@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DD3320EDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF95B320EE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhBVBDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:03:47 -0500
-Received: from mout.gmx.net ([212.227.17.21]:37135 "EHLO mout.gmx.net"
+        id S230041AbhBVBEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:04:54 -0500
+Received: from mga05.intel.com ([192.55.52.43]:51655 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhBVBDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:03:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613955421;
-        bh=lRzqWBl0sthZOBbQ0rNx91fg0tHkddzH7h/62HAEdFU=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=MTUMmsb7XeNsdwAik+EKkNY1WS/GcOQ8l6URuioT+hASZjBHmObs+yYr8zPpCurUM
-         F/llHFrQsLl03usDexEiwxEL69s631ZYEPCR4frkMbo/NzZdWPWPxAJn5ILN+lUMPf
-         QgtBy2QuDC8wt8Cypm9o8YO0dTYAqxSODuMVdpZ8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MfYLQ-1ll9YD2PHc-00g4HK; Mon, 22
- Feb 2021 01:57:01 +0100
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
-Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
-        jsnitsel@redhat.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, LinoSanfilippo@gmx.de
-Subject: [PATCH 1/4] tpm: Use a threaded interrupt handler
-Date:   Mon, 22 Feb 2021 01:56:31 +0100
-Message-Id: <1613955394-13152-2-git-send-email-LinoSanfilippo@gmx.de>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1613955394-13152-1-git-send-email-LinoSanfilippo@gmx.de>
-References: <1613955394-13152-1-git-send-email-LinoSanfilippo@gmx.de>
-MIME-Version: 1.0
+        id S229802AbhBVBEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 20:04:53 -0500
+IronPort-SDR: U28LiCK9r5n2Of1yAVqBJySucHUs9WeHxw0vHod8yM1qFXNXxG3sjAZ+xYVrsDI+kfIQ3h2A9m
+ Kcd4zcODwsDg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="269233478"
+X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
+   d="scan'208";a="269233478"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 17:04:12 -0800
+IronPort-SDR: udvRjf8c642SH3LiL5Dn2d3FnIg352e7OoiqSAQuxXbE4QwkUn0onbAHgRcSvZ5binxFIvkK1I
+ eMJFdn/0XkTA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
+   d="scan'208";a="402313932"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by orsmga008.jf.intel.com with ESMTP; 21 Feb 2021 17:04:12 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Sun, 21 Feb 2021 17:04:11 -0800
+Received: from shsmsx605.ccr.corp.intel.com (10.109.6.215) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Sun, 21 Feb 2021 17:04:10 -0800
+Received: from shsmsx605.ccr.corp.intel.com ([10.109.6.215]) by
+ SHSMSX605.ccr.corp.intel.com ([10.109.6.215]) with mapi id 15.01.2106.002;
+ Mon, 22 Feb 2021 09:04:08 +0800
+From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
+To:     =?utf-8?B?J0tyenlzenRvZiBXaWxjennFhHNraSc=?= <kw@linux.com>
+CC:     Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
+ association
+Thread-Topic: [PATCH v2 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
+ association
+Thread-Index: AQHXBmZlagcS3VhAq0mqYPHwwg7Guapi2DoAgACHA7A=
+Date:   Mon, 22 Feb 2021 01:04:07 +0000
+Message-ID: <4a0bf3a852ed47deb072890319fb39ec@intel.com>
+References: <57a7bbc1ba294ce39c309e519fe45842@intel.com>
+ <20210219022359.435-1-qiuxu.zhuo@intel.com> <YDMBRFWTYKTrDyBI@rocinante>
+In-Reply-To: <YDMBRFWTYKTrDyBI@rocinante>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.239.127.36]
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:9S103CTZTOAfpyXMxVOuZC6DMdivoa+VP6szX9XjvlkwtMDvAAa
- yqdk7kh4h4k4psAz89YdajY+AxlMrHuYnNg8xlsSwOfK5jeXmrOgKcvTza5vE0F7I5e+lNi
- kM915VuKVhV+EDicWGbdqY8t0+Ky/zn2tC0F9BOsgn/MU59Lak2vf3lO0XzP17vt8IXlnqM
- aoJSW0/mgwV1ONqUkagUw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kMhtXEKv2po=:cb1L8fPqIfwt53CBIsu2pr
- Uh7DAs4cZgAlzMKHppdU0aSjtn4tSsRibA85x8a75bT+fBSI8/M9Umna0DFu6J9YhviIiko7b
- 0DjCIPRUtbj7zvo4kvYsn64IRPq3pi7DJ+qhOF5KZ/66VGR+1YaKqzG9l+2slVRuvwY979zBd
- OxcofA0AytfvgtAFUAxsoQWSHZUGlNkRxb6hnIyeDqbhmkaBeFARjPAXeSpg9Vs6Pwjmr1ifF
- rzUN+t3eeFLCeD0RrQUy7nU1TcAp4DYIAfZ0Sy5ieM8B9ts7UG2KJWrA5gxY8S/MPFAyNSFA9
- vS6gdHwiYLUYxieSG7FmpXfL4PerbTX2Yt0MDT0nu6NzyQ5hVEAbcvDErgHgPAHp61r5AmDlo
- EDeQWmafrZN/uJrAM3k+vM4CEN7feovwqb0CDj3QRWmlVfcNyPJTxwMofocnxwJp1cFeVdXoM
- KaovUT1nB5erowwCc4KQ18B5tKHnXBONNZ18G4ebF7EITpte1fPoHw46g75hwssdWA+8+XXXC
- nNT2YeIiv7uvwzfyokdsEY5tk6LZ3ODiq8mJAEVuWwAYDOc4C/OeHYjPEawyTlTPabRY+yWgK
- d0ppaTSHntaKVbl1nr3dt5vB15d7x3BVMvCrs+KQpkl7JayJNZNJqohQXlGAY1UvzTVph+d9n
- as5uCHhI/g0nqtfORz6HG5wfTYlwYGaiV1nbfN2eC6Bx9IxDSNdlYm/k5Eyfpd5sFrNtSdtgt
- e0kEcSxtSCRVYNorsrSlZZQ8I3BKAUTU1RM+T9gI28GrJ5gK/bPHv1MjecNZwNiFxPwM9Rm2/
- 3lFQX/CxGHdZ1KfLOlkOWHVvtTJaKxIhvrJMpxE00KuSa2Lc0aESJunpIVX23WpPIHjkYpfk6
- eioC70GyU6E7lfVxw1VQ==
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V3JpdGluZyBhbmQgcmVhZGluZyByZWdpc3RlcnMgb3ZlciBTUEkgcmVxdWlyZXMgYSBzbGVlcGFi
-bGUgY29udGV4dCwgc2luY2UKYSBtdXRleCBpcyB1c2VkIGluIHRoZSBjb25jZXJuaW5nIGZ1bmN0
-aW9ucy4gU28gaW5zdGVhZCBvZiBpbnN0YWxsaW5nIGEKZ2VuZXJpYyBpbnRlcnJ1cHQgaGFuZGxl
-ciB1c2Ugb25lIGZvciB0aHJlYWRlZCBpbnRlcnJ1cHRzLiBUaGlzIHByb3ZpZGVzCnRoZSBzYW1l
-IGZ1bmN0aW9uYWxpdHkgYXMgYmVmb3JlIGJ1dCBhbHNvIGFsbG93cyBTUEkgZnVuY3Rpb25zIHRv
-IGJlCmNhbGxlZC4KClNpZ25lZC1vZmYtYnk6IExpbm8gU2FuZmlsaXBwbyA8TGlub1NhbmZpbGlw
-cG9AZ214LmRlPgotLS0KIGRyaXZlcnMvY2hhci90cG0vdHBtX3Rpc19jb3JlLmMgfCA2ICsrKyst
-LQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYg
-LS1naXQgYS9kcml2ZXJzL2NoYXIvdHBtL3RwbV90aXNfY29yZS5jIGIvZHJpdmVycy9jaGFyL3Rw
-bS90cG1fdGlzX2NvcmUuYwppbmRleCA5MmM1MWM2Li4yYzk1NmExIDEwMDY0NAotLS0gYS9kcml2
-ZXJzL2NoYXIvdHBtL3RwbV90aXNfY29yZS5jCisrKyBiL2RyaXZlcnMvY2hhci90cG0vdHBtX3Rp
-c19jb3JlLmMKQEAgLTc3MSw4ICs3NzEsMTAgQEAgc3RhdGljIGludCB0cG1fdGlzX3Byb2JlX2ly
-cV9zaW5nbGUoc3RydWN0IHRwbV9jaGlwICpjaGlwLCB1MzIgaW50bWFzaywKIAlpbnQgcmM7CiAJ
-dTMyIGludF9zdGF0dXM7CiAKLQlpZiAoZGV2bV9yZXF1ZXN0X2lycShjaGlwLT5kZXYucGFyZW50
-LCBpcnEsIHRpc19pbnRfaGFuZGxlciwgZmxhZ3MsCi0JCQkgICAgIGRldl9uYW1lKCZjaGlwLT5k
-ZXYpLCBjaGlwKSAhPSAwKSB7CisKKwlpZiAoZGV2bV9yZXF1ZXN0X3RocmVhZGVkX2lycShjaGlw
-LT5kZXYucGFyZW50LCBpcnEsIE5VTEwsCisJCQkJICAgICAgdGlzX2ludF9oYW5kbGVyLCBJUlFG
-X09ORVNIT1QgfCBmbGFncywKKwkJCQkgICAgICBkZXZfbmFtZSgmY2hpcC0+ZGV2KSwgY2hpcCkg
-IT0gMCkgewogCQlkZXZfaW5mbygmY2hpcC0+ZGV2LCAiVW5hYmxlIHRvIHJlcXVlc3QgaXJxOiAl
-ZCBmb3IgcHJvYmVcbiIsCiAJCQkgaXJxKTsKIAkJcmV0dXJuIC0xOwotLSAKMi43LjQKCg==
+PiAuLi4NCj4gPiBbIEtyenlzenRvZjogVXBkYXRlIGNvbW1pdCBtZXNzYWdlLiBdDQo+IFsuLi5d
+DQo+IA0KPiBUaGFuayB5b3UhICBJIGFwcHJlY2lhdGUgdGhhdC4gIEhvd2V2ZXIsIHdlIHByb2Jh
+Ymx5IHNob3VsZCBkcm9wIHRoaXMgZnJvbSB0aGUNCj4gY29tbWl0IG1lc3NhZ2UuICBQZXJoYXBz
+IGVpdGhlciBCam9ybiBvciBMb3JlbnpvIGNvdWxkIGRvIGl0IHdoZW4gYXBwbHlpbmcNCj4gY2hh
+bmdlcy4NCg0KT0ssIHdpbGwgc2VuZCBvdXQgdGhlIHYzIHRoYXQgZHJvcHMgIlsgS3J6eXN6dG9m
+OiBVcGRhdGUgY29tbWl0IG1lc3NhZ2UuIF0iIGZyb20gdGhlIGNvbW1pdCBtZXNzYWdlLg0KDQot
+UWl1eHUNCg==
