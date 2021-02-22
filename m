@@ -2,123 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0F8321D0A
+	by mail.lfdr.de (Postfix) with ESMTP id 0C453321D09
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhBVQcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:32:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35586 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231939AbhBVQ3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:29:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614011306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qMET2jrpSddtpWkJHAuUT+RtXvTsMyez7xuO3kxxUks=;
-        b=g2tsk2ags9OnzyMG3nQzuioxmg3cMeKBT4P+2JdqFcMV1bUJcdtvzwLrq1pyQE54RMqU7D
-        /fgy5Koo1D4bieg9KuKjudfVzG5mfQKlQq7oNTTKfHV05jlKW8ljNeZVOZcCwjUVN3u3yz
-        W/sEfP6ZS00E7tF/MojxcH+wX/bFgzU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B4575AFE6;
-        Mon, 22 Feb 2021 16:28:26 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 17:28:26 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Helge Deller <deller@gmx.de>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: Re: [PATCH printk-rework 08/14] printk: add syslog_lock
-Message-ID: <YDPbqhi6wVwGa5rF@alley>
-References: <20210218081817.28849-1-john.ogness@linutronix.de>
- <20210218081817.28849-9-john.ogness@linutronix.de>
- <YC+9gc/IR8PzeIFf@alley>
- <875z2o15ha.fsf@jogness.linutronix.de>
- <8735xs10hi.fsf@jogness.linutronix.de>
- <db43de06-3183-7401-30f2-0e9302cc48e0@gmx.de>
+        id S231809AbhBVQbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:31:16 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59502 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231940AbhBVQ3U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:29:20 -0500
+Received: from [IPv6:2a01:e0a:4cb:a870:5956:412c:4850:9073] (unknown [IPv6:2a01:e0a:4cb:a870:5956:412c:4850:9073])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E845C1F450A3;
+        Mon, 22 Feb 2021 16:28:33 +0000 (GMT)
+Subject: Re: [PATCH v2 4/9] media: uapi: Add a control for HANTRO driver
+To:     John Cox <jc@kynesim.co.uk>
+Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, peng.fan@nxp.com,
+        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20210218191844.297869-1-benjamin.gaignard@collabora.com>
+ <20210218191844.297869-5-benjamin.gaignard@collabora.com>
+ <9ql73glgbnjaqqsp8ulqenae5n82kfk0o3@4ax.com>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <6364fa8a-db6a-af43-3660-7f0a7a3e0b79@collabora.com>
+Date:   Mon, 22 Feb 2021 17:28:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <db43de06-3183-7401-30f2-0e9302cc48e0@gmx.de>
+In-Reply-To: <9ql73glgbnjaqqsp8ulqenae5n82kfk0o3@4ax.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 2021-02-21 22:39:42, Helge Deller wrote:
-> On 2/19/21 5:33 PM, John Ogness wrote:
-> > Added CC: linux-parisc@vger.kernel.org
-> > 
-> > On 2021-02-19, John Ogness <john.ogness@linutronix.de> wrote:
-> > > > > diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> > > > > index 20c21a25143d..401df370832b 100644
-> > > > > --- a/kernel/printk/printk.c
-> > > > > +++ b/kernel/printk/printk.c
-> > > > > +/* Return a consistent copy of @syslog_seq. */
-> > > > > +static u64 read_syslog_seq_irq(void)
-> > > > > +{
-> > > > > +	u64 seq;
-> > > > > +
-> > > > > +	raw_spin_lock_irq(&syslog_lock);
-> > > > > +	seq = syslog_seq;
-> > > > > +	raw_spin_unlock_irq(&syslog_lock);
-> > > > 
-> > > > Is there any particular reason to disable interrupts here?
-> > > > 
-> > > > It would make sense only when the lock could be taken in IRQ
-> > > > context. Then we would need to always disable interrupts when
-> > > > the lock is taken. And if it is taken in IRQ context, we would
-> > > > need to safe flags.
-> > > 
-> > > All other instances of locking @syslog_lock are done with interrupts
-> > > disabled. And we have:
-> > > 
-> > > register_console()
-> > >    logbuf_lock_irqsave()
-> > >      raw_spin_lock(&syslog_lock)
-> > > 
-> > > I suppose I need to go through all the console drivers to see if any
-> > > register in interrupt context. If not, that logbuf_lock_irqsave()
-> > > should be replaced with logbuf_lock_irq(). And then locking
-> > > @syslog_lock will not need to disable interrupts.
-> > 
-> > I found a possible call chain in interrupt context. From arch/parisc
-> > there is the interrupt handler:
-> > 
-> > handle_interruption(code=1) /* High-priority machine check (HPMC) */
-> >    pdc_console_restart()
-> >      pdc_console_init_force()
-> >        register_console()
-> > 
-> > All other register_console() calls in the kernel are either during init
-> > (within __init sections and probe functions) or are clearly not in
-> > interrupt context (using mutex, kzalloc, spin_lock_irq, etc).
-> > 
-> > I am not familiar with parisc, but I am assuming handle_interruption()
-> > is always called with interrupts disabled (unless the HPMC interrupt is
-> > somehow an exception).
-> 
-> Yes, handle_interruption() is the irq handler, running with irqs off.
-> HPMC is the crash handler - it's called when the kernel will stop
-> anyway. pdc_console is a very basic firmware console which prints
-> the last messages before the machine halts on fatal errors.
-> So, this code it's not the typical use case....
 
-Thanks for information.
+Le 22/02/2021 à 17:16, John Cox a écrit :
+>> The HEVC HANTRO driver needs to know the number of bits to skip at
+>> the beginning of the slice header.
+>> That is a hardware specific requirement so create a dedicated control
+>> that this purpose.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>> include/uapi/linux/hantro-v4l2-controls.h | 20 ++++++++++++++++++++
+>> include/uapi/linux/v4l2-controls.h        |  5 +++++
+>> 2 files changed, 25 insertions(+)
+>> create mode 100644 include/uapi/linux/hantro-v4l2-controls.h
+>>
+>> diff --git a/include/uapi/linux/hantro-v4l2-controls.h b/include/uapi/linux/hantro-v4l2-controls.h
+>> new file mode 100644
+>> index 000000000000..30b1999b7af3
+>> --- /dev/null
+>> +++ b/include/uapi/linux/hantro-v4l2-controls.h
+>> @@ -0,0 +1,20 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>> +
+>> +#ifndef __UAPI_HANTRO_V4L2_CONYTROLS_H__
+>> +#define __UAPI_HANTRO_V4L2_CONYTROLS_H__
+>> +
+>> +#include <linux/v4l2-controls.h>
+>> +#include <media/hevc-ctrls.h>
+>> +
+>> +#define V4L2_CID_HANTRO_HEVC_EXTRA_DECODE_PARAMS	(V4L2_CID_USER_HANTRO_BASE + 0)
+>> +
+>> +/**
+>> + * struct hantro_hevc_extra_decode_params - extra decode parameters for hantro driver
+>> + * @hevc_hdr_skip_lenght:	header first bits offset
+>> + */
+>> +struct hantro_hevc_extra_decode_params {
+>> +	__u32	hevc_hdr_skip_lenght;
+>> +	__u8	padding[4];
+>> +};
+> Can you clarify how hevc_hdr_skip_length differs from
+> v4l2_ctrl_hevc_slice_params.data_bit_offset?  At first sight they would
+> appear to be very similar.
 
-Is this code supposed to work only during early boot or anytime,
-please?
+hevc_hdr_skip_length is the difference between the start positions of 2 nals.
+v4l2_ctrl_hevc_slice_params.data_bit_offset is the offset of the data in the nal.
 
-Note that it is not safe because register_console() takes
-console_lock() which is a sleeping lock.
 
-That said, we are going to rework the console handling a lot. We are
-trying to remove as many locks from the printk path as possible.
-I guess that the list of consoles will be synchronized using
-rcu at the end. But it is still a long way to go.
+Benjamin
 
-Best Regards,
-Petr
+>
+> Regards
+>
+> John Cox
+>
+>> +#endif
+>> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+>> index 039c0d7add1b..ced7486c7f46 100644
+>> --- a/include/uapi/linux/v4l2-controls.h
+>> +++ b/include/uapi/linux/v4l2-controls.h
+>> @@ -209,6 +209,11 @@ enum v4l2_colorfx {
+>>   * We reserve 128 controls for this driver.
+>>   */
+>> #define V4L2_CID_USER_CCS_BASE			(V4L2_CID_USER_BASE + 0x10f0)
+>> +/*
+>> + * The base for HANTRO driver controls.
+>> + * We reserve 32 controls for this driver.
+>> + */
+>> +#define V4L2_CID_USER_HANTRO_BASE		(V4L2_CID_USER_BASE + 0x1170)
+>>
+>> /* MPEG-class control IDs */
+>> /* The MPEG controls are applicable to all codec controls
