@@ -2,143 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB05321A63
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B80EC321A65
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhBVOb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:31:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34731 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231396AbhBVOYs (ORCPT
+        id S231172AbhBVOcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:32:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231950AbhBVOZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 09:24:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614003798;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wzyVHac7bUd3mCc3EMe28wAe65P5w8DpSyWYPCo7GCg=;
-        b=Ufwt8AOKkjGXgfx1+UeSGsqEtFW+jTR72eHMVManz2hFQ0RVfjJ9h7GNqTCSRYvayjczfw
-        3q+2WfF/am1iVmLCTI/zEwTvSbm3u9jY+kLaa5jYSV6H0uF0vUnk5rctuPe81KXTuVr73M
-        UVkUykRsn/X3Q/aK2bIWZHIQ1Gcg4v4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-jfo_04oLNLKlqFumETQ5Tw-1; Mon, 22 Feb 2021 09:23:16 -0500
-X-MC-Unique: jfo_04oLNLKlqFumETQ5Tw-1
-Received: by mail-wr1-f71.google.com with SMTP id d7so6117901wri.23
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 06:23:15 -0800 (PST)
+        Mon, 22 Feb 2021 09:25:44 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE3DC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 06:25:02 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id k17so5540374ioc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 06:25:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=juvEdxvqKlsBbe0kNmOCQgwG0HjLQ/hRQBwpyDMYnmo=;
+        b=fvokkzxsdTHfIYUj61qfUuDxsLNfBMQKlqji7FgUeScjfAdis8TZOyzE7TEXwpKx7S
+         oohO19+xYOg827rtjrhEe+FmUkmkUXg2xJRD32Zh3IyQUuSKDl9rHdGgCj412zT/Cryn
+         UhMvCHEI4Ppfyyj92dn8/yMYVd8jFQ+phi1j3M2k1oRzoUneP2BvnKReu564bvg+Nkph
+         CppDfFxt4RhnWMOgMsvsMq0k7dos70k6wqRunZGGOY7bMNX69oGx8DhSsKbClRHNBmNm
+         Gmy1Y0till1TQQc6pp6QQJbHoYb3RHyF6ncYD8BOIV7Tp7bOM5TOI3mUom3bPQI0cYua
+         LE2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wzyVHac7bUd3mCc3EMe28wAe65P5w8DpSyWYPCo7GCg=;
-        b=qOwvFWubD89kpv4jhTtAqUSYq/SEVRg9QijUU02a6bSZOigSLb/y6K7A1vLLpyHayW
-         nCHcjpUSSI+iXtm2Q+givg3x73Reow+2n2XCyuwtNERKJb39NYN36RY9Ngz3qlhYwkHb
-         ftAxU4HE/25Aq2FJK2gJz7CdRbuNM7ix+dy9j6YKq6x1nJGEmlKYJfITDoLPhJgB2iQC
-         XLCv54om5B/GyYR09QxALx7GOryVCcpRBvWZhdwt9beqomcPalj88z3WJMo2dNgt3x+D
-         D+S1Xki8FyA4mmAgk1SZjNgXm5YhBCZZzWPNMvh5T8e2W2ZEU+WtWHU+URBUA0NAijea
-         UyEg==
-X-Gm-Message-State: AOAM531dJ4nNW5pa17thM4O4E4pedE41sOO10KyZwx/Htem2g5hm0awz
-        TBqDmYF+a2wZn51mvAiAOXtLCdmKPvsnuulPozu/8pvo9Zci5rLd1S+y8DI5bQUIPnPbuZhAt8d
-        E886RSKXJvouvRX/9K4OrVC2c
-X-Received: by 2002:a1c:23c2:: with SMTP id j185mr20392826wmj.96.1614003795017;
-        Mon, 22 Feb 2021 06:23:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyCb72c0yXyjgk1dT0m2zWBpWEuSOVEk1PCqETARj8JSNyPsc7yiew5yYtu4mvxw9C4hwrGDA==
-X-Received: by 2002:a1c:23c2:: with SMTP id j185mr20392806wmj.96.1614003794853;
-        Mon, 22 Feb 2021 06:23:14 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id o10sm22488407wrx.5.2021.02.22.06.23.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 06:23:14 -0800 (PST)
-Date:   Mon, 22 Feb 2021 15:23:11 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v5 00/19] virtio/vsock: introduce SOCK_SEQPACKET
- support
-Message-ID: <20210222142311.gekdd7gsm33wglos@steredhat>
-References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=juvEdxvqKlsBbe0kNmOCQgwG0HjLQ/hRQBwpyDMYnmo=;
+        b=QFRhBFJCpxG2RAOWk4sDojL30O3Fy4y5nph59QosVAFCW4d0+V7W8qycU7cyL2DBoF
+         quXo9R5pnZ8N5LuRuEADg1O+R98snyq2ThzYVEt31IWJkubOH7p3HyKKAeEyU6IyaXUG
+         5vPKXRh5whdV77XTEjIpQOOTR+SKuMuHRP3Eb+4faj5IHXtg7nneJaqHbVRtLNz93RzU
+         kpt8xfwmyFUn1K9IsotBP9v+u5tmBNLTXqOrOvEzKDCuCGbHRUvbbV9ppfAIBzf3VhGu
+         PV2dKfXP1OkSVK7hGPmZFcHE50UOjqUdgjIn+Bb+QmUkV3ITHcyu3PgNgeQgcqC6TZ5N
+         s8lQ==
+X-Gm-Message-State: AOAM531BIYbztEw4zQCidq+IPSYR2kiQLU6/cKU7ZZIxynk4EDzjjEbu
+        SeNcisqFkQIq3OVhaZdDRNqO3kYyLRU2D48wqykFfw==
+X-Google-Smtp-Source: ABdhPJy3M+h35T2uzDveX/x0hkvGAVdKHe5fATxRFSSA9XpiGViMrALwDqQ4Rf85oWU9lEbPKG0zBz8idgOhmIOL3jg=
+X-Received: by 2002:a5d:8490:: with SMTP id t16mr15471280iom.91.1614003901803;
+ Mon, 22 Feb 2021 06:25:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+References: <20210218122546.3546582-1-gmouse@google.com> <CADKL2t6P4gaSUZEFgk7y+TNBRw0Lhf8mXTxzLdbe3FhGs0WH+w@mail.gmail.com>
+ <CAP6Zq1jf4-XAhLQxqNx3LM7-YzDr8zaVPb-jznn8o=frxTotdQ@mail.gmail.com>
+ <CADVsX89F6Tc0Zk6uB3CKRK0F8j_E+sVGHVb9FMAkHDQqJ+KBAQ@mail.gmail.com>
+ <CAKKbWA7WL80C9h9xPcBNAHn-1=NBK9dh2Nqa1hO21hbdLEUbTw@mail.gmail.com> <KL1PR0302MB255112AE01C81FEA63472A6293819@KL1PR0302MB2551.apcprd03.prod.outlook.com>
+In-Reply-To: <KL1PR0302MB255112AE01C81FEA63472A6293819@KL1PR0302MB2551.apcprd03.prod.outlook.com>
+From:   Anton Kachalov <gmouse@google.com>
+Date:   Mon, 22 Feb 2021 15:24:49 +0100
+Message-ID: <CADVsX88Sk2PVomM6o4qeTk3EmDSXnDjFC6nixUt2Jn6dU7jOLQ@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: nuvoton: Fix flash layout
+To:     IS20 Ofer Eilon <ofer.eilon@nuvoton.com>
+Cc:     Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arseny,
+Ofer,
 
-On Thu, Feb 18, 2021 at 08:33:44AM +0300, Arseny Krasnov wrote:
->	This patchset impelements support of SOCK_SEQPACKET for virtio
->transport.
->	As SOCK_SEQPACKET guarantees to save record boundaries, so to
->do it, two new packet operations were added: first for start of record
-> and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
->both operations carries metadata - to maintain boundaries and payload
->integrity. Metadata is introduced by adding special header with two
->fields - message count and message length:
+The oldest version from igps doesn't work as well as the latest
+version from u-boot github.
+
+The only version that works for me is in software deliverables:
+
+https://github.com/Nuvoton-Israel/nuvoton-info/tree/master/npcm7xx-poleg/ev=
+aluation-board/sw_deliverables/npcm7xx_v2.3
+
+On Mon, 22 Feb 2021 at 15:10, IS20 Ofer Eilon <ofer.eilon@nuvoton.com> wrot=
+e:
 >
->	struct virtio_vsock_seq_hdr {
->		__le32  msg_cnt;
->		__le32  msg_len;
->	} __attribute__((packed));
+> Hi Avi,
 >
->	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
->packets(buffer of second virtio descriptor in chain) in the same way as
->data transmitted in RW packets. Payload was chosen as buffer for this
->header to avoid touching first virtio buffer which carries header of
->packet, because someone could check that size of this buffer is equal
->to size of packet header. To send record, packet with start marker is
->sent first(it's header contains length of record and counter), then
->counter is incremented and all data is sent as usual 'RW' packets and
->finally SEQ_END is sent(it also carries counter of message, which is
->counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
->incremented again. On receiver's side, length of record is known from
->packet with start record marker. To check that no packets were dropped
->by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
->checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
->1) and length of data between two markers is compared to length in
->SEQ_BEGIN header.
->	Now as  packets of one socket are not reordered neither on
->vsock nor on vhost transport layers, such markers allows to restore
->original record on receiver's side. If user's buffer is smaller that
->record length, when all out of size data is dropped.
->	Maximum length of datagram is not limited as in stream socket,
->because same credit logic is used. Difference with stream socket is
->that user is not woken up until whole record is received or error
->occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
->	Tests also implemented.
-
-I reviewed the first part (af_vsock.c changes), tomorrow I'll review the 
-rest. That part looks great to me, only found a few minor issues.
-
-In the meantime, however, I'm getting a doubt, especially with regard to 
-other transports besides virtio.
-
-Should we hide the begin/end marker sending in the transport?
-
-I mean, should the transport just provide a seqpacket_enqueue() 
-callbacl?
-Inside it then the transport will send the markers. This is because some 
-transports might not need to send markers.
-
-But thinking about it more, they could actually implement stubs for that 
-calls, if they don't need to send markers.
-
-So I think for now it's fine since it allows us to reuse a lot of code, 
-unless someone has some objection.
-
-Thanks,
-Stefano
-
+> It seems an old version of uboot  u-boot_2019.01.7.5.bin  from igps below=
+:
+>
+> > https://apc01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit=
+hub.com%2FNuvoton-Israel%2Figps%2Ftree%2Fmaster%2FImageGeneration%2Fversion=
+s&amp;data=3D04%7C01%7Cofer.eilon%40nuvoton.com%7Ce56881b8491d42e5ee4c08d8d=
+71bacd4%7Ca3f24931d4034b4a94f17d83ac638e07%7C0%7C0%7C637495861162860437%7CU=
+nknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLC=
+JXVCI6Mn0%3D%7C1000&amp;sdata=3D0%2BNzEv%2FSX9QTg0XumchRrU61uGbZ3CZXrtspXu2=
+560I%3D&amp;reserved=3D0
+>
+> Please use latest from uboot.bin github.
+>
+> Regards,
+> Ofer
+>
+>
+> -----Original Message-----
+> From: Avi Fishman <avifishman70@gmail.com>
+> Sent: Monday, February 22, 2021 12:21 PM
+> To: Anton Kachalov <gmouse@google.com>
+> Cc: Tomer Maimon <tmaimon77@gmail.com>; Benjamin Fair <benjaminfair@googl=
+e.com>; Tali Perry <tali.perry1@gmail.com>; Patrick Venture <venture@google=
+.com>; Nancy Yuen <yuenn@google.com>; Rob Herring <robh+dt@kernel.org>; Ope=
+nBMC Maillist <openbmc@lists.ozlabs.org>; devicetree <devicetree@vger.kerne=
+l.org>; Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; IS20 Ofer=
+ Eilon <ofer.eilon@nuvoton.com>
+> Subject: Re: [PATCH] ARM: dts: nuvoton: Fix flash layout
+>
+> Ofer,
+>
+> Can you check why u-boot doesn't work with SD cards?
+>
+> On Mon, Feb 22, 2021 at 11:27 AM Anton Kachalov <gmouse@google.com> wrote=
+:
+> >
+> > Hi, Tom.
+> >
+> > Yes, I'm using it for testing on real hardware.
+> >
+> > BTW. Recent u-boot doesn't work with SD cards. The card doesn't
+> > detect. The last working version was this one:
+> >
+> > https://apc01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit=
+h
+> > ub.com%2FNuvoton-Israel%2Fnuvoton-info%2Ftree%2Fmaster%2Fnpcm7xx-poleg
+> > %2Fevaluation-board%2Fsw_deliverables%2Fnpcm7xx_v2.3&amp;data=3D04%7C01=
+%
+> > 7Cofer.eilon%40nuvoton.com%7Ce56881b8491d42e5ee4c08d8d71bacd4%7Ca3f249
+> > 31d4034b4a94f17d83ac638e07%7C0%7C0%7C637495861162860437%7CUnknown%7CTW
+> > FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6
+> > Mn0%3D%7C1000&amp;sdata=3Df4t41g3CQaFTQNfwwNVBrIwQScndIGcfRTms0yrTn5o%3=
+D
+> > &amp;reserved=3D0
+> >
+> > However, u-boot from igps repo:
+> >
+> > https://apc01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit=
+h
+> > ub.com%2FNuvoton-Israel%2Figps%2Ftree%2Fmaster%2FImageGeneration%2Fver
+> > sions&amp;data=3D04%7C01%7Cofer.eilon%40nuvoton.com%7Ce56881b8491d42e5e=
+e
+> > 4c08d8d71bacd4%7Ca3f24931d4034b4a94f17d83ac638e07%7C0%7C0%7C6374958611
+> > 62860437%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiL
+> > CJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3D0%2BNzEv%2FSX9QTg0Xumc=
+h
+> > RrU61uGbZ3CZXrtspXu2560I%3D&amp;reserved=3D0
+> >
+> > Has issues too. It doesn't allow me to read more than 4k bytes once at
+> > a time. Thus, to flash the stuff I have manually read chunks from the
+> > SD-card: fat load doesn't work at all and I write that data in raw
+> > partition.
+> >
+> > On Sun, 21 Feb 2021 at 17:40, Tomer Maimon <tmaimon77@gmail.com> wrote:
+> > >
+> > > Hi Benjamin and Anton,
+> > >
+> > > Sorry for the late reply,
+> > >
+> > > The EVB FIU0-CS0 partitioning is used for testing the EVB and this is=
+ why it is different than the OpenBMC flash layout.
+> > >
+> > >
+> > >
+> > > Are you using the NPCM7XX EVB for OpenBMC? if yes we can consider to =
+modify the flash partition to OpenBMC use.
+> > >
+> > >
+> > > On Thu, 18 Feb 2021 at 19:11, Benjamin Fair <benjaminfair@google.com>=
+ wrote:
+> > >>
+> > >> On Thu, 18 Feb 2021 at 04:42, <gmouse@google.com> wrote:
+> > >> >
+> > >> > From: "Anton D. Kachalov" <gmouse@google.com>
+> > >> >
+> > >> > This change satisfy OpenBMC requirements for flash layout.
+> > >> >
+> > >> > Signed-off-by: Anton D. Kachalov <gmouse@google.com>
+> > >> > ---
+> > >> >  arch/arm/boot/dts/nuvoton-npcm750-evb.dts | 28
+> > >> > +++++++----------------
+> > >> >  1 file changed, 8 insertions(+), 20 deletions(-)
+> > >> >
+> > >> > diff --git a/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
+> > >> > b/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
+> > >> > index bd1eb6ee380f..741c1fee8552 100644
+> > >> > --- a/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
+> > >> > +++ b/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
+> > >> > @@ -182,8 +182,8 @@ bbuboot2@80000 {
+> > >> >                                 reg =3D <0x0080000 0x80000>;
+> > >> >                                 read-only;
+> > >> >                                 };
+> > >> > -                       envparam@100000 {
+> > >> > -                               label =3D "env-param";
+> > >> > +                       ubootenv@100000 {
+> > >> > +                               label =3D "u-boot-env";
+> > >> >                                 reg =3D <0x0100000 0x40000>;
+> > >> >                                 read-only;
+> > >> >                                 }; @@ -195,25 +195,13 @@
+> > >> > kernel@200000 {
+> > >> >                                 label =3D "kernel";
+> > >> >                                 reg =3D <0x0200000 0x400000>;
+> > >> >                                 };
+> > >> > -                       rootfs@600000 {
+> > >> > -                               label =3D "rootfs";
+> > >> > -                               reg =3D <0x0600000 0x700000>;
+> > >> > +                       rofs@780000 {
+> > >> > +                               label =3D "rofs";
+> > >> > +                               reg =3D <0x0780000 0x1680000>;
+> > >> >                                 };
+> > >> > -                       spare1@D00000 {
+> > >> > -                               label =3D "spare1";
+> > >> > -                               reg =3D <0x0D00000 0x200000>;
+> > >> > -                               };
+> > >> > -                       spare2@0F00000 {
+> > >> > -                               label =3D "spare2";
+> > >> > -                               reg =3D <0x0F00000 0x200000>;
+> > >> > -                               };
+> > >> > -                       spare3@1100000 {
+> > >> > -                               label =3D "spare3";
+> > >> > -                               reg =3D <0x1100000 0x200000>;
+> > >> > -                               };
+> > >> > -                       spare4@1300000 {
+> > >> > -                               label =3D "spare4";
+> > >> > -                               reg =3D <0x1300000 0x0>;
+> > >> > +                       rwfs@1e00000 {
+> > >> > +                               label =3D "rwfs";
+> > >> > +                               reg =3D <0x1e00000 0x200000>;
+> > >> >                         };
+> > >>
+> > >> I recommend just including the openbmc-flash-layout.dtsi file here
+> > >> instead since that contains the common flash layout for most
+> > >> OpenBMC systems.
+> > >>
+> > > Good solution,
+> > > Do you mean nuvoton-openbmc-flash-layout?
+> > >>
+> > >> >                 };
+> > >> >         };
+> > >> > --
+> > >> > 2.30.0.478.g8a0d178c01-goog
+> > >> >
+> > >
+> > >
+> > > Thanks,
+> > >
+> > > Tomer
+>
+>
+>
+> --
+> Regards,
+> Avi
+> ________________________________
+> ________________________________
+>  The privileged confidential information contained in this email is inten=
+ded for use only by the addressees as indicated by the original sender of t=
+his email. If you are not the addressee indicated in this email or are not =
+responsible for delivery of the email to such a person, please kindly reply=
+ to the sender indicating this fact and delete all copies of it from your c=
+omputer and network server immediately. Your cooperation is highly apprecia=
+ted. It is advised that any unauthorized use of confidential information of=
+ Nuvoton is strictly prohibited; and any information in this email irreleva=
+nt to the official business of Nuvoton shall be deemed as neither given nor=
+ endorsed by Nuvoton.
