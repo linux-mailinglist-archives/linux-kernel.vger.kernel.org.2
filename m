@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E35321B49
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD06321B57
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhBVPWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:22:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
+        id S231603AbhBVPZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:25:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhBVPPM (ORCPT
+        with ESMTP id S231384AbhBVPPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:15:12 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D298DC061A2D
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:13:02 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id a207so14717150wmd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:13:02 -0800 (PST)
+        Mon, 22 Feb 2021 10:15:15 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E88C061A2E
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:13:04 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id b3so19449477wrj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:13:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6uS/mI0aatEHqUL9B1S+eTlivdmOLrwoS7EuJ7+U7Sw=;
-        b=XZEw/mrXSku5Su9sqZev/RiL5oSE4cCOxgVcpsEgG3Aw0XC5XGMbZ8sqOGMu46zW6Y
-         pmk88rgk0w35uM+iQ/W6ggkpxsWUssIP76jHTKw/m5goS80GD3UFMggz0J3zCrZw4T1n
-         vxKoG4KOwfSNVFSUKqDil3BAlxJzyV+NzDxhrbyXbGisNTL1SGQQ+XWbAVPjU4Ob+Z8c
-         /8NUJtdfz+cwhHOsdwZbuOZzN2zDOt3EN1OuU2jiw/fI7WxiG6MfHss0L9zX1ekkKH5c
-         dVDq4bEHmLsJWf1chDh4fUhoveUKBxqfznRpEoUzR8fBgahyCZVNbvKcQK3A5oSFQ9l8
-         uqEA==
+        bh=pNjPP+R6G1ipZtLvtiVHNIvTPKhMwdVdBohHcYREKCw=;
+        b=czOh/H+hJtEMAW7bl45eaYyPl+SGuDPrp1yzUjcGmgfimbF7FpaKsatvBqaQUE58IY
+         jfsa9jO6Ofi087FELMZ11LHCvRWx3NK3RJUAn3er32i1wS0cqrT77H6x6GUN9bocNpqp
+         E9Cb+6ioqmICjpIY+SIou+1IR3oqvxXuCmFutIF3HUV6FfCE9Q2g/WeKY9GRaDNpWOM3
+         3XpNLC+Vnqr5cAIC74JQ76tuVnjyo+VHImkVdAY1PsVKKfkNi8BE0qufn02lx90c29uv
+         4dM5NF+hrClmTRgOpJLK3nwnzKqarm8Tq3D5O9iN8RBz4Bi8rJDPi2jiapbOSzblwcjD
+         dkXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6uS/mI0aatEHqUL9B1S+eTlivdmOLrwoS7EuJ7+U7Sw=;
-        b=ubiNVNEvKMdcuYPZ4ve3TLAeaoVj2rvM1z2pyLZLVIGrtCqBvDCrJ0IeNXECWUzCYr
-         aDx9jnFShsiuXyOubsHd+19MN6n8zBWm/gtZ4Akbiob1Tq4U7d6nV/7n/akSVcXfREMt
-         9rIwvpjG6Ei8thMUoUN9DezN7uLe/knJjNp+VIchhKgA1rtLCDka21tBpGJqoAwbv+he
-         iQmTqD11dJSe0CkSzF62dGCZTquWpSoNvQ2k/jFx1rUgVq2zfDebkIc+YuwdE5+jLq//
-         APJgyIr2A7J70KMIzBGijQklSIpiORN2LUI1f1XLPahzCNdU6JxgfmAzesyvers/Rqh/
-         Dlfw==
-X-Gm-Message-State: AOAM532itDh0ogjuBLNhvIPXbrwt4AtqHMi3oS+hs1edKG6PNJw0YGO6
-        Ig5jGq8KnlkoAF5ZNi2Buv8J+l/Un5fipuZfv2A=
-X-Google-Smtp-Source: ABdhPJwt7aFnIwDsl4dI/alqogWDhoC64RsfiBRWaspWMkuciWBaudkzHyUrd8ywtQbTILnHc6eO5Q==
-X-Received: by 2002:a7b:ce14:: with SMTP id m20mr13614858wmc.12.1614006781358;
-        Mon, 22 Feb 2021 07:13:01 -0800 (PST)
+        bh=pNjPP+R6G1ipZtLvtiVHNIvTPKhMwdVdBohHcYREKCw=;
+        b=dgtg1QRwGJDMWFnsT/aZQ0rhuoWBUgz4lxUum6EuKTPvnmTqVB/vVjOB+BlppgZ0iP
+         O0PcWy956Tg9uc+F+2Z4QQdUlQ+nwA1R4nqnW7dT8ott+G8VnwKdv0oZb9jC6iB5jNMt
+         BkOuHsL8NuSx1a6LADuyLxZTpYMTaJrsHaJijVDXY+aiJJRQTtGc2aCEcGUzVMQPmowG
+         jD1NsGq+kyPtMIWGLi4ZVRpznMao7Wg4KFciMXmn/JUOhAyPkNXK4B+RAD/oD+fCMbLZ
+         Dm5v3CpJ3NSsRDZf2BVRbGvn0hEr8eLYBIclpDj+ht6DNQ8XV/J6h4cEm2kv8IPwBvlp
+         Rhcg==
+X-Gm-Message-State: AOAM531qIzAste0Ret1CX21++3cLEi7UwDruQ5iG5nX0SCZBM8bf1j+D
+        7mjYfKv4xt1diAKTHQr0Gs2Ukf5vWKld19FbOu4=
+X-Google-Smtp-Source: ABdhPJxELjftRjbjQ8QfUGGO1yRJpXVaKOsjxszlBPDZ6XpG6SXTXprLGU2UGpUASnlugQFQNk7gkw==
+X-Received: by 2002:a5d:540d:: with SMTP id g13mr22002512wrv.143.1614006782504;
+        Mon, 22 Feb 2021 07:13:02 -0800 (PST)
 Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id c62sm27221087wme.16.2021.02.22.07.13.00
+        by smtp.gmail.com with ESMTPSA id t23sm6092359wmn.13.2021.02.22.07.13.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:13:01 -0800 (PST)
+        Mon, 22 Feb 2021 07:13:02 -0800 (PST)
 From:   Romain Perier <romain.perier@gmail.com>
 To:     Kees Cook <keescook@chromium.org>,
         kernel-hardening@lists.openwall.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
 Cc:     Romain Perier <romain.perier@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 16/20] tracing/probe: Manual replacement of the deprecated strlcpy() with return values
-Date:   Mon, 22 Feb 2021 16:12:27 +0100
-Message-Id: <20210222151231.22572-17-romain.perier@gmail.com>
+Subject: [PATCH 17/20] vt: Manual replacement of the deprecated strlcpy() with return values
+Date:   Mon, 22 Feb 2021 16:12:28 +0100
+Message-Id: <20210222151231.22572-18-romain.perier@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
 References: <20210222151231.22572-1-romain.perier@gmail.com>
@@ -82,29 +82,25 @@ values (as it is quite different between the two functions).
 
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 ---
- kernel/trace/trace_uprobe.c |   11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/tty/vt/keyboard.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 3cf7128e1ad3..f9583afdb735 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -154,12 +154,11 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
- 	u8 *dst = get_loc_data(dest, base);
- 	void __user *src = (void __force __user *) addr;
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index 77638629c562..5e20c6c307e0 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -2067,9 +2067,12 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+ 			return -ENOMEM;
  
--	if (unlikely(!maxlen))
--		return -ENOMEM;
--
--	if (addr == FETCH_TOKEN_COMM)
--		ret = strlcpy(dst, current->comm, maxlen);
--	else
-+	if (addr == FETCH_TOKEN_COMM) {
-+		ret = strscpy(dst, current->comm, maxlen);
-+		if (ret == -E2BIG)
-+			return -ENOMEM;
-+	} else
- 		ret = strncpy_from_user(dst, src, maxlen);
- 	if (ret >= 0) {
- 		if (ret == maxlen)
+ 		spin_lock_irqsave(&func_buf_lock, flags);
+-		len = strlcpy(kbs, func_table[kb_func] ? : "", len);
++		len = strscpy(kbs, func_table[kb_func] ? : "", len);
+ 		spin_unlock_irqrestore(&func_buf_lock, flags);
+ 
++		if (len == -E2BIG)
++			return -E2BIG;
++
+ 		ret = copy_to_user(user_kdgkb->kb_string, kbs, len + 1) ?
+ 			-EFAULT : 0;
+ 
 
