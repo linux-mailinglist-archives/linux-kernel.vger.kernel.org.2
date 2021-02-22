@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556D1321513
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F2332150E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhBVL0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 06:26:23 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57332 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbhBVLY6 (ORCPT
+        id S230361AbhBVLZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 06:25:40 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59006 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230412AbhBVLYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 06:24:58 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11MBNhxr007131;
-        Mon, 22 Feb 2021 05:23:43 -0600
+        Mon, 22 Feb 2021 06:24:50 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11MBNkLd035103;
+        Mon, 22 Feb 2021 05:23:46 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1613993023;
-        bh=ejNLP8A0/TozqWiIO9rw/YN3cU1wXkHRhs46676Bh+o=;
+        s=ti-com-17Q1; t=1613993026;
+        bh=39hNbAw+ycSkXxD4ycWFRqe28fzItNms9UDyjMiFxdw=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=FNziTBa8jf46AudF0ZD0QI0kzHFUi+AkjCf+HVzp3lwm9ihWMFBSsMZ3HOBZW3sVD
-         BAN2ZsN0IJSRQEuX0z/V8HYocDm+gSzcl712b+d+xRhvA75kPIXDz6D1R9pbLvkZZw
-         b9yEtYTl/ZhNFgnE46he7cyIehH7h0nup51vwILE=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11MBNhq0101411
+        b=O/Tb326P2NRhMT2U5HBUUEdR5cvv783Tc8//+f2BE/u9FP3U5AtsixLCUM8h4dzWr
+         7rRILg7+2s6dObujQnSr+aiKpYVWnHhzdGLlxK2yyWKxyoysqwZkUYGX5rzJaM/DD5
+         GEPR1/XKFcB6f8sgmlRLH7yaWoShxKxuaaUTEAEk=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11MBNkxA050326
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Feb 2021 05:23:43 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 22 Feb 2021 05:23:46 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 22
- Feb 2021 05:23:42 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2021 05:23:46 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 22 Feb 2021 05:23:42 -0600
+ Frontend Transport; Mon, 22 Feb 2021 05:23:46 -0600
 Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11MBNFDc088010;
-        Mon, 22 Feb 2021 05:23:40 -0600
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11MBNFDd088010;
+        Mon, 22 Feb 2021 05:23:43 -0600
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -45,9 +45,9 @@ To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Swapnil Jakhade <sjakhade@cadence.com>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-phy@lists.infradead.org>
-Subject: [PATCH v2 3/9] dt-bindings: ti-serdes-mux: Add defines for AM64 SoC
-Date:   Mon, 22 Feb 2021 16:53:08 +0530
-Message-ID: <20210222112314.10772-4-kishon@ti.com>
+Subject: [PATCH v2 4/9] phy: ti: j721e-wiz: Remove "regmap_field" from wiz_clk_{mux|div}_sel
+Date:   Mon, 22 Feb 2021 16:53:09 +0530
+Message-ID: <20210222112314.10772-5-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210222112314.10772-1-kishon@ti.com>
 References: <20210222112314.10772-1-kishon@ti.com>
@@ -58,30 +58,229 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AM64 has a single lane SERDES which can be configured to be used
-with either PCIe or USB. Define the possilbe values for the SERDES
-function in AM64 SoC here.
+Both "struct wiz_clk_div_sel" and "struct wiz_clk_mux_sel" are static
+data that is common for all wiz instances. Including
+"struct regmap_field" for each of the wiz instances can yield undesirable
+results. Move "struct regmap_field" out of "struct wiz_clk_div_sel" and
+"struct wiz_clk_mux_sel" and make them point to constant data.
+
+So far no issues are observed since both these structures are not
+accessed outside the probe.
 
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Acked-by: Peter Rosin <peda@axentia.se>
 ---
- include/dt-bindings/mux/ti-serdes.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/phy/ti/phy-j721e-wiz.c | 75 +++++++++++++++-------------------
+ 1 file changed, 34 insertions(+), 41 deletions(-)
 
-diff --git a/include/dt-bindings/mux/ti-serdes.h b/include/dt-bindings/mux/ti-serdes.h
-index 9047ec6bd3cf..d417b9268b16 100644
---- a/include/dt-bindings/mux/ti-serdes.h
-+++ b/include/dt-bindings/mux/ti-serdes.h
-@@ -90,4 +90,9 @@
- #define J7200_SERDES0_LANE3_USB			0x2
- #define J7200_SERDES0_LANE3_IP4_UNUSED		0x3
+diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
+index c9cfafe89cbf..956a93d96d9b 100644
+--- a/drivers/phy/ti/phy-j721e-wiz.c
++++ b/drivers/phy/ti/phy-j721e-wiz.c
+@@ -107,7 +107,7 @@ static const struct reg_field typec_ln10_swap =
+ struct wiz_clk_mux {
+ 	struct clk_hw		hw;
+ 	struct regmap_field	*field;
+-	u32			*table;
++	const u32		*table;
+ 	struct clk_init_data	clk_data;
+ };
  
-+/* AM64 */
-+
-+#define AM64_SERDES0_LANE0_PCIE0		0x0
-+#define AM64_SERDES0_LANE0_USB			0x1
-+
- #endif /* _DT_BINDINGS_MUX_TI_SERDES */
+@@ -123,18 +123,16 @@ struct wiz_clk_divider {
+ #define to_wiz_clk_div(_hw) container_of(_hw, struct wiz_clk_divider, hw)
+ 
+ struct wiz_clk_mux_sel {
+-	struct regmap_field	*field;
+ 	u32			table[4];
+ 	const char		*node_name;
+ };
+ 
+ struct wiz_clk_div_sel {
+-	struct regmap_field	*field;
+-	const struct clk_div_table	*table;
++	const struct clk_div_table *table;
+ 	const char		*node_name;
+ };
+ 
+-static struct wiz_clk_mux_sel clk_mux_sel_16g[] = {
++static const struct wiz_clk_mux_sel clk_mux_sel_16g[] = {
+ 	{
+ 		/*
+ 		 * Mux value to be configured for each of the input clocks
+@@ -153,7 +151,7 @@ static struct wiz_clk_mux_sel clk_mux_sel_16g[] = {
+ 	},
+ };
+ 
+-static struct wiz_clk_mux_sel clk_mux_sel_10g[] = {
++static const struct wiz_clk_mux_sel clk_mux_sel_10g[] = {
+ 	{
+ 		/*
+ 		 * Mux value to be configured for each of the input clocks
+@@ -179,7 +177,7 @@ static const struct clk_div_table clk_div_table[] = {
+ 	{ .val = 3, .div = 8, },
+ };
+ 
+-static struct wiz_clk_div_sel clk_div_sel[] = {
++static const struct wiz_clk_div_sel clk_div_sel[] = {
+ 	{
+ 		.table = clk_div_table,
+ 		.node_name = "cmn-refclk-dig-div",
+@@ -201,8 +199,8 @@ enum wiz_type {
+ struct wiz {
+ 	struct regmap		*regmap;
+ 	enum wiz_type		type;
+-	struct wiz_clk_mux_sel	*clk_mux_sel;
+-	struct wiz_clk_div_sel	*clk_div_sel;
++	const struct wiz_clk_mux_sel *clk_mux_sel;
++	const struct wiz_clk_div_sel *clk_div_sel;
+ 	unsigned int		clk_div_sel_num;
+ 	struct regmap_field	*por_en;
+ 	struct regmap_field	*phy_reset_n;
+@@ -214,6 +212,8 @@ struct wiz {
+ 	struct regmap_field	*pma_cmn_refclk_mode;
+ 	struct regmap_field	*pma_cmn_refclk_dig_div;
+ 	struct regmap_field	*pma_cmn_refclk1_dig_div;
++	struct regmap_field	*mux_sel_field[WIZ_MUX_NUM_CLOCKS];
++	struct regmap_field	*div_sel_field[WIZ_DIV_NUM_CLOCKS_16G];
+ 	struct regmap_field	*typec_ln10_swap;
+ 
+ 	struct device		*dev;
+@@ -310,8 +310,6 @@ static int wiz_init(struct wiz *wiz)
+ 
+ static int wiz_regfield_init(struct wiz *wiz)
+ {
+-	struct wiz_clk_mux_sel *clk_mux_sel;
+-	struct wiz_clk_div_sel *clk_div_sel;
+ 	struct regmap *regmap = wiz->regmap;
+ 	int num_lanes = wiz->num_lanes;
+ 	struct device *dev = wiz->dev;
+@@ -344,54 +342,49 @@ static int wiz_regfield_init(struct wiz *wiz)
+ 		return PTR_ERR(wiz->pma_cmn_refclk_mode);
+ 	}
+ 
+-	clk_div_sel = &wiz->clk_div_sel[CMN_REFCLK_DIG_DIV];
+-	clk_div_sel->field = devm_regmap_field_alloc(dev, regmap,
+-						     pma_cmn_refclk_dig_div);
+-	if (IS_ERR(clk_div_sel->field)) {
++	wiz->div_sel_field[CMN_REFCLK_DIG_DIV] =
++		devm_regmap_field_alloc(dev, regmap, pma_cmn_refclk_dig_div);
++	if (IS_ERR(wiz->div_sel_field[CMN_REFCLK_DIG_DIV])) {
+ 		dev_err(dev, "PMA_CMN_REFCLK_DIG_DIV reg field init failed\n");
+-		return PTR_ERR(clk_div_sel->field);
++		return PTR_ERR(wiz->div_sel_field[CMN_REFCLK_DIG_DIV]);
+ 	}
+ 
+ 	if (wiz->type == J721E_WIZ_16G) {
+-		clk_div_sel = &wiz->clk_div_sel[CMN_REFCLK1_DIG_DIV];
+-		clk_div_sel->field =
++		wiz->div_sel_field[CMN_REFCLK1_DIG_DIV] =
+ 			devm_regmap_field_alloc(dev, regmap,
+ 						pma_cmn_refclk1_dig_div);
+-		if (IS_ERR(clk_div_sel->field)) {
++		if (IS_ERR(wiz->div_sel_field[CMN_REFCLK1_DIG_DIV])) {
+ 			dev_err(dev, "PMA_CMN_REFCLK1_DIG_DIV reg field init failed\n");
+-			return PTR_ERR(clk_div_sel->field);
++			return PTR_ERR(wiz->div_sel_field[CMN_REFCLK1_DIG_DIV]);
+ 		}
+ 	}
+ 
+-	clk_mux_sel = &wiz->clk_mux_sel[PLL0_REFCLK];
+-	clk_mux_sel->field = devm_regmap_field_alloc(dev, regmap,
+-						     pll0_refclk_mux_sel);
+-	if (IS_ERR(clk_mux_sel->field)) {
++	wiz->mux_sel_field[PLL0_REFCLK] =
++		devm_regmap_field_alloc(dev, regmap, pll0_refclk_mux_sel);
++	if (IS_ERR(wiz->mux_sel_field[PLL0_REFCLK])) {
+ 		dev_err(dev, "PLL0_REFCLK_SEL reg field init failed\n");
+-		return PTR_ERR(clk_mux_sel->field);
++		return PTR_ERR(wiz->mux_sel_field[PLL0_REFCLK]);
+ 	}
+ 
+-	clk_mux_sel = &wiz->clk_mux_sel[PLL1_REFCLK];
+-	clk_mux_sel->field = devm_regmap_field_alloc(dev, regmap,
+-						     pll1_refclk_mux_sel);
+-	if (IS_ERR(clk_mux_sel->field)) {
++	wiz->mux_sel_field[PLL1_REFCLK] =
++		devm_regmap_field_alloc(dev, regmap, pll1_refclk_mux_sel);
++	if (IS_ERR(wiz->mux_sel_field[PLL1_REFCLK])) {
+ 		dev_err(dev, "PLL1_REFCLK_SEL reg field init failed\n");
+-		return PTR_ERR(clk_mux_sel->field);
++		return PTR_ERR(wiz->mux_sel_field[PLL1_REFCLK]);
+ 	}
+ 
+-	clk_mux_sel = &wiz->clk_mux_sel[REFCLK_DIG];
+ 	if (wiz->type == J721E_WIZ_10G)
+-		clk_mux_sel->field =
++		wiz->mux_sel_field[REFCLK_DIG] =
+ 			devm_regmap_field_alloc(dev, regmap,
+ 						refclk_dig_sel_10g);
+ 	else
+-		clk_mux_sel->field =
++		wiz->mux_sel_field[REFCLK_DIG] =
+ 			devm_regmap_field_alloc(dev, regmap,
+ 						refclk_dig_sel_16g);
+ 
+-	if (IS_ERR(clk_mux_sel->field)) {
++	if (IS_ERR(wiz->mux_sel_field[REFCLK_DIG])) {
+ 		dev_err(dev, "REFCLK_DIG_SEL reg field init failed\n");
+-		return PTR_ERR(clk_mux_sel->field);
++		return PTR_ERR(wiz->mux_sel_field[REFCLK_DIG]);
+ 	}
+ 
+ 	for (i = 0; i < num_lanes; i++) {
+@@ -443,7 +436,7 @@ static u8 wiz_clk_mux_get_parent(struct clk_hw *hw)
+ 	unsigned int val;
+ 
+ 	regmap_field_read(field, &val);
+-	return clk_mux_val_to_index(hw, mux->table, 0, val);
++	return clk_mux_val_to_index(hw, (u32 *)mux->table, 0, val);
+ }
+ 
+ static int wiz_clk_mux_set_parent(struct clk_hw *hw, u8 index)
+@@ -462,7 +455,7 @@ static const struct clk_ops wiz_clk_mux_ops = {
+ };
+ 
+ static int wiz_mux_clk_register(struct wiz *wiz, struct device_node *node,
+-				struct regmap_field *field, u32 *table)
++				struct regmap_field *field, const u32 *table)
+ {
+ 	struct device *dev = wiz->dev;
+ 	struct clk_init_data *init;
+@@ -606,7 +599,7 @@ static int wiz_div_clk_register(struct wiz *wiz, struct device_node *node,
+ 
+ static void wiz_clock_cleanup(struct wiz *wiz, struct device_node *node)
+ {
+-	struct wiz_clk_mux_sel *clk_mux_sel = wiz->clk_mux_sel;
++	const struct wiz_clk_mux_sel *clk_mux_sel = wiz->clk_mux_sel;
+ 	struct device_node *clk_node;
+ 	int i;
+ 
+@@ -619,7 +612,7 @@ static void wiz_clock_cleanup(struct wiz *wiz, struct device_node *node)
+ 
+ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ {
+-	struct wiz_clk_mux_sel *clk_mux_sel = wiz->clk_mux_sel;
++	const struct wiz_clk_mux_sel *clk_mux_sel = wiz->clk_mux_sel;
+ 	struct device *dev = wiz->dev;
+ 	struct device_node *clk_node;
+ 	const char *node_name;
+@@ -663,7 +656,7 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 			goto err;
+ 		}
+ 
+-		ret = wiz_mux_clk_register(wiz, clk_node, clk_mux_sel[i].field,
++		ret = wiz_mux_clk_register(wiz, clk_node, wiz->mux_sel_field[i],
+ 					   clk_mux_sel[i].table);
+ 		if (ret) {
+ 			dev_err(dev, "Failed to register %s clock\n",
+@@ -684,7 +677,7 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 			goto err;
+ 		}
+ 
+-		ret = wiz_div_clk_register(wiz, clk_node, clk_div_sel[i].field,
++		ret = wiz_div_clk_register(wiz, clk_node, wiz->div_sel_field[i],
+ 					   clk_div_sel[i].table);
+ 		if (ret) {
+ 			dev_err(dev, "Failed to register %s clock\n",
 -- 
 2.17.1
 
