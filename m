@@ -2,79 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA3D321E1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BEA321E1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhBVR34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 12:29:56 -0500
-Received: from mail-lj1-f174.google.com ([209.85.208.174]:37530 "EHLO
-        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhBVR3x (ORCPT
+        id S231232AbhBVRaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:30:03 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17815 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230071AbhBVR36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:29:53 -0500
-Received: by mail-lj1-f174.google.com with SMTP id q14so59876403ljp.4;
-        Mon, 22 Feb 2021 09:29:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CmQS7M3u2VmqATtA8JDFLctXoCBqO8GB9D7gSV+4AYo=;
-        b=cky2jJlZgeDkvKPAcw+WIMVpwko/DvhwbM+d7h1kj6rlcoa0KVpzFOAJjofBOImdSk
-         1M2CXcRUKyIzN1H7iNLUlU4jk3/sebC0IQxflM3ESjo2a1E56EVZ6h9OT441y1DyfG5e
-         pntej4+dEw39Vow/lFO3Ix3xC2RfFJy6RYrvyk0Cm5t1HDY/gCAhKJ0MPlk4LaTn/l2N
-         iHuqnqkSNNhiSPINgkFBGSo+AoLg3ELBdtZa1Otd+Km/EFPW434P5sLi7iOEkP4aC7UV
-         ENoVVLnFNVVBEXbUXIr/JPzDS41Ntie08GA9iNPv1hz9Ici7F3884Q+daPgivT5qHzhR
-         CVJw==
-X-Gm-Message-State: AOAM533LyOaEEs4CGyFRBYg4dW6tpeWFjD07vFSl5DMvI0cu78dCEYwQ
-        vfbgaAgzcUXxYUmTBh+1ax0=
-X-Google-Smtp-Source: ABdhPJxM3LU/ep9uq1WAARfclR/xzL43XNvsNnnLPfqVsHa0aQpDCMjLdZihQ2mkcNapivQEnKmDbg==
-X-Received: by 2002:a05:651c:1196:: with SMTP id w22mr14971868ljo.42.1614014950856;
-        Mon, 22 Feb 2021 09:29:10 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id p13sm2257417ljj.49.2021.02.22.09.29.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 09:29:10 -0800 (PST)
-Date:   Mon, 22 Feb 2021 18:29:09 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/4] dt-bindings: PCI: ti,j721e: Add binding to
- represent refclk to the connector
-Message-ID: <YDPp5VS120Cc79ey@rocinante>
-References: <20210222114030.26445-1-kishon@ti.com>
- <20210222114030.26445-2-kishon@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Mon, 22 Feb 2021 12:29:58 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6033e9ed0002>; Mon, 22 Feb 2021 09:29:17 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Feb
+ 2021 17:29:17 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 22 Feb 2021 17:29:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SfWApWPGM0mOHxxzb5RUvDWbG3lDdpE+iq8dsS1ANag0CGJL0VX+LBlDPC8LesOpblfkmceRZz7c0ztuVl681i1VHJrQR33hccovtz0GKHpTD8B5pNIA3G/ccpV/xOupFLyVtIOchGIBjzlBBbdCeVNCV6/4g+wbTPs9h7slo54FyDYOMt4bdMMXQfDOYzPVOlo5rNHV0A6VCmiWY9yZrXqY3xlJGVFrzuFgm5qBF2CRKoQloKHBCZmcYLvqgo0QZYr5uDQUDJH2Dhf2y9QJ2q0g54Tw5hATN+FRPQ5YWUbW3k0zXyoGDJxxGVGFq2Oqo8wpDNt21Wf4AEKTN/9SRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LtL52Fdqmqph0ZAbU2bpeQE2JEOOj4ovMHMVaae9XBE=;
+ b=gSGBGm7GJuA+4/ZOKRuHH7QVpI7k7WnU5dkuI8jRPGf1iH7XHdRGErLzFfiYXu+/hc4NLT5BcxkPoviZ+MnNQ3B8Y5DrD4uadwGhWsYPlKx21jTgezGYGfj6cClv0dwVC43oK3ZPW+Bpp9YMw4KQfsQIZGTWDiOVrGYeDe2kPoljjYbk0JaY1y+DD6sN2O0CFcoFRlAAlxi4PdZHkKaF+mF54/XtEhxzBvC36obBTAGHEpxb6lA7pC23jMNb3mnxkeSk7P/jkZ8M9ycUpNzayQYe8Hv5oosYoXUPpr5DsHoW1yyOD8lzL9lchXVLlMotDmqqbvdrFXhVHvtXNYD8Ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB2439.namprd12.prod.outlook.com (2603:10b6:4:b4::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27; Mon, 22 Feb
+ 2021 17:29:16 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.045; Mon, 22 Feb 2021
+ 17:29:15 +0000
+Date:   Mon, 22 Feb 2021 13:29:13 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
+Subject: Re: [RFC PATCH 05/10] vfio: Create a vfio_device from vma lookup
+Message-ID: <20210222172913.GP4247@nvidia.com>
+References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
+ <161401268537.16443.2329805617992345365.stgit@gimli.home>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210222114030.26445-2-kishon@ti.com>
+In-Reply-To: <161401268537.16443.2329805617992345365.stgit@gimli.home>
+X-ClientProxiedBy: BL1PR13CA0408.namprd13.prod.outlook.com
+ (2603:10b6:208:2c2::23) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0408.namprd13.prod.outlook.com (2603:10b6:208:2c2::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.11 via Frontend Transport; Mon, 22 Feb 2021 17:29:15 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lEF1F-00ESnJ-LB; Mon, 22 Feb 2021 13:29:13 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614014957; bh=LtL52Fdqmqph0ZAbU2bpeQE2JEOOj4ovMHMVaae9XBE=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=aGDpp3tDaE4ZelC+iU+xATL2X7u+T7GQMkmuPtQmz+gJIKJMMls40qm90028sa9AW
+         ep3xCAXdtk/wrkcvc6dLrq7AnuI/Pl2h1DS/Ve/5j/dBXqJTLFHm5cT2xGl0DaindF
+         LwOJouOYqqgZMDcvmpbrDh8zDGmyhBu8jvtC5sZMBFeZmhvi2LtDsELo0lgnYHaAQd
+         puhgUbaZf+0gi7Fk8XA6WD7u+La/RUksUVGm2F7SJ1dvFSvb+lw8vpUdO5arvTqOu8
+         sJjM3duvuWlqHWmy03SunmOk5ZntmXWJ1tj2rdZZNvEy3q4zNwmy6X3yXomt0i/O3i
+         Js3Di3ZR0E+MA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
+On Mon, Feb 22, 2021 at 09:51:25AM -0700, Alex Williamson wrote:
 
-[...]
->    clocks:
-> -    maxItems: 1
-> -    description: clock-specifier to represent input to the PCIe
-> +    minItems: 1
-> +    maxItems: 2
-> +    description: clock-specifier to represent input to the PCIe for 1 item.
-> +      2nd item if present represents reference clock to the connector.
-[...]
+> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+> index da212425ab30..399c42b77fbb 100644
+> +++ b/drivers/vfio/vfio.c
+> @@ -572,6 +572,15 @@ void vfio_device_unmap_mapping_range(struct vfio_device *device,
+>  }
+>  EXPORT_SYMBOL_GPL(vfio_device_unmap_mapping_range);
+>  
+> +/*
+> + * A VFIO bus driver using this open callback will provide a
+> + * struct vfio_device pointer in the vm_private_data field.
 
-I am not an expert on device trees, but what do you think of making this
-description to be as follows:
+The vfio_device pointer should be stored in the struct file
 
-  description: |+
-    clock-specifier to represent input to the PCIe for 1 item.
-    2nd item if present represents reference clock to the connector.
+> +struct vfio_device *vfio_device_get_from_vma(struct vm_area_struct *vma)
+> +{
+> +	struct vfio_device *device;
+> +
+> +	if (vma->vm_ops->open != vfio_device_vma_open)
+> +		return ERR_PTR(-ENODEV);
+> +
 
-What do you think?
+Having looked at VFIO alot more closely last week, this is even more
+trivial - VFIO only creates mmaps of memory we want to invalidate, so
+this is just very simple:
 
-Krzysztof
+struct vfio_device *vfio_device_get_from_vma(struct vm_area_struct *vma)
+{
+       if (!vma->vm_file ||vma->vm_file->f_op != &vfio_device_fops)
+	   return ERR_PTR(-ENODEV);
+       return vma->vm_file->f_private;
+}
+
+The only use of the special ops would be if there are multiple types
+of mmap's going on, but for this narrow use case those would be safely
+distinguished by the vm_pgoff instead
+
+> +extern void vfio_device_vma_open(struct vm_area_struct *vma);
+> +extern struct vfio_device *vfio_device_get_from_vma(struct vm_area_struct *vma);
+
+No externs on function prototypes in new code please, we've been
+slowly deleting them..
+
+Jason
