@@ -2,69 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679553211A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0EB3211A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhBVHxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 02:53:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhBVHxq (ORCPT
+        id S230335AbhBVHxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 02:53:32 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:36882 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230170AbhBVHxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 02:53:46 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890BBC061574;
-        Sun, 21 Feb 2021 23:53:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hqGoMx9Yapzi0ILQOi0zy5A/uV/LCC4QPknj+HY+INU=; b=EmdXJYOJXjM7STZpMm+JRsjv5p
-        g8jamnJj8HF2tF46KSFOBqpCx9zSAUudtn1lPJ5/WVMg1i2agaoR7xfeF2L4sP57cQM7xqW1W/I3O
-        Q/qpnEH68D9sPpB9ezdlL44Y+46Ov1/bEqQYMiIAi9Q1eNlvA+VaTRNjMfwsRn9rG7aOAhofTUpau
-        j+IZOaEjmRnEn/shL3dVqffZFfVH5mA4yy2KWqfv1Pk17mB9VsLvNVIMAgY/WWD3WqHuOqm12mzbH
-        S37wG/jHIZtOJlrIyUD4gE+G4cYhp6TFagVgz38xDBoM/x0Kp1c0NnxkNtImBFpRypqMobgl+g91X
-        UBioS/JQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lE61C-006HOz-NC; Mon, 22 Feb 2021 07:52:36 +0000
-Date:   Mon, 22 Feb 2021 07:52:34 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Joao Martins <joao.m.martins@oracle.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v4 0/4] mm/gup: page unpining improvements
-Message-ID: <20210222075234.GA1492783@infradead.org>
-References: <20210212130843.13865-1-joao.m.martins@oracle.com>
- <20210218072432.GA325423@infradead.org>
- <a5f7d591-f3aa-1a54-569c-bd1abcb99334@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5f7d591-f3aa-1a54-569c-bd1abcb99334@oracle.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        Mon, 22 Feb 2021 02:53:30 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UPD0K-M_1613980366;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPD0K-M_1613980366)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 22 Feb 2021 15:52:46 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     brking@us.ibm.com
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] scsi: ipr: Switch to using the new API kobj_to_dev()
+Date:   Mon, 22 Feb 2021 15:52:45 +0800
+Message-Id: <1613980365-34562-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 03:33:39PM +0000, Joao Martins wrote:
-> in a bvec at once? e.g. something like from this:
-> 
->         bio_for_each_segment_all(bvec, bio, iter_all) {
->                 if (mark_dirty && !PageCompound(bvec->bv_page))
->                         set_page_dirty_lock(bvec->bv_page);
->                 put_page(bvec->bv_page);
->         }
-> 
-> (...) to this instead:
-> 
-> 	bio_for_each_bvec_all(bvec, bio, i)
-> 		unpin_user_page_range_dirty_lock(bvec->bv_page,
-> 			DIV_ROUND_UP(bvec->bv_len, PAGE_SIZE),
-> 			mark_dirty && !PageCompound(bvec->bv_page));
+fixed the following coccicheck:
+./drivers/scsi/ipr.c:4209:61-62: WARNING opportunity for kobj_to_dev()
+./drivers/scsi/ipr.c:4268:61-62: WARNING opportunity for kobj_to_dev()
+./drivers/scsi/ipr.c:4457:61-62: WARNING opportunity for kobj_to_dev()
 
-Yes, like that modulo the fix in your reply and any other fixes.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/scsi/ipr.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/scsi/ipr.c b/drivers/scsi/ipr.c
+index e451102..4d8a975 100644
+--- a/drivers/scsi/ipr.c
++++ b/drivers/scsi/ipr.c
+@@ -4206,7 +4206,7 @@ static ssize_t ipr_next_async_err_log(struct file *filep, struct kobject *kobj,
+ 				struct bin_attribute *bin_attr, char *buf,
+ 				loff_t off, size_t count)
+ {
+-	struct device *cdev = container_of(kobj, struct device, kobj);
++	struct device *cdev = kobj_to_dev(kobj);
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct ipr_ioa_cfg *ioa_cfg = (struct ipr_ioa_cfg *)shost->hostdata;
+ 	struct ipr_hostrcb *hostrcb;
+@@ -4265,7 +4265,7 @@ static ssize_t ipr_read_dump(struct file *filp, struct kobject *kobj,
+ 			     struct bin_attribute *bin_attr,
+ 			     char *buf, loff_t off, size_t count)
+ {
+-	struct device *cdev = container_of(kobj, struct device, kobj);
++	struct device *cdev = kobj_to_dev(kobj);
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct ipr_ioa_cfg *ioa_cfg = (struct ipr_ioa_cfg *)shost->hostdata;
+ 	struct ipr_dump *dump;
+@@ -4454,7 +4454,7 @@ static ssize_t ipr_write_dump(struct file *filp, struct kobject *kobj,
+ 			      struct bin_attribute *bin_attr,
+ 			      char *buf, loff_t off, size_t count)
+ {
+-	struct device *cdev = container_of(kobj, struct device, kobj);
++	struct device *cdev = kobj_to_dev(kobj);
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct ipr_ioa_cfg *ioa_cfg = (struct ipr_ioa_cfg *)shost->hostdata;
+ 	int rc;
+-- 
+1.8.3.1
+
