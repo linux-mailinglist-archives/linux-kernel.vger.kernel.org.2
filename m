@@ -2,136 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C643320EC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 01:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC51320EC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 01:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhBVAuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 19:50:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbhBVAuu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 19:50:50 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D82C061574;
-        Sun, 21 Feb 2021 16:50:09 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5E91258E;
-        Mon, 22 Feb 2021 01:50:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613955006;
-        bh=QDgBEUcxtnBMr+2qeCkHrC4sgHHhnA4SnzpEQF/qJU0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K4BZpwWfzMQy/dLBVQUdRT2fPcMzeBNpBgTaw1zgkwjXP0vUJRq1fGJsDcItWtJDl
-         7qdHwFV4LKeSULiTygX8VkecNviyqzam71Ab0LeWe2mCgmykgxS985ftzSm4m/7PN2
-         BA8zV56/iJP9TsQOpW2GOKQE02dkG5iZwLwe0MfE=
-Date:   Mon, 22 Feb 2021 02:49:34 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        id S229902AbhBVAzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 19:55:19 -0500
+Received: from mga01.intel.com ([192.55.52.88]:38495 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229802AbhBVAzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 19:55:16 -0500
+IronPort-SDR: ksf9cKzOWJuRs1aAs0CcUxgb6UzKyY47C28fNTqOc1v61pQDoRjOO3RbgSBOzY6pmpo3rzBMtw
+ u9/D+u3kqjnw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="203684205"
+X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
+   d="scan'208";a="203684205"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 16:54:35 -0800
+IronPort-SDR: U6YT//L/lZgPE4363x3l7YRll+aJ2Onk6GtmvQxV7YnXfsTNa8XRkvNSn1n+21/56rQoN0B2FQ
+ Zav4wx9gvajw==
+X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
+   d="scan'208";a="402311448"
+Received: from arajago-mobl.amr.corp.intel.com (HELO [10.209.130.124]) ([10.209.130.124])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 16:54:34 -0800
+Subject: Re: [PATCH] x86/sgx: Add a basic NUMA allocation scheme to
+ sgx_alloc_epc_page()
+To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
+Cc:     haitao.huang@intel.com, dan.j.williams@intel.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/16] media: i2c: rdacm20: Enable noise immunity
-Message-ID: <YDL/npLVS7vk3TV7@pendragon.ideasonboard.com>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-2-jacopo+renesas@jmondi.org>
- <5691f68f-724d-9d6a-9ea8-1e017b305c66@ideasonboard.com>
+References: <20210221020631.171404-1-jarkko@kernel.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <7acc3c1c-373e-cfee-e838-2af170e87d98@intel.com>
+Date:   Sun, 21 Feb 2021 16:54:33 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210221020631.171404-1-jarkko@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5691f68f-724d-9d6a-9ea8-1e017b305c66@ideasonboard.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+> +/* Nodes with one or more EPC sections. */
+> +static nodemask_t sgx_numa_mask;
 
-Thank you for the patch.
+I'd also add that this is for optimization only.
 
-On Wed, Feb 17, 2021 at 12:55:19PM +0000, Kieran Bingham wrote:
-> On 16/02/2021 17:41, Jacopo Mondi wrote:
-> > Enable the noise immunity threshold at the end of the rdacm20
-> > initialization routine.
-> > 
-> > The rdcam20 camera module has been so far tested with a startup
+> +/* Array of lists of EPC sections for each NUMA node. */
+> +struct list_head *sgx_numa_nodes;
 
-s/rdcam20/rdacm20/
+I'd much prefer:
 
-> > delay that allowed the embedded MCU to program the serializer. If
-> > the initialization routine is run before the MCU programs the
-> > serializer and the image sensor and their addresses gets changed
-> > by the rdacm20 driver it is required to manually enable the noise
-> > immunity threshold to make the communication on the control channel
-> > more reliable.
-> 
-> Oh, this is interesting, ... booting up without the delays would be ...
-> much nicer.
+/*
+ * Array with one list_head for each possible NUMA node.  Each
+ * list contains all the sgx_epc_section's which are on that
+ * node.
+ */
 
-I second that, but I'm a bit worried. The MCU has caused us more pain
-than gain, the best way to fix it may be with a desoldering station ;-)
-Jokes aside, if we want to start initializing with the serializer before
-the MCU completes its initialization, then we'll have a racy process,
-with two I2C masters configuring the same device. I don't think anything
-good can come out of that :-S
+Otherwise, it's hard to imagine what this structure looks like.
 
-Taking into account the fact that on some platforms we'll want to
-implement power management for the cameras, disabling power (possibly
-individually) when the cameras are not in use, we'll have to handle the
-race carefully, and I'm not sure there any other way than waiting for
-the camera to be initialized with an initialization delay after power
-up.
+>  /*
+>   * These variables are part of the state of the reclaimer, and must be accessed
+>   * with sgx_reclaimer_lock acquired.
+> @@ -473,6 +479,26 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
+>  	return page;
+>  }
+>  
+> +static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
+> +{
+> +	struct sgx_epc_section *section;
+> +	struct sgx_epc_page *page;
+> +
+> +	if (WARN_ON_ONCE(nid < 0 || nid >= MAX_NUMNODES))
+> +		return NULL;
+> +
+> +	if (!node_isset(nid, sgx_numa_mask))
+> +		return NULL;
+> +
+> +	list_for_each_entry(section, &sgx_numa_nodes[nid], section_list) {
+> +		page = __sgx_alloc_epc_page_from_section(section);
+> +		if (page)
+> +			return page;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+>  /**
+>   * __sgx_alloc_epc_page() - Allocate an EPC page
+>   *
+> @@ -485,13 +511,17 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
+>   */
+>  struct sgx_epc_page *__sgx_alloc_epc_page(void)
+>  {
+> +	int current_nid = numa_node_id();
+>  	struct sgx_epc_section *section;
+>  	struct sgx_epc_page *page;
+>  	int i;
+>  
+> +	page = __sgx_alloc_epc_page_from_node(current_nid);
+> +	if (page)
+> +		return page;
 
-Based on this, I'm not concerned about this patch in particular, but
-potentially about the series as a whole. I'll comment on individual
-patches as applicable.
+Comments, please.
 
-Regarding this patch, doies the MCU enable high threshold for the
-reverse channel as part of its initialization procedure ? Do we have a
-full list of what it configures in the MAX9271 ? If so, could we capture
-it in a comment in the driver ? That would be very helpful as a
-reference.
+	/* Try to allocate EPC from the current node, first: */
 
-> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > ---
-> >  drivers/media/i2c/rdacm20.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> > index 90eb73f0e6e9..f7fd5ae955d0 100644
-> > --- a/drivers/media/i2c/rdacm20.c
-> > +++ b/drivers/media/i2c/rdacm20.c
-> > @@ -541,7 +541,13 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
-> >  
-> >  	dev_info(dev->dev, "Identified MAX9271 + OV10635 device\n");
-> >  
-> > -	return 0;
-> > +	/*
-> > +	 * Set reverse channel high threshold to increase noise immunity.
-> > +	 *
-> > +	 * This should be compensated by increasing the reverse channel
-> > +	 * amplitude on the remote deserializer side.
-> > +	 */
-> > +	return max9271_set_high_threshold(&dev->serializer, true);
-> 
-> Does this work 'out of the box' ? I.e. if this patch is applied, I
-> assume it is required to remove the regulator delays that I/we have in DT?
-> 
-> Likewise, does that note mean this patch must also be accompanied by the
-> update in max9286 somehow?
-> 
-> I guess we can't keep 'test bisectability' with this very easily so it
-> probably doesn't matter too much, the end result will be the interesting
-> part.
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> 
-> >  }
-> >  
-> >  static int rdacm20_probe(struct i2c_client *client)
+then:
 
--- 
-Regards,
+	/* Search all EPC sections, ignoring locality: */
 
-Laurent Pinchart
+>  	for (i = 0; i < sgx_nr_epc_sections; i++) {
+>  		section = &sgx_epc_sections[i];
+> -
+>  		page = __sgx_alloc_epc_page_from_section(section);
+>  		if (page)
+>  			return page;
+
+This still has the problem that it exerts too much pressure on the
+low-numbered sgx_epc_sections[].  If a node's sections are full, it
+always tries to go after sgx_epc_sections[0].
+
+It can be in another patch, but I think the *minimal* thing we can do
+here for a NUMA allocator is to try to at least balance the allocations.
+
+Instead of having a for-each-section loop, I'd make it for-each-node ->
+for-each-section.  Something like:
+
+	for (i = 0; i < num_possible_nodes(); i++) {
+		node = (numa_node_id() + i) % num_possible_nodes()
+		
+		if (!node_isset(nid, sgx_numa_mask))
+			continue;
+
+		list_for_each_entry(section, &sgx_numa_nodes[nid],
+				    section_list) {
+			__sgx_alloc_epc_page_from_section(section)
+		}
+	}
+	
+Then you have a single loop instead of a "try local then a fall back".
+
+Also, that "node++" thing might be able to use next_online_node().
+
+> @@ -665,8 +695,12 @@ static bool __init sgx_page_cache_init(void)
+>  {
+>  	u32 eax, ebx, ecx, edx, type;
+>  	u64 pa, size;
+> +	int nid;
+>  	int i;
+>  
+> +	nodes_clear(sgx_numa_mask);
+> +	sgx_numa_nodes = kmalloc_array(MAX_NUMNODES, sizeof(*sgx_numa_nodes), GFP_KERNEL);
+
+MAX_NUMNODES will always be the largest compile-time constant.  That's
+4k, IIRC.  num_possible_nodes() might be as small as 1 if NUMA is off.
+
+>  	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
+>  		cpuid_count(SGX_CPUID, i + SGX_CPUID_EPC, &eax, &ebx, &ecx, &edx);
+>  
+> @@ -690,6 +724,22 @@ static bool __init sgx_page_cache_init(void)
+>  		}
+>  
+>  		sgx_nr_epc_sections++;
+> +
+> +		nid = numa_map_to_online_node(phys_to_target_node(pa));
+> +
+> +		if (nid == NUMA_NO_NODE) {
+> +			pr_err(FW_BUG "unable to map EPC section %d to online node.\n", nid);
+> +			nid = 0;
+
+Could we dump out the physical address there?  I think that's even more
+informative than a section number.
+
+> +		} else if (WARN_ON_ONCE(nid < 0 || nid >= MAX_NUMNODES)) {
+> +			nid = 0;
+> +		}
+
+I'm not sure we really need to check for these.  If we're worried about
+the firmware returning these, I'd expect numa_map_to_online_node() to
+sanity check them for us.
+
+> +		if (!node_isset(nid, sgx_numa_mask)) {
+> +			INIT_LIST_HEAD(&sgx_numa_nodes[nid]);
+> +			node_set(nid, sgx_numa_mask);
+> +		}
+> +
+> +		list_add_tail(&sgx_epc_sections[i].section_list, &sgx_numa_nodes[nid]);
+>  	}
+>  
+>  	if (!sgx_nr_epc_sections) {
+> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+> index 5fa42d143feb..4bc31bc4bacf 100644
+> --- a/arch/x86/kernel/cpu/sgx/sgx.h
+> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+> @@ -45,6 +45,7 @@ struct sgx_epc_section {
+>  	spinlock_t lock;
+>  	struct list_head page_list;
+>  	unsigned long free_cnt;
+> +	struct list_head section_list;
+
+Maybe name this numa_section_list.
+
