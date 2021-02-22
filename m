@@ -2,142 +2,431 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96B2321F5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFEB6321F6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbhBVSsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:48:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231424AbhBVSqs (ORCPT
+        id S231204AbhBVSxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:53:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31287 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231896AbhBVSwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:46:48 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE617C06178B
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:46:07 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id u4so60190395ljh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:46:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EF4DZ8/YPHLgiqcKgmmLocSOb1RhL6xlS59EKbvTOMk=;
-        b=l7F/ZAQ0Ut25vN6NuV1Mgnps+4oWPHrywIpIgaIMkipU6kKTEaaav9qFISBOq1DdyE
-         NxV5B0YqGvSpNTeBTU4M8gA9rVt3DhfzqEvukbwx9tXDmt6zQ2n3ccGgf5qIKe49GnOK
-         +MG8d7OArOJULgO1WVyGHqga7pkUYoKEF0jYlWUT7KupD2fnJOKOBEvX+wG9rctXY6A0
-         huZx9EPyD30ZfcsfqJCpapDIv4dTgJ9lGV8+dWQVJX0mNpKcf+5Bv88WBKvJOqVaTD7s
-         YZ1Umhgva/38fQ8BD83N9bpYvAW5BKOdVqDYTmQ9f7UVVfHRMuI58kMKCF4Rq1tWhOEZ
-         1ufg==
+        Mon, 22 Feb 2021 13:52:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614019834;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GfUDGfi6ea7xF4viXCBTQQvX0/p+g7vjdBBK65j/VPA=;
+        b=ULobO5LQsVpxGQz6PekQogVexvSXGtmPjvEHXLmVUHI7jhAARAPmc6TaZitCBZ3sys2CLm
+        rUZC9ygxVL+Xfw7YyqETo3WNoLEL+WNmsH75RLfuQjGtbW/ymeHjOp26NNem9e29/5lHAB
+        4eEZYvYXmj3f9fWGvGTsIo6d7JuHdlU=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-S19EaVNvNO-uRtTvbH3Kuw-1; Mon, 22 Feb 2021 13:50:32 -0500
+X-MC-Unique: S19EaVNvNO-uRtTvbH3Kuw-1
+Received: by mail-qk1-f197.google.com with SMTP id y79so9857433qka.23
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:50:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EF4DZ8/YPHLgiqcKgmmLocSOb1RhL6xlS59EKbvTOMk=;
-        b=TjrrOhokH1izlxLpgBuyOFzuNyoqHFwICOPkQPCfUGHRrJ4GJrCq2w37rRVsDYkZ8E
-         5otAzNkRTdnCvtkfxxHLg4FtCz77W8DXtksgNtIlefA8bG4Wu5INuU5AyJvxpUMZ5zMj
-         6/V3CazOl7HcCh6HGtwpRMwDEq2PJFm5YCAr5mNOdkRuKOMlIEWttUlUidQzD4UnktmK
-         dNsMrWkUayuj1XM1Jc2uC8/BNaYrBxzQDrnVn7wlWeNvCDyhprWUt9mDNStFxk6FAkIf
-         NOOI4DlsJJ6UGiiWvur7brqqs/ANO5tLtVO6IkY0awBh2Al6uXA58HsBmxowrTvVxzcv
-         aZ+A==
-X-Gm-Message-State: AOAM5312WkjkJ11mUyv6OoxpxK0OPwS2WYxieZrGse0wqcWEUnuC2hcl
-        G44O08aUYhI3ltQ7z/r8dgWigRT0ZB/sunJ8h7Be2w==
-X-Google-Smtp-Source: ABdhPJwAlLu4bzPgqgTebDPTwhJRG9Bc8Q1yEa/sHT1s8b5RpgzeO9D8REbo/sutzBeci2QV80/CUYjcvDc2ktE4rDE=
-X-Received: by 2002:a2e:2f05:: with SMTP id v5mr13605682ljv.279.1614019566052;
- Mon, 22 Feb 2021 10:46:06 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=GfUDGfi6ea7xF4viXCBTQQvX0/p+g7vjdBBK65j/VPA=;
+        b=t95llpisii59ksh39QPwvppApATVia4GTeNHmwwcTRy7EhQS4WTr40Ct4HdlKDOdE4
+         bxhwAZyq++nBdDuLcay1of+gYlgIbV9bRONfY8QahPGqJ+qq/0mgMOAjqewpEteYYOWB
+         fHUVEk43MIcBTMXg535J3FQS2TmYBph/sv8hCkZ4MC16OTAPCNdvDzLIjmy6AmIkcA84
+         Ukz4kUUcXgKID4ZRGOjIpIAg3qV5Q19uFS/rCIm3bcrQA5KK+WE3/IOkcNbXo2Wy/O2y
+         pAmF3zuKvyVoPI1Nr9JPqkfqgRUt3XsqstaB0P1o3kYsoasmmX/C5eHnwSUdPkYzhVLg
+         zx4A==
+X-Gm-Message-State: AOAM530IkvEd1MsN0NIxf6VDK4AL4zIG3ORbQ7KzR2e89IuKGyQ1TlWV
+        yNybZmLk7lw32v7aW8iTtBLm69NCQzSjr6jKXHD/SQ5+Cuqkk9f3qPMdHbzdg1K9j34G13N1+8g
+        T5RnmdCiJ9QjVD0CKwPIHHcZE
+X-Received: by 2002:ad4:5894:: with SMTP id dz20mr14440227qvb.26.1614019832399;
+        Mon, 22 Feb 2021 10:50:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwEzGiYdJnvdaOsdcpNFb0pt6R8goL7WirxetzekByYomC7ZgOJd9mVMcDW+paUosTpuxblbw==
+X-Received: by 2002:ad4:5894:: with SMTP id dz20mr14440187qvb.26.1614019831970;
+        Mon, 22 Feb 2021 10:50:31 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id f186sm1811264qkj.106.2021.02.22.10.50.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 10:50:31 -0800 (PST)
+Subject: Re: [PATCH V3 XRT Alveo 05/18] fpga: xrt: group platform driver
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
+        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <20210218064019.29189-6-lizhih@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <ebf64992-4067-18c2-661d-6c3a3b64c7c0@redhat.com>
+Date:   Mon, 22 Feb 2021 10:50:29 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210219224405.1544597-1-shakeelb@google.com> <YDBZFY8WnLewRqLg@cmpxchg.org>
-In-Reply-To: <YDBZFY8WnLewRqLg@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 22 Feb 2021 10:45:54 -0800
-Message-ID: <CALvZod6Uf4w1xTrM6wSuGyefqWSfauXiJbCex_OnhY2g-Kadhw@mail.gmail.com>
-Subject: Re: [PATCH] memcg: charge before adding to swapcache on swapin
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210218064019.29189-6-lizhih@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 4:34 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Fri, Feb 19, 2021 at 02:44:05PM -0800, Shakeel Butt wrote:
-> > Currently the kernel adds the page, allocated for swapin, to the
-> > swapcache before charging the page. This is fine but now we want a
-> > per-memcg swapcache stat which is essential for folks who wants to
-> > transparently migrate from cgroup v1's memsw to cgroup v2's memory and
-> > swap counters.
-> >
-> > To correctly maintain the per-memcg swapcache stat, one option which
-> > this patch has adopted is to charge the page before adding it to
-> > swapcache. One challenge in this option is the failure case of
-> > add_to_swap_cache() on which we need to undo the mem_cgroup_charge().
-> > Specifically undoing mem_cgroup_uncharge_swap() is not simple.
-> >
-> > This patch circumvent this specific issue by removing the failure path
-> > of  add_to_swap_cache() by providing __GFP_NOFAIL. Please note that in
-> > this specific situation ENOMEM was the only possible failure of
-> > add_to_swap_cache() which is removed by using __GFP_NOFAIL.
-> >
-> > Another option was to use __mod_memcg_lruvec_state(NR_SWAPCACHE) in
-> > mem_cgroup_charge() but then we need to take of the do_swap_page() case
-> > where synchronous swap devices bypass the swapcache. The do_swap_page()
-> > already does hackery to set and reset PageSwapCache bit to make
-> > mem_cgroup_charge() execute the swap accounting code and then we would
-> > need to add additional parameter to tell to not touch NR_SWAPCACHE stat
-> > as that code patch bypass swapcache.
-> >
-> > This patch added memcg charging API explicitly foe swapin pages and
-> > cleaned up do_swap_page() to not set and reset PageSwapCache bit.
-> >
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
->
-> The patch makes sense to me. While it extends the charge interface, I
-> actually quite like that it charges the page earlier - before putting
-> it into wider circulation. It's a step in the right direction.
->
-> But IMO the semantics of mem_cgroup_charge_swapin_page() are a bit too
-> fickle: the __GFP_NOFAIL in add_to_swap_cache() works around it, but
-> having a must-not-fail-after-this line makes the code tricky to work
-> on and error prone.
->
-> It would be nicer to do a proper transaction sequence.
->
-> > @@ -497,16 +497,15 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
-> >       __SetPageLocked(page);
-> >       __SetPageSwapBacked(page);
-> >
-> > -     /* May fail (-ENOMEM) if XArray node allocation failed. */
-> > -     if (add_to_swap_cache(page, entry, gfp_mask & GFP_RECLAIM_MASK, &shadow)) {
-> > -             put_swap_page(page, entry);
-> > +     if (mem_cgroup_charge_swapin_page(page, NULL, gfp_mask, entry))
-> >               goto fail_unlock;
-> > -     }
-> >
-> > -     if (mem_cgroup_charge(page, NULL, gfp_mask)) {
-> > -             delete_from_swap_cache(page);
-> > -             goto fail_unlock;
-> > -     }
-> > +     /*
-> > +      * Use __GFP_NOFAIL to not worry about undoing the changes done by
-> > +      * mem_cgroup_charge_swapin_page() on failure of add_to_swap_cache().
-> > +      */
-> > +     add_to_swap_cache(page, entry,
-> > +                       (gfp_mask|__GFP_NOFAIL) & GFP_RECLAIM_MASK, &shadow);
->
-> How about:
->
->         mem_cgroup_charge_swapin_page()
->         add_to_swap_cache()
->         mem_cgroup_finish_swapin_page()
->
-> where finish_swapin_page() only uncharges the swap entry (on cgroup1)
-> once the swap->memory transition is complete?
->
-> Otherwise the patch looks good to me.
 
-Thanks for the review and yes this makes the code much more clear and
-maintainable.
+On 2/17/21 10:40 PM, Lizhi Hou wrote:
+> group driver that manages life cycle of a bunch of leaf driver instances
+> and bridges them with root.
+>
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
+> ---
+>  drivers/fpga/xrt/include/group.h |  27 ++++
+>  drivers/fpga/xrt/lib/group.c     | 265 +++++++++++++++++++++++++++++++
+>  2 files changed, 292 insertions(+)
+>  create mode 100644 drivers/fpga/xrt/include/group.h
+>  create mode 100644 drivers/fpga/xrt/lib/group.c
+>
+> diff --git a/drivers/fpga/xrt/include/group.h b/drivers/fpga/xrt/include/group.h
+> new file mode 100644
+> index 000000000000..1874cdd5120d
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/include/group.h
+> @@ -0,0 +1,27 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Header file for Xilinx Runtime (XRT) driver
+A bit too generic, please add a description or remove.
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#ifndef _XRT_GROUP_H_
+> +#define _XRT_GROUP_H_
+> +
+> +#include "xleaf.h"
+This is patch 6, consider comments on patch 4.
+> +
+> +/*
+> + * Group driver IOCTL calls.
+
+Are these really ioctl calls?
+
+Seems more like messages between nodes in a tree.
+
+Consider changing to better jagon, maybe ioctl -> msg
+
+> + */
+> +enum xrt_group_ioctl_cmd {
+> +	XRT_GROUP_GET_LEAF = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
+XRT_LEAF_CUSTOM_BASE is a #define, while these are enums. To be consistent, the XRT_LEAF_CUSTOM_BASE should be an enum in xleaf, you can initialize it to 64 there.
+> +	XRT_GROUP_PUT_LEAF,
+> +	XRT_GROUP_INIT_CHILDREN,
+> +	XRT_GROUP_FINI_CHILDREN,
+> +	XRT_GROUP_TRIGGER_EVENT,
+> +};
+> +
+> +#endif	/* _XRT_GROUP_H_ */
+> diff --git a/drivers/fpga/xrt/lib/group.c b/drivers/fpga/xrt/lib/group.c
+> new file mode 100644
+> index 000000000000..6ba56eea479b
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/group.c
+> @@ -0,0 +1,265 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx Alveo FPGA Group Driver
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/platform_device.h>
+> +#include "xleaf.h"
+> +#include "subdev_pool.h"
+> +#include "group.h"
+> +#include "metadata.h"
+> +#include "main.h"
+> +
+> +#define XRT_GRP "xrt_group"
+> +
+> +struct xrt_group {
+> +	struct platform_device *pdev;
+> +	struct xrt_subdev_pool leaves;
+> +	bool leaves_created;
+> +	struct mutex lock; /* lock for group */
+> +};
+> +
+> +static int xrt_grp_root_cb(struct device *dev, void *parg,
+> +			   u32 cmd, void *arg)
+could 'cmd' be some enum type ?
+> +{
+> +	int rc;
+> +	struct platform_device *pdev =
+> +		container_of(dev, struct platform_device, dev);
+> +	struct xrt_group *xg = (struct xrt_group *)parg;
+> +
+> +	switch (cmd) {
+> +	case XRT_ROOT_GET_LEAF_HOLDERS: {
+> +		struct xrt_root_ioctl_get_holders *holders =
+> +			(struct xrt_root_ioctl_get_holders *)arg;
+> +		rc = xrt_subdev_pool_get_holders(&xg->leaves,
+> +						 holders->xpigh_pdev,
+> +						 holders->xpigh_holder_buf,
+> +						 holders->xpigh_holder_buf_len);
+> +		break;
+> +	}
+> +	default:
+> +		/* Forward parent call to root. */
+> +		rc = xrt_subdev_root_request(pdev, cmd, arg);
+> +		break;
+> +	}
+> +
+> +	return rc;
+> +}
+> +
+> +static int xrt_grp_create_leaves(struct xrt_group *xg)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(xg->pdev);
+> +	enum xrt_subdev_id did;
+> +	struct xrt_subdev_endpoints *eps = NULL;
+> +	int ep_count = 0, i, ret = 0, failed = 0;
+> +	unsigned long mlen;
+> +	char *dtb, *grp_dtb = NULL;
+> +	const char *ep_name;
+> +
+> +	mutex_lock(&xg->lock);
+> +
+> +	if (xg->leaves_created) {
+> +		mutex_unlock(&xg->lock);
+This happens should be programming error, so print out some error message
+> +		return -EEXIST;
+> +	}
+> +
+> +	xrt_info(xg->pdev, "bringing up leaves...");
+> +
+> +	/* Create all leaves based on dtb. */
+> +	if (!pdata)
+> +		goto bail;
+move to above the lock and fail with something like -EINVAL
+> +
+> +	mlen = xrt_md_size(DEV(xg->pdev), pdata->xsp_dtb);
+> +	if (mlen == XRT_MD_INVALID_LENGTH) {
+> +		xrt_err(xg->pdev, "invalid dtb, len %ld", mlen);
+> +		goto bail;
+> +	}
+> +
+> +	grp_dtb = vmalloc(mlen);
+> +	if (!grp_dtb)
+> +		goto bail;
+failed is only set in the loop. This is an unreported -ENOMEM
+> +
+> +	memcpy(grp_dtb, pdata->xsp_dtb, mlen);
+> +	for (did = 0; did < XRT_SUBDEV_NUM;) {
+why isn't the did incremented ?
+> +		eps = eps ? eps + 1 : xrt_drv_get_endpoints(did);
+
+this assumes the enpoints are in an array and accessed serially.
+
+this is fragile.
+
+convert to using just the xrt_drv_get_endpoints() call
+
+> +		if (!eps || !eps->xse_names) {
+> +			did++;
+> +			eps = NULL;
+> +			continue;
+> +		}
+> +		ret = xrt_md_create(DEV(xg->pdev), &dtb);
+> +		if (ret) {
+> +			xrt_err(xg->pdev, "create md failed, drv %s",
+> +				xrt_drv_name(did));
+> +			failed++;
+failed but no cleanup of earier successes
+> +			continue;
+> +		}
+> +		for (i = 0; eps->xse_names[i].ep_name ||
+
+this assumes that xse_names[] always has a guard.
+
+why not use xse_min_ep ?
+
+> +		     eps->xse_names[i].regmap_name; i++) {
+> +			ep_name = (char *)eps->xse_names[i].ep_name;
+> +			if (!ep_name) {
+> +				xrt_md_get_compatible_endpoint(DEV(xg->pdev),
+> +							       grp_dtb,
+> +							       eps->xse_names[i].regmap_name,
+> +							       &ep_name);
+> +			}
+> +			if (!ep_name)
+> +				continue;
+> +
+> +			ret = xrt_md_copy_endpoint(DEV(xg->pdev),
+> +						   dtb, grp_dtb, ep_name,
+> +						   (char *)eps->xse_names[i].regmap_name,
+> +						   NULL);
+> +			if (ret)
+> +				continue;
+> +			xrt_md_del_endpoint(DEV(xg->pdev), grp_dtb, ep_name,
+> +					    (char *)eps->xse_names[i].regmap_name);
+> +			ep_count++;
+> +		}
+> +		if (ep_count >= eps->xse_min_ep) {
+This only happens if all additions are successful.
+> +			ret = xrt_subdev_pool_add(&xg->leaves, did,
+> +						  xrt_grp_root_cb, xg, dtb);
+> +			eps = NULL;
+> +			if (ret < 0) {
+> +				failed++;
+> +				xrt_err(xg->pdev, "failed to create %s: %d",
+> +					xrt_drv_name(did), ret);
+> +			}
+> +		} else if (ep_count > 0) {
+> +			xrt_md_copy_all_endpoints(DEV(xg->pdev), grp_dtb, dtb);
+> +		}
+> +		vfree(dtb);
+> +		ep_count = 0;
+> +	}
+> +
+> +	xg->leaves_created = true;
+This is true even if some failed ?
+> +
+> +bail:
+> +	vfree(grp_dtb);
+> +	mutex_unlock(&xg->lock);
+> +
+> +	return failed == 0 ? 0 : -ECHILD;
+> +}
+> +
+> +static void xrt_grp_remove_leaves(struct xrt_group *xg)
+> +{
+> +	mutex_lock(&xg->lock);
+> +
+> +	if (!xg->leaves_created) {
+> +		mutex_unlock(&xg->lock);
+> +		return;
+> +	}
+> +
+> +	xrt_info(xg->pdev, "tearing down leaves...");
+> +	xrt_subdev_pool_fini(&xg->leaves);
+partial failure above and the subdev_pool is not created ?
+> +	xg->leaves_created = false;
+> +
+> +	mutex_unlock(&xg->lock);
+> +}
+> +
+> +static int xrt_grp_probe(struct platform_device *pdev)
+> +{
+> +	struct xrt_group *xg;
+> +
+> +	xrt_info(pdev, "probing...");
+> +
+> +	xg = devm_kzalloc(&pdev->dev, sizeof(*xg), GFP_KERNEL);
+> +	if (!xg)
+> +		return -ENOMEM;
+> +
+> +	xg->pdev = pdev;
+> +	mutex_init(&xg->lock);
+> +	xrt_subdev_pool_init(DEV(pdev), &xg->leaves);
+> +	platform_set_drvdata(pdev, xg);
+> +
+> +	return 0;
+> +}
+> +
+> +static int xrt_grp_remove(struct platform_device *pdev)
+> +{
+> +	struct xrt_group *xg = platform_get_drvdata(pdev);
+> +
+> +	xrt_info(pdev, "leaving...");
+> +	xrt_grp_remove_leaves(xg);
+
+lock ?
+
+Tom
+
+> +	return 0;
+> +}
+> +
+> +static int xrt_grp_ioctl(struct platform_device *pdev, u32 cmd, void *arg)
+> +{
+> +	int rc = 0;
+> +	struct xrt_group *xg = platform_get_drvdata(pdev);
+> +
+> +	switch (cmd) {
+> +	case XRT_XLEAF_EVENT:
+> +		/* Simply forward to every child. */
+> +		xrt_subdev_pool_handle_event(&xg->leaves,
+> +					     (struct xrt_event *)arg);
+> +		break;
+> +	case XRT_GROUP_GET_LEAF: {
+> +		struct xrt_root_ioctl_get_leaf *get_leaf =
+> +			(struct xrt_root_ioctl_get_leaf *)arg;
+> +
+> +		rc = xrt_subdev_pool_get(&xg->leaves, get_leaf->xpigl_match_cb,
+> +					 get_leaf->xpigl_match_arg,
+> +					 DEV(get_leaf->xpigl_pdev),
+> +					 &get_leaf->xpigl_leaf);
+> +		break;
+> +	}
+> +	case XRT_GROUP_PUT_LEAF: {
+> +		struct xrt_root_ioctl_put_leaf *put_leaf =
+> +			(struct xrt_root_ioctl_put_leaf *)arg;
+> +
+> +		rc = xrt_subdev_pool_put(&xg->leaves, put_leaf->xpipl_leaf,
+> +					 DEV(put_leaf->xpipl_pdev));
+> +		break;
+> +	}
+> +	case XRT_GROUP_INIT_CHILDREN:
+> +		rc = xrt_grp_create_leaves(xg);
+> +		break;
+> +	case XRT_GROUP_FINI_CHILDREN:
+> +		xrt_grp_remove_leaves(xg);
+> +		break;
+> +	case XRT_GROUP_TRIGGER_EVENT:
+> +		xrt_subdev_pool_trigger_event(&xg->leaves, (enum xrt_events)(uintptr_t)arg);
+> +		break;
+> +	default:
+> +		xrt_err(pdev, "unknown IOCTL cmd %d", cmd);
+> +		rc = -EINVAL;
+> +		break;
+> +	}
+> +	return rc;
+> +}
+> +
+> +static struct xrt_subdev_drvdata xrt_grp_data = {
+> +	.xsd_dev_ops = {
+> +		.xsd_ioctl = xrt_grp_ioctl,
+> +	},
+> +};
+> +
+> +static const struct platform_device_id xrt_grp_id_table[] = {
+> +	{ XRT_GRP, (kernel_ulong_t)&xrt_grp_data },
+> +	{ },
+> +};
+> +
+> +static struct platform_driver xrt_group_driver = {
+> +	.driver	= {
+> +		.name    = XRT_GRP,
+> +	},
+> +	.probe   = xrt_grp_probe,
+> +	.remove  = xrt_grp_remove,
+> +	.id_table = xrt_grp_id_table,
+> +};
+> +
+> +void group_leaf_init_fini(bool init)
+> +{
+> +	if (init)
+> +		xleaf_register_driver(XRT_SUBDEV_GRP, &xrt_group_driver, NULL);
+> +	else
+> +		xleaf_unregister_driver(XRT_SUBDEV_GRP);
+> +}
+
