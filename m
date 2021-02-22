@@ -2,99 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB76321AD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF24D321AD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhBVPJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:09:28 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:55015 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhBVPJB (ORCPT
+        id S230071AbhBVPIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:08:50 -0500
+Received: from smtp-190f.mail.infomaniak.ch ([185.125.25.15]:54099 "EHLO
+        smtp-190f.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230008AbhBVPIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:09:01 -0500
-Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 37DD320000E;
-        Mon, 22 Feb 2021 15:07:58 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 16:08:25 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/16] media: i2c: rdacm20: Check return values
-Message-ID: <20210222150825.xbmikkm7qyjihfr4@uno.localdomain>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-6-jacopo+renesas@jmondi.org>
- <YDMERvqtWulct59d@pendragon.ideasonboard.com>
+        Mon, 22 Feb 2021 10:08:12 -0500
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DklsQ6vvXzMqXJk;
+        Mon, 22 Feb 2021 16:07:22 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DklsP6SCPzlh8Tg;
+        Mon, 22 Feb 2021 16:07:21 +0100 (CET)
+Subject: Re: [PATCH v2 3/3] security: Add LSMs dependencies to CONFIG_LSM
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Nicolas Iooss <nicolas.iooss@m4x.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+References: <20210215181511.2840674-1-mic@digikod.net>
+ <20210215181511.2840674-4-mic@digikod.net>
+ <CAFqZXNsvqx-pbC+wzHB4aXX6h=buU3csM_a=By-zCOmx0n-xCQ@mail.gmail.com>
+ <CAK7LNAQDWxGJU41D4+AbjFiX63BiA+bsNzTHZsKKc-LPyO7oCQ@mail.gmail.com>
+ <8809a929-980a-95d1-42dc-576ff54e2923@digikod.net>
+ <CAK7LNARq3YneLCVReHf8z34T7VKfv5zmkqwSiNZwgQGD64VMtA@mail.gmail.com>
+ <12b27829-5db0-e9a4-0c74-896c53445da4@digikod.net>
+Message-ID: <d37f9242-b4b4-f4fb-a0b9-8908c0ff027a@digikod.net>
+Date:   Mon, 22 Feb 2021 16:08:39 +0100
+User-Agent: 
 MIME-Version: 1.0
+In-Reply-To: <12b27829-5db0-e9a4-0c74-896c53445da4@digikod.net>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YDMERvqtWulct59d@pendragon.ideasonboard.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
 
-On Mon, Feb 22, 2021 at 03:09:26AM +0200, Laurent Pinchart wrote:
-> Hi Jacopo,
->
-> Thank you for the patch.
->
-> On Tue, Feb 16, 2021 at 06:41:35PM +0100, Jacopo Mondi wrote:
-> > The camera module initialization routine does not check the return
-> > value of a few functions. Fix that.
-> >
-> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > ---
-> >  drivers/media/i2c/rdacm20.c | 13 +++++++++----
-> >  1 file changed, 9 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> > index 56406d82b5ac..e982373908f2 100644
-> > --- a/drivers/media/i2c/rdacm20.c
-> > +++ b/drivers/media/i2c/rdacm20.c
-> > @@ -470,11 +470,16 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
-> >  	 *  Ensure that we have a good link configuration before attempting to
-> >  	 *  identify the device.
-> >  	 */
-> > -	max9271_configure_i2c(&dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
-> > -						MAX9271_I2CSLVTO_1024US |
-> > -						MAX9271_I2CMSTBT_105KBPS);
-> > +	ret = max9271_configure_i2c(&dev->serializer,
-> > +				    MAX9271_I2CSLVSH_469NS_234NS |
-> > +				    MAX9271_I2CSLVTO_1024US |
-> > +				    MAX9271_I2CMSTBT_105KBPS);
-> > +	if (ret)
-> > +		return ret;
-> >
-> > -	max9271_configure_gmsl_link(&dev->serializer);
-> > +	ret = max9271_configure_gmsl_link(&dev->serializer);
-> > +	if (ret)
-> > +		return ret;
->
-> This looks good, so
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->
-> But it would be more useful if max9271_configure_gmsl_link() returned
-> errors when I2C writes fail :-)
->
+On 22/02/2021 11:47, Mickaël Salaün wrote:
+> 
+> On 21/02/2021 15:45, Masahiro Yamada wrote:
+>> On Sun, Feb 21, 2021 at 8:11 PM Mickaël Salaün <mic@digikod.net> wrote:
+>>>
+>>>
+>>> On 21/02/2021 09:50, Masahiro Yamada wrote:
+>>>> On Tue, Feb 16, 2021 at 4:03 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+>>>>>
+>>>>> On Mon, Feb 15, 2021 at 7:17 PM Mickaël Salaün <mic@digikod.net> wrote:
+>>>>>> From: Mickaël Salaün <mic@linux.microsoft.com>
+>>>>>>
+>>>>>> Thanks to the previous commit, this gives the opportunity to users, when
+>>>>>> running make oldconfig, to update the list of enabled LSMs at boot time
+>>>>>> if an LSM has just been enabled or disabled in the build.  Moreover,
+>>>>>> this list only makes sense if at least one LSM is enabled.
+>>>>>>
+>>>>>> Cc: Casey Schaufler <casey@schaufler-ca.com>
+>>>>>> Cc: James Morris <jmorris@namei.org>
+>>>>>> Cc: Masahiro Yamada <masahiroy@kernel.org>
+>>>>>> Cc: Serge E. Hallyn <serge@hallyn.com>
+>>>>>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+>>>>>> Link: https://lore.kernel.org/r/20210215181511.2840674-4-mic@digikod.net
+>>>>>> ---
+>>>>>>
+>>>>>> Changes since v1:
+>>>>>> * Add CONFIG_SECURITY as a dependency of CONFIG_LSM.  This prevent an
+>>>>>>   error when building without any LSMs.
+>>>>>> ---
+>>>>>>  security/Kconfig | 4 ++++
+>>>>>>  1 file changed, 4 insertions(+)
+>>>>>>
+>>>>>> diff --git a/security/Kconfig b/security/Kconfig
+>>>>>> index 7561f6f99f1d..addcc1c04701 100644
+>>>>>> --- a/security/Kconfig
+>>>>>> +++ b/security/Kconfig
+>>>>>> @@ -277,6 +277,10 @@ endchoice
+>>>>>>
+>>>>>>  config LSM
+>>>>>>         string "Ordered list of enabled LSMs"
+>>>>>> +       depends on SECURITY || SECURITY_LOCKDOWN_LSM || SECURITY_YAMA || \
+>>>>>> +               SECURITY_LOADPIN || SECURITY_SAFESETID || INTEGRITY || \
+>>>>>> +               SECURITY_SELINUX || SECURITY_SMACK || SECURITY_TOMOYO || \
+>>>>>> +               SECURITY_APPARMOR || BPF_LSM
+>>>>>
+>>>>> This looks really awkward, since all of these already depend on
+>>>>> SECURITY (if not, it's a bug)... I guarantee you that after some time
+>>>>> someone will come, see that the weird boolean expression is equivalent
+>>>>> to just SECURITY, and simplify it.
+>>>>
+>>>>
+>>>> Currently, LSM does not depend on SECURITY.
+>>>> So you can always define LSM irrespective of SECURITY,
+>>>> which seems a bug.
+>>>>
+>>>> So, I agree with adding 'depends on SECURITY'.
+>>>>
+>>>> What he is trying to achieve in this series
+>>>> seems wrong, of course.
+>>>
+>>> This may be wrong in the general case, but not for CONFIG_LSM.
+>>>
+>>>>
+>>>>
+>>>>> I assume the new mechanism wouldn't work as intended if there is just
+>>>>> SECURITY? If not, then maybe you should rather specify this value
+>>>>> dependency via some new  field rather than abusing "depends on" (say,
+>>>>> "value depends on"?). The fact that a seemingly innocent change to the
+>>>>> config definition breaks your mechanism suggests that the design is
+>>>>> flawed.
+>>>
+>>> Masahiro, what do you think about this suggested "value depends on"?
+>>
+>>
+>> Of course, no.
+>>
+>>
+>> See the help text in init/Kconfig:
+>>
+>>           This choice is there only for converting CONFIG_DEFAULT_SECURITY
+>>           in old kernel configs to CONFIG_LSM in new kernel configs. Don't
+>>           change this choice unless you are creating a fresh kernel config,
+>>           for this choice will be ignored after CONFIG_LSM has been set.
+>>
+>>
+>> When CONFIG_LSM is already set in the .config,
+>> this choice is just ignored.
+>> So, oldconfig is working as the help message says.
+>>
+>> If you think 2623c4fbe2ad1341ff2d1e12410d0afdae2490ca
+>> is a pointless commit, you should ask Kees about it.
+> 
+> This commit was for backward compatibility to not change the configured
+> system behavior because of a new default configuration.
+> Here I want to address a forward compatibility issue: when users want to
+> enable an LSM, give them the opportunity to enable it at boot time too
+> instead of silently ignoring this new configuration at boot time.
+> Indeed, there is two kind of configurations: built time configuration
+> with Kconfig, and boot time configuration with the content of
+> CONFIG_LSM. However, there is no direct dependency between LSM toggles
+> and CONFIG_LSM once it is set.
+> 
+> I think a better solution would be to add a new CONFIG_LSM_AUTO boolean
+> to automatically generate the content of CONFIG_LSM according to the
+> (build/kconfig) enabled LSMs, while letting users the ability to
+> manually configure CONFIG_LSM otherwise. What do you think?
 
-Indeed, I'll add a patch to report back errors on failed i2c writes.
+I sent a new patch series dedicated to the LSM issue:
+https://lore.kernel.org/linux-security-module/20210222150608.808146-1-mic@digikod.net/
 
-Thanks
-  j
-
-> >
-> >  	ret = max9271_verify_id(&dev->serializer);
-> >  	if (ret < 0)
->
-> --
-> Regards,
->
-> Laurent Pinchart
+> 
+>>
+>>>>>
+>>>>> I do think this would be a useful feature, but IMHO shouldn't be
+>>>>> implemented like this.
+>>>>>
+>>>>>>         default "lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
+>>>>>>         default "lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
+>>>>>>         default "lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
+>>>>>> --
+>>>>>> 2.30.0
+>>>>>>
+>>>>>
+>>>>> --
+>>>>> Ondrej Mosnacek
+>>>>> Software Engineer, Linux Security - SELinux kernel
+>>>>> Red Hat, Inc.
+>>>>>
+>>>>
+>>>>
+>> --
+>> Best Regards
+>> Masahiro Yamada
+>>
