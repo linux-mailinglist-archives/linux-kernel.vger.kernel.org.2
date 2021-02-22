@@ -2,124 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C765D321F47
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7840C321F4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbhBVSlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:41:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39076 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231326AbhBVSky (ORCPT
+        id S231201AbhBVSmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:42:32 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41944 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231747AbhBVSls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:40:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614019168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vTDJEhb85J67AdQAHgz7f5oACpIbuhttKKGtn62KUTU=;
-        b=JmlGlkz9UwKphqZX811+QZP/3pC3W3H54Ztz2S2MnJsJa5pRHQS/q6qvMtd+ggGB8zGvGX
-        sy8lJZQPqKKYDG0xRemS4XjUA3BItCjetT90x9cUHkE3ys6vyA7CYt15LP0H7OvTjb7C2A
-        yz8tMlgClj3ekgJ2NdHUIfV+3OpOrRc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-536-O_GYt-tGMt-lFkSYootDsQ-1; Mon, 22 Feb 2021 13:39:26 -0500
-X-MC-Unique: O_GYt-tGMt-lFkSYootDsQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1CD811020C22;
-        Mon, 22 Feb 2021 18:39:25 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D8ED25D9D3;
-        Mon, 22 Feb 2021 18:39:12 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 11:39:11 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     alex.williamson@redhat.com
-Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com, jgg@nvidia.com,
-        peterx@redhat.com
-Subject: Re: [PATCH v2] vfio/type1: Use follow_pte()
-Message-ID: <20210222113911.0ec8a4e5@omen.home.shazbot.org>
-In-Reply-To: <161351571186.15573.5602248562129684350.stgit@gimli.home>
-References: <161351571186.15573.5602248562129684350.stgit@gimli.home>
+        Mon, 22 Feb 2021 13:41:48 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 3C9351C0B76; Mon, 22 Feb 2021 19:40:57 +0100 (CET)
+Date:   Mon, 22 Feb 2021 19:40:56 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/50] 4.19.177-rc1 review
+Message-ID: <20210222184056.GA22197@duo.ucw.cz>
+References: <20210222121019.925481519@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
+Content-Disposition: inline
+In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Feb 2021 15:49:34 -0700
-Alex Williamson <alex.williamson@redhat.com> wrote:
 
-> follow_pfn() doesn't make sure that we're using the correct page
-> protections, get the pte with follow_pte() so that we can test
-> protections and get the pfn from the pte.
-> 
-> Fixes: 5cbf3264bc71 ("vfio/type1: Fix VA->PA translation for PFNMAP VMAs in vaddr_get_pfn()")
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> ---
-> 
-> v2: Update to current follow_pte() API, add Reviews
-> 
->  drivers/vfio/vfio_iommu_type1.c |   14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index ec9fd95a138b..ae4fd2295c95 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -463,9 +463,11 @@ static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
->  			    unsigned long vaddr, unsigned long *pfn,
->  			    bool write_fault)
->  {
-> +	pte_t *ptep;
-> +	spinlock_t *ptl;
->  	int ret;
->  
-> -	ret = follow_pfn(vma, vaddr, pfn);
-> +	ret = follow_pte(vma->vm_mm, vaddr, &ptep, &ptl);
->  	if (ret) {
->  		bool unlocked = false;
->  
-> @@ -479,9 +481,17 @@ static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
->  		if (ret)
->  			return ret;
->  
-> -		ret = follow_pfn(vma, vaddr, pfn);
-> +		ret = follow_pte(vma->vm_mm, vaddr, &ptep, &ptl);
-> +		if (ret)
-> +			return ret;
->  	}
->  
-> +	if (write_fault && !pte_write(*ptep))
-> +		ret = -EFAULT;
-> +	else
-> +		*pfn = pte_pfn(*ptep);
-> +
-> +	pte_unmap_unlock(ptep, ptl);
->  	return ret;
->  }
->  
-> 
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Adding the following to resolve 32-bit build:
+On Mon 2021-02-22 13:12:51, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.177 release.
+> There are 50 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 8a777250764a..ed03f3fcb07e 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -24,6 +24,7 @@
- #include <linux/compat.h>
- #include <linux/device.h>
- #include <linux/fs.h>
-+#include <linux/highmem.h>
- #include <linux/iommu.h>
- #include <linux/module.h>
- #include <linux/mm.h>
+CIP testing has one board failing, but it has problem booting, so it
+is not kernel fault.
 
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--NzB8fVQJ5HfG6fxh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYDP6uAAKCRAw5/Bqldv6
+8ht0AJsHg1IYv4drW7WPdaS48gOr7ngT+gCggYW8OJbPF6hNHdAQwr4og1XraJU=
+=OJ7E
+-----END PGP SIGNATURE-----
+
+--NzB8fVQJ5HfG6fxh--
