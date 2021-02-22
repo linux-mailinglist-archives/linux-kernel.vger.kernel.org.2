@@ -2,100 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C2C3216F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371103216DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhBVMkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:40:45 -0500
+        id S231352AbhBVMhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:37:54 -0500
 Received: from mail.kernel.org ([198.145.29.99]:44936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230434AbhBVMRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:17:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94B9B64F13;
-        Mon, 22 Feb 2021 12:16:36 +0000 (UTC)
+        id S230377AbhBVMQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:16:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E050764E4B;
+        Mon, 22 Feb 2021 12:15:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996197;
-        bh=W8Iy6YrF3A+u0xq4e5/2i4uzGfnVsC3uU6cmDFI8KcM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IZWekke1sh5EXhuR0mH+gZWXrY/rG+onUctlaZbRf0dqySxuJRM/mlOci948ETSVQ
-         HFoUOmj+6dd4WC3e+os8WeK8MoLu3Dd0QXUjLnCbvFxim+Qz0UAnIitIdtmmbVPIXA
-         /PwFpoCp6HR+fZvE5npRaHQL5hyRVLTLTWCnVk8w=
+        s=korg; t=1613996151;
+        bh=3tP8I+VYWevsVrqR6bEQ+s4B7v440lAgg/imqBDISTQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oZZPBcx75U+JbH8sKrBkHOhuiancboFi3cSj+xqzuOpr64tXfrANLZnW7z3Mxoj8M
+         SRKzZmZDFZhtm9tfNoWeSwGy4BUQnF8TW66qBfyc4qaSeSMeCq4qJ4t/VEe6gHNRyB
+         krvjvTYRFTxw2jWg2Y6Zp6cVthtqXmo+MBlxfusc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alain Volmat <alain.volmat@foss.st.com>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/50] i2c: stm32f7: fix configuration of the digital filter
-Date:   Mon, 22 Feb 2021 13:13:16 +0100
-Message-Id: <20210222121024.896291023@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+Subject: [PATCH 5.4 00/13] 5.4.100-rc1 review
+Date:   Mon, 22 Feb 2021 13:13:17 +0100
+Message-Id: <20210222121013.583922436@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
-References: <20210222121019.925481519@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.4.100-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.4.100-rc1
+X-KernelTest-Deadline: 2021-02-24T12:10+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+This is the start of the stable review cycle for the 5.4.100 release.
+There are 13 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-[ Upstream commit 3d6a3d3a2a7a3a60a824e7c04e95fd50dec57812 ]
+Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
+Anything received after that time might be too late.
 
-The digital filter related computation are present in the driver
-however the programming of the filter within the IP is missing.
-The maximum value for the DNF is wrong and should be 15 instead of 16.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.100-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+and the diffstat can be found below.
 
-Fixes: aeb068c57214 ("i2c: i2c-stm32f7: add driver")
+thanks,
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/i2c/busses/i2c-stm32f7.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+greg k-h
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index eb7e533b0dd47..6feafebf85feb 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -49,6 +49,8 @@
- #define STM32F7_I2C_CR1_RXDMAEN			BIT(15)
- #define STM32F7_I2C_CR1_TXDMAEN			BIT(14)
- #define STM32F7_I2C_CR1_ANFOFF			BIT(12)
-+#define STM32F7_I2C_CR1_DNF_MASK		GENMASK(11, 8)
-+#define STM32F7_I2C_CR1_DNF(n)			(((n) & 0xf) << 8)
- #define STM32F7_I2C_CR1_ERRIE			BIT(7)
- #define STM32F7_I2C_CR1_TCIE			BIT(6)
- #define STM32F7_I2C_CR1_STOPIE			BIT(5)
-@@ -147,7 +149,7 @@
- #define STM32F7_I2C_MAX_SLAVE			0x2
- 
- #define STM32F7_I2C_DNF_DEFAULT			0
--#define STM32F7_I2C_DNF_MAX			16
-+#define STM32F7_I2C_DNF_MAX			15
- 
- #define STM32F7_I2C_ANALOG_FILTER_ENABLE	1
- #define STM32F7_I2C_ANALOG_FILTER_DELAY_MIN	50	/* ns */
-@@ -645,6 +647,13 @@ static void stm32f7_i2c_hw_config(struct stm32f7_i2c_dev *i2c_dev)
- 	else
- 		stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
- 				     STM32F7_I2C_CR1_ANFOFF);
-+
-+	/* Program the Digital Filter */
-+	stm32f7_i2c_clr_bits(i2c_dev->base + STM32F7_I2C_CR1,
-+			     STM32F7_I2C_CR1_DNF_MASK);
-+	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
-+			     STM32F7_I2C_CR1_DNF(i2c_dev->setup.dnf));
-+
- 	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
- 			     STM32F7_I2C_CR1_PE);
- }
--- 
-2.27.0
+-------------
+Pseudo-Shortlog of commits:
 
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.4.100-rc1
+
+Matwey V. Kornilov <matwey@sai.msu.ru>
+    media: pwc: Use correct device for DMA
+
+Jan Beulich <jbeulich@suse.com>
+    xen-blkback: fix error handling in xen_blkbk_map()
+
+Jan Beulich <jbeulich@suse.com>
+    xen-scsiback: don't "handle" error by BUG()
+
+Jan Beulich <jbeulich@suse.com>
+    xen-netback: don't "handle" error by BUG()
+
+Jan Beulich <jbeulich@suse.com>
+    xen-blkback: don't "handle" error by BUG()
+
+Stefano Stabellini <stefano.stabellini@xilinx.com>
+    xen/arm: don't ignore return errors from set_phys_to_machine
+
+Jan Beulich <jbeulich@suse.com>
+    Xen/gntdev: correct error checking in gntdev_map_grant_pages()
+
+Jan Beulich <jbeulich@suse.com>
+    Xen/gntdev: correct dev_bus_addr handling in gntdev_map_grant_pages()
+
+Jan Beulich <jbeulich@suse.com>
+    Xen/x86: also check kernel mapping in set_foreign_p2m_mapping()
+
+Jan Beulich <jbeulich@suse.com>
+    Xen/x86: don't bail early from clear_foreign_p2m_mapping()
+
+Wang Hai <wanghai38@huawei.com>
+    net: bridge: Fix a warning when del bridge sysfs
+
+Loic Poulain <loic.poulain@linaro.org>
+    net: qrtr: Fix port ID for control messages
+
+Paolo Bonzini <pbonzini@redhat.com>
+    KVM: SEV: fix double locking due to incorrect backport
+
+
+-------------
+
+Diffstat:
+
+ Makefile                            |  4 ++--
+ arch/arm/xen/p2m.c                  |  6 ++++--
+ arch/x86/kvm/svm.c                  |  1 -
+ arch/x86/xen/p2m.c                  | 15 +++++++--------
+ drivers/block/xen-blkback/blkback.c | 30 ++++++++++++++++--------------
+ drivers/media/usb/pwc/pwc-if.c      | 22 +++++++++++++---------
+ drivers/net/xen-netback/netback.c   |  4 +---
+ drivers/xen/gntdev.c                | 37 ++++++++++++++++++++-----------------
+ drivers/xen/xen-scsiback.c          |  4 ++--
+ include/xen/grant_table.h           |  1 +
+ net/bridge/br.c                     |  5 ++++-
+ net/qrtr/qrtr.c                     |  2 +-
+ 12 files changed, 71 insertions(+), 60 deletions(-)
 
 
