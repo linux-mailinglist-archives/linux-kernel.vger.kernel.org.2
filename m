@@ -2,255 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A8132110B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 07:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EA7321115
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhBVGzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 01:55:37 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:63915 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhBVGzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 01:55:31 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613976910; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ofgj+DChJuv4uQiMPMe3Ol2wZ5uQqx9bQQUd6t5Oc9A=;
- b=RLVrmPsSdi3DL35SbQCTciCI+lhhkMMAL3Dk8nRvI1j51LPaWmMKfPD1XQVFvhUbNRXW6glA
- uV/gcdZNQiyODeg9TeMZCsFpRfvKhIabFvGzDgI+bDfnW9ajFZ0wXN9HLZdEB/Of8RPiyN5H
- 5eplVCOSlGeFDcKRNAcuHoFHshY=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 603355317237f827dc2474b1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Feb 2021 06:54:41
- GMT
-Sender: pnagar=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4F542C433C6; Mon, 22 Feb 2021 06:54:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pnagar)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9710CC433CA;
-        Mon, 22 Feb 2021 06:54:38 +0000 (UTC)
+        id S229934AbhBVHA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 02:00:59 -0500
+Received: from eu-shark1.inbox.eu ([195.216.236.81]:57534 "EHLO
+        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229780AbhBVHA4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 02:00:56 -0500
+X-Greylist: delayed 422 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Feb 2021 02:00:54 EST
+Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
+        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id B93736C00691;
+        Mon, 22 Feb 2021 08:52:59 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1613976779; bh=Rc9nYZ5mpSg611xOOngasQtO3TAbJ1PYJd/SrA47K7c=;
+        h=References:From:To:Cc:Subject:In-reply-to:Date;
+        b=i5M3jqnPmcSIWAmIKHZrm+IRPYokLmtwnUWbQMb2Hvwoq3WHvWqgX9/nW/ZA29ffh
+         AgwlWGjfW41gnoaxl+V4N8HCuCrwrAN8kzWksQpNO60xivwg6YLl8XxMFOj7gv4LAp
+         ItNgVhEuU6ir+cdRo0xaQPds1G1otfas0YWKfNuc=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id A5BED6C00661;
+        Mon, 22 Feb 2021 08:52:59 +0200 (EET)
+Received: from eu-shark1.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id bUrlneumwWrc; Mon, 22 Feb 2021 08:52:59 +0200 (EET)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 01BEE6C00606;
+        Mon, 22 Feb 2021 08:52:59 +0200 (EET)
+Received: from nas (unknown [45.87.95.231])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id 8C41F1BE00B1;
+        Mon, 22 Feb 2021 08:52:50 +0200 (EET)
+References: <CGME20210219124555epcas5p1334e7c4d64ada5dc4a2ca0feb48c1d44@epcas5p1.samsung.com>
+ <20210219124517.79359-1-selvakuma.s1@samsung.com>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Su Yue <l@damenly.su>
+To:     SelvaKumar S <selvakuma.s1@samsung.com>
+Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
+        damien.lemoal@wdc.com, hch@lst.de, sagi@grimberg.me,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, snitzer@redhat.com, selvajove@gmail.com,
+        joshiiitr@gmail.com, nj.shetty@samsung.com, joshi.k@samsung.com,
+        javier.gonz@samsung.com, kch@kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH v5 0/4] add simple copy support
+In-reply-to: <20210219124517.79359-1-selvakuma.s1@samsung.com>
+Message-ID: <lfbgr3ur.fsf@damenly.su>
+Date:   Mon, 22 Feb 2021 14:52:44 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 22 Feb 2021 12:24:38 +0530
-From:   pnagar@codeaurora.org
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Paul Moore <paul@paul-moore.com>,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Will Deacon <will@kernel.org>, nmardana@codeaurora.org,
-        johan@kernel.org, Joe Perches <joe@perches.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Joel Galenson <jgalenson@google.com>
-Subject: Re: [PATCH] RTIC: selinux: ARM64: Move selinux_state to a separate
- page
-In-Reply-To: <CAKwvOdkTkTV6U7zv1WyndLwK_JCB5ptTz64UbqAEwRMV5o7dLw@mail.gmail.com>
-References: <1613470672-3069-1-git-send-email-pnagar@codeaurora.org>
- <CAKwvOdkTkTV6U7zv1WyndLwK_JCB5ptTz64UbqAEwRMV5o7dLw@mail.gmail.com>
-Message-ID: <92c05669eca0307421cd224e0a06e785@codeaurora.org>
-X-Sender: pnagar@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; format=flowed
+X-Virus-Scanned: OK
+X-ESPOL: 6NpmlYxOGzysiV+lRWe8dgs2pzY6IuClpKemo25U5hvmSE6Jek0TWBeplGloT3+5og==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-16 23:39, Nick Desaulniers wrote:
-> On Tue, Feb 16, 2021 at 2:19 AM Preeti Nagar <pnagar@codeaurora.org> 
-> wrote:
->> 
->> The changes introduce a new security feature, RunTime Integrity Check
->> (RTIC), designed to protect Linux Kernel at runtime. The motivation
->> behind these changes is:
->> 1. The system protection offered by Security Enhancements(SE) for
->> Android relies on the assumption of kernel integrity. If the kernel
->> itself is compromised (by a perhaps as yet unknown future 
->> vulnerability),
->> SE for Android security mechanisms could potentially be disabled and
->> rendered ineffective.
->> 2. Qualcomm Snapdragon devices use Secure Boot, which adds 
->> cryptographic
->> checks to each stage of the boot-up process, to assert the 
->> authenticity
->> of all secure software images that the device executes.  However, due 
->> to
->> various vulnerabilities in SW modules, the integrity of the system can 
->> be
->> compromised at any time after device boot-up, leading to un-authorized
->> SW executing.
->> 
->> The feature's idea is to move some sensitive kernel structures to a
->> separate page and monitor further any unauthorized changes to these,
->> from higher Exception Levels using stage 2 MMU. Moving these to a
->> different page will help avoid getting page faults from un-related 
->> data.
->> The mechanism we have been working on removes the write permissions 
->> for
->> HLOS in the stage 2 page tables for the regions to be monitored, such
->> that any modification attempts to these will lead to faults being
->> generated and handled by handlers. If the protected assets are moved 
->> to
->> a separate page, faults will be generated corresponding to change 
->> attempts
->> to these assets only. If not moved to a separate page, write attempts 
->> to
->> un-related data present on the monitored pages will also be generated.
->> 
->> Using this feature, some sensitive variables of the kernel which are
->> initialized after init or are updated rarely can also be protected 
->> from
->> simple overwrites and attacks trying to modify these.
->> 
->> Currently, the change moves selinux_state structure to a separate 
->> page.
->> The page is 2MB aligned not 4K to avoid TLB related performance impact 
->> as,
->> for some CPU core designs, the TLB does not cache 4K stage 2 (IPA to 
->> PA)
->> mappings if the IPA comes from a stage 1 mapping. In future, we plan 
->> to
->> move more security-related kernel assets to this page to enhance
->> protection.
->> 
->> Signed-off-by: Preeti Nagar <pnagar@codeaurora.org>
-> 
-> This addresses my feedback from the RFC regarding the section symbols.
-> No comment on whether there is a better approach, or the 2MB vs page
-> alignment, but perhaps other folks cc'ed can please take a look.
-> 
-> Acked-by: Nick Desaulniers <ndesaulniers@google.com>
-> 
-Thank you! I look forward to reviews and suggestions from the added 
-folks.
 
->> ---
->> The RFC patch reviewed available at:
->> https://lore.kernel.org/linux-security-module/1610099389-28329-1-git-send-email-pnagar@codeaurora.org/
->> ---
->>  include/asm-generic/vmlinux.lds.h | 10 ++++++++++
->>  include/linux/init.h              |  6 ++++++
->>  security/Kconfig                  | 11 +++++++++++
->>  security/selinux/hooks.c          |  2 +-
->>  4 files changed, 28 insertions(+), 1 deletion(-)
->> 
->> diff --git a/include/asm-generic/vmlinux.lds.h 
->> b/include/asm-generic/vmlinux.lds.h
->> index b97c628..d1a5434 100644
->> --- a/include/asm-generic/vmlinux.lds.h
->> +++ b/include/asm-generic/vmlinux.lds.h
->> @@ -770,6 +770,15 @@
->>                 *(.scommon)                                            
->>  \
->>         }
->> 
->> +#ifdef CONFIG_SECURITY_RTIC
->> +#define RTIC_BSS                                                      
->>  \
->> +       . = ALIGN(SZ_2M);                                              
->>  \
->> +       KEEP(*(.bss.rtic))                                             
->>  \
->> +       . = ALIGN(SZ_2M);
->> +#else
->> +#define RTIC_BSS
->> +#endif
->> +
->>  /*
->>   * Allow archectures to redefine BSS_FIRST_SECTIONS to add extra
->>   * sections to the front of bss.
->> @@ -782,6 +791,7 @@
->>         . = ALIGN(bss_align);                                          
->>  \
->>         .bss : AT(ADDR(.bss) - LOAD_OFFSET) {                          
->>  \
->>                 BSS_FIRST_SECTIONS                                     
->>  \
->> +               RTIC_BSS                                               
->>  \
->>                 . = ALIGN(PAGE_SIZE);                                  
->>  \
->>                 *(.bss..page_aligned)                                  
->>  \
->>                 . = ALIGN(PAGE_SIZE);                                  
->>  \
->> diff --git a/include/linux/init.h b/include/linux/init.h
->> index e668832..e6d452a 100644
->> --- a/include/linux/init.h
->> +++ b/include/linux/init.h
->> @@ -300,6 +300,12 @@ void __init parse_early_options(char *cmdline);
->>  /* Data marked not to be saved by software suspend */
->>  #define __nosavedata __section(".data..nosave")
->> 
->> +#ifdef CONFIG_SECURITY_RTIC
->> +#define __rticdata  __section(".bss.rtic")
->> +#else
->> +#define __rticdata
->> +#endif
->> +
->>  #ifdef MODULE
->>  #define __exit_p(x) x
->>  #else
->> diff --git a/security/Kconfig b/security/Kconfig
->> index 7561f6f..1af913a 100644
->> --- a/security/Kconfig
->> +++ b/security/Kconfig
->> @@ -291,5 +291,16 @@ config LSM
->> 
->>  source "security/Kconfig.hardening"
->> 
->> +config SECURITY_RTIC
->> +       bool "RunTime Integrity Check feature"
->> +       depends on ARM64
->> +       help
->> +         RTIC(RunTime Integrity Check) feature is to protect Linux 
->> kernel
->> +         at runtime. This relocates some of the security sensitive 
->> kernel
->> +         structures to a separate RTIC specific page.
->> +
->> +         This is to enable monitoring and protection of these kernel 
->> assets
->> +         from a higher exception level(EL) against any unauthorized 
->> changes.
->> +
->>  endmenu
->> 
->> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
->> index 644b17e..59d7eee 100644
->> --- a/security/selinux/hooks.c
->> +++ b/security/selinux/hooks.c
->> @@ -104,7 +104,7 @@
->>  #include "audit.h"
->>  #include "avc_ss.h"
->> 
->> -struct selinux_state selinux_state;
->> +struct selinux_state selinux_state __rticdata;
->> 
->>  /* SECMARK reference count */
->>  static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
->> --
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
->> member
->> of Code Aurora Forum, hosted by The Linux Foundation
->> 
+On Fri 19 Feb 2021 at 20:45, SelvaKumar S 
+<selvakuma.s1@samsung.com> wrote:
+
+> This patchset tries to add support for TP4065a ("Simple Copy 
+> Command"),
+> v2020.05.04 ("Ratified")
+>
+> The Specification can be found in following link.
+> https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1.zip
+>
+
+404 not found.
+Should it be
+https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs.zip
+?
+
+> Simple copy command is a copy offloading operation and is  used 
+> to copy
+> multiple contiguous ranges (source_ranges) of LBA's to a single 
+> destination
+> LBA within the device reducing traffic between host and device.
+>
+> This implementation doesn't add native copy offload support for 
+> stacked
+> devices rather copy offload is done through emulation. Possible 
+> use
+> cases are F2FS gc and BTRFS relocation/balance.
+>
+> *blkdev_issue_copy* takes source bdev, no of sources, array of 
+> source
+> ranges (in sectors), destination bdev and destination offset(in 
+> sectors).
+> If both source and destination block devices are same and 
+> copy_offload = 1,
+> then copy is done through native copy offloading. Copy emulation 
+> is used
+> in other cases.
+>
+> As SCSI XCOPY can take two different block devices and no of 
+> source range is
+> equal to 1, this interface can be extended in future to support 
+> SCSI XCOPY.
+>
+> For devices supporting native simple copy, attach the control 
+> information
+> as payload to the bio and submit to the device. For devices 
+> without native
+> copy support, copy emulation is done by reading each source 
+> range into memory
+> and writing it to the destination. Caller can choose not to try
+> emulation if copy offload is not supported by setting
+> BLKDEV_COPY_NOEMULATION flag.
+>
+> Following limits are added to queue limits and are exposed in 
+> sysfs
+> to userspace
+> 	- *copy_offload* controls copy_offload. set 0 to disable copy
+> 		offload, 1 to enable native copy offloading support.
+> 	- *max_copy_sectors* limits the sum of all source_range length
+> 	- *max_copy_nr_ranges* limits the number of source ranges
+> 	- *max_copy_range_sectors* limit the maximum number of sectors
+> 		that can constitute a single source range.
+>
+> 	max_copy_sectors = 0 indicates the device doesn't support copy
+> offloading.
+>
+> 	*copy offload* sysfs entry is configurable and can be used 
+> toggle
+> between emulation and native support depending upon the usecase.
+>
+> Changes from v4
+>
+> 1. Extend dm-kcopyd to leverage copy-offload, while copying 
+> within the
+> same device. The other approach was to have copy-emulation by 
+> moving
+> dm-kcopyd to block layer. But it also required moving core dm-io 
+> infra,
+> causing a massive churn across multiple dm-targets.
+>
+> 2. Remove export in bio_map_kern()
+> 3. Change copy_offload sysfs to accept 0 or else
+> 4. Rename copy support flag to QUEUE_FLAG_SIMPLE_COPY
+> 5. Rename payload entries, add source bdev field to be used 
+> while
+> partition remapping, remove copy_size
+> 6. Change the blkdev_issue_copy() interface to accept 
+> destination and
+> source values in sector rather in bytes
+> 7. Add payload to bio using bio_map_kern() for copy_offload case
+> 8. Add check to return error if one of the source range length 
+> is 0
+> 9. Add BLKDEV_COPY_NOEMULATION flag to allow user to not try 
+> copy
+> emulation incase of copy offload is not supported. Caller can 
+> his use
+> his existing copying logic to complete the io.
+> 10. Bug fix copy checks and reduce size of rcu_lock()
+>
+> Planned for next:
+> - adding blktests
+> - handling larger (than device limits) copy
+> - decide on ioctl interface (man-page etc.)
+>
+> Changes from v3
+>
+> 1. gfp_flag fixes.
+> 2. Export bio_map_kern() and use it to allocate and add pages to 
+> bio.
+> 3. Move copy offload, reading to buf, writing from buf to 
+> separate functions.
+> 4. Send read bio of copy offload by chaining them and submit 
+> asynchronously.
+> 5. Add gendisk->part0 and part->bd_start_sect changes to 
+> blk_check_copy().
+> 6. Move single source range limit check to blk_check_copy()
+> 7. Rename __blkdev_issue_copy() to blkdev_issue_copy and remove 
+> old helper.
+> 8. Change blkdev_issue_copy() interface generic to accepts 
+> destination bdev
+> 	to support XCOPY as well.
+> 9. Add invalidate_kernel_vmap_range() after reading data for 
+> vmalloc'ed memory.
+> 10. Fix buf allocoation logic to allocate buffer for the total 
+> size of copy.
+> 11. Reword patch commit description.
+>
+> Changes from v2
+>
+> 1. Add emulation support for devices not supporting copy.
+> 2. Add *copy_offload* sysfs entry to enable and disable 
+> copy_offload
+> 	in devices supporting simple copy.
+> 3. Remove simple copy support for stacked devices.
+>
+> Changes from v1:
+>
+> 1. Fix memory leak in __blkdev_issue_copy
+> 2. Unmark blk_check_copy inline
+> 3. Fix line break in blk_check_copy_eod
+> 4. Remove p checks and made code more readable
+> 5. Don't use bio_set_op_attrs and remove op and set
+>    bi_opf directly
+> 6. Use struct_size to calculate total_size
+> 7. Fix partition remap of copy destination
+> 8. Remove mcl,mssrl,msrc from nvme_ns
+> 9. Initialize copy queue limits to 0 in nvme_config_copy
+> 10. Remove return in QUEUE_FLAG_COPY check
+> 11. Remove unused OCFS
+>
+> SelvaKumar S (4):
+>   block: make bio_map_kern() non static
+>   block: add simple copy support
+>   nvme: add simple copy support
+>   dm kcopyd: add simple copy offload support
+>
+>  block/blk-core.c          | 102 +++++++++++++++--
+>  block/blk-lib.c           | 223 
+>  ++++++++++++++++++++++++++++++++++++++
+>  block/blk-map.c           |   2 +-
+>  block/blk-merge.c         |   2 +
+>  block/blk-settings.c      |  10 ++
+>  block/blk-sysfs.c         |  47 ++++++++
+>  block/blk-zoned.c         |   1 +
+>  block/bounce.c            |   1 +
+>  block/ioctl.c             |  33 ++++++
+>  drivers/md/dm-kcopyd.c    |  49 ++++++++-
+>  drivers/nvme/host/core.c  |  87 +++++++++++++++
+>  include/linux/bio.h       |   1 +
+>  include/linux/blk_types.h |  14 +++
+>  include/linux/blkdev.h    |  17 +++
+>  include/linux/nvme.h      |  43 +++++++-
+>  include/uapi/linux/fs.h   |  13 +++
+>  16 files changed, 627 insertions(+), 18 deletions(-)
+
