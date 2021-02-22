@@ -2,289 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD173211CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1653211D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhBVIMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 03:12:37 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:50699 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhBVILy (ORCPT
+        id S230073AbhBVIQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:16:45 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:39719 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229780AbhBVIQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:11:54 -0500
-X-Originating-IP: 81.185.166.122
-Received: from [192.168.43.237] (122.166.185.81.rev.sfr.net [81.185.166.122])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 7CAABE000F;
-        Mon, 22 Feb 2021 08:11:05 +0000 (UTC)
-Subject: Re: [PATCH] riscv: Get rid of MAX_EARLY_MAPPING_SIZE
-From:   Alex Ghiti <alex@ghiti.fr>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup@brainfault.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-References: <20210221142233.3661-1-alex@ghiti.fr>
- <CACT4Y+Y9Ax=3XnE1NaN1+Qz7oh209nncz7xULQ2Tf8BmUqmVAw@mail.gmail.com>
- <49980664-5121-fa58-8120-5f127288add6@ghiti.fr>
-Message-ID: <d33a4e55-d8bb-3841-6f07-3f320527c4ff@ghiti.fr>
-Date:   Mon, 22 Feb 2021 03:11:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <49980664-5121-fa58-8120-5f127288add6@ghiti.fr>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        Mon, 22 Feb 2021 03:16:22 -0500
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210222081540epoutp01a2e56d667f8b0b6e958a4d5ef56d8016~mA9dpS1oc1736417364epoutp01R
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:15:40 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210222081540epoutp01a2e56d667f8b0b6e958a4d5ef56d8016~mA9dpS1oc1736417364epoutp01R
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1613981740;
+        bh=yZ+s3MpgPT/FngOn6QtfjJgewjP5XWJxA/+2Vd9WU8Q=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=HXT4hft6eSwh7yREV5w7pwh4iIYSh+d1uO6CXaAfTzJ5xAkGz2IvCZVPuzwiea4IL
+         6mmL5xh5dhSo+dJ3Mb63pF1zGr7dmAKf8eB7Q5v4NEkJ0fbyPvjEMAax8WbTWbBbNq
+         y8mok6SXJXGgSlToLDrqhYG4ZseCOL9Pa6ix1sLg=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210222081539epcas2p4869e9539da226f2d38ae6dea3aab9498~mA9coO_-E2148821488epcas2p4M;
+        Mon, 22 Feb 2021 08:15:39 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.190]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DkZkK1WtQz4x9Px; Mon, 22 Feb
+        2021 08:15:37 +0000 (GMT)
+X-AuditID: b6c32a45-337ff7000001297d-e0-603368276640
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        04.CD.10621.72863306; Mon, 22 Feb 2021 17:15:35 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: RE: [PATCH v21 2/4] scsi: ufs: L2P map management for HPB read
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <DM6PR04MB6575DFFA248FC9B5FD5BFBA4FC829@DM6PR04MB6575.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210222081535epcms2p4429fd082538eb12ee0e763e62d5725a4@epcms2p4>
+Date:   Mon, 22 Feb 2021 17:15:35 +0900
+X-CMS-MailID: 20210222081535epcms2p4429fd082538eb12ee0e763e62d5725a4
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMJsWRmVeSWpSXmKPExsWy7bCmma56hnGCwesPshYP5m1js9jbdoLd
+        4uXPq2wWh2+/Y7eY9uEns8Wn9ctYLV4e0rRY9SDconnxejaLOWcbmCx6+7eyWTy+85ndYtGN
+        bUwW/f/aWSwu75rDZtF9fQebxfLj/5gsbm/hsli69SajRef0NSwWixbuZnEQ9bh8xdvjcl8v
+        k8fOWXfZPSYsOsDosX/uGnaPlpP7WTw+Pr3F4tG3ZRWjx+dNch7tB7qZAriicmwyUhNTUosU
+        UvOS81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgD5UUihLzCkFCgUkFhcr
+        6dvZFOWXlqQqZOQXl9gqpRak5BQYGhboFSfmFpfmpesl5+daGRoYGJkCVSbkZLxb8oOtYA1r
+        xeOVHxkbGE8zdzFyckgImEjsb5kPZHNxCAnsYJT4dO4jkMPBwSsgKPF3hzBIjbCAt8SKbfvZ
+        QWwhASWJ9RdnsUPE9SRuPVzDCGKzCehITD9xnx1kjojAb2aJi2+nsYI4zAJLmSVWP22A2sYr
+        MaP9KQuELS2xfflWsG5OgViJb3OOsEPENSR+LOuFqheVuLn6LTuM/f7YfEYIW0Si9d5ZqBpB
+        iQc/d0PFJSWO7f7ABGHXS2y984sR5AgJgR5GicM7b7FCJPQlrnVsZIH40ldi4tFskDCLgKrE
+        4TN9ULtcJF6eXA02n1lAXmL72zngQGEW0JRYv0sfxJQQUJY4cosF5quGjb/Z0dnMAnwSHYf/
+        wsV3zHsCdZmaxLqf65kmMCrPQoT0LCS7ZiHsWsDIvIpRLLWgODc9tdiowBA5cjcxglO7lusO
+        xslvP+gdYmTiYDzEKMHBrCTCy3bXKEGINyWxsiq1KD++qDQntfgQoynQlxOZpUST84HZJa8k
+        3tDUyMzMwNLUwtTMyEJJnLfY4EG8kEB6YklqdmpqQWoRTB8TB6dUA9NZaQdBc5HvNil7gqYw
+        J63iupvwwauqeVI+v/AcFrXLayqDC7kD6tQ0d/I9+jSVidHEsID14gUrV+fm/QlfnlsLl/y4
+        sKmqVMXggSH/IpHH2nNLtopytybJsH8Jk3ubuqZijojF9P8Fn4Q+1U3eK5fhGxN6b9P0pV1N
+        YlP/yyQcUOqulhH2Cp39c57gLYdSlbfvr1xq5p/6wzTbhu1SddSZlKncnR1KzYfkH5bFZe5h
+        KL2x/a7gncx9199enly6eOM102d/k1/Yu54tfChv2c5zqKL0H/f83qMa0xbKzZgVf8W8dono
+        AZdLf3T+brD4c10n8+xD2/+h6mJt/5TK5CQ92o0XT2CTFJibdmVejBJLcUaioRZzUXEiALMV
+        Z+d2BAAA
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210218090627epcms2p639c216ccebed773120121b1d53641d94
+References: <DM6PR04MB6575DFFA248FC9B5FD5BFBA4FC829@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <20210218090627epcms2p639c216ccebed773120121b1d53641d94@epcms2p6>
+        <20210218090747epcms2p8812c04126d57b789f471126055577ae8@epcms2p8>
+        <CGME20210218090627epcms2p639c216ccebed773120121b1d53641d94@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 2/22/21 à 12:40 AM, Alex Ghiti a écrit :
-> Hi Dmitry,
+> +void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+> > +{
+> > +       struct ufshpb_lu *hpb = ufshpb_get_hpb_data(lrbp->cmd->device);
+> > +       struct utp_hpb_rsp *rsp_field;
+> > +       int data_seg_len;
+> > +
+> > +       if (!hpb)
+> > +               return;
+> > +
+> > +       if (ufshpb_get_state(hpb) != HPB_PRESENT) {
+> > +               dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
+> > +                          "%s: ufshpb state is not PRESENT\n", __func__);
+> > +               return;
+> > +       }
+> Theoretically, SSU response upiu may carry hpb sense data, isn't it?
 > 
-> Le 2/21/21 à 10:38 AM, Dmitry Vyukov a écrit :
->> On Sun, Feb 21, 2021 at 3:22 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
->>>
->>> At early boot stage, we have a whole PGDIR to map the kernel, so there
->>> is no need to restrict the early mapping size to 128MB. Removing this
->>> define also allows us to simplify some compile time logic.
->>>
->>> This fixes large kernel mappings with a size greater than 128MB, as it
->>> is the case for syzbot kernels whose size was just ~130MB.
->>>
->>> Note that on rv64, for now, we are then limited to PGDIR size for early
->>> mapping as we can't use PGD mappings (see [1]). That should be enough
->>> given the relative small size of syzbot kernels compared to PGDIR_SIZE
->>> which is 1GB.
->>>
->>> [1] https://lore.kernel.org/lkml/20200603153608.30056-1-alex@ghiti.fr/
->>
->> I've applied this patch to (as it contains the HEAD fix):
->>
->> commit f49815047c1a3e3644a0ba38f3825c5cde8a0922 (HEAD, riscv/for-next)
->> Author: Tobias Klauser <tklauser@distanz.ch>
->> Date:   Tue Feb 16 18:33:05 2021 +0100
->>      riscv: Disable KSAN_SANITIZE for vDSO
->>
->> and the kernel started booting with my large config.
->> It quickly crashed (see below), but at least it started booting, so
->> it's an improvement.
->>
->> Tested-by: Dmitry Vyukov <dvyukov@google.com>
-> 
-> Thanks for that.
-> 
->>
->> Linux version 5.11.0-rc2-00069-gf49815047c1a-dirty
->> (dvyukov@dvyukov-desk.muc.corp.google.com) (riscv64-linux-gnu-gcc
->> (Debian 10.2.1-6+build1) 10.2.1 20210110, GNU ld (GNU Binutils for
->> Debian) 2.35.1) #34 SMP PREEMPT Sun Feb 21 15:51:40 CET 2021
->> OF: fdt: Ignoring memory range 0x80000000 - 0x80200000
->> Machine model: riscv-virtio,qemu
->> earlycon: ns16550a0 at MMIO 0x0000000010000000 (options '')
->> printk: bootconsole [ns16550a0] enabled
->> efi: UEFI not found.
->> cma: Reserved 16 MiB at 0x00000000fec00000
->> Zone ranges:
->>    DMA32    [mem 0x0000000080200000-0x00000000ffffffff]
->>    Normal   empty
->> Movable zone start for each node
->> Early memory node ranges
->>    node   0: [mem 0x0000000080200000-0x00000000ffffffff]
->> Zeroed struct page in unavailable ranges: 512 pages
->> Initmem setup node 0 [mem 0x0000000080200000-0x00000000ffffffff]
->> SBI specification v0.2 detected
->> SBI implementation ID=0x1 Version=0x8
->> SBI v0.2 TIME extension detected
->> SBI v0.2 IPI extension detected
->> SBI v0.2 RFENCE extension detected
->> software IO TLB: mapped [mem 0x00000000f7c00000-0x00000000fbc00000] 
->> (64MB)
->> ------------[ cut here ]------------
->> DEBUG_LOCKS_WARN_ON(early_boot_irqs_disabled)
->> WARNING: CPU: 0 PID: 0 at kernel/locking/lockdep.c:4085
->> lockdep_hardirqs_on_prepare+0x384/0x388 kernel/locking/lockdep.c:4085
->> Modules linked in:
->> CPU: 0 PID: 0 Comm: swapper Not tainted 
->> 5.11.0-rc2-00069-gf49815047c1a-dirty #34
->> Hardware name: riscv-virtio,qemu (DT)
->> epc : lockdep_hardirqs_on_prepare+0x384/0x388 
->> kernel/locking/lockdep.c:4085
->>   ra : lockdep_hardirqs_on_prepare+0x384/0x388 
->> kernel/locking/lockdep.c:4085
->> epc : ffffffe0000c125a ra : ffffffe0000c125a sp : ffffffe006603ce0
->>   gp : ffffffe006c338f0 tp : ffffffe006689e00 t0 : ffffffe00669a9a8
->>   t1 : ffffffc400cc0738 t2 : 0000000000000000 s0 : ffffffe006603d20
->>   s1 : ffffffe006689e00 a0 : 000000000000002d a1 : 00000000000f0000
->>   a2 : 0000000000000002 a3 : ffffffe0000d2718 a4 : 0000000000000000
->>   a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe0066039c7
->>   s2 : ffffffe004a337c0 s3 : ffffffe0076fa1b8 s4 : 0000000000000000
->>   s5 : ffffffe006689e00 s6 : 0000000000000001 s7 : ffffffe07fcfc000
->>   s8 : ffffffe07fcfd000 s9 : ffffffe006c3c0d0 s10: fffffffffffff000
->>   s11: ffffffe004a1fbb8 t3 : 000000002d2d2d2d t4 : ffffffc400cc0737
->>   t5 : ffffffc400cc0739 t6 : ffffffe0066039c8
->> status: 0000000000000100 badaddr: 0000000000000000 cause: 
->> 0000000000000003
->> Call Trace:
->> [<ffffffe0000c125a>] lockdep_hardirqs_on_prepare+0x384/0x388
->> kernel/locking/lockdep.c:4085
->> [<ffffffe0001b7dc0>] trace_hardirqs_on+0x116/0x174
->> kernel/trace/trace_preemptirq.c:49
->> [<ffffffe00000550a>] _save_context+0xa2/0xe2
->> [<ffffffe004807908>] local_flush_tlb_all
->> arch/riscv/include/asm/tlbflush.h:16 [inline]
->> [<ffffffe004807908>] populate arch/riscv/mm/kasan_init.c:95 [inline]
->> [<ffffffe004807908>] kasan_init+0x23e/0x31a 
->> arch/riscv/mm/kasan_init.c:157
->> irq event stamp: 0
->> hardirqs last  enabled at (0): [<0000000000000000>] 0x0
->> hardirqs last disabled at (0): [<0000000000000000>] 0x0
->> softirqs last  enabled at (0): [<0000000000000000>] 0x0
->> softirqs last disabled at (0): [<0000000000000000>] 0x0
->> random: get_random_bytes called from init_oops_id kernel/panic.c:546
->> [inline] with crng_init=0
->> random: get_random_bytes called from init_oops_id kernel/panic.c:543
->> [inline] with crng_init=0
->> random: get_random_bytes called from print_oops_end_marker
->> kernel/panic.c:556 [inline] with crng_init=0
->> random: get_random_bytes called from __warn+0x1be/0x20a
->> kernel/panic.c:613 with crng_init=0
->> ---[ end trace 0000000000000000 ]---
->> Unable to handle kernel paging request at virtual address 
->> dfffffc810040000
->> Oops [#1]
->> Modules linked in:
->> CPU: 0 PID: 0 Comm: swapper Tainted: G        W
->> 5.11.0-rc2-00069-gf49815047c1a-dirty #34
->> Hardware name: riscv-virtio,qemu (DT)
->> epc : __memset+0x60/0xfc arch/riscv/lib/memset.S:67
->>   ra : populate arch/riscv/mm/kasan_init.c:96 [inline]
->>   ra : kasan_init+0x256/0x31a arch/riscv/mm/kasan_init.c:157
->> epc : ffffffe001791cf0 ra : ffffffe004807920 sp : ffffffe006603e80
->>   gp : ffffffe006c338f0 tp : ffffffe006689e00 t0 : dfffffc810040000
->>   t1 : ffffffe004a1fc80 t2 : 0000000000000000 s0 : ffffffe006603f30
->>   s1 : 0000000000000001 a0 : dfffffc810040000 a1 : 0000000000000000
->>   a2 : 000000000ffc0000 a3 : dfffffc820000000 a4 : 0000000000000000
->>   a5 : dfffffc820000000 a6 : 0000000000f00000 a7 : ffffffe004a1fcaf
->>   s2 : dfffffc810040000 s3 : 000000000000ffc0 s4 : dfffffc800000000
->>   s5 : ffffffe006c46908 s6 : 0000000000000001 s7 : ffffffe07fcfc000
->>   s8 : ffffffe07fcfd000 s9 : ffffffe006c3c0d0 s10: fffffffffffff000
->>   s11: ffffffe004a1fbb8 t3 : 0000000000000000 t4 : 0000000000000001
->>   t5 : ffffffc400943f96 t6 : ffffffe006603b98
->> status: 0000000000000100 badaddr: dfffffc810040000 cause: 
->> 000000000000000f
->> Call Trace:
->> [<ffffffe001791cf0>] __memset+0x60/0xfc arch/riscv/lib/memset.S:65
->> [<ffffffe004805e7a>] setup_arch+0x6c4/0x6f2 arch/riscv/kernel/setup.c:271
->> [<ffffffe0048010ea>] start_kernel+0xca/0x5d6 init/main.c:871
->> ---[ end trace f68728a0d3053b52 ]---
->>
->>
-> 
-> Ok this issue lies in for-next as I had no problem getting to init on 
-> both master and my sv48 patchset, I'm taking a look at that !
-> 
-> Thanks,
-> 
-> Alex
-> 
+I fixed code to add HPB hint with suspend state.
 
-I fixed that in my patch "riscv: Pass virtual addresses to 
-kasan_mem_to_shadow", it should hopefully be ok now, I was able to boot 
-correctly to userspace with this.
-
-Thanks again,
-
-Alex
-
->>
->>
->>
->>> Reported-by: Dmitry Vyukov <dvyukov@google.com>
->>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
->>> ---
->>>   arch/riscv/mm/init.c | 21 +++++----------------
->>>   1 file changed, 5 insertions(+), 16 deletions(-)
->>>
->>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
->>> index f9f9568d689e..f81f813b9603 100644
->>> --- a/arch/riscv/mm/init.c
->>> +++ b/arch/riscv/mm/init.c
->>> @@ -226,8 +226,6 @@ pgd_t swapper_pg_dir[PTRS_PER_PGD] 
->>> __page_aligned_bss;
->>>   pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
->>>   pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
->>>
->>> -#define MAX_EARLY_MAPPING_SIZE SZ_128M
->>> -
->>>   pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
->>>
->>>   void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, 
->>> pgprot_t prot)
->>> @@ -302,13 +300,7 @@ static void __init create_pte_mapping(pte_t *ptep,
->>>
->>>   pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
->>>   pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
->>> -
->>> -#if MAX_EARLY_MAPPING_SIZE < PGDIR_SIZE
->>> -#define NUM_EARLY_PMDS         1UL
->>> -#else
->>> -#define NUM_EARLY_PMDS         (1UL + MAX_EARLY_MAPPING_SIZE / 
->>> PGDIR_SIZE)
->>> -#endif
->>> -pmd_t early_pmd[PTRS_PER_PMD * NUM_EARLY_PMDS] __initdata 
->>> __aligned(PAGE_SIZE);
->>> +pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
->>>   pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
->>>
->>>   static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
->>> @@ -330,11 +322,9 @@ static pmd_t *get_pmd_virt_late(phys_addr_t pa)
->>>
->>>   static phys_addr_t __init alloc_pmd_early(uintptr_t va)
->>>   {
->>> -       uintptr_t pmd_num;
->>> +       BUG_ON((va - PAGE_OFFSET) >> PGDIR_SHIFT);
->>>
->>> -       pmd_num = (va - PAGE_OFFSET) >> PGDIR_SHIFT;
->>> -       BUG_ON(pmd_num >= NUM_EARLY_PMDS);
->>> -       return (uintptr_t)&early_pmd[pmd_num * PTRS_PER_PMD];
->>> +       return (uintptr_t)early_pmd;
->>>   }
->>>
->>>   static phys_addr_t __init alloc_pmd_fixmap(uintptr_t va)
->>> @@ -452,7 +442,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->>>          uintptr_t va, pa, end_va;
->>>          uintptr_t load_pa = (uintptr_t)(&_start);
->>>          uintptr_t load_sz = (uintptr_t)(&_end) - load_pa;
->>> -       uintptr_t map_size = best_map_size(load_pa, 
->>> MAX_EARLY_MAPPING_SIZE);
->>> +       uintptr_t map_size;
->>>   #ifndef __PAGETABLE_PMD_FOLDED
->>>          pmd_t fix_bmap_spmd, fix_bmap_epmd;
->>>   #endif
->>> @@ -464,12 +454,11 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->>>           * Enforce boot alignment requirements of RV32 and
->>>           * RV64 by only allowing PMD or PGD mappings.
->>>           */
->>> -       BUG_ON(map_size == PAGE_SIZE);
->>> +       map_size = PMD_SIZE;
->>>
->>>          /* Sanity check alignment and size */
->>>          BUG_ON((PAGE_OFFSET % PGDIR_SIZE) != 0);
->>>          BUG_ON((load_pa % map_size) != 0);
->>> -       BUG_ON(load_sz > MAX_EARLY_MAPPING_SIZE);
->>>
->>>          pt_ops.alloc_pte = alloc_pte_early;
->>>          pt_ops.get_pte_virt = get_pte_virt_early;
->>> -- 
->>> 2.20.1
->>>
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>
+Thanks,
+Daejun
