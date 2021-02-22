@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C848C32205B
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBD032205A
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbhBVTnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 14:43:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54720 "EHLO mail.kernel.org"
+        id S233131AbhBVTnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 14:43:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232963AbhBVTm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232964AbhBVTm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 14:42:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B302A64E31;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B02F964E15;
         Mon, 22 Feb 2021 19:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614022938;
-        bh=2P/frDeCW8JTaaEDaSByJHY8gufOSsfYYCYfWdxiliM=;
+        bh=HLrwUFqhZjviGtmC98wsdr0vgUKSFtk5wKxUM6Kowug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=abMh/mOmtWtVl+TIrppLJ6TnbxgQNtb+Blsm8U8HjhRK95RKB0WpCWcPEOQypLEs2
-         sOkveT2/mec6BAlJ+ayxsADKdyyT5v2NRok5H9vPtt4iF7xe9KXXCKNTeTGhY3ztUD
-         eSAuoNFm/Dky/m90osSAOY0cp9cGJ9ufIN7BzvakR9isjJxh2bPtaeR87xYZ7MGGY/
-         Q2USAm9SzepEW6rBi8ZBJr5dO6XKrtkEYbyqBLrV992fNj/0KP9TTlf561Zi41bEXX
-         soLxI2NiO01stu2mKXfoGGaHvo7nmV8UPEg0XTc6z8LtFkkNSKyii0YYpOpIvKKiDt
-         KknppqcxIkRmw==
+        b=WUmTX4XaTO/dYlK7Oyg5zX2T418K2D+BdaIGokyaBUqVWgMENx2AoxwjpUhlbPHpx
+         jGmp44+pfotq34vPc8ns5gw11WreCJibIn82ekVsBUEMWjgPfUZH4ms2jubGsi80Uu
+         Er64H2AQW2IvqEfFzdGwbQRsVqTgNJNIDxHA8UaBKZlAwkSnOUy9X1RvQepqqYGG56
+         DGjQZrKMoOz11HsACqghKomGo9ZVm3gvS7zCcdLTwHyj9IQb7iYICa6HIS/91fUvHQ
+         NxeC2tIL1Ebmsut/NScYj1DLOG2EIQhff69j+IcbTTGbECFhHhrMe+HTdn/yeC0Qyb
+         vpoitB8/Ptgjw==
 Received: by pali.im (Postfix)
-        id 35A07C9A; Mon, 22 Feb 2021 20:42:16 +0100 (CET)
+        id 71F2EE94; Mon, 22 Feb 2021 20:42:16 +0100 (CET)
 From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 To:     Gregory Clement <gregory.clement@bootlin.com>,
         Andrew Lunn <andrew@lunn.ch>,
@@ -41,12 +41,13 @@ Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
         Russell King <rmk+kernel@armlinux.org.uk>,
         =?UTF-8?q?G=C3=A9rald=20Kerma?= <gerald@gk2.net>,
         Konstantin Porotchkin <kostap@marvell.com>
-Subject: [PATCH mvebu v3 00/10] Armada 37xx: Fix cpufreq changing base CPU speed to 800 MHz from 1000 MHz
-Date:   Mon, 22 Feb 2021 20:41:48 +0100
-Message-Id: <20210222194158.12342-1-pali@kernel.org>
+Subject: [PATCH mvebu v3 01/10] arm64: dts: marvell: armada-37xx: add syscon compatible to NB clk node
+Date:   Mon, 22 Feb 2021 20:41:49 +0100
+Message-Id: <20210222194158.12342-2-pali@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210114124032.12765-1-pali@kernel.org>
+In-Reply-To: <20210222194158.12342-1-pali@kernel.org>
 References: <20210114124032.12765-1-pali@kernel.org>
+ <20210222194158.12342-1-pali@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -54,48 +55,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+From: Marek Behún <kabel@kernel.org>
 
-This is third version of patches for Armada 37xx cpufreq driver which
-fix CPU scaling with 1 GHz base frequency.
+Add "syscon" compatible to the North Bridge clocks node to allow the
+cpufreq driver to access these registers via syscon API.
 
-The only change in this third version is modified patch 04/10 with fixes
-for 1.2 GHz variant of Espressobin. Minimal CPU voltage in L1 load for
-1.2 GHz variant was increased to 1.155V.
+This is needed for a fix of cpufreq driver.
 
-Patches are now rebased on top of the kernel version 5.11 with all
-collected Acked-by/Tested-by lines and are available also in my git
-tree in branch a3720-cpufreq-issues:
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Tested-by: Pali Rohár <pali@kernel.org>
+Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
+Tested-by: Anders Trier Olesen <anders.trier.olesen@gmail.com>
+Tested-by: Philip Soares <philips@netisense.com>
+Fixes: e8d66e7927b2 ("arm64: dts: marvell: armada-37xx: add nodes...")
+Cc: stable@vger.kernel.org
+---
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=a3720-cpufreq-issues
-
-If you have other Armada 3720 boards with 1.2 GHz CPU, including
-Espressobin V7, let us know if it is working fine for you.
-
-Marek & Pali
-
-Marek Behún (3):
-  arm64: dts: marvell: armada-37xx: add syscon compatible to NB clk node
-  cpufreq: armada-37xx: Fix setting TBG parent for load levels
-  clk: mvebu: armada-37xx-periph: remove .set_parent method for CPU PM
-    clock
-
-Pali Rohár (7):
-  cpufreq: armada-37xx: Fix the AVS value for load L1
-  clk: mvebu: armada-37xx-periph: Fix switching CPU freq from 250 Mhz to
-    1 GHz
-  clk: mvebu: armada-37xx-periph: Fix workaround for switching from L1
-    to L0
-  cpufreq: armada-37xx: Fix driver cleanup when registration failed
-  cpufreq: armada-37xx: Fix determining base CPU frequency
-  cpufreq: armada-37xx: Remove cur_frequency variable
-  cpufreq: armada-37xx: Fix module unloading
-
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi |   3 +-
- drivers/clk/mvebu/armada-37xx-periph.c       |  83 +++++++-------
- drivers/cpufreq/armada-37xx-cpufreq.c        | 111 +++++++++++++++----
- 3 files changed, 135 insertions(+), 62 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+index d5b6c0a1c54a..a89e47d95eef 100644
+--- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+@@ -156,7 +156,8 @@
+ 			};
+ 
+ 			nb_periph_clk: nb-periph-clk@13000 {
+-				compatible = "marvell,armada-3700-periph-clock-nb";
++				compatible = "marvell,armada-3700-periph-clock-nb",
++					     "syscon";
+ 				reg = <0x13000 0x100>;
+ 				clocks = <&tbg 0>, <&tbg 1>, <&tbg 2>,
+ 				<&tbg 3>, <&xtalclk>;
 -- 
 2.20.1
 
