@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E333216AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E12321697
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhBVM3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:29:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44828 "EHLO mail.kernel.org"
+        id S231258AbhBVM03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:26:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230312AbhBVMPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:15:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 154DF64F0C;
-        Mon, 22 Feb 2021 12:14:46 +0000 (UTC)
+        id S230384AbhBVMPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:15:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ED3C64EDB;
+        Mon, 22 Feb 2021 12:15:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996087;
-        bh=4oHfP0ip4vBy5gmxRB4+XOs5P0IytXOPdTKFQLWg3aU=;
+        s=korg; t=1613996122;
+        bh=lFXH9yD4FLpqSZmobFWj8tNlzTUfEw3WmYS6LT7yVMc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LynMJazwIpx2oDRJ4CbbI/1vMIOjOuG8vR6dwgXxeSzUL55e43KIBcFMqnk7XRpTa
-         TtgzuqeFmzyT/EiEn/G341SmBEaPkIYfiP/93yu9tA6L+zFYJym/stLibTLC2qjIoz
-         Tnuqm4OT9QNm8b6VhDNMXA8DRbVZJf0HG94O4KmQ=
+        b=IzkgumbZUmNGgtcyHRiJFEglbps07TmkUDEwRJzEvGOQ/ivGhBP7tWw/83KWWcLH1
+         zuiU0SyOQBDRI3zbJ8jFF9GSVhaXd6K7XkXDcWFZL67vCiQoZ8ImyFzguyOG3ptdhI
+         /JG0vCzAc4g6tGeDW12AxaPE2vyWeXY3MViEwTfs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>, Julien Grall <julien@xen.org>
-Subject: [PATCH 5.10 24/29] xen-blkback: fix error handling in xen_blkbk_map()
+        stable@vger.kernel.org, Dov Murik <dovmurik@linux.vnet.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 01/13] KVM: SEV: fix double locking due to incorrect backport
 Date:   Mon, 22 Feb 2021 13:13:18 +0100
-Message-Id: <20210222121025.050794898@linuxfoundation.org>
+Message-Id: <20210222121016.859927439@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
-References: <20210222121019.444399883@linuxfoundation.org>
+In-Reply-To: <20210222121013.583922436@linuxfoundation.org>
+References: <20210222121013.583922436@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -39,80 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit 871997bc9e423f05c7da7c9178e62dde5df2a7f8 upstream.
+Fix an incorrect line in the 5.4.y and 4.19.y backports of commit
+19a23da53932bc ("Fix unsynchronized access to sev members through
+svm_register_enc_region"), first applied to 5.4.98 and 4.19.176.
 
-The function uses a goto-based loop, which may lead to an earlier error
-getting discarded by a later iteration. Exit this ad-hoc loop when an
-error was encountered.
-
-The out-of-memory error path additionally fails to fill a structure
-field looked at by xen_blkbk_unmap_prepare() before inspecting the
-handle which does get properly set (to BLKBACK_INVALID_HANDLE).
-
-Since the earlier exiting from the ad-hoc loop requires the same field
-filling (invalidation) as that on the out-of-memory path, fold both
-paths. While doing so, drop the pr_alert(), as extra log messages aren't
-going to help the situation (the kernel will log oom conditions already
-anyway).
-
-This is XSA-365.
-
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Julien Grall <julien@xen.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 1e80fdc09d12 ("KVM: SVM: Pin guest memory when SEV is active")
+Reported-by: Dov Murik <dovmurik@linux.vnet.ibm.com>
+Cc: stable@vger.kernel.org # 5.4.x
+Cc: stable@vger.kernel.org # 4.19.x
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/xen-blkback/blkback.c |   26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ arch/x86/kvm/svm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/block/xen-blkback/blkback.c
-+++ b/drivers/block/xen-blkback/blkback.c
-@@ -794,8 +794,13 @@ again:
- 			pages[i]->persistent_gnt = persistent_gnt;
- 		} else {
- 			if (gnttab_page_cache_get(&ring->free_pages,
--						  &pages[i]->page))
--				goto out_of_memory;
-+						  &pages[i]->page)) {
-+				gnttab_page_cache_put(&ring->free_pages,
-+						      pages_to_gnt,
-+						      segs_to_map);
-+				ret = -ENOMEM;
-+				goto out;
-+			}
- 			addr = vaddr(pages[i]->page);
- 			pages_to_gnt[segs_to_map] = pages[i]->page;
- 			pages[i]->persistent_gnt = NULL;
-@@ -880,17 +885,18 @@ next:
- 	}
- 	segs_to_map = 0;
- 	last_map = map_until;
--	if (map_until != num)
-+	if (!ret && map_until != num)
- 		goto again;
+diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
+index 296b0d7570d06..1da558f28aa57 100644
+--- a/arch/x86/kvm/svm.c
++++ b/arch/x86/kvm/svm.c
+@@ -7104,7 +7104,6 @@ static int svm_register_enc_region(struct kvm *kvm,
+ 	region->uaddr = range->addr;
+ 	region->size = range->size;
  
--	return ret;
--
--out_of_memory:
--	pr_alert("%s: out of memory\n", __func__);
--	gnttab_page_cache_put(&ring->free_pages, pages_to_gnt, segs_to_map);
--	for (i = last_map; i < num; i++)
-+out:
-+	for (i = last_map; i < num; i++) {
-+		/* Don't zap current batch's valid persistent grants. */
-+		if(i >= last_map + segs_to_map)
-+			pages[i]->persistent_gnt = NULL;
- 		pages[i]->handle = BLKBACK_INVALID_HANDLE;
--	return -ENOMEM;
-+	}
-+
-+	return ret;
- }
+-	mutex_lock(&kvm->lock);
+ 	list_add_tail(&region->list, &sev->regions_list);
+ 	mutex_unlock(&kvm->lock);
  
- static int xen_blkbk_map_seg(struct pending_req *pending_req)
+-- 
+2.27.0
+
 
 
