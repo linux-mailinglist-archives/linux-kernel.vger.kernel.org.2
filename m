@@ -2,84 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF41A321BDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29451321BF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhBVPvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:51:18 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2847 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhBVPvQ (ORCPT
+        id S230245AbhBVP4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:56:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230139AbhBVP4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:51:16 -0500
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DkmmF6YVjz13x88;
-        Mon, 22 Feb 2021 23:47:57 +0800 (CST)
-Received: from DGGEML509-MBX.china.huawei.com ([169.254.1.252]) by
- DGGEML401-HUB.china.huawei.com ([fe80::89ed:853e:30a9:2a79%31]) with mapi id
- 14.03.0509.000; Mon, 22 Feb 2021 23:50:19 +0800
-From:   "chenjun (AM)" <chenjun102@huawei.com>
-To:     "chenjun (AM)" <chenjun102@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "gregory.herrero@oracle.com" <gregory.herrero@oracle.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "Xiangrui (Euler)" <rui.xiang@huawei.com>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIXSByZWNvcmRtY291bnQ6IHVzZSB3OCB0byByZWFkIHJl?=
- =?gb2312?B?bHAtPnJfaW5mbyBpbiBhcm02NF9pc19mYWtlX21jb3VudA==?=
-Thread-Topic: [PATCH] recordmcount: use w8 to read relp->r_info in
- arm64_is_fake_mcount
-Thread-Index: AQHXCSa61U/7Tvwg9UGsa9lKYMYb/qpkUVCw
-Date:   Mon, 22 Feb 2021 15:50:19 +0000
-Message-ID: <CE1E7D7EFA066443B6454A6A5063B50220C5B320@dggeml509-mbx.china.huawei.com>
-References: <20210222135840.56250-1-chenjun102@huawei.com>
-In-Reply-To: <20210222135840.56250-1-chenjun102@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.53]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Mon, 22 Feb 2021 10:56:35 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD57C061574;
+        Mon, 22 Feb 2021 07:55:52 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id d20so14378444oiw.10;
+        Mon, 22 Feb 2021 07:55:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TPpevQFvMZZaJ5SzMpqPhoMUxM8hXrVsQM4xh4VAqE0=;
+        b=m0cbFoUW3OXA+TA1/2nGv1cjum3dpvIZg31hF14CB0UgAIGlLR/MvrWzsnEXtacM8m
+         Fmj3AWJa1qzDaNdSGMCjH/MKHZdMoiqmMkVfQIlJtVZ51+psoFP6Ul4B1uqexRO+v/QF
+         k/mGOCJaeHd6LRUc8XYEMg3CKPwJ3pGSfw8XFE5Dd4/dKWzSMpYxGI/DSQdmjcesLU8E
+         jLyBR5XrWlKISITxUZsDrQM8D+dgC3UlifK7I6KFWdQGT4RegbRwlfF5d7DVyedH2vzT
+         YZDIH5Xj+8SZjjmQvElLoazJnrn6NmR2UBTvUUqYBQuZVj/BkHIzxEgPV+NNx65erk2H
+         /Xvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=TPpevQFvMZZaJ5SzMpqPhoMUxM8hXrVsQM4xh4VAqE0=;
+        b=efm7ZCiZKoQAdaxK0rEa8CR6lsvIOPYtGsLVzb47s97X/DtJrgR57BNAHQj6A2JPyP
+         l0NaiAzHLUn4KdqQyy1XymrlvOX/6z1+XisYYj3JLjlt8qEQtECFzkUrXy1tQLaZZBpz
+         xlVQnxa1chuQWlUVyhybnGvJLxx0jP4p9GnO12pgcyhGnVvkFU8pcO57jzjFHJQUs5nI
+         9reAoz3SlfpnBxMMYLRede9IT4/tikfHPxNcRRUPFQkcA5hw8s3K5q4At/DOarb9qQFK
+         NMDVNgYBzKDiwj9Oo4XiN04hM1btGIxatLRF0n7Ktr2CjoeYR1hvc2bF5t6tFI4/I5ns
+         fKCw==
+X-Gm-Message-State: AOAM53089u2yD1j3jWL7GX/vWsoxs4AO4mfzYgnZGskuD3IABrolsQVP
+        MN5rzLjoe4IM/IxHctr4VkAEMQkXRBg=
+X-Google-Smtp-Source: ABdhPJxEg0BBP7mWsE08uisVDLqWYrDPsvyCHU3uMb22kVyWIjJiTrrrK2B23MSxj0dtI55Eju57jg==
+X-Received: by 2002:a05:6808:aa6:: with SMTP id r6mr4112330oij.128.1614009351635;
+        Mon, 22 Feb 2021 07:55:51 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q132sm2254187oif.32.2021.02.22.07.55.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 07:55:51 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 20/20] s390/watchdog: Manual replacement of the deprecated
+ strlcpy() with return values
+To:     Romain Perier <romain.perier@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        kernel-hardening@lists.openwall.com,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210222151231.22572-1-romain.perier@gmail.com>
+ <20210222151231.22572-21-romain.perier@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <98317dfa-d884-d4ae-9449-d84b902c0e5c@roeck-us.net>
+Date:   Mon, 22 Feb 2021 07:55:49 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210222151231.22572-21-romain.perier@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkNCg0KVGhlcmUgaXMgbm8gcHJvYmxlbSB3aGVuIEkgdXNlIGFhcmNoNjRfYmUoZ2NjIHYxMC4y
-KS4gQmVjYXVzZSBnY2MgdjEwLjIgdXNlIF9fcGF0Y2hhYmxlX2Z1bmN0aW9uX2VudHJpZXMNCmlu
-c3RlYWQgb2YgX19tY291bnQuIEkgYW0gbm90IHN1cmUgd2hlbiB0aGUgY2hhbmdlIGhhcHBlbmVk
-Lg0KDQpSZWdhcmRzLA0KQ2hlbiBKdW4NCg0KLS0tLS3Tyrz+1K28/i0tLS0tDQq3orz+yMs6IENo
-ZW4gSnVuIFttYWlsdG86Y2hlbmp1bjEwMkBodWF3ZWkuY29tXSANCreiy83KsbzkOiAyMDIxxOoy
-1MIyMsjVIDIxOjU5DQrK1bz+yMs6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCrOty806
-IGdyZWdvcnkuaGVycmVyb0BvcmFjbGUuY29tOyBjYXRhbGluLm1hcmluYXNAYXJtLmNvbTsgcm9z
-dGVkdEBnb29kbWlzLm9yZzsgWGlhbmdydWkgKEV1bGVyKSA8cnVpLnhpYW5nQGh1YXdlaS5jb20+
-DQrW98ziOiBbUEFUQ0hdIHJlY29yZG1jb3VudDogdXNlIHc4IHRvIHJlYWQgcmVscC0+cl9pbmZv
-IGluIGFybTY0X2lzX2Zha2VfbWNvdW50DQoNCk9uIGxpdHRsZSBlbmRpYW4gc3lzdGVtLCBVc2Ug
-YWFyY2g2NF9iZShnY2MgdjcuMykgZG93bmxvYWRlZCBmcm9tIGxpbmFyby5vcmcgdG8gYnVpbGQg
-aW1hZ2Ugd2l0aCBDT05GSUdfQ1BVX0JJR19FTkRJQU4gPSB5LCBDT05GSUdfRlRSQUNFID0geSwg
-Q09ORklHX0RZTkFNSUNfRlRSQUNFID0geS4NCg0KZ2NjIHdpbGwgY3JlYXRlIHN5bWJvbHMgb2Yg
-X21jb3VudCBidXQgcmVjb3JkbWNvdW50IGNhbiBub3QgY3JlYXRlIG1jb3VudF9sb2MgZm9yICou
-by4NCmFhcmNoNjRfYmUtbGludXgtZ251LW9iamR1bXAgLXIgZnMvbmFtZWkubyB8IGdyZXAgbWNv
-dW50DQowMDAwMDAwMDAwMDAwMGQwIFJfQUFSQ0g2NF9DQUxMMjYgIF9tY291bnQgLi4uDQowMDAw
-MDAwMDAwMDA3MTkwIFJfQUFSQ0g2NF9DQUxMMjYgIF9tY291bnQNCg0KVGhlIHJlYXNvbiBpcyB0
-aGFuIGZ1bmNpdG9uIGFybTY0X2lzX2Zha2VfbWNvdW50IGNhbiBub3Qgd29yayBjb3JyZWN0bHku
-DQpBIHN5bWJvbCBvZiBfbWNvdW50IGluICoubyBjb21waWxlZCB3aXRoIGJpZyBlbmRpYW4gY29t
-cGlsZXIgbGlrZXM6DQowMCAwMCAwMCAyZCAwMCAwMCAwMSAxYg0KdyhycC0+cl9pbmZvKSB3aWxs
-IHJldHVybiAweDJkIGluc3RlYWQgb2YgMHgwMTFiLiBCZWNhdXNlIHcoKSB0YWtlcyB1aW50MzJf
-dCBhcyBwYXJhbWV0ZXIsIHdoaWNoIHRydW5jYXRlcyBycC0+cl9pbmZvLg0KDQpVc2UgdzgoKSBp
-bnN0ZWFkIHcoKSB0byByZWFkIHJlbHAtPnJfaW5mbw0KDQpGaXhlczogZWEwZWFkYTQ1NjMyICgi
-cmVjb3JkbWNvdW50OiBvbmx5IHJlY29yZCByZWxvY2F0aW9uIG9mIHR5cGUgUl9BQVJDSDY0X0NB
-TEwyNiBvbiBhcm02NC4iKQ0KU2lnbmVkLW9mZi1ieTogQ2hlbiBKdW4gPGNoZW5qdW4xMDJAaHVh
-d2VpLmNvbT4NCi0tLQ0KIHNjcmlwdHMvcmVjb3JkbWNvdW50LmMgfCAyICstDQogMSBmaWxlIGNo
-YW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQoNCmRpZmYgLS1naXQgYS9zY3Jp
-cHRzL3JlY29yZG1jb3VudC5jIGIvc2NyaXB0cy9yZWNvcmRtY291bnQuYyBpbmRleCBiOWMyZWU3
-YWI0M2YuLmNjZTEyZTE5NzFkOCAxMDA2NDQNCi0tLSBhL3NjcmlwdHMvcmVjb3JkbWNvdW50LmMN
-CisrKyBiL3NjcmlwdHMvcmVjb3JkbWNvdW50LmMNCkBAIC00MzgsNyArNDM4LDcgQEAgc3RhdGlj
-IGludCBhcm1faXNfZmFrZV9tY291bnQoRWxmMzJfUmVsIGNvbnN0ICpycCkNCiANCiBzdGF0aWMg
-aW50IGFybTY0X2lzX2Zha2VfbWNvdW50KEVsZjY0X1JlbCBjb25zdCAqcnApICB7DQotCXJldHVy
-biBFTEY2NF9SX1RZUEUodyhycC0+cl9pbmZvKSkgIT0gUl9BQVJDSDY0X0NBTEwyNjsNCisJcmV0
-dXJuIEVMRjY0X1JfVFlQRSh3OChycC0+cl9pbmZvKSkgIT0gUl9BQVJDSDY0X0NBTEwyNjsNCiB9
-DQogDQogLyogNjQtYml0IEVNX01JUFMgaGFzIHdlaXJkIEVMRjY0X1JlbGEucl9pbmZvLg0KLS0N
-CjIuMjUuMA0KDQo=
+On 2/22/21 7:12 AM, Romain Perier wrote:
+> The strlcpy() reads the entire source buffer first, it is dangerous if
+> the source buffer lenght is unbounded or possibility non NULL-terminated.
+
+length
+
+> It can lead to linear read overflows, crashes, etc...
+> 
+
+That won't happen here since both buffers have the same length
+and the source is known to be NULL_terminated.
+
+So this is another misleading patch. If strlcpy() is deemed so dangerous
+nowadays, replace it with memcpy(). That is expensive too, but at least
+it won't create the impression that a non-existing error would ever occur
+On top of that, the code is handling all MAX_CMDLEN bytes twice anyway
+later on, so we can for sure afford the extra cost of the memcpy().
+Pus, we'll have the added benefit that the unused part of the buffer
+will be cleared and no longer contain random data.
+
+Guenter
+
+> As recommended in the deprecated interfaces [1], it should be replaced
+> by strscpy.
+> 
+> This commit replaces all calls to strlcpy that handle the return values
+> by the corresponding strscpy calls with new handling of the return
+> values (as it is quite different between the two functions).
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> 
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> ---
+>  drivers/watchdog/diag288_wdt.c |   12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/watchdog/diag288_wdt.c b/drivers/watchdog/diag288_wdt.c
+> index aafc8d98bf9f..5703f35dd0b7 100644
+> --- a/drivers/watchdog/diag288_wdt.c
+> +++ b/drivers/watchdog/diag288_wdt.c
+> @@ -111,7 +111,7 @@ static unsigned long wdt_status;
+>  static int wdt_start(struct watchdog_device *dev)
+>  {
+>  	char *ebc_cmd;
+> -	size_t len;
+> +	ssize_t len;
+>  	int ret;
+>  	unsigned int func;
+>  
+> @@ -126,7 +126,9 @@ static int wdt_start(struct watchdog_device *dev)
+>  			clear_bit(DIAG_WDOG_BUSY, &wdt_status);
+>  			return -ENOMEM;
+>  		}
+> -		len = strlcpy(ebc_cmd, wdt_cmd, MAX_CMDLEN);
+> +		len = strscpy(ebc_cmd, wdt_cmd, MAX_CMDLEN);
+> +		if (len == -E2BIG)
+> +			return -E2BIG;
+>  		ASCEBC(ebc_cmd, MAX_CMDLEN);
+>  		EBC_TOUPPER(ebc_cmd, MAX_CMDLEN);
+>  
+> @@ -163,7 +165,7 @@ static int wdt_stop(struct watchdog_device *dev)
+>  static int wdt_ping(struct watchdog_device *dev)
+>  {
+>  	char *ebc_cmd;
+> -	size_t len;
+> +	ssize_t len;
+>  	int ret;
+>  	unsigned int func;
+>  
+> @@ -173,7 +175,9 @@ static int wdt_ping(struct watchdog_device *dev)
+>  		ebc_cmd = kmalloc(MAX_CMDLEN, GFP_KERNEL);
+>  		if (!ebc_cmd)
+>  			return -ENOMEM;
+> -		len = strlcpy(ebc_cmd, wdt_cmd, MAX_CMDLEN);
+> +		len = strscpy(ebc_cmd, wdt_cmd, MAX_CMDLEN);
+> +		if (len == -E2BIG)
+> +			return -E2BIG;
+>  		ASCEBC(ebc_cmd, MAX_CMDLEN);
+>  		EBC_TOUPPER(ebc_cmd, MAX_CMDLEN);
+>  
+> 
+
