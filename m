@@ -2,194 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE546321C2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B88F321C51
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhBVQDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:03:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231213AbhBVQDV (ORCPT
+        id S231411AbhBVQF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:05:28 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2593 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231387AbhBVQD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:03:21 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0386C061226;
-        Mon, 22 Feb 2021 08:01:48 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id m144so12990742qke.10;
-        Mon, 22 Feb 2021 08:01:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=25yajcnygbYYQGY/GzbdKnoTm6lkCXxAnbhiTFE9e0A=;
-        b=i54pwN/HRxHD02bAdKUvwgkWvW2ioxHcbZ03b5FKuOysL2DGBbbTLJ9KzHnKUxsxWZ
-         +6t5MqAC/QiaLsUKl2IZiyBQNM8GQoOhpiMS7l8nfLM+OE4dUcEHOU5gL0GTVYDIJRQk
-         x1xnDAUYvAjEICfwphEF+3khf5MdRDX3g6Bu/tIU77LFyPdOUNImtKEY5bASOI0zHU9o
-         8Jn/THeqEIRPCs8PQNOGlX0QIOcx3oc6suw3NXsq2A34llHqN+GwKq93iLLfGzViiQCi
-         LoVmllhsnT18njiXGH59C72TvR1lyqzJNeYxnsf4r/94M9rHAMQEikB/Juzw34S6FgZm
-         j3aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=25yajcnygbYYQGY/GzbdKnoTm6lkCXxAnbhiTFE9e0A=;
-        b=WVI5LJggUlFsxdGuBWh62Rbh3h5yQphrowT4TSuDde1d/7bqM4kK8kZ5DX6dETqMcl
-         +mHg7+F6t8/vifljlaB5QI8JiWPQ0lSFWao6vZDhzzOvDs+KFQHBCPkh8oWwMMnP97TF
-         lg2q6wqMfip+uZetwnRNTpGJ4VgDCpDKqWNX6jdM3uH6rpt1AwMXF4JXEH8I9Zl134Vl
-         hE0fBlthf8UuwwX0NRZxqCxlhcLpHo+4KzJU563vRrHUO9oNacKo0zgV50GQQ7rda2pO
-         Hly7UCjzdCp+pPD7wqN4nXZSx+v68p1d6a3JVJL1P8UXOPVy5hhrsBBv1hlH/q4UexgC
-         o/XA==
-X-Gm-Message-State: AOAM530IZpWOsud6B2CstMghFvFFGe6g4evMoRB5u5X9smvQWLdqI5x3
-        a0c+yjaimFPABoNt8nM2+Yg=
-X-Google-Smtp-Source: ABdhPJx7vE0DaNGcTC14fkNv0Sd1sTunTUoA8rMwFmf5NWqeV358LsiOecabONA7n9UfGR0UGyMtJQ==
-X-Received: by 2002:a05:620a:3d1:: with SMTP id r17mr21732030qkm.256.1614009708000;
-        Mon, 22 Feb 2021 08:01:48 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id x3sm1289034qkd.94.2021.02.22.08.01.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 08:01:47 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id F0E9727C0060;
-        Mon, 22 Feb 2021 11:01:46 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 22 Feb 2021 11:01:46 -0500
-X-ME-Sender: <xms:adUzYLMigtGdpe8Mthtz1E0diuJHJSEhEf2ro2XDuLSSU4sie-Z-qg>
-    <xme:adUzYAimg8SM1-XF9uMJNdnSc-f_z18cyqUBIjIxJtbT7S2HwrAHF9lF0Ifl6HVhp
-    D7SJkgJ94awjryRqA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeefgdekfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
-    jeenucfkphepudefuddruddtjedrudegjedruddvieenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
-    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
-    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:adUzYG3vuMutpwLu3ccd5rDoWOvFcB_03JBUh_1gyxKO4l02h9dwLg>
-    <xmx:adUzYCgVl9DRkHip1FSb-HWzEVtsCu8yN9I91nCWdOyu2iK3JkSmAQ>
-    <xmx:adUzYOc_zAyUvziYufyTqYrpZlNJSO4stH6qmuhZzMKQm5bgvu3ycw>
-    <xmx:atUzYAGI846UUoqmZqNdc1cpef1YKpUPBqo4aGikdyx57pP4Y8LrI8hVpYw>
-Received: from localhost (unknown [131.107.147.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D3EFC108005B;
-        Mon, 22 Feb 2021 11:01:44 -0500 (EST)
-Date:   Tue, 23 Feb 2021 00:01:11 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     sthemmin@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        daniel.lezcano@linaro.org, arnd@arndb.de,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 09/10] clocksource/drivers/hyper-v: Set clocksource
- rating based on Hyper-V feature
-Message-ID: <YDPVRy+QnZzoM+eF@boqun-archlinux>
-References: <1611779025-21503-1-git-send-email-mikelley@microsoft.com>
- <1611779025-21503-10-git-send-email-mikelley@microsoft.com>
+        Mon, 22 Feb 2021 11:03:58 -0500
+Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DkmxL1gmqz67nV1;
+        Mon, 22 Feb 2021 23:55:50 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 22 Feb 2021 17:03:03 +0100
+Received: from localhost (10.47.74.92) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 22 Feb
+ 2021 16:03:02 +0000
+Date:   Mon, 22 Feb 2021 16:01:57 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>
+Subject: Re: [PATCH 1/2] iio: core: use kfree_const in
+ iio_free_chan_devattr_list() to free names
+Message-ID: <20210222160157.0000391e@Huawei.com>
+In-Reply-To: <20210219085826.46622-2-alexandru.ardelean@analog.com>
+References: <20210219085826.46622-1-alexandru.ardelean@analog.com>
+        <20210219085826.46622-2-alexandru.ardelean@analog.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611779025-21503-10-git-send-email-mikelley@microsoft.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.74.92]
+X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:23:44PM -0800, Michael Kelley wrote:
-> On x86/x64, the TSC clocksource is available in a Hyper-V VM only if
-> Hyper-V provides the TSC_INVARIANT flag. The rating on the Hyper-V
-> Reference TSC page clocksource is currently set so that it will not
-> override the TSC clocksource in this case.  Alternatively, if the TSC
-> clocksource is not available, then the Hyper-V clocksource is used.
-> 
-> But on ARM64, the Hyper-V Reference TSC page clocksource should
-> override the ARM arch counter, since the Hyper-V clocksource provides
-> scaling and offsetting during live migrations that is not provided
-> for the ARM arch counter.
-> 
-> To get the needed behavior for both x86/x64 and ARM64, tweak the
-> logic by defaulting the Hyper-V Reference TSC page clocksource
-> rating to a large value that will always override.  If the Hyper-V
-> TSC_INVARIANT flag is set, then reduce the rating so that it will not
-> override the TSC.
-> 
-> While the logic for getting there is slightly different, the net
-> result in the normal cases is no functional change.
-> 
+On Fri, 19 Feb 2021 10:58:25 +0200
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-One question here, please see below:
+> When the buffer attributes were wrapped in iio_dev_attr types, I forgot to
+> duplicate the names, so that when iio_free_chan_devattr_list() gets called
+> on cleanup, these get free'd.
+> I stumbled over this while accidentally breaking a driver doing
+> iio_device_register(), and then the issue appeared.
+> 
+> The fix can be just
+> 1. Just use kstrdup() during iio_buffer_wrap_attr()
+> 2. Just use kfree_const() during iio_free_chan_devattr_list
+> 3. Use both kstrdup_const() & kfree_const() (in the places mentioned above)
+> 
+> Using kfree_const() should be sufficient, as the attribute names will
+> either be allocated or be stored in rodata.
+> 
+> Fixes: a1a11142f66c ("iio: buffer: wrap all buffer attributes into iio_dev_attr")
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+Thinking more on this...  It's fine for the users today, but there is
+nothing stopping a driver passing in names it allocated on the heap.  So
+I think we should revisit this.  Perhaps we need 1 or 3.
 > ---
->  drivers/clocksource/hyperv_timer.c | 23 +++++++++++++----------
->  1 file changed, 13 insertions(+), 10 deletions(-)
+>  drivers/iio/industrialio-core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
-> index a2bee50..edf2d43 100644
-> --- a/drivers/clocksource/hyperv_timer.c
-> +++ b/drivers/clocksource/hyperv_timer.c
-> @@ -302,14 +302,6 @@ void hv_stimer_global_cleanup(void)
->   * the other that uses the TSC reference page feature as defined in the
->   * TLFS.  The MSR version is for compatibility with old versions of
->   * Hyper-V and 32-bit x86.  The TSC reference page version is preferred.
-> - *
-> - * The Hyper-V clocksource ratings of 250 are chosen to be below the
-> - * TSC clocksource rating of 300.  In configurations where Hyper-V offers
-> - * an InvariantTSC, the TSC is not marked "unstable", so the TSC clocksource
-> - * is available and preferred.  With the higher rating, it will be the
-> - * default.  On older hardware and Hyper-V versions, the TSC is marked
-> - * "unstable", so no TSC clocksource is created and the selected Hyper-V
-> - * clocksource will be the default.
->   */
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index 0d8c6e88d993..cb2735d2ae4b 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -1358,7 +1358,7 @@ void iio_free_chan_devattr_list(struct list_head *attr_list)
+>  	struct iio_dev_attr *p, *n;
 >  
->  u64 (*hv_read_reference_counter)(void);
-> @@ -380,7 +372,7 @@ static int hv_cs_enable(struct clocksource *cs)
->  
->  static struct clocksource hyperv_cs_tsc = {
->  	.name	= "hyperv_clocksource_tsc_page",
-> -	.rating	= 250,
-> +	.rating	= 500,
->  	.read	= read_hv_clock_tsc_cs,
->  	.mask	= CLOCKSOURCE_MASK(64),
->  	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
-> @@ -417,7 +409,7 @@ static u64 notrace read_hv_sched_clock_msr(void)
->  
->  static struct clocksource hyperv_cs_msr = {
->  	.name	= "hyperv_clocksource_msr",
-> -	.rating	= 250,
-> +	.rating	= 500,
+>  	list_for_each_entry_safe(p, n, attr_list, l) {
+> -		kfree(p->dev_attr.attr.name);
+> +		kfree_const(p->dev_attr.attr.name);
+>  		list_del(&p->l);
+>  		kfree(p);
+>  	}
 
-Before this patch, since the ".rating" of hyper_cs_msr is 250 which is
-smaller than the TSC clocksource rating, the TSC clocksource is better.
-After this patch, in the case where HV_MSR_REFERENCE_TSC_AVAILABLE bit
-is 0, we make hyperv_cs_msr better than the TSC clocksource (and we
-don't lower the rating of hyperv_cs_msr if TSC_INVARIANT is not
-offered), right?  Could you explain why we need the change? Or maybe I'm
-missing something?
-
-Regards,
-Boqun
-
->  	.read	= read_hv_clock_msr_cs,
->  	.mask	= CLOCKSOURCE_MASK(64),
->  	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
-> @@ -452,6 +444,17 @@ static bool __init hv_init_tsc_clocksource(void)
->  	if (!(ms_hyperv.features & HV_MSR_REFERENCE_TSC_AVAILABLE))
->  		return false;
->  
-> +	/*
-> +	 * If Hyper-V offers TSC_INVARIANT, then the virtualized TSC correctly
-> +	 * handles frequency and offset changes due to live migration,
-> +	 * pause/resume, and other VM management operations.  So lower the
-> +	 * Hyper-V Reference TSC rating, causing the generic TSC to be used.
-> +	 * TSC_INVARIANT is not offered on ARM64, so the Hyper-V Reference
-> +	 * TSC will be preferred over the virtualized ARM64 arch counter.
-> +	 */
-> +	if (ms_hyperv.features & HV_ACCESS_TSC_INVARIANT)
-> +		hyperv_cs_tsc.rating = 250;
-> +
->  	hv_read_reference_counter = read_hv_clock_tsc;
->  	phys_addr = virt_to_phys(hv_get_tsc_page());
->  
-> -- 
-> 1.8.3.1
-> 
