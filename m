@@ -2,193 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3112A322222
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4374A322224
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhBVWZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 17:25:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhBVWZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 17:25:29 -0500
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6A6C061574;
-        Mon, 22 Feb 2021 14:24:49 -0800 (PST)
-Received: by mail-oo1-xc35.google.com with SMTP id y21so3340128oou.13;
-        Mon, 22 Feb 2021 14:24:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=C/1tnMH43nbGkpsLudAbobVdUGLdNYCWQFFBhhkg/1A=;
-        b=qG24Lg4C5G7AzYZ4JTHLf6v+I8VKMh0Ejt3TmfhVmyN6SW+5NU+xdqJzw2j5j4wM+4
-         gQbkIVoF1K9rR7A8PN96eaCjU0furVcoftn4HPhY1hXG8umr2gpyDzq7SBqGSX98tRCG
-         OCYUXq0TU0rZeE8z1fRXtQG61bSVmMpTjZSaJiBPGkV76e9u5HzZCsXxRebkgJtrXCCb
-         g2bpR1sO6bFy4fqrBLay8APZSNQ8gA7fmZFG+2L8hTwB2L/fxPfGv7guWLof5zlgjNoc
-         t4kmeSnK4ZgZTSXXWnDvkXpteRkGHDMiYAHjA07c07QRERYdVWxRnvXjTKMTevUTZFi2
-         4aqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=C/1tnMH43nbGkpsLudAbobVdUGLdNYCWQFFBhhkg/1A=;
-        b=W67oJedpXK3J/wdIDOvHnWsFX1v8Gq0YPpBQBmLk9wM1bDoUgxuDbs2LBTkUabl7kK
-         UFtBwleWZzz6o+NBL4odJXBqwf1HuJXezIa/Y1OUHOZCP8ZybnJKAlHtSycXX6EIY406
-         Kls0aVZ63DK9ZVvy6CyGEFwTSfrJ2zdAvmwyPBEs0p8m4w8J7a54SB09BtQKqxxDCPTT
-         3+nMSGCTZH3eRa/MSDSXFJfjrBTM0s+j1D9lg8XGt3ZkHHSbhAtkyQ3+uG8CGAf0LYFc
-         4n2Xc6TVifCL5ZCg3Q5qphWWGST07GmyZy7oakBW6BiSDyMZnVeebMTICmEF2Qf8TAaD
-         IkqQ==
-X-Gm-Message-State: AOAM5312CcPTUa8nCiXkoVtGA4CgizznYrNxd8JyYUSISAkNsF5ig8YO
-        ykFtfFNtLXXc8OU/evh0X7s=
-X-Google-Smtp-Source: ABdhPJwgvQEcjg0dOJI9Jkm2W9Ici6m6X9Z9H4m3ITOaGg9JdnFQxoXzTcGSfrKLgPOGkaVBzlPVuw==
-X-Received: by 2002:a4a:94a7:: with SMTP id k36mr2995819ooi.45.1614032689106;
-        Mon, 22 Feb 2021 14:24:49 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b12sm1600751otp.21.2021.02.22.14.24.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 22 Feb 2021 14:24:48 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 22 Feb 2021 14:24:47 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] watchdog: bcm7038_wdt: add big endian support
-Message-ID: <20210222222447.GA177866@roeck-us.net>
-References: <9381ef9e-a569-9bcd-5546-a48922e4961d@roeck-us.net>
- <80DB1B7E-D719-4597-A2B7-7CAD592E1B19@gmail.com>
+        id S230516AbhBVWZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 17:25:55 -0500
+Received: from ozlabs.org ([203.11.71.1]:46007 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230079AbhBVWZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 17:25:44 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DkxZM2vBnz9sTD;
+        Tue, 23 Feb 2021 09:24:59 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614032702;
+        bh=90SJyiEzH4lSBkPUptt6HyNSTqL7GO789g6VBOtprr0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dTVYiEK1qPlTAuWqxJQiiDOLbNFzY0n1f0WxJYg+mmaRHi3RjR2ESKsd0eNX8Dwfj
+         +vcl5WvePrWPC0YQ87KugErTwXpPVINYHDXWTny2PxOtIQYq9c4hW6VFKIxc6SCFMf
+         0AF4nnMQFETKt3DNmJHJ2BZ2vzIndzqcdKiuo608IEbo3gyl5oaFBBu96s+jw0X22I
+         WX5/ysRtsXR8ifrZGAy/s/d492G/Sgvtudnbax4pX95Phc+H3/0SnUypEGJ5lDePQr
+         7iK0VQs4nO3rKGEsEo0Zzyi7KJ6NYjqIFA1luGejijGP81hWXKLKKf5a3LwS+FCSgs
+         L2AuJ5x/95KXQ==
+Date:   Tue, 23 Feb 2021 09:24:58 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: linux-next: manual merge of the kbuild tree with Linus' tree
+Message-ID: <20210223092458.38bf35bb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <80DB1B7E-D719-4597-A2B7-7CAD592E1B19@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/+PaLokU5Wxu_w1NbAbux2Ii";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 10:48:09PM +0100, Álvaro Fernández Rojas wrote:
-> Hi Guenter,
-> 
-> > El 22 feb 2021, a las 22:24, Guenter Roeck <linux@roeck-us.net> escribió:
-> > 
-> > ﻿On 2/22/21 12:03 PM, Álvaro Fernández Rojas wrote:
-> >> bcm7038_wdt can be used on bmips (bcm63xx) devices too.
-> >> 
-> > It might make sense to actually enable it for BCM63XX.
-> 
-> bcm63xx SoCs are supported in bcm63xx and bmips.
-> bcm63xx doesn’t have device tree support, but bmips does and this watchdog is already enabled for bmips.
-> 
+--Sig_/+PaLokU5Wxu_w1NbAbux2Ii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Maybe add a note saying that this will only be supported for devicetree
-based systems.
+Hi all,
 
-> > 
-> >> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> >> ---
-> >> drivers/watchdog/bcm7038_wdt.c | 30 ++++++++++++++++++++++++------
-> >> 1 file changed, 24 insertions(+), 6 deletions(-)
-> >> 
-> >> diff --git a/drivers/watchdog/bcm7038_wdt.c b/drivers/watchdog/bcm7038_wdt.c
-> >> index 979caa18d3c8..62494da1ac57 100644
-> >> --- a/drivers/watchdog/bcm7038_wdt.c
-> >> +++ b/drivers/watchdog/bcm7038_wdt.c
-> >> @@ -34,6 +34,24 @@ struct bcm7038_watchdog {                                 
-> >> 
-> >> static bool nowayout = WATCHDOG_NOWAYOUT;
-> >> 
-> >> +static inline void bcm7038_wdt_write(unsigned long data, void __iomem *reg)
-> >> +{
-> >> +#ifdef CONFIG_CPU_BIG_ENDIAN
-> >> +    __raw_writel(data, reg);
-> >> +#else
-> >> +    writel(data, reg);
-> >> +#endif
-> >> +}
-> >> +
-> >> +static inline unsigned long bcm7038_wdt_read(void __iomem *reg)
-> >> +{
-> >> +#ifdef CONFIG_CPU_BIG_ENDIAN
-> >> +    return __raw_readl(reg);
-> >> +#else
-> >> +    return readl(reg);
-> >> +#endif
-> >> +}
-> >> +
-> > 
-> > This needs further explanation. Why not just use __raw_writel() and
-> > __raw_readl() unconditionally ? Also, is it known for sure that,
-> > say, bmips_be_defconfig otherwise uses the wrong endianness
-> > (vs. bmips_stb_defconfig which is a little endian configuration) ?
-> 
-> Because __raw_writel() doesn’t have memory barriers and writel() does.
-> Those configs use the correct endiannes, so I don’t know what you mean...
-> 
-So are you saying that it already works with bmips_stb_defconfig 
-(because it is little endian), that bmips_stb_defconfig needs memory
-barriers, and that bmips_be_defconfig doesn't need memory barriers ?
-Odd, but I'll take you by your word. And other code does something
-similar, so I guess there must be a reason for it.
+Today's linux-next merge of the kbuild tree got a conflict in:
 
-Anyway, after looking into that other code, please use something like
+  arch/mips/kernel/syscalls/Makefile
 
-        if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
-                __raw_writel(value, reg);
-        else
-                writel(value, reg);
+between commit:
 
-Thanks,
-Guenter
+  ccb21774863a ("MIPS: UAPI: unexport unistd_nr_{n32,n64,o32}.h")
 
-> > 
-> > Thanks,
-> > Guenter
-> > 
-> >> static void bcm7038_wdt_set_timeout_reg(struct watchdog_device *wdog)
-> >> {
-> >>    struct bcm7038_watchdog *wdt = watchdog_get_drvdata(wdog);
-> >> @@ -41,15 +59,15 @@ static void bcm7038_wdt_set_timeout_reg(struct watchdog_device *wdog)
-> >> 
-> >>    timeout = wdt->rate * wdog->timeout;
-> >> 
-> >> -    writel(timeout, wdt->base + WDT_TIMEOUT_REG);
-> >> +    bcm7038_wdt_write(timeout, wdt->base + WDT_TIMEOUT_REG);
-> >> }
-> >> 
-> >> static int bcm7038_wdt_ping(struct watchdog_device *wdog)
-> >> {
-> >>    struct bcm7038_watchdog *wdt = watchdog_get_drvdata(wdog);
-> >> 
-> >> -    writel(WDT_START_1, wdt->base + WDT_CMD_REG);
-> >> -    writel(WDT_START_2, wdt->base + WDT_CMD_REG);
-> >> +    bcm7038_wdt_write(WDT_START_1, wdt->base + WDT_CMD_REG);
-> >> +    bcm7038_wdt_write(WDT_START_2, wdt->base + WDT_CMD_REG);
-> >> 
-> >>    return 0;
-> >> }
-> >> @@ -66,8 +84,8 @@ static int bcm7038_wdt_stop(struct watchdog_device *wdog)
-> >> {
-> >>    struct bcm7038_watchdog *wdt = watchdog_get_drvdata(wdog);
-> >> 
-> >> -    writel(WDT_STOP_1, wdt->base + WDT_CMD_REG);
-> >> -    writel(WDT_STOP_2, wdt->base + WDT_CMD_REG);
-> >> +    bcm7038_wdt_write(WDT_STOP_1, wdt->base + WDT_CMD_REG);
-> >> +    bcm7038_wdt_write(WDT_STOP_2, wdt->base + WDT_CMD_REG);
-> >> 
-> >>    return 0;
-> >> }
-> >> @@ -88,7 +106,7 @@ static unsigned int bcm7038_wdt_get_timeleft(struct watchdog_device *wdog)
-> >>    struct bcm7038_watchdog *wdt = watchdog_get_drvdata(wdog);
-> >>    u32 time_left;
-> >> 
-> >> -    time_left = readl(wdt->base + WDT_CMD_REG);
-> >> +    time_left = bcm7038_wdt_read(wdt->base + WDT_CMD_REG);
-> >> 
-> >>    return time_left / wdt->rate;
-> >> }
-> >> 
-> > 
+from Linus' tree and commit:
+
+  865fa29f7dd1 ("arch: syscalls: add missing FORCE and fix 'targets' to mak=
+e if_changed work")
+
+from the kbuild tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/mips/kernel/syscalls/Makefile
+index a1ce8b7dbcfa,ed22b711ccb7..000000000000
+--- a/arch/mips/kernel/syscalls/Makefile
++++ b/arch/mips/kernel/syscalls/Makefile
+@@@ -44,17 -44,17 +44,17 @@@ $(uapi)/unistd_o32.h: $(syscallo32) $(s
+ =20
+  sysnr_pfx_unistd_nr_n32 :=3D N32
+  sysnr_offset_unistd_nr_n32 :=3D 6000
+- $(kapi)/unistd_nr_n32.h: $(syscalln32) $(sysnr)
+ -$(uapi)/unistd_nr_n32.h: $(syscalln32) $(sysnr) FORCE
+++$(kapi)/unistd_nr_n32.h: $(syscalln32) $(sysnr) FORCE
+  	$(call if_changed,sysnr)
+ =20
+  sysnr_pfx_unistd_nr_n64 :=3D 64
+  sysnr_offset_unistd_nr_n64 :=3D 5000
+- $(kapi)/unistd_nr_n64.h: $(syscalln64) $(sysnr)
+ -$(uapi)/unistd_nr_n64.h: $(syscalln64) $(sysnr) FORCE
+++$(kapi)/unistd_nr_n64.h: $(syscalln64) $(sysnr) FORCE
+  	$(call if_changed,sysnr)
+ =20
+  sysnr_pfx_unistd_nr_o32 :=3D O32
+  sysnr_offset_unistd_nr_o32 :=3D 4000
+- $(kapi)/unistd_nr_o32.h: $(syscallo32) $(sysnr)
+ -$(uapi)/unistd_nr_o32.h: $(syscallo32) $(sysnr) FORCE
+++$(kapi)/unistd_nr_o32.h: $(syscallo32) $(sysnr) FORCE
+  	$(call if_changed,sysnr)
+ =20
+  systbl_abi_syscall_table_32_o32 :=3D 32_o32
+@@@ -83,14 -86,12 +83,15 @@@ uapisyshdr-y		+=3D unistd_n32.h		=09
+  kapisyshdr-y		+=3D syscall_table_32_o32.h	\
+  			   syscall_table_64_n32.h	\
+  			   syscall_table_64_n64.h	\
+ -			   syscall_table_64_o32.h
+ +			   syscall_table_64_o32.h	\
+ +			   unistd_nr_n32.h		\
+ +			   unistd_nr_n64.h		\
+ +			   unistd_nr_o32.h
+ =20
+- targets	+=3D $(uapisyshdr-y) $(kapisyshdr-y)
++ uapisyshdr-y	:=3D $(addprefix $(uapi)/, $(uapisyshdr-y))
++ kapisyshdr-y	:=3D $(addprefix $(kapi)/, $(kapisyshdr-y))
++ targets		+=3D $(addprefix ../../../../, $(uapisyshdr-y) $(kapisyshdr-y))
+ =20
+  PHONY +=3D all
+- all: $(addprefix $(uapi)/,$(uapisyshdr-y))
+- all: $(addprefix $(kapi)/,$(kapisyshdr-y))
++ all: $(uapisyshdr-y) $(kapisyshdr-y)
+  	@:
+
+--Sig_/+PaLokU5Wxu_w1NbAbux2Ii
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA0LzoACgkQAVBC80lX
+0Gx55Af/VitEVAARZKObIsd4/qjzqVgnJ6DfTYBsnGgNOrVVAHCMHTT4oGhq1yF2
+4a5HP3tHio6tYVDIUdvkvweGQA+Uo29hnDqlmMQu2ECxAgSdTXnhrMfGYo2uTnZF
+bCwO8orVJi++lFYD+tQ8AdzYoLmaG+Cd34c8sgpb4FN8mjh+ybd0A8c1j3jGSLK4
+J/g/bZw4D3wlIPif87onLL6LfS0e5pDglYMWihGsOAn7UM0QBdU03id8jDkqsm+F
+6xcnqABQf/aHzNlv3SP9TEWFpyrlbtLzkAGUSa2shZOeXS5MP80G+YWUH4+v/wRb
+nxVjk2c0G1p/pFktRO2b3mkSnqhPbA==
+=P/l8
+-----END PGP SIGNATURE-----
+
+--Sig_/+PaLokU5Wxu_w1NbAbux2Ii--
