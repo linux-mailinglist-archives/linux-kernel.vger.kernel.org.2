@@ -2,690 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C70321197
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDEEB3211A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhBVHrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 02:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57526 "EHLO
+        id S230295AbhBVHwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 02:52:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhBVHro (ORCPT
+        with ESMTP id S230260AbhBVHwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 02:47:44 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A2EC061786;
-        Sun, 21 Feb 2021 23:47:04 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id o1so3086324ila.11;
-        Sun, 21 Feb 2021 23:47:04 -0800 (PST)
+        Mon, 22 Feb 2021 02:52:42 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1714AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 23:52:02 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id t25so9745872pga.2
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 23:52:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gyyskUDPvUzZHFO0uv/nASr77IQId98W8ShZeT0xGZg=;
-        b=O5XGRELpzs2JWImimOPCCEmJ7Km580cT/ONehClZC0zjdHdk9QbbD1f3FniLP9hK+A
-         4ovikU1JO3MmfHU/RUMBD2WwT7Ewaxoy59wb1c3LX/brDAoXVJidSdWvwPXmHdgKAdIz
-         E8B07pa/0iuq0vfHcn2r4Yt095VxAdwEynVMfkMzEZcqgAI704utnNlTxRIb+YdEvP5l
-         /h6AhpbyrfqPtcwaTIGeNttbMXzE5XFprZ9lP63A+J2rlwCIh5iWk3CMnbdUcqVYF4wk
-         feBjiGX8BsjqyBowBGXTFT9CT0JeuWY2vdFTVY7dCCdVgR0uTsNXcRSHeLq38vtnSPlu
-         +BGg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lRdSl2m/DMw9bKAYBWJVHZp5b5x9JGXOXuV0kEEo+DU=;
+        b=V7GyxQv+4AvJQ6fvEkKee4b+z+sdzaBU7VwJ3OuVYzc/xPDATqo+h+7sikRDqoFqnx
+         nzN09NkHOknF9HZpI/SmcRKsdVLqj6sDI3jtcdwYqqm4zTZ+86fsGerBsanQZ9vo1U2i
+         nJocEX7YK8zCMUN/2qmn5gPG13d7Thj+YdpuANMSfwZPi/guEs5ZKbMq2qt58VbzD6OF
+         MzjQozqZyBKLw3zPiQH1PE9DETFFPZp7dyV9w3G7SKfdFujZ92SeWWy3q7hiWjsJVfac
+         nayaFLfI2iUAmAG6uYqQ8qrtiLYKh4a6iMFyqctv05VEOdOF9FAMTW+rJwzjEO93iuOR
+         sjBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gyyskUDPvUzZHFO0uv/nASr77IQId98W8ShZeT0xGZg=;
-        b=g6Q6RdSfYbARH5aBVhIoE5udmDPAWtGAYV7J5aP8FOFArbCErguEf8xUNPohIHF6wc
-         Eu/LMI85pYeVFItUhNPijskP33O0MtYqgLyi8N+PQEEOnUNF16+dwtwu5UUNhYpDBBGy
-         lbKbuJNHwxM/lD8e0TnFLhnvz68+0P2yjRI4xPzm0+NF+khBzSjqrxZSgpcRZzCuKyZq
-         PHzIIwI/rrgm+/x+jsMfJwDpka+mO83Y2PWwQPZxYKYf1UTQQMTjmRYI3vBCYML1lHgg
-         n90q1sbzRJeYmvSm2p6Pk994hk9w/shRez2Iur0pUH+LwKYdjA/pCXDoLZCErGG13/Gq
-         B2sA==
-X-Gm-Message-State: AOAM531qklTPclxA7R0jNm1jQSm8n7nXy/mcgOXwGUIHT/sMwUy9UB6Z
-        vR16WA8kPBMg03j49BqJ87jyJC5oV8Vs06E4r8U=
-X-Google-Smtp-Source: ABdhPJzBxpPRYeR/arKoF0apdQ45bWpWj1K0oLZk2y9x7iVhiCc0MIfLIGwtpYuwJT2/WfqYfJXbNCRTksd7fxJ7Clk=
-X-Received: by 2002:a92:c265:: with SMTP id h5mr13031929ild.225.1613980023709;
- Sun, 21 Feb 2021 23:47:03 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lRdSl2m/DMw9bKAYBWJVHZp5b5x9JGXOXuV0kEEo+DU=;
+        b=dNnU4/0Ghs4wDvbszVlSmSV1qrzzhF+tvmKpcEukU9ILP4/sX1MwGkD6mSzQFImM9C
+         9ZhETkt54lkNP0NW/wWftk9J/HDsNnFjvTwbWx6ZPgPRQio6cOHlOO+WibNC6Po0fvmU
+         G3qJGINhjlEjChT9p2HbDcB31fC8xBSXVFMFAE2AjWiCkjsH9RWf6ukYOO9q8E1x65S/
+         B214OY3i/bIFOZEJBbQeEvXtvX8J546L56PxqWKbrKeR+ra9nbBkysZfGdZjq1LqOOMd
+         WvYgQPFbehPKk9djhjW7a4G4nWEJno9GheddV3ul/hc/WZWsDrdplptj7orLKyOenn8W
+         oaUg==
+X-Gm-Message-State: AOAM532OVHe697oZS8nkocDgyBZHlYrQ9cj92wnqbJk4WeSJ/dVtY/sI
+        Jy1DLi1qZTTicRlwOdHxCfXvZw8YmeD4yg==
+X-Google-Smtp-Source: ABdhPJyaCJTv0MM/9NNtnTu5jhVRvMA+OT2i3iufHlLkw+IkvGydM5/vNLM0LErty1D3EoVLhuJ25A==
+X-Received: by 2002:aa7:80cc:0:b029:1da:689d:2762 with SMTP id a12-20020aa780cc0000b02901da689d2762mr21072088pfn.3.1613980321393;
+        Sun, 21 Feb 2021 23:52:01 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:6a36:aa32:eebb:1da7:c90b])
+        by smtp.gmail.com with ESMTPSA id br2sm2651665pjb.40.2021.02.21.23.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 23:52:00 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Subject: [PATCH v7 0/2] checkpatch: add verbose mode
+Date:   Mon, 22 Feb 2021 13:22:03 +0530
+Message-Id: <20210222075205.19834-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210218123327.25486-1-heiko.thiery@gmail.com>
- <20210218123327.25486-3-heiko.thiery@gmail.com> <20210221121111.nsenzgenwb6pu3o7@kozik-lap>
-In-Reply-To: <20210221121111.nsenzgenwb6pu3o7@kozik-lap>
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-Date:   Mon, 22 Feb 2021 08:46:52 +0100
-Message-ID: <CAEyMn7YN4xqcFxR0QHUDp8cc1QP62HgpGMCYAjh0RfWL-iRQCA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: fsl: add support for Kontron pitx-imx8m board
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Michael Walle <michael@walle.cc>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krysztof,
+Add a new verbose mode to checkpatch. The verbose test
+descriptions are read from the checkpatch documentation
+file at `Documentation/dev-tools/checkpatch.rst`.
 
-Am So., 21. Feb. 2021 um 13:11 Uhr schrieb Krzysztof Kozlowski
-<krzk@kernel.org>:
->
-> On Thu, Feb 18, 2021 at 01:33:29PM +0100, Heiko Thiery wrote:
-> > The Kontron pitx-imx8m board is based on an i.MX8MQ soc.
-> >
-> > Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
-> > ---
-> >  arch/arm64/boot/dts/freescale/Makefile        |   1 +
-> >  .../freescale/imx8mq-kontron-pitx-imx8m.dts   | 675 ++++++++++++++++++
-> >  2 files changed, 676 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> > index 6438db3822f8..9fc2c6f64407 100644
-> > --- a/arch/arm64/boot/dts/freescale/Makefile
-> > +++ b/arch/arm64/boot/dts/freescale/Makefile
-> > @@ -47,6 +47,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-phyboard-pollux-rdk.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx8mq-hummingboard-pulse.dtb
-> > +dtb-$(CONFIG_ARCH_MXC) += imx8mq-kontron-pitx-imx8m.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx8mq-librem5-devkit.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx8mq-librem5-r2.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx8mq-librem5-r3.dtb
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts b/arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
-> > new file mode 100644
-> > index 000000000000..79805928204e
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
-> > @@ -0,0 +1,675 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > +/*
-> > + * Device Tree File for the Kontron pitx-imx8m board.
-> > + *
-> > + * Copyright (C) 2021 Heiko Thiery <heiko.thiery@gmail.com>
-> > + */
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include "imx8mq.dtsi"
-> > +#include <dt-bindings/net/ti-dp83867.h>
-> > +
-> > +/ {
-> > +     model = "Kontron pITX-imx8m";
-> > +     compatible = "kontron,pitx-imx8m", "fsl,imx8mq";
-> > +
-> > +     aliases {
-> > +             i2c0 = &i2c1;
-> > +             i2c1 = &i2c2;
-> > +             i2c2 = &i2c3;
-> > +             mmc0 = &usdhc1;
-> > +             mmc1 = &usdhc2;
-> > +             serial0 = &uart1;
-> > +             serial1 = &uart2;
-> > +             serial2 = &uart3;
-> > +             spi0 = &qspi0;
-> > +             spi1 = &ecspi2;
-> > +     };
-> > +
-> > +     chosen {
-> > +             stdout-path = "serial2:115200n8";
-> > +     };
-> > +
-> > +     regulators {
-> > +             compatible = "simple-bus";
-> > +             #address-cells = <1>;
-> > +             #size-cells = <0>;
-> > +
-> > +             reg_usdhc2_vmmc: regulator-v-3v3-sd {
->
-> That's a messed unit addressing. You have here simple-bus but no unit
-> addresses. Move it out of regulators node and run make dtc W=1 (it would
-> point you this issue).
+The verbose mode is optional and can be enabled by the
+flag -v or --verbose.
 
-Ok, I will change that.
+The documentation file is only parsed by checkpatch.pl
+if the verbose mode is enabled. The verbose mode can
+not be used together with the --terse option.
 
-But I'm not able to run dtc on my dts. dtc throws an error.
+Changes in v7:
+- Add color coding support to --list-types option
 
-# dtc -I dts -O dtb imx8mq-kontron-pitx-imx8m.dts
-Error: imx8mq-kontron-pitx-imx8m.dts:10.1-9 syntax error
-FATAL ERROR: Unable to parse input tree
+Changes in v6:
+- Allow using verbose mode with --list-types option
 
-It is about the includes. How can I run dtc for a intree dts to add
-the -W option?
+Changes in v5:
+- Change the reference format to use absolute links.
+- Print verbose descriptions only for the first time
+  a message type is encountered.
 
-> > +                     compatible = "regulator-fixed";
-> > +                     regulator-name = "V_3V3_SD";
-> > +                     regulator-min-microvolt = <3300000>;
-> > +                     regulator-max-microvolt = <3300000>;
-> > +                     gpio = <&gpio2 19 GPIO_ACTIVE_HIGH>;
-> > +                     off-on-delay-us = <20000>;
-> > +                     enable-active-high;
-> > +             };
-> > +     };
-> > +
-> > +     usb_hub_reset: usb-hub-reset {
-> > +             compatible = "gpio-reset";
-> > +             reset-gpios = <&gpio3 4 GPIO_ACTIVE_LOW>;
-> > +             reset-delay-us = <3000>;
-> > +             reset-post-delay-ms = <50>;
-> > +             #reset-cells = <0>;
-> > +     };
-> > +
-> > +     tpm_reset: tpm-reset {
-> > +             compatible = "gpio-reset";
-> > +             reset-gpios = <&gpio3 2 GPIO_ACTIVE_LOW>;
-> > +             reset-delay-us = <2>;
-> > +             reset-post-delay-ms = <60>;
-> > +             #reset-cells = <0>;
-> > +     };
-> > +
-> > +     pcie0_refclk: pcie0-refclk {
->
-> Generic node names (from the dt spec candidate is "clock").
+Changes in v4:
+- Change the type description format
+- Group the message types by usage
+- Make handling of --terse with --verbose simpler
 
-Should I simply set the node name to pcie0-clock? And pcie1-clock for
-the next one?
+Changes in v3:
+- Simplify documentation file parsing in checkpatch
+- Document a total of 33 message types for checkpatch
 
-> > +             compatible = "fixed-clock";
-> > +             #clock-cells = <0>;
-> > +             clock-frequency = <100000000>;
-> > +     };
-> > +
-> > +     pcie1_refclk: pcie1-refclk {
->
-> Same.
->
-> > +             compatible = "fixed-clock";
-> > +             #clock-cells = <0>;
-> > +             clock-frequency = <100000000>;
-> > +     };
-> > +
-> > +     gpio-keys {
-> > +             compatible = "gpio-keys";
-> > +             pinctrl-names = "default";
-> > +             pinctrl-0 = <&pinctrl_gpio_keys>;
-> > +
-> > +             pciewake {
-> > +                     label = "PCIE_Wake";
-> > +                     gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
-> > +                     linux,input-type = <4>; /* EV_MSC */
-> > +                     linux,code = <3>; /* MSC_RAW */
-> > +                     gpio-key,wakeup;
-> > +             };
-> > +     };
-> > +};
-> > +
-> > +&ecspi2 {
-> > +     #address-cells = <1>;
-> > +     #size-cells = <0>;
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_ecspi2 &pinctrl_ecspi2_cs>;
-> > +     cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
-> > +     status = "okay";
-> > +
-> > +     slb9670@0 {
->
-> This needs a generic node name.
+Changes in v2:
+- Use .rst Field Lists to specify the type descriptions.
+- Add a few more type descriptions to documentation.
 
-I will change to tpm@0.
+Dwaipayan Ray (2):
+  checkpatch: add verbose mode
+  docs: add documentation for checkpatch
 
->
-> > +             compatible = "infineon,slb9670";
-> > +             reg = <0>;
-> > +             resets = <&tpm_reset>;
-> > +             spi-max-frequency = <43000000>;
-> > +     };
-> > +};
-> > +
-> > +&fec1 {
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_fec1>;
-> > +     phy-mode = "rgmii-id";
-> > +     phy-handle = <&ethphy0>;
-> > +     phy-reset-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
-> > +     fsl,magic-packet;
-> > +     status = "okay";
-> > +
-> > +     mdio {
-> > +             #address-cells = <1>;
-> > +             #size-cells = <0>;
-> > +
-> > +             ethphy0: ethernet-phy@0 {
-> > +                     compatible = "ethernet-phy-ieee802.3-c22";
-> > +                     reg = <0>;
-> > +                     ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
-> > +                     ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
-> > +                     ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-> > +             };
-> > +     };
-> > +};
-> > +
-> > +&i2c1 {
-> > +     clock-frequency = <400000>;
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_i2c1>;
-> > +     status = "okay";
-> > +
-> > +     pmic@8 {
-> > +             compatible = "fsl,pfuze100";
-> > +             fsl,pfuze-support-disable-sw;
-> > +             reg = <0x8>;
-> > +
-> > +             regulators {
-> > +                     sw1a_reg: sw1ab {
-> > +                             regulator-name = "V_0V9_GPU";
-> > +                             regulator-min-microvolt = <825000>;
-> > +                             regulator-max-microvolt = <1100000>;
-> > +                     };
-> > +
-> > +                     sw1c_reg: sw1c {
-> > +                             regulator-name = "V_0V9_VPU";
-> > +                             regulator-min-microvolt = <825000>;
-> > +                             regulator-max-microvolt = <1100000>;
-> > +                     };
-> > +
-> > +                     sw2_reg: sw2 {
-> > +                             regulator-name = "V_1V1_NVCC_DRAM";
-> > +                             regulator-min-microvolt = <1100000>;
-> > +                             regulator-max-microvolt = <1100000>;
-> > +                             regulator-always-on;
-> > +                     };
-> > +
-> > +                     sw3a_reg: sw3ab {
-> > +                             regulator-name = "V_1V0_DRAM";
-> > +                             regulator-min-microvolt = <825000>;
-> > +                             regulator-max-microvolt = <1100000>;
-> > +                             regulator-always-on;
-> > +                     };
-> > +
-> > +                     sw4_reg: sw4 {
-> > +                             regulator-name = "V_1V8_S0";
-> > +                             regulator-min-microvolt = <1800000>;
-> > +                             regulator-max-microvolt = <1800000>;
-> > +                             regulator-always-on;
-> > +                     };
-> > +
-> > +                     swbst_reg: swbst {
-> > +                             regulator-min-microvolt = <5000000>;
-> > +                             regulator-max-microvolt = <5150000>;
-> > +                     };
-> > +
-> > +                     snvs_reg: vsnvs {
-> > +                             regulator-name = "V_0V9_SNVS";
-> > +                             regulator-min-microvolt = <1000000>;
-> > +                             regulator-max-microvolt = <3000000>;
-> > +                             regulator-always-on;
-> > +                     };
-> > +
-> > +                     vref_reg: vrefddr {
-> > +                             regulator-name = "V_0V55_VREF_DDR";
-> > +                             regulator-always-on;
-> > +                     };
-> > +
-> > +                     vgen1_reg: vgen1 {
-> > +                             regulator-name = "V_1V5_CSI";
-> > +                             regulator-min-microvolt = <800000>;
-> > +                             regulator-max-microvolt = <1550000>;
-> > +                     };
-> > +
-> > +                     vgen2_reg: vgen2 {
-> > +                             regulator-name = "V_0V9_PHY";
-> > +                             regulator-min-microvolt = <850000>;
-> > +                             regulator-max-microvolt = <975000>;
-> > +                             regulator-always-on;
-> > +                     };
-> > +
-> > +                     vgen3_reg: vgen3 {
-> > +                             regulator-name = "V_1V8_PHY";
-> > +                             regulator-min-microvolt = <1675000>;
-> > +                             regulator-max-microvolt = <1975000>;
-> > +                             regulator-always-on;
-> > +                     };
-> > +
-> > +                     vgen4_reg: vgen4 {
-> > +                             regulator-name = "V_1V8_VDDA";
-> > +                             regulator-min-microvolt = <1625000>;
-> > +                             regulator-max-microvolt = <1875000>;
-> > +                             regulator-always-on;
-> > +                     };
-> > +
-> > +                     vgen5_reg: vgen5 {
-> > +                             regulator-name = "V_3V3_PHY";
-> > +                             regulator-min-microvolt = <3075000>;
-> > +                             regulator-max-microvolt = <3625000>;
-> > +                             regulator-always-on;
-> > +                     };
-> > +
-> > +                     vgen6_reg: vgen6 {
-> > +                             regulator-name = "V_2V8_CAM";
-> > +                             regulator-min-microvolt = <1800000>;
-> > +                             regulator-max-microvolt = <3300000>;
-> > +                             regulator-always-on;
-> > +                     };
-> > +             };
-> > +     };
-> > +
-> > +     max6650@1b {
->
-> Generic node name.
+ Documentation/dev-tools/checkpatch.rst | 525 +++++++++++++++++++++++++
+ Documentation/dev-tools/index.rst      |   1 +
+ scripts/checkpatch.pl                  | 133 ++++++-
+ 3 files changed, 639 insertions(+), 20 deletions(-)
+ create mode 100644 Documentation/dev-tools/checkpatch.rst
 
-I could not find a matching name like "fan" in the devicetree
-specification. What about using "fan-ctrl"?
-
->
-> > +             compatible = "maxim,max6650";
-> > +             reg = <0x1b>;
-> > +             maxim,fan-microvolt = <5000000>;
-> > +     };
-> > +
-> > +     rtc@32 {
-> > +             compatible = "microcrystal,rv8803";
-> > +             reg = <0x32>;
-> > +     };
-> > +
-> > +     lm75@4b {
->
-> Node name: sensor.
-
-Ok
-
->
-> > +             compatible = "national,lm75b";
-> > +             reg = <0x4b>;
-> > +     };
-> > +
-> > +     eeprom@51 {
-> > +             compatible = "atmel,24c32";
-> > +             reg = <0x51>;
-> > +             pagesize = <32>;
-> > +     };
-> > +};
-> > +
-> > +&i2c2 {
-> > +     clock-frequency = <100000>;
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_i2c2>;
-> > +     status = "okay";
-> > +};
-> > +
-> > +&i2c3 {
-> > +     clock-frequency = <100000>;
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_i2c3>;
-> > +     status = "okay";
-> > +
-> > +     wm8904: audio-codec@1a {
-> > +             compatible = "wlf,wm8904";
-> > +             reg = <0x1a>;
-> > +             clocks = <&clk IMX8MQ_CLK_SAI2_ROOT>;
-> > +             clock-names = "mclk";
-> > +             clock-frequency = <24000000>;
-> > +     };
-> > +};
-> > +
-> > +/* M.2 B-key slot */
-> > +&pcie0 {
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_pcie0>;
-> > +     disable-gpio = <&gpio5 29 GPIO_ACTIVE_LOW>;
-> > +     reset-gpio = <&gpio1 9 GPIO_ACTIVE_LOW>;
-> > +     clocks = <&clk IMX8MQ_CLK_PCIE1_ROOT>,
-> > +              <&clk IMX8MQ_CLK_PCIE1_AUX>,
-> > +              <&clk IMX8MQ_CLK_PCIE1_PHY>,
-> > +              <&pcie0_refclk>;
-> > +     clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
-> > +     ext_osc = <1>;
-> > +     status = "okay";
-> > +};
-> > +
-> > +/* Intel Ethernet Controller I210/I211 */
-> > +&pcie1 {
-> > +     clocks = <&clk IMX8MQ_CLK_PCIE2_ROOT>,
-> > +              <&clk IMX8MQ_CLK_PCIE2_AUX>,
-> > +              <&clk IMX8MQ_CLK_PCIE2_PHY>,
-> > +              <&pcie1_refclk>;
-> > +     clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
-> > +     ext_osc = <1>;
-> > +     fsl,max-link-speed = <1>;
-> > +     status = "okay";
-> > +};
-> > +
-> > +&pgc_gpu {
-> > +     power-supply = <&sw1a_reg>;
-> > +};
-> > +
-> > +&pgc_vpu {
-> > +     power-supply = <&sw1c_reg>;
-> > +};
-> > +
-> > +&qspi0 {
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_qspi>;
-> > +     status = "okay";
-> > +
-> > +     flash@0 {
-> > +             compatible = "jedec,spi-nor";
-> > +             #address-cells = <1>;
-> > +             #size-cells = <1>;
-> > +             reg = <0>;
-> > +             spi-tx-bus-width = <4>;
-> > +             spi-rx-bus-width = <4>;
-> > +             m25p,fast-read;
-> > +             spi-max-frequency = <50000000>;
-> > +     };
-> > +};
-> > +
-> > +&snvs_pwrkey {
-> > +     status = "okay";
-> > +};
-> > +
-> > +&uart1 {
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_uart1>;
-> > +     assigned-clocks = <&clk IMX8MQ_CLK_UART1>;
-> > +     assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_80M>;
-> > +     status = "okay";
-> > +};
-> > +
-> > +&uart2 {
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_uart2>;
-> > +     assigned-clocks = <&clk IMX8MQ_CLK_UART2>;
-> > +     assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_80M>;
-> > +     status = "okay";
-> > +};
-> > +
-> > +&uart3 {
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_uart3>;
-> > +     fsl,uart-has-rtscts;
-> > +     assigned-clocks = <&clk IMX8MQ_CLK_UART3>;
-> > +     assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_80M>;
-> > +     status = "okay";
-> > +};
-> > +
-> > +&usb_dwc3_0 {
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_usb0>;
-> > +     dr_mode = "otg";
-> > +     hnp-disable;
-> > +     srp-disable;
-> > +     adp-disable;
-> > +     maximum-speed = "high-speed";
-> > +     status = "okay";
-> > +};
-> > +
-> > +&usb3_phy0 {
-> > +     status = "okay";
-> > +};
-> > +
-> > +&usb_dwc3_1 {
-> > +     resets = <&usb_hub_reset>;
-> > +     dr_mode = "host";
-> > +     status = "okay";
-> > +};
-> > +
-> > +&usb3_phy1 {
-> > +     status = "okay";
-> > +};
-> > +
-> > +&usdhc1 {
-> > +     assigned-clocks = <&clk IMX8MQ_CLK_USDHC1>;
-> > +     assigned-clock-rates = <400000000>;
-> > +     pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> > +     pinctrl-0 = <&pinctrl_usdhc1>;
-> > +     pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
-> > +     pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
-> > +     vqmmc-supply = <&sw4_reg>;
-> > +     bus-width = <8>;
-> > +     non-removable;
-> > +     no-sd;
-> > +     no-sdio;
-> > +     status = "okay";
-> > +};
-> > +
-> > +&usdhc2 {
-> > +     assigned-clocks = <&clk IMX8MQ_CLK_USDHC2>;
-> > +     assigned-clock-rates = <200000000>;
-> > +     pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> > +     pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
-> > +     pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
-> > +     pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
-> > +     bus-width = <4>;
-> > +     cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
-> > +     wp-gpios = <&gpio2 20 GPIO_ACTIVE_HIGH>;
-> > +     vmmc-supply = <&reg_usdhc2_vmmc>;
-> > +     status = "okay";
-> > +};
-> > +
-> > +&wdog1 {
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_wdog>;
-> > +     fsl,ext-reset-output;
-> > +     status = "okay";
-> > +};
-> > +
-> > +&iomuxc {
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_hog>;
-> > +
-> > +     pinctrl_hog: hoggrp {
-> > +             fsl,pins = <
-> > +                     MX8MQ_IOMUXC_NAND_CE1_B_GPIO3_IO2               0x19 /* TPM Reset */
-> > +                     MX8MQ_IOMUXC_NAND_CE3_B_GPIO3_IO4               0x19 /* USB2 Hub Reset */
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_gpio: gpiogrp {
-> > +             fsl,pins = <
-> > +                     MX8MQ_IOMUXC_NAND_CLE_GPIO3_IO5                 0x19 /* GPIO0 */
-> > +                     MX8MQ_IOMUXC_NAND_RE_B_GPIO3_IO15               0x19 /* GPIO1 */
-> > +                     MX8MQ_IOMUXC_NAND_WE_B_GPIO3_IO17               0x19 /* GPIO2 */
-> > +                     MX8MQ_IOMUXC_NAND_WP_B_GPIO3_IO18               0x19 /* GPIO3 */
-> > +                     MX8MQ_IOMUXC_NAND_READY_B_GPIO3_IO16            0x19 /* GPIO4 */
-> > +                     MX8MQ_IOMUXC_NAND_DATA04_GPIO3_IO10             0x19 /* GPIO5 */
-> > +                     MX8MQ_IOMUXC_NAND_DATA05_GPIO3_IO11             0x19 /* GPIO6 */
-> > +                     MX8MQ_IOMUXC_NAND_DATA06_GPIO3_IO12             0x19 /* GPIO7 */
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_pcie0: pcie0grp {
-> > +             fsl,pins = <
-> > +                     MX8MQ_IOMUXC_GPIO1_IO09_GPIO1_IO9               0x16 /* PCIE_PERST */
-> > +                     MX8MQ_IOMUXC_UART4_TXD_GPIO5_IO29               0x16 /* W_DISABLE */
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_gpio_keys: gpio-keysgrp {
-> > +             fsl,pins = <
-> > +                     MX8MQ_IOMUXC_GPIO1_IO08_GPIO1_IO8               0x16 /* PCIE_WAKE */
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_fec1: fec1grp {
-> > +             fsl,pins = <
-> > +                     MX8MQ_IOMUXC_ENET_MDC_ENET1_MDC                 0x3
-> > +                     MX8MQ_IOMUXC_ENET_MDIO_ENET1_MDIO               0x23
-> > +                     MX8MQ_IOMUXC_ENET_TD3_ENET1_RGMII_TD3           0x1f
-> > +                     MX8MQ_IOMUXC_ENET_TD2_ENET1_RGMII_TD2           0x1f
-> > +                     MX8MQ_IOMUXC_ENET_TD1_ENET1_RGMII_TD1           0x1f
-> > +                     MX8MQ_IOMUXC_ENET_TD0_ENET1_RGMII_TD0           0x1f
-> > +                     MX8MQ_IOMUXC_ENET_RD3_ENET1_RGMII_RD3           0x91
-> > +                     MX8MQ_IOMUXC_ENET_RD2_ENET1_RGMII_RD2           0x91
-> > +                     MX8MQ_IOMUXC_ENET_RD1_ENET1_RGMII_RD1           0x91
-> > +                     MX8MQ_IOMUXC_ENET_RD0_ENET1_RGMII_RD0           0x91
-> > +                     MX8MQ_IOMUXC_ENET_TXC_ENET1_RGMII_TXC           0x1f
-> > +                     MX8MQ_IOMUXC_ENET_RXC_ENET1_RGMII_RXC           0x91
-> > +                     MX8MQ_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL     0x91
-> > +                     MX8MQ_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL     0x1f
-> > +                     MX8MQ_IOMUXC_GPIO1_IO11_GPIO1_IO11              0x16
-> > +                     MX8MQ_IOMUXC_GPIO1_IO15_GPIO1_IO15              0x16
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_i2c1: i2c1grp {
-> > +             fsl,pins = <
-> > +                     MX8MQ_IOMUXC_I2C1_SCL_I2C1_SCL                  0x4000007f
-> > +                     MX8MQ_IOMUXC_I2C1_SDA_I2C1_SDA                  0x4000007f
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_i2c2: i2c2grp {
-> > +             fsl,pins = <
-> > +                     MX8MQ_IOMUXC_I2C2_SCL_I2C2_SCL                  0x4000007f
-> > +                     MX8MQ_IOMUXC_I2C2_SDA_I2C2_SDA                  0x4000007f
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_i2c3: i2c3grp {
-> > +             fsl,pins = <
-> > +                     MX8MQ_IOMUXC_I2C3_SCL_I2C3_SCL                  0x4000007f
-> > +                     MX8MQ_IOMUXC_I2C3_SDA_I2C3_SDA                  0x4000007f
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_qspi: qspigrp {
-> > +             fsl,pins = <
-> > +                     MX8MQ_IOMUXC_NAND_ALE_QSPI_A_SCLK               0x82
-> > +                     MX8MQ_IOMUXC_NAND_CE0_B_QSPI_A_SS0_B            0x82
-> > +                     MX8MQ_IOMUXC_NAND_DATA00_QSPI_A_DATA0           0x82
-> > +                     MX8MQ_IOMUXC_NAND_DATA01_QSPI_A_DATA1           0x82
-> > +                     MX8MQ_IOMUXC_NAND_DATA02_QSPI_A_DATA2           0x82
-> > +                     MX8MQ_IOMUXC_NAND_DATA03_QSPI_A_DATA3           0x82
-> > +
->
-> No need for empty line.
-
-Ok
-
->
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_ecspi2: ecspi2grp {
-> > +             fsl,pins = <
-> > +                     MX8MQ_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI            0x19
-> > +                     MX8MQ_IOMUXC_ECSPI2_MISO_ECSPI2_MISO            0x19
-> > +                     MX8MQ_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK            0x19
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_ecspi2_cs: ecspi2cs {
->
-> ecspi2csgrp to match schema
-
-Ok
-
->
-> Please run dtbs_check on your DTS.
-
-When I run "make dtbs_check" it runs quite a long time and stops with
-an error. But as far as I can say there is an error coming from the
-included "imx8mq.dtsi".
-
-You can see the output here: https://pastebin.com/raw/iU2geBDh
-
-Thank you
 -- 
-Heiko
+2.30.0
+
