@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44867321A3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F7E321A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbhBVOXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:23:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
+        id S232462AbhBVOXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:23:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbhBVOIq (ORCPT
+        with ESMTP id S231896AbhBVOIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 09:08:46 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C76C061574;
-        Mon, 22 Feb 2021 06:08:03 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id l12so19223384wry.2;
-        Mon, 22 Feb 2021 06:08:03 -0800 (PST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E37C061786;
+        Mon, 22 Feb 2021 06:08:05 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id l13so4929974wmg.5;
+        Mon, 22 Feb 2021 06:08:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PHpdDwi1tvHtdUt7JS/xQ2o+l1NtZtKZiQlCl89/YrI=;
-        b=Y/OrMnvXXNxqt2sUE5GEzzjhOwrzyzeIAWIJC7l1tbQ6WgswCNczcPlmTv0+OAqXcv
-         JXsJvY6YFT8uY04Oeya7uTdl88AmNNQyKDP480hP3Q1qZTwXdT9I6M0ozhyZLU/TMRQJ
-         GHulwdecPx/Ohi42uxJcKpoe2mFSOMtTNCgPzoNZ4i5XXVRdMVLXvvELpJTgmtQENphQ
-         a6FW+6QF6Msdg6b1zP684HHPSy2fG32zGT4vnqagyFrnCqiJVDfu4X3H904Lv4gcjuzZ
-         mGOTLkSudUywy3kB8siWrBmduYT3c2xZEXE06Uyyk53b9QlHwOpcQYE4W9STtOBSQJVs
-         8SYg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qTlBpod/qkS5+lYeKPsZwHey+Qo/T25KoYgivxf00aE=;
+        b=aTQ9utTGTcN0mM7CyUB6WZG7CDpz38A5dB8BkhsKcTtaMHkUU7mNSM7ZyJLW9dkRlB
+         YEg6WoAo7eSJF5xYS+gwNBmlvhvFv/lU2pqOjGsVnPl9zT97xUPypnCwlGojmQnRgI9q
+         4wEQiJjJDJMS8QVA/jmEOy/p60vJwS5XWSJGQzwJPsRJDL6RzoVP6xUwpAkvvZ0Mbfef
+         SsKiFB85fUTy9ZcAsI9iQCgim43Def5FmfgYZprFuvPYgs0LYu8KgjP+7KsHD+hM61ub
+         A3RKToxVIbSWp/ld5lSS143f0KcvAgwFTYZHeDvaRmwkXgh0pDoYb+T87Er6Js+YsOhy
+         I8yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PHpdDwi1tvHtdUt7JS/xQ2o+l1NtZtKZiQlCl89/YrI=;
-        b=AAtdnKlahv5gQIyjXZlVm5Q1gnsIlububXX/hAW0x2MGjes8dpSMG9ypIbG4GUDkiW
-         J/3F7BxG0WJlyesHcNXo/jDfgE4QkY/l1khWkeJaoT9n/LT32cAlZU9gw8vZQjlKJte2
-         4HxOP1Fdp0h4vKROXL01krme2MWPXuEZArL1EgR1Xt0prpjQdK9pJe6IqoKLuIC0jfd/
-         1W48UtTZd0hImlvVYLUsWKc8PdO6sWIpoeZF9htNDtuAKilLgnFGfcSmuOS0d8JckwPr
-         ZJrq5qr3jKaOOMOZCYta7opsefOKFI4IBZnVlGMnePFHCEE62MoGNUndjLvHiBQNkHZ4
-         AGgg==
-X-Gm-Message-State: AOAM531DNlPsu0ZpHH3KEdTIR3Qz0GG9NrD282mwNgWRDsHGSBlEUj0w
-        0HKwzYTzjFpnS/AlK0hAdCsmkYYcCLLtoqV3
-X-Google-Smtp-Source: ABdhPJzyAWXD9U4AEcw7PvQx49jZSPW5+fBOqocI0yWw5puv+9mfPwp7mWu5OgCmX1KSSBpjiyewCQ==
-X-Received: by 2002:a05:6000:1565:: with SMTP id 5mr22214634wrz.109.1614002882147;
-        Mon, 22 Feb 2021 06:08:02 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qTlBpod/qkS5+lYeKPsZwHey+Qo/T25KoYgivxf00aE=;
+        b=AL0xYpTyCPU+P4ZfOnODDHaUBY5ExUv55f+9tmrXuwsaqfaamg+wdoomp2wiQO5kTn
+         sGfPts61o8bLxMoENmRDqMjxHjvzxSppwwQzgbXVGGIOzIy5U8mDSO9+QMFgB3oEII6H
+         KcHAT1liuIJmwUWlDvCmpXMO0vm7HKXQXVYMcz1Uy5QQr8HwDFTDMKBJjN1US1yk12+u
+         1rEvMcagtF6/wV/W7p9aFCJK/rqrbCO1+Rq1C3nANmMNmCvJq0vXZIrUn2dXKVMaKS6m
+         Azk4SrhjQyJn91+QuMQN8EaZZU0ix4NikkB0hLMv3tpoSY8g6H9DGXxV3yLsZvy4h8U+
+         a2FA==
+X-Gm-Message-State: AOAM530Vt9bR0t2yJ0GG2muiV9rTpvuVFydiboD5yZJe+2orArpKApTD
+        1P2hUMi5WmhOC104GjIutrGFe9FDuyTOn+tk
+X-Google-Smtp-Source: ABdhPJzhoDP9rn+03r36a0ixPxTYkL5Y/Uj/my1we0ROsQWx/BBhH3h9WDWdYjXAEQ6+qthnckTeMw==
+X-Received: by 2002:a1c:98ce:: with SMTP id a197mr20151304wme.120.1614002883963;
+        Mon, 22 Feb 2021 06:08:03 -0800 (PST)
 Received: from hthiery.fritz.box (ip1f1322f8.dynamic.kabel-deutschland.de. [31.19.34.248])
-        by smtp.gmail.com with ESMTPSA id g18sm27966308wrw.40.2021.02.22.06.08.00
+        by smtp.gmail.com with ESMTPSA id g18sm27966308wrw.40.2021.02.22.06.08.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 06:08:01 -0800 (PST)
+        Mon, 22 Feb 2021 06:08:03 -0800 (PST)
 From:   Heiko Thiery <heiko.thiery@gmail.com>
 To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
@@ -60,30 +60,40 @@ Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Michael Walle <michael@walle.cc>,
         Heiko Thiery <heiko.thiery@gmail.com>
-Subject: [PATCH v2 0/2] add Kontron pITX-imx8m board
-Date:   Mon, 22 Feb 2021 15:07:54 +0100
-Message-Id: <20210222140756.713-1-heiko.thiery@gmail.com>
+Subject: [PATCH v2 1/2] dt-bindings: arm: fsl: add Kontron pITX-imx8m board
+Date:   Mon, 22 Feb 2021 15:07:55 +0100
+Message-Id: <20210222140756.713-2-heiko.thiery@gmail.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210222140756.713-1-heiko.thiery@gmail.com>
+References: <20210222140756.713-1-heiko.thiery@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds support for the Kontron pITX-imx8m board:
+Add the Kontron pITX-imx8m board.
 
-https://www.kontron.com/products/boards-and-standard-form-factors/single-board-computer/pitx-imx8m.html
+Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+---
+v2:
+ - bring in correct alphabetical order
 
-Heiko Thiery (2):
-  dt-bindings: arm: fsl: add Kontron pITX-imx8m board
-  arm64: dts: fsl: add support for Kontron pitx-imx8m board
+ Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
- .../devicetree/bindings/arm/fsl.yaml          |   1 +
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../freescale/imx8mq-kontron-pitx-imx8m.dts   | 641 ++++++++++++++++++
- 3 files changed, 643 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
-
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 297c87f45db8..6d121bc9af8d 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -733,6 +733,7 @@ properties:
+               - einfochips,imx8mq-thor96  # i.MX8MQ Thor96 Board
+               - fsl,imx8mq-evk            # i.MX8MQ EVK Board
+               - google,imx8mq-phanbell    # Google Coral Edge TPU
++              - kontron,pitx-imx8m        # Kontron pITX-imx8m Board
+               - purism,librem5-devkit     # Purism Librem5 devkit
+               - solidrun,hummingboard-pulse # SolidRun Hummingboard Pulse
+               - technexion,pico-pi-imx8m  # TechNexion PICO-PI-8M evk
 -- 
 2.30.0
 
