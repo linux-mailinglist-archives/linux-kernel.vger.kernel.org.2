@@ -2,190 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2355321C5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:07:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66569321C71
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:10:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbhBVQGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:06:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
+        id S230292AbhBVQKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:10:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231500AbhBVQFJ (ORCPT
+        with ESMTP id S231671AbhBVQHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:05:09 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3053C06178C;
-        Mon, 22 Feb 2021 08:03:41 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id u14so19661668wri.3;
-        Mon, 22 Feb 2021 08:03:41 -0800 (PST)
+        Mon, 22 Feb 2021 11:07:55 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DCCC06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:07:03 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id e6so840081pgk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:07:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M3HrPldQNINRDApkREUB3CejIa6YRDxufQU+GfYs42A=;
-        b=TJPGKawlVl43Zfhg5kXKIMNPLifrS+FKQLdlcAzrn82TAGzn6WwW0RxJY0PEWQUaT6
-         Ru480aODjlOuCph8XyCP+NyOWP8Q5jY9DykDQlAms2jwMGSwd4CYsWWScxrS5dmjBmRO
-         Cx5C5htnSYVfObO1nzUoW1GtQAAfJ6wZHNFfT74YvteqG+vdnbNj3xFwHUVMeQoysJHj
-         LeCijUp56FsvsML+pem4TB4AwBxXlxcsoPePfrczD3oNDxTY5mIzq9jr5gNqJrfz1KDA
-         uIGtlXGQYQoxoQpQpHge6TXy4kza72QrYxojC62MN4sDmXCViR34ghY7dKf3yynYP1Vd
-         zEHg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mp7wIhLHWdhboT6kIoeZS80417khoNPc/CItzMbajCM=;
+        b=GghBN+pJW634uiH0KTvYQM25/DQNpQPu4VEF3pllmDO/S+sXWWXvfEcPZD7QzQs9p2
+         wK0aVSoTe3R/o1UKotnmlXWXlWMFWQpMfOHkxdrSr3K+i2TOjz5/oNfo+VXAplIz9O7Y
+         m7DPjmLtPN09xoGaMg1HPRJwS84c0QxxavAABptUXuOocx4cfM30gvi+OS7sH5SHNMKu
+         VTiebkIQROzGNQguER8Oo5Y+llKPvpVwvIOihvewwLxecWoFR5rilxSvmx8UoGi/SDlO
+         4nY5QInyKBTSATXZax+wF/Xiaq55FURXrt0wCErG40INjLE41UPsXY+wgpvigM00HtLY
+         81Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M3HrPldQNINRDApkREUB3CejIa6YRDxufQU+GfYs42A=;
-        b=rvpFyjJiMJg/XDYUddPlz2eE78Gv4Dc3j2tL2swueTyilH0kxiG/ufw2Wh1ie5DWRC
-         rPTzokrkyoEzKA00PJIoKG5djXdgYYo7zc55WF01N8O9bfWNeVnnNNYtIcnxqG2j89pd
-         CpjlxQ9NUh3lOqwYPMFd8vweFpVUkTns6dZ8C4xmW/VNC17TsI4q2UScagWgL31SNUM3
-         A9ShIL4iR0PeT1H8gDfM76wYZ0WA2KAFxoB8I9DHdxSrOS/s0EQSxuR0ag+K6LCI4O4B
-         qoyTINLhHHLbeVmjGYSpWlGVHSJbiS1fOZ7/RTlTWtT50M6hGTbN2QzQ3xajROdPIR6n
-         vzhQ==
-X-Gm-Message-State: AOAM532e0eWZGto0hFxGeOUg/3uVCj4/dPgTgy3M2DNUU33wyQfDaEu6
-        YgMXfaXGGrtCBe7k8ArRiyN2DsN4DgLZdiN2sRigVbHxs1U=
-X-Google-Smtp-Source: ABdhPJzAmISKz624HeEpKgKdI0aNDUTbh4qfVREBzH+bS3Xmz/KkwIDif6koWv7cOeMcJe0BabSA6S2nRXomVyEYk3g=
-X-Received: by 2002:adf:b60f:: with SMTP id f15mr22500863wre.83.1614009820457;
- Mon, 22 Feb 2021 08:03:40 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mp7wIhLHWdhboT6kIoeZS80417khoNPc/CItzMbajCM=;
+        b=mrCorBSXqT3TPP25ku0++DKE/E42gaGsAv3rRaFGdexOxAmjtCUI9vNDmvZrAqs+0b
+         0pf1pQdkDjE8O9Rde9KKfOg6qP5q05YMwk5i4B5QHBjIQ6dq51ltQbqR6C92yYYyTdUS
+         GK+3nbOVBqpEu9vRianDtYhCoa+mNWXIKt/6vYwSsrRAKL68bpq+aYd8kH7yAX+YsAPl
+         vwAQZxwipOsog/Sat2aWodeE/1/rBC4hMBRGRNaB+QdrwEw4Oym2OgRIaAbb0FqlCpgr
+         +XMmubaU+OD50AZrA5VbZ6gkgMdfbCALrUDrIt45LADC/IhjK0tcFipQNNT/mnO7KXQN
+         yJ8w==
+X-Gm-Message-State: AOAM530rRPZvzX2b9iMpc0MWRn3wjFy2bHfH1njDYsRVH03k16BGrVqO
+        z/BvMNmiyg4qIwlal2E0W14ivQ==
+X-Google-Smtp-Source: ABdhPJwG9nn/7s/1PvvBnUYYLfgZNtt6cka/dQQtMqdxrWrWI6kD7up/F5zZXHkLMYSfoyhbP4JtMw==
+X-Received: by 2002:a63:cf05:: with SMTP id j5mr4302479pgg.384.1614010023095;
+        Mon, 22 Feb 2021 08:07:03 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:655e:415b:3b95:bd58])
+        by smtp.gmail.com with ESMTPSA id k128sm20069508pfd.137.2021.02.22.08.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 08:07:02 -0800 (PST)
+Date:   Mon, 22 Feb 2021 08:06:55 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Liu, Jing2" <jing2.liu@linux.intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, pbonzini@redhat.com,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] kvm: x86: Revise guest_fpu xcomp_bv field
+Message-ID: <YDPWn70DTA64psQb@google.com>
+References: <20210208161659.63020-1-jing2.liu@linux.intel.com>
+ <4e4b37d1-e2f8-6757-003c-d19ae8184088@intel.com>
+ <YCFzztFESzcnKRqQ@google.com>
+ <c33335d3-abbe-04e0-2fa1-47f57ad154ac@linux.intel.com>
 MIME-Version: 1.0
-References: <20210216200909.19039-1-jonathan@marek.ca> <CAF6AEGv53nnzqMgTfSA6t2YpHx1dDW8UqnH9Gw0w3p8bf0mTLw@mail.gmail.com>
- <775436ba-c94a-ab22-d65b-b2391047ec65@codeaurora.org> <20210217190820.GA2229@jcrouse1-lnx.qualcomm.com>
- <CAF6AEGsHws23ozeJ8G23LFQ8J=CVVrx5xvkSgBuE_uSwT4YurQ@mail.gmail.com>
- <74d1277e-295f-0996-91c3-05cfce8d3a0e@marek.ca> <e4b62857-bd4d-cca6-0d6b-b9cc960b52a2@codeaurora.org>
- <CAF6AEGsWCrkOgMVxnx53k8b_o7xy3KWv9VaNRoY44+4GfXtWdg@mail.gmail.com>
- <757b557a-b5f6-6018-caa4-34bffb1b60b7@codeaurora.org> <CAF6AEGv-A5=4z7ZO-SytmivZTfKPYxhAjmRLVsQnrT7_pYCDtQ@mail.gmail.com>
- <0f057c99-ec94-f3e3-796f-b73a609f735d@codeaurora.org>
-In-Reply-To: <0f057c99-ec94-f3e3-796f-b73a609f735d@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 22 Feb 2021 08:06:38 -0800
-Message-ID: <CAF6AEGvXYmcj0YuciZATveALJEP6DdFiwmtnYevrK2SEOJNZGg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/a6xx: fix for kernels without CONFIG_NVMEM
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     Jonathan Marek <jonathan@marek.ca>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c33335d3-abbe-04e0-2fa1-47f57ad154ac@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 7:45 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
->
-> On 2/19/2021 9:30 PM, Rob Clark wrote:
-> > On Fri, Feb 19, 2021 at 2:44 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
-> >>
-> >> On 2/18/2021 9:41 PM, Rob Clark wrote:
-> >>> On Thu, Feb 18, 2021 at 4:28 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
-> >>>>
-> >>>> On 2/18/2021 2:05 AM, Jonathan Marek wrote:
-> >>>>> On 2/17/21 3:18 PM, Rob Clark wrote:
-> >>>>>> On Wed, Feb 17, 2021 at 11:08 AM Jordan Crouse
-> >>>>>> <jcrouse@codeaurora.org> wrote:
-> >>>>>>>
-> >>>>>>> On Wed, Feb 17, 2021 at 07:14:16PM +0530, Akhil P Oommen wrote:
-> >>>>>>>> On 2/17/2021 8:36 AM, Rob Clark wrote:
-> >>>>>>>>> On Tue, Feb 16, 2021 at 12:10 PM Jonathan Marek <jonathan@marek.ca>
-> >>>>>>>>> wrote:
-> >>>>>>>>>>
-> >>>>>>>>>> Ignore nvmem_cell_get() EOPNOTSUPP error in the same way as a
-> >>>>>>>>>> ENOENT error,
-> >>>>>>>>>> to fix the case where the kernel was compiled without CONFIG_NVMEM.
-> >>>>>>>>>>
-> >>>>>>>>>> Fixes: fe7952c629da ("drm/msm: Add speed-bin support to a618 gpu")
-> >>>>>>>>>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> >>>>>>>>>> ---
-> >>>>>>>>>>     drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 6 +++---
-> >>>>>>>>>>     1 file changed, 3 insertions(+), 3 deletions(-)
-> >>>>>>>>>>
-> >>>>>>>>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>>>>>>>>> b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>>>>>>>>> index ba8e9d3cf0fe..7fe5d97606aa 100644
-> >>>>>>>>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>>>>>>>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>>>>>>>>> @@ -1356,10 +1356,10 @@ static int a6xx_set_supported_hw(struct
-> >>>>>>>>>> device *dev, struct a6xx_gpu *a6xx_gpu,
-> >>>>>>>>>>
-> >>>>>>>>>>            cell = nvmem_cell_get(dev, "speed_bin");
-> >>>>>>>>>>            /*
-> >>>>>>>>>> -        * -ENOENT means that the platform doesn't support
-> >>>>>>>>>> speedbin which is
-> >>>>>>>>>> -        * fine
-> >>>>>>>>>> +        * -ENOENT means no speed bin in device tree,
-> >>>>>>>>>> +        * -EOPNOTSUPP means kernel was built without CONFIG_NVMEM
-> >>>>>>>>>
-> >>>>>>>>> very minor nit, it would be nice to at least preserve the gist of the
-> >>>>>>>>> "which is fine" (ie. some variation of "this is an optional thing and
-> >>>>>>>>> things won't catch fire without it" ;-))
-> >>>>>>>>>
-> >>>>>>>>> (which is, I believe, is true, hopefully Akhil could confirm.. if not
-> >>>>>>>>> we should have a harder dependency on CONFIG_NVMEM..)
-> >>>>>>>> IIRC, if the gpu opp table in the DT uses the 'opp-supported-hw'
-> >>>>>>>> property,
-> >>>>>>>> we will see some error during boot up if we don't call
-> >>>>>>>> dev_pm_opp_set_supported_hw(). So calling "nvmem_cell_get(dev,
-> >>>>>>>> "speed_bin")"
-> >>>>>>>> is a way to test this.
-> >>>>>>>>
-> >>>>>>>> If there is no other harm, we can put a hard dependency on
-> >>>>>>>> CONFIG_NVMEM.
-> >>>>>>>
-> >>>>>>> I'm not sure if we want to go this far given the squishiness about
-> >>>>>>> module
-> >>>>>>> dependencies. As far as I know we are the only driver that uses this
-> >>>>>>> seriously
-> >>>>>>> on QCOM SoCs and this is only needed for certain targets. I don't
-> >>>>>>> know if we
-> >>>>>>> want to force every target to build NVMEM and QFPROM on our behalf.
-> >>>>>>> But maybe
-> >>>>>>> I'm just saying that because Kconfig dependencies tend to break my
-> >>>>>>> brain (and
-> >>>>>>> then Arnd has to send a patch to fix it).
-> >>>>>>>
-> >>>>>>
-> >>>>>> Hmm, good point.. looks like CONFIG_NVMEM itself doesn't have any
-> >>>>>> other dependencies, so I suppose it wouldn't be the end of the world
-> >>>>>> to select that.. but I guess we don't want to require QFPROM
-> >>>>>>
-> >>>>>> I guess at the end of the day, what is the failure mode if you have a
-> >>>>>> speed-bin device, but your kernel config misses QFPROM (and possibly
-> >>>>>> NVMEM)?  If the result is just not having the highest clk rate(s)
-> >>>>
-> >>>> Atleast on sc7180's gpu, using an unsupported FMAX breaks gmu. It won't
-> >>>> be very obvious what went wrong when this happens!
-> >>>
-> >>> Ugg, ok..
-> >>>
-> >>> I suppose we could select NVMEM, but not QFPROM, and then the case
-> >>> where QFPROM is not enabled on platforms that have the speed-bin field
-> >>> in DT will fail gracefully and all other platforms would continue on
-> >>> happily?
-> >>>
-> >>> BR,
-> >>> -R
-> >>
-> >> Sounds good to me.
-> >>
-> >
-> > You probably should do a quick test with NVMEM enabled but QFPROM
-> > disabled to confirm my theory, but I *think* that should work
-> >
-> > BR,
-> > -R
-> >
->
-> I tried it on an sc7180 device. The suggested combo (CONFIG_NVMEM + no
-> CONFIG_QCOM_QFPROM) makes the gpu probe fail with error "failed to read
-> speed-bin. Some OPPs may not be supported by hardware". This is good
-> enough clue for the developer that he should fix the broken speedbin
-> detection.
->
+On Mon, Feb 22, 2021, Liu, Jing2 wrote:
+> 
+> On 2/9/2021 1:24 AM, Sean Christopherson wrote:
+> > On Mon, Feb 08, 2021, Dave Hansen wrote:
+> > > On 2/8/21 8:16 AM, Jing Liu wrote:
+> > > > -#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
+> > > > -
+> > > >   static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
+> > > >   {
+> > > >   	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
+> > > > @@ -4494,7 +4492,8 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
+> > > >   	/* Set XSTATE_BV and possibly XCOMP_BV.  */
+> > > >   	xsave->header.xfeatures = xstate_bv;
+> > > >   	if (boot_cpu_has(X86_FEATURE_XSAVES))
+> > > > -		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
+> > > > +		xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
+> > > > +					 xfeatures_mask_all;
+> > This is wrong, xfeatures_mask_all also tracks supervisor states.
+> When looking at SDM Vol2 XSAVES instruction Operation part, it says as
+> follows,
+> 
+> RFBM ← (XCR0 OR IA32_XSS) AND EDX:EAX;
+> COMPMASK ← RFBM OR 80000000_00000000H;
+> ...
+> 
+> XCOMP_BV field in XSAVE header ← COMPMASK;
+> 
+> 
+> So it seems xcomp_bv also tracks supervisor states?
 
-Ok, great.. then sounds like selecting NVMEM is a good approach
+Yes, sorry, I got distracted by Dave's question and didn't read the changelog
+closely.
 
-BR,
--R
+Now that I have, I find "Since fpstate_init() has initialized xcomp_bv, let's
+just use that." confusing.  I think what you intend to say is that we can use
+the same _logic_ as fpstate_init_xstate() for calculating xcomp_bv.
+
+That said, it would be helpful for the changelog to explain why it's correct to
+use xfeatures_mask_all, e.g. just a short comment stating that the variable holds
+all XCR0 and XSS bits enabled by the host kernel.  Justifying a change with
+"because other code does it" is sketchy, becuse there's no guarantee that what
+something else does is also correct for KVM, or that the existing code itself is
+even correct.
