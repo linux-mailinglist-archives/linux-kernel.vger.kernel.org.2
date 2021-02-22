@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663903218F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3F9321914
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhBVNez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:34:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53432 "EHLO mail.kernel.org"
+        id S232381AbhBVNjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:39:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231529AbhBVMnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:43:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A02064F31;
-        Mon, 22 Feb 2021 12:40:23 +0000 (UTC)
+        id S231134AbhBVMnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:43:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5EC864F42;
+        Mon, 22 Feb 2021 12:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997623;
-        bh=ecrkO/CAB5XGhSyWvXvwPaOzStHzU+n6wM8mc6ZYGf0=;
+        s=korg; t=1613997626;
+        bh=89JRW0Kq/X1EEd8vtSTOAkXkcapPWftBLe6KfGsUw/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cZ/VelFVnECq/UYx6Cz0Qs881hIJiHwMiAnURffddAjtC425z7finseidfAYe0jJ1
-         17Oa2L8P6aAswXrzotywpopqFDdqxgFKOd9A28VI3s6FqM30DHfxi8n+vjb2ljB+59
-         5yXwxefbo9PjuzGEnJDUfLTnj/y9xSIBr3+xuJ3Q=
+        b=z0O87ccn39GKYXSjdR0g9Vva1k1NDII9GW9+vXHXJKPGqBD+4wHLO53/TbsEm5p0g
+         USEEkKbVxDsVXBt7NAypZXT6yqaUB+F9Jw+7+/R+C33XFcRDxfKiaY9I8mrCJ5+u1l
+         TvKlAyp4bqgJePn/h0U3VjDGwj5UXzooiJ2WUABk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 19/35] net: watchdog: hold device global xmit lock during tx disable
-Date:   Mon, 22 Feb 2021 13:36:15 +0100
-Message-Id: <20210222121020.925592790@linuxfoundation.org>
+Subject: [PATCH 4.4 20/35] vsock: fix locking in vsock_shutdown()
+Date:   Mon, 22 Feb 2021 13:36:16 +0100
+Message-Id: <20210222121021.007857503@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121013.581198717@linuxfoundation.org>
 References: <20210222121013.581198717@linuxfoundation.org>
@@ -40,46 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Edwin Peer <edwin.peer@broadcom.com>
+From: Stefano Garzarella <sgarzare@redhat.com>
 
-commit 3aa6bce9af0e25b735c9c1263739a5639a336ae8 upstream.
+commit 1c5fae9c9a092574398a17facc31c533791ef232 upstream.
 
-Prevent netif_tx_disable() running concurrently with dev_watchdog() by
-taking the device global xmit lock. Otherwise, the recommended:
+In vsock_shutdown() we touched some socket fields without holding the
+socket lock, such as 'state' and 'sk_flags'.
 
-	netif_carrier_off(dev);
-	netif_tx_disable(dev);
+Also, after the introduction of multi-transport, we are accessing
+'vsk->transport' in vsock_send_shutdown() without holding the lock
+and this call can be made while the connection is in progress, so
+the transport can change in the meantime.
 
-driver shutdown sequence can happen after the watchdog has already
-checked carrier, resulting in possible false alarms. This is because
-netif_tx_lock() only sets the frozen bit without maintaining the locks
-on the individual queues.
+To avoid issues, we hold the socket lock when we enter in
+vsock_shutdown() and release it when we leave.
 
-Fixes: c3f26a269c24 ("netdev: Fix lockdep warnings in multiqueue configurations.")
-Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+Among the transports that implement the 'shutdown' callback, only
+hyperv_transport acquired the lock. Since the caller now holds it,
+we no longer take it.
+
+Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/netdevice.h |    2 ++
- 1 file changed, 2 insertions(+)
+ net/vmw_vsock/af_vsock.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -3428,6 +3428,7 @@ static inline void netif_tx_disable(stru
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -818,10 +818,12 @@ static int vsock_shutdown(struct socket
+ 	 */
  
- 	local_bh_disable();
- 	cpu = smp_processor_id();
-+	spin_lock(&dev->tx_global_lock);
- 	for (i = 0; i < dev->num_tx_queues; i++) {
- 		struct netdev_queue *txq = netdev_get_tx_queue(dev, i);
+ 	sk = sock->sk;
++
++	lock_sock(sk);
+ 	if (sock->state == SS_UNCONNECTED) {
+ 		err = -ENOTCONN;
+ 		if (sk->sk_type == SOCK_STREAM)
+-			return err;
++			goto out;
+ 	} else {
+ 		sock->state = SS_DISCONNECTING;
+ 		err = 0;
+@@ -830,10 +832,8 @@ static int vsock_shutdown(struct socket
+ 	/* Receive and send shutdowns are treated alike. */
+ 	mode = mode & (RCV_SHUTDOWN | SEND_SHUTDOWN);
+ 	if (mode) {
+-		lock_sock(sk);
+ 		sk->sk_shutdown |= mode;
+ 		sk->sk_state_change(sk);
+-		release_sock(sk);
  
-@@ -3435,6 +3436,7 @@ static inline void netif_tx_disable(stru
- 		netif_tx_stop_queue(txq);
- 		__netif_tx_unlock(txq);
+ 		if (sk->sk_type == SOCK_STREAM) {
+ 			sock_reset_flag(sk, SOCK_DONE);
+@@ -841,6 +841,8 @@ static int vsock_shutdown(struct socket
+ 		}
  	}
-+	spin_unlock(&dev->tx_global_lock);
- 	local_bh_enable();
+ 
++out:
++	release_sock(sk);
+ 	return err;
  }
  
 
