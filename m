@@ -2,119 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBC0321FD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A651632200A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232845AbhBVTPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 14:15:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36452 "EHLO mx2.suse.de"
+        id S233267AbhBVTXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 14:23:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232881AbhBVTKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:10:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614021000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/j6XB8moeakcDPPe7MBPNlUMEPJ8h9tKUqV8yRUnMRU=;
-        b=APRKUS7nCXDK6rWHRrhuDIMPPDiBWXRnnD6ml25xVM/N6cN9nqur6mbQZgWrfVgnRnI/dP
-        e+6ZcdwfCym1yKng4yfh11U4Shw4e6Hue2rXykOtiUrA6icBh/gLfkzFwQKBDvOCJVSO4W
-        dHoZ1qMWnEv1XQMa6kEM8C1yRGUmtb8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 456B4ADE3;
-        Mon, 22 Feb 2021 19:10:00 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 20:09:59 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
- usage excess
-Message-ID: <YDQBh5th9txxEFUm@dhcp22.suse.cz>
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
- <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
- <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
- <YDNuAIztiGJpLEtw@dhcp22.suse.cz>
- <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
+        id S233017AbhBVTQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 14:16:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id C7D0A64E32;
+        Mon, 22 Feb 2021 19:12:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614021120;
+        bh=I/Xh/FA1M3Bm5vbT/IOVO74+snpT3QhPzryyrzo0HJo=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=rKJ51AwPF5smzg17AEg0M5njcaFbA289Gad6aC/uybp2Afu3mCfoAvewgVm+gX57D
+         9dS3WDTqqjP8WjHMs6Ys71H/wGX7LDI4Lc5rm79vaDdAc3Od5Nyvw+XmNlG4NHHPyp
+         5yygvq7LT5dcYd/+KEBq46IrcL4EFudyZsQA3smMUGupo4KiNWJIpf1nbAeVvd9Kuq
+         /H6zPKgk92hlsXSMCo+fgaZTf0p6pzzfoiN5r1iSCEzQxN257g0iHlES378v23X4ki
+         S2L//AATMfRNah2S9rTTInxWOmuxaNIQRQS8eUIcTEJ0kQUEdhTpg0s34GdhcZ7Q4c
+         /7dtcIMqmL9Zw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AF0CF60963;
+        Mon, 22 Feb 2021 19:12:00 +0000 (UTC)
+Subject: Re: [GIT PULL] printk for 5.12
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YDOy7NcXzfCJcPXw@alley>
+References: <YDOy7NcXzfCJcPXw@alley>
+X-PR-Tracked-List-Id: <linux-mm.kvack.org>
+X-PR-Tracked-Message-Id: <YDOy7NcXzfCJcPXw@alley>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.12
+X-PR-Tracked-Commit-Id: 16182ac1f02c8a5fc9753f9b8b5f3ef8c01707d8
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b2bec7d8a42a3885d525e821d9354b6b08fd6adf
+Message-Id: <161402112065.16114.1888500204452719345.pr-tracker-bot@kernel.org>
+Date:   Mon, 22 Feb 2021 19:12:00 +0000
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 22-02-21 09:41:00, Tim Chen wrote:
-> 
-> 
-> On 2/22/21 12:40 AM, Michal Hocko wrote:
-> > On Fri 19-02-21 10:59:05, Tim Chen wrote:
->  occurrence.
-> >>>
-> >>> Soft limit is evaluated every THRESHOLDS_EVENTS_TARGET * SOFTLIMIT_EVENTS_TARGET.
-> >>> If all events correspond with a newly charged memory and the last event
-> >>> was just about the soft limit boundary then we should be bound by 128k
-> >>> pages (512M and much more if this were huge pages) which is a lot!
-> >>> I haven't realized this was that much. Now I see the problem. This would
-> >>> be a useful information for the changelog.
-> >>>
-> >>> Your fix is focusing on the over-the-limit boundary which will solve the
-> >>> problem but wouldn't that lead to to updates happening too often in
-> >>> pathological situation when a memcg would get reclaimed immediatelly?
-> >>
-> >> Not really immediately.  The memcg that has the most soft limit excess will
-> >> be chosen for page reclaim, which is the way it should be.  
-> >> It is less likely that a memcg that just exceeded
-> >> the soft limit becomes the worst offender immediately. 
-> > 
-> > Well this all depends on when the the soft limit reclaim triggeres. In
-> > other words how often you see the global memory reclaim. If we have a
-> > memcg with a sufficient excess then this will work mostly fine. I was more
-> > worried about a case when you have memcgs just slightly over the limit
-> > and the global memory pressure is a regular event. You can easily end up
-> > bouncing memcgs off and on the tree in a rapid fashion. 
-> > 
-> 
-> If you are concerned about such a case, we can add an excess threshold,
-> say 4 MB (or 1024 4K pages), before we trigger a forced update. You think
-> that will cover this concern?
+The pull request you sent on Mon, 22 Feb 2021 14:35:08 +0100:
 
-Yes some sort of rate limiting should help. My understanding has been
-that this is the main purpose of the even counting threshold. The code
-as we have doesn't seem to work properly so there are two ways, either
-tune the existing threshold or replace it by something else. Having both
-a force update and non-functional threshold is not a great outcome.
+> git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.12
 
-> >>> One way around that would be to lower the SOFTLIMIT_EVENTS_TARGET. Have
-> >>> you tried that? Do we even need a separate treshold for soft limit, why
-> >>> cannot we simply update the tree each MEM_CGROUP_TARGET_THRESH?
-> >>>  
-> >>
-> >> Lowering the threshold is a band aid that really doesn't fix the problem.
-> >> I found that if the cgroup touches the memory infrequently enough, you
-> >> could still miss the update of it.  And in the mean time, you are updating
-> >> things a lot more frequently with added overhead.
-> > 
-> > Yes, I agree this is more of a workaround than a fix but I would rather
-> > go and touch the threshold which is simply bad than play more tricks
-> > which can lead to other potential problems. All that for a feature which
-> > is rarely used and quite problematic in itself. Not sure what Johannes
-> > thinks about that.
-> > 
-> 
-> I actually have tried adjusting the threshold but found that it doesn't work well for
-> the case with unenven memory access frequency between cgroups.  The soft
-> limit for the low memory event cgroup could creep up quite a lot, exceeding
-> the soft limit by hundreds of MB, even
-> if I drop the SOFTLIMIT_EVENTS_TARGET from 1024 to something like 8.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b2bec7d8a42a3885d525e821d9354b6b08fd6adf
 
-What was the underlying reason? Higher order allocations?
+Thank you!
 
 -- 
-Michal Hocko
-SUSE Labs
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
