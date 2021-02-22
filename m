@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B8A3213A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 808A53213B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhBVKDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:03:24 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:46369 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230334AbhBVJ7B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:59:01 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id B3CF65C0045;
-        Mon, 22 Feb 2021 04:58:13 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 22 Feb 2021 04:58:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=drKS7R
-        CyiLHPJhLL3iSRiYPaWkDIGsBINiMi76uTKs8=; b=dctGY4hE35BtGf5vdTVcxn
-        DYYON3WR+kWVeCQxc5NbcN3uyxWC2B1RwlkY6OzGjEZl/Rz1TazU4HeBKQ2iapWb
-        Skw3fmn89VIoaNrpihpaG/R2AlVGw0WU4f2goW3CJByo+2lBHyenE1HGOWc3NxGE
-        w7he+jHSI9Gp6YqvI7a7rgofMtq9rvf128xoDWQGw8Dr12UTqPNqavS/cN07J2ax
-        BwSyacwfVhuHv9q4efgn4aEWsxccB6YQJXx/gnG6w3wBfT1jkDmNxoxSNl08UTyO
-        i0aCyjrNWxM8jwjoGXLx7LV3HCLGSwHeSPTDpxS4q7sSylC5vyQ5RKVAteXlcFHg
-        ==
-X-ME-Sender: <xms:NYAzYFJ1hxKe9UGTqBkGPGXxkmd9o8Nou7YzL8HRsfBdaDD-ZTFj3w>
-    <xme:NYAzYBK8oiLIRwVgUZcHBG-OdrqAAzw2-1ajgzwRYjfJ-3jUacnHeKFPN6lABoW1t
-    J0pvdnr3h_2nzk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeefgddutdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
-    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
-    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
-    necukfhppeekgedrvddvledrudehfedrgeegnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:NYAzYNuXOug7_VKcNEqh_yDbU4i6RrbyNbnXGEOERiJdeU2b-h2C3Q>
-    <xmx:NYAzYGbWKLI1yVLp4vmFMHo2Mf9JRFzgWUly0byhZoSXSocSspnC5g>
-    <xmx:NYAzYMaxTuLslQ_ikctvJjKF4Mjadss0y-w9qxAplYA_LHntB7E94g>
-    <xmx:NYAzYHwIgsZBtBMYyj7Wvj0hZp4KhaZhk7vwGfRELjdP5rJvo8ALRA>
-Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E496F240068;
-        Mon, 22 Feb 2021 04:58:12 -0500 (EST)
-Date:   Mon, 22 Feb 2021 11:58:09 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] netdevsim: fib: remove unneeded semicolon
-Message-ID: <YDOAMdp8pWXG+reW@shredder.lan>
-References: <1613987224-33151-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S230355AbhBVKEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:04:44 -0500
+Received: from foss.arm.com ([217.140.110.172]:38392 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230390AbhBVKAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 05:00:18 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C65E4ED1;
+        Mon, 22 Feb 2021 01:59:25 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.51.127])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B2C873F73B;
+        Mon, 22 Feb 2021 01:59:23 -0800 (PST)
+Date:   Mon, 22 Feb 2021 09:59:13 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st,
+        maz@kernel.org, tglx@linutronix.de, will@kernel.org
+Subject: Re: [PATCH 5/8] arm64: irq: add a default handle_irq panic function
+Message-ID: <20210222095913.GA70951@C02TD0UTHF1T.local>
+References: <20210219113904.41736-1-mark.rutland@arm.com>
+ <20210219113904.41736-6-mark.rutland@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1613987224-33151-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20210219113904.41736-6-mark.rutland@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 05:47:04PM +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
+On Fri, Feb 19, 2021 at 11:39:01AM +0000, Mark Rutland wrote:
+> If we accidentally unmask IRQs before we've registered an IRQ
+> controller, handle_arch_irq will be NULL, and the IRQ exception handler
+> will branch to a bogus address.
 > 
-> ./drivers/net/netdevsim/fib.c:564:2-3: Unneeded semicolon.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/net/netdevsim/fib.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/netdevsim/fib.c b/drivers/net/netdevsim/fib.c
-> index 46fb414..11b43ce 100644
-> --- a/drivers/net/netdevsim/fib.c
-> +++ b/drivers/net/netdevsim/fib.c
-> @@ -561,7 +561,7 @@ static void nsim_fib6_rt_nh_del(struct nsim_fib6_rt *fib6_rt,
->  err_fib6_rt_nh_del:
->  	for (i--; i >= 0; i--) {
->  		nsim_fib6_rt_nh_del(fib6_rt, rt_arr[i]);
-> -	};
-> +	}
+> To make this easier to debug, this patch initialises handle_arch_irq to
+> a default handler which will panic(), making such problems easier to
+> debug. When we add support for FIQ handlers, we can follow the same
+> approach.
 
-You can simply remove the braces since they are not needed
+> -void (*handle_arch_irq)(struct pt_regs *) __ro_after_init;
+> +void default_handle_irq(struct pt_regs *regs)
+> +{
+> +	panic("IRQ taken without a registered IRQ controller\n");
+> +}
 
->  	nsim_fib_rt_fini(&fib6_rt->common);
->  	kfree(fib6_rt);
->  	return ERR_PTR(err);
+The kbuild test robot pointed out that this should be static (likewise
+with default_handle_fiq in patch 8), since it's only used within this
+file, so I've updated that in my branch.
+
+Mark.
+
+> +
+> +void (*handle_arch_irq)(struct pt_regs *) __ro_after_init = default_handle_irq;
+>  
+>  int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
+>  {
+> -	if (handle_arch_irq)
+> +	if (handle_arch_irq != default_handle_irq)
+>  		return -EBUSY;
+>  
+>  	handle_arch_irq = handle_irq;
+> @@ -87,7 +92,7 @@ void __init init_IRQ(void)
+>  	init_irq_stacks();
+>  	init_irq_scs();
+>  	irqchip_init();
+> -	if (!handle_arch_irq)
+> +	if (handle_arch_irq == default_handle_irq)
+>  		panic("No interrupt controller found.");
+>  
+>  	if (system_uses_irq_prio_masking()) {
 > -- 
-> 1.8.3.1
+> 2.11.0
 > 
