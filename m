@@ -2,134 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D53321D55
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 010FE321D59
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:47:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbhBVQpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbhBVQoj (ORCPT
+        id S230411AbhBVQqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:46:04 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46392 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230382AbhBVQoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 11:44:39 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10947C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:43:58 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id l3so14605052oii.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:43:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I9HPVcIZh92ffaSgkiuaC52t1AjwtivB9/6mRIvGEJ8=;
-        b=JwqxXjgLS5YlVaPZFSBeKOGo4NFR9oRHLd8Q7FQ30RENW+pqBjEWzvqc9gdM5MlK+E
-         RGk60u9kpuRbca4hjpxfmp6tW3ddXS7mtf60WA5wOTtSRSFXb+GxzYQy21NzEqvSPsmA
-         zKmXmWoJQUCNaeB6E5sqSb/5aIqKwH1ZatMJV9qfomazt4jnG1t8e3XOEsksmo7SgxzX
-         z7ssB67OruJNtw5af7jNnMO5nX1w+44tHO4F7r8iO1DnloIROw5Pe+Fo2+jxN3XCwzYQ
-         1M3QoQ9noeu5n9fBfnZUn3u4xlZHmA1yp/EkZ3bK4JLqyiuFTEoZCCvbjIapLlhYrLRF
-         Ngtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I9HPVcIZh92ffaSgkiuaC52t1AjwtivB9/6mRIvGEJ8=;
-        b=RHSTbpG15hV32Wg/l1pEsH67JFrY/DSHWH0FSsTLfFNzNNwpzLH/Fip6VvKtxiPE7u
-         IIABWaec66ySOI0/rYjpAKOZe5XK30serRMt/hUuE6zMajnHozs/vSUiYOWK/EpcRNxs
-         Jm9MA5FWhQt30815x/RTKsCPKCAfdKN0CRJm04xR8a3puXLW9e25x10EUY4VKtVpMnJC
-         O0pAyfbL/74vhX6DsD/lyPZdf+038gX7lIwL1Q0+wC8TsysphKpIo1rs3svsbpXV4+pT
-         AZZ7dpgsRiTijRSW5GKgJOqBKU1DzgiLtociGf4t+8vMsrps0UMPQEDrwfpvowSpHXMF
-         EDXQ==
-X-Gm-Message-State: AOAM532eGViABltbzXaxjUbYGiP5tqqe3kHa7Nqv/ggMak5LPXDFv9ld
-        cYXDeAmC2riULjdGWxgY9vOG9A==
-X-Google-Smtp-Source: ABdhPJwglAISK+IAqoV8BrrJ/jvcvjqAfa1AHrbQX40p7RRVWpuviAXuERWP1JUkVQ40YIkqWxstgA==
-X-Received: by 2002:a05:6808:a1d:: with SMTP id n29mr2525976oij.141.1614012237466;
-        Mon, 22 Feb 2021 08:43:57 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o20sm3560130oor.14.2021.02.22.08.43.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 08:43:57 -0800 (PST)
-Date:   Mon, 22 Feb 2021 10:43:55 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     agross@kernel.org, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>
-Subject: Re: [PATCH] pinctrl: qcom: sc7280: Add GPIO wakeup interrupt map
-Message-ID: <YDPfS5In6DPaDrHW@builder.lan>
-References: <1613105974-28181-1-git-send-email-rnayak@codeaurora.org>
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614012236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M3/fQ8WtYTf7NEsBwWhpZFayVKjGGGhQ6OwWxbAH/As=;
+        b=TNmXRHzQVLwv9K6Y/ycGmRWXOhV0+hMrY3wmMO5ceRxMkNfcmLlF8yaR4qUMpvEH5u+diG
+        Atcj1TXCZnX1lboBQPAVCpj6HG7tl+XtmeKMqNp7jhiAHiyN1kqs1eTRNbKXPglX8dDPGP
+        LjlsLwADHQfeBAKrQvdnDtdWHfX3JKt8ONOJ3+PzeATQcYFtmNAW+5/xg5Pk8bV/xofQlE
+        LjRh10mv/bdcM7dcMssXxIjYbeVVbaep/ht34+O0N40/6h00DZ+4aKY65TZYDtMHJ7hNXO
+        XegIrSQnZConScNzbd8vYdsJaN4RB8F3BzW5WQlxrayUqO9y2lba+UiF8v4eXg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614012236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M3/fQ8WtYTf7NEsBwWhpZFayVKjGGGhQ6OwWxbAH/As=;
+        b=uVCPExwZEHGnLA9xDl+f3uOFhDkbF/xnmI/o2UqBcBOahXE0WzJQyqK3R3g2/gLebauoAS
+        uDCnSCwcUs9EcbBw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk-rework 08/14] printk: add syslog_lock
+In-Reply-To: <YDPWPI4aZat+D1DE@alley>
+References: <20210218081817.28849-1-john.ogness@linutronix.de> <20210218081817.28849-9-john.ogness@linutronix.de> <YC+9gc/IR8PzeIFf@alley> <875z2o15ha.fsf@jogness.linutronix.de> <YDPWPI4aZat+D1DE@alley>
+Date:   Mon, 22 Feb 2021 17:43:56 +0100
+Message-ID: <87czwst5mb.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1613105974-28181-1-git-send-email-rnayak@codeaurora.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11 Feb 22:59 CST 2021, Rajendra Nayak wrote:
+On 2021-02-22, Petr Mladek <pmladek@suse.com> wrote:
+>>>> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+>>>> index 20c21a25143d..401df370832b 100644
+>>>> --- a/kernel/printk/printk.c
+>>>> +++ b/kernel/printk/printk.c
+>>>> +/* Return a consistent copy of @syslog_seq. */
+>>>> +static u64 read_syslog_seq_irq(void)
+>>>> +{
+>>>> +	u64 seq;
+>>>> +
+>>>> +	raw_spin_lock_irq(&syslog_lock);
+>>>> +	seq = syslog_seq;
+>>>> +	raw_spin_unlock_irq(&syslog_lock);
+>>>
+>>> Is there any particular reason to disable interrupts here?
+>>>
+>>> It would make sense only when the lock could be taken in IRQ
+>>> context. Then we would need to always disable interrupts when
+>>> the lock is taken. And if it is taken in IRQ context, we would
+>>> need to safe flags.
+>
+> Note that console_lock was a spinlock in 2.3.15.pre1. I see it defined
+> in kernel/printk.c as:
+>
+> spinlock_t console_lock = SPIN_LOCK_UNLOCKED;
+>
+> But it is a sleeping semaphore these days. As a result,
+> register_console(), as it is now, must not be called in an interrupt
+> context.
 
-> From: Maulik Shah <mkshah@codeaurora.org>
-> 
-> GPIOs that can be configured as wakeup sources, have their
-> interrupt lines routed to PDC interrupt controller.
-> 
-> Provide the interrupt map of the GPIO to its wakeup capable
-> interrupt parent.
-> 
+OK. So I will change read_syslog_seq_irq() to not disable interrupts. As
+you suggested, we can fix the rest when we remove the safe buffers.
 
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
->  drivers/pinctrl/qcom/pinctrl-sc7280.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
-> index 8daccd5..99c416e 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
-> @@ -1449,6 +1449,28 @@ static const struct msm_pingroup sc7280_groups[] = {
->  	[182] = SDC_QDSD_PINGROUP(sdc2_data, 0x1b4000, 9, 0),
->  };
->  
-> +static const struct msm_gpio_wakeirq_map sc7280_pdc_map[] = {
-> +	{ 0, 134 }, { 3, 131 }, { 4, 121 }, { 7, 103 }, { 8, 155 },
-> +	{ 11, 93 }, { 12, 78 }, { 15, 79 }, { 16, 80 }, { 18, 81 },
-> +	{ 19, 107 }, { 20, 82 }, { 21, 83 }, { 23, 99 }, { 24, 86 },
-> +	{ 25, 95 }, { 27, 158 }, { 28, 159 }, { 31, 90 }, { 32, 144 },
-> +	{ 34, 77 }, { 35, 92 }, { 36, 157 }, { 39, 73 }, { 40, 97 },
-> +	{ 41, 98 }, { 43, 85 }, { 44, 100 }, { 45, 101 }, { 47, 102 },
-> +	{ 48, 74 }, { 51, 112 }, { 52, 156 }, { 54, 117 }, { 55, 84 },
-> +	{ 56, 108 }, { 59, 110 }, { 60, 111 }, { 61, 123 }, { 63, 104 },
-> +	{ 68, 127 }, { 72, 150 }, { 75, 133 }, { 77, 125 }, { 78, 105 },
-> +	{ 79, 106 }, { 80, 118 }, { 81, 119 }, { 82, 162 }, { 83, 122 },
-> +	{ 86, 75 }, { 88, 154 }, { 89, 124 }, { 90, 149 }, { 91, 76 },
-> +	{ 93, 128 }, { 95, 160 }, { 101, 126 }, { 102, 96 }, { 103, 116 },
-> +	{ 104, 114 }, { 112, 72 }, { 116, 135 }, { 117, 163 }, { 119, 137 },
-> +	{ 121, 138 }, { 123, 139 }, { 125, 140 }, { 127, 141 }, { 128, 165 },
-> +	{ 129, 143 }, { 130, 94 }, { 131, 145 }, { 133, 146 }, { 136, 147 },
-> +	{ 140, 148 }, { 141, 115 }, { 142, 113 }, { 145, 130 }, { 148, 132 },
-> +	{ 150, 87 }, { 151, 88 }, { 153, 89 }, { 155, 164 }, { 156, 129 },
-> +	{ 157, 161 }, { 158, 120 }, { 161, 136 }, { 163, 142 }, { 172, 166 },
-> +	{ 174, 167 },
-> +};
-> +
->  static const struct msm_pinctrl_soc_data sc7280_pinctrl = {
->  	.pins = sc7280_pins,
->  	.npins = ARRAY_SIZE(sc7280_pins),
-> @@ -1457,6 +1479,8 @@ static const struct msm_pinctrl_soc_data sc7280_pinctrl = {
->  	.groups = sc7280_groups,
->  	.ngroups = ARRAY_SIZE(sc7280_groups),
->  	.ngpios = 176,
-> +	.wakeirq_map = sc7280_pdc_map,
-> +	.nwakeirq_map = ARRAY_SIZE(sc7280_pdc_map),
->  };
->  
->  static int sc7280_pinctrl_probe(struct platform_device *pdev)
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+John Ogness
