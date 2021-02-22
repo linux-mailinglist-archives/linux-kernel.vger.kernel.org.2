@@ -2,87 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B4B321F28
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F68321F4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:43:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbhBVS2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:28:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232100AbhBVS2B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:28:01 -0500
-Received: from cavan.codon.org.uk (cavan.codon.org.uk [IPv6:2a00:1098:84:22e::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89AFC06178A;
-        Mon, 22 Feb 2021 10:27:19 -0800 (PST)
-Received: by cavan.codon.org.uk (Postfix, from userid 1000)
-        id 2000340A21; Mon, 22 Feb 2021 18:27:18 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 18:27:18 +0000
-From:   Matthew Garrett <mjg59@srcf.ucam.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        id S231759AbhBVSnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:43:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231569AbhBVSmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 13:42:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BEF264F44;
+        Mon, 22 Feb 2021 18:16:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614017768;
+        bh=Hjf816WA/+lRyr0PoVVMaBNdOkCdcL7XT7zVlSLoU8g=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=mlsB6asw56Og4rf/ku+ySjRWZHw4LMBFe8EFSwyIeMLQRhsXNlczGgiFrYWeYqZGZ
+         jyEcDOHCFLTcS4FSo0uaHHZVF5ckDfNCRAMQDdfjsZzLCDklpc0OIGsriI2vS7hEbJ
+         T5wikt+epe5AOHP/q1k8rNFbeUevAmNiJ2zScnfEgXdoIqCWc3pzvttmQWjUESD5XD
+         8i1Av0B1Juc+OKew5JQ+nZQfgd4Dv92QW1ffiHGeAPAax9IWigUCMvwydL3TpHwU6b
+         aBRcpK5e/DAgVrTS+4lQH/e9YbxVLR6zRK3aQ+MRhAfmFVmd+4o0+WE3x0l1Ns83kL
+         cePg3G3T9EINg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 16ADB35227D5; Mon, 22 Feb 2021 10:16:08 -0800 (PST)
+Date:   Mon, 22 Feb 2021 10:16:08 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v17 08/10] PM: hibernate: disable when there are active
- secretmem users
-Message-ID: <20210222182718.GA15105@codon.org.uk>
-References: <20210208084920.2884-1-rppt@kernel.org>
- <20210208084920.2884-9-rppt@kernel.org>
- <20210222073452.GA30403@codon.org.uk>
- <20210222102359.GE1447004@kernel.org>
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210222181608.GK2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210219111301.GA34441@pc638.lan>
+ <20210219111738.go6i2fdzvavpotxd@linutronix.de>
+ <20210219112357.GA34462@pc638.lan>
+ <20210219112751.GA34528@pc638.lan>
+ <20210219181811.GY2743@paulmck-ThinkPad-P72>
+ <20210219183336.GA23049@paulmck-ThinkPad-P72>
+ <20210222102104.v3pr7t57hmpwijpi@linutronix.de>
+ <20210222125431.GA41939@pc638.lan>
+ <20210222150903.GH2743@paulmck-ThinkPad-P72>
+ <20210222171605.GA42169@pc638.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210222102359.GE1447004@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210222171605.GA42169@pc638.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 12:23:59PM +0200, Mike Rapoport wrote:
-> On Mon, Feb 22, 2021 at 07:34:52AM +0000, Matthew Garrett wrote:
-> > On Mon, Feb 08, 2021 at 10:49:18AM +0200, Mike Rapoport wrote:
+On Mon, Feb 22, 2021 at 06:16:05PM +0100, Uladzislau Rezki wrote:
+> On Mon, Feb 22, 2021 at 07:09:03AM -0800, Paul E. McKenney wrote:
+> > On Mon, Feb 22, 2021 at 01:54:31PM +0100, Uladzislau Rezki wrote:
+> > > On Mon, Feb 22, 2021 at 11:21:04AM +0100, Sebastian Andrzej Siewior wrote:
+> > > > On 2021-02-19 10:33:36 [-0800], Paul E. McKenney wrote:
+> > > > > For definiteness, here is the first part of the change, posted earlier.
+> > > > > The commit log needs to be updated.  I will post the change that keeps
+> > > > > the tick going as a reply to this email.
+> > > > …
+> > > > > diff --git a/kernel/softirq.c b/kernel/softirq.c
+> > > > > index 9d71046..ba78e63 100644
+> > > > > --- a/kernel/softirq.c
+> > > > > +++ b/kernel/softirq.c
+> > > > > @@ -209,7 +209,7 @@ static inline void invoke_softirq(void)
+> > > > >  	if (ksoftirqd_running(local_softirq_pending()))
+> > > > >  		return;
+> > > > >  
+> > > > > -	if (!force_irqthreads) {
+> > > > > +	if (!force_irqthreads || !__this_cpu_read(ksoftirqd)) {
+> > > > >  #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
+> > > > >  		/*
+> > > > >  		 * We can safely execute softirq on the current stack if
+> > > > > @@ -358,8 +358,8 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+> > > > >  
+> > > > >  	pending = local_softirq_pending();
+> > > > >  	if (pending) {
+> > > > > -		if (time_before(jiffies, end) && !need_resched() &&
+> > > > > -		    --max_restart)
+> > > > > +		if (!__this_cpu_read(ksoftirqd) ||
+> > > > > +		    (time_before(jiffies, end) && !need_resched() && --max_restart))
+> > > > >  			goto restart;
+> > > > 
+> > > > This is hunk shouldn't be needed. The reason for it is probably that the
+> > > > following wakeup_softirqd() would avoid further invoke_softirq()
+> > > > performing the actual softirq work. It would leave early due to
+> > > > ksoftirqd_running(). Unless I'm wrong, any raise_softirq() invocation
+> > > > outside of an interrupt would do the same. 
 > > 
-> > > It is unsafe to allow saving of secretmem areas to the hibernation
-> > > snapshot as they would be visible after the resume and this essentially
-> > > will defeat the purpose of secret memory mappings.
+> > And it does pass the rcutorture test without that hunk:
 > > 
-> > Sorry for being a bit late to this - from the point of view of running
-> > processes (and even the kernel once resume is complete), hibernation is
-> > effectively equivalent to suspend to RAM. Why do they need to be handled
-> > differently here?
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --bootargs "threadirqs=1" --trust-make
+> > 
+> Yep. I have tested that patch also. It works for me as well. So
+> technically i do not see any issues from the first glance but of
+> course it should be reviewed by the softirq people to hear their
+> opinion.
 > 
-> Hibernation leaves a copy of the data on the disk which we want to prevent.
+> IRQs are enabled, so it can be handled from an IRQ tail until
+> ksoftirqd threads are spawned.
 
-Who are you worried about seeing it, and at what points in time?
+And if I add "CONFIG_NO_HZ_IDLE=y CONFIG_HZ_PERIODIC=n" it still works,
+even if I revert my changes to rcu_needs_cpu().  Should I rely on this
+working globally?  ;-)
+
+							Thanx, Paul
+
+> > > > I would like PeterZ / tglx to comment on this one. Basically I'm not
+> > > > sure if it is okay to expect softirqs beeing served and waited on that
+> > > > early in the boot.
+> > 
+> > It would be good to get other eyes on this.
+> > 
+> > I do agree that "don't wait on softirq handlers until after completion
+> > of all early_initcall() handlers" is a nice simple rule, but debugging
+> > violations of it is not so simple.  Adding warnings to ease debugging
+> > of violations of this rule is quite a bit more complex than is either of
+> > the methods of making the rule unnecessary, at least from what I can see
+> > at this point.  The complexity of the warnings is exactly what Sebastian
+> > pointed out earlier, that it is currently legal to raise_softirq() but
+> > not to wait on the resulting handlers.  But even waiting is OK if that
+> > waiting does not delay the boot sequence.  But if the boot kthread waits
+> > on the kthread that does the waiting, it is once again not OK.
+> > 
+> > So am I missing something subtle here?
+> >
+> I agree here. Seems like we are on the same page in understanding :)
+> 
+> > > The ksoftirqd threads get spawned during early_initcall() phase. Why not
+> > > just spawn them one step earlier what is totally safe? I mean before
+> > > do_pre_smp_initcalls() that calls early callbacks.
+> > > 
+> > > +       spawn_ksoftirqd();
+> > >         rcu_init_tasks_generic();
+> > >         do_pre_smp_initcalls();
+> > > 
+> > > With such change the spawning will not be depended on linker/compiler
+> > > i.e. when and in which order an early_initcall(spawn_ksoftirqd) callback
+> > > is executed.
+> > 
+> > We both posted patches similar to this, so I am not opposed.  One caveat,
+> > though, namely that this narrows the window quite a bit but does not
+> > entirely close it.  But it does allow the early_initcall()s to wait on
+> > softirq handlers.
+> > 
+> Yep, that was an intention. At least to provide such functionality for early
+> callbacks. What happens before it(init/main.c) is pretty controllable.
+> 
+> --
+> Vlad Rezki
