@@ -2,101 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D0F321487
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D92321491
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhBVKzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:55:19 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:12934 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230140AbhBVKzM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:55:12 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DkfD25D29zjQ63;
-        Mon, 22 Feb 2021 18:53:06 +0800 (CST)
-Received: from [10.67.102.197] (10.67.102.197) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Feb 2021 18:54:13 +0800
-Subject: Re: [PATCH stable-rc queue/4.9 1/1] futex: Provide distinct return
- value when owner is exiting
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        <sashal@kernel.org>, <tglx@linutronix.de>, <wangle6@huawei.com>,
-        <zhengyejian1@huawei.com>
-References: <20210222070328.102384-1-nixiaoming@huawei.com>
- <20210222070328.102384-2-nixiaoming@huawei.com> <YDOEZhmKqjTVxtMn@kroah.com>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <3bc570f6-f8af-b0a2-4d62-13ed4adc1f33@huawei.com>
-Date:   Mon, 22 Feb 2021 18:54:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        id S230306AbhBVK5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:57:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230155AbhBVK4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 05:56:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45FD164E04;
+        Mon, 22 Feb 2021 10:56:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613991374;
+        bh=uSVdmI9SQTwSZXaLlJZF+IlVbzuQCLdI9sABiZ1LT4M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hS4u2mjbYejeR+K2OGXcDXc7+9Tg8cQRwjWXVUTVlvpPKqv0vHQ9JhNYc2/ufIM2F
+         ud8EJ3IHU1zS8bBAHR+dntl+X+XG+3JVLWDSuzxN3A8+FPeWwHk4Xe7Supun1DRC1P
+         dzk8lkYNQ+HuMtTLm8v3kUJx8m7/fDoOMigi94mxIy6j6A2DY1QJL8k0hCkCrwU9wv
+         5JZ0TiPcs99Jb+9C082qvRNd8wmX6+f7+Ex2OdJ80SvCGn6S639jMTpKrv/KMWUEkG
+         1qKuK9mAI84zEQ7tzu2W7RSRd2i+LgEOqSh2E95K2WTEV9YXcGXQC6uB44KjM6juAh
+         /hVXdmED1dWkQ==
+Date:   Mon, 22 Feb 2021 11:56:08 +0100
+From:   Robert Richter <rric@kernel.org>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/4] PCI: Introduce pcim_alloc_irq_vectors()
+Message-ID: <YDONyMSHO9FDeY69@rric.localdomain>
+References: <20210218150458.798347-1-zhengdejin5@gmail.com>
+ <20210218150458.798347-2-zhengdejin5@gmail.com>
+ <YC/NxfsQn2RKkrp8@rric.localdomain>
+ <20210219164649.GA814637@nuc8i5>
 MIME-Version: 1.0
-In-Reply-To: <YDOEZhmKqjTVxtMn@kroah.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219164649.GA814637@nuc8i5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/22 18:16, Greg KH wrote:
-> On Mon, Feb 22, 2021 at 03:03:28PM +0800, Xiaoming Ni wrote:
->> From: Thomas Gleixner<tglx@linutronix.de>
->>
->> commit ac31c7ff8624409ba3c4901df9237a616c187a5d upstream.
-> This commit is already in the 4.9 tree.  If the backport was incorrect,
-> say that here, and describe what went wrong and why this commit fixes
-> it.
-> 
-> Also state what commit this fixes as well, otherwise this changelog just
-> looks like it is being applied again to the tree, which doesn't make
-> much sense.
-> 
-> thanks,
-> 
-> greg k-h
-> .
+On 20.02.21 00:46:49, Dejin Zheng wrote:
+> > On 18.02.21 23:04:55, Dejin Zheng wrote:
 
-I wrote a cover for it. but forgot to adjust the title of the cover:
- 
-https://lore.kernel.org/lkml/20210222070328.102384-1-nixiaoming@huawei.com/
+> > > +	if (!dr || !dr->enabled)
+> here checks whether the pci device is enabled.
 
+What is the purpose of this? The device "is_managed" or not.
 
-I found a dead code in the queue/4.9 branch of the stable-rc repository.
-
-2021-02-03:
-commit c27f392040e2f6 ("futex: Provide distinct return value when
-  owner is exiting")
-	The function handle_exit_race does not exist. Therefore, the
-	change in handle_exit_race() is ignored in the patch round.
-
-2021-02-22:
-commit e55cb811e612 ("futex: Cure exit race")
-	Define the handle_exit_race() function,
-	but no branch in the function returns EBUSY.
-	As a result, dead code occurs in the attach_to_pi_owner():
-
-		int ret = handle_exit_race(uaddr, uval, p);
-		...
-		if (ret == -EBUSY)
-			*exiting = p; /* dead code */
-
-To fix the dead code, modify the commit e55cb811e612 ("futex: Cure exit 
-race"),
-or install a patch to incorporate the changes in handle_exit_race().
-
-I am unfamiliar with the processing of the stable-rc queue branch,
-and I cannot find the patch mail of the current branch in
-	https://lore.kernel.org/lkml/?q=%22futex%3A+Cure+exit+race%22
-Therefore, I re-integrated commit ac31c7ff8624 ("futex: Provide distinct
-  return value when owner is exiting").
-  And wrote a cover (but forgot to adjust the title of the cover):
- 
-https://lore.kernel.org/lkml/20210222070328.102384-1-nixiaoming@huawei.com/
-
-Thanks
-Xiaoming Ni
-
-
+-Robert
