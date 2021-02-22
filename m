@@ -2,392 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DA5321D3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149A0321D42
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhBVQlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbhBVQkJ (ORCPT
+        id S231326AbhBVQmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:42:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29513 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231311AbhBVQlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:40:09 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B77C061574;
-        Mon, 22 Feb 2021 08:39:28 -0800 (PST)
-Received: from [IPv6:2a01:e0a:4cb:a870:5956:412c:4850:9073] (unknown [IPv6:2a01:e0a:4cb:a870:5956:412c:4850:9073])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Mon, 22 Feb 2021 11:41:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614011982;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GUJtY9R2iZ6J1VlDQs1KAeFyAZBypUCoHyYC6H1JgCo=;
+        b=E/0TTu4vDfPH+UlrPlgJnf3xjeM2EeCfsGac9x3VbsnGAjnXJ77bvnOpbApwIP8Ve1GzcK
+        /7/0w3aNA0ytIAiXZA62dzyJHVsmxf+WnWHP8MkLzk6omxkgbTqastXOwAVP1uHIdX39aC
+        3p/sfD/sDeEuLstlLdpldyqkV7P+WT4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-295-i7f3EASKP-qVMmcsUMFMqQ-1; Mon, 22 Feb 2021 11:39:38 -0500
+X-MC-Unique: i7f3EASKP-qVMmcsUMFMqQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B178B1F44378;
-        Mon, 22 Feb 2021 16:39:25 +0000 (GMT)
-Subject: Re: [PATCH v2 1/9] media: hevc: Modify structures to follow H265 ITU
- spec
-To:     John Cox <jc@kynesim.co.uk>
-Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, peng.fan@nxp.com,
-        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20210218191844.297869-1-benjamin.gaignard@collabora.com>
- <20210218191844.297869-2-benjamin.gaignard@collabora.com>
- <cam73g1am20fqav4bsoakml5natvtgq4qq@4ax.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <4cd4a009-9552-03a5-a49d-de16c55c63da@collabora.com>
-Date:   Mon, 22 Feb 2021 17:39:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 591BE801965;
+        Mon, 22 Feb 2021 16:39:35 +0000 (UTC)
+Received: from [10.36.115.16] (ovpn-115-16.ams2.redhat.com [10.36.115.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F117719C45;
+        Mon, 22 Feb 2021 16:39:30 +0000 (UTC)
+Subject: Re: [PATCH] mm, kasan: don't poison boot memory
+From:   David Hildenbrand <david@redhat.com>
+To:     George Kennedy <george.kennedy@oracle.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Konrad Rzeszutek Wilk <konrad@darnok.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+References: <487751e1ccec8fcd32e25a06ce000617e96d7ae1.1613595269.git.andreyknvl@google.com>
+ <e58cbb53-5f5b-42ae-54a0-e3e1b76ad271@redhat.com>
+ <d11bf144-669b-0fe1-4fa4-001a014db32a@oracle.com>
+ <CAAeHK+y_SmP5yAeSM3Cp6V3WH9uj4737hDuVGA7U=xA42ek3Lw@mail.gmail.com>
+ <c7166cae-bf89-8bdd-5849-72b5949fc6cc@oracle.com>
+ <797fae72-e3ea-c0b0-036a-9283fa7f2317@oracle.com>
+ <1ac78f02-d0af-c3ff-cc5e-72d6b074fc43@redhat.com>
+ <bd7510b5-d325-b516-81a8-fbdc81a27138@oracle.com>
+ <56c97056-6d8b-db0e-e303-421ee625abe3@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <4c7351e2-e97c-e740-5800-ada5504588aa@redhat.com>
+Date:   Mon, 22 Feb 2021 17:39:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <cam73g1am20fqav4bsoakml5natvtgq4qq@4ax.com>
+In-Reply-To: <56c97056-6d8b-db0e-e303-421ee625abe3@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22.02.21 17:13, David Hildenbrand wrote:
+> On 22.02.21 16:13, George Kennedy wrote:
+>>
+>>
+>> On 2/22/2021 4:52 AM, David Hildenbrand wrote:
+>>> On 20.02.21 00:04, George Kennedy wrote:
+>>>>
+>>>>
+>>>> On 2/19/2021 11:45 AM, George Kennedy wrote:
+>>>>>
+>>>>>
+>>>>> On 2/18/2021 7:09 PM, Andrey Konovalov wrote:
+>>>>>> On Fri, Feb 19, 2021 at 1:06 AM George Kennedy
+>>>>>> <george.kennedy@oracle.com> wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2/18/2021 3:55 AM, David Hildenbrand wrote:
+>>>>>>>> On 17.02.21 21:56, Andrey Konovalov wrote:
+>>>>>>>>> During boot, all non-reserved memblock memory is exposed to the
+>>>>>>>>> buddy
+>>>>>>>>> allocator. Poisoning all that memory with KASAN lengthens boot
+>>>>>>>>> time,
+>>>>>>>>> especially on systems with large amount of RAM. This patch makes
+>>>>>>>>> page_alloc to not call kasan_free_pages() on all new memory.
+>>>>>>>>>
+>>>>>>>>> __free_pages_core() is used when exposing fresh memory during
+>>>>>>>>> system
+>>>>>>>>> boot and when onlining memory during hotplug. This patch adds a new
+>>>>>>>>> FPI_SKIP_KASAN_POISON flag and passes it to __free_pages_ok()
+>>>>>>>>> through
+>>>>>>>>> free_pages_prepare() from __free_pages_core().
+>>>>>>>>>
+>>>>>>>>> This has little impact on KASAN memory tracking.
+>>>>>>>>>
+>>>>>>>>> Assuming that there are no references to newly exposed pages
+>>>>>>>>> before they
+>>>>>>>>> are ever allocated, there won't be any intended (but buggy)
+>>>>>>>>> accesses to
+>>>>>>>>> that memory that KASAN would normally detect.
+>>>>>>>>>
+>>>>>>>>> However, with this patch, KASAN stops detecting wild and large
+>>>>>>>>> out-of-bounds accesses that happen to land on a fresh memory page
+>>>>>>>>> that
+>>>>>>>>> was never allocated. This is taken as an acceptable trade-off.
+>>>>>>>>>
+>>>>>>>>> All memory allocated normally when the boot is over keeps getting
+>>>>>>>>> poisoned as usual.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+>>>>>>>>> Change-Id: Iae6b1e4bb8216955ffc14af255a7eaaa6f35324d
+>>>>>>>> Not sure this is the right thing to do, see
+>>>>>>>>
+>>>>>>>> https://lkml.kernel.org/r/bcf8925d-0949-3fe1-baa8-cc536c529860@oracle.com
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> Reversing the order in which memory gets allocated + used during
+>>>>>>>> boot
+>>>>>>>> (in a patch by me) might have revealed an invalid memory access
+>>>>>>>> during
+>>>>>>>> boot.
+>>>>>>>>
+>>>>>>>> I suspect that that issue would no longer get detected with your
+>>>>>>>> patch, as the invalid memory access would simply not get detected.
+>>>>>>>> Now, I cannot prove that :)
+>>>>>>> Since David's patch we're having trouble with the iBFT ACPI table,
+>>>>>>> which
+>>>>>>> is mapped in via kmap() - see acpi_map() in "drivers/acpi/osl.c".
+>>>>>>> KASAN
+>>>>>>> detects that it is being used after free when ibft_init() accesses
+>>>>>>> the
+>>>>>>> iBFT table, but as of yet we can't find where it get's freed (we've
+>>>>>>> instrumented calls to kunmap()).
+>>>>>> Maybe it doesn't get freed, but what you see is a wild or a large
+>>>>>> out-of-bounds access. Since KASAN marks all memory as freed during the
+>>>>>> memblock->page_alloc transition, such bugs can manifest as
+>>>>>> use-after-frees.
+>>>>>
+>>>>> It gets freed and re-used. By the time the iBFT table is accessed by
+>>>>> ibft_init() the page has been over-written.
+>>>>>
+>>>>> Setting page flags like the following before the call to kmap()
+>>>>> prevents the iBFT table page from being freed:
+>>>>
+>>>> Cleaned up version:
+>>>>
+>>>> diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+>>>> index 0418feb..8f0a8e7 100644
+>>>> --- a/drivers/acpi/osl.c
+>>>> +++ b/drivers/acpi/osl.c
+>>>> @@ -287,9 +287,12 @@ static void __iomem *acpi_map(acpi_physical_address
+>>>> pg_off, unsigned long pg_sz)
+>>>>
+>>>>          pfn = pg_off >> PAGE_SHIFT;
+>>>>          if (should_use_kmap(pfn)) {
+>>>> +        struct page *page = pfn_to_page(pfn);
+>>>> +
+>>>>              if (pg_sz > PAGE_SIZE)
+>>>>                  return NULL;
+>>>> -        return (void __iomem __force *)kmap(pfn_to_page(pfn));
+>>>> +        SetPageReserved(page);
+>>>> +        return (void __iomem __force *)kmap(page);
+>>>>          } else
+>>>>              return acpi_os_ioremap(pg_off, pg_sz);
+>>>>      }
+>>>> @@ -299,9 +302,12 @@ static void acpi_unmap(acpi_physical_address
+>>>> pg_off, void __iomem *vaddr)
+>>>>          unsigned long pfn;
+>>>>
+>>>>          pfn = pg_off >> PAGE_SHIFT;
+>>>> -    if (should_use_kmap(pfn))
+>>>> -        kunmap(pfn_to_page(pfn));
+>>>> -    else
+>>>> +    if (should_use_kmap(pfn)) {
+>>>> +        struct page *page = pfn_to_page(pfn);
+>>>> +
+>>>> +        ClearPageReserved(page);
+>>>> +        kunmap(page);
+>>>> +    } else
+>>>>              iounmap(vaddr);
+>>>>      }
+>>>>
+>>>> David, the above works, but wondering why it is now necessary. kunmap()
+>>>> is not hit. What other ways could a page mapped via kmap() be unmapped?
+>>>>
+>>>
+>>> Let me look into the code ... I have little experience with ACPI
+>>> details, so bear with me.
+>>>
+>>> I assume that acpi_map()/acpi_unmap() map some firmware blob that is
+>>> provided via firmware/bios/... to us.
+>>>
+>>> should_use_kmap() tells us whether
+>>> a) we have a "struct page" and should kmap() that one
+>>> b) we don't have a "struct page" and should ioremap.
+>>>
+>>> As it is a blob, the firmware should always reserve that memory region
+>>> via memblock (e.g., memblock_reserve()), such that we either
+>>> 1) don't create a memmap ("struct page") at all (-> case b) )
+>>> 2) if we have to create e memmap, we mark the page PG_reserved and
+>>>      *never* expose it to the buddy (-> case a) )
+>>>
+>>>
+>>> Are you telling me that in this case we might have a memmap for the HW
+>>> blob that is *not* PG_reserved? In that case it most probably got
+>>> exposed to the buddy where it can happily get allocated/freed.
+>>>
+>>> The latent BUG would be that that blob gets exposed to the system like
+>>> ordinary RAM, and not reserved via memblock early during boot.
+>>> Assuming that blob has a low physical address, with my patch it will
+>>> get allocated/used a lot earlier - which would mean we trigger this
+>>> latent BUG now more easily.
+>>>
+>>> There have been similar latent BUGs on ARM boards that my patch
+>>> discovered where special RAM regions did not get marked as reserved
+>>> via the device tree properly.
+>>>
+>>> Now, this is just a wild guess :) Can you dump the page when mapping
+>>> (before PageReserved()) and when unmapping, to see what the state of
+>>> that memmap is?
+>>
+>> Thank you David for the explanation and your help on this,
+>>
+>> dump_page() before PageReserved and before kmap() in the above patch:
+>>
+>> [    1.116480] ACPI: Core revision 20201113
+>> [    1.117628] XXX acpi_map: about to call kmap()...
+>> [    1.118561] page:ffffea0002f914c0 refcount:0 mapcount:0
+>> mapping:0000000000000000 index:0x0 pfn:0xbe453
+>> [    1.120381] flags: 0xfffffc0000000()
+>> [    1.121116] raw: 000fffffc0000000 ffffea0002f914c8 ffffea0002f914c8
+>> 0000000000000000
+>> [    1.122638] raw: 0000000000000000 0000000000000000 00000000ffffffff
+>> 0000000000000000
+>> [    1.124146] page dumped because: acpi_map pre SetPageReserved
+>>
+>> I also added dump_page() before unmapping, but it is not hit. The
+>> following for the same pfn now shows up I believe as a result of setting
+>> PageReserved:
+>>
+>> [   28.098208] BUG:Bad page state in process mo dprobe  pfn:be453
+>> [   28.098394] page:ffffea0002f914c0 refcount:0 mapcount:0
+>> mapping:0000000000000000 index:0x1 pfn:0xbe453
+>> [   28.098394] flags: 0xfffffc0001000(reserved)
+>> [   28.098394] raw: 000fffffc0001000 dead000000000100 dead000000000122
+>> 0000000000000000
+>> [   28.098394] raw: 0000000000000001 0000000000000000 00000000ffffffff
+>> 0000000000000000
+>> [   28.098394] page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
+>> [   28.098394] page_owner info is not present (never set?)
+>> [   28.098394] Modules linked in:
+>> [   28.098394] CPU: 2 PID: 204 Comm: modprobe Not tainted 5.11.0-3dbd5e3 #66
+>> [   28.098394] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+>> BIOS 0.0.0 02/06/2015
+>> [   28.098394] Call Trace:
+>> [   28.098394]  dump_stack+0xdb/0x120
+>> [   28.098394]  bad_page.cold.108+0xc6/0xcb
+>> [   28.098394]  check_new_page_bad+0x47/0xa0
+>> [   28.098394]  get_page_from_freelist+0x30cd/0x5730
+>> [   28.098394]  ? __isolate_free_page+0x4f0/0x4f0
+>> [   28.098394]  ? init_object+0x7e/0x90
+>> [   28.098394]  __alloc_pages_nodemask+0x2d8/0x650
+>> [   28.098394]  ? write_comp_data+0x2f/0x90
+>> [   28.098394]  ? __alloc_pages_slowpath.constprop.103+0x2110/0x2110
+>> [   28.098394]  ? __sanitizer_cov_trace_pc+0x21/0x50
+>> [   28.098394]  alloc_pages_vma+0xe2/0x560
+>> [   28.098394]  do_fault+0x194/0x12c0
+>> [   28.098394]  ? write_comp_data+0x2f/0x90
+>> [   28.098394]  __handle_mm_fault+0x1650/0x26c0
+>> [   28.098394]  ? copy_page_range+0x1350/0x1350
+>> [   28.098394]  ? write_comp_data+0x2f/0x90
+>> [   28.098394]  ? write_comp_data+0x2f/0x90
+>> [   28.098394]  handle_mm_fault+0x1f9/0x810
+>> [   28.098394]  ? write_comp_data+0x2f/0x90
+>> [   28.098394]  do_user_addr_fault+0x6f7/0xca0
+>> [   28.098394]  exc_page_fault+0xaf/0x1a0
+>> [   28.098394]  asm_exc_page_fault+0x1e/0x30
+>> [   28.098394] RIP: 0010:__clear_user+0x30/0x60
+> 
+> I think the PAGE_FLAGS_CHECK_AT_PREP check in this instance means that
+> someone is trying to allocate that page with the PG_reserved bit set.
+> This means that the page actually was exposed to the buddy.
+> 
+> However, when you SetPageReserved(), I don't think that PG_buddy is set
+> and the refcount is 0. That could indicate that the page is on the buddy
+> PCP list. Could be that it is getting reused a couple of times.
+> 
+> The PFN 0xbe453 looks a little strange, though. Do we expect ACPI tables
+> close to 3 GiB ? No idea. Could it be that you are trying to map a wrong
+> table? Just a guess.
 
-Le 22/02/2021 à 17:24, John Cox a écrit :
->> The H.265 ITU specification (section 7.4) define the general
->> slice segment header semantics.
->> Modified/added fields are:
->> - video_parameter_set_id: (7.4.3.1) identifies the VPS for
->> reference by other syntax elements.
->> - seq_parameter_set_id: (7.4.3.2.1) specifies the value of
->> the vps_video_parameter_set_id of the active VPS.
->> - chroma_format_idc: (7.4.3.2.1) specifies the chroma sampling
->> relative to the luma sampling
->> - pic_parameter_set_id: (7.4.3.3.1) identifies the PPS for
->> reference by other syntax elements
->> - num_ref_idx_l0_default_active_minus1: (7.4.3.3.1) specifies
->> the inferred value of num_ref_idx_l0_active_minus1
->> - num_ref_idx_l1_default_active_minus1: (7.4.3.3.1) specifies
->> the inferred value of num_ref_idx_l1_active_minus1
->> - slice_segment_addr: (7.4.7.1) specifies the address of
->> the first coding tree block in the slice segment
->> - num_entry_point_offsets: (7.4.7.1) specifies the number of
->> entry_point_offset_minus1[ i ] syntax elements in the slice header
->>
->> Add HEVC decode params contains the information used in section
->> "8.3 Slice decoding process" of the specification to let the hardware
->> perform decoding of a slices.
->>
->> Adapt Cedrus driver according to these changes.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->> version 2:
->> - remove all change related to scaling
->> - squash commits to a coherent split
->> - be more verbose about the added fields
->>
->> drivers/media/v4l2-core/v4l2-ctrls.c          | 26 ++++++++---
->> drivers/staging/media/sunxi/cedrus/cedrus.c   |  6 +++
->> drivers/staging/media/sunxi/cedrus/cedrus.h   |  1 +
->> .../staging/media/sunxi/cedrus/cedrus_dec.c   |  2 +
->> .../staging/media/sunxi/cedrus/cedrus_h265.c  |  6 ++-
->> include/media/hevc-ctrls.h                    | 45 +++++++++++++++----
->> 6 files changed, 69 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
->> index 016cf6204cbb..4060b5bcc3c0 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
->> @@ -1028,6 +1028,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->> 	case V4L2_CID_MPEG_VIDEO_HEVC_SPS:			return "HEVC Sequence Parameter Set";
->> 	case V4L2_CID_MPEG_VIDEO_HEVC_PPS:			return "HEVC Picture Parameter Set";
->> 	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:		return "HEVC Slice Parameters";
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:		return "HEVC Decode Parameters";
->> 	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:		return "HEVC Decode Mode";
->> 	case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:		return "HEVC Start Code";
->>
->> @@ -1482,6 +1483,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->> 	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
->> 		*type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
->> 		break;
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:
->> +		*type = V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS;
->> +		break;
->> 	case V4L2_CID_UNIT_CELL_SIZE:
->> 		*type = V4L2_CTRL_TYPE_AREA;
->> 		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
->> @@ -1833,6 +1837,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->> 	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
->> 	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
->> 	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
->> +	struct v4l2_ctrl_hevc_decode_params *p_hevc_decode_params;
->> 	struct v4l2_area *area;
->> 	void *p = ptr.p + idx * ctrl->elem_size;
->> 	unsigned int i;
->> @@ -2108,23 +2113,27 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->> 		zero_padding(*p_hevc_pps);
->> 		break;
->>
->> -	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->> -		p_hevc_slice_params = p;
->> +	case V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS:
->> +		p_hevc_decode_params = p;
->>
->> -		if (p_hevc_slice_params->num_active_dpb_entries >
->> +		if (p_hevc_decode_params->num_active_dpb_entries >
->> 		    V4L2_HEVC_DPB_ENTRIES_NUM_MAX)
->> 			return -EINVAL;
->>
->> -		zero_padding(p_hevc_slice_params->pred_weight_table);
->> -
->> -		for (i = 0; i < p_hevc_slice_params->num_active_dpb_entries;
->> +		for (i = 0; i < p_hevc_decode_params->num_active_dpb_entries;
->> 		     i++) {
->> 			struct v4l2_hevc_dpb_entry *dpb_entry =
->> -				&p_hevc_slice_params->dpb[i];
->> +				&p_hevc_decode_params->dpb[i];
->>
->> 			zero_padding(*dpb_entry);
->> 		}
->>
->> +		break;
->> +
->> +	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->> +		p_hevc_slice_params = p;
->> +
->> +		zero_padding(p_hevc_slice_params->pred_weight_table);
->> 		zero_padding(*p_hevc_slice_params);
->> 		break;
->>
->> @@ -2821,6 +2830,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
->> 	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->> 		elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
->> 		break;
->> +	case V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS:
->> +		elem_size = sizeof(struct v4l2_ctrl_hevc_decode_params);
->> +		break;
->> 	case V4L2_CTRL_TYPE_AREA:
->> 		elem_size = sizeof(struct v4l2_area);
->> 		break;
->> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.c b/drivers/staging/media/sunxi/cedrus/cedrus.c
->> index 7bd9291c8d5f..4cd3cab1a257 100644
->> --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
->> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
->> @@ -151,6 +151,12 @@ static const struct cedrus_control cedrus_controls[] = {
->> 		},
->> 		.codec		= CEDRUS_CODEC_VP8,
->> 	},
->> +	{
->> +		.cfg = {
->> +			.id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS,
->> +		},
->> +		.codec		= CEDRUS_CODEC_H265,
->> +	},
->> };
->>
->> #define CEDRUS_CONTROLS_COUNT	ARRAY_SIZE(cedrus_controls)
->> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.h b/drivers/staging/media/sunxi/cedrus/cedrus.h
->> index 251a6a660351..2ca33ac38b9a 100644
->> --- a/drivers/staging/media/sunxi/cedrus/cedrus.h
->> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.h
->> @@ -76,6 +76,7 @@ struct cedrus_h265_run {
->> 	const struct v4l2_ctrl_hevc_sps			*sps;
->> 	const struct v4l2_ctrl_hevc_pps			*pps;
->> 	const struct v4l2_ctrl_hevc_slice_params	*slice_params;
->> +	const struct v4l2_ctrl_hevc_decode_params	*decode_params;
->> };
->>
->> struct cedrus_vp8_run {
->> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
->> index a9090daf626a..cd821f417a14 100644
->> --- a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
->> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
->> @@ -68,6 +68,8 @@ void cedrus_device_run(void *priv)
->> 			V4L2_CID_MPEG_VIDEO_HEVC_PPS);
->> 		run.h265.slice_params = cedrus_find_control_data(ctx,
->> 			V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS);
->> +		run.h265.decode_params = cedrus_find_control_data(ctx,
->> +			V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS);
->> 		break;
->>
->> 	case V4L2_PIX_FMT_VP8_FRAME:
->> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->> index ce497d0197df..dce5db6be13a 100644
->> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->> @@ -245,6 +245,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->> 	const struct v4l2_ctrl_hevc_sps *sps;
->> 	const struct v4l2_ctrl_hevc_pps *pps;
->> 	const struct v4l2_ctrl_hevc_slice_params *slice_params;
->> +	const struct v4l2_ctrl_hevc_decode_params *decode_params;
->> 	const struct v4l2_hevc_pred_weight_table *pred_weight_table;
->> 	dma_addr_t src_buf_addr;
->> 	dma_addr_t src_buf_end_addr;
->> @@ -256,6 +257,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->> 	sps = run->h265.sps;
->> 	pps = run->h265.pps;
->> 	slice_params = run->h265.slice_params;
->> +	decode_params = run->h265.decode_params;
->> 	pred_weight_table = &slice_params->pred_weight_table;
->>
->> 	/* MV column buffer size and allocation. */
->> @@ -487,7 +489,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->>
->> 	reg = VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_TC_OFFSET_DIV2(slice_params->slice_tc_offset_div2) |
->> 	      VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_BETA_OFFSET_DIV2(slice_params->slice_beta_offset_div2) |
->> -	      VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_POC_BIGEST_IN_RPS_ST(slice_params->num_rps_poc_st_curr_after == 0) |
->> +	      VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_POC_BIGEST_IN_RPS_ST(decode_params->num_rps_poc_st_curr_after == 0) |
->> 	      VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_CR_QP_OFFSET(slice_params->slice_cr_qp_offset) |
->> 	      VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_CB_QP_OFFSET(slice_params->slice_cb_qp_offset) |
->> 	      VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_QP_DELTA(slice_params->slice_qp_delta);
->> @@ -528,7 +530,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->>
->> 	/* Write decoded picture buffer in pic list. */
->> 	cedrus_h265_frame_info_write_dpb(ctx, slice_params->dpb,
->> -					 slice_params->num_active_dpb_entries);
->> +					 decode_params->num_active_dpb_entries);
->>
->> 	/* Output frame. */
->>
->> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->> index b4cb2ef02f17..7fe704a08f77 100644
->> --- a/include/media/hevc-ctrls.h
->> +++ b/include/media/hevc-ctrls.h
->> @@ -19,6 +19,7 @@
->> #define V4L2_CID_MPEG_VIDEO_HEVC_SPS		(V4L2_CID_CODEC_BASE + 1008)
->> #define V4L2_CID_MPEG_VIDEO_HEVC_PPS		(V4L2_CID_CODEC_BASE + 1009)
->> #define V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS	(V4L2_CID_CODEC_BASE + 1010)
->> +#define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS	(V4L2_CID_CODEC_BASE + 1012)
->> #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE	(V4L2_CID_CODEC_BASE + 1015)
->> #define V4L2_CID_MPEG_VIDEO_HEVC_START_CODE	(V4L2_CID_CODEC_BASE + 1016)
->>
->> @@ -26,6 +27,7 @@
->> #define V4L2_CTRL_TYPE_HEVC_SPS 0x0120
->> #define V4L2_CTRL_TYPE_HEVC_PPS 0x0121
->> #define V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS 0x0122
->> +#define V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS 0x0124
->>
->> enum v4l2_mpeg_video_hevc_decode_mode {
->> 	V4L2_MPEG_VIDEO_HEVC_DECODE_MODE_SLICE_BASED,
->> @@ -54,6 +56,9 @@ enum v4l2_mpeg_video_hevc_start_code {
->> /* The controls are not stable at the moment and will likely be reworked. */
->> struct v4l2_ctrl_hevc_sps {
->> 	/* ISO/IEC 23008-2, ITU-T Rec. H.265: Sequence parameter set */
->> +	__u8	video_parameter_set_id;
-> Whilst I don't object to the addition of vps id why do we need
-> it if the VPS is never passed?
+... but I assume ibft_check_device() would bail out on an invalid 
+checksum. So the question is, why is this page not properly marked as 
+reserved already.
 
-You are right I could remove it.
+-- 
+Thanks,
 
->
->> +	__u8	seq_parameter_set_id;
->> +	__u8	chroma_format_idc;
->> 	__u16	pic_width_in_luma_samples;
->> 	__u16	pic_height_in_luma_samples;
->> 	__u8	bit_depth_luma_minus8;
->> @@ -74,9 +79,9 @@ struct v4l2_ctrl_hevc_sps {
->> 	__u8	log2_diff_max_min_pcm_luma_coding_block_size;
->> 	__u8	num_short_term_ref_pic_sets;
->> 	__u8	num_long_term_ref_pics_sps;
->> -	__u8	chroma_format_idc;
->>
->> -	__u8	padding;
->> +	__u8	num_slices;
->> +	__u8	padding[6];
->>
->> 	__u64	flags;
->> };
->> @@ -100,10 +105,15 @@ struct v4l2_ctrl_hevc_sps {
->> #define V4L2_HEVC_PPS_FLAG_PPS_DISABLE_DEBLOCKING_FILTER	(1ULL << 16)
->> #define V4L2_HEVC_PPS_FLAG_LISTS_MODIFICATION_PRESENT		(1ULL << 17)
->> #define V4L2_HEVC_PPS_FLAG_SLICE_SEGMENT_HEADER_EXTENSION_PRESENT (1ULL << 18)
->> +#define V4L2_HEVC_PPS_FLAG_DEBLOCKING_FILTER_CONTROL_PRESENT	(1ULL << 19)
->> +#define V4L2_HEVC_PPS_FLAG_UNIFORM_SPACING			(1ULL << 20)
->>
->> struct v4l2_ctrl_hevc_pps {
->> 	/* ISO/IEC 23008-2, ITU-T Rec. H.265: Picture parameter set */
->> +	__u8	pic_parameter_set_id;
->> 	__u8	num_extra_slice_header_bits;
->> +	__u8	num_ref_idx_l0_default_active_minus1;
->> +	__u8	num_ref_idx_l1_default_active_minus1;
->> 	__s8	init_qp_minus26;
->> 	__u8	diff_cu_qp_delta_depth;
->> 	__s8	pps_cb_qp_offset;
->> @@ -116,7 +126,7 @@ struct v4l2_ctrl_hevc_pps {
->> 	__s8	pps_tc_offset_div2;
->> 	__u8	log2_parallel_merge_level_minus2;
->>
->> -	__u8	padding[4];
->> +	__u8	padding;
->> 	__u64	flags;
->> };
->>
->> @@ -165,6 +175,10 @@ struct v4l2_ctrl_hevc_slice_params {
->> 	__u32	bit_size;
->> 	__u32	data_bit_offset;
->>
->> +	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header */
->> +	__u32	slice_segment_addr;
->> +	__u32	num_entry_point_offsets;
->> +
->> 	/* ISO/IEC 23008-2, ITU-T Rec. H.265: NAL unit header */
->> 	__u8	nal_unit_type;
->> 	__u8	nuh_temporal_id_plus1;
->> @@ -190,15 +204,13 @@ struct v4l2_ctrl_hevc_slice_params {
->> 	__u8	pic_struct;
->>
->> 	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header */
->> -	__u8	num_active_dpb_entries;
->> 	__u8	ref_idx_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->> 	__u8	ref_idx_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>
->> -	__u8	num_rps_poc_st_curr_before;
->> -	__u8	num_rps_poc_st_curr_after;
->> -	__u8	num_rps_poc_lt_curr;
->> +	__u16	short_term_ref_pic_set_size;
->> +	__u16	long_term_ref_pic_set_size;
->>
->> -	__u8	padding;
->> +	__u8	padding[5];
->>
->> 	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header */
->> 	struct v4l2_hevc_dpb_entry dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->> @@ -209,4 +221,21 @@ struct v4l2_ctrl_hevc_slice_params {
->> 	__u64	flags;
->> };
->>
->> +#define V4L2_HEVC_DECODE_PARAM_FLAG_IRAP_PIC		0x1
->> +#define V4L2_HEVC_DECODE_PARAM_FLAG_IDR_PIC		0x2
->> +#define V4L2_HEVC_DECODE_PARAM_FLAG_NO_OUTPUT_OF_PRIOR  0x4
->> +
->> +struct v4l2_ctrl_hevc_decode_params {
->> +	__s32	pic_order_cnt_val;
->> +	__u8	num_active_dpb_entries;
->> +	struct	v4l2_hevc_dpb_entry dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->> +	__u8	num_rps_poc_st_curr_before;
->> +	__u8	num_rps_poc_st_curr_after;
->> +	__u8	num_rps_poc_lt_curr;
->> +	__u8	rps_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->> +	__u8	rps_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->> +	__u8	rps_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->> +	__u64	flags;
->> +};
->> +
->> #endif
-> While you are adding stuff is there any chance you could also add:
->
-> #define V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT	(1ULL << 9)
->
-> to the slice flags?  The rpi H265 decoder needs it to deal with
-> cases where dependant_slice_segment is set in the slice header.
+David / dhildenb
 
-Remarks on previous versions suggest to only add what it is used by driver
-(like scaling feature) so I will wait to have an usage of this flag to introduce it.
-
-Benjamin
-
->
-> Thanks
->
-> John Cox
->
