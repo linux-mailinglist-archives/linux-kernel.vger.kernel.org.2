@@ -2,217 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D722321E06
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7808F321E0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhBVRYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 12:24:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
+        id S230498AbhBVRZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:25:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhBVRYT (ORCPT
+        with ESMTP id S230284AbhBVRZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:24:19 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7847BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:23:39 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id b15so4495310pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:23:39 -0800 (PST)
+        Mon, 22 Feb 2021 12:25:08 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D73C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:24:28 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id v1so19905874wrd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:24:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DUHGntaKFYzrq7NZkx3mWcd1ZCuicESk7vii1Ds1bwQ=;
-        b=rx5gkdRFqp9yhSb7+6RWUSzvNoBfPNu5d27yhXnbQJDAoKap+icxeZ4adyPk0oRhAA
-         4j2d14G7xHkTJD9npx6E1UZ+BgeP9soxBveDiTuQ0lWQKmiTRFncVcvkfJdNWkaw3MvE
-         GJbPWHtzxs1htljhabPzgO9rDiPDwd0dcw8hHXoLVCGsVcMiXJ6G8XFjViQ5Jz227dZt
-         eF3nZCMt6bDlzQ1P6Gd/cSCZYIpUPb/zICoOS87ZIWemV58Ma38mxRQ/AsrrmhF45FKZ
-         06WQeDNHEO/e7nXcbStjdCDgxwfVdWEZAFphOcdgTGwwRcNtkeklhFq7IKrUfjGvc3n9
-         bEKA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=WNFKIIU7i+VoUA+RJn2HCqv7Dgcv69h0RbQpQNJXApo=;
+        b=CzKUxd5UUvz2JZ7QNLj/YnAtevriJdfR9zChFMjWdn8G2rRCY+f16tQHqIhljcL5sm
+         HD1myFiHet1L4ci3AdC//zUnPjDC9t2MEDRFsp+2iA03vGOkOWjeywHqC6mUwctsa1Bh
+         55dcb8TIcSgYNiOxwS4Ziz85HSG6JuhBNu5rzBxlR0XFRLMbatT+Ep300Q6aOzWKBOFK
+         BTQETwfSdEj6MGuwMF29uKdVYYOzGwsXxFIPDGFPP8zXVP1590IMpx9EAHoGn6ot/A8o
+         oTMqcnmXc7x96Esh4G4NmxqKgvyyJbGzM7hGEoNKv6PLmDc1Xcs6BR/oBf+TA1QehiCr
+         bABA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DUHGntaKFYzrq7NZkx3mWcd1ZCuicESk7vii1Ds1bwQ=;
-        b=XVl/zslaj+DhccAtYIVUuD5/cXi2vEobCVcWqxMGumSaeY+IDFCoDGHNfFc1MRi0FQ
-         KskuloBphacEHsMdpmM/B1EMSlPzmHtPRH3t8SeXR++Oqg52Xr8quJo1ai8cwOgwpcYG
-         rIMf/Wb6L48Z7paCFs3CKv+6d7BAuz4RUzpm1zLqBMfSFyqiiKpEtqaFZFVFuOyfV7Lt
-         Hw1EGbvuwiUjdX2E7kjRdxY7RMH8YvE5i/G2eH0LyigoGxU1l/5vgH/5gqukKMTafZ8g
-         OO0OWwZPWDmi2xFR5a+LnMM8kJ/nGDdNlUqqyTq81BFrF9DcJPOT/n/O9S/VMzChVPbP
-         KIVg==
-X-Gm-Message-State: AOAM532/KgHdreAXvjTYzDNdNq5tdV25JaMwZtU9pWsLG326gsC+7HPD
-        NTZsNFSNdXHz6KiL2Rm0yHQ=
-X-Google-Smtp-Source: ABdhPJwkqR0nooNiBJVEp5Xxrif3+NWqYOdkzYMEOKJhg6OpIGXa6RgbvwDSdBvgXRNZZJIMlbKKrQ==
-X-Received: by 2002:a17:90a:602:: with SMTP id j2mr24221506pjj.65.1614014617069;
-        Mon, 22 Feb 2021 09:23:37 -0800 (PST)
-Received: from atulu-ubuntu ([27.61.20.212])
-        by smtp.gmail.com with ESMTPSA id t15sm19044867pjy.37.2021.02.22.09.23.33
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=WNFKIIU7i+VoUA+RJn2HCqv7Dgcv69h0RbQpQNJXApo=;
+        b=DeV1a2pwTMK/NieLu09huoHyl6VchzX+NMm4ND0gILTfEzF2V9+4VARj2qMzgqxI1S
+         LwidJq6T7b+/+PCzrvwfY1JpVjJNM51lSsaay7XKI2cZzsWLuXu+1an7d4lQwUlNAZhR
+         wxUwFqLwBbrHuy31jE7FNwjOoGM5hyLTJIEOPCylQCtjQq4SgQYvVci/5Y5GVtZnxmN0
+         p08PhsdpoM9fIJJOu32e3aCg1xXFVO3xngGpKmqj4cCtUg/v02lBNt7yWxclKyAS6qjM
+         xevBNPBqd3OLghw6WPWz0YaH+u+Z1dk78syArz4WqxEiLlvRuSx1+cEV3tiqwFe8Ocxi
+         QiSg==
+X-Gm-Message-State: AOAM533oyKig7GYy2+Ij6f/SeGO/QCvAMWnpS3/9wOQXmj1wAXTCNGHf
+        fHpDtMCvVvd2RFkN0dIOD5EDVA==
+X-Google-Smtp-Source: ABdhPJyWJ6Mi1cLpnrJHha+szSbie6AMhN/qxwSzq2GJr6sCO38+y5bVXBVTuAEjVJtZOZlIjEO0kg==
+X-Received: by 2002:adf:fdd0:: with SMTP id i16mr22282771wrs.215.1614014666916;
+        Mon, 22 Feb 2021 09:24:26 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id t11sm18485201wmb.32.2021.02.22.09.24.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 09:23:36 -0800 (PST)
-Date:   Mon, 22 Feb 2021 22:53:30 +0530
-From:   Atul Gopinathan <atulgopinathan@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     tiwai@suse.de, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, gustavo@embeddedor.com
-Subject: Re: [PATCH 2/2] staging: rtl8192e: Change state information from u16
- to u8
-Message-ID: <20210222172330.GA2507@atulu-ubuntu>
-References: <20210220182154.9457-1-atulgopinathan@gmail.com>
- <20210220182154.9457-2-atulgopinathan@gmail.com>
- <YDJbSgqTpBpIsbVB@kroah.com>
- <20210221165721.GA10040@atulu-nitro>
- <YDPNKTHZqaS37XPe@kroah.com>
+        Mon, 22 Feb 2021 09:24:26 -0800 (PST)
+Date:   Mon, 22 Feb 2021 17:24:24 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Stephen Zhang <stephenzhangzsd@gmail.com>,
+        wengjianfeng@yulong.com, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [GIT PULL] kgdb changes for v5.12
+Message-ID: <20210222172424.yw5nvfuadr5m5max@maple.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YDPNKTHZqaS37XPe@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 04:26:33PM +0100, Greg KH wrote:
-> On Sun, Feb 21, 2021 at 10:27:21PM +0530, Atul Gopinathan wrote:
-> > On Sun, Feb 21, 2021 at 02:08:26PM +0100, Greg KH wrote:
-> > > On Sat, Feb 20, 2021 at 11:51:55PM +0530, Atul Gopinathan wrote:
-> > > > The "CcxRmState" field in struct "rtllib_network" is defined
-> > > > as a u16 array of size 2 (so, 4 bytes in total).
-> > > > 
-> > > > But the operations performed on this array throughout the code
-> > > > base (in rtl8192e/) are all in byte size 2 indicating that this
-> > > > array's type was defined wrongly.
-> > > > 
-> > > > There are two situation were u16 type of this field could yield
-> > > > incorrect behaviour:
-> > > > 
-> > > > 1. In rtllib_rx.c:1970:
-> > > > memcpy(network->CcxRmState, &info_element->data[4], 2);
-> > > > 
-> > > > Here last 2 bytes (index 4 and 5) from the info_element->data[]
-> > > > array are meant to be copied into CcxRmState[].
-> > > > Note that "data" array here is an array of type u8.
-> > > > 
-> > > > 2. In function "update_network()" in staging/rtl8192e/rtllib_rx.c:
-> > > > memcpy(dst->CcxRmState, src->CcxRmState, 2);
-> > > > 
-> > > > Here again, only 2 bytes are copied from the source state to
-> > > > destination state.
-> > > > 
-> > > > There are no instances of "CcxRmState" requiring u16 data type.
-> > > > Here is the output of "grep -IRn 'CcxRmState'" on the rtl8192e/
-> > > > directory for reviewing:
-> > > > 
-> > > > rtllib_rx.c:1970:			memcpy(network->CcxRmState, &info_element->data[4], 2);
-> > > > rtllib_rx.c:1971:			if (network->CcxRmState[0] != 0)
-> > > > rtllib_rx.c:1975:			network->MBssidMask = network->CcxRmState[1] & 0x07;
-> > > > rtllib_rx.c:2520:	memcpy(dst->CcxRmState, src->CcxRmState, 2);
-> > > > rtllib.h:1108:	u8	CcxRmState[2];
-> > > 
-> > > You just changed the logic in line 1975 in that file, right?  Are you
-> > > _SURE_ that is ok?  Do you have a device to test this on?
-> > 
-> > I'm sorry, I didn't quite get you. By line 1975 in rtllib_rx.c, did you mean
-> > the following line?:
-> > 
-> > network->MBssidMask = network->CcxRmState[1] & 0x07;
-> 
-> Yes.
-> 
-> > network->CcxRmState is being fed with 2 bytes of u8 data, in line 1970 (as
-> > seen above). I believe my patch doesn't change the logic of an "&" operation
-> > being performed on it with 0x07, right?
-> 
-> It changes the location of the [1] operation to point to a different
-> place in memory from what I can tell, as you changed the type of that
-> array.
+The following changes since commit 19c329f6808995b142b3966301f217c831e7cf31:
 
-Oh yes, earlier, the network->CcxRmState[] array had memory locations as:
-[x, x+16]. With this patch, it's locations are [x, x+8].
+  Linux 5.11-rc4 (2021-01-17 16:37:05 -0800)
 
-And I strongly believe this is how it should be based on how the original
-author is using the CcxRmState[] array throughout the codebase:
+are available in the Git repository at:
 
-Allow me to explain (Based on the output of "grep -IRn 'CcxRmState'" that
-I sent previously):
-1. At line 1970:
+  git://git.kernel.org/pub/scm/linux/kernel/git/danielt/linux.git/ tags/kgdb-5.12-rc1
 
-    memcpy(network->CcxRmState, &info_element->data[4], 2);
+for you to fetch changes up to f11e2bc682cc197e33bfd118178cadb61326dc0e:
 
-this is where the array CcxRmState[] is being fed with
-data. And one can see the source is an array named "data" which itself
-has type u8. The third argument is "2", meaning 2 bytes of data should
-be written from "data" array to "CcxRmState".
+  kgdb: Remove kgdb_schedule_breakpoint() (2021-02-11 10:51:56 +0000)
 
-Also note that, the array CcxRmState has a size 2, as defined in
-rtllib.h, in struct "rtllib_network":
+----------------------------------------------------------------
+kgdb patches for 5.12
 
-    u16 CcxRmState[2];
+Another fairly small set of changes of changes this cycle. The most
+significant functional change is a fix to better manage the flags
+when allocating memory.
 
-Say if CcxRmState[] _was_ supposed to be u16 and not u8, then both elements
-of the source "data" array will only be written into the first element of
-"CcxRmState", i.e, "CcxRmState[0]". The 2nd element, "CcxRmState[1]" will
-never be fed with any data. The resultant CcxRmState[] array would look
-something like this:
+Additionally there is the removal of some unused code (which is
+slightly more dramatic than it sounds given it means there are now no
+tasklets in kgdb) together with a tidy up of the debug prints and some
+spelling corrections for the documentation.
 
-    [(u8-data and u8-data squashed), 0].
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-The 2 u8-data here refers to info_element->data[4] and
-info_element->data[5].
+----------------------------------------------------------------
+Daniel Thompson (1):
+      kgdb: Remove kgdb_schedule_breakpoint()
 
-Instead, if "CcxRmState" was of type u8, then both elements of source
-"data" array will be written into the 2 elements of "CcxRmState"
-respectively:
+Lukas Bulwahn (1):
+      kgdb: rectify kernel-doc for kgdb_unregister_io_module()
 
-    [u8 data, u8 data]
+Stephen Zhang (1):
+      kdb: kdb_support: Fix debugging information problem
 
-This makes a lot more sense.
+Sumit Garg (1):
+      kdb: Make memory allocations more robust
 
-2. Line 1975:
-    network->MBssidMask = network->CcxRmState[1] & 0x07;
+wengjianfeng (1):
+      kernel: debug: fix typo issue
 
-With point 1 clear, it should now be easy to understand that
-the the "&" operation in line 1975, will _always_ yield 0 if "CcxRmState"
-is u16, simply because CcxRmState[1] is never fed with any data at
-all.
-
-Oh and "network->MBssidMask" is also of type u8.
-
-3. Line 2520:
-memcpy(dst->CcxRmState, src->CcxRmState, 2);
-
-2 bytes, and not 4, again.:D
-The above line belongs to the following function:
-
-    static inline void update_network(struct rtllib_device *ieee,
-                      struct rtllib_network *dst,
-                      struct rtllib_network *src)
-
-As you can see, there is "dst" destination and a "src" source. The author
-is essentially copying all the data from "src" to "dst" in this function.
-Throughout the function, "memcpy()" is being used several times to copy
-the data of all arrays/structs existing in "src" into "dst". In each
-of those instances, the author is making sure to copy the entirety of
-the respective struct/array by passing all used up size of the struct/
-array in the third, size, argument. Here are a few lines from that
-function (posting the entire function defintion would be inappropriate)
-
-	instance 1: memcpy(dst->hidden_ssid, src->ssid, src->ssid_len);
-        instance 2: memcpy(&dst->stats, &src->stats, sizeof(struct rtllib_rx_stats));
-        instance 3: memcpy(&dst->tim, &src->tim, sizeof(struct rtllib_tim_parameters));
-        instance 4: memcpy(dst->wzc_ie, src->wzc_ie, src->wzc_ie_len);
-
-There are a LOT more instances, here is the elixir link to that
-function for a quick reference:
-https://elixir.bootlin.com/linux/v5.11/source/drivers/staging/rtl8192e/rtllib_rx.c#L2420
-
-My point is, it's clear that the intent of this function is to duplicate
-the data of src into dst. If "CcxRmState" really is supposed to be u16,
-then why only write down the first 2 bytes into "dst->CcxRmState"?
-
-What about "dst->CcxRmState[1]"? It never gets any value, again.
-
-These are the only places where CcxRmState is being used in the entire
-rtl8192e driver directory. I skipped line 1971 as it just checks whether
-"CcxRmState[0]" is 0 or not, this should not require any explanation.
-
-
-Thank you for your patience!
-Atul
+ include/linux/kgdb.h           |  1 -
+ kernel/debug/debug_core.c      | 28 +---------------------
+ kernel/debug/gdbstub.c         |  4 ++--
+ kernel/debug/kdb/kdb_private.h | 12 +++++++++-
+ kernel/debug/kdb/kdb_support.c | 53 ++++++++++++++++--------------------------
+ 5 files changed, 34 insertions(+), 64 deletions(-)
