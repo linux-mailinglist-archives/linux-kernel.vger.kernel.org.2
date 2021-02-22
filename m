@@ -2,159 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62094321BD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF41A321BDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231567AbhBVPsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:48:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231370AbhBVPsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:48:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 630CF64E24;
-        Mon, 22 Feb 2021 15:47:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614008840;
-        bh=fShdMEHqdIYWDkjLvCRnUwkQHgDcPkfwGLHGj2lnCkE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vx3pCzUiOBzlJMLnzrPdg9Tzl/PKzBUEqIt7/jVbm5S/c3me0Ha1BIXGvo7p97SSa
-         ryb32uJxHikBtil+E3AJi1luyD+KL3gpivhT2HdIkwsVvHYWN8kMDL1EuggbUdKTmI
-         7Th7xo6Sax+LyK+x+K2qBza00mbbaKaRVYw24IRhdsOdhq0Wf/JdwzQyPEiIYgvAj8
-         lgPY3aMIUBRsjw5/Lj0SRDVBp7wLmTEoRPy3yhA3qD6WzG+RTrYvmo0Pe9nlNBPcJ/
-         AAutriZcyiNWZXXlgtGrF8NueVd4pnn/Id3XcO05I7IkFB9yGwA1OM0YaLmjjtBb2o
-         UaotkCPKqJvOg==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lEDQu-00063s-7N; Mon, 22 Feb 2021 16:47:36 +0100
-Date:   Mon, 22 Feb 2021 16:47:36 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patong.mxl@gmail.com,
-        linus.walleij@linaro.org, angelo.dureghello@timesys.com
-Subject: Re: [PATCH v5 1/3] usb: serial: Add MaxLinear/Exar USB to Serial
- driver
-Message-ID: <YDPSGE5vLphfFNJn@hovoldconsulting.com>
-References: <20201122170822.21715-1-mani@kernel.org>
- <20201122170822.21715-2-mani@kernel.org>
- <YAlVLOqzx8otPgOg@hovoldconsulting.com>
- <20210126154604.GC29751@thinkpad>
- <YBBCvHvduivta07b@hovoldconsulting.com>
- <20210222161119.0bd70a2b@coco.lan>
+        id S230355AbhBVPvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:51:18 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2847 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230202AbhBVPvQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 10:51:16 -0500
+Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DkmmF6YVjz13x88;
+        Mon, 22 Feb 2021 23:47:57 +0800 (CST)
+Received: from DGGEML509-MBX.china.huawei.com ([169.254.1.252]) by
+ DGGEML401-HUB.china.huawei.com ([fe80::89ed:853e:30a9:2a79%31]) with mapi id
+ 14.03.0509.000; Mon, 22 Feb 2021 23:50:19 +0800
+From:   "chenjun (AM)" <chenjun102@huawei.com>
+To:     "chenjun (AM)" <chenjun102@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "gregory.herrero@oracle.com" <gregory.herrero@oracle.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "Xiangrui (Euler)" <rui.xiang@huawei.com>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXSByZWNvcmRtY291bnQ6IHVzZSB3OCB0byByZWFkIHJl?=
+ =?gb2312?B?bHAtPnJfaW5mbyBpbiBhcm02NF9pc19mYWtlX21jb3VudA==?=
+Thread-Topic: [PATCH] recordmcount: use w8 to read relp->r_info in
+ arm64_is_fake_mcount
+Thread-Index: AQHXCSa61U/7Tvwg9UGsa9lKYMYb/qpkUVCw
+Date:   Mon, 22 Feb 2021 15:50:19 +0000
+Message-ID: <CE1E7D7EFA066443B6454A6A5063B50220C5B320@dggeml509-mbx.china.huawei.com>
+References: <20210222135840.56250-1-chenjun102@huawei.com>
+In-Reply-To: <20210222135840.56250-1-chenjun102@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.53]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210222161119.0bd70a2b@coco.lan>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 04:27:34PM +0100, Mauro Carvalho Chehab wrote:
-> Hi Johan,
-> 
-> Em Tue, 26 Jan 2021 17:26:36 +0100
-> Johan Hovold <johan@kernel.org> escreveu:
-> 
-> > On Tue, Jan 26, 2021 at 09:16:04PM +0530, Manivannan Sadhasivam wrote:
-> > > On Thu, Jan 21, 2021 at 11:19:24AM +0100, Johan Hovold wrote:  
-> > > > On Sun, Nov 22, 2020 at 10:38:20PM +0530, Manivannan Sadhasivam wrote:  
-> > > > > Add support for MaxLinear/Exar USB to Serial converters. This driver
-> > > > > only supports XR21V141X series but it can be extended to other series
-> > > > > from Exar as well in future.  
-
-> I'm now facing an issue with this driver. I have here two different
-> boards with those USB UART from MaxLinear/Exar.
-> 
-> The first one is identical to Mani's one:
-> 	USB_DEVICE(0x04e2, 0x1411)
-> The second one is a different version of it:
-> 	USB_DEVICE(0x04e2, 0x1424)
-> 
-> By looking at the final driver merged at linux-next, it sounds that
-> somewhere during the review of this series, it lost the priv struct,
-> and the xr_probe function. It also lost support for all MaxLinear/Exar
-> devices, except for just one model (04e2:1411).
-> 
-> The original submission:
-> 
-> 	https://lore.kernel.org/linux-usb/20180404070634.nhspvmxcjwfgjkcv@advantechmxl-desktop
-> 
-> And the manufacturer's Linux driver on their website:
-> 
-> 	https://www.maxlinear.com/support/design-tools/software-drivers
-> 
-> Had support for other 12 different models of the MaxLinear/Exar USB
-> UART. 
-
-IIRC Manivannan only had access to one of these models and his original
-submission (based on the patch you link to above) didn't include support
-for the others. And keeping the type abstraction didn't make sense for
-just one model.
-
-> Those are grouped into 5 different major types:
-> 
-> 	+	init_xr2280x_reg_map();
-> 	+	init_xr21b142x_reg_map();
-> 	+	init_xr21b1411_reg_map();
-> 	+	init_xr21v141x_reg_map();
-> 	+
-> 	+	if ((xrusb->DeviceProduct & 0xfff0) == 0x1400)
-> 	+		memcpy(&(xrusb->reg_map), &xr2280x_reg_map,
-> 	+			sizeof(struct reg_addr_map));
-> 	+	else if ((xrusb->DeviceProduct & 0xFFF0) == 0x1420)
-> 	+		memcpy(&(xrusb->reg_map), &xr21b142x_reg_map,
-> 	+			sizeof(struct reg_addr_map));
-> 	+	else if (xrusb->DeviceProduct == 0x1411)
-> 	+		memcpy(&(xrusb->reg_map), &xr21b1411_reg_map,
-> 	+			sizeof(struct reg_addr_map));
-> 	+	else if ((xrusb->DeviceProduct & 0xfff0) == 0x1410)
-> 	+		memcpy(&(xrusb->reg_map), &xr21v141x_reg_map,
-> 	+			sizeof(struct reg_addr_map));
-> 	+	else
-> 	+		rv = -1;
-> 
-> Note: Please don't be confused by "reg_map" name. This has nothing
->       to do with Linux regmap API ;-)
-> 
-> What happens is that different USB IDs have different values for
-> each register. So, for instance, the UART enable register is set to
-> either one of the following values, depending on the value of
-> udev->descriptor.idProduct:
-> 
-> 	xr21b140x_reg_map.uart_enable_addr = 0x00;
-> 	xr21b1411_reg_map.uart_enable_addr = 0xc00;
-> 	xr21v141x_reg_map.uart_enable_addr = 0x03;
-> 	xr21b142x_reg_map.uart_enable_addr = 0x00;
-> 
-> There are other values that depend on the probing time detection,
-> based on other USB descriptors. Those set several fields at the
-> priv data that would allow to properly map the registers.
-> 
-> Also, there are 4 models that support multiple channels. On those,
-> there are one pair of register get/set for each channel.
-> 
-> -
-> 
-> In summary, while supporting just 04e2:1411 there's no need for
-> a private struct, in order to properly support the other models,
-> some autodetection is needed. The best way of doing that is to
-> re-add the .probe method and adding a priv struct.
-> 
-> As I dunno why this was dropped in the first place, I'm wondering
-> if it would be ok to re-introduce them.
-
-Sure. It was just not needed if we were only going to support one model.
-
-> To be clear: my main focus here is just to avoid needing to use 
-> Windows in order to use the serial console of the hardware with
-> the 0x1424 variant ;-)
-> 
-> I can't test the driver with the other hardware, but, IMHO, instead
-> of adding a hack to support 0x1424, the better (but more painful)
-> would be to re-add the auto-detection part and support for the
-> other models.
-
-Sounds good to me. 
-
-Johan
+SGkNCg0KVGhlcmUgaXMgbm8gcHJvYmxlbSB3aGVuIEkgdXNlIGFhcmNoNjRfYmUoZ2NjIHYxMC4y
+KS4gQmVjYXVzZSBnY2MgdjEwLjIgdXNlIF9fcGF0Y2hhYmxlX2Z1bmN0aW9uX2VudHJpZXMNCmlu
+c3RlYWQgb2YgX19tY291bnQuIEkgYW0gbm90IHN1cmUgd2hlbiB0aGUgY2hhbmdlIGhhcHBlbmVk
+Lg0KDQpSZWdhcmRzLA0KQ2hlbiBKdW4NCg0KLS0tLS3Tyrz+1K28/i0tLS0tDQq3orz+yMs6IENo
+ZW4gSnVuIFttYWlsdG86Y2hlbmp1bjEwMkBodWF3ZWkuY29tXSANCreiy83KsbzkOiAyMDIxxOoy
+1MIyMsjVIDIxOjU5DQrK1bz+yMs6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCrOty806
+IGdyZWdvcnkuaGVycmVyb0BvcmFjbGUuY29tOyBjYXRhbGluLm1hcmluYXNAYXJtLmNvbTsgcm9z
+dGVkdEBnb29kbWlzLm9yZzsgWGlhbmdydWkgKEV1bGVyKSA8cnVpLnhpYW5nQGh1YXdlaS5jb20+
+DQrW98ziOiBbUEFUQ0hdIHJlY29yZG1jb3VudDogdXNlIHc4IHRvIHJlYWQgcmVscC0+cl9pbmZv
+IGluIGFybTY0X2lzX2Zha2VfbWNvdW50DQoNCk9uIGxpdHRsZSBlbmRpYW4gc3lzdGVtLCBVc2Ug
+YWFyY2g2NF9iZShnY2MgdjcuMykgZG93bmxvYWRlZCBmcm9tIGxpbmFyby5vcmcgdG8gYnVpbGQg
+aW1hZ2Ugd2l0aCBDT05GSUdfQ1BVX0JJR19FTkRJQU4gPSB5LCBDT05GSUdfRlRSQUNFID0geSwg
+Q09ORklHX0RZTkFNSUNfRlRSQUNFID0geS4NCg0KZ2NjIHdpbGwgY3JlYXRlIHN5bWJvbHMgb2Yg
+X21jb3VudCBidXQgcmVjb3JkbWNvdW50IGNhbiBub3QgY3JlYXRlIG1jb3VudF9sb2MgZm9yICou
+by4NCmFhcmNoNjRfYmUtbGludXgtZ251LW9iamR1bXAgLXIgZnMvbmFtZWkubyB8IGdyZXAgbWNv
+dW50DQowMDAwMDAwMDAwMDAwMGQwIFJfQUFSQ0g2NF9DQUxMMjYgIF9tY291bnQgLi4uDQowMDAw
+MDAwMDAwMDA3MTkwIFJfQUFSQ0g2NF9DQUxMMjYgIF9tY291bnQNCg0KVGhlIHJlYXNvbiBpcyB0
+aGFuIGZ1bmNpdG9uIGFybTY0X2lzX2Zha2VfbWNvdW50IGNhbiBub3Qgd29yayBjb3JyZWN0bHku
+DQpBIHN5bWJvbCBvZiBfbWNvdW50IGluICoubyBjb21waWxlZCB3aXRoIGJpZyBlbmRpYW4gY29t
+cGlsZXIgbGlrZXM6DQowMCAwMCAwMCAyZCAwMCAwMCAwMSAxYg0KdyhycC0+cl9pbmZvKSB3aWxs
+IHJldHVybiAweDJkIGluc3RlYWQgb2YgMHgwMTFiLiBCZWNhdXNlIHcoKSB0YWtlcyB1aW50MzJf
+dCBhcyBwYXJhbWV0ZXIsIHdoaWNoIHRydW5jYXRlcyBycC0+cl9pbmZvLg0KDQpVc2UgdzgoKSBp
+bnN0ZWFkIHcoKSB0byByZWFkIHJlbHAtPnJfaW5mbw0KDQpGaXhlczogZWEwZWFkYTQ1NjMyICgi
+cmVjb3JkbWNvdW50OiBvbmx5IHJlY29yZCByZWxvY2F0aW9uIG9mIHR5cGUgUl9BQVJDSDY0X0NB
+TEwyNiBvbiBhcm02NC4iKQ0KU2lnbmVkLW9mZi1ieTogQ2hlbiBKdW4gPGNoZW5qdW4xMDJAaHVh
+d2VpLmNvbT4NCi0tLQ0KIHNjcmlwdHMvcmVjb3JkbWNvdW50LmMgfCAyICstDQogMSBmaWxlIGNo
+YW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQoNCmRpZmYgLS1naXQgYS9zY3Jp
+cHRzL3JlY29yZG1jb3VudC5jIGIvc2NyaXB0cy9yZWNvcmRtY291bnQuYyBpbmRleCBiOWMyZWU3
+YWI0M2YuLmNjZTEyZTE5NzFkOCAxMDA2NDQNCi0tLSBhL3NjcmlwdHMvcmVjb3JkbWNvdW50LmMN
+CisrKyBiL3NjcmlwdHMvcmVjb3JkbWNvdW50LmMNCkBAIC00MzgsNyArNDM4LDcgQEAgc3RhdGlj
+IGludCBhcm1faXNfZmFrZV9tY291bnQoRWxmMzJfUmVsIGNvbnN0ICpycCkNCiANCiBzdGF0aWMg
+aW50IGFybTY0X2lzX2Zha2VfbWNvdW50KEVsZjY0X1JlbCBjb25zdCAqcnApICB7DQotCXJldHVy
+biBFTEY2NF9SX1RZUEUodyhycC0+cl9pbmZvKSkgIT0gUl9BQVJDSDY0X0NBTEwyNjsNCisJcmV0
+dXJuIEVMRjY0X1JfVFlQRSh3OChycC0+cl9pbmZvKSkgIT0gUl9BQVJDSDY0X0NBTEwyNjsNCiB9
+DQogDQogLyogNjQtYml0IEVNX01JUFMgaGFzIHdlaXJkIEVMRjY0X1JlbGEucl9pbmZvLg0KLS0N
+CjIuMjUuMA0KDQo=
