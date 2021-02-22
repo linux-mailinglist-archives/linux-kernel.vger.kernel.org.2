@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AEA3216E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5E73216F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhBVMil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:38:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44744 "EHLO mail.kernel.org"
+        id S231464AbhBVMjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:39:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhBVMQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:16:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADFC164E83;
-        Mon, 22 Feb 2021 12:16:24 +0000 (UTC)
+        id S230468AbhBVMQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:16:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 237C164E61;
+        Mon, 22 Feb 2021 12:16:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996185;
-        bh=h7ECxo7KSLQ+Cs+Nn7UsuDUa/mR25ezkyhmT5TaHxAo=;
+        s=korg; t=1613996187;
+        bh=Me9UCrAm+DFtM6H+IUImRs+bIo7E3wmhN54KYEvUJDM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=muHQ0L6l/KU+L+rWiXWI2TRM7Qn41MH14XntWcXQU9c6VUoyjkqvjltT/uiV4paGX
-         jmiSsNc4rv5qES7o4kQ0dRW67zWFCYUe1L6OP7y83pNcCVonx5CUBXro3I/MjEP3gz
-         Vt8kwgn0rpVD9GEluU3jydHgYWPrbIxpm8tCTClo=
+        b=CFm36ecR74Q5K4t4e5iKq8OvzhBdSsg51k44DhRbYd4OdUZEIn6fQ4c4yihSE3kvi
+         cpYcsD43P/Y8U0DIsIdEpSkI2mPf7ZJgBgeM51t0dfWl4V0pwRQBJObc+g6rhAyYOG
+         xnUEG93yqex3rRGWvJeOqAOMJo2YJi1ii1Id2od8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Igor Druzhinin <igor.druzhinin@citrix.com>,
-        Juergen Gross <jgross@suse.com>, Wei Liu <wl@xen.org>,
+        stable@vger.kernel.org,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 20/50] xen/netback: avoid race in xenvif_rx_ring_slots_available()
-Date:   Mon, 22 Feb 2021 13:13:11 +0100
-Message-Id: <20210222121023.860892093@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>, Song@vger.kernel.org
+Subject: [PATCH 4.19 21/50] net: stmmac: set TxQ mode back to DCB after disabling CBS
+Date:   Mon, 22 Feb 2021 13:13:12 +0100
+Message-Id: <20210222121024.176474075@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
 References: <20210222121019.925481519@linuxfoundation.org>
@@ -41,56 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
 
-[ Upstream commit ec7d8e7dd3a59528e305a18e93f1cb98f7faf83b ]
+[ Upstream commit f317e2ea8c88737aa36228167b2292baef3f0430 ]
 
-Since commit 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-xenvif_rx_ring_slots_available() is no longer called only from the rx
-queue kernel thread, so it needs to access the rx queue with the
-associated queue held.
+When disable CBS, mode_to_use parameter is not updated even the operation
+mode of Tx Queue is changed to Data Centre Bridging (DCB). Therefore,
+when tc_setup_cbs() function is called to re-enable CBS, the operation
+mode of Tx Queue remains at DCB, which causing CBS fails to work.
 
-Reported-by: Igor Druzhinin <igor.druzhinin@citrix.com>
-Fixes: 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Acked-by: Wei Liu <wl@xen.org>
-Link: https://lore.kernel.org/r/20210202070938.7863-1-jgross@suse.com
+This patch updates the value of mode_to_use parameter to MTL_QUEUE_DCB
+after operation mode of Tx Queue is changed to DCB in stmmac_dma_qmode()
+callback function.
+
+Fixes: 1f705bc61aee ("net: stmmac: Add support for CBS QDISC")
+Suggested-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+Signed-off-by: Song, Yoong Siang <yoong.siang.song@intel.com>
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Link: https://lore.kernel.org/r/1612447396-20351-1-git-send-email-yoong.siang.song@intel.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/xen-netback/rx.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/xen-netback/rx.c b/drivers/net/xen-netback/rx.c
-index 9b62f65b630e4..48e2006f96ce6 100644
---- a/drivers/net/xen-netback/rx.c
-+++ b/drivers/net/xen-netback/rx.c
-@@ -38,10 +38,15 @@ static bool xenvif_rx_ring_slots_available(struct xenvif_queue *queue)
- 	RING_IDX prod, cons;
- 	struct sk_buff *skb;
- 	int needed;
-+	unsigned long flags;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+index 37c0bc699cd9c..cc1895a32b9d3 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+@@ -314,7 +314,12 @@ static int tc_setup_cbs(struct stmmac_priv *priv,
+ 
+ 		priv->plat->tx_queues_cfg[queue].mode_to_use = MTL_QUEUE_AVB;
+ 	} else if (!qopt->enable) {
+-		return stmmac_dma_qmode(priv, priv->ioaddr, queue, MTL_QUEUE_DCB);
++		ret = stmmac_dma_qmode(priv, priv->ioaddr, queue,
++				       MTL_QUEUE_DCB);
++		if (ret)
++			return ret;
 +
-+	spin_lock_irqsave(&queue->rx_queue.lock, flags);
++		priv->plat->tx_queues_cfg[queue].mode_to_use = MTL_QUEUE_DCB;
+ 	}
  
- 	skb = skb_peek(&queue->rx_queue);
--	if (!skb)
-+	if (!skb) {
-+		spin_unlock_irqrestore(&queue->rx_queue.lock, flags);
- 		return false;
-+	}
- 
- 	needed = DIV_ROUND_UP(skb->len, XEN_PAGE_SIZE);
- 	if (skb_is_gso(skb))
-@@ -49,6 +54,8 @@ static bool xenvif_rx_ring_slots_available(struct xenvif_queue *queue)
- 	if (skb->sw_hash)
- 		needed++;
- 
-+	spin_unlock_irqrestore(&queue->rx_queue.lock, flags);
-+
- 	do {
- 		prod = queue->rx.sring->req_prod;
- 		cons = queue->rx.req_cons;
+ 	/* Port Transmit Rate and Speed Divider */
 -- 
 2.27.0
 
