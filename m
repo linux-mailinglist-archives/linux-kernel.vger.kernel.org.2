@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832BD321883
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD7B321887
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhBVNXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:23:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52900 "EHLO mail.kernel.org"
+        id S231429AbhBVNY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:24:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231210AbhBVMl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:41:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5907D64F02;
-        Mon, 22 Feb 2021 12:39:00 +0000 (UTC)
+        id S231249AbhBVMlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:41:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D07A764F03;
+        Mon, 22 Feb 2021 12:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997540;
-        bh=4HrBhgJIRgRPr9JuQrDIoTRdOmW5eiU2KLqhXKWskYc=;
+        s=korg; t=1613997543;
+        bh=bOzEOP1W0R6zvHSjlWSJwwqZMSgM9ckWE5p+HO0tp/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B6iMP+jR+7yGnUASRU4ZMAtvRpuu5UQ0cWtIyZU1nBhvPGrXzI/THQ/c+qbZlDBDf
-         v7A9LtR5OPsFakWI8gdzRKVqRpSUSOt5k5w67vvc9MiXtcGNmMvPeHfu0aZg7cNwiE
-         HxpzQPJC6Qat4vg4CQHcekkzqfKSVnNRySOkQq38=
+        b=xkM1IFQYleU66rDOk26ztgwI4U9zlmbxOzbnj5+F/oM7qz94M1tbLspLi9V6RZTGs
+         +CrNMAN/XXtaSgz1L1A8kM/aCbWDUYlFcgq+jMMl3BSRivnfwbx18Xt2ZDwSILWn1P
+         AwmBp0NUfZ8Qdltreyx0OaRVGs2hiJCR42AzsCTg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Igor Druzhinin <igor.druzhinin@citrix.com>,
-        Juergen Gross <jgross@suse.com>, Wei Liu <wl@xen.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 31/57] xen/netback: avoid race in xenvif_rx_ring_slots_available()
-Date:   Mon, 22 Feb 2021 13:35:57 +0100
-Message-Id: <20210222121029.839029326@linuxfoundation.org>
+Subject: [PATCH 4.14 32/57] netfilter: conntrack: skip identical origin tuple in same zone only
+Date:   Mon, 22 Feb 2021 13:35:58 +0100
+Message-Id: <20210222121029.958068814@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121027.174911182@linuxfoundation.org>
 References: <20210222121027.174911182@linuxfoundation.org>
@@ -41,56 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit ec7d8e7dd3a59528e305a18e93f1cb98f7faf83b ]
+[ Upstream commit 07998281c268592963e1cd623fe6ab0270b65ae4 ]
 
-Since commit 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-xenvif_rx_ring_slots_available() is no longer called only from the rx
-queue kernel thread, so it needs to access the rx queue with the
-associated queue held.
+The origin skip check needs to re-test the zone. Else, we might skip
+a colliding tuple in the reply direction.
 
-Reported-by: Igor Druzhinin <igor.druzhinin@citrix.com>
-Fixes: 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Acked-by: Wei Liu <wl@xen.org>
-Link: https://lore.kernel.org/r/20210202070938.7863-1-jgross@suse.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This only occurs when using 'directional zones' where origin tuples
+reside in different zones but the reply tuples share the same zone.
+
+This causes the new conntrack entry to be dropped at confirmation time
+because NAT clash resolution was elided.
+
+Fixes: 4e35c1cb9460240 ("netfilter: nf_nat: skip nat clash resolution for same-origin entries")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/xen-netback/rx.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ net/netfilter/nf_conntrack_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/xen-netback/rx.c b/drivers/net/xen-netback/rx.c
-index f152246c7dfb7..ddfb1cfa2dd94 100644
---- a/drivers/net/xen-netback/rx.c
-+++ b/drivers/net/xen-netback/rx.c
-@@ -38,10 +38,15 @@ static bool xenvif_rx_ring_slots_available(struct xenvif_queue *queue)
- 	RING_IDX prod, cons;
- 	struct sk_buff *skb;
- 	int needed;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&queue->rx_queue.lock, flags);
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index 8064d769c953c..ede0ab5dc400a 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -939,7 +939,8 @@ nf_conntrack_tuple_taken(const struct nf_conntrack_tuple *tuple,
+ 			 * Let nf_ct_resolve_clash() deal with this later.
+ 			 */
+ 			if (nf_ct_tuple_equal(&ignored_conntrack->tuplehash[IP_CT_DIR_ORIGINAL].tuple,
+-					      &ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple))
++					      &ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple) &&
++					      nf_ct_zone_equal(ct, zone, IP_CT_DIR_ORIGINAL))
+ 				continue;
  
- 	skb = skb_peek(&queue->rx_queue);
--	if (!skb)
-+	if (!skb) {
-+		spin_unlock_irqrestore(&queue->rx_queue.lock, flags);
- 		return false;
-+	}
- 
- 	needed = DIV_ROUND_UP(skb->len, XEN_PAGE_SIZE);
- 	if (skb_is_gso(skb))
-@@ -49,6 +54,8 @@ static bool xenvif_rx_ring_slots_available(struct xenvif_queue *queue)
- 	if (skb->sw_hash)
- 		needed++;
- 
-+	spin_unlock_irqrestore(&queue->rx_queue.lock, flags);
-+
- 	do {
- 		prod = queue->rx.sring->req_prod;
- 		cons = queue->rx.req_cons;
+ 			NF_CT_STAT_INC_ATOMIC(net, found);
 -- 
 2.27.0
 
