@@ -2,280 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420BC321529
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1AB9321530
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhBVLbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 06:31:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46534 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230110AbhBVLbH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 06:31:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613993370;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y8uZhtxPnMc3VJgJ7/XsbDI2s/GkB4V6o+tAFFKwv/8=;
-        b=dLnhb5UD+NpaCQn6v2pEF7GfZEbQ12O3I6Ief1E/7iLlUte0CrZPGBCt4uos+Cpy8o4Q3r
-        IeFh/pbOvxb6LWW2w6h0kIcO4avB7V+w/ErLLlsyNZUyRyap7+3BRDERKYHlw4Umn2qyd+
-        ebdBrw7L+LarN8RMfSbSc+7Dmw9Zpj8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-mHakWP2UPIG9dKLceVkvfg-1; Mon, 22 Feb 2021 06:29:29 -0500
-X-MC-Unique: mHakWP2UPIG9dKLceVkvfg-1
-Received: by mail-wr1-f71.google.com with SMTP id v1so5975441wru.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 03:29:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y8uZhtxPnMc3VJgJ7/XsbDI2s/GkB4V6o+tAFFKwv/8=;
-        b=VXciTvWn0S8XMiVbBVcjx3ZSF14WxyC5dkkSUYciq2V+dPSx0Wc2vU3QXozKJfKXa2
-         n3TMXBhbiMHZKcs42yxEHdaZLCvgoG9TKUtycE9SjUxo6RJENnjW8KqfD2vZq6u5Lcfp
-         bFSk5iwK43dnwkLz0uU8gXCUIvT48y7SjK1RRS6aF/1ja/5JTC3sl1Nc/vimKDOT1ObZ
-         GzSUo42wKw7yrNW6llArdvSOBymXsfo3SqGTSUw4XoqNLxDy6yLCXzs9ldK77fX9BlJY
-         MJq7vvuRQe2DBwflHrPgYtL15AVsmxc4ZieJaXtqzH7dH9u0S+tCLdRT4FkQOByxBlVu
-         pvWA==
-X-Gm-Message-State: AOAM533gb5whEjB1KsWSh9n6kuRrQEpUCnQRkKsZGo7FRK1YAl8UTsaY
-        woXDiKdm6wOwTZFNvodSWoe3zijEFd+s2LiBS8c9LhRu7NdTrtIIo54eb/AUY9mrsqW4rs4CXwF
-        eo9kMJfTwbUfkZ1AnhxiXvFOD
-X-Received: by 2002:a5d:63ce:: with SMTP id c14mr7733618wrw.15.1613993368179;
-        Mon, 22 Feb 2021 03:29:28 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxiJBgeZ62WLQXH1tkB63Xoc8oL1rWkIkvwkAGO6rqCCSIdNxSHGL/0LhoyC56LLS/oG3hmig==
-X-Received: by 2002:a5d:63ce:: with SMTP id c14mr7733598wrw.15.1613993367956;
-        Mon, 22 Feb 2021 03:29:27 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id m24sm7861270wmc.18.2021.02.22.03.29.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 03:29:27 -0800 (PST)
-Date:   Mon, 22 Feb 2021 12:29:24 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v5 02/19] af_vsock: separate wait data loop
-Message-ID: <20210222112924.hu2sfoiwni5kt5wm@steredhat>
-References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
- <20210218053637.1066959-1-arseny.krasnov@kaspersky.com>
+        id S230125AbhBVLg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 06:36:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:42598 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230042AbhBVLgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 06:36:55 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 29B061FB;
+        Mon, 22 Feb 2021 03:36:09 -0800 (PST)
+Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC5D73F73B;
+        Mon, 22 Feb 2021 03:36:07 -0800 (PST)
+Date:   Mon, 22 Feb 2021 11:36:03 +0000
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net, valentin.schneider@arm.com
+Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
+ cpu_util_next()
+Message-ID: <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
+References: <20210222095401.37158-1-vincent.donnefort@arm.com>
+ <YDODN1rnTqfTQOug@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218053637.1066959-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <YDODN1rnTqfTQOug@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 08:36:33AM +0300, Arseny Krasnov wrote:
->This moves wait loop for data to dedicated function, because later
->it will be used by SEQPACKET data receive loop.
+Hi Quentin,
 
-The patch LGTM, maybe just add a line in the commit message with 
-something like this:
+On Mon, Feb 22, 2021 at 10:11:03AM +0000, Quentin Perret wrote:
+> Hey Vincent,
+> 
+> On Monday 22 Feb 2021 at 09:54:01 (+0000), vincent.donnefort@arm.com wrote:
+> > From: Vincent Donnefort <vincent.donnefort@arm.com>
+> > 
+> > Currently, cpu_util_next() estimates the CPU utilization as follows:
+> > 
+> >   max(cpu_util + task_util,
+> >       cpu_util_est + task_util_est)
+> 
+> s/task_util_est/_task_util_est
+> 
+> This is an important difference.
+> 
+> > 
+> > This is an issue when making a comparison between CPUs, as the task
+> > contribution can be either:
+> > 
+> >   (1) task_util_est, on a mostly idle CPU, where cpu_util is close to 0
+> >       and task_util_est > cpu_util.
+> >   (2) task_util, on a mostly busy CPU, where cpu_util > task_util_est.
+> 
+> I don't understand how this is an issue, this is by design with util-est
+> no?
+> 
+> Note that cpu_util_next() tries to accurately predict what cpu_util(@cpu)
+> will be once @p is enqueued on @dst_cpu. There should be no policy
+> decision here, we just reproduce the enqueue aggreagation -- see
+> util_est_enqueue() and cpu_util().
+> 
+> Could you please give an example where you think cpu_util_next()
+> computes the wrong value?
 
-     While moving the code around, let's update an old comment.
+Here's with real life numbers.
 
-Whit that fixed:
+The task: util_avg=3 (1) util_est=11 (2)
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+pd0 (CPU-0, CPU-1, CPU-2)
 
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/af_vsock.c | 155 +++++++++++++++++++++------------------
-> 1 file changed, 83 insertions(+), 72 deletions(-)
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 656370e11707..6cf7bb977aa1 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -1832,6 +1832,68 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 	return err;
-> }
->
->+static int vsock_wait_data(struct sock *sk, struct wait_queue_entry *wait,
->+			   long timeout,
->+			   struct vsock_transport_recv_notify_data *recv_data,
->+			   size_t target)
->+{
->+	const struct vsock_transport *transport;
->+	struct vsock_sock *vsk;
->+	s64 data;
->+	int err;
->+
->+	vsk = vsock_sk(sk);
->+	err = 0;
->+	transport = vsk->transport;
->+	prepare_to_wait(sk_sleep(sk), wait, TASK_INTERRUPTIBLE);
->+
->+	while ((data = vsock_stream_has_data(vsk)) == 0) {
->+		if (sk->sk_err != 0 ||
->+		    (sk->sk_shutdown & RCV_SHUTDOWN) ||
->+		    (vsk->peer_shutdown & SEND_SHUTDOWN)) {
->+			break;
->+		}
->+
->+		/* Don't wait for non-blocking sockets. */
->+		if (timeout == 0) {
->+			err = -EAGAIN;
->+			break;
->+		}
->+
->+		if (recv_data) {
->+			err = transport->notify_recv_pre_block(vsk, target, recv_data);
->+			if (err < 0)
->+				break;
->+		}
->+
->+		release_sock(sk);
->+		timeout = schedule_timeout(timeout);
->+		lock_sock(sk);
->+
->+		if (signal_pending(current)) {
->+			err = sock_intr_errno(timeout);
->+			break;
->+		} else if (timeout == 0) {
->+			err = -EAGAIN;
->+			break;
->+		}
->+	}
->+
->+	finish_wait(sk_sleep(sk), wait);
->+
->+	if (err)
->+		return err;
->+
->+	/* Internal transport error when checking for available
->+	 * data. XXX This should be changed to a connection
->+	 * reset in a later change.
->+	 */
->+	if (data < 0)
->+		return -ENOMEM;
->+
->+	return data;
->+}
->+
-> static int
-> vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-> 			  int flags)
->@@ -1911,85 +1973,34 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->
->
-> 	while (1) {
->-		s64 ready;
->-
->-		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
->-		ready = vsock_stream_has_data(vsk);
->-
->-		if (ready == 0) {
->-			if (sk->sk_err != 0 ||
->-			    (sk->sk_shutdown & RCV_SHUTDOWN) ||
->-			    (vsk->peer_shutdown & SEND_SHUTDOWN)) {
->-				finish_wait(sk_sleep(sk), &wait);
->-				break;
->-			}
->-			/* Don't wait for non-blocking sockets. */
->-			if (timeout == 0) {
->-				err = -EAGAIN;
->-				finish_wait(sk_sleep(sk), &wait);
->-				break;
->-			}
->+		ssize_t read;
->
->-			err = transport->notify_recv_pre_block(
->-					vsk, target, &recv_data);
->-			if (err < 0) {
->-				finish_wait(sk_sleep(sk), &wait);
->-				break;
->-			}
->-			release_sock(sk);
->-			timeout = schedule_timeout(timeout);
->-			lock_sock(sk);
->+		err = vsock_wait_data(sk, &wait, timeout, &recv_data, target);
->+		if (err <= 0)
->+			break;
->
->-			if (signal_pending(current)) {
->-				err = sock_intr_errno(timeout);
->-				finish_wait(sk_sleep(sk), &wait);
->-				break;
->-			} else if (timeout == 0) {
->-				err = -EAGAIN;
->-				finish_wait(sk_sleep(sk), &wait);
->-				break;
->-			}
->-		} else {
->-			ssize_t read;
->-
->-			finish_wait(sk_sleep(sk), &wait);
->-
->-			if (ready < 0) {
->-				/* Invalid queue pair content. XXX This should
->-				* be changed to a connection reset in a later
->-				* change.
->-				*/
->-
->-				err = -ENOMEM;
->-				goto out;
->-			}
->-
->-			err = transport->notify_recv_pre_dequeue(
->-					vsk, target, &recv_data);
->-			if (err < 0)
->-				break;
->+		err = transport->notify_recv_pre_dequeue(vsk, target,
->+							 &recv_data);
->+		if (err < 0)
->+			break;
->
->-			read = transport->stream_dequeue(
->-					vsk, msg,
->-					len - copied, flags);
->-			if (read < 0) {
->-				err = -ENOMEM;
->-				break;
->-			}
->+		read = transport->stream_dequeue(vsk, msg, len - copied, flags);
->+		if (read < 0) {
->+			err = -ENOMEM;
->+			break;
->+		}
->
->-			copied += read;
->+		copied += read;
->
->-			err = transport->notify_recv_post_dequeue(
->-					vsk, target, read,
->-					!(flags & MSG_PEEK), &recv_data);
->-			if (err < 0)
->-				goto out;
->+		err = transport->notify_recv_post_dequeue(vsk, target, read,
->+						!(flags & MSG_PEEK), &recv_data);
->+		if (err < 0)
->+			goto out;
->
->-			if (read >= target || flags & MSG_PEEK)
->-				break;
->+		if (read >= target || flags & MSG_PEEK)
->+			break;
->
->-			target -= read;
->-		}
->+		target -= read;
-> 	}
->
-> 	if (sk->sk_err)
->-- 
->2.25.1
->
+ cpu_util_next(CPU-0, NULL): 7
+ cpu_util_next(CPU-1, NULL): 3
+ cpu_util_next(CPU-2, NULL): 0 <- Most capacity, try to place task here.
+
+ cpu_util_next(CPU-2, task): 0 + 11 (2)
+
+
+pd1 (CPU-3):
+
+ cpu_util_next(CPU-3, NULL): 77
+
+ cpu_util_next(CPU-3, task): 77 + 3 (1)
+
+
+On pd0, the task contribution is 11. On pd1, it is 3. When computing the energy
+deltas, pd0's is likely to be higher than pd1's, only because the task
+contribution is higher for one comparison than the other.
+
+-- 
+Vincent
+
+> 
+> Thanks,
+> Quentin
 
