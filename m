@@ -2,197 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACE1321D4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CAE321D54
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhBVQop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:44:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
+        id S231267AbhBVQpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhBVQnx (ORCPT
+        with ESMTP id S230461AbhBVQoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:43:53 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3066AC061574;
-        Mon, 22 Feb 2021 08:43:13 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id q7so13950947iob.0;
-        Mon, 22 Feb 2021 08:43:13 -0800 (PST)
+        Mon, 22 Feb 2021 11:44:23 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D899C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:43:43 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id v21so1067900wml.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:43:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=pMONngvvuyffvAM1oBHinIVMZdGYRmB5h1Te5Fms+io=;
-        b=D9OvjGSbIQ6MlsbuW5Jrno2duP1ISKNgwvSJfKgUKtKBsn8ufYY890DKWf/+t6ihp7
-         gLr8QOCc1RP1K3K7Ie/sVrj5mp5Tm9Q2/M7iOdup7pNL5K8BggEM0X5k3qan7NVUnx+Z
-         aW6c+1UWxjWrV7MpwoJH4Gf5JaRgEIYDvyve4eXPUlMww6hntPdN+GmilZwrd/6OwM6c
-         47VUowBLKO5D54b7YVT/sStXsYpdZQO7oEiTHqD+UrM+k5eUACCq3xdCoDDkAs8veQo1
-         9HIBnSN/mAb4k6vDmREha1lLTM/i7niq0vTt5rs+ikdRZ67yc0RXMXM62oOQpKJc98k+
-         Zqug==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jPRsaEa5vUBDAV+YM6wLvtVhhlfjRcm7BzNc5iCS4sY=;
+        b=vdQYAqjv5wsEdnZ5YQOvOsZ+kRkDiXJ3iRkSNfowvbBQ5gOpWq/DF0b4xWCChan6j3
+         Opu/Ira96c/urawggjhjNn7oaatmYByAResk0E9jPRn2caGDbhX5WJgbgCE6B1Okgcb0
+         3JYzVO1atSYmRYWoQA7qxN3oMT452+WKy14XXAit5mBj8cd3je3xh7H8DW8PrBimq8CA
+         jrpA/aGziU4/htWQ0piUPBLUvQn5+IRjIr5E1Z73bRppDdqXDQAEPCwixA40kR33uScP
+         3gS/HFBHbsYD/VsQQl6Xd6UDHWiRTa96I/+uE9qp1duKqzjsy9enIhqWM926EiN79KM/
+         keJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=pMONngvvuyffvAM1oBHinIVMZdGYRmB5h1Te5Fms+io=;
-        b=KQnvTWDWSavCxxMzcY0SuZRLAw9GB6ycH8zyw2UP+V36/MN4msWbDf4kjZsCuIOusf
-         neb8Gk6cff9YqmvYeco6GUlKVZvDl2jRuXiZxu/AJDa/ujc5uaBOX6iAcFiFHU+Dxg00
-         i5565EXmyfPHMeWGAhfbR5KZNvM57M5f1FIUH2xUsQghUzptVhxsKgLyeZHs38sKc/zb
-         cHiBIFXgQ0mfRNAKUHcXgASGz+4xiLCCwcpEn3oAv9+AW1L0FrtTPbuhX7JVyvfgS3x6
-         GzWVrOy910YjL1U872ZwcxCVHKkxe7fzJlM9E+nnJzwT0EcIVA1zTmlVGkxzmJWBcgNq
-         ifJQ==
-X-Gm-Message-State: AOAM532INFi/rEMX8JyY5VbCdGrDKPZkl+28nccp0WCQBSyHpWVg6Zcg
-        gGRNN1LrUPDhxkhde2Q0qHVXom+dDl3KhqLZRns=
-X-Google-Smtp-Source: ABdhPJwYjkYrI9wfQJklN+s81NVyPZqutO+GBFKjk5c1alTQtNZ2lwqqnVCfwqiMxuekhiifGXC4H5CTHHKxJUNDkgM=
-X-Received: by 2002:a5e:c10b:: with SMTP id v11mr16261489iol.75.1614012192564;
- Mon, 22 Feb 2021 08:43:12 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jPRsaEa5vUBDAV+YM6wLvtVhhlfjRcm7BzNc5iCS4sY=;
+        b=agmnTf2Tv6SHVX1mvvdU06O6MjREkBHiAZrs9QO8KZg1XJwZCRxtO5KtMEJsvgcfrT
+         RkUDsVZ31gvaRwNGH0dSqHhFwdAuuHAk2wJZ8N6ajb2WG06OcF9vMrP+7yLuvFgesLVB
+         zb11ZY6iFKCucKjpG32lO9iqMtWXnoTttlKrKX0TXgpXn6NKy4faJFZTs1o/DkVs4eIf
+         OdNePP3f0WT2sPOa/4uENpuPFRzNJCHFf87VQBN2gSFEkAIA300pNtAiVFS/h6tK8b6L
+         UYEvM0UomPsdGSd0KnpbCTNzEUspzN2TbeSRahh+o8FzUZPizVq9cAKT6cqvTXaDR7xZ
+         f7ew==
+X-Gm-Message-State: AOAM530iLhWgXDVIoX5GH83gdHxbQSaCN5DMa9P7hgQrnuJljjg6aFHn
+        nWQdkuw9m9KgvW6zwRhp47m++A==
+X-Google-Smtp-Source: ABdhPJz6K9/nIAcyv4qk+mgY28pDR9Op91W6n374fqlCrLutVuuGVz0j9V0Jn88uL/3DkEvgPOuTvg==
+X-Received: by 2002:a1c:f702:: with SMTP id v2mr20446477wmh.131.1614012221835;
+        Mon, 22 Feb 2021 08:43:41 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id m3sm25918046wmb.19.2021.02.22.08.43.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 08:43:41 -0800 (PST)
+Date:   Mon, 22 Feb 2021 16:43:39 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net, valentin.schneider@arm.com
+Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
+ cpu_util_next()
+Message-ID: <YDPfO1ixfb+8PNm0@google.com>
+References: <20210222095401.37158-1-vincent.donnefort@arm.com>
+ <YDODN1rnTqfTQOug@google.com>
+ <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
+ <YDOiKH/XQDUKcrPU@google.com>
+ <20210222150151.GA124800@e124901.cambridge.arm.com>
+ <YDPUwKKYgZfzzCJm@google.com>
+ <YDPajlnvgkonocpp@google.com>
+ <20210222163947.GB225035@e124901.cambridge.arm.com>
 MIME-Version: 1.0
-References: <CA+G9fYtNOZ-G_RTq_Uedy-7wkFog2q+OWNbWd--eL+i2-OQ7NA@mail.gmail.com>
- <CA+icZUVdpyNC=e8Cdg2bXaKdQGgkY1Te-OEXE7jaKARw0KKrCw@mail.gmail.com> <CA+G9fYvGgR82mwC9Kk6fKR6Cb53u02MQJffBBZ+bTp2nNxHL7A@mail.gmail.com>
-In-Reply-To: <CA+G9fYvGgR82mwC9Kk6fKR6Cb53u02MQJffBBZ+bTp2nNxHL7A@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 22 Feb 2021 17:43:07 +0100
-Message-ID: <CA+icZUX6y_cPa1ev3RGbq2P8-PfthzZYJUbP3W_9du=GBLQXdA@mail.gmail.com>
-Subject: Re: clang-12: i386: Unsupported relocation type: R_386_PLT32 (4)
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        x86-ml <x86@kernel.org>, lkft-triage@lists.linaro.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210222163947.GB225035@e124901.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 5:30 PM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> On Mon, 22 Feb 2021 at 21:44, Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Mon, Feb 22, 2021 at 5:08 PM Naresh Kamboju
-> > <naresh.kamboju@linaro.org> wrote:
-> > >
-> > > While building i386 configs on stable-rc 5.10, stable-rc 5.11 branch
-> > > and mainline
-> > > with clang-12 these following warnings and errors were noticed.
-> > >
-> >
-> > Hi Naresh,
-> >
-> > Please see commit bb73d07148c405c293e576b40af37737faf23a6a
-> > ("x86/build: Treat R_386_PLT32 relocation as R_386_PC32").
-> > Recently accepted into Linus Git tree.
->
-> Can this be backported / cherry-picked into stable-rc 5.10 and stable-rc 5.11 ?
->
+On Monday 22 Feb 2021 at 16:39:47 (+0000), Vincent Donnefort wrote:
+> On Mon, Feb 22, 2021 at 04:23:42PM +0000, Quentin Perret wrote:
+> > On Monday 22 Feb 2021 at 15:58:56 (+0000), Quentin Perret wrote:
+> > > But in any case, if we're going to address this, I'm still not sure this
+> > > patch will be what we want. As per my first comment we need to keep the
+> > > frequency estimation right.
+> > 
+> > Totally untested, but I think in principle you would like something like
+> > the snippet below. Would that work?
+> 
+> You preempted my previous email :)
+> 
+> Yeah, that looks like what we want, I'll give a try.
 
-I have this one in my custom patchset (even though I only build x86-64).
+Cool, thanks.
 
-Makes sense to have it in Linux v5.10.y LTS and Linux v5.11.y and
-maybe other linux-stable releases.
+And ofc no strong opinion about the implementation details, this can
+most certainly be optimized in some way so have fun :)
 
-The usual way to get a fix into linux-stable is to contact Greg and
-Sasha - the Linux-stable maintainers and ask for inclusion.
-See "STABLE BRANCH" in MAINTAINERS.
-But we have also LLVM/Clang maintainers (see [2]).
-Cannot say if you address LLVM/Clang maintainers first... and they
-help or what is the recommended/ideal way.
-
-- Sedat -
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/MAINTAINERS/?h=v5.11#n16828
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/MAINTAINERS/?h=v5.11#n4306
-
-> >
-> > [1] says:
-> >
-> > Further info for the more interested:
-> >
-> >   https://github.com/ClangBuiltLinux/linux/issues/1210
-> >   https://sourceware.org/bugzilla/show_bug.cgi?id=27169
-> >   https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6
-> >
-> > Hope that helps.
-> >
-> > - Sedat -
-> >
-> > [1] https://git.kernel.org/linus/bb73d07148c405c293e576b40af37737faf23a6a
-> >
-> > > make --silent --keep-going --jobs=8
-> > > O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=i386
-> > > CROSS_COMPILE=i686-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-> > > clang'
-> > >
-> > > drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2586:9: warning: shift
-> > > count >= width of type [-Wshift-count-overflow]
-> > >
-> > >         return hweight64(VDBOX_MASK(&i915->gt));
-> > >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from
-> > > macro 'hweight64'
-> > > #define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) :
-> > > __arch_hweight64(w))
-> > >                                                 ^~~~~~~~~~~~~~~~~~~~
-> > > include/asm-generic/bitops/const_hweight.h:21:76: note: expanded from
-> > > macro '__const_hweight64'
-> > > #define __const_hweight64(w) (__const_hweight32(w) +
-> > > __const_hweight32((w) >> 32))
-> > >                                                                            ^  ~~
-> > > include/asm-generic/bitops/const_hweight.h:20:49: note: expanded from
-> > > macro '__const_hweight32'
-> > > #define __const_hweight32(w) (__const_hweight16(w) +
-> > > __const_hweight16((w) >> 16))
-> > >                                                 ^
-> > > include/asm-generic/bitops/const_hweight.h:19:48: note: expanded from
-> > > macro '__const_hweight16'
-> > > #define __const_hweight16(w) (__const_hweight8(w)  +
-> > > __const_hweight8((w)  >> 8 ))
-> > >                                                ^
-> > > include/asm-generic/bitops/const_hweight.h:10:9: note: expanded from
-> > > macro '__const_hweight8'
-> > >          ((!!((w) & (1ULL << 0))) +     \
-> > >                ^
-> > > drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2586:9: warning: shift
-> > > count >= width of type [-Wshift-count-overflow]
-> > >         return hweight64(VDBOX_MASK(&i915->gt));
-> > >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > <trim>
-> > >
-> > > 32 warnings generated.
-> > > Unsupported relocation type: R_386_PLT32 (4)
-> > > make[3]: *** [arch/x86/boot/compressed/Makefile:116:
-> > > arch/x86/boot/compressed/vmlinux.relocs] Error 1
-> > > make[3]: *** Deleting file 'arch/x86/boot/compressed/vmlinux.relocs'
-> > > make[3]: Target 'arch/x86/boot/compressed/vmlinux' not remade because of errors.
-> > >
-> > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > >
-> > > Steps to reproduce:
-> > > ---------------------------
-> > > # TuxMake is a command line tool and Python library that provides
-> > > # portable and repeatable Linux kernel builds across a variety of
-> > > # architectures, toolchains, kernel configurations, and make targets.
-> > > #
-> > > # TuxMake supports the concept of runtimes.
-> > > # See https://docs.tuxmake.org/runtimes/, for that to work it requires
-> > > # that you install podman or docker on your system.
-> > > #
-> > > # To install tuxmake on your system globally:
-> > > # sudo pip3 install -U tuxmake
-> > > #
-> > > # See https://docs.tuxmake.org/ for complete documentation.
-> > >
-> > > tuxmake --runtime podman --target-arch i386 --toolchain clang-12
-> > > --kconfig defconfig  --kconfig-add
-> > > https://builds.tuxbuild.com/1opxSKxZuRowPsiOsSJ0IoUOXOt/config
-> > >
-> > > --
-> > > Linaro LKFT
-> > > https://lkft.linaro.org
->
-> - Naresh
+Cheers,
+Quentin
