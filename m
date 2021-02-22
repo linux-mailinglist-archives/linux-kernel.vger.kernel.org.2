@@ -2,204 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C012D32107A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE3032107B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhBVFcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 00:32:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhBVFcK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 00:32:10 -0500
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897E8C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 21:31:29 -0800 (PST)
-Received: by mail-ua1-x92d.google.com with SMTP id i3so3944380uai.3
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 21:31:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gu/fKr3GRAQ+ErLkQJBUlVQcwe14YTdgKKhXg0Cv4l4=;
-        b=nKDy+b2+V7fS2f7mnoG/Ss5+uvRYBQnercKoIeTycpfWKJxx6kOPPx2ZeMe5ucP5Iv
-         50sS1bwNYdUpsm04AudIWrPnD+CNDRIBtKgv/9JUPjkbQlh1RAybhdP7pPk7uV3lZTxy
-         I4/U2OZz5f4aafI7BWCv88whwJWIfvn83D3IM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gu/fKr3GRAQ+ErLkQJBUlVQcwe14YTdgKKhXg0Cv4l4=;
-        b=odgWhdfRvIycZV/csUr8rcylfOk2nHy+YC52Gg8FxPw/zyQMvkCzhAXp2jyHcO0HGz
-         1q0JfhDkYl0eO+oi2bkeohkVvQ1hQDRctyvqorZ5daTtS8joC9QxdmsdiYX8p3sioMqk
-         tBL6fZ4nTFqFMVVcX1/ytwOwitWaaJfgeLVCEnMQpC+YMB9kxids1ZxfSJG5pXQNWy8Z
-         d6oiQc+t/xrXMfmriz6I0ZmRJIGS1HG2npb6qE0iR/btUUe36rRp4ZQZ6OKDmZ6Bvr5y
-         Wvl9XGjT46qyla0QoZsAXk+IGGbWmFqDbAey6bBxxahrd2Hcp9vKDfEz1x5D/dc9Qdyr
-         VDUQ==
-X-Gm-Message-State: AOAM5323zTNT6nOqaEPNyVx6pVoM6tpoxWaCyjv/WcYrHuNWTycTe8+j
-        N1K2ovwH6r6JS49M5tXS4o2JXt/eyRGMpF4twKe5zQ==
-X-Google-Smtp-Source: ABdhPJys5c+rCVxUlnAkJ7c+Jss6rAjW1MoFOcoVaCF3S96QpX3HiNwsT/MLRIitrpXf+DKZerK3D3cbUQdqljXKnGs=
-X-Received: by 2002:ab0:1052:: with SMTP id g18mr3262401uab.74.1613971888653;
- Sun, 21 Feb 2021 21:31:28 -0800 (PST)
+        id S230017AbhBVFe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 00:34:27 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:15631 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230006AbhBVFeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 00:34:22 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613972037; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=jO1TyQvWVUaMSZ6/OhAEI1jkl9QLoSv3X/DAz84wuSc=; b=HoIfTmWuo468r90ONTqF24FV/MwXh05m0HLqVaAmJTe3HRl0YaKrI8011dKqtwbPig79twyf
+ zST+KYaehIePXS/aoC2/0pGl8F5DnzqtkGdmv+F6OvZscbRLjfi1T56tmI4K5je4Dp5vQ9iC
+ uCrorKWsk8Tf7ZOQ7O2fYDS4cLk=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60334242090a774287426a90 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Feb 2021 05:33:54
+ GMT
+Sender: pkondeti=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1E972C433ED; Mon, 22 Feb 2021 05:33:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pkondeti)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C6A87C433C6;
+        Mon, 22 Feb 2021 05:33:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C6A87C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pkondeti@codeaurora.org
+Date:   Mon, 22 Feb 2021 11:03:46 +0530
+From:   Pavan Kondeti <pkondeti@codeaurora.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Rik van Riel <riel@surriel.com>
+Subject: Re: [PATCH v2 1/7] sched/fair: Ignore percpu threads for imbalance
+ pulls
+Message-ID: <20210222053346.GC23511@codeaurora.org>
+References: <20210219130003.2890-1-valentin.schneider@arm.com>
+ <20210219130003.2890-2-valentin.schneider@arm.com>
 MIME-Version: 1.0
-References: <20210211113309.1.I629b2366a6591410359c7fcf6d385b474b705ca2@changeid>
- <YDKvm1QmdJtJbaN6@pendragon.ideasonboard.com>
-In-Reply-To: <YDKvm1QmdJtJbaN6@pendragon.ideasonboard.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Mon, 22 Feb 2021 13:31:17 +0800
-Message-ID: <CANMq1KALq+C2GD2uRohKpwvkDC05-fHyo=_WoHwnsKNjgcSfEQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/dsi: Add _NO_ to MIPI_DSI_* flags disabling features
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Xin Ji <xji@analogixsemi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno@lists.freedesktop.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219130003.2890-2-valentin.schneider@arm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 3:08 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Nicolas,
->
-> Thank you for the patch.
->
-> On Thu, Feb 11, 2021 at 11:33:55AM +0800, Nicolas Boichat wrote:
-> > Many of the DSI flags have names opposite to their actual effects,
-> > e.g. MIPI_DSI_MODE_EOT_PACKET means that EoT packets will actually
-> > be disabled. Fix this by including _NO_ in the flag names, e.g.
-> > MIPI_DSI_MODE_NO_EOT_PACKET.
-> >
-> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
->
-> This looks good to me, it increases readability.
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->
-> Please however see the end of the mail for a comment.
->
-> > ---
-> > I considered adding _DISABLE_ instead, but that'd make the
-> > flag names a big too long.
-> >
-> > Generated with:
-> > flag=MIPI_DSI_MODE_VIDEO_HFP; git grep $flag | cut -f1 -d':' | \
-> >   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HFP/" {}
-> > flag=MIPI_DSI_MODE_VIDEO_HBP; git grep $flag | cut -f1 -d':' | \
-> >   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HBP/" {}
-> > flag=MIPI_DSI_MODE_VIDEO_HSA; git grep $flag | cut -f1 -d':' | \
-> >   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HSA/" {}
-> > flag=MIPI_DSI_MODE_EOT_PACKET; git grep $flag | cut -f1 -d':' | \
-> >   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_NO_EOT_PACKET/" {}
-> > (then minor format changes)
->
-> Ever tried coccinelle ? :-)
+On Fri, Feb 19, 2021 at 12:59:57PM +0000, Valentin Schneider wrote:
+> From: Lingutla Chandrasekhar <clingutla@codeaurora.org>
+> 
+> In load balancing, when balancing group is unable to pull task
+> due to ->cpus_ptr constraints from busy group, then it sets
+> LBF_SOME_PINNED to lb env flags, as a consequence, sgc->imbalance
+> is set for its parent domain level. which makes the group
+> classified as imbalance to get help from another balancing cpu.
+> 
+> Consider a 4-CPU big.LITTLE system with CPUs 0-1 as LITTLEs and
+> CPUs 2-3 as Bigs with below scenario:
+> - CPU0 doing newly_idle balancing
+> - CPU1 running percpu kworker and RT task (small tasks)
+> - CPU2 running 2 big tasks
+> - CPU3 running 1 medium task
+> 
+> While CPU0 is doing newly_idle load balance at MC level, it fails to
+> pull percpu kworker from CPU1 and sets LBF_SOME_PINNED to lb env flag
+> and set sgc->imbalance at DIE level domain. As LBF_ALL_PINNED not cleared,
+> it tries to redo the balancing by clearing CPU1 in env cpus, but it don't
+> find other busiest_group, so CPU0 stops balacing at MC level without
+> clearing 'sgc->imbalance' and restart the load balacing at DIE level.
+> 
+> And CPU0 (balancing cpu) finds LITTLE's group as busiest_group with group
+> type as imbalance, and Bigs that classified the level below imbalance type
+> would be ignored to pick as busiest, and the balancing would be aborted
+> without pulling any tasks (by the time, CPU1 might not have running tasks).
+> 
+> It is suboptimal decision to classify the group as imbalance due to
+> percpu threads. So don't use LBF_SOME_PINNED for per cpu threads.
+> 
+> Signed-off-by: Lingutla Chandrasekhar <clingutla@codeaurora.org>
+> [Use kthread_is_per_cpu() rather than p->nr_cpus_allowed]
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  kernel/sched/fair.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 8a8bd7b13634..2d4dcf1a3372 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7539,6 +7539,10 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+>  	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
+>  		return 0;
+>  
+> +	/* Disregard pcpu kthreads; they are where they need to be. */
+> +	if ((p->flags & PF_KTHREAD) && kthread_is_per_cpu(p))
+> +		return 0;
+> +
+>  	if (!cpumask_test_cpu(env->dst_cpu, p->cpus_ptr)) {
+>  		int cpu;
+>  
 
-Fun project for next time ,-)
+Looks good to me. Thanks Valentin for the help.
 
->
-> >  drivers/gpu/drm/bridge/adv7511/adv7533.c             | 2 +-
-> >  drivers/gpu/drm/bridge/analogix/anx7625.c            | 2 +-
-> >  drivers/gpu/drm/bridge/cdns-dsi.c                    | 4 ++--
-> >  drivers/gpu/drm/bridge/tc358768.c                    | 2 +-
-> >  drivers/gpu/drm/exynos/exynos_drm_dsi.c              | 8 ++++----
-> >  drivers/gpu/drm/mcde/mcde_dsi.c                      | 2 +-
-> >  drivers/gpu/drm/mediatek/mtk_dsi.c                   | 2 +-
-> >  drivers/gpu/drm/msm/dsi/dsi_host.c                   | 8 ++++----
-> >  drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c | 2 +-
-> >  drivers/gpu/drm/panel/panel-dsi-cm.c                 | 2 +-
-> >  drivers/gpu/drm/panel/panel-elida-kd35t133.c         | 2 +-
-> >  drivers/gpu/drm/panel/panel-khadas-ts050.c           | 2 +-
-> >  drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c   | 2 +-
-> >  drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c   | 2 +-
-> >  drivers/gpu/drm/panel/panel-novatek-nt35510.c        | 2 +-
-> >  drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c   | 2 +-
-> >  drivers/gpu/drm/panel/panel-samsung-s6d16d0.c        | 2 +-
-> >  drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c     | 2 +-
-> >  drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c    | 2 +-
-> >  drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c        | 4 ++--
-> >  drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c      | 2 +-
-> >  drivers/gpu/drm/panel/panel-simple.c                 | 2 +-
-> >  drivers/gpu/drm/panel/panel-sony-acx424akp.c         | 2 +-
-> >  drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c     | 2 +-
-> >  include/drm/drm_mipi_dsi.h                           | 8 ++++----
-> >  25 files changed, 36 insertions(+), 36 deletions(-)
-> >
-> > []
-> > diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
-> > index 360e6377e84b..ba91cf22af51 100644
-> > --- a/include/drm/drm_mipi_dsi.h
-> > +++ b/include/drm/drm_mipi_dsi.h
-> > @@ -119,15 +119,15 @@ struct mipi_dsi_host *of_find_mipi_dsi_host_by_node(struct device_node *node);
-> >  /* enable hsync-end packets in vsync-pulse and v-porch area */
-> >  #define MIPI_DSI_MODE_VIDEO_HSE              BIT(4)
->
-> We're mixing bits that enable a feature and bits that disable a feature.
-> Are these bits defined in the DSI spec, or internal to DRM ? In the
-> latter case, would it make sense to standardize on one "polarity" ? That
-> would be a more intrusive change in drivers though.
+Thanks,
+Pavan
 
-Yes, that'd require auditing every single code path and reverse the
-logic as needed. I'm not volunteering for that ,-P (hopefully the
-current change is still an improvement).
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-Hopefully real DSI experts can comment (Andrzej?), I think the default
-are sensible settings?
-
-
->
-> >  /* disable hfront-porch area */
-> > -#define MIPI_DSI_MODE_VIDEO_HFP              BIT(5)
-> > +#define MIPI_DSI_MODE_VIDEO_NO_HFP   BIT(5)
-> >  /* disable hback-porch area */
-> > -#define MIPI_DSI_MODE_VIDEO_HBP              BIT(6)
-> > +#define MIPI_DSI_MODE_VIDEO_NO_HBP   BIT(6)
-> >  /* disable hsync-active area */
-> > -#define MIPI_DSI_MODE_VIDEO_HSA              BIT(7)
-> > +#define MIPI_DSI_MODE_VIDEO_NO_HSA   BIT(7)
-> >  /* flush display FIFO on vsync pulse */
-> >  #define MIPI_DSI_MODE_VSYNC_FLUSH    BIT(8)
-> >  /* disable EoT packets in HS mode */
-> > -#define MIPI_DSI_MODE_EOT_PACKET     BIT(9)
-> > +#define MIPI_DSI_MODE_NO_EOT_PACKET  BIT(9)
-> >  /* device supports non-continuous clock behavior (DSI spec 5.6.1) */
-> >  #define MIPI_DSI_CLOCK_NON_CONTINUOUS        BIT(10)
-> >  /* transmit data in low power */
->
-> --
-> Regards,
->
-> Laurent Pinchart
