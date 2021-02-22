@@ -2,57 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8083211C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5CB3211CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhBVII4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 03:08:56 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:49331 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230428AbhBVIIu (ORCPT
+        id S230463AbhBVIKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:10:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230450AbhBVIKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:08:50 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UPD0MBr_1613981284;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPD0MBr_1613981284)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 22 Feb 2021 16:08:04 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     maintainers@bluecherrydvr.com
-Cc:     anton@corp.bluecherry.net, andrey_utkin@fastmail.com,
-        ismael@iodev.co.uk, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] media: solo6x10: Switch to using the new API kobj_to_dev()
-Date:   Mon, 22 Feb 2021 16:08:01 +0800
-Message-Id: <1613981281-52838-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 22 Feb 2021 03:10:18 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD61C061574;
+        Mon, 22 Feb 2021 00:09:36 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DkZbJ1pmNz9sBy;
+        Mon, 22 Feb 2021 19:09:31 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613981373;
+        bh=/kO2yzASfVqsCYvqWo0MJAP9LM+MmjcpeRWvrSn5hSM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Xt5hRaZzLC2XIeRc3jnl0p3O2efy6cGs7Pha1aQE4BfStosSEdIpx6YvZIy9ZL143
+         Ken24YvNBH+63NWAIve38hcLY9DRJjK3nXXaD88cG+0zb4ideSGpndyQfAiCKEMFRW
+         +cWpZzNFTZH5FVnf9UKA+OOHmStTjc3vOka3ZGCIu7399qP3Tf/eZB8SJPPXPjcg62
+         ixZ7xv9jW02znhHRta3hRvncpthhjCBSsEy6WBxFkUWcqLoeVg2Pk/rGM7rLFO4YlE
+         1xq2IUHO+7ERhS5IojIZrb95Y6u5KGJtcZ2wfoQHyaxTW0QgdBwD33Xmx8GZVT3xCw
+         OL2Kq/nfE4NIA==
+Date:   Mon, 22 Feb 2021 19:09:28 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the sparc tree
+Message-ID: <20210222190928.4f093646@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Ta3zzFdFJPmgtWKlbVvRjKm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fixed the following coccicheck:
-./drivers/media/pci/solo6x10/solo6x10-core.c:371:60-61: WARNING
-opportunity for kobj_to_dev()
+--Sig_/Ta3zzFdFJPmgtWKlbVvRjKm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/media/pci/solo6x10/solo6x10-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-diff --git a/drivers/media/pci/solo6x10/solo6x10-core.c b/drivers/media/pci/solo6x10/solo6x10-core.c
-index d497afc..4a546ee 100644
---- a/drivers/media/pci/solo6x10/solo6x10-core.c
-+++ b/drivers/media/pci/solo6x10/solo6x10-core.c
-@@ -368,7 +368,7 @@ static ssize_t sdram_show(struct file *file, struct kobject *kobj,
- 			  struct bin_attribute *a, char *buf,
- 			  loff_t off, size_t count)
- {
--	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct device *dev = kobj_to_dev(kobj);
- 	struct solo_dev *solo_dev =
- 		container_of(dev, struct solo_dev, dev);
- 	const int size = solo_dev->sdram_size;
--- 
-1.8.3.1
+After merging the sparc tree, today's linux-next build (sparc64 defconfig)
+produced these warnings:
 
+arch/sparc/configs/sparc64_defconfig:237:warning: override: reassigning to =
+symbol ATA
+arch/sparc/configs/sparc64_defconfig:239:warning: override: reassigning to =
+symbol HAPPYMEAL
+
+Presumably introduced by commit
+
+  520615e1f5b2 ("sparc64: switch defconfig from the legacy ide driver to li=
+bata")
+
+or commit
+
+  a57cdeb369ef ("sparc: sparc64_defconfig: add necessary configs for qemu")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Ta3zzFdFJPmgtWKlbVvRjKm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAzZrgACgkQAVBC80lX
+0GwHkgf/QtXPFPUR9U9spr0yWGZPXirsYRdNpJWabyJoWysKvKBuBezDWQmCKfnb
+UtkAO8zGJiX4aKWrcmzmlvNRi77Id5EHvRECiYw5IlOmqH2pHblNi8izxnNfz2dI
+4gbXdImmAEmIK8cksyMkr+suZmFVnQr+ohc/lCzMeHnj8p+be3vhjo9Jf9C6Llfi
+S+U6eTH0NyBqLjMm4Z0REs3A4xnKV6RrBUnHh7RpqB0dJpXKKU6zFQnJULHCmHF4
+vTMruRBD8mrEgsi2aIjEVCkwaZDlRI2B99Dg/l7+ZTdPya/CpSRq4tgehuaaQ6Dj
+lGo1wVZ4HZOwBSuFxOCaKOWDAocesg==
+=aCfV
+-----END PGP SIGNATURE-----
+
+--Sig_/Ta3zzFdFJPmgtWKlbVvRjKm--
