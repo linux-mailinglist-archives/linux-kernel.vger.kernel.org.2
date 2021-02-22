@@ -2,180 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556A4322265
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:52:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF36E322268
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbhBVWvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 17:51:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
+        id S232428AbhBVWxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 17:53:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231985AbhBVWvS (ORCPT
+        with ESMTP id S232396AbhBVWxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 17:51:18 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508D4C061574;
-        Mon, 22 Feb 2021 14:50:37 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id i9so680398wml.5;
-        Mon, 22 Feb 2021 14:50:37 -0800 (PST)
+        Mon, 22 Feb 2021 17:53:34 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65952C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 14:52:54 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id f7so8894304pgp.19
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 14:52:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=uEqVaXzxZoPcvL56b/3dsUr6I9DjBbhnipXRDOEiD8s=;
-        b=iHSxU3fhPjCYIOQuugrDmo0B7j2/Svv9qUhk6hhGRmUn5d3VwTuwgYpygu+E5j+4oL
-         MXKPnc5y7xIN3gnQ03rj7vhoxOd9K0yiIbkzJQxz7IFU62jPZayjxeM467E0jvAT6L/9
-         T+2H0XZoK5ZsNSdE0jISEINGUctd/NLGQUOAvrQRzEBuoP8wGjl0z8m7mS3CbvmvIUaO
-         NR+xadw2Ip4uht7BLiCX/jVaEJwY4VUvb4yiwnp23lG/xMe/oNPT6eCTLUsId2/88srR
-         Cc9LK3UOVPOV9TBam8KqC3NNQpHvXWk2xONippJR6ZOXjs+fzbKKX1LU8lCAPVRnP6yD
-         I8ag==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=WCWa6LwM2bR7pmLc5+vjMwUQ7Td6/ol6HmkorD+Rs9E=;
+        b=lDd76rRs/xcSBBfRk70gFbmfgQxT9We6bVeJPObs5IDgLOlnPbzKIFIM/1ZOsf0aq+
+         WmPsPewXicb1MUkmTReT9/qGkuKCE6luXgSHW7iEKpAf62OLjNkjciRCDsmt92SULBEw
+         ADEQc+NSwaqo194CKHIQuqgHc65keoQ6nhjn0pVAVXQzuLSbNH7EMK4sXlTEA4Q0Cp6B
+         kZ+i6jYHuS74AQ1ZftWm4fMMnfp9B/ymM9NLFaiqlDJ7hCkJHLlaa6BGeiq7IlofQg4C
+         Yt1VGSjTumokX/yM6XK/cStxXbO4IqsXMuIbwMUpx+EeR0H8V/wiISMSpUCeYyrWn3Rt
+         kdXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=uEqVaXzxZoPcvL56b/3dsUr6I9DjBbhnipXRDOEiD8s=;
-        b=o0D3vPP9PKU02eWYaSXKZi2yLNMldX2y8jP6B86R5nG+5QGgcaB+gzhTjvEP6QwEq1
-         riclLAvI8d7C6DuuIBzNEQMFkrlFp9D1pryVosn2k5rd/m6rY6c34VdaIB/sQpHmFhgM
-         NBupGlRhq1hVtKsV3UyCp7dBeRwykm2RxNraD0S60he5XSEXzvYyqGV21wYnpowk2C6j
-         fiRYat0EtAxrkobf4LkrjvdSU10+bXjS4EFn+V3KHAE+IruMVau/r6YeUtLgGvQZsHY+
-         erHhXEjxQ/I4NfRNCJjc4+gD3Ity1pdm4T1k0uZyFf5xRA2zNb5Lt0O6TEOTW5t3gsW1
-         wryA==
-X-Gm-Message-State: AOAM530V/0I/heoXYwAUdpzkerdg1M3IPrs4cmOKVMQ8fBjjgwV1LVbS
-        y5j6QVPhFEP4SrjDLh42WCk=
-X-Google-Smtp-Source: ABdhPJyr1xAXSpQ3GB788g0Paavvc+qpjPCBknL0nVmHvD8cp2tu8YZ9yZXQiMyYRvX/40ISvC2rVQ==
-X-Received: by 2002:a7b:c842:: with SMTP id c2mr22188543wml.100.1614034235968;
-        Mon, 22 Feb 2021 14:50:35 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.123])
-        by smtp.gmail.com with ESMTPSA id q140sm743525wme.0.2021.02.22.14.50.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 14:50:35 -0800 (PST)
-Subject: Re: [PATCH v3 5/6] platform/x86: Add intel_skl_int3472 driver
-To:     Hans de Goede <hdegoede@redhat.com>, tfiga@chromium.org,
-        sakari.ailus@linux.intel.com, rajmohan.mani@intel.com,
-        rjw@rjwysocki.net, lenb@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart@ideasonboard.com, mgross@linux.intel.com,
-        luzmaximilian@gmail.com, robert.moore@intel.com,
-        erik.kaneda@intel.com, me@fabwu.ch, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org
-References: <20210222130735.1313443-1-djrscally@gmail.com>
- <20210222130735.1313443-6-djrscally@gmail.com>
- <04c106e3-fd95-c19d-115f-8acd07df4c0c@gmail.com>
- <f9620e2e-604e-01c9-0d72-3b415cf3fa88@redhat.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <5c90915d-1e11-c86a-0dc2-48840fc647e4@gmail.com>
-Date:   Mon, 22 Feb 2021 22:50:34 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <f9620e2e-604e-01c9-0d72-3b415cf3fa88@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=WCWa6LwM2bR7pmLc5+vjMwUQ7Td6/ol6HmkorD+Rs9E=;
+        b=V4uxW0m+us3tcnwinNEvMx/Xa9Dg9TWFN3DTkcqyWXzDtUqdVQPw7vqiVGmAzoTDyD
+         KtYW5BvlgXy8q2vaFhqxKq/wIVO5YGlYLyIYx+BvaCj96Lxz9/wai+Btr3wp6fdxnnpq
+         dqJkjt3Ka+2QrWrKWwDnmw/ZWTYXHxwYnov+oBIqbspNOjXQTdrr9/P9PsJvWhjNOD8x
+         GS1qA+RMOg81vveM/iAWAleGjXfSTm6WYTolL3Ryb5362NSiRJ2i5e741pTdXyEyOMn7
+         2kYAFOwxHZCbpGSnoPFhMtUfIWE4qAHOBbJHeS1U1FAhJaAI2tZvJZ2ROOvqMCk8175e
+         mmlw==
+X-Gm-Message-State: AOAM532dyOsDSrZJaldrMI5IMIei6ZQsuZ0rmV/gR9zr7teCx1S5sE3E
+        JY2ybiV7gexrO5mQQVNE1xLAxW/Z40a9Lw==
+X-Google-Smtp-Source: ABdhPJwtHV6TBb9PF8vdxnwdg9i2ZEKDTAqAQRVyGEyJFdwR2yHkcqOSNcIG9NoO4tbOg7DEs6lhwUOXlxNwfQ==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:1ce2:63d4:4764:e103])
+ (user=dlatypov job=sendgmr) by 2002:a62:8f0c:0:b029:1ed:8c8d:6910 with SMTP
+ id n12-20020a628f0c0000b02901ed8c8d6910mr9773014pfd.31.1614034373814; Mon, 22
+ Feb 2021 14:52:53 -0800 (PST)
+Date:   Mon, 22 Feb 2021 14:52:41 -0800
+Message-Id: <20210222225241.201145-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+Subject: [PATCH] kunit: tool: make --kunitconfig accept dirs, add lib/kunit fragment
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org, tytso@mit.edu,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans, thanks for the input
+TL;DR
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit
 
-On 22/02/2021 13:27, Hans de Goede wrote:
-> Hi,
->
-> On 2/22/21 2:19 PM, Daniel Scally wrote:
->> Hi all
->>
->> On 22/02/2021 13:07, Daniel Scally wrote:
->>> diff --git a/drivers/platform/x86/intel-int3472/Kconfig b/drivers/platform/x86/intel-int3472/Kconfig
->>> new file mode 100644
->>> index 000000000000..b94622245c21
->>> --- /dev/null
->>> +++ b/drivers/platform/x86/intel-int3472/Kconfig
->>> @@ -0,0 +1,31 @@
->>> +config INTEL_SKL_INT3472
->>> +	tristate "Intel SkyLake ACPI INT3472 Driver"
->>> +	depends on ACPI
->>> +	depends on REGULATOR
->>> +	depends on GPIOLIB
->>> +	depends on COMMON_CLK && CLKDEV_LOOKUP
->>> +	depends on I2C
->>> +	select MFD_CORE
->>> +	select REGMAP_I2C
->>> +	help
->>> +	  This driver adds support for the INT3472 ACPI devices found on some
->>> +	  Intel SkyLake devices.
->>> +
->>> +	  The INT3472 is an Intel camera power controller, a logical device
->>> +	  found on some Skylake-based systems that can map to different
->>> +	  hardware devices depending on the platform. On machines
->>> +	  designed for Chrome OS, it maps to a TPS68470 camera PMIC. On
->>> +	  machines designed for Windows, it maps to either a TP68470
->>> +	  camera PMIC, a uP6641Q sensor PMIC, or a set of discrete GPIOs
->>> +	  and power gates.
->>> +
->>> +	  If your device was designed for Chrome OS, this driver will provide
->>> +	  an ACPI OpRegion, which must be available before any of the devices
->>> +	  using it are probed. For this reason, you should select Y if your
->>> +	  device was designed for ChromeOS. For the same reason the
->>> +	  I2C_DESIGNWARE_PLATFORM option must be set to Y too.
->>> +
->>> +	  Say Y or M here if you have a SkyLake device designed for use
->>> +	  with Windows or ChromeOS. Say N here if you are not sure.
->>> +
->>> +	  The module will be named "intel-skl-int3472"
->> The Kconfig option for the existing tps68470 driver is a bool which
->> depends on I2C_DESIGNWARE_PLATFORM=y, giving the following reason:
->>
->> This option is a bool as it provides an ACPI operation
->> region, which must be available before any of the devices
->> using this are probed. This option also configures the
->> designware-i2c driver to be built-in, for the same reason.
->>
->> One problem I've faced is that that scenario only applies to some
->> devices that this new driver can support, so hard-coding it as built in
->> didn't make much sense. For that reason I opted to set it tristate, but
->> of course that issue still exists for ChromeOS devices where the
->> OpRegion will be registered. I opted for simply documenting that
->> requirement, as is done in aaac4a2eadaa6: "mfd: axp20x-i2c: Document
->> that this must be builtin on x86", but that's not entirely satisfactory.
->> Possible alternatives might be setting "depends on
->> I2C_DESIGNWARE_PLATFORM=y if CHROME_PLATFORMS" or something similar,
->> though of course the User would still have to realise they need to
->> build-in the INTEL_SKL_INT3472 Kconfig option too.
->>
->> Feedback around this issue would be particularly welcome, as I'm not
->> sure what the best approach might be.
-> This is a tricky area, I actually wrote the "mfd: axp20x-i2c: Document
-> that this must be builtin on x86" patch you refer to. At first I tried
-> to express the dependency in Kconfig language but things got too complex
-> and Kconfig sometimes became unhappy about circular deps (or something
-> like that).
+Per suggestion from Ted [1], we can reduce the amount of typing by
+assuming a convention that these files are named '.kunitconfig'.
 
+In the case of [1], we now have
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=fs/ext4
 
-Yes, I had a go too; with similar results
+Also add in such a fragment for kunit itself so we can give that as an
+example more close to home (and thus less likely to be accidentally
+broken).
 
-> The most important thing here is to make sure that the generic configs
-> shipped by distros get this right; and we can hope that people creating
-> those configs at least read the help text...
->
-> So all in all I believe that just documenting the requirement is fine.
+[1] https://lore.kernel.org/linux-ext4/YCNF4yP1dB97zzwD@mit.edu/
 
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ lib/kunit/.kunitconfig                 | 3 +++
+ tools/testing/kunit/kunit.py           | 4 +++-
+ tools/testing/kunit/kunit_kernel.py    | 2 ++
+ tools/testing/kunit/kunit_tool_test.py | 6 ++++++
+ 4 files changed, 14 insertions(+), 1 deletion(-)
+ create mode 100644 lib/kunit/.kunitconfig
 
-OK - that's what I'm hoping is the consensus, as I don't think it can be
-made _entirely_ seamless through dependencies or whatever anyway, in
-which case documenting it seems like the cleanest approach to me.
+diff --git a/lib/kunit/.kunitconfig b/lib/kunit/.kunitconfig
+new file mode 100644
+index 000000000000..9235b7d42d38
+--- /dev/null
++++ b/lib/kunit/.kunitconfig
+@@ -0,0 +1,3 @@
++CONFIG_KUNIT=y
++CONFIG_KUNIT_TEST=y
++CONFIG_KUNIT_EXAMPLE_TEST=y
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index d5144fcb03ac..5da8fb3762f9 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -184,7 +184,9 @@ def add_common_opts(parser) -> None:
+ 			    help='Run all KUnit tests through allyesconfig',
+ 			    action='store_true')
+ 	parser.add_argument('--kunitconfig',
+-			     help='Path to Kconfig fragment that enables KUnit tests',
++			     help='Path to Kconfig fragment that enables KUnit tests.'
++			     ' If given a directory, (e.g. lib/kunit), "/.kunitconfig" '
++			     'will get  automatically appended.',
+ 			     metavar='kunitconfig')
+ 
+ def add_build_opts(parser) -> None:
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index f309a33256cd..89a7d4024e87 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -132,6 +132,8 @@ class LinuxSourceTree(object):
+ 			return
+ 
+ 		if kunitconfig_path:
++			if os.path.isdir(kunitconfig_path):
++				kunitconfig_path = os.path.join(kunitconfig_path, KUNITCONFIG_PATH)
+ 			if not os.path.exists(kunitconfig_path):
+ 				raise ConfigError(f'Specified kunitconfig ({kunitconfig_path}) does not exist')
+ 		else:
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index 1ad3049e9069..2e809dd956a7 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -251,6 +251,12 @@ class LinuxSourceTreeTest(unittest.TestCase):
+ 		with tempfile.NamedTemporaryFile('wt') as kunitconfig:
+ 			tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=kunitconfig.name)
+ 
++	def test_dir_kunitconfig(self):
++		with tempfile.TemporaryDirectory('') as dir:
++			with open(os.path.join(dir, '.kunitconfig'), 'w') as f:
++				pass
++			tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
++
+ 	# TODO: add more test cases.
+ 
+ 
 
->
-> The alternative would be to just change I2C_DESIGNWARE_PLATFORM (and the
-> core) to a bool, or at least make it not selectable as module when
-> X86 and ACPI are set... That would be a bit of a big hammer but might
-> not be the worst idea actually.
->
-> Regards,
->
-> Hans
->
+base-commit: b12b47249688915e987a9a2a393b522f86f6b7ab
+-- 
+2.30.0.617.g56c4b15f3c-goog
+
