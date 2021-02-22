@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4973216BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2130C3217AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhBVMb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:31:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44826 "EHLO mail.kernel.org"
+        id S231733AbhBVMwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:52:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230378AbhBVMPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:15:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 754B864EEF;
-        Mon, 22 Feb 2021 12:15:24 +0000 (UTC)
+        id S231168AbhBVMSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:18:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF1DE64E67;
+        Mon, 22 Feb 2021 12:17:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996125;
-        bh=eptyiKcxa2IQuv43NO582Oq2wn+WSgujbiylpCj8u1c=;
+        s=korg; t=1613996266;
+        bh=WxhDHTRvfz0JIMQZCqsuB2dgx4sGKbY4fy2Y03EJsME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MYT556qEUvg6SCHW5uovsmbmjhGV5wnDFErM6iGc1dYzDI1lJz0XLJqYHPd19RRnP
-         tve0rDLkONJkWHfDIJWWMcj36rTNfNn+4qSZV27j4JFSnXp1POFd9KPhjHS/IiJXCa
-         7TmFtjysgsS19yvCOHdcyluLJMIv/m6eGJMIQsN4=
+        b=q4cEO161Sn7Af2p1agOcyU+PorxoTPi1jpv1pLSGsgCAsn94aO9bP+mZlOJBE9onw
+         1s3MxDSfMupy1mzqDak2g5jJU066LdzbNE4XhCbijsS8ts/Fj4Li2K25T7e3sfo4Dz
+         j7BJFupuNrGtRB6MAOyQH6CQZ6ZrTTvwoyI4H7YQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.4 10/13] xen-netback: dont "handle" error by BUG()
-Date:   Mon, 22 Feb 2021 13:13:27 +0100
-Message-Id: <20210222121018.854444187@linuxfoundation.org>
+        stable@vger.kernel.org, AC <achirvasub@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH 4.19 37/50] x86/build: Disable CET instrumentation in the kernel for 32-bit too
+Date:   Mon, 22 Feb 2021 13:13:28 +0100
+Message-Id: <20210222121026.390445870@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121013.583922436@linuxfoundation.org>
-References: <20210222121013.583922436@linuxfoundation.org>
+In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
+References: <20210222121019.925481519@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Borislav Petkov <bp@suse.de>
 
-commit 3194a1746e8aabe86075fd3c5e7cf1f4632d7f16 upstream.
+commit 256b92af784d5043eeb7d559b6d5963dcc2ecb10 upstream.
 
-In particular -ENOMEM may come back here, from set_foreign_p2m_mapping().
-Don't make problems worse, the more that handling elsewhere (together
-with map's status fields now indicating whether a mapping wasn't even
-attempted, and hence has to be considered failed) doesn't require this
-odd way of dealing with errors.
+Commit
 
-This is part of XSA-362.
+  20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+disabled CET instrumentation which gets added by default by the Ubuntu
+gcc9 and 10 by default, but did that only for 64-bit builds. It would
+still fail when building a 32-bit target. So disable CET for all x86
+builds.
+
+Fixes: 20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
+Reported-by: AC <achirvasub@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Tested-by: AC <achirvasub@gmail.com>
+Link: https://lkml.kernel.org/r/YCCIgMHkzh/xT4ex@arch-chirva.localdomain
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/net/xen-netback/netback.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/x86/Makefile |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -1335,13 +1335,11 @@ int xenvif_tx_action(struct xenvif_queue
- 		return 0;
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -61,6 +61,9 @@ endif
+ KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow
+ KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
  
- 	gnttab_batch_copy(queue->tx_copy_ops, nr_cops);
--	if (nr_mops != 0) {
-+	if (nr_mops != 0)
- 		ret = gnttab_map_refs(queue->tx_map_ops,
- 				      NULL,
- 				      queue->pages_to_map,
- 				      nr_mops);
--		BUG_ON(ret);
--	}
++# Intel CET isn't enabled in the kernel
++KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
++
+ ifeq ($(CONFIG_X86_32),y)
+         BITS := 32
+         UTS_MACHINE := i386
+@@ -132,9 +135,6 @@ else
+         KBUILD_CFLAGS += -mno-red-zone
+         KBUILD_CFLAGS += -mcmodel=kernel
  
- 	work_done = xenvif_tx_submit(queue);
- 
+-	# Intel CET isn't enabled in the kernel
+-	KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+-
+         # -funit-at-a-time shrinks the kernel .text considerably
+         # unfortunately it makes reading oopses harder.
+         KBUILD_CFLAGS += $(call cc-option,-funit-at-a-time)
 
 
