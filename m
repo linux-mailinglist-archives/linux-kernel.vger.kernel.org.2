@@ -2,52 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B9332206C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863E632206E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhBVTpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 14:45:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233276AbhBVTnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:43:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AC7964ECB;
-        Mon, 22 Feb 2021 19:42:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614022941;
-        bh=kI6a5fpPOoHyR23MS8XsVVO3TkRdhqh+1vmUgjHNL+s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KqcPh3/hotXpXBp4eFJKe8i7oC2W5DaNqDNwc2vXheVsls88r8PCXCLS9sFLNHHT0
-         3vxCehq8WEZ3OmTwQdhsIKEFmWNGnDWj3wKiMY8cH2AbSlRONIe6rJrnqn0JeDBu4K
-         CtdVZ+5t+OR+Yhe1tTkws/WhGrC45/+JOTEykwYhcH/P3kXpasJpSdXHwxVN3+a+j8
-         h4bquHP+X9COVFZHGaAfwricJLFzzJJw3v6fvc1a9bw5iFcWEUMuqzhD8SwV/6vQWb
-         9RIJBfsai6z8/VIopg0qSIAeP89ExvxSpHLaW4jN7J3FQJjLAM7+34AxkLDcLd0wGk
-         gFmnhGXwdyPEQ==
-Received: by pali.im (Postfix)
-        id AB17D111B; Mon, 22 Feb 2021 20:42:18 +0100 (CET)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Andre Heider <a.heider@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        =?UTF-8?q?G=C3=A9rald=20Kerma?= <gerald@gk2.net>,
-        Konstantin Porotchkin <kostap@marvell.com>
-Subject: [PATCH mvebu v3 10/10] cpufreq: armada-37xx: Fix module unloading
-Date:   Mon, 22 Feb 2021 20:41:58 +0100
-Message-Id: <20210222194158.12342-11-pali@kernel.org>
+        id S233398AbhBVTqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 14:46:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232911AbhBVTpy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 14:45:54 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383C7C061574;
+        Mon, 22 Feb 2021 11:45:14 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id t15so20252379wrx.13;
+        Mon, 22 Feb 2021 11:45:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EPbE9zIO7C3ZegNNseiEJ5pJf5Z9XxS+fBY7BI4UsKc=;
+        b=X1ewBr7YDN88ESxbLjTLm4sAgEXHDtKXYXhlg5FRiO3hEA1/ef+z1xr96Z7VOxiFqt
+         Z5z+kDH8HhduClkAKR7A6kRHgQVsG6q/6yLCnFkDkKAkpDqq3gpMqc/fw9MCseVd4kRm
+         3hKwxaF3sqEj2IuLC2U1/6b5YrnvlUMZNVA4crWWOMW+LU+kS4xDtfusy//QI29WtbUL
+         1jcLtSywLxzfR+8nCVsaumCND0JXCTI9c0x9yJkSqoJEaAskdK/6iVq5ntls2ytmhfQF
+         L51k4lisGwVyCWOM27NjSgsbYe/OMSu7L22QhLTaV+aq1vT2qewffHPgBzrQB4WuESL+
+         78zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EPbE9zIO7C3ZegNNseiEJ5pJf5Z9XxS+fBY7BI4UsKc=;
+        b=QQj3cjZwAR0DprwkbXiUcQVZiIYxvHgtqGgs4xdweBs2iqpHQ/4iL4BxCY8MvyaZ1+
+         BKQ2nh0usa3zDLBYmJ5p0LYHrPXqj9Vf/PPfR+Yq1dRWSvCsXA9M5A44TX2NmCUclhsY
+         0E6zQZnM9GAiuWKxVoDTT2Bpf868yogbgoE0jQqVFdb0BpwDNBzgXQj+67yoZHEJhZO7
+         hMgV4hXenLb/9gn84o9y8Cpke3DYkP8YeZ0MQCxwazyoy6OZ6x8LNDayw3O3hdaMbnuL
+         byIcA8DV2GCnqZ9ME6moY7yxdMkZq65Mjwn5kxiRdSwaoSp2a23wWBgEpK0ImTJ1dZSV
+         RjwA==
+X-Gm-Message-State: AOAM5306qFpgOq9Eqn9xKKjfn6jbqqGKF7q97GX34Qh8zzw/rpkBF3PP
+        dsXFYMX7b6Yr4ymATy556BU=
+X-Google-Smtp-Source: ABdhPJzvvU7tVJfdPp9/d3eTZl7uQuGm9uJru4YNr48hffjIToW/ZPyg0ap4JTVyYe8ionAO6H5Drg==
+X-Received: by 2002:adf:8545:: with SMTP id 63mr22346800wrh.128.1614023112982;
+        Mon, 22 Feb 2021 11:45:12 -0800 (PST)
+Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id w11sm7376427wru.3.2021.02.22.11.45.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 11:45:12 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, linux-crypto@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] hwrng: bcm2835: add reset support
+Date:   Mon, 22 Feb 2021 20:45:10 +0100
+Message-Id: <20210222194510.14004-1-noltari@gmail.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210222194158.12342-1-pali@kernel.org>
-References: <20210114124032.12765-1-pali@kernel.org>
- <20210222194158.12342-1-pali@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -55,67 +74,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is missing module_exit hook. Add proper driver exit function
-which unregisters the platform device and cleans up the data.
+BCM6368 devices need to reset the in order to generate true random numbers.
+This is what BCM6368 produces without a reset:
+root@OpenWrt:/# cat /dev/hwrng | rngtest -c 1000
+rngtest 6.10
+Copyright (c) 2004 by Henrique de Moraes Holschuh
+This is free software; see the source for copying conditions.  There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
-Tested-by: Anders Trier Olesen <anders.trier.olesen@gmail.com>
-Tested-by: Philip Soares <philips@netisense.com>
+rngtest: starting FIPS tests...
+rngtest: bits received from input: 20000032
+rngtest: FIPS 140-2 successes: 0
+rngtest: FIPS 140-2 failures: 1000
+rngtest: FIPS 140-2(2001-10-10) Monobit: 2
+rngtest: FIPS 140-2(2001-10-10) Poker: 1000
+rngtest: FIPS 140-2(2001-10-10) Runs: 1000
+rngtest: FIPS 140-2(2001-10-10) Long run: 30
+rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
+rngtest: input channel speed: (min=37.253; avg=320.827; max=635.783)Mibits/s
+rngtest: FIPS tests speed: (min=12.141; avg=15.034; max=16.428)Mibits/s
+rngtest: Program run time: 1336176 microseconds
+cat: write error: Broken pipe
+
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 ---
- drivers/cpufreq/armada-37xx-cpufreq.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ drivers/char/hw_random/bcm2835-rng.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/cpufreq/armada-37xx-cpufreq.c b/drivers/cpufreq/armada-37xx-cpufreq.c
-index 050abff18308..3fc98a3ffd91 100644
---- a/drivers/cpufreq/armada-37xx-cpufreq.c
-+++ b/drivers/cpufreq/armada-37xx-cpufreq.c
-@@ -86,6 +86,8 @@ static int avs_map[] = {
+diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
+index 1a7c43b43c6b..1b93a896d8e8 100644
+--- a/drivers/char/hw_random/bcm2835-rng.c
++++ b/drivers/char/hw_random/bcm2835-rng.c
+@@ -13,6 +13,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/printk.h>
+ #include <linux/clk.h>
++#include <linux/reset.h>
+ 
+ #define RNG_CTRL	0x0
+ #define RNG_STATUS	0x4
+@@ -32,6 +33,7 @@ struct bcm2835_rng_priv {
+ 	void __iomem *base;
+ 	bool mask_interrupts;
+ 	struct clk *clk;
++	struct reset_control *reset;
  };
  
- struct armada37xx_cpufreq_state {
-+	struct platform_device *pdev;
-+	struct device *cpu_dev;
- 	struct regmap *regmap;
- 	u32 nb_l0l1;
- 	u32 nb_l2l3;
-@@ -506,6 +508,9 @@ static int __init armada37xx_cpufreq_driver_init(void)
- 	if (ret)
- 		goto disable_dvfs;
+ static inline struct bcm2835_rng_priv *to_rng_priv(struct hwrng *rng)
+@@ -94,6 +96,10 @@ static int bcm2835_rng_init(struct hwrng *rng)
+ 			return ret;
+ 	}
  
-+	armada37xx_cpufreq_state->cpu_dev = cpu_dev;
-+	armada37xx_cpufreq_state->pdev = pdev;
-+	platform_set_drvdata(pdev, dvfs);
- 	return 0;
++	ret = reset_control_reset(priv->reset);
++	if (ret)
++		return ret;
++
+ 	if (priv->mask_interrupts) {
+ 		/* mask the interrupt */
+ 		val = rng_readl(priv, RNG_INT_MASK);
+@@ -159,6 +165,10 @@ static int bcm2835_rng_probe(struct platform_device *pdev)
+ 	if (PTR_ERR(priv->clk) == -EPROBE_DEFER)
+ 		return -EPROBE_DEFER;
  
- disable_dvfs:
-@@ -524,6 +529,26 @@ static int __init armada37xx_cpufreq_driver_init(void)
- /* late_initcall, to guarantee the driver is loaded after A37xx clock driver */
- late_initcall(armada37xx_cpufreq_driver_init);
- 
-+static void __exit armada37xx_cpufreq_driver_exit(void)
-+{
-+	struct platform_device *pdev = armada37xx_cpufreq_state->pdev;
-+	struct armada_37xx_dvfs *dvfs = platform_get_drvdata(pdev);
-+	unsigned long freq;
-+	int load_lvl;
++	priv->reset = devm_reset_control_get_optional_exclusive(dev, NULL);
++	if (IS_ERR(priv->reset))
++		return PTR_ERR(priv->reset);
 +
-+	platform_device_unregister(pdev);
-+
-+	armada37xx_cpufreq_disable_dvfs(armada37xx_cpufreq_state->regmap);
-+
-+	for (load_lvl = ARMADA_37XX_DVFS_LOAD_0; load_lvl < LOAD_LEVEL_NR; load_lvl++) {
-+		freq = dvfs->cpu_freq_max / dvfs->divider[load_lvl];
-+		dev_pm_opp_remove(armada37xx_cpufreq_state->cpu_dev, freq);
-+	}
-+
-+	kfree(armada37xx_cpufreq_state);
-+}
-+module_exit(armada37xx_cpufreq_driver_exit);
-+
- static const struct of_device_id __maybe_unused armada37xx_cpufreq_of_match[] = {
- 	{ .compatible = "marvell,armada-3700-nb-pm" },
- 	{ },
+ 	priv->rng.name = pdev->name;
+ 	priv->rng.init = bcm2835_rng_init;
+ 	priv->rng.read = bcm2835_rng_read;
 -- 
 2.20.1
 
