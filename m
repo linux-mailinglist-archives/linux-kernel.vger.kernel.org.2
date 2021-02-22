@@ -2,128 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4463213C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEEB3213C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhBVKHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
+        id S231131AbhBVKIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:08:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhBVKEo (ORCPT
+        with ESMTP id S230230AbhBVKF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:04:44 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24877C061786;
-        Mon, 22 Feb 2021 02:04:04 -0800 (PST)
-Date:   Mon, 22 Feb 2021 11:04:00 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613988242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9DqdmMcC65JlDNxGXXaK9p0hPgxRE+lfHdTeie7Ho38=;
-        b=waEtf0JWXpDUj2FuRUPGflgm6U4yDZLlHUqu5vOXgIlfe0FFDuvPgq7/WsTb+nPCbxyMNJ
-        UURcpSCUA4d+QEXP6FAqttoh0lBG+uG1Q+EYu4RhphOZ4MsbjBdyDmD9QT21T45K/81YJa
-        DPklD83qKnc0yT76zrFXM7pSLgjStKFkiFpOL5LUuMJKmnzy2cwnrhOYZ9mgP8i5UVJ+0z
-        WJwUZiDrJZU9FZ3ympmgc8flJcDVxDDnxI9mBbUll8jg2hqDU1Ceoph+VDhWyGhEMQq/h6
-        NOZg8soUO+tALZDOhW6quZ/q1FxxqmB1GLuq2u4qX+tN5waxpv/pxsImWpBSqg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613988242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9DqdmMcC65JlDNxGXXaK9p0hPgxRE+lfHdTeie7Ho38=;
-        b=/HsCFiui1OcDMIsfQNQXTi+Bid3xTVk4Adltdh5wQV/IDNKY7SiQKu701hRFB48T61HzSz
-        kGhqULt7L66bXFBw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
-Message-ID: <20210222100400.xzdq7iciw5f4zzlv@linutronix.de>
-References: <161365856280.719838.12423085451287256713.stgit@devnote2>
- <20210218151554.GQ2743@paulmck-ThinkPad-P72>
- <20210219081755.eucq4srbam6wg2gm@linutronix.de>
- <20210219104958.GA34308@pc638.lan>
- <20210219105710.d626zexj6vzt6k6y@linutronix.de>
- <20210219111301.GA34441@pc638.lan>
- <20210219111738.go6i2fdzvavpotxd@linutronix.de>
- <20210219112357.GA34462@pc638.lan>
- <20210219112751.GA34528@pc638.lan>
- <20210219181811.GY2743@paulmck-ThinkPad-P72>
+        Mon, 22 Feb 2021 05:05:29 -0500
+X-Greylist: delayed 1629 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 22 Feb 2021 02:04:48 PST
+Received: from filter01-ipv6-out08.totaalholding.nl (filter01-ipv6-out08.totaalholding.nl [IPv6:2a02:40c0:1:2:ffff::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC437C061793
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:04:48 -0800 (PST)
+Received: from www98.totaalholding.nl ([185.94.230.81])
+        by filter01.totaalholding.nl with esmtps (TLSv1.2:AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <mjbaars1977.gcc@cyberfiber.eu>)
+        id 1lE852-00014S-SP
+        for linux-kernel@vger.kernel.org; Mon, 22 Feb 2021 11:04:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=cyberfiber.eu; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=6rt4rAP4w0ppViWQHMVPSZJynj22nNKL1wg8xgcmFfk=; b=gP+bXSyiIVHt8aHmNdANKzNj4S
+        oak43WAUPTJJuNIiL61NNK4PR3HR/xb3V0fCJAI87QwV57NOF6LzCqLZYZ94A5Q9D5BvqOL7AruuO
+        RroD+N401cWNZbs/4hsfNOqv664HE6tuS2oBdOyFZc05RVM7QKJ77/rIvFCZag5jX0/L520MWjbPd
+        sKZ4BK8JG3su3y76fhof0SLTHLVGze3OXYl/18WP8GLSfQ5jrm0Efn9XqGHJX2xAB24cXR4yHABdW
+        dv0c76xtYYS/jVqZq1oNmdp5nb0OMvxjuX4rZjDxI2JHF/eEbcEzLUIKG9g4wqQ1IGmFJdqVlA0Ro
+        /NGfysDQ==;
+Received: from 82-94-23-232.ip.xs4all.nl ([82.94.23.232]:54910 helo=tp06.long4more.com)
+        by www98.totaalholding.nl with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <mjbaars1977.gcc@cyberfiber.eu>)
+        id 1lE851-00027R-EF; Mon, 22 Feb 2021 11:04:39 +0100
+Message-ID: <64755104869ec3af730db147b5eccb5da4b78b74.camel@cyberfiber.eu>
+Subject: Re: problems with memory allocation and the alignment check
+From:   "Michael J. Baars" <mjbaars1977.gcc@cyberfiber.eu>
+To:     Andrew Pinski <pinskia@gmail.com>
+Cc:     GCC Mailing List <gcc@gcc.gnu.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Mon, 22 Feb 2021 11:04:40 +0100
+In-Reply-To: <CA+=Sn1kR6jV2j2cOLhC-GBDS_NSxsw0m=K+VghBmqBSB4c2gqw@mail.gmail.com>
+References: <80753cbc54ef69b4fc136f791666197fc8b1f8bb.camel@cyberfiber.eu>
+         <CA+=Sn1njFZ-XZRHJdmjzOyvXvcMXg+oBao=wK8w3RXN_Ji=fLA@mail.gmail.com>
+         <d9a2cdcf116ed32874ed02bd6fa60ad899ce5f50.camel@cyberfiber.eu>
+         <CA+=Sn1kR6jV2j2cOLhC-GBDS_NSxsw0m=K+VghBmqBSB4c2gqw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210219181811.GY2743@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - www98.totaalholding.nl
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - cyberfiber.eu
+X-Get-Message-Sender-Via: www98.totaalholding.nl: authenticated_id: mjbaars1977.gcc@cyberfiber.eu
+X-Authenticated-Sender: www98.totaalholding.nl: mjbaars1977.gcc@cyberfiber.eu
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Originating-IP: 185.94.230.81
+X-SpamExperts-Domain: out.totaalholding.nl
+X-SpamExperts-Username: 185.94.230.81
+Authentication-Results: totaalholding.nl; auth=pass smtp.auth=185.94.230.81@out.totaalholding.nl
+X-SpamExperts-Outgoing-Class: ham
+X-SpamExperts-Outgoing-Evidence: Combined (0.11)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT/mDSGpZbTUMXuqHprC2CKRPUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5z4WkZ/TJaiaBbP2NJqrVHtfCzdNGNoLjYW00m5NbCHvI9w
+ knWGobBIYos3d1n2bRFrr7MFgLsNQjVehl0AjLQh5WCy5VkstzhnxgTXqsdmpzAZsc6MRuL9DcHa
+ Zpd4we/piBIbZdykCKL9bqvChryU+RG6hze7zJVTSRhy6iTC2HkixtWJU3ux8TqCslrbPB+bgaCk
+ W8nGm/sYr5TGcUrdU3OqTzTj50M7fvGTHKtUfcFSHlWCaM2L0TajYf48Pb86t/uXZsD0kV3eTzZp
+ 3NyQLDnQGgRgHjioU8fpt7xeC7AK0L/uTNt3WCw41GzGb1Zq+pu9ho29CVyp3Dt9A9c5Q0rCcBHa
+ hWKxj5ucSpYIqLmSWYrW9rfAlJyD3amD/+N02lc/+6URXoMhQMtzRh3qJOVgT5lyfynWs+kbrg/X
+ Ljy6H8ZAD1knk8QPx5GWwsxL96o2cJJSAqZrdlwt8BT+rl/L3p68qpY0qoWMExIKqSSxWVdlbFqx
+ F8WMzybyHsghJ1UrIDz/zIKkhjMfdql/vyG/94A9cXb+Do2HsRTe4iHS0NxcLTrnItRtF3glL8Fz
+ lRYBdrHtfAxZw42LBRK8o5yWOEmvMm4n8TJQn6xbOS25y0VVCnTvyy8sSoe9MJmYQRPlfhUIsQHw
+ 9jJ1gs4A07pSUabTJxCHRiVu3X4RqvdjzQ6YC7Heg3Xf7O1TOd4ek3v5uIRk1iKw5Fn4+Jv37dfW
+ alqFj9toMieTbX1rTmoGyi3gpIwXr8e2QN5OEu6dT4kzjylMZ8WxooKJmgvqZuM7jUXIESohoO51
+ xWmU8ZsLPNyWKRVhd4Yc6cD23FynV0BR+dlWoGfFQ+S+p4Yps+5OVLTtd9bM4QLzoum6fo2azxuH
+ F97acinCSKJAyH+R27r9HYUzziTFhEVK8LUgzbwe5wJ+PSAukJcp0I0jTu0aTq8ZhiCjAOP7kbHh
+ TW8wbVA/fmexh8/zhz5EUrcqADujzMmWyPJKS+6kHMEcy2SSgL4U/904QKV4vLt8ilQ=
+X-Report-Abuse-To: spam@filter01.totaalholding.nl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-19 10:18:11 [-0800], Paul E. McKenney wrote:
-> If Masami's patch works for the PowerPC guys on v5.10-rc7, then it can
-> be backported.  The patch making RCU Tasks initialize itself early won't
-> have any effect and can be left or reverted, as we choose.  The self-test
-> patch will need to be either adjusted or reverted.
+On Mon, 2021-02-22 at 01:41 -0800, Andrew Pinski wrote:
+> On Mon, Feb 22, 2021 at 1:37 AM Michael J. Baars
+> <mjbaars1977.gcc@cyberfiber.eu> wrote:
+> > On Mon, 2021-02-22 at 01:29 -0800, Andrew Pinski wrote:
+> > > On Mon, Feb 22, 2021 at 1:17 AM Michael J. Baars
+> > > <mjbaars1977.gcc@cyberfiber.eu> wrote:
+> > > > Hi,
+> > > > 
+> > > > I just wrote this little program to demonstrate a possible flaw in both malloc and calloc.
+> > > > 
+> > > > If I allocate a the simplest memory region from main(), one out of three optimization flags fail.
+> > > > If I allocate the same region from a function, three out of three optimization flags fail.
+> > > > 
+> > > > Does someone know if this really is a flaw, and if so, is it a gcc or a kernel flaw?
+> > > 
+> > > There is no flaw.  GCC (kernel, glibc) all assume unaligned accesses
+> > > on x86 will not cause an exception.
+> > 
+> > Is this just an assumption or more like a fact? I agree with you that byte aligned is more or less the same as unaligned.
 > 
-> However...
+> It is an assumption that is even made inside GCC.  You can modify GCC
+> not to assume that but you need to recompile all libraries and even
+> check the assembly code that is included with most programs.
+> Why are you enabling the alignment access check anyways?  What are you
+> trying to do?
+
+I'm writing an algorithm to compress and encrypt data for use in cluster computing. While trying to verify my own code, I stumbled upon this. Just like that...
+
+And yes, as always performance certainly is an issue :) Correctness of the code even more.
+
+> If you are looking into a performance issue with unaligned accesses,
+> may I suggest you look into perf to see if you can see unaligned
+> accesses?
+
+So it's more like a joke than a flaw? I noticed it earlier with printf too, and traced it back to the strlen kernel assembly code where a lot of sse code is
+used that expects memory to be aligned at the 16 byte boundary. Most character strings that come with printf as an argument, apparently aren't.
+
+I'll have a look at perf.
+
 > 
-> The root cause of this problem is that softirq only kind-of works
-> during a window of time during boot.  It works only if the number and
-> duration of softirq handlers during this time is small enough, for some
-> ill-defined notion of "small enough".  If there are too many, whatever
-> that means exactly, then we get failed attempt to awaken ksoftirqd, which
-
-The number of registered softirq handlers does not matter nor the amount
-times the individual softirqs that were scheduled. The only problem is
-that one schedules softirq and then waits for its completion.
-So scheduling a timer_list timer works. Waiting for its completion does
-not. Once ksoftirqd is up, will be processed.
-
-> (sometimes!) results in a silent hang.  Which, as you pointed out earlier,
-> is a really obnoxious error message.  And any minor change could kick
-> us into silent-hang state because of the heuristics used to hand off
-> to ksoftirqd.  The straw that broke the camel's back and all that.
-
-The problem is that a softirq is raised and being waited for its
-completion.
-Something like synchronize_rcu() would be such a thing I guess.
-
-> One approach would be to add WARN_ON_ONCE() so that if softirq tries
-> to awaken ksoftirqd before it is spawned, we get a nice obvious splat.
-> Unfortunately, this gives false positives because there is code that
-> needs a softirq handler to run eventually, but is OK with that handler
-> being delayed until some random point in the early_initcall() sequence.
+> Thanks,
+> Andrew
 > 
-> Besides which, if we are going to add a check, why not use that check
-> just make things work by forcing handler execution to remain within the
-> softirq back-of-interrupt context instead of awakening a not-yet-spawned
-> ksoftirqd?  We can further prevent entry into dyntick-idle state until
-> the ksoftirqd kthreads have been spawned, which means that if softirq
-> handlers must be deferred, they will be resumed within one jiffy by the
-> next scheduler-clock interrupt.
+> > > Thanks,
+> > > Andrew
+> > > 
+> > > > Regards,
+> > > > Mischa.
 
-This should work.
 
-> Yes, this can allow softirq handlers to impose large latencies, but only
-> during early boot, long before any latency-sensitive applications can
-> possibly have been created.  So this does not seem like a real problem.
-> 
-> Am I missing something here?
-> 
-> 							Thanx, Paul
 
-Sebastian
