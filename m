@@ -2,154 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3968321AC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E973321ACC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbhBVPGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:06:06 -0500
-Received: from smtp-42a9.mail.infomaniak.ch ([84.16.66.169]:53121 "EHLO
-        smtp-42a9.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230441AbhBVPFp (ORCPT
+        id S231174AbhBVPHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:07:38 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:59677 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229947AbhBVPHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:05:45 -0500
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Dklpb3pLxzMppP0;
-        Mon, 22 Feb 2021 16:04:55 +0100 (CET)
-Received: from localhost (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Dklpb0tVvzlh8TH;
-        Mon, 22 Feb 2021 16:04:55 +0100 (CET)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: [PATCH v3 1/1] security: Add CONFIG_LSM_AUTO to handle default LSM stack ordering
-Date:   Mon, 22 Feb 2021 16:06:08 +0100
-Message-Id: <20210222150608.808146-2-mic@digikod.net>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210222150608.808146-1-mic@digikod.net>
-References: <20210222150608.808146-1-mic@digikod.net>
+        Mon, 22 Feb 2021 10:07:09 -0500
+X-Originating-IP: 93.61.96.190
+Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id AB8D8240003;
+        Mon, 22 Feb 2021 15:06:16 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 16:06:43 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/16] media: i2c: rdacm20: Replace goto with a loop
+Message-ID: <20210222150643.cuv6uye3wpxaykim@uno.localdomain>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-4-jacopo+renesas@jmondi.org>
+ <c95022bc-3841-4d0a-653c-6d6974e20355@ideasonboard.com>
+ <YDMDPymgU/N5wd/i@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YDMDPymgU/N5wd/i@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+Hi,
 
-Add a new option CONFIG_LSM_AUTO to enable users to delegate default LSM
-stacking order to kernel developers.  This enable to keep a consistent
-order of enabled LSM when changing the LSM selection, especially when a
-new LSM is added to the kernel.
+On Mon, Feb 22, 2021 at 03:05:03AM +0200, Laurent Pinchart wrote:
+> Hi Jacopo,
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+> On Wed, Feb 17, 2021 at 01:01:26PM +0000, Kieran Bingham wrote:
+> > On 16/02/2021 17:41, Jacopo Mondi wrote:
+> > > During the camera module initialization the image sensor PID is read to
+> > > verify it can correctly be identified. The current implementation is
+> > > rather confused and uses a loop implemented with a label and a goto.
+> > >
+> > > Replace it with a more compact for() loop.
+> > >
+> > > No functional changes intended.
+> >
+> > I think there is a functional change in here, but I almost like it.
+> >
+> > Before, if the read was successful, it would check to see if the
+> > OV10635_PID == OV10635_VERSION, and if not it would print that the read
+> > was successful but a mismatch.
+> >
+> > Now - it will retry again instead, and if at the end of the retries it
+> > still fails then it's a failure.
+> >
+> > This means we perhaps don't get told if the device id is not correct in
+> > the same way, but it also means that if the VERSION was not correct
+> > because of a read error (which I believe i've seen occur), it will retry.
+>
+> I was going to ask about that, whether we can have a successful I2C read
+> operation that would return incorrect data. If we do, aren't we screwed
+> ? If there's a non-negligible probability that reads will return
+> incorrect data without any way to know about it (for other registers
+> than the version register of course), then I would consider that writes
+> could fail the same way, and that would mean an unusable device,
+> wouldn't it ?
+>
+> If, on the other hand, read failures can always (or nearly always,
+> ignoring space neutrinos and similar niceties) be detected, then I think
+> we should avoid the functional change.
+>
+> > Because there is a functional change you might want to update the
+> > commit, but I still think this is a good change overall.
+> >
 
-CONFIG_LSM depends on !CONFIG_LSM_AUTO, which is backward compatible and
-gives the opportunity to users to select CONFIG_LSM_AUTO with a make
-oldconfig.
+I'm not sure I got your concerns to be honest :/
+yes before the code flow was like
 
-CONFIG_LSM and CONFIG_LSM_AUTO depend on CONFIG_SECURITY, which makes
-sense because an LSM depends on the security framework.
+        ret = ov10635_read();
+        if (ret < 0) {
 
-Cc: Casey Schaufler <casey@schaufler-ca.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Serge E. Hallyn <serge@hallyn.com>
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20210222150608.808146-2-mic@digikod.net
----
+        }
 
-Changes since v2:
-* Revamp without virtual dependencies but a new option to automatically
-  enable all selected LSMs.
+        if (ret != PID) {
 
-Changes since v1:
-* Add CONFIG_SECURITY as a dependency of CONFIG_LSM.  This prevent an
-  error when building without any LSMs.
----
- security/Kconfig    | 19 +++++++++++++++++++
- security/security.c | 26 +++++++++++++++++++++++++-
- 2 files changed, 44 insertions(+), 1 deletion(-)
+        }
 
-diff --git a/security/Kconfig b/security/Kconfig
-index 7561f6f99f1d..fae083e9867d 100644
---- a/security/Kconfig
-+++ b/security/Kconfig
-@@ -243,6 +243,7 @@ source "security/integrity/Kconfig"
- 
- choice
- 	prompt "First legacy 'major LSM' to be initialized"
-+	depends on SECURITY
- 	default DEFAULT_SECURITY_SELINUX if SECURITY_SELINUX
- 	default DEFAULT_SECURITY_SMACK if SECURITY_SMACK
- 	default DEFAULT_SECURITY_TOMOYO if SECURITY_TOMOYO
-@@ -275,8 +276,26 @@ choice
- 
- endchoice
- 
-+config LSM_AUTO
-+	bool "Automatically enable all selected LSMs at boot"
-+	depends on SECURITY
-+	default y
-+	help
-+	  This automatically configure the build-time selected LSMs to be
-+	  enabled at boot unless the "lsm=" parameter is provided.
-+
-+	  If this option is not selected, it will be required to configure and
-+	  maintained a static list of enabled LSMs that may become inconsistent
-+	  with future user configuration.  Indeed, this list will not be
-+	  automatically upgraded when selecting a new (future) LSM, e.g. with
-+	  make oldconfig.
-+
-+	  If you are unsure how to answer this question, answer Y.
-+
-+# This lists should be synchronized with LSM_ORDER defined in security/security.c .
- config LSM
- 	string "Ordered list of enabled LSMs"
-+	depends on SECURITY && !LSM_AUTO
- 	default "lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
- 	default "lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
- 	default "lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
-diff --git a/security/security.c b/security/security.c
-index 401663b5b70e..defa1d2c40a3 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -82,7 +82,31 @@ static struct lsm_blob_sizes blob_sizes __lsm_ro_after_init;
- static __initdata const char *chosen_lsm_order;
- static __initdata const char *chosen_major_lsm;
- 
--static __initconst const char * const builtin_lsm_order = CONFIG_LSM;
-+#ifdef CONFIG_LSM
-+#define LSM_ORDER	CONFIG_LSM
-+#else
-+
-+/*
-+ * This lists should be synchronized with the default values of CONFIG_LSM
-+ * defined in security/Kconfig .
-+ */
-+#define LSM_ORDER_PRE	"lockdown,yama,loadpin,safesetid,integrity,"
-+
-+#if defined(CONFIG_DEFAULT_SECURITY_SMACK)
-+#define LSM_ORDER	LSM_ORDER_PRE "smack,selinux,tomoyo,apparmor,bpf"
-+#elif defined(CONFIG_DEFAULT_SECURITY_APPARMOR)
-+#define LSM_ORDER	LSM_ORDER_PRE "apparmor,selinux,smack,tomoyo,bpf"
-+#elif defined(CONFIG_DEFAULT_SECURITY_TOMOYO)
-+#define LSM_ORDER	LSM_ORDER_PRE "tomoyo,bpf"
-+#elif defined(CONFIG_DEFAULT_SECURITY_DAC)
-+#define LSM_ORDER	LSM_ORDER_PRE "bpf"
-+#else
-+#define LSM_ORDER	LSM_ORDER_PRE "selinux,smack,tomoyo,apparmor,bpf"
-+#endif
-+
-+#endif /* CONFIG_LSM */
-+
-+static __initconst const char * const builtin_lsm_order = LSM_ORDER;
- 
- /* Ordered list of LSMs to initialize. */
- static __initdata struct lsm_info **ordered_lsms;
--- 
-2.30.0
+But the condition ret != PID implied ret < 0 so I don't really get
+what changes, apart from the fact that in the previous version we
+could have had two different error messages for the same issue, and yes,
+I saw ID mistmatch happening but the value of knowing the i2c read
+didn't fail but the read data was garbage (usually it's 0x01 when it
+fails iirc) is, well, questionable.
 
+I'm sorry I didn't fully get this comment.
+
+
+> > Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> >
+> > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > > ---
+> > >  drivers/media/i2c/rdacm20.c | 27 ++++++++++-----------------
+> > >  1 file changed, 10 insertions(+), 17 deletions(-)
+> > >
+> > > diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> > > index 4d9bac87cba8..6504ed0bd3bc 100644
+> > > --- a/drivers/media/i2c/rdacm20.c
+> > > +++ b/drivers/media/i2c/rdacm20.c
+> > > @@ -59,6 +59,8 @@
+> > >   */
+> > >  #define OV10635_PIXEL_RATE		(44000000)
+> > >
+> > > +#define OV10635_PID_TIMEOUT		3
+> > > +
+> > >  static const struct ov10635_reg {
+> > >  	u16	reg;
+> > >  	u8	val;
+> > > @@ -452,7 +454,7 @@ static const struct v4l2_subdev_ops rdacm20_subdev_ops = {
+> > >
+> > >  static int rdacm20_initialize(struct rdacm20_device *dev)
+> > >  {
+> > > -	unsigned int retry = 3;
+> > > +	unsigned int i;
+> > >  	int ret;
+> > >
+> > >  	/* Verify communication with the MAX9271: ping to wakeup. */
+> > > @@ -501,23 +503,14 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+> > >  		return ret;
+> > >  	usleep_range(10000, 15000);
+> > >
+> > > -again:
+> > > -	ret = ov10635_read16(dev, OV10635_PID);
+> > > -	if (ret < 0) {
+> > > -		if (retry--)
+> > > -			goto again;
+> > > -
+> > > -		dev_err(dev->dev, "OV10635 ID read failed (%d)\n",
+> > > -			ret);
+> > > -		return -ENXIO;
+> > > +	for (i = 0; i < OV10635_PID_TIMEOUT; ++i) {
+> > > +		ret = ov10635_read16(dev, OV10635_PID);
+> > > +		if (ret == OV10635_VERSION)
+> > > +			break;
+> > > +		usleep_range(1000, 2000);
+> > >  	}
+> > > -
+> > > -	if (ret != OV10635_VERSION) {
+> > > -		if (retry--)
+> > > -			goto again;
+> > > -
+> > > -		dev_err(dev->dev, "OV10635 ID mismatch (0x%04x)\n",
+> > > -			ret);
+> > > +	if (i == OV10635_PID_TIMEOUT) {
+> > > +		dev_err(dev->dev, "OV10635 ID read failed (%d)\n", ret);
+> > >  		return -ENXIO;
+> > >  	}
+> > >
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
