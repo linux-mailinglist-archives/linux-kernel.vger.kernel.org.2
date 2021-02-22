@@ -2,95 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CAE321D54
+	by mail.lfdr.de (Postfix) with ESMTP id B3D53321D55
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhBVQpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:45:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
+        id S230471AbhBVQpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:45:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbhBVQoX (ORCPT
+        with ESMTP id S230428AbhBVQoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:44:23 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D899C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:43:43 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id v21so1067900wml.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:43:43 -0800 (PST)
+        Mon, 22 Feb 2021 11:44:39 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10947C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:43:58 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id l3so14605052oii.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:43:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=jPRsaEa5vUBDAV+YM6wLvtVhhlfjRcm7BzNc5iCS4sY=;
-        b=vdQYAqjv5wsEdnZ5YQOvOsZ+kRkDiXJ3iRkSNfowvbBQ5gOpWq/DF0b4xWCChan6j3
-         Opu/Ira96c/urawggjhjNn7oaatmYByAResk0E9jPRn2caGDbhX5WJgbgCE6B1Okgcb0
-         3JYzVO1atSYmRYWoQA7qxN3oMT452+WKy14XXAit5mBj8cd3je3xh7H8DW8PrBimq8CA
-         jrpA/aGziU4/htWQ0piUPBLUvQn5+IRjIr5E1Z73bRppDdqXDQAEPCwixA40kR33uScP
-         3gS/HFBHbsYD/VsQQl6Xd6UDHWiRTa96I/+uE9qp1duKqzjsy9enIhqWM926EiN79KM/
-         keJA==
+        bh=I9HPVcIZh92ffaSgkiuaC52t1AjwtivB9/6mRIvGEJ8=;
+        b=JwqxXjgLS5YlVaPZFSBeKOGo4NFR9oRHLd8Q7FQ30RENW+pqBjEWzvqc9gdM5MlK+E
+         RGk60u9kpuRbca4hjpxfmp6tW3ddXS7mtf60WA5wOTtSRSFXb+GxzYQy21NzEqvSPsmA
+         zKmXmWoJQUCNaeB6E5sqSb/5aIqKwH1ZatMJV9qfomazt4jnG1t8e3XOEsksmo7SgxzX
+         z7ssB67OruJNtw5af7jNnMO5nX1w+44tHO4F7r8iO1DnloIROw5Pe+Fo2+jxN3XCwzYQ
+         1M3QoQ9noeu5n9fBfnZUn3u4xlZHmA1yp/EkZ3bK4JLqyiuFTEoZCCvbjIapLlhYrLRF
+         Ngtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=jPRsaEa5vUBDAV+YM6wLvtVhhlfjRcm7BzNc5iCS4sY=;
-        b=agmnTf2Tv6SHVX1mvvdU06O6MjREkBHiAZrs9QO8KZg1XJwZCRxtO5KtMEJsvgcfrT
-         RkUDsVZ31gvaRwNGH0dSqHhFwdAuuHAk2wJZ8N6ajb2WG06OcF9vMrP+7yLuvFgesLVB
-         zb11ZY6iFKCucKjpG32lO9iqMtWXnoTttlKrKX0TXgpXn6NKy4faJFZTs1o/DkVs4eIf
-         OdNePP3f0WT2sPOa/4uENpuPFRzNJCHFf87VQBN2gSFEkAIA300pNtAiVFS/h6tK8b6L
-         UYEvM0UomPsdGSd0KnpbCTNzEUspzN2TbeSRahh+o8FzUZPizVq9cAKT6cqvTXaDR7xZ
-         f7ew==
-X-Gm-Message-State: AOAM530iLhWgXDVIoX5GH83gdHxbQSaCN5DMa9P7hgQrnuJljjg6aFHn
-        nWQdkuw9m9KgvW6zwRhp47m++A==
-X-Google-Smtp-Source: ABdhPJz6K9/nIAcyv4qk+mgY28pDR9Op91W6n374fqlCrLutVuuGVz0j9V0Jn88uL/3DkEvgPOuTvg==
-X-Received: by 2002:a1c:f702:: with SMTP id v2mr20446477wmh.131.1614012221835;
-        Mon, 22 Feb 2021 08:43:41 -0800 (PST)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id m3sm25918046wmb.19.2021.02.22.08.43.41
+        bh=I9HPVcIZh92ffaSgkiuaC52t1AjwtivB9/6mRIvGEJ8=;
+        b=RHSTbpG15hV32Wg/l1pEsH67JFrY/DSHWH0FSsTLfFNzNNwpzLH/Fip6VvKtxiPE7u
+         IIABWaec66ySOI0/rYjpAKOZe5XK30serRMt/hUuE6zMajnHozs/vSUiYOWK/EpcRNxs
+         Jm9MA5FWhQt30815x/RTKsCPKCAfdKN0CRJm04xR8a3puXLW9e25x10EUY4VKtVpMnJC
+         O0pAyfbL/74vhX6DsD/lyPZdf+038gX7lIwL1Q0+wC8TsysphKpIo1rs3svsbpXV4+pT
+         AZZ7dpgsRiTijRSW5GKgJOqBKU1DzgiLtociGf4t+8vMsrps0UMPQEDrwfpvowSpHXMF
+         EDXQ==
+X-Gm-Message-State: AOAM532eGViABltbzXaxjUbYGiP5tqqe3kHa7Nqv/ggMak5LPXDFv9ld
+        cYXDeAmC2riULjdGWxgY9vOG9A==
+X-Google-Smtp-Source: ABdhPJwglAISK+IAqoV8BrrJ/jvcvjqAfa1AHrbQX40p7RRVWpuviAXuERWP1JUkVQ40YIkqWxstgA==
+X-Received: by 2002:a05:6808:a1d:: with SMTP id n29mr2525976oij.141.1614012237466;
+        Mon, 22 Feb 2021 08:43:57 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id o20sm3560130oor.14.2021.02.22.08.43.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 08:43:41 -0800 (PST)
-Date:   Mon, 22 Feb 2021 16:43:39 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-        patrick.bellasi@matbug.net, valentin.schneider@arm.com
-Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
- cpu_util_next()
-Message-ID: <YDPfO1ixfb+8PNm0@google.com>
-References: <20210222095401.37158-1-vincent.donnefort@arm.com>
- <YDODN1rnTqfTQOug@google.com>
- <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
- <YDOiKH/XQDUKcrPU@google.com>
- <20210222150151.GA124800@e124901.cambridge.arm.com>
- <YDPUwKKYgZfzzCJm@google.com>
- <YDPajlnvgkonocpp@google.com>
- <20210222163947.GB225035@e124901.cambridge.arm.com>
+        Mon, 22 Feb 2021 08:43:57 -0800 (PST)
+Date:   Mon, 22 Feb 2021 10:43:55 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>
+Subject: Re: [PATCH] pinctrl: qcom: sc7280: Add GPIO wakeup interrupt map
+Message-ID: <YDPfS5In6DPaDrHW@builder.lan>
+References: <1613105974-28181-1-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210222163947.GB225035@e124901.cambridge.arm.com>
+In-Reply-To: <1613105974-28181-1-git-send-email-rnayak@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 22 Feb 2021 at 16:39:47 (+0000), Vincent Donnefort wrote:
-> On Mon, Feb 22, 2021 at 04:23:42PM +0000, Quentin Perret wrote:
-> > On Monday 22 Feb 2021 at 15:58:56 (+0000), Quentin Perret wrote:
-> > > But in any case, if we're going to address this, I'm still not sure this
-> > > patch will be what we want. As per my first comment we need to keep the
-> > > frequency estimation right.
-> > 
-> > Totally untested, but I think in principle you would like something like
-> > the snippet below. Would that work?
+On Thu 11 Feb 22:59 CST 2021, Rajendra Nayak wrote:
+
+> From: Maulik Shah <mkshah@codeaurora.org>
 > 
-> You preempted my previous email :)
+> GPIOs that can be configured as wakeup sources, have their
+> interrupt lines routed to PDC interrupt controller.
 > 
-> Yeah, that looks like what we want, I'll give a try.
+> Provide the interrupt map of the GPIO to its wakeup capable
+> interrupt parent.
+> 
 
-Cool, thanks.
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-And ofc no strong opinion about the implementation details, this can
-most certainly be optimized in some way so have fun :)
+Regards,
+Bjorn
 
-Cheers,
-Quentin
+> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+>  drivers/pinctrl/qcom/pinctrl-sc7280.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> index 8daccd5..99c416e 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> @@ -1449,6 +1449,28 @@ static const struct msm_pingroup sc7280_groups[] = {
+>  	[182] = SDC_QDSD_PINGROUP(sdc2_data, 0x1b4000, 9, 0),
+>  };
+>  
+> +static const struct msm_gpio_wakeirq_map sc7280_pdc_map[] = {
+> +	{ 0, 134 }, { 3, 131 }, { 4, 121 }, { 7, 103 }, { 8, 155 },
+> +	{ 11, 93 }, { 12, 78 }, { 15, 79 }, { 16, 80 }, { 18, 81 },
+> +	{ 19, 107 }, { 20, 82 }, { 21, 83 }, { 23, 99 }, { 24, 86 },
+> +	{ 25, 95 }, { 27, 158 }, { 28, 159 }, { 31, 90 }, { 32, 144 },
+> +	{ 34, 77 }, { 35, 92 }, { 36, 157 }, { 39, 73 }, { 40, 97 },
+> +	{ 41, 98 }, { 43, 85 }, { 44, 100 }, { 45, 101 }, { 47, 102 },
+> +	{ 48, 74 }, { 51, 112 }, { 52, 156 }, { 54, 117 }, { 55, 84 },
+> +	{ 56, 108 }, { 59, 110 }, { 60, 111 }, { 61, 123 }, { 63, 104 },
+> +	{ 68, 127 }, { 72, 150 }, { 75, 133 }, { 77, 125 }, { 78, 105 },
+> +	{ 79, 106 }, { 80, 118 }, { 81, 119 }, { 82, 162 }, { 83, 122 },
+> +	{ 86, 75 }, { 88, 154 }, { 89, 124 }, { 90, 149 }, { 91, 76 },
+> +	{ 93, 128 }, { 95, 160 }, { 101, 126 }, { 102, 96 }, { 103, 116 },
+> +	{ 104, 114 }, { 112, 72 }, { 116, 135 }, { 117, 163 }, { 119, 137 },
+> +	{ 121, 138 }, { 123, 139 }, { 125, 140 }, { 127, 141 }, { 128, 165 },
+> +	{ 129, 143 }, { 130, 94 }, { 131, 145 }, { 133, 146 }, { 136, 147 },
+> +	{ 140, 148 }, { 141, 115 }, { 142, 113 }, { 145, 130 }, { 148, 132 },
+> +	{ 150, 87 }, { 151, 88 }, { 153, 89 }, { 155, 164 }, { 156, 129 },
+> +	{ 157, 161 }, { 158, 120 }, { 161, 136 }, { 163, 142 }, { 172, 166 },
+> +	{ 174, 167 },
+> +};
+> +
+>  static const struct msm_pinctrl_soc_data sc7280_pinctrl = {
+>  	.pins = sc7280_pins,
+>  	.npins = ARRAY_SIZE(sc7280_pins),
+> @@ -1457,6 +1479,8 @@ static const struct msm_pinctrl_soc_data sc7280_pinctrl = {
+>  	.groups = sc7280_groups,
+>  	.ngroups = ARRAY_SIZE(sc7280_groups),
+>  	.ngpios = 176,
+> +	.wakeirq_map = sc7280_pdc_map,
+> +	.nwakeirq_map = ARRAY_SIZE(sc7280_pdc_map),
+>  };
+>  
+>  static int sc7280_pinctrl_probe(struct platform_device *pdev)
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
