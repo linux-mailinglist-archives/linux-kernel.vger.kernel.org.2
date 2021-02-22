@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DCF3213DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF9F3213E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhBVKMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:12:43 -0500
-Received: from mail.kingsoft.com ([114.255.44.146]:44953 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230419AbhBVKJ3 (ORCPT
+        id S231193AbhBVKNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:13:13 -0500
+Received: from pmg01-out2.zxcs.nl ([185.104.28.188]:43485 "EHLO
+        pmg01-out2.zxcs.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230512AbhBVKJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:09:29 -0500
-X-AuditID: 0a580155-6fbff700000550c6-01-60337b96ff01
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 6F.A4.20678.69B73306; Mon, 22 Feb 2021 17:38:30 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 22 Feb
- 2021 18:08:19 +0800
-Date:   Mon, 22 Feb 2021 18:08:19 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     <tony.luck@intel.com>, <mingo@redhat.com>, <tglx@linutronix.de>,
-        <hpa@zytor.com>, <x86@kernel.org>, <linux-edac@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yangfeng1@kingsoft.com>
-Subject: Re: [PATCH v2] x86/mce: fix wrong no-return-ip logic in
- do_machine_check()
-Message-ID: <20210222180819.3998fe33@alex-virtual-machine>
-In-Reply-To: <20210222100356.GB29063@zn.tnic>
-References: <20210222113124.35f2d552@alex-virtual-machine>
-        <20210222115007.75b7de9b@alex-virtual-machine>
-        <20210222092403.GA29063@zn.tnic>
-        <20210222173109.7b7ac42a@alex-virtual-machine>
-        <20210222100356.GB29063@zn.tnic>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Mon, 22 Feb 2021 05:09:51 -0500
+Received: from pmg01.zxcs.nl (localhost.localdomain [127.0.0.1])
+        by pmg01.zxcs.nl (ZXCS) with ESMTP id 1507F10588A;
+        Mon, 22 Feb 2021 11:08:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=pascalroeleven.nl; s=x; h=Content-Transfer-Encoding:MIME-Version:Message-Id
+        :Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=KsZvchTpxBaJoKjRefDrbL7JsiCBHcFRF62tHbfbg+M=; b=rW8nQmOyGEf23sfmBuBdWMBEqT
+        kAf96AdA1k4CPrRSCaKtgM0MgKoYx9hqOLUvo/eOpo/YzGZWxBeBBwKZm2NDBjo0BJ6yOYGLn+XcR
+        e9+z4UTFD+CWXodva1LfYJeQce/PGHkAsd+W9Xk7zPhf8DTDiWhcFXA43fbo8izXmjohltSFpjBxl
+        JWaF1IZ7+otoAzKTJzIpJgrJS3U6wZPCu4cXNQ8Lq95WXLUXL/5dHbQa+Un8zwGeuFyudHlTIGewp
+        /FaNtPgUFbqQugkOBzoqZpT67HN442/v5XblvEIqHxgUD8XZ0d2EsMRxaXrHzL9PeG48ZfRBbyaHp
+        jjxp1VCw==;
+From:   Pascal Roeleven <dev@pascalroeleven.nl>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Martin Cerveny <m.cerveny@computer.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     linux-sunxi@googlegroups.com,
+        Pascal Roeleven <dev@pascalroeleven.nl>
+Subject: [PATCH v4 0/2] Add support for Topwise A721 tablet
+Date:   Mon, 22 Feb 2021 11:08:24 +0100
+Message-Id: <20210222100826.12478-1-dev@pascalroeleven.nl>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrILMWRmVeSWpSXmKPExsXCFcGooDut2jjBYG2fhMXnDf/YLKZtFLe4
-        cKqByeLyrjlsFpcOLGCy2LxpKrPFmwv3WCx+bHjM6sDh8b21j8Vj8Z6XTB6bVnWyebw7d47d
-        4/2+q2wenzfJeZxo+cIawB7FZZOSmpNZllqkb5fAlfFm11u2gmcsFfvOfGdpYHzI3MXIySEh
-        YCLR+fIQkM3FISQwnUni26vf7BDOK0aJn48/sYJUsQioSvy6NAPMZgOyd92bBWaLCChJfF00
-        lwmkgVngEKPE4XMvgEZxcAgLhEosmVYIUsMrYCWx++8jNhCbU0BX4urF20wQCx4xSlx4tRns
-        DH4BMYneK/+ZIE6yl2jbsogRollQ4uTMJywgNrOAjsSJVceYIWx5ie1v54DZQgKKEoeX/GKH
-        6FWSONI9gw3CjpVYNu8V6wRG4VlIRs1CMmoWklELGJlXMbIU56YbbWKExEroDsYZTR/1DjEy
-        cTAC/cbBrCTCy3bXKEGINyWxsiq1KD++qDQntfgQozQHi5I4b7kDX4KQQHpiSWp2ampBahFM
-        lomDU6qByXnmxIOTEwRLjbe/ufukY/o+kRtaM2edTg1pS4ufuFJW1zJn/wdm/32H/dz8qg9+
-        4xeZeeh9R2rZJUb3uTzFeUevcd7bNK3P5P1BbYlTOrICgtl2dsc9X2xznDbnYJfOnKrgpF3z
-        He8mbpKbZVY4V8r+4je7G55yN2OiVVv22K263J1xqvmvvaWyx8dTmunqNwqzLi150L/EL+hA
-        y4yYtUI/05QPrbJk5pNYMVlTvPbjCmtHwUdeE2/eXFPhabYy8OeZ3YuE79xiujrt/LNGQa9T
-        v+Z8nyF97J3vjLqLs+6W/H5jK/r+odyJH1GLjkz9G20pNu1iYZtu3nO/DL+XZ9U6ax32761Z
-        +Kaq57dAaZgSS3FGoqEWc1FxIgDeYsNxBAMAAA==
+Content-Transfer-Encoding: 8bit
+X-AuthUser: dev@pascalroeleven.nl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 11:03:56 +0100
-Borislav Petkov <bp@alien8.de> wrote:
+On request I'm resending the last two patches from the Topwise A721 tablet
+series from a year ago as they weren't picked up. The other patches are
+already merged, so I didn't resend them.
 
-> On Mon, Feb 22, 2021 at 05:31:09PM +0800, Aili Yao wrote:
-> > you can inject a memory UE to a VM, it should always be MCG_STATUS_RIPV 0.  
-> 
-> So the signature you injected is not something the hardware would
-> generate - you just didn't set MCG_STATUS_RIPV.
-> 
-> If so, why should the code handle invalid signatures which the harware
-> cannot generate?
-> 
+Changes from v3:
+* Fix DT validation warnings
+* Remove leftover labels
 
-So why would intel provide this MCG_STATUS_RIPV flag, it's better to remove it as it will
-never be set, and all the related logic for this flag is really needed ? 
+Changes from v2:
+* Collected acked-by.
+
+Original cover letter:
+
+This series add support for the Topwise A721 tablet and it's display.
+It is an old tablet (around 2012) but it might be useful as reference
+as the devicetree is pretty complete.
+
+Changes from v1:
+* Split into multiple patches
+* dt-binding: use yaml instead of txt
+* dt-binding: add Topwise A721 to sunxi.yaml
+* dt-binding: add Topwise to vendor-prefixes
+* drm: Add bus_format, bus_flags and connector_type
+* dts: Use SPDX license identifier instead of boilerplate license text
+* dts: Remove pinctrl leftovers
+
+Pascal Roeleven (2):
+  dt-bindings: arm: Add Topwise A721
+  ARM: dts: sun4i: Add support for Topwise A721 tablet
+
+ .../devicetree/bindings/arm/sunxi.yaml        |   5 +
+ arch/arm/boot/dts/Makefile                    |   3 +-
+ arch/arm/boot/dts/sun4i-a10-topwise-a721.dts  | 242 ++++++++++++++++++
+ 3 files changed, 249 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/sun4i-a10-topwise-a721.dts
+
+-- 
+2.27.0
+
+
