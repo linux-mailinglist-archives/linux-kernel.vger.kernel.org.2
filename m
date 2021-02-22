@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3710A3217A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 257763217A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbhBVMw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:52:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44826 "EHLO mail.kernel.org"
+        id S230099AbhBVMvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:51:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231156AbhBVMR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231157AbhBVMR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 07:17:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A689B64F19;
-        Mon, 22 Feb 2021 12:17:38 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BA0864F12;
+        Mon, 22 Feb 2021 12:17:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996259;
-        bh=NFxsOPs56Ag2RAf7CIPzUo7IHlehnyAYbQ2D0zUHG1k=;
+        s=korg; t=1613996261;
+        bh=QDBg45RFT+SOm/lag6l4rj0iybT9eBugjWUvyOd+7iY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sldNj4uQ/yn7aOtu1O8miYx6/p4wA+/193tBtTo2W/QZRIR0yLMkWJquJyOYIYXEC
-         ksZsAmTHIbe61z4ccyrJWqYyvzlwLujpGf871NUDDulQ52dQIwRGxW3qY3SrZBTYR/
-         /c5ng2UGbU4SN/c5K5yz6nuD8ExcuHWcqurw3Gow=
+        b=hlR1sLgnonip5vlWjuOJx8wXwnAAn1aO0AUfe/v6zdNmEJxEr0aY31WSCb2OcX9ky
+         2ebdWPloLCwE1d1A5BxgF2zjsQlneWMxw3L+0d5+APjeOWhJqokd7u+bgyk4Sg9+b7
+         nF63hQtXkTY5O9ouaxdWgUX2LS5F6n/pvcwplxHI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+1bd2b07f93745fa38425@syzkaller.appspotmail.com,
+        syzbot+c2a7e5c5211605a90865@syzkaller.appspotmail.com,
         Sabyrzhan Tasbolatov <snovitoll@gmail.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 34/50] net/rds: restrict iovecs length for RDS_CMSG_RDMA_ARGS
-Date:   Mon, 22 Feb 2021 13:13:25 +0100
-Message-Id: <20210222121026.148735621@linuxfoundation.org>
+Subject: [PATCH 4.19 35/50] net/qrtr: restrict user-controlled length in qrtr_tun_write_iter()
+Date:   Mon, 22 Feb 2021 13:13:26 +0100
+Message-Id: <20210222121026.244062783@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
 References: <20210222121019.925481519@linuxfoundation.org>
@@ -44,51 +43,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 
-commit a11148e6fcce2ae53f47f0a442d098d860b4f7db upstream.
+commit 2a80c15812372e554474b1dba0b1d8e467af295d upstream.
 
-syzbot found WARNING in rds_rdma_extra_size [1] when RDS_CMSG_RDMA_ARGS
-control message is passed with user-controlled
-0x40001 bytes of args->nr_local, causing order >= MAX_ORDER condition.
+syzbot found WARNING in qrtr_tun_write_iter [1] when write_iter length
+exceeds KMALLOC_MAX_SIZE causing order >= MAX_ORDER condition.
 
-The exact value 0x40001 can be checked with UIO_MAXIOV which is 0x400.
-So for kcalloc() 0x400 iovecs with sizeof(struct rds_iovec) = 0x10
-is the closest limit, with 0x10 leftover.
+Additionally, there is no check for 0 length write.
 
-Same condition is currently done in rds_cmsg_rdma_args().
-
-[1] WARNING: mm/page_alloc.c:5011
+[1]
+WARNING: mm/page_alloc.c:5011
 [..]
 Call Trace:
  alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
  alloc_pages include/linux/gfp.h:547 [inline]
  kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
  kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
- kmalloc_array include/linux/slab.h:592 [inline]
- kcalloc include/linux/slab.h:621 [inline]
- rds_rdma_extra_size+0xb2/0x3b0 net/rds/rdma.c:568
- rds_rm_size net/rds/send.c:928 [inline]
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ qrtr_tun_write_iter+0x8a/0x180 net/qrtr/tun.c:83
+ call_write_iter include/linux/fs.h:1901 [inline]
 
-Reported-by: syzbot+1bd2b07f93745fa38425@syzkaller.appspotmail.com
+Reported-by: syzbot+c2a7e5c5211605a90865@syzkaller.appspotmail.com
 Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Link: https://lore.kernel.org/r/20210201203233.1324704-1-snovitoll@gmail.com
+Link: https://lore.kernel.org/r/20210202092059.1361381-1-snovitoll@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/rds/rdma.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/qrtr/tun.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/net/rds/rdma.c
-+++ b/net/rds/rdma.c
-@@ -531,6 +531,9 @@ int rds_rdma_extra_size(struct rds_rdma_
- 	if (args->nr_local == 0)
- 		return -EINVAL;
+--- a/net/qrtr/tun.c
++++ b/net/qrtr/tun.c
+@@ -80,6 +80,12 @@ static ssize_t qrtr_tun_write_iter(struc
+ 	ssize_t ret;
+ 	void *kbuf;
  
-+	if (args->nr_local > UIO_MAXIOV)
-+		return -EMSGSIZE;
++	if (!len)
++		return -EINVAL;
 +
- 	iov->iov = kcalloc(args->nr_local,
- 			   sizeof(struct rds_iovec),
- 			   GFP_KERNEL);
++	if (len > KMALLOC_MAX_SIZE)
++		return -ENOMEM;
++
+ 	kbuf = kzalloc(len, GFP_KERNEL);
+ 	if (!kbuf)
+ 		return -ENOMEM;
 
 
