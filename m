@@ -2,205 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FE7321D05
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0F8321D0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhBVQa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:30:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbhBVQ1o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:27:44 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5464EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:26:59 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id q14so59614092ljp.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:26:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mp2QQ7MvrV5zUofeFKg73RhwyazD5hfojtJwL2lbSOo=;
-        b=CQ5BSYE17bAMylBR6D/q2/HIcfSBxLJksn3AmOzI1DfO+18D98Ie5GrJoA5Gk4DGp1
-         kMW0MOxFH8THlXa0hbZqRbS7iAD4SShoL+OWC89YNpbuFje1X8hsrnvdUqz+vq1Qizfj
-         22ukhqqfzvcTWqdLsG0xzJdj5tbX1PVM77aDzCpQQ3v6HC8OCEr68vIlwTVXvFS76flt
-         /Aj4M34J6IJdI2rEvhixZEbR9f9U+WwBucJLpx8VEIMqorvIyY+yx2U8J/7MRbQaGjow
-         l82Jn0VaVyEew4UcIE2y9D6pGcgYkWY5wQT0vqFgMt5m/O5oetsf/PIX97iNZT1m7Hi8
-         repw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mp2QQ7MvrV5zUofeFKg73RhwyazD5hfojtJwL2lbSOo=;
-        b=bl/GgWDWlk/N9B3plmRdF+DSxHYpyd9MrOEQYbNwKIdP8/ZrPqO8ecGfmOx8bJVU8/
-         UE5JRXlOoWkW3RnfqDWG9fPrvF/tN0fElDU6Z+Ky2baItRnh6jKlGsyRuNguBDm59Shi
-         2z5g/W3QqNvFmMg+DK2IAMSwcZEicZ3aeXTANloS2DX78OuN7rdwyyexeZqtbtUjdlQQ
-         mQbDOS66w6ijaa6MB+Xg3QRBuJD43pONyZKDV8wMD9qmoAH9UFoWQC/bEz4glJWEuX8F
-         Pw8y0tJPk54l5AjW9S5Klyg8atKZBPUejjqYGXO/U3ILkp5kN3M/hsm6SNSshIEj1Lae
-         OGQg==
-X-Gm-Message-State: AOAM531kJzDW0LoNLj+kDHRoOV/PQ9xA8DJu0Err0O7uPq93JajXx0DM
-        pPo2KEGX+V4LOMQwpVdkjaeumQ==
-X-Google-Smtp-Source: ABdhPJxGwceBPuVjmyf18Mdqo1hgQf9u3FDMoPxiBpD6nJuwxSs7K8ql3RXClACX9VwKUk2lVHWFyQ==
-X-Received: by 2002:a2e:9cc2:: with SMTP id g2mr14144873ljj.348.1614011217845;
-        Mon, 22 Feb 2021 08:26:57 -0800 (PST)
-Received: from [192.168.118.216] ([85.249.43.69])
-        by smtp.gmail.com with ESMTPSA id a6sm1087926ljp.135.2021.02.22.08.26.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 08:26:57 -0800 (PST)
-Subject: Re: [PATCH v5 08/22] media: camss: Add missing format identifiers
-To:     Robert Foss <robert.foss@linaro.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, todor.too@gmail.com,
-        mchehab@kernel.org, robh+dt@kernel.org,
-        angelogioacchino.delregno@somainline.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-References: <20210217112122.424236-1-robert.foss@linaro.org>
- <20210217112122.424236-9-robert.foss@linaro.org>
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-Message-ID: <3e8eced2-de18-5def-c25e-b819e17b9c22@linaro.org>
-Date:   Mon, 22 Feb 2021 19:26:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230129AbhBVQcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:32:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35586 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231939AbhBVQ3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:29:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614011306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qMET2jrpSddtpWkJHAuUT+RtXvTsMyez7xuO3kxxUks=;
+        b=g2tsk2ags9OnzyMG3nQzuioxmg3cMeKBT4P+2JdqFcMV1bUJcdtvzwLrq1pyQE54RMqU7D
+        /fgy5Koo1D4bieg9KuKjudfVzG5mfQKlQq7oNTTKfHV05jlKW8ljNeZVOZcCwjUVN3u3yz
+        W/sEfP6ZS00E7tF/MojxcH+wX/bFgzU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B4575AFE6;
+        Mon, 22 Feb 2021 16:28:26 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 17:28:26 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Helge Deller <deller@gmx.de>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+Subject: Re: [PATCH printk-rework 08/14] printk: add syslog_lock
+Message-ID: <YDPbqhi6wVwGa5rF@alley>
+References: <20210218081817.28849-1-john.ogness@linutronix.de>
+ <20210218081817.28849-9-john.ogness@linutronix.de>
+ <YC+9gc/IR8PzeIFf@alley>
+ <875z2o15ha.fsf@jogness.linutronix.de>
+ <8735xs10hi.fsf@jogness.linutronix.de>
+ <db43de06-3183-7401-30f2-0e9302cc48e0@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <20210217112122.424236-9-robert.foss@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <db43de06-3183-7401-30f2-0e9302cc48e0@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert,
-
-Thank you for your patch!
-
-On 17.02.2021 14:21, Robert Foss wrote:
-> The CSI-2 spec defines the following types:
->   - Data Type - Often abbreviated DT
->   - Decode Format - Often abbreviated as DF
->   - Encode Format
+On Sun 2021-02-21 22:39:42, Helge Deller wrote:
+> On 2/19/21 5:33 PM, John Ogness wrote:
+> > Added CC: linux-parisc@vger.kernel.org
+> > 
+> > On 2021-02-19, John Ogness <john.ogness@linutronix.de> wrote:
+> > > > > diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> > > > > index 20c21a25143d..401df370832b 100644
+> > > > > --- a/kernel/printk/printk.c
+> > > > > +++ b/kernel/printk/printk.c
+> > > > > +/* Return a consistent copy of @syslog_seq. */
+> > > > > +static u64 read_syslog_seq_irq(void)
+> > > > > +{
+> > > > > +	u64 seq;
+> > > > > +
+> > > > > +	raw_spin_lock_irq(&syslog_lock);
+> > > > > +	seq = syslog_seq;
+> > > > > +	raw_spin_unlock_irq(&syslog_lock);
+> > > > 
+> > > > Is there any particular reason to disable interrupts here?
+> > > > 
+> > > > It would make sense only when the lock could be taken in IRQ
+> > > > context. Then we would need to always disable interrupts when
+> > > > the lock is taken. And if it is taken in IRQ context, we would
+> > > > need to safe flags.
+> > > 
+> > > All other instances of locking @syslog_lock are done with interrupts
+> > > disabled. And we have:
+> > > 
+> > > register_console()
+> > >    logbuf_lock_irqsave()
+> > >      raw_spin_lock(&syslog_lock)
+> > > 
+> > > I suppose I need to go through all the console drivers to see if any
+> > > register in interrupt context. If not, that logbuf_lock_irqsave()
+> > > should be replaced with logbuf_lock_irq(). And then locking
+> > > @syslog_lock will not need to disable interrupts.
+> > 
+> > I found a possible call chain in interrupt context. From arch/parisc
+> > there is the interrupt handler:
+> > 
+> > handle_interruption(code=1) /* High-priority machine check (HPMC) */
+> >    pdc_console_restart()
+> >      pdc_console_init_force()
+> >        register_console()
+> > 
+> > All other register_console() calls in the kernel are either during init
+> > (within __init sections and probe functions) or are clearly not in
+> > interrupt context (using mutex, kzalloc, spin_lock_irq, etc).
+> > 
+> > I am not familiar with parisc, but I am assuming handle_interruption()
+> > is always called with interrupts disabled (unless the HPMC interrupt is
+> > somehow an exception).
 > 
-> These definitions are as far as I can tell complete for CSI-2.
-> 
-> Additionally the Qualcomm internal type describing Plain Formats
-> has been added. Plain formats describe the size of the pixels
-> written by the RDI units to memory. PLAIN8 for example has the size
-> 8 bits, and PLAIN32 32 bits. The appropriate Plain Format is
-> determined by the Decode Format used. The smallest Plain Format
-> that is able to contain a pixel of the used Decode Format is the
-> appropriate one to use.
-> 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
->   .../media/platform/qcom/camss/camss-csid.h    | 50 +++++++++++++++++++
->   1 file changed, 50 insertions(+)
-> 
-> diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
-> index 1824b3745e10..02fc34ee8a41 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csid.h
-> +++ b/drivers/media/platform/qcom/camss/camss-csid.h
-> @@ -21,6 +21,56 @@
->   #define MSM_CSID_PAD_SRC 1
->   #define MSM_CSID_PADS_NUM 2
->   
-> +#define DATA_TYPE_EMBEDDED_DATA_8BIT	0x12
-> +#define DATA_TYPE_YUV420_8BIT		0x18
-> +#define DATA_TYPE_YUV420_10BIT		0x19
-> +#define DATA_TYPE_YUV420_8BIT_LEGACY	0x1a
-> +#define DATA_TYPE_YUV420_8BIT_SHIFTED	0x1c /* Chroma Shifted Pixel Sampling */
-> +#define DATA_TYPE_YUV420_10BIT_SHIFTED	0x1d /* Chroma Shifted Pixel Sampling */
-> +#define DATA_TYPE_YUV422_8BIT		0x1e
-> +#define DATA_TYPE_YUV422_10BIT		0x1f
-> +#define DATA_TYPE_RGB444		0x20
-> +#define DATA_TYPE_RGB555		0x21
-> +#define DATA_TYPE_RGB565		0x22
-> +#define DATA_TYPE_RGB666		0x23
-> +#define DATA_TYPE_RGB888		0x24
-> +#define DATA_TYPE_RAW_24BIT		0x27
-> +#define DATA_TYPE_RAW_6BIT		0x28
-> +#define DATA_TYPE_RAW_7BIT		0x29
-> +#define DATA_TYPE_RAW_8BIT		0x2a
-> +#define DATA_TYPE_RAW_10BIT		0x2b
-> +#define DATA_TYPE_RAW_12BIT		0x2c
-> +#define DATA_TYPE_RAW_14BIT		0x2d
-> +#define DATA_TYPE_RAW_16BIT		0x2e
-> +#define DATA_TYPE_RAW_20BIT		0x2f
+> Yes, handle_interruption() is the irq handler, running with irqs off.
+> HPMC is the crash handler - it's called when the kernel will stop
+> anyway. pdc_console is a very basic firmware console which prints
+> the last messages before the machine halts on fatal errors.
+> So, this code it's not the typical use case....
 
-- these look OK for me (the old MIPI spec draft I have doesn't have
-   some of the data types listed above).
+Thanks for information.
 
-   As these are generic values from the MIPI standard, it could probably make
-   sense to create a common header file for that someday.
-   E.g. the very similar defines (same values, different names) are present in
-   drivers/staging/media/atomisp/pci/isp_capture_defs.h
-   But it looks like most of the current drivers don't need the MIPI data type
-   defines, so not a problem at the moment.
+Is this code supposed to work only during early boot or anytime,
+please?
 
-> +
-> +#define DECODE_FORMAT_UNCOMPRESSED_6_BIT	0x0
-> +#define DECODE_FORMAT_UNCOMPRESSED_8_BIT	0x1
-> +#define DECODE_FORMAT_UNCOMPRESSED_10_BIT	0x2
-> +#define DECODE_FORMAT_UNCOMPRESSED_12_BIT	0x3
-> +#define DECODE_FORMAT_UNCOMPRESSED_14_BIT	0x4
-> +#define DECODE_FORMAT_UNCOMPRESSED_16_BIT	0x5
-> +#define DECODE_FORMAT_UNCOMPRESSED_20_BIT	0x6
-> +#define DECODE_FORMAT_DPCM_10_6_10		0x7
-> +#define DECODE_FORMAT_DPCM_10_8_10		0x8
-> +#define DECODE_FORMAT_DPCM_12_6_12		0x9
-> +#define DECODE_FORMAT_DPCM_12_8_12		0xA
-> +#define DECODE_FORMAT_DPCM_14_8_14		0xB
-> +#define DECODE_FORMAT_DPCM_14_10_14		0xC
-> +#define DECODE_FORMAT_USER_DEFINED		0xE
-> +#define DECODE_FORMAT_PAYLOAD_ONLY		0xF
+Note that it is not safe because register_console() takes
+console_lock() which is a sleeping lock.
 
-- interesting that the subset of the DECODE_FORMAT's used in
-   camss-csid-4-1.c (the first four formats above - UNCOMPRESSED_6_BIT
-   to UNCOMPRESSED_12_BIT ones) has the same values as the corresponding
-   field in the CSID_CID_n_CFG registers - according to the public
-   "APQ8016E Technical Reference Manual" [1]. So these exact DECODE_FORMAT_*
-   values are written into the bits 7:4 of the hw register.
-   But in [1] the values of DPCM_10_6_10 to DPCM_12_8_12 are 0x4 to 0x7
-   (as the camss-csid-4-1.c doesn't support DPCM this is not an issue).
-   Are the DECODE_FORMAT_* values above defined in the MIPI standard, or did
-   they come from the datasheet for a particular SOC?
+That said, we are going to rework the console handling a lot. We are
+trying to remove as many locks from the printk path as possible.
+I guess that the list of consoles will be synchronized using
+rcu at the end. But it is still a long way to go.
 
-[1] https://developer.qualcomm.com/download/sd410/snapdragon-410e-technical-reference-manual.pdf
-     page 990
-> +
-> +#define ENCODE_FORMAT_RAW_8_BIT		0x1
-> +#define ENCODE_FORMAT_RAW_10_BIT	0x2
-> +#define ENCODE_FORMAT_RAW_12_BIT	0x3
-> +#define ENCODE_FORMAT_RAW_14_BIT	0x4
-> +#define ENCODE_FORMAT_RAW_16_BIT	0x5
-
-- the ENCODE_FORMAT_* defines are not used in the driver.
-
-> +
-> +#define PLAIN_FORMAT_PLAIN8	0x0 /* supports DPCM, UNCOMPRESSED_6/8_BIT */
-> +#define PLAIN_FORMAT_PLAIN16	0x1 /* supports DPCM, UNCOMPRESSED_10/16_BIT */
-> +#define PLAIN_FORMAT_PLAIN32	0x2 /* supports UNCOMPRESSED_20_BIT */
-
-- the PLAIN_FORMAT_* defines are not used in the driver, but
-   camss-csid-4-1.c and camss-csid-4-7.c do define there own
-   CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_8 and CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_16
-   (without relying on PLAIN_FORMAT_PLAIN8 or PLAIN_FORMAT_PLAIN16).
-
-Thanks,
-Andrey
-
-> +
-> +
->   enum csid_payload_mode {
->   	CSID_PAYLOAD_MODE_INCREMENTING = 0,
->   	CSID_PAYLOAD_MODE_ALTERNATING_55_AA = 1,
-> 
+Best Regards,
+Petr
