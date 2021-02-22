@@ -2,165 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CF2320F20
+	by mail.lfdr.de (Postfix) with ESMTP id E3ABC320F21
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbhBVBdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:33:01 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:12933 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbhBVBcq (ORCPT
+        id S231736AbhBVBdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:33:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231687AbhBVBcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:32:46 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DkPl940tfzjPw4;
-        Mon, 22 Feb 2021 09:30:45 +0800 (CST)
-Received: from [10.67.102.248] (10.67.102.248) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Feb 2021 09:31:51 +0800
-Subject: Re: [PATCH] perf record: Fix continue profiling after draining the
- buffer
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-CC:     Namhyung Kim <namhyung@kernel.org>, <amistry@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <zhangjinhao2@huawei.com>
-References: <20210205065001.23252-1-yangjihong1@huawei.com>
- <CAM9d7cgGGWtTkReghATVmMnOd=0dBrghBLgEc9AqT_PF-UP1Rg@mail.gmail.com>
- <YB0h9Gj5lpcuqndo@krava> <YC5ptbU8Mavb1a/t@kernel.org>
- <YC6fVHohih5giNf7@kernel.org>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <5a76a82e-7ec1-d510-309e-a38a1b41027e@huawei.com>
-Date:   Mon, 22 Feb 2021 09:31:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Sun, 21 Feb 2021 20:32:50 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD042C061574;
+        Sun, 21 Feb 2021 17:32:09 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id b8so10579330oti.7;
+        Sun, 21 Feb 2021 17:32:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=urSTMy9t6cTiTrhHbL96lNEFLr5gM8etKvvG8YybOtM=;
+        b=RiKpsUd2eg9pq2eKx9PgQDgKlS6S2TMP1cA6OmvM+0aHJN1D+Fxatx7zLPScl4ZvP1
+         z0qfvtLpR+HDDilB8prIpl46msQycXNibiUYYCf1kto7cDyfvgtxVKRI9ZSyyvcl3ZKp
+         6JBAGiAbBDBlaRu8DbGbpHN8pvSQ+rk81NktKSs/nBI+1M2aoBpkxjSBIkaFd8An7F12
+         tFHljIX96wMyJpDhZO9594jJ13VQxiZjSjSnv1IBAor0PzRNmhjg0BWxLWZkBRd06PFD
+         K7d/0XsrGKDw2UK+ViumxfVoK96HtpH/Sdl+TJkEgMQC8MGj+XmO3FBglsLneyIIE6YI
+         G1Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=urSTMy9t6cTiTrhHbL96lNEFLr5gM8etKvvG8YybOtM=;
+        b=sw6ysVdaGbfgS712zmMMhIkQvcfw6UlNftu9cxfaPJnmbdJ8jX1DLDjIcXQs/jnsMu
+         nIWVP/kLYmomMJ7QQQ9nEXOUT8FJKDg2OGxO+O0Y5atqtpENlzAhzLGZEoZLoKvYAaLU
+         LlbSRP/NY3m8RZ+8rKGReN+HOEGLUN2z138julAg7irtMwLoquHGWVrF5s6gqeYNEuQl
+         lhgQkKIxy0f3G8vzRsxl3XCSBRn+sE40Fig3HDJJ5ukCXDqM95qV6dcsUBk5MY5UjrFt
+         l3P9ollg6GmzCesLPMwLFrWFdFvJkciCmFXGzWtb+c3WxdnFC+o3xr1BNb68KsLAavOI
+         xzDw==
+X-Gm-Message-State: AOAM531RoCByz7gUfAj9L/Ptdy52uhnqmkLcbd1BnNIk0bt8Auwc8BTg
+        x95N4NxvxvODp8LEpMXBdqk=
+X-Google-Smtp-Source: ABdhPJy9/ek5tQDmOCC4jipCZCItMiaiSmbk31Qp56NGSfXHrJmQjQYbxDtf5G5zBFDY1OH+xstrXg==
+X-Received: by 2002:a05:6830:3151:: with SMTP id c17mr1142078ots.194.1613957529125;
+        Sun, 21 Feb 2021 17:32:09 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p3sm1046484otf.22.2021.02.21.17.32.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 21 Feb 2021 17:32:08 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 21 Feb 2021 17:32:07 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        will@kernel.org, joe@perches.com, catalin.marinas@arm.com,
+        mpe@ellerman.id.au, mark.rutland@arm.com, benh@kernel.crashing.org,
+        tao.li@vivo.com, paulus@samba.org, vincenzo.frascino@arm.com,
+        frowand.list@gmail.com, sashal@kernel.org, masahiroy@kernel.org,
+        jmorris@namei.org, allison@lohutok.net, serge@hallyn.com,
+        devicetree@vger.kernel.org, pasha.tatashin@soleen.com,
+        prsriva@linux.microsoft.com, hsinyi@chromium.org,
+        linux-arm-kernel@lists.infradead.org, christophe.leroy@c-s.fr,
+        mbrugger@suse.com, balajib@linux.microsoft.com,
+        dmitry.kasatkin@gmail.com, linux-kernel@vger.kernel.org,
+        james.morse@arm.com, linux-integrity@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v18 03/11] of: Add a common kexec FDT setup function
+Message-ID: <20210222013207.GA142216@roeck-us.net>
+References: <20210213161049.6190-1-nramas@linux.microsoft.com>
+ <20210213161049.6190-4-nramas@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <YC6fVHohih5giNf7@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210213161049.6190-4-nramas@linux.microsoft.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Feb 13, 2021 at 08:10:41AM -0800, Lakshmi Ramasubramanian wrote:
+> From: Rob Herring <robh@kernel.org>
+> 
+> Both arm64 and powerpc do essentially the same FDT /chosen setup for
+> kexec.  The differences are either omissions that arm64 should have
+> or additional properties that will be ignored.  The setup code can be
+> combined and shared by both powerpc and arm64.
+> 
+> The differences relative to the arm64 version:
+>  - If /chosen doesn't exist, it will be created (should never happen).
+>  - Any old dtb and initrd reserved memory will be released.
+>  - The new initrd and elfcorehdr are marked reserved.
+>  - "linux,booted-from-kexec" is set.
+> 
+> The differences relative to the powerpc version:
+>  - "kaslr-seed" and "rng-seed" may be set.
+>  - "linux,elfcorehdr" is set.
+>  - Any existing "linux,usable-memory-range" is removed.
+> 
+> Combine the code for setting up the /chosen node in the FDT and updating
+> the memory reservation for kexec, for powerpc and arm64, in
+> of_kexec_alloc_and_setup_fdt() and move it to "drivers/of/kexec.c".
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 
-On 2021/2/19 1:09, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Feb 18, 2021 at 10:20:53AM -0300, Arnaldo Carvalho de Melo escreveu:
->> Em Fri, Feb 05, 2021 at 11:46:12AM +0100, Jiri Olsa escreveu:
->>> On Fri, Feb 05, 2021 at 07:35:22PM +0900, Namhyung Kim wrote:
->>>> Hello,
->>>>
->>>> On Fri, Feb 5, 2021 at 3:50 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->>>>>
->>>>> commit da231338ec9c098707c8a1e4d8a50e2400e2fe17 uses eventfd to solve rare race
->>>>> where the setting and checking of 'done' which add done_fd to pollfd.
->>>>> When draining buffer, revents of done_fd is 0 and evlist__filter_pollfd
->>>>> function returns a non-zero value.
->>>>> As a result, perf record does not stop profiling.
->>>>>
->>>>> The following simple scenarios can trigger this condition:
->>>>>
->>>>> sleep 10 &
->>>>> perf record -p $!
->>>>>
->>>>> After the sleep process exits, perf record should stop profiling and exit.
->>>>> However, perf record keeps running.
->>>>>
->>>>> If pollfd revents contains only POLLERR or POLLHUP,
->>>>> perf record indicates that buffer is draining and need to stop profiling.
->>>>> Use fdarray_flag__nonfilterable to set done eventfd to nonfilterable objects,
->>>>> so that evlist__filter_pollfd does not filter and check done eventfd.
->>>>>
->>>>> Fixes: da231338ec9c (perf record: Use an eventfd to wakeup when done)
->>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
->>>>> ---
->>>>>   tools/perf/builtin-record.c | 2 +-
->>>>>   tools/perf/util/evlist.c    | 8 ++++++++
->>>>>   tools/perf/util/evlist.h    | 4 ++++
->>>>>   3 files changed, 13 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
->>>>> index fd3911650612..51e593e896ea 100644
->>>>> --- a/tools/perf/builtin-record.c
->>>>> +++ b/tools/perf/builtin-record.c
->>>>> @@ -1663,7 +1663,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>>>>                  status = -1;
->>>>>                  goto out_delete_session;
->>>>>          }
->>>>> -       err = evlist__add_pollfd(rec->evlist, done_fd);
->>>>> +       err = evlist__add_wakeup_eventfd(rec->evlist, done_fd);
->>>>>          if (err < 0) {
->>>>>                  pr_err("Failed to add wakeup eventfd to poll list\n");
->>>>>                  status = err;
->>>>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
->>>>> index 05363a7247c4..fea4c1e8010d 100644
->>>>> --- a/tools/perf/util/evlist.c
->>>>> +++ b/tools/perf/util/evlist.c
->>>>> @@ -572,6 +572,14 @@ int evlist__filter_pollfd(struct evlist *evlist, short revents_and_mask)
->>>>>          return perf_evlist__filter_pollfd(&evlist->core, revents_and_mask);
->>>>>   }
->>>>>
->>>>> +#ifdef HAVE_EVENTFD_SUPPORT
->>>>> +int evlist__add_wakeup_eventfd(struct evlist *evlist, int fd)
->>>>> +{
->>>>> +       return perf_evlist__add_pollfd(&evlist->core, fd, NULL, POLLIN,
->>>>> +                                      fdarray_flag__nonfilterable);
->>>>> +}
->>>>> +#endif
->>>>
->>>> Does it build when HAVE_EVENTFD_SUPPORT is not defined?
->>>
->>> yea, I was wondering the same.. but it's called only from
->>> code within HAVE_EVENTFD_SUPPORT ifdef
->>
->> Yes, this can't work on systems without eventfd, it will simply not
->> build, and why do we have to make the definition of this function
->> conditional on HAVE_EVENTFD_SUPPORT?
->>
->> I'm missing something :-\
->>
->> Yeah, this whole call to evlist__add_pollfd is already surrounded by
->> #ifdef HAVE_EVENTFD_SUPPORT:
->>
->> 1656         if (zstd_init(&session->zstd_data, rec->opts.comp_level) < 0) {
->> 1657                 pr_err("Compression initialization failed.\n");
->> 1658                 return -1;
->> 1659         }
->> 1660 #ifdef HAVE_EVENTFD_SUPPORT
->> 1661         done_fd = eventfd(0, EFD_NONBLOCK);
->> 1662         if (done_fd < 0) {
->> 1663                 pr_err("Failed to create wakeup eventfd, error: %m\n");
->> 1664                 status = -1;
->> 1665                 goto out_delete_session;
->> 1666         }
->> 1667         err = evlist__add_pollfd(rec->evlist, done_fd);
->> 1668         if (err < 0) {
->> 1669                 pr_err("Failed to add wakeup eventfd to poll list\n");
->> 1670                 status = err;
->> 1671                 goto out_delete_session;
->> 1672         }
->> 1673 #endif // HAVE_EVENTFD_SUPPORT
->> 1674
->> 1675         session->header.env.comp_type  = PERF_COMP_ZSTD;
->> 1676         session->header.env.comp_level = rec->opts.comp_level;
->>
->> Jiri, does your Acked-by stands? Namhyung?
-> 
-> Thanks tested and applied, together with Jiri's Tested-by,
-> 
-> - Arnaldo
-> .
-> 
-Is this patch okay? Is there anything that needs to be modified?
+s390:allmodconfig:
 
-Thanks,
-Yang
+drivers/of/kexec.c: In function 'of_kexec_alloc_and_setup_fdt':
+drivers/of/kexec.c:378:10: error: 'const struct kimage' has no member named 'arch'
+  378 |     image->arch.elf_load_addr,
+      |          ^~
+drivers/of/kexec.c:379:10: error: 'const struct kimage' has no member named 'arch'
+  379 |     image->arch.elf_headers_sz);
+      |          ^~
+drivers/of/kexec.c:387:35: error: 'const struct kimage' has no member named 'arch'
+  387 |   ret = fdt_add_mem_rsv(fdt, image->arch.elf_load_addr,
+      |                                   ^~
+drivers/of/kexec.c:388:16: error: 'const struct kimage' has no member named 'arch'
+  388 |           image->arch.elf_headers_sz);
+      |                ^~
+
+Guenter
