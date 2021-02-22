@@ -2,89 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D10F3211AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C883211B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhBVH5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 02:57:03 -0500
-Received: from muru.com ([72.249.23.125]:36212 "EHLO muru.com"
+        id S230368AbhBVIAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:00:23 -0500
+Received: from verein.lst.de ([213.95.11.211]:57416 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230304AbhBVH5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 02:57:01 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 08F3180C3;
-        Mon, 22 Feb 2021 07:56:47 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 09:56:07 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-omap@vger.kernel.org, sre@kernel.org, nekit1000@gmail.com,
-        mpartap@gmx.net, merlijn@wizzup.org, martin_rysavy@centrum.cz,
-        phone-devel@vger.kernel.org, maemo-leste@lists.dyne.org,
-        Carl Philipp Klemm <philipp@uvos.xyz>
-Subject: Re: Droid 4 charging
-Message-ID: <YDNjl+4M/hrmsbIj@atomide.com>
-References: <20210206131415.GA4499@amd>
- <YCn5+ZPdPojwCz8g@atomide.com>
- <20210219215752.GA31435@amd>
+        id S230314AbhBVIAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 03:00:22 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 69F6168D0A; Mon, 22 Feb 2021 08:59:38 +0100 (CET)
+Date:   Mon, 22 Feb 2021 08:59:37 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Subject: Re: [PATCH 5/6] driver core: lift dma_default_coherent into common
+ code
+Message-ID: <20210222075937.GA21946@lst.de>
+References: <20210208145024.3320420-1-hch@lst.de> <20210208145024.3320420-6-hch@lst.de> <alpine.DEB.2.21.2102081654060.35623@angie.orcam.me.uk> <20210208161043.GA14083@lst.de> <alpine.DEB.2.21.2102091213070.35623@angie.orcam.me.uk> <alpine.DEB.2.21.2102151342050.1521@angie.orcam.me.uk> <alpine.DEB.2.21.2102210407090.2021@angie.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210219215752.GA31435@amd>
+In-Reply-To: <alpine.DEB.2.21.2102210407090.2021@angie.orcam.me.uk>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Pavel Machek <pavel@ucw.cz> [210219 21:58]:
-> > > If I turn off charging with echo 0 > input_current_limit, 0.2 to 0.4A
-> > > is drawn from USB, and battery is not discharged:
-> > > 
-> > > root@devuan-droid4:/sys/class/power_supply/usb# echo 0 >  input_current_limit
-> > > root@devuan-droid4:/sys/class/power_supply/usb# cat current_now
-> > > 0
-> > 
-> > Hmm so have you measured that setting the current limit to 0 actually
-> > draws something from the USB?
+On Sun, Feb 21, 2021 at 04:32:38AM +0100, Maciej W. Rozycki wrote:
+> I haven't booted Linux on my Malta for a while now, but it turns out to 
+> work just fine, and your patch set does not regress it booting multi-user 
+> NFS-rooted over FDDI.
 > 
-> Yes, it does, if I do the echo when charge is done. (I have small USB
-> passthrough with volt and amp meters). It has been behaving weirdly in
-> other cases.p
-
-OK great, seems like we can just change the charger timeout then.
-
-> > I recall clearing the ichrgr bits stops the vbus draw completely, but
-> > I could be wrong.
-> > 
-> > > Is that a better way to handle full battery?
-> > 
-> > We could experiment with switching over to usb power when the battery is
-> > full. Looking at the docs for mc1378 it might be possible that setting
-> > CPCAP_REG_CRM_FET_OVRD and clearing CPCAP_REG_CRM_FET_CTRL after the
-> > battery is full disables charging but still keep drawing power from
-> > the usb. I'd assume the current limit still needs to be nonzero there
-> > too? Totally untested..
+>  I note however that the system does not reboot properly:
 > 
-> I may be able to test patches...
+> sd 0:0:0:0: [sda] Synchronizing SCSI cache
+> reboot: Restarting system
+> Reboot failed -- System halted
+> 
+> which is a regression, and also the MMIO-mapped discrete CBUS UART (ttyS2) 
+> does not sign in anymore either:
 
-Yeah this too might be worth testing on some donor device..
-
-> > And switching back to battery power on usb disconnect will potentially
-> > only give us very little time based on the different line length for
-> > vbus and ground pins compared to data pins on the usb connector.. And
-> > uvos had some concerns about the battery capacity putting it back online,
-> > so adding him to Cc also.
->
-> You mean, we'd have to take interrupt and switch registers in order to
-> switch back to battery power, and system would crash if we did not
-> make it in time?
-
-Yes hopefully we don't need to do that. My guess is we should find some
-FET_OVRD and FET_CTRL setting we can always keep enabled after charger
-negotation. Maybe we already have the right settings based on your tests :)
-
-Regards,
-
-Tony
-
-
+Do you mean a regression with this series, or just compared to when you
+last tested?
