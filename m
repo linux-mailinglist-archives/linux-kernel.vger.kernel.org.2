@@ -2,68 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF63321378
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD9332137D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhBVJxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:53:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51858 "EHLO mail.kernel.org"
+        id S230008AbhBVJz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:55:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:38176 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230044AbhBVJxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:53:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CA8864E2F;
-        Mon, 22 Feb 2021 09:53:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613987588;
-        bh=BBG3yknKL0hoGSOg1hNme7zrwWCbVtcVbJuDn0H9qRo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2va3FjJtSZQupCjTYVzMxAyUZVVUbxhp9YPh7MLb2J8qpkpWPJQkQsuAXiQgnH5CW
-         Y5PLKhfUqtCh3HifYAoGZ5ytxKRb7Wch2FiOaymmYibhqwjnJQjGZyPk4u2oZHrHeP
-         QivH9UJCqqPRIVf9GwsBgmnDCZ9JQ/cBjnUJGlW4=
-Date:   Mon, 22 Feb 2021 10:53:06 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Adrian Catangiu <acatan@amazon.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qemu-devel@nongnu.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, graf@amazon.com, rdunlap@infradead.org,
-        arnd@arndb.de, ebiederm@xmission.com, rppt@kernel.org,
-        0x7f454c46@gmail.com, borntraeger@de.ibm.com, Jason@zx2c4.com,
-        jannh@google.com, w@1wt.eu, colmmacc@amazon.com, luto@kernel.org,
-        tytso@mit.edu, ebiggers@kernel.org, dwmw@amazon.co.uk,
-        bonzini@gnu.org, sblbir@amazon.com, raduweis@amazon.com,
-        corbet@lwn.net, mst@redhat.com, mhocko@kernel.org,
-        rafael@kernel.org, pavel@ucw.cz, mpe@ellerman.id.au,
-        areber@redhat.com, ovzxemul@gmail.com, avagin@gmail.com,
-        ptikhomirov@virtuozzo.com, gil@azul.com, asmehra@redhat.com,
-        dgunigun@redhat.com, vijaysun@ca.ibm.com, oridgar@gmail.com,
-        ghammer@redhat.com
-Subject: Re: [PATCH v6 1/2] drivers/misc: sysgenid: add system generation id
- driver
-Message-ID: <YDN/AvsplZ7R8OTR@kroah.com>
-References: <1613986886-29493-1-git-send-email-acatan@amazon.com>
- <1613986886-29493-2-git-send-email-acatan@amazon.com>
+        id S229518AbhBVJzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:55:15 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8C78D6E;
+        Mon, 22 Feb 2021 01:54:27 -0800 (PST)
+Received: from e124901.arm.com (unknown [10.57.11.147])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 74B203F73B;
+        Mon, 22 Feb 2021 01:54:25 -0800 (PST)
+From:   vincent.donnefort@arm.com
+To:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org
+Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        qperret@google.com, patrick.bellasi@matbug.net,
+        valentin.schneider@arm.com,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: [PATCH] sched/fair: Fix task utilization accountability in cpu_util_next()
+Date:   Mon, 22 Feb 2021 09:54:01 +0000
+Message-Id: <20210222095401.37158-1-vincent.donnefort@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1613986886-29493-2-git-send-email-acatan@amazon.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 11:41:25AM +0200, Adrian Catangiu wrote:
-> The driver also generates a `SYSGENID=%u` uevent containing the new
-> system generation counter/id value every time it changes. Unlike the
-> filesystem interface, the uevent has no synchronization guarantees
-> therefore it should not be used by any sensitive system components.
+From: Vincent Donnefort <vincent.donnefort@arm.com>
 
-No, please no.  It is not ok to start sending random uevents all the
-time to userspace for individual drivers like this.  Especially for a
-misc device.
+Currently, cpu_util_next() estimates the CPU utilization as follows:
 
-As you say "has no synchromization guarantees", then why use it at all?
+  max(cpu_util + task_util,
+      cpu_util_est + task_util_est)
 
-Please drop it.
+This is an issue when making a comparison between CPUs, as the task
+contribution can be either:
 
-thanks,
+  (1) task_util_est, on a mostly idle CPU, where cpu_util is close to 0
+      and task_util_est > cpu_util.
+  (2) task_util, on a mostly busy CPU, where cpu_util > task_util_est.
 
-greg k-h
+This gives an unfair advantage to some CPUs, when comparing energy deltas
+in the task waking placement, where task_util is always smaller than
+task_util_est. The energy delta is therefore, likely to be bigger on
+a mostly idle CPU (1) than a mostly busy CPU (2).
+
+This issue is, moreover, not sporadic. By starving idle CPUs, it keeps
+their cpu_util < task_util_est (1) while others will maintain cpu_util >
+task_util_est (2).
+
+The new approach uses (if UTIL_EST is enabled) task_util_est() as task
+contribution, which ensures that all CPUs will use the same value:
+
+  max(cpu_util + max(task_util, task_util_est),
+      cpu_util_est + max(task_util, task_util_est))
+
+This patch doesn't modify the !UTIL_EST behaviour.
+
+Also, replace sub_positive with lsub_positive which saves one explicit
+load-store.
+
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index fb9f10d4312b..dd143aafaf97 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6516,32 +6516,42 @@ static unsigned long cpu_util_without(int cpu, struct task_struct *p)
+ static unsigned long cpu_util_next(int cpu, struct task_struct *p, int dst_cpu)
+ {
+ 	struct cfs_rq *cfs_rq = &cpu_rq(cpu)->cfs;
+-	unsigned long util_est, util = READ_ONCE(cfs_rq->avg.util_avg);
++	unsigned long util = READ_ONCE(cfs_rq->avg.util_avg);
+ 
+ 	/*
+-	 * If @p migrates from @cpu to another, remove its contribution. Or,
+-	 * if @p migrates from another CPU to @cpu, add its contribution. In
+-	 * the other cases, @cpu is not impacted by the migration, so the
+-	 * util_avg should already be correct.
++	 * UTIL_EST case: hide the task_util contribution from util.
++	 * During wake-up, the task isn't enqueued yet and doesn't
++	 * appear in the util_est of any CPU. No contribution has
++	 * therefore to be removed from util_est.
++	 *
++	 * If @p migrates to this CPU, add its contribution to util and
++	 * util_est.
+ 	 */
+-	if (task_cpu(p) == cpu && dst_cpu != cpu)
+-		sub_positive(&util, task_util(p));
+-	else if (task_cpu(p) != cpu && dst_cpu == cpu)
+-		util += task_util(p);
+-
+ 	if (sched_feat(UTIL_EST)) {
++		unsigned long util_est;
++
+ 		util_est = READ_ONCE(cfs_rq->avg.util_est.enqueued);
+ 
+-		/*
+-		 * During wake-up, the task isn't enqueued yet and doesn't
+-		 * appear in the cfs_rq->avg.util_est.enqueued of any rq,
+-		 * so just add it (if needed) to "simulate" what will be
+-		 * cpu_util() after the task has been enqueued.
+-		 */
+-		if (dst_cpu == cpu)
+-			util_est += _task_util_est(p);
++		if (task_cpu(p) == cpu)
++			lsub_positive(&util, task_util(p));
++
++		if (dst_cpu == cpu) {
++			unsigned long task_util = task_util_est(p);
++
++			util += task_util;
++			util_est += task_util;
++		}
+ 
+ 		util = max(util, util_est);
++	/*
++	 * !UTIL_EST case: If @p migrates from @cpu to another, remove its
++	 * contribution. If @p migrates to @cpu, add it.
++	 */
++	} else {
++		if (task_cpu(p) == cpu && dst_cpu != cpu)
++			lsub_positive(&util, task_util(p));
++		else if (task_cpu(p) != cpu && dst_cpu == cpu)
++			util += task_util(p);
+ 	}
+ 
+ 	return min(util, arch_scale_cpu_capacity(cpu));
+-- 
+2.25.1
+
