@@ -2,111 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7C5320F1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA085320F26
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhBVBaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:30:35 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54738 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhBVBa0 (ORCPT
+        id S231739AbhBVBeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:34:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44829 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231742AbhBVBdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:30:26 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 483AE517;
-        Mon, 22 Feb 2021 02:29:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613957384;
-        bh=WIYtArx8kmB0bXNl34Zf0YcBtLjG5KZn46ZFZXcecfY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SGRmlIAl98Xa6QRVSVdfZvpUgHfGUlDNhm8dirby3KsDKKu9oTwfSMRkNhulp9spj
-         xNLfhNoMOIrsNgi7fjEEDJW6FIlBIskHTQdPbFTOVKAFOf7PCWCk3m5ljn8U07FEef
-         dpRC3zr6V3aaFD7HwfGiw4anSBVD8khSBlIJfEbo=
-Date:   Mon, 22 Feb 2021 03:29:17 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/16] media: i2c: max9286: Rename reverse_channel_mv
-Message-ID: <YDMI7TnwreLNT7yh@pendragon.ideasonboard.com>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-11-jacopo+renesas@jmondi.org>
+        Sun, 21 Feb 2021 20:33:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613957537;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N34hBKZHkXIxa+0JV+MfgWWrHN+GVw6/8nre7Mkust8=;
+        b=BJfyIfumHNc8YqdGK0DcPmxoW3zSy6OMjoCp12PjhNU9IfT1YsN0XJVT4Zi3YY9ogcYZuD
+        4x2A1KgQ92DoFj2zvNpDhL1l7RvjnbCrMs2h7jR6tzuL8hWeqcP7XRbastcU8sjUTjd5Nq
+        DOdMKBmyxKHvoQjul2Pj4jG3VY1G4Lc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-vCCu8_aQNUS3Y2da_gJthQ-1; Sun, 21 Feb 2021 20:32:00 -0500
+X-MC-Unique: vCCu8_aQNUS3Y2da_gJthQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA26A79EC0;
+        Mon, 22 Feb 2021 01:31:57 +0000 (UTC)
+Received: from T590 (ovpn-12-196.pek2.redhat.com [10.72.12.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7972B1A867;
+        Mon, 22 Feb 2021 01:31:37 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 09:31:33 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     SelvaKumar S <selvakuma.s1@samsung.com>
+Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
+        damien.lemoal@wdc.com, hch@lst.de, sagi@grimberg.me,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, snitzer@redhat.com, selvajove@gmail.com,
+        joshiiitr@gmail.com, nj.shetty@samsung.com, joshi.k@samsung.com,
+        javier.gonz@samsung.com, kch@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [RFC PATCH v5 0/4] add simple copy support
+Message-ID: <YDMJdekWhy/Y1Y1r@T590>
+References: <CGME20210219124555epcas5p1334e7c4d64ada5dc4a2ca0feb48c1d44@epcas5p1.samsung.com>
+ <20210219124517.79359-1-selvakuma.s1@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210216174146.106639-11-jacopo+renesas@jmondi.org>
+In-Reply-To: <20210219124517.79359-1-selvakuma.s1@samsung.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
-
-Thank you for the patch.
-
-On Tue, Feb 16, 2021 at 06:41:40PM +0100, Jacopo Mondi wrote:
-> Rename the reverse_channel_mv variable to init_rev_chan_mv as
-> the next patches will cache the reverse channel amplitude in
-> a new driver variable.
+On Fri, Feb 19, 2021 at 06:15:13PM +0530, SelvaKumar S wrote:
+> This patchset tries to add support for TP4065a ("Simple Copy Command"),
+> v2020.05.04 ("Ratified")
 > 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  drivers/media/i2c/max9286.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+> The Specification can be found in following link.
+> https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1.zip
 > 
-> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> index 1d9951215868..1f14cd817fbf 100644
-> --- a/drivers/media/i2c/max9286.c
-> +++ b/drivers/media/i2c/max9286.c
-> @@ -163,7 +163,7 @@ struct max9286_priv {
->  	unsigned int mux_channel;
->  	bool mux_open;
->  
-> -	u32 reverse_channel_mv;
-> +	u32 init_rev_chan_mv;
+> Simple copy command is a copy offloading operation and is  used to copy
+> multiple contiguous ranges (source_ranges) of LBA's to a single destination
+> LBA within the device reducing traffic between host and device.
+> 
+> This implementation doesn't add native copy offload support for stacked
+> devices rather copy offload is done through emulation. Possible use
+> cases are F2FS gc and BTRFS relocation/balance.
+> 
+> *blkdev_issue_copy* takes source bdev, no of sources, array of source
+> ranges (in sectors), destination bdev and destination offset(in sectors).
+> If both source and destination block devices are same and copy_offload = 1,
+> then copy is done through native copy offloading. Copy emulation is used
+> in other cases.
+> 
+> As SCSI XCOPY can take two different block devices and no of source range is
+> equal to 1, this interface can be extended in future to support SCSI XCOPY.
 
-Maybe it could be time to add some kerneldoc to this structure, or just
-a comment for this field, to explain what it stores ?
+The patchset adds ioctl(BLKCOPY) and two userspace visible data
+struture(range_entry, and copy_range), all belong to kabi stuff, and the
+interface is generic block layer kabi.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+The API has to be allowed to extend for supporting SCSI XCOPY in future or similar
+block copy commands without breaking previous application, so please CC linux-scsi
+and scsi guys in your next post.
 
->  
->  	struct v4l2_ctrl_handler ctrls;
->  	struct v4l2_ctrl *pixelrate;
-> @@ -563,7 +563,7 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
->  	 * - Disable auto-ack as communication on the control channel are now
->  	 *   stable.
->  	 */
-> -	if (priv->reverse_channel_mv < 170)
-> +	if (priv->init_rev_chan_mv < 170)
->  		max9286_reverse_channel_setup(priv, 170);
->  	max9286_check_config_link(priv, priv->source_mask);
->  
-> @@ -971,7 +971,7 @@ static int max9286_setup(struct max9286_priv *priv)
->  	 * only. This should be disabled after the mux is initialised.
->  	 */
->  	max9286_configure_i2c(priv, true);
-> -	max9286_reverse_channel_setup(priv, priv->reverse_channel_mv);
-> +	max9286_reverse_channel_setup(priv, priv->init_rev_chan_mv);
->  
->  	/*
->  	 * Enable GMSL links, mask unused ones and autodetect link
-> @@ -1236,9 +1236,9 @@ static int max9286_parse_dt(struct max9286_priv *priv)
->  	if (of_property_read_u32(dev->of_node,
->  				 "maxim,reverse-channel-microvolt",
->  				 &reverse_channel_microvolt))
-> -		priv->reverse_channel_mv = 170;
-> +		priv->init_rev_chan_mv = 170;
->  	else
-> -		priv->reverse_channel_mv = reverse_channel_microvolt / 1000U;
-> +		priv->init_rev_chan_mv = reverse_channel_microvolt / 1000U;
->  
->  	priv->route_mask = priv->source_mask;
->  
 
 -- 
-Regards,
+Ming
 
-Laurent Pinchart
