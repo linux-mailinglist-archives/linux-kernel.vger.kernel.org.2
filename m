@@ -2,132 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F24E32100E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 05:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FA4321010
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 05:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhBVEnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 23:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbhBVEnj (ORCPT
+        id S230214AbhBVEp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 23:45:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27405 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230044AbhBVEpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 23:43:39 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C484C061574;
-        Sun, 21 Feb 2021 20:42:59 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id p5so2100511plo.4;
-        Sun, 21 Feb 2021 20:42:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nKtPFB1xyx73OQfeVTdioOSSM0I1Aror0iPkO5KBpc0=;
-        b=Re2HcRKTF4oDMZmpesnJOT49BwGsqOQ5KGgusmwalLvCB7TfEYfXSeo69BzwRE689o
-         z58SuWtj9UWQPTrO8Z6Ukn520ek2bdjIgYtTZh+TbOboMuZSsw+36lHU8Ya/QD29l5ki
-         0giww37q0kTVuFy3iMPRR99RUBLWtg0PPIl+y96/9d0yXJHhCPfjRnXiJXZjBQw36mkp
-         Ok8D7aZp4iitcIBZLJhf+1dLyovaqdm9lQK0Y0yd5hn7JHKWdg4t6aqvUrG3zoic/fqL
-         ZQ4UHyytn1+2ls0uNt/rARQjCI9kM74p5UWoxT7ro7xyVwBBaqNf6JyfIprf7vHvg0K1
-         YWmA==
+        Sun, 21 Feb 2021 23:45:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613969063;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cd7HPIL9dlAr5R+7k2bPsLA7MXZ+jz1lBX7uDhHKXsU=;
+        b=NizrVJI8X0rrVNOUnuomqDRAPlRvDnyIlk5MBg60K+gBzV0451fKNW/JiKyiXQP55beOQT
+        cc0gGJSB9hGUrNS9VsuOFQ3wqY5OjA6+E3MfcfxLagtkuXhF7UPBSZ4Uw4d10zeeMHU4CS
+        cre5Rm7SFHZ4WrsU7cr/RD0ZPjAnSBc=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102-Tw3WugusMqyVXhe-KJ4kkg-1; Sun, 21 Feb 2021 23:44:22 -0500
+X-MC-Unique: Tw3WugusMqyVXhe-KJ4kkg-1
+Received: by mail-pl1-f200.google.com with SMTP id p1so1044095plf.14
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 20:44:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nKtPFB1xyx73OQfeVTdioOSSM0I1Aror0iPkO5KBpc0=;
-        b=nB/PzMQnvoaAiGT/4WawLQj+/EGbyeQLs8gpfCugHTaL0waZjMqwtzcLYqqLZVnsYL
-         GELGX3xYfN4gj+/hL3DpRIWrljxfunnRPqLlScGsybh5hBinyQ802E0YqlMOJ5C5pxA4
-         9AVCVV7THtLOotDufKPOi/urQKTRLtVcsgctlKEfSmlOiTpx/Gx7ra0/qhbHzpCTk3ER
-         ZcShhxw6MvJCSiqmyVNmhQQfrGaSCCBHKwuxiHWrok7sdPWOCuCemBu/bVlhWh1DNIY7
-         0utGg/Oe9ZmSUhDkTARSWWPVCR8K65Jd2GajpT3hS+yFMUQRoY1A0qsPj9KWbyBLH2+W
-         sjrA==
-X-Gm-Message-State: AOAM531m2aFY8knn25llX7cBeQn93ygECXySnxZVyASZV2kCThYm1CmI
-        XA2Ybz42+jTN5enHta8CZvk=
-X-Google-Smtp-Source: ABdhPJx4YWkwy4GkpN7j67wTtgRujttnGXkdr8fmpug5JI4lVDWB4gqo8OpDW5W+tWoXKI3txVZKjw==
-X-Received: by 2002:a17:90a:6589:: with SMTP id k9mr21210384pjj.100.1613968978881;
-        Sun, 21 Feb 2021 20:42:58 -0800 (PST)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id js15sm8400296pjb.37.2021.02.21.20.42.54
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cd7HPIL9dlAr5R+7k2bPsLA7MXZ+jz1lBX7uDhHKXsU=;
+        b=RTxIWziA+5iIdgTiRZf54tstyV6PHWyD+/B/c4n5oyjI7R/LWmNrYVhS+uT9t0wCLj
+         aFLJ8+5cbr2QnipBFYvvRftnWqjYcm4NALexjnQI6XaPeUrORvdOPc8gGiwnuX6rva7u
+         2hS1WcY4QTRGzm9Ye2eyXNTMRafNEB8nzVlSOcvsQkT7rt7696RreeC2tJAOOKPk93Y/
+         7LQ3EFkg8h3rPCedvZkW9j1AovkttgZtrcx6YEp3Mbnyrv7mCDNrM+IOkccT3x7Y7nhM
+         TOVEI4I+qjdpOEcDqyE7DEJC1GZ9WHDaCUJc1ljr0pwhDAnMFjBX4okFJ5KUmxZbCXEa
+         Yj4g==
+X-Gm-Message-State: AOAM531PpfXXwQjXOHiGV4wzetXJ382IyPLf58to+YdrLKXad18hEqdN
+        GgfVflcA3+s1i/L9lI11dcLZZbYdoYEh3DDpD89ET0anofxGDBlW/dM82Y3Fq9Fn2A/bCgO1BXp
+        GjFUhJuxMvXeopXyOJC6R2nqZ
+X-Received: by 2002:a17:902:bb8c:b029:dc:2e5e:2b2 with SMTP id m12-20020a170902bb8cb02900dc2e5e02b2mr13242186pls.10.1613969060907;
+        Sun, 21 Feb 2021 20:44:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxOa2eb4CQrT/ncR+h9iFyBY5fki5umtXxuZB9gaBTvUfQP8AGxjQHVIItflA8v5pCqvRsdFw==
+X-Received: by 2002:a17:902:bb8c:b029:dc:2e5e:2b2 with SMTP id m12-20020a170902bb8cb02900dc2e5e02b2mr13242172pls.10.1613969060675;
+        Sun, 21 Feb 2021 20:44:20 -0800 (PST)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id l11sm16495311pfd.194.2021.02.21.20.44.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 20:42:58 -0800 (PST)
-Date:   Mon, 22 Feb 2021 13:42:51 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     jic23@kernel.org, kernel@pengutronix.de,
-        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de
-Subject: Re: [PATCH v8 09/22] counter: Return error code on invalid modes
-Message-ID: <YDM2SzQgL+GAHhUV@shinobu>
-References: <cover.1613131238.git.vilhelm.gray@gmail.com>
- <58e7c59bb7c7bb94c8655903308842d9d9e9907a.1613131238.git.vilhelm.gray@gmail.com>
- <d5b53db8-395a-b77e-77fb-49f7fd0da231@lechnology.com>
+        Sun, 21 Feb 2021 20:44:20 -0800 (PST)
+Date:   Mon, 22 Feb 2021 12:44:10 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Huang Jianan <huangjianan@oppo.com>
+Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        guoweichao@oppo.com, zhangshiming@oppo.com
+Subject: Re: [PATCH] erofs: support adjust lz4 history window size
+Message-ID: <20210222044410.GA1038521@xiangao.remote.csb>
+References: <20210218120049.17265-1-huangjianan@oppo.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="H+2x3VvQXXETcoRB"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d5b53db8-395a-b77e-77fb-49f7fd0da231@lechnology.com>
+In-Reply-To: <20210218120049.17265-1-huangjianan@oppo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jianan,
 
---H+2x3VvQXXETcoRB
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Feb 18, 2021 at 08:00:49PM +0800, Huang Jianan via Linux-erofs wrote:
+> From: huangjianan <huangjianan@oppo.com>
+> 
+> lz4 uses LZ4_DISTANCE_MAX to record history preservation. When
+> using rolling decompression, a block with a higher compression
+> ratio will cause a larger memory allocation (up to 64k). It may
+> cause a large resource burden in extreme cases on devices with
+> small memory and a large number of concurrent IOs. So appropriately
+> reducing this value can improve performance.
+> 
+> Decreasing this value will reduce the compression ratio (except
+> when input_size <LZ4_DISTANCE_MAX). But considering that erofs
+> currently only supports 4k output, reducing this value will not
+> significantly reduce the compression benefits.
+> 
+> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+> ---
+>  fs/erofs/decompressor.c | 13 +++++++++----
+>  fs/erofs/erofs_fs.h     |  3 ++-
+>  fs/erofs/internal.h     |  3 +++
+>  fs/erofs/super.c        |  3 +++
+>  4 files changed, 17 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+> index 1cb1ffd10569..94ae56b3ff71 100644
+> --- a/fs/erofs/decompressor.c
+> +++ b/fs/erofs/decompressor.c
+> @@ -36,22 +36,27 @@ static int z_erofs_lz4_prepare_destpages(struct z_erofs_decompress_req *rq,
+>  	struct page *availables[LZ4_MAX_DISTANCE_PAGES] = { NULL };
+>  	unsigned long bounced[DIV_ROUND_UP(LZ4_MAX_DISTANCE_PAGES,
+>  					   BITS_PER_LONG)] = { 0 };
+> +	unsigned int lz4_distance_pages = LZ4_MAX_DISTANCE_PAGES;
+>  	void *kaddr = NULL;
+>  	unsigned int i, j, top;
+>  
+> +	if (EROFS_SB(rq->sb)->compr_alg)
+> +		lz4_distance_pages = DIV_ROUND_UP(EROFS_SB(rq->sb)->compr_alg,
+> +						  PAGE_SIZE) + 1;
+> +
 
-On Sat, Feb 20, 2021 at 10:43:06AM -0600, David Lechner wrote:
-> On 2/12/21 6:13 AM, William Breathitt Gray wrote:
-> > Only a select set of modes (function, action, etc.) are valid for a
-> > given device configuration. This patch ensures that invalid modes result
-> > in a return -EINVAL. Such a situation should never occur in reality, but
-> > it's good to define a default switch cases for the sake of making the
-> > intent of the code clear.
-> >=20
-> > Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-> > Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-> > Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> > Cc: Alexandre Torgue <alexandre.torgue@st.com>
-> > Cc: David Lechner <david@lechnology.com>
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> > ---
->=20
-> Reviewed-by: David Lechner <david@lechnology.com>
->=20
-> (In response to Jonathan's comment, I think this is fine rather than
-> adding more churn to change all of the breaks to returns - but will
-> keep that in mind for future changes.)
+Thanks for your patch, I agree that will reduce runtime memory
+footpoint. and keep max sliding window ondisk in bytes (rather
+than in blocks) is better., but could we calculate lz4_distance_pages
+ahead when reading super_block?
 
-Due to some other updates I'm making to this patchset, I went ahead
-already and updated the breaks to returns in the few places where
-applicable. The changes to this patch are minor, but being pedantic I'll
-hold off on adding your Reviewed-by line until the next revision so you
-have the opportunity to formally approve it.
+Also, in the next cycle, I'd like to introduce a bitmap for available
+algorithms (maximum 16-bit) for the next LZMA algorithm, and for each
+available algorithm introduces an on-disk variable-array like below:
+bitmap(16-bit)    2       1       0
+                ...     LZMA    LZ4
+__le16		compr_opt_off;      /* get the opt array start offset
+                                       (I think also in 4-byte) */
 
-William Breathitt Gray
+compr alg 0 (lz4)	__le16	alg_opt_size;
+	/* next opt off = roundup(off + alg_opt_size, 4); */
+			__le16	lz4_max_distance;
 
---H+2x3VvQXXETcoRB
-Content-Type: application/pgp-signature; name="signature.asc"
+/* 4-byte aligned */
+compr alg x (if available)	u8	alg_opt_size;
+				...
 
------BEGIN PGP SIGNATURE-----
+...
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmAzNkIACgkQhvpINdm7
-VJK9rRAAyu8elp03L+LXeHNMXyjon3ijwzzn9y1RotPVZbIO3A1Ikd8HPRaFB1a2
-mveObCiWyOmduF/wqTfzTD0yJ1PlfzyHmqynlw4rqAx5WIc1Tq3vezkl4EoVQCz4
-kgaAZrcDNVcRXT2nrmGp7g4LP6hjTlTBD6hYWibN3II8b4iyFO/8VWCJO4U/ipJs
-wjPNtbh9Zn6Eak6yIbGRGsaZ3g//Bk4I5AQGzCk2fKnh8i8W9FHgNzVvZ5nf2VFf
-VuAplEmvItTnc4Ua1Qc0YzffEzasDbef0/lVaRyq95DsdJCLLoIxfYXiuvx8P25f
-O0dR1GkfiFsviq0syAydVjOWvtyEeQZAJbwsuZCVu19ENhNNrk9BGh9WE94vG+Xi
-2hFhG1Q6bCDnEQvoqUbBswvdQLtzHRUvfpoo8ZNfwRpjFqsp1bBBebdOO6TKWnH6
-+7QvSQF2nEgCT2yxdnv9iu8mrp1wgg8fho+X4uQ+Iqil5lnPu2iG3aud6ooMwWOa
-YfMwFdHhEotekumCwqXexOkCWOu8wJHrAPcbm+ojv5NBCsFhHvJ7aq5On9+zF+8g
-BDhWcoRhQhfR6v6u2E52S8KdrQyr1x+mq2rbEy6URexMGlbJL7bPuaYNUHI43hfy
-pPTwE5lV+R17oNpB0TSDABOVo7Y//VFE3DpwKlsSNx3QYOAhxEE=
-=oo0o
------END PGP SIGNATURE-----
+When reading sb, first, it scans the whole bitmap, and get all the
+available algorithms in the image at once. And then read such compr
+opts one-by-one.
 
---H+2x3VvQXXETcoRB--
+Do you have some interest and extra time to implement it? :) That
+makes me work less since I'm debugging mbpcluster compression now...
+
+Thanks,
+Gao Xiang
+
