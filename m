@@ -2,282 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8D2321468
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F76321459
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhBVKsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:48:22 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15265 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhBVKri (ORCPT
+        id S230360AbhBVKq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:46:56 -0500
+Received: from smtp-bc0a.mail.infomaniak.ch ([45.157.188.10]:50261 "EHLO
+        smtp-bc0a.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230117AbhBVKqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:47:38 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60338ba00000>; Mon, 22 Feb 2021 02:46:56 -0800
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Feb
- 2021 10:46:53 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
-        <jglisse@redhat.com>, <jgg@nvidia.com>, <daniel@ffwll.ch>
-Subject: Re: [PATCH v2 1/4] hmm: Device exclusive memory access
-Date:   Mon, 22 Feb 2021 21:46:51 +1100
-Message-ID: <67252432.xGUjY6W94y@nvdebian>
-In-Reply-To: <20210219094741.GA641389@infradead.org>
-References: <20210219020750.16444-1-apopple@nvidia.com> <20210219020750.16444-2-apopple@nvidia.com> <20210219094741.GA641389@infradead.org>
+        Mon, 22 Feb 2021 05:46:54 -0500
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Dkf3y0rb3zMq8Xb;
+        Mon, 22 Feb 2021 11:46:06 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Dkf3v4nPyzlh8Tp;
+        Mon, 22 Feb 2021 11:46:03 +0100 (CET)
+Subject: Re: [PATCH v2 3/3] security: Add LSMs dependencies to CONFIG_LSM
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Nicolas Iooss <nicolas.iooss@m4x.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+References: <20210215181511.2840674-1-mic@digikod.net>
+ <20210215181511.2840674-4-mic@digikod.net>
+ <CAFqZXNsvqx-pbC+wzHB4aXX6h=buU3csM_a=By-zCOmx0n-xCQ@mail.gmail.com>
+ <CAK7LNAQDWxGJU41D4+AbjFiX63BiA+bsNzTHZsKKc-LPyO7oCQ@mail.gmail.com>
+ <8809a929-980a-95d1-42dc-576ff54e2923@digikod.net>
+ <CAK7LNARq3YneLCVReHf8z34T7VKfv5zmkqwSiNZwgQGD64VMtA@mail.gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <12b27829-5db0-e9a4-0c74-896c53445da4@digikod.net>
+Date:   Mon, 22 Feb 2021 11:47:20 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613990816; bh=WSELGhqP+NOSudWxdZmSn1jCecQ9LfJU/HOyyjATzQk=;
-        h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-         MIME-Version:Content-Transfer-Encoding:Content-Type:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=AsDH1KFt7q2fn1GQH1bGZsfxPuP6PWniyR68l2YMD7Q3Cfbq5uK+p+mMUtOfNCzHP
-         a+hSdF72Kju84oKrEh0gg6e8rGRcP4SODxDcOyS/1SQNOgR82RHgMN4+muzfJRKteX
-         TZjWkSDKTi+eWBm5dbyv/oZyE95BVowqo+OXcexYvpYnlUsHqC93D9hf3z7vCcYpXg
-         beQX9uq28IHVckKy1BtFiOs2mBRghniAdXwhBHNF2E6SUF7HvL5sLv5fN7c9Krbh1R
-         iMHvxXCUtmJre53wnpmserXyNhCq0cnsUNF+34d7gdgVUyWwc2BnUqJO0ARndiY3DG
-         gOBglEpWEttmA==
+In-Reply-To: <CAK7LNARq3YneLCVReHf8z34T7VKfv5zmkqwSiNZwgQGD64VMtA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, 19 February 2021 8:47:41 PM AEDT Christoph Hellwig wrote:
-> >  			page = migration_entry_to_page(swpent);
-> >  		else if (is_device_private_entry(swpent))
-> >  			page = device_private_entry_to_page(swpent);
-> > +		else if (is_device_exclusive_entry(swpent))
-> > +			page = device_exclusive_entry_to_page(swpent);
+
+On 21/02/2021 15:45, Masahiro Yamada wrote:
+> On Sun, Feb 21, 2021 at 8:11 PM Mickaël Salaün <mic@digikod.net> wrote:
+>>
+>>
+>> On 21/02/2021 09:50, Masahiro Yamada wrote:
+>>> On Tue, Feb 16, 2021 at 4:03 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+>>>>
+>>>> On Mon, Feb 15, 2021 at 7:17 PM Mickaël Salaün <mic@digikod.net> wrote:
+>>>>> From: Mickaël Salaün <mic@linux.microsoft.com>
+>>>>>
+>>>>> Thanks to the previous commit, this gives the opportunity to users, when
+>>>>> running make oldconfig, to update the list of enabled LSMs at boot time
+>>>>> if an LSM has just been enabled or disabled in the build.  Moreover,
+>>>>> this list only makes sense if at least one LSM is enabled.
+>>>>>
+>>>>> Cc: Casey Schaufler <casey@schaufler-ca.com>
+>>>>> Cc: James Morris <jmorris@namei.org>
+>>>>> Cc: Masahiro Yamada <masahiroy@kernel.org>
+>>>>> Cc: Serge E. Hallyn <serge@hallyn.com>
+>>>>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+>>>>> Link: https://lore.kernel.org/r/20210215181511.2840674-4-mic@digikod.net
+>>>>> ---
+>>>>>
+>>>>> Changes since v1:
+>>>>> * Add CONFIG_SECURITY as a dependency of CONFIG_LSM.  This prevent an
+>>>>>   error when building without any LSMs.
+>>>>> ---
+>>>>>  security/Kconfig | 4 ++++
+>>>>>  1 file changed, 4 insertions(+)
+>>>>>
+>>>>> diff --git a/security/Kconfig b/security/Kconfig
+>>>>> index 7561f6f99f1d..addcc1c04701 100644
+>>>>> --- a/security/Kconfig
+>>>>> +++ b/security/Kconfig
+>>>>> @@ -277,6 +277,10 @@ endchoice
+>>>>>
+>>>>>  config LSM
+>>>>>         string "Ordered list of enabled LSMs"
+>>>>> +       depends on SECURITY || SECURITY_LOCKDOWN_LSM || SECURITY_YAMA || \
+>>>>> +               SECURITY_LOADPIN || SECURITY_SAFESETID || INTEGRITY || \
+>>>>> +               SECURITY_SELINUX || SECURITY_SMACK || SECURITY_TOMOYO || \
+>>>>> +               SECURITY_APPARMOR || BPF_LSM
+>>>>
+>>>> This looks really awkward, since all of these already depend on
+>>>> SECURITY (if not, it's a bug)... I guarantee you that after some time
+>>>> someone will come, see that the weird boolean expression is equivalent
+>>>> to just SECURITY, and simplify it.
+>>>
+>>>
+>>> Currently, LSM does not depend on SECURITY.
+>>> So you can always define LSM irrespective of SECURITY,
+>>> which seems a bug.
+>>>
+>>> So, I agree with adding 'depends on SECURITY'.
+>>>
+>>> What he is trying to achieve in this series
+>>> seems wrong, of course.
+>>
+>> This may be wrong in the general case, but not for CONFIG_LSM.
+>>
+>>>
+>>>
+>>>> I assume the new mechanism wouldn't work as intended if there is just
+>>>> SECURITY? If not, then maybe you should rather specify this value
+>>>> dependency via some new  field rather than abusing "depends on" (say,
+>>>> "value depends on"?). The fact that a seemingly innocent change to the
+>>>> config definition breaks your mechanism suggests that the design is
+>>>> flawed.
+>>
+>> Masahiro, what do you think about this suggested "value depends on"?
 > 
-> >  			page = migration_entry_to_page(swpent);
-> >  		else if (is_device_private_entry(swpent))
-> >  			page = device_private_entry_to_page(swpent);
-> > +		else if (is_device_exclusive_entry(swpent))
-> > +			page = device_exclusive_entry_to_page(swpent);
 > 
-> >  		if (is_device_private_entry(entry))
-> >  			page = device_private_entry_to_page(entry);
-> > +
-> > +		if (is_device_exclusive_entry(entry))
-> > +			page = device_exclusive_entry_to_page(entry);
+> Of course, no.
 > 
-> Any chance we can come up with a clever scheme to avoid all this
-> boilerplate code (and maybe also what it gets compiled to)?
-
-If I open code the entry_to_page() functions as suggested below then these 
-simplify down to single if statements like so:
-
-                if (is_migration_entry(entry) ||
-                    is_device_private_entry(entry) ||
-                    is_device_exclusive_entry(entry))
-                        page = pfn_to_page(swp_offset(entry));
-
-I could simplify further by hiding that in a single static inline like so:
-
-static inline bool is_special_entry(swp_entry_t entry)
-{
-	return is_migration_entry(entry) ||
-			is_device_private_entry(entry) ||
-          is_device_exclusive_entry(entry);
-}
-
-My only concern with doing that is these entries can't *always* be treated the 
-same so it might make it too easy to overlook the subtle differences.
-
-> > diff --git a/include/linux/hmm.h b/include/linux/hmm.h
-> > index 866a0fa104c4..5d28ff6d4d80 100644
-> > --- a/include/linux/hmm.h
-> > +++ b/include/linux/hmm.h
-> > @@ -109,6 +109,10 @@ struct hmm_range {
-> >   */
-> >  int hmm_range_fault(struct hmm_range *range);
-> >  
-> > +int hmm_exclusive_range(struct mm_struct *mm, unsigned long start,
-> > +			unsigned long end, struct page **pages);
-> > +vm_fault_t hmm_remove_exclusive_entry(struct vm_fault *vmf);
 > 
-> Can we avoid the hmm naming for new code (we should probably also kill
-> it off for the existing code)?
-
-Sure. I ended up stuffing it in there for the moment because I didn't know of 
-any other "obvious" spot to put it. How about these for names:
-
-int make_device_exclusive_range(struct mm_struct *mm, unsigned long start,
-			unsigned long end, struct page **pages);
-vm_fault_t remove_device_exclusive_entry(struct vm_fault *vmf);
-
-I am open to any alternative naming suggestions though.
-
-> > +#define free_swap_and_cache(e) ({(is_migration_entry(e) || 
-is_device_private_entry(e) \
-> > +					|| is_device_exclusive_entry(e)); })
-> > +#define swapcache_prepare(e) ({(is_migration_entry(e) || 
-is_device_private_entry(e) \
-> > +					|| is_device_exclusive_entry(e)); })
-> Can you turn these into properly formatted inline functions?  As-is this
-> becomes pretty unreadable.
-
-Ok, if I add a is_special_entry() function as suggested above these could just 
-use that.
- 
-> > +static inline void make_device_exclusive_entry_read(swp_entry_t *entry)
-> > +{
-> > +	*entry = swp_entry(SWP_DEVICE_EXCLUSIVE_READ, swp_offset(*entry));
-> > +}
+> See the help text in init/Kconfig:
 > 
-> s/make_device_exclusive_entry_read/mark_device_exclusive_entry_readable/
-> ??
-
-See my next comment.
-
-> > +
-> > +static inline swp_entry_t make_device_exclusive_entry(struct page *page, 
-bool write)
-> > +{
-> > +	return swp_entry(write ? SWP_DEVICE_EXCLUSIVE_WRITE : 
-SWP_DEVICE_EXCLUSIVE_READ,
-> > +			 page_to_pfn(page));
-> > +}
+>           This choice is there only for converting CONFIG_DEFAULT_SECURITY
+>           in old kernel configs to CONFIG_LSM in new kernel configs. Don't
+>           change this choice unless you are creating a fresh kernel config,
+>           for this choice will be ignored after CONFIG_LSM has been set.
 > 
-> I'd split this into two helpers, which is easier to follow and avoids
-> the pointlessly overlong lines.
-
-I assume you mean separate read and write functions instead of using the write 
-flag?
-
-These are based on the existing device private functions which themselves 
-looked to be based on the migration entry functions. It would be good to keep 
-these consistent so when making the changes above I would also refactor the 
-existing make_device_private_entry() and make_migration_entry() functions to 
-match as well.
-
-As a test I tried refactoring the migration entry functions into the below and 
-it seemed to make things a bit easier to follow if not a little verbose:
-
-static inline int is_writable_migration_entry(swp_entry_t entry);
-static inline swp_entry_t make_readable_migration_entry(pgoff_t offset);
-static inline swp_entry_t make_writable_migration_entry(pgoff_t offset);
-static inline int is_migration_entry(swp_entry_t entry);
-
-So I can do that along with the same refactoring of device private accessor 
-functions as a prep patch if that seems reasonable?
-
-> > +static inline bool is_device_exclusive_entry(swp_entry_t entry)
-> > +{
-> > +	int type = swp_type(entry);
-> > +	return type == SWP_DEVICE_EXCLUSIVE_READ || type == 
-SWP_DEVICE_EXCLUSIVE_WRITE;
-> > +}
 > 
-> Another overly long line.  I also wouldn't bother with the local
-> variable:
+> When CONFIG_LSM is already set in the .config,
+> this choice is just ignored.
+> So, oldconfig is working as the help message says.
 > 
-> 	return swp_type(entry) == SWP_DEVICE_EXCLUSIVE_READ ||
-> 		swp_type(entry) == SWP_DEVICE_EXCLUSIVE_WRITE;
-> 		
-> 
-> > +static inline bool is_write_device_exclusive_entry(swp_entry_t entry)
-> > +{
-> > +	return swp_type(entry) == SWP_DEVICE_EXCLUSIVE_WRITE;
-> > +}
-> 
-> Or reuse these kind of helpers..
->
-> > +
-> > +static inline unsigned long device_exclusive_entry_to_pfn(swp_entry_t 
-entry)
-> > +{
-> > +	return swp_offset(entry);
-> > +}
-> > +
-> > +static inline struct page *device_exclusive_entry_to_page(swp_entry_t 
-entry)
-> > +{
-> > +	return pfn_to_page(swp_offset(entry));
-> > +}
-> 
-> I'd rather open code these two, and as a prep patch also kill off the
-> equivalents for the migration and device private entries, which would
-> actually clean up a lot of the mess mentioned in my first comment above.
+> If you think 2623c4fbe2ad1341ff2d1e12410d0afdae2490ca
+> is a pointless commit, you should ask Kees about it.
 
-Ok, I have just tried doing that and it ends up being more concise and 
-accurate so I'll add it to the series. 
+This commit was for backward compatibility to not change the configured
+system behavior because of a new default configuration.
+Here I want to address a forward compatibility issue: when users want to
+enable an LSM, give them the opportunity to enable it at boot time too
+instead of silently ignoring this new configuration at boot time.
+Indeed, there is two kind of configurations: built time configuration
+with Kconfig, and boot time configuration with the content of
+CONFIG_LSM. However, there is no direct dependency between LSM toggles
+and CONFIG_LSM once it is set.
 
-> > +static int hmm_exclusive_skip(unsigned long start,
-> > +		      unsigned long end,
-> > +		      __always_unused int depth,
-> > +		      struct mm_walk *walk)
-> > +{
-> > +	struct hmm_exclusive_walk *hmm_exclusive_walk = walk->private;
-> > +	unsigned long addr;
-> > +
-> > +	for (addr = start; addr < end; addr += PAGE_SIZE)
-> > +		hmm_exclusive_walk->pages[hmm_exclusive_walk->npages++] = NULL;
-> > +
-> > +	return 0;
-> > +}
-> 
-> Wouldn't pre-zeroing the array be simpler and more efficient?
-
-Good point. I had other code here but I didn't need it and should have just 
-removed what was left.
-
-> > +int hmm_exclusive_range(struct mm_struct *mm, unsigned long start,
-> > +			unsigned long end, struct page **pages)
-> > +{
-> > +	struct hmm_exclusive_walk hmm_exclusive_walk = { .pages = pages, 
-.npages = 0 };
-> > +	int i;
-> > +
-> > +	/* Collect and lock candidate pages */
-> > +	walk_page_range(mm, start, end, &hmm_exclusive_walk_ops, 
-&hmm_exclusive_walk);
-> 
-> Please avoid the overly long lines.
-> 
-> But more importantly:  Unless I'm missing something obvious this
-> walk_page_range call just open codes get_user_pages_fast, why can't you
-> use that?
-
-Good idea, you aren't missing anything although I don't think 
-get_user_pages_fast() will work as the driver needs to be able to operate on a 
-remote mm_struct. 
-
-But something like get_user_pages_remote() would work better than open-coding 
-it.
-
-> > +#if defined(CONFIG_ARCH_ENABLE_THP_MIGRATION) || defined(CONFIG_HUGETLB)
-> > +		if (PageTransHuge(page)) {
-> > +			VM_BUG_ON_PAGE(1, page);
-> > +			continue;
-> > +		}
-> > +#endif
-> 
-> Doesn't PageTransHuge always return false for that case?  If not
-> shouldn't we make sure it does?
-
-Right, this is probably an overly defensive check so I'll remove it.
-
-[snip - will address code format/structure suggestions]
+I think a better solution would be to add a new CONFIG_LSM_AUTO boolean
+to automatically generate the content of CONFIG_LSM according to the
+(build/kconfig) enabled LSMs, while letting users the ability to
+manually configure CONFIG_LSM otherwise. What do you think?
 
 > 
-> try_to_unmap_one has turned into a monster.  A little refactoring to
-> split it into managable pieces would be nice.
+>>>>
+>>>> I do think this would be a useful feature, but IMHO shouldn't be
+>>>> implemented like this.
+>>>>
+>>>>>         default "lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
+>>>>>         default "lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
+>>>>>         default "lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
+>>>>> --
+>>>>> 2.30.0
+>>>>>
+>>>>
+>>>> --
+>>>> Ondrej Mosnacek
+>>>> Software Engineer, Linux Security - SELinux kernel
+>>>> Red Hat, Inc.
+>>>>
+>>>
+>>>
+> --
+> Best Regards
+> Masahiro Yamada
 > 
-
-Agreed, adding this it did seem a little unwieldy. I will see if I can do a 
-bit of refactoring for the next version.
-
- - Alistair
-
-
-
