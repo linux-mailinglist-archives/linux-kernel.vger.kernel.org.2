@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B8232135F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D7E321363
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhBVJqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:46:13 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:51465 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbhBVJpC (ORCPT
+        id S229934AbhBVJrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:47:32 -0500
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:41651 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229995AbhBVJrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:45:02 -0500
-Received: by mail-io1-f72.google.com with SMTP id j2so8947010iow.18
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:44:46 -0800 (PST)
+        Mon, 22 Feb 2021 04:47:21 -0500
+Received: by mail-lj1-f173.google.com with SMTP id e17so56111133ljl.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:47:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=XCLqp0FZYYz6SZnHZ7vg7/2+XZHTd7UxQv+c9wa+DxE=;
-        b=DOrFK8h/Mzebz6cMyeASD4EMBUpCuy60hqQU/g17eCKU0NMc37be07eDc6eEpV3X4X
-         UOE67xYuuJcftidSbZWFxf5BeOlSJbKWMgemHQKLpUiVX7B3/ZeZopy2zcAdYSxVfCHJ
-         avsLOUJYj7k1eo7fwdTkDSdsfrsxDI0Rc1cDWKuGEP04b1zT4gvPhV+nMG9NQgpypgxi
-         AXQZQERAdaOjvHI+o+LuySOqn/j7kP7wFVyez6UqEBZ/QIzRRrXSb7kYwwys0PSl7nWr
-         d44hRR+ybMr2IJyNypP/YMiTBcGM3Jm4cf84qnF3XrfdxF5jvt+vK8eW4Rb2TiC6B+QJ
-         hJeg==
-X-Gm-Message-State: AOAM530SWx3tD0zZMs7Xt5T2ANx+aAM2JDrx/gcwx2xrLOD/UhWP9BUX
-        18LJa0Jod41/ZsOOJNPnS0vAwCrOM6unFhzn8uUVRVG0Gk46
-X-Google-Smtp-Source: ABdhPJzHQbci+nThI3zq4iMnVTUglKLg7dqCF3uQyy8p2h0rTEbWuOPBz+71xmzO6JaRiZcZxJIrQYROtHoKn1JAAawaG+Tlupfd
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4IhNxvaEzerjfy9TDwo9/XQFb4xj9POVW73cIDqBPXE=;
+        b=YKT0MOsGktSLFBBcL0dWhf6JU9x3WdG+ReSjIdHFdi+sKDPUzK8CpkIZHBNkbC5TTn
+         yLCK1/8ivadAsRK6vrH6C4XES+q4o4LA63zUOKsewFN3lFssHzpD/YS49vTSXqO1KCCI
+         p+gNbUhZ8dZTUQLy1ECJoyNR6lm9fI1eIBm7rjacsV6i6TplIH3PTo/OoxVaXOEe2WWH
+         cjcVqfW1QOCx2B4+fAHqeN7NYFEHzvNSqF6EO+uIDeJS4/8AKZwBSN5AwxUugAW39Mwv
+         3Dep4VwO/n7eHfWHdOLb/SSQwhdyoR/IXfmDx/wjIgN777zQajsqEelTDkSB4j21pVb9
+         yPXw==
+X-Gm-Message-State: AOAM530BFRFGPv62RCtbFtUBwUPwMSkKEshoSfilHNBVQNgZuxN3WYGa
+        kRNMF1enXJ4TMxZZIhUY6P6eWciHAXaNtukrrsU=
+X-Google-Smtp-Source: ABdhPJyVt0cliP/Ol1/vMZiZv/yLAjQZTNc7QhNFxHnphtJD+O5mMlIUKDb/uyX+uSYWYpCJ6gEZ97s139asX0wOj5Q=
+X-Received: by 2002:a05:651c:2042:: with SMTP id t2mr13146997ljo.233.1613987199129;
+ Mon, 22 Feb 2021 01:46:39 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:3319:: with SMTP id b25mr7279174ioz.54.1613987061148;
- Mon, 22 Feb 2021 01:44:21 -0800 (PST)
-Date:   Mon, 22 Feb 2021 01:44:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000073afff05bbe9a54d@google.com>
-Subject: WARNING in ieee802154_del_seclevel
-From:   syzbot <syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
-        syzkaller-bugs@googlegroups.com
+References: <20201130193842.10569-1-kan.liang@linux.intel.com>
+ <20201130193842.10569-3-kan.liang@linux.intel.com> <20201201172903.GT3040@hirez.programming.kicks-ass.net>
+ <CAM9d7ciukm4RAH+44YWhZRummKzk1HTbnZ0Sc4Xd5ZyCo=x0xQ@mail.gmail.com>
+ <CAM9d7ciBO=cmgnBVJWpyJ75VHjoxuEA=ck=V1+k8KRBkh23+nw@mail.gmail.com>
+ <c868c6f7-c89f-ecc5-b771-2701b6029788@linux.intel.com> <20201210142515.GR2414@hirez.programming.kicks-ass.net>
+ <CAM9d7chme3WFQzsqHeQx+1vaLpCG7qL=D6QO4+_Vnt=byzC5sQ@mail.gmail.com> <CAM9d7chAvc5cfNsJZnJ2bwuNMp4L929it++riuNHw6VsGpHDuA@mail.gmail.com>
+In-Reply-To: <CAM9d7chAvc5cfNsJZnJ2bwuNMp4L929it++riuNHw6VsGpHDuA@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 22 Feb 2021 18:46:27 +0900
+Message-ID: <CAM9d7ciACrxqgWv0A-gxGpqmBFOkqrn8wPhVUUhm8bh2SPk8Lg@mail.gmail.com>
+Subject: Re: [PATCH V2 3/3] perf: Optimize sched_task() in a context switch
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Gabriel Marin <gmx@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jan 27, 2021 at 1:41 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> Hi,
+>
+> On Mon, Jan 18, 2021 at 4:04 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Hi Peter and Kan,
+> >
+> > On Thu, Dec 10, 2020 at 11:25 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Thu, Dec 10, 2020 at 08:52:55AM -0500, Liang, Kan wrote:
+> > > >
+> > > >
+> > > > On 12/10/2020 2:13 AM, Namhyung Kim wrote:
+> > > > > Hi Peter and Kan,
+> > > > >
+> > > > > How can we move this forward?
+> > > >
+> > > > Hi Namhyung,
+> > > >
+> > > > Thanks for the test. The changes look good to me.
+> > > >
+> > > > Hi Peter,
+> > > >
+> > > > Should we resend the patch set for further review?
+> > >
+> > > I've not yet seen a coherent replacement of #3, what I send was just a
+> > > PoC.
+>
+> If it's the only problem of #3 which is an optimization,
+> can we merge the actual fixes in #1 and #2 first?
+>
+> I know some people waiting for the fix..
 
-syzbot found the following issue on:
+Ping again...
 
-HEAD commit:    f40ddce8 Linux 5.11
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1032cfacd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=67894355b1dbeb07
-dashboard link: https://syzkaller.appspot.com/bug?extid=fbf4fc11a819824e027b
-userspace arch: arm
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-DEBUG_LOCKS_WARN_ON(lock->magic != lock)
-WARNING: CPU: 0 PID: 18095 at kernel/locking/mutex.c:938 __mutex_lock_common kernel/locking/mutex.c:938 [inline]
-WARNING: CPU: 0 PID: 18095 at kernel/locking/mutex.c:938 __mutex_lock+0x428/0x99c kernel/locking/mutex.c:1103
-Modules linked in:
-CPU: 0 PID: 18095 Comm: syz-executor.1 Not tainted 5.11.0-syzkaller #0
-Hardware name: linux,dummy-virt (DT)
-pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-pc : __mutex_lock_common kernel/locking/mutex.c:938 [inline]
-pc : __mutex_lock+0x428/0x99c kernel/locking/mutex.c:1103
-lr : __mutex_lock_common kernel/locking/mutex.c:938 [inline]
-lr : __mutex_lock+0x428/0x99c kernel/locking/mutex.c:1103
-sp : ffff00003ce07150
-x29: ffff00003ce07150 x28: ffff80001aa29cc0 
-x27: ffff80001ba7e000 x26: ffff800019180000 
-x25: 0000000000000000 x24: 0000000000000000 
-x23: ffff8000167ed574 x22: 0000000000000002 
-x21: ffff800016b3d720 x20: 1fffe000079c0e3a 
-x19: ffff000032e08c90 x18: 0000000000000001 
-x17: 0000000000000000 x16: 0000000000000000 
-x15: 0000000000000000 x14: 0000000000000000 
-x13: 0000000000000000 x12: ffff60000d44eb84 
-x11: 1fffe0000d44eb83 x10: ffff60000d44eb83 
-x9 : dfff800000000000 x8 : ffff00006a275c1b 
-x7 : 0000000000000001 x6 : 00009ffff2bb147d 
-x5 : ffff00006a275c18 x4 : 1fffe00001ec5001 
-x3 : dfff800000000000 x2 : 0000000000000000 
-x1 : 0000000000000000 x0 : ffff00000f628000 
-Call trace:
- __mutex_lock_common kernel/locking/mutex.c:938 [inline]
- __mutex_lock+0x428/0x99c kernel/locking/mutex.c:1103
- mutex_lock_nested+0x78/0x100 kernel/locking/mutex.c:1118
- ieee802154_del_seclevel+0x44/0x84 net/mac802154/cfg.c:382
- rdev_del_seclevel net/ieee802154/rdev-ops.h:284 [inline]
- nl802154_del_llsec_seclevel+0x14c/0x200 net/ieee802154/nl802154.c:2093
- genl_family_rcv_msg_doit+0x1b8/0x2a0 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x24c/0x430 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x198/0x34c net/netlink/af_netlink.c:2494
- genl_rcv+0x38/0x50 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x3e0/0x670 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x610/0xa20 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xc0/0xf4 net/socket.c:672
- ____sys_sendmsg+0x548/0x6d0 net/socket.c:2345
- ___sys_sendmsg+0xf4/0x170 net/socket.c:2399
- __sys_sendmsg+0xbc/0x14c net/socket.c:2432
- __compat_sys_sendmsg net/compat.c:347 [inline]
- __do_compat_sys_sendmsg net/compat.c:354 [inline]
- __se_compat_sys_sendmsg net/compat.c:351 [inline]
- __arm64_compat_sys_sendmsg+0x74/0xac net/compat.c:351
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
- el0_svc_common.constprop.0+0x110/0x3c0 arch/arm64/kernel/syscall.c:159
- do_el0_svc_compat+0x40/0x80 arch/arm64/kernel/syscall.c:204
- el0_svc_compat+0x20/0x30 arch/arm64/kernel/entry-common.c:442
- el0_sync_compat_handler+0x90/0x140 arch/arm64/kernel/entry-common.c:451
- el0_sync_compat+0x178/0x180 arch/arm64/kernel/entry.S:708
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks,
+Namhyung
