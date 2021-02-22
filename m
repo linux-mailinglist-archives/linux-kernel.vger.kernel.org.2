@@ -2,118 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C453321D09
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B85D321D12
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbhBVQbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:31:16 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:59502 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbhBVQ3U (ORCPT
+        id S230463AbhBVQdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:33:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231611AbhBVQan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:29:20 -0500
-Received: from [IPv6:2a01:e0a:4cb:a870:5956:412c:4850:9073] (unknown [IPv6:2a01:e0a:4cb:a870:5956:412c:4850:9073])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E845C1F450A3;
-        Mon, 22 Feb 2021 16:28:33 +0000 (GMT)
-Subject: Re: [PATCH v2 4/9] media: uapi: Add a control for HANTRO driver
-To:     John Cox <jc@kynesim.co.uk>
-Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, peng.fan@nxp.com,
-        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20210218191844.297869-1-benjamin.gaignard@collabora.com>
- <20210218191844.297869-5-benjamin.gaignard@collabora.com>
- <9ql73glgbnjaqqsp8ulqenae5n82kfk0o3@4ax.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <6364fa8a-db6a-af43-3660-7f0a7a3e0b79@collabora.com>
-Date:   Mon, 22 Feb 2021 17:28:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 22 Feb 2021 11:30:43 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503F0C06178B
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:30:03 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id i14so22536502eds.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:30:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iYFZQhpI9PWFICV4j9Dcg2L4iXOc1SnJH/pDiQOJqnU=;
+        b=FTApkqpOBIB0BP8YBy7a44yeNU9F8UeIhkSaI+PnH7UEnhgfNkbHGIScuM1SUMmjEB
+         RXn68yAJGjmArwGz4ludBmIoXTQoH/qS7M6/fNoxX96FooLm2LYBWppHz/eaWP6VbRep
+         CQ8RDRfwr01rNdnmTtP2+Lsa+A7d2f3txug+/Q2AriMVeRXFK0mkV0yDvC8gwCh33gPg
+         /uCUCQA4svfc7LKBZk47yDsGyXAqNY9+9mJ9k8S3UMnhI2vOa1XeQbIydfPMzejn3pdZ
+         AjVjGMrgpMar8ekJ77xWdUDOgbPtU34a156k0xAzvp2qMuvBUkzsstB3hew7gI8YFzSU
+         8KhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iYFZQhpI9PWFICV4j9Dcg2L4iXOc1SnJH/pDiQOJqnU=;
+        b=WcihIb0hK/XjS5gAvL6RWgV9Jpx+UxowXXZuy2hr093Bgs6iS6CBmH0xz8A0sXdapB
+         v1g1rrSD9bbpy3IMiyvpA1UwdHIdgBm7inSUWGEgzHD2fFUBk4+JvKZm/LULpWQ9L4Ga
+         ptQ5T+qkzNzAlIhuoUO5LZe0/41lWfDVVdZgkJu4Qp+LSFPMMXO75v2hRfsqXoxruAyl
+         FoQMnobaMg02lRnq8altV0KSQVWVkiNB2lPK4c5FvenYPlq2u9rjdODVskxsS/PeuXcx
+         ZfzYv76IjqN7mSlbwRaydIrqtwYrpTFIMLn14pdyPqBxKhv27rV1ZynjMvqLodO/U8Cu
+         k4dQ==
+X-Gm-Message-State: AOAM533XQ9uNa4zxlivvSgjwokS01VMbUv6rg+wSE+K7BI8OPvnDT27J
+        tYyRowShBTM0tjsKFc/aI0ys21NIIbNwVzZzEobcbg==
+X-Google-Smtp-Source: ABdhPJyjqvFdfUdvrym9hYtXMn3ZicmRz2Gyn/YWDX9lE5hsJiHhBDR8hbEC6tniszfI9M6FMcf7i+hKCoz7d1XDbI8=
+X-Received: by 2002:a05:6402:26c9:: with SMTP id x9mr23507629edd.365.1614011401515;
+ Mon, 22 Feb 2021 08:30:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <9ql73glgbnjaqqsp8ulqenae5n82kfk0o3@4ax.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <CA+G9fYtNOZ-G_RTq_Uedy-7wkFog2q+OWNbWd--eL+i2-OQ7NA@mail.gmail.com>
+ <CA+icZUVdpyNC=e8Cdg2bXaKdQGgkY1Te-OEXE7jaKARw0KKrCw@mail.gmail.com>
+In-Reply-To: <CA+icZUVdpyNC=e8Cdg2bXaKdQGgkY1Te-OEXE7jaKARw0KKrCw@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 22 Feb 2021 21:59:50 +0530
+Message-ID: <CA+G9fYvGgR82mwC9Kk6fKR6Cb53u02MQJffBBZ+bTp2nNxHL7A@mail.gmail.com>
+Subject: Re: clang-12: i386: Unsupported relocation type: R_386_PLT32 (4)
+To:     sedat.dilek@gmail.com
+Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        x86-ml <x86@kernel.org>, lkft-triage@lists.linaro.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fangrui Song <maskray@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 22 Feb 2021 at 21:44, Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Mon, Feb 22, 2021 at 5:08 PM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
+> >
+> > While building i386 configs on stable-rc 5.10, stable-rc 5.11 branch
+> > and mainline
+> > with clang-12 these following warnings and errors were noticed.
+> >
+>
+> Hi Naresh,
+>
+> Please see commit bb73d07148c405c293e576b40af37737faf23a6a
+> ("x86/build: Treat R_386_PLT32 relocation as R_386_PC32").
+> Recently accepted into Linus Git tree.
 
-Le 22/02/2021 à 17:16, John Cox a écrit :
->> The HEVC HANTRO driver needs to know the number of bits to skip at
->> the beginning of the slice header.
->> That is a hardware specific requirement so create a dedicated control
->> that this purpose.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->> include/uapi/linux/hantro-v4l2-controls.h | 20 ++++++++++++++++++++
->> include/uapi/linux/v4l2-controls.h        |  5 +++++
->> 2 files changed, 25 insertions(+)
->> create mode 100644 include/uapi/linux/hantro-v4l2-controls.h
->>
->> diff --git a/include/uapi/linux/hantro-v4l2-controls.h b/include/uapi/linux/hantro-v4l2-controls.h
->> new file mode 100644
->> index 000000000000..30b1999b7af3
->> --- /dev/null
->> +++ b/include/uapi/linux/hantro-v4l2-controls.h
->> @@ -0,0 +1,20 @@
->> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->> +
->> +#ifndef __UAPI_HANTRO_V4L2_CONYTROLS_H__
->> +#define __UAPI_HANTRO_V4L2_CONYTROLS_H__
->> +
->> +#include <linux/v4l2-controls.h>
->> +#include <media/hevc-ctrls.h>
->> +
->> +#define V4L2_CID_HANTRO_HEVC_EXTRA_DECODE_PARAMS	(V4L2_CID_USER_HANTRO_BASE + 0)
->> +
->> +/**
->> + * struct hantro_hevc_extra_decode_params - extra decode parameters for hantro driver
->> + * @hevc_hdr_skip_lenght:	header first bits offset
->> + */
->> +struct hantro_hevc_extra_decode_params {
->> +	__u32	hevc_hdr_skip_lenght;
->> +	__u8	padding[4];
->> +};
-> Can you clarify how hevc_hdr_skip_length differs from
-> v4l2_ctrl_hevc_slice_params.data_bit_offset?  At first sight they would
-> appear to be very similar.
-
-hevc_hdr_skip_length is the difference between the start positions of 2 nals.
-v4l2_ctrl_hevc_slice_params.data_bit_offset is the offset of the data in the nal.
-
-
-Benjamin
+Can this be backported / cherry-picked into stable-rc 5.10 and stable-rc 5.11 ?
 
 >
-> Regards
+> [1] says:
 >
-> John Cox
+> Further info for the more interested:
 >
->> +#endif
->> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
->> index 039c0d7add1b..ced7486c7f46 100644
->> --- a/include/uapi/linux/v4l2-controls.h
->> +++ b/include/uapi/linux/v4l2-controls.h
->> @@ -209,6 +209,11 @@ enum v4l2_colorfx {
->>   * We reserve 128 controls for this driver.
->>   */
->> #define V4L2_CID_USER_CCS_BASE			(V4L2_CID_USER_BASE + 0x10f0)
->> +/*
->> + * The base for HANTRO driver controls.
->> + * We reserve 32 controls for this driver.
->> + */
->> +#define V4L2_CID_USER_HANTRO_BASE		(V4L2_CID_USER_BASE + 0x1170)
->>
->> /* MPEG-class control IDs */
->> /* The MPEG controls are applicable to all codec controls
+>   https://github.com/ClangBuiltLinux/linux/issues/1210
+>   https://sourceware.org/bugzilla/show_bug.cgi?id=27169
+>   https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6
+>
+> Hope that helps.
+>
+> - Sedat -
+>
+> [1] https://git.kernel.org/linus/bb73d07148c405c293e576b40af37737faf23a6a
+>
+> > make --silent --keep-going --jobs=8
+> > O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=i386
+> > CROSS_COMPILE=i686-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+> > clang'
+> >
+> > drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2586:9: warning: shift
+> > count >= width of type [-Wshift-count-overflow]
+> >
+> >         return hweight64(VDBOX_MASK(&i915->gt));
+> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from
+> > macro 'hweight64'
+> > #define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) :
+> > __arch_hweight64(w))
+> >                                                 ^~~~~~~~~~~~~~~~~~~~
+> > include/asm-generic/bitops/const_hweight.h:21:76: note: expanded from
+> > macro '__const_hweight64'
+> > #define __const_hweight64(w) (__const_hweight32(w) +
+> > __const_hweight32((w) >> 32))
+> >                                                                            ^  ~~
+> > include/asm-generic/bitops/const_hweight.h:20:49: note: expanded from
+> > macro '__const_hweight32'
+> > #define __const_hweight32(w) (__const_hweight16(w) +
+> > __const_hweight16((w) >> 16))
+> >                                                 ^
+> > include/asm-generic/bitops/const_hweight.h:19:48: note: expanded from
+> > macro '__const_hweight16'
+> > #define __const_hweight16(w) (__const_hweight8(w)  +
+> > __const_hweight8((w)  >> 8 ))
+> >                                                ^
+> > include/asm-generic/bitops/const_hweight.h:10:9: note: expanded from
+> > macro '__const_hweight8'
+> >          ((!!((w) & (1ULL << 0))) +     \
+> >                ^
+> > drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2586:9: warning: shift
+> > count >= width of type [-Wshift-count-overflow]
+> >         return hweight64(VDBOX_MASK(&i915->gt));
+> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > <trim>
+> >
+> > 32 warnings generated.
+> > Unsupported relocation type: R_386_PLT32 (4)
+> > make[3]: *** [arch/x86/boot/compressed/Makefile:116:
+> > arch/x86/boot/compressed/vmlinux.relocs] Error 1
+> > make[3]: *** Deleting file 'arch/x86/boot/compressed/vmlinux.relocs'
+> > make[3]: Target 'arch/x86/boot/compressed/vmlinux' not remade because of errors.
+> >
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> >
+> > Steps to reproduce:
+> > ---------------------------
+> > # TuxMake is a command line tool and Python library that provides
+> > # portable and repeatable Linux kernel builds across a variety of
+> > # architectures, toolchains, kernel configurations, and make targets.
+> > #
+> > # TuxMake supports the concept of runtimes.
+> > # See https://docs.tuxmake.org/runtimes/, for that to work it requires
+> > # that you install podman or docker on your system.
+> > #
+> > # To install tuxmake on your system globally:
+> > # sudo pip3 install -U tuxmake
+> > #
+> > # See https://docs.tuxmake.org/ for complete documentation.
+> >
+> > tuxmake --runtime podman --target-arch i386 --toolchain clang-12
+> > --kconfig defconfig  --kconfig-add
+> > https://builds.tuxbuild.com/1opxSKxZuRowPsiOsSJ0IoUOXOt/config
+> >
+> > --
+> > Linaro LKFT
+> > https://lkft.linaro.org
+
+- Naresh
