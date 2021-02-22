@@ -2,69 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7AF3217BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A39ED3217BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhBVMzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:55:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbhBVMXY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:23:24 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425CCC061574;
-        Mon, 22 Feb 2021 04:22:44 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0402008ca1f4f712cbc8cf.dip0.t-ipconnect.de [IPv6:2003:ec:2f04:200:8ca1:f4f7:12cb:c8cf])
+        id S231473AbhBVM4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:56:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231255AbhBVMXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:23:48 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3E28E1EC050D;
-        Mon, 22 Feb 2021 13:22:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1613996562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ljhihQwx9chR9lhZJgSKKh6JlCTcVb2u54fkWRxZeCM=;
-        b=CWs7LgUffpmzmGWCsOvzdbbFv8trrKfB4y4xU7o6qBWEmiALd37UviYSwkmb6CFokpmlhl
-        rGc8Ax5WKbKKNnOuDv8bOw4Sk6pyJHv8WgbmPYJGobPb+VZB1Vlu9+5OZqVbEq7lfmZuch
-        9KIxuXhRlpQC7wfxhf9iaUdPUItR7Oc=
-Date:   Mon, 22 Feb 2021 13:22:41 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Aili Yao <yaoaili@kingsoft.com>
-Cc:     tony.luck@intel.com, mingo@redhat.com, tglx@linutronix.de,
-        hpa@zytor.com, x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangfeng1@kingsoft.com
-Subject: Re: [PATCH v2] x86/mce: fix wrong no-return-ip logic in
- do_machine_check()
-Message-ID: <20210222122241.GA10880@zn.tnic>
-References: <20210222113124.35f2d552@alex-virtual-machine>
- <20210222115007.75b7de9b@alex-virtual-machine>
- <20210222092403.GA29063@zn.tnic>
- <20210222173109.7b7ac42a@alex-virtual-machine>
- <20210222100356.GB29063@zn.tnic>
- <20210222180819.3998fe33@alex-virtual-machine>
- <20210222102206.GC29063@zn.tnic>
- <20210222192146.76ffec84@alex-virtual-machine>
- <20210222201723.0fcec589@alex-virtual-machine>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210222201723.0fcec589@alex-virtual-machine>
+        by mail.kernel.org (Postfix) with ESMTPSA id 85ED564E61;
+        Mon, 22 Feb 2021 12:23:07 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lEAEz-00FJdN-6a; Mon, 22 Feb 2021 12:23:05 +0000
+Date:   Mon, 22 Feb 2021 12:23:04 +0000
+Message-ID: <87ft1o1ec7.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st,
+        tglx@linutronix.de, will@kernel.org
+Subject: Re: [PATCH 5/8] arm64: irq: add a default handle_irq panic function
+In-Reply-To: <20210222120614.GC70951@C02TD0UTHF1T.local>
+References: <20210219113904.41736-1-mark.rutland@arm.com>
+        <20210219113904.41736-6-mark.rutland@arm.com>
+        <20210222095913.GA70951@C02TD0UTHF1T.local>
+        <1d2c27d72b9b2cbdb83d25165a20559a@kernel.org>
+        <20210222112544.GB70951@C02TD0UTHF1T.local>
+        <2e6a9659eabcccb355318ff7214c8d1f@kernel.org>
+        <20210222120614.GC70951@C02TD0UTHF1T.local>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st, tglx@linutronix.de, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 08:17:23PM +0800, Aili Yao wrote:
-> AR (Action Required) flag, bit 55 - Indicates (when set) that MCA
-> error code specific recovery action must be...
+On Mon, 22 Feb 2021 12:06:14 +0000,
+Mark Rutland <mark.rutland@arm.com> wrote:
+> 
+> On Mon, Feb 22, 2021 at 11:43:13AM +0000, Marc Zyngier wrote:
 
-Give me the *exact* MCE signature you're injecting please.
+[...]
 
-Thx.
+> > As I said, it's not a big deal. I doubt that we'll see default_handle_irq()
+> > exploding in practice. But the real nit here is the difference of treatment
+> > between IRQ and FIQ. *IF* we ever get a system that only signals its
+> > interrupt as FIQ (and I don't see why we'd forbid that), then we would
+> 
+> That's a fair point.
+> 
+> For consistency, we could remove the init_IRQ() panic() and instead log
+> the registered handlers, e.g.
+> 
+> | pr_info("Root IRQ handler is %ps\n", handle_arch_irq);
+> | pr_info("Root FIQ handler is %ps\n", handle_arch_fiq);
+> 
+> ... or do that inside the set_handle_{irq,fiq}() functions. That way the
+> messages (or absence thereof) would be sufficient to diagnose the lack
+> of a root IRQ/FIQ handler when IRQ/FIQ happens to be quiescent.
+> 
+> Does that sound any better?
+
+Yup, I quite like the second variant (using set_handle_{irq,fiq}()).
+
+Thanks,
+
+	M.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Without deviation from the norm, progress is not possible.
