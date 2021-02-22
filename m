@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D7C3216B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B051321662
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbhBVMaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:30:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45308 "EHLO mail.kernel.org"
+        id S230037AbhBVMV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:21:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230361AbhBVMPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:15:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E127B64E24;
-        Mon, 22 Feb 2021 12:13:53 +0000 (UTC)
+        id S230291AbhBVMOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:14:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DB2964EF1;
+        Mon, 22 Feb 2021 12:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996034;
-        bh=rhhSYTr05rJBZkXnPWzZ+gcp6JeK+a0E1wjwmfDmpnk=;
+        s=korg; t=1613996036;
+        bh=tEgMQRN5efLLeumv2XkB4L1vcBdaTZy6qxXvyImfRwI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mVhjU/GGDemD/y/XPjD5wWsI4IvxmgdDyCd2+P1jzDmK96A/lTTysm1J2K4MnIrRc
-         j6WM9IXa1LPsgCdZ02uwl8CpougNv72/YtXDpAyUQkiWA94KcrtvGxu7ImfK6PgztV
-         kcs5gj+gPwVhZh37Rop/DJQO92c65lE3iQ15BS/w=
+        b=t50GhUA++QV6d2/PgttcvdWx1/7OyJ1H2SRcf0CA40CnanE8sfKuUzIGbTGTknHpO
+         V3LRj3KIeZ8foBTUREszypHqinG409RTVsPpqPDBM5fCK4iK77zftwacTI+qwsAKAz
+         1sxGVDfPQc9myaKhvpqTkfMSHSrdVMomaY6FcFCk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Eelco Chaudron <echaudro@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 12/29] net: sched: incorrect Kconfig dependencies on Netfilter modules
-Date:   Mon, 22 Feb 2021 13:13:06 +0100
-Message-Id: <20210222121021.933444392@linuxfoundation.org>
+Subject: [PATCH 5.10 13/29] net: openvswitch: fix TTL decrement exception action execution
+Date:   Mon, 22 Feb 2021 13:13:07 +0100
+Message-Id: <20210222121022.023081351@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
 References: <20210222121019.444399883@linuxfoundation.org>
@@ -40,57 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Eelco Chaudron <echaudro@redhat.com>
 
-[ Upstream commit 102e2c07239c07144d9c7338ec09b9d47f2e5f79 ]
+[ Upstream commit 09d6217254c004f6237cc2c2bfe604af58e9a8c5 ]
 
-- NET_ACT_CONNMARK and NET_ACT_CTINFO only require conntrack support.
-- NET_ACT_IPT only requires NETFILTER_XTABLES symbols, not
-  IP_NF_IPTABLES. After this patch, NET_ACT_IPT becomes consistent
-  with NET_EMATCH_IPT. NET_ACT_IPT dependency on IP_NF_IPTABLES predates
-  Linux-2.6.12-rc2 (initial git repository build).
+Currently, the exception actions are not processed correctly as the wrong
+dataset is passed. This change fixes this, including the misleading
+comment.
 
-Fixes: 22a5dc0e5e3e ("net: sched: Introduce connmark action")
-Fixes: 24ec483cec98 ("net: sched: Introduce act_ctinfo action")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Link: https://lore.kernel.org/r/20201208204707.11268-1-pablo@netfilter.org
+In addition, a check was added to make sure we work on an IPv4 packet,
+and not just assume if it's not IPv6 it's IPv4.
+
+This was all tested using OVS with patch,
+https://patchwork.ozlabs.org/project/openvswitch/list/?series=21639,
+applied and sending packets with a TTL of 1 (and 0), both with IPv4
+and IPv6.
+
+Fixes: 69929d4c49e1 ("net: openvswitch: fix TTL decrement action netlink message format")
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+Link: https://lore.kernel.org/r/160733569860.3007.12938188180387116741.stgit@wsfd-netdev64.ntdv.lab.eng.bos.redhat.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/openvswitch/actions.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/net/sched/Kconfig b/net/sched/Kconfig
-index a3b37d88800eb..d762e89ab74f7 100644
---- a/net/sched/Kconfig
-+++ b/net/sched/Kconfig
-@@ -813,7 +813,7 @@ config NET_ACT_SAMPLE
+diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
+index c3a664871cb5a..e8902a7e60f24 100644
+--- a/net/openvswitch/actions.c
++++ b/net/openvswitch/actions.c
+@@ -959,16 +959,13 @@ static int dec_ttl_exception_handler(struct datapath *dp, struct sk_buff *skb,
+ 				     struct sw_flow_key *key,
+ 				     const struct nlattr *attr, bool last)
+ {
+-	/* The first action is always 'OVS_DEC_TTL_ATTR_ARG'. */
+-	struct nlattr *dec_ttl_arg = nla_data(attr);
++	/* The first attribute is always 'OVS_DEC_TTL_ATTR_ACTION'. */
++	struct nlattr *actions = nla_data(attr);
  
- config NET_ACT_IPT
- 	tristate "IPtables targets"
--	depends on NET_CLS_ACT && NETFILTER && IP_NF_IPTABLES
-+	depends on NET_CLS_ACT && NETFILTER && NETFILTER_XTABLES
- 	help
- 	  Say Y here to be able to invoke iptables targets after successful
- 	  classification.
-@@ -912,7 +912,7 @@ config NET_ACT_BPF
+-	if (nla_len(dec_ttl_arg)) {
+-		struct nlattr *actions = nla_data(dec_ttl_arg);
++	if (nla_len(actions))
++		return clone_execute(dp, skb, key, 0, nla_data(actions),
++				     nla_len(actions), last, false);
  
- config NET_ACT_CONNMARK
- 	tristate "Netfilter Connection Mark Retriever"
--	depends on NET_CLS_ACT && NETFILTER && IP_NF_IPTABLES
-+	depends on NET_CLS_ACT && NETFILTER
- 	depends on NF_CONNTRACK && NF_CONNTRACK_MARK
- 	help
- 	  Say Y here to allow retrieving of conn mark
-@@ -924,7 +924,7 @@ config NET_ACT_CONNMARK
+-		if (actions)
+-			return clone_execute(dp, skb, key, 0, nla_data(actions),
+-					     nla_len(actions), last, false);
+-	}
+ 	consume_skb(skb);
+ 	return 0;
+ }
+@@ -1212,7 +1209,7 @@ static int execute_dec_ttl(struct sk_buff *skb, struct sw_flow_key *key)
+ 			return -EHOSTUNREACH;
  
- config NET_ACT_CTINFO
- 	tristate "Netfilter Connection Mark Actions"
--	depends on NET_CLS_ACT && NETFILTER && IP_NF_IPTABLES
-+	depends on NET_CLS_ACT && NETFILTER
- 	depends on NF_CONNTRACK && NF_CONNTRACK_MARK
- 	help
- 	  Say Y here to allow transfer of a connmark stored information.
+ 		key->ip.ttl = --nh->hop_limit;
+-	} else {
++	} else if (skb->protocol == htons(ETH_P_IP)) {
+ 		struct iphdr *nh;
+ 		u8 old_ttl;
+ 
 -- 
 2.27.0
 
