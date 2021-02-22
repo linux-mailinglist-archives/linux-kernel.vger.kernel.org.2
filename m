@@ -2,139 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAAA321D15
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB11321D1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhBVQeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:34:37 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:58670 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231281AbhBVQcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:32:36 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614011533; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=dCdhlnGttsQALHTe0ST0kOVHzzKLcqYwXO4t7pO+g9g=;
- b=HejxH93/hUia7vNT/35LdMNadwDgrBrJftmE9moOxfxtd+NkIaByXZUT0NTbdJ5JERlt+LqW
- R9EAFxvCD3hzmM8ZZ1p0bj2m2ILhMvhfF2xdfFUrxCQ06B5MnjpYLgt6bTM8sCbcUnShXBoT
- ImHfkuWXz7mgevnsnoqmdvcqz/s=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6033dc42090a7742877fd440 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Feb 2021 16:30:58
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8D43DC433ED; Mon, 22 Feb 2021 16:30:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A3707C433C6;
-        Mon, 22 Feb 2021 16:30:57 +0000 (UTC)
+        id S231655AbhBVQfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:35:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231577AbhBVQcs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:32:48 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AFBC061794;
+        Mon, 22 Feb 2021 08:31:29 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lEE7A-006xZ6-IT; Mon, 22 Feb 2021 17:31:16 +0100
+Message-ID: <3823be537c3c138de90154835573113c6577188e.camel@sipsolutions.net>
+Subject: Re: [PATCH net v1 3/3] [RFC] mac80211: ieee80211_store_ack_skb():
+ make use of skb_clone_sk_optional()
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>, mkl@pengutronix.de,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Robin van der Gracht <robin@protonic.nl>
+Cc:     kernel@pengutronix.de, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        linux-wireless@vger.kernel.org
+Date:   Mon, 22 Feb 2021 17:30:59 +0100
+In-Reply-To: <20210222151247.24534-4-o.rempel@pengutronix.de>
+References: <20210222151247.24534-1-o.rempel@pengutronix.de>
+         <20210222151247.24534-4-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 22 Feb 2021 08:30:57 -0800
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] drm/msm/dp: add supported max link rate specified
- from dtsi
-In-Reply-To: <161377480166.1254594.16557636343276220817@swboyd.mtv.corp.google.com>
-References: <1613681704-12539-1-git-send-email-khsieh@codeaurora.org>
- <161368935031.1254594.14384765673800900954@swboyd.mtv.corp.google.com>
- <7af07dcacd5b68087cc61e467e9c57ea@codeaurora.org>
- <161377480166.1254594.16557636343276220817@swboyd.mtv.corp.google.com>
-Message-ID: <1782d03506bebe7751d33ae12a38d21c@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-19 14:46, Stephen Boyd wrote:
-> Quoting khsieh@codeaurora.org (2021-02-19 08:39:38)
->> On 2021-02-18 15:02, Stephen Boyd wrote:
->> > Quoting Kuogee Hsieh (2021-02-18 12:55:04)
->> >> Allow supported link rate to be limited to the value specified at
->> >> dtsi. If it is not specified, then link rate is derived from dpcd
->> >> directly. Below are examples,
->> >> link-rate = <162000> for max link rate limited at 1.62G
->> >> link-rate = <270000> for max link rate limited at 2.7G
->> >> link-rate = <540000> for max link rate limited at 5.4G
->> >> link-rate = <810000> for max link rate limited at 8.1G
->> >>
->> >> Changes in V2:
->> >> -- allow supported max link rate specified from dtsi
->> >
->> > Please don't roll this into the patch that removes the limit. The
->> > previous version of this patch was fine. The part that lowers the limit
->> > back down should be another patch.
->> >
->> > We rejected link-rate in DT before and we should reject it upstream
->> > again. As far as I can tell, the maximum link rate should be determined
->> > based on the panel or the type-c port on the board. The dp controller
->> > can always achieve HBR3, so limiting it at the dp controller is
->> > incorrect. The driver should query the endpoints to figure out if they
->> > want to limit the link rate. Is that done automatically sometimes by
->> > intercepting the DPCD?
->> 
->> ok, i will roll back to original patch and add the second patch for 
->> max
->> link rate limited purpose.
->> panel dpcd specified max link rate it supported.
->> At driver, link rate is derived from dpcd directly since driver will 
->> try
->> to use the maximum supported link rate and less lane to save power.
->> Therefore it is not possible that limit link rate base on dpcd.
->> AS i understand we are going to do max link rate limitation is due to
->> old redriver chip can not support HBR3.
->> How can I acquire which type-c port on the board so that I can trigger
->> max link rate limitation?
->> 
->> 
-> 
-> The driver already seems to support lowering the link rate during link
-> training. Can't we try to train at the highest rate and then downgrade
-> the link speed until it trains properly? I sort of fail to see why we
-> need to introduce a bunch of complexity around limiting the link rate 
-> on
-> certain boards if the driver can figure out that link training doesn't
-> work at HBR3 so it should try to train at HBR2 instead.
+On Mon, 2021-02-22 at 16:12 +0100, Oleksij Rempel wrote:
+> This code is trying to clone the skb with optional skb->sk. But this
+> will fail to clone the skb if socket was closed just after the skb was
+> pushed into the networking stack.
 
-yes, dp driver did support down grade link rate during link training 
-procedure.
-But link training is kind of setting up agreement between host and panel 
-with assumption that there are no other limitations in between.
-The problem we are discussing here is the limitation of usb re driver 
-link rate support.
-Since we do not know how usb re driver behavior, I am not sure link 
-training will work appropriately for this case.
-It may end up link status keep toggling up and down.
+Which IMHO is completely fine. If we then still clone the SKB we can't
+do anything with it, since the point would be to ... send it back to the
+socket, but it's gone.
 
-Both link-lane and link-rate specified at dtsi are for the limitation of 
-Trogdor hardware platform.
-Both link-lane and link-rate specified at dtsi are NOT for panel since 
-panel have specified its capability at its DPCD.
+Nothing to fix here, I'd think. If you wanted to get a copy back that
+gives you the status of the SKB, it should not come as a huge surprise
+that you have to keep the socket open for that :)
 
+Having the ACK skb will just make us do more work by handing it back
+to skb_complete_wifi_ack() at TX status time, which is supposed to put
+it into the socket's error queue, but if the socket is closed ... no
+point in that.
 
-
-
-
-
+johannes
 
 
