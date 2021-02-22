@@ -2,243 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA72321C5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F55C321C6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhBVQF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:05:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbhBVQEw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:04:52 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091F9C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:02:53 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id e15so9563823qte.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:02:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=czGWY8uQnq3owWtXa46dSideyOqa5Jj4FvgK5VnXqPg=;
-        b=oUBe0oGw2gSJ31bJBZaKmUahxYkjXth/ex9h84mlmIBNYGn0ZbovD+2HbZiCF7pgdM
-         il/TP9I7kZtHvNJLV8r0VzJY+xNEU6tCqSXn+boAaQR25exb05Fe/vUOh+82q0RE6Twd
-         m/1n1N9uSav8dkK/VPJLdjMxO6YKp7sSr/cu1Fem0VjxiXKLPKQLIAdRMONVhJwVK1+c
-         Fty1otWJyvHNYt+/g0VXcmYtreI39T/1GcCssdwdSw38yAcewdr5M+KQ5hqMLoFEqDQw
-         PX2WLqZLajDuCsdd7mLk/c5SKyjMDOgJFGWt4RreqUzhUxfzBf0yaPJe7WYvi4zn9sJL
-         CCgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=czGWY8uQnq3owWtXa46dSideyOqa5Jj4FvgK5VnXqPg=;
-        b=PxthtARAqDeXOCwI8+8hCJ26Gau26Cz3JK6p3/DNFLWsKMwaGFQEcq/fMaJa2YP2yY
-         sAcMK+DgRgFYnYaxEjN0MP6WJLVAdXhnx4+7+G8J7l3EUHxbpdECfjOIjZgm0RF8fMhw
-         ULQeGAbo8qWO7O/m8ib2sbwnugp0VBI/F6vOJlgBkGOxcMr+deyRq55vq/2wzknIaqG6
-         WXEu2oQuqNdQK4/mqN89ltRRilJumtK0Zfb0UOZK4CIk8KnuB/KiGr+6IlYTRTUsdCFz
-         4KKI9i+VvF5rrLYyDNXS1QZH3pft1jXYIoUcLVc7nBxcZkVqt8TdCRA8HPyb3I915NAh
-         Agfw==
-X-Gm-Message-State: AOAM533tpVTcXm8SkMjBdyNJkN71bxRE2CD+ym4a14hzGpNWMtlUDjG2
-        Cv9USX4CUXbVHTikT5gtMSvY/g==
-X-Google-Smtp-Source: ABdhPJxUaZLr72X+IitGiZdhvcdjbXqJ8JGYNuaWzIyHsZqL8oZ3TGdKCtzxFvdCJQIoO0kqCuOa9A==
-X-Received: by 2002:ac8:6e86:: with SMTP id c6mr1726430qtv.203.1614009772088;
-        Mon, 22 Feb 2021 08:02:52 -0800 (PST)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v145sm12948098qka.27.2021.02.22.08.02.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 08:02:51 -0800 (PST)
-Subject: Re: KASAN: use-after-free Read in nbd_genl_connect
-To:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+429d3f82d757c211bff3@syzkaller.appspotmail.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000bda69205bbe88a09@google.com>
- <20210222093444.2782-1-hdanton@sina.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <02ee51c8-90eb-7f51-b725-441211504ff1@toxicpanda.com>
-Date:   Mon, 22 Feb 2021 11:02:50 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        id S230240AbhBVQIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:08:49 -0500
+Received: from mout01.posteo.de ([185.67.36.65]:40545 "EHLO mout01.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231213AbhBVQEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:04:39 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id D202A16005C
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 17:03:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1614009798; bh=LvquAM2J5zLig8UiWE7YNNTosNOEsZkwWbtbd26zOZI=;
+        h=To:Cc:From:Subject:Date:From;
+        b=nEFtYiWgLTqI2pE9oY4HiC/P8e+FKC2JOkaB2eSDla3UN8OPQN8IO2+k0zJ8XGWFD
+         B+wR7IcgewkASzWqfYvbc25hYRIPKEBQ5+Ku2q0TxurcAtoSWivfPJLVAGtcMOTubh
+         pRSBIjAURv0BCxR/0F6wlS5g15j4LyziablLUk3fbCLEui/oIBYBkkgGRgun4e87wc
+         yzwaMNtavzd+Afqslh51OvxndxLwC+1y8vUwbZzWY/Ko9t1aa8KnWHXZQDBi+0B76d
+         0w7JFHsWs1wpt8HplU9cvTCIKqldow8jvXYj/dyBsIVZlFfLCaTM9mHnTpFb2Wqi7o
+         5w/h/Elt2zVLA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Dkn5s6W55z9rxp;
+        Mon, 22 Feb 2021 17:03:13 +0100 (CET)
+To:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "kernel@puri.sm" <kernel@puri.sm>
+Cc:     NXP Linux Team <linux-imx@nxp.com>
+References: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com>
+From:   Martin Kepplinger <martink@posteo.de>
+Subject: Re: [RFC 00/19] Rework support for i.MX8MQ interconnect with devfreq
+Message-ID: <a2b651de-77a7-2a40-7e51-d0098e4b804b@posteo.de>
+Date:   Mon, 22 Feb 2021 17:03:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210222093444.2782-1-hdanton@sina.com>
+In-Reply-To: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 4:34 AM, Hillf Danton wrote:
-> Mon, 22 Feb 2021 00:25:18 -0800
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    f40ddce8 Linux 5.11
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=179e8d22d00000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=e53d04227c52a0df
->> dashboard link: https://syzkaller.appspot.com/bug?extid=429d3f82d757c211bff3
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d190cad00000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13dc8a82d00000
->>
->> Bisection is inconclusive: the issue happens on the oldest tested release.
->>
->> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1128ae60d00000
->> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1328ae60d00000
->> console output: https://syzkaller.appspot.com/x/log.txt?x=1528ae60d00000
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+429d3f82d757c211bff3@syzkaller.appspotmail.com
->>
->> ==================================================================
->> BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
->> BUG: KASAN: use-after-free in atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
->> BUG: KASAN: use-after-free in refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
->> Read of size 4 at addr ffff888014ca19a0 by task syz-executor980/8540
->>
->> CPU: 0 PID: 8540 Comm: syz-executor980 Not tainted 5.11.0-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Call Trace:
->>   __dump_stack lib/dump_stack.c:79 [inline]
->>   dump_stack+0x107/0x163 lib/dump_stack.c:120
->>   print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
->>   __kasan_report mm/kasan/report.c:396 [inline]
->>   kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
->>   check_memory_region_inline mm/kasan/generic.c:179 [inline]
->>   check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
->>   instrument_atomic_read include/linux/instrumented.h:71 [inline]
->>   atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
->>   refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
->>   refcount_dec_and_mutex_lock+0x19/0x140 lib/refcount.c:115
->>   nbd_put drivers/block/nbd.c:248 [inline]
+On 19.02.21 16:59, Abel Vesa wrote:
+> This has been on my queue for quite some time now. It is more of a
+> proof-of-concept.
 > 
-> This put is unbalanced, given the 1978 line below.
+> This rework is done with the compatibility of future i.MX platforms in
+> mind. For example, the i.MX8MP platform has multiple NoCs. This
+> patchsets prepares the imx interconnect and imx devfreq for that too.
 > 
->>   nbd_genl_connect+0xee7/0x1560 drivers/block/nbd.c:1980
->>   genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
->>   genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
->>   genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
->>   netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
->>   genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
->>   netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
->>   netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
->>   netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
->>   sock_sendmsg_nosec net/socket.c:652 [inline]
->>   sock_sendmsg+0xcf/0x120 net/socket.c:672
->>   ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
->>   ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
->>   __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
->>   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> RIP: 0033:0x440709
->> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
->> RSP: 002b:00007ffd63e9cc88 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
->> RAX: ffffffffffffffda RBX: 000000000000e3fb RCX: 0000000000440709
->> RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000003
->> RBP: 0000000000000000 R08: 0000000000000000 R09: 00007ffd63e9ce28
->> R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd63e9cc9c
->> R13: 431bde82d7b634db R14: 00000000004ae018 R15: 00000000004004a0
->>
->> Allocated by task 8536:
->>   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->>   kasan_set_track mm/kasan/common.c:46 [inline]
->>   set_alloc_info mm/kasan/common.c:401 [inline]
->>   ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
->>   kmalloc include/linux/slab.h:552 [inline]
->>   kzalloc include/linux/slab.h:682 [inline]
->>   nbd_dev_add+0x44/0x8e0 drivers/block/nbd.c:1673
->>   nbd_genl_connect+0x59c/0x1560 drivers/block/nbd.c:1838
->>   genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
->>   genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
->>   genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
->>   netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
->>   genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
->>   netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
->>   netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
->>   netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
->>   sock_sendmsg_nosec net/socket.c:652 [inline]
->>   sock_sendmsg+0xcf/0x120 net/socket.c:672
->>   ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
->>   ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
->>   __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
->>   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>
->> Freed by task 8540:
->>   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->>   kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
->>   kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
->>   ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
->>   kasan_slab_free include/linux/kasan.h:192 [inline]
->>   slab_free_hook mm/slub.c:1547 [inline]
->>   slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
->>   slab_free mm/slub.c:3143 [inline]
->>   kfree+0xdb/0x3b0 mm/slub.c:4139
->>   nbd_dev_remove drivers/block/nbd.c:243 [inline]
->>   nbd_put.part.0+0x180/0x1d0 drivers/block/nbd.c:251
->>   nbd_put drivers/block/nbd.c:295 [inline]
->>   nbd_config_put+0x6dd/0x8c0 drivers/block/nbd.c:1242
->>   nbd_genl_connect+0xeb7/0x1560 drivers/block/nbd.c:1978
->>   genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
->>   genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
->>   genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
->>   netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
->>   genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
->>   netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
->>   netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
->>   netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
->>   sock_sendmsg_nosec net/socket.c:652 [inline]
->>   sock_sendmsg+0xcf/0x120 net/socket.c:672
->>   ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
->>   ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
->>   __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
->>   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>
->> The buggy address belongs to the object at ffff888014ca1800
->>   which belongs to the cache kmalloc-1k of size 1024
->> The buggy address is located 416 bytes inside of
->>   1024-byte region [ffff888014ca1800, ffff888014ca1c00)
->> The buggy address belongs to the page:
->> page:0000000086766889 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x14ca0
->> head:0000000086766889 order:3 compound_mapcount:0 compound_pincount:0
->> flags: 0xfff00000010200(slab|head)
->> raw: 00fff00000010200 ffffea0000929400 0000000200000002 ffff888010c41140
->> raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
->> page dumped because: kasan: bad access detected
->>
->> Memory state around the buggy address:
->>   ffff888014ca1880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->>   ffff888014ca1900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->>> ffff888014ca1980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->>                                 ^
->>   ffff888014ca1a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->>   ffff888014ca1a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->> ==================================================================
+> As of now, none of the drivers involved are being used and there is no
+> icc consumer on any off the i.MX platforms.
 > 
-> If the quick fix will be able to survive syzbot tests then we can
-> remove the put_dev on stack.
+> Basically, the steps taken here are the following:
 > 
-> --- x/drivers/block/nbd.c
-> +++ y/drivers/block/nbd.c
-> @@ -1908,6 +1908,7 @@ again:
->   				&config->runtime_flags);
->   			set_bit(NBD_DESTROY_ON_DISCONNECT, &nbd->flags);
->   			put_dev = true;
-> +			refcount_inc(&nbd->refs);
->   		} else {
->   			clear_bit(NBD_DESTROY_ON_DISCONNECT, &nbd->flags);
->   		}
+> 1. Make the dram_apb clock "reparantable" from kernel.
+> This is needed in order to keep track of the actual parent of the
+> dram_apb clock in the kernel clock hierarchy. Note that the actual
+> switch is done EL3 (TF-A).
+> 
+> 2. Rework the imx-bus so the actual link between the icc and the
+> NoCs or the pl301s is not tightly coupled. This allows us to have
+> as many NoCs as necessary but also allows as to use the same driver
+> for the pl301s. The pl301s have their own clocks too, so we need to
+> reduce their rates too.
+> 
+> 3. Rework the imx8m-ddrc driver. Remove the support for dts defined
+> OPPs. The EL3 provides those. So instead of havingi to keep the OPP table in
+> both EL3 and kernel in sync, we rely on what the EL3 gives us.
+> Also, when the platform suspends, the bus needs to be running at highest
+> rate, otherwise there is a chance it might not resume anymore.
+> By adding the late system sleep PM ops we can handle that easily.
+> 
+> 4. Rework the imx interconnect driver to use the fsl,icc-id instead
+> of the robust imx_icc_node_adj_desc for linking with the target node.
+> By adding the fsl,icc-id property to all the NoC and pl301 dts nodes,
+> we can link each icc node to their corresponding NoC, pl301 or dram.
+> Basically, when the imx interconnect platform specific driver probes,
+> it will take each node defined for that platform and look-up the
+> corresponding dts node based on the id and add that as the qos device.
+> 
+> 5. Added the fec and usdhc as icc consumers. This is just as an example.
+> All the other consumers can be added later. Basically, each consumer
+> will add a path to their device node and in the driver will have to
+> handle that icc path accordingly.
 > 
 
-That's not it, it's a race between one thread disconnecting while the other 
-thread is connecting.  At this point we expect the ref count to be 2, but this 
-isn't the case if we raced in and got a ref on our index while a config was 
-exiting, we'll have a refcount of 1.  I'll make sure I can reproduce and then 
-fix it properly.  Thanks,
+thanks for working on this Abel,
 
-Josef
+It looks like the icc path requests don't work for me:
+
+when applying this onto v5.11 (without any other workaround in that 
+area, but some out-of-tree icc-requests like in mxsfb) my rootfs isn't 
+being mounted anymore. Since you add icc requests to the usdhc driver, 
+there could be something wrong.
+
+So I revert 19/19 ("mmc: sdhci-esdhc-imx: Add interconnect support") and 
+then my imx8mq (Librem 5) rootfs system boots, but all frequencies stay 
+at the minimum (despite the icc request like this: 
+https://source.puri.sm/martin.kepplinger/linux-next/-/commit/1692de27d1475c53574dd7359c68ba613e0fea10 
+so I can't use the display).
+
+What could be missing? As I said I'm trying on top of v5.11, (at least I 
+have the NOC node described: 
+https://source.puri.sm/martin.kepplinger/linux-next/-/commit/1d74a24c9944d1bf618abdd57d24101368cc8df0 
+and (with the revert from 
+https://lore.kernel.org/linux-arm-kernel/20210104120512.gmi2zjz7dzhjussp@fsr-ub1664-175/ 
+devfreq works without your patchset ) Is there anything I'm missing that 
+is not yet merged in v5.11?
+
+Can I test anything else that would help?
+
+/sys/class/devfreq# cat */cur_freq
+133333334
+25000000
+25641026
+25000000
+800000000
+25000000
+0
+25000000
+25000000
+25000000
+0
+
+the available freqs look ok (opp table removed from device dts, but you 
+don't read that anymore anyway):
+
+cat */available_frequencies
+133333333 400000000 800000000
+25000000 100000000 800000000
+25000000 133333333 333333333
+25000000 266666666
+25000000 800000000
+25000000 800000000
+25000000 333333333
+25000000 500000000
+25000000 500000000
+25000000 128000000 500000000
+25000000 133333333
+
+where ls is:
+
+32700000.noc 
+
+3d400000.memory-controller 
+
+soc@0:pl301@0 
+
+soc@0:pl301@1 
+
+soc@0:pl301@2 
+
+soc@0:pl301@3 
+
+soc@0:pl301@4 
+
+soc@0:pl301@5 
+
+soc@0:pl301@6 
+
+soc@0:pl301@7 
+
+soc@0:pl301@8
+
+thanks,
+                                 martin
