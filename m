@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843743217B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D95D321799
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbhBVMyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:54:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44744 "EHLO mail.kernel.org"
+        id S231566AbhBVMvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:51:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230505AbhBVMR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:17:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1342B64DA1;
-        Mon, 22 Feb 2021 12:17:09 +0000 (UTC)
+        id S231152AbhBVMR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:17:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CADD64E61;
+        Mon, 22 Feb 2021 12:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996230;
-        bh=yaSc8o3acTSEGDz1KGNQJWtUHY0muESinDksmkUeJj8=;
+        s=korg; t=1613996256;
+        bh=YZ6GOVgbruHge1XWWbpHjjPHtO4T36kRZyv34rffeaM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lDt6LxAcmTaPBKjhDayFyapNtMULxhPhtFXrQOHUWonJzyp8GBk0y8GvCcbHE++ea
-         C0uWiR7oNwTkYWWfGEZ7j6au1GfriSX9OhlAZl3+TPwL61v/CqHRiyWG4Zxg0qx+Dj
-         YadCEOtdhBENSAWTp7b+Z61Al2cD55bxP7ADVuXE=
+        b=G/wze34X0qHHy1ea9Sb4dJgTVXlsVdFArZYQK80jo23pOlsuoZKaq6S/yVqU959eG
+         It4VhAUzMNKP7yl+91tUQ6MPUmgn1mhudI5GCFfccWhoQkv+XTOdDyOx/4F6Z0NIL8
+         he+3a5CY8t5+ypseqdU3ll5I30Ka6BoHRNwcxB/k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 32/50] vsock/virtio: update credit only if socket is not closed
-Date:   Mon, 22 Feb 2021 13:13:23 +0100
-Message-Id: <20210222121025.947666099@linuxfoundation.org>
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 33/50] vsock: fix locking in vsock_shutdown()
+Date:   Mon, 22 Feb 2021 13:13:24 +0100
+Message-Id: <20210222121026.072410085@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
 References: <20210222121019.925481519@linuxfoundation.org>
@@ -42,38 +41,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Stefano Garzarella <sgarzare@redhat.com>
 
-commit ce7536bc7398e2ae552d2fabb7e0e371a9f1fe46 upstream.
+commit 1c5fae9c9a092574398a17facc31c533791ef232 upstream.
 
-If the socket is closed or is being released, some resources used by
-virtio_transport_space_update() such as 'vsk->trans' may be released.
+In vsock_shutdown() we touched some socket fields without holding the
+socket lock, such as 'state' and 'sk_flags'.
 
-To avoid a use after free bug we should only update the available credit
-when we are sure the socket is still open and we have the lock held.
+Also, after the introduction of multi-transport, we are accessing
+'vsk->transport' in vsock_send_shutdown() without holding the lock
+and this call can be made while the connection is in progress, so
+the transport can change in the meantime.
 
-Fixes: 06a8fc78367d ("VSOCK: Introduce virtio_vsock_common.ko")
+To avoid issues, we hold the socket lock when we enter in
+vsock_shutdown() and release it when we leave.
+
+Among the transports that implement the 'shutdown' callback, only
+hyperv_transport acquired the lock. Since the caller now holds it,
+we no longer take it.
+
+Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
 Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Link: https://lore.kernel.org/r/20210208144454.84438-1-sgarzare@redhat.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/vmw_vsock/virtio_transport_common.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/vmw_vsock/af_vsock.c         |    8 +++++---
+ net/vmw_vsock/hyperv_transport.c |    4 ----
+ 2 files changed, 5 insertions(+), 7 deletions(-)
 
---- a/net/vmw_vsock/virtio_transport_common.c
-+++ b/net/vmw_vsock/virtio_transport_common.c
-@@ -1033,10 +1033,10 @@ void virtio_transport_recv_pkt(struct vi
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -816,10 +816,12 @@ static int vsock_shutdown(struct socket
+ 	 */
  
- 	vsk = vsock_sk(sk);
- 
--	space_available = virtio_transport_space_update(sk, pkt);
--
- 	lock_sock(sk);
- 
-+	space_available = virtio_transport_space_update(sk, pkt);
+ 	sk = sock->sk;
 +
- 	/* Update CID in case it has changed after a transport reset event */
- 	vsk->local_addr.svm_cid = dst.svm_cid;
++	lock_sock(sk);
+ 	if (sock->state == SS_UNCONNECTED) {
+ 		err = -ENOTCONN;
+ 		if (sk->sk_type == SOCK_STREAM)
+-			return err;
++			goto out;
+ 	} else {
+ 		sock->state = SS_DISCONNECTING;
+ 		err = 0;
+@@ -828,10 +830,8 @@ static int vsock_shutdown(struct socket
+ 	/* Receive and send shutdowns are treated alike. */
+ 	mode = mode & (RCV_SHUTDOWN | SEND_SHUTDOWN);
+ 	if (mode) {
+-		lock_sock(sk);
+ 		sk->sk_shutdown |= mode;
+ 		sk->sk_state_change(sk);
+-		release_sock(sk);
+ 
+ 		if (sk->sk_type == SOCK_STREAM) {
+ 			sock_reset_flag(sk, SOCK_DONE);
+@@ -839,6 +839,8 @@ static int vsock_shutdown(struct socket
+ 		}
+ 	}
+ 
++out:
++	release_sock(sk);
+ 	return err;
+ }
+ 
+--- a/net/vmw_vsock/hyperv_transport.c
++++ b/net/vmw_vsock/hyperv_transport.c
+@@ -443,14 +443,10 @@ static void hvs_shutdown_lock_held(struc
+ 
+ static int hvs_shutdown(struct vsock_sock *vsk, int mode)
+ {
+-	struct sock *sk = sk_vsock(vsk);
+-
+ 	if (!(mode & SEND_SHUTDOWN))
+ 		return 0;
+ 
+-	lock_sock(sk);
+ 	hvs_shutdown_lock_held(vsk->trans, mode);
+-	release_sock(sk);
+ 	return 0;
+ }
  
 
 
