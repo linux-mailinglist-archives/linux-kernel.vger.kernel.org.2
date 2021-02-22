@@ -2,152 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79415321C03
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F829321C07
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhBVP7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:59:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49936 "EHLO
+        id S230470AbhBVQBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:01:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbhBVP7m (ORCPT
+        with ESMTP id S230207AbhBVQBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:59:42 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC69C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:59:01 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id i9so4076419wml.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:59:01 -0800 (PST)
+        Mon, 22 Feb 2021 11:01:14 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD98DC061574;
+        Mon, 22 Feb 2021 08:00:33 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id p2so22590386edm.12;
+        Mon, 22 Feb 2021 08:00:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=po7ZCyqFMyZIWV0p+8IMI9gFAeID81WPSqIoGNYvua4=;
-        b=fitIDR6W4Ci+br3LK2dzGYqKIbRNFwbYQEgmdMCexm1YPkbyoVtvbc1NF4YkJL8nNd
-         oGueKlRsp6xf5+mSYK/QvaENI0gvDdX754/WjAazUEaCHNQO8RrKZkgf9k0cyJKobpYv
-         5dzvGb9dyLIYuemAALc9ChJLvb+kaz3jjE4EGLVKbhl+2Bpa0Nxj1eFnGRKp+ImvLOAM
-         pmh6+9sgWN+hQeDNf0DfKCqUm+7+Vt3dup6dnbZAkzLRfO4hFEAippBZRrJfn9piZCmT
-         5Ig/RJiYFquARoeI4oAmCVxbF1RUDlr0IrBtvHzlIpHmkWZ7fJB/BQsLf/0pd0b8VZFq
-         RqHQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YGAvnzMESkS+Z4+Pab/L4bQLX/w0TQcH3GRn/tc/Ao8=;
+        b=t6+RmEOe0FcHDkuCBmi1GLuVNYPmR6YSKQpFB7gaqGDpIt+gI81BaiC1rEbKb7eJ7x
+         P84arTt3qW03ijOGcDQBeGh0uLgioBOz4UUkB4ENP3bSIgUmw2QTuWkKFOttZTjlycPo
+         ySQdI4AexC7BbWqmNr3tvSRVFhU9kxndhD5nwtpyDfjkkUL+t0V8LrGXHeReTbMdGkpo
+         cm9ODgV91GVJ4f8dVCQ9gu2yHvl2nDS9cwVALhWn4xnf0yyRFAiYPkp2tUD8DmRQZ1RB
+         2BteB6apH/4nk31r+ALfnyRphPPrg3z/BxEVf7AryNmPApcCaNYS3xZuJ1Yr3DQbZ8mi
+         ALtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=po7ZCyqFMyZIWV0p+8IMI9gFAeID81WPSqIoGNYvua4=;
-        b=A028H/ld3qp6OoHPJU+DcUoh6nKDsKoM2zir9byz+b20ok5xMKndiB6+iAgIMOZZ4X
-         RHRxiuz2ogguRQvl0YM0RHDIS0MztAkPLvu47lGkT44m9oynxew5etNWhnjrHnLWf7HP
-         tLqo91FtMsag4yALUYe/NsYdLtDBnWH0a6I98nVkpfk6E2NEW+xr1rlcsj7o2VyFnalA
-         9NxLvvU4cTXioHR/R2lGB/u5gL261dqLx20+KOjhJgZXj3YluM4TTVMfBcxiGPUa1rND
-         aGtsDJbthj4GmKKtzkizcoES8/lAVhYBS8u3j5J/7Ru80nFDbfX+llh/Xo3+JrwEbayQ
-         1QaA==
-X-Gm-Message-State: AOAM5306bCL88dnV39fP3TDRvUplpoYushTtNrT2Cdd7ewBksg1X3aRH
-        4wnZyMqhQRWdp+Iw7JLF8DXnRQ==
-X-Google-Smtp-Source: ABdhPJyYvaJziWChoNOVN8K56NaGcK8bo0ZZQF6xR4BYaiJD6oQWIEoupJgKmlnuEyj7PSw5xu1YLA==
-X-Received: by 2002:a1c:28c1:: with SMTP id o184mr20172452wmo.183.1614009539785;
-        Mon, 22 Feb 2021 07:58:59 -0800 (PST)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id w81sm26221109wmb.3.2021.02.22.07.58.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:58:59 -0800 (PST)
-Date:   Mon, 22 Feb 2021 15:58:56 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-        patrick.bellasi@matbug.net, valentin.schneider@arm.com
-Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
- cpu_util_next()
-Message-ID: <YDPUwKKYgZfzzCJm@google.com>
-References: <20210222095401.37158-1-vincent.donnefort@arm.com>
- <YDODN1rnTqfTQOug@google.com>
- <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
- <YDOiKH/XQDUKcrPU@google.com>
- <20210222150151.GA124800@e124901.cambridge.arm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YGAvnzMESkS+Z4+Pab/L4bQLX/w0TQcH3GRn/tc/Ao8=;
+        b=Qnj7+vTq1jhQZcC5GW2yUQCfkmOYAWY71KSI8Q2YhcsSInuEqz3WlJ+0kENudSg5lu
+         ADHp+t9TeFasTJCMa/d7JwU5LRgYFYe8WiKV+6HT0pN8zLZDwK37/GAyyJRQjIhZkIho
+         GwBJ0xmtt3N6S8mCk0VX2F4wSfZ0RkCJfHsI48xUbWa4N2ASI8p8+ksjqHa0o2cTo0r5
+         m3S4pEBa8enr2x6UMl2fa1hO7Zu0vn9JKkuJaXlghGkRlvEnXrNiHYMaFPw/pQNUbjCm
+         AnMxWbKcWTjPu1Rf2o8Xq1envUgYgI3ZA1bav12DBqfA17l90uVRsPR/ViuPVNh/VZHr
+         16/w==
+X-Gm-Message-State: AOAM533eQnO5dDr8/3515Km1pJeQsKwWmZp1gAOd8dcpiZGDnmuUqiQP
+        lAXdwEwa+NmX6NCK5NbYysSk1XN1nbc=
+X-Google-Smtp-Source: ABdhPJxz/wKuipbNFDoAiObiR8UrkysgBqsDub+EMSZUbWYn40+Og5eya8/Tr+lBWKfgZ2ySb0qY+w==
+X-Received: by 2002:aa7:dac7:: with SMTP id x7mr6672502eds.44.1614009631775;
+        Mon, 22 Feb 2021 08:00:31 -0800 (PST)
+Received: from [192.168.178.40] (ipbcc11466.dynamic.kabel-deutschland.de. [188.193.20.102])
+        by smtp.gmail.com with ESMTPSA id v12sm1792101edx.90.2021.02.22.08.00.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 08:00:31 -0800 (PST)
+Subject: Re: [PATCH 14/20] target: Manual replacement of the deprecated
+ strlcpy() with return values
+To:     Romain Perier <romain.perier@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        kernel-hardening@lists.openwall.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210222151231.22572-1-romain.perier@gmail.com>
+ <20210222151231.22572-15-romain.perier@gmail.com>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <c296eb89-32e2-0866-34f1-0bdd00d80f82@gmail.com>
+Date:   Mon, 22 Feb 2021 17:00:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210222150151.GA124800@e124901.cambridge.arm.com>
+In-Reply-To: <20210222151231.22572-15-romain.perier@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 22 Feb 2021 at 15:01:51 (+0000), Vincent Donnefort wrote:
-> You mean that it could lead to a wrong frequency estimation when doing
-> freq = map_util_freq() in em_cpu_energy()?
-
-I'm not too worried about the map_util_freq() part, I'm worried about
-the schedutil aggregation. Specifically, when a task is enqueued on a
-rq, we sum its util_avg to the rq's util_avg, and the _task_util_est()
-to the rq's util_est.enqueue member (as per util_est_enqueue()).
-
-Now, in schedutil, sugov_get_util() calls cpu_util_cfs(), which does the
-following:
-
-	static inline unsigned long cpu_util_cfs(struct rq *rq)
-	{
-		unsigned long util = READ_ONCE(rq->cfs.avg.util_avg);
-
-		if (sched_feat(UTIL_EST)) {
-			util = max_t(unsigned long, util,
-				     READ_ONCE(rq->cfs.avg.util_est.enqueued));
-		}
-
-		return util;
-	}
-
-And that value will be the base for frequency selection. cpu_util_next()
-tries to mimic this as accurately as possible, by doing the sums
-independently, and then computing the max, exactly as we will do when
-the task is enqueued and a freq update is generated.
-
-> But in any case, the computed energy, being the product of sum_util with the
-> OPP's cost, it is directly affected by this util_avg/util_est difference.
-
-Sure, but we're not going to fix it by messing up the OPP selection part ;-)
-
-> In the case where the task placement doesn't change the OPP, which is often the
-> case, we can simplify the comparison and end-up with the following:
+On 22.02.21 16:12, Romain Perier wrote:
+> The strlcpy() reads the entire source buffer first, it is dangerous if
+> the source buffer lenght is unbounded or possibility non NULL-terminated.
+> It can lead to linear read overflows, crashes, etc...
 > 
->   delta_energy(CPU-3): OPP3 cost * (cpu_util_avg + task_util_avg - cpu_util_avg)
->   delta_energy(CPU-2): OPP2 cost * (cpu_util_est + task_util_est - cpu_util_est)
+> As recommended in the deprecated interfaces [1], it should be replaced
+> by strscpy.
 > 
->   => OPP3 cost * task_util_avg < task_util_est * OPP2 cost
+> This commit replaces all calls to strlcpy that handle the return values
+> by the corresponding strscpy calls with new handling of the return
+> values (as it is quite different between the two functions).
 > 
-> With the same example I described previously, if you add the scaled OPP cost of
-> 0.76 for CPU-3 and 0.65 for CPU-2 (real life OPP scaled costs), we have:
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
 > 
->   2.3 (CPU-3) < 7.15 (CPU-2)
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> ---
+>   drivers/target/target_core_configfs.c |   33 +++++++++------------------------
+>   1 file changed, 9 insertions(+), 24 deletions(-)
 > 
-> The task is placed on CPU-3, while it would have been much more efficient to use
-> CPU-2.
-
-That should really be a transient state: having a util_avg much larger
-than util_est.enqueued is indicative of either a new task or a workload
-changing behaviour. And so, chances are all the estimations are wrong
-anyways -- it's hard to do good estimations when the present doesn't
-look like the recent past.
-
-But in any case, if we're going to address this, I'm still not sure this
-patch will be what we want. As per my first comment we need to keep the
-frequency estimation right.
-
-> > > When computing the energy
-> > > deltas, pd0's is likely to be higher than pd1's, only because the task
-> > > contribution is higher for one comparison than the other.
-> > 
-> > You mean the contribution to sum_util right? I think I see what you mean
-> > but I'm still not sure if this really is an issue. This is how util_est
-> > works, and the EM stuff is just consistent with that.
-> > 
-> > The issue you describe can only happen (I think) when a rq's util_avg is
-> > larger than its util-est emwa by some margin (that has to do with the
-> > ewma-util_avg delta for the task?). But that means the ewma is not to be
-> > trusted to begin with, so ...
+> diff --git a/drivers/target/target_core_configfs.c b/drivers/target/target_core_configfs.c
+> index f04352285155..676215cd8847 100644
+> --- a/drivers/target/target_core_configfs.c
+> +++ b/drivers/target/target_core_configfs.c
+> @@ -1325,16 +1325,11 @@ static ssize_t target_wwn_vendor_id_store(struct config_item *item,
+>   	/* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+>   	unsigned char buf[INQUIRY_VENDOR_LEN + 2];
+>   	char *stripped = NULL;
+> -	size_t len;
+> +	ssize_t len;
+>   	ssize_t ret;
+>   
+> -	len = strlcpy(buf, page, sizeof(buf));
+> -	if (len < sizeof(buf)) {
+> -		/* Strip any newline added from userspace. */
+> -		stripped = strstrip(buf);
+> -		len = strlen(stripped);
+> -	}
+> -	if (len > INQUIRY_VENDOR_LEN) {
+> +	len = strscpy(buf, page, sizeof(buf));
+> +	if (len == -E2BIG) {
+>   		pr_err("Emulated T10 Vendor Identification exceeds"
+>   			" INQUIRY_VENDOR_LEN: " __stringify(INQUIRY_VENDOR_LEN)
+>   			"\n");
+> @@ -1381,16 +1376,11 @@ static ssize_t target_wwn_product_id_store(struct config_item *item,
+>   	/* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+>   	unsigned char buf[INQUIRY_MODEL_LEN + 2];
+>   	char *stripped = NULL;
+> -	size_t len;
+> +	ssize_t len;
+>   	ssize_t ret;
+>   
+> -	len = strlcpy(buf, page, sizeof(buf));
+> -	if (len < sizeof(buf)) {
+> -		/* Strip any newline added from userspace. */
+> -		stripped = strstrip(buf);
+> -		len = strlen(stripped);
+> -	}
+> -	if (len > INQUIRY_MODEL_LEN) {
+> +	len = strscpy(buf, page, sizeof(buf));
+> +	if (len == -E2BIG) {
+>   		pr_err("Emulated T10 Vendor exceeds INQUIRY_MODEL_LEN: "
+>   			 __stringify(INQUIRY_MODEL_LEN)
+>   			"\n");
+> @@ -1437,16 +1427,11 @@ static ssize_t target_wwn_revision_store(struct config_item *item,
+>   	/* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+>   	unsigned char buf[INQUIRY_REVISION_LEN + 2];
+>   	char *stripped = NULL;
+> -	size_t len;
+> +	ssize_t len;
+>   	ssize_t ret;
+>   
+> -	len = strlcpy(buf, page, sizeof(buf));
+> -	if (len < sizeof(buf)) {
+> -		/* Strip any newline added from userspace. */
+> -		stripped = strstrip(buf);
+> -		len = strlen(stripped);
+> -	}
+> -	if (len > INQUIRY_REVISION_LEN) {
+> +	len = strscpy(buf, page, sizeof(buf));
+> +	if (len == -E2BIG) {
+>   		pr_err("Emulated T10 Revision exceeds INQUIRY_REVISION_LEN: "
+>   			 __stringify(INQUIRY_REVISION_LEN)
+>   			"\n");
 > 
-> cfs_rq->avg.util_est.ewma is not used. cpu_util() will only return the max
-> between ue.enqueued and util_avg.
 
-Right, my bad, it was the 'enqueued' member. But the rest of the
-argument is still valid I think, but with s/ewma/enqueued :-)
+AFAICS, you are not only replacing strlcpy with strscpy, but also remove 
+stripping of possible trailing '\n', and remove the necessary length
+check of the remaining string.
 
-Thanks,
-Quentin
+-Bodo
