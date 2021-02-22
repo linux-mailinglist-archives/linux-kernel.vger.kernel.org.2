@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2180321CEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF661321D38
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbhBVQ2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:28:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55884 "EHLO
+        id S230492AbhBVQk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:40:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbhBVQ06 (ORCPT
+        with ESMTP id S230248AbhBVQjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:26:58 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E275C061574;
-        Mon, 22 Feb 2021 08:26:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=4G2c4gsQQ/sKBEI06UU7bCq4rbHSCsZ03J36bIQz7jQ=; b=KRWO+b9m+GnGORV3rM6t+dTy0u
-        CUm/7wmx7aN9QrWQT8eTM7AK+D6YeHn0rlXg5Aec7xpHBCCaeMYVV1iy09W0BnGgxbKvdnvasNDh8
-        0LJ4yXdAntPwF38jORzz3JHDarZDnHBQuC5/liVyiRs2X8ilBa13CT4hx9uiMoDBhuyWBXPdeO7Sk
-        mvCICpxKz3yWHIBBMC8r2DKjolJqWoKhgMJSU1xUTraEbYhVKvcwyYratfSyJHif0vVutX+7MSbsN
-        YXkj0l6hNrgGg2p0ttq/JDgi0baxivScBmUJi++aPmFocG9HR1dKRDAVcK0yktJHJuQh0nF1VX8Q3
-        +s5EcckQ==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lEE2I-0002ZX-PP; Mon, 22 Feb 2021 16:26:15 +0000
-Subject: Re: [PATCH] drivers: infiniband: sw: rxe: fix kconfig dependency on
- CRYPTO
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Julian Braha <julianbraha@gmail.com>,
-        Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <21525878.NYvzQUHefP@ubuntu-mate-laptop> <YDICM3SwwGZfE+Sg@unreal>
- <CAD=hENeCXGtKrXxLof=DEZjxpKyYBFS80pAX20nnJBuP_s-GBA@mail.gmail.com>
- <YDOq060TvAwLgknl@unreal> <20210222155845.GI2643399@ziepe.ca>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e1e3bec7-0350-4bdd-50c3-41b21388fc71@infradead.org>
-Date:   Mon, 22 Feb 2021 08:26:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 22 Feb 2021 11:39:14 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F48BC061793
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:38:33 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id e6so898594pgk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:38:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dynamicaims-com.20150623.gappssmtp.com; s=20150623;
+        h=to:subject:from:message-id:disposition-notification-to:date
+         :user-agent:mime-version:content-transfer-encoding:content-language;
+        bh=7nEcqNWP9KeLsneDEi3dmHkpomc3q3iTlP5gSWNfAcQ=;
+        b=NuRJOzgrpD9NqUtdPgEpxKQ0XI29kNDHiXMOsWkKeRv4vIT6UOUUViSB77N8yNK8Tw
+         GFE9XxCv3h4I72Vii/Hfemo+Z1GkIRW/MX+xgtzo6sEjN3pOLDQ4ub8vuTsFQtg5DuJp
+         3mrlLg9HzUdmqkJO0YcZ2TYM6EBo0QYDXIu1ziD79mEEFNpGGfhCEphulrA5LxMuaCct
+         boNOEVAAwj+7gKkFLwkfF2bXxjb+mmSjeMBWahcNiATNESP9k1QVXIaCNjhyRmQ19ChS
+         0UFS6jiL4fFrBp59taemkS0doekVcz/DDKYErDI+SkrmjrXDsWSsVlAz35Dg4440LHkg
+         jk4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:subject:from:message-id
+         :disposition-notification-to:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=7nEcqNWP9KeLsneDEi3dmHkpomc3q3iTlP5gSWNfAcQ=;
+        b=i37YLclHucsB6ui9w49VanJ1147du7/ZEcPPNCUm9lP22nY5aHWNqw3UUA6bV6PPSy
+         GaaR9tHljgwveJzVB8nAbHSwYGiq6ZWYS9Vn/PjdfrODSQrgkSX3aPBv37siGXfhvOG7
+         eEM9W6TlUGN7gTKK55dJ3y+fByYMO+d+WJCn9he5RXAfMx/UyX9Hqp0RupwOiWVTkd4v
+         2LrGPj5S/lx0y+HRjzrf289G7GlN0Dgdz4YFgw7it/M9fVpQYambP08mUwh68PextR6P
+         cvGI4L/dEfkU63rDn3Lxxzh57kFy+57vBtrCtDCv9aMkb/Z34itdzwe1FEQmpCiNewJO
+         YtMA==
+X-Gm-Message-State: AOAM530x/kFFZgPM8oBU/7idxKsIWccFHd231ucxu9pMQU+JJ5czJZrR
+        FPEzqM4cHbChOhHpxY4Sr1uuwsgD/uL5yQ==
+X-Google-Smtp-Source: ABdhPJxqz34ZM94yk8FiSaPW1f7exsvyw+uudqITNj/3zOoPWWNpd9mszS+dKRCZOchryezrJByXtw==
+X-Received: by 2002:a05:6a00:1385:b029:1be:ac19:3a9d with SMTP id t5-20020a056a001385b02901beac193a9dmr14966529pfg.65.1614011912396;
+        Mon, 22 Feb 2021 08:38:32 -0800 (PST)
+Received: from [192.168.0.6] ([103.16.71.222])
+        by smtp.gmail.com with ESMTPSA id 8sm20544932pfp.171.2021.02.22.08.38.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Feb 2021 08:38:31 -0800 (PST)
+To:     linux-kernel@vger.kernel.org
+Subject: Wine List
+From:   Gavan Hunt <gavanh@dynamicaims.com>
+Message-ID: <5f5b2bb9-df95-fd6f-e758-e6427ab68e5a@dynamicaims.com>
+Date:   Mon, 22 Feb 2021 10:29:19 -0500
+User-Agent: Mozilla/5.0 (Windows NT 6.3; rv:52.0) Gecko/20100101
+ Thunderbird/52.4.0
 MIME-Version: 1.0
-In-Reply-To: <20210222155845.GI2643399@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 7:58 AM, Jason Gunthorpe wrote:
-> On Mon, Feb 22, 2021 at 03:00:03PM +0200, Leon Romanovsky wrote:
->> On Mon, Feb 22, 2021 at 10:39:20AM +0800, Zhu Yanjun wrote:
->>> On Sun, Feb 21, 2021 at 2:49 PM Leon Romanovsky <leon@kernel.org> wrote:
->>>>
->>>> On Fri, Feb 19, 2021 at 06:32:26PM -0500, Julian Braha wrote:
->>>>> commit 6e61907779ba99af785f5b2397a84077c289888a
->>>>> Author: Julian Braha <julianbraha@gmail.com>
->>>>> Date:   Fri Feb 19 18:20:57 2021 -0500
->>>>>
->>>>>     drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
->>>>>
->>>>>     When RDMA_RXE is enabled and CRYPTO is disabled,
->>>>>     Kbuild gives the following warning:
->>>>>
->>>>>     WARNING: unmet direct dependencies detected for CRYPTO_CRC32
->>>>>       Depends on [n]: CRYPTO [=n]
->>>>>       Selected by [y]:
->>>>>       - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && INFINIBAND_VIRT_DMA [=y]
->>>>>
->>>>>     This is because RDMA_RXE selects CRYPTO_CRC32,
->>>>>     without depending on or selecting CRYPTO, despite that config option
->>>>>     being subordinate to CRYPTO.
->>>>>
->>>>>     Signed-off-by: Julian Braha <julianbraha@gmail.com>
->>>>
->>>> Please use git sent-email to send patches and please fix crypto Kconfig
->>>> to enable CRYPTO if CRYPTO_* selected.
->>>>
->>>> It is a little bit awkward to request all users of CRYPTO_* to request
->>>> select CRYPTO too.
->>>
->>> The same issue and similar patch is in this link:
->>>
->>> https://patchwork.kernel.org/project/linux-rdma/patch/20200915101559.33292-1-fazilyildiran@gmail.com/#23615747
->>
->> So what prevents us from fixing CRYPTO Kconfig?
-> 
-> Yes, I would like to see someone deal with this properly, either every
-> place doing select CRYPTO_XX needs fixing or something needs to be
-> done in the crypto layer.
-> 
-> I have no idea about kconfig to give advice, I've added Arnd since he
-> always seems to know :)
 
-I will Ack the original patch in this thread.
+Hello,
 
-How many Mellanox drivers are you concerned about?
-You don't have to fix any other drivers that have a similar issue.
+Would you be interested in acquiring an email list of "Wine Enthusiasts List" from USA?
 
+We also have data for Beer Enthusiasts List, Liquor Enthusiasts List, Beverage Enthusiasts List and many more.
 
--- 
-~Randy
+Each record in the list contains Contact Name (First, Middle and Last Name), Mailing Address, List type and Opt-in email address.
+
+All the contacts are opt-in verified, 100% permission based and can be used for unlimited multi-channel marketing.
+
+Please let me know your thoughts towards procuring the Wine Enthusiasts List.
+
+Best Regards,
+Gavan Hunt
+Research Analyst
+
+We respect your privacy, if you do not wish to receive any further emails from our end, please reply with a subject "Remove".
+
