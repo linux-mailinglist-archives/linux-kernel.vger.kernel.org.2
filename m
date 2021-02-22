@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF173217B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3CA3217B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbhBVMxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:53:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47524 "EHLO mail.kernel.org"
+        id S230495AbhBVMxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:53:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230240AbhBVMSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:18:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F2AB64EEF;
-        Mon, 22 Feb 2021 12:17:50 +0000 (UTC)
+        id S230245AbhBVMSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:18:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 204A964EF5;
+        Mon, 22 Feb 2021 12:17:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996271;
-        bh=pd3PrJb+foKqU8w6hxDu5EHxFOO37VLjIZrxGe3+9WI=;
+        s=korg; t=1613996273;
+        bh=EcSu6k2Cq+hzf90YArDfATrgHmc+TcSk7idHTtFlagA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D41LGIL8w+GF5Ea3+anrXD4IBXLPhL877cIx5/yAioG5g0pfpRkxTt0LEYc6oJG1W
-         Lb5sd/1+o62uXQvZkJG+5p3iQE0GqrA0T5AntXdqs9QAHztpnOtgpVFu6nCaGUu49g
-         yAn+E9us5iAnzj0W3ZiGDfa1UHxH1/qiyCaoGe+k=
+        b=ZVX+Na7VINAg4HLxxGwLJO4J7xZ6aRAWqZXdqKFD4sMq8/vSoyFlY+tcnbOb8d4Jo
+         cJQqTNPXb2O1R/wjISM1+GCsv7AK1JawsXwF5QlBxL6JfT0mKVxGAv0FMJhUhtqNgm
+         EXVglaXSKh3MMQ+JTMWuNVO2V7hfthybkGS0plUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Loic Poulain <loic.poulain@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 39/50] net: qrtr: Fix port ID for control messages
-Date:   Mon, 22 Feb 2021 13:13:30 +0100
-Message-Id: <20210222121026.522104836@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.19 40/50] Xen/x86: dont bail early from clear_foreign_p2m_mapping()
+Date:   Mon, 22 Feb 2021 13:13:31 +0100
+Message-Id: <20210222121026.601141155@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
 References: <20210222121019.925481519@linuxfoundation.org>
@@ -40,37 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loic Poulain <loic.poulain@linaro.org>
+From: Jan Beulich <jbeulich@suse.com>
 
-[ Upstream commit ae068f561baa003d260475c3e441ca454b186726 ]
+commit a35f2ef3b7376bfd0a57f7844bd7454389aae1fc upstream.
 
-The port ID for control messages was uncorrectly set with broadcast
-node ID value, causing message to be dropped on remote side since
-not passing packet filtering (cb->dst_port != QRTR_PORT_CTRL).
+Its sibling (set_foreign_p2m_mapping()) as well as the sibling of its
+only caller (gnttab_map_refs()) don't clean up after themselves in case
+of error. Higher level callers are expected to do so. However, in order
+for that to really clean up any partially set up state, the operation
+should not terminate upon encountering an entry in unexpected state. It
+is particularly relevant to notice here that set_foreign_p2m_mapping()
+would skip setting up a p2m entry if its grant mapping failed, but it
+would continue to set up further p2m entries as long as their mappings
+succeeded.
 
-Fixes: d27e77a3de28 ("net: qrtr: Reset the node and port ID of broadcast messages")
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Arguably down the road set_foreign_p2m_mapping() may want its page state
+related WARN_ON() also converted to an error return.
+
+This is part of XSA-361.
+
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/qrtr/qrtr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/xen/p2m.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-index a05c5cb3429c0..69cf9cbbb05f6 100644
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -194,7 +194,7 @@ static int qrtr_node_enqueue(struct qrtr_node *node, struct sk_buff *skb,
- 	hdr->src_port_id = cpu_to_le32(from->sq_port);
- 	if (to->sq_port == QRTR_PORT_CTRL) {
- 		hdr->dst_node_id = cpu_to_le32(node->nid);
--		hdr->dst_port_id = cpu_to_le32(QRTR_NODE_BCAST);
-+		hdr->dst_port_id = cpu_to_le32(QRTR_PORT_CTRL);
- 	} else {
- 		hdr->dst_node_id = cpu_to_le32(to->sq_node);
- 		hdr->dst_port_id = cpu_to_le32(to->sq_port);
--- 
-2.27.0
-
+--- a/arch/x86/xen/p2m.c
++++ b/arch/x86/xen/p2m.c
+@@ -746,17 +746,15 @@ int clear_foreign_p2m_mapping(struct gnt
+ 		unsigned long mfn = __pfn_to_mfn(page_to_pfn(pages[i]));
+ 		unsigned long pfn = page_to_pfn(pages[i]);
+ 
+-		if (mfn == INVALID_P2M_ENTRY || !(mfn & FOREIGN_FRAME_BIT)) {
++		if (mfn != INVALID_P2M_ENTRY && (mfn & FOREIGN_FRAME_BIT))
++			set_phys_to_machine(pfn, INVALID_P2M_ENTRY);
++		else
+ 			ret = -EINVAL;
+-			goto out;
+-		}
+-
+-		set_phys_to_machine(pfn, INVALID_P2M_ENTRY);
+ 	}
+ 	if (kunmap_ops)
+ 		ret = HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref,
+-						kunmap_ops, count);
+-out:
++						kunmap_ops, count) ?: ret;
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(clear_foreign_p2m_mapping);
 
 
