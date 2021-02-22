@@ -2,103 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0324C321C00
+	by mail.lfdr.de (Postfix) with ESMTP id F031C321C02
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbhBVP64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:58:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
+        id S230432AbhBVP7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:59:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhBVP6r (ORCPT
+        with ESMTP id S230379AbhBVP7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:58:47 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89930C061574;
-        Mon, 22 Feb 2021 07:58:04 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id h25so9003508eds.4;
-        Mon, 22 Feb 2021 07:58:04 -0800 (PST)
+        Mon, 22 Feb 2021 10:59:30 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F64C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:58:47 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id c1so9573266qtc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:58:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eqt4tyVUm6sFFSl2X77cgXFxmGm9zkPl59fYAb4UtLM=;
-        b=CRGzM9snCLPk0WcXCIhX/L5eaQ49/xpzBacwDJLahWleNBDO+XJsBkpdLGp9kguzNz
-         Scu4+dMvFBSh6DuJgtkw6J8FBzj5SZ5UExMOQD++T2jBuwCNKJdRcVHgrLfx3m2WDTsv
-         WFKIJk+7uIq5nf7FW9GOotYbtPcypKJ3yZuZnj6VqyBa0tQcsY6sXD8Go6SX3nxK676O
-         rn1Qxl7xUt29Ssr577+0saPIioLrKs8jSpb2ornKbVURE2X3vMaMfHDPxKAyNZxfJMVQ
-         nLaSu0D9wtfIW4jgsqT+m7YmXQxYTBn63lFDgkuoKeYUtiLJTgdckMD1kekyxN2AV2Vk
-         UHpw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=n07VaxTY0kbB+VdtG9ROy4sSSmPU2dRQLBzVM0ZBz7E=;
+        b=Yqh1ikPAu5/XDu3ob7bxG4ON5Ojvl2kXbVvCYH8A3EXSyCxNXlgTurFsl7mfTra0X4
+         O8wd/nDs2txIH9cGahzAJmgTOApJ4luniDPCNv1PaqGgw2vf6VZ33bO1/YpHbaqowXzK
+         EiBfnce60ipXhW9OI8r/P3xjfbuLK6MpavM+F5k4Fr4ynqNo19p62ZykbRtWyyytjb6N
+         96T0vEmI9qBNlae3pTyJkDyZt20F7aF57Pb5TJWwSujuToukmDfa3joBNW9PM8oVy3kG
+         kPRW5BM+QC00dNZfyDkUMMYyT+spJAOUYvMdkp2P98MaoDFZ67Pp/+DLr0OIleZbNC+p
+         Xzvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eqt4tyVUm6sFFSl2X77cgXFxmGm9zkPl59fYAb4UtLM=;
-        b=OXx5N3GST+NT75YHtBVuxLhuQNi7658OOLB5Gn2nWDmfeMy0d/bZrt03QtQ+gPRrmj
-         cNbaF8XDvrZbmLeSC39QhEfCIeaF42853Va6bEYobsw+MsXcDfIDrRBPr8FL5WbjNj37
-         xtNA7lRcNQdOAw0HRIFMhu39A9gCwwdz/40ry/h5aCULVKq4wRRocdjSK7krH/uPsuGf
-         SvKrPHQZ7j1vEZ/BWqvnf7raGvNHt00gG9yazF4f2sr8pqywdSaqYdm4ml5pRRvwlGpW
-         MtMQtA0WdNteAu4J/a8IIje17Ky96GMrBb34DauB2e4yfb5GCuwwzBr2WVPnOd5uagO5
-         3pGQ==
-X-Gm-Message-State: AOAM533DofuHolWvYo/+svQYGvH1ZNrJNkERlmwPs1x8u4BB9qrcFTTI
-        LzygatMp/oJaFsuAzDnqNkHfFY/0iQawyIUwviA=
-X-Google-Smtp-Source: ABdhPJwZCZVZf9WeJRPU+J8UGCkToLST5tkhlxw8G27fU8a5k7VbjCKgwE2fc0X960Ko9awC2JIhDm7WjyG+QPkPyN4=
-X-Received: by 2002:a50:cf02:: with SMTP id c2mr23026578edk.333.1614009483256;
- Mon, 22 Feb 2021 07:58:03 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n07VaxTY0kbB+VdtG9ROy4sSSmPU2dRQLBzVM0ZBz7E=;
+        b=cHTl9yVC/ybucWiGmkSt3RapuZsUwsee7GAtxU6uJcbSIENyvZ2e3+hEuzxcXdWVBf
+         64WAyWvemmK23u+PmclY4s7lV9v0LaVplhpaCAvmqL4auNgFT0/3OHlpqbqDYTZcaKpE
+         eqGpcLsgyd/mctMoHdpEsG09k3Y3c4GzVHXqHXvlj6wUrcYBKF7hs7zLNj7a90F6j6du
+         TgyDokgtogkrWjyAB4N7jdTJlfkRAUKtKIzJgkCeNl1KomcwlnPGtjPYAjwR5qwGD7Ii
+         ee8xNYNWYdc5BxPhjCdou2HBdb536RFcLc71ZU68gvSM4yXMvDk9Jnkjc02hr52TkntH
+         8gWg==
+X-Gm-Message-State: AOAM533F7ihqUGS704T8i0drx6B7+wQLNQEQwxmDyj14FIMyFS2nBRyj
+        TWHAeMVgWGJIewnPcTjTCh/Jow==
+X-Google-Smtp-Source: ABdhPJyby2lV/pkUjOuAGtzhFcBs3hQo43DMUoohhVtah90nJbhZYkzBQWWSi40FRSmcZMEGzEaHjA==
+X-Received: by 2002:a05:622a:143:: with SMTP id v3mr20662916qtw.363.1614009526850;
+        Mon, 22 Feb 2021 07:58:46 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id x12sm12175675qkj.20.2021.02.22.07.58.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 07:58:46 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lEDbh-00ERHh-Or; Mon, 22 Feb 2021 11:58:45 -0400
+Date:   Mon, 22 Feb 2021 11:58:45 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Julian Braha <julianbraha@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drivers: infiniband: sw: rxe: fix kconfig dependency on
+ CRYPTO
+Message-ID: <20210222155845.GI2643399@ziepe.ca>
+References: <21525878.NYvzQUHefP@ubuntu-mate-laptop>
+ <YDICM3SwwGZfE+Sg@unreal>
+ <CAD=hENeCXGtKrXxLof=DEZjxpKyYBFS80pAX20nnJBuP_s-GBA@mail.gmail.com>
+ <YDOq060TvAwLgknl@unreal>
 MIME-Version: 1.0
-References: <20210219124517.79359-1-selvakuma.s1@samsung.com>
- <CGME20210219124608epcas5p2a673f9e00c3e7b5352f115497b0e2d98@epcas5p2.samsung.com>
- <20210219124517.79359-4-selvakuma.s1@samsung.com> <20210220033637.GA2858050@casper.infradead.org>
-In-Reply-To: <20210220033637.GA2858050@casper.infradead.org>
-From:   Selva Jove <selvajove@gmail.com>
-Date:   Mon, 22 Feb 2021 21:27:50 +0530
-Message-ID: <CAHqX9vYdz-SRP2y6gzR1ei5WukNGzWhrHrvtXo4L8iFw4Lb9Hg@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 3/4] nvme: add simple copy support
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     SelvaKumar S <selvakuma.s1@samsung.com>,
-        linux-nvme@lists.infradead.org, Keith Busch <kbusch@kernel.org>,
-        axboe@kernel.dk, Damien Le Moal <damien.lemoal@wdc.com>,
-        hch@lst.de, sagi@grimberg.me, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com,
-        snitzer@redhat.com, joshiiitr@gmail.com, nj.shetty@samsung.com,
-        joshi.k@samsung.com, javier.gonz@samsung.com, kch@kernel.org,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDOq060TvAwLgknl@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew,
+On Mon, Feb 22, 2021 at 03:00:03PM +0200, Leon Romanovsky wrote:
+> On Mon, Feb 22, 2021 at 10:39:20AM +0800, Zhu Yanjun wrote:
+> > On Sun, Feb 21, 2021 at 2:49 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > >
+> > > On Fri, Feb 19, 2021 at 06:32:26PM -0500, Julian Braha wrote:
+> > > > commit 6e61907779ba99af785f5b2397a84077c289888a
+> > > > Author: Julian Braha <julianbraha@gmail.com>
+> > > > Date:   Fri Feb 19 18:20:57 2021 -0500
+> > > >
+> > > >     drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
+> > > >
+> > > >     When RDMA_RXE is enabled and CRYPTO is disabled,
+> > > >     Kbuild gives the following warning:
+> > > >
+> > > >     WARNING: unmet direct dependencies detected for CRYPTO_CRC32
+> > > >       Depends on [n]: CRYPTO [=n]
+> > > >       Selected by [y]:
+> > > >       - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && INFINIBAND_VIRT_DMA [=y]
+> > > >
+> > > >     This is because RDMA_RXE selects CRYPTO_CRC32,
+> > > >     without depending on or selecting CRYPTO, despite that config option
+> > > >     being subordinate to CRYPTO.
+> > > >
+> > > >     Signed-off-by: Julian Braha <julianbraha@gmail.com>
+> > >
+> > > Please use git sent-email to send patches and please fix crypto Kconfig
+> > > to enable CRYPTO if CRYPTO_* selected.
+> > >
+> > > It is a little bit awkward to request all users of CRYPTO_* to request
+> > > select CRYPTO too.
+> >
+> > The same issue and similar patch is in this link:
+> >
+> > https://patchwork.kernel.org/project/linux-rdma/patch/20200915101559.33292-1-fazilyildiran@gmail.com/#23615747
+> 
+> So what prevents us from fixing CRYPTO Kconfig?
 
-Maximum Source Range Count (MSRC) is limited by u8. So the maximum
-number of source ranges is 256 (0 base value). The number of pages
-required to be sent to the device is at most 2. Since we are
-allocating the memory using kmalloc_array(), we would get a continuous
-physical segment. nvme_map_data() maps the physical segment either by
-setting 2 PRP pointers or by SGL. So the copy command sends two pages
-to the device for copying more than128 ranges.
+Yes, I would like to see someone deal with this properly, either every
+place doing select CRYPTO_XX needs fixing or something needs to be
+done in the crypto layer.
 
-On Sat, Feb 20, 2021 at 9:08 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Fri, Feb 19, 2021 at 06:15:16PM +0530, SelvaKumar S wrote:
-> > +     struct nvme_copy_range *range = NULL;
-> [...]
-> > +     range = kmalloc_array(nr_range, sizeof(*range),
-> > +                     GFP_ATOMIC | __GFP_NOWARN);
-> [...]
-> > +     req->special_vec.bv_page = virt_to_page(range);
-> > +     req->special_vec.bv_offset = offset_in_page(range);
-> > +     req->special_vec.bv_len = sizeof(*range) * nr_range;
-> [...]
-> > +struct nvme_copy_range {
-> > +     __le64                  rsvd0;
-> > +     __le64                  slba;
-> > +     __le16                  nlb;
-> > +     __le16                  rsvd18;
-> > +     __le32                  rsvd20;
-> > +     __le32                  eilbrt;
-> > +     __le16                  elbat;
-> > +     __le16                  elbatm;
-> > +};
->
-> so ... at 32 bytes, you can get 128 per 4kB page.  What happens if you
-> try to send down a command that attempts to copy 129 ranges?
+I have no idea about kconfig to give advice, I've added Arnd since he
+always seems to know :)
+
+Thanks,
+Jason
