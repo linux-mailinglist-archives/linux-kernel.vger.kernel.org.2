@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6BA320F36
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D2D320F38
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbhBVBlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:41:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
+        id S231775AbhBVBlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:41:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbhBVBlK (ORCPT
+        with ESMTP id S230151AbhBVBlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:41:10 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75181C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 17:40:30 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id z5so2455952pfe.3
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 17:40:30 -0800 (PST)
+        Sun, 21 Feb 2021 20:41:50 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10595C061574;
+        Sun, 21 Feb 2021 17:41:10 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id d2so7966295pjs.4;
+        Sun, 21 Feb 2021 17:41:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=Pmfn8f/i9TumuS4aSYkIvZo4/H99mKopifdoxhuUtdg=;
-        b=T60i5xmqABV5ARr6WaanBLU2cGHolVYLPmE8mrIYt8SPrVLMMpkuxwYiviwuc+L/u/
-         C2gaolDpezEK6fLu0XlDVV8E0WMSwzTrsCT/Wshcx36Yjszf+UlIJRa4va6+DbG31ldw
-         14kfSmTnvfkgCJYqH1/jrOwaHT8u6AA+kA3TU=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=TegYIsZ25A3LfiaM2DL4uTLW6gJgEq61GqpsbzZMT/0=;
+        b=dhBEEzCyGqPYzotWWTEtpm3kjxZTRyWXnMzKUllUAGy1fhWGm81OoCtYgzW8iglxSL
+         V8dO4/aUlMvqtQW5z2VvefXpuWXDStwd57WLpeupnteJPL0Bo4Gjhzb6NDxooA5uyrL0
+         Z4wv0bWYiZ54tYpuCT/KdoMUeUdhZTG32P9BwuwOW3Gy9K96gobEBAadmcslhARHIDtB
+         w2v5bofsWB0/zo/uHLsh2KQ/0puTg3vOFQW6RLOmtJR4zRw5SIGVU4MvE8l1SSqwiBh9
+         JMI3Gw7aY0THAUE6MemaurQRPULJPmzFGbnJvSCcfOGoyE99tTqQOzbcxilwoL48IMKy
+         HD8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Pmfn8f/i9TumuS4aSYkIvZo4/H99mKopifdoxhuUtdg=;
-        b=dwnjswAAtBlljtku3/b3sr+Kuap/tqagbe4gBRUvc1qUO9NLlVESm2J3R5LjVB0moZ
-         z+sSMukTOGgoG1JilEadtGS7G7I4otV70VgCX5swUCCuLtJJ3XMxZfYm/gUG6vBhJ1ZC
-         q7ocrAP3WpVsV/gOFt+Sz4cr1JX6qfp6imU+3HUDgXjIBsj9Yg5CZRQjlGvUEXNSva9g
-         3vgoGHBXb/EI0yar4FgFw0RYck/kZ4fFDk0sFd5gbyMe0v3tRiUqOFyDYkI4rXMgdr72
-         mMafoqTEyHTHhRHaHS1+FOtUJUAL8ca2AH8Ml926LFaR2IgtDpwUTc4A7O8Pg2eHccUs
-         Xp7g==
-X-Gm-Message-State: AOAM533Y6y0UaJvNKO4gDW9hrqAfAcDjrnIbl7fzAYwnJlg1ZrRANpQt
-        V7GQzlDBejUzU/qzzyFw9hWwjjUcscvGS6kz
-X-Google-Smtp-Source: ABdhPJxtyPWEO8BWjW1Faie4bC1Bqwm2iJDW3XPcs1fWp5czZ1Gt1y7cs6vsAEeh8RmiztWxGvI7Ww==
-X-Received: by 2002:a65:6a4b:: with SMTP id o11mr17970000pgu.138.1613958030061;
-        Sun, 21 Feb 2021 17:40:30 -0800 (PST)
-Received: from localhost (2001-44b8-1113-6700-c141-3594-a9dc-6972.static.ipv6.internode.on.net. [2001:44b8:1113:6700:c141:3594:a9dc:6972])
-        by smtp.gmail.com with ESMTPSA id v1sm19889837pfi.99.2021.02.21.17.40.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=TegYIsZ25A3LfiaM2DL4uTLW6gJgEq61GqpsbzZMT/0=;
+        b=qki/LW3aG6tBLL4HIlbChhwfntjQ/oph314hF89q82eCqBOsPZ+czLR7hyhyM2ucjQ
+         Evm9eh3HNqR4BQ0OCoBJsOCr1XvQAu1jytubNxlth+S+xgKZ2PiMM6lSxsnQ2hluwUbG
+         xaI3MFm7c4W5MNZpfgglTm2upZzm3davfed98cxSD8wm/ua61jKqx6d1ots5te7dmsLK
+         dwTHWpmbFHm7hnShuSUS2xw03nX0dYHcodvphUa2JKPbYD2lKIVn1PfGgf59mq+QXqaO
+         w3Iazr6CYP0G33ZIddIUKdS0NAt7Ah24ZdGntP4MM6AiCx35+KZwEkVu+BRm2SgFh1yT
+         BKRg==
+X-Gm-Message-State: AOAM533mJ1SruuzrdIkQ8j3TOZ7CtkdNJcsVVfvHC54u6rQ+UQjI9wAv
+        VLKXO59wpyVzW51lyl24n64=
+X-Google-Smtp-Source: ABdhPJyJyWHgbkAwBF8w6e/bGuXigU6gd3e7KbZXdva3kd4jt77ZXeCIW2ouoqiLjncEQOsnDVCjag==
+X-Received: by 2002:a17:90b:1494:: with SMTP id js20mr3451181pjb.224.1613958069571;
+        Sun, 21 Feb 2021 17:41:09 -0800 (PST)
+Received: from DESKTOP-8REGVGF.localdomain ([211.25.125.254])
+        by smtp.gmail.com with ESMTPSA id z10sm4462062pjq.5.2021.02.21.17.41.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 17:40:29 -0800 (PST)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Yang Li <yang.lee@linux.alibaba.com>, mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH] powerpc: use ARRAY_SIZE instead of division operation
-In-Reply-To: <1613808853-78381-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1613808853-78381-1-git-send-email-yang.lee@linux.alibaba.com>
-Date:   Mon, 22 Feb 2021 12:40:26 +1100
-Message-ID: <87blccq3qt.fsf@dja-thinkpad.axtens.net>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Sun, 21 Feb 2021 17:41:09 -0800 (PST)
+From:   Sieng Piaw Liew <liew.s.piaw@gmail.com>
+To:     chris.snook@gmail.com
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sieng Piaw Liew <liew.s.piaw@gmail.com>
+Subject: [PATCH net] atl1c: switch to napi_gro_receive
+Date:   Mon, 22 Feb 2021 09:40:45 +0800
+Message-Id: <20210222014045.1425-1-liew.s.piaw@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang,
+Changing to napi_gro_receive() improves efficiency significantly. Tested
+on Intel Core2-based motherboards and iperf3.
 
-> This eliminates the following coccicheck warning:
-> ./arch/powerpc/boot/mktree.c:130:31-32: WARNING: Use ARRAY_SIZE
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  arch/powerpc/boot/mktree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/powerpc/boot/mktree.c b/arch/powerpc/boot/mktree.c
-> index dc603f3..0b2def5 100644
-> --- a/arch/powerpc/boot/mktree.c
-> +++ b/arch/powerpc/boot/mktree.c
-> @@ -127,7 +127,7 @@ int main(int argc, char *argv[])
->  			exit(5);
->  		}
->  		cp = tmpbuf;
-> -		for (i = 0; i < sizeof(tmpbuf) / sizeof(unsigned int); i++)
-> +		for (i = 0; i < ARRAY_SIZE(tmpbuf); i++)
+Signed-off-by: Sieng Piaw Liew <liew.s.piaw@gmail.com>
+---
+ drivers/net/ethernet/atheros/atl1c/atl1c_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Unfortunately this breaks the build - see
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/1613808853-78381-1-git-send-email-yang.lee@linux.alibaba.com/
+diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
+index 3f65f2b370c5..3e440c2dc68a 100644
+--- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
++++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
+@@ -1851,7 +1851,7 @@ static void atl1c_clean_rx_irq(struct atl1c_adapter *adapter,
+ 			vlan = le16_to_cpu(vlan);
+ 			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan);
+ 		}
+-		netif_receive_skb(skb);
++		napi_gro_receive(&adapter->napi, skb);
+ 
+ 		(*work_done)++;
+ 		count++;
+-- 
+2.17.1
 
-This is because 'boot/mktree.c' is a userspace program without access to
-the usual kernel headers.
-
-It might be best to get coccicheck to exclude all of
-'arch/powerpc/boot/' as I believe everything in that directory is
-compiled differently to the rest of the kernel (see the Makefile), but
-maybe just blacklisting boot/mktree.c would be sufficient.
-
-Kind regards,
-Daniel
-
->  			cksum += *cp++;
->  		if (write(out_fd, tmpbuf, sizeof(tmpbuf)) != sizeof(tmpbuf)) {
->  			perror("boot-image write");
-> -- 
-> 1.8.3.1
