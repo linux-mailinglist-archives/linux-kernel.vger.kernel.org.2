@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3ABC320F21
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 692E0320F29
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231736AbhBVBdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:33:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
+        id S231717AbhBVBfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:35:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231687AbhBVBcu (ORCPT
+        with ESMTP id S231603AbhBVBeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:32:50 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD042C061574;
-        Sun, 21 Feb 2021 17:32:09 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id b8so10579330oti.7;
-        Sun, 21 Feb 2021 17:32:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=urSTMy9t6cTiTrhHbL96lNEFLr5gM8etKvvG8YybOtM=;
-        b=RiKpsUd2eg9pq2eKx9PgQDgKlS6S2TMP1cA6OmvM+0aHJN1D+Fxatx7zLPScl4ZvP1
-         z0qfvtLpR+HDDilB8prIpl46msQycXNibiUYYCf1kto7cDyfvgtxVKRI9ZSyyvcl3ZKp
-         6JBAGiAbBDBlaRu8DbGbpHN8pvSQ+rk81NktKSs/nBI+1M2aoBpkxjSBIkaFd8An7F12
-         tFHljIX96wMyJpDhZO9594jJ13VQxiZjSjSnv1IBAor0PzRNmhjg0BWxLWZkBRd06PFD
-         K7d/0XsrGKDw2UK+ViumxfVoK96HtpH/Sdl+TJkEgMQC8MGj+XmO3FBglsLneyIIE6YI
-         G1Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=urSTMy9t6cTiTrhHbL96lNEFLr5gM8etKvvG8YybOtM=;
-        b=sw6ysVdaGbfgS712zmMMhIkQvcfw6UlNftu9cxfaPJnmbdJ8jX1DLDjIcXQs/jnsMu
-         nIWVP/kLYmomMJ7QQQ9nEXOUT8FJKDg2OGxO+O0Y5atqtpENlzAhzLGZEoZLoKvYAaLU
-         LlbSRP/NY3m8RZ+8rKGReN+HOEGLUN2z138julAg7irtMwLoquHGWVrF5s6gqeYNEuQl
-         lhgQkKIxy0f3G8vzRsxl3XCSBRn+sE40Fig3HDJJ5ukCXDqM95qV6dcsUBk5MY5UjrFt
-         l3P9ollg6GmzCesLPMwLFrWFdFvJkciCmFXGzWtb+c3WxdnFC+o3xr1BNb68KsLAavOI
-         xzDw==
-X-Gm-Message-State: AOAM531RoCByz7gUfAj9L/Ptdy52uhnqmkLcbd1BnNIk0bt8Auwc8BTg
-        x95N4NxvxvODp8LEpMXBdqk=
-X-Google-Smtp-Source: ABdhPJy9/ek5tQDmOCC4jipCZCItMiaiSmbk31Qp56NGSfXHrJmQjQYbxDtf5G5zBFDY1OH+xstrXg==
-X-Received: by 2002:a05:6830:3151:: with SMTP id c17mr1142078ots.194.1613957529125;
-        Sun, 21 Feb 2021 17:32:09 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p3sm1046484otf.22.2021.02.21.17.32.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 21 Feb 2021 17:32:08 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 21 Feb 2021 17:32:07 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, joe@perches.com, catalin.marinas@arm.com,
-        mpe@ellerman.id.au, mark.rutland@arm.com, benh@kernel.crashing.org,
-        tao.li@vivo.com, paulus@samba.org, vincenzo.frascino@arm.com,
-        frowand.list@gmail.com, sashal@kernel.org, masahiroy@kernel.org,
-        jmorris@namei.org, allison@lohutok.net, serge@hallyn.com,
-        devicetree@vger.kernel.org, pasha.tatashin@soleen.com,
-        prsriva@linux.microsoft.com, hsinyi@chromium.org,
-        linux-arm-kernel@lists.infradead.org, christophe.leroy@c-s.fr,
-        mbrugger@suse.com, balajib@linux.microsoft.com,
-        dmitry.kasatkin@gmail.com, linux-kernel@vger.kernel.org,
-        james.morse@arm.com, linux-integrity@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v18 03/11] of: Add a common kexec FDT setup function
-Message-ID: <20210222013207.GA142216@roeck-us.net>
-References: <20210213161049.6190-1-nramas@linux.microsoft.com>
- <20210213161049.6190-4-nramas@linux.microsoft.com>
+        Sun, 21 Feb 2021 20:34:23 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51235C061786;
+        Sun, 21 Feb 2021 17:33:43 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 26E00517;
+        Mon, 22 Feb 2021 02:33:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613957621;
+        bh=wx/q4aKq6oZLLuL1Nx2ZFt8o5HHVbpEPzovBML6ZPsE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KqAl0Urg83qLVmpcnAX79PNEt21LGr50I8ElUQsyQra82DkUYhR1Nu9JLIKTpwCyb
+         lADckXnbS7GHTXOwAySeG/D/DDbYyS9Pw/NNLTMD8AdZvWLS4UD6JjicLUTeHexwJu
+         KzQQMOfbRFTJRsahOl/hoiCt9TEy7O9Mg3ySfQqU=
+Date:   Mon, 22 Feb 2021 03:33:14 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/16] media: i2c: max9286: Cache channel amplitude
+Message-ID: <YDMJ2nVwi/ByVEgF@pendragon.ideasonboard.com>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-12-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210213161049.6190-4-nramas@linux.microsoft.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210216174146.106639-12-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 08:10:41AM -0800, Lakshmi Ramasubramanian wrote:
-> From: Rob Herring <robh@kernel.org>
-> 
-> Both arm64 and powerpc do essentially the same FDT /chosen setup for
-> kexec.  The differences are either omissions that arm64 should have
-> or additional properties that will be ignored.  The setup code can be
-> combined and shared by both powerpc and arm64.
-> 
-> The differences relative to the arm64 version:
->  - If /chosen doesn't exist, it will be created (should never happen).
->  - Any old dtb and initrd reserved memory will be released.
->  - The new initrd and elfcorehdr are marked reserved.
->  - "linux,booted-from-kexec" is set.
-> 
-> The differences relative to the powerpc version:
->  - "kaslr-seed" and "rng-seed" may be set.
->  - "linux,elfcorehdr" is set.
->  - Any existing "linux,usable-memory-range" is removed.
-> 
-> Combine the code for setting up the /chosen node in the FDT and updating
-> the memory reservation for kexec, for powerpc and arm64, in
-> of_kexec_alloc_and_setup_fdt() and move it to "drivers/of/kexec.c".
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Hi Jacopo,
 
-s390:allmodconfig:
+Thank you for the patch.
 
-drivers/of/kexec.c: In function 'of_kexec_alloc_and_setup_fdt':
-drivers/of/kexec.c:378:10: error: 'const struct kimage' has no member named 'arch'
-  378 |     image->arch.elf_load_addr,
-      |          ^~
-drivers/of/kexec.c:379:10: error: 'const struct kimage' has no member named 'arch'
-  379 |     image->arch.elf_headers_sz);
-      |          ^~
-drivers/of/kexec.c:387:35: error: 'const struct kimage' has no member named 'arch'
-  387 |   ret = fdt_add_mem_rsv(fdt, image->arch.elf_load_addr,
-      |                                   ^~
-drivers/of/kexec.c:388:16: error: 'const struct kimage' has no member named 'arch'
-  388 |           image->arch.elf_headers_sz);
-      |                ^~
+On Tue, Feb 16, 2021 at 06:41:41PM +0100, Jacopo Mondi wrote:
+> Cache the current channel amplitude in a driver variable
+> to skip updating it if the new requested value is the same
+> as the currently configured one.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
-Guenter
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/media/i2c/max9286.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index 1f14cd817fbf..4afb5ca06448 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -164,6 +164,7 @@ struct max9286_priv {
+>  	bool mux_open;
+>  
+>  	u32 init_rev_chan_mv;
+> +	u32 rev_chan_mv;
+>  
+>  	struct v4l2_ctrl_handler ctrls;
+>  	struct v4l2_ctrl *pixelrate;
+> @@ -340,8 +341,15 @@ static void max9286_configure_i2c(struct max9286_priv *priv, bool localack)
+>  static void max9286_reverse_channel_setup(struct max9286_priv *priv,
+>  					  unsigned int chan_amplitude)
+>  {
+> +	u8 chan_config;
+> +
+> +	if (priv->rev_chan_mv == chan_amplitude)
+> +		return;
+> +
+> +	priv->rev_chan_mv = chan_amplitude;
+> +
+>  	/* Reverse channel transmission time: default to 1. */
+> -	u8 chan_config = MAX9286_REV_TRF(1);
+> +	chan_config = MAX9286_REV_TRF(1);
+>  
+>  	/*
+>  	 * Reverse channel setup.
+> @@ -563,8 +571,7 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
+>  	 * - Disable auto-ack as communication on the control channel are now
+>  	 *   stable.
+>  	 */
+> -	if (priv->init_rev_chan_mv < 170)
+> -		max9286_reverse_channel_setup(priv, 170);
+> +	max9286_reverse_channel_setup(priv, 170);
+>  	max9286_check_config_link(priv, priv->source_mask);
+>  
+>  	/*
+
+-- 
+Regards,
+
+Laurent Pinchart
