@@ -2,379 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA1E320F8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 03:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C13320F93
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 03:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbhBVCrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 21:47:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49996 "EHLO
+        id S231863AbhBVCsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 21:48:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbhBVCrB (ORCPT
+        with ESMTP id S231871AbhBVCsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 21:47:01 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5D7C0617AA
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 18:45:57 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id 189so5723372pfy.6
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 18:45:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ss521oD40ZnZ/Nyo5tW+L84EULMrNn4Gw0gjrJuxp1M=;
-        b=jwFgb/QDUW4kzKwp9G2USfUDzhdnenGNye8WO1n6t2LMoEN2pCbtbpWfuAVgzItrx0
-         ACzoVjZvZRU3wJ3t+SO3k8TauTXtaXVoUguMFxqNYto5twkjywEuQXFgmwKOl/CWVanm
-         NfLeYgvoeIF0rtnjepULnjMZEZV32vDGWZaxQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ss521oD40ZnZ/Nyo5tW+L84EULMrNn4Gw0gjrJuxp1M=;
-        b=dLYwoWatamxBhLV/sb6XARXEKvKUzbwJ+3OugSBRKru11h7rH33l/D10QEc58HLeCO
-         SZmc8VmL2LU/0WMBOQ2qeTiKFmDPYV9yvcnUe4NNkqTk9D74kxYsHnVFyDaG9K1RmWdM
-         JvCqGq9N+tmWcMy3ObhYijaAk6qp1JZkZM8VJO41sIJMukw/I56y5OjcD8kw5rMZsLOz
-         /EKe7Kzmk9rLbsbVBtRLCto3ISc4QcB1nu+RnjncxYcnqKGSVbTyE74rZdG/UnRDNnCa
-         x9S5D6qqjfsMJg9c+rhtFEBIjhmvv80LCiJbNZ2Kkrxb8x8m9UMPCfns0RuKAQbf0cQw
-         uaJg==
-X-Gm-Message-State: AOAM533ToSGSAfk88eYUZ/SnkPIXAMM/aXtj7DOCVY7XcONagcf1uixJ
-        bzbTwNjRqDvVKRWmwLRTm+OEVQ==
-X-Google-Smtp-Source: ABdhPJwNgvHyZmW+/s05ddugGwvWr9Qw9pnLSevD8i66tTa9xzVCqS1ccHwM239iTRUUoYE9KH6RCg==
-X-Received: by 2002:aa7:9356:0:b029:1dd:644a:d904 with SMTP id 22-20020aa793560000b02901dd644ad904mr19753804pfn.18.1613961956628;
-        Sun, 21 Feb 2021 18:45:56 -0800 (PST)
-Received: from localhost ([2401:fa00:8f:203:11b3:5e1a:7cb:7e1f])
-        by smtp.gmail.com with UTF8SMTPSA id 14sm16852882pfy.55.2021.02.21.18.45.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Feb 2021 18:45:56 -0800 (PST)
-From:   David Stevens <stevensd@chromium.org>
-X-Google-Original-From: David Stevens <stevensd@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
-        kvm-ppc@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Stevens <stevensd@chromium.org>
-Subject: [PATCH v4 2/2] KVM: x86/mmu: Consider the hva in mmu_notifier retry
-Date:   Mon, 22 Feb 2021 11:45:22 +0900
-Message-Id: <20210222024522.1751719-3-stevensd@google.com>
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-In-Reply-To: <20210222024522.1751719-1-stevensd@google.com>
-References: <20210222024522.1751719-1-stevensd@google.com>
+        Sun, 21 Feb 2021 21:48:06 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD12C061574;
+        Sun, 21 Feb 2021 18:47:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=5fFHNeJ8nqeNMa0DGHcRPcH+3cOuL7XbveGYEMFXDD0=; b=zv4edCC+GUZ4S1hKw2n1qVccHA
+        SyAdKzZ7/YhO7qCGFXhKPPMOylEbFxDAr3gyFcD+aWyX7xIx/6p393eHfreBW3ie4QmMpK/fm81Bn
+        VZg+wbJHlpaMhy/OexPEqs2ay95PZ97d006cElTeOeBdu50B12NLBz3h+Gl0Q54P4S2AQ4Cuq9yE8
+        BnfK+54Y9cUu52AYwqTyGiyPerKvaKwtu4W9BqkMib187LitIbX5AWpKuN8nhXdNCISllSyZV3nw0
+        RcPrJWAo0C5WilVYiksG1s7MyFmNEyhvjkZFw5dYkxLNaT+C6UTobqz3cDtYT2UmpB5ffJ3KahLbz
+        EwpxiH5Q==;
+Received: from [2601:1c0:6280:3f0::d05b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lE1Fq-0001g8-QV; Mon, 22 Feb 2021 02:47:23 +0000
+Subject: Re: [PATCH v3 3/8] securtiy/brute: Detect a brute force attack
+To:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <20210221154919.68050-1-john.wood@gmx.com>
+ <20210221154919.68050-4-john.wood@gmx.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f4fd9e44-539e-279e-a3a6-8af39f863f73@infradead.org>
+Date:   Sun, 21 Feb 2021 18:47:16 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210221154919.68050-4-john.wood@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Stevens <stevensd@chromium.org>
+Hi--
 
-Track the range being invalidated by mmu_notifier and skip page fault
-retries if the fault address is not affected by the in-progress
-invalidation. Handle concurrent invalidations by finding the minimal
-range which includes all ranges being invalidated. Although the combined
-range may include unrelated addresses and cannot be shrunk as individual
-invalidation operations complete, it is unlikely the marginal gains of
-proper range tracking are worth the additional complexity.
+scripts/kernel-doc does not like these items to be marked
+as being in kernel-doc notation. scripts/kernel-doc does not
+recognize them as one of: struct, union, enum, typedef, so it
+defaults to trying to interpret these as functions, and then
+says:
 
-The primary benefit of this change is the reduction in the likelihood of
-extreme latency when handing a page fault due to another thread having
-been preempted while modifying host virtual addresses.
+(I copied these blocks to my test megatest.c source file.)
 
-Signed-off-by: David Stevens <stevensd@chromium.org>
----
-v3 -> v4:
- - Skip prefetch while invalidations are in progress
 
-v2 -> v3:
- - Removed unnecessary ifdef
- - Style changes
+../src/megatest.c:1214: warning: cannot understand function prototype: 'const u64 BRUTE_EMA_WEIGHT_NUMERATOR = 7; '
+../src/megatest.c:1219: warning: cannot understand function prototype: 'const u64 BRUTE_EMA_WEIGHT_DENOMINATOR = 10; '
+../src/megatest.c:1228: warning: cannot understand function prototype: 'const unsigned char BRUTE_MAX_FAULTS = 200; '
+../src/megatest.c:1239: warning: cannot understand function prototype: 'const unsigned char BRUTE_MIN_FAULTS = 5; '
+../src/megatest.c:1249: warning: cannot understand function prototype: 'const u64 BRUTE_CRASH_PERIOD_THRESHOLD = 30000; '
 
-v1 -> v2:
- - Improve handling of concurrent invalidation requests by unioning
-   ranges, instead of just giving up and using [0, ULONG_MAX).
- - Add lockdep check
- - Code comments and formatting
 
- arch/powerpc/kvm/book3s_64_mmu_hv.c    |  2 +-
- arch/powerpc/kvm/book3s_64_mmu_radix.c |  2 +-
- arch/x86/kvm/mmu/mmu.c                 | 23 ++++++++++++++------
- arch/x86/kvm/mmu/paging_tmpl.h         |  7 ++++---
- include/linux/kvm_host.h               | 25 +++++++++++++++++++++-
- virt/kvm/kvm_main.c                    | 29 ++++++++++++++++++++++----
- 6 files changed, 72 insertions(+), 16 deletions(-)
+On 2/21/21 7:49 AM, John Wood wrote:
+> 
+> +/**
+> + * brute_stats_ptr_lock - Lock to protect the brute_stats structure pointer.
+> + */
+> +static DEFINE_RWLOCK(brute_stats_ptr_lock);
 
-diff --git a/arch/powerpc/kvm/book3s_64_mmu_hv.c b/arch/powerpc/kvm/book3s_64_mmu_hv.c
-index 38ea396a23d6..8e06cd3f759c 100644
---- a/arch/powerpc/kvm/book3s_64_mmu_hv.c
-+++ b/arch/powerpc/kvm/book3s_64_mmu_hv.c
-@@ -590,7 +590,7 @@ int kvmppc_book3s_hv_page_fault(struct kvm_vcpu *vcpu,
- 	} else {
- 		/* Call KVM generic code to do the slow-path check */
- 		pfn = __gfn_to_pfn_memslot(memslot, gfn, false, NULL,
--					   writing, &write_ok);
-+					   writing, &write_ok, NULL);
- 		if (is_error_noslot_pfn(pfn))
- 			return -EFAULT;
- 		page = NULL;
-diff --git a/arch/powerpc/kvm/book3s_64_mmu_radix.c b/arch/powerpc/kvm/book3s_64_mmu_radix.c
-index bb35490400e9..e603de7ade52 100644
---- a/arch/powerpc/kvm/book3s_64_mmu_radix.c
-+++ b/arch/powerpc/kvm/book3s_64_mmu_radix.c
-@@ -822,7 +822,7 @@ int kvmppc_book3s_instantiate_page(struct kvm_vcpu *vcpu,
- 
- 		/* Call KVM generic code to do the slow-path check */
- 		pfn = __gfn_to_pfn_memslot(memslot, gfn, false, NULL,
--					   writing, upgrade_p);
-+					   writing, upgrade_p, NULL);
- 		if (is_error_noslot_pfn(pfn))
- 			return -EFAULT;
- 		page = NULL;
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 9ac0a727015d..f6aaac729667 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2758,6 +2758,13 @@ static void direct_pte_prefetch(struct kvm_vcpu *vcpu, u64 *sptep)
- 	if (sp->role.level > PG_LEVEL_4K)
- 		return;
- 
-+	/*
-+	 * If addresses are being invalidated, skip prefetching to avoid
-+	 * accidentally prefetching those addresses.
-+	 */
-+	if (unlikely(vcpu->kvm->mmu_notifier_count))
-+		return;
-+
- 	__direct_pte_prefetch(vcpu, sp, sptep);
- }
- 
-@@ -3658,8 +3665,8 @@ static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
- }
- 
- static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
--			 gpa_t cr2_or_gpa, kvm_pfn_t *pfn, bool write,
--			 bool *writable)
-+			 gpa_t cr2_or_gpa, kvm_pfn_t *pfn, hva_t *hva,
-+			 bool write, bool *writable)
- {
- 	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
- 	bool async;
-@@ -3672,7 +3679,8 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
- 	}
- 
- 	async = false;
--	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, &async, write, writable);
-+	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, &async,
-+				    write, writable, hva);
- 	if (!async)
- 		return false; /* *pfn has correct page already */
- 
-@@ -3686,7 +3694,8 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
- 			return true;
- 	}
- 
--	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, NULL, write, writable);
-+	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, NULL,
-+				    write, writable, hva);
- 	return false;
- }
- 
-@@ -3699,6 +3708,7 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 	gfn_t gfn = gpa >> PAGE_SHIFT;
- 	unsigned long mmu_seq;
- 	kvm_pfn_t pfn;
-+	hva_t hva;
- 	int r;
- 
- 	if (page_fault_handle_page_track(vcpu, error_code, gfn))
-@@ -3717,7 +3727,8 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
- 	smp_rmb();
- 
--	if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, write, &map_writable))
-+	if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, &hva,
-+			 write, &map_writable))
- 		return RET_PF_RETRY;
- 
- 	if (handle_abnormal_pfn(vcpu, is_tdp ? 0 : gpa, gfn, pfn, ACC_ALL, &r))
-@@ -3725,7 +3736,7 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 
- 	r = RET_PF_RETRY;
- 	spin_lock(&vcpu->kvm->mmu_lock);
--	if (!is_noslot_pfn(pfn) && mmu_notifier_retry(vcpu->kvm, mmu_seq))
-+	if (!is_noslot_pfn(pfn) && mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, hva))
- 		goto out_unlock;
- 	r = make_mmu_pages_available(vcpu);
- 	if (r)
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index ab54263d857c..5f12f7b24d68 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -790,6 +790,7 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
- 	struct guest_walker walker;
- 	int r;
- 	kvm_pfn_t pfn;
-+	hva_t hva;
- 	unsigned long mmu_seq;
- 	bool map_writable, is_self_change_mapping;
- 	int max_level;
-@@ -840,8 +841,8 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
- 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
- 	smp_rmb();
- 
--	if (try_async_pf(vcpu, prefault, walker.gfn, addr, &pfn, write_fault,
--			 &map_writable))
-+	if (try_async_pf(vcpu, prefault, walker.gfn, addr, &pfn, &hva,
-+			 write_fault, &map_writable))
- 		return RET_PF_RETRY;
- 
- 	if (handle_abnormal_pfn(vcpu, addr, walker.gfn, pfn, walker.pte_access, &r))
-@@ -869,7 +870,7 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
- 
- 	r = RET_PF_RETRY;
- 	spin_lock(&vcpu->kvm->mmu_lock);
--	if (!is_noslot_pfn(pfn) && mmu_notifier_retry(vcpu->kvm, mmu_seq))
-+	if (!is_noslot_pfn(pfn) && mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, hva))
- 		goto out_unlock;
- 
- 	kvm_mmu_audit(vcpu, AUDIT_PRE_PAGE_FAULT);
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index f3b1013fb22c..850ff351583d 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -11,6 +11,7 @@
- #include <linux/signal.h>
- #include <linux/sched.h>
- #include <linux/bug.h>
-+#include <linux/minmax.h>
- #include <linux/mm.h>
- #include <linux/mmu_notifier.h>
- #include <linux/preempt.h>
-@@ -502,6 +503,8 @@ struct kvm {
- 	struct mmu_notifier mmu_notifier;
- 	unsigned long mmu_notifier_seq;
- 	long mmu_notifier_count;
-+	unsigned long mmu_notifier_range_start;
-+	unsigned long mmu_notifier_range_end;
- #endif
- 	long tlbs_dirty;
- 	struct list_head devices;
-@@ -729,7 +732,7 @@ kvm_pfn_t gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn);
- kvm_pfn_t gfn_to_pfn_memslot_atomic(struct kvm_memory_slot *slot, gfn_t gfn);
- kvm_pfn_t __gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn,
- 			       bool atomic, bool *async, bool write_fault,
--			       bool *writable);
-+			       bool *writable, hva_t *hva);
- 
- void kvm_release_pfn_clean(kvm_pfn_t pfn);
- void kvm_release_pfn_dirty(kvm_pfn_t pfn);
-@@ -1203,6 +1206,26 @@ static inline int mmu_notifier_retry(struct kvm *kvm, unsigned long mmu_seq)
- 		return 1;
- 	return 0;
- }
-+
-+static inline int mmu_notifier_retry_hva(struct kvm *kvm,
-+					 unsigned long mmu_seq,
-+					 unsigned long hva)
-+{
-+	lockdep_assert_held(&kvm->mmu_lock);
-+	/*
-+	 * If mmu_notifier_count is non-zero, then the range maintained by
-+	 * kvm_mmu_notifier_invalidate_range_start contains all addresses that
-+	 * might be being invalidated. Note that it may include some false
-+	 * positives, due to shortcuts when handing concurrent invalidations.
-+	 */
-+	if (unlikely(kvm->mmu_notifier_count) &&
-+	    hva >= kvm->mmu_notifier_range_start &&
-+	    hva < kvm->mmu_notifier_range_end)
-+		return 1;
-+	if (kvm->mmu_notifier_seq != mmu_seq)
-+		return 1;
-+	return 0;
-+}
- #endif
- 
- #ifdef CONFIG_HAVE_KVM_IRQ_ROUTING
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 8367d88ce39b..4a69bc13680c 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -483,6 +483,24 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
- 	 * count is also read inside the mmu_lock critical section.
- 	 */
- 	kvm->mmu_notifier_count++;
-+	if (likely(kvm->mmu_notifier_count == 1)) {
-+		kvm->mmu_notifier_range_start = range->start;
-+		kvm->mmu_notifier_range_end = range->end;
-+	} else {
-+		/*
-+		 * Fully tracking multiple concurrent ranges has dimishing
-+		 * returns. Keep things simple and just find the minimal range
-+		 * which includes the current and new ranges. As there won't be
-+		 * enough information to subtract a range after its invalidate
-+		 * completes, any ranges invalidated concurrently will
-+		 * accumulate and persist until all outstanding invalidates
-+		 * complete.
-+		 */
-+		kvm->mmu_notifier_range_start =
-+			min(kvm->mmu_notifier_range_start, range->start);
-+		kvm->mmu_notifier_range_end =
-+			max(kvm->mmu_notifier_range_end, range->end);
-+	}
- 	need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end,
- 					     range->flags);
- 	/* we've to flush the tlb before the pages can be freed */
-@@ -2011,10 +2029,13 @@ static kvm_pfn_t hva_to_pfn(unsigned long addr, bool atomic, bool *async,
- 
- kvm_pfn_t __gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn,
- 			       bool atomic, bool *async, bool write_fault,
--			       bool *writable)
-+			       bool *writable, hva_t *hva)
- {
- 	unsigned long addr = __gfn_to_hva_many(slot, gfn, NULL, write_fault);
- 
-+	if (hva)
-+		*hva = addr;
-+
- 	if (addr == KVM_HVA_ERR_RO_BAD) {
- 		if (writable)
- 			*writable = false;
-@@ -2042,19 +2063,19 @@ kvm_pfn_t gfn_to_pfn_prot(struct kvm *kvm, gfn_t gfn, bool write_fault,
- 		      bool *writable)
- {
- 	return __gfn_to_pfn_memslot(gfn_to_memslot(kvm, gfn), gfn, false, NULL,
--				    write_fault, writable);
-+				    write_fault, writable, NULL);
- }
- EXPORT_SYMBOL_GPL(gfn_to_pfn_prot);
- 
- kvm_pfn_t gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn)
- {
--	return __gfn_to_pfn_memslot(slot, gfn, false, NULL, true, NULL);
-+	return __gfn_to_pfn_memslot(slot, gfn, false, NULL, true, NULL, NULL);
- }
- EXPORT_SYMBOL_GPL(gfn_to_pfn_memslot);
- 
- kvm_pfn_t gfn_to_pfn_memslot_atomic(struct kvm_memory_slot *slot, gfn_t gfn)
- {
--	return __gfn_to_pfn_memslot(slot, gfn, true, NULL, true, NULL);
-+	return __gfn_to_pfn_memslot(slot, gfn, true, NULL, true, NULL, NULL);
- }
- EXPORT_SYMBOL_GPL(gfn_to_pfn_memslot_atomic);
- 
+> +/**
+> + * BRUTE_EMA_WEIGHT_NUMERATOR - Weight's numerator of EMA.
+> + */
+> +static const u64 BRUTE_EMA_WEIGHT_NUMERATOR = 7;
+
+> +/**
+> + * BRUTE_EMA_WEIGHT_DENOMINATOR - Weight's denominator of EMA.
+> + */
+> +static const u64 BRUTE_EMA_WEIGHT_DENOMINATOR = 10;
+
+> +/**
+> + * BRUTE_MAX_FAULTS - Maximum number of faults.
+> + *
+> + * If a brute force attack is running slowly for a long time, the application
+> + * crash period's EMA is not suitable for the detection. This type of attack
+> + * must be detected using a maximum number of faults.
+> + */
+> +static const unsigned char BRUTE_MAX_FAULTS = 200;
+
+> +/**
+> + * BRUTE_MIN_FAULTS - Minimum number of faults.
+> + *
+> + * The application crash period's EMA cannot be used until a minimum number of
+> + * data has been applied to it. This constraint allows getting a trend when this
+> + * moving average is used. Moreover, it avoids the scenario where an application
+> + * fails quickly from execve system call due to reasons unrelated to a real
+> + * attack.
+> + */
+> +static const unsigned char BRUTE_MIN_FAULTS = 5;
+
+> +/**
+> + * BRUTE_CRASH_PERIOD_THRESHOLD - Application crash period threshold.
+> + *
+> + * The units are expressed in milliseconds.
+> + *
+> + * A fast brute force attack is detected when the application crash period falls
+> + * below this threshold.
+> + */
+> +static const u64 BRUTE_CRASH_PERIOD_THRESHOLD = 30000;
+
+Basically we don't support scalars in kernel-doc notation...
+
 -- 
-2.30.0.617.g56c4b15f3c-goog
+~Randy
 
