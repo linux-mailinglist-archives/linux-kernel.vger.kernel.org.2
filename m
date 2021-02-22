@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC4D32122E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C406F321233
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhBVInz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 03:43:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42134 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhBVInw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:43:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613983386; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BGr3u1/QiWkqeNGAS3nuSf2LPGyseFbACm8rcGmaFMU=;
-        b=jyTfTBszQLX9et73++r8X7IxIMrqlNpH9jZPmxVJzzdhnlZPOwgMlrZ6YcBxmmoy7ZqRr5
-        qbnq8T2JOps4nShL425LoAycwSUXe1OHGYvGk+eF2wrI48AKF5j2qyuB2JUpW6u+PxgFj3
-        WJ04qlNgi/dXFFcAUlVp1OXf9kWxaTc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 33741AFD7;
-        Mon, 22 Feb 2021 08:43:06 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 09:41:40 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] mm: Fix missing mem cgroup soft limit tree updates
-Message-ID: <YDNuRFgJPH4bPEbq@dhcp22.suse.cz>
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <e269f5df3af1157232b01a9b0dae3edf4880d786.1613584277.git.tim.c.chen@linux.intel.com>
- <YC+B2KvJVSgfVDTe@dhcp22.suse.cz>
- <1ecd277e-c236-08e1-f068-3dd65ee0e640@linux.intel.com>
+        id S230049AbhBVIp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:45:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229907AbhBVIpx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 03:45:53 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA841C061574;
+        Mon, 22 Feb 2021 00:45:12 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id l13so4006002wmg.5;
+        Mon, 22 Feb 2021 00:45:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WZ1TpVqC8jbOAE905d14DzJdnCbYipexqF0Xfhf38q0=;
+        b=tRSBVpZfp7BN7eaY63r2/hmgFVZF4cG8NGhti13kMdgoomZW4zLYoV5D62aF/vstam
+         GWjjxEnH6buLbtZ2WWbuelFrtuhNPxuQSnI+AWHDfwmHhrA83l40r1R79745tvpE5eNT
+         Nl974nU1mfVIu7tYt2CWTdJD6KIwEbarHC4rV9Q4LUZz49yB0qVTGeSOfwzkdoNq40th
+         fwEq0Vb0fhQIEzFGBL46f0yIqzWVNbPdXQI9h1f2FZkZS/HrJLtJLPo7tQBiefYLmEj8
+         Ulx9PPCUTpUReU9MjedAp9ZHmRW8SeyRazbDoEYKUZhO6eHWvI1gJIT9c4dhhTAbsR35
+         Ih/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WZ1TpVqC8jbOAE905d14DzJdnCbYipexqF0Xfhf38q0=;
+        b=MgRC7NXIHFhRFG7e4BNBj56wDiQDAt8tmXU5CPYYZgZZ4FhKL8ym+IPRHiMpLwbnTT
+         JNvjvMeqP72I/HmEBcgGkd6mcEmwH8uxQ6rWOW1ktRIyVFRk24iditMcFr5QmqByb43M
+         U+31GNol93CNopwUYXWlRWVzaIXyP3pvf6LbqToAUwoLzrGNcRAztry+bLKG347A5xU4
+         uvlsyGPFPI4NP7n01Rse2p5aGrbvOKNCCc2/v/j4HnJHw+GQmkuhDBAIDuKGSnMo9WpR
+         JHTH+gwOxb/9wP9DDtJN3O05Iulpzf3UFo0vHW1bUu0u7nCc5dUHPH/dyn312ymrwflg
+         WSZg==
+X-Gm-Message-State: AOAM533omJEmN0DD13bHkgqVNjpEQ37/amm5W7Ld0co37dwo9y6v37A9
+        P2jMBsRnkXM7tkCxB57qXCA=
+X-Google-Smtp-Source: ABdhPJzkjqc9ets0DSyy3uS4J8QgFPty0lmgdctexH3xsijP6wBd7K7ZXB8PaAqYmSe8K3mqTgFCsQ==
+X-Received: by 2002:a1c:cc14:: with SMTP id h20mr19309612wmb.180.1613983511700;
+        Mon, 22 Feb 2021 00:45:11 -0800 (PST)
+Received: from [192.168.1.101] ([37.171.239.209])
+        by smtp.gmail.com with ESMTPSA id t15sm25202663wmi.48.2021.02.22.00.45.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 00:45:10 -0800 (PST)
+Subject: Re: [PATCH] net/qrtr: restrict length in qrtr_tun_write_iter()
+To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        syzbot+c2a7e5c5211605a90865@syzkaller.appspotmail.com
+References: <3b27dac1-45b9-15ad-c25e-2f5f3050907e@gmail.com>
+ <20210221123912.3185059-1-snovitoll@gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <573bd57c-5ef8-3d4c-1fe9-eaa0337e7bfd@gmail.com>
+Date:   Mon, 22 Feb 2021 09:45:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1ecd277e-c236-08e1-f068-3dd65ee0e640@linux.intel.com>
+In-Reply-To: <20210221123912.3185059-1-snovitoll@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 19-02-21 11:28:47, Tim Chen wrote:
-> 
-> 
-> On 2/19/21 1:16 AM, Michal Hocko wrote:
-> 
-> >>
-> >> Something like this?
-> >>
-> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >> index 8bddee75f5cb..b50cae3b2a1a 100644
-> >> --- a/mm/memcontrol.c
-> >> +++ b/mm/memcontrol.c
-> >> @@ -3472,6 +3472,14 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
-> >>                 if (!mz)
-> >>                         break;
-> >>
-> >> +               /*
-> >> +                * Soft limit tree is updated based on memcg events sampling.
-> >> +                * We could have missed some updates on page uncharge and
-> >> +                * the cgroup is below soft limit.  Skip useless soft reclaim.
-> >> +                */
-> >> +               if (!soft_limit_excess(mz->memcg))
-> >> +                       continue;
-> >> +
-> >>                 nr_scanned = 0;
-> >>                 reclaimed = mem_cgroup_soft_reclaim(mz->memcg, pgdat,
-> > 
-> > Yes I meant something like this but then I have looked more closely and
-> > this shouldn't be needed afterall. __mem_cgroup_largest_soft_limit_node
-> > already does all the work
-> >         if (!soft_limit_excess(mz->memcg) ||
-> >             !css_tryget(&mz->memcg->css))
-> >                 goto retry;
-> > so this shouldn't really happen.
-> > 
-> 
-> Ah, that's true.  The added check for soft_limit_excess is not needed.
-> 
-> Do you think it is still a good idea to add patch 3 to
-> restrict the uncharge update in page batch of the same node and cgroup?
 
-I would rather drop it. The less the soft limit reclaim code is spread
-around the better.
--- 
-Michal Hocko
-SUSE Labs
+
+On 2/21/21 1:39 PM, Sabyrzhan Tasbolatov wrote:
+>> Do we really expect to accept huge lengths here ?
+> 
+> Sorry for late response but I couldnt find any reference to the max
+> length of incoming data for qrtr TUN interface.
+> 
+>> qrtr_endpoint_post() will later attempt a netdev_alloc_skb() which will need
+>> some extra space (for struct skb_shared_info)
+> 
+> Thanks, you're right, qrtr_endpoint_post() will alloc another slab buffer.
+> We can check the length of skb allocation but we need to do following:
+> 
+> int qrtr_endpoint_post(.., const void *data, size_t len) 
+> {
+> 	..
+> 	when QRTR_PROTO_VER_1:
+> 		hdrlen = sizeof(*data);
+> 	when QRTR_PROTO_VER_2:
+> 		hdrlen = sizeof(*data) + data->optlen;
+> 	
+> 	len = (KMALLOC_MAX_SIZE - hdrlen) % data->size;
+> 	skb = netdev_alloc_skb(NULL, len);
+> 	..
+> 	skb_put_data(skb, data + hdrlen, size);
+> 
+> 
+> So it requires refactoring as in qrtr_tun_write_iter() we just allocate and
+> pass it to qrtr_endpoint_post() and there
+> we need to do len calculation as above *before* netdev_alloc_skb(NULL, len).
+> 
+> Perhaps there is a nicer solution though.
+> 
+
+A protocol requiring contiguous physical memory allocations of up to KMALLOC_MAX_SIZE
+bytes would be really unreliable.
+
+I suggest we simply limit the allocations to 64KB, unless qrtr maintainers shout,
+or start implementing scatter gather.
+
+
+
+
+
