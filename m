@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C65321853
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A88C321856
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhBVNSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:18:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53774 "EHLO mail.kernel.org"
+        id S230310AbhBVNSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:18:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231261AbhBVMji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231462AbhBVMji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 07:39:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30D6F64F0E;
-        Mon, 22 Feb 2021 12:38:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9738864F13;
+        Mon, 22 Feb 2021 12:38:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997499;
-        bh=S/bd23BQkwRgKJHcmSwkOS+UEktxaYfet4nnB3sCiAQ=;
+        s=korg; t=1613997502;
+        bh=AWJrq9CTU4jWdDExlrGjWDcFNigDcOUR4XCJyS4QyrA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HPyfeyVqPWr8pMzhQfct3nRVDEcts0F2OrlfbV2nZ1hTg64OLzuTKSnJ2RBZnZqbo
-         ZFf9FvAd3BEiOE2kXkgnT0O9WJqkTGbpPOZLfu75jXLD87zRodqW2OEmjWivReE7qv
-         ZOVSs9ICYIXCCnsiHG2C4G/bhKNNa2iDzRccIeH4=
+        b=WAgqLrnvySKxBELf2i+cg9SwdDTdlA8haxGqmde/Tn31YVdxY/u/17meU4q3T/g7m
+         1OOcO0/V1pSA+YzlpXSjR3rWCrEOiiIBqHPR0wqRlXcSFuWQAlkyLIALwRSqjl6qa+
+         UfIS71pNOPdeJ5J3CDC5MF7HsvxGzhyBEdkjjC9M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.14 42/57] trace: Use -mcount-record for dynamic ftrace
-Date:   Mon, 22 Feb 2021 13:36:08 +0100
-Message-Id: <20210222121032.166118470@linuxfoundation.org>
+Subject: [PATCH 4.14 43/57] tracing: Fix SKIP_STACK_VALIDATION=1 build due to bad merge with -mrecord-mcount
+Date:   Mon, 22 Feb 2021 13:36:09 +0100
+Message-Id: <20210222121032.333497130@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121027.174911182@linuxfoundation.org>
 References: <20210222121027.174911182@linuxfoundation.org>
@@ -39,52 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andi Kleen <ak@linux.intel.com>
+From: Greg Thelen <gthelen@google.com>
 
-commit 96f60dfa5819a065bfdd2f2ba0df7d9cbce7f4dd upstream.
+commit ed7d40bc67b8353c677b38c6cdddcdc310c0f452 upstream.
 
-gcc 5 supports a new -mcount-record option to generate ftrace
-tables directly. This avoids the need to run record_mcount
-manually.
+Non gcc-5 builds with CONFIG_STACK_VALIDATION=y and
+SKIP_STACK_VALIDATION=1 fail.
+Example output:
+  /bin/sh: init/.tmp_main.o: Permission denied
 
-Use this option when available.
+commit 96f60dfa5819 ("trace: Use -mcount-record for dynamic ftrace"),
+added a mismatched endif.  This causes cmd_objtool to get mistakenly
+set.
 
-So far doesn't use -mcount-nop, which also exists now.
+Relocate endif to balance the newly added -record-mcount check.
 
-This is needed to make ftrace work with LTO because the
-normal record-mcount script doesn't run over the link
-time output.
+Link: http://lkml.kernel.org/r/20180608214746.136554-1-gthelen@google.com
 
-It should also improve build times slightly in the general
-case.
-Link: http://lkml.kernel.org/r/20171127213423.27218-12-andi@firstfloor.org
-
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
+Fixes: 96f60dfa5819 ("trace: Use -mcount-record for dynamic ftrace")
+Acked-by: Andi Kleen <ak@linux.intel.com>
+Tested-by: David Rientjes <rientjes@google.com>
+Signed-off-by: Greg Thelen <gthelen@google.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- scripts/Makefile.build |    6 ++++++
- 1 file changed, 6 insertions(+)
+ scripts/Makefile.build |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/scripts/Makefile.build
 +++ b/scripts/Makefile.build
-@@ -224,6 +224,11 @@ cmd_modversions_c =								\
- endif
+@@ -257,6 +257,7 @@ cmd_record_mcount =						\
+ 	     "$(CC_FLAGS_FTRACE)" ]; then			\
+ 		$(sub_cmd_record_mcount)			\
+ 	fi;
++endif # -record-mcount
+ endif # CONFIG_FTRACE_MCOUNT_RECORD
  
- ifdef CONFIG_FTRACE_MCOUNT_RECORD
-+# gcc 5 supports generating the mcount tables directly
-+ifneq ($(call cc-option,-mrecord-mcount,y),y)
-+KBUILD_CFLAGS += -mrecord-mcount
-+else
-+# else do it all manually
- ifdef BUILD_C_RECORDMCOUNT
- ifeq ("$(origin RECORDMCOUNT_WARN)", "command line")
-   RECORDMCOUNT_FLAGS = -w
-@@ -274,6 +279,7 @@ endif
+ ifdef CONFIG_STACK_VALIDATION
+@@ -279,7 +280,6 @@ endif
  ifdef CONFIG_RETPOLINE
    objtool_args += --retpoline
  endif
-+endif
+-endif
  
  
  ifdef CONFIG_MODVERSIONS
