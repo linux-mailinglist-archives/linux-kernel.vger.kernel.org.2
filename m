@@ -2,145 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35F7321AD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30895321AE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhBVPKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:10:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230443AbhBVPJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:09:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AE5E64DF0;
-        Mon, 22 Feb 2021 15:09:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614006544;
-        bh=CCxMs258JjiYV+rmdp4CVB+FHMraTUBy+aZ6Oel2FPU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eZ7HvSeKaZ5pg2GkNf2rVvDlaVcZ+T9NE4DAC22ZOfuDGVOnK+RjSjLayqYfDdbdN
-         hRomBzO2nu1NwJSxN5R3UYzsoPsp7w/ihPOMeO8UPq3bCD2hahAfXgcdiuUKsyOQDo
-         Fr3E06WjHHPJIcB965YAtrI4qO3Bg/lRbUtFb3+Gs1ykfD5S2Rc0fjblP8i7icH1v9
-         zsHXeZhMFAERNDoWTcz0NjjXQoXBHnuh18iCD/K2Am+CVKvUPwk8AVFQ5/SxZQr0l0
-         XOKTKXA98wz65dmPMVxWIvqOVEcIIgl/7t1VcbCfF3fVr29F7rbl+lthHFgS0ou6+k
-         y10+BgRV9H2qw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C138A352259B; Mon, 22 Feb 2021 07:09:03 -0800 (PST)
-Date:   Mon, 22 Feb 2021 07:09:03 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
-Message-ID: <20210222150903.GH2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210219104958.GA34308@pc638.lan>
- <20210219105710.d626zexj6vzt6k6y@linutronix.de>
- <20210219111301.GA34441@pc638.lan>
- <20210219111738.go6i2fdzvavpotxd@linutronix.de>
- <20210219112357.GA34462@pc638.lan>
- <20210219112751.GA34528@pc638.lan>
- <20210219181811.GY2743@paulmck-ThinkPad-P72>
- <20210219183336.GA23049@paulmck-ThinkPad-P72>
- <20210222102104.v3pr7t57hmpwijpi@linutronix.de>
- <20210222125431.GA41939@pc638.lan>
+        id S230518AbhBVPMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:12:13 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:57247 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230257AbhBVPMF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 10:12:05 -0500
+X-Originating-IP: 93.61.96.190
+Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id E7BB61BF213;
+        Mon, 22 Feb 2021 15:11:13 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 16:11:41 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 07/16] media: i2c: rdacm2x: Fix wake up delay
+Message-ID: <20210222151141.4cydkhwiw4ylbebj@uno.localdomain>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-8-jacopo+renesas@jmondi.org>
+ <3e759da5-9bba-54ae-fe39-a7db2cbbb31c@ideasonboard.com>
+ <YDMGfQFKWUq9hyDv@pendragon.ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210222125431.GA41939@pc638.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YDMGfQFKWUq9hyDv@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 01:54:31PM +0100, Uladzislau Rezki wrote:
-> On Mon, Feb 22, 2021 at 11:21:04AM +0100, Sebastian Andrzej Siewior wrote:
-> > On 2021-02-19 10:33:36 [-0800], Paul E. McKenney wrote:
-> > > For definiteness, here is the first part of the change, posted earlier.
-> > > The commit log needs to be updated.  I will post the change that keeps
-> > > the tick going as a reply to this email.
-> > …
-> > > diff --git a/kernel/softirq.c b/kernel/softirq.c
-> > > index 9d71046..ba78e63 100644
-> > > --- a/kernel/softirq.c
-> > > +++ b/kernel/softirq.c
-> > > @@ -209,7 +209,7 @@ static inline void invoke_softirq(void)
-> > >  	if (ksoftirqd_running(local_softirq_pending()))
-> > >  		return;
-> > >  
-> > > -	if (!force_irqthreads) {
-> > > +	if (!force_irqthreads || !__this_cpu_read(ksoftirqd)) {
-> > >  #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
-> > >  		/*
-> > >  		 * We can safely execute softirq on the current stack if
-> > > @@ -358,8 +358,8 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
-> > >  
-> > >  	pending = local_softirq_pending();
-> > >  	if (pending) {
-> > > -		if (time_before(jiffies, end) && !need_resched() &&
-> > > -		    --max_restart)
-> > > +		if (!__this_cpu_read(ksoftirqd) ||
-> > > +		    (time_before(jiffies, end) && !need_resched() && --max_restart))
-> > >  			goto restart;
-> > 
-> > This is hunk shouldn't be needed. The reason for it is probably that the
-> > following wakeup_softirqd() would avoid further invoke_softirq()
-> > performing the actual softirq work. It would leave early due to
-> > ksoftirqd_running(). Unless I'm wrong, any raise_softirq() invocation
-> > outside of an interrupt would do the same. 
+Hi
 
-And it does pass the rcutorture test without that hunk:
+On Mon, Feb 22, 2021 at 03:18:53AM +0200, Laurent Pinchart wrote:
+> Hi Jacopo,
+>
+> Thank you for the patch.
+>
+> On Wed, Feb 17, 2021 at 01:33:01PM +0000, Kieran Bingham wrote:
+> > On 16/02/2021 17:41, Jacopo Mondi wrote:
+> > > The MAX9271 chip manual prescribes a delay of 5 milliseconds
+> > > after the chip exists from low power state.
+> > >
+> > > Adjust the required delay in the rdacm21 camera module and add it
+> > > to the rdacm20 that currently doesn't implement one.
+> >
+> > This sounds to me like it should be a common function in the max9271 module:
+> >
+> > >         /* Verify communication with the MAX9271: ping to wakeup. */
+> > >         dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> > >         i2c_smbus_read_byte(dev->serializer.client);
+> > >         usleep_range(5000, 8000);
+> >
+> > Especially as that MAX9271_DEFAULT_ADDR should probably be handled
+> > directly in the max9271.c file too, and the RDACM's shouldn't care about it.
+>
+> I think this is a good idea. With this addressed,
 
-tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --bootargs "threadirqs=1" --trust-make
+The address reprogramming was exactly why I refrained from adding a
+function to the max9271 library, as handling of the addresses there
+would introduce a precendece order in the function calls, ie the newly
+introduced function would require to be called first after a chip
+reset and that's something I considered better handled by the camera
+driver (even if it wouldn't be suprising a 'wake up' function to be
+called first).
 
-> > I would like PeterZ / tglx to comment on this one. Basically I'm not
-> > sure if it is okay to expect softirqs beeing served and waited on that
-> > early in the boot.
+please also note that I will next try to make the max9271 a proper i2c
+driver so this might be even less relevant that what it is right now
 
-It would be good to get other eyes on this.
-
-I do agree that "don't wait on softirq handlers until after completion
-of all early_initcall() handlers" is a nice simple rule, but debugging
-violations of it is not so simple.  Adding warnings to ease debugging
-of violations of this rule is quite a bit more complex than is either of
-the methods of making the rule unnecessary, at least from what I can see
-at this point.  The complexity of the warnings is exactly what Sebastian
-pointed out earlier, that it is currently legal to raise_softirq() but
-not to wait on the resulting handlers.  But even waiting is OK if that
-waiting does not delay the boot sequence.  But if the boot kthread waits
-on the kthread that does the waiting, it is once again not OK.
-
-So am I missing something subtle here?
-
-> The ksoftirqd threads get spawned during early_initcall() phase. Why not
-> just spawn them one step earlier what is totally safe? I mean before
-> do_pre_smp_initcalls() that calls early callbacks.
-> 
-> +       spawn_ksoftirqd();
->         rcu_init_tasks_generic();
->         do_pre_smp_initcalls();
-> 
-> With such change the spawning will not be depended on linker/compiler
-> i.e. when and in which order an early_initcall(spawn_ksoftirqd) callback
-> is executed.
-
-We both posted patches similar to this, so I am not opposed.  One caveat,
-though, namely that this narrows the window quite a bit but does not
-entirely close it.  But it does allow the early_initcall()s to wait on
-softirq handlers.
-
-							Thanx, Paul
+Thanks
+   j
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+> > If we end up moving the max9271 'library' into more of a module/device
+> > then this would have to be done in it's 'probe' anyway, so it's likely
+> > better handled down there...?
+> >
+> > But ... it's not essential at this point in the series, so if you want
+> > to keep this patch as is,
+> >
+> > Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> > 	> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > > ---
+> > >  drivers/media/i2c/rdacm20.c | 1 +
+> > >  drivers/media/i2c/rdacm21.c | 2 +-
+> > >  2 files changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> > > index ea30cc936531..39e4b4241870 100644
+> > > --- a/drivers/media/i2c/rdacm20.c
+> > > +++ b/drivers/media/i2c/rdacm20.c
+> > > @@ -460,6 +460,7 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+> > >  	/* Verify communication with the MAX9271: ping to wakeup. */
+> > >  	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> > >  	i2c_smbus_read_byte(dev->serializer.client);
+> > > +	usleep_range(5000, 8000);
+> > >
+> > >  	/* Serial link disabled during config as it needs a valid pixel clock. */
+> > >  	ret = max9271_set_serial_link(&dev->serializer, false);
+> > > diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> > > index 179d107f494c..b22a2ca5340b 100644
+> > > --- a/drivers/media/i2c/rdacm21.c
+> > > +++ b/drivers/media/i2c/rdacm21.c
+> > > @@ -453,7 +453,7 @@ static int rdacm21_initialize(struct rdacm21_device *dev)
+> > >  	/* Verify communication with the MAX9271: ping to wakeup. */
+> > >  	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> > >  	i2c_smbus_read_byte(dev->serializer.client);
+> > > -	usleep_range(3000, 5000);
+> > > +	usleep_range(5000, 8000);
+> > >
+> > >  	/* Enable reverse channel and disable the serial link. */
+> > >  	ret = max9271_set_serial_link(&dev->serializer, false);
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
