@@ -2,60 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131C0322253
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEB9322228
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbhBVWpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 17:45:15 -0500
-Received: from vmicros1.altlinux.org ([194.107.17.57]:33950 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbhBVWoy (ORCPT
+        id S230411AbhBVWa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 17:30:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230018AbhBVWaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 17:44:54 -0500
-Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 433F272C8B3;
-        Tue, 23 Feb 2021 01:44:10 +0300 (MSK)
-Received: by mua.local.altlinux.org (Postfix, from userid 508)
-        id 364F67CC89C; Tue, 23 Feb 2021 01:44:10 +0300 (MSK)
-Date:   Mon, 22 Feb 2021 08:00:00 +0000
-From:   "Dmitry V. Levin" <ldv@altlinux.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] uapi: nfnetlink_cthelper.h: fix userspace compilation error
-Message-ID: <20210222080000.GA5900@altlinux.org>
+        Mon, 22 Feb 2021 17:30:55 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A63C061574;
+        Mon, 22 Feb 2021 14:30:15 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id ds5so562026pjb.2;
+        Mon, 22 Feb 2021 14:30:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kx6Dchna4hn/dVA9JmVwo8evWAsk2O8u38C6RCiJgXg=;
+        b=MU6IRhzqMkVc3QQYia+AI5XcnunTDYzxwOwzFEu+C24iVoVTPI6EUy67FByXT0JJgY
+         flgOQzSd98RbPhsXZjwTqq9/Kz5gKu2N2jalBcSGfFNMwKYeMCtVfZ/f416E2aS+5/iv
+         UkABjA8ELSh5bL2FvKyoPGT40b6uo9v6xmlMmE5TZo2V3G5GGAi2D9Tjn3saF/W3bMEC
+         Ig7ogz+sqKGxzkjaixSUQg2nAKMmektWNYpRRcVfvZM8kzE56OU4MnmQYWTrg8Fjqg2L
+         HCZChCXwlmcZ/UjmL8cUOEwfRkREjKCXcNouZ8z+f/LYUgwoZW959K9b34JrdI5xLmn2
+         L9Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kx6Dchna4hn/dVA9JmVwo8evWAsk2O8u38C6RCiJgXg=;
+        b=Cb7hh4ReMoViUnyVadhMgnWyWfTq1wcVhyYQ/wUzsGGGCRTDj4B8tF0eGmAYTu5ILl
+         B4RqGd2rGHuYAx1Coc1vemybVxoz6l/a7fr1FJ5R9c35iVL8gIja2lIBfoNCjRY3Ihz8
+         x9eb2FmFLNmHOC0qq2GmbnzDERwRvGaiRBagHAGC2e8CDubmO/aWMP8jGuxsLr9o/LTw
+         3M2CZMYSzHYvt/UIvrOhnGDqRO9o0/jbkKvRrdVSKUsUqUJzTQhwyP53HaqD6hoedjXY
+         9CWRptZibGXJoiuPj4EjkyblCua/K/oi8LXRbfVveZ8AXRBJTBy9HY9zalG6NZgD1C2t
+         eJXw==
+X-Gm-Message-State: AOAM531vGFjaG9211ZiwQhmAdd/EeSaSB+NmnTQe19duUsVmaBSshxNH
+        Km+swgx1K1Gd2mTQAFhjuY46613h+P8=
+X-Google-Smtp-Source: ABdhPJyD5s/+qnlYW2kJZ+0TodyEx7Ybr7cmbvDCKKIeOajh9ykpjhqo91wHxX8s80/xxXcYfKYKgg==
+X-Received: by 2002:a17:902:aa42:b029:e3:492a:7b37 with SMTP id c2-20020a170902aa42b02900e3492a7b37mr24286147plr.6.1614033014435;
+        Mon, 22 Feb 2021 14:30:14 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id gg5sm495385pjb.3.2021.02.22.14.30.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 14:30:13 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net v2 0/2] net: dsa: Learning fixes for b53/bcm_sf2
+Date:   Mon, 22 Feb 2021 14:30:08 -0800
+Message-Id: <20210222223010.2907234-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apparently, <linux/netfilter/nfnetlink_cthelper.h> and
-<linux/netfilter/nfnetlink_acct.h> could not be included into the same
-compilation unit because of a cut-and-paste typo in the former header.
+Hi David, Jakub,
 
-Fixes: 12f7a505331e6 ("netfilter: add user-space connection tracking helper infrastructure")
-Cc: <stable@vger.kernel.org> # v3.6
-Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
----
- include/uapi/linux/netfilter/nfnetlink_cthelper.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patch series contains a couple of fixes for the b53/bcm_sf2 drivers
+with respect to configuring learning.
 
-diff --git a/include/uapi/linux/netfilter/nfnetlink_cthelper.h b/include/uapi/linux/netfilter/nfnetlink_cthelper.h
-index a13137afc429..70af02092d16 100644
---- a/include/uapi/linux/netfilter/nfnetlink_cthelper.h
-+++ b/include/uapi/linux/netfilter/nfnetlink_cthelper.h
-@@ -5,7 +5,7 @@
- #define NFCT_HELPER_STATUS_DISABLED	0
- #define NFCT_HELPER_STATUS_ENABLED	1
- 
--enum nfnl_acct_msg_types {
-+enum nfnl_cthelper_msg_types {
- 	NFNL_MSG_CTHELPER_NEW,
- 	NFNL_MSG_CTHELPER_GET,
- 	NFNL_MSG_CTHELPER_DEL,
+The first patch is wiring-up the necessary dsa_switch_ops operations in
+order to support the offloading of bridge flags.
+
+The second patch corrects the switch driver's default learning behavior
+which was unfortunately wrong from day one.
+
+This is submitted against "net" because this is technically a bug fix
+since ports should not have had learning enabled by default but given
+this is dependent upon Vladimir's recent br_flags series, there is no
+Fixes tag provided.
+
+I will be providing targeted stable backports that look a bit
+difference.
+
+Changes in v2:
+
+- added first patch
+- updated second patch to include BR_LEARNING check in br_flags_pre as
+  a support bridge flag to offload
+
+Florian Fainelli (2):
+  net: dsa: bcm_sf2: Wire-up br_flags_pre, br_flags and set_mrouter
+  net: dsa: b53: Support setting learning on port
+
+ drivers/net/dsa/b53/b53_common.c | 39 ++++++++++++++++++++++++--------
+ drivers/net/dsa/b53/b53_priv.h   |  8 +++++++
+ drivers/net/dsa/b53/b53_regs.h   |  1 +
+ drivers/net/dsa/bcm_sf2.c        | 18 ++++-----------
+ 4 files changed, 43 insertions(+), 23 deletions(-)
+
 -- 
-ldv
+2.25.1
+
