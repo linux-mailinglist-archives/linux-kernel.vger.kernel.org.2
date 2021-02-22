@@ -2,171 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728E33219D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBED3219DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbhBVOJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:09:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55685 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231684AbhBVN2v (ORCPT
+        id S232235AbhBVOLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:11:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231783AbhBVN3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 08:28:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614000445;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GHONXLl3nmBLIKawFr0LZgdMPC27uJpiOMdfDbFyhfY=;
-        b=jDUPWun0zkgyeUGkKM9t8hJDCwz5XBLeVdobZw2sh82QPu2FHRh5lzyVVHhU63Fx0mmlsu
-        K+Xjr6NW5YQ/wXtvsb3LO1a7R9GIYTAsJx4HmxGuyBFgQTyhtmS63AeFeccx4JXW2Hvp/Z
-        8ydMuWc99DB9GU/zXyaaQGAnMtcpXNY=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-N53rjPECPHKkJShBdWh_0w-1; Mon, 22 Feb 2021 08:27:23 -0500
-X-MC-Unique: N53rjPECPHKkJShBdWh_0w-1
-Received: by mail-ej1-f72.google.com with SMTP id gg8so446108ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 05:27:23 -0800 (PST)
+        Mon, 22 Feb 2021 08:29:15 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBEDC061574;
+        Mon, 22 Feb 2021 05:28:29 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id s23so5773991pji.1;
+        Mon, 22 Feb 2021 05:28:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fgxTxUDILQKYpK+kkMjKu0FMVKszhc5oAFeDxdZLCpA=;
+        b=T5zmuUUUcSVap0ah8QOi0Ir1Ax80hEln5b0nRp6vC4ezQFbMVX9YHomqTMYO8ecCpt
+         OKOZlOHwzuSFV1EtUqDC/Whhl13HAnAYqYqn0O9rEg1n43JQrrUC2nm80UaC/wjnaPSg
+         EslscuTnCjvZeQfd+wCKyE0DoEhIjH1mMXbQEWvnF2yMXY63XRXLHQyoBSaQ8fmKzLCQ
+         RDnQSlRYRWPWqJhxclMXaXELrd8jJ28i0fx3mPQJZ41SLopobzg9yX0wxRu9ZzIkJBhR
+         /rfC85eM0qWa9WHGsautyVm1lkTAraToWrPSt6554cDQndGdHwBC6KDGebeP2YiMidHe
+         IMCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=GHONXLl3nmBLIKawFr0LZgdMPC27uJpiOMdfDbFyhfY=;
-        b=s8f768DC9hUN1oHBHpu8ph6kmTmFbzTa8/e1ubDH3jXpW1Z68YzJTR7E/of6NPlL4X
-         Ah/0t5kxBmOsOb9waKOefpBgi5hhMvApHsfPlQOLlRPYHt84UUb43M4a07KJNY4jQDSZ
-         G+F2ptRga4i4IlZm3VJ9BAANhZYkYo54IF893i4eQ8smi2skMreDLwsF7wKzkdSkFFi+
-         ysYXmAstxJ/NFqGbUblTNGKH6YuEndlaSmKvds/z4jS2e8N8c3cLM64JkRGcSo0ZtuxJ
-         OmSeACUjmsOmu7Ctrp3xCt2AzEpFfQ1aRPYUWL/v66GAm0Z3bBN4Hz5w1yxRgoHLgjAg
-         hgrw==
-X-Gm-Message-State: AOAM533CfG8CHiU+R0g/HSb5ySDTIt4Al187lidvAwSD3ZES7QhC0yDd
-        Zf1YM7BKo9TK+N2SLGLW1vYL8m0Pb+Kk6/2Ftk3ZE7Otf3g1zVj8FKckS5hX6PQr1oetMJ7LSyV
-        Z2Dy2Fy4iizWXrokDWTN2p1iw
-X-Received: by 2002:a17:906:4159:: with SMTP id l25mr13876274ejk.422.1614000441330;
-        Mon, 22 Feb 2021 05:27:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwu1h3Dz7m2ZikkRECC7W2E6glb8Lbl5nOkzxdhboC2u0NoKyWMJWb/ALk2JernkoP7zoBxbw==
-X-Received: by 2002:a17:906:4159:: with SMTP id l25mr13876248ejk.422.1614000441127;
-        Mon, 22 Feb 2021 05:27:21 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id y11sm10612929ejd.72.2021.02.22.05.27.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 05:27:20 -0800 (PST)
-Subject: Re: [PATCH v3 5/6] platform/x86: Add intel_skl_int3472 driver
-To:     Daniel Scally <djrscally@gmail.com>, tfiga@chromium.org,
-        sakari.ailus@linux.intel.com, rajmohan.mani@intel.com,
-        rjw@rjwysocki.net, lenb@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart@ideasonboard.com, mgross@linux.intel.com,
-        luzmaximilian@gmail.com, robert.moore@intel.com,
-        erik.kaneda@intel.com, me@fabwu.ch, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org
-References: <20210222130735.1313443-1-djrscally@gmail.com>
- <20210222130735.1313443-6-djrscally@gmail.com>
- <04c106e3-fd95-c19d-115f-8acd07df4c0c@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f9620e2e-604e-01c9-0d72-3b415cf3fa88@redhat.com>
-Date:   Mon, 22 Feb 2021 14:27:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=fgxTxUDILQKYpK+kkMjKu0FMVKszhc5oAFeDxdZLCpA=;
+        b=c5f5U5pXsiLflmy8OM1Q7zkTXeXlLcGE5IeoFAPLKfex5b2PeZbMcJNPTiYKDRgjj3
+         ZVGMRCw7EZLswZxD/r7RMR/xz6qRrymvl5XFbhvO8CKYFIE9fjGtzXA0mVnmCcxgBm7w
+         gMbpIqOydD32wVkS5/No9xtIKezv5T++Bb6rf3k9fJYSXBO2gnGuDwViMlyCrKPyKZdJ
+         VC+S5GJOT6Gh5zQApJGLxKnZxgeiEujqMo07JpheWx37/audtcseEppqPLqyl3MXGDLu
+         qPmQkWheZorGkbecB+9X5pjyjo8Lkn2bFC8P/QAMgxvPZLVHHXRMeBzr/q+lysmja/eZ
+         4Rww==
+X-Gm-Message-State: AOAM531yxxC08XUO1+PHy/S2Kr2j5MiiOSY9gbX6ncWt5smKATm8MKog
+        Z9VKyaKQCFMMZggHRxzXnE0=
+X-Google-Smtp-Source: ABdhPJzhjWiTQUvQuE/07p/XYGM0i2/2d8EqO84o/ZCU1084QpCRYN13zQZMt8EtBLfw09KJLYjrVQ==
+X-Received: by 2002:a17:90a:1b0d:: with SMTP id q13mr8618774pjq.211.1614000509220;
+        Mon, 22 Feb 2021 05:28:29 -0800 (PST)
+Received: from nj08008nbu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id 141sm19585334pfa.65.2021.02.22.05.28.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Feb 2021 05:28:28 -0800 (PST)
+From:   Kevin Tang <kevin3.tang@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, mark.rutland@arm.com, kevin3.tang@gmail.com
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v4 0/6] Add Unisoc's drm kms module
+Date:   Mon, 22 Feb 2021 21:28:16 +0800
+Message-Id: <20210222132822.7830-1-kevin3.tang@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <04c106e3-fd95-c19d-115f-8acd07df4c0c@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+ChangeList:
+RFC v1:
+1. only upstream modeset and atomic at first commit. 
+2. remove some unused code;
+3. use alpha and blend_mode properties;
+3. add yaml support;
+4. remove auto-adaptive panel driver;
+5. bugfix
 
-On 2/22/21 2:19 PM, Daniel Scally wrote:
-> Hi all
-> 
-> On 22/02/2021 13:07, Daniel Scally wrote:
->> diff --git a/drivers/platform/x86/intel-int3472/Kconfig b/drivers/platform/x86/intel-int3472/Kconfig
->> new file mode 100644
->> index 000000000000..b94622245c21
->> --- /dev/null
->> +++ b/drivers/platform/x86/intel-int3472/Kconfig
->> @@ -0,0 +1,31 @@
->> +config INTEL_SKL_INT3472
->> +	tristate "Intel SkyLake ACPI INT3472 Driver"
->> +	depends on ACPI
->> +	depends on REGULATOR
->> +	depends on GPIOLIB
->> +	depends on COMMON_CLK && CLKDEV_LOOKUP
->> +	depends on I2C
->> +	select MFD_CORE
->> +	select REGMAP_I2C
->> +	help
->> +	  This driver adds support for the INT3472 ACPI devices found on some
->> +	  Intel SkyLake devices.
->> +
->> +	  The INT3472 is an Intel camera power controller, a logical device
->> +	  found on some Skylake-based systems that can map to different
->> +	  hardware devices depending on the platform. On machines
->> +	  designed for Chrome OS, it maps to a TPS68470 camera PMIC. On
->> +	  machines designed for Windows, it maps to either a TP68470
->> +	  camera PMIC, a uP6641Q sensor PMIC, or a set of discrete GPIOs
->> +	  and power gates.
->> +
->> +	  If your device was designed for Chrome OS, this driver will provide
->> +	  an ACPI OpRegion, which must be available before any of the devices
->> +	  using it are probed. For this reason, you should select Y if your
->> +	  device was designed for ChromeOS. For the same reason the
->> +	  I2C_DESIGNWARE_PLATFORM option must be set to Y too.
->> +
->> +	  Say Y or M here if you have a SkyLake device designed for use
->> +	  with Windows or ChromeOS. Say N here if you are not sure.
->> +
->> +	  The module will be named "intel-skl-int3472"
-> The Kconfig option for the existing tps68470 driver is a bool which
-> depends on I2C_DESIGNWARE_PLATFORM=y, giving the following reason:
-> 
-> This option is a bool as it provides an ACPI operation
-> region, which must be available before any of the devices
-> using this are probed. This option also configures the
-> designware-i2c driver to be built-in, for the same reason.
-> 
-> One problem I've faced is that that scenario only applies to some
-> devices that this new driver can support, so hard-coding it as built in
-> didn't make much sense. For that reason I opted to set it tristate, but
-> of course that issue still exists for ChromeOS devices where the
-> OpRegion will be registered. I opted for simply documenting that
-> requirement, as is done in aaac4a2eadaa6: "mfd: axp20x-i2c: Document
-> that this must be builtin on x86", but that's not entirely satisfactory.
-> Possible alternatives might be setting "depends on
-> I2C_DESIGNWARE_PLATFORM=y if CHROME_PLATFORMS" or something similar,
-> though of course the User would still have to realise they need to
-> build-in the INTEL_SKL_INT3472 Kconfig option too.
-> 
-> Feedback around this issue would be particularly welcome, as I'm not
-> sure what the best approach might be.
+RFC v2:
+1. add sprd crtc and plane module for KMS, preparing for multi crtc&encoder
+2. remove gem drivers, use generic CMA handlers
+3. remove redundant "module_init", all the sub modules loading by KMS
 
-This is a tricky area, I actually wrote the "mfd: axp20x-i2c: Document
-that this must be builtin on x86" patch you refer to. At first I tried
-to express the dependency in Kconfig language but things got too complex
-and Kconfig sometimes became unhappy about circular deps (or something
-like that).
+RFC v3:
+1. multi crtc&encoder design have problem, so rollback to v1
 
-The most important thing here is to make sure that the generic configs
-shipped by distros get this right; and we can hope that people creating
-those configs at least read the help text...
+RFC v4:
+1. update to gcc-linaro-7.5.0
+2. update to Linux 5.6-rc3
+3. remove pm_runtime support
+4. add COMPILE_TEST, remove unused kconfig
+5. "drm_dev_put" on drm_unbind
+6. fix some naming convention issue
+7. remove semaphore lock for crtc flip
+8. remove static variables
 
-So all in all I believe that just documenting the requirement is fine.
+RFC v5:
+1. optimize encoder and connector code implementation
+2. use "platform_get_irq" and "platform_get_resource"
+3. drop useless function return type, drop unless debug log
+4. custom properties should be separate, so drop it
+5. use DRM_XXX replase pr_xxx
+6. drop dsi&dphy hal callback ops
+7. drop unless callback ops checking
+8. add comments for sprd dpu structure
 
-The alternative would be to just change I2C_DESIGNWARE_PLATFORM (and the
-core) to a bool, or at least make it not selectable as module when
-X86 and ACPI are set... That would be a bit of a big hammer but might
-not be the worst idea actually.
+RFC v6:
+1. Access registers via readl/writel
+2. Checking for unsupported KMS properties (format, rotation, blend_mode, etc) on plane_check ops
+3. Remove always true checks for dpu core ops
 
-Regards,
+RFC v7:
+1. Fix DTC unit name warnings
+2. Fix the problem of maintainers
+3. Call drmm_mode_config_init to mode config init
+4. Embed drm_device in sprd_drm and use devm_drm_dev_alloc
+5. Replace DRM_XXX with drm_xxx on KMS module, but not suitable for other subsystems
+6. Remove plane_update stuff, dpu handles all the HW update in crtc->atomic_flush
+7. Dsi&Dphy Code structure adjustment, all move to "sprd/"
 
-Hans
+v0:
+1. Remove dpu_core_ops stuff layer for sprd drtc driver, but dpu_layer need to keeping.
+   Because all the HW update in crtc->atomic_flush, we need temporary storage all layers for
+   the dpu pageflip of atomic_flush.
+2. Add ports subnode with port@X.
+
+v1:
+1. Remove dphy and dsi graph binding, merge the dphy driver into the dsi.
+2. Add commit messages for Unisoc's virtual nodes.
+
+v2:
+1. Use drm_xxx to replace all DRM_XXX.
+2. Use kzalloc to replace devm_kzalloc for sprd_dsi/sprd_dpu structure init.
+3. Remove dpu_core_ops midlayer.
+
+v3:
+1. Remove dpu_layer midlayer and commit layers by aotmic_update
+
+v4:
+1. Move the devm_drm_dev_alloc to master_ops->bind function.
+2. The managed drmm_mode_config_init() it is no longer necessary for drivers to explicitly call drm_mode_config_cleanup, so delete it.
+3. Use drmm_helpers to allocate crtc ,planes and encoder.
+4. Move allocate crtc ,planes, encoder to bind funtion.
+5. Move rotation enum definitions to crtc layer reg bitfields.
+
+Kevin Tang (6):
+  dt-bindings: display: add Unisoc's drm master bindings
+  drm/sprd: add Unisoc's drm kms master
+  dt-bindings: display: add Unisoc's dpu bindings
+  drm/sprd: add Unisoc's drm display controller driver
+  dt-bindings: display: add Unisoc's mipi dsi controller bindings
+  drm/sprd: add Unisoc's drm mipi dsi&dphy driver
+
+ .../display/sprd/sprd,display-subsystem.yaml  |   64 +
+ .../display/sprd/sprd,sharkl3-dpu.yaml        |   77 +
+ .../display/sprd/sprd,sharkl3-dsi-host.yaml   |  102 ++
+ drivers/gpu/drm/Kconfig                       |    2 +
+ drivers/gpu/drm/Makefile                      |    1 +
+ drivers/gpu/drm/sprd/Kconfig                  |   13 +
+ drivers/gpu/drm/sprd/Makefile                 |    8 +
+ drivers/gpu/drm/sprd/dw_dsi_ctrl.c            |  794 +++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl.h            | 1475 +++++++++++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c        |  157 ++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h        |   26 +
+ drivers/gpu/drm/sprd/megacores_pll.c          |  317 ++++
+ drivers/gpu/drm/sprd/megacores_pll.h          |  146 ++
+ drivers/gpu/drm/sprd/sprd_dpu.c               |  964 +++++++++++
+ drivers/gpu/drm/sprd/sprd_dpu.h               |  109 ++
+ drivers/gpu/drm/sprd/sprd_drm.c               |  219 +++
+ drivers/gpu/drm/sprd/sprd_drm.h               |   19 +
+ drivers/gpu/drm/sprd/sprd_dsi.c               | 1132 +++++++++++++
+ drivers/gpu/drm/sprd/sprd_dsi.h               |  104 ++
+ 19 files changed, 5729 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dpu.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-host.yaml
+ create mode 100644 drivers/gpu/drm/sprd/Kconfig
+ create mode 100644 drivers/gpu/drm/sprd/Makefile
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.h
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h
+ create mode 100644 drivers/gpu/drm/sprd/megacores_pll.c
+ create mode 100644 drivers/gpu/drm/sprd/megacores_pll.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.h
+
+-- 
+2.29.0
 
