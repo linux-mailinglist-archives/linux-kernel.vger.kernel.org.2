@@ -2,369 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81428321359
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8952E321349
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:43:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbhBVJoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:44:46 -0500
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:41304 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbhBVJnO (ORCPT
+        id S230209AbhBVJmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:42:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230044AbhBVJmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:43:14 -0500
+        Mon, 22 Feb 2021 04:42:38 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F07C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:41:58 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id m188so12214145yba.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:41:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1613986991; x=1645522991;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=8UTpe6qmQnTzNV2cZ919RiLXlAwB3jtqeyIcXPKbGLs=;
-  b=pQmdo1BbiIvrz+m8kHPFZR4/9901sW6FLCvyT+98hBHoEoPC9i2cS+om
-   jnIqmE8W3vzu2nz5AIdjI+uPbwDKUgfmuFeC6F7EqYYzWpJiXsJuyUl0O
-   1i0CVQogfWFGHny4NRq0g3kuptrVKk1DXo0ZsHWbFW5PhjF42f9if18/T
-   E=;
-X-IronPort-AV: E=Sophos;i="5.81,196,1610409600"; 
-   d="scan'208";a="86462655"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 22 Feb 2021 09:42:27 +0000
-Received: from EX13D08EUB004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id AB903A1D25;
-        Mon, 22 Feb 2021 09:42:23 +0000 (UTC)
-Received: from uf6ed9c851f4556.ant.amazon.com (10.43.161.87) by
- EX13D08EUB004.ant.amazon.com (10.43.166.158) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 22 Feb 2021 09:42:08 +0000
-From:   Adrian Catangiu <acatan@amazon.com>
-To:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <qemu-devel@nongnu.org>, <kvm@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <graf@amazon.com>,
-        <rdunlap@infradead.org>, <arnd@arndb.de>, <ebiederm@xmission.com>,
-        <rppt@kernel.org>, <0x7f454c46@gmail.com>,
-        <borntraeger@de.ibm.com>, <Jason@zx2c4.com>, <jannh@google.com>,
-        <w@1wt.eu>, <colmmacc@amazon.com>, <luto@kernel.org>,
-        <tytso@mit.edu>, <ebiggers@kernel.org>, <dwmw@amazon.co.uk>,
-        <bonzini@gnu.org>, <sblbir@amazon.com>, <raduweis@amazon.com>,
-        <corbet@lwn.net>, <mst@redhat.com>, <mhocko@kernel.org>,
-        <rafael@kernel.org>, <pavel@ucw.cz>, <mpe@ellerman.id.au>,
-        <areber@redhat.com>, <ovzxemul@gmail.com>, <avagin@gmail.com>,
-        <ptikhomirov@virtuozzo.com>, <gil@azul.com>, <asmehra@redhat.com>,
-        <dgunigun@redhat.com>, <vijaysun@ca.ibm.com>, <oridgar@gmail.com>,
-        <ghammer@redhat.com>, <acatan@amazon.com>
-Subject: [PATCH v6 2/2] drivers/virt: vmgenid: add vm generation id driver
-Date:   Mon, 22 Feb 2021 11:41:26 +0200
-Message-ID: <1613986886-29493-3-git-send-email-acatan@amazon.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1613986886-29493-1-git-send-email-acatan@amazon.com>
-References: <1613986886-29493-1-git-send-email-acatan@amazon.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nnVUVgYdzlTaLNUZVHYsoq81Hf3LdGcZv8wp+xIsMKQ=;
+        b=q9HANR+ftiNoosKELJ2rEATlHBG03CRuFOXrzqx9wEUjfjiLeAl4mErAg6hxevZqSB
+         1OxRyHDNJ8yjRBD1Rl1XpX5uB6PQq6+bozZgi8PegSWEYuzU0E8CVi1FTas378d7oaRW
+         ccQRLdpa83zJYkTKhXVqORSQWGmsxVnTSTVCiPQwjOoskTn2Rkxl2FRoJ/iucIU4JqN8
+         TactrLdDk9ew2f7zWA/p0yGvJkvU0EV/pItd0URvTFEUinZJ2mFelm79PWf5ZpwEqfUw
+         xOj1lrY12MtvIAk8UcnXALo2J5TqzPkx0ELBE3TKeTv9GecRvKQBeU/jiUzwr6hC4prM
+         C1aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nnVUVgYdzlTaLNUZVHYsoq81Hf3LdGcZv8wp+xIsMKQ=;
+        b=Oc/Wt+a3Uqgi59ZW/ifeAOirL4fNjlofY0PQGhiM/K0SImZByXM+riq+lkgJlo57OD
+         L7NYlIaKdpSKRbMEE5xBARU3yFqNRz7meIkIyc3dSipzIQDCBElM4kRMDM0U9US+4Kcv
+         6GXrbJe/hJnz+PdKbArl3jdfDuFQnOEVKA2brCT5MN6lgbnVhsr7jO34vUzRbo5yX8Qb
+         WHMCgbUPdo+7q0kIuiRymgw785/ZGRmEXzbE5EscfDo3odl23k+RFIQBzMedcJwEIb7m
+         zJuJYbDlUjlf8fWbAlqam2HsHb8z02ubne1MbnKkq6aMPSYm9scD1yicB8sMTEYCwMe9
+         0vHA==
+X-Gm-Message-State: AOAM533HRS20FTEHw/iYZNVljG+NDHYXHAQ4OgsTN6Zp2eyeC0Mpr+4I
+        rAgu9k1FdyV0T/KPg38OdLcsxSN7QR5Ty8/JHMb16pcHRjs=
+X-Google-Smtp-Source: ABdhPJwbbRq9Gy63KRsXCJZ2Ujf2rr34YLhQCl4CYzSt/RlsGoatSRgVM+4Sv8pL5X7Jnkdx7BZbfLabKkf+gNIlPUM=
+X-Received: by 2002:a25:9204:: with SMTP id b4mr31636990ybo.420.1613986917930;
+ Mon, 22 Feb 2021 01:41:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.87]
-X-ClientProxiedBy: EX13D41UWC004.ant.amazon.com (10.43.162.31) To
- EX13D08EUB004.ant.amazon.com (10.43.166.158)
+References: <80753cbc54ef69b4fc136f791666197fc8b1f8bb.camel@cyberfiber.eu>
+ <CA+=Sn1njFZ-XZRHJdmjzOyvXvcMXg+oBao=wK8w3RXN_Ji=fLA@mail.gmail.com> <d9a2cdcf116ed32874ed02bd6fa60ad899ce5f50.camel@cyberfiber.eu>
+In-Reply-To: <d9a2cdcf116ed32874ed02bd6fa60ad899ce5f50.camel@cyberfiber.eu>
+From:   Andrew Pinski <pinskia@gmail.com>
+Date:   Mon, 22 Feb 2021 01:41:46 -0800
+Message-ID: <CA+=Sn1kR6jV2j2cOLhC-GBDS_NSxsw0m=K+VghBmqBSB4c2gqw@mail.gmail.com>
+Subject: Re: problems with memory allocation and the alignment check
+To:     "Michael J. Baars" <mjbaars1977.gcc@cyberfiber.eu>
+Cc:     GCC Mailing List <gcc@gcc.gnu.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The VM Generation ID is a feature defined by Microsoft (paper:
-http://go.microsoft.com/fwlink/?LinkId=260709) and supported by
-multiple hypervisor vendors.
+On Mon, Feb 22, 2021 at 1:37 AM Michael J. Baars
+<mjbaars1977.gcc@cyberfiber.eu> wrote:
+>
+> On Mon, 2021-02-22 at 01:29 -0800, Andrew Pinski wrote:
+> > On Mon, Feb 22, 2021 at 1:17 AM Michael J. Baars
+> > <mjbaars1977.gcc@cyberfiber.eu> wrote:
+> > > Hi,
+> > >
+> > > I just wrote this little program to demonstrate a possible flaw in both malloc and calloc.
+> > >
+> > > If I allocate a the simplest memory region from main(), one out of three optimization flags fail.
+> > > If I allocate the same region from a function, three out of three optimization flags fail.
+> > >
+> > > Does someone know if this really is a flaw, and if so, is it a gcc or a kernel flaw?
+> >
+> > There is no flaw.  GCC (kernel, glibc) all assume unaligned accesses
+> > on x86 will not cause an exception.
+>
+> Is this just an assumption or more like a fact? I agree with you that byte aligned is more or less the same as unaligned.
 
-The feature can be used to drive the `sysgenid` mechanism required in
-virtualized environments by software that works with local copies and
-caches of world-unique data such as random values, uuids, monotonically
-increasing counters, etc.
+It is an assumption that is even made inside GCC.  You can modify GCC
+not to assume that but you need to recompile all libraries and even
+check the assembly code that is included with most programs.
+Why are you enabling the alignment access check anyways?  What are you
+trying to do?
+If you are looking into a performance issue with unaligned accesses,
+may I suggest you look into perf to see if you can see unaligned
+accesses?
 
-The VM Generation ID is a hypervisor/hardware provided 128-bit unique
-ID that changes each time the VM is restored from a snapshot. It can be
-used to differentiate between VMs or different generations of the same
-VM.
-This VM Generation ID is exposed through an ACPI device by multiple
-hypervisor vendors.
+Thanks,
+Andrew
 
-The `vmgenid` driver acts as a backend for the `sysgenid` kernel module
-(`drivers/misc/sysgenid.c`, `Documentation/misc-devices/sysgenid.rst`)
-to drive changes to the "System Generation Id" which is further exposed
-to userspace as a monotonically increasing counter.
-
-The driver uses ACPI events to be notified by hardware of changes to the
-128-bit Vm Gen Id UUID. Since the actual UUID value is not directly exposed
-to userspace, but only used to drive the System Generation Counter, the
-driver also adds it as device randomness to improve kernel entropy
-following VM snapshot events.
-
-This patch builds on top of Or Idgar <oridgar@gmail.com>'s proposal
-https://lkml.org/lkml/2018/3/1/498
-
-Signed-off-by: Adrian Catangiu <acatan@amazon.com>
----
- Documentation/virt/vmgenid.rst |  36 ++++++++++
- MAINTAINERS                    |   7 ++
- drivers/virt/Kconfig           |  13 ++++
- drivers/virt/Makefile          |   1 +
- drivers/virt/vmgenid.c         | 153 +++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 210 insertions(+)
- create mode 100644 Documentation/virt/vmgenid.rst
- create mode 100644 drivers/virt/vmgenid.c
-
-diff --git a/Documentation/virt/vmgenid.rst b/Documentation/virt/vmgenid.rst
-new file mode 100644
-index 0000000..a429c2a3
---- /dev/null
-+++ b/Documentation/virt/vmgenid.rst
-@@ -0,0 +1,36 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=======
-+VMGENID
-+=======
-+
-+The VM Generation ID is a feature defined by Microsoft (paper:
-+http://go.microsoft.com/fwlink/?LinkId=260709) and supported by
-+multiple hypervisor vendors.
-+
-+The feature is required in virtualized environments by applications
-+that work with local copies/caches of world-unique data such as random
-+values, UUIDs, monotonically increasing counters, etc.
-+Such applications can be negatively affected by VM snapshotting when
-+the VM is either cloned or returned to an earlier point in time.
-+
-+The VM Generation ID is a simple concept through which a hypevisor
-+notifies its guest that a snapshot has taken place. The vmgenid device
-+provides a unique ID that changes each time the VM is restored from a
-+snapshot. The hardware provided UUID value can be used to differentiate
-+between VMs or different generations of the same VM.
-+
-+The VM Generation ID is exposed through an ACPI device by multiple
-+hypervisor vendors. The driver for it lives at
-+``drivers/virt/vmgenid.c``
-+
-+The ``vmgenid`` driver acts as a backend for the ``sysgenid`` kernel module
-+(``drivers/misc/sysgenid.c``, ``Documentation/misc-devices/sysgenid.rst``)
-+to drive changes to the "System Generation Id" which is further exposed
-+to userspace as a monotonically increasing counter.
-+
-+The driver uses ACPI events to be notified by hardware of changes to the
-+128-bit Vm Gen Id UUID. Since the actual UUID value is not directly exposed
-+to userspace, but only used to drive the System Generation Counter, the
-+driver also adds it as device randomness to improve kernel entropy
-+following VM snapshot events.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9ae62d5..e8b182d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19009,6 +19009,13 @@ F:	drivers/staging/vme/
- F:	drivers/vme/
- F:	include/linux/vme*
- 
-+VMGENID
-+M:	Adrian Catangiu <acatan@amazon.com>
-+L:	linux-kernel@vger.kernel.org
-+S:	Supported
-+F:	Documentation/virt/vmgenid.rst
-+F:	drivers/virt/vmgenid.c
-+
- VMWARE BALLOON DRIVER
- M:	Nadav Amit <namit@vmware.com>
- M:	"VMware, Inc." <pv-drivers@vmware.com>
-diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
-index 80c5f9c1..95d82c9 100644
---- a/drivers/virt/Kconfig
-+++ b/drivers/virt/Kconfig
-@@ -13,6 +13,19 @@ menuconfig VIRT_DRIVERS
- 
- if VIRT_DRIVERS
- 
-+config VMGENID
-+	tristate "Virtual Machine Generation ID driver"
-+	depends on ACPI && SYSGENID
-+	help
-+	  The driver uses the hypervisor provided Virtual Machine Generation ID
-+	  to drive the system generation counter mechanism exposed by sysgenid.
-+	  The vmgenid changes on VM snapshots or VM cloning. The hypervisor
-+	  provided 128-bit vmgenid is also used as device randomness to improve
-+	  kernel entropy following VM snapshot events.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called vmgenid.
-+
- config FSL_HV_MANAGER
- 	tristate "Freescale hypervisor management driver"
- 	depends on FSL_SOC
-diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
-index f28425c..889be01 100644
---- a/drivers/virt/Makefile
-+++ b/drivers/virt/Makefile
-@@ -4,6 +4,7 @@
- #
- 
- obj-$(CONFIG_FSL_HV_MANAGER)	+= fsl_hypervisor.o
-+obj-$(CONFIG_VMGENID)		+= vmgenid.o
- obj-y				+= vboxguest/
- 
- obj-$(CONFIG_NITRO_ENCLAVES)	+= nitro_enclaves/
-diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
-new file mode 100644
-index 0000000..d9d089a
---- /dev/null
-+++ b/drivers/virt/vmgenid.c
-@@ -0,0 +1,153 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Virtual Machine Generation ID driver
-+ *
-+ * Copyright (C) 2018 Red Hat Inc. All rights reserved.
-+ *
-+ * Copyright (C) 2020 Amazon. All rights reserved.
-+ *
-+ *	Authors:
-+ *	  Adrian Catangiu <acatan@amazon.com>
-+ *	  Or Idgar <oridgar@gmail.com>
-+ *	  Gal Hammer <ghammer@redhat.com>
-+ *
-+ */
-+#include <linux/acpi.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/random.h>
-+#include <linux/uuid.h>
-+#include <linux/sysgenid.h>
-+
-+#define DEV_NAME "vmgenid"
-+ACPI_MODULE_NAME(DEV_NAME);
-+
-+struct vmgenid_data {
-+	uuid_t uuid;
-+	void *uuid_iomap;
-+};
-+static struct vmgenid_data vmgenid_data;
-+
-+static int vmgenid_acpi_map(struct vmgenid_data *priv, acpi_handle handle)
-+{
-+	int i;
-+	phys_addr_t phys_addr;
-+	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-+	acpi_status status;
-+	union acpi_object *pss;
-+	union acpi_object *element;
-+
-+	status = acpi_evaluate_object(handle, "ADDR", NULL, &buffer);
-+	if (ACPI_FAILURE(status)) {
-+		ACPI_EXCEPTION((AE_INFO, status, "Evaluating ADDR"));
-+		return -ENODEV;
-+	}
-+	pss = buffer.pointer;
-+	if (!pss || pss->type != ACPI_TYPE_PACKAGE || pss->package.count != 2)
-+		return -EINVAL;
-+
-+	phys_addr = 0;
-+	for (i = 0; i < pss->package.count; i++) {
-+		element = &(pss->package.elements[i]);
-+		if (element->type != ACPI_TYPE_INTEGER)
-+			return -EINVAL;
-+		phys_addr |= element->integer.value << i * 32;
-+	}
-+
-+	priv->uuid_iomap = acpi_os_map_memory(phys_addr, sizeof(uuid_t));
-+	if (!priv->uuid_iomap) {
-+		pr_err("Could not map memory at 0x%llx, size %u\n",
-+			   phys_addr,
-+			   (u32) sizeof(uuid_t));
-+		return -ENOMEM;
-+	}
-+
-+	memcpy_fromio(&priv->uuid, priv->uuid_iomap, sizeof(uuid_t));
-+
-+	return 0;
-+}
-+
-+static int vmgenid_acpi_add(struct acpi_device *device)
-+{
-+	int ret;
-+
-+	if (!device)
-+		return -EINVAL;
-+	device->driver_data = &vmgenid_data;
-+
-+	ret = vmgenid_acpi_map(device->driver_data, device->handle);
-+	if (ret < 0) {
-+		pr_err("vmgenid: failed to map acpi device\n");
-+		device->driver_data = NULL;
-+	}
-+
-+	return ret;
-+}
-+
-+static int vmgenid_acpi_remove(struct acpi_device *device)
-+{
-+	if (!device || acpi_driver_data(device) != &vmgenid_data)
-+		return -EINVAL;
-+	device->driver_data = NULL;
-+
-+	if (vmgenid_data.uuid_iomap)
-+		acpi_os_unmap_memory(vmgenid_data.uuid_iomap, sizeof(uuid_t));
-+	vmgenid_data.uuid_iomap = NULL;
-+
-+	return 0;
-+}
-+
-+static void vmgenid_acpi_notify(struct acpi_device *device, u32 event)
-+{
-+	uuid_t old_uuid;
-+
-+	if (!device || acpi_driver_data(device) != &vmgenid_data) {
-+		pr_err("VMGENID notify with unexpected driver private data\n");
-+		return;
-+	}
-+
-+	/* update VM Generation UUID */
-+	old_uuid = vmgenid_data.uuid;
-+	memcpy_fromio(&vmgenid_data.uuid, vmgenid_data.uuid_iomap, sizeof(uuid_t));
-+
-+	if (memcmp(&old_uuid, &vmgenid_data.uuid, sizeof(uuid_t))) {
-+		/* HW uuid updated */
-+		sysgenid_bump_generation();
-+		add_device_randomness(&vmgenid_data.uuid, sizeof(uuid_t));
-+	}
-+}
-+
-+static const struct acpi_device_id vmgenid_ids[] = {
-+	{"VMGENID", 0},
-+	{"QEMUVGID", 0},
-+	{"", 0},
-+};
-+
-+static struct acpi_driver acpi_vmgenid_driver = {
-+	.name = "vm_generation_id",
-+	.ids = vmgenid_ids,
-+	.owner = THIS_MODULE,
-+	.ops = {
-+		.add = vmgenid_acpi_add,
-+		.remove = vmgenid_acpi_remove,
-+		.notify = vmgenid_acpi_notify,
-+	}
-+};
-+
-+static int __init vmgenid_init(void)
-+{
-+	return acpi_bus_register_driver(&acpi_vmgenid_driver);
-+}
-+
-+static void __exit vmgenid_exit(void)
-+{
-+	acpi_bus_unregister_driver(&acpi_vmgenid_driver);
-+}
-+
-+module_init(vmgenid_init);
-+module_exit(vmgenid_exit);
-+
-+MODULE_AUTHOR("Adrian Catangiu");
-+MODULE_DESCRIPTION("Virtual Machine Generation ID");
-+MODULE_LICENSE("GPL");
-+MODULE_VERSION("0.1");
--- 
-2.7.4
-
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
-
+>
+> >
+> > Thanks,
+> > Andrew
+> >
+> > > Regards,
+> > > Mischa.
+>
