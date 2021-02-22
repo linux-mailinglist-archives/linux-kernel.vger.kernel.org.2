@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121C63216BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF35321725
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhBVMc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:32:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45332 "EHLO mail.kernel.org"
+        id S231451AbhBVMmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:42:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230408AbhBVMQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:16:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8912064E77;
-        Mon, 22 Feb 2021 12:15:36 +0000 (UTC)
+        id S230205AbhBVMRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:17:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF98164E4B;
+        Mon, 22 Feb 2021 12:16:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996137;
-        bh=zDWUu+4/o5DA+dicrmVNP3kLcE9gasVVeWw7NqqnmXc=;
+        s=korg; t=1613996211;
+        bh=A8U3fjTZ7aTPZKWXEibHh+3klriVO/cKknkKIfI6S4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E/7kQSm1zB6d7stUH6vpqrghtyGCpIK9h1fXGHVWTvXkMKo9WOvF8OUzltPA2Boub
-         JKMPBXNI+BAVzb56ynxH9tZnJkJiezYmR2izYj0saET0uaGr670Icoh+s4JD52OeSk
-         Wf+i+UYZKfg5KiDIiwM2715TuFfhUWJ+M/xU8gKo=
+        b=hGbKNqr0LgbqRowO/j7PNMYDS2DrPW1YLda3bXSkPbf0z3Vaq9dKK8E/zh2GHTafd
+         mFQsoMua8seznTuLX8DMcKXdaN5Lb4P4MpLZF+htr0uQbLMWKypO5v+e7kIIpgvKBc
+         DLEveFMhKgA9Cu820P6r6ff7PAjnmhPGVMLQf1BA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.4 04/13] Xen/x86: dont bail early from clear_foreign_p2m_mapping()
+        stable@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 30/50] net/vmw_vsock: improve locking in vsock_connect_timeout()
 Date:   Mon, 22 Feb 2021 13:13:21 +0100
-Message-Id: <20210222121017.721219755@linuxfoundation.org>
+Message-Id: <20210222121025.619521378@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121013.583922436@linuxfoundation.org>
-References: <20210222121013.583922436@linuxfoundation.org>
+In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
+References: <20210222121019.925481519@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Norbert Slusarek <nslusarek@gmx.net>
 
-commit a35f2ef3b7376bfd0a57f7844bd7454389aae1fc upstream.
+commit 3d0bc44d39bca615b72637e340317b7899b7f911 upstream.
 
-Its sibling (set_foreign_p2m_mapping()) as well as the sibling of its
-only caller (gnttab_map_refs()) don't clean up after themselves in case
-of error. Higher level callers are expected to do so. However, in order
-for that to really clean up any partially set up state, the operation
-should not terminate upon encountering an entry in unexpected state. It
-is particularly relevant to notice here that set_foreign_p2m_mapping()
-would skip setting up a p2m entry if its grant mapping failed, but it
-would continue to set up further p2m entries as long as their mappings
-succeeded.
+A possible locking issue in vsock_connect_timeout() was recognized by
+Eric Dumazet which might cause a null pointer dereference in
+vsock_transport_cancel_pkt(). This patch assures that
+vsock_transport_cancel_pkt() will be called within the lock, so a race
+condition won't occur which could result in vsk->transport to be set to NULL.
 
-Arguably down the road set_foreign_p2m_mapping() may want its page state
-related WARN_ON() also converted to an error return.
-
-This is part of XSA-361.
-
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Fixes: 380feae0def7 ("vsock: cancel packets when failing to connect")
+Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
+Signed-off-by: Norbert Slusarek <nslusarek@gmx.net>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Link: https://lore.kernel.org/r/trinity-f8e0937a-cf0e-4d80-a76e-d9a958ba3ef1-1612535522360@3c-app-gmx-bap12
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/x86/xen/p2m.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ net/vmw_vsock/af_vsock.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -754,17 +754,15 @@ int clear_foreign_p2m_mapping(struct gnt
- 		unsigned long mfn = __pfn_to_mfn(page_to_pfn(pages[i]));
- 		unsigned long pfn = page_to_pfn(pages[i]);
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -1107,7 +1107,6 @@ static void vsock_connect_timeout(struct
+ {
+ 	struct sock *sk;
+ 	struct vsock_sock *vsk;
+-	int cancel = 0;
  
--		if (mfn == INVALID_P2M_ENTRY || !(mfn & FOREIGN_FRAME_BIT)) {
-+		if (mfn != INVALID_P2M_ENTRY && (mfn & FOREIGN_FRAME_BIT))
-+			set_phys_to_machine(pfn, INVALID_P2M_ENTRY);
-+		else
- 			ret = -EINVAL;
--			goto out;
--		}
--
--		set_phys_to_machine(pfn, INVALID_P2M_ENTRY);
+ 	vsk = container_of(work, struct vsock_sock, connect_work.work);
+ 	sk = sk_vsock(vsk);
+@@ -1118,11 +1117,9 @@ static void vsock_connect_timeout(struct
+ 		sk->sk_state = TCP_CLOSE;
+ 		sk->sk_err = ETIMEDOUT;
+ 		sk->sk_error_report(sk);
+-		cancel = 1;
++		vsock_transport_cancel_pkt(vsk);
  	}
- 	if (kunmap_ops)
- 		ret = HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref,
--						kunmap_ops, count);
--out:
-+						kunmap_ops, count) ?: ret;
-+
- 	return ret;
+ 	release_sock(sk);
+-	if (cancel)
+-		vsock_transport_cancel_pkt(vsk);
+ 
+ 	sock_put(sk);
  }
- EXPORT_SYMBOL_GPL(clear_foreign_p2m_mapping);
 
 
