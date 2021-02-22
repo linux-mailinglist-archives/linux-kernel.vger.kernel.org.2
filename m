@@ -2,175 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B85D321D12
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAAA321D15
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhBVQdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:33:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbhBVQan (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:30:43 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503F0C06178B
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:30:03 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id i14so22536502eds.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:30:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iYFZQhpI9PWFICV4j9Dcg2L4iXOc1SnJH/pDiQOJqnU=;
-        b=FTApkqpOBIB0BP8YBy7a44yeNU9F8UeIhkSaI+PnH7UEnhgfNkbHGIScuM1SUMmjEB
-         RXn68yAJGjmArwGz4ludBmIoXTQoH/qS7M6/fNoxX96FooLm2LYBWppHz/eaWP6VbRep
-         CQ8RDRfwr01rNdnmTtP2+Lsa+A7d2f3txug+/Q2AriMVeRXFK0mkV0yDvC8gwCh33gPg
-         /uCUCQA4svfc7LKBZk47yDsGyXAqNY9+9mJ9k8S3UMnhI2vOa1XeQbIydfPMzejn3pdZ
-         AjVjGMrgpMar8ekJ77xWdUDOgbPtU34a156k0xAzvp2qMuvBUkzsstB3hew7gI8YFzSU
-         8KhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iYFZQhpI9PWFICV4j9Dcg2L4iXOc1SnJH/pDiQOJqnU=;
-        b=WcihIb0hK/XjS5gAvL6RWgV9Jpx+UxowXXZuy2hr093Bgs6iS6CBmH0xz8A0sXdapB
-         v1g1rrSD9bbpy3IMiyvpA1UwdHIdgBm7inSUWGEgzHD2fFUBk4+JvKZm/LULpWQ9L4Ga
-         ptQ5T+qkzNzAlIhuoUO5LZe0/41lWfDVVdZgkJu4Qp+LSFPMMXO75v2hRfsqXoxruAyl
-         FoQMnobaMg02lRnq8altV0KSQVWVkiNB2lPK4c5FvenYPlq2u9rjdODVskxsS/PeuXcx
-         ZfzYv76IjqN7mSlbwRaydIrqtwYrpTFIMLn14pdyPqBxKhv27rV1ZynjMvqLodO/U8Cu
-         k4dQ==
-X-Gm-Message-State: AOAM533XQ9uNa4zxlivvSgjwokS01VMbUv6rg+wSE+K7BI8OPvnDT27J
-        tYyRowShBTM0tjsKFc/aI0ys21NIIbNwVzZzEobcbg==
-X-Google-Smtp-Source: ABdhPJyjqvFdfUdvrym9hYtXMn3ZicmRz2Gyn/YWDX9lE5hsJiHhBDR8hbEC6tniszfI9M6FMcf7i+hKCoz7d1XDbI8=
-X-Received: by 2002:a05:6402:26c9:: with SMTP id x9mr23507629edd.365.1614011401515;
- Mon, 22 Feb 2021 08:30:01 -0800 (PST)
+        id S231722AbhBVQeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:34:37 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:58670 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231281AbhBVQcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:32:36 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614011533; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=dCdhlnGttsQALHTe0ST0kOVHzzKLcqYwXO4t7pO+g9g=;
+ b=HejxH93/hUia7vNT/35LdMNadwDgrBrJftmE9moOxfxtd+NkIaByXZUT0NTbdJ5JERlt+LqW
+ R9EAFxvCD3hzmM8ZZ1p0bj2m2ILhMvhfF2xdfFUrxCQ06B5MnjpYLgt6bTM8sCbcUnShXBoT
+ ImHfkuWXz7mgevnsnoqmdvcqz/s=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6033dc42090a7742877fd440 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Feb 2021 16:30:58
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8D43DC433ED; Mon, 22 Feb 2021 16:30:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A3707C433C6;
+        Mon, 22 Feb 2021 16:30:57 +0000 (UTC)
 MIME-Version: 1.0
-References: <CA+G9fYtNOZ-G_RTq_Uedy-7wkFog2q+OWNbWd--eL+i2-OQ7NA@mail.gmail.com>
- <CA+icZUVdpyNC=e8Cdg2bXaKdQGgkY1Te-OEXE7jaKARw0KKrCw@mail.gmail.com>
-In-Reply-To: <CA+icZUVdpyNC=e8Cdg2bXaKdQGgkY1Te-OEXE7jaKARw0KKrCw@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 22 Feb 2021 21:59:50 +0530
-Message-ID: <CA+G9fYvGgR82mwC9Kk6fKR6Cb53u02MQJffBBZ+bTp2nNxHL7A@mail.gmail.com>
-Subject: Re: clang-12: i386: Unsupported relocation type: R_386_PLT32 (4)
-To:     sedat.dilek@gmail.com
-Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        x86-ml <x86@kernel.org>, lkft-triage@lists.linaro.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 22 Feb 2021 08:30:57 -0800
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] drm/msm/dp: add supported max link rate specified
+ from dtsi
+In-Reply-To: <161377480166.1254594.16557636343276220817@swboyd.mtv.corp.google.com>
+References: <1613681704-12539-1-git-send-email-khsieh@codeaurora.org>
+ <161368935031.1254594.14384765673800900954@swboyd.mtv.corp.google.com>
+ <7af07dcacd5b68087cc61e467e9c57ea@codeaurora.org>
+ <161377480166.1254594.16557636343276220817@swboyd.mtv.corp.google.com>
+Message-ID: <1782d03506bebe7751d33ae12a38d21c@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 at 21:44, Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Mon, Feb 22, 2021 at 5:08 PM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> >
-> > While building i386 configs on stable-rc 5.10, stable-rc 5.11 branch
-> > and mainline
-> > with clang-12 these following warnings and errors were noticed.
-> >
->
-> Hi Naresh,
->
-> Please see commit bb73d07148c405c293e576b40af37737faf23a6a
-> ("x86/build: Treat R_386_PLT32 relocation as R_386_PC32").
-> Recently accepted into Linus Git tree.
+On 2021-02-19 14:46, Stephen Boyd wrote:
+> Quoting khsieh@codeaurora.org (2021-02-19 08:39:38)
+>> On 2021-02-18 15:02, Stephen Boyd wrote:
+>> > Quoting Kuogee Hsieh (2021-02-18 12:55:04)
+>> >> Allow supported link rate to be limited to the value specified at
+>> >> dtsi. If it is not specified, then link rate is derived from dpcd
+>> >> directly. Below are examples,
+>> >> link-rate = <162000> for max link rate limited at 1.62G
+>> >> link-rate = <270000> for max link rate limited at 2.7G
+>> >> link-rate = <540000> for max link rate limited at 5.4G
+>> >> link-rate = <810000> for max link rate limited at 8.1G
+>> >>
+>> >> Changes in V2:
+>> >> -- allow supported max link rate specified from dtsi
+>> >
+>> > Please don't roll this into the patch that removes the limit. The
+>> > previous version of this patch was fine. The part that lowers the limit
+>> > back down should be another patch.
+>> >
+>> > We rejected link-rate in DT before and we should reject it upstream
+>> > again. As far as I can tell, the maximum link rate should be determined
+>> > based on the panel or the type-c port on the board. The dp controller
+>> > can always achieve HBR3, so limiting it at the dp controller is
+>> > incorrect. The driver should query the endpoints to figure out if they
+>> > want to limit the link rate. Is that done automatically sometimes by
+>> > intercepting the DPCD?
+>> 
+>> ok, i will roll back to original patch and add the second patch for 
+>> max
+>> link rate limited purpose.
+>> panel dpcd specified max link rate it supported.
+>> At driver, link rate is derived from dpcd directly since driver will 
+>> try
+>> to use the maximum supported link rate and less lane to save power.
+>> Therefore it is not possible that limit link rate base on dpcd.
+>> AS i understand we are going to do max link rate limitation is due to
+>> old redriver chip can not support HBR3.
+>> How can I acquire which type-c port on the board so that I can trigger
+>> max link rate limitation?
+>> 
+>> 
+> 
+> The driver already seems to support lowering the link rate during link
+> training. Can't we try to train at the highest rate and then downgrade
+> the link speed until it trains properly? I sort of fail to see why we
+> need to introduce a bunch of complexity around limiting the link rate 
+> on
+> certain boards if the driver can figure out that link training doesn't
+> work at HBR3 so it should try to train at HBR2 instead.
 
-Can this be backported / cherry-picked into stable-rc 5.10 and stable-rc 5.11 ?
+yes, dp driver did support down grade link rate during link training 
+procedure.
+But link training is kind of setting up agreement between host and panel 
+with assumption that there are no other limitations in between.
+The problem we are discussing here is the limitation of usb re driver 
+link rate support.
+Since we do not know how usb re driver behavior, I am not sure link 
+training will work appropriately for this case.
+It may end up link status keep toggling up and down.
 
->
-> [1] says:
->
-> Further info for the more interested:
->
->   https://github.com/ClangBuiltLinux/linux/issues/1210
->   https://sourceware.org/bugzilla/show_bug.cgi?id=27169
->   https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6
->
-> Hope that helps.
->
-> - Sedat -
->
-> [1] https://git.kernel.org/linus/bb73d07148c405c293e576b40af37737faf23a6a
->
-> > make --silent --keep-going --jobs=8
-> > O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=i386
-> > CROSS_COMPILE=i686-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
-> > clang'
-> >
-> > drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2586:9: warning: shift
-> > count >= width of type [-Wshift-count-overflow]
-> >
-> >         return hweight64(VDBOX_MASK(&i915->gt));
-> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from
-> > macro 'hweight64'
-> > #define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) :
-> > __arch_hweight64(w))
-> >                                                 ^~~~~~~~~~~~~~~~~~~~
-> > include/asm-generic/bitops/const_hweight.h:21:76: note: expanded from
-> > macro '__const_hweight64'
-> > #define __const_hweight64(w) (__const_hweight32(w) +
-> > __const_hweight32((w) >> 32))
-> >                                                                            ^  ~~
-> > include/asm-generic/bitops/const_hweight.h:20:49: note: expanded from
-> > macro '__const_hweight32'
-> > #define __const_hweight32(w) (__const_hweight16(w) +
-> > __const_hweight16((w) >> 16))
-> >                                                 ^
-> > include/asm-generic/bitops/const_hweight.h:19:48: note: expanded from
-> > macro '__const_hweight16'
-> > #define __const_hweight16(w) (__const_hweight8(w)  +
-> > __const_hweight8((w)  >> 8 ))
-> >                                                ^
-> > include/asm-generic/bitops/const_hweight.h:10:9: note: expanded from
-> > macro '__const_hweight8'
-> >          ((!!((w) & (1ULL << 0))) +     \
-> >                ^
-> > drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2586:9: warning: shift
-> > count >= width of type [-Wshift-count-overflow]
-> >         return hweight64(VDBOX_MASK(&i915->gt));
-> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > <trim>
-> >
-> > 32 warnings generated.
-> > Unsupported relocation type: R_386_PLT32 (4)
-> > make[3]: *** [arch/x86/boot/compressed/Makefile:116:
-> > arch/x86/boot/compressed/vmlinux.relocs] Error 1
-> > make[3]: *** Deleting file 'arch/x86/boot/compressed/vmlinux.relocs'
-> > make[3]: Target 'arch/x86/boot/compressed/vmlinux' not remade because of errors.
-> >
-> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> >
-> > Steps to reproduce:
-> > ---------------------------
-> > # TuxMake is a command line tool and Python library that provides
-> > # portable and repeatable Linux kernel builds across a variety of
-> > # architectures, toolchains, kernel configurations, and make targets.
-> > #
-> > # TuxMake supports the concept of runtimes.
-> > # See https://docs.tuxmake.org/runtimes/, for that to work it requires
-> > # that you install podman or docker on your system.
-> > #
-> > # To install tuxmake on your system globally:
-> > # sudo pip3 install -U tuxmake
-> > #
-> > # See https://docs.tuxmake.org/ for complete documentation.
-> >
-> > tuxmake --runtime podman --target-arch i386 --toolchain clang-12
-> > --kconfig defconfig  --kconfig-add
-> > https://builds.tuxbuild.com/1opxSKxZuRowPsiOsSJ0IoUOXOt/config
-> >
-> > --
-> > Linaro LKFT
-> > https://lkft.linaro.org
+Both link-lane and link-rate specified at dtsi are for the limitation of 
+Trogdor hardware platform.
+Both link-lane and link-rate specified at dtsi are NOT for panel since 
+panel have specified its capability at its DPCD.
 
-- Naresh
+
+
+
+
+
+
+
