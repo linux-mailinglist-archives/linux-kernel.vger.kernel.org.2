@@ -2,92 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F86320FC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 04:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFECD320FC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 04:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhBVDcS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Feb 2021 22:32:18 -0500
-Received: from mail.kingsoft.com ([114.255.44.146]:44910 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229889AbhBVDcQ (ORCPT
+        id S230139AbhBVDcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 22:32:47 -0500
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:39861
+        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S230110AbhBVDcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 22:32:16 -0500
-X-AuditID: 0a580157-f39ff7000005df43-0f-60331f5b9f21
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 22.62.57155.B5F13306; Mon, 22 Feb 2021 11:04:59 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 22 Feb
- 2021 11:31:24 +0800
-Date:   Mon, 22 Feb 2021 11:31:24 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     <tony.luck@intel.com>, <bp@alien8.de>, <mingo@redhat.com>,
-        <yangfeng1@kingsoft.com>, <yaoaili@kingsoft.com>
-CC:     <tglx@linutronix.de>, <x86@kernel.org>, <hpa@zytor.com>,
-        <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: x86/mce: fix wrong no-return-ip logic in do_machine_check()
-Message-ID: <20210222113124.35f2d552@alex-virtual-machine>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrKLMWRmVeSWpSXmKPExsXCFcGooBstb5xg0NSlbPF5wz82i2kbxS0u
-        nGpgsri8aw6bxaUDC5gsNm+aymzx5sI9FosfGx6zOnB4fG/tY/FYvOclk8emVZ1sHu/OnWP3
-        eL/vKpvH501yHidavrAGsEdx2aSk5mSWpRbp2yVwZXxdNpel4ChXRX97J0sD4xWOLkZODgkB
-        E4ne9ycZuxi5OIQEpjNJtC7YygThvGKUuPdoFgtIFYuAqsTrvU2MIDYbkL3r3ixWEFtEoFBi
-        wYGDQA0cHMwC1RKd/8tBTGEBF4n5V1hATF4BK4l3h2NAivkFxCR6r/xnglhrL9G2ZRHYQF4B
-        QYmTM5+ALWIW0JE4seoYM4StLbFs4WswW0hAUeLwkl/sEL1KEke6Z7BB2LESy+a9Yp3AKDgL
-        yahZSEbNQjJqASPzKkaW4tx0w02MkJAP38E4r+mj3iFGJg7GQ4wSHMxKIrxsd40ShHhTEiur
-        Uovy44tKc1KLDzFKc7AoifOKOfIlCAmkJ5akZqemFqQWwWSZODilGpgCwhg6S+VzFv7+XDnX
-        eZpgjXVA7K/Te3ZMSpavqdn+a4mF24LqX1ZehUrJR/cIV8x1VvBm8D+1wD6XL/53wam1F2Vu
-        HtJQuHMp4abmTrNF943eZLEmMJ79rLAz+tFHpmc/dORl4pdt3d53xjivrlaqlZ9vvfeOIBej
-        tbaPnr+L9hWoXNt7KODoT7bGGWfKPk/h+n9dhUn4MD9b75l0dZmfmy1WbRZiVGJfmXr22tr8
-        7zJeDnlu7AyXmAqNZcv7bB+5Onb0X95xu+B9TvXaz6dWpZ/Zf1yoPrnOK11a1WjZ+/LD9xYr
-        f+b/KFfpbe3VFCjP1PHz0vNzfkwml3W7NhTPVrCWVhF++rO36ZgOvxJLcUaioRZzUXEiAP2d
-        LHToAgAA
+        Sun, 21 Feb 2021 22:32:39 -0500
+Received: from centos7u5.localdomain (unknown [202.43.158.76])
+        by c1app2 (Coremail) with SMTP id AgINCgBXXLiXJTNgxOMTAw--.1315S3;
+        Mon, 22 Feb 2021 11:31:35 +0800 (CST)
+From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Subject: [PATCH] mm/interval_tree: add comments to improve code reading
+Date:   Mon, 22 Feb 2021 11:31:35 +0800
+Message-Id: <1613964695-17614-1-git-send-email-daizhiyuan@phytium.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AgINCgBXXLiXJTNgxOMTAw--.1315S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrKF4xKFy7tFy5XF15Zry8AFb_yoWfXwb_Gr
+        W8Jr1j9a4Yqrna93s8CF4YyryF9wsYkF9Yya4rXayYk34qgayrJF17Cr1rZryI9F4Svr4Y
+        qF9Fq3y3Kr4DWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJV
+        W0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gr4l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUjhL8DUUUU
+X-Originating-IP: [202.43.158.76]
+X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From commit b2f9d678e28c ("x86/mce: Check for faults tagged in
-EXTABLE_CLASS_FAULT exception table entries"), When there is a
-memory MCE_AR_SEVERITY error with no return ip, Only a SIGBUS
-signal is send to current. As the page is not poisoned, the SIGBUS
-process coredump step in kernel will touch the error page again,
-whick result to a fatal error. We need to poison the page and then
-kill current in memory-failure module.
+Add a comment explain the value of the ISSTATIC parameter,
+Inform the reader that this is not a coding style issue.
 
-So fix it using the orinigal checking method.
-
-Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
 ---
- arch/x86/kernel/cpu/mce/core.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ mm/interval_tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index e133ce1e562b..ae09b0279422 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1413,9 +1413,10 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 	if ((m.cs & 3) == 3) {
- 		/* If this triggers there is no way to recover. Die hard. */
- 		BUG_ON(!on_thread_stack() || !user_mode(regs));
--
--		queue_task_work(&m, kill_current_task);
--
-+		if (worst == MCE_AR_SEVERITY)
-+			queue_task_work(&m, 0);
-+		else if (kill_current_task)
-+			queue_task_work(&m, kill_current_task);
- 	} else {
- 		/*
- 		 * Handle an MCE which has happened in kernel space but from
+diff --git a/mm/interval_tree.c b/mm/interval_tree.c
+index 11c75fb..32e390c 100644
+--- a/mm/interval_tree.c
++++ b/mm/interval_tree.c
+@@ -22,7 +22,7 @@ static inline unsigned long vma_last_pgoff(struct vm_area_struct *v)
+ 
+ INTERVAL_TREE_DEFINE(struct vm_area_struct, shared.rb,
+ 		     unsigned long, shared.rb_subtree_last,
+-		     vma_start_pgoff, vma_last_pgoff,, vma_interval_tree)
++		     vma_start_pgoff, vma_last_pgoff, /* empty */, vma_interval_tree)
+ 
+ /* Insert node immediately after prev in the interval tree */
+ void vma_interval_tree_insert_after(struct vm_area_struct *node,
 -- 
-2.25.1
+1.8.3.1
 
