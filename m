@@ -2,144 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FA4321010
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 05:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A55A4321011
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 05:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhBVEp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 23:45:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27405 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230044AbhBVEpv (ORCPT
+        id S230117AbhBVEtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 23:49:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230029AbhBVEtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 23:45:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613969063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cd7HPIL9dlAr5R+7k2bPsLA7MXZ+jz1lBX7uDhHKXsU=;
-        b=NizrVJI8X0rrVNOUnuomqDRAPlRvDnyIlk5MBg60K+gBzV0451fKNW/JiKyiXQP55beOQT
-        cc0gGJSB9hGUrNS9VsuOFQ3wqY5OjA6+E3MfcfxLagtkuXhF7UPBSZ4Uw4d10zeeMHU4CS
-        cre5Rm7SFHZ4WrsU7cr/RD0ZPjAnSBc=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-102-Tw3WugusMqyVXhe-KJ4kkg-1; Sun, 21 Feb 2021 23:44:22 -0500
-X-MC-Unique: Tw3WugusMqyVXhe-KJ4kkg-1
-Received: by mail-pl1-f200.google.com with SMTP id p1so1044095plf.14
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 20:44:21 -0800 (PST)
+        Sun, 21 Feb 2021 23:49:15 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEA2C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 20:48:34 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id u4so8829523lja.3
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 20:48:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T9VDWpnb5lfzit8yS6WyeZO6cXnnRi0ASXtFAlOXtGQ=;
+        b=ZQoECtYg95T1WUJ7rlkNUoB2fEylQMU7nwAvu80LUOe9PriPH731NwSWpIt3UMdrwy
+         q2TZkMl+WJUbgbyN4Y7yRP71IC+3SNBAlZi5a7lDpiNaCS6L1BDgdeD8aL+ys9cS98s9
+         BySvhwM1g7Tx9AOfo3eIoWJ6VNN42rMKoJBZgv+GDc2hQyZP29/uHQ7NuXRJ9qk1DRQM
+         VcmLLBO28lo/fl48XKkL+VMaweH8G9GCftKvoz143k++SiUEIJ5YOLIeJq2Vw9QrF2y8
+         /VEvOioie6CNb/v6xawdP2amBGcX2VuVGOND59Pwm7xAFt+t9OwZzs4RIRbaO3PaeU9J
+         JaDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cd7HPIL9dlAr5R+7k2bPsLA7MXZ+jz1lBX7uDhHKXsU=;
-        b=RTxIWziA+5iIdgTiRZf54tstyV6PHWyD+/B/c4n5oyjI7R/LWmNrYVhS+uT9t0wCLj
-         aFLJ8+5cbr2QnipBFYvvRftnWqjYcm4NALexjnQI6XaPeUrORvdOPc8gGiwnuX6rva7u
-         2hS1WcY4QTRGzm9Ye2eyXNTMRafNEB8nzVlSOcvsQkT7rt7696RreeC2tJAOOKPk93Y/
-         7LQ3EFkg8h3rPCedvZkW9j1AovkttgZtrcx6YEp3Mbnyrv7mCDNrM+IOkccT3x7Y7nhM
-         TOVEI4I+qjdpOEcDqyE7DEJC1GZ9WHDaCUJc1ljr0pwhDAnMFjBX4okFJ5KUmxZbCXEa
-         Yj4g==
-X-Gm-Message-State: AOAM531PpfXXwQjXOHiGV4wzetXJ382IyPLf58to+YdrLKXad18hEqdN
-        GgfVflcA3+s1i/L9lI11dcLZZbYdoYEh3DDpD89ET0anofxGDBlW/dM82Y3Fq9Fn2A/bCgO1BXp
-        GjFUhJuxMvXeopXyOJC6R2nqZ
-X-Received: by 2002:a17:902:bb8c:b029:dc:2e5e:2b2 with SMTP id m12-20020a170902bb8cb02900dc2e5e02b2mr13242186pls.10.1613969060907;
-        Sun, 21 Feb 2021 20:44:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxOa2eb4CQrT/ncR+h9iFyBY5fki5umtXxuZB9gaBTvUfQP8AGxjQHVIItflA8v5pCqvRsdFw==
-X-Received: by 2002:a17:902:bb8c:b029:dc:2e5e:2b2 with SMTP id m12-20020a170902bb8cb02900dc2e5e02b2mr13242172pls.10.1613969060675;
-        Sun, 21 Feb 2021 20:44:20 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l11sm16495311pfd.194.2021.02.21.20.44.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 20:44:20 -0800 (PST)
-Date:   Mon, 22 Feb 2021 12:44:10 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Huang Jianan <huangjianan@oppo.com>
-Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        guoweichao@oppo.com, zhangshiming@oppo.com
-Subject: Re: [PATCH] erofs: support adjust lz4 history window size
-Message-ID: <20210222044410.GA1038521@xiangao.remote.csb>
-References: <20210218120049.17265-1-huangjianan@oppo.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T9VDWpnb5lfzit8yS6WyeZO6cXnnRi0ASXtFAlOXtGQ=;
+        b=dQmwFS2pFuLaxY6kQoVVMJMYb9V+qk0HuGU+JztHi5jNRJEpOeMEEhT86lGBCqo0at
+         tPHnu7BQYe5jllIlfmAVVUaOsE7HJTvr7qTPxPycWAsbMss3+Q7++XB1mZJiY6q+xPLX
+         fjXjZZi4oXL+EudxPPdbdr7ZDT3Dc1t27mrWtx7l14/oaRVnN/EMk3GPWdiZQLPBm/M/
+         PDTyRfm0MQz5LJmuz4OOmtSLjSW0dWG4KoBUheWXbE/5tfXYWw55M+z1CsYK+KKmPVpx
+         u+ibDfhTMtbqBt1srTEyf8SQ+sDf6vvOs0AVGrG/T5sFjRNc5+h5kfO6GNL7COmXbRvY
+         AL6g==
+X-Gm-Message-State: AOAM531KIzXdAnO+WWmZBfPH1iMzT77yoqVrrV18zNqom+qVNZfBvKCR
+        O1BS5fEzxweZotpwdUMmDSLyBun0u+FKwxE0Wt99kH1dSWk=
+X-Google-Smtp-Source: ABdhPJzlpPEGc66709Uzvnm1Zpg1ZXQG6r4s65eRlBlZOsGe+xlTtKrspZuH9YpF0jiHOjquWIq8/vtjeAmZojXDg80=
+X-Received: by 2002:a19:c194:: with SMTP id r142mr4959749lff.342.1613969312967;
+ Sun, 21 Feb 2021 20:48:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210218120049.17265-1-huangjianan@oppo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210221115802.19788-1-dwaipayanray1@gmail.com>
+ <20210221115802.19788-2-dwaipayanray1@gmail.com> <46c3b16602f36858b194b22dfbdb2150e25f5d94.camel@perches.com>
+ <CABJPP5CJKUeaxUqKzuJD5pd2HsHKcAx9x3iCm6W+Z8AuXiR5Rg@mail.gmail.com> <7bd4520e2552e1a9ae7eccb812c197d6a955e85c.camel@perches.com>
+In-Reply-To: <7bd4520e2552e1a9ae7eccb812c197d6a955e85c.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Mon, 22 Feb 2021 10:18:33 +0530
+Message-ID: <CABJPP5BkFj1N+PNpLmT4J_kNuD0q14EvmOQoLEkA8760iG4TfQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] checkpatch: add verbose mode
+To:     Joe Perches <joe@perches.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jianan,
+On Mon, Feb 22, 2021 at 8:14 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2021-02-22 at 00:05 +0530, Dwaipayan Ray wrote:
+> > On Sun, Feb 21, 2021 at 11:36 PM Joe Perches <joe@perches.com> wrote:
+> > >
+> > > On Sun, 2021-02-21 at 17:28 +0530, Dwaipayan Ray wrote:
+> > > > Add a new verbose mode to checkpatch.pl to emit additional verbose
+> > > > test descriptions. The verbose mode is optional and can be enabled
+> > > > by the flag -v or --verbose.
+> > >
+> > > OK, maybe add color coding to the list_types output.
+> > Okay, nice idea!
+> []
+> > Sure, I will do something like this.
+> > Are there any other improvements you can see right now
+> > or will the coloring thing suffice?
+>
+> A lot more descriptive output for the .rst file and
+> of course a lot more of the types documented...
+>
 
-On Thu, Feb 18, 2021 at 08:00:49PM +0800, Huang Jianan via Linux-erofs wrote:
-> From: huangjianan <huangjianan@oppo.com>
-> 
-> lz4 uses LZ4_DISTANCE_MAX to record history preservation. When
-> using rolling decompression, a block with a higher compression
-> ratio will cause a larger memory allocation (up to 64k). It may
-> cause a large resource burden in extreme cases on devices with
-> small memory and a large number of concurrent IOs. So appropriately
-> reducing this value can improve performance.
-> 
-> Decreasing this value will reduce the compression ratio (except
-> when input_size <LZ4_DISTANCE_MAX). But considering that erofs
-> currently only supports 4k output, reducing this value will not
-> significantly reduce the compression benefits.
-> 
-> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-> ---
->  fs/erofs/decompressor.c | 13 +++++++++----
->  fs/erofs/erofs_fs.h     |  3 ++-
->  fs/erofs/internal.h     |  3 +++
->  fs/erofs/super.c        |  3 +++
->  4 files changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-> index 1cb1ffd10569..94ae56b3ff71 100644
-> --- a/fs/erofs/decompressor.c
-> +++ b/fs/erofs/decompressor.c
-> @@ -36,22 +36,27 @@ static int z_erofs_lz4_prepare_destpages(struct z_erofs_decompress_req *rq,
->  	struct page *availables[LZ4_MAX_DISTANCE_PAGES] = { NULL };
->  	unsigned long bounced[DIV_ROUND_UP(LZ4_MAX_DISTANCE_PAGES,
->  					   BITS_PER_LONG)] = { 0 };
-> +	unsigned int lz4_distance_pages = LZ4_MAX_DISTANCE_PAGES;
->  	void *kaddr = NULL;
->  	unsigned int i, j, top;
->  
-> +	if (EROFS_SB(rq->sb)->compr_alg)
-> +		lz4_distance_pages = DIV_ROUND_UP(EROFS_SB(rq->sb)->compr_alg,
-> +						  PAGE_SIZE) + 1;
-> +
+Sure I was hoping to do that over time after getting
+this series in...
 
-Thanks for your patch, I agree that will reduce runtime memory
-footpoint. and keep max sliding window ondisk in bytes (rather
-than in blocks) is better., but could we calculate lz4_distance_pages
-ahead when reading super_block?
-
-Also, in the next cycle, I'd like to introduce a bitmap for available
-algorithms (maximum 16-bit) for the next LZMA algorithm, and for each
-available algorithm introduces an on-disk variable-array like below:
-bitmap(16-bit)    2       1       0
-                ...     LZMA    LZ4
-__le16		compr_opt_off;      /* get the opt array start offset
-                                       (I think also in 4-byte) */
-
-compr alg 0 (lz4)	__le16	alg_opt_size;
-	/* next opt off = roundup(off + alg_opt_size, 4); */
-			__le16	lz4_max_distance;
-
-/* 4-byte aligned */
-compr alg x (if available)	u8	alg_opt_size;
-				...
-
-...
-
-When reading sb, first, it scans the whole bitmap, and get all the
-available algorithms in the image at once. And then read such compr
-opts one-by-one.
-
-Do you have some interest and extra time to implement it? :) That
-makes me work less since I'm debugging mbpcluster compression now...
+Nevertheless I will send the v7 in right away with the color
+code changes.
 
 Thanks,
-Gao Xiang
-
+Dwaipayan.
