@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AE832196E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3010A321971
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhBVNxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:53:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56572 "EHLO mail.kernel.org"
+        id S231639AbhBVNxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:53:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231544AbhBVMqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:46:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E171464EEF;
-        Mon, 22 Feb 2021 12:41:58 +0000 (UTC)
+        id S231577AbhBVMqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:46:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CD4F64F19;
+        Mon, 22 Feb 2021 12:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997719;
-        bh=DMiDY7+T/Yl4AmW2y0LOpioN7bouz3xHTxx4V3SaVEE=;
+        s=korg; t=1613997724;
+        bh=mKXWVJIySyeW2DYR2GVsYxGB4eiFh5S/De1yxyxounQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2L5brrkae1Py6RazjrDSl6ptrhS5+lBr9MzXk0t+VtKcu942oGekA7qSZOEJ2/1LX
-         G378OSux4VSzBIDUgKdBYXWlKbPS3srQJxNWLt1spP2W+d0h+tAke9kkELBrTwJ6ID
-         Sv8RtstM11UrCYvQw/X/t+Jc5KlFohHeu2/MBgS8=
+        b=Tu7Cva7zYX2GytBWsHZ9+s1Jt0BaI5RfcAMO6APmrCDqHUIWjVs94APUMxLrYOyGU
+         9cA4H9TrDHr5z8VfxcDVJi1Hp7vTpMZxFhAz73rU7BgM5jsmgkIILtWoW4hG7IViqm
+         isTqV694ljpfo2/9LkoiNu03uldNwKXYALqKfrxI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Theodore Tso <tytso@mit.edu>,
-        Chris Mason <clm@fb.com>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 12/49] memcg: fix a crash in wb_workfn when a device disappears
-Date:   Mon, 22 Feb 2021 13:36:10 +0100
-Message-Id: <20210222121025.659528004@linuxfoundation.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 4.9 13/49] futex: Ensure the correct return value from futex_lock_pi()
+Date:   Mon, 22 Feb 2021 13:36:11 +0100
+Message-Id: <20210222121025.806830758@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121022.546148341@linuxfoundation.org>
 References: <20210222121022.546148341@linuxfoundation.org>
@@ -43,236 +40,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 68f23b89067fdf187763e75a56087550624fdbee ]
+commit 12bb3f7f1b03d5913b3f9d4236a488aa7774dfe9 upstream
 
-Without memcg, there is a one-to-one mapping between the bdi and
-bdi_writeback structures.  In this world, things are fairly
-straightforward; the first thing bdi_unregister() does is to shutdown
-the bdi_writeback structure (or wb), and part of that writeback ensures
-that no other work queued against the wb, and that the wb is fully
-drained.
+In case that futex_lock_pi() was aborted by a signal or a timeout and the
+task returned without acquiring the rtmutex, but is the designated owner of
+the futex due to a concurrent futex_unlock_pi() fixup_owner() is invoked to
+establish consistent state. In that case it invokes fixup_pi_state_owner()
+which in turn tries to acquire the rtmutex again. If that succeeds then it
+does not propagate this success to fixup_owner() and futex_lock_pi()
+returns -EINTR or -ETIMEOUT despite having the futex locked.
 
-With memcg, however, there is a one-to-many relationship between the bdi
-and bdi_writeback structures; that is, there are multiple wb objects
-which can all point to a single bdi.  There is a refcount which prevents
-the bdi object from being released (and hence, unregistered).  So in
-theory, the bdi_unregister() *should* only get called once its refcount
-goes to zero (bdi_put will drop the refcount, and when it is zero,
-release_bdi gets called, which calls bdi_unregister).
+Return success from fixup_pi_state_owner() in all cases where the current
+task owns the rtmutex and therefore the futex and propagate it correctly
+through fixup_owner(). Fixup the other callsite which does not expect a
+positive return value.
 
-Unfortunately, del_gendisk() in block/gen_hd.c never got the memo about
-the Brave New memcg World, and calls bdi_unregister directly.  It does
-this without informing the file system, or the memcg code, or anything
-else.  This causes the root wb associated with the bdi to be
-unregistered, but none of the memcg-specific wb's are shutdown.  So when
-one of these wb's are woken up to do delayed work, they try to
-dereference their wb->bdi->dev to fetch the device name, but
-unfortunately bdi->dev is now NULL, thanks to the bdi_unregister()
-called by del_gendisk().  As a result, *boom*.
-
-Fortunately, it looks like the rest of the writeback path is perfectly
-happy with bdi->dev and bdi->owner being NULL, so the simplest fix is to
-create a bdi_dev_name() function which can handle bdi->dev being NULL.
-This also allows us to bulletproof the writeback tracepoints to prevent
-them from dereferencing a NULL pointer and crashing the kernel if one is
-tracing with memcg's enabled, and an iSCSI device dies or a USB storage
-stick is pulled.
-
-The most common way of triggering this will be hotremoval of a device
-while writeback with memcg enabled is going on.  It was triggering
-several times a day in a heavily loaded production environment.
-
-Google Bug Id: 145475544
-
-Link: https://lore.kernel.org/r/20191227194829.150110-1-tytso@mit.edu
-Link: http://lkml.kernel.org/r/20191228005211.163952-1-tytso@mit.edu
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: Chris Mason <clm@fb.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[Lee: Back-ported in support of a previous futex attempt]
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/fs-writeback.c                |  2 +-
- include/linux/backing-dev.h      | 10 ++++++++++
- include/trace/events/writeback.h | 29 +++++++++++++----------------
- mm/backing-dev.c                 |  1 +
- 4 files changed, 25 insertions(+), 17 deletions(-)
+ kernel/futex.c |   24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index f978ae2bb846f..2de656ecc48bb 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -1971,7 +1971,7 @@ void wb_workfn(struct work_struct *work)
- 						struct bdi_writeback, dwork);
- 	long pages_written;
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -2322,7 +2322,7 @@ retry:
+ 		}
  
--	set_worker_desc("flush-%s", dev_name(wb->bdi->dev));
-+	set_worker_desc("flush-%s", bdi_dev_name(wb->bdi));
- 	current->flags |= PF_SWAPWRITE;
+ 		if (__rt_mutex_futex_trylock(&pi_state->pi_mutex)) {
+-			/* We got the lock after all, nothing to fix. */
++			/* We got the lock. pi_state is correct. Tell caller. */
+ 			return 1;
+ 		}
  
- 	if (likely(!current_is_workqueue_rescuer() ||
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index 63f17b106a4a6..57db558c9a616 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -12,6 +12,7 @@
- #include <linux/fs.h>
- #include <linux/sched.h>
- #include <linux/blkdev.h>
-+#include <linux/device.h>
- #include <linux/writeback.h>
- #include <linux/blk-cgroup.h>
- #include <linux/backing-dev-defs.h>
-@@ -517,4 +518,13 @@ static inline int bdi_rw_congested(struct backing_dev_info *bdi)
- 				  (1 << WB_async_congested));
+@@ -2364,7 +2364,7 @@ retry:
+ 	 */
+ 	pi_state_update_owner(pi_state, newowner);
+ 
+-	return 0;
++	return argowner == current;
+ 
+ 	/*
+ 	 * To handle the page fault we need to drop the hash bucket
+@@ -2447,8 +2447,6 @@ static long futex_wait_restart(struct re
+  */
+ static int fixup_owner(u32 __user *uaddr, struct futex_q *q, int locked)
+ {
+-	int ret = 0;
+-
+ 	if (locked) {
+ 		/*
+ 		 * Got the lock. We might not be the anticipated owner if we
+@@ -2459,8 +2457,8 @@ static int fixup_owner(u32 __user *uaddr
+ 		 * stable state, anything else needs more attention.
+ 		 */
+ 		if (q->pi_state->owner != current)
+-			ret = fixup_pi_state_owner(uaddr, q, current);
+-		goto out;
++			return fixup_pi_state_owner(uaddr, q, current);
++		return 1;
+ 	}
+ 
+ 	/*
+@@ -2471,10 +2469,8 @@ static int fixup_owner(u32 __user *uaddr
+ 	 * Another speculative read; pi_state->owner == current is unstable
+ 	 * but needs our attention.
+ 	 */
+-	if (q->pi_state->owner == current) {
+-		ret = fixup_pi_state_owner(uaddr, q, NULL);
+-		goto out;
+-	}
++	if (q->pi_state->owner == current)
++		return fixup_pi_state_owner(uaddr, q, NULL);
+ 
+ 	/*
+ 	 * Paranoia check. If we did not take the lock, then we should not be
+@@ -2483,8 +2479,7 @@ static int fixup_owner(u32 __user *uaddr
+ 	if (WARN_ON_ONCE(rt_mutex_owner(&q->pi_state->pi_mutex) == current))
+ 		return fixup_pi_state_owner(uaddr, q, current);
+ 
+-out:
+-	return ret ? ret : locked;
++	return 0;
  }
  
-+extern const char *bdi_unknown_name;
-+
-+static inline const char *bdi_dev_name(struct backing_dev_info *bdi)
-+{
-+	if (!bdi || !bdi->dev)
-+		return bdi_unknown_name;
-+	return dev_name(bdi->dev);
-+}
-+
- #endif	/* _LINUX_BACKING_DEV_H */
-diff --git a/include/trace/events/writeback.h b/include/trace/events/writeback.h
-index c6cea40e6e6fc..49a72adc7135c 100644
---- a/include/trace/events/writeback.h
-+++ b/include/trace/events/writeback.h
-@@ -66,8 +66,8 @@ TRACE_EVENT(writeback_dirty_page,
- 
- 	TP_fast_assign(
- 		strscpy_pad(__entry->name,
--			    mapping ? dev_name(inode_to_bdi(mapping->host)->dev) : "(unknown)",
--			    32);
-+			    bdi_dev_name(mapping ? inode_to_bdi(mapping->host) :
-+					 NULL), 32);
- 		__entry->ino = mapping ? mapping->host->i_ino : 0;
- 		__entry->index = page->index;
- 	),
-@@ -96,8 +96,7 @@ DECLARE_EVENT_CLASS(writeback_dirty_inode_template,
- 		struct backing_dev_info *bdi = inode_to_bdi(inode);
- 
- 		/* may be called for files on pseudo FSes w/ unregistered bdi */
--		strscpy_pad(__entry->name,
--			    bdi->dev ? dev_name(bdi->dev) : "(unknown)", 32);
-+		strscpy_pad(__entry->name, bdi_dev_name(bdi), 32);
- 		__entry->ino		= inode->i_ino;
- 		__entry->state		= inode->i_state;
- 		__entry->flags		= flags;
-@@ -177,7 +176,7 @@ DECLARE_EVENT_CLASS(writeback_write_inode_template,
- 
- 	TP_fast_assign(
- 		strscpy_pad(__entry->name,
--			    dev_name(inode_to_bdi(inode)->dev), 32);
-+			    bdi_dev_name(inode_to_bdi(inode)), 32);
- 		__entry->ino		= inode->i_ino;
- 		__entry->sync_mode	= wbc->sync_mode;
- 		__entry->cgroup_ino	= __trace_wbc_assign_cgroup(wbc);
-@@ -220,9 +219,7 @@ DECLARE_EVENT_CLASS(writeback_work_class,
- 		__field(unsigned int, cgroup_ino)
- 	),
- 	TP_fast_assign(
--		strscpy_pad(__entry->name,
--			    wb->bdi->dev ? dev_name(wb->bdi->dev) :
--			    "(unknown)", 32);
-+		strscpy_pad(__entry->name, bdi_dev_name(wb->bdi), 32);
- 		__entry->nr_pages = work->nr_pages;
- 		__entry->sb_dev = work->sb ? work->sb->s_dev : 0;
- 		__entry->sync_mode = work->sync_mode;
-@@ -275,7 +272,7 @@ DECLARE_EVENT_CLASS(writeback_class,
- 		__field(unsigned int, cgroup_ino)
- 	),
- 	TP_fast_assign(
--		strscpy_pad(__entry->name, dev_name(wb->bdi->dev), 32);
-+		strscpy_pad(__entry->name, bdi_dev_name(wb->bdi), 32);
- 		__entry->cgroup_ino = __trace_wb_assign_cgroup(wb);
- 	),
- 	TP_printk("bdi %s: cgroup_ino=%u",
-@@ -298,7 +295,7 @@ TRACE_EVENT(writeback_bdi_register,
- 		__array(char, name, 32)
- 	),
- 	TP_fast_assign(
--		strscpy_pad(__entry->name, dev_name(bdi->dev), 32);
-+		strscpy_pad(__entry->name, bdi_dev_name(bdi), 32);
- 	),
- 	TP_printk("bdi %s",
- 		__entry->name
-@@ -323,7 +320,7 @@ DECLARE_EVENT_CLASS(wbc_class,
- 	),
- 
- 	TP_fast_assign(
--		strscpy_pad(__entry->name, dev_name(bdi->dev), 32);
-+		strscpy_pad(__entry->name, bdi_dev_name(bdi), 32);
- 		__entry->nr_to_write	= wbc->nr_to_write;
- 		__entry->pages_skipped	= wbc->pages_skipped;
- 		__entry->sync_mode	= wbc->sync_mode;
-@@ -374,7 +371,7 @@ TRACE_EVENT(writeback_queue_io,
- 		__field(unsigned int,	cgroup_ino)
- 	),
- 	TP_fast_assign(
--		strncpy_pad(__entry->name, dev_name(wb->bdi->dev), 32);
-+		strscpy_pad(__entry->name, bdi_dev_name(wb->bdi), 32);
- 		__entry->older	= dirtied_before;
- 		__entry->age	= (jiffies - dirtied_before) * 1000 / HZ;
- 		__entry->moved	= moved;
-@@ -459,7 +456,7 @@ TRACE_EVENT(bdi_dirty_ratelimit,
- 	),
- 
- 	TP_fast_assign(
--		strscpy_pad(__entry->bdi, dev_name(wb->bdi->dev), 32);
-+		strscpy_pad(__entry->bdi, bdi_dev_name(wb->bdi), 32);
- 		__entry->write_bw	= KBps(wb->write_bandwidth);
- 		__entry->avg_write_bw	= KBps(wb->avg_write_bandwidth);
- 		__entry->dirty_rate	= KBps(dirty_rate);
-@@ -524,7 +521,7 @@ TRACE_EVENT(balance_dirty_pages,
- 
- 	TP_fast_assign(
- 		unsigned long freerun = (thresh + bg_thresh) / 2;
--		strscpy_pad(__entry->bdi, dev_name(wb->bdi->dev), 32);
-+		strscpy_pad(__entry->bdi, bdi_dev_name(wb->bdi), 32);
- 
- 		__entry->limit		= global_wb_domain.dirty_limit;
- 		__entry->setpoint	= (global_wb_domain.dirty_limit +
-@@ -585,7 +582,7 @@ TRACE_EVENT(writeback_sb_inodes_requeue,
- 
- 	TP_fast_assign(
- 		strscpy_pad(__entry->name,
--			    dev_name(inode_to_bdi(inode)->dev), 32);
-+			    bdi_dev_name(inode_to_bdi(inode)), 32);
- 		__entry->ino		= inode->i_ino;
- 		__entry->state		= inode->i_state;
- 		__entry->dirtied_when	= inode->dirtied_when;
-@@ -659,7 +656,7 @@ DECLARE_EVENT_CLASS(writeback_single_inode_template,
- 
- 	TP_fast_assign(
- 		strscpy_pad(__entry->name,
--			    dev_name(inode_to_bdi(inode)->dev), 32);
-+			    bdi_dev_name(inode_to_bdi(inode)), 32);
- 		__entry->ino		= inode->i_ino;
- 		__entry->state		= inode->i_state;
- 		__entry->dirtied_when	= inode->dirtied_when;
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 113b7d3170799..aad61d0175a1c 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -21,6 +21,7 @@ struct backing_dev_info noop_backing_dev_info = {
- EXPORT_SYMBOL_GPL(noop_backing_dev_info);
- 
- static struct class *bdi_class;
-+const char *bdi_unknown_name = "(unknown)";
- 
- /*
-  * bdi_lock protects updates to bdi_list. bdi_list has RCU reader side
--- 
-2.27.0
-
+ /**
+@@ -3106,6 +3101,11 @@ static int futex_wait_requeue_pi(u32 __u
+ 			 */
+ 			put_pi_state(q.pi_state);
+ 			spin_unlock(q.lock_ptr);
++			/*
++			 * Adjust the return value. It's either -EFAULT or
++			 * success (1) but the caller expects 0 for success.
++			 */
++			ret = ret < 0 ? ret : 0;
+ 		}
+ 	} else {
+ 		struct rt_mutex *pi_mutex;
 
 
