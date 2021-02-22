@@ -2,388 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBDD0321C70
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21672321C8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhBVQJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbhBVQHJ (ORCPT
+        id S231237AbhBVQOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:14:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28061 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230441AbhBVQOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:07:09 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0851DC061786;
-        Mon, 22 Feb 2021 08:06:02 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id b3so19640316wrj.5;
-        Mon, 22 Feb 2021 08:06:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nbAcmhlGdjKSXvwOTcRLldAj5yGwOd44DYbhKMd4N98=;
-        b=rbaSKiu1dCcBLjobCvCLJk5Wyfoqo2Q9/mjM0yBMS2aIEwlCJ2geyVEqoY3uPIY4F+
-         +XiarhhQcXnHgnvAfR+uEh15t5Sqw3t7TEo3HJiT8pkbOFrbDZLR/xEAg3QbqvuxC5Fu
-         mmJaXIQ3R+xvh4pbU72lEnHplzR5fMSVCS0mxa+uut8d2tZY9Neq8tPYh1i/Q/o5IWrh
-         PDLmGDDtHWT9b16yvp+YWKkqMyedwBTODRZULViwiM+LZcW0/ZSnhs7uzFEIQRQsYISJ
-         ET0e2xN4awPAFpTipJGEs2dmrPOHoTX0AXtVTYwPAZMYumEM6l+PI2amluSorouQmzFE
-         qwdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nbAcmhlGdjKSXvwOTcRLldAj5yGwOd44DYbhKMd4N98=;
-        b=N1MfPs3uwUEWcEkbihfS1loDrJ2qdtuAY2HWaiZCf0mNb3KYzIG59IkgomiMTLrDgF
-         5YCk/npq+eqI/H0uvVp16dbPkF9AwIFF5NMylQWKRq5PvXSIaj62fwqR+C3PCUk147GD
-         EsSLv2yCwI16+PolN1jhbaCVYzPkfkkbKC62NVa2NloWK/EovBs75zmVKF79CUCmU6vf
-         GknnGFqDxU/b3HJWbe3b0FooN0hg93uFYXM86bEY1zPoGfYtRKDnfIYlEP3+0559w7OY
-         05G33EzJWuoygzANnPXJiwHHrmZppa3jxr3WS7m4Pmb2LoN6TFFr1MJhN8BYXNUzHfp5
-         Lh6w==
-X-Gm-Message-State: AOAM5304vJAfL0PxXH8URaSeWWQiZjzqNfqG1Q6cV+6cZbBIKwCBRoRB
-        lHPFCkBeBo7RL166O32HRooIj+vIMHnvJQE8N1U=
-X-Google-Smtp-Source: ABdhPJyHopO6mHb5EqDxulpT9Kha5K6c7fkNDS9RDfIbaq/fasNvz9dIU6/yCZ0mtcRfR7Y+jsJJYiajcjUQhBWEM9k=
-X-Received: by 2002:adf:dd44:: with SMTP id u4mr4590975wrm.327.1614009960544;
- Mon, 22 Feb 2021 08:06:00 -0800 (PST)
+        Mon, 22 Feb 2021 11:14:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614010367;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kzM1nmkZLUtXSCoFXOxh9S0ee7AIDfHgUq8V6oXQdwk=;
+        b=NuPy0oO+Aw7L6Hzjjc2kGtCSGDx7XIW8+dyZZtNQVi7lJlRIfgy5426Ew3WjiRprv3qhdL
+        6aMV1xCpTLxdhK3T+2sVK5e83U1EYOxl6nBPlZPxyIRo/DdGIpaZ0g4i8Wdih2ab3EmpLm
+        6P1xMoiPgbBjY1dJH4NUxKx2N2uhqPM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-hh-wV3niPY-5m29u9xRw2w-1; Mon, 22 Feb 2021 11:12:41 -0500
+X-MC-Unique: hh-wV3niPY-5m29u9xRw2w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D55D4107ACE6;
+        Mon, 22 Feb 2021 16:12:38 +0000 (UTC)
+Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4A94F5D6B1;
+        Mon, 22 Feb 2021 16:12:30 +0000 (UTC)
+Subject: Re: [PATCH v11 01/13] vfio: VFIO_IOMMU_SET_PASID_TABLE
+To:     Keqian Zhu <zhukeqian1@huawei.com>, eric.auger.pro@gmail.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
+        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
+        alex.williamson@redhat.com
+Cc:     jean-philippe@linaro.org, jacob.jun.pan@linux.intel.com,
+        nicoleotsuka@gmail.com, vivek.gautam@arm.com, yi.l.liu@intel.com,
+        zhangfei.gao@linaro.org
+References: <20201116110030.32335-1-eric.auger@redhat.com>
+ <20201116110030.32335-2-eric.auger@redhat.com>
+ <84a111da-1969-1701-9a6d-cae8d7c285c6@huawei.com>
+ <e476f85d-f49f-f9a6-3232-e99a4cb5a0a2@redhat.com>
+ <bb8c7382-5f2b-6a95-7dee-5528caf67a96@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <c1e2909a-82d4-5263-c0a1-f6f6edee0218@redhat.com>
+Date:   Mon, 22 Feb 2021 17:12:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <1613651746-12783-1-git-send-email-kalyan_t@codeaurora.org>
-In-Reply-To: <1613651746-12783-1-git-send-email-kalyan_t@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 22 Feb 2021 08:08:58 -0800
-Message-ID: <CAF6AEGuyGf2qXK-obqVfj8utKUh5uKVn8Pc-4Uk7h0S3eZme5g@mail.gmail.com>
-Subject: Re: [v4] drm/msm/disp/dpu1: turn off vblank irqs aggressively in dpu driver
-To:     Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Drew Davenport <ddavenport@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <bb8c7382-5f2b-6a95-7dee-5528caf67a96@huawei.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 4:36 AM Kalyan Thota <kalyan_t@codeaurora.org> wrote:
->
-> Set the flag vblank_disable_immediate = true to turn off vblank irqs
-> immediately as soon as drm_vblank_put is requested so that there are
-> no irqs triggered during idle state. This will reduce cpu wakeups
-> and help in power saving.
->
-> To enable vblank_disable_immediate flag the underlying KMS driver
-> needs to support high precision vblank timestamping and also a
-> reliable way of providing vblank counter which is incrementing
-> at the leading edge of vblank.
->
-> This patch also brings in changes to support vblank_disable_immediate
-> requirement in dpu driver.
->
-> Changes in v1:
->  - Specify reason to add vblank timestamp support. (Rob).
->  - Add changes to provide vblank counter from dpu driver.
->
-> Changes in v2:
->  - Fix warn stack reported by Rob Clark with v2 patch.
->
-> Changes in v3:
->  - Move back to HW frame counter (Rob).
->
+Hi Keqian,
 
-could you let me know what the delta was in v4?  (No need to resend
-yet, if needed I can amend the commit msg when applying)
+On 2/22/21 1:20 PM, Keqian Zhu wrote:
+> Hi Eric,
+> 
+> On 2021/2/22 18:53, Auger Eric wrote:
+>> Hi Keqian,
+>>
+>> On 2/2/21 1:34 PM, Keqian Zhu wrote:
+>>> Hi Eric,
+>>>
+>>> On 2020/11/16 19:00, Eric Auger wrote:
+>>>> From: "Liu, Yi L" <yi.l.liu@linux.intel.com>
+>>>>
+>>>> This patch adds an VFIO_IOMMU_SET_PASID_TABLE ioctl
+>>>> which aims to pass the virtual iommu guest configuration
+>>>> to the host. This latter takes the form of the so-called
+>>>> PASID table.
+>>>>
+>>>> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+>>>> Signed-off-by: Liu, Yi L <yi.l.liu@linux.intel.com>
+>>>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+>>>>
+>>>> ---
+>>>> v11 -> v12:
+>>>> - use iommu_uapi_set_pasid_table
+>>>> - check SET and UNSET are not set simultaneously (Zenghui)
+>>>>
+>>>> v8 -> v9:
+>>>> - Merge VFIO_IOMMU_ATTACH/DETACH_PASID_TABLE into a single
+>>>>   VFIO_IOMMU_SET_PASID_TABLE ioctl.
+>>>>
+>>>> v6 -> v7:
+>>>> - add a comment related to VFIO_IOMMU_DETACH_PASID_TABLE
+>>>>
+>>>> v3 -> v4:
+>>>> - restore ATTACH/DETACH
+>>>> - add unwind on failure
+>>>>
+>>>> v2 -> v3:
+>>>> - s/BIND_PASID_TABLE/SET_PASID_TABLE
+>>>>
+>>>> v1 -> v2:
+>>>> - s/BIND_GUEST_STAGE/BIND_PASID_TABLE
+>>>> - remove the struct device arg
+>>>> ---
+>>>>  drivers/vfio/vfio_iommu_type1.c | 65 +++++++++++++++++++++++++++++++++
+>>>>  include/uapi/linux/vfio.h       | 19 ++++++++++
+>>>>  2 files changed, 84 insertions(+)
+>>>>
+>>>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+>>>> index 67e827638995..87ddd9e882dc 100644
+>>>> --- a/drivers/vfio/vfio_iommu_type1.c
+>>>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>>>> @@ -2587,6 +2587,41 @@ static int vfio_iommu_iova_build_caps(struct vfio_iommu *iommu,
+>>>>  	return ret;
+>>>>  }
+>>>>  
+>>>> +static void
+>>>> +vfio_detach_pasid_table(struct vfio_iommu *iommu)
+>>>> +{
+>>>> +	struct vfio_domain *d;
+>>>> +
+>>>> +	mutex_lock(&iommu->lock);
+>>>> +	list_for_each_entry(d, &iommu->domain_list, next)
+>>>> +		iommu_detach_pasid_table(d->domain);
+>>>> +
+>>>> +	mutex_unlock(&iommu->lock);
+>>>> +}
+>>>> +
+>>>> +static int
+>>>> +vfio_attach_pasid_table(struct vfio_iommu *iommu, unsigned long arg)
+>>>> +{
+>>>> +	struct vfio_domain *d;
+>>>> +	int ret = 0;
+>>>> +
+>>>> +	mutex_lock(&iommu->lock);
+>>>> +
+>>>> +	list_for_each_entry(d, &iommu->domain_list, next) {
+>>>> +		ret = iommu_uapi_attach_pasid_table(d->domain, (void __user *)arg);
+>>> This design is not very clear to me. This assumes all iommu_domains share the same pasid table.
+>>>
+>>> As I understand, it's reasonable when there is only one group in the domain, and only one domain in the vfio_iommu.
+>>> If more than one group in the vfio_iommu, the guest may put them into different guest iommu_domain, then they have different pasid table.
+>>>
+>>> Is this the use scenario?
+>>
+>> the vfio_iommu is attached to a container. all the groups within a
+>> container share the same set of page tables (linux
+>> Documentation/driver-api/vfio.rst). So to me if you want to use
+>> different pasid tables, the groups need to be attached to different
+>> containers. Does that make sense to you?
+> OK, so this is what I understand about the design. A little question is that when
+> we perform attach_pasid_table on a container, maybe we ought to do a sanity
+> check to make sure that only one group is in this container, instead of
+> iterating all domain?
+> 
+> To be frank, my main concern is that if we put each group into different container
+> under nested mode, then we give up the possibility that they can share stage2 page tables,
+> which saves host memory and reduces the time of preparing environment for VM.
 
-BR,
--R
+Referring to the QEMU integration, when you use a virtual IOMMU, there
+is generally one VFIO container per viommu protected device
+(AddressSpace), independently on the fact nested stage is being used. I
+think the exception is if you put 2 assigned devices behind a virtual
+PCIe to PCI bridge (pcie-pci-bridge), in that case they have the same
+RID, they share the same QEMU AddressSpace and they are put in the same
+container, if the kernel does not reject it (underlying pIOMMUs allow
+it). See QEMU vfio_connect_container() in hw/vfio/common.c.
 
->  Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c           | 80 ++++++++++++++++++++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c        | 30 ++++++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h        | 11 +++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h   |  1 +
->  .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c   | 26 +++++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c        |  1 +
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h        |  1 +
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c            |  5 ++
->  8 files changed, 155 insertions(+)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> index d4662e8..9a80981 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> @@ -65,6 +65,83 @@ static void dpu_crtc_destroy(struct drm_crtc *crtc)
->         kfree(dpu_crtc);
->  }
->
-> +static struct drm_encoder *get_encoder_from_crtc(struct drm_crtc *crtc)
-> +{
-> +       struct drm_device *dev = crtc->dev;
-> +       struct drm_encoder *encoder;
-> +
-> +       drm_for_each_encoder(encoder, dev)
-> +               if (encoder->crtc == crtc)
-> +                       return encoder;
-> +
-> +       return NULL;
-> +}
-> +
-> +static u32 dpu_crtc_get_vblank_counter(struct drm_crtc *crtc)
-> +{
-> +       struct drm_encoder *encoder;
-> +
-> +       encoder = get_encoder_from_crtc(crtc);
-> +       if (!encoder) {
-> +               DRM_ERROR("no encoder found for crtc %d\n", crtc->index);
-> +               return false;
-> +       }
-> +
-> +       return dpu_encoder_get_frame_count(encoder);
-> +}
-> +
-> +static bool dpu_crtc_get_scanout_position(struct drm_crtc *crtc,
-> +                                          bool in_vblank_irq,
-> +                                          int *vpos, int *hpos,
-> +                                          ktime_t *stime, ktime_t *etime,
-> +                                          const struct drm_display_mode *mode)
-> +{
-> +       unsigned int pipe = crtc->index;
-> +       struct drm_encoder *encoder;
-> +       int line, vsw, vbp, vactive_start, vactive_end, vfp_end;
-> +
-> +       encoder = get_encoder_from_crtc(crtc);
-> +       if (!encoder) {
-> +               DRM_ERROR("no encoder found for crtc %d\n", pipe);
-> +               return false;
-> +       }
-> +
-> +       vsw = mode->crtc_vsync_end - mode->crtc_vsync_start;
-> +       vbp = mode->crtc_vtotal - mode->crtc_vsync_end;
-> +
-> +       /*
-> +        * the line counter is 1 at the start of the VSYNC pulse and VTOTAL at
-> +        * the end of VFP. Translate the porch values relative to the line
-> +        * counter positions.
-> +        */
-> +
-> +       vactive_start = vsw + vbp + 1;
-> +       vactive_end = vactive_start + mode->crtc_vdisplay;
-> +
-> +       /* last scan line before VSYNC */
-> +       vfp_end = mode->crtc_vtotal;
-> +
-> +       if (stime)
-> +               *stime = ktime_get();
-> +
-> +       line = dpu_encoder_get_linecount(encoder);
-> +
-> +       if (line < vactive_start)
-> +               line -= vactive_start;
-> +       else if (line > vactive_end)
-> +               line = line - vfp_end - vactive_start;
-> +       else
-> +               line -= vactive_start;
-> +
-> +       *vpos = line;
-> +       *hpos = 0;
-> +
-> +       if (etime)
-> +               *etime = ktime_get();
-> +
-> +       return true;
-> +}
-> +
->  static void _dpu_crtc_setup_blend_cfg(struct dpu_crtc_mixer *mixer,
->                 struct dpu_plane_state *pstate, struct dpu_format *format)
->  {
-> @@ -1243,6 +1320,8 @@ static const struct drm_crtc_funcs dpu_crtc_funcs = {
->         .early_unregister = dpu_crtc_early_unregister,
->         .enable_vblank  = msm_crtc_enable_vblank,
->         .disable_vblank = msm_crtc_disable_vblank,
-> +       .get_vblank_timestamp = drm_crtc_vblank_helper_get_vblank_timestamp,
-> +       .get_vblank_counter = dpu_crtc_get_vblank_counter,
->  };
->
->  static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
-> @@ -1251,6 +1330,7 @@ static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
->         .atomic_check = dpu_crtc_atomic_check,
->         .atomic_begin = dpu_crtc_atomic_begin,
->         .atomic_flush = dpu_crtc_atomic_flush,
-> +       .get_scanout_position = dpu_crtc_get_scanout_position,
->  };
->
->  /* initialize crtc */
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> index f7f5c25..5cd3f31 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> @@ -425,6 +425,36 @@ int dpu_encoder_helper_unregister_irq(struct dpu_encoder_phys *phys_enc,
->         return 0;
->  }
->
-> +int dpu_encoder_get_frame_count(struct drm_encoder *drm_enc)
-> +{
-> +       struct dpu_encoder_virt *dpu_enc;
-> +       struct dpu_encoder_phys *phys;
-> +       int framecount = 0;
-> +
-> +       dpu_enc = to_dpu_encoder_virt(drm_enc);
-> +       phys = dpu_enc ? dpu_enc->cur_master : NULL;
-> +
-> +       if (phys && phys->ops.get_frame_count)
-> +               framecount = phys->ops.get_frame_count(phys);
-> +
-> +       return framecount;
-> +}
-> +
-> +int dpu_encoder_get_linecount(struct drm_encoder *drm_enc)
-> +{
-> +       struct dpu_encoder_virt *dpu_enc;
-> +       struct dpu_encoder_phys *phys;
-> +       int linecount = 0;
-> +
-> +       dpu_enc = to_dpu_encoder_virt(drm_enc);
-> +       phys = dpu_enc ? dpu_enc->cur_master : NULL;
-> +
-> +       if (phys && phys->ops.get_line_count)
-> +               linecount = phys->ops.get_line_count(phys);
-> +
-> +       return linecount;
-> +}
-> +
->  void dpu_encoder_get_hw_resources(struct drm_encoder *drm_enc,
->                                   struct dpu_encoder_hw_resources *hw_res)
->  {
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
-> index b491346..99a5d73 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
-> @@ -156,5 +156,16 @@ void dpu_encoder_prepare_commit(struct drm_encoder *drm_enc);
->   */
->  void dpu_encoder_set_idle_timeout(struct drm_encoder *drm_enc,
->                                                         u32 idle_timeout);
-> +/**
-> + * dpu_encoder_get_linecount - get interface line count for the encoder.
-> + * @drm_enc:    Pointer to previously created drm encoder structure
-> + */
-> +int dpu_encoder_get_linecount(struct drm_encoder *drm_enc);
-> +
-> +/**
-> + * dpu_encoder_get_frame_count - get interface frame count for the encoder.
-> + * @drm_enc:    Pointer to previously created drm encoder structure
-> + */
-> +int dpu_encoder_get_frame_count(struct drm_encoder *drm_enc);
->
->  #endif /* __DPU_ENCODER_H__ */
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> index f8f2515..ecbc4be 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> @@ -143,6 +143,7 @@ struct dpu_encoder_phys_ops {
->         void (*prepare_idle_pc)(struct dpu_encoder_phys *phys_enc);
->         void (*restore)(struct dpu_encoder_phys *phys);
->         int (*get_line_count)(struct dpu_encoder_phys *phys);
-> +       int (*get_frame_count)(struct dpu_encoder_phys *phys);
->  };
->
->  /**
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-> index 9a69fad..0e06b7e 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-> @@ -658,6 +658,31 @@ static int dpu_encoder_phys_vid_get_line_count(
->         return phys_enc->hw_intf->ops.get_line_count(phys_enc->hw_intf);
->  }
->
-> +static int dpu_encoder_phys_vid_get_frame_count(
-> +               struct dpu_encoder_phys *phys_enc)
-> +{
-> +       struct intf_status s = {0};
-> +       u32 fetch_start = 0;
-> +       struct drm_display_mode mode = phys_enc->cached_mode;
-> +
-> +       if (!dpu_encoder_phys_vid_is_master(phys_enc))
-> +               return -EINVAL;
-> +
-> +       if (!phys_enc->hw_intf || !phys_enc->hw_intf->ops.get_status)
-> +               return -EINVAL;
-> +
-> +       phys_enc->hw_intf->ops.get_status(phys_enc->hw_intf, &s);
-> +
-> +       if (s.is_prog_fetch_en && s.is_en) {
-> +               fetch_start = mode.vtotal - (mode.vsync_start - mode.vdisplay);
-> +               if ((s.line_count > fetch_start) &&
-> +                       (s.line_count <= mode.vtotal))
-> +                       return s.frame_count + 1;
-> +       }
-> +
-> +       return s.frame_count;
-> +}
-> +
->  static void dpu_encoder_phys_vid_init_ops(struct dpu_encoder_phys_ops *ops)
->  {
->         ops->is_master = dpu_encoder_phys_vid_is_master;
-> @@ -676,6 +701,7 @@ static void dpu_encoder_phys_vid_init_ops(struct dpu_encoder_phys_ops *ops)
->         ops->handle_post_kickoff = dpu_encoder_phys_vid_handle_post_kickoff;
->         ops->needs_single_flush = dpu_encoder_phys_vid_needs_single_flush;
->         ops->get_line_count = dpu_encoder_phys_vid_get_line_count;
-> +       ops->get_frame_count = dpu_encoder_phys_vid_get_frame_count;
->  }
->
->  struct dpu_encoder_phys *dpu_encoder_phys_vid_init(
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> index 6f0f545..717178b 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> @@ -256,6 +256,7 @@ static void dpu_hw_intf_get_status(
->         struct dpu_hw_blk_reg_map *c = &intf->hw;
->
->         s->is_en = DPU_REG_READ(c, INTF_TIMING_ENGINE_EN);
-> +       s->is_prog_fetch_en = !!(DPU_REG_READ(c, INTF_CONFIG) & BIT(31));
->         if (s->is_en) {
->                 s->frame_count = DPU_REG_READ(c, INTF_FRAME_COUNT);
->                 s->line_count = DPU_REG_READ(c, INTF_LINE_COUNT);
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-> index 0ead64d..3568be8 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-> @@ -40,6 +40,7 @@ struct intf_prog_fetch {
->
->  struct intf_status {
->         u8 is_en;               /* interface timing engine is enabled or not */
-> +       u8 is_prog_fetch_en;    /* interface prog fetch counter is enabled or not */
->         u32 frame_count;        /* frame count since timing engine enabled */
->         u32 line_count;         /* current line count including blanking */
->  };
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> index 374b0e8..ed636f1 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> @@ -14,6 +14,7 @@
->
->  #include <drm/drm_crtc.h>
->  #include <drm/drm_file.h>
-> +#include <drm/drm_vblank.h>
->
->  #include "msm_drv.h"
->  #include "msm_mmu.h"
-> @@ -1020,6 +1021,10 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
->          */
->         dev->mode_config.allow_fb_modifiers = true;
->
-> +       dev->max_vblank_count = 0xffffffff;
-> +       /* Disable vblank irqs aggressively for power-saving */
-> +       dev->vblank_disable_immediate = true;
-> +
->         /*
->          * _dpu_kms_drm_obj_init should create the DRM related objects
->          * i.e. CRTCs, planes, encoders, connectors and so forth
-> --
-> 2.7.4
->
+In that config, if the assigned devices belong to different groups, you
+may end up with 2 groups set to the same container. But this case is not
+supported by the guest kernel anyway (independently on the nested stage
+integration). You hit a BUG_ON as reported a long time ago in
+
+https://www.mail-archive.com/qemu-devel@nongnu.org/msg608047.html
+
+
+> 
+> To me, I'd like to understand the "container shares page table" to be:
+> 1) share stage2 page table under nested mode.
+under nested mode they share S2 and with this design devices also share
+the same PASID table. Because on the guest they are in the same group.
+> 2) share stage1 page table under non-nested mode.
+in non nested mode there is a single stage, by default S1.
+> 
+> As when we perform "map" on a container:
+> 1) under nested mode, we setup stage2 mapping.
+> 2) under non-nested mode, we setup stage1 mapping.
+right
+> 
+> Indeed, to realize stage2 mapping sharing, we should do much more work to refactor
+> SMMU_DOMAIN...
+
+Hope this helps
+
+Thanks
+
+Eric
+> 
+> Hope you can consider this. :)
+> 
+> Thanks,
+> Keqian
+> 
+>>
+>> Thanks
+>>
+>> Eric
+>>>
+>>> Thanks,
+>>> Keqian
+>>>
+>>>> +		if (ret)
+>>>> +			goto unwind;
+>>>> +	}
+>>>> +	goto unlock;
+>>>> +unwind:
+>>>> +	list_for_each_entry_continue_reverse(d, &iommu->domain_list, next) {
+>>>> +		iommu_detach_pasid_table(d->domain);
+>>>> +	}
+>>>> +unlock:
+>>>> +	mutex_unlock(&iommu->lock);
+>>>> +	return ret;
+>>>> +}
+>>>> +
+>>>>  static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
+>>>>  					   struct vfio_info_cap *caps)
+>>>>  {
+>>>> @@ -2747,6 +2782,34 @@ static int vfio_iommu_type1_unmap_dma(struct vfio_iommu *iommu,
+>>>>  			-EFAULT : 0;
+>>>>  }
+>>>>  
+>>>> +static int vfio_iommu_type1_set_pasid_table(struct vfio_iommu *iommu,
+>>>> +					    unsigned long arg)
+>>>> +{
+>>>> +	struct vfio_iommu_type1_set_pasid_table spt;
+>>>> +	unsigned long minsz;
+>>>> +	int ret = -EINVAL;
+>>>> +
+>>>> +	minsz = offsetofend(struct vfio_iommu_type1_set_pasid_table, flags);
+>>>> +
+>>>> +	if (copy_from_user(&spt, (void __user *)arg, minsz))
+>>>> +		return -EFAULT;
+>>>> +
+>>>> +	if (spt.argsz < minsz)
+>>>> +		return -EINVAL;
+>>>> +
+>>>> +	if (spt.flags & VFIO_PASID_TABLE_FLAG_SET &&
+>>>> +	    spt.flags & VFIO_PASID_TABLE_FLAG_UNSET)
+>>>> +		return -EINVAL;
+>>>> +
+>>>> +	if (spt.flags & VFIO_PASID_TABLE_FLAG_SET)
+>>>> +		ret = vfio_attach_pasid_table(iommu, arg + minsz);
+>>>> +	else if (spt.flags & VFIO_PASID_TABLE_FLAG_UNSET) {
+>>>> +		vfio_detach_pasid_table(iommu);
+>>>> +		ret = 0;
+>>>> +	}
+>>>> +	return ret;
+>>>> +}
+>>>> +
+>>>>  static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
+>>>>  					unsigned long arg)
+>>>>  {
+>>>> @@ -2867,6 +2930,8 @@ static long vfio_iommu_type1_ioctl(void *iommu_data,
+>>>>  		return vfio_iommu_type1_unmap_dma(iommu, arg);
+>>>>  	case VFIO_IOMMU_DIRTY_PAGES:
+>>>>  		return vfio_iommu_type1_dirty_pages(iommu, arg);
+>>>> +	case VFIO_IOMMU_SET_PASID_TABLE:
+>>>> +		return vfio_iommu_type1_set_pasid_table(iommu, arg);
+>>>>  	default:
+>>>>  		return -ENOTTY;
+>>>>  	}
+>>>> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+>>>> index 2f313a238a8f..78ce3ce6c331 100644
+>>>> --- a/include/uapi/linux/vfio.h
+>>>> +++ b/include/uapi/linux/vfio.h
+>>>> @@ -14,6 +14,7 @@
+>>>>  
+>>>>  #include <linux/types.h>
+>>>>  #include <linux/ioctl.h>
+>>>> +#include <linux/iommu.h>
+>>>>  
+>>>>  #define VFIO_API_VERSION	0
+>>>>  
+>>>> @@ -1180,6 +1181,24 @@ struct vfio_iommu_type1_dirty_bitmap_get {
+>>>>  
+>>>>  #define VFIO_IOMMU_DIRTY_PAGES             _IO(VFIO_TYPE, VFIO_BASE + 17)
+>>>>  
+>>>> +/*
+>>>> + * VFIO_IOMMU_SET_PASID_TABLE - _IOWR(VFIO_TYPE, VFIO_BASE + 22,
+>>>> + *			struct vfio_iommu_type1_set_pasid_table)
+>>>> + *
+>>>> + * The SET operation passes a PASID table to the host while the
+>>>> + * UNSET operation detaches the one currently programmed. Setting
+>>>> + * a table while another is already programmed replaces the old table.
+>>>> + */
+>>>> +struct vfio_iommu_type1_set_pasid_table {
+>>>> +	__u32	argsz;
+>>>> +	__u32	flags;
+>>>> +#define VFIO_PASID_TABLE_FLAG_SET	(1 << 0)
+>>>> +#define VFIO_PASID_TABLE_FLAG_UNSET	(1 << 1)
+>>>> +	struct iommu_pasid_table_config config; /* used on SET */
+>>>> +};
+>>>> +
+>>>> +#define VFIO_IOMMU_SET_PASID_TABLE	_IO(VFIO_TYPE, VFIO_BASE + 22)
+>>>> +
+>>>>  /* -------- Additional API for SPAPR TCE (Server POWERPC) IOMMU -------- */
+>>>>  
+>>>>  /*
+>>>>
+>>>
+>>
+>> .
+>>
+> 
+
