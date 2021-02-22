@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0153320F3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F143A320F3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbhBVBo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:44:59 -0500
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:42633
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S230151AbhBVBo5 (ORCPT
+        id S231822AbhBVBpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:45:43 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12560 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230151AbhBVBpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:44:57 -0500
-Received: from centos7u5.localdomain (unknown [202.43.158.76])
-        by c1app2 (Coremail) with SMTP id AgINCgDn7ztTDDNgB6kTAw--.49700S3;
-        Mon, 22 Feb 2021 09:43:47 +0800 (CST)
-From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-To:     catalin.marinas@arm.com, will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Subject: [PATCH] arm64/mm: Fixed some coding style issues
-Date:   Mon, 22 Feb 2021 09:43:51 +0800
-Message-Id: <1613958231-5474-1-git-send-email-daizhiyuan@phytium.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AgINCgDn7ztTDDNgB6kTAw--.49700S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw13tw17tF48GrWrXry5Arb_yoW8JFy7pF
-        naka1kKr4fKFykCrZrZry8Wry5uwn7Gas8JF4agFyqkF13J3W8Wry093sakF4UXFykZa13
-        GayYy34UAay5XaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
-        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVWk
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU5AwIDUUUU
-X-Originating-IP: [202.43.158.76]
-X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
+        Sun, 21 Feb 2021 20:45:41 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DkQ1G0XTMzMccn;
+        Mon, 22 Feb 2021 09:42:58 +0800 (CST)
+Received: from [10.174.179.140] (10.174.179.140) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 22 Feb 2021 09:44:53 +0800
+Subject: Re: [PATCH] mm: Use rcu_dereference in in_vfork
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+CC:     <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>,
+        <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>
+References: <20210221194207.1351703-1-willy@infradead.org>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <28850db2-687d-e604-2bd3-3a72344c1e7d@huawei.com>
+Date:   Mon, 22 Feb 2021 09:44:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210221194207.1351703-1-willy@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.140]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch move the pointer location to fix coding style issues,
-improve code reading.
+On 2021/2/22 3:42, Matthew Wilcox (Oracle) wrote:
+> Fix a sparse warning by using rcu_dereference().  Technically this is a
+> bug and a sufficiently aggressive compiler could reload the `real_parent'
+> pointer outside the protection of the rcu lock (and access freed memory),
+> but I think it's pretty unlikely to happen.
+> 
+> Fixes: b18dc5f291c0 ("mm, oom: skip vforked tasks from being selected")
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
----
- arch/arm64/mm/mmu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Looks good to me. Thanks!
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 25af183..9ce8641 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1155,7 +1155,7 @@ void vmemmap_free(unsigned long start, unsigned long end,
- }
- #endif	/* CONFIG_SPARSEMEM_VMEMMAP */
- 
--static inline pud_t * fixmap_pud(unsigned long addr)
-+static inline pud_t *fixmap_pud(unsigned long addr)
- {
- 	pgd_t *pgdp = pgd_offset_k(addr);
- 	p4d_t *p4dp = p4d_offset(pgdp, addr);
-@@ -1166,7 +1166,7 @@ static inline pud_t * fixmap_pud(unsigned long addr)
- 	return pud_offset_kimg(p4dp, addr);
- }
- 
--static inline pmd_t * fixmap_pmd(unsigned long addr)
-+static inline pmd_t *fixmap_pmd(unsigned long addr)
- {
- 	pud_t *pudp = fixmap_pud(addr);
- 	pud_t pud = READ_ONCE(*pudp);
-@@ -1176,7 +1176,7 @@ static inline pmd_t * fixmap_pmd(unsigned long addr)
- 	return pmd_offset_kimg(pudp, addr);
- }
- 
--static inline pte_t * fixmap_pte(unsigned long addr)
-+static inline pte_t *fixmap_pte(unsigned long addr)
- {
- 	return &bm_pte[pte_index(addr)];
- }
--- 
-1.8.3.1
+> ---
+>  include/linux/sched/mm.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+> index 1ae08b8462a4..90b2a0bce11c 100644
+> --- a/include/linux/sched/mm.h
+> +++ b/include/linux/sched/mm.h
+> @@ -140,7 +140,8 @@ static inline bool in_vfork(struct task_struct *tsk)
+>  	 * another oom-unkillable task does this it should blame itself.
+>  	 */
+>  	rcu_read_lock();
+> -	ret = tsk->vfork_done && tsk->real_parent->mm == tsk->mm;
+> +	ret = tsk->vfork_done &&
+> +			rcu_dereference(tsk->real_parent)->mm == tsk->mm;
+>  	rcu_read_unlock();
+>  
+>  	return ret;
+> 
 
