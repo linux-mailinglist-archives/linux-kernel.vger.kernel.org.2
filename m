@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1380B321B21
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6B1321B19
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbhBVPRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:17:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        id S231451AbhBVPPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:15:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231240AbhBVPNz (ORCPT
+        with ESMTP id S231241AbhBVPNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 10:13:55 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2C8C061797
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:12:49 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id x16so13834961wmk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:12:49 -0800 (PST)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20545C0617A7;
+        Mon, 22 Feb 2021 07:12:51 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id i9so3926585wml.5;
+        Mon, 22 Feb 2021 07:12:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=S1lCywCtYVxEsnuw6UX2uJMQ5VyTPpsEmxTnLQJHs4w=;
-        b=rWf86sGXPcNotlzO6S3Y7LO5Nm2WfrkvTP72KQo9Y1VVv5HcanSJASCmDSQC/FvS4l
-         4X+BnIYovgNuWrjBcRMMgByxaJJKo+WuEdB5B4TeeH5KAB/k0o74OaToO8dP5U+NeEuv
-         kjZevojzhOKXgUYIqK4jZ7+a8FFI4fyWPiYx976xmPlhyZGLbZFjCJRnjHuPAx0agih+
-         CBwler96z49x42STZP1ftWGwflDrYvL5xmIdJrvmSrGhRlJ+bHCMVys2WE6akJcWlLDD
-         pN58SYbZPSp/1g7GyQVoqT/QQavBz69bDTBxGFZjGXmlE5vLK087Q62L8G+gsKUJ9TPk
-         vUPQ==
+        bh=LLkuX0+ITGWZ/iVnAzMULSxwtPPckweuLMISePt9ssw=;
+        b=BPykAZVvUp4icbQV3I8OKq3dgj9xE7I0bXvTLRa+lLFvT2T9S46GpK5rzpalk0vka7
+         EMAebBc4xNncmRW0iYtFoKILmLT9xpNRKjXNkKgGb+RdrBDYrM86Ih0zaynkmOTCb5LP
+         NaKo4wGex24T0J5JuUZcwofRPEBZMW4HusebFD6CYD7Muei1Q9Ep+FX3tFJoNNyi6fQ4
+         vE8B0dAximKDBpReNOj1/mEWaFJRZGAdbJ6d3RmzX4lwPElZ4tQbzdIkzl+VgYesDdXm
+         1qtG97aM1OEtTOrV6g9qGUbFcX4kZio/WjmW8dJAY8W54ikoDB+MgxYkLUCWt2nF9F/v
+         xpkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=S1lCywCtYVxEsnuw6UX2uJMQ5VyTPpsEmxTnLQJHs4w=;
-        b=AYv1oU44E+0qzSClGvqXgW8drLk8a+bArYxkBrqbf/o3lLzqVFEK7D5jQmXhg8/FZM
-         vr0vleq1Ig7sghyECCg1z9rmzeqEncQWrXuYlgNZ07wgS8+KPDhtJjeGoDjFw3FyRboI
-         FED+2DErA46OpSRPIu2JoBrkYo9kVaVbSMjdLmgn23ZnWTtm/eBe2W/9P4LeQxucAHCy
-         fqmcFhFcrEWrgRUxRsuHCaASHDy9f4aq2WTBiUK4RYMweugj5qhZ+/yWgejEYFOM6/C4
-         7hSEKGLDzqoHxjyPszZEy2Tp/z6oSB2Qc9RZb0Da6w2Fdq9ENwB41+fAWjnNOcTDxQ0u
-         E6vA==
-X-Gm-Message-State: AOAM531fYieLqI28fm/8+d9KuFW1I2XPs0fpj19sit+ryPIdiMvCPbxz
-        F8ZmIryUDQ42feh690uHAS9CyDvRpAnoJM+Bg78=
-X-Google-Smtp-Source: ABdhPJxdv2k+gVDTX8PjxaPQz6UiDFMRMwv8LZF9w+l6PKqIasSjklSPneGhJPBCNfwEJDSzCT51jg==
-X-Received: by 2002:a7b:c14d:: with SMTP id z13mr14117614wmi.6.1614006768018;
-        Mon, 22 Feb 2021 07:12:48 -0800 (PST)
+        bh=LLkuX0+ITGWZ/iVnAzMULSxwtPPckweuLMISePt9ssw=;
+        b=t8e3DWaynfASCENevG8YlmPo5GrYiVVFXKIj9scJ4wmW7RynSfmcyWx8RNxMa4dY2K
+         F+hYXyZFTgExhFu0DrdQ89vIttPIna6bawPKhnn5GerNQqxhH2927l5X4B4M7eF3L5SF
+         1CGCeQ66o8XBoCrD5IY5VoIC6qJlxRUzgTUaDbgL+IaFvIDJ56b9mwVGTFVR25HZ3COT
+         r+q0TzDVhq1nDNyuIlJhNb7r7JRoxkY0keZwYoJxae3Fm2pgcEZw9539LtpTwdcrpYKf
+         SVl2hZOJithkUpaUeALs3ibL1OJUQEpjvQ/4oqGlKRtbOvDj5tNoe1r2RU6jX0zYq3YA
+         q/TQ==
+X-Gm-Message-State: AOAM531b8Eans2ce0nyTMOWOYumrv9SMuw51RGgOL9qcbOSDd43PqSGS
+        UO/6S3ILaVhNsr0onNxUSX9/d8FXEVc5Zc30VGY=
+X-Google-Smtp-Source: ABdhPJxc30UcYQVY9SrjO7shc//rXjLfBfc8tuVxMSyonaZSmDzTDDA/bQLZBQpXRC/u5O+PvGH7Xw==
+X-Received: by 2002:a1c:2094:: with SMTP id g142mr20921780wmg.101.1614006769655;
+        Mon, 22 Feb 2021 07:12:49 -0800 (PST)
 Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id m17sm24783581wmq.5.2021.02.22.07.12.47
+        by smtp.gmail.com with ESMTPSA id l15sm26251391wmh.21.2021.02.22.07.12.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:12:47 -0800 (PST)
+        Mon, 22 Feb 2021 07:12:49 -0800 (PST)
 From:   Romain Perier <romain.perier@gmail.com>
 To:     Kees Cook <keescook@chromium.org>,
         kernel-hardening@lists.openwall.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
 Cc:     Romain Perier <romain.perier@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 05/20] kobject: Manual replacement of the deprecated strlcpy() with return values
-Date:   Mon, 22 Feb 2021 16:12:16 +0100
-Message-Id: <20210222151231.22572-6-romain.perier@gmail.com>
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 06/20] ima: Manual replacement of the deprecated strlcpy() with return values
+Date:   Mon, 22 Feb 2021 16:12:17 +0100
+Message-Id: <20210222151231.22572-7-romain.perier@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
 References: <20210222151231.22572-1-romain.perier@gmail.com>
@@ -82,26 +82,27 @@ values (as it is quite different between the two functions).
 
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 ---
- lib/kobject_uevent.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ security/integrity/ima/ima_policy.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/lib/kobject_uevent.c b/lib/kobject_uevent.c
-index 7998affa45d4..9dca89b76a22 100644
---- a/lib/kobject_uevent.c
-+++ b/lib/kobject_uevent.c
-@@ -251,11 +251,11 @@ static int kobj_usermode_filter(struct kobject *kobj)
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 9b45d064a87d..1a905b8b064f 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -790,8 +790,14 @@ static int __init ima_init_arch_policy(void)
+ 	for (rules = arch_rules, i = 0; *rules != NULL; rules++) {
+ 		char rule[255];
+ 		int result;
++		ssize_t len;
  
- static int init_uevent_argv(struct kobj_uevent_env *env, const char *subsystem)
- {
--	int len;
-+	ssize_t len;
+-		result = strlcpy(rule, *rules, sizeof(rule));
++		len = strscpy(rule, *rules, sizeof(rule));
++		if (len == -E2BIG) {
++			pr_warn("Internal copy of architecture policy rule '%s' "
++				"failed. Skipping.\n", *rules);
++			continue;
++		}
  
--	len = strlcpy(&env->buf[env->buflen], subsystem,
-+	len = strscpy(&env->buf[env->buflen], subsystem,
- 		      sizeof(env->buf) - env->buflen);
--	if (len >= (sizeof(env->buf) - env->buflen)) {
-+	if (len == -E2BIG) {
- 		WARN(1, KERN_ERR "init_uevent_argv: buffer size too small\n");
- 		return -ENOMEM;
- 	}
+ 		INIT_LIST_HEAD(&arch_policy_entry[i].list);
+ 		result = ima_parse_rule(rule, &arch_policy_entry[i]);
 
