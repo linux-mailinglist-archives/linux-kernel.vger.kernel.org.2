@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA6932210D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3AC232210F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhBVVAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 16:00:43 -0500
-Received: from ms.lwn.net ([45.79.88.28]:34112 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhBVVAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:00:40 -0500
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E071330D;
-        Mon, 22 Feb 2021 20:59:58 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E071330D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1614027599; bh=uCB8Hgwaf+lNKimvvf9tQZlF3BSKiETK4qc1TCmNd18=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=kaLWH++b7x3gCrgO2e97h3hLmlCS2bCHXpPcqHTC+hnEzOydtFi8uY/7v+2LWBasy
-         pdgY7Fb64JtnogF65eqEMN3Mx+9pET01gn9DJcnVq35LXQbyUQjfQxXn1Ln8uBE7RY
-         MAp1cqnosIyyk2i9je2TBYgWDQqONHmIcw/X6Sk4cGsFvyYVQ30FfIusZpAh8OrcZs
-         PeF67BflaU6Ps8dy7N5z5gKebLYMe3sJdFfJZjYXM1quJJFlvFMJY7Nxddu58eO7aA
-         48QwTHKExhb617tMl3FuQ95PbBD9Ez2Sl3KF1X1gLjpw19id92bgMjgF6XQdh42cQ7
-         eJniFyeQRAmZA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Masahiro Yamada <masahiroy@kernel.org>, linux-doc@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Harry Wei <harryxiyou@gmail.com>, Jyri Sarha <jsarha@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] doc: use KCFLAGS instead of EXTRA_CFLAGS to pass flags
- from command line
-In-Reply-To: <20210221152524.197693-1-masahiroy@kernel.org>
-References: <20210221152524.197693-1-masahiroy@kernel.org>
-Date:   Mon, 22 Feb 2021 13:59:58 -0700
-Message-ID: <87h7m3lsxd.fsf@meer.lwn.net>
+        id S231204AbhBVVAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 16:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhBVVAp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 16:00:45 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F407BC061574;
+        Mon, 22 Feb 2021 13:00:04 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 75so10981097pgf.13;
+        Mon, 22 Feb 2021 13:00:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=H0Xgyt5coIH+GE4ESBF/DDHxRtz15wSekZzSGidjJ40=;
+        b=Eq4HTBRkpBFEOj3x7npC7iQPImgtay3bpsDwLybwhumfoDXN1/39W57Zwn2MXDFQbX
+         GaLiBMOi5hXAPjmN6ubOC5NrUg2yryw5tC49QyL7nILN4IgmjM/6X4mWpO0oX3tqffT3
+         pSmeu2/1+1mrk4Jhu3fgdw3tpVwbLCi8DuDSfMRgiU8jIWXDt5k9fN6dXk0nlSC2F2fe
+         1bY/HdAA7TAgNjIYmW0KHPPHJIP9X9B/MlmE9CISwGbhxbevpGQv2G1qGcHcPb7JnCIz
+         HbENYeVzIPWicvLA6gPvU/EurE1uS8nMT0XuPxT9E4/VP912Wvot46qQY6hqdXK/pKf0
+         VtOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=H0Xgyt5coIH+GE4ESBF/DDHxRtz15wSekZzSGidjJ40=;
+        b=G3qHfi2Aemrz437ByYTVWSfbb+8MjP7ul2V0+xjAgp4kaE7sjIPuafvOVXnQogLdF/
+         0kopzJWEAYdngz6YqrtPrOyivYYM6oDSJDzKKVNKXKsqewelwNpX0dXvck7qs3E5X4uy
+         sOOtw/2wzrZGNE5bQym1a9oU7hAfsLUnQk47cn6pbmLQaQKWXKDUGdPJkLBzwxuxxxeq
+         aEpMFBFfD+p959mlJiq55Fw/ogcNuqeA/yhiz3fLdCzDJuEht38nC5ivc+eJ1JrfBvc7
+         Lqrpp/Jkhjy4j7P4pKYTRXMEUKfDGW0nyGRmQsaQ2WYbfbt5R96pXOYEQG0fU7a8TVmW
+         784Q==
+X-Gm-Message-State: AOAM533IPwmCdiZ5QrUToEAyKYfq2yDIXNL/rwRKyJKWHXcXhC13ZzXz
+        Vtvh3oKXFrvJm5cOUjpQgzZ8ykrkLkU=
+X-Google-Smtp-Source: ABdhPJyGj9q8+ckK9W3DAnRknkAKgAh/UnyHUCICnA8bG4DJcFr5tlE2ex5p9Rx1U60pSCZm8OYutA==
+X-Received: by 2002:a63:c54c:: with SMTP id g12mr20658056pgd.449.1614027604011;
+        Mon, 22 Feb 2021 13:00:04 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x12sm20587085pfp.214.2021.02.22.13.00.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 13:00:03 -0800 (PST)
+Subject: Re: [PATCH] irqchip/bcm-6345-l1: fix SMP support
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        jonas.gorski@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210222201332.30253-1-noltari@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <6169cb21-538b-1066-51cb-dd362f811fa1@gmail.com>
+Date:   Mon, 22 Feb 2021 13:00:01 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210222201332.30253-1-noltari@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masahiro Yamada <masahiroy@kernel.org> writes:
 
-> You should use KCFLAGS to pass additional compiler flags from the
-> command line. Using EXTRA_CFLAGS is wrong.
->
-> EXTRA_CFLAGS is supposed to specify flags applied only to the current
-> Makefile (and now deprecated in favor of ccflags-y).
->
-> It is still used in arch/mips/kvm/Makefile (and possibly in external
-> modules too). Passing EXTRA_CFLAGS from the command line overwrites
-> it and breaks the build.
->
-> I also fixed drivers/gpu/drm/tilcdc/Makefile because commit 816175dd1fd7
-> ("drivers/gpu/drm/tilcdc: Makefile, only -Werror when no -W* in
-> EXTRA_CFLAGS") was based on the same misunderstanding.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  Documentation/process/4.Coding.rst                            | 2 +-
->  Documentation/process/submit-checklist.rst                    | 2 +-
->  Documentation/translations/it_IT/process/4.Coding.rst         | 2 +-
->  Documentation/translations/it_IT/process/submit-checklist.rst | 2 +-
->  Documentation/translations/zh_CN/process/4.Coding.rst         | 2 +-
->  drivers/gpu/drm/tilcdc/Makefile                               | 2 +-
->  6 files changed, 6 insertions(+), 6 deletions(-)
 
-I've applied this, fixing the conflict with submit-checklist.rst in the
-process.
+On 2/22/2021 12:13 PM, Álvaro Fernández Rojas wrote:
+> Some BCM6358 devices start with Core #1 instead of Core #0.
+> Apart from that, SMP is restricted to 1 CPU since BCM6358 has a shared TLB,
+> which makes it impossible for the current SMP support to start both CPUs.
+> 
+> The problem is that smp_processor_id() returns 0 and then cpu_logical_map()
+> converts that to 1, which accesses an uninitialized position of intc->cpus[],
+> resulting in a kernel panic.
 
-Thanks,
-
-jon
+Sounds like you nee to correct the way the cpu_logical_map[] is
+populated then?
+-- 
+Florian
