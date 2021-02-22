@@ -2,111 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235AD320F15
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B26D3320F18
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhBVB2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:28:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhBVB2e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:28:34 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87ECC061574;
-        Sun, 21 Feb 2021 17:27:53 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0608A517;
-        Mon, 22 Feb 2021 02:27:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613957272;
-        bh=DvouH4As8+RR+VV2xQsF4c0eG8ofBC2VwV6/+LxrUTk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=szb1MosGWvFTvscWxXgqQr0mIBnedrBb/TsUgTnJioe28FKhQNg0DGwA3VHZuQXEX
-         pU7DViEkW0xWYy/iYn8CJzGa2ohJvjz+1g8w2DpsZBxvow1/nVFlh+4pFMOBx8YUqY
-         gmfOZ3QUDp9P7wJhjcJGEZ+Pft4mS7pC0wMdTODo=
-Date:   Mon, 22 Feb 2021 03:27:25 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/16] media: i2c: rdacm21: Re-work OV10640 initialization
-Message-ID: <YDMIfTtc7ottA6Ir@pendragon.ideasonboard.com>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-10-jacopo+renesas@jmondi.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210216174146.106639-10-jacopo+renesas@jmondi.org>
+        id S230210AbhBVB3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:29:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229889AbhBVB3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 20:29:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 90D0B60234;
+        Mon, 22 Feb 2021 01:28:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613957337;
+        bh=r/mieAIuGocXGqqhoN00S3IK812JKkJYsADOgDF0Gto=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=jhj/TL+CzZi/aIMCNJr+vlmfPtC1mbjDSPSI8S/KFuKLV1TEFQ++0EQcSq1BGfPyv
+         hMs5Ew8PERJhRTaXrCoSu+7pxbqjUsmj6pl98vTU2T+S2P7eCOFtd7YJIxFqqkGaWb
+         nv6v9M/Ce99Xg1R7002wFFjMy9e3tqoA5ePlZlVdxZo5tyibFvdgz3iMFqm3stJhZ8
+         8mvbsi48NbtJvYTuA+mB7Rc2jLTskHOWLh/UL+1WqxKzy/xD5yPD4mRzug/FK6MFB5
+         KGFs1mr1IS+9wV9YqHuv5zIwheUfBj93S3LF3XJGDtt8HXUGzVLrbVCYeWfkcbg0Dd
+         OGQpuyiFQZ0EA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 78E4E60A3D;
+        Mon, 22 Feb 2021 01:28:57 +0000 (UTC)
+Subject: Re: [GIT PULL] Crypto Update for 5.12
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210215024721.GA20593@gondor.apana.org.au>
+References: <20200803044024.GA6429@gondor.apana.org.au>
+ <20201012033249.GA25179@gondor.apana.org.au>
+ <20201214055515.GA14196@gondor.apana.org.au> <20210215024721.GA20593@gondor.apana.org.au>
+X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210215024721.GA20593@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+X-PR-Tracked-Commit-Id: 0de9dc80625b0ca1cb9730c5ed1c5a8cab538369
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 31caf8b2a847214be856f843e251fc2ed2cd1075
+Message-Id: <161395733744.5020.10211479517423908542.pr-tracker-bot@kernel.org>
+Date:   Mon, 22 Feb 2021 01:28:57 +0000
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+The pull request you sent on Mon, 15 Feb 2021 13:47:21 +1100:
 
-Thank you for the patch.
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
 
-On Tue, Feb 16, 2021 at 06:41:39PM +0100, Jacopo Mondi wrote:
-> The OV10640 image sensor reset and powerdown on signals are controlled
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/31caf8b2a847214be856f843e251fc2ed2cd1075
 
-s/ on//
-
-> by the embedded OV490 ISP. The current reset procedure does not respect
-> the 1 millisecond power-up delay and releases the reset signal before
-> the powerdown one.
-> 
-> Fix the OV10640 power up sequence by releasing the powerdown signal,
-> waiting the mandatory 1 millisecond power up delay and then releasing
-> the reset signal. The reset delay is not characterized in the chip
-> manual if not as "255 XVCLK + initialization". Wait for at least 3
-> milliseconds to guarantee the SCCB bus is available.
-> 
-> This commit fixes a sporadic start-up error triggered by a failure to
-> read the OV10640 chip ID:
-> rdacm21 8-0054: OV10640 ID mismatch: (0x01)
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  drivers/media/i2c/rdacm21.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
-> index b22a2ca5340b..c420a6b96879 100644
-> --- a/drivers/media/i2c/rdacm21.c
-> +++ b/drivers/media/i2c/rdacm21.c
-> @@ -333,13 +333,15 @@ static int ov10640_initialize(struct rdacm21_device *dev)
->  {
->  	u8 val;
->  
-> -	/* Power-up OV10640 by setting RESETB and PWDNB pins high. */
-> +	/* Power-up OV10640 by setting PWDNB and RESETB pins high. */
->  	ov490_write_reg(dev, OV490_GPIO_SEL0, OV490_GPIO0);
->  	ov490_write_reg(dev, OV490_GPIO_SEL1, OV490_SPWDN0);
->  	ov490_write_reg(dev, OV490_GPIO_DIRECTION0, OV490_GPIO0);
->  	ov490_write_reg(dev, OV490_GPIO_DIRECTION1, OV490_SPWDN0);
-> -	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_GPIO0);
-> +
->  	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_SPWDN0);
-
-Shouldn't this be OV490_GPIO_OUTPUT_VALUE1 ?
-
-> +	usleep_range(1500, 3000);
-> +	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_GPIO0);
-
-I'm a bit puzzled by why this patch would improve the ID read issue,
-given that it sets GPIO0 to 1, then sets GPIO0 to 1, compared to
-previously setting GPIO0 to 1 following by setting GPIO0 to 1 :-) Maybe
-it's the additional delay ? In any case, it would probably be a good
-idea to perform additional tests after fixing this.
-
->  	usleep_range(3000, 5000);
->  
->  	/* Read OV10640 ID to test communications. */
+Thank you!
 
 -- 
-Regards,
-
-Laurent Pinchart
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
