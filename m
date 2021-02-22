@@ -2,158 +2,517 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801BB321B84
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C428321B7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhBVPdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:33:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32148 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230510AbhBVPcg (ORCPT
+        id S231566AbhBVPcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:32:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231439AbhBVPb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:32:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614007867;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ibOntcfVMPryl4chcvMDuXiG7DIYwm8AcKE8thK3PgA=;
-        b=cIvH5qanO4rs6m/6gvQ6zSJNZAb/ITTzkE2KVXTu+vdCoj15WJMWhdqwZQusgeKKinX67A
-        1mlJBIEzZF+8htSzWYzXDZOtSFaTgro9Go/D79gpe6ZYkQ+LPHFD3TaEaX3rXDuWWQEQ+W
-        jSXZa0GCdaVQFGngCyjszSurGMqr8k8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-73-_pzbSEXUPpu-KGQl-y-UQQ-1; Mon, 22 Feb 2021 10:31:02 -0500
-X-MC-Unique: _pzbSEXUPpu-KGQl-y-UQQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB5D0801965;
-        Mon, 22 Feb 2021 15:30:57 +0000 (UTC)
-Received: from [10.36.115.16] (ovpn-115-16.ams2.redhat.com [10.36.115.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F3CC5C1BD;
-        Mon, 22 Feb 2021 15:30:48 +0000 (UTC)
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <640738b5-a47e-448b-586d-a1fb80131891@redhat.com>
- <YDOqA9nQHiuIrKBu@dhcp22.suse.cz>
- <73f73cf2-1b4e-bfa9-9a4c-3192d7b7a5ec@redhat.com>
- <YDOvRv8sCVcgF6yC@dhcp22.suse.cz>
- <3b5cd68d-c4ac-c6be-8824-34c541d5377b@redhat.com>
- <YDO5d+pbPBsjv13T@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-Message-ID: <7d7d2213-92a4-0419-20ad-bba7071a279c@redhat.com>
-Date:   Mon, 22 Feb 2021 16:30:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 22 Feb 2021 10:31:57 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F516C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:31:14 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1lEDAw-0001Fu-PG; Mon, 22 Feb 2021 16:31:06 +0100
+Received: from mgr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mgr@pengutronix.de>)
+        id 1lEDAv-0003oB-Vz; Mon, 22 Feb 2021 16:31:05 +0100
+Date:   Mon, 22 Feb 2021 16:31:05 +0100
+From:   Michael Grzeschik <mgr@pengutronix.de>
+To:     Manish Narani <manish.narani@xilinx.com>
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        michal.simek@xilinx.com, balbi@kernel.org, p.zabel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, git@xilinx.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND PATCH v3 2/2] usb: dwc3: Add driver for Xilinx platforms
+Message-ID: <20210222153105.GD4544@pengutronix.de>
+References: <1608015291-52007-1-git-send-email-manish.narani@xilinx.com>
+ <1608015291-52007-3-git-send-email-manish.narani@xilinx.com>
 MIME-Version: 1.0
-In-Reply-To: <YDO5d+pbPBsjv13T@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qFgkTsE6LiHkLPZw"
+Content-Disposition: inline
+In-Reply-To: <1608015291-52007-3-git-send-email-manish.narani@xilinx.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 16:18:27 up 4 days, 18:42, 65 users,  load average: 0.13, 0.13, 0.17
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mgr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.02.21 15:02, Michal Hocko wrote:
-> On Mon 22-02-21 14:22:37, David Hildenbrand wrote:
->>>> Exactly. But for hugetlbfs/shmem ("!RAM-backed files") this is not what we
->>>> want.
->>>
->>> OK, then I must have misread your requirements. Maybe I just got lost in
->>> all the combinations you have listed.
->>
->> Another special case could be dax/pmem I think. You might want to fault it
->> in readable/writable but not perform an actual read/write unless really
->> required.
->>
->> QEMU phrases this as "don't cause wear on the storage backing".
-> 
-> Sorry for being dense here but I still do not follow. If you do not want
-> to read then what do you want to populate from? Only map if it is in the
 
-In the context of VMs it's usually rather a mean to preallocate backend 
-storage - which would also happen on read access. See below on case 4).
+--qFgkTsE6LiHkLPZw
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> page cache?
+Hi Manish!
 
-Let's try to untangle my thoughts regarding VMs. We could have as 
-backend storage for our VM:
+On Tue, Dec 15, 2020 at 12:24:51PM +0530, Manish Narani wrote:
+>Add a new driver for supporting Xilinx platforms. This driver is used
+>for some sequence of operations required for Xilinx USB controllers.
+>This driver is also used to choose between PIPE clock coming from SerDes
+>and the Suspend Clock. Before the controller is out of reset, the clock
+>selection should be changed to PIPE clock in order to make the USB
+>controller work. There is a register added in Xilinx USB controller
+>register space for the same.
+>
+>Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+>---
+> drivers/usb/dwc3/Kconfig          |   9 +
+> drivers/usb/dwc3/Makefile         |   1 +
+> drivers/usb/dwc3/dwc3-of-simple.c |   1 -
+> drivers/usb/dwc3/dwc3-xilinx.c    | 334 ++++++++++++++++++++++++++++++
+> 4 files changed, 344 insertions(+), 1 deletion(-)
+> create mode 100644 drivers/usb/dwc3/dwc3-xilinx.c
+>
+>diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
+>index 7a2304565a73..0e00e6dfccd8 100644
+>--- a/drivers/usb/dwc3/Kconfig
+>+++ b/drivers/usb/dwc3/Kconfig
+>@@ -139,4 +139,13 @@ config USB_DWC3_QCOM
+> 	  for peripheral mode support.
+> 	  Say 'Y' or 'M' if you have one such device.
+>
+>+config USB_DWC3_XILINX
+>+	tristate "Xilinx Platforms"
+>+	depends on (ARCH_ZYNQMP || ARCH_VERSAL) && OF
+>+	default USB_DWC3
+>+	help
+>+	  Support Xilinx SoCs with DesignWare Core USB3 IP.
+>+	  This driver handles both ZynqMP and Versal SoC operations.
+>+	  Say 'Y' or 'M' if you have one such device.
+>+
+> endif
+>diff --git a/drivers/usb/dwc3/Makefile b/drivers/usb/dwc3/Makefile
+>index ae86da0dc5bd..add567578b1f 100644
+>--- a/drivers/usb/dwc3/Makefile
+>+++ b/drivers/usb/dwc3/Makefile
+>@@ -51,3 +51,4 @@ obj-$(CONFIG_USB_DWC3_MESON_G12A)	+=3D dwc3-meson-g12a.o
+> obj-$(CONFIG_USB_DWC3_OF_SIMPLE)	+=3D dwc3-of-simple.o
+> obj-$(CONFIG_USB_DWC3_ST)		+=3D dwc3-st.o
+> obj-$(CONFIG_USB_DWC3_QCOM)		+=3D dwc3-qcom.o
+>+obj-$(CONFIG_USB_DWC3_XILINX)		+=3D dwc3-xilinx.o
+>diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-=
+simple.c
+>index e62ecd22b3ed..71fd620c5161 100644
+>--- a/drivers/usb/dwc3/dwc3-of-simple.c
+>+++ b/drivers/usb/dwc3/dwc3-of-simple.c
+>@@ -172,7 +172,6 @@ static const struct dev_pm_ops dwc3_of_simple_dev_pm_o=
+ps =3D {
+>
+> static const struct of_device_id of_dwc3_simple_match[] =3D {
+> 	{ .compatible =3D "rockchip,rk3399-dwc3" },
+>-	{ .compatible =3D "xlnx,zynqmp-dwc3" },
+> 	{ .compatible =3D "cavium,octeon-7130-usb-uctl" },
+> 	{ .compatible =3D "sprd,sc9860-dwc3" },
+> 	{ .compatible =3D "allwinner,sun50i-h6-dwc3" },
+>diff --git a/drivers/usb/dwc3/dwc3-xilinx.c b/drivers/usb/dwc3/dwc3-xilinx=
+=2Ec
+>new file mode 100644
+>index 000000000000..7e485951d2f7
+>--- /dev/null
+>+++ b/drivers/usb/dwc3/dwc3-xilinx.c
+>@@ -0,0 +1,334 @@
+>+// SPDX-License-Identifier: GPL-2.0
+>+/**
+>+ * dwc3-xilinx.c - Xilinx DWC3 controller specific glue driver
+>+ *
+>+ * Authors: Manish Narani <manish.narani@xilinx.com>
+>+ *          Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
+>+ */
+>+
+>+#include <linux/module.h>
+>+#include <linux/kernel.h>
+>+#include <linux/slab.h>
+>+#include <linux/clk.h>
+>+#include <linux/of.h>
+>+#include <linux/platform_device.h>
+>+#include <linux/dma-mapping.h>
+>+#include <linux/of_platform.h>
+>+#include <linux/pm_runtime.h>
+>+#include <linux/reset.h>
+>+#include <linux/of_address.h>
+>+#include <linux/delay.h>
+>+#include <linux/firmware/xlnx-zynqmp.h>
+>+#include <linux/io.h>
+>+
+>+#include <linux/phy/phy.h>
+>+
+>+/* USB phy reset mask register */
+>+#define XLNX_USB_PHY_RST_EN			0x001C
+>+#define XLNX_PHY_RST_MASK			0x1
+>+
+>+/* Xilinx USB 3.0 IP Register */
+>+#define XLNX_USB_TRAFFIC_ROUTE_CONFIG		0x005C
+>+#define XLNX_USB_TRAFFIC_ROUTE_FPD		0x1
+>+
+>+/* Versal USB Reset ID */
+>+#define VERSAL_USB_RESET_ID			0xC104036
+>+
+>+#define XLNX_USB_FPD_PIPE_CLK			0x7c
+>+#define PIPE_CLK_DESELECT			1
+>+#define PIPE_CLK_SELECT				0
+>+#define XLNX_USB_FPD_POWER_PRSNT		0x80
+>+#define PIPE_POWER_ON				1
+>+#define PIPE_POWER_OFF				0
+>+
+>+struct dwc3_xlnx {
+>+	int				num_clocks;
+>+	struct clk_bulk_data		*clks;
+>+	struct device			*dev;
+>+	void __iomem			*regs;
+>+	int				(*pltfm_init)(struct dwc3_xlnx *data);
+>+};
+>+
+>+static void dwc3_xlnx_mask_phy_rst(struct dwc3_xlnx *priv_data, bool mask)
+>+{
+>+	u32 reg;
+>+
+>+	/*
+>+	 * Enable or disable ULPI PHY reset from USB Controller.
+>+	 * This does not actually reset the phy, but just controls
+>+	 * whether USB controller can or cannot reset ULPI PHY.
+>+	 */
+>+	reg =3D readl(priv_data->regs + XLNX_USB_PHY_RST_EN);
+>+
+>+	if (mask)
+>+		reg &=3D ~XLNX_PHY_RST_MASK;
+>+	else
+>+		reg |=3D XLNX_PHY_RST_MASK;
+>+
+>+	writel(reg, priv_data->regs + XLNX_USB_PHY_RST_EN);
+>+}
+>+
+>+static int dwc3_xlnx_init_versal(struct dwc3_xlnx *priv_data)
+>+{
+>+	struct device		*dev =3D priv_data->dev;
+>+	int			ret;
+>+
+>+	dwc3_xlnx_mask_phy_rst(priv_data, false);
+>+
+>+	/* Assert and De-assert reset */
+>+	ret =3D zynqmp_pm_reset_assert(VERSAL_USB_RESET_ID,
+>+				     PM_RESET_ACTION_ASSERT);
+>+	if (ret < 0) {
+>+		dev_err_probe(dev, ret, "failed to assert Reset\n");
+>+		return ret;
+>+	}
+>+
+>+	ret =3D zynqmp_pm_reset_assert(VERSAL_USB_RESET_ID,
+>+				     PM_RESET_ACTION_RELEASE);
+>+	if (ret < 0) {
+>+		dev_err_probe(dev, ret, "failed to De-assert Reset\n");
+>+		return ret;
+>+	}
+>+
+>+	dwc3_xlnx_mask_phy_rst(priv_data, true);
+>+
+>+	return 0;
+>+}
+>+
+>+static int dwc3_xlnx_init_zynqmp(struct dwc3_xlnx *priv_data)
+>+{
+>+	struct device		*dev =3D priv_data->dev;
+>+	struct reset_control	*crst, *hibrst, *apbrst;
+>+	struct phy		*usb3_phy;
+>+	int			ret;
+>+	u32			reg;
+>+
+>+	crst =3D devm_reset_control_get_exclusive(dev, "usb_crst");
+>+	if (IS_ERR(crst)) {
+>+		ret =3D PTR_ERR(crst);
+>+		dev_err_probe(dev, ret,
+>+			      "failed to get core reset signal\n");
+>+		goto err;
+>+	}
+>+
+>+	hibrst =3D devm_reset_control_get_exclusive(dev, "usb_hibrst");
+>+	if (IS_ERR(hibrst)) {
+>+		ret =3D PTR_ERR(hibrst);
+>+		dev_err_probe(dev, ret,
+>+			      "failed to get hibernation reset signal\n");
+>+		goto err;
+>+	}
+>+
+>+	apbrst =3D devm_reset_control_get_exclusive(dev, "usb_apbrst");
+>+	if (IS_ERR(apbrst)) {
+>+		ret =3D PTR_ERR(apbrst);
+>+		dev_err_probe(dev, ret,
+>+			      "failed to get APB reset signal\n");
+>+		goto err;
+>+	}
+>+
+>+	ret =3D reset_control_assert(crst);
+>+	if (ret < 0) {
+>+		dev_err(dev, "Failed to assert core reset\n");
+>+		goto err;
+>+	}
+>+
+>+	ret =3D reset_control_assert(hibrst);
+>+	if (ret < 0) {
+>+		dev_err(dev, "Failed to assert hibernation reset\n");
+>+		goto err;
+>+	}
+>+
+>+	ret =3D reset_control_assert(apbrst);
+>+	if (ret < 0) {
+>+		dev_err(dev, "Failed to assert APB reset\n");
+>+		goto err;
+>+	}
+>+
+>+	usb3_phy =3D devm_phy_get(dev, "usb3-phy");
 
-1) Anonymous memory
-2) hugetlbfs (private/shared)
-3) tmpfs/shmem (private/shared)
-4) Ordinary files (shared)
-5) DAX/PMEM (shared)
+You should move this phy get to probe code and skip the call of
+pltfm_init if no phy was found.
 
-Excluding special cases (hypervisor upgrades with 2) and 3) ), we expect 
-to have pre-existing content in files only in 4) and 5). 4) and 5) might 
-be used as NVDIMM backend for a guest, or as DIMM backend.
+As I understand this glue now, you will set an defined fixed-clock
+frequency from dts in the ps-gtr phy. If no phy and therefor also no
+clock is defined, the call of dwc3_xlnx_init_zynqmp can be skipped, as
+you will not need to switch the clocks to an external lane source.
 
-The first access of our VM to memory could be
-a) Write: the usual case when exposed as RAM/DIMM to out guest.
-b) Read: possible case when exposed as an NVDIMM to our guest (we don't
-    know). But eventually, we might write to (parts of) NVDIMMs later.
+For example for the host case with node option dr_mode =3D "host" set and
+no external physical external clksrc connected, this glue still needs to
+be used. The current version would break this case.
 
-We "preallocate"/"populate" memory of our VM so that
-- We know we have sufficient backend storage (esp. hugetlbfs, shmem,
-   files) - so we don't randomly crash the VM. My most important use
-   case.
-- We avoid page faults (including page zeroing!) at runtime. Especially
-   relevant for RT workloads.
-
-With 1), 2), and 3) we want to have pages faulted in writable - we 
-expect that our guest will write to that memory. MADV_POPULATE would do 
-that only for 1), and MAP_PRIVATE of 2). For the shared parts, we would 
-want MADV_POPULATE_WRITE semantics.
-
-With 5), we already had complaints that preallcoation in QEMU takes a 
-long time - because we end up actually reading/writing slow PMEM 
-(libvirt now disables preallcoation for that reason, which makes sense). 
-However, MADV_POPULATE_WRITE would help to prefault without actually 
-reading/writing pmem - if we want to avoid any minor faults.
-
-With 4), I think we primarily prealloc/prefault to make sure we have 
-sufficient backend storage. fallocate() might do a better job just for 
-the allocation. But if there is sufficient RAM it might make sense to 
-prefault all guest RAM at least readable - then we only have a minor 
-fault when the VM writes to it and might avoid having to go to disk. 
-Prefaulting everything writable means that we *have to* write back all 
-guest RAM even if the guest never accessed it. So I think there are 
-cases where MADV_POPULATE_READ (current MADV_POPULATE) semantics could 
-make sense.
-
-
--- 
 Thanks,
+Michael
 
-David / dhildenb
+>+	ret =3D phy_init(usb3_phy);
+>+	if (ret < 0) {
+>+		phy_exit(usb3_phy);
+>+		goto err;
+>+	}
+>+
+>+	ret =3D reset_control_deassert(apbrst);
+>+	if (ret < 0) {
+>+		dev_err(dev, "Failed to release APB reset\n");
+>+		goto err;
+>+	}
+>+
+>+	/* Set PIPE Power Present signal in FPD Power Present Register*/
+>+	writel(PIPE_POWER_ON, priv_data->regs + XLNX_USB_FPD_POWER_PRSNT);
+>+
+>+	/* Set the PIPE Clock Select bit in FPD PIPE Clock register */
+>+	writel(PIPE_CLK_SELECT, priv_data->regs + XLNX_USB_FPD_PIPE_CLK);
+>+
+>+	ret =3D reset_control_deassert(crst);
+>+	if (ret < 0) {
+>+		dev_err(dev, "Failed to release core reset\n");
+>+		goto err;
+>+	}
+>+
+>+	ret =3D reset_control_deassert(hibrst);
+>+	if (ret < 0) {
+>+		dev_err(dev, "Failed to release hibernation reset\n");
+>+		goto err;
+>+	}
+>+
+>+	ret =3D phy_power_on(usb3_phy);
+>+	if (ret < 0) {
+>+		phy_exit(usb3_phy);
+>+		goto err;
+>+	}
+>+
+>+	/*
+>+	 * This routes the USB DMA traffic to go through FPD path instead
+>+	 * of reaching DDR directly. This traffic routing is needed to
+>+	 * make SMMU and CCI work with USB DMA.
+>+	 */
+>+	if (of_dma_is_coherent(dev->of_node) || device_iommu_mapped(dev)) {
+>+		reg =3D readl(priv_data->regs + XLNX_USB_TRAFFIC_ROUTE_CONFIG);
+>+		reg |=3D XLNX_USB_TRAFFIC_ROUTE_FPD;
+>+		writel(reg, priv_data->regs + XLNX_USB_TRAFFIC_ROUTE_CONFIG);
+>+	}
+>+
+>+err:
+>+	return ret;
+>+}
+>+
+>+static const struct of_device_id dwc3_xlnx_of_match[] =3D {
+>+	{
+>+		.compatible =3D "xlnx,zynqmp-dwc3",
+>+		.data =3D &dwc3_xlnx_init_zynqmp,
+>+	},
+>+	{
+>+		.compatible =3D "xlnx,versal-dwc3",
+>+		.data =3D &dwc3_xlnx_init_versal,
+>+	},
+>+	{ /* Sentinel */ }
+>+};
+>+MODULE_DEVICE_TABLE(of, dwc3_xlnx_of_match);
+>+
+>+static int dwc3_xlnx_probe(struct platform_device *pdev)
+>+{
+>+	struct dwc3_xlnx		*priv_data;
+>+	struct device			*dev =3D &pdev->dev;
+>+	struct device_node		*np =3D dev->of_node;
+>+	const struct of_device_id	*match;
+>+	void __iomem			*regs;
+>+	int				ret;
+>+
+>+	priv_data =3D devm_kzalloc(dev, sizeof(*priv_data), GFP_KERNEL);
+>+	if (!priv_data)
+>+		return -ENOMEM;
+>+
+>+	regs =3D devm_platform_ioremap_resource(pdev, 0);
+>+	if (IS_ERR(regs)) {
+>+		ret =3D PTR_ERR(regs);
+>+		dev_err_probe(dev, ret, "failed to map registers\n");
+>+		return ret;
+>+	}
+>+
+>+	match =3D of_match_node(dwc3_xlnx_of_match, pdev->dev.of_node);
+>+
+>+	priv_data->pltfm_init =3D match->data;
+>+	priv_data->regs =3D regs;
+>+	priv_data->dev =3D dev;
+>+
+>+	platform_set_drvdata(pdev, priv_data);
+>+
+>+	ret =3D devm_clk_bulk_get_all(priv_data->dev, &priv_data->clks);
+>+	if (ret < 0)
+>+		return ret;
+>+
+>+	priv_data->num_clocks =3D ret;
+>+
+>+	ret =3D clk_bulk_prepare_enable(priv_data->num_clocks, priv_data->clks);
+>+	if (ret)
+>+		return ret;
+>+
+>+	ret =3D priv_data->pltfm_init(priv_data);
+>+	if (ret)
+>+		goto err_clk_put;
+>+
+>+	ret =3D of_platform_populate(np, NULL, NULL, dev);
+>+	if (ret)
+>+		goto err_clk_put;
+>+
+>+	pm_runtime_set_active(dev);
+>+	pm_runtime_enable(dev);
+>+	pm_suspend_ignore_children(dev, false);
+>+	pm_runtime_get_sync(dev);
+>+
+>+	return 0;
+>+
+>+err_clk_put:
+>+	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data->clks);
+>+	clk_bulk_put_all(priv_data->num_clocks, priv_data->clks);
+>+
+>+	return ret;
+>+}
+>+
+>+static int dwc3_xlnx_remove(struct platform_device *pdev)
+>+{
+>+	struct dwc3_xlnx	*priv_data =3D platform_get_drvdata(pdev);
+>+	struct device		*dev =3D &pdev->dev;
+>+
+>+	of_platform_depopulate(dev);
+>+
+>+	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data->clks);
+>+	clk_bulk_put_all(priv_data->num_clocks, priv_data->clks);
+>+	priv_data->num_clocks =3D 0;
+>+
+>+	pm_runtime_disable(dev);
+>+	pm_runtime_put_noidle(dev);
+>+	pm_runtime_set_suspended(dev);
+>+
+>+	return 0;
+>+}
+>+
+>+static int __maybe_unused dwc3_xlnx_suspend_common(struct device *dev)
+>+{
+>+	struct dwc3_xlnx *priv_data =3D dev_get_drvdata(dev);
+>+
+>+	clk_bulk_disable(priv_data->num_clocks, priv_data->clks);
+>+
+>+	return 0;
+>+}
+>+
+>+static int __maybe_unused dwc3_xlnx_resume_common(struct device *dev)
+>+{
+>+	struct dwc3_xlnx *priv_data =3D dev_get_drvdata(dev);
+>+
+>+	return clk_bulk_enable(priv_data->num_clocks, priv_data->clks);
+>+}
+>+
+>+static int __maybe_unused dwc3_xlnx_runtime_idle(struct device *dev)
+>+{
+>+	pm_runtime_mark_last_busy(dev);
+>+	pm_runtime_autosuspend(dev);
+>+
+>+	return 0;
+>+}
+>+
+>+static UNIVERSAL_DEV_PM_OPS(dwc3_xlnx_dev_pm_ops, dwc3_xlnx_suspend_commo=
+n,
+>+			    dwc3_xlnx_resume_common, dwc3_xlnx_runtime_idle);
+>+
+>+static struct platform_driver dwc3_xlnx_driver =3D {
+>+	.probe		=3D dwc3_xlnx_probe,
+>+	.remove		=3D dwc3_xlnx_remove,
+>+	.driver		=3D {
+>+		.name		=3D "dwc3-xilinx",
+>+		.of_match_table	=3D dwc3_xlnx_of_match,
+>+		.pm		=3D &dwc3_xlnx_dev_pm_ops,
+>+	},
+>+};
+>+
+>+module_platform_driver(dwc3_xlnx_driver);
+>+
+>+MODULE_LICENSE("GPL v2");
+>+MODULE_DESCRIPTION("Xilinx DWC3 controller specific glue driver");
+>+MODULE_AUTHOR("Manish Narani <manish.narani@xilinx.com>");
+>+MODULE_AUTHOR("Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>");
+>--=20
+>2.17.1
+>
+>
+>_______________________________________________
+>linux-arm-kernel mailing list
+>linux-arm-kernel@lists.infradead.org
+>http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
 
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--qFgkTsE6LiHkLPZw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmAzzjQACgkQC+njFXoe
+LGRZAg/+IwUvRoTT4Yi8aTtUuqrCqDWAhSkaJOwKz+o1jCF+ZEobGu9lTgequE5V
+DzWq89AdpBfsnNVh4XlJzctVCPyAJmbMjp9dloIyLCzvoa9HsKCVuEQbtk/AukBR
+exBzFAjyEFu8K77K9Xmb8Zh4/FldGyMxaLjNrf53W4ABLmC+frHcQEtphdu5MN20
+pJg9NsaLwzcI4OqQmsExbIlZSWbasf3LdjfLZ4G0bjVk84Z2PfzTCAECI2O5N+bs
+VFONL5Nq0upv4iKMEB1AjXLu8I3mA5vL3cNSwdzGGOPu+k2L3dkOeuPyfBSRCsuf
++Q+2zVBpzALb8r33OQFTqq23W/HoSbs8DmGmZvbsYOrYLhYLNN/+9ZElGHxCBPNm
+k8XPXu4sraT9wt9A7mx3gYK5EzadaXnFwN2FU5oX+RJkd+JByYkrpFTtzuQiRFTV
+y7ElK0A/koqRrWM2Dc1bqpeeOmDRVFBdYXROd7i9khHkbqe1VdQA0094LaSdB1VV
+YX0ixftpt1eeIf5DvFz3pgY//L2b02LXKsXcAZPCRZbluLxhjMaQwoe0aBE+scpv
+sYNBMLCM4IRak5c3NlAK9pH5OGlXSFcF2GmioQgjhwfkafHT2ge0uuElFFebYfVy
+9Tglaw7TUD0/c3x3BpMaF6pFMp8/2acROLgJgMhoktclaJP0WCA=
+=Y3XC
+-----END PGP SIGNATURE-----
+
+--qFgkTsE6LiHkLPZw--
