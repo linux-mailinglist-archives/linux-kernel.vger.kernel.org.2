@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E52832151E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2455132151F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhBVL3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 06:29:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230469AbhBVL2o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 06:28:44 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF0FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 03:28:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AKMkOQRxL9OZt3xWljPnbeyEIC+Pe8fINfC5tAIFSyk=; b=l0RrpAdm85BLG2uw5wVe5Yfuqk
-        oo83Ax1nhPHHmXR3bqNiC6JEx15qoq1uUqqkYvkqUKYGj8tLTtGlSgBWm4OCdGvy3hYwPnttcApbl
-        RQqfxCD1hBY3H4JsGijkQTovC7daa1QNUqB9B/nCU+A7AjixOrKxyePpO6K59Mwa1sYh6K2tUTMzd
-        v6LjPRr6I6TQ/KI1GCY8I/QSqkHrG2SGvX25Z4OIUxHlVIwsnwUmWG5h88DBFnUBxq5esX3+f5H3D
-        jpla6Zd/btj6LjcLCXlwuxSNVS2LR9Yw8OtcPSUpGl95DfPUSE6mzyQU4tT7R8FB7KGfvqlWycwuJ
-        Vg46Ao7w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lE9NM-0005OG-Oc; Mon, 22 Feb 2021 11:27:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 686B43013E5;
-        Mon, 22 Feb 2021 12:27:36 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 52B422BC3285F; Mon, 22 Feb 2021 12:27:36 +0100 (CET)
-Date:   Mon, 22 Feb 2021 12:27:36 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, tony.luck@intel.com, pjt@google.com,
-        linux-kernel@vger.kernel.org, r.marek@assembler.cz,
-        jpoimboe@redhat.com, jikos@kernel.org, andrew.cooper3@citrix.com
-Subject: Re: [RFC][PATCH 2/2] x86/retpoline: Compress retpolines
-Message-ID: <YDOVKBHDC3ish9k/@hirez.programming.kicks-ass.net>
-References: <20210218165938.213678824@infradead.org>
- <20210218172151.942060087@infradead.org>
- <20210219071439.GA26778@zn.tnic>
+        id S230380AbhBVL3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 06:29:34 -0500
+Received: from smtp.asem.it ([151.1.184.197]:62715 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230433AbhBVL3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 06:29:12 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000821183.MSG 
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:28:19 +0100S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 22
+ Feb 2021 12:28:18 +0100
+Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
+ mapi id 15.01.1979.003; Mon, 22 Feb 2021 12:28:18 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Mika Westerberg" <mika.westerberg@linux.intel.com>
+Subject: RE: R: [PATCH v1] watchdog: wdat: add param. to start wdog on module
+ insertion
+Thread-Topic: R: [PATCH v1] watchdog: wdat: add param. to start wdog on module
+ insertion
+Thread-Index: AQHXBhOZhCefmAy4X0yS/T4Cg8tbv6pfPluAgAAygZCAABs6gIAEfpKw
+Date:   Mon, 22 Feb 2021 11:28:18 +0000
+Message-ID: <90ae006f2f3a47298122d53ba5e747b3@asem.it>
+References: <20210218163200.1154812-1-f.suligoi@asem.it>
+ <20210219105447.GI2542@lahna.fi.intel.com>
+ <bf4e89bd11964f2e9f621f949adc338b@asem.it>
+ <4ed7ec8c-d5bf-41b8-96c4-b34db670315d@roeck-us.net>
+In-Reply-To: <4ed7ec8c-d5bf-41b8-96c4-b34db670315d@roeck-us.net>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [192.168.100.3]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219071439.GA26778@zn.tnic>
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A782F25.60339553.003E,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 08:14:39AM +0100, Borislav Petkov wrote:
-> On Thu, Feb 18, 2021 at 05:59:40PM +0100, Peter Zijlstra wrote:
-> > By using int3 as a speculation fence instead of lfence, we can shrink
-> > the longest alternative to just 15 bytes:
-> > 
-> >   0:   e8 05 00 00 00          callq  a <.altinstr_replacement+0xa>
-> >   5:   f3 90                   pause  
-> >   7:   cc                      int3   
-> >   8:   eb fb                   jmp    5 <.altinstr_replacement+0x5>
-> >   a:   48 89 04 24             mov    %rax,(%rsp)
-> >   e:   c3                      retq   
-> > 
-> > This means we can change the alignment from 32 to 16 bytes and get 4
-> > retpolines per cacheline, $I win.
-> 
-> You mean I$ :)
-
-Typin' so hard.
-
-> In any case, for both:
-> 
-> Reviewed-by: Borislav Petkov <bp@suse.de>
-
-Thanks, except I've been told there is a performance implication. But
-since all that happened in sekrit, none of that is recorded :/
-
-I was hoping for some people (Tony, Paul) to respond with more data.
-Also, Andrew said that if we ditch the lfence we could also ditch the
-pause.
-
-So people, please speak up, and if possible share any data you still
-might have from back when retpolines were developed such that we can
-have it on record.
+SGkgR3VlbnRlcg0KDQo+ID4+PiAgCSBjb25zdCBzdHJ1Y3Qgd2RhdF9pbnN0cnVjdGlvbiAqaW5z
+dHIsIHUzMiAqdmFsdWUpICB7IEBAIC00MzcsNg0KPiA+Pj4gKzQ0Myw4IEBAIHN0YXRpYyBpbnQg
+d2RhdF93ZHRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZQ0KPiA+PiAqcGRldikNCj4gPj4+
+ICAJfQ0KPiA+Pj4NCj4gPj4+ICAJd2RhdF93ZHRfYm9vdF9zdGF0dXMod2RhdCk7DQo+ID4+PiAr
+CWlmIChzdGFydF9lbmFibGVkKQ0KPiA+Pj4gKwkJd2RhdF93ZHRfc3RhcnQoJndkYXQtPndkZCk7
+DQo+ID4+DQo+ID4+IE5vIG9iamVjdGlvbnMgdG8gdGhpcyBpZiBpdCBpcyByZWFsbHkgbmVlZGVk
+LiBIb3dldmVyLCBJIHRoaW5rIGl0IGlzDQo+ID4+IGJldHRlciBzdGFydCB0aGUgd2F0Y2hkb2cg
+YWZ0ZXIgZGV2bV93YXRjaGRvZ19yZWdpc3Rlcl9kZXZpY2UoKSBoYXMNCj4gPj4gYmVlbiBjYWxs
+ZWQgc28gd2UgaGF2ZSBldmVyeXRoaW5nIGluaXRpYWxpemVkLg0KPiA+DQo+ID4gWWVzLCBpdCBp
+cyBuZWVkZWQuIFdlIG5lZWQgdGhpcyBmZWF0dXJlIHRvIGVuYWJsZSB0aGUgd2F0Y2hkb2cgYXMg
+c29vbg0KPiA+IGFzIHBvc3NpYmxlIGFuZCB0aGlzIGlzIGVzc2VudGlhbCBmb3IgdW5tYW5uZWQg
+YXBwbGljYXRpb25zLCBzdWNoIGFzDQo+ID4gcm91dGVycywgd2F0ZXIgcHVtcGluZyBzdGF0aW9u
+cywgY2xpbWF0ZSBkYXRhIGNvbGxlY3Rpb25zLCBldGMuDQo+ID4NCj4gRldJVywgaW4geW91ciB1
+c2UgY2FzZSB0aGUgd2F0Y2hkb2cgc2hvdWxkIGJlIGVuYWJsZWQgaW4gdGhlDQo+IEJJT1MvUk9N
+TU9OLg0KDQpZZXMsIHlvdSBhcmUgcmlnaHQsICB3aXRoIHRoZSBuZXcgQklPUyB2ZXJzaW9uIGZv
+ciB0aGUgbmV3IGJvYXJkcw0Kd2UnbGwgaW1wbGVtZW50IHRoaXMgZmVhdHVyZXMsIGJ1dCBmb3Ig
+dGhlIG9sZCBib2FyZHMgaXQgaXMgbm8gbW9yZSBwb3NzaWJsZS4NCg0KPiANCj4gPiBSaWdodCwg
+b2sgZm9yIHRoZSBjb3JyZWN0IHBvc2l0aW9uaW5nIG9mIHRoZSB3ZGF0X3dkdF9zdGFydCBmdW5j
+dGlvbg0KPiA+IGF0IHRoZSBlbmQgb2YgdGhlIHdhdGNoZG9nIGRldmljZSBpbml0aWFsaXphdGlv
+bi4gVGhhbmtzIQ0KPiA+DQo+IA0KPiBObywgaXQgaXNuJ3QsIGJlY2F1c2UgaXQgd29uJ3Qgc2V0
+IFdET0dfSFdfUlVOTklORywgYW5kIHRoZSB3YXRjaGRvZw0KPiBjb3JlIHdvbid0IGtub3cgdGhh
+dCB0aGUgd2F0Y2hkb2cgaXMgcnVubmluZy4NCg0KT2sNCg0KPiBUaGUgd2F0Y2hkb2cgaGFzIHRv
+IGJlIHN0YXJ0ZWQgYmVmb3JlIHRoZSBjYWxsIHRvIHdkYXRfd2R0X3NldF9ydW5uaW5nKCkuDQo+
+IElmIHRoYXQgaXNuJ3QgcG9zc2libGUgd2l0aCB0aGUgY3VycmVudCBsb2NhdGlvbiBvZiB3ZGF0
+X3dkdF9zZXRfcnVubmluZygpLA0KPiB0aGVuDQo+IHdkYXRfd2R0X3NldF9ydW5uaW5nKCkgaGFz
+IHRvIGJlIG1vdmVkIGFjY29yZGluZ2x5Lg0KPiBFaXRoZXIgY2FzZSwgYm90aCBoYXZlIHRvIGJl
+IGNhbGxlZCBiZWZvcmUgY2FsbGluZw0KPiBkZXZtX3dhdGNoZG9nX3JlZ2lzdGVyX2RldmljZSgp
+Lg0KDQpPaw0KDQo+IA0KPiBIYXZpbmcgc2FpZCB0aGF0LCBJJ2QgcHJlZmVyIHRvIGhhdmUgYSBt
+b2R1bGUgcGFyYW1ldGVyIGluIHRoZSB3YXRjaGRvZw0KPiBjb3JlLiBXZSBhbHJlYWR5IGhhdmUg
+YSBudW1iZXIgb2Ygc2ltaWxhciBtb2R1bGUgcGFyYW1ldGVycyBpbiB2YXJpb3VzDQo+IGRyaXZl
+cnMsIGFsbCBuYW1lZCBkaWZmZXJlbnRseSwgYW5kIEknZCByYXRoZXIgbm90IGhhdmUgbW9yZS4N
+Cg0KT2ssIEknbGwgc3R1ZHkgaG93IHRvIGludHJvZHVjZSBhIHRoaXMgbmV3IHBhcmFtZXRlciBp
+biB0aGUgd2RvZyBjb3JlLA0Kc28gdGhhdCBpdCBjYW4gYmUgYXZhaWxhYmxlIGZvciBhbGwgd2F0
+Y2hkb2cgZHJpdmVycy4NClRoZW4gd2UnbGwgaGF2ZSB0byB0aGluayB3aGF0IHRvIGRvIHdpdGgg
+dGhlIGV4aXN0ZW50IHNpbWlsYXIgcGFyYW1ldGVycy4NCkkgdGhpbmsgd2UgaGF2ZSB0byBrZWVw
+IHRoZW0gZm9yIGNvbXBhdGliaWxpdHkgcmVhc29ucy4NCg0KPiANCj4gR3VlbnRlcg0KPiANCg0K
+UmVnYXJkcywNCkZsYXZpbw0K
