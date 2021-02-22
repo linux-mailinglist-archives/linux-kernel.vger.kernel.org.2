@@ -2,183 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51787320EA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 00:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 832EF320EAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 01:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbhBUX4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 18:56:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47938 "EHLO mail.kernel.org"
+        id S230014AbhBVASH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 19:18:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229717AbhBUX4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 18:56:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8493364E64;
-        Sun, 21 Feb 2021 23:55:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613951721;
-        bh=pCV1sQy9uTqnFAmmvzP8ZG3dSUM5TF1WU3OUbHWIOv4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=T1pRRi5/D/X7oVKcOmFHTJtXqE5RutVhZWk7CLVNL5XbPT8qLQytrs0gEhOLn4zd/
-         oMtzAGHyufc5EAcu9qpi67kgU5sFMf0THymI2PM4BPddsXq3IEgenfteJzQ7WsMpWg
-         Fh++ylm32cIb7DV/46FFXRFy9poORUQIvjU8kqLcIl0MrLQppdq+Qg8jAVnNCwkeN8
-         /s3Qc9qVacn1oOqUcFUrQUhG+UfoVpF7MO9ssZOm1coRCCrCAsNKygsF8/yDUcW1cN
-         zVRfdYaI0IFjAPoRJWcZeJb+WzRvA2sS0avXg/cZpzLDNODhVX8uiwhLavvKRoiERK
-         9eZgDdBOeY/sQ==
-Received: by mail-ed1-f51.google.com with SMTP id i14so19434588eds.8;
-        Sun, 21 Feb 2021 15:55:21 -0800 (PST)
-X-Gm-Message-State: AOAM530Ig5p3dOBvdBDxynLTxJ9qlmFw4q4+RM928g2qYOdwaNLkZxdL
-        PXgwHswInickGI+KBg28diwa945MO2Qwd0n5Vg==
-X-Google-Smtp-Source: ABdhPJzjfP1nPPQ1MNPaWVnfk2Mr7HLZ5b27HJabVIkK5eW+HiRwhioG5vwkCodyWo5nFcJXQ+8wp5PIi/mGH6iID4E=
-X-Received: by 2002:aa7:dd4b:: with SMTP id o11mr19989951edw.303.1613951719928;
- Sun, 21 Feb 2021 15:55:19 -0800 (PST)
+        id S230000AbhBVASF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 19:18:05 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6649E64E24;
+        Mon, 22 Feb 2021 00:17:23 +0000 (UTC)
+Date:   Sun, 21 Feb 2021 19:17:21 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bean Huo <beanhuo@micron.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Qiujun Huang <hqjagain@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Song Chen <chensong_2000@189.cn>, Tom Rix <trix@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
+Subject: [GIT PULL] tracing: Updates for 5.12
+Message-ID: <20210221191721.7126befa@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <1613728452-24871-1-git-send-email-yongqiang.niu@mediatek.com> <1613728452-24871-2-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1613728452-24871-2-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Mon, 22 Feb 2021 07:55:10 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_92-Kw+BFnxgQbh2zFT5hDBAF+uZe+_VgCd4NAziQ0wUg@mail.gmail.com>
-Message-ID: <CAAOTY_92-Kw+BFnxgQbh2zFT5hDBAF+uZe+_VgCd4NAziQ0wUg@mail.gmail.com>
-Subject: Re: [PATCH v1] drm/mediatek: move page flip handle into cmdq cb
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B42=E6=9C=
-=8819=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=885:54=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> move page flip handle into cmdq cb
-> irq callback will before cmdq flush ddp register
-> into hardware, that will cause the display frame page
-> flip event before it realy display out time
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 33 +++++++++++++++++++++++++++=
-++----
->  1 file changed, 29 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
-diatek/mtk_drm_crtc.c
-> index bdd37ea..bece327 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -72,6 +72,13 @@ struct mtk_crtc_state {
->         unsigned int                    pending_vrefresh;
->  };
->
-> +#if IS_REACHABLE(CONFIG_MTK_CMDQ)
-> +struct mtk_cmdq_cb_data {
-> +       struct cmdq_pkt                 *cmdq_handle;
-> +       struct mtk_drm_crtc             *mtk_crtc;
-> +};
-> +#endif
-> +
->  static inline struct mtk_drm_crtc *to_mtk_crtc(struct drm_crtc *c)
->  {
->         return container_of(c, struct mtk_drm_crtc, base);
-> @@ -96,7 +103,6 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_d=
-rm_crtc *mtk_crtc)
->
->  static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
->  {
-> -       drm_crtc_handle_vblank(&mtk_crtc->base);
->         if (mtk_crtc->pending_needs_vblank) {
->                 mtk_drm_crtc_finish_page_flip(mtk_crtc);
->                 mtk_crtc->pending_needs_vblank =3D false;
-> @@ -241,7 +247,19 @@ struct mtk_ddp_comp *mtk_drm_ddp_comp_for_plane(stru=
-ct drm_crtc *crtc,
->  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
->  static void ddp_cmdq_cb(struct cmdq_cb_data data)
->  {
-> -       cmdq_pkt_destroy(data.data);
-> +       struct mtk_cmdq_cb_data *cb_data =3D data.data;
-> +
-> +       if (cb_data) {
-> +               struct mtk_drm_crtc *mtk_crtc =3D cb_data->mtk_crtc;
-> +
-> +               if (mtk_crtc)
-> +                       mtk_drm_finish_page_flip(mtk_crtc);
-> +
-> +               if (cb_data->cmdq_handle)
-> +                       cmdq_pkt_destroy(cb_data->cmdq_handle);
-> +
-> +               kfree(cb_data);
-> +       }
->  }
->  #endif
->
-> @@ -481,13 +499,20 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_c=
-rtc *mtk_crtc)
->         }
->  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
->         if (mtk_crtc->cmdq_client) {
-> +               struct mtk_cmdq_cb_data *cb_data;
-> +
->                 mbox_flush(mtk_crtc->cmdq_client->chan, 2000);
->                 cmdq_handle =3D cmdq_pkt_create(mtk_crtc->cmdq_client, PA=
-GE_SIZE);
->                 cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_event);
->                 cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, false);
->                 mtk_crtc_ddp_config(crtc, cmdq_handle);
->                 cmdq_pkt_finalize(cmdq_handle);
-> -               cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cmdq_handl=
-e);
-> +
-> +               cb_data =3D kmalloc(sizeof(*cb_data), GFP_KERNEL);
-> +               cb_data->cmdq_handle =3D cmdq_handle;
-> +               cb_data->mtk_crtc =3D mtk_crtc;
-> +
-> +               cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cb_data);
->         }
->  #endif
->         mutex_unlock(&mtk_crtc->hw_lock);
-> @@ -674,7 +699,7 @@ void mtk_crtc_ddp_irq(struct drm_crtc *crtc, struct m=
-tk_ddp_comp *comp)
->  #endif
->                 mtk_crtc_ddp_config(crtc, NULL);
->
-> -       mtk_drm_finish_page_flip(mtk_crtc);
-> +       drm_crtc_handle_vblank(&mtk_crtc->base);
+Linus,
 
-For CPU and shadow register case, where to handle page flip?
-The correct sequence should be:
+Tracing updates for 5.12
 
-1. set pending_needs_vblank to true
-2. mtk_drm_crtc_hw_config
-3. irq comes, handle page flip, and set pending_needs_vblank to false
+ - Update to the way irqs and preemption is tracked via the trace event PC field
 
-But now irq comes before 2, so this patch want to fix this bug.
-I think shadow register also have this problem. The control flow of
-shadow register is similar to cmdq, so I would like to fix both
-problem in the same way.
+ - Fix handling of unregistering event failing due to allocating memory.
+   This is only triggered by failure injection, as it is pretty much guaranteed
+   to have less than a page allocation succeed.
 
-Regards,
-Chun-Kuang.
+ - Do not show the useless "filter" or "enable" files for the "ftrace" trace
+   system, as they have no effect on doing anything.
 
->  }
->
->  static int mtk_drm_crtc_num_comp_planes(struct mtk_drm_crtc *mtk_crtc,
-> --
-> 1.8.1.1.dirty
->
+ - Add a warning if kprobes are registered more than once.
+
+ - Synthetic events now have their fields parsed by semicolons.
+   Old formats without semicolons will still work, but new features will
+   require them.
+
+ - New option to allow trace events to show %p without hashing in trace file.
+   The trace file can only be read by root, and reading the raw event buffer
+   did not have any pointers hashed, so this does not expose anything new.
+
+ - New directory in tools called tools/tracing, where a new tool that reads
+   sequential latency reports from the ftrace latency tracers.
+
+ - Other minor fixes and cleanups.
+
+
+Please pull the latest trace-v5.12 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.12
+
+Tag SHA1: 608220f252f14f04170ccc894267897e9b5740b8
+Head SHA1: c85c9a2c6e368dc94907e63babb18a9788e5c9b6
+
+
+Bean Huo (1):
+      tracing: Fix a kernel doc warning
+
+Bhaskar Chowdhury (1):
+      tracing: Fix spelling of controlling in uprobes
+
+Colin Ian King (1):
+      tracing: Fix spelling mistake in Kconfig "infinit" -> "infinite"
+
+Jinyang He (1):
+      ftrace: Remove unused ftrace_force_update()
+
+Masami Hiramatsu (6):
+      kprobes: Warn if the kprobe is reregistered
+      tracing/dynevent: Delegate parsing to create function
+      tracing: Show real address for trace event arguments
+      tracing: Update the stage 3 of trace event macro comment
+      tracing: Add ptr-hash option to show the hashed pointer value
+      kprobes: Fix to delay the kprobes jump optimization
+
+Qiujun Huang (4):
+      tracing: Update trace_ignore_this_task() kernel-doc comment
+      tracing: Remove get/put_cpu() from function_trace_init
+      ring-buffer: Remove cpu_buffer argument from the rb_inc_page()
+      ring-buffer: Drop unneeded check in ring_buffer_resize()
+
+Sebastian Andrzej Siewior (4):
+      tracing: Merge irqflags + preempt counter.
+      tracing: Inline tracing_gen_ctx_flags()
+      tracing: Use in_serving_softirq() to deduct softirq status.
+      tracing: Remove NULL check from current in tracing_generic_entry_update().
+
+Song Chen (1):
+      kernel: trace: preemptirq_delay_test: add cpu affinity
+
+Steven Rostedt (VMware) (6):
+      tracepoint: Do not fail unregistering a probe due to memory failure
+      tracing: Do not create "enable" or "filter" files for ftrace event subsystem
+      tracepoints: Remove unnecessary "data_args" macro parameter
+      tracepoints: Do not punish non static call users
+      tracepoints: Code clean up
+      tracing: Make hash-ptr option default
+
+Tom Rix (2):
+      tracing: Add printf attribute to log function
+      tracing: Remove definition of DEBUG in trace_mmiotrace.c
+
+Tom Zanussi (5):
+      tracing: Rework synthetic event command parsing
+      tracing: Update synth command errors
+      tracing: Add a backward-compatibility check for synthetic event creation
+      selftests/ftrace: Update synthetic event syntax errors
+      selftests/ftrace: Add '!event' synthetic event syntax check
+
+Viktor Rosendahl (1):
+      tracing/tools: Add the latency-collector to tools directory
+
+----
+ Documentation/trace/ftrace.rst                     |    6 +
+ include/linux/ftrace.h                             |    2 -
+ include/linux/trace.h                              |    3 +-
+ include/linux/trace_events.h                       |   75 +-
+ include/linux/tracepoint.h                         |   54 +-
+ include/trace/trace_events.h                       |   31 +-
+ kernel/kprobes.c                                   |   44 +-
+ kernel/trace/Kconfig                               |    6 +-
+ kernel/trace/blktrace.c                            |   17 +-
+ kernel/trace/preemptirq_delay_test.c               |   14 +
+ kernel/trace/ring_buffer.c                         |   41 +-
+ kernel/trace/trace.c                               |  283 +--
+ kernel/trace/trace.h                               |   63 +-
+ kernel/trace/trace_branch.c                        |    6 +-
+ kernel/trace/trace_dynevent.c                      |   35 +-
+ kernel/trace/trace_dynevent.h                      |    4 +-
+ kernel/trace/trace_event_perf.c                    |    5 +-
+ kernel/trace/trace_events.c                        |   40 +-
+ kernel/trace/trace_events_inject.c                 |    6 +-
+ kernel/trace/trace_events_synth.c                  |  320 ++-
+ kernel/trace/trace_functions.c                     |   31 +-
+ kernel/trace/trace_functions_graph.c               |   32 +-
+ kernel/trace/trace_hwlat.c                         |    7 +-
+ kernel/trace/trace_irqsoff.c                       |   86 +-
+ kernel/trace/trace_kprobe.c                        |   43 +-
+ kernel/trace/trace_mmiotrace.c                     |   16 +-
+ kernel/trace/trace_output.c                        |   12 +-
+ kernel/trace/trace_probe.c                         |   17 +
+ kernel/trace/trace_probe.h                         |    1 +
+ kernel/trace/trace_sched_wakeup.c                  |   71 +-
+ kernel/trace/trace_syscalls.c                      |   20 +-
+ kernel/trace/trace_uprobe.c                        |   23 +-
+ kernel/tracepoint.c                                |   91 +-
+ tools/Makefile                                     |   14 +-
+ .../inter-event/trigger-synthetic-event-syntax.tc  |    4 +
+ .../trigger-synthetic_event_syntax_errors.tc       |   35 +-
+ tools/tracing/Makefile                             |   19 +
+ tools/tracing/latency/.gitignore                   |    2 +
+ tools/tracing/latency/Makefile                     |   24 +
+ tools/tracing/latency/latency-collector.c          | 2108 ++++++++++++++++++++
+ 40 files changed, 3083 insertions(+), 628 deletions(-)
+ create mode 100644 tools/tracing/Makefile
+ create mode 100644 tools/tracing/latency/.gitignore
+ create mode 100644 tools/tracing/latency/Makefile
+ create mode 100644 tools/tracing/latency/latency-collector.c
+---------------------------
