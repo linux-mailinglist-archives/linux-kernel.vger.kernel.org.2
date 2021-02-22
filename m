@@ -2,111 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F71321F3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72482321F44
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhBVSjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:39:31 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:55036 "EHLO honk.sigxcpu.org"
+        id S230352AbhBVSlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:41:02 -0500
+Received: from mga07.intel.com ([134.134.136.100]:65104 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231366AbhBVSi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:38:58 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 791CFFB02;
-        Mon, 22 Feb 2021 19:38:15 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RDN2vddEVoRq; Mon, 22 Feb 2021 19:38:12 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id BB22940258; Mon, 22 Feb 2021 19:38:11 +0100 (CET)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Liu Ying <victor.liu@nxp.com>
-Subject: [PATCH v4 1/1] phy: fsl-imx8-mipi-dphy: Hook into runtime pm
-Date:   Mon, 22 Feb 2021 19:38:11 +0100
-Message-Id: <fa1ce8cdb448ed81e0dc6e49e3c7f8fd6b19ecae.1614019053.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <cover.1614019053.git.agx@sigxcpu.org>
-References: <cover.1614019053.git.agx@sigxcpu.org>
+        id S231986AbhBVSkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 13:40:21 -0500
+IronPort-SDR: i54tMhGVkfVazDupSPUSQrubSX+R14TNYd3BqplGE2B2sbz0u5ewJ7mnxoYA/gxtcyOQBc5xbq
+ zUosS8gw9rlA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="248604546"
+X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
+   d="scan'208";a="248604546"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 10:38:29 -0800
+IronPort-SDR: K25ijc2ixE1JNZWZB66mWJ4ZdE0FII9vDWen8txowUjhmclpeg2toWWWFDqz3XnBN3+69ECDow
+ o6Cz8fMw7CLg==
+X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
+   d="scan'208";a="389966258"
+Received: from schen9-mobl.amr.corp.intel.com ([10.251.12.88])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 10:38:28 -0800
+Subject: Re: [PATCH v2 3/3] mm: Fix missing mem cgroup soft limit tree updates
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <e269f5df3af1157232b01a9b0dae3edf4880d786.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC4BcsNFEmW7XeqB@cmpxchg.org>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <d141f9ec-5502-b011-167f-e24d891b0dfe@linux.intel.com>
+Date:   Mon, 22 Feb 2021 10:38:27 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YC4BcsNFEmW7XeqB@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows us to shut down the mipi power domain on the imx8. The
-alternative would be to drop the dphy from the mipi power domain in the
-SOCs device tree and only have the DSI host controller visible there but
-since the PD is mostly about the PHY that would defeat it's purpose.
 
-This allows to shut off the power domain hen blanking the LCD panel:
 
-pm_genpd_summary before:
+On 2/17/21 9:56 PM, Johannes Weiner wrote:
 
-domain                          status          slaves
-    /device                                             runtime status
-----------------------------------------------------------------------
-mipi                            on
-    /devices/platform/soc@0/soc@0:bus@30800000/30a00300.dphy  unsupported
-    /devices/platform/soc@0/soc@0:bus@30800000/30a00000.mipi_dsi  suspended
+>>  static inline void uncharge_gather_clear(struct uncharge_gather *ug)
+>> @@ -6849,7 +6850,13 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+>>  	 * exclusive access to the page.
+>>  	 */
+>>  
+>> -	if (ug->memcg != page_memcg(page)) {
+>> +	if (ug->memcg != page_memcg(page) ||
+>> +	    /*
+>> +	     * Update soft limit tree used in v1 cgroup in page batch for
+>> +	     * the same node. Relevant only to v1 cgroup with a soft limit.
+>> +	     */
+>> +	    (ug->dummy_page && ug->nid != page_to_nid(page) &&
+>> +	     ug->memcg->soft_limit != PAGE_COUNTER_MAX)) {
+> 
+> Sorry, I used weird phrasing in my last email.
+> 
+> Can you please preface the checks you're adding with a
+> !cgroup_subsys_on_dfl(memory_cgrp_subsys) to static branch for
+> cgroup1? The uncharge path is pretty hot, and this would avoid the
+> runtime overhead on cgroup2 at least, which doesn't have the SL.
+> 
+> Also, do we need the ug->dummy_page check? It's only NULL on the first
+> loop - where ug->memcg is NULL as well and the branch is taken anyway.
+> 
+> The soft limit check is also slightly cheaper than the nid check, as
+> page_to_nid() might be out-of-line, so we should do it first. This?
+> 
+> 	/*
+> 	 * Batch-uncharge all pages of the same memcg.
+> 	 *
+> 	 * Unless we're looking at a cgroup1 with a softlimit
+> 	 * set: the soft limit trees are maintained per-node
+> 	 * and updated on uncharge (via dummy_page), so keep
+> 	 * batches confined to a single node as well.
+> 	 */
+> 	if (ug->memcg != page_memcg(page) ||
+> 	    (!cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
+> 	     ug->memcg->soft_limit != PAGE_COUNTER_MAX &&
+> 	     ug->nid != page_to_nid(page)))
+> 
 
-after:
+Johannes,
 
-mipi                            off-0
-    /devices/platform/soc@0/soc@0:bus@30800000/30a00300.dphy  suspended
-    /devices/platform/soc@0/soc@0:bus@30800000/30a00000.mipi_dsi  suspended
+Thanks for your feedback.  Since Michal has concerns about the overhead
+this patch could incur, I think we'll hold the patch for now.  If later
+on Michal think that this patch is a good idea, I'll incorporate these
+changes you suggested.
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
- drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c b/drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c
-index a95572b397ca..5de175695834 100644
---- a/drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c
-+++ b/drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c
-@@ -14,6 +14,7 @@
- #include <linux/of_platform.h>
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- 
- /* DPHY registers */
-@@ -469,6 +470,8 @@ static int mixel_dphy_probe(struct platform_device *pdev)
- 
- 	dev_set_drvdata(dev, priv);
- 
-+	pm_runtime_enable(dev);
-+
- 	phy = devm_phy_create(dev, np, &mixel_dphy_phy_ops);
- 	if (IS_ERR(phy)) {
- 		dev_err(dev, "Failed to create phy %ld\n", PTR_ERR(phy));
-@@ -481,8 +484,15 @@ static int mixel_dphy_probe(struct platform_device *pdev)
- 	return PTR_ERR_OR_ZERO(phy_provider);
- }
- 
-+static int mixel_dphy_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+	return 0;
-+}
-+
- static struct platform_driver mixel_dphy_driver = {
- 	.probe	= mixel_dphy_probe,
-+	.remove = mixel_dphy_remove,
- 	.driver = {
- 		.name = "mixel-mipi-dphy",
- 		.of_match_table	= mixel_dphy_of_match,
--- 
-2.30.0
-
+Tim
