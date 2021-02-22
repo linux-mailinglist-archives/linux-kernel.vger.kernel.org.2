@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB68322255
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2371D32223D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbhBVWqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 17:46:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53044 "EHLO
+        id S231358AbhBVWiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 17:38:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbhBVWqI (ORCPT
+        with ESMTP id S231152AbhBVWif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 17:46:08 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40765C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 14:45:26 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id h19so452469edb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 14:45:26 -0800 (PST)
+        Mon, 22 Feb 2021 17:38:35 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C63C061574;
+        Mon, 22 Feb 2021 14:37:54 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id i7so663478wmb.0;
+        Mon, 22 Feb 2021 14:37:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r7EOmcELM54UmBvApMBLdEmUEKDMh6qMssHdlFfkwGs=;
-        b=d9XI9NKAdnQUgNlRYZBN0ZMIIfpSm1OKH1zyzI/Vkm8Org+COfvN9rrWRSaY0OwMtj
-         0MSoqlsN/JtQLNk7i3pGVbZ8w+EBUMGSh5ktQZz7JRYQ4XKzTp810rS1z4q9D8IqBu6M
-         mztM40DrDDZEkydB2ejwi0K1qqZ/Ec4RHWtec=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=OG84TCVpzOvu0k+n0n+mBjAnoUroeSHULIlvXLAswOQ=;
+        b=KjLbT1T6wGDYkYrP1rC7MvL8hgAAM1DzCaojVOdGag82ig4oJrCiHArQmceF44/Li+
+         JE+/8D7gWnMxJipthpHRF6JBDj5t5KdT7N0MoIyvdNSBXIQpoLIuDK8jwvaaKrKlbK/E
+         52yJXZzOKMw0PvEfhZhEQZ4M3QHuEroBs4AVINrHokkQycuiYPnts7Hs7Mnl8cawcm+F
+         04qcsvCpNShaLAlJyzRx65apTthWGRJkPXTXyJTVCd3K3xOwtqOhXaH0D3X58ZeDnvx5
+         grxPJHJM8NrvMP20LMMM1IBMyX7xqzULxOb+H2JLBUndg1WwiWtqzpZfp5lfX92g8sED
+         rN2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r7EOmcELM54UmBvApMBLdEmUEKDMh6qMssHdlFfkwGs=;
-        b=BIoBBfy8MamVwIhgN2W4MbIDUCubXtmgsfno3JTRfoB/s388e/VT5JTHn5Lv+QLcuM
-         nDMKnBnI1w/wIpr2zaZwpapMca/dGKJQIi3/rsStJwsCSYjtoFdIWPcZInGRjqkyL8zT
-         7zX/0vLiscMM52DwqCfZN68pXGY8BNpG5BgFR1lvzank5g55ixYqpvU2vWN1ixvBRwkv
-         EVlP5zWJbYNyg/bZxdko0PJ+8TWaMLk/QmryBoMJVf7nQKCJboDlEF7yr5NFlSd6cfiB
-         GYhI9hkfAFHIVmedGrZBK5/TiYtB5PAsuaWAGQb750SOfrngoNV32w0Ef/hvzEMbIq0G
-         KCxw==
-X-Gm-Message-State: AOAM532IDvvwh/JobUAW/A4xYKF7Fvn5MmMJUnbog1nxE6GIKMxnwqy7
-        Gjap+oQ3nZ0vf5HPR/FqIJRd/7EjeaSCXg==
-X-Google-Smtp-Source: ABdhPJwznbXIa0GEd4MYIiiq/EtW/uFTFioQFTOH7+eXW+7yZAsdQAAGcQjK0LAi46azwK8SUREtIw==
-X-Received: by 2002:a05:6402:1485:: with SMTP id e5mr11725818edv.192.1614033924687;
-        Mon, 22 Feb 2021 14:45:24 -0800 (PST)
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com. [209.85.221.46])
-        by smtp.gmail.com with ESMTPSA id y8sm8854835ejw.32.2021.02.22.14.45.24
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=OG84TCVpzOvu0k+n0n+mBjAnoUroeSHULIlvXLAswOQ=;
+        b=M1UMngQm6gCbBacEnZ1V9EAXCU8l1soVoHeMh2L8EUbSZv/MPrn7BD8BS2H756C6kG
+         HLBWIKd9g+ol082DwbfJ7DJItdGp0Ej037vjDIYEGi5Kf2hIzrNF94zrnF7XlkEKBXkn
+         zSX9jtlZYFPziJxkIqVbdVPUhjCRWpEIcYT7PB17UTcHI5DVLQkN6BNe4LKsyUDAI2Ti
+         lwx4FQ4MQKNEC/ApHxOC7WC1m3u5nMWlWOy97wMWGrXxQGJQ0tsrnTL35954bcEEpAEr
+         R67tQZGuGb6tjoWg+905ww2Hls9Ap2svhgdEPEYTMbChxsIuel3UzcDItqsKvD/KhY20
+         4XjA==
+X-Gm-Message-State: AOAM5335O5GbUAl64YM1j5MotZjJgHkIO63v+EEegSM6g1OrjH+fczco
+        YCpZLTrwsZu0uFSqJKxsEv4=
+X-Google-Smtp-Source: ABdhPJxF3LwORa249PDud7gcZLOJApH8R9HWg9suqvDcMjAIbN36Nf77fwz2awTGfkrXN6VYi0EqSQ==
+X-Received: by 2002:a7b:c5c7:: with SMTP id n7mr22017751wmk.63.1614033473415;
+        Mon, 22 Feb 2021 14:37:53 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.123])
+        by smtp.gmail.com with ESMTPSA id v9sm26246302wrn.86.2021.02.22.14.37.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 14:45:24 -0800 (PST)
-Received: by mail-wr1-f46.google.com with SMTP id v15so20736952wrx.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 14:45:24 -0800 (PST)
-X-Received: by 2002:a19:7f44:: with SMTP id a65mr14452663lfd.41.1614033479451;
- Mon, 22 Feb 2021 14:37:59 -0800 (PST)
-MIME-Version: 1.0
-References: <87o8gctii6.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87o8gctii6.fsf@mpe.ellerman.id.au>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 22 Feb 2021 14:37:43 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wj9nZYEZnTYMpHwVT6B6P+zFXW_P-PWH_bRR5bp-cWbOQ@mail.gmail.com>
-Message-ID: <CAHk-=wj9nZYEZnTYMpHwVT6B6P+zFXW_P-PWH_bRR5bp-cWbOQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.12-1 tag
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     aik@ozlabs.ru, ananth@linux.ibm.com,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Athira Jajeev <atrajeev@linux.vnet.ibm.com>,
-        Qian Cai <cai@lca.pw>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>, clg@kaod.org,
-        cmr@codefail.de, cy.fan@huawei.com, eerykitty@gmail.com,
-        Markus Elfring <elfring@users.sourceforge.net>,
-        Florian Fainelli <f.fainelli@gmail.com>, fbarrat@linux.ibm.com,
-        ganeshgr@linux.ibm.com, haren@linux.ibm.com,
-        hbathini@linux.ibm.com, jiapeng.chong@linux.alibaba.com,
-        kernelfans@gmail.com, kjain@linux.ibm.com,
+        Mon, 22 Feb 2021 14:37:52 -0800 (PST)
+Subject: Re: [PATCH v3 6/6] mfd: tps68470: Remove tps68470 MFD driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Rajmohan Mani <rajmohan.mani@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        andy.shevchenko@linux.intel.com,
+        kieran.bingham+renesas@ideasonboard.com,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>, me@fabwu.ch,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, msuchanek@suse.de,
-        nathanl@linux.ibm.com, Nick Piggin <npiggin@gmail.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Po-Hsu Lin <po-hsu.lin@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>, sandipan@linux.ibm.com,
-        skirmisher@protonmail.com,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        devel@acpica.org
+References: <20210222130735.1313443-1-djrscally@gmail.com>
+ <20210222130735.1313443-7-djrscally@gmail.com>
+ <CAHp75Veb=0OOE=iyt5ua46HkMuG6_Xu1bWAxzZX5d3378CrfNg@mail.gmail.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <995b2a4e-601a-3256-9348-bcad173826ff@gmail.com>
+Date:   Mon, 22 Feb 2021 22:37:51 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75Veb=0OOE=iyt5ua46HkMuG6_Xu1bWAxzZX5d3378CrfNg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 4:06 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
->
-> Please pull powerpc updates for 5.12.
-
-Pulled. However:
-
->  mode change 100755 => 100644 tools/testing/selftests/powerpc/eeh/eeh-functions.sh
->  create mode 100755 tools/testing/selftests/powerpc/eeh/eeh-vf-aware.sh
->  create mode 100755 tools/testing/selftests/powerpc/eeh/eeh-vf-unaware.sh
-
-Somebody is being confused.
-
-Why create two new shell scripts with the proper executable bit, and
-then remove the executable bit from an existing one?
-
-That just seems very inconsistent.
-
-             Linus
+On 22/02/2021 14:12, Andy Shevchenko wrote:
+> On Mon, Feb 22, 2021 at 3:12 PM Daniel Scally <djrscally@gmail.com> wrote:
+>> This driver only covered one scenario in which ACPI devices with _HID
+>> INT3472 are found, and its functionality has been taken over by the
+>> intel-skl-int3472 module, so remove it.
+> As long as patch 5 accepted
+> Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Great - thank you! And likewise for the R-bs on the previous patches,
+I'll follow all the comments for those
