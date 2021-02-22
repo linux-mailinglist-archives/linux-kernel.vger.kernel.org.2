@@ -2,97 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F8B321E86
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:51:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1E6321E8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhBVRuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 12:50:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhBVRuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:50:20 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S231558AbhBVRx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:53:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33430 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230398AbhBVRxZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 12:53:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614016319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q/184qGC08c/X9yZo4h4BJEplxwrcfp8FbIowMgcbh8=;
+        b=CnwgPTeae531K9EcluBxigJVwc6Bh4g1zgWM9qnQ5J4ViL5Ik63QITWjzM/fIfgA5M0hV4
+        DGZdLhI9fPEzVBpRKmCwGs7gvqjNXOmwuFAfnHPyUyeYIH1lQOdDNBnhAubCdFfOvLz45q
+        4+XxW76r4lmBnD43M5eZ4OAtFQaMRB8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-RChLU-ryP-K3uWCL8GQBYQ-1; Mon, 22 Feb 2021 12:51:55 -0500
+X-MC-Unique: RChLU-ryP-K3uWCL8GQBYQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9FC964F00;
-        Mon, 22 Feb 2021 17:49:38 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 12:49:36 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Romain Perier <romain.perier@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 16/20] tracing/probe: Manual replacement of the
- deprecated strlcpy() with return values
-Message-ID: <20210222124936.03103585@gandalf.local.home>
-In-Reply-To: <20210222151231.22572-17-romain.perier@gmail.com>
-References: <20210222151231.22572-1-romain.perier@gmail.com>
-        <20210222151231.22572-17-romain.perier@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACBA3100961C;
+        Mon, 22 Feb 2021 17:51:53 +0000 (UTC)
+Received: from treble (ovpn-118-117.rdu2.redhat.com [10.10.118.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BD5435D6B1;
+        Mon, 22 Feb 2021 17:51:52 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 11:51:50 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Evgenii Shatokhin <eshatokhin@virtuozzo.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>,
+        live-patching@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Konstantin Khorenko <khorenko@virtuozzo.com>
+Subject: Re: 'perf probe' and symbols from .text.<something>
+Message-ID: <20210222175150.yxgw3sxxaqjqgq56@treble>
+References: <09257fb8-3ded-07b0-b3cc-55d5431698d8@virtuozzo.com>
+ <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 16:12:27 +0100
-Romain Perier <romain.perier@gmail.com> wrote:
-
-> The strlcpy() reads the entire source buffer first, it is dangerous if
-> the source buffer lenght is unbounded or possibility non NULL-terminated.
-> It can lead to linear read overflows, crashes, etc...
+On Tue, Feb 23, 2021 at 12:05:08AM +0900, Masami Hiramatsu wrote:
+> > Of course, one could place probes using absolute addresses of the 
+> > functions but that would be less convenient.
+> > 
+> > This also affects many livepatch modules where the kernel code can be 
+> > compiled with -ffunction-sections and each function may end up in a 
+> > separate section .text.<function_name>. 'perf probe' cannot be used 
+> > there, except with the absolute addresses.
+> > 
+> > Moreover, if FGKASLR patches are merged 
+> > (https://lwn.net/Articles/832434/) and the kernel is built with FGKASLR 
+> > enabled, -ffunction-sections will be used too. 'perf probe' will be 
+> > unable to see the kernel functions then.
 > 
-> As recommended in the deprecated interfaces [1], it should be replaced
-> by strscpy.
-> 
-> This commit replaces all calls to strlcpy that handle the return values
-> by the corresponding strscpy calls with new handling of the return
-> values (as it is quite different between the two functions).
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-> 
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> ---
->  kernel/trace/trace_uprobe.c |   11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index 3cf7128e1ad3..f9583afdb735 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -154,12 +154,11 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
->  	u8 *dst = get_loc_data(dest, base);
->  	void __user *src = (void __force __user *) addr;
->  
-> -	if (unlikely(!maxlen))
-> -		return -ENOMEM;
+> Hmm, if the FGKASLAR really randomizes the symbol address, perf-probe
+> should give up "_text-relative" probe for that kernel, and must fallback
+> to the "symbol-based" probe. (Are there any way to check the FGKASLR is on?)
+> The problem of "symbol-based" probe is that local (static) symbols
+> may share a same name sometimes. In that case, it can not find correct
+> symbol. (Maybe I can find a candidate from its size.)
+> Anyway, sometimes the security and usability are trade-off.
 
-Don't remove the above. You just broke the else side.
+We had a similar issue with FGKASLR and live patching.  The proposed
+solution is a new linker flag which eliminates duplicates: -z
+unique-symbol.
 
-> -
-> -	if (addr == FETCH_TOKEN_COMM)
-> -		ret = strlcpy(dst, current->comm, maxlen);
-> -	else
-> +	if (addr == FETCH_TOKEN_COMM) {
-> +		ret = strscpy(dst, current->comm, maxlen);
-> +		if (ret == -E2BIG)
-> +			return -ENOMEM;
+https://sourceware.org/bugzilla/show_bug.cgi?id=26391
 
-I'm not sure the above is what we want. current->comm is always nul
-terminated, and not only that, it will never be bigger than TASK_COMM_LEN.
-If the "dst" location is smaller than comm (maxlen < TASK_COMM_LEN), it is
-still OK to copy a partial string. It should not return -ENOMEM which looks
-to be what happens with this patch.
-
-In other words, it looks like this patch breaks the current code in more
-ways than one.
-
--- Steve
-
-
-> +	} else
->  		ret = strncpy_from_user(dst, src, maxlen);
->  	if (ret >= 0) {
->  		if (ret == maxlen)
+-- 
+Josh
 
