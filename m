@@ -2,119 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBA8322128
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A4C32212A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhBVVNw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Feb 2021 16:13:52 -0500
-Received: from mx1.polytechnique.org ([129.104.30.34]:35651 "EHLO
-        mx1.polytechnique.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231313AbhBVVNo (ORCPT
+        id S231417AbhBVVOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 16:14:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230476AbhBVVOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:13:44 -0500
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ssl.polytechnique.org (Postfix) with ESMTPSA id 8DFFB56122A;
-        Mon, 22 Feb 2021 22:12:58 +0100 (CET)
-Received: by mail-ot1-f54.google.com with SMTP id h22so5126854otr.6;
-        Mon, 22 Feb 2021 13:12:58 -0800 (PST)
-X-Gm-Message-State: AOAM5325Ke9+2OhWW7sd5b7WRjfp6Ecwh1rA9Qr9fY0c4GpKuxD9PfJU
-        aRAPS151TctyuSthueKl5AkDTxkjQ9VDoEsy3o8=
-X-Google-Smtp-Source: ABdhPJwmK3muigXNi8XZXhn+ic4o+uiZ5UpZpQT0fWB8nOdB5z1mzOL6/KQn824EU99Pvwo5PyKpG3gvJw1bxg76XvM=
-X-Received: by 2002:a9d:dc9:: with SMTP id 67mr7261434ots.26.1614028377527;
- Mon, 22 Feb 2021 13:12:57 -0800 (PST)
+        Mon, 22 Feb 2021 16:14:46 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D3CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 13:14:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=uvvxHpxjpRDChkcLEuz/w9isIoe8ffoa8WKElKGpxLg=; b=qcVt3B5qUZhOe1+3Fvy1vUW2UW
+        IGVigTv5c/u0qDQL+9cL1hKNSu+vEkrGr3Y+Gxti77SpQlOLYV9BpAf00AsbW5Zil8KzpfONvIraK
+        eykqUElkB12/bQldmhoABtRYV+8LTL0OKUQuPbu/gSFotUUmKieWAfV9fV+1MRIueVV0opRokVPZw
+        j9ht9zXLmbvunpixo080IqgEHTpV+eDExj14gnpz3qpqrariiuFWS1VpNcQM1dmiPwSN4glZT3XOE
+        Wnvs+KDUdMYbxvcfN6nWztObuUBEu2JKqEYBCa5xtePF3wGEDNIgvkrsgr6sikFLCmMcht2ETBdAT
+        VFPoZ+cQ==;
+Received: from [2601:1c0:6280:3f0::d05b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lEIWn-0001NA-VI; Mon, 22 Feb 2021 21:14:02 +0000
+Subject: Re: [PATCH] staging: rtl8192e: fix kconfig dependency on CRYPTO
+To:     Julian Braha <julianbraha@gmail.com>, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
+References: <20210222180607.399753-1-julianbraha@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8e220235-6ef6-dd49-8333-d32bc0cdcf8f@infradead.org>
+Date:   Mon, 22 Feb 2021 13:13:58 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210222150608.808146-1-mic@digikod.net> <20210222150608.808146-2-mic@digikod.net>
- <51725b44-bc40-0205-8583-285d3b35b5ca@schaufler-ca.com> <ee461f8d-a02d-0782-8f31-691853a57f00@digikod.net>
- <7b67163a-9de1-313f-5b5a-8c720cef9b73@schaufler-ca.com>
-In-Reply-To: <7b67163a-9de1-313f-5b5a-8c720cef9b73@schaufler-ca.com>
-From:   Nicolas Iooss <nicolas.iooss@m4x.org>
-Date:   Mon, 22 Feb 2021 22:12:46 +0100
-X-Gmail-Original-Message-ID: <CAJfZ7=n5FOxHXMLRrDQ3F-kDqbYngNoYKcz6_PWi1rPa0_8WpA@mail.gmail.com>
-Message-ID: <CAJfZ7=n5FOxHXMLRrDQ3F-kDqbYngNoYKcz6_PWi1rPa0_8WpA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] security: Add CONFIG_LSM_AUTO to handle default
- LSM stack ordering
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-AV-Checked: ClamAV using ClamSMTP at svoboda.polytechnique.org (Mon Feb 22 22:12:59 2021 +0100 (CET))
-X-Spam-Flag: No, tests=bogofilter, spamicity=0.000003, queueID=32870561233
-X-Org-Mail: nicolas.iooss.2010@polytechnique.org
+In-Reply-To: <20210222180607.399753-1-julianbraha@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 9:32 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
->
-> On 2/22/2021 10:31 AM, Mickaël Salaün wrote:
-> > On 22/02/2021 17:51, Casey Schaufler wrote:
-> >> On 2/22/2021 7:06 AM, Mickaël Salaün wrote:
-> >>> From: Mickaël Salaün <mic@linux.microsoft.com>
-> >>>
-> >>> Add a new option CONFIG_LSM_AUTO to enable users to delegate default LSM
-> >>> stacking order to kernel developers.  This enable to keep a consistent
-> >>> order of enabled LSM when changing the LSM selection, especially when a
-> >>> new LSM is added to the kernel.
-> >> TL;DR - NAK
-> >>
-> >> Do you think that we might have considered this when stacking was
-> >> introduced?
-> > I didn't dig the detailed history of LSM stacking, but you are in Cc
-> > because I know that you know. I may have though that the main goal of
-> > the current LSM stacking implementation was to enable to stack existing
-> > LSMs, which works well with this CONFIG_LSM list, but doesn't work as
-> > well for new LSMs.
->
-> It works just fine for new LSMs if you treat them as significant
-> features which may have significant impact on the behavior of the
-> system.
->
-> >> Did you even consider the implications before sending
-> >> the patch?
-> > Yes, and it doesn't change much the current behavior without user
-> > interaction. However, it gives the choice to users to choose how they
-> > want their configuration to evolve.
->
-> Automatic inclusions of new LSMs would be counter to existing practice.
-> It won't work for "major" LSMs.
->
->
-> >> This only makes any sense if you want to compile in
-> >> AppArmor and/or Smack but always use SELinux. The existing Kconfig
-> >> model handles that perfectly well.
-> > This patch series doesn't change this behavior if the user doesn't want
-> > it to change.
->
-> Well, there's the question. If a distribution/system uses the new scheme
-> "users" are going to get new LSMs spontaniously. If they don't it's up to
-> the "user". Unsophisticated users won't want this, and the others don't
-> need it.
+On 2/22/21 10:06 AM, Julian Braha wrote:
+> When RTLLIB_CRYPTO_TKIP is enabled and CRYPTO is disabled,
+> Kbuild gives the following warning:
+> 
+> WARNING: unmet direct dependencies detected for CRYPTO_MICHAEL_MIC
+>   Depends on [n]: CRYPTO [=n]
+>   Selected by [m]:
+>   - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+> 
+> WARNING: unmet direct dependencies detected for CRYPTO_LIB_ARC4
+>   Depends on [n]: CRYPTO [=n]
+>   Selected by [m]:
+>   - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+>   - RTLLIB_CRYPTO_WEP [=m] && STAGING [=y] && RTLLIB [=m]
+> 
+> This is because RTLLIB_CRYPTO_TKIP selects CRYPTO_MICHAEL_MIC and
+> CRYPTO_LIB_ARC4, without depending on or selecting CRYPTO,
+> despite those config options being subordinate to CRYPTO.
+> 
+> Signed-off-by: Julian Braha <julianbraha@gmail.com>
 
-Hello, sorry if I missed something simple but I did not understand
-what "Automatic inclusions of new LSMs " and "get new LSMs
-spontaniously" is about. If I understood the kernel practice
-development correctly, when a new LSM will be included, it will have a
-dedicated "config SECURITY_MYNEWLSM" which will be default to "n" in
-order to respect the "principle of least astonishment". How could such
-a new LSM be automatically/spontaneously added to the LSM list?
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-I understand that this is a tough issue and that the subject might
-have been discussed a few years ago, and if that's the case, it would
-be nice to have pointers to some clear documentation or past emails
-(and it would be very very nice if the kernel documentation was
-updated to document the current state of LSM stacking: for example
-https://www.kernel.org/doc/html/v5.11/admin-guide/LSM/index.html still
-documents the "security=" kernel parameter even though it conflicts
-with CONFIG_LSM and can be ignored by the kernel in practise).
+Thanks.
 
-Thanks,
-Nicolas
+> ---
+>  drivers/staging/rtl8192e/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
+> index 03fcc23516fd..6e7d84ac06f5 100644
+> --- a/drivers/staging/rtl8192e/Kconfig
+> +++ b/drivers/staging/rtl8192e/Kconfig
+> @@ -26,6 +26,7 @@ config RTLLIB_CRYPTO_CCMP
+>  config RTLLIB_CRYPTO_TKIP
+>  	tristate "Support for rtllib TKIP crypto"
+>  	depends on RTLLIB
+> +	select CRYPTO
+>  	select CRYPTO_LIB_ARC4
+>  	select CRYPTO_MICHAEL_MIC
+>  	default y
+> 
+
+
+-- 
+~Randy
 
