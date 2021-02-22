@@ -2,201 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458473221F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 432823221FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbhBVWKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 17:10:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43066 "EHLO mail.kernel.org"
+        id S231638AbhBVWKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 17:10:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231411AbhBVWJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 17:09:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A89E664E41;
-        Mon, 22 Feb 2021 22:08:47 +0000 (UTC)
+        id S231478AbhBVWJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 17:09:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2BC064DE9;
+        Mon, 22 Feb 2021 22:09:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614031728;
-        bh=FDya88AugVrfqZoMO73A+PeUX0Qc1tdzMEBxZwrJw+I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uKHDQERDoqejFt7QRiWqDhfqMNQh0IW708L1/wHFxCC9FpsInbWHbPAAImdtwollT
-         3O87NeKiglbO/JFTq6ftndBllgsyCfN1fGXsahPyenVnkUTQ+f+htNBhomckq9J7xJ
-         4jJkQDQgWUzb72OXsLbYRS52oODhjn1jQHJOQnUQHiV0BAEOGbWmUPBNQ/RgC+eiTh
-         EvaTB7EVSHD6KPJXzYc6lKs1PRNRElAjSXEb6kMEQin7pXvJ6N0c2iPn13sDMaBc2Y
-         y1nwzv0W9s3af9IWfaIVOxP4PirwmFA3B+w4S9X97cTkRkkPIwFrKU4vfGi4DjwgzM
-         9nCKWmZwlJYPg==
+        s=k20201202; t=1614031747;
+        bh=q1C3XxsdS/yAKJQS70PydxKPASK41p5x9h6IXKh484U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bdqEN1dCLMCTxnpn5Y9RHBaUtnHUsMjEpcgpCGbKH+0LeVz6C/sj1/s6tQuhLyPzd
+         9Rw6NKquk6MKuPo2s9NtLX+PdWTmVkb0JM5QvYrxl/jq5I1qGNIdkIIIUhqpQkpuQw
+         0jFgNSDCci/7k9xo8uGQnIBYT9aIZm2fFCRPNlJOvOYm9LlL+dNn+LFTcZzJQZkfCx
+         Wh1yUQUoZKuQ989iLWT+NQAhF5GTfhJiY4IH6QhYh8Mw2gC4MjJuexe3Isy9+cLyZR
+         XdzVhKyFDjcvARQW2g2v8E8z/2TRNPklv2ITsgA/VWyJKGdoOHI1Kj2+BFgvVSIlLS
+         UVdmG2EdRLYYQ==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Ohad Sharabi <osharabi@habana.ai>
-Subject: [PATCH 2/2] habanalabs: reset device in case of sync error
-Date:   Tue, 23 Feb 2021 00:08:42 +0200
-Message-Id: <20210222220842.9398-2-ogabbay@kernel.org>
+Cc:     Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH 1/3] habanalabs: enable all IRQs for user interrupt support
+Date:   Tue, 23 Feb 2021 00:09:01 +0200
+Message-Id: <20210222220903.9487-1-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210222220842.9398-1-ogabbay@kernel.org>
-References: <20210222220842.9398-1-ogabbay@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ohad Sharabi <osharabi@habana.ai>
+From: Ofir Bitton <obitton@habana.ai>
 
-As the F/wW is the first to detect out of sync event, a new event is
-added to notify the driver on such event. In which case the driver
-performs hard reset.
+In order to support user interrupts, driver must enable all MSI-X
+interrupts for any case user will trigger them. We differentiate
+between a valid user interrupt and a non valid one.
 
-Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c         | 18 +++++++++++++++
- drivers/misc/habanalabs/goya/goya.c           | 23 +++++++++++++++++++
- .../misc/habanalabs/include/common/cpucp_if.h |  9 ++++++++
- .../include/gaudi/gaudi_async_events.h        |  1 +
- .../include/goya/goya_async_events.h          |  1 +
- 5 files changed, 52 insertions(+)
+ drivers/misc/habanalabs/common/device.c     | 20 +++++++++--
+ drivers/misc/habanalabs/common/habanalabs.h | 16 +++++++++
+ drivers/misc/habanalabs/common/irq.c        | 40 +++++++++++++++++++++
+ 3 files changed, 74 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 9152242778f5..c1f00237273c 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -7097,6 +7097,15 @@ static void gaudi_print_irq_info(struct hl_device *hdev, u16 event_type,
- 	}
- }
- 
-+static void gaudi_print_out_of_sync_info(struct hl_device *hdev,
-+					struct cpucp_pkt_sync_err *sync_err)
-+{
-+	struct hl_hw_queue *q = &hdev->kernel_queues[GAUDI_QUEUE_ID_CPU_PQ];
-+
-+	dev_err(hdev->dev, "Out of sync with FW, FW: pi=%u, ci=%u, LKD: pi=%u, ci=%u\n",
-+			sync_err->pi, sync_err->ci, q->pi, atomic_read(&q->ci));
-+}
-+
- static int gaudi_soft_reset_late_init(struct hl_device *hdev)
+diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
+index 6948a1c54083..06395c79f07d 100644
+--- a/drivers/misc/habanalabs/common/device.c
++++ b/drivers/misc/habanalabs/common/device.c
+@@ -1223,7 +1223,7 @@ int hl_device_reset(struct hl_device *hdev, bool hard_reset,
+  */
+ int hl_device_init(struct hl_device *hdev, struct class *hclass)
  {
- 	struct gaudi_device *gaudi = hdev->asic_specific;
-@@ -7552,6 +7561,15 @@ static void gaudi_handle_eqe(struct hl_device *hdev,
- 			event_type, cause);
- 		break;
+-	int i, rc, cq_cnt, cq_ready_cnt;
++	int i, rc, cq_cnt, user_interrupt_cnt, cq_ready_cnt;
+ 	char *name;
+ 	bool add_cdev_sysfs_on_err = false;
  
-+	case GAUDI_EVENT_PKT_QUEUE_OUT_SYNC:
-+		gaudi_print_irq_info(hdev, event_type, false);
-+		gaudi_print_out_of_sync_info(hdev, &eq_entry->pkt_sync_err);
-+		if (hdev->hard_reset_on_fw_events)
-+			hl_device_reset(hdev, true, false);
-+		else
-+			hl_fw_unmask_irq(hdev, event_type);
-+		break;
-+
- 	default:
- 		dev_err(hdev->dev, "Received invalid H/W interrupt %d\n",
- 				event_type);
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index ed566c52ccaa..a40c428fed94 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -4401,6 +4401,8 @@ static const char *_goya_get_event_desc(u16 event_type)
- 		return "THERMAL_ENV_S";
- 	case GOYA_ASYNC_EVENT_ID_FIX_THERMAL_ENV_E:
- 		return "THERMAL_ENV_E";
-+	case GOYA_ASYNC_EVENT_PKT_QUEUE_OUT_SYNC:
-+		return "QUEUE_OUT_OF_SYNC";
- 	default:
- 		return "N/A";
+@@ -1312,6 +1312,19 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
+ 		hdev->completion_queue[i].cq_idx = i;
  	}
-@@ -4483,6 +4485,9 @@ static void goya_get_event_desc(u16 event_type, char *desc, size_t size)
- 		index = event_type - GOYA_ASYNC_EVENT_ID_DMA_BM_CH0;
- 		snprintf(desc, size, _goya_get_event_desc(event_type), index);
- 		break;
-+	case GOYA_ASYNC_EVENT_PKT_QUEUE_OUT_SYNC:
-+		snprintf(desc, size, _goya_get_event_desc(event_type));
-+		break;
- 	default:
- 		snprintf(desc, size, _goya_get_event_desc(event_type));
- 		break;
-@@ -4534,6 +4539,15 @@ static void goya_print_mmu_error_info(struct hl_device *hdev)
+ 
++	user_interrupt_cnt = hdev->asic_prop.user_interrupt_count;
++
++	if (user_interrupt_cnt) {
++		hdev->user_interrupt = kcalloc(user_interrupt_cnt,
++				sizeof(*hdev->user_interrupt),
++				GFP_KERNEL);
++
++		if (!hdev->user_interrupt) {
++			rc = -ENOMEM;
++			goto cq_fini;
++		}
++	}
++
+ 	/*
+ 	 * Initialize the event queue. Must be done before hw_init,
+ 	 * because there the address of the event queue is being
+@@ -1320,7 +1333,7 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
+ 	rc = hl_eq_init(hdev, &hdev->event_queue);
+ 	if (rc) {
+ 		dev_err(hdev->dev, "failed to initialize event queue\n");
+-		goto cq_fini;
++		goto user_interrupts_fini;
  	}
- }
  
-+static void goya_print_out_of_sync_info(struct hl_device *hdev,
-+					struct cpucp_pkt_sync_err *sync_err)
-+{
-+	struct hl_hw_queue *q = &hdev->kernel_queues[GOYA_QUEUE_ID_CPU_PQ];
-+
-+	dev_err(hdev->dev, "Out of sync with FW, FW: pi=%u, ci=%u, LKD: pi=%u, ci=%u\n",
-+			sync_err->pi, sync_err->ci, q->pi, atomic_read(&q->ci));
-+}
-+
- static void goya_print_irq_info(struct hl_device *hdev, u16 event_type,
- 				bool razwi)
- {
-@@ -4754,6 +4768,15 @@ void goya_handle_eqe(struct hl_device *hdev, struct hl_eq_entry *eq_entry)
- 		goya_unmask_irq(hdev, event_type);
- 		break;
+ 	/* MMU S/W must be initialized before kernel context is created */
+@@ -1458,6 +1471,8 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
+ 	hl_mmu_fini(hdev);
+ eq_fini:
+ 	hl_eq_fini(hdev, &hdev->event_queue);
++user_interrupts_fini:
++	kfree(hdev->user_interrupt);
+ cq_fini:
+ 	for (i = 0 ; i < cq_ready_cnt ; i++)
+ 		hl_cq_fini(hdev, &hdev->completion_queue[i]);
+@@ -1595,6 +1610,7 @@ void hl_device_fini(struct hl_device *hdev)
+ 	for (i = 0 ; i < hdev->asic_prop.completion_queues_count ; i++)
+ 		hl_cq_fini(hdev, &hdev->completion_queue[i]);
+ 	kfree(hdev->completion_queue);
++	kfree(hdev->user_interrupt);
  
-+	case GOYA_ASYNC_EVENT_PKT_QUEUE_OUT_SYNC:
-+		goya_print_irq_info(hdev, event_type, false);
-+		goya_print_out_of_sync_info(hdev, &eq_entry->pkt_sync_err);
-+		if (hdev->hard_reset_on_fw_events)
-+			hl_device_reset(hdev, true, false);
-+		else
-+			hl_fw_unmask_irq(hdev, event_type);
-+		break;
-+
- 	default:
- 		dev_err(hdev->dev, "Received invalid H/W interrupt %d\n",
- 				event_type);
-diff --git a/drivers/misc/habanalabs/include/common/cpucp_if.h b/drivers/misc/habanalabs/include/common/cpucp_if.h
-index b77c1c16c32c..bf4e7900d8c8 100644
---- a/drivers/misc/habanalabs/include/common/cpucp_if.h
-+++ b/drivers/misc/habanalabs/include/common/cpucp_if.h
-@@ -28,6 +28,14 @@
- #define CPUCP_PKT_HBM_ECC_INFO_HBM_CH_SHIFT		6
- #define CPUCP_PKT_HBM_ECC_INFO_HBM_CH_MASK		0x000007C0
+ 	hl_hw_queues_destroy(hdev);
  
-+/*
-+ * info of the pkt queue pointers in the first async occurrence
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 046bb44f70f9..bb6cb88d7257 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -412,6 +412,7 @@ struct hl_mmu_properties {
+  * @first_available_user_msix_interrupt: first available msix interrupt
+  *                                       reserved for the user
+  * @first_available_cq: first available CQ for the user.
++ * @user_interrupt_count: number of user interrupts.
+  * @tpc_enabled_mask: which TPCs are enabled.
+  * @completion_queues_count: number of completion queues.
+  * @fw_security_disabled: true if security measures are disabled in firmware,
+@@ -475,6 +476,7 @@ struct asic_fixed_properties {
+ 	u16				first_available_user_mon[HL_MAX_DCORES];
+ 	u16				first_available_user_msix_interrupt;
+ 	u16				first_available_cq[HL_MAX_DCORES];
++	u16				user_interrupt_count;
+ 	u8				tpc_enabled_mask;
+ 	u8				completion_queues_count;
+ 	u8				fw_security_disabled;
+@@ -689,6 +691,16 @@ struct hl_cq {
+ 	atomic_t		free_slots_cnt;
+ };
+ 
++/**
++ * struct hl_user_interrupt - holds user interrupt information
++ * @hdev: pointer to the device structure
++ * @interrupt_id: msix interrupt id
 + */
-+struct cpucp_pkt_sync_err {
-+	__le32 pi;
-+	__le32 ci;
++struct hl_user_interrupt {
++	struct hl_device	*hdev;
++	u32			interrupt_id;
 +};
 +
- struct hl_eq_hbm_ecc_data {
- 	/* SERR counter */
- 	__le32 sec_cnt;
-@@ -77,6 +85,7 @@ struct hl_eq_entry {
- 		struct hl_eq_ecc_data ecc_data;
- 		struct hl_eq_hbm_ecc_data hbm_ecc_data;
- 		struct hl_eq_sm_sei_data sm_sei_data;
-+		struct cpucp_pkt_sync_err pkt_sync_err;
- 		__le64 data[7];
- 	};
- };
-diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_async_events.h b/drivers/misc/habanalabs/include/gaudi/gaudi_async_events.h
-index 49335e8334b4..0a0fa57024f8 100644
---- a/drivers/misc/habanalabs/include/gaudi/gaudi_async_events.h
-+++ b/drivers/misc/habanalabs/include/gaudi/gaudi_async_events.h
-@@ -303,6 +303,7 @@ enum gaudi_async_event_id {
- 	GAUDI_EVENT_NIC3_QP1 = 619,
- 	GAUDI_EVENT_NIC4_QP0 = 620,
- 	GAUDI_EVENT_NIC4_QP1 = 621,
-+	GAUDI_EVENT_PKT_QUEUE_OUT_SYNC = 647,
- 	GAUDI_EVENT_FIX_POWER_ENV_S = 658,
- 	GAUDI_EVENT_FIX_POWER_ENV_E = 659,
- 	GAUDI_EVENT_FIX_THERMAL_ENV_S = 660,
-diff --git a/drivers/misc/habanalabs/include/goya/goya_async_events.h b/drivers/misc/habanalabs/include/goya/goya_async_events.h
-index 5fb92362fc5f..09081401cb1d 100644
---- a/drivers/misc/habanalabs/include/goya/goya_async_events.h
-+++ b/drivers/misc/habanalabs/include/goya/goya_async_events.h
-@@ -188,6 +188,7 @@ enum goya_async_event_id {
- 	GOYA_ASYNC_EVENT_ID_HALT_MACHINE = 485,
- 	GOYA_ASYNC_EVENT_ID_INTS_REGISTER = 486,
- 	GOYA_ASYNC_EVENT_ID_SOFT_RESET = 487,
-+	GOYA_ASYNC_EVENT_PKT_QUEUE_OUT_SYNC = 506,
- 	GOYA_ASYNC_EVENT_ID_FIX_POWER_ENV_S = 507,
- 	GOYA_ASYNC_EVENT_ID_FIX_POWER_ENV_E = 508,
- 	GOYA_ASYNC_EVENT_ID_FIX_THERMAL_ENV_S = 509,
+ /**
+  * struct hl_eq - describes the event queue (single one per device)
+  * @hdev: pointer to the device structure
+@@ -1821,6 +1833,7 @@ struct hl_mmu_funcs {
+  * @asic_name: ASIC specific name.
+  * @asic_type: ASIC specific type.
+  * @completion_queue: array of hl_cq.
++ * @user_interrupt: array of hl_user_interrupt.
+  * @cq_wq: work queues of completion queues for executing work in process
+  *         context.
+  * @eq_wq: work queue of event queue for executing work in process context.
+@@ -1937,6 +1950,7 @@ struct hl_device {
+ 	char				status[HL_DEV_STS_MAX][HL_STR_MAX];
+ 	enum hl_asic_type		asic_type;
+ 	struct hl_cq			*completion_queue;
++	struct hl_user_interrupt	*user_interrupt;
+ 	struct workqueue_struct		**cq_wq;
+ 	struct workqueue_struct		*eq_wq;
+ 	struct hl_ctx			*kernel_ctx;
+@@ -2158,6 +2172,8 @@ void hl_cq_reset(struct hl_device *hdev, struct hl_cq *q);
+ void hl_eq_reset(struct hl_device *hdev, struct hl_eq *q);
+ irqreturn_t hl_irq_handler_cq(int irq, void *arg);
+ irqreturn_t hl_irq_handler_eq(int irq, void *arg);
++irqreturn_t hl_irq_handler_user_cq(int irq, void *arg);
++irqreturn_t hl_irq_handler_default(int irq, void *arg);
+ u32 hl_cq_inc_ptr(u32 ptr);
+ 
+ int hl_asid_init(struct hl_device *hdev);
+diff --git a/drivers/misc/habanalabs/common/irq.c b/drivers/misc/habanalabs/common/irq.c
+index de53fb5f978a..e112da51b1c8 100644
+--- a/drivers/misc/habanalabs/common/irq.c
++++ b/drivers/misc/habanalabs/common/irq.c
+@@ -137,6 +137,46 @@ irqreturn_t hl_irq_handler_cq(int irq, void *arg)
+ 	return IRQ_HANDLED;
+ }
+ 
++/**
++ * hl_irq_handler_user_cq - irq handler for user completion queues
++ *
++ * @irq: irq number
++ * @arg: pointer to user interrupt structure
++ *
++ */
++irqreturn_t hl_irq_handler_user_cq(int irq, void *arg)
++{
++	struct hl_user_interrupt *user_cq = arg;
++	struct hl_device *hdev = user_cq->hdev;
++	u32 interrupt_id = user_cq->interrupt_id;
++
++	dev_info(hdev->dev,
++		"got user completion interrupt id %u",
++		interrupt_id);
++
++	return IRQ_HANDLED;
++}
++
++/**
++ * hl_irq_handler_default - default irq handler
++ *
++ * @irq: irq number
++ * @arg: pointer to user interrupt structure
++ *
++ */
++irqreturn_t hl_irq_handler_default(int irq, void *arg)
++{
++	struct hl_user_interrupt *user_interrupt = arg;
++	struct hl_device *hdev = user_interrupt->hdev;
++	u32 interrupt_id = user_interrupt->interrupt_id;
++
++	dev_err(hdev->dev,
++		"got invalid user interrupt %u",
++		interrupt_id);
++
++	return IRQ_HANDLED;
++}
++
+ /**
+  * hl_irq_handler_eq - irq handler for event queue
+  *
 -- 
 2.25.1
 
