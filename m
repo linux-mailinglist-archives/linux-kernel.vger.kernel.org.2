@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237423216A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71FF53216A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhBVM1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:27:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44936 "EHLO mail.kernel.org"
+        id S229863AbhBVM2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:28:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230389AbhBVMPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230349AbhBVMPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 07:15:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EED264F14;
-        Mon, 22 Feb 2021 12:14:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E568464E05;
+        Mon, 22 Feb 2021 12:14:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996090;
-        bh=ClW5u69acfm/AsqAy0Vj0bV5RxkRJnX2Eb5Z7iXlRPY=;
+        s=korg; t=1613996092;
+        bh=TpxiZbi5b+MklyBDanEH4NAloJpXBHVpjJfBip9LBV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SUcgFLOiDdNHXduSINCgyf7160gqfj9B9b3Ed/HFHe6rTJGyLpuSlEtRfqanrOdEq
-         6YeYJ8F9ggzRpEdaZ4r4RZi47HeEq6JMjyzH/8Xgt/O6QXshsEVzd2smJjn9VqmK/8
-         PFoP461G6m35ECTYD8JlXqvWPhffjMOiO6RbkzP8=
+        b=dtGjsS7HnSbgheEjHEz7g0OX1s1SHXXkNJ6n5scMiLxNn7fN40XuZcXoxEpsXUrGK
+         Owi6y3sn/s3fSMBgbXa903qDlLemoJCngyvu1AOt5AW/eMSNr4b65/Pq0gHPiysr9F
+         VU0pn6qXUurbhURmf/aGooZwkkOTG0qllrop+auU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+3d2c27c2b7dc2a94814d@syzkaller.appspotmail.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 5.10 25/29] tty: protect tty_write from odd low-level tty disciplines
-Date:   Mon, 22 Feb 2021 13:13:19 +0100
-Message-Id: <20210222121025.239340563@linuxfoundation.org>
+        stable@vger.kernel.org, Trent Piepho <tpiepho@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Salvatore Bonaccorso <carnil@debian.org>,
+        Sjoerd Simons <sjoerd@luon.net>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: [PATCH 5.10 26/29] Bluetooth: btusb: Always fallback to alt 1 for WBS
+Date:   Mon, 22 Feb 2021 13:13:20 +0100
+Message-Id: <20210222121025.315105569@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
 References: <20210222121019.444399883@linuxfoundation.org>
@@ -41,46 +42,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Trent Piepho <tpiepho@gmail.com>
 
-commit 3342ff2698e9720f4040cc458a2744b2b32f5c3a upstream.
+commit 517b693351a2d04f3af1fc0e506ac7e1346094de upstream.
 
-Al root-caused a new warning from syzbot to the ttyprintk tty driver
-returning a write count larger than the data the tty layer actually gave
-it.  Which confused the tty write code mightily, and with the new
-iov_iter based code, caused a WARNING in iov_iter_revert().
+When alt mode 6 is not available, fallback to the kernel <= 5.7 behavior
+of always using alt mode 1.
 
-syzbot correctly bisected the source of the new warning to commit
-9bb48c82aced ("tty: implement write_iter"), but the oddity goes back
-much further, it just didn't get caught by anything before.
+Prior to kernel 5.8, btusb would always use alt mode 1 for WBS (Wide
+Band Speech aka mSBC aka transparent SCO).  In commit baac6276c0a9
+("Bluetooth: btusb: handle mSBC audio over USB Endpoints") this
+was changed to use alt mode 6, which is the recommended mode in the
+Bluetooth spec (Specifications of the Bluetooth System, v5.0, Vol 4.B
+§2.2.1).  However, many if not most BT USB adapters do not support alt
+mode 6.  In fact, I have been unable to find any which do.
 
-Reported-by: syzbot+3d2c27c2b7dc2a94814d@syzkaller.appspotmail.com
-Fixes: 9bb48c82aced ("tty: implement write_iter")
-Debugged-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+In kernel 5.8, this was changed to use alt mode 6, and if not available,
+use alt mode 0.  But mode 0 has a zero byte max packet length and can
+not possibly work.  It is just there as a zero-bandwidth dummy mode to
+work around a USB flaw that would prevent device enumeration if
+insufficient bandwidth were available for the lowest isoc mode
+supported.
+
+In effect, WBS was broken for all USB-BT adapters that do not support
+alt 6, which appears to nearly all of them.
+
+Then in commit 461f95f04f19 ("Bluetooth: btusb: USB alternate setting 1 for
+WBS") the 5.7 behavior was restored, but only for Realtek adapters.
+
+I've tested a Broadcom BRCM20702A and CSR 8510 adapter, both work with
+the 5.7 behavior and do not with the 5.8.
+
+So get rid of the Realtek specific flag and use the 5.7 behavior for all
+adapters as a fallback when alt 6 is not available.  This was the
+kernel's behavior prior to 5.8 and I can find no adapters for which it
+is not correct.  And even if there is an adapter for which this does not
+work, the current behavior would be to fall back to alt 0, which can not
+possibly work either, and so is no better.
+
+Signed-off-by: Trent Piepho <tpiepho@gmail.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Cc: Salvatore Bonaccorso <carnil@debian.org>
+Cc: Sjoerd Simons <sjoerd@luon.net>
+Cc: Sebastian Reichel <sre@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/tty_io.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/bluetooth/btusb.c |   20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -963,11 +963,14 @@ static inline ssize_t do_tty_write(
- 		if (ret <= 0)
- 			break;
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -480,7 +480,6 @@ static const struct dmi_system_id btusb_
+ #define BTUSB_HW_RESET_ACTIVE	12
+ #define BTUSB_TX_WAIT_VND_EVT	13
+ #define BTUSB_WAKEUP_DISABLE	14
+-#define BTUSB_USE_ALT1_FOR_WBS	15
  
-+		written += ret;
-+		if (ret > size)
-+			break;
-+
- 		/* FIXME! Have Al check this! */
- 		if (ret != size)
- 			iov_iter_revert(from, size-ret);
+ struct btusb_data {
+ 	struct hci_dev       *hdev;
+@@ -1710,15 +1709,12 @@ static void btusb_work(struct work_struc
+ 				new_alts = data->sco_num;
+ 			}
+ 		} else if (data->air_mode == HCI_NOTIFY_ENABLE_SCO_TRANSP) {
+-			/* Check if Alt 6 is supported for Transparent audio */
+-			if (btusb_find_altsetting(data, 6)) {
+-				data->usb_alt6_packet_flow = true;
+-				new_alts = 6;
+-			} else if (test_bit(BTUSB_USE_ALT1_FOR_WBS, &data->flags)) {
+-				new_alts = 1;
+-			} else {
+-				bt_dev_err(hdev, "Device does not support ALT setting 6");
+-			}
++			/* Bluetooth USB spec recommends alt 6 (63 bytes), but
++			 * many adapters do not support it.  Alt 1 appears to
++			 * work for all adapters that do not have alt 6, and
++			 * which work with WBS at all.
++			 */
++			new_alts = btusb_find_altsetting(data, 6) ? 6 : 1;
+ 		}
  
--		written += ret;
- 		count -= ret;
- 		if (!count)
- 			break;
+ 		if (btusb_switch_alt_setting(hdev, new_alts) < 0)
+@@ -4149,10 +4145,6 @@ static int btusb_probe(struct usb_interf
+ 		 * (DEVICE_REMOTE_WAKEUP)
+ 		 */
+ 		set_bit(BTUSB_WAKEUP_DISABLE, &data->flags);
+-		if (btusb_find_altsetting(data, 1))
+-			set_bit(BTUSB_USE_ALT1_FOR_WBS, &data->flags);
+-		else
+-			bt_dev_err(hdev, "Device does not support ALT setting 1");
+ 	}
+ 
+ 	if (!reset)
 
 
