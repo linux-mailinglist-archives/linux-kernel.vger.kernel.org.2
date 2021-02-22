@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BD8321B47
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:23:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF322321B5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbhBVPW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:22:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
+        id S231665AbhBVP0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhBVPPC (ORCPT
+        with ESMTP id S230474AbhBVPPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:15:02 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E63C0611C2;
-        Mon, 22 Feb 2021 07:12:59 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id i9so3927156wml.5;
-        Mon, 22 Feb 2021 07:12:59 -0800 (PST)
+        Mon, 22 Feb 2021 10:15:33 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73E4C061A28;
+        Mon, 22 Feb 2021 07:13:00 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id m1so14705764wml.2;
+        Mon, 22 Feb 2021 07:13:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7hFnLRkgd4Q0qw+7HAuuUUWLWJVPby5EiSXIS4L9oGQ=;
-        b=dT612FLTVPEz8XRs6mxabgghhhSms68v480SapGnLo7hxIioNIX+ObgFDoRQuVg5S4
-         vAVjOP6C0XlZwDHg1qPCuB3tf2Pelmamb5mfcceNfCa1UKyeyViUmHUDJLgRyS1ut308
-         d6TQwzb2cIwABwhaJE0AC9Ea3QBZmVSiWT6J9nwYqR8z6JVLP5fJE5i7M0yDxSmIXt05
-         jb6IJgXvyo1XkwSxbrpfoSdTcvnYX3nSJuSSWWDgrOrB/SDGqpZr0xz1rKH6bR7QMYGV
-         4nNuhf2kPoPdYm6w3edgiTNVx81wadjOmh2Nx8odGuQJ8uG/3NxzX2wbLm4vQfJ9UCZD
-         5FiQ==
+        bh=AaIJGjhVZ09u/EP3bHxMgqdNAjXosc23vp6hWLR+1MA=;
+        b=UmcqE3lzOznpZPI93PnZsK+swpRu7m70pr3gta9k6ZAIq9lPUwIAP1G9soX57vzhSE
+         P/a0sNKNqSnFIIPV7MzCjU+UngDEfNkYIt1Ygt32naA/1AwNmtutkAmWt+cP5uyegNef
+         zE726RgSRt3elVe1YYwaEEYrhpNaIp3q1R/HZBsH0pBTATq61HxX2NdtCGsRw8xtKOvS
+         7zLaHvg7AsObv5YcMHfFoP3BZaymoqvShDHdx5v0vni/ynrG07sM5E3+GEUdzclERKOi
+         3vnvPl7WCz5W7zmqT1YjbquukYOHREJtRbP0rGS9D+SWNg+8POkwIaRGxb5jq0Ro4qqy
+         cXPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7hFnLRkgd4Q0qw+7HAuuUUWLWJVPby5EiSXIS4L9oGQ=;
-        b=bpcxzSc0pr2OcEErsB7fYom43qnA5nvEr1rNXAGOEDWWf2j5nil1JJ6fV6S4PmtT5i
-         9IRSp6s1lgLuW4NTTg8a9Hw4CLwV0Do1skZ531RLPlFHYbJZRXZmh27REhgje+QJ92Ni
-         IFKua2iDkLjOApULugUtkRw+11aROfsTfoBOv23ArqxH8TixheQFqgf1D/YYdMKcLerm
-         +fr8xfW46M+PaWV223PScC3G1ZfBA6w4M4pE3gQ/xrjR77gIDnxEDXP6x8WSZ7GiejHQ
-         zod2c8HWe1Sn1HDp7I59HESMZZ9IkNBvRTHO+GAOJtVq9kfHSiBKjhoPjiEZ6eKOKu7M
-         1ctw==
-X-Gm-Message-State: AOAM531dD8E/dtlYTzxT0o+qII2FBj4w98vES4vHrNzKq/URXx9dP2g0
-        9gyDPNfumFAvUixG/Yg/FYHnkIf5sBXZFmTt18k=
-X-Google-Smtp-Source: ABdhPJzVilHCS3gxDmaUXrsQs/QpvPLFYyKQGlIV5aFkTOiZdT7NP4nfll4p9JTad+ZeVYS+ou+FOA==
-X-Received: by 2002:a05:600c:3399:: with SMTP id o25mr20222396wmp.13.1614006777981;
-        Mon, 22 Feb 2021 07:12:57 -0800 (PST)
+        bh=AaIJGjhVZ09u/EP3bHxMgqdNAjXosc23vp6hWLR+1MA=;
+        b=oCoBR44oYk8IjZXqmIqalIEKi1sIGRlx0Ufy9I4UiJCkVev3Dz1r2QS5vqrnGwNxud
+         L3UuPIgigakDRnIeMG5StqRTdvWTcqP2nRFU5jvMHLfGAsFN7DsudbyIrCC6JmEbVf/D
+         lRVNzUL5aW0F/20tff3KDjWtrPUb/PUQGobN5FOAVzE3E0VbPb7gZ5MP0Bs2tUE45p4T
+         13hHzF6Q9ww0uL7evZUC06CEnxqQ+2tZN/Ssar/5pLpv4vpdarKV4COvEAwDXFvwbrsZ
+         DHH5Ay3X1jnciiFiGHQ+1c+PpFZ7i7LrUkNyLAGFsNq0rGLTzZ3annpssD8BxFIEvlqb
+         /s2Q==
+X-Gm-Message-State: AOAM531vET1eio+Mem4NtDW7YWD22PVJMD8Xmj6r69kixPTTh/MlIQVI
+        gYiMqh432VntUwdDUNWEDujEc9/4EwTLNkrMTgA=
+X-Google-Smtp-Source: ABdhPJxPIIevSdHpq0bz8dkLKKzkdobBzKa6BG4pC9pZkFSwSrY4yq1GT/LnCNM1hIF4l39fbEWI4g==
+X-Received: by 2002:a1c:2090:: with SMTP id g138mr20574057wmg.137.1614006779236;
+        Mon, 22 Feb 2021 07:12:59 -0800 (PST)
 Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id p17sm15671076wmq.27.2021.02.22.07.12.57
+        by smtp.gmail.com with ESMTPSA id h11sm24964006wmq.26.2021.02.22.07.12.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:12:57 -0800 (PST)
+        Mon, 22 Feb 2021 07:12:58 -0800 (PST)
 From:   Romain Perier <romain.perier@gmail.com>
 To:     Kees Cook <keescook@chromium.org>,
         kernel-hardening@lists.openwall.com,
-        Steffen Maier <maier@linux.ibm.com>,
-        Benjamin Block <bblock@linux.ibm.com>
+        "Martin K. Petersen" <martin.petersen@oracle.com>
 Cc:     Romain Perier <romain.perier@gmail.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 13/20] scsi: zfcp: Manual replacement of the deprecated strlcpy() with return values
-Date:   Mon, 22 Feb 2021 16:12:24 +0100
-Message-Id: <20210222151231.22572-14-romain.perier@gmail.com>
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 14/20] target: Manual replacement of the deprecated strlcpy() with return values
+Date:   Mon, 22 Feb 2021 16:12:25 +0100
+Message-Id: <20210222151231.22572-15-romain.perier@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
 References: <20210222151231.22572-1-romain.perier@gmail.com>
@@ -82,31 +82,71 @@ values (as it is quite different between the two functions).
 
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 ---
- drivers/s390/scsi/zfcp_fc.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/target/target_core_configfs.c |   33 +++++++++------------------------
+ 1 file changed, 9 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/s390/scsi/zfcp_fc.c b/drivers/s390/scsi/zfcp_fc.c
-index d24cafe02708..8a65241011b9 100644
---- a/drivers/s390/scsi/zfcp_fc.c
-+++ b/drivers/s390/scsi/zfcp_fc.c
-@@ -877,14 +877,16 @@ static void zfcp_fc_rspn(struct zfcp_adapter *adapter,
- 	struct zfcp_fsf_ct_els *ct_els = &fc_req->ct_els;
- 	struct zfcp_fc_rspn_req *rspn_req = &fc_req->u.rspn.req;
- 	struct fc_ct_hdr *rspn_rsp = &fc_req->u.rspn.rsp;
--	int ret, len;
-+	int ret;
+diff --git a/drivers/target/target_core_configfs.c b/drivers/target/target_core_configfs.c
+index f04352285155..676215cd8847 100644
+--- a/drivers/target/target_core_configfs.c
++++ b/drivers/target/target_core_configfs.c
+@@ -1325,16 +1325,11 @@ static ssize_t target_wwn_vendor_id_store(struct config_item *item,
+ 	/* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+ 	unsigned char buf[INQUIRY_VENDOR_LEN + 2];
+ 	char *stripped = NULL;
+-	size_t len;
 +	ssize_t len;
+ 	ssize_t ret;
  
- 	zfcp_fc_ct_ns_init(&rspn_req->ct_hdr, FC_NS_RSPN_ID,
- 			   FC_SYMBOLIC_NAME_SIZE);
- 	hton24(rspn_req->rspn.fr_fid.fp_fid, fc_host_port_id(shost));
--	len = strlcpy(rspn_req->rspn.fr_name, fc_host_symbolic_name(shost),
-+	len = strscpy(rspn_req->rspn.fr_name, fc_host_symbolic_name(shost),
- 		      FC_SYMBOLIC_NAME_SIZE);
--	rspn_req->rspn.fr_name_len = len;
-+	if (len != -E2BIG)
-+		rspn_req->rspn.fr_name_len = len;
+-	len = strlcpy(buf, page, sizeof(buf));
+-	if (len < sizeof(buf)) {
+-		/* Strip any newline added from userspace. */
+-		stripped = strstrip(buf);
+-		len = strlen(stripped);
+-	}
+-	if (len > INQUIRY_VENDOR_LEN) {
++	len = strscpy(buf, page, sizeof(buf));
++	if (len == -E2BIG) {
+ 		pr_err("Emulated T10 Vendor Identification exceeds"
+ 			" INQUIRY_VENDOR_LEN: " __stringify(INQUIRY_VENDOR_LEN)
+ 			"\n");
+@@ -1381,16 +1376,11 @@ static ssize_t target_wwn_product_id_store(struct config_item *item,
+ 	/* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+ 	unsigned char buf[INQUIRY_MODEL_LEN + 2];
+ 	char *stripped = NULL;
+-	size_t len;
++	ssize_t len;
+ 	ssize_t ret;
  
- 	sg_init_one(&fc_req->sg_req, rspn_req, sizeof(*rspn_req));
- 	sg_init_one(&fc_req->sg_rsp, rspn_rsp, sizeof(*rspn_rsp));
+-	len = strlcpy(buf, page, sizeof(buf));
+-	if (len < sizeof(buf)) {
+-		/* Strip any newline added from userspace. */
+-		stripped = strstrip(buf);
+-		len = strlen(stripped);
+-	}
+-	if (len > INQUIRY_MODEL_LEN) {
++	len = strscpy(buf, page, sizeof(buf));
++	if (len == -E2BIG) {
+ 		pr_err("Emulated T10 Vendor exceeds INQUIRY_MODEL_LEN: "
+ 			 __stringify(INQUIRY_MODEL_LEN)
+ 			"\n");
+@@ -1437,16 +1427,11 @@ static ssize_t target_wwn_revision_store(struct config_item *item,
+ 	/* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+ 	unsigned char buf[INQUIRY_REVISION_LEN + 2];
+ 	char *stripped = NULL;
+-	size_t len;
++	ssize_t len;
+ 	ssize_t ret;
+ 
+-	len = strlcpy(buf, page, sizeof(buf));
+-	if (len < sizeof(buf)) {
+-		/* Strip any newline added from userspace. */
+-		stripped = strstrip(buf);
+-		len = strlen(stripped);
+-	}
+-	if (len > INQUIRY_REVISION_LEN) {
++	len = strscpy(buf, page, sizeof(buf));
++	if (len == -E2BIG) {
+ 		pr_err("Emulated T10 Revision exceeds INQUIRY_REVISION_LEN: "
+ 			 __stringify(INQUIRY_REVISION_LEN)
+ 			"\n");
 
