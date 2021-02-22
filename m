@@ -2,70 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC0332116F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2B0321173
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhBVHfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 02:35:14 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:53089 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229915AbhBVHfM (ORCPT
+        id S230132AbhBVHgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 02:36:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37442 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230042AbhBVHgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 02:35:12 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UPCfR2._1613979267;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPCfR2._1613979267)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 22 Feb 2021 15:34:28 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     skashyap@marvell.com
-Cc:     jhasan@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] scsi: qedf: Switch to using the new API kobj_to_dev()
-Date:   Mon, 22 Feb 2021 15:34:26 +0800
-Message-Id: <1613979266-13667-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 22 Feb 2021 02:36:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613979284;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6FVHK+rXFWPhvTdgY3ca3NMaeJHpQu46VbcX/NLNp1o=;
+        b=BBRGR8EEsaKbEYis3B4wqnH00BkdrfJ1aggwobhwkTPPHI8ByrPvhRfalWLuRESDXparV/
+        X25GR473nxAfDyoS3PtDqnIDgaToLYVFoWyGqVlWU9x/ZZNgKN8s35AblGr65hN1SNuSVV
+        bKGDkk/2iF1oGcYsOeoKk5JWs173Hms=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-WFkvTmykN2KrAvAA3Z3ZgQ-1; Mon, 22 Feb 2021 02:34:42 -0500
+X-MC-Unique: WFkvTmykN2KrAvAA3Z3ZgQ-1
+Received: by mail-ed1-f71.google.com with SMTP id l23so6558515edt.23
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 23:34:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6FVHK+rXFWPhvTdgY3ca3NMaeJHpQu46VbcX/NLNp1o=;
+        b=mgR0lqifHL/VcHSpEo1Orixnn+knbeWCspDjihEVXr2GwjK6FmnrTzoQfq+g1xJYvw
+         XGIRpFh7wb3++rw8SSsCWtU/F4wiigCLw7VOVzka+QJfpCG21EaLa49sXGZaWLXTjQPO
+         mUArdZHA01r070SuuSZ3zbG/MZeEfaQ06wNNJOUatmWWa0wrRgVEpHrUw2VvV/Q3X9Ud
+         DYtzxjFYBIoX+yaxTmkt+3f4dYEQqYTJ/gf++5PNDM/8rlTzVDG/HgAVugqHUwhlh3XD
+         r1s1oRq2Xnc/CMGhqoszQCC6U9Lq2juKvjuAeO9E2w6Ux7wGt+MRt2FGEy2C7AqKFIgV
+         MQGw==
+X-Gm-Message-State: AOAM533kECsKnTgZZzmNiyDZZwVuUCTi1ngbaRKFmiP6qgdXGZ+xzEBp
+        +EKhMNcnrkf/0HmEOVJYM5ObXi/bwPBqc/D/WhSS2t95aQ25TgquK+0IST1IxmkjGYx5+YPdkOk
+        fA6UeoxfkJqpNDbnCiSguYrOb
+X-Received: by 2002:a05:6402:3d8:: with SMTP id t24mr21009491edw.298.1613979280811;
+        Sun, 21 Feb 2021 23:34:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxEzpKE3VGwXPIdtln/AiroN8FBRqHsg0v8D6hpM8GMEsbhJmhd1UQeVTsGMSLWYiL91843Cw==
+X-Received: by 2002:a05:6402:3d8:: with SMTP id t24mr21009478edw.298.1613979280624;
+        Sun, 21 Feb 2021 23:34:40 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id m26sm4603396eja.6.2021.02.21.23.34.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 23:34:40 -0800 (PST)
+Date:   Mon, 22 Feb 2021 02:34:37 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
+Message-ID: <20210222023040-mutt-send-email-mst@kernel.org>
+References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
+ <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fixed the following coccicheck:
-./drivers/scsi/qedf/qedf_attr.c:105:26-27: WARNING opportunity for
-kobj_to_dev()
-./drivers/scsi/qedf/qedf_attr.c:134:24-25: WARNING opportunity for
-kobj_to_dev()
+On Mon, Feb 22, 2021 at 12:14:17PM +0800, Jason Wang wrote:
+> 
+> On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
+> > Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
+> > for legacy") made an exception for legacy guests to reset
+> > features to 0, when config space is accessed before features
+> > are set. We should relieve the verify_min_features() check
+> > and allow features reset to 0 for this case.
+> > 
+> > It's worth noting that not just legacy guests could access
+> > config space before features are set. For instance, when
+> > feature VIRTIO_NET_F_MTU is advertised some modern driver
+> > will try to access and validate the MTU present in the config
+> > space before virtio features are set.
+> 
+> 
+> This looks like a spec violation:
+> 
+> "
+> 
+> The following driver-read-only field, mtu only exists if VIRTIO_NET_F_MTU is
+> set.
+> This field specifies the maximum MTU for the driver to use.
+> "
+> 
+> Do we really want to workaround this?
+> 
+> Thanks
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/scsi/qedf/qedf_attr.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+And also:
 
-diff --git a/drivers/scsi/qedf/qedf_attr.c b/drivers/scsi/qedf/qedf_attr.c
-index d995f72..33d2281 100644
---- a/drivers/scsi/qedf/qedf_attr.c
-+++ b/drivers/scsi/qedf/qedf_attr.c
-@@ -101,8 +101,7 @@ void qedf_capture_grc_dump(struct qedf_ctx *qedf)
- 			size_t count)
- {
- 	ssize_t ret = 0;
--	struct fc_lport *lport = shost_priv(dev_to_shost(container_of(kobj,
--							struct device, kobj)));
-+	struct fc_lport *lport = shost_priv(dev_to_shost(kobj_to_dev(kobj)));
- 	struct qedf_ctx *qedf = lport_priv(lport);
- 
- 	if (test_bit(QEDF_GRCDUMP_CAPTURE, &qedf->flags)) {
-@@ -130,8 +129,7 @@ void qedf_capture_grc_dump(struct qedf_ctx *qedf)
- 		return ret;
- 
- 
--	lport = shost_priv(dev_to_shost(container_of(kobj,
--	    struct device, kobj)));
-+	lport = shost_priv(dev_to_shost(kobj_to_dev(kobj)));
- 	qedf = lport_priv(lport);
- 
- 	buf[1] = 0;
--- 
-1.8.3.1
+The driver MUST follow this sequence to initialize a device:
+1. Reset the device.
+2. Set the ACKNOWLEDGE status bit: the guest OS has noticed the device.
+3. Set the DRIVER status bit: the guest OS knows how to drive the device.
+4. Read device feature bits, and write the subset of feature bits understood by the OS and driver to the
+device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration
+fields to check that it can support the device before accepting it.
+5. Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step.
+6. Re-read device status to ensure the FEATURES_OK bit is still set: otherwise, the device does not
+support our subset of features and the device is unusable.
+7. Perform device-specific setup, including discovery of virtqueues for the device, optional per-bus setup,
+reading and possibly writing the device’s virtio configuration space, and population of virtqueues.
+8. Set the DRIVER_OK status bit. At this point the device is “live”.
+
+
+so accessing config space before FEATURES_OK is a spec violation, right?
+
+
+> 
+> > Rejecting reset to 0
+> > prematurely causes correct MTU and link status unable to load
+> > for the very first config space access, rendering issues like
+> > guest showing inaccurate MTU value, or failure to reject
+> > out-of-range MTU.
+> > 
+> > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> > Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> > ---
+> >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
+> >   1 file changed, 1 insertion(+), 14 deletions(-)
+> > 
+> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > index 7c1f789..540dd67 100644
+> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > @@ -1490,14 +1490,6 @@ static u64 mlx5_vdpa_get_features(struct vdpa_device *vdev)
+> >   	return mvdev->mlx_features;
+> >   }
+> > -static int verify_min_features(struct mlx5_vdpa_dev *mvdev, u64 features)
+> > -{
+> > -	if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
+> > -		return -EOPNOTSUPP;
+> > -
+> > -	return 0;
+> > -}
+> > -
+> >   static int setup_virtqueues(struct mlx5_vdpa_net *ndev)
+> >   {
+> >   	int err;
+> > @@ -1558,18 +1550,13 @@ static int mlx5_vdpa_set_features(struct vdpa_device *vdev, u64 features)
+> >   {
+> >   	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+> >   	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
+> > -	int err;
+> >   	print_features(mvdev, features, true);
+> > -	err = verify_min_features(mvdev, features);
+> > -	if (err)
+> > -		return err;
+> > -
+> >   	ndev->mvdev.actual_features = features & ndev->mvdev.mlx_features;
+> >   	ndev->config.mtu = cpu_to_mlx5vdpa16(mvdev, ndev->mtu);
+> >   	ndev->config.status |= cpu_to_mlx5vdpa16(mvdev, VIRTIO_NET_S_LINK_UP);
+> > -	return err;
+> > +	return 0;
+> >   }
+> >   static void mlx5_vdpa_set_config_cb(struct vdpa_device *vdev, struct vdpa_callback *cb)
 
