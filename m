@@ -2,163 +2,438 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3229A321AC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E956321ACB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbhBVPGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:06:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230512AbhBVPFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:05:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAE1E64F03;
-        Mon, 22 Feb 2021 15:05:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614006312;
-        bh=N2sUrb5DtS0t0bdhotzAGrC+vNB1CWHSJkakZPoy060=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sSUqtF1ZHzKthBDohVu7u7wOxXB45KRoMAgbgZ4gSvOOHks6pzg1XicT9XzhwiI/E
-         1z+JlxkrWYIYRhU6fG0SqLR2ETNzE8wp/y9RDaMk1E4o4+WVVQ25rg5GAn53THx/yn
-         tOnBZRmS/AtF+IAUAWngMh5Wo6BDUR8DAm+cLNFZAUo0cx0Dv1oBSp5cCaSS97iwtX
-         nZgfDfsiUF6/RzK5NlalXWtbNgB/z7iH4oU+mcpcC5m3Uga9prSfTxLztVYX7lqUKy
-         rM8dCM/SUmVLZJnTDDLLygfELp58l05rvdYg4xXuaWA0GANxn4aZrM4VlIeON1abEH
-         Mk2I65swSsSCw==
-Date:   Tue, 23 Feb 2021 00:05:08 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Evgenii Shatokhin <eshatokhin@virtuozzo.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        live-patching@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Konstantin Khorenko <khorenko@virtuozzo.com>
-Subject: Re: 'perf probe' and symbols from .text.<something>
-Message-Id: <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
-In-Reply-To: <09257fb8-3ded-07b0-b3cc-55d5431698d8@virtuozzo.com>
-References: <09257fb8-3ded-07b0-b3cc-55d5431698d8@virtuozzo.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231166AbhBVPHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:07:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54906 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230044AbhBVPHE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 10:07:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614006336;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jfLiXK853Af1kpeF/zm3Muk1EF9s40aEj3nT84zY5gY=;
+        b=BQhuQFOQSnuGsX8913aSvl1UZj1pzlV1KCrmCESFTSYlAsYKdfcjHGLtG88dl6Ga9wKF9j
+        txtE8VEmP9Dudjlfri6M2idIjIJj5P48PunWnkWtwPJmrnnf+drLS12hmdjxgYZXf++nml
+        oJ3+kaCWo7BRH8Ad65WAWewZnCM2Baw=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-9-MqZ4A36cNGy1C9P7RlYQ8Q-1; Mon, 22 Feb 2021 10:05:33 -0500
+X-MC-Unique: MqZ4A36cNGy1C9P7RlYQ8Q-1
+Received: by mail-qt1-f198.google.com with SMTP id n4so7825769qte.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:05:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=jfLiXK853Af1kpeF/zm3Muk1EF9s40aEj3nT84zY5gY=;
+        b=VYIncyCs39EEj+V1vVHeQDo5ozRzwqCWOikg5kJ9xbcR7kVWVfr2wFwStkx9SnP0Ly
+         UGUQPjWEaCVg2fYUp7bSwjTWEzP3K2t6BloveRELufYFJ1J0/jRZ5nWI3OcXUltge2m/
+         oQd138mmHvby2rFL6Xkav2ERSMv+3dstW2x/AIm7XT+IMyQ3++vWr3le+dU+tC5jRmp1
+         DeUt5BylQa9LAj5cKgLGdK6ywZZFuv2Gu58LJrBhC9ylO6QS5DjZtCczfTTBbFmJCu9X
+         2KHxVBOnrhAdq1sMD8VNg0YphUiIKDBiJTS6infodY5hZX7V7OKhyfJdWXn/dt2Dw3wW
+         C6Yg==
+X-Gm-Message-State: AOAM531WFFn9m5dRxr4iU6Wxesy/wJUXEi76McRChH42XFsDK63TlpyW
+        trNito4MMk5zBHxns0nRm9KJR7Ikz5znec4DRlPkb8GbEA9rN7AxLc5J93EPZk6cC4hYmHmO9zS
+        S622f9/g8FdHHVAZ5GTv6pBeF
+X-Received: by 2002:a37:6348:: with SMTP id x69mr20862400qkb.254.1614006331992;
+        Mon, 22 Feb 2021 07:05:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzrq+L4B1BnH+O9XSPxa50MZXky4EblzpAR85A0xm+pmjp03ZouWKADpoR+8D6lvfa0Lu/eUQ==
+X-Received: by 2002:a37:6348:: with SMTP id x69mr20862361qkb.254.1614006331672;
+        Mon, 22 Feb 2021 07:05:31 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id v135sm12562346qka.98.2021.02.22.07.05.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 07:05:31 -0800 (PST)
+Subject: Re: [PATCH V3 XRT Alveo 04/18] fpga: xrt: xrt-lib platform driver
+ manager
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
+        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <20210218064019.29189-5-lizhih@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <b93fb3ad-bbde-81db-d448-72fb8049f323@redhat.com>
+Date:   Mon, 22 Feb 2021 07:05:29 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210218064019.29189-5-lizhih@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Evgenii,
 
-On Thu, 18 Feb 2021 20:09:17 +0300
-Evgenii Shatokhin <eshatokhin@virtuozzo.com> wrote:
+On 2/17/21 10:40 PM, Lizhi Hou wrote:
+> xrt-lib kernel module infrastructure code to register and manage all
+> leaf driver modules.
+>
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
+> ---
+>  drivers/fpga/xrt/lib/main.c | 274 ++++++++++++++++++++++++++++++++++++
+>  drivers/fpga/xrt/lib/main.h |  17 +++
+>  2 files changed, 291 insertions(+)
+>  create mode 100644 drivers/fpga/xrt/lib/main.c
+>  create mode 100644 drivers/fpga/xrt/lib/main.h
 
-> Hi,
-> 
-> It seems, 'perf probe' can only see functions from .text section in the 
-> kernel modules, but not from .text.unlikely or other .text.* sections.
-> 
-> For example, with kernel 5.11 and nf_conntrack.ko with debug info, 'perf 
-> probe' succeeds for nf_conntrack_attach() from .text and fails for 
-> nf_ct_resolve_clash() from .text.unlikely:
+Not sure if 'main' is a good base name for something going into a lib.
 
-Thanks for reporting it!
+>
+> diff --git a/drivers/fpga/xrt/lib/main.c b/drivers/fpga/xrt/lib/main.c
+> new file mode 100644
+> index 000000000000..36fb62710843
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/main.c
+> @@ -0,0 +1,274 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Driver for Xilinx Alveo FPGA Support
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#include <linux/module.h>
+> +#include "xleaf.h"
+> +#include "xroot.h"
+> +#include "main.h"
+> +
+> +#define XRT_IPLIB_MODULE_NAME		"xrt-lib"
+> +#define XRT_IPLIB_MODULE_VERSION	"4.0.0"
+> +#define XRT_MAX_DEVICE_NODES		128
+> +#define XRT_DRVNAME(drv)		((drv)->driver.name)
+> +
+> +/*
+> + * Subdev driver is known by ID to others. We map the ID to it's
+by it's ID
+> + * struct platform_driver, which contains it's binding name and driver/file ops.
+> + * We also map it to the endpoint name in DTB as well, if it's different
+> + * than the driver's binding name.
+> + */
+> +struct xrt_drv_map {
+> +	struct list_head list;
+> +	enum xrt_subdev_id id;
+> +	struct platform_driver *drv;
+> +	struct xrt_subdev_endpoints *eps;
+> +	struct ida ida; /* manage driver instance and char dev minor */
+> +};
+> +
+> +static DEFINE_MUTEX(xrt_lib_lock); /* global lock protecting xrt_drv_maps list */
+> +static LIST_HEAD(xrt_drv_maps);
+> +struct class *xrt_class;
+> +
+> +static inline struct xrt_subdev_drvdata *
+> +xrt_drv_map2drvdata(struct xrt_drv_map *map)
+> +{
+> +	return (struct xrt_subdev_drvdata *)map->drv->id_table[0].driver_data;
+> +}
+> +
+> +static struct xrt_drv_map *
+> +xrt_drv_find_map_by_id_nolock(enum xrt_subdev_id id)
 
-> 
-> ------------
-> # perf probe -v -m nf_conntrack nf_ct_resolve_clash
-> probe-definition(0): nf_ct_resolve_clash
-> symbol:nf_ct_resolve_clash file:(null) line:0 offset:0 return:0 lazy:(null)
-> 0 arguments
-> Failed to get build-id from nf_conntrack.
-> Cache open error: -1
-> Open Debuginfo file: 
-> /lib/modules/5.11.0-test01/kernel/net/netfilter/nf_conntrack.ko
-> Try to find probe point from debuginfo.
-> Matched function: nf_ct_resolve_clash [33616]
-> Probe point found: nf_ct_resolve_clash+0
-> Found 1 probe_trace_events.
-> Post processing failed or all events are skipped. (-2)
-> Probe point 'nf_ct_resolve_clash' not found.
->    Error: Failed to add events. Reason: No such file or directory (Code: -2)
+name could be by convention
 
-The above log shows, an error occured while post_process_probe_trace_events(),
-and the error code is -ENOENT (-2).
-  ----
-                pr_debug("Found %d probe_trace_events.\n", ntevs);
-                ret = post_process_probe_trace_events(pev, *tevs, ntevs,
-                                        pev->target, pev->uprobes, dinfo);
-                if (ret < 0 || ret == ntevs) {
-                        pr_debug("Post processing failed or all events are skipped. (%d)\n", ret);
-  ----
+__xrt_drv_find_map_id
 
-In that function, map__find_symbol() failure will return -ENOENT.
+> +{
+> +	const struct list_head *ptr;
+> +
+> +	list_for_each(ptr, &xrt_drv_maps) {
+> +		struct xrt_drv_map *tmap = list_entry(ptr, struct xrt_drv_map, list);
+> +
+> +		if (tmap->id == id)
+> +			return tmap;
+> +	}
+> +	return NULL;
+> +}
+> +
+> +static struct xrt_drv_map *
+> +xrt_drv_find_map_by_id(enum xrt_subdev_id id)
+> +{
+> +	struct xrt_drv_map *map;
+> +
+> +	mutex_lock(&xrt_lib_lock);
+> +	map = xrt_drv_find_map_by_id_nolock(id);
+> +	mutex_unlock(&xrt_lib_lock);
+> +	/*
+> +	 * map should remain valid even after lock is dropped since a registered
+even after the lock
+> +	 * driver should only be unregistered when driver module is being unloaded,
+> +	 * which means that the driver should not be used by then.
+> +	 */
+> +	return map;
+> +}
+> +
+> +static int xrt_drv_register_driver(struct xrt_drv_map *map)
+> +{
+> +	struct xrt_subdev_drvdata *drvdata;
+> +	int rc = 0;
+> +	const char *drvname = XRT_DRVNAME(map->drv);
+> +
+> +	rc = platform_driver_register(map->drv);
+> +	if (rc) {
+> +		pr_err("register %s platform driver failed\n", drvname);
+> +		return rc;
+> +	}
+> +
+> +	drvdata = xrt_drv_map2drvdata(map);
+> +	if (drvdata) {
+> +		/* Initialize dev_t for char dev node. */
+> +		if (xleaf_devnode_enabled(drvdata)) {
+> +			rc = alloc_chrdev_region(&drvdata->xsd_file_ops.xsf_dev_t, 0,
+> +						 XRT_MAX_DEVICE_NODES, drvname);
+> +			if (rc) {
+> +				platform_driver_unregister(map->drv);
+> +				pr_err("failed to alloc dev minor for %s: %d\n", drvname, rc);
+> +				return rc;
+> +			}
+> +		} else {
+> +			drvdata->xsd_file_ops.xsf_dev_t = (dev_t)-1;
+> +		}
+> +	}
+> +
+> +	ida_init(&map->ida);
+> +
+> +	pr_info("%s registered successfully\n", drvname);
+> +
+> +	return 0;
+> +}
+> +
+> +static void xrt_drv_unregister_driver(struct xrt_drv_map *map)
+> +{
+> +	const char *drvname = XRT_DRVNAME(map->drv);
+> +	struct xrt_subdev_drvdata *drvdata;
+> +
+> +	ida_destroy(&map->ida);
+> +
+> +	drvdata = xrt_drv_map2drvdata(map);
+> +	if (drvdata && drvdata->xsd_file_ops.xsf_dev_t != (dev_t)-1) {
+> +		unregister_chrdev_region(drvdata->xsd_file_ops.xsf_dev_t,
+> +					 XRT_MAX_DEVICE_NODES);
+> +	}
+> +
+> +	platform_driver_unregister(map->drv);
+> +
+> +	pr_info("%s unregistered successfully\n", drvname);
+> +}
+> +
+> +int xleaf_register_driver(enum xrt_subdev_id id,
+> +			  struct platform_driver *drv,
+> +			  struct xrt_subdev_endpoints *eps)
+> +{
+> +	struct xrt_drv_map *map;
+> +
+> +	mutex_lock(&xrt_lib_lock);
 
-  ----
-/* Adjust symbol name and address */
-static int post_process_probe_trace_point(struct probe_trace_point *tp,
-                                           struct map *map, unsigned long offs)
-{
-        struct symbol *sym;
-        u64 addr = tp->address - offs;
+Trying to minimize length of lock being held.
 
-        sym = map__find_symbol(map, addr);
-        if (!sym)
-                return -ENOENT;
-  ----
+Could holding this lock be split or the alloc moved above ?
 
-So it seems "map" may not load the symbol out of ".text".
-This need to be fixed, since the map is widely used in the perf.
+> +
+> +	map = xrt_drv_find_map_by_id_nolock(id);
+> +	if (map) {
+> +		mutex_unlock(&xrt_lib_lock);
+> +		pr_err("Id %d already has a registered driver, 0x%p\n",
+> +		       id, map->drv);
+> +		return -EEXIST;
+> +	}
+> +
+> +	map = vzalloc(sizeof(*map));
 
-Anyway, since this is on a module, so even if it can not find the symbol
-from map (or failed to load a map), it can fail back to the original symbol.
-Let me fix that.
+general issue
 
-> # perf probe -v -m nf_conntrack nf_conntrack_attach
-> probe-definition(0): nf_conntrack_attach
-> symbol:nf_conntrack_attach file:(null) line:0 offset:0 return:0 lazy:(null)
-> 0 arguments
-> Failed to get build-id from nf_conntrack.
-> Cache open error: -1
-> Open Debuginfo file: 
-> /lib/modules/5.11.0-test01/kernel/net/netfilter/nf_conntrack.ko
-> Try to find probe point from debuginfo.
-> Matched function: nf_conntrack_attach [2c8c3]
-> Probe point found: nf_conntrack_attach+0
-> Found 1 probe_trace_events.
-> Opening /sys/kernel/tracing//kprobe_events write=1
-> Opening /sys/kernel/tracing//README write=0
-> Writing event: p:probe/nf_conntrack_attach 
-> nf_conntrack:nf_conntrack_attach+0
-> Added new event:
->    probe:nf_conntrack_attach (on nf_conntrack_attach in nf_conntrack)
-> ------------
-> 
-> Is there a way to allow probing of functions in .text.<something> ?
+map is small, so kzalloc
 
-I need to check how machine__kernel_maps() generated maps cut down .text.unlikely.
-Arnaldo, I thought the maps in machine__kernel_maps() are generated from
-kallsyms (doesn't check .text) right?
+> +	if (!map) {
+> +		mutex_unlock(&xrt_lib_lock);
+> +		return -ENOMEM;
+> +	}
+> +	map->id = id;
+> +	map->drv = drv;
+> +	map->eps = eps;
+> +
+> +	xrt_drv_register_driver(map);
 
-> 
-> Of course, one could place probes using absolute addresses of the 
-> functions but that would be less convenient.
-> 
-> This also affects many livepatch modules where the kernel code can be 
-> compiled with -ffunction-sections and each function may end up in a 
-> separate section .text.<function_name>. 'perf probe' cannot be used 
-> there, except with the absolute addresses.
-> 
-> Moreover, if FGKASLR patches are merged 
-> (https://lwn.net/Articles/832434/) and the kernel is built with FGKASLR 
-> enabled, -ffunction-sections will be used too. 'perf probe' will be 
-> unable to see the kernel functions then.
+xrt_drv_register_driver failure is unhandled.
 
-Hmm, if the FGKASLAR really randomizes the symbol address, perf-probe
-should give up "_text-relative" probe for that kernel, and must fallback
-to the "symbol-based" probe. (Are there any way to check the FGKASLR is on?)
-The problem of "symbol-based" probe is that local (static) symbols
-may share a same name sometimes. In that case, it can not find correct
-symbol. (Maybe I can find a candidate from its size.)
-Anyway, sometimes the security and usability are trade-off.
+This is the only time xrt_drv_register_driver is called, consider expanding the function here and removing the call.
 
-Thank you,
+> +
+> +	list_add(&map->list, &xrt_drv_maps);
+> +
+> +	mutex_unlock(&xrt_lib_lock);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(xleaf_register_driver);
+> +
+> +void xleaf_unregister_driver(enum xrt_subdev_id id)
+> +{
+> +	struct xrt_drv_map *map;
+> +
+> +	mutex_lock(&xrt_lib_lock);
+> +
+> +	map = xrt_drv_find_map_by_id_nolock(id);
+> +	if (!map) {
+> +		mutex_unlock(&xrt_lib_lock);
+> +		pr_err("Id %d has no registered driver\n", id);
+> +		return;
+> +	}
+> +
+> +	list_del(&map->list);
+> +
+> +	mutex_unlock(&xrt_lib_lock);
+> +
+> +	xrt_drv_unregister_driver(map);
+> +	vfree(map);
+> +}
+> +EXPORT_SYMBOL_GPL(xleaf_unregister_driver);
+> +
+> +const char *xrt_drv_name(enum xrt_subdev_id id)
+> +{
+> +	struct xrt_drv_map *map = xrt_drv_find_map_by_id(id);
+> +
+> +	if (map)
+> +		return XRT_DRVNAME(map->drv);
+> +	return NULL;
+> +}
+> +
+> +int xrt_drv_get_instance(enum xrt_subdev_id id)
+> +{
+> +	struct xrt_drv_map *map = xrt_drv_find_map_by_id(id);
+> +
+> +	return ida_alloc_range(&map->ida, 0, XRT_MAX_DEVICE_NODES, GFP_KERNEL);
+> +}
+> +
+> +void xrt_drv_put_instance(enum xrt_subdev_id id, int instance)
+> +{
+> +	struct xrt_drv_map *map = xrt_drv_find_map_by_id(id);
+> +
+> +	ida_free(&map->ida, instance);
+> +}
+> +
+> +struct xrt_subdev_endpoints *xrt_drv_get_endpoints(enum xrt_subdev_id id)
+> +{
+> +	struct xrt_drv_map *map = xrt_drv_find_map_by_id(id);
+> +	struct xrt_subdev_endpoints *eps;
+> +
+> +	eps = map ? map->eps : NULL;
+> +	return eps;
+> +}
+> +
+> +/* Leaf driver's module init/fini callbacks. */
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+These constructor/destructor calls needs to be more dynamic.
+
+calls are made even if there are no subdevices to go with the id's.
+
+Also this list can not grow.  How would a new id be added by a module ?
+
+> +static void (*leaf_init_fini_cbs[])(bool) = {
+> +	group_leaf_init_fini,
+> +	vsec_leaf_init_fini,
+> +	devctl_leaf_init_fini,
+> +	axigate_leaf_init_fini,
+> +	icap_leaf_init_fini,
+> +	calib_leaf_init_fini,
+> +	clkfreq_leaf_init_fini,
+> +	clock_leaf_init_fini,
+> +	ucs_leaf_init_fini,
+> +};
+> +
+> +static __init int xrt_lib_init(void)
+> +{
+> +	int i;
+> +
+> +	xrt_class = class_create(THIS_MODULE, XRT_IPLIB_MODULE_NAME);
+> +	if (IS_ERR(xrt_class))
+> +		return PTR_ERR(xrt_class);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(leaf_init_fini_cbs); i++)
+> +		leaf_init_fini_cbs[i](true);
+> +	return 0;
+> +}
+> +
+> +static __exit void xrt_lib_fini(void)
+> +{
+> +	struct xrt_drv_map *map;
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(leaf_init_fini_cbs); i++)
+> +		leaf_init_fini_cbs[i](false);
+> +
+> +	mutex_lock(&xrt_lib_lock);
+> +
+> +	while (!list_empty(&xrt_drv_maps)) {
+> +		map = list_first_entry_or_null(&xrt_drv_maps, struct xrt_drv_map, list);
+> +		pr_err("Unloading module with %s still registered\n", XRT_DRVNAME(map->drv));
+> +		list_del(&map->list);
+> +		mutex_unlock(&xrt_lib_lock);
+> +		xrt_drv_unregister_driver(map);
+> +		vfree(map);
+> +		mutex_lock(&xrt_lib_lock);
+> +	}
+> +
+> +	mutex_unlock(&xrt_lib_lock);
+> +
+> +	class_destroy(xrt_class);
+> +}
+> +
+> +module_init(xrt_lib_init);
+> +module_exit(xrt_lib_fini);
+> +
+> +MODULE_VERSION(XRT_IPLIB_MODULE_VERSION);
+> +MODULE_AUTHOR("XRT Team <runtime@xilinx.com>");
+> +MODULE_DESCRIPTION("Xilinx Alveo IP Lib driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/fpga/xrt/lib/main.h b/drivers/fpga/xrt/lib/main.h
+> new file mode 100644
+> index 000000000000..f3bfc87ee614
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/main.h
+> @@ -0,0 +1,17 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#ifndef _XRT_MAIN_H_
+> +#define _XRT_MAIN_H_
+> +
+> +const char *xrt_drv_name(enum xrt_subdev_id id);
+
+To be self contained, the header defining enum xrt_subdev_id should be included.
+
+This is subdev_id.h which comes in with patch 6
+
+A dependency on a future patch breaks bisectablity.
+
+It may make sense to collect these small headers into a single large header for the ip infra lib and bring them all in this patch.
+
+Tom
+
+> +int xrt_drv_get_instance(enum xrt_subdev_id id);
+> +void xrt_drv_put_instance(enum xrt_subdev_id id, int instance);
+> +struct xrt_subdev_endpoints *xrt_drv_get_endpoints(enum xrt_subdev_id id);
+> +
+> +#endif	/* _XRT_MAIN_H_ */
+
