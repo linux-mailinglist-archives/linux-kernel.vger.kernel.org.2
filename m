@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A53932217C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E374F32217B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhBVVej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 16:34:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27790 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230483AbhBVVeZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:34:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614029569;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VHkykbHbCEbhfXQcCGBmKQ16MwG/Vbgco6JD4wruzP4=;
-        b=W0aJF6bsBCjCfOSHp45+mTjrXqPmjbUpQPXOz4EcRDyqmJuRT1RJGJQnP885+FiGNWn0nc
-        aqN+OueMZXtDI/Ka5dFdQGyzxh6a5xncDjMss7ClZqx/VVZAkrO2w+UF8e/K126WaiTDyf
-        nqdksDfY6OwuVwT3gXj267GrCnL6Z04=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-6zMpvab5MqqmPONQh-W39A-1; Mon, 22 Feb 2021 16:32:45 -0500
-X-MC-Unique: 6zMpvab5MqqmPONQh-W39A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S230309AbhBVVea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 16:34:30 -0500
+Received: from ms.lwn.net ([45.79.88.28]:35046 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230063AbhBVVeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 16:34:24 -0500
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09F158030BB;
-        Mon, 22 Feb 2021 21:32:44 +0000 (UTC)
-Received: from krava (unknown [10.40.195.254])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E18371346F;
-        Mon, 22 Feb 2021 21:32:41 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 22:32:40 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH] perf report: Create option to disable raw event ordering
-Message-ID: <YDQi+OxAq256vbKP@krava>
-References: <20210219070005.12397-1-yao.jin@linux.intel.com>
+        by ms.lwn.net (Postfix) with ESMTPSA id 0FB7B2B7;
+        Mon, 22 Feb 2021 21:33:33 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 0FB7B2B7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614029613; bh=bL4sbefqoOVp9OCqDyDEVtsiOHFV5JJR/crNNp2k3pM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=VKmOuPKu3fJG5P5HH+PnRU/+xrc8DgTCfef6J3Gozkc/h7IU1qRRHZRQ86K3faEae
+         XK02k7S+AJnH69MywGMCq5CPy91M+pW7TsNc6Wf1CWC3d+CM/uyoMaQo+hOM+nKG1q
+         sLvELn44CiV5xcL04T6edwL5I2ANJ3TGAM+BpYbut3h7l+Sbk9FLBjzgw766QNH5BS
+         iuXCncnezFRYMJM4BpunAwJ8cZVeqRSSoMIb3i4506nsvfSHBA65ZKs10sNmEnzHMj
+         JsY2R7g7R5+RGcg+1xrqygBkSX8fR/TR3Jv8rggMpzLzwG4ULlhV1HdBQHSJaZoRvY
+         PhwwVmINpkNqg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [RFC] scripts: kernel-doc: fix array element capture in
+ pointer-to-func parsing
+In-Reply-To: <20210217145625.14006-1-yashsri421@gmail.com>
+References: <20210217145625.14006-1-yashsri421@gmail.com>
+Date:   Mon, 22 Feb 2021 14:33:32 -0700
+Message-ID: <878s7flrdf.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219070005.12397-1-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 03:00:05PM +0800, Jin Yao wrote:
-> Warning "dso not found" is reported when using "perf report -D".
-> 
->  66702781413407 0x32c0 [0x30]: PERF_RECORD_SAMPLE(IP, 0x2): 28177/28177: 0x55e493e00563 period: 106578 addr: 0
->   ... thread: perf:28177
->   ...... dso: <not found>
-> 
->  66702727832429 0x9dd8 [0x38]: PERF_RECORD_COMM exec: triad_loop:28177/28177
-> 
-> The PERF_RECORD_SAMPLE event (timestamp: 66702781413407) should be after the
-> PERF_RECORD_COMM event (timestamp: 66702727832429), but it's early processed.
-> 
-> So for most of cases, it makes sense to keep the event ordered even for dump
-> mode. But it would be also useful to disable ordered_events for reporting raw
-> dump to see events as they are stored in the perf.data file.
-> 
-> So now, set ordered_events by default to true and add a new option
-> 'disable-order' to disable it. For example,
-> 
-> perf report -D --disable-order
-> 
-> Fixes: 977f739b7126b ("perf report: Disable ordered_events for raw dump")
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Aditya Srivastava <yashsri421@gmail.com> writes:
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+> Currently, kernel-doc causes an unexpected error when array element (i.e.,
+> "type (*foo[bar])(args)") is present as pointer parameter in
+> pointer-to-function parsing.
+>
+> For e.g., running kernel-doc -none on kernel/gcov/gcc_4_7.c causes this
+> error:
+> "Use of uninitialized value $param in regexp compilation at ...", in
+> combination with:
+> "warning: Function parameter or member '' not described in 'gcov_info'"
 
-thanks,
-jirka
+In the future, please quote error messages from the kernel verbatim.
+You can trim irrelevant stuff before or after, but please do not edit
+them in this way.  That helps me to understand what you are fixing, and
+is also useful for anybody else who might be searching for a solution to
+the same problem.
 
-
+> Here, the parameter parsing does not take into account the presence of
+> array element (i.e. square brackets) in $param.
+>
+> Provide a simple fix by adding square brackets in the regex, responsible
+> for capturing $param.
+>
+> A quick evaluation, by running 'kernel-doc -none' on entire kernel-tree,
+> reveals that no additional warning or error has been added or removed by
+> the fix.
+>
+> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 > ---
->  tools/perf/Documentation/perf-report.txt | 3 +++
->  tools/perf/builtin-report.c              | 5 ++++-
->  2 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
-> index f546b5e9db05..87112e8d904e 100644
-> --- a/tools/perf/Documentation/perf-report.txt
-> +++ b/tools/perf/Documentation/perf-report.txt
-> @@ -224,6 +224,9 @@ OPTIONS
->  --dump-raw-trace::
->          Dump raw trace in ASCII.
->  
-> +--disable-order::
-> +	Disable raw trace ordering.
-> +
->  -g::
->  --call-graph=<print_type,threshold[,print_limit],order,sort_key[,branch],value>::
->          Display call chains using type, min percent threshold, print limit,
-> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-> index 2a845d6cac09..0d65c98794a8 100644
-> --- a/tools/perf/builtin-report.c
-> +++ b/tools/perf/builtin-report.c
-> @@ -84,6 +84,7 @@ struct report {
->  	bool			nonany_branch_mode;
->  	bool			group_set;
->  	bool			stitch_lbr;
-> +	bool			disable_order;
->  	int			max_stack;
->  	struct perf_read_values	show_threads_values;
->  	struct annotation_options annotation_opts;
-> @@ -1296,6 +1297,8 @@ int cmd_report(int argc, const char **argv)
->  	OPTS_EVSWITCH(&report.evswitch),
->  	OPT_BOOLEAN(0, "total-cycles", &report.total_cycles_mode,
->  		    "Sort all blocks by 'Sampled Cycles%'"),
-> +	OPT_BOOLEAN(0, "disable-order", &report.disable_order,
-> +		    "Disable raw trace ordering"),
->  	OPT_END()
->  	};
->  	struct perf_data data = {
-> @@ -1329,7 +1332,7 @@ int cmd_report(int argc, const char **argv)
->  	if (report.mmaps_mode)
->  		report.tasks_mode = true;
->  
-> -	if (dump_trace)
-> +	if (dump_trace && report.disable_order)
->  		report.tool.ordered_events = false;
->  
->  	if (quiet)
+> * Applies perfectly over next-20210217
+>
+>  scripts/kernel-doc | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+> index e046e16e4411..8b5bc7bf4bb8 100755
+> --- a/scripts/kernel-doc
+> +++ b/scripts/kernel-doc
+> @@ -1553,7 +1553,7 @@ sub create_parameterlist($$$$) {
+>  	} elsif ($arg =~ m/\(.+\)\s*\(/) {
+>  	    # pointer-to-function
+>  	    $arg =~ tr/#/,/;
+> -	    $arg =~ m/[^\(]+\(\*?\s*([\w\.]*)\s*\)/;
+> +	    $arg =~ m/[^\(]+\(\*?\s*([\w\[\]\.]*)\s*\)/;
+>  	    $param = $1;
+>  	    $type = $arg;
+>  	    $type =~ s/([^\(]+\(\*?)\s*$param/$1/;
 > -- 
-> 2.17.1
-> 
 
+...meanwhile, I have applied this one, thanks.
+
+jon
