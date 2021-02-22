@@ -2,184 +2,878 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE4C3212C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5AE3212CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhBVJH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:07:56 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:37732 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhBVJGB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:06:01 -0500
-Received: by mail-il1-f200.google.com with SMTP id g3so7205681ild.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:05:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Gn1296qZG0YzHRO/kjdgq+1qhhHLjh3lQMKcYA49tHM=;
-        b=LwBtAWNaigxWu77dlaQ444wYHbqVUwG6U0W88ndwDIWH2pKH7PsbTJPDam1VEl/T8k
-         9WEFBAhhOVpifWsfaJXYc6pjmet5dUPRMC2jU2HcrZ+KY4zPAq41k0do9zOSecB8l4pC
-         sXZHntMjtAv4IdmPrDcPMRGbpW2B484ELUCpfzsKNr4S4Y4AA0wNWpiZ1bfRhC4cduj3
-         leJG3uKnEUaz1Xu6z3RvWVSMDgCwiNtMXFrtVzTbJkd4Z7riul+ILT+j9saEcYD6QKDR
-         CmgCaEBn3TqVNVYF3Xg8XWh7MZm4AR4IkgMiaPVNi3YnLZxbfE0VTws+qIiJhZjRv08N
-         m3uA==
-X-Gm-Message-State: AOAM530tMwRaMBmU/3PEIW9ZMfytL5i/afeFDaZCNNp0IWsY9R3yq32j
-        yaCnHsZURZZJbiOQNzCo80N56rINPvmj6KdJztbkXdx4feKb
-X-Google-Smtp-Source: ABdhPJyoaYdPhhSUvC1j/ioV5Yqv98Yj4Pns/xNN3PldtfOD8BcweecYWwrC2ikJALNVV2kMkAJxteqsUfyMLU8uSsG+01qmLPx1
+        id S229996AbhBVJKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:10:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33686 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229961AbhBVJGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:06:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ED7E7AF99;
+        Mon, 22 Feb 2021 09:05:35 +0000 (UTC)
+Subject: Re: [PATCH v3 05/11] drm: Use the state pointer directly in planes
+ atomic_check
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        dri-devel@lists.freedesktop.org, Sandy Huang <hjc@rock-chips.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Mihail Atanassov <mihail.atanassov@arm.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
+        Marek Vasut <marex@denx.de>,
+        linux-rockchip@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Russell King <linux@armlinux.org.uk>,
+        amd-gfx@lists.freedesktop.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        "James (Qian) Wang" <james.qian.wang@arm.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-msm@vger.kernel.org, Dave Airlie <airlied@redhat.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Leo Li <sunpeng.li@amd.com>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Roland Scheidegger <sroland@vmware.com>,
+        linux-mips@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-amlogic@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
+        Sean Paul <sean@poorly.run>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Melissa Wen <melissa.srw@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Tomi Valkeinen <tomba@kernel.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        virtualization@lists.linux-foundation.org,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Vincent Abriou <vincent.abriou@st.com>,
+        Edmund Dea <edmund.j.dea@intel.com>,
+        freedreno@lists.freedesktop.org,
+        Kevin Hilman <khilman@baylibre.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Shawn Guo <shawnguo@kernel.org>
+References: <20210219120032.260676-1-maxime@cerno.tech>
+ <20210219120032.260676-5-maxime@cerno.tech>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <6effa086-f8e2-3a9b-0670-505eaba3b4e6@suse.de>
+Date:   Mon, 22 Feb 2021 10:05:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c2a:: with SMTP id m10mr13988675ilh.17.1613984720116;
- Mon, 22 Feb 2021 01:05:20 -0800 (PST)
-Date:   Mon, 22 Feb 2021 01:05:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ea61fa05bbe91914@google.com>
-Subject: KASAN: use-after-free Read in nbd_release
-From:   syzbot <syzbot+74f888d2e102b3930324@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210219120032.260676-5-maxime@cerno.tech>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="vLS3S6dxzp1ykBtz3peBtLmBVFQB4DBhz"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--vLS3S6dxzp1ykBtz3peBtLmBVFQB4DBhz
+Content-Type: multipart/mixed; boundary="OmUA4DUqmXi27I53FLnF8qjTujfobBVLr";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Maxime Ripard <maxime@cerno.tech>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Daniel Vetter <daniel.vetter@intel.com>, David Airlie <airlied@linux.ie>
+Cc: Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Neil Armstrong <narmstrong@baylibre.com>,
+ Xinliang Liu <xinliang.liu@linaro.org>, Liviu Dudau <liviu.dudau@arm.com>,
+ dri-devel@lists.freedesktop.org, Sandy Huang <hjc@rock-chips.com>,
+ Paul Cercueil <paul@crapouillou.net>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+ Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+ Mihail Atanassov <mihail.atanassov@arm.com>, Sam Ravnborg
+ <sam@ravnborg.org>, Michal Simek <michal.simek@xilinx.com>,
+ linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
+ Marek Vasut <marex@denx.de>, linux-rockchip@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
+ amd-gfx@lists.freedesktop.org,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ "James (Qian) Wang" <james.qian.wang@arm.com>,
+ NXP Linux Team <linux-imx@nxp.com>, linux-arm-msm@vger.kernel.org,
+ Dave Airlie <airlied@redhat.com>, Xinwei Kong
+ <kong.kongxinwei@hisilicon.com>, Hyun Kwon <hyun.kwon@xilinx.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>, Leo Li <sunpeng.li@amd.com>,
+ Chen Feng <puck.chen@hisilicon.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Roland Scheidegger <sroland@vmware.com>, linux-mips@vger.kernel.org,
+ Hans de Goede <hdegoede@redhat.com>,
+ Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-amlogic@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
+ Sean Paul <sean@poorly.run>, Pengutronix Kernel Team
+ <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org,
+ Melissa Wen <melissa.srw@gmail.com>, Jernej Skrabec
+ <jernej.skrabec@siol.net>,
+ VMware Graphics <linux-graphics-maintainer@vmware.com>,
+ Gerd Hoffmann <kraxel@redhat.com>,
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Tomi Valkeinen <tomba@kernel.org>, Boris Brezillon <bbrezillon@kernel.org>,
+ Jyri Sarha <jyri.sarha@iki.fi>, virtualization@lists.linux-foundation.org,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+ Vincent Abriou <vincent.abriou@st.com>, Edmund Dea <edmund.j.dea@intel.com>,
+ freedreno@lists.freedesktop.org, Kevin Hilman <khilman@baylibre.com>,
+ Alex Deucher <alexander.deucher@amd.com>, Tian Tao <tiantao6@hisilicon.com>,
+ Shawn Guo <shawnguo@kernel.org>
+Message-ID: <6effa086-f8e2-3a9b-0670-505eaba3b4e6@suse.de>
+Subject: Re: [PATCH v3 05/11] drm: Use the state pointer directly in planes
+ atomic_check
+References: <20210219120032.260676-1-maxime@cerno.tech>
+ <20210219120032.260676-5-maxime@cerno.tech>
+In-Reply-To: <20210219120032.260676-5-maxime@cerno.tech>
 
-syzbot found the following issue on:
-
-HEAD commit:    3af409ca net: enetc: fix destroyed phylink dereference dur..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=144bf26cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8cb23303ddb9411f
-dashboard link: https://syzkaller.appspot.com/bug?extid=74f888d2e102b3930324
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12917e5ad00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1131fb04d00000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1252220cd00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1152220cd00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1652220cd00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+74f888d2e102b3930324@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
-BUG: KASAN: use-after-free in atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
-BUG: KASAN: use-after-free in refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
-Read of size 4 at addr ffff888143bf71a0 by task systemd-udevd/8451
-
-CPU: 0 PID: 8451 Comm: systemd-udevd Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- check_memory_region_inline mm/kasan/generic.c:179 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
- instrument_atomic_read include/linux/instrumented.h:71 [inline]
- atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
- refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
- refcount_dec_and_mutex_lock+0x19/0x140 lib/refcount.c:115
- nbd_put drivers/block/nbd.c:248 [inline]
- nbd_release+0x116/0x190 drivers/block/nbd.c:1508
- __blkdev_put+0x548/0x800 fs/block_dev.c:1579
- blkdev_put+0x92/0x570 fs/block_dev.c:1632
- blkdev_close+0x8c/0xb0 fs/block_dev.c:1640
- __fput+0x283/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x190 kernel/task_work.c:140
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
- exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7fc1e92b5270
-Code: 73 01 c3 48 8b 0d 38 7d 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 59 c1 20 00 00 75 10 b8 03 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 ee fb ff ff 48 89 04 24
-RSP: 002b:00007ffe8beb2d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000007 RCX: 00007fc1e92b5270
-RDX: 000000000aba9500 RSI: 0000000000000000 RDI: 0000000000000007
-RBP: 00007fc1ea16f710 R08: 000000000000004a R09: 0000000000000008
-R10: 0000562f8cb0b2a8 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000562f8cb0afd0 R14: 0000000000000003 R15: 000000000000000e
-
-Allocated by task 1:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:401 [inline]
- ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
- kmalloc include/linux/slab.h:552 [inline]
- kzalloc include/linux/slab.h:682 [inline]
- nbd_dev_add+0x44/0x8e0 drivers/block/nbd.c:1673
- nbd_init+0x250/0x271 drivers/block/nbd.c:2394
- do_one_initcall+0x103/0x650 init/main.c:1223
- do_initcall_level init/main.c:1296 [inline]
- do_initcalls init/main.c:1312 [inline]
- do_basic_setup init/main.c:1332 [inline]
- kernel_init_freeable+0x605/0x689 init/main.c:1533
- kernel_init+0xd/0x1b8 init/main.c:1421
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-Freed by task 8451:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
- ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
- kasan_slab_free include/linux/kasan.h:192 [inline]
- slab_free_hook mm/slub.c:1547 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
- slab_free mm/slub.c:3143 [inline]
- kfree+0xdb/0x3b0 mm/slub.c:4139
- nbd_dev_remove drivers/block/nbd.c:243 [inline]
- nbd_put.part.0+0x180/0x1d0 drivers/block/nbd.c:251
- nbd_put drivers/block/nbd.c:295 [inline]
- nbd_config_put+0x6dd/0x8c0 drivers/block/nbd.c:1242
- nbd_release+0x103/0x190 drivers/block/nbd.c:1507
- __blkdev_put+0x548/0x800 fs/block_dev.c:1579
- blkdev_put+0x92/0x570 fs/block_dev.c:1632
- blkdev_close+0x8c/0xb0 fs/block_dev.c:1640
- __fput+0x283/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x190 kernel/task_work.c:140
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
- exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888143bf7000
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 416 bytes inside of
- 1024-byte region [ffff888143bf7000, ffff888143bf7400)
-The buggy address belongs to the page:
-page:000000005238f4ce refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x143bf0
-head:000000005238f4ce order:3 compound_mapcount:0 compound_pincount:0
-flags: 0x57ff00000010200(slab|head)
-raw: 057ff00000010200 ffffea00004b1400 0000000300000003 ffff888010c41140
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888143bf7080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888143bf7100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888143bf7180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                               ^
- ffff888143bf7200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888143bf7280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+--OmUA4DUqmXi27I53FLnF8qjTujfobBVLr
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Am 19.02.21 um 13:00 schrieb Maxime Ripard:
+> Now that atomic_check takes the global atomic state as a parameter, we
+> don't need to go through the pointer in the plane state.
+>=20
+> This was done using the following coccinelle script:
+>=20
+> @ plane_atomic_func @
+> identifier helpers;
+> identifier func;
+> @@
+>=20
+> static struct drm_plane_helper_funcs helpers =3D {
+> 	...,
+> 	.atomic_check =3D func,
+> 	...,
+> };
+>=20
+> @@
+> identifier plane_atomic_func.func;
+> identifier plane, state;
+> identifier plane_state;
+> @@
+>=20
+>    func(struct drm_plane *plane, struct drm_atomic_state *state) {
+>    ...
+> - struct drm_plane_state *plane_state =3D drm_atomic_get_new_plane_stat=
+e(state, plane);
+>    <... when !=3D plane_state
+> - plane_state->state
+> + state
+>    ...>
+>   }
+>=20
+> @@
+> identifier plane_atomic_func.func;
+> identifier plane, state;
+> identifier plane_state;
+> @@
+>=20
+>    func(struct drm_plane *plane, struct drm_atomic_state *state) {
+>    ...
+>    struct drm_plane_state *plane_state =3D drm_atomic_get_new_plane_sta=
+te(state, plane);
+>    <...
+> - plane_state->state
+> + state
+>    ...>
+>   }
+>=20
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+>=20
+> ---
+>=20
+> Changes from v1:
+>    - Fixed the formatting in zynqmp_disp
+> ---
+>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
+>   drivers/gpu/drm/arm/display/komeda/komeda_plane.c | 2 +-
+>   drivers/gpu/drm/arm/hdlcd_crtc.c                  | 2 +-
+>   drivers/gpu/drm/armada/armada_plane.c             | 4 ++--
+>   drivers/gpu/drm/ast/ast_mode.c                    | 4 ++--
+>   drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c   | 2 +-
+>   drivers/gpu/drm/drm_simple_kms_helper.c           | 2 +-
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c    | 2 +-
+>   drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c   | 2 +-
+>   drivers/gpu/drm/imx/dcss/dcss-plane.c             | 2 +-
+>   drivers/gpu/drm/imx/ipuv3-plane.c                 | 2 +-
+>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c         | 2 +-
+>   drivers/gpu/drm/ingenic/ingenic-ipu.c             | 2 +-
+>   drivers/gpu/drm/kmb/kmb_plane.c                   | 2 +-
+>   drivers/gpu/drm/mediatek/mtk_drm_plane.c          | 2 +-
+>   drivers/gpu/drm/meson/meson_overlay.c             | 2 +-
+>   drivers/gpu/drm/meson/meson_plane.c               | 2 +-
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c         | 2 +-
+>   drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c        | 2 +-
+>   drivers/gpu/drm/mxsfb/mxsfb_kms.c                 | 2 +-
+>   drivers/gpu/drm/omapdrm/omap_plane.c              | 2 +-
+>   drivers/gpu/drm/rockchip/rockchip_drm_vop.c       | 2 +-
+>   drivers/gpu/drm/sti/sti_cursor.c                  | 2 +-
+>   drivers/gpu/drm/sti/sti_gdp.c                     | 2 +-
+>   drivers/gpu/drm/sti/sti_hqvdp.c                   | 2 +-
+>   drivers/gpu/drm/sun4i/sun8i_ui_layer.c            | 2 +-
+>   drivers/gpu/drm/sun4i/sun8i_vi_layer.c            | 2 +-
+>   drivers/gpu/drm/tidss/tidss_plane.c               | 2 +-
+>   drivers/gpu/drm/tilcdc/tilcdc_plane.c             | 2 +-
+>   drivers/gpu/drm/vboxvideo/vbox_mode.c             | 8 ++++----
+>   drivers/gpu/drm/virtio/virtgpu_plane.c            | 2 +-
+>   drivers/gpu/drm/vkms/vkms_plane.c                 | 2 +-
+>   drivers/gpu/drm/vmwgfx/vmwgfx_kms.c               | 2 +-
+>   drivers/gpu/drm/xlnx/zynqmp_disp.c                | 3 +--
+>   drivers/gpu/drm/zte/zx_plane.c                    | 4 ++--
+>   35 files changed, 41 insertions(+), 42 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/driver=
+s/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 1cdff048b0c0..22124f76d0b5 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -6451,7 +6451,7 @@ static int dm_plane_atomic_check(struct drm_plane=
+ *plane,
+>   		return 0;
+>  =20
+>   	new_crtc_state =3D
+> -		drm_atomic_get_new_crtc_state(new_plane_state->state,
+> +		drm_atomic_get_new_crtc_state(state,
+>   					      new_plane_state->crtc);
+>   	if (!new_crtc_state)
+>   		return -EINVAL;
+> diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_plane.c b/driver=
+s/gpu/drm/arm/display/komeda/komeda_plane.c
+> index 96a6fe95a4e7..13582c174bbb 100644
+> --- a/drivers/gpu/drm/arm/display/komeda/komeda_plane.c
+> +++ b/drivers/gpu/drm/arm/display/komeda/komeda_plane.c
+> @@ -84,7 +84,7 @@ komeda_plane_atomic_check(struct drm_plane *plane,
+>   	if (!new_plane_state->crtc || !new_plane_state->fb)
+>   		return 0;
+>  =20
+> -	crtc_st =3D drm_atomic_get_crtc_state(new_plane_state->state,
+> +	crtc_st =3D drm_atomic_get_crtc_state(state,
+>   					    new_plane_state->crtc);
+>   	if (IS_ERR(crtc_st) || !crtc_st->enable) {
+>   		DRM_DEBUG_ATOMIC("Cannot update plane on a disabled CRTC.\n");
+> diff --git a/drivers/gpu/drm/arm/hdlcd_crtc.c b/drivers/gpu/drm/arm/hdl=
+cd_crtc.c
+> index 9da9d0581ce9..028ec39c8484 100644
+> --- a/drivers/gpu/drm/arm/hdlcd_crtc.c
+> +++ b/drivers/gpu/drm/arm/hdlcd_crtc.c
+> @@ -244,7 +244,7 @@ static int hdlcd_plane_atomic_check(struct drm_plan=
+e *plane,
+>   		return -EINVAL;
+>   	}
+>  =20
+> -	for_each_new_crtc_in_state(new_plane_state->state, crtc, crtc_state,
+> +	for_each_new_crtc_in_state(state, crtc, crtc_state,
+>   				   i) {
+>   		/* we cannot disable the plane while the CRTC is active */
+>   		if (!new_plane_state->fb && crtc_state->active)
+> diff --git a/drivers/gpu/drm/armada/armada_plane.c b/drivers/gpu/drm/ar=
+mada/armada_plane.c
+> index b1266c588102..51f33c689df3 100644
+> --- a/drivers/gpu/drm/armada/armada_plane.c
+> +++ b/drivers/gpu/drm/armada/armada_plane.c
+> @@ -121,8 +121,8 @@ int armada_drm_plane_atomic_check(struct drm_plane =
+*plane,
+>   		return 0;
+>   	}
+>  =20
+> -	if (new_plane_state->state)
+> -		crtc_state =3D drm_atomic_get_existing_crtc_state(new_plane_state->s=
+tate,
+> +	if (state)
+> +		crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+>   								crtc);
+>   	else
+>   		crtc_state =3D crtc->state;
+> diff --git a/drivers/gpu/drm/ast/ast_mode.c b/drivers/gpu/drm/ast/ast_m=
+ode.c
+> index cb8650142f13..d3c4a1f6aede 100644
+> --- a/drivers/gpu/drm/ast/ast_mode.c
+> +++ b/drivers/gpu/drm/ast/ast_mode.c
+> @@ -547,7 +547,7 @@ static int ast_primary_plane_helper_atomic_check(st=
+ruct drm_plane *plane,
+>   	if (!new_plane_state->crtc)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_new_crtc_state(new_plane_state->state,
+> +	crtc_state =3D drm_atomic_get_new_crtc_state(state,
+>   						   new_plane_state->crtc);
+>  =20
+>   	ret =3D drm_atomic_helper_check_plane_state(new_plane_state, crtc_st=
+ate,
+> @@ -769,7 +769,7 @@ static int ast_cursor_plane_helper_atomic_check(str=
+uct drm_plane *plane,
+>   	if (!new_plane_state->crtc)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_new_crtc_state(new_plane_state->state,
+> +	crtc_state =3D drm_atomic_get_new_crtc_state(state,
+>   						   new_plane_state->crtc);
+>  =20
+>   	ret =3D drm_atomic_helper_check_plane_state(new_plane_state, crtc_st=
+ate,
+> diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c b/drivers/=
+gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
+> index 445105e75a97..a32d45bcc386 100644
+> --- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
+> +++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_plane.c
+> @@ -609,7 +609,7 @@ static int atmel_hlcdc_plane_atomic_check(struct dr=
+m_plane *p,
+>   	if (!hstate->base.crtc || WARN_ON(!fb))
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(s->state, s->crtc);=
+
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state, s->crtc);
+>   	mode =3D &crtc_state->adjusted_mode;
+>  =20
+>   	ret =3D drm_atomic_helper_check_plane_state(s, crtc_state,
+> diff --git a/drivers/gpu/drm/drm_simple_kms_helper.c b/drivers/gpu/drm/=
+drm_simple_kms_helper.c
+> index a43e34e04d6b..7f3d90e776a3 100644
+> --- a/drivers/gpu/drm/drm_simple_kms_helper.c
+> +++ b/drivers/gpu/drm/drm_simple_kms_helper.c
+> @@ -186,7 +186,7 @@ static int drm_simple_kms_plane_atomic_check(struct=
+ drm_plane *plane,
+>   	int ret;
+>  =20
+>   	pipe =3D container_of(plane, struct drm_simple_display_pipe, plane);=
+
+> -	crtc_state =3D drm_atomic_get_new_crtc_state(plane_state->state,
+> +	crtc_state =3D drm_atomic_get_new_crtc_state(state,
+>   						   &pipe->crtc);
+>  =20
+>   	ret =3D drm_atomic_helper_check_plane_state(plane_state, crtc_state,=
+
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/g=
+pu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> index ddcf121af542..3f7027e40c79 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> @@ -66,7 +66,7 @@ static int hibmc_plane_atomic_check(struct drm_plane =
+*plane,
+>   	if (!crtc || !fb)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state, crtc=
+);
+> +	crtc_state =3D drm_atomic_get_crtc_state(state, crtc);
+>   	if (IS_ERR(crtc_state))
+>   		return PTR_ERR(crtc_state);
+>  =20
+> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c b/drivers/=
+gpu/drm/hisilicon/kirin/kirin_drm_ade.c
+> index fab083380ef7..320631cb7034 100644
+> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
+> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
+> @@ -781,7 +781,7 @@ static int ade_plane_atomic_check(struct drm_plane =
+*plane,
+>   	if (fmt =3D=3D ADE_FORMAT_UNSUPPORT)
+>   		return -EINVAL;
+>  =20
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state, crtc=
+);
+> +	crtc_state =3D drm_atomic_get_crtc_state(state, crtc);
+>   	if (IS_ERR(crtc_state))
+>   		return PTR_ERR(crtc_state);
+>  =20
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-plane.c b/drivers/gpu/drm/im=
+x/dcss/dcss-plane.c
+> index 0e68d295bd60..35a7b23060b3 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-plane.c
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-plane.c
+> @@ -157,7 +157,7 @@ static int dcss_plane_atomic_check(struct drm_plane=
+ *plane,
+>   	cma_obj =3D drm_fb_cma_get_gem_obj(fb, 0);
+>   	WARN_ON(!cma_obj);
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(new_plane_state->st=
+ate,
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+>   							new_plane_state->crtc);
+>  =20
+>   	hdisplay =3D crtc_state->adjusted_mode.hdisplay;
+> diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ip=
+uv3-plane.c
+> index 28571091ff1c..b5f6123850bb 100644
+> --- a/drivers/gpu/drm/imx/ipuv3-plane.c
+> +++ b/drivers/gpu/drm/imx/ipuv3-plane.c
+> @@ -358,7 +358,7 @@ static int ipu_plane_atomic_check(struct drm_plane =
+*plane,
+>   		return -EINVAL;
+>  =20
+>   	crtc_state =3D
+> -		drm_atomic_get_existing_crtc_state(new_state->state,
+> +		drm_atomic_get_existing_crtc_state(state,
+>   						   new_state->crtc);
+>   	if (WARN_ON(!crtc_state))
+>   		return -EINVAL;
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/dr=
+m/ingenic/ingenic-drm-drv.c
+> index 8232104e598f..e6d7d0a04ddb 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -371,7 +371,7 @@ static int ingenic_drm_plane_atomic_check(struct dr=
+m_plane *plane,
+>   	if (!crtc)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(new_plane_state->st=
+ate,
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+>   							crtc);
+>   	if (WARN_ON(!crtc_state))
+>   		return -EINVAL;
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c b/drivers/gpu/drm/in=
+genic/ingenic-ipu.c
+> index 7394b0af1259..1e1b0fe095bd 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> @@ -526,7 +526,7 @@ static int ingenic_ipu_plane_atomic_check(struct dr=
+m_plane *plane,
+>   	if (!crtc)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(new_plane_state->st=
+ate, crtc);
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state, crtc);
+>   	if (WARN_ON(!crtc_state))
+>   		return -EINVAL;
+>  =20
+> diff --git a/drivers/gpu/drm/kmb/kmb_plane.c b/drivers/gpu/drm/kmb/kmb_=
+plane.c
+> index 909045b67b28..9a8cf2991fb4 100644
+> --- a/drivers/gpu/drm/kmb/kmb_plane.c
+> +++ b/drivers/gpu/drm/kmb/kmb_plane.c
+> @@ -100,7 +100,7 @@ static int kmb_plane_atomic_check(struct drm_plane =
+*plane,
+>   		return -EINVAL;
+>   	can_position =3D (plane->type =3D=3D DRM_PLANE_TYPE_OVERLAY);
+>   	crtc_state =3D
+> -		drm_atomic_get_existing_crtc_state(new_plane_state->state,
+> +		drm_atomic_get_existing_crtc_state(state,
+>   						   new_plane_state->crtc);
+>   	return drm_atomic_helper_check_plane_state(new_plane_state,
+>   						   crtc_state,
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm=
+/mediatek/mtk_drm_plane.c
+> index 31f1cc2085c7..37489a086ca8 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+> @@ -160,7 +160,7 @@ static int mtk_plane_atomic_check(struct drm_plane =
+*plane,
+>   	if (ret)
+>   		return ret;
+>  =20
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state,
+> +	crtc_state =3D drm_atomic_get_crtc_state(state,
+>   					       new_plane_state->crtc);
+>   	if (IS_ERR(crtc_state))
+>   		return PTR_ERR(crtc_state);
+> diff --git a/drivers/gpu/drm/meson/meson_overlay.c b/drivers/gpu/drm/me=
+son/meson_overlay.c
+> index 629ca303af25..93ba785de396 100644
+> --- a/drivers/gpu/drm/meson/meson_overlay.c
+> +++ b/drivers/gpu/drm/meson/meson_overlay.c
+> @@ -174,7 +174,7 @@ static int meson_overlay_atomic_check(struct drm_pl=
+ane *plane,
+>   	if (!new_plane_state->crtc)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state,
+> +	crtc_state =3D drm_atomic_get_crtc_state(state,
+>   					       new_plane_state->crtc);
+>   	if (IS_ERR(crtc_state))
+>   		return PTR_ERR(crtc_state);
+> diff --git a/drivers/gpu/drm/meson/meson_plane.c b/drivers/gpu/drm/meso=
+n/meson_plane.c
+> index f8355cb2a2e1..e5d05b725ed6 100644
+> --- a/drivers/gpu/drm/meson/meson_plane.c
+> +++ b/drivers/gpu/drm/meson/meson_plane.c
+> @@ -80,7 +80,7 @@ static int meson_plane_atomic_check(struct drm_plane =
+*plane,
+>   	if (!new_plane_state->crtc)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state,
+> +	crtc_state =3D drm_atomic_get_crtc_state(state,
+>   					       new_plane_state->crtc);
+>   	if (IS_ERR(crtc_state))
+>   		return PTR_ERR(crtc_state);
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/dr=
+m/msm/disp/dpu1/dpu_plane.c
+> index 9945d11bb6ed..d644044a2bbb 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
+> @@ -964,7 +964,7 @@ static int dpu_plane_atomic_check(struct drm_plane =
+*plane,
+>   	uint32_t min_src_size, max_linewidth;
+>  =20
+>   	if (new_plane_state->crtc)
+> -		crtc_state =3D drm_atomic_get_new_crtc_state(new_plane_state->state,=
+
+> +		crtc_state =3D drm_atomic_get_new_crtc_state(state,
+>   							   new_plane_state->crtc);
+>  =20
+>   	min_scale =3D FRAC_16_16(1, pdpu->pipe_sblk->maxupscale);
+> diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c b/drivers/gpu/d=
+rm/msm/disp/mdp5/mdp5_plane.c
+> index 45f7780da901..4aac6217a5ad 100644
+> --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
+> +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
+> @@ -415,7 +415,7 @@ static int mdp5_plane_atomic_check(struct drm_plane=
+ *plane,
+>   	if (!crtc)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(new_plane_state->st=
+ate,
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+>   							crtc);
+>   	if (WARN_ON(!crtc_state))
+>   		return -EINVAL;
+> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/=
+mxsfb_kms.c
+> index 85b547dcf86d..18c0c0d7b4b6 100644
+> --- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> +++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> @@ -409,7 +409,7 @@ static int mxsfb_plane_atomic_check(struct drm_plan=
+e *plane,
+>   	struct mxsfb_drm_private *mxsfb =3D to_mxsfb_drm_private(plane->dev)=
+;
+>   	struct drm_crtc_state *crtc_state;
+>  =20
+> -	crtc_state =3D drm_atomic_get_new_crtc_state(plane_state->state,
+> +	crtc_state =3D drm_atomic_get_new_crtc_state(state,
+>   						   &mxsfb->crtc);
+>  =20
+>   	return drm_atomic_helper_check_plane_state(plane_state, crtc_state,
+> diff --git a/drivers/gpu/drm/omapdrm/omap_plane.c b/drivers/gpu/drm/oma=
+pdrm/omap_plane.c
+> index 6bd384c79324..0df1d35504ad 100644
+> --- a/drivers/gpu/drm/omapdrm/omap_plane.c
+> +++ b/drivers/gpu/drm/omapdrm/omap_plane.c
+> @@ -112,7 +112,7 @@ static int omap_plane_atomic_check(struct drm_plane=
+ *plane,
+>   	if (WARN_ON(!new_plane_state->crtc))
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(new_plane_state->st=
+ate,
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+>   							new_plane_state->crtc);
+>   	/* we should have a crtc state if the plane is attached to a crtc */=
+
+>   	if (WARN_ON(!crtc_state))
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/=
+drm/rockchip/rockchip_drm_vop.c
+> index d96d42dfc6c7..01f6cb99e8ea 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+> @@ -796,7 +796,7 @@ static int vop_plane_atomic_check(struct drm_plane =
+*plane,
+>   	if (!crtc || WARN_ON(!fb))
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(new_plane_state->st=
+ate,
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+>   							crtc);
+>   	if (WARN_ON(!crtc_state))
+>   		return -EINVAL;
+> diff --git a/drivers/gpu/drm/sti/sti_cursor.c b/drivers/gpu/drm/sti/sti=
+_cursor.c
+> index ceb30d545ab9..e34ab8317f6d 100644
+> --- a/drivers/gpu/drm/sti/sti_cursor.c
+> +++ b/drivers/gpu/drm/sti/sti_cursor.c
+> @@ -198,7 +198,7 @@ static int sti_cursor_atomic_check(struct drm_plane=
+ *drm_plane,
+>   	if (!crtc || !fb)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state, crtc=
+);
+> +	crtc_state =3D drm_atomic_get_crtc_state(state, crtc);
+>   	mode =3D &crtc_state->mode;
+>   	dst_x =3D new_plane_state->crtc_x;
+>   	dst_y =3D new_plane_state->crtc_y;
+> diff --git a/drivers/gpu/drm/sti/sti_gdp.c b/drivers/gpu/drm/sti/sti_gd=
+p.c
+> index 63823827417c..f64eef90dc58 100644
+> --- a/drivers/gpu/drm/sti/sti_gdp.c
+> +++ b/drivers/gpu/drm/sti/sti_gdp.c
+> @@ -635,7 +635,7 @@ static int sti_gdp_atomic_check(struct drm_plane *d=
+rm_plane,
+>   		return 0;
+>  =20
+>   	mixer =3D to_sti_mixer(crtc);
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state, crtc=
+);
+> +	crtc_state =3D drm_atomic_get_crtc_state(state, crtc);
+>   	mode =3D &crtc_state->mode;
+>   	dst_x =3D new_plane_state->crtc_x;
+>   	dst_y =3D new_plane_state->crtc_y;
+> diff --git a/drivers/gpu/drm/sti/sti_hqvdp.c b/drivers/gpu/drm/sti/sti_=
+hqvdp.c
+> index b3b10ee96bb2..c1a2450beed4 100644
+> --- a/drivers/gpu/drm/sti/sti_hqvdp.c
+> +++ b/drivers/gpu/drm/sti/sti_hqvdp.c
+> @@ -1034,7 +1034,7 @@ static int sti_hqvdp_atomic_check(struct drm_plan=
+e *drm_plane,
+>   	if (!crtc || !fb)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state, crtc=
+);
+> +	crtc_state =3D drm_atomic_get_crtc_state(state, crtc);
+>   	mode =3D &crtc_state->mode;
+>   	dst_x =3D new_plane_state->crtc_x;
+>   	dst_y =3D new_plane_state->crtc_y;
+> diff --git a/drivers/gpu/drm/sun4i/sun8i_ui_layer.c b/drivers/gpu/drm/s=
+un4i/sun8i_ui_layer.c
+> index b5fb50e72868..bb60419868f9 100644
+> --- a/drivers/gpu/drm/sun4i/sun8i_ui_layer.c
+> +++ b/drivers/gpu/drm/sun4i/sun8i_ui_layer.c
+> @@ -269,7 +269,7 @@ static int sun8i_ui_layer_atomic_check(struct drm_p=
+lane *plane,
+>   	if (!crtc)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(new_plane_state->st=
+ate,
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+>   							crtc);
+>   	if (WARN_ON(!crtc_state))
+>   		return -EINVAL;
+> diff --git a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c b/drivers/gpu/drm/s=
+un4i/sun8i_vi_layer.c
+> index 85c2927755a4..0c7bb36f1bce 100644
+> --- a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
+> +++ b/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
+> @@ -373,7 +373,7 @@ static int sun8i_vi_layer_atomic_check(struct drm_p=
+lane *plane,
+>   	if (!crtc)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(new_plane_state->st=
+ate,
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+>   							crtc);
+>   	if (WARN_ON(!crtc_state))
+>   		return -EINVAL;
+> diff --git a/drivers/gpu/drm/tidss/tidss_plane.c b/drivers/gpu/drm/tids=
+s/tidss_plane.c
+> index 980b65725d66..9b531e625ec9 100644
+> --- a/drivers/gpu/drm/tidss/tidss_plane.c
+> +++ b/drivers/gpu/drm/tidss/tidss_plane.c
+> @@ -44,7 +44,7 @@ static int tidss_plane_atomic_check(struct drm_plane =
+*plane,
+>   		return 0;
+>   	}
+>  =20
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state,
+> +	crtc_state =3D drm_atomic_get_crtc_state(state,
+>   					       new_plane_state->crtc);
+>   	if (IS_ERR(crtc_state))
+>   		return PTR_ERR(crtc_state);
+> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_plane.c b/drivers/gpu/drm/ti=
+lcdc/tilcdc_plane.c
+> index f43670aff5ad..ebdd42dcaf82 100644
+> --- a/drivers/gpu/drm/tilcdc/tilcdc_plane.c
+> +++ b/drivers/gpu/drm/tilcdc/tilcdc_plane.c
+> @@ -41,7 +41,7 @@ static int tilcdc_plane_atomic_check(struct drm_plane=
+ *plane,
+>   		return -EINVAL;
+>   	}
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(new_state->state,
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+>   							new_state->crtc);
+>   	/* we should have a crtc state if the plane is attached to a crtc */=
+
+>   	if (WARN_ON(!crtc_state))
+> diff --git a/drivers/gpu/drm/vboxvideo/vbox_mode.c b/drivers/gpu/drm/vb=
+oxvideo/vbox_mode.c
+> index 7140086d8308..c8e1a37e839c 100644
+> --- a/drivers/gpu/drm/vboxvideo/vbox_mode.c
+> +++ b/drivers/gpu/drm/vboxvideo/vbox_mode.c
+> @@ -260,8 +260,8 @@ static int vbox_primary_atomic_check(struct drm_pla=
+ne *plane,
+>   	struct drm_crtc_state *crtc_state =3D NULL;
+>  =20
+>   	if (new_state->crtc) {
+> -		crtc_state =3D drm_atomic_get_existing_crtc_state(
+> -					    new_state->state, new_state->crtc);
+> +		crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+> +								new_state->crtc);
+>   		if (WARN_ON(!crtc_state))
+>   			return -EINVAL;
+>   	}
+> @@ -338,8 +338,8 @@ static int vbox_cursor_atomic_check(struct drm_plan=
+e *plane,
+>   	int ret;
+>  =20
+>   	if (new_state->crtc) {
+> -		crtc_state =3D drm_atomic_get_existing_crtc_state(
+> -					    new_state->state, new_state->crtc);
+> +		crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+> +								new_state->crtc);
+>   		if (WARN_ON(!crtc_state))
+>   			return -EINVAL;
+>   	}
+> diff --git a/drivers/gpu/drm/virtio/virtgpu_plane.c b/drivers/gpu/drm/v=
+irtio/virtgpu_plane.c
+> index 0f4fdd8c28f9..9419aa611af9 100644
+> --- a/drivers/gpu/drm/virtio/virtgpu_plane.c
+> +++ b/drivers/gpu/drm/virtio/virtgpu_plane.c
+> @@ -94,7 +94,7 @@ static int virtio_gpu_plane_atomic_check(struct drm_p=
+lane *plane,
+>   	if (!new_plane_state->fb || WARN_ON(!new_plane_state->crtc))
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state,
+> +	crtc_state =3D drm_atomic_get_crtc_state(state,
+>   					       new_plane_state->crtc);
+>   	if (IS_ERR(crtc_state))
+>                   return PTR_ERR(crtc_state);
+> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/v=
+kms_plane.c
+> index 751695a76e26..2f2ab3c01bf9 100644
+> --- a/drivers/gpu/drm/vkms/vkms_plane.c
+> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
+> @@ -125,7 +125,7 @@ static int vkms_plane_atomic_check(struct drm_plane=
+ *plane,
+>   	if (!new_plane_state->fb || WARN_ON(!new_plane_state->crtc))
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state,
+> +	crtc_state =3D drm_atomic_get_crtc_state(state,
+>   					       new_plane_state->crtc);
+>   	if (IS_ERR(crtc_state))
+>   		return PTR_ERR(crtc_state);
+> diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c b/drivers/gpu/drm/vmwg=
+fx/vmwgfx_kms.c
+> index 5be1e4bd8a5f..d6487376838f 100644
+> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+> @@ -446,7 +446,7 @@ int vmw_du_primary_plane_atomic_check(struct drm_pl=
+ane *plane,
+>   	int ret;
+>  =20
+>   	if (new_state->crtc)
+> -		crtc_state =3D drm_atomic_get_new_crtc_state(new_state->state,
+> +		crtc_state =3D drm_atomic_get_new_crtc_state(state,
+>   							   new_state->crtc);
+>  =20
+>   	ret =3D drm_atomic_helper_check_plane_state(new_state, crtc_state,
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/=
+zynqmp_disp.c
+> index b0a3ba528718..27c0b849598b 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> @@ -1152,8 +1152,7 @@ zynqmp_disp_plane_atomic_check(struct drm_plane *=
+plane,
+>   	if (!new_plane_state->crtc)
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_crtc_state(new_plane_state->state,
+> -					       new_plane_state->crtc);
+> +	crtc_state =3D drm_atomic_get_crtc_state(state, new_plane_state->crtc=
+);
+>   	if (IS_ERR(crtc_state))
+>   		return PTR_ERR(crtc_state);
+>  =20
+> diff --git a/drivers/gpu/drm/zte/zx_plane.c b/drivers/gpu/drm/zte/zx_pl=
+ane.c
+> index 20ac29212991..1d5d35bda249 100644
+> --- a/drivers/gpu/drm/zte/zx_plane.c
+> +++ b/drivers/gpu/drm/zte/zx_plane.c
+> @@ -59,7 +59,7 @@ static int zx_vl_plane_atomic_check(struct drm_plane =
+*plane,
+>   	if (!crtc || WARN_ON(!fb))
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(plane_state->state,=
+
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+>   							crtc);
+>   	if (WARN_ON(!crtc_state))
+>   		return -EINVAL;
+> @@ -288,7 +288,7 @@ static int zx_gl_plane_atomic_check(struct drm_plan=
+e *plane,
+>   	if (!crtc || WARN_ON(!fb))
+>   		return 0;
+>  =20
+> -	crtc_state =3D drm_atomic_get_existing_crtc_state(plane_state->state,=
+
+> +	crtc_state =3D drm_atomic_get_existing_crtc_state(state,
+>   							crtc);
+>   	if (WARN_ON(!crtc_state))
+>   		return -EINVAL;
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--OmUA4DUqmXi27I53FLnF8qjTujfobBVLr--
+
+--vLS3S6dxzp1ykBtz3peBtLmBVFQB4DBhz
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAzc9sFAwAAAAAACgkQlh/E3EQov+BW
+7g/+MwBEkPZzi2qrtosuCywoqtRWDewY6WVpX3DW7s6tJmPc/BmwzMuWcmI6whMwQSGA7w66qlob
+8AJpRuQE2zyW3JxPSZDgwB3/todW8S0JfAvgybsE3e4gBgL+vLw2Zxaa4WuM+7d1JyjWClZ3Vmmb
+9lPQTHJek0mbUYXhtBTjajFeHu4nYYZfIzkKxC6Ly0//0KTasoQ3x7Kc7+/arJLzrS5Z1jl76lAv
+WulIjzpVLqHVLrm1jTQd1fH8QJ8ozTEbs+SKlMEci1ryJVGuHB2P8nV+oGdvQhuLUyMBeukVYBbr
+kjgr/IIgNcduz4FqOaHFttObt7agBEtItLzQQcwPwJnEz4i9zxzrjt8NnuBzOqi69hV+HEYUfv9Q
+HPPIdpMiebh8hyy0i44f0pSyq9UIdmQOO9NAil32sEchP3h72MlEzhBmL8/0ZFEHJsBa33nIwzxS
++vQ4cmkgU1SV7jtBJO8Qoo0HWEWpX/rwJTGlqZWVLh9nNbIlXrrT+dQJSHrZW2psBm4izdhA2cAB
+9NWapg5/PQIdkhNdfKXkSooFzLL9+aE+GuCm2cHOEEpotr8AjPj8HNAuA61T/4a9+SoniGH4EgaY
+1MY8P8rwv2ewD1sBGyJUqDwIrwb1vMV0y/lpzk67MtsRbTpyEj+JjubqsUBHiWn36P/U1zrdCKYY
+jBU=
+=x5Jd
+-----END PGP SIGNATURE-----
+
+--vLS3S6dxzp1ykBtz3peBtLmBVFQB4DBhz--
