@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE21321596
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9769E32159A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhBVL6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 06:58:13 -0500
-Received: from vmicros1.altlinux.org ([194.107.17.57]:55208 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhBVL6J (ORCPT
+        id S230049AbhBVL6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 06:58:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229863AbhBVL6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 06:58:09 -0500
-Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 39B5672C8B3;
-        Mon, 22 Feb 2021 14:57:26 +0300 (MSK)
-Received: by mua.local.altlinux.org (Postfix, from userid 508)
-        id 29E067CC89C; Mon, 22 Feb 2021 14:57:26 +0300 (MSK)
-Date:   Mon, 22 Feb 2021 14:57:26 +0300
-From:   "Dmitry V. Levin" <ldv@altlinux.org>
-To:     Piotr Figiel <figiel@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        mathieu.desnoyers@efficios.com, peterz@infradead.org,
-        paulmck@kernel.org, boqun.feng@gmail.com, oleg@redhat.com,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org,
-        posk@google.com, kyurtsever@google.com, ckennelly@google.com,
-        pjt@google.com, emmir@google.com, linux-man@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
-Message-ID: <20210222115726.GA30843@altlinux.org>
-References: <20210222100443.4155938-1-figiel@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210222100443.4155938-1-figiel@google.com>
+        Mon, 22 Feb 2021 06:58:16 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CD7C06178A;
+        Mon, 22 Feb 2021 03:57:35 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id t11so28841233ejx.6;
+        Mon, 22 Feb 2021 03:57:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4y7BXbCaoSy8pcfvh1FBhUbCtj/O5tRWQAH/XOjXyKg=;
+        b=HLTyMuhK9Vg+w8AORWrIVwa+cCF2eqsH28sl5TBQmyOtjU6LX+n+uURVooqvwC00Be
+         aDu9svXUUz4N8Uzs5rkKYO+/mur83q5rjWTSCwBTBxLo79IZwXancOzctloRBGRFG7hp
+         wtTVvcm4mwbv91Gj5JJvNYCGjc7Xsa7WWI4J1MWg0K9bOOIszrnwHp6tebH0t9uwnpss
+         W+b2DdEJbsBPOxD+xMHXGnKyZeRVmMoDNv8ia/lzaFs3bgwjttWTbjqFMPyt2iZFPB8M
+         y/sscJxJB8AZ9KyKYC0dxBptIgK9vZHEUKgycav/GoH6KtiVFXOJFn0wcvIJx+8kZWMg
+         8XbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4y7BXbCaoSy8pcfvh1FBhUbCtj/O5tRWQAH/XOjXyKg=;
+        b=AnbyO2eaAk9cwZf5FDXgrc761raZUmuVFnHBxPVTAGZFxWKvMKC27l2QFeY5bnTNf7
+         U7NN8q6vmA53im7NRXaozwluXBdac+ayJ1ufgEgroZ7RR1BA21h5DWy7tF9p65MaH03s
+         W5DMJUsiwQJICajwAdjzrVU0KOKIUap8NU46wrghA/r0V/zK0uTTpo5wsB0wCRbML4cO
+         ODcLAk1sxhoM5j5oSnIXgflwm9Gpgzx3kknPPugPtswB91N67q75LM1WOf1Flrf+Gyf+
+         Job/v4Ptw5WVIF80eSUvCgY7RquEM6o5n0sL6N1yK7SnK/0gmVUcEugSrPLLyhcps45D
+         VSRw==
+X-Gm-Message-State: AOAM532VK3Omi9IckDUOdHKGYpwGx7GDc4MoUlnLbWOPUu40EWkicLQH
+        HPuwZhWOIK72nSM1e88fV6Q=
+X-Google-Smtp-Source: ABdhPJz39+SdxiXFr5MMnpEJiLHx3DSeN1Lq85wDaSV9T4iNTINmkI3flM+bQR/2/XTK38naYu6Vig==
+X-Received: by 2002:a17:906:2c44:: with SMTP id f4mr3158242ejh.234.1613995054362;
+        Mon, 22 Feb 2021 03:57:34 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bec1d.dynamic.kabel-deutschland.de. [95.91.236.29])
+        by smtp.googlemail.com with ESMTPSA id e11sm10291120ejz.94.2021.02.22.03.57.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Feb 2021 03:57:33 -0800 (PST)
+Message-ID: <62be9fcfbd79b5977b34de85e486409ec74b7359.camel@gmail.com>
+Subject: Re: [PATCH v22 4/4] scsi: ufs: Add HPB 2.0 support
+From:   Bean Huo <huobean@gmail.com>
+To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Date:   Mon, 22 Feb 2021 12:57:32 +0100
+In-Reply-To: <20210222093150epcms2p155352e2255e6bfd8f8d71c737ed05e76@epcms2p1>
+References: <20210222092957epcms2p728b0c563f3cfbecbf8692d7e86f9afed@epcms2p7>
+         <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
+         <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p1>
+         <20210222093150epcms2p155352e2255e6bfd8f8d71c737ed05e76@epcms2p1>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 11:04:43AM +0100, Piotr Figiel wrote:
-[...]
-> --- a/include/uapi/linux/ptrace.h
-> +++ b/include/uapi/linux/ptrace.h
-> @@ -102,6 +102,14 @@ struct ptrace_syscall_info {
->  	};
->  };
->  
-> +#define PTRACE_GET_RSEQ_CONFIGURATION	0x420f
-> +
-> +struct ptrace_rseq_configuration {
-> +	__u64 rseq_abi_pointer;
-> +	__u32 signature;
-> +	__u32 pad;
-> +};
-> +
->  /*
->   * These values are stored in task->ptrace_message
->   * by tracehook_report_syscall_* to describe the current syscall-stop.
-> diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-> index 61db50f7ca86..a936af66cf6f 100644
-> --- a/kernel/ptrace.c
-> +++ b/kernel/ptrace.c
-> @@ -31,6 +31,7 @@
->  #include <linux/cn_proc.h>
->  #include <linux/compat.h>
->  #include <linux/sched/signal.h>
-> +#include <linux/minmax.h>
->  
->  #include <asm/syscall.h>	/* for syscall_get_* */
->  
-> @@ -779,6 +780,22 @@ static int ptrace_peek_siginfo(struct task_struct *child,
->  	return ret;
->  }
->  
-> +#ifdef CONFIG_RSEQ
-> +static long ptrace_get_rseq_configuration(struct task_struct *task,
-> +					  unsigned long size, void __user *data)
-> +{
-> +	struct ptrace_rseq_configuration conf = {
-> +		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
-> +		.signature = task->rseq_sig,
-> +	};
-> +
-> +	size = min_t(unsigned long, size, sizeof(conf));
-> +	if (copy_to_user(data, &conf, size))
-> +		return -EFAULT;
-> +	return size;
+On Mon, 2021-02-22 at 18:31 +0900, Daejun Park wrote:
 > +}
-> +#endif
+> +static DEVICE_ATTR_RW(requeue_timeout_ms);
+> +
+> +static struct attribute *hpb_dev_param_attrs[] = {
+> +       &dev_attr_requeue_timeout_ms.attr,
+> +};
 
-From API perspective I suggest for such interfaces to return the amount of
-data that could have been written if there was enough room specified, e.g.
-in this case it's sizeof(conf) instead of size.
+here, you lost a NULL member at the end of attribute struct.
 
+Bean
 
--- 
-ldv
