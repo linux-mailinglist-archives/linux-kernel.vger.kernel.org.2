@@ -2,179 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4754C321A43
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C905F321A42
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhBVOX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:23:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32072 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231982AbhBVONx (ORCPT
+        id S232625AbhBVOX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230339AbhBVONe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 09:13:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614003146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C4ob/HwZY6JToPa6OIARFnOVuWbb8EWH4Jtjs9jshMI=;
-        b=ZJzeBd3FVu9OByQEluSXqLAxIaaA+l8rj3B7FAUNatpqBwKy5wI7Ak6GGvRUxbLDT9EsYc
-        pJWPkcz9eTGJGPBhHDMGuBu7t4DHMxM2w8Wune7o4q6umXgKkEYMWe7rubfC9HrvXtM9qU
-        7FzrvRRnrY47BlS6D/5s3Dx4w4zR7Uo=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-275-Qbm7owRRPHGd4HXjpaXsmw-1; Mon, 22 Feb 2021 09:12:24 -0500
-X-MC-Unique: Qbm7owRRPHGd4HXjpaXsmw-1
-Received: by mail-wr1-f71.google.com with SMTP id j12so554775wrt.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 06:12:23 -0800 (PST)
+        Mon, 22 Feb 2021 09:13:34 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8554AC06174A;
+        Mon, 22 Feb 2021 06:12:52 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d13so7826758plg.0;
+        Mon, 22 Feb 2021 06:12:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wTvuzSsDx5wHEQjCsdWnJWyRmJKaFgdpWavq1bhv6/I=;
+        b=pXXMhdxX7vhFRGsWj18RR56E2kMiwbDgIUCVhhZGSSrfM2Nyhx5kyYaGCP3ktf5tbr
+         inWpWxjUzuUCIt3FL44TA4I5dg0DEPdng/0/d9aWMrhg46iDfOai/TSq8kFOkMyekDvq
+         QL3Difmc2FSps8YCgIMMAaBZb4vWi2l32xK009SViFDQMLXUHQCAip7R6EYJsYJuxOTB
+         RKwbmMCG66xz1ALbGWPJXJX4dL/OYqGMz9NmoDvoyb/upp2o4Esbt3cZmdtpbpSh6Z3q
+         jHgwmOFm1x/b1MTYvsZEBuXR3tNBzZhEde3xqr8ShhTHwd+6B981xhylMKk36WksLZOS
+         wrag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C4ob/HwZY6JToPa6OIARFnOVuWbb8EWH4Jtjs9jshMI=;
-        b=OpRjqZT3promThODSW/Gs3eosdUwmecIb0tMG4X3IAeQgXcRDQMjimRXoVrynQelfT
-         m6ATW3rc4gR+COb4z9a/v7dtsvnsxskySx00TobCY8s2u0TJL0WnsNmshtcRA0GmHoop
-         vLXeDkxVgvl8bfZ1rypwoQx8XmXapMx0BpFue6PT8DeL7qmpusNEqwYIAsSYMK5docj7
-         KTBlUJKboC6Gw9F6FYA62DZo77rtGZdBSgv2+XbEoLX7aSS+5sjwdShLks1Xsf2xdu7K
-         wEmN4gnQggNMHSdrbisznwmP6t+COIWqJ3KtCnGW3OzA16NHrFkpx2lAqfM8ZsIbj+DW
-         7gzQ==
-X-Gm-Message-State: AOAM532R+Vt8fEraP7Ic5B6N0PeNFFkfhbzkhvedadQfCv7ryHkissBI
-        /iIFwI6MQ1u8u3npSvjfpRz04ew5KS2Qc+JhI4Qg+0wSkcphX0Vr2GVgWjq8nnck4LUxmTl+mfj
-        pJFz8ike1iJjbPyN4uwuHatUC
-X-Received: by 2002:a5d:5441:: with SMTP id w1mr21614570wrv.366.1614003142875;
-        Mon, 22 Feb 2021 06:12:22 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzvUh6+RKpz1p9mHjfUgu/bHee+H13baHG8nnXHUSqARjGTCoY6aSGxXiwzPvqOvhgWfA6Rew==
-X-Received: by 2002:a5d:5441:: with SMTP id w1mr21614537wrv.366.1614003142640;
-        Mon, 22 Feb 2021 06:12:22 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id i1sm25218726wmq.12.2021.02.22.06.12.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 06:12:22 -0800 (PST)
-Date:   Mon, 22 Feb 2021 15:12:19 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v5 07/19] af_vsock: rest of SEQPACKET support
-Message-ID: <20210222141219.nvw4323sizvsud5d@steredhat>
-References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
- <20210218053831.1067678-1-arseny.krasnov@kaspersky.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wTvuzSsDx5wHEQjCsdWnJWyRmJKaFgdpWavq1bhv6/I=;
+        b=J7wL8bP9cBwxQF1cHbhfv4fzEvl5KT8ad6ejcr0F/sYvOAfHFtae9B+V35DH8xa3HO
+         7MtkSju+nxqAorq2Z1h/e8QxYVOuHaghUn+wCpPAVfyiPBscD1D3Dzta1KtS48dIdfS1
+         mUIZncPSbtXrbY9PwCBXGTT7YeinWXr/TnKSipPg5ZCDQo/zUG9yywdIDKzAr6r7D7LI
+         gc7P9ODm7MkRoUpZYRjLxtT4n/qUVWoP00cXVkUNej1OKn/AQu8L3PfuZ3/Za/ltZVEN
+         EBu6AH+sD+tlo1851CmSjLpALUJ9BRBhhRLBpFZYetvGZ5bDdPYqrBz0yE/N2ovW2goa
+         D4hw==
+X-Gm-Message-State: AOAM533V/kb7N4wdqOsHgu+8B5TkuMejBVQpvdLkoG3n8AlZIS2za29h
+        Fhz5NJILO5uFYMKQ/o1+EoCFt3c69KgScO0VfSo=
+X-Google-Smtp-Source: ABdhPJykkv6u9UtjDofhN3sWJPZJolrvMOjq9nG2MawYjC589/kCKJxpAUPfLJYijfh1vFjiJ26qD2JIUa7R8Y5yPwE=
+X-Received: by 2002:a17:90b:3d8:: with SMTP id go24mr24457261pjb.181.1614003171942;
+ Mon, 22 Feb 2021 06:12:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210218053831.1067678-1-arseny.krasnov@kaspersky.com>
+References: <20210222130735.1313443-1-djrscally@gmail.com> <20210222130735.1313443-7-djrscally@gmail.com>
+In-Reply-To: <20210222130735.1313443-7-djrscally@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 22 Feb 2021 16:12:35 +0200
+Message-ID: <CAHp75Veb=0OOE=iyt5ua46HkMuG6_Xu1bWAxzZX5d3378CrfNg@mail.gmail.com>
+Subject: Re: [PATCH v3 6/6] mfd: tps68470: Remove tps68470 MFD driver
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Rajmohan Mani <rajmohan.mani@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        andy.shevchenko@linux.intel.com,
+        kieran.bingham+renesas@ideasonboard.com,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>, me@fabwu.ch,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        devel@acpica.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 08:38:28AM +0300, Arseny Krasnov wrote:
->This does rest of SOCK_SEQPACKET support:
->1) Adds socket ops for SEQPACKET type.
->2) Allows to create socket with SEQPACKET type.
+On Mon, Feb 22, 2021 at 3:12 PM Daniel Scally <djrscally@gmail.com> wrote:
 >
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/af_vsock.c | 36 +++++++++++++++++++++++++++++++++++-
-> 1 file changed, 35 insertions(+), 1 deletion(-)
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index f352cd9d91ce..f4b02c6d35d1 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -452,6 +452,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> 		new_transport = transport_dgram;
-> 		break;
-> 	case SOCK_STREAM:
->+	case SOCK_SEQPACKET:
-> 		if (vsock_use_local_transport(remote_cid))
-> 			new_transport = transport_local;
-> 		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g ||
->@@ -484,6 +485,14 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> 	if (!new_transport || !try_module_get(new_transport->module))
-> 		return -ENODEV;
->
->+	if (sk->sk_type == SOCK_SEQPACKET) {
->+		if (!new_transport->seqpacket_seq_send_len ||
->+		    !new_transport->seqpacket_seq_send_eor ||
->+		    !new_transport->seqpacket_seq_get_len ||
->+		    !new_transport->seqpacket_dequeue)
+> This driver only covered one scenario in which ACPI devices with _HID
+> INT3472 are found, and its functionality has been taken over by the
+> intel-skl-int3472 module, so remove it.
 
-We must release the module reference acquired above:
+As long as patch 5 accepted
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-			module_put(new_transport->module);
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v3:
+>         - Replaced Kconfig dependencies with INTEL_SKL_INT3472 for the tps68470
+>           OpRegion and GPIO drivers.
+>
+>  drivers/acpi/pmic/Kconfig |  2 +-
+>  drivers/gpio/Kconfig      |  2 +-
+>  drivers/mfd/Kconfig       | 18 --------
+>  drivers/mfd/Makefile      |  1 -
+>  drivers/mfd/tps68470.c    | 97 ---------------------------------------
+>  5 files changed, 2 insertions(+), 118 deletions(-)
+>  delete mode 100644 drivers/mfd/tps68470.c
+>
+> diff --git a/drivers/acpi/pmic/Kconfig b/drivers/acpi/pmic/Kconfig
+> index 56bbcb2ce61b..f84b8f6038dc 100644
+> --- a/drivers/acpi/pmic/Kconfig
+> +++ b/drivers/acpi/pmic/Kconfig
+> @@ -52,7 +52,7 @@ endif # PMIC_OPREGION
+>
+>  config TPS68470_PMIC_OPREGION
+>         bool "ACPI operation region support for TPS68470 PMIC"
+> -       depends on MFD_TPS68470
+> +       depends on INTEL_SKL_INT3472
+>         help
+>           This config adds ACPI operation region support for TI TPS68470 PMIC.
+>           TPS68470 device is an advanced power management unit that powers
+> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> index c70f46e80a3b..998898c72af8 100644
+> --- a/drivers/gpio/Kconfig
+> +++ b/drivers/gpio/Kconfig
+> @@ -1343,7 +1343,7 @@ config GPIO_TPS65912
+>
+>  config GPIO_TPS68470
+>         bool "TPS68470 GPIO"
+> -       depends on MFD_TPS68470
+> +       depends on INTEL_SKL_INT3472
+>         help
+>           Select this option to enable GPIO driver for the TPS68470
+>           chip family.
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index bdfce7b15621..9a1f648efde0 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -1520,24 +1520,6 @@ config MFD_TPS65217
+>           This driver can also be built as a module.  If so, the module
+>           will be called tps65217.
+>
+> -config MFD_TPS68470
+> -       bool "TI TPS68470 Power Management / LED chips"
+> -       depends on ACPI && PCI && I2C=y
+> -       depends on I2C_DESIGNWARE_PLATFORM=y
+> -       select MFD_CORE
+> -       select REGMAP_I2C
+> -       help
+> -         If you say yes here you get support for the TPS68470 series of
+> -         Power Management / LED chips.
+> -
+> -         These include voltage regulators, LEDs and other features
+> -         that are often used in portable devices.
+> -
+> -         This option is a bool as it provides an ACPI operation
+> -         region, which must be available before any of the devices
+> -         using this are probed. This option also configures the
+> -         designware-i2c driver to be built-in, for the same reason.
+> -
+>  config MFD_TI_LP873X
+>         tristate "TI LP873X Power Management IC"
+>         depends on I2C
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index 14fdb188af02..5994e812f479 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -105,7 +105,6 @@ obj-$(CONFIG_MFD_TPS65910)  += tps65910.o
+>  obj-$(CONFIG_MFD_TPS65912)     += tps65912-core.o
+>  obj-$(CONFIG_MFD_TPS65912_I2C) += tps65912-i2c.o
+>  obj-$(CONFIG_MFD_TPS65912_SPI)  += tps65912-spi.o
+> -obj-$(CONFIG_MFD_TPS68470)     += tps68470.o
+>  obj-$(CONFIG_MFD_TPS80031)     += tps80031.o
+>  obj-$(CONFIG_MENELAUS)         += menelaus.o
+>
+> diff --git a/drivers/mfd/tps68470.c b/drivers/mfd/tps68470.c
+> deleted file mode 100644
+> index 4a4df4ffd18c..000000000000
+> --- a/drivers/mfd/tps68470.c
+> +++ /dev/null
+> @@ -1,97 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -/*
+> - * TPS68470 chip Parent driver
+> - *
+> - * Copyright (C) 2017 Intel Corporation
+> - *
+> - * Authors:
+> - *     Rajmohan Mani <rajmohan.mani@intel.com>
+> - *     Tianshu Qiu <tian.shu.qiu@intel.com>
+> - *     Jian Xu Zheng <jian.xu.zheng@intel.com>
+> - *     Yuning Pu <yuning.pu@intel.com>
+> - */
+> -
+> -#include <linux/acpi.h>
+> -#include <linux/delay.h>
+> -#include <linux/i2c.h>
+> -#include <linux/init.h>
+> -#include <linux/mfd/core.h>
+> -#include <linux/mfd/tps68470.h>
+> -#include <linux/regmap.h>
+> -
+> -static const struct mfd_cell tps68470s[] = {
+> -       { .name = "tps68470-gpio" },
+> -       { .name = "tps68470_pmic_opregion" },
+> -};
+> -
+> -static const struct regmap_config tps68470_regmap_config = {
+> -       .reg_bits = 8,
+> -       .val_bits = 8,
+> -       .max_register = TPS68470_REG_MAX,
+> -};
+> -
+> -static int tps68470_chip_init(struct device *dev, struct regmap *regmap)
+> -{
+> -       unsigned int version;
+> -       int ret;
+> -
+> -       /* Force software reset */
+> -       ret = regmap_write(regmap, TPS68470_REG_RESET, TPS68470_REG_RESET_MASK);
+> -       if (ret)
+> -               return ret;
+> -
+> -       ret = regmap_read(regmap, TPS68470_REG_REVID, &version);
+> -       if (ret) {
+> -               dev_err(dev, "Failed to read revision register: %d\n", ret);
+> -               return ret;
+> -       }
+> -
+> -       dev_info(dev, "TPS68470 REVID: 0x%x\n", version);
+> -
+> -       return 0;
+> -}
+> -
+> -static int tps68470_probe(struct i2c_client *client)
+> -{
+> -       struct device *dev = &client->dev;
+> -       struct regmap *regmap;
+> -       int ret;
+> -
+> -       regmap = devm_regmap_init_i2c(client, &tps68470_regmap_config);
+> -       if (IS_ERR(regmap)) {
+> -               dev_err(dev, "devm_regmap_init_i2c Error %ld\n",
+> -                       PTR_ERR(regmap));
+> -               return PTR_ERR(regmap);
+> -       }
+> -
+> -       i2c_set_clientdata(client, regmap);
+> -
+> -       ret = tps68470_chip_init(dev, regmap);
+> -       if (ret < 0) {
+> -               dev_err(dev, "TPS68470 Init Error %d\n", ret);
+> -               return ret;
+> -       }
+> -
+> -       ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, tps68470s,
+> -                             ARRAY_SIZE(tps68470s), NULL, 0, NULL);
+> -       if (ret < 0) {
+> -               dev_err(dev, "devm_mfd_add_devices failed: %d\n", ret);
+> -               return ret;
+> -       }
+> -
+> -       return 0;
+> -}
+> -
+> -static const struct acpi_device_id tps68470_acpi_ids[] = {
+> -       {"INT3472"},
+> -       {},
+> -};
+> -
+> -static struct i2c_driver tps68470_driver = {
+> -       .driver = {
+> -                  .name = "tps68470",
+> -                  .acpi_match_table = tps68470_acpi_ids,
+> -       },
+> -       .probe_new = tps68470_probe,
+> -};
+> -builtin_i2c_driver(tps68470_driver);
+> --
+> 2.25.1
+>
 
->+			return -ESOCKTNOSUPPORT;
->+	}
->+
-> 	ret = new_transport->init(vsk, psk);
-> 	if (ret) {
-> 		module_put(new_transport->module);
->@@ -684,6 +693,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
->
-> 	switch (sk->sk_socket->type) {
-> 	case SOCK_STREAM:
->+	case SOCK_SEQPACKET:
-> 		spin_lock_bh(&vsock_table_lock);
-> 		retval = __vsock_bind_connectible(vsk, addr);
-> 		spin_unlock_bh(&vsock_table_lock);
->@@ -769,7 +779,7 @@ static struct sock *__vsock_create(struct net *net,
->
-> static bool sock_type_connectible(u16 type)
-> {
->-	return type == SOCK_STREAM;
->+	return (type == SOCK_STREAM) || (type == SOCK_SEQPACKET);
-> }
->
-> static void __vsock_release(struct sock *sk, int level)
->@@ -2191,6 +2201,27 @@ static const struct proto_ops vsock_stream_ops = {
-> 	.sendpage = sock_no_sendpage,
-> };
->
->+static const struct proto_ops vsock_seqpacket_ops = {
->+	.family = PF_VSOCK,
->+	.owner = THIS_MODULE,
->+	.release = vsock_release,
->+	.bind = vsock_bind,
->+	.connect = vsock_connect,
->+	.socketpair = sock_no_socketpair,
->+	.accept = vsock_accept,
->+	.getname = vsock_getname,
->+	.poll = vsock_poll,
->+	.ioctl = sock_no_ioctl,
->+	.listen = vsock_listen,
->+	.shutdown = vsock_shutdown,
->+	.setsockopt = vsock_connectible_setsockopt,
->+	.getsockopt = vsock_connectible_getsockopt,
->+	.sendmsg = vsock_connectible_sendmsg,
->+	.recvmsg = vsock_connectible_recvmsg,
->+	.mmap = sock_no_mmap,
->+	.sendpage = sock_no_sendpage,
->+};
->+
-> static int vsock_create(struct net *net, struct socket *sock,
-> 			int protocol, int kern)
-> {
->@@ -2211,6 +2242,9 @@ static int vsock_create(struct net *net, struct socket *sock,
-> 	case SOCK_STREAM:
-> 		sock->ops = &vsock_stream_ops;
-> 		break;
->+	case SOCK_SEQPACKET:
->+		sock->ops = &vsock_seqpacket_ops;
->+		break;
-> 	default:
-> 		return -ESOCKTNOSUPPORT;
-> 	}
->-- 
->2.25.1
->
 
+-- 
+With Best Regards,
+Andy Shevchenko
