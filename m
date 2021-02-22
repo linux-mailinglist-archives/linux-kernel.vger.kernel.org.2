@@ -2,150 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071E13219A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 626593219AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbhBVOBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:01:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231802AbhBVNAK (ORCPT
+        id S232000AbhBVOCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:02:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28402 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231723AbhBVNBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 08:00:10 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0820BC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 04:59:24 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:254f:253d:debc:790b])
-        by albert.telenet-ops.be with bizsmtp
-        id YCzP240011v7dkx06CzP0Y; Mon, 22 Feb 2021 13:59:23 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lEAo6-000kYH-My; Mon, 22 Feb 2021 13:59:22 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lEAo6-00HUVX-8I; Mon, 22 Feb 2021 13:59:22 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] f2fs: compress: Allow modular (de)compression algorithms
-Date:   Mon, 22 Feb 2021 13:59:16 +0100
-Message-Id: <20210222125916.4168804-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 22 Feb 2021 08:01:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613998811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TRfCGo+d4jZVJhCFZnvsjweX1KWQd9768AoENBDOGlQ=;
+        b=Qn+Qu1xU8JodbOvqeKyZ3DayzZmbM8s0yxq7r4T6B4FSVeUYcE404TEGaVMNrcS5ODXh5W
+        lgNUPAdYHAK4xvAf0m/uMdwDybP2rER/dZ8p4C34udc90CqLlfQzh2Kmd78wmzJ0WM4zGs
+        I5wiAqJnoPJIik6z78H5epmTwU4J2t0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-368-1hH8o-AHMaSAy3fNzDzl1g-1; Mon, 22 Feb 2021 08:00:09 -0500
+X-MC-Unique: 1hH8o-AHMaSAy3fNzDzl1g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E7EF8799EC;
+        Mon, 22 Feb 2021 13:00:06 +0000 (UTC)
+Received: from [10.36.115.16] (ovpn-115-16.ams2.redhat.com [10.36.115.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5648872F85;
+        Mon, 22 Feb 2021 12:59:56 +0000 (UTC)
+Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
+ prefault/prealloc memory
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
+References: <20210217154844.12392-1-david@redhat.com>
+ <640738b5-a47e-448b-586d-a1fb80131891@redhat.com>
+ <YDOqA9nQHiuIrKBu@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <73f73cf2-1b4e-bfa9-9a4c-3192d7b7a5ec@redhat.com>
+Date:   Mon, 22 Feb 2021 13:59:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YDOqA9nQHiuIrKBu@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If F2FS_FS is modular, enabling the compressions options
-F2FS_FS_{LZ4,LZ4HZ,LZO,LZORLE,ZSTD} will make the (de)compression
-algorithms {LZ4,LZ4HC,LZO,ZSTD}_{,DE}COMPRESS builtin instead of
-modular, as the former depend on an intermediate boolean
-F2FS_FS_COMPRESSION, which in-turn depends on tristate F2FS_FS.
+On 22.02.21 13:56, Michal Hocko wrote:
+> On Sat 20-02-21 10:12:26, David Hildenbrand wrote:
+> [...]
+>> Thinking about MADV_POPULATE vs. MADV_POPULATE_WRITE I wonder if it would be
+>> more versatile to break with existing MAP_POPULATE semantics and directly go
+>> with
+>>
+>> MADV_POPULATE_READ: simulate user space read access without actually
+>> reading. Trigger a read fault if required.
+>>
+>> MADV_POPULATE_WRITE: simulate user space write access without actually
+>> writing. Trigger a write fault if required.
+>>
+>> For my use case, I could use MADV_POPULATE_WRITE on anonymous memory and
+>> RAM-backed files (shmem/hugetlb) - I would not have a minor fault when the
+>> guest inside the VM first initializes memory. This mimics how QEMU currently
+>> preallocates memory.
+>>
+>> However, I would use MADV_POPULATE_READ on any !RAM-backed files where we
+>> actually have to write-back to a (slow?) device. Dirtying everything
+>> although the guest might not actually consume it in the near future might be
+>> undesired.
+> 
+> Isn't what the current mm_populate does?
+>          if ((vma->vm_flags & (VM_WRITE | VM_SHARED)) == VM_WRITE)
+>                  gup_flags |= FOLL_WRITE;
+> 
+> So it will write fault to shared memory mappings but it will touch
+> others.
 
-Indeed, if a boolean symbol A depends directly on a tristate symbol B
-and selects another tristate symbol C:
+Exactly. But for hugetlbfs/shmem ("!RAM-backed files") this is not what 
+we want.
 
-    tristate B
-
-    tristate C
-
-    bool A
-      depends on B
-      select C
-
-and B is modular, then C will also be modular.
-
-However, if there is an intermediate boolean D in the dependency chain
-between A and B:
-
-    tristate B
-
-    tristate C
-
-    bool D
-      depends on B
-
-    bool A
-      depends on D
-      select C
-
-then the modular state won't propagate from B to C, and C will be
-builtin instead of modular.
-
-Fix this by making the various compression options depend directly on
-F2FS_FS using a big if/endif block.  Drop the now superfluous
-dependencies on F2FS_FS from individual symbols.
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Perhaps the propagation logic in Kconfig should be fixed instead?
-Else people may reintroduce this issue when removing seemingly-unneeded
-dependencies.
----
- fs/f2fs/Kconfig | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
-index 62e638a49bbf089a..20a82ecb72b42f84 100644
---- a/fs/f2fs/Kconfig
-+++ b/fs/f2fs/Kconfig
-@@ -20,9 +20,10 @@ config F2FS_FS
- 
- 	  If unsure, say N.
- 
-+if F2FS_FS
-+
- config F2FS_STAT_FS
- 	bool "F2FS Status Information"
--	depends on F2FS_FS
- 	default y
- 	help
- 	  /sys/kernel/debug/f2fs/ contains information about all the partitions
-@@ -35,7 +36,6 @@ config F2FS_STAT_FS
- 
- config F2FS_FS_XATTR
- 	bool "F2FS extended attributes"
--	depends on F2FS_FS
- 	default y
- 	help
- 	  Extended attributes are name:value pairs associated with inodes by
-@@ -70,7 +70,6 @@ config F2FS_FS_SECURITY
- 
- config F2FS_CHECK_FS
- 	bool "F2FS consistency checking feature"
--	depends on F2FS_FS
- 	help
- 	  Enables BUG_ONs which check the filesystem consistency in runtime.
- 
-@@ -78,7 +77,6 @@ config F2FS_CHECK_FS
- 
- config F2FS_FAULT_INJECTION
- 	bool "F2FS fault injection facility"
--	depends on F2FS_FS
- 	help
- 	  Test F2FS to inject faults such as ENOMEM, ENOSPC, and so on.
- 
-@@ -86,7 +84,6 @@ config F2FS_FAULT_INJECTION
- 
- config F2FS_FS_COMPRESSION
- 	bool "F2FS compression feature"
--	depends on F2FS_FS
- 	help
- 	  Enable filesystem-level compression on f2fs regular files,
- 	  multiple back-end compression algorithms are supported.
-@@ -137,3 +134,5 @@ config F2FS_FS_LZORLE
- 	default y
- 	help
- 	  Support LZO-RLE compress algorithm, if unsure, say Y.
-+
-+endif
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
