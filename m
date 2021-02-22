@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB363219BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 255613219BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:07:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhBVOG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:06:26 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12637 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhBVNMh (ORCPT
+        id S232130AbhBVOGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:06:50 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:43932 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231607AbhBVNNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 08:12:37 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DkjGM3kY9z16BWd;
-        Mon, 22 Feb 2021 21:10:19 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Feb 2021 21:11:43 +0800
-Subject: Re: [PATCH 4.9.257 1/1] futex: Fix OWNER_DEAD fixup
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Lee Jones <lee.jones@linaro.org>, <stable@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <judy.chenhui@huawei.com>,
-        <zhangjinhao2@huawei.com>, <tglx@linutronix.de>
-References: <20210222110542.3531596-1-zhengyejian1@huawei.com>
- <20210222110542.3531596-2-zhengyejian1@huawei.com>
- <20210222115424.GF376568@dell> <YDOec1kosGKKO80g@kroah.com>
- <4f06340a-e027-f944-3248-2939639d5e07@huawei.com>
- <YDOlOd9aHQzVCXkk@kroah.com>
-From:   "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>
-Message-ID: <42af110f-f492-c11c-397c-e0b5018d9263@huawei.com>
-Date:   Mon, 22 Feb 2021 21:11:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 22 Feb 2021 08:13:33 -0500
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 787F020B57A1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 05:12:46 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 787F020B57A1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1613999566;
+        bh=nPUkWMtEqtt3EdWh4OMmYqe+dbCvxFMStlcejHtdICw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UxPW1VUI1TbVfJCsYJj4ZKEZLxJc7ePq5mGY54YzIz1eeNaqpCoW33sZzVoKJNdJD
+         2FG+Tplv3PG2lBWC8wtZ3rgwF2mgSPfS4aGXPCSsWlTNRPiJ9f9iMjYDJfdZQzKZoB
+         iiUN+nAzLkChBO8gSfIQQdKDiI+bUsAOdncwbkxo=
+Received: by mail-pg1-f182.google.com with SMTP id t11so10181121pgu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 05:12:46 -0800 (PST)
+X-Gm-Message-State: AOAM532HsxLk0JiFyGfqEm03QUS3RZvAUd3KCkLCTyHquZJOAqFWjOPJ
+        PMH7Jqc2dhyTb1AWJNK1a4CYahH3t1og5vp4GRo=
+X-Google-Smtp-Source: ABdhPJzuWzL2Na+RYT/5s+nUYI1G1s9IrFVcAoklprIrtkLTw7NO98lkFde5Dz230MjrWHwEWuLS68UlMNSj3LY4vkk=
+X-Received: by 2002:a62:5a43:0:b029:1ed:263a:b05c with SMTP id
+ o64-20020a625a430000b02901ed263ab05cmr17087161pfb.16.1613999565998; Mon, 22
+ Feb 2021 05:12:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YDOlOd9aHQzVCXkk@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-CFilter-Loop: Reflected
+References: <20201110202746.9690-1-mcroce@linux.microsoft.com> <20210222100325.GA14587@amd>
+In-Reply-To: <20210222100325.GA14587@amd>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Mon, 22 Feb 2021 14:12:10 +0100
+X-Gmail-Original-Message-ID: <CAFnufp1Gu7MV03hADAm2gvveHaeR7X_td2EmyEpxto1oW3sZvg@mail.gmail.com>
+Message-ID: <CAFnufp1Gu7MV03hADAm2gvveHaeR7X_td2EmyEpxto1oW3sZvg@mail.gmail.com>
+Subject: Re: [PATCH v4] reboot: allow to specify reboot mode via sysfs
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>, Petr Mladek <pmladek@suse.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 22, 2021 at 11:03 AM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> On Tue 2020-11-10 21:27:46, Matteo Croce wrote:
+> > From: Matteo Croce <mcroce@microsoft.com>
+> >
+> > The kernel cmdline reboot= option offers some sort of control
+> > on how the reboot is issued.
+> > Add handles in sysfs to allow setting these reboot options, so they
+> > can be changed when the system is booted, other than at boot time.
+>
+> We already have a reboot syscall, do we need sysfs interface, too?
+>
+>
+> > +What:                /sys/kernel/reboot/mode
+> > +Date:                November 2020
+> > +KernelVersion:       5.11
+> > +Contact:     Matteo Croce <mcroce@microsoft.com>
+> > +Description: Reboot mode. Valid values are: cold warm hard soft gpio
+>
+>
+> > +What:                /sys/kernel/reboot/type
+> > +Date:                November 2020
+> > +KernelVersion:       5.11
+> > +Contact:     Matteo Croce <mcroce@microsoft.com>
+> > +Description: Reboot type. Valid values are: bios acpi kbd triple efi pci
+>
+> what is difference between mode and type? What is difference between
+> cold and hard for example? WTF is gpio?
+>
+> > +What:                /sys/kernel/reboot/cpu
+> > +Date:                November 2020
+> > +KernelVersion:       5.11
+> > +Contact:     Matteo Croce <mcroce@microsoft.com>
+> > +Description: CPU number to use to reboot.
+>
+> Why should user care about this?
+>
 
+Mode is the reboot mode (soft, warm, cold, gpio), and type is an x86
+specific type, (bios, acpi, uefi, etc.).
+I never used GPIO reboot but it's used by some ARM devices.
 
-On 2021/2/22 20:36, Greg KH wrote:
-> On Mon, Feb 22, 2021 at 08:20:38PM +0800, Zhengyejian (Zetta) wrote:
->>
->>
->> On 2021/2/22 20:07, Greg KH wrote:
->>> On Mon, Feb 22, 2021 at 11:54:24AM +0000, Lee Jones wrote:
->>>> On Mon, 22 Feb 2021, Zheng Yejian wrote:
->>>>
->>>>> From: Peter Zijlstra <peterz@infradead.org>
->>>>>
->>>>> commit a97cb0e7b3f4c6297fd857055ae8e895f402f501 upstream.
->>>>>
->>>>> Both Geert and DaveJ reported that the recent futex commit:
->>>>>
->>>>>     c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
->>>>>
->>>>> introduced a problem with setting OWNER_DEAD. We set the bit on an
->>>>> uninitialized variable and then entirely optimize it away as a
->>>>> dead-store.
->>>>>
->>>>> Move the setting of the bit to where it is more useful.
->>>>>
->>>>> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>>>> Reported-by: Dave Jones <davej@codemonkey.org.uk>
->>>>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>>>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
->>>>> Cc: Paul E. McKenney <paulmck@us.ibm.com>
->>>>> Cc: Peter Zijlstra <peterz@infradead.org>
->>>>> Cc: Thomas Gleixner <tglx@linutronix.de>
->>>>> Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
->>>>> Link: http://lkml.kernel.org/r/20180122103947.GD2228@hirez.programming.kicks-ass.net
->>>>> Signed-off-by: Ingo Molnar <mingo@kernel.org>
->>>>> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
->>>>> ---
->>>>>    kernel/futex.c | 7 +++----
->>>>>    1 file changed, 3 insertions(+), 4 deletions(-)
->>>>
->>>> Reviewed-by: Lee Jones <lee.jones@linaro.org>
->>>
->>> This does not apply to the 4.9.y tree at all right now, are you all sure
->>> you got the backport correct?
->>>
->>> confused,
->>>
->>> greg k-h
->>> .
->>>
->> I make the patch basing on 282aeb477a10 ("Linux 4.9.257").
->> Should I base on f0cf73f13b39 ("Linux 4.9.258-rc1")?
-> 
-> Yes please as I think this is already there.
-> 
-> How about just waiting for the next release to come out, I will push out
-> the 4.4 and 4.9 -rc releases right now as well to give everyone a chance
-> to sync up properly.
-Ok, I will rebase this patch then.
-Thanks for your suggestion.
+I didn't invent anything from scratch, I just transposed the settings
+available from the kernel command line (see
+Documentation/admin-guide/kernel-parameters.txt) to sysfs.
+Everithing was already tunable before, like the CPU used during reboot.
 
-> 
-> thanks,
-> 
-> greg k-h
-> .
-> 
+-- 
+per aspera ad upstream
