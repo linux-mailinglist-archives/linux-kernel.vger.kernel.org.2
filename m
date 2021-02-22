@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF74320FFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 05:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FCC321009
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 05:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbhBVEQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 23:16:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27174 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230085AbhBVEP4 (ORCPT
+        id S230100AbhBVEju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 23:39:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230044AbhBVEjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 23:15:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613967269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E+x2TUELl7mIVGk/ohyT3Fe+rS53LsnETTro7AaKiEY=;
-        b=Ncu+11LCt4aTIpr+c1tz5c4QRAHTR1WLVfZr07+ghyvKSluXZMDHl0IDvUIFyQLdilNssk
-        rw7NS0U6dF2q7aqcBncg5bxYBM3vIEa01JkENKhEQWZEolRJRuSkuWNF5fIDbeVbAATxAz
-        5C6sNXt9EifXYtuSEn/tF+2Q8FwhCD8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-182-kMsuTl1_NKemZuv_UIhDrw-1; Sun, 21 Feb 2021 23:14:25 -0500
-X-MC-Unique: kMsuTl1_NKemZuv_UIhDrw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 702D18030BB;
-        Mon, 22 Feb 2021 04:14:24 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-112.pek2.redhat.com [10.72.13.112])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7D41660C5C;
-        Mon, 22 Feb 2021 04:14:19 +0000 (UTC)
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-To:     Si-Wei Liu <si-wei.liu@oracle.com>, mst@redhat.com, elic@nvidia.com
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
-Date:   Mon, 22 Feb 2021 12:14:17 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Sun, 21 Feb 2021 23:39:47 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212DFC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 20:39:07 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id p21so9462197pgl.12
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 20:39:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rHR/hBdQwM37tuzoR2JFYoJ3S9CP5BdPWbteP4d6NZY=;
+        b=KfS0O6oJgq1gLGOPbLz0ylgzLs1AC9D2WkTdESI9tVcCV29uUd4Xsxi5gZPVkGDw+E
+         d2116ZMbXfldY2ExN/V7P4Q/jcV8/0Xen9facHCe4TWJHyxQYC7aAADXCeupZaXApFi2
+         ordeieG7XaFPxu5XUxeW2QWGFRAzy5mbVCpe9mkuDBZrQLSGYGqKDU/ByXk3174jo29V
+         7mkSf4wOGgMzaiaM8014dVI5sI/oZKup++RJRPJfzOX1gvEDaqdQrf5vcsUU74e+LIwk
+         SOgLMyCyREN1wuIewkSv53PJXaVh26tvjz/UavavCSs6g9+BzECJhoJb8MbZ7LGLvOPb
+         jXgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rHR/hBdQwM37tuzoR2JFYoJ3S9CP5BdPWbteP4d6NZY=;
+        b=Cgwqm6iu+ZG0svA4DkaVKNBktu9GBq0eU6pQK3cgY/2Ku24iLub7K1oDv6w+ZbzPKO
+         Xh7iB0TXS++teX/PxYZEAmFFpMXeR+NWTVtGS9Mt+uZkBzpx715k9sGMeseqwsr4OPCI
+         yRwFWYAub5JVRIFJ2kI2AjvMx+baaxTQi3EfFY2WhOO0lW3yxxQLpXGowCmA62gzyqbE
+         6OTchJ22/LRaOZLQr6W0nWC/ok4o7Av2ysBg6Dg2L9BaZjFLBcygKWTdNqTM5mP+mtqK
+         AuBV+GOuNQ0PnJZjk7iaTz2bi93EmGqDPvTe0Jph1XN+vhhck7veVgpz9L7n5IXzQ5U0
+         wYIg==
+X-Gm-Message-State: AOAM532Pvpiic7E9+tvfEK/WSrjRloOlBIry2h+yUSG/XwLo93yw0dly
+        qifP+SvsY+n+USvSEeNhu7mlPw==
+X-Google-Smtp-Source: ABdhPJx6KlnebKx8hqFh1OSBi0TL1Knw23OfbdUQYj0FzNSxavjiHfMdteCPIY748Iq4tl7IMtEi4g==
+X-Received: by 2002:a63:1a07:: with SMTP id a7mr18156961pga.167.1613968746460;
+        Sun, 21 Feb 2021 20:39:06 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id t7sm16554202pgr.53.2021.02.21.20.39.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 21 Feb 2021 20:39:05 -0800 (PST)
+Date:   Mon, 22 Feb 2021 10:09:04 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, rjw@rjwysocki.net, vireshk@kernel.org,
+        cristian.marussi@arm.com, morten.rasmussen@arm.com,
+        chris.redpath@arm.com, ionela.voinescu@arm.com
+Subject: Re: [PATCH v8 0/3] CPUFreq: Add support for opp-sharing cpus
+Message-ID: <20210222043904.j36d6btl2v64xg6q@vireshk-i7>
+References: <20210218222326.15788-1-nicola.mazzucato@arm.com>
+ <20210219041944.uox45mesrabvfm72@vireshk-i7>
+ <20210219191650.q7bu6ogbhh2hcmww@bogus>
 MIME-Version: 1.0
-In-Reply-To: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219191650.q7bu6ogbhh2hcmww@bogus>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 19-02-21, 19:16, Sudeep Holla wrote:
+> Hi Viresh,
+> 
+> On Fri, Feb 19, 2021 at 09:49:44AM +0530, Viresh Kumar wrote:
+> > On 18-02-21, 22:23, Nicola Mazzucato wrote:
+> > > Hi Viresh,
+> > > 
+> > > In this V8 I have addressed your comments:
+> > > - correct the goto in patch 1/3
+> > > - improve comment in patch 2/3 for dev_pm_opp_get_opp_count()
+> > 
+> > LGTM. I will apply them after the merge window is over. Thanks.
+> 
+> I am planning to merge the series on scmi[1] which changes scmi-cpufreq.c
+> and will conflict with these changes I think. If possible either,
+> 
+> 1. Share a branch with these changes that I can merge or
+> 2. I can take patch 1/3 and 2/3 with other scmi changes with your Ack.
+> 
+> I am fine either way, let me know by v5.12-rc1
 
-On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
-> Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
-> for legacy") made an exception for legacy guests to reset
-> features to 0, when config space is accessed before features
-> are set. We should relieve the verify_min_features() check
-> and allow features reset to 0 for this case.
->
-> It's worth noting that not just legacy guests could access
-> config space before features are set. For instance, when
-> feature VIRTIO_NET_F_MTU is advertised some modern driver
-> will try to access and validate the MTU present in the config
-> space before virtio features are set.
+I have applied 3/3, you can take first two and add my Ack.
 
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-This looks like a spec violation:
-
-"
-
-The following driver-read-only field, mtu only exists if 
-VIRTIO_NET_F_MTU is set. This field specifies the maximum MTU for the 
-driver to use.
-"
-
-Do we really want to workaround this?
-
-Thanks
-
-
-> Rejecting reset to 0
-> prematurely causes correct MTU and link status unable to load
-> for the very first config space access, rendering issues like
-> guest showing inaccurate MTU value, or failure to reject
-> out-of-range MTU.
->
-> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-> ---
->   drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
->   1 file changed, 1 insertion(+), 14 deletions(-)
->
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 7c1f789..540dd67 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1490,14 +1490,6 @@ static u64 mlx5_vdpa_get_features(struct vdpa_device *vdev)
->   	return mvdev->mlx_features;
->   }
->   
-> -static int verify_min_features(struct mlx5_vdpa_dev *mvdev, u64 features)
-> -{
-> -	if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
-> -		return -EOPNOTSUPP;
-> -
-> -	return 0;
-> -}
-> -
->   static int setup_virtqueues(struct mlx5_vdpa_net *ndev)
->   {
->   	int err;
-> @@ -1558,18 +1550,13 @@ static int mlx5_vdpa_set_features(struct vdpa_device *vdev, u64 features)
->   {
->   	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->   	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
-> -	int err;
->   
->   	print_features(mvdev, features, true);
->   
-> -	err = verify_min_features(mvdev, features);
-> -	if (err)
-> -		return err;
-> -
->   	ndev->mvdev.actual_features = features & ndev->mvdev.mlx_features;
->   	ndev->config.mtu = cpu_to_mlx5vdpa16(mvdev, ndev->mtu);
->   	ndev->config.status |= cpu_to_mlx5vdpa16(mvdev, VIRTIO_NET_S_LINK_UP);
-> -	return err;
-> +	return 0;
->   }
->   
->   static void mlx5_vdpa_set_config_cb(struct vdpa_device *vdev, struct vdpa_callback *cb)
-
+-- 
+viresh
