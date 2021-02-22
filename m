@@ -2,67 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131C03215D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:11:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 001003215DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhBVMKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:10:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56192 "EHLO mx2.suse.de"
+        id S230291AbhBVMLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:11:44 -0500
+Received: from foss.arm.com ([217.140.110.172]:44114 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230090AbhBVMKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:10:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613995783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yLeSjdAn6ytvvSZ7l1bruf6v0eYDWUB2oiRB+v/1EnM=;
-        b=e/nAV+MYeJjAgiyPTwc40OITAzxjyTJR6GKilTsxVYuBh8sK8jo7wYdB+AV3weQEJR4YWY
-        hZ3CT15WUxeCSGnV7dmKjSzHJx4w88Ebamntg49TLET0SNTdnFQFE3G4pHu6cTJbJv4N10
-        aTyCPn+8FaTPp1cVYwCPRJ4lpv4xDYY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1FB54AD5C;
-        Mon, 22 Feb 2021 12:09:43 +0000 (UTC)
-Message-ID: <d61ad9565e29a07086e52bc984e8e629285ff8cf.camel@suse.com>
-Subject: Re: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
-From:   Oliver Neukum <oneukum@suse.com>
-To:     Sam Bingner <sam@bingner.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Martin Habets <mhabets@solarflare.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Matti Vuorela <matti.vuorela@bitfactor.fi>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yves-Alexis Perez <corsac@corsac.net>
-Date:   Mon, 22 Feb 2021 13:09:38 +0100
-In-Reply-To: <370902e520c44890a44cb5dd0cb1595f@bingner.com>
-References: <370902e520c44890a44cb5dd0cb1595f@bingner.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S230230AbhBVMLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:11:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D95381FB;
+        Mon, 22 Feb 2021 04:10:52 -0800 (PST)
+Received: from [10.57.51.123] (unknown [10.57.51.123])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 754373F70D;
+        Mon, 22 Feb 2021 04:10:50 -0800 (PST)
+Subject: Re: [RFC][PATCH 0/3] New thermal interface allowing IPA to get max
+ power
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, rafael@kernel.org, Dietmar.Eggemann@arm.com,
+        amitk@kernel.org, rui.zhang@intel.com, cw00.choi@samsung.com,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+References: <20210126104001.20361-1-lukasz.luba@arm.com>
+ <2f4d7bf2-3f3e-ac24-20fb-b8d66dcdd809@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <042c06a3-eae4-85e4-54cd-4389cc343eb1@arm.com>
+Date:   Mon, 22 Feb 2021 12:10:48 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <2f4d7bf2-3f3e-ac24-20fb-b8d66dcdd809@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sonntag, den 21.02.2021, 10:42 +0000 schrieb Sam Bingner:
-> There seems to be a problem with this patch:
-> 
-> Whenever the iPhone sends a packet to the tethered device that is 1500 bytes long, it gets the error "ipheth 1-1:4.2: ipheth_rcvbulk_callback: urb status: -79" on the connected device and stops passing traffic.  I am able to bring it back up by shutting and unshutting the interface, but the same thing happens very quickly.   I noticed that this patch dropped the max USB packet size from 1516 to 1514 bytes, so I decided to try lowering the MTU to 1498; this made the connection reliable and no more errors occurred.
-> 
-> It appears to me that the iPhone is still sending out 1516 bytes over USB for a 1500 byte packet and this patch makes USB abort when that happens?  I could duplicate reliably by sending a ping from the iphone (ping -s 1472) to the connected device, or vice versa as the reply would then break it.
-> 
-> I apologize if this reply doesn't end up where it should - I tried to reply to the last message in this thread but I wasn't actually *on* the thread so I had to just build it as much as possible myself.
+Hi Daniel,
 
-Is this a regression? Does it work after reverting the patch? Which
-version of iOS?
+On 2/22/21 10:22 AM, Daniel Lezcano wrote:
+> 
+> Hi Lukasz,
+> 
+> sorry for the delay, it took more time to finish my current work before
+> commenting these patches.
 
-	Regards
-		Oliver
+No worries, thank you looking at this.
 
+> 
+> On 26/01/2021 11:39, Lukasz Luba wrote:
+>> Hi all,
+>>
+>> This patch set tries to add the missing feature in the Intelligent Power
+>> Allocation (IPA) governor which is: frequency limit set by user space.
+> 
+> It is unclear if we are talking about frequency limit of the dvfs device
+> by setting the hardware limit (min-max freq). If it is the case, then
+> that is an energy model change, and all user of the energy model must be
+> notified about this change. But I don't see why userspace wants to
+> change that.
+> 
+> If we just want to set a frequency limit, then that is what we are doing
+> with the DTPM framework via power numbers.
+> 
+>> User can set max allowed frequency for a given device which has impact on
+>> max allowed power. In current design there is no mechanism to figure this
+>> out. IPA must know the maximum allowed power for every device. It is then
+>> used for proper power split and divvy-up. When the user limit for max
+>> frequency is not know, IPA assumes it is the highest possible frequency.
+>> It causes wrong power split across the devices.
+> 
+> That is because the IPA introduced the power rebalancing between devices
+> belonging the same thermal zone, so the feature was very use case specific.
+> 
+> The DTPM is supposed to solve this by providing an unified uW unit to
+> act on the different power capable devices on a generic way.
+> 
+> Today DTPM is mapped to userspace using the powercap framework, but it
+> is considered to add kernel API to let other subsystem to act on it
+> directly. May be, you can add those and call them from IPA directly, so
+> the governor does power decision and ask the DTPM to do the changes.
+> 
+> Conceptually, that would be much more consistent and will remove
+> duplicated code IMO.
+> 
+> May be create a power_qos framework to unify the units ...
+> 
+>> This new mechanism provides the max allowed frequency to the thermal
+>> framework and then max allowed power to the IPA.
+>> The implementation is done in this way because currently there is no way
+>> to retrieve the limits from the PM QoS, without uncapping the local
+>> thermal limit and reading the next value. It would be a heavy way of
+>> doing these things, since it should be done every polling time (e.g. 50ms).
+>>
+>> Also, the value stored in PM QoS can be different than the real OPP 'rate'
+>> so still would need conversion into proper OPP for comparison with EM.
+>> Furthermore, uncapping the device in thermal just to check the user freq
+>> limit is not the safest way.
+>> Thus, this simple implementation moves the calculation of the proper
+>> frequency to the sysfs write code, since it's called less often. The value
+>> is then used as-is in the thermal framework without any hassle.
+> 
+> Sounds like the DTPM is doing exactly that, no ?
+> 
+>> As it's a RFC, it still misses the cpufreq sysfs implementation, but would
+>> be addressed if all agree.
+> We are talking about power, frequency, in-kernel governor, userspace
+> having knowledge of max frequency limit to set power.
+> 
+> I'm a bit lost. What is the problem we want to solve here ?
+> 
+> May be I'm missing something. Is it possible to share a scenario where
+> the userspace acts on the devfreq and the IPA taking decision to
+> illustrate your proposal ?
+> 
+> 
+
+Sure, here is the description of the configuration and scenario in which
+the issue is present.
+SoC with 2 CPU clusters (consuming 1W (little cluster) and 3W (big
+cluster) at max freq, plenty of OPPs available),
+1 GPU (at max consuming ~6W, a few of OPPs),
+
+Scenario:
+IPA is working because temperature crossed 1st threshold and tries to
+control the system to 'converge' to 2nd temp threshold. It checks
+the actors max possible power [1], gets the current power, calculates
+current budget, split that budget and grants power across actors so
+max allowed frequency is set via QoS.
+
+The state2power() callback called at [1] with argument '0' would return
+the power from EM for the highest OPP. This is fine in most cases. That
+power information is used in line 359 and 364 during the split.
+
+If the user-space (the aware middleware) wants to switch into different
+power-performance mode e.g. power-saving, it writes into device sysfs
+to limit max allowed freq. Then IPA does not know about it and makes
+wrong decisions. It's an issue for GPUs (but CPUs also) which can
+consume big power at higher freq. For example to limit this 6W into
+3W, simple freq write via sysfs is enough, but IPA completely is not
+aware of that (as you can see in the code).
+
+The sysfs interface for GPU:
+$ cat /sys/class/devfreq/<device>/available_frequencies
+400000000 600000000 800000000 1000000000
+
+$ echo 600000000 > /sys/class/devfreq/<device>/max_freq
+$ cat /sys/class/devfreq/<device>/max_freq
+600000000
+
+IMHO is not an issue of IPA, because DTPM might suffer for this
+missing 'user write' information as well. It's just missing
+design feature, to provide that user information further to the
+other frameworks or governors.
+
+Regards,
+Lukasz
+
+[1] 
+https://elixir.bootlin.com/linux/latest/source/drivers/thermal/gov_power_allocator.c#L458
 
