@@ -2,149 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E0C321C8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8B0321C6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhBVQNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:13:00 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55642 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231735AbhBVQKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:10:37 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11MG7KcC093869;
-        Mon, 22 Feb 2021 11:09:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to : sender; s=pp1;
- bh=e10sRKXrRQP/yyKgNz/7fjY2pJYcOYdrb1QU5xWU+X8=;
- b=AWekrGFUH8yq/xRHBanJ81XgiKOGe8NYXEaf+zqaZ1cFsDTYPqCs5S39EWaJWAdBKC9/
- hlhcc51lsIf38Qp5rSUlQIVD1F3j43vKp7ohzX5R3kQHztAFqWEGg+kp2umlZ/WT+yeI
- 7HDjsRvlr3Hk94AaeTH4UjCtUWcezsXNUwY7MczAz9lpcD6U/PFeUZ1mA9I4sjwm/imE
- XFBMlqNucHdOpFk+WgR1Ughlxnue8nCrME6U7V0BCu+aTqX/Ls8QdTF9NbbUzSfQL/fq
- GSMixXvQ95h4XWm5NlQip1ojxXgrfz6y15OrIPlToiPsMG8sOEtVrQIsSD/rsWNGCIKI CA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36vfsq89ge-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Feb 2021 11:09:29 -0500
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11MG893V113711;
-        Mon, 22 Feb 2021 11:08:42 -0500
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36vfsq87fe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Feb 2021 11:08:17 -0500
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11MG4Xo0031127;
-        Mon, 22 Feb 2021 16:04:33 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04fra.de.ibm.com with ESMTP id 36tt288xgb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Feb 2021 16:04:33 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11MG4Ike37618064
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Feb 2021 16:04:18 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 788DF4C04A;
-        Mon, 22 Feb 2021 16:04:30 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 667864C046;
-        Mon, 22 Feb 2021 16:04:30 +0000 (GMT)
-Received: from t480-pf1aa2c2.fritz.box (unknown [9.145.72.151])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 22 Feb 2021 16:04:30 +0000 (GMT)
-Received: from bblock by t480-pf1aa2c2.fritz.box with local (Exim 4.94)
-        (envelope-from <bblock@linux.ibm.com>)
-        id 1lEDhF-0009vS-Qf; Mon, 22 Feb 2021 17:04:29 +0100
-Date:   Mon, 22 Feb 2021 17:04:29 +0100
-From:   Benjamin Block <bblock@linux.ibm.com>
-To:     Romain Perier <romain.perier@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com,
-        Steffen Maier <maier@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/20] scsi: zfcp: Manual replacement of the deprecated
- strlcpy() with return values
-Message-ID: <YDPWDU7iVTY7aY2h@t480-pf1aa2c2.linux.ibm.com>
-References: <20210222151231.22572-1-romain.perier@gmail.com>
- <20210222151231.22572-14-romain.perier@gmail.com>
+        id S231351AbhBVQJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:09:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39558 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231649AbhBVQGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:06:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614009917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fymWnnsJD9yF0KQNLsNQHmDiy5LI+Jp/eC+pUhdETqg=;
+        b=Mp7Bpn1ZgI/7N6RkHbPs4X/sFZCgDuoQZZUGyqGIpXabF5OX+SFPdoEPKuXIPJ6sQbIx1H
+        8ql2HRLV0xKd/P8wXFM6yWDZoL4ovfFOUr8VBGPiatlQodPGDTKSCSC2nIIJ1qMhKn/hoB
+        V34fL+EKXysVgBiQx9qfIzMYCuAODsc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E8B16AFD8;
+        Mon, 22 Feb 2021 16:05:16 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 17:05:16 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk-rework 08/14] printk: add syslog_lock
+Message-ID: <YDPWPI4aZat+D1DE@alley>
+References: <20210218081817.28849-1-john.ogness@linutronix.de>
+ <20210218081817.28849-9-john.ogness@linutronix.de>
+ <YC+9gc/IR8PzeIFf@alley>
+ <875z2o15ha.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210222151231.22572-14-romain.perier@gmail.com>
-Sender: Benjamin Block <bblock@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-22_03:2021-02-22,2021-02-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 bulkscore=0 suspectscore=0 clxscore=1011 mlxlogscore=999
- adultscore=0 phishscore=0 impostorscore=0 mlxscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102220147
+In-Reply-To: <875z2o15ha.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 04:12:24PM +0100, Romain Perier wrote:
-> The strlcpy() reads the entire source buffer first, it is dangerous if
-> the source buffer lenght is unbounded or possibility non NULL-terminated.
-> It can lead to linear read overflows, crashes, etc...
+On Fri 2021-02-19 15:45:21, John Ogness wrote:
+> On 2021-02-19, Petr Mladek <pmladek@suse.com> wrote:
+> >> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> >> index 20c21a25143d..401df370832b 100644
+> >> --- a/kernel/printk/printk.c
+> >> +++ b/kernel/printk/printk.c
+> >> +/* Return a consistent copy of @syslog_seq. */
+> >> +static u64 read_syslog_seq_irq(void)
+> >> +{
+> >> +	u64 seq;
+> >> +
+> >> +	raw_spin_lock_irq(&syslog_lock);
+> >> +	seq = syslog_seq;
+> >> +	raw_spin_unlock_irq(&syslog_lock);
+> >
+> > Is there any particular reason to disable interrupts here?
+> >
+> > It would make sense only when the lock could be taken in IRQ
+> > context. Then we would need to always disable interrupts when
+> > the lock is taken. And if it is taken in IRQ context, we would
+> > need to safe flags.
 > 
-> As recommended in the deprecated interfaces [1], it should be replaced
-> by strscpy.
+> All other instances of locking @syslog_lock are done with interrupts
+> disabled. And we have:
 > 
-> This commit replaces all calls to strlcpy that handle the return values
-> by the corresponding strscpy calls with new handling of the return
-> values (as it is quite different between the two functions).
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-> 
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> ---
->  drivers/s390/scsi/zfcp_fc.c |    8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/s390/scsi/zfcp_fc.c b/drivers/s390/scsi/zfcp_fc.c
-> index d24cafe02708..8a65241011b9 100644
-> --- a/drivers/s390/scsi/zfcp_fc.c
-> +++ b/drivers/s390/scsi/zfcp_fc.c
-> @@ -877,14 +877,16 @@ static void zfcp_fc_rspn(struct zfcp_adapter *adapter,
->  	struct zfcp_fsf_ct_els *ct_els = &fc_req->ct_els;
->  	struct zfcp_fc_rspn_req *rspn_req = &fc_req->u.rspn.req;
->  	struct fc_ct_hdr *rspn_rsp = &fc_req->u.rspn.rsp;
-> -	int ret, len;
-> +	int ret;
-> +	ssize_t len;
->  
->  	zfcp_fc_ct_ns_init(&rspn_req->ct_hdr, FC_NS_RSPN_ID,
->  			   FC_SYMBOLIC_NAME_SIZE);
->  	hton24(rspn_req->rspn.fr_fid.fp_fid, fc_host_port_id(shost));
-> -	len = strlcpy(rspn_req->rspn.fr_name, fc_host_symbolic_name(shost),
-> +	len = strscpy(rspn_req->rspn.fr_name, fc_host_symbolic_name(shost),
->  		      FC_SYMBOLIC_NAME_SIZE);
-> -	rspn_req->rspn.fr_name_len = len;
-> +	if (len != -E2BIG)
-> +		rspn_req->rspn.fr_name_len = len;
+> register_console()
+>   logbuf_lock_irqsave()
+>     raw_spin_lock(&syslog_lock)
 
-That is a bug. Leaving `rspn.fr_name_len` uninitialized defeats the
-purpose of sending a RSPN.
+I see. We should revisit this after removing logbuf_lock and
+printk_safe context.
 
-How about:
-	if (len == -E2BIG)
-		rspn_req->rspn.fr_name_len = FC_SYMBOLIC_NAME_SIZE - 1;
-	else
-		rspn_req->rspn.fr_name_len = len;
+> Looking back through history, I found that locking of the "console lock"
+> in register_console() was changed from spin_lock_irq() to
+> spin_lock_irqsave() for 2.3.15pre1 [0]. The only reason I can find why
+> that was done is because sparc64 was regstering its console in a PROM
+> callback (the comments there: "Pretty sick eh?").
 
->  
->  	sg_init_one(&fc_req->sg_req, rspn_req, sizeof(*rspn_req));
->  	sg_init_one(&fc_req->sg_rsp, rspn_rsp, sizeof(*rspn_rsp));
-> 
+Note that console_lock was a spinlock in 2.3.15.pre1. I see it defined
+in kernel/printk.c as:
 
--- 
-Best Regards, Benjamin Block  / Linux on IBM Z Kernel Development / IBM Systems
-IBM Deutschland Research & Development GmbH    /    https://www.ibm.com/privacy
-Vorsitz. AufsR.: Gregor Pillen         /        Geschäftsführung: Dirk Wittkopp
-Sitz der Gesellschaft: Böblingen / Registergericht: AmtsG Stuttgart, HRB 243294
+spinlock_t console_lock = SPIN_LOCK_UNLOCKED;
+
+But it is a sleeping semaphore these days. As a result,
+register_console(), as it is now, must not be called in an interrupt context.
+
+Best Regards,
+Petr
