@@ -2,80 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84743213EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A20543213F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhBVKPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:15:04 -0500
-Received: from raptor.unsafe.ru ([5.9.43.93]:58216 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230375AbhBVKMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:12:30 -0500
-Received: from example.org (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id 3E86D209FA;
-        Mon, 22 Feb 2021 10:11:46 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 11:11:41 +0100
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     LKML <linux-kernel@vger.kernel.org>, io-uring@vger.kernel.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v6 3/7] Reimplement RLIMIT_NPROC on top of ucounts
-Message-ID: <20210222101141.uve6hnftsakf4u7n@example.org>
-References: <cover.1613392826.git.gladkov.alexey@gmail.com>
- <72fdcd154bec7e0dfad090f1af65ddac1e767451.1613392826.git.gladkov.alexey@gmail.com>
- <72214339-57fc-e47f-bb57-d1b39c69e38e@kernel.dk>
+        id S230386AbhBVKQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:16:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230303AbhBVKQq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 05:16:46 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CE4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:16:05 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id s16so7431196plr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:16:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DEyKy5mx0dMuKE/TR0/MfCGJrJdUfSMNm7rgBnd8nC8=;
+        b=ka5Mjfco5GPDZIy/EYuD06J9MmfbGkHtLRu76/NxtzUCZEMfkXQNn0pWhUCogc9+LI
+         gynf0G3viWhdlJyBI9qNoMOUHYiA/FK8Pxy/QjwB1WyLN+Zw9OJUN8glc+Bg+T9mw1Ey
+         RAST6dMBPCAvMMaPF3ovRtqMeAMybefqwXkQ56bqbQZuOkr4REsv8m4+pRZahyd50JvH
+         DZWuHJpZ6rdw8hKxdkssclEllaGLdwGTHu22Pah5GXq9pZhqKcXsYrDx6ccUYVGg+VHd
+         i1vrmwSugLBcFUjphpQxYVoOv5WhhwJlchfSi51tv4CaSR9TJU5dBmo592ujRaSNdz+E
+         /Ncw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DEyKy5mx0dMuKE/TR0/MfCGJrJdUfSMNm7rgBnd8nC8=;
+        b=dtz4JgPTk4/AngVzJsaR/QrVyQcaKEjGBa5tQgacCEWYOzL2bKEp9q1NZYB8+pcmBM
+         3Ti5nHRLCP4YXCbQR28km/p4xpEGZCOMF8gZhx/a3C3ixpHYnVHxd65VGGzfhgLiU2ne
+         sKFwsjTTq1M5KxJXiW599//X3gKl/vQQ4Asnf8BRVHC9w6ldpRRbN+9tP11HFakU4CHv
+         KRoCvOD6o8P37t2bGDCFzYpYsD9ybfn/z/+2zlQwIs9LmkGYvVHFbogUvPMtLVZwm7lC
+         1o56XM2mG548AEnlVBIPSDcSo8c1dBourNl/OY19sbNxICMTgiXnnrKJi9e2adlJvRRf
+         ULcA==
+X-Gm-Message-State: AOAM5325LBqOtG0YItMsKTwvHVd57eQaHxwJ5ofxVuooJx9ewwwEOp/6
+        dutlxDxa/4rZ3ag+6PdiFy8=
+X-Google-Smtp-Source: ABdhPJwD2XP8n1aSRMGIyeJRfQ7R8q+ukTW9z6ndbeinSJuxwIHLPliSjfJ11aMk5dx5le7NNU4hxg==
+X-Received: by 2002:a17:902:8b89:b029:e3:dbc0:bc4c with SMTP id ay9-20020a1709028b89b02900e3dbc0bc4cmr9725220plb.5.1613988965368;
+        Mon, 22 Feb 2021 02:16:05 -0800 (PST)
+Received: from localhost.localdomain ([49.36.150.223])
+        by smtp.gmail.com with ESMTPSA id mp20sm17229814pjb.34.2021.02.22.02.16.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 02:16:04 -0800 (PST)
+From:   Amrit Khera <amritkhera98@gmail.com>
+To:     gregkh@linuxfoundation.org, lee.jones@linaro.org,
+        johannes@sipsolutions.net, mail@anirudhrb.com, arnd@arndb.de,
+        amritkhera98@gmail.com, memxor@gmail.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] staging: wimax: Fix block comment style issue in stack.c
+Date:   Mon, 22 Feb 2021 15:45:42 +0530
+Message-Id: <20210222101541.2571-1-amritkhera98@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <72214339-57fc-e47f-bb57-d1b39c69e38e@kernel.dk>
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 22 Feb 2021 10:11:46 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 21, 2021 at 04:38:10PM -0700, Jens Axboe wrote:
-> On 2/15/21 5:41 AM, Alexey Gladkov wrote:
-> > diff --git a/fs/io-wq.c b/fs/io-wq.c
-> > index a564f36e260c..5b6940c90c61 100644
-> > --- a/fs/io-wq.c
-> > +++ b/fs/io-wq.c
-> > @@ -1090,10 +1091,7 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
-> >  		wqe->node = alloc_node;
-> >  		wqe->acct[IO_WQ_ACCT_BOUND].max_workers = bounded;
-> >  		atomic_set(&wqe->acct[IO_WQ_ACCT_BOUND].nr_running, 0);
-> > -		if (wq->user) {
-> > -			wqe->acct[IO_WQ_ACCT_UNBOUND].max_workers =
-> > -					task_rlimit(current, RLIMIT_NPROC);
-> > -		}
-> > +		wqe->acct[IO_WQ_ACCT_UNBOUND].max_workers = task_rlimit(current, RLIMIT_NPROC);
-> 
-> This doesn't look like an equivalent transformation. But that may be
-> moot if we merge the io_uring-worker.v3 series, as then you would not
-> have to touch io-wq at all.
+This change fixes a checkpatch warning for "Block comments use
+* on subsequent lines". It removes the unnecessary block comment.
 
-In the current code the wq->user is always set to current_user():
+Signed-off-by: Amrit Khera <amritkhera98@gmail.com>
+---
+ Changes in v3:
+ - Updated commit message, as suggested by Greg KH <gregkh@linuxfoundation.org>
+ - Removed the whole comment, as suggested by Dan Carpenter <dan.carpenter@oracle.com>
 
-io_uring_create [1]
-`- io_sq_offload_create
-   `- io_init_wq_offload [2]
-      `-io_wq_create [3]
+ drivers/staging/wimax/stack.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/io_uring.c#n9752
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/io_uring.c#n8107
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/io-wq.c#n1070
-
-So, specifying max_workers always happens.
-
+diff --git a/drivers/staging/wimax/stack.c b/drivers/staging/wimax/stack.c
+index ace24a6dfd2d..0d2e3d5f3691 100644
+--- a/drivers/staging/wimax/stack.c
++++ b/drivers/staging/wimax/stack.c
+@@ -55,20 +55,6 @@ MODULE_PARM_DESC(debug,
+ 		 "are the different debug submodules and VALUE are the "
+ 		 "initial debug value to set.");
+ 
+-/*
+- * Authoritative source for the RE_STATE_CHANGE attribute policy
+- *
+- * We don't really use it here, but /me likes to keep the definition
+- * close to where the data is generated.
+- */
+-/*
+-static const struct nla_policy wimax_gnl_re_status_change[WIMAX_GNL_ATTR_MAX + 1] = {
+-	[WIMAX_GNL_STCH_STATE_OLD] = { .type = NLA_U8 },
+-	[WIMAX_GNL_STCH_STATE_NEW] = { .type = NLA_U8 },
+-};
+-*/
+-
+-
+ /*
+  * Allocate a Report State Change message
+  *
 -- 
-Rgrds, legion
+2.20.1
 
