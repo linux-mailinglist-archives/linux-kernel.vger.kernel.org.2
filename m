@@ -2,273 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE3B32123C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1786C32123D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhBVIsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 03:48:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30393 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229902AbhBVIsY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:48:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613983617;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BRBKKPTDQQSllyCSH6Sx8yz6rlC3+XTAEeNCR0qemEM=;
-        b=YYwGLuw5xnY/L30V2FocN0w5UaxtyyUdPk9+kacrMN91IDmJUExqhwkY+X4Cd2z1pmZjAr
-        Y2EWz5+b6uFtQhaVhMqe++317Pc3aBDllawiCi1kpxdE15E6/JXMbbZ+LHS0igTt6Gt3mF
-        SE0tKuYpH2TVv3JxpXVOKuIuGX+cmeI=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-184-T4-G7LrfNZu4d20-E7FNOg-1; Mon, 22 Feb 2021 03:46:55 -0500
-X-MC-Unique: T4-G7LrfNZu4d20-E7FNOg-1
-Received: by mail-wm1-f71.google.com with SMTP id r21so2359930wmq.7
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 00:46:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BRBKKPTDQQSllyCSH6Sx8yz6rlC3+XTAEeNCR0qemEM=;
-        b=SWvHctT6oLMu2F4nzm/NCEwZyKYe9rgkJBOQltDAo3QI6F9Vw+CH1O3ENgtTC2yHAk
-         3fJdlfSBT2FmdjS0prx0lGX1iBkW/0ZcmnJdWkGhq63HmtDIEpszmEzVdTpMx+9ktEZN
-         D7BRZgUa93R6NyvGcj24FCMAXF/nqlyRy7iSizusZkYuxRn5Hzw0FzHW1HRbfi5HSrwn
-         h/cKuwTxuEfqkuey4UXDXfQCXj1N7lNbqtjGe9gpFsVeKAoCGCvJFbUZnhsjjz4Qm947
-         2S8ZOnnyl2psynMQWGS+1lAYe/e9Bfxzt0K6xj1WTzw3OIpjJUy8hNoK4xtD/ps5CjEe
-         oXYw==
-X-Gm-Message-State: AOAM532XBenmU6SD4XqKWKUeP2dy4WmUUtMbS4MhDzONquva8GbWnIxu
-        IvWFbzLTGPxhjxwKv4+BUGm8V56D8sFe9rKjup/XsopcaAD4r3WF7ZciBTQBH8CuswTF54DZCcp
-        2WadBvHU0ulh2fO50cWDE5Z+V
-X-Received: by 2002:adf:fb03:: with SMTP id c3mr20643868wrr.395.1613983614629;
-        Mon, 22 Feb 2021 00:46:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxso7Sr1Tgz8UcTmO5FG5UogUyBcOr7mfqVBOmevYIAsC4BHg0yeyu1Ro/ag5hcPy9v1x+WZw==
-X-Received: by 2002:adf:fb03:: with SMTP id c3mr20643853wrr.395.1613983614420;
-        Mon, 22 Feb 2021 00:46:54 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id f7sm28032616wre.78.2021.02.22.00.46.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 00:46:54 -0800 (PST)
-Date:   Mon, 22 Feb 2021 09:46:51 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
-        lulu@redhat.com, rdunlap@infradead.org
-Subject: Re: [PATCH V4 1/2] vdpa: set the virtqueue num during register
-Message-ID: <20210222084651.rj5q2q7k2kz7h7ic@steredhat>
-References: <20210220084629.282432-1-jasowang@redhat.com>
- <20210220084629.282432-2-jasowang@redhat.com>
+        id S230106AbhBVIse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:48:34 -0500
+Received: from mail-eopbgr690056.outbound.protection.outlook.com ([40.107.69.56]:30354
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230060AbhBVIs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 03:48:27 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i17Hykr5ZyTrWA/hrxRvk39Trvsbp90ZcldmamKE2zgkm+lCaaPcV9BN+4fLMiXassPaN5jIpqT9h/oB8xenhdBAL27CTGCzdxybKDMH+eozQhggCsjV0YLE/ERsrXikv4LuNMiEIGBDYlWrC5AilIqDa+atp22vMJBO6XuxdNaZOfRgx3eFzmBnA5JQNPoOg/r8nNS3sMcF9y4ilrzY9UE955BvG7wyzm0G7nwF+I4NAXqg4VkI9HeBTB/1O3BwZ3WbryypkR2toKIT+7yGEKG+idlwAMQIbFLu/+9aa+xiAX+pUV8Nr+EneRwsaDV437rVDnC3e/EDfqrlD5wMhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mmLMXEyeKFpgCU/tGUHhLhmVXnLHKxoeOimHwef8gMY=;
+ b=Es9XNZHFeAsQL4TfMVQQzCp9/Z1gCbThnQUezqiAe1SFNTulgUuRWD7/1ZWDXSN2G6rxz8ai/jSuifdYhQJHaCJOAReESUGwsSBYmM7NhMPBlAjyVhkEe0N5h6y1H78JE1smbXwgkwYt1dWJyPNoRLiUO8M/qGi43xruYjzNA/0lzEGxeMbYH8B1BJ5gzK3H5hJd+sL567U4BXI0yuCsxRWywnzRiiYjz0wducupYbJxiKtfdZJoFOKa6lJ900iiKET/1pL7Smgfy06Oqn4nSz0PYGpT8PnvUA/U+KOxWU/Q3M6WWxVgg+gQP/vevFP/ZGNey7KyqICtZdBzcRuSzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mmLMXEyeKFpgCU/tGUHhLhmVXnLHKxoeOimHwef8gMY=;
+ b=FWDeP/gpZ9YsLPloy+fYgYjzC8mbgXdMAgmJ7nAp4BHNoSKG8Vve4A1e4dhgzchkYfrL+i9hTlBp2aBXcKpIjNHaQP2L2LeWmnW/pdVmGRcWmZ2aumDrbTx71hbAeEc1A+iyZExmNpaRaVKKfI0Dj8EHXnT/6GZIMyQEAqXERQg=
+Received: from DM5PR10CA0018.namprd10.prod.outlook.com (2603:10b6:4:2::28) by
+ DM6PR02MB6587.namprd02.prod.outlook.com (2603:10b6:5:220::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3868.32; Mon, 22 Feb 2021 08:47:37 +0000
+Received: from DM3NAM02FT010.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:4:2:cafe::f4) by DM5PR10CA0018.outlook.office365.com
+ (2603:10b6:4:2::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend
+ Transport; Mon, 22 Feb 2021 08:47:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT010.mail.protection.outlook.com (10.13.5.124) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3868.27 via Frontend Transport; Mon, 22 Feb 2021 08:47:37 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 22 Feb 2021 00:47:36 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Mon, 22 Feb 2021 00:47:36 -0800
+Envelope-to: bharat.kumar.gogada@xilinx.com,
+ linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ bhelgaas@google.com
+Received: from [10.140.9.2] (port=33774 helo=xhdbharatku40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <bharat.kumar.gogada@xilinx.com>)
+        id 1lE6sR-0007zZ-S1; Mon, 22 Feb 2021 00:47:36 -0800
+From:   Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+To:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <bhelgaas@google.com>,
+        Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+Subject: [PATCH v3 1/2] PCI: xilinx-nwl: Enable coherent PCIe DMA traffic using CCI
+Date:   Mon, 22 Feb 2021 14:17:31 +0530
+Message-ID: <20210222084732.21521-1-bharat.kumar.gogada@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210220084629.282432-2-jasowang@redhat.com>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c96fbd61-02c4-497c-3f7e-08d8d70e8141
+X-MS-TrafficTypeDiagnostic: DM6PR02MB6587:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB658746D465E144826E1F5E96A5819@DM6PR02MB6587.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WUJuP3WUM+wayvysI2mFbot5mS+OJXCDtMk+ddNhPr6vuIO6T7uHAR1y/Nl3bWg31xxR2HEQqdcoxN0ciICL3onMabfXIYt+v73i3DgnBYZpJBtrGpsMRI/is6o0RPakicpURnNH3FoCYf4WN2WsxrXAw53ytVcmstnPG+cXQ8RMRcRIiGvpUGZzAqmVErKEj0DQXB4QwAZAl9XKOIMq+Z27VAWdiE1ETjNG6Qh1tou8fndeKs8tLoTI4p9Yi69rj2H4Mnbj2E5E5PtP7xhJROBCYC6/7T/QnaIHxFOWIhV1qdXShius8tMBv/hr+E9v4florQSPB8me9EYGUPFUnemw9qpEaDwh5MUHVxPTCkVdhqFzwY2WFqVdzwoYz3zFM9j7dNjSzwL1J7Xv6V+JxnhPFau2GpXxtzDSKojCtlFRsTS5sm29ZpPMDgHwv/1vksVrvRzdQ9wVBF8z340tuJplRuX/Yc1Y0vrn8riA98dLF1n0pur6Yz+Far/as+7Btdvytb70CaTrBl/e/X4wrDVdW0IV8AoRPOTC0lnq9kIK8Z3pzzD+FvtluSWjtjYaqvScQJTozm8ggykEjgFZQgYa6ionWhPoOuMizypP7jaYXqobtEH9l4A3z3LDgBw5JejCNk5ygB8UGcSPA4UUVCEPn0ukOv46HRIefxDtmQZzNucazcosUvedLXxOtzsZXBGRNZg4wKIf/gG/VdLxjD28O8BZ5U77REAKx3otuBN6T+mm1N2Xb4li3W36AZ7iGsuDNh0vPqWAdoL2Y5Qc9g==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(346002)(396003)(46966006)(36840700001)(82740400003)(356005)(478600001)(7636003)(47076005)(82310400003)(8676002)(26005)(8936002)(4326008)(6666004)(36756003)(54906003)(7696005)(103116003)(186003)(9786002)(110136005)(107886003)(966005)(5660300002)(2616005)(36860700001)(1076003)(336012)(70206006)(2906002)(426003)(70586007)(36906005)(316002)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2021 08:47:37.0076
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c96fbd61-02c4-497c-3f7e-08d8d70e8141
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT010.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6587
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 04:46:28PM +0800, Jason Wang wrote:
->This patch delay the queue number setting to vDPA device
->registering. This allows us to probe the virtqueue numbers between
->device allocation and registering.
->
->Signed-off-by: Jason Wang <jasowang@redhat.com>
->---
-> drivers/vdpa/ifcvf/ifcvf_main.c      |  5 ++---
-> drivers/vdpa/mlx5/net/mlx5_vnet.c    |  4 ++--
-> drivers/vdpa/vdpa.c                  | 18 ++++++++++--------
-> drivers/vdpa/vdpa_sim/vdpa_sim.c     |  2 +-
-> drivers/vdpa/vdpa_sim/vdpa_sim_net.c |  2 +-
-> include/linux/vdpa.h                 | 10 +++++-----
-> 6 files changed, 21 insertions(+), 20 deletions(-)
+Add support for routing PCIe DMA traffic coherently when
+Cache Coherent Interconnect (CCI) is enabled in the system.
+The "dma-coherent" property is used to determine if CCI is enabled
+or not.
+Refer to https://developer.arm.com/documentation/ddi0470/k/preface
+for the CCI specification.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+---
+ drivers/pci/controller/pcie-xilinx-nwl.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
->
->diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
->index 7c8bbfcf6c3e..d555a6a5d1ba 100644
->--- a/drivers/vdpa/ifcvf/ifcvf_main.c
->+++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->@@ -431,8 +431,7 @@ static int ifcvf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> 	}
->
-> 	adapter = vdpa_alloc_device(struct ifcvf_adapter, vdpa,
->-				    dev, &ifc_vdpa_ops,
->-				    IFCVF_MAX_QUEUE_PAIRS * 2, NULL);
->+				    dev, &ifc_vdpa_ops, NULL);
-> 	if (adapter == NULL) {
-> 		IFCVF_ERR(pdev, "Failed to allocate vDPA structure");
-> 		return -ENOMEM;
->@@ -456,7 +455,7 @@ static int ifcvf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> 	for (i = 0; i < IFCVF_MAX_QUEUE_PAIRS * 2; i++)
-> 		vf->vring[i].irq = -EINVAL;
->
->-	ret = vdpa_register_device(&adapter->vdpa);
->+	ret = vdpa_register_device(&adapter->vdpa, IFCVF_MAX_QUEUE_PAIRS * 2);
-> 	if (ret) {
-> 		IFCVF_ERR(pdev, "Failed to register ifcvf to vdpa bus");
-> 		goto err;
->diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->index 10e9b09932eb..71397fdafa6a 100644
->--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->@@ -1982,7 +1982,7 @@ static int mlx5v_probe(struct auxiliary_device *adev,
-> 	max_vqs = min_t(u32, max_vqs, MLX5_MAX_SUPPORTED_VQS);
->
-> 	ndev = vdpa_alloc_device(struct mlx5_vdpa_net, mvdev.vdev, mdev->device, &mlx5_vdpa_ops,
->-				 2 * mlx5_vdpa_max_qps(max_vqs), NULL);
->+				 NULL);
-> 	if (IS_ERR(ndev))
-> 		return PTR_ERR(ndev);
->
->@@ -2009,7 +2009,7 @@ static int mlx5v_probe(struct auxiliary_device *adev,
-> 	if (err)
-> 		goto err_res;
->
->-	err = vdpa_register_device(&mvdev->vdev);
->+	err = vdpa_register_device(&mvdev->vdev, 2 * mlx5_vdpa_max_qps(max_vqs));
-> 	if (err)
-> 		goto err_reg;
->
->diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
->index 3d997b389345..55a15c51e243 100644
->--- a/drivers/vdpa/vdpa.c
->+++ b/drivers/vdpa/vdpa.c
->@@ -69,7 +69,6 @@ static void vdpa_release_dev(struct device *d)
->  * initialized but before registered.
->  * @parent: the parent device
->  * @config: the bus operations that is supported by this device
->- * @nvqs: number of virtqueues supported by this device
->  * @size: size of the parent structure that contains private data
->  * @name: name of the vdpa device; optional.
->  *
->@@ -81,7 +80,7 @@ static void vdpa_release_dev(struct device *d)
->  */
-> struct vdpa_device *__vdpa_alloc_device(struct device *parent,
-> 					const struct vdpa_config_ops *config,
->-					int nvqs, size_t size, const char *name)
->+					size_t size, const char *name)
-> {
-> 	struct vdpa_device *vdev;
-> 	int err = -EINVAL;
->@@ -107,7 +106,6 @@ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
-> 	vdev->index = err;
-> 	vdev->config = config;
-> 	vdev->features_valid = false;
->-	vdev->nvqs = nvqs;
->
-> 	if (name)
-> 		err = dev_set_name(&vdev->dev, "%s", name);
->@@ -136,10 +134,12 @@ static int vdpa_name_match(struct device *dev, const void *data)
-> 	return (strcmp(dev_name(&vdev->dev), data) == 0);
-> }
->
->-static int __vdpa_register_device(struct vdpa_device *vdev)
->+static int __vdpa_register_device(struct vdpa_device *vdev, int nvqs)
-> {
-> 	struct device *dev;
->
->+	vdev->nvqs = nvqs;
->+
-> 	lockdep_assert_held(&vdpa_dev_mutex);
-> 	dev = bus_find_device(&vdpa_bus, NULL, dev_name(&vdev->dev), vdpa_name_match);
-> 	if (dev) {
->@@ -155,15 +155,16 @@ static int __vdpa_register_device(struct vdpa_device *vdev)
->  * Caller must invoke this routine in the management device dev_add()
->  * callback after setting up valid mgmtdev for this vdpa device.
->  * @vdev: the vdpa device to be registered to vDPA bus
->+ * @nvqs: number of virtqueues supported by this device
->  *
->  * Returns an error when fail to add device to vDPA bus
->  */
->-int _vdpa_register_device(struct vdpa_device *vdev)
->+int _vdpa_register_device(struct vdpa_device *vdev, int nvqs)
-> {
-> 	if (!vdev->mdev)
-> 		return -EINVAL;
->
->-	return __vdpa_register_device(vdev);
->+	return __vdpa_register_device(vdev, nvqs);
-> }
-> EXPORT_SYMBOL_GPL(_vdpa_register_device);
->
->@@ -171,15 +172,16 @@ EXPORT_SYMBOL_GPL(_vdpa_register_device);
->  * vdpa_register_device - register a vDPA device
->  * Callers must have a succeed call of vdpa_alloc_device() before.
->  * @vdev: the vdpa device to be registered to vDPA bus
->+ * @nvqs: number of virtqueues supported by this device
->  *
->  * Returns an error when fail to add to vDPA bus
->  */
->-int vdpa_register_device(struct vdpa_device *vdev)
->+int vdpa_register_device(struct vdpa_device *vdev, int nvqs)
-> {
-> 	int err;
->
-> 	mutex_lock(&vdpa_dev_mutex);
->-	err = __vdpa_register_device(vdev);
->+	err = __vdpa_register_device(vdev, nvqs);
-> 	mutex_unlock(&vdpa_dev_mutex);
-> 	return err;
-> }
->diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
->index d5942842432d..5b6b2f87d40c 100644
->--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
->+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
->@@ -235,7 +235,7 @@ struct vdpasim *vdpasim_create(struct vdpasim_dev_attr *dev_attr)
-> 		ops = &vdpasim_config_ops;
->
-> 	vdpasim = vdpa_alloc_device(struct vdpasim, vdpa, NULL, ops,
->-				    dev_attr->nvqs, dev_attr->name);
->+				    dev_attr->name);
-> 	if (!vdpasim)
-> 		goto err_alloc;
->
->diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
->index d344c5b7c914..702be74877d2 100644
->--- a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
->+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
->@@ -147,7 +147,7 @@ static int vdpasim_net_dev_add(struct vdpa_mgmt_dev *mdev, const char *name)
-> 	if (IS_ERR(simdev))
-> 		return PTR_ERR(simdev);
->
->-	ret = _vdpa_register_device(&simdev->vdpa);
->+	ret = _vdpa_register_device(&simdev->vdpa, VDPASIM_NET_VQ_NUM);
-> 	if (ret)
-> 		goto reg_err;
->
->diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
->index 4ab5494503a8..15fa085fab05 100644
->--- a/include/linux/vdpa.h
->+++ b/include/linux/vdpa.h
->@@ -250,20 +250,20 @@ struct vdpa_config_ops {
->
-> struct vdpa_device *__vdpa_alloc_device(struct device *parent,
-> 					const struct vdpa_config_ops *config,
->-					int nvqs, size_t size, const char *name);
->+					size_t size, const char *name);
->
->-#define vdpa_alloc_device(dev_struct, member, parent, config, nvqs, name)   \
->+#define vdpa_alloc_device(dev_struct, member, parent, config, name)   \
-> 			  container_of(__vdpa_alloc_device( \
->-				       parent, config, nvqs, \
->+				       parent, config, \
-> 				       sizeof(dev_struct) + \
-> 				       BUILD_BUG_ON_ZERO(offsetof( \
-> 				       dev_struct, member)), name), \
-> 				       dev_struct, member)
->
->-int vdpa_register_device(struct vdpa_device *vdev);
->+int vdpa_register_device(struct vdpa_device *vdev, int nvqs);
-> void vdpa_unregister_device(struct vdpa_device *vdev);
->
->-int _vdpa_register_device(struct vdpa_device *vdev);
->+int _vdpa_register_device(struct vdpa_device *vdev, int nvqs);
-> void _vdpa_unregister_device(struct vdpa_device *vdev);
->
-> /**
->-- 
->2.25.1
->
+diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
+index 07e36661bbc2..8689311c5ef6 100644
+--- a/drivers/pci/controller/pcie-xilinx-nwl.c
++++ b/drivers/pci/controller/pcie-xilinx-nwl.c
+@@ -26,6 +26,7 @@
+ 
+ /* Bridge core config registers */
+ #define BRCFG_PCIE_RX0			0x00000000
++#define BRCFG_PCIE_RX1			0x00000004
+ #define BRCFG_INTERRUPT			0x00000010
+ #define BRCFG_PCIE_RX_MSG_FILTER	0x00000020
+ 
+@@ -128,6 +129,7 @@
+ #define NWL_ECAM_VALUE_DEFAULT		12
+ 
+ #define CFG_DMA_REG_BAR			GENMASK(2, 0)
++#define CFG_PCIE_CACHE			GENMASK(7, 0)
+ 
+ #define INT_PCI_MSI_NR			(2 * 32)
+ 
+@@ -675,6 +677,11 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
+ 	nwl_bridge_writel(pcie, CFG_ENABLE_MSG_FILTER_MASK,
+ 			  BRCFG_PCIE_RX_MSG_FILTER);
+ 
++	/* This routes the PCIe DMA traffic to go through CCI path */
++	if (of_dma_is_coherent(dev->of_node))
++		nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, BRCFG_PCIE_RX1) |
++				  CFG_PCIE_CACHE, BRCFG_PCIE_RX1);
++
+ 	err = nwl_wait_for_link(pcie);
+ 	if (err)
+ 		return err;
+-- 
+2.17.1
 
