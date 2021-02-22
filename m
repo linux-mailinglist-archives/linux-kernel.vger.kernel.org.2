@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B051321662
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD78321665
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhBVMV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:21:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44828 "EHLO mail.kernel.org"
+        id S230380AbhBVMWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:22:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhBVMOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230297AbhBVMOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 07:14:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DB2964EF1;
-        Mon, 22 Feb 2021 12:13:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8A0264F02;
+        Mon, 22 Feb 2021 12:13:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996036;
-        bh=tEgMQRN5efLLeumv2XkB4L1vcBdaTZy6qxXvyImfRwI=;
+        s=korg; t=1613996039;
+        bh=uhTqBtJBa+ehkNDxV1CWg1OsblPV+Tzr8aKkq9A5S/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t50GhUA++QV6d2/PgttcvdWx1/7OyJ1H2SRcf0CA40CnanE8sfKuUzIGbTGTknHpO
-         V3LRj3KIeZ8foBTUREszypHqinG409RTVsPpqPDBM5fCK4iK77zftwacTI+qwsAKAz
-         1sxGVDfPQc9myaKhvpqTkfMSHSrdVMomaY6FcFCk=
+        b=QWl/DGlmbOgF749zs/oJekiSIvdxtR1vnB0rvTBBHwwdPavDdwVC7inQYxYwmkS//
+         OU4VvkLy7Yq2aWwojTXVXHwybj0KQHzszyikhalf6vX1wrw9+CoxGKKHYDMN+rW8xU
+         dXBS361JZX3oMlGrmY4XYd9OKhhsIkhQwHcg3EOQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eelco Chaudron <echaudro@redhat.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 13/29] net: openvswitch: fix TTL decrement exception action execution
-Date:   Mon, 22 Feb 2021 13:13:07 +0100
-Message-Id: <20210222121022.023081351@linuxfoundation.org>
+Subject: [PATCH 5.10 14/29] net: bridge: Fix a warning when del bridge sysfs
+Date:   Mon, 22 Feb 2021 13:13:08 +0100
+Message-Id: <20210222121022.132166826@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
 References: <20210222121019.444399883@linuxfoundation.org>
@@ -40,66 +42,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eelco Chaudron <echaudro@redhat.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 09d6217254c004f6237cc2c2bfe604af58e9a8c5 ]
+[ Upstream commit 989a1db06eb18ff605377eec87e18d795e0ec74b ]
 
-Currently, the exception actions are not processed correctly as the wrong
-dataset is passed. This change fixes this, including the misleading
-comment.
+I got a warining report:
 
-In addition, a check was added to make sure we work on an IPv4 packet,
-and not just assume if it's not IPv6 it's IPv4.
+br_sysfs_addbr: can't create group bridge4/bridge
+------------[ cut here ]------------
+sysfs group 'bridge' not found for kobject 'bridge4'
+WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group fs/sysfs/group.c:279 [inline]
+WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group+0x153/0x1b0 fs/sysfs/group.c:270
+Modules linked in: iptable_nat
+...
+Call Trace:
+  br_dev_delete+0x112/0x190 net/bridge/br_if.c:384
+  br_dev_newlink net/bridge/br_netlink.c:1381 [inline]
+  br_dev_newlink+0xdb/0x100 net/bridge/br_netlink.c:1362
+  __rtnl_newlink+0xe11/0x13f0 net/core/rtnetlink.c:3441
+  rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
+  rtnetlink_rcv_msg+0x385/0x980 net/core/rtnetlink.c:5562
+  netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2494
+  netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+  netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1330
+  netlink_sendmsg+0x793/0xc80 net/netlink/af_netlink.c:1919
+  sock_sendmsg_nosec net/socket.c:651 [inline]
+  sock_sendmsg+0x139/0x170 net/socket.c:671
+  ____sys_sendmsg+0x658/0x7d0 net/socket.c:2353
+  ___sys_sendmsg+0xf8/0x170 net/socket.c:2407
+  __sys_sendmsg+0xd3/0x190 net/socket.c:2440
+  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-This was all tested using OVS with patch,
-https://patchwork.ozlabs.org/project/openvswitch/list/?series=21639,
-applied and sending packets with a TTL of 1 (and 0), both with IPv4
-and IPv6.
+In br_device_event(), if the bridge sysfs fails to be added,
+br_device_event() should return error. This can prevent warining
+when removing bridge sysfs that do not exist.
 
-Fixes: 69929d4c49e1 ("net: openvswitch: fix TTL decrement action netlink message format")
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-Link: https://lore.kernel.org/r/160733569860.3007.12938188180387116741.stgit@wsfd-netdev64.ntdv.lab.eng.bos.redhat.com
+Fixes: bb900b27a2f4 ("bridge: allow creating bridge devices with netlink")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Tested-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Link: https://lore.kernel.org/r/20201211122921.40386-1-wanghai38@huawei.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/openvswitch/actions.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ net/bridge/br.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
-index c3a664871cb5a..e8902a7e60f24 100644
---- a/net/openvswitch/actions.c
-+++ b/net/openvswitch/actions.c
-@@ -959,16 +959,13 @@ static int dec_ttl_exception_handler(struct datapath *dp, struct sk_buff *skb,
- 				     struct sw_flow_key *key,
- 				     const struct nlattr *attr, bool last)
- {
--	/* The first action is always 'OVS_DEC_TTL_ATTR_ARG'. */
--	struct nlattr *dec_ttl_arg = nla_data(attr);
-+	/* The first attribute is always 'OVS_DEC_TTL_ATTR_ACTION'. */
-+	struct nlattr *actions = nla_data(attr);
+diff --git a/net/bridge/br.c b/net/bridge/br.c
+index 401eeb9142eb6..1b169f8e74919 100644
+--- a/net/bridge/br.c
++++ b/net/bridge/br.c
+@@ -43,7 +43,10 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
  
--	if (nla_len(dec_ttl_arg)) {
--		struct nlattr *actions = nla_data(dec_ttl_arg);
-+	if (nla_len(actions))
-+		return clone_execute(dp, skb, key, 0, nla_data(actions),
-+				     nla_len(actions), last, false);
- 
--		if (actions)
--			return clone_execute(dp, skb, key, 0, nla_data(actions),
--					     nla_len(actions), last, false);
--	}
- 	consume_skb(skb);
- 	return 0;
- }
-@@ -1212,7 +1209,7 @@ static int execute_dec_ttl(struct sk_buff *skb, struct sw_flow_key *key)
- 			return -EHOSTUNREACH;
- 
- 		key->ip.ttl = --nh->hop_limit;
--	} else {
-+	} else if (skb->protocol == htons(ETH_P_IP)) {
- 		struct iphdr *nh;
- 		u8 old_ttl;
- 
+ 		if (event == NETDEV_REGISTER) {
+ 			/* register of bridge completed, add sysfs entries */
+-			br_sysfs_addbr(dev);
++			err = br_sysfs_addbr(dev);
++			if (err)
++				return notifier_from_errno(err);
++
+ 			return NOTIFY_DONE;
+ 		}
+ 	}
 -- 
 2.27.0
 
