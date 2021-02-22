@@ -2,138 +2,724 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB1D3212D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 799423212DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhBVJMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:12:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54044 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230253AbhBVJIT (ORCPT
+        id S230281AbhBVJNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:13:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230139AbhBVJJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:08:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613984805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KO2eAxv01FOB+ShIuZKE9lvyTzxRP1g6QCSFRiLbDqI=;
-        b=Lkjw0LB9Uus/inIKT8ittdR/xAAKfkWERBf+QH7O2Crl/R+5nLBfPLWZaW6J9SnvgzpRW1
-        uDeUvFJNbtRr8czmPqoFDzDeVnysI5YcXnJyiVWH3wIgqtpovi1sN1Ti8GR+fJ3JN9Cskx
-        W+4WstaET79qaU+z9PkbubMQkpHyUpo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-JJuZURN-PpCo1tLSn0cESA-1; Mon, 22 Feb 2021 04:06:43 -0500
-X-MC-Unique: JJuZURN-PpCo1tLSn0cESA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF59A80402C;
-        Mon, 22 Feb 2021 09:06:41 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-244.pek2.redhat.com [10.72.12.244])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BC0AF57;
-        Mon, 22 Feb 2021 09:06:35 +0000 (UTC)
-Subject: Re: [PATCH] virtio: don't prompt CONFIG_VIRTIO_PCI_MODERN
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>
-References: <20210219084509.48269-1-jasowang@redhat.com>
- <4b2378d8-0061-c6ed-f377-492649869581@roeck-us.net>
- <2cf598ee-38cf-3c1c-33a9-1890e892a8e6@redhat.com>
- <20210222022550-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <48cc339b-a23e-7e56-5234-5b439173209e@redhat.com>
-Date:   Mon, 22 Feb 2021 17:06:34 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Mon, 22 Feb 2021 04:09:41 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E35C061574;
+        Mon, 22 Feb 2021 01:09:01 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id a16so10154567ilq.5;
+        Mon, 22 Feb 2021 01:09:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VPHHiJ1ifjYXcN4yWQ3Lsn7dY0ZN+c5sp/jAG2B36Z4=;
+        b=U0YpsmZv5YX24D+jrooNAQ2fk97K8RLMKcTH+dh0oJvKcVfl4MdQrp3bKDkJ7PeOIf
+         X6fn6WL0oU8XSsQODSYzp6A59IDNpNzNKGX3TbP4WUyNFl9nkm7wlD4ttuzgaJGfHEEG
+         mmjS+/tbysKTw5I+NrnS+jXYeD1xoX+L4LijRMy7YW//aRWBbP7JEfWaI8vlTsE0POrK
+         ueDSekCdZYvxmzBuRQTWp1D9cnLgbGpU20pG5C4Ej67CNqmbYw97lesKxmpnPGAUb0jO
+         n/UKXCr45fwBoXpIDejutQgplvNRaV71KSgcFGQFyYfuNRncl5JN/tTXC0MOeN3zbkRH
+         9fng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VPHHiJ1ifjYXcN4yWQ3Lsn7dY0ZN+c5sp/jAG2B36Z4=;
+        b=kzAkbjYGxeKeD9aHk0VCRE3NpyHOSrO8pUUEYikuEvGN8vJjS7DbzIhdzdutgbXgmB
+         dVP4AAcBUxb8FkJDUzUA30xr3YUTaa0xd+gIg+pfPjmJiyQK5dfvJ8XUSlOCIR3dWAmr
+         VjkyQV+fRutiT7Amq+4pnDIRNeO43/a+PntqRzY91++i7CnHzd/g43LOlE4jMNZo36n4
+         t4NRI9YrO2FR1Kg5wAfLG4V3vtyC4FXBGA/2UzCX6Jko82yYYSJekl+j/k9Wy1tZVDtW
+         zIeCDMD2j/duAR5SHbFOKt1ScGaSzVqwx68fAxIFP0sIguVT6hPs8/dS0EEiz+1lkkyi
+         Nlzw==
+X-Gm-Message-State: AOAM532V248fHjOmXq2W87gnzd2RAaNufjdDyTd6BgtUw3ym+1b+Ftig
+        QhKPN0bEbLTN4JHS81b+McWvsi1hrSk1KwyJOsE=
+X-Google-Smtp-Source: ABdhPJym7Pzx7sDNlOARVBr734vj96b1uX3ZeNNoZpv9Z70o2H5CaDn0NnsZKubNyGIkszaaS8Oa3ShYiSfBnYq2xno=
+X-Received: by 2002:a92:d201:: with SMTP id y1mr320945ily.129.1613984940578;
+ Mon, 22 Feb 2021 01:09:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210222022550-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210218123327.25486-1-heiko.thiery@gmail.com>
+ <20210218123327.25486-3-heiko.thiery@gmail.com> <20210221121111.nsenzgenwb6pu3o7@kozik-lap>
+ <CAEyMn7YN4xqcFxR0QHUDp8cc1QP62HgpGMCYAjh0RfWL-iRQCA@mail.gmail.com> <20210222084027.jd3eop7j4czoqqim@kozik-lap>
+In-Reply-To: <20210222084027.jd3eop7j4czoqqim@kozik-lap>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Mon, 22 Feb 2021 10:08:49 +0100
+Message-ID: <CAEyMn7YPNRDbPH84wg2s+r2F6Fo=0DJOUd-R03Fg=6_CxgknSg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: fsl: add support for Kontron pitx-imx8m board
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Michael Walle <michael@walle.cc>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Krzysztof,
 
-On 2021/2/22 3:29 下午, Michael S. Tsirkin wrote:
-> On Mon, Feb 22, 2021 at 11:42:44AM +0800, Jason Wang wrote:
->> On 2021/2/19 11:38 下午, Guenter Roeck wrote:
->>> On 2/19/21 12:45 AM, Jason Wang wrote:
->>>> We used to prompt CONFIG_VIRTIO_PCI_MODERN to user which may bring a
->>>> lot of confusion. E.g it may break various default configs which want
->>>> virtio devices.
->>>>
->>>> So this patch fixes this by hide the prompot and document the
->>> ... by hiding the prompt and documenting ...
->>
->> Hi Michael:
->>
->> Would you like me to post a new version or you can fix those typos when
->> applying the patch?
->>
->> Thanks
+Am Mo., 22. Feb. 2021 um 09:40 Uhr schrieb Krzysztof Kozlowski
+<krzk@kernel.org>:
 >
-> A new version. However I have a suggestion.
+> On Mon, Feb 22, 2021 at 08:46:52AM +0100, Heiko Thiery wrote:
+> > Hi Krysztof,
+> >
+> > Am So., 21. Feb. 2021 um 13:11 Uhr schrieb Krzysztof Kozlowski
+> > <krzk@kernel.org>:
+> > >
+> > > On Thu, Feb 18, 2021 at 01:33:29PM +0100, Heiko Thiery wrote:
+> > > > The Kontron pitx-imx8m board is based on an i.MX8MQ soc.
+> > > >
+> > > > Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+> > > > ---
+> > > >  arch/arm64/boot/dts/freescale/Makefile        |   1 +
+> > > >  .../freescale/imx8mq-kontron-pitx-imx8m.dts   | 675 ++++++++++++++++++
+> > > >  2 files changed, 676 insertions(+)
+> > > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
+> > > >
+> > > > diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+> > > > index 6438db3822f8..9fc2c6f64407 100644
+> > > > --- a/arch/arm64/boot/dts/freescale/Makefile
+> > > > +++ b/arch/arm64/boot/dts/freescale/Makefile
+> > > > @@ -47,6 +47,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-phyboard-pollux-rdk.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mq-hummingboard-pulse.dtb
+> > > > +dtb-$(CONFIG_ARCH_MXC) += imx8mq-kontron-pitx-imx8m.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mq-librem5-devkit.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mq-librem5-r2.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mq-librem5-r3.dtb
+> > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts b/arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
+> > > > new file mode 100644
+> > > > index 000000000000..79805928204e
+> > > > --- /dev/null
+> > > > +++ b/arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
+> > > > @@ -0,0 +1,675 @@
+> > > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > > > +/*
+> > > > + * Device Tree File for the Kontron pitx-imx8m board.
+> > > > + *
+> > > > + * Copyright (C) 2021 Heiko Thiery <heiko.thiery@gmail.com>
+> > > > + */
+> > > > +
+> > > > +/dts-v1/;
+> > > > +
+> > > > +#include "imx8mq.dtsi"
+> > > > +#include <dt-bindings/net/ti-dp83867.h>
+> > > > +
+> > > > +/ {
+> > > > +     model = "Kontron pITX-imx8m";
+> > > > +     compatible = "kontron,pitx-imx8m", "fsl,imx8mq";
+> > > > +
+> > > > +     aliases {
+> > > > +             i2c0 = &i2c1;
+> > > > +             i2c1 = &i2c2;
+> > > > +             i2c2 = &i2c3;
+> > > > +             mmc0 = &usdhc1;
+> > > > +             mmc1 = &usdhc2;
+> > > > +             serial0 = &uart1;
+> > > > +             serial1 = &uart2;
+> > > > +             serial2 = &uart3;
+> > > > +             spi0 = &qspi0;
+> > > > +             spi1 = &ecspi2;
+> > > > +     };
+> > > > +
+> > > > +     chosen {
+> > > > +             stdout-path = "serial2:115200n8";
+> > > > +     };
+> > > > +
+> > > > +     regulators {
+> > > > +             compatible = "simple-bus";
+> > > > +             #address-cells = <1>;
+> > > > +             #size-cells = <0>;
+> > > > +
+> > > > +             reg_usdhc2_vmmc: regulator-v-3v3-sd {
+> > >
+> > > That's a messed unit addressing. You have here simple-bus but no unit
+> > > addresses. Move it out of regulators node and run make dtc W=1 (it would
+> > > point you this issue).
+> >
+> > Ok, I will change that.
+> >
+> > But I'm not able to run dtc on my dts. dtc throws an error.
+> >
+> > # dtc -I dts -O dtb imx8mq-kontron-pitx-imx8m.dts
+> > Error: imx8mq-kontron-pitx-imx8m.dts:10.1-9 syntax error
+> > FATAL ERROR: Unable to parse input tree
+> >
+> > It is about the includes. How can I run dtc for a intree dts to add
+> > the -W option?
 >
-> How about we call the new library VIRTIO_PCI_LIB? That would be
-> a new auto-selected symbol.
->
-> We can then keep VIRTIO_PCI as a symbol enabling the actual driver.
+> make dtbs W=1
 
-
-Ok, will do.
-
-Thanks
-
+Ah ok. I was not aware of that.
 
 >
+> >
+> > > > +                     compatible = "regulator-fixed";
+> > > > +                     regulator-name = "V_3V3_SD";
+> > > > +                     regulator-min-microvolt = <3300000>;
+> > > > +                     regulator-max-microvolt = <3300000>;
+> > > > +                     gpio = <&gpio2 19 GPIO_ACTIVE_HIGH>;
+> > > > +                     off-on-delay-us = <20000>;
+> > > > +                     enable-active-high;
+> > > > +             };
+> > > > +     };
+> > > > +
+> > > > +     usb_hub_reset: usb-hub-reset {
+> > > > +             compatible = "gpio-reset";
+> > > > +             reset-gpios = <&gpio3 4 GPIO_ACTIVE_LOW>;
+> > > > +             reset-delay-us = <3000>;
+> > > > +             reset-post-delay-ms = <50>;
+> > > > +             #reset-cells = <0>;
+> > > > +     };
+> > > > +
+> > > > +     tpm_reset: tpm-reset {
+> > > > +             compatible = "gpio-reset";
+> > > > +             reset-gpios = <&gpio3 2 GPIO_ACTIVE_LOW>;
+> > > > +             reset-delay-us = <2>;
+> > > > +             reset-post-delay-ms = <60>;
+> > > > +             #reset-cells = <0>;
+> > > > +     };
+> > > > +
+> > > > +     pcie0_refclk: pcie0-refclk {
+> > >
+> > > Generic node names (from the dt spec candidate is "clock").
+> >
+> > Should I simply set the node name to pcie0-clock? And pcie1-clock for
+> > the next one?
 >
->
->>>> dependency.
->>>>
->>>> Cc: Arnd Bergmann <arnd@arndb.de>
->>>> Cc: Anders Roxell <anders.roxell@linaro.org>
->>>> Cc: Guenter Roeck <linux@roeck-us.net>
->>>> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->>>> Fixes: 86b87c9d858b6 ("virtio-pci: introduce modern device module")
->>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
->>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
->>>
->>>> ---
->>>>    drivers/virtio/Kconfig | 9 +++++----
->>>>    1 file changed, 5 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
->>>> index 6b9b81f4b8c2..be7df369bc2b 100644
->>>> --- a/drivers/virtio/Kconfig
->>>> +++ b/drivers/virtio/Kconfig
->>>> @@ -13,12 +13,12 @@ config ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
->>>>    	  VIRTIO_F_ACCESS_PLATFORM
->>>>    config VIRTIO_PCI_MODERN
->>>> -	tristate "Modern Virtio PCI Device"
->>>> -	depends on PCI
->>>> +	tristate
->>>>    	help
->>>>    	  Modern PCI device implementation. This module implements the
->>>>    	  basic probe and control for devices which are based on modern
->>>> -	  PCI device with possible vendor specific extensions.
->>>> +	  PCI device with possible vendor specific extensions. Any
->>>> +	  module that selects this module must depend on PCI.
->>>>    menuconfig VIRTIO_MENU
->>>>    	bool "Virtio drivers"
->>>> @@ -28,7 +28,8 @@ if VIRTIO_MENU
->>>>    config VIRTIO_PCI
->>>>    	tristate "PCI driver for virtio devices"
->>>> -	depends on VIRTIO_PCI_MODERN
->>>> +	depends on PCI
->>>> +	select VIRTIO_PCI_MODERN
->>>>    	select VIRTIO
->>>>    	help
->>>>    	  This driver provides support for virtio based paravirtual device
->>>>
+> I am fine with "pcie0-clock" or just "clock-0".
 
+I saw now that in "imx8mq-zii-ultra.dtsi" the name
+"clock-pcie0-refclk" is used. Can I use the same?
+
+>
+> >
+> > > > +             compatible = "fixed-clock";
+> > > > +             #clock-cells = <0>;
+> > > > +             clock-frequency = <100000000>;
+> > > > +     };
+> > > > +
+> > > > +     pcie1_refclk: pcie1-refclk {
+> > >
+> > > Same.
+> > >
+> > > > +             compatible = "fixed-clock";
+> > > > +             #clock-cells = <0>;
+> > > > +             clock-frequency = <100000000>;
+> > > > +     };
+> > > > +
+> > > > +     gpio-keys {
+> > > > +             compatible = "gpio-keys";
+> > > > +             pinctrl-names = "default";
+> > > > +             pinctrl-0 = <&pinctrl_gpio_keys>;
+> > > > +
+> > > > +             pciewake {
+> > > > +                     label = "PCIE_Wake";
+> > > > +                     gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
+> > > > +                     linux,input-type = <4>; /* EV_MSC */
+> > > > +                     linux,code = <3>; /* MSC_RAW */
+> > > > +                     gpio-key,wakeup;
+> > > > +             };
+> > > > +     };
+> > > > +};
+> > > > +
+> > > > +&ecspi2 {
+> > > > +     #address-cells = <1>;
+> > > > +     #size-cells = <0>;
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_ecspi2 &pinctrl_ecspi2_cs>;
+> > > > +     cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
+> > > > +     status = "okay";
+> > > > +
+> > > > +     slb9670@0 {
+> > >
+> > > This needs a generic node name.
+> >
+> > I will change to tpm@0.
+>
+> Thanks.
+>
+> >
+> > >
+> > > > +             compatible = "infineon,slb9670";
+> > > > +             reg = <0>;
+> > > > +             resets = <&tpm_reset>;
+> > > > +             spi-max-frequency = <43000000>;
+> > > > +     };
+> > > > +};
+> > > > +
+> > > > +&fec1 {
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_fec1>;
+> > > > +     phy-mode = "rgmii-id";
+> > > > +     phy-handle = <&ethphy0>;
+> > > > +     phy-reset-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
+> > > > +     fsl,magic-packet;
+> > > > +     status = "okay";
+> > > > +
+> > > > +     mdio {
+> > > > +             #address-cells = <1>;
+> > > > +             #size-cells = <0>;
+> > > > +
+> > > > +             ethphy0: ethernet-phy@0 {
+> > > > +                     compatible = "ethernet-phy-ieee802.3-c22";
+> > > > +                     reg = <0>;
+> > > > +                     ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
+> > > > +                     ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
+> > > > +                     ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+> > > > +             };
+> > > > +     };
+> > > > +};
+> > > > +
+> > > > +&i2c1 {
+> > > > +     clock-frequency = <400000>;
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_i2c1>;
+> > > > +     status = "okay";
+> > > > +
+> > > > +     pmic@8 {
+> > > > +             compatible = "fsl,pfuze100";
+> > > > +             fsl,pfuze-support-disable-sw;
+> > > > +             reg = <0x8>;
+> > > > +
+> > > > +             regulators {
+> > > > +                     sw1a_reg: sw1ab {
+> > > > +                             regulator-name = "V_0V9_GPU";
+> > > > +                             regulator-min-microvolt = <825000>;
+> > > > +                             regulator-max-microvolt = <1100000>;
+> > > > +                     };
+> > > > +
+> > > > +                     sw1c_reg: sw1c {
+> > > > +                             regulator-name = "V_0V9_VPU";
+> > > > +                             regulator-min-microvolt = <825000>;
+> > > > +                             regulator-max-microvolt = <1100000>;
+> > > > +                     };
+> > > > +
+> > > > +                     sw2_reg: sw2 {
+> > > > +                             regulator-name = "V_1V1_NVCC_DRAM";
+> > > > +                             regulator-min-microvolt = <1100000>;
+> > > > +                             regulator-max-microvolt = <1100000>;
+> > > > +                             regulator-always-on;
+> > > > +                     };
+> > > > +
+> > > > +                     sw3a_reg: sw3ab {
+> > > > +                             regulator-name = "V_1V0_DRAM";
+> > > > +                             regulator-min-microvolt = <825000>;
+> > > > +                             regulator-max-microvolt = <1100000>;
+> > > > +                             regulator-always-on;
+> > > > +                     };
+> > > > +
+> > > > +                     sw4_reg: sw4 {
+> > > > +                             regulator-name = "V_1V8_S0";
+> > > > +                             regulator-min-microvolt = <1800000>;
+> > > > +                             regulator-max-microvolt = <1800000>;
+> > > > +                             regulator-always-on;
+> > > > +                     };
+> > > > +
+> > > > +                     swbst_reg: swbst {
+> > > > +                             regulator-min-microvolt = <5000000>;
+> > > > +                             regulator-max-microvolt = <5150000>;
+> > > > +                     };
+> > > > +
+> > > > +                     snvs_reg: vsnvs {
+> > > > +                             regulator-name = "V_0V9_SNVS";
+> > > > +                             regulator-min-microvolt = <1000000>;
+> > > > +                             regulator-max-microvolt = <3000000>;
+> > > > +                             regulator-always-on;
+> > > > +                     };
+> > > > +
+> > > > +                     vref_reg: vrefddr {
+> > > > +                             regulator-name = "V_0V55_VREF_DDR";
+> > > > +                             regulator-always-on;
+> > > > +                     };
+> > > > +
+> > > > +                     vgen1_reg: vgen1 {
+> > > > +                             regulator-name = "V_1V5_CSI";
+> > > > +                             regulator-min-microvolt = <800000>;
+> > > > +                             regulator-max-microvolt = <1550000>;
+> > > > +                     };
+> > > > +
+> > > > +                     vgen2_reg: vgen2 {
+> > > > +                             regulator-name = "V_0V9_PHY";
+> > > > +                             regulator-min-microvolt = <850000>;
+> > > > +                             regulator-max-microvolt = <975000>;
+> > > > +                             regulator-always-on;
+> > > > +                     };
+> > > > +
+> > > > +                     vgen3_reg: vgen3 {
+> > > > +                             regulator-name = "V_1V8_PHY";
+> > > > +                             regulator-min-microvolt = <1675000>;
+> > > > +                             regulator-max-microvolt = <1975000>;
+> > > > +                             regulator-always-on;
+> > > > +                     };
+> > > > +
+> > > > +                     vgen4_reg: vgen4 {
+> > > > +                             regulator-name = "V_1V8_VDDA";
+> > > > +                             regulator-min-microvolt = <1625000>;
+> > > > +                             regulator-max-microvolt = <1875000>;
+> > > > +                             regulator-always-on;
+> > > > +                     };
+> > > > +
+> > > > +                     vgen5_reg: vgen5 {
+> > > > +                             regulator-name = "V_3V3_PHY";
+> > > > +                             regulator-min-microvolt = <3075000>;
+> > > > +                             regulator-max-microvolt = <3625000>;
+> > > > +                             regulator-always-on;
+> > > > +                     };
+> > > > +
+> > > > +                     vgen6_reg: vgen6 {
+> > > > +                             regulator-name = "V_2V8_CAM";
+> > > > +                             regulator-min-microvolt = <1800000>;
+> > > > +                             regulator-max-microvolt = <3300000>;
+> > > > +                             regulator-always-on;
+> > > > +                     };
+> > > > +             };
+> > > > +     };
+> > > > +
+> > > > +     max6650@1b {
+> > >
+> > > Generic node name.
+> >
+> > I could not find a matching name like "fan" in the devicetree
+> > specification. What about using "fan-ctrl"?
+>
+> So maybe "fan-controller"?
+
+I will use that name.
+
+>
+> >
+> > >
+> > > > +             compatible = "maxim,max6650";
+> > > > +             reg = <0x1b>;
+> > > > +             maxim,fan-microvolt = <5000000>;
+> > > > +     };
+> > > > +
+> > > > +     rtc@32 {
+> > > > +             compatible = "microcrystal,rv8803";
+> > > > +             reg = <0x32>;
+> > > > +     };
+> > > > +
+> > > > +     lm75@4b {
+> > >
+> > > Node name: sensor.
+> >
+> > Ok
+> >
+> > >
+> > > > +             compatible = "national,lm75b";
+> > > > +             reg = <0x4b>;
+> > > > +     };
+> > > > +
+> > > > +     eeprom@51 {
+> > > > +             compatible = "atmel,24c32";
+> > > > +             reg = <0x51>;
+> > > > +             pagesize = <32>;
+> > > > +     };
+> > > > +};
+> > > > +
+> > > > +&i2c2 {
+> > > > +     clock-frequency = <100000>;
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_i2c2>;
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&i2c3 {
+> > > > +     clock-frequency = <100000>;
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_i2c3>;
+> > > > +     status = "okay";
+> > > > +
+> > > > +     wm8904: audio-codec@1a {
+> > > > +             compatible = "wlf,wm8904";
+> > > > +             reg = <0x1a>;
+> > > > +             clocks = <&clk IMX8MQ_CLK_SAI2_ROOT>;
+> > > > +             clock-names = "mclk";
+> > > > +             clock-frequency = <24000000>;
+> > > > +     };
+> > > > +};
+> > > > +
+> > > > +/* M.2 B-key slot */
+> > > > +&pcie0 {
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_pcie0>;
+> > > > +     disable-gpio = <&gpio5 29 GPIO_ACTIVE_LOW>;
+> > > > +     reset-gpio = <&gpio1 9 GPIO_ACTIVE_LOW>;
+> > > > +     clocks = <&clk IMX8MQ_CLK_PCIE1_ROOT>,
+> > > > +              <&clk IMX8MQ_CLK_PCIE1_AUX>,
+> > > > +              <&clk IMX8MQ_CLK_PCIE1_PHY>,
+> > > > +              <&pcie0_refclk>;
+> > > > +     clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
+> > > > +     ext_osc = <1>;
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +/* Intel Ethernet Controller I210/I211 */
+> > > > +&pcie1 {
+> > > > +     clocks = <&clk IMX8MQ_CLK_PCIE2_ROOT>,
+> > > > +              <&clk IMX8MQ_CLK_PCIE2_AUX>,
+> > > > +              <&clk IMX8MQ_CLK_PCIE2_PHY>,
+> > > > +              <&pcie1_refclk>;
+> > > > +     clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
+> > > > +     ext_osc = <1>;
+> > > > +     fsl,max-link-speed = <1>;
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&pgc_gpu {
+> > > > +     power-supply = <&sw1a_reg>;
+> > > > +};
+> > > > +
+> > > > +&pgc_vpu {
+> > > > +     power-supply = <&sw1c_reg>;
+> > > > +};
+> > > > +
+> > > > +&qspi0 {
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_qspi>;
+> > > > +     status = "okay";
+> > > > +
+> > > > +     flash@0 {
+> > > > +             compatible = "jedec,spi-nor";
+> > > > +             #address-cells = <1>;
+> > > > +             #size-cells = <1>;
+> > > > +             reg = <0>;
+> > > > +             spi-tx-bus-width = <4>;
+> > > > +             spi-rx-bus-width = <4>;
+> > > > +             m25p,fast-read;
+> > > > +             spi-max-frequency = <50000000>;
+> > > > +     };
+> > > > +};
+> > > > +
+> > > > +&snvs_pwrkey {
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&uart1 {
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_uart1>;
+> > > > +     assigned-clocks = <&clk IMX8MQ_CLK_UART1>;
+> > > > +     assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_80M>;
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&uart2 {
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_uart2>;
+> > > > +     assigned-clocks = <&clk IMX8MQ_CLK_UART2>;
+> > > > +     assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_80M>;
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&uart3 {
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_uart3>;
+> > > > +     fsl,uart-has-rtscts;
+> > > > +     assigned-clocks = <&clk IMX8MQ_CLK_UART3>;
+> > > > +     assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_80M>;
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&usb_dwc3_0 {
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_usb0>;
+> > > > +     dr_mode = "otg";
+> > > > +     hnp-disable;
+> > > > +     srp-disable;
+> > > > +     adp-disable;
+> > > > +     maximum-speed = "high-speed";
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&usb3_phy0 {
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&usb_dwc3_1 {
+> > > > +     resets = <&usb_hub_reset>;
+> > > > +     dr_mode = "host";
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&usb3_phy1 {
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&usdhc1 {
+> > > > +     assigned-clocks = <&clk IMX8MQ_CLK_USDHC1>;
+> > > > +     assigned-clock-rates = <400000000>;
+> > > > +     pinctrl-names = "default", "state_100mhz", "state_200mhz";
+> > > > +     pinctrl-0 = <&pinctrl_usdhc1>;
+> > > > +     pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
+> > > > +     pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
+> > > > +     vqmmc-supply = <&sw4_reg>;
+> > > > +     bus-width = <8>;
+> > > > +     non-removable;
+> > > > +     no-sd;
+> > > > +     no-sdio;
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&usdhc2 {
+> > > > +     assigned-clocks = <&clk IMX8MQ_CLK_USDHC2>;
+> > > > +     assigned-clock-rates = <200000000>;
+> > > > +     pinctrl-names = "default", "state_100mhz", "state_200mhz";
+> > > > +     pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
+> > > > +     pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
+> > > > +     pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
+> > > > +     bus-width = <4>;
+> > > > +     cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
+> > > > +     wp-gpios = <&gpio2 20 GPIO_ACTIVE_HIGH>;
+> > > > +     vmmc-supply = <&reg_usdhc2_vmmc>;
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&wdog1 {
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_wdog>;
+> > > > +     fsl,ext-reset-output;
+> > > > +     status = "okay";
+> > > > +};
+> > > > +
+> > > > +&iomuxc {
+> > > > +     pinctrl-names = "default";
+> > > > +     pinctrl-0 = <&pinctrl_hog>;
+> > > > +
+> > > > +     pinctrl_hog: hoggrp {
+> > > > +             fsl,pins = <
+> > > > +                     MX8MQ_IOMUXC_NAND_CE1_B_GPIO3_IO2               0x19 /* TPM Reset */
+> > > > +                     MX8MQ_IOMUXC_NAND_CE3_B_GPIO3_IO4               0x19 /* USB2 Hub Reset */
+> > > > +             >;
+> > > > +     };
+> > > > +
+> > > > +     pinctrl_gpio: gpiogrp {
+> > > > +             fsl,pins = <
+> > > > +                     MX8MQ_IOMUXC_NAND_CLE_GPIO3_IO5                 0x19 /* GPIO0 */
+> > > > +                     MX8MQ_IOMUXC_NAND_RE_B_GPIO3_IO15               0x19 /* GPIO1 */
+> > > > +                     MX8MQ_IOMUXC_NAND_WE_B_GPIO3_IO17               0x19 /* GPIO2 */
+> > > > +                     MX8MQ_IOMUXC_NAND_WP_B_GPIO3_IO18               0x19 /* GPIO3 */
+> > > > +                     MX8MQ_IOMUXC_NAND_READY_B_GPIO3_IO16            0x19 /* GPIO4 */
+> > > > +                     MX8MQ_IOMUXC_NAND_DATA04_GPIO3_IO10             0x19 /* GPIO5 */
+> > > > +                     MX8MQ_IOMUXC_NAND_DATA05_GPIO3_IO11             0x19 /* GPIO6 */
+> > > > +                     MX8MQ_IOMUXC_NAND_DATA06_GPIO3_IO12             0x19 /* GPIO7 */
+> > > > +             >;
+> > > > +     };
+> > > > +
+> > > > +     pinctrl_pcie0: pcie0grp {
+> > > > +             fsl,pins = <
+> > > > +                     MX8MQ_IOMUXC_GPIO1_IO09_GPIO1_IO9               0x16 /* PCIE_PERST */
+> > > > +                     MX8MQ_IOMUXC_UART4_TXD_GPIO5_IO29               0x16 /* W_DISABLE */
+> > > > +             >;
+> > > > +     };
+> > > > +
+> > > > +     pinctrl_gpio_keys: gpio-keysgrp {
+> > > > +             fsl,pins = <
+> > > > +                     MX8MQ_IOMUXC_GPIO1_IO08_GPIO1_IO8               0x16 /* PCIE_WAKE */
+> > > > +             >;
+> > > > +     };
+> > > > +
+> > > > +     pinctrl_fec1: fec1grp {
+> > > > +             fsl,pins = <
+> > > > +                     MX8MQ_IOMUXC_ENET_MDC_ENET1_MDC                 0x3
+> > > > +                     MX8MQ_IOMUXC_ENET_MDIO_ENET1_MDIO               0x23
+> > > > +                     MX8MQ_IOMUXC_ENET_TD3_ENET1_RGMII_TD3           0x1f
+> > > > +                     MX8MQ_IOMUXC_ENET_TD2_ENET1_RGMII_TD2           0x1f
+> > > > +                     MX8MQ_IOMUXC_ENET_TD1_ENET1_RGMII_TD1           0x1f
+> > > > +                     MX8MQ_IOMUXC_ENET_TD0_ENET1_RGMII_TD0           0x1f
+> > > > +                     MX8MQ_IOMUXC_ENET_RD3_ENET1_RGMII_RD3           0x91
+> > > > +                     MX8MQ_IOMUXC_ENET_RD2_ENET1_RGMII_RD2           0x91
+> > > > +                     MX8MQ_IOMUXC_ENET_RD1_ENET1_RGMII_RD1           0x91
+> > > > +                     MX8MQ_IOMUXC_ENET_RD0_ENET1_RGMII_RD0           0x91
+> > > > +                     MX8MQ_IOMUXC_ENET_TXC_ENET1_RGMII_TXC           0x1f
+> > > > +                     MX8MQ_IOMUXC_ENET_RXC_ENET1_RGMII_RXC           0x91
+> > > > +                     MX8MQ_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL     0x91
+> > > > +                     MX8MQ_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL     0x1f
+> > > > +                     MX8MQ_IOMUXC_GPIO1_IO11_GPIO1_IO11              0x16
+> > > > +                     MX8MQ_IOMUXC_GPIO1_IO15_GPIO1_IO15              0x16
+> > > > +             >;
+> > > > +     };
+> > > > +
+> > > > +     pinctrl_i2c1: i2c1grp {
+> > > > +             fsl,pins = <
+> > > > +                     MX8MQ_IOMUXC_I2C1_SCL_I2C1_SCL                  0x4000007f
+> > > > +                     MX8MQ_IOMUXC_I2C1_SDA_I2C1_SDA                  0x4000007f
+> > > > +             >;
+> > > > +     };
+> > > > +
+> > > > +     pinctrl_i2c2: i2c2grp {
+> > > > +             fsl,pins = <
+> > > > +                     MX8MQ_IOMUXC_I2C2_SCL_I2C2_SCL                  0x4000007f
+> > > > +                     MX8MQ_IOMUXC_I2C2_SDA_I2C2_SDA                  0x4000007f
+> > > > +             >;
+> > > > +     };
+> > > > +
+> > > > +     pinctrl_i2c3: i2c3grp {
+> > > > +             fsl,pins = <
+> > > > +                     MX8MQ_IOMUXC_I2C3_SCL_I2C3_SCL                  0x4000007f
+> > > > +                     MX8MQ_IOMUXC_I2C3_SDA_I2C3_SDA                  0x4000007f
+> > > > +             >;
+> > > > +     };
+> > > > +
+> > > > +     pinctrl_qspi: qspigrp {
+> > > > +             fsl,pins = <
+> > > > +                     MX8MQ_IOMUXC_NAND_ALE_QSPI_A_SCLK               0x82
+> > > > +                     MX8MQ_IOMUXC_NAND_CE0_B_QSPI_A_SS0_B            0x82
+> > > > +                     MX8MQ_IOMUXC_NAND_DATA00_QSPI_A_DATA0           0x82
+> > > > +                     MX8MQ_IOMUXC_NAND_DATA01_QSPI_A_DATA1           0x82
+> > > > +                     MX8MQ_IOMUXC_NAND_DATA02_QSPI_A_DATA2           0x82
+> > > > +                     MX8MQ_IOMUXC_NAND_DATA03_QSPI_A_DATA3           0x82
+> > > > +
+> > >
+> > > No need for empty line.
+> >
+> > Ok
+> >
+> > >
+> > > > +             >;
+> > > > +     };
+> > > > +
+> > > > +     pinctrl_ecspi2: ecspi2grp {
+> > > > +             fsl,pins = <
+> > > > +                     MX8MQ_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI            0x19
+> > > > +                     MX8MQ_IOMUXC_ECSPI2_MISO_ECSPI2_MISO            0x19
+> > > > +                     MX8MQ_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK            0x19
+> > > > +             >;
+> > > > +     };
+> > > > +
+> > > > +     pinctrl_ecspi2_cs: ecspi2cs {
+> > >
+> > > ecspi2csgrp to match schema
+> >
+> > Ok
+> >
+> > >
+> > > Please run dtbs_check on your DTS.
+> >
+> > When I run "make dtbs_check" it runs quite a long time and stops with
+> > an error. But as far as I can say there is an error coming from the
+> > included "imx8mq.dtsi".
+> >
+> > You can see the output here: https://pastebin.com/raw/iU2geBDh
+>
+> Looks fine (except the error tool :) ).
+
+What do you mean with error tool?
+
+Thank you
+
+-- 
+Heiko
