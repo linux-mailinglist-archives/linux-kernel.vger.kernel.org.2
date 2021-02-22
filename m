@@ -2,215 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4BA321EC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6888321ECF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230492AbhBVSGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:06:07 -0500
-Received: from mga01.intel.com ([192.55.52.88]:60709 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230071AbhBVSGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:06:05 -0500
-IronPort-SDR: oMJ3VzAzryy/LVTuHzmSLX9YJuqzfLDpfcWvcjwU0z9cYBpIDoaSRU+ISJ2YkFWERcEhIbMbi9
- QP3u41Nkb96w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="203940546"
-X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
-   d="scan'208";a="203940546"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 10:04:23 -0800
-IronPort-SDR: 6b4L1Xf6+UC0yIplK4IpGCEBwv4Frqqy0A0y5iXumm6sxuyh9+vCLfwdfTAtqmdarbcarPJCHt
- QdptNSVFJjDw==
-X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
-   d="scan'208";a="389950448"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.209.104.72])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 10:04:22 -0800
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Russ Weight <russell.h.weight@intel.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: [PATCH v6 1/1] fpga: dfl: afu: harden port enable logic
-Date:   Mon, 22 Feb 2021 10:04:14 -0800
-Message-Id: <20210222180414.116014-1-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S231822AbhBVSHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:07:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231241AbhBVSG7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 13:06:59 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC78AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:06:18 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id z190so13487795qka.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:06:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w/1v7qcxV6sXFq3hxXWf+zOxG2zTiP0+4CUMaFeTsMk=;
+        b=hh90LbgHh4HvFm440ikVfcEEOikR/+r7DS0iYKRlzm9tZKNHikQxp8biTqRYaBhgYE
+         8b6FdvJegN2lSjQhNg4sn8cTY+fYHfwRtZAV5wOfM3v7N0N8+9X2Ml6LcjOF1ZFv5cNa
+         BGAHcVykRnvgR0eoUty0oE7GUYLECpZPcX5gY7gnwCtxsl1qh3lMBBJrBL+CpDL5cQfv
+         WbmhA1qrC/WLJGy+c5pjRopHnWsW8rKzfsHVG6yE/wkm1oixSm1hEZwILhgBV1HwLAto
+         9xGVj90eU5+zG/Mu+xuDR3O9hT98U0rG2/A7c04DkFOsIpYmJgSx4is9UGKEc6Fx+th7
+         8BNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=w/1v7qcxV6sXFq3hxXWf+zOxG2zTiP0+4CUMaFeTsMk=;
+        b=H8uA7UgOo0Vm5XasLMIUqfUctBtuXHOVXPjG/Q3Rglo+n3CXv6xbwKV2dI1jUrCZZm
+         6Kqpqwz7+s6Uxm2BD6pKWKdnZDAAPqbZTZ+d7UH3+j7pmATlcgdbd7ro3N4jM7AP7viR
+         A8Cp4jv80g38oJeG8Bi7qjozafHPXBZFCHtB1iTo+NTJjBG/JkclggL4xYR1fXTHPczu
+         myjdfffe2AZpa/jRfq76Oqyx/6t/6QwnOiKRH3u22RZ9Cxy08737zGYOe7yyt4xyVEfa
+         Qij+FhiC2qutkpFUM8t1EsSmNVmbV4axfK9esYj7PBInfsBZgCM0KSZY7pleuA3Ke27h
+         iJLw==
+X-Gm-Message-State: AOAM5325HINs05ikIy7e7ob6sGFuHgko+J33V93bVXLBQGy2heeQQEqn
+        aTS2dLx/NlcUsJ910us4hoY=
+X-Google-Smtp-Source: ABdhPJwz0uUQuS6SrOxnd9U5qO9ZiLgAHcC4GWDAyuSrpRSFXyQDaZW9Y29QL3L9YkZUF7/d+C+TcA==
+X-Received: by 2002:a05:620a:e16:: with SMTP id y22mr2944198qkm.86.1614017178085;
+        Mon, 22 Feb 2021 10:06:18 -0800 (PST)
+Received: from localhost.localdomain ([208.64.158.253])
+        by smtp.gmail.com with ESMTPSA id c63sm13109242qkf.8.2021.02.22.10.06.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 10:06:17 -0800 (PST)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
+Subject: [PATCH] staging: rtl8192e: fix kconfig dependency on CRYPTO
+Date:   Mon, 22 Feb 2021 13:06:07 -0500
+Message-Id: <20210222180607.399753-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Port enable is not complete until ACK = 0. Change
-__afu_port_enable() to guarantee that the enable process
-is complete by polling for ACK == 0.
+When RTLLIB_CRYPTO_TKIP is enabled and CRYPTO is disabled,
+Kbuild gives the following warning:
 
-Reviewed-by: Tom Rix <trix@redhat.com>
-Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
-v6:
-  - Fixed the dev_warn statement, which had "__func__" embedded in the
-    string instead of treated as a parameter to the format string.
-v5:
-  - Added Reviewed-by tag to commit message
-v4:
-  - Added a dev_warn() call for the -EINVAL case of afu_port_err_clear()
-  - Modified dev_err() message in __afu_port_disable() to say "disable"
-    instead of "reset"
-v3:
-  - afu_port_err_clear() changed to prioritize port_enable failure over
-    other a detected mismatch in port errors.
-  - reorganized code in port_reset() to be more readable.
-v2:
-  - Fixed typo in commit message
----
- drivers/fpga/dfl-afu-error.c | 10 ++++++----
- drivers/fpga/dfl-afu-main.c  | 33 +++++++++++++++++++++++----------
- drivers/fpga/dfl-afu.h       |  2 +-
- 3 files changed, 30 insertions(+), 15 deletions(-)
+WARNING: unmet direct dependencies detected for CRYPTO_MICHAEL_MIC
+  Depends on [n]: CRYPTO [=n]
+  Selected by [m]:
+  - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
 
-diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
-index c4691187cca9..ab7be6217368 100644
---- a/drivers/fpga/dfl-afu-error.c
-+++ b/drivers/fpga/dfl-afu-error.c
-@@ -52,7 +52,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
- 	struct platform_device *pdev = to_platform_device(dev);
- 	void __iomem *base_err, *base_hdr;
--	int ret = -EBUSY;
-+	int enable_ret = 0, ret = -EBUSY;
- 	u64 v;
- 
- 	base_err = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
-@@ -96,18 +96,20 @@ static int afu_port_err_clear(struct device *dev, u64 err)
- 		v = readq(base_err + PORT_FIRST_ERROR);
- 		writeq(v, base_err + PORT_FIRST_ERROR);
- 	} else {
-+		dev_warn(dev, "%s: received 0x%llx, expected 0x%llx\n",
-+			 __func__, v, err);
- 		ret = -EINVAL;
- 	}
- 
- 	/* Clear mask */
- 	__afu_port_err_mask(dev, false);
- 
--	/* Enable the Port by clear the reset */
--	__afu_port_enable(pdev);
-+	/* Enable the Port by clearing the reset */
-+	enable_ret = __afu_port_enable(pdev);
- 
- done:
- 	mutex_unlock(&pdata->lock);
--	return ret;
-+	return enable_ret ? enable_ret : ret;
- }
- 
- static ssize_t errors_show(struct device *dev, struct device_attribute *attr,
-diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
-index 753cda4b2568..77dadaae5b8f 100644
---- a/drivers/fpga/dfl-afu-main.c
-+++ b/drivers/fpga/dfl-afu-main.c
-@@ -21,6 +21,9 @@
- 
- #include "dfl-afu.h"
- 
-+#define RST_POLL_INVL 10 /* us */
-+#define RST_POLL_TIMEOUT 1000 /* us */
-+
- /**
-  * __afu_port_enable - enable a port by clear reset
-  * @pdev: port platform device.
-@@ -32,7 +35,7 @@
-  *
-  * The caller needs to hold lock for protection.
-  */
--void __afu_port_enable(struct platform_device *pdev)
-+int __afu_port_enable(struct platform_device *pdev)
- {
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
- 	void __iomem *base;
-@@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
- 	WARN_ON(!pdata->disable_count);
- 
- 	if (--pdata->disable_count != 0)
--		return;
-+		return 0;
- 
- 	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
- 
-@@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
- 	v = readq(base + PORT_HDR_CTRL);
- 	v &= ~PORT_CTRL_SFTRST;
- 	writeq(v, base + PORT_HDR_CTRL);
--}
- 
--#define RST_POLL_INVL 10 /* us */
--#define RST_POLL_TIMEOUT 1000 /* us */
-+	/*
-+	 * HW clears the ack bit to indicate that the port is fully out
-+	 * of reset.
-+	 */
-+	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
-+			       !(v & PORT_CTRL_SFTRST_ACK),
-+			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
-+		dev_err(&pdev->dev, "timeout, failure to enable device\n");
-+		return -ETIMEDOUT;
-+	}
-+
-+	return 0;
-+}
- 
- /**
-  * __afu_port_disable - disable a port by hold reset
-@@ -86,7 +99,7 @@ int __afu_port_disable(struct platform_device *pdev)
- 	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
- 			       v & PORT_CTRL_SFTRST_ACK,
- 			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
--		dev_err(&pdev->dev, "timeout, fail to reset device\n");
-+		dev_err(&pdev->dev, "timeout, failure to disable device\n");
- 		return -ETIMEDOUT;
- 	}
- 
-@@ -111,9 +124,9 @@ static int __port_reset(struct platform_device *pdev)
- 
- 	ret = __afu_port_disable(pdev);
- 	if (!ret)
--		__afu_port_enable(pdev);
-+		return ret;
- 
--	return ret;
-+	return __afu_port_enable(pdev);
- }
- 
- static int port_reset(struct platform_device *pdev)
-@@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
- static int port_enable_set(struct platform_device *pdev, bool enable)
- {
- 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
--	int ret = 0;
-+	int ret;
- 
- 	mutex_lock(&pdata->lock);
- 	if (enable)
--		__afu_port_enable(pdev);
-+		ret = __afu_port_enable(pdev);
- 	else
- 		ret = __afu_port_disable(pdev);
- 	mutex_unlock(&pdata->lock);
-diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
-index 576e94960086..e5020e2b1f3d 100644
---- a/drivers/fpga/dfl-afu.h
-+++ b/drivers/fpga/dfl-afu.h
-@@ -80,7 +80,7 @@ struct dfl_afu {
- };
- 
- /* hold pdata->lock when call __afu_port_enable/disable */
--void __afu_port_enable(struct platform_device *pdev);
-+int __afu_port_enable(struct platform_device *pdev);
- int __afu_port_disable(struct platform_device *pdev);
- 
- void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
+WARNING: unmet direct dependencies detected for CRYPTO_LIB_ARC4
+  Depends on [n]: CRYPTO [=n]
+  Selected by [m]:
+  - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+  - RTLLIB_CRYPTO_WEP [=m] && STAGING [=y] && RTLLIB [=m]
+
+This is because RTLLIB_CRYPTO_TKIP selects CRYPTO_MICHAEL_MIC and
+CRYPTO_LIB_ARC4, without depending on or selecting CRYPTO,
+despite those config options being subordinate to CRYPTO.
+
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ drivers/staging/rtl8192e/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
+index 03fcc23516fd..6e7d84ac06f5 100644
+--- a/drivers/staging/rtl8192e/Kconfig
++++ b/drivers/staging/rtl8192e/Kconfig
+@@ -26,6 +26,7 @@ config RTLLIB_CRYPTO_CCMP
+ config RTLLIB_CRYPTO_TKIP
+ 	tristate "Support for rtllib TKIP crypto"
+ 	depends on RTLLIB
++	select CRYPTO
+ 	select CRYPTO_LIB_ARC4
+ 	select CRYPTO_MICHAEL_MIC
+ 	default y
 -- 
-2.25.1
+2.27.0
 
