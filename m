@@ -2,105 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31509321C65
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E0C321C8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhBVQHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbhBVQFJ (ORCPT
+        id S231771AbhBVQNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:13:00 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55642 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231735AbhBVQKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:05:09 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848B8C061793;
-        Mon, 22 Feb 2021 08:03:55 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id kr16so8875351pjb.2;
-        Mon, 22 Feb 2021 08:03:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=g/df7huNH6MfWEYwBa1KL4hvVPRnxd7sYN0b7qrS+Eo=;
-        b=YP9xzY8apNP3InqG+PM1WTiqx1/NMTiW4Hjvdj2gSAg9FlQ8zEwFWKnqERvnc5D267
-         eB3iLEJYcvnfae/4iFq6m9bZpvBfg2nFHXDZzIGNkWp7nFxrZm66AJVldpKP/Rn2G+CF
-         z5nbRNt/5Sh6XRXpq56MxX0Vnl5/6+v5S5QBL7k3kWamaW8TcDRxcwU2n3QJmFkMFwiM
-         3XE+nR2lW9wTN6306HphrG78dAExYFAv8nzY3GkeyBLVuem0Fahpzn/ryDcQmb/Vdo8+
-         uDhGPvIf6hTom85/o7UMA4EFIdoYLupLV0yyPA97EShNNOm7iOqOxNWG0FLj1PRmGYyw
-         aSfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=g/df7huNH6MfWEYwBa1KL4hvVPRnxd7sYN0b7qrS+Eo=;
-        b=IK2a90YIlEMI7Xsi9iRKjgjgY9wB5kSFmd4PgdVKtb2EngntE6Q+ZuV0z7xOv8snys
-         3yu6v1pl5UeDusWP2FYINZeoBk7T5cJrx7P3WkCvaIJjDsBpYucVj32Vimt5uHHEjwNS
-         n4L/DVuAU+/lLKrEcRs5CDQfp2hsKn+5fEOsh8atM1st73ahO9SwqIJ6uhI4zzs6ZAJ5
-         u0DJYkfYx8zdkUCZMqaol7ZzOoDO0/WpSvDD9MxvB0x3tKZt9NdVpi2wpG0YCV6leUp/
-         Csur2ow4TJQWEnczZbjb3dx9OHV4oX4mHWQqn+pkABWtg82fRktSE2DA+ku5YrgQRb39
-         q4FA==
-X-Gm-Message-State: AOAM530C6LThdc8MHsOUOjxdFQsa8LIvyqVySiC9LUBtwLftt2I96uaA
-        mGX0yw9aMo7gGH6qru48e9I=
-X-Google-Smtp-Source: ABdhPJwVZA8/60TITCfjuud2smvskuBah0kv6QccJazhIC+JGnxqinDyG7ls9VFb59+lMsi/UtNr/A==
-X-Received: by 2002:a17:902:6949:b029:e3:1ee9:6bfd with SMTP id k9-20020a1709026949b02900e31ee96bfdmr23241817plt.66.1614009835024;
-        Mon, 22 Feb 2021 08:03:55 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:600d:a089:d92b:2fcb:b6a3:bcc0])
-        by smtp.googlemail.com with ESMTPSA id s18sm18541728pjr.14.2021.02.22.08.03.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 08:03:54 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     corbet@lwn.net
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [RFC] scripts: kernel-doc: fix typedef support for struct parsing
-Date:   Mon, 22 Feb 2021 21:33:47 +0530
-Message-Id: <20210222160347.23410-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 22 Feb 2021 11:10:37 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11MG7KcC093869;
+        Mon, 22 Feb 2021 11:09:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to : sender; s=pp1;
+ bh=e10sRKXrRQP/yyKgNz/7fjY2pJYcOYdrb1QU5xWU+X8=;
+ b=AWekrGFUH8yq/xRHBanJ81XgiKOGe8NYXEaf+zqaZ1cFsDTYPqCs5S39EWaJWAdBKC9/
+ hlhcc51lsIf38Qp5rSUlQIVD1F3j43vKp7ohzX5R3kQHztAFqWEGg+kp2umlZ/WT+yeI
+ 7HDjsRvlr3Hk94AaeTH4UjCtUWcezsXNUwY7MczAz9lpcD6U/PFeUZ1mA9I4sjwm/imE
+ XFBMlqNucHdOpFk+WgR1Ughlxnue8nCrME6U7V0BCu+aTqX/Ls8QdTF9NbbUzSfQL/fq
+ GSMixXvQ95h4XWm5NlQip1ojxXgrfz6y15OrIPlToiPsMG8sOEtVrQIsSD/rsWNGCIKI CA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36vfsq89ge-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Feb 2021 11:09:29 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11MG893V113711;
+        Mon, 22 Feb 2021 11:08:42 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36vfsq87fe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Feb 2021 11:08:17 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11MG4Xo0031127;
+        Mon, 22 Feb 2021 16:04:33 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 36tt288xgb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Feb 2021 16:04:33 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11MG4Ike37618064
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Feb 2021 16:04:18 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 788DF4C04A;
+        Mon, 22 Feb 2021 16:04:30 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 667864C046;
+        Mon, 22 Feb 2021 16:04:30 +0000 (GMT)
+Received: from t480-pf1aa2c2.fritz.box (unknown [9.145.72.151])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 22 Feb 2021 16:04:30 +0000 (GMT)
+Received: from bblock by t480-pf1aa2c2.fritz.box with local (Exim 4.94)
+        (envelope-from <bblock@linux.ibm.com>)
+        id 1lEDhF-0009vS-Qf; Mon, 22 Feb 2021 17:04:29 +0100
+Date:   Mon, 22 Feb 2021 17:04:29 +0100
+From:   Benjamin Block <bblock@linux.ibm.com>
+To:     Romain Perier <romain.perier@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        kernel-hardening@lists.openwall.com,
+        Steffen Maier <maier@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/20] scsi: zfcp: Manual replacement of the deprecated
+ strlcpy() with return values
+Message-ID: <YDPWDU7iVTY7aY2h@t480-pf1aa2c2.linux.ibm.com>
+References: <20210222151231.22572-1-romain.perier@gmail.com>
+ <20210222151231.22572-14-romain.perier@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210222151231.22572-14-romain.perier@gmail.com>
+Sender: Benjamin Block <bblock@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-22_03:2021-02-22,2021-02-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 clxscore=1011 mlxlogscore=999
+ adultscore=0 phishscore=0 impostorscore=0 mlxscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102220147
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are files in kernel, which use 'typedef struct' syntax for defining
-struct. For eg, include/linux/zstd.h, drivers/scsi/megaraid/mega_common.h,
-etc.
-However, kernel-doc still does not support it, causing a parsing error.
+On Mon, Feb 22, 2021 at 04:12:24PM +0100, Romain Perier wrote:
+> The strlcpy() reads the entire source buffer first, it is dangerous if
+> the source buffer lenght is unbounded or possibility non NULL-terminated.
+> It can lead to linear read overflows, crashes, etc...
+> 
+> As recommended in the deprecated interfaces [1], it should be replaced
+> by strscpy.
+> 
+> This commit replaces all calls to strlcpy that handle the return values
+> by the corresponding strscpy calls with new handling of the return
+> values (as it is quite different between the two functions).
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> 
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> ---
+>  drivers/s390/scsi/zfcp_fc.c |    8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/s390/scsi/zfcp_fc.c b/drivers/s390/scsi/zfcp_fc.c
+> index d24cafe02708..8a65241011b9 100644
+> --- a/drivers/s390/scsi/zfcp_fc.c
+> +++ b/drivers/s390/scsi/zfcp_fc.c
+> @@ -877,14 +877,16 @@ static void zfcp_fc_rspn(struct zfcp_adapter *adapter,
+>  	struct zfcp_fsf_ct_els *ct_els = &fc_req->ct_els;
+>  	struct zfcp_fc_rspn_req *rspn_req = &fc_req->u.rspn.req;
+>  	struct fc_ct_hdr *rspn_rsp = &fc_req->u.rspn.rsp;
+> -	int ret, len;
+> +	int ret;
+> +	ssize_t len;
+>  
+>  	zfcp_fc_ct_ns_init(&rspn_req->ct_hdr, FC_NS_RSPN_ID,
+>  			   FC_SYMBOLIC_NAME_SIZE);
+>  	hton24(rspn_req->rspn.fr_fid.fp_fid, fc_host_port_id(shost));
+> -	len = strlcpy(rspn_req->rspn.fr_name, fc_host_symbolic_name(shost),
+> +	len = strscpy(rspn_req->rspn.fr_name, fc_host_symbolic_name(shost),
+>  		      FC_SYMBOLIC_NAME_SIZE);
+> -	rspn_req->rspn.fr_name_len = len;
+> +	if (len != -E2BIG)
+> +		rspn_req->rspn.fr_name_len = len;
 
-For eg, running scripts/kernel-doc -none on include/linux/zstd.h emits:
-"error: Cannot parse struct or union!"
+That is a bug. Leaving `rspn.fr_name_len` uninitialized defeats the
+purpose of sending a RSPN.
 
-Add support for parsing it.
+How about:
+	if (len == -E2BIG)
+		rspn_req->rspn.fr_name_len = FC_SYMBOLIC_NAME_SIZE - 1;
+	else
+		rspn_req->rspn.fr_name_len = len;
 
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
- scripts/kernel-doc | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+>  
+>  	sg_init_one(&fc_req->sg_req, rspn_req, sizeof(*rspn_req));
+>  	sg_init_one(&fc_req->sg_rsp, rspn_rsp, sizeof(*rspn_rsp));
+> 
 
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 8b5bc7bf4bb8..46e904dc3f87 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -1201,12 +1201,20 @@ sub dump_union($$) {
- sub dump_struct($$) {
-     my $x = shift;
-     my $file = shift;
-+    my $decl_type;
-+    my $members;
- 
-     if ($x =~ /(struct|union)\s+(\w+)\s*\{(.*)\}(\s*(__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*/) {
--	my $decl_type = $1;
-+	$decl_type = $1;
- 	$declaration_name = $2;
--	my $members = $3;
-+	$members = $3;
-+    } elsif ($x =~ /typedef\s+(struct|union)\s*\{(.*)\}(?:\s*(?:__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*\s*(\w*)\s*;/) {
-+	$decl_type = $1;
-+	$declaration_name = $3;
-+	$members = $2;
-+    }
- 
-+    if ($members) {
- 	if ($identifier ne $declaration_name) {
- 	    print STDERR "${file}:$.: warning: expecting prototype for $decl_type $identifier. Prototype was for $decl_type $declaration_name instead\n";
- 	    return;
 -- 
-2.17.1
-
+Best Regards, Benjamin Block  / Linux on IBM Z Kernel Development / IBM Systems
+IBM Deutschland Research & Development GmbH    /    https://www.ibm.com/privacy
+Vorsitz. AufsR.: Gregor Pillen         /        Geschäftsführung: Dirk Wittkopp
+Sitz der Gesellschaft: Böblingen / Registergericht: AmtsG Stuttgart, HRB 243294
