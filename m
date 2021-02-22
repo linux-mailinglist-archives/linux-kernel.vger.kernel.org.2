@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C7E3216DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3710A3217A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbhBVMh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:37:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44940 "EHLO mail.kernel.org"
+        id S231436AbhBVMw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:52:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230230AbhBVMQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:16:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2816664EF5;
-        Mon, 22 Feb 2021 12:15:46 +0000 (UTC)
+        id S231156AbhBVMR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:17:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A689B64F19;
+        Mon, 22 Feb 2021 12:17:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996146;
-        bh=JzL1R1kLFmc4+X+GW/BnLIETWiIar3H27kZ/NPvXEQk=;
+        s=korg; t=1613996259;
+        bh=NFxsOPs56Ag2RAf7CIPzUo7IHlehnyAYbQ2D0zUHG1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O0EPGU2FSKcreF+WS6AITwgXw3FUcl6PsZbM2/DjokCoPYs0P97Bu4nrK2oaVdntc
-         oy0yGbR3N9wDxCU10ofIlEOXFknib2hS2HUoTI82Iv5GfBH+Z/DPht7uZalNndMiEj
-         C3iWIYQwYpnu9ldlL/K3CmmoznyKbluvJESkgXnM=
+        b=sldNj4uQ/yn7aOtu1O8miYx6/p4wA+/193tBtTo2W/QZRIR0yLMkWJquJyOYIYXEC
+         ksZsAmTHIbe61z4ccyrJWqYyvzlwLujpGf871NUDDulQ52dQIwRGxW3qY3SrZBTYR/
+         /c5ng2UGbU4SN/c5K5yz6nuD8ExcuHWcqurw3Gow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Julien Grall <jgrall@amazon.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.4 08/13] xen/arm: dont ignore return errors from set_phys_to_machine
+        syzbot+1bd2b07f93745fa38425@syzkaller.appspotmail.com,
+        Sabyrzhan Tasbolatov <snovitoll@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 34/50] net/rds: restrict iovecs length for RDS_CMSG_RDMA_ARGS
 Date:   Mon, 22 Feb 2021 13:13:25 +0100
-Message-Id: <20210222121018.539342040@linuxfoundation.org>
+Message-Id: <20210222121026.148735621@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121013.583922436@linuxfoundation.org>
-References: <20210222121013.583922436@linuxfoundation.org>
+In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
+References: <20210222121019.925481519@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Stabellini <stefano.stabellini@xilinx.com>
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 
-commit 36bf1dfb8b266e089afa9b7b984217f17027bf35 upstream.
+commit a11148e6fcce2ae53f47f0a442d098d860b4f7db upstream.
 
-set_phys_to_machine can fail due to lack of memory, see the kzalloc call
-in arch/arm/xen/p2m.c:__set_phys_to_machine_multi.
+syzbot found WARNING in rds_rdma_extra_size [1] when RDS_CMSG_RDMA_ARGS
+control message is passed with user-controlled
+0x40001 bytes of args->nr_local, causing order >= MAX_ORDER condition.
 
-Don't ignore the potential return error in set_foreign_p2m_mapping,
-returning it to the caller instead.
+The exact value 0x40001 can be checked with UIO_MAXIOV which is 0x400.
+So for kcalloc() 0x400 iovecs with sizeof(struct rds_iovec) = 0x10
+is the closest limit, with 0x10 leftover.
 
-This is part of XSA-361.
+Same condition is currently done in rds_cmsg_rdma_args().
 
-Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Julien Grall <jgrall@amazon.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+[1] WARNING: mm/page_alloc.c:5011
+[..]
+Call Trace:
+ alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
+ kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
+ kmalloc_array include/linux/slab.h:592 [inline]
+ kcalloc include/linux/slab.h:621 [inline]
+ rds_rdma_extra_size+0xb2/0x3b0 net/rds/rdma.c:568
+ rds_rm_size net/rds/send.c:928 [inline]
+
+Reported-by: syzbot+1bd2b07f93745fa38425@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Link: https://lore.kernel.org/r/20210201203233.1324704-1-snovitoll@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/arm/xen/p2m.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/rds/rdma.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/arm/xen/p2m.c
-+++ b/arch/arm/xen/p2m.c
-@@ -95,8 +95,10 @@ int set_foreign_p2m_mapping(struct gntta
- 	for (i = 0; i < count; i++) {
- 		if (map_ops[i].status)
- 			continue;
--		set_phys_to_machine(map_ops[i].host_addr >> XEN_PAGE_SHIFT,
--				    map_ops[i].dev_bus_addr >> XEN_PAGE_SHIFT);
-+		if (unlikely(!set_phys_to_machine(map_ops[i].host_addr >> XEN_PAGE_SHIFT,
-+				    map_ops[i].dev_bus_addr >> XEN_PAGE_SHIFT))) {
-+			return -ENOMEM;
-+		}
- 	}
+--- a/net/rds/rdma.c
++++ b/net/rds/rdma.c
+@@ -531,6 +531,9 @@ int rds_rdma_extra_size(struct rds_rdma_
+ 	if (args->nr_local == 0)
+ 		return -EINVAL;
  
- 	return 0;
++	if (args->nr_local > UIO_MAXIOV)
++		return -EMSGSIZE;
++
+ 	iov->iov = kcalloc(args->nr_local,
+ 			   sizeof(struct rds_iovec),
+ 			   GFP_KERNEL);
 
 
