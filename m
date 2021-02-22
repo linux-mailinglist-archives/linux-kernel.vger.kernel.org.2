@@ -2,63 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26D3320F18
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7C5320F1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhBVB3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:29:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229889AbhBVB3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:29:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 90D0B60234;
-        Mon, 22 Feb 2021 01:28:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613957337;
-        bh=r/mieAIuGocXGqqhoN00S3IK812JKkJYsADOgDF0Gto=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=jhj/TL+CzZi/aIMCNJr+vlmfPtC1mbjDSPSI8S/KFuKLV1TEFQ++0EQcSq1BGfPyv
-         hMs5Ew8PERJhRTaXrCoSu+7pxbqjUsmj6pl98vTU2T+S2P7eCOFtd7YJIxFqqkGaWb
-         nv6v9M/Ce99Xg1R7002wFFjMy9e3tqoA5ePlZlVdxZo5tyibFvdgz3iMFqm3stJhZ8
-         8mvbsi48NbtJvYTuA+mB7Rc2jLTskHOWLh/UL+1WqxKzy/xD5yPD4mRzug/FK6MFB5
-         KGFs1mr1IS+9wV9YqHuv5zIwheUfBj93S3LF3XJGDtt8HXUGzVLrbVCYeWfkcbg0Dd
-         OGQpuyiFQZ0EA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 78E4E60A3D;
-        Mon, 22 Feb 2021 01:28:57 +0000 (UTC)
-Subject: Re: [GIT PULL] Crypto Update for 5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210215024721.GA20593@gondor.apana.org.au>
-References: <20200803044024.GA6429@gondor.apana.org.au>
- <20201012033249.GA25179@gondor.apana.org.au>
- <20201214055515.GA14196@gondor.apana.org.au> <20210215024721.GA20593@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210215024721.GA20593@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
-X-PR-Tracked-Commit-Id: 0de9dc80625b0ca1cb9730c5ed1c5a8cab538369
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 31caf8b2a847214be856f843e251fc2ed2cd1075
-Message-Id: <161395733744.5020.10211479517423908542.pr-tracker-bot@kernel.org>
-Date:   Mon, 22 Feb 2021 01:28:57 +0000
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+        id S230334AbhBVBaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:30:35 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54738 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhBVBa0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 20:30:26 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 483AE517;
+        Mon, 22 Feb 2021 02:29:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613957384;
+        bh=WIYtArx8kmB0bXNl34Zf0YcBtLjG5KZn46ZFZXcecfY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SGRmlIAl98Xa6QRVSVdfZvpUgHfGUlDNhm8dirby3KsDKKu9oTwfSMRkNhulp9spj
+         xNLfhNoMOIrsNgi7fjEEDJW6FIlBIskHTQdPbFTOVKAFOf7PCWCk3m5ljn8U07FEef
+         dpRC3zr6V3aaFD7HwfGiw4anSBVD8khSBlIJfEbo=
+Date:   Mon, 22 Feb 2021 03:29:17 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/16] media: i2c: max9286: Rename reverse_channel_mv
+Message-ID: <YDMI7TnwreLNT7yh@pendragon.ideasonboard.com>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-11-jacopo+renesas@jmondi.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210216174146.106639-11-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 15 Feb 2021 13:47:21 +1100:
+Hi Jacopo,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+Thank you for the patch.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/31caf8b2a847214be856f843e251fc2ed2cd1075
+On Tue, Feb 16, 2021 at 06:41:40PM +0100, Jacopo Mondi wrote:
+> Rename the reverse_channel_mv variable to init_rev_chan_mv as
+> the next patches will cache the reverse channel amplitude in
+> a new driver variable.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  drivers/media/i2c/max9286.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index 1d9951215868..1f14cd817fbf 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -163,7 +163,7 @@ struct max9286_priv {
+>  	unsigned int mux_channel;
+>  	bool mux_open;
+>  
+> -	u32 reverse_channel_mv;
+> +	u32 init_rev_chan_mv;
 
-Thank you!
+Maybe it could be time to add some kerneldoc to this structure, or just
+a comment for this field, to explain what it stores ?
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+>  
+>  	struct v4l2_ctrl_handler ctrls;
+>  	struct v4l2_ctrl *pixelrate;
+> @@ -563,7 +563,7 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
+>  	 * - Disable auto-ack as communication on the control channel are now
+>  	 *   stable.
+>  	 */
+> -	if (priv->reverse_channel_mv < 170)
+> +	if (priv->init_rev_chan_mv < 170)
+>  		max9286_reverse_channel_setup(priv, 170);
+>  	max9286_check_config_link(priv, priv->source_mask);
+>  
+> @@ -971,7 +971,7 @@ static int max9286_setup(struct max9286_priv *priv)
+>  	 * only. This should be disabled after the mux is initialised.
+>  	 */
+>  	max9286_configure_i2c(priv, true);
+> -	max9286_reverse_channel_setup(priv, priv->reverse_channel_mv);
+> +	max9286_reverse_channel_setup(priv, priv->init_rev_chan_mv);
+>  
+>  	/*
+>  	 * Enable GMSL links, mask unused ones and autodetect link
+> @@ -1236,9 +1236,9 @@ static int max9286_parse_dt(struct max9286_priv *priv)
+>  	if (of_property_read_u32(dev->of_node,
+>  				 "maxim,reverse-channel-microvolt",
+>  				 &reverse_channel_microvolt))
+> -		priv->reverse_channel_mv = 170;
+> +		priv->init_rev_chan_mv = 170;
+>  	else
+> -		priv->reverse_channel_mv = reverse_channel_microvolt / 1000U;
+> +		priv->init_rev_chan_mv = reverse_channel_microvolt / 1000U;
+>  
+>  	priv->route_mask = priv->source_mask;
+>  
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Regards,
+
+Laurent Pinchart
