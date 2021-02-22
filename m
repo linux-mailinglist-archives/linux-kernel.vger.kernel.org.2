@@ -2,123 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52AA321FF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6B5322012
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:25:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbhBVTTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 14:19:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35900 "EHLO
+        id S233106AbhBVTYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 14:24:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232888AbhBVTOS (ORCPT
+        with ESMTP id S233238AbhBVTSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:14:18 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECAAC061356
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:12:50 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id i9so259883wml.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:12:50 -0800 (PST)
+        Mon, 22 Feb 2021 14:18:45 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92FAC06178C
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:17:52 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id e13so27895128ejl.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:17:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8R2nhedFMBS0Evz/oU72XEbm/1TReocnZGcamPRVP1g=;
-        b=PmrT5HrV+fQlRSeimNblYdmPwTIB7+QbCBnQ9PPV26gjLmFV34aw6iLtNoL2AIZE4d
-         3mgj74vk+P5CPNXlZZHA5+WSZ8QI2XSIoDp+ev0YlAv0FdmsZv+KJHpDK8lm6jpYMdIr
-         BkJThbQT/sNbmugmQHsF0eORG9vTDIcEo4nFT5Aidcw1WdkX7c6bREKXdQZtROIRooMT
-         yrKmgxlRxVDlphH2dJVf51W93fDrMhYsznZtTo0Z5MI0Jgkx0SPMrx5+EEIUqlt9fJQq
-         nRL5UItgtusjNKgl/lUWtL5WC6lxKEXf2TtxYWpLbWwdrOI42mTd0C9iX54jWCWhzFp6
-         8/Sg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mL0bjhfITdu5839ghM56EtmuJ0mV3o1IEyaUJSuFMFs=;
+        b=0VKXgI+d4N8/TsZjQE/E5fkYxDFeC7KFxegFQ1tUDUQWXj1P6cXOsiH5slGqxqrmbb
+         dBx4HcRD8Hzu5KRTHX5N1ybYz5yC5e7kYtwfTlsuU2esXKkYljaX8VDDRS1DaE/uHUin
+         QAGppPvDyByXQFp+iE9GKGPwF3A2dB1mFytnHdtGJw+XJLGP5r33xK45enAbysyTaEHa
+         57tTo6DZyOE+uYzDNdPTZAL71cYVMSUiSI5K7sek4p2eMAFj1YmFFfuyLNvbSLKSE5kW
+         D+y3PQVbEo19hoNoanDSrLywkZqhcPGuG5KVCRRj/oMJKHnyCwkRLTAD6EZO4JnoconN
+         aV4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8R2nhedFMBS0Evz/oU72XEbm/1TReocnZGcamPRVP1g=;
-        b=hMXWe/UphNj9n4n86B1VwIy72hZQn8x8DOd/1Z3zTIdaJL0r05jdJHlhVzGy9bPJVp
-         XoERWsDUDDazqNG7089eNZh8Bk/AcGTGg+f9HHS8VnIjg/8dTLcCLzkEa78IURS10K9W
-         giOIOioYSrM0aw7115ElZu88p4ubJSmtBvR7xxvGFwN2INGGsKSdF/k6wksZ94HGQPu8
-         U+q9ZqQwH89BriMsTYkhdqerrnrqq7zmrFLTL+0dP6wdjByd7Y3bGZEuQ/7Ix+1KHjhQ
-         /nAqXCAtgg1/VtdBNrin5bxuU21rGQuTVXwKp1/cr7pO/fn+7PgaJrIvPXF43CuRPngJ
-         l6jw==
-X-Gm-Message-State: AOAM530YjPbNYYacmdJDq3dLltQGWvLNlhrRFNBv3CCHbi4ftbEnq9p5
-        6Rk1UhY02rD7BTCV9Dz/zlyyrw==
-X-Google-Smtp-Source: ABdhPJySNOsw6p+WnFtTBSJswZjYlpQht23XuomeLaPvabdFFun76t06rZ+ctqF96HKM/J/wzaSwBg==
-X-Received: by 2002:a1c:4d0d:: with SMTP id o13mr4893612wmh.147.1614021169161;
-        Mon, 22 Feb 2021 11:12:49 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:246c:9c33:7c45:77cd? ([2a01:e34:ed2f:f020:246c:9c33:7c45:77cd])
-        by smtp.googlemail.com with ESMTPSA id m184sm264439wmf.15.2021.02.22.11.12.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 11:12:48 -0800 (PST)
-Subject: Re: [GIT PULL] thermal for v5.12-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Lukasz Luba <Lukasz.Luba@arm.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Colin King <colin.king@canonical.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>
-References: <ace202cb-b9bc-c43a-8023-9c45946af3bf@linaro.org>
- <CAHk-=wiaespvE0HmhpJhcNsJXob6WJCH0BdD5XuvBJP7KF_EFg@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <0e61a669-129e-b223-644a-33da100e6d5e@linaro.org>
-Date:   Mon, 22 Feb 2021 20:12:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mL0bjhfITdu5839ghM56EtmuJ0mV3o1IEyaUJSuFMFs=;
+        b=ap5cDAxKGMFBFQjgBUA1gTFxvgrjSOTUg6od7deSoZw2zfCdGejbNIEcoMM/JI0FxK
+         tA0gf17WdPI6vKdYH2je9tMBi6RzZjOTd3QAWhkb2uQ0E98YKpNbFI6JUjBa7UlocJU2
+         vemAo1hxF1eS5e8i2f4j0jR4VLvTievVXTZZyYI1OwEVizlCESqh4y3WBy/u3Xe8MNB6
+         d+5AopdrWELW8a1tE2JXHuEBZkFrs7RGVo5bmzTPA933TE0oBa+gMwo2NlyTDO5y6bvj
+         vgwzpN7HTXBz2L5KEQF1jzo5ma1duxGunu1CQKy3cEeqjxB+DIaoSCbK8Gguscph5WgL
+         3sJg==
+X-Gm-Message-State: AOAM532iZ61cbIpXNpyt6ojJttyH8Q5J/gjPTfenCauMhvyOqGBrQg4p
+        QwKm0ImRJeXjfAdtqma12uRdgohPaNCrU/ncUhohGw==
+X-Google-Smtp-Source: ABdhPJwkiWshDLTsz8a3A7EzLjYNcKqX6Z1F01E3QE0NjkocZdW4txgaDcjEXqIRRI2IV4obwnL12Zk+rIG7YnuhZ4g=
+X-Received: by 2002:a17:906:8692:: with SMTP id g18mr22575502ejx.418.1614021471495;
+ Mon, 22 Feb 2021 11:17:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wiaespvE0HmhpJhcNsJXob6WJCH0BdD5XuvBJP7KF_EFg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210208084920.2884-1-rppt@kernel.org> <20210208084920.2884-9-rppt@kernel.org>
+ <20210222073452.GA30403@codon.org.uk> <20210222102359.GE1447004@kernel.org>
+In-Reply-To: <20210222102359.GE1447004@kernel.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 22 Feb 2021 11:17:46 -0800
+Message-ID: <CAPcyv4hCXZFmeMkKxN54Yw3ZbvoYQ3Z9y9Ayv42i6u+24Bkmqg@mail.gmail.com>
+Subject: Re: [PATCH v17 08/10] PM: hibernate: disable when there are active
+ secretmem users
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Matthew Garrett <mjg59@srcf.ucam.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-riscv@lists.infradead.org, X86 ML <x86@kernel.org>,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 22, 2021 at 2:24 AM Mike Rapoport <rppt@kernel.org> wrote:
+>
+> On Mon, Feb 22, 2021 at 07:34:52AM +0000, Matthew Garrett wrote:
+> > On Mon, Feb 08, 2021 at 10:49:18AM +0200, Mike Rapoport wrote:
+> >
+> > > It is unsafe to allow saving of secretmem areas to the hibernation
+> > > snapshot as they would be visible after the resume and this essentially
+> > > will defeat the purpose of secret memory mappings.
+> >
+> > Sorry for being a bit late to this - from the point of view of running
+> > processes (and even the kernel once resume is complete), hibernation is
+> > effectively equivalent to suspend to RAM. Why do they need to be handled
+> > differently here?
+>
+> Hibernation leaves a copy of the data on the disk which we want to prevent.
 
-Hi Linus,
-
-On 22/02/2021 18:44, Linus Torvalds wrote:
-> On Fri, Feb 19, 2021 at 3:54 AM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
->>
->> Note a set of changes for the qcom adc driver rely on an immutable
->> branch from the iio tree:
-> 
-> That part is fine, but what _isn't_ great is the merge commit message.
-> 
-> This is the message in its entirety:
-> 
->    "Merge remote-tracking branch
-> 'iio-thermal-5.11-rc1/ib-iio-thermal-5.11-rc1' into testing"
-> 
-> Notice how it doesn't say _anything_ useful.
-> 
-> Merges are commits, and they should have commit messages with
-> *explanation* the same way all regular commits should. In fact, they
-> generally should have *more* explanation, since they are fundamentally
-> more interesting and subtle than some one-liner obvious bug-fix.
-> 
-> So this all looks otherwise fine, and I like how you were clearly
-> aware of the whole cross-tree merge, and how you let me kn0ow about
-> it. I appreciate that part, and I've pulled your branch.
-> 
-> But I wanted to really take this moment to point out that merge
-> commits really should have messages explaining *why* and *what* got
-> merged. Not just the technical "I merged that tree".
-
-Thanks for pointing this out, I will take care in the future to give a
-better description.
-
-  -- Daniel
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Why not document that users should use data at rest protection
+mechanisms for their hibernation device? Just because secretmem can't
+assert its disclosure guarantee does not mean the hibernation device
+is untrustworthy.
