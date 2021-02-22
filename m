@@ -2,81 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D163321CA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C81321CAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbhBVQTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:19:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54054 "EHLO
+        id S231321AbhBVQUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhBVQSs (ORCPT
+        with ESMTP id S231244AbhBVQUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:18:48 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC035C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:17:56 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id l18so9391130pji.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:17:56 -0800 (PST)
+        Mon, 22 Feb 2021 11:20:25 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B67C061574;
+        Mon, 22 Feb 2021 08:19:42 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id w1so30212044ejf.11;
+        Mon, 22 Feb 2021 08:19:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0oTXE9HVvDGBzY+kLMPkfFY7CNArufakj02yyUEBmno=;
-        b=i2eLFEYtrH5/NOdWQgdMxO6XM8eLfaIS9LJvKXZSM7PbjDjMHqzHltePB9u1NHtObE
-         FUa3176Ox5VlOmH9Ofsemis8eM5xkxLkxpRHn3AzD+qe2J+X1G4+P1AViF+czhL+Kjg7
-         7Kb91jgGSZh3VB+ssjnbVdip8eabWswa5+ON899RdjuUuqzM8AzaUC8ow1MT171yRWoB
-         yox9sZHMQAnczIS7DpBNqrPJ6H4Agy5IhBc9g837YJbd7RT34QI/fS6qd8K8r0DzaVrf
-         gcA/cPWsvh6S6K9tsgyj23ejw9cOCajinDZ8b9uVRqRlzJYOLSi8zr3b6E+C7GoiaN1z
-         hkXA==
+        h=from:to:cc:subject:date:message-id;
+        bh=jrKMxz76VrtujF1xTtdvcqWh/FiUwzdqgqPn8MABZcQ=;
+        b=tbCF6H7dNXWERfQSXS6cEb8eXbKZ4q0uTOEsLLhVC/ayjIosiu3ZdXWK3X6QJJpfTO
+         oP5eo1+Ja+BAy5CLSQIdpeEA69xPIckoipNbGE8SiK6P9ZpgTlESyb+DsYXapjzbzVi0
+         Psi4XvMUK6Zm8WwdD8/jVbGflL/RD3XZh2jY8FlNoDsxsfN/54xgI0mUW9Jm3jS8QJ6O
+         DoC//YlzI54ErTJ6HEHWpVCiIJ4k+pDXx4DAdNf2ZMUHfPcGdaDisB6IjQaE3CYT4c29
+         9pcqs6IicpJQvVRkY+tI7SsPqNeoXgRHZdsw+ET/Fa2YebRI82TOmwWxTDrXmNNsQLhB
+         c0hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0oTXE9HVvDGBzY+kLMPkfFY7CNArufakj02yyUEBmno=;
-        b=e4le9wEA0xhw4MgEI59zgakRRiYXB04R0yvLFtDy/Y4pWJLdMhhRthPLZuto6QqkKB
-         91o36dBnpDfKss3jwHKSjsmCO7qF1nYva056s7Kbdusp2l/vReAGZ8PLQeWQV9nU2dG1
-         F0YDZIEgq1tnkvOEijYVLsSJKVqGJpxx0lfQpVFNtS/MemqoQfX/qS9S0kBBg2W2MuEv
-         k+1Lv26Hxif8+HRSeKfgSI/RF+oIdHn6h0Qo0HVJHqziDqxcFO3VrAUMRIn1zqJ1+oGo
-         DQyIJ9DZzzBUz9ks+uTwo+VieNW0jXlD7cmApYXVayavrMFdcDDG2bwYhwkfNAH5Od4K
-         ohkg==
-X-Gm-Message-State: AOAM5339r/1mIkl5O52eTyS31GQRCxiK7AYwp7mhS/n9RmwMDKZaYZ4/
-        t/9TdjYuZPtbQCi9Ms9QZ4bfFVtUuVYpZfVO
-X-Google-Smtp-Source: ABdhPJw6D3qE+/uQHgJBtNurxFxZfoOXiXjC7C10ymQXt0Sq4JgqsmuZC0WuHVUE/aLz0I2GeOZmUQ==
-X-Received: by 2002:a17:90a:4dc1:: with SMTP id r1mr24490758pjl.12.1614010676264;
-        Mon, 22 Feb 2021 08:17:56 -0800 (PST)
-Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
-        by smtp.gmail.com with ESMTPSA id ml7sm14216393pjb.28.2021.02.22.08.17.52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=jrKMxz76VrtujF1xTtdvcqWh/FiUwzdqgqPn8MABZcQ=;
+        b=GnMH0O+GHTZhQQbrdaZ9Qwogg/ofAiFbr0R7xFh2wcj2nmUR4DS9TvbHIYhlSeBkXL
+         eWNlhLxaXbvmEUpoNFQVdEFInCLwk7X2yvC4GuRtbPb7KuwXnEAgo/6OLbr4BMwO9wz5
+         nLiYCYpy8JCmxgLHMYP+d5T454my+BdBe9JLKo6O3daXjDp9+vO2Hq0ZyMaRG5QPfq/X
+         Am59DjR9GDXXwFnVW3zip4Nos4mnotm6nJ8Fs9GBwgn9hv83KSCdC9DG316YBDIr4FTr
+         M7n96esAJ3IT/I5F4ytIxSYIwYTiBFKOmsK4t+uW6DGbJ/9C+IneciKaMOoPGs2H2Y4W
+         k8VQ==
+X-Gm-Message-State: AOAM531DfsZrQYGCnQcw49OmrE5n3WbYdVs4PiUjMJABOb+slC7/xpBI
+        p20BrNmH0rSMrUlMViC0xFY=
+X-Google-Smtp-Source: ABdhPJymsCglaF9UgI/Qnjwt/XNzwiLp23cWL9gxOA1KKbBrbEkowNuvAZGKz41lNo2Ny8QHbHP8RA==
+X-Received: by 2002:a17:906:3850:: with SMTP id w16mr22079770ejc.286.1614010781593;
+        Mon, 22 Feb 2021 08:19:41 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d6b:2000:6504:2c93:2a67:f7e2])
+        by smtp.gmail.com with ESMTPSA id i7sm67876ejf.59.2021.02.22.08.19.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 08:17:54 -0800 (PST)
-Date:   Mon, 22 Feb 2021 08:17:49 -0800
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     Anton Altaparmakov <anton@tuxera.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] ntfs: check for valid standard information attribute
-Message-ID: <YDPZLTZ/eLEw9rLT@nuc10>
-References: <20210217155930.1506815-1-rkovhaev@gmail.com>
- <42B686E5-92C1-4AD3-8CF4-E9AB39CBDB7B@tuxera.com>
- <20210219104956.09e869c36f065a78d1901725@linux-foundation.org>
- <A4498E63-33DC-4DAA-837D-D97B8F29F70C@tuxera.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <A4498E63-33DC-4DAA-837D-D97B8F29F70C@tuxera.com>
+        Mon, 22 Feb 2021 08:19:40 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Cc:     "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
+        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH 0/5] Remove dead linux-mips.org references
+Date:   Mon, 22 Feb 2021 17:19:00 +0100
+Message-Id: <20210222161905.1153-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 02:18:50PM +0000, Anton Altaparmakov wrote:
-> Rustam would you like to resubmit with an improved/extended description?
-sure thing, no problem!
+Dear all,
 
-> when resubmitting with better description, please also add the 
-> "Cc: stable@vger.kernel.org" line together with the "Signed-off-by", 
-> etc lines (note no need to actually put this in CC: field of the email 
-> iteslf).
-i will do that, thanks Andrew and Anton
+The domain lookup for linux-mips.org fails for quite some time now.
+Hence, webpages, the patchwork instance and Ralf Baechle's email there is
+not reachable anymore.
+
+First, I updated all sections in MAINTAINERS for references with linux-mips.org.
+Then, I also quickly scanned through the whole git tree for linux-mips.org
+references, and step-wise filtered out obvious copyright holder lines and
+references to old email addresses.
+
+  git ls-files | xargs grep "linux-mips.org" | \
+    grep -v -i "Copyright" | grep -v -i "MODULE_AUTHOR" | grep -v -i "written" | \
+    grep -v "Ralf" | grep -v "Maciej" | grep -v "Yoichi" | grep -v "Ladislav"
+
+
+I removed dead references or replaced them with their living counterparts if
+available. However, these two cases remain and somebody might want to have a look:
+
+  1. case in ./arch/mips/include/asm/page.h:
+
+<snip>
+/*
+ * RELOC_HIDE was originally added by 6007b903dfe5f1d13e0c711ac2894bdd4a61b1ad
+ * (lmo) rsp. 8431fd094d625b94d364fe393076ccef88e6ce18 (kernel.org).  The
+ * discussion can be found in
+ * https://lore.kernel.org/lkml/a2ebde260608230500o3407b108hc03debb9da6e62c@mail.gmail.com
+ *
+ * It is unclear if the misscompilations mentioned in
+ * https://lore.kernel.org/lkml/1281303490-390-1-git-send-email-namhyung@gmail.com
+ * also affect MIPS so we keep this one until GCC 3.x has been retired
+ * before we can apply https://patchwork.linux-mips.org/patch/1541/
+ */
+</snip>
+
+  Decision: Keep as is. Although GCC 3.x is long retired, it is unclear what
+  https://patchwork.linux-mips.org/patch/1541/ is and if it has been already
+  applied or not.
+  Question: does anyone know how to identify this patch?
+
+
+  2. case in ./drivers/parport/parport_ip32.c:
+
+    linux-mips.org tree is referred to in an old To do item:
+
+<snip>
+ * To do:
+ *
+ *      Fully implement ECP mode.
+ *      EPP and ECP mode need to be tested.  I currently do not own any
+ *      peripheral supporting these extended mode, and cannot test them.
+ *      If DMA mode works well, decide if support for PIO FIFO modes should be
+ *      dropped.
+ *      Use the io{read,write} family functions when they become available in
+ *      the linux-mips.org tree.  Note: the MIPS specific functions readsb()
+ *      and writesb() are to be translated by ioread8_rep() and iowrite8_rep()
+ *      respectively.
+</snip>
+
+  Decision: Keep as is; anyone that wants to follow up on this will probably
+  understand that the reference is outdated anyway.
+
+
+Please comment on these clean-up patches on this administrative topic.
+
+Patch set applies cleanly on next-20210222.
+
+Thanks,
+
+Lukas
+
+
+Lukas Bulwahn (5):
+  MAINTAINERS: mark sections from Ralf Baechle orphan
+  MAINTAINERS: remove linux-mips.org references
+  arch: mips: update references to current linux-mips list
+  arch: mips: remove dead references
+  MIPS: SGI-IP27: fix spelling in Copyright
+
+ MAINTAINERS                     | 20 ++++++--------------
+ arch/mips/Kconfig               |  8 +-------
+ arch/mips/jazz/Kconfig          | 12 +++---------
+ arch/mips/kernel/r4k-bugs64.c   |  2 +-
+ arch/mips/lib/iomap-pci.c       |  2 +-
+ arch/mips/sgi-ip27/ip27-timer.c |  4 ++--
+ arch/mips/sgi-ip32/ip32-irq.c   |  2 +-
+ tools/include/nolibc/nolibc.h   |  3 +--
+ 8 files changed, 16 insertions(+), 37 deletions(-)
+
+-- 
+2.17.1
 
