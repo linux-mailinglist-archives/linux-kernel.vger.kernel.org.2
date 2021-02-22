@@ -2,68 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF383211C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 893B53211C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhBVIJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 03:09:11 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:58731 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbhBVIIy (ORCPT
+        id S230422AbhBVIIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:08:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230352AbhBVII2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:08:54 -0500
-X-Originating-IP: 81.185.166.122
-Received: from localhost.localdomain (122.166.185.81.rev.sfr.net [81.185.166.122])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 13306C0006;
-        Mon, 22 Feb 2021 08:07:56 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>, kasan-dev@googlegroups.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH] riscv: Pass virtual addresses to kasan_mem_to_shadow
-Date:   Mon, 22 Feb 2021 03:07:34 -0500
-Message-Id: <20210222080734.31631-1-alex@ghiti.fr>
-X-Mailer: git-send-email 2.20.1
+        Mon, 22 Feb 2021 03:08:28 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAC9C061574;
+        Mon, 22 Feb 2021 00:07:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=Tr1ML1nr5oksMQv9KAcH0/1j9EyorwBVbrTZIi5dm7Q=; b=GMIURamVFWbPlGldFnkn9UjeIR
+        7QCCKOgZf2pEfTnLGRQKw1Q6kuUZJgfFd0PUnSV1RbXyPbrjPbkZBTsrkGnwrsHmhgIzcTHBMyWDK
+        Ota8t2vmyf40yFBfFJPUzEhOprfhZ+6VYn/V76LpQLyS9b3diYTIPOMK3FeGLquaqWa+3+6QvFmLU
+        l+tfb7AC+zaOiyu6pK8LwRhomgmsTMWiHUdSxB+DZ+f+s9AbKiAJco0XRFRSFXgEsN2MaXmaijWJY
+        8cvk4Lyk2yAyE54F/QDi3YkHGhQflfDi3+d0j4me1+KyKji4f+Am2k0Wn5p0gDs0anmprm7z1wD/9
+        5Uo0hJ6A==;
+Received: from [2601:1c0:6280:3f0::d05b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lE6Ft-0001kQ-48; Mon, 22 Feb 2021 08:07:45 +0000
+Subject: Re: [PATCH] drivers: input: mouse: Change postive to positive in the
+ file alps.c
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, pali@kernel.org,
+        dmitry.torokhov@gmail.com, rydberg@bitmath.org,
+        colin.king@canonical.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210222075439.32201-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <97932a41-0d3b-adaa-3b08-35c6e81763ff@infradead.org>
+Date:   Mon, 22 Feb 2021 00:07:40 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210222075439.32201-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kasan_mem_to_shadow translates virtual addresses to kasan shadow
-addresses whereas for_each_mem_range returns physical addresses: it is
-then required to use __va on those addresses before passing them to
-kasan_mem_to_shadow.
+On 2/21/21 11:54 PM, Bhaskar Chowdhury wrote:
+> 
+> s/postive/positive/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Fixes: b10d6bca8720 ("arch, drivers: replace for_each_membock() with for_each_mem_range()")
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
----
- arch/riscv/mm/kasan_init.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-index 4b9149f963d3..6d3b88f2c566 100644
---- a/arch/riscv/mm/kasan_init.c
-+++ b/arch/riscv/mm/kasan_init.c
-@@ -148,8 +148,8 @@ void __init kasan_init(void)
- 			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
- 
- 	for_each_mem_range(i, &_start, &_end) {
--		void *start = (void *)_start;
--		void *end = (void *)_end;
-+		void *start = (void *)__va(_start);
-+		void *end = (void *)__va(_end);
- 
- 		if (start >= end)
- 			break;
+> ---
+>  drivers/input/mouse/alps.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/mouse/alps.c b/drivers/input/mouse/alps.c
+> index b067bfd2699c..4a6b33bbe7ea 100644
+> --- a/drivers/input/mouse/alps.c
+> +++ b/drivers/input/mouse/alps.c
+> @@ -986,7 +986,7 @@ static void alps_get_finger_coordinate_v7(struct input_mt_pos *mt,
+>  	case V7_PACKET_ID_TWO:
+>  		mt[1].x &= ~0x000F;
+>  		mt[1].y |= 0x000F;
+> -		/* Detect false-postive touches where x & y report max value */
+> +		/* Detect false-positive touches where x & y report max value */
+>  		if (mt[1].y == 0x7ff && mt[1].x == 0xff0) {
+>  			mt[1].x = 0;
+>  			/* y gets set to 0 at the end of this function */
+> --
+
+
 -- 
-2.20.1
+~Randy
 
