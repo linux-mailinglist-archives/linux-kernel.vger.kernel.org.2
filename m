@@ -2,78 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4A432107F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8085321082
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbhBVFiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 00:38:24 -0500
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:32847
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229487AbhBVFiT (ORCPT
+        id S229903AbhBVFlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 00:41:12 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:38897 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhBVFlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 00:38:19 -0500
-Received: from centos7u5.localdomain (unknown [202.43.158.76])
-        by c1app2 (Coremail) with SMTP id AgINCgAHuDgEQzNgrzIUAw--.49872S3;
-        Mon, 22 Feb 2021 13:37:08 +0800 (CST)
-From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Subject: [PATCH] mm/mempolicy: minor coding style tweaks
-Date:   Mon, 22 Feb 2021 13:37:08 +0800
-Message-Id: <1613972228-25501-1-git-send-email-daizhiyuan@phytium.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AgINCgAHuDgEQzNgrzIUAw--.49872S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1xKr45Cw13urWUtF43KFg_yoWfKFc_ua
-        1Iqa4xCFn8ZF1fGFs2vasaqFs0kwsFkFykZr18tay2v3yDArs8tr409ryxur4rZr43GF17
-        C3yYvrsxX3Z7GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJV
-        W0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GrWl
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVW8JVWxJwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUe2NtDUUUU
-X-Originating-IP: [202.43.158.76]
-X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
+        Mon, 22 Feb 2021 00:41:08 -0500
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.100] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id C910C60005;
+        Mon, 22 Feb 2021 05:40:16 +0000 (UTC)
+Subject: Re: [PATCH] riscv: Get rid of MAX_EARLY_MAPPING_SIZE
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup@brainfault.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <20210221142233.3661-1-alex@ghiti.fr>
+ <CACT4Y+Y9Ax=3XnE1NaN1+Qz7oh209nncz7xULQ2Tf8BmUqmVAw@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <49980664-5121-fa58-8120-5f127288add6@ghiti.fr>
+Date:   Mon, 22 Feb 2021 00:40:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <CACT4Y+Y9Ax=3XnE1NaN1+Qz7oh209nncz7xULQ2Tf8BmUqmVAw@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add whitespace to fix coding style issues, improve code reading.
+Hi Dmitry,
 
-Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
----
- mm/mempolicy.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Le 2/21/21 à 10:38 AM, Dmitry Vyukov a écrit :
+> On Sun, Feb 21, 2021 at 3:22 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
+>>
+>> At early boot stage, we have a whole PGDIR to map the kernel, so there
+>> is no need to restrict the early mapping size to 128MB. Removing this
+>> define also allows us to simplify some compile time logic.
+>>
+>> This fixes large kernel mappings with a size greater than 128MB, as it
+>> is the case for syzbot kernels whose size was just ~130MB.
+>>
+>> Note that on rv64, for now, we are then limited to PGDIR size for early
+>> mapping as we can't use PGD mappings (see [1]). That should be enough
+>> given the relative small size of syzbot kernels compared to PGDIR_SIZE
+>> which is 1GB.
+>>
+>> [1] https://lore.kernel.org/lkml/20200603153608.30056-1-alex@ghiti.fr/
+> 
+> I've applied this patch to (as it contains the HEAD fix):
+> 
+> commit f49815047c1a3e3644a0ba38f3825c5cde8a0922 (HEAD, riscv/for-next)
+> Author: Tobias Klauser <tklauser@distanz.ch>
+> Date:   Tue Feb 16 18:33:05 2021 +0100
+>      riscv: Disable KSAN_SANITIZE for vDSO
+> 
+> and the kernel started booting with my large config.
+> It quickly crashed (see below), but at least it started booting, so
+> it's an improvement.
+> 
+> Tested-by: Dmitry Vyukov <dvyukov@google.com>
 
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 2c3a865..740633d 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -330,7 +330,7 @@ static void mpol_rebind_nodemask(struct mempolicy *pol, const nodemask_t *nodes)
- 	else if (pol->flags & MPOL_F_RELATIVE_NODES)
- 		mpol_relative_nodemask(&tmp, &pol->w.user_nodemask, nodes);
- 	else {
--		nodes_remap(tmp, pol->v.nodes,pol->w.cpuset_mems_allowed,
-+		nodes_remap(tmp, pol->v.nodes, pol->w.cpuset_mems_allowed,
- 								*nodes);
- 		pol->w.cpuset_mems_allowed = *nodes;
- 	}
-@@ -1151,7 +1151,7 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
- 
- 	tmp = *from;
- 	while (!nodes_empty(tmp)) {
--		int s,d;
-+		int s, d;
- 		int source = NUMA_NO_NODE;
- 		int dest = 0;
- 
--- 
-1.8.3.1
+Thanks for that.
 
+> 
+> Linux version 5.11.0-rc2-00069-gf49815047c1a-dirty
+> (dvyukov@dvyukov-desk.muc.corp.google.com) (riscv64-linux-gnu-gcc
+> (Debian 10.2.1-6+build1) 10.2.1 20210110, GNU ld (GNU Binutils for
+> Debian) 2.35.1) #34 SMP PREEMPT Sun Feb 21 15:51:40 CET 2021
+> OF: fdt: Ignoring memory range 0x80000000 - 0x80200000
+> Machine model: riscv-virtio,qemu
+> earlycon: ns16550a0 at MMIO 0x0000000010000000 (options '')
+> printk: bootconsole [ns16550a0] enabled
+> efi: UEFI not found.
+> cma: Reserved 16 MiB at 0x00000000fec00000
+> Zone ranges:
+>    DMA32    [mem 0x0000000080200000-0x00000000ffffffff]
+>    Normal   empty
+> Movable zone start for each node
+> Early memory node ranges
+>    node   0: [mem 0x0000000080200000-0x00000000ffffffff]
+> Zeroed struct page in unavailable ranges: 512 pages
+> Initmem setup node 0 [mem 0x0000000080200000-0x00000000ffffffff]
+> SBI specification v0.2 detected
+> SBI implementation ID=0x1 Version=0x8
+> SBI v0.2 TIME extension detected
+> SBI v0.2 IPI extension detected
+> SBI v0.2 RFENCE extension detected
+> software IO TLB: mapped [mem 0x00000000f7c00000-0x00000000fbc00000] (64MB)
+> ------------[ cut here ]------------
+> DEBUG_LOCKS_WARN_ON(early_boot_irqs_disabled)
+> WARNING: CPU: 0 PID: 0 at kernel/locking/lockdep.c:4085
+> lockdep_hardirqs_on_prepare+0x384/0x388 kernel/locking/lockdep.c:4085
+> Modules linked in:
+> CPU: 0 PID: 0 Comm: swapper Not tainted 5.11.0-rc2-00069-gf49815047c1a-dirty #34
+> Hardware name: riscv-virtio,qemu (DT)
+> epc : lockdep_hardirqs_on_prepare+0x384/0x388 kernel/locking/lockdep.c:4085
+>   ra : lockdep_hardirqs_on_prepare+0x384/0x388 kernel/locking/lockdep.c:4085
+> epc : ffffffe0000c125a ra : ffffffe0000c125a sp : ffffffe006603ce0
+>   gp : ffffffe006c338f0 tp : ffffffe006689e00 t0 : ffffffe00669a9a8
+>   t1 : ffffffc400cc0738 t2 : 0000000000000000 s0 : ffffffe006603d20
+>   s1 : ffffffe006689e00 a0 : 000000000000002d a1 : 00000000000f0000
+>   a2 : 0000000000000002 a3 : ffffffe0000d2718 a4 : 0000000000000000
+>   a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe0066039c7
+>   s2 : ffffffe004a337c0 s3 : ffffffe0076fa1b8 s4 : 0000000000000000
+>   s5 : ffffffe006689e00 s6 : 0000000000000001 s7 : ffffffe07fcfc000
+>   s8 : ffffffe07fcfd000 s9 : ffffffe006c3c0d0 s10: fffffffffffff000
+>   s11: ffffffe004a1fbb8 t3 : 000000002d2d2d2d t4 : ffffffc400cc0737
+>   t5 : ffffffc400cc0739 t6 : ffffffe0066039c8
+> status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
+> Call Trace:
+> [<ffffffe0000c125a>] lockdep_hardirqs_on_prepare+0x384/0x388
+> kernel/locking/lockdep.c:4085
+> [<ffffffe0001b7dc0>] trace_hardirqs_on+0x116/0x174
+> kernel/trace/trace_preemptirq.c:49
+> [<ffffffe00000550a>] _save_context+0xa2/0xe2
+> [<ffffffe004807908>] local_flush_tlb_all
+> arch/riscv/include/asm/tlbflush.h:16 [inline]
+> [<ffffffe004807908>] populate arch/riscv/mm/kasan_init.c:95 [inline]
+> [<ffffffe004807908>] kasan_init+0x23e/0x31a arch/riscv/mm/kasan_init.c:157
+> irq event stamp: 0
+> hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> hardirqs last disabled at (0): [<0000000000000000>] 0x0
+> softirqs last  enabled at (0): [<0000000000000000>] 0x0
+> softirqs last disabled at (0): [<0000000000000000>] 0x0
+> random: get_random_bytes called from init_oops_id kernel/panic.c:546
+> [inline] with crng_init=0
+> random: get_random_bytes called from init_oops_id kernel/panic.c:543
+> [inline] with crng_init=0
+> random: get_random_bytes called from print_oops_end_marker
+> kernel/panic.c:556 [inline] with crng_init=0
+> random: get_random_bytes called from __warn+0x1be/0x20a
+> kernel/panic.c:613 with crng_init=0
+> ---[ end trace 0000000000000000 ]---
+> Unable to handle kernel paging request at virtual address dfffffc810040000
+> Oops [#1]
+> Modules linked in:
+> CPU: 0 PID: 0 Comm: swapper Tainted: G        W
+> 5.11.0-rc2-00069-gf49815047c1a-dirty #34
+> Hardware name: riscv-virtio,qemu (DT)
+> epc : __memset+0x60/0xfc arch/riscv/lib/memset.S:67
+>   ra : populate arch/riscv/mm/kasan_init.c:96 [inline]
+>   ra : kasan_init+0x256/0x31a arch/riscv/mm/kasan_init.c:157
+> epc : ffffffe001791cf0 ra : ffffffe004807920 sp : ffffffe006603e80
+>   gp : ffffffe006c338f0 tp : ffffffe006689e00 t0 : dfffffc810040000
+>   t1 : ffffffe004a1fc80 t2 : 0000000000000000 s0 : ffffffe006603f30
+>   s1 : 0000000000000001 a0 : dfffffc810040000 a1 : 0000000000000000
+>   a2 : 000000000ffc0000 a3 : dfffffc820000000 a4 : 0000000000000000
+>   a5 : dfffffc820000000 a6 : 0000000000f00000 a7 : ffffffe004a1fcaf
+>   s2 : dfffffc810040000 s3 : 000000000000ffc0 s4 : dfffffc800000000
+>   s5 : ffffffe006c46908 s6 : 0000000000000001 s7 : ffffffe07fcfc000
+>   s8 : ffffffe07fcfd000 s9 : ffffffe006c3c0d0 s10: fffffffffffff000
+>   s11: ffffffe004a1fbb8 t3 : 0000000000000000 t4 : 0000000000000001
+>   t5 : ffffffc400943f96 t6 : ffffffe006603b98
+> status: 0000000000000100 badaddr: dfffffc810040000 cause: 000000000000000f
+> Call Trace:
+> [<ffffffe001791cf0>] __memset+0x60/0xfc arch/riscv/lib/memset.S:65
+> [<ffffffe004805e7a>] setup_arch+0x6c4/0x6f2 arch/riscv/kernel/setup.c:271
+> [<ffffffe0048010ea>] start_kernel+0xca/0x5d6 init/main.c:871
+> ---[ end trace f68728a0d3053b52 ]---
+> 
+> 
+
+Ok this issue lies in for-next as I had no problem getting to init on 
+both master and my sv48 patchset, I'm taking a look at that !
+
+Thanks,
+
+Alex
+
+> 
+> 
+> 
+>> Reported-by: Dmitry Vyukov <dvyukov@google.com>
+>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>> ---
+>>   arch/riscv/mm/init.c | 21 +++++----------------
+>>   1 file changed, 5 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>> index f9f9568d689e..f81f813b9603 100644
+>> --- a/arch/riscv/mm/init.c
+>> +++ b/arch/riscv/mm/init.c
+>> @@ -226,8 +226,6 @@ pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>>   pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>>   pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+>>
+>> -#define MAX_EARLY_MAPPING_SIZE SZ_128M
+>> -
+>>   pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+>>
+>>   void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
+>> @@ -302,13 +300,7 @@ static void __init create_pte_mapping(pte_t *ptep,
+>>
+>>   pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+>>   pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+>> -
+>> -#if MAX_EARLY_MAPPING_SIZE < PGDIR_SIZE
+>> -#define NUM_EARLY_PMDS         1UL
+>> -#else
+>> -#define NUM_EARLY_PMDS         (1UL + MAX_EARLY_MAPPING_SIZE / PGDIR_SIZE)
+>> -#endif
+>> -pmd_t early_pmd[PTRS_PER_PMD * NUM_EARLY_PMDS] __initdata __aligned(PAGE_SIZE);
+>> +pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+>>   pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+>>
+>>   static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
+>> @@ -330,11 +322,9 @@ static pmd_t *get_pmd_virt_late(phys_addr_t pa)
+>>
+>>   static phys_addr_t __init alloc_pmd_early(uintptr_t va)
+>>   {
+>> -       uintptr_t pmd_num;
+>> +       BUG_ON((va - PAGE_OFFSET) >> PGDIR_SHIFT);
+>>
+>> -       pmd_num = (va - PAGE_OFFSET) >> PGDIR_SHIFT;
+>> -       BUG_ON(pmd_num >= NUM_EARLY_PMDS);
+>> -       return (uintptr_t)&early_pmd[pmd_num * PTRS_PER_PMD];
+>> +       return (uintptr_t)early_pmd;
+>>   }
+>>
+>>   static phys_addr_t __init alloc_pmd_fixmap(uintptr_t va)
+>> @@ -452,7 +442,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>          uintptr_t va, pa, end_va;
+>>          uintptr_t load_pa = (uintptr_t)(&_start);
+>>          uintptr_t load_sz = (uintptr_t)(&_end) - load_pa;
+>> -       uintptr_t map_size = best_map_size(load_pa, MAX_EARLY_MAPPING_SIZE);
+>> +       uintptr_t map_size;
+>>   #ifndef __PAGETABLE_PMD_FOLDED
+>>          pmd_t fix_bmap_spmd, fix_bmap_epmd;
+>>   #endif
+>> @@ -464,12 +454,11 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>           * Enforce boot alignment requirements of RV32 and
+>>           * RV64 by only allowing PMD or PGD mappings.
+>>           */
+>> -       BUG_ON(map_size == PAGE_SIZE);
+>> +       map_size = PMD_SIZE;
+>>
+>>          /* Sanity check alignment and size */
+>>          BUG_ON((PAGE_OFFSET % PGDIR_SIZE) != 0);
+>>          BUG_ON((load_pa % map_size) != 0);
+>> -       BUG_ON(load_sz > MAX_EARLY_MAPPING_SIZE);
+>>
+>>          pt_ops.alloc_pte = alloc_pte_early;
+>>          pt_ops.get_pte_virt = get_pte_virt_early;
+>> --
+>> 2.20.1
+>>
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
