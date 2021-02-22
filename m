@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E85321068
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C04432106E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhBVFXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 00:23:41 -0500
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:47795
+        id S229863AbhBVFax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 00:30:53 -0500
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:58493
         "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229567AbhBVFXj (ORCPT
+        by vger.kernel.org with SMTP id S229487AbhBVFau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 00:23:39 -0500
+        Mon, 22 Feb 2021 00:30:50 -0500
 Received: from centos7u5.localdomain (unknown [202.43.158.76])
-        by c1app2 (Coremail) with SMTP id AgINCgC3BEGWPzNg8yoUAw--.27007S3;
-        Mon, 22 Feb 2021 13:22:30 +0800 (CST)
+        by c1app2 (Coremail) with SMTP id AgINCgBXXLhIQTNgOy4UAw--.1517S3;
+        Mon, 22 Feb 2021 13:29:45 +0800 (CST)
 From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-To:     ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, akpm@linux-foundation.org
-Cc:     kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Subject: [PATCH] mm/kasan: remove volatile keyword
-Date:   Mon, 22 Feb 2021 13:22:27 +0800
-Message-Id: <1613971347-24213-1-git-send-email-daizhiyuan@phytium.com.cn>
+Subject: [PATCH] mm/memory_hotplug: minor coding style tweaks
+Date:   Mon, 22 Feb 2021 13:29:44 +0800
+Message-Id: <1613971784-24878-1-git-send-email-daizhiyuan@phytium.com.cn>
 X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AgINCgC3BEGWPzNg8yoUAw--.27007S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFy3Kw1rAr1DuFW8ur45Jrb_yoW8JFWrpF
-        9xJ3yxJr45t34j9Fyjyrs5Z3WrGas7JayxtF13CayfZwn5Wr1kXryIg34rAF48GrWkG3W3
-        Za4rGFyrZF1UAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4r
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JV
-        WxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb-zV5UUUU
-        U==
+X-CM-TRANSID: AgINCgBXXLhIQTNgOy4UAw--.1517S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1xKr4xXw18Aw4rJr1kKrg_yoW3ZFb_Ka
+        yIqwsFgryFvF1S9r4qy34fJrn3Kr109w48uFyxJasIyryDX3sxZF4kJwn3ZryF9347Wr12
+        q34DZrWagry7WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJV
+        W0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GrWl
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUe2NtDUUUU
 X-Originating-IP: [202.43.158.76]
 X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like volatile, the kernel primitives which make concurrent
-access to data safe (spinlocks, mutexes, memory barriers,
-etc.) are designed to prevent unwanted optimization.
-
-If they are being used properly, there will be no need to
-use volatile as well.  If volatile is still necessary,
-there is almost certainly a bug in the code somewhere.
-In properly-written kernel code, volatile can only serve
-to slow things down.
-
-see: Documentation/process/volatile-considered-harmful.rst
+This patch move the pointer location to fix coding style issues,
+improve code reading.
 
 Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
 ---
- mm/kasan/shadow.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/memory_hotplug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index 7c2c08c..d5ff9ca 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -25,13 +25,13 @@
- 
- #include "kasan.h"
- 
--bool __kasan_check_read(const volatile void *p, unsigned int size)
-+bool __kasan_check_read(const void *p, unsigned int size)
- {
- 	return check_memory_region((unsigned long)p, size, false, _RET_IP_);
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index f9d57b9..a46c297 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -764,7 +764,7 @@ static inline struct zone *default_zone_for_pfn(int nid, unsigned long start_pfn
+ 	return movable_node_enabled ? movable_zone : kernel_zone;
  }
- EXPORT_SYMBOL(__kasan_check_read);
  
--bool __kasan_check_write(const volatile void *p, unsigned int size)
-+bool __kasan_check_write(const void *p, unsigned int size)
+-struct zone * zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
++struct zone *zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
+ 		unsigned long nr_pages)
  {
- 	return check_memory_region((unsigned long)p, size, true, _RET_IP_);
- }
+ 	if (online_type == MMOP_ONLINE_KERNEL)
 -- 
 1.8.3.1
 
