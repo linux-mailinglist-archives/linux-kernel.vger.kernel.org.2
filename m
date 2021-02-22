@@ -2,138 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD9332137D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF49321380
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhBVJz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:55:27 -0500
-Received: from foss.arm.com ([217.140.110.172]:38176 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhBVJzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:55:15 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8C78D6E;
-        Mon, 22 Feb 2021 01:54:27 -0800 (PST)
-Received: from e124901.arm.com (unknown [10.57.11.147])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 74B203F73B;
-        Mon, 22 Feb 2021 01:54:25 -0800 (PST)
-From:   vincent.donnefort@arm.com
-To:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org
-Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-        qperret@google.com, patrick.bellasi@matbug.net,
-        valentin.schneider@arm.com,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: [PATCH] sched/fair: Fix task utilization accountability in cpu_util_next()
-Date:   Mon, 22 Feb 2021 09:54:01 +0000
-Message-Id: <20210222095401.37158-1-vincent.donnefort@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S230132AbhBVJ4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:56:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53172 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230053AbhBVJ4x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:56:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613987726;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hRBICccBgEcAau0frnzIZLdNGmFu16xAVTYuVaZrsmQ=;
+        b=YbaoxaDpERE0OJwgOKXV6GcM4CSEWX85w/+jJwBhRb9dP5uLnQf8KSclkU/Z+OW144s+di
+        NBXlwwvE9AOJ8gE3PO79SjjTkxawZsRBKZxQ01mYxmWY2axrqPOuqzA523qxRKJo0r6yuX
+        X/tq1Y+6MK0zI4cCoX8Hu2xYx3bwH6U=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-JOf1fcJoNfeAfp0JLlgqdw-1; Mon, 22 Feb 2021 04:55:25 -0500
+X-MC-Unique: JOf1fcJoNfeAfp0JLlgqdw-1
+Received: by mail-ed1-f72.google.com with SMTP id i4so6721366edt.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:55:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hRBICccBgEcAau0frnzIZLdNGmFu16xAVTYuVaZrsmQ=;
+        b=qdby2SYxvKvVJHOh8PoDSB+dQ2Y8hkb8egmlk5ScOQfinK+cZoCzKmkKbS1FCHByOg
+         TICAHx51BpZys5JgczZdJXCsHrNjRc0DEQkJ4sGsCS7AcUXQhm7mvxNkmoGvZ2JhMJbn
+         i0wv1Af+SmxarMuPSxLl8hZ0PgYHK8SK5YdNrGRxOkiHmoAM2ykcsbe3VZYNblDZ8Ug0
+         ul8+n13tJeRXPuY2QJe/9wIVTGAaK6DXnmWOx7nr96e0yOYgt1dRa1nGLA+BqcjN6UbK
+         eVMBgBvm4p4yKmP2NouYR2MQSdyH7dn5W0pYsV2wHXTceZYTfnk2WKJTsvjuUX41wzjB
+         ptIg==
+X-Gm-Message-State: AOAM530sB67TyddvC86uOQ7bS9c6pmovjUK7h2CmSI+JOHb00S4lx3pv
+        VHWKROM2nWe9PIMtLAN5zzyyVqilGKMmKgDVWWhEG5hwtjb5Qwy8/y7ZrCNpbwQwkJXeezzeDQ6
+        GnF+2xLyZa9z7iWXBRomll3L92o7Rr3Cu/RHWCh318stKymGxNacgvnsR0KrFNgflv/bKKKUHy1
+        4n
+X-Received: by 2002:a05:6402:1593:: with SMTP id c19mr2829597edv.274.1613987723487;
+        Mon, 22 Feb 2021 01:55:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzplWvd2ZJiexdrTEF1gNnTBzIhr4LG2vPt5qZmzus9ICwwvtYFaL7eGZAVHOpxqxMqrO9Skg==
+X-Received: by 2002:a05:6402:1593:: with SMTP id c19mr2829586edv.274.1613987723344;
+        Mon, 22 Feb 2021 01:55:23 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id li22sm10085829ejb.29.2021.02.22.01.55.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 01:55:23 -0800 (PST)
+Subject: Re: [PATCH 1/2] platform/x86: hp-wmi: rename "thermal policy" to
+ "thermal profile"
+To:     Elia Devito <eliadevito@gmail.com>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210221210256.68198-1-eliadevito@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <525eef3b-6534-6f3f-e8f0-338500d8023f@redhat.com>
+Date:   Mon, 22 Feb 2021 10:55:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210221210256.68198-1-eliadevito@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Donnefort <vincent.donnefort@arm.com>
+Hi,
 
-Currently, cpu_util_next() estimates the CPU utilization as follows:
+On 2/21/21 10:02 PM, Elia Devito wrote:
+> rename "thermal policy" with the more appropriate term "thermal profile"
+> 
+> Signed-off-by: Elia Devito <eliadevito@gmail.com>
 
-  max(cpu_util + task_util,
-      cpu_util_est + task_util_est)
+Thanks, patch looks good to me:
 
-This is an issue when making a comparison between CPUs, as the task
-contribution can be either:
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-  (1) task_util_est, on a mostly idle CPU, where cpu_util is close to 0
-      and task_util_est > cpu_util.
-  (2) task_util, on a mostly busy CPU, where cpu_util > task_util_est.
+I will merge this once we are out of the merge-window / once 5.12-rc1 is out.
 
-This gives an unfair advantage to some CPUs, when comparing energy deltas
-in the task waking placement, where task_util is always smaller than
-task_util_est. The energy delta is therefore, likely to be bigger on
-a mostly idle CPU (1) than a mostly busy CPU (2).
+Regards,
 
-This issue is, moreover, not sporadic. By starving idle CPUs, it keeps
-their cpu_util < task_util_est (1) while others will maintain cpu_util >
-task_util_est (2).
+Hans
 
-The new approach uses (if UTIL_EST is enabled) task_util_est() as task
-contribution, which ensures that all CPUs will use the same value:
 
-  max(cpu_util + max(task_util, task_util_est),
-      cpu_util_est + max(task_util, task_util_est))
 
-This patch doesn't modify the !UTIL_EST behaviour.
-
-Also, replace sub_positive with lsub_positive which saves one explicit
-load-store.
-
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index fb9f10d4312b..dd143aafaf97 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6516,32 +6516,42 @@ static unsigned long cpu_util_without(int cpu, struct task_struct *p)
- static unsigned long cpu_util_next(int cpu, struct task_struct *p, int dst_cpu)
- {
- 	struct cfs_rq *cfs_rq = &cpu_rq(cpu)->cfs;
--	unsigned long util_est, util = READ_ONCE(cfs_rq->avg.util_avg);
-+	unsigned long util = READ_ONCE(cfs_rq->avg.util_avg);
- 
- 	/*
--	 * If @p migrates from @cpu to another, remove its contribution. Or,
--	 * if @p migrates from another CPU to @cpu, add its contribution. In
--	 * the other cases, @cpu is not impacted by the migration, so the
--	 * util_avg should already be correct.
-+	 * UTIL_EST case: hide the task_util contribution from util.
-+	 * During wake-up, the task isn't enqueued yet and doesn't
-+	 * appear in the util_est of any CPU. No contribution has
-+	 * therefore to be removed from util_est.
-+	 *
-+	 * If @p migrates to this CPU, add its contribution to util and
-+	 * util_est.
- 	 */
--	if (task_cpu(p) == cpu && dst_cpu != cpu)
--		sub_positive(&util, task_util(p));
--	else if (task_cpu(p) != cpu && dst_cpu == cpu)
--		util += task_util(p);
--
- 	if (sched_feat(UTIL_EST)) {
-+		unsigned long util_est;
-+
- 		util_est = READ_ONCE(cfs_rq->avg.util_est.enqueued);
- 
--		/*
--		 * During wake-up, the task isn't enqueued yet and doesn't
--		 * appear in the cfs_rq->avg.util_est.enqueued of any rq,
--		 * so just add it (if needed) to "simulate" what will be
--		 * cpu_util() after the task has been enqueued.
--		 */
--		if (dst_cpu == cpu)
--			util_est += _task_util_est(p);
-+		if (task_cpu(p) == cpu)
-+			lsub_positive(&util, task_util(p));
-+
-+		if (dst_cpu == cpu) {
-+			unsigned long task_util = task_util_est(p);
-+
-+			util += task_util;
-+			util_est += task_util;
-+		}
- 
- 		util = max(util, util_est);
-+	/*
-+	 * !UTIL_EST case: If @p migrates from @cpu to another, remove its
-+	 * contribution. If @p migrates to @cpu, add it.
-+	 */
-+	} else {
-+		if (task_cpu(p) == cpu && dst_cpu != cpu)
-+			lsub_positive(&util, task_util(p));
-+		else if (task_cpu(p) != cpu && dst_cpu == cpu)
-+			util += task_util(p);
- 	}
- 
- 	return min(util, arch_scale_cpu_capacity(cpu));
--- 
-2.25.1
+> ---
+>  drivers/platform/x86/hp-wmi.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/hp-wmi.c b/drivers/platform/x86/hp-wmi.c
+> index e94e59283ecb..6d7b91b8109b 100644
+> --- a/drivers/platform/x86/hp-wmi.c
+> +++ b/drivers/platform/x86/hp-wmi.c
+> @@ -85,7 +85,7 @@ enum hp_wmi_commandtype {
+>  	HPWMI_FEATURE2_QUERY		= 0x0d,
+>  	HPWMI_WIRELESS2_QUERY		= 0x1b,
+>  	HPWMI_POSTCODEERROR_QUERY	= 0x2a,
+> -	HPWMI_THERMAL_POLICY_QUERY	= 0x4c,
+> +	HPWMI_THERMAL_PROFILE_QUERY	= 0x4c,
+>  };
+>  
+>  enum hp_wmi_command {
+> @@ -869,19 +869,19 @@ static int __init hp_wmi_rfkill2_setup(struct platform_device *device)
+>  	return err;
+>  }
+>  
+> -static int thermal_policy_setup(struct platform_device *device)
+> +static int thermal_profile_setup(struct platform_device *device)
+>  {
+>  	int err, tp;
+>  
+> -	tp = hp_wmi_read_int(HPWMI_THERMAL_POLICY_QUERY);
+> +	tp = hp_wmi_read_int(HPWMI_THERMAL_PROFILE_QUERY);
+>  	if (tp < 0)
+>  		return tp;
+>  
+>  	/*
+> -	 * call thermal policy write command to ensure that the firmware correctly
+> +	 * call thermal profile write command to ensure that the firmware correctly
+>  	 * sets the OEM variables for the DPTF
+>  	 */
+> -	err = hp_wmi_perform_query(HPWMI_THERMAL_POLICY_QUERY, HPWMI_WRITE, &tp,
+> +	err = hp_wmi_perform_query(HPWMI_THERMAL_PROFILE_QUERY, HPWMI_WRITE, &tp,
+>  							   sizeof(tp), 0);
+>  	if (err)
+>  		return err;
+> @@ -900,7 +900,7 @@ static int __init hp_wmi_bios_setup(struct platform_device *device)
+>  	if (hp_wmi_rfkill_setup(device))
+>  		hp_wmi_rfkill2_setup(device);
+>  
+> -	thermal_policy_setup(device);
+> +	thermal_profile_setup(device);
+>  
+>  	return 0;
+>  }
+> 
 
