@@ -2,292 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D1E321497
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E624132149E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhBVK6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:58:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhBVK6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:58:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 125BB64E04;
-        Mon, 22 Feb 2021 10:57:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613991458;
-        bh=4RN22+tenkyztEXhyy8CdvEbwI3iL3fY2jSAm4XkuF0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cWD5SeFhysXcWe4/exZ1kmOm6/a1JOTCh+eSLpWAyKAmGlUoCfQyvy13vCoJ/Cj7P
-         KMd4vuSXZFnueGl9+f8qELB6UpPKulY3fARuYEQTAs4IwC491jyoDQ3srf+fFVb62Y
-         RojDgu3WajqFsRX3jdgdpa1kdweQU+vY/m5S1QH/cCnCJt8BILXJhWj51VnYD1gYfT
-         +HAw45xa0iEM28izl1YJSvBf1qJUjc/RgnQ1oFb6vLaM1r27aCCSqEGu202HQ+Fc1T
-         CkWOYtsz55XpIky20/N0HPUxP65mmIJJgHs13NqRtjmmnqYEK7pzDwfG8quoHgzXOA
-         iMWNGdEgh55bQ==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?q?=C5=81ukasz=20Majczak?= <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v6 1/1] mm/page_alloc.c: refactor initialization of struct page for holes in memory layout
-Date:   Mon, 22 Feb 2021 12:57:28 +0200
-Message-Id: <20210222105728.28636-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S230141AbhBVK7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:59:15 -0500
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:18754 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhBVK7E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 05:59:04 -0500
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 0A0997634E;
+        Mon, 22 Feb 2021 13:58:14 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1613991494;
+        bh=SHYi7PV63WP4rrEl4a+UIz2wZejxCQTWp3Pmwar1YxU=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=XmsIZFekDth4nLp9WJTj3Z1tgj0NPMdWS9aUgF1iEYPKlze0dAZGlVPi3U+9ldjrI
+         IiDy8D47/zFIlMo1kzsKxDHYAg32YGnwkUDFB1bYJzFTLEnkyxMJLC1kBGSoPJzbrO
+         xe2ag0GpogpRgnlx7DZTNOEfA0WPQJKA2qZusyufteB4u12JTA71Qht6RAfQ55Q1O2
+         M0Vzz/+xCk0pAIIutFkxmaDpy+2s7P0VUrDseTlUTvNykKWDGvHLsowN2LklXtoqDm
+         qAv7uAH5gFW1YKWt389aiPHyyx+iX6ARYEpj9DWTlvjadFPC0WHmileGa5ZAo4RxKq
+         gMdc0/A2YP5Gw==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 38DCB76298;
+        Mon, 22 Feb 2021 13:58:13 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Mon, 22
+ Feb 2021 13:58:12 +0300
+Subject: Re: [RFC PATCH v5 01/19] af_vsock: update functions for connectible
+ socket
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210218053607.1066783-1-arseny.krasnov@kaspersky.com>
+ <20210222105023.aqcu25irkeed6div@steredhat>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <279059b2-4c08-16d4-3bca-03640c7932d9@kaspersky.com>
+Date:   Mon, 22 Feb 2021 13:58:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210222105023.aqcu25irkeed6div@steredhat>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 02/06/2021 23:52:08
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 161679 [Feb 06 2021]
+X-KSE-AntiSpam-Info: LuaCore: 422 422 763e61bea9fcfcd94e075081cb96e065bc0509b4
+X-KSE-AntiSpam-Info: Version: 5.9.16.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
+X-KSE-AntiSpam-Info: {Tracking_date, moscow}
+X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/06/2021 23:55:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 06.02.2021 21:17:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/02/22 09:47:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/02/22 04:39:00 #16312882
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
 
-There could be struct pages that are not backed by actual physical memory.
-This can happen when the actual memory bank is not a multiple of
-SECTION_SIZE or when an architecture does not register memory holes
-reserved by the firmware as memblock.memory.
-
-Such pages are currently initialized using init_unavailable_mem() function
-that iterates through PFNs in holes in memblock.memory and if there is a
-struct page corresponding to a PFN, the fields of this page are set to
-default values and it is marked as Reserved.
-
-init_unavailable_mem() does not take into account zone and node the page
-belongs to and sets both zone and node links in struct page to zero.
-
-Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
-rather that check each PFN") the holes inside a zone were re-initialized
-during memmap_init() and got their zone/node links right. However, after
-that commit nothing updates the struct pages representing such holes.
-
-On a system that has firmware reserved holes in a zone above ZONE_DMA, for
-instance in a configuration below:
-
-	# grep -A1 E820 /proc/iomem
-	7a17b000-7a216fff : Unknown E820 type
-	7a217000-7bffffff : System RAM
-
-unset zone link in struct page will trigger
-
-	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
-
-because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
-in struct page) in the same pageblock.
-
-Interleave initialization of the unavailable pages with the normal
-initialization of memory map, so that zone and node information will be
-properly set on struct pages that are not backed by the actual memory.
-
-With this change the pages for holes inside a zone will get proper
-zone/node links and the pages that are not spanned by any node will get
-links to the adjacent zone/node.
-
-Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Reported-by: Qian Cai <cai@lca.pw>
-Reported-by: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Qian Cai <cai@lca.pw>
-Cc: Vlastimil Babka <vbabka@suse.cz>
----
- mm/page_alloc.c | 144 ++++++++++++++++++++----------------------------
- 1 file changed, 61 insertions(+), 83 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3e93f8b29bae..1f1db70b7789 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6280,12 +6280,60 @@ static void __meminit zone_init_free_lists(struct zone *zone)
- 	}
- }
- 
-+#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
-+/*
-+ * Only struct pages that correspond to ranges defined by memblock.memory
-+ * are zeroed and initialized by going through __init_single_page() during
-+ * memmap_init_zone().
-+ *
-+ * But, there could be struct pages that correspond to holes in
-+ * memblock.memory. This can happen because of the following reasons:
-+ * - phyiscal memory bank size is not necessarily the exact multiple of the
-+ *   arbitrary section size
-+ * - early reserved memory may not be listed in memblock.memory
-+ * - memory layouts defined with memmap= kernel parameter may not align
-+ *   nicely with memmap sections
-+ *
-+ * Explicitly initialize those struct pages so that:
-+ * - PG_Reserved is set
-+ * - zone and node links point to zone and node that span the page
-+ */
-+static u64 __meminit init_unavailable_range(unsigned long spfn,
-+					    unsigned long epfn,
-+					    int zone, int node)
-+{
-+	unsigned long pfn;
-+	u64 pgcnt = 0;
-+
-+	for (pfn = spfn; pfn < epfn; pfn++) {
-+		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
-+			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
-+				+ pageblock_nr_pages - 1;
-+			continue;
-+		}
-+		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
-+		__SetPageReserved(pfn_to_page(pfn));
-+		pgcnt++;
-+	}
-+
-+	return pgcnt;
-+}
-+#else
-+static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
-+					 int zone, int node)
-+{
-+	return 0;
-+}
-+#endif
-+
- void __meminit __weak memmap_init_zone(struct zone *zone)
- {
- 	unsigned long zone_start_pfn = zone->zone_start_pfn;
- 	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
- 	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
-+	static unsigned long hole_pfn = 0;
- 	unsigned long start_pfn, end_pfn;
-+	u64 pgcnt = 0;
- 
- 	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
- 		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
-@@ -6295,7 +6343,20 @@ void __meminit __weak memmap_init_zone(struct zone *zone)
- 			memmap_init_range(end_pfn - start_pfn, nid,
- 					zone_id, start_pfn, zone_end_pfn,
- 					MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
-+
-+		if (hole_pfn < start_pfn)
-+			pgcnt += init_unavailable_range(hole_pfn, start_pfn,
-+							zone_id, nid);
-+		hole_pfn = end_pfn;
- 	}
-+
-+	if (hole_pfn < zone_end_pfn)
-+		pgcnt += init_unavailable_range(hole_pfn, zone_end_pfn,
-+						zone_id, nid);
-+
-+	if (pgcnt)
-+		pr_info("  %s zone: %lld pages in unavailable ranges\n",
-+			zone->name, pgcnt);
- }
- 
- static int zone_batchsize(struct zone *zone)
-@@ -7092,88 +7153,6 @@ void __init free_area_init_memoryless_node(int nid)
- 	free_area_init_node(nid);
- }
- 
--#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
--/*
-- * Initialize all valid struct pages in the range [spfn, epfn) and mark them
-- * PageReserved(). Return the number of struct pages that were initialized.
-- */
--static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
--{
--	unsigned long pfn;
--	u64 pgcnt = 0;
--
--	for (pfn = spfn; pfn < epfn; pfn++) {
--		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
--			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
--				+ pageblock_nr_pages - 1;
--			continue;
--		}
--		/*
--		 * Use a fake node/zone (0) for now. Some of these pages
--		 * (in memblock.reserved but not in memblock.memory) will
--		 * get re-initialized via reserve_bootmem_region() later.
--		 */
--		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
--		__SetPageReserved(pfn_to_page(pfn));
--		pgcnt++;
--	}
--
--	return pgcnt;
--}
--
--/*
-- * Only struct pages that are backed by physical memory are zeroed and
-- * initialized by going through __init_single_page(). But, there are some
-- * struct pages which are reserved in memblock allocator and their fields
-- * may be accessed (for example page_to_pfn() on some configuration accesses
-- * flags). We must explicitly initialize those struct pages.
-- *
-- * This function also addresses a similar issue where struct pages are left
-- * uninitialized because the physical address range is not covered by
-- * memblock.memory or memblock.reserved. That could happen when memblock
-- * layout is manually configured via memmap=, or when the highest physical
-- * address (max_pfn) does not end on a section boundary.
-- */
--static void __init init_unavailable_mem(void)
--{
--	phys_addr_t start, end;
--	u64 i, pgcnt;
--	phys_addr_t next = 0;
--
--	/*
--	 * Loop through unavailable ranges not covered by memblock.memory.
--	 */
--	pgcnt = 0;
--	for_each_mem_range(i, &start, &end) {
--		if (next < start)
--			pgcnt += init_unavailable_range(PFN_DOWN(next),
--							PFN_UP(start));
--		next = end;
--	}
--
--	/*
--	 * Early sections always have a fully populated memmap for the whole
--	 * section - see pfn_valid(). If the last section has holes at the
--	 * end and that section is marked "online", the memmap will be
--	 * considered initialized. Make sure that memmap has a well defined
--	 * state.
--	 */
--	pgcnt += init_unavailable_range(PFN_DOWN(next),
--					round_up(max_pfn, PAGES_PER_SECTION));
--
--	/*
--	 * Struct pages that do not have backing memory. This could be because
--	 * firmware is using some of this memory, or for some other reasons.
--	 */
--	if (pgcnt)
--		pr_info("Zeroed struct page in unavailable ranges: %lld pages", pgcnt);
--}
--#else
--static inline void __init init_unavailable_mem(void)
--{
--}
--#endif /* !CONFIG_FLAT_NODE_MEM_MAP */
--
- #if MAX_NUMNODES > 1
- /*
-  * Figure out the number of possible node ids.
-@@ -7597,7 +7576,6 @@ void __init free_area_init(unsigned long *max_zone_pfn)
- 	/* Initialise every node */
- 	mminit_verify_pageflags_layout();
- 	setup_nr_node_ids();
--	init_unavailable_mem();
- 	for_each_online_node(nid) {
- 		pg_data_t *pgdat = NODE_DATA(nid);
- 		free_area_init_node(nid);
--- 
-2.28.0
-
+On 22.02.2021 13:50, Stefano Garzarella wrote:
+> On Thu, Feb 18, 2021 at 08:36:03AM +0300, Arseny Krasnov wrote:
+>> This prepares af_vsock.c for SEQPACKET support: some functions such
+>> as setsockopt(), getsockopt(), connect(), recvmsg(), sendmsg() are
+>> shared between both types of sockets, so rename them in general
+>> manner.
+>>
+>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>> ---
+>> net/vmw_vsock/af_vsock.c | 64 +++++++++++++++++++++-------------------
+>> 1 file changed, 34 insertions(+), 30 deletions(-)
+> IIRC I had already given my R-b to this patch. Please carry it over when 
+> you post a new version.
+>
+> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+>
+> Thanks,
+> Stefano
+Ack, sorry, didn't know that
+>
+>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>> index 5546710d8ac1..656370e11707 100644
+>> --- a/net/vmw_vsock/af_vsock.c
+>> +++ b/net/vmw_vsock/af_vsock.c
+>> @@ -604,8 +604,8 @@ static void vsock_pending_work(struct work_struct *work)
+>>
+>> /**** SOCKET OPERATIONS ****/
+>>
+>> -static int __vsock_bind_stream(struct vsock_sock *vsk,
+>> -			       struct sockaddr_vm *addr)
+>> +static int __vsock_bind_connectible(struct vsock_sock *vsk,
+>> +				    struct sockaddr_vm *addr)
+>> {
+>> 	static u32 port;
+>> 	struct sockaddr_vm new_addr;
+>> @@ -685,7 +685,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
+>> 	switch (sk->sk_socket->type) {
+>> 	case SOCK_STREAM:
+>> 		spin_lock_bh(&vsock_table_lock);
+>> -		retval = __vsock_bind_stream(vsk, addr);
+>> +		retval = __vsock_bind_connectible(vsk, addr);
+>> 		spin_unlock_bh(&vsock_table_lock);
+>> 		break;
+>>
+>> @@ -767,6 +767,11 @@ static struct sock *__vsock_create(struct net *net,
+>> 	return sk;
+>> }
+>>
+>> +static bool sock_type_connectible(u16 type)
+>> +{
+>> +	return type == SOCK_STREAM;
+>> +}
+>> +
+>> static void __vsock_release(struct sock *sk, int level)
+>> {
+>> 	if (sk) {
+>> @@ -785,7 +790,7 @@ static void __vsock_release(struct sock *sk, int level)
+>>
+>> 		if (vsk->transport)
+>> 			vsk->transport->release(vsk);
+>> -		else if (sk->sk_type == SOCK_STREAM)
+>> +		else if (sock_type_connectible(sk->sk_type))
+>> 			vsock_remove_sock(vsk);
+>>
+>> 		sock_orphan(sk);
+>> @@ -947,7 +952,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
+>> 	lock_sock(sk);
+>> 	if (sock->state == SS_UNCONNECTED) {
+>> 		err = -ENOTCONN;
+>> -		if (sk->sk_type == SOCK_STREAM)
+>> +		if (sock_type_connectible(sk->sk_type))
+>> 			goto out;
+>> 	} else {
+>> 		sock->state = SS_DISCONNECTING;
+>> @@ -960,7 +965,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
+>> 		sk->sk_shutdown |= mode;
+>> 		sk->sk_state_change(sk);
+>>
+>> -		if (sk->sk_type == SOCK_STREAM) {
+>> +		if (sock_type_connectible(sk->sk_type)) {
+>> 			sock_reset_flag(sk, SOCK_DONE);
+>> 			vsock_send_shutdown(sk, mode);
+>> 		}
+>> @@ -1015,7 +1020,7 @@ static __poll_t vsock_poll(struct file *file, struct socket *sock,
+>> 		if (!(sk->sk_shutdown & SEND_SHUTDOWN))
+>> 			mask |= EPOLLOUT | EPOLLWRNORM | EPOLLWRBAND;
+>>
+>> -	} else if (sock->type == SOCK_STREAM) {
+>> +	} else if (sock_type_connectible(sk->sk_type)) {
+>> 		const struct vsock_transport *transport;
+>>
+>> 		lock_sock(sk);
+>> @@ -1262,8 +1267,8 @@ static void vsock_connect_timeout(struct work_struct *work)
+>> 	sock_put(sk);
+>> }
+>>
+>> -static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
+>> -				int addr_len, int flags)
+>> +static int vsock_connect(struct socket *sock, struct sockaddr *addr,
+>> +			 int addr_len, int flags)
+>> {
+>> 	int err;
+>> 	struct sock *sk;
+>> @@ -1413,7 +1418,7 @@ static int vsock_accept(struct socket *sock, struct socket *newsock, int flags,
+>>
+>> 	lock_sock(listener);
+>>
+>> -	if (sock->type != SOCK_STREAM) {
+>> +	if (!sock_type_connectible(sock->type)) {
+>> 		err = -EOPNOTSUPP;
+>> 		goto out;
+>> 	}
+>> @@ -1490,7 +1495,7 @@ static int vsock_listen(struct socket *sock, int backlog)
+>>
+>> 	lock_sock(sk);
+>>
+>> -	if (sock->type != SOCK_STREAM) {
+>> +	if (!sock_type_connectible(sk->sk_type)) {
+>> 		err = -EOPNOTSUPP;
+>> 		goto out;
+>> 	}
+>> @@ -1534,11 +1539,11 @@ static void vsock_update_buffer_size(struct vsock_sock *vsk,
+>> 	vsk->buffer_size = val;
+>> }
+>>
+>> -static int vsock_stream_setsockopt(struct socket *sock,
+>> -				   int level,
+>> -				   int optname,
+>> -				   sockptr_t optval,
+>> -				   unsigned int optlen)
+>> +static int vsock_connectible_setsockopt(struct socket *sock,
+>> +					int level,
+>> +					int optname,
+>> +					sockptr_t optval,
+>> +					unsigned int optlen)
+>> {
+>> 	int err;
+>> 	struct sock *sk;
+>> @@ -1616,10 +1621,10 @@ static int vsock_stream_setsockopt(struct socket *sock,
+>> 	return err;
+>> }
+>>
+>> -static int vsock_stream_getsockopt(struct socket *sock,
+>> -				   int level, int optname,
+>> -				   char __user *optval,
+>> -				   int __user *optlen)
+>> +static int vsock_connectible_getsockopt(struct socket *sock,
+>> +					int level, int optname,
+>> +					char __user *optval,
+>> +					int __user *optlen)
+>> {
+>> 	int err;
+>> 	int len;
+>> @@ -1687,8 +1692,8 @@ static int vsock_stream_getsockopt(struct socket *sock,
+>> 	return 0;
+>> }
+>>
+>> -static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+>> -				size_t len)
+>> +static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+>> +				     size_t len)
+>> {
+>> 	struct sock *sk;
+>> 	struct vsock_sock *vsk;
+>> @@ -1827,10 +1832,9 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+>> 	return err;
+>> }
+>>
+>> -
+>> static int
+>> -vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>> -		     int flags)
+>> +vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>> +			  int flags)
+>> {
+>> 	struct sock *sk;
+>> 	struct vsock_sock *vsk;
+>> @@ -2006,7 +2010,7 @@ static const struct proto_ops vsock_stream_ops = {
+>> 	.owner = THIS_MODULE,
+>> 	.release = vsock_release,
+>> 	.bind = vsock_bind,
+>> -	.connect = vsock_stream_connect,
+>> +	.connect = vsock_connect,
+>> 	.socketpair = sock_no_socketpair,
+>> 	.accept = vsock_accept,
+>> 	.getname = vsock_getname,
+>> @@ -2014,10 +2018,10 @@ static const struct proto_ops vsock_stream_ops = {
+>> 	.ioctl = sock_no_ioctl,
+>> 	.listen = vsock_listen,
+>> 	.shutdown = vsock_shutdown,
+>> -	.setsockopt = vsock_stream_setsockopt,
+>> -	.getsockopt = vsock_stream_getsockopt,
+>> -	.sendmsg = vsock_stream_sendmsg,
+>> -	.recvmsg = vsock_stream_recvmsg,
+>> +	.setsockopt = vsock_connectible_setsockopt,
+>> +	.getsockopt = vsock_connectible_getsockopt,
+>> +	.sendmsg = vsock_connectible_sendmsg,
+>> +	.recvmsg = vsock_connectible_recvmsg,
+>> 	.mmap = sock_no_mmap,
+>> 	.sendpage = sock_no_sendpage,
+>> };
+>> -- 
+>> 2.25.1
+>>
+>
