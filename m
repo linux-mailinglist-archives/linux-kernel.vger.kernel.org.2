@@ -2,253 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69B9320ECB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B85320ED7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhBVA5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 19:57:47 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:56151 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbhBVA5o (ORCPT
+        id S229943AbhBVA7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 19:59:41 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54344 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230135AbhBVA70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 19:57:44 -0500
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id E5FBE240002;
-        Mon, 22 Feb 2021 00:56:52 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 01:56:52 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] RTC for 5.12
-Message-ID: <YDMBVCTgavxdqkj6@piout.net>
+        Sun, 21 Feb 2021 19:59:26 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DB8AD58E;
+        Mon, 22 Feb 2021 01:58:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613955522;
+        bh=323TC+vAFgYdqYeUrXUcysK+7LkTLS6Zx5cPnpw8BHk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=axi49CHfZHV/SY0ehaNGuD0pP6Qk4JTImZFjyF6aU4EueAzBqGbi90duNUxWYwE0Z
+         knSau8f+sJl+nLon2vDsVYqupsec/s5hi8zAeuVIGnr1/KWobJLWvZQmL/GQobvUjk
+         ec52sihXfNzA5Fssly698HMexTIZAiWdnWMkiKkQ=
+Date:   Mon, 22 Feb 2021 02:58:15 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/16] media: i2c: rdacm20: Embedded 'serializer' field
+Message-ID: <YDMBp5KV/kytZJSr@pendragon.ideasonboard.com>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-3-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20210216174146.106639-3-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+Hi Jacopo,
 
-Here is the RTC subsystem pull request for v5.12. Many cleanups and a
-few drivers removal this cycle.
+Thank you for the patch.
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+On Tue, Feb 16, 2021 at 06:41:32PM +0100, Jacopo Mondi wrote:
+> There's no reason to allocate dynamically the 'serializer' field in
+> the driver structure.
+> 
+> Embed the field and adjust all its users in the driver.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+This requires making the max9271_device structure definition available
+to the rdacm20 and other drivers. Given how tightly coupled they are, I
+don't think that's an issue, but let's keep in mind in the future that
+the camera drivers should not, as a general rule, peek into the
+max9271_device structure directly. It may be nice to add a
+max9271_init() function that will initialize the client field, and move
+the client->addr assignment to max9271_set_address().
 
-are available in the Git repository at:
+Maybe you've already done so in the rest of the series, I'll find out
+soon :-) For this patch,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.12
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-for you to fetch changes up to 49dfc1f16b03a6abc17721d4600f7a0bf3d3e4ed:
-
-  rtc: abx80x: Add utility function for writing configuration key (2021-02-13 23:03:26 +0100)
-
-----------------------------------------------------------------
-RTC for 5.12
-
-Subsystem:
- - Introduce features bitfield and the first feature: RTC_FEATURE_ALARM
-
-Removed drivers:
- - ab3100
- - coh901331
- - tx4939
- - sirfsoc
-
-Drivers:
- - use rtc_lock and rtc_unlock instead of opencoding
- - constify all struct rtc_class_ops
- - quiet maybe-unused variable warning
- - replace spin_lock_irqsave with spin_lock in hard IRQ
- - pcf2127: disable Power-On Reset Override and run OTP refresh
-
-----------------------------------------------------------------
-Alexandre Belloni (58):
-      rtc: opal: set range
-      rtc: introduce features bitfield
-      rtc: pl031: use RTC_FEATURE_ALARM
-      rtc: armada38x: remove armada38x_rtc_ops_noirq
-      rtc: cmos: remove cmos_rtc_ops_no_alarm
-      rtc: mv: remove mv_rtc_alarm_ops
-      rtc: m48t59: remove m48t02_rtc_ops
-      rtc: pcf2127: remove pcf2127_rtc_alrm_ops
-      rtc: pcf85063: remove pcf85063_rtc_ops_alarm
-      rtc: rx8010: drop a struct rtc_class_ops
-      rtc: pcf85363: drop a struct rtc_class_ops
-      rtc: m41t80: constify m41t80_rtc_ops
-      rtc: opal: constify opal_rtc_ops
-      rtc: rv3028: constify rv3028_rtc_ops
-      rtc: rv3029: constify rv3029_rtc_ops
-      rtc: rv3032: constify rv3032_rtc_ops
-      rtc: rv8803: constify rv8803_rtc_ops
-      rtc: tps65910: remove tps65910_rtc_ops_noirq
-      rtc: ac100: use rtc_lock/rtc_unlock
-      rtc: asm9260: use rtc_lock/rtc_unlock
-      rtc: ds1305: use rtc_lock/rtc_unlock
-      rtc: ds1307: use rtc_lock/rtc_unlock
-      rtc: ds1685: use rtc_lock/rtc_unlock
-      rtc: ds3232: use rtc_lock/rtc_unlock
-      rtc: hym8563: use rtc_lock/rtc_unlock
-      rtc: m41t80: use rtc_lock/rtc_unlock
-      rtc: mcp795: use rtc_lock/rtc_unlock
-      rtc: pcf2123: use rtc_lock/rtc_unlock
-      rtc: rv3029: use rtc_lock/rtc_unlock
-      rtc: rx8010: use rtc_lock/rtc_unlock
-      rtc: rx8025: use rtc_lock/rtc_unlock
-      rtc: stm32: use rtc_lock/rtc_unlock
-      rtc: rv3028: fix PORF handling
-      rtc: rv3028: remove useless warning messages
-      dt-bindings: rtc: pcf2127: update bindings
-      rtc: class: remove bogus documentation
-      rtc: armada38x: depend on OF
-      rtc: bq32k: quiet maybe-unused variable warning
-      rtc: brcmstb-waketimer: quiet maybe-unused variable warning
-      rtc: digicolor: quiet maybe-unused variable warning
-      rtc: ds1672: quiet maybe-unused variable warning
-      rtc: ds3232: quiet maybe-unused variable warning
-      rtc: isl1208: quiet maybe-unused variable warning
-      rtc: m41t80: quiet maybe-unused variable warning
-      rtc: meson: quiet maybe-unused variable warning
-      rtc: pcf85063: quiet maybe-unused variable warnings
-      rtc: pcf85363: quiet maybe-unused variable warning
-      rtc: rs5c372: quiet maybe-unused variable warning
-      rtc: rv3028: quiet maybe-unused variable warning
-      rtc: rv3029: quiet maybe-unused variable warning
-      rtc: rv3032: quiet maybe-unused variable warning
-      rtc: rv8803: quiet maybe-unused variable warning
-      rtc: rx8010: quiet maybe-unused variable warning
-      rtc: rx8581: quiet maybe-unused variable warning
-      rtc: s35390a: quiet maybe-unused variable warning
-      rtc: sd3078: quiet maybe-unused variable warning
-      rtc: s3c: stop setting bogus time
-      rtc: s3c: quiet maybe-unused variable warning
-
-Arnd Bergmann (4):
-      rtc: rx6110: fix build against modular I2C
-      rtc: remove sirfsoc driver
-      rtc: remove ste coh901 driver
-      rtc: remove ste ab3100 driver
-
-Bartosz Golaszewski (3):
-      rtc: s5m: select REGMAP_I2C
-      rtc: s5m: use devm_i2c_new_dummy_device()
-      rtc: s5m: check the return value of s5m8767_rtc_init_reg()
-
-Biwen Li (1):
-      rtc: pcf2127: properly set flag WD_CD for rtc chips(pcf2129, pca2129)
-
-Claudiu Beznea (1):
-      dt-bindings: rtc: at91rm9200: add sama7g5 compatible
-
-David Gow (1):
-      rtc: zynqmp: depend on HAS_IOMEM
-
-Dmitry Osipenko (1):
-      rtc: tps65910: Support wakeup-source property
-
-Guixiong Wei (1):
-      rtc: pm8xxx: Read ALARM_EN and update to alarm enabled status
-
-Kevin P. Fleming (1):
-      rtc: abx80x: Add utility function for writing configuration key
-
-Marek Vasut (1):
-      rtc: pcf8563: Add NXP PCA8565 compatible
-
-Philipp Rosenberger (2):
-      rtc: pcf2127: Disable Power-On Reset Override
-      rtc: pcf2127: Run a OTP refresh if not done before
-
-Thomas Bogendoerfer (1):
-      rtc: tx4939: Remove driver
-
-Xiaofei Tan (6):
-      rtc: cmos: Replace spin_lock_irqsave with spin_lock in hard IRQ
-      rtc: pm8xxx: Replace spin_lock_irqsave with spin_lock in hard IRQ
-      rtc: r7301: Replace spin_lock_irqsave with spin_lock in hard IRQ
-      rtc: tegra: Replace spin_lock_irqsave with spin_lock in hard IRQ
-      rtc: mxc: Replace spin_lock_irqsave with spin_lock in hard IRQ
-      rtc: mxc_v2: Replace spin_lock_irqsave with spin_lock in hard IRQ
-
- .../bindings/rtc/atmel,at91rm9200-rtc.yaml         |   1 +
- .../devicetree/bindings/rtc/nxp,pcf2127.yaml       |  51 +++
- Documentation/devicetree/bindings/rtc/pcf8563.txt  |   3 +-
- .../devicetree/bindings/rtc/sirf,prima2-sysrtc.txt |  13 -
- .../bindings/rtc/stericsson,coh901331.txt          |  16 -
- .../devicetree/bindings/rtc/trivial-rtc.yaml       |   6 +-
- drivers/rtc/Kconfig                                |  38 +-
- drivers/rtc/Makefile                               |   4 -
- drivers/rtc/class.c                                |  10 +-
- drivers/rtc/interface.c                            |  12 +-
- drivers/rtc/rtc-ab3100.c                           | 254 ------------
- drivers/rtc/rtc-abx80x.c                           |  39 +-
- drivers/rtc/rtc-ac100.c                            |   4 +-
- drivers/rtc/rtc-armada38x.c                        |  21 +-
- drivers/rtc/rtc-asm9260.c                          |   6 +-
- drivers/rtc/rtc-bq32k.c                            |   2 +-
- drivers/rtc/rtc-brcmstb-waketimer.c                |   2 +-
- drivers/rtc/rtc-cmos.c                             |  17 +-
- drivers/rtc/rtc-coh901331.c                        | 290 --------------
- drivers/rtc/rtc-digicolor.c                        |   2 +-
- drivers/rtc/rtc-ds1305.c                           |   5 +-
- drivers/rtc/rtc-ds1307.c                           |   5 +-
- drivers/rtc/rtc-ds1672.c                           |   2 +-
- drivers/rtc/rtc-ds1685.c                           |   6 +-
- drivers/rtc/rtc-ds3232.c                           |   7 +-
- drivers/rtc/rtc-hym8563.c                          |   5 +-
- drivers/rtc/rtc-isl1208.c                          |   2 +-
- drivers/rtc/rtc-m41t80.c                           |  25 +-
- drivers/rtc/rtc-m48t59.c                           |  22 +-
- drivers/rtc/rtc-mcp795.c                           |   5 +-
- drivers/rtc/rtc-meson.c                            |   2 +-
- drivers/rtc/rtc-mv.c                               |  14 +-
- drivers/rtc/rtc-mxc.c                              |   5 +-
- drivers/rtc/rtc-mxc_v2.c                           |   7 +-
- drivers/rtc/rtc-opal.c                             |  27 +-
- drivers/rtc/rtc-pcf2123.c                          |   5 +-
- drivers/rtc/rtc-pcf2127.c                          |  46 ++-
- drivers/rtc/rtc-pcf85063.c                         |  49 +--
- drivers/rtc/rtc-pcf85363.c                         |  10 +-
- drivers/rtc/rtc-pcf8563.c                          |   2 +
- drivers/rtc/rtc-pl031.c                            |   8 +-
- drivers/rtc/rtc-pm8xxx.c                           |  18 +-
- drivers/rtc/rtc-r7301.c                            |   5 +-
- drivers/rtc/rtc-rs5c372.c                          |   2 +-
- drivers/rtc/rtc-rv3028.c                           |  23 +-
- drivers/rtc/rtc-rv3029c2.c                         |  22 +-
- drivers/rtc/rtc-rv3032.c                           |  13 +-
- drivers/rtc/rtc-rv8803.c                           |  13 +-
- drivers/rtc/rtc-rx6110.c                           |   4 +-
- drivers/rtc/rtc-rx8010.c                           |  21 +-
- drivers/rtc/rtc-rx8025.c                           |   5 +-
- drivers/rtc/rtc-rx8581.c                           |   2 +-
- drivers/rtc/rtc-s35390a.c                          |   2 +-
- drivers/rtc/rtc-s3c.c                              |  17 +-
- drivers/rtc/rtc-s5m.c                              |  33 +-
- drivers/rtc/rtc-sd3078.c                           |   2 +-
- drivers/rtc/rtc-sirfsoc.c                          | 446 ---------------------
- drivers/rtc/rtc-stm32.c                            |   4 +-
- drivers/rtc/rtc-tegra.c                            |   6 +-
- drivers/rtc/rtc-tps65910.c                         |  19 +-
- drivers/rtc/rtc-tx4939.c                           | 303 --------------
- include/linux/rtc.h                                |   2 +
- include/linux/rtc/sirfsoc_rtciobrg.h               |  21 -
- include/uapi/linux/rtc.h                           |   5 +
- 64 files changed, 321 insertions(+), 1717 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
- delete mode 100644 Documentation/devicetree/bindings/rtc/sirf,prima2-sysrtc.txt
- delete mode 100644 Documentation/devicetree/bindings/rtc/stericsson,coh901331.txt
- delete mode 100644 drivers/rtc/rtc-ab3100.c
- delete mode 100644 drivers/rtc/rtc-coh901331.c
- delete mode 100644 drivers/rtc/rtc-sirfsoc.c
- delete mode 100644 drivers/rtc/rtc-tx4939.c
- delete mode 100644 include/linux/rtc/sirfsoc_rtciobrg.h
+> ---
+>  drivers/media/i2c/rdacm20.c | 38 ++++++++++++++++---------------------
+>  1 file changed, 16 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> index f7fd5ae955d0..4d9bac87cba8 100644
+> --- a/drivers/media/i2c/rdacm20.c
+> +++ b/drivers/media/i2c/rdacm20.c
+> @@ -312,7 +312,7 @@ static const struct ov10635_reg {
+>  
+>  struct rdacm20_device {
+>  	struct device			*dev;
+> -	struct max9271_device		*serializer;
+> +	struct max9271_device		serializer;
+>  	struct i2c_client		*sensor;
+>  	struct v4l2_subdev		sd;
+>  	struct media_pad		pad;
+> @@ -399,7 +399,7 @@ static int rdacm20_s_stream(struct v4l2_subdev *sd, int enable)
+>  {
+>  	struct rdacm20_device *dev = sd_to_rdacm20(sd);
+>  
+> -	return max9271_set_serial_link(dev->serializer, enable);
+> +	return max9271_set_serial_link(&dev->serializer, enable);
+>  }
+>  
+>  static int rdacm20_enum_mbus_code(struct v4l2_subdev *sd,
+> @@ -456,11 +456,11 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>  	int ret;
+>  
+>  	/* Verify communication with the MAX9271: ping to wakeup. */
+> -	dev->serializer->client->addr = MAX9271_DEFAULT_ADDR;
+> -	i2c_smbus_read_byte(dev->serializer->client);
+> +	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> +	i2c_smbus_read_byte(dev->serializer.client);
+>  
+>  	/* Serial link disabled during config as it needs a valid pixel clock. */
+> -	ret = max9271_set_serial_link(dev->serializer, false);
+> +	ret = max9271_set_serial_link(&dev->serializer, false);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -468,35 +468,35 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>  	 *  Ensure that we have a good link configuration before attempting to
+>  	 *  identify the device.
+>  	 */
+> -	max9271_configure_i2c(dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
+> -					       MAX9271_I2CSLVTO_1024US |
+> -					       MAX9271_I2CMSTBT_105KBPS);
+> +	max9271_configure_i2c(&dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
+> +						MAX9271_I2CSLVTO_1024US |
+> +						MAX9271_I2CMSTBT_105KBPS);
+>  
+> -	max9271_configure_gmsl_link(dev->serializer);
+> +	max9271_configure_gmsl_link(&dev->serializer);
+>  
+> -	ret = max9271_verify_id(dev->serializer);
+> +	ret = max9271_verify_id(&dev->serializer);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	ret = max9271_set_address(dev->serializer, dev->addrs[0]);
+> +	ret = max9271_set_address(&dev->serializer, dev->addrs[0]);
+>  	if (ret < 0)
+>  		return ret;
+> -	dev->serializer->client->addr = dev->addrs[0];
+> +	dev->serializer.client->addr = dev->addrs[0];
+>  
+>  	/*
+>  	 * Reset the sensor by cycling the OV10635 reset signal connected to the
+>  	 * MAX9271 GPIO1 and verify communication with the OV10635.
+>  	 */
+> -	ret = max9271_enable_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> +	ret = max9271_enable_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = max9271_clear_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> +	ret = max9271_clear_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>  	if (ret)
+>  		return ret;
+>  	usleep_range(10000, 15000);
+>  
+> -	ret = max9271_set_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> +	ret = max9271_set_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>  	if (ret)
+>  		return ret;
+>  	usleep_range(10000, 15000);
+> @@ -560,13 +560,7 @@ static int rdacm20_probe(struct i2c_client *client)
+>  	if (!dev)
+>  		return -ENOMEM;
+>  	dev->dev = &client->dev;
+> -
+> -	dev->serializer = devm_kzalloc(&client->dev, sizeof(*dev->serializer),
+> -				       GFP_KERNEL);
+> -	if (!dev->serializer)
+> -		return -ENOMEM;
+> -
+> -	dev->serializer->client = client;
+> +	dev->serializer.client = client;
+>  
+>  	ret = of_property_read_u32_array(client->dev.of_node, "reg",
+>  					 dev->addrs, 2);
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Regards,
+
+Laurent Pinchart
