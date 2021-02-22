@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F993222CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 00:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AEA3222CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 00:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbhBVXur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 18:50:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhBVXuk (ORCPT
+        id S231549AbhBVXvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 18:51:06 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:59775 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhBVXvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 18:50:40 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB15C061574;
-        Mon, 22 Feb 2021 15:50:00 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DkzSK0pcNz9sSC;
-        Tue, 23 Feb 2021 10:49:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614037795;
-        bh=pX0WYdPuB6nv8cg3kUdrKd2A841m2wNDY//CSlQG4cE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ljC/1Jb1//43GKjkVW+9pgrLIXZFAJko8/80nMMcm83KyLX/m5oU9C4RSW0V3MX7U
-         VDG3RiUlXFC1GoMVDRVenIA0Ajhwtvres0G3ypg5WWDoaChMZZmdxVc+Nv4gxuFrfZ
-         y1thulL7ip3Oh14RWx8wpT1foUsZ+T6GDSRNr/ftz97RwVxZ1iwf/UX378la7XvcSB
-         PeRCU4YcUzwOgNNBNwBb0wyVD2yaiZQ46au2HlnVj8m1ArX6oi1vAwcW8bTwbWZVWk
-         1PI6oECDqMaRp1Wl3VObdcVybG5ch04a3DjT1cLUJrdjBd3al4Gcq1vFiSQVf+uzTp
-         xnPwCOGr+4O0Q==
-Date:   Tue, 23 Feb 2021 10:49:50 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kees Cook <keescook@chromium.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: linux-next: manual merge of the kspp tree with the mips tree
-Message-ID: <20210223104950.1f754320@canb.auug.org.au>
-In-Reply-To: <20210215074726.60c45281@canb.auug.org.au>
-References: <20210118150804.378ac9f3@canb.auug.org.au>
-        <20210215074726.60c45281@canb.auug.org.au>
+        Mon, 22 Feb 2021 18:51:02 -0500
+Date:   Mon, 22 Feb 2021 23:50:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1614037819;
+        bh=ph1ySBEQC0LJpRPum3dD4XtE11mtDK6Kdlwf7VEbw5E=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=cc2FYh0f9I8DcHixptL/3YWq/dc+vUJCOLh2GWZ2BXH22GspZN90hOwFl/9dPFMKK
+         6nnqDu8qOUg5XbyFoy+E5IGUA/fPrLGhYFnFIrwWPqs6k6jYFXQd5aIEb2l2b3ArnH
+         U4iZ0I4cJEgPoPWD/rF1xJeTuAxvkq5KwaicRzqFIuFnDlg8c0+xXp/tf+T4lN/faZ
+         mb5/DaE+mvtRNA2PqzuYGUpar5OSfKvIc/foi2JiQ+O03ckn8vE0qFB4xTAKZHJywc
+         +ocqGh0J6I+tg28wbF/fzmNQ96BEY+wPmfvl5sSHQOffXNABk5gweZQQH6ovD7+4S0
+         xRt//bY/pcZLA==
+To:     Nathan Chancellor <nathan@kernel.org>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Souptick Joarder <jrdr.linux@gmail.com>, harry.wentland@amd.com,
+        sunpeng.li@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        nicholas.kazlauskas@amd.com, Rodrigo.Siqueira@amd.com,
+        aurabindo.pillai@amd.com, stylon.wang@amd.com,
+        bas@basnieuwenhuizen.nl, Bhawanpreet.Lakha@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH] drm/amdgpu/display: initialize the variable 'i'
+Message-ID: <yHvp7KbQD2pF5dR6krMc_Zuq9a8GxkYSSiIpjBenuiCjwpFmFxpAOpfzhp0DfHQhH2Z3P81-CGpwmmXp0zjifT93vBXXYd5kJsSucQgXFZI=@emersion.fr>
+In-Reply-To: <20210222234457.GA36153@24bbad8f3778>
+References: <1614021931-4386-1-git-send-email-jrdr.linux@gmail.com> <32vjVDssCxltB75h5jHin2U3-cvNjmd_HFnRLiKohhbXkTfZea3hw2Knd80SgcHoyIFldMNwqh49t28hMBvta0HeWed1L0q_efLJ8QCgNw8=@emersion.fr> <20210222234457.GA36153@24bbad8f3778>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_L.V5b/u7kTB1oSiHwMFBW2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_L.V5b/u7kTB1oSiHwMFBW2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tuesday, February 23rd, 2021 at 12:44 AM, Nathan Chancellor <nathan@kern=
+el.org> wrote:
 
-Hi all,
+> On Mon, Feb 22, 2021 at 11:05:17PM +0000, Simon Ser wrote:
+> > On Monday, February 22nd, 2021 at 8:25 PM, Souptick Joarder <jrdr.linux=
+@gmail.com> wrote:
+> >
+> > > >> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9804:3=
+8:
+> > > >> warning: variable 'i' is uninitialized when used here
+> > > >> [-Wuninitialized]
+> > >                            timing  =3D &edid->detailed_timings[i];
+> > >                                                              ^
+> > >    drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9714:7=
+:
+> > > note: initialize the variable 'i' to silence this warning
+> > >            int i;
+> > >                 ^
+> > >                  =3D 0
+> > >    1 warning generated.
+> > >
+> > > Initialize the variable 'i'.
+> >
+> > Hm, I see this variable already initialized in the loop:
+> >
+> >     for (i =3D 0; i < 4; i++) {
+> >
+> > This is the branch agd5f/drm-next.
+>
+> That is in the
+>
+> =09if (amdgpu_dm_connector->dc_sink->sink_signal =3D=3D SIGNAL_TYPE_DISPL=
+AY_PORT
+> =09=09|| amdgpu_dm_connector->dc_sink->sink_signal =3D=3D SIGNAL_TYPE_EDP=
+) {
+>
+> branch not the
+>
+> =09} else if (edid && amdgpu_dm_connector->dc_sink->sink_signal =3D=3D SI=
+GNAL_TYPE_HDMI_TYPE_A) {
+>
+> branch, where i is indeed used uninitialized like clang complains about.
+>
+> I am not at all familiar with the code so I cannot say if this fix is
+> the proper one but it is definitely a legitimate issue.
 
-On Mon, 15 Feb 2021 07:47:26 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> On Mon, 18 Jan 2021 15:08:04 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >=20
-> > Today's linux-next merge of the kspp tree got a conflict in:
-> >=20
-> >   include/asm-generic/vmlinux.lds.h
-> >=20
-> > between commits:
-> >=20
-> >   9a427556fb8e ("vmlinux.lds.hf41b233de0ae: catch compound literals int=
-o data and BSS")
-> >   f41b233de0ae ("vmlinux.lds.h: catch UBSAN's "unnamed data" into data")
-> >=20
-> > from the mips tree and commit:
-> >=20
-> >   dc5723b02e52 ("kbuild: add support for Clang LTO")
-> >=20
-> > from the kspp tree.
-> >=20
-> > I fixed it up (9a427556fb8e and dc5723b02e52 made the same change to
-> > DATA_MAIN, which conflicted with the change in f41b233de0ae) and can
-> > carry the fix as necessary. This is now fixed as far as linux-next is
-> > concerned, but any non trivial conflicts should be mentioned to your
-> > upstream maintainer when your tree is submitted for merging. You may
-> > also want to consider cooperating with the maintainer of the
-> > conflicting tree to minimise any particularly complex conflicts. =20
->=20
-> With the merge window about to open, this is a reminder that this
-> conflict still exists.
+I think you have an outdated branch. In my checkout, i is not used in the f=
+irst
+branch, and is initialized in the second one.
 
-This is now a conflict between the kspp tree and Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/_L.V5b/u7kTB1oSiHwMFBW2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA0Qx4ACgkQAVBC80lX
-0GzvaAf/exYfZ63fFOXiiAaFP0uHEBIhRhM1t9R/hMH1ktuFdwluNFDAWb6tryej
-CJt3LHk8CZTyvc4MlaZgAWW/VaGFyJKsN+EjBl5Q8oIMyn2RlazhZfLx7ZA3n1jL
-d1q9xh4fK8xhKxzF0TAlsTm2QumF7b5pl7YOy6a7ISmc5qmw25UP7goVve1bHrYH
-/QbYVIXBi9azya06tYhrMYd9+HlD7tq7wibcoHIDtb+uIRnIldxrEMQXmMzkYSPQ
-M1gGAsLMHoy54ClkMkmvKWoaSwGsUrK9ZpkkaLomJM1ZTtJUzJcPXVZtPmIKRClc
-NxoSGrm49gW3acu4n124c1w852dJVg==
-=4lJh
------END PGP SIGNATURE-----
-
---Sig_/_L.V5b/u7kTB1oSiHwMFBW2--
+https://cgit.freedesktop.org/~agd5f/linux/tree/drivers/gpu/drm/amd/display/=
+amdgpu_dm/amdgpu_dm.c?h=3Ddrm-next#n9700
