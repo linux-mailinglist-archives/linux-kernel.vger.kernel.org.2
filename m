@@ -2,321 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21672321C8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03643321C92
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhBVQOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:14:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28061 "EHLO
+        id S230518AbhBVQPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:15:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20245 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230441AbhBVQOP (ORCPT
+        by vger.kernel.org with ESMTP id S230071AbhBVQPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:14:15 -0500
+        Mon, 22 Feb 2021 11:15:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614010367;
+        s=mimecast20190719; t=1614010426;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kzM1nmkZLUtXSCoFXOxh9S0ee7AIDfHgUq8V6oXQdwk=;
-        b=NuPy0oO+Aw7L6Hzjjc2kGtCSGDx7XIW8+dyZZtNQVi7lJlRIfgy5426Ew3WjiRprv3qhdL
-        6aMV1xCpTLxdhK3T+2sVK5e83U1EYOxl6nBPlZPxyIRo/DdGIpaZ0g4i8Wdih2ab3EmpLm
-        6P1xMoiPgbBjY1dJH4NUxKx2N2uhqPM=
+        bh=vGnfE5dmtvOlJFPabKOkr4gF//An3LQV9JDbxXBmlGM=;
+        b=b/+r/ZC/8/I9+wX6aRqSS3uNo6h99INeLl4pyc5mPR1ksOIEJ7am3tlyRGLOZiiEsmHVs8
+        0odojJasN9CFOwIV/eDXXDppPjQKth2dkciseFDJ60lxuKoA5qu54ageeCZ2q6WGY0dBWq
+        2oVbL7yC4pwN8qZLesN92APlxozbMbw=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-hh-wV3niPY-5m29u9xRw2w-1; Mon, 22 Feb 2021 11:12:41 -0500
-X-MC-Unique: hh-wV3niPY-5m29u9xRw2w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-567-dSb2tbqLND-u__McrvQZgw-1; Mon, 22 Feb 2021 11:13:42 -0500
+X-MC-Unique: dSb2tbqLND-u__McrvQZgw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D55D4107ACE6;
-        Mon, 22 Feb 2021 16:12:38 +0000 (UTC)
-Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4A94F5D6B1;
-        Mon, 22 Feb 2021 16:12:30 +0000 (UTC)
-Subject: Re: [PATCH v11 01/13] vfio: VFIO_IOMMU_SET_PASID_TABLE
-To:     Keqian Zhu <zhukeqian1@huawei.com>, eric.auger.pro@gmail.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
-        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
-        alex.williamson@redhat.com
-Cc:     jean-philippe@linaro.org, jacob.jun.pan@linux.intel.com,
-        nicoleotsuka@gmail.com, vivek.gautam@arm.com, yi.l.liu@intel.com,
-        zhangfei.gao@linaro.org
-References: <20201116110030.32335-1-eric.auger@redhat.com>
- <20201116110030.32335-2-eric.auger@redhat.com>
- <84a111da-1969-1701-9a6d-cae8d7c285c6@huawei.com>
- <e476f85d-f49f-f9a6-3232-e99a4cb5a0a2@redhat.com>
- <bb8c7382-5f2b-6a95-7dee-5528caf67a96@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <c1e2909a-82d4-5263-c0a1-f6f6edee0218@redhat.com>
-Date:   Mon, 22 Feb 2021 17:12:28 +0100
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44B161935780;
+        Mon, 22 Feb 2021 16:13:39 +0000 (UTC)
+Received: from [10.36.115.16] (ovpn-115-16.ams2.redhat.com [10.36.115.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DD44E10016F4;
+        Mon, 22 Feb 2021 16:13:34 +0000 (UTC)
+To:     George Kennedy <george.kennedy@oracle.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Konrad Rzeszutek Wilk <konrad@darnok.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+References: <487751e1ccec8fcd32e25a06ce000617e96d7ae1.1613595269.git.andreyknvl@google.com>
+ <e58cbb53-5f5b-42ae-54a0-e3e1b76ad271@redhat.com>
+ <d11bf144-669b-0fe1-4fa4-001a014db32a@oracle.com>
+ <CAAeHK+y_SmP5yAeSM3Cp6V3WH9uj4737hDuVGA7U=xA42ek3Lw@mail.gmail.com>
+ <c7166cae-bf89-8bdd-5849-72b5949fc6cc@oracle.com>
+ <797fae72-e3ea-c0b0-036a-9283fa7f2317@oracle.com>
+ <1ac78f02-d0af-c3ff-cc5e-72d6b074fc43@redhat.com>
+ <bd7510b5-d325-b516-81a8-fbdc81a27138@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH] mm, kasan: don't poison boot memory
+Message-ID: <56c97056-6d8b-db0e-e303-421ee625abe3@redhat.com>
+Date:   Mon, 22 Feb 2021 17:13:33 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <bb8c7382-5f2b-6a95-7dee-5528caf67a96@huawei.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <bd7510b5-d325-b516-81a8-fbdc81a27138@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Keqian,
-
-On 2/22/21 1:20 PM, Keqian Zhu wrote:
-> Hi Eric,
+On 22.02.21 16:13, George Kennedy wrote:
 > 
-> On 2021/2/22 18:53, Auger Eric wrote:
->> Hi Keqian,
->>
->> On 2/2/21 1:34 PM, Keqian Zhu wrote:
->>> Hi Eric,
+> 
+> On 2/22/2021 4:52 AM, David Hildenbrand wrote:
+>> On 20.02.21 00:04, George Kennedy wrote:
 >>>
->>> On 2020/11/16 19:00, Eric Auger wrote:
->>>> From: "Liu, Yi L" <yi.l.liu@linux.intel.com>
->>>>
->>>> This patch adds an VFIO_IOMMU_SET_PASID_TABLE ioctl
->>>> which aims to pass the virtual iommu guest configuration
->>>> to the host. This latter takes the form of the so-called
->>>> PASID table.
->>>>
->>>> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
->>>> Signed-off-by: Liu, Yi L <yi.l.liu@linux.intel.com>
->>>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->>>>
->>>> ---
->>>> v11 -> v12:
->>>> - use iommu_uapi_set_pasid_table
->>>> - check SET and UNSET are not set simultaneously (Zenghui)
->>>>
->>>> v8 -> v9:
->>>> - Merge VFIO_IOMMU_ATTACH/DETACH_PASID_TABLE into a single
->>>>   VFIO_IOMMU_SET_PASID_TABLE ioctl.
->>>>
->>>> v6 -> v7:
->>>> - add a comment related to VFIO_IOMMU_DETACH_PASID_TABLE
->>>>
->>>> v3 -> v4:
->>>> - restore ATTACH/DETACH
->>>> - add unwind on failure
->>>>
->>>> v2 -> v3:
->>>> - s/BIND_PASID_TABLE/SET_PASID_TABLE
->>>>
->>>> v1 -> v2:
->>>> - s/BIND_GUEST_STAGE/BIND_PASID_TABLE
->>>> - remove the struct device arg
->>>> ---
->>>>  drivers/vfio/vfio_iommu_type1.c | 65 +++++++++++++++++++++++++++++++++
->>>>  include/uapi/linux/vfio.h       | 19 ++++++++++
->>>>  2 files changed, 84 insertions(+)
->>>>
->>>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
->>>> index 67e827638995..87ddd9e882dc 100644
->>>> --- a/drivers/vfio/vfio_iommu_type1.c
->>>> +++ b/drivers/vfio/vfio_iommu_type1.c
->>>> @@ -2587,6 +2587,41 @@ static int vfio_iommu_iova_build_caps(struct vfio_iommu *iommu,
->>>>  	return ret;
->>>>  }
->>>>  
->>>> +static void
->>>> +vfio_detach_pasid_table(struct vfio_iommu *iommu)
->>>> +{
->>>> +	struct vfio_domain *d;
->>>> +
->>>> +	mutex_lock(&iommu->lock);
->>>> +	list_for_each_entry(d, &iommu->domain_list, next)
->>>> +		iommu_detach_pasid_table(d->domain);
->>>> +
->>>> +	mutex_unlock(&iommu->lock);
->>>> +}
->>>> +
->>>> +static int
->>>> +vfio_attach_pasid_table(struct vfio_iommu *iommu, unsigned long arg)
->>>> +{
->>>> +	struct vfio_domain *d;
->>>> +	int ret = 0;
->>>> +
->>>> +	mutex_lock(&iommu->lock);
->>>> +
->>>> +	list_for_each_entry(d, &iommu->domain_list, next) {
->>>> +		ret = iommu_uapi_attach_pasid_table(d->domain, (void __user *)arg);
->>> This design is not very clear to me. This assumes all iommu_domains share the same pasid table.
 >>>
->>> As I understand, it's reasonable when there is only one group in the domain, and only one domain in the vfio_iommu.
->>> If more than one group in the vfio_iommu, the guest may put them into different guest iommu_domain, then they have different pasid table.
->>>
->>> Is this the use scenario?
->>
->> the vfio_iommu is attached to a container. all the groups within a
->> container share the same set of page tables (linux
->> Documentation/driver-api/vfio.rst). So to me if you want to use
->> different pasid tables, the groups need to be attached to different
->> containers. Does that make sense to you?
-> OK, so this is what I understand about the design. A little question is that when
-> we perform attach_pasid_table on a container, maybe we ought to do a sanity
-> check to make sure that only one group is in this container, instead of
-> iterating all domain?
-> 
-> To be frank, my main concern is that if we put each group into different container
-> under nested mode, then we give up the possibility that they can share stage2 page tables,
-> which saves host memory and reduces the time of preparing environment for VM.
-
-Referring to the QEMU integration, when you use a virtual IOMMU, there
-is generally one VFIO container per viommu protected device
-(AddressSpace), independently on the fact nested stage is being used. I
-think the exception is if you put 2 assigned devices behind a virtual
-PCIe to PCI bridge (pcie-pci-bridge), in that case they have the same
-RID, they share the same QEMU AddressSpace and they are put in the same
-container, if the kernel does not reject it (underlying pIOMMUs allow
-it). See QEMU vfio_connect_container() in hw/vfio/common.c.
-
-In that config, if the assigned devices belong to different groups, you
-may end up with 2 groups set to the same container. But this case is not
-supported by the guest kernel anyway (independently on the nested stage
-integration). You hit a BUG_ON as reported a long time ago in
-
-https://www.mail-archive.com/qemu-devel@nongnu.org/msg608047.html
-
-
-> 
-> To me, I'd like to understand the "container shares page table" to be:
-> 1) share stage2 page table under nested mode.
-under nested mode they share S2 and with this design devices also share
-the same PASID table. Because on the guest they are in the same group.
-> 2) share stage1 page table under non-nested mode.
-in non nested mode there is a single stage, by default S1.
-> 
-> As when we perform "map" on a container:
-> 1) under nested mode, we setup stage2 mapping.
-> 2) under non-nested mode, we setup stage1 mapping.
-right
-> 
-> Indeed, to realize stage2 mapping sharing, we should do much more work to refactor
-> SMMU_DOMAIN...
-
-Hope this helps
-
-Thanks
-
-Eric
-> 
-> Hope you can consider this. :)
-> 
-> Thanks,
-> Keqian
-> 
->>
->> Thanks
->>
->> Eric
->>>
->>> Thanks,
->>> Keqian
->>>
->>>> +		if (ret)
->>>> +			goto unwind;
->>>> +	}
->>>> +	goto unlock;
->>>> +unwind:
->>>> +	list_for_each_entry_continue_reverse(d, &iommu->domain_list, next) {
->>>> +		iommu_detach_pasid_table(d->domain);
->>>> +	}
->>>> +unlock:
->>>> +	mutex_unlock(&iommu->lock);
->>>> +	return ret;
->>>> +}
->>>> +
->>>>  static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
->>>>  					   struct vfio_info_cap *caps)
->>>>  {
->>>> @@ -2747,6 +2782,34 @@ static int vfio_iommu_type1_unmap_dma(struct vfio_iommu *iommu,
->>>>  			-EFAULT : 0;
->>>>  }
->>>>  
->>>> +static int vfio_iommu_type1_set_pasid_table(struct vfio_iommu *iommu,
->>>> +					    unsigned long arg)
->>>> +{
->>>> +	struct vfio_iommu_type1_set_pasid_table spt;
->>>> +	unsigned long minsz;
->>>> +	int ret = -EINVAL;
->>>> +
->>>> +	minsz = offsetofend(struct vfio_iommu_type1_set_pasid_table, flags);
->>>> +
->>>> +	if (copy_from_user(&spt, (void __user *)arg, minsz))
->>>> +		return -EFAULT;
->>>> +
->>>> +	if (spt.argsz < minsz)
->>>> +		return -EINVAL;
->>>> +
->>>> +	if (spt.flags & VFIO_PASID_TABLE_FLAG_SET &&
->>>> +	    spt.flags & VFIO_PASID_TABLE_FLAG_UNSET)
->>>> +		return -EINVAL;
->>>> +
->>>> +	if (spt.flags & VFIO_PASID_TABLE_FLAG_SET)
->>>> +		ret = vfio_attach_pasid_table(iommu, arg + minsz);
->>>> +	else if (spt.flags & VFIO_PASID_TABLE_FLAG_UNSET) {
->>>> +		vfio_detach_pasid_table(iommu);
->>>> +		ret = 0;
->>>> +	}
->>>> +	return ret;
->>>> +}
->>>> +
->>>>  static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
->>>>  					unsigned long arg)
->>>>  {
->>>> @@ -2867,6 +2930,8 @@ static long vfio_iommu_type1_ioctl(void *iommu_data,
->>>>  		return vfio_iommu_type1_unmap_dma(iommu, arg);
->>>>  	case VFIO_IOMMU_DIRTY_PAGES:
->>>>  		return vfio_iommu_type1_dirty_pages(iommu, arg);
->>>> +	case VFIO_IOMMU_SET_PASID_TABLE:
->>>> +		return vfio_iommu_type1_set_pasid_table(iommu, arg);
->>>>  	default:
->>>>  		return -ENOTTY;
->>>>  	}
->>>> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
->>>> index 2f313a238a8f..78ce3ce6c331 100644
->>>> --- a/include/uapi/linux/vfio.h
->>>> +++ b/include/uapi/linux/vfio.h
->>>> @@ -14,6 +14,7 @@
->>>>  
->>>>  #include <linux/types.h>
->>>>  #include <linux/ioctl.h>
->>>> +#include <linux/iommu.h>
->>>>  
->>>>  #define VFIO_API_VERSION	0
->>>>  
->>>> @@ -1180,6 +1181,24 @@ struct vfio_iommu_type1_dirty_bitmap_get {
->>>>  
->>>>  #define VFIO_IOMMU_DIRTY_PAGES             _IO(VFIO_TYPE, VFIO_BASE + 17)
->>>>  
->>>> +/*
->>>> + * VFIO_IOMMU_SET_PASID_TABLE - _IOWR(VFIO_TYPE, VFIO_BASE + 22,
->>>> + *			struct vfio_iommu_type1_set_pasid_table)
->>>> + *
->>>> + * The SET operation passes a PASID table to the host while the
->>>> + * UNSET operation detaches the one currently programmed. Setting
->>>> + * a table while another is already programmed replaces the old table.
->>>> + */
->>>> +struct vfio_iommu_type1_set_pasid_table {
->>>> +	__u32	argsz;
->>>> +	__u32	flags;
->>>> +#define VFIO_PASID_TABLE_FLAG_SET	(1 << 0)
->>>> +#define VFIO_PASID_TABLE_FLAG_UNSET	(1 << 1)
->>>> +	struct iommu_pasid_table_config config; /* used on SET */
->>>> +};
->>>> +
->>>> +#define VFIO_IOMMU_SET_PASID_TABLE	_IO(VFIO_TYPE, VFIO_BASE + 22)
->>>> +
->>>>  /* -------- Additional API for SPAPR TCE (Server POWERPC) IOMMU -------- */
->>>>  
->>>>  /*
+>>> On 2/19/2021 11:45 AM, George Kennedy wrote:
 >>>>
+>>>>
+>>>> On 2/18/2021 7:09 PM, Andrey Konovalov wrote:
+>>>>> On Fri, Feb 19, 2021 at 1:06 AM George Kennedy
+>>>>> <george.kennedy@oracle.com> wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 2/18/2021 3:55 AM, David Hildenbrand wrote:
+>>>>>>> On 17.02.21 21:56, Andrey Konovalov wrote:
+>>>>>>>> During boot, all non-reserved memblock memory is exposed to the
+>>>>>>>> buddy
+>>>>>>>> allocator. Poisoning all that memory with KASAN lengthens boot
+>>>>>>>> time,
+>>>>>>>> especially on systems with large amount of RAM. This patch makes
+>>>>>>>> page_alloc to not call kasan_free_pages() on all new memory.
+>>>>>>>>
+>>>>>>>> __free_pages_core() is used when exposing fresh memory during
+>>>>>>>> system
+>>>>>>>> boot and when onlining memory during hotplug. This patch adds a new
+>>>>>>>> FPI_SKIP_KASAN_POISON flag and passes it to __free_pages_ok()
+>>>>>>>> through
+>>>>>>>> free_pages_prepare() from __free_pages_core().
+>>>>>>>>
+>>>>>>>> This has little impact on KASAN memory tracking.
+>>>>>>>>
+>>>>>>>> Assuming that there are no references to newly exposed pages
+>>>>>>>> before they
+>>>>>>>> are ever allocated, there won't be any intended (but buggy)
+>>>>>>>> accesses to
+>>>>>>>> that memory that KASAN would normally detect.
+>>>>>>>>
+>>>>>>>> However, with this patch, KASAN stops detecting wild and large
+>>>>>>>> out-of-bounds accesses that happen to land on a fresh memory page
+>>>>>>>> that
+>>>>>>>> was never allocated. This is taken as an acceptable trade-off.
+>>>>>>>>
+>>>>>>>> All memory allocated normally when the boot is over keeps getting
+>>>>>>>> poisoned as usual.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+>>>>>>>> Change-Id: Iae6b1e4bb8216955ffc14af255a7eaaa6f35324d
+>>>>>>> Not sure this is the right thing to do, see
+>>>>>>>
+>>>>>>> https://lkml.kernel.org/r/bcf8925d-0949-3fe1-baa8-cc536c529860@oracle.com
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> Reversing the order in which memory gets allocated + used during
+>>>>>>> boot
+>>>>>>> (in a patch by me) might have revealed an invalid memory access
+>>>>>>> during
+>>>>>>> boot.
+>>>>>>>
+>>>>>>> I suspect that that issue would no longer get detected with your
+>>>>>>> patch, as the invalid memory access would simply not get detected.
+>>>>>>> Now, I cannot prove that :)
+>>>>>> Since David's patch we're having trouble with the iBFT ACPI table,
+>>>>>> which
+>>>>>> is mapped in via kmap() - see acpi_map() in "drivers/acpi/osl.c".
+>>>>>> KASAN
+>>>>>> detects that it is being used after free when ibft_init() accesses
+>>>>>> the
+>>>>>> iBFT table, but as of yet we can't find where it get's freed (we've
+>>>>>> instrumented calls to kunmap()).
+>>>>> Maybe it doesn't get freed, but what you see is a wild or a large
+>>>>> out-of-bounds access. Since KASAN marks all memory as freed during the
+>>>>> memblock->page_alloc transition, such bugs can manifest as
+>>>>> use-after-frees.
+>>>>
+>>>> It gets freed and re-used. By the time the iBFT table is accessed by
+>>>> ibft_init() the page has been over-written.
+>>>>
+>>>> Setting page flags like the following before the call to kmap()
+>>>> prevents the iBFT table page from being freed:
+>>>
+>>> Cleaned up version:
+>>>
+>>> diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+>>> index 0418feb..8f0a8e7 100644
+>>> --- a/drivers/acpi/osl.c
+>>> +++ b/drivers/acpi/osl.c
+>>> @@ -287,9 +287,12 @@ static void __iomem *acpi_map(acpi_physical_address
+>>> pg_off, unsigned long pg_sz)
+>>>
+>>>         pfn = pg_off >> PAGE_SHIFT;
+>>>         if (should_use_kmap(pfn)) {
+>>> +        struct page *page = pfn_to_page(pfn);
+>>> +
+>>>             if (pg_sz > PAGE_SIZE)
+>>>                 return NULL;
+>>> -        return (void __iomem __force *)kmap(pfn_to_page(pfn));
+>>> +        SetPageReserved(page);
+>>> +        return (void __iomem __force *)kmap(page);
+>>>         } else
+>>>             return acpi_os_ioremap(pg_off, pg_sz);
+>>>     }
+>>> @@ -299,9 +302,12 @@ static void acpi_unmap(acpi_physical_address
+>>> pg_off, void __iomem *vaddr)
+>>>         unsigned long pfn;
+>>>
+>>>         pfn = pg_off >> PAGE_SHIFT;
+>>> -    if (should_use_kmap(pfn))
+>>> -        kunmap(pfn_to_page(pfn));
+>>> -    else
+>>> +    if (should_use_kmap(pfn)) {
+>>> +        struct page *page = pfn_to_page(pfn);
+>>> +
+>>> +        ClearPageReserved(page);
+>>> +        kunmap(page);
+>>> +    } else
+>>>             iounmap(vaddr);
+>>>     }
+>>>
+>>> David, the above works, but wondering why it is now necessary. kunmap()
+>>> is not hit. What other ways could a page mapped via kmap() be unmapped?
 >>>
 >>
->> .
+>> Let me look into the code ... I have little experience with ACPI
+>> details, so bear with me.
 >>
+>> I assume that acpi_map()/acpi_unmap() map some firmware blob that is
+>> provided via firmware/bios/... to us.
+>>
+>> should_use_kmap() tells us whether
+>> a) we have a "struct page" and should kmap() that one
+>> b) we don't have a "struct page" and should ioremap.
+>>
+>> As it is a blob, the firmware should always reserve that memory region
+>> via memblock (e.g., memblock_reserve()), such that we either
+>> 1) don't create a memmap ("struct page") at all (-> case b) )
+>> 2) if we have to create e memmap, we mark the page PG_reserved and
+>>     *never* expose it to the buddy (-> case a) )
+>>
+>>
+>> Are you telling me that in this case we might have a memmap for the HW
+>> blob that is *not* PG_reserved? In that case it most probably got
+>> exposed to the buddy where it can happily get allocated/freed.
+>>
+>> The latent BUG would be that that blob gets exposed to the system like
+>> ordinary RAM, and not reserved via memblock early during boot.
+>> Assuming that blob has a low physical address, with my patch it will
+>> get allocated/used a lot earlier - which would mean we trigger this
+>> latent BUG now more easily.
+>>
+>> There have been similar latent BUGs on ARM boards that my patch
+>> discovered where special RAM regions did not get marked as reserved
+>> via the device tree properly.
+>>
+>> Now, this is just a wild guess :) Can you dump the page when mapping
+>> (before PageReserved()) and when unmapping, to see what the state of
+>> that memmap is?
 > 
+> Thank you David for the explanation and your help on this,
+> 
+> dump_page() before PageReserved and before kmap() in the above patch:
+> 
+> [    1.116480] ACPI: Core revision 20201113
+> [    1.117628] XXX acpi_map: about to call kmap()...
+> [    1.118561] page:ffffea0002f914c0 refcount:0 mapcount:0
+> mapping:0000000000000000 index:0x0 pfn:0xbe453
+> [    1.120381] flags: 0xfffffc0000000()
+> [    1.121116] raw: 000fffffc0000000 ffffea0002f914c8 ffffea0002f914c8
+> 0000000000000000
+> [    1.122638] raw: 0000000000000000 0000000000000000 00000000ffffffff
+> 0000000000000000
+> [    1.124146] page dumped because: acpi_map pre SetPageReserved
+> 
+> I also added dump_page() before unmapping, but it is not hit. The
+> following for the same pfn now shows up I believe as a result of setting
+> PageReserved:
+> 
+> [   28.098208] BUG:Bad page state in process mo dprobe  pfn:be453
+> [   28.098394] page:ffffea0002f914c0 refcount:0 mapcount:0
+> mapping:0000000000000000 index:0x1 pfn:0xbe453
+> [   28.098394] flags: 0xfffffc0001000(reserved)
+> [   28.098394] raw: 000fffffc0001000 dead000000000100 dead000000000122
+> 0000000000000000
+> [   28.098394] raw: 0000000000000001 0000000000000000 00000000ffffffff
+> 0000000000000000
+> [   28.098394] page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
+> [   28.098394] page_owner info is not present (never set?)
+> [   28.098394] Modules linked in:
+> [   28.098394] CPU: 2 PID: 204 Comm: modprobe Not tainted 5.11.0-3dbd5e3 #66
+> [   28.098394] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS 0.0.0 02/06/2015
+> [   28.098394] Call Trace:
+> [   28.098394]  dump_stack+0xdb/0x120
+> [   28.098394]  bad_page.cold.108+0xc6/0xcb
+> [   28.098394]  check_new_page_bad+0x47/0xa0
+> [   28.098394]  get_page_from_freelist+0x30cd/0x5730
+> [   28.098394]  ? __isolate_free_page+0x4f0/0x4f0
+> [   28.098394]  ? init_object+0x7e/0x90
+> [   28.098394]  __alloc_pages_nodemask+0x2d8/0x650
+> [   28.098394]  ? write_comp_data+0x2f/0x90
+> [   28.098394]  ? __alloc_pages_slowpath.constprop.103+0x2110/0x2110
+> [   28.098394]  ? __sanitizer_cov_trace_pc+0x21/0x50
+> [   28.098394]  alloc_pages_vma+0xe2/0x560
+> [   28.098394]  do_fault+0x194/0x12c0
+> [   28.098394]  ? write_comp_data+0x2f/0x90
+> [   28.098394]  __handle_mm_fault+0x1650/0x26c0
+> [   28.098394]  ? copy_page_range+0x1350/0x1350
+> [   28.098394]  ? write_comp_data+0x2f/0x90
+> [   28.098394]  ? write_comp_data+0x2f/0x90
+> [   28.098394]  handle_mm_fault+0x1f9/0x810
+> [   28.098394]  ? write_comp_data+0x2f/0x90
+> [   28.098394]  do_user_addr_fault+0x6f7/0xca0
+> [   28.098394]  exc_page_fault+0xaf/0x1a0
+> [   28.098394]  asm_exc_page_fault+0x1e/0x30
+> [   28.098394] RIP: 0010:__clear_user+0x30/0x60
+
+I think the PAGE_FLAGS_CHECK_AT_PREP check in this instance means that 
+someone is trying to allocate that page with the PG_reserved bit set. 
+This means that the page actually was exposed to the buddy.
+
+However, when you SetPageReserved(), I don't think that PG_buddy is set 
+and the refcount is 0. That could indicate that the page is on the buddy 
+PCP list. Could be that it is getting reused a couple of times.
+
+The PFN 0xbe453 looks a little strange, though. Do we expect ACPI tables 
+close to 3 GiB ? No idea. Could it be that you are trying to map a wrong 
+table? Just a guess.
+
+> 
+> What would be  the correct way to reserve the page so that the above
+> would not be hit?
+
+I would have assumed that if this is a binary blob, that someone (which 
+I think would be acpi code) reserved via memblock_reserve() early during 
+boot.
+
+E.g., see drivers/acpi/tables.c:acpi_table_upgrade()->memblock_reserve().
+
+-- 
+Thanks,
+
+David / dhildenb
 
