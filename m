@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EEA3220B1
+	by mail.lfdr.de (Postfix) with ESMTP id 768033220B2
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 21:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhBVUO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 15:14:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
+        id S231626AbhBVUOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 15:14:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbhBVUOU (ORCPT
+        with ESMTP id S230194AbhBVUOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 15:14:20 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27358C061574;
+        Mon, 22 Feb 2021 15:14:21 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3E2C06174A;
         Mon, 22 Feb 2021 12:13:40 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id BEDC61F44AA3
-Message-ID: <4a58c2122096b0ea43614e0ad44dbb1d77584782.camel@collabora.com>
-Subject: Re: [PATCH v2 4/9] media: uapi: Add a control for HANTRO driver
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        John Cox <jc@kynesim.co.uk>
-Cc:     p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, peng.fan@nxp.com,
-        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-Date:   Mon, 22 Feb 2021 17:13:28 -0300
-In-Reply-To: <6364fa8a-db6a-af43-3660-7f0a7a3e0b79@collabora.com>
-References: <20210218191844.297869-1-benjamin.gaignard@collabora.com>
-         <20210218191844.297869-5-benjamin.gaignard@collabora.com>
-         <9ql73glgbnjaqqsp8ulqenae5n82kfk0o3@4ax.com>
-         <6364fa8a-db6a-af43-3660-7f0a7a3e0b79@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+Received: by mail-wm1-x331.google.com with SMTP id o82so423927wme.1;
+        Mon, 22 Feb 2021 12:13:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N1THKtV2zIVCWufgt+M4ifL17ZkPeASTyRAQBJ1PEQ0=;
+        b=FX7g0fWoAMMAkmGyFCW1xGtTYun5JQPB38Y+u9Sd6XsJfdWoDykhWWYVYjYZXffG27
+         j3o2IGFqg01a4BgRnLAd+jZCQ+liCm/2K7RgCJus7nvTXmUmNZkXz5EM6JhJoqVnz7oY
+         FJTsK2/dtz6Md9M50HoC6I1Tz3AwEJNuWCja1CtsCfm2hiMe8Z6wTTzJXzC89AlJq3OB
+         smdQwvXqc8tsqgU5iSQku9AF5ROZMWhOaEnFOf33jd80F+kdSXlTZIeEcZFgIesQrqDf
+         gHXZYKjLopM9hC+RliHPnyiShxY0KyNkXgZIL/5Xl3R40fmJGKbb0dfr+tjXjBia5CVa
+         vn8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N1THKtV2zIVCWufgt+M4ifL17ZkPeASTyRAQBJ1PEQ0=;
+        b=sYlViScmRk+kkb3DyRf0rMPJFSjlPZvCu6u7SqidbmvygND41PmecLV0B71RSFzmRs
+         2epsEWuey5l3qqaN1qLwggZyJRF4SVsPwPn3VEi26u9MftNk7DyLrrsJtOLGl9d3TFXP
+         X74CdV31gGIchk/ylh2B2Fu9oCRXslyzy7nd3cm9RXcFPHFrv/A6pQsGyzaRBk6qnTqp
+         nYOgX1cKTccgFbmfDWfKaXE4u/QcfGwnzPFPO0vGt+7z9lwMRz5yhOBRdUdsXlYjjtll
+         qVFZXE7TyayaEsn7o7X7OiwT9qHq+feugNtJpu+wg7Z6Knvm1R5zPpF7afOv3fc4i2+E
+         qRvA==
+X-Gm-Message-State: AOAM532/dghCguPSpO6/4odmg2ULdYF7d3zkZUK+mWV0D08z6mm6nRrb
+        6S2w1KIlAclxUGq/Yc3MzCo=
+X-Google-Smtp-Source: ABdhPJzUCA8dbqs8IfAZLg4/4SON/yBBC8O27c8wPEJ5lNmMdpzg3g17Z13vFDpk6N/hhQT2FrzbnA==
+X-Received: by 2002:a05:600c:4fd5:: with SMTP id o21mr21217669wmq.20.1614024818782;
+        Mon, 22 Feb 2021 12:13:38 -0800 (PST)
+Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id h17sm21619818wrw.74.2021.02.22.12.13.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 12:13:38 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     jonas.gorski@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH] irqchip/bcm-6345-l1: fix SMP support
+Date:   Mon, 22 Feb 2021 21:13:32 +0100
+Message-Id: <20210222201332.30253-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-22 at 17:28 +0100, Benjamin Gaignard wrote:
-> 
-> Le 22/02/2021 à 17:16, John Cox a écrit :
-> > > The HEVC HANTRO driver needs to know the number of bits to skip at
-> > > the beginning of the slice header.
-> > > That is a hardware specific requirement so create a dedicated control
-> > > that this purpose.
-> > > 
-> > > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> > > ---
-> > > include/uapi/linux/hantro-v4l2-controls.h | 20 ++++++++++++++++++++
-> > > include/uapi/linux/v4l2-controls.h        |  5 +++++
-> > > 2 files changed, 25 insertions(+)
-> > > create mode 100644 include/uapi/linux/hantro-v4l2-controls.h
-> > > 
-> > > diff --git a/include/uapi/linux/hantro-v4l2-controls.h b/include/uapi/linux/hantro-v4l2-controls.h
-> > > new file mode 100644
-> > > index 000000000000..30b1999b7af3
-> > > --- /dev/null
-> > > +++ b/include/uapi/linux/hantro-v4l2-controls.h
-> > > @@ -0,0 +1,20 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > +
-> > > +#ifndef __UAPI_HANTRO_V4L2_CONYTROLS_H__
-> > > +#define __UAPI_HANTRO_V4L2_CONYTROLS_H__
-> > > +
-> > > +#include <linux/v4l2-controls.h>
-> > > +#include <media/hevc-ctrls.h>
-> > > +
-> > > +#define V4L2_CID_HANTRO_HEVC_EXTRA_DECODE_PARAMS       (V4L2_CID_USER_HANTRO_BASE + 0)
-> > > +
-> > > +/**
-> > > + * struct hantro_hevc_extra_decode_params - extra decode parameters for hantro driver
-> > > + * @hevc_hdr_skip_lenght:      header first bits offset
-> > > + */
-> > > +struct hantro_hevc_extra_decode_params {
-> > > +       __u32   hevc_hdr_skip_lenght;
-> > > +       __u8    padding[4];
-> > > +};
-> > Can you clarify how hevc_hdr_skip_length differs from
-> > v4l2_ctrl_hevc_slice_params.data_bit_offset?  At first sight they would
-> > appear to be very similar.
-> 
-> hevc_hdr_skip_length is the difference between the start positions of 2 nals.
-> v4l2_ctrl_hevc_slice_params.data_bit_offset is the offset of the data in the nal.
-> 
+Some BCM6358 devices start with Core #1 instead of Core #0.
+Apart from that, SMP is restricted to 1 CPU since BCM6358 has a shared TLB,
+which makes it impossible for the current SMP support to start both CPUs.
 
-I think the hardware is weird enough that we should have detailed
-documentation to the exact expectation for this control, i.e. detailing
-exactly what syntax elements userspace is expected to pass the distance.
+The problem is that smp_processor_id() returns 0 and then cpu_logical_map()
+converts that to 1, which accesses an uninitialized position of intc->cpus[],
+resulting in a kernel panic.
 
-Maybe documenting this somewhere in Documentation/.../media/something,
-and then linking that in the kernel-doc comment for hantro_hevc_extra_decode_params.
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+---
+ drivers/irqchip/irq-bcm6345-l1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Ezequiel
+diff --git a/drivers/irqchip/irq-bcm6345-l1.c b/drivers/irqchip/irq-bcm6345-l1.c
+index e3483789f4df..b2173ce4743d 100644
+--- a/drivers/irqchip/irq-bcm6345-l1.c
++++ b/drivers/irqchip/irq-bcm6345-l1.c
+@@ -121,7 +121,7 @@ static void bcm6345_l1_irq_handle(struct irq_desc *desc)
+ 	unsigned int idx;
+ 
+ #ifdef CONFIG_SMP
+-	cpu = intc->cpus[cpu_logical_map(smp_processor_id())];
++	cpu = intc->cpus[smp_processor_id()];
+ #else
+ 	cpu = intc->cpus[0];
+ #endif
+-- 
+2.20.1
 
