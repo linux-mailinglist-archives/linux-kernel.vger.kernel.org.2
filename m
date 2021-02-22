@@ -2,132 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CFE322176
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A53932217C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhBVVdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 16:33:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230483AbhBVVcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:32:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAE1764E02;
-        Mon, 22 Feb 2021 21:32:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614029520;
-        bh=Eh42XbJyyXC24A1STrMBcBWCKsBVxzw5KXWISRssFgw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=jIvQRbWAKTXaCs3OS46GAMEyEsHVHm3FZZ8YHfFZlN6ny1X9d7iTt+uZfQ7iQ3zhq
-         WLiuK902y2pUaXwxWcRX2naFYAa9WIGYMDUWXarYCB6DWUIh9r9MmVAfKSdudPZAxC
-         gF5nx4hMamhVVZJzQO18Jrxli3xAYFvrJacWVBl276KgpdCjL75BUksZpZia1lR1a1
-         kkCk65p9uPLrWt2x8gQjDui3YsM0BoKt901LJws8mItigaGnWbn4nYTJwEqHb8EkED
-         qfmgJR51OJIr1mhZ/PdA/D+NBspeA4FUn5QNkIeppGWpWB7+Zvl+bLxwjcY6QTwF3+
-         QwoEoqLYpWMkQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 74D2B35227D5; Mon, 22 Feb 2021 13:32:00 -0800 (PST)
-Date:   Mon, 22 Feb 2021 13:32:00 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
-Message-ID: <20210222213200.GN2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210219112357.GA34462@pc638.lan>
- <20210219112751.GA34528@pc638.lan>
- <20210219181811.GY2743@paulmck-ThinkPad-P72>
- <20210219183336.GA23049@paulmck-ThinkPad-P72>
- <20210222102104.v3pr7t57hmpwijpi@linutronix.de>
- <20210222125431.GA41939@pc638.lan>
- <20210222150903.GH2743@paulmck-ThinkPad-P72>
- <20210222171605.GA42169@pc638.lan>
- <20210222181608.GK2743@paulmck-ThinkPad-P72>
- <20210222190703.GA19167@pc638.lan>
+        id S232086AbhBVVej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 16:34:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27790 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230483AbhBVVeZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 16:34:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614029569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VHkykbHbCEbhfXQcCGBmKQ16MwG/Vbgco6JD4wruzP4=;
+        b=W0aJF6bsBCjCfOSHp45+mTjrXqPmjbUpQPXOz4EcRDyqmJuRT1RJGJQnP885+FiGNWn0nc
+        aqN+OueMZXtDI/Ka5dFdQGyzxh6a5xncDjMss7ClZqx/VVZAkrO2w+UF8e/K126WaiTDyf
+        nqdksDfY6OwuVwT3gXj267GrCnL6Z04=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-351-6zMpvab5MqqmPONQh-W39A-1; Mon, 22 Feb 2021 16:32:45 -0500
+X-MC-Unique: 6zMpvab5MqqmPONQh-W39A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09F158030BB;
+        Mon, 22 Feb 2021 21:32:44 +0000 (UTC)
+Received: from krava (unknown [10.40.195.254])
+        by smtp.corp.redhat.com (Postfix) with SMTP id E18371346F;
+        Mon, 22 Feb 2021 21:32:41 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 22:32:40 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH] perf report: Create option to disable raw event ordering
+Message-ID: <YDQi+OxAq256vbKP@krava>
+References: <20210219070005.12397-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210222190703.GA19167@pc638.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210219070005.12397-1-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 08:07:03PM +0100, Uladzislau Rezki wrote:
-> On Mon, Feb 22, 2021 at 10:16:08AM -0800, Paul E. McKenney wrote:
-> > On Mon, Feb 22, 2021 at 06:16:05PM +0100, Uladzislau Rezki wrote:
-> > > On Mon, Feb 22, 2021 at 07:09:03AM -0800, Paul E. McKenney wrote:
-> > > > On Mon, Feb 22, 2021 at 01:54:31PM +0100, Uladzislau Rezki wrote:
-> > > > > On Mon, Feb 22, 2021 at 11:21:04AM +0100, Sebastian Andrzej Siewior wrote:
-> > > > > > On 2021-02-19 10:33:36 [-0800], Paul E. McKenney wrote:
-> > > > > > > For definiteness, here is the first part of the change, posted earlier.
-> > > > > > > The commit log needs to be updated.  I will post the change that keeps
-> > > > > > > the tick going as a reply to this email.
-> > > > > > …
-> > > > > > > diff --git a/kernel/softirq.c b/kernel/softirq.c
-> > > > > > > index 9d71046..ba78e63 100644
-> > > > > > > --- a/kernel/softirq.c
-> > > > > > > +++ b/kernel/softirq.c
-> > > > > > > @@ -209,7 +209,7 @@ static inline void invoke_softirq(void)
-> > > > > > >  	if (ksoftirqd_running(local_softirq_pending()))
-> > > > > > >  		return;
-> > > > > > >  
-> > > > > > > -	if (!force_irqthreads) {
-> > > > > > > +	if (!force_irqthreads || !__this_cpu_read(ksoftirqd)) {
-> > > > > > >  #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
-> > > > > > >  		/*
-> > > > > > >  		 * We can safely execute softirq on the current stack if
-> > > > > > > @@ -358,8 +358,8 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
-> > > > > > >  
-> > > > > > >  	pending = local_softirq_pending();
-> > > > > > >  	if (pending) {
-> > > > > > > -		if (time_before(jiffies, end) && !need_resched() &&
-> > > > > > > -		    --max_restart)
-> > > > > > > +		if (!__this_cpu_read(ksoftirqd) ||
-> > > > > > > +		    (time_before(jiffies, end) && !need_resched() && --max_restart))
-> > > > > > >  			goto restart;
-> > > > > > 
-> > > > > > This is hunk shouldn't be needed. The reason for it is probably that the
-> > > > > > following wakeup_softirqd() would avoid further invoke_softirq()
-> > > > > > performing the actual softirq work. It would leave early due to
-> > > > > > ksoftirqd_running(). Unless I'm wrong, any raise_softirq() invocation
-> > > > > > outside of an interrupt would do the same. 
-> > > > 
-> > > > And it does pass the rcutorture test without that hunk:
-> > > > 
-> > > > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --bootargs "threadirqs=1" --trust-make
-> > > > 
-> > > Yep. I have tested that patch also. It works for me as well. So
-> > > technically i do not see any issues from the first glance but of
-> > > course it should be reviewed by the softirq people to hear their
-> > > opinion.
-> > > 
-> > > IRQs are enabled, so it can be handled from an IRQ tail until
-> > > ksoftirqd threads are spawned.
-> > 
-> > And if I add "CONFIG_NO_HZ_IDLE=y CONFIG_HZ_PERIODIC=n" it still works,
-> > even if I revert my changes to rcu_needs_cpu().  Should I rely on this
-> > working globally?  ;-)
-> > 
-> There might be corner cases which we are not aware of so far. From the
-> other hand what the patch does is simulating the !threadirqs behaviour
-> during early boot. In that case we know that handling of SW irqs from
-> real-irq tail works :)
+On Fri, Feb 19, 2021 at 03:00:05PM +0800, Jin Yao wrote:
+> Warning "dso not found" is reported when using "perf report -D".
+> 
+>  66702781413407 0x32c0 [0x30]: PERF_RECORD_SAMPLE(IP, 0x2): 28177/28177: 0x55e493e00563 period: 106578 addr: 0
+>   ... thread: perf:28177
+>   ...... dso: <not found>
+> 
+>  66702727832429 0x9dd8 [0x38]: PERF_RECORD_COMM exec: triad_loop:28177/28177
+> 
+> The PERF_RECORD_SAMPLE event (timestamp: 66702781413407) should be after the
+> PERF_RECORD_COMM event (timestamp: 66702727832429), but it's early processed.
+> 
+> So for most of cases, it makes sense to keep the event ordered even for dump
+> mode. But it would be also useful to disable ordered_events for reporting raw
+> dump to see events as they are stored in the perf.data file.
+> 
+> So now, set ordered_events by default to true and add a new option
+> 'disable-order' to disable it. For example,
+> 
+> perf report -D --disable-order
+> 
+> Fixes: 977f739b7126b ("perf report: Disable ordered_events for raw dump")
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 
-Sold!  I keep the rcu_needs_cpu() changes, just in case.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-							Thanx, Paul
+thanks,
+jirka
+
+
+> ---
+>  tools/perf/Documentation/perf-report.txt | 3 +++
+>  tools/perf/builtin-report.c              | 5 ++++-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
+> index f546b5e9db05..87112e8d904e 100644
+> --- a/tools/perf/Documentation/perf-report.txt
+> +++ b/tools/perf/Documentation/perf-report.txt
+> @@ -224,6 +224,9 @@ OPTIONS
+>  --dump-raw-trace::
+>          Dump raw trace in ASCII.
+>  
+> +--disable-order::
+> +	Disable raw trace ordering.
+> +
+>  -g::
+>  --call-graph=<print_type,threshold[,print_limit],order,sort_key[,branch],value>::
+>          Display call chains using type, min percent threshold, print limit,
+> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> index 2a845d6cac09..0d65c98794a8 100644
+> --- a/tools/perf/builtin-report.c
+> +++ b/tools/perf/builtin-report.c
+> @@ -84,6 +84,7 @@ struct report {
+>  	bool			nonany_branch_mode;
+>  	bool			group_set;
+>  	bool			stitch_lbr;
+> +	bool			disable_order;
+>  	int			max_stack;
+>  	struct perf_read_values	show_threads_values;
+>  	struct annotation_options annotation_opts;
+> @@ -1296,6 +1297,8 @@ int cmd_report(int argc, const char **argv)
+>  	OPTS_EVSWITCH(&report.evswitch),
+>  	OPT_BOOLEAN(0, "total-cycles", &report.total_cycles_mode,
+>  		    "Sort all blocks by 'Sampled Cycles%'"),
+> +	OPT_BOOLEAN(0, "disable-order", &report.disable_order,
+> +		    "Disable raw trace ordering"),
+>  	OPT_END()
+>  	};
+>  	struct perf_data data = {
+> @@ -1329,7 +1332,7 @@ int cmd_report(int argc, const char **argv)
+>  	if (report.mmaps_mode)
+>  		report.tasks_mode = true;
+>  
+> -	if (dump_trace)
+> +	if (dump_trace && report.disable_order)
+>  		report.tool.ordered_events = false;
+>  
+>  	if (quiet)
+> -- 
+> 2.17.1
+> 
+
