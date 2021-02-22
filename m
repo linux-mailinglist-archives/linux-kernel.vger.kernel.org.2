@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5FF321B4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E35321B49
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:23:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbhBVPXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:23:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
+        id S231641AbhBVPWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:22:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbhBVPPM (ORCPT
+        with ESMTP id S231371AbhBVPPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 10:15:12 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9217C061A2A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:13:01 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id b3so19449328wrj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:13:01 -0800 (PST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D298DC061A2D
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:13:02 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id a207so14717150wmd.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:13:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WYznJRJi7sEltEuFcbESAgA/1ekiiKcyEWk34Vl4+aw=;
-        b=CcgFY/TizwV98v0EjQpqqprS4kVWLxLIO+yAEtYX9MJDmQjMwKOK0zhLFhUAmTTUvo
-         UYCCmjDnP3NHnqKIuslmK1ckzcpTkXYuvs0ZfCVMNzBvYmY5JxTzUGmctvKraW5OW/3m
-         d3UAE7bzLdvPxuy+csHIHgHU41Y17L8S4vqx0F0JnvKxr1BGWcR0gdJnGyVtMHkBv2OD
-         G+ZRlYUbp7mUHzS2OGp06688Aziy6jCbmBcL2ghihroHV2JxcYem1sy18GTKwUfACGzy
-         RNfbhejFrJtQ2h2UcWWTlvOP9zx7vP2kTgELNmMdR7OqC90iRXVahtQQtVVU1CPFV8sf
-         TYdg==
+        bh=6uS/mI0aatEHqUL9B1S+eTlivdmOLrwoS7EuJ7+U7Sw=;
+        b=XZEw/mrXSku5Su9sqZev/RiL5oSE4cCOxgVcpsEgG3Aw0XC5XGMbZ8sqOGMu46zW6Y
+         pmk88rgk0w35uM+iQ/W6ggkpxsWUssIP76jHTKw/m5goS80GD3UFMggz0J3zCrZw4T1n
+         vxKoG4KOwfSNVFSUKqDil3BAlxJzyV+NzDxhrbyXbGisNTL1SGQQ+XWbAVPjU4Ob+Z8c
+         /8NUJtdfz+cwhHOsdwZbuOZzN2zDOt3EN1OuU2jiw/fI7WxiG6MfHss0L9zX1ekkKH5c
+         dVDq4bEHmLsJWf1chDh4fUhoveUKBxqfznRpEoUzR8fBgahyCZVNbvKcQK3A5oSFQ9l8
+         uqEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WYznJRJi7sEltEuFcbESAgA/1ekiiKcyEWk34Vl4+aw=;
-        b=N8VUF0YtMaG+XpyniVY47ziwAs4xRtoC7MM94MHQQbgbBDTqbQzxuEYX3ATAAZ/Rag
-         y6OZV0Zp+gJHExkavvuQlxJQE4XFTT6MmWEarBu2NfiliSKbiCQm3kmAWJkdrSbaHr7q
-         smiprOc/RxNS1Zzq7K0LhPFDduz3Gvu3PjavD2w7934h6BT9Lw7hr7FjmlAGu23ZvEMP
-         jJAhBCadqLY/Z27mCbl7y+E0h3WJ2BBNgHwgahgurulTwejTmyq3MN0zWF1Dm1HUgHLH
-         evYlDHDoWhg06rI7+naC7LeVNz0BtmZpORq0m3+wmoZIPUgS6tIZRL3nEEfNPbkUBDIw
-         Q6sw==
-X-Gm-Message-State: AOAM531pwbSannS+69UES4KrWA+PTFWNyBE5Aek/UcINdEDLhs89z+hI
-        DUIddm1OojSd5+emiq3Cnj0Ld/8+tWlZvz1xy8c=
-X-Google-Smtp-Source: ABdhPJzjuRXaYt/SRvU62YQ+PqGinj8lFxjNzE0l2PB160Gii4xzWBJxkVSIXDJqoVo/mJEet+g7wQ==
-X-Received: by 2002:a5d:54cb:: with SMTP id x11mr2479881wrv.165.1614006780305;
-        Mon, 22 Feb 2021 07:13:00 -0800 (PST)
+        bh=6uS/mI0aatEHqUL9B1S+eTlivdmOLrwoS7EuJ7+U7Sw=;
+        b=ubiNVNEvKMdcuYPZ4ve3TLAeaoVj2rvM1z2pyLZLVIGrtCqBvDCrJ0IeNXECWUzCYr
+         aDx9jnFShsiuXyOubsHd+19MN6n8zBWm/gtZ4Akbiob1Tq4U7d6nV/7n/akSVcXfREMt
+         9rIwvpjG6Ei8thMUoUN9DezN7uLe/knJjNp+VIchhKgA1rtLCDka21tBpGJqoAwbv+he
+         iQmTqD11dJSe0CkSzF62dGCZTquWpSoNvQ2k/jFx1rUgVq2zfDebkIc+YuwdE5+jLq//
+         APJgyIr2A7J70KMIzBGijQklSIpiORN2LUI1f1XLPahzCNdU6JxgfmAzesyvers/Rqh/
+         Dlfw==
+X-Gm-Message-State: AOAM532itDh0ogjuBLNhvIPXbrwt4AtqHMi3oS+hs1edKG6PNJw0YGO6
+        Ig5jGq8KnlkoAF5ZNi2Buv8J+l/Un5fipuZfv2A=
+X-Google-Smtp-Source: ABdhPJwt7aFnIwDsl4dI/alqogWDhoC64RsfiBRWaspWMkuciWBaudkzHyUrd8ywtQbTILnHc6eO5Q==
+X-Received: by 2002:a7b:ce14:: with SMTP id m20mr13614858wmc.12.1614006781358;
+        Mon, 22 Feb 2021 07:13:01 -0800 (PST)
 Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id q20sm25316500wmc.14.2021.02.22.07.12.59
+        by smtp.gmail.com with ESMTPSA id c62sm27221087wme.16.2021.02.22.07.13.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:12:59 -0800 (PST)
+        Mon, 22 Feb 2021 07:13:01 -0800 (PST)
 From:   Romain Perier <romain.perier@gmail.com>
 To:     Kees Cook <keescook@chromium.org>,
         kernel-hardening@lists.openwall.com,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
 Cc:     Romain Perier <romain.perier@gmail.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 15/20] ALSA: usb-audio: Manual replacement of the deprecated strlcpy() with return values
-Date:   Mon, 22 Feb 2021 16:12:26 +0100
-Message-Id: <20210222151231.22572-16-romain.perier@gmail.com>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 16/20] tracing/probe: Manual replacement of the deprecated strlcpy() with return values
+Date:   Mon, 22 Feb 2021 16:12:27 +0100
+Message-Id: <20210222151231.22572-17-romain.perier@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
 References: <20210222151231.22572-1-romain.perier@gmail.com>
@@ -81,23 +82,29 @@ values (as it is quite different between the two functions).
 
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 ---
- sound/usb/card.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/trace_uprobe.c |   11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 85ed8507e41a..acb1ea3e16a3 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -496,7 +496,7 @@ static void usb_audio_make_longname(struct usb_device *dev,
- 	struct snd_card *card = chip->card;
- 	const struct usb_audio_device_name *preset;
- 	const char *s = NULL;
--	int len;
-+	ssize_t len;
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 3cf7128e1ad3..f9583afdb735 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -154,12 +154,11 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
+ 	u8 *dst = get_loc_data(dest, base);
+ 	void __user *src = (void __force __user *) addr;
  
- 	preset = lookup_device_name(chip->usb_id);
- 
--- 
-2.20.1
-
+-	if (unlikely(!maxlen))
+-		return -ENOMEM;
+-
+-	if (addr == FETCH_TOKEN_COMM)
+-		ret = strlcpy(dst, current->comm, maxlen);
+-	else
++	if (addr == FETCH_TOKEN_COMM) {
++		ret = strscpy(dst, current->comm, maxlen);
++		if (ret == -E2BIG)
++			return -ENOMEM;
++	} else
+ 		ret = strncpy_from_user(dst, src, maxlen);
+ 	if (ret >= 0) {
+ 		if (ret == maxlen)
 
