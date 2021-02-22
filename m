@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014743212C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE4C3212C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhBVJHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:07:04 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:38431 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbhBVJGE (ORCPT
+        id S230218AbhBVJH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:07:56 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:37732 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230134AbhBVJGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:06:04 -0500
-Received: by mail-io1-f72.google.com with SMTP id a12so8904128ioe.5
+        Mon, 22 Feb 2021 04:06:01 -0500
+Received: by mail-il1-f200.google.com with SMTP id g3so7205681ild.4
         for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:05:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=8i7ef9mdZEz8Dc+R8e8QwH0oS5yU5a2BOPEpeW6o6e0=;
-        b=cbGJl5kAl+xkHsmXerLyT9NKmm/6Zpibh+fhJhk78wseADxeptA+COcLKkigRghuB/
-         XrHiNK628p2bnH/DXxhS/i5TV7fzVKyJUMZdG2TZ1cT48B4yb07VOU58wKxZcXicifCo
-         48Q39kRPp1JgNYqvKwMYjDfSeMV0DTwLW5j1goc5ZZSs8xeyJdFsSCi9fGTdFsE/Ez6w
-         bKjDrfsqhhFfVzW2HN4Eh+gVlwCtULz8eeU3ATis2MUrvK671m4d1hnc5F9LzxLOkrwt
-         gUrzKTg5xACFF7PdDaLcDgo+/7EVt/GsMKDcgTcmeQqhXR6kmlDoVEDuR3j6JbmAOQsI
-         1JGQ==
-X-Gm-Message-State: AOAM532KSvlcyLGka5EmabZ564v/Nobs2oqxTsF3Vwvc1FqkG/FaMIRc
-        ERIUKZDX40mEQbU4/R+pVvPOsY4UT1HQAHNZ7M921al7DsBg
-X-Google-Smtp-Source: ABdhPJwGgAOvJUe1Q6FMdHe4ViTUsyrTLvEbwfsMrB1J+WrFYV/I/R2vA0dWD1QtpGeIq+Knk1BUcqNXynGbhKvtBeVJpLoWd0aW
+        bh=Gn1296qZG0YzHRO/kjdgq+1qhhHLjh3lQMKcYA49tHM=;
+        b=LwBtAWNaigxWu77dlaQ444wYHbqVUwG6U0W88ndwDIWH2pKH7PsbTJPDam1VEl/T8k
+         9WEFBAhhOVpifWsfaJXYc6pjmet5dUPRMC2jU2HcrZ+KY4zPAq41k0do9zOSecB8l4pC
+         sXZHntMjtAv4IdmPrDcPMRGbpW2B484ELUCpfzsKNr4S4Y4AA0wNWpiZ1bfRhC4cduj3
+         leJG3uKnEUaz1Xu6z3RvWVSMDgCwiNtMXFrtVzTbJkd4Z7riul+ILT+j9saEcYD6QKDR
+         CmgCaEBn3TqVNVYF3Xg8XWh7MZm4AR4IkgMiaPVNi3YnLZxbfE0VTws+qIiJhZjRv08N
+         m3uA==
+X-Gm-Message-State: AOAM530tMwRaMBmU/3PEIW9ZMfytL5i/afeFDaZCNNp0IWsY9R3yq32j
+        yaCnHsZURZZJbiOQNzCo80N56rINPvmj6KdJztbkXdx4feKb
+X-Google-Smtp-Source: ABdhPJyoaYdPhhSUvC1j/ioV5Yqv98Yj4Pns/xNN3PldtfOD8BcweecYWwrC2ikJALNVV2kMkAJxteqsUfyMLU8uSsG+01qmLPx1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:96c:: with SMTP id o12mr21406318jaj.24.1613984720377;
+X-Received: by 2002:a05:6e02:1c2a:: with SMTP id m10mr13988675ilh.17.1613984720116;
  Mon, 22 Feb 2021 01:05:20 -0800 (PST)
 Date:   Mon, 22 Feb 2021 01:05:20 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ee58d305bbe9197a@google.com>
-Subject: memory leak in con_do_clear_unimap
-From:   syzbot <syzbot+bcc922b19ccc64240b42@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, efremov@linux.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        lee.jones@linaro.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, vbabka@suse.cz, walken@google.com
+Message-ID: <000000000000ea61fa05bbe91914@google.com>
+Subject: KASAN: use-after-free Read in nbd_release
+From:   syzbot <syzbot+74f888d2e102b3930324@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nbd@other.debian.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,1090 +48,129 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    e767b353 Merge tag 'arm-drivers-v5.12' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=150add22d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=61dda858c0a83826
-dashboard link: https://syzkaller.appspot.com/bug?extid=bcc922b19ccc64240b42
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a12446d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154e6d22d00000
+HEAD commit:    3af409ca net: enetc: fix destroyed phylink dereference dur..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=144bf26cd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8cb23303ddb9411f
+dashboard link: https://syzkaller.appspot.com/bug?extid=74f888d2e102b3930324
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12917e5ad00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1131fb04d00000
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1252220cd00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1152220cd00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1652220cd00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bcc922b19ccc64240b42@syzkaller.appspotmail.com
+Reported-by: syzbot+74f888d2e102b3930324@syzkaller.appspotmail.com
 
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-BUG: memory leak
-unreferenced object 0xffff888115b08e00 (size 512):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.130s)
-  hex dump (first 32 bytes):
-    00 7d f6 14 81 88 ff ff 00 72 f6 14 81 88 ff ff  .}.......r......
-    00 71 f6 14 81 88 ff ff 00 ba b2 15 81 88 ff ff  .q..............
-  backtrace:
-    [<00000000949419ca>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000949419ca>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000949419ca>] con_do_clear_unimap+0xa6/0x140 drivers/tty/vt/consolemap.c:510
-    [<00000000be05b978>] con_set_unimap+0x1ae/0x350 drivers/tty/vt/consolemap.c:564
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
+BUG: KASAN: use-after-free in atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+BUG: KASAN: use-after-free in refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
+Read of size 4 at addr ffff888143bf71a0 by task systemd-udevd/8451
 
-BUG: memory leak
-unreferenced object 0xffff888114f67d00 (size 256):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.130s)
-  hex dump (first 32 bytes):
-    80 91 87 14 81 88 ff ff 00 ae de 14 81 88 ff ff  ................
-    80 af de 14 81 88 ff ff 00 af de 14 81 88 ff ff  ................
-  backtrace:
-    [<000000004f6cc060>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004f6cc060>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<000000004f6cc060>] con_insert_unipair+0x9b/0x1a0 drivers/tty/vt/consolemap.c:482
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+CPU: 0 PID: 8451 Comm: systemd-udevd Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+ check_memory_region_inline mm/kasan/generic.c:179 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+ refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
+ refcount_dec_and_mutex_lock+0x19/0x140 lib/refcount.c:115
+ nbd_put drivers/block/nbd.c:248 [inline]
+ nbd_release+0x116/0x190 drivers/block/nbd.c:1508
+ __blkdev_put+0x548/0x800 fs/block_dev.c:1579
+ blkdev_put+0x92/0x570 fs/block_dev.c:1632
+ blkdev_close+0x8c/0xb0 fs/block_dev.c:1640
+ __fput+0x283/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x190 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fc1e92b5270
+Code: 73 01 c3 48 8b 0d 38 7d 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 59 c1 20 00 00 75 10 b8 03 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 ee fb ff ff 48 89 04 24
+RSP: 002b:00007ffe8beb2d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000007 RCX: 00007fc1e92b5270
+RDX: 000000000aba9500 RSI: 0000000000000000 RDI: 0000000000000007
+RBP: 00007fc1ea16f710 R08: 000000000000004a R09: 0000000000000008
+R10: 0000562f8cb0b2a8 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000562f8cb0afd0 R14: 0000000000000003 R15: 000000000000000e
 
-BUG: memory leak
-unreferenced object 0xffff888114879180 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.130s)
-  hex dump (first 32 bytes):
-    00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Allocated by task 1:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:401 [inline]
+ ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
+ kmalloc include/linux/slab.h:552 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ nbd_dev_add+0x44/0x8e0 drivers/block/nbd.c:1673
+ nbd_init+0x250/0x271 drivers/block/nbd.c:2394
+ do_one_initcall+0x103/0x650 init/main.c:1223
+ do_initcall_level init/main.c:1296 [inline]
+ do_initcalls init/main.c:1312 [inline]
+ do_basic_setup init/main.c:1332 [inline]
+ kernel_init_freeable+0x605/0x689 init/main.c:1533
+ kernel_init+0xd/0x1b8 init/main.c:1421
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-BUG: memory leak
-unreferenced object 0xffff888114deae00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.140s)
-  hex dump (first 32 bytes):
-    40 00 41 00 42 00 43 00 44 00 45 00 46 00 47 00  @.A.B.C.D.E.F.G.
-    48 00 49 00 4a 00 4b 00 4c 00 4d 00 4e 00 4f 00  H.I.J.K.L.M.N.O.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Freed by task 8451:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
+ ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
+ kasan_slab_free include/linux/kasan.h:192 [inline]
+ slab_free_hook mm/slub.c:1547 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
+ slab_free mm/slub.c:3143 [inline]
+ kfree+0xdb/0x3b0 mm/slub.c:4139
+ nbd_dev_remove drivers/block/nbd.c:243 [inline]
+ nbd_put.part.0+0x180/0x1d0 drivers/block/nbd.c:251
+ nbd_put drivers/block/nbd.c:295 [inline]
+ nbd_config_put+0x6dd/0x8c0 drivers/block/nbd.c:1242
+ nbd_release+0x103/0x190 drivers/block/nbd.c:1507
+ __blkdev_put+0x548/0x800 fs/block_dev.c:1579
+ blkdev_put+0x92/0x570 fs/block_dev.c:1632
+ blkdev_close+0x8c/0xb0 fs/block_dev.c:1640
+ __fput+0x283/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x190 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-BUG: memory leak
-unreferenced object 0xffff888114deaf80 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.140s)
-  hex dump (first 32 bytes):
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+The buggy address belongs to the object at ffff888143bf7000
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 416 bytes inside of
+ 1024-byte region [ffff888143bf7000, ffff888143bf7400)
+The buggy address belongs to the page:
+page:000000005238f4ce refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x143bf0
+head:000000005238f4ce order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x57ff00000010200(slab|head)
+raw: 057ff00000010200 ffffea00004b1400 0000000300000003 ffff888010c41140
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
 
-BUG: memory leak
-unreferenced object 0xffff888114deaf00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.140s)
-  hex dump (first 32 bytes):
-    41 00 41 00 41 00 41 00 8e 00 8f 00 92 00 80 00  A.A.A.A.........
-    45 00 90 00 45 00 45 00 49 00 49 00 49 00 49 00  E...E.E.I.I.I.I.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888115b08e00 (size 512):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.200s)
-  hex dump (first 32 bytes):
-    00 7d f6 14 81 88 ff ff 00 72 f6 14 81 88 ff ff  .}.......r......
-    00 71 f6 14 81 88 ff ff 00 ba b2 15 81 88 ff ff  .q..............
-  backtrace:
-    [<00000000949419ca>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000949419ca>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000949419ca>] con_do_clear_unimap+0xa6/0x140 drivers/tty/vt/consolemap.c:510
-    [<00000000be05b978>] con_set_unimap+0x1ae/0x350 drivers/tty/vt/consolemap.c:564
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114f67d00 (size 256):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.200s)
-  hex dump (first 32 bytes):
-    80 91 87 14 81 88 ff ff 00 ae de 14 81 88 ff ff  ................
-    80 af de 14 81 88 ff ff 00 af de 14 81 88 ff ff  ................
-  backtrace:
-    [<000000004f6cc060>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004f6cc060>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<000000004f6cc060>] con_insert_unipair+0x9b/0x1a0 drivers/tty/vt/consolemap.c:482
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114879180 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.200s)
-  hex dump (first 32 bytes):
-    00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deae00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.200s)
-  hex dump (first 32 bytes):
-    40 00 41 00 42 00 43 00 44 00 45 00 46 00 47 00  @.A.B.C.D.E.F.G.
-    48 00 49 00 4a 00 4b 00 4c 00 4d 00 4e 00 4f 00  H.I.J.K.L.M.N.O.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf80 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.200s)
-  hex dump (first 32 bytes):
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.200s)
-  hex dump (first 32 bytes):
-    41 00 41 00 41 00 41 00 8e 00 8f 00 92 00 80 00  A.A.A.A.........
-    45 00 90 00 45 00 45 00 49 00 49 00 49 00 49 00  E...E.E.I.I.I.I.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888115b08e00 (size 512):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.260s)
-  hex dump (first 32 bytes):
-    00 7d f6 14 81 88 ff ff 00 72 f6 14 81 88 ff ff  .}.......r......
-    00 71 f6 14 81 88 ff ff 00 ba b2 15 81 88 ff ff  .q..............
-  backtrace:
-    [<00000000949419ca>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000949419ca>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000949419ca>] con_do_clear_unimap+0xa6/0x140 drivers/tty/vt/consolemap.c:510
-    [<00000000be05b978>] con_set_unimap+0x1ae/0x350 drivers/tty/vt/consolemap.c:564
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114f67d00 (size 256):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.260s)
-  hex dump (first 32 bytes):
-    80 91 87 14 81 88 ff ff 00 ae de 14 81 88 ff ff  ................
-    80 af de 14 81 88 ff ff 00 af de 14 81 88 ff ff  ................
-  backtrace:
-    [<000000004f6cc060>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004f6cc060>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<000000004f6cc060>] con_insert_unipair+0x9b/0x1a0 drivers/tty/vt/consolemap.c:482
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114879180 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.260s)
-  hex dump (first 32 bytes):
-    00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deae00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.260s)
-  hex dump (first 32 bytes):
-    40 00 41 00 42 00 43 00 44 00 45 00 46 00 47 00  @.A.B.C.D.E.F.G.
-    48 00 49 00 4a 00 4b 00 4c 00 4d 00 4e 00 4f 00  H.I.J.K.L.M.N.O.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf80 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.260s)
-  hex dump (first 32 bytes):
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.260s)
-  hex dump (first 32 bytes):
-    41 00 41 00 41 00 41 00 8e 00 8f 00 92 00 80 00  A.A.A.A.........
-    45 00 90 00 45 00 45 00 49 00 49 00 49 00 49 00  E...E.E.I.I.I.I.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888115b08e00 (size 512):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.320s)
-  hex dump (first 32 bytes):
-    00 7d f6 14 81 88 ff ff 00 72 f6 14 81 88 ff ff  .}.......r......
-    00 71 f6 14 81 88 ff ff 00 ba b2 15 81 88 ff ff  .q..............
-  backtrace:
-    [<00000000949419ca>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000949419ca>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000949419ca>] con_do_clear_unimap+0xa6/0x140 drivers/tty/vt/consolemap.c:510
-    [<00000000be05b978>] con_set_unimap+0x1ae/0x350 drivers/tty/vt/consolemap.c:564
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114f67d00 (size 256):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.320s)
-  hex dump (first 32 bytes):
-    80 91 87 14 81 88 ff ff 00 ae de 14 81 88 ff ff  ................
-    80 af de 14 81 88 ff ff 00 af de 14 81 88 ff ff  ................
-  backtrace:
-    [<000000004f6cc060>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004f6cc060>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<000000004f6cc060>] con_insert_unipair+0x9b/0x1a0 drivers/tty/vt/consolemap.c:482
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114879180 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.320s)
-  hex dump (first 32 bytes):
-    00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deae00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.320s)
-  hex dump (first 32 bytes):
-    40 00 41 00 42 00 43 00 44 00 45 00 46 00 47 00  @.A.B.C.D.E.F.G.
-    48 00 49 00 4a 00 4b 00 4c 00 4d 00 4e 00 4f 00  H.I.J.K.L.M.N.O.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf80 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.320s)
-  hex dump (first 32 bytes):
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.320s)
-  hex dump (first 32 bytes):
-    41 00 41 00 41 00 41 00 8e 00 8f 00 92 00 80 00  A.A.A.A.........
-    45 00 90 00 45 00 45 00 49 00 49 00 49 00 49 00  E...E.E.I.I.I.I.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888115b08e00 (size 512):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.380s)
-  hex dump (first 32 bytes):
-    00 7d f6 14 81 88 ff ff 00 72 f6 14 81 88 ff ff  .}.......r......
-    00 71 f6 14 81 88 ff ff 00 ba b2 15 81 88 ff ff  .q..............
-  backtrace:
-    [<00000000949419ca>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000949419ca>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000949419ca>] con_do_clear_unimap+0xa6/0x140 drivers/tty/vt/consolemap.c:510
-    [<00000000be05b978>] con_set_unimap+0x1ae/0x350 drivers/tty/vt/consolemap.c:564
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114f67d00 (size 256):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.380s)
-  hex dump (first 32 bytes):
-    80 91 87 14 81 88 ff ff 00 ae de 14 81 88 ff ff  ................
-    80 af de 14 81 88 ff ff 00 af de 14 81 88 ff ff  ................
-  backtrace:
-    [<000000004f6cc060>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004f6cc060>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<000000004f6cc060>] con_insert_unipair+0x9b/0x1a0 drivers/tty/vt/consolemap.c:482
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114879180 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.380s)
-  hex dump (first 32 bytes):
-    00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deae00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.380s)
-  hex dump (first 32 bytes):
-    40 00 41 00 42 00 43 00 44 00 45 00 46 00 47 00  @.A.B.C.D.E.F.G.
-    48 00 49 00 4a 00 4b 00 4c 00 4d 00 4e 00 4f 00  H.I.J.K.L.M.N.O.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf80 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.380s)
-  hex dump (first 32 bytes):
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.380s)
-  hex dump (first 32 bytes):
-    41 00 41 00 41 00 41 00 8e 00 8f 00 92 00 80 00  A.A.A.A.........
-    45 00 90 00 45 00 45 00 49 00 49 00 49 00 49 00  E...E.E.I.I.I.I.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888115b08e00 (size 512):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.440s)
-  hex dump (first 32 bytes):
-    00 7d f6 14 81 88 ff ff 00 72 f6 14 81 88 ff ff  .}.......r......
-    00 71 f6 14 81 88 ff ff 00 ba b2 15 81 88 ff ff  .q..............
-  backtrace:
-    [<00000000949419ca>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000949419ca>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000949419ca>] con_do_clear_unimap+0xa6/0x140 drivers/tty/vt/consolemap.c:510
-    [<00000000be05b978>] con_set_unimap+0x1ae/0x350 drivers/tty/vt/consolemap.c:564
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114f67d00 (size 256):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.440s)
-  hex dump (first 32 bytes):
-    80 91 87 14 81 88 ff ff 00 ae de 14 81 88 ff ff  ................
-    80 af de 14 81 88 ff ff 00 af de 14 81 88 ff ff  ................
-  backtrace:
-    [<000000004f6cc060>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004f6cc060>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<000000004f6cc060>] con_insert_unipair+0x9b/0x1a0 drivers/tty/vt/consolemap.c:482
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114879180 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.440s)
-  hex dump (first 32 bytes):
-    00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deae00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.440s)
-  hex dump (first 32 bytes):
-    40 00 41 00 42 00 43 00 44 00 45 00 46 00 47 00  @.A.B.C.D.E.F.G.
-    48 00 49 00 4a 00 4b 00 4c 00 4d 00 4e 00 4f 00  H.I.J.K.L.M.N.O.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf80 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.440s)
-  hex dump (first 32 bytes):
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.440s)
-  hex dump (first 32 bytes):
-    41 00 41 00 41 00 41 00 8e 00 8f 00 92 00 80 00  A.A.A.A.........
-    45 00 90 00 45 00 45 00 49 00 49 00 49 00 49 00  E...E.E.I.I.I.I.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888115b08e00 (size 512):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.500s)
-  hex dump (first 32 bytes):
-    00 7d f6 14 81 88 ff ff 00 72 f6 14 81 88 ff ff  .}.......r......
-    00 71 f6 14 81 88 ff ff 00 ba b2 15 81 88 ff ff  .q..............
-  backtrace:
-    [<00000000949419ca>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000949419ca>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000949419ca>] con_do_clear_unimap+0xa6/0x140 drivers/tty/vt/consolemap.c:510
-    [<00000000be05b978>] con_set_unimap+0x1ae/0x350 drivers/tty/vt/consolemap.c:564
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114f67d00 (size 256):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.500s)
-  hex dump (first 32 bytes):
-    80 91 87 14 81 88 ff ff 00 ae de 14 81 88 ff ff  ................
-    80 af de 14 81 88 ff ff 00 af de 14 81 88 ff ff  ................
-  backtrace:
-    [<000000004f6cc060>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004f6cc060>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<000000004f6cc060>] con_insert_unipair+0x9b/0x1a0 drivers/tty/vt/consolemap.c:482
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114879180 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.500s)
-  hex dump (first 32 bytes):
-    00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deae00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.500s)
-  hex dump (first 32 bytes):
-    40 00 41 00 42 00 43 00 44 00 45 00 46 00 47 00  @.A.B.C.D.E.F.G.
-    48 00 49 00 4a 00 4b 00 4c 00 4d 00 4e 00 4f 00  H.I.J.K.L.M.N.O.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf80 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.500s)
-  hex dump (first 32 bytes):
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.500s)
-  hex dump (first 32 bytes):
-    41 00 41 00 41 00 41 00 8e 00 8f 00 92 00 80 00  A.A.A.A.........
-    45 00 90 00 45 00 45 00 49 00 49 00 49 00 49 00  E...E.E.I.I.I.I.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888115b08e00 (size 512):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.560s)
-  hex dump (first 32 bytes):
-    00 7d f6 14 81 88 ff ff 00 72 f6 14 81 88 ff ff  .}.......r......
-    00 71 f6 14 81 88 ff ff 00 ba b2 15 81 88 ff ff  .q..............
-  backtrace:
-    [<00000000949419ca>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000949419ca>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000949419ca>] con_do_clear_unimap+0xa6/0x140 drivers/tty/vt/consolemap.c:510
-    [<00000000be05b978>] con_set_unimap+0x1ae/0x350 drivers/tty/vt/consolemap.c:564
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114f67d00 (size 256):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.560s)
-  hex dump (first 32 bytes):
-    80 91 87 14 81 88 ff ff 00 ae de 14 81 88 ff ff  ................
-    80 af de 14 81 88 ff ff 00 af de 14 81 88 ff ff  ................
-  backtrace:
-    [<000000004f6cc060>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004f6cc060>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<000000004f6cc060>] con_insert_unipair+0x9b/0x1a0 drivers/tty/vt/consolemap.c:482
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114879180 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.560s)
-  hex dump (first 32 bytes):
-    00 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deae00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.560s)
-  hex dump (first 32 bytes):
-    40 00 41 00 42 00 43 00 44 00 45 00 46 00 47 00  @.A.B.C.D.E.F.G.
-    48 00 49 00 4a 00 4b 00 4c 00 4d 00 4e 00 4f 00  H.I.J.K.L.M.N.O.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf80 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.560s)
-  hex dump (first 32 bytes):
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888114deaf00 (size 128):
-  comm "syz-executor181", pid 8852, jiffies 4295096812 (age 158.560s)
-  hex dump (first 32 bytes):
-    41 00 41 00 41 00 41 00 8e 00 8f 00 92 00 80 00  A.A.A.A.........
-    45 00 90 00 45 00 45 00 49 00 49 00 49 00 49 00  E...E.E.I.I.I.I.
-  backtrace:
-    [<00000000586d43ff>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000586d43ff>] kmalloc_array include/linux/slab.h:591 [inline]
-    [<00000000586d43ff>] con_insert_unipair+0xf5/0x1a0 drivers/tty/vt/consolemap.c:491
-    [<00000000a258f6e6>] con_set_unimap+0x2e4/0x350 drivers/tty/vt/consolemap.c:595
-    [<000000007184d814>] do_unimap_ioctl drivers/tty/vt/vt_ioctl.c:562 [inline]
-    [<000000007184d814>] vt_io_ioctl drivers/tty/vt/vt_ioctl.c:644 [inline]
-    [<000000007184d814>] vt_ioctl+0x2b1/0x19d0 drivers/tty/vt/vt_ioctl.c:817
-    [<00000000e3ea544f>] tty_ioctl+0x713/0xcb0 drivers/tty/tty_io.c:2675
-    [<000000004efd2c65>] vfs_ioctl fs/ioctl.c:48 [inline]
-    [<000000004efd2c65>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-    [<000000004efd2c65>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-    [<000000004efd2c65>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-    [<00000000ef611fc3>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000039ee10fc>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+Memory state around the buggy address:
+ ffff888143bf7080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888143bf7100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888143bf7180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff888143bf7200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888143bf7280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
 ---
@@ -1142,5 +180,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
