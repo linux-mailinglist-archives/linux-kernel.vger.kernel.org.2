@@ -2,77 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF95B320EE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52600320EE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbhBVBEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:04:54 -0500
-Received: from mga05.intel.com ([192.55.52.43]:51655 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229802AbhBVBEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:04:53 -0500
-IronPort-SDR: U28LiCK9r5n2Of1yAVqBJySucHUs9WeHxw0vHod8yM1qFXNXxG3sjAZ+xYVrsDI+kfIQ3h2A9m
- Kcd4zcODwsDg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="269233478"
-X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
-   d="scan'208";a="269233478"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 17:04:12 -0800
-IronPort-SDR: udvRjf8c642SH3LiL5Dn2d3FnIg352e7OoiqSAQuxXbE4QwkUn0onbAHgRcSvZ5binxFIvkK1I
- eMJFdn/0XkTA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
-   d="scan'208";a="402313932"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by orsmga008.jf.intel.com with ESMTP; 21 Feb 2021 17:04:12 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Sun, 21 Feb 2021 17:04:11 -0800
-Received: from shsmsx605.ccr.corp.intel.com (10.109.6.215) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Sun, 21 Feb 2021 17:04:10 -0800
-Received: from shsmsx605.ccr.corp.intel.com ([10.109.6.215]) by
- SHSMSX605.ccr.corp.intel.com ([10.109.6.215]) with mapi id 15.01.2106.002;
- Mon, 22 Feb 2021 09:04:08 +0800
-From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-To:     =?utf-8?B?J0tyenlzenRvZiBXaWxjennFhHNraSc=?= <kw@linux.com>
-CC:     Bjorn Helgaas <helgaas@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
- association
-Thread-Topic: [PATCH v2 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
- association
-Thread-Index: AQHXBmZlagcS3VhAq0mqYPHwwg7Guapi2DoAgACHA7A=
-Date:   Mon, 22 Feb 2021 01:04:07 +0000
-Message-ID: <4a0bf3a852ed47deb072890319fb39ec@intel.com>
-References: <57a7bbc1ba294ce39c309e519fe45842@intel.com>
- <20210219022359.435-1-qiuxu.zhuo@intel.com> <YDMBRFWTYKTrDyBI@rocinante>
-In-Reply-To: <YDMBRFWTYKTrDyBI@rocinante>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S230139AbhBVBGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:06:14 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54416 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230090AbhBVBGL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 20:06:11 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7757D58E;
+        Mon, 22 Feb 2021 02:05:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613955929;
+        bh=AD4yr/AoKlgw4K2SHvNO0bY6/vPA6ZTnOjAseSwj2nM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EQ2QzsQJWUXfeGfgTh/jR0+on5jL6yJopFzoVq34FiGboe2ivwtMzZrKaWEa+KOFE
+         BmCqjKpc4r9q9EukJOqOUXXo5rQFbTXssxTFOfQ5gQVXI/TCCt6Va33NGI1Z/35MIq
+         OE5oAxuBYbFUab47n03uvK1BKZbCuPqI8KuIHW2Y=
+Date:   Mon, 22 Feb 2021 03:05:03 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/16] media: i2c: rdacm20: Replace goto with a loop
+Message-ID: <YDMDPymgU/N5wd/i@pendragon.ideasonboard.com>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-4-jacopo+renesas@jmondi.org>
+ <c95022bc-3841-4d0a-653c-6d6974e20355@ideasonboard.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c95022bc-3841-4d0a-653c-6d6974e20355@ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAuLi4NCj4gPiBbIEtyenlzenRvZjogVXBkYXRlIGNvbW1pdCBtZXNzYWdlLiBdDQo+IFsuLi5d
-DQo+IA0KPiBUaGFuayB5b3UhICBJIGFwcHJlY2lhdGUgdGhhdC4gIEhvd2V2ZXIsIHdlIHByb2Jh
-Ymx5IHNob3VsZCBkcm9wIHRoaXMgZnJvbSB0aGUNCj4gY29tbWl0IG1lc3NhZ2UuICBQZXJoYXBz
-IGVpdGhlciBCam9ybiBvciBMb3JlbnpvIGNvdWxkIGRvIGl0IHdoZW4gYXBwbHlpbmcNCj4gY2hh
-bmdlcy4NCg0KT0ssIHdpbGwgc2VuZCBvdXQgdGhlIHYzIHRoYXQgZHJvcHMgIlsgS3J6eXN6dG9m
-OiBVcGRhdGUgY29tbWl0IG1lc3NhZ2UuIF0iIGZyb20gdGhlIGNvbW1pdCBtZXNzYWdlLg0KDQot
-UWl1eHUNCg==
+Hi Jacopo,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+On Wed, Feb 17, 2021 at 01:01:26PM +0000, Kieran Bingham wrote:
+> On 16/02/2021 17:41, Jacopo Mondi wrote:
+> > During the camera module initialization the image sensor PID is read to
+> > verify it can correctly be identified. The current implementation is
+> > rather confused and uses a loop implemented with a label and a goto.
+> > 
+> > Replace it with a more compact for() loop.
+> > 
+> > No functional changes intended.
+> 
+> I think there is a functional change in here, but I almost like it.
+> 
+> Before, if the read was successful, it would check to see if the
+> OV10635_PID == OV10635_VERSION, and if not it would print that the read
+> was successful but a mismatch.
+> 
+> Now - it will retry again instead, and if at the end of the retries it
+> still fails then it's a failure.
+> 
+> This means we perhaps don't get told if the device id is not correct in
+> the same way, but it also means that if the VERSION was not correct
+> because of a read error (which I believe i've seen occur), it will retry.
+
+I was going to ask about that, whether we can have a successful I2C read
+operation that would return incorrect data. If we do, aren't we screwed
+? If there's a non-negligible probability that reads will return
+incorrect data without any way to know about it (for other registers
+than the version register of course), then I would consider that writes
+could fail the same way, and that would mean an unusable device,
+wouldn't it ?
+
+If, on the other hand, read failures can always (or nearly always,
+ignoring space neutrinos and similar niceties) be detected, then I think
+we should avoid the functional change.
+
+> Because there is a functional change you might want to update the
+> commit, but I still think this is a good change overall.
+> 
+> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> 
+> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > ---
+> >  drivers/media/i2c/rdacm20.c | 27 ++++++++++-----------------
+> >  1 file changed, 10 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> > index 4d9bac87cba8..6504ed0bd3bc 100644
+> > --- a/drivers/media/i2c/rdacm20.c
+> > +++ b/drivers/media/i2c/rdacm20.c
+> > @@ -59,6 +59,8 @@
+> >   */
+> >  #define OV10635_PIXEL_RATE		(44000000)
+> >  
+> > +#define OV10635_PID_TIMEOUT		3
+> > +
+> >  static const struct ov10635_reg {
+> >  	u16	reg;
+> >  	u8	val;
+> > @@ -452,7 +454,7 @@ static const struct v4l2_subdev_ops rdacm20_subdev_ops = {
+> >  
+> >  static int rdacm20_initialize(struct rdacm20_device *dev)
+> >  {
+> > -	unsigned int retry = 3;
+> > +	unsigned int i;
+> >  	int ret;
+> >  
+> >  	/* Verify communication with the MAX9271: ping to wakeup. */
+> > @@ -501,23 +503,14 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+> >  		return ret;
+> >  	usleep_range(10000, 15000);
+> >  
+> > -again:
+> > -	ret = ov10635_read16(dev, OV10635_PID);
+> > -	if (ret < 0) {
+> > -		if (retry--)
+> > -			goto again;
+> > -
+> > -		dev_err(dev->dev, "OV10635 ID read failed (%d)\n",
+> > -			ret);
+> > -		return -ENXIO;
+> > +	for (i = 0; i < OV10635_PID_TIMEOUT; ++i) {
+> > +		ret = ov10635_read16(dev, OV10635_PID);
+> > +		if (ret == OV10635_VERSION)
+> > +			break;
+> > +		usleep_range(1000, 2000);
+> >  	}
+> > -
+> > -	if (ret != OV10635_VERSION) {
+> > -		if (retry--)
+> > -			goto again;
+> > -
+> > -		dev_err(dev->dev, "OV10635 ID mismatch (0x%04x)\n",
+> > -			ret);
+> > +	if (i == OV10635_PID_TIMEOUT) {
+> > +		dev_err(dev->dev, "OV10635 ID read failed (%d)\n", ret);
+> >  		return -ENXIO;
+> >  	}
+> >  
+
+-- 
+Regards,
+
+Laurent Pinchart
