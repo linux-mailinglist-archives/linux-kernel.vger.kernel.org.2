@@ -2,323 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149A0321D42
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B162B321D3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhBVQmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:42:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29513 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231311AbhBVQlK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:41:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614011982;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GUJtY9R2iZ6J1VlDQs1KAeFyAZBypUCoHyYC6H1JgCo=;
-        b=E/0TTu4vDfPH+UlrPlgJnf3xjeM2EeCfsGac9x3VbsnGAjnXJ77bvnOpbApwIP8Ve1GzcK
-        /7/0w3aNA0ytIAiXZA62dzyJHVsmxf+WnWHP8MkLzk6omxkgbTqastXOwAVP1uHIdX39aC
-        3p/sfD/sDeEuLstlLdpldyqkV7P+WT4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-i7f3EASKP-qVMmcsUMFMqQ-1; Mon, 22 Feb 2021 11:39:38 -0500
-X-MC-Unique: i7f3EASKP-qVMmcsUMFMqQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 591BE801965;
-        Mon, 22 Feb 2021 16:39:35 +0000 (UTC)
-Received: from [10.36.115.16] (ovpn-115-16.ams2.redhat.com [10.36.115.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F117719C45;
-        Mon, 22 Feb 2021 16:39:30 +0000 (UTC)
-Subject: Re: [PATCH] mm, kasan: don't poison boot memory
-From:   David Hildenbrand <david@redhat.com>
-To:     George Kennedy <george.kennedy@oracle.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Konrad Rzeszutek Wilk <konrad@darnok.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <487751e1ccec8fcd32e25a06ce000617e96d7ae1.1613595269.git.andreyknvl@google.com>
- <e58cbb53-5f5b-42ae-54a0-e3e1b76ad271@redhat.com>
- <d11bf144-669b-0fe1-4fa4-001a014db32a@oracle.com>
- <CAAeHK+y_SmP5yAeSM3Cp6V3WH9uj4737hDuVGA7U=xA42ek3Lw@mail.gmail.com>
- <c7166cae-bf89-8bdd-5849-72b5949fc6cc@oracle.com>
- <797fae72-e3ea-c0b0-036a-9283fa7f2317@oracle.com>
- <1ac78f02-d0af-c3ff-cc5e-72d6b074fc43@redhat.com>
- <bd7510b5-d325-b516-81a8-fbdc81a27138@oracle.com>
- <56c97056-6d8b-db0e-e303-421ee625abe3@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <4c7351e2-e97c-e740-5800-ada5504588aa@redhat.com>
-Date:   Mon, 22 Feb 2021 17:39:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231349AbhBVQlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:41:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:56020 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231253AbhBVQka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:40:30 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0BC31FB;
+        Mon, 22 Feb 2021 08:39:44 -0800 (PST)
+Received: from e124901.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BED7F3F73B;
+        Mon, 22 Feb 2021 08:39:42 -0800 (PST)
+Date:   Mon, 22 Feb 2021 16:39:47 +0000
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net, valentin.schneider@arm.com
+Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
+ cpu_util_next()
+Message-ID: <20210222163947.GB225035@e124901.cambridge.arm.com>
+References: <20210222095401.37158-1-vincent.donnefort@arm.com>
+ <YDODN1rnTqfTQOug@google.com>
+ <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
+ <YDOiKH/XQDUKcrPU@google.com>
+ <20210222150151.GA124800@e124901.cambridge.arm.com>
+ <YDPUwKKYgZfzzCJm@google.com>
+ <YDPajlnvgkonocpp@google.com>
 MIME-Version: 1.0
-In-Reply-To: <56c97056-6d8b-db0e-e303-421ee625abe3@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDPajlnvgkonocpp@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.02.21 17:13, David Hildenbrand wrote:
-> On 22.02.21 16:13, George Kennedy wrote:
->>
->>
->> On 2/22/2021 4:52 AM, David Hildenbrand wrote:
->>> On 20.02.21 00:04, George Kennedy wrote:
->>>>
->>>>
->>>> On 2/19/2021 11:45 AM, George Kennedy wrote:
->>>>>
->>>>>
->>>>> On 2/18/2021 7:09 PM, Andrey Konovalov wrote:
->>>>>> On Fri, Feb 19, 2021 at 1:06 AM George Kennedy
->>>>>> <george.kennedy@oracle.com> wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 2/18/2021 3:55 AM, David Hildenbrand wrote:
->>>>>>>> On 17.02.21 21:56, Andrey Konovalov wrote:
->>>>>>>>> During boot, all non-reserved memblock memory is exposed to the
->>>>>>>>> buddy
->>>>>>>>> allocator. Poisoning all that memory with KASAN lengthens boot
->>>>>>>>> time,
->>>>>>>>> especially on systems with large amount of RAM. This patch makes
->>>>>>>>> page_alloc to not call kasan_free_pages() on all new memory.
->>>>>>>>>
->>>>>>>>> __free_pages_core() is used when exposing fresh memory during
->>>>>>>>> system
->>>>>>>>> boot and when onlining memory during hotplug. This patch adds a new
->>>>>>>>> FPI_SKIP_KASAN_POISON flag and passes it to __free_pages_ok()
->>>>>>>>> through
->>>>>>>>> free_pages_prepare() from __free_pages_core().
->>>>>>>>>
->>>>>>>>> This has little impact on KASAN memory tracking.
->>>>>>>>>
->>>>>>>>> Assuming that there are no references to newly exposed pages
->>>>>>>>> before they
->>>>>>>>> are ever allocated, there won't be any intended (but buggy)
->>>>>>>>> accesses to
->>>>>>>>> that memory that KASAN would normally detect.
->>>>>>>>>
->>>>>>>>> However, with this patch, KASAN stops detecting wild and large
->>>>>>>>> out-of-bounds accesses that happen to land on a fresh memory page
->>>>>>>>> that
->>>>>>>>> was never allocated. This is taken as an acceptable trade-off.
->>>>>>>>>
->>>>>>>>> All memory allocated normally when the boot is over keeps getting
->>>>>>>>> poisoned as usual.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->>>>>>>>> Change-Id: Iae6b1e4bb8216955ffc14af255a7eaaa6f35324d
->>>>>>>> Not sure this is the right thing to do, see
->>>>>>>>
->>>>>>>> https://lkml.kernel.org/r/bcf8925d-0949-3fe1-baa8-cc536c529860@oracle.com
->>>>>>>>
->>>>>>>>
->>>>>>>>
->>>>>>>> Reversing the order in which memory gets allocated + used during
->>>>>>>> boot
->>>>>>>> (in a patch by me) might have revealed an invalid memory access
->>>>>>>> during
->>>>>>>> boot.
->>>>>>>>
->>>>>>>> I suspect that that issue would no longer get detected with your
->>>>>>>> patch, as the invalid memory access would simply not get detected.
->>>>>>>> Now, I cannot prove that :)
->>>>>>> Since David's patch we're having trouble with the iBFT ACPI table,
->>>>>>> which
->>>>>>> is mapped in via kmap() - see acpi_map() in "drivers/acpi/osl.c".
->>>>>>> KASAN
->>>>>>> detects that it is being used after free when ibft_init() accesses
->>>>>>> the
->>>>>>> iBFT table, but as of yet we can't find where it get's freed (we've
->>>>>>> instrumented calls to kunmap()).
->>>>>> Maybe it doesn't get freed, but what you see is a wild or a large
->>>>>> out-of-bounds access. Since KASAN marks all memory as freed during the
->>>>>> memblock->page_alloc transition, such bugs can manifest as
->>>>>> use-after-frees.
->>>>>
->>>>> It gets freed and re-used. By the time the iBFT table is accessed by
->>>>> ibft_init() the page has been over-written.
->>>>>
->>>>> Setting page flags like the following before the call to kmap()
->>>>> prevents the iBFT table page from being freed:
->>>>
->>>> Cleaned up version:
->>>>
->>>> diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
->>>> index 0418feb..8f0a8e7 100644
->>>> --- a/drivers/acpi/osl.c
->>>> +++ b/drivers/acpi/osl.c
->>>> @@ -287,9 +287,12 @@ static void __iomem *acpi_map(acpi_physical_address
->>>> pg_off, unsigned long pg_sz)
->>>>
->>>>          pfn = pg_off >> PAGE_SHIFT;
->>>>          if (should_use_kmap(pfn)) {
->>>> +        struct page *page = pfn_to_page(pfn);
->>>> +
->>>>              if (pg_sz > PAGE_SIZE)
->>>>                  return NULL;
->>>> -        return (void __iomem __force *)kmap(pfn_to_page(pfn));
->>>> +        SetPageReserved(page);
->>>> +        return (void __iomem __force *)kmap(page);
->>>>          } else
->>>>              return acpi_os_ioremap(pg_off, pg_sz);
->>>>      }
->>>> @@ -299,9 +302,12 @@ static void acpi_unmap(acpi_physical_address
->>>> pg_off, void __iomem *vaddr)
->>>>          unsigned long pfn;
->>>>
->>>>          pfn = pg_off >> PAGE_SHIFT;
->>>> -    if (should_use_kmap(pfn))
->>>> -        kunmap(pfn_to_page(pfn));
->>>> -    else
->>>> +    if (should_use_kmap(pfn)) {
->>>> +        struct page *page = pfn_to_page(pfn);
->>>> +
->>>> +        ClearPageReserved(page);
->>>> +        kunmap(page);
->>>> +    } else
->>>>              iounmap(vaddr);
->>>>      }
->>>>
->>>> David, the above works, but wondering why it is now necessary. kunmap()
->>>> is not hit. What other ways could a page mapped via kmap() be unmapped?
->>>>
->>>
->>> Let me look into the code ... I have little experience with ACPI
->>> details, so bear with me.
->>>
->>> I assume that acpi_map()/acpi_unmap() map some firmware blob that is
->>> provided via firmware/bios/... to us.
->>>
->>> should_use_kmap() tells us whether
->>> a) we have a "struct page" and should kmap() that one
->>> b) we don't have a "struct page" and should ioremap.
->>>
->>> As it is a blob, the firmware should always reserve that memory region
->>> via memblock (e.g., memblock_reserve()), such that we either
->>> 1) don't create a memmap ("struct page") at all (-> case b) )
->>> 2) if we have to create e memmap, we mark the page PG_reserved and
->>>      *never* expose it to the buddy (-> case a) )
->>>
->>>
->>> Are you telling me that in this case we might have a memmap for the HW
->>> blob that is *not* PG_reserved? In that case it most probably got
->>> exposed to the buddy where it can happily get allocated/freed.
->>>
->>> The latent BUG would be that that blob gets exposed to the system like
->>> ordinary RAM, and not reserved via memblock early during boot.
->>> Assuming that blob has a low physical address, with my patch it will
->>> get allocated/used a lot earlier - which would mean we trigger this
->>> latent BUG now more easily.
->>>
->>> There have been similar latent BUGs on ARM boards that my patch
->>> discovered where special RAM regions did not get marked as reserved
->>> via the device tree properly.
->>>
->>> Now, this is just a wild guess :) Can you dump the page when mapping
->>> (before PageReserved()) and when unmapping, to see what the state of
->>> that memmap is?
->>
->> Thank you David for the explanation and your help on this,
->>
->> dump_page() before PageReserved and before kmap() in the above patch:
->>
->> [    1.116480] ACPI: Core revision 20201113
->> [    1.117628] XXX acpi_map: about to call kmap()...
->> [    1.118561] page:ffffea0002f914c0 refcount:0 mapcount:0
->> mapping:0000000000000000 index:0x0 pfn:0xbe453
->> [    1.120381] flags: 0xfffffc0000000()
->> [    1.121116] raw: 000fffffc0000000 ffffea0002f914c8 ffffea0002f914c8
->> 0000000000000000
->> [    1.122638] raw: 0000000000000000 0000000000000000 00000000ffffffff
->> 0000000000000000
->> [    1.124146] page dumped because: acpi_map pre SetPageReserved
->>
->> I also added dump_page() before unmapping, but it is not hit. The
->> following for the same pfn now shows up I believe as a result of setting
->> PageReserved:
->>
->> [   28.098208] BUG:Bad page state in process mo dprobe  pfn:be453
->> [   28.098394] page:ffffea0002f914c0 refcount:0 mapcount:0
->> mapping:0000000000000000 index:0x1 pfn:0xbe453
->> [   28.098394] flags: 0xfffffc0001000(reserved)
->> [   28.098394] raw: 000fffffc0001000 dead000000000100 dead000000000122
->> 0000000000000000
->> [   28.098394] raw: 0000000000000001 0000000000000000 00000000ffffffff
->> 0000000000000000
->> [   28.098394] page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
->> [   28.098394] page_owner info is not present (never set?)
->> [   28.098394] Modules linked in:
->> [   28.098394] CPU: 2 PID: 204 Comm: modprobe Not tainted 5.11.0-3dbd5e3 #66
->> [   28.098394] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
->> BIOS 0.0.0 02/06/2015
->> [   28.098394] Call Trace:
->> [   28.098394]  dump_stack+0xdb/0x120
->> [   28.098394]  bad_page.cold.108+0xc6/0xcb
->> [   28.098394]  check_new_page_bad+0x47/0xa0
->> [   28.098394]  get_page_from_freelist+0x30cd/0x5730
->> [   28.098394]  ? __isolate_free_page+0x4f0/0x4f0
->> [   28.098394]  ? init_object+0x7e/0x90
->> [   28.098394]  __alloc_pages_nodemask+0x2d8/0x650
->> [   28.098394]  ? write_comp_data+0x2f/0x90
->> [   28.098394]  ? __alloc_pages_slowpath.constprop.103+0x2110/0x2110
->> [   28.098394]  ? __sanitizer_cov_trace_pc+0x21/0x50
->> [   28.098394]  alloc_pages_vma+0xe2/0x560
->> [   28.098394]  do_fault+0x194/0x12c0
->> [   28.098394]  ? write_comp_data+0x2f/0x90
->> [   28.098394]  __handle_mm_fault+0x1650/0x26c0
->> [   28.098394]  ? copy_page_range+0x1350/0x1350
->> [   28.098394]  ? write_comp_data+0x2f/0x90
->> [   28.098394]  ? write_comp_data+0x2f/0x90
->> [   28.098394]  handle_mm_fault+0x1f9/0x810
->> [   28.098394]  ? write_comp_data+0x2f/0x90
->> [   28.098394]  do_user_addr_fault+0x6f7/0xca0
->> [   28.098394]  exc_page_fault+0xaf/0x1a0
->> [   28.098394]  asm_exc_page_fault+0x1e/0x30
->> [   28.098394] RIP: 0010:__clear_user+0x30/0x60
+On Mon, Feb 22, 2021 at 04:23:42PM +0000, Quentin Perret wrote:
+> On Monday 22 Feb 2021 at 15:58:56 (+0000), Quentin Perret wrote:
+> > But in any case, if we're going to address this, I'm still not sure this
+> > patch will be what we want. As per my first comment we need to keep the
+> > frequency estimation right.
 > 
-> I think the PAGE_FLAGS_CHECK_AT_PREP check in this instance means that
-> someone is trying to allocate that page with the PG_reserved bit set.
-> This means that the page actually was exposed to the buddy.
-> 
-> However, when you SetPageReserved(), I don't think that PG_buddy is set
-> and the refcount is 0. That could indicate that the page is on the buddy
-> PCP list. Could be that it is getting reused a couple of times.
-> 
-> The PFN 0xbe453 looks a little strange, though. Do we expect ACPI tables
-> close to 3 GiB ? No idea. Could it be that you are trying to map a wrong
-> table? Just a guess.
+> Totally untested, but I think in principle you would like something like
+> the snippet below. Would that work?
 
-... but I assume ibft_check_device() would bail out on an invalid 
-checksum. So the question is, why is this page not properly marked as 
-reserved already.
+You preempted my previous email :)
 
--- 
+Yeah, that looks like what we want, I'll give a try.
+
 Thanks,
 
-David / dhildenb
+-- 
+Vincent.
+
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 04a3ce20da67..6594d875c6ac 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6534,8 +6534,13 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+>          * its pd list and will not be accounted by compute_energy().
+>          */
+>         for_each_cpu_and(cpu, pd_mask, cpu_online_mask) {
+> -               unsigned long cpu_util, util_cfs = cpu_util_next(cpu, p, dst_cpu);
+> +               unsigned long util_freq = cpu_util_next(cpu, p, dst_cpu);
+> +               unsigned long util_running = cpu_util_without(cpu, p);
+>                 struct task_struct *tsk = cpu == dst_cpu ? p : NULL;
+> +               unsigned long cpu_util;
+> +
+> +               if (cpu == dst_cpu)
+> +                       util_running += task_util_est();
+> 
+>                 /*
+>                  * Busy time computation: utilization clamping is not
+> @@ -6543,7 +6548,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+>                  * is already enough to scale the EM reported power
+>                  * consumption at the (eventually clamped) cpu_capacity.
+>                  */
+> -               sum_util += schedutil_cpu_util(cpu, util_cfs, cpu_cap,
+> +               sum_util += schedutil_cpu_util(cpu, util_running, cpu_cap,
+>                                                ENERGY_UTIL, NULL);
+> 
+>                 /*
+> @@ -6553,7 +6558,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+>                  * NOTE: in case RT tasks are running, by default the
+>                  * FREQUENCY_UTIL's utilization can be max OPP.
+>                  */
+> -               cpu_util = schedutil_cpu_util(cpu, util_cfs, cpu_cap,
+> +               cpu_util = schedutil_cpu_util(cpu, util_freq, cpu_cap,
+>                                               FREQUENCY_UTIL, tsk);
+>                 max_util = max(max_util, cpu_util);
+>         }
+>
+
+
 
