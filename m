@@ -2,105 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4C13217B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96AC43217BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhBVMyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:54:00 -0500
-Received: from mail.kingsoft.com ([114.255.44.146]:45010 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230195AbhBVMSU (ORCPT
+        id S231735AbhBVMzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:55:02 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12563 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230258AbhBVMVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:18:20 -0500
-X-AuditID: 0a580157-f39ff7000005df43-c8-60339aa058a0
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id FB.89.57155.0AA93306; Mon, 22 Feb 2021 19:50:56 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 22 Feb
- 2021 20:17:24 +0800
-Date:   Mon, 22 Feb 2021 20:17:23 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     <tony.luck@intel.com>, <mingo@redhat.com>, <tglx@linutronix.de>,
-        <hpa@zytor.com>, <x86@kernel.org>, <linux-edac@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yangfeng1@kingsoft.com>
-Subject: Re: [PATCH v2] x86/mce: fix wrong no-return-ip logic in
- do_machine_check()
-Message-ID: <20210222201723.0fcec589@alex-virtual-machine>
-In-Reply-To: <20210222192146.76ffec84@alex-virtual-machine>
-References: <20210222113124.35f2d552@alex-virtual-machine>
-        <20210222115007.75b7de9b@alex-virtual-machine>
-        <20210222092403.GA29063@zn.tnic>
-        <20210222173109.7b7ac42a@alex-virtual-machine>
-        <20210222100356.GB29063@zn.tnic>
-        <20210222180819.3998fe33@alex-virtual-machine>
-        <20210222102206.GC29063@zn.tnic>
-        <20210222192146.76ffec84@alex-virtual-machine>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Mon, 22 Feb 2021 07:21:10 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dkh6W2gbCzMcZG;
+        Mon, 22 Feb 2021 20:18:27 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 22 Feb 2021 20:20:24 +0800
+Subject: Re: [PATCH v11 01/13] vfio: VFIO_IOMMU_SET_PASID_TABLE
+To:     Auger Eric <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <will@kernel.org>, <joro@8bytes.org>, <maz@kernel.org>,
+        <robin.murphy@arm.com>, <alex.williamson@redhat.com>
+References: <20201116110030.32335-1-eric.auger@redhat.com>
+ <20201116110030.32335-2-eric.auger@redhat.com>
+ <84a111da-1969-1701-9a6d-cae8d7c285c6@huawei.com>
+ <e476f85d-f49f-f9a6-3232-e99a4cb5a0a2@redhat.com>
+CC:     <jean-philippe@linaro.org>, <jacob.jun.pan@linux.intel.com>,
+        <nicoleotsuka@gmail.com>, <vivek.gautam@arm.com>,
+        <yi.l.liu@intel.com>, <zhangfei.gao@linaro.org>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <bb8c7382-5f2b-6a95-7dee-5528caf67a96@huawei.com>
+Date:   Mon, 22 Feb 2021 20:20:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <e476f85d-f49f-f9a6-3232-e99a4cb5a0a2@redhat.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPLMWRmVeSWpSXmKPExsXCFcGooLtglnGCwbJbwhafN/xjs5i2Udzi
-        wqkGJovLu+awWVw6sIDJYvOmqcwWby7cY7H4seExqwOHx/fWPhaPxXteMnlsWtXJ5vHu3Dl2
-        j/f7rrJ5fN4k53Gi5QtrAHsUl01Kak5mWWqRvl0CV8bqXR/YCp7xVVw5IdHA+Ji7i5GTQ0LA
-        ROJe82vmLkYuDiGB6UwSZ7atYIdwXjFK9GyfytjFyMHBIqAq8XIDWAMbkLnr3ixWEFtEQEni
-        66K5TCD1zAKHGCUOn3vBDFIvLBAqsWRaIUgNr4CVxJoFLSwgNqeAtcTGX/9YIOY/Z5JY//4/
-        O0iCX0BMovfKfyaIi+wl2rYsYoRoFpQ4OfMJWDOzgI7EiVXHmCFseYntb+eA2UICihKHl/xi
-        h+hVkjjSPYMNwo6VWDbvFesERuFZSEbNQjJqFpJRCxiZVzGyFOemG25ihMRJ+A7GeU0f9Q4x
-        MnEwAv3Gwawkwst21yhBiDclsbIqtSg/vqg0J7X4EKM0B4uSOK+YI1+CkEB6YklqdmpqQWoR
-        TJaJg1OqganzwKIQ167F25mPl2rtUMw13luzULPnAB9vsuoJYR7tyYWn3X8f1+Yu7GfmZzl2
-        9DZvYeIVP8YSu0ktXl9urpfeG3vj3wrb5bez54TP/Pq7tVJwvYpXdcjToKJ+8XMMbjd9jrA+
-        4WoRn8jp+HfOXueJ+w+paiR/yqs4EHfmyI/fm7x/HBW6PFs55v+l2fwbjilGbomaurfi2vIp
-        s/8bXvz9L704X6dHwaXBJo5pq8XFfhXmwtyNRjtYnNUzVHIezrTwfRJav/3MtsVHZ7c9Tgza
-        8yfKn8GIfbVzwfn9l+02KU9zr+FrVwxLX3l2lrLHhHU815cFVQW5rrjB2yCu6MY6Y02wKMOp
-        JrHz4t0JzEosxRmJhlrMRcWJAKO1awkCAwAA
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 19:21:46 +0800
-Aili Yao <yaoaili@kingsoft.com> wrote:
+Hi Eric,
 
-> On Mon, 22 Feb 2021 11:22:06 +0100
-> Borislav Petkov <bp@alien8.de> wrote:
+On 2021/2/22 18:53, Auger Eric wrote:
+> Hi Keqian,
 > 
-> > On Mon, Feb 22, 2021 at 06:08:19PM +0800, Aili Yao wrote:  
-> > > So why would intel provide this MCG_STATUS_RIPV flag, it's better to
-> > > remove it as it will never be set, and all the related logic for this
-> > > flag is really needed ?    
-> > 
-> > Why would it never be set - of course it will be. You don't set it. If
-> > you wanna inject errors, then make sure you inject *valid* errors which
-> > the hardware *actually* generates, not some random ones.
-> >   
+> On 2/2/21 1:34 PM, Keqian Zhu wrote:
+>> Hi Eric,
+>>
+>> On 2020/11/16 19:00, Eric Auger wrote:
+>>> From: "Liu, Yi L" <yi.l.liu@linux.intel.com>
+>>>
+>>> This patch adds an VFIO_IOMMU_SET_PASID_TABLE ioctl
+>>> which aims to pass the virtual iommu guest configuration
+>>> to the host. This latter takes the form of the so-called
+>>> PASID table.
+>>>
+>>> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+>>> Signed-off-by: Liu, Yi L <yi.l.liu@linux.intel.com>
+>>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+>>>
+>>> ---
+>>> v11 -> v12:
+>>> - use iommu_uapi_set_pasid_table
+>>> - check SET and UNSET are not set simultaneously (Zenghui)
+>>>
+>>> v8 -> v9:
+>>> - Merge VFIO_IOMMU_ATTACH/DETACH_PASID_TABLE into a single
+>>>   VFIO_IOMMU_SET_PASID_TABLE ioctl.
+>>>
+>>> v6 -> v7:
+>>> - add a comment related to VFIO_IOMMU_DETACH_PASID_TABLE
+>>>
+>>> v3 -> v4:
+>>> - restore ATTACH/DETACH
+>>> - add unwind on failure
+>>>
+>>> v2 -> v3:
+>>> - s/BIND_PASID_TABLE/SET_PASID_TABLE
+>>>
+>>> v1 -> v2:
+>>> - s/BIND_GUEST_STAGE/BIND_PASID_TABLE
+>>> - remove the struct device arg
+>>> ---
+>>>  drivers/vfio/vfio_iommu_type1.c | 65 +++++++++++++++++++++++++++++++++
+>>>  include/uapi/linux/vfio.h       | 19 ++++++++++
+>>>  2 files changed, 84 insertions(+)
+>>>
+>>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+>>> index 67e827638995..87ddd9e882dc 100644
+>>> --- a/drivers/vfio/vfio_iommu_type1.c
+>>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>>> @@ -2587,6 +2587,41 @@ static int vfio_iommu_iova_build_caps(struct vfio_iommu *iommu,
+>>>  	return ret;
+>>>  }
+>>>  
+>>> +static void
+>>> +vfio_detach_pasid_table(struct vfio_iommu *iommu)
+>>> +{
+>>> +	struct vfio_domain *d;
+>>> +
+>>> +	mutex_lock(&iommu->lock);
+>>> +	list_for_each_entry(d, &iommu->domain_list, next)
+>>> +		iommu_detach_pasid_table(d->domain);
+>>> +
+>>> +	mutex_unlock(&iommu->lock);
+>>> +}
+>>> +
+>>> +static int
+>>> +vfio_attach_pasid_table(struct vfio_iommu *iommu, unsigned long arg)
+>>> +{
+>>> +	struct vfio_domain *d;
+>>> +	int ret = 0;
+>>> +
+>>> +	mutex_lock(&iommu->lock);
+>>> +
+>>> +	list_for_each_entry(d, &iommu->domain_list, next) {
+>>> +		ret = iommu_uapi_attach_pasid_table(d->domain, (void __user *)arg);
+>> This design is not very clear to me. This assumes all iommu_domains share the same pasid table.
+>>
+>> As I understand, it's reasonable when there is only one group in the domain, and only one domain in the vfio_iommu.
+>> If more than one group in the vfio_iommu, the guest may put them into different guest iommu_domain, then they have different pasid table.
+>>
+>> Is this the use scenario?
 > 
-> As far as I know, Most of RAS related tests are faked, not real errors, and it's really meaningful.
-> 
-> You should better reproduce the issue I tried to fix, or at least read the code more detailly and you will
-> know if it's random and invalid
-> 
-I See this in sdm 325462:
+> the vfio_iommu is attached to a container. all the groups within a
+> container share the same set of page tables (linux
+> Documentation/driver-api/vfio.rst). So to me if you want to use
+> different pasid tables, the groups need to be attached to different
+> containers. Does that make sense to you?
+OK, so this is what I understand about the design. A little question is that when
+we perform attach_pasid_table on a container, maybe we ought to do a sanity
+check to make sure that only one group is in this container, instead of
+iterating all domain?
 
-AR (Action Required) flag, bit 55 - Indicates (when set) that MCA error code specific recovery action must be
-performed by system software at the time this error was signaled. This recovery action must be completed
-successfully before any additional work is scheduled for this processor. 
--------------------
-When the RIPV flag in the IA32_MCG_STATUS is clear, an alternative execution stream needs to be provided; 
-------------------
-when the MCA error code
-specific recovery specific recovery action cannot be successfully completed, system software must shut down
-the system. When the AR flag in the IA32_MCi_STATUS register is clear, system software may still take MCA
-error code specific recovery action but this is optional; system software can safely resume program execution
-at the instruction pointer saved on the stack from the machine check exception when the RIPV flag in the
-IA32_MCG_STATUS register is set.
+To be frank, my main concern is that if we put each group into different container
+under nested mode, then we give up the possibility that they can share stage2 page tables,
+which saves host memory and reduces the time of preparing environment for VM.
 
-Best Regards!
-Aili Yao
+To me, I'd like to understand the "container shares page table" to be:
+1) share stage2 page table under nested mode.
+2) share stage1 page table under non-nested mode.
 
+As when we perform "map" on a container:
+1) under nested mode, we setup stage2 mapping.
+2) under non-nested mode, we setup stage1 mapping.
+
+Indeed, to realize stage2 mapping sharing, we should do much more work to refactor
+SMMU_DOMAIN...
+
+Hope you can consider this. :)
+
+Thanks,
+Keqian
+
+> 
+> Thanks
+> 
+> Eric
+>>
+>> Thanks,
+>> Keqian
+>>
+>>> +		if (ret)
+>>> +			goto unwind;
+>>> +	}
+>>> +	goto unlock;
+>>> +unwind:
+>>> +	list_for_each_entry_continue_reverse(d, &iommu->domain_list, next) {
+>>> +		iommu_detach_pasid_table(d->domain);
+>>> +	}
+>>> +unlock:
+>>> +	mutex_unlock(&iommu->lock);
+>>> +	return ret;
+>>> +}
+>>> +
+>>>  static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
+>>>  					   struct vfio_info_cap *caps)
+>>>  {
+>>> @@ -2747,6 +2782,34 @@ static int vfio_iommu_type1_unmap_dma(struct vfio_iommu *iommu,
+>>>  			-EFAULT : 0;
+>>>  }
+>>>  
+>>> +static int vfio_iommu_type1_set_pasid_table(struct vfio_iommu *iommu,
+>>> +					    unsigned long arg)
+>>> +{
+>>> +	struct vfio_iommu_type1_set_pasid_table spt;
+>>> +	unsigned long minsz;
+>>> +	int ret = -EINVAL;
+>>> +
+>>> +	minsz = offsetofend(struct vfio_iommu_type1_set_pasid_table, flags);
+>>> +
+>>> +	if (copy_from_user(&spt, (void __user *)arg, minsz))
+>>> +		return -EFAULT;
+>>> +
+>>> +	if (spt.argsz < minsz)
+>>> +		return -EINVAL;
+>>> +
+>>> +	if (spt.flags & VFIO_PASID_TABLE_FLAG_SET &&
+>>> +	    spt.flags & VFIO_PASID_TABLE_FLAG_UNSET)
+>>> +		return -EINVAL;
+>>> +
+>>> +	if (spt.flags & VFIO_PASID_TABLE_FLAG_SET)
+>>> +		ret = vfio_attach_pasid_table(iommu, arg + minsz);
+>>> +	else if (spt.flags & VFIO_PASID_TABLE_FLAG_UNSET) {
+>>> +		vfio_detach_pasid_table(iommu);
+>>> +		ret = 0;
+>>> +	}
+>>> +	return ret;
+>>> +}
+>>> +
+>>>  static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
+>>>  					unsigned long arg)
+>>>  {
+>>> @@ -2867,6 +2930,8 @@ static long vfio_iommu_type1_ioctl(void *iommu_data,
+>>>  		return vfio_iommu_type1_unmap_dma(iommu, arg);
+>>>  	case VFIO_IOMMU_DIRTY_PAGES:
+>>>  		return vfio_iommu_type1_dirty_pages(iommu, arg);
+>>> +	case VFIO_IOMMU_SET_PASID_TABLE:
+>>> +		return vfio_iommu_type1_set_pasid_table(iommu, arg);
+>>>  	default:
+>>>  		return -ENOTTY;
+>>>  	}
+>>> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+>>> index 2f313a238a8f..78ce3ce6c331 100644
+>>> --- a/include/uapi/linux/vfio.h
+>>> +++ b/include/uapi/linux/vfio.h
+>>> @@ -14,6 +14,7 @@
+>>>  
+>>>  #include <linux/types.h>
+>>>  #include <linux/ioctl.h>
+>>> +#include <linux/iommu.h>
+>>>  
+>>>  #define VFIO_API_VERSION	0
+>>>  
+>>> @@ -1180,6 +1181,24 @@ struct vfio_iommu_type1_dirty_bitmap_get {
+>>>  
+>>>  #define VFIO_IOMMU_DIRTY_PAGES             _IO(VFIO_TYPE, VFIO_BASE + 17)
+>>>  
+>>> +/*
+>>> + * VFIO_IOMMU_SET_PASID_TABLE - _IOWR(VFIO_TYPE, VFIO_BASE + 22,
+>>> + *			struct vfio_iommu_type1_set_pasid_table)
+>>> + *
+>>> + * The SET operation passes a PASID table to the host while the
+>>> + * UNSET operation detaches the one currently programmed. Setting
+>>> + * a table while another is already programmed replaces the old table.
+>>> + */
+>>> +struct vfio_iommu_type1_set_pasid_table {
+>>> +	__u32	argsz;
+>>> +	__u32	flags;
+>>> +#define VFIO_PASID_TABLE_FLAG_SET	(1 << 0)
+>>> +#define VFIO_PASID_TABLE_FLAG_UNSET	(1 << 1)
+>>> +	struct iommu_pasid_table_config config; /* used on SET */
+>>> +};
+>>> +
+>>> +#define VFIO_IOMMU_SET_PASID_TABLE	_IO(VFIO_TYPE, VFIO_BASE + 22)
+>>> +
+>>>  /* -------- Additional API for SPAPR TCE (Server POWERPC) IOMMU -------- */
+>>>  
+>>>  /*
+>>>
+>>
+> 
+> .
+> 
