@@ -2,200 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E143211FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B915321206
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhBVI0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 03:26:07 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:42736 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhBVI0A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:26:00 -0500
-Received: by mail-io1-f70.google.com with SMTP id q5so8828320iot.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 00:25:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=c8hXqBBz+8mXOrISI8+t5InjB6QMByMBQpfz881C0bs=;
-        b=U42hfQ8UhYeJCNdir6VkyBh78q8gSB72dWjflq+Nd/P3bcuLXPMPA7+swJNV9eyNhy
-         5CNkhaBnh9jydDUY7m75piBy5YjnoYWh4HYgnKWCEPKpoHzQtnU1xweHHuRwWb+o58cH
-         gXrgaFzwmPrBD+Rx9SM+elRSK7iCnzZRmqCq+z8zHACS4XwcjnY4UuQA/eVAckaazmOQ
-         DalmClmxTrj8o5pxInGuP64/K42P8/Mid4tkVIg53wJo1A6eV/Tt66m0S3tdrAFB13hk
-         IomuenUs4MQmiGdkRGPd4VxL1OvC/rr+VDtFQbE9bF313doTemNeXxZqDizXl/NHtxz0
-         gIiw==
-X-Gm-Message-State: AOAM532DrqBtwQJCRe+EvUXl2oMhddx4QEjMz5D8d8RKV/ojXgIqUMe4
-        59/4rmHw/INqnrAeyupbtPei34Nilz8xH01ZHUBbqnrvtsV3
-X-Google-Smtp-Source: ABdhPJz5253lID0hJ3vzkyQ6t2Ou9t9uHrukzVPiB/2GaLfMqYi/OgnFaHEv65Yze8nKZu4dty/sTYk7uhr05Umn4iSkzdG2qy0k
+        id S229953AbhBVIaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:30:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33568 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229518AbhBVIaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 03:30:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 05140AD57;
+        Mon, 22 Feb 2021 08:29:23 +0000 (UTC)
+From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
+Subject: [PATCH] perf annotate: add --demangle and --demangle-kernel
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Message-ID: <deb2af9e-25dd-ac72-29f4-ab90c2b24237@suse.cz>
+Date:   Mon, 22 Feb 2021 09:29:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1806:: with SMTP id a6mr14168565ilv.8.1613982318043;
- Mon, 22 Feb 2021 00:25:18 -0800 (PST)
-Date:   Mon, 22 Feb 2021 00:25:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bda69205bbe88a09@google.com>
-Subject: KASAN: use-after-free Read in nbd_genl_connect
-From:   syzbot <syzbot+429d3f82d757c211bff3@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nbd@other.debian.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Perf annotate supports --symbol but it's impossible to filter
+a C++ symbol. With --no-demangle one can filter easily by
+mangled function name.
 
-syzbot found the following issue on:
-
-HEAD commit:    f40ddce8 Linux 5.11
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=179e8d22d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e53d04227c52a0df
-dashboard link: https://syzkaller.appspot.com/bug?extid=429d3f82d757c211bff3
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d190cad00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13dc8a82d00000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1128ae60d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1328ae60d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1528ae60d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+429d3f82d757c211bff3@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
-BUG: KASAN: use-after-free in atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
-BUG: KASAN: use-after-free in refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
-Read of size 4 at addr ffff888014ca19a0 by task syz-executor980/8540
-
-CPU: 0 PID: 8540 Comm: syz-executor980 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- check_memory_region_inline mm/kasan/generic.c:179 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
- instrument_atomic_read include/linux/instrumented.h:71 [inline]
- atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
- refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
- refcount_dec_and_mutex_lock+0x19/0x140 lib/refcount.c:115
- nbd_put drivers/block/nbd.c:248 [inline]
- nbd_genl_connect+0xee7/0x1560 drivers/block/nbd.c:1980
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440709
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd63e9cc88 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000000e3fb RCX: 0000000000440709
-RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 00007ffd63e9ce28
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd63e9cc9c
-R13: 431bde82d7b634db R14: 00000000004ae018 R15: 00000000004004a0
-
-Allocated by task 8536:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:401 [inline]
- ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
- kmalloc include/linux/slab.h:552 [inline]
- kzalloc include/linux/slab.h:682 [inline]
- nbd_dev_add+0x44/0x8e0 drivers/block/nbd.c:1673
- nbd_genl_connect+0x59c/0x1560 drivers/block/nbd.c:1838
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 8540:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
- ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
- kasan_slab_free include/linux/kasan.h:192 [inline]
- slab_free_hook mm/slub.c:1547 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
- slab_free mm/slub.c:3143 [inline]
- kfree+0xdb/0x3b0 mm/slub.c:4139
- nbd_dev_remove drivers/block/nbd.c:243 [inline]
- nbd_put.part.0+0x180/0x1d0 drivers/block/nbd.c:251
- nbd_put drivers/block/nbd.c:295 [inline]
- nbd_config_put+0x6dd/0x8c0 drivers/block/nbd.c:1242
- nbd_genl_connect+0xeb7/0x1560 drivers/block/nbd.c:1978
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888014ca1800
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 416 bytes inside of
- 1024-byte region [ffff888014ca1800, ffff888014ca1c00)
-The buggy address belongs to the page:
-page:0000000086766889 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x14ca0
-head:0000000086766889 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 ffffea0000929400 0000000200000002 ffff888010c41140
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888014ca1880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888014ca1900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888014ca1980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                               ^
- ffff888014ca1a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888014ca1a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
+Signed-off-by: Martin Liška <mliska@suse.cz>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+  tools/perf/Documentation/perf-annotate.txt | 7 +++++++
+  tools/perf/builtin-annotate.c              | 4 ++++
+  2 files changed, 11 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/tools/perf/Documentation/perf-annotate.txt b/tools/perf/Documentation/perf-annotate.txt
+index 1b5042f134a8..80c1be5d566c 100644
+--- a/tools/perf/Documentation/perf-annotate.txt
++++ b/tools/perf/Documentation/perf-annotate.txt
+@@ -124,6 +124,13 @@ OPTIONS
+  --group::
+  	Show event group information together
+  
++--demangle::
++	Demangle symbol names to human readable form. It's enabled by default,
++	disable with --no-demangle.
++
++--demangle-kernel::
++	Demangle kernel symbol names to human readable form (for C++ kernels).
++
+  --percent-type::
+  	Set annotation percent type from following choices:
+  	  global-period, local-period, global-hits, local-hits
+diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+index a23ba6bb99b6..ef70a17b9b5b 100644
+--- a/tools/perf/builtin-annotate.c
++++ b/tools/perf/builtin-annotate.c
+@@ -538,6 +538,10 @@ int cmd_annotate(int argc, const char **argv)
+  		    "Strip first N entries of source file path name in programs (with --prefix)"),
+  	OPT_STRING(0, "objdump", &annotate.opts.objdump_path, "path",
+  		   "objdump binary to use for disassembly and annotations"),
++	OPT_BOOLEAN(0, "demangle", &symbol_conf.demangle,
++		    "Disable symbol demangling"),
++	OPT_BOOLEAN(0, "demangle-kernel", &symbol_conf.demangle_kernel,
++		    "Enable kernel symbol demangling"),
+  	OPT_BOOLEAN(0, "group", &symbol_conf.event_group,
+  		    "Show event group information together"),
+  	OPT_BOOLEAN(0, "show-total-period", &symbol_conf.show_total_period,
+-- 
+2.30.1
+
