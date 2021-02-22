@@ -2,175 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B85320ED7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36704320ED8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhBVA7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 19:59:41 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54344 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbhBVA70 (ORCPT
+        id S230183AbhBVA7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 19:59:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230140AbhBVA7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 19:59:26 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DB8AD58E;
-        Mon, 22 Feb 2021 01:58:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613955522;
-        bh=323TC+vAFgYdqYeUrXUcysK+7LkTLS6Zx5cPnpw8BHk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=axi49CHfZHV/SY0ehaNGuD0pP6Qk4JTImZFjyF6aU4EueAzBqGbi90duNUxWYwE0Z
-         knSau8f+sJl+nLon2vDsVYqupsec/s5hi8zAeuVIGnr1/KWobJLWvZQmL/GQobvUjk
-         ec52sihXfNzA5Fssly698HMexTIZAiWdnWMkiKkQ=
-Date:   Mon, 22 Feb 2021 02:58:15 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/16] media: i2c: rdacm20: Embedded 'serializer' field
-Message-ID: <YDMBp5KV/kytZJSr@pendragon.ideasonboard.com>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-3-jacopo+renesas@jmondi.org>
+        Sun, 21 Feb 2021 19:59:32 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9066C061574;
+        Sun, 21 Feb 2021 16:58:51 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id f3so12352653oiw.13;
+        Sun, 21 Feb 2021 16:58:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=plm+Gqqif0nFmrHo7nyrM26fSa+6xQh6uBWBUDQ738w=;
+        b=vS8uaQWR+01p0sDbKpunLTnIicqRfc2ldhcDcz7Gj//0kps2TdFb5bCJ2FaGhFUlun
+         VPzHAacM8FBeLQ7tXVO9MAbHtZchak397POEBH2E2a/+hsy8u3D3vy46oLjTWY0DWRmQ
+         ZH21NFk2f/JdRUCzn9Lpu5YE9JIkQLmrBv2pQ7P1wOS2IuIlyG9cpCvKpi1q6n/PRvN/
+         XvatSqkKSunuGZ9Ig+6aLJjMJcSaNbFYhe5Bu/a3P+YU5QbQWwKYyy9kO3FmSXGwkN66
+         B5Hwx8yREAfn2pb8rvSPfmhpZ0xvRkahE5ff0nPMgh8YFaiNBDDlPpBnKmkZe/LlSD+6
+         2aew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=plm+Gqqif0nFmrHo7nyrM26fSa+6xQh6uBWBUDQ738w=;
+        b=qEpSAzEAQY5wwHYGk2ZUckqGUten9nyNSk8bFQPwZFWPWSU6aSDClC4LEWfUSqIdCh
+         466mrETsmwMDxOk7tXQdiR1Ri+N4WQFhYHjrU83UlfAMKiJQtXfS+cO+r2orTLQIpXjN
+         dlMb1azYGeNbvqdOX3od2HVjSslskaWimUAdsX6+iq1umFhWE7UNzdoIQDjSBJE9lr0V
+         FPQZes8dLqOTMcWdKUaoN+8CnBD6M4A5eBPpujV07GXXxR33alrNX3dGuhH7ceBQmOJU
+         kGy7bx8x7D+uo1X0YJhqJ05lIBrFlbWWLQSNRWxSW9bmLHMOwppPVhU6FWfTaMWyKQNn
+         O3aw==
+X-Gm-Message-State: AOAM533kvFLwocx9q8lbMzIFyMzI9CqAKsO4kYJpK0jwVNaagZEr0hVg
+        USuNIVLoCpsIjSwDh9u9bo792m6AEagUy22k
+X-Google-Smtp-Source: ABdhPJwhQwMyR/GSjk5Jd6qKD0etUhUwiEkRjenpPURrS0rU5yYRi4Ja7VuaAP/Anri2IGPNaQVmbg==
+X-Received: by 2002:aca:1907:: with SMTP id l7mr10194690oii.28.1613955531031;
+        Sun, 21 Feb 2021 16:58:51 -0800 (PST)
+Received: from localhost.localdomain ([194.110.112.30])
+        by smtp.gmail.com with ESMTPSA id f15sm3359956oti.74.2021.02.21.16.58.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 16:58:50 -0800 (PST)
+From:   Forest Crossman <cyrozap@gmail.com>
+To:     linux-usb@vger.kernel.org
+Cc:     Forest Crossman <cyrozap@gmail.com>, mathias.nyman@intel.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: xhci: Fix ASMedia ASM1042A and ASM3242 DMA addressing
+Date:   Sun, 21 Feb 2021 18:58:29 -0600
+Message-Id: <20210222005829.396968-1-cyrozap@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210216174146.106639-3-jacopo+renesas@jmondi.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+I've confirmed that both the ASMedia ASM1042A and ASM3242 have the same
+problem as the ASM1142 and ASM2142/ASM3142, where they lose some of the
+upper bits of 64-bit DMA addresses. As with the other chips, this can
+cause problems on systems where the upper bits matter, and adding the
+XHCI_NO_64BIT_SUPPORT quirk completely fixes the issue.
 
-Thank you for the patch.
+Signed-off-by: Forest Crossman <cyrozap@gmail.com>
+---
+ drivers/usb/host/xhci-pci.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-On Tue, Feb 16, 2021 at 06:41:32PM +0100, Jacopo Mondi wrote:
-> There's no reason to allocate dynamically the 'serializer' field in
-> the driver structure.
-> 
-> Embed the field and adjust all its users in the driver.
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-
-This requires making the max9271_device structure definition available
-to the rdacm20 and other drivers. Given how tightly coupled they are, I
-don't think that's an issue, but let's keep in mind in the future that
-the camera drivers should not, as a general rule, peek into the
-max9271_device structure directly. It may be nice to add a
-max9271_init() function that will initialize the client field, and move
-the client->addr assignment to max9271_set_address().
-
-Maybe you've already done so in the rest of the series, I'll find out
-soon :-) For this patch,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->  drivers/media/i2c/rdacm20.c | 38 ++++++++++++++++---------------------
->  1 file changed, 16 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> index f7fd5ae955d0..4d9bac87cba8 100644
-> --- a/drivers/media/i2c/rdacm20.c
-> +++ b/drivers/media/i2c/rdacm20.c
-> @@ -312,7 +312,7 @@ static const struct ov10635_reg {
->  
->  struct rdacm20_device {
->  	struct device			*dev;
-> -	struct max9271_device		*serializer;
-> +	struct max9271_device		serializer;
->  	struct i2c_client		*sensor;
->  	struct v4l2_subdev		sd;
->  	struct media_pad		pad;
-> @@ -399,7 +399,7 @@ static int rdacm20_s_stream(struct v4l2_subdev *sd, int enable)
->  {
->  	struct rdacm20_device *dev = sd_to_rdacm20(sd);
->  
-> -	return max9271_set_serial_link(dev->serializer, enable);
-> +	return max9271_set_serial_link(&dev->serializer, enable);
->  }
->  
->  static int rdacm20_enum_mbus_code(struct v4l2_subdev *sd,
-> @@ -456,11 +456,11 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
->  	int ret;
->  
->  	/* Verify communication with the MAX9271: ping to wakeup. */
-> -	dev->serializer->client->addr = MAX9271_DEFAULT_ADDR;
-> -	i2c_smbus_read_byte(dev->serializer->client);
-> +	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
-> +	i2c_smbus_read_byte(dev->serializer.client);
->  
->  	/* Serial link disabled during config as it needs a valid pixel clock. */
-> -	ret = max9271_set_serial_link(dev->serializer, false);
-> +	ret = max9271_set_serial_link(&dev->serializer, false);
->  	if (ret)
->  		return ret;
->  
-> @@ -468,35 +468,35 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
->  	 *  Ensure that we have a good link configuration before attempting to
->  	 *  identify the device.
->  	 */
-> -	max9271_configure_i2c(dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
-> -					       MAX9271_I2CSLVTO_1024US |
-> -					       MAX9271_I2CMSTBT_105KBPS);
-> +	max9271_configure_i2c(&dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
-> +						MAX9271_I2CSLVTO_1024US |
-> +						MAX9271_I2CMSTBT_105KBPS);
->  
-> -	max9271_configure_gmsl_link(dev->serializer);
-> +	max9271_configure_gmsl_link(&dev->serializer);
->  
-> -	ret = max9271_verify_id(dev->serializer);
-> +	ret = max9271_verify_id(&dev->serializer);
->  	if (ret < 0)
->  		return ret;
->  
-> -	ret = max9271_set_address(dev->serializer, dev->addrs[0]);
-> +	ret = max9271_set_address(&dev->serializer, dev->addrs[0]);
->  	if (ret < 0)
->  		return ret;
-> -	dev->serializer->client->addr = dev->addrs[0];
-> +	dev->serializer.client->addr = dev->addrs[0];
->  
->  	/*
->  	 * Reset the sensor by cycling the OV10635 reset signal connected to the
->  	 * MAX9271 GPIO1 and verify communication with the OV10635.
->  	 */
-> -	ret = max9271_enable_gpios(dev->serializer, MAX9271_GPIO1OUT);
-> +	ret = max9271_enable_gpios(&dev->serializer, MAX9271_GPIO1OUT);
->  	if (ret)
->  		return ret;
->  
-> -	ret = max9271_clear_gpios(dev->serializer, MAX9271_GPIO1OUT);
-> +	ret = max9271_clear_gpios(&dev->serializer, MAX9271_GPIO1OUT);
->  	if (ret)
->  		return ret;
->  	usleep_range(10000, 15000);
->  
-> -	ret = max9271_set_gpios(dev->serializer, MAX9271_GPIO1OUT);
-> +	ret = max9271_set_gpios(&dev->serializer, MAX9271_GPIO1OUT);
->  	if (ret)
->  		return ret;
->  	usleep_range(10000, 15000);
-> @@ -560,13 +560,7 @@ static int rdacm20_probe(struct i2c_client *client)
->  	if (!dev)
->  		return -ENOMEM;
->  	dev->dev = &client->dev;
-> -
-> -	dev->serializer = devm_kzalloc(&client->dev, sizeof(*dev->serializer),
-> -				       GFP_KERNEL);
-> -	if (!dev->serializer)
-> -		return -ENOMEM;
-> -
-> -	dev->serializer->client = client;
-> +	dev->serializer.client = client;
->  
->  	ret = of_property_read_u32_array(client->dev.of_node, "reg",
->  					 dev->addrs, 2);
-
+diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+index 84da8406d5b4..c1694fc5f890 100644
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -66,6 +66,7 @@
+ #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
+ #define PCI_DEVICE_ID_ASMEDIA_1142_XHCI			0x1242
+ #define PCI_DEVICE_ID_ASMEDIA_2142_XHCI			0x2142
++#define PCI_DEVICE_ID_ASMEDIA_3242_XHCI			0x3242
+ 
+ static const char hcd_name[] = "xhci_hcd";
+ 
+@@ -276,11 +277,14 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
+ 		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042_XHCI)
+ 		xhci->quirks |= XHCI_BROKEN_STREAMS;
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+-		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI)
++		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI) {
+ 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
++		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
++	}
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+ 	    (pdev->device == PCI_DEVICE_ID_ASMEDIA_1142_XHCI ||
+-	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI))
++	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI ||
++	     pdev->device == PCI_DEVICE_ID_ASMEDIA_3242_XHCI))
+ 		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
+ 
+ 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
 -- 
-Regards,
+2.20.1
 
-Laurent Pinchart
