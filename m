@@ -2,95 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466403221B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990573221BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhBVVpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 16:45:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
+        id S231196AbhBVVsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 16:48:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231845AbhBVVpf (ORCPT
+        with ESMTP id S230106AbhBVVsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:45:35 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749ECC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 13:44:55 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id h8so14246513qkk.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 13:44:55 -0800 (PST)
+        Mon, 22 Feb 2021 16:48:17 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E03AC06174A;
+        Mon, 22 Feb 2021 13:47:37 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id b15so480018pjb.0;
+        Mon, 22 Feb 2021 13:47:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1dNKSWdiyZdcySCS8Mo5qwTMLCVeoueOOG2rvs262jo=;
-        b=D/+0Js26+HlfFQqMWd4QnMQ98GQQuoxrWwxYY4jKjloItBDrEbKRDIRnoTvrj2jsLZ
-         +VoTol7Zos8swZE8ooW4d1tt0+p1lR5qQIoUcSHDclxVP74QbKjUCb5LhB1psGs5W7jm
-         CMDz31J8BQZDT7LiXnP7QISkZdobC/4AgRZojU1mUaGhYCmUrUuUZPdWB7o28JPxfR7c
-         qCdWM7U0A+eu5D62AdYAoOvpAHKn/AtdToFOTQuVexockM6ZbpwWZhx5tz7KHlpP9l6G
-         tPFToFt0L1pEZKyMqOCcTugeGGxw1TAomprjAeH/dPHmFXZpbV3qW+kCNEah/QMt8RXn
-         u4EQ==
+        bh=yUOECDbspUPB7vYqE7OAhqNYTlK/dZC/wuY7Okr7q74=;
+        b=lPuAGNYCfU6ycpsOEQxNhUk+IFECTwWNSe+gYigLGt4NsMk+knHGI72M3vuf3taREn
+         Q4zaixwwd8Qf2Xc4WHzNDu4D+Bkg99/qpKPOtqcGd0dZ32S5APclqxnNT1zDFV3y+15W
+         b8zOTZKv3hOeXbLNwAj0I71DFfAaBw77Cj0YCVmiz+9ltR4N2TV3novh8KGic2T89vQs
+         aELEE7dw7lsMQ4KPTCzNrog/4zMpoO4ZvOgR0zONMtgYehDakihEZl/5flGHznD8l4bd
+         YV7FfT0Fn49oW/rQ9AruL6rLmdqTvDcUCvRoTLE6lm1ntvW8JrqKHMNu0Bmjdkfp0v81
+         t1TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=1dNKSWdiyZdcySCS8Mo5qwTMLCVeoueOOG2rvs262jo=;
-        b=fyY+wsQfye2mOXyHEcvFQYm5CQOyKxZ2uGQ6IU7n3KhzyCPehnjwSJ6KujDL5nE7Ra
-         Eieh/r3przlfEnxD2isu0C9nwVIFsM0/N5viupjqiMqgw16mJoPSLYC1yUw1ukK5N0eo
-         YhVnlhmHbWuxZdNtyWiBtYKZxc+k9FEKnYA19KsNSzsbZDwql469H5C5yeasbb46/K0X
-         38jXzVwvshZaQ8RB0qWWQS4MGnR3XsijwhoXl0jaxXDYT/zUdKEQAcXj8Y8eaknO9QdW
-         FTHHhn835SE8xBUey1xiK3g0rMnDxDfsYvzMrQwmW9QUQ65ZeAXyxq87p95PGXDyBakf
-         xJag==
-X-Gm-Message-State: AOAM533wlrYTkQxaiQr+6uNTLHg6vQCYQB+9jHPDdBu53o9alpQYV6Vv
-        dZG+/z9CeMp7KaH962dlEexxXzsF+I7v5oP6
-X-Google-Smtp-Source: ABdhPJwFSCSJLOSqsPqKt3URkuoEibnPZ79qNnVRlvLNBOgSLG7t2y7e0ZwQSSypqQB5QOdocrILKA==
-X-Received: by 2002:a05:620a:22a3:: with SMTP id p3mr22841037qkh.13.1614030294650;
-        Mon, 22 Feb 2021 13:44:54 -0800 (PST)
-Received: from localhost.localdomain ([208.64.158.253])
-        by smtp.gmail.com with ESMTPSA id j5sm11595009qth.80.2021.02.22.13.44.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yUOECDbspUPB7vYqE7OAhqNYTlK/dZC/wuY7Okr7q74=;
+        b=RPzk/NNAzs6SQ5YyFnJobQHPqs0X2uASzG0mFOXZhZrkMzEmsQXA1SgetUM81wfp2A
+         BNK1SwknhmeN2eiGKBuy492A8Pq3UNW6weOjse/ahOQ17Q5ZUkdBm2VvnG1cyQbK13Ox
+         4kIQq7POnH+XaKhTWNijLATIay5mDwuMwKINBRIUUQxVCpMfgy003ncoI70eaiq4LCmY
+         ICytsZVekUNegmOtMMQR2TsJ7uDpqvEbc7WY6cOLTnBgpAMqId5Zdo8lnONAGZL177bP
+         5F2s1gFcCKgDcGtQkptE5ah/I2qjUF0RZu5b4Z15tQccClUDnUXq04WAQvLepDHVbvI2
+         ZHnA==
+X-Gm-Message-State: AOAM532iPj7DtSaUaJvF6EsOgsCqz+rqOW91qXWnghPdvDHSjA8GIHyn
+        lAyMVoQjKwVBDwa/RJkEXyQDWtVj8iw=
+X-Google-Smtp-Source: ABdhPJw/5pkHY75CzRt791ZqaQhoYcAkGlvgMr5oxz/oCbaSgHacytQMtT+saIMDOdHwmMp/Mr8DEQ==
+X-Received: by 2002:a17:90a:a117:: with SMTP id s23mr14027096pjp.208.1614030456614;
+        Mon, 22 Feb 2021 13:47:36 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x9sm433339pjp.3.2021.02.22.13.47.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 13:44:54 -0800 (PST)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     perex@perex.cz
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] sound: soc: codecs: fix kconfig dependency on GPIOLIB
-Date:   Mon, 22 Feb 2021 16:44:44 -0500
-Message-Id: <20210222214444.23340-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 22 Feb 2021 13:47:35 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] net: dsa: b53: Support setting learning on port
+Date:   Mon, 22 Feb 2021 13:46:41 -0800
+Message-Id: <20210222214641.2865493-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When SND_SOC_DMIC is enabled and GPIOLIB is disabled,
-Kbuild gives the following warning:
+Add support for being able to set the learning attribute on port, and
+make sure that the standalone ports start up with learning disabled.
 
-WARNING: unmet direct dependencies detected for SND_SOC_DMIC
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
-  Selected by [y]:
-  - SND_SOC_AMD_RENOIR_MACH [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AMD_RENOIR [=y]
+We can remove the code in bcm_sf2 that configured the ports learning
+attribute because we want the standalone ports to have learning disabled
+by default and port 7 cannot be bridged, so its learning attribute will
+not change past its initial configuration.
 
-This is because SND_SOC_AMD_RENOIR_MACH selects SND_SOC_DMIC,
-without depending on or selecting GPIOLIB, despite that config option
-depending on GPIOLIB.
-
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- sound/soc/amd/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+David, Jakub,
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index a6ce000fac3f..5480dff7a1ad 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -46,6 +46,7 @@ config SND_SOC_AMD_RENOIR
+This is submitted against "net" because this is technically a bug fix
+since ports should not have had learning enabled by default but given
+this is dependent upon Vladimir's recent br_flags series, there is no
+Fixes tag provided.
+
+I will be providing targeted stable backports that look a bit
+difference.
+
+Thanks!
+
+ drivers/net/dsa/b53/b53_common.c | 18 ++++++++++++++++++
+ drivers/net/dsa/b53/b53_regs.h   |  1 +
+ drivers/net/dsa/bcm_sf2.c        | 15 +--------------
+ 3 files changed, 20 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
+index ae86ded1e2a1..261f6902abc3 100644
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -543,6 +543,19 @@ static void b53_port_set_mcast_flood(struct b53_device *dev, int port,
+ 	b53_write16(dev, B53_CTRL_PAGE, B53_IPMC_FLOOD_MASK, mc);
+ }
  
- config SND_SOC_AMD_RENOIR_MACH
- 	tristate "AMD Renoir support for DMIC"
-+	select GPIOLIB
- 	select SND_SOC_DMIC
- 	depends on SND_SOC_AMD_RENOIR
- 	help
++static void b53_port_set_learning(struct b53_device *dev, int port,
++				  bool learning)
++{
++	u16 reg;
++
++	b53_read16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, &reg);
++	if (learning)
++		reg &= ~BIT(port);
++	else
++		reg |= BIT(port);
++	b53_write16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, reg);
++}
++
+ int b53_enable_port(struct dsa_switch *ds, int port, struct phy_device *phy)
+ {
+ 	struct b53_device *dev = ds->priv;
+@@ -557,6 +570,7 @@ int b53_enable_port(struct dsa_switch *ds, int port, struct phy_device *phy)
+ 
+ 	b53_port_set_ucast_flood(dev, port, true);
+ 	b53_port_set_mcast_flood(dev, port, true);
++	b53_port_set_learning(dev, port, false);
+ 
+ 	if (dev->ops->irq_enable)
+ 		ret = dev->ops->irq_enable(dev, port);
+@@ -691,6 +705,7 @@ static void b53_enable_cpu_port(struct b53_device *dev, int port)
+ 
+ 	b53_port_set_ucast_flood(dev, port, true);
+ 	b53_port_set_mcast_flood(dev, port, true);
++	b53_port_set_learning(dev, port, false);
+ }
+ 
+ static void b53_enable_mib(struct b53_device *dev)
+@@ -1973,6 +1988,9 @@ static int b53_br_flags(struct dsa_switch *ds, int port,
+ 	if (flags.mask & BR_MCAST_FLOOD)
+ 		b53_port_set_mcast_flood(ds->priv, port,
+ 					 !!(flags.val & BR_MCAST_FLOOD));
++	if (flags.mask & BR_LEARNING)
++		b53_port_set_learning(ds->priv, port,
++				      !!(flags.val & BR_LEARNING));
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/dsa/b53/b53_regs.h b/drivers/net/dsa/b53/b53_regs.h
+index c90985c294a2..b2c539a42154 100644
+--- a/drivers/net/dsa/b53/b53_regs.h
++++ b/drivers/net/dsa/b53/b53_regs.h
+@@ -115,6 +115,7 @@
+ #define B53_UC_FLOOD_MASK		0x32
+ #define B53_MC_FLOOD_MASK		0x34
+ #define B53_IPMC_FLOOD_MASK		0x36
++#define B53_DIS_LEARNING		0x3c
+ 
+ /*
+  * Override Ports 0-7 State on devices with xMII interfaces (8 bit)
+diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
+index 1857aa9aa84a..726edfe230df 100644
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -223,23 +223,10 @@ static int bcm_sf2_port_setup(struct dsa_switch *ds, int port,
+ 	reg &= ~P_TXQ_PSM_VDD(port);
+ 	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
+ 
+-	/* Enable learning */
+-	reg = core_readl(priv, CORE_DIS_LEARN);
+-	reg &= ~BIT(port);
+-	core_writel(priv, reg, CORE_DIS_LEARN);
+-
+ 	/* Enable Broadcom tags for that port if requested */
+-	if (priv->brcm_tag_mask & BIT(port)) {
++	if (priv->brcm_tag_mask & BIT(port))
+ 		b53_brcm_hdr_setup(ds, port);
+ 
+-		/* Disable learning on ASP port */
+-		if (port == 7) {
+-			reg = core_readl(priv, CORE_DIS_LEARN);
+-			reg |= BIT(port);
+-			core_writel(priv, reg, CORE_DIS_LEARN);
+-		}
+-	}
+-
+ 	/* Configure Traffic Class to QoS mapping, allow each priority to map
+ 	 * to a different queue number
+ 	 */
 -- 
-2.27.0
+2.25.1
 
