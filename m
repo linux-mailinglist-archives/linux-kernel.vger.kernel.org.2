@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F9C3211AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D10F3211AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhBVH5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 02:57:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhBVH5K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 02:57:10 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEDEC061574;
-        Sun, 21 Feb 2021 23:56:30 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id w1so1816357qto.2;
-        Sun, 21 Feb 2021 23:56:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VhzvwgVncQ6MD7CZFmC+wiMajLs4T5H60snpx41H/70=;
-        b=XYwdahjfwj3YMXWwrWfxNv5U5JoB/vVn5t5Z4sAHx9FQwomQDjkRip9ZQjW9MAum1y
-         Gfm/wJMyM6dFT3TXXdNLYMbSIKJZynAvJ3gi/GHYccn0PPyARjCxawYGidDAoLpVt/Vq
-         29IqFEBG858tC6rGIlaRck2G48rsEBS2gdRxyGojxlP6/nEMJQt40rRr4Gu3gd6Bho50
-         7QLJEUe2QR+XNpUKNJL8lGSS2u0PR4St0AY7eKnGyWwPZk72vkjg+7LgMckYR8ijMCVx
-         dvBpMcbydT6RYgDZ40oMdVnBl6VpFkqGvhK9U22nPBnl1IT0uF7ICQskN+zEm/hF+BaE
-         aPWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VhzvwgVncQ6MD7CZFmC+wiMajLs4T5H60snpx41H/70=;
-        b=rgFLBqXZeX8HYCYVS7ec4GSOVQOyB1n82cmRxaPUD5xdBWHx6gazEDpw9Hvrsz4SdV
-         lHoZwAexg+5Y/vYQFufACdx+C2VTpwdXIICCOUfCbF9v0ovt+RaVA55NC6SQdaBV5JLo
-         uxfL1giax9E690WH+mJln52ppVKkaxWPY5LtTxySdxRnEg9cdzpEJvOFmhajYGE6RNWu
-         Wzgk1DWd0Aa7sqFvaaKutmN8Ltcb5Fl9KweP4dAaxYsEg7tiQ5zapdAS8iucIRqofQzd
-         uYzG7cdVcUDNBrQK+Ip2vVsVRmp5uIzgnKI/UthI5luk27hQkR51jQ/ArrTGP9IPCUfW
-         W4tQ==
-X-Gm-Message-State: AOAM532+N+gxRWLwZsa1byjC88dzvk3YhD9biG9P4M7jgftkXdA0FNkD
-        hRMAHA/Hd3jJDSTNZSESMgk=
-X-Google-Smtp-Source: ABdhPJw3e+mjkQiwmxFBW6+UVF9r7pVwJm27kej86zaQfp/QZRaUanKfInmJHTslMIfbx+YhpJJ1Xw==
-X-Received: by 2002:a05:622a:7:: with SMTP id x7mr18862632qtw.257.1613980589611;
-        Sun, 21 Feb 2021 23:56:29 -0800 (PST)
-Received: from localhost.localdomain ([143.244.44.214])
-        by smtp.gmail.com with ESMTPSA id q204sm11962652qka.84.2021.02.21.23.56.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 23:56:28 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     pali@kernel.org, dmitry.torokhov@gmail.com, rydberg@bitmath.org,
-        colin.king@canonical.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: input: mouse: Change postive to positive in the file alps.c
-Date:   Mon, 22 Feb 2021 13:24:39 +0530
-Message-Id: <20210222075439.32201-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S230345AbhBVH5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 02:57:03 -0500
+Received: from muru.com ([72.249.23.125]:36212 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230304AbhBVH5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 02:57:01 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 08F3180C3;
+        Mon, 22 Feb 2021 07:56:47 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 09:56:07 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-omap@vger.kernel.org, sre@kernel.org, nekit1000@gmail.com,
+        mpartap@gmx.net, merlijn@wizzup.org, martin_rysavy@centrum.cz,
+        phone-devel@vger.kernel.org, maemo-leste@lists.dyne.org,
+        Carl Philipp Klemm <philipp@uvos.xyz>
+Subject: Re: Droid 4 charging
+Message-ID: <YDNjl+4M/hrmsbIj@atomide.com>
+References: <20210206131415.GA4499@amd>
+ <YCn5+ZPdPojwCz8g@atomide.com>
+ <20210219215752.GA31435@amd>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219215752.GA31435@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Pavel Machek <pavel@ucw.cz> [210219 21:58]:
+> > > If I turn off charging with echo 0 > input_current_limit, 0.2 to 0.4A
+> > > is drawn from USB, and battery is not discharged:
+> > > 
+> > > root@devuan-droid4:/sys/class/power_supply/usb# echo 0 >  input_current_limit
+> > > root@devuan-droid4:/sys/class/power_supply/usb# cat current_now
+> > > 0
+> > 
+> > Hmm so have you measured that setting the current limit to 0 actually
+> > draws something from the USB?
+> 
+> Yes, it does, if I do the echo when charge is done. (I have small USB
+> passthrough with volt and amp meters). It has been behaving weirdly in
+> other cases.p
 
-s/postive/positive/
+OK great, seems like we can just change the charger timeout then.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/input/mouse/alps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > I recall clearing the ichrgr bits stops the vbus draw completely, but
+> > I could be wrong.
+> > 
+> > > Is that a better way to handle full battery?
+> > 
+> > We could experiment with switching over to usb power when the battery is
+> > full. Looking at the docs for mc1378 it might be possible that setting
+> > CPCAP_REG_CRM_FET_OVRD and clearing CPCAP_REG_CRM_FET_CTRL after the
+> > battery is full disables charging but still keep drawing power from
+> > the usb. I'd assume the current limit still needs to be nonzero there
+> > too? Totally untested..
+> 
+> I may be able to test patches...
 
-diff --git a/drivers/input/mouse/alps.c b/drivers/input/mouse/alps.c
-index b067bfd2699c..4a6b33bbe7ea 100644
---- a/drivers/input/mouse/alps.c
-+++ b/drivers/input/mouse/alps.c
-@@ -986,7 +986,7 @@ static void alps_get_finger_coordinate_v7(struct input_mt_pos *mt,
- 	case V7_PACKET_ID_TWO:
- 		mt[1].x &= ~0x000F;
- 		mt[1].y |= 0x000F;
--		/* Detect false-postive touches where x & y report max value */
-+		/* Detect false-positive touches where x & y report max value */
- 		if (mt[1].y == 0x7ff && mt[1].x == 0xff0) {
- 			mt[1].x = 0;
- 			/* y gets set to 0 at the end of this function */
---
-2.26.2
+Yeah this too might be worth testing on some donor device..
+
+> > And switching back to battery power on usb disconnect will potentially
+> > only give us very little time based on the different line length for
+> > vbus and ground pins compared to data pins on the usb connector.. And
+> > uvos had some concerns about the battery capacity putting it back online,
+> > so adding him to Cc also.
+>
+> You mean, we'd have to take interrupt and switch registers in order to
+> switch back to battery power, and system would crash if we did not
+> make it in time?
+
+Yes hopefully we don't need to do that. My guess is we should find some
+FET_OVRD and FET_CTRL setting we can always keep enabled after charger
+negotation. Maybe we already have the right settings based on your tests :)
+
+Regards,
+
+Tony
+
 
