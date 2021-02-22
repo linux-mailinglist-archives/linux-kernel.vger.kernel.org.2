@@ -2,128 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30895321AE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 072C5321AE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbhBVPMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:12:13 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:57247 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbhBVPMF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:12:05 -0500
-X-Originating-IP: 93.61.96.190
-Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id E7BB61BF213;
-        Mon, 22 Feb 2021 15:11:13 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 16:11:41 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/16] media: i2c: rdacm2x: Fix wake up delay
-Message-ID: <20210222151141.4cydkhwiw4ylbebj@uno.localdomain>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-8-jacopo+renesas@jmondi.org>
- <3e759da5-9bba-54ae-fe39-a7db2cbbb31c@ideasonboard.com>
- <YDMGfQFKWUq9hyDv@pendragon.ideasonboard.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YDMGfQFKWUq9hyDv@pendragon.ideasonboard.com>
+        id S229925AbhBVPNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:13:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54560 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230378AbhBVPMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 10:12:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B9F564E61;
+        Mon, 22 Feb 2021 15:12:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614006725;
+        bh=NDgZTqFZ6L94F/HVezS1Spyd2g4LoZ+F846hPirmNbA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tWrOZaT2AURA9mEIP8mlw8AFHJqdT8KxHGbvKVexcD6uTOqVixaqssbcR3wBPIE8E
+         QF7uzowYMhST48vWyDWYi+UuueqEIYXcqxLpU+EKaxfw46p05e+Av6oKi7Da74hFYA
+         HeydWYDr745b1uAkS6oGi2d8beJJmLg2gxTQpB1cWB0prPzT90cAlWXUUlkJ1MTm2v
+         AUMmK7naH69pTokCVgtJKq3yj0RSIEvYOebNLlWSsUPL9QIbALx8kJ+6PncrL9NO6d
+         abhi+UHslg7IwJ1a9v+Hw3SfnOM9lHDb4JnKqHTB9epPyye+1ElMBb0F4QvxJJy23e
+         wufjIgry68WuQ==
+Date:   Tue, 23 Feb 2021 00:12:01 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Evgenii Shatokhin <eshatokhin@virtuozzo.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Evgenii Shatokhin <eshatokhin@virtuozzo.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>,
+        live-patching@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Konstantin Khorenko <khorenko@virtuozzo.com>
+Subject: Re: 'perf probe' and symbols from .text.<something>
+Message-Id: <20210223001201.c478d4cb6481385d31b3f09b@kernel.org>
+In-Reply-To: <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
+References: <09257fb8-3ded-07b0-b3cc-55d5431698d8@virtuozzo.com>
+        <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Tue, 23 Feb 2021 00:05:08 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-On Mon, Feb 22, 2021 at 03:18:53AM +0200, Laurent Pinchart wrote:
-> Hi Jacopo,
->
-> Thank you for the patch.
->
-> On Wed, Feb 17, 2021 at 01:33:01PM +0000, Kieran Bingham wrote:
-> > On 16/02/2021 17:41, Jacopo Mondi wrote:
-> > > The MAX9271 chip manual prescribes a delay of 5 milliseconds
-> > > after the chip exists from low power state.
-> > >
-> > > Adjust the required delay in the rdacm21 camera module and add it
-> > > to the rdacm20 that currently doesn't implement one.
-> >
-> > This sounds to me like it should be a common function in the max9271 module:
-> >
-> > >         /* Verify communication with the MAX9271: ping to wakeup. */
-> > >         dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
-> > >         i2c_smbus_read_byte(dev->serializer.client);
-> > >         usleep_range(5000, 8000);
-> >
-> > Especially as that MAX9271_DEFAULT_ADDR should probably be handled
-> > directly in the max9271.c file too, and the RDACM's shouldn't care about it.
->
-> I think this is a good idea. With this addressed,
+> Hi Evgenii,
+> 
+> On Thu, 18 Feb 2021 20:09:17 +0300
+> Evgenii Shatokhin <eshatokhin@virtuozzo.com> wrote:
+> 
+> > Hi,
+> > 
+> > It seems, 'perf probe' can only see functions from .text section in the 
+> > kernel modules, but not from .text.unlikely or other .text.* sections.
+> > 
+> > For example, with kernel 5.11 and nf_conntrack.ko with debug info, 'perf 
+> > probe' succeeds for nf_conntrack_attach() from .text and fails for 
+> > nf_ct_resolve_clash() from .text.unlikely:
+> 
+> Thanks for reporting it!
+> 
+> > 
+> > ------------
+> > # perf probe -v -m nf_conntrack nf_ct_resolve_clash
+> > probe-definition(0): nf_ct_resolve_clash
+> > symbol:nf_ct_resolve_clash file:(null) line:0 offset:0 return:0 lazy:(null)
+> > 0 arguments
+> > Failed to get build-id from nf_conntrack.
+> > Cache open error: -1
+> > Open Debuginfo file: 
+> > /lib/modules/5.11.0-test01/kernel/net/netfilter/nf_conntrack.ko
+> > Try to find probe point from debuginfo.
+> > Matched function: nf_ct_resolve_clash [33616]
+> > Probe point found: nf_ct_resolve_clash+0
+> > Found 1 probe_trace_events.
+> > Post processing failed or all events are skipped. (-2)
+> > Probe point 'nf_ct_resolve_clash' not found.
+> >    Error: Failed to add events. Reason: No such file or directory (Code: -2)
+> 
+[...]
 
-The address reprogramming was exactly why I refrained from adding a
-function to the max9271 library, as handling of the addresses there
-would introduce a precendece order in the function calls, ie the newly
-introduced function would require to be called first after a chip
-reset and that's something I considered better handled by the camera
-driver (even if it wouldn't be suprising a 'wake up' function to be
-called first).
+> > Is there a way to allow probing of functions in .text.<something> ?
 
-please also note that I will next try to make the max9271 a proper i2c
-driver so this might be even less relevant that what it is right now
+BTW, just for putting a probe on nf_ct_resolve_clash, please give the module *path*
+instead of the module *name*. For example,
 
-Thanks
-   j
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->
-> > If we end up moving the max9271 'library' into more of a module/device
-> > then this would have to be done in it's 'probe' anyway, so it's likely
-> > better handled down there...?
-> >
-> > But ... it's not essential at this point in the series, so if you want
-> > to keep this patch as is,
-> >
-> > Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> > 	> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > > ---
-> > >  drivers/media/i2c/rdacm20.c | 1 +
-> > >  drivers/media/i2c/rdacm21.c | 2 +-
-> > >  2 files changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> > > index ea30cc936531..39e4b4241870 100644
-> > > --- a/drivers/media/i2c/rdacm20.c
-> > > +++ b/drivers/media/i2c/rdacm20.c
-> > > @@ -460,6 +460,7 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
-> > >  	/* Verify communication with the MAX9271: ping to wakeup. */
-> > >  	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
-> > >  	i2c_smbus_read_byte(dev->serializer.client);
-> > > +	usleep_range(5000, 8000);
-> > >
-> > >  	/* Serial link disabled during config as it needs a valid pixel clock. */
-> > >  	ret = max9271_set_serial_link(&dev->serializer, false);
-> > > diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
-> > > index 179d107f494c..b22a2ca5340b 100644
-> > > --- a/drivers/media/i2c/rdacm21.c
-> > > +++ b/drivers/media/i2c/rdacm21.c
-> > > @@ -453,7 +453,7 @@ static int rdacm21_initialize(struct rdacm21_device *dev)
-> > >  	/* Verify communication with the MAX9271: ping to wakeup. */
-> > >  	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
-> > >  	i2c_smbus_read_byte(dev->serializer.client);
-> > > -	usleep_range(3000, 5000);
-> > > +	usleep_range(5000, 8000);
-> > >
-> > >  	/* Enable reverse channel and disable the serial link. */
-> > >  	ret = max9271_set_serial_link(&dev->serializer, false);
->
-> --
-> Regards,
->
-> Laurent Pinchart
+perf probe -v -m /lib/modules/5.11.0-test01/kernel/net/netfilter/nf_conntrack.ko nf_ct_resolve_clash
+
+This should work (at least works for me), because it directly loads the symbols from the .ko file.
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
