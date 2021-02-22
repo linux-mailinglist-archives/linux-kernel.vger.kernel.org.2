@@ -2,146 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606F932121A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A48CA321220
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhBVIhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 03:37:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
+        id S230049AbhBVIin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:38:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhBVIhM (ORCPT
+        with ESMTP id S229989AbhBVIid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:37:12 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13ECFC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 00:36:32 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id i9so2732481wml.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 00:36:32 -0800 (PST)
+        Mon, 22 Feb 2021 03:38:33 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD775C061574;
+        Mon, 22 Feb 2021 00:37:51 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id p3so2524380wmc.2;
+        Mon, 22 Feb 2021 00:37:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rAg4EewEnjk4UCCsJmjOHgsR6AXU7AP1VYxhJm9JOaA=;
-        b=K1YLIMKUT5eMSX/KUsvUwe93zB+imNjT0mvOX73CTZojhOIkM/Ok4exabM4OyuzGBn
-         7CR18ENETheo4Jm+AdRcUePdoY3V9kAa6tkGRa7899fSsqoFOt5Hs4bL6bO5fp9y8sjt
-         gqYd6TSuEK/aJTb3kGlUQ+9QMd4kTxDwKtvN+07TJeoh1BZdRh67uHiBRqo1vzTajRBy
-         hwiwySkIOd27+Ck6ya//7Lb+6jv+wTOmgR42JniGaCiTyvRBC5HtclS8I6EQ/cRyqYkk
-         qFNEI9LgEHqXM0Bb+mjcG+22NNq3LZwKe2mUUge30+SWwun5tvgSJBKIMKpgssJJwmZz
-         cqlQ==
+        bh=CeWBZt+hcCxVqYJNaniFHpV0E/tU4rgmknD4HdcGoA8=;
+        b=B7RaBO+aD3Tzj0ptbjRBs/L0Tl8BhA1vYGHLzgZGwDCq0Wf9LNAP4q91TXQIXqcrJD
+         6UwWdNJgd+CIoAEOII3zYFqGA7VH3HaVaqbWbFV+T/L653qvNuDr7h1HY5w5AUzZXi5Z
+         dSv37h529bzRmG4aNSY0+KyY59cdMaQo1HmBoR7qeOEYSs6j9VMwk0e/KuJg3uY+6qXI
+         k8fIqAKGWTG4XTYVQ+5M9HqYqlQPIgyW+J0ZQOtpVwDdNeMUILMudW5+mXgUjhI+Oga7
+         fJCb8tlsYSLuqxYyGcflHCx+aEo3pPgZyFENysWtucVVbp8fNuzdZPdHes8gM13k3o3Y
+         OLiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=rAg4EewEnjk4UCCsJmjOHgsR6AXU7AP1VYxhJm9JOaA=;
-        b=JTiPiNTa8mYjFLNcPRL2IhZ+ZYeTxWanpRR1TqZ2p8be6yB/UCJdkKxuqdGGw4jS8B
-         5M8+4/RVmjLMmJ+XHcnQudq8rhYNioRoTtaTbbJi2a+Y092FPm43YZy2xMPuQNBZjlZw
-         bnOWdurenGWhGPsfCVP2gfk4NlR0toLfjE+t1X8b+tM0PetfITEDB7VEmvLjuf6Lpyy0
-         1dX3Fc5F3uzwUCp0b1ROQtDZcQuoH9kbM3BiOBEdljXZYPSeJ7T72dKc/OHNEIFemyeo
-         Df94KDLAUsFEu49ENiBgsfS4EXGTqYYBV/hPu0TGbCHKylqgPIk4RLSsI3LyWiU6c8YH
-         iUpw==
-X-Gm-Message-State: AOAM531IpcFUYBqqvQYTHq41u8u/c4VbNgA6TC9KhFZ9RS92V9hpKi0G
-        56JN4RRcpIlNB4W+E9rdwNlOng==
-X-Google-Smtp-Source: ABdhPJzuHkitC0FD+nkw4S9XNfdKaS8c0gg5a/JWcKcaDWTTAMwsf4y0SyltfXsX21uMmhQEL20ImA==
-X-Received: by 2002:a1c:32c4:: with SMTP id y187mr19258294wmy.120.1613982990655;
-        Mon, 22 Feb 2021 00:36:30 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8d19:48da:83de:346d? ([2a01:e34:ed2f:f020:8d19:48da:83de:346d])
-        by smtp.googlemail.com with ESMTPSA id m9sm68278833wml.3.2021.02.22.00.36.29
+        bh=CeWBZt+hcCxVqYJNaniFHpV0E/tU4rgmknD4HdcGoA8=;
+        b=gvh4Z8TnoVEZWifQREkLgpkj7L1JD+xmvUWzC/nnNfjbgMU1OG708U/Q4XW7mbFQqZ
+         am9enpuK80svXkXDFbe6gd2xvPD0c89pEnUUCKXDHmTe+6LTj3TdIjJjFdlYk69I8ASM
+         quFqbBDWg/jgiSk/6lSo1AKeOAUqXOh1U5MahzmVj1VH+976OrzYNS4qJw23LrCUhNOx
+         HP+4rlgbTs5u/UMMJJVrFOq+CoX3haUbWvaHIM3j3igew/Q6nh0+390Vs1ig81asdgKY
+         SWvdXGatMGfu6aEkoIube89udWX4vP9ecaEKHjWBlUFhQUFEOaZdjDG+d0f/lRnssBDY
+         /QkA==
+X-Gm-Message-State: AOAM531NM6LHZSs/L+PH2gSjWFPoQXcR+JcJwNPVNSP0LQlvab8L4eMm
+        8vjFVo6dFduwF4cvnaY5y2Hi2uc3QB8=
+X-Google-Smtp-Source: ABdhPJymMOf4TNIDxX2pW6azZ2nmgM8INoCSdxZy+6QriYxawL7PnXosUCFFkkYekcAEUTqztF3u0A==
+X-Received: by 2002:a05:600c:4f46:: with SMTP id m6mr19430978wmq.154.1613983070546;
+        Mon, 22 Feb 2021 00:37:50 -0800 (PST)
+Received: from [192.168.1.101] ([37.171.239.209])
+        by smtp.gmail.com with ESMTPSA id f7sm28234732wrm.92.2021.02.22.00.37.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 00:36:30 -0800 (PST)
-Subject: Re: [GIT PULL] timer drivers fixes for v5.11-rc5
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arnd Bergmann <arnd.bergmann@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>, trix@redhat.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-References: <ae3bcda6-5180-639d-6246-d2dfd271c3e7@linaro.org>
- <7a90ec96-d8e5-e505-bd5a-38cc00892021@linaro.org>
-Message-ID: <db09cb3f-5074-a5e6-ea88-c4f304194c9d@linaro.org>
-Date:   Mon, 22 Feb 2021 09:36:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 22 Feb 2021 00:37:49 -0800 (PST)
+Subject: Re: [PATCH] arp: Remove the arp_hh_ops structure
+To:     Yejune Deng <yejune.deng@gmail.com>, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+References: <20210222031526.3834-1-yejune.deng@gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <0143f961-7530-3ae9-27f2-f076ea951975@gmail.com>
+Date:   Mon, 22 Feb 2021 09:37:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <7a90ec96-d8e5-e505-bd5a-38cc00892021@linaro.org>
+In-Reply-To: <20210222031526.3834-1-yejune.deng@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi Thomas,
 
-those fixes were not picked up
-
-  -- Daniel
-
-
-On 27/01/2021 09:47, Daniel Lezcano wrote:
+On 2/22/21 4:15 AM, Yejune Deng wrote:
+> The arp_hh_ops structure is similar to the arp_generic_ops structure.
+> but the latter is more general,so remove the arp_hh_ops structure.
 > 
-> Hi Thomas,
-> 
-> just a gentle ping
-> 
-> On 20/01/2021 09:31, Daniel Lezcano wrote:
->>
->> Hi Thomas,
->>
->> please consider the following three fixes for the timer drivers.
->>
->> Thanks
->>
->>   -- Daniel
->>
->> The following changes since commit e3fab2f3de081e98c50b7b4ace1b040161d95310:
->>
->>   ntp: Fix RTC synchronization on 32-bit platforms (2021-01-12 21:13:01
->> +0100)
->>
->> are available in the Git repository at:
->>
->>   https://git.linaro.org/people/daniel.lezcano/linux.git
->> tags/timers-v5.11-rc5
->>
->> for you to fetch changes up to 7da390694afbaed8e0f05717a541dfaf1077ba51:
->>
->>   clocksource/drivers/mxs_timer: Add missing semicolon when DEBUG is
->> defined (2021-01-18 22:28:59 +0100)
->>
->> ----------------------------------------------------------------
->> - Fix harmless warning with the ixp4xx when the TIMER_OF option is not
->> selected (Arnd Bergmann)
->>
->> - Make sure channel clock supply is enabled on sh_cmt (Geert Uytterhoeven)
->>
->> - Fix compilation error when DEBUG is defined with the mxs_timer (Tom Rix)
->>
->> ----------------------------------------------------------------
->> Arnd Bergmann (1):
->>       clocksource/drivers/ixp4xx: Select TIMER_OF when needed
->>
->> Geert Uytterhoeven (1):
->>       clocksource/drivers/sh_cmt: Make sure channel clock supply is enabled
->>
->> Tom Rix (1):
->>       clocksource/drivers/mxs_timer: Add missing semicolon when DEBUG is
->> defined
->>
->>  arch/arm/mach-ixp4xx/Kconfig    |  1 -
->>  drivers/clocksource/Kconfig     |  1 +
->>  drivers/clocksource/mxs_timer.c |  5 +----
->>  drivers/clocksource/sh_cmt.c    | 16 +++++++++++++---
->>  4 files changed, 15 insertions(+), 8 deletions(-)
->>
-> 
+> Fix when took out the neigh->ops assignment:
+> 8.973653] #PF: supervisor read access in kernel mode
+> [    8.975027] #PF: error_code(0x0000) - not-present page
+> [    8.976310] PGD 0 P4D 0
+> [    8.977036] Oops: 0000 [#1] SMP PTI
+> [    8.977973] CPU: 1 PID: 210 Comm: sd-resolve Not tainted 5.11.0-rc7-02046-g4591591ab715 #1
+> [    8.979998] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+> [    8.981996] RIP: 0010:neigh_probe (kbuild/src/consumer/net/core/neighbour.c:1009)
 > 
 
+I have a hard time understanding this patch submission.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+This seems a mix of a net-next and net material ?
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+
+
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+
+If this is a bug fix, we want a Fixes: tag
+
+This will really help us. Please don't let us guess what is going on.
+
+
+Also, if this is not a bug fix, this should target net-next tree,
+please take a look at Documentation/networking/netdev-FAQ.rst
+
+In short, the stack trace in this changelog seems to be not
+related to this patch, maybe a prior version ? We do not want
+to keep artifacts of some buggy version that was never merged
+into official tree.
+
+Thanks.
+
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> ---
+>  net/ipv4/arp.c | 15 ++-------------
+>  1 file changed, 2 insertions(+), 13 deletions(-)
+> 
+> diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
+> index 922dd73e5740..9ee59c2e419a 100644
+> --- a/net/ipv4/arp.c
+> +++ b/net/ipv4/arp.c
+> @@ -135,14 +135,6 @@ static const struct neigh_ops arp_generic_ops = {
+>  	.connected_output =	neigh_connected_output,
+>  };
+>  
+> -static const struct neigh_ops arp_hh_ops = {
+> -	.family =		AF_INET,
+> -	.solicit =		arp_solicit,
+> -	.error_report =		arp_error_report,
+> -	.output =		neigh_resolve_output,
+> -	.connected_output =	neigh_resolve_output,
+> -};
+> -
+>  static const struct neigh_ops arp_direct_ops = {
+>  	.family =		AF_INET,
+>  	.output =		neigh_direct_output,
+> @@ -277,12 +269,9 @@ static int arp_constructor(struct neighbour *neigh)
+>  			memcpy(neigh->ha, dev->broadcast, dev->addr_len);
+>  		}
+>  
+> -		if (dev->header_ops->cache)
+> -			neigh->ops = &arp_hh_ops;
+> -		else
+> -			neigh->ops = &arp_generic_ops;
+> +		neigh->ops = &arp_generic_ops;
+>  
+> -		if (neigh->nud_state & NUD_VALID)
+> +		if (!dev->header_ops->cache && (neigh->nud_state & NUD_VALID))
+>  			neigh->output = neigh->ops->connected_output;
+>  		else
+>  			neigh->output = neigh->ops->output;
+> 
