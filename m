@@ -2,137 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0637E320ED2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48034320EC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 01:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhBVA7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 19:59:04 -0500
-Received: from mout.gmx.net ([212.227.17.22]:39049 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229913AbhBVA6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 19:58:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613955422;
-        bh=Wm8bOd5VsIxoCahMsOXQQTv3Q9KJBY1NZqr/SE8y4SM=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=ENQKnsA6Wp78bxvQiiHOpsRnq/bn8W2cSRTtHPP+KDi757sqrv8nRSlJT/d1a/4sI
-         Lxf22sb8qg9RY8Zs4kGSI07j74wkekZlPELUgypyxSitFwBwPKUQuIXfuhmpbt+1i6
-         d+XLF5kCgmnROihxtmanS0Sj2Vdc80M7ez+TGUTQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MFKKX-1l2mBz2B8j-00Fm0B; Mon, 22
- Feb 2021 01:57:02 +0100
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
-Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
-        jsnitsel@redhat.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, LinoSanfilippo@gmx.de
-Subject: [PATCH 4/4] tpm: Only enable supported irqs
-Date:   Mon, 22 Feb 2021 01:56:34 +0100
-Message-Id: <1613955394-13152-5-git-send-email-LinoSanfilippo@gmx.de>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1613955394-13152-1-git-send-email-LinoSanfilippo@gmx.de>
-References: <1613955394-13152-1-git-send-email-LinoSanfilippo@gmx.de>
+        id S229953AbhBVA5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 19:57:24 -0500
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:43434 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhBVA5U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 19:57:20 -0500
+Received: by mail-wr1-f49.google.com with SMTP id n8so17269007wrm.10;
+        Sun, 21 Feb 2021 16:57:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6l08NbqWC+qu4nr8l+AW7qZL8N6MHomNkIxlydPqmjI=;
+        b=gXR1WdYnH0EKzt3G+rc9KQuNoyoLxCKFNlD7gmW8wdshiQDHCwxfrlFeE8oMjBKfWF
+         IhVT5B2g7W25Dbfo/lNuX5y3i3m7TCNvDf6FHSxIVazZaUFN8R0XAIGSEbMzQoCMx3CQ
+         RH7xGsa2Btju7j1Iykzz9K/qUWsUN7+mM4L4uSMyjkVRHM1K/0NUH/49ui+7K6JAajHK
+         U5wkRoarQC/ecELkC/U3ZjYZ6OE3J5hWkhwZUkp8zWLFFLCM/bERDNg7S/T0CJEGT6b5
+         6dvhfQhLSJZ9Dw9Kx1BBkrdk1DNrrYQlPVDY5hqS79I5hCL1roHQ2MRmdTC80P+EqEUT
+         B5EA==
+X-Gm-Message-State: AOAM531b2qu16mpQhKXHMGfd6bA/iI/FFr09YDAFf0nwzTelRYr8shTl
+        DXJXJ+jtosNEqsowEkWqSQgGjlYjgSxwrA==
+X-Google-Smtp-Source: ABdhPJzZ91okcXKkPZMDgKc958eE8akWYsaXgx9jW/6p7m3jEtsKDSFMe3p7tK1Wuk6ZV6Y0w6K5VA==
+X-Received: by 2002:adf:e510:: with SMTP id j16mr19005623wrm.153.1613955398517;
+        Sun, 21 Feb 2021 16:56:38 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id b2sm27818367wrn.2.2021.02.21.16.56.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 16:56:37 -0800 (PST)
+Date:   Mon, 22 Feb 2021 01:56:36 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC
+ association
+Message-ID: <YDMBRFWTYKTrDyBI@rocinante>
+References: <57a7bbc1ba294ce39c309e519fe45842@intel.com>
+ <20210219022359.435-1-qiuxu.zhuo@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:9e2Hnk2DJof3/f6+V6gSGPaMK0hiRkofJkv3NV9DM9KreTwYEHt
- wacZbbS1n9lNjJ/keRO614ElYLhsMwwzzewoxhCrM/6U2jKhSa6SjdZtW09GyXHMM96Ffh6
- k0jYOgisrFBKgp9eHNJp3W6O9TczKbjlMn0aHfLUagjEjTpRnKt69mk1MoEFu87U6DDDDXH
- FUwtLEDleUZwOJZ6mKZmQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6SVXowGlLvE=:1fZpFtQlLJ68XQay6QuHrw
- 35cMhPGUGis8nxItefg+pIHxb760NPch4encCYFtlwVaqDNL0AEflGZb/E5Xnxxnfhs2lg4Es
- N5NSWL7v2hRPWP8JeVWs/vVA2N66OeQ+ySv1vtqAuqpUl9o3uYgb6hOHFFDfmaQFda8wVWLxC
- X/PXMD2/xS6loZxRe6ytIL5UdjNnzUo2uuDNOVDPeXONYjzcJsncZMSiNXPFK4eq2Td8y0jJT
- DqeGUqjmMjYA0qPu8ibxuIHJKAui6Pcq0PZaJKEpzAz2uMS3Arfp3aPtu0uM+W5UMtyYaJtGl
- JtfaxTw4gMzwf7GO+IjKEElHTcZqb7Ie0ro3PUyYecp7viYLGupEiv/fMiNaBqKLRhH476tG5
- 0jZDYC9XWK/fLSyEr5giPPDx6AkvaZmpP/ImC+Qhxt/UmIDJRlisuTF+YsZenkM47NmEU4lPh
- 4OYtW72MSMqIXzPYDgwwzjLfAhei1zCCMmqhHqaCp/GRC0929Xw13dvKcldVtcEFq3CD4tTDa
- 451GRMM3iiVxdkEYGVJB1Dq0F8ApIj9YFvzhnM90yk2RnStwqf4TFSkhL2DgX1/ICgtXn8iWl
- xwaIYsrqMfCpwglvGyls2EB8YpP3sg2IuEQP6hLgvdyJkCiTy8L6pHj4huJ7lOB4HSX5HdsQ9
- kLiSmtytmQ+WCKVEu3EstUcf3aRPFOoN6CLLs10xIJDESg3wvMcw7xHUtZycIxPB2IYUCOnSK
- fNaUrNloxGTtZzEsjYS7InA6ntB5hXTDTcfgBUX3uXdvuz19uoNmLofnLlSgyGnwSwO58syUV
- gXhz7Tz2F/FjDrXP2ZBLCt5tFVz+uCAhcjJ1b+9nezc5zZxP6E71Rnb1yCZjvAEzEiYGJqtAS
- JhCifV7ePw4eerXDOtAA==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210219022359.435-1-qiuxu.zhuo@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RG8gbm90IHNldCBpbnRlcnJ1cHRzIHdoaWNoIGFyZSBub3Qgc3VwcG9ydGVkIGJ5IHRoZSBoYXJk
-d2FyZS4gSW5zdGVhZCB1c2UKdGhlIGluZm9ybWF0aW9uIGZyb20gdGhlIGNhcGFiaWxpdHkgcXVl
-cnkgYW5kIGFjdGl2YXRlIG9ubHkgdGhlIHJlcG9ydGVkCmludGVycnVwdHMuCgpTaWduZWQtb2Zm
-LWJ5OiBMaW5vIFNhbmZpbGlwcG8gPExpbm9TYW5maWxpcHBvQGdteC5kZT4KLS0tCiBkcml2ZXJz
-L2NoYXIvdHBtL3RwbV90aXNfY29yZS5jIHwgNjggKysrKysrKysrKysrKysrKysrKysrKy0tLS0t
-LS0tLS0tLS0tLS0tLS0KIGRyaXZlcnMvY2hhci90cG0vdHBtX3Rpc19jb3JlLmggfCAgMSArCiAy
-IGZpbGVzIGNoYW5nZWQsIDM4IGluc2VydGlvbnMoKyksIDMxIGRlbGV0aW9ucygtKQoKZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvY2hhci90cG0vdHBtX3Rpc19jb3JlLmMgYi9kcml2ZXJzL2NoYXIvdHBt
-L3RwbV90aXNfY29yZS5jCmluZGV4IGQ5OGY4ZTguLjQyZjhjYzMgMTAwNjQ0Ci0tLSBhL2RyaXZl
-cnMvY2hhci90cG0vdHBtX3Rpc19jb3JlLmMKKysrIGIvZHJpdmVycy9jaGFyL3RwbS90cG1fdGlz
-X2NvcmUuYwpAQCAtOTg1LDEzICs5ODUsNDcgQEAgaW50IHRwbV90aXNfY29yZV9pbml0KHN0cnVj
-dCBkZXZpY2UgKmRldiwgc3RydWN0IHRwbV90aXNfZGF0YSAqcHJpdiwgaW50IGlycSwKIAlpZiAo
-cmMpCiAJCWdvdG8gb3V0X2VycjsKIAorCS8qIEZpZ3VyZSBvdXQgdGhlIGNhcGFiaWxpdGllcyAq
-LworCXJjID0gdHBtX3Rpc19yZWFkMzIocHJpdiwgVFBNX0lOVEZfQ0FQUyhwcml2LT5sb2NhbGl0
-eSksICZpbnRmY2Fwcyk7CisJaWYgKHJjIDwgMCkKKwkJZ290byBvdXRfZXJyOworCisJZGV2X2Ri
-ZyhkZXYsICJUUE0gaW50ZXJmYWNlIGNhcGFiaWxpdGllcyAoMHgleCk6XG4iLAorCQlpbnRmY2Fw
-cyk7CisJaWYgKGludGZjYXBzICYgVFBNX0lOVEZfQlVSU1RfQ09VTlRfU1RBVElDKQorCQlkZXZf
-ZGJnKGRldiwgIlx0QnVyc3QgQ291bnQgU3RhdGljXG4iKTsKKwlpZiAoaW50ZmNhcHMgJiBUUE1f
-SU5URl9DTURfUkVBRFlfSU5UKSB7CisJCXByaXYtPnN1cHBvcnRlZF9pcnFzIHw9IFRQTV9JTlRG
-X0NNRF9SRUFEWV9JTlQ7CisJCWRldl9kYmcoZGV2LCAiXHRDb21tYW5kIFJlYWR5IEludCBTdXBw
-b3J0XG4iKTsKKwl9CisJaWYgKGludGZjYXBzICYgVFBNX0lOVEZfSU5UX0VER0VfRkFMTElORykK
-KwkJZGV2X2RiZyhkZXYsICJcdEludGVycnVwdCBFZGdlIEZhbGxpbmdcbiIpOworCWlmIChpbnRm
-Y2FwcyAmIFRQTV9JTlRGX0lOVF9FREdFX1JJU0lORykKKwkJZGV2X2RiZyhkZXYsICJcdEludGVy
-cnVwdCBFZGdlIFJpc2luZ1xuIik7CisJaWYgKGludGZjYXBzICYgVFBNX0lOVEZfSU5UX0xFVkVM
-X0xPVykKKwkJZGV2X2RiZyhkZXYsICJcdEludGVycnVwdCBMZXZlbCBMb3dcbiIpOworCWlmIChp
-bnRmY2FwcyAmIFRQTV9JTlRGX0lOVF9MRVZFTF9ISUdIKQorCQlkZXZfZGJnKGRldiwgIlx0SW50
-ZXJydXB0IExldmVsIEhpZ2hcbiIpOworCWlmIChpbnRmY2FwcyAmIFRQTV9JTlRGX0xPQ0FMSVRZ
-X0NIQU5HRV9JTlQpIHsKKwkJcHJpdi0+c3VwcG9ydGVkX2lycXMgfD0gVFBNX0lOVEZfTE9DQUxJ
-VFlfQ0hBTkdFX0lOVDsKKwkJZGV2X2RiZyhkZXYsICJcdExvY2FsaXR5IENoYW5nZSBJbnQgU3Vw
-cG9ydFxuIik7CisJfQorCWlmIChpbnRmY2FwcyAmIFRQTV9JTlRGX1NUU19WQUxJRF9JTlQpIHsK
-KwkJcHJpdi0+c3VwcG9ydGVkX2lycXMgfD0gVFBNX0lOVEZfU1RTX1ZBTElEX0lOVDsKKwkJZGV2
-X2RiZyhkZXYsICJcdFN0cyBWYWxpZCBJbnQgU3VwcG9ydFxuIik7CisJfQorCWlmIChpbnRmY2Fw
-cyAmIFRQTV9JTlRGX0RBVEFfQVZBSUxfSU5UKSB7CisJCXByaXYtPnN1cHBvcnRlZF9pcnFzIHw9
-IFRQTV9JTlRGX0RBVEFfQVZBSUxfSU5UOworCQlkZXZfZGJnKGRldiwgIlx0RGF0YSBBdmFpbCBJ
-bnQgU3VwcG9ydFxuIik7CisJfQorCiAJLyogVGFrZSBjb250cm9sIG9mIHRoZSBUUE0ncyBpbnRl
-cnJ1cHQgaGFyZHdhcmUgYW5kIHNodXQgaXQgb2ZmICovCiAJcmMgPSB0cG1fdGlzX3JlYWQzMihw
-cml2LCBUUE1fSU5UX0VOQUJMRShwcml2LT5sb2NhbGl0eSksICZpbnRtYXNrKTsKIAlpZiAocmMg
-PCAwKQogCQlnb3RvIG91dF9lcnI7CiAKLQlpbnRtYXNrIHw9IFRQTV9JTlRGX0NNRF9SRUFEWV9J
-TlQgfCBUUE1fSU5URl9MT0NBTElUWV9DSEFOR0VfSU5UIHwKLQkJICAgVFBNX0lOVEZfREFUQV9B
-VkFJTF9JTlQgfCBUUE1fSU5URl9TVFNfVkFMSURfSU5UOworCWludG1hc2sgfD0gcHJpdi0+c3Vw
-cG9ydGVkX2lycXM7CisKIAlpbnRtYXNrICY9IH5UUE1fR0xPQkFMX0lOVF9FTkFCTEU7CiAJdHBt
-X3Rpc193cml0ZTMyKHByaXYsIFRQTV9JTlRfRU5BQkxFKHByaXYtPmxvY2FsaXR5KSwgaW50bWFz
-ayk7CiAKQEAgLTEwMjAsMzIgKzEwNTQsNiBAQCBpbnQgdHBtX3Rpc19jb3JlX2luaXQoc3RydWN0
-IGRldmljZSAqZGV2LCBzdHJ1Y3QgdHBtX3Rpc19kYXRhICpwcml2LCBpbnQgaXJxLAogCQlnb3Rv
-IG91dF9lcnI7CiAJfQogCi0JLyogRmlndXJlIG91dCB0aGUgY2FwYWJpbGl0aWVzICovCi0JcmMg
-PSB0cG1fdGlzX3JlYWQzMihwcml2LCBUUE1fSU5URl9DQVBTKHByaXYtPmxvY2FsaXR5KSwgJmlu
-dGZjYXBzKTsKLQlpZiAocmMgPCAwKQotCQlnb3RvIG91dF9lcnI7Ci0KLQlkZXZfZGJnKGRldiwg
-IlRQTSBpbnRlcmZhY2UgY2FwYWJpbGl0aWVzICgweCV4KTpcbiIsCi0JCWludGZjYXBzKTsKLQlp
-ZiAoaW50ZmNhcHMgJiBUUE1fSU5URl9CVVJTVF9DT1VOVF9TVEFUSUMpCi0JCWRldl9kYmcoZGV2
-LCAiXHRCdXJzdCBDb3VudCBTdGF0aWNcbiIpOwotCWlmIChpbnRmY2FwcyAmIFRQTV9JTlRGX0NN
-RF9SRUFEWV9JTlQpCi0JCWRldl9kYmcoZGV2LCAiXHRDb21tYW5kIFJlYWR5IEludCBTdXBwb3J0
-XG4iKTsKLQlpZiAoaW50ZmNhcHMgJiBUUE1fSU5URl9JTlRfRURHRV9GQUxMSU5HKQotCQlkZXZf
-ZGJnKGRldiwgIlx0SW50ZXJydXB0IEVkZ2UgRmFsbGluZ1xuIik7Ci0JaWYgKGludGZjYXBzICYg
-VFBNX0lOVEZfSU5UX0VER0VfUklTSU5HKQotCQlkZXZfZGJnKGRldiwgIlx0SW50ZXJydXB0IEVk
-Z2UgUmlzaW5nXG4iKTsKLQlpZiAoaW50ZmNhcHMgJiBUUE1fSU5URl9JTlRfTEVWRUxfTE9XKQot
-CQlkZXZfZGJnKGRldiwgIlx0SW50ZXJydXB0IExldmVsIExvd1xuIik7Ci0JaWYgKGludGZjYXBz
-ICYgVFBNX0lOVEZfSU5UX0xFVkVMX0hJR0gpCi0JCWRldl9kYmcoZGV2LCAiXHRJbnRlcnJ1cHQg
-TGV2ZWwgSGlnaFxuIik7Ci0JaWYgKGludGZjYXBzICYgVFBNX0lOVEZfTE9DQUxJVFlfQ0hBTkdF
-X0lOVCkKLQkJZGV2X2RiZyhkZXYsICJcdExvY2FsaXR5IENoYW5nZSBJbnQgU3VwcG9ydFxuIik7
-Ci0JaWYgKGludGZjYXBzICYgVFBNX0lOVEZfU1RTX1ZBTElEX0lOVCkKLQkJZGV2X2RiZyhkZXYs
-ICJcdFN0cyBWYWxpZCBJbnQgU3VwcG9ydFxuIik7Ci0JaWYgKGludGZjYXBzICYgVFBNX0lOVEZf
-REFUQV9BVkFJTF9JTlQpCi0JCWRldl9kYmcoZGV2LCAiXHREYXRhIEF2YWlsIEludCBTdXBwb3J0
-XG4iKTsKLQogCS8qIElOVEVSUlVQVCBTZXR1cCAqLwogCWluaXRfd2FpdHF1ZXVlX2hlYWQoJnBy
-aXYtPnJlYWRfcXVldWUpOwogCWluaXRfd2FpdHF1ZXVlX2hlYWQoJnByaXYtPmludF9xdWV1ZSk7
-CkBAIC0xMTEzLDkgKzExMjEsNyBAQCBzdGF0aWMgdm9pZCB0cG1fdGlzX3JlZW5hYmxlX2ludGVy
-cnVwdHMoc3RydWN0IHRwbV9jaGlwICpjaGlwKQogCWlmIChyYyA8IDApCiAJCWdvdG8gb3V0Owog
-Ci0JaW50bWFzayB8PSBUUE1fSU5URl9DTURfUkVBRFlfSU5UCi0JICAgIHwgVFBNX0lOVEZfTE9D
-QUxJVFlfQ0hBTkdFX0lOVCB8IFRQTV9JTlRGX0RBVEFfQVZBSUxfSU5UCi0JICAgIHwgVFBNX0lO
-VEZfU1RTX1ZBTElEX0lOVCB8IFRQTV9HTE9CQUxfSU5UX0VOQUJMRTsKKwlpbnRtYXNrIHw9IHBy
-aXYtPnN1cHBvcnRlZF9pcnFzIHwgVFBNX0dMT0JBTF9JTlRfRU5BQkxFOwogCiAJdHBtX3Rpc193
-cml0ZTMyKHByaXYsIFRQTV9JTlRfRU5BQkxFKHByaXYtPmxvY2FsaXR5KSwgaW50bWFzayk7CiAK
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2hhci90cG0vdHBtX3Rpc19jb3JlLmggYi9kcml2ZXJzL2No
-YXIvdHBtL3RwbV90aXNfY29yZS5oCmluZGV4IGRjNWY5MmIuLjhmZjYyMjEzIDEwMDY0NAotLS0g
-YS9kcml2ZXJzL2NoYXIvdHBtL3RwbV90aXNfY29yZS5oCisrKyBiL2RyaXZlcnMvY2hhci90cG0v
-dHBtX3Rpc19jb3JlLmgKQEAgLTg5LDYgKzg5LDcgQEAgc3RydWN0IHRwbV90aXNfZGF0YSB7CiAJ
-dTE2IG1hbnVmYWN0dXJlcl9pZDsKIAlpbnQgbG9jYWxpdHk7CiAJaW50IGlycTsKKwl1bnNpZ25l
-ZCBpbnQgc3VwcG9ydGVkX2lycXM7CiAJdW5zaWduZWQgaW50IGZsYWdzOwogCXZvaWQgX19pb21l
-bSAqaWxiX2Jhc2VfYWRkcjsKIAl1MTYgY2xrcnVuX2VuYWJsZWQ7Ci0tIAoyLjcuNAoK
+[+cc Lorenzo for visiblity]
+
+Hi,
+
+[...]
+> Fix rcec_assoc_rciep() using the PCI_SLOT() macro and convert the value
+> of "rciep->devfn" to a device number to ensure that the RCiEP devices
+> associated with the RCEC are linked when the RCEC is enumerated.
+> 
+> [ Krzysztof: Update commit message. ]
+[...]
+
+Thank you!  I appreciate that.  However, we probably should drop this
+from the commit message.  Perhaps either Bjorn or Lorenzo could do it
+when applying changes.
+
+Krzysztof
