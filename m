@@ -2,88 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7A7320FC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 04:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F04320FC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 04:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhBVD3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 22:29:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
+        id S230010AbhBVDbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 22:31:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhBVD3p (ORCPT
+        with ESMTP id S229735AbhBVDbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 22:29:45 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC0CC061574;
-        Sun, 21 Feb 2021 19:29:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=2/j5Lqy5dhvDPN7B6GDS9vPRNJDpnM+aTBfnWbXMC7w=; b=OtRJW4wqXmNWb5xMEq9F+WqDJf
-        aPhAT9Xw3GzbfmQkSSruEZcR20orlmcwzomgY+Z/9sZGzmBOf/612nLV6aYXzAdJBN4N8PsovftZm
-        IC0fXQbawnBjb6XS6CTsnthabiNdzyrH/Gz+GjHun2cyEShhnS5us5HO5+eCo759nN85IKjdGZOms
-        Q3olCqW6gTnKPSfGFxeRrXA41UReb4818SsELVc8ZM3OpuaeWPzIkwyvXfbKoaC29NIZB3xR989st
-        p7GCx1FWfJ1tmKDU+PCvgUc7JVqu/3y1EbBjDqiCEPwHvCWeR2D5nig3WPNEar2rTcDPLjj37CWqD
-        KEWjUZzA==;
-Received: from [2601:1c0:6280:3f0::d05b] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lE1u7-0003dI-HH; Mon, 22 Feb 2021 03:29:00 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Subject: [PATCH] fbdev: atyfb: add stubs for aty_{ld,st}_lcd()
-Date:   Sun, 21 Feb 2021 19:28:53 -0800
-Message-Id: <20210222032853.21483-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 21 Feb 2021 22:31:33 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A378DC061574;
+        Sun, 21 Feb 2021 19:30:53 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id q9so1622818qvo.8;
+        Sun, 21 Feb 2021 19:30:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uA+m8NZNWmXsGFEB/EalT7miEM7TlkoAJOSMtgOtTM4=;
+        b=Mbxm/NRo6mFO2oP+NSJQWuq+sGddW3OzqXzTTEPENzyKygIQOTtH03PPSfYldJ0lRB
+         xmK36sJIw2e3UNg7j8cGyohUEY77xWgj0KMLBeAGCmTEyQ7kFIpcmUHByZoM4rA6dwaL
+         2cpHl0DNChhg8g3GXF4DKS6XjqQVmEXcpz0tXXaUMfCYPFmecWyvFqreA/h0SKwGtg8L
+         EwKloaPJI0H4BdNa/mm3PD99As0CvGfbTJLJkMSTMfxwo0kCMr+V7Cc5qR0vWkpdyhVD
+         nKHt86ERQhh916J4x4JNzoxikxBOlAbJ1J7LZEJajZRfZjCJvwfM+5XDta1uvSV45jI1
+         bQHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uA+m8NZNWmXsGFEB/EalT7miEM7TlkoAJOSMtgOtTM4=;
+        b=sAV2no7qnDSxdS0Z6mcvB4IoB9RAeDZa6BoTYSXSdBTCgOz2QimEJEdfbgib/Y2mSB
+         rh6fuMJWFlpAcrTgleniY3SBD9mfUSyCJE8ATrt0D2ievwF1Bjn29ZLNPrhJNhoCk8h4
+         oWYQiQHVXOLJAugrMfhRArFT9wmROg2UfeutYf3yF1ode1qcDUeEMmOzWA949DnQIfPA
+         Q/l0qFnYbKFL1Tmq84j77yFy+gFcujad7pBAAu4gimicQSymcgVIQZndQeSOCuCM+Rav
+         MAPrhXlsdmin1t4ypp8fjhbxpTbZAyuQjiuPK2TeQTr99Dw0XuMLSWaFHKEG9gU+v2/D
+         aZmA==
+X-Gm-Message-State: AOAM531C1EjI2lozkpxmVXLdsV//AnbsZcRkRqllLaoXuls60f3ItHsE
+        52TkGarr0Qb7IILQ0K4heKk=
+X-Google-Smtp-Source: ABdhPJwsU2KjbRmtztXiYx5K9ee4nXH8TenYbLNp0cWOsHAU/l58MTsNDgBMm2yt/GPcJ2177stbUw==
+X-Received: by 2002:ad4:52c2:: with SMTP id p2mr19027375qvs.39.1613964652954;
+        Sun, 21 Feb 2021 19:30:52 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id j20sm2224918qtl.36.2021.02.21.19.30.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 19:30:52 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 0750A27C0054;
+        Sun, 21 Feb 2021 22:30:52 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sun, 21 Feb 2021 22:30:52 -0500
+X-ME-Sender: <xms:ayUzYDmc_1xJevj2wuWK3678MXFyFGwpbnAAPPfC7AxyNIMIWYPGUQ>
+    <xme:ayUzYG3Wsvk_CyYsanw3zIRRlxX5ao4O-woVIVR3nBnM7AzQu1NEmVuImqFVG7834
+    PbyFN2DSD2pBRTnvw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkedvgdeitdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
+    jeenucfkphepudefuddruddtjedrudegjedruddvieenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
+    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
+    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:ayUzYJqSpycvnzTxxBv1eGV3ZAWOWByse2nBg5AEzN6csc4a3ukHpA>
+    <xmx:ayUzYLkz62YPsJD482otL9qKqbuLwupvbgoag8-jX0hVG9aPlY8a0w>
+    <xmx:ayUzYB0AbXsTgx7Z6yFBGp6tNVZzvUE8Mtcny8YsRgrtcoLHC0-Gyw>
+    <xmx:bCUzYPM5ETocTXHp9hdwDu0Wo-7u7KDywPbUTjdI4AEQeTdH82QEC990pW4>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 739DF108005C;
+        Sun, 21 Feb 2021 22:30:51 -0500 (EST)
+Date:   Mon, 22 Feb 2021 11:30:19 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     sthemmin@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        daniel.lezcano@linaro.org, arnd@arndb.de,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 05/10] Drivers: hv: vmbus: Handle auto EOI quirk inline
+Message-ID: <YDMlS+Dnid6VwZJN@boqun-archlinux>
+References: <1611779025-21503-1-git-send-email-mikelley@microsoft.com>
+ <1611779025-21503-6-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611779025-21503-6-git-send-email-mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build errors when these functions are not defined.
+On Wed, Jan 27, 2021 at 12:23:40PM -0800, Michael Kelley wrote:
+> On x86/x64, Hyper-V provides a flag to indicate auto EOI functionality,
+> but it doesn't on ARM64. Handle this quirk inline instead of calling
+> into code under arch/x86 (and coming, under arch/arm64).
+> 
+> No functional change.
+> 
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
 
-../drivers/video/fbdev/aty/atyfb_base.c: In function 'aty_power_mgmt':
-../drivers/video/fbdev/aty/atyfb_base.c:2002:7: error: implicit declaration of function 'aty_ld_lcd'; did you mean 'aty_ld_8'? [-Werror=implicit-function-declaration]
- 2002 |  pm = aty_ld_lcd(POWER_MANAGEMENT, par);
-../drivers/video/fbdev/aty/atyfb_base.c:2004:2: error: implicit declaration of function 'aty_st_lcd'; did you mean 'aty_st_8'? [-Werror=implicit-function-declaration]
- 2004 |  aty_st_lcd(POWER_MANAGEMENT, pm, par);
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
----
- drivers/video/fbdev/aty/atyfb_base.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+Regards,
+Boqun
 
---- linux-next-20210219.orig/drivers/video/fbdev/aty/atyfb_base.c
-+++ linux-next-20210219/drivers/video/fbdev/aty/atyfb_base.c
-@@ -175,6 +175,15 @@ u32 aty_ld_lcd(int index, const struct a
- 		return aty_ld_le32(LCD_DATA, par);
- 	}
- }
-+#else /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) \
-+	 defined(CONFIG_FB_ATY_GENERIC_LCD) */
-+void aty_st_lcd(int index, u32 val, const struct atyfb_par *par)
-+{ }
-+
-+u32 aty_ld_lcd(int index, const struct atyfb_par *par)
-+{
-+	return 0;
-+}
- #endif /* defined(CONFIG_PMAC_BACKLIGHT) || defined (CONFIG_FB_ATY_GENERIC_LCD) */
- 
- #ifdef CONFIG_FB_ATY_GENERIC_LCD
+> ---
+>  arch/x86/include/asm/mshyperv.h |  3 ---
+>  drivers/hv/hv.c                 | 12 +++++++++++-
+>  2 files changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index eba637d1..d12a188 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -27,9 +27,6 @@ static inline u64 hv_get_register(unsigned int reg)
+>  	return value;
+>  }
+>  
+> -#define hv_recommend_using_aeoi() \
+> -	(!(ms_hyperv.hints & HV_DEPRECATING_AEOI_RECOMMENDED))
+> -
+>  #define hv_set_clocksource_vdso(val) \
+>  	((val).vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK)
+>  #define hv_enable_vdso_clocksource() \
+> diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
+> index 0c1fa69..afe7a62 100644
+> --- a/drivers/hv/hv.c
+> +++ b/drivers/hv/hv.c
+> @@ -219,7 +219,17 @@ void hv_synic_enable_regs(unsigned int cpu)
+>  
+>  	shared_sint.vector = hv_get_vector();
+>  	shared_sint.masked = false;
+> -	shared_sint.auto_eoi = hv_recommend_using_aeoi();
+> +
+> +	/*
+> +	 * On architectures where Hyper-V doesn't support AEOI (e.g., ARM64),
+> +	 * it doesn't provide a recommendation flag and AEOI must be disabled.
+> +	 */
+> +#ifdef HV_DEPRECATING_AEOI_RECOMMENDED
+> +	shared_sint.auto_eoi =
+> +			!(ms_hyperv.hints & HV_DEPRECATING_AEOI_RECOMMENDED);
+> +#else
+> +	shared_sint.auto_eoi = 0;
+> +#endif
+>  	hv_set_register(HV_REGISTER_SINT0 + VMBUS_MESSAGE_SINT,
+>  				shared_sint.as_uint64);
+>  
+> -- 
+> 1.8.3.1
+> 
