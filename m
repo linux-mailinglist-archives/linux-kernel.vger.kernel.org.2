@@ -2,120 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E18321198
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713EE321187
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhBVHsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 02:48:13 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:36346 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230148AbhBVHrr (ORCPT
+        id S230165AbhBVHqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 02:46:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230114AbhBVHqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 02:47:47 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UPD0JAf_1613980020;
-Received: from 30.225.32.201(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0UPD0JAf_1613980020)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 22 Feb 2021 15:47:00 +0800
-Subject: Re: [PATCH 1/7] fsdax: Output address in dax_iomap_pfn() and rename
- it
-To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
-Cc:     darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de
-References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com>
- <20210207170924.2933035-2-ruansy.fnst@cn.fujitsu.com>
-From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Message-ID: <cd067457-5aaf-a2a9-06b0-953f49437500@linux.alibaba.com>
-Date:   Mon, 22 Feb 2021 15:44:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 22 Feb 2021 02:46:08 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC2BC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 23:45:28 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id b3so1128124qtj.10
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 23:45:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5i8Tn1SlVaWO4Nif6cMWUKjsN8bsR6wBD1bT+KmM76w=;
+        b=DuMSarBrnx4B6AqWFhGoDdpcXJDyC3kVP+sWmN+7pTZPoRcEVLcFm7fGPFUAk/UC2d
+         MzfIdD4DWvD81phjIs1yir/GWAliE/qd1fVNVMbKCgak+d8dGJ3c4dN0h98rVIFl3GG1
+         1SqYBQ6TQ8bfy7C+enpkUCEhfUZI1TenhQOhuq7R2k23uaHDQS+tRyKyZ3sNH4lBK1DS
+         Z27+PpqNytAVgxD7N1MWzamCyZPIRTJlLQDo/bdwQU5o7jKf8+ifeXe2VH4IPEcfDuXZ
+         7mw9Oz9TKrBuk+IPwFPDJK1TQxDIea8GJhQf5hyPNTgz84C/YoY3aV/IXWDDOVPEunbm
+         yT7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5i8Tn1SlVaWO4Nif6cMWUKjsN8bsR6wBD1bT+KmM76w=;
+        b=Pfs1NqIQ7uLB9vHIqL3G+RYCfxvWw/Dxu0aJ20+pTOfqQ36+1Dv6XpGYOhn32xGqdP
+         iorT1tYFMCD3KuD80PJKLVTiTxhqC6cOIvjKyysG0uHGSAd6ZkHtKPVOBYYkJzeuI4nD
+         6M0yMNQ0hWqYiXgZEPyJ64GPt0k9U3TyePpmGXbwqoO8/fyYYNf++q3A8lMaP6bQ5Zf4
+         /GcRhZsAlLIDQgclh6goQddUy/zxTisKyMU8wGAzl46CAe+K02y6TYj3wUbmn31KTOaK
+         x5vReqbAn6v6KuZXhRVKQWbEZxoNfN45fJZY/uKdIW4RyYD0S8ByEaz9+xFOwbUZLMMq
+         arUA==
+X-Gm-Message-State: AOAM531/p+oj+msQdhF7Hu/mns8n2rzh+DiwT3Qu2OJGnXvt9EC7bRON
+        411HCMXNiPA1DbSAlc0tsGHlAzYd8uwMbITK8K02OQ==
+X-Google-Smtp-Source: ABdhPJwO4Ki99L1sEVcKwWhaw/oUf4d+mZNVNa5xcQGmaM6uFuYo31RnwPH8F/uwUGT1xa4+hc3Nh3Ik+sgMP9MwPa0=
+X-Received: by 2002:ac8:6752:: with SMTP id n18mr4841157qtp.8.1613979927541;
+ Sun, 21 Feb 2021 23:45:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210207170924.2933035-2-ruansy.fnst@cn.fujitsu.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <1613970647-23272-1-git-send-email-daizhiyuan@phytium.com.cn>
+In-Reply-To: <1613970647-23272-1-git-send-email-daizhiyuan@phytium.com.cn>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 22 Feb 2021 08:45:16 +0100
+Message-ID: <CAG_fn=WqixC0B+dW50gRFn3Qm63rQ5x6jP+2eGVAkRcuBOwQ6A@mail.gmail.com>
+Subject: Re: [PATCH] mm/kasan: switch from strlcpy to strscpy
+To:     Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi,
+On Mon, Feb 22, 2021 at 6:10 AM Zhiyuan Dai <daizhiyuan@phytium.com.cn> wro=
+te:
+>
+> strlcpy is marked as deprecated in Documentation/process/deprecated.rst,
+> and there is no functional difference when the caller expects truncation
+> (when not checking the return value). strscpy is relatively better as it
+> also avoids scanning the whole source string.
 
-> Add address output in dax_iomap_pfn() in order to perform a memcpy() in
-> CoW case.  Since this function both output address and pfn, rename it to
-> dax_iomap_direct_access().
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+Looks like a good thing to do.
+
+> Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Acked-by: Alexander Potapenko <glider@google.com>
+
 > ---
->   fs/dax.c | 20 +++++++++++++++-----
->   1 file changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index 5b47834f2e1b..b012b2db7ba2 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -998,8 +998,8 @@ static sector_t dax_iomap_sector(struct iomap *iomap, loff_t pos)
->   	return (iomap->addr + (pos & PAGE_MASK) - iomap->offset) >> 9;
->   }
->   
-> -static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
-> -			 pfn_t *pfnp)
-> +static int dax_iomap_direct_access(struct iomap *iomap, loff_t pos, size_t size,
-> +		void **kaddr, pfn_t *pfnp)
->   {
->   	const sector_t sector = dax_iomap_sector(iomap, pos);
->   	pgoff_t pgoff;
-> @@ -1011,11 +1011,13 @@ static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
->   		return rc;
->   	id = dax_read_lock();
->   	length = dax_direct_access(iomap->dax_dev, pgoff, PHYS_PFN(size),
-> -				   NULL, pfnp);
-> +				   kaddr, pfnp);
->   	if (length < 0) {
->   		rc = length;
->   		goto out;
->   	}
-> +	if (!pfnp)
-Should this be "if (!*pfnp)"?
+>  mm/kasan/report_generic.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
+> index 8a9c889..fc7f7ad 100644
+> --- a/mm/kasan/report_generic.c
+> +++ b/mm/kasan/report_generic.c
+> @@ -148,7 +148,7 @@ static bool __must_check tokenize_frame_descr(const c=
+har **frame_descr,
+>                 }
+>
+>                 /* Copy token (+ 1 byte for '\0'). */
+> -               strlcpy(token, *frame_descr, tok_len + 1);
+> +               strscpy(token, *frame_descr, tok_len + 1);
+>         }
+>
+>         /* Advance frame_descr past separator. */
+> --
+> 1.8.3.1
+>
 
-Regards,
-Xiaoguang Wang
-> +		goto out_check_addr;
->   	rc = -EINVAL;
->   	if (PFN_PHYS(length) < size)
->   		goto out;
-> @@ -1025,6 +1027,12 @@ static int dax_iomap_pfn(struct iomap *iomap, loff_t pos, size_t size,
->   	if (length > 1 && !pfn_t_devmap(*pfnp))
->   		goto out;
->   	rc = 0;
-> +
-> +out_check_addr:
-> +	if (!kaddr)
-> +		goto out;
-> +	if (!*kaddr)
-> +		rc = -EFAULT;
->   out:
->   	dax_read_unlock(id);
->   	return rc;
-> @@ -1348,7 +1356,8 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
->   			count_memcg_event_mm(vma->vm_mm, PGMAJFAULT);
->   			major = VM_FAULT_MAJOR;
->   		}
-> -		error = dax_iomap_pfn(&iomap, pos, PAGE_SIZE, &pfn);
-> +		error = dax_iomap_direct_access(&iomap, pos, PAGE_SIZE,
-> +						NULL, &pfn);
->   		if (error < 0)
->   			goto error_finish_iomap;
->   
-> @@ -1566,7 +1575,8 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
->   
->   	switch (iomap.type) {
->   	case IOMAP_MAPPED:
-> -		error = dax_iomap_pfn(&iomap, pos, PMD_SIZE, &pfn);
-> +		error = dax_iomap_direct_access(&iomap, pos, PMD_SIZE,
-> +						NULL, &pfn);
->   		if (error < 0)
->   			goto finish_iomap;
->   
-> 
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
