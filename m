@@ -2,106 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7046C321EC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4BA321EC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbhBVSCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:02:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231845AbhBVSCF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:02:05 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9B5C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:01:25 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id u14so20058930wri.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:01:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=LPkzCWzgTTRB9IFbmFZQR3gPhCmhsf+1JM/o4I3eeoc=;
-        b=TW5IvECR9QxqNYsQhczLzYQlb7O+/SLzwxpD2eaRgmRi3hwmivV2pdzP/Vq4G/99ER
-         kcaYv//UcdunhsZ+qWK0aR7eNiqUiktMMFmVn+bm/0o6zimb/vRNhPBvQ6HIKW7mrRwI
-         tdgEFrvwtfNkVfC9lp+aHPddJBsG+Dds8TgVJrXoJtniNhBOGlgPnbPK/0Cbrgw6JKW2
-         KnmKDLbFGRskuaEc4jGUISKmQpEYFMnCfQXm62frf3z0BeyMsAl1RQqc+TdjloEf1aV1
-         wfBOiKb9L5DEwpFiT1ahujhIneO/yFQmZzJW3WEp+Xhk35gU3NykMBriSeXrqS+W1MNm
-         iJZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=LPkzCWzgTTRB9IFbmFZQR3gPhCmhsf+1JM/o4I3eeoc=;
-        b=a/3Yq6aq1uWuAFq1y2cxToG3jH7j6uV9YOj/i6HWsK3lkyGfg937ES0toCa8/Vek2O
-         tmY0gStugmEAQL8Mi7Fps2smxJXjuxeXgumvUZki0FkkpLuAkUKZBhn/RlgaFD6sh9dg
-         MCpdgQkNwbrYnrncF8BrZDEKnh4vlXkbn/8PDVLsNCaFCZm8aqddQ1tNurVBgfW1nD9I
-         vJESUIcxwB/kRRDGXagq0IW0rNJQb7x2xqZmZfSpj5Q3AfIAU5lAQWU7abTVMcenIf12
-         zOtYFfrIwAHrTkM9cO9geDe485UHX1zXubz7iFt9HkKZJbsw9W0h3DjqdutqiYe8VvEG
-         5fxQ==
-X-Gm-Message-State: AOAM5329Z99BgYF+v6pdwWYVOOrHTk1xyRciEGR+wa8+BJh+Acg2W9Id
-        N3w/E+Hmg95Op/Ksb/NGe4Dd9pivIsylkxojbla74g==
-X-Google-Smtp-Source: ABdhPJxPMdKl+pluu9d52YZ94zHILBxpp8X0ZvaLBYsTXXq9OpfcJjhXhLAF3hApYKCqdTZUR3jCoalR8TxlUxCiVVw=
-X-Received: by 2002:a05:6000:8f:: with SMTP id m15mr21453842wrx.376.1614016883707;
- Mon, 22 Feb 2021 10:01:23 -0800 (PST)
+        id S230492AbhBVSGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:06:07 -0500
+Received: from mga01.intel.com ([192.55.52.88]:60709 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230071AbhBVSGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 13:06:05 -0500
+IronPort-SDR: oMJ3VzAzryy/LVTuHzmSLX9YJuqzfLDpfcWvcjwU0z9cYBpIDoaSRU+ISJ2YkFWERcEhIbMbi9
+ QP3u41Nkb96w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="203940546"
+X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
+   d="scan'208";a="203940546"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 10:04:23 -0800
+IronPort-SDR: 6b4L1Xf6+UC0yIplK4IpGCEBwv4Frqqy0A0y5iXumm6sxuyh9+vCLfwdfTAtqmdarbcarPJCHt
+ QdptNSVFJjDw==
+X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
+   d="scan'208";a="389950448"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.209.104.72])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 10:04:22 -0800
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Subject: [PATCH v6 1/1] fpga: dfl: afu: harden port enable logic
+Date:   Mon, 22 Feb 2021 10:04:14 -0800
+Message-Id: <20210222180414.116014-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201120063037.3166069-1-irogers@google.com>
-In-Reply-To: <20201120063037.3166069-1-irogers@google.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 22 Feb 2021 10:01:12 -0800
-Message-ID: <CAP-5=fWStOGveisGTXejQ7ZxgBKu1Mgw4MF+k-ZXVvM4hMdQaQ@mail.gmail.com>
-Subject: Re: [PATCH v2] perf docs: Add man pages to see also
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 10:30 PM Ian Rogers <irogers@google.com> wrote:
->
-> Add all other man pages to the "see also" list except for
-> perf-script-perl and perf-script-python that are linked to from
-> perf-script.
->
-> v2. Fix accidentally listing perf-top twice.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Port enable is not complete until ACK = 0. Change
+__afu_port_enable() to guarantee that the enable process
+is complete by polling for ACK == 0.
 
-Ping. I think this might have gotten lost.
+Reviewed-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+---
+v6:
+  - Fixed the dev_warn statement, which had "__func__" embedded in the
+    string instead of treated as a parameter to the format string.
+v5:
+  - Added Reviewed-by tag to commit message
+v4:
+  - Added a dev_warn() call for the -EINVAL case of afu_port_err_clear()
+  - Modified dev_err() message in __afu_port_disable() to say "disable"
+    instead of "reset"
+v3:
+  - afu_port_err_clear() changed to prioritize port_enable failure over
+    other a detected mismatch in port errors.
+  - reorganized code in port_reset() to be more readable.
+v2:
+  - Fixed typo in commit message
+---
+ drivers/fpga/dfl-afu-error.c | 10 ++++++----
+ drivers/fpga/dfl-afu-main.c  | 33 +++++++++++++++++++++++----------
+ drivers/fpga/dfl-afu.h       |  2 +-
+ 3 files changed, 30 insertions(+), 15 deletions(-)
 
-Thanks,
-Ian
+diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
+index c4691187cca9..ab7be6217368 100644
+--- a/drivers/fpga/dfl-afu-error.c
++++ b/drivers/fpga/dfl-afu-error.c
+@@ -52,7 +52,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+ 	struct dfl_feature_platform_data *pdata = dev_get_platdata(dev);
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	void __iomem *base_err, *base_hdr;
+-	int ret = -EBUSY;
++	int enable_ret = 0, ret = -EBUSY;
+ 	u64 v;
+ 
+ 	base_err = dfl_get_feature_ioaddr_by_id(dev, PORT_FEATURE_ID_ERROR);
+@@ -96,18 +96,20 @@ static int afu_port_err_clear(struct device *dev, u64 err)
+ 		v = readq(base_err + PORT_FIRST_ERROR);
+ 		writeq(v, base_err + PORT_FIRST_ERROR);
+ 	} else {
++		dev_warn(dev, "%s: received 0x%llx, expected 0x%llx\n",
++			 __func__, v, err);
+ 		ret = -EINVAL;
+ 	}
+ 
+ 	/* Clear mask */
+ 	__afu_port_err_mask(dev, false);
+ 
+-	/* Enable the Port by clear the reset */
+-	__afu_port_enable(pdev);
++	/* Enable the Port by clearing the reset */
++	enable_ret = __afu_port_enable(pdev);
+ 
+ done:
+ 	mutex_unlock(&pdata->lock);
+-	return ret;
++	return enable_ret ? enable_ret : ret;
+ }
+ 
+ static ssize_t errors_show(struct device *dev, struct device_attribute *attr,
+diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
+index 753cda4b2568..77dadaae5b8f 100644
+--- a/drivers/fpga/dfl-afu-main.c
++++ b/drivers/fpga/dfl-afu-main.c
+@@ -21,6 +21,9 @@
+ 
+ #include "dfl-afu.h"
+ 
++#define RST_POLL_INVL 10 /* us */
++#define RST_POLL_TIMEOUT 1000 /* us */
++
+ /**
+  * __afu_port_enable - enable a port by clear reset
+  * @pdev: port platform device.
+@@ -32,7 +35,7 @@
+  *
+  * The caller needs to hold lock for protection.
+  */
+-void __afu_port_enable(struct platform_device *pdev)
++int __afu_port_enable(struct platform_device *pdev)
+ {
+ 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+ 	void __iomem *base;
+@@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
+ 	WARN_ON(!pdata->disable_count);
+ 
+ 	if (--pdata->disable_count != 0)
+-		return;
++		return 0;
+ 
+ 	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
+ 
+@@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
+ 	v = readq(base + PORT_HDR_CTRL);
+ 	v &= ~PORT_CTRL_SFTRST;
+ 	writeq(v, base + PORT_HDR_CTRL);
+-}
+ 
+-#define RST_POLL_INVL 10 /* us */
+-#define RST_POLL_TIMEOUT 1000 /* us */
++	/*
++	 * HW clears the ack bit to indicate that the port is fully out
++	 * of reset.
++	 */
++	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
++			       !(v & PORT_CTRL_SFTRST_ACK),
++			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
++		dev_err(&pdev->dev, "timeout, failure to enable device\n");
++		return -ETIMEDOUT;
++	}
++
++	return 0;
++}
+ 
+ /**
+  * __afu_port_disable - disable a port by hold reset
+@@ -86,7 +99,7 @@ int __afu_port_disable(struct platform_device *pdev)
+ 	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
+ 			       v & PORT_CTRL_SFTRST_ACK,
+ 			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
+-		dev_err(&pdev->dev, "timeout, fail to reset device\n");
++		dev_err(&pdev->dev, "timeout, failure to disable device\n");
+ 		return -ETIMEDOUT;
+ 	}
+ 
+@@ -111,9 +124,9 @@ static int __port_reset(struct platform_device *pdev)
+ 
+ 	ret = __afu_port_disable(pdev);
+ 	if (!ret)
+-		__afu_port_enable(pdev);
++		return ret;
+ 
+-	return ret;
++	return __afu_port_enable(pdev);
+ }
+ 
+ static int port_reset(struct platform_device *pdev)
+@@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
+ static int port_enable_set(struct platform_device *pdev, bool enable)
+ {
+ 	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+-	int ret = 0;
++	int ret;
+ 
+ 	mutex_lock(&pdata->lock);
+ 	if (enable)
+-		__afu_port_enable(pdev);
++		ret = __afu_port_enable(pdev);
+ 	else
+ 		ret = __afu_port_disable(pdev);
+ 	mutex_unlock(&pdata->lock);
+diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
+index 576e94960086..e5020e2b1f3d 100644
+--- a/drivers/fpga/dfl-afu.h
++++ b/drivers/fpga/dfl-afu.h
+@@ -80,7 +80,7 @@ struct dfl_afu {
+ };
+ 
+ /* hold pdata->lock when call __afu_port_enable/disable */
+-void __afu_port_enable(struct platform_device *pdev);
++int __afu_port_enable(struct platform_device *pdev);
+ int __afu_port_disable(struct platform_device *pdev);
+ 
+ void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
+-- 
+2.25.1
 
-> ---
->  tools/perf/Documentation/perf.txt | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/tools/perf/Documentation/perf.txt b/tools/perf/Documentation/perf.txt
-> index c130a3c46a90..9c330cdfa973 100644
-> --- a/tools/perf/Documentation/perf.txt
-> +++ b/tools/perf/Documentation/perf.txt
-> @@ -76,3 +76,15 @@ SEE ALSO
->  linkperf:perf-stat[1], linkperf:perf-top[1],
->  linkperf:perf-record[1], linkperf:perf-report[1],
->  linkperf:perf-list[1]
-> +
-> +linkperf:perf-annotate[1],linkperf:perf-archive[1],
-> +linkperf:perf-bench[1], linkperf:perf-buildid-cache[1],
-> +linkperf:perf-buildid-list[1], linkperf:perf-c2c[1],
-> +linkperf:perf-config[1], linkperf:perf-data[1], linkperf:perf-diff[1],
-> +linkperf:perf-evlist[1], linkperf:perf-ftrace[1],
-> +linkperf:perf-help[1], linkperf:perf-inject[1],
-> +linkperf:perf-intel-pt[1], linkperf:perf-kallsyms[1],
-> +linkperf:perf-kmem[1], linkperf:perf-kvm[1], linkperf:perf-lock[1],
-> +linkperf:perf-mem[1], linkperf:perf-probe[1], linkperf:perf-sched[1],
-> +linkperf:perf-script[1], linkperf:perf-test[1],
-> +linkperf:perf-trace[1], linkperf:perf-version[1]
-> --
-> 2.29.2.454.gaff20da3a2-goog
->
