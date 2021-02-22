@@ -2,84 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010FE321D59
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05673321D5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhBVQqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:46:04 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:46392 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbhBVQoj (ORCPT
+        id S230515AbhBVQrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:47:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230194AbhBVQr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:44:39 -0500
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614012236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M3/fQ8WtYTf7NEsBwWhpZFayVKjGGGhQ6OwWxbAH/As=;
-        b=TNmXRHzQVLwv9K6Y/ycGmRWXOhV0+hMrY3wmMO5ceRxMkNfcmLlF8yaR4qUMpvEH5u+diG
-        Atcj1TXCZnX1lboBQPAVCpj6HG7tl+XtmeKMqNp7jhiAHiyN1kqs1eTRNbKXPglX8dDPGP
-        LjlsLwADHQfeBAKrQvdnDtdWHfX3JKt8ONOJ3+PzeATQcYFtmNAW+5/xg5Pk8bV/xofQlE
-        LjRh10mv/bdcM7dcMssXxIjYbeVVbaep/ht34+O0N40/6h00DZ+4aKY65TZYDtMHJ7hNXO
-        XegIrSQnZConScNzbd8vYdsJaN4RB8F3BzW5WQlxrayUqO9y2lba+UiF8v4eXg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614012236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M3/fQ8WtYTf7NEsBwWhpZFayVKjGGGhQ6OwWxbAH/As=;
-        b=uVCPExwZEHGnLA9xDl+f3uOFhDkbF/xnmI/o2UqBcBOahXE0WzJQyqK3R3g2/gLebauoAS
-        uDCnSCwcUs9EcbBw==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk-rework 08/14] printk: add syslog_lock
-In-Reply-To: <YDPWPI4aZat+D1DE@alley>
-References: <20210218081817.28849-1-john.ogness@linutronix.de> <20210218081817.28849-9-john.ogness@linutronix.de> <YC+9gc/IR8PzeIFf@alley> <875z2o15ha.fsf@jogness.linutronix.de> <YDPWPI4aZat+D1DE@alley>
-Date:   Mon, 22 Feb 2021 17:43:56 +0100
-Message-ID: <87czwst5mb.fsf@jogness.linutronix.de>
+        Mon, 22 Feb 2021 11:47:28 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17BBC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:46:47 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id q85so13187277qke.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:46:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oux3bIya7f6glqB3l5NhRGO4M7zOOvy007MEe2S9WwU=;
+        b=Ce7We5UWmuoejuiaCLifW9WGYfLarSu1j6AtQQw2j3Nq9vLBo/gSZfECnq/eeffvCo
+         0Gis+MD6V2xMvoVbhyiMU35RbDWVIP6aLdezgTEnNuSukvTg22rokLNNlBjdkZN0bpBl
+         ipNGjAxdKWDbGJGRQ7tIhYxfVZNYRlS9ayUNoi5w36OtnNUlcXbvYCqRHkXc3gDIvLyp
+         yp8DREzNaVmU/1FhaAXHby4wYoQthca70BwTYLvNFNhy/13nEd+zauoYEH4Qrw4pN97B
+         0beY2b4u0Q7fM+NQG14uCQug0/kKXrEJ8/boaU9lQNkgBDdd81fKrGjlrb8EC8AME6bL
+         3UiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oux3bIya7f6glqB3l5NhRGO4M7zOOvy007MEe2S9WwU=;
+        b=ar5EveZD0jfRRbESDYFguy+wdH3frremja670+tOjrMwDPWofEJiO2Z1tapZyWtsFJ
+         raXpoyUvaeBIBZZZarHCRmthtqTv8QeIzUlIDPcSPei2JBPbfM9D1gNSSvaAiX/+60lm
+         KnLaCndcIKwBcWGNIHIfodph+K4WShDlYBuTVs2wELXloiXbsgZ7nrE9iy2A1flH3q0U
+         97g+FD8MU1QeBZgDvqGI7tSeAVJGrLKkrXuQocLnbQT2unR1P7jZQCExZqJRjy9QXaKV
+         c4yt3knEAgrrS13lCgJpYpBY77H+yEGZQqlKOa0+98JxZgB7RKOPiFHRctINUmXWBRMT
+         eTqA==
+X-Gm-Message-State: AOAM531UA4rSmJpIV+BlqeJBX1C9bcUtzSMiJmCVOVcnXo5MunnZDwcg
+        Un2qqLS4iCG5mnKafYHa5GsNpA==
+X-Google-Smtp-Source: ABdhPJwd2aLjmgY8Mxcvx4DL7ohzVyVBGDSE1JcyiQKhaA9ytAfF62ugFUH7JdW3YLfvg3Bmdg8tuA==
+X-Received: by 2002:a37:9c89:: with SMTP id f131mr22111090qke.112.1614012406931;
+        Mon, 22 Feb 2021 08:46:46 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id y20sm959071qtw.32.2021.02.22.08.46.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 08:46:46 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lEEM9-00ERw6-RV; Mon, 22 Feb 2021 12:46:45 -0400
+Date:   Mon, 22 Feb 2021 12:46:45 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Leon Romanovsky <leon@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Julian Braha <julianbraha@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drivers: infiniband: sw: rxe: fix kconfig dependency on
+ CRYPTO
+Message-ID: <20210222164645.GK2643399@ziepe.ca>
+References: <21525878.NYvzQUHefP@ubuntu-mate-laptop>
+ <YDICM3SwwGZfE+Sg@unreal>
+ <CAD=hENeCXGtKrXxLof=DEZjxpKyYBFS80pAX20nnJBuP_s-GBA@mail.gmail.com>
+ <YDOq060TvAwLgknl@unreal>
+ <20210222155845.GI2643399@ziepe.ca>
+ <e1e3bec7-0350-4bdd-50c3-41b21388fc71@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e1e3bec7-0350-4bdd-50c3-41b21388fc71@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-22, Petr Mladek <pmladek@suse.com> wrote:
->>>> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
->>>> index 20c21a25143d..401df370832b 100644
->>>> --- a/kernel/printk/printk.c
->>>> +++ b/kernel/printk/printk.c
->>>> +/* Return a consistent copy of @syslog_seq. */
->>>> +static u64 read_syslog_seq_irq(void)
->>>> +{
->>>> +	u64 seq;
->>>> +
->>>> +	raw_spin_lock_irq(&syslog_lock);
->>>> +	seq = syslog_seq;
->>>> +	raw_spin_unlock_irq(&syslog_lock);
->>>
->>> Is there any particular reason to disable interrupts here?
->>>
->>> It would make sense only when the lock could be taken in IRQ
->>> context. Then we would need to always disable interrupts when
->>> the lock is taken. And if it is taken in IRQ context, we would
->>> need to safe flags.
->
-> Note that console_lock was a spinlock in 2.3.15.pre1. I see it defined
-> in kernel/printk.c as:
->
-> spinlock_t console_lock = SPIN_LOCK_UNLOCKED;
->
-> But it is a sleeping semaphore these days. As a result,
-> register_console(), as it is now, must not be called in an interrupt
-> context.
+On Mon, Feb 22, 2021 at 08:26:10AM -0800, Randy Dunlap wrote:
+> On 2/22/21 7:58 AM, Jason Gunthorpe wrote:
+> > On Mon, Feb 22, 2021 at 03:00:03PM +0200, Leon Romanovsky wrote:
+> >> On Mon, Feb 22, 2021 at 10:39:20AM +0800, Zhu Yanjun wrote:
+> >>> On Sun, Feb 21, 2021 at 2:49 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >>>>
+> >>>> On Fri, Feb 19, 2021 at 06:32:26PM -0500, Julian Braha wrote:
+> >>>>> commit 6e61907779ba99af785f5b2397a84077c289888a
+> >>>>> Author: Julian Braha <julianbraha@gmail.com>
+> >>>>> Date:   Fri Feb 19 18:20:57 2021 -0500
+> >>>>>
+> >>>>>     drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
+> >>>>>
+> >>>>>     When RDMA_RXE is enabled and CRYPTO is disabled,
+> >>>>>     Kbuild gives the following warning:
+> >>>>>
+> >>>>>     WARNING: unmet direct dependencies detected for CRYPTO_CRC32
+> >>>>>       Depends on [n]: CRYPTO [=n]
+> >>>>>       Selected by [y]:
+> >>>>>       - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && INFINIBAND_VIRT_DMA [=y]
+> >>>>>
+> >>>>>     This is because RDMA_RXE selects CRYPTO_CRC32,
+> >>>>>     without depending on or selecting CRYPTO, despite that config option
+> >>>>>     being subordinate to CRYPTO.
+> >>>>>
+> >>>>>     Signed-off-by: Julian Braha <julianbraha@gmail.com>
+> >>>>
+> >>>> Please use git sent-email to send patches and please fix crypto Kconfig
+> >>>> to enable CRYPTO if CRYPTO_* selected.
+> >>>>
+> >>>> It is a little bit awkward to request all users of CRYPTO_* to request
+> >>>> select CRYPTO too.
+> >>>
+> >>> The same issue and similar patch is in this link:
+> >>>
+> >>> https://patchwork.kernel.org/project/linux-rdma/patch/20200915101559.33292-1-fazilyildiran@gmail.com/#23615747
+> >>
+> >> So what prevents us from fixing CRYPTO Kconfig?
+> > 
+> > Yes, I would like to see someone deal with this properly, either every
+> > place doing select CRYPTO_XX needs fixing or something needs to be
+> > done in the crypto layer.
+> > 
+> > I have no idea about kconfig to give advice, I've added Arnd since he
+> > always seems to know :)
+> 
+> I will Ack the original patch in this thread.
 
-OK. So I will change read_syslog_seq_irq() to not disable interrupts. As
-you suggested, we can fix the rest when we remove the safe buffers.
+The one from Julian?
 
-John Ogness
+> How many Mellanox drivers are you concerned about?
+
+?? This is about rxe
+
+> You don't have to fix any other drivers that have a similar issue.
+
+Why shouldn't they be fixed too?
+
+There is nearly 1000 places that use a 'select CRYPTO_*' in the
+kernel.
+
+I see only 60 'select CRYPTO' statements.
+
+Jason
