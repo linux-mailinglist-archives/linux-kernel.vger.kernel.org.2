@@ -2,256 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B35032148D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E2A321485
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhBVKz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:55:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38194 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230345AbhBVKzT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:55:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613991232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4OT0Rqw5Wl9T/7XHQTc0+4SQvZIZjrveo3V9rnAMoIU=;
-        b=BibsbbTY3dl5UJ7jD4bIKTjum36eBtaXs9Pu9FwhgtC+NY0+BDG0QFGVbspevxGH7eb4pZ
-        uQSE3XjfWNRGqcuh74h0v/fSj7OW2macCnoIYOP3Te92hQ9ETfd6HjhQQtpZBB58xuzUou
-        Opz3gdQ2s7yGzm6yZKWH7xORrWcJNm8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-fsHw0bK2OuWq84CK_CtRJA-1; Mon, 22 Feb 2021 05:53:50 -0500
-X-MC-Unique: fsHw0bK2OuWq84CK_CtRJA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 784AD801965;
-        Mon, 22 Feb 2021 10:53:48 +0000 (UTC)
-Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A573F10016DB;
-        Mon, 22 Feb 2021 10:53:40 +0000 (UTC)
-Subject: Re: [PATCH v11 01/13] vfio: VFIO_IOMMU_SET_PASID_TABLE
-To:     Keqian Zhu <zhukeqian1@huawei.com>, eric.auger.pro@gmail.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
-        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
-        alex.williamson@redhat.com
-Cc:     jean-philippe@linaro.org, jacob.jun.pan@linux.intel.com,
-        nicoleotsuka@gmail.com, vivek.gautam@arm.com, yi.l.liu@intel.com,
-        zhangfei.gao@linaro.org
-References: <20201116110030.32335-1-eric.auger@redhat.com>
- <20201116110030.32335-2-eric.auger@redhat.com>
- <84a111da-1969-1701-9a6d-cae8d7c285c6@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <e476f85d-f49f-f9a6-3232-e99a4cb5a0a2@redhat.com>
-Date:   Mon, 22 Feb 2021 11:53:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S230299AbhBVKyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:54:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230042AbhBVKyv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 05:54:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB87364E04;
+        Mon, 22 Feb 2021 10:54:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613991250;
+        bh=paRjSN108FmOvvi0TofHdKlKJPnvAiYjtvHzzEJsom4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FFFHN+N/hLrZCq8x2aBnXef3slLETnF/RqgxBhzLnGXwg/k8mSfS9VPLyXLshKmGf
+         Qs3FewOVrp7jnwrcbaFXjChrPqq/5GfHYpS48erB0IavUYPcKKUdglyU+Z6emEH8sw
+         vO+R3KQP8jhDGipZE4K0Hb9KmD04lz0bcC6FlPwSkoyVteMWARZr4aryKNT4mKkvLU
+         La3L46MmuIzek9C0vYSg3n78fqWjKqp9IEgrX6/gvCwNC1vFlgvOn1Kcs5I9QmfTAU
+         perId2YWM7ekxb66UQ3vntiMZOQqrvZUleN2Oq2CNupPrbt+74zDOJUmalC8UhfZCy
+         v4jKQSpxPbL8Q==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?q?=C5=81ukasz=20Majczak?= <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+Subject: [PATCH v6 0/1] mm: fix initialization of struct page for holes in  memory layout
+Date:   Mon, 22 Feb 2021 12:54:00 +0200
+Message-Id: <20210222105400.28583-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <84a111da-1969-1701-9a6d-cae8d7c285c6@huawei.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Keqian,
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-On 2/2/21 1:34 PM, Keqian Zhu wrote:
-> Hi Eric,
-> 
-> On 2020/11/16 19:00, Eric Auger wrote:
->> From: "Liu, Yi L" <yi.l.liu@linux.intel.com>
->>
->> This patch adds an VFIO_IOMMU_SET_PASID_TABLE ioctl
->> which aims to pass the virtual iommu guest configuration
->> to the host. This latter takes the form of the so-called
->> PASID table.
->>
->> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
->> Signed-off-by: Liu, Yi L <yi.l.liu@linux.intel.com>
->> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->>
->> ---
->> v11 -> v12:
->> - use iommu_uapi_set_pasid_table
->> - check SET and UNSET are not set simultaneously (Zenghui)
->>
->> v8 -> v9:
->> - Merge VFIO_IOMMU_ATTACH/DETACH_PASID_TABLE into a single
->>   VFIO_IOMMU_SET_PASID_TABLE ioctl.
->>
->> v6 -> v7:
->> - add a comment related to VFIO_IOMMU_DETACH_PASID_TABLE
->>
->> v3 -> v4:
->> - restore ATTACH/DETACH
->> - add unwind on failure
->>
->> v2 -> v3:
->> - s/BIND_PASID_TABLE/SET_PASID_TABLE
->>
->> v1 -> v2:
->> - s/BIND_GUEST_STAGE/BIND_PASID_TABLE
->> - remove the struct device arg
->> ---
->>  drivers/vfio/vfio_iommu_type1.c | 65 +++++++++++++++++++++++++++++++++
->>  include/uapi/linux/vfio.h       | 19 ++++++++++
->>  2 files changed, 84 insertions(+)
->>
->> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
->> index 67e827638995..87ddd9e882dc 100644
->> --- a/drivers/vfio/vfio_iommu_type1.c
->> +++ b/drivers/vfio/vfio_iommu_type1.c
->> @@ -2587,6 +2587,41 @@ static int vfio_iommu_iova_build_caps(struct vfio_iommu *iommu,
->>  	return ret;
->>  }
->>  
->> +static void
->> +vfio_detach_pasid_table(struct vfio_iommu *iommu)
->> +{
->> +	struct vfio_domain *d;
->> +
->> +	mutex_lock(&iommu->lock);
->> +	list_for_each_entry(d, &iommu->domain_list, next)
->> +		iommu_detach_pasid_table(d->domain);
->> +
->> +	mutex_unlock(&iommu->lock);
->> +}
->> +
->> +static int
->> +vfio_attach_pasid_table(struct vfio_iommu *iommu, unsigned long arg)
->> +{
->> +	struct vfio_domain *d;
->> +	int ret = 0;
->> +
->> +	mutex_lock(&iommu->lock);
->> +
->> +	list_for_each_entry(d, &iommu->domain_list, next) {
->> +		ret = iommu_uapi_attach_pasid_table(d->domain, (void __user *)arg);
-> This design is not very clear to me. This assumes all iommu_domains share the same pasid table.
-> 
-> As I understand, it's reasonable when there is only one group in the domain, and only one domain in the vfio_iommu.
-> If more than one group in the vfio_iommu, the guest may put them into different guest iommu_domain, then they have different pasid table.
-> 
-> Is this the use scenario?
+Hi,
 
-the vfio_iommu is attached to a container. all the groups within a
-container share the same set of page tables (linux
-Documentation/driver-api/vfio.rst). So to me if you want to use
-different pasid tables, the groups need to be attached to different
-containers. Does that make sense to you?
+@Andrew, this is based on v5.11-mmotm-2021-02-18-18-29 with the previous
+version reverted
 
-Thanks
+Commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather
+that check each PFN") exposed several issues with the memory map
+initialization and these patches fix those issues.
 
-Eric
-> 
-> Thanks,
-> Keqian
-> 
->> +		if (ret)
->> +			goto unwind;
->> +	}
->> +	goto unlock;
->> +unwind:
->> +	list_for_each_entry_continue_reverse(d, &iommu->domain_list, next) {
->> +		iommu_detach_pasid_table(d->domain);
->> +	}
->> +unlock:
->> +	mutex_unlock(&iommu->lock);
->> +	return ret;
->> +}
->> +
->>  static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
->>  					   struct vfio_info_cap *caps)
->>  {
->> @@ -2747,6 +2782,34 @@ static int vfio_iommu_type1_unmap_dma(struct vfio_iommu *iommu,
->>  			-EFAULT : 0;
->>  }
->>  
->> +static int vfio_iommu_type1_set_pasid_table(struct vfio_iommu *iommu,
->> +					    unsigned long arg)
->> +{
->> +	struct vfio_iommu_type1_set_pasid_table spt;
->> +	unsigned long minsz;
->> +	int ret = -EINVAL;
->> +
->> +	minsz = offsetofend(struct vfio_iommu_type1_set_pasid_table, flags);
->> +
->> +	if (copy_from_user(&spt, (void __user *)arg, minsz))
->> +		return -EFAULT;
->> +
->> +	if (spt.argsz < minsz)
->> +		return -EINVAL;
->> +
->> +	if (spt.flags & VFIO_PASID_TABLE_FLAG_SET &&
->> +	    spt.flags & VFIO_PASID_TABLE_FLAG_UNSET)
->> +		return -EINVAL;
->> +
->> +	if (spt.flags & VFIO_PASID_TABLE_FLAG_SET)
->> +		ret = vfio_attach_pasid_table(iommu, arg + minsz);
->> +	else if (spt.flags & VFIO_PASID_TABLE_FLAG_UNSET) {
->> +		vfio_detach_pasid_table(iommu);
->> +		ret = 0;
->> +	}
->> +	return ret;
->> +}
->> +
->>  static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
->>  					unsigned long arg)
->>  {
->> @@ -2867,6 +2930,8 @@ static long vfio_iommu_type1_ioctl(void *iommu_data,
->>  		return vfio_iommu_type1_unmap_dma(iommu, arg);
->>  	case VFIO_IOMMU_DIRTY_PAGES:
->>  		return vfio_iommu_type1_dirty_pages(iommu, arg);
->> +	case VFIO_IOMMU_SET_PASID_TABLE:
->> +		return vfio_iommu_type1_set_pasid_table(iommu, arg);
->>  	default:
->>  		return -ENOTTY;
->>  	}
->> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
->> index 2f313a238a8f..78ce3ce6c331 100644
->> --- a/include/uapi/linux/vfio.h
->> +++ b/include/uapi/linux/vfio.h
->> @@ -14,6 +14,7 @@
->>  
->>  #include <linux/types.h>
->>  #include <linux/ioctl.h>
->> +#include <linux/iommu.h>
->>  
->>  #define VFIO_API_VERSION	0
->>  
->> @@ -1180,6 +1181,24 @@ struct vfio_iommu_type1_dirty_bitmap_get {
->>  
->>  #define VFIO_IOMMU_DIRTY_PAGES             _IO(VFIO_TYPE, VFIO_BASE + 17)
->>  
->> +/*
->> + * VFIO_IOMMU_SET_PASID_TABLE - _IOWR(VFIO_TYPE, VFIO_BASE + 22,
->> + *			struct vfio_iommu_type1_set_pasid_table)
->> + *
->> + * The SET operation passes a PASID table to the host while the
->> + * UNSET operation detaches the one currently programmed. Setting
->> + * a table while another is already programmed replaces the old table.
->> + */
->> +struct vfio_iommu_type1_set_pasid_table {
->> +	__u32	argsz;
->> +	__u32	flags;
->> +#define VFIO_PASID_TABLE_FLAG_SET	(1 << 0)
->> +#define VFIO_PASID_TABLE_FLAG_UNSET	(1 << 1)
->> +	struct iommu_pasid_table_config config; /* used on SET */
->> +};
->> +
->> +#define VFIO_IOMMU_SET_PASID_TABLE	_IO(VFIO_TYPE, VFIO_BASE + 22)
->> +
->>  /* -------- Additional API for SPAPR TCE (Server POWERPC) IOMMU -------- */
->>  
->>  /*
->>
-> 
+Initially there were crashes during compaction that Qian Cai reported back
+in April [1]. It seemed back then that the problem was fixed, but a few
+weeks ago Andrea Arcangeli hit the same bug [2] and there was an additional
+discussion at [3].
+
+I didn't appreciate variety of ways BIOSes can report memory in the first
+megabyte, so previous versions of this set caused all kinds of troubles.
+
+The last version that implicitly extended node/zone to cover the complete
+section might also have unexpected side effects, so this time I'm trying to
+move in forward in baby steps.
+
+This is mostly a return to the fist version that simply merges
+init_unavailable_pages() into memmap_init() so that the only effective
+change would be more sensible zone/node links in unavailable struct pages.
+
+For now, I've dropped the patch that tried to make ZONE_DMA to span pfn 0
+because it didn't cause any issues for really long time and there are way
+to many hidden mines around this.
+
+I have an ugly workaround for "pfn 0" issue that IMHO is the safest way to
+deal with it until it could be gradually fixed properly:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/commit/?id=a1b6e4d7e4a6d893caeda9a7f3800766243a02fe
+
+v6:
+* only interleave initialization of unavailable pages in memmap_init(), so
+that it is essentially includes init_unavailable_pages().
+
+v5: https://lore.kernel.org/lkml/20210208110820.6269-1-rppt@kernel.org
+* extend node/zone spans to cover complete sections, this allows to interleave
+  the initialization of unavailable pages with "normal" memory map init.
+* drop modifications to x86 early setup
+
+v4: https://lore.kernel.org/lkml/20210130221035.4169-1-rppt@kernel.org/
+* make sure pages in the range 0 - start_pfn_of_lowest_zone are initialized
+  even if an architecture hides them from the generic mm
+* finally make pfn 0 on x86 to be a part of memory visible to the generic
+  mm as reserved memory.
+
+v3: https://lore.kernel.org/lkml/20210111194017.22696-1-rppt@kernel.org
+* use architectural zone constraints to set zone links for struct pages
+  corresponding to the holes
+* drop implicit update of memblock.memory
+* add a patch that sets pfn 0 to E820_TYPE_RAM on x86
+
+v2: https://lore.kernel.org/lkml/20201209214304.6812-1-rppt@kernel.org/):
+* added patch that adds all regions in memblock.reserved that do not
+overlap with memblock.memory to memblock.memory in the beginning of
+free_area_init()
+
+[1] https://lore.kernel.org/lkml/8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw
+[2] https://lore.kernel.org/lkml/20201121194506.13464-1-aarcange@redhat.com
+[3] https://lore.kernel.org/mm-commits/20201206005401.qKuAVgOXr%akpm@linux-foundation.org
+
+Mike Rapoport (1):
+  mm/page_alloc.c: refactor initialization of struct page for holes in
+    memory layout
+
+ mm/page_alloc.c | 144 ++++++++++++++++++++----------------------------
+ 1 file changed, 61 insertions(+), 83 deletions(-)
+
+-- 
+2.28.0
 
