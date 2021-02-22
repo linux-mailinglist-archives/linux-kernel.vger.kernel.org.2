@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FEA321631
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8854532166F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhBVMTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:19:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44942 "EHLO mail.kernel.org"
+        id S230256AbhBVMVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:21:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230261AbhBVMOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:14:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BD8760C3E;
-        Mon, 22 Feb 2021 12:13:49 +0000 (UTC)
+        id S230270AbhBVMOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:14:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86C8864EEF;
+        Mon, 22 Feb 2021 12:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996029;
-        bh=tu95Ey8D12jZg/R9mceQ2cio8kmJ7Gfw3dkobEdymms=;
+        s=korg; t=1613996032;
+        bh=xwsFBpM6iHt+NEyE51wmthC6JwKyFWxy3dga04cnfnY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CqUOEKuTsAmJHF5zBGgJfQ4HQjEQOhxyu/MY8N6ZfBwcoQ/imKbOD4JizreWVIaST
-         BSse6XsIaqUgXcoHvueWK+UnabmOaKhuME4bn5Su3kiIO7P9a3JxugNReH03LyPGWY
-         d0Es+NJ8PWZq0s3RMg8+9WaZQw/thDBK7AO5CTVw=
+        b=WOpbrnv16JUUS93oVG0HKxlRsH60f0JD4yu9woMrUT6a56PrfALAauKkSKfid2kZL
+         D1ycAzvnqb+MpgP4xagtjpPZz09VTNRnwO4T847RgF1T+ajQ2ZXM8Zmp+mmdifT8vO
+         veHFHniHxhL3dU9UXm2CUiqRqth/B94IIE3eVCiM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 10/29] mt76: mt7915: fix endian issues
-Date:   Mon, 22 Feb 2021 13:13:04 +0100
-Message-Id: <20210222121021.741215487@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 11/29] mt76: mt7615: fix rdd mcu cmd endianness
+Date:   Mon, 22 Feb 2021 13:13:05 +0100
+Message-Id: <20210222121021.841044948@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
 References: <20210222121019.444399883@linuxfoundation.org>
@@ -39,70 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit cee236e1489ecca9d23d6ce6f60d126cc651a5ba ]
+[ Upstream commit 0211c282bc8aaa15343aadbc6e23043e7057f77d ]
 
-Multiple MCU messages were using u16/u32 fields without endian annotations
-or conversions
+Similar to mt7915 driver, fix mt7615 radar mcu command endianness
 
-Fixes: e57b7901469f ("mt76: add mac80211 driver for MT7915 PCIe-based chipsets")
-Fixes: 5517f78b0063 ("mt76: mt7915: enable firmware module debug support")
+Fixes: 2ce73efe0f8e5 ("mt76: mt7615: initialize radar specs from host driver")
+Fixes: 70911d9638069 ("mt76: mt7615: add radar pattern test knob to debugfs")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/mediatek/mt76/mt7915/mcu.c   | 87 +++++++++++++++----
- 1 file changed, 68 insertions(+), 19 deletions(-)
+ .../net/wireless/mediatek/mt76/mt7615/mcu.c   | 89 ++++++++++++++-----
+ 1 file changed, 66 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index a3ccc17856615..ea71409751519 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -2835,7 +2835,7 @@ int mt7915_mcu_fw_dbg_ctrl(struct mt7915_dev *dev, u32 module, u8 level)
- 	struct {
- 		u8 ver;
- 		u8 pad;
--		u16 len;
-+		__le16 len;
- 		u8 level;
- 		u8 rsv[3];
- 		__le32 module_idx;
-@@ -3070,12 +3070,12 @@ int mt7915_mcu_rdd_cmd(struct mt7915_dev *dev,
- int mt7915_mcu_set_fcc5_lpn(struct mt7915_dev *dev, int val)
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7615/mcu.c
+index 31b40fb83f6c1..c31036f57aef8 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/mcu.c
+@@ -2718,11 +2718,11 @@ int mt7615_mcu_rdd_cmd(struct mt7615_dev *dev,
+ int mt7615_mcu_set_fcc5_lpn(struct mt7615_dev *dev, int val)
  {
  	struct {
--		u32 tag;
+-		u16 tag;
 -		u16 min_lpn;
-+		__le32 tag;
++		__le16 tag;
 +		__le16 min_lpn;
- 		u8 rsv[2];
- 	} __packed req = {
+ 	} req = {
 -		.tag = 0x1,
 -		.min_lpn = val,
-+		.tag = cpu_to_le32(0x1),
++		.tag = cpu_to_le16(0x1),
 +		.min_lpn = cpu_to_le16(val),
  	};
  
  	return __mt76_mcu_send_msg(&dev->mt76, MCU_EXT_CMD_SET_RDD_TH,
-@@ -3086,14 +3086,29 @@ int mt7915_mcu_set_pulse_th(struct mt7915_dev *dev,
- 			    const struct mt7915_dfs_pulse *pulse)
+@@ -2733,14 +2733,27 @@ int mt7615_mcu_set_pulse_th(struct mt7615_dev *dev,
+ 			    const struct mt7615_dfs_pulse *pulse)
  {
  	struct {
--		u32 tag;
--		struct mt7915_dfs_pulse pulse;
-+		__le32 tag;
-+
-+		__le32 max_width;		/* us */
-+		__le32 max_pwr;			/* dbm */
-+		__le32 min_pwr;			/* dbm */
-+		__le32 min_stgr_pri;		/* us */
-+		__le32 max_stgr_pri;		/* us */
-+		__le32 min_cr_pri;		/* us */
-+		__le32 max_cr_pri;		/* us */
- 	} __packed req = {
+-		u16 tag;
+-		struct mt7615_dfs_pulse pulse;
++		__le16 tag;
++		__le32 max_width;	/* us */
++		__le32 max_pwr;		/* dbm */
++		__le32 min_pwr;		/* dbm */
++		__le32 min_stgr_pri;	/* us */
++		__le32 max_stgr_pri;	/* us */
++		__le32 min_cr_pri;	/* us */
++		__le32 max_cr_pri;	/* us */
+ 	} req = {
 -		.tag = 0x3,
-+		.tag = cpu_to_le32(0x3),
-+
++		.tag = cpu_to_le16(0x3),
 +#define __req_field(field) .field = cpu_to_le32(pulse->field)
 +		__req_field(max_width),
 +		__req_field(max_pwr),
@@ -111,7 +99,7 @@ index a3ccc17856615..ea71409751519 100644
 +		__req_field(max_stgr_pri),
 +		__req_field(min_cr_pri),
 +		__req_field(max_cr_pri),
-+#undef __req_field
++#undef  __req_field
  	};
  
 -	memcpy(&req.pulse, pulse, sizeof(*pulse));
@@ -119,38 +107,34 @@ index a3ccc17856615..ea71409751519 100644
  	return __mt76_mcu_send_msg(&dev->mt76, MCU_EXT_CMD_SET_RDD_TH,
  				   &req, sizeof(req), true);
  }
-@@ -3102,16 +3117,50 @@ int mt7915_mcu_set_radar_th(struct mt7915_dev *dev, int index,
- 			    const struct mt7915_dfs_pattern *pattern)
+@@ -2749,16 +2762,45 @@ int mt7615_mcu_set_radar_th(struct mt7615_dev *dev, int index,
+ 			    const struct mt7615_dfs_pattern *pattern)
  {
  	struct {
--		u32 tag;
+-		u16 tag;
 -		u16 radar_type;
--		struct mt7915_dfs_pattern pattern;
-+		__le32 tag;
+-		struct mt7615_dfs_pattern pattern;
++		__le16 tag;
 +		__le16 radar_type;
-+
 +		u8 enb;
 +		u8 stgr;
 +		u8 min_crpn;
 +		u8 max_crpn;
 +		u8 min_crpr;
 +		u8 min_pw;
-+		u32 min_pri;
-+		u32 max_pri;
 +		u8 max_pw;
++		__le32 min_pri;
++		__le32 max_pri;
 +		u8 min_crbn;
 +		u8 max_crbn;
 +		u8 min_stgpn;
 +		u8 max_stgpn;
 +		u8 min_stgpr;
-+		u8 rsv[2];
-+		u32 min_stgpr_diff;
- 	} __packed req = {
+ 	} req = {
 -		.tag = 0x2,
 -		.radar_type = index,
-+		.tag = cpu_to_le32(0x2),
++		.tag = cpu_to_le16(0x2),
 +		.radar_type = cpu_to_le16(index),
-+
 +#define __req_field_u8(field) .field = pattern->field
 +#define __req_field_u32(field) .field = cpu_to_le32(pattern->field)
 +		__req_field_u8(enb),
@@ -159,15 +143,14 @@ index a3ccc17856615..ea71409751519 100644
 +		__req_field_u8(max_crpn),
 +		__req_field_u8(min_crpr),
 +		__req_field_u8(min_pw),
++		__req_field_u8(max_pw),
 +		__req_field_u32(min_pri),
 +		__req_field_u32(max_pri),
-+		__req_field_u8(max_pw),
 +		__req_field_u8(min_crbn),
 +		__req_field_u8(max_crbn),
 +		__req_field_u8(min_stgpn),
 +		__req_field_u8(max_stgpn),
 +		__req_field_u8(min_stgpr),
-+		__req_field_u32(min_stgpr_diff),
 +#undef __req_field_u8
 +#undef __req_field_u32
  	};
@@ -177,21 +160,35 @@ index a3ccc17856615..ea71409751519 100644
  	return __mt76_mcu_send_msg(&dev->mt76, MCU_EXT_CMD_SET_RDD_TH,
  				   &req, sizeof(req), true);
  }
-@@ -3342,12 +3391,12 @@ int mt7915_mcu_add_obss_spr(struct mt7915_dev *dev, struct ieee80211_vif *vif,
- 		u8 drop_tx_idx;
- 		u8 sta_idx;	/* 256 sta */
- 		u8 rsv[2];
--		u32 val;
-+		__le32 val;
- 	} __packed req = {
- 		.action = MT_SPR_ENABLE,
- 		.arg_num = 1,
- 		.band_idx = mvif->band_idx,
--		.val = enable,
-+		.val = cpu_to_le32(enable),
- 	};
+@@ -2769,9 +2811,9 @@ int mt7615_mcu_rdd_send_pattern(struct mt7615_dev *dev)
+ 		u8 pulse_num;
+ 		u8 rsv[3];
+ 		struct {
+-			u32 start_time;
+-			u16 width;
+-			s16 power;
++			__le32 start_time;
++			__le16 width;
++			__le16 power;
+ 		} pattern[32];
+ 	} req = {
+ 		.pulse_num = dev->radar_pattern.n_pulses,
+@@ -2784,10 +2826,11 @@ int mt7615_mcu_rdd_send_pattern(struct mt7615_dev *dev)
  
- 	return __mt76_mcu_send_msg(&dev->mt76, MCU_EXT_CMD_SET_SPR,
+ 	/* TODO: add some noise here */
+ 	for (i = 0; i < dev->radar_pattern.n_pulses; i++) {
+-		req.pattern[i].width = dev->radar_pattern.width;
+-		req.pattern[i].power = dev->radar_pattern.power;
+-		req.pattern[i].start_time = start_time +
+-					    i * dev->radar_pattern.period;
++		u32 ts = start_time + i * dev->radar_pattern.period;
++
++		req.pattern[i].width = cpu_to_le16(dev->radar_pattern.width);
++		req.pattern[i].power = cpu_to_le16(dev->radar_pattern.power);
++		req.pattern[i].start_time = cpu_to_le32(ts);
+ 	}
+ 
+ 	return __mt76_mcu_send_msg(&dev->mt76, MCU_EXT_CMD_SET_RDD_PATTERN,
 -- 
 2.27.0
 
