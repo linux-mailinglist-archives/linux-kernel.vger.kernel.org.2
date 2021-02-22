@@ -2,185 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192463219C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFDD3219C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232143AbhBVOHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:07:22 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:38431 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbhBVNPC (ORCPT
+        id S232204AbhBVOHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231481AbhBVNQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 08:15:02 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 11MDDgL82013184, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 11MDDgL82013184
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 22 Feb 2021 21:13:42 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 22 Feb 2021 21:13:42 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 22 Feb 2021 21:13:41 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::a98b:ac3a:714:c542]) by
- RTEXMBS04.realtek.com.tw ([fe80::a98b:ac3a:714:c542%6]) with mapi id
- 15.01.2106.006; Mon, 22 Feb 2021 21:13:41 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "chenhaoa@uniontech.com" <chenhaoa@uniontech.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tony0620emma@gmail.com" <tony0620emma@gmail.com>,
-        Timlee <timlee@realtek.com>,
-        "zhanjun@uniontech.com" <zhanjun@uniontech.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
-Subject: Re: [PATCH v2] rtw88: 8822ce: fix wifi disconnect after S3/S4 on HONOR laptop
-Thread-Topic: [PATCH v2] rtw88: 8822ce: fix wifi disconnect after S3/S4 on
- HONOR laptop
-Thread-Index: AQHXCQAH7RfNyn4HvEexqF5ErvwOdKpj+arv//+MPYCAABaFgIAABIgA
-Date:   Mon, 22 Feb 2021 13:13:41 +0000
-Message-ID: <1613999618.9141.7.camel@realtek.com>
-References: <20210222094638.18392-1-chenhaoa@uniontech.com>
-         <87h7m4iefe.fsf@codeaurora.org> <1613993809.2331.12.camel@realtek.com>
-         <e3cc6cd6-8f98-2fca-dfa6-b1b3835adf6c@uniontech.com>
-In-Reply-To: <e3cc6cd6-8f98-2fca-dfa6-b1b3835adf6c@uniontech.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [125.224.90.247]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <68245672AC80F64B845B99F5A94EACF5@realtek.com>
-Content-Transfer-Encoding: base64
+        Mon, 22 Feb 2021 08:16:27 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3776C061574;
+        Mon, 22 Feb 2021 05:15:44 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 4087B1F44D43
+Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        thierry.reding@gmail.com, will@kernel.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com, digetx@gmail.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>
+References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <7a664911-41bf-2647-716d-0836acd8078a@collabora.com>
+Date:   Mon, 22 Feb 2021 13:15:41 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210218220702.1962-1-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTAyLTIyIGF0IDIwOjU3ICswODAwLCBIYW8gQ2hlbiB3cm90ZToNCj4gQmVj
-YXVzZSBJIG9ubHkgaGF2ZSB0aGUgYEhPTk9SIG1hZ2ljIDE0YCBsYXB0b3Agd2l0aCBydGw4ODIy
-Y2Ugd2lmaSBjaGlwwqANCj4gOi0oDQo+IA0KPiBJIHdpbGwgdHJ5IHRvIGZpbmQgb3V0IHdoeSB0
-aGUgdGFyZ2V0IHBsYXRmb3JtIGNhbid0IHByb3Blcmx5IHJlc3VtZSB3aXRoDQo+IHRoaXMgZGVj
-bGFyYXRpb24uVGhhbmtzLg0KPiANCj4g5ZyoIDIwMjEvMi8yMiDkuIvljYg3OjM2LCBQa3NoaWgg
-5YaZ6YGTOg0KPiA+IE9uIE1vbiwgMjAyMS0wMi0yMiBhdCAxMjoyOSArMDIwMCwgS2FsbGUgVmFs
-byB3cm90ZToNCj4gPj4gSGFvIENoZW4gPGNoZW5oYW9hQHVuaW9udGVjaC5jb20+IHdyaXRlczoN
-Cj4gPj4NCj4gPj4+IFRoZSBsYXB0b3AncyB3aWZpIGRpc2Nvbm5lY3QgYWZ0ZXIgdGhlIGxhcHRv
-cCBIT05PUiBNYWdpY0Jvb2sgMTQNCj4gPj4+IHNsZWVwIHRvIFMzL1M0IGFuZCB3YWtlIHVwLg0K
-PiA+Pj4NCj4gPj4+IFRoZSBkbWVzZyBvZiBrZXJuZWwgcmVwb3J0Og0KPiA+Pj4gIlvCoMKgwqA5
-OS45OTAxNjhdIHBjaWVwb3J0IDAwMDA6MDA6MDEuMjogY2FuJ3QgY2hhbmdlIHBvd2VyIHN0YXRl
-IGZyb20gRDNob3QNCj4gPj4+IHRvIEQwIChjb25maWcgc3BhY2UgaW5hY2Nlc3NpYmxlKQ0KPiA+
-Pj4gW8KgwqDCoDk5Ljk5MDE3Nl0gQUNQSTogRUM6IGludGVycnVwdCB1bmJsb2NrZWQNCj4gPj4+
-IFvCoMKgwqA5OS45OTMzMzRdIHJ0d19wY2kgMDAwMDowMTowMC4wOiBjYW4ndCBjaGFuZ2UgcG93
-ZXIgc3RhdGUgZnJvbSBEM2hvdA0KPiA+Pj4gdG8gRDAgKGNvbmZpZyBzcGFjZSBpbmFjY2Vzc2li
-bGUpDQo+ID4+PiAuLi4uLi4NCj4gPj4+IFvCoMKgMTAyLjEzMzUwMF0gcnR3X3BjaSAwMDAwOjAx
-OjAwLjA6IG1hYyBwb3dlciBvbiBmYWlsZWQNCj4gPj4+IFvCoMKgMTAyLjEzMzUwM10gcnR3X3Bj
-aSAwMDAwOjAxOjAwLjA6IGZhaWxlZCB0byBwb3dlciBvbiBtYWMNCj4gPj4+IFvCoMKgMTAyLjEz
-MzUwNV0gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tDQo+ID4+PiBbwqDCoDEw
-Mi4xMzM1MDZdIEhhcmR3YXJlIGJlY2FtZSB1bmF2YWlsYWJsZSB1cG9uIHJlc3VtZS4gVGhpcyBj
-b3VsZCBiZSBhDQo+ID4+PiBzb2Z0d2FyZSBpc3N1ZSBwcmlvciB0byBzdXNwZW5kIG9yIGEgaGFy
-ZHdhcmUgaXNzdWUuDQo+ID4+PiBbwqDCoDEwMi4xMzM1NjldIFdBUk5JTkc6IENQVTogNCBQSUQ6
-IDU2MTIgYXQgbmV0L21hYzgwMjExL3V0aWwuYzoyMjMyDQo+ID4+PiBpZWVlODAyMTFfcmVjb25m
-aWcrMHg5Yi8weDE0OTAgW21hYzgwMjExXQ0KPiA+Pj4gW8KgwqAxMDIuMTMzNTcwXSBNb2R1bGVz
-IGxpbmtlZCBpbjogY2NtIHJmY29tbSB1dmN2aWRlbyB2aWRlb2J1ZjJfdm1hbGxvYw0KPiA+Pj4g
-dmlkZW9idWYyX21lbW9wcyB2aWRlb2J1ZjJfdjRsMiB2aWRlb2J1ZjJfY29tbW9uIHZpZGVvZGV2
-IG1jIGNtYWMgYm5lcA0KPiA+Pj4gYnR1c2IgYnRydGwgYnRiY20gYnRpbnRlbCBlZGFjX21jZV9h
-bWQgYmx1ZXRvb3RoIGt2bV9hbWQgZWNkaF9nZW5lcmljDQo+ID4+PiBlY2Mga3ZtIG5sc19pc284
-ODU5XzEgcnR3cGNpIHJ0dzg4IGNyY3QxMGRpZl9wY2xtdWwgY3JjMzJfcGNsbXVsIG1hYzgwMjEx
-DQo+ID4+PiBnaGFzaF9jbG11bG5pX2ludGVsIGFlc25pX2ludGVsIHNuZF9oZGFfY29kZWNfcmVh
-bHRlayBjcnlwdG9fc2ltZCBodWF3ZWlfd21pDQo+ID4+PiBzbmRfaGRhX2NvZGVjX2dlbmVyaWMg
-Y3J5cHRkIGNmZzgwMjExIHdtaV9ibW9mIHNlcmlvX3JhdyBzcGFyc2Vfa2V5bWFwDQo+ID4+PiBs
-ZWR0cmlnX2F1ZGlvIHNwNTEwMF90Y28gZ2x1ZV9oZWxwZXIgam95ZGV2IHNuZF9oZGFfY29kZWNf
-aGRtaSBzbmRfaGRhX2ludGVsDQo+ID4+PiBzbmRfaW50ZWxfZHNwY2ZnIHdkYXRfd2R0IHNuZF9o
-ZGFfY29kZWMgc25kX2hkYV9jb3JlIHBjc3BrciBzbmRfaHdkZXAgc25kX3BjbQ0KPiA+Pj4gZWZp
-X3BzdG9yZSBzbmRfdGltZXIgbGliYXJjNCBrMTB0ZW1wIHNuZCBzb3VuZGNvcmUgc25kX3BjaV9h
-Y3AzeCBjY3AgbWFjX2hpZA0KPiA+Pj4gYmluZm10X21pc2MgaXBfdGFibGVzIHhfdGFibGVzIGF1
-dG9mczQgYW1kZ3B1IGFtZF9pb21tdV92MiBncHVfc2NoZWQNCj4gPj4+IGkyY19hbGdvX2JpdCB0
-dG0gZHJtX2ttc19oZWxwZXIgc3lzY29weWFyZWEgc3lzZmlsbHJlY3Qgc3lzaW1nYmx0IGZiX3N5
-c19mb3BzDQo+ID4+PiB1c2Jtb3VzZSBjZWMgbnZtZSBoaWRfZ2VuZXJpYyBpMmNfcGlpeDQgdXNi
-aGlkIG52bWVfY29yZSBkcm0gd21pIHZpZGVvDQo+ID4+PiBbwqDCoDEwMi4xMzM2MTddIENQVTog
-NCBQSUQ6IDU2MTIgQ29tbToga3dvcmtlci91MzI6MTYgTm90IHRhaW50ZWQgNS43LjctYW1kNjQt
-ZGVza3RvcC04ODIyICMzDQo+ID4+PiBbwqDCoDEwMi4xMzM2MThdIEhhcmR3YXJlIG5hbWU6IEhV
-QVdFSSBOQkxMLVdYWDkvTkJMTC1XWFg5LVBDQiwgQklPUyAxLjA2IDA5LzI5LzIwMjANCj4gPj4+
-IFvCoMKgMTAyLjEzMzYyM10gV29ya3F1ZXVlOiBldmVudHNfdW5ib3VuZCBhc3luY19ydW5fZW50
-cnlfZm4NCj4gPj4+IFvCoMKgMTAyLjEzMzY1MV0gUklQOiAwMDEwOmllZWU4MDIxMV9yZWNvbmZp
-ZysweDliLzB4MTQ5MCBbbWFjODAyMTFdDQo+ID4+PiBbwqDCoDEwMi4xMzM2NTRdIENvZGU6IDMx
-IGRiIGU4IGU4IGZiIDI3IGMyIDQxIGM2IDg1IDM0IDA1IDAwIDAwIDAwIDRjIDg5IGVmIGU4IDM4
-DQo+ID4+PiA1NiBmYyBmZiA4OSA0NSBiOCA4NSBjMCA3NCA0YyA0OCBjNyBjNyBkMCAwYyAwOSBj
-MSBlOCAwMSBlMCAyNSBjMiA8MGY+IDBiIDRjDQo+ID4+PiA4OSBlZiBlOCAyYiBkMSBmZiBmZiBl
-OSAwMiAwMyAwMCAwMCA4MCA3ZCA5ZiAwMCAwZiA4NSAxZA0KPiA+Pj4gW8KgwqAxMDIuMTMzNjU1
-XSBSU1A6IDAwMTg6ZmZmZmJlNTJjMDU5ZmQwOCBFRkxBR1M6IDAwMDEwMjg2DQo+ID4+PiBbwqDC
-oDEwMi4xMzM2NTddIFJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IDAwMDAwMDAwMDAwMDAwMDAg
-UkNYOiAwMDAwMDAwMDAwMDAwMDA3DQo+ID4+PiBbwqDCoDEwMi4xMzM2NThdIFJEWDogMDAwMDAw
-MDAwMDAwMDAwNyBSU0k6IDAwMDAwMDAwMDAwMDAwOTYgUkRJOiBmZmZmOWQ1NzNmNTE5Y2MwDQo+
-ID4+PiBbwqDCoDEwMi4xMzM2NTldIFJCUDogZmZmZmJlNTJjMDU5ZmQ4MCBSMDg6IGZmZmZmZmZm
-ZmZkOTYyNDUgUjA5OiAwMDAwMDAwMDAwMDJjYjgwDQo+ID4+PiBbwqDCoDEwMi4xMzM2NjBdIFIx
-MDogMDAwMDAwMDE2OTg5ZTU0YyBSMTE6IDAwMDAwMDAwMDAwMmEzNjAgUjEyOiBmZmZmOWQ1NzMx
-ZjUwMzAwDQo+ID4+PiBbwqDCoDEwMi4xMzM2NjFdIFIxMzogZmZmZjlkNTczMWY1MDgwMCBSMTQ6
-IGZmZmY5ZDU3MzFmNTA0YzggUjE1OiBmZmZmZmZmZjg0NjNmYmVmDQo+ID4+PiBbwqDCoDEwMi4x
-MzM2NjRdIEZTOsKgwqAwMDAwMDAwMDAwMDAwMDAwKDAwMDApIEdTOmZmZmY5ZDU3M2Y1MDAwMDAo
-MDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KPiA+Pj4gW8KgwqAxMDIuMTMzNjY1XSBDUzrC
-oMKgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNCj4gPj4+IFvC
-oMKgMTAyLjEzMzY2Nl0gQ1IyOiAwMDAwMDAwMDAwMDAwMDAwIENSMzogMDAwMDAwMDMzMzIwYTAw
-MCBDUjQ6IDAwMDAwMDAwMDAzNDBlZTANCj4gPj4+IFvCoMKgMTAyLjEzMzY2N10gQ2FsbCBUcmFj
-ZToNCj4gPj4+IFvCoMKgMTAyLjEzMzY3M13CoMKgPyBlbnF1ZXVlX2VudGl0eSsweGUzLzB4Njgw
-DQo+ID4+PiBbwqDCoDEwMi4xMzM3MDVdwqDCoGllZWU4MDIxMV9yZXN1bWUrMHg1NS8weDcwIFtt
-YWM4MDIxMV0NCj4gPj4+IFvCoMKgMTAyLjEzMzcyOV3CoMKgd2lwaHlfcmVzdW1lKzB4ODQvMHgx
-MzAgW2NmZzgwMjExXQ0KPiA+Pj4gW8KgwqAxMDIuMTMzNzUyXcKgwqA/IGFkZHJlc3Nlc19zaG93
-KzB4YTAvMHhhMCBbY2ZnODAyMTFdDQo+ID4+PiBbwqDCoDEwMi4xMzM3NTddwqDCoGRwbV9ydW5f
-Y2FsbGJhY2srMHg1Yi8weDE1MA0KPiA+Pj4gW8KgwqAxMDIuMTMzNzYwXcKgwqBkZXZpY2VfcmVz
-dW1lKzB4YWQvMHgxZjANCj4gPj4+IFvCoMKgMTAyLjEzMzc2Ml3CoMKgYXN5bmNfcmVzdW1lKzB4
-MWQvMHgzMA0KPiA+Pj4gW8KgwqAxMDIuMTMzNzY0XcKgwqBhc3luY19ydW5fZW50cnlfZm4rMHgz
-ZS8weDE3MA0KPiA+Pj4gW8KgwqAxMDIuMTMzNzY4XcKgwqBwcm9jZXNzX29uZV93b3JrKzB4MWFi
-LzB4MzgwDQo+ID4+PiBbwqDCoDEwMi4xMzM3NzFdwqDCoHdvcmtlcl90aHJlYWQrMHgzNy8weDNi
-MA0KPiA+Pj4gW8KgwqAxMDIuMTMzNzc0XcKgwqBrdGhyZWFkKzB4MTIwLzB4MTQwDQo+ID4+PiBb
-wqDCoDEwMi4xMzM3NzZdwqDCoD8gY3JlYXRlX3dvcmtlcisweDFiMC8weDFiMA0KPiA+Pj4gW8Kg
-wqAxMDIuMTMzNzc4XcKgwqA/IGt0aHJlYWRfcGFyaysweDkwLzB4OTANCj4gPj4+IFvCoMKgMTAy
-LjEzMzc4Ml3CoMKgcmV0X2Zyb21fZm9yaysweDIyLzB4NDANCj4gPj4+IFvCoMKgMTAyLjEzMzc4
-NV0gLS0tWyBlbmQgdHJhY2UgNDYyMjliZmQzYTQyNzNiZSBdLS0tDQo+ID4+PiBbwqDCoDEwMi4x
-MzQxMzddIC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQ0KPiA+Pj4gW8KgwqAx
-MDIuMTM0MTQxXSB3bHAxczA6wqDCoEZhaWxlZCBjaGVjay1zZGF0YS1pbi1kcml2ZXIgY2hlY2ss
-IGZsYWdzOiAweDANCj4gPj4+IFvCoMKgMTAyLjEzNDE5NV0gV0FSTklORzogQ1BVOiAwIFBJRDog
-NTYxMiBhdCBuZXQvbWFjODAyMTEvZHJpdmVyLW9wcy5oOjE5DQo+ID4+PiBkcnZfcmVtb3ZlX2lu
-dGVyZmFjZSsweGZlLzB4MTEwIFttYWM4MDIxMV0iDQo+ID4+Pg0KPiA+Pj4gV2hlbiB0cnkgdG8g
-cG9pbnRlciB0aGUgZHJpdmVyLnBtIHRvIE5VTEwsIHRoZSBwcm9ibGVtIGlzIGZpeGVkLg0KPiA+
-Pj4gSXQgbWFrZXMgdGhlIHNsZWVwIGFuZCB3YWtlIHByb2NlZHVyZSBleHBlY3RlZCB3aGVuIHBt
-J3Mgb3BzIG5vdCBOVUxMLg0KPiA+Pj4NCj4gPj4+IEJ5IGBnaXQgYmxhbWVgIGNvbW1hbmQsIEkg
-a25vdyB0aGF0IHRoZSBhc3NpZ25tZW50IG9mIC5kcml2ZXIucG0gPQ0KPiA+Pj4gUlRXX1BNX09Q
-UyB3YXMgaW4gY29tbWl0IDQ0YmMxN2Y3ZjViMyAoInJ0dzg4OiBzdXBwb3J0IHdvd2xhbiBmZWF0
-dXJlIGZvcg0KPiA+Pj4gODgyMmMiKSwgYW5kIGFub3RoZXINCj4gPj4+IGNvbW1pdCA3ZGM3YzQx
-NjA3ZDEgKCJydHc4ODogYXZvaWQgdW51c2VkIGZ1bmN0aW9uIHdhcm5pbmdzIikNCj4gPj4+IHBv
-aW50ZWQgb3V0IHJ0d19wY2lfcmVzdW1lKCkgYW5kIHJ0d19wY2lfc3VzcGVuZCgpIGFyZSBub3Qg
-dXNlZCBhdA0KPiA+Pj4gYWxsLg0KPiA+Pj4NCj4gPj4+IFNvIEkgdGhpbmsgaXQncyBzYWZlIHRv
-IHJlbW92ZSB0aGVtLg0KPiA+Pj4NCj4gPj4+IEZpeGVzOiA3ZGM3YzQxNjA3ZDEgKCJydHc4ODog
-YXZvaWQgdW51c2VkIGZ1bmN0aW9uIHdhcm5pbmdzIikNCj4gPj4+IEZpeGVzOiA0NGJjMTdmN2Y1
-YjMgKCJydHc4ODogc3VwcG9ydCB3b3dsYW4gZmVhdHVyZSBmb3IgODgyMmMiKQ0KPiA+Pj4NCj4g
-Pj4+IFNpZ25lZC1vZmYtYnk6IEhhbyBDaGVuIDxjaGVuaGFvYUB1bmlvbnRlY2guY29tPg0KPiA+
-Pj4gLS0tDQo+ID4+PsKgwqDCoMKgZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OC9y
-dHc4ODIyY2UuYyB8IDEgLQ0KPiA+Pj7CoMKgwqDCoDEgZmlsZSBjaGFuZ2VkLCAxIGRlbGV0aW9u
-KC0pDQo+ID4+Pg0KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0
-ZWsvcnR3ODgvcnR3ODgyMmNlLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4
-L3J0dzg4MjJjZS5jDQo+ID4+PiBpbmRleCAzODQ1YjEzMzNkYzMuLjRjMDYzMTkyZjgwMSAxMDA2
-NDQNCj4gPj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnR3ODgvcnR3ODgy
-MmNlLmMNCj4gPj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnR3ODgvcnR3
-ODgyMmNlLmMNCj4gPj4+IEBAIC0yNSw3ICsyNSw2IEBAIHN0YXRpYyBzdHJ1Y3QgcGNpX2RyaXZl
-ciBydHdfODgyMmNlX2RyaXZlciA9IHsNCj4gPj4+wqDCoMKgwqAJLmlkX3RhYmxlID0gcnR3Xzg4
-MjJjZV9pZF90YWJsZSwNCj4gPj4+wqDCoMKgwqAJLnByb2JlID0gcnR3X3BjaV9wcm9iZSwNCj4g
-Pj4+wqDCoMKgwqAJLnJlbW92ZSA9IHJ0d19wY2lfcmVtb3ZlLA0KPiA+Pj4gLQkuZHJpdmVyLnBt
-ID0gJnJ0d19wbV9vcHMsDQo+ID4+IFdoeSBqdXN0IDg4MjJjZT8gV2h5IG5vdCByZW1vdmUgcnR3
-X3BtX29wcyBlbnRpcmVseSBpZiBpdCBqdXN0IGNyZWF0ZXMNCj4gPj4gcHJvYmxlbXM/DQo+ID4+
-DQo+ID4gSSB0aGluayB3ZSBjYW4ndCByZW1vdmUgcnR3X3BtX29wcywgYmVjYXVzZSB3b3dsYW4g
-d2lsbCBub3Qgd29yay4NCj4gPiBXZSBuZWVkIHRvIGZpbmQgb3V0IHdoeSB0aGUgdGFyZ2V0IHBs
-YXRmb3JtIGNhbid0IHByb3Blcmx5IHJlc3VtZSB3aXRoDQo+ID4gdGhpcyBkZWNsYXJhdGlvbi4N
-Cj4gPg0KPiANCg0Kc2lkZSBub3RlOiBwbGVhc2UgZG9uJ3QgdG9wIHBvc3QgdGhhdCBtYWludGFp
-bmVycyBkbyBoYXJkIHRvIHJlYWQgdGhlbS4NCg0KSSBzdWdnZXN0IHRvIHVzZSDCoGBwY2llX2Fz
-cG0ucG9saWN5PXBlcmZvcm1hbmNlIGAgbWVudGlvbmVkIGluIHYxIHRlbXBvcmFyaWx5O8KgDQpp
-dCB3b3JrcyBvbiB5b3VyIHBsYXRmb3JtLCByaWdodD8NCk15IGNvbGxlYWd1ZXMgd2lsbCBoZWxw
-IHRvIGNoZWNrIHRoZSB0aGluZ3MgeW91IHByb3ZpZGUuIElmIHdlIGhhdmUgYW55IHVwZGF0ZSwN
-CkknbGwgbGV0IHlvdSBrbm93Lg0KDQotLQ0KUGluZy1LZQ0KDQo=
+On 18/02/2021 22:07, Nicolin Chen wrote:
+> Commit 25938c73cd79 ("iommu/tegra-smmu: Rework tegra_smmu_probe_device()")
+> removed certain hack in the tegra_smmu_probe() by relying on IOMMU core to
+> of_xlate SMMU's SID per device, so as to get rid of tegra_smmu_find() and
+> tegra_smmu_configure() that are typically done in the IOMMU core also.
+> 
+> This approach works for both existing devices that have DT nodes and other
+> devices (like PCI device) that don't exist in DT, on Tegra210 and Tegra3
+> upon testing. However, Page Fault errors are reported on tegra124-Nyan:
+> 
+>   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
+> 	 EMEM address decode error (SMMU translation error [--S])
+>   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
+> 	 Page fault (SMMU translation error [--S])
+> 
+> After debugging, I found that the mentioned commit changed some function
+> callback sequence of tegra-smmu's, resulting in enabling SMMU for display
+> client before display driver gets initialized. I couldn't reproduce exact
+> same issue on Tegra210 as Tegra124 (arm-32) differs at arch-level code.
+> 
+> Actually this Page Fault is a known issue, as on most of Tegra platforms,
+> display gets enabled by the bootloader for the splash screen feature, so
+> it keeps filling the framebuffer memory. A proper fix to this issue is to
+> 1:1 linear map the framebuffer memory to IOVA space so the SMMU will have
+> the same address as the physical address in its page table. Yet, Thierry
+> has been working on the solution above for a year, and it hasn't merged.
+> 
+> Therefore, let's partially revert the mentioned commit to fix the errors.
+> 
+> The reason why we do a partial revert here is that we can still set priv
+> in ->of_xlate() callback for PCI devices. Meanwhile, devices existing in
+> DT, like display, will go through tegra_smmu_configure() at the stage of
+> bus_set_iommu() when SMMU gets probed(), as what it did before we merged
+> the mentioned commit.
+> 
+> Once we have the linear map solution for framebuffer memory, this change
+> can be cleaned away.
+> 
+> [Big thank to Guillaume who reported and helped debugging/verification]
+> 
+> Fixes: 25938c73cd79 ("iommu/tegra-smmu: Rework tegra_smmu_probe_device()")
+> Reported-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+
+You're welcome.  I would actually prefer to see it as reported by
+kernelci.org since I wouldn't have found it without the automated
+testing and bisection.  If you're OK to change this trailer:
+
+  Reported-by: "kernelci.org bot" <bot@kernelci.org>
+
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+> 
+> Guillaume, would you please give a "Tested-by" to this change? Thanks!
+
+Sure. https://lava.collabora.co.uk/scheduler/job/3249387
+
+  Tested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+
+Thanks,
+Guillaume
