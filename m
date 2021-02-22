@@ -2,142 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F767321306
+	by mail.lfdr.de (Postfix) with ESMTP id B110B321307
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhBVJZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:25:21 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:48115 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhBVJZC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:25:02 -0500
-Received: by mail-io1-f69.google.com with SMTP id o4so8935321ioh.14
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:24:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2uSBdEqU47c4oS9ECd3COMKQ/tDdxAm2kFaxZlo25JE=;
-        b=IBugOEx/qLx8yPWSLkqHuYtLoZ54rqrXXIwsXFilLV+Ffj62vgR2GfKiRUs52y+ct3
-         kz6rD4SMk4g8YrHxQuGAXZzecJBxbys+2anbS1aPRoxBGrQ0gdhncMF1tjfYeOfsxAN1
-         2tV3HnPr6VkHRLJ3weWtoht6iAYFZJSNYdXvMEvWkAknnN/cuquKIY99DIsw3Cj2awtn
-         TTjOanR3s3FUie42ktizdQcDr7GV76cu0Cw1JPXg1QsGtHWrSxKCB8l1nRWiw8DIeUQD
-         cbAngaV3N9yIhUhvK+2DVlrwuZ+StzryCVPzDHjApZDp02fgdhSVawkL9GWtlBSR7bxb
-         8Dxg==
-X-Gm-Message-State: AOAM531vYyED/qGB053YL29I1bCnGacGx062Rri1Bu7qhIWNRcascSgs
-        ifMYt77yUTaV5Tk8Oa9wR1Ra6xnkOgju1Mt97sy/j/VX0isa
-X-Google-Smtp-Source: ABdhPJxJtADNakcKhIpNEcZvK+RbczS8i7akNa4Yeo4xqbH5zi4F/RG2av5zJtFbIKl1aTYNCI+7PiiAsXhvx4W4HLDxcKtWst1h
+        id S230179AbhBVJZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:25:49 -0500
+Received: from foss.arm.com ([217.140.110.172]:36840 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230044AbhBVJZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:25:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68B51D6E;
+        Mon, 22 Feb 2021 01:24:28 -0800 (PST)
+Received: from e124901.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB5A43F73B;
+        Mon, 22 Feb 2021 01:24:26 -0800 (PST)
+Date:   Mon, 22 Feb 2021 09:24:26 +0000
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH] sched/pelt: Fix task util_est update filtering
+Message-ID: <20210222092426.GA5716@e124901.cambridge.arm.com>
+References: <20210216163921.572228-1-vincent.donnefort@arm.com>
+ <CAKfTPtDC1GYV_7zoUtZa5MNLdt0Lx=X_UgB=Q8UtsGf8=Kd3iQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9b18:: with SMTP id y24mr14518492ion.24.1613985860726;
- Mon, 22 Feb 2021 01:24:20 -0800 (PST)
-Date:   Mon, 22 Feb 2021 01:24:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e6b67405bbe95dfd@google.com>
-Subject: general protection fault in ieee802154_llsec_parse_key_id
-From:   syzbot <syzbot+d4c07de0144f6f63be3a@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtDC1GYV_7zoUtZa5MNLdt0Lx=X_UgB=Q8UtsGf8=Kd3iQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Feb 19, 2021 at 11:48:28AM +0100, Vincent Guittot wrote:
+> On Tue, 16 Feb 2021 at 17:39, <vincent.donnefort@arm.com> wrote:
+> >
+> > From: Vincent Donnefort <vincent.donnefort@arm.com>
+> >
+> > Being called for each dequeue, util_est reduces the number of its updates
+> > by filtering out when the EWMA signal is different from the task util_avg
+> > by less than 1%. It is a problem for a sudden util_avg ramp-up. Due to the
+> > decay from a previous high util_avg, EWMA might now be close enough to
+> > the new util_avg. No update would then happen while it would leave
+> > ue.enqueued with an out-of-date value.
+> >
+> > Taking into consideration the two util_est members, EWMA and enqueued for
+> > the filtering, ensures, for both, an up-to-date value.
+> >
+> > This is for now an issue only for the trace probe that might return the
+> > stale value. Functional-wise, it isn't (yet) a problem, as the value is
+> 
+> What do you mean by "it isn't (yet) a problem" ? How could this become
+> a problem ?
 
-syzbot found the following issue on:
+I wrote "yet" as nothing prevents anyone from using the ue.enqueued signal.
 
-HEAD commit:    38b5133a octeontx2-pf: Fix otx2_get_fecparam()
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=140c2512d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=d4c07de0144f6f63be3a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13db6e22d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13fea434d00000
+> 
+> > always accessed through max(enqueued, ewma).
+> >
+> 
+> This adds more tests and or update of  struct avg.util_est. It would
+> be good to have an idea of the perf impact. Especially because this
+> only fixes a tracing problem
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+I ran hackbench on the big cores of a SD845C board. After 100 iterations of
+100 loops runs, the geometric mean of the hackbench test is 0.1% lower
+with this patch applied (2.0833s vs 2.0858s). The p-value, computed with
+the ks_2samp [1] is 0.37. We can't conclude that the two distributions are
+different. This patch, in this scenario seems completely harmless.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=168e7f02d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=158e7f02d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=118e7f02d00000
+Shall I include those results in the commit message?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d4c07de0144f6f63be3a@syzkaller.appspotmail.com
+[1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ks_2samp.html
 
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 PID: 8431 Comm: syz-executor292 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:nla_get_u16 include/net/netlink.h:1581 [inline]
-RIP: 0010:nla_get_shortaddr net/ieee802154/nl-mac.c:48 [inline]
-RIP: 0010:ieee802154_llsec_parse_key_id+0x17f/0x8a0 net/ieee802154/nl-mac.c:559
-Code: 00 00 4d 8b 66 30 4d 85 e4 0f 84 1e 05 00 00 e8 a7 16 e8 f8 49 8d 7c 24 04 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 4e
-RSP: 0018:ffffc900017ff4f0 EFLAGS: 00010247
-RAX: dffffc0000000000 RBX: ffffc900017ff5a8 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff888ad1e9 RDI: 0000000000000004
-RBP: ffffc900017ff680 R08: 0000000000000001 R09: 0000000000000000
-R10: ffffffff888ad1a6 R11: 0000000000000000 R12: 0000000000000000
-R13: 1ffff920002ffe9e R14: ffff888025b7c400 R15: ffffffff8da591f8
-FS:  00000000008e1300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002000030c CR3: 000000001cb7a000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- llsec_remove_key net/ieee802154/nl-mac.c:896 [inline]
- ieee802154_nl_llsec_change net/ieee802154/nl-mac.c:824 [inline]
- ieee802154_llsec_del_key+0x109/0x240 net/ieee802154/nl-mac.c:904
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2348
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2402
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2435
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x43fa99
-Code: 28 c3 e8 5a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffce4fc0e98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 000000000043fa99
-RDX: 0000000000004054 RSI: 0000000020000440 RDI: 0000000000000004
-RBP: 0000000000403500 R08: 00000000ffffffff R09: 00000000004004a0
-R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000403590
-R13: 0000000000000000 R14: 00000000004ad018 R15: 00000000004004a0
-Modules linked in:
----[ end trace 32b0ca68504d0ad5 ]---
-RIP: 0010:nla_get_u16 include/net/netlink.h:1581 [inline]
-RIP: 0010:nla_get_shortaddr net/ieee802154/nl-mac.c:48 [inline]
-RIP: 0010:ieee802154_llsec_parse_key_id+0x17f/0x8a0 net/ieee802154/nl-mac.c:559
-Code: 00 00 4d 8b 66 30 4d 85 e4 0f 84 1e 05 00 00 e8 a7 16 e8 f8 49 8d 7c 24 04 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 4e
-RSP: 0018:ffffc900017ff4f0 EFLAGS: 00010247
-RAX: dffffc0000000000 RBX: ffffc900017ff5a8 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff888ad1e9 RDI: 0000000000000004
-RBP: ffffc900017ff680 R08: 0000000000000001 R09: 0000000000000000
-R10: ffffffff888ad1a6 R11: 0000000000000000 R12: 0000000000000000
-R13: 1ffff920002ffe9e R14: ffff888025b7c400 R15: ffffffff8da591f8
-FS:  00000000008e1300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055bf74e6f0b8 CR3: 000000001cb7a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> 
+> 
+> > This problem has been observed using LISA's UtilConvergence:test_means on
+> > the sd845c board.
+> >
+> > Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 794c2cb945f8..9008e0c42def 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -3941,24 +3941,27 @@ static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
+> >         trace_sched_util_est_cfs_tp(cfs_rq);
+> >  }
+> >
+> > +#define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
+> > +
+> >  /*
+> > - * Check if a (signed) value is within a specified (unsigned) margin,
+> > + * Check if a (signed) value is within the (unsigned) util_est margin,
+> >   * based on the observation that:
+> >   *
+> >   *     abs(x) < y := (unsigned)(x + y - 1) < (2 * y - 1)
+> >   *
+> > - * NOTE: this only works when value + maring < INT_MAX.
+> > + * NOTE: this only works when value + UTIL_EST_MARGIN < INT_MAX.
+> >   */
+> > -static inline bool within_margin(int value, int margin)
+> > +static inline bool util_est_within_margin(int value)
+> >  {
+> > -       return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
+> > +       return ((unsigned int)(value + UTIL_EST_MARGIN - 1) <
+> > +               (2 * UTIL_EST_MARGIN - 1));
+> >  }
+> >
+> >  static inline void util_est_update(struct cfs_rq *cfs_rq,
+> >                                    struct task_struct *p,
+> >                                    bool task_sleep)
+> >  {
+> > -       long last_ewma_diff;
+> > +       long last_ewma_diff, last_enqueued_diff;
+> >         struct util_est ue;
+> >
+> >         if (!sched_feat(UTIL_EST))
+> > @@ -3979,6 +3982,8 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
+> >         if (ue.enqueued & UTIL_AVG_UNCHANGED)
+> >                 return;
+> >
+> > +       last_enqueued_diff = ue.enqueued;
+> > +
+> >         /*
+> >          * Reset EWMA on utilization increases, the moving average is used only
+> >          * to smooth utilization decreases.
+> > @@ -3992,12 +3997,19 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
+> >         }
+> >
+> >         /*
+> > -        * Skip update of task's estimated utilization when its EWMA is
+> > +        * Skip update of task's estimated utilization when its members are
+> >          * already ~1% close to its last activation value.
+> >          */
+> >         last_ewma_diff = ue.enqueued - ue.ewma;
+> > -       if (within_margin(last_ewma_diff, (SCHED_CAPACITY_SCALE / 100)))
+> > +       last_enqueued_diff -= ue.enqueued;
+> > +       if (util_est_within_margin(last_ewma_diff)) {
+> > +               if (!util_est_within_margin(last_enqueued_diff)) {
+> > +                       ue.ewma = ue.enqueued;
+> > +                       goto done;
+> > +               }
+> > +
+> >                 return;
+> > +       }
+> >
+> >         /*
+> >          * To avoid overestimation of actual task utilization, skip updates if
+> > --
+> > 2.25.1
+> >
