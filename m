@@ -2,98 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EE6321F9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB588321FA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbhBVTFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 14:05:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
+        id S232651AbhBVTFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 14:05:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232574AbhBVTD1 (ORCPT
+        with ESMTP id S232606AbhBVTD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:03:27 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5064EC061574;
-        Mon, 22 Feb 2021 11:02:40 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id e7so11803005ile.7;
-        Mon, 22 Feb 2021 11:02:40 -0800 (PST)
+        Mon, 22 Feb 2021 14:03:28 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0423C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:02:47 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id j19so7357092lfr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:02:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+e8UIztOcsKjrlTctjSMc1WY3nEzfs9k9bIVsJIkLwU=;
-        b=X+k64qx9S22kXdp3V9YOk+/i0xClR17rtxxYmkOaaGpG1SEEleI2gDY05YCqWQOxua
-         xtlYd8V9geaibnFZhbw6WwaINx6DQ/G0yrCiAjlR5an/5J6sr12diWGQJS8yGsLV1jDW
-         lSMVwO644zLsG7RM1XznYOifxadmxTLbLqTdgKBIC9hkPDg4AygDZD04j7P6RL7Yhrpv
-         usY8mVGMrlyCeBkW8x9vNtMQM/OWBbjd9TQxYlf72GFJWTfZdtyCMxKbectEPZlQzsjc
-         d7eIgCVB5nn2Ny/SUXXmp/+n2o0wAwePpPRLjVjkZT7azRghNOiyAFRli4eQP+NGF337
-         MqiQ==
+        bh=l7tjb/ULPTs0YK9djuSw4jI/piZzj9Be22oeBt6d4gY=;
+        b=mrY2NByHHyaff5bYeda64M/VoEosJ32rOPg4tTipSJbWFIY8bKAiJGN3qURfIutpyz
+         cKHTAdFT3H9fWNcQWE2vXUst95QbVQs61PEsUdkOp7sG0fP2gxNN5ic1tPrEInT/BFCC
+         DdjFE6QkIVos4s3D0CwyGIsOIS7R2loRI6I3YgmoFTLjfYtMpCnkAXXeYXEvbzQfP7xh
+         hZL+lMLgfhKTczJIeW/5/P43e8Jte8+AMEoZg7Zk7fIwbSVfeWZMzJi5nYZSyuhx6wB3
+         pa+VbIe1bTeAVIh3SXAnnnoSQJbpwwYw9zj6co1Uc5gfn4SJlHujHmfF00kn4ZC+/sb3
+         ikuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+e8UIztOcsKjrlTctjSMc1WY3nEzfs9k9bIVsJIkLwU=;
-        b=OxAKDjcyn8rVzpjwU3EwRT0LG54jzc7/ZxAkW6sWph+Z8+srzTTm9/sagNe1QO8Jg5
-         RXizmZaQtRtoCVA6xr0Yt41nNKdoTrS1ii6bR+M8Od1myUQ1nXohUolafBwmI7oplkUF
-         4Z8ROMTbjytMIM+FUjdTFVWNDOZNDoV+CnyU/39FBApJue3g7yO8ZEiO1ecGZ1egz0Re
-         N+ENnYzN/mxo0pjvHm13XgdvgXM5jP9C4DfAIG9foWuW1q/kwMYXHBEovHEPtTpN/sGZ
-         V3tNy0PrfpOa7+GrGcvFGspwn70Hw1Tp1G4zzwwBeA02ZXE6rhJfHGU95rQ7OYj4Ogng
-         rejg==
-X-Gm-Message-State: AOAM5333jJR5USJ4GEOmDYYRu9lN/k3+27xoE+mxevuEJH/slUSUfdnb
-        lbgWV/wXaPWzrWBGGQfm23wvOxdSUwT+c+To9vQ=
-X-Google-Smtp-Source: ABdhPJzRK+14O8IUP3faQtq2TM10OHznaqxvVqO4EmlQADeJMDJYsZDwQCaw1/nY/Rnk9RTgI83LkzHg+EvokccMGdA=
-X-Received: by 2002:a92:d201:: with SMTP id y1mr2582055ily.129.1614020559300;
- Mon, 22 Feb 2021 11:02:39 -0800 (PST)
+        bh=l7tjb/ULPTs0YK9djuSw4jI/piZzj9Be22oeBt6d4gY=;
+        b=loqJn2fnwL+KT6wX7OMGoJPTft8j2yUwH0U2lyq1+VLRjAPL9PBBaVpbK6iyRwDgoZ
+         gA14UmSOhVK3Ibpw6lvNk+JVbGIjFurRdOGTq2ml5v3zFRbTDXTATjHP64Z79v5n/i2G
+         3U/TGx8bOeQmLFDhDQB9D1J/J/kUZCumSkN6Zq790FJCu6Q2sYiZ6KxNgG3p4vDdytP5
+         VfnZeSNLUMDqnEhEdecZfgvTF9lDE1l6+Q98g4EIgXRSIiooqxOqnCS9OHTyidY4B4xT
+         ek6dXx0RFCRNXkwYUFiEm31lo/myXmfDy/QXOML/tb70+KBIziptTMMvalscnZQkkF7M
+         c4pg==
+X-Gm-Message-State: AOAM5329yuo3QmdMRHHTVdTplSZt9or2oJ86iHBIlW80843lVJqU8513
+        wOE2BWv6ohNk0UYEJUeZs2TRBX2953nQJyDvdV8sag==
+X-Google-Smtp-Source: ABdhPJwWmG0JYv8DqkeX3ykU/s7MQAhAyFGkaW2VRAIk/PCpiPtFsdg9zr2j2BvY54a5YWmtKdCLcROd3JJyfCfLpf4=
+X-Received: by 2002:ac2:515c:: with SMTP id q28mr5267546lfd.297.1614020566033;
+ Mon, 22 Feb 2021 11:02:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20210218123327.25486-1-heiko.thiery@gmail.com>
- <20210218123327.25486-3-heiko.thiery@gmail.com> <20210221121111.nsenzgenwb6pu3o7@kozik-lap>
- <CAEyMn7YN4xqcFxR0QHUDp8cc1QP62HgpGMCYAjh0RfWL-iRQCA@mail.gmail.com>
- <20210222084027.jd3eop7j4czoqqim@kozik-lap> <CAEyMn7YPNRDbPH84wg2s+r2F6Fo=0DJOUd-R03Fg=6_CxgknSg@mail.gmail.com>
- <CAJKOXPdhbwpEHA+h3706NXf0uRhyu8VVC++K8WpzA6h2=8PK8Q@mail.gmail.com>
-In-Reply-To: <CAJKOXPdhbwpEHA+h3706NXf0uRhyu8VVC++K8WpzA6h2=8PK8Q@mail.gmail.com>
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-Date:   Mon, 22 Feb 2021 20:02:28 +0100
-Message-ID: <CAEyMn7YeKg2foozsoX4yJZyMkE_dRgxR5KncW6yixaY10NgjwA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: fsl: add support for Kontron pitx-imx8m board
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Michael Walle <michael@walle.cc>
+References: <20210211194258.4137998-1-nathan@kernel.org>
+In-Reply-To: <20210211194258.4137998-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 22 Feb 2021 11:02:34 -0800
+Message-ID: <CAKwvOdkJfJ+LDspz04tsjd=55LxF5rgTOAXt0cPxTyCCUBqgBw@mail.gmail.com>
+Subject: Re: [PATCH] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
+To:     Gabriel Somlo <somlo@cmu.edu>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>, qemu-devel@nongnu.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Did this happen to get picked up already? EOM
 
-Am Mo., 22. Feb. 2021 um 19:39 Uhr schrieb Krzysztof Kozlowski
-<krzk@kernel.org>:
+On Thu, Feb 11, 2021 at 11:43 AM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> On Mon, 22 Feb 2021 at 10:09, Heiko Thiery <heiko.thiery@gmail.com> wrote:
-> > > > > > +
-> > > > > > +     pcie0_refclk: pcie0-refclk {
-> > > > >
-> > > > > Generic node names (from the dt spec candidate is "clock").
-> > > >
-> > > > Should I simply set the node name to pcie0-clock? And pcie1-clock for
-> > > > the next one?
-> > >
-> > > I am fine with "pcie0-clock" or just "clock-0".
-> >
-> > I saw now that in "imx8mq-zii-ultra.dtsi" the name
-> > "clock-pcie0-refclk" is used. Can I use the same?
+> fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
+> which violates clang's CFI checking because fw_cfg_showrev()'s second
+> parameter is 'struct attribute', whereas the ->show() member of 'struct
+> kobj_structure' expects the second parameter to be of type 'struct
+> kobj_attribute'.
 >
-> It's not that generic anymore - but specific, but it's also not that
-> important, so go ahead.
+> $ cat /sys/firmware/qemu_fw_cfg/rev
+> 3
+>
+> $ dmesg | grep "CFI failure"
+> [   26.016832] CFI failure (target: fw_cfg_showrev+0x0/0x8):
+>
+> Fix this by converting fw_cfg_rev_attr to 'struct kobj_attribute' where
+> this would have been caught automatically by the incompatible pointer
+> types compiler warning. Update fw_cfg_showrev() accordingly.
+>
+> Fixes: 75f3e8e47f38 ("firmware: introduce sysfs driver for QEMU's fw_cfg device")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1299
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  drivers/firmware/qemu_fw_cfg.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/firmware/qemu_fw_cfg.c b/drivers/firmware/qemu_fw_cfg.c
+> index 0078260fbabe..172c751a4f6c 100644
+> --- a/drivers/firmware/qemu_fw_cfg.c
+> +++ b/drivers/firmware/qemu_fw_cfg.c
+> @@ -299,15 +299,13 @@ static int fw_cfg_do_platform_probe(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> -static ssize_t fw_cfg_showrev(struct kobject *k, struct attribute *a, char *buf)
+> +static ssize_t fw_cfg_showrev(struct kobject *k, struct kobj_attribute *a,
+> +                             char *buf)
+>  {
+>         return sprintf(buf, "%u\n", fw_cfg_rev);
+>  }
+>
+> -static const struct {
+> -       struct attribute attr;
+> -       ssize_t (*show)(struct kobject *k, struct attribute *a, char *buf);
+> -} fw_cfg_rev_attr = {
+> +static const struct kobj_attribute fw_cfg_rev_attr = {
+>         .attr = { .name = "rev", .mode = S_IRUSR },
+>         .show = fw_cfg_showrev,
+>  };
+>
+> base-commit: 92bf22614b21a2706f4993b278017e437f7785b3
+> --
+> 2.30.1
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210211194258.4137998-1-nathan%40kernel.org.
 
-For me it is no problem to change this to pcie0-clock and pcie1-clock.
-I need to make a new version anyway.
+
 
 -- 
-Heiko
+Thanks,
+~Nick Desaulniers
