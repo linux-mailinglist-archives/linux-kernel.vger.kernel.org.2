@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34D53212DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 570D33212FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhBVJNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:13:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44698 "EHLO mail.kernel.org"
+        id S230099AbhBVJWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:22:47 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:40132 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230100AbhBVJK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:10:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2E0664DE5;
-        Mon, 22 Feb 2021 09:09:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613984987;
-        bh=EKegPUwUKotxlOegY+ew4LCdfwE80de2IMwqvvfAsRA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZtlI7RfJd7K8Pl+3BbAZ62wLQpyFOJfsBNT1issztP86fCbNFksE1aUfo1bG3EYBO
-         EX5ugvyjRIH/nZLqMTr80NmLvaEVghZdRiYMVqtZbk9BNIiO8ks4EZDLIpELkegooR
-         dJvWgvDftHSugjtrTF1qzG8H/N0LBu9CFub7dY3zAoXrSA/5mgwlvdZm3NBjxQEnOR
-         sjnE+QctDeC34/SspuRRmZvxjwKr3iy8TrmSjfldyAPgoIPDOiN2iTrxQnGgFsha5f
-         6fIQlY+zVeIAmtYpIB6FxhbzohElwHvM+9dszyA5tf8R/uJbRvZMpqKTCqjADsChHe
-         oIDIOuqEwsRpw==
-Received: by pali.im (Postfix)
-        id 12BE8C9A; Mon, 22 Feb 2021 10:09:44 +0100 (CET)
-Date:   Mon, 22 Feb 2021 10:09:44 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        dmitry.torokhov@gmail.com, rydberg@bitmath.org,
-        colin.king@canonical.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: input: mouse: Change postive to positive in the
- file alps.c
-Message-ID: <20210222090944.nhvcwmzkwuoh2g4z@pali>
-References: <20210222075439.32201-1-unixbhaskar@gmail.com>
- <97932a41-0d3b-adaa-3b08-35c6e81763ff@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <97932a41-0d3b-adaa-3b08-35c6e81763ff@infradead.org>
-User-Agent: NeoMutt/20180716
+        id S229996AbhBVJWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:22:45 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2F5781A020C;
+        Mon, 22 Feb 2021 10:21:58 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DB1F51A0050;
+        Mon, 22 Feb 2021 10:21:52 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 2C98240291;
+        Mon, 22 Feb 2021 10:21:46 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_xcvr: move reset assert into runtime_resume
+Date:   Mon, 22 Feb 2021 17:09:50 +0800
+Message-Id: <1613984990-5534-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 22 February 2021 00:07:40 Randy Dunlap wrote:
-> On 2/21/21 11:54 PM, Bhaskar Chowdhury wrote:
-> > 
-> > s/postive/positive/
-> > 
-> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> 
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+From: Viorel Suman <viorel.suman@nxp.com>
 
-Reviewed-by: Pali Rohár <pali@kernel.org>
+Move reset assert into runtime_resume since we
+cannot rely on reset assert state when the device
+is put out from suspend.
 
-> > ---
-> >  drivers/input/mouse/alps.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/input/mouse/alps.c b/drivers/input/mouse/alps.c
-> > index b067bfd2699c..4a6b33bbe7ea 100644
-> > --- a/drivers/input/mouse/alps.c
-> > +++ b/drivers/input/mouse/alps.c
-> > @@ -986,7 +986,7 @@ static void alps_get_finger_coordinate_v7(struct input_mt_pos *mt,
-> >  	case V7_PACKET_ID_TWO:
-> >  		mt[1].x &= ~0x000F;
-> >  		mt[1].y |= 0x000F;
-> > -		/* Detect false-postive touches where x & y report max value */
-> > +		/* Detect false-positive touches where x & y report max value */
-> >  		if (mt[1].y == 0x7ff && mt[1].x == 0xff0) {
-> >  			mt[1].x = 0;
-> >  			/* y gets set to 0 at the end of this function */
-> > --
-> 
-> 
-> -- 
-> ~Randy
-> 
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_xcvr.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index dd228b421e2c..4857e0df8681 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -1243,10 +1243,6 @@ static __maybe_unused int fsl_xcvr_runtime_suspend(struct device *dev)
+ 	if (ret < 0)
+ 		dev_err(dev, "Failed to assert M0+ core: %d\n", ret);
+ 
+-	ret = reset_control_assert(xcvr->reset);
+-	if (ret < 0)
+-		dev_err(dev, "Failed to assert M0+ reset: %d\n", ret);
+-
+ 	regcache_cache_only(xcvr->regmap, true);
+ 
+ 	clk_disable_unprepare(xcvr->spba_clk);
+@@ -1262,6 +1258,12 @@ static __maybe_unused int fsl_xcvr_runtime_resume(struct device *dev)
+ 	struct fsl_xcvr *xcvr = dev_get_drvdata(dev);
+ 	int ret;
+ 
++	ret = reset_control_assert(xcvr->reset);
++	if (ret < 0) {
++		dev_err(dev, "Failed to assert M0+ reset: %d\n", ret);
++		return ret;
++	}
++
+ 	ret = clk_prepare_enable(xcvr->ipg_clk);
+ 	if (ret) {
+ 		dev_err(dev, "failed to start IPG clock.\n");
+-- 
+2.27.0
+
