@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC5A321F5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5924F321F5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbhBVSqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:46:51 -0500
-Received: from foss.arm.com ([217.140.110.172]:33386 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231336AbhBVSoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:44:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC72A1FB;
-        Mon, 22 Feb 2021 10:43:24 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.51.127])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CBC3C3F73B;
-        Mon, 22 Feb 2021 10:43:22 -0800 (PST)
-Date:   Mon, 22 Feb 2021 18:43:20 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 7/8 v1.5] arm64: Always keep DAIF.[IF] in sync
-Message-ID: <20210222184320.GD77517@C02TD0UTHF1T.local>
-References: <20210219113904.41736-8-mark.rutland@arm.com>
- <20210219172530.45805-1-marcan@marcan.st>
- <20210219182641.GB84857@C02TD0UTHF1T.local>
- <8c955dd3-8f40-3837-da33-7e117b357a35@marcan.st>
+        id S231652AbhBVSrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:47:39 -0500
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:34535 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231236AbhBVSpD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 13:45:03 -0500
+Received: by mail-wr1-f44.google.com with SMTP id n4so20189556wrx.1;
+        Mon, 22 Feb 2021 10:44:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WMwCTPqIvolvJ4k3GJnXnqsgpX6SITbYIGEcInJtsN8=;
+        b=ubvBOJjtJLT2EcuGWDYy2wZqbbLwqCJljkEzfHQIEw/taKKQECyLp4P3lkDoX1ZtRT
+         CWoMuhnDem42AI0oANasbqiCg/tPZKKvU4J//J1iA4Twlg5RQEsoKGtYYGFHr4DQ8M+I
+         amdixzkQsv19uHjhC9IVzgmMIoJH2HniJSQP1Y/c4kAYedHp/oT/ZtyiVb+egg9FnQBK
+         nTIjx6ElP0KOy5cEL0pIq2x1UNhnj5rkvKdQXFhWkhPQKYiCcCeVOcHcbsWVZTBBnNnh
+         Sj0Otd1wZI/0sgpnz/Ca+VsxgZrG74Sx+D7/LfNgfiGC+Rkbsrq5/Qaa9LQUdDUbe8wJ
+         W8WA==
+X-Gm-Message-State: AOAM532UgL+wgkaA3MzdvOG/DqH8YJa85RlwcpB92+xQm6unaA/Ub3K1
+        hKYonX4RiwgDuQeHrh/rLco=
+X-Google-Smtp-Source: ABdhPJyasyK+ldSeEjiN1NbKy1+letae1s/FCLPnubZtcS5+CTLcmogkhuR+mCLFSxbHRwTWwr+igw==
+X-Received: by 2002:a5d:618a:: with SMTP id j10mr11151064wru.264.1614019460131;
+        Mon, 22 Feb 2021 10:44:20 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id k15sm197869wmj.6.2021.02.22.10.44.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 10:44:19 -0800 (PST)
+Date:   Mon, 22 Feb 2021 19:44:17 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Heiko Thiery <heiko.thiery@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH v2 2/2] arm64: dts: fsl: add support for Kontron
+ pitx-imx8m board
+Message-ID: <20210222184417.4nkmdjkgub73b2xd@kozik-lap>
+References: <20210222140756.713-1-heiko.thiery@gmail.com>
+ <20210222140756.713-3-heiko.thiery@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8c955dd3-8f40-3837-da33-7e117b357a35@marcan.st>
+In-Reply-To: <20210222140756.713-3-heiko.thiery@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 02:39:11AM +0900, Hector Martin wrote:
-> On 20/02/2021 03.26, Mark Rutland wrote:
-> > On Sat, Feb 20, 2021 at 02:25:30AM +0900, Hector Martin wrote:
-> > > Apple SoCs (A11 and newer) have some interrupt sources hardwired to the
-> > > FIQ line. We implement support for this by simply treating IRQs and FIQs
-> > > the same way in the interrupt vectors.
-> > > 
-> > > To support these systems, the FIQ mask bit needs to be kept in sync with
-> > > the IRQ mask bit, so both kinds of exceptions are masked together. No
-> > > other platforms should be delivering FIQ exceptions right now, and we
-> > > already unmask FIQ in normal process context, so this should not have an
-> > > effect on other systems - if spurious FIQs were arriving, they would
-> > > already panic the kernel.
-> > 
-> > This looks good to me; I've picked this up and pushed out my arm64/fiq
-> > branch [1,2] incorporating this, tagged as arm64-fiq-20210219.
-> > 
-> > I'll give this version a few days to gather comments before I post a v2.
-> > 
-> > [1] git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git arm64/fiq
-> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/fiqA
+On Mon, Feb 22, 2021 at 03:07:56PM +0100, Heiko Thiery wrote:
+> The Kontron pitx-imx8m board is based on an i.MX8MQ soc.
 > 
-> Thanks! Any chance you can do a rebase on top of torvalds/master? Since
-> Marc's nVHE changes went in, we're going to need to add a workaround patch
-> for the M1's lack of nVHE mode, which is going to be in the next version of
-> my M1 bringup series - but right now that would involve telling people to
-> merge two trees to build a base to apply it on, which is sub-optimal.
+> Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+> ---
+> v2:
+>  - bring root nodes in alphabetical order
+>  - remove pinctrl_gpio_keys for pciewake
+>  - remove pinctrl_sai2 and pinctrl_spdfif1 since it is not used yet
+> 
+>  Thanks to Michael Walle:
+>  - add pinctrl for regulator-v-3v3-sd
+>  - add name for regulator swbst
+>  - add comment about currently unused audio codec
+>  - put usb_phy entry in correct alphabetical order
+> 
+>  Thanks to Krzysztof Kozlowski:
+>  - use generic names for pcie-refclk, tpm, fan-controller, sensor
+>  - remove empty line
+>  - fix group name to match schema (ecspi2cs -> ecspi2csgrp)
+> 
+> 
+>  arch/arm64/boot/dts/freescale/Makefile        |   1 +
+>  .../freescale/imx8mq-kontron-pitx-imx8m.dts   | 641 ++++++++++++++++++
+>  2 files changed, 642 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
+> 
 
-I generally try to base on a stable tag/commit, so I'd prefer to avoid
-rebasing the development branch until rc1 if possible. I've pushed out a
-new arm64-fiq-mainline-20210222 tag rebased atop torvalds/master:
+Looks fine to me, also with the changes pointed out by Micahel in other
+email in this thread:
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git arm64-fiq-mainline-20210222
-https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/tag/?h=arm64-fiq-mainline-20210222
-
-... leaving the main branch atop v5.11. Is that good enough for now? If
-that's painful for development I can shuffle the main branch along too.
-
-Thanks,
-Mark.
+Best regards,
+Krzysztof
