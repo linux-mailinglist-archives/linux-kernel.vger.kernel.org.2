@@ -2,100 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD58320FB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 04:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302B3320FB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 04:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhBVDS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 22:18:57 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:60323 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229735AbhBVDSs (ORCPT
+        id S230040AbhBVDU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 22:20:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhBVDUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 22:18:48 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 19DBD580733;
-        Sun, 21 Feb 2021 22:18:02 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute4.internal (MEProxy); Sun, 21 Feb 2021 22:18:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=pncbO6UEb+m+8vOmGoE/SecasoVV8iw
-        T/YMMuVYgrJ0=; b=ereB1HbvQy/FIy5J9cGXdt/uP/K2XPS5ttu6hK1tuZ5ypGL
-        rbBhkY04K0RAKWX3HvDZw6JieXtEyp5O9rmZErTf6RVVnatIOnp3JvIIdn24vdpb
-        Dg88jy4qhUh/ie5vskES2xZLpHksBE8RwAYWtzejzT2hM6l4RkYMYsQaelZAd9Zq
-        0LG8yDVlrIK1g8SdcnVV5O2XDGNIpVfWNWZkkganyg8dZt09v42Xa4TvxxVuGy5z
-        wf26vKLggbZfLx7v3u9TW5no/bSLa3EYoz+WttDL/qwOOJibxP51541CJjrpFssz
-        ZZn7qn0aVzZiwZE6i4frOqw3s/b1CEuhyS43ffA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=pncbO6
-        UEb+m+8vOmGoE/SecasoVV8iwT/YMMuVYgrJ0=; b=FalWMqtEOqXwA2nc6b8pzT
-        zYp/7qtL6KnYcjY2MsOOpcvOcHNa4eZXBt8rCbOa/xMEgmgYP4CcmTSMCkF4p4hW
-        QJUaKybvT4dXaN8ZGgrse0qZ/hyPHttxKXWCLjNfT3s5T5z4pd++YCzSzzkXwIYN
-        tVSQu6qolDWVQ5Hm+XwnG02aTv2uaXVSgo9slZT0fohJoNvPf3/c+V4TIOEIS0FR
-        MYKWxHZwbXmqvzIKH6pdFjlDT0yIOzACTqe+7homPzzJPQC5GoQBfUBghFCUtVAz
-        6ptktBerlYvmUTlX65W17oIzSKAJ5miMqaYHvvQU7Ip58o9f6lf1OZjPBuBK7lBQ
-        ==
-X-ME-Sender: <xms:aCIzYNDKf1lfCgN6Ovl5vR5YG8zlj0sjFBt5OCCS0Gap6LcS0qE1JQ>
-    <xme:aCIzYLhWVotw-At9GflSkagk0eVYQf2SmZxDn-m84p7B-d6b2M94n1FQZAjywsFPK
-    0UfobiMghLWuw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkedvgdehjecutefuodetggdotefrodftvf
+        Sun, 21 Feb 2021 22:20:49 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA58C061574;
+        Sun, 21 Feb 2021 19:20:09 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id d8so4266203qtn.8;
+        Sun, 21 Feb 2021 19:20:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kVrs5X0WZfGFW9grIUDE07Lkw35+5+f1ukgRyFLIv/4=;
+        b=MUHyhgguBmvIAaF581JKivK/qF5/5uwpQCvMaEtqbOO03fdLW7nKqjOagJCJqokKGN
+         s4MQvNjxpKXUzVoW4VCJN0gWOy05o3lAyAfZnoxFpIJ3tlF4CmQA9CEwrV9decnjVAye
+         HfFbBC98zY3jPyI3QzFt4GyS7psQ4BoiLnUxIEoRXG9fZrdVw3J63/vTD3uJkW+aqrq8
+         oUj7kCg/Hvl/IIfwOzrA18QkrSjUKLtN6OARbFKe+6SWVI4XyJZna/EY7lLPU64x5fA0
+         GOM2se0Fi4V3Kv74PY/nKxCQm+7VhafTTzmzN5JUXzYpvjoAtM+594+d/McVHKk2lGgu
+         1Ffw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kVrs5X0WZfGFW9grIUDE07Lkw35+5+f1ukgRyFLIv/4=;
+        b=BLT99BZ5HPE3WH7RQBQiuwcGGTvyxeoIqObxHrgtI+XZ0DkSe3F1m/2jXxxZG/YWak
+         9oTFFXPORq5IYkaKuYWzKvQ7RnfGIRnFkh2tjwWcr5Px2iYSY4ifRB0153yruLtJDk4S
+         hXuuVWBeLB1wP+aXyKOGasjY+tnptOLsjau1wxJh57Lvk92zcWLuxBTv6c3bpIZRPNfq
+         PJO5KxOcybwrlpGk78RqLO6aP9i+nDG81wXwqxVloaSDpoAu1Lv1Cc+yqKtDRaiWF0SI
+         /wBxP+EMYAsReR3maMQUjFtj4X/Fmv+iV9T8SvERFYX0wG0edokEGMTV0jkJBsHvdY4q
+         xAXQ==
+X-Gm-Message-State: AOAM533K6vEByNQD8pNaeNVw7+RGgm51txDQ0FLWIXcgvHDYq18oLbbx
+        pY55zb1aF9SdbJxkhA8NJA0=
+X-Google-Smtp-Source: ABdhPJxESTWoh7v6e7qKkW/kLbXVxXfZ+xFT99qQMPR4l8PN2xK/tF2rfHxdz4AVrGIpER7fqBKk/Q==
+X-Received: by 2002:ac8:4e04:: with SMTP id c4mr18379586qtw.205.1613964008848;
+        Sun, 21 Feb 2021 19:20:08 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id f8sm10044139qth.6.2021.02.21.19.20.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 19:20:08 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id E8B4F27C0054;
+        Sun, 21 Feb 2021 22:20:07 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sun, 21 Feb 2021 22:20:07 -0500
+X-ME-Sender: <xms:5iIzYH9JmUzkVzY6fnBwcYx25pH_SNBXD8DEEoqXs2a8nDCtl7LMtw>
+    <xme:5iIzYDuBVoAMLSrGWL5MtnGxhyf3CVG94K7Yx3Y9jcvEcqhuHxOvm-Ij8iseKDYLO
+    BCasM_p8EOsaxCviA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkedvgdehkecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpehnnhgvthcu
-    oehnnhgvthesfhgrshhtmhgrihhlrdhfmheqnecuggftrfgrthhtvghrnhephfejledtke
-    ehtdejtdekgfegheehfeevfeejffevkeevveekjefhtdehfeeffeegnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhhnvghtsehfrghsthhmrg
-    hilhdrfhhm
-X-ME-Proxy: <xmx:aCIzYImUrF7YZ34y7NC8ADvQSxGUVeAvbmnUxh_S6rRmQ6tinWLUKg>
-    <xmx:aCIzYHzAHV447Se7x8e3u-N-p23CUG8SrCjiUnSfRUXxVDmbbPGLIQ>
-    <xmx:aCIzYCQhLgQCk43-AjSs5LL3GROqzLx0TlALYxoMp8yL2QNZVeV79A>
-    <xmx:aiIzYOp81DGwK7nC7moWuOr8BIr2G_1A2QDB9WyMg_ddOfs3WnWryg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 586EAA00060; Sun, 21 Feb 2021 22:18:00 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-141-gf094924a34-fm-20210210.001-gf094924a
-Mime-Version: 1.0
-Message-Id: <c0ade595-9bfa-4cfc-8c87-0e955173d5db@www.fastmail.com>
-In-Reply-To: <20210219193302.odcjcaukxxjaedd5@pali>
-References: <20210211195559.n2j4jnchl2ho54mg@pali>
- <1ad78446-4a40-4c3e-8680-6dbf19616515@www.fastmail.com>
- <20210211234445.hbv2diphmgbir76u@pali>
- <000b92cc-9b54-4af9-b95c-d1317fb6f97f@www.fastmail.com>
- <20210213100139.ckrscepg72zjkj4f@pali>
- <c0b02aa0-1789-43a3-8d73-057890f703f1@www.fastmail.com>
- <20210214123310.d6armpep7kxbymbu@pali>
- <675b7a74-066b-4dc0-8dcb-f11c5606ae52@www.fastmail.com>
- <20210216104141.umy6zrrkal3dlj5j@pali>
- <d057d7f7-27a5-45ec-88f0-a653572a8ca6@www.fastmail.com>
- <20210219193302.odcjcaukxxjaedd5@pali>
-Date:   Sun, 21 Feb 2021 19:17:40 -0800
-From:   nnet <nnet@fastmail.fm>
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
-        a.heider@gmail.com, andrew@lunn.ch, gerald@gk2.net,
-        gregory.clement@bootlin.com, kostap@marvell.com,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr,
-        miquel.raynal@bootlin.com, mturquette@baylibre.com,
-        rmk+kernel@armlinux.org.uk, sboyd@kernel.org, tmn505@gmail.com,
-        vladimir.vid@sartura.hr
-Subject: =?UTF-8?Q?Re:_[PATCH_mvebu_v2_00/10]_Armada_37xx:_Fix_cpufreq_changing_b?=
- =?UTF-8?Q?ase_CPU_speed_to_800_MHz_from_1000_MHz?=
-Content-Type: text/plain
+    fjughrpeffhffvuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpeeiffdviedtteehffduudfggfegvdejjeeiffehledtgefhheeuheetheelgeeh
+    ffenucfkphepudefuddruddtjedrudegjedruddvieenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
+    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
+    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:5iIzYFBgtKA8QtyXKU-nKjzgs4Zojg6tGKB2UOKebvgHdUmjEgvCNQ>
+    <xmx:5iIzYDdO-OmkSx_Volr49Es9boMjhS6J3_IGRh9BzBr0FUD5AsPB0w>
+    <xmx:5iIzYMN79r37f-GI67Q5_0F61atfEVwPKKetNV9xD5RClsfBzwb3lQ>
+    <xmx:5yIzYIle9C2LEFaPAXGkUo1VQ_5bMXFwaYyykmYM__PUhwwVTYB2weDFkFc>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E22E4108005F;
+        Sun, 21 Feb 2021 22:20:05 -0500 (EST)
+Date:   Mon, 22 Feb 2021 11:19:33 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     sthemmin@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        daniel.lezcano@linaro.org, arnd@arndb.de,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 02/10] x86/hyper-v: Move hv_message_type to architecture
+ neutral module
+Message-ID: <YDMixTmbTXiTuhYw@boqun-archlinux>
+References: <1611779025-21503-1-git-send-email-mikelley@microsoft.com>
+ <1611779025-21503-3-git-send-email-mikelley@microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611779025-21503-3-git-send-email-mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Could you test if 1.155V voltage for L1 is stable on 1.2 GHz variant?
+On Wed, Jan 27, 2021 at 12:23:37PM -0800, Michael Kelley wrote:
+> The definition of enum hv_message_type includes arch neutral and
+> x86/x64-specific values. Ideally there would be a way to put the
+> arch neutral values in an arch neutral module, and the arch
+> specific values in an arch specific module. But C doesn't provide
+> a way to extend enum types. As a compromise, move the entire
+> definition into an arch neutral module, to avoid duplicating the
+> arch neutral values for x86/x64 and for ARM64.
+> 
+> No functional change.
+> 
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
 
-++#define MIN_VOLT_MV_FOR_L1_1200MHZ 1155
-...
-++              if (avs_min_l1 > dvfs->avs[0])
-++                      avs_min_l1 = dvfs->avs[0];
-++
-++              if (dvfs->avs[1] < avs_min_l1)
-++                      dvfs->avs[1] = avs_min_l1;
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 
-This works fine. Tested with switching 600MHz to 1.2GHz under load.
+Regards,
+Boqun
+
+> ---
+>  arch/x86/include/asm/hyperv-tlfs.h | 29 -----------------------------
+>  include/asm-generic/hyperv-tlfs.h  | 35 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 35 insertions(+), 29 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+> index 6bf42ae..dd74066 100644
+> --- a/arch/x86/include/asm/hyperv-tlfs.h
+> +++ b/arch/x86/include/asm/hyperv-tlfs.h
+> @@ -263,35 +263,6 @@ struct hv_tsc_emulation_status {
+>  #define HV_X64_MSR_TSC_REFERENCE_ENABLE		0x00000001
+>  #define HV_X64_MSR_TSC_REFERENCE_ADDRESS_SHIFT	12
+>  
+> -
+> -/* Define hypervisor message types. */
+> -enum hv_message_type {
+> -	HVMSG_NONE			= 0x00000000,
+> -
+> -	/* Memory access messages. */
+> -	HVMSG_UNMAPPED_GPA		= 0x80000000,
+> -	HVMSG_GPA_INTERCEPT		= 0x80000001,
+> -
+> -	/* Timer notification messages. */
+> -	HVMSG_TIMER_EXPIRED		= 0x80000010,
+> -
+> -	/* Error messages. */
+> -	HVMSG_INVALID_VP_REGISTER_VALUE	= 0x80000020,
+> -	HVMSG_UNRECOVERABLE_EXCEPTION	= 0x80000021,
+> -	HVMSG_UNSUPPORTED_FEATURE	= 0x80000022,
+> -
+> -	/* Trace buffer complete messages. */
+> -	HVMSG_EVENTLOG_BUFFERCOMPLETE	= 0x80000040,
+> -
+> -	/* Platform-specific processor intercept messages. */
+> -	HVMSG_X64_IOPORT_INTERCEPT	= 0x80010000,
+> -	HVMSG_X64_MSR_INTERCEPT		= 0x80010001,
+> -	HVMSG_X64_CPUID_INTERCEPT	= 0x80010002,
+> -	HVMSG_X64_EXCEPTION_INTERCEPT	= 0x80010003,
+> -	HVMSG_X64_APIC_EOI		= 0x80010004,
+> -	HVMSG_X64_LEGACY_FP_ERROR	= 0x80010005
+> -};
+> -
+>  struct hv_nested_enlightenments_control {
+>  	struct {
+>  		__u32 directhypercall:1;
+> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+> index e73a118..d06f7b1 100644
+> --- a/include/asm-generic/hyperv-tlfs.h
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> @@ -213,6 +213,41 @@ enum HV_GENERIC_SET_FORMAT {
+>  #define HV_MESSAGE_PAYLOAD_BYTE_COUNT	(240)
+>  #define HV_MESSAGE_PAYLOAD_QWORD_COUNT	(30)
+>  
+> +/*
+> + * Define hypervisor message types. Some of the message types
+> + * are x86/x64 specific, but there's no good way to separate
+> + * them out into the arch-specific version of hyperv-tlfs.h
+> + * because C doesn't provide a way to extend enum types.
+> + * Keeping them all in the arch neutral hyperv-tlfs.h seems
+> + * the least messy compromise.
+> + */
+> +enum hv_message_type {
+> +	HVMSG_NONE			= 0x00000000,
+> +
+> +	/* Memory access messages. */
+> +	HVMSG_UNMAPPED_GPA		= 0x80000000,
+> +	HVMSG_GPA_INTERCEPT		= 0x80000001,
+> +
+> +	/* Timer notification messages. */
+> +	HVMSG_TIMER_EXPIRED		= 0x80000010,
+> +
+> +	/* Error messages. */
+> +	HVMSG_INVALID_VP_REGISTER_VALUE	= 0x80000020,
+> +	HVMSG_UNRECOVERABLE_EXCEPTION	= 0x80000021,
+> +	HVMSG_UNSUPPORTED_FEATURE	= 0x80000022,
+> +
+> +	/* Trace buffer complete messages. */
+> +	HVMSG_EVENTLOG_BUFFERCOMPLETE	= 0x80000040,
+> +
+> +	/* Platform-specific processor intercept messages. */
+> +	HVMSG_X64_IOPORT_INTERCEPT	= 0x80010000,
+> +	HVMSG_X64_MSR_INTERCEPT		= 0x80010001,
+> +	HVMSG_X64_CPUID_INTERCEPT	= 0x80010002,
+> +	HVMSG_X64_EXCEPTION_INTERCEPT	= 0x80010003,
+> +	HVMSG_X64_APIC_EOI		= 0x80010004,
+> +	HVMSG_X64_LEGACY_FP_ERROR	= 0x80010005
+> +};
+> +
+>  /* Define synthetic interrupt controller message flags. */
+>  union hv_message_flags {
+>  	__u8 asu8;
+> -- 
+> 1.8.3.1
+> 
