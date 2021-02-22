@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39ED3217BE
+	by mail.lfdr.de (Postfix) with ESMTP id 32EB13217BD
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231473AbhBVM4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:56:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231255AbhBVMXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:23:48 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85ED564E61;
-        Mon, 22 Feb 2021 12:23:07 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lEAEz-00FJdN-6a; Mon, 22 Feb 2021 12:23:05 +0000
+        id S230355AbhBVM4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:56:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231256AbhBVMXt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:23:49 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC80C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 04:23:08 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id v62so14125076wmg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 04:23:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7SDXGUBiQi4h2HvY9cK08vZS2jwK85xZ930e3fkTHuI=;
+        b=IzKBY469kDikkQuk7qOc56oZV76eW5IdTFjsnoed/tfLuz8CnBjEgTTPvyTLhVfhOP
+         wopA67cgEGylkOF3ygRHjqCkt42Ol4me5rlzhLKbvDB/Bta+W87XkgWfe4/n2x0GWMpn
+         AiiQBIPtjvj9ndyPeeQ5WJG1Eo04ZnQGyIxQqyrxBjHmBg8AxixfHeMI7uKqN/PhYLxZ
+         7Uvw4cDuw2V6Q+0fxCjrSNyGepCLO/h+Tf8lvd/0P96n0vRBkrgkfYIca7EXe8gp1K8e
+         +orkBSeCPCOivRMza1Tuem2j2sEb9BNoWvOcZ2Vz0y9UDN6P2p9wxX8w1GBm4d9FmllS
+         2wbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7SDXGUBiQi4h2HvY9cK08vZS2jwK85xZ930e3fkTHuI=;
+        b=mqYDdJfChojTq8cJQcz0IDYF/341HuuP7kORi4U4khqmzZog3tuL09DkWC0QscZKq2
+         p5rpEw95Pk6kG4WxX68k50Jg375ExreiBQhSnvIKLbAz7oqFchKh7S35O7ZsDq0VsHrv
+         VJDZP1dIdPOUaMB5CAy/EhyU3r0skkkNJ8+C6LAkzieQ/TVs+cpam5N+E7ggHz5FUkxQ
+         Y3lrqXUB4fesy8PCtB4CUntJ1yojAIAAHZFK9BqpL2lFMx018ONX7zMZ+x8JZFVoaU7b
+         VA8GpB6zPskZjooGa5+UFEBe+EqFgvSXAy7ggMCeKd2hXgxHinNsTkbtP2wUwGWj8F2s
+         Z2Dg==
+X-Gm-Message-State: AOAM532dQOTl9qNrAnE6GLTCkhNl+SSAqtl7S/9DOp6qSY+RxGnl5YCI
+        TqZTJpj788Es0AddytrEbkiejw==
+X-Google-Smtp-Source: ABdhPJwvPKOZ92308u2obk73vmCah5qafXApTj5YxzmiktYZk7gUG36YJS6iu5c92Z+mNj5FN6Zmhg==
+X-Received: by 2002:a05:600c:21c1:: with SMTP id x1mr17013757wmj.185.1613996587567;
+        Mon, 22 Feb 2021 04:23:07 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id c3sm6777007wrw.80.2021.02.22.04.23.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 04:23:07 -0800 (PST)
 Date:   Mon, 22 Feb 2021 12:23:04 +0000
-Message-ID: <87ft1o1ec7.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st,
-        tglx@linutronix.de, will@kernel.org
-Subject: Re: [PATCH 5/8] arm64: irq: add a default handle_irq panic function
-In-Reply-To: <20210222120614.GC70951@C02TD0UTHF1T.local>
-References: <20210219113904.41736-1-mark.rutland@arm.com>
-        <20210219113904.41736-6-mark.rutland@arm.com>
-        <20210222095913.GA70951@C02TD0UTHF1T.local>
-        <1d2c27d72b9b2cbdb83d25165a20559a@kernel.org>
-        <20210222112544.GB70951@C02TD0UTHF1T.local>
-        <2e6a9659eabcccb355318ff7214c8d1f@kernel.org>
-        <20210222120614.GC70951@C02TD0UTHF1T.local>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st, tglx@linutronix.de, will@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+From:   Quentin Perret <qperret@google.com>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net, valentin.schneider@arm.com
+Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
+ cpu_util_next()
+Message-ID: <YDOiKH/XQDUKcrPU@google.com>
+References: <20210222095401.37158-1-vincent.donnefort@arm.com>
+ <YDODN1rnTqfTQOug@google.com>
+ <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 12:06:14 +0000,
-Mark Rutland <mark.rutland@arm.com> wrote:
+On Monday 22 Feb 2021 at 11:36:03 (+0000), Vincent Donnefort wrote:
+> Here's with real life numbers.
 > 
-> On Mon, Feb 22, 2021 at 11:43:13AM +0000, Marc Zyngier wrote:
-
-[...]
-
-> > As I said, it's not a big deal. I doubt that we'll see default_handle_irq()
-> > exploding in practice. But the real nit here is the difference of treatment
-> > between IRQ and FIQ. *IF* we ever get a system that only signals its
-> > interrupt as FIQ (and I don't see why we'd forbid that), then we would
+> The task: util_avg=3 (1) util_est=11 (2)
 > 
-> That's a fair point.
+> pd0 (CPU-0, CPU-1, CPU-2)
 > 
-> For consistency, we could remove the init_IRQ() panic() and instead log
-> the registered handlers, e.g.
+>  cpu_util_next(CPU-0, NULL): 7
+>  cpu_util_next(CPU-1, NULL): 3
+>  cpu_util_next(CPU-2, NULL): 0 <- Most capacity, try to place task here.
 > 
-> | pr_info("Root IRQ handler is %ps\n", handle_arch_irq);
-> | pr_info("Root FIQ handler is %ps\n", handle_arch_fiq);
+>  cpu_util_next(CPU-2, task): 0 + 11 (2)
 > 
-> ... or do that inside the set_handle_{irq,fiq}() functions. That way the
-> messages (or absence thereof) would be sufficient to diagnose the lack
-> of a root IRQ/FIQ handler when IRQ/FIQ happens to be quiescent.
 > 
-> Does that sound any better?
+> pd1 (CPU-3):
+> 
+>  cpu_util_next(CPU-3, NULL): 77
+> 
+>  cpu_util_next(CPU-3, task): 77 + 3 (1)
+> 
+> 
+> On pd0, the task contribution is 11. On pd1, it is 3.
 
-Yup, I quite like the second variant (using set_handle_{irq,fiq}()).
+Yes but that accurately reflects what the task's impact on frequency
+selection of those CPUs if it was enqueued there, right?
 
-Thanks,
+This is an important property we should aim to keep, the frequency
+prediction needs to be in sync with the actual frequency request, or
+the energy estimate will be off.
 
-	M.
+> When computing the energy
+> deltas, pd0's is likely to be higher than pd1's, only because the task
+> contribution is higher for one comparison than the other.
 
--- 
-Without deviation from the norm, progress is not possible.
+You mean the contribution to sum_util right? I think I see what you mean
+but I'm still not sure if this really is an issue. This is how util_est
+works, and the EM stuff is just consistent with that.
+
+The issue you describe can only happen (I think) when a rq's util_avg is
+larger than its util-est emwa by some margin (that has to do with the
+ewma-util_avg delta for the task?). But that means the ewma is not to be
+trusted to begin with, so ...
