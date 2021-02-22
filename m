@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858173218CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B1C321944
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbhBVNbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:31:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52920 "EHLO mail.kernel.org"
+        id S231583AbhBVNpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:45:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231342AbhBVMmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:42:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63BEB64F2F;
-        Mon, 22 Feb 2021 12:39:50 +0000 (UTC)
+        id S231639AbhBVMny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:43:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4552D64DF0;
+        Mon, 22 Feb 2021 12:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997590;
-        bh=7HAX9sU+l6BNdNYSlFXNawad2Tcj2aC8xHHqNBYP1s8=;
+        s=korg; t=1613997654;
+        bh=jCyPvmj/VHxcGkWl8CNXFkUNCSiy3nQSDgNHVBoMCJE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N6Io688xoAPDktmyh7ppmmw7g+thR2oPCgHQtCRF6mOkdiwhAkuQwaNuj1JSvqt9d
-         DA5MEPUf67SnLRlrFDz/bT8OnKwLKApRHoG/tC7Wzjze33JrJqQra01HhbY6VkqJm5
-         UDRDgY4lqjAXoRaUMDbnlLFW33AKHSS71fu0GLss=
+        b=gD5og0omF8MHNbnhlPcZ6zYkf7NG85CNQJ26vOb2m2WaEhKb/JBZBJESe7zCBBt9v
+         azByQuQT/m+97AKYm+IwBY4Zkof6ZcXSvmfJ42d7a3MQiVdMHdI1AL2k0/3gJ5m+GS
+         3GW+fKULmRw6JETrg5cxHU3Xos4VNUjzDRjzNidE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Wysochanski <dwysocha@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 07/35] SUNRPC: Handle 0 length opaque XDR object data properly
+Subject: [PATCH 4.9 05/49] iwlwifi: mvm: take mutex for calling iwl_mvm_get_sync_time()
 Date:   Mon, 22 Feb 2021 13:36:03 +0100
-Message-Id: <20210222121018.503158969@linuxfoundation.org>
+Message-Id: <20210222121024.207916459@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121013.581198717@linuxfoundation.org>
-References: <20210222121013.581198717@linuxfoundation.org>
+In-Reply-To: <20210222121022.546148341@linuxfoundation.org>
+References: <20210222121022.546148341@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,77 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Wysochanski <dwysocha@redhat.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit e4a7d1f7707eb44fd953a31dd59eff82009d879c ]
+[ Upstream commit 5c56d862c749669d45c256f581eac4244be00d4d ]
 
-When handling an auth_gss downcall, it's possible to get 0-length
-opaque object for the acceptor.  In the case of a 0-length XDR
-object, make sure simple_get_netobj() fills in dest->data = NULL,
-and does not continue to kmemdup() which will set
-dest->data = ZERO_SIZE_PTR for the acceptor.
+We need to take the mutex to call iwl_mvm_get_sync_time(), do it.
 
-The trace event code can handle NULL but not ZERO_SIZE_PTR for a
-string, and so without this patch the rpcgss_context trace event
-will crash the kernel as follows:
-
-[  162.887992] BUG: kernel NULL pointer dereference, address: 0000000000000010
-[  162.898693] #PF: supervisor read access in kernel mode
-[  162.900830] #PF: error_code(0x0000) - not-present page
-[  162.902940] PGD 0 P4D 0
-[  162.904027] Oops: 0000 [#1] SMP PTI
-[  162.905493] CPU: 4 PID: 4321 Comm: rpc.gssd Kdump: loaded Not tainted 5.10.0 #133
-[  162.908548] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
-[  162.910978] RIP: 0010:strlen+0x0/0x20
-[  162.912505] Code: 48 89 f9 74 09 48 83 c1 01 80 39 00 75 f7 31 d2 44 0f b6 04 16 44 88 04 11 48 83 c2 01 45 84 c0 75 ee c3 0f 1f 80 00 00 00 00 <80> 3f 00 74 10 48 89 f8 48 83 c0 01 80 38 00 75 f7 48 29 f8 c3 31
-[  162.920101] RSP: 0018:ffffaec900c77d90 EFLAGS: 00010202
-[  162.922263] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000fffde697
-[  162.925158] RDX: 000000000000002f RSI: 0000000000000080 RDI: 0000000000000010
-[  162.928073] RBP: 0000000000000010 R08: 0000000000000e10 R09: 0000000000000000
-[  162.930976] R10: ffff8e698a590cb8 R11: 0000000000000001 R12: 0000000000000e10
-[  162.933883] R13: 00000000fffde697 R14: 000000010034d517 R15: 0000000000070028
-[  162.936777] FS:  00007f1e1eb93700(0000) GS:ffff8e6ab7d00000(0000) knlGS:0000000000000000
-[  162.940067] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  162.942417] CR2: 0000000000000010 CR3: 0000000104eba000 CR4: 00000000000406e0
-[  162.945300] Call Trace:
-[  162.946428]  trace_event_raw_event_rpcgss_context+0x84/0x140 [auth_rpcgss]
-[  162.949308]  ? __kmalloc_track_caller+0x35/0x5a0
-[  162.951224]  ? gss_pipe_downcall+0x3a3/0x6a0 [auth_rpcgss]
-[  162.953484]  gss_pipe_downcall+0x585/0x6a0 [auth_rpcgss]
-[  162.955953]  rpc_pipe_write+0x58/0x70 [sunrpc]
-[  162.957849]  vfs_write+0xcb/0x2c0
-[  162.959264]  ksys_write+0x68/0xe0
-[  162.960706]  do_syscall_64+0x33/0x40
-[  162.962238]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  162.964346] RIP: 0033:0x7f1e1f1e57df
-
-Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20210115130252.4bb5ccf881a6.I62973cbb081e80aa5b0447a5c3b9c3251a65cf6b@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/auth_gss/auth_gss_internal.h | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/debugfs-vif.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/sunrpc/auth_gss/auth_gss_internal.h b/net/sunrpc/auth_gss/auth_gss_internal.h
-index c5603242b54bf..f6d9631bd9d00 100644
---- a/net/sunrpc/auth_gss/auth_gss_internal.h
-+++ b/net/sunrpc/auth_gss/auth_gss_internal.h
-@@ -34,9 +34,12 @@ simple_get_netobj(const void *p, const void *end, struct xdr_netobj *dest)
- 	q = (const void *)((const char *)p + len);
- 	if (unlikely(q > end || q < p))
- 		return ERR_PTR(-EFAULT);
--	dest->data = kmemdup(p, len, GFP_NOFS);
--	if (unlikely(dest->data == NULL))
--		return ERR_PTR(-ENOMEM);
-+	if (len) {
-+		dest->data = kmemdup(p, len, GFP_NOFS);
-+		if (unlikely(dest->data == NULL))
-+			return ERR_PTR(-ENOMEM);
-+	} else
-+		dest->data = NULL;
- 	dest->len = len;
- 	return q;
- }
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/debugfs-vif.c b/drivers/net/wireless/intel/iwlwifi/mvm/debugfs-vif.c
+index f4d75ffe3d8a8..7f01fb91ea668 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/debugfs-vif.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/debugfs-vif.c
+@@ -518,7 +518,10 @@ static ssize_t iwl_dbgfs_os_device_timediff_read(struct file *file,
+ 	const size_t bufsz = sizeof(buf);
+ 	int pos = 0;
+ 
++	mutex_lock(&mvm->mutex);
+ 	iwl_mvm_get_sync_time(mvm, &curr_gp2, &curr_os);
++	mutex_unlock(&mvm->mutex);
++
+ 	do_div(curr_os, NSEC_PER_USEC);
+ 	diff = curr_os - curr_gp2;
+ 	pos += scnprintf(buf + pos, bufsz - pos, "diff=%lld\n", diff);
 -- 
 2.27.0
 
