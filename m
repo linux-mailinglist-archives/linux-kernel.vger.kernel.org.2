@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE653216D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA18E3216D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhBVMhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:37:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46206 "EHLO mail.kernel.org"
+        id S231327AbhBVMhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:37:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230458AbhBVMQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:16:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93EC764F00;
-        Mon, 22 Feb 2021 12:16:00 +0000 (UTC)
+        id S230235AbhBVMQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:16:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1421D64F0B;
+        Mon, 22 Feb 2021 12:16:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996161;
-        bh=pocyn+9VVPB9fe6QZ4lhsKCTCFw29kNYVSRIRcFeyvE=;
+        s=korg; t=1613996163;
+        bh=axZ0Jl2Xd0A1Y4Llp/hS6PE0wj1Pn8dRYAEkgCvlvr8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s79CUSSpfPWumagbEks83zi4H0fILzLEREmCadpr5RECeGW5N4b4ESE3EWPUj0QNz
-         oPGaJsakquFLfcT+kZ4JNfYiDlVavhyYv941s6N8jobJhay37FpmXlPxtL7ySmfJcZ
-         WpvLU/jioiQlF7YFkQLLbfaG5S1KqpVYJIi9xmZk=
+        b=brySSSiopWlyfVjGl3Iq3lFos/8Z8cQmcfuoFtqlADlvzr9lIo+5rCP0rhYtM+FH/
+         0e12Kaj2g7zWeMXXBfxVnBS9cjkwhvfTusn5atI0Ca6LR24FBrOtlO8LavryMG+8qq
+         WOzkWSKR+uzRgy9zyGVQ40efP+61cZcHhPEnBECY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexandre Ghiti <alex@ghiti.fr>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        stable@vger.kernel.org, Lin Feng <linf@wangsu.com>,
+        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 11/50] riscv: virt_addr_valid must check the address belongs to linear mapping
-Date:   Mon, 22 Feb 2021 13:13:02 +0100
-Message-Id: <20210222121022.032808615@linuxfoundation.org>
+Subject: [PATCH 4.19 12/50] bfq-iosched: Revert "bfq: Fix computation of shallow depth"
+Date:   Mon, 22 Feb 2021 13:13:03 +0100
+Message-Id: <20210222121022.170793596@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
 References: <20210222121019.925481519@linuxfoundation.org>
@@ -41,43 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Ghiti <alex@ghiti.fr>
+From: Lin Feng <linf@wangsu.com>
 
-[ Upstream commit 2ab543823322b564f205cb15d0f0302803c87d11 ]
+[ Upstream commit 388c705b95f23f317fa43e6abf9ff07b583b721a ]
 
-virt_addr_valid macro checks that a virtual address is valid, ie that
-the address belongs to the linear mapping and that the corresponding
- physical page exists.
+This reverts commit 6d4d273588378c65915acaf7b2ee74e9dd9c130a.
 
-Add the missing check that ensures the virtual address belongs to the
-linear mapping, otherwise __virt_to_phys, when compiled with
-CONFIG_DEBUG_VIRTUAL enabled, raises a WARN that is interpreted as a
-kernel bug by syzbot.
+bfq.limit_depth passes word_depths[] as shallow_depth down to sbitmap core
+sbitmap_get_shallow, which uses just the number to limit the scan depth of
+each bitmap word, formula:
+scan_percentage_for_each_word = shallow_depth / (1 << sbimap->shift) * 100%
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+That means the comments's percentiles 50%, 75%, 18%, 37% of bfq are correct.
+But after commit patch 'bfq: Fix computation of shallow depth', we use
+sbitmap.depth instead, as a example in following case:
+
+sbitmap.depth = 256, map_nr = 4, shift = 6; sbitmap_word.depth = 64.
+The resulsts of computed bfqd->word_depths[] are {128, 192, 48, 96}, and
+three of the numbers exceed core dirver's 'sbitmap_word.depth=64' limit
+nothing.
+
+Signed-off-by: Lin Feng <linf@wangsu.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/include/asm/page.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ block/bfq-iosched.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-index 06cfbb3aacbb0..abc147aeff8b0 100644
---- a/arch/riscv/include/asm/page.h
-+++ b/arch/riscv/include/asm/page.h
-@@ -115,7 +115,10 @@ extern unsigned long min_low_pfn;
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index b7ad8ac6bb41e..5198ed1b36690 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -5280,13 +5280,13 @@ static unsigned int bfq_update_depths(struct bfq_data *bfqd,
+ 	 * limit 'something'.
+ 	 */
+ 	/* no more than 50% of tags for async I/O */
+-	bfqd->word_depths[0][0] = max(bt->sb.depth >> 1, 1U);
++	bfqd->word_depths[0][0] = max((1U << bt->sb.shift) >> 1, 1U);
+ 	/*
+ 	 * no more than 75% of tags for sync writes (25% extra tags
+ 	 * w.r.t. async I/O, to prevent async I/O from starving sync
+ 	 * writes)
+ 	 */
+-	bfqd->word_depths[0][1] = max((bt->sb.depth * 3) >> 2, 1U);
++	bfqd->word_depths[0][1] = max(((1U << bt->sb.shift) * 3) >> 2, 1U);
  
- #endif /* __ASSEMBLY__ */
+ 	/*
+ 	 * In-word depths in case some bfq_queue is being weight-
+@@ -5296,9 +5296,9 @@ static unsigned int bfq_update_depths(struct bfq_data *bfqd,
+ 	 * shortage.
+ 	 */
+ 	/* no more than ~18% of tags for async I/O */
+-	bfqd->word_depths[1][0] = max((bt->sb.depth * 3) >> 4, 1U);
++	bfqd->word_depths[1][0] = max(((1U << bt->sb.shift) * 3) >> 4, 1U);
+ 	/* no more than ~37% of tags for sync writes (~20% extra tags) */
+-	bfqd->word_depths[1][1] = max((bt->sb.depth * 6) >> 4, 1U);
++	bfqd->word_depths[1][1] = max(((1U << bt->sb.shift) * 6) >> 4, 1U);
  
--#define virt_addr_valid(vaddr)	(pfn_valid(virt_to_pfn(vaddr)))
-+#define virt_addr_valid(vaddr)	({						\
-+	unsigned long _addr = (unsigned long)vaddr;				\
-+	(unsigned long)(_addr) >= PAGE_OFFSET && pfn_valid(virt_to_pfn(_addr));	\
-+})
- 
- #define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | \
- 				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+ 	for (i = 0; i < 2; i++)
+ 		for (j = 0; j < 2; j++)
 -- 
 2.27.0
 
