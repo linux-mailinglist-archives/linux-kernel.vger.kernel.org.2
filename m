@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E710321B83
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 039AD321B85
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:35:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbhBVPdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:33:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58206 "EHLO mail.kernel.org"
+        id S231176AbhBVPeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:34:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230419AbhBVPcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:32:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B53064EC3;
-        Mon, 22 Feb 2021 15:31:33 +0000 (UTC)
+        id S230412AbhBVPcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 10:32:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E2A564E76;
+        Mon, 22 Feb 2021 15:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614007894;
-        bh=O5oVzXeXDcQjdSLsH3D0UHdDHpNIqdFtFj8TS0MdwGU=;
+        s=korg; t=1614007898;
+        bh=XMEZ7PH/ni+hF/4PzC80cUBZVOIDoDWFydw/tU/lfhE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fpt8P6UnaBTUcspIelbCF3zsXvfFuavDZmasUK6CVpmHCZYM2fkHM5FxIttitqStG
-         tXSBSBo3rmImvopkJDQaO9eA+Pr8tGiomW7+W5ufzCJHzY6D9yN0U9f1FkAUCRuw0j
-         sj39KPcN3xx67aAgMZyf36nIq0w85O+xVArkmD7U=
-Date:   Mon, 22 Feb 2021 15:24:30 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Nishanth Aravamudan <naravamudan@digitalocean.com>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        cgardner@digitalocean.com, pmccormick@digitalocean.com
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <YDO+nl6aI/Gl1LPd@kroah.com>
-References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
- <YA/E1bHRmZb50MlS@kroah.com>
- <20210222140052.GA1520276@breakout>
+        b=pz+ySTl/03N7Tyvbc8xOkfaa/v61t91srPxX0mzW7+7fEpiM+U55PDXRlAZE5uOSw
+         unbPjWJBEnZ69vAvjjCsy5BuQ2QWWFstuzBRkkbNsDzxBR1Ljay6jYq3beAZvgzya8
+         bieDwiFexYbtu+ADcBO/xQIoz/W2VZ5snJ0J4rLs=
+Date:   Mon, 22 Feb 2021 16:26:33 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Atul Gopinathan <atulgopinathan@gmail.com>
+Cc:     tiwai@suse.de, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, gustavo@embeddedor.com
+Subject: Re: [PATCH 2/2] staging: rtl8192e: Change state information from u16
+ to u8
+Message-ID: <YDPNKTHZqaS37XPe@kroah.com>
+References: <20210220182154.9457-1-atulgopinathan@gmail.com>
+ <20210220182154.9457-2-atulgopinathan@gmail.com>
+ <YDJbSgqTpBpIsbVB@kroah.com>
+ <20210221165721.GA10040@atulu-nitro>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210222140052.GA1520276@breakout>
+In-Reply-To: <20210221165721.GA10040@atulu-nitro>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 08:00:52AM -0600, Nishanth Aravamudan wrote:
-> Hi Greg,
-> 
-> On 26.01.2021 [08:29:25 +0100], Greg Kroah-Hartman wrote:
-> > On Mon, Jan 25, 2021 at 11:55:11AM -0800, Scott Branden wrote:
-> > > Hi All,
+On Sun, Feb 21, 2021 at 10:27:21PM +0530, Atul Gopinathan wrote:
+> On Sun, Feb 21, 2021 at 02:08:26PM +0100, Greg KH wrote:
+> > On Sat, Feb 20, 2021 at 11:51:55PM +0530, Atul Gopinathan wrote:
+> > > The "CcxRmState" field in struct "rtllib_network" is defined
+> > > as a u16 array of size 2 (so, 4 bytes in total).
 > > > 
-> > > The 5.10 LTS kernel being officially LTS supported for 2 years
-> > > presents a problem: why would anyone select a 5.10 kernel with 2
-> > > year LTS when 5.4 kernel has a 6 year LTS.
+> > > But the operations performed on this array throughout the code
+> > > base (in rtl8192e/) are all in byte size 2 indicating that this
+> > > array's type was defined wrongly.
+> > > 
+> > > There are two situation were u16 type of this field could yield
+> > > incorrect behaviour:
+> > > 
+> > > 1. In rtllib_rx.c:1970:
+> > > memcpy(network->CcxRmState, &info_element->data[4], 2);
+> > > 
+> > > Here last 2 bytes (index 4 and 5) from the info_element->data[]
+> > > array are meant to be copied into CcxRmState[].
+> > > Note that "data" array here is an array of type u8.
+> > > 
+> > > 2. In function "update_network()" in staging/rtl8192e/rtllib_rx.c:
+> > > memcpy(dst->CcxRmState, src->CcxRmState, 2);
+> > > 
+> > > Here again, only 2 bytes are copied from the source state to
+> > > destination state.
+> > > 
+> > > There are no instances of "CcxRmState" requiring u16 data type.
+> > > Here is the output of "grep -IRn 'CcxRmState'" on the rtl8192e/
+> > > directory for reviewing:
+> > > 
+> > > rtllib_rx.c:1970:			memcpy(network->CcxRmState, &info_element->data[4], 2);
+> > > rtllib_rx.c:1971:			if (network->CcxRmState[0] != 0)
+> > > rtllib_rx.c:1975:			network->MBssidMask = network->CcxRmState[1] & 0x07;
+> > > rtllib_rx.c:2520:	memcpy(dst->CcxRmState, src->CcxRmState, 2);
+> > > rtllib.h:1108:	u8	CcxRmState[2];
+> > 
+> > You just changed the logic in line 1975 in that file, right?  Are you
+> > _SURE_ that is ok?  Do you have a device to test this on?
 > 
-> <snip>
+> I'm sorry, I didn't quite get you. By line 1975 in rtllib_rx.c, did you mean
+> the following line?:
 > 
-> > > If 5.10 is "actually" going to be supported for 6 years it would be
-> > > quite valuable to make such a declaration.
-> > > https://www.kernel.org/category/releases.html
-> > 
-> > Why?  What would that change?
-> > 
-> > Ok, seriously, this happens every year, and every year we go through
-> > the same thing, it's not like this is somehow new, right?
-> > 
-> > I want to see companies _using_ the kernel, and most importantly,
-> > _updating_ their devices with it, to know if it is worth to keep
-> > around for longer than 2 years.  I also, hopefully, want to see how
-> > those companies will help me out in the testing and maintenance of
-> > that kernel version in order to make supporting it for 6 years
-> > actually possible.
-> > 
-> > So, are you planning on using 5.10?  Will you will be willing to help
-> > out in testing the -rc releases I make to let me know if there are any
-> > problems, and to help in pointing out and backporting any specific
-> > patches that your platforms need for that kernel release?
-> > 
-> > When I get this kind of promises and support from companies, then I am
-> > glad to bump up the length of the kernel support from 2 to 6 years,
-> > and I mark it on the web site.  Traditionally this happens in
-> > Febuary/March once I hear from enough companies.  Can I count on your
-> > support in this endeavor?
-> 
-> I am very sorry for the long delay on my end (I had privately e-mailed
-> Greg on January 28) -- DigitalOcean also intends to provide feedback and
-> testing on the 5.10 series. We intend to use it as the basis for our
-> next-next kernel and are very invested in ensuring the stability and
-> performance of the kernel.
+> network->MBssidMask = network->CcxRmState[1] & 0x07;
 
-Great!  If you need me to add your cc: to the -rc release announcements
-so that you have an easy email to respond to, just let me know and I can
-do so.
+Yes.
 
-Any ideas when the testing will start happening?  There's a 5.10-rc
-release out there right now if you want to start today :)
+> network->CcxRmState is being fed with 2 bytes of u8 data, in line 1970 (as
+> seen above). I believe my patch doesn't change the logic of an "&" operation
+> being performed on it with 0x07, right?
+
+It changes the location of the [1] operation to point to a different
+place in memory from what I can tell, as you changed the type of that
+array.
 
 thanks,
 
