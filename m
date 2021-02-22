@@ -2,157 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B110B321307
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72FCE321311
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:28:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhBVJZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:25:49 -0500
-Received: from foss.arm.com ([217.140.110.172]:36840 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230044AbhBVJZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:25:16 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68B51D6E;
-        Mon, 22 Feb 2021 01:24:28 -0800 (PST)
-Received: from e124901.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB5A43F73B;
-        Mon, 22 Feb 2021 01:24:26 -0800 (PST)
-Date:   Mon, 22 Feb 2021 09:24:26 +0000
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH] sched/pelt: Fix task util_est update filtering
-Message-ID: <20210222092426.GA5716@e124901.cambridge.arm.com>
-References: <20210216163921.572228-1-vincent.donnefort@arm.com>
- <CAKfTPtDC1GYV_7zoUtZa5MNLdt0Lx=X_UgB=Q8UtsGf8=Kd3iQ@mail.gmail.com>
+        id S230125AbhBVJ0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:26:41 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:48426 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230195AbhBVJ0B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:26:01 -0500
+Received: by mail-io1-f69.google.com with SMTP id l5so8239698iol.15
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:25:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=dd5E75WeB1fcJTnUyxbeSxDm5KeJnuGU9IgYm2DyzmU=;
+        b=L0LtuHH5cbVwyHIiWdiCsweIOypBA2S866x15Z7WcRpQV2ef7Sw5BOB+Tl+npqt6/S
+         ycsE9CMNvMgMSf/PHFQdlNzrMxPN1XvUctQdXlvtE2/CJQxxC+OFJBxybjL8IuIHbn6y
+         IzhhW8Uboaf6rkPbhrH/jbxpdNEyEoIEVsEiHZ3e3Czrd1YFFAqIbhsYhMdemtCVNUiJ
+         qQ7+JZ4tdm4EMaI0BYdztNB5RxZ8hexOSPXicMggG10L8LtYArMulHb1cid/ZZhhRJ1G
+         j7vT05NeZzN4JQLNcXNsKSEIzpbkBQskiAYW0vyttl8aj/P3cF0PJo9Msmov0J5RWfzl
+         Mwdg==
+X-Gm-Message-State: AOAM531hhP9z/ii+3MafOAoX8R2mr7IZ/A6KE7C7ok2YvRTkX7uuReGp
+        V+kjjqOZKhE24p44COz7+kgBOn9wP2js4YHBKM57CfuWsyt0
+X-Google-Smtp-Source: ABdhPJyc36tIXExcRpXhdhOptC8rXSAFw70zjDUUHJsw7xDbK0PMwjV+Eaf8fWfXi4Zdb/iHi7KZgi954segSaraf9P+InXjDzl6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDC1GYV_7zoUtZa5MNLdt0Lx=X_UgB=Q8UtsGf8=Kd3iQ@mail.gmail.com>
+X-Received: by 2002:a92:940b:: with SMTP id c11mr13431224ili.132.1613985920259;
+ Mon, 22 Feb 2021 01:25:20 -0800 (PST)
+Date:   Mon, 22 Feb 2021 01:25:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000731bc205bbe96143@google.com>
+Subject: memory leak in __pskb_copy_fclone
+From:   syzbot <syzbot+44b651863a17760a893b@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, stefan@datenfreihafen.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 11:48:28AM +0100, Vincent Guittot wrote:
-> On Tue, 16 Feb 2021 at 17:39, <vincent.donnefort@arm.com> wrote:
-> >
-> > From: Vincent Donnefort <vincent.donnefort@arm.com>
-> >
-> > Being called for each dequeue, util_est reduces the number of its updates
-> > by filtering out when the EWMA signal is different from the task util_avg
-> > by less than 1%. It is a problem for a sudden util_avg ramp-up. Due to the
-> > decay from a previous high util_avg, EWMA might now be close enough to
-> > the new util_avg. No update would then happen while it would leave
-> > ue.enqueued with an out-of-date value.
-> >
-> > Taking into consideration the two util_est members, EWMA and enqueued for
-> > the filtering, ensures, for both, an up-to-date value.
-> >
-> > This is for now an issue only for the trace probe that might return the
-> > stale value. Functional-wise, it isn't (yet) a problem, as the value is
-> 
-> What do you mean by "it isn't (yet) a problem" ? How could this become
-> a problem ?
+Hello,
 
-I wrote "yet" as nothing prevents anyone from using the ue.enqueued signal.
+syzbot found the following issue on:
 
-> 
-> > always accessed through max(enqueued, ewma).
-> >
-> 
-> This adds more tests and or update of  struct avg.util_est. It would
-> be good to have an idea of the perf impact. Especially because this
-> only fixes a tracing problem
+HEAD commit:    f40ddce8 Linux 5.11
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17b89c34d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5528e8db7fc481ae
+dashboard link: https://syzkaller.appspot.com/bug?extid=44b651863a17760a893b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a9d40cd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1208fccad00000
 
-I ran hackbench on the big cores of a SD845C board. After 100 iterations of
-100 loops runs, the geometric mean of the hackbench test is 0.1% lower
-with this patch applied (2.0833s vs 2.0858s). The p-value, computed with
-the ks_2samp [1] is 0.37. We can't conclude that the two distributions are
-different. This patch, in this scenario seems completely harmless.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+44b651863a17760a893b@syzkaller.appspotmail.com
 
-Shall I include those results in the commit message?
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff888110c36e00 (size 232):
+  comm "syz-executor899", pid 8419, jiffies 4294996042 (age 38.220s)
+  hex dump (first 32 bytes):
+    10 1b f0 10 81 88 ff ff 10 1b f0 10 81 88 ff ff  ................
+    00 00 00 00 00 00 00 00 40 1a f0 10 81 88 ff ff  ........@.......
+  backtrace:
+    [<00000000b4534d28>] __alloc_skb+0x6d/0x280 net/core/skbuff.c:198
+    [<00000000a1f27cd4>] __pskb_copy_fclone+0x73/0x330 net/core/skbuff.c:1563
+    [<000000003311a1de>] __pskb_copy include/linux/skbuff.h:1163 [inline]
+    [<000000003311a1de>] pskb_copy include/linux/skbuff.h:3130 [inline]
+    [<000000003311a1de>] hwsim_hw_xmit+0xd3/0x140 drivers/net/ieee802154/mac802154_hwsim.c:132
+    [<00000000c07253fa>] drv_xmit_async net/mac802154/driver-ops.h:16 [inline]
+    [<00000000c07253fa>] ieee802154_tx+0xc7/0x190 net/mac802154/tx.c:83
+    [<000000001b265c49>] ieee802154_subif_start_xmit+0x58/0x70 net/mac802154/tx.c:132
+    [<00000000908eabe9>] __netdev_start_xmit include/linux/netdevice.h:4778 [inline]
+    [<00000000908eabe9>] netdev_start_xmit include/linux/netdevice.h:4792 [inline]
+    [<00000000908eabe9>] xmit_one net/core/dev.c:3574 [inline]
+    [<00000000908eabe9>] dev_hard_start_xmit+0xe1/0x330 net/core/dev.c:3590
+    [<000000007fbb3187>] sch_direct_xmit+0x1c5/0x500 net/sched/sch_generic.c:313
+    [<000000001df39c76>] qdisc_restart net/sched/sch_generic.c:376 [inline]
+    [<000000001df39c76>] __qdisc_run+0x201/0x810 net/sched/sch_generic.c:384
+    [<000000002521364f>] qdisc_run include/net/pkt_sched.h:136 [inline]
+    [<000000002521364f>] qdisc_run include/net/pkt_sched.h:128 [inline]
+    [<000000002521364f>] __dev_xmit_skb net/core/dev.c:3765 [inline]
+    [<000000002521364f>] __dev_queue_xmit+0xb9b/0xf60 net/core/dev.c:4119
+    [<00000000fe77cf74>] dgram_sendmsg+0x40c/0x4d0 net/ieee802154/socket.c:682
+    [<00000000f9f3520e>] sock_sendmsg_nosec net/socket.c:652 [inline]
+    [<00000000f9f3520e>] sock_sendmsg+0x56/0x80 net/socket.c:672
+    [<000000005e70a8bc>] ____sys_sendmsg+0x36c/0x390 net/socket.c:2345
+    [<00000000e2a23226>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
+    [<000000008b9fc415>] __sys_sendmsg+0x88/0x100 net/socket.c:2432
+    [<0000000089dd1aab>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000011f571a2>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-[1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ks_2samp.html
+BUG: memory leak
+unreferenced object 0xffff888103ae5f00 (size 232):
+  comm "syz-executor899", pid 8428, jiffies 4294998453 (age 14.110s)
+  hex dump (first 32 bytes):
+    50 1b f0 10 81 88 ff ff 50 1b f0 10 81 88 ff ff  P.......P.......
+    00 00 00 00 00 00 00 00 80 1a f0 10 81 88 ff ff  ................
+  backtrace:
+    [<00000000b4534d28>] __alloc_skb+0x6d/0x280 net/core/skbuff.c:198
+    [<00000000a1f27cd4>] __pskb_copy_fclone+0x73/0x330 net/core/skbuff.c:1563
+    [<000000003311a1de>] __pskb_copy include/linux/skbuff.h:1163 [inline]
+    [<000000003311a1de>] pskb_copy include/linux/skbuff.h:3130 [inline]
+    [<000000003311a1de>] hwsim_hw_xmit+0xd3/0x140 drivers/net/ieee802154/mac802154_hwsim.c:132
+    [<00000000c07253fa>] drv_xmit_async net/mac802154/driver-ops.h:16 [inline]
+    [<00000000c07253fa>] ieee802154_tx+0xc7/0x190 net/mac802154/tx.c:83
+    [<000000001b265c49>] ieee802154_subif_start_xmit+0x58/0x70 net/mac802154/tx.c:132
+    [<00000000908eabe9>] __netdev_start_xmit include/linux/netdevice.h:4778 [inline]
+    [<00000000908eabe9>] netdev_start_xmit include/linux/netdevice.h:4792 [inline]
+    [<00000000908eabe9>] xmit_one net/core/dev.c:3574 [inline]
+    [<00000000908eabe9>] dev_hard_start_xmit+0xe1/0x330 net/core/dev.c:3590
+    [<000000007fbb3187>] sch_direct_xmit+0x1c5/0x500 net/sched/sch_generic.c:313
+    [<000000001df39c76>] qdisc_restart net/sched/sch_generic.c:376 [inline]
+    [<000000001df39c76>] __qdisc_run+0x201/0x810 net/sched/sch_generic.c:384
+    [<000000002521364f>] qdisc_run include/net/pkt_sched.h:136 [inline]
+    [<000000002521364f>] qdisc_run include/net/pkt_sched.h:128 [inline]
+    [<000000002521364f>] __dev_xmit_skb net/core/dev.c:3765 [inline]
+    [<000000002521364f>] __dev_queue_xmit+0xb9b/0xf60 net/core/dev.c:4119
+    [<00000000fe77cf74>] dgram_sendmsg+0x40c/0x4d0 net/ieee802154/socket.c:682
+    [<00000000f9f3520e>] sock_sendmsg_nosec net/socket.c:652 [inline]
+    [<00000000f9f3520e>] sock_sendmsg+0x56/0x80 net/socket.c:672
+    [<000000005e70a8bc>] ____sys_sendmsg+0x36c/0x390 net/socket.c:2345
+    [<00000000e2a23226>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
+    [<000000008b9fc415>] __sys_sendmsg+0x88/0x100 net/socket.c:2432
+    [<0000000089dd1aab>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000011f571a2>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> 
-> 
-> > This problem has been observed using LISA's UtilConvergence:test_means on
-> > the sd845c board.
-> >
-> > Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 794c2cb945f8..9008e0c42def 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -3941,24 +3941,27 @@ static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
-> >         trace_sched_util_est_cfs_tp(cfs_rq);
-> >  }
-> >
-> > +#define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
-> > +
-> >  /*
-> > - * Check if a (signed) value is within a specified (unsigned) margin,
-> > + * Check if a (signed) value is within the (unsigned) util_est margin,
-> >   * based on the observation that:
-> >   *
-> >   *     abs(x) < y := (unsigned)(x + y - 1) < (2 * y - 1)
-> >   *
-> > - * NOTE: this only works when value + maring < INT_MAX.
-> > + * NOTE: this only works when value + UTIL_EST_MARGIN < INT_MAX.
-> >   */
-> > -static inline bool within_margin(int value, int margin)
-> > +static inline bool util_est_within_margin(int value)
-> >  {
-> > -       return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
-> > +       return ((unsigned int)(value + UTIL_EST_MARGIN - 1) <
-> > +               (2 * UTIL_EST_MARGIN - 1));
-> >  }
-> >
-> >  static inline void util_est_update(struct cfs_rq *cfs_rq,
-> >                                    struct task_struct *p,
-> >                                    bool task_sleep)
-> >  {
-> > -       long last_ewma_diff;
-> > +       long last_ewma_diff, last_enqueued_diff;
-> >         struct util_est ue;
-> >
-> >         if (!sched_feat(UTIL_EST))
-> > @@ -3979,6 +3982,8 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
-> >         if (ue.enqueued & UTIL_AVG_UNCHANGED)
-> >                 return;
-> >
-> > +       last_enqueued_diff = ue.enqueued;
-> > +
-> >         /*
-> >          * Reset EWMA on utilization increases, the moving average is used only
-> >          * to smooth utilization decreases.
-> > @@ -3992,12 +3997,19 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
-> >         }
-> >
-> >         /*
-> > -        * Skip update of task's estimated utilization when its EWMA is
-> > +        * Skip update of task's estimated utilization when its members are
-> >          * already ~1% close to its last activation value.
-> >          */
-> >         last_ewma_diff = ue.enqueued - ue.ewma;
-> > -       if (within_margin(last_ewma_diff, (SCHED_CAPACITY_SCALE / 100)))
-> > +       last_enqueued_diff -= ue.enqueued;
-> > +       if (util_est_within_margin(last_ewma_diff)) {
-> > +               if (!util_est_within_margin(last_enqueued_diff)) {
-> > +                       ue.ewma = ue.enqueued;
-> > +                       goto done;
-> > +               }
-> > +
-> >                 return;
-> > +       }
-> >
-> >         /*
-> >          * To avoid overestimation of actual task utilization, skip updates if
-> > --
-> > 2.25.1
-> >
+BUG: memory leak
+unreferenced object 0xffff88810d717c00 (size 512):
+  comm "syz-executor899", pid 8428, jiffies 4294998453 (age 14.110s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000010ef2c1d>] __kmalloc_reserve net/core/skbuff.c:142 [inline]
+    [<0000000010ef2c1d>] __alloc_skb+0xab/0x280 net/core/skbuff.c:210
+    [<00000000a1f27cd4>] __pskb_copy_fclone+0x73/0x330 net/core/skbuff.c:1563
+    [<000000003311a1de>] __pskb_copy include/linux/skbuff.h:1163 [inline]
+    [<000000003311a1de>] pskb_copy include/linux/skbuff.h:3130 [inline]
+    [<000000003311a1de>] hwsim_hw_xmit+0xd3/0x140 drivers/net/ieee802154/mac802154_hwsim.c:132
+    [<00000000c07253fa>] drv_xmit_async net/mac802154/driver-ops.h:16 [inline]
+    [<00000000c07253fa>] ieee802154_tx+0xc7/0x190 net/mac802154/tx.c:83
+    [<000000001b265c49>] ieee802154_subif_start_xmit+0x58/0x70 net/mac802154/tx.c:132
+    [<00000000908eabe9>] __netdev_start_xmit include/linux/netdevice.h:4778 [inline]
+    [<00000000908eabe9>] netdev_start_xmit include/linux/netdevice.h:4792 [inline]
+    [<00000000908eabe9>] xmit_one net/core/dev.c:3574 [inline]
+    [<00000000908eabe9>] dev_hard_start_xmit+0xe1/0x330 net/core/dev.c:3590
+    [<000000007fbb3187>] sch_direct_xmit+0x1c5/0x500 net/sched/sch_generic.c:313
+    [<000000001df39c76>] qdisc_restart net/sched/sch_generic.c:376 [inline]
+    [<000000001df39c76>] __qdisc_run+0x201/0x810 net/sched/sch_generic.c:384
+    [<000000002521364f>] qdisc_run include/net/pkt_sched.h:136 [inline]
+    [<000000002521364f>] qdisc_run include/net/pkt_sched.h:128 [inline]
+    [<000000002521364f>] __dev_xmit_skb net/core/dev.c:3765 [inline]
+    [<000000002521364f>] __dev_queue_xmit+0xb9b/0xf60 net/core/dev.c:4119
+    [<00000000fe77cf74>] dgram_sendmsg+0x40c/0x4d0 net/ieee802154/socket.c:682
+    [<00000000f9f3520e>] sock_sendmsg_nosec net/socket.c:652 [inline]
+    [<00000000f9f3520e>] sock_sendmsg+0x56/0x80 net/socket.c:672
+    [<000000005e70a8bc>] ____sys_sendmsg+0x36c/0x390 net/socket.c:2345
+    [<00000000e2a23226>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2399
+    [<000000008b9fc415>] __sys_sendmsg+0x88/0x100 net/socket.c:2432
+    [<0000000089dd1aab>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000011f571a2>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
