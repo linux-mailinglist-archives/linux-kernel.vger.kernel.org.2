@@ -2,153 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A336B321D6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 792BD321D6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhBVQvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:51:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230441AbhBVQvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:51:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFBE664EF5;
-        Mon, 22 Feb 2021 16:50:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614012625;
-        bh=NdPYl+QWm8xo7ev8sCTXYwm6VXHmzh9VDOg2opkQ6i4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pn75JUGxdwgvVJA1khgp3BBoVuUVh4ybT4LVCLZhLEkU7EF6dlo4vXysceu5kOyrQ
-         6nZfkFrC+IMXgr3jrHYMk9QYwxAbbp53WKVMDXE2fApUD1E3wi53y4eBe0Wo4vqZuy
-         Vth9nBx0m32+u2hY/p3WKY7y8EgHzi3N/uXKWw4jbd+XpvzIcSP2wTzS6MN9L8Ybcv
-         Hyj4GqDYTcb+gTN3An1CPPtZPdxtKSzbkwfJZ+HHuBrYCZXWtqQaWXLMyLdtpRerLH
-         /6hCY4hgnRv2l7j3W5KHcGmS6YTlHw9zowVgN/E/D99g8iQx0xwbU5+R90G2L5x8aA
-         vGZaXpn4gNFcw==
-Date:   Mon, 22 Feb 2021 18:50:20 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Julian Braha <julianbraha@gmail.com>,
-        Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drivers: infiniband: sw: rxe: fix kconfig dependency on
- CRYPTO
-Message-ID: <YDPgzFkF7L6S5xQa@unreal>
-References: <21525878.NYvzQUHefP@ubuntu-mate-laptop>
- <YDICM3SwwGZfE+Sg@unreal>
- <CAD=hENeCXGtKrXxLof=DEZjxpKyYBFS80pAX20nnJBuP_s-GBA@mail.gmail.com>
- <YDOq060TvAwLgknl@unreal>
- <20210222155845.GI2643399@ziepe.ca>
- <e1e3bec7-0350-4bdd-50c3-41b21388fc71@infradead.org>
- <20210222164645.GK2643399@ziepe.ca>
+        id S231149AbhBVQwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:52:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23645 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230213AbhBVQwA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:52:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614012634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=CgcpckDo9UEWBagLaIjLCEPd9ZKR8yZthDIdNf7Trmc=;
+        b=iqEmFTrbr6PuSzXSjQX4wO2CKRv4h2PwG0jgnsIlArmYlQ/6DoCDHL69WMQcyl9RC7RTfx
+        qV4DPsoW+ZFGZvavyUMMKLiL7eAylddS12d6fSwBaCAWoMUGErt6xNs4FY+3D4laGBKYYI
+        9caPjFxXtotnmcysN+MCbQIpW0KkvlY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-65-TU9vfHv_MuKmOaZx2C8S7Q-1; Mon, 22 Feb 2021 11:50:32 -0500
+X-MC-Unique: TU9vfHv_MuKmOaZx2C8S7Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1764ECC627;
+        Mon, 22 Feb 2021 16:50:30 +0000 (UTC)
+Received: from gimli.home (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A3FA5D9D3;
+        Mon, 22 Feb 2021 16:50:23 +0000 (UTC)
+Subject: [RFC PATCH 00/10] vfio: Device memory DMA mapping improvements
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     alex.williamson@redhat.com
+Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jgg@nvidia.com, peterx@redhat.com
+Date:   Mon, 22 Feb 2021 09:50:22 -0700
+Message-ID: <161401167013.16443.8389863523766611711.stgit@gimli.home>
+User-Agent: StGit/0.21-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210222164645.GK2643399@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 12:46:45PM -0400, Jason Gunthorpe wrote:
-> On Mon, Feb 22, 2021 at 08:26:10AM -0800, Randy Dunlap wrote:
-> > On 2/22/21 7:58 AM, Jason Gunthorpe wrote:
-> > > On Mon, Feb 22, 2021 at 03:00:03PM +0200, Leon Romanovsky wrote:
-> > >> On Mon, Feb 22, 2021 at 10:39:20AM +0800, Zhu Yanjun wrote:
-> > >>> On Sun, Feb 21, 2021 at 2:49 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > >>>>
-> > >>>> On Fri, Feb 19, 2021 at 06:32:26PM -0500, Julian Braha wrote:
-> > >>>>> commit 6e61907779ba99af785f5b2397a84077c289888a
-> > >>>>> Author: Julian Braha <julianbraha@gmail.com>
-> > >>>>> Date:   Fri Feb 19 18:20:57 2021 -0500
-> > >>>>>
-> > >>>>>     drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
-> > >>>>>
-> > >>>>>     When RDMA_RXE is enabled and CRYPTO is disabled,
-> > >>>>>     Kbuild gives the following warning:
-> > >>>>>
-> > >>>>>     WARNING: unmet direct dependencies detected for CRYPTO_CRC32
-> > >>>>>       Depends on [n]: CRYPTO [=n]
-> > >>>>>       Selected by [y]:
-> > >>>>>       - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && INFINIBAND_VIRT_DMA [=y]
-> > >>>>>
-> > >>>>>     This is because RDMA_RXE selects CRYPTO_CRC32,
-> > >>>>>     without depending on or selecting CRYPTO, despite that config option
-> > >>>>>     being subordinate to CRYPTO.
-> > >>>>>
-> > >>>>>     Signed-off-by: Julian Braha <julianbraha@gmail.com>
-> > >>>>
-> > >>>> Please use git sent-email to send patches and please fix crypto Kconfig
-> > >>>> to enable CRYPTO if CRYPTO_* selected.
-> > >>>>
-> > >>>> It is a little bit awkward to request all users of CRYPTO_* to request
-> > >>>> select CRYPTO too.
-> > >>>
-> > >>> The same issue and similar patch is in this link:
-> > >>>
-> > >>> https://patchwork.kernel.org/project/linux-rdma/patch/20200915101559.33292-1-fazilyildiran@gmail.com/#23615747
-> > >>
-> > >> So what prevents us from fixing CRYPTO Kconfig?
-> > >
-> > > Yes, I would like to see someone deal with this properly, either every
-> > > place doing select CRYPTO_XX needs fixing or something needs to be
-> > > done in the crypto layer.
-> > >
-> > > I have no idea about kconfig to give advice, I've added Arnd since he
-> > > always seems to know :)
-> >
-> > I will Ack the original patch in this thread.
->
-> The one from Julian?
->
-> > How many Mellanox drivers are you concerned about?
->
-> ?? This is about rxe
->
-> > You don't have to fix any other drivers that have a similar issue.
->
-> Why shouldn't they be fixed too?
->
-> There is nearly 1000 places that use a 'select CRYPTO_*' in the
-> kernel.
->
-> I see only 60 'select CRYPTO' statements.
+This is a re-implementation of [1] following suggestions and code from
+Jason Gunthorpe.  This is lightly tested but seems functional and
+throws no lockdep warnings.  In this series we tremendously simplify
+zapping of vmas mapping device memory using unmap_mapping_range(), we
+create a protocol for looking up a vfio_device from a vma and provide
+an interface to get a reference from that vma, using that device
+reference, the caller can register a notifier for the device to
+trigger on events such as device release.  This notifier is only
+enabled here for vfio-pci, but both the vma policy and the notifier
+trigger should be trivial to add to any vfio bus driver after RFC.
 
-I don't like the suggestion to ack and not fix either.
-All CRYPTO_CRC32C users need CRYPTO and it means that CRYPTO Kconfig
-should be fixed.
+Does this look more like the direction we should go?
 
-➜  kernel git:(queue-next) git grep -B 1 "select CRYPTO_CRC32"
-drivers/infiniband/sw/rxe/Kconfig-      select NET_UDP_TUNNEL
-drivers/infiniband/sw/rxe/Kconfig:      select CRYPTO_CRC32
---
-drivers/nvme/host/Kconfig-      select CRYPTO
-drivers/nvme/host/Kconfig:      select CRYPTO_CRC32C
---
-drivers/scsi/Kconfig-   select CRYPTO_MD5
-drivers/scsi/Kconfig:   select CRYPTO_CRC32C
---
-drivers/target/iscsi/Kconfig-   select CRYPTO
-drivers/target/iscsi/Kconfig:   select CRYPTO_CRC32C
-drivers/target/iscsi/Kconfig:   select CRYPTO_CRC32C_INTEL if X86
---
-fs/btrfs/Kconfig-       select CRYPTO
-fs/btrfs/Kconfig:       select CRYPTO_CRC32C
---
-fs/ext4/Kconfig-        select CRYPTO
-fs/ext4/Kconfig:        select CRYPTO_CRC32C
---
-fs/f2fs/Kconfig-        select CRYPTO
-fs/f2fs/Kconfig:        select CRYPTO_CRC32
---
-fs/jbd2/Kconfig-        select CRYPTO
-fs/jbd2/Kconfig:        select CRYPTO_CRC32C
---
-lib/Kconfig-    select CRYPTO
-lib/Kconfig:    select CRYPTO_CRC32C
+Note that like the last series we're still not dropping DMA mappings
+on device memory disable as this would likely break userspace in some
+instances, we don't have IOMMU interfaces to modify protection bits,
+and it's not clear an IOMMU fault is absolutely better than the bus
+error.  Thanks,
+
+Alex
+
+[1]https://lore.kernel.org/kvm/161315658638.7320.9686203003395567745.stgit@gimli.home/T/#m64859ccd7d92f39a924759c7423f2dcf7d367c84
+---
+
+Alex Williamson (10):
+      vfio: Create vfio_fs_type with inode per device
+      vfio: Update vfio_add_group_dev() API
+      vfio: Export unmap_mapping_range() wrapper
+      vfio/pci: Use vfio_device_unmap_mapping_range()
+      vfio: Create a vfio_device from vma lookup
+      vfio: Add a device notifier interface
+      vfio/pci: Notify on device release
+      vfio/type1: Refactor pfn_list clearing
+      vfio/type1: Pass iommu and dma objects through to vaddr_get_pfn
+      vfio/type1: Register device notifier
 
 
->
-> Jason
+ drivers/vfio/Kconfig                         |    1 
+ drivers/vfio/fsl-mc/vfio_fsl_mc.c            |    6 -
+ drivers/vfio/mdev/vfio_mdev.c                |    5 -
+ drivers/vfio/pci/vfio_pci.c                  |  223 ++++----------------------
+ drivers/vfio/pci/vfio_pci_private.h          |    3 
+ drivers/vfio/platform/vfio_platform_common.c |    7 +
+ drivers/vfio/vfio.c                          |  143 +++++++++++++++--
+ drivers/vfio/vfio_iommu_type1.c              |  211 ++++++++++++++++++++-----
+ include/linux/vfio.h                         |   19 ++
+ 9 files changed, 368 insertions(+), 250 deletions(-)
+
