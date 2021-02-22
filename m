@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DD932188B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D77D32188A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhBVN0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:26:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53702 "EHLO mail.kernel.org"
+        id S231899AbhBVNZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:25:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231314AbhBVMlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230438AbhBVMlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 07:41:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B049564EF5;
-        Mon, 22 Feb 2021 12:39:07 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B3A164F18;
+        Mon, 22 Feb 2021 12:39:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997548;
-        bh=mKYmuy7/RgFRiIr9NhypYXMcKoXmfk4j7pK0+rBFtYs=;
+        s=korg; t=1613997550;
+        bh=IYtOLjs4R1so+RYLicGg4TanI0IUpraLK+Ef2FaJVnc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VJ3vuHCQl4+ezkRg3u7BLzB9xixMoyskpwhKSX+hunI0q7R2GpY+9C9FTUKSZbfiM
-         DznM7bshVE+4zTdjFE0RHyGUNDoZyvZDwmneuYpf2kes1Et/bNEv8oSDzqaLVvhlv6
-         c95fULv2jeudB6GFX/mjiaRVwK6QafD7L2Uu2DEQ=
+        b=D0ZgfX41wFARmjbL1HTe7MbtjwfdPq9rKg5fgaUoDE80dW3Tn0gsNzUOhXSMhQWj4
+         R3eineGc73WAMbChKGT1pFBQB5LdYsxRVc0X1IkEbb/8ldTggl48FWma6OPpnO68WX
+         /BxSvE2bit18U0i99HwLg6hEW9PCenl6O0lzEqOU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 34/57] usb: dwc3: ulpi: Replace CPU-based busyloop with Protocol-based one
-Date:   Mon, 22 Feb 2021 13:36:00 +0100
-Message-Id: <20210222121030.173780756@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 35/57] net/vmw_vsock: improve locking in vsock_connect_timeout()
+Date:   Mon, 22 Feb 2021 13:36:01 +0100
+Message-Id: <20210222121030.268965648@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121027.174911182@linuxfoundation.org>
 References: <20210222121027.174911182@linuxfoundation.org>
@@ -41,96 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Norbert Slusarek <nslusarek@gmx.net>
 
-commit fca3f138105727c3a22edda32d02f91ce1bf11c9 upstream
+commit 3d0bc44d39bca615b72637e340317b7899b7f911 upstream.
 
-Originally the procedure of the ULPI transaction finish detection has been
-developed as a simple busy-loop with just decrementing counter and no
-delays. It's wrong since on different systems the loop will take a
-different time to complete. So if the system bus and CPU are fast enough
-to overtake the ULPI bus and the companion PHY reaction, then we'll get to
-take a false timeout error. Fix this by converting the busy-loop procedure
-to take the standard bus speed, address value and the registers access
-mode into account for the busy-loop delay calculation.
+A possible locking issue in vsock_connect_timeout() was recognized by
+Eric Dumazet which might cause a null pointer dereference in
+vsock_transport_cancel_pkt(). This patch assures that
+vsock_transport_cancel_pkt() will be called within the lock, so a race
+condition won't occur which could result in vsk->transport to be set to NULL.
 
-Here is the way the fix works. It's known that the ULPI bus is clocked
-with 60MHz signal. In accordance with [1] the ULPI bus protocol is created
-so to spend 5 and 6 clock periods for immediate register write and read
-operations respectively, and 6 and 7 clock periods - for the extended
-register writes and reads. Based on that we can easily pre-calculate the
-time which will be needed for the controller to perform a requested IO
-operation. Note we'll still preserve the attempts counter in case if the
-DWC USB3 controller has got some internals delays.
-
-[1] UTMI+ Low Pin Interface (ULPI) Specification, Revision 1.1,
-    October 20, 2004, pp. 30 - 36.
-
-Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Link: https://lore.kernel.org/r/20201210085008.13264-3-Sergey.Semin@baikalelectronics.ru
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Fixes: 380feae0def7 ("vsock: cancel packets when failing to connect")
+Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
+Signed-off-by: Norbert Slusarek <nslusarek@gmx.net>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Link: https://lore.kernel.org/r/trinity-f8e0937a-cf0e-4d80-a76e-d9a958ba3ef1-1612535522360@3c-app-gmx-bap12
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/ulpi.c |   18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ net/vmw_vsock/af_vsock.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/drivers/usb/dwc3/ulpi.c
-+++ b/drivers/usb/dwc3/ulpi.c
-@@ -10,6 +10,8 @@
-  * published by the Free Software Foundation.
-  */
- 
-+#include <linux/delay.h>
-+#include <linux/time64.h>
- #include <linux/ulpi/regs.h>
- 
- #include "core.h"
-@@ -20,12 +22,22 @@
- 		DWC3_GUSB2PHYACC_ADDR(ULPI_ACCESS_EXTENDED) | \
- 		DWC3_GUSB2PHYACC_EXTEND_ADDR(a) : DWC3_GUSB2PHYACC_ADDR(a))
- 
--static int dwc3_ulpi_busyloop(struct dwc3 *dwc)
-+#define DWC3_ULPI_BASE_DELAY	DIV_ROUND_UP(NSEC_PER_SEC, 60000000L)
-+
-+static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -1114,7 +1114,6 @@ static void vsock_connect_timeout(struct
  {
-+	unsigned long ns = 5L * DWC3_ULPI_BASE_DELAY;
- 	unsigned int count = 1000;
- 	u32 reg;
+ 	struct sock *sk;
+ 	struct vsock_sock *vsk;
+-	int cancel = 0;
  
-+	if (addr >= ULPI_EXT_VENDOR_SPECIFIC)
-+		ns += DWC3_ULPI_BASE_DELAY;
-+
-+	if (read)
-+		ns += DWC3_ULPI_BASE_DELAY;
-+
- 	while (count--) {
-+		ndelay(ns);
- 		reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYACC(0));
- 		if (reg & DWC3_GUSB2PHYACC_DONE)
- 			return 0;
-@@ -50,7 +62,7 @@ static int dwc3_ulpi_read(struct device
- 	reg = DWC3_GUSB2PHYACC_NEWREGREQ | DWC3_ULPI_ADDR(addr);
- 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
+ 	vsk = container_of(work, struct vsock_sock, connect_work.work);
+ 	sk = sk_vsock(vsk);
+@@ -1125,11 +1124,9 @@ static void vsock_connect_timeout(struct
+ 		sk->sk_state = TCP_CLOSE;
+ 		sk->sk_err = ETIMEDOUT;
+ 		sk->sk_error_report(sk);
+-		cancel = 1;
++		vsock_transport_cancel_pkt(vsk);
+ 	}
+ 	release_sock(sk);
+-	if (cancel)
+-		vsock_transport_cancel_pkt(vsk);
  
--	ret = dwc3_ulpi_busyloop(dwc);
-+	ret = dwc3_ulpi_busyloop(dwc, addr, true);
- 	if (ret)
- 		return ret;
- 
-@@ -74,7 +86,7 @@ static int dwc3_ulpi_write(struct device
- 	reg |= DWC3_GUSB2PHYACC_WRITE | val;
- 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
- 
--	return dwc3_ulpi_busyloop(dwc);
-+	return dwc3_ulpi_busyloop(dwc, addr, false);
+ 	sock_put(sk);
  }
- 
- static const struct ulpi_ops dwc3_ulpi_ops = {
 
 
