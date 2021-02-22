@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFB03220F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 21:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 804443220FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 21:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhBVUwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 15:52:35 -0500
-Received: from msg-2.mailo.com ([213.182.54.12]:52402 "EHLO msg-2.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230006AbhBVUwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 15:52:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1614027101; bh=yT9yvRTMH3hDKjbPZh495ozLuLQga9KRyWtS41qgQCU=;
-        h=X-EA-Auth:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-         References:Content-Type:MIME-Version:Content-Transfer-Encoding;
-        b=BYeUEKdZE9FXyhfvc4fAaF5jKPeAEWA1ZbxZSV+4nPOaCIg6I7JHwPaXI3UBkEqOy
-         RQqEZ40po1lIclGjYCGsV/MPkZBjVaeaxIkTDiyCVCVJmmqALZ3tE04UQKs/BJZQDA
-         KJUUd6WRB7tj5KV7lD68J8QkoYvsIaPpU0bflziQ=
-Received: by b-3.in.mailobj.net [192.168.90.13] with ESMTP
-        via proxy.mailoo.org [213.182.55.207]
-        Mon, 22 Feb 2021 21:51:41 +0100 (CET)
-X-EA-Auth: f5tjIfSV86z/9LHQH2uDIBjEZ8HeKzTj2PLSAxSAmowAtHZFNnsFbP6GwYOUdr6lJYANbpibI12fpPDkqck81zFAduM28S7yZ6VZJy+/mTo=
-Message-ID: <a22fda89b5f97418e936655817f45bd55f6248ee.camel@mailoo.org>
-Subject: Re: [PATCH v4 2/2] Input: add MStar MSG2638 touchscreen driver
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michael Srba <Michael.Srba@seznam.cz>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Date:   Mon, 22 Feb 2021 21:51:39 +0100
-In-Reply-To: <YDGaB6L5+Aa2snUM@google.com>
-References: <20210210173403.667482-1-vincent.knecht@mailoo.org>
-         <20210210173403.667482-2-vincent.knecht@mailoo.org>
-         <YDGaB6L5+Aa2snUM@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S231499AbhBVUwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 15:52:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230006AbhBVUwn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 15:52:43 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116BCC06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:52:03 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id k13so2877313otn.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:52:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EsKNWOTpoXFBX3Vm20VX6e7+2+XeumtrdsmpqxkFoSE=;
+        b=hx3ZtNKXCjBF9VddK8QgdVRc3sYrJ55BQupjDWwHI7khjSuKLDNLD0Kz9MR3dQ4v/J
+         /NWxPC7wssr4gRI9wTUsE5nQFc+C9iYzom2snaBD0WOe5kHUeCGqd2uzpyUu1N4iZQYB
+         m9fhfaAd+CTX1VqvmvTrmZTJUOuJy1WUACfQ8pyZmdzPr2+CUL5+dvHStza5z2tFVhtz
+         etYdm5dNI1D70LSlkjgAYmdgW0OEOxYXiUh1jCYsNUUC1GIPjCGj67Nub8zr898KoIPL
+         06yH3kUXJ1bU6yJcX125gno29ErYUlSiuOTkwKI6crx8I/LxT0Tdwzt9SCDAxTR9r7ak
+         3NVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EsKNWOTpoXFBX3Vm20VX6e7+2+XeumtrdsmpqxkFoSE=;
+        b=sdA1zWdcuZnz/AR64ZU3ew0+CVFssXBbSdlEM+jfd2ahteGINmGJ8DFu3K4MgiZH95
+         yqEIJpzOuk+yu5b0GaZqYdYwlpcSf1f5VcK+oQq3j4mdFJ/0VNmXBL0KbTQyH6FVCyWd
+         OYt/Q7nhJ1znqJeAbm7vhsH7RLq49IoC6SuTzHwthCcxe2NNVrqOcUlJY++vkw69J7GJ
+         mCA+vOQRH6NM4MOHmJrsYr+1+edXuqSFwLDroDJPpQbsIMB1GKuIiV6pFwQsir8/yEsd
+         /za2b0BpHuhM3nbwTGMtVmFd4OLeHGzTb0tOUMOOtUCfL8PZATV6ff25gRW+WUWei1jG
+         PfRQ==
+X-Gm-Message-State: AOAM532+ZpvVyoGSrw7yMtpH+CuP+Pfu1KWi0lqEpbSYzsm5zQwe5gPM
+        FoxkZ2WTesSMdXTWg37yM0fAJQwPg28cFATc+QkHmdX0
+X-Google-Smtp-Source: ABdhPJxgtf9qdkqoR/ipe+6CsbbzBAq5ddIs5TNufipZbmAeTYrchhfeEOY7Tl9/Fuz8GfJ/YxQrPGmnMN0S7JTlfQc=
+X-Received: by 2002:a9d:5cc2:: with SMTP id r2mr7475200oti.132.1614027122516;
+ Mon, 22 Feb 2021 12:52:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <CAPM=9txd-x1NKWK9BBqVTDNOR00zNqcXgs76YJrDfL94eMLYqQ@mail.gmail.com>
+ <CAHk-=wgiPxXzRNnfaXk7ozSWSu7fFU--kTmVjkDaTB05wwUk_g@mail.gmail.com> <20210221234549.GA21254@24bbad8f3778>
+In-Reply-To: <20210221234549.GA21254@24bbad8f3778>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 22 Feb 2021 15:51:51 -0500
+Message-ID: <CADnq5_OcxrYehTWWiEOO8OMqMSHk22=Z7ehcYhiOUVwFF=Yhyw@mail.gmail.com>
+Subject: Re: [git pull] drm for 5.12-rc1
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le samedi 20 f=C3=A9vrier 2021 =C3=A0 15:23 -0800, Dmitry Torokhov a =C3=A9=
-crit=C2=A0:
-> Hi Vincent,
+On Sun, Feb 21, 2021 at 6:45 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Sun, Feb 21, 2021 at 03:07:17PM -0800, Linus Torvalds wrote:
+> > On Thu, Feb 18, 2021 at 10:06 PM Dave Airlie <airlied@gmail.com> wrote:
+> > >
+> > > Let me know if there are any issues,
+> >
+> > gcc was happy, and I obviously already pushed out my merge, but then
+> > when I did my clang build afterwards, it reports:
+> >
+> >   drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:764:2: warning:
+> > variable 'structure_size' is used uninitialized whenever switch
+> > default is taken [-Wsometimes-uninitialized]
+> >           default:
+> >           ^~~~~~~
+> >   drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:770:23: note:
+> > uninitialized use occurs here
+> >           memset(header, 0xFF, structure_size);
+> >                                ^~~~~~~~~~~~~~
+> >
+> > and clang is very very right. That "default" case is completely
+> > broken, and will generate a randomly sized memset. Not good.
+> >
+> > Presumably that default case never happens, but if so it shouldn't exist.
+> >
+> > Perhaps better yet, make the "default" case just do a "return" instead
+> > of a break. Breaking out of the switch statement to code that cannot
+> > possibly work is all kinds of mindless.
+> >
+> > Kevin/Alex? This was introduced by commit de4b7cd8cb87
+> > ("drm/amd/pm/swsmu: unify the init soft gpu metrics function")
+> >
+> >               Linus
+>
+> I sent https://lore.kernel.org/r/20210218224849.5591-1-nathan@kernel.org/
+> a few days ago and Kevin reviewed it, just seems like Alex needs to pick
+> it up.
 
-Hi Dmitry, thank you for the review !
+Yeah, sorry, I meant to include it, but it slipped through the cracks
+last week.  Will include it in my -fixes PR this week.
 
-> On Wed, Feb 10, 2021 at 06:33:52PM +0100, Vincent Knecht wrote:
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0for (i =3D 0; i < MAX_SUPPOR=
-TED_FINGER_NUM; i++) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0p =3D &touch_event.pkt[i];
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0/* Ignore non-pressed finger data */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0if (p->xy_hi =3D=3D 0xFF && p->x_low =3D=3D 0xFF && p-=
->y_low =3D=3D 0xFF)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0contin=
-ue;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0coord.x =3D (((p->xy_hi & 0xF0) << 4) | p->x_low) * ms=
-g2638->prop.max_x / TPD_WIDTH;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0coord.y =3D (((p->xy_hi & 0x0F) << 8) | p->y_low) * ms=
-g2638->prop.max_y / TPD_HEIGHT;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0msg2638_report_finger(msg2638, i, &coord);
->=20
-> We do not scale the coordinates in the kernel. Rather we provide
-> resolution, if known, and min/max coordinates reported by the hardware,
-> and let userspace handle the rest.
-
-Ok, will remove scaling... I was able to test it's ok by setting=20
-touchscreen-size-{x,y} =3D <2048>;
-
-> > +static int __maybe_unused msg2638_suspend(struct device *dev)
-> > +{
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct i2c_client *client =
-=3D to_i2c_client(dev);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct msg2638_ts_data *msg2=
-638 =3D i2c_get_clientdata(client);
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_lock(&msg2638->input_d=
-ev->mutex);
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (input_device_enabled(msg=
-2638->input_dev))
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0msg2638_stop(msg2638);
->=20
-> I believe that you should power down the device only if it is not
-> configures as wakeup source. In fact (and I think most drivers are
-> wrong in this), you may want to power up the device if it is a wakeup
-> source and it does not have any users.
-
-I don't know much on this subject ; from downstream code, it seems
-the touchscreen supports "wakeup gestures" (like "double click",
-up/down/left/right directions and some characters/letters) and apparently
-an irq-gpio which would be used to wakeup.
-I don't handle that currently, is it required ?
-
-
-
-
-
+Alex
