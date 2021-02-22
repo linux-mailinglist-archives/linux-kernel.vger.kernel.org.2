@@ -2,186 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF24D321AD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:09:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C35F7321AD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhBVPIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:08:50 -0500
-Received: from smtp-190f.mail.infomaniak.ch ([185.125.25.15]:54099 "EHLO
-        smtp-190f.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230008AbhBVPIM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:08:12 -0500
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DklsQ6vvXzMqXJk;
-        Mon, 22 Feb 2021 16:07:22 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DklsP6SCPzlh8Tg;
-        Mon, 22 Feb 2021 16:07:21 +0100 (CET)
-Subject: Re: [PATCH v2 3/3] security: Add LSMs dependencies to CONFIG_LSM
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Nicolas Iooss <nicolas.iooss@m4x.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-References: <20210215181511.2840674-1-mic@digikod.net>
- <20210215181511.2840674-4-mic@digikod.net>
- <CAFqZXNsvqx-pbC+wzHB4aXX6h=buU3csM_a=By-zCOmx0n-xCQ@mail.gmail.com>
- <CAK7LNAQDWxGJU41D4+AbjFiX63BiA+bsNzTHZsKKc-LPyO7oCQ@mail.gmail.com>
- <8809a929-980a-95d1-42dc-576ff54e2923@digikod.net>
- <CAK7LNARq3YneLCVReHf8z34T7VKfv5zmkqwSiNZwgQGD64VMtA@mail.gmail.com>
- <12b27829-5db0-e9a4-0c74-896c53445da4@digikod.net>
-Message-ID: <d37f9242-b4b4-f4fb-a0b9-8908c0ff027a@digikod.net>
-Date:   Mon, 22 Feb 2021 16:08:39 +0100
-User-Agent: 
+        id S230463AbhBVPKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:10:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230443AbhBVPJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 10:09:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AE5E64DF0;
+        Mon, 22 Feb 2021 15:09:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614006544;
+        bh=CCxMs258JjiYV+rmdp4CVB+FHMraTUBy+aZ6Oel2FPU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eZ7HvSeKaZ5pg2GkNf2rVvDlaVcZ+T9NE4DAC22ZOfuDGVOnK+RjSjLayqYfDdbdN
+         hRomBzO2nu1NwJSxN5R3UYzsoPsp7w/ihPOMeO8UPq3bCD2hahAfXgcdiuUKsyOQDo
+         Fr3E06WjHHPJIcB965YAtrI4qO3Bg/lRbUtFb3+Gs1ykfD5S2Rc0fjblP8i7icH1v9
+         zsHXeZhMFAERNDoWTcz0NjjXQoXBHnuh18iCD/K2Am+CVKvUPwk8AVFQ5/SxZQr0l0
+         XOKTKXA98wz65dmPMVxWIvqOVEcIIgl/7t1VcbCfF3fVr29F7rbl+lthHFgS0ou6+k
+         y10+BgRV9H2qw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C138A352259B; Mon, 22 Feb 2021 07:09:03 -0800 (PST)
+Date:   Mon, 22 Feb 2021 07:09:03 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210222150903.GH2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210219104958.GA34308@pc638.lan>
+ <20210219105710.d626zexj6vzt6k6y@linutronix.de>
+ <20210219111301.GA34441@pc638.lan>
+ <20210219111738.go6i2fdzvavpotxd@linutronix.de>
+ <20210219112357.GA34462@pc638.lan>
+ <20210219112751.GA34528@pc638.lan>
+ <20210219181811.GY2743@paulmck-ThinkPad-P72>
+ <20210219183336.GA23049@paulmck-ThinkPad-P72>
+ <20210222102104.v3pr7t57hmpwijpi@linutronix.de>
+ <20210222125431.GA41939@pc638.lan>
 MIME-Version: 1.0
-In-Reply-To: <12b27829-5db0-e9a4-0c74-896c53445da4@digikod.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210222125431.GA41939@pc638.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 22, 2021 at 01:54:31PM +0100, Uladzislau Rezki wrote:
+> On Mon, Feb 22, 2021 at 11:21:04AM +0100, Sebastian Andrzej Siewior wrote:
+> > On 2021-02-19 10:33:36 [-0800], Paul E. McKenney wrote:
+> > > For definiteness, here is the first part of the change, posted earlier.
+> > > The commit log needs to be updated.  I will post the change that keeps
+> > > the tick going as a reply to this email.
+> > …
+> > > diff --git a/kernel/softirq.c b/kernel/softirq.c
+> > > index 9d71046..ba78e63 100644
+> > > --- a/kernel/softirq.c
+> > > +++ b/kernel/softirq.c
+> > > @@ -209,7 +209,7 @@ static inline void invoke_softirq(void)
+> > >  	if (ksoftirqd_running(local_softirq_pending()))
+> > >  		return;
+> > >  
+> > > -	if (!force_irqthreads) {
+> > > +	if (!force_irqthreads || !__this_cpu_read(ksoftirqd)) {
+> > >  #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
+> > >  		/*
+> > >  		 * We can safely execute softirq on the current stack if
+> > > @@ -358,8 +358,8 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+> > >  
+> > >  	pending = local_softirq_pending();
+> > >  	if (pending) {
+> > > -		if (time_before(jiffies, end) && !need_resched() &&
+> > > -		    --max_restart)
+> > > +		if (!__this_cpu_read(ksoftirqd) ||
+> > > +		    (time_before(jiffies, end) && !need_resched() && --max_restart))
+> > >  			goto restart;
+> > 
+> > This is hunk shouldn't be needed. The reason for it is probably that the
+> > following wakeup_softirqd() would avoid further invoke_softirq()
+> > performing the actual softirq work. It would leave early due to
+> > ksoftirqd_running(). Unless I'm wrong, any raise_softirq() invocation
+> > outside of an interrupt would do the same. 
 
-On 22/02/2021 11:47, Mickaël Salaün wrote:
-> 
-> On 21/02/2021 15:45, Masahiro Yamada wrote:
->> On Sun, Feb 21, 2021 at 8:11 PM Mickaël Salaün <mic@digikod.net> wrote:
->>>
->>>
->>> On 21/02/2021 09:50, Masahiro Yamada wrote:
->>>> On Tue, Feb 16, 2021 at 4:03 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
->>>>>
->>>>> On Mon, Feb 15, 2021 at 7:17 PM Mickaël Salaün <mic@digikod.net> wrote:
->>>>>> From: Mickaël Salaün <mic@linux.microsoft.com>
->>>>>>
->>>>>> Thanks to the previous commit, this gives the opportunity to users, when
->>>>>> running make oldconfig, to update the list of enabled LSMs at boot time
->>>>>> if an LSM has just been enabled or disabled in the build.  Moreover,
->>>>>> this list only makes sense if at least one LSM is enabled.
->>>>>>
->>>>>> Cc: Casey Schaufler <casey@schaufler-ca.com>
->>>>>> Cc: James Morris <jmorris@namei.org>
->>>>>> Cc: Masahiro Yamada <masahiroy@kernel.org>
->>>>>> Cc: Serge E. Hallyn <serge@hallyn.com>
->>>>>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
->>>>>> Link: https://lore.kernel.org/r/20210215181511.2840674-4-mic@digikod.net
->>>>>> ---
->>>>>>
->>>>>> Changes since v1:
->>>>>> * Add CONFIG_SECURITY as a dependency of CONFIG_LSM.  This prevent an
->>>>>>   error when building without any LSMs.
->>>>>> ---
->>>>>>  security/Kconfig | 4 ++++
->>>>>>  1 file changed, 4 insertions(+)
->>>>>>
->>>>>> diff --git a/security/Kconfig b/security/Kconfig
->>>>>> index 7561f6f99f1d..addcc1c04701 100644
->>>>>> --- a/security/Kconfig
->>>>>> +++ b/security/Kconfig
->>>>>> @@ -277,6 +277,10 @@ endchoice
->>>>>>
->>>>>>  config LSM
->>>>>>         string "Ordered list of enabled LSMs"
->>>>>> +       depends on SECURITY || SECURITY_LOCKDOWN_LSM || SECURITY_YAMA || \
->>>>>> +               SECURITY_LOADPIN || SECURITY_SAFESETID || INTEGRITY || \
->>>>>> +               SECURITY_SELINUX || SECURITY_SMACK || SECURITY_TOMOYO || \
->>>>>> +               SECURITY_APPARMOR || BPF_LSM
->>>>>
->>>>> This looks really awkward, since all of these already depend on
->>>>> SECURITY (if not, it's a bug)... I guarantee you that after some time
->>>>> someone will come, see that the weird boolean expression is equivalent
->>>>> to just SECURITY, and simplify it.
->>>>
->>>>
->>>> Currently, LSM does not depend on SECURITY.
->>>> So you can always define LSM irrespective of SECURITY,
->>>> which seems a bug.
->>>>
->>>> So, I agree with adding 'depends on SECURITY'.
->>>>
->>>> What he is trying to achieve in this series
->>>> seems wrong, of course.
->>>
->>> This may be wrong in the general case, but not for CONFIG_LSM.
->>>
->>>>
->>>>
->>>>> I assume the new mechanism wouldn't work as intended if there is just
->>>>> SECURITY? If not, then maybe you should rather specify this value
->>>>> dependency via some new  field rather than abusing "depends on" (say,
->>>>> "value depends on"?). The fact that a seemingly innocent change to the
->>>>> config definition breaks your mechanism suggests that the design is
->>>>> flawed.
->>>
->>> Masahiro, what do you think about this suggested "value depends on"?
->>
->>
->> Of course, no.
->>
->>
->> See the help text in init/Kconfig:
->>
->>           This choice is there only for converting CONFIG_DEFAULT_SECURITY
->>           in old kernel configs to CONFIG_LSM in new kernel configs. Don't
->>           change this choice unless you are creating a fresh kernel config,
->>           for this choice will be ignored after CONFIG_LSM has been set.
->>
->>
->> When CONFIG_LSM is already set in the .config,
->> this choice is just ignored.
->> So, oldconfig is working as the help message says.
->>
->> If you think 2623c4fbe2ad1341ff2d1e12410d0afdae2490ca
->> is a pointless commit, you should ask Kees about it.
-> 
-> This commit was for backward compatibility to not change the configured
-> system behavior because of a new default configuration.
-> Here I want to address a forward compatibility issue: when users want to
-> enable an LSM, give them the opportunity to enable it at boot time too
-> instead of silently ignoring this new configuration at boot time.
-> Indeed, there is two kind of configurations: built time configuration
-> with Kconfig, and boot time configuration with the content of
-> CONFIG_LSM. However, there is no direct dependency between LSM toggles
-> and CONFIG_LSM once it is set.
-> 
-> I think a better solution would be to add a new CONFIG_LSM_AUTO boolean
-> to automatically generate the content of CONFIG_LSM according to the
-> (build/kconfig) enabled LSMs, while letting users the ability to
-> manually configure CONFIG_LSM otherwise. What do you think?
+And it does pass the rcutorture test without that hunk:
 
-I sent a new patch series dedicated to the LSM issue:
-https://lore.kernel.org/linux-security-module/20210222150608.808146-1-mic@digikod.net/
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --bootargs "threadirqs=1" --trust-make
 
+> > I would like PeterZ / tglx to comment on this one. Basically I'm not
+> > sure if it is okay to expect softirqs beeing served and waited on that
+> > early in the boot.
+
+It would be good to get other eyes on this.
+
+I do agree that "don't wait on softirq handlers until after completion
+of all early_initcall() handlers" is a nice simple rule, but debugging
+violations of it is not so simple.  Adding warnings to ease debugging
+of violations of this rule is quite a bit more complex than is either of
+the methods of making the rule unnecessary, at least from what I can see
+at this point.  The complexity of the warnings is exactly what Sebastian
+pointed out earlier, that it is currently legal to raise_softirq() but
+not to wait on the resulting handlers.  But even waiting is OK if that
+waiting does not delay the boot sequence.  But if the boot kthread waits
+on the kthread that does the waiting, it is once again not OK.
+
+So am I missing something subtle here?
+
+> The ksoftirqd threads get spawned during early_initcall() phase. Why not
+> just spawn them one step earlier what is totally safe? I mean before
+> do_pre_smp_initcalls() that calls early callbacks.
 > 
->>
->>>>>
->>>>> I do think this would be a useful feature, but IMHO shouldn't be
->>>>> implemented like this.
->>>>>
->>>>>>         default "lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
->>>>>>         default "lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
->>>>>>         default "lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
->>>>>> --
->>>>>> 2.30.0
->>>>>>
->>>>>
->>>>> --
->>>>> Ondrej Mosnacek
->>>>> Software Engineer, Linux Security - SELinux kernel
->>>>> Red Hat, Inc.
->>>>>
->>>>
->>>>
->> --
->> Best Regards
->> Masahiro Yamada
->>
+> +       spawn_ksoftirqd();
+>         rcu_init_tasks_generic();
+>         do_pre_smp_initcalls();
+> 
+> With such change the spawning will not be depended on linker/compiler
+> i.e. when and in which order an early_initcall(spawn_ksoftirqd) callback
+> is executed.
+
+We both posted patches similar to this, so I am not opposed.  One caveat,
+though, namely that this narrows the window quite a bit but does not
+entirely close it.  But it does allow the early_initcall()s to wait on
+softirq handlers.
+
+							Thanx, Paul
