@@ -2,67 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081E532140A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:23:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 294B232140E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbhBVKXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:23:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34166 "EHLO
+        id S230350AbhBVKXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:23:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230214AbhBVKWs (ORCPT
+        with ESMTP id S230316AbhBVKXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:22:48 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFEEC061786;
-        Mon, 22 Feb 2021 02:22:08 -0800 (PST)
-Received: from zn.tnic (p200300ec2f040200a034b7f44a0c99a8.dip0.t-ipconnect.de [IPv6:2003:ec:2f04:200:a034:b7f4:4a0c:99a8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E207F1EC0323;
-        Mon, 22 Feb 2021 11:22:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1613989327;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9UJpE2XmXjqNjTRz2nvD9/bdrjQ0X8OvHEMTp53Ji5g=;
-        b=jfjqx1RIIJ++hO3NQg2mav75eRFliGKk+czEWSfR7K+3PwgBz88YkugIschtIJkMv4JIqv
-        EJN3tPI/47VcCVkHvlFOHAYSQxrV0bPshkZKhUiGjGVs3niVTeCSg8LTNx/45Uxl/3rWFR
-        ryABfuCDtTBhFIfPXXCa2iJzUJcGXS8=
-Date:   Mon, 22 Feb 2021 11:22:06 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Aili Yao <yaoaili@kingsoft.com>
-Cc:     tony.luck@intel.com, mingo@redhat.com, tglx@linutronix.de,
-        hpa@zytor.com, x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangfeng1@kingsoft.com
-Subject: Re: [PATCH v2] x86/mce: fix wrong no-return-ip logic in
- do_machine_check()
-Message-ID: <20210222102206.GC29063@zn.tnic>
-References: <20210222113124.35f2d552@alex-virtual-machine>
- <20210222115007.75b7de9b@alex-virtual-machine>
- <20210222092403.GA29063@zn.tnic>
- <20210222173109.7b7ac42a@alex-virtual-machine>
- <20210222100356.GB29063@zn.tnic>
- <20210222180819.3998fe33@alex-virtual-machine>
+        Mon, 22 Feb 2021 05:23:03 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B382C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:22:22 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id n10so13812155wmq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:22:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gzhAm54W/9fzbzcaxzy1NT+5bc7fiy3sUsh0lCDscII=;
+        b=DTqTG3ANLVbC24ksi5/RLM69eVWALii0090x+7cXoFjfgbHpwiFMviVQQP+etMt62K
+         G/56meV4VejR5jVkRXpNqKKcKu+NGtPQc5UEdjKrpcReHSJtng+WCdhvP0MnMpusOfI5
+         tlYQYV4+orcrEGI1NKelVYngJFQ+vVYyu0Ggu6k2DCSkR5mHZ6wVQsLx9dEoXCNSX5vp
+         jaE9GBHQGbuQr/z2B153ABjKu9XtfDosT4VpnJqYferSyEuknKnrOdSlgl69SBVG8ewj
+         xJwSpVPOH0yYLAUKOZlB12IO6E/va9D/ma4epXEOrK9ctWHwCX/9FfvdOGiJbkele+ws
+         AL0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gzhAm54W/9fzbzcaxzy1NT+5bc7fiy3sUsh0lCDscII=;
+        b=JCMn4lk+o6wAtFJaUsdzBmk8T3/nlaCvKuHX6hPsJBkimB44KvN+v8Q/TioOXxLusC
+         7wo1+OSw4Zs0AwzEG1NWcGX2zp+UJ6bDk76kGG9BP/tpifph6H4u2qaKKvhmmVvNS/M4
+         QwxMpY2FyqgaVtrn9YwTjo6rRmlq44JEPidt/1gg5Aj3MQt/5v5Mf56zTXX1BQEzWaCt
+         zhvmkqCkCcR1zLLHrzcOCmK/8KlQiwI8PtALHqOKKNYxYzICQhULcXKVNqFJy9qJe5/Z
+         ecDWTXe6SNaQtXipfXAT86SMHgI6W9V34/m7izvteojphm4NErSaxc8RYwwOcgTM495E
+         6VIQ==
+X-Gm-Message-State: AOAM531RmyzWoGJ5fCYyS62T7BzZ/5wb9fNVkMBuHJ7HQuuo7AKLDl6g
+        PbWdfLPKyYAkLzngRlIYP3XGjA==
+X-Google-Smtp-Source: ABdhPJza1uaC7tcXppo/6+lr5xblW3A5dqMncwyyZvMWjcemVC3QHlyvhHLvZ3XP7FmaUEZ2R0jiWA==
+X-Received: by 2002:a1c:e912:: with SMTP id q18mr19459775wmc.162.1613989341128;
+        Mon, 22 Feb 2021 02:22:21 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8d19:48da:83de:346d? ([2a01:e34:ed2f:f020:8d19:48da:83de:346d])
+        by smtp.googlemail.com with ESMTPSA id d7sm16575095wrm.62.2021.02.22.02.22.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 02:22:20 -0800 (PST)
+Subject: Re: [RFC][PATCH 0/3] New thermal interface allowing IPA to get max
+ power
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     vireshk@kernel.org, rafael@kernel.org, Dietmar.Eggemann@arm.com,
+        amitk@kernel.org, rui.zhang@intel.com, cw00.choi@samsung.com,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+References: <20210126104001.20361-1-lukasz.luba@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <2f4d7bf2-3f3e-ac24-20fb-b8d66dcdd809@linaro.org>
+Date:   Mon, 22 Feb 2021 11:22:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210126104001.20361-1-lukasz.luba@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210222180819.3998fe33@alex-virtual-machine>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 06:08:19PM +0800, Aili Yao wrote:
-> So why would intel provide this MCG_STATUS_RIPV flag, it's better to
-> remove it as it will never be set, and all the related logic for this
-> flag is really needed ?
 
-Why would it never be set - of course it will be. You don't set it. If
-you wanna inject errors, then make sure you inject *valid* errors which
-the hardware *actually* generates, not some random ones.
+Hi Lukasz,
+
+sorry for the delay, it took more time to finish my current work before
+commenting these patches.
+
+On 26/01/2021 11:39, Lukasz Luba wrote:
+> Hi all,
+> 
+> This patch set tries to add the missing feature in the Intelligent Power
+> Allocation (IPA) governor which is: frequency limit set by user space.
+
+It is unclear if we are talking about frequency limit of the dvfs device
+by setting the hardware limit (min-max freq). If it is the case, then
+that is an energy model change, and all user of the energy model must be
+notified about this change. But I don't see why userspace wants to
+change that.
+
+If we just want to set a frequency limit, then that is what we are doing
+with the DTPM framework via power numbers.
+
+> User can set max allowed frequency for a given device which has impact on
+> max allowed power. In current design there is no mechanism to figure this
+> out. IPA must know the maximum allowed power for every device. It is then
+> used for proper power split and divvy-up. When the user limit for max
+> frequency is not know, IPA assumes it is the highest possible frequency.
+> It causes wrong power split across the devices.
+
+That is because the IPA introduced the power rebalancing between devices
+belonging the same thermal zone, so the feature was very use case specific.
+
+The DTPM is supposed to solve this by providing an unified uW unit to
+act on the different power capable devices on a generic way.
+
+Today DTPM is mapped to userspace using the powercap framework, but it
+is considered to add kernel API to let other subsystem to act on it
+directly. May be, you can add those and call them from IPA directly, so
+the governor does power decision and ask the DTPM to do the changes.
+
+Conceptually, that would be much more consistent and will remove
+duplicated code IMO.
+
+May be create a power_qos framework to unify the units ...
+
+> This new mechanism provides the max allowed frequency to the thermal
+> framework and then max allowed power to the IPA.
+> The implementation is done in this way because currently there is no way
+> to retrieve the limits from the PM QoS, without uncapping the local
+> thermal limit and reading the next value. It would be a heavy way of
+> doing these things, since it should be done every polling time (e.g. 50ms).
+>
+> Also, the value stored in PM QoS can be different than the real OPP 'rate'
+> so still would need conversion into proper OPP for comparison with EM.
+> Furthermore, uncapping the device in thermal just to check the user freq
+> limit is not the safest way.
+> Thus, this simple implementation moves the calculation of the proper
+> frequency to the sysfs write code, since it's called less often. The value
+> is then used as-is in the thermal framework without any hassle.
+
+Sounds like the DTPM is doing exactly that, no ?
+
+> As it's a RFC, it still misses the cpufreq sysfs implementation, but would
+> be addressed if all agree.
+We are talking about power, frequency, in-kernel governor, userspace
+having knowledge of max frequency limit to set power.
+
+I'm a bit lost. What is the problem we want to solve here ?
+
+May be I'm missing something. Is it possible to share a scenario where
+the userspace acts on the devfreq and the IPA taking decision to
+illustrate your proposal ?
+
 
 -- 
-Regards/Gruss,
-    Boris.
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
