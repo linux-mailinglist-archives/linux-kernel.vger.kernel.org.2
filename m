@@ -2,189 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990573221BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A8B3221C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhBVVsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 16:48:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40684 "EHLO
+        id S231222AbhBVVtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 16:49:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhBVVsR (ORCPT
+        with ESMTP id S229959AbhBVVsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:48:17 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E03AC06174A;
-        Mon, 22 Feb 2021 13:47:37 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id b15so480018pjb.0;
-        Mon, 22 Feb 2021 13:47:37 -0800 (PST)
+        Mon, 22 Feb 2021 16:48:53 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4683C061574;
+        Mon, 22 Feb 2021 13:48:12 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id a207so606767wmd.1;
+        Mon, 22 Feb 2021 13:48:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yUOECDbspUPB7vYqE7OAhqNYTlK/dZC/wuY7Okr7q74=;
-        b=lPuAGNYCfU6ycpsOEQxNhUk+IFECTwWNSe+gYigLGt4NsMk+knHGI72M3vuf3taREn
-         Q4zaixwwd8Qf2Xc4WHzNDu4D+Bkg99/qpKPOtqcGd0dZ32S5APclqxnNT1zDFV3y+15W
-         b8zOTZKv3hOeXbLNwAj0I71DFfAaBw77Cj0YCVmiz+9ltR4N2TV3novh8KGic2T89vQs
-         aELEE7dw7lsMQ4KPTCzNrog/4zMpoO4ZvOgR0zONMtgYehDakihEZl/5flGHznD8l4bd
-         YV7FfT0Fn49oW/rQ9AruL6rLmdqTvDcUCvRoTLE6lm1ntvW8JrqKHMNu0Bmjdkfp0v81
-         t1TA==
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=PfzaZPW6YSp2BPSDyYzKC/ggi0wSZXtlYnd1kAVU0rw=;
+        b=CUjxsR6kJ6NdwpVBSa5e0Ql1z6iTbsdV4SmvM/g2S7K+wBkMbtztkY7YZzbeWyrCZU
+         byJX7YNVG7vsxk2SVk2Qth9QUS5pe5PyrOIk4yteI/WjWH5CvMh5aI2ZuTGUPzSt833Q
+         8s+1iFThr3NQ77c3toVco0vLFQCIpiPmh4KTPggZKJyM+GUOg69U1STxKaIr+3PDYX1+
+         GoQzZOuxOBkpqCR/2h2C2zZZGPE/40icVElZH2xq8PYEkBPfn/FYs8wUu68Io4ezfAf3
+         78ntKhWpP+f4BL+378nnlX73jdjA1j4a+b9/cRAyhHfJfbBt83Ngvu3t69fg2JM5lxy/
+         W9bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yUOECDbspUPB7vYqE7OAhqNYTlK/dZC/wuY7Okr7q74=;
-        b=RPzk/NNAzs6SQ5YyFnJobQHPqs0X2uASzG0mFOXZhZrkMzEmsQXA1SgetUM81wfp2A
-         BNK1SwknhmeN2eiGKBuy492A8Pq3UNW6weOjse/ahOQ17Q5ZUkdBm2VvnG1cyQbK13Ox
-         4kIQq7POnH+XaKhTWNijLATIay5mDwuMwKINBRIUUQxVCpMfgy003ncoI70eaiq4LCmY
-         ICytsZVekUNegmOtMMQR2TsJ7uDpqvEbc7WY6cOLTnBgpAMqId5Zdo8lnONAGZL177bP
-         5F2s1gFcCKgDcGtQkptE5ah/I2qjUF0RZu5b4Z15tQccClUDnUXq04WAQvLepDHVbvI2
-         ZHnA==
-X-Gm-Message-State: AOAM532iPj7DtSaUaJvF6EsOgsCqz+rqOW91qXWnghPdvDHSjA8GIHyn
-        lAyMVoQjKwVBDwa/RJkEXyQDWtVj8iw=
-X-Google-Smtp-Source: ABdhPJw/5pkHY75CzRt791ZqaQhoYcAkGlvgMr5oxz/oCbaSgHacytQMtT+saIMDOdHwmMp/Mr8DEQ==
-X-Received: by 2002:a17:90a:a117:: with SMTP id s23mr14027096pjp.208.1614030456614;
-        Mon, 22 Feb 2021 13:47:36 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x9sm433339pjp.3.2021.02.22.13.47.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 13:47:35 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] net: dsa: b53: Support setting learning on port
-Date:   Mon, 22 Feb 2021 13:46:41 -0800
-Message-Id: <20210222214641.2865493-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=PfzaZPW6YSp2BPSDyYzKC/ggi0wSZXtlYnd1kAVU0rw=;
+        b=oVmOQepH9bdjkploEscuiSE0AhdC5JomgnblV44MYZIeG4kwcz6cjXNsXsE2nerTa4
+         oFvtzx10V9oQPV4NlLC4krsN85qxYjzBuoglNtO7ytbLW1drUSL9gwrNzmx6tJh32Vgt
+         CgjZIoR73ykdOFnc2j/jdOGvIzExLkpnY26pOWHXTpz5phz4ElxqGbQ2VY555k/fXx17
+         zXdGUL/pluuVCSZ76NN1SYNCi3Hv4j2G8FUa6y0GaXGtCmBS4sSSqv390SXKBMdmr5cm
+         1Pu8uK42mixs3cgwXGVFRC1JGX4wtDiiTXeDlQV6is8WPysWx5ccRTd/NzAlZHL/djc7
+         QZ7A==
+X-Gm-Message-State: AOAM533H5ParVTBAKlmSi5J3252CF/Srdo7AMc2qyGvN++5LtP8/fpEA
+        fAfdGxtNrmtuHtYsJ/T3C9VlSu7fDNkWjw==
+X-Google-Smtp-Source: ABdhPJxAwZ7Insl72enokBVX0iITa8n6g3WFAeIDRgXFTzOiRVMULkTMmPCEoURZOJjsaxPkXZWFJA==
+X-Received: by 2002:a7b:ca47:: with SMTP id m7mr16235124wml.112.1614030491037;
+        Mon, 22 Feb 2021 13:48:11 -0800 (PST)
+Received: from [192.168.1.50] (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id y2sm8486610wrp.39.2021.02.22.13.48.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 13:48:10 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] watchdog: bcm7038_wdt: add big endian support
+Date:   Mon, 22 Feb 2021 22:48:09 +0100
+Message-Id: <80DB1B7E-D719-4597-A2B7-7CAD592E1B19@gmail.com>
+References: <9381ef9e-a569-9bcd-5546-a48922e4961d@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <9381ef9e-a569-9bcd-5546-a48922e4961d@roeck-us.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+X-Mailer: iPhone Mail (18D52)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for being able to set the learning attribute on port, and
-make sure that the standalone ports start up with learning disabled.
+Hi Guenter,
 
-We can remove the code in bcm_sf2 that configured the ports learning
-attribute because we want the standalone ports to have learning disabled
-by default and port 7 cannot be bridged, so its learning attribute will
-not change past its initial configuration.
+> El 22 feb 2021, a las 22:24, Guenter Roeck <linux@roeck-us.net> escribi=C3=
+=B3:
+>=20
+> =EF=BB=BFOn 2/22/21 12:03 PM, =C3=81lvaro Fern=C3=A1ndez Rojas wrote:
+>> bcm7038_wdt can be used on bmips (bcm63xx) devices too.
+>>=20
+> It might make sense to actually enable it for BCM63XX.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-David, Jakub,
+bcm63xx SoCs are supported in bcm63xx and bmips.
+bcm63xx doesn=E2=80=99t have device tree support, but bmips does and this wa=
+tchdog is already enabled for bmips.
 
-This is submitted against "net" because this is technically a bug fix
-since ports should not have had learning enabled by default but given
-this is dependent upon Vladimir's recent br_flags series, there is no
-Fixes tag provided.
+>=20
+>> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+>> ---
+>> drivers/watchdog/bcm7038_wdt.c | 30 ++++++++++++++++++++++++------
+>> 1 file changed, 24 insertions(+), 6 deletions(-)
+>>=20
+>> diff --git a/drivers/watchdog/bcm7038_wdt.c b/drivers/watchdog/bcm7038_wd=
+t.c
+>> index 979caa18d3c8..62494da1ac57 100644
+>> --- a/drivers/watchdog/bcm7038_wdt.c
+>> +++ b/drivers/watchdog/bcm7038_wdt.c
+>> @@ -34,6 +34,24 @@ struct bcm7038_watchdog {                             =
+   =20
+>>=20
+>> static bool nowayout =3D WATCHDOG_NOWAYOUT;
+>>=20
+>> +static inline void bcm7038_wdt_write(unsigned long data, void __iomem *r=
+eg)
+>> +{
+>> +#ifdef CONFIG_CPU_BIG_ENDIAN
+>> +    __raw_writel(data, reg);
+>> +#else
+>> +    writel(data, reg);
+>> +#endif
+>> +}
+>> +
+>> +static inline unsigned long bcm7038_wdt_read(void __iomem *reg)
+>> +{
+>> +#ifdef CONFIG_CPU_BIG_ENDIAN
+>> +    return __raw_readl(reg);
+>> +#else
+>> +    return readl(reg);
+>> +#endif
+>> +}
+>> +
+>=20
+> This needs further explanation. Why not just use __raw_writel() and
+> __raw_readl() unconditionally ? Also, is it known for sure that,
+> say, bmips_be_defconfig otherwise uses the wrong endianness
+> (vs. bmips_stb_defconfig which is a little endian configuration) ?
 
-I will be providing targeted stable backports that look a bit
-difference.
+Because __raw_writel() doesn=E2=80=99t have memory barriers and writel() doe=
+s.
+Those configs use the correct endiannes, so I don=E2=80=99t know what you me=
+an...
 
-Thanks!
-
- drivers/net/dsa/b53/b53_common.c | 18 ++++++++++++++++++
- drivers/net/dsa/b53/b53_regs.h   |  1 +
- drivers/net/dsa/bcm_sf2.c        | 15 +--------------
- 3 files changed, 20 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index ae86ded1e2a1..261f6902abc3 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -543,6 +543,19 @@ static void b53_port_set_mcast_flood(struct b53_device *dev, int port,
- 	b53_write16(dev, B53_CTRL_PAGE, B53_IPMC_FLOOD_MASK, mc);
- }
- 
-+static void b53_port_set_learning(struct b53_device *dev, int port,
-+				  bool learning)
-+{
-+	u16 reg;
-+
-+	b53_read16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, &reg);
-+	if (learning)
-+		reg &= ~BIT(port);
-+	else
-+		reg |= BIT(port);
-+	b53_write16(dev, B53_CTRL_PAGE, B53_DIS_LEARNING, reg);
-+}
-+
- int b53_enable_port(struct dsa_switch *ds, int port, struct phy_device *phy)
- {
- 	struct b53_device *dev = ds->priv;
-@@ -557,6 +570,7 @@ int b53_enable_port(struct dsa_switch *ds, int port, struct phy_device *phy)
- 
- 	b53_port_set_ucast_flood(dev, port, true);
- 	b53_port_set_mcast_flood(dev, port, true);
-+	b53_port_set_learning(dev, port, false);
- 
- 	if (dev->ops->irq_enable)
- 		ret = dev->ops->irq_enable(dev, port);
-@@ -691,6 +705,7 @@ static void b53_enable_cpu_port(struct b53_device *dev, int port)
- 
- 	b53_port_set_ucast_flood(dev, port, true);
- 	b53_port_set_mcast_flood(dev, port, true);
-+	b53_port_set_learning(dev, port, false);
- }
- 
- static void b53_enable_mib(struct b53_device *dev)
-@@ -1973,6 +1988,9 @@ static int b53_br_flags(struct dsa_switch *ds, int port,
- 	if (flags.mask & BR_MCAST_FLOOD)
- 		b53_port_set_mcast_flood(ds->priv, port,
- 					 !!(flags.val & BR_MCAST_FLOOD));
-+	if (flags.mask & BR_LEARNING)
-+		b53_port_set_learning(ds->priv, port,
-+				      !!(flags.val & BR_LEARNING));
- 
- 	return 0;
- }
-diff --git a/drivers/net/dsa/b53/b53_regs.h b/drivers/net/dsa/b53/b53_regs.h
-index c90985c294a2..b2c539a42154 100644
---- a/drivers/net/dsa/b53/b53_regs.h
-+++ b/drivers/net/dsa/b53/b53_regs.h
-@@ -115,6 +115,7 @@
- #define B53_UC_FLOOD_MASK		0x32
- #define B53_MC_FLOOD_MASK		0x34
- #define B53_IPMC_FLOOD_MASK		0x36
-+#define B53_DIS_LEARNING		0x3c
- 
- /*
-  * Override Ports 0-7 State on devices with xMII interfaces (8 bit)
-diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
-index 1857aa9aa84a..726edfe230df 100644
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -223,23 +223,10 @@ static int bcm_sf2_port_setup(struct dsa_switch *ds, int port,
- 	reg &= ~P_TXQ_PSM_VDD(port);
- 	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
- 
--	/* Enable learning */
--	reg = core_readl(priv, CORE_DIS_LEARN);
--	reg &= ~BIT(port);
--	core_writel(priv, reg, CORE_DIS_LEARN);
--
- 	/* Enable Broadcom tags for that port if requested */
--	if (priv->brcm_tag_mask & BIT(port)) {
-+	if (priv->brcm_tag_mask & BIT(port))
- 		b53_brcm_hdr_setup(ds, port);
- 
--		/* Disable learning on ASP port */
--		if (port == 7) {
--			reg = core_readl(priv, CORE_DIS_LEARN);
--			reg |= BIT(port);
--			core_writel(priv, reg, CORE_DIS_LEARN);
--		}
--	}
--
- 	/* Configure Traffic Class to QoS mapping, allow each priority to map
- 	 * to a different queue number
- 	 */
--- 
-2.25.1
-
+>=20
+> Thanks,
+> Guenter
+>=20
+>> static void bcm7038_wdt_set_timeout_reg(struct watchdog_device *wdog)
+>> {
+>>    struct bcm7038_watchdog *wdt =3D watchdog_get_drvdata(wdog);
+>> @@ -41,15 +59,15 @@ static void bcm7038_wdt_set_timeout_reg(struct watchd=
+og_device *wdog)
+>>=20
+>>    timeout =3D wdt->rate * wdog->timeout;
+>>=20
+>> -    writel(timeout, wdt->base + WDT_TIMEOUT_REG);
+>> +    bcm7038_wdt_write(timeout, wdt->base + WDT_TIMEOUT_REG);
+>> }
+>>=20
+>> static int bcm7038_wdt_ping(struct watchdog_device *wdog)
+>> {
+>>    struct bcm7038_watchdog *wdt =3D watchdog_get_drvdata(wdog);
+>>=20
+>> -    writel(WDT_START_1, wdt->base + WDT_CMD_REG);
+>> -    writel(WDT_START_2, wdt->base + WDT_CMD_REG);
+>> +    bcm7038_wdt_write(WDT_START_1, wdt->base + WDT_CMD_REG);
+>> +    bcm7038_wdt_write(WDT_START_2, wdt->base + WDT_CMD_REG);
+>>=20
+>>    return 0;
+>> }
+>> @@ -66,8 +84,8 @@ static int bcm7038_wdt_stop(struct watchdog_device *wdo=
+g)
+>> {
+>>    struct bcm7038_watchdog *wdt =3D watchdog_get_drvdata(wdog);
+>>=20
+>> -    writel(WDT_STOP_1, wdt->base + WDT_CMD_REG);
+>> -    writel(WDT_STOP_2, wdt->base + WDT_CMD_REG);
+>> +    bcm7038_wdt_write(WDT_STOP_1, wdt->base + WDT_CMD_REG);
+>> +    bcm7038_wdt_write(WDT_STOP_2, wdt->base + WDT_CMD_REG);
+>>=20
+>>    return 0;
+>> }
+>> @@ -88,7 +106,7 @@ static unsigned int bcm7038_wdt_get_timeleft(struct wa=
+tchdog_device *wdog)
+>>    struct bcm7038_watchdog *wdt =3D watchdog_get_drvdata(wdog);
+>>    u32 time_left;
+>>=20
+>> -    time_left =3D readl(wdt->base + WDT_CMD_REG);
+>> +    time_left =3D bcm7038_wdt_read(wdt->base + WDT_CMD_REG);
+>>=20
+>>    return time_left / wdt->rate;
+>> }
+>>=20
+>=20
