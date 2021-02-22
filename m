@@ -2,227 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83840321D6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A336B321D6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhBVQui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:50:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbhBVQuT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:50:19 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8C4C06174A;
-        Mon, 22 Feb 2021 08:49:38 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id q186so14558637oig.12;
-        Mon, 22 Feb 2021 08:49:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RGFcvVJ1lj+6uQWliW0Ld/r3pfPfn4RVhCz5UuK1Pc8=;
-        b=p/KcXmHQHllQeiug8VVKMusPsQkCDxJlAYVIcoWFWFlj2uV+USyO8SVvdtxxcB4kVk
-         gwnaEMBEg3uiEeA9RfFYkMbkYKxJ3jBol8k3wEyXv7Me0MyjDh7HyCbICZJX1IHxE6HH
-         d35duhFbfBCcmvAL/4wYaxUf6uhZiUvtAC/o/eWBluUOChu3no3MWddbAyEb+d0Pnf05
-         wA3BYw0NvQYw9eoa/ylXkmjN4M5erWoPCGbnZ2CY1ipZsoaHsYiy61fMB3FJDyg6f315
-         vuO/Dc0yY3xesCDwih25v4BgpiM4aJvx72nTE0GhGV8f6rR/3plKlNOnpCWnd8eStM7s
-         I50w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RGFcvVJ1lj+6uQWliW0Ld/r3pfPfn4RVhCz5UuK1Pc8=;
-        b=RvqeOwrhJIpU/h7Pfmobxpa1OaMf8ofQePwjMp7FXSUmVEQYN21KSIVKqb7wYGXe2X
-         hAqwaaV91oxGJ7Ma/7M0rDipFxQhRlrpOYNi3ranAjBCgdxCIynEyI7AsQT2PigVLVZM
-         +5cLImvnAc519IpGElLQfAGLySzGAmqLuSYqa8YM2Uvbp9nFamj2w2K154t8r94Jvrx4
-         /jrxt/C7XyAd/wLtBWknY7mJNzZ3ovv3yHa9RdKsZqS2Ess50rkQwcEmUKEPPPaKEoQk
-         3Bw+1j7+BjitrezFb3I+Z5gJ60l30lf0hIy9sR2PXxnwLHVU8WOMLakegDIw/HUigBoM
-         x3lQ==
-X-Gm-Message-State: AOAM53234x/czYuBiMArB2hZYiuV2rsKFjRlEZLAmgOYsWB/rwrXpXTt
-        C+Vb56xhx3QhlTCmr7e+HZGT/HOHwSurufbky6//NG/dZWRb
-X-Google-Smtp-Source: ABdhPJwqdey7eXWwnY0zVLdcFlvjDc5rD2VhaDRQdLn08BPQSJb4fHoE+S/lCd2ZXfs4eIlorgiz19uysylbx7JmiSE=
-X-Received: by 2002:a05:6808:5ca:: with SMTP id d10mr15601120oij.122.1614012578036;
- Mon, 22 Feb 2021 08:49:38 -0800 (PST)
+        id S231249AbhBVQvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:51:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230441AbhBVQvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:51:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFBE664EF5;
+        Mon, 22 Feb 2021 16:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614012625;
+        bh=NdPYl+QWm8xo7ev8sCTXYwm6VXHmzh9VDOg2opkQ6i4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pn75JUGxdwgvVJA1khgp3BBoVuUVh4ybT4LVCLZhLEkU7EF6dlo4vXysceu5kOyrQ
+         6nZfkFrC+IMXgr3jrHYMk9QYwxAbbp53WKVMDXE2fApUD1E3wi53y4eBe0Wo4vqZuy
+         Vth9nBx0m32+u2hY/p3WKY7y8EgHzi3N/uXKWw4jbd+XpvzIcSP2wTzS6MN9L8Ybcv
+         Hyj4GqDYTcb+gTN3An1CPPtZPdxtKSzbkwfJZ+HHuBrYCZXWtqQaWXLMyLdtpRerLH
+         /6hCY4hgnRv2l7j3W5KHcGmS6YTlHw9zowVgN/E/D99g8iQx0xwbU5+R90G2L5x8aA
+         vGZaXpn4gNFcw==
+Date:   Mon, 22 Feb 2021 18:50:20 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Julian Braha <julianbraha@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drivers: infiniband: sw: rxe: fix kconfig dependency on
+ CRYPTO
+Message-ID: <YDPgzFkF7L6S5xQa@unreal>
+References: <21525878.NYvzQUHefP@ubuntu-mate-laptop>
+ <YDICM3SwwGZfE+Sg@unreal>
+ <CAD=hENeCXGtKrXxLof=DEZjxpKyYBFS80pAX20nnJBuP_s-GBA@mail.gmail.com>
+ <YDOq060TvAwLgknl@unreal>
+ <20210222155845.GI2643399@ziepe.ca>
+ <e1e3bec7-0350-4bdd-50c3-41b21388fc71@infradead.org>
+ <20210222164645.GK2643399@ziepe.ca>
 MIME-Version: 1.0
-References: <d79b32d366ca49aca7821cb0b0edf52b@EXCH-SVR2013.eberle.local>
-In-Reply-To: <d79b32d366ca49aca7821cb0b0edf52b@EXCH-SVR2013.eberle.local>
-From:   George McCollister <george.mccollister@gmail.com>
-Date:   Mon, 22 Feb 2021 10:49:26 -0600
-Message-ID: <CAFSKS=PnV-aLnGeNqjqrsT4nfFby18uYQpScCCurz6dZ39AynQ@mail.gmail.com>
-Subject: Re: [PATCH] net: hsr: add support for EntryForgetTime
-To:     "Wenzel, Marco" <Marco.Wenzel@a-eberle.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Amol Grover <frextrite@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Arvid Brodin <Arvid.Brodin@xdin.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210222164645.GK2643399@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 7:38 AM Wenzel, Marco <Marco.Wenzel@a-eberle.de> wrote:
+On Mon, Feb 22, 2021 at 12:46:45PM -0400, Jason Gunthorpe wrote:
+> On Mon, Feb 22, 2021 at 08:26:10AM -0800, Randy Dunlap wrote:
+> > On 2/22/21 7:58 AM, Jason Gunthorpe wrote:
+> > > On Mon, Feb 22, 2021 at 03:00:03PM +0200, Leon Romanovsky wrote:
+> > >> On Mon, Feb 22, 2021 at 10:39:20AM +0800, Zhu Yanjun wrote:
+> > >>> On Sun, Feb 21, 2021 at 2:49 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > >>>>
+> > >>>> On Fri, Feb 19, 2021 at 06:32:26PM -0500, Julian Braha wrote:
+> > >>>>> commit 6e61907779ba99af785f5b2397a84077c289888a
+> > >>>>> Author: Julian Braha <julianbraha@gmail.com>
+> > >>>>> Date:   Fri Feb 19 18:20:57 2021 -0500
+> > >>>>>
+> > >>>>>     drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
+> > >>>>>
+> > >>>>>     When RDMA_RXE is enabled and CRYPTO is disabled,
+> > >>>>>     Kbuild gives the following warning:
+> > >>>>>
+> > >>>>>     WARNING: unmet direct dependencies detected for CRYPTO_CRC32
+> > >>>>>       Depends on [n]: CRYPTO [=n]
+> > >>>>>       Selected by [y]:
+> > >>>>>       - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && INFINIBAND_VIRT_DMA [=y]
+> > >>>>>
+> > >>>>>     This is because RDMA_RXE selects CRYPTO_CRC32,
+> > >>>>>     without depending on or selecting CRYPTO, despite that config option
+> > >>>>>     being subordinate to CRYPTO.
+> > >>>>>
+> > >>>>>     Signed-off-by: Julian Braha <julianbraha@gmail.com>
+> > >>>>
+> > >>>> Please use git sent-email to send patches and please fix crypto Kconfig
+> > >>>> to enable CRYPTO if CRYPTO_* selected.
+> > >>>>
+> > >>>> It is a little bit awkward to request all users of CRYPTO_* to request
+> > >>>> select CRYPTO too.
+> > >>>
+> > >>> The same issue and similar patch is in this link:
+> > >>>
+> > >>> https://patchwork.kernel.org/project/linux-rdma/patch/20200915101559.33292-1-fazilyildiran@gmail.com/#23615747
+> > >>
+> > >> So what prevents us from fixing CRYPTO Kconfig?
+> > >
+> > > Yes, I would like to see someone deal with this properly, either every
+> > > place doing select CRYPTO_XX needs fixing or something needs to be
+> > > done in the crypto layer.
+> > >
+> > > I have no idea about kconfig to give advice, I've added Arnd since he
+> > > always seems to know :)
+> >
+> > I will Ack the original patch in this thread.
 >
-> On Fri, Feb 19, 2021 at 2:14 PM : George McCollister <george.mccollister@gmail.com> wrote:
-> >
-> > On Fri, Feb 19, 2021 at 2:27 AM Wenzel, Marco <Marco.Wenzel@a-
-> > eberle.de> wrote:
-> > >
-> > > On Thu, Feb 18, 2021 at 6:06 PM : George McCollister
-> > <george.mccollister@gmail.com> wrote:
-> > > >
-> > > > On Thu, Feb 18, 2021 at 9:01 AM Marco Wenzel <marco.wenzel@a-
-> > > > eberle.de> wrote:
-> > > > >
-> > > > > In IEC 62439-3 EntryForgetTime is defined with a value of 400 ms.
-> > > > > When a node does not send any frame within this time, the sequence
-> > > > > number check for can be ignored. This solves communication issues
-> > > > > with Cisco IE 2000 in Redbox mode.
-> > > > >
-> > > > > Fixes: f421436a591d ("net/hsr: Add support for the
-> > > > > High-availability Seamless Redundancy protocol (HSRv0)")
-> > > > > Signed-off-by: Marco Wenzel <marco.wenzel@a-eberle.de>
-> > > > > ---
-> > > > >  net/hsr/hsr_framereg.c | 9 +++++++--  net/hsr/hsr_framereg.h | 1
-> > > > > +
-> > > > >  net/hsr/hsr_main.h     | 1 +
-> > > > >  3 files changed, 9 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c index
-> > > > > 5c97de459905..805f974923b9 100644
-> > > > > --- a/net/hsr/hsr_framereg.c
-> > > > > +++ b/net/hsr/hsr_framereg.c
-> > > > > @@ -164,8 +164,10 @@ static struct hsr_node *hsr_add_node(struct
-> > > > hsr_priv *hsr,
-> > > > >          * as initialization. (0 could trigger an spurious ring error warning).
-> > > > >          */
-> > > > >         now = jiffies;
-> > > > > -       for (i = 0; i < HSR_PT_PORTS; i++)
-> > > > > +       for (i = 0; i < HSR_PT_PORTS; i++) {
-> > > > >                 new_node->time_in[i] = now;
-> > > > > +               new_node->time_out[i] = now;
-> > > > > +       }
-> > > > >         for (i = 0; i < HSR_PT_PORTS; i++)
-> > > > >                 new_node->seq_out[i] = seq_out;
-> > > > >
-> > > > > @@ -411,9 +413,12 @@ void hsr_register_frame_in(struct hsr_node
-> > > > *node,
-> > > > > struct hsr_port *port,  int hsr_register_frame_out(struct hsr_port
-> > > > > *port,
-> > > > struct hsr_node *node,
-> > > > >                            u16 sequence_nr)  {
-> > > > > -       if (seq_nr_before_or_eq(sequence_nr, node->seq_out[port-
-> > >type]))
-> > > > > +       if (seq_nr_before_or_eq(sequence_nr,
-> > > > > + node->seq_out[port->type])
-> > > > &&
-> > > > > +           time_is_after_jiffies(node->time_out[port->type] +
-> > > > > +           msecs_to_jiffies(HSR_ENTRY_FORGET_TIME)))
-> > > > >                 return 1;
-> > > > >
-> > > > > +       node->time_out[port->type] = jiffies;
-> > > > >         node->seq_out[port->type] = sequence_nr;
-> > > > >         return 0;
-> > > > >  }
-> > > > > diff --git a/net/hsr/hsr_framereg.h b/net/hsr/hsr_framereg.h index
-> > > > > 86b43f539f2c..d9628e7a5f05 100644
-> > > > > --- a/net/hsr/hsr_framereg.h
-> > > > > +++ b/net/hsr/hsr_framereg.h
-> > > > > @@ -75,6 +75,7 @@ struct hsr_node {
-> > > > >         enum hsr_port_type      addr_B_port;
-> > > > >         unsigned long           time_in[HSR_PT_PORTS];
-> > > > >         bool                    time_in_stale[HSR_PT_PORTS];
-> > > > > +       unsigned long           time_out[HSR_PT_PORTS];
-> > > > >         /* if the node is a SAN */
-> > > > >         bool                    san_a;
-> > > > >         bool                    san_b;
-> > > > > diff --git a/net/hsr/hsr_main.h b/net/hsr/hsr_main.h index
-> > > > > 7dc92ce5a134..f79ca55d6986 100644
-> > > > > --- a/net/hsr/hsr_main.h
-> > > > > +++ b/net/hsr/hsr_main.h
-> > > > > @@ -21,6 +21,7 @@
-> > > > >  #define HSR_LIFE_CHECK_INTERVAL                 2000 /* ms */
-> > > > >  #define HSR_NODE_FORGET_TIME           60000 /* ms */
-> > > > >  #define HSR_ANNOUNCE_INTERVAL            100 /* ms */
-> > > > > +#define HSR_ENTRY_FORGET_TIME            400 /* ms */
-> > > > >
-> > > > >  /* By how much may slave1 and slave2 timestamps of latest
-> > > > > received
-> > > > frame from
-> > > > >   * each node differ before we notify of communication problem?
-> > > > > --
-> > > > > 2.30.0
-> > > > >
-> > > >
-> > > > scripts/checkpatch.pl gives errors about DOS line endings but once
-> > > > that is resolved this looks good. I tested it on an HSR network with
-> > > > the software implementation and the xrs700x which uses offloading
-> > > > and everything still works. I don't have a way to force anything on
-> > > > the HSR network to reuse sequence numbers after 400ms.
-> > > >
-> > > > Reviewed-by: George McCollister <george.mccollister@gmail.com
-> > > > Tested-by: George McCollister <george.mccollister@gmail.com
-> > >
-> > > Thank you very much for reviewing, testing and supporting!
-> > >
-> > > Where do you see the incorrect line endings? I just ran scripts/checkpath.pl
-> > as git commit hook and it did not report any errors. When I run it again
-> > manually, it also does not report any errors:
-> > >
-> > > # ./scripts/checkpatch.pl --strict
-> > > /tmp/0001-net-hsr-add-support-for-EntryForgetTime.patch
-> > > total: 0 errors, 0 warnings, 0 checks, 38 lines checked
-> > >
-> > > /tmp/0001-net-hsr-add-support-for-EntryForgetTime.patch has no obvious
-> > style problems and is ready for submission.
-> >
-> > Sorry about this. It seems when I downloaded the patch with Chromium
-> > from gmail in Linux it added DOS new lines (this is unexpected). When I
-> > downloaded it from lore.kernel.org it's fine.
-> >
-> > Reviewed-by: George McCollister <george.mccollister@gmail.com>
-> > Tested-by: George McCollister <george.mccollister@gmail.com>
-> >
+> The one from Julian?
 >
-> Thank you for reviewing again! Is there any operation needed from my side in order to officially apply this patch?
+> > How many Mellanox drivers are you concerned about?
+>
+> ?? This is about rxe
+>
+> > You don't have to fix any other drivers that have a similar issue.
+>
+> Why shouldn't they be fixed too?
+>
+> There is nearly 1000 places that use a 'select CRYPTO_*' in the
+> kernel.
+>
+> I see only 60 'select CRYPTO' statements.
 
-Looks like the patch is showing as deferred in patchwork because it's
-not targeting either net or net-next.
+I don't like the suggestion to ack and not fix either.
+All CRYPTO_CRC32C users need CRYPTO and it means that CRYPTO Kconfig
+should be fixed.
 
-From https://www.kernel.org/doc/Documentation/networking/netdev-FAQ.txt
-  There are always two trees (git repositories) in play. Both are driven
-   by David Miller, the main network maintainer.  There is the "net" tree,
-   and the "net-next" tree.  As you can probably guess from the names, the
-   net tree is for fixes to existing code already in the mainline tree from
-   Linus, and net-next is where the new code goes for the future release.
-   You can find the trees here:
+➜  kernel git:(queue-next) git grep -B 1 "select CRYPTO_CRC32"
+drivers/infiniband/sw/rxe/Kconfig-      select NET_UDP_TUNNEL
+drivers/infiniband/sw/rxe/Kconfig:      select CRYPTO_CRC32
+--
+drivers/nvme/host/Kconfig-      select CRYPTO
+drivers/nvme/host/Kconfig:      select CRYPTO_CRC32C
+--
+drivers/scsi/Kconfig-   select CRYPTO_MD5
+drivers/scsi/Kconfig:   select CRYPTO_CRC32C
+--
+drivers/target/iscsi/Kconfig-   select CRYPTO
+drivers/target/iscsi/Kconfig:   select CRYPTO_CRC32C
+drivers/target/iscsi/Kconfig:   select CRYPTO_CRC32C_INTEL if X86
+--
+fs/btrfs/Kconfig-       select CRYPTO
+fs/btrfs/Kconfig:       select CRYPTO_CRC32C
+--
+fs/ext4/Kconfig-        select CRYPTO
+fs/ext4/Kconfig:        select CRYPTO_CRC32C
+--
+fs/f2fs/Kconfig-        select CRYPTO
+fs/f2fs/Kconfig:        select CRYPTO_CRC32
+--
+fs/jbd2/Kconfig-        select CRYPTO
+fs/jbd2/Kconfig:        select CRYPTO_CRC32C
+--
+lib/Kconfig-    select CRYPTO
+lib/Kconfig:    select CRYPTO_CRC32C
 
-        https://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git
-        https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-You must decide if you want to send it for net or net-next. If you
-want to send it for net-next you must wait Linus has closed the merge
-window and this shows open:
-http://vger.kernel.org/~davem/net-next.html
-
-To send for net use the subject prefix "[PATCH net]".
-To send for net-next use the subject prefix "[PATCH net-next]".
-
-If you're using git format-patch you can use the following:
-git format-patch --subject-prefix='PATCH net-next'
-
-If you're just using git send-email you can use the --annotate option
-to edit the patch subject manually.
-
-Thanks and sorry for not mentioning this before,
-George McCollister
 
 >
-> > >
-> > > Regards,
-> > > Marco Wenzel
+> Jason
