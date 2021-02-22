@@ -2,212 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A2B321418
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F98321425
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:28:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhBVKYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:24:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50768 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230063AbhBVKYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:24:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 366C0B02A;
-        Mon, 22 Feb 2021 10:23:54 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id f6f7d930;
-        Mon, 22 Feb 2021 10:24:58 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Amir Goldstein <amir73il@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        Luis Henriques <lhenriques@suse.de>
-Subject: [PATCH v8] vfs: fix copy_file_range regression in cross-fs copies
-Date:   Mon, 22 Feb 2021 10:24:56 +0000
-Message-Id: <20210222102456.6692-1-lhenriques@suse.de>
-In-Reply-To: <20210221195833.23828-1-lhenriques@suse.de>
-References: <20210221195833.23828-1-lhenriques@suse.de>
+        id S230169AbhBVK0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:26:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230240AbhBVKZs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 05:25:48 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18A1C06178C
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:25:07 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id 105so5059721otd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:25:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8PN9lZns7J1+4nVNdLUsP5pZfABQHuCQh40cXC4mRVU=;
+        b=JjNqFK4gSzIei693IqlhBwRtfqfVLnXSE7H+WylDNcJ9iWnvn2v5HZQmr66dRaYaR2
+         1qy0ofXUQ9Sazr3OTMvKwxsLcc+bhw7lERWk030gGX0TSIV/TOasbs9/DKvt7XoHW5NV
+         X+rSaxHg9heK4QU/oT4mD4B0YbNGVJzrPs9c4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8PN9lZns7J1+4nVNdLUsP5pZfABQHuCQh40cXC4mRVU=;
+        b=IHHjlGu8/juZl30LvAM6w8F5739i1DRGi0lZOyiB+fSqQLV8gPuiHU0NXUMRwCTGnk
+         uE7yQzCubrj+Fzmyc7OapYMJrivTXn4Ky4hJjGs2xvwJPiBKwbnkd3qYfgy2NTQX46WA
+         4nGEYuRN1XZLHksJv63H5IBWXz5ZdqodAUS+84bs5HFy4/fdmimXiVygHxtSZmLLH6WL
+         diOvy9OfWfIQQ1iJ7qKVkxAx9vjnKSMdLh3BHMfe6KU/B6vPQr6UP05qvPdx4iGcRFVB
+         6Iqz3iJsVHWAZaIWyukcDya2FKoAEv0vUIImJJ8/iJQU2qjs6aGt4gR94tNqyDfWUNGm
+         ZbVw==
+X-Gm-Message-State: AOAM5321M+phGNR3AjZhJyWJUKLayNqlTLvndLbujbDeZgAK2xsOMaxb
+        YAwlk4tPNxDeWmohplrWltJ7FwGlGoi5lMY5CkOusQ==
+X-Google-Smtp-Source: ABdhPJz61isp2ETWeXwVtiL//SENHDycgJJ4PyNLSgD/N7s44pHwG+wgblzkTIqc5NrUKKhFiAtR7tjIdciUtZWmuUw=
+X-Received: by 2002:a9d:2265:: with SMTP id o92mr16080713ota.188.1613989507244;
+ Mon, 22 Feb 2021 02:25:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <YDOGERvNuU3+2WWe@phenom.ffwll.local>
+In-Reply-To: <YDOGERvNuU3+2WWe@phenom.ffwll.local>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Mon, 22 Feb 2021 11:24:56 +0100
+Message-ID: <CAKMK7uHQ=6OJcRguCUtiB456RWdCfwSNEXV8pQsfsPodTJ6uxw@mail.gmail.com>
+Subject: Re: [PULL] fixes around VM_PFNMAP and follow_pfn for 5.12 merge window
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux MM <linux-mm@kvack.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A regression has been reported by Nicolas Boichat, found while using the
-copy_file_range syscall to copy a tracefs file.  Before commit
-5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
-kernel would return -EXDEV to userspace when trying to copy a file across
-different filesystems.  After this commit, the syscall doesn't fail anymore
-and instead returns zero (zero bytes copied), as this file's content is
-generated on-the-fly and thus reports a size of zero.
+Cc all the mailing lists ... my usual script crashed and I had to
+hand-roll the email and screwed it up ofc :-/
+-Daniel
 
-This patch restores some cross-filesystem copy restrictions that existed
-prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-devices").  Filesystems are still allowed to fall-back to the VFS
-generic_copy_file_range() implementation, but that has now to be done
-explicitly.
+On Mon, Feb 22, 2021 at 11:23 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> Hi Linus,
+>
+> Another small pull from you to ponder.
+>
+> This is the first part of a patch series I've been working on for a while:
+>
+> https://lore.kernel.org/dri-devel/20201127164131.2244124-1-daniel.vetter@ffwll.ch/
+>
+> I've stumbled over this for my own learning and then realized there's a
+> bunch of races around VM_PFNMAP mappings vs follow pfn.
+>
+> If you're happy with this then I'll follow up with the media patches to
+> mark their leftover use of follow_pfn as unsafe (it's uapi, so unfixable
+> issue, all we can do is a config option to harden the kernel). Plus
+> hopefully kvm and vfio are then fixed too (you've been on the recent kvm
+> thread where this popped up again) so that we can sunset follow_pfn usage
+> completely.
+>
+> The last two patches have only been in linux-next in their current form
+> for a week, there was some issue for platforms with HAVE_PCI_LEGACY (not
+> that many) which took some sorting out. But looks all good now.
+>
+> Cheers, Daniel
+>
+> The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+>
+>   Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
+>
+> are available in the Git repository at:
+>
+>   git://anongit.freedesktop.org/drm/drm tags/topic/iomem-mmap-vs-gup-2021-02-22
+>
+> for you to fetch changes up to 636b21b50152d4e203223ee337aca1cb3c1bfe53:
+>
+>   PCI: Revoke mappings like devmem (2021-02-11 15:59:19 +0100)
+>
+> ----------------------------------------------------------------
+> Fixes around VM_FPNMAP and follow_pfn
+>
+> - replace mm/frame_vector.c by get_user_pages in misc/habana and
+>   drm/exynos drivers, then move that into media as it's sole user
+> - close race in generic_access_phys
+> - s390 pci ioctl fix of this series landed in 5.11 already
+> - properly revoke iomem mappings (/dev/mem, pci files)
+>
+> ----------------------------------------------------------------
+> Daniel Vetter (13):
+>       drm/exynos: Stop using frame_vector helpers
+>       drm/exynos: Use FOLL_LONGTERM for g2d cmdlists
+>       misc/habana: Stop using frame_vector helpers
+>       misc/habana: Use FOLL_LONGTERM for userptr
+>       mm/frame-vector: Use FOLL_LONGTERM
+>       media: videobuf2: Move frame_vector into media subsystem
+>       mm: Close race in generic_access_phys
+>       PCI: Obey iomem restrictions for procfs mmap
+>       /dev/mem: Only set filp->f_mapping
+>       resource: Move devmem revoke code to resource framework
+>       sysfs: Support zapping of binary attr mmaps
+>       PCI: Also set up legacy files only after sysfs init
+>       PCI: Revoke mappings like devmem
+>
+>  drivers/char/mem.c                                    | 86 +----------------------------------------------------------------
+>  drivers/gpu/drm/exynos/Kconfig                        |  1 -
+>  drivers/gpu/drm/exynos/exynos_drm_g2d.c               | 48 ++++++++++++++++---------------------
+>  drivers/media/common/videobuf2/Kconfig                |  1 -
+>  drivers/media/common/videobuf2/Makefile               |  1 +
+>  {mm => drivers/media/common/videobuf2}/frame_vector.c | 55 +++++++++++++++---------------------------
+>  drivers/media/common/videobuf2/videobuf2-memops.c     |  3 +--
+>  drivers/media/platform/omap/Kconfig                   |  1 -
+>  drivers/misc/habanalabs/Kconfig                       |  1 -
+>  drivers/misc/habanalabs/common/habanalabs.h           |  6 +++--
+>  drivers/misc/habanalabs/common/memory.c               | 52 +++++++++++++++-------------------------
+>  drivers/pci/pci-sysfs.c                               | 11 +++++++++
+>  drivers/pci/proc.c                                    |  6 +++++
+>  fs/sysfs/file.c                                       | 11 +++++++++
+>  include/linux/ioport.h                                |  6 +----
+>  include/linux/mm.h                                    | 45 ++--------------------------------
+>  include/linux/sysfs.h                                 |  2 ++
+>  include/media/frame_vector.h                          | 47 ++++++++++++++++++++++++++++++++++++
+>  include/media/videobuf2-core.h                        |  1 +
+>  kernel/resource.c                                     | 98 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  mm/Kconfig                                            |  3 ---
+>  mm/Makefile                                           |  1 -
+>  mm/memory.c                                           | 46 ++++++++++++++++++++++++++++++++---
+>  23 files changed, 287 insertions(+), 245 deletions(-)
+>  rename {mm => drivers/media/common/videobuf2}/frame_vector.c (85%)
+>  create mode 100644 include/media/frame_vector.h
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
 
-nfsd is also modified to fall-back into generic_copy_file_range() in case
-vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
 
-Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
-Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
-Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
-Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
----
-Changes since v7
-- set 'ret' to '-EOPNOTSUPP' before the clone 'if' statement so that the
-  error returned is always related to the 'copy' operation
-Changes since v6
-- restored i_sb checks for the clone operation
-Changes since v5
-- check if ->copy_file_range is NULL before calling it
-Changes since v4
-- nfsd falls-back to generic_copy_file_range() only *if* it gets -EOPNOTSUPP
-  or -EXDEV.
-Changes since v3
-- dropped the COPY_FILE_SPLICE flag
-- kept the f_op's checks early in generic_copy_file_checks, implementing
-  Amir's suggestions
-- modified nfsd to use generic_copy_file_range()
-Changes since v2
-- do all the required checks earlier, in generic_copy_file_checks(),
-  adding new checks for ->remap_file_range
-- new COPY_FILE_SPLICE flag
-- don't remove filesystem's fallback to generic_copy_file_range()
-- updated commit changelog (and subject)
-Changes since v1 (after Amir review)
-- restored do_copy_file_range() helper
-- return -EOPNOTSUPP if fs doesn't implement CFR
-- updated commit description
 
- fs/nfsd/vfs.c   |  8 +++++++-
- fs/read_write.c | 49 ++++++++++++++++++++++++-------------------------
- 2 files changed, 31 insertions(+), 26 deletions(-)
-
-diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
-index 04937e51de56..23dab0fa9087 100644
---- a/fs/nfsd/vfs.c
-+++ b/fs/nfsd/vfs.c
-@@ -568,6 +568,7 @@ __be32 nfsd4_clone_file_range(struct nfsd_file *nf_src, u64 src_pos,
- ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
- 			     u64 dst_pos, u64 count)
- {
-+	ssize_t ret;
- 
- 	/*
- 	 * Limit copy to 4MB to prevent indefinitely blocking an nfsd
-@@ -578,7 +579,12 @@ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
- 	 * limit like this and pipeline multiple COPY requests.
- 	 */
- 	count = min_t(u64, count, 1 << 22);
--	return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-+	ret = vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-+
-+	if (ret == -EOPNOTSUPP || ret == -EXDEV)
-+		ret = generic_copy_file_range(src, src_pos, dst, dst_pos,
-+					      count, 0);
-+	return ret;
- }
- 
- __be32 nfsd4_vfs_fallocate(struct svc_rqst *rqstp, struct svc_fh *fhp,
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 75f764b43418..5a26297fd410 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -1388,28 +1388,6 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
- }
- EXPORT_SYMBOL(generic_copy_file_range);
- 
--static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
--				  struct file *file_out, loff_t pos_out,
--				  size_t len, unsigned int flags)
--{
--	/*
--	 * Although we now allow filesystems to handle cross sb copy, passing
--	 * a file of the wrong filesystem type to filesystem driver can result
--	 * in an attempt to dereference the wrong type of ->private_data, so
--	 * avoid doing that until we really have a good reason.  NFS defines
--	 * several different file_system_type structures, but they all end up
--	 * using the same ->copy_file_range() function pointer.
--	 */
--	if (file_out->f_op->copy_file_range &&
--	    file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
--		return file_out->f_op->copy_file_range(file_in, pos_in,
--						       file_out, pos_out,
--						       len, flags);
--
--	return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
--				       flags);
--}
--
- /*
-  * Performs necessary checks before doing a file copy
-  *
-@@ -1427,6 +1405,25 @@ static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
- 	loff_t size_in;
- 	int ret;
- 
-+	/*
-+	 * Although we now allow filesystems to handle cross sb copy, passing
-+	 * a file of the wrong filesystem type to filesystem driver can result
-+	 * in an attempt to dereference the wrong type of ->private_data, so
-+	 * avoid doing that until we really have a good reason.  NFS defines
-+	 * several different file_system_type structures, but they all end up
-+	 * using the same ->copy_file_range() function pointer.
-+	 */
-+	if (file_out->f_op->copy_file_range) {
-+		if (file_in->f_op->copy_file_range !=
-+		    file_out->f_op->copy_file_range)
-+			return -EXDEV;
-+	} else if (file_in->f_op->remap_file_range) {
-+		if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
-+			return -EXDEV;
-+	} else {
-+                return -EOPNOTSUPP;
-+	}
-+
- 	ret = generic_file_rw_checks(file_in, file_out);
- 	if (ret)
- 		return ret;
-@@ -1495,6 +1492,7 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
- 
- 	file_start_write(file_out);
- 
-+	ret = -EOPNOTSUPP;
- 	/*
- 	 * Try cloning first, this is supported by more file systems, and
- 	 * more efficient if both clone and copy are supported (e.g. NFS).
-@@ -1513,9 +1511,10 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
- 		}
- 	}
- 
--	ret = do_copy_file_range(file_in, pos_in, file_out, pos_out, len,
--				flags);
--	WARN_ON_ONCE(ret == -EOPNOTSUPP);
-+	if (file_out->f_op->copy_file_range)
-+		ret = file_out->f_op->copy_file_range(file_in, pos_in,
-+						      file_out, pos_out,
-+						      len, flags);
- done:
- 	if (ret > 0) {
- 		fsnotify_access(file_in);
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
