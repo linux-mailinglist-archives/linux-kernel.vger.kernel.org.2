@@ -2,124 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C56321CCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1F5321CD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhBVQXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:23:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54896 "EHLO
+        id S231387AbhBVQZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:25:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbhBVQWd (ORCPT
+        with ESMTP id S231364AbhBVQY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:22:33 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01BFC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:21:51 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id a16so11306419ilq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:21:51 -0800 (PST)
+        Mon, 22 Feb 2021 11:24:27 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A8CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:23:46 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id b3so19702900wrj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:23:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O2UdjypR4W3iDVOy5hnKP5de6BTPFEvlQ6oGQr/tzUY=;
-        b=QWYr4qA6Wc1K2uzDRbRDKEFJU9VggdyiFbE9noSMExFmpSB/WSH/g2hR2wobF0KpKU
-         aVmWFkaH9gj8GcMoYdDsRvYawy/kizivt/PojhfqMjCVxWyJwyMAmuZjBr0OPFcPerai
-         XoppCFZUi/lHoq1JIO0Y7Bw+vx/Vb9gdiubmc=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sbG3leYenVvfYzPUziVWcBviCvedu5Ddm0kc2wDnMx0=;
+        b=Tp/ZA6CpFnf6yZsD9Eb/Ut7zndfT4awnGXXpdJjJ764Ubg9Zc75RxCupcuDKO3JtN8
+         SRY7BpT8o9ZJlOSccysYdJ50IM9sz1g2lBdHntpv+5bdJadVDQsEoetwBSMLim10HzHT
+         TFnBzH6CTmWkknkCMT9QXAyMWrHjMG/svW1JYBgScEaW5GQBUqPBQM9fb7TGKkc2DNQL
+         vF4cGeZr+n2JVV3vSgpiepuhRcDaf48zK2BPhXrxSO9wvqdXiDdthw+XAQkqDIhkwZOu
+         9JTPzgVpzDysNds5IEgEhoARszLhr4AAG0P+IAep2Z1hSpNGhsYRTTffV41XMm6Zbnla
+         SBig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O2UdjypR4W3iDVOy5hnKP5de6BTPFEvlQ6oGQr/tzUY=;
-        b=PeajbLeWSOlQEAKKWHRQ5glscIppgF/kjKPoYtTFo1KoWyWEHin/jOzfEOq6zVvVM9
-         OemLpSGdQmmymYcL5Ixh4vhkJM9GIhPpqruPfXZ265Y3W5FTeVUzroy4LLzLtAOfIIpg
-         uBDUxtUwIaYLDRB/zj+piUaxO8C/0yDbr+Bd9Rn3h63o8ZE3d9K19GxtoIpPVlmc5VNC
-         3KYe9PuRJfTo/hK7A1VwOGiV8Ey1mkzQQgXMvOVMtjoL0+0fAXQrRgqi34Ygm79asRaH
-         1Gj6r3ke1bB4l72MNvWCdyRvCHUKrU1HJeQ+C7m2JTkcKLwCMCDXcarHczholRoV7AaD
-         u1QQ==
-X-Gm-Message-State: AOAM532iiw0oaU+laWpFXw2aoD0GamgPGLIXsqOYrrZoBxDllyVLngl7
-        OkjiSH2bYCpoH3ykrYPMyGLMgg==
-X-Google-Smtp-Source: ABdhPJwFg4oQJS2b8UUSE1H4Y8Chs7Kox5qlda5aF9f45HJogdaR2sWCL7VTfnIvoEcooK4vehk05A==
-X-Received: by 2002:a92:1312:: with SMTP id 18mr15099286ilt.92.1614010911339;
-        Mon, 22 Feb 2021 08:21:51 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id b16sm5383378ilq.49.2021.02.22.08.21.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 08:21:51 -0800 (PST)
-Subject: Re: [PATCH 19/20] usbip: usbip_host: Manual replacement of the
- deprecated strlcpy() with return values
-To:     Romain Perier <romain.perier@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210222151231.22572-1-romain.perier@gmail.com>
- <20210222151231.22572-20-romain.perier@gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <0323dcb2-726c-7ea2-8e8b-dba81090b571@linuxfoundation.org>
-Date:   Mon, 22 Feb 2021 09:21:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sbG3leYenVvfYzPUziVWcBviCvedu5Ddm0kc2wDnMx0=;
+        b=Hin8a6GL4f1yrpajsSk3rqG4TvmV6K8vBdhBXdMCVJDKDG3RGBp/rk9HHDMvhQvlhK
+         uF06AnxuMltQ4iG+bCCjytTOjBSpbI8YgVGVTg2yqFe90TpGxDpyXH76F8to6v/rBvfj
+         4+/xsvJeeNDvMwL780vGiBvY2gwdjKpTcrvd93exL9dn5LIu+RuIwnfawzynBNbLfgSV
+         mwDJ7Ta0FQuHujxKUR0xAeuyjhbKtOLGC++Ip4UClZldzv7ZxV2VBP0+5EQ/buRst4Xu
+         8A378zsK0yW/P4q19NgQ3x/8k6tSo2lHX897Uilfzr7Qr1g8EORBcLe/Ns+GZsLuXUJA
+         oTPA==
+X-Gm-Message-State: AOAM5329FNLB0qkXy2FrSlFNKQXQn3VdPw/u4GENKVpKgIFyy6nGoA+2
+        O4zfLpMOziBA5eOYfmwaJXS8jA==
+X-Google-Smtp-Source: ABdhPJzP+qabd4wnSkwbRyQ6G6KjShybuGft6ua89veTSg0v6lGiNGucGUxVPJ1SWq4Jf2XvStf/EA==
+X-Received: by 2002:adf:ee84:: with SMTP id b4mr21874880wro.339.1614011025407;
+        Mon, 22 Feb 2021 08:23:45 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id o10sm22800324wrx.5.2021.02.22.08.23.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 08:23:45 -0800 (PST)
+Date:   Mon, 22 Feb 2021 16:23:42 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net, valentin.schneider@arm.com
+Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
+ cpu_util_next()
+Message-ID: <YDPajlnvgkonocpp@google.com>
+References: <20210222095401.37158-1-vincent.donnefort@arm.com>
+ <YDODN1rnTqfTQOug@google.com>
+ <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
+ <YDOiKH/XQDUKcrPU@google.com>
+ <20210222150151.GA124800@e124901.cambridge.arm.com>
+ <YDPUwKKYgZfzzCJm@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210222151231.22572-20-romain.perier@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDPUwKKYgZfzzCJm@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 8:12 AM, Romain Perier wrote:
-> The strlcpy() reads the entire source buffer first, it is dangerous if
-> the source buffer lenght is unbounded or possibility non NULL-terminated.
-> It can lead to linear read overflows, crashes, etc...
-> 
-> As recommended in the deprecated interfaces [1], it should be replaced
-> by strscpy.
-> 
-> This commit replaces all calls to strlcpy that handle the return values
-> by the corresponding strscpy calls with new handling of the return
-> values (as it is quite different between the two functions).
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-> 
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> ---
->   drivers/usb/usbip/stub_main.c |    6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/usb/usbip/stub_main.c b/drivers/usb/usbip/stub_main.c
-> index 77a5b3f8736a..5bc2c09c0d10 100644
-> --- a/drivers/usb/usbip/stub_main.c
-> +++ b/drivers/usb/usbip/stub_main.c
-> @@ -167,15 +167,15 @@ static ssize_t match_busid_show(struct device_driver *drv, char *buf)
->   static ssize_t match_busid_store(struct device_driver *dev, const char *buf,
->   				 size_t count)
->   {
-> -	int len;
-> +	ssize_t len;
->   	char busid[BUSID_SIZE];
->   
->   	if (count < 5)
->   		return -EINVAL;
->   
->   	/* busid needs to include \0 termination */
-> -	len = strlcpy(busid, buf + 4, BUSID_SIZE);
-> -	if (sizeof(busid) <= len)
-> +	len = strscpy(busid, buf + 4, BUSID_SIZE);
-> +	if (len == -E2BIG)
->   		return -EINVAL;
->   
->   	if (!strncmp(buf, "add ", 4)) {
-> 
+On Monday 22 Feb 2021 at 15:58:56 (+0000), Quentin Perret wrote:
+> But in any case, if we're going to address this, I'm still not sure this
+> patch will be what we want. As per my first comment we need to keep the
+> frequency estimation right.
 
+Totally untested, but I think in principle you would like something like
+the snippet below. Would that work?
 
-Looks good to me. Thank you.
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 04a3ce20da67..6594d875c6ac 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6534,8 +6534,13 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+         * its pd list and will not be accounted by compute_energy().
+         */
+        for_each_cpu_and(cpu, pd_mask, cpu_online_mask) {
+-               unsigned long cpu_util, util_cfs = cpu_util_next(cpu, p, dst_cpu);
++               unsigned long util_freq = cpu_util_next(cpu, p, dst_cpu);
++               unsigned long util_running = cpu_util_without(cpu, p);
+                struct task_struct *tsk = cpu == dst_cpu ? p : NULL;
++               unsigned long cpu_util;
++
++               if (cpu == dst_cpu)
++                       util_running += task_util_est();
 
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+                /*
+                 * Busy time computation: utilization clamping is not
+@@ -6543,7 +6548,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+                 * is already enough to scale the EM reported power
+                 * consumption at the (eventually clamped) cpu_capacity.
+                 */
+-               sum_util += schedutil_cpu_util(cpu, util_cfs, cpu_cap,
++               sum_util += schedutil_cpu_util(cpu, util_running, cpu_cap,
+                                               ENERGY_UTIL, NULL);
 
-thanks,
--- Shuah
+                /*
+@@ -6553,7 +6558,7 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+                 * NOTE: in case RT tasks are running, by default the
+                 * FREQUENCY_UTIL's utilization can be max OPP.
+                 */
+-               cpu_util = schedutil_cpu_util(cpu, util_cfs, cpu_cap,
++               cpu_util = schedutil_cpu_util(cpu, util_freq, cpu_cap,
+                                              FREQUENCY_UTIL, tsk);
+                max_util = max(max_util, cpu_util);
+        }
+
