@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAC13216D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAAA3216D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhBVMhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:37:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44938 "EHLO mail.kernel.org"
+        id S230507AbhBVMhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:37:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230444AbhBVMQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:16:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AFD464F0F;
-        Mon, 22 Feb 2021 12:16:10 +0000 (UTC)
+        id S230449AbhBVMQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:16:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A28A964F0D;
+        Mon, 22 Feb 2021 12:16:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996170;
-        bh=kCPswHZsB2j30YuiYCX05r4IVWl+xdbQdmm5e6xAiVk=;
+        s=korg; t=1613996173;
+        bh=ZH/x40iBITPmWAZQd3qg9N2pcCi9lOszL4sNH07xKxw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c+s47c9uOr5GI4SexDYuGB2LQ/eQs6BfAvzhKo+snF2LCjf/boWSmVjOTT/7xWbZ+
-         uzPTpQ6rY9+PEf4XW5LmO6n+nSpuNdXj8V41SOwwkNKAtz2YwmWSrYAHtvFsYdj7xZ
-         rbOTk/fnHa3vB8NkRKrMH0SeGycIv/rf7o24ExsM=
+        b=RGTLuZws+UHDLrayO9TuF6iZcC8O6Zd1VScjq26QRBFIvkgFy8m+M+DuymDm5jv+1
+         g1xgH4SsoEMdsrGfi8NTMsPLW9ZnHetz8mp/0DMu63bNtVWFBXl2ZJtoAH27lGm80A
+         jerETqyzKVcHvddPO0Q03slxbOQZGySHhDTSYEqc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 15/50] ARM: kexec: fix oops after TLB are invalidated
-Date:   Mon, 22 Feb 2021 13:13:06 +0100
-Message-Id: <20210222121022.452888385@linuxfoundation.org>
+Subject: [PATCH 4.19 16/50] mt76: dma: fix a possible memory leak in mt76_add_fragment()
+Date:   Mon, 22 Feb 2021 13:13:07 +0100
+Message-Id: <20210222121022.556438992@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
 References: <20210222121019.925481519@linuxfoundation.org>
@@ -41,202 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 4d62e81b60d4025e2dfcd5ea531cc1394ce9226f ]
+[ Upstream commit 93a1d4791c10d443bc67044def7efee2991d48b7 ]
 
-Giancarlo Ferrari reports the following oops while trying to use kexec:
+Fix a memory leak in mt76_add_fragment routine returning the buffer
+to the page_frag_cache when we receive a new fragment and the
+skb_shared_info frag array is full.
 
- Unable to handle kernel paging request at virtual address 80112f38
- pgd = fd7ef03e
- [80112f38] *pgd=0001141e(bad)
- Internal error: Oops: 80d [#1] PREEMPT SMP ARM
- ...
-
-This is caused by machine_kexec() trying to set the kernel text to be
-read/write, so it can poke values into the relocation code before
-copying it - and an interrupt occuring which changes the page tables.
-The subsequent writes then hit read-only sections that trigger a
-data abort resulting in the above oops.
-
-Fix this by copying the relocation code, and then writing the variables
-into the destination, thereby avoiding the need to make the kernel text
-read/write.
-
-Reported-by: Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-Tested-by: Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Fixes: b102f0c522cf6 ("mt76: fix array overflow on receiving too many fragments for a packet")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Acked-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/4f9dd73407da88b2a552517ce8db242d86bf4d5c.1611616130.git.lorenzo@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/include/asm/kexec-internal.h | 12 +++++++++
- arch/arm/kernel/asm-offsets.c         |  5 ++++
- arch/arm/kernel/machine_kexec.c       | 20 ++++++--------
- arch/arm/kernel/relocate_kernel.S     | 38 ++++++++-------------------
- 4 files changed, 36 insertions(+), 39 deletions(-)
- create mode 100644 arch/arm/include/asm/kexec-internal.h
+ drivers/net/wireless/mediatek/mt76/dma.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/include/asm/kexec-internal.h b/arch/arm/include/asm/kexec-internal.h
-new file mode 100644
-index 0000000000000..ecc2322db7aa1
---- /dev/null
-+++ b/arch/arm/include/asm/kexec-internal.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ARM_KEXEC_INTERNAL_H
-+#define _ARM_KEXEC_INTERNAL_H
-+
-+struct kexec_relocate_data {
-+	unsigned long kexec_start_address;
-+	unsigned long kexec_indirection_page;
-+	unsigned long kexec_mach_type;
-+	unsigned long kexec_r2;
-+};
-+
-+#endif
-diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-index 3968d6c22455b..ae85f67a63520 100644
---- a/arch/arm/kernel/asm-offsets.c
-+++ b/arch/arm/kernel/asm-offsets.c
-@@ -18,6 +18,7 @@
- #include <linux/kvm_host.h>
- #endif
- #include <asm/cacheflush.h>
-+#include <asm/kexec-internal.h>
- #include <asm/glue-df.h>
- #include <asm/glue-pf.h>
- #include <asm/mach/arch.h>
-@@ -189,5 +190,9 @@ int main(void)
-   DEFINE(MPU_RGN_PRBAR,	offsetof(struct mpu_rgn, prbar));
-   DEFINE(MPU_RGN_PRLAR,	offsetof(struct mpu_rgn, prlar));
- #endif
-+  DEFINE(KEXEC_START_ADDR,	offsetof(struct kexec_relocate_data, kexec_start_address));
-+  DEFINE(KEXEC_INDIR_PAGE,	offsetof(struct kexec_relocate_data, kexec_indirection_page));
-+  DEFINE(KEXEC_MACH_TYPE,	offsetof(struct kexec_relocate_data, kexec_mach_type));
-+  DEFINE(KEXEC_R2,		offsetof(struct kexec_relocate_data, kexec_r2));
-   return 0; 
- }
-diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
-index 76300f3813e89..734adeb42df87 100644
---- a/arch/arm/kernel/machine_kexec.c
-+++ b/arch/arm/kernel/machine_kexec.c
-@@ -15,6 +15,7 @@
- #include <asm/pgalloc.h>
- #include <asm/mmu_context.h>
- #include <asm/cacheflush.h>
-+#include <asm/kexec-internal.h>
- #include <asm/fncpy.h>
- #include <asm/mach-types.h>
- #include <asm/smp_plat.h>
-@@ -24,11 +25,6 @@
- extern void relocate_new_kernel(void);
- extern const unsigned int relocate_new_kernel_size;
- 
--extern unsigned long kexec_start_address;
--extern unsigned long kexec_indirection_page;
--extern unsigned long kexec_mach_type;
--extern unsigned long kexec_boot_atags;
--
- static atomic_t waiting_for_crash_ipi;
- 
- /*
-@@ -161,6 +157,7 @@ void (*kexec_reinit)(void);
- void machine_kexec(struct kimage *image)
+diff --git a/drivers/net/wireless/mediatek/mt76/dma.c b/drivers/net/wireless/mediatek/mt76/dma.c
+index cc6840377bc27..8ce6a167dd2cc 100644
+--- a/drivers/net/wireless/mediatek/mt76/dma.c
++++ b/drivers/net/wireless/mediatek/mt76/dma.c
+@@ -393,15 +393,17 @@ static void
+ mt76_add_fragment(struct mt76_dev *dev, struct mt76_queue *q, void *data,
+ 		  int len, bool more)
  {
- 	unsigned long page_list, reboot_entry_phys;
-+	struct kexec_relocate_data *data;
- 	void (*reboot_entry)(void);
- 	void *reboot_code_buffer;
+-	struct page *page = virt_to_head_page(data);
+-	int offset = data - page_address(page);
+ 	struct sk_buff *skb = q->rx_head;
+ 	struct skb_shared_info *shinfo = skb_shinfo(skb);
  
-@@ -176,18 +173,17 @@ void machine_kexec(struct kimage *image)
- 
- 	reboot_code_buffer = page_address(image->control_code_page);
- 
--	/* Prepare parameters for reboot_code_buffer*/
--	set_kernel_text_rw();
--	kexec_start_address = image->start;
--	kexec_indirection_page = page_list;
--	kexec_mach_type = machine_arch_type;
--	kexec_boot_atags = image->arch.kernel_r2;
--
- 	/* copy our kernel relocation code to the control code page */
- 	reboot_entry = fncpy(reboot_code_buffer,
- 			     &relocate_new_kernel,
- 			     relocate_new_kernel_size);
- 
-+	data = reboot_code_buffer + relocate_new_kernel_size;
-+	data->kexec_start_address = image->start;
-+	data->kexec_indirection_page = page_list;
-+	data->kexec_mach_type = machine_arch_type;
-+	data->kexec_r2 = image->arch.kernel_r2;
+ 	if (shinfo->nr_frags < ARRAY_SIZE(shinfo->frags)) {
+-		offset += q->buf_offset;
++		struct page *page = virt_to_head_page(data);
++		int offset = data - page_address(page) + q->buf_offset;
 +
- 	/* get the identity mapping physical address for the reboot code */
- 	reboot_entry_phys = virt_to_idmap(reboot_entry);
+ 		skb_add_rx_frag(skb, shinfo->nr_frags, page, offset, len,
+ 				q->buf_size);
++	} else {
++		skb_free_frag(data);
+ 	}
  
-diff --git a/arch/arm/kernel/relocate_kernel.S b/arch/arm/kernel/relocate_kernel.S
-index 7eaa2ae7aff58..5e15b5912cb05 100644
---- a/arch/arm/kernel/relocate_kernel.S
-+++ b/arch/arm/kernel/relocate_kernel.S
-@@ -5,14 +5,16 @@
- 
- #include <linux/linkage.h>
- #include <asm/assembler.h>
-+#include <asm/asm-offsets.h>
- #include <asm/kexec.h>
- 
- 	.align	3	/* not needed for this code, but keeps fncpy() happy */
- 
- ENTRY(relocate_new_kernel)
- 
--	ldr	r0,kexec_indirection_page
--	ldr	r1,kexec_start_address
-+	adr	r7, relocate_new_kernel_end
-+	ldr	r0, [r7, #KEXEC_INDIR_PAGE]
-+	ldr	r1, [r7, #KEXEC_START_ADDR]
- 
- 	/*
- 	 * If there is no indirection page (we are doing crashdumps)
-@@ -57,34 +59,16 @@ ENTRY(relocate_new_kernel)
- 
- 2:
- 	/* Jump to relocated kernel */
--	mov lr,r1
--	mov r0,#0
--	ldr r1,kexec_mach_type
--	ldr r2,kexec_boot_atags
-- ARM(	ret lr	)
-- THUMB(	bx lr		)
--
--	.align
--
--	.globl kexec_start_address
--kexec_start_address:
--	.long	0x0
--
--	.globl kexec_indirection_page
--kexec_indirection_page:
--	.long	0x0
--
--	.globl kexec_mach_type
--kexec_mach_type:
--	.long	0x0
--
--	/* phy addr of the atags for the new kernel */
--	.globl kexec_boot_atags
--kexec_boot_atags:
--	.long	0x0
-+	mov	lr, r1
-+	mov	r0, #0
-+	ldr	r1, [r7, #KEXEC_MACH_TYPE]
-+	ldr	r2, [r7, #KEXEC_R2]
-+ ARM(	ret	lr	)
-+ THUMB(	bx	lr	)
- 
- ENDPROC(relocate_new_kernel)
- 
-+	.align	3
- relocate_new_kernel_end:
- 
- 	.globl relocate_new_kernel_size
+ 	if (more)
 -- 
 2.27.0
 
