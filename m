@@ -2,245 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850B23215CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D52DE3215C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhBVMJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:09:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60604 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230235AbhBVMIk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:08:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613995633;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zfN32sQUDLnzJ032yBR935SiIXgmWnEZ4V626Ip1AbU=;
-        b=NDydfaQF7mpARjb2ICcDKOPxJ8NIhl/VZFDR2L5muNkTH193ajYMfil7Y/3GZudTp/aLge
-        JjW9kYhY9USfaeu0pEaGeUX/J8KKtn9q54nlxzdJDwc9l6+wP1MtEtuqS/CxRlJgkn7Qn0
-        +zTsdqnHsxPWN9mErq5qEx1/c57hixw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-1ro4C6t7M6W7w-fupjlMKw-1; Mon, 22 Feb 2021 07:06:45 -0500
-X-MC-Unique: 1ro4C6t7M6W7w-fupjlMKw-1
-Received: by mail-wr1-f72.google.com with SMTP id e11so5913040wro.19
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 04:06:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zfN32sQUDLnzJ032yBR935SiIXgmWnEZ4V626Ip1AbU=;
-        b=cl/n2tqJtj2A3f6qK+8E7yZtTKBE22ly9mb3b6JCmiK/HvwzM6UMfDS28KlvS7xsef
-         HsZ0kwz6fm2kk4ySzPO7JjSjQt3YuW2WHp1vvaWF+hIRERJ6gFMeozHMKuj04Ru826ya
-         tTAcXXXeK5K1ND+8G/bL+8zph1P1g7/RH5Lj3yHOcVXCrgfDd/SXZhhCKjF6gZmeZIhK
-         8uA+4w7C64beEIVJktsgISRmzxsMnSxplyuoTc10Sh1MeOTQUcNU0HZVpIp0uoBMBEk8
-         6UKZoGsSUO+Sc2TgSPOm57Psw2H8jbFe2ZxERzwOzJcustsTdQaol1W5YMtvsgXVxRkK
-         WINQ==
-X-Gm-Message-State: AOAM533R44jOTFju+H7agdR3MFBgbdUubI25VnP6/aJUcRjgS+3/kudx
-        K/HCV7dMCYb9usdDHegcOEOFicqOZKjVPW+4h8EU3ah8qM31M/nIWOBXqs9T4SwdCFikTlqeGUw
-        7CwyXidAcgWrpcZbKaj7NZyq2
-X-Received: by 2002:a05:6000:89:: with SMTP id m9mr12916251wrx.3.1613995601962;
-        Mon, 22 Feb 2021 04:06:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzBgxVG1+KQe5ktBwrmeS45BwEguQMp9b4SH8ACBZnLC8/aSNiV9xm9pOzkDA3ilfNa94ePDA==
-X-Received: by 2002:a05:6000:89:: with SMTP id m9mr12916229wrx.3.1613995601788;
-        Mon, 22 Feb 2021 04:06:41 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id h20sm9909617wmb.1.2021.02.22.04.06.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 04:06:41 -0800 (PST)
-Date:   Mon, 22 Feb 2021 13:06:38 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v5 05/19] af_vsock: separate wait space loop
-Message-ID: <20210222120638.ybltjuubfabgk3uz@steredhat>
-References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
- <20210218053758.1067436-1-arseny.krasnov@kaspersky.com>
+        id S230224AbhBVMIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:08:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230211AbhBVMIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:08:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68C7764E29;
+        Mon, 22 Feb 2021 12:07:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613995637;
+        bh=WKGqyeJ+H1+pIiZMC/bmOLTI3fFkMlqK6Xvp3YQ9des=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wUWWfqBr5fMMlNA5GvUr75CKZkQTV7gqgZkju16Uj/TrKKG1ozDHvaNTK7Zx2xC9p
+         n6jkaB+8RPqx8WMvw/3A471XFkqK/3nCCtnhPXFwWOW904AdQYW24C0tqZEDX6Jbqr
+         y88NAKbAjA4/BLTPom0hxQk42cWWShU+b6cElzwk=
+Date:   Mon, 22 Feb 2021 13:07:15 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Zheng Yejian <zhengyejian1@huawei.com>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, judy.chenhui@huawei.com,
+        zhangjinhao2@huawei.com, tglx@linutronix.de
+Subject: Re: [PATCH 4.9.257 1/1] futex: Fix OWNER_DEAD fixup
+Message-ID: <YDOec1kosGKKO80g@kroah.com>
+References: <20210222110542.3531596-1-zhengyejian1@huawei.com>
+ <20210222110542.3531596-2-zhengyejian1@huawei.com>
+ <20210222115424.GF376568@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218053758.1067436-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <20210222115424.GF376568@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 08:37:54AM +0300, Arseny Krasnov wrote:
->This moves loop that waits for space on send to separate function,
->because it will be used for SEQ_BEGIN/SEQ_END sending before and
->after data transmission. Waiting for SEQ_BEGIN/SEQ_END is needed
->because such packets carries SEQPACKET header that couldn't be
->fragmented by credit mechanism, so to avoid it, sender waits until
->enough space will be ready.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> include/net/af_vsock.h   |  2 +
-> net/vmw_vsock/af_vsock.c | 99 +++++++++++++++++++++++++---------------
-> 2 files changed, 63 insertions(+), 38 deletions(-)
->
->diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
->index 01563338cc03..6fbe88306403 100644
->--- a/include/net/af_vsock.h
->+++ b/include/net/af_vsock.h
->@@ -205,6 +205,8 @@ void vsock_remove_sock(struct vsock_sock *vsk);
-> void vsock_for_each_connected_socket(void (*fn)(struct sock *sk));
-> int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk);
-> bool vsock_find_cid(unsigned int cid);
->+int vsock_wait_space(struct sock *sk, size_t space, int flags,
->+		     struct vsock_transport_send_notify_data *send_data);
->
-> /**** TAP ****/
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index b754927a556a..09b377422b1e 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -1692,6 +1692,65 @@ static int vsock_connectible_getsockopt(struct socket *sock,
-> 	return 0;
-> }
->
->+int vsock_wait_space(struct sock *sk, size_t space, int flags,
->+		     struct vsock_transport_send_notify_data *send_data)
->+{
->+	const struct vsock_transport *transport;
->+	struct vsock_sock *vsk;
->+	long timeout;
->+	int err;
->+
->+	DEFINE_WAIT_FUNC(wait, woken_wake_function);
->+
->+	vsk = vsock_sk(sk);
->+	transport = vsk->transport;
->+	timeout = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
->+	err = 0;
->+
->+	add_wait_queue(sk_sleep(sk), &wait);
->+
->+	while (vsock_stream_has_space(vsk) < space &&
->+	       sk->sk_err == 0 &&
->+	       !(sk->sk_shutdown & SEND_SHUTDOWN) &&
->+	       !(vsk->peer_shutdown & RCV_SHUTDOWN)) {
->+
->+		/* Don't wait for non-blocking sockets. */
->+		if (timeout == 0) {
->+			err = -EAGAIN;
->+			goto out_err;
->+		}
->+
->+		if (send_data) {
->+			err = transport->notify_send_pre_block(vsk, send_data);
->+			if (err < 0)
->+				goto out_err;
->+		}
->+
->+		release_sock(sk);
->+		timeout = wait_woken(&wait, TASK_INTERRUPTIBLE, timeout);
->+		lock_sock(sk);
->+		if (signal_pending(current)) {
->+			err = sock_intr_errno(timeout);
->+			goto out_err;
->+		} else if (timeout == 0) {
->+			err = -EAGAIN;
->+			goto out_err;
->+		}
->+	}
->+
->+	if (sk->sk_err) {
->+		err = -sk->sk_err;
->+	} else if ((sk->sk_shutdown & SEND_SHUTDOWN) ||
->+		   (vsk->peer_shutdown & RCV_SHUTDOWN)) {
->+		err = -EPIPE;
->+	}
->+
->+out_err:
->+	remove_wait_queue(sk_sleep(sk), &wait);
->+	return err;
->+}
->+EXPORT_SYMBOL_GPL(vsock_wait_space);
->+
-> static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 				     size_t len)
-> {
->@@ -1699,10 +1758,8 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 	struct vsock_sock *vsk;
-> 	const struct vsock_transport *transport;
-> 	ssize_t total_written;
->-	long timeout;
-> 	int err;
-> 	struct vsock_transport_send_notify_data send_data;
->-	DEFINE_WAIT_FUNC(wait, woken_wake_function);
->
-> 	sk = sock->sk;
-> 	vsk = vsock_sk(sk);
->@@ -1740,9 +1797,6 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 		goto out;
-> 	}
->
->-	/* Wait for room in the produce queue to enqueue our user's data. */
->-	timeout = sock_sndtimeo(sk, msg->msg_flags & MSG_DONTWAIT);
->-
-> 	err = transport->notify_send_init(vsk, &send_data);
-> 	if (err < 0)
-> 		goto out;
->@@ -1750,39 +1804,8 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 	while (total_written < len) {
-> 		ssize_t written;
->
->-		add_wait_queue(sk_sleep(sk), &wait);
->-		while (vsock_stream_has_space(vsk) == 0 &&
->-		       sk->sk_err == 0 &&
->-		       !(sk->sk_shutdown & SEND_SHUTDOWN) &&
->-		       !(vsk->peer_shutdown & RCV_SHUTDOWN)) {
->-
->-			/* Don't wait for non-blocking sockets. */
->-			if (timeout == 0) {
->-				err = -EAGAIN;
->-				remove_wait_queue(sk_sleep(sk), &wait);
->-				goto out_err;
->-			}
->-
->-			err = transport->notify_send_pre_block(vsk, &send_data);
->-			if (err < 0) {
->-				remove_wait_queue(sk_sleep(sk), &wait);
->-				goto out_err;
->-			}
->-
->-			release_sock(sk);
->-			timeout = wait_woken(&wait, TASK_INTERRUPTIBLE, timeout);
->-			lock_sock(sk);
->-			if (signal_pending(current)) {
->-				err = sock_intr_errno(timeout);
->-				remove_wait_queue(sk_sleep(sk), &wait);
->-				goto out_err;
->-			} else if (timeout == 0) {
->-				err = -EAGAIN;
->-				remove_wait_queue(sk_sleep(sk), &wait);
->-				goto out_err;
->-			}
->-		}
->-		remove_wait_queue(sk_sleep(sk), &wait);
->+		if (vsock_wait_space(sk, 1, msg->msg_flags, &send_data))
->+			goto out_err;
->
-> 		/* These checks occur both as part of and after the loop
-> 		 * conditional since we need to check before and after
->-- 
->2.25.1
->
+On Mon, Feb 22, 2021 at 11:54:24AM +0000, Lee Jones wrote:
+> On Mon, 22 Feb 2021, Zheng Yejian wrote:
+> 
+> > From: Peter Zijlstra <peterz@infradead.org>
+> > 
+> > commit a97cb0e7b3f4c6297fd857055ae8e895f402f501 upstream.
+> > 
+> > Both Geert and DaveJ reported that the recent futex commit:
+> > 
+> >   c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
+> > 
+> > introduced a problem with setting OWNER_DEAD. We set the bit on an
+> > uninitialized variable and then entirely optimize it away as a
+> > dead-store.
+> > 
+> > Move the setting of the bit to where it is more useful.
+> > 
+> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Reported-by: Dave Jones <davej@codemonkey.org.uk>
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > Cc: Paul E. McKenney <paulmck@us.ibm.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
+> > Link: http://lkml.kernel.org/r/20180122103947.GD2228@hirez.programming.kicks-ass.net
+> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> > Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> > ---
+> >  kernel/futex.c | 7 +++----
+> >  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> Reviewed-by: Lee Jones <lee.jones@linaro.org>
 
-The patch LGTM:
+This does not apply to the 4.9.y tree at all right now, are you all sure
+you got the backport correct?
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+confused,
 
+greg k-h
