@@ -2,173 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2578A320FF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 05:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5B2320FF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 05:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhBVEJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 23:09:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbhBVEJH (ORCPT
+        id S230064AbhBVEN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 23:13:58 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14180 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229974AbhBVENz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 23:09:07 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A271C061574;
-        Sun, 21 Feb 2021 20:08:26 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id k8so5057252qvm.6;
-        Sun, 21 Feb 2021 20:08:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LczEaE48F+utnjkPuq1s+xKVZFE6A8WhpTBcnEGpZa8=;
-        b=Z3Ijjw6imodIyhMz0xEu6y5v5oVzoG6wjpJtA9SBmmBW/poIe3ffZ/aDEIOakFR5YT
-         F3yLV/TvG+8BCjVxzs7ZwkanmbIIufGlFhy++9Ykv8xTE0xs2KM2Ls9jNcM4X5fXT75r
-         7guy1ID2ep+Vtc1Cwl/aoXt2t08fv2tLf5g1Q7hriA47rMHFYiwABUXDsLnwUUBGOf2p
-         3taSTA/JMr5oDdOXMPIj0kNP6aEvguI7PAzxg7Zdjxx6K5N5QkzyO8F+P1t36DX+OajS
-         xsMFtGfuyZu81q2rlhCHZZ5LAlrvM2e34mJmpG4qRH+TltU8MEdpCasxrV7UFBaEO9js
-         +zzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LczEaE48F+utnjkPuq1s+xKVZFE6A8WhpTBcnEGpZa8=;
-        b=NrTkgfTlQ1IvcvlfKkB31/yyIJWcK9EadwUubthDnpr2W8t8/UcmZfrbFFOFlr8F0d
-         VAIRmeS+xwvDngxpEK6lWjtG1FqzIo3KxYeU7fjdMs9HVjcsXrxttEGtVqeDP4nvknwK
-         DceVd3V/tWBvhIgcDJQctJ9NxhvRNcWtxNCMQ/8oyVQVQZ9+757SJ4pUlJa32AsBG4/A
-         eFB7em//FWH18MRdCU0KiGgPbWuzjtElmzhv5+d4/OOh0YuiL7TxMMKx7V1Jg16ZXoOA
-         ZlLuWGWNWK9+hcnlucIQ2x9SaoRHbtf7tBVy/Gj61/mAc38ixC5OkrzciQSJfxV86qS+
-         ilVw==
-X-Gm-Message-State: AOAM533CTxdW+4Xr9V/JEiAP/FthOqQobJy/uZMd0L7cJ5MlGqpWBZ3c
-        GWzB3zrGat7XAH+1O6cMcGM=
-X-Google-Smtp-Source: ABdhPJyZZuUV5ti70yxIfWmrKFvIqr6NKFZ1SgpPQw5j4CIKgZcP8bsbkgVwjFZnQrBQJwNc1PMelA==
-X-Received: by 2002:a05:6214:38c:: with SMTP id l12mr11430205qvy.20.1613966905662;
-        Sun, 21 Feb 2021 20:08:25 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id z31sm3844191qtb.0.2021.02.21.20.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 20:08:25 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id B427B27C0054;
-        Sun, 21 Feb 2021 23:08:19 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sun, 21 Feb 2021 23:08:24 -0500
-X-ME-Sender: <xms:Mi4zYA9oFh8DDxaRMYzJVlqRv1rVec9mbZ_fmqRAe44zqx9FF7hhAQ>
-    <xme:Mi4zYIvk0ZU7snXRoFbu0WF0ozGWZwXsoZouF30sg-y3FoqiXV7vfWIxg6m6LzGWB
-    x8zP6moaEJb-vM-rg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkedvgdeijecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
-    jeenucfkphepudeijedrvddvtddrvddruddvieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghr
-    shhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvg
-    hngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:Mi4zYGCJN4-afnZaO0dYB1mgLM5X39dtGS86QG8itNV8L3vwhtilqA>
-    <xmx:Mi4zYAcqdQnu1LB7qzn7qfvAbfQNxOSCbO_vvmWpONf_oVGYBK1FUw>
-    <xmx:Mi4zYFPzXFcfpBuFzYx3FcQMTEoIJV8-NUTCaR2xAoTQq7jW47F3uA>
-    <xmx:My4zYJms5RCuXN-skRCvTXIg8Ni2caCJ8Z4Yigmah50qZjaGGaAo4LYrgew>
-Received: from localhost (unknown [167.220.2.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1D71824005C;
-        Sun, 21 Feb 2021 23:08:18 -0500 (EST)
-Date:   Mon, 22 Feb 2021 12:07:46 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     sthemmin@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        daniel.lezcano@linaro.org, arnd@arndb.de,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 07/10] clocksource/drivers/hyper-v: Handle vDSO
- differences inline
-Message-ID: <YDMuEvgRMF152DbS@boqun-archlinux>
-References: <1611779025-21503-1-git-send-email-mikelley@microsoft.com>
- <1611779025-21503-8-git-send-email-mikelley@microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611779025-21503-8-git-send-email-mikelley@microsoft.com>
+        Sun, 21 Feb 2021 23:13:55 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11M4AEkW130456;
+        Sun, 21 Feb 2021 23:13:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=kpb2TlLhOjclsLeoYqcSuqxpuRn9QHnDDMTb4RlAfUY=;
+ b=Kb6MlIxpl2IJBbkrqcVQpqIo8BO2Qgy8W75dLm8Czlj2vrE+lhW17QX492eLhnY68pKb
+ KHd7JYg8zqkxrKgiBdBSKmu0H/nak/BAmS9iyywyBKd/MISA1elGZ9Wbb2ah7dwKWIyT
+ IEbd1u7K4UDK1SHTLJr9/aYVOFbXnh0gWkW503UsKrTi44zrRi68FLRRB0IZUxLJnklv
+ KxWKBriSVtoeNW9rJ6BazTDS4EOT9DXsHhuqNyijZE9dLDgBlD4OlsY4l+naTbYl0iu8
+ rcCC02TXBQ/O1wvhhwG7u9pOwqwjd768DKhRghSINikqQcOWt6SJdEeLdGV9lCUYvRtd lQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36v5770ad0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 21 Feb 2021 23:13:06 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11M49jbW029391;
+        Mon, 22 Feb 2021 04:11:57 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 36tt2898ja-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Feb 2021 04:11:57 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11M4BsCN41353554
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Feb 2021 04:11:54 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B5DC311C050;
+        Mon, 22 Feb 2021 04:11:54 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A956E11C04C;
+        Mon, 22 Feb 2021 04:11:52 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.43.123])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 22 Feb 2021 04:11:52 +0000 (GMT)
+Message-ID: <88affa2e0f4951f4b1b286df50d71a22a9ac1b54.camel@linux.ibm.com>
+Subject: Re: [PATCH v2] IMA: support for duplicate data measurement
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 21 Feb 2021 23:11:51 -0500
+In-Reply-To: <6c2d2242-119c-2a8a-8062-6326fed6a45d@linux.microsoft.com>
+References: <20210217024649.23405-1-tusharsu@linux.microsoft.com>
+         <ab197aa9719b4218ab497b55f0bc78a0dadc83dd.camel@linux.ibm.com>
+         <5236e03f-9be4-f7f3-ec6c-29f00c16dc18@linux.microsoft.com>
+         <bb4356d779720b8fa9c342647132cfeec938c296.camel@linux.ibm.com>
+         <21538a53-0174-e3b4-f1e8-ddb8cc334a79@linux.microsoft.com>
+         <6c2d2242-119c-2a8a-8062-6326fed6a45d@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-21_14:2021-02-18,2021-02-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 impostorscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 adultscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102220034
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:23:42PM -0800, Michael Kelley wrote:
-> While the driver for the Hyper-V Reference TSC and STIMERs is architecture
-> neutral, vDSO is implemented for x86/x64, but not for ARM64.  Current code
-> calls into utility functions under arch/x86 (and coming, under arch/arm64)
-> to handle the difference.
+On Thu, 2021-02-18 at 14:05 -0800, Tushar Sugandhi wrote:
+> On 2021-02-17 12:49 p.m., Tushar Sugandhi wrote:
+> > On 2021-02-17 12:39 p.m., Mimi Zohar wrote:
+> >> On Wed, 2021-02-17 at 10:53 -0800, Tushar Sugandhi wrote:
+> >>> Thanks for the feedback Mimi.
+> >>> Appreciate it.
+> >>>
+> >>> On 2021-02-17 7:03 a.m., Mimi Zohar wrote:
+> >>>> Hi Tushar,
+> >>>>
+> >>>> The Subject line could be improved.  Perhaps something like - "IMA:
+> >>>> support for duplicate measurement records"
+> >>>>
+> >>> Will do.
+> >>>
+> >>>> On Tue, 2021-02-16 at 18:46 -0800, Tushar Sugandhi wrote:
+> >>>>> IMA does not measure duplicate data since TPM extend is a very 
+> >>>>> expensive
+> >>>>> operation.  However, in some cases, the measurement of duplicate data
+> >>>>> is necessary to accurately determine the current state of the system.
+> >>>>> Eg, SELinux state changing from 'audit', to 'enforcing', and back to
+> >>>>> 'audit' again.  In this example, currently, IMA will not measure the
+> >>>>> last state change to 'audit'.  This limits the ability of attestation
+> >>>>> services to accurately determine the current state of the measurements
+> >>>>> on the system.
+> >>>>
+> >>>> This patch description is written from your specific usecase
+> >>>> perspective, but it impacts file and buffer data measurements as well,
+> >>>> not only critical data measurements.  In all of these situations, with
+> >>>> this patch a new measurement record is added/appended to the
+> >>>> measurement list.  Please re-write the patch description making it more
+> >>>> generic.
+> >>>>
+> >>>> For example, I would start with something like, "IMA does not include
+> >>>> duplicate file, buffer or critical data measurement records ..."
+> >>>>
+> >>> Agreed.
+> >>> I will generalize the description further and send the v3 for review.
+> >>
+> >> It would be good to boot with the ima_policy=tcb policy with/without
+> >> your patch and account for the different number of measurements.   Are
+> >> all the differences related to duplicate measurements - original file
+> >> hash -> new file hash -> original file hash - similar to what you
+> >> described.
+> >>
+> > Thanks for the ima_policy=tcb pointer.
+> > 
+> > I tested my patch with:
+> >   - duplicate buffer content for "measure func=CRITICAL_DATA"
+> >   - and reading the same file twice with "measure func=FILE_CHECK 
+> > mask=MAY_READ"
+> > 
+> > In both the above use cases, IMA is measuring the duplicate entries with 
+> > the patch, and not measuring the duplicate entries w/o the patch.
+> > 
+> > I will test the "ima_policy=tcb" boot-scenario as you suggested, before 
+> > posting the next version.
+> > 
 > 
-> Change this approach to handle the difference inline based on whether
-> VDSO_CLOCK_MODE_HVCLOCK is present.  The new approach removes code under
-> arch/* since the difference is tied more to the specifics of the Linux
-> implementation than to the architecture.
+> I booted the system with "ima_policy=tcb" policy with/without my patch.
+> I also removed /etc/ima/ima-policy for testing these use-cases.
+> (so that it wouldn't override the policy generated by boot param 
+> "ima_policy=tcb").
 > 
-> No functional change.
+> I double checked the contents of the kernel policy:
+> #cat /sys/kernel/security/integrity/ima/policy
+>      dont_measure fsmagic=0x9fa0
+>      dont_measure fsmagic=0x62656572
+>      dont_measure fsmagic=0x64626720
+>      dont_measure fsmagic=0x1021994
+>      dont_measure fsmagic=0x1cd1
+>      dont_measure fsmagic=0x42494e4d
+>      dont_measure fsmagic=0x73636673
+>      dont_measure fsmagic=0xf97cff8c
+>      dont_measure fsmagic=0x43415d53
+>      dont_measure fsmagic=0x27e0eb
+>      dont_measure fsmagic=0x63677270
+>      dont_measure fsmagic=0x6e736673
+>      dont_measure fsmagic=0xde5e81e4
+>      measure func=MMAP_CHECK mask=MAY_EXEC
+>      measure func=BPRM_CHECK mask=MAY_EXEC
+>      measure func=FILE_CHECK mask=^MAY_READ euid=0
+>      measure func=FILE_CHECK mask=^MAY_READ uid=0
+>      measure func=MODULE_CHECK
+>      measure func=FIRMWARE_CHECK
+>      measure func=POLICY_CHECK
 > 
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> And then I compared the contents of the ascii_runtime_measurements with 
+> and without my patch.
+> 
+> And here are my findings:
+> 
+> (1) Files like systemd-udevd, x2go_sessions etc. get measured multiple
+>      times with the CONFIG_IMA_DISABLE_HTABLE=y.
+>      They only get measured once with the config "=n".
+> 
+>      10 668df8723f5a1f57a0afe3b50d44054d66363f3e ima-ng 
+> sha1:51f66e82421b93b21ad1e0a25e5efa4155c6a8e0 /lib/systemd/systemd-udevd
+>      10 668df8723f5a1f57a0afe3b50d44054d66363f3e ima-ng 
+> sha1:51f66e82421b93b21ad1e0a25e5efa4155c6a8e0 /lib/systemd/systemd-udevd
+> 
+> (2) There are lot more instances of /tmp/<random> measurement records
+>      with the CONFIG_IMA_DISABLE_HTABLE=y.
+>      Eg,
+> 
+>      10 33515851cfee4acbf24de9482ff018d33def1083 ima-ng 
+> sha1:da39a3ee5e6b4b0d3255bfef95601890afd80709 /tmp/oUWCVeypLR
+>      10 9d1dc0e1e54ee2e16308a824fc5780bd21b38208 ima-ng 
+> sha1:da39a3ee5e6b4b0d3255bfef95601890afd80709 /tmp/etX8dy7qqy
+>      10 8643a5543179b86c02d7e3e01e16b3bd2f8dbb9f ima-ng 
+> sha1:da39a3ee5e6b4b0d3255bfef95601890afd80709 /tmp/I4zTWEuyMf
+>      10 56e9547a4ed39036d2e790cfad78b467aa979e32 ima-ng 
+> sha1:da39a3ee5e6b4b0d3255bfef95601890afd80709 /tmp/Lh5wDm6_Ep
+> 
+> I believe both the observations are consistent with the expected outcome 
+> of the patch.
 
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+These measurement records are not a result of the scenario described in
+the patch description, but as the result of different inodes being
+measured.   In the first case, the measurement is most likely coming
+from the initramfs, while the second measurement is after pivot root.  
+Without digging, I assume the second example is the file hash of an
+empty file.
 
-Regards,
-Boqun
+> 
+> Please let me know if I should test any other scenario.
+> 
+> I will shortly post the v3 patch with updates to description and title 
+> as you suggested.
 
-> ---
->  arch/x86/include/asm/mshyperv.h    |  4 ----
->  drivers/clocksource/hyperv_timer.c | 10 ++++++++--
->  2 files changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> index 4d3e0c5..ed9dc56 100644
-> --- a/arch/x86/include/asm/mshyperv.h
-> +++ b/arch/x86/include/asm/mshyperv.h
-> @@ -27,10 +27,6 @@ static inline u64 hv_get_register(unsigned int reg)
->  	return value;
->  }
->  
-> -#define hv_set_clocksource_vdso(val) \
-> -	((val).vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK)
-> -#define hv_enable_vdso_clocksource() \
-> -	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
->  #define hv_get_raw_timer() rdtsc_ordered()
->  
->  /*
-> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
-> index 9425308..9cee6db 100644
-> --- a/drivers/clocksource/hyperv_timer.c
-> +++ b/drivers/clocksource/hyperv_timer.c
-> @@ -372,7 +372,9 @@ static void resume_hv_clock_tsc(struct clocksource *arg)
->  
->  static int hv_cs_enable(struct clocksource *cs)
->  {
-> -	hv_enable_vdso_clocksource();
-> +#ifdef VDSO_CLOCKMODE_HVCLOCK
-> +	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
-> +#endif
->  	return 0;
->  }
->  
-> @@ -385,6 +387,11 @@ static int hv_cs_enable(struct clocksource *cs)
->  	.suspend= suspend_hv_clock_tsc,
->  	.resume	= resume_hv_clock_tsc,
->  	.enable = hv_cs_enable,
-> +#ifdef VDSO_CLOCKMODE_HVCLOCK
-> +	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
-> +#else
-> +	.vdso_clock_mode = VDSO_CLOCKMODE_NONE,
-> +#endif
->  };
->  
->  static u64 notrace read_hv_clock_msr(void)
-> @@ -439,7 +446,6 @@ static bool __init hv_init_tsc_clocksource(void)
->  	tsc_msr = tsc_msr | 0x1 | (u64)phys_addr;
->  	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
->  
-> -	hv_set_clocksource_vdso(hyperv_cs_tsc);
->  	clocksource_register_hz(&hyperv_cs_tsc, NSEC_PER_SEC/100);
->  
->  	hv_sched_clock_offset = hv_read_reference_counter();
-> -- 
-> 1.8.3.1
-> 
+The patch description is much better, but doesn't address the duplicate
+measurements without the file changing in between.   Please really
+compare the before and after measurement record changes, making sure
+you understand the cause for all the duplicate measurement records.  
+Based on the results, please update the patch description
+appropriately.
+
+thanks,
+
+Mimi
+
