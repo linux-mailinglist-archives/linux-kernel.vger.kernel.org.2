@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18F9321B54
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3DB321B4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhBVPYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:24:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40124 "EHLO
+        id S230099AbhBVPXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:23:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbhBVPPR (ORCPT
+        with ESMTP id S231405AbhBVPPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:15:17 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9D6C061A30;
-        Mon, 22 Feb 2021 07:13:05 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id l30so3772385wrb.12;
-        Mon, 22 Feb 2021 07:13:05 -0800 (PST)
+        Mon, 22 Feb 2021 10:15:23 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A47CC061A31;
+        Mon, 22 Feb 2021 07:13:06 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id b3so19449630wrj.5;
+        Mon, 22 Feb 2021 07:13:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=eE3vB1/Y8MdpJt97O9ILAeiKByH7vJluKckPn4DVjuc=;
-        b=qRBLvooKzzptyg4Na1vV+Zw3xpJrgdbtv8oSWAD7uDzDOAIsoTtNtDBnRP9zRr6tkh
-         9f6G6dKGjz9WqzquotrqA1GQ0V2DC9qo/WLqkVtNZzGlwHJ6egBZxwWujxTt/wYYKVgT
-         N9EkVwdrFyjVzqlI1Q150Z6RFloU34+sttMm2VStZnXAzwYTBae87xniZ9tqaDV+5Rv7
-         NlvoiH4/Btz0f3ojJebhRhpVbONzce8Rr1ksYkPxS50D3HLkxHENK/oyP9iYz9y4yD2S
-         Hj9yfnfnfRQn6PdUvWIhTP9ZODAnNhPVrqhvbkfziR3sCGsXj4jq1O1wu9GUWbxu1vW7
-         ylvQ==
+        bh=xsehZqvcvtb4tCCQoqeDviKqU/Y1YzBUUFjUVz3pAZk=;
+        b=rncFZJGMNdZtNXBSacAVdgQBb0oGFNyf4Hdrl4WXvGfYPpXc/Yp5sNVXRPxebcNuHS
+         7IwEN7oQqyGVvRqs7xITRH9BrQFVeMl9spTlXJbuc9zRHDrvQyCLU3I7tFJ1PyS/4HNJ
+         fzRC7nyB+goax8BUDRiSpHvvPl5rliAh3rGz2sJefngJxqQ91KSDr12SCvrRitANW/hI
+         0ZEPXb2d75NN21G4Mk1zMcEiEFxGfPE1x4YqmFFkLRQzfM4WHTL3WWIWjUQbfKTCBMaK
+         sivFSnlzPOUjk7O8xk+5jDWF/7ksajmmcO15qtMvYQi3A8BDvi2F/SkrsWH3iGHIEm/5
+         DhaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eE3vB1/Y8MdpJt97O9ILAeiKByH7vJluKckPn4DVjuc=;
-        b=WBlUKL1tN8bZ6XztVQVBU8x6xuN3e5aYKOAqlDtULj0oEqGoYWNULqsNuwfTPm28aO
-         i7axW9SQEpKxWRx+PzHXXB15BGpRQwLDiGMRADSAnp1kMvyvlbLo8XB2P5hzInipC9FR
-         Df0up/4LHsA/cI278t5qOeyibraJKJgwbhL8rlARoYg1o01EZoQO6EfGhl2XtKMSwDkQ
-         k+ckj+JRUrz1q5hc0/2eS5g+OaAHihUgZirG1h8gtIfRbLSsPcTO7JDMpPlffrISQjuh
-         RB7MyfEnAZ4kA3j/s2DhZVUUhhflxIa0xkhwUozZfiI9Tt809kg9eLNoRaAmC8PqH8VQ
-         rqTw==
-X-Gm-Message-State: AOAM530Ip3E7rOhyuQp4fVfESHlICeoBHBsi2knhNHern1BEpOuQ3rxH
-        SXT6yEpEBZRNorRTY7KAY7Ai93/QcFSHkLA8CgE=
-X-Google-Smtp-Source: ABdhPJyfPGar/M7v1Lbgl1i6VGHfK9R+x8JNl1xnJQkxT/oA6TAsd7WzE2w4ZgIygKgSC/mrQJNzqg==
-X-Received: by 2002:adf:f1c4:: with SMTP id z4mr4346920wro.52.1614006783582;
-        Mon, 22 Feb 2021 07:13:03 -0800 (PST)
+        bh=xsehZqvcvtb4tCCQoqeDviKqU/Y1YzBUUFjUVz3pAZk=;
+        b=IH6RySdRHvgOxuNtgtYPGTaJNrSBByIg+uwQNjs/TI51syOaXzvhOS+2H3k3I/6jaa
+         DOvdY1XkxlO3lMSQIB7sugWTf5YD7h3Rxi+IMCpRLN7c+peZs104KMr4uT0vlNlDYsqv
+         VDeHPj8DNCT9kMA021f4SSzTtXnutorxGzXETaSFN/b2b9+uz2/NIt6KeuQXoWinaPyP
+         bShDUMRHgWi0/NvPQ0ol6wnYoHTN0OOcIu2xyqo74AMShZuNmKwS5KdUib/CXAHR9luk
+         FL4xXW78JesCqbkaWb3PpSqDI1zVb4kQyPqCnmf/q3yxxolwHGWSuPJlIQ9QV6ihI2RS
+         hVmQ==
+X-Gm-Message-State: AOAM532HoYEiFyFAGLYgG+UHONFZnAAiuwOJ39Y5Xd4fb0oS/TSPHxEh
+        bjoG7EL0x4yE0nOCJByQH2VbbH6A2cpUdqe0pfE=
+X-Google-Smtp-Source: ABdhPJxRYTjEd7nsbxeIKUmEpWw/94Nm1leoqbaxX1B5ddNqok4WzlYQVzm9GVfAfVRtD+2oslhAOw==
+X-Received: by 2002:a5d:55d2:: with SMTP id i18mr5005134wrw.221.1614006784971;
+        Mon, 22 Feb 2021 07:13:04 -0800 (PST)
 Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id y62sm30776774wmy.9.2021.02.22.07.13.03
+        by smtp.gmail.com with ESMTPSA id h13sm29117488wrv.20.2021.02.22.07.13.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:13:03 -0800 (PST)
+        Mon, 22 Feb 2021 07:13:04 -0800 (PST)
 From:   Romain Perier <romain.perier@gmail.com>
 To:     Kees Cook <keescook@chromium.org>,
         kernel-hardening@lists.openwall.com,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
 Cc:     Romain Perier <romain.perier@gmail.com>, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 18/20] usb: gadget: f_midi: Manual replacement of the deprecated strlcpy() with return values
-Date:   Mon, 22 Feb 2021 16:12:29 +0100
-Message-Id: <20210222151231.22572-19-romain.perier@gmail.com>
+Subject: [PATCH 19/20] usbip: usbip_host: Manual replacement of the deprecated strlcpy() with return values
+Date:   Mon, 22 Feb 2021 16:12:30 +0100
+Message-Id: <20210222151231.22572-20-romain.perier@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
 References: <20210222151231.22572-1-romain.perier@gmail.com>
@@ -82,50 +84,30 @@ values (as it is quite different between the two functions).
 
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 ---
- drivers/usb/gadget/function/f_midi.c    |    4 ++--
- drivers/usb/gadget/function/f_printer.c |    8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/usb/usbip/stub_main.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/f_midi.c b/drivers/usb/gadget/function/f_midi.c
-index 71a1a26e85c7..1f2b0d4309b4 100644
---- a/drivers/usb/gadget/function/f_midi.c
-+++ b/drivers/usb/gadget/function/f_midi.c
-@@ -1143,11 +1143,11 @@ F_MIDI_OPT(out_ports, true, MAX_PORTS);
- static ssize_t f_midi_opts_id_show(struct config_item *item, char *page)
+diff --git a/drivers/usb/usbip/stub_main.c b/drivers/usb/usbip/stub_main.c
+index 77a5b3f8736a..5bc2c09c0d10 100644
+--- a/drivers/usb/usbip/stub_main.c
++++ b/drivers/usb/usbip/stub_main.c
+@@ -167,15 +167,15 @@ static ssize_t match_busid_show(struct device_driver *drv, char *buf)
+ static ssize_t match_busid_store(struct device_driver *dev, const char *buf,
+ 				 size_t count)
  {
- 	struct f_midi_opts *opts = to_f_midi_opts(item);
--	int result;
-+	ssize_t result;
+-	int len;
++	ssize_t len;
+ 	char busid[BUSID_SIZE];
  
- 	mutex_lock(&opts->lock);
- 	if (opts->id) {
--		result = strlcpy(page, opts->id, PAGE_SIZE);
-+		result = strscpy(page, opts->id, PAGE_SIZE);
- 	} else {
- 		page[0] = 0;
- 		result = 0;
-diff --git a/drivers/usb/gadget/function/f_printer.c b/drivers/usb/gadget/function/f_printer.c
-index 61ce8e68f7a3..af83953e6770 100644
---- a/drivers/usb/gadget/function/f_printer.c
-+++ b/drivers/usb/gadget/function/f_printer.c
-@@ -1212,15 +1212,15 @@ static ssize_t f_printer_opts_pnp_string_show(struct config_item *item,
- 					      char *page)
- {
- 	struct f_printer_opts *opts = to_f_printer_opts(item);
--	int result = 0;
-+	ssize_t result = 0;
+ 	if (count < 5)
+ 		return -EINVAL;
  
- 	mutex_lock(&opts->lock);
- 	if (!opts->pnp_string)
- 		goto unlock;
+ 	/* busid needs to include \0 termination */
+-	len = strlcpy(busid, buf + 4, BUSID_SIZE);
+-	if (sizeof(busid) <= len)
++	len = strscpy(busid, buf + 4, BUSID_SIZE);
++	if (len == -E2BIG)
+ 		return -EINVAL;
  
--	result = strlcpy(page, opts->pnp_string, PAGE_SIZE);
--	if (result >= PAGE_SIZE) {
--		result = PAGE_SIZE;
-+	result = strscpy(page, opts->pnp_string, PAGE_SIZE);
-+	if (result == -E2BIG) {
-+		goto unlock;
- 	} else if (page[result - 1] != '\n' && result + 1 < PAGE_SIZE) {
- 		page[result++] = '\n';
- 		page[result] = '\0';
+ 	if (!strncmp(buf, "add ", 4)) {
 
