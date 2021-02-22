@@ -2,121 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C1D321CE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F32321CE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhBVQ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:26:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbhBVQZk (ORCPT
+        id S231685AbhBVQ0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:26:55 -0500
+Received: from vmicros1.altlinux.org ([194.107.17.57]:50954 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230282AbhBVQZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:25:40 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3255AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:25:00 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id kr16so8920823pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:25:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K8Mk8DPpk11B6V3YwuQN3+iAtbjKIINrpZOMJr9ijMU=;
-        b=ZkL+DPyOhtNNe7hZI9CaKbe4ebR0w/c08TMwcW6jEWxnEH8r794ZleXZWoZ/UR0m9l
-         /JvwszOIsqxGcoQusTcqqjnSjevmzjijIqmibZWhNlf1fAH+fqB2XaC9yYLNGSgQajKW
-         cQ37mvXb34+aOOxfrJiSDd0duyNERIQhiKqe1mF+9oUWIOq5QI43wZI8wjHcqYbkkeNz
-         F74iB1b0pF2iLrhK6gzgmonIkdXMBmp9UGOP+w4UrVRBbDRpQmc5IjIAIQwXpNnoKanf
-         hCRm8lc+Mszq2AP9WNUUdxblVMsJd9jJlh10sSOCswStuXopFHTvKoZcecsf/gsAVlr3
-         E8CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K8Mk8DPpk11B6V3YwuQN3+iAtbjKIINrpZOMJr9ijMU=;
-        b=EHF18SuVmbLIcP/Uis6zSxp8LoT78iUhZ3j002uI5Bo6Hrf9gOKESqbGS5uRgqLye4
-         03iQ9STRgo4eezfbi0Xob6atOveuPqfM1nLiWUcIRyFIrqK9eeQPQHUR/V332/pAKw5j
-         ljJH4rWjCZ/YjiPy0LaMQ430thzbhMeUxsotBo2nzEIgXWqPY1LoKNIZZS98ry2WMcqX
-         RKqsh9k+RVhSIbRLT2MYk9L8RVmkWd6GO6oh636BczPCyT9FKvg1+C9xl6zSaBCsutoW
-         oIYgqvyPdy+CszBShDh27bgfkG4wScPWMZtYDc40WIlaWGi7r/b1LkNFZvsuaxTtgdkG
-         qffQ==
-X-Gm-Message-State: AOAM532iafcHIqs8tNq3EmbTV3TetRzNdkkJWbr910n+6N3fq3PoIAO1
-        61IyqrPPcfV4nKVwjNTNJ1zFKQ==
-X-Google-Smtp-Source: ABdhPJzpaRZ20ovy1dpVfBdxXc3ZVF23iR3XDePJsjQUoeSVBm8Osbw6p/Oa6Rqwlvu7+JfquMJWyQ==
-X-Received: by 2002:a17:903:1d0:b029:df:d098:f1cb with SMTP id e16-20020a17090301d0b02900dfd098f1cbmr23104083plh.49.1614011099559;
-        Mon, 22 Feb 2021 08:24:59 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:655e:415b:3b95:bd58])
-        by smtp.gmail.com with ESMTPSA id f2sm21929378pfk.63.2021.02.22.08.24.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 08:24:58 -0800 (PST)
-Date:   Mon, 22 Feb 2021 08:24:51 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Stevens <stevensd@chromium.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
-        kvm-ppc@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [PATCH v4 2/2] KVM: x86/mmu: Consider the hva in mmu_notifier
- retry
-Message-ID: <YDPa07i3S3Y7/iwy@google.com>
-References: <20210222024522.1751719-1-stevensd@google.com>
- <20210222024522.1751719-3-stevensd@google.com>
+        Mon, 22 Feb 2021 11:25:53 -0500
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id 967FB72C8B3;
+        Mon, 22 Feb 2021 19:25:05 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+        id 86F107CC89C; Mon, 22 Feb 2021 19:25:05 +0300 (MSK)
+Date:   Mon, 22 Feb 2021 19:25:05 +0300
+From:   "Dmitry V. Levin" <ldv@altlinux.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Piotr Figiel <figiel@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Oskolkov <posk@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Paul Turner <pjt@google.com>, emmir@google.com,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>
+Subject: Re: [PATCH] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
+Message-ID: <20210222162505.GB1325@altlinux.org>
+References: <20210222100443.4155938-1-figiel@google.com>
+ <20210222115726.GA30843@altlinux.org>
+ <1510231959.29418.1614005590596.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210222024522.1751719-3-stevensd@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1510231959.29418.1614005590596.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021, David Stevens wrote:
-> ---
-> v3 -> v4:
->  - Skip prefetch while invalidations are in progress
+On Mon, Feb 22, 2021 at 09:53:10AM -0500, Mathieu Desnoyers wrote:
+> ----- On Feb 22, 2021, at 6:57 AM, Dmitry V. Levin ldv@altlinux.org wrote:
+> > On Mon, Feb 22, 2021 at 11:04:43AM +0100, Piotr Figiel wrote:
+[...]
+> >> +#ifdef CONFIG_RSEQ
+> >> +static long ptrace_get_rseq_configuration(struct task_struct *task,
+> >> +					  unsigned long size, void __user *data)
+> >> +{
+> >> +	struct ptrace_rseq_configuration conf = {
+> >> +		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
+> >> +		.signature = task->rseq_sig,
+> >> +	};
+> >> +
+> >> +	size = min_t(unsigned long, size, sizeof(conf));
+> >> +	if (copy_to_user(data, &conf, size))
+> >> +		return -EFAULT;
+> >> +	return size;
+> >> +}
+> >> +#endif
+> > 
+> > From API perspective I suggest for such interfaces to return the amount of
+> > data that could have been written if there was enough room specified, e.g.
+> > in this case it's sizeof(conf) instead of size.
+> 
+> Looking at the ptrace(2) man page:
+> 
+> RETURN VALUE
+>        On success, the PTRACE_PEEK* requests return the  requested  data  (but
+>        see NOTES), the PTRACE_SECCOMP_GET_FILTER request returns the number of
+>        instructions in the BPF program, and other requests return zero.
 
-Oof, nice catch.
+PTRACE_GET_SYSCALL_INFO returns "the number of bytes available to be
+written by the kernel".
 
-...
+It's written in the "DESCRIPTION" section, needs to be mirrored
+to "RETURN VALUE" section, thanks for reporting the inconsistency.
 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 9ac0a727015d..f6aaac729667 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -2758,6 +2758,13 @@ static void direct_pte_prefetch(struct kvm_vcpu *vcpu, u64 *sptep)
->  	if (sp->role.level > PG_LEVEL_4K)
->  		return;
->  
-> +	/*
-> +	 * If addresses are being invalidated, skip prefetching to avoid
-> +	 * accidentally prefetching those addresses.
-> +	 */
-> +	if (unlikely(vcpu->kvm->mmu_notifier_count))
-> +		return;
+>        On error, all requests return  -1,  and  errno  is  set  appropriately.
+>        Since  the  value  returned by a successful PTRACE_PEEK* request may be
+>        -1, the caller must clear errno before the call, and then check it  af‐
+>        terward to determine whether or not an error occurred.
+> 
+> It looks like the usual behavior for ptrace requests would be to return 0 when everything
+> is OK. Unless there a strong motivation for doing different for this new request, I
+> would be tempted to use the same expected behavior than other requests on success:
+> return 0.
+> 
+> Unless there is a strong motivation for returning either size or sizeof(conf) ? If we
+> return sizeof(conf) to user-space, it means it should check it and deal with the
+> size mismatch. Is that size ever expected to change ?
 
-FNAME(pte_prefetch) needs the same check.
+When adding new interfaces, it's generally a good idea to allow for
+future extensions.
+If some day in the future the structure is extended, the return value
+would be the way to tell userspace what's actually supported by the kernel.
 
-Paolo, this brings up a good addition for the work to integrate the mmu notifier
-into the rest of KVM, e.g. for vmcs12 pages.  Ideally, gfn_to_page_many_atomic()
-and __gfn_to_pfn_memslot() would WARN if mmu_notifier_count is non-zero, but
-that will fire all over the place until the nested code properly integrates the
-notifier.  There are a few use cases where racing with the notifier is acceptable,
-e.g. reexecute_instruction(), but hopefully we can address those flows without
-things getting too ugly.
 
-> +
->  	__direct_pte_prefetch(vcpu, sp, sptep);
->  }
+-- 
+ldv
