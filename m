@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6C4321B0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71798321B12
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhBVPOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:14:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
+        id S231293AbhBVPPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:15:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhBVPN2 (ORCPT
+        with ESMTP id S231226AbhBVPNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:13:28 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A168C06178B;
-        Mon, 22 Feb 2021 07:12:46 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id v21so785031wml.4;
-        Mon, 22 Feb 2021 07:12:46 -0800 (PST)
+        Mon, 22 Feb 2021 10:13:50 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1FCC061793;
+        Mon, 22 Feb 2021 07:12:47 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id v1so19442055wrd.6;
+        Mon, 22 Feb 2021 07:12:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bS+BhtUH3R5L/9GDlP7BU+Ce2CmxRyCIWCNfBp1I6gM=;
-        b=V5cR30vb5ardXeLt1d88QjtqI6/PZWMibuMU6FBWH9EF+5K4B7ctOb8EB9Nyw2+5O/
-         B9DRlg8fmqjkflRlIWXPb5PmqND8ANbJzfMVVl6CfSc/H95nHm1PyuLvjBrysK2xDjmV
-         eQLwLsWF227SCr5APVYITzaqAgCw//AAItH+IWl2SAeN4LzRXmXEYvJ6PecDGNySDc4p
-         IoZJSdblCMO+SeXF9z861+jky4AvY48blDSwbc8Fqk59soEOkZ0EbZpniMgaPfg21OVW
-         xxChBbjW63ip25O/FvjUxtYu+nOdaku8Z27gVkmqS2yhU3cjha3zgR6FIYJxsFTOQmWY
-         2aZA==
+        bh=pdGuMOt4W9f6d632mZ/3+qcmk+vyhqvdNPaPLq7IjEM=;
+        b=k6YPsBKxhiIVQgrR1NdSYHdWn4S97ym5N5LCHyB5TOSQxclZfqhb+K112mwVOvPdbc
+         YsUsd4glncxcxs/mU+68rO2yBsai6OJMWHsI7TDIBaGyHKBwGGMOcRdSxtby0dHsakBU
+         xudObvNr9cstN2fAOzMrQywEDT+qKOMFCrVBy1Yvo5/K3pN1wuEhu5nMw7+Vn4P+oyzq
+         kPMccoOCphrMrfGWAsxbhPcYfTeCYThv/ZThSHcajVGLTJ648gdvc90RDNiEvAwmz1CF
+         EodIi/cqA2HJ68SYPUU3JACVRe/vGDjIvh4jIeA6QGbl9MIa6ktk+C1cJU8HA7lmYQtu
+         aDrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bS+BhtUH3R5L/9GDlP7BU+Ce2CmxRyCIWCNfBp1I6gM=;
-        b=P7zPVmfq0L2FAyVXIzZhSK7oMqnyiAIkV0MrS5/63SBRIn9XPlwvo27JoWJMbF56iX
-         ETGTCFppToRu764Ooa/cv2OaYxBMaI+uRWGD5GKz5KXURio3O6b6dEwJ1d+CRPRnlXTp
-         5PpZnYRx7xtoFxFkdSh7my4EMI6ncMwRJqgNKyMMqpvGRqd//wBIe+9nt9pKVhiomx0i
-         u2M+/WHA7GV8LEm2M7Rz3jC2EX5yhcCrFA9UjheG1MlmD64YAnovVV7FEudBHoCC7c2Z
-         3gJu1in0Nf5XOxeRX2ZOVPqkjN+hIdg9NK952SqwLM4n1xLC4d1jIBRx8b3nwTxGvE4t
-         WaeA==
-X-Gm-Message-State: AOAM531Bu6FcuwTYrCyEBwBIjqQ29d+pu45+ud8MBEsfS399aoId+1kJ
-        2Y1QVoYtcCAZSZppYz3dt1G6qmw8umO45MJl884=
-X-Google-Smtp-Source: ABdhPJw11x5IL7ncOL+63QUugBE7PetgqUhUecRWWpL8gsY5S92hRrmOrK8XXRALroxCO+KKqgCkIA==
-X-Received: by 2002:a1c:7705:: with SMTP id t5mr14179710wmi.148.1614006764022;
-        Mon, 22 Feb 2021 07:12:44 -0800 (PST)
+        bh=pdGuMOt4W9f6d632mZ/3+qcmk+vyhqvdNPaPLq7IjEM=;
+        b=fgqmJuN4KsslMmdXYjIp12sX91+G/WcEZOYfWSP/w8IjHsPOG5/ukFFlAs6XFVu7ov
+         iRaJNknjoqN9Odp4MmR3eTJNBSOWwM6IVUnpOjgRZWzL5MflhmAT50pQ9GoCWsev+BgQ
+         8RcdjfPN6rOGT0hSmXtCdIlsk4fZmk0hyj8fVa8VSwiCGc7pNQSSnTXx10WkQi0rdUdh
+         lRK6V8YchkCSzINycTvTgRiSSwFmpBiA9gNTdTF0fCk55LWa9tG5aafdKyHX+ofRArJj
+         jxvK+b+DDbJTrqsyo2FCcW5rZsKaCiValUMIiG9wcNOjSgJrRLsgF6WZqndAThmbTa+u
+         G9lg==
+X-Gm-Message-State: AOAM5331oP5EgE+g0QyYZ9rsU2JkiylNPXK+MPzvhq/J83qCBeZCpkZV
+        hBz4Gy4SB0bN/0/sLlivlD1rkBr3yATt1i6RVik=
+X-Google-Smtp-Source: ABdhPJxrpzigvnHf99oo4cOIbGkxhLJ4N3VZOzCxRfNHMT7x79PfV4RdRx6LhrL4FqA9HYIKUqBMqg==
+X-Received: by 2002:adf:ff88:: with SMTP id j8mr15600241wrr.62.1614006765655;
+        Mon, 22 Feb 2021 07:12:45 -0800 (PST)
 Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id l1sm25932031wmi.48.2021.02.22.07.12.43
+        by smtp.gmail.com with ESMTPSA id m17sm24783472wmq.5.2021.02.22.07.12.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:12:43 -0800 (PST)
+        Mon, 22 Feb 2021 07:12:45 -0800 (PST)
 From:   Romain Perier <romain.perier@gmail.com>
 To:     Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Romain Perier <romain.perier@gmail.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 02/20] crypto: Manual replacement of the deprecated strlcpy() with return values
-Date:   Mon, 22 Feb 2021 16:12:13 +0100
-Message-Id: <20210222151231.22572-3-romain.perier@gmail.com>
+        kernel-hardening@lists.openwall.com, Jiri Pirko <jiri@nvidia.com>
+Cc:     Romain Perier <romain.perier@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 03/20] devlink: Manual replacement of the deprecated strlcpy() with return values
+Date:   Mon, 22 Feb 2021 16:12:14 +0100
+Message-Id: <20210222151231.22572-4-romain.perier@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
 References: <20210222151231.22572-1-romain.perier@gmail.com>
@@ -82,44 +80,25 @@ values (as it is quite different between the two functions).
 
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 ---
- crypto/lrw.c |    6 +++---
- crypto/xts.c |    6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ net/core/devlink.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/crypto/lrw.c b/crypto/lrw.c
-index bcf09fbc750a..4d35f4439012 100644
---- a/crypto/lrw.c
-+++ b/crypto/lrw.c
-@@ -357,10 +357,10 @@ static int lrw_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	 * cipher name.
- 	 */
- 	if (!strncmp(cipher_name, "ecb(", 4)) {
--		unsigned len;
-+		ssize_t len;
+diff --git a/net/core/devlink.c b/net/core/devlink.c
+index 737b61c2976e..7eb445460c92 100644
+--- a/net/core/devlink.c
++++ b/net/core/devlink.c
+@@ -9461,10 +9461,10 @@ EXPORT_SYMBOL_GPL(devlink_port_param_value_changed);
+ void devlink_param_value_str_fill(union devlink_param_value *dst_val,
+ 				  const char *src)
+ {
+-	size_t len;
++	ssize_t len;
  
--		len = strlcpy(ecb_name, cipher_name + 4, sizeof(ecb_name));
--		if (len < 2 || len >= sizeof(ecb_name))
-+		len = strscpy(ecb_name, cipher_name + 4, sizeof(ecb_name));
-+		if (len == -E2BIG || len < 2)
- 			goto err_free_inst;
+-	len = strlcpy(dst_val->vstr, src, __DEVLINK_PARAM_MAX_STRING_VALUE);
+-	WARN_ON(len >= __DEVLINK_PARAM_MAX_STRING_VALUE);
++	len = strscpy(dst_val->vstr, src, __DEVLINK_PARAM_MAX_STRING_VALUE);
++	WARN_ON(len == -E2BIG);
+ }
+ EXPORT_SYMBOL_GPL(devlink_param_value_str_fill);
  
- 		if (ecb_name[len - 1] != ')')
-diff --git a/crypto/xts.c b/crypto/xts.c
-index 6c12f30dbdd6..1dfe39d61418 100644
---- a/crypto/xts.c
-+++ b/crypto/xts.c
-@@ -396,10 +396,10 @@ static int xts_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	 * cipher name.
- 	 */
- 	if (!strncmp(cipher_name, "ecb(", 4)) {
--		unsigned len;
-+		ssize_t len;
- 
--		len = strlcpy(ctx->name, cipher_name + 4, sizeof(ctx->name));
--		if (len < 2 || len >= sizeof(ctx->name))
-+		len = strscpy(ctx->name, cipher_name + 4, sizeof(ctx->name));
-+		if (len == -E2BIG || len < 2)
- 			goto err_free_inst;
- 
- 		if (ctx->name[len - 1] != ')')
 
