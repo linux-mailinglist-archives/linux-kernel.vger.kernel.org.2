@@ -2,349 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C869F32155D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6F2321562
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:48:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhBVLqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 06:46:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhBVLpv (ORCPT
+        id S230170AbhBVLrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 06:47:42 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:53175 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230100AbhBVLrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 06:45:51 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E9FC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 03:45:03 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id u4so57024233ljh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 03:45:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MxPlHbXYugR+GyzGQ4MNZpa+2cxc7caoJS9Q08n01BU=;
-        b=FZC8vjZxFVp4FftG/9esK0jP1dhAv7nDlj0qOhskRE3t1T/CFMDrCoRiy7hE91GKzf
-         0i4J0WIWeqWwVrkqsBgEeTAcT3gfdQuNy9d+7v5mi0VHKlqYpn4XAlVX95Zsfv2HQcRH
-         4PRGaxqA9U7qLaFhndU/8X2VbHMLy5DodGCKsI0JSu8NKnb9ahFoqOAXeyZQfyvT5rdm
-         h9T3uPM1rPn+x1wvbVqQR5DxhZNCQM6gXZbjCOY2SRPfftIYZ3WThtADniZgQsdk0Bjx
-         kRRxwuAaZLFWxiaBfU/a1VYQOiCBq01LIFXiiZYLfVjihAbCiBBVw6NbKxdtk58jVKnX
-         mPWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MxPlHbXYugR+GyzGQ4MNZpa+2cxc7caoJS9Q08n01BU=;
-        b=tCwmIYxJZEyjqGV/SMNA1nxJpTo3msap3BsfWQU17/LRh9sMPm79WW+46YXjRiAS8K
-         ZanUfuq1yInQK5ZxpQqUVSL7+uouKX1ocYIia8pOzssoqfpqpVNJapHtMf5cLDQ5+a3n
-         B3I2hAwpPq1q7Cg2xHzvOfrUF1PnA5nVev1P+knNx4tOWj6VnwrX+uTmMqCAJjbQ5CoJ
-         wkXdqTtYKMyyry0sX3ryNQRdpRBidZ5EHm701fNGmvuvApsOhD8oewkUtmC5S+Bfwi+W
-         opHJlaDAYS1uCan7bMW2DkbNkMBt64z3U1iwe0gC7dLXbRWQvJWvMO/Rnr/a+L0TAzhJ
-         3s5Q==
-X-Gm-Message-State: AOAM530X3T7GoI5q2PMluhDOxLqNVZ5IhEb9U6FBrh6aeqB6rlCsHGaJ
-        HDKZSNiZViZiJ/Y16AfjvOFL1g==
-X-Google-Smtp-Source: ABdhPJyxalBupjjMqx5uthbbwkIK2RAXGa2eG3yqalDbS0sPVBpxWuAd0EVwFZ74kujc40vn1swk5Q==
-X-Received: by 2002:a19:ca1b:: with SMTP id a27mr13209415lfg.92.1613994300095;
-        Mon, 22 Feb 2021 03:45:00 -0800 (PST)
-Received: from [192.168.118.216] ([85.249.43.69])
-        by smtp.gmail.com with ESMTPSA id j16sm1383636lfk.68.2021.02.22.03.44.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 03:44:59 -0800 (PST)
-Subject: Re: [PATCH v5 12/22] media: camss: Remove per VFE power domain
- toggling
-To:     Robert Foss <robert.foss@linaro.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, todor.too@gmail.com,
-        mchehab@kernel.org, robh+dt@kernel.org,
-        angelogioacchino.delregno@somainline.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-References: <20210217112122.424236-1-robert.foss@linaro.org>
- <20210217112122.424236-13-robert.foss@linaro.org>
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-Message-ID: <32b2cd1d-e41a-4571-ac4f-4ec055b3f6cb@linaro.org>
-Date:   Mon, 22 Feb 2021 14:44:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 22 Feb 2021 06:47:05 -0500
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 11MBjmSq026019;
+        Mon, 22 Feb 2021 20:45:49 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 11MBjmSq026019
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613994349;
+        bh=XycS92IGA3vLF6aa9ZEP5cx7aX8qlkuTZWFQ5Nsc3mo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pxLlUel3rZgmGgieTAUcqXqa/u7C8LHYJkoHTmk304NKqB1CkTweK4oHRY/oilMdZ
+         eUKw1wRm6nRlqD7ar1SgKL5sChqh4tfLBIkCAu1zXimhpGnlpb6rVa7Q1T5MvBH6DW
+         4WNU7v819T+0p+75FntMyyqabBqwV5hr7FfQc6ZpJWTIQEKHCccjWMjobZqw1w2CxW
+         UHTMFZcfUnlNkCCj1B17LYJ9BLySwB5ZzWy91WErRlb9ZXqRh1cJ1wLsSn0sIHfb/n
+         0DYBiEL6hEor2ktacyyobbf3OekSV7rPzBOfsUyhkvOGAx1jXFfe1Cz9zP7HZNGYIa
+         oAfvbf3YJjH7g==
+X-Nifty-SrcIP: [209.85.210.177]
+Received: by mail-pf1-f177.google.com with SMTP id u26so464878pfn.6;
+        Mon, 22 Feb 2021 03:45:49 -0800 (PST)
+X-Gm-Message-State: AOAM532qhbcs2kMnz+FeHqiRJ3tsuPBPCEdodMG8zJ3YmF6EnmjqQ0R6
+        T4rWsAoi7LzA6e4xE8+Mc6gTnPApMM1BrbbmFwU=
+X-Google-Smtp-Source: ABdhPJzg8YvMz+G0Com1JcOMBvXR+cwLw21c4AEbMPt+R+k+o7Ro5o3jSTZdRWIQ5c+kyR2CNajAS4OJgpWf2Y56Mgc=
+X-Received: by 2002:a62:1412:0:b029:1ec:bc11:31fd with SMTP id
+ 18-20020a6214120000b02901ecbc1131fdmr21092690pfu.76.1613994348588; Mon, 22
+ Feb 2021 03:45:48 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210217112122.424236-13-robert.foss@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210220142935.918554-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20210220142935.918554-1-christophe.jaillet@wanadoo.fr>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 22 Feb 2021 20:45:11 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATar8hf7B=HeaWO4D8DhmABXjNZ16H_+KQr=gEx+9Bgrg@mail.gmail.com>
+Message-ID: <CAK7LNATar8hf7B=HeaWO4D8DhmABXjNZ16H_+KQr=gEx+9Bgrg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mmc: uniphier-sd: Fix an error handling path in uniphier_sd_probe()
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        kernel@esmil.dk, Douglas Anderson <dianders@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert,
-
-Thank you for your patch!
-
-On 17.02.2021 14:21, Robert Foss wrote:
-> For Titan ISPs clocks fail to re-enable during vfe_get()
-> after any vfe has been halted and its corresponding power
-> domain power has been detached.
-
-OK.
-
-> Since all of the clocks depend on all of the PDs, per
-> VFE PD detaching is no option for this generation of HW.
-
-But this patch removes camss_pm_domain_on/off calls from
-vfe_get/put() for all the SOCs, not only for sdm845.
-And this looks like a regression (higher power consumption)
-for all the generation1 devices.
-
-Is it possible to handle gen1 and gen2 hardware differently,
-so that gen1 continued to use camss_pm_domain_on/off as
-before?
-
-Thanks,
-Andrey
-
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+On Sat, Feb 20, 2021 at 11:31 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> A 'uniphier_sd_clk_enable()' call should be balanced by a corresponding
+> 'uniphier_sd_clk_disable()' call.
+> This is done in the remove function, but not in the error handling path of
+> the probe.
+>
+> Add the missing call.
+>
+> Fixes: 3fd784f745dd ("mmc: uniphier-sd: add UniPhier SD/eMMC controller driver")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->   .../media/platform/qcom/camss/camss-ispif.c   | 11 ---
->   drivers/media/platform/qcom/camss/camss-vfe.c |  7 --
->   drivers/media/platform/qcom/camss/camss.c     | 94 +++++++++++--------
->   drivers/media/platform/qcom/camss/camss.h     | 12 +--
->   4 files changed, 60 insertions(+), 64 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
-> index fc121da4ab0c..b88f4025010a 100644
-> --- a/drivers/media/platform/qcom/camss/camss-ispif.c
-> +++ b/drivers/media/platform/qcom/camss/camss-ispif.c
-> @@ -323,14 +323,6 @@ static int ispif_reset(struct ispif_device *ispif, u8 vfe_id)
->   	struct camss *camss = ispif->camss;
->   	int ret;
->   
-> -	ret = camss_pm_domain_on(camss, PM_DOMAIN_VFE0);
-> -	if (ret < 0)
-> -		return ret;
-> -
-> -	ret = camss_pm_domain_on(camss, PM_DOMAIN_VFE1);
-> -	if (ret < 0)
-> -		return ret;
-> -
->   	ret = camss_enable_clocks(ispif->nclocks_for_reset,
->   				  ispif->clock_for_reset,
->   				  camss->dev);
-> @@ -343,9 +335,6 @@ static int ispif_reset(struct ispif_device *ispif, u8 vfe_id)
->   
->   	camss_disable_clocks(ispif->nclocks_for_reset, ispif->clock_for_reset);
->   
-> -	camss_pm_domain_off(camss, PM_DOMAIN_VFE0);
-> -	camss_pm_domain_off(camss, PM_DOMAIN_VFE1);
-> -
->   	return ret;
->   }
->   
-> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-> index 6fafeb8a5484..ed35f9ae9067 100644
-> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
-> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-> @@ -580,10 +580,6 @@ static int vfe_get(struct vfe_device *vfe)
->   	mutex_lock(&vfe->power_lock);
->   
->   	if (vfe->power_count == 0) {
-> -		ret = camss_pm_domain_on(vfe->camss, vfe->id);
-> -		if (ret < 0)
-> -			goto error_pm_domain;
-> -
->   		ret = pm_runtime_get_sync(vfe->camss->dev);
->   		if (ret < 0)
->   			goto error_pm_runtime_get;
-> @@ -620,9 +616,7 @@ static int vfe_get(struct vfe_device *vfe)
->   
->   error_pm_runtime_get:
->   	pm_runtime_put_sync(vfe->camss->dev);
-> -	camss_pm_domain_off(vfe->camss, vfe->id);
->   
-> -error_pm_domain:
->   	mutex_unlock(&vfe->power_lock);
->   
->   	return ret;
-> @@ -646,7 +640,6 @@ static void vfe_put(struct vfe_device *vfe)
->   		}
->   		camss_disable_clocks(vfe->nclocks, vfe->clock);
->   		pm_runtime_put_sync(vfe->camss->dev);
-> -		camss_pm_domain_off(vfe->camss, vfe->id);
->   	}
->   
->   	vfe->power_count--;
-> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-> index 5d0479b5589c..3c45537b2cfb 100644
-> --- a/drivers/media/platform/qcom/camss/camss.c
-> +++ b/drivers/media/platform/qcom/camss/camss.c
-> @@ -774,28 +774,6 @@ int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock)
->   	return 0;
->   }
->   
-> -int camss_pm_domain_on(struct camss *camss, int id)
-> -{
-> -	if (camss->version == CAMSS_8x96 ||
-> -	    camss->version == CAMSS_660) {
-> -		camss->genpd_link[id] = device_link_add(camss->dev,
-> -				camss->genpd[id], DL_FLAG_STATELESS |
-> -				DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE);
-> -
-> -		if (!camss->genpd_link[id])
-> -			return -EINVAL;
-> -	}
-> -
-> -	return 0;
-> -}
-> -
-> -void camss_pm_domain_off(struct camss *camss, int id)
-> -{
-> -	if (camss->version == CAMSS_8x96 ||
-> -	    camss->version == CAMSS_660)
-> -		device_link_del(camss->genpd_link[id]);
-> -}
-> -
->   /*
->    * camss_of_parse_endpoint_node - Parse port endpoint node
->    * @dev: Device
-> @@ -1207,6 +1185,48 @@ static const struct media_device_ops camss_media_ops = {
->   	.link_notify = v4l2_pipeline_link_notify,
->   };
->   
-> +
-> +static int camss_configure_pd(struct camss *camss)
-> +{
-> +	int nbr_pm_domains = 0;
-> +	int last_pm_domain = 0;
-> +	int i;
-> +	int ret;
-> +
-> +	if (camss->version == CAMSS_8x96 ||
-> +	    camss->version == CAMSS_660)
-> +		nbr_pm_domains = PM_DOMAIN_CAMSS_COUNT;
-> +
-> +	for (i = 0; i < nbr_pm_domains; i++) {
-> +		camss->genpd[i] = dev_pm_domain_attach_by_id(camss->dev, i);
-> +		if (IS_ERR(camss->genpd[i])) {
-> +			ret = PTR_ERR(camss->genpd[i]);
-> +			goto fail_pm;
-> +		}
-> +
-> +		camss->genpd_link[i] = device_link_add(camss->dev, camss->genpd[i],
-> +			DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE);
-> +
-> +		if (!camss->genpd_link[i]) {
-> +			dev_pm_domain_detach(camss->genpd[i], true);
-> +			ret = -EINVAL;
-> +			goto fail_pm;
-> +		}
-> +
-> +		last_pm_domain = i;
-> +	}
-> +
-> +	return 0;
-> +
-> +fail_pm:
-> +	for (i = 0; i < last_pm_domain; i++) {
-> +		device_link_del(camss->genpd_link[i]);
-> +		dev_pm_domain_detach(camss->genpd[i], true);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->   /*
->    * camss_probe - Probe CAMSS platform device
->    * @pdev: Pointer to CAMSS platform device
-> @@ -1339,20 +1359,10 @@ static int camss_probe(struct platform_device *pdev)
->   		}
->   	}
->   
-> -	if (camss->version == CAMSS_8x96 ||
-> -	    camss->version == CAMSS_660) {
-> -		camss->genpd[PM_DOMAIN_VFE0] = dev_pm_domain_attach_by_id(
-> -						camss->dev, PM_DOMAIN_VFE0);
-> -		if (IS_ERR(camss->genpd[PM_DOMAIN_VFE0]))
-> -			return PTR_ERR(camss->genpd[PM_DOMAIN_VFE0]);
-> -
-> -		camss->genpd[PM_DOMAIN_VFE1] = dev_pm_domain_attach_by_id(
-> -						camss->dev, PM_DOMAIN_VFE1);
-> -		if (IS_ERR(camss->genpd[PM_DOMAIN_VFE1])) {
-> -			dev_pm_domain_detach(camss->genpd[PM_DOMAIN_VFE0],
-> -					     true);
-> -			return PTR_ERR(camss->genpd[PM_DOMAIN_VFE1]);
-> -		}
-> +	ret = camss_configure_pd(camss);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to configure power domains: %d\n", ret);
-> +		return ret;
->   	}
->   
->   	pm_runtime_enable(dev);
-> @@ -1373,6 +1383,9 @@ static int camss_probe(struct platform_device *pdev)
->   
->   void camss_delete(struct camss *camss)
->   {
-> +	int nbr_pm_domains = 0;
-> +	int i;
-> +
->   	v4l2_device_unregister(&camss->v4l2_dev);
->   	media_device_unregister(&camss->media_dev);
->   	media_device_cleanup(&camss->media_dev);
-> @@ -1380,9 +1393,12 @@ void camss_delete(struct camss *camss)
->   	pm_runtime_disable(camss->dev);
->   
->   	if (camss->version == CAMSS_8x96 ||
-> -	    camss->version == CAMSS_660) {
-> -		dev_pm_domain_detach(camss->genpd[PM_DOMAIN_VFE0], true);
-> -		dev_pm_domain_detach(camss->genpd[PM_DOMAIN_VFE1], true);
-> +	    camss->version == CAMSS_660)
-> +		nbr_pm_domains = PM_DOMAIN_CAMSS_COUNT;
-> +
-> +	for (i = 0; i < nbr_pm_domains; i++) {
-> +		device_link_del(camss->genpd_link[i]);
-> +		dev_pm_domain_detach(camss->genpd[i], true);
->   	}
->   
->   	kfree(camss);
-> diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
-> index b7ad8e9f68a8..7560d85b3352 100644
-> --- a/drivers/media/platform/qcom/camss/camss.h
-> +++ b/drivers/media/platform/qcom/camss/camss.h
-> @@ -57,9 +57,9 @@ struct resources_ispif {
->   };
->   
->   enum pm_domain {
-> -	PM_DOMAIN_VFE0,
-> -	PM_DOMAIN_VFE1,
-> -	PM_DOMAIN_COUNT
-> +	PM_DOMAIN_VFE0 = 0,
-> +	PM_DOMAIN_VFE1 = 1,
-> +	PM_DOMAIN_CAMSS_COUNT = 2,	/* CAMSS series of ISPs */
->   };
->   
->   enum camss_version {
-> @@ -83,8 +83,8 @@ struct camss {
->   	int vfe_num;
->   	struct vfe_device *vfe;
->   	atomic_t ref_count;
-> -	struct device *genpd[PM_DOMAIN_COUNT];
-> -	struct device_link *genpd_link[PM_DOMAIN_COUNT];
-> +	struct device *genpd[PM_DOMAIN_CAMSS_COUNT];
-> +	struct device_link *genpd_link[PM_DOMAIN_CAMSS_COUNT];
->   };
->   
->   struct camss_camera_interface {
-> @@ -110,8 +110,6 @@ int camss_enable_clocks(int nclocks, struct camss_clock *clock,
->   void camss_disable_clocks(int nclocks, struct camss_clock *clock);
->   struct media_entity *camss_find_sensor(struct media_entity *entity);
->   int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock);
-> -int camss_pm_domain_on(struct camss *camss, int id);
-> -void camss_pm_domain_off(struct camss *camss, int id);
->   void camss_delete(struct camss *camss);
->   
->   #endif /* QC_MSM_CAMSS_H */
-> 
+
+I no longer have access to this hardware, but
+by browsing the code, this seems correct.
+
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+
+
+
+
+
+
+>  drivers/mmc/host/uniphier-sd.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/uniphier-sd.c b/drivers/mmc/host/uniphier-sd.c
+> index 2413b6750cec..6f0f05466917 100644
+> --- a/drivers/mmc/host/uniphier-sd.c
+> +++ b/drivers/mmc/host/uniphier-sd.c
+> @@ -635,7 +635,7 @@ static int uniphier_sd_probe(struct platform_device *pdev)
+>
+>         ret = tmio_mmc_host_probe(host);
+>         if (ret)
+> -               goto free_host;
+> +               goto disable_clk;
+>
+>         ret = devm_request_irq(dev, irq, tmio_mmc_irq, IRQF_SHARED,
+>                                dev_name(dev), host);
+> @@ -646,6 +646,8 @@ static int uniphier_sd_probe(struct platform_device *pdev)
+>
+>  remove_host:
+>         tmio_mmc_host_remove(host);
+> +disable_clk:
+> +       uniphier_sd_clk_disable(host);
+>  free_host:
+>         tmio_mmc_host_free(host);
+>
+> --
+> 2.27.0
+>
+
+
+--
+Best Regards
+Masahiro Yamada
