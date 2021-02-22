@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DE7320FB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 04:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C7B320FB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 04:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhBVDXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 22:23:14 -0500
-Received: from mga09.intel.com ([134.134.136.24]:56524 "EHLO mga09.intel.com"
+        id S230087AbhBVDYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 22:24:17 -0500
+Received: from ozlabs.org ([203.11.71.1]:34165 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229943AbhBVDXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 22:23:11 -0500
-IronPort-SDR: wHIj+f7amBA0Nc7Hefpr88jW3qhxcIA5G1OccQaTPulDRaiqwBxPrUVkQb4dxELjW6xqFwwRkT
- iuL522IroxKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="184435075"
-X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
-   d="scan'208";a="184435075"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 19:21:17 -0800
-IronPort-SDR: JqI88i/XKbymHjhVCWhJngVe9t3aDgKCGeo3DSjkbsC3HshwVpMYpqazxIRN7vjgAFCFLjdQ0k
- YLuNXYmMtEFA==
-X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
-   d="scan'208";a="441238706"
-Received: from liujing-mobl.ccr.corp.intel.com (HELO [10.238.130.120]) ([10.238.130.120])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 19:21:08 -0800
-Subject: Re: [PATCH v1] kvm: x86: Revise guest_fpu xcomp_bv field
-To:     Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     pbonzini@redhat.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210208161659.63020-1-jing2.liu@linux.intel.com>
- <4e4b37d1-e2f8-6757-003c-d19ae8184088@intel.com>
- <YCFzztFESzcnKRqQ@google.com>
-From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
-Message-ID: <c33335d3-abbe-04e0-2fa1-47f57ad154ac@linux.intel.com>
-Date:   Mon, 22 Feb 2021 11:21:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S230071AbhBVDYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 22:24:14 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DkSFH2HgFz9s1l;
+        Mon, 22 Feb 2021 14:23:31 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613964212;
+        bh=DwuiH7S2B/BTlVrR8jipesfJzt/46PcYIOIZpoSp+AU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EbWcb5C2so1I8JzTtZXkxQR5yQHK7+jcYbgUQm+FDjzLtbs+S6SxsafEm4QIxO8/+
+         V2mER2lJY0DJZMoknIuZ+tFBnF6lUyhe6FRfd7B0XhbsUoHguiNDV6Zl9rrUfNWztt
+         EF6IhKuh+ln2EfQ68xpoz63tKsriGoqB/wvpZNCQs1aM9/7BMBOFNRqY4kcJDlzfMM
+         o88IG02C2I8QDTkov0Qurpq2TC9QYcWlFW7vv7BESERntywxeVknbx7diTEKXVJ2+u
+         OKx5U6qikMKrWaZEAjz+TtxzHjRpcR+/InUN2m3RJc1abU05sd4BveVdwH1UZ8J2V0
+         7VYsBh0wmD6dA==
+Date:   Mon, 22 Feb 2021 14:23:30 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        qiuguorui1 <qiuguorui1@huawei.com>
+Subject: linux-next: manual merge of the devicetree tree with the
+ arm64-fixes tree
+Message-ID: <20210222142330.72b89798@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YCFzztFESzcnKRqQ@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/78Tvumly.LP5wMYcFng2vuL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/78Tvumly.LP5wMYcFng2vuL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+Today's linux-next merge of the devicetree tree got a conflict in:
+
+  arch/arm64/kernel/machine_kexec_file.c
+
+between commit:
+
+  656d1d58d8e0 ("arm64: kexec_file: fix memory leakage in create_dtb() when=
+ fdt_open_into() fails")
+
+from the arm64-fixes tree and commit:
+
+  c6844a608e43 ("arm64: Use common of_kexec_alloc_and_setup_fdt()")
+
+from the devicetree tree.
+
+I fixed it up (the latter removed the code updated by the former, so I
+just did that) and can carry the fix as necessary. This is now fixed as
+far as linux-next is concerned, but any non trivial conflicts should be
+mentioned to your upstream maintainer when your tree is submitted for
+merging.  You may also want to consider cooperating with the maintainer
+of the conflicting tree to minimise any particularly complex conflicts.
 
 
-On 2/9/2021 1:24 AM, Sean Christopherson wrote:
-> On Mon, Feb 08, 2021, Dave Hansen wrote:
->> On 2/8/21 8:16 AM, Jing Liu wrote:
->>> -#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
->>> -
->>>   static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
->>>   {
->>>   	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
->>> @@ -4494,7 +4492,8 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
->>>   	/* Set XSTATE_BV and possibly XCOMP_BV.  */
->>>   	xsave->header.xfeatures = xstate_bv;
->>>   	if (boot_cpu_has(X86_FEATURE_XSAVES))
->>> -		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
->>> +		xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
->>> +					 xfeatures_mask_all;
-> This is wrong, xfeatures_mask_all also tracks supervisor states.
-When looking at SDM Vol2 XSAVES instruction Operation part, it says as 
-follows,
 
-RFBM ← (XCR0 OR IA32_XSS) AND EDX:EAX;
-COMPMASK ← RFBM OR 80000000_00000000H;
-...
+--=20
+Cheers,
+Stephen Rothwell
 
-XCOMP_BV field in XSAVE header ← COMPMASK;
+--Sig_/78Tvumly.LP5wMYcFng2vuL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
-So it seems xcomp_bv also tracks supervisor states?
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAzI7IACgkQAVBC80lX
+0Gwy/gf/fawMKUGqVtVeUq2wYs+fD5eA/4y2OkPLLJ9ehcC4ar3sLI5sWdQdTGyG
+Q82P093+UMZnZdxQ00imQkI1IBGTMvroEpX377PyFPlitAQPrll0V+sAvmeDNnVs
+4oy7tovEmrwutXptDw49ATswT39zj6ooOQn0L1O5NA9jBEArwyAbQxzppZo2a2Hn
+Km0juQKHVcXuKTNjtuox+E4JmFTUj08J92mEJBfbdiFBbU8bZCIm3y3uv0TkAQF7
+UsG+bfOgf95fb92BVTgWuNd/vZEELFOlQOvCtfQ7sLeRJZ+wReoc1eGbQWYmo9OD
+qqFOTZVhKy+9TmD5HH3LbRl8EDKvIA==
+=9U4+
+-----END PGP SIGNATURE-----
 
-BRs,
-Jing
->
->> Are 'host_xcr0' and 'xfeatures_mask_all' really interchangeable?  If so,
->> shouldn't we just remove 'host_xcr0' everywhere?
-> I think so?  But use xfeatures_mask_user().
->
-> In theory, host_xss can also be replaced with the _supervisor() and _dynamic()
-> variants.  That code needs a good hard look at the _dynamic() features, which is
-> currently just architectural LBRs.  E.g. I wouldn't be surprised if KVM currently
-> fails to save/restore arch LBRs due to the bit not being set in host_xss.
-
+--Sig_/78Tvumly.LP5wMYcFng2vuL--
