@@ -2,119 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82045320FAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 04:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD58320FB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 04:21:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhBVDQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 22:16:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhBVDQP (ORCPT
+        id S229959AbhBVDS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 22:18:57 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:60323 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229735AbhBVDSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 22:16:15 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB8EC061574;
-        Sun, 21 Feb 2021 19:15:35 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id z7so6862302plk.7;
-        Sun, 21 Feb 2021 19:15:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5NYuJtu5WA02pTylBdzel53IgVo86VYzWK5glcYVXg8=;
-        b=uXHoDzvfbSko0H3SLOz+d6YU+XnkP4S6GSQ9IhUd4NjT5xhKuz8De3i6Bnrs9zHyAK
-         3cl8KTQd+rQBlxcJcnvOiHl5bpLjwfVi/ERlkLB86g1pXqle6fvqijqoRZi/jZ2i+lWI
-         yzeWeWQhqX8H5gGiQNXZfmDKr/uzBnEaPPHj22VTimwcL7FPLsQZ5sdWN//8u9WZBV7c
-         M3129NU1MrAoDdlmrgicLF6v04BzbcYHnU7PkiizFjHG6yXP5uW8BznM5yyONMvmkQuj
-         bidF2/D7zQr8zZK3JKacwgAuYcSaOWoGEmY1itiod6Vee7bDNGiDR7DGw9iLOwG11L+Z
-         QbTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5NYuJtu5WA02pTylBdzel53IgVo86VYzWK5glcYVXg8=;
-        b=AGyvmwRFdYzYsPjwjJENkmAiHEjIdDedC2FvaSkMSm/x61PZjMoO1mXUxJrDtzhUrm
-         NuzJiN5IgIY4Yx9dRDqzbTvJcnfp13QSUJM86zzu7F4FBiLkNpWdzoPnjlHQv5UOnJyW
-         ilSl9926ObRwuEJ9dKo1Blebs72oY06ShIqavwL0SWl6C4hZozg6Sh1fifh+T+lE9Zfo
-         acHWhbKITxEBqGx1zn9lNjVmZtQxNdqF8sr8i1j+SEX7y8ELgMD8QFjFBn/ms0m9zBCI
-         uu8toBeuefBPFOkcjndzWddOlxgJMcUKiJzKvAjYKMQbuea9suO9GybqdAUFGVwtegPA
-         fZQw==
-X-Gm-Message-State: AOAM532FfTtfoitvXS9vzLnTEt3ghpScR1p239w7J8YWqXKwu4nurcfY
-        PLDwFyU5pmNBE74Lp+vZn6o=
-X-Google-Smtp-Source: ABdhPJzXoeYPg9h8uSS7umKJqXmuPhi2Sw1G+6PA047S9J5MkD5L5Cf43J5DS2/bQ0pdDgLWORzdqg==
-X-Received: by 2002:a17:90b:3892:: with SMTP id mu18mr21220607pjb.143.1613963734758;
-        Sun, 21 Feb 2021 19:15:34 -0800 (PST)
-Received: from localhost.localdomain ([122.10.161.207])
-        by smtp.gmail.com with ESMTPSA id v126sm16484528pfv.163.2021.02.21.19.15.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 21 Feb 2021 19:15:34 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yejune.deng@gmail.com, kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH] arp: Remove the arp_hh_ops structure
-Date:   Mon, 22 Feb 2021 11:15:26 +0800
-Message-Id: <20210222031526.3834-1-yejune.deng@gmail.com>
-X-Mailer: git-send-email 2.29.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 21 Feb 2021 22:18:48 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 19DBD580733;
+        Sun, 21 Feb 2021 22:18:02 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute4.internal (MEProxy); Sun, 21 Feb 2021 22:18:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=pncbO6UEb+m+8vOmGoE/SecasoVV8iw
+        T/YMMuVYgrJ0=; b=ereB1HbvQy/FIy5J9cGXdt/uP/K2XPS5ttu6hK1tuZ5ypGL
+        rbBhkY04K0RAKWX3HvDZw6JieXtEyp5O9rmZErTf6RVVnatIOnp3JvIIdn24vdpb
+        Dg88jy4qhUh/ie5vskES2xZLpHksBE8RwAYWtzejzT2hM6l4RkYMYsQaelZAd9Zq
+        0LG8yDVlrIK1g8SdcnVV5O2XDGNIpVfWNWZkkganyg8dZt09v42Xa4TvxxVuGy5z
+        wf26vKLggbZfLx7v3u9TW5no/bSLa3EYoz+WttDL/qwOOJibxP51541CJjrpFssz
+        ZZn7qn0aVzZiwZE6i4frOqw3s/b1CEuhyS43ffA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=pncbO6
+        UEb+m+8vOmGoE/SecasoVV8iwT/YMMuVYgrJ0=; b=FalWMqtEOqXwA2nc6b8pzT
+        zYp/7qtL6KnYcjY2MsOOpcvOcHNa4eZXBt8rCbOa/xMEgmgYP4CcmTSMCkF4p4hW
+        QJUaKybvT4dXaN8ZGgrse0qZ/hyPHttxKXWCLjNfT3s5T5z4pd++YCzSzzkXwIYN
+        tVSQu6qolDWVQ5Hm+XwnG02aTv2uaXVSgo9slZT0fohJoNvPf3/c+V4TIOEIS0FR
+        MYKWxHZwbXmqvzIKH6pdFjlDT0yIOzACTqe+7homPzzJPQC5GoQBfUBghFCUtVAz
+        6ptktBerlYvmUTlX65W17oIzSKAJ5miMqaYHvvQU7Ip58o9f6lf1OZjPBuBK7lBQ
+        ==
+X-ME-Sender: <xms:aCIzYNDKf1lfCgN6Ovl5vR5YG8zlj0sjFBt5OCCS0Gap6LcS0qE1JQ>
+    <xme:aCIzYLhWVotw-At9GflSkagk0eVYQf2SmZxDn-m84p7B-d6b2M94n1FQZAjywsFPK
+    0UfobiMghLWuw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkedvgdehjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpehnnhgvthcu
+    oehnnhgvthesfhgrshhtmhgrihhlrdhfmheqnecuggftrfgrthhtvghrnhephfejledtke
+    ehtdejtdekgfegheehfeevfeejffevkeevveekjefhtdehfeeffeegnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhhnvghtsehfrghsthhmrg
+    hilhdrfhhm
+X-ME-Proxy: <xmx:aCIzYImUrF7YZ34y7NC8ADvQSxGUVeAvbmnUxh_S6rRmQ6tinWLUKg>
+    <xmx:aCIzYHzAHV447Se7x8e3u-N-p23CUG8SrCjiUnSfRUXxVDmbbPGLIQ>
+    <xmx:aCIzYCQhLgQCk43-AjSs5LL3GROqzLx0TlALYxoMp8yL2QNZVeV79A>
+    <xmx:aiIzYOp81DGwK7nC7moWuOr8BIr2G_1A2QDB9WyMg_ddOfs3WnWryg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 586EAA00060; Sun, 21 Feb 2021 22:18:00 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-141-gf094924a34-fm-20210210.001-gf094924a
+Mime-Version: 1.0
+Message-Id: <c0ade595-9bfa-4cfc-8c87-0e955173d5db@www.fastmail.com>
+In-Reply-To: <20210219193302.odcjcaukxxjaedd5@pali>
+References: <20210211195559.n2j4jnchl2ho54mg@pali>
+ <1ad78446-4a40-4c3e-8680-6dbf19616515@www.fastmail.com>
+ <20210211234445.hbv2diphmgbir76u@pali>
+ <000b92cc-9b54-4af9-b95c-d1317fb6f97f@www.fastmail.com>
+ <20210213100139.ckrscepg72zjkj4f@pali>
+ <c0b02aa0-1789-43a3-8d73-057890f703f1@www.fastmail.com>
+ <20210214123310.d6armpep7kxbymbu@pali>
+ <675b7a74-066b-4dc0-8dcb-f11c5606ae52@www.fastmail.com>
+ <20210216104141.umy6zrrkal3dlj5j@pali>
+ <d057d7f7-27a5-45ec-88f0-a653572a8ca6@www.fastmail.com>
+ <20210219193302.odcjcaukxxjaedd5@pali>
+Date:   Sun, 21 Feb 2021 19:17:40 -0800
+From:   nnet <nnet@fastmail.fm>
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
+        a.heider@gmail.com, andrew@lunn.ch, gerald@gk2.net,
+        gregory.clement@bootlin.com, kostap@marvell.com,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr,
+        miquel.raynal@bootlin.com, mturquette@baylibre.com,
+        rmk+kernel@armlinux.org.uk, sboyd@kernel.org, tmn505@gmail.com,
+        vladimir.vid@sartura.hr
+Subject: =?UTF-8?Q?Re:_[PATCH_mvebu_v2_00/10]_Armada_37xx:_Fix_cpufreq_changing_b?=
+ =?UTF-8?Q?ase_CPU_speed_to_800_MHz_from_1000_MHz?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The arp_hh_ops structure is similar to the arp_generic_ops structure.
-but the latter is more general,so remove the arp_hh_ops structure.
+> Could you test if 1.155V voltage for L1 is stable on 1.2 GHz variant?
 
-Fix when took out the neigh->ops assignment:
-8.973653] #PF: supervisor read access in kernel mode
-[    8.975027] #PF: error_code(0x0000) - not-present page
-[    8.976310] PGD 0 P4D 0
-[    8.977036] Oops: 0000 [#1] SMP PTI
-[    8.977973] CPU: 1 PID: 210 Comm: sd-resolve Not tainted 5.11.0-rc7-02046-g4591591ab715 #1
-[    8.979998] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-[    8.981996] RIP: 0010:neigh_probe (kbuild/src/consumer/net/core/neighbour.c:1009)
+++#define MIN_VOLT_MV_FOR_L1_1200MHZ 1155
+...
+++              if (avs_min_l1 > dvfs->avs[0])
+++                      avs_min_l1 = dvfs->avs[0];
+++
+++              if (dvfs->avs[1] < avs_min_l1)
+++                      dvfs->avs[1] = avs_min_l1;
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
----
- net/ipv4/arp.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
-
-diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
-index 922dd73e5740..9ee59c2e419a 100644
---- a/net/ipv4/arp.c
-+++ b/net/ipv4/arp.c
-@@ -135,14 +135,6 @@ static const struct neigh_ops arp_generic_ops = {
- 	.connected_output =	neigh_connected_output,
- };
- 
--static const struct neigh_ops arp_hh_ops = {
--	.family =		AF_INET,
--	.solicit =		arp_solicit,
--	.error_report =		arp_error_report,
--	.output =		neigh_resolve_output,
--	.connected_output =	neigh_resolve_output,
--};
--
- static const struct neigh_ops arp_direct_ops = {
- 	.family =		AF_INET,
- 	.output =		neigh_direct_output,
-@@ -277,12 +269,9 @@ static int arp_constructor(struct neighbour *neigh)
- 			memcpy(neigh->ha, dev->broadcast, dev->addr_len);
- 		}
- 
--		if (dev->header_ops->cache)
--			neigh->ops = &arp_hh_ops;
--		else
--			neigh->ops = &arp_generic_ops;
-+		neigh->ops = &arp_generic_ops;
- 
--		if (neigh->nud_state & NUD_VALID)
-+		if (!dev->header_ops->cache && (neigh->nud_state & NUD_VALID))
- 			neigh->output = neigh->ops->connected_output;
- 		else
- 			neigh->output = neigh->ops->output;
--- 
-2.29.0
-
+This works fine. Tested with switching 600MHz to 1.2GHz under load.
