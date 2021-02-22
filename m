@@ -2,98 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768033220B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 21:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D48B73220C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 21:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhBVUOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 15:14:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
+        id S230417AbhBVUWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 15:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhBVUOV (ORCPT
+        with ESMTP id S232447AbhBVUWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 15:14:21 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3E2C06174A;
-        Mon, 22 Feb 2021 12:13:40 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id o82so423927wme.1;
-        Mon, 22 Feb 2021 12:13:40 -0800 (PST)
+        Mon, 22 Feb 2021 15:22:51 -0500
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89299C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:22:10 -0800 (PST)
+Received: by mail-vs1-xe2d.google.com with SMTP id t23so7234531vsk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:22:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N1THKtV2zIVCWufgt+M4ifL17ZkPeASTyRAQBJ1PEQ0=;
-        b=FX7g0fWoAMMAkmGyFCW1xGtTYun5JQPB38Y+u9Sd6XsJfdWoDykhWWYVYjYZXffG27
-         j3o2IGFqg01a4BgRnLAd+jZCQ+liCm/2K7RgCJus7nvTXmUmNZkXz5EM6JhJoqVnz7oY
-         FJTsK2/dtz6Md9M50HoC6I1Tz3AwEJNuWCja1CtsCfm2hiMe8Z6wTTzJXzC89AlJq3OB
-         smdQwvXqc8tsqgU5iSQku9AF5ROZMWhOaEnFOf33jd80F+kdSXlTZIeEcZFgIesQrqDf
-         gHXZYKjLopM9hC+RliHPnyiShxY0KyNkXgZIL/5Xl3R40fmJGKbb0dfr+tjXjBia5CVa
-         vn8A==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=na2/RnRgnH/8w2EWhU1MCTH0hcdu6Lj44empnumnDy4=;
+        b=Y5bCllchHHbP8XBCtGC46iSxTXUj3JkmfFo1TORkiyAIROLZ7UB51MkUUfXoyqLfc5
+         dQ4ChFamfDNB9SUiwQi4k3N/CEIPf5ryloDp6GwHQ2kwl/iy7hdcZeEZNHCQ5fibbKKf
+         Iy58IGl2dVvuYfrd1ISKuhPSzulYZDYDJtCIE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N1THKtV2zIVCWufgt+M4ifL17ZkPeASTyRAQBJ1PEQ0=;
-        b=sYlViScmRk+kkb3DyRf0rMPJFSjlPZvCu6u7SqidbmvygND41PmecLV0B71RSFzmRs
-         2epsEWuey5l3qqaN1qLwggZyJRF4SVsPwPn3VEi26u9MftNk7DyLrrsJtOLGl9d3TFXP
-         X74CdV31gGIchk/ylh2B2Fu9oCRXslyzy7nd3cm9RXcFPHFrv/A6pQsGyzaRBk6qnTqp
-         nYOgX1cKTccgFbmfDWfKaXE4u/QcfGwnzPFPO0vGt+7z9lwMRz5yhOBRdUdsXlYjjtll
-         qVFZXE7TyayaEsn7o7X7OiwT9qHq+feugNtJpu+wg7Z6Knvm1R5zPpF7afOv3fc4i2+E
-         qRvA==
-X-Gm-Message-State: AOAM532/dghCguPSpO6/4odmg2ULdYF7d3zkZUK+mWV0D08z6mm6nRrb
-        6S2w1KIlAclxUGq/Yc3MzCo=
-X-Google-Smtp-Source: ABdhPJzUCA8dbqs8IfAZLg4/4SON/yBBC8O27c8wPEJ5lNmMdpzg3g17Z13vFDpk6N/hhQT2FrzbnA==
-X-Received: by 2002:a05:600c:4fd5:: with SMTP id o21mr21217669wmq.20.1614024818782;
-        Mon, 22 Feb 2021 12:13:38 -0800 (PST)
-Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id h17sm21619818wrw.74.2021.02.22.12.13.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 12:13:38 -0800 (PST)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     jonas.gorski@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH] irqchip/bcm-6345-l1: fix SMP support
-Date:   Mon, 22 Feb 2021 21:13:32 +0100
-Message-Id: <20210222201332.30253-1-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=na2/RnRgnH/8w2EWhU1MCTH0hcdu6Lj44empnumnDy4=;
+        b=Jw6AAkzt6uZYiFeE0Mko6E5Gor+/xOmEWcrr+hs4Z7unBQ8lOIgnA0hgff9VOtneNq
+         q6kQONe2dv3FQqF32ieS+9ZAMRacaBybAcnCWwD04Rvb6UBkgMSz1KNTon3QaON5ZANl
+         2eseCfFq6Khe53rOVh5D9XlLDKm4boM2Qb/Dlgl2DvvHA4gGHZQSOFXE4aY9N9n2nG0d
+         BY5dlXNEFF1feb+uQT+J2nDw3ju2vzzyRBH55AhLapllYgTmf/XM0RfO+Ql4x8T9sYfV
+         xmj4DI3QDJREoUehMiumnrJHcVKEFearnsnbUODI09Tk/898qD8/2NDSFZZbOGdHtosw
+         vF9w==
+X-Gm-Message-State: AOAM532fJMmzuu3K9t5Y0BdfGzN72zNKkzRJ1geegjSuhHcH+W7QfXNU
+        dTQzkj3h/iNvxbQomx/aVu7nvuZ2m7coCA==
+X-Google-Smtp-Source: ABdhPJzv6i8otzX7FDlC69j4xjr1hmJyYCW83FPngF8V2K+6SCYtVVcYE/mW5zh/hr7oYbm4qPOOmw==
+X-Received: by 2002:a67:fa13:: with SMTP id i19mr5091833vsq.24.1614025329534;
+        Mon, 22 Feb 2021 12:22:09 -0800 (PST)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
+        by smtp.gmail.com with ESMTPSA id e13sm1778400vsp.7.2021.02.22.12.22.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 12:22:09 -0800 (PST)
+Received: by mail-ua1-f51.google.com with SMTP id r19so4487108uak.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:22:09 -0800 (PST)
+X-Received: by 2002:a25:aa43:: with SMTP id s61mr37800696ybi.32.1614024875145;
+ Mon, 22 Feb 2021 12:14:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <cover.1611909025.git.saiprakash.ranjan@codeaurora.org> <5d063d6035ff079b10e34cee110a26b856957ebe.1611909025.git.saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <5d063d6035ff079b10e34cee110a26b856957ebe.1611909025.git.saiprakash.ranjan@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 22 Feb 2021 12:14:23 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WUxPrFYGWbTAUYMC1nuPSHT3fk=fcE-fGVveHpr1KPhQ@mail.gmail.com>
+Message-ID: <CAD=FV=WUxPrFYGWbTAUYMC1nuPSHT3fk=fcE-fGVveHpr1KPhQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] coresight: etm4x: Add support to exclude kernel mode tracing
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        Mattias Nissler <mnissler@chromium.org>,
+        Al Grant <al.grant@arm.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some BCM6358 devices start with Core #1 instead of Core #0.
-Apart from that, SMP is restricted to 1 CPU since BCM6358 has a shared TLB,
-which makes it impossible for the current SMP support to start both CPUs.
+Hi,
 
-The problem is that smp_processor_id() returns 0 and then cpu_logical_map()
-converts that to 1, which accesses an uninitialized position of intc->cpus[],
-resulting in a kernel panic.
+On Fri, Jan 29, 2021 at 11:08 AM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> @@ -1202,6 +1207,13 @@ void etm4_config_trace_mode(struct etmv4_config *config)
+>         /* excluding kernel AND user space doesn't make sense */
+>         WARN_ON_ONCE(mode == (ETM_MODE_EXCL_KERN | ETM_MODE_EXCL_USER));
+>
+> +       if (!(mode & ETM_MODE_EXCL_KERN) && IS_ENABLED(CONFIG_EXCLUDE_KERNEL_HW_ITRACE)) {
+> +               dev_err(&drvdata->csdev->dev,
+> +                       "Kernel mode tracing is not allowed, check your kernel config\n");
+> +               config->mode |= ETM_MODE_EXCL_KERN;
+> +               return;
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- drivers/irqchip/irq-bcm6345-l1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So I'm not an expert on this code, but the above looks suspicious to
+me.  Specifically you are still modifying "config->mode" even though
+printing an "error" (dev_err, not dev_warn) and then skipping the rest
+of this function.  Since you're skipping the rest of this function
+you're not applying the access, right?  Naively I'd have expected one
+of these:
 
-diff --git a/drivers/irqchip/irq-bcm6345-l1.c b/drivers/irqchip/irq-bcm6345-l1.c
-index e3483789f4df..b2173ce4743d 100644
---- a/drivers/irqchip/irq-bcm6345-l1.c
-+++ b/drivers/irqchip/irq-bcm6345-l1.c
-@@ -121,7 +121,7 @@ static void bcm6345_l1_irq_handle(struct irq_desc *desc)
- 	unsigned int idx;
- 
- #ifdef CONFIG_SMP
--	cpu = intc->cpus[cpu_logical_map(smp_processor_id())];
-+	cpu = intc->cpus[smp_processor_id()];
- #else
- 	cpu = intc->cpus[0];
- #endif
--- 
-2.20.1
+1. Maybe the "dev_err" should be a "dev_warn" and then you shouldn't
+"return".  In this case you're just implicitly adding
+"ETM_MODE_EXCL_KERN" (and shouting) but then making things work.  Of
+course, then what happens if the user already specified
+"ETM_MODE_EXCL_USER" too?  As per the comment above that "doesn't make
+sense".  ...so maybe the code wouldn't behave properly...
 
+2. Maybe you should be modifying this function to return an error code.
+
+3. Maybe you should just be updating the one caller of this function
+to error check this right at the beginning of the function and then
+fail the sysfs write if the user did the wrong thing.  Then in
+etm4_config_trace_mode you could just have a WARN_ON_ONCE if the
+kernel wasn't excluded...
+
+-Doug
