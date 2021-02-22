@@ -2,283 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEBE321476
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B399C32146F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhBVKwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:52:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56060 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230396AbhBVKv5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:51:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613991030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r/umkKobSl1oJ5nCTeCGkktIBMKXA0l63/V8yWAiXgY=;
-        b=AKrRLCQGWCHFEwreUJmD5KHxfPRB0e45fG4PoO2NxVuL9v1w/ITXwEGT2tIBfjfA9+/fHA
-        SH/O3kf1lzk+kwlJF2Lcr1uK/tw084FI/daYMbySWiZXo7fuKwmOcxR22DgXv7/Y00dbpp
-        RTieycYtDPww80EYPQ/+qQ/KaOLbbm4=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-599-I0NJb_LfNl23NUQG00pIMg-1; Mon, 22 Feb 2021 05:50:28 -0500
-X-MC-Unique: I0NJb_LfNl23NUQG00pIMg-1
-Received: by mail-wm1-f71.google.com with SMTP id p8so4867954wmq.7
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:50:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r/umkKobSl1oJ5nCTeCGkktIBMKXA0l63/V8yWAiXgY=;
-        b=JLEOJJqF+LV9DAhoYYRYi+TaOHWWnIY2/p1MNg66QHam+gEOfJygWs7+A+gvz9LwdL
-         jFHvdCMz9qsOOCjZwkK1S7n7O6NAX4hEJlx+mhjsLzPH8tChVBXmQqg7/k6jd0+42W5f
-         JJDC6uZr/yR0dG70KILqgKyQcDYhAH7RpvWQIdkrMt8o0cllzQlHR2Xv1hBbp71eU41n
-         EzcmfxKV/O5urMjsR2EdtBpHRTp8PaUNHA0J4d3IE8L19TjZW5JBACGN/6E+SgbRaz9S
-         +ZNOHkN0KuShmO17zPkWE4Y6Ly2A/PXjTHXCZp4IQb3IBulPU+cv7PGiFNHI23bB4xTu
-         B9cw==
-X-Gm-Message-State: AOAM532+7cIVoy52Nncm4fT4dWnrdJHY3V8o5STLrcOvzlfxO7HCl501
-        ynHToZDHdoYkuzGmEbEfXI/a4Z3oy/9SQTebXHEsWp0Hs6vlxiHiby2S9O/m6zyauq8Ido7PWxe
-        LNmzgtTs6gq7d9BKUmIgUJurY
-X-Received: by 2002:a1c:356:: with SMTP id 83mr20229596wmd.31.1613991027236;
-        Mon, 22 Feb 2021 02:50:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwGeo1jDQvRWIZunRRhVDnke7H4Q4D0daD7CIHbY/NWBlQs7bEj3/GryyH4ccKUfYqegxDaVg==
-X-Received: by 2002:a1c:356:: with SMTP id 83mr20229567wmd.31.1613991027006;
-        Mon, 22 Feb 2021 02:50:27 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id v15sm28696163wra.61.2021.02.22.02.50.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 02:50:26 -0800 (PST)
-Date:   Mon, 22 Feb 2021 11:50:23 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v5 01/19] af_vsock: update functions for connectible
- socket
-Message-ID: <20210222105023.aqcu25irkeed6div@steredhat>
-References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
- <20210218053607.1066783-1-arseny.krasnov@kaspersky.com>
+        id S230367AbhBVKvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:51:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45744 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230270AbhBVKvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 05:51:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5B719AFE1;
+        Mon, 22 Feb 2021 10:51:02 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 11:50:56 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v16 4/9] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+Message-ID: <20210222105051.GA23063@linux>
+References: <20210219104954.67390-1-songmuchun@bytedance.com>
+ <20210219104954.67390-5-songmuchun@bytedance.com>
+ <YC/HRTq1MRaDWn7O@dhcp22.suse.cz>
+ <CAMZfGtW-j=WizTckEWZNB2OSPkz662Vjr79Fb0he9tMD+bnT3Q@mail.gmail.com>
+ <YDN4hhhINcn69CeV@dhcp22.suse.cz>
+ <CAMZfGtWt3uYcCv5htRkOncJnh=4eiGXzpKsV7-Gj40m-BXcUrw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218053607.1066783-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <CAMZfGtWt3uYcCv5htRkOncJnh=4eiGXzpKsV7-Gj40m-BXcUrw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 08:36:03AM +0300, Arseny Krasnov wrote:
->This prepares af_vsock.c for SEQPACKET support: some functions such
->as setsockopt(), getsockopt(), connect(), recvmsg(), sendmsg() are
->shared between both types of sockets, so rename them in general
->manner.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/af_vsock.c | 64 +++++++++++++++++++++-------------------
-> 1 file changed, 34 insertions(+), 30 deletions(-)
+On Mon, Feb 22, 2021 at 06:31:12PM +0800, Muchun Song wrote:
+> On Mon, Feb 22, 2021 at 5:25 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Sat 20-02-21 12:20:36, Muchun Song wrote:
+> > > On Fri, Feb 19, 2021 at 10:12 PM Michal Hocko <mhocko@suse.com> wrote:
+> > [...]
+> > > > What about hugetlb page poisoning on HW failure (resp. soft offlining)?
+> > >
+> > > If the HW poisoned hugetlb page failed to be dissolved, the page
+> > > will go back to the free list with PG_HWPoison set. But the page
+> > > will not be used, because we will check whether the page is HW
+> > > poisoned when it is dequeued from the free list. If so, we will skip
+> > > this page.
 
-IIRC I had already given my R-b to this patch. Please carry it over when 
-you post a new version.
+Not really. If the huge page is dissolved, we will take the page out of the
+the freelist. See take_page_off_buddy in memory_failure_hugetlb.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+In an ideal world, we should inspect that page in free_pages_prepare(),
+remove the HPWpoisoned page and process the others, without letting that
+page hit Buddy.
+And not only for hugetlb, but for any higher order page.
+See how memory_failure() happily disengage itself when it finds a higher
+order page.
+It does it because we have the premise that once that page hits Buddy,
+it will stay there as the check_new_page guards us.
+But this has been proofed to be quite a weak measure, as compaction does
+not performs such a check, and so the page can sneak in.
 
-Thanks,
-Stefano
+I fixed that for soft-offline, and for memory-failure in some cases, but more
+needs to be done and is it in my TODO list.
 
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 5546710d8ac1..656370e11707 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -604,8 +604,8 @@ static void vsock_pending_work(struct work_struct *work)
->
-> /**** SOCKET OPERATIONS ****/
->
->-static int __vsock_bind_stream(struct vsock_sock *vsk,
->-			       struct sockaddr_vm *addr)
->+static int __vsock_bind_connectible(struct vsock_sock *vsk,
->+				    struct sockaddr_vm *addr)
-> {
-> 	static u32 port;
-> 	struct sockaddr_vm new_addr;
->@@ -685,7 +685,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
-> 	switch (sk->sk_socket->type) {
-> 	case SOCK_STREAM:
-> 		spin_lock_bh(&vsock_table_lock);
->-		retval = __vsock_bind_stream(vsk, addr);
->+		retval = __vsock_bind_connectible(vsk, addr);
-> 		spin_unlock_bh(&vsock_table_lock);
-> 		break;
->
->@@ -767,6 +767,11 @@ static struct sock *__vsock_create(struct net *net,
-> 	return sk;
-> }
->
->+static bool sock_type_connectible(u16 type)
->+{
->+	return type == SOCK_STREAM;
->+}
->+
-> static void __vsock_release(struct sock *sk, int level)
-> {
-> 	if (sk) {
->@@ -785,7 +790,7 @@ static void __vsock_release(struct sock *sk, int level)
->
-> 		if (vsk->transport)
-> 			vsk->transport->release(vsk);
->-		else if (sk->sk_type == SOCK_STREAM)
->+		else if (sock_type_connectible(sk->sk_type))
-> 			vsock_remove_sock(vsk);
->
-> 		sock_orphan(sk);
->@@ -947,7 +952,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
-> 	lock_sock(sk);
-> 	if (sock->state == SS_UNCONNECTED) {
-> 		err = -ENOTCONN;
->-		if (sk->sk_type == SOCK_STREAM)
->+		if (sock_type_connectible(sk->sk_type))
-> 			goto out;
-> 	} else {
-> 		sock->state = SS_DISCONNECTING;
->@@ -960,7 +965,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
-> 		sk->sk_shutdown |= mode;
-> 		sk->sk_state_change(sk);
->
->-		if (sk->sk_type == SOCK_STREAM) {
->+		if (sock_type_connectible(sk->sk_type)) {
-> 			sock_reset_flag(sk, SOCK_DONE);
-> 			vsock_send_shutdown(sk, mode);
-> 		}
->@@ -1015,7 +1020,7 @@ static __poll_t vsock_poll(struct file *file, struct socket *sock,
-> 		if (!(sk->sk_shutdown & SEND_SHUTDOWN))
-> 			mask |= EPOLLOUT | EPOLLWRNORM | EPOLLWRBAND;
->
->-	} else if (sock->type == SOCK_STREAM) {
->+	} else if (sock_type_connectible(sk->sk_type)) {
-> 		const struct vsock_transport *transport;
->
-> 		lock_sock(sk);
->@@ -1262,8 +1267,8 @@ static void vsock_connect_timeout(struct work_struct *work)
-> 	sock_put(sk);
-> }
->
->-static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
->-				int addr_len, int flags)
->+static int vsock_connect(struct socket *sock, struct sockaddr *addr,
->+			 int addr_len, int flags)
-> {
-> 	int err;
-> 	struct sock *sk;
->@@ -1413,7 +1418,7 @@ static int vsock_accept(struct socket *sock, struct socket *newsock, int flags,
->
-> 	lock_sock(listener);
->
->-	if (sock->type != SOCK_STREAM) {
->+	if (!sock_type_connectible(sock->type)) {
-> 		err = -EOPNOTSUPP;
-> 		goto out;
-> 	}
->@@ -1490,7 +1495,7 @@ static int vsock_listen(struct socket *sock, int backlog)
->
-> 	lock_sock(sk);
->
->-	if (sock->type != SOCK_STREAM) {
->+	if (!sock_type_connectible(sk->sk_type)) {
-> 		err = -EOPNOTSUPP;
-> 		goto out;
-> 	}
->@@ -1534,11 +1539,11 @@ static void vsock_update_buffer_size(struct vsock_sock *vsk,
-> 	vsk->buffer_size = val;
-> }
->
->-static int vsock_stream_setsockopt(struct socket *sock,
->-				   int level,
->-				   int optname,
->-				   sockptr_t optval,
->-				   unsigned int optlen)
->+static int vsock_connectible_setsockopt(struct socket *sock,
->+					int level,
->+					int optname,
->+					sockptr_t optval,
->+					unsigned int optlen)
-> {
-> 	int err;
-> 	struct sock *sk;
->@@ -1616,10 +1621,10 @@ static int vsock_stream_setsockopt(struct socket *sock,
-> 	return err;
-> }
->
->-static int vsock_stream_getsockopt(struct socket *sock,
->-				   int level, int optname,
->-				   char __user *optval,
->-				   int __user *optlen)
->+static int vsock_connectible_getsockopt(struct socket *sock,
->+					int level, int optname,
->+					char __user *optval,
->+					int __user *optlen)
-> {
-> 	int err;
-> 	int len;
->@@ -1687,8 +1692,8 @@ static int vsock_stream_getsockopt(struct socket *sock,
-> 	return 0;
-> }
->
->-static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
->-				size_t len)
->+static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
->+				     size_t len)
-> {
-> 	struct sock *sk;
-> 	struct vsock_sock *vsk;
->@@ -1827,10 +1832,9 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
-> 	return err;
-> }
->
->-
-> static int
->-vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->-		     int flags)
->+vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->+			  int flags)
-> {
-> 	struct sock *sk;
-> 	struct vsock_sock *vsk;
->@@ -2006,7 +2010,7 @@ static const struct proto_ops vsock_stream_ops = {
-> 	.owner = THIS_MODULE,
-> 	.release = vsock_release,
-> 	.bind = vsock_bind,
->-	.connect = vsock_stream_connect,
->+	.connect = vsock_connect,
-> 	.socketpair = sock_no_socketpair,
-> 	.accept = vsock_accept,
-> 	.getname = vsock_getname,
->@@ -2014,10 +2018,10 @@ static const struct proto_ops vsock_stream_ops = {
-> 	.ioctl = sock_no_ioctl,
-> 	.listen = vsock_listen,
-> 	.shutdown = vsock_shutdown,
->-	.setsockopt = vsock_stream_setsockopt,
->-	.getsockopt = vsock_stream_getsockopt,
->-	.sendmsg = vsock_stream_sendmsg,
->-	.recvmsg = vsock_stream_recvmsg,
->+	.setsockopt = vsock_connectible_setsockopt,
->+	.getsockopt = vsock_connectible_getsockopt,
->+	.sendmsg = vsock_connectible_sendmsg,
->+	.recvmsg = vsock_connectible_recvmsg,
-> 	.mmap = sock_no_mmap,
-> 	.sendpage = sock_no_sendpage,
-> };
->-- 
->2.25.1
->
+> > Can this lead to an under provisioned pool then? Or is there a new
+> > hugetlb allocated to replace the poisoned one?
+> 
+> Actually, no page will be allocated. Your concern is right. But without
+> this patch, the result does not change. e.g. The HW poisoned page
+> can fail to be dissolved when h->free_huge_pages is equal to
+> h->resv_huge_pages. But no one seems to have reported this issue so
+> far. Maybe this behavior needs improvement in the feature.
 
+Yes, something to improve.
+I shall have a look.
+
+-- 
+Oscar Salvador
+SUSE L3
