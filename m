@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0804E320F2E
+	by mail.lfdr.de (Postfix) with ESMTP id F2493320F30
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbhBVBgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:36:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
+        id S231599AbhBVBge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:36:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhBVBgK (ORCPT
+        with ESMTP id S229866AbhBVBg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:36:10 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97081C061574;
-        Sun, 21 Feb 2021 17:35:30 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E7278517;
-        Mon, 22 Feb 2021 02:35:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613957729;
-        bh=w93vWuoMNvv5niDXg7wAlxjj/FGqCUStQqpuRckm2Xw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YQlZuLZH4wWj9oDmjLlEUaIVptrGhu+ARsqZZsgvub35DtAAHAqyEafawjjow4DR6
-         sXNNvNWs0q4TEgiFO19iCbH3xCmXN5w8nG55Gf2klwcYJ7PMTPTv8gJjhaaSpHrtNR
-         ZQwVtVbzlhjY/HmVL0QgK9dUA22SFDXvIi1H+SuU=
-Date:   Mon, 22 Feb 2021 03:35:02 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/16] media: i2c: max9286: Define high channel amplitude
-Message-ID: <YDMKRo+HU2ebyAqV@pendragon.ideasonboard.com>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-13-jacopo+renesas@jmondi.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210216174146.106639-13-jacopo+renesas@jmondi.org>
+        Sun, 21 Feb 2021 20:36:26 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020E0C061786;
+        Sun, 21 Feb 2021 17:35:46 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id kr16so7434158pjb.2;
+        Sun, 21 Feb 2021 17:35:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=qybJx7OQtUA+va9ad1ujiUGkl1rkwozY3pUZwjr/v7Y=;
+        b=Sjqj6nTqms7lXnfx6l3En4TOUffwRiRoSrJCdch/tvaxIP7e3yGlx8TMuBamWNor+E
+         yDzC4VvCMGOMe6m9aBvfSQJVUwRiA9PF57e0LpQrSJ1jnvasDv7iFb2JMqWEP15aqHdN
+         6fXyqXzkcWTPaL4z99jB2DHhAs+d0DwPuj93XDW2y8gPNyKg6LbA8ahpe0wF3B0MS+IE
+         nkqkd4yVLFjhyyNfw+KzugjgsqYPMzj8nX8fUECz0DLSTNtY9riTEYxYmT6rQIMzKi7C
+         LDTJBTE6hU2Clnmbze3jPCeVJEsJeojTIIBGAIm0xFqDMu7F1RCMMJ12lUvO6x4FzKif
+         wSdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=qybJx7OQtUA+va9ad1ujiUGkl1rkwozY3pUZwjr/v7Y=;
+        b=KsAds7TO6GqquqfvJfTo8uKeC0u7FY9+7CcGkfuLTyi1OUm7siMJtFALMLuHShSZrR
+         57A3fsyaBNTDmOWDx0yqyXSkwPL7qV1CM2k8t9cXXsYBjbhrzlghjzap9nfhd+eOcrgb
+         DjW6DZ2br3qXgb60Znk4ZPt086yZT6zOcO3VviXH1CPVuq8oVHnhotJdV6FgitlBz/zo
+         IYudfhKzj341R8Wc0tovqyqDoc++N6sYWeiBrOQVfMRYS2RhQoIaFBmZ4yf4C/67e0xF
+         +MBtM0a8Kf8gwprlmK9YUb2hRjfXoOiec4PARPFdNHAO51IwSQoiS6K2cwLWWXrSgZkv
+         PQ3g==
+X-Gm-Message-State: AOAM531FyUcaPS6jEhSTu0aee5YjoqeADsaxAQWSJ2ynJHMULpja1LzF
+        JzxtqRpuoU19X7AjfFS+1QrWL4e1az8=
+X-Google-Smtp-Source: ABdhPJy6X3PZ66NbVzloW52Kh4EuWjMyI5A8xpDX593ZdKEf5YhMZw9+9oEvGpdC+fTzV+4s0WgmEg==
+X-Received: by 2002:a17:90a:9484:: with SMTP id s4mr13999097pjo.170.1613957745546;
+        Sun, 21 Feb 2021 17:35:45 -0800 (PST)
+Received: from DESKTOP-8REGVGF.localdomain ([211.25.125.254])
+        by smtp.gmail.com with ESMTPSA id t189sm13570196pgt.39.2021.02.21.17.35.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 17:35:45 -0800 (PST)
+From:   Sieng Piaw Liew <liew.s.piaw@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, f.fainelli@gmail.com
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sieng Piaw Liew <liew.s.piaw@gmail.com>
+Subject: [PATCH net] bcm63xx_enet: fix sporadic kernel panic
+Date:   Mon, 22 Feb 2021 09:35:30 +0800
+Message-Id: <20210222013530.1356-1-liew.s.piaw@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+In ndo_stop functions, netdev_completed_queue() is called during forced
+tx reclaim, after netdev_reset_queue(). This may trigger kernel panic if
+there is any tx skb left.
 
-Thank you for the patch.
+This patch moves netdev_reset_queue() to after tx reclaim, so BQL can
+complete successfully then reset.
 
-On Tue, Feb 16, 2021 at 06:41:42PM +0100, Jacopo Mondi wrote:
-> Provide a macro to define the reverse channel amplitude to
-> be used to compensate the remote serializer noise immunity.
-> 
-> While at it, update a comment.
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  drivers/media/i2c/max9286.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> index 4afb5ca06448..7913b5f2249e 100644
-> --- a/drivers/media/i2c/max9286.c
-> +++ b/drivers/media/i2c/max9286.c
-> @@ -113,6 +113,7 @@
->  #define MAX9286_REV_TRF(n)		((n) << 4)
->  #define MAX9286_REV_AMP(n)		((((n) - 30) / 10) << 1) /* in mV */
->  #define MAX9286_REV_AMP_X		BIT(0)
-> +#define MAX9286_REV_AMP_HIGH		170
->  /* Register 0x3f */
->  #define MAX9286_EN_REV_CFG		BIT(6)
->  #define MAX9286_REV_FLEN(n)		((n) - 20)
-> @@ -566,12 +567,12 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
->  	 * channels:
->  	 *
->  	 * - Increase the reverse channel amplitude to compensate for the
-> -	 *   remote ends high threshold, if not done already
-> +	 *   remote ends high threshold
+Signed-off-by: Sieng Piaw Liew <liew.s.piaw@gmail.com>
+---
+ drivers/net/ethernet/broadcom/bcm63xx_enet.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-I would have done this in the previous patch, but it doesn't matter
-much.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
->  	 * - Verify all configuration links are properly detected
->  	 * - Disable auto-ack as communication on the control channel are now
->  	 *   stable.
->  	 */
-> -	max9286_reverse_channel_setup(priv, 170);
-> +	max9286_reverse_channel_setup(priv, MAX9286_REV_AMP_HIGH);
->  	max9286_check_config_link(priv, priv->source_mask);
->  
->  	/*
-
+diff --git a/drivers/net/ethernet/broadcom/bcm63xx_enet.c b/drivers/net/ethernet/broadcom/bcm63xx_enet.c
+index fd8767213165..977f097fc7bf 100644
+--- a/drivers/net/ethernet/broadcom/bcm63xx_enet.c
++++ b/drivers/net/ethernet/broadcom/bcm63xx_enet.c
+@@ -1192,7 +1192,6 @@ static int bcm_enet_stop(struct net_device *dev)
+ 	kdev = &priv->pdev->dev;
+ 
+ 	netif_stop_queue(dev);
+-	netdev_reset_queue(dev);
+ 	napi_disable(&priv->napi);
+ 	if (priv->has_phy)
+ 		phy_stop(dev->phydev);
+@@ -1231,6 +1230,9 @@ static int bcm_enet_stop(struct net_device *dev)
+ 	if (priv->has_phy)
+ 		phy_disconnect(dev->phydev);
+ 
++	/* reset BQL after forced tx reclaim to prevent kernel panic */
++	netdev_reset_queue(dev);
++
+ 	return 0;
+ }
+ 
+@@ -2343,7 +2345,6 @@ static int bcm_enetsw_stop(struct net_device *dev)
+ 
+ 	del_timer_sync(&priv->swphy_poll);
+ 	netif_stop_queue(dev);
+-	netdev_reset_queue(dev);
+ 	napi_disable(&priv->napi);
+ 	del_timer_sync(&priv->rx_timeout);
+ 
+@@ -2371,6 +2372,9 @@ static int bcm_enetsw_stop(struct net_device *dev)
+ 		free_irq(priv->irq_tx, dev);
+ 	free_irq(priv->irq_rx, dev);
+ 
++	/* reset BQL after forced tx reclaim to prevent kernel panic */
++	netdev_reset_queue(dev);
++
+ 	return 0;
+ }
+ 
 -- 
-Regards,
+2.17.1
 
-Laurent Pinchart
