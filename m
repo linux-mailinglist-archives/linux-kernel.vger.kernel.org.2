@@ -2,84 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BC132320D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CBE3231F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234275AbhBWUZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 15:25:06 -0500
-Received: from mout.kundenserver.de ([212.227.126.130]:38155 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234231AbhBWUZB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 15:25:01 -0500
-Received: from [192.168.1.155] ([77.9.11.4]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MfL5v-1lm58U2uBX-00gqLG; Tue, 23 Feb 2021 21:13:29 +0100
-Subject: Re: [RFC PATCH 09/12] drivers: base: reintroduce find_bus()
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, rafael@kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        pantelis.antoniou@konsulko.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20210208222203.22335-1-info@metux.net>
- <20210208222203.22335-10-info@metux.net> <YCen7uHqFJQ/U/5p@kroah.com>
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-Message-ID: <da82c033-3a82-3420-4d06-f5c39c524ae9@metux.net>
-Date:   Tue, 23 Feb 2021 21:13:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S234274AbhBWURk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 15:17:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234228AbhBWUQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 15:16:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E73DF64E5C;
+        Tue, 23 Feb 2021 20:16:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614111376;
+        bh=Gi0T8RFRTzayLKerSooTo9WkX+L7aCMqft1EEJnDgFM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gOiAoTAedATmc4Mo66Sa0i6xsWdQqanhVPxXvYO7DB3yCTcHfMiOYuF7OPH3j8tSJ
+         V6qmwbV8VF2sgeo7vPnAU3NsDjo40HrJhA1yxSKYkoIySJ5kCyCQTnufPa2Wqn7DYq
+         nCndE0iXgUzd+HwqaZ9O4gAoAJVPRmAf3VFPb3fFol4MvklM1T3kkCBT2vepIyTBdY
+         ByKH8h2j7Aa7Fz/qxrrgVQk3vyZj5oijAxts6eWRqct6lfEHNs1RrwcqWGBdflYsTI
+         5REgOM4XCWQRoviY7gpNhEwBp3WsxZVOrJORoal0dt5++YY+Fjs3eWBecv75VmQcko
+         oxaLO13j24O2g==
+Date:   Tue, 23 Feb 2021 12:16:12 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Sieng Piaw Liew <liew.s.piaw@gmail.com>, davem@davemloft.net,
+        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] bcm63xx_enet: fix sporadic kernel panic
+Message-ID: <20210223121612.0fda2333@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <f382effd-a4f5-b860-c521-5728f1f6200d@gmail.com>
+References: <20210222013530.1356-1-liew.s.piaw@gmail.com>
+        <f382effd-a4f5-b860-c521-5728f1f6200d@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YCen7uHqFJQ/U/5p@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:K6t2Brz0acFlLE8pKtT6EGZ5DDbr4Gjg0xoO6NHOPqBovg9y0hR
- IJMjqOpjpq5NIsaB9MvbGjthbOf4bgBmXJYMpzI/rzoA02FLiiy0nfhoPf2O8kThWU6d8Xb
- ZR5fi7rP/0aT/JCfJFoeZfwhPChSxOjwNHGzjaE+PT71Xn5oy5kEcG61MawmAWkD4iC159a
- 0/4sb2ns8N2cdck7Gvakw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qbsrZD4idXU=:wE73xu0E1ANdDKF1shWBbp
- JbE3hzM8TGBHd6XAG9ZKRYTiKx37+y5kK041SKPg2zs7vblDGEFjCiaCLC/k9AGCmO6PAQprO
- zvZjyX2dw79F17kvZI/6jXrWRRnY5W/0RDLKwvVl8y2tezKbLt7UUSqooYohCi8xivBf0/+/B
- 93nJhI9srSjMIoyRBknP7UnWqp5hxodBPMtxKqElbEb6pvn/4rQePJzFXPJ85BP4L66zn+t7b
- xhGRPiMFAjSTfF+TTVFtqYR9OecMgQjV/nNVGeLnIRRoYviGRV3KNitRyJuXc5uk9OEiE6z1Y
- 96bHwJ4ioQ+yyrmldMyIr3bwi3TcpXrCeXNCI+zraKUPuSVadAgdy2hsmOfcj6bdXqSdxhVi0
- Mg/5UKWadIfCU3kSgO6u9w6iuMLMpEgrU7azW5TMcrZ9wkynT+YHjHHkgiG10
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.02.21 11:20, Greg KH wrote:
-> On Mon, Feb 08, 2021 at 11:22:00PM +0100, Enrico Weigelt, metux IT consult wrote:
->> ---
->>   drivers/base/bus.c         | 14 ++++++++++----
->>   include/linux/device/bus.h |  2 ++
->>   2 files changed, 12 insertions(+), 4 deletions(-)
+On Sun, 21 Feb 2021 21:05:50 -0800 Florian Fainelli wrote:
+> On 2/21/2021 17:35, Sieng Piaw Liew wrote:
+> > In ndo_stop functions, netdev_completed_queue() is called during forced
+> > tx reclaim, after netdev_reset_queue(). This may trigger kernel panic if
+> > there is any tx skb left.
+> > 
+> > This patch moves netdev_reset_queue() to after tx reclaim, so BQL can
+> > complete successfully then reset.
+> > 
+> > Signed-off-by: Sieng Piaw Liew <liew.s.piaw@gmail.com>  
 > 
-> Um, no.
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> Fixes: 4c59b0f5543d ("bcm63xx_enet: add BQL support")
 
-Why not ? Do you have a better idea ?
-
-What I actually need is a way to unbdind a specific device, identified
-by bus name and device name. The problem to be solved here is dropping
-devices that have been enumerated in a bad way by firmware (ACPI in this
-case), and then recreating it in a clean, consistent way.
-
-If there was a variant of bus_find_device_by_name() which takes the name
-instead of ptr to the bus, that would also be okay for me.
-
-
---mtx
-
--- 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Applied, thanks!
