@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A2D323065
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17F6323069
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbhBWSPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 13:15:11 -0500
-Received: from mail-il1-f169.google.com ([209.85.166.169]:46391 "EHLO
-        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233817AbhBWSO4 (ORCPT
+        id S233862AbhBWSPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 13:15:21 -0500
+Received: from mail-oo1-f54.google.com ([209.85.161.54]:44545 "EHLO
+        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233167AbhBWSPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 13:14:56 -0500
-Received: by mail-il1-f169.google.com with SMTP id i18so2171004ilq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:14:35 -0800 (PST)
+        Tue, 23 Feb 2021 13:15:08 -0500
+Received: by mail-oo1-f54.google.com with SMTP id n19so4082897ooj.11;
+        Tue, 23 Feb 2021 10:14:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NBD19TtNuqKmtZTJ8bFpz+xLfryH6M8evU2W8orJimw=;
-        b=AxpqRPgiZpLeJpudauMu58fFjZbDKykbw4VK9oUSdygJSoYAxFwMiZ1DcSuQEnj/e4
-         2PqKN0oL1pVnuuLLrlkZLZOqqM0FvWc7LYWM8yap3YlEiRq5S1d9ZoBd23GN6dNNAhCF
-         J+tqggI4qM48JrwXq4rKDpfJk6d7CFks5dy+PzTNEZ8g3Xrf6ZqMqRvgzxCcpdLnJg/y
-         Vi2gASwWjJjxVfVeN9pzYU1XucMx5Z3aqPQ4gVi//g5472DlOU0XjYdydQsnnxsQUZ4p
-         6tD25svBVl4Mnybty7/a4v4ZRi3NgFzqmQUFeIfrSskaI3XQFmCl5uokRFQA2wa1YP89
-         Yx7g==
-X-Gm-Message-State: AOAM531CWBsjNdgCxNtEG5TwXG3LB9h4povy4vsSfzzGmSEAR+lgLtj7
-        Vf0zWoS2ACqlfWqv8OSUZcU7piZRr3X6DhgoQUQ=
-X-Google-Smtp-Source: ABdhPJxx/TZSCisENcO5Uxe7yUnXfib+nh/4u/AobThe/PiT92Zy413z/FV3yJKDnruuyr4rRyoAcPmxOiybsL3TF6Q=
-X-Received: by 2002:a05:6e02:1848:: with SMTP id b8mr20333140ilv.210.1614104050299;
- Tue, 23 Feb 2021 10:14:10 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mLlNY+cGCFP0M8CPAs8lZy0a+QhOrOEW6xBzmwBXj2c=;
+        b=A7NuUy+6RTMMVn89AWG0ceUuDGQKEZrQB4xdqkNVxeYejz6LOJ0POy8ykmjGzZCAEG
+         pzLPYTd+qLvmcszf+6TrSBpwVBKRhWWxn+ALF/+woHmPh3fCzWlo9X917n/LuF7nJ2V1
+         jwRNQmt0FFWVLyUiqLf4R1nKIzdrKbUtXo69uAbuGjkpp4r92BiUQR6f0rYfNXyIaf2X
+         kS9vtGtFoDcILc4VQXE8wuH4kZygSy5bbg+3oB8dG+JifLWy/aA/552vZN+H3DnWePlv
+         Otc9lkLz3Prks7U/eGDQO4kuJlA3good8WKHiEHI+ODX8mOqFwKEwcjV9sMH8aer+5Os
+         N6Hg==
+X-Gm-Message-State: AOAM533l9MG8HqIMdOhx4rKQAz1xb4MWsomEGdRKf6yVBfaZoc+5JvbY
+        Zt5eV43rXsJ4V97s9XSmCA==
+X-Google-Smtp-Source: ABdhPJwNQdjaDtp+Bksf3dL3jifdQ4+Hiw9XxpZo+//9Wqh12LGBIz7MS20NwYHPVrCvRqMqwARDcA==
+X-Received: by 2002:a4a:a301:: with SMTP id q1mr10536866ool.26.1614104067027;
+        Tue, 23 Feb 2021 10:14:27 -0800 (PST)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id b2sm3578113oov.3.2021.02.23.10.14.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 10:14:26 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] Build time gitignore checking
+Date:   Tue, 23 Feb 2021 12:14:22 -0600
+Message-Id: <20210223181425.4010665-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210119015415.2511028-1-lyude@redhat.com> <20210119015415.2511028-2-lyude@redhat.com>
- <YDUN+Re/alMVL0Zn@pflmari> <CAKb7UvhFkw23so-a4JKLzpQLhphzjzarOy-9h+FiKP-aAC=4xw@mail.gmail.com>
- <YDUg/9fjsvTkRUqr@pflmari> <CAKb7Uvji_+N+b8HghZckU-uSBWn-=BZwNAiUff2oitbVuNUE2Q@mail.gmail.com>
- <YDUkfjDA4xLJlxE5@pflmari> <YDUr2OGDsxDyC0l2@pflmari>
-In-Reply-To: <YDUr2OGDsxDyC0l2@pflmari>
-From:   Ilia Mirkin <imirkin@alum.mit.edu>
-Date:   Tue, 23 Feb 2021 13:13:59 -0500
-Message-ID: <CAKb7UvjmdgS536tNzisomi_oXOGk3Q+anp0AfPvA8OruU_9m5Q@mail.gmail.com>
-Subject: Re: [PATCH 2/3] drm/nouveau/kms/nv50-: Report max cursor size to userspace
-To:     Alex Riesen <alexander.riesen@cetitec.com>
-Cc:     Lyude Paul <lyude@redhat.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        James Jones <jajones@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Jeremy Cline <jcline@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Dave Airlie <airlied@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 11:23 AM Alex Riesen
-<alexander.riesen@cetitec.com> wrote:
->
-> Alex Riesen, Tue, Feb 23, 2021 16:51:26 +0100:
-> > Ilia Mirkin, Tue, Feb 23, 2021 16:46:52 +0100:
-> > > I'd recommend using xf86-video-nouveau in any case, but some distros
-> >
-> > I would like try this out. Do you know how to force the xorg server to
-> > choose this driver instead of modesetting?
->
-> Found that myself (a Device section with Driver set to "nouveau"):
->
->     $ xrandr  --listproviders
->     Providers: number : 1
->     Provider 0: id: 0x68 cap: 0x7, Source Output, Sink Output, Source Offload crtcs: 4 outputs: 5 associated providers: 0 name:nouveau
->
-> And yes, the cursor looks good in v5.11 even without reverting the commit.
+Linus wasn't happy that I forgot a gitignore entry in my recent PR.
+Checking that requires doing in tree build (which is not my usual
+workflow) and checking git status afterwards. Given either one I'll
+easily forget again, I came up with a build time check which works for
+in tree and out of tree builds. It should also show up in any CI builds.
 
-FWIW it's not immediately apparent to me what grave error modesetting
-is committing in setting the cursor. The logic looks perfectly
-reasonable. It's not trying to be fancy with rendering the cursor/etc.
+The first 2 patches are fixes which the 3rd patch found. They can be
+picked up regardless of whether folks like the 3rd patch or not.
 
-The one thing is that it's using drmModeSetCursor2 which sets the
-hotspot at the same time. But internally inside nouveau I think it
-should work out to the same thing. Perhaps setting the hotspot, or
-something in that path, doesn't quite work for 256x256? [Again, no
-clue what that might be.]
+Rob
 
-It might also be worthwhile just testing if the 256x256 cursor works
-quite the way one would want. If you're interested, grab libdrm,
-there's a test called 'modetest', which has an option to enable a
-moving cursor (-c iirc). It's hard-coded to 64x64, so you'll have to
-modify it there too (and probably change the pattern from plain gray
-to any one of the other ones).
 
-Cheers,
+Rob Herring (3):
+  kbuild: Make old-atomics and missing-syscalls phony targets
+  x86: Drop generated syscall headers from 'targets'
+  kbuild: Add a build check for missing gitignore entries
 
-  -ilia
+ Kbuild                           | 2 ++
+ arch/x86/entry/syscalls/Makefile | 2 --
+ scripts/Makefile.lib             | 4 ++++
+ 3 files changed, 6 insertions(+), 2 deletions(-)
+
+-- 
+2.27.0
+
