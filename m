@@ -2,60 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FFE322AF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D58F1322A8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232707AbhBWM6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 07:58:18 -0500
-Received: from elvis.franken.de ([193.175.24.41]:49451 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232601AbhBWM5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 07:57:51 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lEXFU-0002LK-03; Tue, 23 Feb 2021 13:57:08 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 28562C07B1; Tue, 23 Feb 2021 13:29:28 +0100 (CET)
-Date:   Tue, 23 Feb 2021 13:29:28 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-mips@vger.kernel.org,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
-        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] arch: mips: update references to current linux-mips
- list
-Message-ID: <20210223122928.GD7765@alpha.franken.de>
-References: <20210222161905.1153-1-lukas.bulwahn@gmail.com>
- <20210222161905.1153-4-lukas.bulwahn@gmail.com>
+        id S232648AbhBWMbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 07:31:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57498 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232621AbhBWMbE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 07:31:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614083378;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2pPGjn1L2OCanUWSSCwQKIX3l54iDUbuwOkt25b4CnI=;
+        b=ZCC/BEbcVWEXdzWoqPSaKM9qDTpvRYEEcY0mnLc1hrxsSeGN/OgkUgNFn55RvgvHuhozmz
+        1pKO6uIByCb9tlFjglNzHT0sIbdULFpKGEEZKIpzsphHKNjiU908Gh8CUbcCqahboT5sxr
+        eVB8Kf8akC8HFxN8n9pJCxgGsXcbrNU=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-2v4ZKBXqMXSw7--hvZEJMQ-1; Tue, 23 Feb 2021 07:29:36 -0500
+X-MC-Unique: 2v4ZKBXqMXSw7--hvZEJMQ-1
+Received: by mail-wr1-f69.google.com with SMTP id c9so7245726wrq.18
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 04:29:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2pPGjn1L2OCanUWSSCwQKIX3l54iDUbuwOkt25b4CnI=;
+        b=KlqptNHGpSMWE51/+j1EnKg2DwgS+obvLXps5bpcY6oZ6mR8FMNZ19hqu3ey0TcMTt
+         cf3zeQnRbmSRlDNGGglWIkOZSMGQSbwPJd2w4oRqYX7NM4m9Qkk7gxrQw4/XuDd4g1vq
+         /ER9R5Zc4uaRJulX4SPvvsbS77ZX14YZHhs3VAoIAsq5TfH/kCIm8BVRqrfiK4UNozYP
+         vdN8T4umds68CexOVtqZE0wSXULxtpol1ewADzDueppu6uz1XoIMXGkqYMcmMilFoj6O
+         ApQnSwmuGdT6n6+GQpXg8MQA0ldXAb+bSMfs3qIEJ1UILyHQWNOEzd7HZI9sHiI/TRlA
+         9dfg==
+X-Gm-Message-State: AOAM532Uw43CJUGydn7W4q/gs8cd0Y8wE3AxTzKQ0MimmIv414zjK2fi
+        uvszKaCf6NIXI1av3F70+RKd5Zd1SYGKkSW4SdcKQre97iFmrBj3msL08wjXGYtVPzCnnl7Flsh
+        or4QVe4m5gwO9f60j2zfEeOIP
+X-Received: by 2002:a5d:55d2:: with SMTP id i18mr9277731wrw.221.1614083375345;
+        Tue, 23 Feb 2021 04:29:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzT9ETBZCwu34Y3jqc+iCOoGTGTw/wVdbbWPNouqoXWdCS/xdvtKEfF0VAgTzO3xgZORzM2aQ==
+X-Received: by 2002:a5d:55d2:: with SMTP id i18mr9277717wrw.221.1614083375192;
+        Tue, 23 Feb 2021 04:29:35 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id j14sm20083473wrw.34.2021.02.23.04.29.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 04:29:34 -0800 (PST)
+Date:   Tue, 23 Feb 2021 07:29:32 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     jasowang@redhat.com, si-wei.liu@oracle.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>
+Subject: Re: [PATCH v2] vdpa/mlx5: Enable user to add/delete vdpa device
+Message-ID: <20210223072847-mutt-send-email-mst@kernel.org>
+References: <20210218074157.43220-1-elic@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210222161905.1153-4-lukas.bulwahn@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210218074157.43220-1-elic@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 05:19:03PM +0100, Lukas Bulwahn wrote:
-> The linux-mips mailing list now lives at kernel.org. Update all references
-> in the kernel tree.
+On Thu, Feb 18, 2021 at 09:41:57AM +0200, Eli Cohen wrote:
+> Allow to control vdpa device creation and destruction using the vdpa
+> management tool.
 > 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Examples:
+> 1. List the management devices
+> $ vdpa mgmtdev show
+> pci/0000:3b:00.1:
+>   supported_classes net
+> 
+> 2. Create vdpa instance
+> $ vdpa dev add mgmtdev pci/0000:3b:00.1 name vdpa0
+> 
+> 3. Show vdpa devices
+> $ vdpa dev show
+> vdpa0: type network mgmtdev pci/0000:3b:00.1 vendor_id 5555 max_vqs 16 \
+> max_vq_size 256
+> 
+> Signed-off-by: Eli Cohen <elic@nvidia.com>
+> Reviewed-by: Parav Pandit <parav@nvidia.com>
+
+Not sure which tree this is for, I could not apply this.
+
 > ---
->  arch/mips/kernel/r4k-bugs64.c | 2 +-
->  arch/mips/lib/iomap-pci.c     | 2 +-
->  arch/mips/sgi-ip32/ip32-irq.c | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
+> v0->v1:
+> set mgtdev->ndev NULL on dev delete
+> v1->v2: Resend
+> 
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 79 +++++++++++++++++++++++++++----
+>  1 file changed, 70 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index a51b0f86afe2..08fb481ddc4f 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -1974,23 +1974,32 @@ static void init_mvqs(struct mlx5_vdpa_net *ndev)
+>  	}
+>  }
+>  
+> -static int mlx5v_probe(struct auxiliary_device *adev,
+> -		       const struct auxiliary_device_id *id)
+> +struct mlx5_vdpa_mgmtdev {
+> +	struct vdpa_mgmt_dev mgtdev;
+> +	struct mlx5_adev *madev;
+> +	struct mlx5_vdpa_net *ndev;
+> +};
+> +
+> +static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
+>  {
+> -	struct mlx5_adev *madev = container_of(adev, struct mlx5_adev, adev);
+> -	struct mlx5_core_dev *mdev = madev->mdev;
+> +	struct mlx5_vdpa_mgmtdev *mgtdev = container_of(v_mdev, struct mlx5_vdpa_mgmtdev, mgtdev);
+>  	struct virtio_net_config *config;
+>  	struct mlx5_vdpa_dev *mvdev;
+>  	struct mlx5_vdpa_net *ndev;
+> +	struct mlx5_core_dev *mdev;
+>  	u32 max_vqs;
+>  	int err;
+>  
+> +	if (mgtdev->ndev)
+> +		return -ENOSPC;
+> +
+> +	mdev = mgtdev->madev->mdev;
+>  	/* we save one virtqueue for control virtqueue should we require it */
+>  	max_vqs = MLX5_CAP_DEV_VDPA_EMULATION(mdev, max_num_virtio_queues);
+>  	max_vqs = min_t(u32, max_vqs, MLX5_MAX_SUPPORTED_VQS);
+>  
+>  	ndev = vdpa_alloc_device(struct mlx5_vdpa_net, mvdev.vdev, mdev->device, &mlx5_vdpa_ops,
+> -				 2 * mlx5_vdpa_max_qps(max_vqs), NULL);
+> +				 2 * mlx5_vdpa_max_qps(max_vqs), name);
+>  	if (IS_ERR(ndev))
+>  		return PTR_ERR(ndev);
+>  
+> @@ -2018,11 +2027,12 @@ static int mlx5v_probe(struct auxiliary_device *adev,
+>  	if (err)
+>  		goto err_res;
+>  
+> -	err = vdpa_register_device(&mvdev->vdev);
+> +	mvdev->vdev.mdev = &mgtdev->mgtdev;
+> +	err = _vdpa_register_device(&mvdev->vdev);
+>  	if (err)
+>  		goto err_reg;
+>  
+> -	dev_set_drvdata(&adev->dev, ndev);
+> +	mgtdev->ndev = ndev;
+>  	return 0;
+>  
+>  err_reg:
+> @@ -2035,11 +2045,62 @@ static int mlx5v_probe(struct auxiliary_device *adev,
+>  	return err;
+>  }
+>  
+> +static void mlx5_vdpa_dev_del(struct vdpa_mgmt_dev *v_mdev, struct vdpa_device *dev)
+> +{
+> +	struct mlx5_vdpa_mgmtdev *mgtdev = container_of(v_mdev, struct mlx5_vdpa_mgmtdev, mgtdev);
+> +
+> +	_vdpa_unregister_device(dev);
+> +	mgtdev->ndev = NULL;
+> +}
+> +
+> +static const struct vdpa_mgmtdev_ops mdev_ops = {
+> +	.dev_add = mlx5_vdpa_dev_add,
+> +	.dev_del = mlx5_vdpa_dev_del,
+> +};
+> +
+> +static struct virtio_device_id id_table[] = {
+> +	{ VIRTIO_ID_NET, VIRTIO_DEV_ANY_ID },
+> +	{ 0 },
+> +};
+> +
+> +static int mlx5v_probe(struct auxiliary_device *adev,
+> +		       const struct auxiliary_device_id *id)
+> +
+> +{
+> +	struct mlx5_adev *madev = container_of(adev, struct mlx5_adev, adev);
+> +	struct mlx5_core_dev *mdev = madev->mdev;
+> +	struct mlx5_vdpa_mgmtdev *mgtdev;
+> +	int err;
+> +
+> +	mgtdev = kzalloc(sizeof(*mgtdev), GFP_KERNEL);
+> +	if (!mgtdev)
+> +		return -ENOMEM;
+> +
+> +	mgtdev->mgtdev.ops = &mdev_ops;
+> +	mgtdev->mgtdev.device = mdev->device;
+> +	mgtdev->mgtdev.id_table = id_table;
+> +	mgtdev->madev = madev;
+> +
+> +	err = vdpa_mgmtdev_register(&mgtdev->mgtdev);
+> +	if (err)
+> +		goto reg_err;
+> +
+> +	dev_set_drvdata(&adev->dev, mgtdev);
+> +
+> +	return 0;
+> +
+> +reg_err:
+> +	kfree(mdev);
+> +	return err;
+> +}
+> +
+>  static void mlx5v_remove(struct auxiliary_device *adev)
+>  {
+> -	struct mlx5_vdpa_dev *mvdev = dev_get_drvdata(&adev->dev);
+> +	struct mlx5_vdpa_mgmtdev *mgtdev;
+>  
+> -	vdpa_unregister_device(&mvdev->vdev);
+> +	mgtdev = dev_get_drvdata(&adev->dev);
+> +	vdpa_mgmtdev_unregister(&mgtdev->mgtdev);
+> +	kfree(mgtdev);
+>  }
+>  
+>  static const struct auxiliary_device_id mlx5v_id_table[] = {
+> -- 
+> 2.29.2
 
-applied only this patch to mips-next.
-
-For the other patches I'll wait for how the resolution for linux-mips.org
-looks like.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
