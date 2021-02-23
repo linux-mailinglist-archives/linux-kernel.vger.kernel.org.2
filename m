@@ -2,108 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81123223C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E263223D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:49:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhBWBdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 20:33:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39384 "EHLO mail.kernel.org"
+        id S230374AbhBWBsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 20:48:51 -0500
+Received: from mga01.intel.com ([192.55.52.88]:61186 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhBWBdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 20:33:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D55B960233;
-        Tue, 23 Feb 2021 01:33:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614043983;
-        bh=SidThf39RHR584VvQ2PFUpvKbaI6ZS/1pOYS/H0qYgY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kv5Rpg55CfBeqg69qrft4n/IYgjL4QVqpK7mb6WIgQDcaM0sTLPTOVfK5qxSzy70S
-         SGd/KiYm+SpyMohMIRc8d8ZHCWbIgEFhiI40yzd9TWIqqnVk0E86B0/eDFc/L0bwTs
-         5Seqoyxxmc0pp6tJVWCNuWpjhjpR5NFHrUsPY5rQ1PMcM4vvG7q+cGfjCeroXRf/gP
-         3XGGePnqCmqAvISX2PRCzIt+OJ7EuA8VxHIOag8ozHLIBZF5J3K7OytEh43cB5OIZw
-         PdVpClLlcKCSR8Y5YDfADTKacEd98t/cBj7k0ZYbpY5HEhJfNS2aeZDbUNjBYZXOC7
-         8Bzh19ZQDOkBg==
-Received: by earth.universe (Postfix, from userid 1000)
-        id 9E1313C0C96; Tue, 23 Feb 2021 02:33:00 +0100 (CET)
-Date:   Tue, 23 Feb 2021 02:33:00 +0100
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCHv1 5/6] dt-bindings: mtd: jedec,spi-nor: add sst25vf032b
-Message-ID: <20210223013300.ouwilfkk5hyyhzdi@earth.universe>
-References: <20210222171247.97609-1-sebastian.reichel@collabora.com>
- <20210222171247.97609-6-sebastian.reichel@collabora.com>
- <CAL_JsqLmcRqFW5ufy-zY9dfqpiwACxfOHrrGphTx2UGMBVj-7w@mail.gmail.com>
+        id S230099AbhBWBss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 20:48:48 -0500
+IronPort-SDR: 7FhznoiHTqU5i/ixzuUKyErezaQgRbIjVK3/13WowIu1j9V2K6gFQLjj4w11wXNaU6YCyDUOHQ
+ yA1o0NOvamGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="204074435"
+X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; 
+   d="scan'208";a="204074435"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 17:47:02 -0800
+IronPort-SDR: TnqcXWgI8AzeQoutJT/a0nG3o/Kg5Ru5L7vxJfg/4eMqupzJMgW45FmjKX22B5H/C6J3AOQRzV
+ Cj9N5heluTNw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; 
+   d="scan'208";a="423349289"
+Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
+  by fmsmga004.fm.intel.com with ESMTP; 22 Feb 2021 17:46:59 -0800
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] KVM: vmx/pmu: Fix dummy check if lbr_desc->event is created
+Date:   Tue, 23 Feb 2021 09:39:57 +0800
+Message-Id: <20210223013958.1280444-1-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="peq7earpm2cetdte"
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqLmcRqFW5ufy-zY9dfqpiwACxfOHrrGphTx2UGMBVj-7w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If lbr_desc->event is successfully created, the intel_pmu_create_
+guest_lbr_event() will return 0, otherwise it will return -ENOENT,
+and then jump to LBR msrs dummy handling.
 
---peq7earpm2cetdte
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 1b5ac3226a1a ("KVM: vmx/pmu: Pass-through LBR msrs when the guest LBR event is ACTIVE")
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
+---
+ arch/x86/kvm/vmx/pmu_intel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi,
+diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+index d1df618cb7de..d6a5fe19ff09 100644
+--- a/arch/x86/kvm/vmx/pmu_intel.c
++++ b/arch/x86/kvm/vmx/pmu_intel.c
+@@ -320,7 +320,7 @@ static bool intel_pmu_handle_lbr_msrs_access(struct kvm_vcpu *vcpu,
+ 	if (!intel_pmu_is_valid_lbr_msr(vcpu, index))
+ 		return false;
+ 
+-	if (!lbr_desc->event && !intel_pmu_create_guest_lbr_event(vcpu))
++	if (!lbr_desc->event && intel_pmu_create_guest_lbr_event(vcpu))
+ 		goto dummy;
+ 
+ 	/*
+-- 
+2.29.2
 
-On Mon, Feb 22, 2021 at 06:15:11PM -0600, Rob Herring wrote:
-> On Mon, Feb 22, 2021 at 11:13 AM Sebastian Reichel
-> <sebastian.reichel@collabora.com> wrote:
-> >
-> > The binding is already used by the driver. Update documentation
-> > accordingly.
-> >
-> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > ---
-> >  Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt | 1 +
-> >  1 file changed, 1 insertion(+)
->=20
-> This is now DT schema format. Landed in Linus' tree today.
-
-Indeed and it already contains sst,sst25vf032b.
-This patch can be ignored.
-
-Thanks,
-
--- Sebastian
-
---peq7earpm2cetdte
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmA0W0wACgkQ2O7X88g7
-+ppMiBAAnBRRR4ntus9a9JePpyG2+61admQniYXmvTJtKohNBG1463YJj+URPhBv
-4EMUHj4Mkmo5SPrSyEcIpal00Hb0+LOP/KwTCvHNrbGRp4myzc15+l1fErFNh/ya
-81RWoUagWwhPeQZhkumO/69Hb+j/wj9iSQfl72VwzmQaQeJ0X/xh24ONlIL5M7xP
-Yk7P3j+YULsFM8ZZnpyAfxSnYS/okRrvOr70nrHGLrtfBd9mHV/JtOMXHWepInAc
-4Ar852HZQI2lbtz6dXZnIFsq5VfEw+pczi7YtnduHbz95idImndViMk982jx9zFz
-GkTx3MSxzM/xOZxzrJq8iPHdLIguV0DW5Q7p5hygjcox79ACQw+iTMHrbzf/rZPa
-QXAMRnb/Gr1Q48LOqgSmT9Qk/ALFg2Y3QjOlJYlC9/9f6S5S53FY/4XUatqmvz5/
-LbsgFHWceif6LL6m7KMoKgHvPiKcY3MP2LDkXSni8gxQLqNF6hWav70jJ9fXcEsZ
-3hgHuGBii0pX6MXl7jxu7qCD8OQ7cUCITJSD/gx6Jgr+CflDEYZWRDgu1x0RyqFI
-QQc2F1EcQ1EBmeC7JZfQAx3gf++BFVVW1WkaI9pHZwzKigBW8+UdEY9kEtJH3Fvt
-JIM7+72d80QDfWZvJpa81fltQfRwHWLDwkmaFZfEF4sWrqkOmq8=
-=+yJ9
------END PGP SIGNATURE-----
-
---peq7earpm2cetdte--
