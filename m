@@ -2,193 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9AA322406
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 03:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CB132240A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 03:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhBWCFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 21:05:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47387 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231237AbhBWCFf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 21:05:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614045849;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+6idrDlv3jxmFr3UwSuJjfWfYYHRXCR4c1yPFc4Gx68=;
-        b=YThPgcdP+puKCG9O/CQept/sIUmaBTtmLB98DnythqSin8o5vixJV/RnGSTExYDh+xfpT/
-        mdl5GfORPh4E0VhfgAXNLdobgxYUKU6aAyy+AHDsN3R7K6u/kK3qmIu+yZg00D9xGQlsc8
-        QGx/A8QoVKU2hhwue3XNW7lMfnh1EFY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-551-LStuIhLXPKaUwoKYNmhnqA-1; Mon, 22 Feb 2021 21:04:06 -0500
-X-MC-Unique: LStuIhLXPKaUwoKYNmhnqA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 759C310082F6;
-        Tue, 23 Feb 2021 02:04:05 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-58.pek2.redhat.com [10.72.13.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 356865B4A0;
-        Tue, 23 Feb 2021 02:03:58 +0000 (UTC)
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-To:     Si-Wei Liu <si-wei.liu@oracle.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     elic@nvidia.com, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
- <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
- <20210222023040-mutt-send-email-mst@kernel.org>
- <22fe5923-635b-59f0-7643-2fd5876937c2@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <fae0bae7-e4cd-a3aa-57fe-d707df99b634@redhat.com>
-Date:   Tue, 23 Feb 2021 10:03:57 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <22fe5923-635b-59f0-7643-2fd5876937c2@oracle.com>
+        id S231519AbhBWCGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 21:06:11 -0500
+Received: from mail-eopbgr1320047.outbound.protection.outlook.com ([40.107.132.47]:3631
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231443AbhBWCFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 21:05:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=htnIcd4dHN6oDNpmr9bW+EfA52wI5lmFYdHgybzMp54USRRAYCxrLEzey5n894soM37wpY83X6uWR2Zqp+DRz7FkAyJDVpHZgoq2HcoF4ipaY8zwIQXxl0HxnLQUhplZ2yBBIYFJmkK2YP7wdQWJA2ZRNwUcuH6QP7gp49PYY7+sviytfKlAulqvpz7EkUwO+TF15IxkWMNOl3zCoZ73Lc6s92acg9gEiu7o7lwJnpoUnBpWWi90FqlOE8hhNq9ELYG2pds6JiSqzT/bKugNGlXSOymOxQjxQCS4P6qUt3pTqvt5+L0CjdvlOnrDGPynEU5SIuHL49cXd2Pc1xxf3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IomwmDQy/iueeu6n8WCqpXPkNGxbg92Rzc5f9xSEIec=;
+ b=XkkyZ9wHt5v439O81uGJ9w/asLV3bqX8Mb+Vt5DvnmsxUB7CaThl+1aOuVz4zMRALqQVU7E10znVOpG25WClEwAB/2njJp/AevHrSZEHWiS96qj6HLbPjzVH4aqzHhZDB4iFu+UEmu3VSCChGK7YZZXU+Rfj3wq2G56hfdOEBrU6RfVsxS8VSjEg7Z3G4XUonIaSG/EAZfN2Sav0n7XEHfSQVR5CbGh9gj2+iVl/NTFZ0uFpqCw89kG2e9sP8KT9/+VAb4/eRVKSL3nO0LrL42o/euUhwmePJXqgdIHRN20wuSgOSvsXa8cpUvEDxMCFRyHpZZAhR1m1TLXGUd9F7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IomwmDQy/iueeu6n8WCqpXPkNGxbg92Rzc5f9xSEIec=;
+ b=pgwT6maf1SF64xVdIxuT+xCTquP/gYlQfw7Wq0R/jY0X8rh8pHWUpq/uZhxNX8YWc/HiGfFJPjmZ5uRln1V0kBFbNFrDnMmKZPRGkRB/Rnabf6eKG8MbystaS2FRRIeXKqhgQU6kUqBzrvdj+HRnlwPJylMtDexvYwrYUM9nU88=
+Authentication-Results: oppo.com; dkim=none (message not signed)
+ header.d=none;oppo.com; dmarc=none action=none header.from=oppo.com;
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
+ SG2PR0201MB2095.apcprd02.prod.outlook.com (2603:1096:3:4::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3868.27; Tue, 23 Feb 2021 02:04:06 +0000
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::1143:a7b7:6bd4:83b3]) by SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::1143:a7b7:6bd4:83b3%7]) with mapi id 15.20.3868.033; Tue, 23 Feb 2021
+ 02:04:06 +0000
+Subject: Re: [PATCH] erofs: support adjust lz4 history window size
+To:     Gao Xiang <hsiangkao@redhat.com>
+Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        guoweichao@oppo.com, zhangshiming@oppo.com
+References: <20210218120049.17265-1-huangjianan@oppo.com>
+ <20210222044410.GA1038521@xiangao.remote.csb>
+From:   Huang Jianan <huangjianan@oppo.com>
+Message-ID: <11afa9f6-109a-c660-1664-7a596d6836b6@oppo.com>
+Date:   Tue, 23 Feb 2021 10:03:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210222044410.GA1038521@xiangao.remote.csb>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [58.255.79.104]
+X-ClientProxiedBy: HK0PR03CA0110.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::26) To SG2PR02MB4108.apcprd02.prod.outlook.com
+ (2603:1096:4:96::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.118.0.32] (58.255.79.104) by HK0PR03CA0110.apcprd03.prod.outlook.com (2603:1096:203:b0::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Tue, 23 Feb 2021 02:04:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bbf04914-b4c8-493b-d2e3-08d8d79f4c60
+X-MS-TrafficTypeDiagnostic: SG2PR0201MB2095:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR0201MB20959FD1A07F8B56F40FAA97C3809@SG2PR0201MB2095.apcprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XjQyV4J15Jy0Quo1dJtgL0+/6/2ynaSFaGemxkWxwSOiQLEHOyn6pXCVW8ajHjWKm1s9YuSKT8jLCmNgFO6dM4HnrQ2EqKfrIKP6VxrwkhHfqcEzvchPiQ/1hp2dDTGC6rzf8KFk+Hi99npagKf5OmrLmQrbIBIuXZs4DtTtpXIm7cziNEWBQoyJreh1/VmsJkbKBlpCpvi2UHk/2RCWLZ4T/+R9/OfWVy6Pmy0ddLsyDXsgggwm/Duii7WFWb5HyKMuYBBu/T3x27lnU6rl0VMVdrmYw1lGZ/zmDGAUiHkQTQndtTPfdWxp+CvwN8gLeB22FXvraOYrI/tRy0LFUxU7TCed/ruyzPXVAz65ABvTDjGgchDGLTWofc5o5NpEmWbrJoPWkz2GN9ZdwFt2C9USLNtsk6efIaIOO7opP9RuoFlE6Zq3YheqsOh0JSrtNIp6qgOzzoXOUgnZBG2TfwkduyuEO/u6f6imyrMvTkB4GMFP3xp2rQNUHid3GTr1WZDanuSVuh+myrKMitOXQ+BQMIWQ4fC5hDGIXY+MbcaRaZSH8eGn1S4zG41AQgLQVcDmYd4x+QCSD7PWysx/FoGyJPsux8+xAfVP3u1L622o6mtaQMIP+sLAloCTdMna
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(396003)(39860400002)(136003)(31686004)(66946007)(86362001)(107886003)(66556008)(26005)(6666004)(16576012)(53546011)(31696002)(8676002)(6916009)(6486002)(2906002)(956004)(4326008)(2616005)(83380400001)(8936002)(5660300002)(16526019)(52116002)(316002)(66476007)(36756003)(478600001)(186003)(11606007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UkU0SThjaFlKemtDMXlaQzJIUEZhNGJJVDYxL2poamdtOERENGdJRGMvS3hS?=
+ =?utf-8?B?MFBQQ0ZocTYzQzFGNjQrUTVsUGtHVzJqWTBESTdKdTVHK01wMldtekRxL0li?=
+ =?utf-8?B?WWlGM1RMd2FMbmpyQ3J3MWo3SW41M0VHUVZVVW1Mdnl2VmQ3ZW1BWi82ZGJX?=
+ =?utf-8?B?Y3B6ZXUrNkg1UUM3bjEvMVlGNlNxaW1LM3k2TmszazVPd0RWeGlHcnNVRU55?=
+ =?utf-8?B?cVVlbTZnMWtqU0RiMEJQeG9pUWRSWThkR3R0UFE2NFF2aTRpSFE3dUhJOW5O?=
+ =?utf-8?B?VUptRVZSRFdPSVBrNFVMbG1ML08zQnJWTWdGdjRaWk5GQ1gvTEwxQzU1aElT?=
+ =?utf-8?B?RHJNYkRKcDVWRWM2dWxNa0F5NURMU2p1WFgvTkFMK0dvYXFKanF5TmNNaWVl?=
+ =?utf-8?B?WmJwUUlWZnArSUtuL3VvMlF3TjJxMkIvT20zVEp3RnJDOCtjNTR6ODI0QjFW?=
+ =?utf-8?B?YUdNUGlSZmFYZW85MU9MWXUyalBCakE5Q3ZVQlVwWUk4bUZNY1pyWWowbGVw?=
+ =?utf-8?B?MWdJMFJMazFTRGdDaFMwS0NOV0ZUMmFrK0NlLzhEaUdhaUJRRUhTclVIY2po?=
+ =?utf-8?B?ZUdFRStZTFNLMC8wMjA2R0l6Y1M5MGJuK2hSR2xwYlIwRDdPR1pCUmxyQk0x?=
+ =?utf-8?B?dTdVSTV5T1QvY2pPRnlVQ2J6ZlI3bDNGaEJySCs2clIvMko1QnlhRFlYdytz?=
+ =?utf-8?B?YW9pMDNDR0FMdC9UTmRvMXE4N0RrN0k0VmgzdUZFTHZmQmdyZTNZaEdSQ1p3?=
+ =?utf-8?B?bmVLcmVkT2dEeDc5aVN2ekY0c2NNWmlJb1hQVW45cEV5dWZ2RHJvTXhSSkFO?=
+ =?utf-8?B?Rm9ROW51NU9Ma2FFbDZ4VUtlTVhsbEZWMnQ4U0MrcTN4emxBVHB6RTYvYjhC?=
+ =?utf-8?B?Nlo3Z2tKdGZ2R01iWmgrenJyblhVVHVqODFHejZYVzZEZTVPbWx0UlFnMU40?=
+ =?utf-8?B?WXRqWTNROEJNb3hNZEZYa2x2SW85dktFMEZDZXJINVNlZXZLVE1WREthTTRL?=
+ =?utf-8?B?SU5Fb21jNjZhL05DVS9lMDR0WWFMODE4M2xJU09RakpxdTB1MlFTRWxjdndH?=
+ =?utf-8?B?ZFhBWjFiL3RDNzZrT1ZnU1VXUys5TmZ6YStyTi9CTTBEaGVGV2RDVldTajZm?=
+ =?utf-8?B?Smw5THpRemhqS1J6Ukp2U20yZVU2UkhBUERTa0IydnJwVW8zVlFGU0FzYkdi?=
+ =?utf-8?B?SkcvcURxNVpkL3Z5TFVDVnBSalVLamVtMnF1V3Q2bmRmQTViMmtvT2xSZEFU?=
+ =?utf-8?B?MnFUdnBGZUQ4bXNMZ3Nkd2UxTmROdkF5ZTh5SVJnd0RCR09sWi9yYWRMa2NC?=
+ =?utf-8?B?UUY2MXNjZ2dvdWJPNWZVVktJUTRLak43c3ZsRFpCWDdTb0J6SnlXa3g0eEhr?=
+ =?utf-8?B?WlRLMGsxUEd1VmVMMEI0VzhoTm5TeldVaUh2ekZWT2Q5VWkzTURZMEZubnhm?=
+ =?utf-8?B?SFN4TmVXeWlnMElCb2d6UFVLRE1xazltTUFjL2REa3l4SS9TRTFuRmErK2ZZ?=
+ =?utf-8?B?MXAveFl6YUF3NzU5TVFHeWd3WDZLTnpNTUI5eEo5U0I0cW1OcFdTLzA1cGto?=
+ =?utf-8?B?K3hlSjdrVlNBSUYraVN2c0F3Mkw2SVliZmJOaG1peWJXUEpnU2ZhRW50cnBt?=
+ =?utf-8?B?ekJUbWFocHV3S1F5c2JrbmxmK2RKaDlabFBUQlhUSDFpZ1JrTVYxZHF3VzZC?=
+ =?utf-8?B?QmRYdkJwUE9pVkpTdmluZnFvbUQ3RUd6aERrSUtkaG9PVzBPMVlaNHhKaXJs?=
+ =?utf-8?Q?axXd04Y0KsJhD5NtHD2uXrxnGOyxzsPxaT4Gv0U?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbf04914-b4c8-493b-d2e3-08d8d79f4c60
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2021 02:04:06.1616
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3NIsZ9cqXtmqgVEE0Y1Pmd9oTu7DXu2TCS2Qe9rgzp+PV0oqNwZmI3QAwFUYldAD2lu+00SncgOSTbvbfphjtA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR0201MB2095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Xiang,
 
-On 2021/2/23 9:12 上午, Si-Wei Liu wrote:
+On 2021/2/22 12:44, Gao Xiang wrote:
+> Hi Jianan,
 >
->
-> On 2/21/2021 11:34 PM, Michael S. Tsirkin wrote:
->> On Mon, Feb 22, 2021 at 12:14:17PM +0800, Jason Wang wrote:
->>> On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
->>>> Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
->>>> for legacy") made an exception for legacy guests to reset
->>>> features to 0, when config space is accessed before features
->>>> are set. We should relieve the verify_min_features() check
->>>> and allow features reset to 0 for this case.
->>>>
->>>> It's worth noting that not just legacy guests could access
->>>> config space before features are set. For instance, when
->>>> feature VIRTIO_NET_F_MTU is advertised some modern driver
->>>> will try to access and validate the MTU present in the config
->>>> space before virtio features are set.
->>>
->>> This looks like a spec violation:
->>>
->>> "
->>>
->>> The following driver-read-only field, mtu only exists if 
->>> VIRTIO_NET_F_MTU is
->>> set.
->>> This field specifies the maximum MTU for the driver to use.
->>> "
->>>
->>> Do we really want to workaround this?
->>>
->>> Thanks
->> And also:
+> On Thu, Feb 18, 2021 at 08:00:49PM +0800, Huang Jianan via Linux-erofs wrote:
+>> From: huangjianan <huangjianan@oppo.com>
 >>
->> The driver MUST follow this sequence to initialize a device:
->> 1. Reset the device.
->> 2. Set the ACKNOWLEDGE status bit: the guest OS has noticed the device.
->> 3. Set the DRIVER status bit: the guest OS knows how to drive the 
->> device.
->> 4. Read device feature bits, and write the subset of feature bits 
->> understood by the OS and driver to the
->> device. During this step the driver MAY read (but MUST NOT write) the 
->> device-specific configuration
->> fields to check that it can support the device before accepting it.
->> 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new 
->> feature bits after this step.
->> 6. Re-read device status to ensure the FEATURES_OK bit is still set: 
->> otherwise, the device does not
->> support our subset of features and the device is unusable.
->> 7. Perform device-specific setup, including discovery of virtqueues 
->> for the device, optional per-bus setup,
->> reading and possibly writing the device’s virtio configuration space, 
->> and population of virtqueues.
->> 8. Set the DRIVER_OK status bit. At this point the device is “live”.
+>> lz4 uses LZ4_DISTANCE_MAX to record history preservation. When
+>> using rolling decompression, a block with a higher compression
+>> ratio will cause a larger memory allocation (up to 64k). It may
+>> cause a large resource burden in extreme cases on devices with
+>> small memory and a large number of concurrent IOs. So appropriately
+>> reducing this value can improve performance.
 >>
+>> Decreasing this value will reduce the compression ratio (except
+>> when input_size <LZ4_DISTANCE_MAX). But considering that erofs
+>> currently only supports 4k output, reducing this value will not
+>> significantly reduce the compression benefits.
 >>
->> so accessing config space before FEATURES_OK is a spec violation, right?
-> It is, but it's not relevant to what this commit tries to address. I 
-> thought the legacy guest still needs to be supported.
->
-> Having said, a separate patch has to be posted to fix the guest driver 
-> issue where this discrepancy is introduced to virtnet_validate() 
-> (since commit fe36cbe067). But it's not technically related to this 
-> patch.
->
-> -Siwei
-
-
-I think it's a bug to read config space in validate, we should move it 
-to virtnet_probe().
-
-Thanks
-
-
->
+>> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+>> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+>> ---
+>>   fs/erofs/decompressor.c | 13 +++++++++----
+>>   fs/erofs/erofs_fs.h     |  3 ++-
+>>   fs/erofs/internal.h     |  3 +++
+>>   fs/erofs/super.c        |  3 +++
+>>   4 files changed, 17 insertions(+), 5 deletions(-)
 >>
->>
->>>> Rejecting reset to 0
->>>> prematurely causes correct MTU and link status unable to load
->>>> for the very first config space access, rendering issues like
->>>> guest showing inaccurate MTU value, or failure to reject
->>>> out-of-range MTU.
->>>>
->>>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 
->>>> devices")
->>>> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
->>>> ---
->>>>    drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
->>>>    1 file changed, 1 insertion(+), 14 deletions(-)
->>>>
->>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c 
->>>> b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>> index 7c1f789..540dd67 100644
->>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>> @@ -1490,14 +1490,6 @@ static u64 mlx5_vdpa_get_features(struct 
->>>> vdpa_device *vdev)
->>>>        return mvdev->mlx_features;
->>>>    }
->>>> -static int verify_min_features(struct mlx5_vdpa_dev *mvdev, u64 
->>>> features)
->>>> -{
->>>> -    if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
->>>> -        return -EOPNOTSUPP;
->>>> -
->>>> -    return 0;
->>>> -}
->>>> -
->>>>    static int setup_virtqueues(struct mlx5_vdpa_net *ndev)
->>>>    {
->>>>        int err;
->>>> @@ -1558,18 +1550,13 @@ static int mlx5_vdpa_set_features(struct 
->>>> vdpa_device *vdev, u64 features)
->>>>    {
->>>>        struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->>>>        struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
->>>> -    int err;
->>>>        print_features(mvdev, features, true);
->>>> -    err = verify_min_features(mvdev, features);
->>>> -    if (err)
->>>> -        return err;
->>>> -
->>>>        ndev->mvdev.actual_features = features & 
->>>> ndev->mvdev.mlx_features;
->>>>        ndev->config.mtu = cpu_to_mlx5vdpa16(mvdev, ndev->mtu);
->>>>        ndev->config.status |= cpu_to_mlx5vdpa16(mvdev, 
->>>> VIRTIO_NET_S_LINK_UP);
->>>> -    return err;
->>>> +    return 0;
->>>>    }
->>>>    static void mlx5_vdpa_set_config_cb(struct vdpa_device *vdev, 
->>>> struct vdpa_callback *cb)
+>> diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+>> index 1cb1ffd10569..94ae56b3ff71 100644
+>> --- a/fs/erofs/decompressor.c
+>> +++ b/fs/erofs/decompressor.c
+>> @@ -36,22 +36,27 @@ static int z_erofs_lz4_prepare_destpages(struct z_erofs_decompress_req *rq,
+>>   	struct page *availables[LZ4_MAX_DISTANCE_PAGES] = { NULL };
+>>   	unsigned long bounced[DIV_ROUND_UP(LZ4_MAX_DISTANCE_PAGES,
+>>   					   BITS_PER_LONG)] = { 0 };
+>> +	unsigned int lz4_distance_pages = LZ4_MAX_DISTANCE_PAGES;
+>>   	void *kaddr = NULL;
+>>   	unsigned int i, j, top;
+>>   
+>> +	if (EROFS_SB(rq->sb)->compr_alg)
+>> +		lz4_distance_pages = DIV_ROUND_UP(EROFS_SB(rq->sb)->compr_alg,
+>> +						  PAGE_SIZE) + 1;
+>> +
+> Thanks for your patch, I agree that will reduce runtime memory
+> footpoint. and keep max sliding window ondisk in bytes (rather
+> than in blocks) is better., but could we calculate lz4_distance_pages
+> ahead when reading super_block?
+Thanks for suggestion, i will update it soon.
+> Also, in the next cycle, I'd like to introduce a bitmap for available
+> algorithms (maximum 16-bit) for the next LZMA algorithm, and for each
+> available algorithm introduces an on-disk variable-array like below:
+> bitmap(16-bit)    2       1       0
+>                  ...     LZMA    LZ4
+> __le16		compr_opt_off;      /* get the opt array start offset
+>                                         (I think also in 4-byte) */
 >
+> compr alg 0 (lz4)	__le16	alg_opt_size;
+> 	/* next opt off = roundup(off + alg_opt_size, 4); */
+> 			__le16	lz4_max_distance;
+>
+> /* 4-byte aligned */
+> compr alg x (if available)	u8	alg_opt_size;
+> 				...
+>
+> ...
+>
+> When reading sb, first, it scans the whole bitmap, and get all the
+> available algorithms in the image at once. And then read such compr
+> opts one-by-one.
+>
+> Do you have some interest and extra time to implement it? :) That
+> makes me work less since I'm debugging mbpcluster compression now...
 
+Sounds good, I will try to do this part of the work.
+
+Thanks,
+
+Jianan
+
+> Thanks,
+> Gao Xiang
+>
