@@ -2,230 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3576322359
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C8C32235D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhBWA7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 19:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
+        id S230235AbhBWBFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 20:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhBWA7h (ORCPT
+        with ESMTP id S229999AbhBWBFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 19:59:37 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE6FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 16:58:57 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id w6so3326269qti.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 16:58:57 -0800 (PST)
+        Mon, 22 Feb 2021 20:05:49 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F8EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 17:05:09 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id t62so14701765qke.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 17:05:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iyB89RKBO7L+gSLQuS4sTB8Yvi5nARaZXNkFcKd9HCo=;
-        b=fhG9oECZwDS+aG8JbizDALlWHYZUwNwF+TKpbBPatOJG+Kl1BHJpXXo2Jsm+EuGaQM
-         oYn2dpII9axrEuxca5U0NMLrYDDhzTFiLMHK5kC/fwjBsuq/cjBbbkm7Jfdp25mpzqvK
-         wgBAfl6XJS06Y2jYvPeFrpviYYbycMY45fzEHlQTFcqgpdMwMH2+IhIT7WlbFDilMCFa
-         BD1uIISRai7Ee60bAadumSbMTfTB6BlMk2aoz+i/3NtEdR6vW6bJWbVW6rE52K3JUeWw
-         JzSma9H604OF+R50oqNZQ3OtxWtX6PVDfZrsqsBcY01qnE49+XWkuuLFAhcuotgpf4aR
-         6MsQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=D0LM5T76AYBD/PNGqQ8IueROsXS50xM/2SGU2qyVUqs=;
+        b=lhPy+pQMIegIDFFaiFd3AKKOjaS1AHAZLwU/Uqy5LAIAFeF9iGPu4sWiYdvbyvzBL0
+         pi3vVO38ASwp2Cji6+vOQidk18/JQmwfHUIDfqxpCwFpstcogcVWMWGlS1cTLRq4r4IE
+         TUecKB7azutlnD5LpSRTil0h2hUuPD/zWh/QgqDo5rsARA7ese/poO8JlaS7fbEw64Sl
+         nBaDvFgm3MwyKGCQG/xA9bKYbS74NF/iBS31kv5pNXbMeXoWQW+AuUuxHbu9Dydn76gK
+         ncu2PQE+I8nQclwi5r56wXErAGim6fZ/hRFcjfQYlCMrpE2w1GV0tcbjmE/Dprnznttq
+         LuDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iyB89RKBO7L+gSLQuS4sTB8Yvi5nARaZXNkFcKd9HCo=;
-        b=N0MwIjHNa9bB5XFowdbIJOzeitN/WwXWAs/YxmsfUs+cmtdtZOi1vHPctBqLORMURI
-         V3U9Zh+ydYL7NtqtstGr/tVV4Pci6b5WeveuWomYULDGK1ApFI+7XGB0q+f3bdl0RccI
-         rp3wQ0ghSPRgeDpz2PAyxbYNLqeNiH9cSWtSMZb6bk1azYphUvaTcOg4WOp7DhUjKsXv
-         TJ7mUBaLpey7dXJmrdpbxMw+xX3QvgXAzIJ9yFFlfT+fOM7Rlw0SZMExfjIR4z1CjB1x
-         Oc0F0ZDhlBpfQthSBTsjBbGnHIvl98tCbbKicOAUbZAL8bztD4qSZkI56F/R6qg22FAk
-         iKcA==
-X-Gm-Message-State: AOAM533XdKHPvNVrabnBWymFAwAdVOYqCMNadvnKw6b5wKySOkvCuWDr
-        zlJActKECV0ciBlwSwIe7FR3g0ER3WUEmvHY4ZBP4A==
-X-Google-Smtp-Source: ABdhPJwymyLVO0mUgGR7R+0cXQlIQ7CMJUcJpLlF6UjB04tEUwjIv8JkvJHQg+6SMLh5sZckvqS+TI9tF5S4brVJG+o=
-X-Received: by 2002:ac8:4f4f:: with SMTP id i15mr21320488qtw.101.1614041936494;
- Mon, 22 Feb 2021 16:58:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20210214000611.2169820-1-zzyiwei@android.com> <YC+ZQAwwb4RGgjDf@alley>
- <CAKB3++YB3xftQFgSGQXKQucuid9sFywjN1E7nQ6QrqR96+heEg@mail.gmail.com>
-In-Reply-To: <CAKB3++YB3xftQFgSGQXKQucuid9sFywjN1E7nQ6QrqR96+heEg@mail.gmail.com>
-From:   =?UTF-8?B?WWl3ZWkgWmhhbmfigI4=?= <zzyiwei@android.com>
-Date:   Mon, 22 Feb 2021 16:58:46 -0800
-Message-ID: <CAKB3++b4wnsh+Kbgk4U200hLQmudM28sK=s9e6mARpM-eZ2ZZw@mail.gmail.com>
-Subject: Re: [PATCH] kthread: add kthread_mod_pending_delayed_work api
-To:     Petr Mladek <pmladek@suse.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "J. Bruce Fields" <bfields@redhat.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D0LM5T76AYBD/PNGqQ8IueROsXS50xM/2SGU2qyVUqs=;
+        b=cRj6A32LcT92pNlll+cd6afI2YQlxt9Vs4TwQz2fDzm+rRp2rwMex4dGvrFhIzgWfZ
+         7vYLwHHU6kcW550uXTsYwEmkdZF1i4pe5tMQJlu26T/sFlxyJq1cYMDC2L6ztokU0m1v
+         3IWaPu0iELK1Pa+zzz8ioTG0nEE1PUngsvBzrA9fD2OuWCnxQYKAFeBGedKiGRt4JGFg
+         4xXQMuFvJd2So+nUGKMdODbx9+gbIkk4XaOVrDynzaRmzcl1sl1DCHuymHiZwq+/zKb9
+         SXOE9vyRYd9visKbnQU6Ozt1gFW+9c8WUIuOLzUpfCDHmYB4LAZ4mhkNl90Fa6C4/KOQ
+         RZSw==
+X-Gm-Message-State: AOAM530SBAix1J9IhsSg1oTkkrtRISWGAa01KRAyoQCi/6yTTi4xzpOT
+        kdou0c6H6PCURN+fQb2i0dHbHAgo89U=
+X-Google-Smtp-Source: ABdhPJyakBtuWeAxUC6ebwya9XTuSSjg/Ph2dfApaIA8Syk1R8JjjoReygLFr3pXzV6FOLtgHwJOag==
+X-Received: by 2002:a37:5243:: with SMTP id g64mr4980849qkb.376.1614042308127;
+        Mon, 22 Feb 2021 17:05:08 -0800 (PST)
+Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
+        by smtp.gmail.com with ESMTPSA id 136sm13702375qko.12.2021.02.22.17.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 17:05:07 -0800 (PST)
+Date:   Mon, 22 Feb 2021 17:05:06 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Triplett <josh@joshtriplett.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ilias Stamatis <stamatis.iliass@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Liang Chen <cl@rock-chips.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v5 0/8] support for bitmap (and hence CPU) list "N"
+ abbreviation
+Message-ID: <20210223010506.GA1041464@yury-ThinkPad>
+References: <20210221080827.84862-1-paul.gortmaker@windriver.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210221080827.84862-1-paul.gortmaker@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since you awesome guys are here, I do have another kthread related
-question, and hopefully to get some suggestions:
+On Sun, Feb 21, 2021 at 03:08:19AM -0500, Paul Gortmaker wrote:
+> This is the 5th and final version of this series.  We got some good
+> improvements, like adding self-tests, using "N" as "just another number"
+> that could be used anywhere, and making things not CPU specific.
+> 
+> But now it is time to close this review out since is down to just
+> hand-wringing over hypothetical use cases, bikeshedding on upper/lower
+> case, and a wild goose chase on trying to avoid adding a function arg.
+> 
+> So, once again - thanks to all who provided input; it was all considered
+> even if not all of it was used.  And in that vein, just to be clear:
+> 
+> 1) There will be no adaptive modifying or guessing what the user meant if
+> a range turns out to be invalid.  The caller will be responsible for
+> handling the -EINVAL just as things are currently today.
+> 
+> 2) There will be no use of "L" or lower case "n" because there is simply
+> no need for it.  Yes, it would be simple enough to add, but it complicates
+> things and would also be impossible to remove later, once it went mainline.
+> 
+> 
+> The original text from v4 follows:
+> 
+> The basic objective here was to add support for "nohz_full=8-N" and/or
+> "rcu_nocbs="4-N" -- essentially introduce "N" as a portable reference
+> to the last core, evaluated at boot for anything using a CPU list.
+> 
+> The thinking behind this, is that people carve off a few early CPUs to
+> support housekeeping tasks, and perhaps dedicate one to a busy I/O
+> peripheral, and then the remaining pool of CPUs out to the end are a
+> part of a commonly configured pool used for the real work the user
+> cares about.
+> 
+> Extend that logic out to a fleet of machines - some new, and some
+> nearing EOL, and you've probably got a wide range of core counts to
+> contend with - even though the early number of cores dedicated to the
+> system overhead probably doesn't vary.
+> 
+> This change would enable sysadmins to have a common bootarg across all
+> such systems, and would also avoid any off-by-one fencepost errors that
+> happen for users who might briefly forget that core counts start at zero.
+> 
+> Originally I did this at the CPU subsys level, but Yury suggested it
+> be moved down further to bitmap level itself, which made the core 
+> implementation smaller and less complex, but the series longer.
+> 
+> New self tests are added to better exercise what bitmap range/region
+> currently supports, and new tests are added for the new "N" support.
+> 
+> Also tested boot arg and the post-boot cgroup use case as per below:
+> 
+>    root@hackbox:~# cat /proc/cmdline 
+>    BOOT_IMAGE=/boot/bzImage root=/dev/sda1 rcu_nocbs=2,3,8-N:1/2
+>    root@hackbox:~# dmesg|grep Offl
+>    rcu:     Offload RCU callbacks from CPUs: 2-3,8,10,12,14.
+> 
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+>    
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 10-N > cpuset.cpus
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+>    10-15
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo N-N:N/N > cpuset.cpus
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+>    15
+> 
+> This was on a 16 core machine with CONFIG_NR_CPUS=16 in .config file.
+> 
+> Note that "N" is a dynamic quantity, and can change scope if the bitmap
+> is changed in size.  So at the risk of stating the obvious, don't use it
+> for "burn_eFuse=128-N" or "secure_erase_firmware=32-N" type stuff.
+> 
+> Paul.
+> ---
 
-Below are the conditions:
-1. The caller threads queuing the work are normal threads(non-RT).
-2. The worker thread is a realtime kernel thread with relatively high prio.
-3. We are not allowed to pin caller threads to fixed cpu clusters.
-
-Sometimes when the CPU is busy, the worker thread starts preempting
-the caller thread, which is not cool because it will make the
-asynchronous effort a no-op. Is there a way we can include caller
-thread metadata(task_struct pointer?) when it enqueues the work so
-that the RT worker thread won't preempt the caller thread when that
-queued work gets scheduled? Probably require the CPU scheduler to poke
-at the next work...or any other ideas will be very appreciated,
-thanks!
-
-Best regards,
-Yiwei
-
-On Mon, Feb 22, 2021 at 4:39 PM Yiwei Zhang=E2=80=8E <zzyiwei@android.com> =
-wrote:
->
-> On Fri, Feb 19, 2021 at 2:56 AM Petr Mladek <pmladek@suse.com> wrote:
-> >
-> > On Sun 2021-02-14 00:06:11, Yiwei Zhang wrote:
-> > > The existing kthread_mod_delayed_work api will queue a new work if
-> > > failing to cancel the current work due to no longer being pending.
-> > > However, there's a case that the same work can be enqueued from both
-> > > an async request and a delayed work, and a racing could happen if the
-> > > async request comes right after the timeout delayed work gets schedul=
-ed,
-> > > because the clean up work may not be safe to run twice.
-> >
-> > Please, provide more details about the use case. Why the work is
-> > originally sheduled with a delay. And and why it suddenly can/should
-> > be proceed immediately.
-> >
-> > >
-> > > Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
-> > > ---
-> > >  include/linux/kthread.h |  3 +++
-> > >  kernel/kthread.c        | 48 +++++++++++++++++++++++++++++++++++++++=
-++
-> > >  2 files changed, 51 insertions(+)
-> > >
-> > > --- a/kernel/kthread.c
-> > > +++ b/kernel/kthread.c
-> > > @@ -1142,6 +1142,54 @@ bool kthread_mod_delayed_work(struct kthread_w=
-orker *worker,
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(kthread_mod_delayed_work);
-> > >
-> > > +/**
-> > > + * kthread_mod_pending_delayed_work - modify delay of a pending dela=
-yed work
-> > > + * @worker: kthread worker to use
-> > > + * @dwork: kthread delayed work to queue
-> > > + * @delay: number of jiffies to wait before queuing
-> > > + *
-> > > + * If @dwork is still pending modify @dwork's timer so that it expir=
-es after
-> > > + * @delay. If @dwork is still pending and @delay is zero, @work is g=
-uaranteed to
-> > > + * be queued immediately.
-> > > + *
-> > > + * Return: %true if @dwork was pending and its timer was modified,
-> > > + * %false otherwise.
-> > > + *
-> > > + * A special case is when the work is being canceled in parallel.
-> > > + * It might be caused either by the real kthread_cancel_delayed_work=
-_sync()
-> > > + * or yet another kthread_mod_delayed_work() call. We let the other =
-command
-> > > + * win and return %false here. The caller is supposed to synchronize=
- these
-> > > + * operations a reasonable way.
-> > > + *
-> > > + * This function is safe to call from any context including IRQ hand=
-ler.
-> > > + * See __kthread_cancel_work() and kthread_delayed_work_timer_fn()
-> > > + * for details.
-> > > + */
-> > > +bool kthread_mod_pending_delayed_work(struct kthread_worker *worker,
-> > > +                                   struct kthread_delayed_work *dwor=
-k,
-> > > +                                   unsigned long delay)
-> > > +{
-> >
-> > kthread_worker API tries to follow the workqueue API. It helps to use a=
-nd
-> > switch between them easily.
-> >
-> > workqueue API does not provide this possibility. Instead it has
-> > flush_delayed_work(). It queues the work when it was pending and
-> > waits until the work is procced. So, we might do:
-> >
-> > bool kthread_flush_delayed_work(struct kthread_delayed_work *dwork)
-> >
-> >
-> > > +     struct kthread_work *work =3D &dwork->work;
-> > > +     unsigned long flags;
-> > > +     int ret =3D true;
-> > > +
-> > > +     raw_spin_lock_irqsave(&worker->lock, flags);
-> > > +     if (!work->worker || work->canceling ||
-> > > +         !__kthread_cancel_work(work, true, &flags)) {
-> > > +             ret =3D false;
-> > > +             goto out;
-> > > +     }
-> >
-> > Please, use separate checks with comments as it is done, for example,
-> > in kthread_mod_delayed_work()
-> >
-> >         struct kthread_work *work =3D &dwork->work;
-> >         unsigned long flags;
-> >         int ret;
-> >
-> >         raw_spin_lock_irqsave(&worker->lock, flags);
-> >
-> >         /* Do not bother with canceling when never queued. */
-> >         if (!work->worker)
-> >                 goto nope;
-> >
-> >         /* Do not fight with another command that is canceling this wor=
-k. */
-> >         if (work->canceling)
-> >                 goto nope;
-> >
-> >         /* Nope when the work was not pending. */
-> >         ret =3D __kthread_cancel_work(work, true, &flags);
-> >         if (!ret)
-> >                 nope;
-> >
-> >         /* Queue the work immediately. */
-> >         kthread_insert_work(worker, work, &worker->work_list);
-> >         raw_spin_unlock_irqrestore(&worker->lock, flags);
-> >
-> >         return kthread_flush_work(work);
-> > nope:
-> >         raw_spin_unlock_irqrestore(&worker->lock, flags);
-> >         return false;
-> >
-> >
-> > Will this work for you?
-> >
-> > Best Regards,
-> > Petr
->
-> Thanks for your comments and reviews, Petr! I completely understand
-> Christoph's pushback regarding no upstream use case here. Just want to
-> see if this is a missing use case in kthread. I'll propose again if
-> later I find a use case in any upstream drivers.
->
-> Best,
-> Yiwei
+Acked-by: Yury Norov <yury.norov@gmail.com>
+ 
+> [v5: go back to v3 location of "nbits" in region.  Add acks/reviewed.]
+> 
+> [v4: pair nbits with region, instead of inside it.  Split EINVAL and
+>  ERANGE tests.  Don't handle start/end/offset within a macro to
+>  abstract away nbits usage.  Added some Reviwed-by/Ack tags.]
+>  https://lore.kernel.org/lkml/20210209225907.78405-1-paul.gortmaker@windriver.com/
+> 
+> [v3: Allow "N" to be used anywhere in the region spec, i.e. "N-N:N/N" vs.
+>  just being allowed at end of range like "0-N".  Add new self-tests.  Drop
+>  "all" and "none" aliases as redundant and not worth the extra complication. ]
+>  https://lore.kernel.org/lkml/20210126171141.122639-1-paul.gortmaker@windriver.com/
+> 
+> [v2: push code down from cpu subsys to core bitmap code as per
+>  Yury's comments.  Change "last" to simply be "N" as per PeterZ.]
+>  https://lore.kernel.org/lkml/20210121223355.59780-1-paul.gortmaker@windriver.com/
+> 
+> [v1: https://lore.kernel.org/lkml/20210106004850.GA11682@paulmck-ThinkPad-P72/
+> 
+> Cc: Li Zefan <lizefan@huawei.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Yury Norov <yury.norov@gmail.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Frederic Weisbecker <fweisbec@gmail.com>
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> 
+> 
+> Paul Gortmaker (8):
+>   lib: test_bitmap: clearly separate ERANGE from EINVAL tests.
+>   lib: test_bitmap: add tests to trigger ERANGE case.
+>   lib: test_bitmap: add more start-end:offset/len tests
+>   lib: bitmap: fold nbits into region struct
+>   lib: bitmap: move ERANGE check from set_region to check_region
+>   lib: bitmap: support "N" as an alias for size of bitmap
+>   lib: test_bitmap: add tests for "N" alias
+>   rcu: deprecate "all" option to rcu_nocbs=
+> 
+>  .../admin-guide/kernel-parameters.rst         |  7 +++
+>  .../admin-guide/kernel-parameters.txt         |  4 +-
+>  kernel/rcu/tree_plugin.h                      |  6 +--
+>  lib/bitmap.c                                  | 49 +++++++++++--------
+>  lib/test_bitmap.c                             | 46 ++++++++++++++---
+>  5 files changed, 79 insertions(+), 33 deletions(-)
+> 
+> -- 
+> 2.30.0
