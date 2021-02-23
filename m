@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC8E322E03
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22181322E0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbhBWPwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:52:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233468AbhBWPv2 (ORCPT
+        id S233467AbhBWPyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:54:21 -0500
+Received: from mout.kundenserver.de ([212.227.126.131]:60729 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233302AbhBWPyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 10:51:28 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0702C06178B
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:50:47 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id o3so8322207oic.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:50:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=23xyttMgUTUc74O8PSZq50RUnpnu4HEpSjkkgbeXd50=;
-        b=bWUUd7DRJ8fxiVDrm/GbzrK0jpBnaJpLAtCLK9iG3/HaqQJokjax0+3WT+am9QiZO/
-         g5ks13ahhiLhszxDWHhPnIybHmixq98QENtwdhuU3eyktbjdG07uYNZK4XQxTdKTnlha
-         GLAE4nSk/+jVaOrO7Kr67vFh3v2Izhnw8v2jWqY1pmra+HMMqYMTF+7uOpQvDuxYTw8z
-         Ebj5uAHeP886aLV711ncIe0L+3N/ideu1m5BqR7l0hQfNSIzf2iGL4jQWv/c9qbmgRRO
-         3GSECONOt3uriBqOprSCId+ynebzD/ODb6KxRzt6P9AGQ4e1UgibMcAEkILVwQbMkC32
-         jKaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=23xyttMgUTUc74O8PSZq50RUnpnu4HEpSjkkgbeXd50=;
-        b=TJK2dYqs70xLG6nyP1EKnGOxkffOQDHWU089/0TmjJX/E6uU+n0TtVp57HX2D7htMM
-         PZqYsXKZOV5xEO0TOH62lxVbC3h9FdHqUTtK1azAJbTshEIzguH40j/LOrrI+rcJ5L/F
-         UB0Nva9Kg69y901UhQ4fZmdf9cKFqL1xDWqwEtL4l4LLATMDHSSvr8iJ6J6YK8OfSVu7
-         zzN2YZwbi+SMy9ZWnu80Ff0k3vbcm16a5vMEKt2nGQ7uz5hIXaYkz46LUzycux1ViuFI
-         pRUAXZs8iQh2yyyuMsUyZ5fMaTna+9zxrn4GY1mF765fWLHqV8c79W/JTG3z4TlXoMG2
-         oY3g==
-X-Gm-Message-State: AOAM531IL1MoPoiy7a9MnStinC+0tKXTXxzAiIdlMFMnMKwKu76FTQ8Z
-        tOA4x7l4L6A8jCJ+l8KcPZUnXnX4HrZo1NJbJkxe0oAuxV4=
-X-Google-Smtp-Source: ABdhPJwmLfj4P+YB6TA3SbUyXZUMALrC8Q5ZBxxZShUXhi/jO2OYGG1maell7wrySj7E7LUovTo2SSHWlKKikjQ3y6w=
-X-Received: by 2002:a05:6808:1290:: with SMTP id a16mr19426724oiw.161.1614095447221;
- Tue, 23 Feb 2021 07:50:47 -0800 (PST)
+        Tue, 23 Feb 2021 10:54:17 -0500
+Received: from mail.cetitecgmbh.com ([87.190.42.90]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M89P1-1lATVT1OiJ-005M5W; Tue, 23 Feb 2021 16:51:28 +0100
+Received: from pflvmailgateway.corp.cetitec.com (unknown [127.0.0.1])
+        by mail.cetitecgmbh.com (Postfix) with ESMTP id 3A6551E01E7;
+        Tue, 23 Feb 2021 15:51:27 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at cetitec.com
+Received: from mail.cetitecgmbh.com ([127.0.0.1])
+        by pflvmailgateway.corp.cetitec.com (pflvmailgateway.corp.cetitec.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id tnEpDMyau6jA; Tue, 23 Feb 2021 16:51:26 +0100 (CET)
+Received: from pflmari.corp.cetitec.com (2-usr-pf-main.vpn.it.cetitec.com [10.8.5.2])
+        by mail.cetitecgmbh.com (Postfix) with ESMTPSA id E826D1E01E6;
+        Tue, 23 Feb 2021 16:51:26 +0100 (CET)
+Received: by pflmari.corp.cetitec.com (Postfix, from local account)
+Date:   Tue, 23 Feb 2021 16:51:26 +0100
+From:   Alex Riesen <alexander.riesen@cetitec.com>
+To:     Ilia Mirkin <imirkin@alum.mit.edu>
+Cc:     Lyude Paul <lyude@redhat.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        James Jones <jajones@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jeremy Cline <jcline@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Dave Airlie <airlied@redhat.com>
+Subject: Re: [PATCH 2/3] drm/nouveau/kms/nv50-: Report max cursor size to
+ userspace
+Message-ID: <YDUkfjDA4xLJlxE5@pflmari>
+References: <20210119015415.2511028-1-lyude@redhat.com>
+ <20210119015415.2511028-2-lyude@redhat.com>
+ <YDUN+Re/alMVL0Zn@pflmari>
+ <CAKb7UvhFkw23so-a4JKLzpQLhphzjzarOy-9h+FiKP-aAC=4xw@mail.gmail.com>
+ <YDUg/9fjsvTkRUqr@pflmari>
+ <CAKb7Uvji_+N+b8HghZckU-uSBWn-=BZwNAiUff2oitbVuNUE2Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210223061905.422659-1-jasowang@redhat.com> <20210223061905.422659-2-jasowang@redhat.com>
- <533886b3-9979-7a51-5b44-eeefad242cdf@roeck-us.net>
-In-Reply-To: <533886b3-9979-7a51-5b44-eeefad242cdf@roeck-us.net>
-From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Date:   Tue, 23 Feb 2021 09:50:35 -0600
-Message-ID: <CAEUSe7-g=O_=G1fzjLwjQH1taj0YZYKt=874mUxcM-qGv51+9g@mail.gmail.com>
-Subject: Re: [PATCH V4 1/3] virtio: don't prompt CONFIG_VIRTIO_PCI_MODERN
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jason Wang <jasowang@redhat.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        open list <linux-kernel@vger.kernel.org>, shahafs@mellanox.com,
-        sgarzare@redhat.com, Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKb7Uvji_+N+b8HghZckU-uSBWn-=BZwNAiUff2oitbVuNUE2Q@mail.gmail.com>
+X-Provags-ID: V03:K1:TZGccT2syXDhApLxVFzVDJq5wKOtDGq/dl3aJQEA5t+BCVA3L2q
+ V2lhNWDapJfSve9PZ5g8vpBtD2MQCXpv4W0PVMnTyWJdp+BAqHPypSdzeLnJYlzv9EmFZC+
+ +D2ZnMjL5Xr4bJYsf5D69SAm/mbjuwsuOsuWdiJQDmhgdDu0O08nB4SHW3ORqAliTh1oPrC
+ 5KbbtmIVlyk6JiDnl/AAg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2BLltldadtY=:4/40UfQuTN5gRc7injwK9G
+ VwF3NpsVQh17Mk95k953iVeMGZ/Yu/dXP1705KZELeDrGyGtxOTTFOnDiiavm06f799DFkiHO
+ 6tqZYNLBRpm+z4LHOnyO4oOoMCb1M/xDicQ61+6+4irBCbveD4N/lE2lH2MU5y6bzelkdHobY
+ GcdCAqhp8tgmuLx/0CsdClgAEw3AYXhIBmhYM8Zke5SNsyOE0yLqFJcBRMzgeqp5jJAnhREUV
+ oSutt83jV/UfqJUu8URcvTkOpQVmbIZXr69m1tHErDtqThiGMfAi0O/03KQdhjkgtAQvbdguD
+ FeuAgbuAsV7rWmfjwOJiC7CP51/iHltbSRfJjrjX/fku9EuQFw82pI2mBHkGotONBPgAKiSk6
+ WFYdkQ3FJbcFoDMSRnG5ozSeU+Ryn5DpBW56d5hepl5DtmntgmvbZUbAvTTG+7pexLzrnGBOS
+ OwYhwJJ1lw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-If I may add to the nit-picking...
-
-On Tue, 23 Feb 2021 at 09:23, Guenter Roeck <linux@roeck-us.net> wrote:
-> On 2/22/21 10:19 PM, Jason Wang wrote:
-> > We used to prompt CONFIG_VIRTIO_PCI_MODERN to user which may bring a
-> > lot of confusion. E.g it may break various default configs which want
-> > virtio devices.
+Ilia Mirkin, Tue, Feb 23, 2021 16:46:52 +0100:
+> On Tue, Feb 23, 2021 at 10:36 AM Alex Riesen <alexander.riesen@cetitec.com> wrote:
+> > Ilia Mirkin, Tue, Feb 23, 2021 15:56:21 +0100:
+> > > On Tue, Feb 23, 2021 at 9:26 AM Alex Riesen <alexander.riesen@cetitec.com> wrote:
+> > > >
+> > > > This change broke X cursor in my setup, and reverting the commit restores it.
+> > > >
+> > > > Dell Precision M4800, issue ~2014 with GK106GLM [Quadro K2100M] (rev a1).
+> > > > libdrm 2.4.91-1 (Debian 10.8 stable).
+> > > > There are no errors or warnings in Xorg logs nor in the kernel log.
+> > >
+> > > Could you confirm which ddx is driving the nvidia hw? You can find
+> > > this out by running "xrandr --listproviders", or also in the xorg log.
 > >
-> > So this patch fixes this by hiding the prompot and documenting the
+> > xrandr(1) does not seem to list much:
+> >
+> > $ xrandr --listproviders
+> > Providers: number : 1
+> > Provider 0: id: 0x48 cap: 0xf, Source Output, Sink Output, Source Offload, Sink Offload crtcs: 4 outputs: 5 associated providers: 0 name:modesetting
+> 
+> Thanks - this is what I was looking for. name:modesetting, i.e. the
+> modesetting ddx driver.
+> 
+> I checked nouveau source, and it seems like it uses a 64x64 cursor no
+> matter what. Not sure what the modesetting ddx does.
+> 
+> I'd recommend using xf86-video-nouveau in any case, but some distros
 
-*prompt
+I would like try this out. Do you know how to force the xorg server to
+choose this driver instead of modesetting?
 
-Greetings!
+> have decided to explicitly force modesetting in preference of nouveau.
+> Oh well. (And regardless, the regression should be addressed somehow,
+> but it's also good to understand what the problem is.)
+>
+> Can you confirm what the problem with the cursor is?
 
-Daniel D=C3=ADaz
-daniel.diaz@linaro.org
+The cursor looks stretched vertically over a bigger matrix, while missing some
+lines and being wrapped over the bottom on top of that matrix.
+
