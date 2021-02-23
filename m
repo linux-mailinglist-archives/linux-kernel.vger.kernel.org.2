@@ -2,92 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3630323158
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A13A432314D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhBWTVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 14:21:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233704AbhBWTSU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 14:18:20 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4EDC0617A9;
-        Tue, 23 Feb 2021 11:17:03 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id t15so23649709wrx.13;
-        Tue, 23 Feb 2021 11:17:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kTr1/mv6nsyXy8Axrc2R950ucaShXBUxnX7juCfyHPA=;
-        b=taJkGM9E9fqDSBNdWN56z/pHRLCIViIrJkGfRzq6yxbeypt2mE20AcRuXW4rVILHQt
-         ldwZoxPfVoeCkvNbmJt5L+jjm6qNcJhscXGET+Wol3oqlSpHBiMyMbkxkm3KiD+x5Iz6
-         iHM+vVIo0/BjO9dDG/HsoxlHcTtAd6b6q0NqZjL5ixOx3G+SpYiVvhmKwiPrG91+EXJi
-         X9RsIMcNjNNKQm5Zeok2t+QnXV9AKP47Y4mJnE00kBeigdMOj+ukrdIUsk4rIrfVTpti
-         QUBjZsVxVpeC/bvQiczQeRcGLWNP4pfQd9x3/E0nmDjT5I7FjudI596dVfAFkKCP3J0l
-         U9gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kTr1/mv6nsyXy8Axrc2R950ucaShXBUxnX7juCfyHPA=;
-        b=UB2yO7GnW5Ml6tkAFFFMdncJp+R2XYMAWcBKkTScNbucS2iRMSxCL3DE6d7cZd8zZz
-         rPyT2ovil4RuS7A0JWARtRjSvCDjpUTOIaMxjUXIztQ7RjIjJqT+kDkrs9wNT93lwu+t
-         2yph47WR31pf/ExMgk8FtRDF9uITz3ttyz1+FSu6pDNu0N6kTwXVkyRpCt8ruk5+3EKD
-         9vn+FO6VZeyfOfWTJtaiw41V3esga4/qM3LyOT7bE6O75vQDL9ARCu7NwzrsNf3WfZCs
-         YVz3QEVtetEZVW0FUxgHChB1ppSQTUlbjqg2uS1taoLTcxosbNeEDbiMJzPqNS1J2mTx
-         zUiA==
-X-Gm-Message-State: AOAM53177I0n/khirwk4N88pWbq5Zvq4cUGvEmNewyFhmHLISwVTmbh+
-        p9Wk5CfAFyaIzJMOZirQrME=
-X-Google-Smtp-Source: ABdhPJwrhVSJ0cuYzgU2i+NE3qLswjWPTJ5YYKdyYYnA9LIowR9udrqCv7Ezi3VkZAjSkZpp8yDWFQ==
-X-Received: by 2002:a5d:6d06:: with SMTP id e6mr28325033wrq.425.1614107822405;
-        Tue, 23 Feb 2021 11:17:02 -0800 (PST)
-Received: from localhost.localdomain (2a01cb0008bd270084c09ff22cc10cb2.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:84c0:9ff2:2cc1:cb2])
-        by smtp.gmail.com with ESMTPSA id a21sm3611413wmb.5.2021.02.23.11.17.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 11:17:02 -0800 (PST)
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     krzk@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, catalin.marinas@arm.com, will@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH v4 10/10] arm64: defconfig: Enable wm8960 audio driver.
-Date:   Tue, 23 Feb 2021 20:16:52 +0100
-Message-Id: <20210223191652.436397-10-adrien.grassein@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210223191652.436397-1-adrien.grassein@gmail.com>
-References: <20210223191652.436397-1-adrien.grassein@gmail.com>
+        id S233830AbhBWTTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 14:19:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233690AbhBWTSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 14:18:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCFB264E7A;
+        Tue, 23 Feb 2021 19:17:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614107846;
+        bh=x6yh8NGQDb+RifuQ95bjVU+mIpOZUX4pyBPC2FNHGR0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gq/M/WYDurJ4zpz8sBi6sLR2Amq5Mo869ftjEhnuw350zs9DMMVq++DbhhwZ5Fs96
+         tevHhcmO5kWvOMNh4+z3JXveR2ca0H93Vs+ED7xrXVF8xCAnpG2foZqPMFq1ynh6ET
+         g3J9adNC+xiMAzF9cmymf/BNdukIL1qkBi5vOKOf+PALGCo03mHGylZwJociPR1m3H
+         uUfH5nU25Mw24ijJI3qXmjDX/uuVo+CydZRdfz5dcD3XvP9J6Ug3CaA5mK3zs/vOR1
+         eEp1io+NYLljRaAdQqsE/R354L/PcoI8mNT+F0597LfPXKooQ/KxlCa5kK1aYqn8Bh
+         ERpu9LPC7/kBQ==
+Date:   Tue, 23 Feb 2021 21:17:12 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-sgx@vger.kernel.org, haitao.huang@intel.com,
+        dan.j.williams@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Add a basic NUMA allocation scheme to
+ sgx_alloc_epc_page()
+Message-ID: <YDVUuF3rqnRCr+Bb@kernel.org>
+References: <20210221020631.171404-1-jarkko@kernel.org>
+ <7acc3c1c-373e-cfee-e838-2af170e87d98@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7acc3c1c-373e-cfee-e838-2af170e87d98@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is used by the Nitrogen8m Mini SBC.
+On Sun, Feb 21, 2021 at 04:54:33PM -0800, Dave Hansen wrote:
+> > +/* Nodes with one or more EPC sections. */
+> > +static nodemask_t sgx_numa_mask;
+> 
+> I'd also add that this is for optimization only.
+> 
+> > +/* Array of lists of EPC sections for each NUMA node. */
+> > +struct list_head *sgx_numa_nodes;
+> 
+> I'd much prefer:
+> 
+> /*
+>  * Array with one list_head for each possible NUMA node.  Each
+>  * list contains all the sgx_epc_section's which are on that
+>  * node.
+>  */
+> 
+> Otherwise, it's hard to imagine what this structure looks like.
 
-Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+OK.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 292c00f893fc..bd310e91d4ed 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -764,6 +764,7 @@ CONFIG_SND_SOC_SIMPLE_AMPLIFIER=m
- CONFIG_SND_SOC_TAS571X=m
- CONFIG_SND_SOC_WCD934X=m
- CONFIG_SND_SOC_WM8904=m
-+CONFIG_SND_SOC_WM8960=m
- CONFIG_SND_SOC_WM8962=m
- CONFIG_SND_SOC_WSA881X=m
- CONFIG_SND_SOC_LPASS_WSA_MACRO=m
--- 
-2.25.1
+> >  /*
+> >   * These variables are part of the state of the reclaimer, and must be accessed
+> >   * with sgx_reclaimer_lock acquired.
+> > @@ -473,6 +479,26 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
+> >  	return page;
+> >  }
+> >  
+> > +static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
+> > +{
+> > +	struct sgx_epc_section *section;
+> > +	struct sgx_epc_page *page;
+> > +
+> > +	if (WARN_ON_ONCE(nid < 0 || nid >= MAX_NUMNODES))
+> > +		return NULL;
+> > +
+> > +	if (!node_isset(nid, sgx_numa_mask))
+> > +		return NULL;
+> > +
+> > +	list_for_each_entry(section, &sgx_numa_nodes[nid], section_list) {
+> > +		page = __sgx_alloc_epc_page_from_section(section);
+> > +		if (page)
+> > +			return page;
+> > +	}
+> > +
+> > +	return NULL;
+> > +}
+> > +
+> >  /**
+> >   * __sgx_alloc_epc_page() - Allocate an EPC page
+> >   *
+> > @@ -485,13 +511,17 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
+> >   */
+> >  struct sgx_epc_page *__sgx_alloc_epc_page(void)
+> >  {
+> > +	int current_nid = numa_node_id();
+> >  	struct sgx_epc_section *section;
+> >  	struct sgx_epc_page *page;
+> >  	int i;
+> >  
+> > +	page = __sgx_alloc_epc_page_from_node(current_nid);
+> > +	if (page)
+> > +		return page;
+> 
+> Comments, please.
+> 
+> 	/* Try to allocate EPC from the current node, first: */
+> 
+> then:
+> 
+> 	/* Search all EPC sections, ignoring locality: */
+> 
+> >  	for (i = 0; i < sgx_nr_epc_sections; i++) {
+> >  		section = &sgx_epc_sections[i];
+> > -
+> >  		page = __sgx_alloc_epc_page_from_section(section);
+> >  		if (page)
+> >  			return page;
+> 
+> This still has the problem that it exerts too much pressure on the
+> low-numbered sgx_epc_sections[].  If a node's sections are full, it
+> always tries to go after sgx_epc_sections[0].
 
+I have a better idea. See below.
+
+> It can be in another patch, but I think the *minimal* thing we can do
+> here for a NUMA allocator is to try to at least balance the allocations.
+> 
+> Instead of having a for-each-section loop, I'd make it for-each-node ->
+> for-each-section.  Something like:
+> 
+> 	for (i = 0; i < num_possible_nodes(); i++) {
+> 		node = (numa_node_id() + i) % num_possible_nodes()
+> 		
+> 		if (!node_isset(nid, sgx_numa_mask))
+> 			continue;
+> 
+> 		list_for_each_entry(section, &sgx_numa_nodes[nid],
+> 				    section_list) {
+> 			__sgx_alloc_epc_page_from_section(section)
+> 		}
+> 	}
+> 	
+> Then you have a single loop instead of a "try local then a fall back".
+> 
+> Also, that "node++" thing might be able to use next_online_node().
+> 
+> > @@ -665,8 +695,12 @@ static bool __init sgx_page_cache_init(void)
+> >  {
+> >  	u32 eax, ebx, ecx, edx, type;
+> >  	u64 pa, size;
+> > +	int nid;
+> >  	int i;
+> >  
+> > +	nodes_clear(sgx_numa_mask);
+> > +	sgx_numa_nodes = kmalloc_array(MAX_NUMNODES, sizeof(*sgx_numa_nodes), GFP_KERNEL);
+> 
+> MAX_NUMNODES will always be the largest compile-time constant.  That's
+> 4k, IIRC.  num_possible_nodes() might be as small as 1 if NUMA is off.
+
+Right.
+
+> >  	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
+> >  		cpuid_count(SGX_CPUID, i + SGX_CPUID_EPC, &eax, &ebx, &ecx, &edx);
+> >  
+> > @@ -690,6 +724,22 @@ static bool __init sgx_page_cache_init(void)
+> >  		}
+> >  
+> >  		sgx_nr_epc_sections++;
+> > +
+> > +		nid = numa_map_to_online_node(phys_to_target_node(pa));
+> > +
+> > +		if (nid == NUMA_NO_NODE) {
+> > +			pr_err(FW_BUG "unable to map EPC section %d to online node.\n", nid);
+> > +			nid = 0;
+> 
+> Could we dump out the physical address there?  I think that's even more
+> informative than a section number.
+
+Yes.
+
+> > +		} else if (WARN_ON_ONCE(nid < 0 || nid >= MAX_NUMNODES)) {
+> > +			nid = 0;
+> > +		}
+> 
+> I'm not sure we really need to check for these.  If we're worried about
+> the firmware returning these, I'd expect numa_map_to_online_node() to
+> sanity check them for us.
+
+Yes, let's remove it.
+
+> > +		if (!node_isset(nid, sgx_numa_mask)) {
+> > +			INIT_LIST_HEAD(&sgx_numa_nodes[nid]);
+> > +			node_set(nid, sgx_numa_mask);
+> > +		}
+> > +
+> > +		list_add_tail(&sgx_epc_sections[i].section_list, &sgx_numa_nodes[nid]);
+> >  	}
+> >  
+> >  	if (!sgx_nr_epc_sections) {
+> > diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+> > index 5fa42d143feb..4bc31bc4bacf 100644
+> > --- a/arch/x86/kernel/cpu/sgx/sgx.h
+> > +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+> > @@ -45,6 +45,7 @@ struct sgx_epc_section {
+> >  	spinlock_t lock;
+> >  	struct list_head page_list;
+> >  	unsigned long free_cnt;
+> > +	struct list_head section_list;
+> 
+> Maybe name this numa_section_list.
+
+Instead, let's just:
+
+1. Have a global sgx_free_epc_list and remove sgx_epc_section.
+   Pages from this are allocated from this in LIFO fashion.
+2. Instead add struct list_head node_list and use that for node
+   associated pages.
+3. Replace 'int section' with 'int node'.
+
+This will remove one layer of abstraction and provide better fallback
+scheme.
+
+E.g. allocate:
+
+1. Check node_list of current node.
+2. As a fallback check sgx_free_epc_list.
+3. list_del() for two lists.
+
+/Jarkko
