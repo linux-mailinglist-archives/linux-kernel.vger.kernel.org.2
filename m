@@ -2,111 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C8D322C5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B55D0322C70
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbhBWOcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:32:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232608AbhBWOcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:32:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 582B064EC1;
-        Tue, 23 Feb 2021 14:31:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614090682;
-        bh=oqCJx8NHXStuqlV1NrC2dd7e7CMVlgeyC8oEC7KrlG0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=p2B2lsUBRUHMQNFYCxErtzkEFiHGphDbdtN+G9Z1KL0Od+TLCb52iwYAJdqum+PgU
-         Zf4xyqNbXwUKLnalc8pRRulVdsFBxpodn2mvpbb2CKBk01obkYCvpQvlTEhEO95Dtt
-         Gcq260nyEdsVrjBu3ExkixiFX7+XScq57aodHBD434enlAPaW5G8VmCQfKHIvzkX3E
-         EOomp0dz6XDte7O9k6vTuDRMPN5Us238cTFK3ZZ9uKy//EvDHmTI7/ioM/a9Q8LBQ4
-         L0I0MPFKXyqOmSLvFU+Y4Jb4so2rUjJuujJjPmXTty2oLK0kKdjEg0upNwPwPpKOeM
-         9jsuIFnV6R8Cg==
-Received: by mail-ed1-f49.google.com with SMTP id c6so26205528ede.0;
-        Tue, 23 Feb 2021 06:31:22 -0800 (PST)
-X-Gm-Message-State: AOAM530I1f1sOWCFVHy3p0KOPFqkxBSoKuWQSNVFVj7spywVZEkyyyo4
-        eC6JVKbngd7sHFrXzRNIRQkSgGF5QA1cvxpmGQ==
-X-Google-Smtp-Source: ABdhPJyYhIvQsC2FuZjzr5FowQAASKFykbjYyZN9ovf0Da99A769RxD3C30Z3RZmtSjSV1KoZikYqHKwpHOh5s+qPbE=
-X-Received: by 2002:a05:6402:164e:: with SMTP id s14mr15513878edx.62.1614090680626;
- Tue, 23 Feb 2021 06:31:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20210222122406.41782-1-benjamin.gaignard@collabora.com>
- <20210222122406.41782-9-benjamin.gaignard@collabora.com> <20210223003442.GA2516123@robh.at.kernel.org>
- <25f30110-d655-2d77-d3b7-30c1c61f6965@collabora.com>
-In-Reply-To: <25f30110-d655-2d77-d3b7-30c1c61f6965@collabora.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 23 Feb 2021 08:31:08 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJGZK2C8mcDiYa4yfKxf4sKykxSQ-Nfr4bi_u_OcAxW_Q@mail.gmail.com>
-Message-ID: <CAL_JsqJGZK2C8mcDiYa4yfKxf4sKykxSQ-Nfr4bi_u_OcAxW_Q@mail.gmail.com>
-Subject: Re: [PATCH v3 8/9] dt-bindings: media: nxp,imx8mq-vpu: Update bindings
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Peng Fan <peng.fan@nxp.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>
+        id S233039AbhBWOfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:35:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232662AbhBWOf0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:35:26 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01337C06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:34:45 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id m1so10120083qvp.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:34:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Q8hQJDMeUJlqSjrNYnPafLaJX5CJRNsJS+XYHF26pcU=;
+        b=PJnNVGeDqB/jzzRFb43n6pABAUatJLV3VpoQVilcEqdrryJp08zjPufvVz5cFPnSEY
+         t/li1aI0RjRwp7z2bUQbnWYCBL0UM2aSKop0ae9s2DpamNAajkWv+hxDEW2W9qIUp36d
+         PAkr+ieLWes8nDdQ/+SEvLNzI2fhbLggfEVRl9YrCoom2ez47kSRP4/0+WUFn/kOA6Dt
+         tTkwHtzevwds9t+smuh8yccupDpw+dh//SW88nsBdvQXbwTAsE8g1S7IxFZI03HwubvC
+         rBVvVUVzattE0GWgZFrJETMXyA15a2rVhKdtnp2DazMEJEX4XDqEecySE72Fjn1RZ8Z0
+         L2rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Q8hQJDMeUJlqSjrNYnPafLaJX5CJRNsJS+XYHF26pcU=;
+        b=E60qu3ZDvOUzPuUh7iH5oaJzP+7v0k7+vLYMxiyfZnceyTY9JEBWR7udzcBHmkno/f
+         G/if7UHoDxIdIRxPqWvSYzbKBLEyPKVf229gd5YlwZo2/SLw1zX1nf0BZ7haLC38bW9O
+         UeYhaNdBq/LBbU1Hkz9KOG0769dEMr13wPTbHibhSuiv4lx7ll1VWnZ5NOC78oW9QEab
+         CAp0ovtTwij08TKcM9ZVISbi2+JN4JIuvIP5s8LZziDkc6zmoAYTpk5b0xtasZkWktrU
+         ZQ+lD4WDStAx9YmWlBdCFItGErsnHthVsr33q0HSYVj4sRmswkKsov0idN8XLyacgPaF
+         2g8A==
+X-Gm-Message-State: AOAM531V3xQTJDMzzVMTKTRY2WTAmM+BHOZ8j+HUswbA4g7xsNOTEOGg
+        zoThPGAeQQlShj11bQgIQyEGugBj+g==
+X-Google-Smtp-Source: ABdhPJwIekUA4sFfcyjccindFCcQp2ep8MthgqSzW3N3MtGLmm1PZlc40koEqgpP+XoOBcmnN/Qv1jzPlw==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:855b:f924:6e71:3d5d])
+ (user=elver job=sendgmr) by 2002:a0c:a8cf:: with SMTP id h15mr25576657qvc.20.1614090884790;
+ Tue, 23 Feb 2021 06:34:44 -0800 (PST)
+Date:   Tue, 23 Feb 2021 15:34:22 +0100
+Message-Id: <20210223143426.2412737-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+Subject: [PATCH RFC 0/4] Add support for synchronous signals on perf events
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, peterz@infradead.org,
+        alexander.shishkin@linux.intel.com, acme@kernel.org,
+        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
+        namhyung@kernel.org, tglx@linutronix.de
+Cc:     glider@google.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
+        christian@brauner.io, dvyukov@google.com, jannh@google.com,
+        axboe@kernel.dk, mascasa@google.com, pcc@google.com,
+        irogers@google.com, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 2:04 AM Benjamin Gaignard
-<benjamin.gaignard@collabora.com> wrote:
->
->
-> Le 23/02/2021 =C3=A0 01:34, Rob Herring a =C3=A9crit :
-> > On Mon, Feb 22, 2021 at 01:24:05PM +0100, Benjamin Gaignard wrote:
-> >> The current bindings seem to make the assumption that the
-> >> two VPUs hardware blocks (G1 and G2) are only one set of
-> >> registers.
-> >> After implementing the VPU reset driver and G2 decoder driver
-> >> it shows that all the VPUs are independent and don't need to
-> >> know about the registers of the other blocks.
-> >> Remove from the bindings the need to set all blocks register
-> >> but keep reg-names property because removing it from the driver
-> >> may affect other variants.
-> >>
-> >> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> >> ---
-> >> version 2:
-> >> - be more verbose about why I change the bindings
-> >> Keep in mind that series comes after: https://www.spinics.net/lists/ar=
-m-kernel/msg875766.html
-> >> without that review and ack it won't work
-> > Better, but you've still mentioned nothing about breaking compatibility=
-.
-> > Why is that okay?
->
-> Because this reg-names wasn't used before for this variant so remove it w=
-on't change anything.
+The perf subsystem today unifies various tracing and monitoring
+features, from both software and hardware. One benefit of the perf
+subsystem is automatically inheriting events to child tasks, which
+enables process-wide events monitoring with low overheads. By default
+perf events are non-intrusive, not affecting behaviour of the tasks
+being monitored.
 
-It is the reset changes in the driver that break. The driver
-previously got the 'ctrl' registers whether it went by name or index,
-right? With an old DTB and a kernel with the changes (and vice-versa),
-you'll have nothing to handle the VPU resets because the VPU reset
-node doesn't exist. It could work if the default state is not held in
-reset.
+For certain use-cases, however, it makes sense to leverage the
+generality of the perf events subsystem and optionally allow the tasks
+being monitored to receive signals on events they are interested in.
+This patch series adds the option to synchronously signal user space on
+events.
 
-At least the removal of 'ctrl' registers belongs in the reset changes serie=
-s.
+The discussion at [1] led to the changes proposed in this series. The
+approach taken in patch 3/4 to use 'event_limit' to trigger the signal
+was kindly suggested by Peter Zijlstra in [2].
 
-Rob
+[1] https://lore.kernel.org/lkml/CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2jwVAbZD=-XQ@mail.gmail.com/
+[2] https://lore.kernel.org/lkml/YBv3rAT566k+6zjg@hirez.programming.kicks-ass.net/ 
+
+Motivation and example uses:
+
+1. 	Our immediate motivation is low-overhead sampling-based race
+	detection for user-space [3]. By using perf_event_open() at
+	process initialization, we can create hardware
+	breakpoint/watchpoint events that are propagated automatically
+	to all threads in a process. As far as we are aware, today no
+	existing kernel facility (such as ptrace) allows us to set up
+	process-wide watchpoints with minimal overheads (that are
+	comparable to mprotect() of whole pages).
+
+	[3] https://llvm.org/devmtg/2020-09/slides/Morehouse-GWP-Tsan.pdf 
+
+2.	Other low-overhead error detectors that rely on detecting
+	accesses to certain memory locations or code, process-wide and
+	also only in a specific set of subtasks or threads.
+
+Other example use-cases we found potentially interesting:
+
+3.	Code hot patching without full stop-the-world. Specifically, by
+	setting a code breakpoint to entry to the patched routine, then
+	send signals to threads and check that they are not in the
+	routine, but without stopping them further. If any of the
+	threads will enter the routine, it will receive SIGTRAP and
+	pause.
+
+4. 	Safepoints without mprotect(). Some Java implementations use
+	"load from a known memory location" as a safepoint. When threads
+	need to be stopped, the page containing the location is
+	mprotect()ed and threads get a signal. This can be replaced with
+	a watchpoint, which does not require a whole page nor DTLB
+	shootdowns.
+
+5.	Tracking data flow globally.
+
+6.	Threads receiving signals on performance events to
+	throttle/unthrottle themselves.
+
+
+Marco Elver (4):
+  perf/core: Apply PERF_EVENT_IOC_MODIFY_ATTRIBUTES to children
+  signal: Introduce TRAP_PERF si_code and si_perf to siginfo
+  perf/core: Add support for SIGTRAP on perf events
+  perf/core: Add breakpoint information to siginfo on SIGTRAP
+
+ arch/m68k/kernel/signal.c          |  3 ++
+ arch/x86/kernel/signal_compat.c    |  5 ++-
+ fs/signalfd.c                      |  4 +++
+ include/linux/compat.h             |  2 ++
+ include/linux/signal.h             |  1 +
+ include/uapi/asm-generic/siginfo.h |  6 +++-
+ include/uapi/linux/perf_event.h    |  3 +-
+ include/uapi/linux/signalfd.h      |  4 ++-
+ kernel/events/core.c               | 54 +++++++++++++++++++++++++++++-
+ kernel/signal.c                    | 11 ++++++
+ 10 files changed, 88 insertions(+), 5 deletions(-)
+
+-- 
+2.30.0.617.g56c4b15f3c-goog
+
