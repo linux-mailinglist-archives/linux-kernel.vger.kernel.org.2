@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81B832258D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9858D32258B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhBWFv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 00:51:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54486 "EHLO mail.kernel.org"
+        id S231440AbhBWFvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 00:51:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231393AbhBWFvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231403AbhBWFvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Feb 2021 00:51:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFD3964E60;
-        Tue, 23 Feb 2021 05:50:33 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FA0B64E61;
+        Tue, 23 Feb 2021 05:50:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614059434;
-        bh=IPkD+572EaUq/Ouy9LtIH5yCNhFOhkYfrxu8FFiUTRg=;
+        bh=IxzJw0GUqBQVtl7etqZ3Ql2q06WxtQPDUPWKaQdph1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=stGgyRsuhqDn1KY3wVlD82Jr93tvHhs6l6I2q1NPz5eBsWWPldliFJ3gHhLiew/f2
-         1QsogMswaYaz1/BUKkKGo98IxBbY3JUcFRyf/W9fxrhbO9l9PuAWgp9p7DwgQmfCXN
-         1kbl0IsKdkxB+BFPEPCckDwZBdikUAjPhydSd0xwxdrz65y+GOlZhJX3hul1cMpGfO
-         jgcZRgcm+haCHQt9iFHSnDR1bzrMnF6Q8bBz9u5GLEss7nIKzbf5GizLZRDFMtZUk0
-         91eQaW3r6WpGHbQqeUx+geojFYxnr/iXHSeamApQ0d3hBjQjyqpFbQ7tKzrgjNZ09m
-         EXATPoakyyGMw==
+        b=Fn98GEJTL3sl0A4K9Lds/PKQZk62q7DYsV/rWbcO5ctMBMgfmuTo71kJx8BIqcT2O
+         f/NmUjcJKY0hrey4kYjnaAwW2W88OFzDE+JOjF+Nr3SFbeOmobH/j6wW4k6xY5r+Tl
+         Sqt+bHy4cGWPBBJxwM+f76594/99wfQ6mr30IM2PlgrElC0jcjYPGRZ7QR2OIjruhg
+         1i2RBH7bPrTgqo8deOOQo2nCaEfaPlFPNThB23xupkYVPkIpu5Lngxh5wsbdShtsL+
+         ExhhYQCeIJ6new0JrMvDCSQEw8TT1AbeDWnxJ4rV7eobLbgzjGcarzROY0n7Oeq2bn
+         EfFMolV4byplA==
 From:   Andy Lutomirski <luto@kernel.org>
 To:     x86@kernel.org
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH 2/3] x86/entry: Fix entry/exit mismatch on failed fast 32-bit syscalls
-Date:   Mon, 22 Feb 2021 21:50:28 -0800
-Message-Id: <a0025117242488a30621fb9858918802532f9ee9.1614059335.git.luto@kernel.org>
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH 3/3] selftests/x86: Add a missing .note.GNU-stack section to thunks_32.S
+Date:   Mon, 22 Feb 2021 21:50:29 -0800
+Message-Id: <850bb26d395a4091418f8fc2763359eb7b99ee30.1614059335.git.luto@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1614059335.git.luto@kernel.org>
 References: <cover.1614059335.git.luto@kernel.org>
@@ -39,34 +39,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a 32-bit fast syscall that fails to read its arguments from user
-memory, the kernel currently does syscall exit work but not
-syscall exit work.  This would confuse audit and ptrace.
+test_syscall_vdso_32 ended up with an executable stacks because the asm was
+missing the annotation that says that it is modern and doesn't need an
+executable stack.  Add the annotation.
 
-This is a minimal fix intended for ease of backporting.  A more
-complete cleanup is coming.
+This was missed in commit aeaaf005da1d ("selftests/x86: Add missing
+.note.GNU-stack sections").
 
-Cc: stable@vger.kernel.org
-Fixes: 0b085e68f407 ("x86/entry: Consolidate 32/64 bit syscall entry")
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/entry/common.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/testing/selftests/x86/thunks_32.S | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 0904f5676e4d..cf4dcf346ca8 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -128,7 +128,8 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
- 		regs->ax = -EFAULT;
+diff --git a/tools/testing/selftests/x86/thunks_32.S b/tools/testing/selftests/x86/thunks_32.S
+index a71d92da8f46..f3f56e681e9f 100644
+--- a/tools/testing/selftests/x86/thunks_32.S
++++ b/tools/testing/selftests/x86/thunks_32.S
+@@ -45,3 +45,5 @@ call64_from_32:
+ 	ret
  
- 		instrumentation_end();
--		syscall_exit_to_user_mode(regs);
-+		local_irq_disable();
-+		exit_to_user_mode();
- 		return false;
- 	}
- 
+ .size call64_from_32, .-call64_from_32
++
++.section .note.GNU-stack,"",%progbits
 -- 
 2.29.2
 
