@@ -2,60 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7AC3225B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 07:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A66B93225B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 07:18:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhBWGOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 01:14:48 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:36089 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229949AbhBWGOI (ORCPT
+        id S230281AbhBWGSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 01:18:10 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:56442 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230349AbhBWGSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 01:14:08 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UPLGGyu_1614060799;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPLGGyu_1614060799)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 23 Feb 2021 14:13:24 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     harry.wentland@amd.com
-Cc:     sunpeng.li@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] drm/amd/display: Remove unnecessary conversion to bool
-Date:   Tue, 23 Feb 2021 14:13:17 +0800
-Message-Id: <1614060797-124965-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 23 Feb 2021 01:18:05 -0500
+Received: from [192.168.0.114] (unknown [49.207.208.227])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 6B99520B6C40;
+        Mon, 22 Feb 2021 22:17:23 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6B99520B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1614061045;
+        bh=lUNtrJvctvJzEcm1zYcLcrAroXBINRuq0RjqjDVmyfs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=KT2/lZB44jCwhVMbSkk7ge2xvbpsHiCOTJmKxL+Igd5gJFpX48A56PJgYHZW+tcur
+         OVVNTThZnd5E9/O71bUH76bQdH/kUvv2W5ntL0odWEzIKEGpB1+ZzSwBVljO1fHosT
+         k9k+fEv2UIibl4CV/7I1tz5eQz8lIAh41STZA3wM=
+Subject: Re: [PATCH 0/2] optee: fix OOM seen due to tee_shm_free()
+To:     Allen Pais <allen.lkml@gmail.com>, jens.wiklander@linaro.org,
+        zajec5@gmail.com
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org
+References: <20210217092714.121297-1-allen.lkml@gmail.com>
+From:   Allen Pais <apais@linux.microsoft.com>
+Message-ID: <7ed919a9-2ef3-95f3-3bf4-70961a18656a@linux.microsoft.com>
+Date:   Tue, 23 Feb 2021 11:47:20 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210217092714.121297-1-allen.lkml@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
 
-./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c:8260:16-21: WARNING:
-conversion to bool not needed here.
+> 
+> The following out of memory errors are seen on kexec reboot
+> from the optee core.
+>      
+> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
+> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -22
+>      
+> tee_shm_release() is not invoked on dma shm buffer.
+>      
+> Implement .shutdown() in optee core as well as bnxt firmware driver
+> to handle the release of the buffers correctly.
+>      
+> More info:
+> https://github.com/OP-TEE/optee_os/issues/3637
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Jens,
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 94cd5dd..323473d 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -8253,8 +8253,7 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
- 			hdcp_update_display(
- 				adev->dm.hdcp_workqueue, aconnector->dc_link->link_index, aconnector,
- 				new_con_state->hdcp_content_type,
--				new_con_state->content_protection == DRM_MODE_CONTENT_PROTECTION_DESIRED ? true
--													 : false);
-+				new_con_state->content_protection == DRM_MODE_CONTENT_PROTECTION_DESIRED);
- 	}
- #endif
- 
--- 
-1.8.3.1
+   Could you please take sometime out and review the series.
 
+Thanks.
+
+> 
+> Allen Pais (2):
+>    optee: fix tee out of memory failure seen during kexec reboot
+>    firmware: tee_bnxt: implement shutdown method to handle kexec reboots
+> 
+>   drivers/firmware/broadcom/tee_bnxt_fw.c |  9 ++++
+>   drivers/tee/optee/core.c                | 69 ++++++++++++++++++-------
+>   2 files changed, 58 insertions(+), 20 deletions(-)
+> 
