@@ -2,174 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF223230C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0C03230C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbhBWS3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 13:29:38 -0500
-Received: from mga14.intel.com ([192.55.52.115]:19911 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232878AbhBWS3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 13:29:31 -0500
-IronPort-SDR: 83/88wiE+vzZfpOzljeOxD4arlB1WBO3sSmYBvxGdw1K50bg2LB8e601QSUc+X61FQ0BnHnuio
- 4rDi2KjnbArA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="184200622"
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="184200622"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 10:28:49 -0800
-IronPort-SDR: W/xNUxWvWPhcqKfi/wdaw2bX+SbMboVw53nq7Dx0hdLPouhwFI10AAIbp3HrjlDidIzG6dROB+
- tzOoZKUd/f7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="391089711"
-Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 23 Feb 2021 10:28:48 -0800
-Received: from kbuild by 16660e54978b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lEcQR-0001Sg-Tn; Tue, 23 Feb 2021 18:28:47 +0000
-Date:   Wed, 24 Feb 2021 02:28:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/testing] BUILD SUCCESS WITH WARNING
- 16c90ac027a98f2bb63534c625befee648350153
-Message-ID: <60354932.pM4U/Jlyla07w8om%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S233967AbhBWSah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 13:30:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42277 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233959AbhBWSa2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 13:30:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614104942;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o+lMNmwE9sWeaJZim5ktBynQMO9mBkWFkIPu3ZX6sdY=;
+        b=GxTI5FNILOwQGgO1im5rT80uUghcNdet7H1yRoj0nI2rCJwZ+w2uw0uWQu1NGk5QVYskYi
+        zs1+9flIieVgh9vgXQn2c7RyuLG4H1JfIHW+5doLTxgagC/HAXpgIJbZLKGjZ0WzG1p+Uv
+        hgcabndRFG/vLrIYVLnuRzunbw8csz4=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437--oeHDZG5MCuyTMG1Tr-K_A-1; Tue, 23 Feb 2021 13:29:00 -0500
+X-MC-Unique: -oeHDZG5MCuyTMG1Tr-K_A-1
+Received: by mail-qk1-f198.google.com with SMTP id m16so1228614qkh.20
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:29:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o+lMNmwE9sWeaJZim5ktBynQMO9mBkWFkIPu3ZX6sdY=;
+        b=K9lNahksB5itGhwteP4WgX124fov8zYEQXdXUZEG9q5zHXPKnxIR13yDvSyBq73dwl
+         TO5OgryfkncNOa+ZvCcwtsE+8TB2cnzKrjP+6qwzsNuZcWif6awp2GHlKdXNWHkOx9xM
+         enSs7SuKNxns7EkBWSt8JK4V863HlouXhjkHHymsy84B4sY7cArBcLba7pRRPxxoVZQZ
+         BxHo3vAObAZKTQ26inj5rFGtTDzaHCRKrqDIYW7nKPnWgyJdyAcz19ZUeXY/q26gVTRG
+         ZT4Yp3H/as7gxkMnExYCGe5n62Z0PhA4CXevx57xemHP4H8ai4S4/rhIMkn9+vaQTwzh
+         72+A==
+X-Gm-Message-State: AOAM530YCGI6aHkwlBXD+FrbX+4T7FBD0XpO2MrRuROIutKAhlMjZd4J
+        I1JGeX7TqAC0by/b5fyF8zPJO18RaG3KjpTVQrNNMUVihmUNAEuplRTVf1T6AmZRLmbGqG2p34W
+        ygXxX+A1C70JKpbQ4LcG86LRR
+X-Received: by 2002:a05:620a:21c2:: with SMTP id h2mr27925116qka.494.1614104940023;
+        Tue, 23 Feb 2021 10:29:00 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw/BshTm6p2mAAGoJn9l2lOs8hsKvkpGfB8X8pMIvq7Eii7zi5lDF8avtFrEUscK2NizzpzIA==
+X-Received: by 2002:a05:620a:21c2:: with SMTP id h2mr27925073qka.494.1614104939764;
+        Tue, 23 Feb 2021 10:28:59 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-25-174-95-95-253.dsl.bell.ca. [174.95.95.253])
+        by smtp.gmail.com with ESMTPSA id d5sm9388455qtd.67.2021.02.23.10.28.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 10:28:58 -0800 (PST)
+Date:   Tue, 23 Feb 2021 13:28:56 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v7 4/6] userfaultfd: add UFFDIO_CONTINUE ioctl
+Message-ID: <20210223182856.GA176114@xz-x1>
+References: <20210219004824.2899045-1-axelrasmussen@google.com>
+ <20210219004824.2899045-5-axelrasmussen@google.com>
+ <20210223153840.GB154711@xz-x1>
+ <CAJHvVcg_hV0diLxyB2=JbLbJkXWTW+zsPsdzBTJW_WcG-vbvbA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJHvVcg_hV0diLxyB2=JbLbJkXWTW+zsPsdzBTJW_WcG-vbvbA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/testing
-branch HEAD: 16c90ac027a98f2bb63534c625befee648350153  xfs: Replace one-element arrays with flexible-array members
+On Tue, Feb 23, 2021 at 10:05:49AM -0800, Axel Rasmussen wrote:
+> On Tue, Feb 23, 2021 at 7:38 AM Peter Xu <peterx@redhat.com> wrote:
+> >
+> > On Thu, Feb 18, 2021 at 04:48:22PM -0800, Axel Rasmussen wrote:
+> > > @@ -4645,8 +4646,18 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+> > >       spinlock_t *ptl;
+> > >       int ret;
+> > >       struct page *page;
+> > > +     int writable;
+> > >
+> > > -     if (!*pagep) {
+> > > +     mapping = dst_vma->vm_file->f_mapping;
+> > > +     idx = vma_hugecache_offset(h, dst_vma, dst_addr);
+> > > +
+> > > +     if (is_continue) {
+> > > +             ret = -EFAULT;
+> > > +             page = find_lock_page(mapping, idx);
+> > > +             *pagep = NULL;
+> >
+> > Why set *pagep to NULL?  Shouldn't it be NULL always?.. If that's the case,
+> > maybe WARN_ON_ONCE(*pagep) suite more.
+> 
+> Right, the caller should be passing in NULL in the
+> MCOPY_ATOMIC_CONTINUE case. Looking more closely at the caller
+> (__mcopy_atomic_hugetlb), it already has a BUG_ON(page), so at best
+> this assignment is redundant, and at worst it might actually cover up
+> a real bug (say the caller mistakenly *did* pass in some page, we'd
+> set it to NULL and the BUG_ON wouldn't trigger).
+> 
+> So, I'll just remove this - I don't think an additional WARN_ON_ONCE
+> is needed given the existing BUG_ON.
 
-possible Warning in current branch:
+It's still okay to have the WARN_ON_ONCE; it gives a direct hint that *pagep
+should never be set for uffdio_continue.  No strong opinion.
 
-drivers/media/radio/wl128x/fmdrv_common.c:435:21: warning: array subscript 2 is outside array bounds of 'u16[1]' {aka 'short unsigned int[1]'} [-Warray-bounds]
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [3, 7] from the object at 'cmd' is out of the bounds of referenced subobject 'feature' with type 'unsigned char' at offset 1 [-Warray-bounds]
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [3, 8] from the object at 'cmd' is out of the bounds of referenced subobject 'feature' with type 'unsigned char' at offset 1 [-Warray-bounds]
-include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [33, 48] from the object at 'flow_keys' is out of the bounds of referenced subobject 'ipv6_src' with type '__u32[4]' {aka 'unsigned int[4]'} at offset 16 [-Warray-bounds]
+> 
+> >
+> > Otherwise the patch looks good to me.
+> 
+> Shall I add a R-B? :)
 
-Warning ids grouped by kconfigs:
+Yes, as long as "*pagep = NULL" dropped, please feel free to. :)
 
-gcc_recent_errors
-|-- arc-randconfig-r025-20210222
-|   `-- drivers-media-radio-wl128x-fmdrv_common.c:warning:array-subscript-is-outside-array-bounds-of-u16-aka-short-unsigned-int
-|-- i386-allyesconfig
-|   `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
-|-- i386-randconfig-r011-20210222
-|   |-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
-|   `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-flow_keys-is-out-of-the-bounds-of-referenced-subobject-ipv6_src-with-type-__u32-aka-unsigned-int-at-offset
-`-- i386-randconfig-s002-20210223
-    `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+Thanks,
 
-elapsed time: 1120m
+-- 
+Peter Xu
 
-configs tested: 95
-configs skipped: 3
-
-gcc tested configs:
-arm64                               defconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         at91_dt_defconfig
-mips                     decstation_defconfig
-m68k                       bvme6000_defconfig
-arm                       versatile_defconfig
-arm                        multi_v7_defconfig
-alpha                            alldefconfig
-powerpc                      ppc64e_defconfig
-arm                           tegra_defconfig
-powerpc                     ksi8560_defconfig
-openrisc                    or1ksim_defconfig
-powerpc                  mpc885_ads_defconfig
-openrisc                  or1klitex_defconfig
-m68k                        m5307c3_defconfig
-mips                        omega2p_defconfig
-powerpc                     sbc8548_defconfig
-powerpc                        warp_defconfig
-openrisc                            defconfig
-arm                        mini2440_defconfig
-arm                       spear13xx_defconfig
-sh                        sh7785lcr_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-parisc                              defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210222
-i386                 randconfig-a006-20210222
-i386                 randconfig-a004-20210222
-i386                 randconfig-a003-20210222
-i386                 randconfig-a001-20210222
-i386                 randconfig-a002-20210222
-x86_64               randconfig-a001-20210222
-x86_64               randconfig-a002-20210222
-x86_64               randconfig-a003-20210222
-x86_64               randconfig-a005-20210222
-x86_64               randconfig-a006-20210222
-x86_64               randconfig-a004-20210222
-i386                 randconfig-a013-20210222
-i386                 randconfig-a012-20210222
-i386                 randconfig-a011-20210222
-i386                 randconfig-a014-20210222
-i386                 randconfig-a015-20210222
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20210222
-x86_64               randconfig-a011-20210222
-x86_64               randconfig-a012-20210222
-x86_64               randconfig-a016-20210222
-x86_64               randconfig-a014-20210222
-x86_64               randconfig-a013-20210222
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
