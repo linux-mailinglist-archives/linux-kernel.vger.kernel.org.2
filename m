@@ -2,120 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14724322896
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11363322894
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbhBWKId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:08:33 -0500
-Received: from conuserg-08.nifty.com ([210.131.2.75]:45189 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbhBWKHs (ORCPT
+        id S232410AbhBWKIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 05:08:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232202AbhBWKHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:07:48 -0500
-Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 11NA6MWu027532;
-        Tue, 23 Feb 2021 19:06:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 11NA6MWu027532
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614074783;
-        bh=owZQEXlFIQ33aUPBIXx5P3uyVNGtycyIe/UsLJziBHQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=l44/E6+HFnGiVvw+YJmuspNes+npkA4ClvTaqyrX7X5+RlJjrF9JNVGcVTqSwK+4r
-         rH8iwhSClDlwVh1Qwc/Lo4VLhx9uP3Fg1pYYNoOIwbQVmF1EKOMqcbtaGOIVB99pZm
-         vB8cWFja1r3rzWUXQDxoybw6rE6CkIbBi80fQifB0oYJMgUtaPve4sPmKtqK81aNzi
-         zB0DBNQ1kH3a5HZbuvBhJ+UpTau5yblloiLiviMtSa/anKZdcxKP53yFE79nl/vuEo
-         99EoCFqOil/yLL64J0bou6fwMlE1fKRP+UB+NDooldit4tKzinjnE0lNPMRWforwAA
-         0Obx6MXyJ1VEg==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-arch@vger.kernel.org
-Subject: [PATCH] asm-generic/ioctl.h: use BUILD_BUG_ON_ZERO() for type check
-Date:   Tue, 23 Feb 2021 19:06:19 +0900
-Message-Id: <20210223100619.798698-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Tue, 23 Feb 2021 05:07:42 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB583C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 02:07:02 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lEUan-0005RW-MQ; Tue, 23 Feb 2021 11:06:57 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lEUam-00035o-RS; Tue, 23 Feb 2021 11:06:56 +0100
+Date:   Tue, 23 Feb 2021 11:06:56 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v5 2/2] counter: add IRQ or GPIO based event counter
+Message-ID: <20210223100656.efbshsh5bz66uhj5@pengutronix.de>
+References: <20210208135347.18494-1-o.rempel@pengutronix.de>
+ <20210208135347.18494-3-o.rempel@pengutronix.de>
+ <YCjlPhEtyH+vfSi4@shinobu>
+ <20210215091737.fx6dwiz7tt56wbkr@pengutronix.de>
+ <YDMMJJ985Zq9oEOv@shinobu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YDMMJJ985Zq9oEOv@shinobu>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:39:14 up 82 days, 23:45, 41 users,  load average: 0.02, 0.05,
+ 0.06
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the latest sparse, I do not see the error claimed by commit
-d55875f5d52c ("include/asm-generic/ioctl.h: fix _IOC_TYPECHECK sparse
-error").
+On Mon, Feb 22, 2021 at 10:43:00AM +0900, William Breathitt Gray wrote:
+> On Mon, Feb 15, 2021 at 10:17:37AM +0100, Oleksij Rempel wrote:
+> > > > +static irqreturn_t event_cnt_isr(int irq, void *dev_id)
+> > > > +{
+> > > > +	struct event_cnt_priv *priv = dev_id;
+> > > > +
+> > > > +	atomic_inc(&priv->count);
+> > > 
+> > > This is just used to count the number of interrupts right? I wonder if
+> > > we can do this smarter. For example, the kernel already keeps track of
+> > > number of interrupts that has occurred for any particular IRQ line on a
+> > > CPU (see the 'kstat_irqs' member of struct irq_desc, and the
+> > > show_interrupts() function in kernel/irq/proc.c). Would it make sense to
+> > > simply store the initial interrupt count on driver load or enablement,
+> > > and then return the difference during a count_read() callback?
+> > 
+> > This driver do not makes a lot of sense without your chardev patches. As
+> > soon as this patches go mainline, this driver will be able to send
+> > event with a timestamp and counter state to the user space.
+> > 
+> > With other words, we will need an irq handler anyway. In this case we
+> > can't save more RAM or CPU cycles by using system irq counters.
+> 
+> It's true that this driver will need an IRQ handler when the timestamp
+> functionality is added, but deriving the count value is different matter
+> regardless. There's already code in the kernel to retrieve the number of
+> interrupts, so it makes sense that we use that rather than rolling our
+> own -- at the very least to ensure the value we provide to users is
+> consistent with the ones already provided by other areas of the kernel.
 
-Anyway, using BUILD_BUG_ON_ZERO() is clearer, and we do not need
-to worry about sparse because BUILD_BUG_ON_ZERO() definition in
-<linux/build_bug.h> is a constant zero when __CHECKER__ is defined.
+We are talking about one or two code lines. If we will take some
+duplication search engine, it will find that major part of the kernel
+is matching against it.
 
-Also, remove #ifndef __KERNEL__ from <uapi/asm-generic/ioctl.h>.
+Newer the less, this driver provides a way to reset the counter. Why
+should we drop this functionality no advantage?
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+> To that end, I'd like to see your cnt_isr() function removed for this
+> patchset (you can bring it back once timestamp support is added).
 
- include/asm-generic/ioctl.h      | 12 ++++--------
- include/uapi/asm-generic/ioctl.h | 13 ++++++-------
- 2 files changed, 10 insertions(+), 15 deletions(-)
+Are you suggesting to enable IRQ without interrupt handler? May be i'm
+missing some thing.. I do not understand it.
 
-diff --git a/include/asm-generic/ioctl.h b/include/asm-generic/ioctl.h
-index 9fda9ed000cd..d5129d70ee1c 100644
---- a/include/asm-generic/ioctl.h
-+++ b/include/asm-generic/ioctl.h
-@@ -2,17 +2,13 @@
- #ifndef _ASM_GENERIC_IOCTL_H
- #define _ASM_GENERIC_IOCTL_H
- 
-+#include <linux/build_bug.h>
- #include <uapi/asm-generic/ioctl.h>
- 
--#ifdef __CHECKER__
--#define _IOC_TYPECHECK(t) (sizeof(t))
--#else
- /* provoke compile error for invalid uses of size argument */
--extern unsigned int __invalid_size_argument_for_IOC;
-+#undef _IOC_TYPECHECK
- #define _IOC_TYPECHECK(t) \
--	((sizeof(t) == sizeof(t[1]) && \
--	  sizeof(t) < (1 << _IOC_SIZEBITS)) ? \
--	  sizeof(t) : __invalid_size_argument_for_IOC)
--#endif
-+	BUILD_BUG_ON_ZERO(sizeof(t) != sizeof(t[1]) || \
-+			  sizeof(t) >= (1 << _IOC_SIZEBITS))
- 
- #endif /* _ASM_GENERIC_IOCTL_H */
-diff --git a/include/uapi/asm-generic/ioctl.h b/include/uapi/asm-generic/ioctl.h
-index a84f4db8a250..d50bd39ec3e3 100644
---- a/include/uapi/asm-generic/ioctl.h
-+++ b/include/uapi/asm-generic/ioctl.h
-@@ -72,9 +72,8 @@
- 	 ((nr)   << _IOC_NRSHIFT) | \
- 	 ((size) << _IOC_SIZESHIFT))
- 
--#ifndef __KERNEL__
--#define _IOC_TYPECHECK(t) (sizeof(t))
--#endif
-+#define _IOC_TYPECHECK(t)	0
-+#define _IOC_SIZE_WITH_TYPECHECK(t)	(sizeof(t) + _IOC_TYPECHECK(t))
- 
- /*
-  * Used to create numbers.
-@@ -82,10 +81,10 @@
-  * NOTE: _IOW means userland is writing and kernel is reading. _IOR
-  * means userland is reading and kernel is writing.
-  */
--#define _IO(type,nr)		_IOC(_IOC_NONE,(type),(nr),0)
--#define _IOR(type,nr,size)	_IOC(_IOC_READ,(type),(nr),(_IOC_TYPECHECK(size)))
--#define _IOW(type,nr,size)	_IOC(_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
--#define _IOWR(type,nr,size)	_IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
-+#define _IO(type,nr)		_IOC(_IOC_NONE, type, nr, 0)
-+#define _IOR(type,nr,size)	_IOC(_IOC_READ, type, nr, _IOC_SIZE_WITH_TYPECHECK(size))
-+#define _IOW(type,nr,size)	_IOC(_IOC_WRITE, type, nr, _IOC_SIZE_WITH_TYPECHECK(size))
-+#define _IOWR(type,nr,size)	_IOC(_IOC_READ|_IOC_WRITE, type, nr, _IOC_SIZE_WITH_TYPECHECK(size))
- #define _IOR_BAD(type,nr,size)	_IOC(_IOC_READ,(type),(nr),sizeof(size))
- #define _IOW_BAD(type,nr,size)	_IOC(_IOC_WRITE,(type),(nr),sizeof(size))
- #define _IOWR_BAD(type,nr,size)	_IOC(_IOC_READ|_IOC_WRITE,(type),(nr),sizeof(size))
+> Reimplement your cnt_read/cnt_write() functions to instead use
+> kstat_irqs_usr() from <linux/kernel_stat.h> to get the current number of
+> interrupts the IRQ line and use it to derive your count value for this
+> driver.
+
+I can follow the counter read way, but overwriting system wide counter
+for local use is bad idea.
+
+> > > > +static struct counter_signal event_cnt_signals[] = {
+> > > > +	{
+> > > > +		.id = 0,
+> > > > +		.name = "Channel 0 signal",
+> > > 
+> > > You should choose a more description name for this Signal;
+> > > "Channel 0 signal" isn't very useful information for the user. Is this
+> > > signal the respective GPIO line state?
+> > 
+> > Sounds plausible. How about "Channel 0, GPIO line state"?
+> 
+> Ideally, this would match the GPIO name (or I suppose the IRQ number if
+> not a GPIO line). So in your probe() function you can do something like
+> this I believe:
+> 
+> 	cnt_signals[0].name = priv->gpio->name;
+
+to make this possible, i would need hack gpiolib framework and add
+name/label exporter. But after endless rounds of pingponging me for
+renaming the driver and removing interrupt handler, i feel like we are
+not having serious discussion for mainlining this driver.
+
+Is it some expensive way to prepare me for 1. April joke?
+
+> Of course, you should first check whether this is a GPIO line or IRQ
+> line and set the name accordingly.
+
+Please, let's stop bike-shed for now. This driver has no limitless
+budget. If there are serious problem, I would love to fix it, but if we
+still discussing name of the driver or how to misuse kernel interrupt
+handling, then it makes no sense to continue.
+
+Regards,
+Oleksij
 -- 
-2.27.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
