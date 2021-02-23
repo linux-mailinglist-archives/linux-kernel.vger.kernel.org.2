@@ -2,116 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE17D323196
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:47:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC75D323199
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233946AbhBWTr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 14:47:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20936 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231514AbhBWTrW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 14:47:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614109556;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k6yTUk4uiMxB/J45WOwiwNDUQruhsfoPNbtv/+KOvq4=;
-        b=BxNTynZ+GbCYXyQFq7S29WUOcG9xvivZifkiNXH1/GmlLivSNcB1DLx2g7yKZl7sxdociV
-        L506hP82hox2UDP1lV/960cMO/q5o4gP7/cEe9Q0NV068Dlq40H56P+e5XsDeeHBTZIKgM
-        cHFbStmTr++9q39QuLbfzW/oWMihpZo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-0o9XgixIO7SOTOk_xRElUw-1; Tue, 23 Feb 2021 14:45:51 -0500
-X-MC-Unique: 0o9XgixIO7SOTOk_xRElUw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0C78107ACF8;
-        Tue, 23 Feb 2021 19:45:49 +0000 (UTC)
-Received: from treble (ovpn-118-117.rdu2.redhat.com [10.10.118.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AB5B75C277;
-        Tue, 23 Feb 2021 19:45:48 +0000 (UTC)
-Date:   Tue, 23 Feb 2021 13:45:46 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Evgenii Shatokhin <eshatokhin@virtuozzo.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        live-patching@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Konstantin Khorenko <khorenko@virtuozzo.com>
-Subject: Re: 'perf probe' and symbols from .text.<something>
-Message-ID: <20210223194546.dhejf4mpugyw3nqq@treble>
-References: <09257fb8-3ded-07b0-b3cc-55d5431698d8@virtuozzo.com>
- <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
- <20210222175150.yxgw3sxxaqjqgq56@treble>
- <20210223102331.147d62de88886a75013c10e0@kernel.org>
- <20210223163619.0cd580a4290165208c8aa7bb@kernel.org>
+        id S234092AbhBWTsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 14:48:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234084AbhBWTs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 14:48:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF0F764E61;
+        Tue, 23 Feb 2021 19:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614109668;
+        bh=MFNRRJdEMQ2zfs9yfpiG4cj/GRXl4P4mMHmsA7H11Rk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NSlbcKDLODzruMc2YZesoD/aRId5q/zX65UchgP7+6FgTStIrrmtX6YVYS9SrxmNO
+         +XpnfEcLfd686EarP+Z5ZAyhgkLsFWwMC//TZvH2msnSGpHvEmR191xdnrovqK8UiP
+         iyPPFlJpIg8zCApiN/mL72TFtFAKA67ZcpF2XinEXNZWzNm1HuuD0s2FxzX89zCe8r
+         oSXRBTbd5iWCajmZte3uNESEaekHN8ybVuLjI/KcA4SHw8mMOuQeW6HGQHzw3an4h7
+         4cNikHfPVRDJtXzVCEpRWrpDV5gmDZXbZudGWHCBxk8tONYAS/uhg3FCJyi0TW9Gof
+         HhbSkDMK3tDHw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id BB19040CD9; Tue, 23 Feb 2021 16:47:44 -0300 (-03)
+Date:   Tue, 23 Feb 2021 16:47:44 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf annotate: improve --stdio mode
+Message-ID: <YDVb4KS/ARbtfoAw@kernel.org>
+References: <a0d53f31-f633-5013-c386-a4452391b081@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210223163619.0cd580a4290165208c8aa7bb@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a0d53f31-f633-5013-c386-a4452391b081@suse.cz>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 04:36:19PM +0900, Masami Hiramatsu wrote:
-> On Tue, 23 Feb 2021 10:23:31 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > On Mon, 22 Feb 2021 11:51:50 -0600
-> > Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > 
-> > > On Tue, Feb 23, 2021 at 12:05:08AM +0900, Masami Hiramatsu wrote:
-> > > > > Of course, one could place probes using absolute addresses of the 
-> > > > > functions but that would be less convenient.
-> > > > > 
-> > > > > This also affects many livepatch modules where the kernel code can be 
-> > > > > compiled with -ffunction-sections and each function may end up in a 
-> > > > > separate section .text.<function_name>. 'perf probe' cannot be used 
-> > > > > there, except with the absolute addresses.
-> > > > > 
-> > > > > Moreover, if FGKASLR patches are merged 
-> > > > > (https://lwn.net/Articles/832434/) and the kernel is built with FGKASLR 
-> > > > > enabled, -ffunction-sections will be used too. 'perf probe' will be 
-> > > > > unable to see the kernel functions then.
-> > > > 
-> > > > Hmm, if the FGKASLAR really randomizes the symbol address, perf-probe
-> > > > should give up "_text-relative" probe for that kernel, and must fallback
-> > > > to the "symbol-based" probe. (Are there any way to check the FGKASLR is on?)
-> > > > The problem of "symbol-based" probe is that local (static) symbols
-> > > > may share a same name sometimes. In that case, it can not find correct
-> > > > symbol. (Maybe I can find a candidate from its size.)
-> > > > Anyway, sometimes the security and usability are trade-off.
-> > > 
-> > > We had a similar issue with FGKASLR and live patching.  The proposed
-> > > solution is a new linker flag which eliminates duplicates: -z
-> > > unique-symbol.
-> > > 
-> > > https://sourceware.org/bugzilla/show_bug.cgi?id=26391
-> > 
-> > Interesting, but it might not be enough for perf-probe.
-> > Since the perf-probe has to handle both dwarf and elf, both must be
-> > changed. I think the problem is that the dwarf is generated while
-> > compiling, but this -z seems converting elf symbols in linkage.
-> > As far as I can see, this appends ".COUNT" suffix to the non-unique
-> > symbols in the linkage phase. Is that also applied to dwarf too?
-> 
-> Ah, OK. If there is an offline elf binary with symbol map, I can convert
-> DWARF symbol -> address -> offline elf symbol (unique name)-> kallsyms.
-> Currently, it directly converts address by kallsyms, so I will change it
-> to find elf-symbol and solve address by kallsyms in post processing.
+Em Sun, Feb 21, 2021 at 01:46:36PM +0100, Martin Liška escreveu:
+> The patch changes the output format in 2 ways:
+> - line number is displayed for all source lines (matching TUI mode)
 
-DWARF sections have references to the ELF symbols, which are renamed by
-the linker.  So DWARF should automatically show the new symbol name.
+Are you aware of 'perf annotate --stdio2' ? If the goal is to make the
+stdio mode better, doing it in that mode would be best, as it was done
+to share as much code as possible, not just the looks, with the TUI
+mode.
 
-And kallsyms is generated after the kernel is linked.  So I'm not sure I
-understand the problem.
+I kept --stdio around because changing the output in that way could
+annoy people used to that format.
+
+Please take a look at 'man perf-config' and see what can be configured
+for both 'perf annotate --tui' and 'perf annotate --stdio2'.
+
+Perhaps we can do something like:
+
+perf config annotate.stdio=tui_like
+
+And, for completeness have:
+
+perf config annotate.stdio=classical
+
+wdyt?
+
+Looking at the other patches now.
+
+- Arnaldo
+
+> - source locations for the hottest lines are printed
+>   at the line end in order to preserve layout
+> 
+> Before:
+> 
+>     0.00 :   405ef1: inc    %r15
+>          :            tmpsd * (TD + tmpsd * TDD)));
+>     0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
+>          :            tmpsd * (TC +
+>  eff.c:1811    0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8>
+>          :            TA + tmpsd * (TB +
+>     0.35 :   405f06: vfmadd213sd 0x2b9b1(%rip),%xmm0,%xmm3        # 4318c0 <_IO_stdin_used+0x8c0>
+>          :            dumbo =
+>  eff.c:1809    1.41 :   405f0f: vfmadd213sd 0x2b9b0(%rip),%xmm0,%xmm3        # 4318c8 <_IO_stdin_used+0x8c8>
+>          :            sumi -= sj * tmpsd * dij2i * dumbo;
+>  eff.c:1813    2.58 :   405f18: vmulsd %xmm3,%xmm0,%xmm0
+>     2.81 :   405f1c: vfnmadd213sd 0x30(%rsp),%xmm1,%xmm0
+>     3.78 :   405f23: vmovsd %xmm0,0x30(%rsp)
+>          :            for (k = 0; k < lpears[i] + upears[i]; k++) {
+>  eff.c:1761    0.90 :   405f29: cmp    %r15d,%r12d
+> 
+> After:
+> 
+>     0.00 :   405ef1: inc    %r15
+>          : 1812   tmpsd * (TD + tmpsd * TDD)));
+>     0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
+>          : 1811   tmpsd * (TC +
+>     0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8> // eff.c:1811
+>          : 1810   TA + tmpsd * (TB +
+>     0.35 :   405f06: vfmadd213sd 0x2b9b1(%rip),%xmm0,%xmm3        # 4318c0 <_IO_stdin_used+0x8c0>
+>          : 1809   dumbo =
+>     1.41 :   405f0f: vfmadd213sd 0x2b9b0(%rip),%xmm0,%xmm3        # 4318c8 <_IO_stdin_used+0x8c8> // eff.c:1809
+>          : 1813   sumi -= sj * tmpsd * dij2i * dumbo;
+>     2.58 :   405f18: vmulsd %xmm3,%xmm0,%xmm0 // eff.c:1813
+>     2.81 :   405f1c: vfnmadd213sd 0x30(%rsp),%xmm1,%xmm0
+>     3.78 :   405f23: vmovsd %xmm0,0x30(%rsp)
+>          : 1761   for (k = 0; k < lpears[i] + upears[i]; k++) {
+> 
+> Where e.g. '// eff.c:1811' shares the same color as the percentantage
+> at the line beginning.
+> 
+> Signed-off-by: Martin Liška <mliska@suse.cz>
+> ---
+>  tools/perf/util/annotate.c | 30 ++++++++++++++----------------
+>  1 file changed, 14 insertions(+), 16 deletions(-)
+> 
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index e60841b86d27..80542012ec1b 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -1366,7 +1366,6 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+>  {
+>  	struct disasm_line *dl = container_of(al, struct disasm_line, al);
+>  	static const char *prev_line;
+> -	static const char *prev_color;
+>  	if (al->offset != -1) {
+>  		double max_percent = 0.0;
+> @@ -1405,20 +1404,6 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+>  		color = get_percent_color(max_percent);
+> -		/*
+> -		 * Also color the filename and line if needed, with
+> -		 * the same color than the percentage. Don't print it
+> -		 * twice for close colored addr with the same filename:line
+> -		 */
+> -		if (al->path) {
+> -			if (!prev_line || strcmp(prev_line, al->path)
+> -				       || color != prev_color) {
+> -				color_fprintf(stdout, color, " %s", al->path);
+> -				prev_line = al->path;
+> -				prev_color = color;
+> -			}
+> -		}
+> -
+>  		for (i = 0; i < nr_percent; i++) {
+>  			struct annotation_data *data = &al->data[i];
+>  			double percent;
+> @@ -1439,6 +1424,19 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+>  		printf(" : ");
+>  		disasm_line__print(dl, start, addr_fmt_width);
+> +
+> +		/*
+> +		 * Also color the filename and line if needed, with
+> +		 * the same color than the percentage. Don't print it
+> +		 * twice for close colored addr with the same filename:line
+> +		 */
+> +		if (al->path) {
+> +			if (!prev_line || strcmp(prev_line, al->path)) {
+> +				color_fprintf(stdout, color, " // %s", al->path);
+> +				prev_line = al->path;
+> +			}
+> +		}
+> +
+>  		printf("\n");
+>  	} else if (max_lines && printed >= max_lines)
+>  		return 1;
+> @@ -1454,7 +1452,7 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+>  		if (!*al->line)
+>  			printf(" %*s:\n", width, " ");
+>  		else
+> -			printf(" %*s:     %*s %s\n", width, " ", addr_fmt_width, " ", al->line);
+> +			printf(" %*s: %-*d %s\n", width, " ", addr_fmt_width, al->line_nr, al->line);
+>  	}
+>  	return 0;
+> -- 
+> 2.30.1
+> 
 
 -- 
-Josh
 
+- Arnaldo
