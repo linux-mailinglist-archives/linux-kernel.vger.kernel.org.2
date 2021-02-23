@@ -2,138 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA47322FF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DAA322FF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233854AbhBWRro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 12:47:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
+        id S233821AbhBWRsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 12:48:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233821AbhBWRqc (ORCPT
+        with ESMTP id S233833AbhBWRrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 12:46:32 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D74DC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:45:52 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id m6so9273535pfk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:45:52 -0800 (PST)
+        Tue, 23 Feb 2021 12:47:16 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA4AC06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:46:35 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id 18so18477890oiz.7
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:46:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=VyGG3ok5+hvim2EHZCOhmqRAJkjtLpgTA1iWhCaD6x0=;
-        b=FqgAcuUSeyzDfUyHurWW7F4mjvfwNy68igadpk1ez352+ZeNULvxkGYibJLLplgkO5
-         q3u1ZNHMEqO2G5UraZTEoq5G/0cXD6Bnt5aCjqvctqqn4Nfj2xY5vtamgJs6kBcBLxvh
-         uvGOoGECAvPXZIkB4fJeawVGE/r0GSiUVcwab4GfCDNrmlsmC5Rv1CW6dkG0OdIsUu7Q
-         9IkjFszTrePyCmHnq2SDyrQgYzgucohC2ZtZY1g0k6Ac4t+QygwV9rNtekYPvicm7dOb
-         /hIptnnmW77v/TTchOjx20VRMTFiQv5CkrQqtuZN0ZsOI0TvimfyuQmyWemfDy4eriyz
-         CkdQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9qtbTXqXVuOZUhIlF4MKyuwiBZDXKc/e8EIy79NOn8I=;
+        b=EhvqwC6fc0LXrtbfZcvMp82zCW+fmUD+W/RdQZzDPf5ii8MCce9Kg0h9jSdxiZ6TY2
+         6Ede7G1Oe5TXUJ3UQdHVeaaTIRHhyHPrvQT1cI/9/UjvluArnBeFOfXOgwg3aiDd7oVo
+         BPzLQC49p9d/NTqiWHbV12rcPk0tQAiysimtv65v0VFOrZZdWSeWyMnFkL4lMjy3yjGX
+         tsqvfveHWiVeb6StipOF1KTmAVSuf8duOzmE+dKzDd8j+xBGy9MuS+olSE5+MDicjn9B
+         QhBjTndDDkzbQdPV/YK79rwYS2pjZnAE9V8jlWHe0/law7EmsZwtFnmy0j3nsqN8kCk2
+         l07g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=VyGG3ok5+hvim2EHZCOhmqRAJkjtLpgTA1iWhCaD6x0=;
-        b=ha1kk1pshISNbdQR7r+rHi76usbzdknsmdgWVQ1lKraZxu9U6ilCIe6AaIouNQkNFK
-         3oRItfvy2rm5VeYslk8C9nVkEOSfi51tQxfgq4nOSrRJr2OpF8SJa4SdgrXowQiNDu8f
-         WkLtPKUdkOLFbyrVQh9RL8iGm1W97WhmqtOlEU9GZEOMNZioB2qVAawPFz9GvsWPtQei
-         rMyFFJicxnhke1quFM8pCORwi8jU8R0EKr+UPRgIKhbxdeLeLh+e6mZWDpYvMDqNnnUe
-         kxPPQOOzA4aPwEn1bHGCExLUZvl8zUZGWqXBGDB4aTORY+ApDBo97V0fBk99HNwmqOSy
-         odNg==
-X-Gm-Message-State: AOAM5339YNzEy9VUeI/8vMrG+I1mt24vjzxBYsMiRuECpR70Qm60HOfD
-        Hfy4MJ/1WQ/57+c8G7EumpYo
-X-Google-Smtp-Source: ABdhPJzA7fHOoHjX3O7xgr26Ckw+I6nd4J989A7PeyvQ1mbO3Fz+HGL78AX7076LEi4TPjBHYyTQLQ==
-X-Received: by 2002:a65:654e:: with SMTP id a14mr25432204pgw.265.1614102351464;
-        Tue, 23 Feb 2021 09:45:51 -0800 (PST)
-Received: from work ([103.66.79.25])
-        by smtp.gmail.com with ESMTPSA id s27sm117050pgk.77.2021.02.23.09.45.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Feb 2021 09:45:50 -0800 (PST)
-Date:   Tue, 23 Feb 2021 23:15:46 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        boris.brezillon@collabora.com
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add a property to declare secure
- regions in Qcom NANDc
-Message-ID: <20210223174546.GA27945@work>
-References: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
- <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
- <20210223174922.052f9776@xps13>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9qtbTXqXVuOZUhIlF4MKyuwiBZDXKc/e8EIy79NOn8I=;
+        b=qKGuNUWktLWPmhFDbTzhCC1YNCWVQXvy5vsMGBe6bhWSrpPMXnhuuMlkaNAeWPM0/V
+         /KGSAMy3HBBh+gHo4sAcioZxgORLBtgry+RDmixBMoc3Zz+00SieMkMeddAmcJ5F4gKj
+         83/MOHhkpZg0wb2QbHYycch2jqjnZzJWV09jowiEw18uJsqsaK16hjR4UMCbe9swetDA
+         AwI/+FGKkqB7rIX0RFQN3bOhWSIxJfnx8Pf8pJGrqeSDDbMArZpTuye6Vnn6tkRcnner
+         kujDKeOJei4UHpzn47eXUx3NGaVX9nX0MAvyFvLzlWoPwCmITTwQCP/hSGol8aN4fchn
+         2Vqw==
+X-Gm-Message-State: AOAM531UmFvuSE5Bcd7PuvLn/vV9Z/JL7OJkfF7BCILJcRgVol/9ApCS
+        9lwEkHvBqsOf31jl0QPokbHWG1yxUOh01ys7cO0=
+X-Google-Smtp-Source: ABdhPJxJtTCZXfTvedSSRvecwTcyGawl8EKQR0fPrCfuqwgApxHDv+38pdIua8+emj+ut1ZkhbTJ9xqi6YZvgmU+aGs=
+X-Received: by 2002:aca:f485:: with SMTP id s127mr7316628oih.120.1614102395279;
+ Tue, 23 Feb 2021 09:46:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210223174922.052f9776@xps13>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1614021931-4386-1-git-send-email-jrdr.linux@gmail.com>
+In-Reply-To: <1614021931-4386-1-git-send-email-jrdr.linux@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 23 Feb 2021 12:46:24 -0500
+Message-ID: <CADnq5_PgZLo56d613xo=ofo9X=uq8bXKUu=khpUzVm0vTDVJqQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu/display: initialize the variable 'i'
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Simon Ser <contact@emersion.fr>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+On Mon, Feb 22, 2021 at 3:13 PM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+>
+> >> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9804:38:
+> >> warning: variable 'i' is uninitialized when used here
+> >> [-Wuninitialized]
+>                            timing  = &edid->detailed_timings[i];
+>                                                              ^
+>    drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9714:7:
+> note: initialize the variable 'i' to silence this warning
+>            int i;
+>                 ^
+>                  = 0
+>    1 warning generated.
+>
+> Initialize the variable 'i'.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
 
-On Tue, Feb 23, 2021 at 05:49:22PM +0100, Miquel Raynal wrote:
-> Hi Manivannan,
-> 
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Mon,
-> 22 Feb 2021 17:32:58 +0530:
-> 
-> > On a typical end product, a vendor may choose to secure some regions in
-> > the NAND memory which are supposed to stay intact between FW upgrades.
-> > The access to those regions will be blocked by a secure element like
-> > Trustzone. So the normal world software like Linux kernel should not
-> > touch these regions (including reading).
-> > 
-> > So let's add a property for declaring such secure regions so that the
-> > driver can skip touching them.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  Documentation/devicetree/bindings/mtd/qcom,nandc.yaml | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> > index 84ad7ff30121..7500e20da9c1 100644
-> > --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> > +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> > @@ -48,6 +48,13 @@ patternProperties:
-> >          enum:
-> >            - 512
-> >  
-> > +      qcom,secure-regions:
-> > +        $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +        description:
-> > +          Regions in the NAND memory which are protected using a secure element
-> > +          like Trustzone. This property contains the start address and size of
-> > +          the secure regions present (optional).
-> 
-> What does this "(optional)" means? If you mean the property is optional
-> then it should be described accordingly in the yaml file, or am I
-> missing something?
-> 
+Applied.  Thanks!
 
-IIUC, if a property is not listed under "required" section then it is
-optional. But I've added the quote here to just make it explicit.
+Alex
 
-> I wonder if it wouldn't be better to make this a NAND chip node
-> property. I don't think a qcom prefix is needed as potentially many
-> other SoCs might have the same "feature".
-> 
-> I'm fine adding support for it in the qcom driver only though.
-> 
-
-Hmm, sounds good to me.
-
-Thanks,
-Mani
-
-> > +
-> >  allOf:
-> >    - $ref: "nand-controller.yaml#"
-> >  
-> 
-> Thanks,
-> Miquèl
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index a22a53d..e96d3d9 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -9717,7 +9717,7 @@ static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+>  void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+>                                         struct edid *edid)
+>  {
+> -       int i;
+> +       int i = 0;
+>         struct detailed_timing *timing;
+>         struct detailed_non_pixel *data;
+>         struct detailed_data_monitor_range *range;
+> --
+> 1.9.1
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
