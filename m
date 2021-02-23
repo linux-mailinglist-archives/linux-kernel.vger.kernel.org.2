@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F13F32340D
+	by mail.lfdr.de (Postfix) with ESMTP id C960232340E
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 00:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbhBWW6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 17:58:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
+        id S233573AbhBWW6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 17:58:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232787AbhBWWmk (ORCPT
+        with ESMTP id S232557AbhBWWpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 17:42:40 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C803C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:42:00 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id h18so13777ils.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:42:00 -0800 (PST)
+        Tue, 23 Feb 2021 17:45:43 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D46C061574;
+        Tue, 23 Feb 2021 14:45:02 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id x129so5055011pfx.7;
+        Tue, 23 Feb 2021 14:45:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Lw00I39tMMHoHHOPSgKttYErvt005RuGUQAb9q20a8A=;
-        b=TSVUM/zT7BA44V6HBXT0zpH7TqCwFdeKGgTUPMw/nr1Y2Nq0B9o4FEK0tmf4Pte/5D
-         Tc7YEQdOVlrhymfkLb+TVtGFuV0xBjEtueZLXS6u/+zHlqSEP2cWBDJUyi0gBt9QrEq9
-         JzWUETk3pdWvV2ZtiHcwTAiwt5e4ApF6Kyr4elT9rZyOzcaa2SA0BYGpUEqbmLeDOIeY
-         4x6i/qvAaTa/hDKKdDrFMWkD7ZtEazBppxAnmI77EhcHQFuoIY2RwZQkO+yf7YcAGlSC
-         rEoX5IO49rb3mbSrn0ZX6+ISAvuak+0lGci/nfKDTTUVnOcrqmfie7Vb9xUzdOSkjOz1
-         2lXQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MyScsstJI7ORQOgqP6jBg1h7EBbGtNB6RuazO9OfwkU=;
+        b=OEXb/WGjobugc309Or9PdWZVhp5uGvGlbm2ED5T+DjGR6re/DwMbaWD4DDfQh7OouY
+         33KIbGfPZVUvEubuc+DGSmhEhYjaEQW4uvWjcZ8dISEOlFGQiP3GtlnQPfhBJK6U6A14
+         HR55xrJeV/6FN4SDetad5Knpf1fp6XGUihWBu3gbKyL5HIYziLbsvlk1DKhgTe6c1WAr
+         1BDTRjId02eDRj6qeeqes+nUQRPQE2w4nDqPy6YIiJJMqKRgIzBxig/1Bi3fCpQ6Pua5
+         gfWFWvqa74PCl2iBvkHf/xW8o9XonekEakttMtWnvTOzrbJANVvdu/lzZAyemC1LRnKy
+         wHcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Lw00I39tMMHoHHOPSgKttYErvt005RuGUQAb9q20a8A=;
-        b=VxvC24bMvgLixc5mVSacJVsk0bjgbO3JjbQJVeJ5gdDYdxt5DKU/rMiqxEQD5Mu+UX
-         AVpQDO0Y4/OuqwB69Ja8fqE4waCs17/TDmy8m28ud6prtnu4dtk3Mif+4A1ry2uXp+r+
-         CJLb6W8AeCXmQVqm6uW8Esx5ganphWkzEZmCLoEFEiCp0QLC/RAYCJx7z4X5dwF5XXkZ
-         w8hL71uLDQmEh+knGiV2y31NIs2szcZ/zNnRgwgk4Ch0NkVJ3wKOS4jlycVEIUzufyOr
-         l5rGsh4XcDdlziTqU1cGrVeDa+pHkni0egCCwzWm60FojNO/aCL17ipaNHGYZCDGgml9
-         PdGg==
-X-Gm-Message-State: AOAM532NG/luMhq8bJ+uo5fXkRYUq0bO7QfTyuygB2gO9QHRdtkF3rZt
-        KOhF+sZhNo7Yz2GnzxK/psv3LQ==
-X-Google-Smtp-Source: ABdhPJzXHFoTuq4AHw4FgnneXIbXW0HvdigmHBt1L83UU7hsh+H7lS3Cyu4aIsOx6BRDPOXbXSKn3Q==
-X-Received: by 2002:a92:3f12:: with SMTP id m18mr21853729ila.109.1614120119892;
-        Tue, 23 Feb 2021 14:41:59 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id a14sm26801ilj.39.2021.02.23.14.41.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 14:41:59 -0800 (PST)
-Subject: Re: [REGRESSION] "add a disk_uevent helper" breaks booting Andorid w/
- dynamic partitions
-To:     Christoph Hellwig <hch@lst.de>,
-        John Stultz <john.stultz@linaro.org>
-Cc:     Tejun Heo <tj@kernel.org>, David Anderson <dvander@google.com>,
-        linux-block@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Todd Kjos <tkjos@google.com>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        Alistair Delva <adelva@google.com>
-References: <CALAqxLU3B8YcS_MTnr2Lpasvn8oLJvD2qO4hkfkZeEwVNfeHXg@mail.gmail.com>
- <20210223063130.GA16292@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <b11afae3-64bb-5ccc-535e-e8c4add4d0f6@kernel.dk>
-Date:   Tue, 23 Feb 2021 15:41:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MyScsstJI7ORQOgqP6jBg1h7EBbGtNB6RuazO9OfwkU=;
+        b=GhePjPhl7IWtB0drcT0hJb7SssGySjEAmVsgbR6femSJske6QhoVruxompmocRlCam
+         cWT6aWZBC7e9LzFN/L0Gx1JG0KVjAZjsAvtkfNUpm8+J/cnHI/5EOwfGNLHuT4vzMClK
+         IW25w2b0A2P9ZTCyKdL1MDBMeBDW/5mtekPHq9E3YWsW1mXSFbhGVdt+sOQPjSaRp/Re
+         e0gwxZNT/WgKuiGr5GgfWfHPYfELC3ygZ/R4MCL/lEAl/CiZBLN4NLTWvWIIhACP3cRI
+         r7MHOF0/+6GJtU6N3vGa4q/Jbcxz4bWfQkh8DHi1yden6uOsaAY4KrqW0konBFZtTJaE
+         ylwA==
+X-Gm-Message-State: AOAM532G/pQdNPPZn1BjgDwxj4Dtez5EZcvlEEJggH8dnGZUQZ5Q/5PK
+        5iU39GTWNHljbEffRfotlzWwoiIxutvPXhuezGY=
+X-Google-Smtp-Source: ABdhPJwkiV0/WkoW/7VZvUXBrMpMorE095G2RrRzoqHNL1SBzSSoYk+J7z6PYenGvCrfvCuWkTTLKTNaBoWIyTsdQjE=
+X-Received: by 2002:a63:c74b:: with SMTP id v11mr10090081pgg.336.1614120301268;
+ Tue, 23 Feb 2021 14:45:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210223063130.GA16292@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <00000000000056c3e005b82689d1@google.com> <000000000000d8369805bc01fe68@google.com>
+In-Reply-To: <000000000000d8369805bc01fe68@google.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Tue, 23 Feb 2021 14:44:50 -0800
+Message-ID: <CAM_iQpVOyYGoWdEkZ62yYRoK0G+xEPqYBod2=8QOu9d8X3-c1w@mail.gmail.com>
+Subject: Re: general protection fault in xfrm_user_rcv_msg_compat
+To:     syzbot <syzbot+5078fc2d7cf37d71de1c@syzkaller.appspotmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied, thanks.
+On Tue, Feb 23, 2021 at 6:55 AM syzbot
+<syzbot+5078fc2d7cf37d71de1c@syzkaller.appspotmail.com> wrote:
+>
+> syzbot has found a reproducer for the following issue on:
+>
+> HEAD commit:    a99163e9 Merge tag 'devicetree-for-5.12' of git://git.kern..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11a6fccad00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7a875029a795d230
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5078fc2d7cf37d71de1c
+> userspace arch: i386
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=167c1832d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10214f12d00000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+5078fc2d7cf37d71de1c@syzkaller.appspotmail.com
+>
+> general protection fault, probably for non-canonical address 0xe51af2c1f2c7bd20: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: maybe wild-memory-access in range [0x28d7b60f963de900-0x28d7b60f963de907]
+> CPU: 1 PID: 8357 Comm: syz-executor113 Not tainted 5.11.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:nla_type include/net/netlink.h:1130 [inline]
+> RIP: 0010:xfrm_xlate32_attr net/xfrm/xfrm_compat.c:404 [inline]
+> RIP: 0010:xfrm_xlate32 net/xfrm/xfrm_compat.c:526 [inline]
+> RIP: 0010:xfrm_user_rcv_msg_compat+0x5e5/0x1070 net/xfrm/xfrm_compat.c:571
 
--- 
-Jens Axboe
+Looks like we have to initialize the pointer array to NULL's.
 
+diff --git a/net/xfrm/xfrm_compat.c b/net/xfrm/xfrm_compat.c
+index d8e8a11ca845..56fb32f90799 100644
+--- a/net/xfrm/xfrm_compat.c
++++ b/net/xfrm/xfrm_compat.c
+@@ -537,7 +537,7 @@ static struct nlmsghdr
+*xfrm_user_rcv_msg_compat(const struct nlmsghdr *h32,
+ {
+        /* netlink_rcv_skb() checks if a message has full (struct nlmsghdr) */
+        u16 type = h32->nlmsg_type - XFRM_MSG_BASE;
+-       struct nlattr *attrs[XFRMA_MAX+1];
++       struct nlattr *attrs[XFRMA_MAX+1] = {0};
+        struct nlmsghdr *h64;
+        size_t len;
+        int err;
