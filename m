@@ -2,192 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A5B322FD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D48322FC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233763AbhBWRpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 12:45:00 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:39636 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbhBWRo4 (ORCPT
+        id S233759AbhBWRm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 12:42:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233729AbhBWRm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 12:44:56 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11NHeVhb176420;
-        Tue, 23 Feb 2021 17:43:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=IyUlhk3AQQFwYAAWr8SNBNU6VGlgvbB1uytdVra3niw=;
- b=ND1wUxekMtD4MuhCkV3V9qeoilWF8eys357ctXWavxlvEu13VVSqJSxveEtIie9YN6wQ
- 5XPBgE1KGO7OXwUC3WF8tF410ym6QcQ6eq6lV/T5CgZuSyEu0I0YHTCFmQF8HFAkzol8
- TyOFbitxpEv5N6X/014mrdEg2gd7EwrLQowf7GQIFvsMbBmkrjRr+rQA3hR67Cw9dXR/
- BvNuMZPmfynGSzA2vEh+6QqflKNGozP5Ihw2VAj3ZOf5RFn2hIE4GFtnVM4xPU3hkdWI
- oOr4dNZoBOCLb8DpNd/Awuxwqw60VaSn5tYICdCsZLFm5+gAvHU0CAq1SNQEbWbUSd1p NQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 36ugq3f4k8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Feb 2021 17:43:17 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11NHeR1V096692;
-        Tue, 23 Feb 2021 17:43:16 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 36v9m4w9xs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Feb 2021 17:43:16 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11NHedQK097929;
-        Tue, 23 Feb 2021 17:43:15 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
-        by aserp3030.oracle.com with ESMTP id 36v9m4w9vs-1;
-        Tue, 23 Feb 2021 17:43:15 +0000
-From:   Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Cc:     saeed.mirzamohammadi@oracle.com,
-        John Donnelly <john.p.donnelly@oracle.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/1] kernel/crash_core: Add crashkernel=auto for vmcore creation
-Date:   Tue, 23 Feb 2021 09:41:50 -0800
-Message-Id: <20210223174153.72802-1-saeed.mirzamohammadi@oracle.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 23 Feb 2021 12:42:56 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BCBC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:42:16 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id b8so16407452oti.7
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:42:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VuxpnNTlbfa73guZtbI9Nhw2M5eDcrgPYdz+56/6dWc=;
+        b=nL7g6q8SnspLBcq5aEvtCrCr3oFPtCOiDmIqpH/qqMlZziUJUYYGB1TYNT+enHAzgr
+         Z/OFIDGQk12kO0nGCzONaDmuuJkcrMZW3UcTYlvGR3x01ZHu4IubuwwkkEsbGEx6rfB9
+         Gp4r62k2MmPgvJZ2mcXa2KPrtsuGyggwln1hhuuinLpX2/BXFTN8W+xUY2JFqSGQwqVg
+         UfuMuwBpwNUNjETK1v+CMb9oBmAX8WW3TbhX15OdSdenJdqRXNEOIs4pig9/Cu8oSbs3
+         m1a9vdSG/Qn5S2k4wq3EUYQXMdDk050JMfAay/4u7wdx5YeQJadfrZhpZYSAiKcrTdhX
+         lPKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VuxpnNTlbfa73guZtbI9Nhw2M5eDcrgPYdz+56/6dWc=;
+        b=iZomAClCTpPTRqn1LzqZlrzwieqw2H2CtBZys0mwoXlpXFKbGfnhdUEHPqDISpPuas
+         sIVPAQc62ySrcnuISKv8s6AHHKBtLowT5lZMWBJqv51/u7tnx01LAt3o/OVs67aAZn1B
+         eQmflOmZDzSyLngprEICLZ3VaC4i8lLPNn87ymo/WV04YOnj6B5bmOqQ+N882PCBT+jh
+         w3klwiu4zFK6a4pawcy3ggjRB1lpsAMpHfgTtpPiLrZGN91ZzEHO28D84FFZvK2DKpaG
+         IV4QDoEB+Sww0SEQC9dTEwns2cRMyVg2CBfG7cjlK5SMKJMzOGneAOKkAsdYamq0oEVV
+         8mbQ==
+X-Gm-Message-State: AOAM531B0/ycIqFX0pHtW3jQtX4RXnx6bQ2NjhsAFcJtTCkCNORyHaXt
+        VvRxQZd77CdVdwl6JVeCnPGWiBYnUr+P/2xQCQvRe2nZf7Q=
+X-Google-Smtp-Source: ABdhPJyjUKxqV7AOCUKsVQCtpD9QXKbaGWwKvSlqdCwpSOtCsB5w2Yrh1m7QIxBjt6ChpY/dQqLXO/Ytyja4DaevaZg=
+X-Received: by 2002:a9d:5cc2:: with SMTP id r2mr10635173oti.132.1614102136101;
+ Tue, 23 Feb 2021 09:42:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- malwarescore=0 spamscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
- clxscore=1011 impostorscore=0 lowpriorityscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102230148
-To:     unlisted-recipients:; (no To-header on input)
+References: <1614021931-4386-1-git-send-email-jrdr.linux@gmail.com>
+ <32vjVDssCxltB75h5jHin2U3-cvNjmd_HFnRLiKohhbXkTfZea3hw2Knd80SgcHoyIFldMNwqh49t28hMBvta0HeWed1L0q_efLJ8QCgNw8=@emersion.fr>
+ <20210222234457.GA36153@24bbad8f3778> <yHvp7KbQD2pF5dR6krMc_Zuq9a8GxkYSSiIpjBenuiCjwpFmFxpAOpfzhp0DfHQhH2Z3P81-CGpwmmXp0zjifT93vBXXYd5kJsSucQgXFZI=@emersion.fr>
+ <CAP+8YyGdr0jkf5_K8ofKMzZn5Koy_vkxyKKHkyVDqDz2sWvL_g@mail.gmail.com>
+In-Reply-To: <CAP+8YyGdr0jkf5_K8ofKMzZn5Koy_vkxyKKHkyVDqDz2sWvL_g@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 23 Feb 2021 12:42:05 -0500
+Message-ID: <CADnq5_MXK_H-g4GReU1dGca2PAXsGjbzg47kcWjXFQ4DrYG8tg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu/display: initialize the variable 'i'
+To:     Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
+Cc:     Simon Ser <contact@emersion.fr>, Stylon Wang <stylon.wang@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        "Wentland, Harry" <harry.wentland@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds crashkernel=auto feature to configure reserved memory for
-vmcore creation. CONFIG_CRASH_AUTO_STR is defined to be set for
-different kernel distributions and different archs based on their
-needs.
+yeah, fdo ran out of disk space so I moved to gitlab:
+https://gitlab.freedesktop.org/agd5f/linux/-/commits/drm-next
 
-Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
-Tested-by: John Donnelly <john.p.donnelly@oracle.com>
----
- Documentation/admin-guide/kdump/kdump.rst     |  3 ++-
- .../admin-guide/kernel-parameters.txt         |  6 ++++++
- arch/Kconfig                                  | 20 +++++++++++++++++++
- kernel/crash_core.c                           |  7 +++++++
- 4 files changed, 35 insertions(+), 1 deletion(-)
+Alex
 
-diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-index 75a9dd98e76e..ae030111e22a 100644
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -285,7 +285,8 @@ This would mean:
-     2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
-     3) if the RAM size is larger than 2G, then reserve 128M
- 
--
-+Or you can use crashkernel=auto to choose the crash kernel memory size
-+based on the recommended configuration set for each arch.
- 
- Boot into System Kernel
- =======================
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 9e3cdb271d06..a5deda5c85fe 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -747,6 +747,12 @@
- 			a memory unit (amount[KMG]). See also
- 			Documentation/admin-guide/kdump/kdump.rst for an example.
- 
-+	crashkernel=auto
-+			[KNL] This parameter will set the reserved memory for
-+			the crash kernel based on the value of the CRASH_AUTO_STR
-+			that is the best effort estimation for each arch. See also
-+			arch/Kconfig for further details.
-+
- 	crashkernel=size[KMG],high
- 			[KNL, X86-64] range could be above 4G. Allow kernel
- 			to allocate physical memory region from top, so could
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 24862d15f3a3..23d047548772 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -14,6 +14,26 @@ menu "General architecture-dependent options"
- config CRASH_CORE
- 	bool
- 
-+config CRASH_AUTO_STR
-+	string "Memory reserved for crash kernel"
-+	depends on CRASH_CORE
-+	default "1G-64G:128M,64G-1T:256M,1T-:512M"
-+	help
-+	  This configures the reserved memory dependent
-+	  on the value of System RAM. The syntax is:
-+	  crashkernel=<range1>:<size1>[,<range2>:<size2>,...][@offset]
-+	              range=start-[end]
-+
-+	  For example:
-+	      crashkernel=512M-2G:64M,2G-:128M
-+
-+	  This would mean:
-+
-+	      1) if the RAM is smaller than 512M, then don't reserve anything
-+	         (this is the "rescue" case)
-+	      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
-+	      3) if the RAM size is larger than 2G, then reserve 128M
-+
- config KEXEC_CORE
- 	select CRASH_CORE
- 	bool
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index 825284baaf46..90f9e4bb6704 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -7,6 +7,7 @@
- #include <linux/crash_core.h>
- #include <linux/utsname.h>
- #include <linux/vmalloc.h>
-+#include <linux/kexec.h>
- 
- #include <asm/page.h>
- #include <asm/sections.h>
-@@ -250,6 +251,12 @@ static int __init __parse_crashkernel(char *cmdline,
- 	if (suffix)
- 		return parse_crashkernel_suffix(ck_cmdline, crash_size,
- 				suffix);
-+#ifdef CONFIG_CRASH_AUTO_STR
-+	if (strncmp(ck_cmdline, "auto", 4) == 0) {
-+		ck_cmdline = CONFIG_CRASH_AUTO_STR;
-+		pr_info("Using crashkernel=auto, the size chosen is a best effort estimation.\n");
-+	}
-+#endif
- 	/*
- 	 * if the commandline contains a ':', then that's the extended
- 	 * syntax -- if not, it must be the classic syntax
--- 
-2.27.0
-
+On Mon, Feb 22, 2021 at 7:26 PM Bas Nieuwenhuizen
+<bas@basnieuwenhuizen.nl> wrote:
+>
+> I think Alex moved to gitlab for his branches
+>
+> On Tue, Feb 23, 2021, 12:50 AM Simon Ser <contact@emersion.fr> wrote:
+>>
+>> On Tuesday, February 23rd, 2021 at 12:44 AM, Nathan Chancellor <nathan@kernel.org> wrote:
+>>
+>> > On Mon, Feb 22, 2021 at 11:05:17PM +0000, Simon Ser wrote:
+>> > > On Monday, February 22nd, 2021 at 8:25 PM, Souptick Joarder <jrdr.linux@gmail.com> wrote:
+>> > >
+>> > > > >> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9804:38:
+>> > > > >> warning: variable 'i' is uninitialized when used here
+>> > > > >> [-Wuninitialized]
+>> > > >                            timing  = &edid->detailed_timings[i];
+>> > > >                                                              ^
+>> > > >    drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9714:7:
+>> > > > note: initialize the variable 'i' to silence this warning
+>> > > >            int i;
+>> > > >                 ^
+>> > > >                  = 0
+>> > > >    1 warning generated.
+>> > > >
+>> > > > Initialize the variable 'i'.
+>> > >
+>> > > Hm, I see this variable already initialized in the loop:
+>> > >
+>> > >     for (i = 0; i < 4; i++) {
+>> > >
+>> > > This is the branch agd5f/drm-next.
+>> >
+>> > That is in the
+>> >
+>> >       if (amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_DISPLAY_PORT
+>> >               || amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_EDP) {
+>> >
+>> > branch not the
+>> >
+>> >       } else if (edid && amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_HDMI_TYPE_A) {
+>> >
+>> > branch, where i is indeed used uninitialized like clang complains about.
+>> >
+>> > I am not at all familiar with the code so I cannot say if this fix is
+>> > the proper one but it is definitely a legitimate issue.
+>>
+>> I think you have an outdated branch. In my checkout, i is not used in the first
+>> branch, and is initialized in the second one.
+>>
+>> https://cgit.freedesktop.org/~agd5f/linux/tree/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c?h=drm-next#n9700
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
