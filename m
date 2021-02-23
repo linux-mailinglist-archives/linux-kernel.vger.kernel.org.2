@@ -2,147 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B1C323078
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A2D323065
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233926AbhBWSRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 13:17:33 -0500
-Received: from mout.gmx.net ([212.227.15.19]:49423 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233907AbhBWSQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 13:16:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1614104057;
-        bh=UWN3l183zAbiXXQl5Z1FP79kj4fY8vt9bxdy1C023fE=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=RwdP2vo09Qi6yabb1To6m8GrDpYMCrB9Toz8jPhUmaGzm2NF/CJpAr+fO4FkW6UjQ
-         sSkQC/QiP6gDhhjy91h8xsZ/5YIedpcHVQhCXMTv/vGRB7XbB0y8uhngFmcvMTo1HY
-         q0unAtaYO+aRTwu3lKu6QA3nWsJM5yo8P5wSC6qc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.229.153]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmULr-1leuOO2oWf-00iTJH; Tue, 23
- Feb 2021 19:14:17 +0100
-Date:   Tue, 23 Feb 2021 19:13:57 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
-Cc:     John Wood <john.wood@gmx.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 3/8] securtiy/brute: Detect a brute force attack
-Message-ID: <20210223181357.GA3068@ubuntu>
-References: <20210221154919.68050-1-john.wood@gmx.com>
- <20210221154919.68050-4-john.wood@gmx.com>
- <085f8f05-243e-fbf0-3f9c-ea011511a296@infradead.org>
+        id S233142AbhBWSPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 13:15:11 -0500
+Received: from mail-il1-f169.google.com ([209.85.166.169]:46391 "EHLO
+        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233817AbhBWSO4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 13:14:56 -0500
+Received: by mail-il1-f169.google.com with SMTP id i18so2171004ilq.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:14:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NBD19TtNuqKmtZTJ8bFpz+xLfryH6M8evU2W8orJimw=;
+        b=AxpqRPgiZpLeJpudauMu58fFjZbDKykbw4VK9oUSdygJSoYAxFwMiZ1DcSuQEnj/e4
+         2PqKN0oL1pVnuuLLrlkZLZOqqM0FvWc7LYWM8yap3YlEiRq5S1d9ZoBd23GN6dNNAhCF
+         J+tqggI4qM48JrwXq4rKDpfJk6d7CFks5dy+PzTNEZ8g3Xrf6ZqMqRvgzxCcpdLnJg/y
+         Vi2gASwWjJjxVfVeN9pzYU1XucMx5Z3aqPQ4gVi//g5472DlOU0XjYdydQsnnxsQUZ4p
+         6tD25svBVl4Mnybty7/a4v4ZRi3NgFzqmQUFeIfrSskaI3XQFmCl5uokRFQA2wa1YP89
+         Yx7g==
+X-Gm-Message-State: AOAM531CWBsjNdgCxNtEG5TwXG3LB9h4povy4vsSfzzGmSEAR+lgLtj7
+        Vf0zWoS2ACqlfWqv8OSUZcU7piZRr3X6DhgoQUQ=
+X-Google-Smtp-Source: ABdhPJxx/TZSCisENcO5Uxe7yUnXfib+nh/4u/AobThe/PiT92Zy413z/FV3yJKDnruuyr4rRyoAcPmxOiybsL3TF6Q=
+X-Received: by 2002:a05:6e02:1848:: with SMTP id b8mr20333140ilv.210.1614104050299;
+ Tue, 23 Feb 2021 10:14:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <085f8f05-243e-fbf0-3f9c-ea011511a296@infradead.org>
-X-Provags-ID: V03:K1:ju0O4S8Nvdn1JuYpx180LYXiBWGpIoiYfkvATFebYMFGyfsTHd9
- wRuTsXxl4cu79Pht/Vpfew+2jDvQYKv5iUww/OxpFxO6Oy7oVj13CRoP4wzlOw4xwz8Y5xW
- EV9QLuqoaF7IpDYK0VQf+2Hi29tNzGfTXyrRtfMJ+VHp9d8v+MSrFpBSqlYxp80wKpa8D6C
- PpBaMCipfTcEh6OPnkTJg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3q+pBoAH1js=:XR39Nzb2x6fGQ/6FFW3zzi
- Raj2QUKGSNrAnWBTl55EaeZ1FAEaBNFiymAR3DARDcdjHtXDc7MIYW3hdPP2bo/i2u0EES61F
- 9NtsbISe79UKtCt+N05uJN1Jj/88oJ3KkWVYsHu7dotTKBpSEYBCVlxcFOLPZh3V8uRpWC+js
- z7UqeD9HfVM+rTCnLJ+N0Du3YMEbVWFnibChC88csO8+qSXSWI8Dza/GbTZAtEeGzU+iPmJ7z
- E+NzoGw87POsGI2iqlOpObfjATGvlXzkYfSiosJym0t89OTroKOd+jqBGQbfWmpT/ml0HEodo
- 3m9AC7sPvKRAvk2solGx9x10TF4sa2290yObfJZ2wjoCvMb+ytx3NXZoTerIa3IspleSjeojc
- gYwa9mNScd1Tt8mzItla7bIEaB2U+J+WuOkgjuffDTL5fg7AF85x5AAsfoFMA9nWCKDGJ9RZV
- czw8n7SfEqF6+a3gJ2bIKybk2U2I46Adh3I5JxpyPGh1tQz41e/I89PsTzhBhlD9CdvaTKnnD
- JuKIQUK8MhsAi+8jqBSwJ64rJ4nkTUl0xaQOepAvmRf3pJzPKJ5U1Wc250wLk1VAJIknA6NYx
- RY8f3TMnEU4JsRUqx5jX0RcbhbNM5IcRbk7qIFKxB+0oKgKC94asTvVS6flNDlNPEmpvt2A8Q
- gRAllOR73bp9psFz4pAuW5pp4wUF5Yd6MqUbCS7UgojyzF3moz+H248gDVNY/pLCh9AjhxX04
- 9lI5wVTR3Q1JOkrJ3yRm3KmYuZJ4McTThk2Yj2bAquYSFEPDTeos5Ts6yj24IkEgDYA+QOu88
- D2rXeCkbRTJEGMzEa7ACchjgimJVFIYF3CZAhF3WfqLgTyHDyAWZMdh9TILAeQH/73t7+I58G
- oUFu7WyG0wdon7UHw00Q==
-Content-Transfer-Encoding: quoted-printable
+References: <20210119015415.2511028-1-lyude@redhat.com> <20210119015415.2511028-2-lyude@redhat.com>
+ <YDUN+Re/alMVL0Zn@pflmari> <CAKb7UvhFkw23so-a4JKLzpQLhphzjzarOy-9h+FiKP-aAC=4xw@mail.gmail.com>
+ <YDUg/9fjsvTkRUqr@pflmari> <CAKb7Uvji_+N+b8HghZckU-uSBWn-=BZwNAiUff2oitbVuNUE2Q@mail.gmail.com>
+ <YDUkfjDA4xLJlxE5@pflmari> <YDUr2OGDsxDyC0l2@pflmari>
+In-Reply-To: <YDUr2OGDsxDyC0l2@pflmari>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Tue, 23 Feb 2021 13:13:59 -0500
+Message-ID: <CAKb7UvjmdgS536tNzisomi_oXOGk3Q+anp0AfPvA8OruU_9m5Q@mail.gmail.com>
+Subject: Re: [PATCH 2/3] drm/nouveau/kms/nv50-: Report max cursor size to userspace
+To:     Alex Riesen <alexander.riesen@cetitec.com>
+Cc:     Lyude Paul <lyude@redhat.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        James Jones <jajones@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jeremy Cline <jcline@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Dave Airlie <airlied@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sun, Feb 21, 2021 at 06:25:51PM -0800, Randy Dunlap wrote:
-> Hi--
+On Tue, Feb 23, 2021 at 11:23 AM Alex Riesen
+<alexander.riesen@cetitec.com> wrote:
 >
-> On 2/21/21 7:49 AM, John Wood wrote:
+> Alex Riesen, Tue, Feb 23, 2021 16:51:26 +0100:
+> > Ilia Mirkin, Tue, Feb 23, 2021 16:46:52 +0100:
+> > > I'd recommend using xf86-video-nouveau in any case, but some distros
 > >
-> > +/**
-> > + * print_fork_attack_running() - Warn about a fork brute force attack=
-.
-> > + */
-> > +static inline void print_fork_attack_running(void)
-> > +{
-> > +	pr_warn("Fork brute force attack detected [%s]\n", current->comm);
-> > +}
+> > I would like try this out. Do you know how to force the xorg server to
+> > choose this driver instead of modesetting?
 >
-> Do these pr_warn() calls need to be rate-limited so that they don't
-> flood the kernel log?
+> Found that myself (a Device section with Driver set to "nouveau"):
+>
+>     $ xrandr  --listproviders
+>     Providers: number : 1
+>     Provider 0: id: 0x68 cap: 0x7, Source Output, Sink Output, Source Offload crtcs: 4 outputs: 5 associated providers: 0 name:nouveau
+>
+> And yes, the cursor looks good in v5.11 even without reverting the commit.
 
-I think it is not necessary since when a brute force attack through the fo=
-rk
-system call is detected, a fork warning appears only once. Then, all the
-offending tasks involved in the attack are killed. But if the parent try t=
-o run
-again the same app already killed, a new crash will trigger a brute force =
-attack
-through the execve system call, then this parent is killed, and a new warn=
-ing
-message appears. Now, the parent and childs are killed, the attacks are
-mitigated and only a few messages (one or two) have been shown in the kern=
-el
-log.
+FWIW it's not immediately apparent to me what grave error modesetting
+is committing in setting the cursor. The logic looks perfectly
+reasonable. It's not trying to be fancy with rendering the cursor/etc.
 
-Thanks,
-John Wood
+The one thing is that it's using drmModeSetCursor2 which sets the
+hotspot at the same time. But internally inside nouveau I think it
+should work out to the same thing. Perhaps setting the hotspot, or
+something in that path, doesn't quite work for 256x256? [Again, no
+clue what that might be.]
 
-> > +/**
-> > + * print_exec_attack_running() - Warn about an exec brute force attac=
-k.
-> > + * @stats: Statistical data shared by all the fork hierarchy processe=
-s.
-> > + *
-> > + * The statistical data shared by all the fork hierarchy processes ca=
-nnot be
-> > + * NULL.
-> > + *
-> > + * Before showing the process name it is mandatory to find a process =
-that holds
-> > + * a pointer to the exec statistics.
-> > + *
-> > + * Context: Must be called with tasklist_lock and brute_stats_ptr_loc=
-k held.
-> > + */
-> > +static void print_exec_attack_running(const struct brute_stats *stats=
-)
-> > +{
-> > +	struct task_struct *p;
-> > +	struct brute_stats **p_stats;
-> > +	bool found =3D false;
-> > +
-> > +	for_each_process(p) {
-> > +		p_stats =3D brute_stats_ptr(p);
-> > +		if (*p_stats =3D=3D stats) {
-> > +			found =3D true;
-> > +			break;
-> > +		}
-> >  	}
-> > +
-> > +	if (WARN(!found, "No exec process\n"))
-> > +		return;
-> > +
-> > +	pr_warn("Exec brute force attack detected [%s]\n", p->comm);
-> > +}
->
->
-> thanks.
-> --
-> ~Randy
->
+It might also be worthwhile just testing if the 256x256 cursor works
+quite the way one would want. If you're interested, grab libdrm,
+there's a test called 'modetest', which has an option to enable a
+moving cursor (-c iirc). It's hard-coded to 64x64, so you'll have to
+modify it there too (and probably change the pattern from plain gray
+to any one of the other ones).
+
+Cheers,
+
+  -ilia
