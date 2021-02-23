@@ -2,157 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2620F32274C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 010C1322752
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhBWI4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:56:42 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:12628 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231751AbhBWI4b (ORCPT
+        id S231287AbhBWI5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:57:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231856AbhBWI4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:56:31 -0500
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210223085547epoutp03a08dddfbf613ef6b0366c3c00ddc5a58~mVJxvQfVf0299802998epoutp035
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:55:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210223085547epoutp03a08dddfbf613ef6b0366c3c00ddc5a58~mVJxvQfVf0299802998epoutp035
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614070547;
-        bh=d0gOIuQUPCQxZRJQkKwdEW+V7cqTiJ3TqS4Et/IoMh0=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=N4bhozeuwzxqXeZW26u1n+/z4gTOoWrYFW/aS9gqEu7fUOjuxp6R28MnzBgTw3NCR
-         X7LHb9/zA4Gre7WqqU+UdLbjXLAXG/8qSZ9Og5MmjgdA9RSAI1nLf2GgCHuTYG0Pff
-         05n8G8ubetl/nxGwAfdboUkfNEBdnV/sMIal+zO0=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210223085546epcas2p33b74d382f135e0ff450998680399d4df~mVJw-Zg292016520165epcas2p3_;
-        Tue, 23 Feb 2021 08:55:46 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.190]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DlCZ82xzRz4x9QB; Tue, 23 Feb
-        2021 08:55:44 +0000 (GMT)
-X-AuditID: b6c32a47-b97ff7000000148e-f9-6034c31019bf
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C6.4F.05262.013C4306; Tue, 23 Feb 2021 17:55:44 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: RE: RE: RE: [PATCH v22 2/4] scsi: ufs: L2P map management for
- HPB read
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <DM6PR04MB657522A864655988A1430E56FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210223085543epcms2p32abd20cbc9dda715eab38a8a382d9057@epcms2p3>
-Date:   Tue, 23 Feb 2021 17:55:43 +0900
-X-CMS-MailID: 20210223085543epcms2p32abd20cbc9dda715eab38a8a382d9057
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEJsWRmVeSWpSXmKPExsWy7bCmqa7AYZMEg1Vn2CwezNvGZrG37QS7
-        xcufV9ksDt9+x24x7cNPZotP65exWrw8pGmx6kG4RfPi9WwWc842MFn09m9ls3h85zO7xaIb
-        25gs+v+1s1hc3jWHzaL7+g42i+XH/zFZ3N7CZbF0601Gi87pa1gsFi3czeIg6nH5irfH5b5e
-        Jo+ds+6ye0xYdIDRY//cNeweLSf3s3h8fHqLxaNvyypGj8+b5DzaD3QzBXBF5dhkpCampBYp
-        pOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAH2opFCWmFMKFApILC5W
-        0rezKcovLUlVyMgvLrFVSi1IySkwNCzQK07MLS7NS9dLzs+1MjQwMDIFqkzIyTgw1aXgEW/F
-        y7fP2RoYz3J2MXJySAiYSJw8to6xi5GLQ0hgB6PE6Ql/mLsYOTh4BQQl/u4QBjGFBUIldl3T
-        AykXElCSWH9xFjuILSygJ3Hr4RpGEJtNQEdi+on77CBjRARWsEhc/HWJDcRhFvjFJHHi8QdG
-        iGW8EjPan7JA2NIS25dvBYtzCsRKnFm6lAkiriHxY1kvM4QtKnFz9Vt2GPv9sflQc0QkWu+d
-        haoRlHjwczdUXFLi2O4PUHPqJbbe+QX2mIRAD6PE4Z23WCES+hLXOjaCHcEr4Ctxv/UuWDOL
-        gKrE9VVXoJpdJPZ3LQOrZxaQl9j+dg44UJgFNCXW79IHMSUElCWO3GKBeath4292dDazAJ9E
-        x+G/cPEd855ATVeTWPdzPdMERuVZiJCehWTXLIRdCxiZVzGKpRYU56anFhsVGCPH7SZGcGLX
-        ct/BOOPtB71DjEwcjIcYJTiYlUR42e4aJQjxpiRWVqUW5ccXleakFh9iNAX6ciKzlGhyPjC3
-        5JXEG5oamZkZWJpamJoZWSiJ8xYbPIgXEkhPLEnNTk0tSC2C6WPi4JRqYJrVeuN7/UnDQp79
-        Z5vuPc9wknnp4iakXm97Ik66KV28KKRnjuKO3wV6hvl3pOwe6dSZRE2cc0N6zSXBUo01Voky
-        S9T5rSRX9Z9ZpKfIV1l8L66IfdeGylDmOoXJdkzzlXIeTm4JYpXe8sZVjinAVEOI7722y9/W
-        k2eSF/EcX+Em+GS2QbTXj2PpCS//ejDel5boWrr2femsNaanwrZEZS+IbW3ddL6A98r1aXKd
-        DE3JZ5MEH0Sz9vxaV3JiQoHoe5brKz3+zLmadYPhnr/B+x93vxUfUfa6cdB+oY/GlremQk3L
-        xXR2lB/ZeyXfVsIsuszLadYMk8Aau2DdzoYqz6bXa28YXHnidCCynydLiaU4I9FQi7moOBEA
-        QZfrAnUEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
-References: <DM6PR04MB657522A864655988A1430E56FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210223080043epcms2p83f813841174ade50ef97481b3f4cdef7@epcms2p8>
-        <DM6PR04MB657508BC3F0D0240FDCBB043FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
-        <20210222093050epcms2p6506a476c777785c6212cc80fc6158714@epcms2p6>
-        <20210223083136epcms2p89ada047f0da1fb700ace8b4e3e396697@epcms2p8>
-        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
+        Tue, 23 Feb 2021 03:56:37 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F7EC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 00:55:56 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id d9so6814266ybq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 00:55:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lB/a4iMwzZXCVzQKA/wFs+7TeUdvCzpHO2+5MvW6yfU=;
+        b=ANVQQS+Usc9OSyEkwQ0rKjoeqmy7t/RkfPSQKW/yfFbEW/2mjzUT2ghPUfiGN9I2Jw
+         9298v+5cbHBiGasuLAljXkJs/uhAJ/PUbY1XwN/N34AeVliE087Dn3tXfXk2a66KMlbc
+         vFv9gzp0rrpMDG1SHaPr+d78Y/64WEVObZjszfGmUK2pODzXOFa+ISUpkk4yBsBVSltI
+         G3o47TvPg53VtBu4HPd397hYtKz1ejg4+SsRIYpHFLusNfauZg52IjGzxHwCaXrSzQCQ
+         V1WCXwXMnr0MHh+yLbHGoC7RMKoz3VX9F4QCQYZWgqhzFp/LjEPwH5hyxZYO824Zr+GE
+         jFbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lB/a4iMwzZXCVzQKA/wFs+7TeUdvCzpHO2+5MvW6yfU=;
+        b=HabIURSumh0vTj/+uqofqxZF51IZ0lDUYjwfodtHPlKktlDUxZchgqiw9LKm3d0QLt
+         nH+rYLFnKWMGr/vYSX+JUWFuEZVPMIlvYDz49TA1IXkS7nvQqgP77W77JhkGdp2TTbRq
+         sN44nRSTBij88XHtoB8fLUPfoW+QLZBhwI0xyYUHg72CKoTJXEUQ9vm/V0guphU8hZOK
+         6nYBuDL3OjM99pasYOBSzxVsy97bvZusWY5oMrpz+iBPaYrkXXc8KazzONh9UgFiA4ek
+         z1jXOQ1c0NgA9rCznsjI57PqMWQxEIFRNdqO7KdYHAjCGu1AORgcdEzwHbyX1NHvjk9R
+         DNeg==
+X-Gm-Message-State: AOAM5339GxOjPaI/iBB/TJfkZqSp7q7txY5/MYDDssTHc8PHlgU66zME
+        ZPVv1ziCIplmJklqavKmsuCdTQjdZKg30yYJOXMJWQ==
+X-Google-Smtp-Source: ABdhPJxiG98x7BOMr2s35CNt0d3MmkzHRwBqlPjTMbVGbt3kdfqoekbd94XMkb7+6aAZ3Vii4t6Zl4vrWx9AEn4pVDg=
+X-Received: by 2002:a25:7306:: with SMTP id o6mr39702181ybc.132.1614070555696;
+ Tue, 23 Feb 2021 00:55:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20210223055321.3891-1-o.rempel@pengutronix.de> <20210223055321.3891-3-o.rempel@pengutronix.de>
+In-Reply-To: <20210223055321.3891-3-o.rempel@pengutronix.de>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 23 Feb 2021 09:55:43 +0100
+Message-ID: <CANn89iJp6PeiJOQSnsXGRJBVmQ8QR1mNF=cHMnGMrg0J=UmPHQ@mail.gmail.com>
+Subject: Re: [PATCH net v2 2/2] can: fix ref count warning if socket was
+ closed before skb was cloned
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Andre Naujoks <nautsch2@gmail.com>, kernel@pengutronix.de,
+        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > +/*
-> > > > + * This function will parse recommended active subregion information in
-> > > > sense
-> > > > + * data field of response UPIU with SAM_STAT_GOOD state.
-> > > > + */
-> > > > +void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-> > > > +{
-> > > > +       struct ufshpb_lu *hpb;
-> > > > +       struct scsi_device *sdev;
-> > > > +       struct utp_hpb_rsp *rsp_field = &lrbp->ucd_rsp_ptr->hr;
-> > > > +       int data_seg_len;
-> > > > +       bool found = false;
-> > > > +
-> > > > +       __shost_for_each_device(sdev, hba->host) {
-> > > > +               hpb = ufshpb_get_hpb_data(sdev);
-> > > > +
-> > > > +               if (!hpb)
-> > > > +                       continue;
-> > > > +
-> > > > +               if (rsp_field->lun == hpb->lun) {
-> > > > +                       found = true;
-> > > > +                       break;
-> > > This piece of code looks awkward, although it is probably working.
-> > > Why not just having a reference to the hpb luns, e.g. something like:
-> > > struct ufshpb_lu *hpb_luns[8] in struct ufs_hba.
-> > > Less elegant - but much more effective than iterating the scsi host on every
-> > completion interrupt.
-> > 
-> > How about checking (cmd->lun == rsp->lun) before the iteration?
-> > Major case will be have same lun. And, it is hard to add struct ufshpb_lu
-> > *hpb_luns[128]
-> > in struct ufs_hba, because LUN can be upto 127.
-> Oh - yes, 8 is for write booster.
-> OK.  Whatever you think.
+On Tue, Feb 23, 2021 at 6:53 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+>
+> There are two ref count variables controlling the free()ing of a socket:
+> - struct sock::sk_refcnt - which is changed by sock_hold()/sock_put()
+> - struct sock::sk_wmem_alloc - which accounts the memory allocated by
+>   the skbs in the send path.
+>
+> If the socket is closed the struct sock::sk_refcnt will finally reach 0
+> and sk_free() is called. Which then calls
+> refcount_dec_and_test(&sk->sk_wmem_alloc). If sk_wmem_alloc reaches 0
+> the socket is actually free()ed.
+>
+> In case there are still TX skbs on the fly and the socket() is closed,
+> the struct sock::sk_refcnt reaches 0. In the TX-path the CAN stack
+> clones an "echo" skb, calls sock_hold() on the original socket and
+> references it. This produces the following back trace:
 
-Then, I want to keep this code with adding code that checking same LUN for
-fast path.
-  
-> However, I think there can be up to 32 regular luns,
-> meaning UFS_UPIU_MAX_UNIT_NUM_ID need to be fixed as well.
+Why not simply fix can_skb_set_owner() instead of adding yet another helper ?
 
-OK, it can be fixed another patch.
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index 685f34cfba20741d372d340fe7df1084767b2850..655f33aa99e330b8ffc804b0f3a1d61aa9b00b0b
+100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -65,8 +65,7 @@ static inline void can_skb_reserve(struct sk_buff *skb)
 
-Thanks,
-Daejun
+ static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
+ {
+-       if (sk) {
+-               sock_hold(sk);
++       if (sk && refcount_inc_not_zero(&sk->sk_refcnt)) {
+                skb->destructor = sock_efree;
+                skb->sk = sk;
+        }
+
+IMO, CAN seems to use sock_hold() even for tx packets.
+
+But tx packets usually have a reference on sockets based on sk->sk_wmem_alloc ,
+look at skb_set_owner_w() for reference.
+
+This might be the reason why you catch a zero sk_refcnt while packets
+are still in flight ?
+
+
+
+> | WARNING: CPU: 0 PID: 280 at lib/refcount.c:25 refcount_warn_saturate+0x114/0x134
+> | refcount_t: addition on 0; use-after-free.
+> | Modules linked in: coda_vpu(E) v4l2_jpeg(E) videobuf2_vmalloc(E) imx_vdoa(E)
+> | CPU: 0 PID: 280 Comm: test_can.sh Tainted: G            E     5.11.0-04577-gf8ff6603c617 #203
+> | Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+> | Backtrace:
+> | [<80bafea4>] (dump_backtrace) from [<80bb0280>] (show_stack+0x20/0x24) r7:00000000 r6:600f0113 r5:00000000 r4:81441220
+> | [<80bb0260>] (show_stack) from [<80bb593c>] (dump_stack+0xa0/0xc8)
+> | [<80bb589c>] (dump_stack) from [<8012b268>] (__warn+0xd4/0x114) r9:00000019 r8:80f4a8c2 r7:83e4150c r6:00000000 r5:00000009 r4:80528f90
+> | [<8012b194>] (__warn) from [<80bb09c4>] (warn_slowpath_fmt+0x88/0xc8) r9:83f26400 r8:80f4a8d1 r7:00000009 r6:80528f90 r5:00000019 r4:80f4a8c2
+> | [<80bb0940>] (warn_slowpath_fmt) from [<80528f90>] (refcount_warn_saturate+0x114/0x134) r8:00000000 r7:00000000 r6:82b44000 r5:834e5600 r4:83f4d540
+> | [<80528e7c>] (refcount_warn_saturate) from [<8079a4c8>] (__refcount_add.constprop.0+0x4c/0x50)
+> | [<8079a47c>] (__refcount_add.constprop.0) from [<8079a57c>] (can_put_echo_skb+0xb0/0x13c)
+> | [<8079a4cc>] (can_put_echo_skb) from [<8079ba98>] (flexcan_start_xmit+0x1c4/0x230) r9:00000010 r8:83f48610 r7:0fdc0000 r6:0c080000 r5:82b44000 r4:834e5600
+> | [<8079b8d4>] (flexcan_start_xmit) from [<80969078>] (netdev_start_xmit+0x44/0x70) r9:814c0ba0 r8:80c8790c r7:00000000 r6:834e5600 r5:82b44000 r4:82ab1f00
+> | [<80969034>] (netdev_start_xmit) from [<809725a4>] (dev_hard_start_xmit+0x19c/0x318) r9:814c0ba0 r8:00000000 r7:82ab1f00 r6:82b44000 r5:00000000 r4:834e5600
+> | [<80972408>] (dev_hard_start_xmit) from [<809c6584>] (sch_direct_xmit+0xcc/0x264) r10:834e5600 r9:00000000 r8:00000000 r7:82b44000 r6:82ab1f00 r5:834e5600 r4:83f27400
+> | [<809c64b8>] (sch_direct_xmit) from [<809c6c0c>] (__qdisc_run+0x4f0/0x534)
+>
+> To fix this problem, we have to take into account, that the socket
+> technically still there but should not used (by any new skbs) any more.
+> The function skb_clone_sk_optional() (introduced in the previous patch)
+> takes care of this. It will only clone the skb, if the sk is set and the
+> refcount has not reached 0.
+>
+> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+> Cc: Andre Naujoks <nautsch2@gmail.com>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  include/linux/can/skb.h   | 3 +--
+>  net/can/af_can.c          | 6 +++---
+>  net/can/j1939/main.c      | 3 +--
+>  net/can/j1939/socket.c    | 3 +--
+>  net/can/j1939/transport.c | 4 +---
+>  5 files changed, 7 insertions(+), 12 deletions(-)
+>
+> diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+> index 685f34cfba20..bc1af38697a2 100644
+> --- a/include/linux/can/skb.h
+> +++ b/include/linux/can/skb.h
+> @@ -79,13 +79,12 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
+>  {
+>         struct sk_buff *nskb;
+>
+> -       nskb = skb_clone(skb, GFP_ATOMIC);
+> +       nskb = skb_clone_sk_optional(skb);
+>         if (unlikely(!nskb)) {
+>                 kfree_skb(skb);
+>                 return NULL;
+>         }
+>
+> -       can_skb_set_owner(nskb, skb->sk);
+>         consume_skb(skb);
+>         return nskb;
+>  }
+> diff --git a/net/can/af_can.c b/net/can/af_can.c
+> index cce2af10eb3e..9e1bd60e7e1b 100644
+> --- a/net/can/af_can.c
+> +++ b/net/can/af_can.c
+> @@ -251,20 +251,20 @@ int can_send(struct sk_buff *skb, int loop)
+>                  * its own. Example: can_raw sockopt CAN_RAW_RECV_OWN_MSGS
+>                  * Therefore we have to ensure that skb->sk remains the
+>                  * reference to the originating sock by restoring skb->sk
+> -                * after each skb_clone() or skb_orphan() usage.
+> +                * after each skb_clone() or skb_orphan() usage -
+> +                * skb_clone_sk_optional() takes care of that.
+>                  */
+>
+>                 if (!(skb->dev->flags & IFF_ECHO)) {
+>                         /* If the interface is not capable to do loopback
+>                          * itself, we do it here.
+>                          */
+> -                       newskb = skb_clone(skb, GFP_ATOMIC);
+> +                       newskb = skb_clone_sk_optional(skb);
+>                         if (!newskb) {
+>                                 kfree_skb(skb);
+>                                 return -ENOMEM;
+>                         }
+>
+> -                       can_skb_set_owner(newskb, skb->sk);
+>                         newskb->ip_summed = CHECKSUM_UNNECESSARY;
+>                         newskb->pkt_type = PACKET_BROADCAST;
+>                 }
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index da3a7a7bcff2..4f6852d48077 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+> @@ -47,12 +47,11 @@ static void j1939_can_recv(struct sk_buff *iskb, void *data)
+>          * the header goes into sockaddr.
+>          * j1939 may not touch the incoming skb in such way
+>          */
+> -       skb = skb_clone(iskb, GFP_ATOMIC);
+> +       skb = skb_clone_sk_optional(iskb);
+>         if (!skb)
+>                 return;
+>
+>         j1939_priv_get(priv);
+> -       can_skb_set_owner(skb, iskb->sk);
+>
+>         /* get a pointer to the header of the skb
+>          * the skb payload (pointer) is moved, so that the next skb_data
+> diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+> index 4e4a510d82f9..c1be6c26ff76 100644
+> --- a/net/can/j1939/socket.c
+> +++ b/net/can/j1939/socket.c
+> @@ -305,12 +305,11 @@ static void j1939_sk_recv_one(struct j1939_sock *jsk, struct sk_buff *oskb)
+>         if (!j1939_sk_recv_match_one(jsk, oskcb))
+>                 return;
+>
+> -       skb = skb_clone(oskb, GFP_ATOMIC);
+> +       skb = skb_clone_sk_optional(oskb);
+>         if (!skb) {
+>                 pr_warn("skb clone failed\n");
+>                 return;
+>         }
+> -       can_skb_set_owner(skb, oskb->sk);
+>
+>         skcb = j1939_skb_to_cb(skb);
+>         skcb->msg_flags &= ~(MSG_DONTROUTE);
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index e09d087ba240..e902557bbe17 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -1014,12 +1014,10 @@ static int j1939_simple_txnext(struct j1939_session *session)
+>         if (!se_skb)
+>                 return 0;
+>
+> -       skb = skb_clone(se_skb, GFP_ATOMIC);
+> +       skb = skb_clone_sk_optional(se_skb);
+>         if (!skb)
+>                 return -ENOMEM;
+>
+> -       can_skb_set_owner(skb, se_skb->sk);
+> -
+>         j1939_tp_set_rxtimeout(session, J1939_SIMPLE_ECHO_TIMEOUT_MS);
+>
+>         ret = j1939_send_one(priv, skb);
+> --
+> 2.29.2
+>
