@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD31B322952
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1146322957
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232390AbhBWLNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 06:13:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232377AbhBWLNX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:13:23 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083F2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 03:12:43 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id w19so15637386qki.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 03:12:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vDJKyrOYFbZgyIbDoSlNOmxT0wOERdFNLnLjqv9XaI4=;
-        b=AKvkQC2O5sPNCelEGUg7Weo2THVB644tAmz6ADl4Ek1PAhqTvjEnah72Av2XwaTppL
-         MrfUGT6mqbmRXaz87K2P077IXvJvpX2wU+xVOEe5rzjqDqIChOqC4Aj0IEjdqLiu+fn/
-         S/acrId2IUz2UEgyBB2C7xXHFEuV3GLGB64mF7ZxO24bIkcQmOIUqwB9Fk6uVv6Bgn1K
-         Gy2I/5o8RW2ut6f1dqOjWjgTuYlc/ga0c5r51EK0VskySqe8uNXid2s0ez4FBXmPOfFu
-         81IrfjsYopalLRN2VooNbaMA2Cwib3Qilg4NOpm7xAmj3GoFoulAfUbmyLcPisJavTvr
-         6KDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vDJKyrOYFbZgyIbDoSlNOmxT0wOERdFNLnLjqv9XaI4=;
-        b=lbjuAfG3E1oJl7I9LkjELBbrei2OcFA3kDOia8HP4M6Pcrc305ZwVL+2p+wNlWQflI
-         SD6OSWJ/YK8MCaH8TW2VUzIk7nBRlK1q2Z7evIjk0DgaISIpfli4JggNaTucpyKcQmSS
-         9nkcVF3zRRkVC9fY+kcb4cxAAjf0tYVOyi0SdzX0bLSpwbdXhOb19k1aTrt15zZIRHYO
-         ujscncn2TXybKtPkU1URfSCCeY6bIKi+E58qNBlJ009wsTLh9dK1owWZ+CRE22qsdhDD
-         5rbs1vEjWTnSM/Ulw6s41ZAoT+PWqk158J3vlAL16PyNFgCXEAzcquthJeIKOu8IcZLk
-         PHgw==
-X-Gm-Message-State: AOAM5335aefUBgbALtYcKn+1CapRIWyAtoG6QmYKNWjOZ/K709fMcp/n
-        gtVkxRrC4AMtzic9skOcJawvM9BHhXlsg1b34wW3dg==
-X-Google-Smtp-Source: ABdhPJwMsjW0y3O9JlfLIqwKA4BBgSM8ln4wbd7X9YqkDboeTHfbzmGCVzqb30lCKEbEeFCX/sSysWzTgCh3cDFnPVM=
-X-Received: by 2002:a37:b6c4:: with SMTP id g187mr15630174qkf.162.1614078762141;
- Tue, 23 Feb 2021 03:12:42 -0800 (PST)
+        id S232392AbhBWLOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 06:14:48 -0500
+Received: from smtp.asem.it ([151.1.184.197]:59424 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232346AbhBWLOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 06:14:46 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000823976.MSG 
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 12:13:44 +0100S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 23
+ Feb 2021 12:13:43 +0100
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 23 Feb 2021 12:13:43 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>
+CC:     <linux-watchdog@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH] docs: watchdog: fix obsolete include file reference in pcwd
+Date:   Tue, 23 Feb 2021 12:13:24 +0100
+Message-ID: <20210223111324.309285-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210219181032.1.I23e12818c4a841ba9c37c60b3ba8cfeeb048285f@changeid>
- <20210219181032.3.Ia4c1022191d09fe8c56a16486b77796b83ffcae4@changeid>
-In-Reply-To: <20210219181032.3.Ia4c1022191d09fe8c56a16486b77796b83ffcae4@changeid>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 23 Feb 2021 14:12:30 +0300
-Message-ID: <CAA8EJpoCBe_5khmWPGvr35zBWdcoSJ4OeY=6Nw1diTsNtv7EpA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: sc7180: Delete charger thermal zone
- and ADC channel for lazor <= rev3
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A782F18.6034E368.004B,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The file linux/pcwd.h is not more present in the kernel
+sources. Its information is now moved into the file:
 
-On Sat, 20 Feb 2021 at 05:13, Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> Lazor rev3 and older are stuffed with a 47k NTC as thermistor for
-> the charger temperature which currently isn't supported by the
-> PM6150 ADC driver. Delete the charger thermal zone and ADC channel
-> to avoid the use of bogus temperature values.
+include/uapi/linux/watchdog.h
 
-Should we just expand the adc/adc-tm drivers with additional calibration tables?
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+---
+ Documentation/watchdog/pcwd-watchdog.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/Documentation/watchdog/pcwd-watchdog.rst b/Documentation/watchdog/pcwd-watchdog.rst
+index 405e2a370082..151505c856f6 100644
+--- a/Documentation/watchdog/pcwd-watchdog.rst
++++ b/Documentation/watchdog/pcwd-watchdog.rst
+@@ -47,7 +47,7 @@ Documentation and Driver by Ken Hollis <kenji@bitgate.com>
+ 	WDIOC_GETSTATUS
+ 		This returns the status of the card, with the bits of
+ 		WDIOF_* bitwise-anded into the value.  (The comments
+-		are in linux/pcwd.h)
++		are in include/uapi/linux/watchdog.h)
+ 
+ 	WDIOC_GETBOOTSTATUS
+ 		This returns the status of the card that was reported
 -- 
-With best wishes
-Dmitry
+2.25.1
+
