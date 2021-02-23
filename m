@@ -2,221 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108F9322A4C
+	by mail.lfdr.de (Postfix) with ESMTP id 81E9C322A4D
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbhBWMHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 07:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232489AbhBWMFN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 07:05:13 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F11DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 04:04:32 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id l12so25610493edt.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 04:04:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=u54RcXY8lntpJRKlVhb5dK9TdcZjKTkI7lQxSwGkD7I=;
-        b=Sj3jaLOrk9EgUNB4CMwV5RDi9NW4MNzgeXmP3xvBhZkEUwiYNmudBpdsY9O807ER/5
-         qDjhj+6MigQdUh0/s2lO2tioTo9ek59WLM4IHy3+Bu+ZDTUIgkDyiI/DQTDAdP1RWgBz
-         IVvwSzji17pVJfAk8Fa2kXa02wXSZipmXJJdov+lxE8tBaD2ShoSbSVuNvkS+Y6pzaeC
-         t0TwwjzE2lp8jeMjSjhGKGZdeVW5bCoSi+xGDbDxMCzC6fgXJVia/0ukY3P8w0dMOxZR
-         gBuYMDNqBOHsqOk+pf6efhKav+rrG+DkqLysDVUO+3MjiKNFpx/gEl0DWcVy2QJ3ntVZ
-         jnOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=u54RcXY8lntpJRKlVhb5dK9TdcZjKTkI7lQxSwGkD7I=;
-        b=b3NUkFUXOtxTnyPF1zZDm6kVR7GZ4yqnKlbG/4aoj3d2AHbFdfnqoD0SR+cxLIakM3
-         oYrFEP8B5vso39JS2H9qVlm7YMGanExEjgpyVtrWPHkFvNfBKBU1CsM9mYCrdzFOyPu6
-         2Y6k6KT9Wcen/cRojIgjnOg4Ld1cf/UN0sBCtw6LWQYOP5GreuBaaoDHr2yZ+52n0fZg
-         548xRsjQu3XtipPGmQgZi5NhwFFYQroUtcI1319qWrtu50ZTmHcg7cvvYLwVlVzAXyTg
-         9uDQhsRPGVbqlaERaed69ooHOdMtMwijna9L6PRie2GQdZgVad1TRZlnz7vxTNllGc5Q
-         +/tQ==
-X-Gm-Message-State: AOAM531i6XUIlkZVC2jBD14X8qa/ODNobCI5ctMLWLak2h5BRYzHVjWA
-        EEbbaUWIvZo3yVLaJn+77dbjUPNTIb66bHgzL10eWg==
-X-Google-Smtp-Source: ABdhPJzJAinCv+2pcIKwucmukYorecqSwGho/KIh01RmGZFktqdOABnysMgYqYjpAwm5nm8r0lbCQkFo1Lr2/w3llMg=
-X-Received: by 2002:aa7:cb0d:: with SMTP id s13mr27137270edt.221.1614081871259;
- Tue, 23 Feb 2021 04:04:31 -0800 (PST)
-MIME-Version: 1.0
-References: <20210222121022.546148341@linuxfoundation.org>
-In-Reply-To: <20210222121022.546148341@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 23 Feb 2021 17:34:19 +0530
-Message-ID: <CA+G9fYsyqoo5+Vz_uYf3QkLiaKzT_p4R6r+n3-eQw1Hw3A3B5Q@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/49] 4.9.258-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        id S232618AbhBWMIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 07:08:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232666AbhBWMGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 07:06:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21EEB601FF;
+        Tue, 23 Feb 2021 12:05:34 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 12:05:32 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: Re: [PATCH v13 4/7] arm64: mte: Enable TCO in functions that can
+ read beyond buffer limits
+Message-ID: <20210223120530.GA20769@arm.com>
+References: <20210211153353.29094-1-vincenzo.frascino@arm.com>
+ <20210211153353.29094-5-vincenzo.frascino@arm.com>
+ <20210212172128.GE7718@arm.com>
+ <c3d565da-c446-dea2-266e-ef35edabca9c@arm.com>
+ <20210222175825.GE19604@arm.com>
+ <6111633c-3bbd-edfa-86a0-be580a9ebcc8@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6111633c-3bbd-edfa-86a0-be580a9ebcc8@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 at 18:11, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.258 release.
-> There are 49 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.258-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, Feb 23, 2021 at 10:56:46AM +0000, Vincenzo Frascino wrote:
+> On 2/22/21 5:58 PM, Catalin Marinas wrote:
+> > We'll still have an issue with dynamically switching the async/sync mode
+> > at run-time. Luckily kasan doesn't do this now. The problem is that
+> > until the last CPU have been switched from async to sync, we can't
+> > toggle the static label. When switching from sync to async, we need
+> > to do it on the first CPU being switched.
+> 
+> I totally agree on this point. In the case of runtime switching we might need
+> the rethink completely the strategy and depends a lot on what we want to allow
+> and what not. For the kernel I imagine we will need to expose something in sysfs
+> that affects all the cores and then maybe stop_machine() to propagate it to all
+> the cores. Do you think having some of the cores running in sync mode and some
+> in async is a viable solution?
 
+stop_machine() is an option indeed. I think it's still possible to run
+some cores in async while others in sync but the static key here would
+only be toggled when no async CPUs are left.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> Probably it is worth to discuss it further once we cross that bridge.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Yes. For now, a warning should do so that we don't forget.
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.9.258-rc1
-git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-git branch: linux-4.9.y
-git commit: f0cf73f13b3979117e50a90dc884d48c1738105a
-git describe: v4.9.257-50-gf0cf73f13b39
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
-y/build/v4.9.257-50-gf0cf73f13b39
-
-No regressions (compared to build v4.9.257)
-
-No fixes (compared to build v4.9.257)
-
-Ran 39549 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-intel_pstate
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* fwts
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* libhugetlbfs
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* network-basic-tests
-* kvm-unit-tests
-* ltp-open-posix-tests
-* kselftest-vm
-* kselftest-kexec
-* kselftest-x86
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Catalin
