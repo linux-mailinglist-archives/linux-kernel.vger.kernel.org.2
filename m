@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8252E32337D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 037AC323381
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhBWVvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 16:51:51 -0500
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:41433 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbhBWVvk (ORCPT
+        id S232012AbhBWVzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 16:55:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230268AbhBWVzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 16:51:40 -0500
-Received: by mail-oi1-f182.google.com with SMTP id o3so246271oic.8;
-        Tue, 23 Feb 2021 13:51:25 -0800 (PST)
+        Tue, 23 Feb 2021 16:55:05 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEADC061574;
+        Tue, 23 Feb 2021 13:54:40 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id c1so15295qtc.1;
+        Tue, 23 Feb 2021 13:54:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/2YQl5j1lSOrAsVX4Tf33JuArsqON9FAJrHoqBhvUAY=;
+        b=SjL74SvJbXYEkIKRmaESz2/LOhR/fjSCIQlBo0t9SDZgvgnPExxSf75AcToNpc7ly2
+         RW/2vpEL6qwoZDXLpGPsthZccUfSK4m9mNnP/USqPt71YkkCbkYXM9Wlqu200pLoJUSt
+         KC+9tL9vYWTr3imlHgR6AT53O2+8UNXwYBZO/jSXoCDxqqkYFwgau5I3lF6/RrTkhLZz
+         lXRyhuWK0fjeMWBMBiu6nqE7y6tRk6BwTf5RBra+OXBYx4SPKkfXve7Rr141B6+No5nq
+         r+jz5grHZfCizJqtkkTuMrSChWfPLw6K/+ZKNGWuHOmzYAgytgM0fgXRvf4PR2HTp59g
+         k2Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AsR9ipt+b1mHYtmLjiSKpblxqFVh4LbdCrUVluojW2Q=;
-        b=A8BydkdYx4OBqOBCkhZ0aE96xMlN+ai9tJxLFB73J6UFqv41FM3uWT1j7AGYsY9ZPP
-         7LkNdnVQBERTBZ/DhD1ed+ROFCIy83iyPRU2UO2uhJB+z7Hh3zbec5eQiIRKPe9YbPpO
-         juDRBeefSSQ+hRrCEyfEh4x63k3SAvuJXQ/oIpHpd1WokYSW+kXdqau99mhaFSQi8iqk
-         1f6LVG5JMSWVeR8yslNyKOIp2lA1VMahqRvU/mBraD97xW2UwqCpf3TTimPwR6rj68Gc
-         pAR3acvRedL6nChyWdqQX9W4y7Rw7oZbl3HEV2ZeyQiJZ+bJ8mB8yveX4gFLl77sCyGS
-         HmfQ==
-X-Gm-Message-State: AOAM533Q8709wmCMniN/1vrPv7V/NQ+P5lF8d7ZX75HyQnlrVagpVpZn
-        BIt4/RluRdfjJRThqkCzUe5goqA5Wg==
-X-Google-Smtp-Source: ABdhPJwy7fsmg2yVC2MxWgcLyRFaNJiQxfoU7ly52FmudKmJznM3YDMN6gBOsgvWng4cpxYEOHkXaQ==
-X-Received: by 2002:a05:6808:14d0:: with SMTP id f16mr601770oiw.56.1614117059629;
-        Tue, 23 Feb 2021 13:50:59 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id p26sm1444867ota.9.2021.02.23.13.50.58
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=/2YQl5j1lSOrAsVX4Tf33JuArsqON9FAJrHoqBhvUAY=;
+        b=Xr3LiPHFnGE8z0Bnkrf4AvZ7bJ+uHL/VIV96Gcmtig4a1S9EVKAXJwjeU9+rdAa+J7
+         ef2zq5HtBezT9aehCU3pMH9M312MxnZW+qiASRbzVJOCm+rOwC5fivRQoYL9e0bP/Zk+
+         XkSPCKVgfl2398Ht63+HovmpvI76PkVYvaeGpVNhF3kYgcJkCB3l+vYVL/3Q8jaZAECG
+         71iTjJCAwDKOQqlVWTl3HJ5K3MEzPch6bBUBlnYWYF19Hk7fJkUQ12z289BAPHRDiTgI
+         RKuNLd4x+pSrPbHXcchxpADjd22m3e6HWEr7jd13Wfl0DbEm7Jas+rmlsUf5Fi+59V8B
+         AH5w==
+X-Gm-Message-State: AOAM533lefhSZ86uxK34wGJBhpKX1Frb1ihz773SxpzANJSmDvUlmqXt
+        JL4UHIb6soejZZ8Ai+sI1yM=
+X-Google-Smtp-Source: ABdhPJx1Ohe2fn4HMWjqXJHYzXGca6gc4EdzEanQQP7Ro4JcSnT4WwVaHLzZ9Ckw7PpL1SKFGVPtfg==
+X-Received: by 2002:ac8:5992:: with SMTP id e18mr26827902qte.177.1614117279726;
+        Tue, 23 Feb 2021 13:54:39 -0800 (PST)
+Received: from ubuntu-mate-laptop.localnet (108-188-130-030.biz.spectrum.com. [108.188.130.30])
+        by smtp.gmail.com with ESMTPSA id 80sm95389qkm.45.2021.02.23.13.54.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 13:50:59 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        CK Hu <ck.hu@mediatek.com>, Jitao shi <jitao.shi@mediatek.com>,
-        dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org
-Subject: [PATCH] dt-bindings: display: mediatek,dpi: Convert to use graph schema
-Date:   Tue, 23 Feb 2021 15:50:57 -0600
-Message-Id: <20210223215057.125708-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Tue, 23 Feb 2021 13:54:39 -0800 (PST)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
+Date:   Tue, 23 Feb 2021 16:54:37 -0500
+Message-ID: <10464303.FBcTZR2von@ubuntu-mate-laptop>
+In-Reply-To: <CAK8P3a1jRS=QyTxJzSxfEsaAuF5HnOXbv4MOu8b5EZWEhUep=Q@mail.gmail.com>
+References: <21525878.NYvzQUHefP@ubuntu-mate-laptop> <CAJ-ZY99xZEsS5pCbZ7evi_ohozQBpHcNHDcXxfoeaLzuWRzyzw@mail.gmail.com> <CAK8P3a1jRS=QyTxJzSxfEsaAuF5HnOXbv4MOu8b5EZWEhUep=Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the mediatek,dpi binding to use the graph schema. Missed
-this one from the mass conversion since it's not part of drm-misc.
+On Tuesday, February 23, 2021 4:26:44 PM EST Arnd Bergmann wrote:
+> On Tue, Feb 23, 2021 at 9:46 PM Julian Braha <julianbraha@gmail.com> wrote:
+> >
+> > I have other similar patches that I intend to submit. What should I do,
+> > going forward? Should I use "depends on CRYPTO" for cases like these?
+> > Should I resubmit this patch with that change?
+> 
+> No, we should not mix the two methods, that just leads to circular dependencies.
+> 
+> How many more patches do you have that need to get merged?
+> 
+> If it's only a few, I'd suggest merging them first before we consider a
+> broader change. If the problem is very common, we may want to
+> think about alternative approaches first, and then change everything
+> at once.
+> 
+>        Arnd
+> 
 
-Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: CK Hu <ck.hu@mediatek.com>
-Cc: Jitao shi <jitao.shi@mediatek.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-mediatek@lists.infradead.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../bindings/display/mediatek/mediatek,dpi.yaml       | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+Sorry, I don't have a specific number, but it's certainly under a dozen patches.
 
-diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.yaml
-index 6cdb734c91a9..eb84b53cabb1 100644
---- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.yaml
-+++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.yaml
-@@ -50,15 +50,10 @@ properties:
-       - const: sleep
- 
-   port:
--    type: object
-+    $ref: /schemas/graph.yaml#/properties/port
-     description:
--      Output port node with endpoint definitions as described in
--      Documentation/devicetree/bindings/graph.txt. This port should be connected
--      to the input port of an attached HDMI or LVDS encoder chip.
--
--    properties:
--      endpoint:
--        type: object
-+      Output port node. This port should be connected to the input port of an
-+      attached HDMI or LVDS encoder chip.
- 
- required:
-   - compatible
--- 
-2.27.0
+
 
