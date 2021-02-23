@@ -2,52 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E01D3225A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 07:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1943225A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 07:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhBWF7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 00:59:44 -0500
-Received: from smtp.rcn.com ([69.168.97.78]:57990 "EHLO smtp.rcn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230434AbhBWF7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 00:59:41 -0500
-DKIM-Signature: v=1; a=rsa-sha1; d=rcn.com; s=20180516; c=relaxed/simple;
-        q=dns/txt; i=@rcn.com; t=1614059940;
-        h=From:Subject:Date:To:MIME-Version:Content-Type;
-        bh=uoq1oCgLlTqpdDX/iUbLy7J1Wic=;
-        b=dTfPiCzzs3ZTe3rRcmVFI6kiK+bgtR9TwI3MAXxp4OeHELiLb/dUgXPfB7Ik+TEi
-        70d048lsYmkzQhu7nspn+YDWkhwwUxd1e6OA7F/WRjT9wI2npC9Kzp4kfpie6Dma
-        bFQAHzWmtjCfQM9Tuuj9OGMWPhnPtql+ET9lOkL2lhxcoZ5DQmyVwMUbRJjl2OXu
-        jrGRklGvE8rS7ZtuC0w+/VMg20QogYFme6Q3Yo5NuM4gV7iwx802qyNZCv/QeBBi
-        jEnwcYnqbzyUFdStCdGuegyv/p8B7CDgkShXV/DhU2cWJjYq0gNJaRvvZziG37jJ
-        tx0DwBT/Ddx6k6GjtBhSKw==;
-X_CMAE_Category: , ,
-X-CNFS-Analysis: v=2.4 cv=TPOA93pa c=1 sm=1 tr=0 ts=603499a3 cx=a_idp_x a=x5gWOx0sY5WO8mqg6s4djw==:117 a=KGjhK52YXX0A:10 a=FKkrIqjQGGEA:10 a=n5JTWFA-sQwA:10 a=IkcTkHD0fZMA:10 a=qa6Q16uM49sA:10 a=l962JvNQ8v8A:10 a=17Swcp7twyYA:10 a=tclcd6dtLQvEqt9_mmAA:9 a=QEXdDO2ut3YA:10
-X-CM-Score: 0
-X-Scanned-by: Cloudmark Authority Engine
-X-Authed-Username: dGNhcm1lbEByY24uY29t
-Authentication-Results: smtp02.rcn.cmh.synacor.com smtp.mail=tcarmel@rcn.com; spf=softfail; sender-id=softfail
-Authentication-Results: smtp02.rcn.cmh.synacor.com header.from=tcarmel@rcn.com; sender-id=softfail
-Received: from [10.33.66.2] ([10.33.66.2:55384] helo=md08.rcn.cmh.synacor.com)
-        by smtp.rcn.com (envelope-from <tcarmel@rcn.com>)
-        (ecelerity 3.6.25.56547 r(Core:3.6.25.0)) with ESMTP
-        id CA/87-53000-2A994306; Tue, 23 Feb 2021 00:58:59 -0500
-Date:   Tue, 23 Feb 2021 00:58:58 -0500 (EST)
-From:   dr bharati ghosh <tcarmel@rcn.com>
-Reply-To: dr bharati ghosh <drbharatighosh@mediacombb.net>
-To:     dr bharati ghosh <drbharatighosh@mediacombb.net>
-Message-ID: <1669456887.12281885.1614059938765.JavaMail.root@rcn.com>
-In-Reply-To: <560849086.12279926.1614059683319.JavaMail.root@rcn.com>
-Subject: Re: hi
+        id S231129AbhBWGFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 01:05:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230223AbhBWGFI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 01:05:08 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065EDC061574;
+        Mon, 22 Feb 2021 22:04:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=AEaIQi2veuBQwf4XS7youG5ABqjrt94dxMm7ycd6j8Q=; b=yr4TIbtQTCu8boueDH4UkQX4e2
+        XS8PP67uNf8PPevKETIXm9kLdaB5S//pVsHm1XOx6GV1qc61vlGYWCCejWJ1rOzE1gf8iX+7Sqwu9
+        I3LoPciKXqUUJ8SouyZ9XiBKJzkmBUhyDYnafVSrP8wUgQIIhtv3EjVmavwhUVKJpO6o4Dx97McuL
+        uFp5XwMbrjzyqggcFA867TvSR8CeX1Dy/lj9VRBzeTL4tuA8dFXO/sIlVocnvpcKkaoTcbo9TkGAo
+        WQbdb4Emf/W1TzGVZqYL9pbEfWO6+LxlJtK2gTZ3wGQ/h/VTHd2LtVZegc2R6ySulquo1iZgKWMBF
+        bgEJwv6g==;
+Received: from [2601:1c0:6280:3f0::d05b] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lEQo3-0005fq-Oh; Tue, 23 Feb 2021 06:04:24 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: [PATCH -next] docs: proc.rst: fix indentation warning
+Date:   Mon, 22 Feb 2021 22:04:18 -0800
+Message-Id: <20210223060418.21443-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [84.17.40.112]
-X-Mailer: Zimbra 7.2.7_GA_2942 (zclient/7.2.7_GA_2942)
-X-Vade-Verditct: clean
-X-Vade-Analysis: gggruggvucftvghtrhhoucdtuddrgeduledrkeeggdeklecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfujgfpteevqfftpdftvefppdfqfgfvnecuuegrihhlohhuthemuceftddunecugfhmphhthicusghougihucdlhedtmdenucfjughrpeffhfhrvffkjgfugggtgfhiofesthejtgdtredtjeenucfhrhhomhepughrucgshhgrrhgrthhiuchghhhoshhhuceothgtrghrmhgvlhesrhgtnhdrtghomheqnecuggftrfgrthhtvghrnhepfeekudehleekteelkeeggfffleekudeijeeghfefhffhffelhfevudejvdevtefgnecukfhppedutddrfeefrdeiiedrvddpkeegrddujedrgedtrdduuddvnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehinhgvthepuddtrdeffedrieeirddvnedpmhgrihhlfhhrohhmpehttggrrhhmvghlsehrtghnrdgtohhmnedprhgtphhtthhopehlohhgihhsthhitghsseguuhhflhhonhdrtghomhen
-X-Vade-Client: RCN
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix indentation snafu in proc.rst as reported by Stephen.
+
+next-20210219/Documentation/filesystems/proc.rst:697: WARNING: Unexpected indentation.
+
+Fixes: 93ea4a0b8fce ("Documentation: proc.rst: add more about the 6 fields in loadavg")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+---
+shame on me.
+
+ Documentation/filesystems/proc.rst |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-next-20210219.orig/Documentation/filesystems/proc.rst
++++ linux-next-20210219/Documentation/filesystems/proc.rst
+@@ -694,7 +694,7 @@ files are there, and which are missing.
+                 All fields are separated by one space except "number of
+                 processes currently runnable" and "total number of processes
+                 in system", which are separated by a slash ('/'). Example:
+-                  0.61 0.61 0.55 3/828 22084
++                0.61 0.61 0.55 3/828 22084
+  locks        Kernel locks
+  meminfo      Memory info
+  misc         Miscellaneous
