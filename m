@@ -2,73 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B14323176
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B28E32317C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234038AbhBWTer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 14:34:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233951AbhBWTen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 14:34:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7CCC64E12;
-        Tue, 23 Feb 2021 19:34:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614108843;
-        bh=k5Aj0V7danyXSc29h3WWx1T6FWMorq6ZnUvkZ30e+oI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XAfXwA4ZH+uVbm1z0h4wiElKr41Wn1EHF1FD5kAR0GZbR/MynqpGxWScaYnYtKId2
-         Iz/LeK04PudXW+gTRpDDG5PLU/EjXLWM7P/bO1endEVEUgrPteT9Zt8Yt13TdAVVBO
-         VKIxS49HVz+SHeUzwtFPSSoyyxWuWVGJiCkbwVAssBXI73i4E42AdD4yRNCx2mp7Ba
-         sKYzlmaAcFm5GwNeaf5u4N5Jecx6GpTdfed3jigW/4Mi0PRbGt9qPFq4l20IAAyEnY
-         5rOlBvddFcRnyfeulbI22abhO2svwi0adLlE9KZDKBj1aLjNiL5ysCCMftF8ltPRyu
-         kvzert5RdJVDA==
-Date:   Tue, 23 Feb 2021 21:33:49 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-sgx@vger.kernel.org, haitao.huang@intel.com,
-        dan.j.williams@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: Add a basic NUMA allocation scheme to
- sgx_alloc_epc_page()
-Message-ID: <YDVYnRdxHOME7cNe@kernel.org>
-References: <20210221020631.171404-1-jarkko@kernel.org>
- <7acc3c1c-373e-cfee-e838-2af170e87d98@intel.com>
- <YDVUuF3rqnRCr+Bb@kernel.org>
- <1ce6670a-ea35-c1bd-b5df-c52cc44dc433@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1ce6670a-ea35-c1bd-b5df-c52cc44dc433@intel.com>
+        id S234055AbhBWTfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 14:35:00 -0500
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:46617 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234040AbhBWTey (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 14:34:54 -0500
+Received: by mail-oi1-f179.google.com with SMTP id f3so18812138oiw.13;
+        Tue, 23 Feb 2021 11:34:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=Jd0iJwzzoy2OV01YxLUppnxWSo+h7hTXkFr7aHmltkk=;
+        b=IEDQbE4qPCLyKDZSeq8Mvld04gQbVnrZSonBfeTM1MgqLNEI6hK/wddNk9LQPCvBI6
+         lxnOltQPxLM24qTvoB0b8r2yrIKoztEQ9qCyiBzDOUjsD1qwEMVh/A5vwKmh5xNwIKXK
+         ykTlNXblVD3HKYtTd9sbqcf6GUoe9B/uge8T6RiJe3eBqP9I4MrVyKJhgjV7uO0THO9y
+         Zv8o7h25YIvk5eTISQmDEfem6k6rENPCtOCWy2qDZhF4VbgPEUEPTgC/YRAvlXsTaSXQ
+         YLMdyxTBYCRq0xHntd7DpXqiAEwRExeSbe0LI5ePkqOEVPkKL1JnBuLcit/wKLDU/ha/
+         b/sw==
+X-Gm-Message-State: AOAM533hYw5HiBjUTCbv/gDSso1s+6FrE5e8IgUV9K0mf6bHuqeIbTQ9
+        qe/yHkBkMjLmvw0QVbWQ78EJcyw1Og==
+X-Google-Smtp-Source: ABdhPJy1jssNdKq9KMlLx33dO0mbsh9DPwl9N6mfsOaL+GaoxMUl57imtSClS4z55ss1nOpkGacR2g==
+X-Received: by 2002:a05:6808:d47:: with SMTP id w7mr257519oik.150.1614108852913;
+        Tue, 23 Feb 2021 11:34:12 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q25sm4528236ota.16.2021.02.23.11.34.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 11:34:11 -0800 (PST)
+Received: (nullmailer pid 4116104 invoked by uid 1000);
+        Tue, 23 Feb 2021 19:34:10 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     soc@kernel.org, sboyd@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, w@1wt.eu,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20210223061830.1913700-2-daniel@0x0f.com>
+References: <20210223061830.1913700-1-daniel@0x0f.com> <20210223061830.1913700-2-daniel@0x0f.com>
+Subject: Re: [PATCH 1/8] dt-bindings: clk: mstar msc313 cpupll binding description
+Date:   Tue, 23 Feb 2021 13:34:10 -0600
+Message-Id: <1614108850.540354.4116103.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 11:20:55AM -0800, Dave Hansen wrote:
-> On 2/23/21 11:17 AM, Jarkko Sakkinen wrote:
-> > Instead, let's just:
-> > 
-> > 1. Have a global sgx_free_epc_list and remove sgx_epc_section.
-> >    Pages from this are allocated from this in LIFO fashion.
-> > 2. Instead add struct list_head node_list and use that for node
-> >    associated pages.
-> > 3. Replace 'int section' with 'int node'.
+On Tue, 23 Feb 2021 15:18:23 +0900, Daniel Palmer wrote:
+> Add a binding description for the MStar/SigmaStar CPU PLL block.
 > 
-> I was thinking of something similar.
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> ---
+>  .../bindings/clock/mstar,msc313-cpupll.yaml   | 45 +++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/mstar,msc313-cpupll.yaml
 > 
-> I'm fine with this approach.
 
-Here's my two step plan.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-1. Let's ack this with the cosmetic changes. It's good first baby
-   step to take.
-2. I'll do another patch that wipes sgx_epc_section.
+yamllint warnings/errors:
 
-Both are functionally self-contained patch that improve. That's why
-I don't see point in iterating them as a two patch patch set. One
-patch at a time is less overhead.
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/clock/mstar,msc313-cpupll.example.dts:19:18: fatal error: dt-bindings/clock/mstar-msc313-mpll.h: No such file or directory
+   19 |         #include <dt-bindings/clock/mstar-msc313-mpll.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/clock/mstar,msc313-cpupll.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1370: dt_binding_check] Error 2
 
-/Jarkko
+See https://patchwork.ozlabs.org/patch/1443402
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
