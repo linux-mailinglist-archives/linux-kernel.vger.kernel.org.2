@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB94D322CE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24DC322CF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232718AbhBWOyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:54:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53364 "EHLO mail.kernel.org"
+        id S232784AbhBWO4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:56:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33382 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232520AbhBWOyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:54:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED19164E12;
-        Tue, 23 Feb 2021 14:53:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614092018;
-        bh=OM4cSQCV8yXeiUPJwhUhjpxUXGQYw13IEBaq41dXDGM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZGU+j7EQQ2t8KbwUIJxd7loy8zUA1jLuw2dGQPrVXAcKUzwFESYQF6diMDL3UIGZ8
-         UpLCPAo62vTnHkKlD7vElszn1Hozun4b7rONR8m23vSVN+XyhTqkV05LEWizHkz2VU
-         m1uaEPgtWWq7+vMuREIBY6ZQIEXDTSt8R2I1d3qdn4YRQ4fGe2piacu9m7c0z9vydo
-         Q3eYvn1NPlPojp1YJyLZv2Vs7PFj7QaOfgGdBEFpCPBq+/FpcDYV0kgQPfjOPjF0eT
-         cnh06GLAwVXD8n2HED9ORMQow6kAZfLHMLndv7/MGi904o9Hkv3RIKyHGLuMVBIH6i
-         SzQJuPcsa28xw==
-Received: by pali.im (Postfix)
-        id A00E2CAE; Tue, 23 Feb 2021 15:53:35 +0100 (CET)
-Date:   Tue, 23 Feb 2021 15:53:35 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, maemo-leste@lists.dyne.org
-Subject: Re: [PATCH 1/3] power: supply: bq27xxx: fix sign of current_now for
- newer ICs
-Message-ID: <20210223145335.2vsfclgeqpsmacfp@pali>
-References: <20210223141122.9574-1-matthias.schiffer@ew.tq-group.com>
- <20210223154946.1ef58514@aktux>
+        id S231970AbhBWO4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:56:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0F6D1AFCE;
+        Tue, 23 Feb 2021 14:55:30 +0000 (UTC)
+Message-ID: <2fff7c82d983baccb91c4a1c0891a9b6cdc50dd6.camel@suse.de>
+Subject: Re: [PATCH -next] nvmem: Fix return value check in rmem_read()
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Tue, 23 Feb 2021 15:55:29 +0100
+In-Reply-To: <20210223142214.3405217-1-weiyongjun1@huawei.com>
+References: <20210223142214.3405217-1-weiyongjun1@huawei.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-+ZOTHRWo0mdmPr2PAEim"
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210223154946.1ef58514@aktux>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 23 February 2021 15:49:46 Andreas Kemnade wrote:
-> On Tue, 23 Feb 2021 15:11:20 +0100
-> Matthias Schiffer <matthias.schiffer@ew.tq-group.com> wrote:
-> 
-> > Commit cd060b4d0868 ("power: supply: bq27xxx: fix polarity of current_now")
-> > changed the sign of current_now for all bq27xxx variants, but on BQ28Z610
-> > I'm now seeing negated values *with* that patch.
-> > 
-> > The GTA04/Openmoko device that was used for testing uses a BQ27000 or
-> > BQ27010 IC, so I assume only the BQ27XXX_O_ZERO code path was incorrect.
-> > Revert the behaviour for newer ICs.
-> > 
-> > Fixes: cd060b4d0868 "power: supply: bq27xxx: fix polarity of current_now"
-> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> > ---
-> > 
-> > @Andreas Kemnade: It would be great to get a confirmation that the
-> > Openmoko battery indeed uses BQ27000/BQ27010 - I was having some trouble
-> > finding that information.
-> > 
-> I can confirm that.
-> here is the corresponding schematic:
-> 
-> http://people.openmoko.org/tony_tu/GTA02/hardware/GTA02/CT-GTA02.pdf
-> 
-> Regards,
-> Andreas
 
-Nokia N900 has BQ27200 connected via i2c. CCing Maemo mailing list maemo-leste@lists.dyne.org
+--=-+ZOTHRWo0mdmPr2PAEim
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 2021-02-23 at 14:22 +0000, Wei Yongjun wrote:
+> In case of error, the function memremap() returns NULL pointer
+> not ERR_PTR(). The IS_ERR() test in the return value check
+> should be replaced with NULL test.
+>=20
+> Fixes: 5a3fa75a4d9c ("nvmem: Add driver to expose reserved memory as nvme=
+m")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
+
+Acked-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+
+Thanks!
+
+
+
+--=-+ZOTHRWo0mdmPr2PAEim
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmA1F2EACgkQlfZmHno8
+x/5q2QgAntr7DrAtYlhZ2GumimEwN+L4edjp9P+ocKfuMbUP+RhvDb/ha1RpI6JB
+IvbVD/GkhL7KmyQ8MWBk7tQ1uTSgl7VggqGcXQvkmKVHW2OEwa+NpGNAQDxJUajw
+YAG99GooA3aQxSY3FN9vvbb0xiFNZyufgIORGj7VovkrQSP49EQlgfxs5paU/leA
+YieP200H0k//7o/9Twl+x3BWNeurfxKyDGLuMzsHPXPxKYVdTxgCKaC/Z8FknwwY
+HFYy2Bmm4VAVXY2zcPXB5cSYdjU/rFWChXBhV9X4h2Y51o70paB5kx3Djv+KoJeF
+97fxxJO19HGmLpT9UgqMR5vFYMEFnA==
+=RjAZ
+-----END PGP SIGNATURE-----
+
+--=-+ZOTHRWo0mdmPr2PAEim--
+
