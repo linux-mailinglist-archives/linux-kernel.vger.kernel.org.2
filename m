@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F308322629
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 08:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C2E32262C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 08:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhBWHJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 02:09:30 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:46804 "EHLO z11.mailgun.us"
+        id S231569AbhBWHKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 02:10:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230174AbhBWHJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 02:09:27 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614064148; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=pTEQghgVkfDvWMsdEuAjG7tlCrXlwH0AYTvKRDuVXFI=; b=BFiRfYRTfItunM0RAy39wkKz+MAORoFuN1w03buIj25JUlMl17y5S53wx9LxsdBA1PbexWZY
- Eiao51yUuD7Mdj8lHDej163dY8Ad4LnpSByvf2oUierREX6rjszreXNpcNwbb8J67/UhUMGk
- 9AS3CZnhFA92CrFnitxnzZ3HdIg=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6034a9f9ba086638301f0697 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Feb 2021 07:08:40
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A2487C43464; Tue, 23 Feb 2021 07:08:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 037B3C433CA;
-        Tue, 23 Feb 2021 07:08:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 037B3C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Pkshih <pkshih@realtek.com>
-Cc:     "chenhaoa\@uniontech.com" <chenhaoa@uniontech.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tony0620emma\@gmail.com" <tony0620emma@gmail.com>,
-        Timlee <timlee@realtek.com>,
-        "zhanjun\@uniontech.com" <zhanjun@uniontech.com>,
-        "kuba\@kernel.org" <kuba@kernel.org>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "arnd\@arndb.de" <arnd@arndb.de>,
-        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>
-Subject: Re: [PATCH v2] rtw88: 8822ce: fix wifi disconnect after S3/S4 on HONOR laptop
-References: <20210222094638.18392-1-chenhaoa@uniontech.com>
-        <87h7m4iefe.fsf@codeaurora.org> <1613993809.2331.12.camel@realtek.com>
-Date:   Tue, 23 Feb 2021 09:08:34 +0200
-In-Reply-To: <1613993809.2331.12.camel@realtek.com> (pkshih@realtek.com's
-        message of "Mon, 22 Feb 2021 11:36:51 +0000")
-Message-ID: <878s7fi7m5.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S229999AbhBWHKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 02:10:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35AD364DF5;
+        Tue, 23 Feb 2021 07:09:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614064180;
+        bh=cHjGiKXHdsfh6IXz5BdpbiOLiJ8lvc+EMmClna0j4SY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dNKIKJuqKUM+8hSSOmT8wTsLcjGlinYVEFcZM36Ipvb0qNSGQ+6l5s1IElwBdJzmD
+         EVPDqhwf+Vhi01EvwRXTIc23FMBjDT8nUiLnbRnrwX7BX4S3kR+9asfDRpk75zLDwY
+         FT7Wt+PU3AXPtfxIyFRFX3LEsOsTlvFrvsXw6WjIhWAGUhoCsiaVkOt+mP4HEAxiTn
+         5dXyCt4dpmh+vU4Upuf6vKJrDNdjIDDXQsHrrHuOCQ+fvI+MLANsvCnBtbkVO2cBEc
+         pP6YrX3Gk6Ox/xQ0NG1KQ1+NxWRQLkLIEiyJ21B7xCH8+K9Rouy0bUIHNc8ldkBL1y
+         3JJ+PqfRotIng==
+Date:   Tue, 23 Feb 2021 16:09:35 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Evgenii Shatokhin <eshatokhin@virtuozzo.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>,
+        live-patching@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Konstantin Khorenko <khorenko@virtuozzo.com>
+Subject: Re: 'perf probe' and symbols from .text.<something>
+Message-Id: <20210223160935.82b2a9c42f637ce5449a7497@kernel.org>
+In-Reply-To: <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
+References: <09257fb8-3ded-07b0-b3cc-55d5431698d8@virtuozzo.com>
+        <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pkshih <pkshih@realtek.com> writes:
+Hi,
 
->> > --- a/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
->> > +++ b/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
->> > @@ -25,7 +25,6 @@ static struct pci_driver rtw_8822ce_driver =3D {
->> >=C2=A0=C2=A0	.id_table =3D rtw_8822ce_id_table,
->> >=C2=A0=C2=A0	.probe =3D rtw_pci_probe,
->> >=C2=A0=C2=A0	.remove =3D rtw_pci_remove,
->> > -	.driver.pm =3D &rtw_pm_ops,
->>=20
->> Why just 8822ce? Why not remove rtw_pm_ops entirely if it just creates
->> problems?
->
-> I think we can't remove rtw_pm_ops, because wowlan will not work.
+On Tue, 23 Feb 2021 00:05:08 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Ah. A comment code in the code stating that would be nice.
+>   ----
+> /* Adjust symbol name and address */
+> static int post_process_probe_trace_point(struct probe_trace_point *tp,
+>                                            struct map *map, unsigned long offs)
+> {
+>         struct symbol *sym;
+>         u64 addr = tp->address - offs;
+> 
+>         sym = map__find_symbol(map, addr);
+>         if (!sym)
+>                 return -ENOENT;
+>   ----
+> 
+> So it seems "map" may not load the symbol out of ".text".
+> This need to be fixed, since the map is widely used in the perf.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+OK, I found a root cause of this issue.
+dso__process_kernel_symbol() (which invoked from map__load() path) only adds the
+symbols in ".text" section to the symbol list. It must be fixed.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
