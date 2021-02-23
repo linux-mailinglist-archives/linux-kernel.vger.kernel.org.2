@@ -2,67 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C686A32317F
+	by mail.lfdr.de (Postfix) with ESMTP id 5510E32317E
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbhBWTfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 14:35:21 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:39687 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234048AbhBWTe6 (ORCPT
+        id S234064AbhBWTfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 14:35:13 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:34324 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234041AbhBWTe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 14:34:58 -0500
-Received: by mail-ot1-f46.google.com with SMTP id h22so8466195otr.6;
-        Tue, 23 Feb 2021 11:34:42 -0800 (PST)
+        Tue, 23 Feb 2021 14:34:56 -0500
+Received: by mail-ot1-f45.google.com with SMTP id b16so16819478otq.1;
+        Tue, 23 Feb 2021 11:34:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=T8E7934aIPHB6mtxl6xXtzB4FrnNLcQJIHRrXAiFI0I=;
-        b=NEokTrUK5GqVLQzJHC3ZIRsTsdm2+EuujLUnZlrLz4qpugd9JCNH+f5+wW4+9r0XP+
-         G00jFx3CiqOQodVOR2TRVI6xq3jfRg6aig+phXm0azwQfRS4znTW7m3OsRrWDBGroxmp
-         86+Q57Dynn76fetNz2pYWBlhZfvs180BInUhrZim8WWx3u9gt3/czG7mdZy92quIFGXL
-         KowzVmJ/ORV4qk7jVIaupEa2uWn8sNh+WkpeZe1XUGW92FtWRVZMU2Yf32eZqwbaZMZw
-         z86Cc9Eed5k+TxSMdtlDs+HF80mvmgnebBj0+/MbAP7xNaydnNeQzTfig2kOTmTMZnK9
-         3LSw==
-X-Gm-Message-State: AOAM5328AL3UbGAgJb3K80xcVymMv/wf/qPo7zBiAbaAO9SkI60awQi1
-        77IrniJM6xIiz4ZWXEIQvrKwHouJ1A==
-X-Google-Smtp-Source: ABdhPJyykKxgNSiM9MYHc77xPLzAhw2bKZ5r1F5zv+PuiZsNRrVqKXkRizpkg0vvdsajYEIH+Vb/wQ==
-X-Received: by 2002:a05:6830:2390:: with SMTP id l16mr11741286ots.43.1614108857104;
-        Tue, 23 Feb 2021 11:34:17 -0800 (PST)
+        bh=jzoiYbxpGL9e8WsQqrLwB9sTS+xjumdfM5quc7WjraA=;
+        b=JgZQFB/0HbPE4LIHjD2xvXj3RJ/8nMk0r0FsWiC2P0j9Gd04UYm4ARdvm6za/PGD5f
+         RIqm2qLxFppfb2okqG3VEV4Blzjjh/Ls33bocdzbw21myZ6kEYNcMT+w3snN4zWHNMdF
+         ecqAWmBvYw5Xu3cFss5Aw2U58SUvSne+dvCGgXc9vvLR2rO36m++vIFJdnXk5/mylNqf
+         I9XldAWuGHwP5ySwPJZsa4EkK2oKtp7Tu+9Cs944xNynmexNbnN3zB4Sp1vk31FmCPBN
+         4AiLfl1kTKRhwDlinBpmoeq8we+PDIJl0/u/KsNzSCBm91/aQcWf7qFSWJ+iymD2iGBQ
+         SqOg==
+X-Gm-Message-State: AOAM531ltxDrKsVnfZkD/YT/PCEDYxNu7p7QabJoajHWFk+Atnb7wili
+        ij9OppLDUWL0WQCEeFObEg==
+X-Google-Smtp-Source: ABdhPJwj76JeAWZQEdKJSqs6KXqu/e1xzLx2WR5ir1KgpkRjXIMDERCdN92Jr+TLNAQe0oqLmlaClw==
+X-Received: by 2002:a9d:618a:: with SMTP id g10mr20959934otk.34.1614108855332;
+        Tue, 23 Feb 2021 11:34:15 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m11sm4509766oih.34.2021.02.23.11.34.15
+        by smtp.gmail.com with ESMTPSA id j5sm4445295oij.48.2021.02.23.11.34.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 11:34:16 -0800 (PST)
-Received: (nullmailer pid 4116109 invoked by uid 1000);
+        Tue, 23 Feb 2021 11:34:14 -0800 (PST)
+Received: (nullmailer pid 4116107 invoked by uid 1000);
         Tue, 23 Feb 2021 19:34:10 -0000
 From:   Rob Herring <robh@kernel.org>
 To:     =?utf-8?q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        linux-rpi-kernel@lists.infradead.org,
+        Matt Mackall <mpm@selenic.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        devicetree@vger.kernel.org
-In-Reply-To: <20210223180840.28771-2-noltari@gmail.com>
-References: <20210223180840.28771-1-noltari@gmail.com> <20210223180840.28771-2-noltari@gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: interrupt-controller: document BCM6345 external interrupt controller
+        =?utf-8?b?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@protonmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-crypto@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Scott Branden <sbranden@broadcom.com>,
+        Mark Brown <broonie@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Stefan Wahren <stefan.wahren@i2se.com>
+In-Reply-To: <20210223170006.29558-2-noltari@gmail.com>
+References: <20210222194510.14004-1-noltari@gmail.com> <20210223170006.29558-1-noltari@gmail.com> <20210223170006.29558-2-noltari@gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: rng: bcm2835: document reset support
 Date:   Tue, 23 Feb 2021 13:34:10 -0600
-Message-Id: <1614108850.569087.4116108.nullmailer@robh.at.kernel.org>
+Message-Id: <1614108850.556529.4116106.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 19:08:39 +0100, Álvaro Fernández Rojas wrote:
-> Document the binding for the BCM6345 external interrupt controller.
+On Tue, 23 Feb 2021 18:00:05 +0100, Álvaro Fernández Rojas wrote:
+> Some devices may need to perform a reset before using the RNG, such as the
+> BCM6368.
 > 
 > Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 > ---
->  .../brcm,bcm6345-ext-intc.yaml                | 61 +++++++++++++++++++
->  1 file changed, 61 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml
+>  v3: make resets required if brcm,bcm6368-rng.
+>  v2: document reset support.
+> 
+>  .../devicetree/bindings/rng/brcm,bcm2835.yaml   | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -70,13 +84,10 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml: properties:interrupt-parent: False schema does not allow {'description': 'Specifies the phandle to the parent interrupt controller this one is cascaded from.'}
-./Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/interrupt-controller/brcm,bcm6345-ext-intc.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml: ignoring, error in schema: properties: interrupt-parent
-warning: no schema found in file: ./Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/rng/brcm,bcm2835.example.dt.yaml: rng@10004180: 'resets' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/rng/brcm,bcm2835.yaml
 
-See https://patchwork.ozlabs.org/patch/1443597
+See https://patchwork.ozlabs.org/patch/1443582
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
