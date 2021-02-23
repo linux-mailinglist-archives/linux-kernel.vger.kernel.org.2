@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B9D323366
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB1532336B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:49:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhBWVqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 16:46:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
+        id S232404AbhBWVrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 16:47:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbhBWVqY (ORCPT
+        with ESMTP id S231969AbhBWVrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 16:46:24 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3F6C06178B
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 13:45:44 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id j24so6752380pfi.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 13:45:44 -0800 (PST)
+        Tue, 23 Feb 2021 16:47:02 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C45AC061793
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 13:45:45 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id v200so1250895pfc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 13:45:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2Tx6PpXqyldYGLFbNHsTHVpykMytzBwI2ywunG7WWQc=;
-        b=NDsJA6rX7vmtl4tSNItgvJx0TzTU5RypxDLyOD7YWMhybpDTwoEI24kVAt6CJ+Dwmt
-         GirsVaDp0a5RKqYUscnRHJupJIfUB/0xDAcbG4hQw7ElvL2zjcrqBpyqJtN4jNXMs7zW
-         dTE2523urD/n4wWysH5o3KyBrOd5DrwG4ImxM=
+        bh=tqWQhT3LjBz5MByIC+aXJToZ1jZ2b58/ZuDpVrbD+Uo=;
+        b=Y/jL/5NhCl6kU+DaTLgVV6B8EkXtSb37eblUKcVW8JjbDaqdAo6oQ6glZf3vUe+i+N
+         9j9IM24PzKejIsunuWX5gdlecz8ZDBWOgV3zYKDJlChOfRinURMmxSZE1bWB7JSbP0wO
+         2yGti4I1CX8vc8Szvs6L+bsxKCtk0rzj7C9Qc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2Tx6PpXqyldYGLFbNHsTHVpykMytzBwI2ywunG7WWQc=;
-        b=eE+20+/J5UjFaHVGK4C7p5Y4NThe4m78T2q4TU24CLM+d4/BXIFOCOFhVPo4pHYn26
-         dvjIasFWJFkEQ7DHZHrEEVnbrzR1oNKvYXbHTZrmDibNlhRMjeS7H85h9sdfntTLxR2a
-         6JFZ0I5Mrp8uFl+aWSuITCUnoIfMQQ9aNyk+knhFGqQHXgapzTF3vSZUSh4R5Y8QM0Gd
-         t8W8doypzHrXQI6DfzyjO7k7ETlYJamWq1co8xP4qWxX/ZQhC7HT++xDLLtX5ihgfocy
-         srkeT6nGTEAcTHxMkG+Zg2/VHpYIIGAEnvyhAZ2eVAvXmq6ZSqNNA8HoKGNVqZfklzBq
-         QIWA==
-X-Gm-Message-State: AOAM5330rKtHdeE5jpjWeTREaPERvu1gWrJHfnkIC2mcSCXPUhEm6qLz
-        2Nqax+2jtJIwMyDNvolqKDS31w==
-X-Google-Smtp-Source: ABdhPJyZwrOprIzdvmcveFi7XyRmyoLKXPntzsi7yqJR4dS6RSmbWCWnn1Kn6QiuHpADj0GznlJV8w==
-X-Received: by 2002:a62:1896:0:b029:197:491c:be38 with SMTP id 144-20020a6218960000b0290197491cbe38mr28273517pfy.15.1614116743837;
-        Tue, 23 Feb 2021 13:45:43 -0800 (PST)
+        bh=tqWQhT3LjBz5MByIC+aXJToZ1jZ2b58/ZuDpVrbD+Uo=;
+        b=Zq++wA8VVTd47S0sVrR35WGmPbHA6S3OEgQ/m+KesVkhWk+uiy6nilgoRB0KU5ygX4
+         CUYDArbf2fqHMCQRfz9a7rrVbG8Dj/bpQwzwUGAORVqlyFBdZr+zyyLBONZQMNq+oX4+
+         AUxYe9oGPZnVL+ctJDznTeTt1FgEIm6+LVT4aRk9YucqkEAohGfvwhLbJ/3WslO3OpUC
+         jJD9YDUAk9r94Nv56RKsZv8LkASshIEFgsvpF5CRTtfoHSbWDGzrc5tNk6dIuw2vOvZT
+         nMoaJIy45C6Zh7WvOGOROHtZSVMLhhAq5fR9QPxP0q6uAuCI1rW8tQTd1ehDzkRr53OK
+         fYEw==
+X-Gm-Message-State: AOAM530kQuHgut9ciwfcf4syYM1lwFEtzDgUYGOSqDfa5WZbfFyOtvus
+        Q8X/wg3VnGJ9eXPRXYIZ8nahdw==
+X-Google-Smtp-Source: ABdhPJwQ606cvIhvmU7L+ZXAWRGkhUDsIa6rT3NdHLlZ0IwGaAHKV89yTlDBpyaOXb8wqWixtQyA3A==
+X-Received: by 2002:a05:6a00:1a01:b029:1da:a7ee:438f with SMTP id g1-20020a056a001a01b02901daa7ee438fmr4126793pfv.77.1614116744909;
+        Tue, 23 Feb 2021 13:45:44 -0800 (PST)
 Received: from smtp.gmail.com ([2620:15c:202:201:68e6:d68b:3887:f216])
-        by smtp.gmail.com with ESMTPSA id r68sm137951pfc.49.2021.02.23.13.45.42
+        by smtp.gmail.com with ESMTPSA id r68sm137951pfc.49.2021.02.23.13.45.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 13:45:43 -0800 (PST)
+        Tue, 23 Feb 2021 13:45:44 -0800 (PST)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>
@@ -54,9 +54,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Stephan Gerhold <stephan@gerhold.net>,
         Jeffrey Hugo <jhugo@codeaurora.org>,
         Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH 2/6] firmware: qcom_scm: Reduce locking section for __get_convention()
-Date:   Tue, 23 Feb 2021 13:45:35 -0800
-Message-Id: <20210223214539.1336155-3-swboyd@chromium.org>
+Subject: [PATCH 3/6] firmware: qcom_scm: Workaround lack of "is available" call on SC7180
+Date:   Tue, 23 Feb 2021 13:45:36 -0800
+Message-Id: <20210223214539.1336155-4-swboyd@chromium.org>
 X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
 In-Reply-To: <20210223214539.1336155-1-swboyd@chromium.org>
 References: <20210223214539.1336155-1-swboyd@chromium.org>
@@ -66,26 +66,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We shouldn't need to hold this spinlock here around the entire SCM call
-into the firmware and back. Instead, we should be able to query the
-firmware, potentially in parallel with other CPUs making the same
-convention detection firmware call, and then grab the lock to update the
-calling convention detected. The convention doesn't change at runtime so
-calling into firmware more than once is possibly wasteful but simpler.
-Besides, this is the slow path, not the fast path where we've already
-detected the convention used.
+Some SC7180 firmwares don't implement the QCOM_SCM_INFO_IS_CALL_AVAIL
+API, so we can't probe the calling convention. We detect the legacy
+calling convention on these firmwares, because the availability call
+always fails and legacy is the fallback. This leads to problems where
+the rmtfs driver fails to probe, because it tries to assign memory with
+a bad calling convention, which then leads to modem failing to load and
+all networking, even wifi, to fail. Ouch!
 
-More importantly, this allows us to add more logic here to workaround
-the case where the firmware call to check for availability isn't
-implemented in the firmware at all. In that case we can check the
-firmware node compatible string and force a calling convention.
-
-Note that we remove the 'has_queried' logic that is repeated twice. That
-could lead to the calling convention being printed multiple times to the
-kernel logs if the bool is true but __query_convention() is running on
-multiple CPUs. We also shorten the time where the lock is held, but we
-keep the lock held around the printk because it doesn't seem hugely
-important to drop it for that.
+Let's force the calling convention to be what it always is on this SoC,
+i.e. arm64. Of course, the calling convention is not the same thing as
+implementing the QCOM_SCM_INFO_IS_CALL_AVAIL API. The absence of the "is
+this call available" API from the firmware means that any call to
+__qcom_scm_is_call_available() fails. This is OK for now though because
+none of the calls that are checked for existence are implemented on
+firmware running on sc7180. If such a call needs to be checked for
+existence in the future, we presume that firmware will implement this
+API and then things will "just work".
 
 Cc: Elliot Berman <eberman@codeaurora.org>
 Cc: Brian Masney <masneyb@onstation.org>
@@ -95,152 +92,52 @@ Cc: Douglas Anderson <dianders@chromium.org>
 Fixes: 9a434cee773a ("firmware: qcom_scm: Dynamically support SMCCC and legacy conventions")
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/firmware/qcom_scm-smc.c | 12 ++++---
- drivers/firmware/qcom_scm.c     | 55 ++++++++++++++++-----------------
- drivers/firmware/qcom_scm.h     |  7 +++--
- 3 files changed, 39 insertions(+), 35 deletions(-)
+ drivers/firmware/qcom_scm.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/firmware/qcom_scm-smc.c b/drivers/firmware/qcom_scm-smc.c
-index 497c13ba98d6..d111833364ba 100644
---- a/drivers/firmware/qcom_scm-smc.c
-+++ b/drivers/firmware/qcom_scm-smc.c
-@@ -77,8 +77,10 @@ static void __scm_smc_do(const struct arm_smccc_args *smc,
- 	}  while (res->a0 == QCOM_SCM_V2_EBUSY);
- }
- 
--int scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
--		 struct qcom_scm_res *res, bool atomic)
-+
-+int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
-+		   enum qcom_scm_convention qcom_convention,
-+		   struct qcom_scm_res *res, bool atomic)
- {
- 	int arglen = desc->arginfo & 0xf;
- 	int i;
-@@ -87,9 +89,8 @@ int scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 	size_t alloc_len;
- 	gfp_t flag = atomic ? GFP_ATOMIC : GFP_KERNEL;
- 	u32 smccc_call_type = atomic ? ARM_SMCCC_FAST_CALL : ARM_SMCCC_STD_CALL;
--	u32 qcom_smccc_convention =
--			(qcom_scm_convention == SMC_CONVENTION_ARM_32) ?
--			ARM_SMCCC_SMC_32 : ARM_SMCCC_SMC_64;
-+	u32 qcom_smccc_convention = (qcom_convention == SMC_CONVENTION_ARM_32) ?
-+				    ARM_SMCCC_SMC_32 : ARM_SMCCC_SMC_64;
- 	struct arm_smccc_res smc_res;
- 	struct arm_smccc_args smc = {0};
- 
-@@ -148,4 +149,5 @@ int scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 	}
- 
- 	return (long)smc_res.a0 ? qcom_scm_remap_error(smc_res.a0) : 0;
-+
- }
 diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index 2be5573dce53..21e07a464bd9 100644
+index 21e07a464bd9..9ac84b5d6ce0 100644
 --- a/drivers/firmware/qcom_scm.c
 +++ b/drivers/firmware/qcom_scm.c
-@@ -113,11 +113,10 @@ static void qcom_scm_clk_disable(void)
- 	clk_disable_unprepare(__scm->bus_clk);
- }
- 
--enum qcom_scm_convention qcom_scm_convention;
--static bool has_queried __read_mostly;
--static DEFINE_SPINLOCK(query_lock);
-+enum qcom_scm_convention qcom_scm_convention = SMC_CONVENTION_UNKNOWN;
-+static DEFINE_SPINLOCK(scm_query_lock);
- 
--static void __query_convention(void)
-+static enum qcom_scm_convention __get_convention(void)
- {
- 	unsigned long flags;
- 	struct qcom_scm_desc desc = {
-@@ -130,36 +129,36 @@ static void __query_convention(void)
- 		.owner = ARM_SMCCC_OWNER_SIP,
- 	};
+@@ -131,6 +131,7 @@ static enum qcom_scm_convention __get_convention(void)
  	struct qcom_scm_res res;
-+	enum qcom_scm_convention probed_convention;
+ 	enum qcom_scm_convention probed_convention;
  	int ret;
++	bool forced = false;
  
--	spin_lock_irqsave(&query_lock, flags);
--	if (has_queried)
--		goto out;
-+	if (likely(qcom_scm_convention != SMC_CONVENTION_UNKNOWN))
-+		return qcom_scm_convention;
+ 	if (likely(qcom_scm_convention != SMC_CONVENTION_UNKNOWN))
+ 		return qcom_scm_convention;
+@@ -144,6 +145,18 @@ static enum qcom_scm_convention __get_convention(void)
+ 	if (!ret && res.result[0] == 1)
+ 		goto found;
  
--	qcom_scm_convention = SMC_CONVENTION_ARM_64;
--	// Device isn't required as there is only one argument - no device
--	// needed to dma_map_single to secure world
--	ret = scm_smc_call(NULL, &desc, &res, true);
 +	/*
-+	 * Device isn't required as there is only one argument - no device
-+	 * needed to dma_map_single to secure world
++	 * Some SC7180 firmwares didn't implement the
++	 * QCOM_SCM_INFO_IS_CALL_AVAIL call, so we fallback to forcing ARM_64
++	 * calling conventions on these firmwares. Luckily we don't make any
++	 * early calls into the firmware on these SoCs so the device pointer
++	 * will be valid here to check if the compatible matches.
 +	 */
-+	probed_convention = SMC_CONVENTION_ARM_64;
-+	ret = __scm_smc_call(NULL, &desc, probed_convention, &res, true);
- 	if (!ret && res.result[0] == 1)
--		goto out;
++	if (of_device_is_compatible(__scm ? __scm->dev->of_node : NULL, "qcom,scm-sc7180")) {
++		forced = true;
 +		goto found;
- 
--	qcom_scm_convention = SMC_CONVENTION_ARM_32;
--	ret = scm_smc_call(NULL, &desc, &res, true);
-+	probed_convention = SMC_CONVENTION_ARM_32;
-+	ret = __scm_smc_call(NULL, &desc, probed_convention, &res, true);
- 	if (!ret && res.result[0] == 1)
--		goto out;
--
--	qcom_scm_convention = SMC_CONVENTION_LEGACY;
--out:
--	has_queried = true;
--	spin_unlock_irqrestore(&query_lock, flags);
--	pr_info("qcom_scm: convention: %s\n",
--		qcom_scm_convention_names[qcom_scm_convention]);
--}
-+		goto found;
-+
-+	probed_convention = SMC_CONVENTION_LEGACY;
-+found:
-+	spin_lock_irqsave(&scm_query_lock, flags);
-+	if (probed_convention != qcom_scm_convention) {
-+		qcom_scm_convention = probed_convention;
-+		pr_info("qcom_scm: convention: %s\n",
-+			qcom_scm_convention_names[qcom_scm_convention]);
 +	}
-+	spin_unlock_irqrestore(&scm_query_lock, flags);
++
+ 	probed_convention = SMC_CONVENTION_ARM_32;
+ 	ret = __scm_smc_call(NULL, &desc, probed_convention, &res, true);
+ 	if (!ret && res.result[0] == 1)
+@@ -154,8 +167,9 @@ static enum qcom_scm_convention __get_convention(void)
+ 	spin_lock_irqsave(&scm_query_lock, flags);
+ 	if (probed_convention != qcom_scm_convention) {
+ 		qcom_scm_convention = probed_convention;
+-		pr_info("qcom_scm: convention: %s\n",
+-			qcom_scm_convention_names[qcom_scm_convention]);
++		pr_info("qcom_scm: convention: %s%s\n",
++			qcom_scm_convention_names[qcom_scm_convention],
++			forced ? " (forced)" : "");
+ 	}
+ 	spin_unlock_irqrestore(&scm_query_lock, flags);
  
--static inline enum qcom_scm_convention __get_convention(void)
--{
--	if (unlikely(!has_queried))
--		__query_convention();
- 	return qcom_scm_convention;
- }
- 
-@@ -1239,7 +1238,7 @@ static int qcom_scm_probe(struct platform_device *pdev)
- 	__scm = scm;
- 	__scm->dev = &pdev->dev;
- 
--	__query_convention();
-+	__get_convention();
- 
- 	/*
- 	 * If requested enable "download mode", from this point on warmboot
-diff --git a/drivers/firmware/qcom_scm.h b/drivers/firmware/qcom_scm.h
-index 95cd1ac30ab0..632fe3142462 100644
---- a/drivers/firmware/qcom_scm.h
-+++ b/drivers/firmware/qcom_scm.h
-@@ -61,8 +61,11 @@ struct qcom_scm_res {
- };
- 
- #define SCM_SMC_FNID(s, c)	((((s) & 0xFF) << 8) | ((c) & 0xFF))
--extern int scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
--			struct qcom_scm_res *res, bool atomic);
-+extern int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
-+			  enum qcom_scm_convention qcom_convention,
-+			  struct qcom_scm_res *res, bool atomic);
-+#define scm_smc_call(dev, desc, res, atomic) \
-+	__scm_smc_call((dev), (desc), qcom_scm_convention, (res), (atomic))
- 
- #define SCM_LEGACY_FNID(s, c)	(((s) << 10) | ((c) & 0x3ff))
- extern int scm_legacy_call_atomic(struct device *dev,
 -- 
 https://chromeos.dev
 
