@@ -2,105 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC15B3226EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D110F3226F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhBWIKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:10:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45306 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232190AbhBWII5 (ORCPT
+        id S231952AbhBWIO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:14:58 -0500
+Received: from sonic305-19.consmr.mail.gq1.yahoo.com ([98.137.64.82]:46020
+        "EHLO sonic305-19.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230060AbhBWIO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:08:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614067651;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QJQaZPz8BU5jNxqGBbzYmwqQYEQoV6UYoqOet8cn2TE=;
-        b=cvViqWf7niinqURt6B8EqjmluOQvEAGs622tq+ovfnB5rO/8KX+ozIh/jtJXkPI4GOUR0S
-        V24Aghaw5BA6+Cy9Ge3B6lpKXVwMcyMDz4dwvT4TMjJ0fyHpdUwKCO9aqzz68jFgsCeQze
-        gPwYgctm+U2bsA9/i7qC7C6aWDf9bXk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-69-JqqCyiTPNyCRz58xa_dN8A-1; Tue, 23 Feb 2021 03:06:59 -0500
-X-MC-Unique: JqqCyiTPNyCRz58xa_dN8A-1
-Received: by mail-wr1-f69.google.com with SMTP id j12so1428008wrt.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 00:06:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QJQaZPz8BU5jNxqGBbzYmwqQYEQoV6UYoqOet8cn2TE=;
-        b=t+5OuuSnl2NFNkShM1qo2YfMosJlMDaTpYDaSVLh8AAnUGoDf8RHQHd+33UEAzEy+P
-         llyjkTHamQQokgLH/w39kcxTdPPqZSitFR5yZN8JGoUKJVShgFm59hoRpKs/cYFovK06
-         35QbjtXXaGDQg1Hb9WygrHbWZTBdOdAC17fbr4GxC3zmv3WTiVx+epmy8EXZ0ZB+vXVM
-         OxpnT6Fo6kd9FQ8IlEdhiCo+N1fDWQPuyp8jKorrBhfy9mmHhG+Ij0pzFIAiG46mhDCs
-         4qY+uyTqNlHMVsQbbzZwo2cj2IhNMq5ONMi8fiE11oNjhNTznaumKsn+fpxeuk30FwL3
-         ykdA==
-X-Gm-Message-State: AOAM533U93oxat5PUx+usuNRmOOJyr9ftpsDzZbv4oBc5wUV609fFn4D
-        pT1tZyz1ImB5PjRfX89cGmvIpsQFu+DRhzPtlWvLiCOOHZ/x4iH8HOpeTaClfjLXNPOFEHq1HX5
-        mWzOo+hV2SgI5+EnULmlJjs1B
-X-Received: by 2002:a05:6000:2aa:: with SMTP id l10mr25427489wry.368.1614067618437;
-        Tue, 23 Feb 2021 00:06:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxMIH1kwz2CQY7I9V1/kNJmJOFjB038suRPfBB8YuLFHXVn1XserOYC9TniXTjzHgbqy7vqMQ==
-X-Received: by 2002:a05:6000:2aa:: with SMTP id l10mr25427472wry.368.1614067618257;
-        Tue, 23 Feb 2021 00:06:58 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id v188sm302614wme.1.2021.02.23.00.06.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 00:06:57 -0800 (PST)
-Date:   Tue, 23 Feb 2021 09:06:55 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH 5.10 03/29] vdpa_sim: store parsed MAC address in a buffer
-Message-ID: <20210223080655.ps7ujvgvs6wtlszf@steredhat>
-References: <20210222121019.444399883@linuxfoundation.org>
- <20210222121020.153222666@linuxfoundation.org>
- <20210222195414.GA24405@amd>
+        Tue, 23 Feb 2021 03:14:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1614068030; bh=VgRaNiXmS+fHUI7DmYXUl0ZOy1q455DZjxEhf4VEPXs=; h=Date:From:To:Cc:Subject:References:In-Reply-To:From:Subject:Reply-To; b=ahpk7S/v1mR5uLk8S/KdDNybLS+h6w7wC8zHcf0KPxalKtZM6BREr8IQ5jW6BCOn9AanykAKw3ep/8Rd/N1OoGCP+Sa/cM/zwL1xhrDDhZyrdQ7u5UO6mTnwQIHHoFXKCSNr3vFLQGhN7+Sna8hMuN+x6SKNGVHd561J4Te7stKE2B4sy4/Pkl/sNkGRDKPAlsgzX6cYLRHSP6fWUK4yC7WAvXru8wbh40PW8wJrsvHyXLsbpAToppuVWUiojThd30Wgj7/aBIIXyieYfL0aJGD601Mk3NZOOQI0xVE0Z2Uw6Mm0ldkyg5Di8fZ8Tch8q6mGdOEyzDQizH1WBs2JBQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1614068030; bh=FVnb1PG+YppfkV46CJalLyQRXxdyypGCCqCP4Bm+kbw=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=WgAef68o9i3vsUCVcRVYnZ4TiVpIR92x3702QTxgT+TGVP4Fg8c98qbYwAvlF6IboqNlRkeE+deIWUxD111o7pPtysXjUFD9552Oc/RB5KmheuMXApBSEDRuY1MEoD0WA8Yu2vvs2C2MLpoYsvjXApgOgyQmNuhb7AwM3NXfWDnL9PBNIYARilhpSvZrmXk3acw48dBwvCPxXBh19OgwFLWUB58YcQVOimbTfH1/9owCNV+T9tYCjQtO2YIPnE4oW00Zdow8+ZRpoQKax6JQT0mOU0torpQcnRCnKAyAFWaclFbMbPNQ+t37jVyBgZ6PwnPBi9AWGTYhCZq4bCOprQ==
+X-YMail-OSG: 2g6jPhQVM1mMw6MW0uill92AcbruD0.qNLKiBq9lnIsAwaCU6a3CK4JSTRXwPD.
+ YV3AMK.HMHvvKlmhuMWrMf7089jcAuRY2HtHq2E7AosEdDWVRrFTVlvv5IueDDF5Adt8hzdvdcy1
+ e5tSwqZStbiDfdOe5903zNrgaCkZiNb16d3NfsQNSS9DK7CP3Qai7kXT9g1ORepY5pxNPRe6AfUV
+ lLUj_0fq0uNd8zKwhXkbJuBT6Jc7J6nNVYUyckzYoPtXeXKbOvxfLBKxypemeLiG7FYa0g02vPSv
+ snP_L_WFySD5Hp5fplqtztdY8ZQ6LSI7F5cw77STN_V.UHGK4Xq0Bo378JdaGYBpjSdEu3eANKB9
+ R.B_0WsrFeWyW9wVleGtQ45pGHZ1y9kEIw.lM_CnTtY9oSq8_g9qa8.KxJDi95EjNPevO6_DPiqZ
+ bHskEwu0gliyV4OoDgHFGgFXO31pfV633tb3jgWQ_ASkQzbE0guFe7vWfxqO_rJBgngDVirkMv1y
+ Q8s49fA5aKlTT5HWmabTqg6Gi09x0QL1j9ve8CdyBns7tBysSA3BJKRL5OxaItvO33kHGJ_rOdxK
+ VOFhy.u6gDzDm5NeOTuGFJqTFOOkLl9hgudbIW6AfUr.CdsxTirRgsToZuFp1q1Xe17LfgnnT86T
+ 5MfgRJxVW4JGnY78tj7yU.BD2eh9fO5BQ2gRDEBmmcofgFAEuvRgrluCGm3piyR2UVZ7NRrrsaun
+ IF1o0b.bOFLhBaR9i6aaqqHbyrRLXuPXKrdsxGropjwrW_NaUAbviurviyb7Ew1NOFLSFfTqAES2
+ uRexWouGOAOrSrEvV75Jpm_41hfRc5wfi1rheauIS0c0Y8bTVdlpw4xdhqeedIjwsGEYeYOFGWMP
+ NmiaDLxIPB8UVzBG9TIP2SBVsVtCvko4KlFR42Zw_DZTIFZSz9RUNMu0RF0RrL467BVf4nf5Oe2y
+ O__aDfyQo65dg3QGR8vbyRjcgBeMNqhvxtf_m2nDBB9xwBumJzNo4eqfWqVesJFF3StUXo0jW3RY
+ Nsx.GJ2J7C700y_LKa0JFnW8hEllW0t8FjFoOh9tX36eEFV6i60TzHSQUvSO1rxzsUkfuNaEdc4a
+ F_iecXEi9RuwLS7xlrTtQQryD7E3Zy_eMnnCWv9KbAduP4OUZOuET8FxrlmNj_nUzkDH2x5If5ig
+ i3IlQ_B8wMNQShy0cpD9Y4jFL.7HP4V8.EzX9N_zT200AUjgy8kOBGN8f2Fu7mS7RdU4P_h42niz
+ 9w6xaPmA81vrVARcW_HLT0wIdckEUXd1.PgLZNvmfbtQzh1kz2OKbbcUUcDrLsnD4VNX1ZD0TtxJ
+ muDzYDGZyGSWYWtxJNiIDaudkVrCNgzZSvVPrNQKhosZlNzElGp.G7L6CLlAuaP4Fu1X08gQYjV.
+ pcyssXltq4CTX_nf6E6ddwNLuOB6V_1m6_QRAeyiJa17WItaWOveaF18GmcWkJ_xWmpfsKkb_c9H
+ ysMUx8pLU91O5ZgWza0dgaysMEC3iG65YFevhyTGULQe7RrVeILX0hcvzgrw87l8sus5kBbdDuDA
+ yw2oUO09.rLYEJ.o0rq2XM_jU1BFr7pUCULQn0aWJbTEyFATbwI_SsGgjrKZTgb3nNhCJ1It1Nx7
+ A0rQXDxLfnMf0yKU8Ju2N0o8xHXURXZXtAcb_adW7zUiAdkgQ.gnIbocTOBtN3j.wghYRDMFwvb4
+ G9oQksG6VZoK5lKpozG6gI1cYa5fxReKzcMx.NaM1nNiY1fmYgO5Gmez1VGEGL4J.W2ObVQ9gwey
+ N5j2XSNo4LWfhpbZvYH9TOgnxncUzToZhn0b3U37Ezxm_wuoqV4_frQQjMEeLbb8wFwCdErhvg.u
+ mqemZIZqExR_O5EjNNaC9ilnw.MunaMk2Xl5zynv8NrhSvuJqro.hrDxz6Oy_O39CKuTbVenXstc
+ a3vjdqO.s4zTgcf0MRstfKsDRxS43z1l14gwIQCLFIYN546U_bUWc8UtAcOVXcHVNgrvWgKNPi16
+ q9Z88II2YV8a14CdVWPmPF2yLzIF2z7SI19JCcb8JG2UITMQccZP.VoTveKXXbbVCQdaLS9wbtHO
+ oZosmguZEwSVPOsT8y.8ynxH8qr0JIC9HyVEULYtWrV_5cekUuTowbQbNYW4iiRarAPFfwr2DcqQ
+ IyekUHZL9cjmkboh4qiEqE_qpUwkvg_ZNPD0pYqXm6RU1UfH30lCw.ozJ5GILuTctPjBtqb5SG1j
+ ACieA1qQWRtym.AbyYQfu4wxrvSBwcByTUMpy7ZkBpbAGmTCfjdMOLpEpUZrjnYAxQe.y4juuyhM
+ JTWT.tII40pTGSTM2qJZddfDBEZRr5e_FSx_xGbFurfoD4GkKAGMT.AAzTPjLqoEnBb.HsinCmaP
+ 8CQX2eEH3X6tn1nvgt7XRl7oRYcVV28BRw0FHy8Yd5RMc6E1weasb9dNS.LUfOiwu0mmebT6TAsu
+ vsLkHZtspciL5l_TXjNhSroPKmVdWUjLrgW8X61e0BFQj8lxpkMOOCT.1HTBMbG3DME9hzWGGfwc
+ FFLNeGPKDQylf_rVp7d.fPGM4SaXyiVhxyjuOIema8r6vKT9siUlq5L7.ffeJwgzxrQkEytpKe4u
+ PGAGZYjXiFNevdKD5Ih9GcGizK7nxuRU33.DhKjlKcnpWerTCaKhJMSSyTRoHziAybGZQfQsoOsG
+ 9kqisFGgp5a4TfDc45A--
+X-Sonic-MF: <hsiangkao@aol.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.gq1.yahoo.com with HTTP; Tue, 23 Feb 2021 08:13:50 +0000
+Received: by smtp407.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID c8a8e7ed1d54030eb2a1fabfc0c47f76;
+          Tue, 23 Feb 2021 08:13:42 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 16:13:24 +0800
+From:   Gao Xiang <hsiangkao@aol.com>
+To:     Huang Jianan <huangjianan@oppo.com>
+Cc:     zhangshiming@oppo.com, guoweichao@oppo.com,
+        linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] erofs: support adjust lz4 history window size
+Message-ID: <20210223081323.GA21197@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <20210223073119.69232-1-huangjianan@oppo.com>
+ <20210223074418.GA1269766@xiangao.remote.csb>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210222195414.GA24405@amd>
+In-Reply-To: <20210223074418.GA1269766@xiangao.remote.csb>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailer: WebService/1.1.17712 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.aol Apache-HttpAsyncClient/4.1.4 (Java/11.0.9.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 08:54:15PM +0100, Pavel Machek wrote:
->Hi!
->
->> From: Stefano Garzarella <sgarzare@redhat.com>
->>
->> commit cf1a3b35382c10ce315c32bd2b3d7789897fbe13 upstream.
->>
->> As preparation for the next patches, we store the MAC address,
->> parsed during the vdpasim_create(), in a buffer that will be used
->> to fill 'config' together with other configurations.
->
->I'm not sure why this series is in stable. It is not documented to fix
->anything bad.
->
->> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
->> @@ -42,6 +42,8 @@ static char *macaddr;
->>  module_param(macaddr, charp, 0);
->>  MODULE_PARM_DESC(macaddr, "Ethernet MAC address");
->>
->> +u8 macaddr_buf[ETH_ALEN];
->> +
->
->Should this be static?
+On Tue, Feb 23, 2021 at 03:44:18PM +0800, Gao Xiang wrote:
+> On Tue, Feb 23, 2021 at 03:31:19PM +0800, Huang Jianan via Linux-erofs wrote:
+> > lz4 uses LZ4_DISTANCE_MAX to record history preservation. When
+> > using rolling decompression, a block with a higher compression
+> > ratio will cause a larger memory allocation (up to 64k). It may
+> > cause a large resource burden in extreme cases on devices with
+> > small memory and a large number of concurrent IOs. So appropriately
+> > reducing this value can improve performance.
+> > 
+> > Decreasing this value will reduce the compression ratio (except
+> > when input_size <LZ4_DISTANCE_MAX). But considering that erofs
+> > currently only supports 4k output, reducing this value will not
+> > significantly reduce the compression benefits.
+> > 
+> > The maximum value of LZ4_DISTANCE_MAX defined by lz4 is 64k, and
+> > we can only reduce this value. For the old kernel, it just can't
+> > reduce the memory allocation during rolling decompression without
+> > affecting the decompression result.
+> > 
+> > Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+> > Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+> > ---
+> > 
+> > change since v2:
+> > - use z_erofs_load_lz4_config to calculate lz4_distance_pages
+> > - add description about the compatibility of the old kernel version
+> > - drop useless comment
+> > 
+> >  fs/erofs/decompressor.c | 22 ++++++++++++++++++----
+> >  fs/erofs/erofs_fs.h     |  3 ++-
+> >  fs/erofs/internal.h     |  7 +++++++
+> >  fs/erofs/super.c        |  2 ++
+> >  4 files changed, 29 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+> > index 1cb1ffd10569..0bb7903e3f9b 100644
+> > --- a/fs/erofs/decompressor.c
+> > +++ b/fs/erofs/decompressor.c
+> > @@ -28,6 +28,18 @@ struct z_erofs_decompressor {
+> >  	char *name;
+> >  };
+> >  
+> > +int z_erofs_load_lz4_config(struct erofs_sb_info *sbi,
+> > +			    struct erofs_super_block *dsb)
+> > +{
+> > +	u16 distance = le16_to_cpu(dsb->lz4_max_distance);
+> > +
+> > +	sbi->lz4_max_distance_pages = distance ?
+> > +					(DIV_ROUND_UP(distance, PAGE_SIZE) + 1) :
+> 
+> Unneeded parentheses here (I'll update it when applying).
+> Otherwise it looks good to me.
+> 
+> Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
+> 
+> Thanks,
+> Gao Xiang
 
-Yes, there is already a patch [1] queued by Michael but not yet 
-upstream. When it will be merged upstream I will make sure it will be 
-backported.
+Applied to dev-test temporarily with the following diff
+(fix 80 char limitation, etc):
 
-Thanks,
-Stefano
-
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git/commit/?h=linux-next&id=8c0bea4adac9f1f9ac827210fa8862be4bde6290
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index 0bb7903e3f9b..49347e681a53 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -34,9 +34,8 @@ int z_erofs_load_lz4_config(struct erofs_sb_info *sbi,
+ 	u16 distance = le16_to_cpu(dsb->lz4_max_distance);
+ 
+ 	sbi->lz4_max_distance_pages = distance ?
+-					(DIV_ROUND_UP(distance, PAGE_SIZE) + 1) :
++					DIV_ROUND_UP(distance, PAGE_SIZE) + 1 :
+ 					LZ4_MAX_DISTANCE_PAGES;
+-
+ 	return 0;
+ }
+ 
+diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+index 4cb2395db45c..77965490dced 100644
+--- a/fs/erofs/internal.h
++++ b/fs/erofs/internal.h
+@@ -433,7 +433,7 @@ static inline void erofs_exit_shrinker(void) {}
+ static inline int z_erofs_init_zip_subsystem(void) { return 0; }
+ static inline void z_erofs_exit_zip_subsystem(void) {}
+ static inline int z_erofs_load_lz4_config(struct erofs_sb_info *sbi,
+-					  struct erofs_super_block *dsb) { return 0; }
++				struct erofs_super_block *dsb) { return 0; }
+ #endif	/* !CONFIG_EROFS_FS_ZIP */
+ 
+ #define EFSCORRUPTED    EUCLEAN         /* Filesystem is corrupted */
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index 11bc51e488dd..025c25d6e0f3 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -166,8 +166,6 @@ static int erofs_read_superblock(struct super_block *sb)
+ 	if (!check_layout_compatibility(sb, dsb))
+ 		goto out;
+ 
+-	z_erofs_load_lz4_config(sbi, dsb);
+-
+ 	sbi->blocks = le32_to_cpu(dsb->blocks);
+ 	sbi->meta_blkaddr = le32_to_cpu(dsb->meta_blkaddr);
+ #ifdef CONFIG_EROFS_FS_XATTR
+@@ -189,6 +187,9 @@ static int erofs_read_superblock(struct super_block *sb)
+ 		ret = -EFSCORRUPTED;
+ 		goto out;
+ 	}
++
++	/* parse on-disk compression configurations */
++	z_erofs_load_lz4_config(sbi, dsb);
+ 	ret = 0;
+ out:
+ 	kunmap(page);
 
