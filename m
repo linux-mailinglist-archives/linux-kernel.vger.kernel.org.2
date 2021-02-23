@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3456322C17
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61391322C19
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbhBWOUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:20:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232326AbhBWOUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:20:18 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 103EE64E58;
-        Tue, 23 Feb 2021 14:19:37 +0000 (UTC)
-Date:   Tue, 23 Feb 2021 09:19:36 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        op-tee@lists.trustedfirmware.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] tee: optee: add invoke_fn tracepoints
-Message-ID: <20210223091936.5b390f35@gandalf.local.home>
-In-Reply-To: <20210223131124.GA2303918@jade>
-References: <20210210144409.36ecdaed@xhacker.debian>
-        <CAHUa44E-_czjhRxr2JjggYu0sDCsRvOA3Uc=hqp7j5Cmtb9q0w@mail.gmail.com>
-        <20210223184026.22c86356@xhacker.debian>
-        <20210223131124.GA2303918@jade>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233006AbhBWOU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:20:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232313AbhBWOUr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:20:47 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35C5C06174A;
+        Tue, 23 Feb 2021 06:20:07 -0800 (PST)
+Date:   Tue, 23 Feb 2021 15:20:02 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614090004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VzTN7zIIE4/8D9vTZDJiCxOd1/gCyd3XlCjlnumqjY0=;
+        b=TcJLwYrYH2ngitGvAMieIsqEJBU3uQvxle0gB/TyAU4nQv+VjdZJZERTNGOb33iOUkfrYw
+        9bxOaAl96IE04FaGdJSuaUniZkWFzVoEq9JOxaG0r+WI4TlObUf7EWu+hudQElgkias7AB
+        eQa6m6hziHR06h/hJYKlVW6PPuPl0eaWHcdQg9vqhPwUFWoALqki2bww04Tv2gPsvi83ma
+        5NSJNzTJTj+61q9Wexp7ck8fVUUq3bR0uAxtJa7ql6KB9efoSvjv6HjRy84V9w/wfwKUVB
+        H+1/XOJYBzY7cXqd3PrcEz/BG/8OwLV8CEHs+Zawsu0RraA1qXwQprS75wV/2Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614090004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VzTN7zIIE4/8D9vTZDJiCxOd1/gCyd3XlCjlnumqjY0=;
+        b=AVtug7zRAi97ZP1EOJb4Sdhlh28PpPwHz9v8+sk3UVvbFjN0sJ712qeNCCCnlFzL+uKC2a
+        1E3HBwEwrbXyv6Dw==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RT v5.11-rt7] WARNING at include/linux/seqlock.h:271
+ nft_counter_eval
+Message-ID: <YDUPEsdMAMWjmm8Z@lx-t490>
+References: <YDTdo+jETVr983t6@localhost.localdomain>
+ <20210223110015.ybl7feu43wvtjoqu@linutronix.de>
+ <YDUI5M5FQLycOd33@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YDUI5M5FQLycOd33@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 14:11:24 +0100
-Jens Wiklander <jens.wiklander@linaro.org> wrote:
+On Tue, Feb 23, 2021 at 02:53:40PM +0100, Juri Lelli wrote:
+> On 23/02/21 12:00, Sebastian Andrzej Siewior wrote:
+> > On 2021-02-23 11:49:07 [+0100], Juri Lelli wrote:
+> > > Hi,
+> > Hi,
+> >
+> > > I'm seeing the following splat right after boot (or during late boot
+> > > phases) with v5.11-rt7 (LOCKDEP enabled).
+> > …
+> > > [   85.273588] WARNING: CPU: 5 PID: 1416 at include/linux/seqlock.h:271 nft_counter_eval+0x95/0x130 [nft_counter]
+> > …
+> > > [   85.273713] RIP: 0010:nft_counter_eval+0x95/0x130 [nft_counter]
+> >
+> > This is a per-CPU seqcount_t in net/netfilter/nft_counter.c which is
+> > only protected by local_bh_disabled(). The warning expects preemption
+> > to be disabled which is the case on !RT but not on RT.
+> >
+> > Not sure what to do about this. It is doing anything wrong as of now. It
+> > is noisy.
+>
+> So, I'm a bit confused and I'm very likely missing details (still
+> digesting the seqprop_ magic), but write_seqcount_being() has
+>
+>  if (seqprop_preemptible(s))
+>      preempt_disable();
+>
+> which in this case (no lock associated) is defined to return false,
 
-> I used the -strict option.
-> 
-> ./scripts/checkpatch.pl -strict 0001-tee-optee-add-invoke_fn-tracepoints.patch
-> WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-> #44: 
-> new file mode 100644
+Preemption is disabled if and only if:
 
-The above is just asking for someone to take maintainership of the new file.
+  1. It's a CONFIG_PREEMPT_RT=n system
+  2. There's a lock associated with the sequence counter
+  3. That lock is also preemptible (e.g., a mutex)
 
-> 
-> CHECK: Alignment should match open parenthesis
-> #68: FILE: drivers/tee/optee/optee_trace.h:20:
-> +TRACE_EVENT(optee_invoke_fn_begin,
-> +	TP_PROTO(struct optee_rpc_param *param),
-> 
-> CHECK: Lines should not end with a '('
-> #71: FILE: drivers/tee/optee/optee_trace.h:23:
-> +	TP_STRUCT__entry(
-> 
-> CHECK: Lines should not end with a '('
-> #76: FILE: drivers/tee/optee/optee_trace.h:28:
-> +	TP_fast_assign(
-> 
-> CHECK: Alignment should match open parenthesis
-> #89: FILE: drivers/tee/optee/optee_trace.h:41:
-> +TRACE_EVENT(optee_invoke_fn_end,
-> +	TP_PROTO(struct optee_rpc_param *param, struct arm_smccc_res *res),
-> 
-> CHECK: Lines should not end with a '('
-> #92: FILE: drivers/tee/optee/optee_trace.h:44:
-> +	TP_STRUCT__entry(
-> 
-> CHECK: Lines should not end with a '('
-> #97: FILE: drivers/tee/optee/optee_trace.h:49:
-> +	TP_fast_assign(
+In your case, the 3 condititions are OFF. You're on a PREEMPT_RT=y
+kernel and the sequence counter in question has no lock associated.
 
-The TRACE_EVENT() macro is "special", and checkpatch notoriously stumbles
-over it. I usually recommend that people ignore the checkpatch warnings on
-TRACE_EVENT() macros.
+As Sebastian summarized, the error is just "noisy" at this point.
 
--- Steve
+We will of course need to find a (mainline-friendly) way to let the
+lockdep splat go away for -rt kernels. But for now, it's not harmful.
 
+Good luck,
 
-> 
-> total: 0 errors, 1 warnings, 6 checks, 86 lines checked
-
+--
+Ahmed S. Darwish
