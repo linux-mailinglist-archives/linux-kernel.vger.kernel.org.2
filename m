@@ -2,1144 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785DD322A45
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FCA322A47
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232600AbhBWMFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 07:05:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232611AbhBWMCD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 07:02:03 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA03C06178B
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 04:01:23 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id m6so8660624pfk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 04:01:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xMp0af1CxKAaYJRIY+xC7Zz31OJbQu3cMUHQV/40Wd0=;
-        b=jZpyEW68zji7Gu/iajHbp18JKaF3Z+MLDR5HIZ8Y5eNbggFFM31mpB2rQ5fzhkHLOu
-         R5NsXkBR68fNHMKfuJLcwiLS+Lo+B4xdl/7PfI96Wjd/KQaxWncmLfebgFIiCHBQgfCC
-         A1Otr4W6Kq9GQ1805iSCq3weloBdpCOg5kKfH3Ri9KwOJz81wua9V1bLGNDNJxBqxg/y
-         TkBOe7vwU0Sr4ZnCcTLMJD+t6nXbPsuo4WU/nkMu2fz9d/ZHCfbmMq4yGa3zDt0CNaIF
-         2Bgr1Vl3gGoQSh6fzTuAJ46uU7WM38i3uXFKyg4HgnccErb1ns2ChE0xvANksUNmAUl0
-         G1Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xMp0af1CxKAaYJRIY+xC7Zz31OJbQu3cMUHQV/40Wd0=;
-        b=J1dTKVzyAU4kNknssd9So3gYwowX3KuAR917G/rkUhcGgjtc21T9rrgvCUesOt41NS
-         PqKbjJ3tAONCAsndnzQYKHGOE00TeF5216DXJA5MS7DDRnRknBzxVcnnOHZcepl+fV7r
-         qV1gWrf3e3oBxjeOBF76cY+SFebtevFh8zRfsS75hnnqO2nnKqdkvUH2713RPpjDy2YM
-         qu42/jxgGYxGU3HAS1dPuLet0aBgda+KcPl+j4OaBE8JD2u6n+GiN9sTSEvUZ9KVI64v
-         2TfaU9p0W/4rGuPCN5NxOcVA4hpc+EflV5xjxVrm5YG5xIx3ZEbuFPtU7MQYyQLsOXlJ
-         rOBQ==
-X-Gm-Message-State: AOAM531buTe+uHhXeT9PiGaOkiWJidNfiVmgHPQRFiLqfeqF0BQLD42K
-        T/wgd3pS7S+cnBsk4U2mehYsfjL3AfPPohSmMrFWzw==
-X-Google-Smtp-Source: ABdhPJwEFu9776GdDM+LGBBJlGi1GtKJdXhhniewEMYDru1zYMG4jutb5RR3BOTt8gCs/KxEB41IAM24FkkRyXw3NR8=
-X-Received: by 2002:a63:6547:: with SMTP id z68mr20834928pgb.120.1614081682596;
- Tue, 23 Feb 2021 04:01:22 -0800 (PST)
+        id S232755AbhBWMGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 07:06:45 -0500
+Received: from mga01.intel.com ([192.55.52.88]:12810 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232468AbhBWMC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 07:02:29 -0500
+IronPort-SDR: VEDBMz3yblLb9Se+iAKZeBXHvMOeT0l5snrU2BlzgF0Ole6fs4bg2tnafpOnty4daaH0DJmgpM
+ 1NpTd+LIVa+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="204204601"
+X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
+   d="scan'208";a="204204601"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 04:01:35 -0800
+IronPort-SDR: vArlr3KrePNBRYNfBwiKlzekovfISugTKtVeSAQotiJWMWn7rBgZV9Z/BBRjs+ywQPZ+rbI0DZ
+ z4kqlVJiVX1A==
+X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
+   d="scan'208";a="432679629"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 04:01:29 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1lEWNZ-007Nkk-W1; Tue, 23 Feb 2021 14:01:25 +0200
+Date:   Tue, 23 Feb 2021 14:01:25 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Rajmohan Mani <rajmohan.mani@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>, me@fabwu.ch,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        devel@acpica.org
+Subject: Re: [PATCH v3 5/6] platform/x86: Add intel_skl_int3472 driver
+Message-ID: <YDTuldAG9FB8+RAd@smile.fi.intel.com>
+References: <20210222130735.1313443-1-djrscally@gmail.com>
+ <20210222130735.1313443-6-djrscally@gmail.com>
+ <CAHp75Vd2Dc2Poq7VNRXRT-0VjkYdEFY2WKpz8fWpAQViQRO4jA@mail.gmail.com>
+ <534849f6-c7b5-19b0-a09f-cd410cde93bd@gmail.com>
 MIME-Version: 1.0
-References: <20210218210504.375752-1-adrien.grassein@gmail.com>
- <20210218210504.375752-3-adrien.grassein@gmail.com> <CAG3jFyuQHxS9mc2k=1GSgwR40r8xbZ9wYguBYhQy8Sb4ma3gxA@mail.gmail.com>
- <CABkfQAFRC7AP8qXHu=OCHWVR0+OAeVr+eXH+qprubroq9DiVDg@mail.gmail.com>
- <CAG3jFyv1HW_zKeL+wjZgmBvxAa__Y1X6-GgrC_W=0808hF-t5g@mail.gmail.com>
- <CABkfQAHuVtiy3PfyWhBxbA-BTSAsY6OAVYPiz942VvEb6k=gWw@mail.gmail.com> <CABkfQAFr_+uoQvG1XaCibQS7RpOjYz8TP0epSpRx1dLnBeysPg@mail.gmail.com>
-In-Reply-To: <CABkfQAFr_+uoQvG1XaCibQS7RpOjYz8TP0epSpRx1dLnBeysPg@mail.gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 23 Feb 2021 13:01:11 +0100
-Message-ID: <CAG3jFyt2uMXnao9MzWHPA_ntC_FA0yFXLAo2k4Hd+yFi1wbNZA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] drm/bridge: Introduce LT8912 DSI to HDMI bridge
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <534849f6-c7b5-19b0-a09f-cd410cde93bd@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 at 11:51, Adrien Grassein <adrien.grassein@gmail.com> w=
-rote:
->
-> Hey Robert,
->
-> Le ven. 19 f=C3=A9vr. 2021 =C3=A0 22:47, Adrien Grassein
-> <adrien.grassein@gmail.com> a =C3=A9crit :
-> >
-> > Le ven. 19 f=C3=A9vr. 2021 =C3=A0 22:28, Robert Foss <robert.foss@linar=
-o.org> a =C3=A9crit :
-> > >
-> > > On Fri, 19 Feb 2021 at 16:01, Adrien Grassein <adrien.grassein@gmail.=
-com> wrote:
-> > > >
-> > > > Hey Robert,
-> > > >
-> > > > Le ven. 19 f=C3=A9vr. 2021 =C3=A0 14:27, Robert Foss <robert.foss@l=
-inaro.org> a =C3=A9crit :
-> > > > >
-> > > > > Hey Adrien,
-> > > > >
-> > > > >
-> > > > > Thanks for the quick update.
-> > > > No problem, I have some free time at the moment.
-> > > > >
-> > > > > On Thu, 18 Feb 2021 at 22:05, Adrien Grassein <adrien.grassein@gm=
-ail.com> wrote:
-> > > > > >
-> > > > > > Lontium Lt8912 is a DSI to HDMI bridge.
-> > > > > >
-> > > > > > Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> > > > > > ---
-> > > > > >  MAINTAINERS                             |   1 +
-> > > > > >  drivers/gpu/drm/bridge/Kconfig          |  14 +
-> > > > > >  drivers/gpu/drm/bridge/Makefile         |   1 +
-> > > > > >  drivers/gpu/drm/bridge/lontium-lt8912.c | 760 ++++++++++++++++=
-++++++++
-> > > > > >  4 files changed, 776 insertions(+)
-> > > > > >  create mode 100644 drivers/gpu/drm/bridge/lontium-lt8912.c
-> > > > > >
-> > > > > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > > > > index 5d1ed281cd41..58f8f45a7c86 100644
-> > > > > > --- a/MAINTAINERS
-> > > > > > +++ b/MAINTAINERS
-> > > > > > @@ -10462,6 +10462,7 @@ LONTIUM LT8912 MIPI TO HDMI BRIDGE
-> > > > > >  M:     Adrien Grassein <adrien.grassein@gmail.com>
-> > > > > >  S:     Maintained
-> > > > > >  F:     Documentation/devicetree/bindings/display/bridge/lontiu=
-m,lt8912.yaml
-> > > > > > +F:     drivers/gpu/drm/bridge/lontium-lt8912.c
-> > > > > >
-> > > > > >  LSILOGIC MPT FUSION DRIVERS (FC/SAS/SPI)
-> > > > > >  M:     Sathya Prakash <sathya.prakash@broadcom.com>
-> > > > > > diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/b=
-ridge/Kconfig
-> > > > > > index e4110d6ca7b3..5b36d4b86e3c 100644
-> > > > > > --- a/drivers/gpu/drm/bridge/Kconfig
-> > > > > > +++ b/drivers/gpu/drm/bridge/Kconfig
-> > > > > > @@ -48,6 +48,20 @@ config DRM_DISPLAY_CONNECTOR
-> > > > > >           on ARM-based platforms. Saying Y here when this drive=
-r is not needed
-> > > > > >           will not cause any issue.
-> > > > > >
-> > > > > > +config DRM_LONTIUM_LT8912
-> > > > > > +       tristate "Lontium LT8912 DSI/HDMI bridge"
-> > > > > > +       depends on OF
-> > > > > > +       select DRM_PANEL_BRIDGE
-> > > > > > +       select DRM_KMS_HELPER
-> > > > > > +       select REGMAP_I2C
-> > > > > > +       help
-> > > > > > +         Driver for Lontium LT8912 DSI to HDMI bridge
-> > > > > > +         chip driver.
-> > > > > > +         Please say Y if you have such hardware.
-> > > > > > +
-> > > > > > +         Say M here if you want to support this hardware as a =
-module.
-> > > > > > +         The module will be named "lontium-lt8912".
-> > > > > > +
-> > > > > >  config DRM_LONTIUM_LT9611
-> > > > > >         tristate "Lontium LT9611 DSI/HDMI bridge"
-> > > > > >         select SND_SOC_HDMI_CODEC if SND_SOC
-> > > > > > diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/=
-bridge/Makefile
-> > > > > > index 86e7acc76f8d..5a1b201cea1f 100644
-> > > > > > --- a/drivers/gpu/drm/bridge/Makefile
-> > > > > > +++ b/drivers/gpu/drm/bridge/Makefile
-> > > > > > @@ -2,6 +2,7 @@
-> > > > > >  obj-$(CONFIG_DRM_CDNS_DSI) +=3D cdns-dsi.o
-> > > > > >  obj-$(CONFIG_DRM_CHRONTEL_CH7033) +=3D chrontel-ch7033.o
-> > > > > >  obj-$(CONFIG_DRM_DISPLAY_CONNECTOR) +=3D display-connector.o
-> > > > > > +obj-$(CONFIG_DRM_LONTIUM_LT8912) +=3D lontium-lt8912.o
-> > > > > >  obj-$(CONFIG_DRM_LONTIUM_LT9611) +=3D lontium-lt9611.o
-> > > > > >  obj-$(CONFIG_DRM_LONTIUM_LT9611UXC) +=3D lontium-lt9611uxc.o
-> > > > > >  obj-$(CONFIG_DRM_LVDS_CODEC) +=3D lvds-codec.o
-> > > > > > diff --git a/drivers/gpu/drm/bridge/lontium-lt8912.c b/drivers/=
-gpu/drm/bridge/lontium-lt8912.c
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..8bdb584d22ce
-> > > > > > --- /dev/null
-> > > > > > +++ b/drivers/gpu/drm/bridge/lontium-lt8912.c
-> > > > > > @@ -0,0 +1,760 @@
-> > > > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > > > +/*
-> > > > > > + * Copyright (c) 2018, The Linux Foundation. All rights reserv=
-ed.
-> > > > > > + */
-> > > > > > +
-> > > > > > +#include <linux/device.h>
-> > > > > > +#include <linux/delay.h>
-> > > > > > +#include <linux/i2c.h>
-> > > > > > +#include <linux/gpio.h>
-> > > > > > +#include <linux/of_gpio.h>
-> > > > > > +#include <linux/regmap.h>
-> > > > > > +
-> > > > > > +#include <drm/drm_probe_helper.h>
-> > > > > > +#include <drm/drm_atomic_helper.h>
-> > > > > > +#include <drm/drm_mipi_dsi.h>
-> > > > > > +#include <drm/drm_of.h>
-> > > > > > +
-> > > > > > +#include <video/videomode.h>
-> > > > > > +
-> > > > > > +#define I2C_MAIN 0
-> > > > > > +#define I2C_ADDR_MAIN 0x48
-> > > > > > +
-> > > > > > +#define I2C_CEC_DSI 1
-> > > > > > +#define I2C_ADDR_CEC_DSI 0x49
-> > > > > > +
-> > > > > > +#define I2C_MAX_IDX 2
-> > > > > > +
-> > > > > > +struct lt8912 {
-> > > > > > +       struct device *dev;
-> > > > > > +       struct drm_bridge bridge;
-> > > > > > +       struct drm_connector connector;
-> > > > > > +
-> > > > > > +       struct i2c_client *i2c_client[I2C_MAX_IDX];
-> > > > > > +       struct regmap *regmap[I2C_MAX_IDX];
-> > > > > > +
-> > > > > > +       struct device_node *host_node;
-> > > > > > +       struct drm_bridge *hdmi_port;
-> > > > > > +
-> > > > > > +       struct mipi_dsi_device *dsi;
-> > > > > > +
-> > > > > > +       struct gpio_desc *gp_reset;
-> > > > > > +
-> > > > > > +       struct videomode mode;
-> > > > > > +
-> > > > > > +       u8 data_lanes;
-> > > > > > +       bool is_power_on;
-> > > > > > +       bool is_attached;
-> > > > > > +};
-> > > > > > +
-> > > > > > +static int lt8912_write_init_config(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       const struct reg_sequence seq[] =3D {
-> > > > > > +               /* Digital clock en*/
-> > > > > > +               {0x08, 0xff},
-> > > > > > +               {0x09, 0xff},
-> > > > > > +               {0x0a, 0xff},
-> > > > > > +               {0x0b, 0x7c},
-> > > > > > +               {0x0c, 0xff},
-> > > > > > +               {0x42, 0x04},
-> > > > > > +
-> > > > > > +               /*Tx Analog*/
-> > > > > > +               {0x31, 0xb1},
-> > > > > > +               {0x32, 0xb1},
-> > > > > > +               {0x33, 0x0e},
-> > > > > > +               {0x37, 0x00},
-> > > > > > +               {0x38, 0x22},
-> > > > > > +               {0x60, 0x82},
-> > > > > > +
-> > > > > > +               /*Cbus Analog*/
-> > > > > > +               {0x39, 0x45},
-> > > > > > +               {0x3a, 0x00},
-> > > > > > +               {0x3b, 0x00},
-> > > > > > +
-> > > > > > +               /*HDMI Pll Analog*/
-> > > > > > +               {0x44, 0x31},
-> > > > > > +               {0x55, 0x44},
-> > > > > > +               {0x57, 0x01},
-> > > > > > +               {0x5a, 0x02},
-> > > > > > +
-> > > > > > +               /*MIPI Analog*/
-> > > > > > +               {0x3e, 0xd6},
-> > > > > > +               {0x3f, 0xd4},
-> > > > > > +               {0x41, 0x3c},
-> > > > > > +               {0xB2, 0x00},
-> > > > > > +       };
-> > > > > > +
-> > > > > > +       return regmap_multi_reg_write(lt->regmap[I2C_MAIN], seq=
-, ARRAY_SIZE(seq));
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_write_mipi_basic_config(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       const struct reg_sequence seq[] =3D {
-> > > > > > +               {0x12, 0x04},
-> > > > > > +               {0x14, 0x00},
-> > > > > > +               {0x15, 0x00},
-> > > > > > +               {0x1a, 0x03},
-> > > > > > +               {0x1b, 0x03},
-> > > > > > +       };
-> > > > > > +
-> > > > > > +       return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], =
-seq, ARRAY_SIZE(seq));
-> > > > > > +};
-> > > > > > +
-> > > > > > +static int lt8912_write_dds_config(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       const struct reg_sequence seq[] =3D {
-> > > > > > +               {0x4e, 0xff},
-> > > > > > +               {0x4f, 0x56},
-> > > > > > +               {0x50, 0x69},
-> > > > > > +               {0x51, 0x80},
-> > > > > > +               {0x1f, 0x5e},
-> > > > > > +               {0x20, 0x01},
-> > > > > > +               {0x21, 0x2c},
-> > > > > > +               {0x22, 0x01},
-> > > > > > +               {0x23, 0xfa},
-> > > > > > +               {0x24, 0x00},
-> > > > > > +               {0x25, 0xc8},
-> > > > > > +               {0x26, 0x00},
-> > > > > > +               {0x27, 0x5e},
-> > > > > > +               {0x28, 0x01},
-> > > > > > +               {0x29, 0x2c},
-> > > > > > +               {0x2a, 0x01},
-> > > > > > +               {0x2b, 0xfa},
-> > > > > > +               {0x2c, 0x00},
-> > > > > > +               {0x2d, 0xc8},
-> > > > > > +               {0x2e, 0x00},
-> > > > > > +               {0x42, 0x64},
-> > > > > > +               {0x43, 0x00},
-> > > > > > +               {0x44, 0x04},
-> > > > > > +               {0x45, 0x00},
-> > > > > > +               {0x46, 0x59},
-> > > > > > +               {0x47, 0x00},
-> > > > > > +               {0x48, 0xf2},
-> > > > > > +               {0x49, 0x06},
-> > > > > > +               {0x4a, 0x00},
-> > > > > > +               {0x4b, 0x72},
-> > > > > > +               {0x4c, 0x45},
-> > > > > > +               {0x4d, 0x00},
-> > > > > > +               {0x52, 0x08},
-> > > > > > +               {0x53, 0x00},
-> > > > > > +               {0x54, 0xb2},
-> > > > > > +               {0x55, 0x00},
-> > > > > > +               {0x56, 0xe4},
-> > > > > > +               {0x57, 0x0d},
-> > > > > > +               {0x58, 0x00},
-> > > > > > +               {0x59, 0xe4},
-> > > > > > +               {0x5a, 0x8a},
-> > > > > > +               {0x5b, 0x00},
-> > > > > > +               {0x5c, 0x34},
-> > > > > > +               {0x1e, 0x4f},
-> > > > > > +               {0x51, 0x00},
-> > > > > > +       };
-> > > > > > +
-> > > > > > +       return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], =
-seq, ARRAY_SIZE(seq));
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_write_rxlogicres_config(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       int ret;
-> > > > > > +
-> > > > > > +       ret =3D regmap_write(lt->regmap[I2C_MAIN], 0x03, 0x7f);
-> > > > > > +       usleep_range(10000, 20000);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_MAIN], 0x03, 0xff)=
-;
-> > > > > > +
-> > > > > > +       return ret;
-> > > > > > +};
-> > > > > > +
-> > > > > > +static int lt8912_write_lvds_config(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       const struct reg_sequence seq[] =3D {
-> > > > > > +               {0x44, 0x30},
-> > > > > > +               {0x51, 0x05},
-> > > > > > +               {0x50, 0x24},
-> > > > > > +               {0x51, 0x2d},
-> > > > > > +               {0x52, 0x04},
-> > > > > > +               {0x69, 0x0e},
-> > > > > > +               {0x69, 0x8e},
-> > > > > > +               {0x6a, 0x00},
-> > > > > > +               {0x6c, 0xb8},
-> > > > > > +               {0x6b, 0x51},
-> > > > > > +               {0x04, 0xfb},
-> > > > > > +               {0x04, 0xff},
-> > > > > > +               {0x7f, 0x00},
-> > > > > > +               {0xa8, 0x13},
-> > > > > > +               {0x02, 0xf7},
-> > > > > > +               {0x02, 0xff},
-> > > > > > +               {0x03, 0xcf},
-> > > > > > +               {0x03, 0xff},
-> > > > > > +       };
-> > > > > > +
-> > > > > > +       return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], =
-seq, ARRAY_SIZE(seq));
-> > > > > > +};
-> > > > > > +
-> > > > > > +static inline struct lt8912 *bridge_to_lt8912(struct drm_bridg=
-e *b)
-> > > > > > +{
-> > > > > > +       return container_of(b, struct lt8912, bridge);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static inline struct lt8912 *connector_to_lt8912(struct drm_co=
-nnector *c)
-> > > > > > +{
-> > > > > > +       return container_of(c, struct lt8912, connector);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static const struct regmap_config lt8912_regmap_config =3D {
-> > > > > > +       .reg_bits =3D 8,
-> > > > > > +       .val_bits =3D 8,
-> > > > > > +       .max_register =3D 0xff,
-> > > > > > +};
-> > > > > > +
-> > > > > > +static int lt8912_init_i2c(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       unsigned int i;
-> > > > > > +       int ret;
-> > > > > > +       /*
-> > > > > > +        * At this time we only initialize 2 chips, but the lt8=
-912 provides
-> > > > > > +        * a third interface for the audio over HDMI configurat=
-ion.
-> > > > > > +        */
-> > > > > > +       struct i2c_board_info info[] =3D {
-> > > > > > +               { I2C_BOARD_INFO("lt8912p0", I2C_ADDR_MAIN), },
-> > > > > > +               { I2C_BOARD_INFO("lt8912p1", I2C_ADDR_CEC_DSI),=
- },
-> > > > > > +       };
-> > > > > > +
-> > > > > > +       if (!lt)
-> > > > > > +               return -ENODEV;
-> > > > > > +
-> > > > > > +       for (i =3D 0; i < ARRAY_SIZE(info); i++) {
-> > > > > > +               /*
-> > > > > > +                * lt->i2c_client[0] was already allocated earl=
-ier by the
-> > > > > > +                * kernel (via DT).
-> > > > > > +                */
-> > > > > > +               if (i > 0) {
-> > > > > > +                       lt->i2c_client[i] =3D i2c_new_dummy_dev=
-ice(lt->i2c_client[0]->adapter,
-> > > > > > +                                                              =
-  info[i].addr);
-> > > > > > +                       if (!lt->i2c_client[i])
-> > > > > > +                               return -ENODEV;
-> > > > > > +               }
-> > > > > > +               lt->regmap[i] =3D devm_regmap_init_i2c(lt->i2c_=
-client[i],
-> > > > > > +                                                    &lt8912_re=
-gmap_config);
-> > > > > > +               if (IS_ERR(lt->regmap[i])) {
-> > > > > > +                       ret =3D PTR_ERR(lt->regmap[i]);
-> > > > > > +                       return ret;
-> > > > > > +               }
-> > > > > > +       }
-> > > > > > +       return 0;
-> > > > > > +}
-> > > > >
-> > > > > I had a 2nd look at prior art for bridges with multiple I2C addre=
-sses,
-> > > > > and I think I prefer the implementation in anx7625. Instead of ha=
-ving
-> > > > > one I2C address provided by the DT and one by the driver, all are
-> > > > > provided by the driver. If you have any even better suggestions, =
-I'd
-> > > > > be curious to hear them.
-> > > > >
-> > > > > https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/bri=
-dge/analogix/anx7625.c#L1646
-> > > > >
-> > > >
-> > > > I check this implementation. I am not a kernel expert (nor a kernel
-> > > > dev) but I think that
-> > >
-> > > Well, now you're a kernel dev :p
-> > >
-> >
-> > AhAh ^^
-> >
-> > > > one i2c device is allocated twice (one is provided via DTB, via the
-> > > > reg property).
-> > >
-> > > Yeah. So let's ignore the one returned by probe() and configure two
-> > > i2c clients using addresses defined in the driver.
-> > >
-> > > >
-> > > > I can alloc all the devices on the driver (it is what I did before =
-I
-> > > > publish my patch set, and so
-> > > > that was the aim of the for loop).
-> > >
-> > > Thanks, and sorry about the churn around this topic.
-> > >
-> >
-> > No problem, I'm here to learn, and I consider it as a lesson :).
->
-> After some test and code reading, I can't reallocate the i2c device
-> given by the DTB.
-> (I got a -EBUSY error when calling  "i2c_new_dummy_device"). When reading=
- the
-> anx7625 code, we can see that the i2c addr described in the DTB is
-> never used in the code.
+On Mon, Feb 22, 2021 at 10:35:44PM +0000, Daniel Scally wrote:
+> On 22/02/2021 14:58, Andy Shevchenko wrote:
+> > On Mon, Feb 22, 2021 at 3:12 PM Daniel Scally <djrscally@gmail.com> wrote:
 
-Ah, I see. I didn't realize that.
+...
 
-> So, I guess that my first proposal was good (use the DTB device and
-> allocate the other
-> ones).
->
-> But this experience allows me to find a bug in the error check ^^.
-> Thanks a lot.
+> >> +       if (obj->buffer.length > sizeof(*cldb)) {
+> >> +               dev_err(&adev->dev, "The CLDB buffer is too large\n");
+> >> +               ret = -EINVAL;
+> > ENOSPC? ENOMEM?
+> 
+> I still think EINVAL actually, as in this case the problem isn't that
+> space couldn't be allocated but that the buffer in the SSDB is larger
+> than I expect it to be, which means the definition of it has changed /
+> this device isn't actually supported.
 
-Ok, then I'm satisfied with this I2C business.
+OK!
 
-> > > >
-> > > > > > +
-> > > > > > +static int lt8912_free_i2c(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       unsigned int i;
-> > > > > > +
-> > > > > > +       for (i =3D 1; i < I2C_MAX_IDX; i++)
-> > > > > > +               i2c_unregister_device(lt->i2c_client[i]);
-> > > > > > +
-> > > > > > +       return 0;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_hard_power_on(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       gpiod_set_value_cansleep(lt->gp_reset, 0);
-> > > > > > +       msleep(20);
-> > > > > > +
-> > > > > > +       return 0;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static void lt8912_hard_power_off(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       gpiod_set_value_cansleep(lt->gp_reset, 1);
-> > > > > > +       msleep(20);
-> > > > > > +       lt->is_power_on =3D false;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_video_setup(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       u32 hactive, h_total, hpw, hfp, hbp;
-> > > > > > +       u32 vactive, v_total, vpw, vfp, vbp;
-> > > > > > +       u8 settle =3D 0x08;
-> > > > > > +       int ret;
-> > > > > > +
-> > > > > > +       if (!lt)
-> > > > > > +               return -EINVAL;
-> > > > > > +
-> > > > > > +       hactive =3D lt->mode.hactive;
-> > > > > > +       hfp =3D lt->mode.hfront_porch;
-> > > > > > +       hpw =3D lt->mode.hsync_len;
-> > > > > > +       hbp =3D lt->mode.hback_porch;
-> > > > > > +       h_total =3D hactive + hfp + hpw + hbp;
-> > > > > > +
-> > > > > > +       vactive =3D lt->mode.vactive;
-> > > > > > +       vfp =3D lt->mode.vfront_porch;
-> > > > > > +       vpw =3D lt->mode.vsync_len;
-> > > > > > +       vbp =3D lt->mode.vback_porch;
-> > > > > > +       v_total =3D vactive + vfp + vpw + vbp;
-> > > > > > +
-> > > > > > +       if (vactive <=3D 600)
-> > > > > > +               settle =3D 0x04;
-> > > > > > +       else if (vactive =3D=3D 1080)
-> > > > > > +               settle =3D 0x0a;
-> > > > > > +
-> > > > > > +       ret =3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x10, 0x0=
-1);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x11, se=
-ttle);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x18, hp=
-w);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x19, vp=
-w);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x1c, ha=
-ctive & 0xff);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x1d, ha=
-ctive >> 8);
-> > > > > > +
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x2f, 0x=
-0c);
-> > > > > > +
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x34, h_=
-total & 0xff);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x35, h_=
-total >> 8);
-> > > > > > +
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x36, v_=
-total & 0xff);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x37, v_=
-total >> 8);
-> > > > > > +
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x38, vb=
-p & 0xff);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x39, vb=
-p >> 8);
-> > > > > > +
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x3a, vf=
-p & 0xff);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x3b, vf=
-p >> 8);
-> > > > > > +
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x3c, hb=
-p & 0xff);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x3d, hb=
-p >> 8);
-> > > > > > +
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x3e, hf=
-p & 0xff);
-> > > > > > +       ret |=3D regmap_write(lt->regmap[I2C_CEC_DSI], 0x3f, hf=
-p >> 8);
-> > > > > > +
-> > > > > > +       return ret;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_soft_power_on(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       if (!lt->is_power_on) {
-> > > > > > +               u32 lanes =3D lt->data_lanes;
-> > > > > > +
-> > > > > > +               lt8912_write_init_config(lt);
-> > > > > > +               regmap_write(lt->regmap[I2C_CEC_DSI], 0x13, lan=
-es & 3);
-> > > > > > +
-> > > > > > +               lt8912_write_mipi_basic_config(lt);
-> > > > > > +
-> > > > > > +               lt->is_power_on =3D true;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       return 0;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_video_on(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       int ret;
-> > > > > > +
-> > > > > > +       ret =3D lt8912_video_setup(lt);
-> > > > > > +       if (ret < 0)
-> > > > > > +               goto end;
-> > > > > > +
-> > > > > > +       ret =3D lt8912_write_dds_config(lt);
-> > > > > > +       if (ret < 0)
-> > > > > > +               goto end;
-> > > > > > +
-> > > > > > +       ret =3D lt8912_write_rxlogicres_config(lt);
-> > > > > > +       if (ret < 0)
-> > > > > > +               goto end;
-> > > > > > +
-> > > > > > +       ret =3D lt8912_write_lvds_config(lt);
-> > > > > > +       if (ret < 0)
-> > > > > > +               goto end;
-> > > > > > +
-> > > > > > +end:
-> > > > > > +       return ret;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static enum drm_connector_status
-> > > > > > +lt8912_connector_detect(struct drm_connector *connector, bool =
-force)
-> > > > > > +{
-> > > > > > +       struct lt8912 *lt =3D connector_to_lt8912(connector);
-> > > > > > +
-> > > > > > +       return drm_bridge_detect(lt->hdmi_port);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static const struct drm_connector_funcs lt8912_connector_funcs=
- =3D {
-> > > > > > +       .detect =3D lt8912_connector_detect,
-> > > > > > +       .fill_modes =3D drm_helper_probe_single_connector_modes=
-,
-> > > > > > +       .destroy =3D drm_connector_cleanup,
-> > > > > > +       .reset =3D drm_atomic_helper_connector_reset,
-> > > > > > +       .atomic_duplicate_state =3D drm_atomic_helper_connector=
-_duplicate_state,
-> > > > > > +       .atomic_destroy_state =3D drm_atomic_helper_connector_d=
-estroy_state,
-> > > > > > +};
-> > > > > > +
-> > > > > > +static enum drm_mode_status
-> > > > > > +lt8912_connector_mode_valid(struct drm_connector *connector,
-> > > > > > +                           struct drm_display_mode *mode)
-> > > > > > +{
-> > > > > > +       if (mode->clock > 150000)
-> > > > > > +               return MODE_CLOCK_HIGH;
-> > > > > > +
-> > > > > > +       if (mode->hdisplay > 1920)
-> > > > > > +               return MODE_BAD_HVALUE;
-> > > > > > +
-> > > > > > +       if (mode->vdisplay > 1080)
-> > > > > > +               return MODE_BAD_VVALUE;
-> > > > > > +
-> > > > > > +       return MODE_OK;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_connector_get_modes(struct drm_connector *co=
-nnector)
-> > > > > > +{
-> > > > > > +       struct edid *edid;
-> > > > > > +       int ret, num =3D 0;
-> > > > > > +       struct lt8912 *lt =3D connector_to_lt8912(connector);
-> > > > > > +       u32 bus_format =3D MEDIA_BUS_FMT_RGB888_1X24;
-> > > > > > +
-> > > > > > +       edid =3D drm_bridge_get_edid(lt->hdmi_port, connector);
-> > > > > > +       if (edid) {
-> > > > > > +               drm_connector_update_edid_property(connector, e=
-did);
-> > > > > > +               num =3D drm_add_edid_modes(connector, edid);
-> > > > > > +       } else
-> > > > > > +               return ret;
-> > > > > > +
-> > > > > > +       ret =3D drm_display_info_set_bus_formats(&connector->di=
-splay_info,
-> > > > > > +                                              &bus_format, 1);
-> > > > > > +       if (ret)
-> > > > > > +               num =3D ret;
-> > > > > > +
-> > > > > > +       kfree(edid);
-> > > > > > +       return num;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static const struct drm_connector_helper_funcs lt8912_connecto=
-r_helper_funcs =3D {
-> > > > > > +       .get_modes =3D lt8912_connector_get_modes,
-> > > > > > +       .mode_valid =3D lt8912_connector_mode_valid,
-> > > > > > +};
-> > > > > > +
-> > > > > > +static void lt8912_bridge_mode_set(struct drm_bridge *bridge,
-> > > > > > +                                  const struct drm_display_mod=
-e *mode,
-> > > > > > +                                  const struct drm_display_mod=
-e *adj)
-> > > > > > +{
-> > > > > > +       struct lt8912 *lt =3D bridge_to_lt8912(bridge);
-> > > > > > +
-> > > > > > +       drm_display_mode_to_videomode(adj, &lt->mode);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static void lt8912_bridge_enable(struct drm_bridge *bridge)
-> > > > > > +{
-> > > > > > +       struct lt8912 *lt =3D bridge_to_lt8912(bridge);
-> > > > > > +
-> > > > > > +       lt8912_video_on(lt);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_attach_dsi(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       struct device *dev =3D lt->dev;
-> > > > > > +       struct mipi_dsi_host *host;
-> > > > > > +       struct mipi_dsi_device *dsi;
-> > > > > > +       int ret =3D -1;
-> > > > > > +       const struct mipi_dsi_device_info info =3D { .type =3D =
-"lt8912",
-> > > > > > +                                                  .channel =3D=
- 0,
-> > > > > > +                                                  .node =3D NU=
-LL,
-> > > > > > +                                                };
-> > > > > > +
-> > > > > > +       host =3D of_find_mipi_dsi_host_by_node(lt->host_node);
-> > > > > > +       if (!host) {
-> > > > > > +               dev_err(dev, "failed to find dsi host\n");
-> > > > > > +               return -EPROBE_DEFER;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       dsi =3D mipi_dsi_device_register_full(host, &info);
-> > > > > > +       if (IS_ERR(dsi)) {
-> > > > > > +               ret =3D PTR_ERR(dsi);
-> > > > > > +               dev_err(dev, "failed to create dsi device (%d)\=
-n", ret);
-> > > > > > +               goto err_dsi_device;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       lt->dsi =3D dsi;
-> > > > > > +
-> > > > > > +       dsi->lanes =3D lt->data_lanes;
-> > > > > > +       dsi->format =3D MIPI_DSI_FMT_RGB888;
-> > > > > > +
-> > > > > > +       dsi->mode_flags =3D MIPI_DSI_MODE_VIDEO |
-> > > > > > +                         MIPI_DSI_MODE_VIDEO_BURST |
-> > > > > > +                         MIPI_DSI_MODE_LPM |
-> > > > > > +                         MIPI_DSI_MODE_EOT_PACKET;
-> > > > > > +
-> > > > > > +       ret =3D mipi_dsi_attach(dsi);
-> > > > > > +       if (ret < 0) {
-> > > > > > +               dev_err(dev, "failed to attach dsi to host\n");
-> > > > > > +               goto err_dsi_attach;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       return 0;
-> > > > > > +
-> > > > > > +err_dsi_attach:
-> > > > > > +       mipi_dsi_device_unregister(dsi);
-> > > > > > +err_dsi_device:
-> > > > > > +       return ret;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static void lt8912_detach_dsi(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       mipi_dsi_detach(lt->dsi);
-> > > > > > +       mipi_dsi_device_unregister(lt->dsi);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static void lt8912_bridge_connector_hpd_event(void *arg,
-> > > > > > +                                             enum drm_connecto=
-r_status status)
-> > > > > > +{
-> > > > > > +       struct lt8912 *lt =3D arg;
-> > > > > > +
-> > > > > > +       if (lt->hdmi_port->dev)
-> > > > > > +               drm_helper_hpd_irq_event(lt->hdmi_port->dev);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_bridge_connector_init(struct drm_bridge *bri=
-dge)
-> > > > > > +{
-> > > > > > +       int ret;
-> > > > > > +       struct lt8912 *lt =3D bridge_to_lt8912(bridge);
-> > > > > > +       struct drm_connector *connector =3D &lt->connector;
-> > > > > > +
-> > > > > > +       if (lt->hdmi_port->ops & DRM_BRIDGE_OP_DETECT) {
-> > > > > > +               connector->polled =3D DRM_CONNECTOR_POLL_HPD;
-> > > > > > +       } else {
-> > > > > > +               connector->polled =3D DRM_CONNECTOR_POLL_CONNEC=
-T |
-> > > > > > +                                   DRM_CONNECTOR_POLL_DISCONNE=
-CT;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       if (lt->hdmi_port->ops & DRM_BRIDGE_OP_HPD) {
-> > > > > > +               drm_bridge_hpd_enable(lt->hdmi_port,
-> > > > > > +                                     lt8912_bridge_connector_h=
-pd_event,
-> > > > > > +                                     lt);
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       ret =3D drm_connector_init(bridge->dev, connector,
-> > > > > > +                                &lt8912_connector_funcs,
-> > > > > > +                                lt->hdmi_port->type);
-> > > > > > +       if (ret)
-> > > > > > +               goto exit;
-> > > > > > +
-> > > > > > +       drm_connector_helper_add(connector, &lt8912_connector_h=
-elper_funcs);
-> > > > > > +
-> > > > > > +       connector->dpms =3D DRM_MODE_DPMS_OFF;
-> > > > > > +       drm_connector_attach_encoder(connector, bridge->encoder=
-);
-> > > > > > +exit:
-> > > > > > +       return ret;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_bridge_attach(struct drm_bridge *bridge,
-> > > > > > +                               enum drm_bridge_attach_flags fl=
-ags)
-> > > > > > +{
-> > > > > > +       struct lt8912 *lt =3D bridge_to_lt8912(bridge);
-> > > > > > +       int ret;
-> > > > > > +
-> > > > > > +       if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
-> > > > > > +               ret =3D lt8912_bridge_connector_init(bridge);
-> > > > > > +               if (ret) {
-> > > > > > +                       dev_err(lt->dev, "Failed to init bridge=
- ! (%d)\n", ret);
-> > > > > > +                       return ret;
-> > > > > > +               }
-> > > > > > +       }
-> > > > > > +
-> > > > > > +
-> > > > > > +       ret =3D lt8912_hard_power_on(lt);
-> > > > > > +       if (ret)
-> > > > > > +               return ret;
-> > > > > > +
-> > > > > > +       ret =3D lt8912_soft_power_on(lt);
-> > > > > > +       if (ret)
-> > > > > > +               goto error;
-> > > > > > +
-> > > > > > +       ret =3D lt8912_attach_dsi(lt);
-> > > > > > +       if (ret)
-> > > > > > +               goto error;
-> > > > > > +
-> > > > > > +       lt->is_attached =3D true;
-> > > > > > +
-> > > > > > +       return 0;
-> > > > > > +
-> > > > > > +error:
-> > > > > > +       lt8912_hard_power_off(lt);
-> > > > > > +       return ret;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static void lt8912_bridge_detach(struct drm_bridge *bridge)
-> > > > > > +{
-> > > > > > +       struct lt8912 *lt =3D bridge_to_lt8912(bridge);
-> > > > > > +
-> > > > > > +       if (lt->is_attached) {
-> > > > > > +               if (lt->hdmi_port->ops & DRM_BRIDGE_OP_HPD)
-> > > > > > +                       drm_bridge_hpd_disable(lt->hdmi_port);
-> > > > > > +               lt8912_detach_dsi(lt);
-> > > > > > +               lt8912_hard_power_off(lt);
-> > > > > > +       }
-> > > > > > +}
-> > > > > > +
-> > > > > > +static enum drm_connector_status
-> > > > > > +lt8912_bridge_detect(struct drm_bridge *bridge)
-> > > > > > +{
-> > > > > > +       struct lt8912 *lt =3D bridge_to_lt8912(bridge);
-> > > > > > +
-> > > > > > +       return drm_bridge_detect(lt->hdmi_port);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static struct edid *lt8912_bridge_get_edid(struct drm_bridge *=
-bridge,
-> > > > > > +                                              struct drm_conne=
-ctor *connector)
-> > > > > > +{
-> > > > > > +       struct lt8912 *lt =3D bridge_to_lt8912(bridge);
-> > > > > > +
-> > > > > > +       return drm_bridge_get_edid(lt->hdmi_port, connector);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static const struct drm_bridge_funcs lt8912_bridge_funcs =3D {
-> > > > > > +       .attach =3D lt8912_bridge_attach,
-> > > > > > +       .detach =3D lt8912_bridge_detach,
-> > > > > > +       .mode_set =3D lt8912_bridge_mode_set,
-> > > > > > +       .enable =3D lt8912_bridge_enable,
-> > > > > > +       .detect =3D lt8912_bridge_detect,
-> > > > > > +       .get_edid =3D lt8912_bridge_get_edid,
-> > > > > > +};
-> > > > > > +
-> > > > > > +static int lt8912_parse_dt(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       struct gpio_desc *gp_reset;
-> > > > > > +       struct device *dev =3D lt->dev;
-> > > > > > +       int ret =3D 0;
-> > > > > > +       struct device_node *port_node;
-> > > > > > +       struct device_node *endpoint;
-> > > > > > +
-> > > > > > +       gp_reset =3D devm_gpiod_get_optional(dev, "reset", GPIO=
-D_OUT_HIGH);
-> > > > > > +       if (IS_ERR(gp_reset)) {
-> > > > > > +               ret =3D PTR_ERR(gp_reset);
-> > > > > > +               if (ret !=3D -EPROBE_DEFER)
-> > > > > > +                       dev_err(dev, "Failed to get reset gpio:=
- %d\n", ret);
-> > > > > > +               return ret;
-> > > > > > +       }
-> > > > > > +       lt->gp_reset =3D gp_reset;
-> > > > > > +
-> > > > > > +
-> > > > > > +       endpoint =3D of_graph_get_endpoint_by_regs(dev->of_node=
-, 0, -1);
-> > > > > > +       if (IS_ERR(endpoint)) {
-> > > > > > +               ret =3D PTR_ERR(endpoint);
-> > > > > > +               goto end;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       lt->data_lanes =3D of_property_count_u32_elems(endpoint=
-, "data-lanes");
-> > > > > > +       of_node_put(endpoint);
-> > > > > > +
-> > > > > > +       lt->host_node =3D of_graph_get_remote_node(dev->of_node=
-, 0, -1);
-> > > > > > +       if (!lt->host_node) {
-> > > > > > +               dev_err(lt->dev, "%s: Failed to get remote port=
-\n", __func__);
-> > > > > > +               ret =3D -ENODEV;
-> > > > > > +               goto end;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       port_node =3D of_graph_get_remote_node(dev->of_node, 1,=
- -1);
-> > > > > > +       if (!port_node) {
-> > > > > > +               dev_err(lt->dev, "%s: Failed to get connector p=
-ort\n", __func__);
-> > > > > > +               ret =3D -ENODEV;
-> > > > > > +               goto err_free_host_node;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       lt->hdmi_port =3D of_drm_find_bridge(port_node);
-> > > > > > +       if (IS_ERR(lt->hdmi_port)) {
-> > > > > > +               dev_err(lt->dev, "%s: Failed to get hdmi port\n=
-", __func__);
-> > > > > > +               ret =3D PTR_ERR(lt->hdmi_port);
-> > > > > > +               of_node_put(lt->host_node);
-> > > > > > +               goto end;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       if (!of_device_is_compatible(port_node, "hdmi-connector=
-")) {
-> > > > > > +               dev_err(lt->dev, "%s: Failed to get hdmi port\n=
-", __func__);
-> > > > > > +               ret =3D -EINVAL;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       of_node_put(port_node);
-> > > > > > +
-> > > > > > +end:
-> > > > > > +       return ret;
-> > > > > > +
-> > > > > > +err_free_host_node:
-> > > > > > +       of_node_put(lt->host_node);
-> > > > > > +       return ret;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_put_dt(struct lt8912 *lt)
-> > > > > > +{
-> > > > > > +       of_node_put(lt->host_node);
-> > > > > > +       return 0;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_probe(struct i2c_client *client,
-> > > > > > +        const struct i2c_device_id *id)
-> > > > > > +{
-> > > > > > +       static struct lt8912 *lt;
-> > > > > > +       int ret =3D 0;
-> > > > > > +       struct device *dev =3D &client->dev;
-> > > > > > +
-> > > > > > +       lt =3D devm_kzalloc(dev, sizeof(struct lt8912), GFP_KER=
-NEL);
-> > > > > > +       if (!lt)
-> > > > > > +               return -ENOMEM;
-> > > > > > +
-> > > > > > +       lt->dev =3D dev;
-> > > > > > +       lt->i2c_client[0] =3D client;
-> > > > > > +
-> > > > > > +       ret =3D lt8912_parse_dt(lt);
-> > > > > > +       if (ret)
-> > > > > > +               goto err_dt_parse;
-> > > > > > +
-> > > > > > +       ret =3D lt8912_init_i2c(lt);
-> > > > > > +       if (ret)
-> > > > > > +               goto err_i2c;
-> > > > > > +
-> > > > > > +       i2c_set_clientdata(client, lt);
-> > > > > > +
-> > > > > > +       lt->bridge.funcs =3D &lt8912_bridge_funcs;
-> > > > > > +       lt->bridge.of_node =3D dev->of_node;
-> > > > > > +       lt->bridge.ops =3D lt->hdmi_port->ops;
-> > > > >
-> > > > > This is not entirely kosher, bridge.ops should mirror what is
-> > > > > implemented by bridge.funcs.
-> > > > >
-> > > > > I would expect DRM_BRIDGE_OP_HPD and possibly DRM_BRIDGE_OP_DETEC=
-T to
-> > > > > be enabled, since the hardware brief mentions supporting hot plug
-> > > > > detection.
-> > > > > drm_bridge_funcs.hpd_enable & drm_bridge_funcs.hpd_disable should=
- both
-> > > > > also be implemented. If the hardware supports HPD, the driver is
-> > > > > required to support it as well.
-> > > > >
-> > > > > lt8912_product_brief.pdf: https://allg.one/0R71
-> > > > >
-> > > > > Have you seen the lt8912 driver in the Toradex tree? It mentions =
-HPD
-> > > > > and the relevant registers, but doesn't implement support for it
-> > > > >
-> > > > > http://git.toradex.com/cgit/linux-toradex.git/tree/drivers/gpu/dr=
-m/bridge/lt8912.c?h=3Dcolibri&id=3D331ac1cf6e09d90e7d9ab39445bc8812ff33f178=
-#n248
-> > > > >
-> > > >
-> > > > Yes I read the product brief and I know that this chip can do HPD. =
-The
-> > > > problem is that it is not working (so far) on my board.
-> > > > Second point, my driver uses an "hdmi-connector" that does HPD and =
-DDC
-> > > > (for EDID=C3=A0 for me (to avoid duplicating some code).
-> > > > It's why I rely on the bridge (hdmi-connector) ops for my own ops.
-> > >
-> > > So I think there are a few issues with what we've got now
-> > >
-> > > 1) lt->bridge.ops =3D lt->hdmi_port->ops does not guarantee that the
-> > > functionality we're advertising in .ops is what we have implemented i=
-n
-> > > .funcs
-> > >
-> > > 2) The documentation is pretty clear about bridge drivers being
-> > > required to implement support for all connector related operations
-> > > that are supported by the hardware.[1]
-> > >
-> > >
-> > > [1] https://dri.freedesktop.org/docs/drm/gpu/drm-kms-helpers.html#bri=
-dges
-> > >
-> >
-> > OK. I think I can do something like
-> >
-> > "lt->bridge.ops =3D lt->hdmi_port->ops & (DRM_BRIDGE_OP_EDID |
-> > DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_HPD);"
-> >
-> > With this, we can assume that all advertised fun are available.
-> > What are you thinking about this solution?
+...
 
-The display drivers are responsible for sorting out how the bridge
-drivers are used. Therefore the bridge.ops defined in the bridge
-driver doesn't have to take into account the limitations of the
-connector. This means that 'lt->hdmi_port->ops' shouldn't be a part of
-the bridge.ops definition.
+> >> +       if (!IS_ERR_OR_NULL(sensor_config) && sensor_config->function_maps) {
+> > Hmm...
+> >
+> > Would
+> >
+> > if (IS_ERR_OR_NULL(sensor_config))
+> >   return 0;
+> >
+> > if (!_maps)
+> >   return 0;
+> >
+> > with respective comments working here?
+> 
+> No, because the absence of either sensor_config or
+> sensor_config->function_maps is not a failure mode. We only need to
+> provide sensor_configs for some platforms, and function_maps for even
+> fewer. So if that check is false, the rest of the function should still
+> execute.
 
-> >
-> > > >
-> > > > > > +
-> > > > > > +       drm_bridge_add(&lt->bridge);
-> > > > > > +
-> > > > > > +       return 0;
-> > > > > > +
-> > > > > > +err_i2c:
-> > > > > > +       lt8912_put_dt(lt);
-> > > > > > +err_dt_parse:
-> > > > > > +       return ret;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int lt8912_remove(struct i2c_client *client)
-> > > > > > +{
-> > > > > > +       struct lt8912 *lt =3D i2c_get_clientdata(client);
-> > > > > > +
-> > > > > > +       lt8912_bridge_detach(&lt->bridge);
-> > > > > > +       drm_bridge_remove(&lt->bridge);
-> > > > > > +       lt8912_free_i2c(lt);
-> > > > > > +       lt8912_put_dt(lt);
-> > > > > > +
-> > > > > > +       return 0;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static const struct of_device_id lt8912_dt_match[] =3D {
-> > > > > > +       {.compatible =3D "lontium,lt8912"},
-> > > > > > +       {}
-> > > > > > +};
-> > > > > > +MODULE_DEVICE_TABLE(of, lt8912_dt_match);
-> > > > > > +
-> > > > > > +static const struct i2c_device_id lt8912_id[] =3D {
-> > > > > > +       {"lt8912", 0},
-> > > > > > +       {},
-> > > > > > +};
-> > > > > > +MODULE_DEVICE_TABLE(i2c, lt8912_id);
-> > > > > > +
-> > > > > > +static struct i2c_driver lt8912_i2c_driver =3D {
-> > > > > > +       .driver =3D {
-> > > > > > +               .name =3D "lt8912",
-> > > > > > +               .of_match_table =3D lt8912_dt_match,
-> > > > > > +               .owner =3D THIS_MODULE,
-> > > > > > +       },
-> > > > > > +       .probe =3D lt8912_probe,
-> > > > > > +       .remove =3D lt8912_remove,
-> > > > > > +       .id_table =3D lt8912_id,
-> > > > > > +};
-> > > > > > +module_i2c_driver(lt8912_i2c_driver);
-> > > > > > +
-> > > > > > +MODULE_AUTHOR("Adrien Grassein <adrien.grassein@gmail.com>");
-> > > > > > +MODULE_DESCRIPTION("lt8912 drm driver");
-> > > > > > +MODULE_LICENSE("GPL v2");
-> > > > > > --
-> > > > > > 2.25.1
-> > > > > >
-> > > >
-> > > > Thanks,
-> > > > Adrien
-> >
-> >
-> > Thanks,
->
->
-> Best regards,
-> Adrien
+I see, thanks for elaboration.
+
+...
+
+> >> +       if (ares->type != ACPI_RESOURCE_TYPE_GPIO ||
+> >> +           ares->data.gpio.connection_type != ACPI_RESOURCE_GPIO_TYPE_IO)
+> >> +               return 1; /* Deliberately positive so parsing continues */
+> > I don't like to lose control over ACPI_RESOURCE_TYPE_GPIO, i.e.
+> > spreading it over kernel code (yes, I know about one existing TS
+> > case).
+> > Consider to provide a helper in analogue to acpi_gpio_get_irq_resource().
+> 
+> Sure, but I probably name it acpi_gpio_is_io_resource() - a function
+> named "get" which returns a bool seems a bit funny to me.
+
+But don't you need the resource itself?
+
+You may extract and check resource at the same time as
+acpi_gpio_get_irq_resource() does.
+
+...
+
+> >> +       struct int3472_discrete_device *int3472 = platform_get_drvdata(pdev);
+> >> +       if (int3472->gpios.dev_id)
+> >> +               gpiod_remove_lookup_table(&int3472->gpios);
+> > gpiod_remove_lookup_table() is now NULL-aware.
+> > But in any case I guess you don't need the above check.
+> 
+> Sorry; forgot to call out that I didn't follow that suggestion;
+> int3472->gpios is a _struct_ rather than a pointer, so &int3472->gpios
+> won't be NULL, even if I haven't filled anything in to there yet because
+> it failed before it got to that point. So, not sure that it quite works
+> there.
+
+I think if you initialize the ->list member you can remove without check.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
