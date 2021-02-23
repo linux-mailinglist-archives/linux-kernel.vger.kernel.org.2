@@ -2,128 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F25A323378
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1149B32337C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbhBWVu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 16:50:58 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:57723 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231721AbhBWVu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 16:50:56 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DlXll3kslz9sTD;
-        Wed, 24 Feb 2021 08:50:11 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614117011;
-        bh=LeqYiL6xDMx+PuUPfQq9szKPfh7MEt+rtWM9ht8WzPM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=crmZcab5kShsglH/hXDLN/dJ1kre4F0WFwW/4hpdTkBnMP+UNfSmOG9C7eMF/7RsA
-         5xN8h0MeYGFpr9fNxX7o3TF2PtKzz+kIKNvLvJG4l93z4jq5YUC1o+iyWFo0/wDfQo
-         u/9ZE5Xb+09FtBm1pFepPKySFrpzIjEjsYR+PP1EptoVJ1P79tnMzC7PlGAKZYjuRx
-         MAT4sPqikPG9aCHRIUI/AWm5L+3gbrfbKNVMfehVzcP98VYYHdkgbVjtwzcjLpWsbt
-         X8HgfAqL4VdczHFFurzudtrOhEfqaXorbGOL4VMWbD3C2JQwS/W8rwaNYXOlKgLlyH
-         hcY/2y/KkkpYA==
-Date:   Wed, 24 Feb 2021 08:50:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Borislav Petkov <bp@suse.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     "Ernst, Justin" <justin.ernst@hpe.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning in Linus' tree
-Message-ID: <20210224085010.28c66ba8@canb.auug.org.au>
-In-Reply-To: <AT5PR8401MB130092CFAECCDB469375063487859@AT5PR8401MB1300.NAMPRD84.PROD.OUTLOOK.COM>
-References: <20210219075853.0514c9f9@canb.auug.org.au>
-        <AT5PR8401MB130092CFAECCDB469375063487859@AT5PR8401MB1300.NAMPRD84.PROD.OUTLOOK.COM>
+        id S232646AbhBWVvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 16:51:48 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:59696 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230128AbhBWVvj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 16:51:39 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 2BF8920B57A0;
+        Tue, 23 Feb 2021 13:50:56 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2BF8920B57A0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1614117056;
+        bh=/FDgRyczYUTc1V/w1Z6FW2alV0DNZbytQBsd3UGv5GQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YOYoCrdvwpm2mjTzt1POBUKtveAp2lVOBu0GfubFrNkirQi+MDPCQ3EmnNnCcnBMm
+         LpWH/LzQRfpSkSkUILBFH667ao2pVWtADS0kvExhpHKJqd/7zHPVAnyysVIhLxTKBR
+         iUlZorcl0J3EJrCWhIOWUzjJ4G5U6eEjJfl4XkkI=
+Date:   Tue, 23 Feb 2021 15:50:54 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [BUG] Race between policy reload sidtab conversion and live
+ conversion
+Message-ID: <20210223215054.GC6000@sequoia>
+References: <20210223214346.GB6000@sequoia>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Nh3ZNsiWHn1O+CfbD7BXQhl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223214346.GB6000@sequoia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Nh3ZNsiWHn1O+CfbD7BXQhl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2021-02-23 15:43:48, Tyler Hicks wrote:
+> I'm seeing a race during policy load while the "regular" sidtab
+> conversion is happening and a live conversion starts to take place in
+> sidtab_context_to_sid().
+> 
+> We have an initial policy that's loaded by systemd ~0.6s into boot and
+> then another policy gets loaded ~2-3s into boot. That second policy load
+> is what hits the race condition situation because the sidtab is only
+> partially populated and there's a decent amount of filesystem operations
+> happening, at the same time, which are triggering live conversions.
 
-Hi all,
+Here are the relevant messages written to the ring buffer showing the initial
+policy load, the second policy load, the sidtab conversion starting, and then
+the stack trace:
 
-On Thu, 18 Feb 2021 22:47:57 +0000 "Ernst, Justin" <justin.ernst@hpe.com> w=
-rote:
->
-> Hi,
-> We made a special effort to squash the unexpected indentation warnings in=
- c159376490ee (https://lore.kernel.org/lkml/20201130214304.369348-1-justin.=
-ernst@hpe.com/), so I was surprised to see this again.
-> Commit:
->=20
-> 	c9624cb7db1c ("x86/platform/uv: Update sysfs documentation")
->=20
-> is the culprit here. I suspect it was written and submitted before we mad=
-e the effort to fix the Unexpected indentation in c159376490ee, so it mispl=
-aced the first line of a codeblock, the original problem that was reported =
-and fixed.
->=20
-> The fix:
->=20
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-sgi_uv b/Documentat=
-ion/ABI/testing/sysfs-firmware-sgi_uv
-> index 637c668cbe45..12ed843e1d3e 100644
-> --- a/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-> +++ b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-> @@ -39,8 +39,8 @@ Description:
->=20
->                 The uv_type entry contains the hub revision number.
->                 This value can be used to identify the UV system version::
-> -                       "0.*" =3D Hubless UV ('*' is subtype)
->=20
-> +                       "0.*" =3D Hubless UV ('*' is subtype)
->                         "3.0" =3D UV2
->                         "5.0" =3D UV3
->                         "7.0" =3D UV4
->=20
-> Thanks,
-> Justin
->=20
-> > Building Linus' tree, today's linux-next build (htmldocs) produced
-> > this warning:
-> >=20
-> > Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected =
-indentation.
-> >=20
-> > Introduced by commit
-> >=20
-> >   c159376490ee ("x86/platform/uv: Update ABI documentation of /sys/firm=
-ware/sgi_uv/")
-> >=20
-> > Or maybe an ealier one.
-> >=20
-> > This has been around for some time.
+[    0.112159] SELinux:  Initializing.
+...
+[    0.624107] audit: type=1404 audit(0.492:2): enforcing=1 old_enforcing=0 auid=4294967295 ses=4294967295 enabled=1 old-enabled=1 lsm=selinux res=1
+[    0.664063] SELinux:  Permission perfmon in class capability2 not defined in policy.
+[    0.664068] SELinux:  Permission bpf in class capability2 not defined in policy.
+[    0.664070] SELinux:  Permission checkpoint_restore in class capability2 not defined in policy.
+[    0.664077] SELinux:  Permission perfmon in class cap2_userns not defined in policy.
+[    0.664079] SELinux:  Permission bpf in class cap2_userns not defined in policy.
+[    0.664080] SELinux:  Permission checkpoint_restore in class cap2_userns not defined in policy.
+[    0.664114] SELinux:  Class perf_event not defined in policy.
+[    0.664115] SELinux:  Class lockdown not defined in policy.
+[    0.664117] SELinux: the above unknown classes and permissions will be allowed
+[    0.667863] SELinux:  policy capability network_peer_controls=1
+[    0.667866] SELinux:  policy capability open_perms=1
+[    0.667867] SELinux:  policy capability extended_socket_class=1
+[    0.667868] SELinux:  policy capability always_check_network=0
+[    0.667870] SELinux:  policy capability cgroup_seclabel=1
+[    0.667871] SELinux:  policy capability nnp_nosuid_transition=1
+[    0.667873] SELinux:  policy capability genfs_seclabel_symlinks=0
+[    0.712152] audit: type=1403 audit(0.584:3): auid=4294967295 ses=4294967295 lsm=selinux res=1
+[    0.714430] systemd[1]: Successfully loaded SELinux policy in 91.004ms.
+...
+[    3.042735] SELinux:  Permission perfmon in class capability2 not defined in policy.
+[    3.042741] SELinux:  Permission bpf in class capability2 not defined in policy.
+[    3.042743] SELinux:  Permission checkpoint_restore in class capability2 not defined in policy.
+[    3.042750] SELinux:  Permission perfmon in class cap2_userns not defined in policy.
+[    3.042751] SELinux:  Permission bpf in class cap2_userns not defined in policy.
+[    3.042753] SELinux:  Permission checkpoint_restore in class cap2_userns not defined in policy.
+[    3.042787] SELinux:  Class perf_event not defined in policy.
+[    3.042789] SELinux:  Class lockdown not defined in policy.
+[    3.042791] SELinux: the above unknown classes and permissions will be allowed
+[    3.042801] SELinux:  Converting 208 SID table entries...
+[    3.044951] Unable to handle kernel access to user memory outside uaccess routines at virtual address 0000000040000028
+[    3.050919] SELinux:  policy capability network_peer_controls=1
+[    3.055990] Mem abort info:
+[    3.055992]   ESR = 0x96000004
+[    3.055994]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    3.055995]   SET = 0, FnV = 0
+[    3.055996]   EA = 0, S1PTW = 0
+[    3.055997] Data abort info:
+[    3.055998]   ISV = 0, ISS = 0x00000004
+[    3.055999]   CM = 0, WnR = 0
+[    3.056002] user pgtable: 4k pages, 48-bit VAs, pgdp=00000000940ea000
+[    3.056003] [0000000040000028] pgd=0000000000000000, p4d=0000000000000000
+[    3.058894] SELinux:  policy capability open_perms=1
+[    3.062037] 
+[    3.062041] Internal error: Oops: 96000004 [#1] SMP
+[    3.062044] Modules linked in: bnxt_en pcie_iproc_platform
+[    3.067530] SELinux:  policy capability extended_socket_class=1
+[    3.070674]  pcie_iproc diagbe(O)
+[    3.070680] CPU: 1 PID: 512 Comm: (tservice) Tainted: G           O      5.10.17.1 #1
+[    3.070683] Hardware name: redacted (DT)
+[    3.073924] SELinux:  policy capability always_check_network=0
+[    3.076890] pstate: 20400085 (nzCv daIf +PAN -UAO -TCO BTYPE=--)
+[    3.076904] pc : sidtab_do_lookup+0x128/0x1b4
+[    3.076908] lr : sidtab_context_to_sid+0x210/0x378
+[    3.080864] SELinux:  policy capability cgroup_seclabel=1
+[    3.083920] sp : ffff800011bfbaf0
+[    3.083922] x29: ffff800011bfbaf0 
+[    3.090570] SELinux:  policy capability nnp_nosuid_transition=1
+[    3.097564] x28: 0000000000000000 
+[    3.097566] x27: 0000000000000005 x26: ffffd1b6451f2000 
+[    3.097568] x25: 00000000ffffffff x24: 0000000000000000 
+[    3.102693] SELinux:  policy capability genfs_seclabel_symlinks=0
+[    3.104225] x23: 0000000000000001 x22: 0000000000000005 
+[    3.104227] x21: 0000000040000028 x20: 0000000000000001 
+[    3.104230] x19: 00000000000000d0 x18: 5b00000000000000 
+[    3.217640] x17: 0000000077493ecb x16: 00000000c2b2ae35 
+[    3.223120] x15: 00000000639285d3 x14: 0000000000000010 
+[    3.228600] x13: 00000000128b8525 x12: 000000005128b852 
+[    3.234079] x11: 0000000049dd48c1 x10: 0000000000004e00 
+[    3.239559] x9 : 00000000000000d1 x8 : 0000000000000005 
+[    3.245039] x7 : 0000000000000001 x6 : 0000000000000000 
+[    3.250518] x5 : ffff800011bfbc48 x4 : 0000000000000010 
+[    3.255998] x3 : 0000000000000002 x2 : 0000000000000001 
+[    3.261477] x1 : 00000000000000d0 x0 : 0000000040000000 
+[    3.266957] Call trace:
+[    3.269480]  sidtab_do_lookup+0x128/0x1b4
+[    3.273615]  sidtab_context_to_sid+0x210/0x378
+[    3.278198]  security_compute_sid+0x3f4/0x60c
+[    3.282692]  security_transition_sid+0x30/0x38
+[    3.287277]  selinux_bprm_creds_for_exec+0x11c/0x2e8
+[    3.292398]  security_bprm_creds_for_exec+0x30/0x4c
+[    3.297432]  bprm_execve+0x100/0x1d4
+[    3.301118]  do_execveat_common+0x1e8/0x228
+[    3.305432]  __arm64_sys_execve+0x3c/0x4c
+[    3.309569]  do_el0_svc+0xec/0x154
+[    3.313079]  el0_svc+0xc/0x14
+[    3.316139]  el0_sync_handler+0x7c/0xd8
+[    3.320095]  el0_sync+0x144/0x180
+[    3.323516] Code: 51002718 340001d7 1ad82768 8b284c15 (f94002a0) 
+[    3.329808] ---[ end trace 69ebb6381d57e49b ]---
 
-I am still seeing this warning.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Nh3ZNsiWHn1O+CfbD7BXQhl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA1eJIACgkQAVBC80lX
-0GySvwf/U1KZBGh6FI7PTs0ra/huW36XhzhrjTfWjiEa+xwpv8jkkUHkvBK9aHK2
-+a7iQYNpq5q1W9i5/RgoI79oXhll5JfEpE3uND2pGQ9jv3dsTHO8F7tWojCQrmdh
-NqLPVRtf9j/P29Oux+xJVn+QFN2VaNjZfCIOy8RNjY9SyQhEVaJhHXAWSbATfHfl
-HG7zt0hgLL4Hwl1u7ZTvF0Rk1OMoPo7+b9djNnBnYJ3P+d8ycexahFZsC7AmnuwI
-20nVeo3Xqs1BE1TKYr/V795btRiL/bHwbhA2twbzVaUhG+EEMMsXI9x54ftAXHzO
-HDWRgfo8sd40oYjfjeeN+pnacBU9iA==
-=D+lG
------END PGP SIGNATURE-----
-
---Sig_/Nh3ZNsiWHn1O+CfbD7BXQhl--
+Tyler
