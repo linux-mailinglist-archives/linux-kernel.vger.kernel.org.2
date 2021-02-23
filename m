@@ -2,190 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052D33228BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E75A3228CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhBWKTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:19:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33133 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230459AbhBWKT3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:19:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614075482;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mZGrk/KRVSJf4lDW/M6cnASmoATrbPhldVhOPwuWamk=;
-        b=VW8XJcmINZWmLzZF2L4A/0WuMMIobwz5QkjO6OVFit4djzV0Zj1xqBglHgixjZ/iZIE8AV
-        hS5T2A9fgpxoiS9GhhAIQP+CpCSFHkWU5mDZyp8t6nEBO146bqPkfIbtXuuIfy+8IqhTSF
-        JLTAtursbaCN7eMPi9IJ3IHA3JrkqcI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-BOWJBQAyOaygi4vJp1gqeA-1; Tue, 23 Feb 2021 05:17:58 -0500
-X-MC-Unique: BOWJBQAyOaygi4vJp1gqeA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C16BCC621;
-        Tue, 23 Feb 2021 10:17:57 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-193.pek2.redhat.com [10.72.12.193])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 736D162A23;
-        Tue, 23 Feb 2021 10:17:51 +0000 (UTC)
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        virtio-dev@lists.oasis-open.org
-References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
- <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
- <ee31e93b-5fbb-1999-0e82-983d3e49ad1e@oracle.com>
- <20210223041740-mutt-send-email-mst@kernel.org>
- <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
- <20210223045600-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <c188353e-9aca-a94c-e8f5-4bad5942481c@redhat.com>
-Date:   Tue, 23 Feb 2021 18:17:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        id S231812AbhBWKXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 05:23:19 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:57240 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230380AbhBWKXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 05:23:16 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lEUps-00005Z-1T; Tue, 23 Feb 2021 11:22:32 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     sboyd@kernel.org, Elaine Zhang <zhangqing@rock-chips.com>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cl@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
+        finley.xiao@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: Re: [PATCH v1 3/4] clk: rockchip: support more core div setting
+Date:   Tue, 23 Feb 2021 11:22:30 +0100
+Message-ID: <5312231.BaHzMo0RvP@diego>
+In-Reply-To: <20210223095352.11544-4-zhangqing@rock-chips.com>
+References: <20210223095352.11544-1-zhangqing@rock-chips.com> <20210223095352.11544-4-zhangqing@rock-chips.com>
 MIME-Version: 1.0
-In-Reply-To: <20210223045600-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Elaine,
 
-On 2021/2/23 6:01 下午, Michael S. Tsirkin wrote:
-> On Tue, Feb 23, 2021 at 05:46:20PM +0800, Jason Wang wrote:
->> On 2021/2/23 下午5:25, Michael S. Tsirkin wrote:
->>> On Mon, Feb 22, 2021 at 09:09:28AM -0800, Si-Wei Liu wrote:
->>>> On 2/21/2021 8:14 PM, Jason Wang wrote:
->>>>> On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
->>>>>> Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
->>>>>> for legacy") made an exception for legacy guests to reset
->>>>>> features to 0, when config space is accessed before features
->>>>>> are set. We should relieve the verify_min_features() check
->>>>>> and allow features reset to 0 for this case.
->>>>>>
->>>>>> It's worth noting that not just legacy guests could access
->>>>>> config space before features are set. For instance, when
->>>>>> feature VIRTIO_NET_F_MTU is advertised some modern driver
->>>>>> will try to access and validate the MTU present in the config
->>>>>> space before virtio features are set.
->>>>> This looks like a spec violation:
->>>>>
->>>>> "
->>>>>
->>>>> The following driver-read-only field, mtu only exists if
->>>>> VIRTIO_NET_F_MTU is set. This field specifies the maximum MTU for the
->>>>> driver to use.
->>>>> "
->>>>>
->>>>> Do we really want to workaround this?
->>>> Isn't the commit 452639a64ad8 itself is a workaround for legacy guest?
->>>>
->>>> I think the point is, since there's legacy guest we'd have to support, this
->>>> host side workaround is unavoidable. Although I agree the violating driver
->>>> should be fixed (yes, it's in today's upstream kernel which exists for a
->>>> while now).
->>> Oh  you are right:
->>>
->>>
->>> static int virtnet_validate(struct virtio_device *vdev)
->>> {
->>>           if (!vdev->config->get) {
->>>                   dev_err(&vdev->dev, "%s failure: config access disabled\n",
->>>                           __func__);
->>>                   return -EINVAL;
->>>           }
->>>
->>>           if (!virtnet_validate_features(vdev))
->>>                   return -EINVAL;
->>>
->>>           if (virtio_has_feature(vdev, VIRTIO_NET_F_MTU)) {
->>>                   int mtu = virtio_cread16(vdev,
->>>                                            offsetof(struct virtio_net_config,
->>>                                                     mtu));
->>>                   if (mtu < MIN_MTU)
->>>                           __virtio_clear_bit(vdev, VIRTIO_NET_F_MTU);
->>
->> I wonder why not simply fail here?
-> Back in 2016 it went like this:
->
-> 	On Thu, Jun 02, 2016 at 05:10:59PM -0400, Aaron Conole wrote:
-> 	> +     if (virtio_has_feature(vdev, VIRTIO_NET_F_MTU)) {
-> 	> +             dev->mtu = virtio_cread16(vdev,
-> 	> +                                       offsetof(struct virtio_net_config,
-> 	> +                                                mtu));
-> 	> +     }
-> 	> +
-> 	>       if (vi->any_header_sg)
-> 	>               dev->needed_headroom = vi->hdr_len;
-> 	>
->
-> 	One comment though: I think we should validate the mtu.
-> 	If it's invalid, clear VIRTIO_NET_F_MTU and ignore.
->
->
-> Too late at this point :)
->
-> I guess it's a way to tell device "I can not live with this MTU",
-> device can fail FEATURES_OK if it wants to. MIN_MTU
-> is an internal linux thing and at the time I felt it's better to
-> try to make progress.
+Am Dienstag, 23. Februar 2021, 10:53:51 CET schrieb Elaine Zhang:
+> A55 supports each core to work at different frequencies, and each core
+> has an independent divider control.
+> 
+> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+> ---
+>  drivers/clk/rockchip/clk-cpu.c | 25 +++++++++++++++++++++++++
+>  drivers/clk/rockchip/clk.h     | 17 ++++++++++++++++-
+>  2 files changed, 41 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/rockchip/clk-cpu.c b/drivers/clk/rockchip/clk-cpu.c
+> index fa9027fb1920..cac06f4f7573 100644
+> --- a/drivers/clk/rockchip/clk-cpu.c
+> +++ b/drivers/clk/rockchip/clk-cpu.c
+> @@ -164,6 +164,18 @@ static int rockchip_cpuclk_pre_rate_change(struct rockchip_cpuclk *cpuclk,
+>  				     reg_data->mux_core_mask,
+>  				     reg_data->mux_core_shift),
+>  		       cpuclk->reg_base + reg_data->core_reg);
+> +		if (reg_data->core1_reg)
+> +			writel(HIWORD_UPDATE(alt_div, reg_data->div_core1_mask,
+> +					     reg_data->div_core1_shift),
+> +			       cpuclk->reg_base + reg_data->core1_reg);
+> +		if (reg_data->core2_reg)
+> +			writel(HIWORD_UPDATE(alt_div, reg_data->div_core2_mask,
+> +					     reg_data->div_core2_shift),
+> +			       cpuclk->reg_base + reg_data->core2_reg);
+> +		if (reg_data->core3_reg)
+> +			writel(HIWORD_UPDATE(alt_div, reg_data->div_core3_mask,
+> +					     reg_data->div_core3_shift),
+> +			       cpuclk->reg_base + reg_data->core3_reg);
 
+for (i = 0; i < reg_data->num_cores; i++)
+	writel(...)
 
-What if e.g the device advertise a large MTU. E.g 64K here? In that 
-case, the driver can not live either. Clearing MTU won't help here.
+>  	} else {
+>  		/* select alternate parent */
+>  		writel(HIWORD_UPDATE(reg_data->mux_core_alt,
+> @@ -209,6 +221,19 @@ static int rockchip_cpuclk_post_rate_change(struct rockchip_cpuclk *cpuclk,
+>  				reg_data->mux_core_shift),
+>  	       cpuclk->reg_base + reg_data->core_reg);
+>  
+> +	if (reg_data->core1_reg)
+> +		writel(HIWORD_UPDATE(0, reg_data->div_core1_mask,
+> +				     reg_data->div_core1_shift),
+> +		       cpuclk->reg_base + reg_data->core1_reg);
+> +	if (reg_data->core2_reg)
+> +		writel(HIWORD_UPDATE(0, reg_data->div_core2_mask,
+> +				     reg_data->div_core2_shift),
+> +		       cpuclk->reg_base + reg_data->core2_reg);
+> +	if (reg_data->core3_reg)
+> +		writel(HIWORD_UPDATE(0, reg_data->div_core3_mask,
+> +				     reg_data->div_core3_shift),
+> +		       cpuclk->reg_base + reg_data->core3_reg);
+> +
+
+for (i = 0; i < reg_data->num_cores; i++)
+	writel(...)
+
+>  	if (ndata->old_rate > ndata->new_rate)
+>  		rockchip_cpuclk_set_dividers(cpuclk, rate);
+>  
+> diff --git a/drivers/clk/rockchip/clk.h b/drivers/clk/rockchip/clk.h
+> index 2271a84124b0..b46c93fd0cb5 100644
+> --- a/drivers/clk/rockchip/clk.h
+> +++ b/drivers/clk/rockchip/clk.h
+> @@ -322,7 +322,7 @@ struct rockchip_cpuclk_clksel {
+>  	u32 val;
+>  };
+>  
+> -#define ROCKCHIP_CPUCLK_NUM_DIVIDERS	2
+> +#define ROCKCHIP_CPUCLK_NUM_DIVIDERS	5
+
+please move this into a separate patch, as yes the rk3568 needs more
+dividers but that isn't related to adding separate core divider controls.
+
+[...]
+add
+
+#define ROCKCHIP_CPUCLK_MAX_CORES	4
+
+>  struct rockchip_cpuclk_rate_table {
+>  	unsigned long prate;
+>  	struct rockchip_cpuclk_clksel divs[ROCKCHIP_CPUCLK_NUM_DIVIDERS];
+> @@ -333,6 +333,12 @@ struct rockchip_cpuclk_rate_table {
+>   * @core_reg:		register offset of the core settings register
+>   * @div_core_shift:	core divider offset used to divide the pll value
+>   * @div_core_mask:	core divider mask
+> + * @div_core1_shift:	core1 divider offset used to divide the pll value
+> + * @div_core1_mask:	core1 divider mask
+> + * @div_core2_shift:	core2 divider offset used to divide the pll value
+> + * @div_core2_mask:	core2 divider mask
+> + * @div_core3_shift:	core3 divider offset used to divide the pll value
+> + * @div_core3_mask:	core3 divider mask
+>   * @mux_core_alt:	mux value to select alternate parent
+>   * @mux_core_main:	mux value to select main parent of core
+>   * @mux_core_shift:	offset of the core multiplexer
+> @@ -342,6 +348,15 @@ struct rockchip_cpuclk_reg_data {
+>  	int		core_reg;
+>  	u8		div_core_shift;
+>  	u32		div_core_mask;
+> +	int		core1_reg;
+> +	u8		div_core1_shift;
+> +	u32		div_core1_mask;
+> +	int		core2_reg;
+> +	u8		div_core2_shift;
+> +	u32		div_core2_mask;
+> +	int		core3_reg;
+> +	u8		div_core3_shift;
+> +	u32		div_core3_mask;
+
+please make this instead like:
+
+int	core_reg[ROCKCHIP_CPUCLK_MAX_CORES];
+u8	div_core_shift[ROCKCHIP_CPUCLK_MAX_CORES];
+u32	div_core_mask[ROCKCHIP_CPUCLK_MAX_CORES];
+int	num_cores;
+
 
 Thanks
+Heiko
 
 
->
->
->>>           }
->>>
->>>           return 0;
->>> }
->>>
->>> And the spec says:
->>>
->>>
->>> The driver MUST follow this sequence to initialize a device:
->>> 1. Reset the device.
->>> 2. Set the ACKNOWLEDGE status bit: the guest OS has noticed the device.
->>> 3. Set the DRIVER status bit: the guest OS knows how to drive the device.
->>> 4. Read device feature bits, and write the subset of feature bits understood by the OS and driver to the
->>> device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration
->>> fields to check that it can support the device before accepting it.
->>> 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step.
->>> 6. Re-read device status to ensure the FEATURES_OK bit is still set: otherwise, the device does not
->>> support our subset of features and the device is unusable.
->>> 7. Perform device-specific setup, including discovery of virtqueues for the device, optional per-bus setup,
->>> reading and possibly writing the device’s virtio configuration space, and population of virtqueues.
->>> 8. Set the DRIVER_OK status bit. At this point the device is “live”.
->>>
->>>
->>> Item 4 on the list explicitly allows reading config space before
->>> FEATURES_OK.
->>>
->>> I conclude that VIRTIO_NET_F_MTU is set means "set in device features".
->>
->> So this probably need some clarification. "is set" is used many times in the
->> spec that has different implications.
->>
->> Thanks
->>
->>
->>> Generally it is worth going over feature dependent config fields
->>> and checking whether they should be present when device feature is set
->>> or when feature bit has been negotiated, and making this clear.
->>>
+>  	u8		mux_core_alt;
+>  	u8		mux_core_main;
+>  	u8		mux_core_shift;
+> 
+
+
+
 
