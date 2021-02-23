@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3764323279
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0596B323223
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233897AbhBWUvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 15:51:33 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:55055 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233818AbhBWUt2 (ORCPT
+        id S233555AbhBWUbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 15:31:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231742AbhBWUbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 15:49:28 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id AE81DAFC;
-        Tue, 23 Feb 2021 15:47:37 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 23 Feb 2021 15:47:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=doruJhczG0yJ4
-        EN8JQu3N66tK/shwjEF6ktp55ZkXOM=; b=LW7dQJvTCpEyDG1scV+oj2S07g0/9
-        /0iXd4DwpKRewI8+DChUJzursfNOHANySUmHmHcvDk6/KvT6d2WrJAqTVX/UEbTO
-        qVTctUyQIYSNUOA5y/fpQ2t9xIWX+bcSkCEJb1h7BINnDAY5KuwaarbKetjcZkWM
-        Hqlf5mSP6zIV2A5/bc6dDdd3W2RrqRcpCcXBy6PM+wQMaWoDaH+XdHNQoTjJeVRq
-        o27/Kg9zsFxDPcmw/ZrMtIl/GgJzxnGRBxStKN4cDMRqI+0f2zdLURwZWfc0gaXv
-        2APRevw+Zgg646T/H3zApeGL/7XNP9x1x5Azz6rVT3EtFgqdzCuFHbuPA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=doruJhczG0yJ4EN8JQu3N66tK/shwjEF6ktp55ZkXOM=; b=O7X2YT1U
-        GcMNQBfJXxgkrl9vamyrvh7hoQlro7WgFCl9GYCP1PvsdvUePKUY7bhnH0jaReXL
-        qiuhocp+yHPoyqHy7PFxQ8gabJjOdCfZzRjNUvzP4uKXHRjyo9PCZkD5QpDzAwt1
-        iObbsmmYSWP4IXnl/Vgfl/d7d+astDqm/sj7vMGD2SkVggJdLWL1Ekq6x17HaKvd
-        XuYzI5lfm7Ln2csUG1uA5XOWfNIYYnryMGIPuzVnXDnXlqwIKSlvdaYWNKUj0CmB
-        g5M6++JLmqbl03C+H7cY7pb5KVLoI0ezhAb2NU32qjDkfupODa4GzT3tG0LHKtpO
-        AMda+DlKHDERBQ==
-X-ME-Sender: <xms:6Wk1YI4W4nYPxbwYWWtSeuWCr0rJBcNPv-vFQE775uNAO7MuN4dRRA>
-    <xme:6Wk1YNI27eF2ReM0bez-TSlJT0-dBBT_lXWIKp2UVVFa5WNnvY-b4KJhXSScuCclD
-    pKfEMPu9_Y5L6xV6g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeehgddugedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeghihhllhhi
-    rghmucffuhhrrghnugcuoeifihhllhdoghhithesughrnhgurdhmvgeqnecuggftrfgrth
-    htvghrnhepjedvgeffieeivdefleekvddvudffvefhiefgueeujedvgfegfeelkeduffel
-    ffefnecukfhppedvudejrddvfeekrddvtdekrdejgeenucevlhhushhtvghrufhiiigvpe
-    ehnecurfgrrhgrmhepmhgrihhlfhhrohhmpeifihhllhdoghhithesughrnhgurdhmvg
-X-ME-Proxy: <xmx:6Wk1YA6Ho9-_NG1wkf1C-lbC3h4edd_MNsNZrfY_H6xteG15XMhdJA>
-    <xmx:6Wk1YIyQQDOkZNATG-_FtlCBQtuzgFYLWNCfou4aJwuvkulLvrzlgw>
-    <xmx:6Wk1YMbU_If7O8Ggef1aJzl7isad5p9UWTOtA9waZ6KGIxDSBu-9Ew>
-    <xmx:6Wk1YLCtNHT1jTpGKRpKul8WVWAs_-MruQCvtxEzLDMCKqlKGtPSkA>
-Received: from vagrant.vm (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D0AD7240062;
-        Tue, 23 Feb 2021 15:47:36 -0500 (EST)
-From:   William Durand <will+git@drnd.me>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 13/13] staging: rtl8192e: reformat bss_ht struct
-Date:   Sat, 20 Feb 2021 15:54:17 +0000
-Message-Id: <20210220155418.12282-14-will+git@drnd.me>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210220155418.12282-1-will+git@drnd.me>
-References: <20210220155418.12282-1-will+git@drnd.me>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 23 Feb 2021 15:31:04 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1925C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 12:30:23 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id y17so2337568wrs.12
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 12:30:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=vQEhhF0/dKLq0SjYrCKXmLIv+2+DjFtHParA2D5ObMA=;
+        b=modC1kQJcTwgsN7k9QXOJpFuRQ6sWfaOJjFQ6W+nP0vIGwHjnaYSVAyKPH2xlq43+7
+         8St99fOs6itFtjy3T6O/Ff7HkBxwzz3hKFqKukTLRPtQwdBFp800hzgyttg8LxdKiZA0
+         63cKiAcSKMiSFrsrCqBMPbGS4LZQ9RrH/LH6og/r6hT86oI2EPU37yLOVFkfAi2Pi5gF
+         ZPlUNLWMYJOMtq3iJ3g4XTkUntoV4dDHJ+6UJxQA1bM6sqZ9z7EFhZWzspRdhg8wHGOK
+         kz/Jj9ob8XbNNn8FrygY2JosehB3ezSO8jbFAP2lE5ynctIeFwr/r4myMoIKHWXA8vIs
+         WzpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vQEhhF0/dKLq0SjYrCKXmLIv+2+DjFtHParA2D5ObMA=;
+        b=JZNd5Gr5bR/83HW8CjnMz4CPLUUOnx0THtZ6chFJU9RekbQAeC0BVKtXoqYEqv/Cs3
+         YDfE5liN/6r29GupDGFBygxMYPu0k/qvMm9VBj8RSD7UePFtZi+QdRnTYnqMYbar12Sz
+         /+6rZGRvkimn8giULwPEO4+GeecGiyIZdC9DflC6ztEj4IqFJveJ8TwOlWTVNatH3MTz
+         p5nurxDpwqHteFhqKv3rveLQnpvCt1LyDjO4K85zl8fCUQOrQHU4zpImtM/cUSXo6k8l
+         jhPIrWjcduVknv0MKvqFIPJRm028WW64wEY4rWzrr+O18Apr/2tUJVl8hSlXM9dd4wnv
+         zgJQ==
+X-Gm-Message-State: AOAM532259kvm524eGOpUyyLp1QYuDmjnLUOK4vNPR9osgWzTEY++j5I
+        uzFdlMa+DYAg4iKsjZWMwJp8sA==
+X-Google-Smtp-Source: ABdhPJwT+s7YViOE/TANTDz5FHNTMv6ZObW5lEtgL0d5I1mrIwvSCE513bve3SfiXI5bZEJXrmF12g==
+X-Received: by 2002:a5d:638a:: with SMTP id p10mr3260480wru.286.1614112222500;
+        Tue, 23 Feb 2021 12:30:22 -0800 (PST)
+Received: from localhost.localdomain (lns-bzn-59-82-252-157-252.adsl.proxad.net. [82.252.157.252])
+        by smtp.gmail.com with ESMTPSA id p3sm18288936wro.55.2021.02.23.12.30.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 12:30:22 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     rafael@kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] units: Add the HZ_PER_KHZ macro
+Date:   Tue, 23 Feb 2021 21:30:01 +0100
+Message-Id: <20210223203004.7219-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change uses a space instead of tabs between the type and name of
-each member of the struct.
+The macro for the unit conversion for frequency is duplicated in
+different places.
 
-Signed-off-by: William Durand <will+git@drnd.me>
+Provide this macro in the 'units' header, so it can be reused.
+
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- drivers/staging/rtl8192e/rtl819x_HT.h | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ include/linux/units.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_HT.h b/drivers/staging/rtl8192e/rtl819x_HT.h
-index 33a58c87f4c1..ce13b41074a7 100644
---- a/drivers/staging/rtl8192e/rtl819x_HT.h
-+++ b/drivers/staging/rtl8192e/rtl819x_HT.h
-@@ -179,20 +179,20 @@ struct rt_hi_throughput {
- } __packed;
-
- struct bss_ht {
--	u8				bd_support_ht;
-+	u8 bd_support_ht;
-
--	u8					bd_ht_cap_buf[32];
--	u16					bd_ht_cap_len;
--	u8					bd_ht_info_buf[32];
--	u16					bd_ht_info_len;
-+	u8 bd_ht_cap_buf[32];
-+	u16 bd_ht_cap_len;
-+	u8 bd_ht_info_buf[32];
-+	u16 bd_ht_info_len;
-
- 	enum ht_spec_ver bd_ht_spec_ver;
- 	enum ht_channel_width bd_bandwidth;
-
--	u8					bd_rt2rt_aggregation;
--	u8					bd_rt2rt_long_slot_time;
--	u8					rt2rt_ht_mode;
--	u8					bd_ht_1r;
-+	u8 bd_rt2rt_aggregation;
-+	u8 bd_rt2rt_long_slot_time;
-+	u8 rt2rt_ht_mode;
-+	u8 bd_ht_1r;
- };
-
- extern u8 MCS_FILTER_ALL[16];
---
-2.30.0
+diff --git a/include/linux/units.h b/include/linux/units.h
+index dcc30a53fa93..218ec0d314b6 100644
+--- a/include/linux/units.h
++++ b/include/linux/units.h
+@@ -4,6 +4,10 @@
+ 
+ #include <linux/math.h>
+ 
++#define HZ_PER_KHZ		1000L
++#define KHZ_PER_MHZ		1000L
++#define HZ_PER_MHZ		1000000L
++
+ #define MILLIWATT_PER_WATT	1000L
+ #define MICROWATT_PER_MILLIWATT	1000L
+ #define MICROWATT_PER_WATT	1000000L
+-- 
+2.17.1
 
