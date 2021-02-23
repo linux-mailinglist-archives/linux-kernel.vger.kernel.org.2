@@ -2,210 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83DB32291B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E90C32291D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232217AbhBWKzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:55:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60536 "EHLO mail.kernel.org"
+        id S232097AbhBWK4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 05:56:05 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:57504 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232244AbhBWKyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:54:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E9E964DF5;
-        Tue, 23 Feb 2021 10:53:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614077634;
-        bh=+tBz8oJlO1Afoq1OewvlE2bsdP89xKUuzW7SMxAPGVo=;
-        h=Date:From:To:cc:Subject:From;
-        b=dyhOTtNSuwq4+dEJ9gl1dbyBprffuBsTeDR9Xw99xxmRlyv6lKGyc7sj0Gdw06qKc
-         DJ1MzarQ2KVRAyDd3Rtwd0XQVhDh/dfHXYsk5HGaLhRzUcM4LhpqZIQvaZSqnigoTc
-         dbkkwLDqcxPJwCtVsGbFMO5GlASIjF4JxL/Fm6lQSF8EV4clwbLeW7R3Eb+csGnk19
-         PFsHnXzF3jade+iUHzSgFmJBXO+e8zOkLCONVy/rMYdkj+PJZjGm5dnfTq3yclT2pV
-         ZBjtnOe+8Rtu8GxsOLn1PKeLBFPM9Pa8eFsKgjaZ/wP+0DLXxOL7ExCwjqTRniFyof
-         xqJjlFUJ0R/KA==
-Date:   Tue, 23 Feb 2021 11:53:51 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     linux-kernel@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [GIT PULL] HID for 5.12
-Message-ID: <nycvar.YFH.7.76.2102231147510.28696@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S232181AbhBWKzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 05:55:16 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lEVKp-0000KT-FJ; Tue, 23 Feb 2021 11:54:31 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Elaine Zhang <zhangqing@rock-chips.com>, sboyd@kernel.org,
+        Johan Jonker <jbx6244@gmail.com>
+Cc:     huangtao@rock-chips.com, linux-kernel@vger.kernel.org,
+        kever.yang@rock-chips.com, linux-rockchip@lists.infradead.org,
+        tony.xie@rock-chips.com, finley.xiao@rock-chips.com,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        cl@rock-chips.com
+Subject: Re: [PATCH v1 1/4] dt-bindings: add bindings for rk3568 clock controller
+Date:   Tue, 23 Feb 2021 11:54:30 +0100
+Message-ID: <6385562.anssfa2V6d@diego>
+In-Reply-To: <eb82f0a4-ca89-d1bc-5660-49bd05b7fc50@gmail.com>
+References: <20210223095352.11544-1-zhangqing@rock-chips.com> <20210223095352.11544-2-zhangqing@rock-chips.com> <eb82f0a4-ca89-d1bc-5660-49bd05b7fc50@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Am Dienstag, 23. Februar 2021, 11:50:25 CET schrieb Johan Jonker:
+> Hi Elaine,
+> 
+> This is a new document.
+> Could you convert rockchip,rk3568-cru.txt to yaml?
 
-please pull from
+I'll definitly second that wish for a conversion to yaml.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
+Having the ability to check devicetrees for correctness is
+quite helpful :-)
 
-to receive HID susbsytem updates scheduled for 5.12. Highlights:
 
-=====
-- support for "Unified Battery" feature on Logitech devices from Filipe 
-  Laíns
-- power management improvements for intel-ish driver from Zhang Lixu
-- support for Goodix devices from Douglas Anderson
-- improved handling of generic HID keyboard in order to make it easier for 
-  userspace to figure out the details of the device, from Dmitry Torokhov
-- Playstation DualSense support from Roderick Colenbrander
-- other assorted small fixes and device ID additions.
-=====
+Heiko
 
-You are going to get a trivial conflict in arch/arm64/configs/defconfig 
-which is documented here:
 
-	https://lore.kernel.org/linux-next/20210119104536.50e08bac@canb.auug.org.au/
+> To get an acked-by you must include:
+> 
+> robh+dt@kernel.org
+> devicetree@vger.kernel.org
+> 
+> ./scripts/get_maintainer.pl --noroles --norolestats --nogit-fallback
+> --nogit <patch>
+> 
+> Your patch should show up here after filtering:
+> https://patchwork.ozlabs.org/project/devicetree-bindings/list/
+> 
+> Check with:
+> 
+> make ARCH=arm64 dt_binding_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/pinctrl/rockchip,rk3568-cru.yaml
+> 
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/pinctrl/rockchip,rk3568-cru.yaml
+> 
+> ./scripts/checkpatch.pl --strict <patch>
+> 
+> 
+> On 2/23/21 10:53 AM, Elaine Zhang wrote:
+> > Add devicetree bindings for Rockchip cru which found on
+> > Rockchip SoCs.
+> > 
+> > Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+> > ---
+> >  .../bindings/clock/rockchip,rk3568-cru.txt    | 66 +++++++++++++++++++
+> >  1 file changed, 66 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/clock/rockchip,rk3568-cru.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/clock/rockchip,rk3568-cru.txt b/Documentation/devicetree/bindings/clock/rockchip,rk3568-cru.txt
+> > new file mode 100644
+> > index 000000000000..b1119aecb7c7
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/rockchip,rk3568-cru.txt
+> > @@ -0,0 +1,66 @@
+> > +* Rockchip RK3568 Clock and Reset Unit
+> > +
+> > +The RK3568 clock controller generates and supplies clock to various
+> > +controllers within the SoC and also implements a reset controller for SoC
+> > +peripherals.
+> > +
+> > +Required Properties:
+> > +
+> > +- compatible: PMU for CRU should be "rockchip,rk3568-pmucru"
+> > +- compatible: CRU should be "rockchip,rk3568-cru"
+> > +- reg: physical base address of the controller and length of memory mapped
+> > +  region.
+> > +- #clock-cells: should be 1.
+> > +- #reset-cells: should be 1.
+> > +
+> > +Optional Properties:
+> > +
+> > +- rockchip,grf: phandle to the syscon managing the "general register files"
+> > +  If missing, pll rates are not changeable, due to the missing pll lock status.
+> > +
+> > +Each clock is assigned an identifier and client nodes can use this identifier
+> > +to specify the clock which they consume. All available clocks are defined as
+> > +preprocessor macros in the dt-bindings/clock/rk3568-cru.h headers and can be
+> > +used in device tree sources. Similar macros exist for the reset sources in
+> > +these files.
+> > +
+> > +External clocks:
+> > +
+> > +There are several clocks that are generated outside the SoC. It is expected
+> > +that they are defined using standard clock bindings with following
+> > +clock-output-names:
+> > + - "xin24m" - crystal input - required,
+> > + - "xin32k" - rtc clock - optional,
+> > + - "i2sx_mclkin" - external I2S clock - optional,
+> > + - "xin_osc0_usbphyx_g" - external USBPHY clock - optional,
+> > + - "xin_osc0_mipidsiphyx_g" - external MIPIDSIPHY clock - optional,
+> > +
+> > +Example: Clock controller node:
+> > +
+> > +	pmucru: clock-controller@fdd00000 {
+> > +		compatible = "rockchip,rK3568-pmucru";
+> > +		reg = <0x0 0xfdd00000 0x0 0x1000>;
+> > +		#clock-cells = <1>;
+> > +		#reset-cells = <1>;
+> > +	};
+> > +
+> > +	cru: clock-controller@fdd20000 {
+> > +		compatible = "rockchip,rK3568-cru";
+> > +		reg = <0x0 0xfdd20000 0x0 0x1000>;
+> > +		rockchip,grf = <&grf>;
+> > +		#clock-cells = <1>;
+> > +		#reset-cells = <1>;
+> > +	};
+> > +
+> > +Example: UART controller node that consumes the clock generated by the clock
+> > +  controller:
+> > +
+> > +	uart1: serial@fe650000 {
+> > +		compatible = "rockchip,rK3568-uart", "snps,dw-apb-uart";
+> > +		reg = <0x0 0xfe650000 0x0 0x100>;
+> > +		interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
+> > +		reg-shift = <2>;
+> > +		reg-io-width = <4>;
+> > +		clocks = <&cru SCLK_UART1>, <&cru PCLK_UART1>;
+> > +		clock-names = "baudclk", "apb_pclk";
+> > +	};
+> > 
+> 
+> 
 
-Please let me know in case you'd like me to fix it and prepare merged 
-branch for you.
 
-Thanks.
 
-----------------------------------------------------------------
-Bla¸ Hrastnik (1):
-      HID: multitouch: Set to high latency mode on suspend.
-
-Colin Ian King (2):
-      HID: lg-g15: make a const array static, makes object smaller
-      HID: playstation: fix array size comparison (off-by-one)
-
-Cristian Klein (1):
-      HID: uclogic: Improve support for Trust Panora
-
-Dmitry Torokhov (1):
-      HID: hid-input: avoid splitting keyboard, system and consumer controls
-
-Douglas Anderson (4):
-      HID: i2c-hid: Reorganize so ACPI and OF are separate modules
-      arm64: defconfig: Update config names for i2c-hid rejigger
-      dt-bindings: input: HID: i2c-hid: Introduce bindings for the Goodix GT7375P
-      HID: i2c-hid: Introduce goodix-i2c-hid using i2c-hid core
-
-Elia Devito (1):
-      HID: Ignore battery for Elan touchscreen on HP Spectre X360 15-df0xxx
-
-Filipe Laíns (3):
-      HID: logitech-hidpp: add support for Unified Battery (1004) feature
-      HID: logitech-dj: add support for keyboard events in eQUAD step 4 Gaming
-      HID: logitech-dj: add support for the new lightspeed connection iteration
-
-Hans de Goede (2):
-      HID: i2c-hid: Add I2C_HID_QUIRK_NO_IRQ_AFTER_RESET for ITE8568 EC on Voyo Winpad A15
-      HID: ite: Enable QUIRK_TOUCHPAD_ON_OFF_REPORT on Acer Aspire Switch 10E
-
-Jason Gerecke (1):
-      HID: wacom: Ignore attempts to overwrite the touch_max value from HID
-
-Jian-Hong Pan (1):
-      HID: chicony: Add Wireless Radio Control feature for Chicony devices
-
-Jiapeng Chong (2):
-      HID: wacom: convert sysfs sprintf/snprintf family to sysfs_emit
-      HID: displays: convert sysfs sprintf/snprintf family to sysfs_emit
-
-Nicolas Boichat (1):
-      HID: google: Get HID report on probe to confirm tablet switch state
-
-Randy Dunlap (11):
-      Documentation: HID: hid-alps editing & corrections
-      Documentation: HID: amd-sfh-hid editing & corrections
-      Documentation: HID: hiddev editing & corrections
-      Documentation: HID: intel-ish-hid editing & corrections
-      Documentation: HID: hidraw editing & corrections
-      Documentation: HID: hid-sensor editing & corrections
-      Documentation: HID: hid-transport editing & corrections
-      Documentation: HID: uhid editing & corrections
-      HID: core: detect and skip invalid inputs to snto32()
-      HID: correct kernel-doc notation in <linux/hid*.h>
-      HID: correct kernel-doc notation in hid-quirks.c
-
-Roderick Colenbrander (13):
-      HID: playstation: initial DualSense USB support.
-      HID: playstation: use DualSense MAC address as unique identifier.
-      HID: playstation: add DualSense battery support.
-      HID: playstation: add DualSense touchpad support.
-      HID: playstation: add DualSense accelerometer and gyroscope support.
-      HID: playstation: track devices in list.
-      HID: playstation: add DualSense Bluetooth support.
-      HID: playstation: add DualSense classic rumble support.
-      HID: playstation: report DualSense hardware and firmware version.
-      HID: playstation: fix unused variable in ps_battery_get_property.
-      HID: playstation: add initial DualSense lightbar support.
-      HID: playstation: add microphone mute support for DualSense.
-      HID: playstation: add DualSense player LED support.
-
-Sanjay Govind (1):
-      HID: sony: Add support for tilt on guitar hero guitars
-
-Will McVicker (1):
-      HID: make arrays usage and value to be the same
-
-You-Sheng Yang (1):
-      HID: intel-ish-hid: ipc: Add Tiger Lake H PCI device ID
-
-Zhang Lixu (2):
-      HID: intel-ish-hid: ipc: finish power flow for EHL OOB
-      HID: intel-ish-hid: ipc: Address EHL Sx resume issues
-
- .../devicetree/bindings/input/goodix,gt7375p.yaml  |   65 +
- Documentation/hid/amd-sfh-hid.rst                  |   22 +-
- Documentation/hid/hid-alps.rst                     |    4 +-
- Documentation/hid/hid-sensor.rst                   |   18 +-
- Documentation/hid/hid-transport.rst                |   12 +-
- Documentation/hid/hiddev.rst                       |   10 +-
- Documentation/hid/hidraw.rst                       |    5 +-
- Documentation/hid/intel-ish-hid.rst                |   78 +-
- Documentation/hid/uhid.rst                         |   34 +-
- MAINTAINERS                                        |    6 +
- arch/arm64/configs/defconfig                       |    3 +-
- drivers/hid/Kconfig                                |   19 +
- drivers/hid/Makefile                               |    3 +-
- drivers/hid/hid-chicony.c                          |   55 +
- drivers/hid/hid-core.c                             |    9 +-
- drivers/hid/hid-google-hammer.c                    |   85 +-
- drivers/hid/hid-ids.h                              |   11 +-
- drivers/hid/hid-input.c                            |   12 +
- drivers/hid/hid-ite.c                              |   12 +-
- drivers/hid/hid-lg-g15.c                           |    2 +-
- drivers/hid/hid-logitech-dj.c                      |    8 +-
- drivers/hid/hid-logitech-hidpp.c                   |  246 +++-
- drivers/hid/hid-multitouch.c                       |   10 +
- drivers/hid/hid-playstation.c                      | 1351 ++++++++++++++++++++
- drivers/hid/hid-quirks.c                           |   26 +-
- drivers/hid/hid-roccat-arvo.c                      |    6 +-
- drivers/hid/hid-sony.c                             |   20 +-
- drivers/hid/hid-uclogic-core.c                     |    2 +
- drivers/hid/hid-uclogic-params.c                   |    2 +
- drivers/hid/i2c-hid/Kconfig                        |   47 +-
- drivers/hid/i2c-hid/Makefile                       |    6 +-
- drivers/hid/i2c-hid/i2c-hid-acpi.c                 |  143 +++
- drivers/hid/i2c-hid/i2c-hid-core.c                 |  254 +---
- drivers/hid/i2c-hid/i2c-hid-of-goodix.c            |  116 ++
- drivers/hid/i2c-hid/i2c-hid-of.c                   |  143 +++
- drivers/hid/i2c-hid/i2c-hid.h                      |   22 +
- drivers/hid/intel-ish-hid/ipc/hw-ish.h             |    2 +
- drivers/hid/intel-ish-hid/ipc/ipc.c                |   27 +
- drivers/hid/intel-ish-hid/ipc/pci-ish.c            |   55 +-
- drivers/hid/wacom_sys.c                            |    2 +-
- drivers/hid/wacom_wac.c                            |    7 +-
- include/linux/hid-sensor-hub.h                     |    9 +-
- include/linux/hid.h                                |   15 +-
- include/linux/platform_data/i2c-hid.h              |   41 -
- 44 files changed, 2606 insertions(+), 419 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/input/goodix,gt7375p.yaml
- create mode 100644 drivers/hid/hid-playstation.c
- create mode 100644 drivers/hid/i2c-hid/i2c-hid-acpi.c
- create mode 100644 drivers/hid/i2c-hid/i2c-hid-of-goodix.c
- create mode 100644 drivers/hid/i2c-hid/i2c-hid-of.c
- delete mode 100644 include/linux/platform_data/i2c-hid.h
-
--- 
-Jiri Kosina
-SUSE Labs
 
