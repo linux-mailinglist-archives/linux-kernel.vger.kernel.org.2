@@ -2,153 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11363322894
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9CE322899
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbhBWKIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:08:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232202AbhBWKHm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:07:42 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB583C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 02:07:02 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lEUan-0005RW-MQ; Tue, 23 Feb 2021 11:06:57 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lEUam-00035o-RS; Tue, 23 Feb 2021 11:06:56 +0100
-Date:   Tue, 23 Feb 2021 11:06:56 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v5 2/2] counter: add IRQ or GPIO based event counter
-Message-ID: <20210223100656.efbshsh5bz66uhj5@pengutronix.de>
-References: <20210208135347.18494-1-o.rempel@pengutronix.de>
- <20210208135347.18494-3-o.rempel@pengutronix.de>
- <YCjlPhEtyH+vfSi4@shinobu>
- <20210215091737.fx6dwiz7tt56wbkr@pengutronix.de>
- <YDMMJJ985Zq9oEOv@shinobu>
+        id S232389AbhBWKJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 05:09:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232299AbhBWKHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 05:07:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA91864E3F;
+        Tue, 23 Feb 2021 10:07:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614074830;
+        bh=ldsGlNDSWjObH//AcaVyVQQKhLO6Y4NGrLkEEk/X1Fw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RbK9+nibc62xkE6KYKhOYU2/DAkFZdXP5FAppKjVSO6+bAQ8rT49E2p0xz70sCeKg
+         CanSZRBIKjopRCmoFauqzMQO0ahgfBqdp8OLhf0HTOKAW81Nxdxkhmue1lA1H/BzZR
+         E1j2euU99oiLWUta8OltH4Yb/me+UivaK/b5Z8anO04LeWlMlYBTyz7lCOQHlMLBZC
+         0w5Zuterro0K5aVcTIJMfrcLBv3ADFpNNDGovuYZjU8s5chhvSmiIX9eDYtKhoYAxY
+         ywKIbb4g9ghAeaVChMmr7wxqQ1MGUc+a6/2DforsrqiCRDlnPOkdIUtmDFFHn1dJWs
+         jbbpF1r2ITpww==
+Date:   Tue, 23 Feb 2021 12:06:59 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v6 1/1] mm/page_alloc.c: refactor initialization of
+ struct page for holes in memory layout
+Message-ID: <20210223100659.GJ1447004@kernel.org>
+References: <20210222105728.28636-1-rppt@kernel.org>
+ <a7f70da1-6733-967f-4d1d-92d23b95a753@redhat.com>
+ <20210223094802.GI1447004@kernel.org>
+ <aafa291d-ced4-2e4d-f9c4-be99e9394c0c@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YDMMJJ985Zq9oEOv@shinobu>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:39:14 up 82 days, 23:45, 41 users,  load average: 0.02, 0.05,
- 0.06
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <aafa291d-ced4-2e4d-f9c4-be99e9394c0c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 10:43:00AM +0900, William Breathitt Gray wrote:
-> On Mon, Feb 15, 2021 at 10:17:37AM +0100, Oleksij Rempel wrote:
-> > > > +static irqreturn_t event_cnt_isr(int irq, void *dev_id)
-> > > > +{
-> > > > +	struct event_cnt_priv *priv = dev_id;
-> > > > +
-> > > > +	atomic_inc(&priv->count);
+On Tue, Feb 23, 2021 at 10:49:44AM +0100, David Hildenbrand wrote:
+> On 23.02.21 10:48, Mike Rapoport wrote:
+> > On Tue, Feb 23, 2021 at 09:04:19AM +0100, David Hildenbrand wrote:
+> > > On 22.02.21 11:57, Mike Rapoport wrote:
+> > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > 
+> > > > There could be struct pages that are not backed by actual physical memory.
+> > > > This can happen when the actual memory bank is not a multiple of
+> > > > SECTION_SIZE or when an architecture does not register memory holes
+> > > > reserved by the firmware as memblock.memory.
+> > > > 
+> > > > Such pages are currently initialized using init_unavailable_mem() function
+> > > > that iterates through PFNs in holes in memblock.memory and if there is a
+> > > > struct page corresponding to a PFN, the fields of this page are set to
+> > > > default values and it is marked as Reserved.
+> > > > 
+> > > > init_unavailable_mem() does not take into account zone and node the page
+> > > > belongs to and sets both zone and node links in struct page to zero.
+> > > > 
+> > > > Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
+> > > > rather that check each PFN") the holes inside a zone were re-initialized
+> > > > during memmap_init() and got their zone/node links right. However, after
+> > > > that commit nothing updates the struct pages representing such holes.
+> > > > 
+> > > > On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+> > > > instance in a configuration below:
+> > > > 
+> > > > 	# grep -A1 E820 /proc/iomem
+> > > > 	7a17b000-7a216fff : Unknown E820 type
+> > > > 	7a217000-7bffffff : System RAM
+> > > > 
+> > > > unset zone link in struct page will trigger
+> > > > 
+> > > > 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+> > > > 
+> > > > because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
+> > > > in struct page) in the same pageblock.
+> > > > 
+> > > > Interleave initialization of the unavailable pages with the normal
+> > > > initialization of memory map, so that zone and node information will be
+> > > > properly set on struct pages that are not backed by the actual memory.
+> > > > 
+> > > > With this change the pages for holes inside a zone will get proper
+> > > > zone/node links and the pages that are not spanned by any node will get
+> > > > links to the adjacent zone/node.
 > > > 
-> > > This is just used to count the number of interrupts right? I wonder if
-> > > we can do this smarter. For example, the kernel already keeps track of
-> > > number of interrupts that has occurred for any particular IRQ line on a
-> > > CPU (see the 'kstat_irqs' member of struct irq_desc, and the
-> > > show_interrupts() function in kernel/irq/proc.c). Would it make sense to
-> > > simply store the initial interrupt count on driver load or enablement,
-> > > and then return the difference during a count_read() callback?
-> > 
-> > This driver do not makes a lot of sense without your chardev patches. As
-> > soon as this patches go mainline, this driver will be able to send
-> > event with a timestamp and counter state to the user space.
-> > 
-> > With other words, we will need an irq handler anyway. In this case we
-> > can't save more RAM or CPU cycles by using system irq counters.
-> 
-> It's true that this driver will need an IRQ handler when the timestamp
-> functionality is added, but deriving the count value is different matter
-> regardless. There's already code in the kernel to retrieve the number of
-> interrupts, so it makes sense that we use that rather than rolling our
-> own -- at the very least to ensure the value we provide to users is
-> consistent with the ones already provided by other areas of the kernel.
-
-We are talking about one or two code lines. If we will take some
-duplication search engine, it will find that major part of the kernel
-is matching against it.
-
-Newer the less, this driver provides a way to reset the counter. Why
-should we drop this functionality no advantage?
-
-> To that end, I'd like to see your cnt_isr() function removed for this
-> patchset (you can bring it back once timestamp support is added).
-
-Are you suggesting to enable IRQ without interrupt handler? May be i'm
-missing some thing.. I do not understand it.
-
-> Reimplement your cnt_read/cnt_write() functions to instead use
-> kstat_irqs_usr() from <linux/kernel_stat.h> to get the current number of
-> interrupts the IRQ line and use it to derive your count value for this
-> driver.
-
-I can follow the counter read way, but overwriting system wide counter
-for local use is bad idea.
-
-> > > > +static struct counter_signal event_cnt_signals[] = {
-> > > > +	{
-> > > > +		.id = 0,
-> > > > +		.name = "Channel 0 signal",
+> > > Does this include pages in the last section has handled by ...
+> > > ...
+> > > > -	/*
+> > > > -	 * Early sections always have a fully populated memmap for the whole
+> > > > -	 * section - see pfn_valid(). If the last section has holes at the
+> > > > -	 * end and that section is marked "online", the memmap will be
+> > > > -	 * considered initialized. Make sure that memmap has a well defined
+> > > > -	 * state.
+> > > > -	 */
+> > > > -	pgcnt += init_unavailable_range(PFN_DOWN(next),
+> > > > -					round_up(max_pfn, PAGES_PER_SECTION));
+> > > > -
 > > > 
-> > > You should choose a more description name for this Signal;
-> > > "Channel 0 signal" isn't very useful information for the user. Is this
-> > > signal the respective GPIO line state?
+> > > ^ this code?
+> > > 
+> > > Or how is that case handled now?
 > > 
-> > Sounds plausible. How about "Channel 0, GPIO line state"?
+> > Hmm, now it's clamped to node_end_pfn/zone_end_pfn, so in your funny example with
+> > 
+> >      -object memory-backend-ram,id=bmem0,size=4160M \
+> >      -object memory-backend-ram,id=bmem1,size=4032M \
+> > 
+> > this is not handled :(
+> > 
+> > But it will be handled with this on top:
+> > 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index 29bbd08b8e63..6c9b490f5a8b 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -6350,9 +6350,12 @@ void __meminit __weak memmap_init_zone(struct zone *zone)
+> >   		hole_pfn = end_pfn;
+> >   	}
+> > -	if (hole_pfn < zone_end_pfn)
+> > -		pgcnt += init_unavailable_range(hole_pfn, zone_end_pfn,
+> > +#ifdef CONFIG_SPARSEMEM
+> > +	end_pfn = round_up(zone_end_pfn, PAGES_PER_SECTION);
+> > +	if (hole_pfn < end_pfn)
+> > +		pgcnt += init_unavailable_range(hole_pfn, end_pfn,
+> >   						zone_id, nid);
+> > +#endif
+> >   	if (pgcnt)
+> >   		pr_info("  %s zone: %lld pages in unavailable ranges\n",
+> > 
 > 
-> Ideally, this would match the GPIO name (or I suppose the IRQ number if
-> not a GPIO line). So in your probe() function you can do something like
-> this I believe:
 > 
-> 	cnt_signals[0].name = priv->gpio->name;
+> Also, just wondering, will PFN 0 still get initialized?
 
-to make this possible, i would need hack gpiolib framework and add
-name/label exporter. But after endless rounds of pingponging me for
-renaming the driver and removing interrupt handler, i feel like we are
-not having serious discussion for mainlining this driver.
+Yes, it gets 0,0 links, but it is still outside node/zone span.
 
-Is it some expensive way to prepare me for 1. April joke?
-
-> Of course, you should first check whether this is a GPIO line or IRQ
-> line and set the name accordingly.
-
-Please, let's stop bike-shed for now. This driver has no limitless
-budget. If there are serious problem, I would love to fix it, but if we
-still discussing name of the driver or how to misuse kernel interrupt
-handling, then it makes no sense to continue.
-
-Regards,
-Oleksij
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Sincerely yours,
+Mike.
