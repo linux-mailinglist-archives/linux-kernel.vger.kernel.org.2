@@ -2,227 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6249322429
+	by mail.lfdr.de (Postfix) with ESMTP id 543EB322428
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 03:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhBWCc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 21:32:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
+        id S230235AbhBWCc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 21:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhBWCcZ (ORCPT
+        with ESMTP id S229852AbhBWCcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 21:32:25 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AEA4C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:31:45 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id v62so18800000ybb.15
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:31:45 -0800 (PST)
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFE9C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:31:44 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id y202so15551085iof.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:31:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=Q1j93qwuy/J16VYdZY9OwcszBQob8ihsmTijrh0rYD4=;
-        b=DVElnxie0yaEXCS7ca25i9lmUVZhtZ4x2QRALHD8pmEq45Y8JrUrAOVroI/Kheq9hK
-         v8AMU7lNenLwIeE7TBqbCZhmiY9h8BKLC1nnjDpyJgj4pcFhPl4zvVifRdtpPLjlylI/
-         ezLYkKqbiM8/ghryZuBss1/wmACnj6lo28XKrKLQqPROxffxNnVAOQwVCyl8dgSFV3+u
-         7RxCarhish8ysaUXMUEP+OqepKRIwxzTGv4KgJI7XA3EwpaO3u9spReDNcoKok4c1T2r
-         VRvSzg0JbQL4EU1GZKXmcmy+BackzruQTuebrlsMoWpZvcZPGQWQO283uxAk/2yfW1hx
-         8c+A==
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JEuYJuQRqJcKGWuFA6L1ex4F1e2C+KcEnHJZhT9FdZA=;
+        b=kjYopEl2v1bGXaZ3fcTZl8ehpMYQyp4AdStpVTDecP7qg8SCWEtfp1W+/SIfxaZ5qC
+         UO6tj7bkHxdq43Jq8ovn4lZsH8SFez5lGU6KQGLSo3kywx0r0UJw3L8ttr+lzVhqAluK
+         fHGTnotTk15c4WiWuQZ/TraPWVR5jL8Iv5Tjc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=Q1j93qwuy/J16VYdZY9OwcszBQob8ihsmTijrh0rYD4=;
-        b=FcXlXbuDzqsMqWri3UZNOkOfszEv63KKce2AtqtEEecMkA/VYRi2jnPlFpFfkhQu29
-         xe0oudqDdm25CDjgAohZwf/uqy4YAxoV8QfDCwdC0qzNL41HPmjDn27HZxVFcv2I1hFu
-         wkmMYMyDxHi7Go/34lvqKH/ZG8eVaJZNEUTM5KGmU7wtF31cMalz2uJSpnGO52Qnmy9u
-         /upyld6wcYEN5Bn6XosZ3o9j1nWDV+b5yeqa6VuFdK0UKGSsIFpMinwxL+1VQTmJd7pv
-         XKty2zUCW0TbFortvm7mfC/0c1ZtC/QyWvf34/s3FIPK2fzNIFCepmlRjQqyUlDeuU/r
-         MZGw==
-X-Gm-Message-State: AOAM531xTm+KfHjbyNCtvt90eHwQ9k0j8VwwbjhXccXOQCqkwm9ibgfT
-        NxATQAkVvRp+gWnY6JjPrxqM3rtsvjiS
-X-Google-Smtp-Source: ABdhPJzdESPMYVkuKRp46z6k/1HyWow5PI6VIDHD9DSx2dJLwqSBnc6LDFRg9huHcQPGORE8+ydqlstwhrZh
-Sender: "jiancai via sendgmr" <jiancai@jiancai.svl.corp.google.com>
-X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:7985:60cc:661a:9692])
- (user=jiancai job=sendgmr) by 2002:a25:da0e:: with SMTP id
- n14mr37389154ybf.356.1614047504192; Mon, 22 Feb 2021 18:31:44 -0800 (PST)
-Date:   Mon, 22 Feb 2021 18:31:07 -0800
-In-Reply-To: <20210219230841.875875-1-jiancai@google.com>
-Message-Id: <20210223023125.2265845-1-jiancai@google.com>
-Mime-Version: 1.0
-References: <20210219230841.875875-1-jiancai@google.com>
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-Subject: [PATCH v5] ARM: Implement SLS mitigation
-From:   Jian Cai <jiancai@google.com>
-Cc:     ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com, Jian Cai <jiancai@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "=?UTF-8?q?Andreas=20F=C3=A4rber?=" <afaerber@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Marc Zyngier <maz@kernel.org>, Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JEuYJuQRqJcKGWuFA6L1ex4F1e2C+KcEnHJZhT9FdZA=;
+        b=d6GJwVYlJ8+kGqEAAKA1/CVB7/2GLZ6qgJz4GHumdStWB344FsMvvSL0buBmL+WvqL
+         /J/88s55XETJG2+8xKvCsASYjijo/eGyjT4ufJWzCz7llomyM9pq1idcwooSKaa1OKF+
+         ybUVKONsJvHtSLjJ1/mDUv+FaOnuesug361XPGjMW3QjuCqEBxSHcbfTTOykfHKWYNwy
+         8V3sSR844eoRsXMBxfdRBr9N5ILlytQmUtC1HKAwdQlFLdBm27ymwx6Jn3bn5Dc+w8Ld
+         UUTmx51NRxl84y4joWz3BJV0MgFVZne0EhnDlfMyCgjaB8CECekkOrsJcqyg0EzXgkhz
+         T73w==
+X-Gm-Message-State: AOAM533XdocaUU0Oiem9naGUbI4LCQAel10tX1XE56rEzFKW8Si37fe9
+        lOCOekqSYFAKeHzLhe1svcmjsOs3kvDVE1z6cya6
+X-Google-Smtp-Source: ABdhPJyoayprEz4sgeCBquS8FzGm/skWsKU0aymux5jNIzi2RHq9wZfOimxpoCB1V3GQgIMVeyJ/zUcpEmstN3I35+g=
+X-Received: by 2002:a05:6602:3283:: with SMTP id d3mr17836814ioz.53.1614047504319;
+ Mon, 22 Feb 2021 18:31:44 -0800 (PST)
+MIME-Version: 1.0
+References: <CAOnJCUJq4Gfd_YvJz5K2yFwmsSiB3LDM6rSQ2d+O+jV8b0z_wg@mail.gmail.com>
+ <mhng-96a8d981-5dff-488d-af25-b3c40815b643@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-96a8d981-5dff-488d-af25-b3c40815b643@palmerdabbelt-glaptop>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 22 Feb 2021 18:31:33 -0800
+Message-ID: <CAOnJCUJ-gbyz_Oc_S0xMv2ByAMeWhzxH3aJJFzKtMZBT0-u8VQ@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: Add a non-void return for sbi v02 functions
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
--mharden-sls=all, which mitigates the straight-line speculation
-vulnerability, speculative execution of the instruction following some
-unconditional jumps. Notice -mharden-sls= has other options as below,
-and this config turns on the strongest option.
+On Mon, Feb 22, 2021 at 5:52 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Mon, 22 Feb 2021 14:38:28 PST (-0800), atishp@atishpatra.org wrote:
+> > On Mon, Feb 22, 2021 at 12:23 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>
+> >> On Wed, Feb 03, 2021 at 09:26:43PM -0800, Atish Patra wrote:
+> >> > SBI v0.2 functions can return an error code from SBI implementation.
+> >> > We are already processing the SBI error code and coverts it to the Linux
+> >> > error code.
+> >> >
+> >> > Propagate to the error code to the caller as well. As of now, kvm is the
+> >> > only user of these error codes.
+> >> >
+> >> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> >> > ---
+> >> ...
+> >> >  #else /* CONFIG_RISCV_SBI */
+> >> > -static inline void sbi_remote_fence_i(const unsigned long *hart_mask) {}
+> >> > +static inline int sbi_remote_fence_i(const unsigned long *hart_mask) {}
+> >>
+> >> Error log:
+> >> In file included from arch/riscv/kernel/setup.c:29:
+> >> arch/riscv/include/asm/sbi.h: In function 'sbi_remote_fence_i':
+> >> arch/riscv/include/asm/sbi.h:150:1: error: no return statement in function returning non-void
+> >>
+> >
+> > Sorry for the oversight. The return statement is missing.
+> >
+> > @Palmer Dabbelt : Can you fix it in for-next or should I send a v2 ?
+>
+> I just fixed it up.
 
-all: enable all mitigations against Straight Line Speculation that are implemented.
-none: disable all mitigations against Straight Line Speculation.
-retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
-blr: enable the mitigation against Straight Line Speculation for BLR instructions.
+Thanks!
 
-Links:
-https://reviews.llvm.org/D93221
-https://reviews.llvm.org/D81404
-https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
-https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
-
-Suggested-by: Manoj Gupta <manojgupta@google.com>
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Suggested-by: David Laight <David.Laight@aculab.com>
-Suggested-by: Will Deacon <will@kernel.org>
-Suggested-by: Russell King <rmk+kernel@armlinux.org.uk>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Jian Cai <jiancai@google.com>
----
-
-Changes v4->v5:
-  Removed "default n" and made the description target indepdent in
-  Kconfig.hardening.
-
-
- arch/arm/Makefile                  |  4 ++++
- arch/arm/include/asm/vmlinux.lds.h |  4 ++++
- arch/arm/kernel/vmlinux.lds.S      |  1 +
- arch/arm64/Makefile                |  4 ++++
- arch/arm64/kernel/vmlinux.lds.S    |  5 +++++
- security/Kconfig.hardening         | 10 ++++++++++
- 6 files changed, 28 insertions(+)
-
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 4aaec9599e8a..11d89ef32da9 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -48,6 +48,10 @@ CHECKFLAGS	+= -D__ARMEL__
- KBUILD_LDFLAGS	+= -EL
- endif
- 
-+ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
-+KBUILD_CFLAGS  += -mharden-sls=all
-+endif
-+
- #
- # The Scalar Replacement of Aggregates (SRA) optimization pass in GCC 4.9 and
- # later may result in code being generated that handles signed short and signed
-diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
-index 4a91428c324d..c7f9717511ca 100644
---- a/arch/arm/include/asm/vmlinux.lds.h
-+++ b/arch/arm/include/asm/vmlinux.lds.h
-@@ -145,3 +145,7 @@
- 		__edtcm_data = .;					\
- 	}								\
- 	. = __dtcm_start + SIZEOF(.data_dtcm);
-+
-+#define SLS_TEXT							\
-+		ALIGN_FUNCTION();					\
-+		*(.text.__llvm_slsblr_thunk_*)
-diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-index f7f4620d59c3..e71f2bc97bae 100644
---- a/arch/arm/kernel/vmlinux.lds.S
-+++ b/arch/arm/kernel/vmlinux.lds.S
-@@ -63,6 +63,7 @@ SECTIONS
- 	.text : {			/* Real text segment		*/
- 		_stext = .;		/* Text and read-only data	*/
- 		ARM_TEXT
-+		SLS_TEXT
- 	}
- 
- #ifdef CONFIG_DEBUG_ALIGN_RODATA
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 90309208bb28..ca7299b356a9 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -34,6 +34,10 @@ $(warning LSE atomics not supported by binutils)
-   endif
- endif
- 
-+ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
-+KBUILD_CFLAGS  += -mharden-sls=all
-+endif
-+
- cc_has_k_constraint := $(call try-run,echo				\
- 	'int main(void) {						\
- 		asm volatile("and w0, w0, %w0" :: "K" (4294967295));	\
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 4c0b0c89ad59..f8912e42ffcd 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -93,6 +93,10 @@ jiffies = jiffies_64;
- #define TRAMP_TEXT
- #endif
- 
-+#define SLS_TEXT					\
-+	ALIGN_FUNCTION();				\
-+	*(.text.__llvm_slsblr_thunk_*)
-+
- /*
-  * The size of the PE/COFF section that covers the kernel image, which
-  * runs from _stext to _edata, must be a round multiple of the PE/COFF
-@@ -144,6 +148,7 @@ SECTIONS
- 			HIBERNATE_TEXT
- 			TRAMP_TEXT
- 			*(.fixup)
-+			SLS_TEXT
- 			*(.gnu.warning)
- 		. = ALIGN(16);
- 		*(.got)			/* Global offset table		*/
-diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
-index 269967c4fc1b..146b75a79d9e 100644
---- a/security/Kconfig.hardening
-+++ b/security/Kconfig.hardening
-@@ -121,6 +121,16 @@ choice
- 
- endchoice
- 
-+config HARDEN_SLS_ALL
-+	bool "enable SLS vulnerability hardening"
-+	default n
-+	depends on $(cc-option,-mharden-sls=all)
-+	help
-+	  Enables straight-line speculation vulnerability hardening on ARM and ARM64
-+	  architectures. It inserts speculation barrier sequences (SB or DSB+ISB
-+	  depending on the target architecture) after RET and BR, and replacing
-+	  BLR with BL+BR sequence.
-+
- config GCC_PLUGIN_STRUCTLEAK_VERBOSE
- 	bool "Report forcefully initialized variables"
- 	depends on GCC_PLUGIN_STRUCTLEAK
 -- 
-2.30.0.617.g56c4b15f3c-goog
-
+Regards,
+Atish
