@@ -2,103 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CEB32255C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C43DD32255E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhBWF1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 00:27:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60149 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230458AbhBWF1k (ORCPT
+        id S231129AbhBWF3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 00:29:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhBWF3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 00:27:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614057973;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JP8BZNEYe8HK8zjKUD5vM6SEeD44TdAOAL+tQOP8FIY=;
-        b=TWcKU4S/2KST+PG3yMZeb0AN3eq0myI+Gbrbz+guxwvtM0JyuYJZcQcpQewQ0LQbhR9ZpU
-        CmI3GD5cPtoXOne1ubwRXoNPkxJnbu2C84NuwwafrAq+VRgrE8Clez5QytSdR3UTxky4hb
-        7rlurYc7lpbP25Vddw6lvudvEuII99I=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-298-dj9-w5sWP8-4megHNxI78w-1; Tue, 23 Feb 2021 00:26:11 -0500
-X-MC-Unique: dj9-w5sWP8-4megHNxI78w-1
-Received: by mail-pl1-f199.google.com with SMTP id w10so9448393plg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 21:26:11 -0800 (PST)
+        Tue, 23 Feb 2021 00:29:12 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DB6C061574;
+        Mon, 22 Feb 2021 21:28:31 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id f3so16503657oiw.13;
+        Mon, 22 Feb 2021 21:28:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lwj5MobrJnNqjEfnyDCKLy+EwAn09sOy0OKym1ak5/U=;
+        b=mwN8jiaUTi634arC+a8gFSiO0axpO2LOG2l/oEedksOViVsBbYkB4rNchP5FMxJ6bU
+         EWiz3QsVzu+5wyccPloIt7bwheEFT4bgbuyMzF7CIJGE+2Qp2R2aUKGqYgYZnXU/H0q+
+         uns3J7goprXWurkldJqLd3I43QqWB9ASjhL8JpdfdzX6wI2eU7+fGr7XxH7Qopf4o02P
+         xsyRn5j5c/yXgUJqrawHacS8l8WuH/OxnbHkri3CFvqfiYm5HBK4O6/5pcvvFks9ZJpi
+         VWDd0Uie/TjdvmGuam2daFvRfgfKle5WG3oOJreq/WNir4CFKRoX60ZYey2qRNU/d9v2
+         UyMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JP8BZNEYe8HK8zjKUD5vM6SEeD44TdAOAL+tQOP8FIY=;
-        b=lKdBDM9igk/YSCBWdD2vrcK4uT3oTCXjkPUKAaS5ydFHQZ1HmiLCOJTm92vapIPwaP
-         pCZRbscWKoYHEVkdn/s8qLN8nNrUoddYgyAJqplXQ6dSQpqUr/bXXwedlZj62X4vy3Wp
-         tbijLdTLpTvDVh0ioyB0tg/YSz3Hn3UXz0HEDCvnf5a86gHqTnUUzc4eZc9OuY4dO35C
-         QByoX+pjvmv2Nugceh5gdZhLyUzXtkqYNoHU6y06U7imr5yXxhnn33Uw513kwiD2bbs2
-         h3y2rQnCBxqz161eT3M3lvj/zDZ/uwJgTTVcNxJgMaz1WbaPd/MrBYZyIrVx+XVCfys0
-         p5Ug==
-X-Gm-Message-State: AOAM5339+3351ufynel4Guwb+3OzrxBTngZZKCFQNbkoPM6fESX7s9Ny
-        akcC4T7YL+iD1JFZN81HrktxoMe/1cs1CI1qvZWjoyRTD7QyQn6lrqTclLT+hTMfCqmBn7AEjBJ
-        01mNcdnJbi+6ZAHb7uZTqUVaE
-X-Received: by 2002:a17:90a:b016:: with SMTP id x22mr3207269pjq.161.1614057969936;
-        Mon, 22 Feb 2021 21:26:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxpnt3C/L6BzHK8iud/yFdLHTq9zLeWs7YlwD0343Bs/iKI/BS4iGOoGOYKvtl/84R4ksqqoQ==
-X-Received: by 2002:a17:90a:b016:: with SMTP id x22mr3207238pjq.161.1614057969564;
-        Mon, 22 Feb 2021 21:26:09 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id o189sm21216324pfd.73.2021.02.22.21.26.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 21:26:08 -0800 (PST)
-Date:   Tue, 23 Feb 2021 13:25:58 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Huang Jianan <huangjianan@oppo.com>
-Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        guoweichao@oppo.com, zhangshiming@oppo.com
-Subject: Re: [PATCH v2] erofs: support adjust lz4 history window size
-Message-ID: <20210223052558.GC1225203@xiangao.remote.csb>
-References: <20210223043634.36807-1-huangjianan@oppo.com>
- <20210223051926.GB1225203@xiangao.remote.csb>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lwj5MobrJnNqjEfnyDCKLy+EwAn09sOy0OKym1ak5/U=;
+        b=KbU9kxZBukfYI3wlRAyDVpDz+lTgQ0gTv5Mn8VLwov5BOqx4CYNqymUXFPiTQJMx2S
+         6U7rB/YCMvQF0unrh+HDBAOWpLBeC6OKVtzFiGrzQf0jCqaO9rEmx7hvqPWmBkdNMzq7
+         Tb5Nqev8RWd8kAF8a6BYu94IT17w0KYpCyoxsHjwm9nUd6/X3EIM7z1vcS2hKmOWxPdI
+         7LU3P1iQAxvofmDEMoLB+2SL03Llrck5mbdCcpabKaJZQTTuW8hBo8ty/HhOEo4NJ6mt
+         Nh+vpOAvbB/fCbKifWNzN7GT71dk5cGZkP0lG6A37u5yH7PX8wELV058yDBNGb/cPm3x
+         tyow==
+X-Gm-Message-State: AOAM532nwqul+Nh/v40O9jQf4ZiUriVn5Wy7Wew6fQsFAtF5bvVSyRl5
+        5GG728bfqSxN5RpRtC7KUTmEE7ID6A7QIPWWUXmz6mVuIyU=
+X-Google-Smtp-Source: ABdhPJykN5Bi5N4WPXpFZGHeFc7dsRHkkUyc7QyH+biEyWI1M6bLOwto6RHwjHeIb2PpzXp+z4PQG8QkdMM3ajtVGJY=
+X-Received: by 2002:a05:6808:10ca:: with SMTP id s10mr15557313ois.33.1614058111252;
+ Mon, 22 Feb 2021 21:28:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210223051926.GB1225203@xiangao.remote.csb>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1614057902-23774-1-git-send-email-wanpengli@tencent.com>
+In-Reply-To: <1614057902-23774-1-git-send-email-wanpengli@tencent.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Tue, 23 Feb 2021 13:28:19 +0800
+Message-ID: <CANRm+CwX189YE_oi5x-b6Xx4=hpcGCqzLaHjmW6bz_=Fj2N7Mw@mail.gmail.com>
+Subject: Re: [PATCH] x86/kvm: Fix broken irq restoration in kvm_wait
+To:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(cont. the previous reply)
+On Tue, 23 Feb 2021 at 13:25, Wanpeng Li <kernellwp@gmail.com> wrote:
+>
+> From: Wanpeng Li <wanpengli@tencent.com>
+>
+> After commit 997acaf6b4b59c (lockdep: report broken irq restoration), the guest
+> splatting below during boot:
+>
+>  raw_local_irq_restore() called with IRQs enabled
+>  WARNING: CPU: 1 PID: 169 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x26/0x30
+>  Modules linked in: hid_generic usbhid hid
+>  CPU: 1 PID: 169 Comm: systemd-udevd Not tainted 5.11.0+ #25
+>  RIP: 0010:warn_bogus_irq_restore+0x26/0x30
+>  Call Trace:
+>   kvm_wait+0x76/0x90
+>   __pv_queued_spin_lock_slowpath+0x285/0x2e0
+>   do_raw_spin_lock+0xc9/0xd0
+>   _raw_spin_lock+0x59/0x70
+>   lockref_get_not_dead+0xf/0x50
+>   __legitimize_path+0x31/0x60
+>   legitimize_root+0x37/0x50
+>   try_to_unlazy_next+0x7f/0x1d0
+>   lookup_fast+0xb0/0x170
+>   path_openat+0x165/0x9b0
+>   do_filp_open+0x99/0x110
+>   do_sys_openat2+0x1f1/0x2e0
+>   do_sys_open+0x5c/0x80
+>   __x64_sys_open+0x21/0x30
+>   do_syscall_64+0x32/0x50
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> The irqflags handling in kvm_wait() which ends up doing:
+>
+>         local_irq_save(flags);
+>         safe_halt();
+>         local_irq_restore(flags);
+>
+> which triggered a new consistency checking, we generally expect
+> local_irq_save() and local_irq_restore() to be pared and sanely
+> nested, and so local_irq_restore() expects to be called with
+> irqs disabled.
+>
+> This patch fixes it by adding a local_irq_disable() after safe_halt()
+> to avoid this warning.
+>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+>  arch/x86/kernel/kvm.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index 5e78e01..688c84a 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -853,8 +853,10 @@ static void kvm_wait(u8 *ptr, u8 val)
+>          */
+>         if (arch_irqs_disabled_flags(flags))
+>                 halt();
+> -       else
+> +       else {
+>                 safe_halt();
+> +               local_irq_disable();
+> +       }
 
-On Tue, Feb 23, 2021 at 01:19:26PM +0800, Gao Xiang wrote:
+An alternative fix:
 
-...
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index 5e78e01..7127aef 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -836,12 +836,13 @@ static void kvm_kick_cpu(int cpu)
 
-> > +	__le16 lz4_max_distance;	/* lz4 max distance */
+ static void kvm_wait(u8 *ptr, u8 val)
+ {
+-    unsigned long flags;
++    bool disabled = irqs_disabled();
 
-unneeded comment.
+     if (in_nmi())
+         return;
 
-> > +	__u8 reserved2[42];
-> >  };
-> >  
-> >  /*
-> > diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> > index 67a7ec945686..7457710a763a 100644
-> > --- a/fs/erofs/internal.h
-> > +++ b/fs/erofs/internal.h
-> > @@ -70,6 +70,9 @@ struct erofs_sb_info {
-> >  
-> >  	/* pseudo inode to manage cached pages */
-> >  	struct inode *managed_cache;
-> > +
-> > +	/* lz4 max distance pages */
-> > +	u16 lz4_max_distance_pages;
+-    local_irq_save(flags);
++    if (!disabled)
++        local_irq_disable();
 
-useless comment as well... maybe we could add some descriptive
-words, e.g.
+     if (READ_ONCE(*ptr) != val)
+         goto out;
+@@ -851,13 +852,14 @@ static void kvm_wait(u8 *ptr, u8 val)
+      * for irq enabled case to avoid hang when lock info is overwritten
+      * in irq spinlock slowpath and no spurious interrupt occur to save us.
+      */
+-    if (arch_irqs_disabled_flags(flags))
++    if (disabled)
+         halt();
+     else
+         safe_halt();
 
-/* # of pages needed for EROFS lz4 rolling decompression */
+ out:
+-    local_irq_restore(flags);
++    if (!disabled)
++        local_irq_enable();
+ }
 
-Thanks,
-Gao Xiang
-
+ #ifdef CONFIG_X86_32
