@@ -2,426 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C50323059
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3216F323062
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233776AbhBWSNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 13:13:39 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:60294 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232634AbhBWSNd (ORCPT
+        id S233065AbhBWSOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 13:14:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233115AbhBWSOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 13:13:33 -0500
-Received: from x64host.home (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 41A0120A247C;
-        Tue, 23 Feb 2021 10:12:51 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 41A0120A247C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1614103971;
-        bh=VCa+ZCbvJMbIKML3X/zZgJgbXAV9P4yVGWxgCW2AniU=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Jpld8dXunZwrEM1ux+o8ce23dOS6lhLJ+kkuTeCa0eS2COsUZjIbDsXX2d90xhh39
-         hKmx9e1WLDAyijCBTOPPPnl9SK3Dvy/I9nvA/I8ynV0hgB8V9NZi43OgpY7eomQd6D
-         HiItxaUrtJ0kOJe4TK9ahaezOJdKcE/QN/a/52Js=
-From:   madvenka@linux.microsoft.com
-To:     broonie@kernel.org, mark.rutland@arm.com, jpoimboe@redhat.com,
-        jthierry@redhat.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        madvenka@linux.microsoft.com
-Subject: [RFC PATCH v1 1/1] arm64: Unwinder enhancements for reliable stack trace
-Date:   Tue, 23 Feb 2021 12:12:43 -0600
-Message-Id: <20210223181243.6776-2-madvenka@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210223181243.6776-1-madvenka@linux.microsoft.com>
-References: <bc4761a47ad08ab7fdd555fc8094beb8fc758d33>
- <20210223181243.6776-1-madvenka@linux.microsoft.com>
+        Tue, 23 Feb 2021 13:14:36 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C67C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:13:56 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id s12so7562490qvq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:13:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=64chh81MrDhbGsEgUYAQK1O320WsxsfdzdSvZe/81Lc=;
+        b=FMcvcTOtJbk9S1OVOWzfwDI5hEJZtOOmWU/jx2w96FB7sbM4dTOUaL9uiX7+DbzOjh
+         SckAfTThgCrNq9MZdWyLykL8A8V2tpZq2WKyEu+IEcuT9vYdy42OJfU0uY5KQmUvOc14
+         IWOySySdL1dIZtnKCoAktLqbu5etA0LNHAujHL8fGQQx/khRZpqpAlO/3G9ifKZOSe7p
+         U/V1t1C2ssrd12UzPv6Tc8TI1ZQmeQL4SBk29m7M3GzQuqVAIvMNKithrg9NzgJ+wPvt
+         p3t+iw8zwvxfIY5nhwTyV9xO8IgyaZDSCJqvoTzizj2jdUg5IQ/zrKmsPyS0Q5cSX+pn
+         /DxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=64chh81MrDhbGsEgUYAQK1O320WsxsfdzdSvZe/81Lc=;
+        b=MQXQZ5XgwqRQLEGagWtWfIVwSqYz/OzehXmRvXJaiDxbh/bshRXtN9tA2T7wHpAcrI
+         JiB8ziC3IAzni6EU2S/dwBgXZKjQj/wrxSO5eKs0czdrKCdODYbT6LALYn1UoMNcnlJz
+         58XVyOpn8ZambCrtnrpDHcw0kMl0xhmWMe58FBX2I3GO/GCgz2ZeRU7eQXUW0WmuXmFt
+         6T1FVB5Bt9H4wmBjPTm+4J/SUrGDN8M4GG9AbbYChcbQ1R2QN7VR7YjZLSGI/oDge/8A
+         loIofc8fA4HyygKJaztvvNWlPWfXDMsSm0tbRz7grxpLwXsu2yHxe/I4e+fRfBLtqAAd
+         YtHg==
+X-Gm-Message-State: AOAM533lSxWUjNXi+oFKPmtJGbHVQ0ANclSLXkgLCnY9RyarsTQ7oYEQ
+        6bF4kbsKqrIjyDtnJQvgf3u/8BjNxVf37UswTcFBjA==
+X-Google-Smtp-Source: ABdhPJzd2W30fvJh6WbDh5Kt5luVUnWfWNcb2OCq6wulmujrbpLeuMCS+sjlsu+6F+H08XVOLW05o0n0O0xTf4LNtqY=
+X-Received: by 2002:a0c:8304:: with SMTP id j4mr26498875qva.18.1614104034885;
+ Tue, 23 Feb 2021 10:13:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210223143426.2412737-1-elver@google.com> <20210223143426.2412737-4-elver@google.com>
+In-Reply-To: <20210223143426.2412737-4-elver@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 23 Feb 2021 19:13:42 +0100
+Message-ID: <CACT4Y+byoqr4UjNcYO-VMRZorqVxGyZmQb==pJXiQ0WjqwXvhg@mail.gmail.com>
+Subject: Re: [PATCH RFC 3/4] perf/core: Add support for SIGTRAP on perf events
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+On Tue, Feb 23, 2021 at 3:34 PM Marco Elver <elver@google.com> wrote:
+>
+> Adds bit perf_event_attr::sigtrap, which can be set to cause events to
+> send SIGTRAP (with si_code TRAP_PERF) to the task where the event
+> occurred. To distinguish perf events and allow user space to decode
+> si_perf (if set), the event type is set in si_errno.
+>
+> The primary motivation is to support synchronous signals on perf events
+> in the task where an event (such as breakpoints) triggered.
+>
+> Link: https://lore.kernel.org/lkml/YBv3rAT566k+6zjg@hirez.programming.kicks-ass.net/
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  include/uapi/linux/perf_event.h |  3 ++-
+>  kernel/events/core.c            | 21 +++++++++++++++++++++
+>  2 files changed, 23 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> index ad15e40d7f5d..b9cc6829a40c 100644
+> --- a/include/uapi/linux/perf_event.h
+> +++ b/include/uapi/linux/perf_event.h
+> @@ -389,7 +389,8 @@ struct perf_event_attr {
+>                                 cgroup         :  1, /* include cgroup events */
+>                                 text_poke      :  1, /* include text poke events */
+>                                 build_id       :  1, /* use build id in mmap2 events */
+> -                               __reserved_1   : 29;
+> +                               sigtrap        :  1, /* send synchronous SIGTRAP on event */
+> +                               __reserved_1   : 28;
+>
+>         union {
+>                 __u32           wakeup_events;    /* wakeup every n events */
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 37a8297be164..8718763045fd 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -6288,6 +6288,17 @@ void perf_event_wakeup(struct perf_event *event)
+>         }
+>  }
+>
+> +static void perf_sigtrap(struct perf_event *event)
+> +{
+> +       struct kernel_siginfo info;
+> +
+> +       clear_siginfo(&info);
+> +       info.si_signo = SIGTRAP;
+> +       info.si_code = TRAP_PERF;
+> +       info.si_errno = event->attr.type;
+> +       force_sig_info(&info);
+> +}
+> +
+>  static void perf_pending_event_disable(struct perf_event *event)
+>  {
+>         int cpu = READ_ONCE(event->pending_disable);
+> @@ -6297,6 +6308,13 @@ static void perf_pending_event_disable(struct perf_event *event)
+>
+>         if (cpu == smp_processor_id()) {
+>                 WRITE_ONCE(event->pending_disable, -1);
+> +
+> +               if (event->attr.sigtrap) {
+> +                       atomic_inc(&event->event_limit); /* rearm event */
 
-Unwinder changes
-================
+We send the signal to the current task. Can this fire outside of the
+current task context? E.g. in interrupt/softirq/etc? And then we will
+send the signal to the current task. Watchpoint can be set to
+userspace address and then something asynchronous (some IO completion)
+that does not belong to this task access the userspace address (is
+this possible?). But watchpoints can also be set to kernel addresses,
+then another context can definitely access it.
+(1) can this happen? maybe perf context is somehow disabled when !in_task()?
+(2) if yes, what is the desired behavior?
 
-	Termination
-	===========
 
-	Currently, the unwinder terminates when both the FP (frame pointer)
-	and the PC (return address) of a frame are 0. But a frame could get
-	corrupted and zeroed. There needs to be a better check.
 
-	The following special terminating frame and function have been
-	defined for this purpose:
 
-	const u64    arm64_last_frame[2] __attribute__ ((aligned (16)));
-
-	void arm64_last_func(void)
-	{
-	}
-
-	So, set the FP to arm64_last_frame and the PC to arm64_last_func in
-	the bottom most frame.
-
-	Exception/Interrupt detection
-	=============================
-
-	An EL1 exception renders the stack trace unreliable as it can happen
-	anywhere including the frame pointer prolog and epilog. The
-	unwinder needs to be able to detect the exception on the stack.
-
-	Currently, the EL1 exception handler sets up pt_regs on the stack
-	and chains pt_regs->stackframe with the other frames on the stack.
-	But, the unwinder does not know where this exception frame is in
-	the stack trace.
-
-	Set the LSB of the exception frame FP to allow the unwinder to
-	detect the exception frame. When the unwinder detects the frame,
-	it needs to make sure that it is really an exception frame and
-	not the result of any stack corruption.
-
-	It can do this if the FP and PC are also recorded elsewhere in the
-	pt_regs for comparison. Currently, the FP is also stored in
-	regs->regs[29]. The PC is stored in regs->pc. However, regs->pc can
-	be changed by lower level functions.
-
-	Create a new field, pt_regs->orig_pc, and record the return address
-	PC there. With this, the unwinder can validate the exception frame
-	and set a flag so that the caller of the unwinder can know when
-	an exception frame is encountered.
-
-	Unwinder return value
-	=====================
-
-	Currently, the unwinder returns -EINVAL for stack trace termination
-	as well as stack trace error. Return -ENOENT for stack trace
-	termination and -EINVAL for error to disambiguate. This idea has
-	been borrowed from Mark Brown.
-
-Reliable stack trace function
-=============================
-
-Implement arch_stack_walk_reliable(). This function walks the stack like
-the existing stack trace functions with a couple of additional checks:
-
-	Return address check
-	--------------------
-
-	For each frame, check the return address to see if it is a
-	proper kernel text address. If not, return -EINVAL.
-
-	Exception frame check
-	---------------------
-
-	Check each frame to see if it is an EL1 exception frame. If it is,
-	return -EINVAL.
-
-Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
----
- arch/arm64/include/asm/processor.h  |   2 +
- arch/arm64/include/asm/ptrace.h     |   7 ++
- arch/arm64/include/asm/stacktrace.h |   5 ++
- arch/arm64/kernel/asm-offsets.c     |   1 +
- arch/arm64/kernel/entry.S           |  14 +++-
- arch/arm64/kernel/head.S            |   8 +--
- arch/arm64/kernel/process.c         |  12 ++++
- arch/arm64/kernel/stacktrace.c      | 103 +++++++++++++++++++++++++---
- 8 files changed, 137 insertions(+), 15 deletions(-)
-
-diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
-index ca2cd75d3286..d268c74d262e 100644
---- a/arch/arm64/include/asm/processor.h
-+++ b/arch/arm64/include/asm/processor.h
-@@ -195,6 +195,8 @@ static inline void start_thread_common(struct pt_regs *regs, unsigned long pc)
- 	memset(regs, 0, sizeof(*regs));
- 	forget_syscall(regs);
- 	regs->pc = pc;
-+	regs->stackframe[0] = (u64) arm64_last_frame;
-+	regs->stackframe[1] = (u64) arm64_last_func;
- 
- 	if (system_uses_irq_prio_masking())
- 		regs->pmr_save = GIC_PRIO_IRQON;
-diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
-index e58bca832dff..a15750a9f6e5 100644
---- a/arch/arm64/include/asm/ptrace.h
-+++ b/arch/arm64/include/asm/ptrace.h
-@@ -201,8 +201,15 @@ struct pt_regs {
- 	/* Only valid for some EL1 exceptions. */
- 	u64 lockdep_hardirqs;
- 	u64 exit_rcu;
-+
-+	/* Only valid for EL1 exceptions. */
-+	u64 orig_pc;
-+	u64 unused1;
- };
- 
-+extern const u64 arm64_last_frame[2];
-+extern void arm64_last_func(void);
-+
- static inline bool in_syscall(struct pt_regs const *regs)
- {
- 	return regs->syscallno != NO_SYSCALL;
-diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
-index eb29b1fe8255..9760ceddbd78 100644
---- a/arch/arm64/include/asm/stacktrace.h
-+++ b/arch/arm64/include/asm/stacktrace.h
-@@ -49,6 +49,9 @@ struct stack_info {
-  *
-  * @graph:       When FUNCTION_GRAPH_TRACER is selected, holds the index of a
-  *               replacement lr value in the ftrace graph stack.
-+ *
-+ * @exception_frame
-+ *		EL1 exception frame.
-  */
- struct stackframe {
- 	unsigned long fp;
-@@ -59,6 +62,7 @@ struct stackframe {
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- 	int graph;
- #endif
-+	bool exception_frame;
- };
- 
- extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
-@@ -169,6 +173,7 @@ static inline void start_backtrace(struct stackframe *frame,
- 	bitmap_zero(frame->stacks_done, __NR_STACK_TYPES);
- 	frame->prev_fp = 0;
- 	frame->prev_type = STACK_TYPE_UNKNOWN;
-+	frame->exception_frame = false;
- }
- 
- #endif	/* __ASM_STACKTRACE_H */
-diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-index 301784463587..a9fbe1ca6d8a 100644
---- a/arch/arm64/kernel/asm-offsets.c
-+++ b/arch/arm64/kernel/asm-offsets.c
-@@ -75,6 +75,7 @@ int main(void)
-   DEFINE(S_SDEI_TTBR1,		offsetof(struct pt_regs, sdei_ttbr1));
-   DEFINE(S_PMR_SAVE,		offsetof(struct pt_regs, pmr_save));
-   DEFINE(S_STACKFRAME,		offsetof(struct pt_regs, stackframe));
-+  DEFINE(S_ORIG_PC,		offsetof(struct pt_regs, orig_pc));
-   DEFINE(PT_REGS_SIZE,		sizeof(struct pt_regs));
-   BLANK();
- #ifdef CONFIG_COMPAT
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index c9bae73f2621..b2d6c73dd054 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -264,10 +264,21 @@ alternative_else_nop_endif
- 	 * In order to be able to dump the contents of struct pt_regs at the
- 	 * time the exception was taken (in case we attempt to walk the call
- 	 * stack later), chain it together with the stack frames.
-+	 *
-+	 * Set up a synthetic EL0 frame such that the unwinder can recognize
-+	 * it and stop the unwind.
-+	 *
-+	 * Set up a synthetic EL1 frame such that the unwinder can recognize
-+	 * it. For a reliable stack trace, the unwinder stops here. Else, it
-+	 * continues. Also, record the return address in regs->orig_pc for
-+	 * the unwinder's benefit because regs->pc can be changed.
- 	 */
- 	.if \el == 0
--	stp	xzr, xzr, [sp, #S_STACKFRAME]
-+	ldr	x29, =arm64_last_frame
-+	ldr	x17, =arm64_last_func
-+	stp	x29, x17, [sp, #S_STACKFRAME]
- 	.else
-+	orr	x29, x29, #1
- 	stp	x29, x22, [sp, #S_STACKFRAME]
- 	.endif
- 	add	x29, sp, #S_STACKFRAME
-@@ -279,6 +290,7 @@ alternative_else_nop_endif
- #endif
- 
- 	stp	x22, x23, [sp, #S_PC]
-+	str	x22, [sp, #S_ORIG_PC]
- 
- 	/* Not in a syscall by default (el0_svc overwrites for real syscall) */
- 	.if	\el == 0
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index a0dc987724ed..2cce019f29fa 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -448,8 +448,8 @@ SYM_FUNC_START_LOCAL(__primary_switched)
- 0:
- #endif
- 	add	sp, sp, #16
--	mov	x29, #0
--	mov	x30, #0
-+	ldr	x29, =arm64_last_frame
-+	ldr	x30, =arm64_last_func
- 	b	start_kernel
- SYM_FUNC_END(__primary_switched)
- 
-@@ -644,8 +644,8 @@ SYM_FUNC_START_LOCAL(__secondary_switched)
- 	cbz	x2, __secondary_too_slow
- 	msr	sp_el0, x2
- 	scs_load x2, x3
--	mov	x29, #0
--	mov	x30, #0
-+	ldr	x29, =arm64_last_frame
-+	ldr	x30, =arm64_last_func
- 
- #ifdef CONFIG_ARM64_PTR_AUTH
- 	ptrauth_keys_init_cpu x2, x3, x4, x5
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 6616486a58fe..bac13fc33914 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -380,6 +380,12 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
- 
- asmlinkage void ret_from_fork(void) asm("ret_from_fork");
- 
-+const u64	arm64_last_frame[2] __attribute__ ((aligned (16)));
-+
-+void arm64_last_func(void)
-+{
-+}
-+
- int copy_thread(unsigned long clone_flags, unsigned long stack_start,
- 		unsigned long stk_sz, struct task_struct *p, unsigned long tls)
- {
-@@ -437,6 +443,12 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
- 	}
- 	p->thread.cpu_context.pc = (unsigned long)ret_from_fork;
- 	p->thread.cpu_context.sp = (unsigned long)childregs;
-+	/*
-+	 * Set up a special termination stack frame for the task.
-+	 */
-+	p->thread.cpu_context.fp = (unsigned long)childregs->stackframe;
-+	childregs->stackframe[0] = (u64) arm64_last_frame;
-+	childregs->stackframe[1] = (u64) arm64_last_func;
- 
- 	ptrace_hw_copy_thread(p);
- 
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index fa56af1a59c3..26ac4dd54eaf 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -18,6 +18,60 @@
- #include <asm/stack_pointer.h>
- #include <asm/stacktrace.h>
- 
-+static notrace struct pt_regs *get_frame_regs(struct task_struct *task,
-+					      struct stackframe *frame)
-+{
-+	unsigned long stackframe, regs_start, regs_end;
-+	struct stack_info info;
-+
-+	stackframe = frame->prev_fp;
-+	if (!stackframe)
-+		return NULL;
-+
-+	(void) on_accessible_stack(task, stackframe, &info);
-+
-+	regs_start = stackframe - offsetof(struct pt_regs, stackframe);
-+	if (regs_start < info.low)
-+		return NULL;
-+	regs_end = regs_start + sizeof(struct pt_regs);
-+	if (regs_end > info.high)
-+		return NULL;
-+	return (struct pt_regs *) regs_start;
-+}
-+
-+static notrace int update_frame(struct task_struct *task,
-+				struct stackframe *frame)
-+{
-+	unsigned long lsb = frame->fp & 0xf;
-+	unsigned long fp = frame->fp & ~lsb;
-+	unsigned long pc = frame->pc;
-+	struct pt_regs *regs;
-+
-+	frame->exception_frame = false;
-+
-+	if (fp == (unsigned long) arm64_last_frame &&
-+	    pc == (unsigned long) arm64_last_func)
-+		return -ENOENT;
-+
-+	if (!lsb)
-+		return 0;
-+	if (lsb != 1)
-+		return -EINVAL;
-+
-+	/*
-+	 * This looks like an EL1 exception frame.
-+	 * Make sure the frame matches the EL1 pt_regs.
-+	 */
-+	regs = get_frame_regs(task, frame);
-+	if (!regs || fp != READ_ONCE_NOCHECK(regs->regs[29]) ||
-+	   pc != regs->orig_pc)
-+		return -EINVAL;
-+
-+	frame->exception_frame = true;
-+	frame->fp = fp;
-+	return 0;
-+}
-+
- /*
-  * AArch64 PCS assigns the frame pointer to x29.
-  *
-@@ -104,16 +158,7 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
- 
- 	frame->pc = ptrauth_strip_insn_pac(frame->pc);
- 
--	/*
--	 * Frames created upon entry from EL0 have NULL FP and PC values, so
--	 * don't bother reporting these. Frames created by __noreturn functions
--	 * might have a valid FP even if PC is bogus, so only terminate where
--	 * both are NULL.
--	 */
--	if (!frame->fp && !frame->pc)
--		return -EINVAL;
--
--	return 0;
-+	return update_frame(tsk, frame);
- }
- NOKPROBE_SYMBOL(unwind_frame);
- 
-@@ -217,4 +262,42 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
- 	walk_stackframe(task, &frame, consume_entry, cookie);
- }
- 
-+int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
-+			      void *cookie, struct task_struct *task)
-+{
-+	struct stackframe frame;
-+	int ret = 0;
-+
-+	if (task == current) {
-+		start_backtrace(&frame,
-+				(unsigned long)__builtin_frame_address(0),
-+				(unsigned long)arch_stack_walk_reliable);
-+	} else {
-+		start_backtrace(&frame, thread_saved_fp(task),
-+				thread_saved_pc(task));
-+	}
-+
-+	while (!ret) {
-+		/*
-+		 * If the task encountered an EL1 exception, the stack trace
-+		 * is unreliable.
-+		 */
-+		if (frame.exception_frame)
-+			return -EINVAL;
-+
-+		/*
-+		 * A NULL or invalid return address probably means there's
-+		 * some generated code which __kernel_text_address() doesn't
-+		 * know about.
-+		 */
-+		if (!__kernel_text_address(frame.pc))
-+			return -EINVAL;
-+		if (!consume_entry(cookie, frame.pc))
-+			return -EINVAL;
-+		ret = unwind_frame(task, &frame);
-+	}
-+
-+	return ret == -ENOENT ? 0 : -EINVAL;
-+}
-+
- #endif
--- 
-2.25.1
-
+> +                       perf_sigtrap(event);
+> +                       return;
+> +               }
+> +
+>                 perf_event_disable_local(event);
+>                 return;
+>         }
+> @@ -11325,6 +11343,9 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+>
+>         event->state            = PERF_EVENT_STATE_INACTIVE;
+>
+> +       if (event->attr.sigtrap)
+> +               atomic_set(&event->event_limit, 1);
+> +
+>         if (task) {
+>                 event->attach_state = PERF_ATTACH_TASK;
+>                 /*
+> --
+> 2.30.0.617.g56c4b15f3c-goog
+>
