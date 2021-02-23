@@ -2,87 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F52322E6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60535322E6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbhBWQKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 11:10:23 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:53271 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S233296AbhBWQKO (ORCPT
+        id S233316AbhBWQK4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Feb 2021 11:10:56 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:41615 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232599AbhBWQKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:10:14 -0500
-Received: (qmail 1264834 invoked by uid 1000); 23 Feb 2021 11:09:32 -0500
-Date:   Tue, 23 Feb 2021 11:09:32 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] dt-bindings: usb: generic-ehci: document ignore-oc
- flag
-Message-ID: <20210223160932.GD1261797@rowland.harvard.edu>
-References: <20210223155005.21712-1-noltari@gmail.com>
- <20210223155005.21712-2-noltari@gmail.com>
- <20210223155443.GB1261797@rowland.harvard.edu>
- <54E1894F-C8D8-4E2F-92DF-DC891153BAAB@gmail.com>
+        Tue, 23 Feb 2021 11:10:53 -0500
+X-Originating-IP: 86.210.203.113
+Received: from xps13 (lfbn-tou-1-972-113.w86-210.abo.wanadoo.fr [86.210.203.113])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 02CFB1C0009;
+        Tue, 23 Feb 2021 16:10:07 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 17:10:06 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Md Sadre Alam <mdalam@codeaurora.org>
+Cc:     mani@kernel.org, richard@nod.at, boris.brezillon@collabora.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: Convert nandc to chip in Read/Write
+ helper
+Message-ID: <20210223171006.3e2030ce@xps13>
+In-Reply-To: <1613939101-23001-1-git-send-email-mdalam@codeaurora.org>
+References: <1613939101-23001-1-git-send-email-mdalam@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <54E1894F-C8D8-4E2F-92DF-DC891153BAAB@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 05:04:57PM +0100, ¡lvaro Fern·ndez Rojas wrote:
-> Hi Alan,
-> 
-> > El 23 feb 2021, a las 16:54, Alan Stern <stern@rowland.harvard.edu> escribiÛ:
-> > 
-> > On Tue, Feb 23, 2021 at 04:50:04PM +0100, ¡lvaro Fern·ndez Rojas wrote:
-> >> Over-current reporting isn't supported on some platforms such as bcm63xx.
-> >> These devices will incorrectly report over-current if this flag isn't properly
-> >> activated.
-> >> 
-> >> Signed-off-by: ¡lvaro Fern·ndez Rojas <noltari@gmail.com>
-> >> ---
-> >> Documentation/devicetree/bindings/usb/generic-ehci.yaml | 5 +++++
-> >> 1 file changed, 5 insertions(+)
-> >> 
-> >> diff --git a/Documentation/devicetree/bindings/usb/generic-ehci.yaml b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> >> index cf83f2d9afac..294bbf02399e 100644
-> >> --- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> >> +++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> >> @@ -117,6 +117,11 @@ properties:
-> >>       Set this flag if EHCI has a Transaction Translator built into
-> >>       the root hub.
-> >> 
-> >> +  ignore-oc:
-> >> +    $ref: /schemas/types.yaml#/definitions/flag
-> >> +    description:
-> >> +      Set this flag for HCDs without over-current reporting support.
-> > 
-> > This is not a good description of a device property.  DT entries are 
-> > supposed to described the hardware, not talk about how to use it.
-> 
-> Any suggestions on a proper description?
-> 
-> > 
-> > When you say that the bcm63xx doesn't support over-current reporting, 
-> > what exactly do you mean?  Do you mean that sometimes the hardware turns 
-> > on the over-current bit when an over-current isn't actually present?  Or 
-> > do you mean something else?
-> 
-> Yes, the hardware turns on the over-current bit with no over-current present.
+Hello,
 
-Okay, in that case the property should be named something like 
-"spurious_oc", and the description should say something like:
+Md Sadre Alam <mdalam@codeaurora.org> wrote on Mon, 22 Feb 2021
+01:55:01 +0530:
 
-	Set this flag to indicate that the hardware sometimes turns on 
-	the OC bit when an over-current isn't actually present.
+> This change will convert nandc to chip in Read/Write helper, this
+> change is needed because if we wnated to access number of steps
+> in Read/Write helper then we need to get the chip->ecc.steps,
+> currentlly its not possible.After this change we can directly
+> acces chip->ecc.steps in Read/Write helper.
+> 
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
 
-Alan Stern
+Thanks for splitting your series, I think it's much easier to review
+and contains much less imprecise changes.
+
+I have a few minor comments (see the following e-mails), please address
+them and then please send all your patches a single series, not like 6+
+independent patches.
+
+I'll then require someone to test it if we are good I'll merge it.
+
+Thanks,
+Miqu√®l
