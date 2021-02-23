@@ -2,591 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17141322702
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D122322706
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbhBWITp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:19:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46636 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230060AbhBWITZ (ORCPT
+        id S232113AbhBWIUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:20:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232076AbhBWIUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:19:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614068277;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zKKZzeTevlM6htBNNgWyFTtcRgJnqwkbNjEdP+E8vl8=;
-        b=VBiWQCJvkW2bwF0gq1fEzJbs6RolotX7PUyk/+FKHAFAx7DQkSFNDr/8MpexYs6eWF0XUx
-        k1nd7N77ySk6dBSB4lNWJLSotu1KldbO8W03UatWPGnhZ5JIqJYdWy31C6bpTwd44s1BZC
-        JQlcgtUkpHCfqjcOZS0wIIff5LGDsHM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-6mzXmrPVO-2pmpiIGkajWQ-1; Tue, 23 Feb 2021 03:17:54 -0500
-X-MC-Unique: 6mzXmrPVO-2pmpiIGkajWQ-1
-Received: by mail-wr1-f69.google.com with SMTP id v18so4744173wrr.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 00:17:54 -0800 (PST)
+        Tue, 23 Feb 2021 03:20:32 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3402DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 00:19:52 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id a22so62005783ljp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 00:19:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ziKu9fCgZMMDJu51DNLFllZqOxNQ3wrYaiXyRSckVtY=;
+        b=p/MGW4fux+raA1lacKYcNWVbXKqUFMqEe0TZK1tdZDrw65OmouBhYUWRNnbftp0AZ5
+         Z2xQeEZrpQ9wiZ7TIx/SaoVrxllrVkk7x3V9ISEnPEpAm92ZYAVQ5CyprTuHT1V3c7QS
+         6nx92MGt5IIOY1/tCVUk0z8+x8YwJjnSS72dWlM/2iV+v3TpjAiBrQIctSpFAeZasSjA
+         tZXBl3P9/y8i+sLakv+sWS9V2afmWMt9OzmqjE8E3I3etPOFQOiG2SqSYyiIm/aT/BaO
+         pdeQRVcay/Kq/i8h4WWePbUdBmnlflnKAWiqGRq6dm7u9B2oWHjhcBmK+wdjBD1mkitI
+         o/ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=zKKZzeTevlM6htBNNgWyFTtcRgJnqwkbNjEdP+E8vl8=;
-        b=TsFikDTeJ7K62duAGeJnmGu+FEvpG5xPnirTjcL5AAvEhYzVxGRPEOJ2malZlosXkb
-         dUUu6d5YtftRJ9sul1BZgF5vtP/xpvY3BC+bigsSopuu3zxZV3zX0uGe1uKsG5F4yE4q
-         igqFCTFvfElU6E8O31vrKv2Ih4kD7vlkcD8IMyD98eYflcE86kPOOQ/tr1kBviIU3FyN
-         c1+3cTWYdI1mcuJtIPsmn8FVWrbvN9YbRxOV39K5Bui8XfjBwig5IayityV0oypMpYD1
-         DJptQbgtXVEWnE0Gk2EEk6zml+NimGGe9M9c4+5yxjUhUX/OQsFqj+gPzFo0ww5+4Mdb
-         e6xw==
-X-Gm-Message-State: AOAM530MKwkMbsVLAJjJM9yh4VINyft2LaYnyeCWQ+StFpu1ts3yvOfm
-        YCYFeriRg57F/2i9yNUHbIFQjIZt7SVdFrupNZqY1SAMrZJgE8tNaeph3lzD2BPBYeBNfmnfP33
-        2UmAxLdxLEFM5096B727k+lqD
-X-Received: by 2002:a1c:ac86:: with SMTP id v128mr23892305wme.175.1614068273534;
-        Tue, 23 Feb 2021 00:17:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxXwIJvITGNcFIQyHI0CQemG5y0C8DFAH6QptgupPDytlA8yEi0bGCZeOciO4cAOa0e2Ed+BA==
-X-Received: by 2002:a1c:ac86:: with SMTP id v128mr23892287wme.175.1614068273278;
-        Tue, 23 Feb 2021 00:17:53 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id v9sm27443214wrn.86.2021.02.23.00.17.52
+        bh=ziKu9fCgZMMDJu51DNLFllZqOxNQ3wrYaiXyRSckVtY=;
+        b=HoJRA5H3Igt44+5Fa2nL0kTkyOnOSNGyPR7UPxKgNEpZZEGZnei06Rbk1+2n9JPc3G
+         JqLxUUuvvUU9SpsB7nlV4sjS6eJ+1kEDp+rUVzITZQkw2TWuo8N7GH0Uws3y4WYf1IE8
+         UM3s6ovzto58VmVfmWQP5bOlo4R0ZPSXg2F1F13+aYkYjS2Wkynko0uR5APSEQimTYUw
+         LpuRqru6yMXF1r2GMxJBKp8AQ4sgUdwpIGy/02F28YBxMBiEbM+DKyKh5Rkk9VAFvtLW
+         7/hbxsh+e28SF28/b0l/n0Q1SQSOi0tu0TpjScOxKdpPMbKrzZHazR+T2u1mpueX3H8g
+         UV/A==
+X-Gm-Message-State: AOAM532GPD+1x41Kuvw4dCX5lkgViTAhySUQEFlK3Bj91Na2v0lAsss5
+        /OolmeCrvIxJfipnM8GSf+YL0g==
+X-Google-Smtp-Source: ABdhPJwJ9JpH7dAZolmZr9u0otMtqyysvc+TS7zWZCkH2j9OhjcmRyz/GZb6SqB2dv7txM9yYrb9JA==
+X-Received: by 2002:a2e:b051:: with SMTP id d17mr24922ljl.255.1614068390673;
+        Tue, 23 Feb 2021 00:19:50 -0800 (PST)
+Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
+        by smtp.gmail.com with ESMTPSA id r16sm2474986lfr.223.2021.02.23.00.19.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 00:17:52 -0800 (PST)
-Date:   Tue, 23 Feb 2021 09:17:50 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
-        rdunlap@infradead.org
-Subject: Re: [PATCH V4 3/3] vdpa: introduce virtio pci driver
-Message-ID: <20210223081750.cfk3aesnjktucgzf@steredhat>
-References: <20210223061905.422659-1-jasowang@redhat.com>
- <20210223061905.422659-4-jasowang@redhat.com>
+        Tue, 23 Feb 2021 00:19:50 -0800 (PST)
+Date:   Tue, 23 Feb 2021 09:19:48 +0100
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     Allen Pais <apais@linux.microsoft.com>
+Cc:     Dhananjay Phadke <dphadke@linux.microsoft.com>,
+        allen.lkml@gmail.com, zajec5@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH 1/2] optee: fix tee out of memory failure seen during
+ kexec reboot
+Message-ID: <20210223081948.GA1836717@jade>
+References: <20210217092714.121297-2-allen.lkml@gmail.com>
+ <20210217092714.121297-2-allen.lkml@gmail.com>
+ <8d87655f-27c6-6a66-6eb0-9244279fbf2c@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210223061905.422659-4-jasowang@redhat.com>
+In-Reply-To: <8d87655f-27c6-6a66-6eb0-9244279fbf2c@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 02:19:05PM +0800, Jason Wang wrote:
->This patch introduce a vDPA driver for virtio-pci device. It bridges
->the virtio-pci control command to the vDPA bus. This will be used for
->features prototyping and testing.
->
->Note that get/restore virtqueue state is not supported which needs
->extension on the virtio specification.
->
->Signed-off-by: Jason Wang <jasowang@redhat.com>
->---
-> drivers/vdpa/Kconfig              |   7 +
-> drivers/vdpa/Makefile             |   1 +
-> drivers/vdpa/virtio_pci/Makefile  |   2 +
-> drivers/vdpa/virtio_pci/vp_vdpa.c | 458 ++++++++++++++++++++++++++++++
-> 4 files changed, 468 insertions(+)
-> create mode 100644 drivers/vdpa/virtio_pci/Makefile
-> create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa.c
+On Mon, Feb 22, 2021 at 06:15:08PM +0530, Allen Pais wrote:
+> 
+> > On Wed, 17 Feb 2021 14:57:12 +0530, Allen Pais wrote:
+> > > -	/*
+> > > -	 * Ask OP-TEE to free all cached shared memory objects to decrease
+> > > -	 * reference counters and also avoid wild pointers in secure world
+> > > -	 * into the old shared memory range.
+> > > -	 */
+> > > -	optee_disable_shm_cache(optee);
+> > > +	if (shutdown) {
+> > > +		optee_disable_shm_cache(optee);
+> > > +	} else {
+> > > +		/*
+> > > +		 * Ask OP-TEE to free all cached shared memory
+> > > +		 * objects to decrease reference counters and
+> > > +		 * also avoid wild pointers in secure world
+> > > +		 * into the old shared memory range.
+> > > +		 */
+> > > +		optee_disable_shm_cache(optee);
+> > Calling optee_disable_shm_cache() in both if and else. It could be
+> > put in front of if().
+> > 
+> 
+>   Ideally, I could just use optee_remove for shutdown() too.
+> But it would not look good. Hence this approach.
 
-Acked-by: Stefano Garzarella <sgarzare@redhat.com>
+What is the problem with using optee_remove() for shutdown()?
 
->
->diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
->index ffd1e098bfd2..a245809c99d0 100644
->--- a/drivers/vdpa/Kconfig
->+++ b/drivers/vdpa/Kconfig
->@@ -52,4 +52,11 @@ config MLX5_VDPA_NET
-> 	  be executed by the hardware. It also supports a variety of stateless
-> 	  offloads depending on the actual device used and firmware version.
->
->+config VP_VDPA
->+	tristate "Virtio PCI bridge vDPA driver"
->+	select VIRTIO_PCI_LIB
->+	depends on PCI_MSI
->+	help
->+	  This kernel module bridges virtio PCI device to vDPA bus.
->+
-> endif # VDPA
->diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
->index d160e9b63a66..67fe7f3d6943 100644
->--- a/drivers/vdpa/Makefile
->+++ b/drivers/vdpa/Makefile
->@@ -3,3 +3,4 @@ obj-$(CONFIG_VDPA) += vdpa.o
-> obj-$(CONFIG_VDPA_SIM) += vdpa_sim/
-> obj-$(CONFIG_IFCVF)    += ifcvf/
-> obj-$(CONFIG_MLX5_VDPA) += mlx5/
->+obj-$(CONFIG_VP_VDPA)    += virtio_pci/
->diff --git a/drivers/vdpa/virtio_pci/Makefile b/drivers/vdpa/virtio_pci/Makefile
->new file mode 100644
->index 000000000000..231088d3af7d
->--- /dev/null
->+++ b/drivers/vdpa/virtio_pci/Makefile
->@@ -0,0 +1,2 @@
->+# SPDX-License-Identifier: GPL-2.0
->+obj-$(CONFIG_VP_VDPA) += vp_vdpa.o
->diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
->new file mode 100644
->index 000000000000..1321a2fcd088
->--- /dev/null
->+++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
->@@ -0,0 +1,458 @@
->+// SPDX-License-Identifier: GPL-2.0-only
->+/*
->+ * vDPA bridge driver for modern virtio-pci device
->+ *
->+ * Copyright (c) 2020, Red Hat Inc. All rights reserved.
->+ * Author: Jason Wang <jasowang@redhat.com>
->+ *
->+ * Based on virtio_pci_modern.c.
->+ */
->+
->+#include <linux/interrupt.h>
->+#include <linux/module.h>
->+#include <linux/pci.h>
->+#include <linux/vdpa.h>
->+#include <linux/virtio.h>
->+#include <linux/virtio_config.h>
->+#include <linux/virtio_ring.h>
->+#include <linux/virtio_pci.h>
->+#include <linux/virtio_pci_modern.h>
->+
->+#define VP_VDPA_QUEUE_MAX 256
->+#define VP_VDPA_DRIVER_NAME "vp_vdpa"
->+#define VP_VDPA_NAME_SIZE 256
->+
->+struct vp_vring {
->+	void __iomem *notify;
->+	char msix_name[VP_VDPA_NAME_SIZE];
->+	struct vdpa_callback cb;
->+	int irq;
->+};
->+
->+struct vp_vdpa {
->+	struct vdpa_device vdpa;
->+	struct virtio_pci_modern_device mdev;
->+	struct vp_vring *vring;
->+	struct vdpa_callback config_cb;
->+	char msix_name[VP_VDPA_NAME_SIZE];
->+	int config_irq;
->+	int queues;
->+	int vectors;
->+};
->+
->+static struct vp_vdpa *vdpa_to_vp(struct vdpa_device *vdpa)
->+{
->+	return container_of(vdpa, struct vp_vdpa, vdpa);
->+}
->+
->+static struct virtio_pci_modern_device *vdpa_to_mdev(struct vdpa_device *vdpa)
->+{
->+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
->+
->+	return &vp_vdpa->mdev;
->+}
->+
->+static u64 vp_vdpa_get_features(struct vdpa_device *vdpa)
->+{
->+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
->+
->+	return vp_modern_get_features(mdev);
->+}
->+
->+static int vp_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
->+{
->+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
->+
->+	vp_modern_set_features(mdev, features);
->+
->+	return 0;
->+}
->+
->+static u8 vp_vdpa_get_status(struct vdpa_device *vdpa)
->+{
->+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
->+
->+	return vp_modern_get_status(mdev);
->+}
->+
->+static void vp_vdpa_free_irq(struct vp_vdpa *vp_vdpa)
->+{
->+	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
->+	struct pci_dev *pdev = mdev->pci_dev;
->+	int i;
->+
->+	for (i = 0; i < vp_vdpa->queues; i++) {
->+		if (vp_vdpa->vring[i].irq != VIRTIO_MSI_NO_VECTOR) {
->+			vp_modern_queue_vector(mdev, i, VIRTIO_MSI_NO_VECTOR);
->+			devm_free_irq(&pdev->dev, vp_vdpa->vring[i].irq,
->+				      &vp_vdpa->vring[i]);
->+			vp_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
->+		}
->+	}
->+
->+	if (vp_vdpa->config_irq != VIRTIO_MSI_NO_VECTOR) {
->+		vp_modern_config_vector(mdev, VIRTIO_MSI_NO_VECTOR);
->+		devm_free_irq(&pdev->dev, vp_vdpa->config_irq, vp_vdpa);
->+		vp_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
->+	}
->+
->+	if (vp_vdpa->vectors) {
->+		pci_free_irq_vectors(pdev);
->+		vp_vdpa->vectors = 0;
->+	}
->+}
->+
->+static irqreturn_t vp_vdpa_vq_handler(int irq, void *arg)
->+{
->+	struct vp_vring *vring = arg;
->+
->+	if (vring->cb.callback)
->+		return vring->cb.callback(vring->cb.private);
->+
->+	return IRQ_HANDLED;
->+}
->+
->+static irqreturn_t vp_vdpa_config_handler(int irq, void *arg)
->+{
->+	struct vp_vdpa *vp_vdpa = arg;
->+
->+	if (vp_vdpa->config_cb.callback)
->+		return vp_vdpa->config_cb.callback(vp_vdpa->config_cb.private);
->+
->+	return IRQ_HANDLED;
->+}
->+
->+static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa)
->+{
->+	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
->+	struct pci_dev *pdev = mdev->pci_dev;
->+	int i, ret, irq;
->+	int queues = vp_vdpa->queues;
->+	int vectors = queues + 1;
->+
->+	ret = pci_alloc_irq_vectors(pdev, vectors, vectors, PCI_IRQ_MSIX);
->+	if (ret != vectors) {
->+		dev_err(&pdev->dev,
->+			"vp_vdpa: fail to allocate irq vectors want %d but %d\n",
->+			vectors, ret);
->+		return ret;
->+	}
->+
->+	vp_vdpa->vectors = vectors;
->+
->+	for (i = 0; i < queues; i++) {
->+		snprintf(vp_vdpa->vring[i].msix_name, VP_VDPA_NAME_SIZE,
->+			"vp-vdpa[%s]-%d\n", pci_name(pdev), i);
->+		irq = pci_irq_vector(pdev, i);
->+		ret = devm_request_irq(&pdev->dev, irq,
->+				       vp_vdpa_vq_handler,
->+				       0, vp_vdpa->vring[i].msix_name,
->+				       &vp_vdpa->vring[i]);
->+		if (ret) {
->+			dev_err(&pdev->dev,
->+				"vp_vdpa: fail to request irq for vq %d\n", i);
->+			goto err;
->+		}
->+		vp_modern_queue_vector(mdev, i, i);
->+		vp_vdpa->vring[i].irq = irq;
->+	}
->+
->+	snprintf(vp_vdpa->msix_name, VP_VDPA_NAME_SIZE, "vp-vdpa[%s]-config\n",
->+		 pci_name(pdev));
->+	irq = pci_irq_vector(pdev, queues);
->+	ret = devm_request_irq(&pdev->dev, irq,	vp_vdpa_config_handler, 0,
->+			       vp_vdpa->msix_name, vp_vdpa);
->+	if (ret) {
->+		dev_err(&pdev->dev,
->+			"vp_vdpa: fail to request irq for vq %d\n", i);
->+			goto err;
->+	}
->+	vp_modern_config_vector(mdev, queues);
->+	vp_vdpa->config_irq = irq;
->+
->+	return 0;
->+err:
->+	vp_vdpa_free_irq(vp_vdpa);
->+	return ret;
->+}
->+
->+static void vp_vdpa_set_status(struct vdpa_device *vdpa, u8 status)
->+{
->+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
->+	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
->+	u8 s = vp_vdpa_get_status(vdpa);
->+
->+	if (status & VIRTIO_CONFIG_S_DRIVER_OK &&
->+	    !(s & VIRTIO_CONFIG_S_DRIVER_OK)) {
->+		vp_vdpa_request_irq(vp_vdpa);
->+	}
->+
->+	vp_modern_set_status(mdev, status);
->+
->+	if (!(status & VIRTIO_CONFIG_S_DRIVER_OK) &&
->+	    (s & VIRTIO_CONFIG_S_DRIVER_OK))
->+		vp_vdpa_free_irq(vp_vdpa);
->+}
->+
->+static u16 vp_vdpa_get_vq_num_max(struct vdpa_device *vdpa)
->+{
->+	return VP_VDPA_QUEUE_MAX;
->+}
->+
->+static int vp_vdpa_get_vq_state(struct vdpa_device *vdpa, u16 qid,
->+				struct vdpa_vq_state *state)
->+{
->+	/* Note that this is not supported by virtio specification, so
->+	 * we return -EOPNOTSUPP here. This means we can't support live
->+	 * migration, vhost device start/stop.
->+	 */
->+	return -EOPNOTSUPP;
->+}
->+
->+static int vp_vdpa_set_vq_state(struct vdpa_device *vdpa, u16 qid,
->+				const struct vdpa_vq_state *state)
->+{
->+	/* Note that this is not supported by virtio specification, so
->+	 * we return -ENOPOTSUPP here. This means we can't support live
->+	 * migration, vhost device start/stop.
->+	 */
->+	return -EOPNOTSUPP;
->+}
->+
->+static void vp_vdpa_set_vq_cb(struct vdpa_device *vdpa, u16 qid,
->+			      struct vdpa_callback *cb)
->+{
->+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
->+
->+	vp_vdpa->vring[qid].cb = *cb;
->+}
->+
->+static void vp_vdpa_set_vq_ready(struct vdpa_device *vdpa,
->+				 u16 qid, bool ready)
->+{
->+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
->+
->+	vp_modern_set_queue_enable(mdev, qid, ready);
->+}
->+
->+static bool vp_vdpa_get_vq_ready(struct vdpa_device *vdpa, u16 qid)
->+{
->+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
->+
->+	return vp_modern_get_queue_enable(mdev, qid);
->+}
->+
->+static void vp_vdpa_set_vq_num(struct vdpa_device *vdpa, u16 qid,
->+			       u32 num)
->+{
->+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
->+
->+	vp_modern_set_queue_size(mdev, qid, num);
->+}
->+
->+static int vp_vdpa_set_vq_address(struct vdpa_device *vdpa, u16 qid,
->+				  u64 desc_area, u64 driver_area,
->+				  u64 device_area)
->+{
->+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
->+
->+	vp_modern_queue_address(mdev, qid, desc_area,
->+				driver_area, device_area);
->+
->+	return 0;
->+}
->+
->+static void vp_vdpa_kick_vq(struct vdpa_device *vdpa, u16 qid)
->+{
->+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
->+
->+	vp_iowrite16(qid, vp_vdpa->vring[qid].notify);
->+}
->+
->+static u32 vp_vdpa_get_generation(struct vdpa_device *vdpa)
->+{
->+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
->+
->+	return vp_modern_generation(mdev);
->+}
->+
->+static u32 vp_vdpa_get_device_id(struct vdpa_device *vdpa)
->+{
->+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
->+
->+	return mdev->id.device;
->+}
->+
->+static u32 vp_vdpa_get_vendor_id(struct vdpa_device *vdpa)
->+{
->+	struct virtio_pci_modern_device *mdev = vdpa_to_mdev(vdpa);
->+
->+	return mdev->id.vendor;
->+}
->+
->+static u32 vp_vdpa_get_vq_align(struct vdpa_device *vdpa)
->+{
->+	return PAGE_SIZE;
->+}
->+
->+static void vp_vdpa_get_config(struct vdpa_device *vdpa,
->+			       unsigned int offset,
->+			       void *buf, unsigned int len)
->+{
->+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
->+	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
->+	u8 old, new;
->+	u8 *p;
->+	int i;
->+
->+	do {
->+		old = vp_ioread8(&mdev->common->config_generation);
->+		p = buf;
->+		for (i = 0; i < len; i++)
->+			*p++ = vp_ioread8(mdev->device + offset + i);
->+
->+		new = vp_ioread8(&mdev->common->config_generation);
->+	} while (old != new);
->+}
->+
->+static void vp_vdpa_set_config(struct vdpa_device *vdpa,
->+			       unsigned int offset, const void *buf,
->+			       unsigned int len)
->+{
->+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
->+	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
->+	const u8 *p = buf;
->+	int i;
->+
->+	for (i = 0; i < len; i++)
->+		vp_iowrite8(*p++, mdev->device + offset + i);
->+}
->+
->+static void vp_vdpa_set_config_cb(struct vdpa_device *vdpa,
->+				  struct vdpa_callback *cb)
->+{
->+	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
->+
->+	vp_vdpa->config_cb = *cb;
->+}
->+
->+static const struct vdpa_config_ops vp_vdpa_ops = {
->+	.get_features	= vp_vdpa_get_features,
->+	.set_features	= vp_vdpa_set_features,
->+	.get_status	= vp_vdpa_get_status,
->+	.set_status	= vp_vdpa_set_status,
->+	.get_vq_num_max	= vp_vdpa_get_vq_num_max,
->+	.get_vq_state	= vp_vdpa_get_vq_state,
->+	.set_vq_state	= vp_vdpa_set_vq_state,
->+	.set_vq_cb	= vp_vdpa_set_vq_cb,
->+	.set_vq_ready	= vp_vdpa_set_vq_ready,
->+	.get_vq_ready	= vp_vdpa_get_vq_ready,
->+	.set_vq_num	= vp_vdpa_set_vq_num,
->+	.set_vq_address	= vp_vdpa_set_vq_address,
->+	.kick_vq	= vp_vdpa_kick_vq,
->+	.get_generation	= vp_vdpa_get_generation,
->+	.get_device_id	= vp_vdpa_get_device_id,
->+	.get_vendor_id	= vp_vdpa_get_vendor_id,
->+	.get_vq_align	= vp_vdpa_get_vq_align,
->+	.get_config	= vp_vdpa_get_config,
->+	.set_config	= vp_vdpa_set_config,
->+	.set_config_cb  = vp_vdpa_set_config_cb,
->+};
->+
->+static void vp_vdpa_free_irq_vectors(void *data)
->+{
->+	pci_free_irq_vectors(data);
->+}
->+
->+static int vp_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->+{
->+	struct virtio_pci_modern_device *mdev;
->+	struct device *dev = &pdev->dev;
->+	struct vp_vdpa *vp_vdpa;
->+	u16 notify_off;
->+	int ret, i;
->+
->+	ret = pcim_enable_device(pdev);
->+	if (ret)
->+		return ret;
->+
->+	vp_vdpa = vdpa_alloc_device(struct vp_vdpa, vdpa,
->+				    dev, &vp_vdpa_ops, NULL);
->+	if (vp_vdpa == NULL) {
->+		dev_err(dev, "vp_vdpa: Failed to allocate vDPA structure\n");
->+		return -ENOMEM;
->+	}
->+
->+	mdev = &vp_vdpa->mdev;
->+	mdev->pci_dev = pdev;
->+
->+	ret = vp_modern_probe(mdev);
->+	if (ret) {
->+		dev_err(&pdev->dev, "Failed to probe modern PCI device\n");
->+		goto err;
->+	}
->+
->+	pci_set_master(pdev);
->+	pci_set_drvdata(pdev, vp_vdpa);
->+
->+	vp_vdpa->vdpa.dma_dev = &pdev->dev;
->+	vp_vdpa->queues = vp_modern_get_num_queues(mdev);
->+
->+	ret = devm_add_action_or_reset(dev, vp_vdpa_free_irq_vectors, pdev);
->+	if (ret) {
->+		dev_err(&pdev->dev,
->+			"Failed for adding devres for freeing irq vectors\n");
->+		goto err;
->+	}
->+
->+	vp_vdpa->vring = devm_kcalloc(&pdev->dev, vp_vdpa->queues,
->+				      sizeof(*vp_vdpa->vring),
->+				      GFP_KERNEL);
->+	if (!vp_vdpa->vring) {
->+		ret = -ENOMEM;
->+		dev_err(&pdev->dev, "Fail to allocate virtqueues\n");
->+		goto err;
->+	}
->+
->+	for (i = 0; i < vp_vdpa->queues; i++) {
->+		notify_off = vp_modern_get_queue_notify_off(mdev, i);
->+		vp_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
->+		vp_vdpa->vring[i].notify = mdev->notify_base +
->+			notify_off * mdev->notify_offset_multiplier;
->+	}
->+	vp_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
->+
->+	ret = vdpa_register_device(&vp_vdpa->vdpa, vp_vdpa->queues);
->+	if (ret) {
->+		dev_err(&pdev->dev, "Failed to register to vdpa bus\n");
->+		goto err;
->+	}
->+
->+	return 0;
->+
->+err:
->+	put_device(&vp_vdpa->vdpa.dev);
->+	return ret;
->+}
->+
->+static void vp_vdpa_remove(struct pci_dev *pdev)
->+{
->+	struct vp_vdpa *vp_vdpa = pci_get_drvdata(pdev);
->+
->+	vdpa_unregister_device(&vp_vdpa->vdpa);
->+	vp_modern_remove(&vp_vdpa->mdev);
->+}
->+
->+static struct pci_driver vp_vdpa_driver = {
->+	.name		= "vp-vdpa",
->+	.id_table	= NULL, /* only dynamic ids */
->+	.probe		= vp_vdpa_probe,
->+	.remove		= vp_vdpa_remove,
->+};
->+
->+module_pci_driver(vp_vdpa_driver);
->+
->+MODULE_AUTHOR("Jason Wang <jasowang@redhat.com>");
->+MODULE_DESCRIPTION("vp-vdpa");
->+MODULE_LICENSE("GPL");
->+MODULE_VERSION("1");
->-- 
->2.25.1
->
-
+Cheers,
+Jens
