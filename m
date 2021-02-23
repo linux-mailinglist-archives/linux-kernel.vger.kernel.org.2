@@ -2,159 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35595322F4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 234F6322F4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbhBWRBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 12:01:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
+        id S233001AbhBWRBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 12:01:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233619AbhBWRAz (ORCPT
+        with ESMTP id S233674AbhBWRBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 12:00:55 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C0DC06178A;
-        Tue, 23 Feb 2021 09:00:14 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id v1so23291037wrd.6;
-        Tue, 23 Feb 2021 09:00:14 -0800 (PST)
+        Tue, 23 Feb 2021 12:01:00 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EF0C06178B;
+        Tue, 23 Feb 2021 09:00:19 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id ds5so2362086pjb.2;
+        Tue, 23 Feb 2021 09:00:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=LiTCa6DBif/PzMmCMLr4DjB3Hi0VKw857tDOttZsLNE=;
-        b=kvsOcWcgEK3QmhXthFAy5GwObgwYPEF1evtOsjmM1OlqsrMz9ykUBiMTT84HNzvxNe
-         w6bPFW61/yt7h3aq8HEoKS6xhsJ0r5oUEuyyi07LMZEpZorhCGwhwN3dvt7Ilf9Jt8Cf
-         +tcJsKnGVUaHMfVrEayhOSmnIalYFkGjB8IGyRAqPjcMKxpvk2su23+TuacMIdCMU3oa
-         QpM8PLvtt40xHrkGze0uVqXBiye72Zudcb0UUBMgTS5iMr3fsM+T8RHueEaWQhYmSBoB
-         Y9x2zJdpFoH0ZHQaSn796fspvcM8rtSPCMba4baFkllc8vJueFM0IrJkg/OnGkZXIJVL
-         k0uQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+I+A05vCm3IG7TRzAH4tvspVQ7ImjwYeEeSSkYCANAs=;
+        b=R1t58opIvMu6BVczn3RijvvqcNo0e2Ug758tJd6DCw7LwJTaya7RiMzn4CeIgtjZ0Z
+         ES2khhXQ4Sge4r4D+IVLQMLoA/8TRJKFPv7ZwWs2KdrX24TRmWWFg1gYdHIggMXRgcFZ
+         gS6SH3Fefq8qtkJZwoWp1V4iEzjz9uQ6Lru0cFl3GL+7W2ED1zzDCTbWW5J45BcpXPYe
+         Cy5TOPbe0tTDnblbIHd2HShCXcramRxfGsXeeKBRbIW9eM0pGjryZ4YeIU7qeouZxK/R
+         24ZZk4RAKaTjutVrFB5/9Hx5l7og4ViCbHobzIBTX9WAEx4qMNPTjAfMtGsbKPR4XlFV
+         P/bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LiTCa6DBif/PzMmCMLr4DjB3Hi0VKw857tDOttZsLNE=;
-        b=DjiiPkUHgN0JvU5R0XDsUwIV8W3uhqD8z2qaHLJow/2M7SLEFrRhpMb2OHla/LT8a9
-         TkkD9NLuS/DE5b6IvOQRW7N5AQYZxjDza4GIp300P4vaWuwqojDKKH1D0qEGEGCO5qHu
-         Qs5OsvE1H0iqBKKvVyrjEayGYErgdi/lNSs1+yiDS3FY5yQz/o17IS32RroWfzEku5bV
-         VR3AlJ6uKdgGhBEJTKXeu4nYJrCi9wVAZtMYOkKPv7RZWMA1+CfmGXwhh3K5mH6HN8as
-         lcoLi5uEwlauxR9mB8lEa6pEEJBbmkSfhAUGFKCCDY+/BGnM2lJZwGnzr4o3SNhKcE2S
-         gpNA==
-X-Gm-Message-State: AOAM533/CD/EMkMVfZpShzDuYh0LgVOXcL7zGoMwIuDSoQUdwXLlTEbc
-        3/l0T2wxIa/x4FoXRQucBDMbzYtd2APWHO5U
-X-Google-Smtp-Source: ABdhPJykd3acZCrN6qeMOXqXvbtu9EKp9Em3ZBixIDwhCWnn+rgjhXGqBROKFqyF3KHZe7UtaEEBIQ==
-X-Received: by 2002:a5d:404d:: with SMTP id w13mr396623wrp.230.1614099613369;
-        Tue, 23 Feb 2021 09:00:13 -0800 (PST)
-Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id u12sm3057190wmq.38.2021.02.23.09.00.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 09:00:12 -0800 (PST)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Guenter Roeck <linux@roeck-us.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@protonmail.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] hwrng: bcm2835: add reset support
-Date:   Tue, 23 Feb 2021 18:00:06 +0100
-Message-Id: <20210223170006.29558-3-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210223170006.29558-1-noltari@gmail.com>
-References: <20210222194510.14004-1-noltari@gmail.com>
- <20210223170006.29558-1-noltari@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+I+A05vCm3IG7TRzAH4tvspVQ7ImjwYeEeSSkYCANAs=;
+        b=dEurHKRbP8gnzrJ7n5yrhRKUKHnPeFBlc5oyvL81wHgMMmDDrRRtGB6Ux6qmKV+9DU
+         OLvxiC5pnAUhq6Wx2RA1vawKcCb0jVQ9MvdfjHG7AbIUiEsH/bf+l5GUJlXLwDctBErE
+         dvg15F7bN35bFXZnnftNAjAUnqYLTIEcc9EIpSvthOD7NFMiqYpRj89JVHk3+6jQF6Y8
+         0A91j93AicJS/HD140SzBFJVbDXAfUtwDqiRQAPd2nu3JWQMfpa9jLwQ4Sm6cj+DGIru
+         sMmmbHaWQMheyS7ldgmbZFcD+HiYDQ2StF3XV1UFS71yJL/l1s1imDa4f8/bJ+DeFTd7
+         tpag==
+X-Gm-Message-State: AOAM532t/wYt2DHFpCvgvxkUEzdiHq/gHQ8TEBlp7ORue4ua+WHccnwD
+        90dGhxyu2ne1LYp4lzswLuEJ+LhPv4o=
+X-Google-Smtp-Source: ABdhPJyFe1yeJcpb80fsxw7qM8DuCagN1Qd/QSqAQAfueCVDENRijEsLnCDcU8KV3iVVn+xMqeRIzg==
+X-Received: by 2002:a17:90a:7f8a:: with SMTP id m10mr30136637pjl.102.1614099618881;
+        Tue, 23 Feb 2021 09:00:18 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 8sm4157654pjl.55.2021.02.23.09.00.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Feb 2021 09:00:18 -0800 (PST)
+Subject: Re: [PATCH 1/2] leds: bcm6328: improve write and read functions
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>
+Cc:     Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210223081732.9362-1-noltari@gmail.com>
+ <20210223081732.9362-2-noltari@gmail.com> <20210223083449.GA9750@amd>
+ <3826ACDE-EFF2-4CC5-82EE-2DBC991CF996@gmail.com> <20210223085819.GB9750@amd>
+ <F349F1C2-4D4F-4BF7-9ADC-6E879197405B@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <a2da8ee6-a941-de04-3d45-56fb6cae596a@gmail.com>
+Date:   Tue, 23 Feb 2021 09:00:16 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <F349F1C2-4D4F-4BF7-9ADC-6E879197405B@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BCM6368 devices need to reset the in order to generate true random numbers.
-This is what BCM6368 produces without a reset:
-root@OpenWrt:/# cat /dev/hwrng | rngtest -c 1000
-rngtest 6.10
-Copyright (c) 2004 by Henrique de Moraes Holschuh
-This is free software; see the source for copying conditions.  There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-rngtest: starting FIPS tests...
-rngtest: bits received from input: 20000032
-rngtest: FIPS 140-2 successes: 0
-rngtest: FIPS 140-2 failures: 1000
-rngtest: FIPS 140-2(2001-10-10) Monobit: 2
-rngtest: FIPS 140-2(2001-10-10) Poker: 1000
-rngtest: FIPS 140-2(2001-10-10) Runs: 1000
-rngtest: FIPS 140-2(2001-10-10) Long run: 30
-rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
-rngtest: input channel speed: (min=37.253; avg=320.827; max=635.783)Mibits/s
-rngtest: FIPS tests speed: (min=12.141; avg=15.034; max=16.428)Mibits/s
-rngtest: Program run time: 1336176 microseconds
-cat: write error: Broken pipe
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- v3: no changes.
- v2: no changes.
+On 2/23/2021 1:05 AM, Álvaro Fernández Rojas wrote:
+> 
+> 
+>> El 23 feb 2021, a las 9:58, Pavel Machek <pavel@ucw.cz> escribió:
+>>
+>> Hi!
+>>
+>>>>> This is proven to work in BMIPS BE/LE and ARM BE/LE, as used in bcm2835-rng
+>>>>> and bcmgenet drivers.
+>>>>> Both should also be inline functions.
+>>>>
+>>>>
+>>>>
+>>>>> -#ifdef CONFIG_CPU_BIG_ENDIAN
+>>>>> -	iowrite32be(data, reg);
+>>>>> -#else
+>>>>> -	writel(data, reg);
+>>>>> -#endif
+>>>>> +	/* MIPS chips strapped for BE will automagically configure the
+>>>>> +	 * peripheral registers for CPU-native byte order.
+>>>>> +	 */
+>>>>
+>>>> Bad comment style.
+>>>
+>>> I just wanted to copy the same comment as the one in bcm2835-rng and bcmgenet…
+>>> https://github.com/torvalds/linux/blob/3b9cdafb5358eb9f3790de2f728f765fef100731/drivers/char/hw_random/bcm2835-rng.c#L42-L60
+>>> https://github.com/torvalds/linux/blob/3b9cdafb5358eb9f3790de2f728f765fef100731/drivers/net/ethernet/broadcom/genet/bcmgenet.c#L71-L88
+>>>
+>>
+>> Yeah, but ideally you should not be copying comments; there should be
+>> one central place which does it and does it right.
+> 
+> I’m open to suggestions :).
+> Which central place would be a good place for you?
 
- drivers/char/hw_random/bcm2835-rng.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+I did consider creating an include/linux/brcm/brcm_io.h header or
+something like that but I am really not sure what the benefit would be.
 
-diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
-index 1a7c43b43c6b..1b93a896d8e8 100644
---- a/drivers/char/hw_random/bcm2835-rng.c
-+++ b/drivers/char/hw_random/bcm2835-rng.c
-@@ -13,6 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/printk.h>
- #include <linux/clk.h>
-+#include <linux/reset.h>
- 
- #define RNG_CTRL	0x0
- #define RNG_STATUS	0x4
-@@ -32,6 +33,7 @@ struct bcm2835_rng_priv {
- 	void __iomem *base;
- 	bool mask_interrupts;
- 	struct clk *clk;
-+	struct reset_control *reset;
- };
- 
- static inline struct bcm2835_rng_priv *to_rng_priv(struct hwrng *rng)
-@@ -94,6 +96,10 @@ static int bcm2835_rng_init(struct hwrng *rng)
- 			return ret;
- 	}
- 
-+	ret = reset_control_reset(priv->reset);
-+	if (ret)
-+		return ret;
-+
- 	if (priv->mask_interrupts) {
- 		/* mask the interrupt */
- 		val = rng_readl(priv, RNG_INT_MASK);
-@@ -159,6 +165,10 @@ static int bcm2835_rng_probe(struct platform_device *pdev)
- 	if (PTR_ERR(priv->clk) == -EPROBE_DEFER)
- 		return -EPROBE_DEFER;
- 
-+	priv->reset = devm_reset_control_get_optional_exclusive(dev, NULL);
-+	if (IS_ERR(priv->reset))
-+		return PTR_ERR(priv->reset);
-+
- 	priv->rng.name = pdev->name;
- 	priv->rng.init = bcm2835_rng_init;
- 	priv->rng.read = bcm2835_rng_read;
+As far as using _relaxed() this is absolutely correct because the bus
+logic that connects the CPU to its on-chip registers is non re-ordering
+non posted. That is true on the MIPS BE/LE and ARM when configured in LE
+or BE.
+
+We need the swapping for ARM because when running in ARM BE32, the data
+is going to be in the host CPU endian, but the register bus is hard
+wired to little endian.
 -- 
-2.20.1
-
+Florian
