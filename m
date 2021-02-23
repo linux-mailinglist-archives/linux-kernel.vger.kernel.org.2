@@ -2,136 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7677D3233EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 23:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A7D3233F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 23:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbhBWWtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 17:49:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48538 "EHLO
+        id S232906AbhBWWwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 17:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232102AbhBWWdH (ORCPT
+        with ESMTP id S232767AbhBWWg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 17:33:07 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A687FC06178A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:32:25 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id d2so2975168pjs.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:32:25 -0800 (PST)
+        Tue, 23 Feb 2021 17:36:59 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC621C06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:36:18 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id w7so179183wmb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:36:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=J4NLUiRDvgyRP+Whra3ilFZ7BfX/2bWEMRphlN0RD9Q=;
-        b=bvhNjopFJKIkgr+vpxnuUp3EGQ/jXgimYFPDviOd/4K2sKhG3fGfsYH+Vy9L2z+Lxp
-         gL5BVGru31XlSLwNWUboizua2J99gdCnuj2mB0/hZwKAoTcevc/inrvzj8j7uxidinLN
-         p3eStytmq3Ixy63YgxSgIs0+jpvIMImnFaJfw=
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xWiZLSlx41qOyR+/nqX4T5Ur2XiD0k9DldMS6oYp7uE=;
+        b=WcflAq5G527RWIltx4lf9nR42x/Y5RkgvppJAZKdUfAStRIR33E/zkZQDRf7TK2IPm
+         GO9JHJKjfcW5hmULQIkvV4D7xobIwGlwaTM2jw6SjfYHuwRPpSmOgo0v27sB/i9jSgiC
+         wgnTqTjaHhAIY1VWjhw/Ix5VwpyddRBKVm3THfDH+DJKPjb0oze2ZNMPi/C1ZtVLVyn2
+         ycK8oyBCIcPmXXvsTx79RuCvwbZv12M0fO08yb9EzfTgl4dIuHwNuSlwZtgxjXXEZ+Gt
+         WX7Pl7qGBHgMs3cCPd1Wr/t6iL5TgKxm4C0M9reopX+Y7KzH3qEOxJtYL8SE+duW539x
+         2eEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=J4NLUiRDvgyRP+Whra3ilFZ7BfX/2bWEMRphlN0RD9Q=;
-        b=Jj/WduLap8qzqHlVO6jTb3ko7v7MXwtT6TbTSlUGWbPkGG8qIqZoJMOq7yok4GZL6M
-         ehvPG0+gWlaobTx0KPpOt2iIMWkypL/y0ipDtDh6w2TxAE0bybMMyP9I/LJYUjpS3m3q
-         TntChs11h55kV99g5Zys2DGVJURHxTNtaFu2hQA4GYT/VXdDuEJYgumO2z35G3S5HM6e
-         PT1fkMQY8vzt28W9MlMu949upJURqrys9GuJhGFFex4lBZM3ZCQLPZdVgE04tnBqqEkd
-         8jKWnwawWdkP6aST5D01Gptq5CSrK9xPYbt76Md9qTakpz4PAKe98FzRcjZeuYRp13rd
-         3kLQ==
-X-Gm-Message-State: AOAM532HrKG1LwDIe8wiRN/P1HRQ+xSjt25+CNeeO8r0C5pI5rDeQgBj
-        bN1P85imzi5tPBGtDqb9jACglg==
-X-Google-Smtp-Source: ABdhPJxf/LtUbjZJOToh7aIEjKWnGeY4QGqQssouAEhSTCUBFPha0mq2UZZl1dcieTveVAGXo7JbLQ==
-X-Received: by 2002:a17:90a:db11:: with SMTP id g17mr1000547pjv.114.1614119545272;
-        Tue, 23 Feb 2021 14:32:25 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c11sm172767pfd.218.2021.02.23.14.32.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xWiZLSlx41qOyR+/nqX4T5Ur2XiD0k9DldMS6oYp7uE=;
+        b=CNG26oG4nipSDn9EwtjPzKI8nOr7AwiXJUDAtdjIhzamn/amqipoiTi/f6qWuDcZwA
+         tMYza07EuoNW7U6A65Sq+M+PSqaD9KU6qNEjgk52rF2NUTA8xhcijEUhZjEFfbqtEPfD
+         8NZCRCdqFnujMhqT3A5wdqsfV4kgzUYGDuL4XdrBtonhvkwWusL/lNc9te51dMWXCZaz
+         SxYn6HnItsQg4DK9WF3iJaMN7oSOx7DYiy2UiCHRjWMPtB/Ppi22vPg/DHYAfGYclcUC
+         YdMH/jnT03/ueaCXwScV3LuyrwdTdxbjXhSHK6IWTjux//qbHq43iQ5Sic/4EYacOeZv
+         9sKA==
+X-Gm-Message-State: AOAM530/R4XzNpIg8rdPLO0ZaZXjf5wJBN5f1wObM1h4g8cFy2FdKkGb
+        t2W6Y8nqQZX0/CLP3pqic93Xiw==
+X-Google-Smtp-Source: ABdhPJzh6VL4qyqqFL28vsTeEqLT4ChCA6Pv8ysE1oNxHQHX0SfSIsjrnnzkfz/1qVxF66qxih3o0A==
+X-Received: by 2002:a05:600c:3551:: with SMTP id i17mr859597wmq.92.1614119777558;
+        Tue, 23 Feb 2021 14:36:17 -0800 (PST)
+Received: from localhost.localdomain ([88.160.162.107])
+        by smtp.gmail.com with ESMTPSA id l22sm185508wrb.4.2021.02.23.14.36.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 14:32:24 -0800 (PST)
-Date:   Tue, 23 Feb 2021 14:32:23 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [GIT PULL] clang-lto (part 2) for v5.12-rc1
-Message-ID: <202102231416.F35628E@keescook>
+        Tue, 23 Feb 2021 14:36:17 -0800 (PST)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>
+Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH] dt-bindings: arm64: dts: mediatek: Add mt8516-pumpkin board
+Date:   Tue, 23 Feb 2021 23:36:13 +0100
+Message-Id: <20210223223613.2085827-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Add binding documentation for the MT8516 Pumpkin board.
 
-Please pull this Clang LTO x86 enablement series for v5.12-rc1. Full
-disclosure: while this has _not_ been in linux-next (since it initially
-looked like the objtool dependencies weren't going to make v5.12), it
-has been under daily build and runtime testing by Sami for quite some
-time. These x86 portions have been discussed[1] on lkml, with Peter,
-Josh, and others helping nail things down[2].
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+---
+ Documentation/devicetree/bindings/arm/mediatek.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-The bulk of the changes are to get objtool working happily. The rest of
-the x86 enablement is very small.
-
-Thanks!
-
--Kees
-
-[1] https://lore.kernel.org/lkml/20201013003203.4168817-26-samitolvanen@google.com/
-[2] https://lore.kernel.org/lkml/cover.1611263461.git.jpoimboe@redhat.com/
-
-The following changes since commit 2b8689520520175075ca97bc4eaf51ff3f7253aa:
-
-  kbuild: prevent CC_FLAGS_LTO self-bloating on recursive rebuilds (2021-02-17 10:10:37 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/clang-lto-v5.12-rc1-part2
-
-for you to fetch changes up to 5e95325fbbbdea96de91e7bdb05fe95a3031e37d:
-
-  kbuild: lto: force rebuilds when switching CONFIG_LTO (2021-02-23 14:10:44 -0800)
-
-----------------------------------------------------------------
-clang-lto for v5.12-rc1 (part2)
-
-- Generate __mcount_loc in objtool (Peter Zijlstra)
-- Support running objtool against vmlinux.o (Sami Tolvanen)
-- Clang LTO enablement for x86 (Sami Tolvanen)
-
-----------------------------------------------------------------
-Peter Zijlstra (1):
-      objtool: Add a pass for generating __mcount_loc
-
-Sami Tolvanen (10):
-      objtool: Fix __mcount_loc generation with Clang's assembler
-      objtool: Don't autodetect vmlinux.o
-      tracing: add support for objtool mcount
-      x86, build: use objtool mcount
-      objtool: Split noinstr validation from --vmlinux
-      kbuild: lto: postpone objtool
-      x86, vdso: disable LTO only for vDSO
-      x86, cpu: disable LTO for cpu.c
-      x86, build: allow LTO to be selected
-      kbuild: lto: force rebuilds when switching CONFIG_LTO
-
- Makefile                      | 10 ++++-
- arch/x86/Kconfig              |  3 ++
- arch/x86/Makefile             |  5 +++
- arch/x86/entry/vdso/Makefile  |  3 +-
- arch/x86/power/Makefile       |  4 ++
- kernel/trace/Kconfig          | 13 ++++++
- scripts/Makefile.build        | 19 +--------
- scripts/Makefile.lib          | 12 ++++++
- scripts/Makefile.modfinal     | 19 +++++++--
- scripts/link-vmlinux.sh       | 28 +++++++++++--
- tools/objtool/builtin-check.c | 10 ++---
- tools/objtool/builtin.h       |  2 +-
- tools/objtool/check.c         | 97 ++++++++++++++++++++++++++++++++++++++++++-
- tools/objtool/check.h         |  1 +
- tools/objtool/objtool.c       |  1 +
- tools/objtool/objtool.h       |  1 +
- 16 files changed, 195 insertions(+), 33 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+index 93b3bdf6eaeb..366a753f64ba 100644
+--- a/Documentation/devicetree/bindings/arm/mediatek.yaml
++++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+@@ -125,6 +125,10 @@ properties:
+               - google,krane-sku176
+           - const: google,krane
+           - const: mediatek,mt8183
++      - items:
++          - enum:
++              - mediatek,mt8516-pumpkin
++          - const: mediatek,mt8516
+ 
+ additionalProperties: true
+ 
 -- 
-Kees Cook
+2.30.1
+
