@@ -2,55 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F178322D41
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A4C322D47
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbhBWPOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:14:24 -0500
-Received: from verein.lst.de ([213.95.11.211]:34207 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232775AbhBWPNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 10:13:18 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E5A9168D0A; Tue, 23 Feb 2021 16:12:33 +0100 (CET)
-Date:   Tue, 23 Feb 2021 16:12:33 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        David Anderson <dvander@google.com>,
-        Alistair Delva <adelva@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-Subject: Re: [REGRESSION] "split bio_kmalloc from bio_alloc_bioset" causing
- crash shortly after bootup
-Message-ID: <20210223151233.GA19143@lst.de>
-References: <CALAqxLUWjr2oR=5XxyGQ2HcC-TLARvboHRHHaAOUFq6_TsKXyw@mail.gmail.com> <BYAPR04MB4965F0B60169371A25CD423E86809@BYAPR04MB4965.namprd04.prod.outlook.com> <20210223071040.GB16980@lst.de> <BYAPR04MB496574519941459FE83C437D86809@BYAPR04MB4965.namprd04.prod.outlook.com> <20210223150852.GA17662@lst.de>
+        id S233026AbhBWPR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:17:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232342AbhBWPRX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 10:17:23 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA926C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:16:41 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id k8so7461564qvm.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:16:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3yeydPNUBbnBa03B4CtFFI71u/VogiWMTrnYPrUvA5o=;
+        b=uA/OwFba1OXPlE3eec0Lkuteazee/7d9Xd178WLkv5dnu8A92vJ3djvigMQ7jAUU3x
+         nME8FehzY+kcVllN570rvIsKcFTRvTQDbwiIWDA0cQJz1KzNcJZX4h3plHWk+bqaBjZn
+         SvN7Gfc1RxuY/+i/jtrAaPenwBNwNWegEHtOvmo0Vjx+8aRq1Ed96qCOX++Sjt87mB/X
+         GTaVTu2K4unxbuD3deSDB5Gpq8x62S/upY7qcSNNBkfFos/vSWFzs2kFtXbKsusKVwNb
+         7OlTcPYQlWfPWA0VtuzWC2Oxbe11yZH4qDiRafr6Ymkyv+N7fk7X9ZAaFHxyTMoLW8ij
+         Er2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3yeydPNUBbnBa03B4CtFFI71u/VogiWMTrnYPrUvA5o=;
+        b=iMvDyai8lY5FtPBZTP0dY2PAHYjJbJi5L0U7K45KmmFd8vAgzMhxsV4zUgFyewALOR
+         G68PAQ/SiRztdu22FtIJTerH0mUNgsF5ZZ6DGnQ7kmMmKIW5OyhGtwaWjgHOU3kGdU+q
+         h7QROAzaCBI8FIx9du1NGLdd1iXNPIKddRnEpUGTvkC26HGGc61O2DTiX8khzkisrGdN
+         ecs3nCO/wOMRvvITVClkxK4xF/z174KjMHngv6Mz7gBcNWc54+GkYEFDYXWj5cng86MC
+         tI/ZMFDUnktlM6aLmVu83AINbvYDk8YO+WNjxCzjFRUdYlWoDhNmPPi/pfIFifZeld9F
+         QISA==
+X-Gm-Message-State: AOAM531+cDarZMeBS4wKCvUNSlqVayN3XvgzCxGxS58LssqzcmlekTzh
+        0sqPLpnLE4XTAP65PlSIXQk+gfm+gsvtnc7rv3pPfg==
+X-Google-Smtp-Source: ABdhPJxLBKxZOO7lXuX++W27qocF5V5S96s4v/Tgf2IBWVEhIaFHgtodagR8vVVk8//B7pIxeik4PswMSc2P9YWh/9A=
+X-Received: by 2002:a0c:8304:: with SMTP id j4mr25737289qva.18.1614093400799;
+ Tue, 23 Feb 2021 07:16:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210223150852.GA17662@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20210223143426.2412737-1-elver@google.com> <20210223143426.2412737-5-elver@google.com>
+ <CACT4Y+aq6voiAEfs0d5Vd9trumVbnQhv-PHYfns2LefijmfyoQ@mail.gmail.com> <CANpmjNP1wQvG0SNPP2L9QO=natf0XU8HXj-r2_-U4QZxtr-dVA@mail.gmail.com>
+In-Reply-To: <CANpmjNP1wQvG0SNPP2L9QO=natf0XU8HXj-r2_-U4QZxtr-dVA@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 23 Feb 2021 16:16:29 +0100
+Message-ID: <CACT4Y+ar7=q0p=LFxkbKbKhz-U3rwdf=PJ3Gg3=ZLP6w_sgTeA@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/4] perf/core: Add breakpoint information to siginfo
+ on SIGTRAP
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 04:08:52PM +0100, Christoph Hellwig wrote:
-> On Tue, Feb 23, 2021 at 07:37:52AM +0000, Chaitanya Kulkarni wrote:
-> > On 2/22/21 23:10, Christoph Hellwig wrote:
-> > > On Tue, Feb 23, 2021 at 03:51:23AM +0000, Chaitanya Kulkarni wrote:
-> > >> Looking at the other call sites do we need something like following ?
-> > >> Since __blk_queue_bounce() passes the NULL for the passthru case as a
-> > >> bio_set value ?
-> > > Well, that is a somewhat odd calling convention.  What about the patch below
-> > > instead?  That being we really need to kill this bouncing code off..
-> > I assume you are sending this patch, let me know otherwise.
-> > If you do please add, looks good.
-> 
-> I'll split the gfp_mask cleanup out, and will submit it with your as
-> the author if that is ok.  I'll need a signoff, though.
+On Tue, Feb 23, 2021 at 4:10 PM 'Marco Elver' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+> > > Encode information from breakpoint attributes into siginfo_t, which
+> > > helps disambiguate which breakpoint fired.
+> > >
+> > > Note, providing the event fd may be unreliable, since the event may have
+> > > been modified (via PERF_EVENT_IOC_MODIFY_ATTRIBUTES) between the event
+> > > triggering and the signal being delivered to user space.
+> > >
+> > > Signed-off-by: Marco Elver <elver@google.com>
+> > > ---
+> > >  kernel/events/core.c | 11 +++++++++++
+> > >  1 file changed, 11 insertions(+)
+> > >
+> > > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > > index 8718763045fd..d7908322d796 100644
+> > > --- a/kernel/events/core.c
+> > > +++ b/kernel/events/core.c
+> > > @@ -6296,6 +6296,17 @@ static void perf_sigtrap(struct perf_event *event)
+> > >         info.si_signo = SIGTRAP;
+> > >         info.si_code = TRAP_PERF;
+> > >         info.si_errno = event->attr.type;
+> > > +
+> > > +       switch (event->attr.type) {
+> > > +       case PERF_TYPE_BREAKPOINT:
+> > > +               info.si_addr = (void *)(unsigned long)event->attr.bp_addr;
+> > > +               info.si_perf = (event->attr.bp_len << 16) | (u64)event->attr.bp_type;
+> > > +               break;
+> > > +       default:
+> > > +               /* No additional info set. */
+> >
+> > Should we prohibit using attr.sigtrap for !PERF_TYPE_BREAKPOINT if we
+> > don't know what info to pass yet?
+>
+> I don't think it's necessary. This way, by default we get support for
+> other perf events. If user space observes si_perf==0, then there's no
+> information available. That would require that any event type that
+> sets si_perf in future, must ensure that it sets si_perf!=0.
+>
+> I can add a comment to document the requirement here (and user space
+> facing documentation should get a copy of how the info is encoded,
+> too).
+>
+> Alternatively, we could set si_errno to 0 if no info is available, at
+> the cost of losing the type information for events not explicitly
+> listed here.
+>
+> What do you prefer?
 
-Actually, I ended up reworking it once more as there is no point for
-the parameter either.
+Ah, I see.
+Let's wait for the opinions of other people. There are a number of
+options for how to approach this.
+
+> > > +               break;
+> > > +       }
+> > > +
+> > >         force_sig_info(&info);
+> > >  }
+> > >
+> > > --
+> > > 2.30.0.617.g56c4b15f3c-goog
+> > >
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/CANpmjNP1wQvG0SNPP2L9QO%3Dnatf0XU8HXj-r2_-U4QZxtr-dVA%40mail.gmail.com.
