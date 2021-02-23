@@ -2,139 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C7C32240E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 03:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF38322411
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 03:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhBWCNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 21:13:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhBWCNa (ORCPT
+        id S231483AbhBWCQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 21:16:02 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12988 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231431AbhBWCPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 21:13:30 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CD8C061574;
-        Mon, 22 Feb 2021 18:12:50 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id e9so8916111plh.3;
-        Mon, 22 Feb 2021 18:12:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=c5ZGNOEFsq06O3hDL6Dkcj0DN73dBzxBLUMcvrx4vz8=;
-        b=PLpTI6iZ95+2Hpv+V69z/FmaAV3HebWieADBp0LmkCVcJWyWRqHGX4GrMad0MqbLO0
-         SbSRecFFlIH73tSepywsfNwDEtmKFC2P4m8jMrBHH9GD8vVdv482iAkTe6qT8RFsofND
-         Ps1mslDMQwBAY4jOZFcj2wlmDQ6Eevyn/FV33k4obz/aOBDCYk4Il4UD3tbQIIvYChTK
-         dsFOZFBq/IPrSujTdetbUoDxAC6hvy3TMncB2gFgihJendfclDtaTDpbnW8JDV3xATRD
-         pr00y6+5EVHtHLH2YBAWCPmSKcBedUuzhYoKCIpYyLrcpm9JiXWyBMSZV8mn7FVUXVQA
-         X9Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=c5ZGNOEFsq06O3hDL6Dkcj0DN73dBzxBLUMcvrx4vz8=;
-        b=plKWoPUSl99hsmWd6SlX+5e3rF1HRFuJ+uXF+L42UIvkqRxNsqL2UOvMDxJL96dYga
-         apAGHE6kU/5dKZrx9u9jfQeWUGD6rlfyUrGgLaPKFG3nqFPbA4/h6h2TNZVRmIdnXU3Z
-         2KPymX6f8A8bkV1z4MDw5h5+sW7aO5LgOEl3pERtz0ajeSm2WFuZaR6o+iwMuLD83Svj
-         wDItpyr42mJgAvJST/rnPFSZWZnc0LdkIKO0GuuKXzKYckKGFD0cKEI1OuxAWRCvUjHm
-         PczDvT/3kKBHDmbtKeRM5t5fscXpx+KWAxzp7wFv09t10PY6RG/xi1R/2SYO9F0zpQLO
-         hkIw==
-X-Gm-Message-State: AOAM533b7kRTZa9nDHYKLdqvekp19d3b+LN2JOoa54NxDZ9ZazPOdGJ4
-        h+aL82uWFqY6S/tL141ho20=
-X-Google-Smtp-Source: ABdhPJyBcNDbkq2zlENqdPwG/ui/noxDrcs/Rvpcj5HMzJyyrXKsSa+YbMa5RPaTdVSHxWtFWdl+bg==
-X-Received: by 2002:a17:90a:e17:: with SMTP id v23mr26904664pje.193.1614046369902;
-        Mon, 22 Feb 2021 18:12:49 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id w202sm10092100pff.198.2021.02.22.18.12.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 22 Feb 2021 18:12:49 -0800 (PST)
-Date:   Mon, 22 Feb 2021 18:13:44 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
-        guillaume.tucker@collabora.com, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
-Message-ID: <20210223021343.GA6539@Asurada-Nvidia>
-References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
- <9d6445c0-9574-1650-e327-32b11716f87e@gmail.com>
+        Mon, 22 Feb 2021 21:15:47 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dl2dy2G5LzjR9b;
+        Tue, 23 Feb 2021 10:13:26 +0800 (CST)
+Received: from [10.174.178.147] (10.174.178.147) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Feb 2021 10:14:52 +0800
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Scott Branden <scott.branden@broadcom.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        PEIXIN HOU <PEIXIN.HOU@huawei.com>,
+        Yanjin <yanjin.yan@huawei.com>,
+        "Zhangdianfang (Dianfang, OS Lab)" <zhangdianfang@huawei.com>,
+        Zhaohongjiang <zhaohongjiang@huawei.com>,
+        Huxinwei <huxinwei@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>
+References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
+ <YA/E1bHRmZb50MlS@kroah.com>
+ <595affb4-36e8-0a63-ebb3-a4fd0e3c243a@huawei.com>
+ <YC+AEcuXhPXXtmRB@kroah.com>
+ <a0e56fe4-8e85-d8c7-ed63-7a96c0944aaf@huawei.com>
+ <YDDcHpmAWmzQcStD@kroah.com>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <0055b2d5-3884-81a7-2e3c-08a2115d22f6@huawei.com>
+Date:   Tue, 23 Feb 2021 10:14:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9d6445c0-9574-1650-e327-32b11716f87e@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YDDcHpmAWmzQcStD@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.147]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
-
-On Sat, Feb 20, 2021 at 08:16:22AM +0300, Dmitry Osipenko wrote:
-> 19.02.2021 01:07, Nicolin Chen пишет:
-> > Commit 25938c73cd79 ("iommu/tegra-smmu: Rework tegra_smmu_probe_device()")
-> > removed certain hack in the tegra_smmu_probe() by relying on IOMMU core to
-> > of_xlate SMMU's SID per device, so as to get rid of tegra_smmu_find() and
-> > tegra_smmu_configure() that are typically done in the IOMMU core also.
-> > 
-> > This approach works for both existing devices that have DT nodes and other
-> > devices (like PCI device) that don't exist in DT, on Tegra210 and Tegra3
-> > upon testing. However, Page Fault errors are reported on tegra124-Nyan:
-> > 
-> >   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-> > 	 EMEM address decode error (SMMU translation error [--S])
-> >   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-> > 	 Page fault (SMMU translation error [--S])
-> > 
-> > After debugging, I found that the mentioned commit changed some function
-> > callback sequence of tegra-smmu's, resulting in enabling SMMU for display
-> > client before display driver gets initialized. I couldn't reproduce exact
-> > same issue on Tegra210 as Tegra124 (arm-32) differs at arch-level code.
+On 2021/2/20 17:53, Greg Kroah-Hartman wrote:
+> On Sat, Feb 20, 2021 at 03:02:54PM +0800, Hanjun Guo wrote:
+>> On 2021/2/19 17:08, Greg Kroah-Hartman wrote:
+>>> On Fri, Feb 19, 2021 at 04:54:24PM +0800, Hanjun Guo wrote:
+>>>> Hi Greg,
+>>>>
+>>>> On 2021/1/26 15:29, Greg Kroah-Hartman wrote:
+>>>> [...]
+>>>>>
+>>>>> I want to see companies _using_ the kernel, and most importantly,
+>>>>> _updating_ their devices with it, to know if it is worth to keep around
+>>>>> for longer than 2 years.  I also, hopefully, want to see how those
+>>>>> companies will help me out in the testing and maintenance of that kernel
+>>>>> version in order to make supporting it for 6 years actually possible.
+>>>>>
+>>>>> So, are you planning on using 5.10?  Will you will be willing to help
+>>>>> out in testing the -rc releases I make to let me know if there are any
+>>>>> problems, and to help in pointing out and backporting any specific
+>>>>> patches that your platforms need for that kernel release?
+>>>>
+>>>> We(Huawei) are willing to commit resources to help out in testing the
+>>>> stable -rc releases, and to help to backport patches for stable kernels.
+>>>
+>>> Wonderful!
+>>>
+>>>> 5.10 stable kernel will be used for openEuler [1] kernel and also inside
+>>>> Huawei. From customer's feedback, it's very important to see the stable
+>>>> kernel we used to be maintained for 6 years in the community, and we
+>>>> will use 5.10 kernel for at least 6 years, so we are willing to help
+>>>> you and help ourselves :)
+>>>>
+>>>> In specific, we will start from the testing work, using HULK robot
+>>>> (reports lots of bugs to mainline kernel) testing framework to test
+>>>> compile, reboot, functional testing, and will extend to basic
+>>>> performance regression testing in the future.
+>>>
+>>> Great!  Do you all need an email notification when the -rc releases come
+>>> out for the stable trees, or can you trigger off of the -rc stable git
+>>> tree?  Different CI systems work in different ways :)
+>>
+>> We can trigger the test when you updated the -rc stable git tree,
+>> by monitoring new commits for the stable branches. So if you push
+>> all the commits at once for -rc stable branches, then our CI system
+>> can work well.
 > 
-> Hello Nicolin,
+> I do push to the -rc branches, but those branches are rebased, and I do
+> "intermediate" pushes as well.  Meaning I push to have CI systems run on
+> the existing patch queue at times that are not only the "main" -rc
+> release periods.
 > 
-> Could you please explain in a more details what exactly makes the
-> difference for the callback sequence?
+> Watch the branches for a few weeks to get an idea of how they work if
+> you are curious.
 
-Here is a log with 5.11.0-rc6:
-https://lava.collabora.co.uk/scheduler/job/3187849
-[dump_stack was added in some tegra-smmu functions]
-
-And here is a corresponding log with reverting the original commit:
-https://lava.collabora.co.uk/scheduler/job/3187851
-
-Here is a log with 5.11.0-rc7-next-20210210:
-https://lava.collabora.co.uk/scheduler/job/3210245
-
-And here is a corresponding log with reverting the original commit:
-https://lava.collabora.co.uk/scheduler/job/3210596
-
-Both failing logs show that mc errors started right after client DC
-got enabled by ->attach_dev() callback that in the passing logs was
-not called until Host1x driver init. And note that two failing logs
-show that ->attach_dev() could be called from two different sources,
-of_dma_configure_id() or arch_setup_dma_ops().
-
-The reason why ->attach_dev() gets called is probably related to the
-following reasons (sorry, can't be 100% sure as I don't have Tegra124
-or other 32bit Tegra board to test):
-1) With the commit reverted, all clients are probed in "arch" stage,
-   which is even prior to iommu core initialization -- including it
-   setting default domain type. This probably messed up the type of
-   allocating domains against the default domain type. Also internal
-   group is somehow affected. So some condition check in iommu core
-   failed and then it bypassed ->attach_dev callback in really_probe
-   stage, until Host1x driver does attach_dev again.
-
-2) 32bit ARM has arch_setup_dma_ops() does an additional set of iommu
-   domain allocation + attach_dev(), after of_dma_configure_id() did
-   once. This isn't reproducible for me on Tegra210.
-
-As debugging online isn't very efficient, and given that Thierry has
-been working on the linear mapping of framebuffer carveout, I choose
-to partially revert as a quick fix.
+Will run our CI system based on your -rc branch to see if anything
+doesn't work, then update our system as needed.
 
 Thanks
+Hanjun
