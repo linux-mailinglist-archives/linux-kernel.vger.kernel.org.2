@@ -2,102 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D791F322D37
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB764322D35
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233120AbhBWPNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:13:10 -0500
-Received: from foss.arm.com ([217.140.110.172]:55032 "EHLO foss.arm.com"
+        id S232931AbhBWPMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:12:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232651AbhBWPLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 10:11:47 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98F171FB;
-        Tue, 23 Feb 2021 07:11:00 -0800 (PST)
-Received: from e107158-lin (unknown [10.1.195.80])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 93C7D3F73B;
-        Tue, 23 Feb 2021 07:10:59 -0800 (PST)
-Date:   Tue, 23 Feb 2021 15:10:56 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     shuo.a.liu@intel.com
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH RESEND v2 1/2] cpu/hotplug: Fix build error of using
- {add,remove}_cpu() with !CONFIG_SMP
-Message-ID: <20210223151056.7j64e3ioyp2lkhkg@e107158-lin>
-References: <20210221134339.57851-1-shuo.a.liu@intel.com>
+        id S232618AbhBWPLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 10:11:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 715CF60234;
+        Tue, 23 Feb 2021 15:11:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614093061;
+        bh=qKTn9YoJjyO9t4cQqeYKyBYJDNb6eBVuVSb3Mxi58I8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KF60KMpgQBQvLW6/caXLGBUOvGi7UnSm5rRdUAQS787x/sWdyJPCsMaoCtiTeAYLK
+         3pRgn0+7xorWNWNqxrnJ1zHGkgwBVRmilFvBQKWNqtIj0gWGm0AxVgfEljJveEfc8Q
+         hMs9CIL3aeUmhokRPn0DcWhJe1r5CxDZBHhBKUEM=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.10.18
+Date:   Tue, 23 Feb 2021 16:10:57 +0100
+Message-Id: <161409305750190@kroah.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210221134339.57851-1-shuo.a.liu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/21/21 21:43, shuo.a.liu@intel.com wrote:
-> From: Shuo Liu <shuo.a.liu@intel.com>
-> 
-> 279dcf693ac7 ("virt: acrn: Introduce an interface for Service VM to
-> control vCPU") introduced {add,remove}_cpu() usage and it hit below
-> error with !CONFIG_SMP:
-> 
-> ../drivers/virt/acrn/hsm.c: In function ‘remove_cpu_store’:
-> ../drivers/virt/acrn/hsm.c:389:3: error: implicit declaration of function ‘remove_cpu’; [-Werror=implicit-function-declaration]
->    remove_cpu(cpu);
-> 
-> ../drivers/virt/acrn/hsm.c:402:2: error: implicit declaration of function ‘add_cpu’; [-Werror=implicit-function-declaration]
->    add_cpu(cpu);
-> 
-> Add add_cpu() function prototypes with !CONFIG_SMP and remove_cpu() with
-> !CONFIG_HOTPLUG_CPU for such usage.
-> 
-> Fixes: 279dcf693ac7 ("virt: acrn: Introduce an interface for Service VM to control vCPU")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Qais Yousef <qais.yousef@arm.com>
-> ---
+I'm announcing the release of the 5.10.18 kernel.
 
-Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+All users of the 5.10 kernel series must upgrade.
 
-Thanks!
+The updated 5.10.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.10.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
---
-Qais Yousef
+thanks,
 
->  include/linux/cpu.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-> index 3aaa0687e8df..94a578a96202 100644
-> --- a/include/linux/cpu.h
-> +++ b/include/linux/cpu.h
-> @@ -108,6 +108,8 @@ static inline void cpu_maps_update_done(void)
->  {
->  }
->  
-> +static inline int add_cpu(unsigned int cpu) { return 0;}
-> +
->  #endif /* CONFIG_SMP */
->  extern struct bus_type cpu_subsys;
->  
-> @@ -137,6 +139,7 @@ static inline int  cpus_read_trylock(void) { return true; }
->  static inline void lockdep_assert_cpus_held(void) { }
->  static inline void cpu_hotplug_disable(void) { }
->  static inline void cpu_hotplug_enable(void) { }
-> +static inline int remove_cpu(unsigned int cpu) { return -EPERM; }
->  static inline void smp_shutdown_nonboot_cpus(unsigned int primary_cpu) { }
->  #endif	/* !CONFIG_HOTPLUG_CPU */
->  
-> 
-> base-commit: abaf6f60176f1ae9d946d63e4db63164600b7b1a
-> -- 
-> 2.28.0
-> 
+greg k-h
+
+------------
+
+ Makefile                                        |    2 
+ arch/arm/xen/p2m.c                              |    6 +
+ arch/x86/xen/p2m.c                              |   15 +---
+ drivers/block/xen-blkback/blkback.c             |   32 ++++----
+ drivers/bluetooth/btusb.c                       |   20 +----
+ drivers/infiniband/ulp/isert/ib_isert.c         |   27 +++++++
+ drivers/infiniband/ulp/isert/ib_isert.h         |    6 +
+ drivers/media/usb/pwc/pwc-if.c                  |   22 +++--
+ drivers/net/wireless/mediatek/mt76/mt7615/mcu.c |   89 +++++++++++++++++-------
+ drivers/net/wireless/mediatek/mt76/mt7915/mcu.c |   87 ++++++++++++++++++-----
+ drivers/net/xen-netback/netback.c               |    4 -
+ drivers/tty/tty_io.c                            |    5 +
+ drivers/vdpa/vdpa_sim/vdpa_sim.c                |   83 ++++++++++++++++------
+ drivers/xen/gntdev.c                            |   37 +++++----
+ drivers/xen/xen-scsiback.c                      |    4 -
+ fs/btrfs/ctree.h                                |    6 -
+ fs/btrfs/inode.c                                |    6 +
+ include/xen/grant_table.h                       |    1 
+ net/bridge/br.c                                 |    5 +
+ net/core/dev.c                                  |    2 
+ net/mptcp/protocol.c                            |    5 +
+ net/openvswitch/actions.c                       |   15 +---
+ net/packet/af_packet.c                          |    2 
+ net/qrtr/qrtr.c                                 |    2 
+ net/sched/Kconfig                               |    6 -
+ net/tls/tls_proc.c                              |    3 
+ 26 files changed, 336 insertions(+), 156 deletions(-)
+
+David Sterba (1):
+      btrfs: fix backport of 2175bf57dc952 in 5.10.13
+
+Eelco Chaudron (1):
+      net: openvswitch: fix TTL decrement exception action execution
+
+Felix Fietkau (1):
+      mt76: mt7915: fix endian issues
+
+Filipe Manana (1):
+      btrfs: fix crash after non-aligned direct IO write with O_DSYNC
+
+Florian Westphal (1):
+      mptcp: skip to next candidate if subflow has unacked data
+
+Greg Kroah-Hartman (1):
+      Linux 5.10.18
+
+Jan Beulich (8):
+      Xen/x86: don't bail early from clear_foreign_p2m_mapping()
+      Xen/x86: also check kernel mapping in set_foreign_p2m_mapping()
+      Xen/gntdev: correct dev_bus_addr handling in gntdev_map_grant_pages()
+      Xen/gntdev: correct error checking in gntdev_map_grant_pages()
+      xen-blkback: don't "handle" error by BUG()
+      xen-netback: don't "handle" error by BUG()
+      xen-scsiback: don't "handle" error by BUG()
+      xen-blkback: fix error handling in xen_blkbk_map()
+
+Linus Torvalds (1):
+      tty: protect tty_write from odd low-level tty disciplines
+
+Loic Poulain (1):
+      net: qrtr: Fix port ID for control messages
+
+Lorenzo Bianconi (1):
+      mt76: mt7615: fix rdd mcu cmd endianness
+
+Matwey V. Kornilov (1):
+      media: pwc: Use correct device for DMA
+
+Max Gurtovoy (2):
+      vdpa_sim: remove hard-coded virtq count
+      IB/isert: add module param to set sg_tablesize for IO cmd
+
+Pablo Neira Ayuso (1):
+      net: sched: incorrect Kconfig dependencies on Netfilter modules
+
+Stefano Garzarella (4):
+      vdpa_sim: add struct vdpasim_dev_attr for device attributes
+      vdpa_sim: store parsed MAC address in a buffer
+      vdpa_sim: make 'config' generic and usable for any device type
+      vdpa_sim: add get_config callback in vdpasim_dev_attr
+
+Stefano Stabellini (1):
+      xen/arm: don't ignore return errors from set_phys_to_machine
+
+Trent Piepho (1):
+      Bluetooth: btusb: Always fallback to alt 1 for WBS
+
+Wang Hai (1):
+      net: bridge: Fix a warning when del bridge sysfs
+
+Yonatan Linik (1):
+      net: fix proc_fs init handling in af_packet and tls
+
+wenxu (1):
+      net/sched: fix miss init the mru in qdisc_skb_cb
+
