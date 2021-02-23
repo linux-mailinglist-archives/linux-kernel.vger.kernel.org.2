@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BB6322714
+	by mail.lfdr.de (Postfix) with ESMTP id EF6D6322713
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbhBWI0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:26:51 -0500
-Received: from mail-dm6nam11on2044.outbound.protection.outlook.com ([40.107.223.44]:54497
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        id S232159AbhBWI05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:26:57 -0500
+Received: from mail-bn7nam10on2078.outbound.protection.outlook.com ([40.107.92.78]:60609
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231971AbhBWI0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:26:47 -0500
+        id S232127AbhBWI0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 03:26:52 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NQIC1fHRSuq+QJmwuywpgGy3i+eMF/3Rs1xNrtpDxeg5CyKSydKDr88CoPHwDDQz3geOT3I7quHvjNZFS+xIebV8y0sB+RhTor9ySfwVPPfLQ10MgdAX74Kn7XhPlT7Z8OI2I8LwYI+Hoi5zE8TyVybD7VpZH7TZKP3zj5okG/Q2/469S2joBvX1ue25qASb4mgC+s+EqidqJtO4Fdfp/rIGOX99198KL9gVD/z1l9tqKI3xnbRiFE0irRfwHpjR8icF+SqVZrbMuiRmZ7nofz//gR7LskYIKvPfcPOvUBj3R/mPKuNBpZ8e8OSy+ablJAL6f+DijlJV8bEB3GlRVA==
+ b=dSjg9PqUHtXCHY208H51+b/+kcJKr3p7gj2XWFNlL4KcS+1ovGM4zTdA8Y1Tyu+bEH3xKYw3jKkFzsEeDoHScZIwnWoFM4GnBP2l4ZvSMvAIs5V9ED5oXhJANjeQJl6uADt6mOdveWt4fiSlXTx6oNvO/fiOGoIJ0wPFrSGZB5YK2lOsOJ03m0lUMOWl2tExnq+7DoLGtjtQTwZgZMNgCuKO0weNTgoSvtzhLmsJ91bCo6wEG+8hhAQbxjZARyz1GP/pCMgUodbtsN5/2BZRFPxFq+LkIkATUuxQrdyCxRPAsKrLB2E1daEBZNkPiS15ej6CMBmSCYeHZbCLCnlFiQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uG0ykDZ8H6mxiQTiG4V1tyssG0q/P/1IinwL5ZcF+EM=;
- b=AZgSBTndLoHqaZ3LCid0gByUKGZQ0OdK1kq9EWiN+HAxgEjaH9ncp75FMhqXhuIHiLAQFk9g9x+Ou09gOuyVBvCtkQuHNBNQTtuTeLvyydGhJdTiviJFZ93ALD0J///03NamymaULCFcO1Pv3BP/ygCDlh8oJPn4A7CgrQQV+U+LTVUUx9Ka08ByvnyD3v7+cdKtHztZWytFiGQ4A4r6EimLGNvOdCMUDp0dsuBiepnorovJjA+h39pe1QTarCp4AWR16OJGD+dtHZMlUXgQFrFN2fcQczw88ppQ4RyH6aHlVDFbAHNz+mIEV4KeoSaIfQ/Qnc2us9X6w5IaT55+mA==
+ bh=VlX64pFI4xchQAa4ixY4HiquPPDyxaOtGM0lBJxoM/M=;
+ b=RkPd67B7AxEbRLuD3n7fxQ8xIoSI/+OJJFKjifYeamsLGZRYlTIDUThcfan1SUbJs0fwNwkfINsEjjmFGrPYBfuWohwTGgfRaB2qpH6mWllYHwiQF2DsYEoxRmEX5RAxqoZzj2ud2qMZW96IPTQBPEdyWy4c/bVQWkn0ZsJ2MNsp+O+XtpViv6x3H7Qo2MjEMh1CB4D4/HxuQlPGXppIKAyIp0u31IQ9us9i9MeExSHr3nFftez+6aM3RRMKw9wfKzud7RUJQmSUKCasf7zZAJZSVwgq61CKaRgHkBb0WE7rTXPC0wBpCxgJ2++8+Z4qmQB3+YRC2PIZ6Zk+57r1Pw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=windriver.com; dmarc=pass action=none
  header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
@@ -26,28 +26,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=windriversystems.onmicrosoft.com;
  s=selector2-windriversystems-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uG0ykDZ8H6mxiQTiG4V1tyssG0q/P/1IinwL5ZcF+EM=;
- b=ZcrM56dvsR3NkYVno9ENvZTfD5F+IzCBOQ7Gfsms3TpZJzFUjmGs/FrTJdcHbom1b3QzIHJ11agGjd5s7ah8KrZMKq7PmRa+7+rNuVDfNigVbiQGjRjDeLpSTBXznogCiVa0HmjOinxKAFrvVC5SSJNRIXeegcExWVhRytM220o=
+ bh=VlX64pFI4xchQAa4ixY4HiquPPDyxaOtGM0lBJxoM/M=;
+ b=RXTaByqzTgXRW4/b7skciwg+MHWuiLKKsY4Nx9FyMEEnwd/u0v/5gVFjOrgshyqGSAqVeJ9Bz0dINVFfImLt9+22Sjv5iArSfuNWQ8UjyUyEFNAdRVm2oZ4L9JrUHrgH3jG+fEPbjyb+c/r+lGQkyA7beSjXhlCOjqebGpyRPPE=
 Authentication-Results: arm.com; dkim=none (message not signed)
  header.d=none;arm.com; dmarc=none action=none header.from=windriver.com;
 Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
- (2603:10b6:300:74::18) by MWHPR11MB1679.namprd11.prod.outlook.com
- (2603:10b6:301:f::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27; Tue, 23 Feb
- 2021 08:25:58 +0000
+ (2603:10b6:300:74::18) by CO1PR11MB5171.namprd11.prod.outlook.com
+ (2603:10b6:303:95::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.30; Tue, 23 Feb
+ 2021 08:26:00 +0000
 Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
  ([fe80::ad02:3dcf:d3e5:b27d]) by MWHPR1101MB2351.namprd11.prod.outlook.com
  ([fe80::ad02:3dcf:d3e5:b27d%10]) with mapi id 15.20.3868.033; Tue, 23 Feb
- 2021 08:25:58 +0000
+ 2021 08:26:00 +0000
 From:   He Zhe <zhe.he@windriver.com>
 To:     catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com,
         alexander.shishkin@linux.intel.com, jolsa@redhat.com,
         namhyung@kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] arm64: uprobe: Return EOPNOTSUPP for AARCH32 instruction probing
-Date:   Tue, 23 Feb 2021 16:25:34 +0800
-Message-Id: <20210223082535.48730-1-zhe.he@windriver.com>
+Subject: [PATCH 2/2] perf tools: Improve EOPNOTSUPP error reporting
+Date:   Tue, 23 Feb 2021 16:25:35 +0800
+Message-Id: <20210223082535.48730-2-zhe.he@windriver.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210223082535.48730-1-zhe.he@windriver.com>
+References: <20210223082535.48730-1-zhe.he@windriver.com>
 Content-Type: text/plain
 X-Originating-IP: [60.247.85.82]
 X-ClientProxiedBy: HKAPR03CA0003.apcprd03.prod.outlook.com
@@ -55,81 +57,111 @@ X-ClientProxiedBy: HKAPR03CA0003.apcprd03.prod.outlook.com
  (2603:10b6:300:74::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-lpg-core2.corp.ad.wrs.com (60.247.85.82) by HKAPR03CA0003.apcprd03.prod.outlook.com (2603:1096:203:c8::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.8 via Frontend Transport; Tue, 23 Feb 2021 08:25:55 +0000
+Received: from pek-lpg-core2.corp.ad.wrs.com (60.247.85.82) by HKAPR03CA0003.apcprd03.prod.outlook.com (2603:1096:203:c8::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.8 via Frontend Transport; Tue, 23 Feb 2021 08:25:58 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6fa3b015-c74d-458a-524d-08d8d7d4a51c
-X-MS-TrafficTypeDiagnostic: MWHPR11MB1679:
-X-Microsoft-Antispam-PRVS: <MWHPR11MB16792F9A173767989F14694D8F809@MWHPR11MB1679.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Office365-Filtering-Correlation-Id: 6c9b4fca-de18-4070-4a76-08d8d7d4a6da
+X-MS-TrafficTypeDiagnostic: CO1PR11MB5171:
+X-Microsoft-Antispam-PRVS: <CO1PR11MB5171A201B456342AE52F67F48F809@CO1PR11MB5171.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:551;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dpw9Is1cS6DLRpATMwesCwgWwMpZ/hjf+pw5J0gPDA3MUJjO2zZN2VZFdtQlHTbiYy3Lk1ia4UDSzuyrczPrcgsK7epGOnKlGBLR8B0RmbLOT91DC4T4rqeHe2/WqgujajK9k1qlcsn3qtLLxH1dmB6M5b0DlGPizbl+PSctItfRDlFKFnnoJ2cwTJdBf0IroUClawOswekv63ixYFtrI36U9iI88rhfDGrdxBsLMZuARhcufaU+PG1dbkYdjIRCQa88O484/j0ml2PZJQI2UFaIxQFJP1RXZEzOUSbCep1Z+Qv07aRItki+i+NxjCsWuURdRjztqhnko27r8uhgDhlu5oRATfcFMxxNyWcQao1n1Ra0TEb+ZIF8zRoIv0WwAFwYUCAv3cbpBjDxmvyVC5+u/kxgchUD+Qs/D0B0KLH3VwbnGdI2NzB11X5gDG/mQ6yK2M387FZuqjcXm17p9H/Ve1C6BrPWec/SE2vRhzFET/+29m5rfGtlYq7CKRE6+Rq6BOpvg6GP/r8v78PbMw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1101MB2351.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(39850400004)(346002)(136003)(186003)(26005)(1076003)(8936002)(6512007)(6506007)(66946007)(16526019)(478600001)(6666004)(36756003)(5660300002)(8676002)(2616005)(83380400001)(52116002)(66556008)(2906002)(86362001)(956004)(66476007)(316002)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?2TMwiCPOljYoHHAufbLPxy/zcOd70kz4EyCw15hakLteVpA6brExhPkjdxQP?=
- =?us-ascii?Q?ATy5hU14bXxJwTAImGByWV3s1lWj8ZIlVI4y6buLj4fdxkTaodVHuAlNw2GG?=
- =?us-ascii?Q?LelSmXUz/xcEFWU3S/IIgZhm2P8Hmce+UA9z+bwR+HqRbQs90VB8qsrqB6sp?=
- =?us-ascii?Q?K+7XLHZjXb6idiu9bU2CzW7kvOiLL5A2ml3l3VeNlmd3vXOIqwxmUuExb1yU?=
- =?us-ascii?Q?xm3BhAcxSq5VdtMWHK4a7/3gRf4mEbY8kgHfSjHpabUxfPWoGYd/CFbrJcTT?=
- =?us-ascii?Q?8eqkJuGjkPDPXM+kwMN0H2dH4PjJaw68g15kxWED/uId6BMxLvPaGbbXxfwh?=
- =?us-ascii?Q?tXWY9M2LNraVvKxGguy9/gGjIqRVHH7SM4pgH+OMMiFiS6wy/loNCK+yyIJN?=
- =?us-ascii?Q?zt4Dtu+3gqOOI+RWjzUN/jy7xc+/7g+RwPHDBQ8ijF6VzEaBCefrD8gjdGQI?=
- =?us-ascii?Q?PAhQrzn7i0jf3iGKU42K3RfFX4a8znsGhV9OBofJ1y7ODYYJf40I3kbCPNuA?=
- =?us-ascii?Q?il082GKqCfybg/XFDFc7R4xpuT54n9+LzO0qzdnuUa/ziRb89ndGvdvEh4w3?=
- =?us-ascii?Q?rMsaGZxYjL2qVXgw3hGhM9IdoTxOXSasDSjXuw3DDgxBVvIrQajVJZfDdkZ5?=
- =?us-ascii?Q?qoOzbo5IgDdBeeuwTkwUglIQn7j0l3CpBVY7jXcmoX0V/GdQpnxNESLJmvNz?=
- =?us-ascii?Q?fDY5WmMpWr4hFhC75X++9wJ2VNfxGGB/Gxfr7m7/+WDpG8iIGpdpLL19njSG?=
- =?us-ascii?Q?RPhzYlETn1KP+FQIOU9LhdSw1AX6YN1AC7HRSX5ZDG1bTMjUSGUkMzAY9PFh?=
- =?us-ascii?Q?N7SdcftEooz+/1FkTO8QaA2VLiY24n0e77R1XXw07AYGB0noFLxLcNDNbS9R?=
- =?us-ascii?Q?+/PyL5INrywAF475/Zk1wN/dO4gOo/4XSnhtoWBGs4cZ3BCbwHf0fmHa7/pM?=
- =?us-ascii?Q?uNoN4G8i9a6k/iTw/horOEfHsBYZIZXmqVOXcG3O5EYa6P+7Ae0dzpxgq6DF?=
- =?us-ascii?Q?uHmQWrmHwgIYI9nk1jSNGA3wwC3XZJZq6Q6+iRNWzheFIwCK+ZRHs/yVGR0C?=
- =?us-ascii?Q?BqipjCML8NpBF7UCsRnZPo8fYqZuZYzI1haDqKiZDMAlmWVaydMWvBiPY0Vw?=
- =?us-ascii?Q?AqdNZ9S4Xjo2GgT0pJnFZ8WSGtVjjk0S17WsqKhSYERc5WbfHfsb7WBderyS?=
- =?us-ascii?Q?8SC+PziPiXHh88WxfvL4uh4mb2yvAyn+MmJ+ajtzbm9DXJm/FxEQbZbe4Ayr?=
- =?us-ascii?Q?xW14awAO5ZiiauVUQFagiQWMhlkr5cPtgDGdUojLwrjdLdwVe5H8JncArEQv?=
- =?us-ascii?Q?K0xOnMta8hAapfO/ZkO7Pb1E?=
+X-Microsoft-Antispam-Message-Info: 75aZylm/iSzwMifJXUBzxwqioGWz0zXPcXs1asntCWHI1kFyGgcnSvoku0OwKRb4wyy5i2zrwzcRwzAVHVjZhZ08r2s8QidrG7UCf+EbOr0RRjkIJnj5Khz4lZqv9Kt2DFaEfco7SlpvFScscfSn1SIbby6Fpa2qgQOuA+S5AbvKFtX5QiMtkO7bT7ZJCUhL60jjEISBd7kelmUqKcM9fxtyF+TRQEuh1zbmS6PKQcr8kIGfLlCwlmxwtNw4frcwfUFktEyQnwCA2tp8+1qTgstV9O9RdcNXb45nqZc//UqC78A/nrJpzGWhcRSNxrldfY247YLjuW5AAGLlUFFFH14Ab9aJerOCTmo6yJtyIYIvJW/g3b2ADkSH8c4k+mqGk5cKqgP3rH4BJxUt4qxft3yqXvfmMuM8guooyYANdwv/Y4DKaoQWX+7dFDtIQseac4NOR4m/Dvf8UDHiFpVfapVFJDu3r+BO2dvxvY3mV+3/T6Tuw5OZXfu8C1hSSoUzRSHQXPoCCh86KSzTzYBL/Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1101MB2351.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(376002)(366004)(346002)(136003)(396003)(2906002)(316002)(6486002)(26005)(52116002)(66556008)(66476007)(66946007)(1076003)(6506007)(6512007)(186003)(8676002)(6666004)(2616005)(83380400001)(86362001)(36756003)(5660300002)(16526019)(478600001)(956004)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?2yEaasxrdhH1omg+PrY7gsk/l7zUdEV17R8LctJpqu1UzCgAkV1CfIRzU29H?=
+ =?us-ascii?Q?/tAOFlKLr3PHBrsrMopAlxppyAh9bmjLkFJ9WcA1bz+SNn5ZebB2quQvzujj?=
+ =?us-ascii?Q?Ap98Im8/UcTJ9+DRWD12WRp3LrABwRDNyIbq5YtqisRex3O+PJs6dFd5MRhU?=
+ =?us-ascii?Q?t8VbzFzdNPIUL+urKtQDhf+5zEuSvDWLt3fnQ6fIwRDje11ueQCdNGamfUmh?=
+ =?us-ascii?Q?KR7vuU0U+6Dd9OaSXwushPqMTIpqzyi+fV46w6gOvE1nqzZ58bZkVUII1FO9?=
+ =?us-ascii?Q?NIbLPga1vlPIO1ayvYMlYJFgY/GPf3b3r6yEhQM5KUV8upP+2en9XHPnjgb6?=
+ =?us-ascii?Q?+tAeX1xaM7FUVMwU/q5TtpkRYx9znlJPUki6R9AkMQa+pAG23gDcOs64wwcH?=
+ =?us-ascii?Q?JKWkfPEMuozQdlkhH71qQkpeGDaP0ucPDy1/DjfWcZDYDuo7XRZZQKbc3uMh?=
+ =?us-ascii?Q?Vg34vPRifRhkOT0VZdqOwZo5w0DZo4MhxeZ/eAzpXw7RTyEAM+ckqvvhFQ1v?=
+ =?us-ascii?Q?jv1qb98JCQnau5xKHqogZhob+BIvajU+gwOym5jOkzihzdl4MMyw3F/MugbF?=
+ =?us-ascii?Q?snJ7/anL+yzvSwJE4JWhbub1VlCHkAhH3KC9DWyvcVvJ1GtQDsivgB8TjPMa?=
+ =?us-ascii?Q?ywTH6AAVbYpac7616af5p6GfgaiKyjTwSlHEK1UnBSMR45FRDtyBbqZD9z+U?=
+ =?us-ascii?Q?Jwg+QxtiL7lNAyDUZKaJUG1mOF5bNxZFPEPh05CvjiVGLqpOpBavpG1bpVGh?=
+ =?us-ascii?Q?43iibmjVQcXNNT3mAOavAb+QEvuroxLuwxJ3WkAqwAx9dOB+Qn91dD7jaVUW?=
+ =?us-ascii?Q?JUKooqTMmmvwXMf9OiRG9fy1K0sZloGRarCd9Je2vLQqLojJJj3LtK1qW+rr?=
+ =?us-ascii?Q?AZlYtIY8be9vGEvopWB0LTqIm69ICWdSbS/Cks+GmxeMQgE/PlqJXLZRRjOj?=
+ =?us-ascii?Q?+bnWul+enJ9F1/HzdX7yRwdk3FQSkFo16q5u0MAp2wR8Vw0QBzgYCMC1keTJ?=
+ =?us-ascii?Q?o1uCx13K2JR1QvsWt0TgsjQg+ChFby+tGcqrLr9I/PYN7ehwjrgaiGONkMl/?=
+ =?us-ascii?Q?c3FZnarhFB4bn80Ehq6N2fwytf9py7sKLo6SdO87daEuQJajbmTwAeYkJQsT?=
+ =?us-ascii?Q?0CthCvYCSQ0zc4LQr814EFqxXbjQK1w/n3bDcn1zihKVVh51dAtznVMJc4FD?=
+ =?us-ascii?Q?ZPCopf+HwJjUNOS1VTY/vxFt16C0OHC45fOmpr/COmeQT9s1x2FxAU1jQ5bN?=
+ =?us-ascii?Q?i2n7WJiMtlYqukdSXPeiucjOsOGHZ/YFjCo51ha0XFMpLxnncyfk8lT9d43U?=
+ =?us-ascii?Q?md9wCbqL2hdH/qhTK5/1VmrT?=
 X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6fa3b015-c74d-458a-524d-08d8d7d4a51c
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c9b4fca-de18-4070-4a76-08d8d7d4a6da
 X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2351.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2021 08:25:58.0388
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2021 08:26:00.8456
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: //7UqtIbyK4/9Q47CTY0GSEyV5g+PFBJHhrpPJRpCyvqIYp7framXuGTzyZHRo+YFrNzIedEw82QloHsBMWl7w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1679
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2fyLq8LUHX0lf0ejNrkNe2ZrXJgtkqUhbC9uwJtpyCx3MA0C4wiGnzvxu3XHP8IZBVsJ5toZ57I5d6e6VqUdkQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5171
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As stated in linux/errno.h, ENOTSUPP should never be seen by user programs.
-When we set up uprobe with 32-bit perf and arm64 kernel, we would see the
-following vague error without useful hint.
+There may be multiple reasons for EOPNOTSUPP. Sometimes we cannot determine
+which one it is.
 
-The sys_perf_event_open() syscall returned with 524 (INTERNAL ERROR:
-strerror_r(524, [buf], 128)=22)
+For example, when we set up uprobe with 32-bit perf and arm64 kernel on
+some hardware that does not support sampling/overflow-interrupts,
+$ perf probe -x /lib/libc.so.6 malloc
+$ perf record -e probe_libc:malloc -a ls
 
-Use EOPNOTSUPP instead to indicate such cases.
+Before this patch:
+probe_libc:malloc: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
+
+After this patch:
+probe_libc:malloc: PMU Hardware may not support sampling/overflow-interrupts. Try 'perf stat'.
+Some 64-bit architectures may not support 32-bit instruction probing.
 
 Signed-off-by: He Zhe <zhe.he@windriver.com>
 ---
- arch/arm64/kernel/probes/uprobes.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/evsel.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/kernel/probes/uprobes.c b/arch/arm64/kernel/probes/uprobes.c
-index a412d8edbcd2..2c247634552b 100644
---- a/arch/arm64/kernel/probes/uprobes.c
-+++ b/arch/arm64/kernel/probes/uprobes.c
-@@ -38,7 +38,7 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
- 
- 	/* TODO: Currently we do not support AARCH32 instruction probing */
- 	if (mm->context.flags & MMCF_AARCH32)
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 	else if (!IS_ALIGNED(addr, AARCH64_INSN_SIZE))
- 		return -EINVAL;
- 
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 1bf76864c4f2..aa56511ddf60 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2697,22 +2697,24 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
+ 		break;
+ 	case EOPNOTSUPP:
+ 		if (evsel->core.attr.aux_output)
+-			return scnprintf(msg, size,
+-	"%s: PMU Hardware doesn't support 'aux_output' feature",
++			printed += scnprintf(msg + printed, size,
++	"%s: PMU Hardware may not support 'aux_output' feature.\n",
+ 					 evsel__name(evsel));
+ 		if (evsel->core.attr.sample_period != 0)
+-			return scnprintf(msg, size,
+-	"%s: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'",
++			printed += scnprintf(msg + printed, size,
++	"%s: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'.\n",
+ 					 evsel__name(evsel));
+ 		if (evsel->core.attr.precise_ip)
+-			return scnprintf(msg, size, "%s",
+-	"\'precise\' request may not be supported. Try removing 'p' modifier.");
++			printed += scnprintf(msg + printed, size, "%s",
++	"\'precise\' request may not be supported. Try removing 'p' modifier.\n");
+ #if defined(__i386__) || defined(__x86_64__)
+ 		if (evsel->core.attr.type == PERF_TYPE_HARDWARE)
+-			return scnprintf(msg, size, "%s",
++			printed += scnprintf(msg + printed, size, "%s",
+ 	"No hardware sampling interrupt available.\n");
+ #endif
+-		break;
++		scnprintf(msg + printed, size, "%s",
++	"Some 64-bit architectures may not support 32-bit instruction uprobe.\n");
++		return;
+ 	case EBUSY:
+ 		if (find_process("oprofiled"))
+ 			return scnprintf(msg, size,
 -- 
 2.17.1
 
