@@ -2,77 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08209322CC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71605322CC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232986AbhBWOst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:48:49 -0500
-Received: from foss.arm.com ([217.140.110.172]:53836 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232553AbhBWOsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:48:39 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F4961FB;
-        Tue, 23 Feb 2021 06:47:53 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 29A643F73B;
-        Tue, 23 Feb 2021 06:47:52 -0800 (PST)
-Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
- cpu_util_next()
-To:     Quentin Perret <qperret@google.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net,
-        valentin.schneider@arm.com
-References: <20210222095401.37158-1-vincent.donnefort@arm.com>
- <YDODN1rnTqfTQOug@google.com>
- <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
- <YDOiKH/XQDUKcrPU@google.com>
- <20210222150151.GA124800@e124901.cambridge.arm.com>
- <YDPUwKKYgZfzzCJm@google.com> <YDPajlnvgkonocpp@google.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <c101892b-157c-0074-12cb-9651d1c4c4e6@arm.com>
-Date:   Tue, 23 Feb 2021 15:47:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232542AbhBWOtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:49:41 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:43834 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232997AbhBWOtX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:49:23 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 8AFB91F44D4B
+Message-ID: <f024535585fe5b248ca8cf7ca95c14ced746f9da.camel@collabora.com>
+Subject: Re: [PATCH v3 8/9] dt-bindings: media: nxp,imx8mq-vpu: Update
+ bindings
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Rob Herring <robh@kernel.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Peng Fan <peng.fan@nxp.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>
+Date:   Tue, 23 Feb 2021 11:48:29 -0300
+In-Reply-To: <CAL_JsqJGZK2C8mcDiYa4yfKxf4sKykxSQ-Nfr4bi_u_OcAxW_Q@mail.gmail.com>
+References: <20210222122406.41782-1-benjamin.gaignard@collabora.com>
+         <20210222122406.41782-9-benjamin.gaignard@collabora.com>
+         <20210223003442.GA2516123@robh.at.kernel.org>
+         <25f30110-d655-2d77-d3b7-30c1c61f6965@collabora.com>
+         <CAL_JsqJGZK2C8mcDiYa4yfKxf4sKykxSQ-Nfr4bi_u_OcAxW_Q@mail.gmail.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-In-Reply-To: <YDPajlnvgkonocpp@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/02/2021 17:23, Quentin Perret wrote:
-> On Monday 22 Feb 2021 at 15:58:56 (+0000), Quentin Perret wrote:
->> But in any case, if we're going to address this, I'm still not sure this
->> patch will be what we want. As per my first comment we need to keep the
->> frequency estimation right.
+Hi Rob,
+
+On Tue, 2021-02-23 at 08:31 -0600, Rob Herring wrote:
+> On Tue, Feb 23, 2021 at 2:04 AM Benjamin Gaignard
+> <benjamin.gaignard@collabora.com> wrote:
+> > 
+> > 
+> > Le 23/02/2021 à 01:34, Rob Herring a écrit :
+> > > On Mon, Feb 22, 2021 at 01:24:05PM +0100, Benjamin Gaignard wrote:
+> > > > The current bindings seem to make the assumption that the
+> > > > two VPUs hardware blocks (G1 and G2) are only one set of
+> > > > registers.
+> > > > After implementing the VPU reset driver and G2 decoder driver
+> > > > it shows that all the VPUs are independent and don't need to
+> > > > know about the registers of the other blocks.
+> > > > Remove from the bindings the need to set all blocks register
+> > > > but keep reg-names property because removing it from the driver
+> > > > may affect other variants.
+> > > > 
+> > > > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> > > > ---
+> > > > version 2:
+> > > > - be more verbose about why I change the bindings
+> > > > Keep in mind that series comes after: https://www.spinics.net/lists/arm-kernel/msg875766.html
+> > > > without that review and ack it won't work
+> > > Better, but you've still mentioned nothing about breaking compatibility.
+> > > Why is that okay?
+> > 
+
+Indeed, the commit description should be clearer about breaking compatibility.
+
+> > Because this reg-names wasn't used before for this variant so remove it won't change anything.
 > 
-> Totally untested, but I think in principle you would like something like
-> the snippet below. Would that work?
+> It is the reset changes in the driver that break. The driver
+> previously got the 'ctrl' registers whether it went by name or index,
+> right? With an old DTB and a kernel with the changes (and vice-versa),
+> you'll have nothing to handle the VPU resets because the VPU reset
+> node doesn't exist. It could work if the default state is not held in
+> reset.
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 04a3ce20da67..6594d875c6ac 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6534,8 +6534,13 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
->          * its pd list and will not be accounted by compute_energy().
->          */
->         for_each_cpu_and(cpu, pd_mask, cpu_online_mask) {
-> -               unsigned long cpu_util, util_cfs = cpu_util_next(cpu, p, dst_cpu);
-> +               unsigned long util_freq = cpu_util_next(cpu, p, dst_cpu);
-> +               unsigned long util_running = cpu_util_without(cpu, p);
+> At least the removal of 'ctrl' registers belongs in the reset changes series.
+> 
+> 
 
-Wouldn't this be the same as:
+Considering that FFMPEG patches that are required to support this driver
+are still floating around, and GStreamer's implementation is also still
+a bit under discussion, we are certain there aren't many upstreams users
+(leaving ChromiumOS aside which mostly care for Rockchip variants).
 
-                 unsigned long util_running = cpu_util_next(cpu, p, -1);
+So, given the driver is in staging, and that there aren't users of the
+i.MX8MQ G1 variant just yet, I think we are safe breaking the compatibility
+(and I'm not taking it lightly).
 
-except some different handling of !last_update_time and
-'task_on_rq_queued(p) || current == p)' in cpu_util_without() which
-shouldn't happen in EAS.
+It would be important to detect an old devicetree and do some pr_warn about
+the driver not supporting it.
 
-We have quite a lot of util related functions!
+Thanks,
+Ezequiel
 
-[...]
