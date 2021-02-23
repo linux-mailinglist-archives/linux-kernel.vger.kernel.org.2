@@ -2,153 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6C9322EE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2DC322EEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233616AbhBWQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 11:38:46 -0500
-Received: from www381.your-server.de ([78.46.137.84]:38522 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233552AbhBWQi1 (ORCPT
+        id S233620AbhBWQjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 11:39:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231604AbhBWQjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:38:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=tlgUyvMAxOQzOyYpYCaYbua1OPAVFxN8saq4CxuGkt4=; b=Vcvh84K+9+7P/8r3MMERhEIt1S
-        X/4e8vHPSMoPQ4pohjVsNoz9FBVrxD9nsFtZUW2VwxbsalhcCyC00ncqJS/ig4rlubeQhuQonZR4c
-        oF30el/0YDi3rJqboAuovdORkd+M7PZtXv5Y71t9yRvkaqoRCTiinE896Qq2eqzoK0RTToqZiE8VY
-        2npTsGGVNVOpyxMz6qDtIrnHNYvQaHbcJeOJL62AHY4NrA2baSFzFVo5BMaSeb8XvyGt3KhcofdzL
-        pX46hz0suZajzhm7ykMOBBu6olYmOHcqmL+UrJOTvrBFiwmWbSToyP6JKuwHV/SuVIVa9mwBg2URG
-        8TEr8ABg==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1lEagv-0009Cm-BB; Tue, 23 Feb 2021 17:37:41 +0100
-Received: from [62.216.202.180] (helo=[192.168.178.20])
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1lEagv-000InI-5Q; Tue, 23 Feb 2021 17:37:41 +0100
-Subject: Re: [PATCH v2 5/5] iio: dac: ad5686: Add PWM as a trigger source
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Michael.Hennerich@analog.com, nuno.sa@analog.com,
-        dragos.bogdan@analog.com,
-        Mircea Caprioru <mircea.caprioru@analog.com>,
-        Mihail Chindris <Mihail.Chindris@analog.com>,
-        robh+dt@kernel.org
-References: <20210217083438.37865-1-alexandru.ardelean@analog.com>
- <20210217083438.37865-6-alexandru.ardelean@analog.com>
- <20210218140506.02b28d8a@archlinux>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <49654dc0-5c6b-2fdc-1e48-22e4b07a4165@metafoo.de>
-Date:   Tue, 23 Feb 2021 17:37:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 23 Feb 2021 11:39:18 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84371C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:38:38 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id p5so5281900plo.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:38:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=suqwHwnPZphs1adCEqjvleP9vgvwz73ppw4oBEyeBNI=;
+        b=jPGQ6tlovoRBukQNilm0Yx/2c5WlEsi5gI/Ek7mWk8JLDM6mxb9Jhd9P3Wdqy+rb0t
+         u5XOBgDVPAlArzrw/fynNA1OvmdWW6PZr4180C0RXv0YGkag+PHaljg0uWprtyqdW0QV
+         NLapQe/oeVr2gmJ0yrcTG3EmDDfEnRMNemJZqgCxWkKbnGA2i1LPINbqhiljZjbMmpc6
+         hBbyGvMltiAsLZg3HaSflKaLfXL4eY2DaSpU82n9wK6molLaAntF4jGSjraiGAZQhPsN
+         x7/0G39qO+dYHPmTXmmtJ1SkFxeQT0wuryay2JnaDpE7VWfymiXdz2/cy3vJbpRfGgVu
+         gAdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=suqwHwnPZphs1adCEqjvleP9vgvwz73ppw4oBEyeBNI=;
+        b=Aq+7iNGK+YfC/bQ+u/ZrP+11IS0F6Rd0X1MmJxG/xDP85XKMMet9EAxymm3J4J43Nr
+         Qdayk1ROQoO27abniNBU42IcVczTIlw+GuDDwvxZlzxa9nmXRDvYZcaHzgx6XvhsgvBS
+         +OHd9JrbpxUjgC6XhB6wLH8AD2ojXN+iMF9Q3iHWEI1fcVXbW1IkVyWMXbHHMtfDK5ew
+         F7IgvTEa4EIAvs/UNxLNCNlNprodMv5P8q8oG6VEQ9iqU/Kl4SeqG+eCCPSr1p9MwGVf
+         13RMsNr48l98/wGawlW7CUaoaawL+yGcNfJvuKvTvTtG4FSAjjXxTo9GKLV9su5JUm5Y
+         OZAw==
+X-Gm-Message-State: AOAM531g48LcxyotsNB0uGa4+G/MKeIQkaH9+UhZYwHd8QiXX7pd1EH1
+        JA4Q2ua4W0m93WIApwPrnb0Q2Q==
+X-Google-Smtp-Source: ABdhPJzqD/ZHpDe3KbQrsqBbtDmNeZBVMnQJMD94Zr4nxA+8z/0k5Hhdddat7e3AbETW4TeDM3ZhNA==
+X-Received: by 2002:a17:902:a614:b029:e1:5b43:956a with SMTP id u20-20020a170902a614b02900e15b43956amr28719486plq.38.1614098317908;
+        Tue, 23 Feb 2021 08:38:37 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:c939:813f:76bc:d651])
+        by smtp.gmail.com with ESMTPSA id a19sm859293pjh.39.2021.02.23.08.38.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 08:38:37 -0800 (PST)
+Date:   Tue, 23 Feb 2021 08:38:29 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] KVM: vmx/pmu: Clear DEBUGCTLMSR_LBR bit on the debug
+ breakpoint event
+Message-ID: <YDUvhTyFVwwZHnEj@google.com>
+References: <20210223013958.1280444-1-like.xu@linux.intel.com>
+ <20210223013958.1280444-2-like.xu@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210218140506.02b28d8a@archlinux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26089/Tue Feb 23 13:11:02 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223013958.1280444-2-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/18/21 3:05 PM, Jonathan Cameron wrote:
-> On Wed, 17 Feb 2021 10:34:38 +0200
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
->> From: Mircea Caprioru <mircea.caprioru@analog.com>
->>
->> A PWM signal will be used as a trigger source to have a deterministic
->> sampling frequency since this family of DAC has no hardware interrupt
->> source.
->>
->> This feature is made optional however, as there are some board setups where
->> this isn't used.
->>
-> So this is taking a very generic setup, but then implementing it
-> as a bit of a hack within the driver.
->
-> It's effectively a PWM connected up to an instance
-> of iio/triggers/iio-trig-interrupt.c
->
-> Now, I've not looked at that trigger driver for a while, so you may well
-> need to figure out how to add a binding to instantiate it.
-> (looks like no one has used it since board file days, or via instantiation
-> from another driver).
->
-> It's a slightly odd corner case as what it reflects is that we have
-> an interrupt available that is intended to drive some sort of data
-> capture or output (it's a trigger signal) - but exactly what is done
-> is a runtime configurable.  In this particular case that interrupt
-> is hooked up to a PWM and we also want to represent that.
->
-> The fact it's being driven via a PWM is interesting but we should be
-> able to extend that trigger driver to optionally accept a pwm provider
-> and if it has one provide frequency control.
->
-> Binding might look something like the following..
->
-> interrupt-trigger {
->     interrupts = <>;
->     pwms = <&pwm 0 4000 PWM_POLARITY_INVERTED>;	
-> };
->
-> @Rob, what do you think of this odd beast?
->
-> So all in all, this generic facility needs a generic implementation, not
-> one buried in a driver.
->
-> Another open question here is whether you really can't just use an hrtimer
-> to get similar precision?  Way back at the dawn of time in IIO we had
-> code to use the RTC periodic ticks as a trigger with the theory that they
-> would give very precise and even timing.  In the end it turned out that
-> hrtimers worked just as well (and RTCs drivers emulated the periodic
-> ticks via hrtimers, dropping their use of the hardware periodic timers).
->
-The way this DAC works is that it has a "latch" pin and some shadow 
-registers. The way this is supposed to be used is that you update the 
-shadow registers and then when the there is a rising edge on the latch 
-pin all the shadow register values are transferred to DAC output registers.
+On Tue, Feb 23, 2021, Like Xu wrote:
+> When the processor that support model-specific LBR generates a debug
+> breakpoint event, it automatically clears the LBR flag. This action
+> does not clear previously stored LBR stack MSRs. (Intel SDM 17.4.2)
+> 
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index e0a3a9be654b..4951b535eb7f 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -4795,6 +4795,7 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+>  	u32 intr_info, ex_no, error_code;
+>  	unsigned long cr2, rip, dr6;
+>  	u32 vect_info;
+> +	u64 lbr_ctl;
+>  
+>  	vect_info = vmx->idt_vectoring_info;
+>  	intr_info = vmx_get_intr_info(vcpu);
+> @@ -4886,6 +4887,10 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+>  		rip = kvm_rip_read(vcpu);
+>  		kvm_run->debug.arch.pc = vmcs_readl(GUEST_CS_BASE) + rip;
+>  		kvm_run->debug.arch.exception = ex_no;
+> +		/* On the debug breakpoint event, the LBREn bit is cleared. */
 
-This means if you hook up a periodic signal like a PWM or clock to the 
-latch pin you can generate very precise waveforms that have much lower 
-jitter than when using a hrtimer since there is no variable interrupt 
-latency for the update step itself. This is useful when generating 
-periodic signals.
+Except this code is in BP_VECTOR, not DB_VECTOR as it should be.
 
-But you could for example also use a GPIO to update multiple discrete 
-DACs at the same time.
+  When the processor generates a debug exception (#DB), it automatically clears
+  the LBR flag before executing the exception handler. This action does not
+  clear previously stored LBR stack MSRs.
 
-This is not specific to this particular chip. There are quite a few ADI 
-(and probably from other vendors) precision DACs that have this 
-functionality. I agree that this should be a some sort of generic 
-trigger helper module.
-
-Now for the implementation since there is a direct connection between 
-the PWM and the DAC I think it makes sense to describe this connection 
-in the DT. After all if there is no connection this will not work.
-
-As for the interrupt, most PWM controllers do have the ability to 
-generate an IRQ by themselves once per period. There should be not need 
-for a hardware loopback. Unfortunately the PWM framework does not have a 
-mechanism yet to expose those IRQs and register a callback.
-
-A similar feature btw exists for many of the ADCs and we did have this 
-special Blackfin PWM trigger[1] back in the day to support this. The 
-bfin PWM trigger driver essentially implements what I'm describing 
-above, but without using the PWM framework.
-
-- Lars
-
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/staging/iio/trigger/iio-trig-bfin-timer.c?h=v3.15
-
+> +		lbr_ctl = vmcs_read64(GUEST_IA32_DEBUGCTL);
+> +		if (lbr_ctl & DEBUGCTLMSR_LBR)
+> +			vmcs_write64(GUEST_IA32_DEBUGCTL, lbr_ctl & ~DEBUGCTLMSR_LBR);
+>  		break;
+>  	case AC_VECTOR:
+>  		if (guest_inject_ac(vcpu)) {
+> -- 
+> 2.29.2
+> 
