@@ -2,78 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78972322E19
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD19322E1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233431AbhBWPz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:55:58 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:53161 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S233498AbhBWPzZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 10:55:25 -0500
-Received: (qmail 1263861 invoked by uid 1000); 23 Feb 2021 10:54:43 -0500
-Date:   Tue, 23 Feb 2021 10:54:43 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     f.fainelli@gmail.com, jonas.gorski@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tony Prisk <linux@prisktech.co.nz>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] dt-bindings: usb: generic-ehci: document ignore-oc
- flag
-Message-ID: <20210223155443.GB1261797@rowland.harvard.edu>
-References: <20210223155005.21712-1-noltari@gmail.com>
- <20210223155005.21712-2-noltari@gmail.com>
+        id S233518AbhBWP4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:56:10 -0500
+Received: from foss.arm.com ([217.140.110.172]:57320 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233499AbhBWPzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 10:55:41 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 655831FB;
+        Tue, 23 Feb 2021 07:54:53 -0800 (PST)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0C103F70D;
+        Tue, 23 Feb 2021 07:54:51 -0800 (PST)
+Subject: Re: [RFC PATCH 0/4] KVM: arm64: Improve efficiency of stage2 page
+ table
+To:     Yanan Wang <wangyanan55@huawei.com>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210208112250.163568-1-wangyanan55@huawei.com>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <3a128c43-ff18-2132-1eaa-1fc882c80b1e@arm.com>
+Date:   Tue, 23 Feb 2021 15:55:04 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210223155005.21712-2-noltari@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210208112250.163568-1-wangyanan55@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 04:50:04PM +0100, Álvaro Fernández Rojas wrote:
-> Over-current reporting isn't supported on some platforms such as bcm63xx.
-> These devices will incorrectly report over-current if this flag isn't properly
-> activated.
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+Hi Yanan,
+
+I wanted to review the patches, but unfortunately I get an error when trying to
+apply the first patch in the series:
+
+Applying: KVM: arm64: Move the clean of dcache to the map handler
+error: patch failed: arch/arm64/kvm/hyp/pgtable.c:464
+error: arch/arm64/kvm/hyp/pgtable.c: patch does not apply
+error: patch failed: arch/arm64/kvm/mmu.c:882
+error: arch/arm64/kvm/mmu.c: patch does not apply
+Patch failed at 0001 KVM: arm64: Move the clean of dcache to the map handler
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
+
+Tried this with Linux tags v5.11-rc1 to v5.11-rc7. It looks like pgtable.c and
+mmu.c from your patch is different than what is found on upstream master. Did you
+use another branch as the base for your patches?
+
+Thanks,
+
+Alex
+
+On 2/8/21 11:22 AM, Yanan Wang wrote:
+> Hi,
+>
+> This series makes some efficiency improvement of stage2 page table code,
+> and there are some test results to present the performance changes, which
+> were tested by a kvm selftest [1] that I have post:
+> [1] https://lore.kernel.org/lkml/20210208090841.333724-1-wangyanan55@huawei.com/ 
+>
+> About patch 1:
+> We currently uniformly clean dcache in user_mem_abort() before calling the
+> fault handlers, if we take a translation fault and the pfn is cacheable.
+> But if there are concurrent translation faults on the same page or block,
+> clean of dcache for the first time is necessary while the others are not.
+>
+> By moving clean of dcache to the map handler, we can easily identify the
+> conditions where CMOs are really needed and avoid the unnecessary ones.
+> As it's a time consuming process to perform CMOs especially when flushing
+> a block range, so this solution reduces much load of kvm and improve the
+> efficiency of creating mappings.
+>
+> Test results:
+> (1) when 20 vCPUs concurrently access 20G ram (all 1G hugepages):
+> KVM create block mappings time: 52.83s -> 3.70s
+> KVM recover block mappings time(after dirty-logging): 52.0s -> 2.87s
+>
+> (2) when 40 vCPUs concurrently access 20G ram (all 1G hugepages):
+> KVM creating block mappings time: 104.56s -> 3.70s
+> KVM recover block mappings time(after dirty-logging): 103.93s -> 2.96s
+>
+> About patch 2, 3:
+> When KVM needs to coalesce the normal page mappings into a block mapping,
+> we currently invalidate the old table entry first followed by invalidation
+> of TLB, then unmap the page mappings, and install the block entry at last.
+>
+> It will cost a lot of time to unmap the numerous page mappings, which means
+> the table entry will be left invalid for a long time before installation of
+> the block entry, and this will cause many spurious translation faults.
+>
+> So let's quickly install the block entry at first to ensure uninterrupted
+> memory access of the other vCPUs, and then unmap the page mappings after
+> installation. This will reduce most of the time when the table entry is
+> invalid, and avoid most of the unnecessary translation faults.
+>
+> Test results based on patch 1:
+> (1) when 20 vCPUs concurrently access 20G ram (all 1G hugepages):
+> KVM recover block mappings time(after dirty-logging): 2.87s -> 0.30s
+>
+> (2) when 40 vCPUs concurrently access 20G ram (all 1G hugepages):
+> KVM recover block mappings time(after dirty-logging): 2.96s -> 0.35s
+>
+> So combined with patch 1, it makes a big difference of KVM creating mappings
+> and recovering block mappings with not much code change.
+>
+> About patch 4:
+> A new method to distinguish cases of memcache allocations is introduced.
+> By comparing fault_granule and vma_pagesize, cases that require allocations
+> from memcache and cases that don't can be distinguished completely.
+>
 > ---
->  Documentation/devicetree/bindings/usb/generic-ehci.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/generic-ehci.yaml b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> index cf83f2d9afac..294bbf02399e 100644
-> --- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> +++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-> @@ -117,6 +117,11 @@ properties:
->        Set this flag if EHCI has a Transaction Translator built into
->        the root hub.
->  
-> +  ignore-oc:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      Set this flag for HCDs without over-current reporting support.
-
-This is not a good description of a device property.  DT entries are 
-supposed to described the hardware, not talk about how to use it.
-
-When you say that the bcm63xx doesn't support over-current reporting, 
-what exactly do you mean?  Do you mean that sometimes the hardware turns 
-on the over-current bit when an over-current isn't actually present?  Or 
-do you mean something else?
-
-Alan Stern
-
-> +
->    needs-reset-on-resume:
->      $ref: /schemas/types.yaml#/definitions/flag
->      description:
-> -- 
-> 2.20.1
-> 
+>
+> Details of test results
+> platform: HiSilicon Kunpeng920 (FWB not supported)
+> host kernel: Linux mainline (v5.11-rc6)
+>
+> (1) performance change of patch 1
+> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 20
+> 	   (20 vcpus, 20G memory, block mappings(granule 1G))
+> Before patch: KVM_CREATE_MAPPINGS: 52.8338s 52.8327s 52.8336s 52.8255s 52.8303s
+> After  patch: KVM_CREATE_MAPPINGS:  3.7022s  3.7031s  3.7028s  3.7012s  3.7024s
+>
+> Before patch: KVM_ADJUST_MAPPINGS: 52.0466s 52.0473s 52.0550s 52.0518s 52.0467s
+> After  patch: KVM_ADJUST_MAPPINGS:  2.8787s  2.8781s  2.8785s  2.8742s  2.8759s
+>
+> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 40
+> 	   (40 vcpus, 20G memory, block mappings(granule 1G))
+> Before patch: KVM_CREATE_MAPPINGS: 104.560s 104.556s 104.554s 104.556s 104.550s
+> After  patch: KVM_CREATE_MAPPINGS:  3.7011s  3.7103s  3.7005s  3.7024s  3.7106s
+>
+> Before patch: KVM_ADJUST_MAPPINGS: 103.931s 103.936s 103.927s 103.942s 103.927s
+> After  patch: KVM_ADJUST_MAPPINGS:  2.9621s  2.9648s  2.9474s  2.9587s  2.9603s
+>
+> (2) performance change of patch 2, 3(based on patch 1)
+> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 1
+> 	   (1 vcpu, 20G memory, block mappings(granule 1G))
+> Before patch: KVM_ADJUST_MAPPINGS: 2.8241s 2.8234s 2.8245s 2.8230s 2.8652s
+> After  patch: KVM_ADJUST_MAPPINGS: 0.2444s 0.2442s 0.2423s 0.2441s 0.2429s
+>
+> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 20
+> 	   (20 vcpus, 20G memory, block mappings(granule 1G))
+> Before patch: KVM_ADJUST_MAPPINGS: 2.8787s 2.8781s 2.8785s 2.8742s 2.8759s
+> After  patch: KVM_ADJUST_MAPPINGS: 0.3008s 0.3004s 0.2974s 0.2917s 0.2900s
+>
+> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 40
+> 	   (40 vcpus, 20G memory, block mappings(granule 1G))
+> Before patch: KVM_ADJUST_MAPPINGS: 2.9621s 2.9648s 2.9474s 2.9587s 2.9603s
+> After  patch: KVM_ADJUST_MAPPINGS: 0.3541s 0.3694s 0.3656s 0.3693s 0.3687s
+>
+> ---
+>
+> Yanan Wang (4):
+>   KVM: arm64: Move the clean of dcache to the map handler
+>   KVM: arm64: Add an independent API for coalescing tables
+>   KVM: arm64: Install the block entry before unmapping the page mappings
+>   KVM: arm64: Distinguish cases of memcache allocations completely
+>
+>  arch/arm64/include/asm/kvm_mmu.h | 16 -------
+>  arch/arm64/kvm/hyp/pgtable.c     | 82 +++++++++++++++++++++-----------
+>  arch/arm64/kvm/mmu.c             | 39 ++++++---------
+>  3 files changed, 69 insertions(+), 68 deletions(-)
+>
