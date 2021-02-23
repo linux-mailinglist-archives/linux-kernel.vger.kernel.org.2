@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DE23226A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 08:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 229A73226A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 08:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbhBWHvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 02:51:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56512 "EHLO
+        id S232000AbhBWHvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 02:51:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbhBWHu2 (ORCPT
+        with ESMTP id S232011AbhBWHuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 02:50:28 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69646C06178B
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 23:49:48 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id w18so8262796pfu.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 23:49:48 -0800 (PST)
+        Tue, 23 Feb 2021 02:50:50 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0B9C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 23:50:10 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id ba1so9341705plb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 23:50:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:content-transfer-encoding:in-reply-to:references
          :subject:from:cc:to:date:message-id:user-agent;
-        bh=vs+Po/qDl+LMilqgZYSJdN00NlVMDFdkH9R9v7dPCJ0=;
-        b=XZ+C6W4OOQZh/kFBb2huxk3/wpyfdWB1ChY7eVghcoLCrdFpJl05LzNymU7oK5e0gr
-         ZXu6O4X74LTzIh+Lc821uFUc43B1csV/zndLv15FGMC6K4Uk99lbEwyDcPvjil2iwZpL
-         MAswBicxTLaavccxaZwGzdkG6WR6jjIQijEAc=
+        bh=1D4vAhvj2G8Kc7c6D67wbQPCXJsVm3M9E2tQ2CYNB2o=;
+        b=dJrIJ9D+6Iv5KPwX0hIV4hHwcrvvWvAU4lC02WQJXnHDiET5KbD0JyA7ecfF9xZ5hW
+         wMWYqD+HLyUOt/DiYeg1R8rPc0CUJutlf1bz8H6ebtF/BeWHScnSyrns1JF/CyDe3BM9
+         ZlHjVco/x2mZPIcZBeaYEXfdqdTrzpAxi1t1Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:content-transfer-encoding
          :in-reply-to:references:subject:from:cc:to:date:message-id
          :user-agent;
-        bh=vs+Po/qDl+LMilqgZYSJdN00NlVMDFdkH9R9v7dPCJ0=;
-        b=cvBPp3bsRgijjF3PppnqGKWtOTC/0PZ9AbsadJoUM3bp2JUXvm+Op/dGHlHZrgsN5R
-         QkAhe2Gxhq+QzWHAkajJL/DMy/pHzlXa+9CrNv+hujZJmuVIhg5EB9UQJx+TbqeUd21M
-         O7RVeu2eYy5dfs058nnf/0h8FF0TI9ymF4vjcsk4oLIWdkpwfpJCM+MgemgOPU2iyoI2
-         3I+qrTwp/ECed94z8Z2r6ePVObcK1Nt+e4TgHJqhuK+NBRwnmlqYX8ArBpV2Nw5M80es
-         vIfRtFB+DBmrur32DdKg7Y0CHB5M7tI/Ux+xlW4LtR5frYAXtmc9acSCyUrN11NR4zjt
-         q3Zw==
-X-Gm-Message-State: AOAM5338a9ENNwN2c7yNWg1z/ZN7SDRu91pUi0c+pWNxbkF+Er88d0Gp
-        5BD8eiDi8Ty597vKzgVuzbXxbQ==
-X-Google-Smtp-Source: ABdhPJxGbMGJrV4PwG5EMGdsmKoBx3keygbgbAJ4uJhqxUNj+HFibldW/FYkZbmo2+XGEjikappoFQ==
-X-Received: by 2002:a63:2948:: with SMTP id p69mr23230491pgp.15.1614066587989;
-        Mon, 22 Feb 2021 23:49:47 -0800 (PST)
+        bh=1D4vAhvj2G8Kc7c6D67wbQPCXJsVm3M9E2tQ2CYNB2o=;
+        b=XHt3/3LvZYujCN2JJna3Ep3Sw8oDCcBgUwDQnB711SE+HIu1LTYnxNm6AHmRhmgkxH
+         z2s6+ATafxvhko9aqN4/0WbBcqUfkgsFWFYDwzILIzHwezGArKLSagy8ja5P8YuKbo7Z
+         EtDu2EKIQATWzTeShesKmXc+p9RCxcjc/13flb4RVAAslcLspz8FDlfKMzcdEPX48sIa
+         ioqQYEVoeSPtgoedVvPSCj2S+D74EGy1XQpgeEZSF4HFLVFUDsYRtQdrUjEkoWjUkHB4
+         tuXQh+CJl5XZh3EJp36vEvdvg2h3ePyIEFlYKCnlVd5do5pxAnB9Sm/9h/hcO+caj43U
+         vi1g==
+X-Gm-Message-State: AOAM5304EXoy6VCIij5naSPeJlwdEAkyP7Ej+8v6RUCpEWJOBHIZtLtP
+        tAoy/gHmlLRINy1op7gXy4gkgQ==
+X-Google-Smtp-Source: ABdhPJz7/0rm3sM2c2w5O1iH+FdR4IQ9LwL3+VosSQTl/HPmWDw6XqMLz1+z5wpKPS5tcJ07x9hIJg==
+X-Received: by 2002:a17:90a:ad97:: with SMTP id s23mr27990760pjq.212.1614066609682;
+        Mon, 22 Feb 2021 23:50:09 -0800 (PST)
 Received: from chromium.org ([2620:15c:202:201:68e6:d68b:3887:f216])
-        by smtp.gmail.com with ESMTPSA id 137sm21405427pgb.80.2021.02.22.23.49.47
+        by smtp.gmail.com with ESMTPSA id k5sm1992563pjl.50.2021.02.22.23.50.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 23:49:47 -0800 (PST)
+        Mon, 22 Feb 2021 23:50:09 -0800 (PST)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1613114930-1661-2-git-send-email-rnayak@codeaurora.org>
-References: <1613114930-1661-1-git-send-email-rnayak@codeaurora.org> <1613114930-1661-2-git-send-email-rnayak@codeaurora.org>
-Subject: Re: [PATCH 01/13] dt-bindings: arm: qcom: Document SC7280 SoC and board
+In-Reply-To: <1613114930-1661-3-git-send-email-rnayak@codeaurora.org>
+References: <1613114930-1661-1-git-send-email-rnayak@codeaurora.org> <1613114930-1661-3-git-send-email-rnayak@codeaurora.org>
+Subject: Re: [PATCH 02/13] dt-bindings: firmware: scm: Add SC7280 support
 From:   Stephen Boyd <swboyd@chromium.org>
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Rajendra Nayak <rnayak@codeaurora.org>
 To:     Rajendra Nayak <rnayak@codeaurora.org>, agross@kernel.org,
         bjorn.andersson@linaro.org, robh+dt@kernel.org
-Date:   Mon, 22 Feb 2021 23:49:46 -0800
-Message-ID: <161406658623.1254594.9002506853157482065@swboyd.mtv.corp.google.com>
+Date:   Mon, 22 Feb 2021 23:50:07 -0800
+Message-ID: <161406660792.1254594.1241141672101768079@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rajendra Nayak (2021-02-11 23:28:38)
-> Document the SC7280 SoC and the IDP board bindings
+Quoting Rajendra Nayak (2021-02-11 23:28:39)
+> Add compatible for SC7280 SoC
 >=20
 > Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 > ---
