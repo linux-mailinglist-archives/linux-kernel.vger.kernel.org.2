@@ -2,61 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6302322AF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE54322B01
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 14:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhBWM6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 07:58:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232734AbhBWM6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 07:58:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B549064E62;
-        Tue, 23 Feb 2021 12:57:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614085074;
-        bh=rhzm5JG8eb5/DmRoVauZVUizQsVvzGQwlt1VbYXoOGs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xjxB1yNT8oxI6NsJTb6Vd01NHPJGsbtGYC0j7ArY589nzrYiPEvHsp/wdmKa9GAIx
-         ofXsZ2qi1PE8eiOfD8De5RqW5H9ztVgM6iiub2YaMYBALwwlMu3yL3n4sdoysJz3Zw
-         9i6Qab/KW8fz5uP5W+XOmYCBV8SZOaMF355iNtXs=
-Date:   Tue, 23 Feb 2021 13:57:51 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 00/12] 5.11.1-rc1 review
-Message-ID: <YDT7z/FHCgIQ+2Rk@kroah.com>
-References: <20210222121013.586597942@linuxfoundation.org>
- <20210222212917.GG98612@roeck-us.net>
+        id S232781AbhBWM7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 07:59:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29763 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232754AbhBWM7P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 07:59:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614085069;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ejww2KN9lm9jdMXwKJXUxNSbDO+xho00yxBfGY60kHQ=;
+        b=R1uPay+pJnqRhQzGQkUTktqHsBHLDCLZSXurKWg7zjOnt2lK9+HOwRv4XZkrJNi4QN6JTO
+        ptUypPS8DPOkCVtZMW2B5kd2TCqzqVp1/UpiwkjaEA8RIgBTQv31pbBRJNiJmOQzqaosti
+        ZbXk1QeQFngN0jKKWbboQJmWljrngXc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-406-StTCqMhkNUqtugcRrQksTQ-1; Tue, 23 Feb 2021 07:57:47 -0500
+X-MC-Unique: StTCqMhkNUqtugcRrQksTQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B85A1005501;
+        Tue, 23 Feb 2021 12:57:44 +0000 (UTC)
+Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 507585D9D0;
+        Tue, 23 Feb 2021 12:57:34 +0000 (UTC)
+Subject: Re: [PATCH v11 04/13] vfio/pci: Add VFIO_REGION_TYPE_NESTED region
+ type
+To:     Shenming Lu <lushenming@huawei.com>, eric.auger.pro@gmail.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
+        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     jean-philippe@linaro.org, jacob.jun.pan@linux.intel.com,
+        nicoleotsuka@gmail.com, vivek.gautam@arm.com, yi.l.liu@intel.com,
+        zhangfei.gao@linaro.org, wanghaibin.wang@huawei.com,
+        Keqian Zhu <zhukeqian1@huawei.com>, yuzenghui@huawei.com,
+        Kunkun Jiang <jiangkunkun@huawei.com>
+References: <20201116110030.32335-1-eric.auger@redhat.com>
+ <20201116110030.32335-5-eric.auger@redhat.com>
+ <2b5031d4-fa1a-c893-e7e4-56c68da600e4@huawei.com>
+ <081265c6-a579-6041-5a74-99bf74cc3d5f@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <022eec8e-ae33-720a-b882-d00cc95a2a27@redhat.com>
+Date:   Tue, 23 Feb 2021 13:57:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210222212917.GG98612@roeck-us.net>
+In-Reply-To: <081265c6-a579-6041-5a74-99bf74cc3d5f@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 01:29:17PM -0800, Guenter Roeck wrote:
-> On Mon, Feb 22, 2021 at 01:12:52PM +0100, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.11.1 release.
-> > There are 12 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> Build results:
-> 	total: 155 pass: 155 fail: 0
-> Qemu test results:
-> 	total: 435 pass: 435 fail: 0
-> 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+Hi Shenming,
 
-Thanks for testing them all and letting me know.
+On 2/23/21 1:45 PM, Shenming Lu wrote:
+>> +static int vfio_pci_dma_fault_init(struct vfio_pci_device *vdev)
+>> +{
+>> +	struct vfio_region_dma_fault *header;
+>> +	struct iommu_domain *domain;
+>> +	size_t size;
+>> +	bool nested;
+>> +	int ret;
+>> +
+>> +	domain = iommu_get_domain_for_dev(&vdev->pdev->dev);
+>> +	ret = iommu_domain_get_attr(domain, DOMAIN_ATTR_NESTING, &nested);
+>> +	if (ret || !nested)
+>> +		return ret;
+> 
+> Hi Eric,
+> 
+> It seems that the type of nested should be int, the use of bool might trigger
+> a panic in arm_smmu_domain_get_attr().
 
-greg k-h
+Thank you. That's fixed now.
+
+Best Regards
+
+Eric
+> 
+> Thanks,
+> Shenming
+> 
+
