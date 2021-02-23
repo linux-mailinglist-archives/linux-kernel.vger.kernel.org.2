@@ -2,114 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8385322E55
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:07:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB705322E6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233527AbhBWQGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 11:06:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
+        id S233422AbhBWQKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 11:10:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233355AbhBWQGT (ORCPT
+        with ESMTP id S233296AbhBWQKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:06:19 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B341C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:05:38 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id 74so2144072iob.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:05:38 -0800 (PST)
+        Tue, 23 Feb 2021 11:10:08 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0133C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:09:26 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id b3so4721717qtj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:09:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qp39F608telK2g5bl2vnH3DV36nCXGkIBvfuxBxCEpY=;
-        b=Fc5JL2D74YRtPChhudq6t+o1f9MaKKi0XlmCIBRl9Nb9+83049FLi9RX5ILEingifB
-         iDeeO2qENKsoDyvLmOpm/9LEKPg4VlXj69JSymwOTlw2m07mmiFkYNvWRosyNfxhNNi1
-         VBiaQp9WMVqPK/Om3Ue+HMFISRBNBYltEArzs=
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aBg1IR5JedpOTOrYO06K6DlJUVlqWpH8omy4Ybzar+8=;
+        b=m0zKw9YMqnels88qhtZuB8ptwcMEcFktaV383ohgB6ToB1fno6GsAzPAlkrp3GW54H
+         Qw6XrXiQn98GVfR0PlSmeBISxq+3mbZ6iOZvZJmSimBBaCOjm/mu+4jBhPjflxbycyO5
+         OK6/c86p5YbIE+7J5XDfYIwczh/hoNDS/3MXM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qp39F608telK2g5bl2vnH3DV36nCXGkIBvfuxBxCEpY=;
-        b=XpkV1NY8bzGGiEKNuTQ2UrSga5PqDRofOxH7H/1M8bVObR/LagLH84I9YulQiDMW2f
-         j7F8qOW8cg2UXrSXn82TR5A+R46ftGRuFgnRBEkdkpGZbvVVadeoJEo5QRSpmkh8dESq
-         QT2RFqwbIKCiY3XWLh/I6a2vWZZEnehON1meRIJiB1/AfHzHuNi8GThsM2GnNmAU2Vd4
-         SPYF9CQNHOWUJOQq9a8CVfLrPtZk10t5PeKEKnkyJnqHgSqfkqdTkiq7IaDbqBtlpTN/
-         kPAd2hbvQBDgdheMaF7DmWV+8Qf5v7xGX2XG4mVYIWrTQpg/PHTAhfS1UvKTiOb220GQ
-         F4gg==
-X-Gm-Message-State: AOAM530gpRr4kRpmzbheoFCsgmGscJnvxCr2VhytOd9TB3NqfsDp4Qa9
-        zqi1tuku+FcjMPs95YU8tAJEoeX577kxGA==
-X-Google-Smtp-Source: ABdhPJyCtLBbrhnuCswxsSSKtEbIVZs8PMT6HfXbak31SxSBn5MDXpSC4e9rcFyuUuZVPvBGFxcGiQ==
-X-Received: by 2002:a5d:8ac5:: with SMTP id e5mr19743306iot.33.1614096337331;
-        Tue, 23 Feb 2021 08:05:37 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id s14sm3978152ilj.83.2021.02.23.08.05.36
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aBg1IR5JedpOTOrYO06K6DlJUVlqWpH8omy4Ybzar+8=;
+        b=ap/CtDmEXVrTCFJBwCBlg/R1iRBXv2y9oFZwgLiYiBFE2MlqxFPFWEwYSrVPpwnY4O
+         mwzyui5lER7zVbcZ04HOLN03qS0TAsQt4TebWdZeb78vGuOnmFeTCvMxw8eFcu3f1dLJ
+         c4/eolsReuCTq6OtQmj16EiJbqLAJke44GNGoB3L9eEhHtxsS7w5CTVvjU3ckZxuN5ss
+         1NeRpCJ8D5fcRJ8y0D3jtNX7XG6VMb5HyAXVWgMCmxK70ECzRhityBtITkjTbtV/FscE
+         SVhXvn+0IRA+Hhgj+8ld4roZ7eUww4VIAfS32EWxzKj6qYoxbO3QHbR22AJhfo1iHfsl
+         LgUw==
+X-Gm-Message-State: AOAM532xnh0E4HYq2VM6XCbMxiu/1l3NMfJ/p1neEsMLpTlgvoIYwOWS
+        Snue5FzHdgKtwCMahROVWiqgB/9pw3VR2A==
+X-Google-Smtp-Source: ABdhPJyEW/XLQ9lLLmBFyhynZgxwUl+f0Z362Ck4ixxn2XwLLcHX4XtXQoiLENV3eQhlITV7geWgjA==
+X-Received: by 2002:ac8:5e4f:: with SMTP id i15mr24984252qtx.47.1614096565920;
+        Tue, 23 Feb 2021 08:09:25 -0800 (PST)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id i16sm640511qkk.104.2021.02.23.08.09.25
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 08:05:36 -0800 (PST)
-Subject: Re: [PATCH] drivers: ipa: Add missing IRQF_ONESHOT
-To:     Yang Li <yang.lee@linux.alibaba.com>, elder@kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1614071362-123210-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <d57e0a43-4d87-93cf-471c-c8185ea85ced@ieee.org>
-Date:   Tue, 23 Feb 2021 10:05:35 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 23 Feb 2021 08:09:25 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id n195so16967488ybg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:09:25 -0800 (PST)
+X-Received: by 2002:a25:b74d:: with SMTP id e13mr41178295ybm.405.1614096564853;
+ Tue, 23 Feb 2021 08:09:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1614071362-123210-1-git-send-email-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210223120045.153208-1-sumit.garg@linaro.org>
+In-Reply-To: <20210223120045.153208-1-sumit.garg@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 23 Feb 2021 08:09:13 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=XXRkgC7XzM4Zu9so4=-KgXyXrLSXURj4uoEDPUOuAsoQ@mail.gmail.com>
+Message-ID: <CAD=FV=XXRkgC7XzM4Zu9so4=-KgXyXrLSXURj4uoEDPUOuAsoQ@mail.gmail.com>
+Subject: Re: [PATCH] kdb: Remove redundant function definitions/prototypes
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/23/21 3:09 AM, Yang Li wrote:
-> fixed the following coccicheck:
-> ./drivers/net/ipa/ipa_smp2p.c:186:7-27: ERROR: Threaded IRQ with no
-> primary handler requested without IRQF_ONESHOT
-> 
-> Make sure threaded IRQs without a primary handler are always request
-> with IRQF_ONESHOT
+Hi,
 
-SMP2P interrupts are handled as nested interrupts.  The hard
-handler for a registered SMP2P interrupt is never called, and
-is in fact ignored (it should really be NULL when registering).
+On Tue, Feb 23, 2021 at 4:01 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> @@ -103,7 +103,6 @@ extern int kdb_getword(unsigned long *, unsigned long, size_t);
+>  extern int kdb_putword(unsigned long, unsigned long, size_t);
+>
+>  extern int kdbgetularg(const char *, unsigned long *);
+> -extern int kdbgetu64arg(const char *, u64 *);
 
-The "main" SMP2P interrupt handler is a ONESHOT threaded
-interrupt handler, and all registered SMP2P interrupts are
-handled within (called by) that main handler thread function.
+IMO you should leave kdbgetu64arg() the way it was.  It is symmetric
+to all of the other similar functions and even if there are no
+external users of kdbgetu64arg() now it seems like it makes sense to
+keep it matching.
 
-It is not *necessary* to provide the IRQF_ONESHOT flag when
-registering an SMP2P interrupt handler.  I don't think it
-does real harm to add it, but unless I'm mistaken, the
-interrupt handling is actually simpler if ONESHOT is *not*
-set in this case.
 
-I could be convinced otherwise, but until I would rather
-not accept this patch.
+> @@ -209,9 +208,7 @@ extern unsigned long kdb_task_state(const struct task_struct *p,
+>                                     unsigned long mask);
+>  extern void kdb_ps_suppressed(void);
+>  extern void kdb_ps1(const struct task_struct *p);
+> -extern void kdb_print_nameval(const char *name, unsigned long val);
+>  extern void kdb_send_sig(struct task_struct *p, int sig);
+> -extern void kdb_meminfo_proc_show(void);
 
-					-Alex
+Getting rid of kdb_print_nameval() / kdb_meminfo_proc_show() makes sense to me.
 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->   drivers/net/ipa/ipa_smp2p.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ipa/ipa_smp2p.c b/drivers/net/ipa/ipa_smp2p.c
-> index a5f7a79..1149ed8 100644
-> --- a/drivers/net/ipa/ipa_smp2p.c
-> +++ b/drivers/net/ipa/ipa_smp2p.c
-> @@ -183,7 +183,7 @@ static int ipa_smp2p_irq_init(struct ipa_smp2p *smp2p, const char *name,
->   	}
->   	irq = ret;
->   
-> -	ret = request_threaded_irq(irq, NULL, handler, 0, name, smp2p);
-> +	ret = request_threaded_irq(irq, NULL, handler, IRQF_ONESHOT, name, smp2p);
->   	if (ret) {
->   		dev_err(dev, "error %d requesting \"%s\" IRQ\n", ret, name);
->   		return ret;
-> 
 
+>  extern char kdb_getchar(void);
+>  extern char *kdb_getstr(char *, size_t, const char *);
+>  extern void kdb_gdb_state_pass(char *buf);
+> diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
+> index 6226502ce049..b59aad1f0b55 100644
+> --- a/kernel/debug/kdb/kdb_support.c
+> +++ b/kernel/debug/kdb/kdb_support.c
+> @@ -665,24 +665,6 @@ unsigned long kdb_task_state(const struct task_struct *p, unsigned long mask)
+>         return (mask & kdb_task_state_string(state)) != 0;
+>  }
+>
+> -/*
+> - * kdb_print_nameval - Print a name and its value, converting the
+> - *     value to a symbol lookup if possible.
+> - * Inputs:
+> - *     name    field name to print
+> - *     val     value of field
+> - */
+> -void kdb_print_nameval(const char *name, unsigned long val)
+> -{
+> -       kdb_symtab_t symtab;
+> -       kdb_printf("  %-11.11s ", name);
+> -       if (kdbnearsym(val, &symtab))
+> -               kdb_symbol_print(val, &symtab,
+> -                                KDB_SP_VALUE|KDB_SP_SYMSIZE|KDB_SP_NEWLINE);
+> -       else
+> -               kdb_printf("0x%lx\n", val);
+> -}
+> -
+
+Getting rid of kdb_print_nameval() makes sense to me.
+
+-Doug
