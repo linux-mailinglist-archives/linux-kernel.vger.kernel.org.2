@@ -2,156 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D246C3224A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 04:28:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 508913224A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 04:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231483AbhBWD1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 22:27:44 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:44088 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhBWD1l (ORCPT
+        id S231517AbhBWD23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 22:28:29 -0500
+Received: from mail-io1-f45.google.com ([209.85.166.45]:40628 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230498AbhBWD21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 22:27:41 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11N3A2Eb139463;
-        Tue, 23 Feb 2021 03:26:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=aCCNKqrczshAFCG3BX80CxTmw64e23br3ll40BDnRBI=;
- b=UhSwrIMH0iaZAcz5B4iUtjPSSHnf8sHe9C+XQc+DW0Hd5kukJWRoE/QqkwCxP8MjgVZc
- grntmNKEK4UUd63mx62BeHBGc+kJ9ieGbPGZEKzRPWqj4e8rSqXb1s7xw/HVtXkkXdu/
- hN6nOOgbKZTwF0iH1f/egjeXOiSRQW+5CPwm1sXRENHEH7mPqC1VI8oUvEEiiVlFpNQS
- uKEeLTc6AEM0oAGETb1nOJBiahAmXfLlhA1DY+RV8fTOEwLc5qnfoRcE6isp21kejTas
- oekaaANlnp4L8e9OFRfA4sG3KQ4xm8xtbZnL0Fqcmkcw4+2Lngw3k5V/x1Z4NsG8Mag2 oA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 36tsuqwsfg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Feb 2021 03:26:55 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11N3QXsD014243;
-        Tue, 23 Feb 2021 03:26:54 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
-        by aserp3030.oracle.com with ESMTP id 36v9m41ad4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Feb 2021 03:26:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lB5cIfXVkLEEMJazuw9/TFFo1euoTJ3JMGgSV6dDf1vwZUH+8Fv+OPAdBCj1cvUibzp1HNGqfjbxmct+6+9gtBOlOrqzNobmb/y0E/+vlzOzEEaOvJQswZio7T5P+tJjkn5iv9G7u1LeB/4pmIuGdJOYXa0nUN5FivGYR/JS/xUaxHnuT1OmD1fa79OOUsdwHuf2C02sXvOvuAyv3z2b2CwGFIDbii3AkAwfgZ1gH8Jy+T7lhmymCW+SYTIbMoc+aPN3AnLg/0TH9YT7nuuQeiSijyGoXRidJtScbc0bSpHLcDAHFlw8253aYoPb2a7k9EyoHsUKVegCtlJxd7xK9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aCCNKqrczshAFCG3BX80CxTmw64e23br3ll40BDnRBI=;
- b=ZdApsIPuycSAdn9HReSvOKa8ij3XJT6iAKfPS441NHc3Gw9Q0v7kUUIFblIU+W4LAXZo3iHwac5Pth83wbK9QqKW8lAgc3m3bj/+Jzp+/Vi6c/1O9x8qEukoLOnwuiVDx9QZ7O0j7ohtIANVvedKoR+UTBbe2YVz9imDajCItgGfBM/El25v9MqspW/PQLCa//zgC0vnjyOMQP7rN9fKpRI6ne2ft1HTY3PGyaHfH7dUdplIjRBgGwAmQed11hgDUWSD9lxexri28v2d2x36RB98aItlVgzE5EUMktNaGtRhq3qh3o2D+gjW37c0EfK+aqlGhjRUERtcwGZt7qIywQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aCCNKqrczshAFCG3BX80CxTmw64e23br3ll40BDnRBI=;
- b=FEVZTKPVh0PNNNQU1A4fpfyziOTD2+WqUSEA9on5e1bQfzlL4/uJnJ97ypc3T8Kr7FaUofBleyfSfxrK4fnC6y5af5uccJxclEmei8saDsouR+1C8mnRumeusI+10AQte/+ST0pgGamuxHCVGc9pGJKd8IrZBLCf+7xbmiuG1H0=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4471.namprd10.prod.outlook.com (2603:10b6:510:38::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.32; Tue, 23 Feb
- 2021 03:26:52 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e%5]) with mapi id 15.20.3868.033; Tue, 23 Feb 2021
- 03:26:52 +0000
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH] SCSI: bnx2fc: fix Kconfig warning & CNIC build errors
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq11rd7h3bh.fsf@ca-mkp.ca.oracle.com>
-References: <20210213192428.22537-1-rdunlap@infradead.org>
-Date:   Mon, 22 Feb 2021 22:26:50 -0500
-In-Reply-To: <20210213192428.22537-1-rdunlap@infradead.org> (Randy Dunlap's
-        message of "Sat, 13 Feb 2021 11:24:28 -0800")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: BYAPR02CA0042.namprd02.prod.outlook.com
- (2603:10b6:a03:54::19) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Mon, 22 Feb 2021 22:28:27 -0500
+Received: by mail-io1-f45.google.com with SMTP id i8so15639874iog.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 19:28:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=HI1IeUcajrSGQGzEM7tIoTC6RGw0rv93ilEN7asvsjo=;
+        b=pOfv5ahQ3dgdNM4kFSM9ka0t4ji3FCyF5eiHcSzC4IxXjtnF/gZTd2cqbJAB90yozs
+         D6Z//+U7jqtrmaqP8wq7zUCKYGf/0mk9A9fYP2cO/oupkzoKCugBA6DO1DoKbUtFVe1t
+         BKetgr6Yfj6jVFgbkDh43PCXmul91qJAa13nNcparF18yYImv1hiA6TwVIvQpz8ueXvi
+         YCRJCV0l7+8SI2NJ0CLbdN2+AfvxYFIP7k9KPgtIWqQhO9HyIYplpRZunGlhOE3aG5iO
+         r5YHSuVoT4u4xsFaUiNID1pJmSqS4IfBhWItSoKlk8wcKZRmjiEF0xg88n366qFUv9YI
+         b16A==
+X-Gm-Message-State: AOAM5331+Ti3OBJ0W2XAFqHnU72Fq0Xrz+H2OFv/rd79oEMI/mV7kGie
+        2ffMGeWfWXnoj2Rrm5Ax2pFtaaqaYi8=
+X-Google-Smtp-Source: ABdhPJzhb9u66SIfGCCsHf+vx/HoQGMVHLdzObOa2U+QErsRxFWXu7KWTWtU6YYWJZmiOqqQSN/BuQ==
+X-Received: by 2002:a6b:3b14:: with SMTP id i20mr18764997ioa.28.1614050866467;
+        Mon, 22 Feb 2021 19:27:46 -0800 (PST)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id c16sm5536698ils.2.2021.02.22.19.27.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 19:27:44 -0800 (PST)
+Date:   Tue, 23 Feb 2021 03:27:41 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] percpu changes for v5.12-rc1
+Message-ID: <YDR2LTclQGy7OHKc@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BYAPR02CA0042.namprd02.prod.outlook.com (2603:10b6:a03:54::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Tue, 23 Feb 2021 03:26:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1c765745-c23d-4c3e-b337-08d8d7aadd19
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4471:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4471B62DFB289C9FDC76EB538E809@PH0PR10MB4471.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +Yys2pdupW1UEy7/7c+qs0WP6l1yaPIT+GCKaSPI1yYDtTdIumtvVIqi01aew/7xJN/qKc3dyZX8sXE2x1bvEc9vR6q7w0bzcZwGM4n6f9zgIifZBZuaHUIsq+UbMX5tbPOEOFcSZDoAC3sgcibe8HHlWuG/6/uddwNPQkTZLfIqPQNWFzhnSuQSvM8SZwQyQ16ZEOYP8aZTC9eYfm9hDB/9B+8kva54coIyjABZQMDKM2yX56mMsMvq4QLlogN5ZTGauU/PJhiolJC5a2whkm0JozypLpXxCSiAqUzd4t/7s4K7jHMdymNX7QApZIaQI6JagVbHVgRYCc1RENAVta3+0vdOTdFP/8g9IG8GPF4/Vc91WNMbQMF+2BLXF0yd7JuVwF0tbUEksF1Htr75qSmTaCZgIm8GDq/yxuRtp5NDZdAZdWDAmtbF6EOMUYhLxqahebqCYTTSjh+wJ1yL6exId4xYjJtNB73eYbbzs47GHt14oBNnZD8fzwKiSDdIcPUIfCW/U4K0PKomTrLKrw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(346002)(396003)(376002)(6916009)(7696005)(478600001)(16526019)(956004)(8936002)(36916002)(2906002)(52116002)(66476007)(66556008)(66946007)(5660300002)(86362001)(558084003)(26005)(8676002)(4326008)(186003)(54906003)(55016002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?xAXm5NvSe1US7jQb14IWSzYkc8tfqC/oZFeYphNaOceHc9wxi7NeVy44aSR8?=
- =?us-ascii?Q?XWeIkrkHCqWPVAUvxKZjSY+Z3HZZjOe/LL95iXmBBEnNrPA+mIQuU6V8/mIz?=
- =?us-ascii?Q?Ay8K7+LuE3C22rjx9ZXOZZtc/aPx9T6tF/yVCO7ofF6cqjFCT6i7M2wO0v2E?=
- =?us-ascii?Q?HmILlpZIg4mD8KR94aJZtl3FHd/1LCF4RrWWA4XhOsJ7GHk+4dj2Jxco3LqR?=
- =?us-ascii?Q?HKLWBjr+2quSt+QNqgCTZoiM7QVOZcRkWobGS4XMneXNj1ncMYb1eUzzNOAG?=
- =?us-ascii?Q?t5XgBuyhcWCwLvP5CrsG7NaJOeZk4FYRTNtap7lzr4XaihhSvRbVm72erNJr?=
- =?us-ascii?Q?YVCcRKtkXcE55SVUStUdPxc1j1FL9YOtxLcuh6StrsAbOaTWu57Nr/VbCwFr?=
- =?us-ascii?Q?O+K+5rtiFjloVmRDYklLhGKnY+iQzNc4Mg3Zu4C96vFP+yQfRD1oKDMPzfdw?=
- =?us-ascii?Q?X9+0GSlSZpAEV+f1dI14x5+jBKwvDhwrtxRdhtnr5Ufo+whPACWsXAlToqt8?=
- =?us-ascii?Q?da1kso6xIIOk0iADjGDDU++IgPyaQ0bBXO5ngAaUXhke0vmoGIEGVgay91vF?=
- =?us-ascii?Q?Xfo/gzO91IwdISpBtkmWz8tliscd1Fr5Y59TSJyt8e0hBC+SfjPvfxl4/2ZO?=
- =?us-ascii?Q?n5ACEsbfpTuXTAQ9thFs2TWROUCkjk5rGqCUPoCmNbxMS9SHht62UTL+eAv3?=
- =?us-ascii?Q?UMOzB/klKPUKy5KfLkbLHmoQChGNhFVMiSEhyvsWQdut2wq9fTA5obg2459T?=
- =?us-ascii?Q?WPCbGQsLfGq9FV1Uc91OfGICYZU5cC43KjRYdm11bORYc4hrKxZh5cELWLZj?=
- =?us-ascii?Q?GJygjjgSu0COn90qZsAlqZmWqrSuRlJygQ62jb3N/qA2KLbKWylhlCHqsUVG?=
- =?us-ascii?Q?vEDytSJOxpq0z8lZlxPq+tH+6/0ueWj1yjINJew0s+FUahznJbRJhlF0ku/+?=
- =?us-ascii?Q?SyxNfWDyqMoCoMOVfef/JlQobKD00zLLebFKJXFGX6HKY1zVakSW1HLGr5IG?=
- =?us-ascii?Q?3dk953whLgMcJK7g+kRzyRnHFH24+dp85rMux9nQLzF296dkxMe6COF1pu+O?=
- =?us-ascii?Q?ML7S8j82+MxcF0syNmyKWh2UjC0jWq2WHHxhluwsE5g8WsUm3ZFg/Xkx2726?=
- =?us-ascii?Q?Cer1Ga7fBDpG/OZJ8AVo2qRLfBO3RBPmVqsa2vOaP3QRdbojIysId3TEhv5v?=
- =?us-ascii?Q?1P4JdrUu5TMp+dOejNaBzU3H2fDp+I87/VhLZlwOoOfr2VIFGx1woUCZpSQT?=
- =?us-ascii?Q?SRNmlrmyKFOEoGwPnFbG1EiyZBdRLg/oogby8AeagM1qzJTSu5dBowLWVx03?=
- =?us-ascii?Q?rPMW/DZ0TJqwkfx0xlUc286o?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c765745-c23d-4c3e-b337-08d8d7aadd19
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2021 03:26:52.7961
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: clwuFWWIS7bP9uyjD0QEMUOH8DruZbfWAJqdmmSbG3/ktLiBDanrvPJjzedc3Rc6K3+tbu6cSX41zLl2ZHsvDjiaJ9bJS3i1GO1DPsCrKZY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4471
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9903 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
- suspectscore=0 mlxlogscore=924 mlxscore=0 spamscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102230027
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9903 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 mlxscore=0 malwarescore=0
- clxscore=1015 phishscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102230026
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
-Randy,
+Percpu had a cleanup come in that makes use of the cpu bitmask helpers
+instead of the current iterative approach. This clean up has an adverse
+interaction when clang's inlining sensitivity is changed such that
+not all sites are inlined resulting in modpost being upset with section
+mismatch due to percpu setup being marked __init. It is fixed by
+introducing __flatten to compiler_attributes.h. This has been supported
+since clang 3.5 and gcc 4.4 [1].
 
-> CNIC depends on MMU, but since 'select' does not follow any dependency
-> chains, SCSI_BNX2X_FCOE also needs to depend on MMU, so that erroneous
-> configs are not generated, which cause build errors in cnic.
+[1] https://lore.kernel.org/lkml/CAKwvOdnxnooqtyeSem63V_P5980jc0Z2PDG=0iM8ixeYTSaTCg@mail.gmail.com/
 
-Applied to 5.12/scsi-staging, thanks!
+Thanks,
+Dennis
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
+
+  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git for-5.12
+
+for you to fetch changes up to 258e0815e2b1706e87c0d874211097aa8a7aa52f:
+
+  percpu: fix clang modpost section mismatch (2021-02-14 18:15:15 +0000)
+
+----------------------------------------------------------------
+Dennis Zhou (1):
+      percpu: fix clang modpost section mismatch
+
+Wonhyuk Yang (1):
+      percpu: reduce the number of cpu distance comparisons
+
+ include/linux/compiler_attributes.h |  6 ++++++
+ mm/percpu.c                         | 36 +++++++++++++++++++++---------------
+ 2 files changed, 27 insertions(+), 15 deletions(-)
