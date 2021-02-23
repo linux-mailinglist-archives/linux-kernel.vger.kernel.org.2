@@ -2,123 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB45532231E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 01:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D33322333
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 01:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhBWA2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 19:28:15 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17346 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229902AbhBWA2M (ORCPT
+        id S231406AbhBWAjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 19:39:23 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12936 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhBWAjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 19:28:12 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11N03u8t080253;
-        Mon, 22 Feb 2021 19:27:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=5J1oNfAJAZAWoxjtw2qcZ2zBoDJIV8/0RoNc1tVrOmU=;
- b=TuaJ0zDVYIg4AY90MBndgHRlYvzfK4jqgc1ESE1iyR8uvrJ/GoI6ngmI1q9M0WS2DAjE
- Lr9oTlDH4U+L9r7yseWCriPaycgoYIbqaAU8Q4NlKG5yPkg6wMjQba8ZSIr/GB1DRIc9
- 7ktZjt5jITTiDDui4Gy8dcX7FZM4m1j6vcun7GAAUP5qXknNWXujDz1OX9p4WLs+ha1p
- +OWpEXU859OTC3D9DjzPfoBbMEZNmEdvX3YfGVyKz3J4W1H0rhDoFiau+HV7QtaJUA6V
- ty3WJbQlDMWQnOoP+oN4Umq/hZCa5NWMOeC53Zr6/m8eHuIHpJI4H9gySmyCYljGs92N BQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36vkehyd7g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Feb 2021 19:27:16 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11N04Hin082615;
-        Mon, 22 Feb 2021 19:27:16 -0500
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36vkehyd75-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Feb 2021 19:27:16 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11N0CAcv005954;
-        Tue, 23 Feb 2021 00:27:14 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma02fra.de.ibm.com with ESMTP id 36tt2893mj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 00:27:14 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11N0RC7l43319652
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Feb 2021 00:27:12 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F07384C044;
-        Tue, 23 Feb 2021 00:27:11 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 030404C040;
-        Tue, 23 Feb 2021 00:27:09 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.63.56])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 23 Feb 2021 00:27:08 +0000 (GMT)
-Message-ID: <3862fed24a1265611f71327ddb444e52557bdc7c.camel@linux.ibm.com>
-Subject: Re: [PATCH v24 04/25] IMA: avoid label collisions with stacked LSMs
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 22 Feb 2021 19:27:07 -0500
-In-Reply-To: <77ebed19-2912-d8f2-cb4d-3f782c8e7f18@schaufler-ca.com>
-References: <20210126164108.1958-1-casey@schaufler-ca.com>
-         <20210126164108.1958-5-casey@schaufler-ca.com>
-         <693f81d9d2f50a920cafbbc8d1d634598b99081a.camel@linux.ibm.com>
-         <77ebed19-2912-d8f2-cb4d-3f782c8e7f18@schaufler-ca.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-22_08:2021-02-22,2021-02-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- clxscore=1015 bulkscore=0 impostorscore=0 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 suspectscore=0 spamscore=0 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102220208
+        Mon, 22 Feb 2021 19:39:20 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Dl0W56pYMzjQB5;
+        Tue, 23 Feb 2021 08:37:21 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.201.86) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Feb 2021 08:38:32 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
+        <akpm@linux-foundation.org>, <linux-mm@kvack.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH] Documentation/features: mark BATCHED_UNMAP_TLB_FLUSH doesn't apply to ARM64
+Date:   Tue, 23 Feb 2021 13:32:30 +1300
+Message-ID: <20210223003230.11976-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.201.86]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-22 at 15:45 -0800, Casey Schaufler wrote:
-> On 2/14/2021 10:21 AM, Mimi Zohar wrote:
-> 
-> Would these changes match your suggestion?
-> 
->  security/integrity/ima/ima_policy.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index 9ac673472781..e80956548243 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
-> @@ -78,11 +78,11 @@ struct ima_rule_entry {
->  	bool (*uid_op)(kuid_t, kuid_t);    /* Handlers for operators       */
->  	bool (*fowner_op)(kuid_t, kuid_t); /* uid_eq(), uid_gt(), uid_lt() */
->  	int pcr;
-> +	int which_lsm; /* which of the rules to use */
->  	struct {
->  		void *rules[LSMBLOB_ENTRIES]; /* LSM file metadata specific */
+BATCHED_UNMAP_TLB_FLUSH is used on x86 to do batched tlb shootdown by
+sending one IPI to TLB flush all entries after unmapping pages rather
+than sending an IPI to flush each individual entry.
+On arm64, tlb shootdown is done by hardware. Flush instructions are
+innershareable. The local flushes are limited to the boot (1 per CPU)
+and when a task is getting a new ASID.
+So marking this feature as "TODO" is not proper. ".." isn't good as
+well. So this patch adds a "N/A" for this kind of features which are
+not needed on some architectures.
 
-If each IMA policy rule may only contain a single LSM specific
-LSM_OBJ_{USER | ROLE | TYPE} and LSM_SUBJ_{USER | ROLE | TYPE}, then
-there is no need for rules[LSMBLOB_ENTRIES].  Leave it as "*rule".
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ Documentation/features/arch-support.txt        | 1 +
+ Documentation/features/vm/TLB/arch-support.txt | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-Otherwise it looks good.
-
-Mimi
-
->  		char *args_p;	/* audit value */
->  		int type;	/* audit type */
-> -		int which_lsm; /* which of the rules to use */
->  	} lsm[MAX_LSM_RULES];
->  	char *fsname;
->  	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
+diff --git a/Documentation/features/arch-support.txt b/Documentation/features/arch-support.txt
+index d22a1095e661..118ae031840b 100644
+--- a/Documentation/features/arch-support.txt
++++ b/Documentation/features/arch-support.txt
+@@ -8,4 +8,5 @@ The meaning of entries in the tables is:
+     | ok |  # feature supported by the architecture
+     |TODO|  # feature not yet supported by the architecture
+     | .. |  # feature cannot be supported by the hardware
++    | N/A|  # feature doesn't apply to the architecture
+ 
+diff --git a/Documentation/features/vm/TLB/arch-support.txt b/Documentation/features/vm/TLB/arch-support.txt
+index 30f75a79ce01..0d070f9f98d8 100644
+--- a/Documentation/features/vm/TLB/arch-support.txt
++++ b/Documentation/features/vm/TLB/arch-support.txt
+@@ -9,7 +9,7 @@
+     |       alpha: | TODO |
+     |         arc: | TODO |
+     |         arm: | TODO |
+-    |       arm64: | TODO |
++    |       arm64: | N/A  |
+     |         c6x: |  ..  |
+     |        csky: | TODO |
+     |       h8300: |  ..  |
+-- 
+2.25.1
 
