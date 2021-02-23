@@ -2,87 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7691C3234B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 01:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E103234C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234496AbhBXAok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 19:44:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234655AbhBXAET (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 19:04:19 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A755C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 16:02:37 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id p2so412993edm.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 16:02:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=teqVJhK4LXz4OZBg8usuG8VfNJnNMz+dTljcctkaNG4=;
-        b=KdGZTmGsRPg0mfraFXSTSp/gtdGU7k4ammQ9upVnBXq/Xqb+ZsRIvIaqmyV3pVxo7C
-         Y040vHQJmflrbsQ+9fRB7vQCenEwcGCHPxhTc+dwKFX2p3us0JRO27Zg62jUNVMeHIG9
-         q1/fIVOksrqcUPr6yZH+k2Vfnjsyu0a4riSCBSB8y+ioY7q34yxUUTrq4N6GhQwKQWNu
-         17d+2hkaQcEs5OfPaKnzKhA4I4Q9UJzA8VofTtNkrZG9GHTsVwnoJlnHz/zEIgRKrmmo
-         bSg/NOsYK2XzYQFCIZIbQ1GGVNC3b8Ld1Y8O01y5OynRX0jDGH7IYowztBOl+KMxSQFJ
-         RSmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=teqVJhK4LXz4OZBg8usuG8VfNJnNMz+dTljcctkaNG4=;
-        b=Y83+F3GfR1zNvKZ5jbIK3Rb/hMnU+Zec/T3EJETJC6XZTi0rjW9a/QWH2yDzwIOWSi
-         69Yz2Ee86QRPu4/ZhDLeFT5NAl3SKlVwPryDJmWpxps7LF0DlxYI3iwoM1dlwJKXd4Ul
-         VBBjjqSRI60OCT5wDoRuqXDOG2iHYyovpf/s3icwW+nbwvlPi/p5dhqU2M6kD0CIwd1n
-         zBEZuKmCvJNH8TQekr/Hsc7atwD73ZPy3zVavgptjnIegeNJkNmL1hXwqJTZt1jl9ckd
-         Xu6Yvbddmcehut26bnJK3e67vDE//qJRojD++siku+kbr+v5WYD531c04IH//cx9jT2F
-         iGqg==
-X-Gm-Message-State: AOAM530RCtN+ANorXQp5fq4y6b0k6YcC5kEDeyfjwuiRr1JN55zJNM9c
-        POm7EwFZ6vCnH0yWO9vAakwnREHCoR4OjnDVvbzX
-X-Google-Smtp-Source: ABdhPJziRNGyofDZux2ELTzG6efQZEMJidRWFdAhC84nYkh3iZBsqcyVm8N/r7ln1ulYlW2a+bnT67lUDe8MhFeDwFs=
-X-Received: by 2002:a05:6402:22e9:: with SMTP id dn9mr21996487edb.269.1614124956065;
- Tue, 23 Feb 2021 16:02:36 -0800 (PST)
+        id S233688AbhBXAzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 19:55:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234660AbhBXAFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 19:05:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C1D864DDC;
+        Tue, 23 Feb 2021 23:48:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614124139;
+        bh=/R0PvoIoUIWKETbltHn0Uho57C8iK6aTehVpfmDuRc8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=n9qHuQJpSKkAo79u8yNzyLd+Olraemtbs5Gvm1s18RjmvsIRPjQxFcOypSJWcKwtl
+         QtGuDXSwPN3JaMolaHdF9mLJa3NGiHhfTPgIrP4CZSj9TdKJXN+QewOvnncCeegiQp
+         7f5O0lFGKK0wN8c3kiLI0nhRVwFhRSFVaqjEUs3NOv6cxLmnM80SKkXJNs+LTQwfzj
+         refJvVCeZ2bm3FKhNvF3QMmpeFEIC5oe4UQiK1YL1NE0B0QMYuvZ6JKc/IPnsm+Jd0
+         YaU1nrAQonPF8nVEY/zRgXi1O4O209OtGfEIPNUT5m7TT462Js95G5sBGI+3HlLBqG
+         qW4d2HHxDLwPA==
+Date:   Tue, 23 Feb 2021 15:48:55 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     syzbot <syzbot+7bf7b22759195c9a21e9@syzkaller.appspotmail.com>,
+        alex.aring@gmail.com
+Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        stefan@datenfreihafen.org, syzkaller-bugs@googlegroups.com
+Subject: Re: UBSAN: shift-out-of-bounds in nl802154_new_interface
+Message-ID: <20210223154855.669413bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <000000000000e37c9805bbe843c1@google.com>
+References: <000000000000e37c9805bbe843c1@google.com>
 MIME-Version: 1.0
-References: <20210223214346.GB6000@sequoia> <20210223215054.GC6000@sequoia> <20210223223652.GD6000@sequoia>
-In-Reply-To: <20210223223652.GD6000@sequoia>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 23 Feb 2021 19:02:25 -0500
-Message-ID: <CAHC9VhRkP-ZuzWPvLbpCOiM2H-x-_FyDrKvy5fZ7TL9etwVJCA@mail.gmail.com>
-Subject: Re: [BUG] Race between policy reload sidtab conversion and live conversion
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 5:36 PM Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
-> On 2021-02-23 15:50:56, Tyler Hicks wrote:
-> > On 2021-02-23 15:43:48, Tyler Hicks wrote:
-> > > I'm seeing a race during policy load while the "regular" sidtab
-> > > conversion is happening and a live conversion starts to take place in
-> > > sidtab_context_to_sid().
-> > >
-> > > We have an initial policy that's loaded by systemd ~0.6s into boot and
-> > > then another policy gets loaded ~2-3s into boot. That second policy load
-> > > is what hits the race condition situation because the sidtab is only
-> > > partially populated and there's a decent amount of filesystem operations
-> > > happening, at the same time, which are triggering live conversions.
->
-> Hmm, perhaps this is the same problem that's fixed by Ondrej's proposed
-> change here:
->
->  https://lore.kernel.org/selinux/20210212185930.130477-3-omosnace@redhat.com/
->
-> I'll put these changes through a validation run (the only place that I
-> can seem to reproduce this crash) and see how it looks.
+Alex, there seems to be a few more syzbot reports for nl802154 beyond
+what you posted fixes for. Are you looking at these?
 
-Thanks, please let us know what you find out.
+On Mon, 22 Feb 2021 00:05:29 -0800 syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    3af409ca net: enetc: fix destroyed phylink dereference dur..
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=139da604d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8cb23303ddb9411f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7bf7b22759195c9a21e9
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=108c7e04d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1177c324d00000
+> 
+> Bisection is inconclusive: the issue happens on the oldest tested release.
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11a6e7d2d00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=13a6e7d2d00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15a6e7d2d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+7bf7b22759195c9a21e9@syzkaller.appspotmail.com
+> 
+> ================================================================================
+> UBSAN: shift-out-of-bounds in net/ieee802154/nl802154.c:914:44
+> shift exponent -1627389953 is negative
+> CPU: 0 PID: 8454 Comm: syz-executor539 Not tainted 5.11.0-rc7-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:120
+>  ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+>  __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+>  nl802154_new_interface.cold+0x19/0x1e net/ieee802154/nl802154.c:914
+>  genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+>  genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+>  genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+>  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+>  genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+>  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+>  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+>  sock_sendmsg_nosec net/socket.c:652 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:672
+>  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
+>  ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+>  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x43fa19
+> Code: 28 c3 e8 5a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007fffda15b8b8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 000000000043fa19
+> RDX: 0000000000000000 RSI: 0000000020000ac0 RDI: 0000000000000003
+> RBP: 0000000000403480 R08: 0000000000000001 R09: 00000000004004a0
+> R10: 0000000000000008 R11: 0000000000000246 R12: 0000000000403510
+> R13: 0000000000000000 R14: 00000000004ad018 R15: 00000000004004a0
+> ================================================================================
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
 
--- 
-paul moore
-www.paul-moore.com
