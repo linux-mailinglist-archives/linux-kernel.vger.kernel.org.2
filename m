@@ -2,169 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6C23223B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:31:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C88573223C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhBWBa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 20:30:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230042AbhBWBa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 20:30:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DFFF64E57;
-        Tue, 23 Feb 2021 01:30:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614043816;
-        bh=ncie3eGoP1Lo7pENaLRqCW2fkUMl2yR3qc5u8v9f/Cs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MyaOfdQ9yb+Jt1rs6BqyaFO5YLrlUhDHHOh2P6qeIQvBeKoXJV6f/o5WInaM0gWds
-         567BIW+sx8ibyf8SpHpSMFPxwhfG9tUAFIwAJC0omA/3h+qtASKo4guFtMrr5QOG2O
-         wTqnSPJ5TiwOfiTRz2a9quZsIasxGTyXiNfjzMyTpeGemqWvZAH26YoHbgp7wnnG81
-         FPqUI5oZUQKmcRF/2NqkbGNjb1WybkM8DtHTk7d6fReE0HIiGIpHULqejofiDpqn6f
-         BJU1QTcKUCM5RKK5csIN8uc0xTYwrYy6zeS+lgNRFioqoePS5mLm143FDaZ/2FRMUs
-         WyDxYAHySz5YA==
-Date:   Mon, 22 Feb 2021 17:30:12 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     mkl@pengutronix.de, "David S. Miller" <davem@davemloft.net>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Robin van der Gracht <robin@protonic.nl>,
-        syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com,
-        kernel@pengutronix.de, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v3] net: introduce CAN specific pointer in the
- struct net_device
-Message-ID: <20210222173012.39e82e8d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210222150251.12911-1-o.rempel@pengutronix.de>
-References: <20210222150251.12911-1-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230206AbhBWBeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 20:34:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229852AbhBWBeP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 20:34:15 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE64C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 17:33:34 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id j12so7757562pfj.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 17:33:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=smby/yISrTbD7Ag5so/UjLKlT0IUNUKC9xD+ASY5i6s=;
+        b=GYiiiqrxbRd+SU8wAVkJr23hjPHL5TkJHMn9MBGknejuNggofVq+D4MW7jg95gPm+o
+         bPzJ2eaVI6AeO0DLsAyS3u9jeBoQCzKuMpnbmNVpUtwdieYuuOY0WjGq0WT6O6gFpUPW
+         QHjz7g647ZgCIZ4j7uYR8e/ioxHrmNYhAZQgZ0AZdeD4owMyO/3QKSy82BfOUVkls5A6
+         PwQ7YgUzqUpxZsQCzm1cFpUK/PyxGrBwcHssCChZFTIndByZWjPHYPtveXUJdovcL/U3
+         pdrajkACfwU6JxWqGuY29Xg2ozpu08DML00uC97GpLnN3BaBOnMgBUQTaGYuFtf7wvad
+         jP6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=smby/yISrTbD7Ag5so/UjLKlT0IUNUKC9xD+ASY5i6s=;
+        b=nUuvRm3PoJXQ2iKDYgbRND75/QQXGY11H/YGQ+dRwnl5qXj3gg3z1BR301JTKoK8Oi
+         XO602ZX3y5UUmE8yw/LtFkDdJi+bBbJcMdO5gKV3UbRtiI+8dHcEQJjqnZg3esFfdH5M
+         mOO9cGJwPv1t4pMSUyMm/zdPep+dWrwqu3TqqHkE+NwVScXVGtgPHUYal6xSjC1MjQLb
+         Sxxdw1zmou0MINwPigITKJ2W7iTxkECeOXxkvhWbVuKE/4+14Ttf9wy8AWW07GgRrMXQ
+         zVmY2jsPFT9fs+qKh+d87TQkfKmmJHVEr16q8Pwe9RuwD2f6BGLUBTcBWpBcgzS4hKbv
+         44rQ==
+X-Gm-Message-State: AOAM530VEEc1wJGNKevfdlEWQOkAVJ9lDIYg1CCJXb4WIHf7Jvs86Xuh
+        T4L3qfczTxcI2cjFu37o0T6XPAg6QAkVZoDv
+X-Google-Smtp-Source: ABdhPJwYiDQufR4zO8udNMr9DXChprskj8Oty96PpE28zbNvz5ztdwNJ6ZFpPxVzdt8muKvcxDKwCw==
+X-Received: by 2002:a63:4d52:: with SMTP id n18mr21659838pgl.237.1614044014321;
+        Mon, 22 Feb 2021 17:33:34 -0800 (PST)
+Received: from mi-HP-ProDesk-680-G4-MT.mioffice.cn ([209.9.72.215])
+        by smtp.gmail.com with ESMTPSA id u7sm19976983pfh.150.2021.02.22.17.33.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Feb 2021 17:33:33 -0800 (PST)
+From:   Yehan Xu <yehanxu1@gmail.com>
+To:     jaegeuk@kernel.org, chao@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, xuyehan <xuyehan@xiaomi.com>
+Subject: [PATCH v2] f2fs: fix a spelling error
+Date:   Tue, 23 Feb 2021 09:31:43 +0800
+Message-Id: <1614043903-31388-1-git-send-email-yehanxu1@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 16:02:51 +0100 Oleksij Rempel wrote:
-> Since 20dd3850bcf8 ("can: Speed up CAN frame receiption by using
-> ml_priv") the CAN framework uses per device specific data in the AF_CAN
-> protocol. For this purpose the struct net_device->ml_priv is used. Later
-> the ml_priv usage in CAN was extended for other users, one of them being
-> CAN_J1939.
-> 
-> Later in the kernel ml_priv was converted to an union, used by other
-> drivers. E.g. the tun driver started storing it's stats pointer.
-> 
-> Since tun devices can claim to be a CAN device, CAN specific protocols
-> will wrongly interpret this pointer, which will cause system crashes.
-> Mostly this issue is visible in the CAN_J1939 stack.
-> 
-> To fix this issue, we request a dedicated CAN pointer within the
-> net_device struct.
-> 
-> Reported-by: syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com
-> Fixes: 20dd3850bcf8 ("can: Speed up CAN frame receiption by using ml_priv")
-> Fixes: ffd956eef69b ("can: introduce CAN midlayer private and allocate it automatically")
-> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> Fixes: 497a5757ce4e ("tun: switch to net core provided statistics counters")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+From: xuyehan <xuyehan@xiaomi.com>
 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index ddf4cfc12615..6e25c6f0f190 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -1584,6 +1584,16 @@ enum netdev_priv_flags {
->  #define IFF_L3MDEV_RX_HANDLER		IFF_L3MDEV_RX_HANDLER
->  #define IFF_LIVE_RENAME_OK		IFF_LIVE_RENAME_OK
->  
-> +/**
-> + * enum netdev_ml_priv_type - &struct net_device ml_priv_type
-> + *
-> + * This enum specifies the type of the struct net_device::ml_priv pointer.
-> + */
+Delete the letter 'e' before 'number'
 
-kdoc (scripts/kernel-doc -none include/linux/netdevice.h) is not happy
-about the fact enum values are not defined. Perhaps they will be
-sufficiently self-explanatory to not bother documenting?
+Signed-off-by: xuyehan <xuyehan@xiaomi.com>
+---
 
-Maybe just:
+changes since previous version
+- modify the title of patch 
 
-/* Specifies the type of the struct net_device::ml_priv pointer */
+thank you very much for your help Mr. Chao Yu
 
-?
+ Documentation/ABI/testing/sysfs-fs-f2fs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +enum netdev_ml_priv_type {
-> +	ML_PRIV_NONE,
-> +	ML_PRIV_CAN,
-> +};
-> +
->  /**
->   *	struct net_device - The DEVICE structure.
->   *
-> @@ -1779,6 +1789,7 @@ enum netdev_priv_flags {
->   * 	@nd_net:		Network namespace this network device is inside
->   *
->   * 	@ml_priv:	Mid-layer private
-> +	@ml_priv_type:  Mid-layer private type
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 3dfee94..21d14fa 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -276,7 +276,7 @@ Date		April 2019
+ Contact:	"Daniel Rosenberg" <drosen@google.com>
+ Description:	If checkpoint=disable, it displays the number of blocks that
+ 		are unusable.
+-		If checkpoint=enable it displays the enumber of blocks that
++		If checkpoint=enable it displays the number of blocks that
+ 		would be unusable if checkpoint=disable were to be set.
+ 
+ What:		/sys/fs/f2fs/<disk>/encoding
+-- 
+2.7.4
 
-missing '*' at the start of the line
-
->   * 	@lstats:	Loopback statistics
->   * 	@tstats:	Tunnel statistics
->   * 	@dstats:	Dummy statistics
-> @@ -2094,8 +2105,10 @@ struct net_device {
->  	possible_net_t			nd_net;
->  
->  	/* mid-layer private */
-> +	void				*ml_priv;
-> +	enum netdev_ml_priv_type	ml_priv_type;
-> +
->  	union {
-> -		void					*ml_priv;
->  		struct pcpu_lstats __percpu		*lstats;
->  		struct pcpu_sw_netstats __percpu	*tstats;
->  		struct pcpu_dstats __percpu		*dstats;
-> @@ -2286,6 +2299,29 @@ static inline void netdev_reset_rx_headroom(struct net_device *dev)
->  	netdev_set_rx_headroom(dev, -1);
->  }
->  
-> +static inline void *netdev_get_ml_priv(struct net_device *dev,
-> +				       enum netdev_ml_priv_type type)
-> +{
-> +	if (dev->ml_priv_type != type)
-> +		return NULL;
-> +
-> +	return dev->ml_priv;
-> +}
-> +
-> +static inline void netdev_set_ml_priv(struct net_device *dev,
-> +				      void *ml_priv,
-> +				      enum netdev_ml_priv_type type)
-> +{
-> +	WARN_ONCE(dev->ml_priv_type && dev->ml_priv_type != type,
-> +		  "Overwriting already set ml_priv_type (%u) with different ml_priv_type (%u)!\n",
-> +		  dev->ml_priv_type, type);
-> +	WARN_ONCE(!dev->ml_priv_type && dev->ml_priv,
-> +		  "Overwriting already set ml_priv and ml_priv_type is ML_PRIV_NONE!\n");
-
-nit: do we need the _ONCE() this helper should be used on control path
-     and relatively rarely, no?
-
-> +	dev->ml_priv = ml_priv;
-> +	dev->ml_priv_type = type;
-> +}
-> +
->  /*
->   * Net namespace inlines
->   */
-
-> @@ -454,6 +455,7 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
->  		j1939_local_ecu_put(priv, jsk->addr.src_name, jsk->addr.sa);
->  	} else {
->  		struct net_device *ndev;
-> +		struct can_ml_priv *can_ml;
-
-nit: rev xmas tree
-
->  
->  		ndev = dev_get_by_index(net, addr->can_ifindex);
->  		if (!ndev) {
