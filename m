@@ -2,143 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F540322DF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3726F322DEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbhBWPtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:49:32 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:41060 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233393AbhBWPsI (ORCPT
+        id S233461AbhBWPtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:49:09 -0500
+Received: from mail-io1-f52.google.com ([209.85.166.52]:46209 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233423AbhBWPro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 10:48:08 -0500
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B74C42089C9B;
-        Tue, 23 Feb 2021 07:47:27 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B74C42089C9B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1614095247;
-        bh=CNobBivITyIZHfV9IIhBh12WyKXN0ArCPEmTlhSkQys=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AnWeEW+Ah60JQOeGC0VbHERpDEPpLFss8vZ9u9f1/Zj/tWCEOvEaNwGrEJHsKUib8
-         k/IxJZVPeLBQm2ku7quSz0P7Fb1VzwXEeKzxkZNByyfl1VskznqcWyc8zLI7Xq8I2c
-         pINtq091F6bkw43wY5mu0wF7wRD2HO3tzV4nUV10=
-Received: by mail-pf1-f178.google.com with SMTP id w18so9010011pfu.9;
-        Tue, 23 Feb 2021 07:47:27 -0800 (PST)
-X-Gm-Message-State: AOAM530fb7kMUxO8Tah2WM4y+nDQwVed39m0t31rVu9g9MdNHb/5b5A/
-        DPNLqCZqfAgf2Pbci3HfoPvjny7V/DU74BHCaIc=
-X-Google-Smtp-Source: ABdhPJxpQGF6YDtaKy9RwYuxdhixk5+xajdkcOUF6LcT/2J4R6s08m7LRjdk1BOqzpmP8JcZJdeTBLElCiLzh161BEo=
-X-Received: by 2002:a62:fc45:0:b029:1ed:bdd2:a07d with SMTP id
- e66-20020a62fc450000b02901edbdd2a07dmr2847913pfh.0.1614095247349; Tue, 23 Feb
- 2021 07:47:27 -0800 (PST)
+        Tue, 23 Feb 2021 10:47:44 -0500
+Received: by mail-io1-f52.google.com with SMTP id u8so17523876ior.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:47:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q+CvRb8uJsnMhLBA4z+SJwvevSaxCnZTQPudMnhz+y8=;
+        b=M0kc+GcDAXfDoLDuTMtzaQcnA08poU/GD7IASOJi0xLMdvITERr3Bb6eOPv5kZWxg7
+         NmHz+BbsTIj9jHbBginGoDEhS16emMbCEHTfmpaTgoQtinGW5bODHgIusaIUkAIiaSFU
+         hhRo0yMLYbBs1dxbN3Sfequ89hslWJvUaewyjDBVrQCTeU9/FBJlAb4cF/WZ3IPMYN7L
+         RZOdf9IYZaiL1s3htU84Cedytif6SVh+DUk6zhU3KpGzW/TZCLw5iipQ2xt04ymObliN
+         I+eequEJ6yr6YLVi+RLrAkU0zAynNhoLS7FUjQJFoLlTIzfSjFIFSZWAedXXlATBqlRP
+         2gbQ==
+X-Gm-Message-State: AOAM532qGNRmXC63jqDMDmijqj0n4vivC3+F8F1tth/BkSWAIfaJLKPy
+        Ca2ujUv4fpFdUiev2ESod0r1W9GkcqscKwaLLZQ=
+X-Google-Smtp-Source: ABdhPJz1kFrzRXcSKPQzV0L9KIq7evTjzIK/fhnl6+WUHdZTdl5LT2+m6x7mNbscJ1uoZ/eP3Tr0b55SGQjjzmQLtUI=
+X-Received: by 2002:a6b:f206:: with SMTP id q6mr20237814ioh.143.1614095223592;
+ Tue, 23 Feb 2021 07:47:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20210206000903.215028-1-mcroce@linux.microsoft.com>
-In-Reply-To: <20210206000903.215028-1-mcroce@linux.microsoft.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Tue, 23 Feb 2021 16:46:51 +0100
-X-Gmail-Original-Message-ID: <CAFnufp1zuXTVcNvSX9eE9hekZ6h455JVve0q2=Ht+xd007CVdQ@mail.gmail.com>
-Message-ID: <CAFnufp1zuXTVcNvSX9eE9hekZ6h455JVve0q2=Ht+xd007CVdQ@mail.gmail.com>
-Subject: Re: [PATCH 0/5] block: add a sequence number to disks
-To:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>, Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
+References: <20210119015415.2511028-1-lyude@redhat.com> <20210119015415.2511028-2-lyude@redhat.com>
+ <YDUN+Re/alMVL0Zn@pflmari> <CAKb7UvhFkw23so-a4JKLzpQLhphzjzarOy-9h+FiKP-aAC=4xw@mail.gmail.com>
+ <YDUg/9fjsvTkRUqr@pflmari>
+In-Reply-To: <YDUg/9fjsvTkRUqr@pflmari>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Tue, 23 Feb 2021 10:46:52 -0500
+Message-ID: <CAKb7Uvji_+N+b8HghZckU-uSBWn-=BZwNAiUff2oitbVuNUE2Q@mail.gmail.com>
+Subject: Re: [PATCH 2/3] drm/nouveau/kms/nv50-: Report max cursor size to userspace
+To:     Alex Riesen <alexander.riesen@cetitec.com>
+Cc:     Lyude Paul <lyude@redhat.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        James Jones <jajones@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jeremy Cline <jcline@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Dave Airlie <airlied@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 6, 2021 at 1:09 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+On Tue, Feb 23, 2021 at 10:36 AM Alex Riesen
+<alexander.riesen@cetitec.com> wrote:
 >
-> From: Matteo Croce <mcroce@microsoft.com>
+> Ilia Mirkin, Tue, Feb 23, 2021 15:56:21 +0100:
+> > On Tue, Feb 23, 2021 at 9:26 AM Alex Riesen <alexander.riesen@cetitec.com> wrote:
+> > > Lyude Paul, Tue, Jan 19, 2021 02:54:13 +0100:
+> > > > diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> > > > index c6367035970e..5f4f09a601d4 100644
+> > > > --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> > > > +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> > > > @@ -2663,6 +2663,14 @@ nv50_display_create(struct drm_device *dev)
+> > > >       else
+> > > >               nouveau_display(dev)->format_modifiers = disp50xx_modifiers;
+> > > >
+> > > > +     if (disp->disp->object.oclass >= GK104_DISP) {
+> > > > +             dev->mode_config.cursor_width = 256;
+> > > > +             dev->mode_config.cursor_height = 256;
+> > > > +     } else {
+> > > > +             dev->mode_config.cursor_width = 64;
+> > > > +             dev->mode_config.cursor_height = 64;
+> > > > +     }
+> > > > +
+> > > >       /* create crtc objects to represent the hw heads */
+> > > >       if (disp->disp->object.oclass >= GV100_DISP)
+> > > >               crtcs = nvif_rd32(&device->object, 0x610060) & 0xff;
+> > >
+> > > This change broke X cursor in my setup, and reverting the commit restores it.
+> > >
+> > > Dell Precision M4800, issue ~2014 with GK106GLM [Quadro K2100M] (rev a1).
+> > > libdrm 2.4.91-1 (Debian 10.8 stable).
+> > > There are no errors or warnings in Xorg logs nor in the kernel log.
+> >
+> > Could you confirm which ddx is driving the nvidia hw? You can find
+> > this out by running "xrandr --listproviders", or also in the xorg log.
 >
-> With this series a monotonically increasing number is added to disks,
-> precisely in the genhd struct, and it's exported in sysfs and uevent.
+> xrandr(1) does not seem to list much:
 >
-> This helps the userspace correlate events for devices that reuse the
-> same device, like loop.
->
-> The first patch is the core one, the 2..4 expose the information in
-> different ways, while the last one increase the sequence number for
-> loop devices at every attach.
->
->     # udevadm monitor -kp |grep -e ^DEVNAME -e ^DISKSEQ &
->     [1] 523
->     # losetup -fP 3part
->     [ 3698.615848] loop0: detected capacity change from 16384 to 0
->     DEVNAME=/dev/loop0
->     DISKSEQ=13
->     [ 3698.647189]  loop0: p1 p2 p3
->     DEVNAME=/dev/loop0
->     DISKSEQ=13
->     DEVNAME=/dev/loop0p1
->     DISKSEQ=13
->     DEVNAME=/dev/loop0p2
->     DISKSEQ=13
->     DEVNAME=/dev/loop0p3
->     DISKSEQ=13
->     # losetup -fP 2part
->     [ 3705.170766] loop1: detected capacity change from 40960 to 0
->     DEVNAME=/dev/loop1
->     DISKSEQ=14
->     [ 3705.247280]  loop1: p1 p2
->     DEVNAME=/dev/loop1
->     DISKSEQ=14
->     DEVNAME=/dev/loop1p1
->     DISKSEQ=14
->     DEVNAME=/dev/loop1p2
->     DISKSEQ=14
->     # ./getdiskseq /dev/loop*
->     /dev/loop0:     13
->     /dev/loop0p1:   13
->     /dev/loop0p2:   13
->     /dev/loop0p3:   13
->     /dev/loop1:     14
->     /dev/loop1p1:   14
->     /dev/loop1p2:   14
->     /dev/loop2:     5
->     /dev/loop3:     6
->     /dev/loop-control: Function not implemented
->     # grep . /sys/class/block/*/diskseq
->     /sys/class/block/loop0/diskseq:13
->     /sys/class/block/loop1/diskseq:14
->     /sys/class/block/loop2/diskseq:5
->     /sys/class/block/loop3/diskseq:6
->     /sys/class/block/ram0/diskseq:1
->     /sys/class/block/ram1/diskseq:2
->     /sys/class/block/vda/diskseq:7
->
-> If merged, this feature will immediately used by the userspace:
-> https://github.com/systemd/systemd/issues/17469#issuecomment-762919781
->
-> Matteo Croce (5):
->   block: add disk sequence number
->   block: add ioctl to read the disk sequence number
->   block: refactor sysfs code
->   block: export diskseq in sysfs
->   loop: increment sequence number
->
->  Documentation/ABI/testing/sysfs-block | 12 ++++++++
->  block/genhd.c                         | 43 ++++++++++++++++++++++++---
->  block/ioctl.c                         |  2 ++
->  drivers/block/loop.c                  |  3 ++
->  include/linux/genhd.h                 |  2 ++
->  include/uapi/linux/fs.h               |  1 +
->  6 files changed, 59 insertions(+), 4 deletions(-)
->
-> --
-> 2.29.2
->
+> $ xrandr --listproviders
+> Providers: number : 1
+> Provider 0: id: 0x48 cap: 0xf, Source Output, Sink Output, Source Offload, Sink Offload crtcs: 4 outputs: 5 associated providers: 0 name:modesetting
 
-Hi,
+Thanks - this is what I was looking for. name:modesetting, i.e. the
+modesetting ddx driver.
 
-Did anyone have a chance to look at this series?
+I checked nouveau source, and it seems like it uses a 64x64 cursor no
+matter what. Not sure what the modesetting ddx does.
 
-Ideas or suggestions?
+I'd recommend using xf86-video-nouveau in any case, but some distros
+have decided to explicitly force modesetting in preference of nouveau.
+Oh well. (And regardless, the regression should be addressed somehow,
+but it's also good to understand what the problem is.)
 
-Regards,
+Can you confirm what the problem with the cursor is?
 
-
---
-per aspera ad upstream
+  -ilia
