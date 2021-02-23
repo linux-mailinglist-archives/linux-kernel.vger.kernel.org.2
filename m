@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D298D322C86
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FF1322C8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbhBWOhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231591AbhBWOgX (ORCPT
+        id S233014AbhBWOjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:39:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60809 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232258AbhBWOjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:36:23 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0D9C061221
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:34:56 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id b7so2735984wrv.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:34:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=S0g1Gw0V8LQdKC7HpmWoNe9UXx0KjO/uwYjAYtfhLeU=;
-        b=Fq2+eMK4jh0j/XFxErxBk8JeSfqqp/fu80bJNatnXBZ+At9fWTw+fV8REB7eXUtZp1
-         ULO0nXNMb/4yD7npazKim9wSN+KhAZDvelhEE2VXOW04dDQNWpR2j4a8dhjUh7H8vdLk
-         LdBD159jN26zXBuVa/9kmkk6hXeouARhByuMWxXgSfSal5Vajn6E0H/0xXc9M/FBGqDx
-         71vEf/3qA2dcUZrsFdOJHXvfq/XGKNsVTheqxZJWbPoc0xiNH+vHxYQlKO6MY+NL0rTl
-         U3Nazu+wdymC8xNyetJQHEzeaV/tg2wAU6FrWnoRr/J1/2/lOOZoEwX79LN/hewvBfCb
-         vklg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=S0g1Gw0V8LQdKC7HpmWoNe9UXx0KjO/uwYjAYtfhLeU=;
-        b=SuF0JqR1Puy5ghq4QHbWSv1E6D7i/DyCzqtpSIDm7qyIEEOtUcPtpfNAkyLAuKH5xe
-         b6T0tYr0Ma3Ohm2FGplN0bq4hRj36ijJjmRav/w5CpqzF9M5o6AtLbzGPkErYJmg3pyk
-         wXsZRc0giEPkEsw5sUx9t4AKps8y/uz5s9ojyY6x4JsJZ/QhqMyTOENY85vdqe3RaGcH
-         9df2j7bvlDdiA0Rmi24lMdiB1yEdfemDQhkez47fIDlpz/Nz1qr1at9Q20vcLlzqW4OC
-         n7LeYC6MJ/NIV+sWtLAOtLNbj6ldym0H4rYFLn+VWLgXbNwXAISFtSGeJtrr9nLuCbla
-         IM6w==
-X-Gm-Message-State: AOAM530tHIIKWVubSjwnRRTVSkSdrAAYPWDzcqaM+rRmISQ1wXWSmxCG
-        W4bwmURZdgncRPYhsShlvQ5IjEjt6Q==
-X-Google-Smtp-Source: ABdhPJzt6spWgjRPJkBK/IplFxSdnMgcPPQTnbG7I8X4jppm6p3wuv5JFcbCjpxvdDcCW9kqNB9SgjiX0A==
-Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:855b:f924:6e71:3d5d])
- (user=elver job=sendgmr) by 2002:a1c:2e90:: with SMTP id u138mr587498wmu.0.1614090894574;
- Tue, 23 Feb 2021 06:34:54 -0800 (PST)
-Date:   Tue, 23 Feb 2021 15:34:26 +0100
-In-Reply-To: <20210223143426.2412737-1-elver@google.com>
-Message-Id: <20210223143426.2412737-5-elver@google.com>
-Mime-Version: 1.0
-References: <20210223143426.2412737-1-elver@google.com>
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-Subject: [PATCH RFC 4/4] perf/core: Add breakpoint information to siginfo on SIGTRAP
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, peterz@infradead.org,
-        alexander.shishkin@linux.intel.com, acme@kernel.org,
-        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
-        namhyung@kernel.org, tglx@linutronix.de
-Cc:     glider@google.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
-        christian@brauner.io, dvyukov@google.com, jannh@google.com,
-        axboe@kernel.dk, mascasa@google.com, pcc@google.com,
-        irogers@google.com, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 23 Feb 2021 09:39:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614091094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UE1un9vgSiZpLq1CGzipH6IHKnzn7Id+eCpqFzzS2ow=;
+        b=fM/vWssZ9Uq21CdCR0SRlO5rTbckqXtadBBVQFw5BvhDdczY2kzwL3QC+X5hTnXn1GoShT
+        pPliGhv6hbDZie3DIR9N/wK04OJTbDAU17FQBP4BLbhy+RkdJlNkr/FnYknXcVGXg1Iljq
+        A7wpK/rSyH6YkTn8nIOeOI3+Z3925rM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-133-H_qy2Yc1NYyAMZj6wyyCGw-1; Tue, 23 Feb 2021 09:38:10 -0500
+X-MC-Unique: H_qy2Yc1NYyAMZj6wyyCGw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21D5618BA298;
+        Tue, 23 Feb 2021 14:38:08 +0000 (UTC)
+Received: from krava (unknown [10.40.192.54])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B40F519C79;
+        Tue, 23 Feb 2021 14:38:05 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 15:38:04 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jackie Liu <jackieliu2113@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Jackie Liu <liuyun01@kylinos.cn>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [PATCH] perf tools: check perf_event_paranoid and kptr_restrict
+ on 'perf top'
+Message-ID: <YDUTTKCScLhRZfYF@krava>
+References: <20210223062440.15848-1-liuyun01@kylinos.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223062440.15848-1-liuyun01@kylinos.cn>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Encode information from breakpoint attributes into siginfo_t, which
-helps disambiguate which breakpoint fired.
+On Tue, Feb 23, 2021 at 02:24:40PM +0800, Jackie Liu wrote:
+> Perf top will segfault, we should give prompt information like perf
+> record instead of crashing directly.
+> 
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+> ---
+>  tools/perf/builtin-top.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+> index 3673c04d16b6..b257fadba3bd 100644
+> --- a/tools/perf/builtin-top.c
+> +++ b/tools/perf/builtin-top.c
+> @@ -1239,6 +1239,14 @@ static int __cmd_top(struct perf_top *top)
+>  			return ret;
+>  	}
+>  
+> +	if (symbol_conf.kptr_restrict && !evlist__exclude_kernel(top->evlist)) {
+> +		pr_warning(
+> +"Kernel address maps (/proc/{kallsyms,modules}) are restricted.\n\n"
+> +"Check /proc/sys/kernel/kptr_restrict and /proc/sys/kernel/perf_event_paranoid.\n\n"
+> +"Kernel samples will not be resolved.\n");
+> +		return -1;
+> +	}
+> +
 
-Note, providing the event fd may be unreliable, since the event may have
-been modified (via PERF_EVENT_IOC_MODIFY_ATTRIBUTES) between the event
-triggering and the signal being delivered to user space.
+hm, why not fix that crash by checking prog_addrs != NULL before using it
 
-Signed-off-by: Marco Elver <elver@google.com>
----
- kernel/events/core.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+  perf_event__synthesize_one_bpf_prog:
+  ...
+     __u64 *prog_addrs = (__u64 *)(uintptr_t)(info->jited_ksyms);
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 8718763045fd..d7908322d796 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6296,6 +6296,17 @@ static void perf_sigtrap(struct perf_event *event)
- 	info.si_signo = SIGTRAP;
- 	info.si_code = TRAP_PERF;
- 	info.si_errno = event->attr.type;
-+
-+	switch (event->attr.type) {
-+	case PERF_TYPE_BREAKPOINT:
-+		info.si_addr = (void *)(unsigned long)event->attr.bp_addr;
-+		info.si_perf = (event->attr.bp_len << 16) | (u64)event->attr.bp_type;
-+		break;
-+	default:
-+		/* No additional info set. */
-+		break;
-+	}
-+
- 	force_sig_info(&info);
- }
- 
--- 
-2.30.0.617.g56c4b15f3c-goog
+it looks like we're already checking on kptr_restrict in
+perf_event__process_sample and allow it on some level
+
+jirka
+
+>  	ret = callchain_param__setup_sample_type(&callchain_param);
+>  	if (ret)
+>  		return ret;
+> -- 
+> 2.25.1
+> 
 
