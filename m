@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BE8322BF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1278322BFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbhBWOLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:11:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbhBWOLk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:11:40 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6A2C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:10:59 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id t11so34725906ejx.6
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:10:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nn10UrN2ZiAmFLW+MlxnU9RSUn18Is+Qx2gx2VgeSH0=;
-        b=nAoDsaQtkRg+Gyg6s6bQmsZpF5msicLBwyqF5y5mpe22lCqudl5DhFl4DCii0NEGEs
-         Wkl1/AMnf9vGdERk2mrULrar2ticASTWiRoaAq32XuerPxSK71VT+YN/+GTN+YEFylzc
-         qZS3j/P504twqXrVKeWU1juhDpIDndleqP3of3REWI8FAPy+64piZST7ocKJqJ1zawKr
-         Xjk5Ahfm3QLD82fJs+ePwcAI/rgp97w6CuK0l97j/G8d50/PAMvj2/jQKJ8Siuy/QqnW
-         yPRxdm1ea3D/EYULkqJUSuzTpG6nLTfl00dTtCnrg3wVYkmuAtEOYCqAa6ygfhSWOlER
-         OcZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nn10UrN2ZiAmFLW+MlxnU9RSUn18Is+Qx2gx2VgeSH0=;
-        b=A/FakhCdVUQyKRBVlD/nDbUuN7xpt4useUbJ5L4o9ZZszjNsVj0iKCqWHDc0HJoZxD
-         gOwWOa3EST1TMeqVy3oMWU/m4ZeQFmJYRoCCkZS7QB5PIY/2r+ICo0KHP56CdxuyYwlA
-         Ux6SlXRKWw5tL0WVrBW6ynp+nvtt9Sylk7asTjVm+k+HpnmxmwpkP6BtsElcuMvcHC5k
-         ZMusrEHI+AYgKBZkY6U3dI3aggPonkigd5cLTDJclInMqnOMycMQeuIjdJGJFJFfx81P
-         8ufqbnfzUHKOCbbHDrbTna+BD3U4oHuwrucrcnnenVrSlvvPdLuWASdVC1OCwmZC0CGc
-         XjMg==
-X-Gm-Message-State: AOAM531CWlxF28PVNlp2rkDx3N/4d8LU4ILk0tcIRt9w09yDGq93DLcV
-        4T5dUSMpPYGXbOfHT765hQ==
-X-Google-Smtp-Source: ABdhPJyKYt39d7GtLJ164Jr+8JRd1UhDfpKgEIqrlZqPrGPa/cMoz952RwvhpBFoebTiRPRrrynjGg==
-X-Received: by 2002:a17:906:af84:: with SMTP id mj4mr26895576ejb.84.1614089458682;
-        Tue, 23 Feb 2021 06:10:58 -0800 (PST)
-Received: from merlot.localdomain ([185.103.236.75])
-        by smtp.gmail.com with ESMTPSA id m26sm7592702eja.6.2021.02.23.06.10.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 06:10:58 -0800 (PST)
-From:   Julian Blaauboer <julian.blaauboer@gmail.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Julian Blaauboer <julian.blaauboer@gmail.com>
-Subject: [PATCH] scripts/gdb: fix 'lx-symbols' section parsing
-Date:   Tue, 23 Feb 2021 15:09:47 +0100
-Message-Id: <20210223140947.55693-1-julian.blaauboer@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        id S232277AbhBWOMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:12:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230268AbhBWOM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:12:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33FE364DE9;
+        Tue, 23 Feb 2021 14:11:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614089505;
+        bh=+JINFj2BPE5byrIfpTw8QQ0mFPqOXrcYF+2MPu/X51E=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=nYNLclt3aYnXo/uXYJYUbO3DNeNcflGBYWd5imEIlyGObH400D0zesBoG83XECPSZ
+         rLeo2Nw8EO7a9fjrpLzrAfDqjmNoxEJpUUkfPEaZk1CGBWgHPZmljZ8tWEzIpTIbnP
+         TfYbyjoq8aqOygl1fsXOrVRRXBYE2/LzAEGTgiRqrFTXgUxixcM2eI7TS+EsNfHQvV
+         dCy6N4Zdq+7DXxmDKw78pIgsxKuAYRo9UNvPBSlhCDjJJje2XbWvciaH4uJxq/Il/E
+         e1pUyRi0eZrMZ3cMcUrl1wA8GB/duBXa0DFl9Gde5mf0eIqVr+0Z082g+axgx4x4nL
+         eT+puUbDHkghg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Colin King <colin.king@canonical.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210215163313.84026-1-colin.king@canonical.com>
+References: <20210215163313.84026-1-colin.king@canonical.com>
+Subject: Re: [PATCH][next] ASoC: codecs: lpass-rx-macro: Fix uninitialized variable ec_tx
+Message-Id: <161408943852.48131.13240298966962769896.b4-ty@kernel.org>
+Date:   Tue, 23 Feb 2021 14:10:38 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Loading a module using 'lx-symbols' in GDB would result in a
-gdb.MemoryError when parsing the section names and addresses because of
-the way GDB handles flexible array members. This patch fixes that issue
-by converting the 'struct module_sect_attr[]' into a pointer before
-accessing it.
+On Mon, 15 Feb 2021 16:33:13 +0000, Colin King wrote:
+> There is potential read of the uninitialized variable ec_tx if the call
+> to snd_soc_component_read fails or returns an unrecognized w->name. To
+> avoid this corner case, initialize ec_tx to -1 so that it is caught
+> later when ec_tx is bounds checked.
 
-Signed-off-by: Julian Blaauboer <julian.blaauboer@gmail.com>
----
- scripts/gdb/linux/symbols.py | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Applied to
 
-diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
-index 1be9763cf8bb..6d3a33a00189 100644
---- a/scripts/gdb/linux/symbols.py
-+++ b/scripts/gdb/linux/symbols.py
-@@ -94,7 +94,8 @@ lx-symbols command."""
-             sect_attrs = module['sect_attrs'].dereference()
-         except gdb.error:
-             return ""
--        attrs = sect_attrs['attrs']
-+        # Convert from struct module_sect_attr[] to struct module_sect_attr*
-+        attrs = sect_attrs['attrs'].dereference().address
-         section_name_to_address = {
-             attrs[n]['battr']['attr']['name'].string(): attrs[n]['address']
-             for n in range(int(sect_attrs['nsections']))}
--- 
-2.30.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: codecs: lpass-rx-macro: Fix uninitialized variable ec_tx
+      commit: 2d003ec15396cc8ffa2a887605c98a967de3078d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
