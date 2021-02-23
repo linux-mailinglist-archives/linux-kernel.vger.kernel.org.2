@@ -2,119 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED739322CE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB94D322CE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbhBWOxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:53:02 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12567 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232908AbhBWOwj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:52:39 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DlMQX3Hl4zMYLm;
-        Tue, 23 Feb 2021 22:49:40 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 23 Feb 2021 22:51:30 +0800
-Subject: Re: [PATCH 4.9.257 1/1] futex: Fix OWNER_DEAD fixup
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Lee Jones <lee.jones@linaro.org>, <stable@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <judy.chenhui@huawei.com>,
-        <zhangjinhao2@huawei.com>, <tglx@linutronix.de>
-References: <20210222110542.3531596-1-zhengyejian1@huawei.com>
- <20210222110542.3531596-2-zhengyejian1@huawei.com>
- <20210222115424.GF376568@dell> <YDOec1kosGKKO80g@kroah.com>
- <4f06340a-e027-f944-3248-2939639d5e07@huawei.com>
- <YDOlOd9aHQzVCXkk@kroah.com>
- <42af110f-f492-c11c-397c-e0b5018d9263@huawei.com>
- <YDT8dsm6XFmfUEi7@kroah.com>
-From:   "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>
-Message-ID: <a3d3e1e5-8956-e1db-840b-40b60e302d69@huawei.com>
-Date:   Tue, 23 Feb 2021 22:51:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232718AbhBWOyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:54:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232520AbhBWOyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:54:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED19164E12;
+        Tue, 23 Feb 2021 14:53:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614092018;
+        bh=OM4cSQCV8yXeiUPJwhUhjpxUXGQYw13IEBaq41dXDGM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZGU+j7EQQ2t8KbwUIJxd7loy8zUA1jLuw2dGQPrVXAcKUzwFESYQF6diMDL3UIGZ8
+         UpLCPAo62vTnHkKlD7vElszn1Hozun4b7rONR8m23vSVN+XyhTqkV05LEWizHkz2VU
+         m1uaEPgtWWq7+vMuREIBY6ZQIEXDTSt8R2I1d3qdn4YRQ4fGe2piacu9m7c0z9vydo
+         Q3eYvn1NPlPojp1YJyLZv2Vs7PFj7QaOfgGdBEFpCPBq+/FpcDYV0kgQPfjOPjF0eT
+         cnh06GLAwVXD8n2HED9ORMQow6kAZfLHMLndv7/MGi904o9Hkv3RIKyHGLuMVBIH6i
+         SzQJuPcsa28xw==
+Received: by pali.im (Postfix)
+        id A00E2CAE; Tue, 23 Feb 2021 15:53:35 +0100 (CET)
+Date:   Tue, 23 Feb 2021 15:53:35 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maemo-leste@lists.dyne.org
+Subject: Re: [PATCH 1/3] power: supply: bq27xxx: fix sign of current_now for
+ newer ICs
+Message-ID: <20210223145335.2vsfclgeqpsmacfp@pali>
+References: <20210223141122.9574-1-matthias.schiffer@ew.tq-group.com>
+ <20210223154946.1ef58514@aktux>
 MIME-Version: 1.0
-In-Reply-To: <YDT8dsm6XFmfUEi7@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223154946.1ef58514@aktux>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/2/23 21:00, Greg KH wrote:
-> On Mon, Feb 22, 2021 at 09:11:43PM +0800, Zhengyejian (Zetta) wrote:
->>
->>
->> On 2021/2/22 20:36, Greg KH wrote:
->>> On Mon, Feb 22, 2021 at 08:20:38PM +0800, Zhengyejian (Zetta) wrote:
->>>>
->>>>
->>>> On 2021/2/22 20:07, Greg KH wrote:
->>>>> On Mon, Feb 22, 2021 at 11:54:24AM +0000, Lee Jones wrote:
->>>>>> On Mon, 22 Feb 2021, Zheng Yejian wrote:
->>>>>>
->>>>>>> From: Peter Zijlstra <peterz@infradead.org>
->>>>>>>
->>>>>>> commit a97cb0e7b3f4c6297fd857055ae8e895f402f501 upstream.
->>>>>>>
->>>>>>> Both Geert and DaveJ reported that the recent futex commit:
->>>>>>>
->>>>>>>      c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
->>>>>>>
->>>>>>> introduced a problem with setting OWNER_DEAD. We set the bit on an
->>>>>>> uninitialized variable and then entirely optimize it away as a
->>>>>>> dead-store.
->>>>>>>
->>>>>>> Move the setting of the bit to where it is more useful.
->>>>>>>
->>>>>>> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>>>>>> Reported-by: Dave Jones <davej@codemonkey.org.uk>
->>>>>>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->>>>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>>>>>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
->>>>>>> Cc: Paul E. McKenney <paulmck@us.ibm.com>
->>>>>>> Cc: Peter Zijlstra <peterz@infradead.org>
->>>>>>> Cc: Thomas Gleixner <tglx@linutronix.de>
->>>>>>> Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
->>>>>>> Link: http://lkml.kernel.org/r/20180122103947.GD2228@hirez.programming.kicks-ass.net
->>>>>>> Signed-off-by: Ingo Molnar <mingo@kernel.org>
->>>>>>> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
->>>>>>> ---
->>>>>>>     kernel/futex.c | 7 +++----
->>>>>>>     1 file changed, 3 insertions(+), 4 deletions(-)
->>>>>>
->>>>>> Reviewed-by: Lee Jones <lee.jones@linaro.org>
->>>>>
->>>>> This does not apply to the 4.9.y tree at all right now, are you all sure
->>>>> you got the backport correct?
->>>>>
->>>>> confused,
->>>>>
->>>>> greg k-h
->>>>> .
->>>>>
->>>> I make the patch basing on 282aeb477a10 ("Linux 4.9.257").
->>>> Should I base on f0cf73f13b39 ("Linux 4.9.258-rc1")?
->>>
->>> Yes please as I think this is already there.
->>>
->>> How about just waiting for the next release to come out, I will push out
->>> the 4.4 and 4.9 -rc releases right now as well to give everyone a chance
->>> to sync up properly.
->> Ok, I will rebase this patch then.
+On Tuesday 23 February 2021 15:49:46 Andreas Kemnade wrote:
+> On Tue, 23 Feb 2021 15:11:20 +0100
+> Matthias Schiffer <matthias.schiffer@ew.tq-group.com> wrote:
 > 
-> Great, can you try 4.9.258?
+> > Commit cd060b4d0868 ("power: supply: bq27xxx: fix polarity of current_now")
+> > changed the sign of current_now for all bq27xxx variants, but on BQ28Z610
+> > I'm now seeing negated values *with* that patch.
+> > 
+> > The GTA04/Openmoko device that was used for testing uses a BQ27000 or
+> > BQ27010 IC, so I assume only the BQ27XXX_O_ZERO code path was incorrect.
+> > Revert the behaviour for newer ICs.
+> > 
+> > Fixes: cd060b4d0868 "power: supply: bq27xxx: fix polarity of current_now"
+> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > ---
+> > 
+> > @Andreas Kemnade: It would be great to get a confirmation that the
+> > Openmoko battery indeed uses BQ27000/BQ27010 - I was having some trouble
+> > finding that information.
+> > 
+> I can confirm that.
+> here is the corresponding schematic:
+> 
+> http://people.openmoko.org/tony_tu/GTA02/hardware/GTA02/CT-GTA02.pdf
+> 
+> Regards,
+> Andreas
 
-I'm very glad to.
-Rebased patch is ready:
- 
-https://lore.kernel.org/lkml/20210223144151.916675-1-zhengyejian1@huawei.com/
-
-Zheng Yejian
+Nokia N900 has BQ27200 connected via i2c. CCing Maemo mailing list maemo-leste@lists.dyne.org
