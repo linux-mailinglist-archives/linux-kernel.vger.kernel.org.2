@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8AC32282A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D06932281F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhBWJyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 04:54:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31385 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232086AbhBWJvE (ORCPT
+        id S231799AbhBWJw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:52:28 -0500
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:39588 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230429AbhBWJtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:51:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614073778;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vKyuU9LWKwPaA0W8b7Zn/93LIBS1BDs8g8bsSMSJ0MM=;
-        b=jLdWk5IW63z59YOK3U/qmznledXRVYkhcL+1tefES6GROVuon9msr6z7hn1X9+lG5+uwtt
-        Uyy1wqjBjuguDtN69esqE75MzCH0n2CyjFS6YC59ZIDkzm6irwcp+B0f8yVrEHanNU/oaI
-        kZCUD0iJmUSkEv2xNAC0ThshWOi6kQM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-Ft6zYw1bOe-pQyUCOJ4coQ-1; Tue, 23 Feb 2021 04:48:18 -0500
-X-MC-Unique: Ft6zYw1bOe-pQyUCOJ4coQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DF58E1085927;
-        Tue, 23 Feb 2021 09:48:16 +0000 (UTC)
-Received: from [10.72.13.6] (ovpn-13-6.pek2.redhat.com [10.72.13.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9CC8E19C45;
-        Tue, 23 Feb 2021 09:48:11 +0000 (UTC)
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-To:     "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
- <20210221144437.GA82010@mtl-vdi-166.wap.labs.mlnx>
- <20210221165047-mutt-send-email-mst@kernel.org>
- <20210222060526.GA110862@mtl-vdi-166.wap.labs.mlnx>
- <20210223042559-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <65494f6b-9613-1c0e-4a36-e4af2965235e@redhat.com>
-Date:   Tue, 23 Feb 2021 17:48:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 23 Feb 2021 04:49:25 -0500
+Received: by mail-oi1-f172.google.com with SMTP id z126so1359707oiz.6;
+        Tue, 23 Feb 2021 01:49:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UAweoN6eUtAsuvPXmS5XNF8LZggD1kVsY6H4x3efuu4=;
+        b=fZv1OMHHRl3grwGBdFtw7n2yDshUqcSE3T7zO1kDi6miwEczZ0eL2xHqkQYHDuLaC5
+         beevs9VyGB/rSkkxPrWtyCh0KmqRSpxQNHq+La9y14UMQiILoJGU7ZbbQnWdpO4V/DSs
+         iGL/fzvXoGbP//YhdD9keRvfEolu42cJHHwduks9m39fHaRdneL+rvSs9Ql9tBv1aBxn
+         dPmMae/ZnER4Wedws77aDEVNxT6X3az451BuLs/0DaVbaYh8OmSX9X/Ku6r8IiPBDEOt
+         iYNXCa8ojAcjC7ZTlWYpA4qeP2WRib/GyXCV+J0zIy6Gzd7cm639X0tVuVf2s33h7OuZ
+         RG8g==
+X-Gm-Message-State: AOAM5330OadTDp5Iq0X3e+RrplJOkt0sR4DpmOwdVUqrIYdSHWyXw4S3
+        xK2390J0d/Qs8Wb3WF69mp47fbMOvJRmIeJLV/M=
+X-Google-Smtp-Source: ABdhPJwU9GCzduzw7dt7nUQZfXrlBnfCpmG43OLUcL8UJ9UtQa8drjZtHc3yDw24+LDKbQIv0j4WKI6HX5iVRNJlMmQ=
+X-Received: by 2002:aca:5e84:: with SMTP id s126mr18807216oib.175.1614073717156;
+ Tue, 23 Feb 2021 01:48:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210223042559-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210222161905.1153-1-lukas.bulwahn@gmail.com> <20210222161905.1153-3-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210222161905.1153-3-lukas.bulwahn@gmail.com>
+From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
+Date:   Tue, 23 Feb 2021 10:48:26 +0100
+Message-ID: <CAAdtpL4egZYCGS+2K5FQSFYcPKomosuvvrunpDskkiif5Ma5Uw@mail.gmail.com>
+Subject: Re: [PATCH 2/5] MAINTAINERS: remove linux-mips.org references
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
+        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/2/23 下午5:26, Michael S. Tsirkin wrote:
-> On Mon, Feb 22, 2021 at 08:05:26AM +0200, Eli Cohen wrote:
->> On Sun, Feb 21, 2021 at 04:52:05PM -0500, Michael S. Tsirkin wrote:
->>> On Sun, Feb 21, 2021 at 04:44:37PM +0200, Eli Cohen wrote:
->>>> On Fri, Feb 19, 2021 at 06:54:58AM -0500, Si-Wei Liu wrote:
->>>>> Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
->>>>> for legacy") made an exception for legacy guests to reset
->>>>> features to 0, when config space is accessed before features
->>>>> are set. We should relieve the verify_min_features() check
->>>>> and allow features reset to 0 for this case.
->>>>>
->>>>> It's worth noting that not just legacy guests could access
->>>>> config space before features are set. For instance, when
->>>>> feature VIRTIO_NET_F_MTU is advertised some modern driver
->>>>> will try to access and validate the MTU present in the config
->>>>> space before virtio features are set. Rejecting reset to 0
->>>>> prematurely causes correct MTU and link status unable to load
->>>>> for the very first config space access, rendering issues like
->>>>> guest showing inaccurate MTU value, or failure to reject
->>>>> out-of-range MTU.
->>>>>
->>>>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
->>>>> Signed-off-by: Si-Wei Liu<si-wei.liu@oracle.com>
->>>>> ---
->>>>>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
->>>>>   1 file changed, 1 insertion(+), 14 deletions(-)
->>>>>
->>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>> index 7c1f789..540dd67 100644
->>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>> @@ -1490,14 +1490,6 @@ static u64 mlx5_vdpa_get_features(struct vdpa_device *vdev)
->>>>>   	return mvdev->mlx_features;
->>>>>   }
->>>>>   
->>>>> -static int verify_min_features(struct mlx5_vdpa_dev *mvdev, u64 features)
->>>>> -{
->>>>> -	if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
->>>>> -		return -EOPNOTSUPP;
->>>>> -
->>>>> -	return 0;
->>>>> -}
->>>>> -
->>>> But what if VIRTIO_F_ACCESS_PLATFORM is not offerred? This does not
->>>> support such cases.
->>> Did you mean "catch such cases" rather than "support"?
->>>
->> Actually I meant this driver/device does not support such cases.
-> Well the removed code merely failed without VIRTIO_F_ACCESS_PLATFORM
-> it didn't actually try to support anything ...
-
-
-I think it's used to catch the driver that doesn't support ACCESS_PLATFORM?
-
-Thanks
-
-
+On Mon, Feb 22, 2021 at 5:22 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 >
+> The domain lookup for linux-mips.org fails for quite some time now. Hence,
+> webpages, the patchwork instance and Ralf Baechle's email there is not
+> reachable anymore.
+>
+> Remove all references of webpages from linux-mips.org in MAINTAINERS, and
+> refer to the kernel.org's linux-mips patchwork instance instead.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+>  MAINTAINERS | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e949e561867d..703a50183301 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4980,7 +4980,6 @@ DECSTATION PLATFORM SUPPORT
+>  M:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+>  L:     linux-mips@vger.kernel.org
+>  S:     Maintained
+> -W:     http://www.linux-mips.org/wiki/DECstation
 
+Why not use the web archive? The information is still valuable.
+https://web.archive.org/web/20190704000315/https://www.linux-mips.org/wiki/DECstation
+
+>  F:     arch/mips/dec/
+>  F:     arch/mips/include/asm/dec/
+>  F:     arch/mips/include/asm/mach-dec/
+...
