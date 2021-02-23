@@ -2,66 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7559A3228C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2214432285C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhBWKUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:20:20 -0500
-Received: from m12-13.163.com ([220.181.12.13]:60691 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231478AbhBWKUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:20:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=HJQaZ
-        cNJ//rTNxUIXY+A3MZAryV+VtXxzjsGLHsl9dk=; b=Hcdvci9az8UDSv+pPNsPa
-        ghXSUGRhU7zG6b3+8KYocJczp7vLcc7r9ZNGU0QxDe7LTYGGc2lG+28jniT/s/KJ
-        OIO/thLgbSdsS/FwY7UZgX3SocUn+b4yUJIWDT3jb/20RPnlvTeb98Zx5Z1RtUNv
-        lVVi8EIEn9/9GWl1R4FNxA=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp9 (Coremail) with SMTP id DcCowABnZQIJyjRgGJ3JgQ--.12282S2;
-        Tue, 23 Feb 2021 17:25:35 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     peterz@infradead.org, mingo@redhat.com, longman@redhat.com,
-        boqun.feng@gmail.com, will@kernel.org
-Cc:     linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] include/linux: remove duplicate description
-Date:   Tue, 23 Feb 2021 17:25:39 +0800
-Message-Id: <20210223092539.941-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowABnZQIJyjRgGJ3JgQ--.12282S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUIJPEDUUUU
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiZQ9CiV8ZM2owagAAsk
+        id S232358AbhBWJ6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:58:54 -0500
+Received: from lucky1.263xmail.com ([211.157.147.135]:60118 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232041AbhBWJ4V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 04:56:21 -0500
+Received: from localhost (unknown [192.168.167.130])
+        by lucky1.263xmail.com (Postfix) with ESMTP id B2488A7361;
+        Tue, 23 Feb 2021 17:53:56 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P21323T140439055234816S1614074035264055_;
+        Tue, 23 Feb 2021 17:53:57 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <a34d75881c57d64c6536b0a15fa6bede>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: sboyd@kernel.org
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     sboyd@kernel.org, heiko@sntech.de
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cl@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
+        finley.xiao@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [PATCH v1 1/4] dt-bindings: add bindings for rk3568 clock controller
+Date:   Tue, 23 Feb 2021 17:53:49 +0800
+Message-Id: <20210223095352.11544-2-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210223095352.11544-1-zhangqing@rock-chips.com>
+References: <20210223095352.11544-1-zhangqing@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+Add devicetree bindings for Rockchip cru which found on
+Rockchip SoCs.
 
-linux/spinlock.h
-
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
 ---
- include/linux/spinlock.h | 2 --
- 1 file changed, 2 deletions(-)
+ .../bindings/clock/rockchip,rk3568-cru.txt    | 66 +++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/rockchip,rk3568-cru.txt
 
-diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
-index 7989784..732150e 100644
---- a/include/linux/spinlock.h
-+++ b/include/linux/spinlock.h
-@@ -43,8 +43,6 @@
-  *
-  *  linux/spinlock_api_up.h:
-  *                        builds the _spin_*() APIs.
-- *
-- *  linux/spinlock.h:     builds the final spin_*() APIs.
-  */
- 
- #include <linux/typecheck.h>
+diff --git a/Documentation/devicetree/bindings/clock/rockchip,rk3568-cru.txt b/Documentation/devicetree/bindings/clock/rockchip,rk3568-cru.txt
+new file mode 100644
+index 000000000000..b1119aecb7c7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/rockchip,rk3568-cru.txt
+@@ -0,0 +1,66 @@
++* Rockchip RK3568 Clock and Reset Unit
++
++The RK3568 clock controller generates and supplies clock to various
++controllers within the SoC and also implements a reset controller for SoC
++peripherals.
++
++Required Properties:
++
++- compatible: PMU for CRU should be "rockchip,rk3568-pmucru"
++- compatible: CRU should be "rockchip,rk3568-cru"
++- reg: physical base address of the controller and length of memory mapped
++  region.
++- #clock-cells: should be 1.
++- #reset-cells: should be 1.
++
++Optional Properties:
++
++- rockchip,grf: phandle to the syscon managing the "general register files"
++  If missing, pll rates are not changeable, due to the missing pll lock status.
++
++Each clock is assigned an identifier and client nodes can use this identifier
++to specify the clock which they consume. All available clocks are defined as
++preprocessor macros in the dt-bindings/clock/rk3568-cru.h headers and can be
++used in device tree sources. Similar macros exist for the reset sources in
++these files.
++
++External clocks:
++
++There are several clocks that are generated outside the SoC. It is expected
++that they are defined using standard clock bindings with following
++clock-output-names:
++ - "xin24m" - crystal input - required,
++ - "xin32k" - rtc clock - optional,
++ - "i2sx_mclkin" - external I2S clock - optional,
++ - "xin_osc0_usbphyx_g" - external USBPHY clock - optional,
++ - "xin_osc0_mipidsiphyx_g" - external MIPIDSIPHY clock - optional,
++
++Example: Clock controller node:
++
++	pmucru: clock-controller@fdd00000 {
++		compatible = "rockchip,rK3568-pmucru";
++		reg = <0x0 0xfdd00000 0x0 0x1000>;
++		#clock-cells = <1>;
++		#reset-cells = <1>;
++	};
++
++	cru: clock-controller@fdd20000 {
++		compatible = "rockchip,rK3568-cru";
++		reg = <0x0 0xfdd20000 0x0 0x1000>;
++		rockchip,grf = <&grf>;
++		#clock-cells = <1>;
++		#reset-cells = <1>;
++	};
++
++Example: UART controller node that consumes the clock generated by the clock
++  controller:
++
++	uart1: serial@fe650000 {
++		compatible = "rockchip,rK3568-uart", "snps,dw-apb-uart";
++		reg = <0x0 0xfe650000 0x0 0x100>;
++		interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
++		reg-shift = <2>;
++		reg-io-width = <4>;
++		clocks = <&cru SCLK_UART1>, <&cru PCLK_UART1>;
++		clock-names = "baudclk", "apb_pclk";
++	};
 -- 
-1.9.1
+2.17.1
+
 
 
