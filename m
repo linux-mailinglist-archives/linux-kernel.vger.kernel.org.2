@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3E3322C1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A570F322C39
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232878AbhBWOVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:21:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:52494 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232313AbhBWOVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:21:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3DE71FB;
-        Tue, 23 Feb 2021 06:21:01 -0800 (PST)
-Received: from [10.37.8.9] (unknown [10.37.8.9])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03D8B3F73B;
-        Tue, 23 Feb 2021 06:20:59 -0800 (PST)
-Subject: Re: [PATCH v13 4/7] arm64: mte: Enable TCO in functions that can read
- beyond buffer limits
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-References: <20210211153353.29094-1-vincenzo.frascino@arm.com>
- <20210211153353.29094-5-vincenzo.frascino@arm.com>
- <20210212172128.GE7718@arm.com>
- <c3d565da-c446-dea2-266e-ef35edabca9c@arm.com>
- <20210222175825.GE19604@arm.com>
- <6111633c-3bbd-edfa-86a0-be580a9ebcc8@arm.com>
- <20210223120530.GA20769@arm.com> <20210223124951.GA10563@willie-the-truck>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <bf45cf22-662b-e99c-4868-bfc64a0622b0@arm.com>
-Date:   Tue, 23 Feb 2021 14:25:14 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231591AbhBWO2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232377AbhBWO2J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:28:09 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F25C06174A;
+        Tue, 23 Feb 2021 06:27:29 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id o6so2012142pjf.5;
+        Tue, 23 Feb 2021 06:27:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3iZSwnKzPYQQG7Iy7lq52a5tBvSjAgaxWW6X97nL+Dc=;
+        b=SMWfomH1bBU1+vvLVEYUgw4rc91OCFMZPGgQmNdrvjX/s4aVemTKD0a75pbe3zoIxV
+         kphe991YlBaT98O35BZdJdRwKdLa/NkzpemciiAgcUqj6EYKMDIE8i8BPZw32Z/bgQA5
+         WXXODhTp/fSchyMlarTk3q0aP/+/yrFvtKf0CkSiiBU4LAAGsUujPCmiTpahX4volinz
+         X4YzKwNFDikcsLWG/qAwnyraECVK8fIi6tFxJM212aFHmuuN3SVUA6gzER0VNgbA/B9c
+         5MORmJsoE0Yd2ntLhjxSCUrD5oKE0w3YaoTFLxJzO7uTGBKTsjtnlHcw6sUTeMee/Lj6
+         /19w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3iZSwnKzPYQQG7Iy7lq52a5tBvSjAgaxWW6X97nL+Dc=;
+        b=TrmMoSQp2hMYKk7aZsVUkrLGAmL8a2BAEUbNBwtdDE/k0VijfXdL0lSECsvemjTSh8
+         1yUkPRn4n/SN6ZZjRKhfDJDBIYC8x2BwVQBQR9iDHmIizZ9ycFu/BjMbyC3uMOVioWD7
+         cQjuYecasBwOuZprRhvKSX3zadBH77N0yKv4A3mGwQJHLVA+0bNvVsmGDx9KfshiVeq9
+         rcODmeHzxtg7H/kCgukBrs3XUsMB24T6iqF2nh/7S46aWDOvvkvBVfixRFXFr9om/LbO
+         qvKo2mk4+2WTVnARGY00hZm7uKrjWMBLxn+POGlyt6o8Oi6AYgGVOMOsVujhBgYX35BU
+         PFzA==
+X-Gm-Message-State: AOAM530mSRz+9yP/hWgZSXsiTipymBEZdAVAapb9j5AwlNXZbgnWYnOu
+        OZqBEHBtHz9gErBKD6drzeys5ijK6ME=
+X-Google-Smtp-Source: ABdhPJy+YrzZKwd5+F/mUlLKc1buAG2GYo3psN+zgLKKgZCaQodKOmaaXPOfQkTbTyqMVe6xmSm/bg==
+X-Received: by 2002:a17:902:6ac7:b029:e4:28f8:b463 with SMTP id i7-20020a1709026ac7b02900e428f8b463mr546771plt.62.1614090448923;
+        Tue, 23 Feb 2021 06:27:28 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id h3sm21489224pgm.67.2021.02.23.06.27.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 06:27:28 -0800 (PST)
+Date:   Tue, 23 Feb 2021 06:27:26 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Heiko Thiery <heiko.thiery@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Fugang Duan <fugang.duan@nxp.com>
+Subject: Re: [PATCH 1/1] net: fec: ptp: avoid register access when ipg clock
+ is disabled
+Message-ID: <20210223142726.GA4711@hoboy.vegasvil.org>
+References: <20210220065654.25598-1-heiko.thiery@gmail.com>
+ <20210222190051.40fdc3e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAEyMn7ZM7_pPor0S=dMGbmnp0hmZMrpquGqq4VNu-ixSPp+0UQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210223124951.GA10563@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEyMn7ZM7_pPor0S=dMGbmnp0hmZMrpquGqq4VNu-ixSPp+0UQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/23/21 12:49 PM, Will Deacon wrote:
->>> I totally agree on this point. In the case of runtime switching we might need
->>> the rethink completely the strategy and depends a lot on what we want to allow
->>> and what not. For the kernel I imagine we will need to expose something in sysfs
->>> that affects all the cores and then maybe stop_machine() to propagate it to all
->>> the cores. Do you think having some of the cores running in sync mode and some
->>> in async is a viable solution?
->> stop_machine() is an option indeed. I think it's still possible to run
->> some cores in async while others in sync but the static key here would
->> only be toggled when no async CPUs are left.
-> Just as a general point, but if we expose stop_machine() via sysfs we
-> probably want to limit that to privileged users so you can't DoS the system
-> by spamming into the file.
+On Tue, Feb 23, 2021 at 09:00:32AM +0100, Heiko Thiery wrote:
+> HI Jakub,
+> 
+> Am Di., 23. Feb. 2021 um 04:00 Uhr schrieb Jakub Kicinski <kuba@kernel.org>:
+> > Why is the PTP interface registered when it can't be accessed?
+> >
+> > Perhaps the driver should unregister the PTP clock when it's brought
+> > down?
 
-I agree, if we ever introduce the runtime switching and go for this option we
-should make sure that we do it safely.
+I don't see any reason why a clock should stop ticking just because
+the interface is down.  This is a poor driver design, but sadly it
+gets copied and even defended.
 
--- 
-Regards,
-Vincenzo
+> Good question, but I do not know what happens e.g. with linuxptp when
+> the device that was opened before will be gone.
+
+If a network interface goes down, ptp4l will notice via rtnl and close
+the interface.  Then it re-opens the sockets on rtnl up.  However, the
+file descriptor representing the dynamic posix clock stays opened.
+
+Thanks,
+Richard
