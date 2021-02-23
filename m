@@ -2,80 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFDF3227A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA11E3227A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhBWJPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 04:15:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232254AbhBWJPD (ORCPT
+        id S232311AbhBWJQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:16:46 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:46421 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231414AbhBWJPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:15:03 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F48C061786;
-        Tue, 23 Feb 2021 01:14:23 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id g5so33476335ejt.2;
-        Tue, 23 Feb 2021 01:14:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b5MtT/ZdRPwH3IHGkszx0Ejluf/ndHyk503G2Rm9ils=;
-        b=GpmmQZlnXzGD1kHuc6Kv9xigy1sJuXWH3dZqg5Vs99WFBxoTWCU3/K2DIiXLQsBorm
-         ULOdBhuPEWDqrfccYAmsLtGjShSlT2/jstrlSPytLEjFi9HQZyjGdZuEDSinUPb+5vJI
-         HkBA1eC5zA1OJUnBCMMn/pM+N1kKZesZh2Rnca8nG11WiF7WKycWDgBdL7NRxbnc2WZ6
-         uf/QXhrDcViYI9wwlB+U2qXnfped8ad53tAqxuE4VBCYre+hx181ANfb8L7B7vMI3ABL
-         MHQUAezy7X8WjIH/kMEDknmITMqhlj4Ej93MbWOQLMYU5NLjTWNAL6xX07PzRWaCbakk
-         6R4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b5MtT/ZdRPwH3IHGkszx0Ejluf/ndHyk503G2Rm9ils=;
-        b=WMjjO9+CJZR4JQBZ5aVkrhSW0d8HlEzwh1Yjh5vLKxGXodF2aR8+f3aozG0GL6y8+h
-         3gOFnVUmJNyUPlf7CZ5GPn4VZZAcA5D3HhyeIbnQn4HrBUujmrZ+VITPk65qjA4cBKer
-         KvdWHMX5J3+lTjaEbA43Fjq4qeMACOrduShDUJFuODh6V05zhHeKD5+3cfnC0X+jcN51
-         8guYSiRr48lN2iaIZAYNw/bUV4AkpDVKFPz17Ed5v6QJIYVVP1KZCYzM71qIOvqHWkj1
-         fu1MAWFWSH+zUmN6XEcFPqm/pEx2FxYVaTBvEHFp8L9/pj4guqJAHGjfcmilZilia6T2
-         zh8Q==
-X-Gm-Message-State: AOAM532J05RamEIesmGYD9joDDGsB0S9aIUFYPZ27zvaI9ztU/XKS2mS
-        +PiWbFHCDUEEjolviDR2Uyh0mvkflLKexXz7MC8=
-X-Google-Smtp-Source: ABdhPJz4R4ZgmznPz2GNNWvnywZAr4uBgUpJfEA7xJHHLpa6gxqaLqhgwSOdWYHkRTdp4nIUPMj6SIo3LCG1a0yXTfY=
-X-Received: by 2002:a17:906:2a06:: with SMTP id j6mr23964456eje.164.1614071662110;
- Tue, 23 Feb 2021 01:14:22 -0800 (PST)
-MIME-Version: 1.0
-References: <CGME20210219124555epcas5p1334e7c4d64ada5dc4a2ca0feb48c1d44@epcas5p1.samsung.com>
- <20210219124517.79359-1-selvakuma.s1@samsung.com> <20210221235248.GZ4626@dread.disaster.area>
-In-Reply-To: <20210221235248.GZ4626@dread.disaster.area>
-From:   Selva Jove <selvajove@gmail.com>
-Date:   Tue, 23 Feb 2021 14:44:08 +0530
-Message-ID: <CAHqX9vbG-cB0h25y4OhcdOEegn-_E=HwHJtkPFGaurEF9-KXPw@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 0/4] add simple copy support
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     SelvaKumar S <selvakuma.s1@samsung.com>,
-        linux-nvme@lists.infradead.org, Keith Busch <kbusch@kernel.org>,
-        axboe@kernel.dk, Damien Le Moal <damien.lemoal@wdc.com>,
-        hch@lst.de, sagi@grimberg.me, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com,
-        snitzer@redhat.com, joshiiitr@gmail.com, nj.shetty@samsung.com,
-        joshi.k@samsung.com, javier.gonz@samsung.com, kch@kernel.org,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 23 Feb 2021 04:15:12 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UPM5NlM_1614071668;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPM5NlM_1614071668)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 23 Feb 2021 17:14:28 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     jdelvare@suse.com
+Cc:     linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] hwmon: Switch to using the new API kobj_to_dev()
+Date:   Tue, 23 Feb 2021 17:14:27 +0800
+Message-Id: <1614071667-5665-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave,
+fixed the following coccicheck:
+./drivers/hwmon/hwmon.c:82:60-61: WARNING opportunity for kobj_to_dev()
 
-copy_file_range() is work under progress.  FALLOC_FL_UNSHARE of fallocate()
-use case sounds interesting. I will try to address both of them in the
-next series.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/hwmon/hwmon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Adding SCSI_XCOPY() support is not in the scope of this patchset. However
-blkdev_issue_copy() interface is made generic so that it is possible to extend
-to cross device XCOPY in future.
+diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
+index 6c68405..fd47ab4 100644
+--- a/drivers/hwmon/hwmon.c
++++ b/drivers/hwmon/hwmon.c
+@@ -79,7 +79,7 @@ struct hwmon_thermal_data {
+ static umode_t hwmon_dev_name_is_visible(struct kobject *kobj,
+ 					 struct attribute *attr, int n)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 
+ 	if (to_hwmon_device(dev)->name == NULL)
+ 		return 0;
+-- 
+1.8.3.1
 
-
-Thanks,
-Selva
