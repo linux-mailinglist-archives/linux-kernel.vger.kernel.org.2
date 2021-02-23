@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4A332343B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 00:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D4A32343E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 00:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233492AbhBWX3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 18:29:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
+        id S233671AbhBWXbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 18:31:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbhBWXTu (ORCPT
+        with ESMTP id S232557AbhBWXUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 18:19:50 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BFDC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:19:07 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id c16so420315otp.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:19:07 -0800 (PST)
+        Tue, 23 Feb 2021 18:20:41 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DF6C06178B
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:20:00 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id a22so172718ljp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:20:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dRXoBDgFZIgD9+/8HNqkE5zY8pCw7BmfPg5XxXSAbIs=;
-        b=mVKXk2bMH060FPg+WmGqt0nUnrkjnTuiNcf0GH2M4keakiQ6qIkznBVX4NBwGN4bhN
-         qI5bpffiHUxCSNtJqjIuq9tBlnWoGwo9XCLz2hdCQHOwScpeaSqCxez1KiVINyzV0Bmx
-         bIWqfiHiwP8HApIl5As5mecCbqim9KRpJ8Horkb+EUH2zN3tusxExi8ISutmVS8DxGuA
-         vAhGWXCkNtiiBOrI3kVKgMTCZ39l7hYDbphinX2jOuTEy7RVsiqSK5vlWVg9jW+qqKvF
-         3WeUinQSL39T5HNH8K1G1ewfLibgnwz4U3RPneBr9EAIkoaBPBe9sfiAHQB3x84G1zW4
-         +5zw==
+        bh=N/yik/iez7Vhg7/1JKjxYAAp3zLKK6slY5s2bzVJPEI=;
+        b=aAVF1AJYiuYOItxrV9OrRctJHr3Lfcke/igUMBt3widY9DeA5idggiNgKtZd+hN3Xx
+         w22z4QWveBDIr8iyrv+FDF8qoQGwmLlzIzPnyePpmASwHMtOzYtmn8X7SCX3u5VUcosu
+         +oiaXsnSMt6y2jukwyatNKSJAvBosVEgx/0Qo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dRXoBDgFZIgD9+/8HNqkE5zY8pCw7BmfPg5XxXSAbIs=;
-        b=tVoV0Drw73azKtDrss+eMl4bryqotjkgO+uHZwRn4qBCmOsSsnSBAjbwtCKLwLTSjU
-         dvbpx+aknBoC2H7RjJEWajwchr5jwt0hwX1+ktrdhxKIV/F7X9CpKNl7y0ndx8MTx3+V
-         0DrSiQQnX4+BxDlfiFEWB9C2k4mZycg6IAy9QProNus2cNqKNs60eNwurN0GwAdQhaBO
-         1BS4rbjM/UF3IhXdgJg6/Dtlli9zw1D3arbeMGkRBirV5XkpJeCH8p7oc39uvxW3fYlB
-         FkuTIfK5/xVPoZtPXdmc3iPNtgo5BfprZE25cVT2xfdfBh+XbPsGds0yj4sd+jt1CmxM
-         F4pA==
-X-Gm-Message-State: AOAM533Xa1R/ichSg90d96yTXbT4qZ6G3vyCMay4C6mLCCNNnpr4ihuA
-        xXTuOoD7KVeoiPsGLC8lUksGOxcVo9mytidApbdoPA==
-X-Google-Smtp-Source: ABdhPJwKP4y+pemw61s5TPgupsrWMV3z9RQT2hiO6PBkW7Y2Z/NK3FR+aq2pE5vF0aYfenU9TlzVP4y+Z/XB4dnWHd8=
-X-Received: by 2002:a05:6830:c9:: with SMTP id x9mr3343269oto.295.1614122346158;
- Tue, 23 Feb 2021 15:19:06 -0800 (PST)
+        bh=N/yik/iez7Vhg7/1JKjxYAAp3zLKK6slY5s2bzVJPEI=;
+        b=o3AYk+Vk49pFmfnuRfJIKbDxnyRF9OzVfFw1A+f+vbyi+JgUxypFu0FeA0Td51S8fZ
+         DjJrtMEIH/UV5ddXFulQTa97ETjiPDRugfyuwAYzaQeByEaJIP1TZxvDGr0p5eWqB7DA
+         BzXNryIQpcxIUqqvrI5TobbYGwIGTN/C3NosmSWtkOAf+s406d0dSKWgfrwFCsVfi1nU
+         c35JogBbBX7MuoA/6VPgie6Ql+p7WfyIDQsv76+R5TSHjf6mK4ADR56ql4L9vhaiTrXl
+         NNMssMohJE2jRQNBRJNNO1ahtGP4IRVWTpIcjvQCe6Q1fJpc0KjFWilFtcYNwPpoHgp2
+         U8Tw==
+X-Gm-Message-State: AOAM531SCRAhj15w4q+pAGiSh6QmNZPceg2WHRs3DttzhHktCHA0n2Jg
+        2OWcpagosreK2bIP+XFVBJElqkmSo/xvhQ==
+X-Google-Smtp-Source: ABdhPJxGhwXjofhb3QojR/zVQLX11L6lpgBkVn5JrhUNtxpLO1S+lP3aH05XOGN812dNW7S/pz6q4A==
+X-Received: by 2002:a05:651c:1196:: with SMTP id w22mr18443923ljo.42.1614122398882;
+        Tue, 23 Feb 2021 15:19:58 -0800 (PST)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id q6sm48673lfb.288.2021.02.23.15.19.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Feb 2021 15:19:57 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id o16so166205ljj.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:19:57 -0800 (PST)
+X-Received: by 2002:a2e:924e:: with SMTP id v14mr1444944ljg.48.1614122396619;
+ Tue, 23 Feb 2021 15:19:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20210219144632.2288189-1-david.edmondson@oracle.com> <20210219144632.2288189-2-david.edmondson@oracle.com>
-In-Reply-To: <20210219144632.2288189-2-david.edmondson@oracle.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 23 Feb 2021 15:18:54 -0800
-Message-ID: <CALMp9eRCYvU6y4Nt6ZruHD+t2wkmkpd67Vhr-wGuD-36EmCMBw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] KVM: x86: dump_vmcs should not assume
- GUEST_IA32_EFER is valid
-To:     David Edmondson <david.edmondson@oracle.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
+References: <20210223181425.4010665-1-robh@kernel.org> <20210223181425.4010665-4-robh@kernel.org>
+In-Reply-To: <20210223181425.4010665-4-robh@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 23 Feb 2021 15:19:40 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiWoqUt5z0Phvr-0HQkohi2SkYRPuCGi0xefV0KE+t4kA@mail.gmail.com>
+Message-ID: <CAHk-=wiWoqUt5z0Phvr-0HQkohi2SkYRPuCGi0xefV0KE+t4kA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] kbuild: Add a build check for missing gitignore entries
+To:     Rob Herring <robh@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 6:46 AM David Edmondson
-<david.edmondson@oracle.com> wrote:
+On Tue, Feb 23, 2021 at 10:14 AM Rob Herring <robh@kernel.org> wrote:
 >
-> If the VM entry/exit controls for loading/saving MSR_EFER are either
-> not available (an older processor or explicitly disabled) or not
-> used (host and guest values are the same), reading GUEST_IA32_EFER
-> from the VMCS returns an inaccurate value.
->
-> Because of this, in dump_vmcs() don't use GUEST_IA32_EFER to decide
-> whether to print the PDPTRs - do so if the EPT is in use and CR4.PAE
-> is set.
->
-> Fixes: 4eb64dce8d0a ("KVM: x86: dump VMCS on invalid entry")
-> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index eb69fef57485..818051c9fa10 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -5759,7 +5759,6 @@ void dump_vmcs(void)
->         u32 vmentry_ctl, vmexit_ctl;
->         u32 cpu_based_exec_ctrl, pin_based_exec_ctrl, secondary_exec_control;
->         unsigned long cr4;
-> -       u64 efer;
->
->         if (!dump_invalid_vmcs) {
->                 pr_warn_ratelimited("set kvm_intel.dump_invalid_vmcs=1 to dump internal KVM state.\n");
-> @@ -5771,7 +5770,6 @@ void dump_vmcs(void)
->         cpu_based_exec_ctrl = vmcs_read32(CPU_BASED_VM_EXEC_CONTROL);
->         pin_based_exec_ctrl = vmcs_read32(PIN_BASED_VM_EXEC_CONTROL);
->         cr4 = vmcs_readl(GUEST_CR4);
-> -       efer = vmcs_read64(GUEST_IA32_EFER);
->         secondary_exec_control = 0;
->         if (cpu_has_secondary_exec_ctrls())
->                 secondary_exec_control = vmcs_read32(SECONDARY_VM_EXEC_CONTROL);
-> @@ -5784,8 +5782,7 @@ void dump_vmcs(void)
->                cr4, vmcs_readl(CR4_READ_SHADOW), vmcs_readl(CR4_GUEST_HOST_MASK));
->         pr_err("CR3 = 0x%016lx\n", vmcs_readl(GUEST_CR3));
->         if ((secondary_exec_control & SECONDARY_EXEC_ENABLE_EPT) &&
-> -           (cr4 & X86_CR4_PAE) && !(efer & EFER_LMA))
-> -       {
-> +           (cr4 & X86_CR4_PAE)) {
+> Any non-phony targets need to be in gitignore. The normal way to check
+> this is doing an in-tree build and running git-status which is easy to
+> miss. Git provides an easy way to check whether a file is ignored with
+> git-check-ignore. Let's add a build time check using it.
 
-Assuming that we really want to restrict the printing of the PDPTEs, I
-think you also need to test "cr0 & CR0.PG" (cf. section 26.3.1.6 of
-the SDM, volume 3).
+This looks ridiculously expensive with a shell and git invocation for
+every single target just for this check.
+
+Considering that I just had to fight my build suddenly getting much
+slower, I'm a bit sensitive about these things.
+
+          Linus
