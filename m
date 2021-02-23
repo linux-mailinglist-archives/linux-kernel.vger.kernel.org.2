@@ -2,227 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502DE322A26
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A36322A1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232726AbhBWL7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 06:59:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232661AbhBWL4c (ORCPT
+        id S232673AbhBWL6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 06:58:53 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17804 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232570AbhBWLzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:56:32 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E76C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 03:53:55 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id u20so33427685ejb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 03:53:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1XOwOWySZhnZCTnQyRrSazspBdCpbP9dpG2ed8fKOxw=;
-        b=TUGjxLj9zQKKyGhe9FncpHrnFvNeWzLVP1BTUJbC5aTuqLBzWOOUzb0y+Younghy4Q
-         eg9wf8J1GVYEygj4sBbFN2U2i6e+qha4IMpg+JtQi67M+27CD61wmSsLg44jxWfQv46m
-         99Bd5zbVnWqZd+xFTEq1AG91V7rIF4W98BLRn2RmfEWDpWiR8+hPH0r37CohvNANe8rt
-         E+3hJGsSRs4f6hO1MCjDhckCF6T3P04n7xKweaK76cT9lGIaAKZFlCzWyOjdBN2BcWHw
-         WCIlXlMd7emfCcJhnkJKtOihpfCIhnFG9MuZVijGZMIOzhMD1tTx0//KdRMESa4HF7Zc
-         oOrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1XOwOWySZhnZCTnQyRrSazspBdCpbP9dpG2ed8fKOxw=;
-        b=PJY0+OjURq0tBN8vfslsuM4BEu+B71Y/BQHt9feAA2vdZ7zkCiusG9JHpu4p0qjVAK
-         cOq0gsltmb7TKOYIemF2YFS96WP8VNDwtoTLQlBC1rMQP0e5+vRv312bwevR2pUbnRpr
-         bAfufDhxye3Eynw2/laHvPvSOl1798vMJct2tEnOEhGhrZr7D4Ywd1habc/sDq/Kipmv
-         PVIyFDWAIoc4A2tbvuWP2jNNP3SLnBOc+lIrG/HHsHatCfKLsYNeGqmlyo4kG5iBWRNW
-         yHhYaVrQoAnkv7uQ42yz//cVlGghBXW9CH0bEsZkl2Jf0ajB0A4KD9tX3LrRhEM7Wlmc
-         KVzw==
-X-Gm-Message-State: AOAM530XpuapwLK1EJdrVmaCnpPDnW9SUo68Qpo/XLJtp4sY3CbNdjAM
-        bOf7vCxcuf1kljUfSS0fWtxpItdkfhoLwCrYWNLeTQ==
-X-Google-Smtp-Source: ABdhPJzzE4J/Ubge/VwImZiHNoYnxpZw76CeFnGlu4atJGD+ebLgzFB4eTccwXTVdmw3LKxiUMoiNyiUqND3pc/ghHU=
-X-Received: by 2002:a17:906:d8ca:: with SMTP id re10mr25954018ejb.18.1614081232795;
- Tue, 23 Feb 2021 03:53:52 -0800 (PST)
+        Tue, 23 Feb 2021 06:55:09 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NBZ7I4161707;
+        Tue, 23 Feb 2021 06:54:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=C6hhHGsSYuLx59MIo/P3YZpsGYjes3e5/h8fmrfLkkQ=;
+ b=UwR4pYDxkjzTeYmK99HuxduXpUKrzKOK8PbHqVGq4ps/lNNTPdnd8i29cQoDBqvtN6F2
+ P1totvxbfy7JD4DMx8UYR0OJ7FyDZh/wL4urdJaL9yd+e0EJi5Uchaew80rNs4975nRx
+ 3YrqC1pSF0YTP4o9rO4Ie5JR8sFA+Hfl3HKlg9EXpo0XvulyR7voJ/uBLVc/iPfMvMYI
+ gX2LUih3p/BQv4vqTn2u1ah5wHOitl33l6TrkJXSr6MA+MVFOG6TI8ZIyn457BvixKl4
+ bpUGEeZnvT6eud6tK2RTqFXntO8KwdQX1DvjmWKBtN3LEi9uw1Zn0N5t5D4OKAFbKTjC rA== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36vkma6tsh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Feb 2021 06:54:16 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11NBrehc014775;
+        Tue, 23 Feb 2021 11:54:14 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 36tt289b8a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Feb 2021 11:54:14 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11NBrxVY33685844
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Feb 2021 11:53:59 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E754211C04A;
+        Tue, 23 Feb 2021 11:54:11 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 99F1611C050;
+        Tue, 23 Feb 2021 11:54:11 +0000 (GMT)
+Received: from osiris (unknown [9.171.40.247])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 23 Feb 2021 11:54:11 +0000 (GMT)
+Date:   Tue, 23 Feb 2021 12:54:10 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH] gcc-plugins: Disable GCC_PLUGIN_CYC_COMPLEXITY for s390
+Message-ID: <YDTs4vfjezu3j7rX@osiris>
+References: <20210221225650.33134-1-linux@roeck-us.net>
+ <YDOeI5+1H3T1ocmQ@osiris>
+ <f35196cc-969f-21ef-0c38-dc6e13831fb0@roeck-us.net>
+ <CAK7LNASdfvJsqq8ubpBZJ5yWPMimt=pF_GFBLTJbFytbtw8jxg@mail.gmail.com>
+ <8d3de6fc-0991-9cef-d5fd-032fdbe2e85e@roeck-us.net>
 MIME-Version: 1.0
-References: <20210222121027.174911182@linuxfoundation.org>
-In-Reply-To: <20210222121027.174911182@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 23 Feb 2021 17:23:40 +0530
-Message-ID: <CA+G9fYv87zpv5xL1S8V=m9j=JGhf-J=vyxi4U_r2pb2y_=P29w@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/57] 4.14.222-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d3de6fc-0991-9cef-d5fd-032fdbe2e85e@roeck-us.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-23_07:2021-02-23,2021-02-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 phishscore=0 priorityscore=1501 adultscore=0 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 clxscore=1015 mlxlogscore=974 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102230100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 at 18:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.222 release.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.222-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Mon, Feb 22, 2021 at 08:03:31AM -0800, Guenter Roeck wrote:
+> > Maybe, we can add something like CONFIG_SUPPRESS_NOISY_TESTS,
+> > which is set to y by all{yes,mod}config.
+> > 
+> > This is self-documenting, so we do not need the '# too noisy' comment.
+> > 
+> > 
+> > 
+> > config SUPPRESS_NOISY_TESTS
+> >        bool "suppress noisy test"
+> > 
+> > 
+> > config GCC_PLUGIN_CYC_COMPLEXITY
+> >         bool "Compute the cyclomatic complexity of a function" if EXPERT
+> >         depends on !SUPPRESS_NOISY_TESTS
+> > 
+> 
+> Good idea. Downside would be that it won't solve the real problem
+> for s390 (which is lack of allmodconfig/allyesconfig compile test
+> coverage because COMPILE_TEST isn't set anymore), but that is a
+> different problem anyway, and my original patch doesn't solve
+> that either.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+I tried to explain why we don't want to set COMPILE_TEST for s390
+anymore. It overrides architecture dependencies in Kconfig, and lots
+of drivers do not set dependencies for HAS_IOMEM, HAS_DMA, and friends
+correctly.
+This generates constantly fallout which is irrelevant for s390 and
+also for other architectures. It generates just work with close to
+zero benefit. For drivers which matter for s390 we still see those
+errors.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> On the other side, if that flag would be set explicitly by
+> all{yes,mod}config, it would really beg for being misused. We
+> might then as well add a new flag that is explicitly associated
+> with all{yes,mod}config, but not with randconfig.
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.14.222-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: 5d849f076141b32ff58f296e2db48960d320954a
-git describe: v4.14.221-58-g5d849f076141
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.221-58-g5d849f076141
-
-No regressions (compared to build v4.14.221)
-
-No fixes (compared to build v4.14.221)
-
-Ran 41786 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* fwts
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* v4l2-compliance
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-open-posix-tests
-* perf
-* kvm-unit-tests
-* rcutorture
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+I think that makes most sense, probably also have a flag that is set
+for randconfig.
