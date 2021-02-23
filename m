@@ -2,142 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770BD32288A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7D132288C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhBWKFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:05:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55162 "EHLO mail.kernel.org"
+        id S231795AbhBWKGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 05:06:30 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:36772 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230142AbhBWKFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:05:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 389EE64E22;
-        Tue, 23 Feb 2021 10:04:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614074701;
-        bh=Wei69MTAw3cAoHZzehtkt6nVDExu19SQg53rlhzIYkc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WZOqzYAfqkinjCDFARp7S1HJXXBR9/a5BpaM0vR+ODhDKzZDPfF/ye7XjKQMUez35
-         gNYf4tHz2dZXzh6zzeOdB4V3qV1z9r5sgXIXTCI0aO5M02BEsGDwODUFLCu1Lt0bOf
-         0DK9G68zNyFKRYC1hCUEsoWO6316kYRolzd+VXquDUZT8xx0YR4ZC9pYlEAwapnwSR
-         iFZl+6xr5ZixbyOTXA4xJh9vWEFM0si3FfsI5NrErO2BOcvcjSnsbqxWi1qJke/gga
-         uJI0eyUbRiuqihtgi0hZ2CyAWZ72G2AC/8FGKqtO9r7yqQCxJpGGZu4aJGwqnQT86v
-         k3LlYOeONI6cg==
-Date:   Tue, 23 Feb 2021 10:04:53 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Jian Cai <jiancai@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        James Morse <james.morse@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v4] ARM: Implement SLS mitigation
-Message-ID: <20210223100453.GB10254@willie-the-truck>
-References: <20210219201852.3213914-1-jiancai@google.com>
- <20210219230841.875875-1-jiancai@google.com>
- <20210222115816.GA8605@willie-the-truck>
- <CA+SOCLJVGJSn67VU24wPDdsOVeHhGe+KO5ekOCusano=bhn1Mg@mail.gmail.com>
+        id S230482AbhBWKGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 05:06:23 -0500
+Received: from zn.tnic (p200300ec2f08d800f4a123a8a64e4d27.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:d800:f4a1:23a8:a64e:4d27])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A34811EC051F;
+        Tue, 23 Feb 2021 11:05:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614074740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Lj5iIoesPz2ZRWUkdPvplvvFVZPwHPGzrGTJCq2uw3w=;
+        b=gKVSOvOqx4T08vP3y0Evua0nuWO/o/R3IW8mceMGbjnuAgcJuNhLXZ+2qXdVvWRTI4Y4sW
+        2MUTokBZZ5ngPt8Kye9NAPcrWRU5Btd6cFaR6cY+9ijsVO+z6MwwRdOzNSTNeuXdx9wenz
+        6iqc8HU9qjMkvcGAS51IW2F/MCFVlcM=
+Date:   Tue, 23 Feb 2021 11:05:38 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Aili Yao <yaoaili@kingsoft.com>
+Cc:     tony.luck@intel.com, mingo@redhat.com, tglx@linutronix.de,
+        hpa@zytor.com, x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yangfeng1@kingsoft.com,
+        yaoaili@kingsoft
+Subject: Re: [PATCH v2] x86/mce: fix wrong no-return-ip logic in
+ do_machine_check()
+Message-ID: <20210223100538.GB26060@zn.tnic>
+References: <20210222180819.3998fe33@alex-virtual-machine>
+ <20210222102206.GC29063@zn.tnic>
+ <20210222192146.76ffec84@alex-virtual-machine>
+ <20210222201723.0fcec589@alex-virtual-machine>
+ <20210222122241.GA10880@zn.tnic>
+ <20210222203549.0e54c26f@alex-virtual-machine>
+ <20210222124550.GB10880@zn.tnic>
+ <20210223102755.13cbdffd@alex-virtual-machine>
+ <20210223094300.GA26060@zn.tnic>
+ <20210223175640.5708c7ed@alex-virtual-machine>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CA+SOCLJVGJSn67VU24wPDdsOVeHhGe+KO5ekOCusano=bhn1Mg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210223175640.5708c7ed@alex-virtual-machine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 01:50:06PM -0800, Jian Cai wrote:
-> Please see my comments inlined below.
-> 
-> Thanks,
-> Jian
-> 
-> On Mon, Feb 22, 2021 at 3:58 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Fri, Feb 19, 2021 at 03:08:13PM -0800, Jian Cai wrote:
-> > > This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
-> > > -mharden-sls=all, which mitigates the straight-line speculation
-> > > vulnerability, speculative execution of the instruction following some
-> > > unconditional jumps. Notice -mharden-sls= has other options as below,
-> > > and this config turns on the strongest option.
-> > >
-> > > all: enable all mitigations against Straight Line Speculation that are implemented.
-> > > none: disable all mitigations against Straight Line Speculation.
-> > > retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
-> > > blr: enable the mitigation against Straight Line Speculation for BLR instructions.
-> > >
-> > > Links:
-> > > https://reviews.llvm.org/D93221
-> > > https://reviews.llvm.org/D81404
-> > > https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
-> > > https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
-> > >
-> > > Suggested-by: Manoj Gupta <manojgupta@google.com>
-> > > Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > Suggested-by: Nathan Chancellor  <nathan@kernel.org>
-> > > Suggested-by: David Laight <David.Laight@aculab.com>
-> > > Suggested-by: Will Deacon <will@kernel.org>
-> > > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> > > Signed-off-by: Jian Cai <jiancai@google.com>
-> > > ---
-> >
-> > Please can you reply to my previous questions?
-> >
-> > https://lore.kernel.org/linux-arm-kernel/20210217094859.GA3706@willie-the-truck/
-> >
-> > (apologies if you did, but I don't see them in the archive or my inbox)
-> 
-> I should have clarified the suggested-by tag was in regard to the
-> Kconfig text change. Regarding your earlier questions, please see my
-> comments below.
-> 
-> > So I think that either we enable this unconditionally, or we don't enable it
-> > at all (and people can hack their CFLAGS themselves if they want to).
-> 
-> Not sure if this answers your question but this config should provide
-> a way for people to turn on the mitigation at their own risk.
+On Tue, Feb 23, 2021 at 05:56:40PM +0800, Aili Yao wrote:
+> What i inject is AR error, and I don't see MCG_STATUS_RIPV flag.
 
-I'm not sure I see the point; either it's needed or its not. I wonder if
-there's a plan to fix this in future CPUs (another question for the Arm
-folks).
+Then keep debugging qemu to figure out why that is.
 
-> > It would be helpful for one of the Arm folks to chime in, as I'm yet to see any
-> > evidence that this is actually exploitable. Is it any worse that Spectre-v1,
-> > where we _don't_ have a compiler mitigation?
-> 
-> > Finally, do we have to worry about our assembly code?
-> 
-> I am not sure if there are any plans to protect assembly code and I
-> will leave it to the Arm folks since they know a whole lot better. But
-> even without that part, we should still have better protection,
-> especially when overhead does not look too bad: I did some preliminary
-> experiments on ChromeOS, code size of vmlinux increased 3%, and there
-> were no noticeable changes to run-time performance of the benchmarks I
-> used.
+-- 
+Regards/Gruss,
+    Boris.
 
-If the mitigation is required, I'm not sure I see a lot of point in only
-doing a half-baked job of it. It feels a bit like a box-ticking exercise,
-in which case any overhead is too much.
-
-Will
+https://people.kernel.org/tglx/notes-about-netiquette
