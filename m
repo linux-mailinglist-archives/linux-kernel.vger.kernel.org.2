@@ -2,72 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6356322882
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B58322888
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbhBWKCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:02:10 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:44846 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbhBWKAh (ORCPT
+        id S232348AbhBWKEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 05:04:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33334 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231867AbhBWKEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:00:37 -0500
-Received: by mail-ot1-f50.google.com with SMTP id f33so1705705otf.11;
-        Tue, 23 Feb 2021 02:00:20 -0800 (PST)
+        Tue, 23 Feb 2021 05:04:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614074562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fq9fMMA50uXmWN63AH4eeQqewule2njQVz39u52s5qo=;
+        b=deTTz0mD4ZDmqsREN/FhdosC1PWGX2b8AAx2SIndzR/hKJ3XrR6iOgntVEIwJBpEIvwnk0
+        9uh1kLaEZIYqeRoc1VcCv0no/tQjfvyobKMfHwh79yoEI4nR9TUCUIAekviuQMB/PBVPDW
+        a/aaZwP3LwgRFug1fBQ+6PLXvEmR9ao=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-6Xk49179MvGZSEqTLX0u8g-1; Tue, 23 Feb 2021 05:01:36 -0500
+X-MC-Unique: 6Xk49179MvGZSEqTLX0u8g-1
+Received: by mail-wr1-f71.google.com with SMTP id l10so7123159wry.16
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 02:01:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LWxe0P8DZYYU1z4RUHaP48wKAlVYUnjj2L7rokBCJ0s=;
-        b=APPzSCus5OikqsUSK00T2XdhJlrq1l+YwJEh0gX/U5FYd1VT69nRynQblkvhqcUyIV
-         B7r+nmOQxvejMze5uYAEE0R6j/TTIZy5xH6SpSGIXja+azGuW5E69Lnsdg3RQnr9kcb0
-         a1P6jZOeHK11liqc2QABDPD8PfwyUV6YSuJKBJqFHnY6sIUlESAW6bYrWoRcuuxpSTui
-         cyHpuhDWophwVUPI0ZgMl3Z6xpL4ny0JGicrPtKWc0nY3pg5iYtmyYoCoM60/ctLZf3G
-         cEYLL1QED8KQZBgn1XwnsiZNKn3k/4G3LJrMi3/yEuPc1xIMoF3XcoTpWuB79Zk0ZD8q
-         Z8pw==
-X-Gm-Message-State: AOAM532f2V8MulRa1oLtsrvDcHhZqxui1/oNKSteVFA55r40GhpWKaGN
-        y+OQ4uQzbkslsrZvB9YBSfimEI4kPE14hoOqHew=
-X-Google-Smtp-Source: ABdhPJxqhTOmb+J2f7WHRsWK1hNdeG2LJuMbyL0sTISsxlaAKuhBEJtQxKAtMf8KWocNXDSnntOz/G4ujTJDxOdUTzA=
-X-Received: by 2002:a9d:4a8e:: with SMTP id i14mr20306399otf.37.1614074395126;
- Tue, 23 Feb 2021 01:59:55 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=fq9fMMA50uXmWN63AH4eeQqewule2njQVz39u52s5qo=;
+        b=Yi+kPQJjqHY2/Kofh65Qu+hHvBjLyOzXoY2WdO3UUzIiqV1Se6f7gF1ojdXSaoFeCG
+         JK7DiUYnWlT0WKaGp8cXpm4rJSFuAI5D05oa4WARSv9Kiko7/s+CNYjLdhqMeG6MoaJ7
+         uUX97fclHEkOnjF8kre/oNdlie0W7B8s58X4hw1uL/lJsDgvMBhdLsuBmraiZZGXugyt
+         b5DxvLrwc6zO9m8joyztkaU0Ije9NmTKbdRcnidn8HaQDoi3aXslndyQyk7R6RL34Nwg
+         HNXmDtlJi8SA491lAgV4mTndsvEJMFBP1s0j7M4f8aOiRxiH2i1fatRexwoXgcceL828
+         N9BA==
+X-Gm-Message-State: AOAM532pu5WqLPizFmrTXbCnT0EukwFqoAmTO727aQAtHOu4JtsyQISY
+        WlXKPrkOdQZ2cv/QKg8v//TNsJIQa5UI+A+Iz9u5rhvie1PCY8+EjBFV0HIfL9ySKh1eWR5kIO2
+        J9H0Ox0roVeFik6sMApstJGPn
+X-Received: by 2002:adf:97d5:: with SMTP id t21mr1510153wrb.139.1614074495014;
+        Tue, 23 Feb 2021 02:01:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzqzcytawXMdenSafG3a3yvlWPCUdXAY4CQjPGVhSoQqq+a9ZdeDw2NxLx25iW4TucswKLb7Q==
+X-Received: by 2002:adf:97d5:: with SMTP id t21mr1510136wrb.139.1614074494799;
+        Tue, 23 Feb 2021 02:01:34 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id z11sm2046114wmi.35.2021.02.23.02.01.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 02:01:33 -0800 (PST)
+Date:   Tue, 23 Feb 2021 05:01:31 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        virtio-dev@lists.oasis-open.org
+Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
+Message-ID: <20210223045600-mutt-send-email-mst@kernel.org>
+References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
+ <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
+ <ee31e93b-5fbb-1999-0e82-983d3e49ad1e@oracle.com>
+ <20210223041740-mutt-send-email-mst@kernel.org>
+ <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
 MIME-Version: 1.0
-References: <20210222161905.1153-1-lukas.bulwahn@gmail.com> <20210222161905.1153-5-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210222161905.1153-5-lukas.bulwahn@gmail.com>
-From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
-Date:   Tue, 23 Feb 2021 10:59:44 +0100
-Message-ID: <CAAdtpL7tj2CvK9w8PNofu1C6Do0gojwWgupJmB_XEYto+EEf3A@mail.gmail.com>
-Subject: Re: [PATCH 4/5] arch: mips: remove dead references
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
-        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 5:22 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> The domain lookup for linux-mips.org fails for quite some time now.
-> Further, the two links:
->
->   http://decstation.unix-ag.org/
+On Tue, Feb 23, 2021 at 05:46:20PM +0800, Jason Wang wrote:
+> 
+> On 2021/2/23 下午5:25, Michael S. Tsirkin wrote:
+> > On Mon, Feb 22, 2021 at 09:09:28AM -0800, Si-Wei Liu wrote:
+> > > 
+> > > On 2/21/2021 8:14 PM, Jason Wang wrote:
+> > > > On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
+> > > > > Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
+> > > > > for legacy") made an exception for legacy guests to reset
+> > > > > features to 0, when config space is accessed before features
+> > > > > are set. We should relieve the verify_min_features() check
+> > > > > and allow features reset to 0 for this case.
+> > > > > 
+> > > > > It's worth noting that not just legacy guests could access
+> > > > > config space before features are set. For instance, when
+> > > > > feature VIRTIO_NET_F_MTU is advertised some modern driver
+> > > > > will try to access and validate the MTU present in the config
+> > > > > space before virtio features are set.
+> > > > 
+> > > > This looks like a spec violation:
+> > > > 
+> > > > "
+> > > > 
+> > > > The following driver-read-only field, mtu only exists if
+> > > > VIRTIO_NET_F_MTU is set. This field specifies the maximum MTU for the
+> > > > driver to use.
+> > > > "
+> > > > 
+> > > > Do we really want to workaround this?
+> > > Isn't the commit 452639a64ad8 itself is a workaround for legacy guest?
+> > > 
+> > > I think the point is, since there's legacy guest we'd have to support, this
+> > > host side workaround is unavoidable. Although I agree the violating driver
+> > > should be fixed (yes, it's in today's upstream kernel which exists for a
+> > > while now).
+> > Oh  you are right:
+> > 
+> > 
+> > static int virtnet_validate(struct virtio_device *vdev)
+> > {
+> >          if (!vdev->config->get) {
+> >                  dev_err(&vdev->dev, "%s failure: config access disabled\n",
+> >                          __func__);
+> >                  return -EINVAL;
+> >          }
+> > 
+> >          if (!virtnet_validate_features(vdev))
+> >                  return -EINVAL;
+> > 
+> >          if (virtio_has_feature(vdev, VIRTIO_NET_F_MTU)) {
+> >                  int mtu = virtio_cread16(vdev,
+> >                                           offsetof(struct virtio_net_config,
+> >                                                    mtu));
+> >                  if (mtu < MIN_MTU)
+> >                          __virtio_clear_bit(vdev, VIRTIO_NET_F_MTU);
+> 
+> 
+> I wonder why not simply fail here?
 
-https://web.archive.org/web/20070609185805/http://decstation.unix-ag.org/
+Back in 2016 it went like this:
 
->   http://www.computer-refuge.org/classiccmp/ftp.digital.com/pub/DEC/TriAdd/
->
-> refer to old webpages or contain no further technical information.
->
-> Remove all those dead references.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
->  arch/mips/Kconfig             |  8 +-------
->  arch/mips/jazz/Kconfig        | 12 +++---------
->  tools/include/nolibc/nolibc.h |  3 +--
->  3 files changed, 5 insertions(+), 18 deletions(-)
+	On Thu, Jun 02, 2016 at 05:10:59PM -0400, Aaron Conole wrote:
+	> +     if (virtio_has_feature(vdev, VIRTIO_NET_F_MTU)) {
+	> +             dev->mtu = virtio_cread16(vdev,
+	> +                                       offsetof(struct virtio_net_config,
+	> +                                                mtu));
+	> +     }
+	> +
+	>       if (vi->any_header_sg)
+	>               dev->needed_headroom = vi->hdr_len;
+	> 
+
+	One comment though: I think we should validate the mtu.
+	If it's invalid, clear VIRTIO_NET_F_MTU and ignore.
+
+
+Too late at this point :)
+
+I guess it's a way to tell device "I can not live with this MTU",
+device can fail FEATURES_OK if it wants to. MIN_MTU
+is an internal linux thing and at the time I felt it's better to
+try to make progress.
+
+
+> 
+> >          }
+> > 
+> >          return 0;
+> > }
+> > 
+> > And the spec says:
+> > 
+> > 
+> > The driver MUST follow this sequence to initialize a device:
+> > 1. Reset the device.
+> > 2. Set the ACKNOWLEDGE status bit: the guest OS has noticed the device.
+> > 3. Set the DRIVER status bit: the guest OS knows how to drive the device.
+> > 4. Read device feature bits, and write the subset of feature bits understood by the OS and driver to the
+> > device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration
+> > fields to check that it can support the device before accepting it.
+> > 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step.
+> > 6. Re-read device status to ensure the FEATURES_OK bit is still set: otherwise, the device does not
+> > support our subset of features and the device is unusable.
+> > 7. Perform device-specific setup, including discovery of virtqueues for the device, optional per-bus setup,
+> > reading and possibly writing the device’s virtio configuration space, and population of virtqueues.
+> > 8. Set the DRIVER_OK status bit. At this point the device is “live”.
+> > 
+> > 
+> > Item 4 on the list explicitly allows reading config space before
+> > FEATURES_OK.
+> > 
+> > I conclude that VIRTIO_NET_F_MTU is set means "set in device features".
+> 
+> 
+> So this probably need some clarification. "is set" is used many times in the
+> spec that has different implications.
+> 
+> Thanks
+> 
+> 
+> > 
+> > Generally it is worth going over feature dependent config fields
+> > and checking whether they should be present when device feature is set
+> > or when feature bit has been negotiated, and making this clear.
+> > 
+
