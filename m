@@ -2,125 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E96322730
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE34322733
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhBWInH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:43:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232086AbhBWInE (ORCPT
+        id S232200AbhBWIoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:44:18 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:12665 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232133AbhBWIoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:43:04 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEFBC061574;
-        Tue, 23 Feb 2021 00:42:24 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id b3so21671869wrj.5;
-        Tue, 23 Feb 2021 00:42:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Op1220cboh2UASN3TZPiX3CEIQMS8vK3b2FYY0QMd4M=;
-        b=ogPXqnAOfJf4OZXVK1pa55Bjf+NA1ojKSI4cJNXNECr/XYaLOeoJH9ipL+YRLVnBVy
-         eqc8ztORIAgLwDYlY569RzboNcdj1niPV9koajVwSjaCss6VkpDUG3Bu/7OPcLJvy3Oi
-         v6ExT+7dSttovwOptil3WU6D9RmIKKIrMPxrfpWtJALbqDJFD6Zx+Z41IKWNkm7xUcoV
-         h/t7hJFJdBiNVkKYC4kDuqPAJtBr4uv8+35f3BYuEJckIrgcTR3KOQB5krpr0fjFrXaq
-         mlav06TSiqM1TAPkp1F+F7Qc9aeB8h/nQ1QSx8BeSsUVlxAGX+KnQNMvLpfbu72EyV3I
-         3tng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Op1220cboh2UASN3TZPiX3CEIQMS8vK3b2FYY0QMd4M=;
-        b=SpZe4hxro9cNgOKc6ra2VPhQAxfbS1x/OUnA01K3u/imOFers4cVNp47tgjKUXU/w5
-         7whlkt9So20mKkZwNkSR13DPY7F89LtH2z1TCjt0kTwqeiloK5xd4MujfVP6QmG4GEg1
-         eRmDXImwEQHZYPPToGy86DxN3YhjcJU87W6LWckZcs7qJq3MhAxfM6T0mXKqe4k23PlQ
-         KqkiWGQEpAo0qAlvsPXR90yeJIGD8s1woHRJR9ezgCrGHSoFMQWZA58JABZgkO+9FVOC
-         rOO5Aw5PbYsX4ZqHNH7c36tAX1sxqsqKKCovrKpYevy3nxZ9oxbiNRLAZWudXqJi4ltH
-         VIoA==
-X-Gm-Message-State: AOAM532/Y8KlY2yVHvtAB/IBs5VuFAHOofIyRstDgovIsDs7oC/nA6Xa
-        tTfeq+15AuDFuxjHkwpmLBXsV/Lp7YdHEg==
-X-Google-Smtp-Source: ABdhPJwGYWmScAWVqB5Sx1KOrf5qh8z8qqBL8tfQp/4dBVM6PadvNU4exudXmBZ5ahm6vQY7a8uenQ==
-X-Received: by 2002:adf:e8c5:: with SMTP id k5mr23135733wrn.135.1614069742808;
-        Tue, 23 Feb 2021 00:42:22 -0800 (PST)
-Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id w13sm30090363wrt.49.2021.02.23.00.42.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Feb 2021 00:42:21 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH 1/2] leds: bcm6328: improve write and read functions
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <20210223083449.GA9750@amd>
-Date:   Tue, 23 Feb 2021 09:42:21 +0100
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3826ACDE-EFF2-4CC5-82EE-2DBC991CF996@gmail.com>
-References: <20210223081732.9362-1-noltari@gmail.com>
- <20210223081732.9362-2-noltari@gmail.com> <20210223083449.GA9750@amd>
-To:     Pavel Machek <pavel@ucw.cz>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Tue, 23 Feb 2021 03:44:15 -0500
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210223084331epoutp04f9239b089df24b79c1a3bb289adfcbd7~mU-E1uUg22530925309epoutp04c
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:43:31 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210223084331epoutp04f9239b089df24b79c1a3bb289adfcbd7~mU-E1uUg22530925309epoutp04c
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614069811;
+        bh=i/t0FHqdJlrUjo5KKe03+T6Ypr/ANYhRXZ7FtAinlKs=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=GQ/C4PT4pJJbAI/0bvtZUE8dPGzWpd6UmOvdRfi7hVVlALcakA0M77VpNYUdqkwHw
+         oxACvV0gX+2tDMqw5AONbkTuukz13JjOKc/tTtFbYyIFY+a+LYqHnPLVUfkst2gCxa
+         SCg67CJNqVOQQarz/Ro9X03Hx6O25Dg491ubS8qE=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20210223084331epcas2p2a4f0bac78b812d8fc24d1fb1d2dbf8a6~mU-EEBHsi0680606806epcas2p2c;
+        Tue, 23 Feb 2021 08:43:31 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.191]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DlCJ14Fp7z4x9Pw; Tue, 23 Feb
+        2021 08:43:29 +0000 (GMT)
+X-AuditID: b6c32a48-4f9ff7000000cd1f-05-6034c02f9849
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        60.BF.52511.F20C4306; Tue, 23 Feb 2021 17:43:27 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: RE: [PATCH v22 3/4] scsi: ufs: Prepare HPB read for cached
+ sub-region
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <DM6PR04MB65754012DD7AC9EEF9D47D0FFC809@DM6PR04MB6575.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210223084327epcms2p5b158fa6769d3deee54796b364f0ae369@epcms2p5>
+Date:   Tue, 23 Feb 2021 17:43:27 +0900
+X-CMS-MailID: 20210223084327epcms2p5b158fa6769d3deee54796b364f0ae369
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA12Te0xTVxzHd+8tt+VRcnm5Q9kmuWRGzIC2oXBQQRiG3QSdJJAtLHFwgTuK
+        K23tLW5uMWCYAgrC4jJnhyg4HwNGQxEodI6uXaC6MKYoShEoE6YswnhsgUJga2mZZv99z+d8
+        z/l9f+fBw/wncAGvQK5mVHJaRuJenA5zeGxElDE6W3hJJ4a2ug4c3jxp4cJp+30cmkdmufDL
+        OTsGF7RXPeC0KRw22t6FpZe1OKztL0FhVXU7Dh8/WuTChocdKKxeL+PAwe5aHJ5+oMfhtb51
+        FI7c8IJX2ocRWHGumQMb6g2cxCBq8F4qNXimCqW6NKNcqqbBiFA9F5q51Ge3ejjU/JSVQ525
+        0YhQi7rXqDLjaTTN6z3ZbilD5zGqUEaeq8grkOfHk6npWclZkhihKEIUB2PJUDldyMSTe/el
+        RaQUyBwdkqFHaFmRA6XRLEtGJexWKYrUTKhUwarjSUaZJ1OKRMpIli5ki+T5kbmKwp0ioVAs
+        cTizZdKRfyoR5bTHx7/M6pASZBw7hXjyABENxp8ZUKf2J/QIMA2HnkJ4PD7hB9b0AU4cQGSA
+        gZExxGUhgfaOhuvikcA60bzBceINcM4y7uBevEDiOgfcWbmLOwcYsYICy+M5xFWMD74qm+K4
+        dAjovNa+wT2Jg2Cg/J470HawfLXKrYPAcNMMd1P/2XvRvU8gODHW7/b4AZvd4ObBoNcwh7p0
+        MWh/tII4QwCiEgHmLquHayIKDJW3boTgE/vB9MXfcWfHHOJ1MK55xykBsRc0zbNOB0ZsBZ0z
+        tZgTY0Q40HZHuRxh4CcrZ7OpktZV7v81RviCcvPaf1xfN+kOtg202LVoDRKmeX7QmhdqaZ7X
+        uoRgjcgWRskW5jOsWBn94tXqkI23voPSI1/PzEWaEJSHmBDAw8hAPj4qzvbn59FHP2FUiixV
+        kYxhTYjE0ePnmCAoV+H4LHJ1lkgijokRxkmgJEYMyZf5KqEty5/Ip9XMhwyjZFSb61Cep6AE
+        /WJl1/nJkObVQ4GV/cfMtuMtP3639Ye/475Z3rdr6GcTbjt0WZqXzm2ipob/EjCtQeP65bvB
+        wXRykzJFJfJ72pvU970u7Gbxt8tvGQOyH8zdevNwztnKbQ+jBG3HkjPbrMRt78jflmpyPuI/
+        Pf7kyisJK4LZyRPUga6EnYaj3olJS5928rUZW5rA4friodGBPfYS/gFTj27sZN32gPCz/d1P
+        9PMpr/a9lG6sH/lgraXUR3F/Mjknc/66rWFhNWJ9grHvMRxZ0AkqSHmI9tfbpdVJlgi92ceY
+        GmtFibRFy5JvVeL5CkNmRl/lM33A26qDlkRfvrmFUDdme+v/aHtfuuzjS3JYKS3agalY+l8b
+        lyPAdAQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
+References: <DM6PR04MB65754012DD7AC9EEF9D47D0FFC809@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <20210222092957epcms2p728b0c563f3cfbecbf8692d7e86f9afed@epcms2p7>
+        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
+        <20210222093117epcms2p80c6904ac3ac7b10349265ed27e83eea4@epcms2p8>
+        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+> > +       err = ufshpb_fill_ppn_from_page(hpb, srgn->mctx, srgn_offset, 1, &ppn);
+> > +       spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+> > +       if (unlikely(err < 0)) {
+> > +               /*
+> > +                * In this case, the region state is active,
+> > +                * but the ppn table is not allocated.
+> > +                * Make sure that ppn table must be allocated on
+> > +                * active state.
+> > +                */
+> > +               WARN_ON(true);
+> > +               dev_err(hba->dev, "get ppn failed. err %d\n", err);
+> Maybe just pr_warn instead of risking crashing the machine over that?
 
-> El 23 feb 2021, a las 9:34, Pavel Machek <pavel@ucw.cz> escribi=C3=B3:
->=20
-> On Tue 2021-02-23 09:17:31, =C3=81lvaro Fern=C3=A1ndez Rojas wrote:
->> This is proven to work in BMIPS BE/LE and ARM BE/LE, as used in =
-bcm2835-rng
->> and bcmgenet drivers.
->> Both should also be inline functions.
->=20
->=20
->=20
->> -#ifdef CONFIG_CPU_BIG_ENDIAN
->> -	iowrite32be(data, reg);
->> -#else
->> -	writel(data, reg);
->> -#endif
->> +	/* MIPS chips strapped for BE will automagically configure the
->> +	 * peripheral registers for CPU-native byte order.
->> +	 */
->=20
-> Bad comment style.
+Why it crashing the machine? WARN_ON will just print kernel message.
 
-I just wanted to copy the same comment as the one in bcm2835-rng and =
-bcmgenet=E2=80=A6
-=
-https://github.com/torvalds/linux/blob/3b9cdafb5358eb9f3790de2f728f765fef1=
-00731/drivers/char/hw_random/bcm2835-rng.c#L42-L60
-=
-https://github.com/torvalds/linux/blob/3b9cdafb5358eb9f3790de2f728f765fef1=
-00731/drivers/net/ethernet/broadcom/genet/bcmgenet.c#L71-L88
-
->=20
->> +	if (IS_ENABLED(CONFIG_MIPS) && =
-IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
->> +		__raw_writel(data, reg);
->> +	else
->> +		writel_relaxed(data, reg);
->> }
->=20
-> Code does not match comment (still need to do conversion on
-> non-MIPS?), and it certainly should not be here (do all mipsen behave
-> like that?!), and it really should not be converting to _relaxed at
-> the same time.
-
-I think it's because non-MIPS BE exposes that as little endian, but =
-Florian can probably help us with that=E2=80=A6
-
->=20
-> Best regards,
-> 								Pavel
-> --=20
-> http://www.livejournal.com/~pavelmachek
-
-Best regards,
-=C3=81lvaro.=
+Thanks,
+Daejun
