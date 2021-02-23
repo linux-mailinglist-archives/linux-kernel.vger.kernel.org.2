@@ -2,171 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A03332316C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B14323176
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbhBWT1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 14:27:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58246 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231375AbhBWT1I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 14:27:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614108340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0gF07ODBMYlnEh288xpLipdlztpVmS3XNZj0lur9ofM=;
-        b=QeRB9KTIslbIozWbR1sI7r2mlIzrvVEvckLK0IwBjWzGCNHsp4fbfcraZlatj7GsRkG6Tp
-        OhH9dk0oUQ32MotCWfXYuEycGV2rs/HRf6UfJkSU7ZybYhi7rbiG+D2JRIybG4O5ezFuYX
-        1RkFYH8kbD6n3IDS3I+nNA1HEEppe6s=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-M1lhu5NNMLq9z-tosXWnHQ-1; Tue, 23 Feb 2021 14:25:38 -0500
-X-MC-Unique: M1lhu5NNMLq9z-tosXWnHQ-1
-Received: by mail-ej1-f71.google.com with SMTP id hx26so5798479ejc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 11:25:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0gF07ODBMYlnEh288xpLipdlztpVmS3XNZj0lur9ofM=;
-        b=dJSPIfboK/x1lSE/lfLibijva5pyuQToSxg2tYyhSInxuUB0v+Af6DqJQhDNgYxCw5
-         Q50DenOHoju6JRwEIPIHdCbKe15K06b+mVCZ2Q1DaM7n6BDfuZQ8tYZAjEESPMw5Hnkn
-         s6ncfPrnpx/GgT9E7ajUiYM9cSF11aTdLMoPIEDzWxLsrlmivssDZ1n1rE3DdXd4MQ/n
-         d+wYtXrDzBS+TB5lmCY4AFq+K8W3lHTOj5MwlJSnU67TLU4yc1VKM0fD6cYFi8dR07cw
-         9jKrwOApEI0l/rtBZXTl5jChZ7A70qDdd670WBKm0jRT9b4UWemy/30WCp7BqDERG1JJ
-         hbRA==
-X-Gm-Message-State: AOAM531JwHnc6dUgFBVVxNuIhvmyDVDcL1Z8m7e5pYakklnK+0Gi1yC6
-        e1ujl/rh8NCbrdGZi++b3RmRIrFeL4tlM2EpZ8zeIDKRwnjLFg4F0ngjZqBn4FF+K6l8/RrKoPM
-        qzekbAvMLTAgb9+jbURJZ6djBKPTb0X665KjGRkt2QffHECq17T72Y4SVkhhhzUX2Vrn+oYYGIL
-        sa
-X-Received: by 2002:a05:6402:355:: with SMTP id r21mr16286920edw.194.1614108336856;
-        Tue, 23 Feb 2021 11:25:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzWcPpeB6vm7SJ/8b7K5wQR1A6syQqw41+Kt4UW3gE783g1E2ce6DqZP2zIl32r1WrZPkPD/Q==
-X-Received: by 2002:a05:6402:355:: with SMTP id r21mr16286901edw.194.1614108336649;
-        Tue, 23 Feb 2021 11:25:36 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id n12sm6013934edq.21.2021.02.23.11.25.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 11:25:36 -0800 (PST)
-Subject: Re: [PATCH v1 1/1] i2c: cht-wc: Use fwnode for the controller and IRQ
- domain
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210223172231.2224-1-andriy.shevchenko@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <fea7ce9a-01a9-cab8-8675-be5c44cb8a27@redhat.com>
-Date:   Tue, 23 Feb 2021 20:25:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S234038AbhBWTer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 14:34:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233951AbhBWTen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 14:34:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7CCC64E12;
+        Tue, 23 Feb 2021 19:34:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614108843;
+        bh=k5Aj0V7danyXSc29h3WWx1T6FWMorq6ZnUvkZ30e+oI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XAfXwA4ZH+uVbm1z0h4wiElKr41Wn1EHF1FD5kAR0GZbR/MynqpGxWScaYnYtKId2
+         Iz/LeK04PudXW+gTRpDDG5PLU/EjXLWM7P/bO1endEVEUgrPteT9Zt8Yt13TdAVVBO
+         VKIxS49HVz+SHeUzwtFPSSoyyxWuWVGJiCkbwVAssBXI73i4E42AdD4yRNCx2mp7Ba
+         sKYzlmaAcFm5GwNeaf5u4N5Jecx6GpTdfed3jigW/4Mi0PRbGt9qPFq4l20IAAyEnY
+         5rOlBvddFcRnyfeulbI22abhO2svwi0adLlE9KZDKBj1aLjNiL5ysCCMftF8ltPRyu
+         kvzert5RdJVDA==
+Date:   Tue, 23 Feb 2021 21:33:49 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-sgx@vger.kernel.org, haitao.huang@intel.com,
+        dan.j.williams@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/sgx: Add a basic NUMA allocation scheme to
+ sgx_alloc_epc_page()
+Message-ID: <YDVYnRdxHOME7cNe@kernel.org>
+References: <20210221020631.171404-1-jarkko@kernel.org>
+ <7acc3c1c-373e-cfee-e838-2af170e87d98@intel.com>
+ <YDVUuF3rqnRCr+Bb@kernel.org>
+ <1ce6670a-ea35-c1bd-b5df-c52cc44dc433@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210223172231.2224-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ce6670a-ea35-c1bd-b5df-c52cc44dc433@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 2/23/21 6:22 PM, Andy Shevchenko wrote:
-> It's better to describe the I²C controller and associated IRQ domain with
-> fwnode, so they will find their place in the hierarchy in sysfs and also
-> make easier to debug.
+On Tue, Feb 23, 2021 at 11:20:55AM -0800, Dave Hansen wrote:
+> On 2/23/21 11:17 AM, Jarkko Sakkinen wrote:
+> > Instead, let's just:
+> > 
+> > 1. Have a global sgx_free_epc_list and remove sgx_epc_section.
+> >    Pages from this are allocated from this in LIFO fashion.
+> > 2. Instead add struct list_head node_list and use that for node
+> >    associated pages.
+> > 3. Replace 'int section' with 'int node'.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
+> I was thinking of something similar.
 > 
-> Hans, unfortunately I have no device at hand with INT34D3. This is only compile
-> tested in that sense. Also I would like to hear if you like the idea in general.
-> 
->  drivers/i2c/busses/i2c-cht-wc.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-cht-wc.c b/drivers/i2c/busses/i2c-cht-wc.c
-> index f80d79e973cd..dbf55842b0dc 100644
-> --- a/drivers/i2c/busses/i2c-cht-wc.c
-> +++ b/drivers/i2c/busses/i2c-cht-wc.c
-> @@ -303,6 +303,7 @@ static struct bq24190_platform_data bq24190_pdata = {
->  static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
->  {
->  	struct intel_soc_pmic *pmic = dev_get_drvdata(pdev->dev.parent);
-> +	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
+> I'm fine with this approach.
 
-So this will point to the ACPi-companion fwnode of the CHT Whiskey Cove PMIC
-controller.
+Here's my two step plan.
 
->  	struct cht_wc_i2c_adap *adap;
->  	struct i2c_board_info board_info = {
->  		.type = "bq24190",
-> @@ -333,6 +334,7 @@ static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
->  	strlcpy(adap->adapter.name, "PMIC I2C Adapter",
->  		sizeof(adap->adapter.name));
->  	adap->adapter.dev.parent = &pdev->dev;
-> +	set_primary_fwnode(&adap->adapter.dev, fwnode);
+1. Let's ack this with the cosmetic changes. It's good first baby
+   step to take.
+2. I'll do another patch that wipes sgx_epc_section.
 
-So now we have the main PMIC device i2c-client, the platform-device instantiated
-for the MFD-cell for the PMIC's builtin I2C-controller; and the device instantiated
-for the adapter-device all 3 share the same ACPI-companion fwnode.
->  
->  	/* Clear and activate i2c-adapter interrupts, disable client IRQ */
->  	adap->old_irq_mask = adap->irq_mask = ~CHT_WC_EXTCHGRIRQ_ADAP_IRQMASK;
-> @@ -350,8 +352,8 @@ static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
->  		return ret;
->  
->  	/* Alloc and register client IRQ */
-> -	adap->irq_domain = irq_domain_add_linear(pdev->dev.of_node, 1,
-> -						 &irq_domain_simple_ops, NULL);
-> +	adap->irq_domain = irq_domain_create_linear(fwnode, 1,
-> +						    &irq_domain_simple_ops, NULL);
+Both are functionally self-contained patch that improve. That's why
+I don't see point in iterating them as a two patch patch set. One
+patch at a time is less overhead.
 
-Hmm, not sure this is right, admittedly the old code looks weird too, but now we
-are creating a second irq_domain at the same level as the irq_domain created for
-the IRQ-chip part of the PMIC. But this is really more of a child-domain of just
-the I2C-controller MFD-cell. The IRQ-CHIP part of the PMIC has a single IRQ for the
-I2C controller which gets raised both on i2c-transfer completions and when the
-pin on the PMIC which is reserved as input for the IRQ coming out of the charger-chip
-gets triggered.
-
-IOW we have this:
-
-
-               PMIC
-                 |
-    ------------------------------
-    |       |        |           |
-   IRQ1   IRQ2      IRQ3       I2C-IRQ
-                                 |
-                   ----------------------------------
-                   |        |         |             |
-                 READIRQ   WRIRQ    NACKIRQ     CLIENT-IRQ
-
-Where READIRQ, WRIRQ and NACKIRQ are directly consumed
-and the CLIENT-IRQ is being represented as a single IRQ on
-a new irqchip so that we can pass it along to the i2c-driver
-for the charger-chip which is connected to the Whiskey Cove's
-builtin I2C controller.
-
-But doing as you suggest would model the IRQs as:
-
-               PMIC
-                 |
-    --------------------------------------------------
-    |       |        |           |                    |
-   IRQ1   IRQ2      IRQ3       I2C-IRQ           CLIENT-IRQ
-
-Which is not the same really. I guess it is better then what we
-have though ?
-
-Note I can test any changes made here, but I'm not 100% convinced that
-the current version of this patch is correct.
-
-Regards,
-
-Hans
-
+/Jarkko
