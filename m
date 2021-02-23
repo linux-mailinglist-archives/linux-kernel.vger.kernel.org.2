@@ -2,178 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A282E3233E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 23:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F403233E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 23:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbhBWWoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 17:44:21 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47954 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231786AbhBWWaC (ORCPT
+        id S232397AbhBWWmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 17:42:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231969AbhBWWa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 17:30:02 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 11NMP0mj007684
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:29:17 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=9MXKxqv+SncBnz5OqxIZYK7jmff9BGIDVI3Ly/9d+n0=;
- b=YAf1/UwhhkYVTLaabyMoOyVAOteljXxr6GLPokZffR52vmsKy7aAN4yGnLUfWDTqUDyj
- 9TtPHs3lNq9Thse/tAn/9UFs8jwQwEVdw0afuFFtbjGZKO44osoxB2lkFL+jepilo6b0
- HEH/CG2VwI/qCwKHy1mjTRTgATqijBBj9QE= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 36ukhydwvu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:29:17 -0800
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Feb 2021 14:29:14 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 7ABA062E093E; Tue, 23 Feb 2021 14:29:10 -0800 (PST)
-From:   Song Liu <songliubraving@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <peterz@infradead.org>, Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v5 bpf-next 6/6] bpf: runqslower: use task local storage
-Date:   Tue, 23 Feb 2021 14:28:45 -0800
-Message-ID: <20210223222845.2866124-7-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20210223222845.2866124-1-songliubraving@fb.com>
-References: <20210223222845.2866124-1-songliubraving@fb.com>
+        Tue, 23 Feb 2021 17:30:29 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F09C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:29:48 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id 81so389520qkf.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:29:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bf1CiVTxRiLHc6u9dFffl/B6A9OxU94+5fQMt8aSHiQ=;
+        b=j3YLbAkkeUM4k5JUJuv1ncXjfeJBhF70Wu+WevNquAGfKJ4iXi+pkO61TOe8ZU/Jq0
+         BRsdPJowgYj2pcym8gfG0ajJAov8g47YZZX6aCJ4Y+Xw2lPRY1IbyhJUPoxqy7dh0u/v
+         hmeCrTUZeIp8Q4kGCE1RyugQJXRRJMkRe10grOAEC4TbM4u1wBUThjSX+deBkv7+CDHG
+         LOo4orQdUjhp3vm5CvLaVx10rwvtI5aJjfpN2iAHCVqEPk5ucpjVuUcdJylQgAba/Rjl
+         TvGi/G/ks9UTRk69ghxZS6J1y3Jf/uFurAxVYc82T0+zj/ZbDqZYPdU+59VmV9V3IH/M
+         uDJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bf1CiVTxRiLHc6u9dFffl/B6A9OxU94+5fQMt8aSHiQ=;
+        b=bahNIdnoQO3CiFOvoU5KlkPrWL1aH5vFZxMfPyvrv/GfLGtG1fM7CQM2CkiCZeN/+/
+         8JaOXPJcBPRxLcRVXmckbXVN3XAnROBCB+mxtrOM9Z8PucUQnPHzCFLt8cfoWO46dcyl
+         NFZM5iaXbrGHlhQfbbm+AQOeDFEEvqz0uIfGl3IXF3fIbIPLzQzL/O84+p2eVZLIAQdD
+         DfQOcGdeslX/RXMT5/8KLznDitg717Gs2s4GW37ZtW29RJsSyOpE4qkXTxjlDPE+ozwS
+         PfLkCHm++Kd0yOyKh1u9000KyTcpu8fCSyRq/oac9huJeJ/CuIUV8qC18YuVPpzWPnE5
+         ZgmA==
+X-Gm-Message-State: AOAM533SKY6KwfTC5we4SB6Gn8xAmcrixXvGdGpZN3vPLkZHgE0cYTn4
+        5otoiVA5DKDxPsb3HP98rU0tdUN0Gax3Pv1xjD6M1g==
+X-Google-Smtp-Source: ABdhPJwBchvPlzQBUj8TvUNJkK5VXun6l9xeXp6E8MFZJc1xphcLyLJHwvQyth2hbpH97jfQivWTSNrTtoTaRWAMVwk=
+X-Received: by 2002:a05:620a:237:: with SMTP id u23mr27678392qkm.229.1614119388270;
+ Tue, 23 Feb 2021 14:29:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-23_11:2021-02-23,2021-02-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- malwarescore=0 bulkscore=0 clxscore=1015 mlxlogscore=999 impostorscore=0
- suspectscore=0 mlxscore=0 phishscore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102230189
-X-FB-Internal: deliver
+References: <20210214000611.2169820-1-zzyiwei@android.com> <YC+ZQAwwb4RGgjDf@alley>
+ <CAKB3++YB3xftQFgSGQXKQucuid9sFywjN1E7nQ6QrqR96+heEg@mail.gmail.com>
+ <CAKB3++b4wnsh+Kbgk4U200hLQmudM28sK=s9e6mARpM-eZ2ZZw@mail.gmail.com> <YDUkoTGk2G/GZj8w@alley>
+In-Reply-To: <YDUkoTGk2G/GZj8w@alley>
+From:   =?UTF-8?B?WWl3ZWkgWmhhbmfigI4=?= <zzyiwei@android.com>
+Date:   Tue, 23 Feb 2021 14:29:37 -0800
+Message-ID: <CAKB3++Yf5cv8shHU0T1nqfNTgbknU1uMu54YXWqNGqXHpa_oAA@mail.gmail.com>
+Subject: Re: [PATCH] kthread: add kthread_mod_pending_delayed_work api
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ilias Stamatis <stamatis.iliass@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Liang Chen <cl@rock-chips.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace hashtab with task local storage in runqslower. This improves the
-performance of these BPF programs. The following table summarizes average
-runtime of these programs, in nanoseconds:
+> > which is not cool because it will make the
+> > asynchronous effort a no-op. Is there a way we can include caller
+> > thread metadata(task_struct pointer?) when it enqueues the work so
+> > that the RT worker thread won't preempt the caller thread when that
+> > queued work gets scheduled? Probably require the CPU scheduler to poke
+> > at the next work...or any other ideas will be very appreciated,
+> > thanks!
+>
+> This sounds like a very strange use case.
+> Why is the worker kthread RT when the work can be delayed?
+>
+> If the kthread has to be RT because of another work then
+> your proposal will not work. The delayed processing of
+> low priority work might block and delay any pending
+> high priority work.
+>
+> You should consider handling the less important work in a separate
+> kthread worker with a lower priority or by the system workqueue.
 
-                          task-local   hash-prealloc   hash-no-prealloc
-handle__sched_wakeup             125             340               3124
-handle__sched_wakeup_new        2812            1510               2998
-handle__sched_switch             151             208                991
+Just want to clarify that it's not about delayed_work any more. In my
+latest question, it's a RT thread with normal work queued and
+scheduled to be run immediately. However, I simply don't want the
+worker to preempt the thread that queues the work.
 
-Note that, task local storage gives better performance than hashtab for
-handle__sched_wakeup and handle__sched_switch. On the other hand, for
-handle__sched_wakeup_new, task local storage is slower than hashtab with
-prealloc. This is because handle__sched_wakeup_new accesses the data for
-the first time, so it has to allocate the data for task local storage.
-Once the initial allocation is done, subsequent accesses, as those in
-handle__sched_wakeup, are much faster with task local storage. If we
-disable hashtab prealloc, task local storage is much faster for all 3
-functions.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- tools/bpf/runqslower/runqslower.bpf.c | 33 +++++++++++++++++----------
- 1 file changed, 21 insertions(+), 12 deletions(-)
-
-diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower=
-/runqslower.bpf.c
-index 1f18a409f0443..645530ca7e985 100644
---- a/tools/bpf/runqslower/runqslower.bpf.c
-+++ b/tools/bpf/runqslower/runqslower.bpf.c
-@@ -11,9 +11,9 @@ const volatile __u64 min_us =3D 0;
- const volatile pid_t targ_pid =3D 0;
-=20
- struct {
--	__uint(type, BPF_MAP_TYPE_HASH);
--	__uint(max_entries, 10240);
--	__type(key, u32);
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
- 	__type(value, u64);
- } start SEC(".maps");
-=20
-@@ -25,15 +25,20 @@ struct {
-=20
- /* record enqueue timestamp */
- __always_inline
--static int trace_enqueue(u32 tgid, u32 pid)
-+static int trace_enqueue(struct task_struct *t)
- {
--	u64 ts;
-+	u32 pid =3D t->pid;
-+	u64 *ptr;
-=20
- 	if (!pid || (targ_pid && targ_pid !=3D pid))
- 		return 0;
-=20
--	ts =3D bpf_ktime_get_ns();
--	bpf_map_update_elem(&start, &pid, &ts, 0);
-+	ptr =3D bpf_task_storage_get(&start, t, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!ptr)
-+		return 0;
-+
-+	*ptr =3D bpf_ktime_get_ns();
- 	return 0;
- }
-=20
-@@ -43,7 +48,7 @@ int handle__sched_wakeup(u64 *ctx)
- 	/* TP_PROTO(struct task_struct *p) */
- 	struct task_struct *p =3D (void *)ctx[0];
-=20
--	return trace_enqueue(p->tgid, p->pid);
-+	return trace_enqueue(p);
- }
-=20
- SEC("tp_btf/sched_wakeup_new")
-@@ -52,7 +57,7 @@ int handle__sched_wakeup_new(u64 *ctx)
- 	/* TP_PROTO(struct task_struct *p) */
- 	struct task_struct *p =3D (void *)ctx[0];
-=20
--	return trace_enqueue(p->tgid, p->pid);
-+	return trace_enqueue(p);
- }
-=20
- SEC("tp_btf/sched_switch")
-@@ -70,12 +75,16 @@ int handle__sched_switch(u64 *ctx)
-=20
- 	/* ivcsw: treat like an enqueue event and store timestamp */
- 	if (prev->state =3D=3D TASK_RUNNING)
--		trace_enqueue(prev->tgid, prev->pid);
-+		trace_enqueue(prev);
-=20
- 	pid =3D next->pid;
-=20
-+	/* For pid mismatch, save a bpf_task_storage_get */
-+	if (!pid || (targ_pid && targ_pid !=3D pid))
-+		return 0;
-+
- 	/* fetch timestamp and calculate delta */
--	tsp =3D bpf_map_lookup_elem(&start, &pid);
-+	tsp =3D bpf_task_storage_get(&start, next, 0, 0);
- 	if (!tsp)
- 		return 0;   /* missed enqueue */
-=20
-@@ -91,7 +100,7 @@ int handle__sched_switch(u64 *ctx)
- 	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU,
- 			      &event, sizeof(event));
-=20
--	bpf_map_delete_elem(&start, &pid);
-+	bpf_task_storage_delete(&start, next);
- 	return 0;
- }
-=20
---=20
-2.24.1
-
+It's a high prio work that we don't want other random tasks to preempt
+it. Meanwhile, we don't want it to preempt the called thread. In
+addition, assume we can't raise the priority of those caller
+threads(otherwise I'd be fine with using a workqueue).
