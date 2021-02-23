@@ -2,71 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE1432344A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 00:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B636332344D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 00:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbhBWXjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 18:39:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232810AbhBWX2k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 18:28:40 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498AFC061574;
-        Tue, 23 Feb 2021 15:27:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=q5XVodoHDTZdgJ0yWJ3OcVB1WnWj1JW3zCsrFT39dRQ=; b=RofC7flCtm+ms9vSAIzCP/Ba8e
-        i9LejeFEc5bXhp8tQpCWjTx2Ys4SZMk+J+0q1+AefmHRyhAajK7DwygnepnFS5sHwprK41cJGaO9m
-        ONoILqgSDzkb0gaA84KbVyrJOBpSfEvfmVlUxf+GPJ7RUgtLsjxYTNw1zAxgG0u3dinMu3a+XHBSM
-        57wqUm8HNNx5jz27XzrvRmccpM+i9V8ZGCU8OmZH3Ky4Ejy9iJ3BaGtnSyuzM1wDUwQTwISqj4PKM
-        T6qadHu3Ozdywcrr79elfJhg4e7le4kRezE6hvzMNEAzLpYNOEcAsQ0KK9LYn92evwRDJgXIoVLmV
-        7PXn+7Ow==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lEh5W-008f7c-GQ; Tue, 23 Feb 2021 23:27:31 +0000
-Date:   Tue, 23 Feb 2021 23:27:30 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        hughd@google.com, hch@lst.de, hannes@cmpxchg.org,
-        yang.shi@linux.alibaba.com, dchinner@redhat.com,
+        id S232473AbhBWXlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 18:41:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:32968 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233839AbhBWXep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 18:34:45 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 93768AC6E;
+        Tue, 23 Feb 2021 23:34:00 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 00:33:58 +0100
+From:   Petr Vorel <pvorel@suse.cz>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Greg KH <gregkh@linuxfoundation.org>, bauerman@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, ebiederm@xmission.com,
+        sashal@kernel.org, tyhicks@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
-Message-ID: <20210223232730.GN2858050@casper.infradead.org>
-References: <20201112212641.27837-1-willy@infradead.org>
- <20210223145836.cb588a6ec6c34e54ad26f9bf@linux-foundation.org>
+Subject: Re: [PATCH v2 1/2] ima: Free IMA measurement buffer on error
+Message-ID: <YDWQ5rBBe8t7+Bs2@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20210204174951.25771-1-nramas@linux.microsoft.com>
+ <YB0YdqbbdAdbEOQw@kroah.com>
+ <7000d128-272e-3654-8480-e46bf7dfad74@linux.microsoft.com>
+ <6a5b7a1767265122d21f185c81399692d12191f4.camel@linux.ibm.com>
+ <b8573374-86d0-f679-6c9f-a61b2bc6f7ea@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210223145836.cb588a6ec6c34e54ad26f9bf@linux-foundation.org>
+In-Reply-To: <b8573374-86d0-f679-6c9f-a61b2bc6f7ea@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 02:58:36PM -0800, Andrew Morton wrote:
-> Do you feel this patchset is ready to merge up?
+Hi all,
 
-I think so.
+<snip>
+> > > > <formletter>
 
-> https://lore.kernel.org/linux-mm/000000000000f6914405b49d9c9d@google.com/
-> was addressed by 0060ef3b4e6dd ("mm: support THPs in
-> zero_user_segments"), yes?
+> > > > This is not the correct way to submit patches for inclusion in the
+> > > > stable kernel tree.  Please read:
+> > > >       https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> > > > for how to do this properly.
 
-Correct.
+> > > > </formletter>
 
-> "mm/truncate,shmem: Handle truncates that split THPs" and "mm/filemap:
-> Return only head pages from find_get_entries" were dropped.  I guess
-> you'll be having another go at those sometime?
 
-That's right.
+> > > Thanks for the info Greg.
 
-> https://lore.kernel.org/linux-fsdevel/20201114100648.GI19102@lst.de/
-> wasn't responded to?
+> > > I will re-submit the two patches in the proper format.
 
-It didn't really seem worth replying to ... I'm not particularly
-sympathetic to "please refactor the patch series" when there's no
-compelling reason, and having a large function inlined really isn't a
-problem when it only has one caller.
+> > No need.  I'm testing these patches now.  I'm not exactly sure what the
+> > problem is.  Stable wasn't Cc'ed.  Is it that you sent the patch
+> > directly to Greg or added "Fixes"?
+
+> I had not Cced stable, but had "Fixes" tag in the patch.
+
+> Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
+
+> The problem is that the buffer allocated for forwarding the IMA measurement
+> list is not freed - at the end of the kexec call and also in an error path.
+> Please see the patch description for
+
+> [PATCH v2 2/2] ima: Free IMA measurement buffer after kexec syscall
+
+> IMA allocates kernel virtual memory to carry forward the measurement
+> list, from the current kernel to the next kernel on kexec system call,
+> in ima_add_kexec_buffer() function.  This buffer is not freed before
+> completing the kexec system call resulting in memory leak.
+
+> thanks,
+>  -lakshmi
+
+Mimi, Lakshmi, it looks like these two fixes haven't been submitted to stable kernels.
+Could you please submit them?
+
+Thanks a lot!
+
+Kind regards,
+Petr
