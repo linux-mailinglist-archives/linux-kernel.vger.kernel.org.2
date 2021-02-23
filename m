@@ -2,163 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7253225E3
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA683225E4
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 07:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhBWG1Y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Feb 2021 01:27:24 -0500
-Received: from mx1.polytechnique.org ([129.104.30.34]:55321 "EHLO
-        mx1.polytechnique.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231785AbhBWGWI (ORCPT
+        id S231431AbhBWG15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 01:27:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231740AbhBWGWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 01:22:08 -0500
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ssl.polytechnique.org (Postfix) with ESMTPSA id 1CEE6564E08;
-        Tue, 23 Feb 2021 07:21:19 +0100 (CET)
-Received: by mail-ot1-f48.google.com with SMTP id d9so390787ote.12;
-        Mon, 22 Feb 2021 22:21:18 -0800 (PST)
-X-Gm-Message-State: AOAM53128Q62lzVkktKznPuzWuzeQ4aUaxse48XdJBgcAXmzbln42Omo
-        nGmF9QJbAIe+Tc5eYPXdP0bqGZVpFeZMLXLajb8=
-X-Google-Smtp-Source: ABdhPJwfVvUyAYF7jvfPMHbDtpYxK7VJPG1FiU1BvYhjPT5npoJy+c43+4etOLGaia6bdyAEHSwqdLWZrxFE+qJSAnM=
-X-Received: by 2002:a05:6830:115:: with SMTP id i21mr19340481otp.96.1614061277868;
- Mon, 22 Feb 2021 22:21:17 -0800 (PST)
+        Tue, 23 Feb 2021 01:22:24 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1002C061574;
+        Mon, 22 Feb 2021 22:21:43 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id x19so15424762ybe.0;
+        Mon, 22 Feb 2021 22:21:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aN0nEKFhckdZG5EVeID2xP188+9jE1AxS3UZDyML5Vk=;
+        b=LVe9/bYYFRbcktdhUrB8khXJiLQbsmf5LBj8OoRu5fC1dhe+whay/vuW8QYBR3iXTR
+         uWcTeEw8W2gogkvgIMDwTOoSahyrlZLv/LBada2TWdIOve3Qz/8YjiWzEm3g4cTeQH9N
+         BXXl/g2yCd9CJXRcfcsfcxhAAvZhxHq8ARABaxZpBglxj1c65nE4IxFTune2GDh+6Lm8
+         vyEoSQPcdgV1ETSYsO75hBX4iMRXv5UicQKdVhduwoxPhNTwBtb4logKvbJcfpMGIo7U
+         UmltnNBEr9G93vd4Xd28UW0u5P1F3c/jK722TZ3b+b4JyQ42Uh6L7Gs36UMgnWODh4So
+         NadA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aN0nEKFhckdZG5EVeID2xP188+9jE1AxS3UZDyML5Vk=;
+        b=NjorKyXiA/NJX7Ttx7x4txUb1T4avfnmh4gJ5lEX1CL9ZrqL2WmlSAGKJSdqnElqYk
+         L5rP1bKBXx8eMnCGNa+bKelOTt3WTl/Y06xPBjk7weAKzLGnzpjZcwA4O13TGLnC6eeZ
+         nB6Ta/hTaA+BnMY67OyGywM437YWHgCnRwCrxLLUGUy5c3vi/ZYU8F6QXF2Jy+9suuHu
+         hDZ0irT8GEhPP34euIyPLdeArV51Q5oLW1t1CqN7C8CjN8xT9tOP3kP1RNpyyjzDIQiz
+         vhoMOnUkSUZD2nNmzrXy9qRe4VEijTUqxg1rTs1Gm9tVoFuWS7DCCmgPznEqd81NqAtB
+         oQoQ==
+X-Gm-Message-State: AOAM531BWqElWk8GWAIZ0BT4gt9B+3bz5S9dH4VjQ8aa6hMDtz2vKOgl
+        0Q2PABwZHtFlZV1bb1ROGtUXw2heHZdLp44sJorEOMP2
+X-Google-Smtp-Source: ABdhPJz0kpIjm45OSQ2/0vvSkcwb3mBWyaza/m2EZ+d3b9y1k/nkI0s35d5XQkexXqt6Aqvch5Yg2blbBm8C+uS0nh4=
+X-Received: by 2002:a25:bd12:: with SMTP id f18mr14582916ybk.403.1614061303271;
+ Mon, 22 Feb 2021 22:21:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20210222150608.808146-1-mic@digikod.net> <20210222150608.808146-2-mic@digikod.net>
- <51725b44-bc40-0205-8583-285d3b35b5ca@schaufler-ca.com> <ee461f8d-a02d-0782-8f31-691853a57f00@digikod.net>
- <7b67163a-9de1-313f-5b5a-8c720cef9b73@schaufler-ca.com> <CAJfZ7=n5FOxHXMLRrDQ3F-kDqbYngNoYKcz6_PWi1rPa0_8WpA@mail.gmail.com>
- <3b97e25b-303c-d732-3e5d-f1b1a446e090@schaufler-ca.com>
-In-Reply-To: <3b97e25b-303c-d732-3e5d-f1b1a446e090@schaufler-ca.com>
-From:   Nicolas Iooss <nicolas.iooss@m4x.org>
-Date:   Tue, 23 Feb 2021 07:21:07 +0100
-X-Gmail-Original-Message-ID: <CAJfZ7=ny5xon0qX9_KPu12Ntdef9NfvjHWBow8q-yvjVhfdt0g@mail.gmail.com>
-Message-ID: <CAJfZ7=ny5xon0qX9_KPu12Ntdef9NfvjHWBow8q-yvjVhfdt0g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] security: Add CONFIG_LSM_AUTO to handle default
- LSM stack ordering
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
+References: <20210223012014.2087583-1-songliubraving@fb.com> <20210223012014.2087583-3-songliubraving@fb.com>
+In-Reply-To: <20210223012014.2087583-3-songliubraving@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 22 Feb 2021 22:21:32 -0800
+Message-ID: <CAEf4BzaZ0ATbJsLoQu_SRUYgzkak9zv61N+T=gijOQ+X=57ErA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/6] bpf: prevent deadlock from recursive bpf_task_storage_[get|delete]
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Peter Ziljstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-AV-Checked: ClamAV using ClamSMTP at svoboda.polytechnique.org (Tue Feb 23 07:21:20 2021 +0100 (CET))
-X-Spam-Flag: No, tests=bogofilter, spamicity=0.000000, queueID=0625F564DE1
-X-Org-Mail: nicolas.iooss.2010@polytechnique.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 11:46 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+On Mon, Feb 22, 2021 at 5:23 PM Song Liu <songliubraving@fb.com> wrote:
 >
+> BPF helpers bpf_task_storage_[get|delete] could hold two locks:
+> bpf_local_storage_map_bucket->lock and bpf_local_storage->lock. Calling
+> these helpers from fentry/fexit programs on functions in bpf_*_storage.c
+> may cause deadlock on either locks.
 >
-> On 2/22/2021 1:12 PM, Nicolas Iooss wrote:
-> > On Mon, Feb 22, 2021 at 9:32 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >> On 2/22/2021 10:31 AM, Mickaël Salaün wrote:
-> >>> On 22/02/2021 17:51, Casey Schaufler wrote:
-> >>>> On 2/22/2021 7:06 AM, Mickaël Salaün wrote:
-> >>>>> From: Mickaël Salaün <mic@linux.microsoft.com>
-> >>>>>
-> >>>>> Add a new option CONFIG_LSM_AUTO to enable users to delegate default LSM
-> >>>>> stacking order to kernel developers.  This enable to keep a consistent
-> >>>>> order of enabled LSM when changing the LSM selection, especially when a
-> >>>>> new LSM is added to the kernel.
-> >>>> TL;DR - NAK
-> >>>>
-> >>>> Do you think that we might have considered this when stacking was
-> >>>> introduced?
-> >>> I didn't dig the detailed history of LSM stacking, but you are in Cc
-> >>> because I know that you know. I may have though that the main goal of
-> >>> the current LSM stacking implementation was to enable to stack existing
-> >>> LSMs, which works well with this CONFIG_LSM list, but doesn't work as
-> >>> well for new LSMs.
-> >> It works just fine for new LSMs if you treat them as significant
-> >> features which may have significant impact on the behavior of the
-> >> system.
-> >>
-> >>>> Did you even consider the implications before sending
-> >>>> the patch?
-> >>> Yes, and it doesn't change much the current behavior without user
-> >>> interaction. However, it gives the choice to users to choose how they
-> >>> want their configuration to evolve.
-> >> Automatic inclusions of new LSMs would be counter to existing practice.
-> >> It won't work for "major" LSMs.
-> >>
-> >>
-> >>>> This only makes any sense if you want to compile in
-> >>>> AppArmor and/or Smack but always use SELinux. The existing Kconfig
-> >>>> model handles that perfectly well.
-> >>> This patch series doesn't change this behavior if the user doesn't want
-> >>> it to change.
-> >> Well, there's the question. If a distribution/system uses the new scheme
-> >> "users" are going to get new LSMs spontaniously. If they don't it's up to
-> >> the "user". Unsophisticated users won't want this, and the others don't
-> >> need it.
-> > Hello, sorry if I missed something simple but I did not understand
-> > what "Automatic inclusions of new LSMs " and "get new LSMs
-> > spontaniously" is about. If I understood the kernel practice
-> > development correctly, when a new LSM will be included, it will have a
-> > dedicated "config SECURITY_MYNEWLSM" which will be default to "n" in
-> > order to respect the "principle of least astonishment". How could such
-> > a new LSM be automatically/spontaneously added to the LSM list?
+> Prevent such deadlock with a per cpu counter, bpf_task_storage_busy, which
+> is similar to bpf_prog_active. We need this counter to be global, because
+> the two locks here belong to two different objects: bpf_local_storage_map
+> and bpf_local_storage. If we pick one of them as the owner of the counter,
+> it is still possible to trigger deadlock on the other lock. For example,
+> if bpf_local_storage_map owns the counters, it cannot prevent deadlock
+> on bpf_local_storage->lock when two maps are used.
 >
-> It wouldn't. But compiling the new LSM mynewlsm doesn't add it to
-> the list, either. Today no one should expect a LSM to be active if
-> it hasn't been added to the CONFIG_LSM list. The proposed addition
-> of CONFIG_LSM_AUTO would change that. "make oldconfig" would add
-> security modules that are built to the list. This is unnecessary
-> since whoever changed CONFIG_SECURITY_MYNEWLSM to "y" could easily
-> have added it to CONFIG_LSM. In the right place.
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  kernel/bpf/bpf_task_storage.c | 57 ++++++++++++++++++++++++++++++-----
+>  1 file changed, 50 insertions(+), 7 deletions(-)
 >
-> > I understand that this is a tough issue and that the subject might
-> > have been discussed a few years ago, and if that's the case, it would
-> > be nice to have pointers to some clear documentation or past emails
-> > (and it would be very very nice if the kernel documentation was
-> > updated to document the current state of LSM stacking:
+
+[...]
+
+> @@ -109,7 +136,9 @@ static void *bpf_pid_task_storage_lookup_elem(struct bpf_map *map, void *key)
+>                 goto out;
+>         }
 >
-> I'm not going to argue against that.
+> +       bpf_task_storage_lock();
+>         sdata = task_storage_lookup(task, map, true);
+> +       bpf_task_storage_unlock();
+>         put_pid(pid);
+>         return sdata ? sdata->data : NULL;
+>  out:
+> @@ -141,8 +170,10 @@ static int bpf_pid_task_storage_update_elem(struct bpf_map *map, void *key,
+>                 goto out;
+>         }
 >
-> >  for example
-> > https://www.kernel.org/doc/html/v5.11/admin-guide/LSM/index.html still
-> > documents the "security=" kernel parameter even though it conflicts
-> > with CONFIG_LSM and can be ignored by the kernel in practise).
+> +       bpf_task_storage_lock();
+>         sdata = bpf_local_storage_update(
+>                 task, (struct bpf_local_storage_map *)map, value, map_flags);
+
+this should probably be container_of() instead of casting
+
+> +       bpf_task_storage_unlock();
 >
-> You can still select one "major" module using security= if you
-> don't use lsm= to specify a full list. We put real effort into
-> being backward compatible.
+>         err = PTR_ERR_OR_ZERO(sdata);
+>  out:
+> @@ -185,7 +216,9 @@ static int bpf_pid_task_storage_delete_elem(struct bpf_map *map, void *key)
+>                 goto out;
+>         }
+>
+> +       bpf_task_storage_lock();
+>         err = task_storage_delete(task, map);
+> +       bpf_task_storage_unlock();
+>  out:
+>         put_pid(pid);
+>         return err;
 
-No, this is not true. If CONFIG_LSM is defined to "lockdown,yama,bpf"
-and if the kernel command line contains "security=selinux" without any
-"lsm" parameter, then SELinux is not enabled properly.
-
-This broke the configuration of several Arch Linux users (cf.
-https://bbs.archlinux.org/viewtopic.php?id=263360 and
-https://github.com/archlinuxhardened/selinux/issues/81) and I reported
-this on some kernel mailing lists a few days ago
-(https://lore.kernel.org/linux-security-module/CAJfZ7=nWJisw2RRW2AvFgpYKQK_PghudeBqiTQXNfedS2idP-Q@mail.gmail.com/).
-Your answer to this issue was very clear (and thank you for explaining
-this):
-
-« You can't (currently) use SELinux and BPF at the same time. This is
-because the infrastructure does not support multiple secid<->secctx
-translation hooks. You get the first one in the list. BPF provides all
-hooks, so the SELinux hooks aren't reached and the secid to secctx
-translation fails in the "bpf,selinux" case. »
-
-Anyway, this means that using "security=..." does not work if
-CONFIG_LSM contains the BPF LSM module, so no: you *cannot* select one
-major module using security=, when the kernel is compiled with
-CONFIG_LSM="lockdown,yama,bpf".
-
-Backward compatibility was broken and Arch Linux users were required
-to switch to lsm= in order to use AppArmor, SELinux, etc. (and the
-documentation of this distribution got updated:
-https://wiki.archlinux.org/index.php/AppArmor,
-https://wiki.archlinux.org/index.php/SELinux, etc.).
-
-Nicolas
-
+[...]
