@@ -2,562 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EBC8322573
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57608322575
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbhBWFhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 00:37:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
+        id S230482AbhBWFj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 00:39:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhBWFhL (ORCPT
+        with ESMTP id S229967AbhBWFjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 00:37:11 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC10C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 21:36:31 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id o6so1116092pjf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 21:36:31 -0800 (PST)
+        Tue, 23 Feb 2021 00:39:20 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0E3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 21:38:40 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id c17so61802384ljn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 21:38:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aYv0eQvZ2yLg52Ysz8rEXt1oFGhcA0fO7nVu09GhKJo=;
-        b=VattKy++i+crfizvJnT73A/PHg1AtsrF5LZKhRwrP1CZNswQmtI1W9/4DUf8jf6i2G
-         zEMSevQvsTShQLwkFgFPZYH90PTBzEgydaZt4L5P+QCclNIA/apqgEpKRAQ76OK57B8x
-         MTfWZrGzOMGawr83aStTDvgb5GT7Y5hwhEUhAWPS2umyeZu/mr5nPyN+aHgaCWO/w51j
-         SVj12JJohl6IjYxMyCFVaAQQHQf0wS9Wnj1SW/j1ojzvSs16Nd/Y+tyqJK4/JFdfpdpr
-         y5hsC7AwbQsZ0H8bJ/pGjOHX+7SRS8gI7N9sVSl67fLMxAFt5SDNPI4GO2UJpyCQkBri
-         iLZA==
+        bh=xoz9ruMyGlyHp0Dux5TOabse5pDK13RiWfyTntkpE9k=;
+        b=nRWf8ohTY81ID4OOn/y0ijqzLx+G+HyUob9gT0Bzn3SmJxgY8uQk8RljshQadg1i+Z
+         yFX7ZnEpsQ21+T1glSTVqoTLXFXVH9m8WXGbzaX92tIUcXO2J93mktG4/TFSj2l5JUwg
+         v2+vweeSa0ceTIdPmchWgHY1Yp22+ZrwO2Gf9eeyV9w89ZLm+WYTW6XJAUa+ZGtp6Omj
+         PnS+m/9KgtwXll2AQK390ka6b0RZi+QLrwOe9+PaKMlivFQurZelN5s2w65iF2mAxCAR
+         6/QqQZgTonNpGUohBPcs9eJTKCuYjP3DJ/fQBDyKmCsC65feKSy6/dcX1bnNObO1VmWn
+         8iCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aYv0eQvZ2yLg52Ysz8rEXt1oFGhcA0fO7nVu09GhKJo=;
-        b=VS3VqOLalqtYCyQdfoCcq03GhKOM8WVdKlBN1INnTwC5yf2mVhvoQSF2dF0GuX0Vk3
-         WqbJRberH0qnUc8ruug0etcTH5se3B6SV1K13tFo6eBwVGSg37IU7Nc1HJZb7KWQ1Hq8
-         lfqYTs0eSpbqkJcy1Ap+qwyZiefdgPLp+PpNB4jPRDgV8uzu9XXG3VxEGzk8Xf24s97S
-         burssqt89T2Hsbha5zdopP7lHKv1jOjVjX+jNIoU0sDByJijTrc2OBXdP4ACq1BCdzsz
-         vTtWLroDDDzBTUo4dPr15ytyXsP1WTqMSqb/erZRNd0CJXQcpjEh+nXdSyKuyDFX2szi
-         Kqlw==
-X-Gm-Message-State: AOAM533yjEG00uUis2fGRr7uqKPCE5wO/lC1ADC7cs46t2qUBW37qnqM
-        TewP8Hv3psR5otClex8A7oLGCwoKRf6MQA7BdIajnA==
-X-Google-Smtp-Source: ABdhPJwgy93EhnypmyOsAuzu+K13tuFOTwwVMC+wgLV+s9q0JC7Q5wYzJvFv7InURvV6eIQwIvRUymiZpeNaJcG+gQk=
-X-Received: by 2002:a17:902:9341:b029:e1:7b4e:57a8 with SMTP id
- g1-20020a1709029341b02900e17b4e57a8mr25102009plp.34.1614058590565; Mon, 22
- Feb 2021 21:36:30 -0800 (PST)
+        bh=xoz9ruMyGlyHp0Dux5TOabse5pDK13RiWfyTntkpE9k=;
+        b=FU4hrhyle/KE6tIBLxR/CDlV0Ytr5DJALgG1bVq9xapKT9fyW2ceaOvtmgZj61rhHL
+         K+CjkluJIipcS2rnZgEvei/mH5yQ4SEkEc5P7k5mDFUIgvPkWUqVW54XcFaYSp9U6VCq
+         cpaUZR54xJFG2o9ayWf3weqd6de8hxju+CPLXC9JxlROhnPkIaKCiGhbgvoW9iKmqnmd
+         r1Y44d5AGAxvDVSz6lYoyB7Kht0qUqnxZKD7URpFtGpuCLEaxWTMHyUW/0Fp+sVgw1oM
+         4PJiXvRsRrB7kr3dJ/soNpzikHBBRJBe52N7Kri1h5qLQL36bH3ad3MYlARj6ehMi9TY
+         IjFA==
+X-Gm-Message-State: AOAM533tIgJv/HPmbuB0Q84vVBWY00+LL57jv41ufa51dAqbJYm8Ti4l
+        ecUqJP5LlAj9scS8mySoYr+AA+6ibAhI0aw2+aJ4Lw==
+X-Google-Smtp-Source: ABdhPJzVkmlPfVBMcdf6U1j6JvbcnHFdFgnjdsxqlwOLxaVOKcc+QDqV/ZsMA+jlNsu0Vjq7zCHr83nliV6qZ6nk4oY=
+X-Received: by 2002:a2e:8656:: with SMTP id i22mr10243200ljj.245.1614058718700;
+ Mon, 22 Feb 2021 21:38:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20210219104954.67390-1-songmuchun@bytedance.com>
- <20210219104954.67390-5-songmuchun@bytedance.com> <13a5363c-6af4-1e1f-9a18-972ca18278b5@oracle.com>
-In-Reply-To: <13a5363c-6af4-1e1f-9a18-972ca18278b5@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 23 Feb 2021 13:35:53 +0800
-Message-ID: <CAMZfGtVeJ7Vs-K3ChqLfWkWYpHvZZ-jnBKo67ague50be-MSbQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v16 4/9] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20210222225241.201145-1-dlatypov@google.com>
+In-Reply-To: <20210222225241.201145-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 23 Feb 2021 13:38:27 +0800
+Message-ID: <CABVgOSk0G7xzoOjnz-oReDER7_e6V+j6fH63FdN8O40_8fNzGA@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: make --kunitconfig accept dirs, add
+ lib/kunit fragment
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 8:01 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+On Tue, Feb 23, 2021 at 6:52 AM Daniel Latypov <dlatypov@google.com> wrote:
 >
-> On 2/19/21 2:49 AM, Muchun Song wrote:
-> > When we free a HugeTLB page to the buddy allocator, we should allocate
-> > the vmemmap pages associated with it. But we may cannot allocate vmemmap
-> > pages when the system is under memory pressure, in this case, we just
-> > refuse to free the HugeTLB page instead of looping forever trying to
-> > allocate the pages. This changes some behavior (list below) on some
-> > corner cases.
+> TL;DR
+> $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit
 >
-> Thank you for listing changes in behavior and possible side effects of
-> not being able to allocate vmemmmap and free huge page to buddy!
+> Per suggestion from Ted [1], we can reduce the amount of typing by
+> assuming a convention that these files are named '.kunitconfig'.
 >
-> I will not repeat Michal's comment about the check for an atomic context
-> in free_huge_page path.
+> In the case of [1], we now have
+> $ ./tools/testing/kunit/kunit.py run --kunitconfig=fs/ext4
 >
-> >
-> >  1) Failing to free a huge page triggered by the user (decrease nr_pages).
-> >
-> >     Need try again later by the user.
-> >
-> >  2) Failing to free a surplus huge page when freed by the application.
-> >
-> >     Try again later when freeing a huge page next time.
-> >
-> >  3) Failing to dissolve a free huge page on ZONE_MOVABLE via
-> >     offline_pages().
-> >
-> >     This is a bit unfortunate if we have plenty of ZONE_MOVABLE memory
-> >     but are low on kernel memory. For example, migration of huge pages
-> >     would still work, however, dissolving the free page does not work.
-> >     This is a corner cases. When the system is that much under memory
-> >     pressure, offlining/unplug can be expected to fail.
-> >
-> >  4) Failing to dissolve a huge page on CMA/ZONE_MOVABLE via
-> >     alloc_contig_range() - once we have that handling in place. Mainly
-> >     affects CMA and virtio-mem.
-> >
-> >     Similar to 3). virito-mem will handle migration errors gracefully.
-> >     CMA might be able to fallback on other free areas within the CMA
-> >     region.
-> >
-> > We do not want to use GFP_ATOMIC to allocate vmemmap pages. Because it
-> > grants access to memory reserves and we do not think it is reasonable
-> > to use memory reserves. We use GFP_KERNEL in alloc_huge_page_vmemmap().
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  Documentation/admin-guide/mm/hugetlbpage.rst |  8 +++
-> >  include/linux/mm.h                           |  2 +
-> >  mm/hugetlb.c                                 | 81 ++++++++++++++++++++--------
-> >  mm/hugetlb_vmemmap.c                         | 22 ++++++++
-> >  mm/hugetlb_vmemmap.h                         |  6 +++
-> >  mm/sparse-vmemmap.c                          | 75 +++++++++++++++++++++++++-
-> >  6 files changed, 171 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
-> > index f7b1c7462991..fb8f649e5635 100644
-> > --- a/Documentation/admin-guide/mm/hugetlbpage.rst
-> > +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
-> > @@ -60,6 +60,10 @@ HugePages_Surp
-> >          the pool above the value in ``/proc/sys/vm/nr_hugepages``. The
-> >          maximum number of surplus huge pages is controlled by
-> >          ``/proc/sys/vm/nr_overcommit_hugepages``.
-> > +     Note: When the feature of freeing unused vmemmap pages associated
-> > +     with each hugetlb page is enabled, the number of the surplus huge
+> Also add in such a fragment for kunit itself so we can give that as an
+> example more close to home (and thus less likely to be accidentally
+> broken).
 >
-> Small wording change:
+> [1] https://lore.kernel.org/linux-ext4/YCNF4yP1dB97zzwD@mit.edu/
 >
->         with each hugetlb page is enabled, the number of surplus huge
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> ---
 
-Thanks. I will update this.
+Thanks! I really like this.
 
->
-> > +     pages may be temporarily larger than the maximum number of surplus
-> > +     huge pages when the system is under memory pressure.
-> >  Hugepagesize
-> >       is the default hugepage size (in Kb).
-> >  Hugetlb
-> > @@ -80,6 +84,10 @@ returned to the huge page pool when freed by a task.  A user with root
-> >  privileges can dynamically allocate more or free some persistent huge pages
-> >  by increasing or decreasing the value of ``nr_hugepages``.
-> >
-> > +Note: When the feature of freeing unused vmemmap pages associated with each
-> > +hugetlb page is enabled, we can failed to free the huge pages triggered by
->
-> Small wording change:
->
->    hugetlb page is enabled, we can fail to free the huge pages triggered by
+I'd assumed we'd check if the path exists, and fall back to appending
+".kunitconfig", but checking if it's a directory is better.
 
-Thanks. I will update this.
+I tried this out with all the different combinations I could think of,
+and it works well.
 
->
-> > +the user when ths system is under memory pressure.  Please try again later.
-> > +
-> >  Pages that are used as huge pages are reserved inside the kernel and cannot
-> >  be used for other purposes.  Huge pages cannot be swapped out under
-> >  memory pressure.
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index d7dddf334779..33c5911afe18 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -2981,6 +2981,8 @@ static inline void print_vma_addr(char *prefix, unsigned long rip)
-> >
-> >  void vmemmap_remap_free(unsigned long start, unsigned long end,
-> >                       unsigned long reuse);
-> > +int vmemmap_remap_alloc(unsigned long start, unsigned long end,
-> > +                     unsigned long reuse, gfp_t gfp_mask);
-> >
-> >  void *sparse_buffer_alloc(unsigned long size);
-> >  struct page * __populate_section_memmap(unsigned long pfn,
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 4cfca27c6d32..bcf856974c48 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -1305,37 +1305,68 @@ static inline void destroy_compound_gigantic_page(struct page *page,
-> >                                               unsigned int order) { }
-> >  #endif
-> >
-> > -static void update_and_free_page(struct hstate *h, struct page *page)
-> > +static int update_and_free_page(struct hstate *h, struct page *page)
-> > +     __releases(&hugetlb_lock) __acquires(&hugetlb_lock)
-> >  {
-> >       int i;
-> > +     int nid = page_to_nid(page);
-> >
-> >       if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
-> > -             return;
-> > +             return 0;
-> >
-> >       h->nr_huge_pages--;
-> > -     h->nr_huge_pages_node[page_to_nid(page)]--;
-> > +     h->nr_huge_pages_node[nid]--;
-> > +     VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
-> > +     VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
-> > +     set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
-> > +     set_page_refcounted(page);
->
-> I think you added the set_page_refcounted() because the huge page will
-> appear as just a compound page without a reference after dropping the
-> hugetlb lock?
+Reviewed-by: David Gow <davidgow@google.com>
 
-Right.
+Cheers,
+-- David
 
-> It might be better to set the reference before modifying
-> the destructor.  Otherwise, page scanning code could find the non-hugetlb
-> compound page with no reference.  I could not find any code where this
-> would be a problem, but I think it would be safer to set the reference
-> first.
-
-Make sense to me. It is better to set the refcount first.
-
+>  lib/kunit/.kunitconfig                 | 3 +++
+>  tools/testing/kunit/kunit.py           | 4 +++-
+>  tools/testing/kunit/kunit_kernel.py    | 2 ++
+>  tools/testing/kunit/kunit_tool_test.py | 6 ++++++
+>  4 files changed, 14 insertions(+), 1 deletion(-)
+>  create mode 100644 lib/kunit/.kunitconfig
 >
-> > +     spin_unlock(&hugetlb_lock);
+> diff --git a/lib/kunit/.kunitconfig b/lib/kunit/.kunitconfig
+> new file mode 100644
+> index 000000000000..9235b7d42d38
+> --- /dev/null
+> +++ b/lib/kunit/.kunitconfig
+> @@ -0,0 +1,3 @@
+> +CONFIG_KUNIT=y
+> +CONFIG_KUNIT_TEST=y
+> +CONFIG_KUNIT_EXAMPLE_TEST=y
+> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> index d5144fcb03ac..5da8fb3762f9 100755
+> --- a/tools/testing/kunit/kunit.py
+> +++ b/tools/testing/kunit/kunit.py
+> @@ -184,7 +184,9 @@ def add_common_opts(parser) -> None:
+>                             help='Run all KUnit tests through allyesconfig',
+>                             action='store_true')
+>         parser.add_argument('--kunitconfig',
+> -                            help='Path to Kconfig fragment that enables KUnit tests',
+> +                            help='Path to Kconfig fragment that enables KUnit tests.'
+> +                            ' If given a directory, (e.g. lib/kunit), "/.kunitconfig" '
+> +                            'will get  automatically appended.',
+>                              metavar='kunitconfig')
 >
-> I really like the way this code is structured.  It is much simpler than
-> previous versions with retries or workqueue.  There is nothing wrong with
-> always dropping the lock here.  However, I wonder if we should think about
-> optimizing for the case where this feature is not enabled and we are not
-> freeing a 1G huge page.  I suspect this will be the most common case for
-> some time, and there is no need to drop the lock in this case.
+>  def add_build_opts(parser) -> None:
+> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+> index f309a33256cd..89a7d4024e87 100644
+> --- a/tools/testing/kunit/kunit_kernel.py
+> +++ b/tools/testing/kunit/kunit_kernel.py
+> @@ -132,6 +132,8 @@ class LinuxSourceTree(object):
+>                         return
 >
-> Please do not change the code based on my comment.  I just wanted to bring
-> this up for thought.
-
-At least make sense to me. It may take a long time to free a 1G
-huge page. Dropping the lock may be a good choice. But I also
-want to listen to Oscar and Michal's opinion on this.
-
+>                 if kunitconfig_path:
+> +                       if os.path.isdir(kunitconfig_path):
+> +                               kunitconfig_path = os.path.join(kunitconfig_path, KUNITCONFIG_PATH)
+>                         if not os.path.exists(kunitconfig_path):
+>                                 raise ConfigError(f'Specified kunitconfig ({kunitconfig_path}) does not exist')
+>                 else:
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> index 1ad3049e9069..2e809dd956a7 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -251,6 +251,12 @@ class LinuxSourceTreeTest(unittest.TestCase):
+>                 with tempfile.NamedTemporaryFile('wt') as kunitconfig:
+>                         tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=kunitconfig.name)
 >
-> Is it as simple as checking?
->         if (free_vmemmap_pages_per_hpage(h) || hstate_is_gigantic(h))
->                 spin_unlock(&hugetlb_lock);
-
+> +       def test_dir_kunitconfig(self):
+> +               with tempfile.TemporaryDirectory('') as dir:
+> +                       with open(os.path.join(dir, '.kunitconfig'), 'w') as f:
+> +                               pass
+> +                       tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
+> +
+>         # TODO: add more test cases.
 >
->         /* before return */
->         if (free_vmemmap_pages_per_hpage(h) || hstate_is_gigantic(h))
->                 spin_lock(&hugetlb_lock);
 >
-> > +
-> > +     if (alloc_huge_page_vmemmap(h, page)) {
-> > +             int zeroed;
-> > +
-> > +             spin_lock(&hugetlb_lock);
-> > +             INIT_LIST_HEAD(&page->lru);
-> > +             set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
-> > +             h->nr_huge_pages++;
-> > +             h->nr_huge_pages_node[nid]++;
-> > +
-> > +             /*
-> > +              * If we cannot allocate vmemmap pages, just refuse to free the
-> > +              * page and put the page back on the hugetlb free list and treat
-> > +              * as a surplus page.
-> > +              */
-> > +             h->surplus_huge_pages++;
-> > +             h->surplus_huge_pages_node[nid]++;
-> > +
-> > +             /*
-> > +              * This page is now managed by the hugetlb allocator and has
-> > +              * no users -- drop the last reference.
-> > +              */
-> > +             zeroed = put_page_testzero(page);
-> > +             VM_BUG_ON_PAGE(!zeroed, page);
-> > +             arch_clear_hugepage_flags(page);
-> > +             enqueue_huge_page(h, page);
-> > +
-> > +             return -ENOMEM;
-> > +     }
-> > +
-> >       for (i = 0; i < pages_per_huge_page(h); i++) {
-> >               page[i].flags &= ~(1 << PG_locked | 1 << PG_error |
-> >                               1 << PG_referenced | 1 << PG_dirty |
-> >                               1 << PG_active | 1 << PG_private |
-> >                               1 << PG_writeback);
-> >       }
-> > -     VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
-> > -     VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
-> > -     set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
-> > -     set_page_refcounted(page);
-> >       if (hstate_is_gigantic(h)) {
-> > -             /*
-> > -              * Temporarily drop the hugetlb_lock, because
-> > -              * we might block in free_gigantic_page().
-> > -              */
-> > -             spin_unlock(&hugetlb_lock);
-> >               destroy_compound_gigantic_page(page, huge_page_order(h));
-> >               free_gigantic_page(page, huge_page_order(h));
-> > -             spin_lock(&hugetlb_lock);
-> >       } else {
-> >               __free_pages(page, huge_page_order(h));
-> >       }
-> > +
-> > +     spin_lock(&hugetlb_lock);
-> > +
-> > +     return 0;
-> >  }
-> >
-> >  struct hstate *size_to_hstate(unsigned long size)
-> > @@ -1403,9 +1434,9 @@ static void __free_huge_page(struct page *page)
-> >       } else if (h->surplus_huge_pages_node[nid]) {
-> >               /* remove the page from active list */
-> >               list_del(&page->lru);
-> > -             update_and_free_page(h, page);
-> >               h->surplus_huge_pages--;
-> >               h->surplus_huge_pages_node[nid]--;
-> > +             update_and_free_page(h, page);
-> >       } else {
-> >               arch_clear_hugepage_flags(page);
-> >               enqueue_huge_page(h, page);
-> > @@ -1693,6 +1724,7 @@ static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
-> >                       struct page *page =
-> >                               list_entry(h->hugepage_freelists[node].next,
-> >                                         struct page, lru);
-> > +                     ClearHPageFreed(page);
 >
-> Quick question.  Is this change directly related to the vmemmap changes,
-> or is it a cleanup that you noticed?
-
-Just a cleanup. Maybe there should be a separate patch for this.
-
->
-> >                       list_del(&page->lru);
-> >                       h->free_huge_pages--;
-> >                       h->free_huge_pages_node[node]--;
-> > @@ -1700,8 +1732,7 @@ static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
-> >                               h->surplus_huge_pages--;
-> >                               h->surplus_huge_pages_node[node]--;
-> >                       }
-> > -                     update_and_free_page(h, page);
-> > -                     ret = 1;
-> > +                     ret = !update_and_free_page(h, page);
-> >                       break;
-> >               }
-> >       }
-> > @@ -1714,10 +1745,14 @@ static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
-> >   * nothing for in-use hugepages and non-hugepages.
-> >   * This function returns values like below:
-> >   *
-> > - *  -EBUSY: failed to dissolved free hugepages or the hugepage is in-use
-> > - *          (allocated or reserved.)
-> > - *       0: successfully dissolved free hugepages or the page is not a
-> > - *          hugepage (considered as already dissolved)
-> > + *  -ENOMEM: failed to allocate vmemmap pages to free the freed hugepages
-> > + *           when the system is under memory pressure and the feature of
-> > + *           freeing unused vmemmap pages associated with each hugetlb page
-> > + *           is enabled.
-> > + *  -EBUSY:  failed to dissolved free hugepages or the hugepage is in-use
-> > + *           (allocated or reserved.)
-> > + *       0:  successfully dissolved free hugepages or the page is not a
-> > + *           hugepage (considered as already dissolved)
-> >   */
-> >  int dissolve_free_huge_page(struct page *page)
-> >  {
-> > @@ -1768,12 +1803,14 @@ int dissolve_free_huge_page(struct page *page)
-> >                       SetPageHWPoison(page);
-> >                       ClearPageHWPoison(head);
-> >               }
-> > +             ClearHPageFreed(page);
-> >               list_del(&head->lru);
-> >               h->free_huge_pages--;
-> >               h->free_huge_pages_node[nid]--;
-> >               h->max_huge_pages--;
-> > -             update_and_free_page(h, head);
-> > -             rc = 0;
-> > +             rc = update_and_free_page(h, head);
-> > +             if (rc)
-> > +                     h->max_huge_pages++;
->
-> Since update_and_free_page failed, the number of surplus pages was
-> incremented.  Surplus pages are the number of pages greater than
-> max_huge_pages.  Since we are incrementing max_huge_pages, we should
-> decrement (undo) the addition to surplus_huge_pages and
-> surplus_huge_pages_node[nid].  So, I think we want
->                         h->surplus_huge_pages--;
->                         h->surplus_huge_pages_node[nid]--;
-> here as well.
-
-You are right. Thanks for reminding me of this.
-
->
-> >       }
-> >  out:
-> >       spin_unlock(&hugetlb_lock);
->
-> In previous version of this patch series, we discussed and refined the
-> vmemmap manipulation routines below.  They still look good to me.
->
-> In general, I like the approach taken in this patch.  Hopefully, others
-> will comment and we can move the series forward.
+> base-commit: b12b47249688915e987a9a2a393b522f86f6b7ab
 > --
-> Mike Kravetz
+> 2.30.0.617.g56c4b15f3c-goog
 >
-> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> > index 0209b736e0b4..29a3380f3b20 100644
-> > --- a/mm/hugetlb_vmemmap.c
-> > +++ b/mm/hugetlb_vmemmap.c
-> > @@ -198,6 +198,28 @@ static inline unsigned long free_vmemmap_pages_size_per_hpage(struct hstate *h)
-> >       return (unsigned long)free_vmemmap_pages_per_hpage(h) << PAGE_SHIFT;
-> >  }
-> >
-> > +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
-> > +{
-> > +     unsigned long vmemmap_addr = (unsigned long)head;
-> > +     unsigned long vmemmap_end, vmemmap_reuse;
-> > +
-> > +     if (!free_vmemmap_pages_per_hpage(h))
-> > +             return 0;
-> > +
-> > +     vmemmap_addr += RESERVE_VMEMMAP_SIZE;
-> > +     vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-> > +     vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
-> > +     /*
-> > +      * The pages which the vmemmap virtual address range [@vmemmap_addr,
-> > +      * @vmemmap_end) are mapped to are freed to the buddy allocator, and
-> > +      * the range is mapped to the page which @vmemmap_reuse is mapped to.
-> > +      * When a HugeTLB page is freed to the buddy allocator, previously
-> > +      * discarded vmemmap pages must be allocated and remapping.
-> > +      */
-> > +     return vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse,
-> > +                                GFP_KERNEL | __GFP_NORETRY | __GFP_THISNODE);
-> > +}
-> > +
-> >  void free_huge_page_vmemmap(struct hstate *h, struct page *head)
-> >  {
-> >       unsigned long vmemmap_addr = (unsigned long)head;
-> > diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-> > index 6923f03534d5..e5547d53b9f5 100644
-> > --- a/mm/hugetlb_vmemmap.h
-> > +++ b/mm/hugetlb_vmemmap.h
-> > @@ -11,8 +11,14 @@
-> >  #include <linux/hugetlb.h>
-> >
-> >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head);
-> >  void free_huge_page_vmemmap(struct hstate *h, struct page *head);
-> >  #else
-> > +static inline int alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> >  static inline void free_huge_page_vmemmap(struct hstate *h, struct page *head)
-> >  {
-> >  }
-> > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-> > index d3076a7a3783..60fc6cd6cd23 100644
-> > --- a/mm/sparse-vmemmap.c
-> > +++ b/mm/sparse-vmemmap.c
-> > @@ -40,7 +40,8 @@
-> >   * @remap_pte:               called for each lowest-level entry (PTE).
-> >   * @reuse_page:              the page which is reused for the tail vmemmap pages.
-> >   * @reuse_addr:              the virtual address of the @reuse_page page.
-> > - * @vmemmap_pages:   the list head of the vmemmap pages that can be freed.
-> > + * @vmemmap_pages:   the list head of the vmemmap pages that can be freed
-> > + *                   or is mapped from.
-> >   */
-> >  struct vmemmap_remap_walk {
-> >       void (*remap_pte)(pte_t *pte, unsigned long addr,
-> > @@ -237,6 +238,78 @@ void vmemmap_remap_free(unsigned long start, unsigned long end,
-> >       free_vmemmap_page_list(&vmemmap_pages);
-> >  }
-> >
-> > +static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
-> > +                             struct vmemmap_remap_walk *walk)
-> > +{
-> > +     pgprot_t pgprot = PAGE_KERNEL;
-> > +     struct page *page;
-> > +     void *to;
-> > +
-> > +     BUG_ON(pte_page(*pte) != walk->reuse_page);
-> > +
-> > +     page = list_first_entry(walk->vmemmap_pages, struct page, lru);
-> > +     list_del(&page->lru);
-> > +     to = page_to_virt(page);
-> > +     copy_page(to, (void *)walk->reuse_addr);
-> > +
-> > +     set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
-> > +}
-> > +
-> > +static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
-> > +                                gfp_t gfp_mask, struct list_head *list)
-> > +{
-> > +     unsigned long nr_pages = (end - start) >> PAGE_SHIFT;
-> > +     int nid = page_to_nid((struct page *)start);
-> > +     struct page *page, *next;
-> > +
-> > +     while (nr_pages--) {
-> > +             page = alloc_pages_node(nid, gfp_mask, 0);
-> > +             if (!page)
-> > +                     goto out;
-> > +             list_add_tail(&page->lru, list);
-> > +     }
-> > +
-> > +     return 0;
-> > +out:
-> > +     list_for_each_entry_safe(page, next, list, lru)
-> > +             __free_pages(page, 0);
-> > +     return -ENOMEM;
-> > +}
-> > +
-> > +/**
-> > + * vmemmap_remap_alloc - remap the vmemmap virtual address range [@start, end)
-> > + *                    to the page which is from the @vmemmap_pages
-> > + *                    respectively.
-> > + * @start:   start address of the vmemmap virtual address range that we want
-> > + *           to remap.
-> > + * @end:     end address of the vmemmap virtual address range that we want to
-> > + *           remap.
-> > + * @reuse:   reuse address.
-> > + * @gpf_mask:        GFP flag for allocating vmemmap pages.
-> > + */
-> > +int vmemmap_remap_alloc(unsigned long start, unsigned long end,
-> > +                     unsigned long reuse, gfp_t gfp_mask)
-> > +{
-> > +     LIST_HEAD(vmemmap_pages);
-> > +     struct vmemmap_remap_walk walk = {
-> > +             .remap_pte      = vmemmap_restore_pte,
-> > +             .reuse_addr     = reuse,
-> > +             .vmemmap_pages  = &vmemmap_pages,
-> > +     };
-> > +
-> > +     /* See the comment in the vmemmap_remap_free(). */
-> > +     BUG_ON(start - reuse != PAGE_SIZE);
-> > +
-> > +     might_sleep_if(gfpflags_allow_blocking(gfp_mask));
-> > +
-> > +     if (alloc_vmemmap_page_list(start, end, gfp_mask, &vmemmap_pages))
-> > +             return -ENOMEM;
-> > +
-> > +     vmemmap_remap_range(reuse, end, &walk);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >  /*
-> >   * Allocate a block of memory to be used to back the virtual memory map
-> >   * or to back the page tables that are used to create the mapping.
-> >
