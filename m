@@ -2,96 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C1E3230BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEEA33230B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234006AbhBWS16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 13:27:58 -0500
-Received: from mout.gmx.net ([212.227.15.18]:57903 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233961AbhBWS10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 13:27:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1614104726;
-        bh=7BwauqzseaTyIv+FEED6OWAW8L+89S2yvXr2FlbloOg=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=MLNYC3zGXzDgsbM3c0876/8kOGG0gHU/UGNDMXvegCA6/mPcQE0doq8KJPREwjocq
-         wKGf5BplZCB71qLCwM/Qj6ANgTMA4T56r5YNUBMwsIBCF5iS9X4sqgv5mSctj/uL1S
-         HXcelzyqZdLqqcLKLkBl/GsAQ8XVhzBMwaEWO9i4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.229.153]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRCOE-1lQfbd3xtk-00N6Fb; Tue, 23
- Feb 2021 19:25:26 +0100
-Date:   Tue, 23 Feb 2021 19:25:22 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
-Cc:     John Wood <john.wood@gmx.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 3/8] securtiy/brute: Detect a brute force attack
-Message-ID: <20210223182522.GC3068@ubuntu>
-References: <20210221154919.68050-1-john.wood@gmx.com>
- <20210221154919.68050-4-john.wood@gmx.com>
- <4fde79a5-34fe-fd27-b390-e9fd341996fb@infradead.org>
+        id S233955AbhBWS1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 13:27:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233167AbhBWS1L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 13:27:11 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C54C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:26:30 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id m22so12725408lfg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:26:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mBr7UNJqLOGs/lMIuN2650GwuS6Xxag/PiTfvbinhVo=;
+        b=YmeFVslLWnkAh0SqA4uyKO/rCf7CecRBmkkYhkHyVOpBgdOeEGi63SnelFBoc+SBVk
+         +Wmk2FtUgcKXMvlhy71TueGREd2G+Agn8EotGZZ81Os48L7spam6gnrurcTM8UC27YWl
+         ltTJcZjplD3oK+Q11gc9Y4CMWQ4KHJ6wt/+Ww=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mBr7UNJqLOGs/lMIuN2650GwuS6Xxag/PiTfvbinhVo=;
+        b=VQB8cjjUdLwIv/rRDjN97Yv8q5JQyYUUDJHxw85eCKtZLknqZsMwhRP6uJ8d2bmhkX
+         DcuthSDv2Wu+pJ16qtHXOwgnkC0L2vYVsdvZI+5LjLKYDU2RtXNJnn9PsmNYKuEXrfZm
+         sAdku6n+x/5cn/I1Y7RgWByevYSbES2fOCBeuSDtJkY1qclfIOCckQW5MDvEHuFtTs5n
+         S5vmxhbVjyB/qzQMB/OztkBOej+PNBjCNNgnk5OCQUFroBq3tnIlhV10Y7eXvWHxmXeS
+         n5XCm/8xogfuT0pa3/JsnmO5C7+L9weUVR33cynNj0VAWrOOrqkoILAu0s6iOFBRaWBj
+         ySFA==
+X-Gm-Message-State: AOAM533kmba1wI69N/IM0GFgav+TQ4muCSEG4G0rkKXxZl6oSukQqwBB
+        Ghl0jl7i0xaNQfveL0N4+qjx8SnEfAsHKA==
+X-Google-Smtp-Source: ABdhPJxA6Rk4ZgFk5nITcQAb6+yFSf8jgK0zX/nhwnu4Ty7VXDsO6Lo2Au4fIX59RbmrxcNCnBRBHQ==
+X-Received: by 2002:a05:6512:3194:: with SMTP id i20mr17590307lfe.283.1614104789241;
+        Tue, 23 Feb 2021 10:26:29 -0800 (PST)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id x75sm2764751lff.91.2021.02.23.10.26.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Feb 2021 10:26:28 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id w36so12754953lfu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:26:28 -0800 (PST)
+X-Received: by 2002:a19:6916:: with SMTP id e22mr16380577lfc.421.1614104788209;
+ Tue, 23 Feb 2021 10:26:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4fde79a5-34fe-fd27-b390-e9fd341996fb@infradead.org>
-X-Provags-ID: V03:K1:EUnrf02szRc5Cqg5XwMwv/sMzB3gfsToWIiEyS9CekvrC53uTdW
- t59mo8duYbPIRThpEohuJip1uhwu1DJhuqG2cNQhnv1cIAbROcZ1f5NPYIH3SaCNLUI1M6S
- 71swv5a323RzfN5z9qw5VsoFWad1SgMtCg0kGQhPgpupa37a5o/kgDgvcLnhwZOKhCzikmU
- K4yzL2hWJPLGFIa+VsqrQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:H+7ThYesxAY=:Kh4IJ/yOba6KfzReGlAiOa
- 3aU6pjviDfczfe+aZ5o0E6I5Mn2VGR7cFA/IcPxQDNnqWOAFnVu6JbmiswU/6OrOdivKrxKqv
- 4Xc91AkaYXTCDPMdshfiH2fImMVGIk4GJ6J3xVJhYQlfGChkb+3/3aPvT1Gu0f2frCUQyI2o8
- 1CUQgsp8OxX3EjPhguF9OEIVOhP5pcXmsXzE04SEqICvGbsMIoehrwP7s+ssU4z/09QA4obpr
- HY394T8chXp+7JZMjvLcRTnO9OxMrA7hWsOYPe/lBBdOgTfhY9rta/g9djDzO60bZ+kz5zKrY
- gAtP+hi2P+Tq47xG2MitQRPczKIV/k0tiRDIWlxJR5RVUzOuPT8R9w3ULGOqVUYPHsO9Z714B
- PcyouNU7PQ/Am2L7gMnTaeuTyf9eVEzsk5cORI6NzvGyZ+ui+sJhNHmZgU0JQppV7Bl1xaB3u
- GSGSsnrd+5520RT9FhlGOfR/R1UkjnWM/QE39DyLVL7dqoqZwHPChRueM510nH/udbHm0sQ1+
- 2AQx7MfFnwtPyfZdV23igYikvjZ4QW8X9XAGqXd2d7WBuA7Twin6dmu1yxr6rM8w/qSONh2OP
- lEvcDj4vT7WfCzhBIsPRIdnmsfN2lbp/slrf2KTGV5vmzCrRA0ELwLsMeTdBNFBB1jGnccf9c
- 9yEad5eqp7jBVL4mOQpNu7ts0kjPF4h+9U9cGmwJlo/Le2JwQpMd7r3LgLiKlmyabbhnVCQ8f
- wkMmiofqa5FfXzn1OKDYBRRpiiCqn5ubkN/HEGkHVZu6hYT1uR2NF5TvBwbtB6HYOE4UeI1c9
- ajSpH+G1xtP/AJjzGiJiAvbZZiAn/1birGmXyWUiepFLoJxDoha6IZMUmJlCpCsDvVEQJr+sq
- /DRHbzDoeoYcyl6qlpDA==
-Content-Transfer-Encoding: quoted-printable
+References: <YDUibKAt5tpA1Hxs@gunter>
+In-Reply-To: <YDUibKAt5tpA1Hxs@gunter>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 23 Feb 2021 10:26:12 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wipCbbXswcFvnrGae01H54dY1+XoaL+9YaiU71zGzko3Q@mail.gmail.com>
+Message-ID: <CAHk-=wipCbbXswcFvnrGae01H54dY1+XoaL+9YaiU71zGzko3Q@mail.gmail.com>
+Subject: Re: [GIT PULL] Modules updates for v5.12
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Feb 23, 2021 at 7:42 AM Jessica Yu <jeyu@kernel.org> wrote:
+>
+> Please pull below to receive modules updates for the v5.12 merge window.
 
-On Sun, Feb 21, 2021 at 06:30:10PM -0800, Randy Dunlap wrote:
-> Hi,
->
-> one spello in 2 locations:
->
-> On 2/21/21 7:49 AM, John Wood wrote:
-> [...]
-> > these statistics dissapear when the involved tasks finished. In this
->
->                    disappear
-> [...]
-> > + * statistics dissapear when this task is finished. In this scenario =
-this data
->
->                  disappear
-> [...]
+   "struct symsearch is only used inside of module.h, so move the definition
+    out of module.h"
 
-This typos will be corrected in the next version.
+Whaa?
 
-Thanks a lot,
-John Wood
+The first module.h should be module.c. Oh well.
 
->
-> --
-> ~Randy
->
+Pulled.
+
+             Linus
