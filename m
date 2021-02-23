@@ -2,97 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477A2322C2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3E3322C1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbhBWOYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:24:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232390AbhBWOYm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:24:42 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED14AC06178A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:24:01 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lEYbS-0007HK-FP; Tue, 23 Feb 2021 15:23:54 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lEYbN-00015y-R4; Tue, 23 Feb 2021 15:23:49 +0100
-Date:   Tue, 23 Feb 2021 15:23:48 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     dingsenjie@163.com
-Cc:     gregkh@linuxfoundation.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dingsenjie <dingsenjie@yulong.com>
-Subject: Re: [PATCH] tty/serial:Remove superfluous "breaks"
-Message-ID: <20210223142348.7wsgp4qdpkmkcmmz@pengutronix.de>
-References: <20210223080630.44644-1-dingsenjie@163.com>
+        id S232878AbhBWOVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:21:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:52494 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232313AbhBWOVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:21:48 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3DE71FB;
+        Tue, 23 Feb 2021 06:21:01 -0800 (PST)
+Received: from [10.37.8.9] (unknown [10.37.8.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03D8B3F73B;
+        Tue, 23 Feb 2021 06:20:59 -0800 (PST)
+Subject: Re: [PATCH v13 4/7] arm64: mte: Enable TCO in functions that can read
+ beyond buffer limits
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20210211153353.29094-1-vincenzo.frascino@arm.com>
+ <20210211153353.29094-5-vincenzo.frascino@arm.com>
+ <20210212172128.GE7718@arm.com>
+ <c3d565da-c446-dea2-266e-ef35edabca9c@arm.com>
+ <20210222175825.GE19604@arm.com>
+ <6111633c-3bbd-edfa-86a0-be580a9ebcc8@arm.com>
+ <20210223120530.GA20769@arm.com> <20210223124951.GA10563@willie-the-truck>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <bf45cf22-662b-e99c-4868-bfc64a0622b0@arm.com>
+Date:   Tue, 23 Feb 2021 14:25:14 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4rajsn7332ydbelk"
-Content-Disposition: inline
-In-Reply-To: <20210223080630.44644-1-dingsenjie@163.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210223124951.GA10563@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/23/21 12:49 PM, Will Deacon wrote:
+>>> I totally agree on this point. In the case of runtime switching we might need
+>>> the rethink completely the strategy and depends a lot on what we want to allow
+>>> and what not. For the kernel I imagine we will need to expose something in sysfs
+>>> that affects all the cores and then maybe stop_machine() to propagate it to all
+>>> the cores. Do you think having some of the cores running in sync mode and some
+>>> in async is a viable solution?
+>> stop_machine() is an option indeed. I think it's still possible to run
+>> some cores in async while others in sync but the static key here would
+>> only be toggled when no async CPUs are left.
+> Just as a general point, but if we expose stop_machine() via sysfs we
+> probably want to limit that to privileged users so you can't DoS the system
+> by spamming into the file.
 
---4rajsn7332ydbelk
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I agree, if we ever introduce the runtime switching and go for this option we
+should make sure that we do it safely.
 
-On Tue, Feb 23, 2021 at 04:06:30PM +0800, dingsenjie@163.com wrote:
-> From: dingsenjie <dingsenjie@yulong.com>
->=20
-> Remove superfluous "breaks", as there is a "return" before them.
->=20
-> Signed-off-by: dingsenjie <dingsenjie@yulong.com>
-
-You are at least the fourth person who sends this patch[1]. The things I
-wrote in reply to the latest submission still applies:
-
- - the Subject is wrong, it should use a prefix similar to "serial: imx:".
-
- - I personally like the breaks for clarity.
-
- - If people agree enough to outvote me, please at least add an empty
-   line instead of just removing the break to visually separate the
-   cases.
-
-Thanks
-Uwe
-
-[1] https://lore.kernel.org/r/20201026125142.21105-1-zhangqilong3@huawei.com
-    https://lore.kernel.org/r/20201020130709.28096-1-trix@redhat.com
-    https://lore.kernel.org/r/20201107140129.kpfhanzjidvdg662@pengutronix.de
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---4rajsn7332ydbelk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmA1D/EACgkQwfwUeK3K
-7An1PAf+KRAeBqmMbZhGgAEM0v7spL0lyXu9maeri0joayo1+9Ri4yDKIVXbqK36
-OYazFmkD7mj+OmYaMyp++j0HYP8nZsnHk1VL+vbln83aJycrhL/dbheFpWUHQCna
-ccVRn/QM/HP0FQ+awI7nePf2VUpIzx+QF211ZrvrOGgd+1lxbhm+rQOfI506yNyS
-moRgn4FK2X4LIG5N0yfr3x31L6CTwVcyDIYgHBgUnrSquerA64dJtJQaxdoNStZF
-6XevK2O4+qSABuX+VQGU/SWQGWPrWbTu5fYs5OhkP4zHW//DSTo0l+23+A5zTx8o
-UmXHPqWySu8/5Th2cFacssJ7s0/68Q==
-=GXNd
------END PGP SIGNATURE-----
-
---4rajsn7332ydbelk--
+-- 
+Regards,
+Vincenzo
