@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F948322456
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 03:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A200F322455
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 03:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhBWC7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 21:59:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbhBWC7I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231207AbhBWC7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 22 Feb 2021 21:59:08 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F82C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:58:22 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id e6so1844507pgk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:58:22 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230396AbhBWC7D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 21:59:03 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888B1C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:58:23 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id t5so884341pjd.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:58:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=2wngzZ6mx+/Vpq7Q62N18mbJmvOCii5bU10fpk/sXk4=;
-        b=xAg0RMNyoNjVqBWz98xEBHilAwyiq4dVzFeg6Dcn2mxnsprTZuZVDvmhFj0hnOYlF9
-         kXlJkDzFE7W19jKisQdSIOBFhB5ZyAX+x7RPnmHddiQkoxm+FsBr1OgI+GOUyIxapFIw
-         Qop4NoeEVYKNQuyPBSRrhi5oTHNEnZRUnmEUOjmrGCTG55UX6AWVD6TfAKxPC4o7SB0h
-         NuN4D+8LUliVI0usdqOe2ETZbzBuy3kB2aurjf6FBarGPRuwJTLJqv8+3XNlUAHAx+0z
-         mA2e0IeGQjEyhPBZ2jbfCaqT1k+8c6FbuLToyM7pt16FeBXPqeXfr5jV0miqzHIeMGN8
-         e5Hw==
+        bh=69faGMiqKu3nPyYAESPRzQr/N8GaW/xblPmvz3UTUyk=;
+        b=p3c4YUSBMWjuo9w902cfnr7CT3hEXcNms1mFbon5F1U4TssdL5MH7X50J1wGMCJ8li
+         d28LUYz6P2KU/NyJUWsJaq5EUDpW8oEAk4JRuhj23pfWvYy7b5gdE6C0S82N7J525n9G
+         HY2CJOy0xhfaYM5IfmcY2BKDU6zMO4eXE1kVn6Qttf6itw4RiG3W+ApjLUMmHy37eySm
+         OaRGz37uppx7ZW4Y2ot6xYcaMrUZ4I/IhPVaI4O/nyokzhFHi9qMreSJKRILUKu+qIZH
+         gqkOWDGG9YfD35F2+/gABqF7LBM4fyWefYQDvQXqgzUWv+jooLva/7Sq6WOlvR9xcNeU
+         DTRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=2wngzZ6mx+/Vpq7Q62N18mbJmvOCii5bU10fpk/sXk4=;
-        b=GczaZAyfw/igHbcWUhzVyBt6z7lx9EmhT04QzfirqN3j7X7Wnby81NbO66MRJwXbA5
-         AWxCqgBFnuxP3chamjcJ6a01bZ8IMPmeWozsexLF73nUqujzJg7lt+eGjXez91eknvyG
-         xNCR1Ydtavr2t/H9ZEIejguvSdIACQlqqVxGbBOFK8EpG0iy7iGGh4SywHSG8n7a3ypZ
-         UGgxPND7nzzB9yzmselEDd1g14T+XyD0+ooz4gN4JSNwuDmYY2PpeKuCAQjcfBOxp7UQ
-         53c8mAGSLyqinBSe+KVXLuPqw6Z/JcPSLHv3C7dEq7Kxuos6S4TmDx73Mme+8X6mK4sU
-         KXug==
-X-Gm-Message-State: AOAM533Kw9iEXvx02yel7n30ynjyut7j+z5g/fIEMCe2k9VXCrODX2HU
-        3MoerMrfqkJPmZ56Clsl8FZHdA==
-X-Google-Smtp-Source: ABdhPJw1AaHpGEYHoBeg/cY+uSWG/zywCJNkfv/3STu7tc190XSaa8k+yi7WYSOLbrSsLV5/tlXPkQ==
-X-Received: by 2002:a62:e401:0:b029:1ec:fdce:b052 with SMTP id r1-20020a62e4010000b02901ecfdceb052mr24176262pfh.79.1614049101866;
-        Mon, 22 Feb 2021 18:58:21 -0800 (PST)
+        bh=69faGMiqKu3nPyYAESPRzQr/N8GaW/xblPmvz3UTUyk=;
+        b=d4cbEo7PEd8Yv0IJe4JsFeUJO88I1EzIcy914I0tGrqqZesIPDwlDTf058DnDSAaK2
+         1pfItXXo2HzGdbR9cj3UCtvZLHOXx2AW7TDdg++kGXbBUGUswYfpJpVL/vXa4gm5IEM6
+         qJZW8GVp+WCFA/27nIZpjNXTiTQ+l5rVc/BrTXl0dV7QByQIPzROclVdqeGPm4+pSvPZ
+         vbvZk/KZfaktsSttLIsMay6D+SK/CoJqPriGMGvhBWZWDsT3ZuOCERahTzlPsgIOL52W
+         p56pVIZokrRp9QqeOYoAxP+Qc7xOjPBqCnx5EK4m14iywfQMSq2XvKzD+Kvo19LO/+35
+         u62w==
+X-Gm-Message-State: AOAM532zxEUylJFeUu5VfvpxfxVcVY6wuQcw73DJG73T7LJqsCWwXdSV
+        IkbddC4OM3zFMR89lCS4tS/UYw==
+X-Google-Smtp-Source: ABdhPJzmV8wZkxXCgdmngyaKJBYUFNgz01I8ZxSK+X8E0TEjxI4BBcoVuj8o0nNcOYFNN9Tp6UocWg==
+X-Received: by 2002:a17:90a:1990:: with SMTP id 16mr17662033pji.26.1614049103146;
+        Mon, 22 Feb 2021 18:58:23 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id o20sm874032pjt.43.2021.02.22.18.58.21
+        by smtp.gmail.com with ESMTPSA id z28sm8702512pfr.38.2021.02.22.18.58.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 18:58:21 -0800 (PST)
-Date:   Mon, 22 Feb 2021 18:58:21 -0800 (PST)
-X-Google-Original-Date: Mon, 22 Feb 2021 18:39:01 PST (-0800)
-Subject:     Re: [PATCH] soc: canaan: Sort the Makefile alphabetically
-In-Reply-To: <BL0PR04MB651408C561B5E4B6889F6841E7809@BL0PR04MB6514.namprd04.prod.outlook.com>
-CC:     linux-riscv@lists.infradead.org,
-        pczarnecki@internships.antmicro.com, leonard.crestez@nxp.com,
-        peng.fan@nxp.com, joel@jms.id.au, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
+        Mon, 22 Feb 2021 18:58:22 -0800 (PST)
+Date:   Mon, 22 Feb 2021 18:58:22 -0800 (PST)
+X-Google-Original-Date: Mon, 22 Feb 2021 18:58:14 PST (-0800)
+Subject:     Re: [PATCH 0/4] Kasan improvements and fixes
+In-Reply-To: <24d45989-4f4e-281c-3f58-d492f0b582e9@ghiti.fr>
+CC:     aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, kasan-dev@googlegroups.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
 From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Message-ID: <mhng-987a3cd7-9d3e-4471-b47a-67aa97629e7b@palmerdabbelt-glaptop>
+To:     alex@ghiti.fr
+Message-ID: <mhng-a99773ba-c614-46dc-820a-4119dbc32ff5@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -66,46 +67,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 18:31:43 PST (-0800), Damien Le Moal wrote:
-> On 2021/02/23 11:19, Palmer Dabbelt wrote:
-> From: Palmer Dabbelt <palmerdabbelt@google.com>
-> 
-> The rest of these are alphabetically sorted, and leaving it this way
-> causes a merge conflict.
-> 
-> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> 
-> ---
-> 
-> I missed this when reviewing these patches, but happened across it when
-> test merging from Linus' tree.  It goes back a way so I'm hesitant to
-> rebase this one out just for cleanliness, but if I have to go back that
-> far before sending the merge window PR I'll squash it in.
-> ---
->  drivers/soc/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-> index fa7071246546..34b23645be14 100644
-> --- a/drivers/soc/Makefile
-> +++ b/drivers/soc/Makefile
-> @@ -7,6 +7,7 @@ obj-$(CONFIG_ARCH_ACTIONS)	+= actions/
->  obj-y				+= aspeed/
->  obj-$(CONFIG_ARCH_AT91)		+= atmel/
->  obj-y				+= bcm/
-> +obj-$(CONFIG_SOC_CANAAN)	+= canaan/
->  obj-$(CONFIG_ARCH_DOVE)		+= dove/
->  obj-$(CONFIG_MACH_DOVE)		+= dove/
->  obj-y				+= fsl/
-> @@ -29,4 +30,3 @@ obj-$(CONFIG_ARCH_U8500)	+= ux500/
->  obj-$(CONFIG_PLAT_VERSATILE)	+= versatile/
->  obj-y				+= xilinx/
->  obj-$(CONFIG_ARCH_ZX)		+= zte/
-> -obj-$(CONFIG_SOC_CANAAN)	+= canaan/
-> 
+On Sun, 21 Feb 2021 05:42:08 PST (-0800), alex@ghiti.fr wrote:
+> Hi,
 >
-> Yes. Should have sent that... Thanks.
+> Le 2/8/21 à 2:30 PM, Alexandre Ghiti a écrit :
+>> This small series contains some improvements for the riscv KASAN code:
+>>
+>> - it brings a better readability of the code (patch 1/2)
+>> - it fixes oversight regarding page table population which I uncovered
+>>    while working on my sv48 patchset (patch 3)
+>> - it helps to have better performance by using hugepages when possible
+>>    (patch 4)
+>>
+>> Alexandre Ghiti (4):
+>>    riscv: Improve kasan definitions
+>>    riscv: Use KASAN_SHADOW_INIT define for kasan memory initialization
+>>    riscv: Improve kasan population function
+>>    riscv: Improve kasan population by using hugepages when possible
+>>
+>>   arch/riscv/include/asm/kasan.h |  22 +++++-
+>>   arch/riscv/mm/kasan_init.c     | 119 ++++++++++++++++++++++++---------
+>>   2 files changed, 108 insertions(+), 33 deletions(-)
+>>
 >
-> Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+> I'm cc-ing linux-arch and linux-mm to get more chance to have reviewers
+> on this series.
 
-No problem, it's on for-next.
+Sorry about that, I must have missed these.  For some reason I remember having
+read the big one, so I'm not sure what happened.  They're on for-next.
+
+Thanks!
