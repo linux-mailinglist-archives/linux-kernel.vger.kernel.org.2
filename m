@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C1F32298D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 416A4322990
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbhBWLgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 06:36:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230429AbhBWLgU (ORCPT
+        id S232381AbhBWLhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 06:37:23 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:49064 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232316AbhBWLhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:36:20 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E2AC061574;
-        Tue, 23 Feb 2021 03:35:40 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id o38so12171418pgm.9;
-        Tue, 23 Feb 2021 03:35:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZXknYZa22rU4H1Kyhm91bekSW7PvKMTDIpqNkOqobg0=;
-        b=CVmm/41qEVa8VkqYO/9hoDhX1BID2L/663fz5V7U+F4AZkVdnGavR376wsVaYXywWv
-         GwaxEEG7ONNBS3a2yM1x56LTm3nuDPq1uFXJjz0zHD7LJfVpMhzcT/0am1a+pSHHe8fp
-         DMdjnmnXYq/+FU0IzTGSoyNWULwftomnuO9VsI7U2rVxA8toBCTlAb/uEHd2CHyVKwdy
-         yAF6dHL5Tz+nkNM+q84Fg82BhD42/Q6znMcw1086F25m89CGXK5YgSGhwwpzwIqGJLs9
-         HBg/GBQ4EU49gd5yXsMj3njGJKQrWmLmha8gigkWuwTDoxh9iAUlhW91D7SmlKhP//CT
-         3C6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZXknYZa22rU4H1Kyhm91bekSW7PvKMTDIpqNkOqobg0=;
-        b=s0eSH+p+9tCk6X2x1VwQG85UfWlUjmB/bfAJsrt6fdyrB1BJ2Wug4Nz1taGSCMmTlG
-         yjEzg7umUpMr2Fl5Y0NLazQfIpTc8owKVvxhubd7E8oGnI2y6HTdQ92g1HnEL7ROPYZb
-         +NNu2iyST9u+Qq3NlUoNczio+MslAe4ebqsfYVdWNqRcpv0jxgu5kjKCYwiZENc9X2zc
-         WwfOZ9ZBA9dF6g7/jgTTMY1nGBrPgDkEAZ3N06iEdfzCPs85/k7nziP8rTllWgYOxflW
-         p7j7aa0ct1P9ei0Gw48TBAme6aAdoH9f38+TwM2YbuY6WMp3stfbkm6LI/LgpvOVbyhm
-         TnXA==
-X-Gm-Message-State: AOAM533gdijYW0Q1bUHIie0finOVXyLK8bL1x8fm4EUv7eb6o1bu6Qh0
-        PSCmUycBM6sx83CKhrX3hqa+aIvgKdRMNA==
-X-Google-Smtp-Source: ABdhPJx9a0hukooQl+z13/uQEycH7Ffx7KnAqyXf1sCpbyl4sm/4sgSImvbkUxroEOUNSBqVplDsIw==
-X-Received: by 2002:a63:f953:: with SMTP id q19mr3171093pgk.125.1614080139936;
-        Tue, 23 Feb 2021 03:35:39 -0800 (PST)
-Received: from ?IPv6:2405:201:600d:a089:71c8:9c21:1a6d:84ab? ([2405:201:600d:a089:71c8:9c21:1a6d:84ab])
-        by smtp.gmail.com with ESMTPSA id b7sm21630037pfp.139.2021.02.23.03.35.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 03:35:39 -0800 (PST)
-Subject: Re: [RFC] scripts: kernel-doc: fix array element capture in
- pointer-to-func parsing
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20210217145625.14006-1-yashsri421@gmail.com>
- <878s7flrdf.fsf@meer.lwn.net>
-From:   Aditya <yashsri421@gmail.com>
-Message-ID: <1e4c4108-feb4-9ab6-7c1c-13200658470c@gmail.com>
-Date:   Tue, 23 Feb 2021 17:05:34 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 23 Feb 2021 06:37:16 -0500
+Date:   Tue, 23 Feb 2021 11:36:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1614080193; bh=LDXrE7sDxyCpuz5Jas1c16xbqsT/JI3J42ibOHIRvzo=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=Ji7fa0uVySwgDiZq2C6IUPQ4Vra+iq5A5BxvtsuyTYMVKGO1iu/VoaLYE7NSfHXGq
+         0KkdXBNXPkR4fy6Hzip7m4ieCLGqRRt2eewCtVBqhZbRLEa3owAJPfvN9emp3pEyfX
+         n+OtksuWJbRuwhPPpd/d9rrxdi2+I14dOhoY/k5t1Y/sPiXbGUEbSZEGhKgh1zkV4F
+         pmIScTlXKqMy3Mzygm7a7Ax4OTynklBEIJkUs0mMSy+l6ktZBOOzW8YEHd0l9VpUK/
+         bYe5F5akM9xVRbIW8h19pk6pGsJu/6LuhvnvdosfICZL6M5rwkzWjtE1Za+bUA96Ld
+         +rA0Eno7YCEwA==
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Kees Cook <keescook@chromium.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Fangrui Song <maskray@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Corey Minyard <cminyard@mvista.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH mips-fixes] vmlinux.lds.h: catch even more instrumentation symbols into .data
+Message-ID: <20210223113600.7009-1-alobakin@pm.me>
 MIME-Version: 1.0
-In-Reply-To: <878s7flrdf.fsf@meer.lwn.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/2/21 3:03 am, Jonathan Corbet wrote:
-> Aditya Srivastava <yashsri421@gmail.com> writes:
-> 
->> Currently, kernel-doc causes an unexpected error when array element (i.e.,
->> "type (*foo[bar])(args)") is present as pointer parameter in
->> pointer-to-function parsing.
->>
->> For e.g., running kernel-doc -none on kernel/gcov/gcc_4_7.c causes this
->> error:
->> "Use of uninitialized value $param in regexp compilation at ...", in
->> combination with:
->> "warning: Function parameter or member '' not described in 'gcov_info'"
-> 
-> In the future, please quote error messages from the kernel verbatim.
-> You can trim irrelevant stuff before or after, but please do not edit
-> them in this way.  That helps me to understand what you are fixing, and
-> is also useful for anybody else who might be searching for a solution to
-> the same problem.
-> 
->> Here, the parameter parsing does not take into account the presence of
->> array element (i.e. square brackets) in $param.
->>
->> Provide a simple fix by adding square brackets in the regex, responsible
-[]
->> -- 
-> 
-> ...meanwhile, I have applied this one, thanks.
-> 
+LKP caught another bunch of orphaned instrumentation symbols [0]:
 
-Thanks Jonathan! Will keep this in mind..
+mipsel-linux-ld: warning: orphan section `.data.$LPBX1' from
+`init/main.o' being placed in section `.data.$LPBX1'
+mipsel-linux-ld: warning: orphan section `.data.$LPBX0' from
+`init/main.o' being placed in section `.data.$LPBX0'
+mipsel-linux-ld: warning: orphan section `.data.$LPBX1' from
+`init/do_mounts.o' being placed in section `.data.$LPBX1'
+mipsel-linux-ld: warning: orphan section `.data.$LPBX0' from
+`init/do_mounts.o' being placed in section `.data.$LPBX0'
+mipsel-linux-ld: warning: orphan section `.data.$LPBX1' from
+`init/do_mounts_initrd.o' being placed in section `.data.$LPBX1'
+mipsel-linux-ld: warning: orphan section `.data.$LPBX0' from
+`init/do_mounts_initrd.o' being placed in section `.data.$LPBX0'
+mipsel-linux-ld: warning: orphan section `.data.$LPBX1' from
+`init/initramfs.o' being placed in section `.data.$LPBX1'
+mipsel-linux-ld: warning: orphan section `.data.$LPBX0' from
+`init/initramfs.o' being placed in section `.data.$LPBX0'
+mipsel-linux-ld: warning: orphan section `.data.$LPBX1' from
+`init/calibrate.o' being placed in section `.data.$LPBX1'
+mipsel-linux-ld: warning: orphan section `.data.$LPBX0' from
+`init/calibrate.o' being placed in section `.data.$LPBX0'
 
-Thanks
-Aditya
+[...]
+
+Soften the wildcard to .data.$L* to grab these ones into .data too.
+
+[0] https://lore.kernel.org/lkml/202102231519.lWPLPveV-lkp@intel.com
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ include/asm-generic/vmlinux.lds.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinu=
+x.lds.h
+index 01a3fd6a64d2..c887ac36c1b4 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -95,7 +95,7 @@
+  */
+ #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+ #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
+-#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliter=
+al* .data.$__unnamed_* .data.$Lubsan_*
++#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliter=
+al* .data.$__unnamed_* .data.$L*
+ #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
+ #define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
+ #define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
+--
+2.30.1
+
+
