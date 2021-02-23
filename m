@@ -2,134 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD93B322D07
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84010322D1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbhBWPAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:00:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231818AbhBWPA3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 10:00:29 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5052FC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:59:49 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id g4so1874895pgj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:59:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TPWEywY+7RrfQbDRMsLObI9Lz4l7g81hZ8ntaurd66Q=;
-        b=lbbRCJqlfccsjStUNQy8nhqxYofLITmpfBAADMw4vOkRyawXkjP+v15BH5BB/qE5EV
-         /9akhT1BCeZei8qQMvZb1ph5tLwtZqGy3u3w82MT+F836ZGXmHRM+bnmXZAPKoE99huv
-         9xRYX4OPlXgF/YCnQhd7Ad1ASEjTjjKouX7H4b1HZuFRM2I8epUo/1IFI1zgh4dO/FPN
-         gh5wnyY3chjcuuW9Vo/hiHCULBBq4him8f4pbgNVCdMdZc7Z4FtkjxctWzjzC3/T03VZ
-         jS1KnTd+b6DxWnksUcDfRwHI95N03AYO5UKKZC4Q6Lg8qxooDak/FaZlrD3cFft5VqMe
-         7sQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TPWEywY+7RrfQbDRMsLObI9Lz4l7g81hZ8ntaurd66Q=;
-        b=LN+7I1mqz4oV1/iKFYMb2v+EVkF0qGk6JMX2kxeHnOTfMV3kYyo9qhv6lT7MnbtIoT
-         uhiNKWNcRWJTyhHzviMzkH6/Ud0CPnIspaw0hE9yPI0swN9rlLXCLNQtPipqp9XpPTgT
-         UIhylZ5edKvXzg5BQWKbhh/kilqDp8kSC79vYfWTLoBW/FCoApKj5SQDwgWG8YYk9m/r
-         QcoI7vMwVlNHhGWlC2t1x4fzCNhIwXRRV/HgGTr/hX0KVrzipk3QU5hVsy2ejr6U9V/4
-         NRyQMwQtutoQfc+Lrc+A2JhtGyePBxTV0soAKrOmb/VzoaeG/mTRvgvKSVEN63P4pryV
-         rLNA==
-X-Gm-Message-State: AOAM530E4sjpE19w7kLLStC2AemE4D6MpgzNuaz8lUUnMGYiRsnRhRh8
-        LhVWyxEkXF4Hoj5N1bqHuvS2yIMLyyhKIMD5A6i+Ow==
-X-Google-Smtp-Source: ABdhPJx7k9bw5zaosBrKWi8wkAKNteucUQHNyLik7bVbAEcWampxkTVMmg57ff2wzNQ0TIL+9tQQibeUmtIw7ZfVhHU=
-X-Received: by 2002:a63:6547:: with SMTP id z68mr21393175pgb.120.1614092388836;
- Tue, 23 Feb 2021 06:59:48 -0800 (PST)
+        id S232997AbhBWPFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:05:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38212 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232695AbhBWPEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 10:04:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614092607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=l0lZhoa3dmJ6W/wL3TjQ0i4ENPMTPDH4uzwTUL0qFPo=;
+        b=fdm51yzYLQesQMXZx7LTZK/3MXbq5A2WJzulEStY9vO1bwvdtX3amBg4nq/OIZpPC1Zgr6
+        1KW/e83tmPYyRzGW0ECZE5DJvgvrcxf/Jr5dXzNgNrZzSdKKon0KGx7xSAch8JdPIjY1TV
+        yYumkzRw1POSR/5fPKtfTqkvBtdlHRg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 75311AFF0;
+        Tue, 23 Feb 2021 15:03:27 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 290EFDA7AA; Tue, 23 Feb 2021 16:01:28 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.cz>, linux-kernel@vger.kernel.org,
+        ira.weiny@intel.com, linux-mm@kvack.org
+Subject: [GIT PULL] Kmap conversions for 5.12
+Date:   Tue, 23 Feb 2021 16:01:25 +0100
+Message-Id: <cover.1614090658.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210220060811.2500081-1-hsinyi@chromium.org>
-In-Reply-To: <20210220060811.2500081-1-hsinyi@chromium.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 23 Feb 2021 15:59:37 +0100
-Message-ID: <CAG3jFyvRn7zmk0tY70VMkh0xPFaSjYcF4PreTFjf8xj8VXHCVA@mail.gmail.com>
-Subject: Re: [RESEND v3 1/2] dt-bindings: drm/bridge: anx7625: Add power supplies
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Xin Ji <xji@analogixsemi.com>, David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Hsin-Yi,
+From: David Sterba <dsterba@suse.cz>
 
-Thanks for the patch, and sorry about the delays in reviewing this.
+Hi,
 
-This patch does not apply to the drm-misc/for-linux-next branch due to
-some other changes having been merged.
+this pull request contains changes regarding kmap API use and eg.
+conversion from kmap_atomic to kmap_local_page.
 
-On Sat, 20 Feb 2021 at 07:10, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
->
-> anx7625 requires 3 power supply regulators.
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bindings/display/bridge/analogix,anx7625.yaml | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> index 60585a4fc22bc..3ae97d9523e56 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> @@ -34,6 +34,15 @@ properties:
->      description: used for reset chip control, RESET_N pin B7.
->      maxItems: 1
->
-> +  vdd10-supply:
-> +    description: Regulator that provides the supply 1.0V power.
-> +
-> +  vdd18-supply:
-> +    description: Regulator that provides the supply 1.8V power.
-> +
-> +  vdd33-supply:
-> +    description: Regulator that provides the supply 3.3V power.
-> +
+The API belongs to memory management but to save cross-tree dependency
+headaches we've agreed to take it through the btrfs tree because there
+are some trivial conversions possible, while the rest will need some
+time and getting the easy cases out of the way would be convenient.
 
-This chunk below has seen some changes.
+The final patchset arrived shortly before merge window, which is not
+perfect, but given that it's straightforward I don't think it's too
+risky.
 
-With this patch fixed, feel free to add my r-b.
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+I've added it to my for-next branch and it's been in linux-next for more
+than a week.  Meanwhile I've been testing it among my regular branches
+with additional MM related debugging options.
 
->    ports:
->      type: object
->
-> @@ -55,6 +64,9 @@ properties:
->  required:
->    - compatible
->    - reg
-> +  - vdd10-supply
-> +  - vdd18-supply
-> +  - vdd33-supply
->    - ports
->
->  additionalProperties: false
-> @@ -72,6 +84,9 @@ examples:
->              reg = <0x58>;
->              enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
->              reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
-> +            vdd10-supply = <&pp1000_mipibrdg>;
-> +            vdd18-supply = <&pp1800_mipibrdg>;
-> +            vdd33-supply = <&pp3300_mipibrdg>;
->
->              ports {
->                  #address-cells = <1>;
-> --
-> 2.30.0.617.g56c4b15f3c-goog
->
+The changes can be grouped:
+
+- function exports, new helpers
+
+- new VM_BUG_ON for additional verification; it's been discussed if it
+  should be VM_BUG_ON or BUG_ON, the former was chosen due to
+  performance reasons
+
+- code replaced by relevant helpers
+
+Please pull, thanks.
+
+----------------------------------------------------------------
+The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
+
+  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git kmap-conversion-for-5.12-tag
+
+for you to fetch changes up to bbc24c42f2c0ea037db3c7f319c860fd790aeb28:
+
+  btrfs: convert to zero_user() (2021-02-11 20:18:25 +0100)
+
+----------------------------------------------------------------
+Ira Weiny (8):
+      mm/highmem: Lift memcpy_[to|from]_page to core
+      mm/highmem: Convert memcpy_[to|from]_page() to kmap_local_page()
+      mm/highmem: Introduce memcpy_page(), memmove_page(), and memset_page()
+      mm/highmem: Add VM_BUG_ON() to mem*_page() calls
+      iov_iter: Remove memzero_page() in favor of zero_user()
+      btrfs: use memcpy_[to|from]_page() and kmap_local_page()
+      btrfs: use copy_highpage() instead of 2 kmaps()
+      btrfs: convert to zero_user()
+
+ fs/btrfs/compression.c  | 11 +++-------
+ fs/btrfs/extent_io.c    | 22 ++++---------------
+ fs/btrfs/inode.c        | 32 ++++++++--------------------
+ fs/btrfs/lzo.c          |  4 ++--
+ fs/btrfs/raid56.c       | 10 +--------
+ fs/btrfs/reflink.c      | 12 ++---------
+ fs/btrfs/send.c         |  7 ++-----
+ fs/btrfs/zlib.c         | 10 +++------
+ fs/btrfs/zstd.c         | 11 +++-------
+ include/linux/highmem.h | 56 +++++++++++++++++++++++++++++++++++++++++++++++++
+ lib/iov_iter.c          | 26 +++--------------------
+ 11 files changed, 88 insertions(+), 113 deletions(-)
