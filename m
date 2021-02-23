@@ -2,184 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3CE323160
+	by mail.lfdr.de (Postfix) with ESMTP id C8A17323161
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232291AbhBWTXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 14:23:37 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:41214 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233995AbhBWTVb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 14:21:31 -0500
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 451ED20B6C40;
-        Tue, 23 Feb 2021 11:20:50 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 451ED20B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1614108050;
-        bh=bgVREtbThCXyyNVzI6besUKkeZ3w63oXLPzE3PrY3pg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Ro2SNAFV/9dYuQbu/CjgaupoR8BXXeFbt/T1IF29ETKMMSFV5PUCPjxTQxgWVvWky
-         EEhrkZ+OpfQ3TrkVrT2gd4x1EKYGbYxTJBWpd01fbhyNYGXxQzmzZReTHR6aqxpBdw
-         7QIGdAHiLRcLUOHBX0I4UoCLFvpcm3ZUhGKOpbDU=
-Subject: Re: [RFC PATCH v1 1/1] arm64: Unwinder enhancements for reliable
- stack trace
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <bc4761a47ad08ab7fdd555fc8094beb8fc758d33>
- <20210223181243.6776-1-madvenka@linux.microsoft.com>
- <20210223181243.6776-2-madvenka@linux.microsoft.com>
- <20210223190240.GK5116@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <08e8e02c-8ef0-26bb-1d0d-7dda54b5fefd@linux.microsoft.com>
-Date:   Tue, 23 Feb 2021 13:20:49 -0600
+        id S232248AbhBWTYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 14:24:02 -0500
+Received: from mga12.intel.com ([192.55.52.136]:42423 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234016AbhBWTVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 14:21:37 -0500
+IronPort-SDR: RzH6GKwFGaZ4g9Ec7etnwT6V8gJIk9Rllza50QxfTXZspuOBYsSufdkbdaOjRp2/0rQ6x1mWYd
+ 2wP1VVz5rgbw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="164143564"
+X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
+   d="scan'208";a="164143564"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 11:20:56 -0800
+IronPort-SDR: 7HvyENjuEv3G//QmdhjDcQrsnDVF/OmOG1WDBBVjaUuXQ93jburJnz35Ll92MW0H+awOorD1rR
+ 5Ex28xeAoYeA==
+X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
+   d="scan'208";a="431062143"
+Received: from bdchartr-mobl3.amr.corp.intel.com (HELO [10.209.183.77]) ([10.209.183.77])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 11:20:56 -0800
+Subject: Re: [PATCH] x86/sgx: Add a basic NUMA allocation scheme to
+ sgx_alloc_epc_page()
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org, haitao.huang@intel.com,
+        dan.j.williams@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+References: <20210221020631.171404-1-jarkko@kernel.org>
+ <7acc3c1c-373e-cfee-e838-2af170e87d98@intel.com>
+ <YDVUuF3rqnRCr+Bb@kernel.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <1ce6670a-ea35-c1bd-b5df-c52cc44dc433@intel.com>
+Date:   Tue, 23 Feb 2021 11:20:55 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210223190240.GK5116@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <YDVUuF3rqnRCr+Bb@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/23/21 1:02 PM, Mark Brown wrote:
-> On Tue, Feb 23, 2021 at 12:12:43PM -0600, madvenka@linux.microsoft.com wrote:
->> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->>
->> Unwinder changes
->> ================
+On 2/23/21 11:17 AM, Jarkko Sakkinen wrote:
+> Instead, let's just:
 > 
-> This is making several different changes so should be split into a patch
-> series - for example the change to terminate on a specific function
-> pointer rather than NULL and the changes to the exception/interupt
-> detection should be split.  Please see submitting-patches.rst for some
-> discussion about how to split things up.  In general if you've got a
-> changelog enumerating a number of different changes in a patch that's a
-> warning sign that it might be good split things up.
-> 
+> 1. Have a global sgx_free_epc_list and remove sgx_epc_section.
+>    Pages from this are allocated from this in LIFO fashion.
+> 2. Instead add struct list_head node_list and use that for node
+>    associated pages.
+> 3. Replace 'int section' with 'int node'.
 
-Will do.
+I was thinking of something similar.
 
-> You should also copy the architecture maintainers (Catalin and Will) on
-> any arch/arm64 submissions.
-> 
-
-Will do when I resubmit.
-
->> 	Unwinder return value
->> 	=====================
->>
->> 	Currently, the unwinder returns -EINVAL for stack trace termination
->> 	as well as stack trace error. Return -ENOENT for stack trace
->> 	termination and -EINVAL for error to disambiguate. This idea has
->> 	been borrowed from Mark Brown.
-> 
-> You could just include my patch for this in your series.
-> 
-
-OK.
-
->> Reliable stack trace function
->> =============================
->>
->> Implement arch_stack_walk_reliable(). This function walks the stack like
->> the existing stack trace functions with a couple of additional checks:
->>
->> 	Return address check
->> 	--------------------
->>
->> 	For each frame, check the return address to see if it is a
->> 	proper kernel text address. If not, return -EINVAL.
->>
->> 	Exception frame check
->> 	---------------------
->>
->> 	Check each frame to see if it is an EL1 exception frame. If it is,
->> 	return -EINVAL.
-> 
-> Again, this should be at least one separate patch.  How does this ensure
-> that we don't have any issues with any of the various probe mechanisms?
-> If there's no need to explicitly check anything that should be called
-> out in the changelog.
-> 
-
-I am trying to do this in an incremental fashion. I have to study the probe
-mechanisms a little bit more before I can come up with a solution. But
-if you want to see that addressed in this patch set, I could do that.
-It will take a little bit of time. That is all.
-
-> Since all these changes are mixed up this is a fairly superficial
-> review of the actual code.
-> 
-
-Understood. I will split things up and we can take it from there.
-
->> +static notrace struct pt_regs *get_frame_regs(struct task_struct *task,
->> +					      struct stackframe *frame)
->> +{
->> +	unsigned long stackframe, regs_start, regs_end;
->> +	struct stack_info info;
->> +
->> +	stackframe = frame->prev_fp;
->> +	if (!stackframe)
->> +		return NULL;
->> +
->> +	(void) on_accessible_stack(task, stackframe, &info);
-> 
-> Shouldn't we return NULL if we are not on an accessible stack?
-> 
-
-The prev_fp has already been checked by the unwinder in the previous
-frame. That is why I don't check the return value. If that is acceptable,
-I will add a comment.
-
->> +static notrace int update_frame(struct task_struct *task,
->> +				struct stackframe *frame)
-> 
-> This function really needs some documentation, the function is just
-> called update_frame() which doesn't say what sort of updates it's
-> supposed to do and most of the checks aren't explained, not all of them
-> are super obvious.
-> 
-
-I will add the documentation as well as try think of a better name.
-
->> +{
->> +	unsigned long lsb = frame->fp & 0xf;
->> +	unsigned long fp = frame->fp & ~lsb;
->> +	unsigned long pc = frame->pc;
->> +	struct pt_regs *regs;
->> +
->> +	frame->exception_frame = false;
->> +
->> +	if (fp == (unsigned long) arm64_last_frame &&
->> +	    pc == (unsigned long) arm64_last_func)
->> +		return -ENOENT;
->> +
->> +	if (!lsb)
->> +		return 0;
->> +	if (lsb != 1)
->> +		return -EINVAL;
->> +
->> +	/*
->> +	 * This looks like an EL1 exception frame.
-> 
-> For clarity it would be good to spell out the properties of an EL1
-> exception frame.  It is not clear to me why we don't reference the frame
-> type information the unwinder already records as part of these checks.
-> 
-> In general, especially for the bits specific to reliable stack trace, I
-> think we want to err on the side of verbosity here so that it is crystal
-> clear what all the checks are supposed to be doing and it's that much
-> easier to tie everything through to the requirements document.
-
-OK. I will improve the documentation.
-
-Madhavan
+I'm fine with this approach.
