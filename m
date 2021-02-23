@@ -2,186 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875F032316A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 293A532316B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhBWTZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 14:25:53 -0500
-Received: from mga02.intel.com ([134.134.136.20]:39674 "EHLO mga02.intel.com"
+        id S232570AbhBWT0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 14:26:23 -0500
+Received: from mga17.intel.com ([192.55.52.151]:39522 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232003AbhBWTZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 14:25:36 -0500
-IronPort-SDR: y6mTW4NBH1t/Mx3YAF9NmhtLh5VtbCK8fH+/V3TFYf4uOGffTs5gQNR5iY24ctX4ZKSyJBgCM7
- GASx0gAyuTnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="172058656"
+        id S231375AbhBWTZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 14:25:51 -0500
+IronPort-SDR: AyhBzYnDv9vhjWxk8ijLdSABS83LPnXgXjZEVFWTW8ork6rtXnWAMg8O5CnZfclx44ffWKbXgT
+ 25i81lDAjDiA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="164775240"
 X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="172058656"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 11:24:56 -0800
-IronPort-SDR: GEl0wsisH1P5GcIckXWDSAyyHKDp31FAGFPsB7Os6hwNHZEaDPEevYXBJpfW89OgRvcNXpU3GI
- 2UxxfMSht7eQ==
-X-ExtLoop1: 1
+   d="scan'208";a="164775240"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 11:25:07 -0800
+IronPort-SDR: N18dsRoR7MTP+0xVTJhhotrFPCCEShC9WRMClXCTVmtJ8Qq15MYHnXj4DX9KrLBizZgO9ypEf8
+ 6K6xBgVKofLw==
 X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="515306479"
-Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 23 Feb 2021 11:24:55 -0800
-Received: from kbuild by 16660e54978b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lEdIk-0001V0-FY; Tue, 23 Feb 2021 19:24:54 +0000
-Date:   Wed, 24 Feb 2021 03:23:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- f1bc6ab4a2b38f3dcf24dc29fb79d5a520f4845d
-Message-ID: <6035564e.da+81e+gDTyDnqeh%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="403302299"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 11:25:07 -0800
+Date:   Tue, 23 Feb 2021 11:25:06 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Sterba <dsterba@suse.com>, David Sterba <dsterba@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [GIT PULL] Kmap conversions for 5.12
+Message-ID: <20210223192506.GY3014244@iweiny-DESK2.sc.intel.com>
+References: <cover.1614090658.git.dsterba@suse.com>
+ <CAHk-=wijdojzo56FzYqE5TOYw2Vws7ik3LEMGj9SPQaJJ+Z73Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wijdojzo56FzYqE5TOYw2Vws7ik3LEMGj9SPQaJJ+Z73Q@mail.gmail.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: f1bc6ab4a2b38f3dcf24dc29fb79d5a520f4845d  Merge branch 'timers/urgent'
+On Tue, Feb 23, 2021 at 09:13:42AM -0800, Linus Torvalds wrote:
+> On Tue, Feb 23, 2021 at 7:03 AM David Sterba <dsterba@suse.com> wrote:
+> > Ira Weiny (8):
+> >       iov_iter: Remove memzero_page() in favor of zero_user()
+> 
+> Ugh. I absolutely _detest_ this patch.
 
-elapsed time: 725m
+Sorry.
 
-configs tested: 124
-configs skipped: 2
+> 
+> "zero_user()" is a completely horrendous function, and not at all the
+> same as memzero_page().
+> 
+> Just look at it.
+> 
+> Yes, it's mis-used in a lot of places that really always wanted
+> "memzero_page()", but this conversion is going exactly the wrong way
+> around.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Originally I lifted memzero_page()[1] but was pointed to zero_user_segments()
+which lead me astray to use zero_user().  I should have thought about it more
+rather than blindly changing to zero_user().
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-m68k                          hp300_defconfig
-arc                         haps_hs_defconfig
-arm64                            alldefconfig
-powerpc                     rainier_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                      pxa255-idp_defconfig
-arc                          axs101_defconfig
-arm                         s3c6400_defconfig
-mips                           jazz_defconfig
-arm                            pleb_defconfig
-xtensa                           alldefconfig
-arm                          moxart_defconfig
-sh                          r7785rp_defconfig
-mips                           xway_defconfig
-mips                        qi_lb60_defconfig
-arm                          pxa910_defconfig
-arc                          axs103_defconfig
-powerpc                    klondike_defconfig
-m68k                          amiga_defconfig
-arc                        nsim_700_defconfig
-arc                              alldefconfig
-powerpc                 mpc8540_ads_defconfig
-mips                          malta_defconfig
-sh                          rsk7203_defconfig
-powerpc                    amigaone_defconfig
-mips                      fuloong2e_defconfig
-arm                        spear6xx_defconfig
-mips                        vocore2_defconfig
-s390                          debug_defconfig
-powerpc                      pcm030_defconfig
-powerpc                 mpc8560_ads_defconfig
-h8300                            alldefconfig
-arm                        multi_v7_defconfig
-openrisc                         alldefconfig
-m68k                        m5307c3_defconfig
-sh                             espt_defconfig
-powerpc                         wii_defconfig
-m68k                                defconfig
-xtensa                generic_kc705_defconfig
-arm                         lpc18xx_defconfig
-arc                      axs103_smp_defconfig
-x86_64                           alldefconfig
-ia64                      gensparse_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                      walnut_defconfig
-mips                           ip32_defconfig
-microblaze                      mmu_defconfig
-sh                        edosk7705_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-h8300                            allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210223
-i386                 randconfig-a006-20210223
-i386                 randconfig-a004-20210223
-i386                 randconfig-a003-20210223
-i386                 randconfig-a001-20210223
-i386                 randconfig-a002-20210223
-x86_64               randconfig-a015-20210223
-x86_64               randconfig-a011-20210223
-x86_64               randconfig-a012-20210223
-x86_64               randconfig-a016-20210223
-x86_64               randconfig-a014-20210223
-x86_64               randconfig-a013-20210223
-i386                 randconfig-a013-20210223
-i386                 randconfig-a012-20210223
-i386                 randconfig-a011-20210223
-i386                 randconfig-a014-20210223
-i386                 randconfig-a016-20210223
-i386                 randconfig-a015-20210223
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> 
+> Existing users of that zero_user() should have been converted to
+> memzero_page(), rather than doing it this way.
 
-clang tested configs:
-x86_64               randconfig-a001-20210223
-x86_64               randconfig-a002-20210223
-x86_64               randconfig-a003-20210223
-x86_64               randconfig-a005-20210223
-x86_64               randconfig-a006-20210223
-x86_64               randconfig-a004-20210223
+I can do that.  No Problem.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> The "user" naming should have given it away. It's a very very magical
+> interface for user-mapped pages that have additional odd issues (ie
+> look at the dcache flushing etc).
+
+Agreed.
+
+> 
+> I'll think some more about this pull request, but honestly, this one
+> broken is pretty much enough for me to say "No way in hell", because
+> it shows a complete disregard for sanity.
+
+Can we just drop the zero_user() patches?  Christoph and others would like to
+see memcpy_[to|from]_page() lifted to the core for other work which is pending.
+Would you agree to those?
+
+> 
+> The last commit in the series:
+> 
+> >       btrfs: convert to zero_user()
+> 
+> is also very mixed up about whether it actually wants the dcache
+> flushing or not (and thus zero_user() or memzero_page()).
+
+Drop this patch too?
+
+> 
+> Honestly, I suspect all the dcache flushing is totally pointless,
+> because any architecture with virtual caches that does kmap needs to
+> flush at kunmap anyway, afaik. Some of it is probably just voodoo
+> programming and copying a pattern.
+> 
+> But in any case, zero_user() is not the same thing as memzero_page(),
+> and even if they *were* the same thing, zero_user() is objectively the
+> horribly much worse name.
+
+Sorry.  I will change it.
+Ira
+
+> 
+>               Linus
+
+[1] https://lore.kernel.org/lkml/20201124141941.GB4327@casper.infradead.org/#t
+
