@@ -2,227 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C69D322F95
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA5C322FA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233676AbhBWR0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 12:26:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38922 "EHLO
+        id S233655AbhBWRbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 12:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbhBWR0j (ORCPT
+        with ESMTP id S232810AbhBWRbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 12:26:39 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0501C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:25:58 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id t26so12802402pgv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:25:58 -0800 (PST)
+        Tue, 23 Feb 2021 12:31:08 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F38C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:30:28 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id kr16so2289924pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:30:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hnn82o/x55u6O8a4VECdJRbx2ZSa2s+2SGdAvFWwwkM=;
-        b=vv533DA1PVESicRmSXFU1iJ0nXcwruJw+gbsz82EKnEf8HQPp2H4GeQwo23sU2sAOG
-         AZopg1toY/d5V6EOmrzAlqwC+pLrjtGkRBWev6JDmwXRnQ5vN7L0b/6dGPBUeO//6Oup
-         KvDsZQUIWUAsK5RQB0IOMI5jy+z4NmmAPugpSY/AY8cUBImN06g9ZXdhe/9PHOJgvAkh
-         d21d/etqrW065G+wU7YWnbHHtuJluCPvu+MQ/xDzpE0la858TqtIBp7udUiEKCTd659k
-         oXD+zyVSKfKZZSyl2Wh0YLW51SqcK16/grQzc0lMEkAgTXM/75Lx7Bc/Ko6frgWXBckj
-         EJ4A==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=31hvjCeQ/TpJV4//HHrQZh8uHoQu/HrXyIpK5ERYqFQ=;
+        b=ecAW4migcemxW9RBDocLgIYMXjwcIWDbI/zsZO0JrUzcwkIuuFWG1N03p+cM5qEYGK
+         OxZR4U2yshOo0em3gT2jbWzWIQQifd2TdRy7CwMK3TFkKup8Uj1UDUuAsePOokiuP80x
+         Jm3QdPUyyWvt5OKkt2a1L6X+Sc37GHiWT9Xpk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hnn82o/x55u6O8a4VECdJRbx2ZSa2s+2SGdAvFWwwkM=;
-        b=Q3Llu69VaXWTtLhJQYSKpjfru4VlDwZ97wb2jsTMfQ/OzRlb5/qohqwriVE3oC/B/W
-         YzQR9mVtzDJTKLwqkLldgYLhKBYgMX4tBmozdiL1StT5yhdZ4ObNpOGIo+Cjy9mLXY0O
-         wICZz3mLNK+poazBlRbgTeIVZNf6hB3eF3227CyfxILv5HGImvt7oNSDnNYgcHVZi5Ji
-         ol8Bw+dX+2+xdX9lShi79RE1mPPtJUJqUy852F6HjmyrFfRDduBvhP6OoRSjuXVF147u
-         IJhax1HuYJq5XJrzYc/n0LZ26JxOMwOXbqaZ8T8+0GoY/zDv60nqTtOQpoQZgGSaMqtO
-         Jpow==
-X-Gm-Message-State: AOAM533ghBBImU+qeEtbyVgWPwwafLHvaxN2GBErlpQ07oh8Ga9YjySN
-        /3qGlFCt9V7yyGU0KJaiKUwBm0789F9ZzelIiQPr/z6+y9k=
-X-Google-Smtp-Source: ABdhPJySYZH337U89meM6P+DBTi2Qq01DBa60P7T5B5OPsPrxVULifhDPzCX312b7DmpJoGgkBScROX1hZN0E/gPyKI=
-X-Received: by 2002:a65:654e:: with SMTP id a14mr25356386pgw.265.1614101158112;
- Tue, 23 Feb 2021 09:25:58 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=31hvjCeQ/TpJV4//HHrQZh8uHoQu/HrXyIpK5ERYqFQ=;
+        b=bVjL6JOOO3qBeRlOTqbt3Ax04yuzwDZroq/PnEQ4qrf9mUfK1sWNRWIBFvJe1RY7U+
+         PU9fJ6v3LqrPHh1hPGcdExMA3NtW25wrAV7Oquxb9r1um4gk+yyQqeed/4nbcMciwGei
+         KW0Wc/U07wzcBDjngf6WCqFiDXvylCEIGKFMj/bc4BHIUHS/cenHDEAzAC11OIrDFZkI
+         OVkE838YADXkDDYz9zDuAUtYzj//5bgaKmAP2Q5CptpT79TC+bu9mQbAd1q8kDe/q2Qb
+         0eEvDwtN6rbnrJ8KMG5dyCVsZC2b7kXslrufnEFl6f3+KZeG98hSQIoAyJWv6agz9NWZ
+         7Htg==
+X-Gm-Message-State: AOAM530mCz9nA/8RLDedAnq31b38ahJcgTvGHahpqbaHVJnUvnXyhH9v
+        XmvsmtDn42ieXYWs6vsc4P4xSg==
+X-Google-Smtp-Source: ABdhPJyshqnE9WfVRKuAZUg5Fz5goNkTpKBitCaQ28jtBXQCe9/Ai44Nk7LYupxAPGku6el2cSHT/w==
+X-Received: by 2002:a17:90a:420c:: with SMTP id o12mr30562970pjg.193.1614101427545;
+        Tue, 23 Feb 2021 09:30:27 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w3sm4072866pjt.24.2021.02.23.09.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 09:30:26 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Anton Vorontsov <anton@enomsg.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        syzbot <syzbot+d0cf0ad6513e9a1da5df@syzkaller.appspotmail.com>
+Subject: Re: [PATCH] pstore: fix warning in pstore_kill_sb()
+Date:   Tue, 23 Feb 2021 09:30:11 -0800
+Message-Id: <161410140523.3588113.12183751046979550289.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210214031307.57903-1-penguin-kernel@I-love.SAKURA.ne.jp>
+References: <00000000000084130f05bb3aa802@google.com> <20210214031307.57903-1-penguin-kernel@I-love.SAKURA.ne.jp>
 MIME-Version: 1.0
-References: <20210217112122.424236-1-robert.foss@linaro.org>
- <20210217112122.424236-9-robert.foss@linaro.org> <3e8eced2-de18-5def-c25e-b819e17b9c22@linaro.org>
-In-Reply-To: <3e8eced2-de18-5def-c25e-b819e17b9c22@linaro.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 23 Feb 2021 18:25:46 +0100
-Message-ID: <CAG3jFyvpCHzGz3Q-o-gnLumPjyhs+mqXcRgFB1_HZOHGsN4zWg@mail.gmail.com>
-Subject: Re: [PATCH v5 08/22] media: camss: Add missing format identifiers
-To:     Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        angelogioacchino.delregno@somainline.org,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 at 17:26, Andrey Konovalov
-<andrey.konovalov@linaro.org> wrote:
->
-> Hi Robert,
->
-> Thank you for your patch!
->
-> On 17.02.2021 14:21, Robert Foss wrote:
-> > The CSI-2 spec defines the following types:
-> >   - Data Type - Often abbreviated DT
-> >   - Decode Format - Often abbreviated as DF
-> >   - Encode Format
-> >
-> > These definitions are as far as I can tell complete for CSI-2.
-> >
-> > Additionally the Qualcomm internal type describing Plain Formats
-> > has been added. Plain formats describe the size of the pixels
-> > written by the RDI units to memory. PLAIN8 for example has the size
-> > 8 bits, and PLAIN32 32 bits. The appropriate Plain Format is
-> > determined by the Decode Format used. The smallest Plain Format
-> > that is able to contain a pixel of the used Decode Format is the
-> > appropriate one to use.
-> >
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> > ---
-> >   .../media/platform/qcom/camss/camss-csid.h    | 50 +++++++++++++++++++
-> >   1 file changed, 50 insertions(+)
-> >
-> > diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
-> > index 1824b3745e10..02fc34ee8a41 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-csid.h
-> > +++ b/drivers/media/platform/qcom/camss/camss-csid.h
-> > @@ -21,6 +21,56 @@
-> >   #define MSM_CSID_PAD_SRC 1
-> >   #define MSM_CSID_PADS_NUM 2
-> >
-> > +#define DATA_TYPE_EMBEDDED_DATA_8BIT 0x12
-> > +#define DATA_TYPE_YUV420_8BIT                0x18
-> > +#define DATA_TYPE_YUV420_10BIT               0x19
-> > +#define DATA_TYPE_YUV420_8BIT_LEGACY 0x1a
-> > +#define DATA_TYPE_YUV420_8BIT_SHIFTED        0x1c /* Chroma Shifted Pixel Sampling */
-> > +#define DATA_TYPE_YUV420_10BIT_SHIFTED       0x1d /* Chroma Shifted Pixel Sampling */
-> > +#define DATA_TYPE_YUV422_8BIT                0x1e
-> > +#define DATA_TYPE_YUV422_10BIT               0x1f
-> > +#define DATA_TYPE_RGB444             0x20
-> > +#define DATA_TYPE_RGB555             0x21
-> > +#define DATA_TYPE_RGB565             0x22
-> > +#define DATA_TYPE_RGB666             0x23
-> > +#define DATA_TYPE_RGB888             0x24
-> > +#define DATA_TYPE_RAW_24BIT          0x27
-> > +#define DATA_TYPE_RAW_6BIT           0x28
-> > +#define DATA_TYPE_RAW_7BIT           0x29
-> > +#define DATA_TYPE_RAW_8BIT           0x2a
-> > +#define DATA_TYPE_RAW_10BIT          0x2b
-> > +#define DATA_TYPE_RAW_12BIT          0x2c
-> > +#define DATA_TYPE_RAW_14BIT          0x2d
-> > +#define DATA_TYPE_RAW_16BIT          0x2e
-> > +#define DATA_TYPE_RAW_20BIT          0x2f
->
-> - these look OK for me (the old MIPI spec draft I have doesn't have
->    some of the data types listed above).
->
->    As these are generic values from the MIPI standard, it could probably make
->    sense to create a common header file for that someday.
->    E.g. the very similar defines (same values, different names) are present in
->    drivers/staging/media/atomisp/pci/isp_capture_defs.h
->    But it looks like most of the current drivers don't need the MIPI data type
->    defines, so not a problem at the moment.
+On Sun, 14 Feb 2021 12:13:07 +0900, Tetsuo Handa wrote:
+> syzbot is hitting WARN_ON(pstore_sb != sb) at pstore_kill_sb() [1], for the
+> assumption that pstore_sb != NULL is wrong because pstore_fill_super() will
+> not assign pstore_sb = sb when new_inode() for d_make_root() returned NULL
+> (due to memory allocation fault injection).
+> 
+> Since mount_single() calls pstore_kill_sb() when pstore_fill_super()
+> failed, pstore_kill_sb() needs to be aware of such failure path.
+> 
+> [...]
 
-Both for the DTs and the DF/EF/PFs I figured it would be nice to have
-as much of these variables listed somewhere as they aren't always so
-easy to find a reference for.
+Applied to for-next/pstore, thanks!
 
->
-> > +
-> > +#define DECODE_FORMAT_UNCOMPRESSED_6_BIT     0x0
-> > +#define DECODE_FORMAT_UNCOMPRESSED_8_BIT     0x1
-> > +#define DECODE_FORMAT_UNCOMPRESSED_10_BIT    0x2
-> > +#define DECODE_FORMAT_UNCOMPRESSED_12_BIT    0x3
-> > +#define DECODE_FORMAT_UNCOMPRESSED_14_BIT    0x4
-> > +#define DECODE_FORMAT_UNCOMPRESSED_16_BIT    0x5
-> > +#define DECODE_FORMAT_UNCOMPRESSED_20_BIT    0x6
-> > +#define DECODE_FORMAT_DPCM_10_6_10           0x7
-> > +#define DECODE_FORMAT_DPCM_10_8_10           0x8
-> > +#define DECODE_FORMAT_DPCM_12_6_12           0x9
-> > +#define DECODE_FORMAT_DPCM_12_8_12           0xA
-> > +#define DECODE_FORMAT_DPCM_14_8_14           0xB
-> > +#define DECODE_FORMAT_DPCM_14_10_14          0xC
-> > +#define DECODE_FORMAT_USER_DEFINED           0xE
-> > +#define DECODE_FORMAT_PAYLOAD_ONLY           0xF
->
-> - interesting that the subset of the DECODE_FORMAT's used in
->    camss-csid-4-1.c (the first four formats above - UNCOMPRESSED_6_BIT
->    to UNCOMPRESSED_12_BIT ones) has the same values as the corresponding
->    field in the CSID_CID_n_CFG registers - according to the public
->    "APQ8016E Technical Reference Manual" [1]. So these exact DECODE_FORMAT_*
->    values are written into the bits 7:4 of the hw register.
->    But in [1] the values of DPCM_10_6_10 to DPCM_12_8_12 are 0x4 to 0x7
->    (as the camss-csid-4-1.c doesn't support DPCM this is not an issue).
->    Are the DECODE_FORMAT_* values above defined in the MIPI standard, or did
->    they come from the datasheet for a particular SOC?
+[1/1] pstore: Fix warning in pstore_kill_sb()
+      https://git.kernel.org/kees/c/9c7d83ae6ba6
 
-DF & EFs are a part of the MIPI spec, but the identifier is SOC/vendor specific.
-PFs are not a part of the MIPI spec at all, but rather a Qcom specific term.
+-- 
+Kees Cook
 
-Having looked over the DFs again, there are some incompatible
-differences between Gen1 & Gen2. I think the way forward is moving
-DF/EF/PFs to Gen 1/2 specific headers.
-
->
-> [1] https://developer.qualcomm.com/download/sd410/snapdragon-410e-technical-reference-manual.pdf
->      page 990
-> > +
-> > +#define ENCODE_FORMAT_RAW_8_BIT              0x1
-> > +#define ENCODE_FORMAT_RAW_10_BIT     0x2
-> > +#define ENCODE_FORMAT_RAW_12_BIT     0x3
-> > +#define ENCODE_FORMAT_RAW_14_BIT     0x4
-> > +#define ENCODE_FORMAT_RAW_16_BIT     0x5
->
-> - the ENCODE_FORMAT_* defines are not used in the driver.
-
-That's intentional, collecting this information somewhere for future
-use seemed like a good idea. But I'm happy to remove it if that's a
-bad idea.
-
->
-> > +
-> > +#define PLAIN_FORMAT_PLAIN8  0x0 /* supports DPCM, UNCOMPRESSED_6/8_BIT */
-> > +#define PLAIN_FORMAT_PLAIN16 0x1 /* supports DPCM, UNCOMPRESSED_10/16_BIT */
-> > +#define PLAIN_FORMAT_PLAIN32 0x2 /* supports UNCOMPRESSED_20_BIT */
->
-> - the PLAIN_FORMAT_* defines are not used in the driver, but
->    camss-csid-4-1.c and camss-csid-4-7.c do define there own
->    CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_8 and CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_16
->    (without relying on PLAIN_FORMAT_PLAIN8 or PLAIN_FORMAT_PLAIN16).
-
-I missed this duplication, I'll fix this in the next version.
-
->
-> Thanks,
-> Andrey
->
-> > +
-> > +
-> >   enum csid_payload_mode {
-> >       CSID_PAYLOAD_MODE_INCREMENTING = 0,
-> >       CSID_PAYLOAD_MODE_ALTERNATING_55_AA = 1,
-> >
