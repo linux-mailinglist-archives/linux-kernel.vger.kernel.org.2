@@ -2,94 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D8F32335C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D50D323360
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:44:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhBWVmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 16:42:49 -0500
-Received: from mga02.intel.com ([134.134.136.20]:50797 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231809AbhBWVmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 16:42:47 -0500
-IronPort-SDR: MEf5SG2L5u+W4I/L/OAtbMA+oblwwUtHX9/50OlfBSq5zjca03X3AU6qXCtvRDcNdHI/lrzk67
- XuajHlzIjV2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="172094369"
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="172094369"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 13:42:05 -0800
-IronPort-SDR: Ccg/xOYx2anSilJ53Dfv2EeWz8DUJa1zs/86zJwzvmW9J8AA7uBE/zi3fDV+SrsOLZjQuPNzwc
- XKyrlY9fctUw==
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="423790381"
-Received: from bdchartr-mobl3.amr.corp.intel.com (HELO [10.209.183.77]) ([10.209.183.77])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 13:42:04 -0800
-Subject: Re: [PATCH] x86/sgx: Add a basic NUMA allocation scheme to
- sgx_alloc_epc_page()
-To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org
-Cc:     haitao.huang@intel.com, dan.j.williams@intel.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20210221020631.171404-1-jarkko@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <7c5c7641-3fd1-d48b-d145-5b23e774a784@intel.com>
-Date:   Tue, 23 Feb 2021 13:42:04 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231451AbhBWVoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 16:44:34 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:58856 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230128AbhBWVoa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 16:44:30 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5AC6120B6C40;
+        Tue, 23 Feb 2021 13:43:48 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5AC6120B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1614116628;
+        bh=mXNZp5kuu013nEFFtEkVTtSEJapzdoKqTaVKKsifH18=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ACbBMOO85JCt+3/dlCWpAY9GAleJcRATmicpnY9WNLqVAs99MKKShAEIoaSaPARvc
+         Gn+mbDUOgmmDsLPwqVfUlawCP0Tvon6Fzqv4LRPgcqaRDrkq6TXBd1KH4QnBztvLYz
+         jZNMwGrc0lKTofBTyLYv/5RXyqZPv1n+ebtvt97A=
+Date:   Tue, 23 Feb 2021 15:43:46 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [BUG] Race between policy reload sidtab conversion and live
+ conversion
+Message-ID: <20210223214346.GB6000@sequoia>
 MIME-Version: 1.0
-In-Reply-To: <20210221020631.171404-1-jarkko@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This doesn't look like it addresses all of the suggestions that I made
-two days ago.  Is that coming in v3?
+I'm seeing a race during policy load while the "regular" sidtab
+conversion is happening and a live conversion starts to take place in
+sidtab_context_to_sid().
+
+We have an initial policy that's loaded by systemd ~0.6s into boot and
+then another policy gets loaded ~2-3s into boot. That second policy load
+is what hits the race condition situation because the sidtab is only
+partially populated and there's a decent amount of filesystem operations
+happening, at the same time, which are triggering live conversions.
+
+[    3.091910] Unable to handle kernel paging request at virtual address 001303e1aa140408
+[    3.100083] Mem abort info:
+[    3.102963]   ESR = 0x96000004
+[    3.102965]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    3.102967]   SET = 0, FnV = 0
+[    3.102968]   EA = 0, S1PTW = 0
+[    3.102969] Data abort info:
+[    3.102970]   ISV = 0, ISS = 0x00000004
+[    3.102971]   CM = 0, WnR = 0
+[    3.102973] [001303e1aa140408] address between user and kernel address ranges
+[    3.102977] Internal error: Oops: 96000004 [#1] SMP
+[    3.102981] Modules linked in:
+[    3.111250]  bnxt_en pcie_iproc_platform pcie_iproc diagbe(O)
+[    3.111259] CPU: 0 PID: 529 Comm: (tservice) Tainted: G           O      5.10.17.1 #1
+[    3.119881] Hardware name: redacted (DT)
+[    3.119884] pstate: 20400085 (nzCv daIf +PAN -UAO -TCO BTYPE=--)
+[    3.119898] pc : sidtab_do_lookup (/usr/src/kernel/security/selinux/ss/sidtab.c:202)
+[    3.119902] lr : sidtab_context_to_sid (/usr/src/kernel/security/selinux/ss/sidtab.c:312)
+[    3.126105] sp : ffff800011ceb810
+[    3.126106] x29: ffff800011ceb810 x28: 0000000000000000
+[    3.126108] x27: 0000000000000005 x26: ffffda109f3f2000
+[    3.126110] x25: 00000000ffffffff x24: 0000000000000000
+[    3.126113] x23: 0000000000000001
+[    3.133124] x22: 0000000000000005
+[    3.133125] x21: aa1303e1aa140408 x20: 0000000000000001
+[    3.133127] x19: 00000000000000cc x18: 0000000000000003
+[    3.133128] x17: 000000000000003e x16: 000000000000003f
+[    3.145519] x15: 0000000000000039 x14: 000000000000002e
+[    3.145521] x13: 0000000058294db1 x12: 00000000158294db
+[    3.145523] x11: 000000007f0b3af2 x10: 0000000000004e00
+[    3.145525] x9 : 00000000000000cd x8 : 0000000000000005
+[    3.281289] x7 : feff735e62647764 x6 : 00000000000080cc
+[    3.286769] x5 : 0000000000000005 x4 : ffff3f47c5b20000
+[    3.292249] x3 : ffff800011ceb900 x2 : 0000000000000001
+[    3.297729] x1 : 00000000000000cc x0 : aa1303e1aa1403e0
+[    3.303210] Call trace:
+[    3.305733] sidtab_do_lookup (/usr/src/kernel/security/selinux/ss/sidtab.c:202)
+[    3.309867] sidtab_context_to_sid (/usr/src/kernel/security/selinux/ss/sidtab.c:312)
+[    3.314451] security_context_to_sid_core (/usr/src/kernel/security/selinux/ss/services.c:1557)
+[    3.319661] security_context_to_sid_default (/usr/src/kernel/security/selinux/ss/services.c:1616)
+[    3.324961] inode_doinit_use_xattr (/usr/src/kernel/security/selinux/hooks.c:1366)
+[    3.329634] inode_doinit_with_dentry (/usr/src/kernel/security/selinux/hooks.c:1457)
+[    3.334486] selinux_d_instantiate (/usr/src/kernel/security/selinux/hooks.c:6278)
+[    3.338889] security_d_instantiate (/usr/src/kernel/security/security.c:2004)
+[    3.343385] d_splice_alias (/usr/src/kernel/fs/dcache.c:3030)
+[    3.347251] squashfs_lookup (/usr/src/kernel/fs/squashfs/namei.c:220)
+[    3.385561] el0_sync_handler (/usr/src/kernel/arch/arm64/kernel/entry-common.c:428)
+[    3.389517] el0_sync (/usr/src/kernel/arch/arm64/kernel/entry.S:671)
+[ 3.392939] Code: 51002718 340001d7 1ad82768 8b284c15 (f94002a0)
+All code
+========
+   0:   18 27                   sbb    %ah,(%rdi)
+   2:   00 51 d7                add    %dl,-0x29(%rcx)
+   5:   01 00                   add    %eax,(%rax)
+   7:   34 68                   xor    $0x68,%al
+   9:   27                      (bad)
+   a:   d8 1a                   fcomps (%rdx)
+   c:*  15 4c 28 8b a0          adc    $0xa08b284c,%eax         <-- trapping instruction
+  11:   02 40 f9                add    -0x7(%rax),%al
+
+Code starting with the faulting instruction
+===========================================
+   0:   a0                      .byte 0xa0
+   1:   02 40 f9                add    -0x7(%rax),%al
+[    3.399230] ---[ end trace cc1840b3ff2c7506 ]---
+
+The corresponding source from sidtab.c:
+
+   179  static struct sidtab_entry *sidtab_do_lookup(struct sidtab *s, u32 index,
+   180                                               int alloc)
+   181  {
+   ...
+   193          /* lookup inside the subtree */
+   194          entry = &s->roots[level];
+   195          while (level != 0) {
+   196                  capacity_shift -= SIDTAB_INNER_SHIFT;
+   197                  --level;
+   198
+   199                  entry = &entry->ptr_inner->entries[leaf_index >> capacity_shift];
+   200                  leaf_index &= ((u32)1 << capacity_shift) - 1;
+   201
+   202                  if (!entry->ptr_inner) {
+   203                          if (alloc)
+   204                                  entry->ptr_inner = kzalloc(SIDTAB_NODE_ALLOC_SIZE,
+   205                                                             GFP_ATOMIC); 
+   206                          if (!entry->ptr_inner)
+   207                                  return NULL;
+   208                  }
+   209          }
+   210          if (!entry->ptr_leaf) {
+   211                  if (alloc)
+   212                          entry->ptr_leaf = kzalloc(SIDTAB_NODE_ALLOC_SIZE,
+   213                                                    GFP_ATOMIC);
+   214                  if (!entry->ptr_leaf)
+   215                          return NULL;
+   216          }
+   217          return &entry->ptr_leaf->entries[index % SIDTAB_LEAF_ENTRIES];
+   218  }
+
+   ...
+
+   263  int sidtab_context_to_sid(struct sidtab *s, struct context *context,
+   264                            u32 *sid)
+   265  {
+   ...
+   305          /*
+   306           * if we are building a new sidtab, we need to convert the context
+   307           * and insert it there as well
+   308           */
+   309          if (convert) {
+   310                  rc = -ENOMEM;
+   311                  dst_convert = sidtab_do_lookup(convert->target, count, 1);
+   312                  if (!dst_convert) {
+   313                          context_destroy(&dst->context);
+   314                          goto out_unlock;
+   315                  }
+   ...
+
+What I'm having trouble understanding is how the above call to
+sidtab_do_lookup(), on the target sidtab that's undergoing a conversion
+in sidtab_convert(), can be expected to work. sidtab_convert_tree() is
+allocating and initializing ptr_inner sidtab nodes at the same time
+sidtab_do_lookup() is trying to use them with no locking being performed
+on the target sidtab.
+
+Ondrej specifically mentions, in commit ee1a84fdfeed ("selinux: overhaul
+sidtab to fix bug and improve performance"), that there's no need to
+freeze the sidtab during policy reloads so I know that there's thought
+given to these code paths running in parallel.
+
+Can someone more knowledgeable on how the sidtab locking is expected to
+work suggest a fix for this crash?
+
+Tyler
