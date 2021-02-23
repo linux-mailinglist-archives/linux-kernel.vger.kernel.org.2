@@ -2,159 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A409322687
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 08:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E7132268A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 08:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbhBWHmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 02:42:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231859AbhBWHlt (ORCPT
+        id S231193AbhBWHnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 02:43:24 -0500
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:34446 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230178AbhBWHnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 02:41:49 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E36CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 23:41:09 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id w18so6169470plc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 23:41:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=QBmv3AC5xTk/Bz1QRlZ402i8IDq9hUClvPJlVeV/Z3o=;
-        b=j5c9cDPkQo7tLyWIAJOCWEsRws5QRDg0evVfT633jK6sWgwSyfaa4z9xwmuJ63I7R7
-         0igf/1HNjkQcG9McUM32oH53y32YZPOQ5M9/ruV6sTCiGYaATKJwwCDoCdXcDarl16p9
-         NHxeJivnrI/ABx3oJ47lOy5IUBqalsEPsTKgY=
+        Tue, 23 Feb 2021 02:43:19 -0500
+Received: by mail-oi1-f172.google.com with SMTP id w69so7056462oif.1;
+        Mon, 22 Feb 2021 23:43:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=QBmv3AC5xTk/Bz1QRlZ402i8IDq9hUClvPJlVeV/Z3o=;
-        b=pFYmmU99LGoXAQYO/ccI1lhcCLk5vFfz4YOY7O0Dx4ZpTWF0pxIVg9kmwvAPjUL3GJ
-         IhZqIv/XI/L8c0/T4LayfZ3UqsN2MvHMKP/rv8wbrTMnnSTC1F7khiE5NqxvUaGtc4vc
-         YSPnQBhO931wkgzDIl1b1EDTlPAW5xZcshHeQp1S/4dTDV4xxeUrckAlWX0NHKr8tGN4
-         ioVPnuiWLa4JCZzhbf30Op26g1XsTMJVIBPrgptJE5c3aqfqvRo3NYPcr0XVaTGL4bYo
-         aIwrrA7NOXG6fnb8a+64yN1C2z/ZIqaRiZ0QzY4XdrI71100huEBEpraknUuv9RZjLZu
-         qc1g==
-X-Gm-Message-State: AOAM532ubP3si59Pax51eNYJUPZKT5IsePHaNOGaeOMu8EJ7TZJbPhGi
-        j0VHv4khEG2tl2I6iw5lRQIBXw==
-X-Google-Smtp-Source: ABdhPJwFfg10EQ3syQ4vnhG4VwRgEemmfIEeZGu2JLF+B2GptDtsFUCxZCGGjHOTqM6n1nkFZMPvlQ==
-X-Received: by 2002:a17:90a:eb02:: with SMTP id j2mr28249436pjz.226.1614066069009;
-        Mon, 22 Feb 2021 23:41:09 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:68e6:d68b:3887:f216])
-        by smtp.gmail.com with ESMTPSA id 14sm21777186pfy.55.2021.02.22.23.41.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 23:41:08 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WJFI5RyzuifHOR96lwKCSFonlTIiLRUIGVDJn5EnP2g=;
+        b=YVI/zdRD9Dev8PAgAEBAvI1E2M7HcUH43Y9XF64bQ8EBtz61I9NjypxEIgvOJ8g68A
+         A2FE4Ac8RDY2l3o0eEcXBLf0vlHJEbA4fFj6th7Usn4TKJumCYU1EhDnCJ8qWikkpvaG
+         tHLhR+J6hgxUcLuCZKUGruAJDO3bUpiak5/Rav2Jb5tQMbHxyiZVvJjoNbXxb/cGwpJS
+         ez7EoXtteefdHt+jTsKdBT3KzhxAc+ErGDSRlwXrNfuepWO/Tm2oHV3gvcBVatNG6vze
+         FQTm9+kqDbym1SlXxSWdeOSTgNF9m9alnsaM3Jdj3c72SGY+R+40dPp/LVHpNBW9rKH8
+         Qkew==
+X-Gm-Message-State: AOAM533keDhlCOUV+2SgRewEZHZHxkg4g+pS/ca+JyqHWKsFfXNsW5ZR
+        3IUyj3aC5whTlWZaLoTG/TvqIR8Y1geZg2EyQXKZXPxZLUI=
+X-Google-Smtp-Source: ABdhPJxwLA+IJ2oFZ0i1C36eBSf9oCeHNZMyyblRWQXyCdK6Xd17NBm7c6MpnurOGmZ/pbWEvX+1HBvWalN3LSvmV8U=
+X-Received: by 2002:aca:d908:: with SMTP id q8mr17857257oig.148.1614066157844;
+ Mon, 22 Feb 2021 23:42:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1613114930-1661-6-git-send-email-rnayak@codeaurora.org>
-References: <1613114930-1661-1-git-send-email-rnayak@codeaurora.org> <1613114930-1661-6-git-send-email-rnayak@codeaurora.org>
-Subject: Re: [PATCH 05/13] arm64: dts: qcom: sc7280: Add RSC and PDC devices
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Date:   Mon, 22 Feb 2021 23:41:07 -0800
-Message-ID: <161406606714.1254594.8318028410661523068@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20210222125916.4168804-1-geert@linux-m68k.org> <CAK7LNARxO6O7aRwzJ+i9hEGvWBTCukpwGBC6B79c7UdO=f0Ymw@mail.gmail.com>
+In-Reply-To: <CAK7LNARxO6O7aRwzJ+i9hEGvWBTCukpwGBC6B79c7UdO=f0Ymw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 23 Feb 2021 08:42:26 +0100
+Message-ID: <CAMuHMdX-t4Z27RnWn0Sp1AoO3A=+aT8GXkcGC5gSArtm+W9w1Q@mail.gmail.com>
+Subject: Re: [PATCH] f2fs: compress: Allow modular (de)compression algorithms
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rajendra Nayak (2021-02-11 23:28:42)
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/q=
-com/sc7280.dtsi
-> index 1fe2eba..7848e88 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -7,6 +7,7 @@
-> =20
->  #include <dt-bindings/clock/qcom,gcc-sc7280.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/soc/qcom,rpmh-rsc.h>
-> =20
->  / {
->         interrupt-parent =3D <&intc>;
-> @@ -30,6 +31,18 @@
->                 };
->         };
-> =20
-> +       reserved_memory: reserved-memory {
-> +               #address-cells =3D <2>;
-> +               #size-cells =3D <2>;
-> +               ranges;
-> +
-> +               aop_cmd_db_mem: memory@80860000 {
-> +                       reg =3D <0x0 0x80860000 0x0 0x20000>;
-> +                       compatible =3D "qcom,cmd-db";
-> +                       no-map;
-> +               };
-> +       };
-> +
->         cpus {
->                 #address-cells =3D <2>;
->                 #size-cells =3D <0>;
-> @@ -189,6 +202,19 @@
->                         };
->                 };
-> =20
-> +               pdc: interrupt-controller@b220000 {
-> +                       compatible =3D "qcom,sc7280-pdc", "qcom,pdc";
-> +                       reg =3D <0 0xb220000 0 0x30000>;
+Hi Yamada-san,
 
-Can you pad out reg to 8 digits? 0x0b220000
+On Tue, Feb 23, 2021 at 7:31 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> On Mon, Feb 22, 2021 at 9:59 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > If F2FS_FS is modular, enabling the compressions options
+> > F2FS_FS_{LZ4,LZ4HZ,LZO,LZORLE,ZSTD} will make the (de)compression
+> > algorithms {LZ4,LZ4HC,LZO,ZSTD}_{,DE}COMPRESS builtin instead of
+> > modular, as the former depend on an intermediate boolean
+> > F2FS_FS_COMPRESSION, which in-turn depends on tristate F2FS_FS.
+> >
+> > Indeed, if a boolean symbol A depends directly on a tristate symbol B
+> > and selects another tristate symbol C:
+> >
+> >     tristate B
+> >
+> >     tristate C
+> >
+> >     bool A
+> >       depends on B
+> >       select C
+> >
+> > and B is modular, then C will also be modular.
+> >
+> > However, if there is an intermediate boolean D in the dependency chain
+> > between A and B:
+> >
+> >     tristate B
+> >
+> >     tristate C
+> >
+> >     bool D
+> >       depends on B
+> >
+> >     bool A
+> >       depends on D
+> >       select C
+> >
+> > then the modular state won't propagate from B to C, and C will be
+> > builtin instead of modular.
+> >
+> > Fix this by making the various compression options depend directly on
+> > F2FS_FS using a big if/endif block.  Drop the now superfluous
+> > dependencies on F2FS_FS from individual symbols.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > ---
+> > Perhaps the propagation logic in Kconfig should be fixed instead?
+> > Else people may reintroduce this issue when removing seemingly-unneeded
+> > dependencies.
+>
+> I checked the code in menu_finalize(), and this seems to work like this.
+>
+> I discussed the oddity of the select behavior before
+> (https://lore.kernel.org/linux-kbuild/e1a6228d-1341-6264-d97a-e2bd52a65c82@infradead.org/),
+> but I was not confident about what the right direction was.
+>
+>
+> Anyway, the behavior is obscure from the current code.
+>
+> If you want to make this more robust,
+> you can write as follows:
+>
+> config F2FS_FS
+>         tristate "F2FS filesystem support"
+>         depends on BLOCK
+>         select NLS
+>         select CRYPTO
+>         select CRYPTO_CRC32
+>         select F2FS_FS_XATTR if FS_ENCRYPTION
+>         select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+>         select LZO_COMPRESS if F2FS_FS_LZO
+>         select LZO_DECOMPRESS if F2FS_FS_LZO
+>         select LZ4_COMPRESS if F2FS_FS_LZ4
+>         select LZ4_DECOMPRESS if F2FS_FS_LZ4
+>         select LZ4HC_COMPRESS if F2FS_FS_LZ4HC
+>         select ZSTD_COMPRESS if F2FS_FS_ZSTD
+>         select ZSTD_DECOMPRESS if F2FS_FS_ZSTD
+>
+> The code is a bit clumsy, but it is clear
+> that the module (F2FS_FS) is selecting the
+> compress/decompress libraries.
 
-> +                       qcom,pdc-ranges =3D <0 480 40>, <40 140 14>, <54 =
-263 1>,
-> +                                         <55 306 4>, <59 312 3>, <62 374=
- 2>,
-> +                                         <64 434 2>, <66 438 3>, <69 86 =
-1>,
-> +                                         <70 520 54>, <124 609 31>, <155=
- 63 1>,
-> +                                         <156 716 12>;
-> +                       #interrupt-cells =3D <2>;
-> +                       interrupt-parent =3D <&intc>;
-> +                       interrupt-controller;
-> +               };
-> +
->                 tlmm: pinctrl@f100000 {
->                         compatible =3D "qcom,sc7280-pinctrl";
->                         reg =3D <0 0xf100000 0 0x1000000>;
+Actually the above is what I tried first ;-)  Works fine.
 
-The same applies to the previous patch. Sorry for missing that.
+Then I started to look for similar cases in other file systems (e.g.
+EROFS_FS_ZIP), and discovered the issue doesn't happen there, which
+sparked my investigation.  So I settled on the direct dependency,
+because it keeps all compression-related logic together.
 
-> @@ -198,6 +224,7 @@
->                         interrupt-controller;
->                         #interrupt-cells =3D <2>;
->                         gpio-ranges =3D <&tlmm 0 0 175>;
-> +                       wakeup-parent =3D <&pdc>;
-> =20
->                         qup_uart5_default: qup-uart5-default {
->                                 pins =3D "gpio46", "gpio47";
-> @@ -282,6 +309,23 @@
->                                 status =3D "disabled";
->                         };
->                 };
-> +
-> +               apps_rsc: rsc@18200000 {
-> +                       compatible =3D "qcom,rpmh-rsc";
-> +                       reg =3D <0 0x18200000 0 0x10000>,
-> +                             <0 0x18210000 0 0x10000>,
-> +                             <0 0x18220000 0 0x10000>;
-> +                       reg-names =3D "drv-0", "drv-1", "drv-2";
-> +                       interrupts =3D <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-> +                                    <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-> +                                    <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
-> +                       qcom,tcs-offset =3D <0xd00>;
-> +                       qcom,drv-id =3D <2>;
-> +                       qcom,tcs-config =3D <ACTIVE_TCS  2>,
-> +                                         <SLEEP_TCS   3>,
-> +                                         <WAKE_TCS    3>,
-> +                                         <CONTROL_TCS 1>;
-> +               };
->         };
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
