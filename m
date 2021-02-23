@@ -2,290 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71EF32300D
+	by mail.lfdr.de (Postfix) with ESMTP id 41B3A323007
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233776AbhBWR4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 12:56:24 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:46514 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbhBWR4J (ORCPT
+        id S232340AbhBWR4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 12:56:13 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:53962 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232672AbhBWR4C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 12:56:09 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11NHrvQL070451;
-        Tue, 23 Feb 2021 17:54:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=etpcwjD0BTMmQ+6E11FlEsw23Md0adL7kYyFnQ6BUjY=;
- b=fttzfHQvmU1kscBruM4nPL7HO3rZQMY5HkxKzTjV13fkVAF0Ar8G85g1dtyXGrS7jr/k
- kaWDxKnfbO1hmfNbf6UVrN3aEW2SmE2kVHsJGT/0W1r7ph5l3G2QaAX7lvCZ2NzLiuLa
- Nqq5f0D8dys77gGMrF8owZntYbFRxXAq8tow6msXXmuCDDTijilsaac0xmndM2y62Y0c
- Obft2QGrLVRDj9aHd9Plbg7q7laKh99ny4MmyWmjcbq2zt1nLtUX21Xj59vHl1glL1ko
- ivwtouT0S7AECIEegPZ7PVGwISq/nkOgyg66zI8PuUQUQGAN4jjP18RSjiZqglPUn2Gh IA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 36ttcm89jg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Feb 2021 17:54:43 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11NHoRhb146666;
-        Tue, 23 Feb 2021 17:54:42 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
-        by aserp3030.oracle.com with ESMTP id 36v9m4wrsv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Feb 2021 17:54:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IYJqvHCo94V99uc+pu1FaLq8i3aufFyCSSEqtWZgjBPBKpCzx9/QpvWwVE3uSpGpo202MAszeC9+w0vSohRjCCoCAgbyhxRZgr/tnhhrDw3qrKtKWYrG5KTmZaxNkti8I0dh3LE6MS6KBl4zgGP7pKyQAGtCDHY07sUthMJb5VwLGd2POAuAdBUI34NGPf6f1PT1JxdK3o7xAW398Rz0a9+dp9wSYYG2FbMrldCxfZzZEraZzrjuud65Qgz0U7YJGpa8CWVPtoRTeNVexHqrkdlkSvj18fN4EDllwJhtgraJecZ1SEQFqAfd489oh3IHCTbfbs8CVNlEDVT/ueh62A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=etpcwjD0BTMmQ+6E11FlEsw23Md0adL7kYyFnQ6BUjY=;
- b=QBEWLMZuQMSnCgs9sXRqyR7+V55MzqhpY/+J2UzR4btn8TBCUiTzv3k09mqFerTUHzqbmLkW8agH0pRtG0zPlidUcGqZKzqUQs3Rl9Htt06Doc1/851s/rky11yI96FCXBJRJUOmlLMR3PbeFAcDg+d6gIu1PniKzegnKtgP4MTnU4Ip0HLJCOtm/bJPFInmUAb/LSkG5cXYIfh8S/skEWWcT+QMp3Xpas+7rTdZIo/TvENfaeypiTJTpeknTQcy1W1mefSTIR8i9p/R5T4mU8Uf0lGkAsXU+EvZupel7rc49KFJ/sFCJDl0ATKYvkjGdZ/0eXxALsCdoWr9h8n0uA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=etpcwjD0BTMmQ+6E11FlEsw23Md0adL7kYyFnQ6BUjY=;
- b=m7YobEJycPezwbQAU7j/MaLPpSt78XIHRRZ/NAD3vlXToUTO1jKAnFJp+2J9uLNUTGG6TakA3sAQC982Zb14ALdU9647xBUrl+9QUAf8rTIO72mTo9OeoCcwXX9gTvl9rrhULPBXeYOqU7SzpBPxO3wE4CzMN5ofhkat/XI/cHs=
-Received: from BN8PR10MB3571.namprd10.prod.outlook.com (2603:10b6:408:ad::23)
- by BN6PR10MB1636.namprd10.prod.outlook.com (2603:10b6:405:6::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.31; Tue, 23 Feb
- 2021 17:54:39 +0000
-Received: from BN8PR10MB3571.namprd10.prod.outlook.com
- ([fe80::6d3a:d67:bd69:3d43]) by BN8PR10MB3571.namprd10.prod.outlook.com
- ([fe80::6d3a:d67:bd69:3d43%7]) with mapi id 15.20.3868.033; Tue, 23 Feb 2021
- 17:54:39 +0000
-From:   Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-To:     Baoquan He <bhe@redhat.com>, Kairui Song <kasong@redhat.com>
-CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        John Donnelly <john.p.donnelly@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v3 1/1] kernel/crash_core: Add crashkernel=auto for vmcore
- creation
-Thread-Topic: [PATCH v3 1/1] kernel/crash_core: Add crashkernel=auto for
- vmcore creation
-Thread-Index: AQHXAKDx99DSVPZnmE6mqOBmmu0RtKpdMteAgAiDIgCAACAGgIAAQqcA
-Date:   Tue, 23 Feb 2021 17:54:39 +0000
-Message-ID: <277127DD-9294-46D7-B05D-15275EF1B93B@oracle.com>
-References: <20210211180814.69708-1-saeed.mirzamohammadi@oracle.com>
- <20210218020203.GC2871@MiWiFi-R3L-srv>
- <CACPcB9d7-kJR7OG2OrLcAhFhiMO26PB82Uv9bK9FkCfH__zWZQ@mail.gmail.com>
- <20210223135605.GA3553@MiWiFi-R3L-srv>
-In-Reply-To: <20210223135605.GA3553@MiWiFi-R3L-srv>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [136.52.113.136]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f86a7304-f23d-4bd8-561c-08d8d824175c
-x-ms-traffictypediagnostic: BN6PR10MB1636:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN6PR10MB16365BC4D7D2E6E34E729FC5F1809@BN6PR10MB1636.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DFiET14sCTYu7QLtJ1+s5bkBA/6ZLslO5qRti0acZ38S/9bufxhWai6Yo32W2nhSWn/Dfa3azmy7I3ztnyZ04SZwpwNjbGQAswbQ66dzgVSFMKyYQhDf+FcKhfoEnaEk/qG48e1bZ0IQjUiapTTQwhiobNBGn1GjlKcLIbS33pHLrhFl00if2HWNvP4W11fgXQc3FDIYVWwyzcM893L0IAkkXOsPCjJsXwbZ3+fLxApnA9xeLpDdTyvRCIdoTQPUnqzInlZC22x8tA2//zVWgwyn0ApO6BH2T00vQ9TPrfbcKNWXelAJox9kTdPFsjsxLS2UcZ3ku1A8UVkbGtywKlag/8GWfKwkt7UxEnK7RgbQAGjONFEGa61HgLCGoFwCaXyh7fNax/cRvlr9LK8VXegBYYCQe5NyTyxeY2Blk6IVSKHYzR4IwlPZf18qwZLmV7AyotI1qizB1mFT8GWbYaHjjimmUqPo7t4EAc9M+cZdS5VFvFLIbKOMMiLj2AjCshp8Dw7FPNP5LU1pUGfDj6cWfs0FJ9EpSwB6iRIB3L4luv7YOeflTHidyPuj3uClGduyDrrXM/MEUoWl/9TWwGAQRHxf1G8nptlIJVpXLmK5WVmnre2Ba2bSJTxXaJsdqBmw8uXb3LBacNg3YfEzCHelMPtueVPp2xU52cIlqEg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR10MB3571.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(136003)(346002)(396003)(366004)(66556008)(64756008)(66476007)(4326008)(33656002)(110136005)(6486002)(44832011)(6512007)(86362001)(71200400001)(2616005)(478600001)(54906003)(26005)(107886003)(66446008)(76116006)(186003)(5660300002)(966005)(66946007)(316002)(53546011)(36756003)(2906002)(8676002)(8936002)(83380400001)(6506007)(7416002)(91956017)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?5hCZtgtoaxs+932C0DiDtR3vs+nYFPUN4psooIjs4VEVC2954KY4d8BdV+hP?=
- =?us-ascii?Q?yCtzgFUpzsteSv3RIwNUVRcSJCCx9gmipDsCjcfrt8IUUbbstKCMcHUPSo79?=
- =?us-ascii?Q?nOrWWgzkAo7UaY9PXCirOaG9iziknRLDZslQcWXzJyDMZZzrNldf5jKAS/Mj?=
- =?us-ascii?Q?aLCUdyiegR2dnLA+gIEv5LxHkEUTZ7jvNddKC0plEJZw+8dLcumGew8lmb7o?=
- =?us-ascii?Q?Dz+TCj2l9Detu4HNurhT/Rvw5YIVKPi0J+Kr6oxnTM1W3aukJjMtTykjDTv6?=
- =?us-ascii?Q?X+1hRwYmNo/vx9nu2PQ19cp+8s8GjCwRrdhwwOSEnEAs0gG9QHirr9p4NjFI?=
- =?us-ascii?Q?JeWacmO/EqYp1tEQr4b09GYK943eJMs8GsZdxeddKGYMbJEnBAogJqRDhAw8?=
- =?us-ascii?Q?jfCQ09A1UEe2RY7Hc56ODaaq/kJ/d95Vy7MxahzDADcjVShZJL92ep84+o3T?=
- =?us-ascii?Q?NV3aQa2bSDPqAkDK1f89asa+x4nDDBymXhalYD2LdKmg/hP8a8Hkrbewd9+S?=
- =?us-ascii?Q?GTlvqO8cojOxFev6bC6Ap/LyTV+0sXAHV/SHPHBHdV5EsOUD7CNmjI5Zu7At?=
- =?us-ascii?Q?vo+KRyGxvroumPhGNWduwN3uqmiOqWYxJ24widRtoQsOPlQsUyMWrv2c2PHG?=
- =?us-ascii?Q?yvHCOUROGu3aGFuQCLRlK61OraFc9z632EO2ObdJfBBs12XV78oZIqS55aH5?=
- =?us-ascii?Q?H0baqlIOhBoNH7IUEJIPyLpxAO7jVpoRuqwhXRC01OgrIgsJ3l5odX2MNk1X?=
- =?us-ascii?Q?ARJ/5KkDZsf6/K4xFkiUiU0lTUKx7S6OhVv86eANOPIDgzaR19CvLWnjqwpC?=
- =?us-ascii?Q?DxfMmSeLSKZTIYiMW+xucWJQAJjUKejP0U8LDiJdAOxv7Mx6JQjsoqJViRRR?=
- =?us-ascii?Q?1w9Q9cu1vqQ4D7RmcMeIUH6ixqIVqCe13hDhh0vPWEZazjBRGnDLBZz0ZmvO?=
- =?us-ascii?Q?zetZVM51qvg7v4ZQ6LTUzVPj8p51AdV8AzD3EsPGsJD0TG0u0YfKzKuVOpfF?=
- =?us-ascii?Q?FSkJjFa3CkUgs1LbTRj1zfkcKVOZmedaiHzZmXmDALwOZA4jai0qiepwstW5?=
- =?us-ascii?Q?iD4QYMHxnem9vahySuzfwbT+R0hKxpQjtwwNhyjiIHdTiIBvO9VMZ2m1mNY9?=
- =?us-ascii?Q?XGU/rrz6ouFiuuoHIuWjb3yTQDRdZiGUahkCXxQyOPwypkh02E6p5BZV07BV?=
- =?us-ascii?Q?laEgje82ApZWBZtvHhCbcUTIrsNWUaxpFRfOIZSozFL1Buasq3CYjD6klWl3?=
- =?us-ascii?Q?Zl+xcHJVG8DO1sFM4Du+pSWTxOcIUCO8G8K/Tj0DYG+8ptXQYuZifjW6HONR?=
- =?us-ascii?Q?Z7nSw/1D3LAQs9NXAKW7FS/a?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <7D34A01A774BA7459C32BD985212D743@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 23 Feb 2021 12:56:02 -0500
+Received: by mail-io1-f69.google.com with SMTP id 196so9808409iob.20
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:55:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=fT48g9h0S+gy4Ojz4VVsb9c+BWOlqpsqL3o3V6eM2GU=;
+        b=Eh7UfFICEqAO77gmi030FANcKTucmrfYVRH7GRT/MgkSQuQ/7KIdyDk4BgXPQcKByb
+         toPyzSYm2GeSlUhLC98kJfshXCKQlRIf90/Kwke2nY4b/7ysKHpsCtfRHWnikWyalgio
+         Cb5oqhlFvn0LgSGaJMUTFB+QQGjl5jLMLnGaNaD2HjzHfPo9F4zuh8cI2JSnd0mRJWlB
+         JG9JiRIcJZLsop/x8S0spccO+JjVwIZ8Dt5idJpfJfDmV8N9SqUwLHuclunLyJb1cLp3
+         ekpneFXPGDQH+m3mZt32q7ZnTRtfL74d2PXiv34j5VCl9JUZSBIjeafX30pyy2AbfzzX
+         KXtw==
+X-Gm-Message-State: AOAM530vCL0X9cmXaUHfhCNIsXsDprlRmYWwfexLH/cuRgvQuKh8uBrK
+        xYHophSXvZoBc1GwuNwCmh6UAgkZYtZd1oInXLLnDVFuEI82
+X-Google-Smtp-Source: ABdhPJw2W3VZbbJexgoqTtgrw7cdX8+Jzj7hZd5pniQHz03ul5QJh8nZXrsVEJ5zJgdb6zV0HreygduyCPqpjfA9umDeGKznEc0C
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR10MB3571.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f86a7304-f23d-4bd8-561c-08d8d824175c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Feb 2021 17:54:39.1776
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VybAPeuee5ioXRzrJvL3+BNkrEOeiveT6Gxko6KWJdH/GNJIiBpjPJZcy8JtY2aA4mhuOyeSqt62esX+ivREmO2l1EjzahcXlY9D8GnO9cQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR10MB1636
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102230150
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 spamscore=0 mlxscore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 malwarescore=0 impostorscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102230150
+X-Received: by 2002:a5e:890a:: with SMTP id k10mr21184821ioj.63.1614102920771;
+ Tue, 23 Feb 2021 09:55:20 -0800 (PST)
+Date:   Tue, 23 Feb 2021 09:55:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000039404305bc049fa5@google.com>
+Subject: BUG: soft lockup in ieee80211_tasklet_handler
+From:   syzbot <syzbot+27df43cf7ae73de7d8ee@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    3b9cdafb Merge tag 'pinctrl-v5.12-1' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=153024bcd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=22008533485b2c35
+dashboard link: https://syzkaller.appspot.com/bug?extid=27df43cf7ae73de7d8ee
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+27df43cf7ae73de7d8ee@syzkaller.appspotmail.com
+
+watchdog: BUG: soft lockup - CPU#0 stuck for 122s! [syz-executor.4:18357]
+Modules linked in:
+irq event stamp: 20542405
+hardirqs last  enabled at (20542404): [<ffffffff89200d42>] asm_sysvec_irq_work+0x12/0x20 arch/x86/include/asm/idtentry.h:661
+hardirqs last disabled at (20542405): [<ffffffff8901540c>] sysvec_apic_timer_interrupt+0xc/0x100 arch/x86/kernel/apic/apic.c:1100
+softirqs last  enabled at (18968488): [<ffffffff89200eaf>] asm_call_irq_on_stack+0xf/0x20
+softirqs last disabled at (18968491): [<ffffffff89200eaf>] asm_call_irq_on_stack+0xf/0x20
+CPU: 0 PID: 18357 Comm: syz-executor.4 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:jhash+0x339/0x5d0 include/linux/jhash.h:95
+Code: fc ff df 48 89 fa 48 c1 ea 03 0f b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 8a 02 00 00 0f b6 43 06 c1 e0 10 41 01 c7 <e8> 92 7f b2 fd 48 8d 7b 05 48 b8 00 00 00 00 00 fc ff df 48 89 fa
+RSP: 0018:ffffc90000007a08 EFLAGS: 00000297
+RAX: 0000000000000000 RBX: ffff88801419dc5a RCX: 000000000000000c
+RDX: 0000000000000000 RSI: ffff88806da10000 RDI: 0000000000000003
+RBP: 0000000000000006 R08: ffffffff89bed200 R09: ffffffff83c0d347
+R10: 000000000000000c R11: 0000000000000006 R12: 0000000000000006
+R13: 00000000b59356c8 R14: 00000000b59356c8 R15: 00000000b59356c8
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557aa2d18ea8 CR3: 000000001466b000 CR4: 0000000000350ef0
+Call Trace:
+ <IRQ>
+ rht_key_hashfn include/linux/rhashtable.h:159 [inline]
+ __rhashtable_lookup+0x22b/0x780 include/linux/rhashtable.h:596
+ rhltable_lookup include/linux/rhashtable.h:688 [inline]
+ sta_info_hash_lookup net/mac80211/sta_info.c:162 [inline]
+ sta_info_get_bss+0x144/0x3f0 net/mac80211/sta_info.c:199
+ __ieee80211_rx_handle_packet net/mac80211/rx.c:4694 [inline]
+ ieee80211_rx_list+0x910/0x2680 net/mac80211/rx.c:4819
+ ieee80211_rx_napi+0xf7/0x3d0 net/mac80211/rx.c:4842
+ ieee80211_rx include/net/mac80211.h:4524 [inline]
+ ieee80211_tasklet_handler+0xd4/0x130 net/mac80211/main.c:235
+ tasklet_action_common.constprop.0+0x1d7/0x2d0 kernel/softirq.c:555
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:226 [inline]
+ __irq_exit_rcu kernel/softirq.c:420 [inline]
+ irq_exit_rcu+0x134/0x200 kernel/softirq.c:432
+ sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1100
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:635
+RIP: 0010:mm_update_next_owner+0x50f/0x7a0 kernel/exit.c:391
+Code: 06 00 00 48 8d a8 f0 f9 ff ff 49 39 c7 0f 84 eb fe ff ff e8 43 e3 2e 00 48 8d 85 a0 04 00 00 48 89 c2 48 c1 ea 03 80 3c 1a 00 <0f> 85 96 01 00 00 4c 8b b5 a0 04 00 00 4d 39 e6 75 95 49 89 c5 e9
+RSP: 0018:ffffc90002067b18 EFLAGS: 00000246
+RAX: ffff888012bcbc20 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: 1ffff11002579784 RSI: ffffffff814470fd RDI: ffff888012bcbf38
+RBP: ffff888012bcb780 R08: 0000000000000000 R09: ffffffff8bc0a083
+R10: ffffffff8144705f R11: 0000000000000001 R12: ffff888073213f00
+R13: ffff888012bcb780 R14: 0000000000000000 R15: ffff88802655c110
+ exit_mm kernel/exit.c:500 [inline]
+ do_exit+0xb67/0x2ae0 kernel/exit.c:812
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ get_signal+0x42c/0x2100 kernel/signal.c:2773
+ arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465ef9
+Code: Unable to access opcode bytes at RIP 0x465ecf.
+RSP: 002b:00007f599085f218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 000000000056bf68 RCX: 0000000000465ef9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf68
+RBP: 000000000056bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf6c
+R13: 00007ffd3669b9ff R14: 00007f599085f300 R15: 0000000000022000
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 18367 Comm: syz-executor.5 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:queued_write_lock_slowpath+0x131/0x270 kernel/locking/qrwlock.c:76
+Code: 00 00 00 00 fc ff df 49 01 c7 41 83 c6 03 41 0f b6 07 41 38 c6 7c 08 84 c0 0f 85 fe 00 00 00 8b 03 3d 00 01 00 00 74 19 f3 90 <41> 0f b6 07 41 38 c6 7c ec 84 c0 74 e8 48 89 df e8 ea c7 5c 00 eb
+RSP: 0018:ffffc90001ee7ca0 EFLAGS: 00000006
+RAX: 0000000000000300 RBX: ffffffff8bc0a080 RCX: ffffffff8159eafa
+RDX: fffffbfff1781411 RSI: 0000000000000004 RDI: ffffffff8bc0a080
+RBP: 00000000000000ff R08: 0000000000000001 R09: ffffffff8bc0a083
+R10: fffffbfff1781410 R11: 0000000000000000 R12: 1ffff920003dcf95
+R13: ffffffff8bc0a084 R14: 0000000000000003 R15: fffffbfff1781410
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000004 CR3: 0000000026091000 CR4: 0000000000350ee0
+Call Trace:
+ queued_write_lock include/asm-generic/qrwlock.h:97 [inline]
+ do_raw_write_lock+0x1ce/0x280 kernel/locking/spinlock_debug.c:207
+ exit_notify kernel/exit.c:667 [inline]
+ do_exit+0xcaf/0x2ae0 kernel/exit.c:845
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465ef9
+Code: Unable to access opcode bytes at RIP 0x465ecf.
+RSP: 002b:00007ffd63249718 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 000000000000001e RCX: 0000000000465ef9
+RDX: 000000000041920b RSI: ffffffffffffffbc RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 00007ffd63249810
 
 
-> On Feb 23, 2021, at 5:56 AM, Baoquan He <bhe@redhat.com> wrote:
->=20
-> On 02/23/21 at 08:01pm, Kairui Song wrote:
->> On Thu, Feb 18, 2021 at 10:03 AM Baoquan He <bhe@redhat.com> wrote:
->>>=20
->>> On 02/11/21 at 10:08am, Saeed Mirzamohammadi wrote:
-> ...
->>>> diff --git a/arch/Kconfig b/arch/Kconfig
->>>> index af14a567b493..f87c88ffa2f8 100644
->>>> --- a/arch/Kconfig
->>>> +++ b/arch/Kconfig
->>>> @@ -14,6 +14,30 @@ menu "General architecture-dependent options"
->>>> config CRASH_CORE
->>>>      bool
->>>>=20
->>>> +if CRASH_CORE
->>>> +
->>>> +config CRASH_AUTO_STR
->>>> +     string "Memory reserved for crash kernel"
->>>> +     depends on CRASH_CORE
->>>> +     default "1G-64G:128M,64G-1T:256M,1T-:512M"
->>>> +     help
->>>> +       This configures the reserved memory dependent
->>>> +       on the value of System RAM. The syntax is:
->>>> +       crashkernel=3D<range1>:<size1>[,<range2>:<size2>,...][@offset]
->>>> +                   range=3Dstart-[end]
->>>> +
->>>> +       For example:
->>>> +           crashkernel=3D512M-2G:64M,2G-:128M
->>>> +
->>>> +       This would mean:
->>>> +
->>>> +           1) if the RAM is smaller than 512M, then don't reserve any=
-thing
->>>> +              (this is the "rescue" case)
->>>> +           2) if the RAM size is between 512M and 2G (exclusive), the=
-n reserve 64M
->>>> +           3) if the RAM size is larger than 2G, then reserve 128M
->>>> +
->>>> +endif # CRASH_CORE
->>>=20
->>> Wondering if this CRASH_CORE ifdeffery is a little redundent here
->>> since CRASH_CORE dependency has been added. Except of this, I like this
->>> patch. As we discussed in private threads, we can try to push it into
->>> mainline and continue improving later.
->>>=20
->>=20
->> I believe "if CRASH_CORE" is not needed as it already "depends on
->> CRASH_CORE", tested with CRASH_CORE=3Dy or 'not set', it just works.
->=20
-> Thanks for testing and confirmation, Kairui.
->=20
-> Saeed, can you post a v4 with CRASH_CORE ifdeffery removed? Maybe this
-> week?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks Kairui and Baoquan for testing and review. I just sent the v4. Hope =
-we move forward and apply this week.
-
-Saeed
-
->=20
-> Thanks
-> Baoquan
->=20
->>=20
->>>> +
->>>> config KEXEC_CORE
->>>>      select CRASH_CORE
->>>>      bool
->>>> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
->>>> index 106e4500fd53..ab0a2b4b1ffa 100644
->>>> --- a/kernel/crash_core.c
->>>> +++ b/kernel/crash_core.c
->>>> @@ -7,6 +7,7 @@
->>>> #include <linux/crash_core.h>
->>>> #include <linux/utsname.h>
->>>> #include <linux/vmalloc.h>
->>>> +#include <linux/kexec.h>
->>>>=20
->>>> #include <asm/page.h>
->>>> #include <asm/sections.h>
->>>> @@ -250,6 +251,12 @@ static int __init __parse_crashkernel(char *cmdli=
-ne,
->>>>      if (suffix)
->>>>              return parse_crashkernel_suffix(ck_cmdline, crash_size,
->>>>                              suffix);
->>>> +#ifdef CONFIG_CRASH_AUTO_STR
->>>> +     if (strncmp(ck_cmdline, "auto", 4) =3D=3D 0) {
->>>> +             ck_cmdline =3D CONFIG_CRASH_AUTO_STR;
->>>> +             pr_info("Using crashkernel=3Dauto, the size chosen is a =
-best effort estimation.\n");
->>>> +     }
->>>> +#endif
->>>>      /*
->>>>       * if the commandline contains a ':', then that's the extended
->>>>       * syntax -- if not, it must be the classic syntax
->>>> --
->>>> 2.27.0
->>>>=20
->>>=20
->>>=20
->>> _______________________________________________
->>> kexec mailing list
->>> kexec@lists.infradead.org
->>> https://urldefense.com/v3/__http://lists.infradead.org/mailman/listinfo=
-/kexec__;!!GqivPVa7Brio!MaBAPZr-j_WcNPodmosfVOyl0ipO6u22Ex-7gSi--wlwbmTgmkh=
-sf-0yftioew3jnkS5WV5v$=20
->>>=20
->>=20
->>=20
->> --=20
->> Best Regards,
->> Kairui Song
->>=20
->=20
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
