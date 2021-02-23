@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878C6322771
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DD4322768
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbhBWJEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 04:04:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbhBWJDE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:03:04 -0500
-Received: from baptiste.telenet-ops.be (unknown [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895ADC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 01:02:23 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:254f:253d:debc:790b])
-        by baptiste.telenet-ops.be with bizsmtp
-        id YZ262401Z1v7dkx01Z266N; Tue, 23 Feb 2021 10:02:06 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lETa2-000zVr-AV; Tue, 23 Feb 2021 10:02:06 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lETa1-0060Pd-F7; Tue, 23 Feb 2021 10:02:05 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Michael Tretter <m.tretter@pengutronix.de>
-Cc:     Andrej Valek <andrej.valek@siemens.com>,
-        linux-input@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] Input: st1232 - Fix NORMAL vs. IDLE state handling
-Date:   Tue, 23 Feb 2021 10:02:01 +0100
-Message-Id: <20210223090201.1430542-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S232143AbhBWJDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:03:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53216 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231946AbhBWJDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 04:03:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614070935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5koVez20mNgf7BKjuFfJWAK0N/ZrPb1QkrYfLF638OI=;
+        b=idECt/f50Pzp1dJg3qe1CDyJcsxiP34a4MxtFMt91nk8m1JoRj50h+t6DkF5xWuzQZ3Uo3
+        wk9DmvgVLgDxH+Tl6wCFaGTo4Jn4fBHOp5zHZ7YWXlv8mhY9Dnk/qYwhIEvX5n1bDpHjIx
+        /hDr/2CoCxxZCigEu6Fo+2QiSxyWXtk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 83408AC6E;
+        Tue, 23 Feb 2021 09:02:15 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 10:02:14 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     stable@vger.kernel.org
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "J. Avila" <elavila@google.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] printk: avoid prb_first_valid_seq() where possible
+Message-ID: <YDTEls/iLBQEtTTn@alley>
+References: <20210211173152.1629-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211173152.1629-1-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NORMAL (0x0) and IDLE (0x4) are really two different states.  Hence you
-cannot check for both using a bitmask, as that checks for IDLE only,
-breaking operation for devices that are in NORMAL state.
+On Thu 2021-02-11 18:37:52, John Ogness wrote:
+> If message sizes average larger than expected (more than 32
+> characters), the data_ring will wrap before the desc_ring. Once the
+> data_ring wraps, it will start invalidating descriptors. These
+> invalid descriptors hang around until they are eventually recycled
+> when the desc_ring wraps. Readers do not care about invalid
+> descriptors, but they still need to iterate past them. If the
+> average message size is much larger than 32 characters, then there
+> will be many invalid descriptors preceding the valid descriptors.
+> 
+> The function prb_first_valid_seq() always begins at the oldest
+> descriptor and searches for the first valid descriptor. This can
+> be rather expensive for the above scenario. And, in fact, because
+> of its heavy usage in /dev/kmsg, there have been reports of long
+> delays and even RCU stalls.
+> 
+> For code that does not need to search from the oldest record,
+> replace prb_first_valid_seq() usage with prb_read_valid_*()
+> functions, which provide a start sequence number to search from.
+> 
+> Fixes: 896fbe20b4e2333fb55 ("printk: use the lockless ringbuffer")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Reported-by: J. Avila <elavila@google.com>
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-Fix the wait function to report either state as ready.
+Could you please push this fix into the stable releases
+based on 5.10 and 5.11, please?
 
-Fixes: 6524d8eac258452e ("Input: st1232 - add IDLE state as ready condition")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/input/touchscreen/st1232.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+The patch fixes a visible performance regression. It has
+landed in the mainline as the commit
+13791c80b0cdf54d92fc542 ("printk: avoid prb_first_valid_seq() where
+possible").
 
-diff --git a/drivers/input/touchscreen/st1232.c b/drivers/input/touchscreen/st1232.c
-index 885f0572488dd061..6abae665ca71d8ec 100644
---- a/drivers/input/touchscreen/st1232.c
-+++ b/drivers/input/touchscreen/st1232.c
-@@ -94,8 +94,13 @@ static int st1232_ts_wait_ready(struct st1232_ts_data *ts)
- 
- 	for (retries = 10; retries; retries--) {
- 		error = st1232_ts_read_data(ts, REG_STATUS, 1);
--		if (!error && ts->read_buf[0] == (STATUS_NORMAL | STATUS_IDLE | ERROR_NONE))
--			return 0;
-+		if (!error) {
-+			switch (ts->read_buf[0]) {
-+			case STATUS_NORMAL | ERROR_NONE:
-+			case STATUS_IDLE | ERROR_NONE:
-+				return 0;
-+			}
-+		}
- 
- 		usleep_range(1000, 2000);
- 	}
--- 
-2.25.1
+It should apply cleanly.
 
+Best Regards,
+Petr
