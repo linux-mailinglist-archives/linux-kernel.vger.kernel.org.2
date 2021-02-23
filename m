@@ -2,174 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D353322ED8
+	by mail.lfdr.de (Postfix) with ESMTP id E185D322ED9
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbhBWQfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 11:35:16 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:17018 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233389AbhBWQfN (ORCPT
+        id S233502AbhBWQfi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Feb 2021 11:35:38 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:58191 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233468AbhBWQfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:35:13 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NGRP62029750;
-        Tue, 23 Feb 2021 17:34:15 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=qiJao0/ysEkLSzLZfmMgPEk3xL+/xnEzNXWUrVhuTVU=;
- b=ToHT2D+u0wDc4hioDucSyBWmV0zXH74Oh+UAjfRElR7m8WnM+Z3luTIglZ4USsw/qwwC
- vhHgjcJCoQEmvFjcAaD/bsCR5eGqa4iUgr9TVvyymD3Vy3KBkxUJJZZy0AB398ZIGgxk
- 1YLHBX6yCYHkP3Lhv05P/5ugdAYZH6oi3aP/3Iaw3A83hU2D1kp5mHJwYKj/lYeuX3+s
- qhq+jJrC/BNs29vExKQOPDFFDzGi4VJWY4/6xTTyxg8ZCjcBLMl3V8uHBa0z9RAVwbWI
- 87tPweZwHXNJJ2rM6/73Y/qovVRVzwoHuI0bFOWLmdFtlHgAYOJuvbWyYhR6HDvNNXnE SA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36tree6a2n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 17:34:15 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 67FA010002A;
-        Tue, 23 Feb 2021 17:34:13 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 41BC62252A5;
-        Tue, 23 Feb 2021 17:34:13 +0100 (CET)
-Received: from lmecxl0572.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 23 Feb
- 2021 17:34:12 +0100
-Subject: Re: [PATCH v2 02/14] clk: stm32mp1: merge 'ck_hse_rtc' and 'ck_rtc'
- into one clock
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Etienne Carriere <etienne.carriere@st.com>,
-        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rob Herring" <robh+dt@kernel.org>, <marex@denx.de>
-CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210126090120.19900-1-gabriel.fernandez@foss.st.com>
- <20210126090120.19900-3-gabriel.fernandez@foss.st.com>
- <161285764074.418021.15522379930579131077@swboyd.mtv.corp.google.com>
- <5cc12945-0347-820c-1125-30ab4a947a00@foss.st.com>
- <161369805767.1254594.5233096495913117772@swboyd.mtv.corp.google.com>
-From:   "gabriel.fernandez@foss.st.com" <gabriel.fernandez@foss.st.com>
-Message-ID: <b66530be-2b01-0306-ad56-af00e8e1d0a5@foss.st.com>
-Date:   Tue, 23 Feb 2021 17:34:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 23 Feb 2021 11:35:36 -0500
+Received: from xps13 (lfbn-tou-1-972-113.w86-210.abo.wanadoo.fr [86.210.203.113])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 1020A24000E;
+        Tue, 23 Feb 2021 16:34:50 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 17:34:49 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Md Sadre Alam <mdalam@codeaurora.org>
+Cc:     mani@kernel.org, boris.brezillon@collabora.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: update last code word register
+Message-ID: <20210223173449.1a55df1e@xps13>
+In-Reply-To: <1614024267-12529-1-git-send-email-mdalam@codeaurora.org>
+References: <1614024267-12529-1-git-send-email-mdalam@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <161369805767.1254594.5233096495913117772@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-23_08:2021-02-23,2021-02-23 signatures=0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On 2/19/21 2:27 AM, Stephen Boyd wrote:
-> Quoting gabriel.fernandez@foss.st.com (2021-02-12 00:08:40)
->> On 2/9/21 9:00 AM, Stephen Boyd wrote:
->>> Quoting gabriel.fernandez@foss.st.com (2021-01-26 01:01:08)
->>>> From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
->>>>
->>>> 'ck_rtc' has multiple clocks as input (ck_hsi, ck_lsi, and ck_hse).
->>>> A divider is available only on the specific rtc input for ck_hse.
->>>> This Merge will facilitate to have a more coherent clock tree
->>>> in no trusted / trusted world.
->>>>
->>>> Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
->>>> ---
->>>>    drivers/clk/clk-stm32mp1.c | 49 +++++++++++++++++++++++++++++++++-----
->>>>    1 file changed, 43 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/drivers/clk/clk-stm32mp1.c b/drivers/clk/clk-stm32mp1.c
->>>> index 35d5aee8f9b0..0e1d4427a8df 100644
->>>> --- a/drivers/clk/clk-stm32mp1.c
->>>> +++ b/drivers/clk/clk-stm32mp1.c
->>>> @@ -245,7 +245,7 @@ static const char * const dsi_src[] = {
->>>>    };
->>>>    
->>>>    static const char * const rtc_src[] = {
->>>> -       "off", "ck_lse", "ck_lsi", "ck_hse_rtc"
->>>> +       "off", "ck_lse", "ck_lsi", "ck_hse"
->>>>    };
->>>>    
->>>>    static const char * const mco1_src[] = {
->>>> @@ -1031,6 +1031,42 @@ static struct clk_hw *clk_register_cktim(struct device *dev, const char *name,
->>>>           return hw;
->>>>    }
->>>>    
->>>> +/* The divider of RTC clock concerns only ck_hse clock */
->>>> +#define HSE_RTC 3
->>>> +
->>>> +static unsigned long clk_divider_rtc_recalc_rate(struct clk_hw *hw,
->>>> +                                                unsigned long parent_rate)
->>>> +{
->>>> +       if (clk_hw_get_parent(hw) == clk_hw_get_parent_by_index(hw, HSE_RTC))
->>>> +               return clk_divider_ops.recalc_rate(hw, parent_rate);
->>>> +
->>>> +       return parent_rate;
->>>> +}
->>>> +
->>>> +static long clk_divider_rtc_round_rate(struct clk_hw *hw, unsigned long rate,
->>>> +                                      unsigned long *prate)
->>>> +{
->>>> +       if (clk_hw_get_parent(hw) == clk_hw_get_parent_by_index(hw, HSE_RTC))
->>> This clk op can be called at basically any time. Maybe this should use
->>> the determine rate op and then look to see what the parent is that comes
->>> in via the rate request structure? Or is the intention to keep this
->>> pinned to one particular parent? Looking at this right now it doesn't
->>> really make much sense why the current parent state should play into
->>> what rate the clk can round to, unless there is some more clk flags
->>> going on that constrain the ability to change this clk's parent.
->> Yes the intention is to keep this pinned for one particular parent.
->>
->> This divider is only applied on the 4th input of the MUX of the RTC and
->>
->> doesn't affect the HSE frequency for all the system.
->>
->>
->> Oscillators
->>    -----
->> | lse |----------------+----------------> ck_lse
->>    -----                 |
->>    -----                 |
->> | lsi |------------+--------------------> ck_lsi
->>    -----             |   |
->>                      |   |
->>    -----             |   |
->> | hse |----+-------|---|----------------> ck_hse
->>    -----     |       |   |
->>              |       |   |         |\ mux
->>              |       |   |  OFF -->| \
->>              |       |   |         |  \     gate
->>              |       |   --------->|  |     ---
->>              |       |             |  |--->|   |--> ck_rtc
->>              |       ------------->|  |     ---
->>              |    -----------      |  |
->>               ----| % 1 to 64 |--->| /
->>                    -----------     |/
->>                      divider
->>
->> I manage the RTC with a clock composite with a gate a mux and a specific
->> rate ops for hse input.
->>
->> That why i need to the parent state.
->>
-> So would using determine_rate op instead of round_rate op help here? That
-> will provide the current parent rate and hw pointer in the rate request
-> structure.
+Md Sadre Alam <mdalam@codeaurora.org> wrote on Tue, 23 Feb 2021
+01:34:27 +0530:
 
-yes u understand what you mean, i will send you a v3.
+> From QPIC version 2.0 onwards new register got added to read last
 
-Many Thanks.
+                               a new
 
+> codeword. This change will add the READ_LOCATION_LAST_CW_n register.
+
+            Add support for this READ_LOCATION_LAST_CW_n register.
+
+> 
+> For first three code word READ_LOCATION_n register will be
+> use.For last code word READ_LOCATION_LAST_CW_n register will be
+> use.
+
+"
+In the case of QPIC v2, codewords 0, 1 and 2 will be accessed through
+READ_LOCATION_n, while codeword 3 will be accessed through
+READ_LOCATION_LAST_CW_n.
+"
+
+When I read my own sentence, I feel that there is something wrong.
+If there are only 4 codewords, I guess a QPIC v2 is able to use
+READ_LOCATION_3 or READ_LOCATION_LAST_CW_0 interchangeably. Isn't it?
+
+I guess the point of having these "last_cw_n" registers is to support
+up to 8 codewords, am I wrong? If this the case, the current patch
+completely fails doing that I don't get the point of such change.
+
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> ---
+
+[...]
+
+>  /* helper to configure address register values */
+> @@ -700,8 +727,9 @@ static void set_address(struct qcom_nand_host *host, u16 column, int page)
+>   *
+>   * @num_cw:		number of steps for the read/write operation
+>   * @read:		read or write operation
+> + * @cw	:		which code word
+>   */
+> -static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
+> +static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, int cw)
+>  {
+>  	struct nand_chip *chip = &host->chip;
+>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> @@ -740,7 +768,7 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
+>  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+>  
+>  	if (read)
+> -		nandc_set_read_loc(chip, 0, 0, 0, host->use_ecc ?
+> +		nandc_set_read_loc(chip, cw, 0, 0, host->use_ecc ?
+>  				   host->cw_data : host->cw_size, 1);
+>  }
+>  
+> @@ -1111,18 +1139,34 @@ static void config_nand_page_read(struct nand_chip *chip)
+>  		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+>  }
+>  
+> +/* helper to check which location register should be use for this
+
+    /*
+     * Check which location...
+
+> + * code word. NAND_READ_LOCATION or NAND_READ_LOCATION_LAST_CW
+> + */
+> +static bool config_loc_last_reg(struct nand_chip *chip, int cw)
+> +{
+> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +
+> +	if (nandc->props->qpic_v2 && qcom_nandc_is_last_cw(ecc, cw))
+> +		return true;
+
+Not sure this is really useful, it's probably better to drop this
+helper and just use...
+
+> +
+> +	return false;
+> +}
+>  /*
+>   * Helper to prepare DMA descriptors for configuring registers
+>   * before reading each codeword in NAND page.
+>   */
+>  static void
+> -config_nand_cw_read(struct nand_chip *chip, bool use_ecc)
+> +config_nand_cw_read(struct nand_chip *chip, bool use_ecc, int cw)
+>  {
+>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> +	int reg = NAND_READ_LOCATION_0;
+> +
+> +	if (config_loc_last_reg(chip, cw))
+
+...     if (nandc->props->qpic_v2 && qcom_nandc_is_lastcw()) here.
+
+> +		reg = NAND_READ_LOCATION_LAST_CW_0;
+>  
+>  	if (nandc->props->is_bam)
+> -		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+> -			      NAND_BAM_NEXT_SGL);
+> +		write_reg_dma(nandc, reg, 4, NAND_BAM_NEXT_SGL);
+>  
+>  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+>  	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+> @@ -1142,12 +1186,12 @@ config_nand_cw_read(struct nand_chip *chip, bool use_ecc)
+
+Thanks,
+Miquèl
