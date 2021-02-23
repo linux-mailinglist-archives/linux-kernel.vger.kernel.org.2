@@ -2,82 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01099322516
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E5432251C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhBWFMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 00:12:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51008 "EHLO
+        id S230270AbhBWFPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 00:15:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhBWFMl (ORCPT
+        with ESMTP id S230105AbhBWFP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 00:12:41 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E8DC061574;
-        Mon, 22 Feb 2021 21:12:00 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id g1so55709687ljj.13;
-        Mon, 22 Feb 2021 21:12:00 -0800 (PST)
+        Tue, 23 Feb 2021 00:15:28 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B98C061574;
+        Mon, 22 Feb 2021 21:14:48 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id z5so4863352pfe.3;
+        Mon, 22 Feb 2021 21:14:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MqKNcCWFmGpjZ57u9e3bWqEH/En69wSXNYW/psMEX2A=;
-        b=XBIU3ShVfEYVkEfsJoA0zfHk+Idyqi6d6Z7/C5x061wFD604LIHtE2G3rdjNtmRI6C
-         aoXib0vcLdPaLrUwEia9MaVe2NbvprPBnctkHWN03strp7uoWDb+pnS5SlynldbNDVPB
-         Jc6e+OOazOyAZic0DCJxMg8nWKnYb0uuwlfbPIOMcyE53QXmEstQrz67QU0CoU0gHEdb
-         pkmpWFAbHjNiFak7P7pjWGXdjHxn7uM0MwdtXuvfaNz2kaxTue+UMWqHxGWvVT9oK9En
-         ahEPGlsFDCkRjvsvYyvEb/I3PMlw2N9vFPGQWSQzFprBQXd7iBG02u0hd+2uXMTtvZtb
-         47iw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Sv+2xHnuMxoZYHZzlSKqDTkD28ImMvhuxWF1qu/hw2M=;
+        b=oF1hpcgZsgJA6Wz5ZkZHxTnYjw2yq4knr7L8Dr3qfv5V27hA1y1dFyuRPyBl9Ccb51
+         Z0Zed4wnMmPLgjnjNfJTHiyWagan3uwpw4DxXtvv2huyGbqYU8eCt1WgOs4CgGlpGfDj
+         PZclBXyUm5Cd6VWrcS0yrJlfB26onKqMJTIkyNOLBuP56+YGQwCGA62q93J8GAWGt6ll
+         v4HQAGFTAT+f8K0jNfrp6110o0A7Wn1Pfi46UoDlD3CXobjF1DHA3lGsq5YXwKYFMuXi
+         HTCTuK+CDmHoocyGsC4leG3Ot+cP+y//Pv60VgrfydmzlRFzZsuXWsx3gFpOcCB/6ie6
+         wmEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MqKNcCWFmGpjZ57u9e3bWqEH/En69wSXNYW/psMEX2A=;
-        b=MgAssONdBlUL3YRBLL7VYKEFDe2eKEjEZYFcZwXKOc7Zg/6Z/geyfafpMvC6F1Bjza
-         InshzVf2vOZ+eNlIEfG9vO9I4u0GCRhrhJjqnN241x0He5lECWX/S8myoAExIsxapmt4
-         dshWR9Gmh4NoOIZTMTZZMgqwvuSjn5mRqFKCfTyV/M45kqncPaIsAIhgUjXAZzjCWq8W
-         AaJ8CdjMMPIoxga6ksl5g55G2X9p/QE0Z3BjPuecyvYbj0/kY9r/yrK166pDx41uZ9gr
-         U2GNUTIuZDR8n7fDjJH2E25IcpZm7+P4fPliTkahEVsIG8N63xs0sSK6Ca/RtDzXUraB
-         7Tnw==
-X-Gm-Message-State: AOAM533OIkpsSeHN1twfIm8HXEO5VObKTf0HwnYUvC907QP+NqO9Gn62
-        SGxCvV50FvYvOrmTXym6RqA=
-X-Google-Smtp-Source: ABdhPJyrVHXWEDuuAo5M4a3B67jAnmirbj+V3eqJCAz0dRDjZXUlzTZ5E5rz/CGQq1K0k5QoUiuv1Q==
-X-Received: by 2002:a05:651c:54a:: with SMTP id q10mr15763669ljp.454.1614057119252;
-        Mon, 22 Feb 2021 21:11:59 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id 124sm229007lfh.252.2021.02.22.21.11.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 21:11:58 -0800 (PST)
-Subject: Re: [bug] RTC alarm vs system suspend race condition
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>
-References: <0a82c37e-ba83-a853-1db8-ba267f7728d7@gmail.com>
- <YC7GVnhsOmQ3uCnL@piout.net>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <6ca90632-c149-5f8e-28c5-1a2a78c3e42b@gmail.com>
-Date:   Tue, 23 Feb 2021 08:11:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Sv+2xHnuMxoZYHZzlSKqDTkD28ImMvhuxWF1qu/hw2M=;
+        b=ADtGMgrIZeus+xvDITF1SwgGVHhX7Pp96vFpy39XyovFAejlF/9bU69azeiYD/hYxX
+         lz1ezM9sGJ01bIkj8mHTKoKN1LGNjQNCQmNMVSjfJPuHsiovRqreNIm+an/G29Zhls7i
+         IAnHKGLAKeZ5XbqQG6auNvml3FUqd8jgDr2R0jKfWkcZV+SOHDxItBBVGuRCtxVgxUjb
+         tXwfnVvJZSGXPX84HCEDbAxlj3Uc0zzNx9YrIcsPJzwCoixE4UpgirTkKWP2tQDf/I6R
+         rO27OOdVZSTjTSd/8+Hi+nl84ysuKgzUxt4CQiwj9tQlCh94Ni4xHllnCh+8IrD66ImZ
+         9A6g==
+X-Gm-Message-State: AOAM532ZigoEmJ+r+GbpnYiRf+3RvhXWG+82btLL1TbZC6cNhIkVJf2j
+        zmUs6E6bKNebt6e48b7Whn8=
+X-Google-Smtp-Source: ABdhPJyyTbQX1xY/5LRGeepQyY86TC3qofoANb1P6IBA6o/d/HQnaXFWhWzu47ogWesSYM3SPOECmQ==
+X-Received: by 2002:aa7:8b48:0:b029:1ec:a315:bdbd with SMTP id i8-20020aa78b480000b02901eca315bdbdmr708936pfd.51.1614057287907;
+        Mon, 22 Feb 2021 21:14:47 -0800 (PST)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id i2sm1233145pjj.35.2021.02.22.21.14.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 21:14:46 -0800 (PST)
+Date:   Tue, 23 Feb 2021 14:14:40 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>, kernel@pengutronix.de,
+        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de
+Subject: Re: [PATCH v8 12/22] counter: Rename counter_count_function to
+ counter_function
+Message-ID: <YDSPQFMd0sqUBUaq@shinobu>
+References: <cover.1613131238.git.vilhelm.gray@gmail.com>
+ <355aaaaf44b36c5de1704e4074a4671abcb9699d.1613131238.git.vilhelm.gray@gmail.com>
+ <20210214171340.3cc7b686@archlinux>
+ <2b6913ac-0802-f83e-06ba-e89d5318dbd7@lechnology.com>
 MIME-Version: 1.0
-In-Reply-To: <YC7GVnhsOmQ3uCnL@piout.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="CvbW7fZyFWvbVNT8"
+Content-Disposition: inline
+In-Reply-To: <2b6913ac-0802-f83e-06ba-e89d5318dbd7@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-18.02.2021 22:56, Alexandre Belloni пишет:
-> Hello,
-> 
-> I just wanted to thank you for reporting this issue. I didn't yet have
-> the time to work on that but this is on my radar. There is also another
-> issue when resuming and I'm not yet sure how we can solve it for all
-> platforms.
 
-No problems, please feel free to ping us if you'll have something to test.
+--CvbW7fZyFWvbVNT8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Feb 20, 2021 at 10:56:13AM -0600, David Lechner wrote:
+> On 2/14/21 11:13 AM, Jonathan Cameron wrote:
+> > On Fri, 12 Feb 2021 21:13:36 +0900
+> > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+> >=20
+> >> The phrase "Counter Count function" is verbose and unintentionally
+> >> implies that function is a Count extension. This patch adjusts the
+> >> Counter subsystem code to use the more direct "Counter function" phrase
+> >> to make the intent of this code clearer. The phrase "Count action" is
+> >> adjusted herein as well for the same reason.
+> >>
+> >> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
+> >> Cc: Patrick Havelange <patrick.havelange@essensium.com>
+> >> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> >> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
+> >> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> >> Cc: Alexandre Torgue <alexandre.torgue@st.com>
+> >> Cc: David Lechner <david@lechnology.com>
+> >> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> >=20
+> > I agree this makes sense in the counter core code, but in the drivers
+> > it may not be quite so obvious we are talking about a counter function
+> > given some of the bits of hardware do a number of other things.
+> >=20
+> > I guess up to the various driver maintainers on whether they
+> > think the new meaning is clear enough!
+> >=20
+> > Jonathan
+> >=20
+>=20
+> TBH, I think "counter count function" makes more sense to me.
+
+That's a fair point. I'll revert this for the individual drivers and
+leave it up to the maintainers if they want to adjust their namings.
+Instead, I'll limit the name changes to the counter core code.
+
+William Breathitt Gray
+
+
+--CvbW7fZyFWvbVNT8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmA0jzYACgkQhvpINdm7
+VJLBQg/9GFXoFuC1SgrhZBOf3aVmvp31oECQ/jZrZRo78seSdAy7lyxzby6V8asO
+adikRiaumev/b4NJStCUMH9qZ7P+nGRI74Yhd0HFaowh3vHm4DKBZfxcwOuh9sL7
+8AUUpqaWFYXPnTn7G/JJv2nVGGlFH8FecIqOjYroMHhI6b8PiueMgqhHnL4bxlyX
+AP1zJYt+EztFOCiLB4hglEbc/qS8lTzqE0qcBwAF8RaUC+bqeiFNb3HrrnT7j1dw
+j+4o9KyuJ8crppn81jlvU54MM457MMh01sAW6KnvFWxFaUXE7LI/jAV0v3vuX4yi
+Ag9kSHRT8zTkPtcQSFApcjwaWRVC7bkvmOLuNl3X4JDJtqb5soVvf5vULzBiUcrf
+DtwK3Xiw7LXV8stKJsz8Ot9xASj47e+R6tmJZFmCDvb/M4zK3CZOAmZvYGuxv81t
+Mi3SM1MyIBZScC+5Pjydxf5kxpTKfcTYoKYaZ/szQtO3bQMP5iyuiKlInnvj0JSv
+ZP89E8JBuihK3C0HGLx4vx3L8n8qaXzoBfkPijnZh+RD2FmTGHuws7YSVkbdApao
+jhSh+GnWr6kc+sH/Jo3QhU7I/rwtscxPmtKuhrptLt1D6C9zR6AKgmNWgd8jb9pX
+OfT2odtPtlnQZZONRO/UgPnQYk2rWTGvOaaz+gerWbsAzIHiEvM=
+=tRzo
+-----END PGP SIGNATURE-----
+
+--CvbW7fZyFWvbVNT8--
