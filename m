@@ -2,307 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DBF322C0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D35B322C0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhBWOQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:16:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53702 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231818AbhBWOQk (ORCPT
+        id S232938AbhBWOSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:18:24 -0500
+Received: from mout.kundenserver.de ([217.72.192.73]:43653 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232331AbhBWOSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:16:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614089712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FJIy5VYftDFzcS1eI6DBNLyuIitPJ8z3PjzMyrSe9Dk=;
-        b=MpBFGS8cJGrp3n0dhExmVOT9Y9QunFqlbJA3oTQ2s4g4+v5IOetrPDpFLSPvkfk7KcNtdF
-        rXR12PQFaZbcXeGYOaL113X0CL0P6JBN0f9ojx8xj4FcVYT/w5+n6vaOVk+q4orqBCxAqG
-        iKE5JdVUgZjWh35fMLLnSFo384YgxA0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-USE3KM3IMR2FvObFgKt_bg-1; Tue, 23 Feb 2021 09:15:09 -0500
-X-MC-Unique: USE3KM3IMR2FvObFgKt_bg-1
-Received: by mail-wm1-f72.google.com with SMTP id s192so1247304wme.6
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:15:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FJIy5VYftDFzcS1eI6DBNLyuIitPJ8z3PjzMyrSe9Dk=;
-        b=qo+3uxP2HPKJiT+S+JAOMwaC+7zyKofbSqAmbhDue+aq42Rew8T/GuvsshMinp1dEl
-         jMoUnEKisIgMd3ENbiQ4ZiItpc3v80efEKkvUENyVmVgZvosOtXysT7wVX8muWdmZH13
-         R3oyw/22jBCEOoS55q5Mr3/vcO+6Ag6ooO58eosH9yaG9h2dAkokqFVCAnYTc8lu/nTB
-         m3kmpRJ6UTrsj92E4MfTQTVx+t4ae6Ozy+VayHS7S7n2/AyMBQ0bFPGIEpdFdrlzFfTg
-         AIwOwtl2IWuoPH6PpdynksNH4t/tfQy5kQKQf2LevTDT0PpbECxfx9JnrAhlTztWW4rk
-         Savg==
-X-Gm-Message-State: AOAM53062kjXiXWhPGq1WX4ggQPqwODFbmX9ZKB4zvWWu2exYMjOe5d8
-        SLyc5LoxEe3IDXWPAmQXU6lweXzZ2IxGho6rzbnvagj/znNJXN81ox0oydamUhPKGvGcNV4NpeU
-        lZbJv1O/wfl/wtJxf66B1kdQ9
-X-Received: by 2002:adf:ab52:: with SMTP id r18mr1516304wrc.65.1614089708384;
-        Tue, 23 Feb 2021 06:15:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxJv3H61BfIS/umFAmEQYS6QIB/suGeYp9cK+970moPYeLP1UMZPtXjRprXGHZ4qx4R6GVjHA==
-X-Received: by 2002:adf:ab52:: with SMTP id r18mr1516282wrc.65.1614089708203;
-        Tue, 23 Feb 2021 06:15:08 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id u4sm31549861wrr.37.2021.02.23.06.15.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 06:15:07 -0800 (PST)
-Date:   Tue, 23 Feb 2021 15:15:04 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v5 11/19] virtio/vsock: dequeue callback for
- SOCK_SEQPACKET
-Message-ID: <20210223141504.eojm7kgcpswrez6j@steredhat>
-References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
- <20210218053940.1068164-1-arseny.krasnov@kaspersky.com>
+        Tue, 23 Feb 2021 09:18:18 -0500
+Received: from mail.cetitecgmbh.com ([87.190.42.90]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1Mdvyi-1lnKzS3eCM-00b0aU; Tue, 23 Feb 2021 15:15:24 +0100
+Received: from pflvmailgateway.corp.cetitec.com (unknown [127.0.0.1])
+        by mail.cetitecgmbh.com (Postfix) with ESMTP id 73AB41E01EB;
+        Tue, 23 Feb 2021 14:15:22 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at cetitec.com
+Received: from mail.cetitecgmbh.com ([127.0.0.1])
+        by pflvmailgateway.corp.cetitec.com (pflvmailgateway.corp.cetitec.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id VmzJgTaF5xPP; Tue, 23 Feb 2021 15:15:22 +0100 (CET)
+Received: from pflmari.corp.cetitec.com (21-usr-pf-main.vpn.it.cetitec.com [10.8.5.21])
+        by mail.cetitecgmbh.com (Postfix) with ESMTPSA id 2CA121E01EA;
+        Tue, 23 Feb 2021 15:15:22 +0100 (CET)
+Received: by pflmari.corp.cetitec.com (Postfix, from local account)
+Date:   Tue, 23 Feb 2021 15:15:21 +0100
+From:   Alex Riesen <alexander.riesen@cetitec.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     nouveau@lists.freedesktop.org, Martin Peres <martin.peres@free.fr>,
+        Jeremy Cline <jcline@redhat.com>,
+        Simon Ser <contact@emersion.fr>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Takashi Iwai <tiwai@suse.de>, James Jones <jajones@nvidia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] drm/nouveau/kms/nv50-: Report max cursor size to
+ userspace
+Message-ID: <YDUN+Re/alMVL0Zn@pflmari>
+References: <20210119015415.2511028-1-lyude@redhat.com>
+ <20210119015415.2511028-2-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218053940.1068164-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <20210119015415.2511028-2-lyude@redhat.com>
+X-Provags-ID: V03:K1:OyqQZwzOO6IF8d6ExZM9WpBmYey37Dqo2pTpIaNdzhHny21aso9
+ h9QRW0YUsgsKhN2jbE1zQlEowesa1sbZjl74BpdeCiwCjsHcDZCfjho0irbPPx1/QDzq+K0
+ tyMd+mno2hxFag40eKo36u+8W6EfsthzItJotElpVDj3/DHoL1e8MLwPNtqkEISL8uW4s/U
+ xQTFFT0qoIwQAZcfUUirA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TJHtvNtb7g8=:8384eCnJpXz5HeD1Prztbo
+ UDwbYnh0+eY779QgS4xAqdrRhUO5J+U1jC/lc1UC15opcUmaDBjAWuw5meMJbaMnp88mkKM5B
+ VTIV4IKCTTBhzqBXSPRWF+55fAInU1Dy6KDM45//ZI2vVsNhmrSYc1SQ+drpdMou+hNCgbYX0
+ 17gtRnG1D8kouAlcb3vvallL9jZhUlS2lrXD9Aoqu2L/SJFxqYL4FgbT5jR8wsk85mXy3cXu+
+ nKLGePSzS4V5FXqSF2191SmfuwS/6yIKDlftgMtPZEYFXLFG7ZL65ML3TK777lvUY7jFq+oMf
+ uSU0bKpgoQAUAoeg4DdpkHUQEsr5WE0bPwg6y7JLmCwQ/Ygc8+JVmJv2IKKybSfjFGaxo3qzF
+ e4tieRefWi9yT8pYuUgPMX0s8c0tfDHIBYIuhlyvy7k63SdE39qCsu4rOy6G/AbtdvgGID6OG
+ PUNAYSPSNw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 08:39:37AM +0300, Arseny Krasnov wrote:
->This adds transport callback and it's logic for SEQPACKET dequeue.
->Callback fetches RW packets from rx queue of socket until whole record
->is copied(if user's buffer is full, user is not woken up). This is done
->to not stall sender, because if we wake up user and it leaves syscall,
->nobody will send credit update for rest of record, and sender will wait
->for next enter of read syscall at receiver's side. So if user buffer is
->full, we just send credit update and drop data. If during copy SEQ_BEGIN
->was found(and not all data was copied), copying is restarted by reset
->user's iov iterator(previous unfinished data is dropped).
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> include/linux/virtio_vsock.h            |  10 +++
-> include/uapi/linux/virtio_vsock.h       |  16 ++++
-> net/vmw_vsock/virtio_transport_common.c | 114 ++++++++++++++++++++++++
-> 3 files changed, 140 insertions(+)
+Lyude Paul, Tue, Jan 19, 2021 02:54:13 +0100:
+> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> index c6367035970e..5f4f09a601d4 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> @@ -2663,6 +2663,14 @@ nv50_display_create(struct drm_device *dev)
+>  	else
+>  		nouveau_display(dev)->format_modifiers = disp50xx_modifiers;
+>  
+> +	if (disp->disp->object.oclass >= GK104_DISP) {
+> +		dev->mode_config.cursor_width = 256;
+> +		dev->mode_config.cursor_height = 256;
+> +	} else {
+> +		dev->mode_config.cursor_width = 64;
+> +		dev->mode_config.cursor_height = 64;
+> +	}
+> +
+>  	/* create crtc objects to represent the hw heads */
+>  	if (disp->disp->object.oclass >= GV100_DISP)
+>  		crtcs = nvif_rd32(&device->object, 0x610060) & 0xff;
 
-This patch LGTM, maybe we only need to change 'msg_cnt' as we discussed 
-on virtio-comment, but let's see if there are any other comments.
+This change broke X cursor in my setup, and reverting the commit restores it.
 
->
->diff --git a/include/linux/virtio_vsock.h 
->b/include/linux/virtio_vsock.h
->index dc636b727179..003d06ae4a85 100644
->--- a/include/linux/virtio_vsock.h
->+++ b/include/linux/virtio_vsock.h
->@@ -36,6 +36,11 @@ struct virtio_vsock_sock {
-> 	u32 rx_bytes;
-> 	u32 buf_alloc;
-> 	struct list_head rx_queue;
->+
->+	/* For SOCK_SEQPACKET */
->+	u32 user_read_seq_len;
->+	u32 user_read_copied;
->+	u32 curr_rx_msg_cnt;
-> };
->
-> struct virtio_vsock_pkt {
->@@ -80,6 +85,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
-> 			       struct msghdr *msg,
-> 			       size_t len, int flags);
->
->+int
->+virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
->+				   struct msghdr *msg,
->+				   int flags,
->+				   bool *msg_ready);
-> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
-> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
->
->diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
->index 1d57ed3d84d2..cf9c165e5cca 100644
->--- a/include/uapi/linux/virtio_vsock.h
->+++ b/include/uapi/linux/virtio_vsock.h
->@@ -63,8 +63,14 @@ struct virtio_vsock_hdr {
-> 	__le32	fwd_cnt;
-> } __attribute__((packed));
->
->+struct virtio_vsock_seq_hdr {
->+	__le32  msg_cnt;
->+	__le32  msg_len;
->+} __attribute__((packed));
->+
-> enum virtio_vsock_type {
-> 	VIRTIO_VSOCK_TYPE_STREAM = 1,
->+	VIRTIO_VSOCK_TYPE_SEQPACKET = 2,
-> };
->
-> enum virtio_vsock_op {
->@@ -83,6 +89,11 @@ enum virtio_vsock_op {
-> 	VIRTIO_VSOCK_OP_CREDIT_UPDATE = 6,
-> 	/* Request the peer to send the credit info to us */
-> 	VIRTIO_VSOCK_OP_CREDIT_REQUEST = 7,
->+
->+	/* Record begin for SOCK_SEQPACKET */
->+	VIRTIO_VSOCK_OP_SEQ_BEGIN = 8,
->+	/* Record end for SOCK_SEQPACKET */
->+	VIRTIO_VSOCK_OP_SEQ_END = 9,
-> };
->
-> /* VIRTIO_VSOCK_OP_SHUTDOWN flags values */
->@@ -91,4 +102,9 @@ enum virtio_vsock_shutdown {
-> 	VIRTIO_VSOCK_SHUTDOWN_SEND = 2,
-> };
->
->+/* VIRTIO_VSOCK_OP_RW flags values */
->+enum virtio_vsock_rw {
->+	VIRTIO_VSOCK_RW_EOR = 1,
->+};
->+
-> #endif /* _UAPI_LINUX_VIRTIO_VSOCK_H */
->diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->index 833104b71a1c..d8ec2dfa2315 100644
->--- a/net/vmw_vsock/virtio_transport_common.c
->+++ b/net/vmw_vsock/virtio_transport_common.c
->@@ -393,6 +393,108 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
-> 	return err;
-> }
->
->+static inline void virtio_transport_remove_pkt(struct virtio_vsock_pkt *pkt)
->+{
->+	list_del(&pkt->list);
->+	virtio_transport_free_pkt(pkt);
->+}
->+
->+static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
->+						 struct msghdr *msg,
->+						 bool *msg_ready)
->+{
->+	struct virtio_vsock_sock *vvs = vsk->trans;
->+	struct virtio_vsock_pkt *pkt;
->+	int err = 0;
->+	size_t user_buf_len = msg->msg_iter.count;
->+
->+	*msg_ready = false;
->+	spin_lock_bh(&vvs->rx_lock);
->+
->+	while (!*msg_ready && !list_empty(&vvs->rx_queue) && !err) {
->+		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
->+
->+		switch (le16_to_cpu(pkt->hdr.op)) {
->+		case VIRTIO_VSOCK_OP_SEQ_BEGIN: {
->+			/* Unexpected 'SEQ_BEGIN' during record copy:
->+			 * Leave receive loop, 'EAGAIN' will restart it from
->+			 * outer receive loop, packet is still in queue and
->+			 * counters are cleared. So in next loop enter,
->+			 * 'SEQ_BEGIN' will be dequeued first. User's iov
->+			 * iterator will be reset in outer loop. Also
->+			 * send credit update, because some bytes could be
->+			 * copied. User will never see unfinished record.
->+			 */
->+			err = -EAGAIN;
->+			break;
->+		}
->+		case VIRTIO_VSOCK_OP_SEQ_END: {
->+			struct virtio_vsock_seq_hdr *seq_hdr;
->+
->+			seq_hdr = (struct virtio_vsock_seq_hdr *)pkt->buf;
->+			/* First check that whole record is received. */
->+
->+			if (vvs->user_read_copied != vvs->user_read_seq_len ||
->+			    (le32_to_cpu(seq_hdr->msg_cnt) - vvs->curr_rx_msg_cnt) != 1) {
->+				/* Tail of current record and head of next missed,
->+				 * so this EOR is from next record. Restart receive.
->+				 * Current record will be dropped, next headless will
->+				 * be dropped on next attempt to get record length.
->+				 */
->+				err = -EAGAIN;
->+			} else {
->+				/* Success. */
->+				*msg_ready = true;
->+			}
->+
->+			break;
->+		}
->+		case VIRTIO_VSOCK_OP_RW: {
->+			size_t bytes_to_copy;
->+			size_t pkt_len;
->+
->+			pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
->+			bytes_to_copy = min(user_buf_len, pkt_len);
->+
->+			/* sk_lock is held by caller so no one else can dequeue.
->+			 * Unlock rx_lock since memcpy_to_msg() may sleep.
->+			 */
->+			spin_unlock_bh(&vvs->rx_lock);
->+
->+			if (memcpy_to_msg(msg, pkt->buf, bytes_to_copy)) {
->+				spin_lock_bh(&vvs->rx_lock);
->+				err = -EINVAL;
->+				break;
->+			}
->+
->+			spin_lock_bh(&vvs->rx_lock);
->+			user_buf_len -= bytes_to_copy;
->+			vvs->user_read_copied += pkt_len;
->+
->+			if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_RW_EOR)
->+				msg->msg_flags |= MSG_EOR;
->+			break;
->+		}
->+		default:
->+			;
->+		}
->+
->+		/* For unexpected 'SEQ_BEGIN', keep such packet in queue,
->+		 * but drop any other type of packet.
->+		 */
->+		if (le16_to_cpu(pkt->hdr.op) != VIRTIO_VSOCK_OP_SEQ_BEGIN) {
->+			virtio_transport_dec_rx_pkt(vvs, pkt);
->+			virtio_transport_remove_pkt(pkt);
->+		}
->+	}
->+
->+	spin_unlock_bh(&vvs->rx_lock);
->+
->+	virtio_transport_send_credit_update(vsk);
->+
->+	return err;
->+}
->+
-> ssize_t
-> virtio_transport_stream_dequeue(struct vsock_sock *vsk,
-> 				struct msghdr *msg,
->@@ -405,6 +507,18 @@ virtio_transport_stream_dequeue(struct vsock_sock *vsk,
-> }
-> EXPORT_SYMBOL_GPL(virtio_transport_stream_dequeue);
->
->+int
->+virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
->+				   struct msghdr *msg,
->+				   int flags, bool *msg_ready)
->+{
->+	if (flags & MSG_PEEK)
->+		return -EOPNOTSUPP;
->+
->+	return virtio_transport_seqpacket_do_dequeue(vsk, msg, msg_ready);
->+}
->+EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_dequeue);
->+
-> int
-> virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
-> 			       struct msghdr *msg,
->-- 
->2.25.1
->
+Dell Precision M4800, issue ~2014 with GK106GLM [Quadro K2100M] (rev a1).
+libdrm 2.4.91-1 (Debian 10.8 stable).
+There are no errors or warnings in Xorg logs nor in the kernel log.
 
+Regards,
+Alex
