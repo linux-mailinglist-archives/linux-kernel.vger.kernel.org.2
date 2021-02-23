@@ -2,83 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5605F3227D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D335B3227D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbhBWJai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 04:30:38 -0500
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:51329 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232338AbhBWJ2c (ORCPT
+        id S232369AbhBWJ2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:28:24 -0500
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:53961 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232336AbhBWJ1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:28:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1614072512;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=elkiEyw/x+p4Mzp82r1PU6gv61RdX2VzYrI0EcXBgiE=;
-  b=eqEccJJBKQpSd2e8VyT0zHZJLliOTtawknOrTNw9y22VO/7wJmybd6gr
-   lvX2jRKqsCdMDQmBMtPaJ85Mp95iwEd8YuJaKkKZJTGcqVX1OK8IHn/aj
-   rju+2Iyvh8SEwRHL29X09P8q1f72uyKmPpdwlU3BIYpu3qj4JgPvRp0R4
-   U=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: r+v2a+pAcLkDXkvtq+LmVooxIXl9Yi1OFFOUqXQVl7OPoBQ/F1wR39/aL26u9L65xhinLzNmzD
- IkM5sCEPjCfpmf9zzrGZh3QpaL3V+Q5QWq+TyAXm2mwA4eOOjMRr16+CUyDyewQEuJfODY5MbN
- wFE9A627oR/uIUpbMpS8JESAt4rQ0ZHYTeHTVyqMz0CtZl4/Eu4i5+crISP29PhiJDm9wpiP9E
- 8gWCC28x4GMlXuCPvXKvUr/Ak6638Jo/O1FCh/AH4ug72oJzWRID7AuaDHkXLapWfmKY7SqObb
- oGk=
-X-SBRS: 5.1
-X-MesageID: 37826829
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.81,199,1610427600"; 
-   d="scan'208";a="37826829"
-Subject: Re: [PATCH v3 2/8] xen/events: don't unmask an event channel when an
- eoi is pending
-To:     Juergen Gross <jgross@suse.com>, <xen-devel@lists.xenproject.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        <stable@vger.kernel.org>, Julien Grall <julien@xen.org>
-References: <20210219154030.10892-1-jgross@suse.com>
- <20210219154030.10892-3-jgross@suse.com>
-From:   Ross Lagerwall <ross.lagerwall@citrix.com>
-Message-ID: <d368a948-17d6-4e64-110e-bede3158f49f@citrix.com>
-Date:   Tue, 23 Feb 2021 09:26:49 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210219154030.10892-3-jgross@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 23 Feb 2021 04:27:35 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R391e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UPLS4QM_1614072412;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPLS4QM_1614072412)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 23 Feb 2021 17:26:52 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     linux@dominikbrodowski.net
+Cc:     linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] pcmcia: Switch to using the new API kobj_to_dev()
+Date:   Tue, 23 Feb 2021 17:26:50 +0800
+Message-Id: <1614072410-32725-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-19 15:40, Juergen Gross wrote:
-> An event channel should be kept masked when an eoi is pending for it.
-> When being migrated to another cpu it might be unmasked, though.
-> 
-> In order to avoid this keep three different flags for each event channel
-> to be able to distinguish "normal" masking/unmasking from eoi related
-> masking/unmasking and temporary masking. The event channel should only
-> be able to generate an interrupt if all flags are cleared.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 54c9de89895e0a36047 ("xen/events: add a new late EOI evtchn framework")
-> Reported-by: Julien Grall <julien@xen.org>
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+fixed the following coccicheck:
+./drivers/pcmcia/cistpl.c:1584:53-54: WARNING opportunity for
+kobj_to_dev()
 
-I tested this patch series backported to a 4.19 kernel and found that
-when doing a reboot loop of Windows with PV drivers, occasionally it will
-end up in a state with some event channels pending and masked in dom0
-which breaks networking in the guest.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/pcmcia/cistpl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The issue seems to have been introduced with this patch, though at first
-glance it appears correct. I haven't yet looked into why it is happening.
-Have you seen anything like this with this patch?
+diff --git a/drivers/pcmcia/cistpl.c b/drivers/pcmcia/cistpl.c
+index cf109d9..7b296ba 100644
+--- a/drivers/pcmcia/cistpl.c
++++ b/drivers/pcmcia/cistpl.c
+@@ -1581,7 +1581,7 @@ static ssize_t pccard_store_cis(struct file *filp, struct kobject *kobj,
+ 	if (error)
+ 		return error;
+ 
+-	s = to_socket(container_of(kobj, struct device, kobj));
++	s = to_socket(kobj_to_dev(kobj));
+ 
+ 	if (off)
+ 		return -EINVAL;
+-- 
+1.8.3.1
 
-Thanks,
-Ross
