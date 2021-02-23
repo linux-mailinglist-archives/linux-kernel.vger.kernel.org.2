@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BC9322314
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 01:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC0F322319
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 01:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhBWAUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 19:20:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
+        id S230351AbhBWAYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 19:24:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbhBWATz (ORCPT
+        with ESMTP id S230010AbhBWAYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 19:19:55 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A676C061574;
-        Mon, 22 Feb 2021 16:19:15 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dl0686zyfz9sW2;
-        Tue, 23 Feb 2021 11:19:12 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614039553;
-        bh=cXslD8pfwrbp/o1ZONJWmsTNOkb3cNTVgGJgtGCHlLU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Mg6WcubO8PMZsxexGIyP+pA7XVwXBN4OvBQizfbe/wXQXVDJdvhdkGVEcvLFjdRwM
-         n5IzmHYOGaj0ZiLbQRB2s9yOY6dH5Qd0iWTFHAK8uBBVruaw2TT8yiZVeTua4dJDjl
-         sWappDddpXv0GEMjOib8ssYhTX4uI6YCxfHnddyZYzGWJIQFlHy0zI+sKieg7r9o1A
-         +piG2fVF1eSmehYCO/Nhs9pkYafZSkSIaPxwprEIrRjTp/ltDimvzJ7IGToYtrfEKY
-         BdC3Aqo1r8zQSm6n1oXErH84IIWmxUp3rrXruDNeA/shKecEnoPhOq5rHRRyTDs2EU
-         kor/lpjRZ+3OA==
-Date:   Tue, 23 Feb 2021 11:19:11 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the pci tree with Linus' tree
-Message-ID: <20210223111911.54ea7503@canb.auug.org.au>
+        Mon, 22 Feb 2021 19:24:12 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF09EC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 16:23:32 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id k17so7478123ioc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 16:23:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qSYZaJXIS6C1ICWmDRD2w5Tj1QqQKhWbKh2gJxndPhk=;
+        b=ajmxv4fS6M6sj14txf7zaT5coPITkpoKwRIgXe473kZuObcls/OHDfGBn1Zihh2Eu/
+         JL8+BksJ8U7tz/nbwyj/NK/FJT7PRIywEFQ/nTqSK2J1+QGfUW7pvHjGADl7yfGif/PQ
+         JsKO2L5Izy22clabS/Gi+5t/LgcNevs3sDMoXu2D0JGepUdh5NXI540WWhd0W/njG60W
+         9HLFkSQrO1wKU1qMm9LPMVsFmXkZd4sBQ34vbJB/KkHM00eBx7bzK0UaGrpGDaX6pXUs
+         mOFGdDXRMwE52Y754dfNs3cD686Djdv6EoODN/fCWYPTWB3UKdMjC9vDvDGmYEVOKtLK
+         S8BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qSYZaJXIS6C1ICWmDRD2w5Tj1QqQKhWbKh2gJxndPhk=;
+        b=iQsPj7WC5PsJnJJLPLr1l0/de/RQd8y+3kYZ09JCQl1x65tH4WvMiaK8VWknGylCak
+         3coqLv0O3emaq05himGX14q/PUanYZNOUx0Nl0Khc0zRrpGMzuMANsZlONj1fqIyjxoT
+         5cjk1Bdp8Ii2URbZp3hMbB/mOpfBbhA0sdACQScLaWXz8K4/i9b59yZUqWlVe8DaYFQS
+         ek/kOhIolpIfUa25hKGZcnO2eEIaxUYXuG9WHO4QCv3P2VRQRzTRx1yutaqocHTDGcol
+         Zxj/YeYz24MClt/fsGlEHrKk4N7pO2FRgzedOSV7hZBnehkM+QfH6IMEttf1kBVQz5Uj
+         LPzw==
+X-Gm-Message-State: AOAM530kkSIeL946nOQsZ2Acs5XvWzKaQuo4Kny+TUagOwNNpT8oZ6bR
+        4SP74qQ23/KfToMMyxhZ0CnPnTbHzo9pI13o90zkbQ==
+X-Google-Smtp-Source: ABdhPJwhGfngyKx+KH1gapYhp//gieSYgnDoX6gnuQ/irJzk5wEu3895VGrImqqIbcMBtkWsLQpTgbyXNiKx+vlyL/8=
+X-Received: by 2002:a02:3541:: with SMTP id y1mr24777666jae.66.1614039811998;
+ Mon, 22 Feb 2021 16:23:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/t.wZ22U=pIOyM2H7wJLYLup";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210210013206.136227-1-dlatypov@google.com> <YCNF4yP1dB97zzwD@mit.edu>
+In-Reply-To: <YCNF4yP1dB97zzwD@mit.edu>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Mon, 22 Feb 2021 16:23:20 -0800
+Message-ID: <CAGS_qxrPEa8kUK+U_bw+isnVRVP_6RdxmyE+Az=G0EhgG45Xhg@mail.gmail.com>
+Subject: Re: [PATCH] ext4: add .kunitconfig fragment to enable ext4-specific tests
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        KUnit Development <kunit-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/t.wZ22U=pIOyM2H7wJLYLup
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Feb 9, 2021 at 6:33 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Tue, Feb 09, 2021 at 05:32:06PM -0800, Daniel Latypov wrote:
+> >
+> > After [2]:
+> >   $ ./tools/testing/kunit.py run --kunitconfig=fs/ext4/.kunitconfig
+>
+> Any chance that in the future this might become:
+>
+> $ ./tools/testing/kunit.py run --kunitconfig=fs/ext4
 
-Hi all,
+For future reference, this patch would make ^ work.
+https://lore.kernel.org/linux-kselftest/20210222225241.201145-1-dlatypov@google.com
 
-Today's linux-next merge of the pci tree got a conflict in:
+(This time w/o the typo in the path to kunit.py :)
 
-  drivers/pci/pci.c
-
-between commit:
-
-  40fb68c7725a ("Revert "PCI/ASPM: Save/restore L1SS Capability for suspend=
-/resume"")
-
-from Linus' tree and commit:
-
-  d2bb2f9e1af6 ("PCI/ASPM: Move LTR, ASPM L1SS save/restore into PCIe save/=
-restore")
-
-from the pci tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/pci/pci.c
-index b67c4327d307,13b89b1e29ed..000000000000
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@@ -1434,6 -1474,9 +1474,8 @@@ static int pci_save_pcie_state(struct p
-  	pcie_capability_read_word(dev, PCI_EXP_LNKCTL2, &cap[i++]);
-  	pcie_capability_read_word(dev, PCI_EXP_SLTCTL2, &cap[i++]);
- =20
-+ 	pci_save_ltr_state(dev);
- -	pci_save_aspm_l1ss_state(dev);
-+=20
-  	return 0;
-  }
- =20
-@@@ -1447,6 -1490,9 +1489,8 @@@ static void pci_restore_pcie_state(stru
-  	if (!save_state)
-  		return;
- =20
-+ 	pci_restore_ltr_state(dev);		/* LTR enabled in DEVCTL2 */
- -	pci_restore_aspm_l1ss_state(dev);	/* ASPM L1 enabled in LNKCTL */
-+=20
-  	cap =3D (u16 *)&save_state->cap.data[0];
-  	pcie_capability_write_word(dev, PCI_EXP_DEVCTL, cap[i++]);
-  	pcie_capability_write_word(dev, PCI_EXP_LNKCTL, cap[i++]);
-
---Sig_/t.wZ22U=pIOyM2H7wJLYLup
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA0Sf8ACgkQAVBC80lX
-0GwzaAf/fYl6EnABTq2lKmIhYSSQG7rkKkczl3qzh0lFQIKaBLTC9ekwxpEa7Yia
-+DneqnzIvuUrFp9fCbB7J/E69E5ubz3wVLKYqhuwmji1rHUb5DXcHojSMvZ9hZbl
-s8wU3r1Er3Xjd4SPBZi3FHA9GrRsZdRYy4qXhiIh30vezm4Cb5jOc4LCF2OXbhjj
-B/7CrLLEUPgJSsSoKpgOlFQq8sRuaFzAuv9n7LnVVQWf8GW6Tkba5caAphWq2Bk8
-8pao3rCw1jS0OLBArdEYkQTW9e3WjtZOtJUkrOGKLCDwf22ApE7qnhrGo5UL2lHu
-myg7g89uqpGvt8bWQozg3uFio4QXrw==
-=F0BL
------END PGP SIGNATURE-----
-
---Sig_/t.wZ22U=pIOyM2H7wJLYLup--
+>
+> Or better yet, syntactic sugar like:
+>
+> $ ./tools/testing/kunit.py test fs/ext4
+>
+> would be really nice.
+>
+>                                                 - Ted
