@@ -2,69 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA247323448
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 00:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE1432344A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 00:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbhBWXi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 18:38:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233725AbhBWXZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 18:25:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE84E64E7C
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:24:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614122672;
-        bh=KP288goND8M4n+LhyazQ7ab4gsFaGAFzzE584UPD1iM=;
-        h=From:Date:Subject:To:From;
-        b=FMCHZcvnzRhWfLWiDCxJvKlBYnB30wJTSuwjs6oSUdZvwyiC/ZvFLYNLqDgtZkQy6
-         mhrekxItrf0QBCzKI05JXFwbzBkxrk+sgAAaXpE2r42tfVnYkl8ELIUtaevGNNY7pm
-         GaRyoihatR5Sgq2PGXixvajShiy9NjiORv9uFuNHChV9wnwuyM+lBrvyqpIsyozyms
-         e6YiFJIvTDn8SAq1keDZSpPJbslxQDEWx0epSpgAauvzJBKWmj58FzhES/0Gb5DWXy
-         k+Js8h9qbXAd7rH2WYSAsRaQdlGr6OMYGHPoJm/Wrno3vwsBpxlhdkovmtVgnT3a4V
-         pga1Aa+pm03pA==
-Received: by mail-lf1-f41.google.com with SMTP id j19so192514lfr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:24:31 -0800 (PST)
-X-Gm-Message-State: AOAM533YRau7MuAQ63SPjDhmnr7aWsDrdyWSPjHEfvc4nxRB6cfk2WQu
-        zsQgPt7SQ8Zfi5+4cUAbJjqzSMHyIGn2ijW7r2hT6g==
-X-Google-Smtp-Source: ABdhPJwARxpYankk7/UpOTZMy2AiL9dmKWTwmvoL1SvZiInLS0WFF7nqN0IqsTInH5BdIPvzFdiz0ICAed767j37esA=
-X-Received: by 2002:a19:810c:: with SMTP id c12mr18485404lfd.244.1614122669974;
- Tue, 23 Feb 2021 15:24:29 -0800 (PST)
+        id S233706AbhBWXjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 18:39:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232810AbhBWX2k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 18:28:40 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498AFC061574;
+        Tue, 23 Feb 2021 15:27:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=q5XVodoHDTZdgJ0yWJ3OcVB1WnWj1JW3zCsrFT39dRQ=; b=RofC7flCtm+ms9vSAIzCP/Ba8e
+        i9LejeFEc5bXhp8tQpCWjTx2Ys4SZMk+J+0q1+AefmHRyhAajK7DwygnepnFS5sHwprK41cJGaO9m
+        ONoILqgSDzkb0gaA84KbVyrJOBpSfEvfmVlUxf+GPJ7RUgtLsjxYTNw1zAxgG0u3dinMu3a+XHBSM
+        57wqUm8HNNx5jz27XzrvRmccpM+i9V8ZGCU8OmZH3Ky4Ejy9iJ3BaGtnSyuzM1wDUwQTwISqj4PKM
+        T6qadHu3Ozdywcrr79elfJhg4e7le4kRezE6hvzMNEAzLpYNOEcAsQ0KK9LYn92evwRDJgXIoVLmV
+        7PXn+7Ow==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lEh5W-008f7c-GQ; Tue, 23 Feb 2021 23:27:31 +0000
+Date:   Tue, 23 Feb 2021 23:27:30 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        hughd@google.com, hch@lst.de, hannes@cmpxchg.org,
+        yang.shi@linux.alibaba.com, dchinner@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/16] Overhaul multi-page lookups for THP
+Message-ID: <20210223232730.GN2858050@casper.infradead.org>
+References: <20201112212641.27837-1-willy@infradead.org>
+ <20210223145836.cb588a6ec6c34e54ad26f9bf@linux-foundation.org>
 MIME-Version: 1.0
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 23 Feb 2021 15:24:19 -0800
-X-Gmail-Original-Message-ID: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
-Message-ID: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
-Subject: Why do kprobes and uprobes singlestep?
-To:     Oleg Nesterov <oleg@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223145836.cb588a6ec6c34e54ad26f9bf@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A while back, I let myself be convinced that kprobes genuinely need to
-single-step the kernel on occasion, and I decided that this sucked but
-I could live with it.  it would, however, be Really Really Nice (tm)
-if we could have a rule that anyone running x86 Linux who single-steps
-the kernel (e.g. kgdb and nothing else) gets to keep all the pieces
-when the system falls apart around them.  Specifically, if we don't
-allow kernel single-stepping and if we suitably limit kernel
-instruction breakpoints (the latter isn't actually a major problem),
-then we don't really really need to use IRET to return to the kernel,
-and that means we can avoid some massive NMI nastiness.
+On Tue, Feb 23, 2021 at 02:58:36PM -0800, Andrew Morton wrote:
+> Do you feel this patchset is ready to merge up?
 
-But I was contemplating the code, and I'm no longer convinced.
-Uprobes seem to single-step user code for no discernable reason.
-(They want to trap after executing an out of line instruction, AFAICT.
-Surely INT3 or even CALL after the out-of-line insn would work as well
-or better.)  Why does kprobe single-step?  I spend a while staring at
-the code, and it was entirely unclear to me what the purpose of the
-single-step is.
+I think so.
 
---Andy
+> https://lore.kernel.org/linux-mm/000000000000f6914405b49d9c9d@google.com/
+> was addressed by 0060ef3b4e6dd ("mm: support THPs in
+> zero_user_segments"), yes?
+
+Correct.
+
+> "mm/truncate,shmem: Handle truncates that split THPs" and "mm/filemap:
+> Return only head pages from find_get_entries" were dropped.  I guess
+> you'll be having another go at those sometime?
+
+That's right.
+
+> https://lore.kernel.org/linux-fsdevel/20201114100648.GI19102@lst.de/
+> wasn't responded to?
+
+It didn't really seem worth replying to ... I'm not particularly
+sympathetic to "please refactor the patch series" when there's no
+compelling reason, and having a large function inlined really isn't a
+problem when it only has one caller.
