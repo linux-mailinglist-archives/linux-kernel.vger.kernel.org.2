@@ -2,88 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1F53231BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41AEC3231CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:08:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234075AbhBWUDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 15:03:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232969AbhBWUC5 (ORCPT
+        id S234154AbhBWUG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 15:06:58 -0500
+Received: from mout.kundenserver.de ([212.227.126.130]:38611 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234117AbhBWUFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 15:02:57 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CBF6C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 12:02:17 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id u4so19108160lja.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 12:02:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/MjjhD2PyEtcxC+ZqCu6N1SO0Pvsotv1wr1KSKHI7fQ=;
-        b=b/CmxW7VRnDVhVEKYI0J2I8V9ipMk3X6/a3qiDHR2BPKVL8yLeK5BWmxaXK2khm6TU
-         UMAXlOPLj5n3h4dLoXFKdSVOPFPdsm1plweDwwDPWDtpTqA7ZCMQub0imXsH6SOrPM4V
-         r2Pb10/ppfku6bByN02T38svCR0IUReoI28Jc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/MjjhD2PyEtcxC+ZqCu6N1SO0Pvsotv1wr1KSKHI7fQ=;
-        b=Cjn3pFMYgDD/aBPnv+ABb+I7o76yCiErTIGYSyqdxYRRDGegp6s/Y48BP28z5x5fxG
-         rUlH2inuCqc+rWSdbp9pDksmC76anAK3GSth5JxgJKJH9TPjm0s+H6JrwBmTVuOHfT9G
-         LbppAHDdNqPfD7YaF8cBuY0JeuWXFkO6niFgjh9eTlW/T6TUSD6cCqZAKbFO8X0CKebC
-         uyFeN7lajUg6F5Cg0PsGat7mxFDfN1Bi1k56Tgppm5ytIiUCXtm2Paj0jgjTpb9O42e9
-         Qaa2okw6rqYeJpI/7X933WY5KEEMaI6yZ+kktMV+fGpCnmS2H3XppGr9qO6631WEWruj
-         Ry1g==
-X-Gm-Message-State: AOAM531IMsGTilf0sPG7v8r6yacvzirwwCef/+v1eGzo54GQdG52qByC
-        lVdRPK7AsR/c7vHNa48mYGzqSo3ZU3hZIQ==
-X-Google-Smtp-Source: ABdhPJzDO/Zjrg1D3lQPk1qWlk5Ma/UCZtPZ9ySGHakHRw9Cbfp7X35zkDhTFtpbEaSELm/01pN8Bg==
-X-Received: by 2002:a2e:910d:: with SMTP id m13mr6938495ljg.189.1614110535129;
-        Tue, 23 Feb 2021 12:02:15 -0800 (PST)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id x5sm1974004lfr.185.2021.02.23.12.02.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 12:02:14 -0800 (PST)
-Received: by mail-lj1-f172.google.com with SMTP id a22so64526809ljp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 12:02:14 -0800 (PST)
-X-Received: by 2002:a2e:8255:: with SMTP id j21mr15174001ljh.507.1614110534111;
- Tue, 23 Feb 2021 12:02:14 -0800 (PST)
+        Tue, 23 Feb 2021 15:05:43 -0500
+Received: from [192.168.1.155] ([77.9.11.4]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1M4ahC-1lE5Nt2jYc-001gHD; Tue, 23 Feb 2021 21:02:03 +0100
+Subject: Re: [PATCH v2] leds: apu: extend support for PC Engines APU1 with
+ newer firmware
+To:     =?UTF-8?Q?Zbyn=c4=9bk_Kocur?= <zbynek.kocur@fel.cvut.cz>,
+        =?UTF-8?Q?Petr_=c5=a0tetiar?= <ynezz@true.cz>
+Cc:     Andreas Eberlein <foodeas@aeberlein.de>,
+        Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210216133028.4025-1-foodeas@aeberlein.de>
+ <c7eebbb6-df0c-51df-7701-ecb8f6543466@metux.net>
+ <20210219143711.GA28202@meh.true.cz>
+ <1E2EF21D-A304-46C4-9370-4FEBFD4767D2@fel.cvut.cz>
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+Message-ID: <54ec502e-2607-3096-d69f-d0c13fc1ba24@metux.net>
+Date:   Tue, 23 Feb 2021 21:02:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <YDUibKAt5tpA1Hxs@gunter> <CAHk-=wipCbbXswcFvnrGae01H54dY1+XoaL+9YaiU71zGzko3Q@mail.gmail.com>
- <CAHk-=wh8vHL43v7GWK9MWrWitSmOmrEw1B0AJD9CrhBc4FvpxA@mail.gmail.com> <CAHk-=wiuoRKa=F3txoVHvnca+H=7gJyL3SFYwd3549v-sa0+QQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wiuoRKa=F3txoVHvnca+H=7gJyL3SFYwd3549v-sa0+QQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 23 Feb 2021 12:01:58 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjV=OB7_PUWc4XE2vQ64NRWHeXAwhZVrtBqE8-tYrkaFw@mail.gmail.com>
-Message-ID: <CAHk-=wjV=OB7_PUWc4XE2vQ64NRWHeXAwhZVrtBqE8-tYrkaFw@mail.gmail.com>
-Subject: Re: [GIT PULL] Modules updates for v5.12
-To:     Jessica Yu <jeyu@kernel.org>, Christoph Hellwig <hch@lst.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?=EF=BF=BCMiroslav_Benes?= <mbenes@suse.cz>,
-        Emil Velikov <emil.l.velikov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1E2EF21D-A304-46C4-9370-4FEBFD4767D2@fel.cvut.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:ahXRts938VIxmZ4V4+bpC3pIA/5kB7OX+6fBkFq9nobtfKM2L3e
+ UqqA2YD3jbyQjGDUAdqNpWV+ixPEeim+NvpVIYXK4t75/j+s+06rF57oGgfoUrsYnpaiEsH
+ fYW4u/GEUksF4zqFNHbt3Ps2SI5nNRTjsdB5PvcvXoFyiGFQ+/U6B+rQX/z1wJij1RPHAz2
+ RYI9L27AyKLBZLIWtRpDg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+OoslpCMGts=:iyO5a4K7dDA92cG3Mcorz5
+ 5Tcc3e7k7CJ1TEJSYlMBjkN9iZn+CKA2HcBDUMlUCbZtPkwdiAEn5Wqk9sVTdo8a35VmNsbn5
+ 7iAMHFSeXRmrQNIkk+uFD+kkXGof0KJf4zNxIzc5c2zxx84RqiHp5mQwV1NWiCvncjxbO1l8C
+ uFYuXcbcTSLzIFl0+7d8qd/C1ES2PCdkJHotmMdjhWCsOwzvt8ljWGlQjb2tgGq4kuCeatq8B
+ b4GedEZpYRxMa7nnbj+oij2avxDFQIqWyw1zxnMjDS3YiPsGjc6w0AQprM2FhRMO9vwxR/mDu
+ wRsK1x/axYwSeQD+jFyjPOW6x5YHdtj1vaavRygpV/ie/CkfjbgsITUt17i7k6La5jWZOpByB
+ qKLZcgapcaEWBi1B6hlNcRW/ofQrdR0t6QbXhm9K2DMOtZcdfur4+oqhdJA7k
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 11:55 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> I don't see quite what is wrong, but bisection is clear, and points
-> the finger at
->
->     367948220fce "module: remove EXPORT_UNUSED_SYMBOL*"
->
-> which looks entirely trivial, but clearly isn't.
->
-> It's repeatable. That commit slows down my build hugely.
+On 19.02.21 21:51, Zbyněk Kocur wrote:
 
-Hmm. I'm starting to suspect that the problem is that the removal of
-CONFIG_UNUSED_SYMBOLS now means that we always trigger
-CONFIG_TRIM_UNUSED_KSYMS instead.
+Hi Zbyněk,
 
-And then that CONFIG_TRIM_UNUSED_KSYMS is some hugely expensive operation.
+> Thanks for adding to the discussion. I tested the proposed modification on APU1 with different versions of bios.
+> The LED subsystem now behaves the same as the APU2 and higher. If it needs more tests on various boards
+>   from PCengines, I'm available.
 
-                  Linus
+Do you also happen to have different apu2/3/4 boards (various hw revs
+and bios versions) for testing ? I've still got some open issues, eg.
+regarding pcie reset lines, etc.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
