@@ -2,225 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58F1322A8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F88322A89
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232648AbhBWMbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 07:31:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57498 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232621AbhBWMbE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 07:31:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614083378;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2pPGjn1L2OCanUWSSCwQKIX3l54iDUbuwOkt25b4CnI=;
-        b=ZCC/BEbcVWEXdzWoqPSaKM9qDTpvRYEEcY0mnLc1hrxsSeGN/OgkUgNFn55RvgvHuhozmz
-        1pKO6uIByCb9tlFjglNzHT0sIbdULFpKGEEZKIpzsphHKNjiU908Gh8CUbcCqahboT5sxr
-        eVB8Kf8akC8HFxN8n9pJCxgGsXcbrNU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-2v4ZKBXqMXSw7--hvZEJMQ-1; Tue, 23 Feb 2021 07:29:36 -0500
-X-MC-Unique: 2v4ZKBXqMXSw7--hvZEJMQ-1
-Received: by mail-wr1-f69.google.com with SMTP id c9so7245726wrq.18
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 04:29:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2pPGjn1L2OCanUWSSCwQKIX3l54iDUbuwOkt25b4CnI=;
-        b=KlqptNHGpSMWE51/+j1EnKg2DwgS+obvLXps5bpcY6oZ6mR8FMNZ19hqu3ey0TcMTt
-         cf3zeQnRbmSRlDNGGglWIkOZSMGQSbwPJd2w4oRqYX7NM4m9Qkk7gxrQw4/XuDd4g1vq
-         /ER9R5Zc4uaRJulX4SPvvsbS77ZX14YZHhs3VAoIAsq5TfH/kCIm8BVRqrfiK4UNozYP
-         vdN8T4umds68CexOVtqZE0wSXULxtpol1ewADzDueppu6uz1XoIMXGkqYMcmMilFoj6O
-         ApQnSwmuGdT6n6+GQpXg8MQA0ldXAb+bSMfs3qIEJ1UILyHQWNOEzd7HZI9sHiI/TRlA
-         9dfg==
-X-Gm-Message-State: AOAM532Uw43CJUGydn7W4q/gs8cd0Y8wE3AxTzKQ0MimmIv414zjK2fi
-        uvszKaCf6NIXI1av3F70+RKd5Zd1SYGKkSW4SdcKQre97iFmrBj3msL08wjXGYtVPzCnnl7Flsh
-        or4QVe4m5gwO9f60j2zfEeOIP
-X-Received: by 2002:a5d:55d2:: with SMTP id i18mr9277731wrw.221.1614083375345;
-        Tue, 23 Feb 2021 04:29:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzT9ETBZCwu34Y3jqc+iCOoGTGTw/wVdbbWPNouqoXWdCS/xdvtKEfF0VAgTzO3xgZORzM2aQ==
-X-Received: by 2002:a5d:55d2:: with SMTP id i18mr9277717wrw.221.1614083375192;
-        Tue, 23 Feb 2021 04:29:35 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id j14sm20083473wrw.34.2021.02.23.04.29.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 04:29:34 -0800 (PST)
-Date:   Tue, 23 Feb 2021 07:29:32 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     jasowang@redhat.com, si-wei.liu@oracle.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>
-Subject: Re: [PATCH v2] vdpa/mlx5: Enable user to add/delete vdpa device
-Message-ID: <20210223072847-mutt-send-email-mst@kernel.org>
-References: <20210218074157.43220-1-elic@nvidia.com>
+        id S232627AbhBWMbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 07:31:16 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:30623 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232569AbhBWMaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 07:30:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614083436; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=RCyGcMrLAoXPkwdjDqoRBfFHog9HDnSKHwrh4kSkF7w=; b=E3jRwiiE4r7VeIpyKuip2GfYX0xoORTYqzWPyYtiu9gtrZRKdgh/ox4yXjSaG6mqtXudpRIp
+ vvxtTdhHFB6ZDpfBVe9q4YeffcQtrJAYmUKGw1wbEqeYx1NbdDnKRlWhBr1GZsvaDBDpXpbM
+ 6TQeHrtkqBKt1A4A6Kri7H6z3Do=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6034f54fe87943df30eb0d9c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Feb 2021 12:30:07
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3A6EFC433C6; Tue, 23 Feb 2021 12:30:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.29.110] (unknown [49.37.158.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 756DCC433C6;
+        Tue, 23 Feb 2021 12:30:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 756DCC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+Subject: Re: [PATCH RFC 0/1] mm: balancing the node zones occupancy
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        rientjes@google.com, vbabka@suse.cz, mhocko@suse.com,
+        mgorman@techsingularity.net, linux-mm@kvack.org
+Cc:     vinmenon@codeaurora.org, sudaraja@codeaurora.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1613661472.git.charante@codeaurora.org>
+ <82e0e9c2-8187-8e2f-0d5e-304dafcda017@redhat.com>
+From:   Charan Teja Kalla <charante@codeaurora.org>
+Message-ID: <d1590275-b70d-5e09-5047-cc0fa268b583@codeaurora.org>
+Date:   Tue, 23 Feb 2021 18:00:01 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218074157.43220-1-elic@nvidia.com>
+In-Reply-To: <82e0e9c2-8187-8e2f-0d5e-304dafcda017@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 09:41:57AM +0200, Eli Cohen wrote:
-> Allow to control vdpa device creation and destruction using the vdpa
-> management tool.
-> 
-> Examples:
-> 1. List the management devices
-> $ vdpa mgmtdev show
-> pci/0000:3b:00.1:
->   supported_classes net
-> 
-> 2. Create vdpa instance
-> $ vdpa dev add mgmtdev pci/0000:3b:00.1 name vdpa0
-> 
-> 3. Show vdpa devices
-> $ vdpa dev show
-> vdpa0: type network mgmtdev pci/0000:3b:00.1 vendor_id 5555 max_vqs 16 \
-> max_vq_size 256
-> 
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
-> Reviewed-by: Parav Pandit <parav@nvidia.com>
 
-Not sure which tree this is for, I could not apply this.
+Thanks David for the review comments!!
 
-> ---
-> v0->v1:
-> set mgtdev->ndev NULL on dev delete
-> v1->v2: Resend
+On 2/18/2021 11:46 PM, David Hildenbrand wrote:
+>> I would like to start discussion about  balancing the occupancy of
+>> memory zones in a node in the system whose imabalance may be caused by
+>> migration of pages to other zones during hotremove and then hotadding
+>> same memory. In this case there is a lot of free memory in newly hotadd
+>> memory which can be filled up by the previous migrated pages(as part of
+>> offline/hotremove) thus may free up some pressure in other zones of the
+>> node.
 > 
->  drivers/vdpa/mlx5/net/mlx5_vnet.c | 79 +++++++++++++++++++++++++++----
->  1 file changed, 70 insertions(+), 9 deletions(-)
+> Why is this specific to memory hot(un)plug? I think the problem is more
+> generic:
 > 
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index a51b0f86afe2..08fb481ddc4f 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1974,23 +1974,32 @@ static void init_mvqs(struct mlx5_vdpa_net *ndev)
->  	}
->  }
->  
-> -static int mlx5v_probe(struct auxiliary_device *adev,
-> -		       const struct auxiliary_device_id *id)
-> +struct mlx5_vdpa_mgmtdev {
-> +	struct vdpa_mgmt_dev mgtdev;
-> +	struct mlx5_adev *madev;
-> +	struct mlx5_vdpa_net *ndev;
-> +};
-> +
-> +static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
->  {
-> -	struct mlx5_adev *madev = container_of(adev, struct mlx5_adev, adev);
-> -	struct mlx5_core_dev *mdev = madev->mdev;
-> +	struct mlx5_vdpa_mgmtdev *mgtdev = container_of(v_mdev, struct mlx5_vdpa_mgmtdev, mgtdev);
->  	struct virtio_net_config *config;
->  	struct mlx5_vdpa_dev *mvdev;
->  	struct mlx5_vdpa_net *ndev;
-> +	struct mlx5_core_dev *mdev;
->  	u32 max_vqs;
->  	int err;
->  
-> +	if (mgtdev->ndev)
-> +		return -ENOSPC;
-> +
-> +	mdev = mgtdev->madev->mdev;
->  	/* we save one virtqueue for control virtqueue should we require it */
->  	max_vqs = MLX5_CAP_DEV_VDPA_EMULATION(mdev, max_num_virtio_queues);
->  	max_vqs = min_t(u32, max_vqs, MLX5_MAX_SUPPORTED_VQS);
->  
->  	ndev = vdpa_alloc_device(struct mlx5_vdpa_net, mvdev.vdev, mdev->device, &mlx5_vdpa_ops,
-> -				 2 * mlx5_vdpa_max_qps(max_vqs), NULL);
-> +				 2 * mlx5_vdpa_max_qps(max_vqs), name);
->  	if (IS_ERR(ndev))
->  		return PTR_ERR(ndev);
->  
-> @@ -2018,11 +2027,12 @@ static int mlx5v_probe(struct auxiliary_device *adev,
->  	if (err)
->  		goto err_res;
->  
-> -	err = vdpa_register_device(&mvdev->vdev);
-> +	mvdev->vdev.mdev = &mgtdev->mgtdev;
-> +	err = _vdpa_register_device(&mvdev->vdev);
->  	if (err)
->  		goto err_reg;
->  
-> -	dev_set_drvdata(&adev->dev, ndev);
-> +	mgtdev->ndev = ndev;
->  	return 0;
->  
->  err_reg:
-> @@ -2035,11 +2045,62 @@ static int mlx5v_probe(struct auxiliary_device *adev,
->  	return err;
->  }
->  
-> +static void mlx5_vdpa_dev_del(struct vdpa_mgmt_dev *v_mdev, struct vdpa_device *dev)
-> +{
-> +	struct mlx5_vdpa_mgmtdev *mgtdev = container_of(v_mdev, struct mlx5_vdpa_mgmtdev, mgtdev);
-> +
-> +	_vdpa_unregister_device(dev);
-> +	mgtdev->ndev = NULL;
-> +}
-> +
-> +static const struct vdpa_mgmtdev_ops mdev_ops = {
-> +	.dev_add = mlx5_vdpa_dev_add,
-> +	.dev_del = mlx5_vdpa_dev_del,
-> +};
-> +
-> +static struct virtio_device_id id_table[] = {
-> +	{ VIRTIO_ID_NET, VIRTIO_DEV_ANY_ID },
-> +	{ 0 },
-> +};
-> +
-> +static int mlx5v_probe(struct auxiliary_device *adev,
-> +		       const struct auxiliary_device_id *id)
-> +
-> +{
-> +	struct mlx5_adev *madev = container_of(adev, struct mlx5_adev, adev);
-> +	struct mlx5_core_dev *mdev = madev->mdev;
-> +	struct mlx5_vdpa_mgmtdev *mgtdev;
-> +	int err;
-> +
-> +	mgtdev = kzalloc(sizeof(*mgtdev), GFP_KERNEL);
-> +	if (!mgtdev)
-> +		return -ENOMEM;
-> +
-> +	mgtdev->mgtdev.ops = &mdev_ops;
-> +	mgtdev->mgtdev.device = mdev->device;
-> +	mgtdev->mgtdev.id_table = id_table;
-> +	mgtdev->madev = madev;
-> +
-> +	err = vdpa_mgmtdev_register(&mgtdev->mgtdev);
-> +	if (err)
-> +		goto reg_err;
-> +
-> +	dev_set_drvdata(&adev->dev, mgtdev);
-> +
-> +	return 0;
-> +
-> +reg_err:
-> +	kfree(mdev);
-> +	return err;
-> +}
-> +
->  static void mlx5v_remove(struct auxiliary_device *adev)
->  {
-> -	struct mlx5_vdpa_dev *mvdev = dev_get_drvdata(&adev->dev);
-> +	struct mlx5_vdpa_mgmtdev *mgtdev;
->  
-> -	vdpa_unregister_device(&mvdev->vdev);
-> +	mgtdev = dev_get_drvdata(&adev->dev);
-> +	vdpa_mgmtdev_unregister(&mgtdev->mgtdev);
-> +	kfree(mgtdev);
->  }
->  
->  static const struct auxiliary_device_id mlx5v_id_table[] = {
-> -- 
-> 2.29.2
+> Assume
+> 
+> 1. Application 1 allocates a lot of memory and gets ZONE_MOVABLE.
+> 2. Application 2 allocates a lot of memory and gets ZONE_NORMAL.
+> 3. Application 1 quits.
+> 
+> Same problem, no?
 
+Thanks for simplifying this problem. Yeah, this looks more generic
+problem. But for these type of problems, user/system administrator has
+clear view about the state of the system and thus may need to take some
+decisions to maintain the the node zones balancing e.g. like this change
+where migrate the eligible pages to other zones.
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+Forum, a Linux Foundation Collaborative Project
