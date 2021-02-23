@@ -2,179 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93584323215
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A20F7323219
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234250AbhBWU1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 15:27:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234213AbhBWU1u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 15:27:50 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E28C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 12:27:09 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id r5so3583118pfh.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 12:27:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=Kk5JpRbDq4xRfQD7TUXlnwHHd/9lf684NeDm/b3OOQ4=;
-        b=rII14qYh1Cca7rwfLGWNs7Fyr/DUwNZTzihjQrueY5urtWwbdyJZi35sbOgST0WGK8
-         u8c10P1/0sKzEwqoIISzyv7qHK7OqsBDWWGGEIHMkRMnJ61cB7AZ/uYE0zd2u8NBUTeS
-         7e1Oyr9LFdWtr6nsQa4hcaHAIsqlBP8Zk6eNkYMmP39ibXz9dkAACaUE8Nk6w4sd0QGn
-         mA6HLSBiF7d+softgXGGLxwwD+7JfkwYEofLZG+QKBYyh7qZe/beElRyEsl2koQxbP0n
-         PHowSXAL+UBxZtt1DULgI5dSAXLy43tvQHLAcE60bPxxjR4deMccheLcAtJAkDmZvTYx
-         JzOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=Kk5JpRbDq4xRfQD7TUXlnwHHd/9lf684NeDm/b3OOQ4=;
-        b=Icnz9OCYQZNv6ThgsCghujhR5XIPTbHoDrXLEYlf+D16KUIP4v8IYHWDXB42feOERy
-         k442vTW+xKEmfbOqASlmO3qqdwmu00j3PFXrOPHnrXJ5ymgMMqOHCur9EYm6n4WyXTEv
-         H/1znngCbONXB1Rv52t39qlBQsP24iSMt0FtK++Jk26ERhm6GRg7YwCO1LzP8KoMLFZ/
-         CMxABCD2jNwnA+yuUkfORHus4MZEbPfBV59TFhbJyXwqPkmgnFvVWKFIdzwort3T2pLu
-         fC1YudDZ6BSSXZGEXluvjwOzljoWpSuo3GfGitL9PCnu3iuVc0gn16mU0vOptfDtbLJv
-         hYsw==
-X-Gm-Message-State: AOAM532oqbNO+3mUXsucifxkGaV/YbvBikgcuMoJDd1ZXfhGk6sgvm6e
-        ENDWuZs6E7lUPLabke0R7CBAPQ==
-X-Google-Smtp-Source: ABdhPJx3SnBLKpP+diJy0QcY1fUev+Mdrm6tm5rjjQn8OW4pmR38bFO1x2yGkQGBShGe3PxvApRG/A==
-X-Received: by 2002:a62:1ad4:0:b029:1ed:b92c:6801 with SMTP id a203-20020a621ad40000b02901edb92c6801mr3749066pfa.7.1614112029199;
-        Tue, 23 Feb 2021 12:27:09 -0800 (PST)
-Received: from ?IPv6:2600:1010:b005:a3de:6cc4:ccf5:1045:b347? ([2600:1010:b005:a3de:6cc4:ccf5:1045:b347])
-        by smtp.gmail.com with ESMTPSA id o188sm16858149pfb.102.2021.02.23.12.27.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 12:27:08 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH RFC 0/4] Add support for synchronous signals on perf events
-Date:   Tue, 23 Feb 2021 12:27:05 -0800
-Message-Id: <3D507285-835F-4C83-8343-2888835971B4@amacapital.net>
-References: <20210223143426.2412737-1-elver@google.com>
-Cc:     peterz@infradead.org, alexander.shishkin@linux.intel.com,
-        acme@kernel.org, mingo@redhat.com, jolsa@redhat.com,
-        mark.rutland@arm.com, namhyung@kernel.org, tglx@linutronix.de,
-        glider@google.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
-        christian@brauner.io, dvyukov@google.com, jannh@google.com,
-        axboe@kernel.dk, mascasa@google.com, pcc@google.com,
-        irogers@google.com, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        x86@kernel.org
-In-Reply-To: <20210223143426.2412737-1-elver@google.com>
-To:     Marco Elver <elver@google.com>
-X-Mailer: iPhone Mail (18D52)
+        id S234290AbhBWU20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 15:28:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232942AbhBWU2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 15:28:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02E9A64E7A;
+        Tue, 23 Feb 2021 20:27:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614112059;
+        bh=vmU5F26YgOkAtvLHpvo5c4HHGCzi+SVsCuih77MNkSM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Uo40ikqkpz2E2piSdQmYNzoyShenJ3gq5N7P332Zu1GIM0L9iu5mtMkVV2TY+Ehzn
+         0cHhpzaDQraHAZKrMqrXIEmDinzn3/xCrdmtuyKohXs/fpeorDokecyrH2T+mrfPTp
+         M3cSYTRtnovSJNniyfsRZxZO9OxEQEIbwozU7QrUUh+1d2dtHmzVl6ZSlJ45WxQlvq
+         nGHJ8Dy12kMAm6CLXpnLMOSvc/+EJw+4me0GkaxnoIGrO4S74CcVLVbRDYa8V5Y6rk
+         w2FlhnfXl/QLnJANqm6TO742oWrb+Z8Z+HEtqO5/Nf0T5+qefSy8c7f3Ov69XJha4S
+         aV5kxLKk6q/yw==
+Date:   Tue, 23 Feb 2021 12:27:35 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH net v2 0/2] net: dsa: Learning fixes for b53/bcm_sf2
+Message-ID: <20210223122735.699660e6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210222223010.2907234-1-f.fainelli@gmail.com>
+References: <20210222223010.2907234-1-f.fainelli@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 22 Feb 2021 14:30:08 -0800 Florian Fainelli wrote:
+> This patch series contains a couple of fixes for the b53/bcm_sf2 drivers
+> with respect to configuring learning.
+> 
+> The first patch is wiring-up the necessary dsa_switch_ops operations in
+> order to support the offloading of bridge flags.
+> 
+> The second patch corrects the switch driver's default learning behavior
+> which was unfortunately wrong from day one.
+> 
+> This is submitted against "net" because this is technically a bug fix
+> since ports should not have had learning enabled by default but given
+> this is dependent upon Vladimir's recent br_flags series, there is no
+> Fixes tag provided.
+> 
+> I will be providing targeted stable backports that look a bit
+> difference.
 
-> On Feb 23, 2021, at 6:34 AM, Marco Elver <elver@google.com> wrote:
->=20
-> =EF=BB=BFThe perf subsystem today unifies various tracing and monitoring
-> features, from both software and hardware. One benefit of the perf
-> subsystem is automatically inheriting events to child tasks, which
-> enables process-wide events monitoring with low overheads. By default
-> perf events are non-intrusive, not affecting behaviour of the tasks
-> being monitored.
->=20
-> For certain use-cases, however, it makes sense to leverage the
-> generality of the perf events subsystem and optionally allow the tasks
-> being monitored to receive signals on events they are interested in.
-> This patch series adds the option to synchronously signal user space on
-> events.
-
-Unless I missed some machinations, which is entirely possible, you can=E2=80=
-=99t call force_sig_info() from NMI context. Not only am I not convinced tha=
-t the core signal code is NMI safe, but at least x86 can=E2=80=99t correctly=
- deliver signals on NMI return. You probably need an IPI-to-self.
-
->=20
-> The discussion at [1] led to the changes proposed in this series. The
-> approach taken in patch 3/4 to use 'event_limit' to trigger the signal
-> was kindly suggested by Peter Zijlstra in [2].
->=20
-> [1] https://lore.kernel.org/lkml/CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2j=
-wVAbZD=3D-XQ@mail.gmail.com/
-> [2] https://lore.kernel.org/lkml/YBv3rAT566k+6zjg@hirez.programming.kicks-=
-ass.net/=20
->=20
-> Motivation and example uses:
->=20
-> 1.    Our immediate motivation is low-overhead sampling-based race
->    detection for user-space [3]. By using perf_event_open() at
->    process initialization, we can create hardware
->    breakpoint/watchpoint events that are propagated automatically
->    to all threads in a process. As far as we are aware, today no
->    existing kernel facility (such as ptrace) allows us to set up
->    process-wide watchpoints with minimal overheads (that are
->    comparable to mprotect() of whole pages).
-
-This would be doable much more simply with an API to set a breakpoint.  All t=
-he machinery exists except the actual user API.
-
->    [3] https://llvm.org/devmtg/2020-09/slides/Morehouse-GWP-Tsan.pdf=20
->=20
-> 2.    Other low-overhead error detectors that rely on detecting
->    accesses to certain memory locations or code, process-wide and
->    also only in a specific set of subtasks or threads.
->=20
-> Other example use-cases we found potentially interesting:
->=20
-> 3.    Code hot patching without full stop-the-world. Specifically, by
->    setting a code breakpoint to entry to the patched routine, then
->    send signals to threads and check that they are not in the
->    routine, but without stopping them further. If any of the
->    threads will enter the routine, it will receive SIGTRAP and
->    pause.
-
-Cute.
-
->=20
-> 4.    Safepoints without mprotect(). Some Java implementations use
->    "load from a known memory location" as a safepoint. When threads
->    need to be stopped, the page containing the location is
->    mprotect()ed and threads get a signal. This can be replaced with
->    a watchpoint, which does not require a whole page nor DTLB
->    shootdowns.
-
-I=E2=80=99m skeptical. Propagating a hardware breakpoint to all threads invo=
-lves IPIs and horribly slow writes to DR1 (or 2, 3, or 4) and DR7.  A TLB fl=
-ush can be accelerated using paravirt or hypothetical future hardware. Or re=
-al live hardware on ARM64.
-
-(The hypothetical future hardware is almost present on Zen 3.  A bit of work=
- is needed on the hardware end to make it useful.)
-
->=20
-> 5.    Tracking data flow globally.
->=20
-> 6.    Threads receiving signals on performance events to
->    throttle/unthrottle themselves.
->=20
-> Marco Elver (4):
->  perf/core: Apply PERF_EVENT_IOC_MODIFY_ATTRIBUTES to children
->  signal: Introduce TRAP_PERF si_code and si_perf to siginfo
->  perf/core: Add support for SIGTRAP on perf events
->  perf/core: Add breakpoint information to siginfo on SIGTRAP
->=20
-> arch/m68k/kernel/signal.c          |  3 ++
-> arch/x86/kernel/signal_compat.c    |  5 ++-
-> fs/signalfd.c                      |  4 +++
-> include/linux/compat.h             |  2 ++
-> include/linux/signal.h             |  1 +
-> include/uapi/asm-generic/siginfo.h |  6 +++-
-> include/uapi/linux/perf_event.h    |  3 +-
-> include/uapi/linux/signalfd.h      |  4 ++-
-> kernel/events/core.c               | 54 +++++++++++++++++++++++++++++-
-> kernel/signal.c                    | 11 ++++++
-> 10 files changed, 88 insertions(+), 5 deletions(-)
->=20
-> --=20
-> 2.30.0.617.g56c4b15f3c-goog
->=20
+Applied, thanks!
