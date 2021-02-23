@@ -2,124 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147A6322CB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08209322CC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbhBWOsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:48:11 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:36294 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbhBWOsB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:48:01 -0500
-Received: by mail-il1-f200.google.com with SMTP id s13so4533262ilp.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:47:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=P+zFeH+d72qPP3Q6ls0umAtZ7gXIoT+uMcJ3RoGOWxA=;
-        b=VPoZKjRcY5nH2Clnr5AVFmthV4C/Tdc7E6/S5FJ8fpM6g75pK+pk6xhbod6UxkRo2l
-         yFkQuAxBdRENkvWBgjmDYgdzBS6pC10fef/Mp5EbrOv2La4AQbr/57h84uta25OSsJHr
-         XJOYPkIRKalx15shXF65gp0+7zyoTMvtWZhwuNdv5Q2SCvBiHR1PJMrW61JDBq22pyAl
-         8OIPGFBw9/wLhZt6yRZhkru7MakCUt/sXpjQZzYOP8V/FzgYVTxt7YTK3nBSdRYJUid5
-         j2DpFsUp4Pul7h0xtWbsTXDqW/YmKK6G1qdPMagXaxT5mRfNcNVmWSqtQIrAXvhAXKhO
-         mL5A==
-X-Gm-Message-State: AOAM530SdAXx+MmYm0rYrtI9LhtgycuWhCFjDhCiTvaXX3ZnnMZo8+2O
-        YQDAphl6kzjv3723mLjDFUC1Ge0PlCMyas/0/Q4HNAhgTeJp
-X-Google-Smtp-Source: ABdhPJxYu+T1N9kSUPvH/8XW1KO+HxHjJ6RaJOROleftkMaW4UhFJnxRbIR/3rE9JDE4MrpcMpHT7NpAuGvGLA6ZI9hT0yrVuHh3
+        id S232986AbhBWOst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:48:49 -0500
+Received: from foss.arm.com ([217.140.110.172]:53836 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232553AbhBWOsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:48:39 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F4961FB;
+        Tue, 23 Feb 2021 06:47:53 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 29A643F73B;
+        Tue, 23 Feb 2021 06:47:52 -0800 (PST)
+Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
+ cpu_util_next()
+To:     Quentin Perret <qperret@google.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net,
+        valentin.schneider@arm.com
+References: <20210222095401.37158-1-vincent.donnefort@arm.com>
+ <YDODN1rnTqfTQOug@google.com>
+ <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
+ <YDOiKH/XQDUKcrPU@google.com>
+ <20210222150151.GA124800@e124901.cambridge.arm.com>
+ <YDPUwKKYgZfzzCJm@google.com> <YDPajlnvgkonocpp@google.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <c101892b-157c-0074-12cb-9651d1c4c4e6@arm.com>
+Date:   Tue, 23 Feb 2021 15:47:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7619:: with SMTP id g25mr20689499iom.177.1614091640122;
- Tue, 23 Feb 2021 06:47:20 -0800 (PST)
-Date:   Tue, 23 Feb 2021 06:47:20 -0800
-In-Reply-To: <00000000000056c3e005b82689d1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d8369805bc01fe68@google.com>
-Subject: Re: general protection fault in xfrm_user_rcv_msg_compat
-From:   syzbot <syzbot+5078fc2d7cf37d71de1c@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YDPajlnvgkonocpp@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On 22/02/2021 17:23, Quentin Perret wrote:
+> On Monday 22 Feb 2021 at 15:58:56 (+0000), Quentin Perret wrote:
+>> But in any case, if we're going to address this, I'm still not sure this
+>> patch will be what we want. As per my first comment we need to keep the
+>> frequency estimation right.
+> 
+> Totally untested, but I think in principle you would like something like
+> the snippet below. Would that work?
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 04a3ce20da67..6594d875c6ac 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6534,8 +6534,13 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+>          * its pd list and will not be accounted by compute_energy().
+>          */
+>         for_each_cpu_and(cpu, pd_mask, cpu_online_mask) {
+> -               unsigned long cpu_util, util_cfs = cpu_util_next(cpu, p, dst_cpu);
+> +               unsigned long util_freq = cpu_util_next(cpu, p, dst_cpu);
+> +               unsigned long util_running = cpu_util_without(cpu, p);
 
-HEAD commit:    a99163e9 Merge tag 'devicetree-for-5.12' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11a6fccad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7a875029a795d230
-dashboard link: https://syzkaller.appspot.com/bug?extid=5078fc2d7cf37d71de1c
-userspace arch: i386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=167c1832d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10214f12d00000
+Wouldn't this be the same as:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5078fc2d7cf37d71de1c@syzkaller.appspotmail.com
+                 unsigned long util_running = cpu_util_next(cpu, p, -1);
 
-general protection fault, probably for non-canonical address 0xe51af2c1f2c7bd20: 0000 [#1] PREEMPT SMP KASAN
-KASAN: maybe wild-memory-access in range [0x28d7b60f963de900-0x28d7b60f963de907]
-CPU: 1 PID: 8357 Comm: syz-executor113 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:nla_type include/net/netlink.h:1130 [inline]
-RIP: 0010:xfrm_xlate32_attr net/xfrm/xfrm_compat.c:404 [inline]
-RIP: 0010:xfrm_xlate32 net/xfrm/xfrm_compat.c:526 [inline]
-RIP: 0010:xfrm_user_rcv_msg_compat+0x5e5/0x1070 net/xfrm/xfrm_compat.c:571
-Code: 3c 38 00 0f 85 50 08 00 00 48 8b 04 24 4c 8b 20 4d 85 e4 0f 84 0b 02 00 00 e8 b7 7f c9 f9 49 8d 7c 24 02 48 89 f8 48 c1 e8 03 <42> 0f b6 14 38 48 89 f8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85
-RSP: 0018:ffffc900017ff3d8 EFLAGS: 00010202
-RAX: 051af6c1f2c7bd20 RBX: 0000000000000006 RCX: 0000000000000000
-RDX: ffff88801ac60000 RSI: ffffffff87a9f019 RDI: 28d7b60f963de902
-RBP: ffff888020c9af50 R08: 000000000000001b R09: ffff888020c9af53
-R10: ffffffff87a9f259 R11: 0000000000000024 R12: 28d7b60f963de900
-R13: 0000000000000007 R14: ffff888020c9af40 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0063) knlGS:0000000009c092c0
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 0000000020002752 CR3: 000000002d87a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- xfrm_user_rcv_msg+0x556/0x8b0 net/xfrm/xfrm_user.c:2774
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2824
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2348
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2402
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2435
- do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
- __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f48549
-Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000ffca8dbc EFLAGS: 00000282 ORIG_RAX: 0000000000000172
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000020003c80
-RDX: 0000000000000000 RSI: 00000000ffca8e10 RDI: 00000000080e3000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 1494ca3373de8f76 ]---
-RIP: 0010:nla_type include/net/netlink.h:1130 [inline]
-RIP: 0010:xfrm_xlate32_attr net/xfrm/xfrm_compat.c:404 [inline]
-RIP: 0010:xfrm_xlate32 net/xfrm/xfrm_compat.c:526 [inline]
-RIP: 0010:xfrm_user_rcv_msg_compat+0x5e5/0x1070 net/xfrm/xfrm_compat.c:571
-Code: 3c 38 00 0f 85 50 08 00 00 48 8b 04 24 4c 8b 20 4d 85 e4 0f 84 0b 02 00 00 e8 b7 7f c9 f9 49 8d 7c 24 02 48 89 f8 48 c1 e8 03 <42> 0f b6 14 38 48 89 f8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85
-RSP: 0018:ffffc900017ff3d8 EFLAGS: 00010202
-RAX: 051af6c1f2c7bd20 RBX: 0000000000000006 RCX: 0000000000000000
-RDX: ffff88801ac60000 RSI: ffffffff87a9f019 RDI: 28d7b60f963de902
-RBP: ffff888020c9af50 R08: 000000000000001b R09: ffff888020c9af53
-R10: ffffffff87a9f259 R11: 0000000000000024 R12: 28d7b60f963de900
-R13: 0000000000000007 R14: ffff888020c9af40 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0063) knlGS:0000000009c092c0
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 00007efcea642000 CR3: 000000002d87a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+except some different handling of !last_update_time and
+'task_on_rq_queued(p) || current == p)' in cpu_util_without() which
+shouldn't happen in EAS.
 
+We have quite a lot of util related functions!
+
+[...]
