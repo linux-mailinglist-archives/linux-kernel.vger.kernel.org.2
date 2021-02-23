@@ -2,107 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9863224FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 05:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D27D5322502
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 05:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhBWEsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 23:48:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbhBWEsB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 23:48:01 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACA0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 20:47:21 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id u4so16134352lja.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 20:47:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TR1Ebr28GfdgahufOQrB/drWR7HsROYX0I7LCagN07A=;
-        b=HvMaDXFPpr3Xx75I2KZJKnYltR2SiDXIuL/Fr0kaKq1wdehMELe48z3jWrXhcgDILq
-         m0uotVbBuXtFGJ/rUIqvXFg99fzyb0va7FoUYYTbVory9X6wRlmzNqKwcTnfu2Y69AR+
-         KAuYyqwEg7l8V95CNC6yyF4iUaSCDzH2euasfg9J//bfumJIENtaPLTiI6G6JeYL95HB
-         v1gDIzuKn+bAYW5917kNpaqevoxHRVODTJqJSRl6mHTn7La7WQFINN9q2RKuPiQAZWPS
-         Jka11pZoQFP2yqM4XG7c0mjofFQHtJcL4H1ubDMLXHbzilRJyJk9vbCRnocM7YPGEDUX
-         5zOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TR1Ebr28GfdgahufOQrB/drWR7HsROYX0I7LCagN07A=;
-        b=EIZFuF2UqqfpDpwm70MtcVwad6dKh53ju5x8C28bbHCDOF6JNHC/nyrr4xoS9eA88J
-         Yru6qQo6F5zfKRUMyO8EunyUkmcjqOwbQeUGEi6vhGVOwpLICEgVYm3dLulo5qD6lqrS
-         NAzYhsTvSaTSWFXKS+PQv2Eb86KEeW/1ohv5RxvYljTlpS0KOym68lD0Q27lRv54M9Ah
-         NTlc0KoWMO/DDb2fX+Lmw1zPcMU7+WLMyy/MJI6Wp5a2qVbWyLK4RrXK9EkVs+uafIy6
-         +AJmOVAjBcMYhCal1CTdGpdksTSoCK2QPWpQtDioF0Je4qkXqG0Tw9T1yw4Hg7PaNMbK
-         jWXQ==
-X-Gm-Message-State: AOAM530+wm4M6JEijg4/xO8SBVi0CSGtB0ziA1cK4QQLB54/YSlUvo9n
-        CDWWyZYkbp9WBsBv3aFZ9fw36uwBJZBw7v+sTHDxtA==
-X-Google-Smtp-Source: ABdhPJx2ccmhLjrENwH72Hhc5VHcnpOc/ikOKl0+q+jP/9K0dgnJ7EP1SfhI7EKgdLIRF2SFwZAVBJQjq/yqpe4dJPQ=
-X-Received: by 2002:a2e:99cb:: with SMTP id l11mr7060738ljj.343.1614055636766;
- Mon, 22 Feb 2021 20:47:16 -0800 (PST)
+        id S230386AbhBWEuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 23:50:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230057AbhBWEun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 23:50:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 873FF64E20;
+        Tue, 23 Feb 2021 04:50:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614055803;
+        bh=p+5nWh0Oxfc+zyfHWmZ2xOuFoBePfPAebKd83o/+1pw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lsZp5zMTKlFrsnYU/p0hfm43kJsFZ0wqBU6AC1fvkx3rjyh0cX9ngqjohUXxEI6Ua
+         Fz0fpzSBLueOjZol81I8OzT13jD3noCwnw7+tzcsFiu1Oob3Tea9ZI4OCS21cqT05F
+         kPVPY9HthTu3UHTWn9fC+ltcohqs8tTy/63VJboo=
+Date:   Tue, 23 Feb 2021 05:49:58 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH 5.10 03/29] vdpa_sim: store parsed MAC address in a buffer
+Message-ID: <YDSJdmc/14/gmnJp@kroah.com>
+References: <20210222121019.444399883@linuxfoundation.org>
+ <20210222121020.153222666@linuxfoundation.org>
+ <20210222195414.GA24405@amd>
 MIME-Version: 1.0
-References: <1613650198-27437-1-git-send-email-sumit.garg@linaro.org>
- <20210222120502.phazkmskgqvpe4yy@maple.lan> <CAFA6WYNiaeyFHrcTSp6x4ur5VjZAoJ=NfMPsa__dH2VK9ze7vQ@mail.gmail.com>
- <20210222134750.zc473zz42bz4teu3@maple.lan>
-In-Reply-To: <20210222134750.zc473zz42bz4teu3@maple.lan>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 23 Feb 2021 10:17:04 +0530
-Message-ID: <CAFA6WYPzds7qHMoeG-mLk0r9o3ba+dXCf_zjLNmoVQRdxedscQ@mail.gmail.com>
-Subject: Re: [PATCH v4] kdb: Simplify kdb commands registration
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210222195414.GA24405@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 at 19:17, Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> On Mon, Feb 22, 2021 at 06:33:18PM +0530, Sumit Garg wrote:
-> > On Mon, 22 Feb 2021 at 17:35, Daniel Thompson
-> > <daniel.thompson@linaro.org> wrote:
-> > >
-> > > On Thu, Feb 18, 2021 at 05:39:58PM +0530, Sumit Garg wrote:
-> > > > Simplify kdb commands registration via using linked list instead of
-> > > > static array for commands storage.
-> > > >
-> > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > > ---
-> > > >
-> > > > Changes in v4:
-> > > > - Fix kdb commands memory allocation issue prior to slab being available
-> > > >   with an array of statically allocated commands. Now it works fine with
-> > > >   kgdbwait.
-> > >
-> > > I'm not sure this is the right approach. It's still faking dynamic usage
-> > > when none of the callers at this stage of the boot actually are dynamic.
-> > >
-> >
-> > Okay, as an alternative I came across dbg_kmalloc()/dbg_kfree() as well but ...
->
-> Last time I traced these functions I concluded that this heap can be
-> removed if the symbol handling code is refactored a little.
+On Mon, Feb 22, 2021 at 08:54:15PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > From: Stefano Garzarella <sgarzare@redhat.com>
+> > 
+> > commit cf1a3b35382c10ce315c32bd2b3d7789897fbe13 upstream.
+> > 
+> > As preparation for the next patches, we store the MAC address,
+> > parsed during the vdpasim_create(), in a buffer that will be used
+> > to fill 'config' together with other configurations.
+> 
+> I'm not sure why this series is in stable. It is not documented to fix
+> anything bad. 
 
-Yeah, I also observed symbol handing code being the only user. So, I
-will try to rework that code and see if we can get rid of this custom
-heap.
-
-> I'd be
-> *seriously* reluctant to add any new callers... which I assume from your
-> later comments you can live with ;-) .
->
-
-Yes that's fine with me.
-
--Sumit
-
->
-> Daniel.
+Please see https://lore.kernel.org/r/20210211162519.215418-1-sgarzare@redhat.com
