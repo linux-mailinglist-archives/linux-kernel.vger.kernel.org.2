@@ -2,188 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D110F3226F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A193226F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:15:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhBWIO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:14:58 -0500
-Received: from sonic305-19.consmr.mail.gq1.yahoo.com ([98.137.64.82]:46020
-        "EHLO sonic305-19.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230060AbhBWIO4 (ORCPT
+        id S232005AbhBWIPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:15:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhBWIPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:14:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1614068030; bh=VgRaNiXmS+fHUI7DmYXUl0ZOy1q455DZjxEhf4VEPXs=; h=Date:From:To:Cc:Subject:References:In-Reply-To:From:Subject:Reply-To; b=ahpk7S/v1mR5uLk8S/KdDNybLS+h6w7wC8zHcf0KPxalKtZM6BREr8IQ5jW6BCOn9AanykAKw3ep/8Rd/N1OoGCP+Sa/cM/zwL1xhrDDhZyrdQ7u5UO6mTnwQIHHoFXKCSNr3vFLQGhN7+Sna8hMuN+x6SKNGVHd561J4Te7stKE2B4sy4/Pkl/sNkGRDKPAlsgzX6cYLRHSP6fWUK4yC7WAvXru8wbh40PW8wJrsvHyXLsbpAToppuVWUiojThd30Wgj7/aBIIXyieYfL0aJGD601Mk3NZOOQI0xVE0Z2Uw6Mm0ldkyg5Di8fZ8Tch8q6mGdOEyzDQizH1WBs2JBQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1614068030; bh=FVnb1PG+YppfkV46CJalLyQRXxdyypGCCqCP4Bm+kbw=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=WgAef68o9i3vsUCVcRVYnZ4TiVpIR92x3702QTxgT+TGVP4Fg8c98qbYwAvlF6IboqNlRkeE+deIWUxD111o7pPtysXjUFD9552Oc/RB5KmheuMXApBSEDRuY1MEoD0WA8Yu2vvs2C2MLpoYsvjXApgOgyQmNuhb7AwM3NXfWDnL9PBNIYARilhpSvZrmXk3acw48dBwvCPxXBh19OgwFLWUB58YcQVOimbTfH1/9owCNV+T9tYCjQtO2YIPnE4oW00Zdow8+ZRpoQKax6JQT0mOU0torpQcnRCnKAyAFWaclFbMbPNQ+t37jVyBgZ6PwnPBi9AWGTYhCZq4bCOprQ==
-X-YMail-OSG: 2g6jPhQVM1mMw6MW0uill92AcbruD0.qNLKiBq9lnIsAwaCU6a3CK4JSTRXwPD.
- YV3AMK.HMHvvKlmhuMWrMf7089jcAuRY2HtHq2E7AosEdDWVRrFTVlvv5IueDDF5Adt8hzdvdcy1
- e5tSwqZStbiDfdOe5903zNrgaCkZiNb16d3NfsQNSS9DK7CP3Qai7kXT9g1ORepY5pxNPRe6AfUV
- lLUj_0fq0uNd8zKwhXkbJuBT6Jc7J6nNVYUyckzYoPtXeXKbOvxfLBKxypemeLiG7FYa0g02vPSv
- snP_L_WFySD5Hp5fplqtztdY8ZQ6LSI7F5cw77STN_V.UHGK4Xq0Bo378JdaGYBpjSdEu3eANKB9
- R.B_0WsrFeWyW9wVleGtQ45pGHZ1y9kEIw.lM_CnTtY9oSq8_g9qa8.KxJDi95EjNPevO6_DPiqZ
- bHskEwu0gliyV4OoDgHFGgFXO31pfV633tb3jgWQ_ASkQzbE0guFe7vWfxqO_rJBgngDVirkMv1y
- Q8s49fA5aKlTT5HWmabTqg6Gi09x0QL1j9ve8CdyBns7tBysSA3BJKRL5OxaItvO33kHGJ_rOdxK
- VOFhy.u6gDzDm5NeOTuGFJqTFOOkLl9hgudbIW6AfUr.CdsxTirRgsToZuFp1q1Xe17LfgnnT86T
- 5MfgRJxVW4JGnY78tj7yU.BD2eh9fO5BQ2gRDEBmmcofgFAEuvRgrluCGm3piyR2UVZ7NRrrsaun
- IF1o0b.bOFLhBaR9i6aaqqHbyrRLXuPXKrdsxGropjwrW_NaUAbviurviyb7Ew1NOFLSFfTqAES2
- uRexWouGOAOrSrEvV75Jpm_41hfRc5wfi1rheauIS0c0Y8bTVdlpw4xdhqeedIjwsGEYeYOFGWMP
- NmiaDLxIPB8UVzBG9TIP2SBVsVtCvko4KlFR42Zw_DZTIFZSz9RUNMu0RF0RrL467BVf4nf5Oe2y
- O__aDfyQo65dg3QGR8vbyRjcgBeMNqhvxtf_m2nDBB9xwBumJzNo4eqfWqVesJFF3StUXo0jW3RY
- Nsx.GJ2J7C700y_LKa0JFnW8hEllW0t8FjFoOh9tX36eEFV6i60TzHSQUvSO1rxzsUkfuNaEdc4a
- F_iecXEi9RuwLS7xlrTtQQryD7E3Zy_eMnnCWv9KbAduP4OUZOuET8FxrlmNj_nUzkDH2x5If5ig
- i3IlQ_B8wMNQShy0cpD9Y4jFL.7HP4V8.EzX9N_zT200AUjgy8kOBGN8f2Fu7mS7RdU4P_h42niz
- 9w6xaPmA81vrVARcW_HLT0wIdckEUXd1.PgLZNvmfbtQzh1kz2OKbbcUUcDrLsnD4VNX1ZD0TtxJ
- muDzYDGZyGSWYWtxJNiIDaudkVrCNgzZSvVPrNQKhosZlNzElGp.G7L6CLlAuaP4Fu1X08gQYjV.
- pcyssXltq4CTX_nf6E6ddwNLuOB6V_1m6_QRAeyiJa17WItaWOveaF18GmcWkJ_xWmpfsKkb_c9H
- ysMUx8pLU91O5ZgWza0dgaysMEC3iG65YFevhyTGULQe7RrVeILX0hcvzgrw87l8sus5kBbdDuDA
- yw2oUO09.rLYEJ.o0rq2XM_jU1BFr7pUCULQn0aWJbTEyFATbwI_SsGgjrKZTgb3nNhCJ1It1Nx7
- A0rQXDxLfnMf0yKU8Ju2N0o8xHXURXZXtAcb_adW7zUiAdkgQ.gnIbocTOBtN3j.wghYRDMFwvb4
- G9oQksG6VZoK5lKpozG6gI1cYa5fxReKzcMx.NaM1nNiY1fmYgO5Gmez1VGEGL4J.W2ObVQ9gwey
- N5j2XSNo4LWfhpbZvYH9TOgnxncUzToZhn0b3U37Ezxm_wuoqV4_frQQjMEeLbb8wFwCdErhvg.u
- mqemZIZqExR_O5EjNNaC9ilnw.MunaMk2Xl5zynv8NrhSvuJqro.hrDxz6Oy_O39CKuTbVenXstc
- a3vjdqO.s4zTgcf0MRstfKsDRxS43z1l14gwIQCLFIYN546U_bUWc8UtAcOVXcHVNgrvWgKNPi16
- q9Z88II2YV8a14CdVWPmPF2yLzIF2z7SI19JCcb8JG2UITMQccZP.VoTveKXXbbVCQdaLS9wbtHO
- oZosmguZEwSVPOsT8y.8ynxH8qr0JIC9HyVEULYtWrV_5cekUuTowbQbNYW4iiRarAPFfwr2DcqQ
- IyekUHZL9cjmkboh4qiEqE_qpUwkvg_ZNPD0pYqXm6RU1UfH30lCw.ozJ5GILuTctPjBtqb5SG1j
- ACieA1qQWRtym.AbyYQfu4wxrvSBwcByTUMpy7ZkBpbAGmTCfjdMOLpEpUZrjnYAxQe.y4juuyhM
- JTWT.tII40pTGSTM2qJZddfDBEZRr5e_FSx_xGbFurfoD4GkKAGMT.AAzTPjLqoEnBb.HsinCmaP
- 8CQX2eEH3X6tn1nvgt7XRl7oRYcVV28BRw0FHy8Yd5RMc6E1weasb9dNS.LUfOiwu0mmebT6TAsu
- vsLkHZtspciL5l_TXjNhSroPKmVdWUjLrgW8X61e0BFQj8lxpkMOOCT.1HTBMbG3DME9hzWGGfwc
- FFLNeGPKDQylf_rVp7d.fPGM4SaXyiVhxyjuOIema8r6vKT9siUlq5L7.ffeJwgzxrQkEytpKe4u
- PGAGZYjXiFNevdKD5Ih9GcGizK7nxuRU33.DhKjlKcnpWerTCaKhJMSSyTRoHziAybGZQfQsoOsG
- 9kqisFGgp5a4TfDc45A--
-X-Sonic-MF: <hsiangkao@aol.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.gq1.yahoo.com with HTTP; Tue, 23 Feb 2021 08:13:50 +0000
-Received: by smtp407.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID c8a8e7ed1d54030eb2a1fabfc0c47f76;
-          Tue, 23 Feb 2021 08:13:42 +0000 (UTC)
-Date:   Tue, 23 Feb 2021 16:13:24 +0800
-From:   Gao Xiang <hsiangkao@aol.com>
-To:     Huang Jianan <huangjianan@oppo.com>
-Cc:     zhangshiming@oppo.com, guoweichao@oppo.com,
-        linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] erofs: support adjust lz4 history window size
-Message-ID: <20210223081323.GA21197@hsiangkao-HP-ZHAN-66-Pro-G1>
-References: <20210223073119.69232-1-huangjianan@oppo.com>
- <20210223074418.GA1269766@xiangao.remote.csb>
+        Tue, 23 Feb 2021 03:15:24 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BF1C061574;
+        Tue, 23 Feb 2021 00:14:44 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id k22so9363413pll.6;
+        Tue, 23 Feb 2021 00:14:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6QVPlsgRJiJCSIqYUUMXsd4yZA1p/Hu+W1ld8bR+c0k=;
+        b=Kw5WT1yuRR8LzvAIGoyDmijKFRn5uET7bx/sWIdrRtqj4FD/J8KOZNDlDR5AxI/caa
+         oAKdjF9PL1rbX+zJPY97s5MI+hlktvG/aD621PU7VuwKWUIwjeuP0Wr2HiOAdBBN2Gqq
+         x/s+stukp95b3oHwS3PaV+Dgp0ukFiIdkgIOg8ycRPRwrcHxjjoKjDYM9l7MpvfcqHJB
+         k7bC4L84Xvu4ByPAjcufR+DEeFee+VK9nCf4R0VC8utpWUpZWrgdEAmPrjBkGIenTo9I
+         b6f8BC5q8UwfiT53jq7KxcS/Tsnae1VK5lngIFsj2DHrXvl4NCSfgB+XXS5lfOxhvzgD
+         j5UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6QVPlsgRJiJCSIqYUUMXsd4yZA1p/Hu+W1ld8bR+c0k=;
+        b=tg8gEpUbS3lcpmilxIsduxj6sZkLY9cyHJtoHQQawdoFsGNJhELt8HuDu/J/uduDWE
+         N0sFyNvdWeBF+BZ3SX7nT3OtjQzSpn6AxRCQDcWkGCuOZBJjBFCfH/alU9QYV4IG0G0z
+         k7kQQ2Tud8n1Dm816uC4EiyaXMdHyBdo15fRjxbM9TxtxWoTYdjfoaN6/u7QXjXLY2WP
+         MJBJq3M2c9EJYMCQoK5jwHdaF8HE0c/6cQDWUjf6oMyljKMMmo2JMk/kdJS2/8WUK4KD
+         A3eXL7c58ciE7OlhJT8zpflMIXFoXoQ0IYxuR+b4Qhw7v1NwVrNVQQW4unqwUwGXYN52
+         zC6Q==
+X-Gm-Message-State: AOAM533Sy/E59mg1MuBk7kKluT9bkG+ROQ3GZ1QbIOqD8fFbHBoM95AW
+        6s577V47ns/s/5AYsiJ/uNIYpZRiWmG6Dg==
+X-Google-Smtp-Source: ABdhPJyWOwFhq0GI/yzhXdE2wyLpy4T2B8rQPgj0g7JqCQxzawkkKW3PGLcX//qqY5UVVTUpw9gggw==
+X-Received: by 2002:a17:90a:404f:: with SMTP id k15mr27330246pjg.220.1614068084180;
+        Tue, 23 Feb 2021 00:14:44 -0800 (PST)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id c18sm21902533pfi.167.2021.02.23.00.14.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 00:14:43 -0800 (PST)
+Date:   Tue, 23 Feb 2021 17:14:38 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v6 0/2] add support for GPIO or IRQ based evemt counter
+Message-ID: <YDS5bp9vsG25nDeT@shinobu>
+References: <20210216081356.3577-1-o.rempel@pengutronix.de>
+ <YDMNiBjnJKanhTUH@shinobu>
+ <20210223071630.lazyuvhr4xgqhafi@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WaZvC677jfRnJHXr"
 Content-Disposition: inline
-In-Reply-To: <20210223074418.GA1269766@xiangao.remote.csb>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Mailer: WebService/1.1.17712 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.aol Apache-HttpAsyncClient/4.1.4 (Java/11.0.9.1)
+In-Reply-To: <20210223071630.lazyuvhr4xgqhafi@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 03:44:18PM +0800, Gao Xiang wrote:
-> On Tue, Feb 23, 2021 at 03:31:19PM +0800, Huang Jianan via Linux-erofs wrote:
-> > lz4 uses LZ4_DISTANCE_MAX to record history preservation. When
-> > using rolling decompression, a block with a higher compression
-> > ratio will cause a larger memory allocation (up to 64k). It may
-> > cause a large resource burden in extreme cases on devices with
-> > small memory and a large number of concurrent IOs. So appropriately
-> > reducing this value can improve performance.
-> > 
-> > Decreasing this value will reduce the compression ratio (except
-> > when input_size <LZ4_DISTANCE_MAX). But considering that erofs
-> > currently only supports 4k output, reducing this value will not
-> > significantly reduce the compression benefits.
-> > 
-> > The maximum value of LZ4_DISTANCE_MAX defined by lz4 is 64k, and
-> > we can only reduce this value. For the old kernel, it just can't
-> > reduce the memory allocation during rolling decompression without
-> > affecting the decompression result.
-> > 
-> > Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> > Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-> > ---
-> > 
-> > change since v2:
-> > - use z_erofs_load_lz4_config to calculate lz4_distance_pages
-> > - add description about the compatibility of the old kernel version
-> > - drop useless comment
-> > 
-> >  fs/erofs/decompressor.c | 22 ++++++++++++++++++----
-> >  fs/erofs/erofs_fs.h     |  3 ++-
-> >  fs/erofs/internal.h     |  7 +++++++
-> >  fs/erofs/super.c        |  2 ++
-> >  4 files changed, 29 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-> > index 1cb1ffd10569..0bb7903e3f9b 100644
-> > --- a/fs/erofs/decompressor.c
-> > +++ b/fs/erofs/decompressor.c
-> > @@ -28,6 +28,18 @@ struct z_erofs_decompressor {
-> >  	char *name;
-> >  };
-> >  
-> > +int z_erofs_load_lz4_config(struct erofs_sb_info *sbi,
-> > +			    struct erofs_super_block *dsb)
-> > +{
-> > +	u16 distance = le16_to_cpu(dsb->lz4_max_distance);
-> > +
-> > +	sbi->lz4_max_distance_pages = distance ?
-> > +					(DIV_ROUND_UP(distance, PAGE_SIZE) + 1) :
-> 
-> Unneeded parentheses here (I'll update it when applying).
-> Otherwise it looks good to me.
-> 
-> Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
-> 
-> Thanks,
-> Gao Xiang
 
-Applied to dev-test temporarily with the following diff
-(fix 80 char limitation, etc):
+--WaZvC677jfRnJHXr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index 0bb7903e3f9b..49347e681a53 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -34,9 +34,8 @@ int z_erofs_load_lz4_config(struct erofs_sb_info *sbi,
- 	u16 distance = le16_to_cpu(dsb->lz4_max_distance);
- 
- 	sbi->lz4_max_distance_pages = distance ?
--					(DIV_ROUND_UP(distance, PAGE_SIZE) + 1) :
-+					DIV_ROUND_UP(distance, PAGE_SIZE) + 1 :
- 					LZ4_MAX_DISTANCE_PAGES;
--
- 	return 0;
- }
- 
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 4cb2395db45c..77965490dced 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -433,7 +433,7 @@ static inline void erofs_exit_shrinker(void) {}
- static inline int z_erofs_init_zip_subsystem(void) { return 0; }
- static inline void z_erofs_exit_zip_subsystem(void) {}
- static inline int z_erofs_load_lz4_config(struct erofs_sb_info *sbi,
--					  struct erofs_super_block *dsb) { return 0; }
-+				struct erofs_super_block *dsb) { return 0; }
- #endif	/* !CONFIG_EROFS_FS_ZIP */
- 
- #define EFSCORRUPTED    EUCLEAN         /* Filesystem is corrupted */
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index 11bc51e488dd..025c25d6e0f3 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -166,8 +166,6 @@ static int erofs_read_superblock(struct super_block *sb)
- 	if (!check_layout_compatibility(sb, dsb))
- 		goto out;
- 
--	z_erofs_load_lz4_config(sbi, dsb);
--
- 	sbi->blocks = le32_to_cpu(dsb->blocks);
- 	sbi->meta_blkaddr = le32_to_cpu(dsb->meta_blkaddr);
- #ifdef CONFIG_EROFS_FS_XATTR
-@@ -189,6 +187,9 @@ static int erofs_read_superblock(struct super_block *sb)
- 		ret = -EFSCORRUPTED;
- 		goto out;
- 	}
-+
-+	/* parse on-disk compression configurations */
-+	z_erofs_load_lz4_config(sbi, dsb);
- 	ret = 0;
- out:
- 	kunmap(page);
+On Tue, Feb 23, 2021 at 08:16:30AM +0100, Oleksij Rempel wrote:
+> Hi William,
+>=20
+> On Mon, Feb 22, 2021 at 10:48:56AM +0900, William Breathitt Gray wrote:
+> > On Tue, Feb 16, 2021 at 09:13:54AM +0100, Oleksij Rempel wrote:
+> > > changes v6:
+> > > - rename it to interrupt-counter
+> >=20
+> > Hi Oleksij,
+> >=20
+> > Sorry to nitpick again, I think "irq-counter" as Jonathan suggested in
+> > an earlier review would be a better name afterall. Would you be able to
+> > rename this driver to use that name instead?
+>=20
+> I would prefer not to rename it. IRQ (Interrupt Request) is a signal
+> outside of the system. Below some frequency rate, amount of counted
+> ISR (interrupt service routine) calls or events would be equal to the act=
+ual
+> IRQs. If frequency is too high, we will count ISR, but not IRQs. In
+> any case, interrupt-counter is more or leas neutral, without triggering
+> too many wrong assumptions.
+>=20
+> Regards,
+> Oleksij
+> --=20
+> Pengutronix e.K.                           |                             |
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
+I suppose "interrupt-counter" should be fine in this context then, so
+perhaps a rename isn't really necessary afterall.
+
+William Breathitt Gray
+
+--WaZvC677jfRnJHXr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmA0uWEACgkQhvpINdm7
+VJJ9gw//W0Nw3A0b6H36jFtb1PwrQRx2rrFJiO7WeGDl0IxpGkDh5p5D48LcF/sB
+2MD6nCyE/MZUqyFiJObPUmsiUrUQ9R1tPOdscDzu6a8dGpazWv5gt8/abuFMTMJQ
+3J0Tflc3swtWZiNSVYLhOMs8v+q4lYjjQRIFFDmOVUTy5c6wSb+2p8WYkN63b+H2
+o7Fhj4xBspJDJvaTeDJKPRn1BWgb8RHMdsviu2m34HsiTR8oXawXCWsi8U+z/bP4
+Up7xbXEtWQJ2KIlOXZrF7w+75d0WKa3V+K4+63sktDpByz3T5/CTD82TfJr/nMaq
+oiExuPjlagyNlu8IjXHZea9Yya1hp+EqepLfgeqC+HUhSG6J1F5M5HEBCXY6p59h
+g7O8fOdbSp/lzSRTZk3SkW+EZXXjD4WUM21ywMBamm4QvBm5aBp8FrQ4MsqE2HYU
+qJ7I716wknX63kxgHbnbPqCVPfPRj81VGTeoZee17Imf0LwE9h2xvBKDz//VD8SL
+Bn+UkaSSaoTVADL25A7oPgsgv9uM5/myMLDJj2Vl2jZ/ip9el+TSgTQAoNtEBbj9
+NiFSMfaVp/gsVvsAT3vDjABRSl1OgZb+7dPwGYQgyMVrjK+3/M/Z54f9ZKBF+cw8
+Z56Vfi4MbggTF8iTt4Wfg68iT96kjdeHMoRGdZcplb5zCaIvcAU=
+=8gCY
+-----END PGP SIGNATURE-----
+
+--WaZvC677jfRnJHXr--
