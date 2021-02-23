@@ -2,141 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297F432325A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC85323271
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234441AbhBWUqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 15:46:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53516 "EHLO
+        id S234471AbhBWUtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 15:49:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbhBWUpE (ORCPT
+        with ESMTP id S234467AbhBWUtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 15:45:04 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87428C061574;
-        Tue, 23 Feb 2021 12:44:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=l5UvSZQBGxOmQXzZ6VSoS/UKjlC4X1+BkU4mQVd80w4=; b=0g6OjLI3dVsGvfbNA+i0UInTwN
-        fW8P+kjwabvUYxrfx/CxyP8w/uAyI7/ag4no66N7J1V50IUlaWc1rfgpQsyQIF+xdXL7hA/qs9l6d
-        QHqSSKPNo+Hk5xA7thfD2uFPsIqXmVR32bOacovC/CEaoaZXjuY8XhW2CpeCPQAXuc/6aUr8EOxiO
-        bO+lzAUlkTbQAjIerrLU6Jtw5hakG3v3jOxjRRQ+iJXX6RQ84YNl3JsC5U2glaASOQcbLh8/Upyju
-        jWnOQDaks9FZgYBeccj3tf434NgeQCSF8jNkOnb1Zh06ALBfIQFWBlcON5GtFvsFKHXuTnMSzDa46
-        IIwivqaQ==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lEeXb-0004DS-UY; Tue, 23 Feb 2021 20:44:20 +0000
-Subject: Re: [PATCH v3 3/8] securtiy/brute: Detect a brute force attack
-To:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20210221154919.68050-1-john.wood@gmx.com>
- <20210221154919.68050-4-john.wood@gmx.com>
- <f4fd9e44-539e-279e-a3a6-8af39f863f73@infradead.org>
- <20210223182054.GB3068@ubuntu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a0134e04-213f-2440-6d0b-adb018e49083@infradead.org>
-Date:   Tue, 23 Feb 2021 12:44:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210223182054.GB3068@ubuntu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 23 Feb 2021 15:49:15 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D07C061786;
+        Tue, 23 Feb 2021 12:48:35 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id d11so4570741wrj.7;
+        Tue, 23 Feb 2021 12:48:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=IwGJDPT+SCO3TP6Ah2cHRHOVWak7YyozOHAEaSbKdwg=;
+        b=Wl482oRv5jnplVEjFf7SQ4dRjo/lOqwhRRpqYCtarAAIrICrYf2MCgfIYiOQsB0Y2K
+         FYq0cWgXWadDy33L/sur+3Hqif6G+Tkp55n3cO69uYzelnusv53L0PGBf/7ds+YuKQFZ
+         BHGYgligaF+SNcYoeWyOzroHZWoEUkVFYHsEtLfgn5MJnsYDlDZYOgSxaUDQvOuqBfAg
+         qBLZ8ZhrvUMtLlInAdhTfoc228HVPmhNrxCEjsnATsbXKa9sy6G6gVWw+UcOGIO2rlGG
+         UvAoCm6q7BtR0Obag+wPq/V1W6qRfJP2CZBz9X9R2jPoaxw0pH5ceIuhqg7cq8Lt6ueE
+         aLUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=IwGJDPT+SCO3TP6Ah2cHRHOVWak7YyozOHAEaSbKdwg=;
+        b=POYv5i0ExJJb0Xzuo2A/sxiDd+t6chIadge3r8wXBElasdbQCepeWlUsmX+oiIFNFv
+         S82VMG4CJ6SO5OW1LPsUFZ1oJ/f4Q1bcenz0Nm3jpSwTFmjQCaJv6VxzGiwbiE5zwgZU
+         Qzyz0lH1s/hw7UOT84tynS3AUMJ1V3CxEJshMQKXYXPaxsmQrh21c08rqNsPzo3KD39r
+         sYs+pasjfKI+N+vYfKD5cXcbcHL5o/X7Q6uU+4K++4zwIs9MAnDltEaNHzcFybBN6sHh
+         ahO0Ej4KUw8RcvKnLFRzx0Qv4As1mGlsA2QxqtXC2UGsykjKtZ/fjCK7emQfNj/Abm9g
+         gMyQ==
+X-Gm-Message-State: AOAM530/KO/vp9kHnJKQ7wbCJJ781rEw3LGgKldHYNMG8VR3AOzBWl8n
+        eqAbxt+mF7wSClCWufYDiYs=
+X-Google-Smtp-Source: ABdhPJywDFh7II8TtTv0qO1KG+JhZ2rfXzJHnoBhk9aD5kz4P9f+w36/4wUQNMlq08zQ1DFPRU+KOw==
+X-Received: by 2002:adf:fd85:: with SMTP id d5mr15876551wrr.423.1614113313727;
+        Tue, 23 Feb 2021 12:48:33 -0800 (PST)
+Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id b15sm168179wmd.41.2021.02.23.12.48.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Feb 2021 12:48:33 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v3 1/2] dt-bindings: rng: bcm2835: document reset support
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+In-Reply-To: <1614108850.556529.4116106.nullmailer@robh.at.kernel.org>
+Date:   Tue, 23 Feb 2021 21:48:32 +0100
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        linux-rpi-kernel@lists.infradead.org,
+        Matt Mackall <mpm@selenic.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        =?utf-8?B?Ik7DrWNvbGFzIEYuIFIuIEEuIFByYWRvIg==?= 
+        <nfraprado@protonmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-crypto@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Scott Branden <sbranden@broadcom.com>,
+        Mark Brown <broonie@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Stefan Wahren <stefan.wahren@i2se.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D1C5E1F2-42EC-4716-9740-1DDA8DE6CE8D@gmail.com>
+References: <20210222194510.14004-1-noltari@gmail.com>
+ <20210223170006.29558-1-noltari@gmail.com>
+ <20210223170006.29558-2-noltari@gmail.com>
+ <1614108850.556529.4116106.nullmailer@robh.at.kernel.org>
+To:     Rob Herring <robh@kernel.org>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/23/21 10:20 AM, John Wood wrote:
-> Hi,
-> 
-> On Sun, Feb 21, 2021 at 06:47:16PM -0800, Randy Dunlap wrote:
->> Hi--
->>
->> scripts/kernel-doc does not like these items to be marked
->> as being in kernel-doc notation. scripts/kernel-doc does not
->> recognize them as one of: struct, union, enum, typedef, so it
->> defaults to trying to interpret these as functions, and then
->> says:
->>
->> (I copied these blocks to my test megatest.c source file.)
->>
->>
->> ../src/megatest.c:1214: warning: cannot understand function prototype: 'const u64 BRUTE_EMA_WEIGHT_NUMERATOR = 7; '
->> ../src/megatest.c:1219: warning: cannot understand function prototype: 'const u64 BRUTE_EMA_WEIGHT_DENOMINATOR = 10; '
->> ../src/megatest.c:1228: warning: cannot understand function prototype: 'const unsigned char BRUTE_MAX_FAULTS = 200; '
->> ../src/megatest.c:1239: warning: cannot understand function prototype: 'const unsigned char BRUTE_MIN_FAULTS = 5; '
->> ../src/megatest.c:1249: warning: cannot understand function prototype: 'const u64 BRUTE_CRASH_PERIOD_THRESHOLD = 30000; '
->>
->>
->> On 2/21/21 7:49 AM, John Wood wrote:
->>>
->>> +/**
->>> + * brute_stats_ptr_lock - Lock to protect the brute_stats structure pointer.
->>> + */
->>> +static DEFINE_RWLOCK(brute_stats_ptr_lock);
->>
->>> +/**
->>> + * BRUTE_EMA_WEIGHT_NUMERATOR - Weight's numerator of EMA.
->>> + */
->>> +static const u64 BRUTE_EMA_WEIGHT_NUMERATOR = 7;
->>
->>> +/**
->>> + * BRUTE_EMA_WEIGHT_DENOMINATOR - Weight's denominator of EMA.
->>> + */
->>> +static const u64 BRUTE_EMA_WEIGHT_DENOMINATOR = 10;
->>
->>> +/**
->>> + * BRUTE_MAX_FAULTS - Maximum number of faults.
->>> + *
->>> + * If a brute force attack is running slowly for a long time, the application
->>> + * crash period's EMA is not suitable for the detection. This type of attack
->>> + * must be detected using a maximum number of faults.
->>> + */
->>> +static const unsigned char BRUTE_MAX_FAULTS = 200;
->>
->>> +/**
->>> + * BRUTE_MIN_FAULTS - Minimum number of faults.
->>> + *
->>> + * The application crash period's EMA cannot be used until a minimum number of
->>> + * data has been applied to it. This constraint allows getting a trend when this
->>> + * moving average is used. Moreover, it avoids the scenario where an application
->>> + * fails quickly from execve system call due to reasons unrelated to a real
->>> + * attack.
->>> + */
->>> +static const unsigned char BRUTE_MIN_FAULTS = 5;
->>
->>> +/**
->>> + * BRUTE_CRASH_PERIOD_THRESHOLD - Application crash period threshold.
->>> + *
->>> + * The units are expressed in milliseconds.
->>> + *
->>> + * A fast brute force attack is detected when the application crash period falls
->>> + * below this threshold.
->>> + */
->>> +static const u64 BRUTE_CRASH_PERIOD_THRESHOLD = 30000;
->>
->> Basically we don't support scalars in kernel-doc notation...
-> 
-> So, to keep it commented it would be better to use a normal comment block?
-> 
-> /*
->  * Documentation here
->  */
-> 
-> What do you think?
+Hi Rob,
 
-Yes, please, just a normal /* comment block.
+> El 23 feb 2021, a las 20:34, Rob Herring <robh@kernel.org> escribi=C3=B3=
+:
+>=20
+> On Tue, 23 Feb 2021 18:00:05 +0100, =C3=81lvaro Fern=C3=A1ndez Rojas =
+wrote:
+>> Some devices may need to perform a reset before using the RNG, such =
+as the
+>> BCM6368.
+>>=20
+>> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+>> ---
+>> v3: make resets required if brcm,bcm6368-rng.
+>> v2: document reset support.
+>>=20
+>> .../devicetree/bindings/rng/brcm,bcm2835.yaml   | 17 =
++++++++++++++++++
+>> 1 file changed, 17 insertions(+)
+>>=20
+>=20
+> My bot found errors running 'make dt_binding_check' on your patch:
+>=20
+> yamllint warnings/errors:
+>=20
+> dtschema/dtc warnings/errors:
+> =
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/rng/b=
+rcm,bcm2835.example.dt.yaml: rng@10004180: 'resets' does not match any =
+of the regexes: 'pinctrl-[0-9]+'
+> 	=46rom schema: =
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/rng/b=
+rcm,bcm2835.yaml
 
-thanks.
--- 
-~Randy
+I don=E2=80=99t get what=E2=80=99s wrong here...
 
+>=20
+> See https://patchwork.ozlabs.org/patch/1443582
+>=20
+> This check can fail if there are any dependencies. The base for a =
+patch
+> series is generally the most recent rc1.
+>=20
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up =
+to
+> date:
+>=20
+> pip3 install dtschema --upgrade
+>=20
+> Please check and re-submit.
+>=20
+
+Best regards,
+=C3=81lvaro.=
