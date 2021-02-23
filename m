@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F00F3234A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 01:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FB63234A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 01:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234542AbhBXAej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 19:34:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31264 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232649AbhBWXtF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 18:49:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614124050;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S3lDmdXQJ0fMVsJregzwrL9TnBkf6/AZ2jUUlf2xCxo=;
-        b=ibeYbKlMJq3rp/rTBtaWkwamq+HgHokxSTu1BrFGYlqmZEx6QAta+FIzGSOrFA+Rm/ajAQ
-        lVctdiGQTNOY5jsxqgjmCGlBwjWa3Ns9xnbSVsaFA732El1p0k9Z1gUXmGE6MuSmpm5TJk
-        aUGRcAKP0/fr2FyB0JpPqGo5SflJJxE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-442-A3EId0ghNOuFY5OcsKpkMQ-1; Tue, 23 Feb 2021 18:47:28 -0500
-X-MC-Unique: A3EId0ghNOuFY5OcsKpkMQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S234653AbhBXA3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 19:29:51 -0500
+Received: from ozlabs.org ([203.11.71.1]:53301 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234235AbhBWXup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 18:50:45 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B81F1100A25F;
-        Tue, 23 Feb 2021 23:47:26 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 57E6D7771C;
-        Tue, 23 Feb 2021 23:47:25 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210217165058.1336155-1-eric.snowberg@oracle.com>
-References: <20210217165058.1336155-1-eric.snowberg@oracle.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dhowells@redhat.com, jarkko@kernel.org, mic@linux.microsoft.com,
-        dwmw2@infradead.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cert: Add kconfig dependency for validate_trust
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DlbNp705dz9sVF;
+        Wed, 24 Feb 2021 10:48:58 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614124139;
+        bh=ER/lCUPTCLvsQ0WunnD25O6xZpauNn7iM59CMq6zjis=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qKVjcKmPveNNr0cCfkTvsLbChLMemvJbyqPo3tzGZz2Wg3U1RGidXcvEhGjw6CQ8n
+         9Nlw1rC29btgsDM+VUTaumqXzhwdtj4s5zPt0tTkosrN0dCBt9WlQ6PMVFNCazOKmB
+         sMApS6rs8B5Yu7fxrjB8xdq13VDithBcTjCy5KchHN5Jn18Wn7vKMgDsaZl1/s/T6g
+         gJwFzhB8c2ldok6SJhcqQXYe9em+1qOfhNCR7748WmjfUOLwogqKzzVWi/AsQ/Uzsp
+         C2aXwLEzbrUCJwyR3Y7gRaX/era2djipS1hm2vZQkmnVSvSUPS1x7BP1VsymdnwsvN
+         B2XmoDf4pTDOw==
+Date:   Wed, 24 Feb 2021 10:48:58 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the amdgpu tree
+Message-ID: <20210224104858.4dba60c2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3524594.1614124044.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 23 Feb 2021 23:47:24 +0000
-Message-ID: <3524595.1614124044@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: multipart/signed; boundary="Sig_/Pm4g_clg8XNkVQmU0XjS6Ai";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Snowberg <eric.snowberg@oracle.com> wrote:
+--Sig_/Pm4g_clg8XNkVQmU0XjS6Ai
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> The kernel test robot reports when building with Kconfig
-> CONFIG_INTEGRITY_PLATFORM_KEYRING defined and =
+Hi all,
 
-> CONFIG_SYSTEM_DATA_VERIFICATION undefined:
-> =
+After merging the amdgpu tree, today's linux-next build (x86_64
+allmodconfig) produced this warning:
 
-> ld.lld: error: undefined symbol: pkcs7_validate_trust
-> referenced by blacklist.c:128 (certs/blacklist.c:128)
->              blacklist.o:(is_key_on_revocation_list) in archive certs/bu=
-ilt-in.a
-> =
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'd=
+m_set_vblank':
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5439:33: warnin=
+g: unused variable 'dm' [-Wunused-variable]
+ 5439 |  struct amdgpu_display_manager *dm =3D &adev->dm;
+      |                                 ^~
 
-> Make CONFIG_SYSTEM_DATA_VERIFICATION a dependency for validate_trust.
-> =
+Introduced by commit
 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+  3cfd14b67b2c ("drm/amd/display: Fix system hang after multiple hotplugs (=
+v2)")
 
-I wonder if it's better to provide a separate config option for the revoca=
-tion
-list, say:
+--=20
+Cheers,
+Stephen Rothwell
 
-	config SYSTEM_REVOCATION_LIST
-		bool "Add revocation certs to the blacklist keyring"
-		depends on SYSTEM_BLACKLIST_KEYRING
-		depends on PKCS7_MESSAGE_PARSER
-		help
-		  ...
+--Sig_/Pm4g_clg8XNkVQmU0XjS6Ai
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-and use that in blacklist.c.
+-----BEGIN PGP SIGNATURE-----
 
-In keys/system_keyring.h, is_key_on_revocation_list() can then be defaulte=
-d to
-return 0 if that is disabled.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA1lGoACgkQAVBC80lX
+0Gz1vQf+JZ3R4TToR9Fs+wb81DD3x8JRVUhDv4m4A8KXG0fcwhSaY1ZsuLqiOKD0
+fY4NNd3RqLfeeFZohIjgKqb9G6HwVAavf0nCfazB/lubh+teFYJKJaAN8AOCv0cH
+Zcu0LBpR3WE/fwPxouKn2maGfgqdaEmraGEKZnNs730Jq6frbEHuAE1W9AuKXdoJ
+LRIbCHFyN8VpPBTTM8PEnWLL2zCknyn+cTbAZVYWoM1xanxyxO0rx8wj6gvlzccG
+SFX8/2IAoivR/qw/fa/4qRs1i+2kJNqUv9aj9IjEVEeOKxE9Y8j9iR5TvCgt3JZg
+T7WgIQfKuerxYhFHJwdeqYO4QMtzJQ==
+=7U+S
+-----END PGP SIGNATURE-----
 
-Btw, I've just noticed that add_key_to_revocation_list() and
-is_key_on_revocation_list() lack kernel doc comments.
-
-David
-
+--Sig_/Pm4g_clg8XNkVQmU0XjS6Ai--
