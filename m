@@ -2,122 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBD6322996
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:39:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7969832299D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbhBWLhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 06:37:39 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:10920 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232316AbhBWLh1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:37:27 -0500
-Date:   Tue, 23 Feb 2021 11:36:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1614080204; bh=jv9tL4u29gVpzSBS59HCvCUVd6Rj3pWoR+fnneLx15A=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=VKk652/EGtE5Cpi6lODpKNnBP2HuuuCiPYsjeJ5xh0JzwmeD5ccfJpzDuhf2chAev
-         JVduJgzSNQUq/s3Hi5JFCse15vul4QCHvaVIwNqsNzose3rfHCewveJTeFPZCUjWxR
-         kDWs5ScAJyi2hc6KrmQhB7hRx+4lhRpRcK3aZ3vfz2SuKYdYBWdfqXvopmi6/fzv7x
-         8NK8o6FJZG5MDjk5IWi+vy5/fxH0is4DbRGn+qnG98buqg3fPg2C8Q2d4fOrCq76nu
-         4A7iEX+qXYxgAx/pzW96JfahVJoThqVzo4eIyhRexANzcSZ5TPT8vvxeH+mYjIFhwX
-         b4J7SK3WHFMsA==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Pei Huang <huangpei@loongson.cn>,
-        Kees Cook <keescook@chromium.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Corey Minyard <cminyard@mvista.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH mips-fixes] vmlinux.lds.h: catch even more instrumentation symbols into .data
-Message-ID: <20210223113600.7009-2-alobakin@pm.me>
-In-Reply-To: <20210223113600.7009-1-alobakin@pm.me>
-References: <20210223113600.7009-1-alobakin@pm.me>
+        id S232392AbhBWLnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 06:43:17 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:10066 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232299AbhBWLnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 06:43:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614080567; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=u4UIo32uH4I3VBRPDY3bek63Jn/ZMnFlBlUbmDlv6YI=; b=xb2iaEzMQ/oP4cH0tJ3dO1c1dED6Ck8jEv8BOQDmm5O7mr0SAX0HsJLwTT+HCicQaSmx1AVc
+ OZIjPG5fKvlOowt24NHM9E8ltQFtLEqkf2wNLWBbnzY+DvcqQsA+0WRCA4ctSwnNed7+Ti8O
+ uZo0/ZFka7X7cJhrk5iuz6gtOBw=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6034ea11e87943df30ced76f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Feb 2021 11:42:09
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C760AC43463; Tue, 23 Feb 2021 11:42:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.102] (unknown [49.207.203.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8C084C433CA;
+        Tue, 23 Feb 2021 11:42:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8C084C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH 03/13] arm64: dts: sc7280: Add basic dts/dtsi files for
+ SC7280 soc
+To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1613114930-1661-1-git-send-email-rnayak@codeaurora.org>
+ <1613114930-1661-4-git-send-email-rnayak@codeaurora.org>
+ <161406585892.1254594.9748953968478715173@swboyd.mtv.corp.google.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <14d2e157-2908-7c59-1c44-f662203fabc5@codeaurora.org>
+Date:   Tue, 23 Feb 2021 17:12:02 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <161406585892.1254594.9748953968478715173@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> LKP caught another bunch of orphaned instrumentation symbols [0]:
->
-> mipsel-linux-ld: warning: orphan section `.data.$LPBX1' from
-> `init/main.o' being placed in section `.data.$LPBX1'
-> mipsel-linux-ld: warning: orphan section `.data.$LPBX0' from
-> `init/main.o' being placed in section `.data.$LPBX0'
-> mipsel-linux-ld: warning: orphan section `.data.$LPBX1' from
-> `init/do_mounts.o' being placed in section `.data.$LPBX1'
-> mipsel-linux-ld: warning: orphan section `.data.$LPBX0' from
-> `init/do_mounts.o' being placed in section `.data.$LPBX0'
-> mipsel-linux-ld: warning: orphan section `.data.$LPBX1' from
-> `init/do_mounts_initrd.o' being placed in section `.data.$LPBX1'
-> mipsel-linux-ld: warning: orphan section `.data.$LPBX0' from
-> `init/do_mounts_initrd.o' being placed in section `.data.$LPBX0'
-> mipsel-linux-ld: warning: orphan section `.data.$LPBX1' from
-> `init/initramfs.o' being placed in section `.data.$LPBX1'
-> mipsel-linux-ld: warning: orphan section `.data.$LPBX0' from
-> `init/initramfs.o' being placed in section `.data.$LPBX0'
-> mipsel-linux-ld: warning: orphan section `.data.$LPBX1' from
-> `init/calibrate.o' being placed in section `.data.$LPBX1'
-> mipsel-linux-ld: warning: orphan section `.data.$LPBX0' from
-> `init/calibrate.o' being placed in section `.data.$LPBX0'
->
-> [...]
->
-> Soften the wildcard to .data.$L* to grab these ones into .data too.
->
-> [0] https://lore.kernel.org/lkml/202102231519.lWPLPveV-lkp@intel.com
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  include/asm-generic/vmlinux.lds.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi Thomas,
 
-This applies on top of mips-next or Linus' tree, so you may need to
-rebase mips-fixes before taking it.
-It's not for mips-next as it should go into this cycle as a [hot]fix.
-I haven't added any "Fixes:" tag since these warnings is a result
-of merging several sets and of certain build configurations that
-almost couldn't be tested separately.
+On 2/23/2021 1:07 PM, Stephen Boyd wrote:
+> Quoting Rajendra Nayak (2021-02-11 23:28:40)
+>> Add initial device tree support for the SC7280 SoC and the IDP
+>> boards based on this SoC
+>>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> ---
+> 
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> new file mode 100644
+>> index 0000000..428f863
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> @@ -0,0 +1,47 @@
+>> +// SPDX-License-Identifier: BSD-3-Clause
+>> +/*
+>> + * sc7280 IDP board device tree source
+> 
+> Is it capitalized or not capitalized for SC?
 
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmli=
-nux.lds.h
-> index 01a3fd6a64d2..c887ac36c1b4 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -95,7 +95,7 @@
->   */
->  #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
->  #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
-> -#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundlit=
-eral* .data.$__unnamed_* .data.$Lubsan_*
-> +#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundlit=
-eral* .data.$__unnamed_* .data.$L*
->  #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
->  #define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
->  #define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
-> --
-> 2.30.1
+:) I'll be consistent and make it not capitalized everywhere.
 
-Thanks,
-Al
+> 
+>> + *
+>> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
+>> + */
+>> +
+>> +/dts-v1/;
+>> +
+>> +#include "sc7280.dtsi"
+>> +
+>> +/ {
+>> +       model = "Qualcomm Technologies, Inc. SC7280 IDP platform";
+> 
+> Because it is capitalized here.
+> 
 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
