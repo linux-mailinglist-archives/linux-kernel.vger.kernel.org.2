@@ -2,131 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0FE32265F
+	by mail.lfdr.de (Postfix) with ESMTP id 7F511322660
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 08:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbhBWHXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 02:23:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231837AbhBWHXQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 02:23:16 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA17C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 23:22:35 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id s6so14645007otk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 23:22:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DpaF+XrlRPqLNZ9QA+WPiUs8joOVV3LopnoOJY64BvY=;
-        b=NNHrJmW2jS2V+5T5AnL3km3Re94L4xGJBmhxFBh2hds03thqQwHd7qJsFgwTZivSdQ
-         NSO3FN0AG5yjRNFwS65SNpwo53eWoeYKuUazm8g91zmj8b91UhpkIFl/QsUA84rbArMP
-         C7qosv5wai1B+yRpvR75pcLBJGTVy5QbiJJC4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DpaF+XrlRPqLNZ9QA+WPiUs8joOVV3LopnoOJY64BvY=;
-        b=hRRcPmBU5mgwfO1P07ppiHpvtFc65Y1RnLUgVd5ub7DxCforMsrkynkmHLsRbaOAk5
-         tblgIxNTvnBH2BIChaT5zDNoyKlA1C8GoAp5x5+5lrnAZoHQker29UOryiFVvMpC0IjN
-         qeF4jh+SDkPo3/VpWrSLKzr1rzMIpiP9fPsV6K5waWtrew5NxkB/gPIG3x7cON+6rEIL
-         1unfyxxqKXfEgnUYm9g9H4sPsM897QuWuWdRKyPb4y9J7nBtcVr3Rgn6lV7hugHGRTC3
-         IKJ3FoiG3/evKdzvDfEqxETZpCqHUUs3k1vbfj7WXbRuNaojSkzX3fokw+UEP9sBgN0Z
-         fs/A==
-X-Gm-Message-State: AOAM532z6dn443U1qOPk51n6JC7laGLbotqyfYy/O7IYCPMYs9EnGjMf
-        v9b1EWPA1gR2DyN0Cq6neAG0gmEtYoPMvTfdfsg9lg==
-X-Google-Smtp-Source: ABdhPJxtl+72oyQ1eandtDlxtpzvuP13KO1x4mZOnmum5QmMKuXAKYArHHVy/wyUyz+iO6PacAYQlwwOj30kkS2JMcw=
-X-Received: by 2002:a9d:2265:: with SMTP id o92mr19488004ota.188.1614064954922;
- Mon, 22 Feb 2021 23:22:34 -0800 (PST)
+        id S231865AbhBWHXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 02:23:51 -0500
+Received: from verein.lst.de ([213.95.11.211]:32997 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231822AbhBWHXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 02:23:36 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B7D5268D0D; Tue, 23 Feb 2021 08:22:52 +0100 (CET)
+Date:   Tue, 23 Feb 2021 08:22:52 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        David Anderson <dvander@google.com>,
+        Alistair Delva <adelva@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        YongQin Liu <yongqin.liu@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>, linux-block@vger.kernel.org,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [REGRESSION] "split bio_kmalloc from bio_alloc_bioset" causing
+ crash shortly after bootup
+Message-ID: <20210223072252.GA18035@lst.de>
+References: <CALAqxLUWjr2oR=5XxyGQ2HcC-TLARvboHRHHaAOUFq6_TsKXyw@mail.gmail.com> <20210223070408.GA16980@lst.de>
 MIME-Version: 1.0
-References: <YDOGERvNuU3+2WWe@phenom.ffwll.local> <CAKMK7uHQ=6OJcRguCUtiB456RWdCfwSNEXV8pQsfsPodTJ6uxw@mail.gmail.com>
- <CAHk-=wjNv9izaVO5+1n5zk01zP3mndqdd2zKsX_syq9ntgY2YQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wjNv9izaVO5+1n5zk01zP3mndqdd2zKsX_syq9ntgY2YQ@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 23 Feb 2021 08:22:23 +0100
-Message-ID: <CAKMK7uG2fg0Q9fSPxHRFuBGRX-=dmCRp+_030B70jhST0hVNYg@mail.gmail.com>
-Subject: Re: [PULL] fixes around VM_PFNMAP and follow_pfn for 5.12 merge window
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux MM <linux-mm@kvack.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223070408.GA16980@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 2:42 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Mon, Feb 22, 2021 at 2:25 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > Cc all the mailing lists ... my usual script crashed and I had to
-> > hand-roll the email and screwed it up ofc :-/
->
-> Oh, and my reply thus also became just a reply to you personally.
->
-> So repeating it here, in case somebody has comments about that
-> access_process_vm() issue.
->
-> On Mon, Feb 22, 2021 at 2:23 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > I've stumbled over this for my own learning and then realized there's a
-> > bunch of races around VM_PFNMAP mappings vs follow pfn.
-> >
-> > If you're happy with this [..]
->
-> Happy? No. But it seems an improvement.
->
-> I did react to some of this: commit 0fb1b1ed7dd9 ("/dev/mem: Only set
-> filp->f_mapping") talks about _what_ it does, but not so much _why_ it
-> does it. It doesn't seem to actually matter, and seems almost
-> incidental (because you've looked at f_mapping and i_mapping just
-> didn't matter but was adjacent.
+On Tue, Feb 23, 2021 at 08:04:08AM +0100, Christoph Hellwig wrote:
+> The problem is that the blk-crypto fallback code calls bio_split
+> with a NULL bioset.  That was aready broken before, as the mempool
+> needed to guarantee forward progress was missing, but is not fatal.
+> 
+> Satya, can you look into adding a mempool that can guarantees forward
+> progress here?
 
-Yeah it doesn't matter, it just confused me, so I wrote a patch to
-remove it and get experts to tell me it actually really doesn't
-matter. So that's really the entirety of that one. Like I said, I
-mostly stumbled into this rat hole because I had some questions,
-wanted to understand stuff better, and the code did not provide
-consistent answers :-)
+Something like this would be the minimum viable fix:
 
-> And generic_access_phys() remains horrific. Does anything actually use
-> this outside of the odd magical access_remote_vm() code?
->
-> I'm wondering if that code shouldn't just be removed entirely. It's
-> quite old, I'm not sure it's really relevant. See commit 28b2ee20c7cb
-> ("access_process_vm device memory infrastructure").
->
-> I guess you do debug the X server, but still.. Do you actually ever
-> look at device memory through the debugger? I'd hope that you'd use an
-> access function and make gdb call it in the context of the debuggee?
-
-tbh I had no idea this exists, but yeah I've fired up gdb on some of
-the register dumper tools we have that use the pci mmap files, and
-after fixing some thinko in the first version it was still working
-after the conversion.
-
-From a quick git grep almost nothing wires this up, so yeah no idea
-whether it's still used. Definitely not useful for X hackery anymore.
-It is wired up for uio framework, and I guess for debugging userspace
-drivers this comes handy. Although letting your debugger do
-reads/writes to device registers sounds scary.
--Daniel
-
-> Whatever. I've pulled it, and I'm not _unhappy_ with it, but I'd also
-> not call myself overly giddy and over the moon happy about this code.
->
->              Linus
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+diff --git a/block/blk-crypto-fallback.c b/block/blk-crypto-fallback.c
+index e8327c50d7c9f4..c176b7af56a7a5 100644
+--- a/block/blk-crypto-fallback.c
++++ b/block/blk-crypto-fallback.c
+@@ -80,6 +80,7 @@ static struct blk_crypto_keyslot {
+ static struct blk_keyslot_manager blk_crypto_ksm;
+ static struct workqueue_struct *blk_crypto_wq;
+ static mempool_t *blk_crypto_bounce_page_pool;
++static struct bio_set crypto_bio_split;
+ 
+ /*
+  * This is the key we set when evicting a keyslot. This *should* be the all 0's
+@@ -224,7 +225,8 @@ static bool blk_crypto_split_bio_if_needed(struct bio **bio_ptr)
+ 	if (num_sectors < bio_sectors(bio)) {
+ 		struct bio *split_bio;
+ 
+-		split_bio = bio_split(bio, num_sectors, GFP_NOIO, NULL);
++		split_bio = bio_split(bio, num_sectors, GFP_NOIO,
++				      &crypto_bio_split);
+ 		if (!split_bio) {
+ 			bio->bi_status = BLK_STS_RESOURCE;
+ 			return false;
+@@ -538,9 +540,13 @@ static int blk_crypto_fallback_init(void)
+ 
+ 	prandom_bytes(blank_key, BLK_CRYPTO_MAX_KEY_SIZE);
+ 
+-	err = blk_ksm_init(&blk_crypto_ksm, blk_crypto_num_keyslots);
++	err = bioset_init(&crypto_bio_split, 64, 0, 0);
+ 	if (err)
+ 		goto out;
++
++	err = blk_ksm_init(&blk_crypto_ksm, blk_crypto_num_keyslots);
++	if (err)
++		goto fail_free_bioset;
+ 	err = -ENOMEM;
+ 
+ 	blk_crypto_ksm.ksm_ll_ops = blk_crypto_ksm_ll_ops;
+@@ -591,6 +597,8 @@ static int blk_crypto_fallback_init(void)
+ 	destroy_workqueue(blk_crypto_wq);
+ fail_free_ksm:
+ 	blk_ksm_destroy(&blk_crypto_ksm);
++fail_free_bioset:
++	bioset_exit(&crypto_bio_split);
+ out:
+ 	return err;
+ }
