@@ -2,111 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E4D32291A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8206232292E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhBWKyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:54:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:42674 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231776AbhBWKxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:53:42 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4786F31B;
-        Tue, 23 Feb 2021 02:52:33 -0800 (PST)
-Received: from [10.37.8.9] (unknown [10.37.8.9])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D57E3F70D;
-        Tue, 23 Feb 2021 02:52:31 -0800 (PST)
-Subject: Re: [PATCH v13 4/7] arm64: mte: Enable TCO in functions that can read
- beyond buffer limits
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-References: <20210211153353.29094-1-vincenzo.frascino@arm.com>
- <20210211153353.29094-5-vincenzo.frascino@arm.com>
- <20210212172128.GE7718@arm.com>
- <c3d565da-c446-dea2-266e-ef35edabca9c@arm.com>
- <20210222175825.GE19604@arm.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <6111633c-3bbd-edfa-86a0-be580a9ebcc8@arm.com>
-Date:   Tue, 23 Feb 2021 10:56:46 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232184AbhBWLAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 06:00:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33985 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231939AbhBWLAZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 06:00:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614077936;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bkd+5jk5LHljt8qwKSET2SjckHJatWstbL8xS93DgrQ=;
+        b=Va3a8j4XSXT6eaO/YV1OFuj3RsUhBHL2Q6zW79A1Yq+Hd+t/WsymR9F6bJyhzrJrt7nqL7
+        0hK/oYCrge7Q3g2hlgsBfdsJBQqEVUNv7/hq78GCqeMDNLklOfha0vAkjml2gG1ru+LXkK
+        uwDivR+SmUzTQDV31YY0oKTQaYdYGOA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-517-PdIEnYWPPxuAwtoFU1FnbA-1; Tue, 23 Feb 2021 05:58:49 -0500
+X-MC-Unique: PdIEnYWPPxuAwtoFU1FnbA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 73AD280196E;
+        Tue, 23 Feb 2021 10:58:43 +0000 (UTC)
+Received: from gondolin (ovpn-113-126.ams2.redhat.com [10.36.113.126])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 72A567092D;
+        Tue, 23 Feb 2021 10:58:36 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 11:58:33 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        virtio-dev@lists.oasis-open.org
+Subject: Re: [virtio-dev] Re: [PATCH] vdpa/mlx5: set_features should allow
+ reset to zero
+Message-ID: <20210223115833.732d809c.cohuck@redhat.com>
+In-Reply-To: <bbb0a09e-17e1-a397-1b64-6ce9afe18e44@redhat.com>
+References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
+        <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
+        <ee31e93b-5fbb-1999-0e82-983d3e49ad1e@oracle.com>
+        <20210223041740-mutt-send-email-mst@kernel.org>
+        <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
+        <20210223110430.2f098bc0.cohuck@redhat.com>
+        <bbb0a09e-17e1-a397-1b64-6ce9afe18e44@redhat.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-In-Reply-To: <20210222175825.GE19604@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 23 Feb 2021 18:31:07 +0800
+Jason Wang <jasowang@redhat.com> wrote:
 
+> On 2021/2/23 6:04 =E4=B8=8B=E5=8D=88, Cornelia Huck wrote:
+> > On Tue, 23 Feb 2021 17:46:20 +0800
+> > Jason Wang <jasowang@redhat.com> wrote:
+> > =20
+> >> On 2021/2/23 =E4=B8=8B=E5=8D=885:25, Michael S. Tsirkin wrote: =20
+> >>> On Mon, Feb 22, 2021 at 09:09:28AM -0800, Si-Wei Liu wrote: =20
+> >>>> On 2/21/2021 8:14 PM, Jason Wang wrote: =20
+> >>>>> On 2021/2/19 7:54 =E4=B8=8B=E5=8D=88, Si-Wei Liu wrote: =20
+> >>>>>> Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
+> >>>>>> for legacy") made an exception for legacy guests to reset
+> >>>>>> features to 0, when config space is accessed before features
+> >>>>>> are set. We should relieve the verify_min_features() check
+> >>>>>> and allow features reset to 0 for this case.
+> >>>>>>
+> >>>>>> It's worth noting that not just legacy guests could access
+> >>>>>> config space before features are set. For instance, when
+> >>>>>> feature VIRTIO_NET_F_MTU is advertised some modern driver
+> >>>>>> will try to access and validate the MTU present in the config
+> >>>>>> space before virtio features are set. =20
+> >>>>> This looks like a spec violation:
+> >>>>>
+> >>>>> "
+> >>>>>
+> >>>>> The following driver-read-only field, mtu only exists if
+> >>>>> VIRTIO_NET_F_MTU is set. This field specifies the maximum MTU for t=
+he
+> >>>>> driver to use.
+> >>>>> "
+> >>>>>
+> >>>>> Do we really want to workaround this? =20
+> >>>> Isn't the commit 452639a64ad8 itself is a workaround for legacy gues=
+t?
+> >>>>
+> >>>> I think the point is, since there's legacy guest we'd have to suppor=
+t, this
+> >>>> host side workaround is unavoidable. Although I agree the violating =
+driver
+> >>>> should be fixed (yes, it's in today's upstream kernel which exists f=
+or a
+> >>>> while now). =20
+> >>> Oh  you are right:
+> >>>
+> >>>
+> >>> static int virtnet_validate(struct virtio_device *vdev)
+> >>> {
+> >>>           if (!vdev->config->get) {
+> >>>                   dev_err(&vdev->dev, "%s failure: config access disa=
+bled\n",
+> >>>                           __func__);
+> >>>                   return -EINVAL;
+> >>>           }
+> >>>
+> >>>           if (!virtnet_validate_features(vdev))
+> >>>                   return -EINVAL;
+> >>>
+> >>>           if (virtio_has_feature(vdev, VIRTIO_NET_F_MTU)) {
+> >>>                   int mtu =3D virtio_cread16(vdev,
+> >>>                                            offsetof(struct virtio_net=
+_config,
+> >>>                                                     mtu));
+> >>>                   if (mtu < MIN_MTU)
+> >>>                           __virtio_clear_bit(vdev, VIRTIO_NET_F_MTU);=
+ =20
+> >>
+> >> I wonder why not simply fail here? =20
+> > I think both failing or not accepting the feature can be argued to make
+> > sense: "the device presented us with a mtu size that does not make
+> > sense" would point to failing, "we cannot work with the mtu size that
+> > the device presented us" would point to not negotiating the feature.
+> > =20
+> >> =20
+> >>>           }
+> >>>
+> >>>           return 0;
+> >>> }
+> >>>
+> >>> And the spec says:
+> >>>
+> >>>
+> >>> The driver MUST follow this sequence to initialize a device:
+> >>> 1. Reset the device.
+> >>> 2. Set the ACKNOWLEDGE status bit: the guest OS has noticed the devic=
+e.
+> >>> 3. Set the DRIVER status bit: the guest OS knows how to drive the dev=
+ice.
+> >>> 4. Read device feature bits, and write the subset of feature bits und=
+erstood by the OS and driver to the
+> >>> device. During this step the driver MAY read (but MUST NOT write) the=
+ device-specific configuration
+> >>> fields to check that it can support the device before accepting it.
+> >>> 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new fea=
+ture bits after this step.
+> >>> 6. Re-read device status to ensure the FEATURES_OK bit is still set: =
+otherwise, the device does not
+> >>> support our subset of features and the device is unusable.
+> >>> 7. Perform device-specific setup, including discovery of virtqueues f=
+or the device, optional per-bus setup,
+> >>> reading and possibly writing the device=E2=80=99s virtio configuratio=
+n space, and population of virtqueues.
+> >>> 8. Set the DRIVER_OK status bit. At this point the device is =E2=80=
+=9Clive=E2=80=9D.
+> >>>
+> >>>
+> >>> Item 4 on the list explicitly allows reading config space before
+> >>> FEATURES_OK.
+> >>>
+> >>> I conclude that VIRTIO_NET_F_MTU is set means "set in device features=
+". =20
+> >>
+> >> So this probably need some clarification. "is set" is used many times =
+in
+> >> the spec that has different implications. =20
+> > Before FEATURES_OK is set by the driver, I guess it means "the device
+> > has offered the feature"; =20
+>=20
+>=20
+> For me this part is ok since it clarify that it's the driver that set=20
+> the bit.
+>=20
+>=20
+>=20
+> > during normal usage, it means "the feature
+> > has been negotiated". =20
+>=20
+> /?
+>=20
+> It looks to me the feature negotiation is done only after device set=20
+> FEATURES_OK, or FEATURES_OK could be read from device status?
 
-On 2/22/21 5:58 PM, Catalin Marinas wrote:
-> That's because cpu_hotplug_lock is not a spinlock but a semaphore which
-> implies sleeping. I don't think avoiding taking this semaphore
-> altogether (as in the *_cpuslocked functions) is the correct workaround.
->
+I'd consider feature negotiation done when the driver reads FEATURES_OK
+back from the status.
 
-Thinking at it a second time I agree, it is not a good idea avoiding to take the
-semaphore in this case.
+>=20
+>=20
+> >   (This is a bit fuzzy for legacy mode.)
 
-> The mte_enable_kernel_async() function is called on each secondary CPU
-> but we don't really need to attempt to toggle the static key on each of
-> them as they all have the same configuration. Maybe do something like:
-> 
-> 	if (!static_branch_unlikely(&mte_async_mode)))
-> 		static_branch_enable(&mte_async_mode);
-> 
-> so that it's only set on the boot CPU.
-> 
+...because legacy does not have FEATURES_OK.
+ =20
+>=20
+>=20
+> The problem is the MTU description for example:
+>=20
+> "The following driver-read-only field, mtu only exists if=20
+> VIRTIO_NET_F_MTU is set."
+>=20
+> It looks to me need to use "if VIRTIO_NET_F_MTU is set by device".
 
-This should work, maybe with a comment that if we plan to introduce runtime
-switching in between async and sync in future we need to revisit our strategy.
+"offered by the device"? I don't think it should 'disappear' from the
+config space if the driver won't use it. (Same for other config space
+fields that are tied to feature bits.)
+=20
+> Otherwise readers (at least for me), may think the MTU is only valid
+> if driver set the bit.
 
-> The alternative is to use a per-CPU mask/variable instead of static
-> branches but it's probably too expensive for those functions that were
-> meant to improve performance.
-> 
+I think it would still be 'valid' in the sense that it exists and has
+some value in there filled in by the device, but a driver reading it
+without negotiating the feature would be buggy. (Like in the kernel
+code above; the kernel not liking the value does not make the field
+invalid.)
 
-I would not go for this approach because the reason why we introduced static
-branches instead of having a normal variable saving the state was performances.
+Maybe a statement covering everything would be:
 
-> We'll still have an issue with dynamically switching the async/sync mode
-> at run-time. Luckily kasan doesn't do this now. The problem is that
-> until the last CPU have been switched from async to sync, we can't
-> toggle the static label. When switching from sync to async, we need
-> to do it on the first CPU being switched.
-> 
+"The following driver-read-only field mtu only exists if the device
+offers VIRTIO_NET_F_MTU and may be read by the driver during feature
+negotiation and after VIRTIO_NET_F_MTU has been successfully
+negotiated."
 
-I totally agree on this point. In the case of runtime switching we might need
-the rethink completely the strategy and depends a lot on what we want to allow
-and what not. For the kernel I imagine we will need to expose something in sysfs
-that affects all the cores and then maybe stop_machine() to propagate it to all
-the cores. Do you think having some of the cores running in sync mode and some
-in async is a viable solution?
+>=20
+>=20
+> >
+> > Should we add a wording clarification to the spec? =20
+>=20
+>=20
+> I think so.
 
-Probably it is worth to discuss it further once we cross that bridge.
+Some clarification would be needed for each field that depends on a
+feature; that would be quite verbose. Maybe we can get away with a
+clarifying statement?
 
-> So, I think currently we can set the mte_async_mode label to true in
-> mte_enable_kernel_async(), with the 'if' check above. For
-> mte_enable_kernel_sync(), don't bother with setting the key to false but
-> place a WARN_ONCE if the mte_async_mode is true. We can revisit it if
-> kasan ever gains this run-time switch mode.
+"Some config space fields may depend on a certain feature. In that
+case, the field exits if the device has offered the corresponding
+feature, and may be read by the driver during feature negotiation, and
+accessed by the driver after the feature has been successfully
+negotiated. A shorthand for this is a statement that a field only
+exists if a certain feature bit is set."
 
-Indeed, this should work for now.
-
--- 
-Regards,
-Vincenzo
