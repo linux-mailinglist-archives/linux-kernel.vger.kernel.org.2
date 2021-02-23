@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8B7322C48
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BEE322C4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbhBWOaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:30:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232969AbhBWO3m (ORCPT
+        id S233065AbhBWOam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:30:42 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:52087 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233056AbhBWOaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:29:42 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2170DC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:29:02 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id h18so6165650ils.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:29:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=zGk/ZhZWEg56YKF9pnwKft4+fj3bPtgDY5IUehTT0YA=;
-        b=KL3ta+t2DS+LDkxM7Bjf6uqw5d/CGHiOAUwdTqGksFje6JcT1D4pnCJo+7DXEVdA+7
-         RPqsF4qyZ8Ir4iKreH/ZArUX2MWEPR3EUJXJ3uRhXlCnzKKMw/a3h/RDs/2oTtZgYBju
-         5WUgdaf3HDSrfAXjFRBMUKrprwJ9aCh1sSCQHB22/SL0m+BPQzh0F45TJizToPEgeqeN
-         7rh1fRZkVWzwfGewFvBHoZrLwD5IIdrX8eLLa1fH+cGhxCY29PyuQihKX5Es7/NCvKHI
-         CmZqTcD8tp5G8+9AavCzV15+6kLWwe8jySBYnoVg8FgRc+tanHshG3hO2ZlLLyuZXrVC
-         J4ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=zGk/ZhZWEg56YKF9pnwKft4+fj3bPtgDY5IUehTT0YA=;
-        b=PM649jDvo5z++VXMEc1rNy4K5ZiHWeVR4qf+3FZZvhjd++tW3i0oVmOOhWy4u4Mbmj
-         ig8cLswdY7p16sp7KUnNJDgkW42bSzhRuQL1Badu4INpVqipVCUS2lZ+EZeygh+Ja4lo
-         rU2odyxst6fj6pSp5GCk9pISmE9Nd3Z3k33ggR4+on2mEy6i8yGv0uw9t/RVhWHCr+Pr
-         HctsKG/qqd/EXa08Qnen3rKBWtmbFIwbxKpXQT3HpTFFxgC0aQBjL+Tv5RGxjdrKSns9
-         WS3w6qWpfzgSRCgGtdBq/480Z/56VQ9eo2x2oeon9WKq9/MlmkMnFbGPXGRXGIwB9e6w
-         +Axw==
-X-Gm-Message-State: AOAM531HQnCbSu26fqILP51f7h+C2F1n7PlxvpC/tj+km9FuhV5WmFnW
-        qMrhVruZo6tJ/35qI2/Y/YC8a+ODbNvlvWKX7js=
-X-Google-Smtp-Source: ABdhPJwwNPKc5rAqOWY8VUPmfVErzArsJKRUn60myW6DGLPvZkS7kOkwt2Uvxhm4djZRlEAGJorZl5eUC6aRoiMdK3w=
-X-Received: by 2002:a05:6e02:12e9:: with SMTP id l9mr19313707iln.201.1614090541581;
- Tue, 23 Feb 2021 06:29:01 -0800 (PST)
+        Tue, 23 Feb 2021 09:30:25 -0500
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 23 Feb 2021 06:29:44 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 23 Feb 2021 06:29:42 -0800
+Cc:     ath10k-review.external@qti.qualcomm.com, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kuabhs@chromium.org,
+        dianders@chromium.org, briannorris@chromium.org,
+        Youghandhar Chintala <youghand@codeaurora.org>
+X-QCInternal: smtphost
+Received: from youghand-linux.qualcomm.com ([10.206.66.115])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 23 Feb 2021 19:59:10 +0530
+Received: by youghand-linux.qualcomm.com (Postfix, from userid 2370257)
+        id E27EB215EC; Tue, 23 Feb 2021 19:59:10 +0530 (IST)
+From:   Youghandhar Chintala <youghand@codeaurora.org>
+To:     ath10k@lists.infradead.org
+Subject: [PATCH v3] ath10k: skip the wait for completion to recovery in shutdown path
+Date:   Tue, 23 Feb 2021 19:59:08 +0530
+Message-Id: <20210223142908.23374-1-youghand@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Reply-To: mrscarolinemanon9@gmail.com
-Sender: mrmoussadauda@gmail.com
-Received: by 2002:a05:6e02:1bc1:0:0:0:0 with HTTP; Tue, 23 Feb 2021 06:29:01
- -0800 (PST)
-From:   "Mrs. Caroline Manon" <mrscarolinemanon@gmail.com>
-Date:   Tue, 23 Feb 2021 15:29:01 +0100
-X-Google-Sender-Auth: 4z3TJPD0c-AFD6dz8P18DSNsfe4
-Message-ID: <CAFFZgbzh_jsg5kUvqHHK4gU9wS_j88ButAm0p5uXO-NN3CQF-Q@mail.gmail.com>
-Subject: Greetings from Mrs. Caroline Manon.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+Currently in the shutdown callback we wait for recovery to complete
+before freeing up the resources. This results in additional two seconds
+delay during the shutdown and thereby increase the shutdown time.
 
-I know that this mail will come to you as a surprise as we have never
-met before, but need not to worry as I am contacting you independently
-of my investigation and no one is informed of this communication. I
-need your urgent assistance in transferring the sum of U$10.5 million
-immediately to your private account, The money has been here in our
-Bank lying dormant for years now without anybody coming for the claim
-of it.
+As an attempt to take less time during shutdown, remove the wait for
+recovery completion in the shutdown callback and added an API to freeing
+the reosurces in which they were common for shutdown and removing
+the module.
 
-I want the money to be release to you as the relative to our deceased
-customer (the account owner) who died a long with his supposed Next Of
-Kin since 16th October 2005. The Banking laws here does not allow such
-money to stay more than 16 years, because the money will be recalled
-to the Bank treasury account as unclaimed fund.
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
+Signed-off-by: Youghandhar Chintala <youghand@codeaurora.org>
+Change-Id: I65bc27b5adae1fedc7f7b367ef13aafbd01f8c0c
+---
+Changes from v2:
+-Corrected commit text and added common API for freeing the
+ resources for shutdown and unloading the module
+---
+ drivers/net/wireless/ath/ath10k/snoc.c | 29 ++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
 
-Please respond urgently and delete if you are not interested.
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 84666f72bdfa..70b3f2bd1c81 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1781,17 +1781,11 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int ath10k_snoc_remove(struct platform_device *pdev)
++static int ath10k_snoc_free_resources(struct ath10k *ar)
+ {
+-	struct ath10k *ar = platform_get_drvdata(pdev);
+ 	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 
+-	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc remove\n");
+-
+-	reinit_completion(&ar->driver_recovery);
+-
+-	if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
+-		wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
++	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc free resources\n");
+ 
+ 	set_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
+ 
+@@ -1805,12 +1799,29 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int ath10k_snoc_remove(struct platform_device *pdev)
++{
++	struct ath10k *ar = platform_get_drvdata(pdev);
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++
++	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc remove\n");
++
++	reinit_completion(&ar->driver_recovery);
++
++	if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
++		wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
++
++	ath10k_snoc_free_resources(ar);
++
++	return 0;
++}
++
+ static void ath10k_snoc_shutdown(struct platform_device *pdev)
+ {
+ 	struct ath10k *ar = platform_get_drvdata(pdev);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc shutdown\n");
+-	ath10k_snoc_remove(pdev);
++	ath10k_snoc_free_resources(ar);
+ }
+ 
+ static struct platform_driver ath10k_snoc_driver = {
+-- 
+2.29.0
 
-Best Regards,
-Mrs. Caroline Manon.
