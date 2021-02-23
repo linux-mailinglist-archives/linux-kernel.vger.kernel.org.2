@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317A9322E27
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F936322E2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbhBWP67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:58:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
+        id S233374AbhBWP7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:59:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233309AbhBWP6s (ORCPT
+        with ESMTP id S233315AbhBWP6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 10:58:48 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3C0C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:58:06 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id e11so7421432wro.19
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:58:06 -0800 (PST)
+        Tue, 23 Feb 2021 10:58:55 -0500
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B46CC06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:58:09 -0800 (PST)
+Received: by mail-wm1-x349.google.com with SMTP id b201so1360579wmb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:58:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=CQEfesAGh6Yaxupcr8w3bDyhXlptt6J3Yf5vNzEZ7xI=;
-        b=ahJMz/9QD//FktmI3FiYI5kZv2HmCwtxm6T0qpp83ZVG11ijWrwdYwZhWhlWBJ+CEk
-         1jnG0OcblYWp0DVJ2dRRxnnLq+pq/xlYOWPblGlAnVTe4mmpgGKdY6ht57WvK4H62vTB
-         CGC8mOl2P3AhVSh0z/+sXRUnjWeANK35861+rdXPjXd7vpwV2nV7e4gUfGh750HKKDJX
-         r78EbvODYloUoicbFLZE55MmD1KVG5MrrSLwvm8nefA6P2EJdhqCH+x+jCmeDqeLQ68e
-         oDb0F8nFaTaHd77uYGBKUBqhEv8gIzKcfslPSAY4HgpmgTHHKG5egD0k3uoCse1RY+Nw
-         ZaVA==
+        bh=6MyHeS31EL7bb0VItKWbX1lwx1Ls4GM48RMPtv0hqg4=;
+        b=sHwtQ4UiQgGx7PNngBOxhHH0QJvSlwMJAiVMluP2MC/J9jQqXygpnJgWGeWeWK7mhh
+         DPlqCq2RV+vZ6YFXQDv8WIymY0p2uwiS67hLx+Wiy5T78lsZZLGNvHFNKx0N/aUzW8hY
+         1XItvuBNhoFciEiklvIDniZc2Z4mxn1IxY9cXewGZ92PcNss8ZIe3kBzREkDt+PWHco2
+         h/tpjbVMefbbOgfdnXL76/m0V7qngItsVjELey+wNZ+08VU2O16QDwWvByAmHIoIG1QI
+         HNMxN/AzvSrbNIw+LHRGjAExCnQ/zXtLqKZcRgB6HlIV7L+TREQ/Gh4ERCmbfrwjj+2a
+         Tpgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=CQEfesAGh6Yaxupcr8w3bDyhXlptt6J3Yf5vNzEZ7xI=;
-        b=GDAKro2zt7SE7yW4n1BBn63KzaEEx7peDb7YicQ8BOHqnALsTNZfPk2iX3CVzWF9we
-         p9+KcnR/ebjRgCpBgkNou+DC2Ii+NOTNJGlWQhH59wK9Lcb7KWwqhh2bOEHKhvSLMlOk
-         k05M7ypqJMi4SmixHyAvRNcOweQIv7RKdsO2G5mBj6AhC886XJxWhlO1bdz3KIaXvyGa
-         yqy+fV1YffqJWcDhmezWZTPXja6coiarDNHQ9S7e20EWAhNnyko7vyhQXxjjaUU0mjdo
-         8nEqc6W+xHXgSATGfgr0IXDx+Gw4gKlJKHb7lzg8vqItB6YZ/DTL1aUQ7sSFv7mecSPa
-         YSIA==
-X-Gm-Message-State: AOAM531B56TPWuDqbc+suM+FlOl+LaETnL4J1d2R+bUKGzyUB1lmBwt3
-        H8qJps+uwu62ez/Ijl6r/2MHw+iA3Tg=
-X-Google-Smtp-Source: ABdhPJx243HHOgDuZVZvZaJGT0iEdqLHawYC1nTIPMVKhxwcycsNTCwKSh8mZBNkhlNs39I7Nz8grf21hKw=
+        bh=6MyHeS31EL7bb0VItKWbX1lwx1Ls4GM48RMPtv0hqg4=;
+        b=qZAUQJUDq/SduVAinhDr+YRv19qEyy58+J3DcvE/zbLF0Wo2cLGyW8KSuq2OUT9fwN
+         r44YLt7BZ0ZQmRxyUfodbnzA6oeSH9rR56LKdP2zAto4GWXNEAGggcntDu9dee3uCZ9h
+         3BU0HbMEwqDzjaI5RuwQKgrcCuG4O1fy8ie45xGkjxwY1/8p6mWDrMX13iHqUT/bYNKY
+         fYt0o6Ks2fPwed0CsVdIjMF5la/4O0HtpMQnQPwAaQegOGeefPCH4BmscymzKSKc6Ynb
+         Pw7bV0e7RqaxJvdYoUvK8DaF2BgFgnHHBkmRYDjoh2lJs6aKXdWRRiKZsTW2Kc3KT5y/
+         Mqrg==
+X-Gm-Message-State: AOAM5325r61DZxKqMJiTiWQg3wpY0nn8Xsfy+lUExtV3iDUp4EpLQgqz
+        7+PuV3Jd6zAQHAtQF8rjC4+YHUZ8V74=
+X-Google-Smtp-Source: ABdhPJyi1NEYRySQoJ9bCKgZ87lgzwQsxEV6eju9zsWcd4dPWKkzJgwL2iSidbgzKw+k31pCnQRJ/zgWfME=
 Sender: "ascull via sendgmr" <ascull@ascull.c.googlers.com>
 X-Received: from ascull.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1510])
- (user=ascull job=sendgmr) by 2002:a1c:17:: with SMTP id 23mr216919wma.6.1614095885613;
- Tue, 23 Feb 2021 07:58:05 -0800 (PST)
-Date:   Tue, 23 Feb 2021 15:57:56 +0000
+ (user=ascull job=sendgmr) by 2002:a1c:2e90:: with SMTP id u138mr30106wmu.0.1614095887853;
+ Tue, 23 Feb 2021 07:58:07 -0800 (PST)
+Date:   Tue, 23 Feb 2021 15:57:57 +0000
 In-Reply-To: <20210223155759.3495252-1-ascull@google.com>
-Message-Id: <20210223155759.3495252-2-ascull@google.com>
+Message-Id: <20210223155759.3495252-3-ascull@google.com>
 Mime-Version: 1.0
 References: <20210223155759.3495252-1-ascull@google.com>
 X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-Subject: [PATCH v2 1/4] bug: Remove redundant condition check in report_bug
+Subject: [PATCH v2 2/4] bug: Factor out a getter for a bug's file line
 From:   Andrew Scull <ascull@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     linux-kernel@vger.kernel.org, maz@kernel.org, james.morse@arm.com,
@@ -66,67 +66,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-report_bug() will return early if it cannot find a bug corresponding to
-the provided address. The subsequent test for the bug will always be
-true so remove it.
+There is some non-trivial config-based logic to get the file name and
+line number associated with a bug. Factor this out to a getter that can
+be resused.
 
 Signed-off-by: Andrew Scull <ascull@google.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 ---
- lib/bug.c | 33 +++++++++++++++------------------
- 1 file changed, 15 insertions(+), 18 deletions(-)
+ include/linux/bug.h |  3 +++
+ lib/bug.c           | 27 +++++++++++++++++----------
+ 2 files changed, 20 insertions(+), 10 deletions(-)
 
+diff --git a/include/linux/bug.h b/include/linux/bug.h
+index f639bd0122f3..e3841bee4c8d 100644
+--- a/include/linux/bug.h
++++ b/include/linux/bug.h
+@@ -36,6 +36,9 @@ static inline int is_warning_bug(const struct bug_entry *bug)
+ 	return bug->flags & BUGFLAG_WARNING;
+ }
+ 
++void bug_get_file_line(struct bug_entry *bug, const char **file,
++		       unsigned int *line);
++
+ struct bug_entry *find_bug(unsigned long bugaddr);
+ 
+ enum bug_trap_type report_bug(unsigned long bug_addr, struct pt_regs *regs);
 diff --git a/lib/bug.c b/lib/bug.c
-index 7103440c0ee1..4ab398a2de93 100644
+index 4ab398a2de93..f936615176b8 100644
 --- a/lib/bug.c
 +++ b/lib/bug.c
-@@ -158,30 +158,27 @@ enum bug_trap_type report_bug(unsigned long bugaddr, struct pt_regs *regs)
- 
- 	file = NULL;
- 	line = 0;
--	warning = 0;
- 
--	if (bug) {
- #ifdef CONFIG_DEBUG_BUGVERBOSE
- #ifndef CONFIG_GENERIC_BUG_RELATIVE_POINTERS
--		file = bug->file;
-+	file = bug->file;
- #else
--		file = (const char *)bug + bug->file_disp;
-+	file = (const char *)bug + bug->file_disp;
+@@ -130,6 +130,22 @@ static inline struct bug_entry *module_find_bug(unsigned long bugaddr)
+ }
  #endif
--		line = bug->line;
-+	line = bug->line;
- #endif
--		warning = (bug->flags & BUGFLAG_WARNING) != 0;
--		once = (bug->flags & BUGFLAG_ONCE) != 0;
--		done = (bug->flags & BUGFLAG_DONE) != 0;
--
--		if (warning && once) {
--			if (done)
--				return BUG_TRAP_TYPE_WARN;
--
--			/*
--			 * Since this is the only store, concurrency is not an issue.
--			 */
--			bug->flags |= BUGFLAG_DONE;
--		}
-+	warning = (bug->flags & BUGFLAG_WARNING) != 0;
-+	once = (bug->flags & BUGFLAG_ONCE) != 0;
-+	done = (bug->flags & BUGFLAG_DONE) != 0;
-+
-+	if (warning && once) {
-+		if (done)
-+			return BUG_TRAP_TYPE_WARN;
-+
-+		/*
-+		 * Since this is the only store, concurrency is not an issue.
-+		 */
-+		bug->flags |= BUGFLAG_DONE;
- 	}
  
- 	/*
++void bug_get_file_line(struct bug_entry *bug, const char **file,
++		       unsigned int *line)
++{
++	*file = NULL;
++	*line = 0;
++
++#ifdef CONFIG_DEBUG_BUGVERBOSE
++#ifndef CONFIG_GENERIC_BUG_RELATIVE_POINTERS
++	*file = bug->file;
++#else
++	*file = (const char *)bug + bug->file_disp;
++#endif
++	*line = bug->line;
++#endif
++}
++
+ struct bug_entry *find_bug(unsigned long bugaddr)
+ {
+ 	struct bug_entry *bug;
+@@ -156,17 +172,8 @@ enum bug_trap_type report_bug(unsigned long bugaddr, struct pt_regs *regs)
+ 
+ 	disable_trace_on_warning();
+ 
+-	file = NULL;
+-	line = 0;
++	bug_get_file_line(bug, &file, &line);
+ 
+-#ifdef CONFIG_DEBUG_BUGVERBOSE
+-#ifndef CONFIG_GENERIC_BUG_RELATIVE_POINTERS
+-	file = bug->file;
+-#else
+-	file = (const char *)bug + bug->file_disp;
+-#endif
+-	line = bug->line;
+-#endif
+ 	warning = (bug->flags & BUGFLAG_WARNING) != 0;
+ 	once = (bug->flags & BUGFLAG_ONCE) != 0;
+ 	done = (bug->flags & BUGFLAG_DONE) != 0;
 -- 
 2.30.0.617.g56c4b15f3c-goog
 
