@@ -2,184 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0B13226CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB2A3226D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbhBWIF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:05:29 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:62632 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232155AbhBWIE7 (ORCPT
+        id S232183AbhBWIHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:07:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20800 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231960AbhBWIGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:04:59 -0500
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210223080414epoutp031f2e0e0565ee258b4a005d3fa05f0a6f~mUcxNE46h2781027810epoutp038
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:04:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210223080414epoutp031f2e0e0565ee258b4a005d3fa05f0a6f~mUcxNE46h2781027810epoutp038
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614067454;
-        bh=VsArMim74poNxoH+XzW3dQThRgDRsxRhbvqOoz51HZo=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=cH7tIk251SnM5mLHPFiMX5jwCSm+RRNywojq0V/CPQ0hfKYC5am3rjFS+pW8cMFjD
-         E/r3Rh3qnjrFomBcxhERww+tm8SCXDNi0fGbNrCmqu67yz7bWwAlr4ygFNq4ut5xCV
-         psV5scDqJwMIKqDZG/rI+1rYGcCGFy6mcRVKiERY=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210223080413epcas2p1605fefab10cece77bba17d10ca32168a~mUcwVpGeH0566705667epcas2p1B;
-        Tue, 23 Feb 2021 08:04:13 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.181]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DlBQg73RLz4x9QP; Tue, 23 Feb
-        2021 08:04:11 +0000 (GMT)
-X-AuditID: b6c32a45-34dff7000001297d-1f-6034b6fb392a
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        81.CC.10621.BF6B4306; Tue, 23 Feb 2021 17:04:11 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: RE: [PATCH v22 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <DM6PR04MB657588F1C76DC0D5BFC68862FC819@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210223080410epcms2p4704a20bb74cbbc1c1d0af92386eda2c7@epcms2p4>
-Date:   Tue, 23 Feb 2021 17:04:10 +0900
-X-CMS-MailID: 20210223080410epcms2p4704a20bb74cbbc1c1d0af92386eda2c7
+        Tue, 23 Feb 2021 03:06:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614067489;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TvIJWNY4/1GkazmbPNAwia/J/m5uVDdO8zNLf6UfHyc=;
+        b=PghX9CnoOxvbWUo4w9lr4hKJrzriHfT8Bks71Zf8rMRRJoBc8i05xpHpoAPMuRuPy+8lE5
+        zvNI2VUfp1hps+SdYq2TItPGIw5NOl28MPIO4/Jcb2hn2y5nQDa349e1GGKW9HURZ7OEwt
+        7/pH/JryIBjClET/6O67FhsDXeaeahk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-415-RMz4k9mhMuqSZi37eipL3A-1; Tue, 23 Feb 2021 03:04:45 -0500
+X-MC-Unique: RMz4k9mhMuqSZi37eipL3A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA3B780197A;
+        Tue, 23 Feb 2021 08:04:27 +0000 (UTC)
+Received: from [10.36.114.0] (ovpn-114-0.ams2.redhat.com [10.36.114.0])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ABF4719725;
+        Tue, 23 Feb 2021 08:04:20 +0000 (UTC)
+Subject: Re: [PATCH v6 1/1] mm/page_alloc.c: refactor initialization of struct
+ page for holes in memory layout
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+References: <20210222105728.28636-1-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <a7f70da1-6733-967f-4d1d-92d23b95a753@redhat.com>
+Date:   Tue, 23 Feb 2021 09:04:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210222105728.28636-1-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMJsWRmVeSWpSXmKPExsWy7bCmhe7vbSYJBvf3iVs8mLeNzWJv2wl2
-        i5c/r7JZHL79jt1i2oefzBaf1i9jtXh5SNNi1YNwi+bF69ks5pxtYLLo7d/KZvH4zmd2i0U3
-        tjFZ9P9rZ7G4vGsOm0X39R1sFsuP/2OyuL2Fy2Lp1puMFp3T17BYLFq4m8VB1OPyFW+Py329
-        TB47Z91l95iw6ACjx/65a9g9Wk7uZ/H4+PQWi0ffllWMHp83yXm0H+hmCuCKyrHJSE1MSS1S
-        SM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAfpQSaEsMacUKBSQWFys
-        pG9nU5RfWpKqkJFfXGKrlFqQklNgaFigV5yYW1yal66XnJ9rZWhgYGQKVJmQk7H/+gnWgkWi
-        FX9aZjI2ML7h62Lk5JAQMJFYdW4+O4gtJLCDUaL1n1IXIwcHr4CgxN8dwiBhYQF7iTcti5kg
-        SpQk1l+cxQ4R15O49XANI4jNJqAjMf3EfaA4F4eIwAoWiYu/LrGBOMwCv5gkTjz+wAixjFdi
-        RvtTFghbWmL78q1gcU6BWIk9Vw8yQcQ1JH4s62WGsEUlbq5+yw5jvz82H2qOiETrvbNQNYIS
-        D37uhopLShzb/QFqTr3E1ju/GEGOkBDoYZQ4vPMWK0RCX+Jax0awI3gFfCXmP9gI1sAioCrR
-        1zcHaqiLxJOfB8CGMgvIS2x/CxLnALI1Jdbv0gcxJQSUJY7cYoF5q2Hjb3Z0NrMAn0TH4b9w
-        8R3znkCdpiax7ud6pgmMyrMQQT0Lya5ZCLsWMDKvYhRLLSjOTU8tNiowRI7cTYzg1K7luoNx
-        8tsPeocYmTgYDzFKcDArifCy3TVKEOJNSaysSi3Kjy8qzUktPsRoCvTlRGYp0eR8YHbJK4k3
-        NDUyMzOwNLUwNTOyUBLnLTZ4EC8kkJ5YkpqdmlqQWgTTx8TBKdXA1HKY23BV0eEGxpJ5t8/q
-        aXyUb+IR7JjM+uli71v3PLt117fd+dDm/XXz8fKfr569m654JOaOlEhmNEukIkeMV1aNRj7H
-        32VKjfKL3aZ/nxnw4+cmLbHLi1YWNH0NlHI4bccXIfezVSbuQM8+0ayXd+V+6x8yvCPHXHXu
-        W/ByoQ9s+3ZlMzJNLIitKo4R6/L/LOh75MMxlxD9nsmbZgSXHORemO7+W/ng3WmFnY/2HfKv
-        ad4iHlfF1eGytfKTkc3XyawX5HusDzgYikYb3quMm7mQS+bxhwVz3IJLT9RdnpVjlOTomt+v
-        uNFrhUWH3vZcnzVd/zY4rm+bx7v4yfN0njmzFinaTN3PJfnOP/2oEktxRqKhFnNRcSIAaHMa
-        WXYEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
-References: <DM6PR04MB657588F1C76DC0D5BFC68862FC819@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210222092957epcms2p728b0c563f3cfbecbf8692d7e86f9afed@epcms2p7>
-        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
-        <20210222093150epcms2p155352e2255e6bfd8f8d71c737ed05e76@epcms2p1>
-        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p4>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > @@ -7447,8 +7452,14 @@ static int ufs_get_device_desc(struct ufs_hba *hba)
-> > 
-> >         if (dev_info->wspecversion >= UFS_DEV_HPB_SUPPORT_VERSION &&
-> >             (b_ufs_feature_sup & UFS_DEV_HPB_SUPPORT)) {
-> > -               dev_info->hpb_enabled = true;
-> > -               ufshpb_get_dev_info(hba, desc_buf);
-> > +               bool hpb_en = false;
-> > +
-> > +               err = ufshcd_query_flag_retry(hba,
-> > UPIU_QUERY_OPCODE_READ_FLAG,
-> > +                                             QUERY_FLAG_IDN_HPB_EN, 0, &hpb_en);
-> > +               if (!err && hpb_en) {
-> > +                       dev_info->hpb_enabled = true;
-> > +                       ufshpb_get_dev_info(hba, desc_buf);
-> QUERY_FLAG_IDN_HPB_EN only apply to HPB2.0
+On 22.02.21 11:57, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> There could be struct pages that are not backed by actual physical memory.
+> This can happen when the actual memory bank is not a multiple of
+> SECTION_SIZE or when an architecture does not register memory holes
+> reserved by the firmware as memblock.memory.
+> 
+> Such pages are currently initialized using init_unavailable_mem() function
+> that iterates through PFNs in holes in memblock.memory and if there is a
+> struct page corresponding to a PFN, the fields of this page are set to
+> default values and it is marked as Reserved.
+> 
+> init_unavailable_mem() does not take into account zone and node the page
+> belongs to and sets both zone and node links in struct page to zero.
+> 
+> Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
+> rather that check each PFN") the holes inside a zone were re-initialized
+> during memmap_init() and got their zone/node links right. However, after
+> that commit nothing updates the struct pages representing such holes.
+> 
+> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+> instance in a configuration below:
+> 
+> 	# grep -A1 E820 /proc/iomem
+> 	7a17b000-7a216fff : Unknown E820 type
+> 	7a217000-7bffffff : System RAM
+> 
+> unset zone link in struct page will trigger
+> 
+> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+> 
+> because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
+> in struct page) in the same pageblock.
+> 
+> Interleave initialization of the unavailable pages with the normal
+> initialization of memory map, so that zone and node information will be
+> properly set on struct pages that are not backed by the actual memory.
+> 
+> With this change the pages for holes inside a zone will get proper
+> zone/node links and the pages that are not spanned by any node will get
+> links to the adjacent zone/node.
 
-OK,
+Does this include pages in the last section has handled by ...
+...
+> -	/*
+> -	 * Early sections always have a fully populated memmap for the whole
+> -	 * section - see pfn_valid(). If the last section has holes at the
+> -	 * end and that section is marked "online", the memmap will be
+> -	 * considered initialized. Make sure that memmap has a well defined
+> -	 * state.
+> -	 */
+> -	pgcnt += init_unavailable_range(PFN_DOWN(next),
+> -					round_up(max_pfn, PAGES_PER_SECTION));
+> -
 
-> > +               }
-> >         }
-> > 
-> > +
-> > +/*
-> > + * WRITE_BUFFER CMD support 36K (len=9) ~ 512K (len=128) default.
-> > + * it is possible to change range of transfer_len through sysfs.
-> > + */
-> Actually the transfer length is limited by its (and read id) single byte.
-> Fixing MAX_HPB_READ_ID = 128  is IMO a reasonable choice,
-> But not limited by spec.  Maybe make note of that ?
->  
-> > +static inline bool ufshpb_is_required_wb(struct ufshpb_lu *hpb, int len)
-> > +{
-> > +       return (len >= hpb->pre_req_min_tr_len &&
-> > +               len <= hpb->pre_req_max_tr_len);
-> >  }
-> Maybe also check HPB2.0 as well?
+^ this code?
 
-OK,
+Or how is that case handled now?
 
-> > -void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-> > +int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-> >  {
-> >         struct ufshpb_lu *hpb;
-> >         struct ufshpb_region *rgn;
-> > @@ -282,26 +546,27 @@ void ufshpb_prep(struct ufs_hba *hba, struct
-> > ufshcd_lrb *lrbp)
-> >         u64 ppn;
-> >         unsigned long flags;
-> >         int transfer_len, rgn_idx, srgn_idx, srgn_offset;
-> > +       int read_id = MAX_HPB_READ_ID;
-> Should be 0 if wb is not used?
-
-I will fix it.
-
-> > +
-> > +       hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), GFP_KERNEL);
-> > +       hpb->throttle_pre_req = qd;
-> What is the point in throttling if you are allowing 32 simultaneous commands?
-> There can't be more than qd/2 anyway?
-> On the contrary, it makes much more sense to control the inflight map requests, instead?
-
-OK, I will change it to qd/2.
- 
-> > +       hpb->num_inflight_pre_req = 0;
-> > +
->  
-> > -#define HPB_SUPPORT_VERSION                    0x100
-> > +#define HPB_SUPPORT_VERSION                    0x200
-> In ufshpb_get_dev_info you are bailing out if version != HPB_SUPPORT_VERSION
-> Meaning you are no longer backward supporting HPB1.0?
-
-I add to support legacy version of HPB.
-
+-- 
 Thanks,
-Daejun
+
+David / dhildenb
+
