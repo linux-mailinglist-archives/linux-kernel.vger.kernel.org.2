@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71605322CC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:49:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD830322CCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbhBWOtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:49:41 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43834 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232997AbhBWOtX (ORCPT
+        id S232858AbhBWOt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:49:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232725AbhBWOts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:49:23 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 8AFB91F44D4B
-Message-ID: <f024535585fe5b248ca8cf7ca95c14ced746f9da.camel@collabora.com>
-Subject: Re: [PATCH v3 8/9] dt-bindings: media: nxp,imx8mq-vpu: Update
- bindings
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Rob Herring <robh@kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Peng Fan <peng.fan@nxp.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>
-Date:   Tue, 23 Feb 2021 11:48:29 -0300
-In-Reply-To: <CAL_JsqJGZK2C8mcDiYa4yfKxf4sKykxSQ-Nfr4bi_u_OcAxW_Q@mail.gmail.com>
-References: <20210222122406.41782-1-benjamin.gaignard@collabora.com>
-         <20210222122406.41782-9-benjamin.gaignard@collabora.com>
-         <20210223003442.GA2516123@robh.at.kernel.org>
-         <25f30110-d655-2d77-d3b7-30c1c61f6965@collabora.com>
-         <CAL_JsqJGZK2C8mcDiYa4yfKxf4sKykxSQ-Nfr4bi_u_OcAxW_Q@mail.gmail.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Tue, 23 Feb 2021 09:49:48 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034E2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:49:07 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id q9so4002756qvo.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:49:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5S1278VXBXOSLVzud0ikIuJDPMbbC2qcHtU1cXjsgPk=;
+        b=NiVKZu5i8qwDclQxF0dwzHxzXcPvLJbWdBqJ0G5HlyTCGT8dxnmVly+zHKAPdGPFrQ
+         jLdOKWrkacctxFanoSKOGX3fa5L5bCcvzYdI6za53kIxVTLpypD57RLJB3PkyBrTsKkd
+         lKj6wAgVQntdDLIQBxJ8PT4t95heusHlnfeTwdCiuCeqGzrqnyqBeEaDR+9vUSPaYSbq
+         DG/uwnbkangeBPnYXVIcU4DYx5Qyusddt4EZdL8HrGfvG6gGArKhgL8JjHqAqZbyNnSP
+         9/dOz/8pMQC+MMk4o8QWp5Tuz5WRqftR8WswyTX6bHnKj8/SSyC4Do5EmH6jhxTuAx7C
+         iWwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5S1278VXBXOSLVzud0ikIuJDPMbbC2qcHtU1cXjsgPk=;
+        b=haM2PC/O1dr3BRCedO6ixQSQQKFKYXDuspblotNmC7Xu01QDtJE+5Sf6G7x7HbTV5V
+         BmhJNa8DDTy4gOi95ny7pHcPWhWBhA0HBR47ltza2AVXPYkfkvHbv8AysWf5f8fibmb4
+         MJu8zxRj9OczWDOTzps40/CZs0zwJCod4zod+nmBy+ffors+WIlp6N44GOmPHqQZ8WdD
+         NL0e5x1oTuJ/TSkciVuhIuZ44kDYcvRlr4nrRmji7fp8p8gf3Gvo+VS1YGAxy5NwRLrR
+         mv6+e359L6Tf0SC4D/TR7rGzyjwhfBrgA1oMSynGnED912Wd5ZWdR2fiGNBOgOdwv7NQ
+         GWcg==
+X-Gm-Message-State: AOAM533PKKxqMJxQ0nXgSKboObu/lu31LlD3uBUE6wGK3QHi13VLVpBd
+        8DPnKNA8eaRtOgAe4yhRe3UCAiC3zz0UuqLSbssC9g==
+X-Google-Smtp-Source: ABdhPJzkj0kFTsnMC8xw+10LnB3Mw8u1Yp18xzsvPq+XTQfqTRg36gkO97V96V/4F1u+24NycHQHKwxhsiqGo6/rJ1s=
+X-Received: by 2002:a0c:e20f:: with SMTP id q15mr22742422qvl.13.1614091745827;
+ Tue, 23 Feb 2021 06:49:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210223143426.2412737-1-elver@google.com> <20210223143426.2412737-2-elver@google.com>
+In-Reply-To: <20210223143426.2412737-2-elver@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 23 Feb 2021 15:48:54 +0100
+Message-ID: <CACT4Y+YGrj3zc+KsxQ0=N5t3dPy58FwVuy=MY95RphOD4i4FHg@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/4] perf/core: Apply PERF_EVENT_IOC_MODIFY_ATTRIBUTES
+ to children
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Tue, Feb 23, 2021 at 3:34 PM Marco Elver <elver@google.com> wrote:
+>
+> As with other ioctls (such as PERF_EVENT_IOC_{ENABLE,DISABLE}), fix up
+> handling of PERF_EVENT_IOC_MODIFY_ATTRIBUTES to also apply to children.
+>
+> Link: https://lkml.kernel.org/r/YBqVaY8aTMYtoUnX@hirez.programming.kicks-ass.net
+> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
 
-On Tue, 2021-02-23 at 08:31 -0600, Rob Herring wrote:
-> On Tue, Feb 23, 2021 at 2:04 AM Benjamin Gaignard
-> <benjamin.gaignard@collabora.com> wrote:
-> > 
-> > 
-> > Le 23/02/2021 à 01:34, Rob Herring a écrit :
-> > > On Mon, Feb 22, 2021 at 01:24:05PM +0100, Benjamin Gaignard wrote:
-> > > > The current bindings seem to make the assumption that the
-> > > > two VPUs hardware blocks (G1 and G2) are only one set of
-> > > > registers.
-> > > > After implementing the VPU reset driver and G2 decoder driver
-> > > > it shows that all the VPUs are independent and don't need to
-> > > > know about the registers of the other blocks.
-> > > > Remove from the bindings the need to set all blocks register
-> > > > but keep reg-names property because removing it from the driver
-> > > > may affect other variants.
-> > > > 
-> > > > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> > > > ---
-> > > > version 2:
-> > > > - be more verbose about why I change the bindings
-> > > > Keep in mind that series comes after: https://www.spinics.net/lists/arm-kernel/msg875766.html
-> > > > without that review and ack it won't work
-> > > Better, but you've still mentioned nothing about breaking compatibility.
-> > > Why is that okay?
-> > 
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 
-Indeed, the commit description should be clearer about breaking compatibility.
 
-> > Because this reg-names wasn't used before for this variant so remove it won't change anything.
-> 
-> It is the reset changes in the driver that break. The driver
-> previously got the 'ctrl' registers whether it went by name or index,
-> right? With an old DTB and a kernel with the changes (and vice-versa),
-> you'll have nothing to handle the VPU resets because the VPU reset
-> node doesn't exist. It could work if the default state is not held in
-> reset.
-> 
-> At least the removal of 'ctrl' registers belongs in the reset changes series.
-> 
-> 
-
-Considering that FFMPEG patches that are required to support this driver
-are still floating around, and GStreamer's implementation is also still
-a bit under discussion, we are certain there aren't many upstreams users
-(leaving ChromiumOS aside which mostly care for Rockchip variants).
-
-So, given the driver is in staging, and that there aren't users of the
-i.MX8MQ G1 variant just yet, I think we are safe breaking the compatibility
-(and I'm not taking it lightly).
-
-It would be important to detect an old devicetree and do some pr_warn about
-the driver not supporting it.
-
-Thanks,
-Ezequiel
-
+> ---
+>  kernel/events/core.c | 22 +++++++++++++++++++++-
+>  1 file changed, 21 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 129dee540a8b..37a8297be164 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -3179,16 +3179,36 @@ static int perf_event_modify_breakpoint(struct perf_event *bp,
+>  static int perf_event_modify_attr(struct perf_event *event,
+>                                   struct perf_event_attr *attr)
+>  {
+> +       int (*func)(struct perf_event *, struct perf_event_attr *);
+> +       struct perf_event *child;
+> +       int err;
+> +
+>         if (event->attr.type != attr->type)
+>                 return -EINVAL;
+>
+>         switch (event->attr.type) {
+>         case PERF_TYPE_BREAKPOINT:
+> -               return perf_event_modify_breakpoint(event, attr);
+> +               func = perf_event_modify_breakpoint;
+> +               break;
+>         default:
+>                 /* Place holder for future additions. */
+>                 return -EOPNOTSUPP;
+>         }
+> +
+> +       WARN_ON_ONCE(event->ctx->parent_ctx);
+> +
+> +       mutex_lock(&event->child_mutex);
+> +       err = func(event, attr);
+> +       if (err)
+> +               goto out;
+> +       list_for_each_entry(child, &event->child_list, child_list) {
+> +               err = func(child, attr);
+> +               if (err)
+> +                       goto out;
+> +       }
+> +out:
+> +       mutex_unlock(&event->child_mutex);
+> +       return err;
+>  }
+>
+>  static void ctx_sched_out(struct perf_event_context *ctx,
+> --
+> 2.30.0.617.g56c4b15f3c-goog
+>
