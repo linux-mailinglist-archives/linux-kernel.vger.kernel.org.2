@@ -2,216 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73662322CD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603ED322CD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233134AbhBWOuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:50:44 -0500
-Received: from mga03.intel.com ([134.134.136.65]:50657 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232313AbhBWOuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:50:18 -0500
-IronPort-SDR: EkP+RMlsr45mqaE7RJGNp5UCIQjXxQBzVE5oKH6883c4sXj9bcbTwINmOwmu5wDQZk2c69byfc
- VPj+dOXoD+Kw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="184873783"
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="184873783"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 06:49:35 -0800
-IronPort-SDR: ysBhO+VHCeZJheQHhE4IO3P+32Wfl9YrV97tKizhglxPl9r9CEeixC5hOWBGMS4LHFNyjgigSR
- 6uVLWCIPvmNQ==
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="423650236"
-Received: from mmgoodso-mobl3.amr.corp.intel.com (HELO intel.com) ([10.212.211.76])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 06:49:30 -0800
-Date:   Tue, 23 Feb 2021 09:49:29 -0500
-From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Oleg Vasilev <oleg.vasilev@intel.com>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        "moderated list:ARM/ZYNQ ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [Intel-gfx] [PATCH 19/30] drm/dp: Pass drm_dp_aux to
- drm_dp_link_train_clock_recovery_delay()
-Message-ID: <YDUV+SU7bSyfFqvw@intel.com>
-References: <20210219215326.2227596-1-lyude@redhat.com>
- <20210219215326.2227596-20-lyude@redhat.com>
+        id S233165AbhBWOvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:51:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232594AbhBWOuc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:50:32 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD59FC061786;
+        Tue, 23 Feb 2021 06:49:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=xaG2XnjEAwC4M07KJBi3PgFXfaTqupRbx3G9e9s1FeY=; b=E/QMLfDmUfV2jMzZ8VVexuOQMc
+        mEHrlLj2nUZIRlV+ooE9RpEy/topEzz45PJXZ9a6GIEsWqzknz47U5LZ8eF7+2DC1a0ETz3NbStmT
+        I50Ptd1+YOhlz6jsJlLFWm4IUBGf8VkeNU5JRCeKLkC147ph7t213e3tjaEIQJqy7CBk=;
+Received: from p200300ccff188c001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff18:8c00:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lEZ0V-0003Xb-15; Tue, 23 Feb 2021 15:49:47 +0100
+Date:   Tue, 23 Feb 2021 15:49:46 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Dan Murphy <dmurphy@ti.com>,
+        Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] power: supply: bq27xxx: fix sign of current_now for
+ newer ICs
+Message-ID: <20210223154946.1ef58514@aktux>
+In-Reply-To: <20210223141122.9574-1-matthias.schiffer@ew.tq-group.com>
+References: <20210223141122.9574-1-matthias.schiffer@ew.tq-group.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219215326.2227596-20-lyude@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 04:53:15PM -0500, Lyude Paul wrote:
-> So that we can start using drm_dbg_*() in
-> drm_dp_link_train_clock_recovery_delay().
+On Tue, 23 Feb 2021 15:11:20 +0100
+Matthias Schiffer <matthias.schiffer@ew.tq-group.com> wrote:
+
+> Commit cd060b4d0868 ("power: supply: bq27xxx: fix polarity of current_now")
+> changed the sign of current_now for all bq27xxx variants, but on BQ28Z610
+> I'm now seeing negated values *with* that patch.
 > 
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-
-I wonder if we could have a drm_dp so we encapsulate both aux and dpcd
-related information...
-
-But this one already solves the issue...
-
-Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-
-
-
+> The GTA04/Openmoko device that was used for testing uses a BQ27000 or
+> BQ27010 IC, so I assume only the BQ27XXX_O_ZERO code path was incorrect.
+> Revert the behaviour for newer ICs.
+> 
+> Fixes: cd060b4d0868 "power: supply: bq27xxx: fix polarity of current_now"
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 > ---
->  drivers/gpu/drm/amd/amdgpu/atombios_dp.c              | 2 +-
->  drivers/gpu/drm/drm_dp_helper.c                       | 3 ++-
->  drivers/gpu/drm/i915/display/intel_dp_link_training.c | 2 +-
->  drivers/gpu/drm/msm/dp/dp_ctrl.c                      | 2 +-
->  drivers/gpu/drm/msm/edp/edp_ctrl.c                    | 2 +-
->  drivers/gpu/drm/radeon/atombios_dp.c                  | 2 +-
->  drivers/gpu/drm/xlnx/zynqmp_dp.c                      | 2 +-
->  include/drm/drm_dp_helper.h                           | 4 +++-
->  8 files changed, 11 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/amd/amdgpu/atombios_dp.c b/drivers/gpu/drm/amd/amdgpu/atombios_dp.c
-> index 6d35da65e09f..4468f9d6b4dd 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/atombios_dp.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/atombios_dp.c
-> @@ -611,7 +611,7 @@ amdgpu_atombios_dp_link_train_cr(struct amdgpu_atombios_dp_link_train_info *dp_i
->  	dp_info->tries = 0;
->  	voltage = 0xff;
->  	while (1) {
-> -		drm_dp_link_train_clock_recovery_delay(dp_info->dpcd);
-> +		drm_dp_link_train_clock_recovery_delay(dp_info->aux, dp_info->dpcd);
->  
->  		if (drm_dp_dpcd_read_link_status(dp_info->aux,
->  						 dp_info->link_status) <= 0) {
-> diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-> index 194e0c273809..ce08eb3bface 100644
-> --- a/drivers/gpu/drm/drm_dp_helper.c
-> +++ b/drivers/gpu/drm/drm_dp_helper.c
-> @@ -132,7 +132,8 @@ u8 drm_dp_get_adjust_request_post_cursor(const u8 link_status[DP_LINK_STATUS_SIZ
->  }
->  EXPORT_SYMBOL(drm_dp_get_adjust_request_post_cursor);
->  
-> -void drm_dp_link_train_clock_recovery_delay(const u8 dpcd[DP_RECEIVER_CAP_SIZE])
-> +void drm_dp_link_train_clock_recovery_delay(const struct drm_dp_aux *aux,
-> +					    const u8 dpcd[DP_RECEIVER_CAP_SIZE])
->  {
->  	unsigned long rd_interval = dpcd[DP_TRAINING_AUX_RD_INTERVAL] &
->  					 DP_TRAINING_AUX_RD_MASK;
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_link_training.c b/drivers/gpu/drm/i915/display/intel_dp_link_training.c
-> index 892d7db7d94f..222073d46bdb 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_link_training.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_link_training.c
-> @@ -441,7 +441,7 @@ static void intel_dp_link_training_clock_recovery_delay(struct intel_dp *intel_d
->  							enum drm_dp_phy dp_phy)
->  {
->  	if (dp_phy == DP_PHY_DPRX)
-> -		drm_dp_link_train_clock_recovery_delay(intel_dp->dpcd);
-> +		drm_dp_link_train_clock_recovery_delay(&intel_dp->aux, intel_dp->dpcd);
->  	else
->  		drm_dp_lttpr_link_train_clock_recovery_delay();
->  }
-> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> index 36b39c381b3f..2501a6b326a3 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> @@ -1103,7 +1103,7 @@ static int dp_ctrl_link_train_1(struct dp_ctrl_private *ctrl,
->  	tries = 0;
->  	old_v_level = ctrl->link->phy_params.v_level;
->  	for (tries = 0; tries < maximum_retries; tries++) {
-> -		drm_dp_link_train_clock_recovery_delay(ctrl->panel->dpcd);
-> +		drm_dp_link_train_clock_recovery_delay(ctrl->aux, ctrl->panel->dpcd);
->  
->  		ret = dp_ctrl_read_link_status(ctrl, link_status);
->  		if (ret)
-> diff --git a/drivers/gpu/drm/msm/edp/edp_ctrl.c b/drivers/gpu/drm/msm/edp/edp_ctrl.c
-> index 57af3d8b6699..6501598448b4 100644
-> --- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
-> +++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
-> @@ -608,7 +608,7 @@ static int edp_start_link_train_1(struct edp_ctrl *ctrl)
->  	tries = 0;
->  	old_v_level = ctrl->v_level;
->  	while (1) {
-> -		drm_dp_link_train_clock_recovery_delay(ctrl->dpcd);
-> +		drm_dp_link_train_clock_recovery_delay(ctrl->drm_aux, ctrl->dpcd);
->  
->  		rlen = drm_dp_dpcd_read_link_status(ctrl->drm_aux, link_status);
->  		if (rlen < DP_LINK_STATUS_SIZE) {
-> diff --git a/drivers/gpu/drm/radeon/atombios_dp.c b/drivers/gpu/drm/radeon/atombios_dp.c
-> index c50c504bad50..299b9d8da376 100644
-> --- a/drivers/gpu/drm/radeon/atombios_dp.c
-> +++ b/drivers/gpu/drm/radeon/atombios_dp.c
-> @@ -680,7 +680,7 @@ static int radeon_dp_link_train_cr(struct radeon_dp_link_train_info *dp_info)
->  	dp_info->tries = 0;
->  	voltage = 0xff;
->  	while (1) {
-> -		drm_dp_link_train_clock_recovery_delay(dp_info->dpcd);
-> +		drm_dp_link_train_clock_recovery_delay(dp_info->aux, dp_info->dpcd);
->  
->  		if (drm_dp_dpcd_read_link_status(dp_info->aux,
->  						 dp_info->link_status) <= 0) {
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index 8272eee03adc..5cc295d8ba9f 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -713,7 +713,7 @@ static int zynqmp_dp_link_train_cr(struct zynqmp_dp *dp)
->  		if (ret)
->  			return ret;
->  
-> -		drm_dp_link_train_clock_recovery_delay(dp->dpcd);
-> +		drm_dp_link_train_clock_recovery_delay(&dp->aux, dp->dpcd);
->  		ret = drm_dp_dpcd_read_link_status(&dp->aux, link_status);
->  		if (ret < 0)
->  			return ret;
-> diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-> index 45ec74862212..e4681665231e 100644
-> --- a/include/drm/drm_dp_helper.h
-> +++ b/include/drm/drm_dp_helper.h
-> @@ -29,6 +29,7 @@
->  #include <drm/drm_connector.h>
->  
->  struct drm_device;
-> +struct drm_dp_aux;
->  
->  /*
->   * Unless otherwise noted, all values are from the DP 1.1a spec.  Note that
-> @@ -1475,7 +1476,8 @@ u8 drm_dp_get_adjust_request_post_cursor(const u8 link_status[DP_LINK_STATUS_SIZ
->  #define DP_LTTPR_COMMON_CAP_SIZE	8
->  #define DP_LTTPR_PHY_CAP_SIZE		3
->  
-> -void drm_dp_link_train_clock_recovery_delay(const u8 dpcd[DP_RECEIVER_CAP_SIZE]);
-> +void drm_dp_link_train_clock_recovery_delay(const struct drm_dp_aux *aux,
-> +					    const u8 dpcd[DP_RECEIVER_CAP_SIZE]);
->  void drm_dp_lttpr_link_train_clock_recovery_delay(void);
->  void drm_dp_link_train_channel_eq_delay(const u8 dpcd[DP_RECEIVER_CAP_SIZE]);
->  void drm_dp_lttpr_link_train_channel_eq_delay(const u8 caps[DP_LTTPR_PHY_CAP_SIZE]);
-> -- 
-> 2.29.2
+> @Andreas Kemnade: It would be great to get a confirmation that the
+> Openmoko battery indeed uses BQ27000/BQ27010 - I was having some trouble
+> finding that information.
 > 
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+I can confirm that.
+here is the corresponding schematic:
+
+http://people.openmoko.org/tony_tu/GTA02/hardware/GTA02/CT-GTA02.pdf
+
+Regards,
+Andreas
