@@ -2,95 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D35B322C0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:19:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84A8322C12
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232938AbhBWOSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:18:24 -0500
-Received: from mout.kundenserver.de ([217.72.192.73]:43653 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232331AbhBWOSS (ORCPT
+        id S232952AbhBWOSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:18:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47476 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232331AbhBWOSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:18:18 -0500
-Received: from mail.cetitecgmbh.com ([87.190.42.90]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1Mdvyi-1lnKzS3eCM-00b0aU; Tue, 23 Feb 2021 15:15:24 +0100
-Received: from pflvmailgateway.corp.cetitec.com (unknown [127.0.0.1])
-        by mail.cetitecgmbh.com (Postfix) with ESMTP id 73AB41E01EB;
-        Tue, 23 Feb 2021 14:15:22 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at cetitec.com
-Received: from mail.cetitecgmbh.com ([127.0.0.1])
-        by pflvmailgateway.corp.cetitec.com (pflvmailgateway.corp.cetitec.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id VmzJgTaF5xPP; Tue, 23 Feb 2021 15:15:22 +0100 (CET)
-Received: from pflmari.corp.cetitec.com (21-usr-pf-main.vpn.it.cetitec.com [10.8.5.21])
-        by mail.cetitecgmbh.com (Postfix) with ESMTPSA id 2CA121E01EA;
-        Tue, 23 Feb 2021 15:15:22 +0100 (CET)
-Received: by pflmari.corp.cetitec.com (Postfix, from local account)
-Date:   Tue, 23 Feb 2021 15:15:21 +0100
-From:   Alex Riesen <alexander.riesen@cetitec.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     nouveau@lists.freedesktop.org, Martin Peres <martin.peres@free.fr>,
-        Jeremy Cline <jcline@redhat.com>,
-        Simon Ser <contact@emersion.fr>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Takashi Iwai <tiwai@suse.de>, James Jones <jajones@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] drm/nouveau/kms/nv50-: Report max cursor size to
- userspace
-Message-ID: <YDUN+Re/alMVL0Zn@pflmari>
-References: <20210119015415.2511028-1-lyude@redhat.com>
- <20210119015415.2511028-2-lyude@redhat.com>
+        Tue, 23 Feb 2021 09:18:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614089827;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sdXyf3LSwUfaOHdYYNvJzMwzVE2QLNggB+GkV4jURgg=;
+        b=SC8MshRB+n5jHs5hMXe1mmXYi/h9Mz4Eb6AYLDo9mltkuhrZVhEB2OeW+dbdk/zs4nei/i
+        BfKYxwiTlbVn9KIf30UirrP7SYEZJBZBHBDXUeeNQ0sBL4pwYtcUTnxIqJ0e0xl6b0lIpw
+        r4wUCCPmtOx5p5ziBMLV9CFWXKayGfo=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-287-YMuT0lZVPVibswTBTCQbDw-1; Tue, 23 Feb 2021 09:17:06 -0500
+X-MC-Unique: YMuT0lZVPVibswTBTCQbDw-1
+Received: by mail-wr1-f69.google.com with SMTP id v3so920170wro.21
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:17:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sdXyf3LSwUfaOHdYYNvJzMwzVE2QLNggB+GkV4jURgg=;
+        b=a9CqLJ58ZxhdnzHFl2T9i2otX4V++lxJut+9weC9nevpSBFgThcUQzR8KIT5vmPJTC
+         awAsCIigmb/mLSkLUkb+a23xY4vS2b6E9Uq/5ExZH16khoWYv8ZuFbXf9SxbasCjwo/6
+         eMyAfbGnYAkBbarJu0HJwXKW+kOpnf7BkhaVhI9+0DHFG/SOwMhOPY+NbSoCnfg55/mt
+         etCAfShlkQYqK/TFSdJnFmMz9QyNJ52qE1Lb4gDBslhBu34GnEUnTjUXVLNZN5IwKyod
+         3yggGy0C5ybsZwEDfN/my1U6QSlWme/HHZS121Shv5A2D9upTeGUO4bBTaBWynWZcTi5
+         DL4g==
+X-Gm-Message-State: AOAM5308tzGzfNCj3brG3UaR+P4KHDfcPw8mlDclV6dq2t/iFIDmEDRd
+        MNMvvg1gWbo9rTtFXGZUtzeEqHaT4PHPvDjfFmRxMJ3w8X2V71FzEsAbOQz1YFznktkdztjwqHW
+        uGm6UllZqpKe+xvUVaAnL/Fqk
+X-Received: by 2002:a5d:6281:: with SMTP id k1mr348207wru.405.1614089825287;
+        Tue, 23 Feb 2021 06:17:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyJRkCFoKbQo6xkTrUQIfNHvZqxmgXuNRPSXDblbZ7p/K2Lm7SUd5TdeJEawHMxG9rT2h8eEQ==
+X-Received: by 2002:a5d:6281:: with SMTP id k1mr348184wru.405.1614089825095;
+        Tue, 23 Feb 2021 06:17:05 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id 6sm40310912wra.63.2021.02.23.06.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 06:17:04 -0800 (PST)
+Date:   Tue, 23 Feb 2021 09:17:01 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v5 11/19] virtio/vsock: dequeue callback for
+ SOCK_SEQPACKET
+Message-ID: <20210223091536-mutt-send-email-mst@kernel.org>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210218053940.1068164-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210119015415.2511028-2-lyude@redhat.com>
-X-Provags-ID: V03:K1:OyqQZwzOO6IF8d6ExZM9WpBmYey37Dqo2pTpIaNdzhHny21aso9
- h9QRW0YUsgsKhN2jbE1zQlEowesa1sbZjl74BpdeCiwCjsHcDZCfjho0irbPPx1/QDzq+K0
- tyMd+mno2hxFag40eKo36u+8W6EfsthzItJotElpVDj3/DHoL1e8MLwPNtqkEISL8uW4s/U
- xQTFFT0qoIwQAZcfUUirA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TJHtvNtb7g8=:8384eCnJpXz5HeD1Prztbo
- UDwbYnh0+eY779QgS4xAqdrRhUO5J+U1jC/lc1UC15opcUmaDBjAWuw5meMJbaMnp88mkKM5B
- VTIV4IKCTTBhzqBXSPRWF+55fAInU1Dy6KDM45//ZI2vVsNhmrSYc1SQ+drpdMou+hNCgbYX0
- 17gtRnG1D8kouAlcb3vvallL9jZhUlS2lrXD9Aoqu2L/SJFxqYL4FgbT5jR8wsk85mXy3cXu+
- nKLGePSzS4V5FXqSF2191SmfuwS/6yIKDlftgMtPZEYFXLFG7ZL65ML3TK777lvUY7jFq+oMf
- uSU0bKpgoQAUAoeg4DdpkHUQEsr5WE0bPwg6y7JLmCwQ/Ygc8+JVmJv2IKKybSfjFGaxo3qzF
- e4tieRefWi9yT8pYuUgPMX0s8c0tfDHIBYIuhlyvy7k63SdE39qCsu4rOy6G/AbtdvgGID6OG
- PUNAYSPSNw==
+In-Reply-To: <20210218053940.1068164-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lyude Paul, Tue, Jan 19, 2021 02:54:13 +0100:
-> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> index c6367035970e..5f4f09a601d4 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> @@ -2663,6 +2663,14 @@ nv50_display_create(struct drm_device *dev)
->  	else
->  		nouveau_display(dev)->format_modifiers = disp50xx_modifiers;
->  
-> +	if (disp->disp->object.oclass >= GK104_DISP) {
-> +		dev->mode_config.cursor_width = 256;
-> +		dev->mode_config.cursor_height = 256;
-> +	} else {
-> +		dev->mode_config.cursor_width = 64;
-> +		dev->mode_config.cursor_height = 64;
-> +	}
+On Thu, Feb 18, 2021 at 08:39:37AM +0300, Arseny Krasnov wrote:
+> This adds transport callback and it's logic for SEQPACKET dequeue.
+> Callback fetches RW packets from rx queue of socket until whole record
+> is copied(if user's buffer is full, user is not woken up). This is done
+> to not stall sender, because if we wake up user and it leaves syscall,
+> nobody will send credit update for rest of record, and sender will wait
+> for next enter of read syscall at receiver's side. So if user buffer is
+> full, we just send credit update and drop data. If during copy SEQ_BEGIN
+> was found(and not all data was copied), copying is restarted by reset
+> user's iov iterator(previous unfinished data is dropped).
+> 
+> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+> ---
+>  include/linux/virtio_vsock.h            |  10 +++
+>  include/uapi/linux/virtio_vsock.h       |  16 ++++
+>  net/vmw_vsock/virtio_transport_common.c | 114 ++++++++++++++++++++++++
+>  3 files changed, 140 insertions(+)
+> 
+> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+> index dc636b727179..003d06ae4a85 100644
+> --- a/include/linux/virtio_vsock.h
+> +++ b/include/linux/virtio_vsock.h
+> @@ -36,6 +36,11 @@ struct virtio_vsock_sock {
+>  	u32 rx_bytes;
+>  	u32 buf_alloc;
+>  	struct list_head rx_queue;
 > +
->  	/* create crtc objects to represent the hw heads */
->  	if (disp->disp->object.oclass >= GV100_DISP)
->  		crtcs = nvif_rd32(&device->object, 0x610060) & 0xff;
+> +	/* For SOCK_SEQPACKET */
+> +	u32 user_read_seq_len;
+> +	u32 user_read_copied;
+> +	u32 curr_rx_msg_cnt;
 
-This change broke X cursor in my setup, and reverting the commit restores it.
 
-Dell Precision M4800, issue ~2014 with GK106GLM [Quadro K2100M] (rev a1).
-libdrm 2.4.91-1 (Debian 10.8 stable).
-There are no errors or warnings in Xorg logs nor in the kernel log.
+wrap these in a struct to make it's clearer they
+are related?
 
-Regards,
-Alex
+>  };
+>  
+>  struct virtio_vsock_pkt {
+> @@ -80,6 +85,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+>  			       struct msghdr *msg,
+>  			       size_t len, int flags);
+>  
+> +int
+> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+> +				   struct msghdr *msg,
+> +				   int flags,
+> +				   bool *msg_ready);
+>  s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+>  s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+>  
+> diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
+> index 1d57ed3d84d2..cf9c165e5cca 100644
+> --- a/include/uapi/linux/virtio_vsock.h
+> +++ b/include/uapi/linux/virtio_vsock.h
+> @@ -63,8 +63,14 @@ struct virtio_vsock_hdr {
+>  	__le32	fwd_cnt;
+>  } __attribute__((packed));
+>  
+> +struct virtio_vsock_seq_hdr {
+> +	__le32  msg_cnt;
+> +	__le32  msg_len;
+> +} __attribute__((packed));
+> +
+>  enum virtio_vsock_type {
+>  	VIRTIO_VSOCK_TYPE_STREAM = 1,
+> +	VIRTIO_VSOCK_TYPE_SEQPACKET = 2,
+>  };
+>  
+>  enum virtio_vsock_op {
+> @@ -83,6 +89,11 @@ enum virtio_vsock_op {
+>  	VIRTIO_VSOCK_OP_CREDIT_UPDATE = 6,
+>  	/* Request the peer to send the credit info to us */
+>  	VIRTIO_VSOCK_OP_CREDIT_REQUEST = 7,
+> +
+> +	/* Record begin for SOCK_SEQPACKET */
+> +	VIRTIO_VSOCK_OP_SEQ_BEGIN = 8,
+> +	/* Record end for SOCK_SEQPACKET */
+> +	VIRTIO_VSOCK_OP_SEQ_END = 9,
+>  };
+>  
+>  /* VIRTIO_VSOCK_OP_SHUTDOWN flags values */
+> @@ -91,4 +102,9 @@ enum virtio_vsock_shutdown {
+>  	VIRTIO_VSOCK_SHUTDOWN_SEND = 2,
+>  };
+>  
+> +/* VIRTIO_VSOCK_OP_RW flags values */
+> +enum virtio_vsock_rw {
+> +	VIRTIO_VSOCK_RW_EOR = 1,
+> +};
+> +
+>  #endif /* _UAPI_LINUX_VIRTIO_VSOCK_H */
+
+Probably a good idea to also have a feature bit gating
+this functionality.
+
+-- 
+MST
+
