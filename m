@@ -2,224 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE8832243D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 03:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C65D32243C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 03:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhBWCgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 21:36:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
+        id S230471AbhBWCge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 21:36:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbhBWCg1 (ORCPT
+        with ESMTP id S230374AbhBWCg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 21:36:27 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9953C061786
+        Mon, 22 Feb 2021 21:36:26 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB1BC06174A
         for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:35:46 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id 42so9334202plb.10
+Received: by mail-pl1-x62f.google.com with SMTP id ba1so8952434plb.1
         for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:35:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=PGrLnEq5sje+DbyVyjyk9DtPrIKTxkj/GFVaSNwb+20=;
-        b=lQPJcLW5Zj/rVq/5KMZi6Bk5Gxp9bi/jqYNJj/hkmFM6gzte6FNZy8pUhQPuF48DW5
-         rgdLyFQsyQ6U4RJUQqukWwxkSjocc0fLx+yt1DM01Qk39F7C/1AXZh+zjBdJxQ/3G0By
-         9Q1STBNlBg5Q7c+WlQM3qRq5jdlJ/xEHfGwh+b+RySqJGyYgto60gGTcmqgVTnskcTia
-         voGzzLmvFVyrWpAvMnajOE6rcF29MHLzcWao+b+LIqDC6xm2dNFZctXjqUO3V/BvFPkl
-         xIDw2+GeuCSLwm+cSUCmzXDs9pW4C7jufUXw/nbxuMFcESLv2rHy/6q1Bho4udqCsDPz
-         0t3w==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OS+Kx7xKhToNJGP5JPCYO0pnu5N6gZydEtshbyrAgDA=;
+        b=PSZtVm4MDH22cwpGJZWMei7fVPPskIZkN3/dT+O9JT/66d5XJagUzJIEk5P8ojZ2nx
+         YYQK/qSy3oeEQNEyKjoC6llQxFL+49xHD76aTfyMdIVI+bFeOi4p4j8wGipSXfPwUOF5
+         DTz3tKBfsRtNtt/+6ob1qQYtsVFMSkvd0RWXomGz5a0XEJuAf20YkeQGEKwCiN06x81G
+         IBQzvLC7KH9xrOZNnnC1R7/rzR1YdcSEPKYG7UK0rp6JQkE+UWdBMYURs1U2Ap9RMRaH
+         PEdMKwcMHuYGVJA5eU3WRfnO6MCjZKQIuxzv81JVLl6b671EY9tfmIaxeb94TrS7myJC
+         fZMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=PGrLnEq5sje+DbyVyjyk9DtPrIKTxkj/GFVaSNwb+20=;
-        b=V6DKvZmTB/4hZiJJTVGPKSl8Zh/Wdj4RzAQinxL0kGvD2UDErHvMeaI/TPhSGNttkw
-         ZLy4pTjkh/PS38W/neSdCcJgkidOgjfrZCzZabuaRGjYgfsoUz0W7Wh4jTvBs1DMmC5V
-         z1ZEKkGHNky2VsxTVX07fZ97+vYifGsfA101+gdL1qqOGVVlF5o9tDNCsqrs8hwgAKXE
-         PJJJFS70dA1CV/DoXA+yMT/O8lQcz7nseiuh6HHLcRl4oymYuYNNPzIns6QsY3i+RGWq
-         sYXn4t9f1yRg+N+aaSjC3BN8PAAih2b9jkbckl8WQpHBp4qum9rxuPIYuFxegtOk5kaa
-         q7zw==
-X-Gm-Message-State: AOAM5331CJBJwizmzkq77HFE3MTqOp8O9kuQMwCFCujfmh1gJPwHThr6
-        Ar6BoaUGVLbtrskqddZqeLzxufYPxD7Q
-X-Google-Smtp-Source: ABdhPJwpIgoHP79+CAP1cZb8niAgyx2loeUCwl0+OoIAPkr358YzHC0nbYkhT6jM2oeR9Nm6NApKoYyBPvq+
-Sender: "jiancai via sendgmr" <jiancai@jiancai.svl.corp.google.com>
-X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:7985:60cc:661a:9692])
- (user=jiancai job=sendgmr) by 2002:a17:90a:8e83:: with SMTP id
- f3mr27877234pjo.70.1614047746241; Mon, 22 Feb 2021 18:35:46 -0800 (PST)
-Date:   Mon, 22 Feb 2021 18:35:28 -0800
-In-Reply-To: <20210223023125.2265845-1-jiancai@google.com>
-Message-Id: <20210223023542.2287529-1-jiancai@google.com>
-Mime-Version: 1.0
-References: <20210223023125.2265845-1-jiancai@google.com>
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-Subject: [PATCH v5] ARM: Implement SLS mitigation
-From:   Jian Cai <jiancai@google.com>
-Cc:     ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com, Jian Cai <jiancai@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "=?UTF-8?q?Andreas=20F=C3=A4rber?=" <afaerber@suse.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OS+Kx7xKhToNJGP5JPCYO0pnu5N6gZydEtshbyrAgDA=;
+        b=SSBWotzG1u64ysn2+b+UIk7k9JJAUt4f2w1E+9zJ2MoXHJTdmN0OPzjjHlsGy/loXb
+         bHtM+GNCtghXi+QhXIheetf3IRV/MIQoEMNsVfFE/od7n2599S/0zE7Vgf45g/1ETPlR
+         m1g4N13jpNRR5zDWYMJqWckfOGrjMrwvAk1z7OPUlXGRVWKFof/HWcCCjoEUamxXfsCg
+         fKfMtHr/MYs5yr4fa894lPi7LdH66VdyMh0niMv9cgCQWBy9uYmksvGPghQm1IfQpqWX
+         rMzNRXvvGSIru26PXnKkqmjjcD1qVcjztth3fQi1ANLnWZilr+igvTC3idUY8mjMPOV4
+         0QVQ==
+X-Gm-Message-State: AOAM531cpHR1YKNkhruxnJnppNKF/apTZoir+OWPVs5khoQNjMtRxrWz
+        5FR1YIju0d4ghl+CAs0sJmpNSQ==
+X-Google-Smtp-Source: ABdhPJwrsAJ734gUPpO9If8JW4jOEXiYN9M9YdEYmw4X3Fjq4jHB0JTbpIIrZknpp3LU43eWjqzQDQ==
+X-Received: by 2002:a17:90a:16d7:: with SMTP id y23mr12941625pje.227.1614047746182;
+        Mon, 22 Feb 2021 18:35:46 -0800 (PST)
+Received: from ?IPv6:2620:10d:c085:21e8::11af? ([2620:10d:c090:400::5:c361])
+        by smtp.gmail.com with ESMTPSA id y12sm853624pjc.56.2021.02.22.18.35.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 18:35:45 -0800 (PST)
+Subject: Re: KASAN: invalid-free in io_req_caches_free
+To:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+30b4936dcdb3aafa4fb4@syzkaller.appspotmail.com>
+Cc:     asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000007786a205bbe9a5d6@google.com>
+ <20210223022515.2846-1-hdanton@sina.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <3eddab97-3539-51a0-e3fc-786f7ef7c93e@kernel.dk>
+Date:   Mon, 22 Feb 2021 19:35:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210223022515.2846-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
--mharden-sls=all, which mitigates the straight-line speculation
-vulnerability, speculative execution of the instruction following some
-unconditional jumps. Notice -mharden-sls= has other options as below,
-and this config turns on the strongest option.
+On 2/22/21 7:25 PM, Hillf Danton wrote:
+> Mon, 22 Feb 2021 01:44:21 -0800
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    31caf8b2 Merge branch 'linus' of git://git.kernel.org/pub/..
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=15a8afa6d00000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=5a8f3a57fabb4015
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=30b4936dcdb3aafa4fb4
+>>
+>> Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+30b4936dcdb3aafa4fb4@syzkaller.appspotmail.com
+>>
+>> ==================================================================
+>> BUG: KASAN: double-free or invalid-free in io_req_caches_free.constprop.0+0x3ce/0x530 fs/io_uring.c:8709
+>>
+>> CPU: 1 PID: 243 Comm: kworker/u4:6 Not tainted 5.11.0-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> Workqueue: events_unbound io_ring_exit_work
+>> Call Trace:
+>>  __dump_stack lib/dump_stack.c:79 [inline]
+>>  dump_stack+0xfa/0x151 lib/dump_stack.c:120
+>>  print_address_description.constprop.0.cold+0x5b/0x2c6 mm/kasan/report.c:230
+>>  kasan_report_invalid_free+0x51/0x80 mm/kasan/report.c:355
+>>  ____kasan_slab_free+0xcc/0xe0 mm/kasan/common.c:341
+>>  kasan_slab_free include/linux/kasan.h:192 [inline]
+>>  __cache_free mm/slab.c:3424 [inline]
+>>  kmem_cache_free_bulk+0x4b/0x1b0 mm/slab.c:3744
+>>  io_req_caches_free.constprop.0+0x3ce/0x530 fs/io_uring.c:8709
+>>  io_ring_ctx_free fs/io_uring.c:8764 [inline]
+>>  io_ring_exit_work+0x518/0x6b0 fs/io_uring.c:8846
+>>  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+>>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+>>  kthread+0x3b1/0x4a0 kernel/kthread.c:292
+>>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>>
+>> Allocated by task 11900:
+>>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>>  kasan_set_track mm/kasan/common.c:46 [inline]
+>>  set_alloc_info mm/kasan/common.c:401 [inline]
+>>  ____kasan_kmalloc.constprop.0+0x7f/0xa0 mm/kasan/common.c:429
+>>  kasan_slab_alloc include/linux/kasan.h:209 [inline]
+>>  slab_post_alloc_hook mm/slab.h:512 [inline]
+>>  kmem_cache_alloc_bulk+0x2c2/0x460 mm/slab.c:3534
+>>  io_alloc_req fs/io_uring.c:2014 [inline]
+>>  io_submit_sqes+0x18e8/0x2b60 fs/io_uring.c:6915
+>>  __do_sys_io_uring_enter+0x1154/0x1f50 fs/io_uring.c:9454
+>>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>
+>> Freed by task 11900:
+>>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+>>  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
+>>  ____kasan_slab_free+0xb0/0xe0 mm/kasan/common.c:362
+>>  kasan_slab_free include/linux/kasan.h:192 [inline]
+>>  __cache_free mm/slab.c:3424 [inline]
+>>  kmem_cache_free_bulk+0x4b/0x1b0 mm/slab.c:3744
+>>  io_req_caches_free.constprop.0+0x3ce/0x530 fs/io_uring.c:8709
+>>  io_uring_flush+0x483/0x6e0 fs/io_uring.c:9237
+>>  filp_close+0xb4/0x170 fs/open.c:1286
+>>  close_files fs/file.c:403 [inline]
+>>  put_files_struct fs/file.c:418 [inline]
+>>  put_files_struct+0x1d0/0x350 fs/file.c:415
+>>  exit_files+0x7e/0xa0 fs/file.c:435
+>>  do_exit+0xc27/0x2ae0 kernel/exit.c:820
+>>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>>  get_signal+0x42c/0x2100 kernel/signal.c:2773
+>>  arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
+>>  handle_signal_work kernel/entry/common.c:147 [inline]
+>>  exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+>>  exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
+>>  __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+>>  syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:301
+>>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>
+>> The buggy address belongs to the object at ffff888012eaae00
+>>  which belongs to the cache io_kiocb of size 208
+>> The buggy address is located 0 bytes inside of
+>>  208-byte region [ffff888012eaae00, ffff888012eaaed0)
+>> The buggy address belongs to the page:
+>> page:0000000091458aed refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12eaa
+>> flags: 0xfff00000000200(slab)
+>> raw: 00fff00000000200 ffff8880188dcd50 ffff8880188dcd50 ffff888141b4ff00
+>> raw: 0000000000000000 ffff888012eaa040 000000010000000c 0000000000000000
+>> page dumped because: kasan: bad access detected
+>>
+>> Memory state around the buggy address:
+>>  ffff888012eaad00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>>  ffff888012eaad80: fb fb fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>>> ffff888012eaae00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>>                    ^
+>>  ffff888012eaae80: fb fb fb fb fb fb fb fb fb fb fc fc fc fc fc fc
+>>  ffff888012eaaf00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>> ==================================================================
+> 
+> Fix double free by reverting 41be53e94fb0 ("io_uring: kill cached
+> requests from exiting task closing the ring") - it ruins kworker's life.
+> 
+> --- x/fs/io_uring.c
+> +++ y/fs/io_uring.c
+> @@ -9234,7 +9234,6 @@ static int io_uring_flush(struct file *f
+>  
+>  	if (fatal_signal_pending(current) || (current->flags & PF_EXITING)) {
+>  		io_uring_cancel_task_requests(ctx, NULL);
+> -		io_req_caches_free(ctx, current);
+>  	}
+>  
+>  	if (!tctx)
 
-all: enable all mitigations against Straight Line Speculation that are implemented.
-none: disable all mitigations against Straight Line Speculation.
-retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
-blr: enable the mitigation against Straight Line Speculation for BLR instructions.
+Already merged the right fix this morning:
 
-Links:
-https://reviews.llvm.org/D93221
-https://reviews.llvm.org/D81404
-https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
-https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
+https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.12/io_uring&id=8e5c66c485a8af3f39a8b0358e9e09f002016d92
 
-Suggested-by: Manoj Gupta <manojgupta@google.com>
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Suggested-by: David Laight <David.Laight@aculab.com>
-Suggested-by: Will Deacon <will@kernel.org>
-Suggested-by: Russell King <rmk+kernel@armlinux.org.uk>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Jian Cai <jiancai@google.com>
----
-Changes v4->v5:
-  Removed "default n" and made the description target indepdent in
-  Kconfig.hardening. Please ignore my last email, it did not include the
-  changes.
-
- arch/arm/Makefile                  | 4 ++++
- arch/arm/include/asm/vmlinux.lds.h | 4 ++++
- arch/arm/kernel/vmlinux.lds.S      | 1 +
- arch/arm64/Makefile                | 4 ++++
- arch/arm64/kernel/vmlinux.lds.S    | 5 +++++
- security/Kconfig.hardening         | 8 ++++++++
- 6 files changed, 26 insertions(+)
-
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 4aaec9599e8a..11d89ef32da9 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -48,6 +48,10 @@ CHECKFLAGS	+= -D__ARMEL__
- KBUILD_LDFLAGS	+= -EL
- endif
- 
-+ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
-+KBUILD_CFLAGS  += -mharden-sls=all
-+endif
-+
- #
- # The Scalar Replacement of Aggregates (SRA) optimization pass in GCC 4.9 and
- # later may result in code being generated that handles signed short and signed
-diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
-index 4a91428c324d..c7f9717511ca 100644
---- a/arch/arm/include/asm/vmlinux.lds.h
-+++ b/arch/arm/include/asm/vmlinux.lds.h
-@@ -145,3 +145,7 @@
- 		__edtcm_data = .;					\
- 	}								\
- 	. = __dtcm_start + SIZEOF(.data_dtcm);
-+
-+#define SLS_TEXT							\
-+		ALIGN_FUNCTION();					\
-+		*(.text.__llvm_slsblr_thunk_*)
-diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-index f7f4620d59c3..e71f2bc97bae 100644
---- a/arch/arm/kernel/vmlinux.lds.S
-+++ b/arch/arm/kernel/vmlinux.lds.S
-@@ -63,6 +63,7 @@ SECTIONS
- 	.text : {			/* Real text segment		*/
- 		_stext = .;		/* Text and read-only data	*/
- 		ARM_TEXT
-+		SLS_TEXT
- 	}
- 
- #ifdef CONFIG_DEBUG_ALIGN_RODATA
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 90309208bb28..ca7299b356a9 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -34,6 +34,10 @@ $(warning LSE atomics not supported by binutils)
-   endif
- endif
- 
-+ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
-+KBUILD_CFLAGS  += -mharden-sls=all
-+endif
-+
- cc_has_k_constraint := $(call try-run,echo				\
- 	'int main(void) {						\
- 		asm volatile("and w0, w0, %w0" :: "K" (4294967295));	\
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 4c0b0c89ad59..f8912e42ffcd 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -93,6 +93,10 @@ jiffies = jiffies_64;
- #define TRAMP_TEXT
- #endif
- 
-+#define SLS_TEXT					\
-+	ALIGN_FUNCTION();				\
-+	*(.text.__llvm_slsblr_thunk_*)
-+
- /*
-  * The size of the PE/COFF section that covers the kernel image, which
-  * runs from _stext to _edata, must be a round multiple of the PE/COFF
-@@ -144,6 +148,7 @@ SECTIONS
- 			HIBERNATE_TEXT
- 			TRAMP_TEXT
- 			*(.fixup)
-+			SLS_TEXT
- 			*(.gnu.warning)
- 		. = ALIGN(16);
- 		*(.got)			/* Global offset table		*/
-diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
-index 269967c4fc1b..db76ad732c14 100644
---- a/security/Kconfig.hardening
-+++ b/security/Kconfig.hardening
-@@ -121,6 +121,14 @@ choice
- 
- endchoice
- 
-+config HARDEN_SLS_ALL
-+	bool "enable SLS vulnerability hardening"
-+	depends on $(cc-option,-mharden-sls=all)
-+	help
-+	  Enables straight-line speculation vulnerability hardening. This inserts
-+	  speculation barrier instruction sequences after certain unconditional jumps
-+	  to prevent speculative execution past those barriers.
-+
- config GCC_PLUGIN_STRUCTLEAK_VERBOSE
- 	bool "Report forcefully initialized variables"
- 	depends on GCC_PLUGIN_STRUCTLEAK
 -- 
-2.30.0.617.g56c4b15f3c-goog
+Jens Axboe
 
