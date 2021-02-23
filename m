@@ -2,160 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B9E3228F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B915B3228F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbhBWKox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:44:53 -0500
-Received: from mga01.intel.com ([192.55.52.88]:10454 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229864AbhBWKou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:44:50 -0500
-IronPort-SDR: zXLgVFGf10avaI2EtNjMITsHBRIFHDykI6FwzMaD8jlpPCoZiwa5S6QCOqqdXuyioJG4bCMNaD
- hn7gd+CDyFZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="204188353"
-X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
-   d="scan'208";a="204188353"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 02:44:09 -0800
-IronPort-SDR: oC+zZ0eh/wgz/S89n67BvGZNrZe0sSsnCfbHVwHcIL1kGUHzrlowszOqaveXZW9o2Iu3dzRFkr
- CnQPJm1s/+dw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
-   d="scan'208";a="515156690"
-Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 23 Feb 2021 02:44:08 -0800
-Received: from kbuild by 16660e54978b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lEVAl-000173-NM; Tue, 23 Feb 2021 10:44:07 +0000
-Date:   Tue, 23 Feb 2021 18:43:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/xfs] BUILD SUCCESS
- fca71389c6700c11aa3fd9e05349460039719ce5
-Message-ID: <6034dc50.jb/TLt5gCAcxb6uY%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231723AbhBWKpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 05:45:20 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:62456 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhBWKpO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 05:45:14 -0500
+Date:   Tue, 23 Feb 2021 10:44:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1614077065; bh=39RPlxQWGsqc110DvGaTPapbMeScM3H7W2UqSxyya+s=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=FPnplCBme01eJdQnthCyxDdCbTB7Kn2TG1PBMwkWe7N8cOyHlwekdzlAHmVPknCPP
+         ZF0ZJISa+Stfa80R00Zbhc3Hcuh3ti2VHfTzDJJ3gpRUvX0CMnm1k1+6Hfbw0lOjQA
+         6B7HtyXoGmt9TU5VxnP9Lp7EdhBM7avPMVfAHlTF4QcJ1026Eix05pjmAGXFdRaoy9
+         LIrvgLAx45Shj+XCl4y7/MUhi01Ft+LJk62lSs2mYq0tdeEc+iDPxgpQqiAMKkBqiw
+         c/kePy7UHPIKsViQNnhsuGC/4xd3nnOJTbr566uq2JYq4ZE3D76FCj31inlphEWkDP
+         CgmJVwwhIfb/g==
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: linux-next: manual merge of the kspp tree with the mips tree
+Message-ID: <20210223104411.4155-1-alobakin@pm.me>
+In-Reply-To: <20210223104950.1f754320@canb.auug.org.au>
+References: <20210118150804.378ac9f3@canb.auug.org.au> <20210215074726.60c45281@canb.auug.org.au> <20210223104950.1f754320@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/xfs
-branch HEAD: fca71389c6700c11aa3fd9e05349460039719ce5  xfs: Replace one-element arrays with flexible-array members
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 23 Feb 2021 10:49:50 +1100
 
-elapsed time: 723m
+> Hi all,
 
-configs tested: 98
-configs skipped: 3
+Hi,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> On Mon, 15 Feb 2021 07:47:26 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > On Mon, 18 Jan 2021 15:08:04 +1100 Stephen Rothwell <sfr@canb.auug.org.=
+au> wrote:
+> > >
+> > > Today's linux-next merge of the kspp tree got a conflict in:
+> > >
+> > >   include/asm-generic/vmlinux.lds.h
+> > >
+> > > between commits:
+> > >
+> > >   9a427556fb8e ("vmlinux.lds.hf41b233de0ae: catch compound literals i=
+nto data and BSS")
+> > >   f41b233de0ae ("vmlinux.lds.h: catch UBSAN's "unnamed data" into dat=
+a")
+> > >
+> > > from the mips tree and commit:
+> > >
+> > >   dc5723b02e52 ("kbuild: add support for Clang LTO")
+> > >
+> > > from the kspp tree.
+> > >
+> > > I fixed it up (9a427556fb8e and dc5723b02e52 made the same change to
+> > > DATA_MAIN, which conflicted with the change in f41b233de0ae) and can
+> > > carry the fix as necessary. This is now fixed as far as linux-next is
+> > > concerned, but any non trivial conflicts should be mentioned to your
+> > > upstream maintainer when your tree is submitted for merging. You may
+> > > also want to consider cooperating with the maintainer of the
+> > > conflicting tree to minimise any particularly complex conflicts.
+> >
+> > With the merge window about to open, this is a reminder that this
+> > conflict still exists.
+>
+> This is now a conflict between the kspp tree and Linus' tree.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         hackkit_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                     redwood_defconfig
-powerpc64                           defconfig
-mips                          rb532_defconfig
-mips                            e55_defconfig
-arm                       imx_v4_v5_defconfig
-mips                           ip28_defconfig
-sh                          sdk7786_defconfig
-powerpc                  storcenter_defconfig
-arm                          pxa910_defconfig
-powerpc                  mpc885_ads_defconfig
-openrisc                  or1klitex_defconfig
-m68k                        m5307c3_defconfig
-mips                        omega2p_defconfig
-powerpc                     sbc8548_defconfig
-powerpc                        warp_defconfig
-powerpc                      bamboo_defconfig
-powerpc                mpc7448_hpc2_defconfig
-mips                         tb0226_defconfig
-arm                       multi_v4t_defconfig
-openrisc                 simple_smp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a001-20210222
-x86_64               randconfig-a002-20210222
-x86_64               randconfig-a003-20210222
-x86_64               randconfig-a005-20210222
-x86_64               randconfig-a006-20210222
-x86_64               randconfig-a004-20210222
-i386                 randconfig-a005-20210222
-i386                 randconfig-a006-20210222
-i386                 randconfig-a004-20210222
-i386                 randconfig-a003-20210222
-i386                 randconfig-a001-20210222
-i386                 randconfig-a002-20210222
-i386                 randconfig-a013-20210222
-i386                 randconfig-a012-20210222
-i386                 randconfig-a011-20210222
-i386                 randconfig-a014-20210222
-i386                 randconfig-a016-20210222
-i386                 randconfig-a015-20210222
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Kees prepared a Git pull of kspp tree for Linus, this will be resolved
+soon.
 
-clang tested configs:
-x86_64               randconfig-a015-20210222
-x86_64               randconfig-a011-20210222
-x86_64               randconfig-a012-20210222
-x86_64               randconfig-a016-20210222
-x86_64               randconfig-a014-20210222
-x86_64               randconfig-a013-20210222
+> --
+> Cheers,
+> Stephen Rothwell
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Al
+
