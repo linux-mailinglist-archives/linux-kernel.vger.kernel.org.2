@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448F1322D5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D280322D64
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhBWPWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:22:35 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:52442 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233195AbhBWPW0 (ORCPT
+        id S233227AbhBWPXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:23:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233175AbhBWPWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 10:22:26 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614093702;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/AFvTPncWowuUW0ABTizhzarZQWNjA+MxWzWwUdQGuk=;
-        b=L7fEfc7A/JixohE2jLHmlsYMa/EiyG9EKWQrxnv8UAcP/Yr0ZsS76XprVfGfkdZcpOcHDY
-        t8QnAI8JQCDETCI86cWb1Jt+bEpYSf+n0ikx4Hg0XNmFNeNcz1oHkR0/S9jznt//rflhcH
-        YRCMMLqbG7Bk8nw6rN0x3jTsP3LmPwnKwva3YJA+vpl/JSXiTpCs68nJy4mb/885hUmN61
-        6HnyoYELSy67tF17zaFd5H6bwkvHnjD5egAj+vEw3rkrNM8f1EPARbyqB5j3oNTG2ylSRX
-        CLQe9QzElOZEN8XpPSArrsXqqRGEM6qeqVyH3pXMNdzwrm2b6DemRFy9vJIsiA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614093702;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/AFvTPncWowuUW0ABTizhzarZQWNjA+MxWzWwUdQGuk=;
-        b=sNQWuMjo4KhBXl2K6RjNVdgh/je5FcV62OfmN10ffcNBLtSXkClqAMRkONXO2GStgu5HH0
-        4h1TqCX2I4eLTSBQ==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [GIT pull] objtool/core for 5.12
-In-Reply-To: <161409254266.2358.17202318838981714361.tglx@nanos>
-References: <161409254266.2358.17202318838981714361.tglx@nanos>
-Date:   Tue, 23 Feb 2021 16:21:42 +0100
-Message-ID: <87pn0q6c8p.fsf@nanos.tec.linutronix.de>
+        Tue, 23 Feb 2021 10:22:53 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B115C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:22:10 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id u4so17982778lja.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:22:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XGL+ZEl1VxWchCvh5LCCnMOsswk/yP/QAWF1B7tp0PE=;
+        b=Wy4BbxDEhgR4O7gMewi35UNKdoIq+5jPJHkEkUPI4l+zHkf/xvB3AtgtOh0iXos53O
+         Zk5wGQPK48Zhpdf64dMiDAILYpmCATxqBwyi0OlNqSYSwz+hK+/9WNhp8lMNLJqBX99c
+         wK4rGFVCouTcrfF/JOUpofuiPJ8fF49tqSkBBrTFMUmEw9nAgfPYyBuuln6d8YW5I8Vc
+         keqpKNlB6pCw7G2BICq8n+GOkqOstBrhwKcOBIXQybErStqxgPXeiIgiNLY1VeybMdgO
+         kzt0LAl78laUJAX1afg+UQPm4iS7baqN1P55qK5me5WGklMBebxv6wW+nN/50r8akgA1
+         a/dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XGL+ZEl1VxWchCvh5LCCnMOsswk/yP/QAWF1B7tp0PE=;
+        b=fgh2tGwaf8cP4lsQi8l4WCPCRm7gPT3tisIn5D409nmLLzAkqNq2Da11tRNVReDJJz
+         qEqJEpaj63bJLT42G+NTMo9Y+R7Mw8dPau1l1UsqbTSuDeVZviknqh94GESq3kzUK3kk
+         GVkdPv08iOTKEP0cOQK8dodx3pvcQrbzMl4VMOsqD7VE9Te0+5DBL+P4AqfJKkAhKAKK
+         4dp4ax2qFI/hk6iqt7BepTfgxXeaAbYwSGWUFkDKgbRvj/eCk2gwm4MvJXLs82g32y8X
+         ImqNleSIl5XJbKYh0buEjWfwFoltBBqVHqtAfJnbmuZTLH5Us6pkWOXmwiMX9lioZF22
+         eCDw==
+X-Gm-Message-State: AOAM532p//XM26ePrWK/hkaKuMV+SeCy/0Wqr0OM0zQv1x1ezgO/IdV3
+        bzIvfika6D8Jb5hhis6tWDQIglT2OuRTK/MzkukgvA==
+X-Google-Smtp-Source: ABdhPJwIlmw07SdzqXAyuw6LI5ynN6o9c4dTEnBt/ZtckCdCovwV8lO7Org5W5KV9NSnIS4DjO6/q9OP4G3TRBtQBhw=
+X-Received: by 2002:a2e:b4e8:: with SMTP id s8mr17816849ljm.34.1614093728978;
+ Tue, 23 Feb 2021 07:22:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210223092423.42420-1-songmuchun@bytedance.com>
+In-Reply-To: <20210223092423.42420-1-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 23 Feb 2021 07:21:58 -0800
+Message-ID: <CALvZod4fYvxusqw=g=Sc99eiW5pd7Qu0YFh=SpUna5Ltd9Pwbg@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: fix slub memory accounting
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23 2021 at 15:02, Thomas Gleixner wrote:
-> Linus,
+On Tue, Feb 23, 2021 at 1:25 AM Muchun Song <songmuchun@bytedance.com> wrote:
 >
-> please pull the latest objtool/core branch from:
+> SLUB currently account kmalloc() and kmalloc_node() allocations larger
+> than order-1 page per-node. But it forget to update the per-memcg
+> vmstats. So it can lead to inaccurate statistics of "slab_unreclaimable"
+> which is from memory.stat. Fix it by using mod_lruvec_page_state instead
+> of mod_node_page_state.
 >
->    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-core-2021-02-23
->
-> up to:  aafeb14e9da2: objtool: Support stack-swizzle
->
-> objtool updates:
->
->  - Make objtool work for big-endian cross compiles
->
->  - Make stack tracking via stack pointer memory operations match push/pop
->    semantics to prepare for architectures w/o PUSH/POP instructions.
->
->  - Add support for analyzing alternatives
->
->  - Improve retpoline detection and handling
->
->  - Improve assembly code coverage on x86
->
->  - Provide support for inlined stack switching
+> Fixes: 6a486c0ad4dc ("mm, sl[ou]b: improve memory accounting")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-There is a trivial merge conflict in the XEN assembly code. xen_sysret64
-got removed upstream and objtool modifies it. Removal is the way to go.
-
-Thanks,
-
-        tglx
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
