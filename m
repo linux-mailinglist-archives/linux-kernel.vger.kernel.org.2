@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDE2322FEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0EC322FDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233827AbhBWRrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 12:47:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25639 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233798AbhBWRqF (ORCPT
+        id S233783AbhBWRpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 12:45:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232147AbhBWRpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 12:46:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614102278;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w4TvOd5ViWOKQi/Wx7BwXFqaCkAgT3HmAHVmSL0o44o=;
-        b=J3D1CnxdqsiBTQnmnjrbSrxfRbUArJwjkdw+q+t7lXf9hSswRbubkygyZ0sLmn8Y/88jFq
-        6un/tzYOyM9y+7D8qaQSYzq9hmUFGowCUFrrmeYWleUpV9hDjl7snsjVNRT0Ek0HAe8IJr
-        LzluM2h9O+2vyWduBO9mZEiAXdhYXNw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-RYDG_V6LM3edxTTVmWMdOA-1; Tue, 23 Feb 2021 12:44:34 -0500
-X-MC-Unique: RYDG_V6LM3edxTTVmWMdOA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1383107ACF8;
-        Tue, 23 Feb 2021 17:44:32 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 783E060CFB;
-        Tue, 23 Feb 2021 17:44:31 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <1323922.1612970030@warthog.procyon.org.uk>
-References: <1323922.1612970030@warthog.procyon.org.uk>
-To:     torvalds@linux-foundation.org
-Cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] Add EFI_CERT_X509_GUID support for dbx/mokx entries
+        Tue, 23 Feb 2021 12:45:40 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FEDDC061574;
+        Tue, 23 Feb 2021 09:44:59 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id 7so23467264wrz.0;
+        Tue, 23 Feb 2021 09:44:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xePih+lj3aAhAkKt7KsLGqHiApDG139qal6vPJJIaeo=;
+        b=Pe18qgDHUD2UoFJX9nNaVqX5yD5DWnha3vqLxSJJcgvQIOi1fsxJVEBmzw9DgH6mG6
+         UNj2c72fSe84Ubfcp/dIhzwi4Us07Dv+HcPTN12uWk/dlMBaJ9u1F9srXwB3A4Xa2Vmz
+         gKhebDMcCxIWhjd7eu6Flep6gIJcWUBE3I0gEBvuzybCRwLMPZYAWiHHsRgfrT+0fFpX
+         o1rfjzyoYZiIQl+cBWiyVJedtjNRneRAwbiX7olAFbJeObnlE7NAbIKkSFiSUDJojS9R
+         R2/BQqF79Dw0ZVx+S6mrrELA7DFq9rFeq225K0b2AZo0QUrR/IAYp6hPSQ4DpditV0mk
+         rV1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xePih+lj3aAhAkKt7KsLGqHiApDG139qal6vPJJIaeo=;
+        b=l1X8XDQw5ZVcTxDa//SBQBpjiCPpDBBT6WlMHVKla8Xrhdn6U5H1GN6gPaXaJfRxtM
+         5KEYooYNGx9279AupJtZU0sw5kwpw5SI2mLGqdPMWHkkFr8rS4rK0OJ7pp4ZQ0AwP7pR
+         E6MIS5e5ztTAW+jTQ2xIZZRQRtUmLpklFV1iRky/UJ9CFZ1k91Q3x7oywg2kdJO8ZSOk
+         cgqqNZwSpI1OMena1z9HnrpfvZQ3Lm4YbSz2MbokkwyWtTCjfP1r7RoOH+UVNAfiDWgM
+         I2zB/s4V+pmZ+1rpW2uVpCxD9qEyNzS06VMww5zLi5b8Ir7cSm7Jl0mmH5B+Ayg/o0Ub
+         LBOg==
+X-Gm-Message-State: AOAM533AE5IiLABsemBoySRA7N/ymTyCVtzkIkEA7WD49139ygH2uCWj
+        1aWDUhIwSDaLXH8ZTI4sIRQ=
+X-Google-Smtp-Source: ABdhPJwn3hIJdJrMXlzLkgSRgFjj5dwMAsVwRnbMvl5ACPmuA8efv7I/TpRBNDZoRChI4aMciXNxUw==
+X-Received: by 2002:a05:6000:107:: with SMTP id o7mr27272371wrx.87.1614102298359;
+        Tue, 23 Feb 2021 09:44:58 -0800 (PST)
+Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id u7sm32408428wrt.67.2021.02.23.09.44.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 09:44:57 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     f.fainelli@gmail.com, jonas.gorski@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Tony Prisk <linux@prisktech.co.nz>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v3 0/3] usb: host: ehci-platform: add spurious-oc support
+Date:   Tue, 23 Feb 2021 18:44:52 +0100
+Message-Id: <20210223174455.1378-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210223155005.21712-1-noltari@gmail.com>
+References: <20210223155005.21712-1-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3493920.1614102270.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 23 Feb 2021 17:44:30 +0000
-Message-ID: <3493921.1614102270@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells <dhowells@redhat.com> wrote:
+Over-current reporting isn't supported on some platforms such as bcm63xx.
+These devices will incorrectly report over-current if this flag isn't properly
+activated.
 
-> This set of patches from Eric Snowberg that add support for
-> EFI_CERT_X509_GUID entries in the dbx and mokx UEFI tables (such entries
-> cause matching certificates to be rejected).  These are currently ignore=
-d
-> and only the hash entries are made use of.
-> =
+v3: add missing patch from Florian Fainelli.
+v2: change flag name and improve documentation as suggested by Alan Stern.
 
-> These patches fix CVE-2020-26541.
-> =
+Florian Fainelli (1):
+  usb: ehci: add spurious flag to disable overcurrent checking
 
-> To quote Eric:
-> =
+Álvaro Fernández Rojas (2):
+  dt-bindings: usb: generic-ehci: document spurious-oc flag
+  usb: host: ehci-platform: add spurious_oc DT support
 
-> 	This is the fifth patch series for adding support for
-> 	EFI_CERT_X509_GUID entries [1].  It has been expanded to not only
-> 	include dbx entries but also entries in the mokx.  Additionally my
-> 	series to preload these certificate [2] has also been included.
-> =
+ Documentation/devicetree/bindings/usb/generic-ehci.yaml | 6 ++++++
+ drivers/usb/host/ehci-hcd.c                             | 2 +-
+ drivers/usb/host/ehci-hub.c                             | 4 ++--
+ drivers/usb/host/ehci-platform.c                        | 5 +++++
+ drivers/usb/host/ehci.h                                 | 1 +
+ include/linux/usb/ehci_pdriver.h                        | 1 +
+ 6 files changed, 16 insertions(+), 3 deletions(-)
 
-> 	This series is based on v5.11-rc4.
-> =
-
-> 	[1] https://patchwork.kernel.org/project/linux-security-module/patch/20=
-200916004927.64276-1-eric.snowberg@oracle.com/
-> 	[2] https://lore.kernel.org/patchwork/cover/1315485/
-> =
-
-> Note that this is based on top of the collected minor fixes I sent you a
-> preceding pull request for.  If you would rather this was not based on m=
-y
-> keys-misc branch, but was instead based on your tree directly, I can reb=
-ase
-> it.  Note that there would be very minor conflict between the two branch=
-es,
-> but I think git merge should be able to handle it automatically.
-
-Please drop this request for now.  It turns out there's a broken dependenc=
-y
-in there:
-
-	https://lore.kernel.org/keyrings/20210217165058.1336155-1-eric.snowberg@o=
-racle.com/
-
-I'll look at folding that in, but I'm not sure Eric's solution is the righ=
-t
-one.  I suspect there needs to be something in Kconfig somewhere.
-
-David
+-- 
+2.20.1
 
