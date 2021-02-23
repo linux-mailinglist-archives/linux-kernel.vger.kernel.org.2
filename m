@@ -2,81 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83142322E72
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89650322E7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233506AbhBWQMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 11:12:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232465AbhBWQMW (ORCPT
+        id S233526AbhBWQNR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Feb 2021 11:13:17 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:34091 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233428AbhBWQNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:12:22 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3761DC06174A;
-        Tue, 23 Feb 2021 08:11:40 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id x129so4337567pfx.7;
-        Tue, 23 Feb 2021 08:11:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LupjWLkRUOq+CiPsIGPEup0J7yFrkHdOXthev84cAN8=;
-        b=msrwyp8/10qWFaWV+seEtedLa6l55XeaIG7sHc3PceJpDJQ3ujkK+1g2IrJ3ttipSq
-         SbjNQpm1naE41eNLkJZ62Rvb8PyJeS1n92eiqSLVOTvLynGkqUlXV0YsI8VBJqTPV6Kk
-         aTT14B+00rLsZC0dOZCA2KBp1TuVnCVz9pPAvu0ot8qr25mLzAr67u4f7XJxVFLPILCD
-         8QyWcFJVU59oSiyi7zlfiBz+3N7gCxvyaQLZVP5IIBsn+cVgQkJT0u9MwHLU0p/ctP/E
-         ssrHQwat8k6JAT0AT4FIoU3HINErHBR7e3en2AlzQ6iyayAFGLpIVmE8UjAAZVOcrDl3
-         BiFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LupjWLkRUOq+CiPsIGPEup0J7yFrkHdOXthev84cAN8=;
-        b=rxjaZzwdNIzMlDeMBW7x4sKZcM2faYB8Fo/ojdVY6axyRtAs4T0xuO4uDjyQKpr0e2
-         2Cdbx/8QeBb9oD+VnrSebTt61C2iME3ngk98Fgk5wCqdbNNh9C7zfjLSFv7uc+WFKJxV
-         RmTx+J4Yw/e9qklkXA72HNrASidcfXcOA6Nfi0giv1FcLhPyFGoJ959UbWmTUk85C6XB
-         JgBM7D9uK92dCYddTSXRrOZsQkpBekKKOjrNysfA66GkkxMj69yT4pDWmSx6PXxHLKNm
-         YgunUD0x/AvJuJ1Eu2gLlzM3bRyHQgdJlqrytEzak5/ggBPY+kOtuV1Kl4YeODNSLBba
-         /VDA==
-X-Gm-Message-State: AOAM532mdGSoYH8u3p3w4Ggg/oV7DVnSZh1SwSP0GPVqdGtCzRqhJj/a
-        B1ibiiEzGoRzlvE8k9d3yOE=
-X-Google-Smtp-Source: ABdhPJx1KhBoDX46FEgvuyi7wjsYLghYVyibp9XH5t2NCEv6aStSgIjIwLeNjhZ8aDjzeIlG6eHQIg==
-X-Received: by 2002:a62:ae18:0:b029:1ed:ac95:d8cb with SMTP id q24-20020a62ae180000b02901edac95d8cbmr9539294pff.69.1614096699775;
-        Tue, 23 Feb 2021 08:11:39 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id u9sm3755812pje.20.2021.02.23.08.11.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 08:11:39 -0800 (PST)
-Date:   Tue, 23 Feb 2021 08:11:36 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Fugang Duan <fugang.duan@nxp.com>
-Subject: Re: [PATCH 1/1] net: fec: ptp: avoid register access when ipg clock
- is disabled
-Message-ID: <20210223161136.GA5894@hoboy.vegasvil.org>
-References: <20210220065654.25598-1-heiko.thiery@gmail.com>
- <20210222190051.40fdc3e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAEyMn7ZM7_pPor0S=dMGbmnp0hmZMrpquGqq4VNu-ixSPp+0UQ@mail.gmail.com>
- <20210223142726.GA4711@hoboy.vegasvil.org>
- <CAEyMn7Za9z9TUdhb8egf8mOFJyA3hgqX5fwLED8HDKw8Smyocg@mail.gmail.com>
+        Tue, 23 Feb 2021 11:13:15 -0500
+X-Originating-IP: 86.210.203.113
+Received: from xps13 (lfbn-tou-1-972-113.w86-210.abo.wanadoo.fr [86.210.203.113])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id DF253E0013;
+        Tue, 23 Feb 2021 16:12:24 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 17:12:23 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Md Sadre Alam <mdalam@codeaurora.org>
+Cc:     mani@kernel.org, boris.brezillon@collabora.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: Add helper to check last code word
+Message-ID: <20210223171223.53f86959@xps13>
+In-Reply-To: <1613975095-15550-1-git-send-email-mdalam@codeaurora.org>
+References: <1613975095-15550-1-git-send-email-mdalam@codeaurora.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEyMn7Za9z9TUdhb8egf8mOFJyA3hgqX5fwLED8HDKw8Smyocg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 04:04:16PM +0100, Heiko Thiery wrote:
-> It is not only the PHC clock that stops. Rather, it is the entire
-> ethernet building block in the SOC that is disabled, including the
-> PHC.
+Hello,
 
-Sure, but why does the driver do that?
+Md Sadre Alam <mdalam@codeaurora.org> wrote on Mon, 22 Feb 2021
+11:54:55 +0530:
+
+> This change will add helper qcom_nandc_is_last_cw()
+
+Use the imperative form, something like:
+
+"
+Add the qcom_nandc_is_last_cw() helper which checks if the input cw
+index is the last one or not.
+"
+
+> which will check for last code word and return true for
+> last code word and false for other code word.
+> 
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> ---
+>  drivers/mtd/nand/raw/qcom_nandc.c | 24 +++++++++++++++---------
+>  1 file changed, 15 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index ae8870ec..4189a7f 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -661,6 +661,12 @@ static void nandc_set_reg(struct qcom_nand_controller *nandc, int offset,
+>  		*reg = cpu_to_le32(val);
+>  }
+>  
+> +/* Helper to check the code word, whether it is last cw or not */
+> +static bool qcom_nandc_is_last_cw(struct nand_ecc_ctrl *ecc, int cw)
+> +{
+> +	return cw == (ecc->steps - 1);
+> +}
+> +
+>  /* helper to configure address register values */
+>  static void set_address(struct qcom_nand_host *host, u16 column, int page)
+>  {
+> @@ -1632,7 +1638,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+>  	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+>  	oob_size1 = host->bbm_size;
+>  
+> -	if (cw == (ecc->steps - 1)) {
+> +	if (qcom_nandc_is_last_cw(ecc, cw)) {
+>  		data_size2 = ecc->size - data_size1 -
+>  			     ((ecc->steps - 1) * 4);
+>  		oob_size2 = (ecc->steps * 4) + host->ecc_bytes_hw +
+> @@ -1713,7 +1719,7 @@ check_for_erased_page(struct qcom_nand_host *host, u8 *data_buf,
+>  	}
+>  
+>  	for_each_set_bit(cw, &uncorrectable_cws, ecc->steps) {
+> -		if (cw == (ecc->steps - 1)) {
+> +		if (qcom_nandc_is_last_cw(ecc, cw)) {
+>  			data_size = ecc->size - ((ecc->steps - 1) * 4);
+>  			oob_size = (ecc->steps * 4) + host->ecc_bytes_hw;
+>  		} else {
+> @@ -1773,7 +1779,7 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+>  		u32 flash, buffer, erased_cw;
+>  		int data_len, oob_len;
+>  
+> -		if (i == (ecc->steps - 1)) {
+> +		if (qcom_nandc_is_last_cw(ecc, i)) {
+>  			data_len = ecc->size - ((ecc->steps - 1) << 2);
+>  			oob_len = ecc->steps << 2;
+>  		} else {
+> @@ -1872,7 +1878,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>  	for (i = 0; i < ecc->steps; i++) {
+>  		int data_size, oob_size;
+>  
+> -		if (i == (ecc->steps - 1)) {
+> +		if (qcom_nandc_is_last_cw(ecc, i)) {
+>  			data_size = ecc->size - ((ecc->steps - 1) << 2);
+>  			oob_size = (ecc->steps << 2) + host->ecc_bytes_hw +
+>  				   host->spare_bytes;
+> @@ -2051,7 +2057,7 @@ static int qcom_nandc_write_page(struct nand_chip *chip, const uint8_t *buf,
+>  	for (i = 0; i < ecc->steps; i++) {
+>  		int data_size, oob_size;
+>  
+> -		if (i == (ecc->steps - 1)) {
+> +		if (qcom_nandc_is_last_cw(ecc, i)) {
+>  			data_size = ecc->size - ((ecc->steps - 1) << 2);
+>  			oob_size = (ecc->steps << 2) + host->ecc_bytes_hw +
+>  				   host->spare_bytes;
+> @@ -2068,10 +2074,10 @@ static int qcom_nandc_write_page(struct nand_chip *chip, const uint8_t *buf,
+>  		 * when ECC is enabled, we don't really need to write anything
+>  		 * to oob for the first n - 1 codewords since these oob regions
+>  		 * just contain ECC bytes that's written by the controller
+> -		 * itself. For the last codeword, we skip the bbm positions and
+> -		 * write to the free oob area.
+> +		 * itself. For the last codeword, we skip the bbm positions and write
+> +		 * to the free oob area.
+
+Not related change, please drop.
+
+>  		 */
+> -		if (i == (ecc->steps - 1)) {
+> +		if (qcom_nandc_is_last_cw(ecc, i)) {
+>  			oob_buf += host->bbm_size;
+>  
+>  			write_data_dma(nandc, FLASH_BUF_ACC + data_size,
+> @@ -2126,7 +2132,7 @@ static int qcom_nandc_write_page_raw(struct nand_chip *chip,
+>  		data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+>  		oob_size1 = host->bbm_size;
+>  
+> -		if (i == (ecc->steps - 1)) {
+> +		if (qcom_nandc_is_last_cw(ecc, i)) {
+>  			data_size2 = ecc->size - data_size1 -
+>  				     ((ecc->steps - 1) << 2);
+>  			oob_size2 = (ecc->steps << 2) + host->ecc_bytes_hw +
+
 
 Thanks,
-Richard
+Miquèl
