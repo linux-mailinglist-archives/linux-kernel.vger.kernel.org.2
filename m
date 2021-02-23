@@ -2,122 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8C1322F89
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC61322F8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhBWRWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 12:22:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38080 "EHLO
+        id S233746AbhBWRXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 12:23:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233061AbhBWRWp (ORCPT
+        with ESMTP id S233061AbhBWRW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 12:22:45 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C72C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:22:05 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id p21so12769792pgl.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:22:05 -0800 (PST)
+        Tue, 23 Feb 2021 12:22:56 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CCEC06178A;
+        Tue, 23 Feb 2021 09:22:15 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id x16so3183547wmk.3;
+        Tue, 23 Feb 2021 09:22:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=G0uZIqR5NGZgy6mztTeasD6R/M3MBQU4WSQP49fh9cc=;
-        b=bkb40P8sgoygxrGGg9tebgaL9oo+HIBwbbnI7Of6Wfnj7rUV+nmk8L/zc54MLwt5+i
-         0T+PjEhGfETVl+1pO6KZ1XlB4ZGApvLn2yjjs6EeE3Xb7S0mimAkOtWVSGpO5W2yl5Sn
-         Hdw6s7akkiX4CXWg6KNy04sI+Sm2/Q/2Vx/S0=
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=EaX5p5UPuTekYiXa10smOCPJuQoIdYNBNNKlPwDQoIw=;
+        b=L2ExbvjtqbSYd6Z4BLFj7QppJJtr04m2tmQa4eq/AdspS/bMn6RGU0ab6qYxp37rjM
+         jXq8pZE08iisojwN+2NcgiMtCzBgetBCIXbLjX7UQ3hDn0lF/2s+1EuvESH6ScTZiRmY
+         scESElzSej0ZbOhuQu2avYH335ihr19oPxQpgxSMqh1VoyQo0VSp9p1NRkcKOOSdoGR5
+         4J201N79nc/t4eYe3QCx8TintIeOMSxWndKm9IRPqTU4cM1uN9pJNNeAl4rhRQWG8r1R
+         f65nW8jnp+GvOgx6l30YfXl9wBoe3kr3RS7z7wBgLn65ZfTFx2DnamZrcbI8a9z+kewg
+         IRGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G0uZIqR5NGZgy6mztTeasD6R/M3MBQU4WSQP49fh9cc=;
-        b=llqy/0Xl0sb6iMr+Bp5UkH8P9LEkYae3xT2UJsq8yg9KHFlS7OKTnzRDazIMpBOUQw
-         BPe/4dOp3lfwCe8hWAgJDbyOZBqw9hcZ0joeXxigIPKCc5bAeKMOkd1LYMr1PKCrnBN3
-         oVdpLyowm961IQz1ODb+s+M1M55ypaXf4M2T4RTHVTmH7NLEYIV+xbWwPkuXUsdu3vwz
-         wp+kii0T8K3I4vGlXZA5riV5qg3LAMY/ocS8y3HdczhQhiFN+ot4oIU8xfJaT0dVDK+4
-         iRVYhbtpO1L7OI5vjFZnw5bk82syBMtLE0vQ4fzt7CpuE6UA81MqV2WVcCsBb35yHmTS
-         y7Aw==
-X-Gm-Message-State: AOAM531ItYooDE6sDJmceliTmf7BLOPRomPYqu8VjfY+GmOpC73TOgff
-        Rww29pT+9e3IjuGx+7+/gg4ddg==
-X-Google-Smtp-Source: ABdhPJzjltN/OKyOgnlOMTimbH+m4++KgOpZ1e81/M8rnFu308uzCuKyPIwHsPxBtIn65Zm5vZ8B4A==
-X-Received: by 2002:a63:1843:: with SMTP id 3mr25223809pgy.253.1614100925076;
-        Tue, 23 Feb 2021 09:22:05 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:212d:9fc9:b1d0:a24])
-        by smtp.gmail.com with UTF8SMTPSA id s1sm22393280pfe.151.2021.02.23.09.22.03
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EaX5p5UPuTekYiXa10smOCPJuQoIdYNBNNKlPwDQoIw=;
+        b=qryaimKT8YeLDxGr5kBSyaBXj+GTmS+KB4PDG4v3cfYJ0aJ9qAhfMLPs/bSdPQm+br
+         UlZYKJ4Yd4wsZFVNKU9mGdacOezNw4CbJT1gKf16k6vgH+voalmpbj19koUfzs9Ih9K3
+         /CbJDKWic1ucPUUUFXp6aoMKzixrzSYPvDcWmbA9NLIBBYlC107F/8y6XQ50/aSN0xkg
+         qoFnbkgwGG0HIJ6YSn6wp23nJKmJVGKV4/ubs8OCv5xzGdzTPyn0G4VDjv4Pw5vFD5xE
+         CqPd7qqNLYOcRgV7ErWyyZ11hIzDjjEEmLKOh9hxiMxpWo6xPCQp1Mu+0FI78VjyGwrz
+         6UYw==
+X-Gm-Message-State: AOAM532t8htQHnCQjckl3KT5M3xjGg8Y2r2d5gRX2STI14KjuaQyGlmA
+        M66/NDGyPUgxpwPSNvc6svsp2DSpSjeL9Poi
+X-Google-Smtp-Source: ABdhPJymfVnvLYj6gmqlN/GCzYyIAkPBbG7VFBpvS13m6zCAi9+YtXqstsO2jMc2r/8H8q4zIFN2zA==
+X-Received: by 2002:a1c:ba05:: with SMTP id k5mr24935188wmf.111.1614100934162;
+        Tue, 23 Feb 2021 09:22:14 -0800 (PST)
+Received: from [192.168.1.10] (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id m4sm17653589wrb.87.2021.02.23.09.22.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 09:22:04 -0800 (PST)
-Date:   Tue, 23 Feb 2021 09:22:02 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: dwc3: qcom: Honor wakeup enabled/disabled state
-Message-ID: <YDU5ujJy5xiDXAJ3@google.com>
-References: <20200915123123.1.I44954d9e1169f2cf5c44e6454d357c75ddfa99a2@changeid>
- <20200915235032.GB1893@yoga>
+        Tue, 23 Feb 2021 09:22:13 -0800 (PST)
+Subject: Re: [PATCH 1/2] dt-bindings: rng: bcm2835: document reset support
+To:     Scott Branden <scott.branden@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@protonmail.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210222194510.14004-1-noltari@gmail.com>
+ <20210223160131.29053-1-noltari@gmail.com>
+ <20210223160131.29053-2-noltari@gmail.com>
+ <1b854f38-9322-71ee-5745-ee650ae92c9b@gmail.com>
+ <23b28f9f-786d-8cdc-338f-efb4b23020a9@broadcom.com>
+From:   =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>
+Message-ID: <110b59a6-2359-89e1-5f20-7d2e1fd32a2f@gmail.com>
+Date:   Tue, 23 Feb 2021 18:22:11 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200915235032.GB1893@yoga>
+In-Reply-To: <23b28f9f-786d-8cdc-338f-efb4b23020a9@broadcom.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping
+Hello Scott,
 
-I noticed this was never picked up, can it be landed or are there any
-concerns with this patch?
+El 23/02/2021 a las 18:17, Scott Branden escribió:
+> On 2021-02-23 8:36 a.m., Florian Fainelli wrote:
+>>
+>>
+>> On 2/23/2021 8:01 AM, Álvaro Fernández Rojas wrote:
+>>> Some devices may need to perform a reset before using the RNG, such as the
+>>> BCM6368.
+>>>
+>>> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+>>
+>> Since the reset is unique to the 6368, you may want to make the property
+>> mandatory for the 6368 compatible string and optional otherwise.
+>>
+> Perhaps the reset could be done at an earlier boot stage as well and then the
+> reset would even be optional on 6368?
+> 
 
-On Tue, Sep 15, 2020 at 06:50:32PM -0500, Bjorn Andersson wrote:
-> On Tue 15 Sep 14:31 CDT 2020, Matthias Kaehlcke wrote:
-> 
-> > The dwc3-qcom currently enables wakeup interrupts unconditionally
-> > when suspending, however this should not be done when wakeup is
-> > disabled (e.g. through the sysfs attribute power/wakeup). Only
-> > enable wakeup interrupts when device_may_wakeup() returns true.
-> > 
-> > Fixes: a4333c3a6ba9 ("usb: dwc3: Add Qualcomm DWC3 glue driver")
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> 
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> 
-> Regards,
-> Bjorn
-> 
-> > ---
-> > 
-> >  drivers/usb/dwc3/dwc3-qcom.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> > index e1e78e9824b1..56d14c09506d 100644
-> > --- a/drivers/usb/dwc3/dwc3-qcom.c
-> > +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> > @@ -251,8 +251,10 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom)
-> >  	for (i = qcom->num_clocks - 1; i >= 0; i--)
-> >  		clk_disable_unprepare(qcom->clks[i]);
-> >  
-> > +	if (device_may_wakeup(qcom->dev))
-> > +		dwc3_qcom_enable_interrupts(qcom);
-> > +
-> >  	qcom->is_suspended = true;
-> > -	dwc3_qcom_enable_interrupts(qcom);
-> >  
-> >  	return 0;
-> >  }
-> > @@ -265,7 +267,8 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom)
-> >  	if (!qcom->is_suspended)
-> >  		return 0;
-> >  
-> > -	dwc3_qcom_disable_interrupts(qcom);
-> > +	if (device_may_wakeup(qcom->dev))
-> > +		dwc3_qcom_disable_interrupts(qcom);
-> >  
-> >  	for (i = 0; i < qcom->num_clocks; i++) {
-> >  		ret = clk_prepare_enable(qcom->clks[i]);
-> > -- 
-> > 2.28.0.618.gf4bc123cb7-goog
-> > 
+No, this isn't possible on bmips, which is device tree only.
+However, it's how is done in bcm63xx, which is why it wasn't needed before.
+
+Best regards,
+Álvaro.
