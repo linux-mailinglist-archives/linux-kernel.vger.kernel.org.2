@@ -2,66 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813DB322821
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C57322822
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhBWJws convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Feb 2021 04:52:48 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:43072 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232063AbhBWJuI (ORCPT
+        id S232300AbhBWJw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:52:56 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:21545 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232064AbhBWJua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:50:08 -0500
-Received: by mail-oi1-f178.google.com with SMTP id d20so17024067oiw.10;
-        Tue, 23 Feb 2021 01:49:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=p88iZzyP29shfj++CGhdBvy6KZNf8uzYSi55mFPxJPU=;
-        b=rulPxWFGCQ4+q3rNSjC9RYEeuFju5DYHfT8juXbhF/FOIkUoBWx/AVNk+JALXicD6R
-         038NDRi2+y3FIKpp9Ged+IE3FcY+1yhujrkgowasSwCzm1mVN5j6yu9YPTO7WgoZ2IQF
-         NLYd433oGVDXbFLBid45Zf+Xp3fgRtQd7v7o7umJxe/4XANgRD8gRZEaOQXNt4OScrtq
-         wNeln9xFuW+OldzCxCnVCugQh9lMAkOQ3lW2QY4tBOyFbT6ZzY0yIAyRLDWvYi+CJHuj
-         wZGmJEoyQAEY+svF4HtTw6O7+K6TnQLEgSwNWQaq4lftE6/qtlLm8LOXpd9tNd9WT9qF
-         LNpw==
-X-Gm-Message-State: AOAM533ZhgfDe2la1Uk1nHdKmi2Qzt6gGlDuMAXmu3TqC95d7hVlm5J8
-        p58nmOU1TtFp3y8RThbYegJE3TpzDutvILe07shCovytUZE=
-X-Google-Smtp-Source: ABdhPJxclUUUfISAO4sB/2rVd7veIxoB918nm647OCokP2t6IMFVoT/a4BLcT2tODwID5sF4yLr9WcQ+6aqHxHHHQ7I=
-X-Received: by 2002:aca:1a0a:: with SMTP id a10mr18414499oia.46.1614073768196;
- Tue, 23 Feb 2021 01:49:28 -0800 (PST)
-MIME-Version: 1.0
-References: <20210222161905.1153-1-lukas.bulwahn@gmail.com> <20210222161905.1153-4-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210222161905.1153-4-lukas.bulwahn@gmail.com>
-From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= 
-        <philippe@mathieu-daude.net>
-Date:   Tue, 23 Feb 2021 10:49:17 +0100
-Message-ID: <CAAdtpL4gB_O0j3QZEkUj-Yogj04NqFpLE5drFxPtVfWEZHNJNA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] arch: mips: update references to current linux-mips list
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
-        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        Tue, 23 Feb 2021 04:50:30 -0500
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210223094943epoutp0218d243686ac165bd2ba09f09752df3d0~mV431iCfH3100531005epoutp02t
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:49:43 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210223094943epoutp0218d243686ac165bd2ba09f09752df3d0~mV431iCfH3100531005epoutp02t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614073783;
+        bh=Ubs1kZZFPa5xRlLuSmHTmEfG00R7cgtV0QxxSb4lGmM=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=rSFF91WTpPISwajyYYdiCt3dDSnKZrXiUdWHQcGVdplA1MtT6QoTpNzz+jIN+5vp6
+         aGEhjAyYVu3x2kHMn+WfqzPwan/UFFq3MUU0Ocdo693hg/gd7EtCm/2szTXJ0HxpLZ
+         pcKPQFFRaLAJB4/H3FOGWEkErqkoOJYYlB0K36f8=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210223094942epcas2p15a36958919c80a66aabfc9cf48e2f6c9~mV43C6Q9h1111811118epcas2p1Z;
+        Tue, 23 Feb 2021 09:49:42 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.186]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4DlDmP5B8bz4x9Px; Tue, 23 Feb
+        2021 09:49:41 +0000 (GMT)
+X-AuditID: b6c32a47-b81ff7000000148e-f3-6034cfb5fff0
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1C.78.05262.5BFC4306; Tue, 23 Feb 2021 18:49:41 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v22 4/4] scsi: ufs: Add HPB 2.0 support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bean Huo <huobean@gmail.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <d5393d50a2d7c4752828a5707a6225ff6ca62f68.camel@gmail.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210223094940epcms2p5e22d3981a396fbe4e2421f427019389b@epcms2p5>
+Date:   Tue, 23 Feb 2021 18:49:40 +0900
+X-CMS-MailID: 20210223094940epcms2p5e22d3981a396fbe4e2421f427019389b
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA52Tf1CTdRzH79nzsOeBoB4GxFe6aj0cICPGNtj8kg44NZ3HhdLJcWYKa3tu
+        W8C2e55hxD8NCKb81BOFYIHgCScSS3QwpIQD40cdlYeJgBaeWKHOSKoLPbg2NtLrz/57f1+f
+        35/vfQiUdxkPI3R6E83olbkU1w/rGY6Wxtq/S8gWtRdFwLmmHi78smwMhwvLP3Dh8OxDHJ5c
+        XEbhI1ubD1wYioYdc5mw5LSNC60TZg6sqrFz4Z2bSzhsvdHDgTWrFgxOXrJyYcWUgwvbR1c5
+        cPaiHzxjn0bgkbpODLa29GMpIYrJa6mKyeoqjqKv4RauONo6iCgGPu3EFR+PD2CK3+/OYIrq
+        ix2IYqn7FYVlsIKzx+8dM7JFyai0ukM0n9arDGqdXiOnMvbuiIUUX2tgTXJqvxhKhOJEqTAh
+        USjZdOANsUgkkVJ8vTKPllMFsd5ois+ojC5vE82aGFpFuxCTwpqUGlrIKvPYfL1GqDLkUfxD
+        ytx8VxwVl7RFSyvVNMPPnke0DyuWcOOgT0HLzwuIGRlByxFfApAJYNF5lluO+BE80oGAym6r
+        y0AQAWQgWHEEuX2CyGTw69h13K15JAVsVxtwDxeCmdudiFtzyddB3dhPuDtPMHkGA7Wjbaj7
+        gZKPOWDsziLiqRYA6i13MY9+CfS229e4L7kTrDjPcT18I/i7rcrbXQiYPufE1/VvI83ePMGg
+        9McJr08gmFvu9/INYKR/kePRHwH7zceIuwlAViJguG/Gx2OIA9cPn8c8U74FfmnjuTFGRoDi
+        46e9sdtBmd251g9Kvgp6nZ6loGQ0sF2Kc0tAhoMrM9j6VObzT/D/apR8HhweXvmXO5rmvdkj
+        QdeyjXMUCW94uumGZ2o1PK11CkE7kBdpI5unoVmJMf7Zj+5G1m5AsNOB1DsXhUMIh0CGEECg
+        VHAA95YkmxegVn5YSDOGLCY/l2aHkELXlMfQsBCVwXVEelOWWCaSyKTxCfHx0gTp/8ZSiUwm
+        SpRCqUwCqdAAVjSXxSM1ShOdQ9NGmlkvziF8w8ycKNZm0DoE75ZONBGNMrWlUleo+1p3ojc2
+        dXcaL+Y5n03J+dFPjHIqPaN4sKjp87IQeRDRklKi1tzfVuBoLohJMYdLzI/oUMcUIvHfmt7V
+        NDbaeDy1ffP3cv6+F/yPgcAr1qh5i2mXGNMXxOXUTBOvVRanF574YuPJ+gv++SWRMQNvhwpW
+        D/AK9dJZgXHrJ/G1mQ+6bls2b4hKSuu4fPbeA+uFP8zitG8i9yZp0TetByVXp8wf3Hs/p/69
+        8jpzdsyIXBA9vv8z4qs9+7bHqTnjf96vFhftuOHQMruZGUfzkH9mhLmvo/3b8mun1MnDAz0Z
+        L//VyNs1XptZOnkwJoMKOkJhrFYpFqAMq/wH4GVHddEEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
+References: <d5393d50a2d7c4752828a5707a6225ff6ca62f68.camel@gmail.com>
+        <20210222092957epcms2p728b0c563f3cfbecbf8692d7e86f9afed@epcms2p7>
+        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
+        <20210222093150epcms2p155352e2255e6bfd8f8d71c737ed05e76@epcms2p1>
+        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 5:22 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> The linux-mips mailing list now lives at kernel.org. Update all references
-> in the kernel tree.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
->  arch/mips/kernel/r4k-bugs64.c | 2 +-
->  arch/mips/lib/iomap-pci.c     | 2 +-
->  arch/mips/sgi-ip32/ip32-irq.c | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
+> >                 }
+> >         }
+> > @@ -532,8 +870,8 @@ static int ufshpb_execute_map_req(struct
+> > ufshpb_lu *hpb,
+> >         if (unlikely(last))
+> >                 mem_size = hpb->last_srgn_entries * HPB_ENTRY_SIZE;
+> >  
+> > -       ufshpb_set_read_buf_cmd(rq->cmd, map_req->rgn_idx,
+> > -                               map_req->srgn_idx, mem_size);
+> > +       ufshpb_set_read_buf_cmd(rq->cmd, map_req->rb.rgn_idx,
+> > +                               map_req->rb.srgn_idx, hpb-
+> > >srgn_mem_size);
+>  
+> Are you sure here it is hpb->srgn_mem_size, not mem_size???
+> if not mem_size, why you kept mem_size??
 
-Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
+I will fix it.
+
+Thanks,
+Daejun
+  
+> Bean
+>  
+>  
+>  
+>   
