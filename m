@@ -2,441 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D70C322C47
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8B7322C48
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233018AbhBWO37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:29:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231960AbhBWO3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:29:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C31764E62;
-        Tue, 23 Feb 2021 14:28:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614090499;
-        bh=TXOEOr+QeHRp3yayrQJPrFefjryS4z5Af5eUxoaB9VU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bS0K0qQ/TeO3wDTe8Pz7K3UGdXUslG8t2b6a9ULFiv0VriUmdyju4BL0ng31bIhvb
-         g3bhyBkw+o7sq3IzN0/pnXk7BB5vkL+JPb1B57+GU2JUstSKCRGuIFwC0WM3cPTbuv
-         XVb9soOa0uHbslPD9f5rZD4J//A0GvFyMLugNwqw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 5.4.100
-Date:   Tue, 23 Feb 2021 15:28:08 +0100
-Message-Id: <161409048711516@kroah.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <161409048718778@kroah.com>
-References: <161409048718778@kroah.com>
+        id S233024AbhBWOaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:30:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232969AbhBWO3m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:29:42 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2170DC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:29:02 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id h18so6165650ils.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:29:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=zGk/ZhZWEg56YKF9pnwKft4+fj3bPtgDY5IUehTT0YA=;
+        b=KL3ta+t2DS+LDkxM7Bjf6uqw5d/CGHiOAUwdTqGksFje6JcT1D4pnCJo+7DXEVdA+7
+         RPqsF4qyZ8Ir4iKreH/ZArUX2MWEPR3EUJXJ3uRhXlCnzKKMw/a3h/RDs/2oTtZgYBju
+         5WUgdaf3HDSrfAXjFRBMUKrprwJ9aCh1sSCQHB22/SL0m+BPQzh0F45TJizToPEgeqeN
+         7rh1fRZkVWzwfGewFvBHoZrLwD5IIdrX8eLLa1fH+cGhxCY29PyuQihKX5Es7/NCvKHI
+         CmZqTcD8tp5G8+9AavCzV15+6kLWwe8jySBYnoVg8FgRc+tanHshG3hO2ZlLLyuZXrVC
+         J4ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=zGk/ZhZWEg56YKF9pnwKft4+fj3bPtgDY5IUehTT0YA=;
+        b=PM649jDvo5z++VXMEc1rNy4K5ZiHWeVR4qf+3FZZvhjd++tW3i0oVmOOhWy4u4Mbmj
+         ig8cLswdY7p16sp7KUnNJDgkW42bSzhRuQL1Badu4INpVqipVCUS2lZ+EZeygh+Ja4lo
+         rU2odyxst6fj6pSp5GCk9pISmE9Nd3Z3k33ggR4+on2mEy6i8yGv0uw9t/RVhWHCr+Pr
+         HctsKG/qqd/EXa08Qnen3rKBWtmbFIwbxKpXQT3HpTFFxgC0aQBjL+Tv5RGxjdrKSns9
+         WS3w6qWpfzgSRCgGtdBq/480Z/56VQ9eo2x2oeon9WKq9/MlmkMnFbGPXGRXGIwB9e6w
+         +Axw==
+X-Gm-Message-State: AOAM531HQnCbSu26fqILP51f7h+C2F1n7PlxvpC/tj+km9FuhV5WmFnW
+        qMrhVruZo6tJ/35qI2/Y/YC8a+ODbNvlvWKX7js=
+X-Google-Smtp-Source: ABdhPJwwNPKc5rAqOWY8VUPmfVErzArsJKRUn60myW6DGLPvZkS7kOkwt2Uvxhm4djZRlEAGJorZl5eUC6aRoiMdK3w=
+X-Received: by 2002:a05:6e02:12e9:: with SMTP id l9mr19313707iln.201.1614090541581;
+ Tue, 23 Feb 2021 06:29:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Reply-To: mrscarolinemanon9@gmail.com
+Sender: mrmoussadauda@gmail.com
+Received: by 2002:a05:6e02:1bc1:0:0:0:0 with HTTP; Tue, 23 Feb 2021 06:29:01
+ -0800 (PST)
+From:   "Mrs. Caroline Manon" <mrscarolinemanon@gmail.com>
+Date:   Tue, 23 Feb 2021 15:29:01 +0100
+X-Google-Sender-Auth: 4z3TJPD0c-AFD6dz8P18DSNsfe4
+Message-ID: <CAFFZgbzh_jsg5kUvqHHK4gU9wS_j88ButAm0p5uXO-NN3CQF-Q@mail.gmail.com>
+Subject: Greetings from Mrs. Caroline Manon.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index a0491ba1d759..d0d4beb4f837 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 4
--SUBLEVEL = 99
-+SUBLEVEL = 100
- EXTRAVERSION =
- NAME = Kleptomaniac Octopus
- 
-diff --git a/arch/arm/xen/p2m.c b/arch/arm/xen/p2m.c
-index e52950a43f2e..fd6e3aafe272 100644
---- a/arch/arm/xen/p2m.c
-+++ b/arch/arm/xen/p2m.c
-@@ -95,8 +95,10 @@ int set_foreign_p2m_mapping(struct gnttab_map_grant_ref *map_ops,
- 	for (i = 0; i < count; i++) {
- 		if (map_ops[i].status)
- 			continue;
--		set_phys_to_machine(map_ops[i].host_addr >> XEN_PAGE_SHIFT,
--				    map_ops[i].dev_bus_addr >> XEN_PAGE_SHIFT);
-+		if (unlikely(!set_phys_to_machine(map_ops[i].host_addr >> XEN_PAGE_SHIFT,
-+				    map_ops[i].dev_bus_addr >> XEN_PAGE_SHIFT))) {
-+			return -ENOMEM;
-+		}
- 	}
- 
- 	return 0;
-diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
-index 296b0d7570d0..1da558f28aa5 100644
---- a/arch/x86/kvm/svm.c
-+++ b/arch/x86/kvm/svm.c
-@@ -7104,7 +7104,6 @@ static int svm_register_enc_region(struct kvm *kvm,
- 	region->uaddr = range->addr;
- 	region->size = range->size;
- 
--	mutex_lock(&kvm->lock);
- 	list_add_tail(&region->list, &sev->regions_list);
- 	mutex_unlock(&kvm->lock);
- 
-diff --git a/arch/x86/xen/p2m.c b/arch/x86/xen/p2m.c
-index 0acba2c712ab..7fe5be8e6d3d 100644
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -716,7 +716,8 @@ int set_foreign_p2m_mapping(struct gnttab_map_grant_ref *map_ops,
- 		unsigned long mfn, pfn;
- 
- 		/* Do not add to override if the map failed. */
--		if (map_ops[i].status)
-+		if (map_ops[i].status != GNTST_okay ||
-+		    (kmap_ops && kmap_ops[i].status != GNTST_okay))
- 			continue;
- 
- 		if (map_ops[i].flags & GNTMAP_contains_pte) {
-@@ -754,17 +755,15 @@ int clear_foreign_p2m_mapping(struct gnttab_unmap_grant_ref *unmap_ops,
- 		unsigned long mfn = __pfn_to_mfn(page_to_pfn(pages[i]));
- 		unsigned long pfn = page_to_pfn(pages[i]);
- 
--		if (mfn == INVALID_P2M_ENTRY || !(mfn & FOREIGN_FRAME_BIT)) {
-+		if (mfn != INVALID_P2M_ENTRY && (mfn & FOREIGN_FRAME_BIT))
-+			set_phys_to_machine(pfn, INVALID_P2M_ENTRY);
-+		else
- 			ret = -EINVAL;
--			goto out;
--		}
--
--		set_phys_to_machine(pfn, INVALID_P2M_ENTRY);
- 	}
- 	if (kunmap_ops)
- 		ret = HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref,
--						kunmap_ops, count);
--out:
-+						kunmap_ops, count) ?: ret;
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(clear_foreign_p2m_mapping);
-diff --git a/drivers/block/xen-blkback/blkback.c b/drivers/block/xen-blkback/blkback.c
-index b18f0162cb9c..208f3eea3641 100644
---- a/drivers/block/xen-blkback/blkback.c
-+++ b/drivers/block/xen-blkback/blkback.c
-@@ -850,8 +850,11 @@ static int xen_blkbk_map(struct xen_blkif_ring *ring,
- 			pages[i]->page = persistent_gnt->page;
- 			pages[i]->persistent_gnt = persistent_gnt;
- 		} else {
--			if (get_free_page(ring, &pages[i]->page))
--				goto out_of_memory;
-+			if (get_free_page(ring, &pages[i]->page)) {
-+				put_free_pages(ring, pages_to_gnt, segs_to_map);
-+				ret = -ENOMEM;
-+				goto out;
-+			}
- 			addr = vaddr(pages[i]->page);
- 			pages_to_gnt[segs_to_map] = pages[i]->page;
- 			pages[i]->persistent_gnt = NULL;
-@@ -867,10 +870,8 @@ static int xen_blkbk_map(struct xen_blkif_ring *ring,
- 			break;
- 	}
- 
--	if (segs_to_map) {
-+	if (segs_to_map)
- 		ret = gnttab_map_refs(map, NULL, pages_to_gnt, segs_to_map);
--		BUG_ON(ret);
--	}
- 
- 	/*
- 	 * Now swizzle the MFN in our domain with the MFN from the other domain
-@@ -885,7 +886,7 @@ static int xen_blkbk_map(struct xen_blkif_ring *ring,
- 				pr_debug("invalid buffer -- could not remap it\n");
- 				put_free_pages(ring, &pages[seg_idx]->page, 1);
- 				pages[seg_idx]->handle = BLKBACK_INVALID_HANDLE;
--				ret |= 1;
-+				ret |= !ret;
- 				goto next;
- 			}
- 			pages[seg_idx]->handle = map[new_map_idx].handle;
-@@ -937,17 +938,18 @@ static int xen_blkbk_map(struct xen_blkif_ring *ring,
- 	}
- 	segs_to_map = 0;
- 	last_map = map_until;
--	if (map_until != num)
-+	if (!ret && map_until != num)
- 		goto again;
- 
--	return ret;
--
--out_of_memory:
--	pr_alert("%s: out of memory\n", __func__);
--	put_free_pages(ring, pages_to_gnt, segs_to_map);
--	for (i = last_map; i < num; i++)
-+out:
-+	for (i = last_map; i < num; i++) {
-+		/* Don't zap current batch's valid persistent grants. */
-+		if(i >= last_map + segs_to_map)
-+			pages[i]->persistent_gnt = NULL;
- 		pages[i]->handle = BLKBACK_INVALID_HANDLE;
--	return -ENOMEM;
-+	}
-+
-+	return ret;
- }
- 
- static int xen_blkbk_map_seg(struct pending_req *pending_req)
-diff --git a/drivers/media/usb/pwc/pwc-if.c b/drivers/media/usb/pwc/pwc-if.c
-index 9b76cf133d52..3df7ca2357da 100644
---- a/drivers/media/usb/pwc/pwc-if.c
-+++ b/drivers/media/usb/pwc/pwc-if.c
-@@ -147,16 +147,17 @@ static const struct video_device pwc_template = {
- /***************************************************************************/
- /* Private functions */
- 
--static void *pwc_alloc_urb_buffer(struct device *dev,
-+static void *pwc_alloc_urb_buffer(struct usb_device *dev,
- 				  size_t size, dma_addr_t *dma_handle)
- {
-+	struct device *dmadev = dev->bus->sysdev;
- 	void *buffer = kmalloc(size, GFP_KERNEL);
- 
- 	if (!buffer)
- 		return NULL;
- 
--	*dma_handle = dma_map_single(dev, buffer, size, DMA_FROM_DEVICE);
--	if (dma_mapping_error(dev, *dma_handle)) {
-+	*dma_handle = dma_map_single(dmadev, buffer, size, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(dmadev, *dma_handle)) {
- 		kfree(buffer);
- 		return NULL;
- 	}
-@@ -164,12 +165,14 @@ static void *pwc_alloc_urb_buffer(struct device *dev,
- 	return buffer;
- }
- 
--static void pwc_free_urb_buffer(struct device *dev,
-+static void pwc_free_urb_buffer(struct usb_device *dev,
- 				size_t size,
- 				void *buffer,
- 				dma_addr_t dma_handle)
- {
--	dma_unmap_single(dev, dma_handle, size, DMA_FROM_DEVICE);
-+	struct device *dmadev = dev->bus->sysdev;
-+
-+	dma_unmap_single(dmadev, dma_handle, size, DMA_FROM_DEVICE);
- 	kfree(buffer);
- }
- 
-@@ -274,6 +277,7 @@ static void pwc_frame_complete(struct pwc_device *pdev)
- static void pwc_isoc_handler(struct urb *urb)
- {
- 	struct pwc_device *pdev = (struct pwc_device *)urb->context;
-+	struct device *dmadev = urb->dev->bus->sysdev;
- 	int i, fst, flen;
- 	unsigned char *iso_buf = NULL;
- 
-@@ -320,7 +324,7 @@ static void pwc_isoc_handler(struct urb *urb)
- 	/* Reset ISOC error counter. We did get here, after all. */
- 	pdev->visoc_errors = 0;
- 
--	dma_sync_single_for_cpu(&urb->dev->dev,
-+	dma_sync_single_for_cpu(dmadev,
- 				urb->transfer_dma,
- 				urb->transfer_buffer_length,
- 				DMA_FROM_DEVICE);
-@@ -371,7 +375,7 @@ static void pwc_isoc_handler(struct urb *urb)
- 		pdev->vlast_packet_size = flen;
- 	}
- 
--	dma_sync_single_for_device(&urb->dev->dev,
-+	dma_sync_single_for_device(dmadev,
- 				   urb->transfer_dma,
- 				   urb->transfer_buffer_length,
- 				   DMA_FROM_DEVICE);
-@@ -453,7 +457,7 @@ static int pwc_isoc_init(struct pwc_device *pdev)
- 		urb->pipe = usb_rcvisocpipe(udev, pdev->vendpoint);
- 		urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
- 		urb->transfer_buffer_length = ISO_BUFFER_SIZE;
--		urb->transfer_buffer = pwc_alloc_urb_buffer(&udev->dev,
-+		urb->transfer_buffer = pwc_alloc_urb_buffer(udev,
- 							    urb->transfer_buffer_length,
- 							    &urb->transfer_dma);
- 		if (urb->transfer_buffer == NULL) {
-@@ -516,7 +520,7 @@ static void pwc_iso_free(struct pwc_device *pdev)
- 		if (urb) {
- 			PWC_DEBUG_MEMORY("Freeing URB\n");
- 			if (urb->transfer_buffer)
--				pwc_free_urb_buffer(&urb->dev->dev,
-+				pwc_free_urb_buffer(urb->dev,
- 						    urb->transfer_buffer_length,
- 						    urb->transfer_buffer,
- 						    urb->transfer_dma);
-diff --git a/drivers/net/xen-netback/netback.c b/drivers/net/xen-netback/netback.c
-index fa1ac0abc924..4bfafcd6317f 100644
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -1335,13 +1335,11 @@ int xenvif_tx_action(struct xenvif_queue *queue, int budget)
- 		return 0;
- 
- 	gnttab_batch_copy(queue->tx_copy_ops, nr_cops);
--	if (nr_mops != 0) {
-+	if (nr_mops != 0)
- 		ret = gnttab_map_refs(queue->tx_map_ops,
- 				      NULL,
- 				      queue->pages_to_map,
- 				      nr_mops);
--		BUG_ON(ret);
--	}
- 
- 	work_done = xenvif_tx_submit(queue);
- 
-diff --git a/drivers/xen/gntdev.c b/drivers/xen/gntdev.c
-index 246864bbb3e4..e953ea34b3e4 100644
---- a/drivers/xen/gntdev.c
-+++ b/drivers/xen/gntdev.c
-@@ -319,44 +319,47 @@ int gntdev_map_grant_pages(struct gntdev_grant_map *map)
- 		 * to the kernel linear addresses of the struct pages.
- 		 * These ptes are completely different from the user ptes dealt
- 		 * with find_grant_ptes.
-+		 * Note that GNTMAP_device_map isn't needed here: The
-+		 * dev_bus_addr output field gets consumed only from ->map_ops,
-+		 * and by not requesting it when mapping we also avoid needing
-+		 * to mirror dev_bus_addr into ->unmap_ops (and holding an extra
-+		 * reference to the page in the hypervisor).
- 		 */
-+		unsigned int flags = (map->flags & ~GNTMAP_device_map) |
-+				     GNTMAP_host_map;
-+
- 		for (i = 0; i < map->count; i++) {
- 			unsigned long address = (unsigned long)
- 				pfn_to_kaddr(page_to_pfn(map->pages[i]));
- 			BUG_ON(PageHighMem(map->pages[i]));
- 
--			gnttab_set_map_op(&map->kmap_ops[i], address,
--				map->flags | GNTMAP_host_map,
-+			gnttab_set_map_op(&map->kmap_ops[i], address, flags,
- 				map->grants[i].ref,
- 				map->grants[i].domid);
- 			gnttab_set_unmap_op(&map->kunmap_ops[i], address,
--				map->flags | GNTMAP_host_map, -1);
-+				flags, -1);
- 		}
- 	}
- 
- 	pr_debug("map %d+%d\n", map->index, map->count);
- 	err = gnttab_map_refs(map->map_ops, use_ptemod ? map->kmap_ops : NULL,
- 			map->pages, map->count);
--	if (err)
--		return err;
- 
- 	for (i = 0; i < map->count; i++) {
--		if (map->map_ops[i].status) {
-+		if (map->map_ops[i].status == GNTST_okay)
-+			map->unmap_ops[i].handle = map->map_ops[i].handle;
-+		else if (!err)
- 			err = -EINVAL;
--			continue;
--		}
- 
--		map->unmap_ops[i].handle = map->map_ops[i].handle;
--		if (use_ptemod)
--			map->kunmap_ops[i].handle = map->kmap_ops[i].handle;
--#ifdef CONFIG_XEN_GRANT_DMA_ALLOC
--		else if (map->dma_vaddr) {
--			unsigned long bfn;
-+		if (map->flags & GNTMAP_device_map)
-+			map->unmap_ops[i].dev_bus_addr = map->map_ops[i].dev_bus_addr;
- 
--			bfn = pfn_to_bfn(page_to_pfn(map->pages[i]));
--			map->unmap_ops[i].dev_bus_addr = __pfn_to_phys(bfn);
-+		if (use_ptemod) {
-+			if (map->kmap_ops[i].status == GNTST_okay)
-+				map->kunmap_ops[i].handle = map->kmap_ops[i].handle;
-+			else if (!err)
-+				err = -EINVAL;
- 		}
--#endif
- 	}
- 	return err;
- }
-diff --git a/drivers/xen/xen-scsiback.c b/drivers/xen/xen-scsiback.c
-index 33d6499d8472..32aba2e8c075 100644
---- a/drivers/xen/xen-scsiback.c
-+++ b/drivers/xen/xen-scsiback.c
-@@ -422,12 +422,12 @@ static int scsiback_gnttab_data_map_batch(struct gnttab_map_grant_ref *map,
- 		return 0;
- 
- 	err = gnttab_map_refs(map, NULL, pg, cnt);
--	BUG_ON(err);
- 	for (i = 0; i < cnt; i++) {
- 		if (unlikely(map[i].status != GNTST_okay)) {
- 			pr_err("invalid buffer -- could not remap it\n");
- 			map[i].handle = SCSIBACK_INVALID_HANDLE;
--			err = -ENOMEM;
-+			if (!err)
-+				err = -ENOMEM;
- 		} else {
- 			get_page(pg[i]);
- 		}
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index cda5534d3d0e..7960359dbc70 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -136,9 +136,6 @@ enum {
- 	BTRFS_FS_STATE_DEV_REPLACING,
- 	/* The btrfs_fs_info created for self-tests */
- 	BTRFS_FS_STATE_DUMMY_FS_INFO,
--
--	/* Indicate that we can't trust the free space tree for caching yet */
--	BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
- };
- 
- #define BTRFS_BACKREF_REV_MAX		256
-@@ -527,6 +524,9 @@ enum {
- 	 * so we don't need to offload checksums to workqueues.
- 	 */
- 	BTRFS_FS_CSUM_IMPL_FAST,
-+
-+	/* Indicate that we can't trust the free space tree for caching yet */
-+	BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
- };
- 
- struct btrfs_fs_info {
-diff --git a/include/xen/grant_table.h b/include/xen/grant_table.h
-index 9bc5bc07d4d3..a9978350b45b 100644
---- a/include/xen/grant_table.h
-+++ b/include/xen/grant_table.h
-@@ -157,6 +157,7 @@ gnttab_set_map_op(struct gnttab_map_grant_ref *map, phys_addr_t addr,
- 	map->flags = flags;
- 	map->ref = ref;
- 	map->dom = domid;
-+	map->status = 1; /* arbitrary positive value */
- }
- 
- static inline void
-diff --git a/net/bridge/br.c b/net/bridge/br.c
-index 8a8f9e5f264f..cccbb9bf3ca4 100644
---- a/net/bridge/br.c
-+++ b/net/bridge/br.c
-@@ -43,7 +43,10 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
- 
- 		if (event == NETDEV_REGISTER) {
- 			/* register of bridge completed, add sysfs entries */
--			br_sysfs_addbr(dev);
-+			err = br_sysfs_addbr(dev);
-+			if (err)
-+				return notifier_from_errno(err);
-+
- 			return NOTIFY_DONE;
- 		}
- 	}
-diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-index d6d2736ec927..ef602976bb2c 100644
---- a/net/qrtr/qrtr.c
-+++ b/net/qrtr/qrtr.c
-@@ -187,7 +187,7 @@ static int qrtr_node_enqueue(struct qrtr_node *node, struct sk_buff *skb,
- 	hdr->src_port_id = cpu_to_le32(from->sq_port);
- 	if (to->sq_port == QRTR_PORT_CTRL) {
- 		hdr->dst_node_id = cpu_to_le32(node->nid);
--		hdr->dst_port_id = cpu_to_le32(QRTR_NODE_BCAST);
-+		hdr->dst_port_id = cpu_to_le32(QRTR_PORT_CTRL);
- 	} else {
- 		hdr->dst_node_id = cpu_to_le32(to->sq_node);
- 		hdr->dst_port_id = cpu_to_le32(to->sq_port);
+Dear Friend,
+
+I know that this mail will come to you as a surprise as we have never
+met before, but need not to worry as I am contacting you independently
+of my investigation and no one is informed of this communication. I
+need your urgent assistance in transferring the sum of U$10.5 million
+immediately to your private account, The money has been here in our
+Bank lying dormant for years now without anybody coming for the claim
+of it.
+
+I want the money to be release to you as the relative to our deceased
+customer (the account owner) who died a long with his supposed Next Of
+Kin since 16th October 2005. The Banking laws here does not allow such
+money to stay more than 16 years, because the money will be recalled
+to the Bank treasury account as unclaimed fund.
+
+By indicating your interest I will send you the full details on how
+the business will be executed.
+
+Please respond urgently and delete if you are not interested.
+
+Best Regards,
+Mrs. Caroline Manon.
