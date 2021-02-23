@@ -2,141 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD830322CCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CCA322CD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:51:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbhBWOt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:49:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232725AbhBWOts (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:49:48 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034E2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:49:07 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id q9so4002756qvo.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:49:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5S1278VXBXOSLVzud0ikIuJDPMbbC2qcHtU1cXjsgPk=;
-        b=NiVKZu5i8qwDclQxF0dwzHxzXcPvLJbWdBqJ0G5HlyTCGT8dxnmVly+zHKAPdGPFrQ
-         jLdOKWrkacctxFanoSKOGX3fa5L5bCcvzYdI6za53kIxVTLpypD57RLJB3PkyBrTsKkd
-         lKj6wAgVQntdDLIQBxJ8PT4t95heusHlnfeTwdCiuCeqGzrqnyqBeEaDR+9vUSPaYSbq
-         DG/uwnbkangeBPnYXVIcU4DYx5Qyusddt4EZdL8HrGfvG6gGArKhgL8JjHqAqZbyNnSP
-         9/dOz/8pMQC+MMk4o8QWp5Tuz5WRqftR8WswyTX6bHnKj8/SSyC4Do5EmH6jhxTuAx7C
-         iWwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5S1278VXBXOSLVzud0ikIuJDPMbbC2qcHtU1cXjsgPk=;
-        b=haM2PC/O1dr3BRCedO6ixQSQQKFKYXDuspblotNmC7Xu01QDtJE+5Sf6G7x7HbTV5V
-         BmhJNa8DDTy4gOi95ny7pHcPWhWBhA0HBR47ltza2AVXPYkfkvHbv8AysWf5f8fibmb4
-         MJu8zxRj9OczWDOTzps40/CZs0zwJCod4zod+nmBy+ffors+WIlp6N44GOmPHqQZ8WdD
-         NL0e5x1oTuJ/TSkciVuhIuZ44kDYcvRlr4nrRmji7fp8p8gf3Gvo+VS1YGAxy5NwRLrR
-         mv6+e359L6Tf0SC4D/TR7rGzyjwhfBrgA1oMSynGnED912Wd5ZWdR2fiGNBOgOdwv7NQ
-         GWcg==
-X-Gm-Message-State: AOAM533PKKxqMJxQ0nXgSKboObu/lu31LlD3uBUE6wGK3QHi13VLVpBd
-        8DPnKNA8eaRtOgAe4yhRe3UCAiC3zz0UuqLSbssC9g==
-X-Google-Smtp-Source: ABdhPJzkj0kFTsnMC8xw+10LnB3Mw8u1Yp18xzsvPq+XTQfqTRg36gkO97V96V/4F1u+24NycHQHKwxhsiqGo6/rJ1s=
-X-Received: by 2002:a0c:e20f:: with SMTP id q15mr22742422qvl.13.1614091745827;
- Tue, 23 Feb 2021 06:49:05 -0800 (PST)
+        id S232878AbhBWOuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:50:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57888 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232725AbhBWOuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:50:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614091763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ab6TNhKlXjlpvvl10dRHtjgP7K/ABqxgf//XIKLZ2qc=;
+        b=tiOTBO6xsx1FlWVx+tFCbzDuTZcZUzURYWmL1HzkEGVdTcAq8fpTF8xeogH9v1HKXeZX2+
+        DjY7iWuO5uEat7bz0e2bWwBlmq3viZsvEpVW4VMHnaB42iIlHd5TwMvtfBi+Ctvcf++IvY
+        rzfHLRamGzYYrzcYKkWVuA3JAaGdD+k=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 175E8AF42;
+        Tue, 23 Feb 2021 14:49:23 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 15:49:22 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     willy@infradead.org, andriy.shevchenko@linux.intel.com,
+        david@redhat.com, linmiaohe@huawei.com, vbabka@suse.cz,
+        cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com, joe@perches.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] vsprintf: dump full information of page flags in pGp
+ fix
+Message-ID: <YDUV8kqgK0fCgpOf@alley>
+References: <20210223055124.75882-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
-References: <20210223143426.2412737-1-elver@google.com> <20210223143426.2412737-2-elver@google.com>
-In-Reply-To: <20210223143426.2412737-2-elver@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 23 Feb 2021 15:48:54 +0100
-Message-ID: <CACT4Y+YGrj3zc+KsxQ0=N5t3dPy58FwVuy=MY95RphOD4i4FHg@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/4] perf/core: Apply PERF_EVENT_IOC_MODIFY_ATTRIBUTES
- to children
-To:     Marco Elver <elver@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223055124.75882-1-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 3:34 PM Marco Elver <elver@google.com> wrote:
->
-> As with other ioctls (such as PERF_EVENT_IOC_{ENABLE,DISABLE}), fix up
-> handling of PERF_EVENT_IOC_MODIFY_ATTRIBUTES to also apply to children.
->
-> Link: https://lkml.kernel.org/r/YBqVaY8aTMYtoUnX@hirez.programming.kicks-ass.net
-> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
+On Tue 2021-02-23 13:51:24, Yafang Shao wrote:
+> The name of the flag should be printed using default_str_spec.
+> There's no difference in the output after this change because the string is
+> printed as-is with both default_dec_spec and default_flag_spec.
+> 
+> This patch is a followup of the patchset
+> "mm, vsprintf: dump full information of page flags in pGp" [1]
+> 
+> [1]. https://lore.kernel.org/linux-mm/20210215155141.47432-1-laoar.shao@gmail.com/
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Miaohe Lin <linmiaohe@huawei.com>
+> Cc: Joe Perches <joe@perches.com>
+> Cc: David Hildenbrand <david@redhat.com>
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-
-> ---
->  kernel/events/core.c | 22 +++++++++++++++++++++-
->  1 file changed, 21 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 129dee540a8b..37a8297be164 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -3179,16 +3179,36 @@ static int perf_event_modify_breakpoint(struct perf_event *bp,
->  static int perf_event_modify_attr(struct perf_event *event,
->                                   struct perf_event_attr *attr)
->  {
-> +       int (*func)(struct perf_event *, struct perf_event_attr *);
-> +       struct perf_event *child;
-> +       int err;
-> +
->         if (event->attr.type != attr->type)
->                 return -EINVAL;
->
->         switch (event->attr.type) {
->         case PERF_TYPE_BREAKPOINT:
-> -               return perf_event_modify_breakpoint(event, attr);
-> +               func = perf_event_modify_breakpoint;
-> +               break;
->         default:
->                 /* Place holder for future additions. */
->                 return -EOPNOTSUPP;
->         }
-> +
-> +       WARN_ON_ONCE(event->ctx->parent_ctx);
-> +
-> +       mutex_lock(&event->child_mutex);
-> +       err = func(event, attr);
-> +       if (err)
-> +               goto out;
-> +       list_for_each_entry(child, &event->child_list, child_list) {
-> +               err = func(child, attr);
-> +               if (err)
-> +                       goto out;
-> +       }
-> +out:
-> +       mutex_unlock(&event->child_mutex);
-> +       return err;
->  }
->
->  static void ctx_sched_out(struct perf_event_context *ctx,
-> --
-> 2.30.0.617.g56c4b15f3c-goog
->
+Best Regards,
+Petr
