@@ -2,157 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B813227DA
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF4D3227D9
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhBWJbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 04:31:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41082 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230088AbhBWJ3B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:29:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614072455;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h24RIBiBzWyvnGHMRqm0bjGav8NVJ5vrDg07fowU/yw=;
-        b=bRxAp1CTEcuOyhkzp/IVkvAC6fnuSny76pVuZgTO2OUJyA22X9fpa05EGyPVQmAJsjO3gw
-        cNcNIJ7d/obfDOkHWHlxaCqEX0oXtysAlUznGTvFqvm6eANLsC3SQF11w/h0eAoXfUo52N
-        oBbGOx73PxiVvnJSCOsTDStamjUH6Lk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-493-TUsy6KvKOOehiTo23wmUZw-1; Tue, 23 Feb 2021 04:26:39 -0500
-X-MC-Unique: TUsy6KvKOOehiTo23wmUZw-1
-Received: by mail-wr1-f69.google.com with SMTP id l3so5463117wrx.15
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 01:26:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h24RIBiBzWyvnGHMRqm0bjGav8NVJ5vrDg07fowU/yw=;
-        b=BsLuR9Yerarokq7bIXDIvRdGrzfPRRxAtwNoMgpZydUthYdCo8b0QC6UmAkvSTBrkx
-         Cv8zxrHtOJUIblOpSSP85I/+LVk9yh44cfxoGm5TpJEpmZ30lNecW0bLbKHOy5NggG5U
-         jJ/jzny10gwFUHGCLdgAIcdVlGbr/RdQHajBjNOKgmplMfcZ4TP/XrmY5BqioaHTM4Wj
-         mNgTV8hXZ0w1sUzl7OYM6XhiYUS3x2XffxNt8yoodz18eRBYtlM4Zo49ACUkeny7IaVW
-         LTGNeH1N3rzHemgod8/lMnC2CBKozT8gzGKcWvHEzMtVLmT4N8f89+kQcmKZlhGSArXn
-         KB6g==
-X-Gm-Message-State: AOAM530eTaRvtD69BhS66zL2CC4+WqtMwnIXiXZzTkYHk/YD2/NGihxA
-        rCFOicGc/c8w793iQjWG3jleDIRatn3xNbw/QFndNRLMWCLeXgT6FIJA3yhqoUn4zlCU3b84vyM
-        xgGypR4HDKFIHBUP+q26tMkm5
-X-Received: by 2002:a5d:5910:: with SMTP id v16mr25412076wrd.304.1614072398474;
-        Tue, 23 Feb 2021 01:26:38 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwpG+IjMBMskIS3JIko3wZp10Ib6ahzykLv4bI1e1go9h9Q19lzcgRxEOLog/5XNrwEUBFFxQ==
-X-Received: by 2002:a5d:5910:: with SMTP id v16mr25412068wrd.304.1614072398336;
-        Tue, 23 Feb 2021 01:26:38 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id 36sm33421735wrj.97.2021.02.23.01.26.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 01:26:37 -0800 (PST)
-Date:   Tue, 23 Feb 2021 04:26:35 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, jasowang@redhat.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-Message-ID: <20210223042559-mutt-send-email-mst@kernel.org>
-References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
- <20210221144437.GA82010@mtl-vdi-166.wap.labs.mlnx>
- <20210221165047-mutt-send-email-mst@kernel.org>
- <20210222060526.GA110862@mtl-vdi-166.wap.labs.mlnx>
+        id S231570AbhBWJat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:30:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43614 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231561AbhBWJ2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 04:28:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6C54AAC1D;
+        Tue, 23 Feb 2021 09:27:59 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 10:27:55 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, mhocko@suse.com, song.bao.hua@hisilicon.com,
+        david@redhat.com, naoya.horiguchi@nec.com,
+        joao.m.martins@oracle.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v16 4/9] mm: hugetlb: alloc the vmemmap pages associated
+ with each HugeTLB page
+Message-ID: <20210223092740.GA1998@linux>
+References: <20210219104954.67390-1-songmuchun@bytedance.com>
+ <20210219104954.67390-5-songmuchun@bytedance.com>
+ <13a5363c-6af4-1e1f-9a18-972ca18278b5@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210222060526.GA110862@mtl-vdi-166.wap.labs.mlnx>
+In-Reply-To: <13a5363c-6af4-1e1f-9a18-972ca18278b5@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 08:05:26AM +0200, Eli Cohen wrote:
-> On Sun, Feb 21, 2021 at 04:52:05PM -0500, Michael S. Tsirkin wrote:
-> > On Sun, Feb 21, 2021 at 04:44:37PM +0200, Eli Cohen wrote:
-> > > On Fri, Feb 19, 2021 at 06:54:58AM -0500, Si-Wei Liu wrote:
-> > > > Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
-> > > > for legacy") made an exception for legacy guests to reset
-> > > > features to 0, when config space is accessed before features
-> > > > are set. We should relieve the verify_min_features() check
-> > > > and allow features reset to 0 for this case.
-> > > > 
-> > > > It's worth noting that not just legacy guests could access
-> > > > config space before features are set. For instance, when
-> > > > feature VIRTIO_NET_F_MTU is advertised some modern driver
-> > > > will try to access and validate the MTU present in the config
-> > > > space before virtio features are set. Rejecting reset to 0
-> > > > prematurely causes correct MTU and link status unable to load
-> > > > for the very first config space access, rendering issues like
-> > > > guest showing inaccurate MTU value, or failure to reject
-> > > > out-of-range MTU.
-> > > > 
-> > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> > > > Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-> > > > ---
-> > > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
-> > > >  1 file changed, 1 insertion(+), 14 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > index 7c1f789..540dd67 100644
-> > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > @@ -1490,14 +1490,6 @@ static u64 mlx5_vdpa_get_features(struct vdpa_device *vdev)
-> > > >  	return mvdev->mlx_features;
-> > > >  }
-> > > >  
-> > > > -static int verify_min_features(struct mlx5_vdpa_dev *mvdev, u64 features)
-> > > > -{
-> > > > -	if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
-> > > > -		return -EOPNOTSUPP;
-> > > > -
-> > > > -	return 0;
-> > > > -}
-> > > > -
-> > > 
-> > > But what if VIRTIO_F_ACCESS_PLATFORM is not offerred? This does not
-> > > support such cases.
-> > 
-> > Did you mean "catch such cases" rather than "support"?
-> > 
+On Mon, Feb 22, 2021 at 04:00:27PM -0800, Mike Kravetz wrote:
+> > -static void update_and_free_page(struct hstate *h, struct page *page)
+> > +static int update_and_free_page(struct hstate *h, struct page *page)
+> > +	__releases(&hugetlb_lock) __acquires(&hugetlb_lock)
+> >  {
+> >  	int i;
+> > +	int nid = page_to_nid(page);
+> >  
+> >  	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
+> > -		return;
+> > +		return 0;
+> >  
+> >  	h->nr_huge_pages--;
+> > -	h->nr_huge_pages_node[page_to_nid(page)]--;
+> > +	h->nr_huge_pages_node[nid]--;
+> > +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
+> > +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
+> > +	set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
+> > +	set_page_refcounted(page);
 > 
-> Actually I meant this driver/device does not support such cases.
+> I think you added the set_page_refcounted() because the huge page will
+> appear as just a compound page without a reference after dropping the
+> hugetlb lock?  It might be better to set the reference before modifying
+> the destructor.  Otherwise, page scanning code could find the non-hugetlb
+> compound page with no reference.  I could not find any code where this
+> would be a problem, but I think it would be safer to set the reference
+> first.
 
-Well the removed code merely failed without VIRTIO_F_ACCESS_PLATFORM
-it didn't actually try to support anything ...
+But we already had set_page_refcounted() before this patchset there.
+Are the worries only because we drop the lock? AFAICS, the "page-scanning"
+problem could have happened before as well?
+Although, what does page scanning mean in this context?
 
-> > 
-> > > Maybe we should call verify_min_features() from mlx5_vdpa_set_status()
-> > > just before attempting to call setup_driver().
-> > > 
-> > > >  static int setup_virtqueues(struct mlx5_vdpa_net *ndev)
-> > > >  {
-> > > >  	int err;
-> > > > @@ -1558,18 +1550,13 @@ static int mlx5_vdpa_set_features(struct vdpa_device *vdev, u64 features)
-> > > >  {
-> > > >  	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
-> > > >  	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
-> > > > -	int err;
-> > > >  
-> > > >  	print_features(mvdev, features, true);
-> > > >  
-> > > > -	err = verify_min_features(mvdev, features);
-> > > > -	if (err)
-> > > > -		return err;
-> > > > -
-> > > >  	ndev->mvdev.actual_features = features & ndev->mvdev.mlx_features;
-> > > >  	ndev->config.mtu = cpu_to_mlx5vdpa16(mvdev, ndev->mtu);
-> > > >  	ndev->config.status |= cpu_to_mlx5vdpa16(mvdev, VIRTIO_NET_S_LINK_UP);
-> > > > -	return err;
-> > > > +	return 0;
-> > > >  }
-> > > >  
-> > > >  static void mlx5_vdpa_set_config_cb(struct vdpa_device *vdev, struct vdpa_callback *cb)
-> > > > -- 
-> > > > 1.8.3.1
-> > > > 
-> > 
+I am not opposed to move it above, but I would like to understand the concern
+here.
 
+> 
+> > +	spin_unlock(&hugetlb_lock);
+> 
+> I really like the way this code is structured.  It is much simpler than
+> previous versions with retries or workqueue.  There is nothing wrong with
+> always dropping the lock here.  However, I wonder if we should think about
+> optimizing for the case where this feature is not enabled and we are not
+> freeing a 1G huge page.  I suspect this will be the most common case for
+> some time, and there is no need to drop the lock in this case.
+> 
+> Please do not change the code based on my comment.  I just wanted to bring
+> this up for thought.
+> 
+> Is it as simple as checking?
+>         if (free_vmemmap_pages_per_hpage(h) || hstate_is_gigantic(h))
+>                 spin_unlock(&hugetlb_lock);
+> 
+>         /* before return */
+>         if (free_vmemmap_pages_per_hpage(h) || hstate_is_gigantic(h))
+>                 spin_lock(&hugetlb_lock);
+
+AFAIK, we at least need the hstate_is_gigantic? Comment below says that
+free_gigantic_page might block, so we need to drop the lock.
+And I am fine with the change overall.
+
+Unless I am missing something, we should not need to drop the lock unless
+we need to allocate vmemmap pages (apart from gigantic pages).
+
+> 
+> > +
+> > +	if (alloc_huge_page_vmemmap(h, page)) {
+> > +		int zeroed;
+> > +
+> > +		spin_lock(&hugetlb_lock);
+> > +		INIT_LIST_HEAD(&page->lru);
+> > +		set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
+> > +		h->nr_huge_pages++;
+> > +		h->nr_huge_pages_node[nid]++;
+
+I think prep_new_huge_page() does this for us?
+
+> > +
+> > +		/*
+> > +		 * If we cannot allocate vmemmap pages, just refuse to free the
+> > +		 * page and put the page back on the hugetlb free list and treat
+> > +		 * as a surplus page.
+> > +		 */
+> > +		h->surplus_huge_pages++;
+> > +		h->surplus_huge_pages_node[nid]++;
+> > +
+> > +		/*
+> > +		 * This page is now managed by the hugetlb allocator and has
+> > +		 * no users -- drop the last reference.
+> > +		 */
+> > +		zeroed = put_page_testzero(page);
+> > +		VM_BUG_ON_PAGE(!zeroed, page);
+
+Can this actually happen? AFAIK, page landed in update_and_free_page should be
+zero refcounted, then we increase the reference, and I cannot see how the
+reference might have changed in the meantime.
+
+I am all for catching corner cases, but not sure how realistic this is.
+Moreover, if we __ever__ get there, things can get nasty.
+
+We basically will have an in-use page in the free hugetlb pool, so corruption
+will happen. At that point, a plain BUG_ON might be better.
+
+But as I said, I do not think we need that.
+
+I yet need to look further, but what I have seen so far looks good.
+
+-- 
+Oscar Salvador
+SUSE L3
