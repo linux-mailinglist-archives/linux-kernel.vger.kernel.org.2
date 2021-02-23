@@ -2,88 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1893224C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 04:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEAB3224C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 04:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbhBWDpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 22:45:05 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:13368 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbhBWDpB (ORCPT
+        id S231468AbhBWDoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 22:44:38 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:38539 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230010AbhBWDog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 22:45:01 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Dl4cy2wR8z7nmH;
-        Tue, 23 Feb 2021 11:42:42 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Tue, 23 Feb 2021
- 11:44:16 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] crypto: testmgr - delete some redundant code
-Date:   Tue, 23 Feb 2021 11:42:04 +0800
-Message-ID: <1614051724-31694-1-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.8.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        Mon, 22 Feb 2021 22:44:36 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UPKSV0A_1614051814;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPKSV0A_1614051814)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 23 Feb 2021 11:43:53 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     alexander.deucher@amd.com
+Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/amdgpu: Remove unnecessary conversion to bool
+Date:   Tue, 23 Feb 2021 11:43:33 +0800
+Message-Id: <1614051813-51451-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete sg_data function, because sg_data function definition same as
-sg_virt(), so need to delete it and use sg_virt() replace to sg_data().
+Fix the following coccicheck warnings:
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
+./drivers/gpu/drm/amd/amdgpu/athub_v2_1.c:79:40-45: WARNING: conversion
+to bool not needed here.
+
+./drivers/gpu/drm/amd/amdgpu/athub_v2_1.c:81:40-45: WARNING: conversion
+to bool not needed here.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- crypto/testmgr.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/athub_v2_1.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 9335999..e13e73c 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -1168,11 +1168,6 @@ static inline int check_shash_op(const char *op, int err,
- 	return err;
- }
- 
--static inline const void *sg_data(struct scatterlist *sg)
--{
--	return page_address(sg_page(sg)) + sg->offset;
--}
--
- /* Test one hash test vector in one configuration, using the shash API */
- static int test_shash_vec_cfg(const struct hash_testvec *vec,
- 			      const char *vec_name,
-@@ -1230,7 +1225,7 @@ static int test_shash_vec_cfg(const struct hash_testvec *vec,
- 			return 0;
- 		if (cfg->nosimd)
- 			crypto_disable_simd_for_test();
--		err = crypto_shash_digest(desc, sg_data(&tsgl->sgl[0]),
-+		err = crypto_shash_digest(desc, sg_virt(&tsgl->sgl[0]),
- 					  tsgl->sgl[0].length, result);
- 		if (cfg->nosimd)
- 			crypto_reenable_simd_for_test();
-@@ -1266,7 +1261,7 @@ static int test_shash_vec_cfg(const struct hash_testvec *vec,
- 		    cfg->finalization_type == FINALIZATION_TYPE_FINUP) {
- 			if (divs[i]->nosimd)
- 				crypto_disable_simd_for_test();
--			err = crypto_shash_finup(desc, sg_data(&tsgl->sgl[i]),
-+			err = crypto_shash_finup(desc, sg_virt(&tsgl->sgl[i]),
- 						 tsgl->sgl[i].length, result);
- 			if (divs[i]->nosimd)
- 				crypto_reenable_simd_for_test();
-@@ -1278,7 +1273,7 @@ static int test_shash_vec_cfg(const struct hash_testvec *vec,
- 		}
- 		if (divs[i]->nosimd)
- 			crypto_disable_simd_for_test();
--		err = crypto_shash_update(desc, sg_data(&tsgl->sgl[i]),
-+		err = crypto_shash_update(desc, sg_virt(&tsgl->sgl[i]),
- 					  tsgl->sgl[i].length);
- 		if (divs[i]->nosimd)
- 			crypto_reenable_simd_for_test();
+diff --git a/drivers/gpu/drm/amd/amdgpu/athub_v2_1.c b/drivers/gpu/drm/amd/amdgpu/athub_v2_1.c
+index 7b1b183..2ac4988 100644
+--- a/drivers/gpu/drm/amd/amdgpu/athub_v2_1.c
++++ b/drivers/gpu/drm/amd/amdgpu/athub_v2_1.c
+@@ -74,10 +74,8 @@ int athub_v2_1_set_clockgating(struct amdgpu_device *adev,
+ 	case CHIP_SIENNA_CICHLID:
+ 	case CHIP_NAVY_FLOUNDER:
+ 	case CHIP_DIMGREY_CAVEFISH:
+-		athub_v2_1_update_medium_grain_clock_gating(adev,
+-				state == AMD_CG_STATE_GATE ? true : false);
+-		athub_v2_1_update_medium_grain_light_sleep(adev,
+-				state == AMD_CG_STATE_GATE ? true : false);
++		athub_v2_1_update_medium_grain_clock_gating(adev, state == AMD_CG_STATE_GATE);
++		athub_v2_1_update_medium_grain_light_sleep(adev, state == AMD_CG_STATE_GATE);
+ 		break;
+ 	default:
+ 		break;
 -- 
-2.8.1
+1.8.3.1
 
