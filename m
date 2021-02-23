@@ -2,157 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF4D3227D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D273227E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhBWJat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 04:30:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43614 "EHLO mx2.suse.de"
+        id S232072AbhBWJcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:32:35 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:33477 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231561AbhBWJ2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:28:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6C54AAC1D;
-        Tue, 23 Feb 2021 09:27:59 +0000 (UTC)
-Date:   Tue, 23 Feb 2021 10:27:55 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        willy@infradead.org, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, naoya.horiguchi@nec.com,
-        joao.m.martins@oracle.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v16 4/9] mm: hugetlb: alloc the vmemmap pages associated
- with each HugeTLB page
-Message-ID: <20210223092740.GA1998@linux>
-References: <20210219104954.67390-1-songmuchun@bytedance.com>
- <20210219104954.67390-5-songmuchun@bytedance.com>
- <13a5363c-6af4-1e1f-9a18-972ca18278b5@oracle.com>
+        id S232159AbhBWJaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 04:30:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614072591; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=ccLpLZFPE7URe8mBNmsAYM6Yt6q2HVKFu6qwIkLkSYc=; b=iUQxpO1XKH3jzaYXv7/RWmvgzqNOXHrUlc/LBcZz39KEaBZqE4llgbUzSV9Zy4utDfF4bQGX
+ NJSloZOYHQeWsopQQBOV+4pXRGpWeFaTfx+1PyexI4hQCvsEvx9KT2ikQnNJ+N9CjivscGmQ
+ nLGAqVSa6xeuN9qcOo5fr8s3sFE=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6034cae99946643859716a9d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Feb 2021 09:29:13
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2F514C43461; Tue, 23 Feb 2021 09:29:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 36879C433C6;
+        Tue, 23 Feb 2021 09:29:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 36879C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Pkshih <pkshih@realtek.com>
+Cc:     "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony0620emma\@gmail.com" <tony0620emma@gmail.com>,
+        Timlee <timlee@realtek.com>,
+        "zhanjun\@uniontech.com" <zhanjun@uniontech.com>,
+        "kuba\@kernel.org" <kuba@kernel.org>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "arnd\@arndb.de" <arnd@arndb.de>,
+        "chenhaoa\@uniontech.com" <chenhaoa@uniontech.com>,
+        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>
+Subject: Re: [PATCH v2] rtw88: 8822ce: fix wifi disconnect after S3/S4 on HONOR laptop
+References: <20210222094638.18392-1-chenhaoa@uniontech.com>
+        <87h7m4iefe.fsf@codeaurora.org> <1613993809.2331.12.camel@realtek.com>
+        <878s7fi7m5.fsf@codeaurora.org> <1614069836.8409.0.camel@realtek.com>
+Date:   Tue, 23 Feb 2021 11:29:07 +0200
+In-Reply-To: <1614069836.8409.0.camel@realtek.com> (pkshih@realtek.com's
+        message of "Tue, 23 Feb 2021 08:43:59 +0000")
+Message-ID: <874ki3i13w.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <13a5363c-6af4-1e1f-9a18-972ca18278b5@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 04:00:27PM -0800, Mike Kravetz wrote:
-> > -static void update_and_free_page(struct hstate *h, struct page *page)
-> > +static int update_and_free_page(struct hstate *h, struct page *page)
-> > +	__releases(&hugetlb_lock) __acquires(&hugetlb_lock)
-> >  {
-> >  	int i;
-> > +	int nid = page_to_nid(page);
-> >  
-> >  	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
-> > -		return;
-> > +		return 0;
-> >  
-> >  	h->nr_huge_pages--;
-> > -	h->nr_huge_pages_node[page_to_nid(page)]--;
-> > +	h->nr_huge_pages_node[nid]--;
-> > +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
-> > +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
-> > +	set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
-> > +	set_page_refcounted(page);
-> 
-> I think you added the set_page_refcounted() because the huge page will
-> appear as just a compound page without a reference after dropping the
-> hugetlb lock?  It might be better to set the reference before modifying
-> the destructor.  Otherwise, page scanning code could find the non-hugetlb
-> compound page with no reference.  I could not find any code where this
-> would be a problem, but I think it would be safer to set the reference
-> first.
+Pkshih <pkshih@realtek.com> writes:
 
-But we already had set_page_refcounted() before this patchset there.
-Are the worries only because we drop the lock? AFAICS, the "page-scanning"
-problem could have happened before as well?
-Although, what does page scanning mean in this context?
+> On Tue, 2021-02-23 at 09:08 +0200, Kalle Valo wrote:
+>> Pkshih <pkshih@realtek.com> writes:
+>>=20
+>> >> > --- a/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
+>> >> > +++ b/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
+>> >> > @@ -25,7 +25,6 @@ static struct pci_driver rtw_8822ce_driver =3D {
+>> >> >=C2=A0=C2=A0	.id_table =3D rtw_8822ce_id_table,
+>> >> >=C2=A0=C2=A0	.probe =3D rtw_pci_probe,
+>> >> >=C2=A0=C2=A0	.remove =3D rtw_pci_remove,
+>> >> > -	.driver.pm =3D &rtw_pm_ops,
+>> >>=C2=A0
+>> >> Why just 8822ce? Why not remove rtw_pm_ops entirely if it just creates
+>> >> problems?
+>> >
+>> > I think we can't remove rtw_pm_ops, because wowlan will not work.
+>>=20
+>> Ah. A comment code in the code stating that would be nice.
+>>=20
+>
+> I'll do it.
 
-I am not opposed to move it above, but I would like to understand the concern
-here.
+Thank you.
 
-> 
-> > +	spin_unlock(&hugetlb_lock);
-> 
-> I really like the way this code is structured.  It is much simpler than
-> previous versions with retries or workqueue.  There is nothing wrong with
-> always dropping the lock here.  However, I wonder if we should think about
-> optimizing for the case where this feature is not enabled and we are not
-> freeing a 1G huge page.  I suspect this will be the most common case for
-> some time, and there is no need to drop the lock in this case.
-> 
-> Please do not change the code based on my comment.  I just wanted to bring
-> this up for thought.
-> 
-> Is it as simple as checking?
->         if (free_vmemmap_pages_per_hpage(h) || hstate_is_gigantic(h))
->                 spin_unlock(&hugetlb_lock);
-> 
->         /* before return */
->         if (free_vmemmap_pages_per_hpage(h) || hstate_is_gigantic(h))
->                 spin_lock(&hugetlb_lock);
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-AFAIK, we at least need the hstate_is_gigantic? Comment below says that
-free_gigantic_page might block, so we need to drop the lock.
-And I am fine with the change overall.
-
-Unless I am missing something, we should not need to drop the lock unless
-we need to allocate vmemmap pages (apart from gigantic pages).
-
-> 
-> > +
-> > +	if (alloc_huge_page_vmemmap(h, page)) {
-> > +		int zeroed;
-> > +
-> > +		spin_lock(&hugetlb_lock);
-> > +		INIT_LIST_HEAD(&page->lru);
-> > +		set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
-> > +		h->nr_huge_pages++;
-> > +		h->nr_huge_pages_node[nid]++;
-
-I think prep_new_huge_page() does this for us?
-
-> > +
-> > +		/*
-> > +		 * If we cannot allocate vmemmap pages, just refuse to free the
-> > +		 * page and put the page back on the hugetlb free list and treat
-> > +		 * as a surplus page.
-> > +		 */
-> > +		h->surplus_huge_pages++;
-> > +		h->surplus_huge_pages_node[nid]++;
-> > +
-> > +		/*
-> > +		 * This page is now managed by the hugetlb allocator and has
-> > +		 * no users -- drop the last reference.
-> > +		 */
-> > +		zeroed = put_page_testzero(page);
-> > +		VM_BUG_ON_PAGE(!zeroed, page);
-
-Can this actually happen? AFAIK, page landed in update_and_free_page should be
-zero refcounted, then we increase the reference, and I cannot see how the
-reference might have changed in the meantime.
-
-I am all for catching corner cases, but not sure how realistic this is.
-Moreover, if we __ever__ get there, things can get nasty.
-
-We basically will have an in-use page in the free hugetlb pool, so corruption
-will happen. At that point, a plain BUG_ON might be better.
-
-But as I said, I do not think we need that.
-
-I yet need to look further, but what I have seen so far looks good.
-
--- 
-Oscar Salvador
-SUSE L3
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
