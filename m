@@ -2,103 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508CB322C1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B8C322BFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbhBWOWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:22:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232533AbhBWOWC (ORCPT
+        id S232646AbhBWOOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:14:08 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12945 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230512AbhBWONx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:22:02 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5E1C061574;
-        Tue, 23 Feb 2021 06:21:21 -0800 (PST)
-Date:   Tue, 23 Feb 2021 15:21:18 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614090080;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=teDU304o4orU9wi3x1wUaMwyYWDTSBXOaHNrx5ClT0w=;
-        b=2ZFBXIkVYYN+nfCFMhN/kFjRVgHW8puY2SXmz4LEKGGgLUncGkXWOrZSwoCghFhYtR+0B+
-        WtPmbg5RS4xdWq4hxg1404dlLYeX8B1nl0sqxT/iSdGPS8B9+EQX6bJrSz60txeX1elHLY
-        UJuc7DdwyciRZtLdZ7N2eL0hXxoiKyZFSWSOa+CpigNZAQxC6YaEfZPpDLl4v/qWuEXt75
-        hQJzYWVPVm0s4qW06fwuBPD49s1CfD4EOueDsOPESr9YTIyMw7koMtkWSNCgwafaW+0GHl
-        qIGWtjJp/HvT7g0wY3dOI9iiT82sEd1QG7g7UFBrvA7otZ+CLf2L64NjiYndRA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614090080;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=teDU304o4orU9wi3x1wUaMwyYWDTSBXOaHNrx5ClT0w=;
-        b=4c33A1S2mV08nn7HeTxSpQILp2jnu0Nz6hii5AhOHt0Qbh5Zt3CCoH3QqXLLwQn84Nitl1
-        HnqJztvf+r2WUzCg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     linux-rt-users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [RT v5.11-rt7] WARNING at include/linux/seqlock.h:271
- nft_counter_eval
-Message-ID: <20210223142118.u22yhw3ku4ttx5hq@linutronix.de>
-References: <YDTdo+jETVr983t6@localhost.localdomain>
- <20210223110015.ybl7feu43wvtjoqu@linutronix.de>
- <YDUI5M5FQLycOd33@localhost.localdomain>
+        Tue, 23 Feb 2021 09:13:53 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DlLZv00P7zjQfb;
+        Tue, 23 Feb 2021 22:11:50 +0800 (CST)
+Received: from localhost.localdomain (10.175.102.38) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Feb 2021 22:13:02 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Hulk Robot <hulkci@huawei.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] nvmem: Fix return value check in rmem_read()
+Date:   Tue, 23 Feb 2021 14:22:14 +0000
+Message-ID: <20210223142214.3405217-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YDUI5M5FQLycOd33@localhost.localdomain>
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.102.38]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-23 14:53:40 [+0100], Juri Lelli wrote:
-> 
-> So, I'm a bit confused and I'm very likely missing details (still
-> digesting the seqprop_ magic), but write_seqcount_being() has
-> 
->  if (seqprop_preemptible(s))
->      preempt_disable();
-> 
-> which in this case (no lock associated) is defined to return false, 
-> while it should return true on RT (or in some occasions)? Or maybe this
-> is what you are saying already.
+In case of error, the function memremap() returns NULL pointer
+not ERR_PTR(). The IS_ERR() test in the return value check
+should be replaced with NULL test.
 
-write_seqcount_begin() has seqprop_assert() at the very beginning which
-ends in __seqprop_assert() in your case (seqcount_t). Your warning.
+Fixes: 5a3fa75a4d9c ("nvmem: Add driver to expose reserved memory as nvmem")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/nvmem/rmem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/nvmem/rmem.c b/drivers/nvmem/rmem.c
+index b11c3c974b3d..80cb187f1481 100644
+--- a/drivers/nvmem/rmem.c
++++ b/drivers/nvmem/rmem.c
+@@ -37,9 +37,9 @@ static int rmem_read(void *context, unsigned int offset,
+ 	 * but as of Dec 2020 this isn't possible on arm64.
+ 	 */
+ 	addr = memremap(priv->mem->base, available, MEMREMAP_WB);
+-	if (IS_ERR(addr)) {
++	if (!addr) {
+ 		dev_err(priv->dev, "Failed to remap memory region\n");
+-		return PTR_ERR(addr);
++		return -ENOMEM;
+ 	}
+ 
+ 	count = memory_read_from_buffer(val, bytes, &off, addr, available);
 
-> Also, the check for preemption been disabled happens before we can
-> actually potentially disable it, no?
-
-That seqprop_preemptible() is true for !RT for mutex/ww_mutex locks. On
-RT it is always false since it does lock()+unlock() of the lock that is
-part of the seqcount.
-
-But back to the original issue: at write_seqcount_begin() preemption is
-disabled !RT implicit by local_bh_disable(). Therefore no warning.
-On RT local_bh_disable() disables BH on the CPUs so locking wise (since
-it is a per-CPU seqcount it should work. Preemption remains enabled so
-we have a warning.
-
-I have no idea what annotation would be best here. Having a
-local_bh_disable() type of a lock and the seqcount is not part of the data
-structure it protects is less than ideal.
-However, if I understand this correct then this nft_counter_percpu_priv
-exists once per nft rule. The seqcount exists once per-CPU since it is
-unlikely to modify two counters at once on a single CPU :) So there is
-that.
-
-While looking at it, there is nft_counter_reset() which modifies the
-values without a seqcount write lock. This might be okay.
-
-> Thanks for the quick reply!
-> 
-> Best,
-> Juri
-
-Sebastian
