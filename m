@@ -2,53 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043A7322CAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD87322CB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbhBWOqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:46:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:53718 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230267AbhBWOqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:46:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AEE181FB;
-        Tue, 23 Feb 2021 06:45:28 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE3AB3F73B;
-        Tue, 23 Feb 2021 06:45:26 -0800 (PST)
-Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
- cpu_util_next()
-To:     vincent.donnefort@arm.com, peterz@infradead.org, mingo@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     linux-kernel@vger.kernel.org, qperret@google.com,
-        patrick.bellasi@matbug.net, valentin.schneider@arm.com
-References: <20210222095401.37158-1-vincent.donnefort@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <66a16cf1-ffc5-2a40-7e04-900cc0e2ee2c@arm.com>
-Date:   Tue, 23 Feb 2021 15:44:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232180AbhBWOql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:46:41 -0500
+Received: from mail-oo1-f44.google.com ([209.85.161.44]:37962 "EHLO
+        mail-oo1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231976AbhBWOqi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 09:46:38 -0500
+Received: by mail-oo1-f44.google.com with SMTP id f26so3895687oog.5;
+        Tue, 23 Feb 2021 06:46:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/wlqU5gFpV97zZnVyyRZleFZ9BWrIgZ2Rdcv8uzTHfM=;
+        b=izqpbqAQoHWERsUlLgCvQl2ltizRssvGosn5JHs3fxCkK7IDsw9/DMyw0d0l+lmpMU
+         ZTDZ6k/4WOfqEH9v6uCGixbuQy9Kc61HGZhiUwERnOUFLILzHpf616PVOG09qjL3rIbL
+         qSPyRZ5y+oADul1PhQL7kcBz5EzrociapohB0wT9NrJscoPHa5qxhbw2evkyWbUK1Exb
+         qBr/bYm+gB+T7pYo2LC1Kq0gzow67HGKmHkxKJG3elg15m+IHGqfnlxXepXnTQdJj2In
+         xvd662pRlgmJ9slqqptGRrsNTIFVfB5QcezsoVZJno7yKDmz5wVArlh+f7DnihoZv3AX
+         MQpA==
+X-Gm-Message-State: AOAM532w6MDpFTGdxvMCy1KWQV6bSuoGd79OvuJEGPnsryCv1rKFphzE
+        znuReNSTbRdoHEY6Ut0khKiR//LQaPjg0NVx79GSBqCW
+X-Google-Smtp-Source: ABdhPJwfbF7b/OCPMJaoTlBR5XDAWd6jhh1U74IHQx1E+yIxafmNB1Y0yypJR+U1IIrawU8zOKzF7Veu7yaSNnskD5E=
+X-Received: by 2002:a4a:3bcb:: with SMTP id s194mr20310533oos.1.1614091557912;
+ Tue, 23 Feb 2021 06:45:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210222095401.37158-1-vincent.donnefort@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <5138173.kHyPcihzTF@kreacher> <10245832.OiMb8u2cOm@kreacher> <0faea0bd-107b-5c4c-5324-e0cd5e5cfba4@huawei.com>
+In-Reply-To: <0faea0bd-107b-5c4c-5324-e0cd5e5cfba4@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 23 Feb 2021 15:45:46 +0100
+Message-ID: <CAJZ5v0i01rX0b-=dDJEdGsK2=6D3tXbC_wdOByTF_mJ0ggTPJQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/4] ACPI: processor: Get rid of ACPICA message printing
+To:     Hanjun Guo <guohanjun@huawei.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/02/2021 10:54, vincent.donnefort@arm.com wrote:
-> From: Vincent Donnefort <vincent.donnefort@arm.com>
+On Tue, Feb 23, 2021 at 12:31 PM Hanjun Guo <guohanjun@huawei.com> wrote:
+>
+> On 2021/2/23 2:59, Rafael J. Wysocki wrote:
+> > Index: linux-pm/drivers/acpi/processor_idle.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/acpi/processor_idle.c
+> > +++ linux-pm/drivers/acpi/processor_idle.c
+>
+> In this file, function acpi_processor_cstate_first_run_checks()
+> has a wrong pr_notice():
+>
+> pr_notice("ACPI: processor limited to max C-state %d\n",
+>                 max_cstate);
+>
+> Since we have pr_fmt() for this file, "ACPI:" is duplicate,
+> we'd better cleanup this as below:
+>
+> pr_notice("processor limited to max C-state %d\n", max_cstate);
 
-[...]
-
-> Also, replace sub_positive with lsub_positive which saves one explicit
-> load-store.
-
-IMHO, in case you're going to fix this now in compute_energy(), this
-optimization could still be done. Maybe in an extra patch?
-cpu_util_without() is using lsub_positive() to remove task util from cpu
-util as well.
-
-[...]
+Thanks for pointing this out, I'll make this change when applying the patch.
