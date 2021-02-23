@@ -2,77 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080E3322696
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 08:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0AE32269D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 08:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhBWHqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 02:46:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbhBWHqJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 02:46:09 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9FAC06178A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 23:45:29 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id a4so11848982pgc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 23:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=xHrDmRSScVv/177HLfEC9DblROvubef4C117H27kpDI=;
-        b=oPCBxW23NUDIdjCFaQUuwktRYz6if1/UG0Bd4QQQoENA4iQ9Sq0s2veVLjfogsgiuY
-         E8g1i/sJHC2G2ioapcVR25xuJZ98FHL2VrRc/Fy0AoXoD3GapKaNWq0jeomhFnSxRzxu
-         yANI81bhDIWet+zIWwaeHUrgyyu+jNKU1UAU8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=xHrDmRSScVv/177HLfEC9DblROvubef4C117H27kpDI=;
-        b=lc4+J+dhcmn0P75GJvK1IfUyNTCvfQJ5MKFVMQtkQ6ujuZf/slPHLg6aToncgSGK8R
-         xYqlMH+F3dSJHY/BKTq+c7zfdBTsdlU6cSAEDTg5hHDjxlKeaVJ5PWSKz8gLqnZYFxae
-         WUSECIfktSEY6EHpJ7N8We6eYVBufdgPWWsOELeMC+a8UDXZhKCPrWrxSqoorY4Dbbie
-         a7BehAiO/KCP5tG4SRLJ9OvzjGOkcb0gmjXh1JJ8w3Oc0+hU9Do8tsmbRydVVXgEs+rJ
-         PmtyMTY2jfTJfoodndgQYAPDiW0SVz8IWUCbFUtFcSKPh5CDudvjh19nTAQ0tSb8L9hv
-         qd1Q==
-X-Gm-Message-State: AOAM530kcnd3rD0ckx9vNXx3P+8NBujnoXWvxIPDJIsH1re44huv6SgE
-        UczKklcyN5z6PVvoxmsqGI5xQg==
-X-Google-Smtp-Source: ABdhPJzYx5TP/q8zGXS26TWITLWDzpjXEWZY0tomTEbDfKUx04wHbvmiHWAod8evnhYZdNOPiPcAzA==
-X-Received: by 2002:a63:4709:: with SMTP id u9mr22936404pga.250.1614066328754;
-        Mon, 22 Feb 2021 23:45:28 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:68e6:d68b:3887:f216])
-        by smtp.gmail.com with ESMTPSA id c22sm20998364pfo.136.2021.02.22.23.45.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 23:45:28 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S232038AbhBWHsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 02:48:04 -0500
+Received: from mga01.intel.com ([192.55.52.88]:61446 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231976AbhBWHri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 02:47:38 -0500
+IronPort-SDR: obVid+bny4GWe3jN4UTvVoIr0jMl76GaZLf5bdZg+kX5clqrn3gnYT5Tb1TmJYkr5W60OVOrQJ
+ EqzKava1yCOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="204146347"
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
+   d="scan'208";a="204146347"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 23:46:57 -0800
+IronPort-SDR: SY+27Y1zVgcTPl3/yjEUDq0suGZxeJD9C7SRZz9K9uHFlc9sLJKyf1rfps4ptMTTT4Otw2NcfN
+ A6Rdd2rnOFZA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
+   d="scan'208";a="499017124"
+Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Feb 2021 23:46:55 -0800
+Received: from kbuild by 16660e54978b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lESPG-000119-Pk; Tue, 23 Feb 2021 07:46:54 +0000
+Date:   Tue, 23 Feb 2021 15:46:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/entry] BUILD SUCCESS
+ 724c8a23d589d8a002d2e39633c2f9a5a429616f
+Message-ID: <6034b2bc.fgx+OiNr905AiC60%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1613114930-1661-11-git-send-email-rnayak@codeaurora.org>
-References: <1613114930-1661-1-git-send-email-rnayak@codeaurora.org> <1613114930-1661-11-git-send-email-rnayak@codeaurora.org>
-Subject: Re: [PATCH 10/13] dt-bindings: watchdog: Add compatible for SC7280 SoC
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Date:   Mon, 22 Feb 2021 23:45:27 -0800
-Message-ID: <161406632702.1254594.5789445963319310338@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rajendra Nayak (2021-02-11 23:28:47)
-> From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->=20
-> Add compatible for watchdog timer on SC7280 SoC.
->=20
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/entry
+branch HEAD: 724c8a23d589d8a002d2e39633c2f9a5a429616f  objtool: Fix stack-swizzle for FRAME_POINTER=y
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+elapsed time: 726m
+
+configs tested: 104
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     akebono_defconfig
+x86_64                           alldefconfig
+mips                            gpr_defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                         ap325rxa_defconfig
+mips                           ip27_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                        bcm63xx_defconfig
+m68k                       m5475evb_defconfig
+powerpc                      mgcoge_defconfig
+m68k                          sun3x_defconfig
+arm                        multi_v5_defconfig
+arm                          simpad_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                        clps711x_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                  mpc885_ads_defconfig
+openrisc                  or1klitex_defconfig
+m68k                        m5307c3_defconfig
+mips                        omega2p_defconfig
+powerpc                     sbc8548_defconfig
+powerpc                        warp_defconfig
+powerpc                      bamboo_defconfig
+powerpc                mpc7448_hpc2_defconfig
+mips                         tb0226_defconfig
+arm                       multi_v4t_defconfig
+openrisc                 simple_smp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a001-20210222
+x86_64               randconfig-a002-20210222
+x86_64               randconfig-a003-20210222
+x86_64               randconfig-a005-20210222
+x86_64               randconfig-a006-20210222
+x86_64               randconfig-a004-20210222
+i386                 randconfig-a005-20210222
+i386                 randconfig-a006-20210222
+i386                 randconfig-a004-20210222
+i386                 randconfig-a003-20210222
+i386                 randconfig-a001-20210222
+i386                 randconfig-a002-20210222
+i386                 randconfig-a013-20210222
+i386                 randconfig-a012-20210222
+i386                 randconfig-a011-20210222
+i386                 randconfig-a014-20210222
+i386                 randconfig-a016-20210222
+i386                 randconfig-a015-20210222
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20210222
+x86_64               randconfig-a011-20210222
+x86_64               randconfig-a012-20210222
+x86_64               randconfig-a016-20210222
+x86_64               randconfig-a014-20210222
+x86_64               randconfig-a013-20210222
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
