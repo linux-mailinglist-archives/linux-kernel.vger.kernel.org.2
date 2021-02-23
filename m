@@ -2,122 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D9B3226C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCD23226CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhBWID4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:03:56 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:60816 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232098AbhBWIDR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:03:17 -0500
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210223080235epoutp035d54a8965847dd4673b9cf8236bf7f2f~mUbVDBvP12764727647epoutp03K
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:02:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210223080235epoutp035d54a8965847dd4673b9cf8236bf7f2f~mUbVDBvP12764727647epoutp03K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614067355;
-        bh=umypOIWVMuOIZl7KF8RuZGFFckDlQDeVTfujdiXuuQk=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=Cm2dCCBk4P5Vd9YUeUSBrO1oiMhqOhYdHk1vQwDrMsnK3F+VVhK/gYdHzFhXQje5i
-         YMIOYpCZqZN7uOZq9HIHnSIkP+yJMIzGczobQtf0US5hVxEgVElGoNkoXruyZsdJuX
-         GSD6rXq2zypG7mfhwi+bB5eVjs1ApX7gTUZrRsfA=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210223080234epcas2p202faa34bc713d851da78d66a6bfd6ff3~mUbUUq_wf0970109701epcas2p2D;
-        Tue, 23 Feb 2021 08:02:34 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DlBNn1y0dz4x9Ps; Tue, 23 Feb
-        2021 08:02:33 +0000 (GMT)
-X-AuditID: b6c32a47-b81ff7000000148e-87-6034b699aaa8
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CB.F1.05262.996B4306; Tue, 23 Feb 2021 17:02:33 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v22 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Bean Huo <huobean@gmail.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <62be9fcfbd79b5977b34de85e486409ec74b7359.camel@gmail.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210223080232epcms2p6f75e3537fc8c0457c0904a4e5f8c1cd8@epcms2p6>
-Date:   Tue, 23 Feb 2021 17:02:32 +0900
-X-CMS-MailID: 20210223080232epcms2p6f75e3537fc8c0457c0904a4e5f8c1cd8
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCJsWRmVeSWpSXmKPExsWy7bCmqe7MbSYJBnsfcFk8mLeNzWJv2wl2
-        i5c/r7JZHL79jt1i2oefzBaf1i9jtXh5SNNi1YNwi+bF69ks5pxtYLLo7d/KZvH4zmd2i0U3
-        tjFZ9P9rZ7G4vGsOm0X39R1sFsuP/2OyuL2Fy2Lp1puMFp3T17BYLFq4m8VB1OPyFW+Py329
-        TB47Z91l95iw6ACjx/65a9g9Wk7uZ/H4+PQWi0ffllWMHp83yXm0H+hmCuCKyrHJSE1MSS1S
-        SM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAfpQSaEsMacUKBSQWFys
-        pG9nU5RfWpKqkJFfXGKrlFqQklNgaFigV5yYW1yal66XnJ9rZWhgYGQKVJmQk3F993bmgjlM
-        FUuvrWdtYLzO2MXIySEhYCLxc+pMti5GLg4hgR2MEl+6+lm6GDk4eAUEJf7uEAapERawl3hx
-        4ho7iC0koCSx/uIsdoi4nsSth2vA5rAJ6EhMP3GfHWSOiMBSFokpx5cxgzjMAr+YJE48/gC1
-        jVdiRvtTFghbWmL78q1gcU4Bd4m3j08zQ8Q1JH4s64WyRSVurn7LDmO/PzYfao6IROu9s1A1
-        ghIPfu6GiktKHNv9gQnCrpfYeucXI8gREgI9jBKHd95ihUjoS1zr2Ah2BK+Ar8S+a/fBmlkE
-        VCUmfemEWuYiMbWtD6yeWUBeYvvbOcygUGEW0JRYv0sfxJQQUJY4cosF5q2Gjb/Z0dnMAnwS
-        HYf/wsV3zHsCdZqaxLqf65kmMCrPQgT1LCS7ZiHsWsDIvIpRLLWgODc9tdiowBg5djcxgpO7
-        lvsOxhlvP+gdYmTiYDzEKMHBrCTCy3bXKEGINyWxsiq1KD++qDQntfgQoynQlxOZpUST84H5
-        Ja8k3tDUyMzMwNLUwtTMyEJJnLfY4EG8kEB6YklqdmpqQWoRTB8TB6dUA9Mi2eZNh9f0ulxO
-        1ZHNstAL5li3SahAjv/mrDOPfi8zcxEVue1kr1F3Lpr56Mcnqz/vseOY9+NrceVMnvfbJyxk
-        +TFtxRSXlPiHNn+2Z96U/iK5gMutyNg2rXKibtSbzN4dyQb5G04LFhoy6eve2HzD0/On1vGO
-        mgexcTrTinnfWDNs/LThzVTHs+3TVh1XdlseHVv+b6Xz5icnA1Ij21+9P7p7i9y7gOcaXxnv
-        bFwaYlBiWyPJY/Spm/Pu5ykG0pccFuXW7C6Y+LWTqzC9Q036m+mj+F3XP2x+r33opxZ3zdPs
-        +eUzfAWcQ07Gmc//wZXEdo1D68zy0h8Hc5NUDmvrirlWb7rkf8vj8JfXLt1KLMUZiYZazEXF
-        iQBt7JbvdwQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
-References: <62be9fcfbd79b5977b34de85e486409ec74b7359.camel@gmail.com>
-        <20210222092957epcms2p728b0c563f3cfbecbf8692d7e86f9afed@epcms2p7>
-        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
-        <20210222093150epcms2p155352e2255e6bfd8f8d71c737ed05e76@epcms2p1>
-        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p6>
+        id S232075AbhBWIEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:04:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232147AbhBWIDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 03:03:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C976264DAF;
+        Tue, 23 Feb 2021 08:02:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614067381;
+        bh=jPx4LV2bldX3/+xhN+fFDKFW8lIjZrChpQM5Wnm09qQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YAQTMxw9sO/cekq6q7hkeSF9CuLk9KpT6pOH/OQcYRvwNWGOAIi5b4stdL9qLr2FJ
+         MAr2cxJ0XMh0jyNPWgJ4yjgqLP2i9WHzk9zdRSw8u/xl+run4OV9mA2bCsdOAkyuyW
+         M22hTM3begRWf8Uh731HentmfuP09gIg7wBoioqIRmuSnHX9YIuRBn2hcbXPF7JX/r
+         mXDlG+3r59M5d+g79YGJmNUuRToBeYO6Ybfza7C1EQIlkVrsGxoO9rnfpWBDdWiKDP
+         O+unDD0TL7w4MxTYAtSpkHl4F0zSxVAJRGDVtAWCDaXn/8KLPhC8ml/iZhlkRltpdY
+         75p+g2z6DMmkw==
+Date:   Tue, 23 Feb 2021 09:02:54 +0100
+From:   Robert Richter <rric@kernel.org>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/4] PCI: Introduce pcim_alloc_irq_vectors()
+Message-ID: <YDS2rkJu7PTJJiZr@rric.localdomain>
+References: <20210218150458.798347-1-zhengdejin5@gmail.com>
+ <20210218150458.798347-2-zhengdejin5@gmail.com>
+ <YC/NxfsQn2RKkrp8@rric.localdomain>
+ <20210219164649.GA814637@nuc8i5>
+ <YDONyMSHO9FDeY69@rric.localdomain>
+ <20210222151415.GA896979@nuc8i5>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210222151415.GA896979@nuc8i5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +}
-> > +static DEVICE_ATTR_RW(requeue_timeout_ms);
-> > +
-> > +static struct attribute *hpb_dev_param_attrs[] = {
-> > +       &dev_attr_requeue_timeout_ms.attr,
-> > +};
->  
-> here, you lost a NULL member at the end of attribute struct.
->  
-OK, I will.
+On 22.02.21 23:14:15, Dejin Zheng wrote:
+> On Mon, Feb 22, 2021 at 11:56:08AM +0100, Robert Richter wrote:
+> > On 20.02.21 00:46:49, Dejin Zheng wrote:
+> > > > On 18.02.21 23:04:55, Dejin Zheng wrote:
+> > 
+> > > > > +	if (!dr || !dr->enabled)
+> > > here checks whether the pci device is enabled.
+> > 
+> > What is the purpose of this? The device "is_managed" or not.
+> >
+> The device is managed or not by check whether "dr" is NULL. And
+> check the "dr->enabled" is for the PCI device enable. I think it
+> may not make sense to apply for irq vectors when PCI device is not
+> enabled.
 
-Thanks,
-Daejun
+I don't see how a disabled device affects in any way the release of
+the irq vectors during device removal. dr is always non-null in case
+the device is managed, a check isn't needed for that.
+
+-Robert
