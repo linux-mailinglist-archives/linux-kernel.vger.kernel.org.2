@@ -2,153 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1A2322A7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC7C322AA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbhBWM1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 07:27:40 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:12943 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbhBWM1i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 07:27:38 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DlJDK2TzHzjPvJ;
-        Tue, 23 Feb 2021 20:25:37 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 23 Feb
- 2021 20:26:49 +0800
-Subject: Re: [PATCH RFC] f2fs: fix to avoid selecting full segment w/ {AT,}SSR
- allocator
-To:     <jaegeuk@kernel.org>
-CC:     Chao Yu <chao@kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
-References: <20210220094052.64905-1-yuchao0@huawei.com>
- <ad627dde-23f9-cbbc-ce58-7c799161f290@kernel.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <2b96b5e5-abc0-615f-0220-5d46b8e2c329@huawei.com>
-Date:   Tue, 23 Feb 2021 20:26:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <ad627dde-23f9-cbbc-ce58-7c799161f290@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+        id S232704AbhBWMhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 07:37:18 -0500
+Received: from m12-17.163.com ([220.181.12.17]:34151 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232589AbhBWMhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 07:37:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=dIDU6J0odxG9RlqAj0
+        JO+hMmJN5ibrBl7SIKeXUpRbI=; b=JD38dWm62FEVyxAELIIIkjEfH+rLQvtUBW
+        xNqE8GX5Ehu+lNYyo7hd5k3s4A8QlP6H5QNXPFMWEbureSr2xDPXDTfzmuGnENpd
+        xQknTtKUUKuhsLDhxQjxKUqRg/fKAX/f8U5VAolv7EPI7z+AI8C0bHJC5QX9uO1P
+        rveTxh/UQ=
+Received: from wengjianfeng.ccdomain.com (unknown [119.137.54.165])
+        by smtp13 (Coremail) with SMTP id EcCowABnbp52pzRgb_LjmQ--.8535S2;
+        Tue, 23 Feb 2021 14:58:01 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     imitsyanko@quantenna.com, geomatsi@gmail.com, kvalo@codeaurora.org,
+        kuba@kernel.org, ohannes.berg@intel.com, dlebed@quantenna.com
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH] qtnfmac: remove meaningless labels
+Date:   Tue, 23 Feb 2021 14:57:54 +0800
+Message-Id: <20210223065754.34392-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: EcCowABnbp52pzRgb_LjmQ--.8535S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tr18Jr1DWw45KFyxAw48Xrb_yoW5JF1xpr
+        WrXa9Fkay8K3yvqas5ArZ5Zr1Yvw1xKFWxKrW8C3s5u3W0yr1rKa1Yva4YyrZ8JFW8Jryj
+        qFWvqF1Uu3ZY9a7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j8miiUUUUU=
+X-Originating-IP: [119.137.54.165]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiEQM2sV7+2yasZQABsA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jaegeuk,
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-Could you please help to review this patch? since I doubt that this
-issue can happen in real world... :(
+some function's label meaningless, the return statement follows
+the goto statement, so just remove it.
 
-Thanks,
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ drivers/net/wireless/quantenna/qtnfmac/cfg80211.c | 27 +++++------------------
+ 1 file changed, 6 insertions(+), 21 deletions(-)
 
-On 2021/2/22 21:43, Chao Yu wrote:
-> Ping,
-> 
-> On 2021/2/20 17:40, Chao Yu wrote:
->> In cp disabling mode, there could be a condition
->> - target segment has 128 ckpt valid blocks
->> - GC migrates 128 valid blocks to other segment (segment is still in
->> dirty list)
->> - GC migrates 384 blocks to target segment (segment has 128 cp_vblocks
->> and 384 vblocks)
->> - If GC selects target segment via {AT,}SSR allocator, however there is
->> no free space in targe segment.
->>
->> Fixes: 4354994f097d ("f2fs: checkpoint disabling")
->> Fixes: 093749e296e2 ("f2fs: support age threshold based garbage collection")
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>    fs/f2fs/f2fs.h    |  1 +
->>    fs/f2fs/gc.c      | 17 +++++++++++++----
->>    fs/f2fs/segment.c | 20 ++++++++++++++++++++
->>    3 files changed, 34 insertions(+), 4 deletions(-)
->>
->> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> index ed7807103c8e..9c753eff0814 100644
->> --- a/fs/f2fs/f2fs.h
->> +++ b/fs/f2fs/f2fs.h
->> @@ -3376,6 +3376,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi);
->>    int f2fs_disable_cp_again(struct f2fs_sb_info *sbi, block_t unusable);
->>    void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
->>    int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
->> +bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno);
->>    void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
->>    void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
->>    void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
->> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
->> index 86ba8ed0b8a7..a1d8062cdace 100644
->> --- a/fs/f2fs/gc.c
->> +++ b/fs/f2fs/gc.c
->> @@ -392,10 +392,6 @@ static void add_victim_entry(struct f2fs_sb_info *sbi,
->>    		if (p->gc_mode == GC_AT &&
->>    			get_valid_blocks(sbi, segno, true) == 0)
->>    			return;
->> -
->> -		if (p->alloc_mode == AT_SSR &&
->> -			get_seg_entry(sbi, segno)->ckpt_valid_blocks == 0)
->> -			return;
->>    	}
->>    
->>    	for (i = 0; i < sbi->segs_per_sec; i++)
->> @@ -736,6 +732,19 @@ static int get_victim_by_default(struct f2fs_sb_info *sbi,
->>    		if (gc_type == BG_GC && test_bit(secno, dirty_i->victim_secmap))
->>    			goto next;
->>    
->> +		if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED))) {
->> +			/*
->> +			 * to avoid selecting candidate which has below valid
->> +			 * block distribution:
->> +			 * partial blocks are valid and all left ones are valid
->> +			 * in previous checkpoint.
->> +			 */
->> +			if (p.alloc_mode == SSR || p.alloc_mode == AT_SSR) {
->> +				if (!segment_has_free_slot(sbi, segno))
->> +					goto next;
->> +			}
->> +		}
->> +
->>    		if (is_atgc) {
->>    			add_victim_entry(sbi, &p, segno);
->>    			goto next;
->> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->> index 2d5a82c4ca15..deaf57e13125 100644
->> --- a/fs/f2fs/segment.c
->> +++ b/fs/f2fs/segment.c
->> @@ -2650,6 +2650,26 @@ static void __refresh_next_blkoff(struct f2fs_sb_info *sbi,
->>    		seg->next_blkoff++;
->>    }
->>    
->> +bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
->> +{
->> +	struct sit_info *sit = SIT_I(sbi);
->> +	struct seg_entry *se = get_seg_entry(sbi, segno);
->> +	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
->> +	unsigned long *target_map = SIT_I(sbi)->tmp_map;
->> +	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
->> +	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
->> +	int i, pos;
->> +
->> +	down_write(&sit->sentry_lock);
->> +	for (i = 0; i < entries; i++)
->> +		target_map[i] = ckpt_map[i] | cur_map[i];
->> +
->> +	pos = __find_rev_next_zero_bit(target_map, sbi->blocks_per_seg, 0);
->> +	up_write(&sit->sentry_lock);
->> +
->> +	return pos < sbi->blocks_per_seg;
->> +}
->> +
->>    /*
->>     * This function always allocates a used segment(from dirty seglist) by SSR
->>     * manner, so it should recover the existing segment information of valid blocks
->>
-> .
-> 
+diff --git a/drivers/net/wireless/quantenna/qtnfmac/cfg80211.c b/drivers/net/wireless/quantenna/qtnfmac/cfg80211.c
+index 504b4d0..84b15a6 100644
+--- a/drivers/net/wireless/quantenna/qtnfmac/cfg80211.c
++++ b/drivers/net/wireless/quantenna/qtnfmac/cfg80211.c
+@@ -680,13 +680,10 @@ static int qtnf_set_default_key(struct wiphy *wiphy, struct net_device *dev,
+ 		eth_zero_addr(vif->bssid);
+ 
+ 	ret = qtnf_cmd_send_connect(vif, sme);
+-	if (ret) {
++	if (ret)
+ 		pr_err("VIF%u.%u: failed to connect\n",
+ 		       vif->mac->macid, vif->vifid);
+-		goto out;
+-	}
+ 
+-out:
+ 	return ret;
+ }
+ 
+@@ -702,13 +699,10 @@ static int qtnf_set_default_key(struct wiphy *wiphy, struct net_device *dev,
+ 		pr_warn("unexpected bssid: %pM", auth->bssid);
+ 
+ 	ret = qtnf_cmd_send_external_auth(vif, auth);
+-	if (ret) {
++	if (ret)
+ 		pr_err("VIF%u.%u: failed to report external auth\n",
+ 		       vif->mac->macid, vif->vifid);
+-		goto out;
+-	}
+ 
+-out:
+ 	return ret;
+ }
+ 
+@@ -727,8 +721,7 @@ static int qtnf_set_default_key(struct wiphy *wiphy, struct net_device *dev,
+ 	}
+ 
+ 	if (vif->wdev.iftype != NL80211_IFTYPE_STATION) {
+-		ret = -EOPNOTSUPP;
+-		goto out;
++		return -EOPNOTSUPP;
+ 	}
+ 
+ 	ret = qtnf_cmd_send_disconnect(vif, reason_code);
+@@ -742,7 +735,6 @@ static int qtnf_set_default_key(struct wiphy *wiphy, struct net_device *dev,
+ 				      NULL, 0, true, GFP_KERNEL);
+ 	}
+ 
+-out:
+ 	return ret;
+ }
+ 
+@@ -935,13 +927,10 @@ static int qtnf_update_owe_info(struct wiphy *wiphy, struct net_device *dev,
+ 		return -EOPNOTSUPP;
+ 
+ 	ret = qtnf_cmd_send_update_owe(vif, owe_info);
+-	if (ret) {
++	if (ret)
+ 		pr_err("VIF%u.%u: failed to update owe info\n",
+ 		       vif->mac->macid, vif->vifid);
+-		goto out;
+-	}
+ 
+-out:
+ 	return ret;
+ }
+ 
+@@ -987,18 +976,14 @@ static int qtnf_resume(struct wiphy *wiphy)
+ 	vif = qtnf_mac_get_base_vif(mac);
+ 	if (!vif) {
+ 		pr_err("MAC%u: primary VIF is not configured\n", mac->macid);
+-		ret = -EFAULT;
+-		goto exit;
++		return -EFAULT;
+ 	}
+ 
+ 	ret = qtnf_cmd_send_wowlan_set(vif, NULL);
+-	if (ret) {
++	if (ret)
+ 		pr_err("MAC%u: failed to reset WoWLAN triggers\n",
+ 		       mac->macid);
+-		goto exit;
+-	}
+ 
+-exit:
+ 	return ret;
+ }
+ 
+-- 
+1.9.1
+
+
