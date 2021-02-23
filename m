@@ -2,176 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394D83232B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C40D43232F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233855AbhBWVAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 16:00:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26355 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234564AbhBWU7S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 15:59:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614113872;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vXo5Ny5RPqrxMbmK96jXWOW3+XmwgeCaBu6QZll4YCc=;
-        b=ehhXCyklmOOJJA7LmVRd9tLjmVKLdoej/BgddwiGX/ZMjnDVxFsb+h1Qf98dzYx6Z0EDqY
-        xEpSt7JBgCezgY3Z2Dh7eB5OVHIfRTezaSxCvlq/eZwwD/VuhWY5jC0AH4KBkePq0rtMmt
-        I5zYUR2zroIsgaoQgJlc+ZW/ZhVnZ7o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-wwYdtQDkNc6HcgElWlgCjw-1; Tue, 23 Feb 2021 15:57:48 -0500
-X-MC-Unique: wwYdtQDkNc6HcgElWlgCjw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        id S234512AbhBWVIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 16:08:38 -0500
+Received: from mailout03.rmx.de ([94.199.88.101]:37253 "EHLO mailout03.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230083AbhBWVIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 16:08:19 -0500
+X-Greylist: delayed 1863 seconds by postgrey-1.27 at vger.kernel.org; Tue, 23 Feb 2021 16:08:16 EST
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4FC68E760;
-        Tue, 23 Feb 2021 20:57:45 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-114-34.ams2.redhat.com [10.36.114.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 47F495D9D0;
-        Tue, 23 Feb 2021 20:57:35 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
-        maz@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-        alex.williamson@redhat.com, tn@semihalf.com, zhukeqian1@huawei.com
-Cc:     jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        wangxingang5@huawei.com, jiangkunkun@huawei.com,
-        jean-philippe@linaro.org, zhangfei.gao@linaro.org,
-        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
-        shameerali.kolothum.thodi@huawei.com, yuzenghui@huawei.com,
-        nicoleotsuka@gmail.com, lushenming@huawei.com, vsethi@nvidia.com
-Subject: [PATCH v14 06/13] iommu/smmuv3: Allow stage 1 invalidation with unmanaged ASIDs
-Date:   Tue, 23 Feb 2021 21:56:27 +0100
-Message-Id: <20210223205634.604221-7-eric.auger@redhat.com>
-In-Reply-To: <20210223205634.604221-1-eric.auger@redhat.com>
-References: <20210223205634.604221-1-eric.auger@redhat.com>
+        by mailout03.rmx.de (Postfix) with ESMTPS id 4DlW6k5R8Pzldby;
+        Tue, 23 Feb 2021 21:36:30 +0100 (CET)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4DlW6d5zqMz2TTJJ;
+        Tue, 23 Feb 2021 21:36:25 +0100 (CET)
+Received: from n95hx1g2.localnet (192.168.54.49) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 23 Feb
+ 2021 21:36:07 +0100
+From:   Christian Eggers <ceggers@arri.de>
+To:     <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>
+CC:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        "Jonathan Cameron" <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Peter Meerwald-Stadler" <pmeerw@pmeerw.net>,
+        Zhang Rui <rui.zhang@intel.com>,
+        "Amit Kucheria" <amitk@kernel.org>,
+        "open list:DEVICE FREQUENCY (DEVFREQ)" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:AMS AS73211 DRIVER" <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH 2/2] units: Use the HZ_PER_KHZ macro
+Date:   Tue, 23 Feb 2021 21:36:05 +0100
+Message-ID: <2578027.mvXUDI8C0e@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20210223203004.7219-2-daniel.lezcano@linaro.org>
+References: <20210223203004.7219-1-daniel.lezcano@linaro.org> <20210223203004.7219-2-daniel.lezcano@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.49]
+X-RMX-ID: 20210223-213625-NLCNxGMyXFbP-0@out02.hq
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With nested stage support, soon we will need to invalidate
-S1 contexts and ranges tagged with an unmanaged asid, this
-latter being managed by the guest. So let's introduce 2 helpers
-that allow to invalidate with externally managed ASIDs
+On Tuesday, 23 February 2021, 21:30:02 CET, Daniel Lezcano wrote:
+> The HZ_PER_KHZ macro definition is duplicated in different subsystems.
+> 
+> The macro now exists in include/linux/units.h, make use of it and
+> remove all the duplicated ones.
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>  drivers/devfreq/devfreq.c         | 2 +-
+>  drivers/iio/light/as73211.c       | 3 +--
+>  drivers/thermal/devfreq_cooling.c | 2 +-
+>  3 files changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> index 6aa10de792b3..4c636c336ace 100644
+> --- a/drivers/devfreq/devfreq.c
+> +++ b/drivers/devfreq/devfreq.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/hrtimer.h>
+>  #include <linux/of.h>
+>  #include <linux/pm_qos.h>
+> +#include <linux/units.h>
+>  #include "governor.h"
+>  
+>  #define CREATE_TRACE_POINTS
+> @@ -33,7 +34,6 @@
+>  
+>  #define IS_SUPPORTED_FLAG(f, name) ((f & DEVFREQ_GOV_FLAG_##name) ? true : false)
+>  #define IS_SUPPORTED_ATTR(f, name) ((f & DEVFREQ_GOV_ATTR_##name) ? true : false)
+> -#define HZ_PER_KHZ	1000
+>  
+>  static struct class *devfreq_class;
+>  static struct dentry *devfreq_debugfs;
+> diff --git a/drivers/iio/light/as73211.c b/drivers/iio/light/as73211.c
+> index 7b32dfaee9b3..3ba2378df3dd 100644
+> --- a/drivers/iio/light/as73211.c
+> +++ b/drivers/iio/light/as73211.c
+> @@ -24,8 +24,7 @@
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+>  #include <linux/pm.h>
+> -
+> -#define HZ_PER_KHZ 1000
+> +#include <linux/units.h>
+>  
+>  #define AS73211_DRV_NAME "as73211"
+>  
+> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+> index fed3121ff2a1..fa5b8b0c7604 100644
+> --- a/drivers/thermal/devfreq_cooling.c
+> +++ b/drivers/thermal/devfreq_cooling.c
+> @@ -19,10 +19,10 @@
+>  #include <linux/pm_opp.h>
+>  #include <linux/pm_qos.h>
+>  #include <linux/thermal.h>
+> +#include <linux/units.h>
+>  
+>  #include <trace/events/thermal.h>
+>  
+> -#define HZ_PER_KHZ		1000
+>  #define SCALE_ERROR_MITIGATION	100
+>  
+>  static DEFINE_IDA(devfreq_ida);
+> 
 
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
+Reviewed-by: Christian Eggers <ceggers@arri.de>
 
----
 
-v13 -> v14
-- Actually send the NH_ASID command (reported by Xingang Wang)
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 38 ++++++++++++++++-----
- 1 file changed, 29 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 5579ec4fccc8..4c19a1114de4 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -1843,9 +1843,9 @@ int arm_smmu_atc_inv_domain(struct arm_smmu_domain *smmu_domain, int ssid,
- }
- 
- /* IO_PGTABLE API */
--static void arm_smmu_tlb_inv_context(void *cookie)
-+static void __arm_smmu_tlb_inv_context(struct arm_smmu_domain *smmu_domain,
-+				       int ext_asid)
- {
--	struct arm_smmu_domain *smmu_domain = cookie;
- 	struct arm_smmu_device *smmu = smmu_domain->smmu;
- 	struct arm_smmu_cmdq_ent cmd;
- 
-@@ -1856,7 +1856,13 @@ static void arm_smmu_tlb_inv_context(void *cookie)
- 	 * insertion to guarantee those are observed before the TLBI. Do be
- 	 * careful, 007.
- 	 */
--	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
-+	if (ext_asid >= 0) { /* guest stage 1 invalidation */
-+		cmd.opcode	= CMDQ_OP_TLBI_NH_ASID;
-+		cmd.tlbi.asid	= ext_asid;
-+		cmd.tlbi.vmid	= smmu_domain->s2_cfg.vmid;
-+		arm_smmu_cmdq_issue_cmd(smmu, &cmd);
-+		arm_smmu_cmdq_issue_sync(smmu);
-+	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
- 		arm_smmu_tlb_inv_asid(smmu, smmu_domain->s1_cfg.cd.asid);
- 	} else {
- 		cmd.opcode	= CMDQ_OP_TLBI_S12_VMALL;
-@@ -1867,6 +1873,13 @@ static void arm_smmu_tlb_inv_context(void *cookie)
- 	arm_smmu_atc_inv_domain(smmu_domain, 0, 0, 0);
- }
- 
-+static void arm_smmu_tlb_inv_context(void *cookie)
-+{
-+	struct arm_smmu_domain *smmu_domain = cookie;
-+
-+	__arm_smmu_tlb_inv_context(smmu_domain, -1);
-+}
-+
- static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
- 				     unsigned long iova, size_t size,
- 				     size_t granule,
-@@ -1926,9 +1939,10 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
- 	arm_smmu_cmdq_batch_submit(smmu, &cmds);
- }
- 
--static void arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
--					  size_t granule, bool leaf,
--					  struct arm_smmu_domain *smmu_domain)
-+static void
-+arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
-+			      size_t granule, bool leaf, int ext_asid,
-+			      struct arm_smmu_domain *smmu_domain)
- {
- 	struct arm_smmu_cmdq_ent cmd = {
- 		.tlbi = {
-@@ -1936,7 +1950,12 @@ static void arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
- 		},
- 	};
- 
--	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
-+	if (ext_asid >= 0) {  /* guest stage 1 invalidation */
-+		cmd.opcode	= smmu_domain->smmu->features & ARM_SMMU_FEAT_E2H ?
-+				  CMDQ_OP_TLBI_EL2_VA : CMDQ_OP_TLBI_NH_VA;
-+		cmd.tlbi.asid	= ext_asid;
-+		cmd.tlbi.vmid	= smmu_domain->s2_cfg.vmid;
-+	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
- 		cmd.opcode	= smmu_domain->smmu->features & ARM_SMMU_FEAT_E2H ?
- 				  CMDQ_OP_TLBI_EL2_VA : CMDQ_OP_TLBI_NH_VA;
- 		cmd.tlbi.asid	= smmu_domain->s1_cfg.cd.asid;
-@@ -1944,6 +1963,7 @@ static void arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
- 		cmd.opcode	= CMDQ_OP_TLBI_S2_IPA;
- 		cmd.tlbi.vmid	= smmu_domain->s2_cfg.vmid;
- 	}
-+
- 	__arm_smmu_tlb_inv_range(&cmd, iova, size, granule, smmu_domain);
- 
- 	/*
-@@ -1982,7 +2002,7 @@ static void arm_smmu_tlb_inv_page_nosync(struct iommu_iotlb_gather *gather,
- static void arm_smmu_tlb_inv_walk(unsigned long iova, size_t size,
- 				  size_t granule, void *cookie)
- {
--	arm_smmu_tlb_inv_range_domain(iova, size, granule, false, cookie);
-+	arm_smmu_tlb_inv_range_domain(iova, size, granule, false, -1, cookie);
- }
- 
- static const struct iommu_flush_ops arm_smmu_flush_ops = {
-@@ -2523,7 +2543,7 @@ static void arm_smmu_iotlb_sync(struct iommu_domain *domain,
- 
- 	arm_smmu_tlb_inv_range_domain(gather->start,
- 				      gather->end - gather->start + 1,
--				      gather->pgsize, true, smmu_domain);
-+				      gather->pgsize, true, -1, smmu_domain);
- }
- 
- static phys_addr_t
--- 
-2.26.2
 
