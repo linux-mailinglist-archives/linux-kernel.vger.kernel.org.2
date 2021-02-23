@@ -2,170 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43DD32255E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 244D2322565
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbhBWF3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 00:29:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhBWF3M (ORCPT
+        id S230417AbhBWFbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 00:31:36 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:56542 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229996AbhBWFbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 00:29:12 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DB6C061574;
-        Mon, 22 Feb 2021 21:28:31 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id f3so16503657oiw.13;
-        Mon, 22 Feb 2021 21:28:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lwj5MobrJnNqjEfnyDCKLy+EwAn09sOy0OKym1ak5/U=;
-        b=mwN8jiaUTi634arC+a8gFSiO0axpO2LOG2l/oEedksOViVsBbYkB4rNchP5FMxJ6bU
-         EWiz3QsVzu+5wyccPloIt7bwheEFT4bgbuyMzF7CIJGE+2Qp2R2aUKGqYgYZnXU/H0q+
-         uns3J7goprXWurkldJqLd3I43QqWB9ASjhL8JpdfdzX6wI2eU7+fGr7XxH7Qopf4o02P
-         xsyRn5j5c/yXgUJqrawHacS8l8WuH/OxnbHkri3CFvqfiYm5HBK4O6/5pcvvFks9ZJpi
-         VWDd0Uie/TjdvmGuam2daFvRfgfKle5WG3oOJreq/WNir4CFKRoX60ZYey2qRNU/d9v2
-         UyMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lwj5MobrJnNqjEfnyDCKLy+EwAn09sOy0OKym1ak5/U=;
-        b=KbU9kxZBukfYI3wlRAyDVpDz+lTgQ0gTv5Mn8VLwov5BOqx4CYNqymUXFPiTQJMx2S
-         6U7rB/YCMvQF0unrh+HDBAOWpLBeC6OKVtzFiGrzQf0jCqaO9rEmx7hvqPWmBkdNMzq7
-         Tb5Nqev8RWd8kAF8a6BYu94IT17w0KYpCyoxsHjwm9nUd6/X3EIM7z1vcS2hKmOWxPdI
-         7LU3P1iQAxvofmDEMoLB+2SL03Llrck5mbdCcpabKaJZQTTuW8hBo8ty/HhOEo4NJ6mt
-         Nh+vpOAvbB/fCbKifWNzN7GT71dk5cGZkP0lG6A37u5yH7PX8wELV058yDBNGb/cPm3x
-         tyow==
-X-Gm-Message-State: AOAM532nwqul+Nh/v40O9jQf4ZiUriVn5Wy7Wew6fQsFAtF5bvVSyRl5
-        5GG728bfqSxN5RpRtC7KUTmEE7ID6A7QIPWWUXmz6mVuIyU=
-X-Google-Smtp-Source: ABdhPJykN5Bi5N4WPXpFZGHeFc7dsRHkkUyc7QyH+biEyWI1M6bLOwto6RHwjHeIb2PpzXp+z4PQG8QkdMM3ajtVGJY=
-X-Received: by 2002:a05:6808:10ca:: with SMTP id s10mr15557313ois.33.1614058111252;
- Mon, 22 Feb 2021 21:28:31 -0800 (PST)
+        Tue, 23 Feb 2021 00:31:31 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lEQHU-007ZbE-T2; Mon, 22 Feb 2021 22:30:45 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lEQHU-0002ip-7f; Mon, 22 Feb 2021 22:30:44 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexey Gladkov <gladkov.alexey@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <cover.1613392826.git.gladkov.alexey@gmail.com>
+        <CAHk-=wjsmAXyYZs+QQFQtY=w-pOOSWoi-ukvoBVVjBnb+v3q7A@mail.gmail.com>
+Date:   Mon, 22 Feb 2021 23:30:26 -0600
+In-Reply-To: <CAHk-=wjsmAXyYZs+QQFQtY=w-pOOSWoi-ukvoBVVjBnb+v3q7A@mail.gmail.com>
+        (Linus Torvalds's message of "Sun, 21 Feb 2021 14:20:00 -0800")
+Message-ID: <m1im6jl5al.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <1614057902-23774-1-git-send-email-wanpengli@tencent.com>
-In-Reply-To: <1614057902-23774-1-git-send-email-wanpengli@tencent.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Tue, 23 Feb 2021 13:28:19 +0800
-Message-ID: <CANRm+CwX189YE_oi5x-b6Xx4=hpcGCqzLaHjmW6bz_=Fj2N7Mw@mail.gmail.com>
-Subject: Re: [PATCH] x86/kvm: Fix broken irq restoration in kvm_wait
-To:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1lEQHU-0002ip-7f;;;mid=<m1im6jl5al.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/DYsNs7fzMb4RYxpfKS0P+rI9c6VJVdTw=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4991]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 363 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.7 (1.3%), b_tie_ro: 3.3 (0.9%), parse: 1.03
+        (0.3%), extract_message_metadata: 11 (3.0%), get_uri_detail_list: 1.26
+        (0.3%), tests_pri_-1000: 4.5 (1.3%), tests_pri_-950: 1.05 (0.3%),
+        tests_pri_-900: 0.91 (0.3%), tests_pri_-90: 124 (34.3%), check_bayes:
+        121 (33.4%), b_tokenize: 4.6 (1.3%), b_tok_get_all: 7 (1.8%),
+        b_comp_prob: 1.65 (0.5%), b_tok_touch_all: 105 (29.0%), b_finish: 0.78
+        (0.2%), tests_pri_0: 203 (55.9%), check_dkim_signature: 0.36 (0.1%),
+        check_dkim_adsp: 8 (2.1%), poll_dns_idle: 0.21 (0.1%), tests_pri_10:
+        2.6 (0.7%), tests_pri_500: 7 (2.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v6 0/7] Count rlimits in each user namespace
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 at 13:25, Wanpeng Li <kernellwp@gmail.com> wrote:
->
-> From: Wanpeng Li <wanpengli@tencent.com>
->
-> After commit 997acaf6b4b59c (lockdep: report broken irq restoration), the guest
-> splatting below during boot:
->
->  raw_local_irq_restore() called with IRQs enabled
->  WARNING: CPU: 1 PID: 169 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x26/0x30
->  Modules linked in: hid_generic usbhid hid
->  CPU: 1 PID: 169 Comm: systemd-udevd Not tainted 5.11.0+ #25
->  RIP: 0010:warn_bogus_irq_restore+0x26/0x30
->  Call Trace:
->   kvm_wait+0x76/0x90
->   __pv_queued_spin_lock_slowpath+0x285/0x2e0
->   do_raw_spin_lock+0xc9/0xd0
->   _raw_spin_lock+0x59/0x70
->   lockref_get_not_dead+0xf/0x50
->   __legitimize_path+0x31/0x60
->   legitimize_root+0x37/0x50
->   try_to_unlazy_next+0x7f/0x1d0
->   lookup_fast+0xb0/0x170
->   path_openat+0x165/0x9b0
->   do_filp_open+0x99/0x110
->   do_sys_openat2+0x1f1/0x2e0
->   do_sys_open+0x5c/0x80
->   __x64_sys_open+0x21/0x30
->   do_syscall_64+0x32/0x50
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> The irqflags handling in kvm_wait() which ends up doing:
->
->         local_irq_save(flags);
->         safe_halt();
->         local_irq_restore(flags);
->
-> which triggered a new consistency checking, we generally expect
-> local_irq_save() and local_irq_restore() to be pared and sanely
-> nested, and so local_irq_restore() expects to be called with
-> irqs disabled.
->
-> This patch fixes it by adding a local_irq_disable() after safe_halt()
-> to avoid this warning.
->
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
->  arch/x86/kernel/kvm.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index 5e78e01..688c84a 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -853,8 +853,10 @@ static void kvm_wait(u8 *ptr, u8 val)
->          */
->         if (arch_irqs_disabled_flags(flags))
->                 halt();
-> -       else
-> +       else {
->                 safe_halt();
-> +               local_irq_disable();
-> +       }
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-An alternative fix:
+> On Mon, Feb 15, 2021 at 4:42 AM Alexey Gladkov <gladkov.alexey@gmail.com> wrote:
+>>
+>> These patches are for binding the rlimit counters to a user in user namespace.
+>
+> So this is now version 6, but I think the kernel test robot keeps
+> complaining about them causing KASAN issues.
+>
+> The complaints seem to change, so I'm hoping they get fixed, but it
+> does seem like every version there's a new one. Hmm?
 
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index 5e78e01..7127aef 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -836,12 +836,13 @@ static void kvm_kick_cpu(int cpu)
+I have been keeping an eye on this as well, and yes the issues are
+getting fixed.
 
- static void kvm_wait(u8 *ptr, u8 val)
- {
--    unsigned long flags;
-+    bool disabled = irqs_disabled();
+My current plan is to aim at getting v7 rebased onto -rc1 into a branch.
+Review the changes very closely.  Get some performance testing and some
+other testing against it.  Then to get this code into linux-next.
 
-     if (in_nmi())
-         return;
+If everything goes smoothly I will send you a pull request next merge
+window.  I have no intention of shipping this (or sending you a pull
+request) before it is ready.
 
--    local_irq_save(flags);
-+    if (!disabled)
-+        local_irq_disable();
-
-     if (READ_ONCE(*ptr) != val)
-         goto out;
-@@ -851,13 +852,14 @@ static void kvm_wait(u8 *ptr, u8 val)
-      * for irq enabled case to avoid hang when lock info is overwritten
-      * in irq spinlock slowpath and no spurious interrupt occur to save us.
-      */
--    if (arch_irqs_disabled_flags(flags))
-+    if (disabled)
-         halt();
-     else
-         safe_halt();
-
- out:
--    local_irq_restore(flags);
-+    if (!disabled)
-+        local_irq_enable();
- }
-
- #ifdef CONFIG_X86_32
+Eric
