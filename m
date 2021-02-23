@@ -2,253 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2D13232CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512103232CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234050AbhBWVFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 16:05:03 -0500
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:45847 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhBWVDF (ORCPT
+        id S233827AbhBWVF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 16:05:56 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46894 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233834AbhBWVEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 16:03:05 -0500
-Received: by mail-oo1-f43.google.com with SMTP id s23so4217828oot.12;
-        Tue, 23 Feb 2021 13:02:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y8sBehCCNa+kbXPwMBE0R5HDgBSq8nEDv9KIRArwz1s=;
-        b=QBEK4XEHsQkbhZL14h1zkHTkEdRJh3y/U/BBKRBo4g5n1I6Ud95j1Aiogb/+BdsoKd
-         y1JKSK100J0RgeA37SXsF8jMHBz8C946NrJ5WlkvE/nCTvbonIj665YEp2wQnYR9+FAD
-         H8hvbrkDiGBsfngO/MlQ0INF+34e+ATPzyFywMQZq25uZ+KqSU5dQqRnVQxjNQIhvuiu
-         0n6NnWAleB5YsVd7zrD76Tesj+NVPV5j/EZWsphtUaLuC8Y4g4q7NgYM6sgsIzzZKXCt
-         S4e1oFmBtDNP+sSiYtd+qdl4mbR+jh+G6VpG2uhF0srUmUVpqnQdXBQQ05zDXFOED4Fb
-         KeBQ==
-X-Gm-Message-State: AOAM532A0hzCiYxDTSSD54740m+fqR3zJ2IfusVKEOWIXwXBu2Ds/9by
-        TYqeIoe36dCIU6LQWCrPhg==
-X-Google-Smtp-Source: ABdhPJyjMAT3lFx7Kt85Yh2ULfoiwnGWka6Q+1Mj60tLWZGKoQKaiWvTU9MV6obqvyr+uUNCqdOv/A==
-X-Received: by 2002:a4a:d018:: with SMTP id h24mr19830268oor.49.1614114141985;
-        Tue, 23 Feb 2021 13:02:21 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id 7sm4531362oth.38.2021.02.23.13.01.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 13:01:49 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        "Paul J. Murphy" <paul.j.murphy@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        linux-media@vger.kernel.org
-Subject: [PATCH] dt-bindings: media: Use graph and video-interfaces schemas, round 2
-Date:   Tue, 23 Feb 2021 15:01:27 -0600
-Message-Id: <20210223210127.55455-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Tue, 23 Feb 2021 16:04:50 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 14C121F450C9
+Subject: Re: mainline/master bisection: baseline.login on
+ meson-sm1-khadas-vim3l
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Brown <broonie@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Remi Denis-Courmont <remi.denis.courmont@huawei.com>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>
+References: <6033a5da.1c69fb81.9be93.66e6@mx.google.com>
+ <00e098ec-671b-1117-c9c6-7f8fa96519f7@collabora.com>
+ <87blca27fy.wl-maz@kernel.org>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <d9156098-f512-09bc-fa42-7a0f0bdee978@collabora.com>
+Date:   Tue, 23 Feb 2021 21:03:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87blca27fy.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A couple of media schemas got applied without using or incorrectly
-using the video-interfaces.yaml and graph.yaml schemas. Fix them up
-before we have more copy-n-paste errors.
+On 23/02/2021 14:18, Marc Zyngier wrote:
+> Hi Guillaume,
+> 
+> On Tue, 23 Feb 2021 09:46:30 +0000,
+> Guillaume Tucker <guillaume.tucker@collabora.com> wrote:
+>>
+>> Hello Marc,
+>>
+>> Please see the bisection report below about a boot failure on
+>> meson-sm1-khadas-vim3l on mainline.  It seems to only be
+>> affecting kernels built with CONFIG_ARM64_64K_PAGES=y.
+>>
+>> Reports aren't automatically sent to the public while we're
+>> trialing new bisection features on kernelci.org but this one
+>> looks valid.
+>>
+>> There's no output in the log, so the kernel is most likely
+>> crashing early.  Some more details can be found here:
+>>
+>>   https://kernelci.org/test/case/id/6034bed3b344e2860daddcc8/
+>>
+>> Please let us know if you need any help to debug the issue or try
+>> a fix on this platform.
+> 
+> Thanks for the heads up.
+> 
+> There is actually a fundamental problem with the patch you bisected
+> to: it provides no guarantee that the point where we enable the EL2
+> MMU is in the idmap and, as it turns out, the code we're running from
+> disappears from under our feet, leading to a translation fault we're
+> not prepared to handle.
+> 
+> How does it work with 4kB pages? Luck.
 
-Fixes: 41b3e23376e9 ("media: dt-bindings: media: Add bindings for imx334")
-Fixes: d899e5f1db7a ("media: dt-bindings: media: imx258: add bindings for IMX258 sensor")
-Fixes: 918b866edfec ("media: dt-bindings: Remove old ov5647.yaml file, update ovti,ov5647.yaml")
-Fixes: 22f2b47517a6 ("media: dt-bindings: media: i2c: Add OV8865 bindings documentation")
-Fixes: 29a202fa7acc ("media: dt-bindings: media: i2c: Add OV5648 bindings documentation")
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Cc: Jacopo Mondi <jacopo@jmondi.org>
-Cc: "Paul J. Murphy" <paul.j.murphy@intel.com>
-Cc: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc: linux-media@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-Please ack and I'll send to Linus for rc1.
+There may be a fascinating explanation for it, but luck works
+too.  It really seems to be booting happily with 4k pages:
 
- .../devicetree/bindings/media/i2c/imx258.yaml    | 14 +++++++-------
- .../bindings/media/i2c/ovti,ov5647.yaml          |  5 ++---
- .../bindings/media/i2c/ovti,ov5648.yaml          | 16 +++++-----------
- .../bindings/media/i2c/ovti,ov8865.yaml          | 16 +++++-----------
- .../bindings/media/i2c/sony,imx334.yaml          | 11 +++++------
- 5 files changed, 24 insertions(+), 38 deletions(-)
+  https://kernelci.org/test/plan/id/60347b358de339d1b7addcc5/
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/imx258.yaml b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
-index eaf77866ed9b..515317eff41a 100644
---- a/Documentation/devicetree/bindings/media/i2c/imx258.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
-@@ -49,10 +49,14 @@ properties:
- 
-   # See ../video-interfaces.txt for more details
-   port:
--    type: object
-+    $ref: /schemas/graph.yaml#/properties/port
-+    additionalProperties: false
-+
-     properties:
-       endpoint:
--        type: object
-+        $ref: /schemas/media/video-interfaces.yaml#
-+        unevaluatedProperties: false
-+
-         properties:
-           data-lanes:
-             oneOf:
-@@ -65,11 +69,7 @@ properties:
-                   - const: 1
-                   - const: 2
- 
--          link-frequencies:
--            allOf:
--              - $ref: /schemas/types.yaml#/definitions/uint64-array
--            description:
--              Allowed data bus frequencies.
-+          link-frequencies: true
- 
-         required:
-           - data-lanes
-diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov5647.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov5647.yaml
-index 1ab22e75d3c6..3e5d82df90a2 100644
---- a/Documentation/devicetree/bindings/media/i2c/ovti,ov5647.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov5647.yaml
-@@ -31,7 +31,8 @@ properties:
-     maxItems: 1
- 
-   port:
--    $ref: /schemas/graph.yaml#/$defs/port-base
-+    $ref: /schemas/graph.yaml#/properties/port
-+    additionalProperties: false
- 
-     properties:
-       endpoint:
-@@ -41,8 +42,6 @@ properties:
-         properties:
-           clock-noncontinuous: true
- 
--    additionalProperties: false
--
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml
-index f8783f77cc54..9149f5685688 100644
---- a/Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov5648.yaml
-@@ -44,19 +44,17 @@ properties:
-     description: Reset Pin GPIO Control (active low)
- 
-   port:
--    type: object
-     description: MIPI CSI-2 transmitter port
-+    $ref: /schemas/graph.yaml#/properties/port
-+    additionalProperties: false
- 
-     properties:
-       endpoint:
--        type: object
-+        $ref: /schemas/media/video-interfaces.yaml#
-+        unevaluatedProperties: false
- 
-         properties:
--          remote-endpoint: true
--
--          link-frequencies:
--            $ref: /schemas/types.yaml#/definitions/uint64-array
--            description: Allowed MIPI CSI-2 link frequencies
-+          link-frequencies: true
- 
-           data-lanes:
-             minItems: 1
-@@ -65,10 +63,6 @@ properties:
-         required:
-           - data-lanes
-           - link-frequencies
--          - remote-endpoint
--
--    required:
--      - endpoint
- 
- required:
-   - compatible
-diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
-index c0ba28aa30c4..0699c7e4fdeb 100644
---- a/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
-@@ -44,19 +44,17 @@ properties:
-     description: Reset Pin GPIO Control (active low)
- 
-   port:
--    type: object
-     description: MIPI CSI-2 transmitter port
-+    $ref: /schemas/graph.yaml#/properties/port
-+    additionalProperties: false
- 
-     properties:
-       endpoint:
--        type: object
-+        $ref: /schemas/media/video-interfaces.yaml#
-+        unevaluatedProperties: false
- 
-         properties:
--          remote-endpoint: true
--
--          link-frequencies:
--            $ref: /schemas/types.yaml#/definitions/uint64-array
--            description: Allowed MIPI CSI-2 link frequencies
-+          link-frequencies: true
- 
-           data-lanes:
-             minItems: 1
-@@ -65,10 +63,6 @@ properties:
-         required:
-           - data-lanes
-           - link-frequencies
--          - remote-endpoint
--
--    required:
--      - endpoint
- 
- required:
-   - compatible
-diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx334.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx334.yaml
-index 24e689314bde..27cc5b7ff613 100644
---- a/Documentation/devicetree/bindings/media/i2c/sony,imx334.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/sony,imx334.yaml
-@@ -36,18 +36,17 @@ properties:
-     description: Reference to the GPIO connected to the XCLR pin, if any.
- 
-   port:
--    type: object
-     additionalProperties: false
-     $ref: /schemas/graph.yaml#/properties/port
- 
-     properties:
-       endpoint:
--        type: object
-+        $ref: /schemas/media/video-interfaces.yaml#
-+        unevaluatedProperties: false
-+
-         properties:
--          data-lanes:
--            $ref: ../video-interfaces.yaml#/properties/data-lanes
--          link-frequencies:
--            $ref: ../video-interfaces.yaml#/properties/link-frequencies
-+          data-lanes: true
-+          link-frequencies: true
- 
-         required:
-           - data-lanes
--- 
-2.27.0
+> Do you mind giving the patch below a go? It does work on my vim3l and
+> on a FVP, so odds are that it will solve it for you too.
+
+Sure, and that worked here as well:
+
+  http://lava.baylibre.com:10080/scheduler/job/752416
+
+and here's the test branch where I applied your fix, for
+completeness:
+
+  https://gitlab.collabora.com/gtucker/linux/-/commits/v5.11-vim3l-vhe/
+
+As always, if you do send a patch with the fix, please give some
+credit to the bot:
+
+  Reported-by: "kernelci.org bot" <bot@kernelci.org> 
+
+Thanks,
+Guillaume
+
+
+> Thanks,
+> 
+> 	M.
+> 
+> diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+> index 678cd2c618ee..fbd2543b8f7d 100644
+> --- a/arch/arm64/kernel/hyp-stub.S
+> +++ b/arch/arm64/kernel/hyp-stub.S
+> @@ -96,8 +96,10 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
+>  	cmp	x1, xzr
+>  	and	x2, x2, x1
+>  	csinv	x2, x2, xzr, ne
+> -	cbz	x2, 1f
+> +	cbnz	x2, 2f
+>  
+> +1:	eret
+> +2:
+>  	// Engage the VHE magic!
+>  	mov_q	x0, HCR_HOST_VHE_FLAGS
+>  	msr	hcr_el2, x0
+> @@ -131,11 +133,29 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
+>  	msr	mair_el1, x0
+>  	isb
+>  
+> +	// Hack the exception return to stay at EL2
+> +	mrs	x0, spsr_el1
+> +	and	x0, x0, #~PSR_MODE_MASK
+> +	mov	x1, #PSR_MODE_EL2h
+> +	orr	x0, x0, x1
+> +	msr	spsr_el1, x0
+> +
+> +	b	enter_vhe
+> +SYM_CODE_END(mutate_to_vhe)
+> +
+> +	// At the point where we reach enter_vhe(), we run with
+> +	// the MMU off (which is enforced by mutate_to_vhe()).
+> +	// We thus need to be in the idmap, or everything will
+> +	// explode when enabling the MMU.
+> +
+> +	.pushsection	.idmap.text, "ax"
+> +
+> +SYM_CODE_START_LOCAL(enter_vhe)
+> +	// Enable the EL2 S1 MMU, as set up from EL1
+>  	// Invalidate TLBs before enabling the MMU
+>  	tlbi	vmalle1
+>  	dsb	nsh
+>  
+> -	// Enable the EL2 S1 MMU, as set up from EL1
+>  	mrs_s	x0, SYS_SCTLR_EL12
+>  	set_sctlr_el1	x0
+>  
+> @@ -143,17 +163,12 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
+>  	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
+>  	msr_s	SYS_SCTLR_EL12, x0
+>  
+> -	// Hack the exception return to stay at EL2
+> -	mrs	x0, spsr_el1
+> -	and	x0, x0, #~PSR_MODE_MASK
+> -	mov	x1, #PSR_MODE_EL2h
+> -	orr	x0, x0, x1
+> -	msr	spsr_el1, x0
+> -
+>  	mov	x0, xzr
+>  
+> -1:	eret
+> -SYM_CODE_END(mutate_to_vhe)
+> +	eret
+> +SYM_CODE_END(enter_vhe)
+> +
+> +	.popsection
+>  
+>  .macro invalid_vector	label
+>  SYM_CODE_START_LOCAL(\label)
+> 
+> 
 
