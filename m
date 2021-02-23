@@ -2,82 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3C232311E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 715E132312D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbhBWTEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 14:04:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233933AbhBWTE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 14:04:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C106A64E83;
-        Tue, 23 Feb 2021 19:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614107028;
-        bh=YWkkpozB3ER6IruxCaThzXsvEStNfh4WR48id4vPvlk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=I3VfJYSz+d2PtdJlnic12kT2Q/y4xcO5gOz0+qcXpMppnOysa9W2+6xuanEvh1hqo
-         RNf/I6Dyh2BV4fw78ZUyln/88t6ftQhXUh/52EtNU9d9VAdPkLh8qTV2plXQWYHCay
-         U+dlOQmDKP6o1+xDVhtnoRIAir6sB6YAUV0adqWrE5t2X4qoDjuozjvW3qdm8VJo8U
-         LQpVcaym+gnY/n+RzrvpWS66VDQPIn8GPiRhIlQongL6IExB6SB2KoYeYjrS69PjiT
-         AfASGaXF4mHtX4aP2Hm5HmXz6Qnu+HEAFefWnVaOb61JHeoLRfRVyGvPwqgAOM7uhi
-         pi5HD6iBxyEJw==
-Received: by mail-ed1-f46.google.com with SMTP id h10so27075630edl.6;
-        Tue, 23 Feb 2021 11:03:47 -0800 (PST)
-X-Gm-Message-State: AOAM531WdlYKzagWRmAio/ivpr/FAw6hGA1ehBMHRB2R7wkTwXzMiSsA
-        SXcSY//qijRGXjN3T7lNVSr8Ej1MVNzcNLfouJg=
-X-Google-Smtp-Source: ABdhPJxCB7joItWdqwy1g7sRqW0BGLBkMngXKcSUhXcgiqKN72zVLRKflxhCJ2MUcjjrIVCb9lGHBuJHupznfZLapDM=
-X-Received: by 2002:a05:6402:d05:: with SMTP id eb5mr29217861edb.143.1614107026414;
- Tue, 23 Feb 2021 11:03:46 -0800 (PST)
+        id S232057AbhBWTOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 14:14:43 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23520 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230114AbhBWTOk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 14:14:40 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NJ2h1q011765;
+        Tue, 23 Feb 2021 14:13:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=ykJhJz2Y/yV96Zls5vPfzXgD4YnQ1pOgma5Gqu5wE/I=;
+ b=r2cyRqBsjTf+8nNDdroxL72ER4uj2NbHkK2aZU3KOxupSI1H94vF/v+LD3LlSPCPyqTq
+ yyrbAtGmLprEKFHM4n9Qme092SfEFOVEXGPy2HxgxhCmmSonJLt6OD20JA4zLXhwLdtI
+ VOFvcwGOqqZxULbW019bgKg1L+mvC3CPZbpYl5xCqq0xpcwB82Skzcuqt0vk6nipmJu5
+ jWyuHNLgoyqeM6SarWs2oPEunNbRrEA+r6gnZMO/wClkiQB6DTk37Xyb118wDpX6hgwi
+ 66QB331VUmrmZxxxN0Sn+KX9Zv5O6SnAZI9obPG7wZJib4OnGGZF0KcFSeYasuInbLET yw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36vkg3csgx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Feb 2021 14:13:59 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11NJ3BGq017316;
+        Tue, 23 Feb 2021 14:13:59 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36vkg3csgc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Feb 2021 14:13:59 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11NJC9cp014507;
+        Tue, 23 Feb 2021 19:13:56 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 36tt282w2u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Feb 2021 19:13:56 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11NJDfkv36503892
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Feb 2021 19:13:41 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C7CE2A4040;
+        Tue, 23 Feb 2021 19:13:53 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6543FA404D;
+        Tue, 23 Feb 2021 19:13:53 +0000 (GMT)
+Received: from ibm-vm.ibmuc.com (unknown [9.145.5.213])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 23 Feb 2021 19:13:53 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [PATCH v4 0/2] s390/kvm: fix MVPG when in VSIE
+Date:   Tue, 23 Feb 2021 20:13:51 +0100
+Message-Id: <20210223191353.267981-1-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210217161052.877877-1-adrien.grassein@gmail.com>
- <20210217161052.877877-2-adrien.grassein@gmail.com> <20210219131825.niiftfm5r32qc6m3@kozik-lap>
- <CABkfQAH75N1k0bDEGzo0mRtoqP=-9p9hzBo43f6gQnSmGsXQUw@mail.gmail.com>
- <20210220191914.pir3ep3utz6uwyrb@kozik-lap> <CABkfQAGyr_ntKMR3Ht0CVZY7zLiBcRN3-WeWiZQ-BTzXHqSF3w@mail.gmail.com>
- <CAJKOXPfb69J+r7WdJMPbMsqaJuKYxKy6BwtEhmPFrEiZz8L8LQ@mail.gmail.com> <CABkfQAG8n3AGdamKZbNx9Q5N_6SB5S4=+nj4zuLP_Xk7zxF-cw@mail.gmail.com>
-In-Reply-To: <CABkfQAG8n3AGdamKZbNx9Q5N_6SB5S4=+nj4zuLP_Xk7zxF-cw@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 23 Feb 2021 20:03:34 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPf9fhsVFAQ+s+xhmuBFUk0=gVrv45JDRHM=WO9keZZwnA@mail.gmail.com>
-Message-ID: <CAJKOXPf9fhsVFAQ+s+xhmuBFUk0=gVrv45JDRHM=WO9keZZwnA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] arm64: dts: imx8mm-nitrogen-r2: add wifi/bt chip
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, DTML <devicetree@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-23_08:2021-02-23,2021-02-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 adultscore=0 priorityscore=1501 malwarescore=0
+ mlxlogscore=679 mlxscore=0 impostorscore=0 bulkscore=0 spamscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102230158
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 at 11:45, Adrien Grassein <adrien.grassein@gmail.com> wrote:
-> > > >
-> > > > I would assume this goes from PMIC, so check your schematics. There is
-> > > > little point in adding a fixed regulator which is non-controllable.
-> > >
-> > > No, the 1.8V is issued directly from the alimentation stage.
-> > > So we can't control it.
-> > >
-> > > > I think bindings don't require it.
-> > > After reading some code, I can say that vqmmc is not mandatory but it
-> > > helped to find out
-> > > the caps of the mmc host. In this case, we only support 1.8V on vqmmc.
-> > > It avoids driver to guess it (and avoid bad behaviour on any future change).
-> >
-> > If the supply (hardware) is really 1.8 V then indeed your approach is
-> > good. So let's keep that one.
-> >
->
-> To be sure to understand well: should I keep the fixed regulator?
-> Thanks,
+The current handling of the MVPG instruction when executed in a nested
+guest is wrong, and can lead to the nested guest hanging.
 
-Yes, keep it, at least I am fine with it.
+This patchset fixes the behaviour to be more architecturally correct,
+and fixes the hangs observed.
 
-Best regards,
-Krzysztof
+v3->v4
+* added PEI_ prefix to DAT_PROT and NOT_PTE macros
+* added small comment to explain what they are about
+
+v2->v3
+* improved some comments
+* improved some variable and parameter names for increased readability
+* fixed missing handling of page faults in the MVPG handler
+* small readability improvements
+
+v1->v2
+* complete rewrite
+
+Claudio Imbrenda (2):
+  s390/kvm: extend kvm_s390_shadow_fault to return entry pointer
+  s390/kvm: VSIE: correctly handle MVPG when in VSIE
+
+ arch/s390/kvm/gaccess.c |  30 ++++++++++--
+ arch/s390/kvm/gaccess.h |   6 ++-
+ arch/s390/kvm/vsie.c    | 101 ++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 122 insertions(+), 15 deletions(-)
+
+-- 
+2.26.2
+
