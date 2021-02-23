@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C68322E97
+	by mail.lfdr.de (Postfix) with ESMTP id A5ABD322E98
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233588AbhBWQRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 11:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
+        id S233598AbhBWQRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 11:17:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbhBWQRa (ORCPT
+        with ESMTP id S233530AbhBWQRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:17:30 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F48C061574;
-        Tue, 23 Feb 2021 08:16:47 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id o10so1874341wmc.1;
-        Tue, 23 Feb 2021 08:16:47 -0800 (PST)
+        Tue, 23 Feb 2021 11:17:32 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B1BC06174A;
+        Tue, 23 Feb 2021 08:16:48 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id a132so2980920wmc.0;
+        Tue, 23 Feb 2021 08:16:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+edkdqgi3SYev5Q8UoeHmGWS9QJymZfx3Dq69r0Ygso=;
-        b=QfklkAOZocwgThYIGee/c+xLDLK5Yy+D4PUmgxD9ohITpIhMy+osOx1MMDR1VSqif5
-         VYS/qhvgDEYSJip7bLtE8Xb6c2Vto7KihCdVVwwLEyas45Oa5iV0Z+qeBZB3gEMk5VNb
-         blfLQv3E4Hr0+sdg8JlXiWvS0qoTEP8+ehTiNe2ajMG/loATBugJo7Qu/1Ns2iS9t9iv
-         4vn6d4dYNWNwhUWdCQyXdqe4E22/cU/q+C5jbTaDj6xgU4OGfw1r7JEzjrFv7EwrcgqW
-         ydr00vUEc1g++dJLmhiOE7uWWaldAtcVe2DkHCJZ1ZGN+pW7YhbyqCzOh6ubjAIzXAf4
-         tTXg==
+        bh=l17os7/7Cmdeypzws3CjPRBYiptpWoT6sGD6tB5zVB0=;
+        b=Mk5JtHBPWldH1fduzHBFFZI7ligfBpyYzjL4Czj3XdNXBSf6bZEoPvO4Eyw68c+xpE
+         wfchl0EmyqK2/qj8qoA/08YxC/jqw6q6sjRAjetXoH19Vlyr5/u7Glh0HZFWiTCZiUIM
+         kRIF4U+PPgC69MysHck0XuJwir+dhfm0DPoqYydhITnwC9icBN6b9UjLNPSBBIHrcWSV
+         Adx6E72akLgK/baeFgUDjfub5VtnwM9AX9SJGeS8nh0KacPx+Xvtzkw5wroLU7bLZwJq
+         5ikWOsrxQ1oR4PTJZWsNr2ChWatRJ6Cq80F6hS6a2F+ktAMxo7BFBhe2JGg/N7LOZ+Ce
+         32iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+edkdqgi3SYev5Q8UoeHmGWS9QJymZfx3Dq69r0Ygso=;
-        b=nwsdD1OYV8jPFzCRMChRhjEXqZVELEyUkfHiywHmjBup2L8kH8Jw7+MkuHyftdA2oX
-         h9loRj5C7XLq6ehGeWVk7jCA0CLBRTD7Z1fP7qHzm1Py2atEFmEcMTv7JY9v+JOJ+iW0
-         AM+CC3fAUOxT5JRnDBtJVCI5kHEhYiUlRiPoju/ICUVGFTgMCldS1HH5UscLZS/ezISI
-         oe7AqbeIQisz7C9qWwlIUL5GRS7kkUMHmHwEZI36o31EBG10MOMAkpkRm7zRevKt7jFn
-         CQ6YYgjdZZJuzBKiBnuvBegpY0Y/XoTt8N3p7VDPqHGhydqt3uCbmxh97XbX285n5qGd
-         IORw==
-X-Gm-Message-State: AOAM533I8BpXABZFvMwhKGToOS6kkLtJjeMzgQElz609cQ9DjDlek4so
-        BBM0TkuArRW/hKOA51yk86Q=
-X-Google-Smtp-Source: ABdhPJxIKUbIkdzh5aSKqP4BK8xaXviO0WDFC7xjICkxsoBmOBeCkSL2xrKojcLx0aLrKx4aPuQX3A==
-X-Received: by 2002:a1c:7c17:: with SMTP id x23mr13849906wmc.95.1614097006584;
-        Tue, 23 Feb 2021 08:16:46 -0800 (PST)
+        bh=l17os7/7Cmdeypzws3CjPRBYiptpWoT6sGD6tB5zVB0=;
+        b=ZMiDc0McqC6BknjDPwTRle3mlqgvsvwdE5L5hl3dOORNBvRy0L7Tb8hzwP8RrupnzT
+         YO5CWP7ltMKX+BZpaHwd5M6kEcQTtLJpnm/1QuyI4lYmg4TCDX8qibiGmfSWN+FKBwld
+         ufB4KZP9H2g1wU7Pis/0Sfh1oQqW7bb969Gi/If46ILR5CfTMiQf5Ev++QkykXJZu6HA
+         Kc7SzcxFakFI1MUxuASE96fOlgSJXwljzW1XliQDUtW3h48J1xkke5GEPYJAgJPBpCgI
+         uXfDIUrery4TPB0ELI3x2UdFozvbgEHtpzJUtGkjUY+X44s2sPT3yNteArJJxR+RnIzy
+         XzYg==
+X-Gm-Message-State: AOAM531anZebnUhDUbD99SgZxJOvSIHT3Syyx39LIQSzL59/CdQkOeyx
+        N22WhYVXQjB0EUTm6A6MFozKfLIu6N0oWr/2
+X-Google-Smtp-Source: ABdhPJzuL42u9wmgMzblrX0mcR0ulC/G2seksOMYMA+Kqq4WWU3HFzWic2TkxRQH8Ur9O8HIMlP1wQ==
+X-Received: by 2002:a1c:c903:: with SMTP id f3mr25621536wmb.69.1614097007648;
+        Tue, 23 Feb 2021 08:16:47 -0800 (PST)
 Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id h13sm32699925wrv.20.2021.02.23.08.16.45
+        by smtp.gmail.com with ESMTPSA id h13sm32699925wrv.20.2021.02.23.08.16.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 08:16:46 -0800 (PST)
+        Tue, 23 Feb 2021 08:16:47 -0800 (PST)
 From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
 To:     f.fainelli@gmail.com, jonas.gorski@gmail.com,
@@ -59,12 +59,13 @@ To:     f.fainelli@gmail.com, jonas.gorski@gmail.com,
         linux-arm-kernel@lists.infradead.org
 Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
-Subject: [PATCH v2 0/2] usb: host: ehci-platform: add ignore-oc DT support
-Date:   Tue, 23 Feb 2021 17:16:42 +0100
-Message-Id: <20210223161644.6095-1-noltari@gmail.com>
+Subject: [PATCH v2 1/2] dt-bindings: usb: generic-ehci: document ignore-oc flag
+Date:   Tue, 23 Feb 2021 17:16:43 +0100
+Message-Id: <20210223161644.6095-2-noltari@gmail.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210223155005.21712-1-noltari@gmail.com>
+In-Reply-To: <20210223161644.6095-1-noltari@gmail.com>
 References: <20210223155005.21712-1-noltari@gmail.com>
+ <20210223161644.6095-1-noltari@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -76,14 +77,30 @@ Over-current reporting isn't supported on some platforms such as bcm63xx.
 These devices will incorrectly report over-current if this flag isn't properly
 activated.
 
-Álvaro Fernández Rojas (2):
-  dt-bindings: usb: generic-ehci: document ignore-oc flag
-  usb: host: ehci-platform: add ignore_oc DT support
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+---
+ v2: change flag name and improve documentation as suggested by Alan Stern.
 
  Documentation/devicetree/bindings/usb/generic-ehci.yaml | 6 ++++++
- drivers/usb/host/ehci-platform.c                        | 3 +++
- 2 files changed, 9 insertions(+)
+ 1 file changed, 6 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/usb/generic-ehci.yaml b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+index cf83f2d9afac..8089dc956ba3 100644
+--- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
++++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+@@ -122,6 +122,12 @@ properties:
+     description:
+       Set this flag to force EHCI reset after resume.
+ 
++  spurious-oc:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Set this flag to indicate that the hardware sometimes turns on
++      the OC bit when an over-current isn't actually present.
++
+   companion:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description:
 -- 
 2.20.1
 
