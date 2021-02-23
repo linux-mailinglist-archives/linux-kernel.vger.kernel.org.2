@@ -2,136 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC67C3230AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C1E3230BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbhBWSZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 13:25:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49828 "EHLO mx2.suse.de"
+        id S234006AbhBWS16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 13:27:58 -0500
+Received: from mout.gmx.net ([212.227.15.18]:57903 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233837AbhBWSZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 13:25:50 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614104703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DyO1mfvHjHSAG9XQ7b42ZfYJ99hqQfhvvyq5UVVCWzA=;
-        b=OCZEepjEd8nPAA5yXaOMYt7CXqXhFbY2Mt80my9GaJ1wxG8ssZG+l72iGL2//6tO0F/gbF
-        eUQs/+2nH2eLaiAFZVT6bVg4XJmCC1zyQAeNKWTfUiwWs6SK6RvXrG0Gf30PWt3dcp0U0j
-        cqZV7p2WJoAiw5OI0RKtAQzMlTw6k8A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 435CAAFF3;
-        Tue, 23 Feb 2021 18:25:03 +0000 (UTC)
-Date:   Tue, 23 Feb 2021 19:24:55 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     tj@kernel.org, thomas.lendacky@amd.com, brijesh.singh@amd.com,
-        jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
-        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
-        corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 1/2] cgroup: sev: Add misc cgroup controller
-Message-ID: <YDVIdycgk8XL0Zgx@blackbook>
-References: <20210218195549.1696769-1-vipinsh@google.com>
- <20210218195549.1696769-2-vipinsh@google.com>
+        id S233961AbhBWS10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 13:27:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614104726;
+        bh=7BwauqzseaTyIv+FEED6OWAW8L+89S2yvXr2FlbloOg=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=MLNYC3zGXzDgsbM3c0876/8kOGG0gHU/UGNDMXvegCA6/mPcQE0doq8KJPREwjocq
+         wKGf5BplZCB71qLCwM/Qj6ANgTMA4T56r5YNUBMwsIBCF5iS9X4sqgv5mSctj/uL1S
+         HXcelzyqZdLqqcLKLkBl/GsAQ8XVhzBMwaEWO9i4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.229.153]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRCOE-1lQfbd3xtk-00N6Fb; Tue, 23
+ Feb 2021 19:25:26 +0100
+Date:   Tue, 23 Feb 2021 19:25:22 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
+Cc:     John Wood <john.wood@gmx.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 3/8] securtiy/brute: Detect a brute force attack
+Message-ID: <20210223182522.GC3068@ubuntu>
+References: <20210221154919.68050-1-john.wood@gmx.com>
+ <20210221154919.68050-4-john.wood@gmx.com>
+ <4fde79a5-34fe-fd27-b390-e9fd341996fb@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vD1CgIgdIbjxQfR1"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218195549.1696769-2-vipinsh@google.com>
+In-Reply-To: <4fde79a5-34fe-fd27-b390-e9fd341996fb@infradead.org>
+X-Provags-ID: V03:K1:EUnrf02szRc5Cqg5XwMwv/sMzB3gfsToWIiEyS9CekvrC53uTdW
+ t59mo8duYbPIRThpEohuJip1uhwu1DJhuqG2cNQhnv1cIAbROcZ1f5NPYIH3SaCNLUI1M6S
+ 71swv5a323RzfN5z9qw5VsoFWad1SgMtCg0kGQhPgpupa37a5o/kgDgvcLnhwZOKhCzikmU
+ K4yzL2hWJPLGFIa+VsqrQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:H+7ThYesxAY=:Kh4IJ/yOba6KfzReGlAiOa
+ 3aU6pjviDfczfe+aZ5o0E6I5Mn2VGR7cFA/IcPxQDNnqWOAFnVu6JbmiswU/6OrOdivKrxKqv
+ 4Xc91AkaYXTCDPMdshfiH2fImMVGIk4GJ6J3xVJhYQlfGChkb+3/3aPvT1Gu0f2frCUQyI2o8
+ 1CUQgsp8OxX3EjPhguF9OEIVOhP5pcXmsXzE04SEqICvGbsMIoehrwP7s+ssU4z/09QA4obpr
+ HY394T8chXp+7JZMjvLcRTnO9OxMrA7hWsOYPe/lBBdOgTfhY9rta/g9djDzO60bZ+kz5zKrY
+ gAtP+hi2P+Tq47xG2MitQRPczKIV/k0tiRDIWlxJR5RVUzOuPT8R9w3ULGOqVUYPHsO9Z714B
+ PcyouNU7PQ/Am2L7gMnTaeuTyf9eVEzsk5cORI6NzvGyZ+ui+sJhNHmZgU0JQppV7Bl1xaB3u
+ GSGSsnrd+5520RT9FhlGOfR/R1UkjnWM/QE39DyLVL7dqoqZwHPChRueM510nH/udbHm0sQ1+
+ 2AQx7MfFnwtPyfZdV23igYikvjZ4QW8X9XAGqXd2d7WBuA7Twin6dmu1yxr6rM8w/qSONh2OP
+ lEvcDj4vT7WfCzhBIsPRIdnmsfN2lbp/slrf2KTGV5vmzCrRA0ELwLsMeTdBNFBB1jGnccf9c
+ 9yEad5eqp7jBVL4mOQpNu7ts0kjPF4h+9U9cGmwJlo/Le2JwQpMd7r3LgLiKlmyabbhnVCQ8f
+ wkMmiofqa5FfXzn1OKDYBRRpiiCqn5ubkN/HEGkHVZu6hYT1uR2NF5TvBwbtB6HYOE4UeI1c9
+ ajSpH+G1xtP/AJjzGiJiAvbZZiAn/1birGmXyWUiepFLoJxDoha6IZMUmJlCpCsDvVEQJr+sq
+ /DRHbzDoeoYcyl6qlpDA==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---vD1CgIgdIbjxQfR1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 18, 2021 at 11:55:48AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
+On Sun, Feb 21, 2021 at 06:30:10PM -0800, Randy Dunlap wrote:
+> Hi,
+>
+> one spello in 2 locations:
+>
+> On 2/21/21 7:49 AM, John Wood wrote:
 > [...]
-> +#ifndef CONFIG_KVM_AMD_SEV
-> +/*
-> + * When this config is not defined, SEV feature is not supported and APIs in
-> + * this file are not used but this file still gets compiled into the KVM AMD
-> + * module.
-I'm not familiar with the layout of KVM/SEV compile targets but wouldn't
-it be simpler to exclude whole svm/sev.c when !CONFIG_KVM_AMD_SEV?
-
-> +++ b/kernel/cgroup/misc.c
+> > these statistics dissapear when the involved tasks finished. In this
+>
+>                    disappear
 > [...]
-> +/**
-> + * misc_cg_set_capacity() - Set the capacity of the misc cgroup res.
-> + * @type: Type of the misc res.
-> + * @capacity: Supported capacity of the misc res on the host.
-> + *
-> + * If capacity is 0 then the charging a misc cgroup fails for that type.
-> + *
-> + * The caller must serialize invocations on the same resource.
-> + *
-> + * Context: Process context.
-> + * Return:
-> + * * %0 - Successfully registered the capacity.
-> + * * %-EINVAL - If @type is invalid.
-> + * * %-EBUSY - If current usage is more than the capacity.
-When is this function supposed to be called? At boot only or is this
-meant for some kind of hot unplug functionality too?
-
-> +int misc_cg_try_charge(enum misc_res_type type, struct misc_cg **cg,
-> +		       unsigned int amount)
+> > + * statistics dissapear when this task is finished. In this scenario =
+this data
+>
+>                  disappear
 > [...]
-> +		new_usage = atomic_add_return(amount, &res->usage);
-> +		if (new_usage > res->max ||
-> +		    new_usage > misc_res_capacity[type]) {
-> +			ret = -EBUSY;
-I'm not sure the user of this resource accounting will always be able to
-interpret EBUSY returned from depths of the subsystem.
-See what's done in pids controller in order to give some useful
-information about why operation failed.
 
-> +			goto err_charge;
-> +		}
-> +
-> +		// First one to charge gets a reference.
-> +		if (new_usage == amount)
-> +			css_get(&i->css);
-1) Use the /* comment */ style.
-2) You pin the whole path from task_cg up to root (on the first charge).
-That's unnecessary since children reference their parents.
-Also why do you get the reference only for the first charger? While it
-may work, it seems too convoluted to me.
-It'd be worth documenting what the caller can expect wrt to ref count of
-the returned misc_cg.
+This typos will be corrected in the next version.
 
-Thanks,
-Michal
+Thanks a lot,
+John Wood
 
---vD1CgIgdIbjxQfR1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmA1SHcACgkQia1+riC5
-qSivUg/9EiijSYjdM27m519sTtNmnf7A8HESAA+AKHoxAzNGS5gX0erx4CzDhaxD
-7dylOAQN3muEl/C56sin5CbaiJ5vKnwqYdqJur3cUAVo5N5mpG9bsnLRnWMfFkCo
-VgczMAeS6e/r1FLfiSujGtdxZOUJCgl51tcCKNM5z+yd5UObi8IAfbgkwStAmFrq
-9/NC93xbJ97oCNTPgHMQ84sMXMSay4ExMKoa7CLpC/Y27wgpa03zIQ3wpgezGTiT
-UjXvkKcXl0FJRF9t+jZboTBEEDnjLGb1HvmSzkI8hFCcNHbZhNAcOt1QtlI70maK
-VFU0hDddLovzqDkJ6oo2Hkx9wilMz8xb8SUgLTGK6w+HMjMfosfwkSAl2NTM3Q9T
-cHtPdE3c00rnjX1x/CS2iCgeFOHNQvig/ZVZ8E5U9xLyX/XlHaDOIbjtdM/fWYyv
-9HkUY8I6AlP+LspXib1XtaDqBx4DSD9nAbLPS0cohAktu8Qf6GrKFzAXQCMtAt9b
-eVtu6+ZemHL3k6R07HiUCdCpqxrpevuv5vrnvPJV3vcX986zAvDloB04nqPg3iaZ
-/keECDl0t5graoHiW0QM8c3bNOEzx33KH7dK4EPvAIM1xE4T1eW3vzjDdwGG/ExN
-aTVcS7Aac+bhaDXbXlLW3AgPrdrs1hnYBx/mflGlZzoA0ZBHkGE=
-=Kfse
------END PGP SIGNATURE-----
-
---vD1CgIgdIbjxQfR1--
+>
+> --
+> ~Randy
+>
