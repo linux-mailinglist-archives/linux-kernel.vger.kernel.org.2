@@ -2,188 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D6F3233B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 23:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E0C3233C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 23:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbhBWW3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 17:29:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbhBWW1X (ORCPT
+        id S232552AbhBWWdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 17:33:43 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44298 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232267AbhBWW3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 17:27:23 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40627C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:26:42 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id e45so242543ote.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:26:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fZxhrFPoVeuINwqWYDTQrRIMFcJNq/iX5+xBlXUPDIw=;
-        b=Lkb/fePhnB3TeXO8nhWGUpDpvuWHlvarKeD0HrVivi0T+3SB/3s96S+TLlJRZWdu/7
-         LzAu9w42VS6gqUKOAyRRnlVvojownec1/CLyOEfqurejaYCCK5tVfresc04+Dl2XW/iN
-         UGuZwMWXTPugvWndL9KLxaN5dLQR0IdCP9yjKf5/5tcsEkL84nOowVAysLLEnAfcg3cS
-         z28cIFKTN5FIt0IiQWX+cbneyBitwyKBKVvCyjrF08Xt9Exkv3ZXlzFYa0UB2Km3buwT
-         44bJM65RqceFOuvwN2cfOXlSaBbfpqTbw3rXZXWhefF7OsdNuGkVpewdqnJ/XW/wWUWS
-         blkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fZxhrFPoVeuINwqWYDTQrRIMFcJNq/iX5+xBlXUPDIw=;
-        b=ddF8qu4wuHSABYSoMX/XHYFKnjIa18+Oh/oJ8nlEt59EtI9LB56vQbX6H3C1cq2gQQ
-         DJtXENUid1hRgv4DmHZ6PchH3KcZQQMK2xm8cmlWinniV7R0tQSs5hWFqie5YWUpZ0MJ
-         08bKYt4TWTyFoiMBxDQxZC+ykyXmtopLUo2rEdxeuov4icjB/soPRaNGklQXqce3Xu8F
-         Rf54s9Dk1cY0h9J4Fxc8AJ5urDagSGEkfe3r/quR5TsYEokXRxmCpRjVTtC0QjKls82n
-         ZJ068eoug0qoz++xUaiJ8e20SWsCjkL/AN+hTCA+PinEKKmMw+AM7fNif2oHTWLBThEN
-         4DqA==
-X-Gm-Message-State: AOAM530GPGLO40tyAtqwo5qqi9lLBtnfry+iRH8yqWLcB/1m+ewphyza
-        iv/30j/JX4ChycJk5wHrmDqVgYnW2TFx7sZZMSv0fw==
-X-Google-Smtp-Source: ABdhPJyKcJ1a+AjtPRO339TGkeeBUE+Uf/ejrr6lZnvFhmNcPW5GEY4o7F+DMHaSBgv4mLYXaBM1l4zKLP8jkuBLUWw=
-X-Received: by 2002:a9d:5a05:: with SMTP id v5mr22397134oth.17.1614119201352;
- Tue, 23 Feb 2021 14:26:41 -0800 (PST)
+        Tue, 23 Feb 2021 17:29:45 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NMJWw8019847
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:28:57 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=+i6vgqPYE//I0dGSp5B8jANfgLo0QJZd7ZWHoYw0sFQ=;
+ b=O6WKiY5FzbyosmE5xPAnq4cVf2aFiylEo1jP++pZL2f13QSC5kKGq1tqqBy3WdAzgCia
+ SpEWZNpyWP6v7KFt9Kb5uCxoZwOL7lFJgqBIVQwcapfcVGoQ9sNrFKGEM166mE9UprKf
+ paFhdrir0Itp6s68T0ulIzZvI1HhCmr5w4A= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 36u14q8y05-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:28:57 -0800
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 23 Feb 2021 14:28:55 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id E803962E093E; Tue, 23 Feb 2021 14:28:51 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <peterz@infradead.org>, Song Liu <songliubraving@fb.com>
+Subject: [PATCH v5 bpf-next 0/6] bpf: enable task local storage for tracing programs
+Date:   Tue, 23 Feb 2021 14:28:39 -0800
+Message-ID: <20210223222845.2866124-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20210223143426.2412737-1-elver@google.com> <3D507285-835F-4C83-8343-2888835971B4@amacapital.net>
-In-Reply-To: <3D507285-835F-4C83-8343-2888835971B4@amacapital.net>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 23 Feb 2021 23:26:29 +0100
-Message-ID: <CANpmjNOpq27pDnoPaNON7a_gi7Ls=7xQXBH5-BSe9jwiFE763A@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/4] Add support for synchronous signals on perf events
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-23_11:2021-02-23,2021-02-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 suspectscore=0 priorityscore=1501
+ phishscore=0 impostorscore=0 clxscore=1015 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102230188
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 at 21:27, Andy Lutomirski <luto@amacapital.net> wrote:
-> > On Feb 23, 2021, at 6:34 AM, Marco Elver <elver@google.com> wrote:
-> >
-> > =EF=BB=BFThe perf subsystem today unifies various tracing and monitorin=
-g
-> > features, from both software and hardware. One benefit of the perf
-> > subsystem is automatically inheriting events to child tasks, which
-> > enables process-wide events monitoring with low overheads. By default
-> > perf events are non-intrusive, not affecting behaviour of the tasks
-> > being monitored.
-> >
-> > For certain use-cases, however, it makes sense to leverage the
-> > generality of the perf events subsystem and optionally allow the tasks
-> > being monitored to receive signals on events they are interested in.
-> > This patch series adds the option to synchronously signal user space on
-> > events.
->
-> Unless I missed some machinations, which is entirely possible, you can=E2=
-=80=99t call force_sig_info() from NMI context. Not only am I not convinced=
- that the core signal code is NMI safe, but at least x86 can=E2=80=99t corr=
-ectly deliver signals on NMI return. You probably need an IPI-to-self.
+This set enables task local storage for non-BPF_LSM programs.
 
-force_sig_info() is called from an irq_work only: perf_pending_event
--> perf_pending_event_disable -> perf_sigtrap -> force_sig_info. What
-did I miss?
+It is common for tracing BPF program to access per-task data. Currently,
+these data are stored in hash tables with pid as the key. In
+bcc/libbpftools [1], 9 out of 23 tools use such hash tables. However,
+hash table is not ideal for many use case. Task local storage provides
+better usability and performance for BPF programs. Please refer to 6/6 fo=
+r
+some performance comparison of task local storage vs. hash table.
 
-> > The discussion at [1] led to the changes proposed in this series. The
-> > approach taken in patch 3/4 to use 'event_limit' to trigger the signal
-> > was kindly suggested by Peter Zijlstra in [2].
-> >
-> > [1] https://lore.kernel.org/lkml/CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpoc=
-X2jwVAbZD=3D-XQ@mail.gmail.com/
-> > [2] https://lore.kernel.org/lkml/YBv3rAT566k+6zjg@hirez.programming.kic=
-ks-ass.net/
-> >
-> > Motivation and example uses:
-> >
-> > 1.    Our immediate motivation is low-overhead sampling-based race
-> >    detection for user-space [3]. By using perf_event_open() at
-> >    process initialization, we can create hardware
-> >    breakpoint/watchpoint events that are propagated automatically
-> >    to all threads in a process. As far as we are aware, today no
-> >    existing kernel facility (such as ptrace) allows us to set up
-> >    process-wide watchpoints with minimal overheads (that are
-> >    comparable to mprotect() of whole pages).
->
-> This would be doable much more simply with an API to set a breakpoint.  A=
-ll the machinery exists except the actual user API.
+Changes v4 =3D> v5:
+1. Fix build w/o CONFIG_NET. (kernel test robot)
+2. Remove unnecessary check for !task_storage_ptr(). (Martin)
+3. Small changes in commit logs.
 
-Isn't perf_event_open() that API?
+Changes v3 =3D> v4:
+1. Prevent deadlock from recursive calls of bpf_task_storage_[get|delete]=
+.
+   (2/6 checks potential deadlock and fails over, 4/6 adds a selftest).
 
-A new user API implementation will either be a thin wrapper around
-perf events or reinvent half of perf events to deal with managing
-watchpoints across a set of tasks (process-wide or some subset).
+Changes v2 =3D> v3:
+1. Make the selftest more robust. (Andrii)
+2. Small changes with runqslower. (Andrii)
+3. Shortern CC list to make it easy for vger.
 
-It's not just breakpoints though.
+Changes v1 =3D> v2:
+1. Do not allocate task local storage when the task is being freed.
+2. Revise the selftest and added a new test for a task being freed.
+3. Minor changes in runqslower.
 
-> >    [3] https://llvm.org/devmtg/2020-09/slides/Morehouse-GWP-Tsan.pdf
-> >
-> > 2.    Other low-overhead error detectors that rely on detecting
-> >    accesses to certain memory locations or code, process-wide and
-> >    also only in a specific set of subtasks or threads.
-> >
-> > Other example use-cases we found potentially interesting:
-> >
-> > 3.    Code hot patching without full stop-the-world. Specifically, by
-> >    setting a code breakpoint to entry to the patched routine, then
-> >    send signals to threads and check that they are not in the
-> >    routine, but without stopping them further. If any of the
-> >    threads will enter the routine, it will receive SIGTRAP and
-> >    pause.
->
-> Cute.
->
-> >
-> > 4.    Safepoints without mprotect(). Some Java implementations use
-> >    "load from a known memory location" as a safepoint. When threads
-> >    need to be stopped, the page containing the location is
-> >    mprotect()ed and threads get a signal. This can be replaced with
-> >    a watchpoint, which does not require a whole page nor DTLB
-> >    shootdowns.
->
-> I=E2=80=99m skeptical. Propagating a hardware breakpoint to all threads i=
-nvolves IPIs and horribly slow writes to DR1 (or 2, 3, or 4) and DR7.  A TL=
-B flush can be accelerated using paravirt or hypothetical future hardware. =
-Or real live hardware on ARM64.
->
-> (The hypothetical future hardware is almost present on Zen 3.  A bit of w=
-ork is needed on the hardware end to make it useful.)
+Song Liu (6):
+  bpf: enable task local storage for tracing programs
+  bpf: prevent deadlock from recursive bpf_task_storage_[get|delete]
+  selftests/bpf: add non-BPF_LSM test for task local storage
+  selftests/bpf: test deadlock from recursive
+    bpf_task_storage_[get|delete]
+  bpf: runqslower: prefer using local vmlimux to generate vmlinux.h
+  bpf: runqslower: use task local storage
 
-Fair enough. Although watchpoints can be much more fine-grained than
-an mprotect() which then also has downsides (checking if the accessed
-memory was actually the bytes we're interested in). Maybe we should
-also ask CPU vendors to give us better watchpoints (perhaps start with
-more of them, and easier to set in batch)? We still need a user space
-API...
+ include/linux/bpf.h                           |  7 ++
+ include/linux/bpf_lsm.h                       | 22 -----
+ include/linux/bpf_types.h                     |  2 +-
+ include/linux/sched.h                         |  5 +
+ kernel/bpf/Makefile                           |  3 +-
+ kernel/bpf/bpf_local_storage.c                | 28 +++---
+ kernel/bpf/bpf_lsm.c                          |  4 -
+ kernel/bpf/bpf_task_storage.c                 | 98 ++++++++++++-------
+ kernel/fork.c                                 |  5 +
+ kernel/trace/bpf_trace.c                      |  4 +
+ tools/bpf/runqslower/Makefile                 |  5 +-
+ tools/bpf/runqslower/runqslower.bpf.c         | 33 ++++---
+ .../bpf/prog_tests/task_local_storage.c       | 92 +++++++++++++++++
+ .../selftests/bpf/progs/task_local_storage.c  | 64 ++++++++++++
+ .../bpf/progs/task_local_storage_exit_creds.c | 32 ++++++
+ .../selftests/bpf/progs/task_ls_recursion.c   | 70 +++++++++++++
+ 16 files changed, 383 insertions(+), 91 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_sto=
+rage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_=
+exit_creds.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_ls_recursion.c
 
-Thanks,
--- Marco
-
-
-
-> >
-> > 5.    Tracking data flow globally.
-> >
-> > 6.    Threads receiving signals on performance events to
-> >    throttle/unthrottle themselves.
+--
+2.24.1
