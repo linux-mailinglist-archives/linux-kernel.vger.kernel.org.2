@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A6D3229A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:47:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 838103229A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232437AbhBWLqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 06:46:23 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:23119 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232250AbhBWLqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:46:09 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614080749; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=3l3/dHpV72D6+xo2sb7a2KaT0sNL+NXfU+xxxFq8JjA=; b=CnZ7HvLX7paap+fw1UU+M/DyAOmYrRcvpD+/qOYb0O8r43gNxUDHlBamz7bEgFyUVtAuNRU1
- 1ytN7TUD7J/4rO0w1ouHiYWxrgEeaS42o7/D1aLurSJ6UmFy9hT29hAk2e8xZ10JdHI6Cyer
- rRuEaEdtNEwwzxKEwFh/E3o6t6I=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6034eacf2a8ee88ea5fc99c3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Feb 2021 11:45:19
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5EE17C43462; Tue, 23 Feb 2021 11:45:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.102] (unknown [49.207.203.158])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E17A1C433CA;
-        Tue, 23 Feb 2021 11:45:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E17A1C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH 09/13] arm64: dts: qcom: Add reserved memory for fw
-To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>
-References: <1613114930-1661-1-git-send-email-rnayak@codeaurora.org>
- <1613114930-1661-10-git-send-email-rnayak@codeaurora.org>
- <161406631106.1254594.5935934364229452348@swboyd.mtv.corp.google.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <f8b866aa-9fe4-4845-3223-ae1b1fb52abc@codeaurora.org>
-Date:   Tue, 23 Feb 2021 17:15:12 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232300AbhBWLsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 06:48:21 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:22056 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230429AbhBWLsO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 06:48:14 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-1-k4jgkJgCOduc41m4UdoBHw-1; Tue, 23 Feb 2021 11:46:29 +0000
+X-MC-Unique: k4jgkJgCOduc41m4UdoBHw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 23 Feb 2021 11:46:28 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 23 Feb 2021 11:46:28 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Michael J. Baars'" <mjbaars1977.gcc@cyberfiber.eu>,
+        Andrew Pinski <pinskia@gmail.com>
+CC:     GCC Mailing List <gcc@gcc.gnu.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: RE: problems with memory allocation and the alignment check
+Thread-Topic: problems with memory allocation and the alignment check
+Thread-Index: AQHXCQVoyFvEwTTs3U2Rfs3mBdGve6pln5+g
+Date:   Tue, 23 Feb 2021 11:46:28 +0000
+Message-ID: <bea4697e847e4b5aa548e62e284d56ca@AcuMS.aculab.com>
+References: <80753cbc54ef69b4fc136f791666197fc8b1f8bb.camel@cyberfiber.eu>
+         <CA+=Sn1njFZ-XZRHJdmjzOyvXvcMXg+oBao=wK8w3RXN_Ji=fLA@mail.gmail.com>
+ <d9a2cdcf116ed32874ed02bd6fa60ad899ce5f50.camel@cyberfiber.eu>
+In-Reply-To: <d9a2cdcf116ed32874ed02bd6fa60ad899ce5f50.camel@cyberfiber.eu>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <161406631106.1254594.5935934364229452348@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+PiA+ID4gSSBqdXN0IHdyb3RlIHRoaXMgbGl0dGxlIHByb2dyYW0gdG8gZGVtb25zdHJhdGUgYSBw
+b3NzaWJsZSBmbGF3IGluIGJvdGggbWFsbG9jIGFuZCBjYWxsb2MuDQo+ID4gPg0KPiA+ID4gSWYg
+SSBhbGxvY2F0ZSBhIHRoZSBzaW1wbGVzdCBtZW1vcnkgcmVnaW9uIGZyb20gbWFpbigpLCBvbmUg
+b3V0IG9mIHRocmVlIG9wdGltaXphdGlvbiBmbGFncyBmYWlsLg0KPiA+ID4gSWYgSSBhbGxvY2F0
+ZSB0aGUgc2FtZSByZWdpb24gZnJvbSBhIGZ1bmN0aW9uLCB0aHJlZSBvdXQgb2YgdGhyZWUgb3B0
+aW1pemF0aW9uIGZsYWdzIGZhaWwuDQo+ID4gPg0KPiA+ID4gRG9lcyBzb21lb25lIGtub3cgaWYg
+dGhpcyByZWFsbHkgaXMgYSBmbGF3LCBhbmQgaWYgc28sIGlzIGl0IGEgZ2NjIG9yIGEga2VybmVs
+IGZsYXc/DQo+ID4NCj4gPiBUaGVyZSBpcyBubyBmbGF3LiAgR0NDIChrZXJuZWwsIGdsaWJjKSBh
+bGwgYXNzdW1lIHVuYWxpZ25lZCBhY2Nlc3Nlcw0KPiA+IG9uIHg4NiB3aWxsIG5vdCBjYXVzZSBh
+biBleGNlcHRpb24uDQo+IA0KPiBJcyB0aGlzIGp1c3QgYW4gYXNzdW1wdGlvbiBvciBtb3JlIGxp
+a2UgYSBmYWN0PyBJIGFncmVlIHdpdGggeW91IHRoYXQgYnl0ZSBhbGlnbmVkIGlzIG1vcmUgb3Ig
+bGVzcyB0aGUNCj4gc2FtZSBhcyB1bmFsaWduZWQuDQoNClRoZXkgcmVxdWlyZSB0aGF0IHN1Y2gg
+YWNjZXNzZXMgZG9uJ3QgY2F1c2UgYW4gZXhjZXB0aW9uLg0KDQpXaGlsZSB0aGUgbWlzYWxpZ25l
+ZCBhY2Nlc3NlcyBhcmUgc2xpZ2h0bHkgc2xvd2VyIChhcGFydCBmcm9tIGxvY2tlZCBhY2Nlc3Nl
+cw0KdGhhdCBjcm9zcyBwYWdlIGJvdW5kYXJpZXMpIHRoZSBjb3N0IG9mIGF2b2lkaW5nIHRoZW0g
+aXMgdHlwaWNhbGx5IGhpZ2hlci4NCg0KVGhpcyBpcyBwYXJ0aWN1bGFybHkgdHJ1ZSBmb3IgZnVu
+Y3Rpb25zIGxpa2Ugc3RybGVuKCkgd2hpY2ggYXJlIG9mdGVuDQpjYWxsZWQgZm9yIHNob3J0IHN0
+cmluZ3MuDQpDYXJlIGRvZXMgaGF2ZSB0byBiZSB0YWtlbiB0byBzdG9wIHN0cmxlbigpIHJlYWRp
+bmcgYWNyb3NzIGEgcGFnZSBib3VuZGFyeS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRk
+cmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBN
+SzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-
-On 2/23/2021 1:15 PM, Stephen Boyd wrote:
-> Quoting Rajendra Nayak (2021-02-11 23:28:46)
->> From: Maulik Shah <mkshah@codeaurora.org>
->>
->> Add fw reserved memory area for CPUCP and AOP.
-> 
-> Does CPUCP stand for CPU Content Protection? AOP is Always On Processor.
-> It would help if the commit text told us what these acronyms were.
-
-Thanks, I'll expand the acronyms when I re-post.
-  
->>
->> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->> ---
->>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
