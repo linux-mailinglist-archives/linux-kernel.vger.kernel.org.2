@@ -2,66 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81C5322807
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B813227DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbhBWJry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 04:47:54 -0500
-Received: from m12-13.163.com ([220.181.12.13]:36971 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230505AbhBWJrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:47:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=HJQaZ
-        cNJ//rTNxUIXY+A3MZAryV+VtXxzjsGLHsl9dk=; b=Hcdvci9az8UDSv+pPNsPa
-        ghXSUGRhU7zG6b3+8KYocJczp7vLcc7r9ZNGU0QxDe7LTYGGc2lG+28jniT/s/KJ
-        OIO/thLgbSdsS/FwY7UZgX3SocUn+b4yUJIWDT3jb/20RPnlvTeb98Zx5Z1RtUNv
-        lVVi8EIEn9/9GWl1R4FNxA=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp9 (Coremail) with SMTP id DcCowABnZQIJyjRgGJ3JgQ--.12282S2;
-        Tue, 23 Feb 2021 17:25:35 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     peterz@infradead.org, mingo@redhat.com, longman@redhat.com,
-        boqun.feng@gmail.com, will@kernel.org
-Cc:     linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] include/linux: remove duplicate description
-Date:   Tue, 23 Feb 2021 17:25:39 +0800
-Message-Id: <20210223092539.941-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S230248AbhBWJbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:31:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41082 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230088AbhBWJ3B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 04:29:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614072455;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=h24RIBiBzWyvnGHMRqm0bjGav8NVJ5vrDg07fowU/yw=;
+        b=bRxAp1CTEcuOyhkzp/IVkvAC6fnuSny76pVuZgTO2OUJyA22X9fpa05EGyPVQmAJsjO3gw
+        cNcNIJ7d/obfDOkHWHlxaCqEX0oXtysAlUznGTvFqvm6eANLsC3SQF11w/h0eAoXfUo52N
+        oBbGOx73PxiVvnJSCOsTDStamjUH6Lk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-493-TUsy6KvKOOehiTo23wmUZw-1; Tue, 23 Feb 2021 04:26:39 -0500
+X-MC-Unique: TUsy6KvKOOehiTo23wmUZw-1
+Received: by mail-wr1-f69.google.com with SMTP id l3so5463117wrx.15
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 01:26:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h24RIBiBzWyvnGHMRqm0bjGav8NVJ5vrDg07fowU/yw=;
+        b=BsLuR9Yerarokq7bIXDIvRdGrzfPRRxAtwNoMgpZydUthYdCo8b0QC6UmAkvSTBrkx
+         Cv8zxrHtOJUIblOpSSP85I/+LVk9yh44cfxoGm5TpJEpmZ30lNecW0bLbKHOy5NggG5U
+         jJ/jzny10gwFUHGCLdgAIcdVlGbr/RdQHajBjNOKgmplMfcZ4TP/XrmY5BqioaHTM4Wj
+         mNgTV8hXZ0w1sUzl7OYM6XhiYUS3x2XffxNt8yoodz18eRBYtlM4Zo49ACUkeny7IaVW
+         LTGNeH1N3rzHemgod8/lMnC2CBKozT8gzGKcWvHEzMtVLmT4N8f89+kQcmKZlhGSArXn
+         KB6g==
+X-Gm-Message-State: AOAM530eTaRvtD69BhS66zL2CC4+WqtMwnIXiXZzTkYHk/YD2/NGihxA
+        rCFOicGc/c8w793iQjWG3jleDIRatn3xNbw/QFndNRLMWCLeXgT6FIJA3yhqoUn4zlCU3b84vyM
+        xgGypR4HDKFIHBUP+q26tMkm5
+X-Received: by 2002:a5d:5910:: with SMTP id v16mr25412076wrd.304.1614072398474;
+        Tue, 23 Feb 2021 01:26:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwpG+IjMBMskIS3JIko3wZp10Ib6ahzykLv4bI1e1go9h9Q19lzcgRxEOLog/5XNrwEUBFFxQ==
+X-Received: by 2002:a5d:5910:: with SMTP id v16mr25412068wrd.304.1614072398336;
+        Tue, 23 Feb 2021 01:26:38 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id 36sm33421735wrj.97.2021.02.23.01.26.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 01:26:37 -0800 (PST)
+Date:   Tue, 23 Feb 2021 04:26:35 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, jasowang@redhat.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
+Message-ID: <20210223042559-mutt-send-email-mst@kernel.org>
+References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
+ <20210221144437.GA82010@mtl-vdi-166.wap.labs.mlnx>
+ <20210221165047-mutt-send-email-mst@kernel.org>
+ <20210222060526.GA110862@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowABnZQIJyjRgGJ3JgQ--.12282S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUIJPEDUUUU
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiZQ9CiV8ZM2owagAAsk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210222060526.GA110862@mtl-vdi-166.wap.labs.mlnx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+On Mon, Feb 22, 2021 at 08:05:26AM +0200, Eli Cohen wrote:
+> On Sun, Feb 21, 2021 at 04:52:05PM -0500, Michael S. Tsirkin wrote:
+> > On Sun, Feb 21, 2021 at 04:44:37PM +0200, Eli Cohen wrote:
+> > > On Fri, Feb 19, 2021 at 06:54:58AM -0500, Si-Wei Liu wrote:
+> > > > Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
+> > > > for legacy") made an exception for legacy guests to reset
+> > > > features to 0, when config space is accessed before features
+> > > > are set. We should relieve the verify_min_features() check
+> > > > and allow features reset to 0 for this case.
+> > > > 
+> > > > It's worth noting that not just legacy guests could access
+> > > > config space before features are set. For instance, when
+> > > > feature VIRTIO_NET_F_MTU is advertised some modern driver
+> > > > will try to access and validate the MTU present in the config
+> > > > space before virtio features are set. Rejecting reset to 0
+> > > > prematurely causes correct MTU and link status unable to load
+> > > > for the very first config space access, rendering issues like
+> > > > guest showing inaccurate MTU value, or failure to reject
+> > > > out-of-range MTU.
+> > > > 
+> > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> > > > Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> > > > ---
+> > > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
+> > > >  1 file changed, 1 insertion(+), 14 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > index 7c1f789..540dd67 100644
+> > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > @@ -1490,14 +1490,6 @@ static u64 mlx5_vdpa_get_features(struct vdpa_device *vdev)
+> > > >  	return mvdev->mlx_features;
+> > > >  }
+> > > >  
+> > > > -static int verify_min_features(struct mlx5_vdpa_dev *mvdev, u64 features)
+> > > > -{
+> > > > -	if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
+> > > > -		return -EOPNOTSUPP;
+> > > > -
+> > > > -	return 0;
+> > > > -}
+> > > > -
+> > > 
+> > > But what if VIRTIO_F_ACCESS_PLATFORM is not offerred? This does not
+> > > support such cases.
+> > 
+> > Did you mean "catch such cases" rather than "support"?
+> > 
+> 
+> Actually I meant this driver/device does not support such cases.
 
-linux/spinlock.h
+Well the removed code merely failed without VIRTIO_F_ACCESS_PLATFORM
+it didn't actually try to support anything ...
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
----
- include/linux/spinlock.h | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
-index 7989784..732150e 100644
---- a/include/linux/spinlock.h
-+++ b/include/linux/spinlock.h
-@@ -43,8 +43,6 @@
-  *
-  *  linux/spinlock_api_up.h:
-  *                        builds the _spin_*() APIs.
-- *
-- *  linux/spinlock.h:     builds the final spin_*() APIs.
-  */
- 
- #include <linux/typecheck.h>
--- 
-1.9.1
-
+> > 
+> > > Maybe we should call verify_min_features() from mlx5_vdpa_set_status()
+> > > just before attempting to call setup_driver().
+> > > 
+> > > >  static int setup_virtqueues(struct mlx5_vdpa_net *ndev)
+> > > >  {
+> > > >  	int err;
+> > > > @@ -1558,18 +1550,13 @@ static int mlx5_vdpa_set_features(struct vdpa_device *vdev, u64 features)
+> > > >  {
+> > > >  	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+> > > >  	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
+> > > > -	int err;
+> > > >  
+> > > >  	print_features(mvdev, features, true);
+> > > >  
+> > > > -	err = verify_min_features(mvdev, features);
+> > > > -	if (err)
+> > > > -		return err;
+> > > > -
+> > > >  	ndev->mvdev.actual_features = features & ndev->mvdev.mlx_features;
+> > > >  	ndev->config.mtu = cpu_to_mlx5vdpa16(mvdev, ndev->mtu);
+> > > >  	ndev->config.status |= cpu_to_mlx5vdpa16(mvdev, VIRTIO_NET_S_LINK_UP);
+> > > > -	return err;
+> > > > +	return 0;
+> > > >  }
+> > > >  
+> > > >  static void mlx5_vdpa_set_config_cb(struct vdpa_device *vdev, struct vdpa_callback *cb)
+> > > > -- 
+> > > > 1.8.3.1
+> > > > 
+> > 
 
