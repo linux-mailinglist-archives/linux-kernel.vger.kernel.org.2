@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7309322DFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86197322E00
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233452AbhBWPvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:51:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
+        id S233365AbhBWPvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:51:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233285AbhBWPu6 (ORCPT
+        with ESMTP id S233384AbhBWPu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Feb 2021 10:50:58 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB86C061574;
-        Tue, 23 Feb 2021 07:50:10 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id v21so2865100wml.4;
-        Tue, 23 Feb 2021 07:50:10 -0800 (PST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B0DC061786;
+        Tue, 23 Feb 2021 07:50:12 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id w7so480727wmb.5;
+        Tue, 23 Feb 2021 07:50:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jq0kQtDSX5dH8ohcWOXbXLKCHW4XC2c+FwwnMqOyu8A=;
-        b=Mn95eKnody6kfmlE5fsuhDTGCKEpKYtcBWhBSJRoqeZmHsoLH5OuaAg433mD41zUd5
-         7+z/S0bNOSAlCu70n5GQ9tkHE+Xk5LG/UAUElWGDkBKzMg3CRkHRLUdmFhbFTj5jd+66
-         7uRatcu4Th3iB0YqtGDSWRET9tqBurnEwVtUL8d09G9jRNI8C1/3MDoXbbG580F7MNrf
-         VBc7JOz/B5YEAN8tmKMNjPbet1Zd91Fhfwn8SCTyS2KhhUVXT8viF2DeF1EHE2auzPjU
-         tpTWqnRncEcotdVvw35HBCFon7GIpTUAFP4TxQPbTBKB/5A4F9ORmDp90c3w/CtTPtBU
-         AHXg==
+        bh=eQwe9NJal+9xVku41hj0jNRXaZ5etqUoeLkfgTJjhEE=;
+        b=k9s0F1WdPXhOc6rInvcXG1IfKqZ1aerGl43gEGEk5apTwif5AKr+DWB3P4dc3Q+bZl
+         r0ODdjWLkd2GmC+U2yaUltCW2oCEiBcCRMW9a+0d27T9R/PoShHvFBBt3c7bLaiMN36J
+         l6NITLjIEUyEAldgvpbrC5yKJ7UcT1PKjo7SmjhOVqDzRR4DLoj1ZJq0v6sbbRln9mFS
+         2T+M6g4pOu71prEVTKJVSYvjB3gp5sbEy+xAwwacJeRKIQ0iF9jyL4s2T33vq55FBX16
+         amWb8FBPZSAKO0cJaHLrGig/7dajuAM7ae978VDo2Xj7Dx2FNfJ3oOeefsQEnQHeegA1
+         Bulw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jq0kQtDSX5dH8ohcWOXbXLKCHW4XC2c+FwwnMqOyu8A=;
-        b=bfH9cWSRAqmJkghzYiiegRkzwZn7mC84EVB/vfEQeDCpQ+I0BKiSYt2q20jLFiyHt0
-         zb4gUp3NRfp16FQTFbLMwcxrzMd3n7J9TObRbgaauF2QvluxeTA6l4JBjIc6FIy9ViOA
-         fe0FBN+S/9Bw5Nc3aZdfhnsi6hbcrMN1GyfK96Cg/0HPm7WGVAvCYvae/6Jcl1kmgs7S
-         cETFBEEf/63YD7lKkrf+qAw3Mb15g7zZ0kcu6fkfARYo0cdDGln0mhe2uLwpmId0U0wS
-         IUTp/N3lXD9iMT/k9cMmH1hq9IdW32CLSwNHi+nui09TM8kWUEuUCU9qwIjTOw25ni8f
-         54Rw==
-X-Gm-Message-State: AOAM531U2Bs+C3rkiXxCceRKFW+JKwhGxELINyhEqyAqWBZs+NsoGHPe
-        u7ZuwIPTBac6CIilA8plikUL2coC2boIHV1/
-X-Google-Smtp-Source: ABdhPJxaWV+jkKPqgTfcLyedOekGOVSPfUwolyvZEyL1bt55OsE94y2kP27DZAoLfZmH+JvYySqJRg==
-X-Received: by 2002:a1c:4c0c:: with SMTP id z12mr797142wmf.60.1614095409667;
-        Tue, 23 Feb 2021 07:50:09 -0800 (PST)
+        bh=eQwe9NJal+9xVku41hj0jNRXaZ5etqUoeLkfgTJjhEE=;
+        b=q8kjCiHicLexpDcEe36xM5hc7PrJh9Ufcv9se996BdUhuN8ndyZjrIyaRA7GBMf+RJ
+         WbENE/n4BcOdXQBzGyXMrt9Bz9Sx30+n3YaDeFBUUcQktmBNsuaZsJwr60Fq56mGKaLN
+         scJVn37URv7wX4Z+4LUPSQVIvjRX912nosptS9l2oQUr2RiR04B+x3+BgJp27WwEVLhD
+         69KIDbBJye6/pky265QtDsEdDar2fRJFVxe3BM1exspkPAJzkS5fLB6e5DVPoYaKdUC4
+         13Gh/rAZDAHlDcx1rLzOt6LMmw+oNQL46Uka9qiNuA5WSEWizSfSXvjVP2rJCzX67iYx
+         jvaQ==
+X-Gm-Message-State: AOAM532MS9ACcqMq24ApxjC0le+ToN+XsCUTZPIJo7Y5WoZsVXwpCf5F
+        doX4kONPEO1KFgdABJOvFvM=
+X-Google-Smtp-Source: ABdhPJwJuLRCrJYSWXYea/XMr57BFa8YkfoPAnCwVgavZ+Kir/O1G9q1OlnbBvOxVICSUe+aTcNFnA==
+X-Received: by 2002:a1c:1b4d:: with SMTP id b74mr10310085wmb.31.1614095410680;
+        Tue, 23 Feb 2021 07:50:10 -0800 (PST)
 Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id t23sm3209201wmn.13.2021.02.23.07.50.08
+        by smtp.gmail.com with ESMTPSA id t23sm3209201wmn.13.2021.02.23.07.50.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 07:50:09 -0800 (PST)
+        Tue, 23 Feb 2021 07:50:10 -0800 (PST)
 From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
 To:     f.fainelli@gmail.com, jonas.gorski@gmail.com,
@@ -59,9 +59,9 @@ To:     f.fainelli@gmail.com, jonas.gorski@gmail.com,
         linux-arm-kernel@lists.infradead.org
 Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
-Subject: [PATCH 1/2] dt-bindings: usb: generic-ehci: document ignore-oc flag
-Date:   Tue, 23 Feb 2021 16:50:04 +0100
-Message-Id: <20210223155005.21712-2-noltari@gmail.com>
+Subject: [PATCH 2/2] usb: host: ehci-platform: add ignore-oc DT support
+Date:   Tue, 23 Feb 2021 16:50:05 +0100
+Message-Id: <20210223155005.21712-3-noltari@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210223155005.21712-1-noltari@gmail.com>
 References: <20210223155005.21712-1-noltari@gmail.com>
@@ -78,25 +78,23 @@ activated.
 
 Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 ---
- Documentation/devicetree/bindings/usb/generic-ehci.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/host/ehci-platform.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/generic-ehci.yaml b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-index cf83f2d9afac..294bbf02399e 100644
---- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-+++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-@@ -117,6 +117,11 @@ properties:
-       Set this flag if EHCI has a Transaction Translator built into
-       the root hub.
+diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
+index a48dd3fac153..f8e58372f7fe 100644
+--- a/drivers/usb/host/ehci-platform.c
++++ b/drivers/usb/host/ehci-platform.c
+@@ -286,6 +286,9 @@ static int ehci_platform_probe(struct platform_device *dev)
+ 		if (of_property_read_bool(dev->dev.of_node, "big-endian"))
+ 			ehci->big_endian_mmio = ehci->big_endian_desc = 1;
  
-+  ignore-oc:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Set this flag for HCDs without over-current reporting support.
++		if (of_property_read_bool(dev->dev.of_node, "ignore-oc"))
++			ehci->ignore_oc = 1;
 +
-   needs-reset-on-resume:
-     $ref: /schemas/types.yaml#/definitions/flag
-     description:
+ 		if (of_property_read_bool(dev->dev.of_node,
+ 					  "needs-reset-on-resume"))
+ 			priv->reset_on_resume = true;
 -- 
 2.20.1
 
