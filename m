@@ -2,122 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6340B3227C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6271E3227BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232327AbhBWJ1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 04:27:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232042AbhBWJ0g (ORCPT
+        id S232165AbhBWJZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:25:44 -0500
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:64170 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230367AbhBWJZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:26:36 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82310C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 01:25:56 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id h4so110617pgf.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 01:25:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mu2c4DZ3wSvp2hWIYY8iGN/5x9vHcWAfw9ARv3kyqaM=;
-        b=LO30HGhJEEoDclp09pG3Zhuhe4o587oo39dmuNomrLg61H6NzuMkL0xL1vBoOKFkuy
-         s5wFOFudC2zzK0/9HCBgmyHk5dt3QNNyE0FvMB/0LHRZjtr3OfC/Jda4G713nBDXbkUw
-         DsvahiAtdD1q5HImPQ1tnNyvxxDLAp8akFgugDk60PJQJGTk185uuHOcXRA4aZBl2gDS
-         hMOS3C/AZ20hOPMt7eW25LMJz7bQNwRsbBIeLbNVU7Ct3lFZ1nK7RpS847vlMYKXsgTd
-         8L0GHFjCVFxsl4ObqTHMsj1/xeCdD5wC1ADe1TFzPuwQvd5lHI3iYz0HRPZIOOWXpq5K
-         i2rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mu2c4DZ3wSvp2hWIYY8iGN/5x9vHcWAfw9ARv3kyqaM=;
-        b=tiDTvksn6viGS7t1/+dZ2Vkm/mu0eEbetwn5hNTmAaAzh7+Kg9pAG5OxbjPgzIxuBS
-         0OSwNbLw0Okbyx3QduvhxH51c+yC4uZ0XnAdgu2Sk/9S2Fk0EGPNLe4iwT+KFYGNNX1S
-         KENDUjgaYs/VhlB9dE2Pfj+o0sEMoRC4AvqsLNa01ENliLvgPCVRw5D+DwG4FVU3zQ7U
-         ZZ4a/0/FiyvCFqu4zrQmR6cbL4n3YndM3CSxmFypz71+V4202RdLYc1ShOhNPZj0x5nP
-         nzlozWKKbShr974gqlhQFMTZU8BwRBQMIkwuCbFRRhwFHQqfdpqn2y0RdlvcKV+jp0q/
-         mPag==
-X-Gm-Message-State: AOAM530V6tU0u2yDRyObbf0W/83NW77xh+GB7X5reAio+CKwny3YB8tq
-        Ppt5EYPrEBtsbauKj8PlKmFZqw==
-X-Google-Smtp-Source: ABdhPJzvGlwiRLMi9EIg0liLMWJEFp4n/kdqajnxkrCrhCu8fi9gpNP4ucf237OTb4TvSn/w6Cne1g==
-X-Received: by 2002:a62:ae05:0:b029:1ed:9384:3e6f with SMTP id q5-20020a62ae050000b02901ed93843e6fmr10898262pff.44.1614072355999;
-        Tue, 23 Feb 2021 01:25:55 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.236])
-        by smtp.gmail.com with ESMTPSA id iq6sm2397154pjb.6.2021.02.23.01.25.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Feb 2021 01:25:55 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, guro@fb.com, shakeelb@google.com
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: memcontrol: fix slub memory accounting
-Date:   Tue, 23 Feb 2021 17:24:23 +0800
-Message-Id: <20210223092423.42420-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        Tue, 23 Feb 2021 04:25:41 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210223092448euoutp014047ffec4a2b44acdd33bc71f648293f~mVjHMeD2D0942309423euoutp01-
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:24:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210223092448euoutp014047ffec4a2b44acdd33bc71f648293f~mVjHMeD2D0942309423euoutp01-
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614072288;
+        bh=9JEGI2yO7sPdfcR8BEgg49SyW9qFp79juGU7Dd/4g0s=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=pIzsiEGdFRMfqNmRh8oFNYcErPSe5U0YrpBv/GTKyncVBJyBQmranS7ORpQSx3DD+
+         y3bwtoLbsVky8fII4b/90jXQoEqdIwhSXdGLDY8QjpoP0NF9e/UYGpvIV5Vq2IBIEG
+         NIjcQbxgZT6rMXBDWwwTSfr2xfr0PQGN4qwniGYo=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210223092443eucas1p14e97c3290f3515e434b584f14baa4c6b~mVjCZcROT0731907319eucas1p1x;
+        Tue, 23 Feb 2021 09:24:43 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 11.A0.45488.BD9C4306; Tue, 23
+        Feb 2021 09:24:43 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210223092442eucas1p264d60b5faa665f6047dfc34e3f5e3cba~mVjB5jmhv2571725717eucas1p2B;
+        Tue, 23 Feb 2021 09:24:42 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210223092442eusmtrp24ac4b540c392881baddcbfe827f11531~mVjB45Yqx0733307333eusmtrp2x;
+        Tue, 23 Feb 2021 09:24:42 +0000 (GMT)
+X-AuditID: cbfec7f5-c77ff7000000b1b0-4f-6034c9db9d6d
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 39.CB.21957.AD9C4306; Tue, 23
+        Feb 2021 09:24:42 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210223092442eusmtip169a72bc7432711a5495ab4f87ed73ef5~mVjBUIPte1800218002eusmtip1b;
+        Tue, 23 Feb 2021 09:24:41 +0000 (GMT)
+Subject: Re: [PATCH] Revert
+ "ARM: dts: exynos: Remove 'opp-shared' from Exynos4412 bus OPP-tables"
+To:     Markus Reichl <m.reichl@fivetechno.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        =?UTF-8?B?7LWc7LCs7Jqw?= <cw00.choi@samsung.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <1ed8fbd7-4aa6-f053-6627-0922420069ab@samsung.com>
+Date:   Tue, 23 Feb 2021 10:24:41 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210222095405.3109-1-m.reichl@fivetechno.de>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMKsWRmVeSWpSXmKPExsWy7djP87q3T5okGFyazmpx/ctzVov5R86x
+        Wpw/v4HdYtPja6wWl3fNYbOYcX4fk8XLIz8YLVr3HmF34PC4dafeY9OqTjaPzUvqPfq2rGL0
+        +LxJLoA1issmJTUnsyy1SN8ugSvj1MoZ7AVtkhXdx+YxNzDOEO5i5OSQEDCRmNPxnqmLkYtD
+        SGAFo8TmO9uZIZwvjBLnJhyEcj4zSszo+8DexcgB1rJ7tzxEfDmjxIk509ggnI+MEu1dP9hA
+        5goLpEhsaTzCCpIQEVjJKNGxrAGsilmgnVHi1Jwb7CBVbAKGEl1vu8A6eAXsJL5/f8MMYrMI
+        qEqcebcbLC4qkCTx9/dNJogaQYmTM5+wgNicAtYSHzsvgNnMAvIS29/OYYawxSVuPZkP9pGE
+        wAMOiQ/r1rJCvOoi0b16KzOELSzx6vgWdghbRuL/TpiGZkaJh+fWskM4PYwSl5tmMEJUWUvc
+        OfeLDRQCzAKaEut36UOEHSVe7NjEDAkYPokbbwUhjuCTmLRtOlSYV6KjTQiiWk1i1vF1cGsP
+        XrjEPIFRaRaS12YheWcWkndmIexdwMiyilE8tbQ4Nz212DgvtVyvODG3uDQvXS85P3cTIzAd
+        nf53/OsOxhWvPuodYmTiYDzEKMHBrCTCy3bXKEGINyWxsiq1KD++qDQntfgQozQHi5I4766t
+        a+KFBNITS1KzU1MLUotgskwcnFINTCFx7sWxn9SLdlzacKJk7zmpivd/05wF24M5K42PRWcu
+        8z3+dI/c/K2x81c5fbim5fUvP3c/j7ypttb5/bvXz2CdxBtVf2cf1yOxQ8ZuioJBqfc9OQtm
+        h2d4mTr31S4RX7NOZ6Nh4HJ5a9cF/KdaZ9c3StfMLF/x8E9W1/eENKZ7IaplJw+vWPVeSmFO
+        per02dvEA4RNK+J0K8Tyqz+n3N69+4Hm+ZN1RezXfjg/sD67ZMeVzdnJx7bsnm3udmzDAZGr
+        YYYCxxzZBRjbctUbW1+fcwpZnj5V6smqiucpXBfmX3rNLZn3U1xA68pjxbj91eJtAnfWPF70
+        uHiVqFjqv6vKvabxZa/YPNn1l1/+rMRSnJFoqMVcVJwIAEwaFDm2AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsVy+t/xu7q3TpokGPy8q2Rx/ctzVov5R86x
+        Wpw/v4HdYtPja6wWl3fNYbOYcX4fk8XLIz8YLVr3HmF34PC4dafeY9OqTjaPzUvqPfq2rGL0
+        +LxJLoA1Ss+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLPyMRSz9DYPNbKyFRJ384mJTUnsyy1SN8u
+        QS/j1MoZ7AVtkhXdx+YxNzDOEO5i5OCQEDCR2L1bvouRi0NIYCmjRN/RHWxdjJxAcRmJk9Ma
+        WCFsYYk/17rYIIreM0o82jcXLCEskCKx7/YBVpCEiMBKRoknOzcxgTjMAu2MEnfezoZq6WOU
+        uP1uK1gLm4ChRNfbLrAdvAJ2Et+/v2EGsVkEVCXOvNsNFhcVSJJYP/0mE0SNoMTJmU9YQGxO
+        AWuJj50XwGxmATOJeZsfMkPY8hLb386BssUlbj2ZzzSBUWgWkvZZSFpmIWmZhaRlASPLKkaR
+        1NLi3PTcYkO94sTc4tK8dL3k/NxNjMD423bs5+YdjPNefdQ7xMjEwXiIUYKDWUmEl+2uUYIQ
+        b0piZVVqUX58UWlOavEhRlOgfyYyS4km5wMTQF5JvKGZgamhiZmlgamlmbGSOO/WuWvihQTS
+        E0tSs1NTC1KLYPqYODilGph2HHLmj2ySLfv7RkoqoD7pad/y118it5l4qLzUCilJunNJXED+
+        6tml38L47SoyPrrvsjDhDH4g9WtC+wzDey/4W/4Ghhid9jY3f+9xpF2k5+rqEpkzG0TPP6/P
+        lLOeGfNpuvR50dppideOrlbg1eHvPF97Q79Lg+vgYYfDKz09BF3mHi9OnKg2J2KTgdUPJZaJ
+        J2qqMwqYvrX8vOWdbMK81r3OJv32aYdJvI+3Vc7jYTshZBzUOvG5RAVLsuWkeG4vZZYwbt25
+        Yn5pSQtMmZZMaVwjei+33/PyaaMLkuXJ79Ya39ytFX2qIXqbesuZQwaZ7Rf4vxu+fefYurg+
+        YNmtzxsvP7iw5MNGi9SHi5VYijMSDbWYi4oTAbVvY+tIAwAA
+X-CMS-MailID: 20210223092442eucas1p264d60b5faa665f6047dfc34e3f5e3cba
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210222095419eucas1p2448e782d7df380425ab9bab5db75008d
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210222095419eucas1p2448e782d7df380425ab9bab5db75008d
+References: <CGME20210222095419eucas1p2448e782d7df380425ab9bab5db75008d@eucas1p2.samsung.com>
+        <20210222095405.3109-1-m.reichl@fivetechno.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SLUB currently account kmalloc() and kmalloc_node() allocations larger
-than order-1 page per-node. But it forget to update the per-memcg
-vmstats. So it can lead to inaccurate statistics of "slab_unreclaimable"
-which is from memory.stat. Fix it by using mod_lruvec_page_state instead
-of mod_node_page_state.
+Hi Markus,
 
-Fixes: 6a486c0ad4dc ("mm, sl[ou]b: improve memory accounting")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/slab_common.c | 4 ++--
- mm/slub.c        | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+On 22.02.2021 10:54, Markus Reichl wrote:
+> This reverts commit a23beead41a18c3be3ca409cb52f35bc02e601b9.
+>
+> I'm running an Odroid-X2 as headless 24/7 server.
+> With plain stable 5.10.1 I had 54 up days without problems.
+> With opp-shared removed on kernels before and now on 5.11
+> my system freezes after some days on disk activity to eMMC
+> (rsync, apt upgrade).
+>
+> The spontaneous hangs are not easy to reproduce but testing this
+> for several months now I am quite confident that there is something
+> wrong with this patch.
+>
+> Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 821f657d38b5..20ffb2b37058 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -906,8 +906,8 @@ void *kmalloc_order(size_t size, gfp_t flags, unsigned int order)
- 	page = alloc_pages(flags, order);
- 	if (likely(page)) {
- 		ret = page_address(page);
--		mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
--				    PAGE_SIZE << order);
-+		mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-+				      PAGE_SIZE << order);
- 	}
- 	ret = kasan_kmalloc_large(ret, size, flags);
- 	/* As ret might get tagged, call kmemleak hook after KASAN. */
-diff --git a/mm/slub.c b/mm/slub.c
-index e564008c2329..f2f953de456e 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4057,8 +4057,8 @@ static void *kmalloc_large_node(size_t size, gfp_t flags, int node)
- 	page = alloc_pages_node(node, flags, order);
- 	if (page) {
- 		ptr = page_address(page);
--		mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
--				    PAGE_SIZE << order);
-+		mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-+				      PAGE_SIZE << order);
- 	}
- 
- 	return kmalloc_large_node_hook(ptr, size, flags);
-@@ -4193,8 +4193,8 @@ void kfree(const void *x)
- 
- 		BUG_ON(!PageCompound(page));
- 		kfree_hook(object);
--		mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
--				    -(PAGE_SIZE << order));
-+		mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-+				      -(PAGE_SIZE << order));
- 		__free_pages(page, order);
- 		return;
- 	}
+Thanks for the report.
+
+IMHO a straight revert is a bad idea. I would prefer to keep current opp 
+definitions and disable the affected devfreq devices (probably right bus 
+would be enough) or try to identify which transitions are responsible 
+for that issue. I know that it would take some time to identify them, 
+but that would be the best solution. Reverting leads to incorrect 
+hardware description, what in turn confuses the driver and framework, 
+what in turn hides a real problem.
+
+Another problem related to devfreq on Exynos4412 has been introduced 
+recently by the commit 86ad9a24f21e ("PM / devfreq: Add required OPPs 
+support to passive governor"). You can see lots of the messages like 
+this one:
+
+devfreq soc:bus-acp: failed to update devfreq using passive governor
+
+I didn't have time to check what's wrong there, but I consider devfreq 
+on Exynos a little bit broken, so another solution would be just to 
+disable it in the exynos_defconfig.
+
+> ---
+>   arch/arm/boot/dts/exynos4412.dtsi | 6 ++++++
+>   1 file changed, 6 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/exynos4412.dtsi b/arch/arm/boot/dts/exynos4412.dtsi
+> index a142fe84010b..6246df278431 100644
+> --- a/arch/arm/boot/dts/exynos4412.dtsi
+> +++ b/arch/arm/boot/dts/exynos4412.dtsi
+> @@ -405,6 +405,7 @@
+>   
+>   		bus_dmc_opp_table: opp-table1 {
+>   			compatible = "operating-points-v2";
+> +			opp-shared;
+>   
+>   			opp-100000000 {
+>   				opp-hz = /bits/ 64 <100000000>;
+> @@ -431,6 +432,7 @@
+>   
+>   		bus_acp_opp_table: opp-table2 {
+>   			compatible = "operating-points-v2";
+> +			opp-shared;
+>   
+>   			opp-100000000 {
+>   				opp-hz = /bits/ 64 <100000000>;
+> @@ -500,6 +502,7 @@
+>   
+>   		bus_leftbus_opp_table: opp-table3 {
+>   			compatible = "operating-points-v2";
+> +			opp-shared;
+>   
+>   			opp-100000000 {
+>   				opp-hz = /bits/ 64 <100000000>;
+> @@ -522,6 +525,7 @@
+>   
+>   		bus_display_opp_table: opp-table4 {
+>   			compatible = "operating-points-v2";
+> +			opp-shared;
+>   
+>   			opp-160000000 {
+>   				opp-hz = /bits/ 64 <160000000>;
+> @@ -533,6 +537,7 @@
+>   
+>   		bus_fsys_opp_table: opp-table5 {
+>   			compatible = "operating-points-v2";
+> +			opp-shared;
+>   
+>   			opp-100000000 {
+>   				opp-hz = /bits/ 64 <100000000>;
+> @@ -544,6 +549,7 @@
+>   
+>   		bus_peri_opp_table: opp-table6 {
+>   			compatible = "operating-points-v2";
+> +			opp-shared;
+>   
+>   			opp-50000000 {
+>   				opp-hz = /bits/ 64 <50000000>;
+
+Best regards
 -- 
-2.11.0
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
