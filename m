@@ -2,132 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE76322BBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 14:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 227E4322BC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 14:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbhBWNyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 08:54:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229886AbhBWNyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 08:54:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 332CD64DBD;
-        Tue, 23 Feb 2021 13:53:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614088417;
-        bh=iC+DgKr7bNJFm/2RCPxrXSkZ+QAYNIbWqrFQAEW25Qc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lPLLx8YS97rViZelcC8uKRfa1j4HTlb1BDuAPafMDEuVWwNy0t/Mct6w3hQ1eT3+G
-         qYkoBm+tHhW34haK0FkzDHWJwAtuOheI+OVzWretFm+1I5y1qgWnuGmKadOQ3hD2Vn
-         aCB8rFx//afOkiuaxoxzYq4AokAf2AxvzypBveNgkwJEHtbPqrd8nya1aJU/21cCc1
-         KPI+hWF06hxmwHRZkFYkzmQHDmg3jUXJGy5k/BpZ2UkI6bbWCho2aAratAcd5eJcWu
-         oLIbKXNc0MU7j+u6/fel8EydSFLh+ikd1YQHTCWQgBqS8V1wqXhkb3XF27r2t3C6cm
-         WlKiBUebYPDzQ==
-Date:   Tue, 23 Feb 2021 15:53:34 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH v15 2/4] phy: Add media type and speed serdes
- configuration interfaces
-Message-ID: <YDUI3rYnNxhxiZem@unreal>
-References: <20210218161451.3489955-1-steen.hegelund@microchip.com>
- <20210218161451.3489955-3-steen.hegelund@microchip.com>
- <YDH20a2hP+HtBqHz@unreal>
- <94dad8f439dd870b3488130e82f50e28b81fccf1.camel@microchip.com>
- <c1b78a32-de24-c036-5a7a-7ef297cc5e3a@ti.com>
+        id S232804AbhBWNz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 08:55:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30307 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232651AbhBWNzV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 08:55:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614088435;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kwir4Wsil0jK4OKrvTzT1wqhvatcr2vaWyMIyN42ByU=;
+        b=JSh90TEyuqBtV2DIpGKGf1RZi7yhQVTjLMMLhiqu1lusQlPZkl98y5/piN/jnqt08rLbCc
+        vB9mqJk17C2PU4uWpCeQPiwkm0sYUQJAGyr82L5X3/As4c0TEqwYG++Lbsy/ZBIcECvmJG
+        NvONh07PGbCJ3c37Q2Wvl7pj0o1pim8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-iMIsjr5YNRG8OGk5kLQpRg-1; Tue, 23 Feb 2021 08:53:44 -0500
+X-MC-Unique: iMIsjr5YNRG8OGk5kLQpRg-1
+Received: by mail-wm1-f72.google.com with SMTP id o63so686421wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 05:53:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=kwir4Wsil0jK4OKrvTzT1wqhvatcr2vaWyMIyN42ByU=;
+        b=jnveZbM0fiuiaZ13RWk5ucJPnN+urxtGxPg6CEtgo9zs67Jbvv0s8hnww+VHjXw1wg
+         Ti4dyjUqNATtgH301+EEbi/iMi3eyO82h762IDCFlndJE/MvJF5nCBYoL4m3aNOrbp3W
+         okVQVdf0C9A4G6q2opPmQgGc6XmcyLOkh8fa3O4RPfKTUSqeNh/CwWbC6mDS3s00FmgQ
+         gSKNLU4JW78WMGvFkOGwyfU4mUgfUUZpYmJx9ZYW71TmAhYwe679mBafvaufO+HNTeWO
+         N/D/CSsNIJmVfdG2ETN1jilW02tCBTftUYZZkT4GBxd7ZwlYrekhfRCIGqMvGdodx7wi
+         t4RA==
+X-Gm-Message-State: AOAM532XuTQF8M9vZg8FGVu1DWk5Qt/0+cnVgztLeUUb3e+8RcHjG2Xo
+        jsVoiO7N9561jQlBofJz8RGeCw2SrPQp4Y1UgWhxOm3ecuSAohqtv7gT2bATuR9QFIrdR1jub0h
+        X5ou9S0CJ902oqdAm2YMJ+amJ
+X-Received: by 2002:a5d:6281:: with SMTP id k1mr234360wru.405.1614088423227;
+        Tue, 23 Feb 2021 05:53:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwvqa5mYS76mtgwFOwEo0awuiMGbxRj6wFrWqOCDoWYiXdsOnm2PzYL52S+dUZeC9KAg4PB0w==
+X-Received: by 2002:a5d:6281:: with SMTP id k1mr234355wru.405.1614088423062;
+        Tue, 23 Feb 2021 05:53:43 -0800 (PST)
+Received: from localhost.localdomain ([151.29.106.174])
+        by smtp.gmail.com with ESMTPSA id w4sm2749376wmc.13.2021.02.23.05.53.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 05:53:42 -0800 (PST)
+Date:   Tue, 23 Feb 2021 14:53:40 +0100
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-rt-users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RT v5.11-rt7] WARNING at include/linux/seqlock.h:271
+ nft_counter_eval
+Message-ID: <YDUI5M5FQLycOd33@localhost.localdomain>
+References: <YDTdo+jETVr983t6@localhost.localdomain>
+ <20210223110015.ybl7feu43wvtjoqu@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c1b78a32-de24-c036-5a7a-7ef297cc5e3a@ti.com>
+In-Reply-To: <20210223110015.ybl7feu43wvtjoqu@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 05:52:14PM +0530, Kishon Vijay Abraham I wrote:
-> Hi Leon,
->
-> On 22/02/21 1:30 pm, Steen Hegelund wrote:
-> > Hi Leon,
-> >
-> > On Sun, 2021-02-21 at 07:59 +0200, Leon Romanovsky wrote:
-> >> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> >> know the content is safe
-> >>
-> >> On Thu, Feb 18, 2021 at 05:14:49PM +0100, Steen Hegelund wrote:
-> >>> Provide new phy configuration interfaces for media type and speed
-> >>> that
-> >>> allows e.g. PHYs used for ethernet to be configured with this
-> >>> information.
-> >>>
-> >>> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> >>> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> >>> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> >>> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> >>> ---
-> >>>
-> >
-> > ...
-> >
-> >>>  int phy_validate(struct phy *phy, enum phy_mode mode, int submode,
-> >>>                union phy_configure_opts *opts);
-> >>> @@ -344,6 +356,20 @@ static inline int phy_set_mode_ext(struct phy
-> >>> *phy, enum phy_mode mode,
-> >>>  #define phy_set_mode(phy, mode) \
-> >>>       phy_set_mode_ext(phy, mode, 0)
-> >>>
-> >>> +static inline int phy_set_media(struct phy *phy, enum phy_media
-> >>> media)
-> >>> +{
-> >>> +     if (!phy)
-> >>> +             return 0;
-> >>
-> >> I'm curious, why do you check for the NULL in all newly introduced
-> >> functions?
-> >> How is it possible that calls to phy_*() supply NULL as the main
-> >> struct?
-> >>
-> >> Thanks
-> >
-> > I do not know the history of that, but all the functions in the
-> > interface that takes a phy as input and returns a status follow that
-> > pattern.  Maybe Kishon and Vinod knows the origin?
->
-> It is to make handling optional PHYs simpler. See here for the origin :-)
-> http://lore.kernel.org/r/1391264157-2112-1-git-send-email-andrew@lunn.ch
+On 23/02/21 12:00, Sebastian Andrzej Siewior wrote:
+> On 2021-02-23 11:49:07 [+0100], Juri Lelli wrote:
+> > Hi,
+> Hi,
+> 
+> > I'm seeing the following splat right after boot (or during late boot
+> > phases) with v5.11-rt7 (LOCKDEP enabled).
+> â€¦
+> > [   85.273588] WARNING: CPU: 5 PID: 1416 at include/linux/seqlock.h:271 nft_counter_eval+0x95/0x130 [nft_counter]
+> â€¦
+> > [   85.273713] RIP: 0010:nft_counter_eval+0x95/0x130 [nft_counter]
+> 
+> This is a per-CPU seqcount_t in net/netfilter/nft_counter.c which is
+> only protected by local_bh_disabled(). The warning expects preemption
+> to be disabled which is the case on !RT but not on RT.
+> 
+> Not sure what to do about this. It is doing anything wrong as of now. It
+> is noisy.
 
-Thanks for the pointer, it is good to know.
-I personally would do it differently, but whatever.
+So, I'm a bit confused and I'm very likely missing details (still
+digesting the seqprop_ magic), but write_seqcount_being() has
 
->
-> Thanks
-> Kishon
-> >
-> >>
-> >>> +     return -ENODEV;
-> >>> +}
-> >>> +
-> >>> +static inline int phy_set_speed(struct phy *phy, int speed)
-> >>> +{
-> >>> +     if (!phy)
-> >>> +             return 0;
-> >>> +     return -ENODEV;
-> >>> +}
-> >>> +
-> >>>  static inline enum phy_mode phy_get_mode(struct phy *phy)
-> >>>  {
-> >>>       return PHY_MODE_INVALID;
-> >>> --
-> >>> 2.30.0
-> >>>
-> >
-> > Best Regards
-> > Steen
-> >
+ if (seqprop_preemptible(s))
+     preempt_disable();
+
+which in this case (no lock associated) is defined to return false, 
+while it should return true on RT (or in some occasions)? Or maybe this
+is what you are saying already.
+
+Also, the check for preemption been disabled happens before we can
+actually potentially disable it, no?
+
+Thanks for the quick reply!
+
+Best,
+Juri
+
