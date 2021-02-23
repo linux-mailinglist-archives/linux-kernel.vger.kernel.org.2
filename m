@@ -2,115 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA436322BA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 14:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7330322BA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 14:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhBWNqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 08:46:25 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:26226 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230166AbhBWNqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 08:46:23 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614087962; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=q+9rPbpfOFwFc2NgncWfqaEw2Cv1mL6rgZsV2hVae08=; b=ckvNR8m1VjXPhibN9lJS3AvfEyQZHaEpCPI8X/JyAqlclXTbcIbYkGor7n4bfE/BWqu5kmtU
- oTL5WmKIZc8RyunLdTJGyW8uEJCeDW+8RaGjE7TwH/eqUgJZFbK75uD7C/KaycPhqWKs4cHK
- Mg2llafyU5edgpP8kqS+JY2WAQw=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 603506f5090a774287f6c963 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Feb 2021 13:45:25
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AC64CC43466; Tue, 23 Feb 2021 13:45:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.110] (unknown [49.37.158.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B11B5C433C6;
-        Tue, 23 Feb 2021 13:45:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B11B5C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH RFC 0/1] mm: balancing the node zones occupancy
-To:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
-        rientjes@google.com, mhocko@suse.com, david@redhat.com,
-        mgorman@techsingularity.net, linux-mm@kvack.org
-Cc:     vinmenon@codeaurora.org, sudaraja@codeaurora.org,
-        linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>
-References: <cover.1613661472.git.charante@codeaurora.org>
- <1c445421-ddeb-8768-03d0-81537b0d1875@suse.cz>
-From:   Charan Teja Kalla <charante@codeaurora.org>
-Message-ID: <ee78c83d-da9b-f6d1-4f66-934b7782acfb@codeaurora.org>
-Date:   Tue, 23 Feb 2021 19:15:19 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231915AbhBWNqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 08:46:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhBWNqc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 08:46:32 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408B6C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 05:45:46 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id v30so11262110lfq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 05:45:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WbLfnKeyB5qQuCIe6mIO3QOQb1kncdAW78Ttu3/DT8Q=;
+        b=iyf6V6QXTM7z3LUIPlJ1O2b7+uhFj5lDNj11z4FRJ5xtkMq+SyMqOMjZr99f8p0A3H
+         QHDj9wFkKEV84L7eosMMk0Ct9d540NCu1OkMtO82qKYAy9GJkRcxCIYgbtmzBZV6tXTP
+         WG4nZi5RvL3JaylEV63QUOp7PZ7cKzUEqXcL+cFNsTRNT2w+T85k9E1B+TtOf9qMTM22
+         MbkzERs4J6YqvV4jgPcB+dwBeSzWwQpB0PHxI4x8F9k+sKW1AW6r9tRZEfnp8j0tJki2
+         s63JiL4L/xJt/2K7fNk0N51hG2KHj/1wmsfizPGCYzpzjyqaKOdDCmHlVSEJufks3zCt
+         1Ucg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WbLfnKeyB5qQuCIe6mIO3QOQb1kncdAW78Ttu3/DT8Q=;
+        b=SNBDDi2UCytCn0XAgxTaC/cow6Y5zuxetQn0INLx1fwJQwmPQxFzXyey9aFImLeiKr
+         w542mG7qyBS5jQgm5r67+JJtgoyV0cA6J4hZ6YKKTwcvFkX5AhWvvL6gSiGycRsHSK5v
+         WoHzISbTnYEur0cuuyllUsSwZZbSj8xcnC3I+rsAqjn+FgirCsNNCpKrZ2qI8jPl3HMK
+         e/4gdkhXug07SFgY7Pyl2fMdrtOlmbcJnVxz5VQwCCAPTXijpNAjA+oN9fu+xzI5nNcC
+         WwuCfDPVRfWqYQ/4AVxybXZ+LiFXfU96inEZaBdA6j0rheGee720zdLq0DFtEH9/4GHj
+         ADeA==
+X-Gm-Message-State: AOAM532kC5oyjG8rys+chtFiL8AnU+wPCT9MlGqT2JLVHjCVHpbv1pzJ
+        FeACkk5OS2wg+/jFNh1CGOjhxYSiK7nCbwWIGS57RA==
+X-Google-Smtp-Source: ABdhPJxQ0s16SHYzGoWl2o2eNa2wakQvmupSIMM9214xlzvkZx2AD44cEy6nHE9cBN7uK8m6iNnsBYPZ1Q0IltSu9hI=
+X-Received: by 2002:a05:6512:3a86:: with SMTP id q6mr16600025lfu.286.1614087944686;
+ Tue, 23 Feb 2021 05:45:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1c445421-ddeb-8768-03d0-81537b0d1875@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <000000000000a43f1f05bbefe703@google.com> <jhjlfbfhty2.mognet@arm.com>
+In-Reply-To: <jhjlfbfhty2.mognet@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 23 Feb 2021 14:45:33 +0100
+Message-ID: <CAKfTPtAkzDWfqAP=Fb+4B+PBUNN_7oTdZ3Cs+wLdfrJNa_ymTQ@mail.gmail.com>
+Subject: Re: UBSAN: shift-out-of-bounds in load_balance
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     syzbot <syzbot+d7581744d5fd27c9fbe1@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, luto@kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs@googlegroups.com,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Vlastimil for the review comments!!
+On Tue, 23 Feb 2021 at 13:03, Valentin Schneider
+<valentin.schneider@arm.com> wrote:
+>
+>
+> +Vincent
+>
+> On 22/02/21 09:12, syzbot wrote:
+> > syzbot has found a reproducer for the following issue on:
+> >
+> > HEAD commit:    31caf8b2 Merge branch 'linus' of git://git.kernel.org/pub/..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=16ab2682d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=b81388f0b32761d4
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=d7581744d5fd27c9fbe1
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1277457f500000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+d7581744d5fd27c9fbe1@syzkaller.appspotmail.com
+> >
+> > ================================================================================
+> > UBSAN: shift-out-of-bounds in kernel/sched/fair.c:7712:14
+> > shift exponent 149 is too large for 64-bit type 'long unsigned int'
+>
+> That 149 is surprising.
 
-On 2/19/2021 4:56 PM, Vlastimil Babka wrote:
-> Can you share the use case for doing this? If it's to replace a failed RAM, then
-> it's probably extremely rare, right.
-> 
->> We have the proof-of-concept code tried on the Snapdragon systems with
->> the system configuration, single memory node of just 2 zones, 6GB normal
->> zone and 2GB movable zone. And this Movable zone is such that hot-added
->> once and there after offline/online based on the need.
-> Hm, snapdragon... so is this some kind of power saving thing?
-> 
+Yes, surprising. But is it really a problem in itself  ? shifting left
+ would be a problem because of the overflow but here we shift right to
+divide and the result is correct
 
-You are correct. This is the power saving usecase which does the offline
-and online of the memory blocks in the system by the user. This is not a
-failed RAM.
+Beside this, it seems that a significant number of previous attempts
+to balance load has been done with another migration_type otherwise it
+would  have raised a problem earlier (at 65) if previous LB were also
+migration_load. It would be good to understand why the 148 previous
+ones failed
 
-> Anyway, shouln't auto NUMA balancing help here, and especially "Migrate Pages in
-> lieu of discard" (CC'd Dave) as a generic mechanism, 
+>
+> sd->cache_nice_tries is \in {1, 2}, and sd->nr_balanced_failed should be in
+> the same ballpark.
+>
+> A successful load_balance() resets it to 0; a failed one increments
+> it. Once it gets to sd->cache_nice_tries + 3, this should trigger an active
+> balance, which will either set it to sd->cache_nice_tries+1 or reset it to
+> 0. There is this one condition that could let it creep up uncontrollably:
+>
+>   /*
+>    * Don't kick the active_load_balance_cpu_stop,
+>    * if the curr task on busiest CPU can't be
+>    * moved to this_cpu:
+>    */
+>   if (!cpumask_test_cpu(this_cpu, busiest->curr->cpus_ptr)) {
+>           raw_spin_unlock_irqrestore(&busiest->lock,
+>                                       flags);
+>           goto out_one_pinned;
+>   }
+>
+> So despite the resulting sd->balance_interval increase, repeatedly hitting
+> this might yield the above. Would we then want something like this?
+>
+> ---
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 8a8bd7b13634..b65c24b5ae91 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7422,6 +7422,11 @@ struct lb_env {
+>         struct list_head        tasks;
+>  };
+>
+> +static inline unsigned int sd_balance_failed_cap(struct sched_domain *sd)
+> +{
+> +       return sd->cache_nice_tries + 3;
+> +}
+> +
+>  /*
+>   * Is this task likely cache-hot:
+>   */
+> @@ -9493,7 +9498,7 @@ imbalanced_active_balance(struct lb_env *env)
+>          * threads on a system with spare capacity
+>          */
+>         if ((env->migration_type == migrate_task) &&
+> -           (sd->nr_balance_failed > sd->cache_nice_tries+2))
+> +           (sd->nr_balance_failed >= sd_balance_failed_cap(sd)))
+>                 return 1;
+>
+>         return 0;
+> @@ -9737,8 +9742,10 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>                  * frequent, pollute the failure counter causing
+>                  * excessive cache_hot migrations and active balances.
+>                  */
+> -               if (idle != CPU_NEWLY_IDLE)
+> -                       sd->nr_balance_failed++;
+> +               if (idle != CPU_NEWLY_IDLE) {
+> +                       sd->nr_balance_failed = min(sd->nr_balance_failed + 1,
+> +                                                   sd_balance_failed_cap(sd));
 
-On the Snapdragon systems we have got only single memory node with
-Normal and movable zones. And my little understanding is that on most
-embedded systems we will just have single memory node.
+nr_balance_failed is an interesting metric that we want to monitor
+sometimes and we would like to be able to divide higher than
+2^(sd->cache_nice_tries + 3).
 
-My limited understanding about this auto NUMA balancing is that there
-should be min. 2 nodes for this balancing to trigger. Please correct if
-I am wrong here. If I am correct then this approach is not suitable for
-us. Moreover the idea I would like to convey in this RFC patch is about
-__balancing the zones in a node but not across NUMA nodes__.
+If we really want to prevent out of bound shift, The below is more
+appropriate IMO:
 
-> so we wouldn't need to have hotplug-specific actions?
-David has told a very simple view of this problem which is nothing todo
-with the hotplug specific actions.
+index 636741fa27c9..4d0b3fa30849 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7707,7 +7707,7 @@ static int detach_tasks(struct lb_env *env)
+                         * migrate.
+                         */
 
-With just 2 zones(Normal and Movable) in a single node in the system,
+-                       if ((load >> env->sd->nr_balance_failed) >
+env->imbalance)
++                       if ((load >> min_t(int,
+env->sd->nr_balance_failed, BITS_PER_LONG)) > env->imbalance)
+                                goto next;
 
-1. Application 1 allocates a lot of memory and gets ZONE_MOVABLE.
-2. Application 2 allocates a lot of memory and gets ZONE_NORMAL.
-3. Application 1 quits.
+                        env->imbalance -= load;
 
-Then after step3, we can expect a lot free memory in the Movable zone
-but normal zone is under pressure. Applying the similar semantics of
-Auto numa balancing("Migrate pages in lieu of swap/discard"), we could
-migrate some eligible pages of Application 2 to Movable zone there by
-can relieve some pressure in Normal zone.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum, a Linux Foundation Collaborative Project
+> +               }
+>
+>                 if (need_active_balance(&env)) {
+>                         unsigned long flags;
+>
