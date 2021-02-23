@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B86D323494
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 01:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8B13234A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 01:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234468AbhBXAQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 19:16:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34978 "EHLO
+        id S235001AbhBXAb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 19:31:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233914AbhBWXma (ORCPT
+        with ESMTP id S233887AbhBWXuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 18:42:30 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0C1C0611BE
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:35:32 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id b15so48879pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:35:32 -0800 (PST)
+        Tue, 23 Feb 2021 18:50:06 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB202C061A28
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:35:33 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id c19so39271pjq.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:35:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=skygqmTpwpFqHXp0ZsK0QIEBfsju4nOHMOtLAZPE+UA=;
-        b=Fkfxqba5KS3e8uLyKOIcfVl1j5B95mT1rMRKDnEO5h2ddnC8Bxa9CP4mbLlZtFtkx9
-         vqk+yoMuByYC0Mg/maHGla3K2ROMO0yRNYXC4UAXDJMSuMwhidb/MbVKEnK/pY4fXqEZ
-         bWnhoj+R99HcmRPHWIbfZkzulHB214Mmsb2vug7Cr7iclMxThGLcHB0HKQ4oXkhsoB0Y
-         HiT7tIEtdaBow9CFuyCQkdgjeOjpka+tXtFfdVjWvIrAYiAP04RduYO/euP+hHmCuy/S
-         C2EoCSLs3NyndBUtke4wis2WOyNFxZPZFZCQvPLp9UDUcElnRkGyDJeDTIJxHV/3L8FU
-         eGvQ==
+        bh=9dNXLfIEwaBmyxdvGPLcXIZoYDoiye95/dFOxo0lMe4=;
+        b=FacrPQa+2h15QlpIr28yddn6IuvoguAmRAZYlTCp41sRk7VfSbFMMi2D9zF2VeoMVT
+         lvlrXDCraOoq8hw/Hd6ybksPaLxpOFGajiMU2ieGncuh6NybqdpyvHRRkwXU/UjOBGM+
+         TUQgRGVRW4k05wOMkgzVXIYlWss60zHMqwZvLSiwQsmkXhgVszeak0UuXk5E6Iw8z7Hd
+         wu1QmI7wa2PfmOxwH1qiYm/V8xlSYqdvXwvMgazNhLtLuLOwSiPZN3DdNyRAgga/VkdD
+         END38q1jtAVeC7pWOVX2IAEp9taTPnTKdHNiWUZ89mdX6PgHv+/nG5g/As1233+t08MD
+         YRBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=skygqmTpwpFqHXp0ZsK0QIEBfsju4nOHMOtLAZPE+UA=;
-        b=VA/Hzu3vQ64ydhhdmY26X74WP4KYy+2O13CEvSaSzoj8Vj6ChTCCGoILx3GgFCtCaF
-         q7KygQsqNN4bKJ82MvUvneioVjIlonrMpi2et9JXKP0BNJlQ9M0OJpTr4MkXp7+UDBde
-         haPaEN/REye6Syuzx5tgf82y9BJ+068vGh3pM7rwQW2xBvyKrOLF0Q27TyJbE5OwD04t
-         09NIqjJQA33B72nBnJ5CYpA/Bv1EdQt7ALSWviMm5iFvPap0VSGrYYa9Sb1DDYUe0N0G
-         qljmEDklQjHeMasdiX4IOssdlPmmc8Whjdfc+80Q7vOibyJl0L57M29E3XW6jQFs6cYv
-         qE5w==
-X-Gm-Message-State: AOAM531iBSszsO8TyNHiuIMjxune+sAL2WU+Izfpyxd7rmCzW6kCTqoK
-        KljD9ApsYoTKyNJ/H3ebrj3FJA==
-X-Google-Smtp-Source: ABdhPJylws8xRS7yb6Lx8oAsaa4CQlYQ1WGcJw/Rv+dLerg4frRX3/lypczOzj811/g3w5SiIH0aKg==
-X-Received: by 2002:a17:902:ec83:b029:e3:ec1f:9def with SMTP id x3-20020a170902ec83b02900e3ec1f9defmr15096233plg.11.1614123332545;
-        Tue, 23 Feb 2021 15:35:32 -0800 (PST)
+        bh=9dNXLfIEwaBmyxdvGPLcXIZoYDoiye95/dFOxo0lMe4=;
+        b=l4taYYQHHlhbkaZEFeTfmDoUOzQzpq5DBXcpOiEL0QZiAQo7uKjqCc1ezRMT90nIbb
+         kpSfYMnb5q0tX+cXJcbz74byjg3bmkm0NA7KKVgFMDDg8csopdZxLv8GCS19dJtpaB3u
+         +xWXTRoKbmc/lpLK9dhm4CI1b9ZS3ISnN4hYDrRXMuAtGfI03kgyrSHhnXcPLrvsQ9J/
+         evxfxSeHNAg+VI8kYq69zlpqAcRrBpLV47SauEdufhyD3O+cYbDL+S+pQ0rte7wluBNM
+         MrJP02Q1YWoI43JD0YTzj17YWwm1+MkL61sO3IVVEsxAqOh/ENx1O60HJZ0r8XWSYJCL
+         ScPQ==
+X-Gm-Message-State: AOAM530gwdMFfYQut3gHDyMawzE5Wu+kL2RKrPFu2Nsap4JTKuEZ58xI
+        w3mezbH3JyDijhkE/cQRhG5uUg==
+X-Google-Smtp-Source: ABdhPJzDAGh6wh3Npt8Bm/YQ7HhxIWxiSdzM/fQpCszCDx97I+KOxtsQXnMjbwrn7gO/M6IugUvOzA==
+X-Received: by 2002:a17:90a:4a0a:: with SMTP id e10mr1161914pjh.112.1614123333381;
+        Tue, 23 Feb 2021 15:35:33 -0800 (PST)
 Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id c24sm311999pfd.11.2021.02.23.15.35.31
+        by smtp.gmail.com with ESMTPSA id c24sm311999pfd.11.2021.02.23.15.35.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 15:35:32 -0800 (PST)
+        Tue, 23 Feb 2021 15:35:33 -0800 (PST)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     ohad@wizery.com, bjorn.andersson@linaro.org,
         arnaud.pouliquen@st.com
 Cc:     mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
         linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v6 15/16] remoteproc: Properly deal with a detach request when attached
-Date:   Tue, 23 Feb 2021 16:35:14 -0700
-Message-Id: <20210223233515.3468677-16-mathieu.poirier@linaro.org>
+Subject: [PATCH v6 16/16] remoteproc: Refactor rproc delete and cdev release path
+Date:   Tue, 23 Feb 2021 16:35:15 -0700
+Message-Id: <20210223233515.3468677-17-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
 References: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
@@ -66,54 +66,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces the capability to detach a remote processor
-that has been attached by the remoteproc core.  For that to happen
-a rproc::ops::detach() operation needs to be available.
+Refactor function rproc_del() and rproc_cdev_release() to take
+into account the current state of the remote processor when choosing
+the state to transition to.
 
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
 New for V6:
-- The RPROC_RUNNING -> RPROC_DETACHED transition is no longer permitted
+- The RPROC_RUNNING -> RPROC_DETACHED transition is no longer permitted.
   to avoid dealing with complex resource table management problems.
+- Transition to the next state is no longer dictated by a DT binding for
+  the same reason as above.
 - Removed Peng and Arnaud's RB tags because of the above.
 ---
 
- drivers/remoteproc/remoteproc_cdev.c  | 5 +++++
- drivers/remoteproc/remoteproc_sysfs.c | 5 +++++
- 2 files changed, 10 insertions(+)
+ drivers/remoteproc/remoteproc_cdev.c | 10 ++++++++--
+ drivers/remoteproc/remoteproc_core.c |  9 +++++++--
+ 2 files changed, 15 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
-index 0249d8f6c3f8..2db494816d5f 100644
+index 2db494816d5f..0b8a84c04f76 100644
 --- a/drivers/remoteproc/remoteproc_cdev.c
 +++ b/drivers/remoteproc/remoteproc_cdev.c
-@@ -43,6 +43,11 @@ static ssize_t rproc_cdev_write(struct file *filp, const char __user *buf, size_
- 			return -EINVAL;
- 
- 		rproc_shutdown(rproc);
-+	} else if (!strncmp(cmd, "detach", len)) {
-+		if (rproc->state != RPROC_ATTACHED)
-+			return -EINVAL;
+@@ -86,11 +86,17 @@ static long rproc_device_ioctl(struct file *filp, unsigned int ioctl, unsigned l
+ static int rproc_cdev_release(struct inode *inode, struct file *filp)
+ {
+ 	struct rproc *rproc = container_of(inode->i_cdev, struct rproc, cdev);
++	int ret = 0;
 +
-+		ret = rproc_detach(rproc);
- 	} else {
- 		dev_err(&rproc->dev, "Unrecognized option\n");
- 		ret = -EINVAL;
-diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
-index 09eb700c5e7e..ad3dd208024c 100644
---- a/drivers/remoteproc/remoteproc_sysfs.c
-+++ b/drivers/remoteproc/remoteproc_sysfs.c
-@@ -207,6 +207,11 @@ static ssize_t state_store(struct device *dev,
- 			return -EINVAL;
++	if (!rproc->cdev_put_on_release)
++		return 0;
  
+-	if (rproc->cdev_put_on_release && rproc->state == RPROC_RUNNING)
++	if (rproc->state == RPROC_RUNNING)
  		rproc_shutdown(rproc);
-+	} else if (sysfs_streq(buf, "detach")) {
-+		if (rproc->state != RPROC_ATTACHED)
-+			return -EINVAL;
-+
++	else if (rproc->state == RPROC_ATTACHED)
 +		ret = rproc_detach(rproc);
- 	} else {
- 		dev_err(&rproc->dev, "Unrecognised option: %s\n", buf);
- 		ret = -EINVAL;
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static const struct file_operations rproc_fops = {
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index 00452da25fba..a05d5fec43b1 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -2542,11 +2542,16 @@ EXPORT_SYMBOL(rproc_put);
+  */
+ int rproc_del(struct rproc *rproc)
+ {
++	int ret = 0;
++
+ 	if (!rproc)
+ 		return -EINVAL;
+ 
+ 	/* TODO: make sure this works with rproc->power > 1 */
+-	rproc_shutdown(rproc);
++	if (rproc->state == RPROC_RUNNING)
++		rproc_shutdown(rproc);
++	else if (rproc->state == RPROC_ATTACHED)
++		ret = rproc_detach(rproc);
+ 
+ 	mutex_lock(&rproc->lock);
+ 	rproc->state = RPROC_DELETED;
+@@ -2565,7 +2570,7 @@ int rproc_del(struct rproc *rproc)
+ 
+ 	device_del(&rproc->dev);
+ 
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL(rproc_del);
+ 
 -- 
 2.25.1
 
