@@ -2,140 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037773223B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6C23223B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhBWB17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 20:27:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38924 "EHLO mail.kernel.org"
+        id S230008AbhBWBa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 20:30:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230164AbhBWB1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 20:27:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E53D64E57;
-        Tue, 23 Feb 2021 01:27:00 +0000 (UTC)
+        id S230042AbhBWBa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 20:30:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DFFF64E57;
+        Tue, 23 Feb 2021 01:30:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614043620;
-        bh=+jNCruc+MkACHldsssuUZj1pB5jnc3ckCdEhn63aZ3o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SCEbCJ1nJRIcMhV6qGtieEkrJRXyo6qpWJEqetyNU8mP5Jc4ErI09EYGq4fhMtmKH
-         e0FxPfE6asbauVfZ9+1UM1DWzJ74gTNHU31AKh8c4Sl8Z6gir2HzfOcNgBiWamoP/L
-         M/do1p+yoilcZtwY0asU0u0fQLhjtkfqiRTLNgqlL0NIh9LEjmnBgJzXvJeKAiokoo
-         EytYoy8OLcp5Ty/ZSlwErxv9blNXfbMGUH4OIt1Ryf8tMpleWWj/q/jmF5SL87Ahhw
-         vj4Y/oFpwohenyZuh7yjzld56y4gVcf30KNB8twNaB1gg57HoLfTY7ARQCgwXgPr5X
-         pQcFTm5SrcyDQ==
-Received: by earth.universe (Postfix, from userid 1000)
-        id 691493C0C96; Tue, 23 Feb 2021 02:26:57 +0100 (CET)
-Date:   Tue, 23 Feb 2021 02:26:57 +0100
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devicetree@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mtd@lists.infradead.org, NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv1 1/6] rtc: m41t80: add support for protected clock
-Message-ID: <20210223012657.bbp5u65nw4tpcjgd@earth.universe>
-References: <20210222171247.97609-1-sebastian.reichel@collabora.com>
- <20210222171247.97609-2-sebastian.reichel@collabora.com>
- <YDQgLTPE0E+/1Cwv@piout.net>
- <YDQhgkftoW4J9AtY@piout.net>
+        s=k20201202; t=1614043816;
+        bh=ncie3eGoP1Lo7pENaLRqCW2fkUMl2yR3qc5u8v9f/Cs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MyaOfdQ9yb+Jt1rs6BqyaFO5YLrlUhDHHOh2P6qeIQvBeKoXJV6f/o5WInaM0gWds
+         567BIW+sx8ibyf8SpHpSMFPxwhfG9tUAFIwAJC0omA/3h+qtASKo4guFtMrr5QOG2O
+         wTqnSPJ5TiwOfiTRz2a9quZsIasxGTyXiNfjzMyTpeGemqWvZAH26YoHbgp7wnnG81
+         FPqUI5oZUQKmcRF/2NqkbGNjb1WybkM8DtHTk7d6fReE0HIiGIpHULqejofiDpqn6f
+         BJU1QTcKUCM5RKK5csIN8uc0xTYwrYy6zeS+lgNRFioqoePS5mLm143FDaZ/2FRMUs
+         WyDxYAHySz5YA==
+Date:   Mon, 22 Feb 2021 17:30:12 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     mkl@pengutronix.de, "David S. Miller" <davem@davemloft.net>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Robin van der Gracht <robin@protonic.nl>,
+        syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com,
+        kernel@pengutronix.de, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v3] net: introduce CAN specific pointer in the
+ struct net_device
+Message-ID: <20210222173012.39e82e8d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210222150251.12911-1-o.rempel@pengutronix.de>
+References: <20210222150251.12911-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vkwv4tifbmgtzlgu"
-Content-Disposition: inline
-In-Reply-To: <YDQhgkftoW4J9AtY@piout.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 22 Feb 2021 16:02:51 +0100 Oleksij Rempel wrote:
+> Since 20dd3850bcf8 ("can: Speed up CAN frame receiption by using
+> ml_priv") the CAN framework uses per device specific data in the AF_CAN
+> protocol. For this purpose the struct net_device->ml_priv is used. Later
+> the ml_priv usage in CAN was extended for other users, one of them being
+> CAN_J1939.
+> 
+> Later in the kernel ml_priv was converted to an union, used by other
+> drivers. E.g. the tun driver started storing it's stats pointer.
+> 
+> Since tun devices can claim to be a CAN device, CAN specific protocols
+> will wrongly interpret this pointer, which will cause system crashes.
+> Mostly this issue is visible in the CAN_J1939 stack.
+> 
+> To fix this issue, we request a dedicated CAN pointer within the
+> net_device struct.
+> 
+> Reported-by: syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com
+> Fixes: 20dd3850bcf8 ("can: Speed up CAN frame receiption by using ml_priv")
+> Fixes: ffd956eef69b ("can: introduce CAN midlayer private and allocate it automatically")
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Fixes: 497a5757ce4e ("tun: switch to net core provided statistics counters")
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
---vkwv4tifbmgtzlgu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index ddf4cfc12615..6e25c6f0f190 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -1584,6 +1584,16 @@ enum netdev_priv_flags {
+>  #define IFF_L3MDEV_RX_HANDLER		IFF_L3MDEV_RX_HANDLER
+>  #define IFF_LIVE_RENAME_OK		IFF_LIVE_RENAME_OK
+>  
+> +/**
+> + * enum netdev_ml_priv_type - &struct net_device ml_priv_type
+> + *
+> + * This enum specifies the type of the struct net_device::ml_priv pointer.
+> + */
 
-Hi,
+kdoc (scripts/kernel-doc -none include/linux/netdevice.h) is not happy
+about the fact enum values are not defined. Perhaps they will be
+sufficiently self-explanatory to not bother documenting?
 
-On Mon, Feb 22, 2021 at 10:26:26PM +0100, Alexandre Belloni wrote:
-> On 22/02/2021 22:20:47+0100, Alexandre Belloni wrote:
-> > On 22/02/2021 18:12:42+0100, Sebastian Reichel wrote:
-> > > Congatec's QMX6 system on module (SoM) uses a m41t62 as RTC. The
-> > > modules SQW clock output defaults to 32768 Hz. This behaviour is
-> > > used to provide the i.MX6 CKIL clock. Once the RTC driver is probed,
-> > > the clock is disabled and all i.MX6 functionality depending on
-> > > the 32 KHz clock has undefined behaviour. On systems using hardware
-> > > watchdog it seems to likely trigger a lot earlier than configured.
-> > >=20
-> > > The proper solution would be to describe this dependency in DT,
-> > > but that will result in a deadlock. The kernel will see, that
-> > > i.MX6 system clock needs the RTC clock and do probe deferral.
-> > > But the i.MX6 I2C module never becomes usable without the i.MX6
-> > > CKIL clock and thus the RTC's clock will not be probed. So from
-> > > the kernel's perspective this is a chicken-and-egg problem.
-> > >=20
-> >=20
-> > Reading the previous paragraph, I was going to suggest describing the
-> > dependency and wondering whether this would cause a circular dependency.
-> > I guess this will keep being an issue for clocks on an I2C or SPI bus...
+Maybe just:
 
-Yes, it is a circular dependency on this particular system on
-module. It only works because the RTC enables the clock by
-default. The i.MX6 CKIL is expected to be always enabled.
+/* Specifies the type of the struct net_device::ml_priv pointer */
 
-> > > Technically everything is fine by not touching anything, since
-> > > the RTC clock correctly enables the clock on reset (i.e. on
-> > > battery backup power loss) and also the bootloader enables it
-> > > in case a kernel without this support has been booted.
-> > >=20
-> > > The 'protected-clocks' property is already in use for some clocks
-> > > that may not be touched because of firmware limitations and is
-> > > described in Documentation/devicetree/bindings/clock/clock-bindings.t=
-xt.
-> > >=20
-> > > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
->=20
-> Or maybe you expected me to apply the patch, how are the following
-> patches dependent on this one?
+?
 
-The last patch, which introduces a new board has a runtime
-dependency on this patch. Without this feature the board
-goes into a reboot loop because its bootloader enables the
-i.MX6 watchdog and without the CKIL its timing is messed up.
+> +enum netdev_ml_priv_type {
+> +	ML_PRIV_NONE,
+> +	ML_PRIV_CAN,
+> +};
+> +
+>  /**
+>   *	struct net_device - The DEVICE structure.
+>   *
+> @@ -1779,6 +1789,7 @@ enum netdev_priv_flags {
+>   * 	@nd_net:		Network namespace this network device is inside
+>   *
+>   * 	@ml_priv:	Mid-layer private
+> +	@ml_priv_type:  Mid-layer private type
 
-But it's a pure runtime dependency for a new board, so it should
-be fine to merge this via your tree. It basically means the board
-is only working once your tree and arm tree have been merged,
-which seems ok from my POV.
+missing '*' at the start of the line
 
--- Sebastian
+>   * 	@lstats:	Loopback statistics
+>   * 	@tstats:	Tunnel statistics
+>   * 	@dstats:	Dummy statistics
+> @@ -2094,8 +2105,10 @@ struct net_device {
+>  	possible_net_t			nd_net;
+>  
+>  	/* mid-layer private */
+> +	void				*ml_priv;
+> +	enum netdev_ml_priv_type	ml_priv_type;
+> +
+>  	union {
+> -		void					*ml_priv;
+>  		struct pcpu_lstats __percpu		*lstats;
+>  		struct pcpu_sw_netstats __percpu	*tstats;
+>  		struct pcpu_dstats __percpu		*dstats;
+> @@ -2286,6 +2299,29 @@ static inline void netdev_reset_rx_headroom(struct net_device *dev)
+>  	netdev_set_rx_headroom(dev, -1);
+>  }
+>  
+> +static inline void *netdev_get_ml_priv(struct net_device *dev,
+> +				       enum netdev_ml_priv_type type)
+> +{
+> +	if (dev->ml_priv_type != type)
+> +		return NULL;
+> +
+> +	return dev->ml_priv;
+> +}
+> +
+> +static inline void netdev_set_ml_priv(struct net_device *dev,
+> +				      void *ml_priv,
+> +				      enum netdev_ml_priv_type type)
+> +{
+> +	WARN_ONCE(dev->ml_priv_type && dev->ml_priv_type != type,
+> +		  "Overwriting already set ml_priv_type (%u) with different ml_priv_type (%u)!\n",
+> +		  dev->ml_priv_type, type);
+> +	WARN_ONCE(!dev->ml_priv_type && dev->ml_priv,
+> +		  "Overwriting already set ml_priv and ml_priv_type is ML_PRIV_NONE!\n");
 
---vkwv4tifbmgtzlgu
-Content-Type: application/pgp-signature; name="signature.asc"
+nit: do we need the _ONCE() this helper should be used on control path
+     and relatively rarely, no?
 
------BEGIN PGP SIGNATURE-----
+> +	dev->ml_priv = ml_priv;
+> +	dev->ml_priv_type = type;
+> +}
+> +
+>  /*
+>   * Net namespace inlines
+>   */
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmA0WdQACgkQ2O7X88g7
-+prAbBAAkf1j4TWyAUwNGCEKZRb6+YySPrlQpkb3EBCE0zV+l99HVYKLfAz5CwCH
-mqVf4GgzAE64+byU2NfmMcXiLikzUlcVR0gN572ED/a5ZEyRkqm7euVnV7jzL6eG
-olAlqpcEy7d6y5R0pHDytFbPAN7C5LN8aTl6zcuroH9QcuFcezQpEd+01PkQMSNJ
-8gT6dXPdeKoy8AqTcwVBel4CS3oQc/mSQ3fuMBa6+UTz90lznin2vyl4arHMd+tv
-LLQvlrn6T2X+rgQ3UNyfEsuSo4WFIdreoWIobQgUmZIhXjno04PTNghc3mhHpHUE
-oL6DMhyB474mdGS3cFIgDnTwFQFKaLOKQiJDcgTBDU497SsTZxOf/DDvU6MEtkzT
-VeCOmfm9xjYxNa0yALMic/nSibePV/bdXiak/njl3KOd5ElQ9RcvlsKMAlK8k1YM
-kKr47aye0+n4hivy1vZR2Kh+wx3BrsGnsYF9gJVUqCkuwA1X58PU6Iq9QVxxMDe2
-SQ62Jz5Y/kg+c+eFas4AeT1NRFZhEvcfni8pHdF2TketdpM4VLQCAdYqkHhpz4Wx
-qmv9E/FU7qly5kOTjcIKhwk7MS4deNZaQoQt/MUs1LN0PBv162jneWsqjmRgLyMH
-cxEOJN/MZVgB5gKG+U5wmHksMAjIfLi3OOC668MhSh2loA48XvE=
-=Hawo
------END PGP SIGNATURE-----
+> @@ -454,6 +455,7 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
+>  		j1939_local_ecu_put(priv, jsk->addr.src_name, jsk->addr.sa);
+>  	} else {
+>  		struct net_device *ndev;
+> +		struct can_ml_priv *can_ml;
 
---vkwv4tifbmgtzlgu--
+nit: rev xmas tree
+
+>  
+>  		ndev = dev_get_by_index(net, addr->can_ifindex);
+>  		if (!ndev) {
