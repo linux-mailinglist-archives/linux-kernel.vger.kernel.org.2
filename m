@@ -2,187 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4E432235F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C969322360
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhBWBMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 20:12:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhBWBMG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 20:12:06 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F06C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 17:11:26 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id q7so15432557iob.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 17:11:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pxy3fWqnHXSmeJ/dQM3CI4wtPt6Zw1lUR2mc3ToJ5/U=;
-        b=M8F6iblXQybOLnVOmmxssZ95gs5WM3Mkswy2mvjKceLanmgSFTpdoTLL9rzFP/zgn/
-         koxPEgzm+G/MloTKcpih+xM/3SAVmV2lPBjsKnIn77ZUdkS017idJOWt6/akFMBhk5KE
-         xAWLjPdhFiQpN3/PfUxjqrm8hRE1qPBnzOO4iAc1gh+p7mSUWt58Uw5sCJ5YYS/UklEk
-         F/iEZsp8OFkkSpuZB37NA/Y7Z5ECBrw+KxLXtQgq3eZeEIDoGGabhdrhlau1rbu1809s
-         pZccHcVybvPwdRx7+Uz3U5KRHPkDb/dV9H3I788/iAmwGcbwRxOMsWmx1RFk+p7NPwbI
-         acng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pxy3fWqnHXSmeJ/dQM3CI4wtPt6Zw1lUR2mc3ToJ5/U=;
-        b=XqgH15g/uueuZNZ60EaoFGdIdyKeDrdBMzzrxVas7qQCCfr6uh3yFyOikOuq6XQ4ik
-         hoH/caxCJk81GWAYQBzJwui0EspiYIkcZvGSAgiDz0w0ML2gQCB/YqtEwOUzaF1klP/V
-         qywZQXfQdlhKcIevwk4XZEJCD/JvBNahv2ErYan+XkFIu0KNXexS7dtmUF+CRP17mK38
-         KyGcDQ3zquC/usH0ObTIL5ueNqWduTK2iRSwSZznqTxEJomzt/5a6KCZ2rMW2G5U7z7G
-         qWwfXNFD2bQ5kzIeRvhlXuwc2XCSCjtRoLvU4QNIOq1QLaHjXFAJEC7Zq4sRvA8F5PT7
-         GCfg==
-X-Gm-Message-State: AOAM533SA3pYV7IvtPjlVEhlmR6LSe9mYSG6mar8PvU2D4S1WgA0KwBh
-        xkQc0tTqVrFfNz9HM0US7cJiTM6ybxL1YYMkgpw=
-X-Google-Smtp-Source: ABdhPJzPK/u7Ujb2x3bbp+XmeDgOyG4RhdiosVYeJg+U+4wRS+v45yBrXadC3+gmtPi82gnqgG8KdB1pUaeG671I3Kw=
-X-Received: by 2002:a5d:9510:: with SMTP id d16mr17604451iom.81.1614042685855;
- Mon, 22 Feb 2021 17:11:25 -0800 (PST)
+        id S231364AbhBWBMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 20:12:19 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:43497 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230352AbhBWBMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 20:12:17 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dl1GY0ZmLz9sSC;
+        Tue, 23 Feb 2021 12:11:33 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614042693;
+        bh=BhMebJFheEGWGacHH8G/FVKpbw8z1PwEQVTKLdmBpx0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=b0dcuwviEzVOXwvj6cuk2WV/ETQc3P6ariYEcXdE/b5eG608oshp0+JaO2Yeq9ahI
+         EqwL8K5DbLoCh0nW0nzQ5cPZF8QuD26Pz2jKNV8Da+keJIgo9ws0paZ2lf7LQY6O+w
+         9NMVXk1+B/juPLXeXR3hqmLIxmwhOBHVr1huh5yUkoM62WuOau2RlewSGL5pJWb+3L
+         SAflwOuIN/SQoH/n3yiGbd4AJ362o50oJ0PwAbRJxKlQYPxuOM6AuriWKNHNdTrVxf
+         ErSihEfi+HbJkKwKJznFm5vtWqvFCBOjZ4PE0vOJ2fGY60+9URxAkZClNWPFZ3WSyU
+         e9qaAsthrS2yQ==
+Date:   Tue, 23 Feb 2021 12:11:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the amdgpu tree
+Message-ID: <20210223121131.476e425b@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210215155141.47432-1-laoar.shao@gmail.com> <20210215155141.47432-4-laoar.shao@gmail.com>
- <YDOluaRK2CHtQyQD@alley>
-In-Reply-To: <YDOluaRK2CHtQyQD@alley>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 23 Feb 2021 09:10:49 +0800
-Message-ID: <CALOAHbBYruMHyHGXcnjt8wyDokE+pvFwLTW0i=XrMSatDUVLFA@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] vsprintf: dump full information of page flags in pGp
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Joe Perches <joe@perches.com>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/J4JljfHDm2DxNyjnuVG9GN8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 8:38 PM Petr Mladek <pmladek@suse.com> wrote:
->
-> Hello,
->
-> first, I am sorry for the late reply. I have marked the thread as
-> proceed by mistake last week...
->
->
-> On Mon 2021-02-15 23:51:41, Yafang Shao wrote:
-> > Currently the pGp only shows the names of page flags, rather than
-> > the full information including section, node, zone, last cpupid and
-> > kasan tag. While it is not easy to parse these information manually
-> > because there're so many flavors. Let's interpret them in pGp as well.
-> >
-> > To be compitable with the existed format of pGp, the new introduced ones
-> > also use '|' as the separator, then the user tools parsing pGp won't
-> > need to make change, suggested by Matthew. The new information is
-> > tracked onto the end of the existed one.
-> >
-> > One example of the output in mm/slub.c as follows,
-> > - Before the patch,
-> > [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
-> >
-> > - After the patch,
-> > [ 8448.272530] Slab 0x0000000090797883 objects=33 used=3 fp=0x00000000790f1c26 flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
-> >
-> > The documentation and test cases are also updated. The output of the
-> > test cases as follows,
-> > [11585.830272] test_printf: loaded.
-> > [11585.830454] test_printf: all 388 tests passed
-> > [11585.831401] test_printf: unloaded.
-> >
-> > --- a/lib/vsprintf.c
-> > +++ b/lib/vsprintf.c
-> > +static
-> > +char *format_page_flags(char *buf, char *end, unsigned long flags)
-> > +{
-> > +     unsigned long main_flags = flags & (BIT(NR_PAGEFLAGS) - 1);
-> > +     bool append = false;
-> > +     int i;
-> > +
-> > +     /* Page flags from the main area. */
-> > +     if (main_flags) {
-> > +             buf = format_flags(buf, end, main_flags, pageflag_names);
-> > +             append = true;
-> > +     }
-> > +
-> > +     /* Page flags from the fields area */
-> > +     for (i = 0; i < ARRAY_SIZE(pff); i++) {
-> > +             /* Skip undefined fields. */
-> > +             if (!pff[i].width)
-> > +                     continue;
-> > +
-> > +             /* Format: Flag Name + '=' (equals sign) + Number + '|' (separator) */
-> > +             if (append) {
-> > +                     if (buf < end)
-> > +                             *buf = '|';
-> > +                     buf++;
-> > +             }
-> > +
-> > +             buf = string(buf, end, pff[i].name, *pff[i].spec);
->
-> I have found one more small issue.
->
-> The purpose of the flag-specific printk_spec is to define the format
-> how the value is printed. The name of the flag should be printed
-> using default_str_spec.
->
-> It works because the string is printed as-is with both
-> default_dec_spec and default_flag_spec. But it would be better
-> to use the string format.
->
+--Sig_/J4JljfHDm2DxNyjnuVG9GN8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the explanation.
+Hi all,
 
-> > +             if (buf < end)
-> > +                     *buf = '=';
-> > +             buf++;
-> > +             buf = number(buf, end, (flags >> pff[i].shift) & pff[i].mask,
-> > +                          *pff[i].spec);
-> > +
-> > +             append = true;
-> > +     }
-> > +
-> > +     return buf;
-> > +}
->
-> Otherwise, the patch looks to me. The issue is cosmetic and might be
-> fixed either by re-spinning just this patch or by a followup patch.
+After merging the amdgpu tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-I will send a separate followup patch.
+In file included from include/linux/kernel.h:15,
+                 from include/linux/list.h:9,
+                 from include/linux/kprobes.h:21,
+                 from include/linux/kgdb.h:19,
+                 from drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:3=
+0,
+                 from drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services_=
+types.h:29,
+                 from drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgp=
+u_dm.c:29:
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'd=
+m_set_vblank':
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5465:38: error:=
+ 'flags' undeclared (first use in this function)
+ 5465 |  spin_lock_irqsave(&dm->vblank_lock, flags);
+      |                                      ^~~~~
+include/linux/typecheck.h:11:9: note: in definition of macro 'typecheck'
+   11 |  typeof(x) __dummy2; \
+      |         ^
+include/linux/spinlock.h:384:2: note: in expansion of macro 'raw_spin_lock_=
+irqsave'
+  384 |  raw_spin_lock_irqsave(spinlock_check(lock), flags); \
+      |  ^~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5465:2: note: i=
+n expansion of macro 'spin_lock_irqsave'
+ 5465 |  spin_lock_irqsave(&dm->vblank_lock, flags);
+      |  ^~~~~~~~~~~~~~~~~
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5465:38: note: =
+each undeclared identifier is reported only once for each function it appea=
+rs in
+ 5465 |  spin_lock_irqsave(&dm->vblank_lock, flags);
+      |                                      ^~~~~
+include/linux/typecheck.h:11:9: note: in definition of macro 'typecheck'
+   11 |  typeof(x) __dummy2; \
+      |         ^
+include/linux/spinlock.h:384:2: note: in expansion of macro 'raw_spin_lock_=
+irqsave'
+  384 |  raw_spin_lock_irqsave(spinlock_check(lock), flags); \
+      |  ^~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5465:2: note: i=
+n expansion of macro 'spin_lock_irqsave'
+ 5465 |  spin_lock_irqsave(&dm->vblank_lock, flags);
+      |  ^~~~~~~~~~~~~~~~~
+include/linux/typecheck.h:12:18: warning: comparison of distinct pointer ty=
+pes lacks a cast
+   12 |  (void)(&__dummy =3D=3D &__dummy2); \
+      |                  ^~
+include/linux/spinlock.h:251:3: note: in expansion of macro 'typecheck'
+  251 |   typecheck(unsigned long, flags); \
+      |   ^~~~~~~~~
+include/linux/spinlock.h:384:2: note: in expansion of macro 'raw_spin_lock_=
+irqsave'
+  384 |  raw_spin_lock_irqsave(spinlock_check(lock), flags); \
+      |  ^~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5465:2: note: i=
+n expansion of macro 'spin_lock_irqsave'
+ 5465 |  spin_lock_irqsave(&dm->vblank_lock, flags);
+      |  ^~~~~~~~~~~~~~~~~
+In file included from include/linux/rwsem.h:16,
+                 from include/linux/notifier.h:15,
+                 from include/linux/kprobes.h:22,
+                 from include/linux/kgdb.h:19,
+                 from drivers/gpu/drm/amd/amdgpu/../display/dc/os_types.h:3=
+0,
+                 from drivers/gpu/drm/amd/amdgpu/../display/dc/dm_services_=
+types.h:29,
+                 from drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgp=
+u_dm.c:29:
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5465:23: error:=
+ 'struct amdgpu_display_manager' has no member named 'vblank_lock'
+ 5465 |  spin_lock_irqsave(&dm->vblank_lock, flags);
+      |                       ^~
+include/linux/spinlock.h:252:34: note: in definition of macro 'raw_spin_loc=
+k_irqsave'
+  252 |   flags =3D _raw_spin_lock_irqsave(lock); \
+      |                                  ^~~~
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5465:2: note: i=
+n expansion of macro 'spin_lock_irqsave'
+ 5465 |  spin_lock_irqsave(&dm->vblank_lock, flags);
+      |  ^~~~~~~~~~~~~~~~~
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5466:6: error: =
+'struct amdgpu_display_manager' has no member named 'vblank_workqueue'; did=
+ you mean 'hdcp_workqueue'?
+ 5466 |  dm->vblank_workqueue->dm =3D dm;
+      |      ^~~~~~~~~~~~~~~~
+      |      hdcp_workqueue
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5467:6: error: =
+'struct amdgpu_display_manager' has no member named 'vblank_workqueue'; did=
+ you mean 'hdcp_workqueue'?
+ 5467 |  dm->vblank_workqueue->otg_inst =3D acrtc->otg_inst;
+      |      ^~~~~~~~~~~~~~~~
+      |      hdcp_workqueue
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5468:6: error: =
+'struct amdgpu_display_manager' has no member named 'vblank_workqueue'; did=
+ you mean 'hdcp_workqueue'?
+ 5468 |  dm->vblank_workqueue->enable =3D enable;
+      |      ^~~~~~~~~~~~~~~~
+      |      hdcp_workqueue
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5469:28: error:=
+ 'struct amdgpu_display_manager' has no member named 'vblank_lock'
+ 5469 |  spin_unlock_irqrestore(&dm->vblank_lock, flags);
+      |                            ^~
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5470:21: error:=
+ 'struct amdgpu_display_manager' has no member named 'vblank_workqueue'; di=
+d you mean 'hdcp_workqueue'?
+ 5470 |  schedule_work(&dm->vblank_workqueue->mall_work);
+      |                     ^~~~~~~~~~~~~~~~
+      |                     hdcp_workqueue
 
-> Either way, feel free to use:
->
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
->
+Caused by commit
 
-Thanks
+  9d99a805a9a0 ("drm/amd/display: Fix system hang after multiple hotplugs")
 
-> Another question where to push this change. It is pity the we
-> finalized it in the middle of the merge window. It has to spend
-> at least few days in linux-next.
->
-> I would like to hear from Andy before I push it into linux-next.
-> There is still theoretical chance to get it into 5.12 when Linus
-> prolongs the merge window by one week. it has been delayed by
-> a long lasting power outage.
->
-> Best Regards,
-> Petr
+I have used the amdgpu tree from next-20210222 for today.
 
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/J4JljfHDm2DxNyjnuVG9GN8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
--- 
-Thanks
-Yafang
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA0VkMACgkQAVBC80lX
+0GzGBQgAh6JW4WLVfPEQ2qlumlgo/Par5lG5la0csZs5INAz0GJf+trsvJyMToL+
+vNb3td3AsfsE3kHq/LHWJj0/TTt79CMhRhHJgMYKwbIewOunaK7UqEx2mb/616M3
+Q7hfNsrjxbINX1DUoZSkiXuWYT+qdc/KH7PEcOQR+7649T+USOla0Exo+3Ae5mzR
+g5yHyKZ43QsadGEb8ZOWzka7iIlsjF9epJDzFgSoNDyX0IahCfuNjbPViLwKsjeU
+1zdmdpgS56Y/KPJAR//pVTHG724F64q8WQSYeWT/Lf/IunOEwcMPxwjzoZXckTcE
+ItDboycnoa9y5tTz1Rvrz8amT0SraQ==
+=BANv
+-----END PGP SIGNATURE-----
+
+--Sig_/J4JljfHDm2DxNyjnuVG9GN8--
