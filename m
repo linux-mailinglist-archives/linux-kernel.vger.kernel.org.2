@@ -2,194 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07DC322B9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 14:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA436322BA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 14:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbhBWNnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 08:43:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27370 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232763AbhBWNnj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 08:43:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614087733;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4pyj+MDg3D0lSmS/jJmU1uY6ZedP+DGHmYasaylhky0=;
-        b=WxBw+iTYhdAWVvrUvwBH17o77P+CdypuIQ29kpM1OX/Ny3PwHb0iGAUXXVHldSJjZS0h2O
-        86MDajpa8BYK23wKpyrtZ4UIr2jtMvVG/AapWDD7lvsAU7QT6DwDI7pmHkX5svxqE6Mvqn
-        6nYpDtvbAM1cteuwmwjif/08K/ECMl0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-eJeQ-4O9PPCl3IEHZSfWKw-1; Tue, 23 Feb 2021 08:42:11 -0500
-X-MC-Unique: eJeQ-4O9PPCl3IEHZSfWKw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S231431AbhBWNqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 08:46:25 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:26226 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230166AbhBWNqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 08:46:23 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614087962; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=q+9rPbpfOFwFc2NgncWfqaEw2Cv1mL6rgZsV2hVae08=; b=ckvNR8m1VjXPhibN9lJS3AvfEyQZHaEpCPI8X/JyAqlclXTbcIbYkGor7n4bfE/BWqu5kmtU
+ oTL5WmKIZc8RyunLdTJGyW8uEJCeDW+8RaGjE7TwH/eqUgJZFbK75uD7C/KaycPhqWKs4cHK
+ Mg2llafyU5edgpP8kqS+JY2WAQw=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 603506f5090a774287f6c963 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Feb 2021 13:45:25
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AC64CC43466; Tue, 23 Feb 2021 13:45:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.29.110] (unknown [49.37.158.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02C8680403A;
-        Tue, 23 Feb 2021 13:42:10 +0000 (UTC)
-Received: from bnemeth.users.ipa.redhat.com (ovpn-112-72.ams2.redhat.com [10.36.112.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A65319C46;
-        Tue, 23 Feb 2021 13:42:05 +0000 (UTC)
-Message-ID: <1bcc8d88b4cb7ad5610a045fc013127d3055b0d8.camel@redhat.com>
-Subject: Re: [PATCH] net: check if protocol extracted by
- virtio_net_hdr_set_proto is correct
-From:   Balazs Nemeth <bnemeth@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        virtualization@lists.linux-foundation.org
-Date:   Tue, 23 Feb 2021 14:42:04 +0100
-In-Reply-To: <8168e98e-d608-750a-9b49-b1e60a23714c@redhat.com>
-References: <5e910d11a14da17c41317417fc41d3a9d472c6e7.1613659844.git.bnemeth@redhat.com>
-         <CA+FuTSe7srSBnAmFNFBFkDrLmPL5XtxhbXEs1mBytUBuuym2fg@mail.gmail.com>
-         <2cc06597-8005-7be8-4094-b20f525afde8@redhat.com>
-         <CA+FuTSf2GCi+RzpkFeBgtSOyhjsBFfApjekzupHLfyeYDn-JYQ@mail.gmail.com>
-         <8168e98e-d608-750a-9b49-b1e60a23714c@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B11B5C433C6;
+        Tue, 23 Feb 2021 13:45:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B11B5C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+Subject: Re: [PATCH RFC 0/1] mm: balancing the node zones occupancy
+To:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
+        rientjes@google.com, mhocko@suse.com, david@redhat.com,
+        mgorman@techsingularity.net, linux-mm@kvack.org
+Cc:     vinmenon@codeaurora.org, sudaraja@codeaurora.org,
+        linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>
+References: <cover.1613661472.git.charante@codeaurora.org>
+ <1c445421-ddeb-8768-03d0-81537b0d1875@suse.cz>
+From:   Charan Teja Kalla <charante@codeaurora.org>
+Message-ID: <ee78c83d-da9b-f6d1-4f66-934b7782acfb@codeaurora.org>
+Date:   Tue, 23 Feb 2021 19:15:19 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <1c445421-ddeb-8768-03d0-81537b0d1875@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-22 at 11:39 +0800, Jason Wang wrote:
+Thanks Vlastimil for the review comments!!
+
+On 2/19/2021 4:56 PM, Vlastimil Babka wrote:
+> Can you share the use case for doing this? If it's to replace a failed RAM, then
+> it's probably extremely rare, right.
 > 
-> On 2021/2/19 10:55 下午, Willem de Bruijn wrote:
-> > On Fri, Feb 19, 2021 at 3:53 AM Jason Wang <jasowang@redhat.com>
-> > wrote:
-> > > 
-> > > On 2021/2/18 11:50 下午, Willem de Bruijn wrote:
-> > > > On Thu, Feb 18, 2021 at 10:01 AM Balazs Nemeth <
-> > > > bnemeth@redhat.com> wrote:
-> > > > > For gso packets, virtio_net_hdr_set_proto sets the protocol
-> > > > > (if it isn't
-> > > > > set) based on the type in the virtio net hdr, but the skb
-> > > > > could contain
-> > > > > anything since it could come from packet_snd through a raw
-> > > > > socket. If
-> > > > > there is a mismatch between what virtio_net_hdr_set_proto
-> > > > > sets and
-> > > > > the actual protocol, then the skb could be handled
-> > > > > incorrectly later
-> > > > > on by gso.
-> > > > > 
-> > > > > The network header of gso packets starts at 14 bytes, but a
-> > > > > specially
-> > > > > crafted packet could fool the call to
-> > > > > skb_flow_dissect_flow_keys_basic
-> > > > > as the network header offset in the skb could be incorrect.
-> > > > > Consequently, EINVAL is not returned.
-> > > > > 
-> > > > > There are even packets that can cause an infinite loop. For
-> > > > > example, a
-> > > > > packet with ethernet type ETH_P_MPLS_UC (which is unnoticed
-> > > > > by
-> > > > > virtio_net_hdr_to_skb) that is sent to a geneve interface
-> > > > > will be
-> > > > > handled by geneve_build_skb. In turn, it calls
-> > > > > udp_tunnel_handle_offloads which then calls
-> > > > > skb_reset_inner_headers.
-> > > > > After that, the packet gets passed to mpls_gso_segment. That
-> > > > > function
-> > > > > calculates the mpls header length by taking the difference
-> > > > > between
-> > > > > network_header and inner_network_header. Since the two are
-> > > > > equal
-> > > > > (due to the earlier call to skb_reset_inner_headers), it will
-> > > > > calculate
-> > > > > a header of length 0, and it will not pull any headers. Then,
-> > > > > it will
-> > > > > call skb_mac_gso_segment which will again call
-> > > > > mpls_gso_segment, etc...
-> > > > > This leads to the infinite loop.
-> > > 
-> > > I remember kernel will validate dodgy gso packets in gso ops. I
-> > > wonder
-> > > why not do the check there? The reason is that virtio/TUN is not
-> > > the
-> > > only source for those packets.
-> > It is? All other GSO packets are generated by the stack itself,
-> > either
-> > locally or through GRO.
-> 
-> 
-> Something like what has been done in tcp_tso_segment()?
-> 
->      if (skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST)) {
->                  /* Packet is from an untrusted source, reset
-> gso_segs. */
-> 
->          skb_shinfo(skb)->gso_segs = DIV_ROUND_UP(skb->len, mss);
-> 
->          segs = NULL;
->                  goto out;
->          }
-> 
-> My understanding of the header check logic is that it tries to dealy
-> the 
-> check as much as possible, so for device that has GRO_ROBUST, there's
-> even no need to do that.
-> 
-> 
-> > 
-> > But indeed some checks are better performed in the GSO layer. Such
-> > as
-> > likely the 0-byte mpls header length.
-> > 
-> > If we cannot trust virtio_net_hdr.gso_type passed from userspace,
-> > then
-> > we can also not trust the eth.h_proto coming from the same source.
-> 
-> 
-> I agree.
-> 
-I'll add a check in the GSO layer as well. 
-> 
-> > But
-> > it makes sense to require them to be consistent. There is a
-> > dev_parse_header_protocol that may return the link layer type in a
-> > more generic fashion than casting to skb_eth_hdr.
-> > 
-> > Question remains what to do for the link layer types that do not
-> > implement
-> > header_ops->parse_protocol, and so we cannot validate the packet's
-> > network protocol. Drop will cause false positives, accepts will
-> > leave a
-> > potential path, just closes it for Ethernet.
-> > 
-> > This might call for multiple fixes, both on first ingest and inside
-> > the stack?
-> 
-Given that this is related to dodgy packets and that we can't trust
-eth.h_proto, wouldn't it make sense to always drop packets (with
-potential false positives), erring on the side of caution, if
-header_ops->parse_protocol isn't implemented for the dev in question?
-> 
-> It's a balance between performance and security. Ideally, it looks to
-> me 
-> the GSO codes should not assume the header of dodgy packet is correct
-> which means it must validate them before using them. I'm not sure if
-> it 
-> needs a lot of changes or not.
-> 
-> For security reason, it's better to do a strict check during first 
-> ingest. But it bascially suppress the meaning of NETIF_F_GSO_ROBUST 
-> somehow. And it needs some benchmark to see if it can cause obvious 
-> performance regression.
-> 
-> Thanks
-> 
-> 
-> > 
+>> We have the proof-of-concept code tried on the Snapdragon systems with
+>> the system configuration, single memory node of just 2 zones, 6GB normal
+>> zone and 2GB movable zone. And this Movable zone is such that hot-added
+>> once and there after offline/online based on the need.
+> Hm, snapdragon... so is this some kind of power saving thing?
 > 
 
+You are correct. This is the power saving usecase which does the offline
+and online of the memory blocks in the system by the user. This is not a
+failed RAM.
 
+> Anyway, shouln't auto NUMA balancing help here, and especially "Migrate Pages in
+> lieu of discard" (CC'd Dave) as a generic mechanism, 
+
+On the Snapdragon systems we have got only single memory node with
+Normal and movable zones. And my little understanding is that on most
+embedded systems we will just have single memory node.
+
+My limited understanding about this auto NUMA balancing is that there
+should be min. 2 nodes for this balancing to trigger. Please correct if
+I am wrong here. If I am correct then this approach is not suitable for
+us. Moreover the idea I would like to convey in this RFC patch is about
+__balancing the zones in a node but not across NUMA nodes__.
+
+> so we wouldn't need to have hotplug-specific actions?
+David has told a very simple view of this problem which is nothing todo
+with the hotplug specific actions.
+
+With just 2 zones(Normal and Movable) in a single node in the system,
+
+1. Application 1 allocates a lot of memory and gets ZONE_MOVABLE.
+2. Application 2 allocates a lot of memory and gets ZONE_NORMAL.
+3. Application 1 quits.
+
+Then after step3, we can expect a lot free memory in the Movable zone
+but normal zone is under pressure. Applying the similar semantics of
+Auto numa balancing("Migrate pages in lieu of swap/discard"), we could
+migrate some eligible pages of Application 2 to Movable zone there by
+can relieve some pressure in Normal zone.
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+Forum, a Linux Foundation Collaborative Project
