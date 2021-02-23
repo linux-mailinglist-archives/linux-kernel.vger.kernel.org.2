@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780EF32296D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A8A322970
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhBWLU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 06:20:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231591AbhBWLUw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:20:52 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A241C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 03:20:07 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:254f:253d:debc:790b])
-        by xavier.telenet-ops.be with bizsmtp
-        id YbL52400V1v7dkx01bL55Y; Tue, 23 Feb 2021 12:20:06 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lEVjZ-0011vc-9r; Tue, 23 Feb 2021 12:20:05 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lEVjY-009KOx-Sv; Tue, 23 Feb 2021 12:20:04 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] net: dsa: sja1105: Remove unneeded cast in sja1105_crc32()
-Date:   Tue, 23 Feb 2021 12:20:03 +0100
-Message-Id: <20210223112003.2223332-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S232210AbhBWLYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 06:24:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231591AbhBWLYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 06:24:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DA6E64E58;
+        Tue, 23 Feb 2021 11:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614079439;
+        bh=7dt3WFcKWgMb17C1fabScSgpfGbLICDn6coc0lLO/Ko=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=y/IR/5jEBIqIMCL6h+smpsP71zMAAcNMreRaGQbwiQCsDmPtjxIgwzUCQ27Uk1TGh
+         iV79xVfcA3nUiHJwMY5D9DnQk79pmyn7MiuE8/KxpE/7rTC12Kz3dphj/uYD5qGCTG
+         xInK+LQa/ed6GdbFmjUP+aw70PNWmLApzWQ5UUOA=
+Date:   Tue, 23 Feb 2021 12:23:55 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     dingsenjie@163.com
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dingsenjie <dingsenjie@yulong.com>
+Subject: Re: [PATCH] tty/serial:Remove superfluous "breaks"
+Message-ID: <YDTly/pUCjsgVpDG@kroah.com>
+References: <20210223080630.44644-1-dingsenjie@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223080630.44644-1-dingsenjie@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sja1105_unpack() takes a "const void *buf" as its first parameter, so
-there is no need to cast away the "const" of the "buf" variable before
-calling it.
+On Tue, Feb 23, 2021 at 04:06:30PM +0800, dingsenjie@163.com wrote:
+> From: dingsenjie <dingsenjie@yulong.com>
+> 
+> Remove superfluous "breaks", as there is a "return" before them.
+> 
+> Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+> ---
+>  drivers/tty/serial/imx.c | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+> index 425624d..6c1c31a 100644
+> --- a/drivers/tty/serial/imx.c
+> +++ b/drivers/tty/serial/imx.c
+> @@ -300,7 +300,6 @@ static u32 imx_uart_readl(struct imx_port *sport, u32 offset)
+>  	switch (offset) {
+>  	case UCR1:
+>  		return sport->ucr1;
+> -		break;
+>  	case UCR2:
+>  		/*
+>  		 * UCR2_SRST is the only bit in the cached registers that might
+> @@ -311,16 +310,12 @@ static u32 imx_uart_readl(struct imx_port *sport, u32 offset)
+>  		if (!(sport->ucr2 & UCR2_SRST))
+>  			sport->ucr2 = readl(sport->port.membase + offset);
+>  		return sport->ucr2;
+> -		break;
+>  	case UCR3:
+>  		return sport->ucr3;
+> -		break;
+>  	case UCR4:
+>  		return sport->ucr4;
+> -		break;
+>  	case UFCR:
+>  		return sport->ufcr;
+> -		break;
+>  	default:
+>  		return readl(sport->port.membase + offset);
+>  	}
+> -- 
+> 1.9.1
+> 
 
-Drop the cast, as it prevents the compiler performing some checks.
+Hi,
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Compile-tested only.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-BTW, sja1105_packing() and packing() are really bad APIs, as the input
-pointer parameters cannot be const due to the direction depending on
-"op".  This means the compiler cannot do const checks.  Worse, callers
-are required to cast away constness to prevent the compiler from
-issueing warnings.  Please don't do this!
----
- drivers/net/dsa/sja1105/sja1105_static_config.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-diff --git a/drivers/net/dsa/sja1105/sja1105_static_config.c b/drivers/net/dsa/sja1105/sja1105_static_config.c
-index 139b7b4fbd0d5252..a8efb7fac3955307 100644
---- a/drivers/net/dsa/sja1105/sja1105_static_config.c
-+++ b/drivers/net/dsa/sja1105/sja1105_static_config.c
-@@ -85,7 +85,7 @@ u32 sja1105_crc32(const void *buf, size_t len)
- 	/* seed */
- 	crc = ~0;
- 	for (i = 0; i < len; i += 4) {
--		sja1105_unpack((void *)buf + i, &word, 31, 0, 4);
-+		sja1105_unpack(buf + i, &word, 31, 0, 4);
- 		crc = crc32_le(crc, (u8 *)&word, 4);
- 	}
- 	return ~crc;
--- 
-2.25.1
+- It looks like you did not use your "real" name for the patch on either
+  the Signed-off-by: line, or the From: line (both of which have to
+  match).  Please read the kernel file, Documentation/SubmittingPatches
+  for how to do this correctly.
 
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
