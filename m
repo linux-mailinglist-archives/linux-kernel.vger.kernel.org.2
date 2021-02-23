@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1E3322D99
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B88E1322DA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhBWPed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:34:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
+        id S233022AbhBWPge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:36:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232307AbhBWPea (ORCPT
+        with ESMTP id S232931AbhBWPgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 10:34:30 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E97C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:33:49 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id s16so10032025plr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:33:49 -0800 (PST)
+        Tue, 23 Feb 2021 10:36:31 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1BAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:35:49 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id gm18so2057307pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:35:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amacapital-net.20150623.gappssmtp.com; s=20150623;
         h=content-transfer-encoding:from:mime-version:subject:date:message-id
          :references:cc:in-reply-to:to;
-        bh=S1+694tF7E6JOAf32EqgTXj/ubixpJ18hXdr8aPWDgI=;
-        b=ngI0rU01hqa40qg2u4VlRUqm7wgIOZH9Lo+aTRNgzkK1of1tdZYDsLDeM3bnImibnp
-         1i/0USARwUi98V6w1t1REkAkyscY8CtbG6D13TkF4Aq1YoRYzalAzBe/6tuySpb41ZBZ
-         MArEOMogQRMgVIgfD7EPHqJVo1YMTyltkKXMlnpRhSzfa10s2YM2AlxIiM3OvMzTKFT3
-         UU3ROBZ/1pWcAKZhdK4AeN7Ubo6z4W/hqW+tMs1XEzLk+l8XoTglqEbFaVV3FvPXYeTM
-         QHo4xkQfOZ0k2ZXsVFH6cU2hSf2YovEtg5Nz7y4mIqvz3T/09pUhzL30+00ayJcHXwKA
-         35hw==
+        bh=BnLhbV4q8sdnFkZjnko1LKGxrL0kXwy4HCD3zJOfD4k=;
+        b=e1aOH4lowSAqlV7nJxM5AJOOrXdop1pnqlXYB6/tmt2DOmu9BDsYecM5EQi8qOHgD+
+         G1ZGGTakAqN8i4Zq4zsfB0xoh3Sj7o2GCaqOsnj9rHhrXE8ztr2Z5lMK/YZIluQWJuo1
+         aqJhSjEM8IcSgnX6iF8Hq1qIUetFL+So604VONxxvHi7tOMeywsh9jIUifeGI1HBIWb4
+         bXfqK/b4+cHyGlROe5xlRNlud8+B8enGZaBlckVQte2t9Vh8EKjNTbNf6/MIa5weonC7
+         d/WHaHEfyJpuE6uZ1XP+AT/yae7AyLCASwamMLTaE27Pio0ZnwLlxDmTIPKSSi9CoOz8
+         Dwuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:content-transfer-encoding:from:mime-version
          :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=S1+694tF7E6JOAf32EqgTXj/ubixpJ18hXdr8aPWDgI=;
-        b=Qk1fOj74tBxCchmxcSXBBhNGpObni7lOCRrucY6EWA6UWfm7S7aQrKUvLZcH9lyZqS
-         Cbtwsj/UFuiUWZw/9FnLY/aeqAvs6ss/YFcLdWq1RtY8FMq4o/2+gZUvSnYbukKBphhq
-         UCGpAg5eXx52FN/fPIk19I2URVtp44e4blFGLHT4bSnHK+Zl2nJdcjx8q2Q/69SEJgvu
-         56KQSO9DZ2o2cCt0plQEHOfRZ3cieoxc7xQY60mhdZ0F9EylQkZE94GwrD6r00qLEtxK
-         kPZ8fwLUVel8g9Ge+2cLTUcW2o6NxSiupWrdQej1hG8hnjYKn6UDv7LKyDMFyFQWq/Ke
-         b1vQ==
-X-Gm-Message-State: AOAM533r2IuEtUymDJHZuvHcxp6p/NiK9TnH/kxYYOGz8HAFP/HY5Vda
-        pu/iKDzHoDhMui4O2oFUZV1UwQ==
-X-Google-Smtp-Source: ABdhPJzoRKhmfzQGuTbH5ITlI5Le0B+bcvxH1DrTPvM8crTJxrwekIakZjx/PditZmlrkpz5AeZJVQ==
-X-Received: by 2002:a17:90a:b292:: with SMTP id c18mr29248288pjr.134.1614094428836;
-        Tue, 23 Feb 2021 07:33:48 -0800 (PST)
+        bh=BnLhbV4q8sdnFkZjnko1LKGxrL0kXwy4HCD3zJOfD4k=;
+        b=hM0sk3p06KLJ95NxCVZCv+Z+NFJcAS/NtIYbZ012j8fUpWQB1b7ANo6FoOOQx3fzbs
+         kKVvrDg+DMhrxlPNkq4ZCnAVbc4K6z7v6aAfdelisxsy+XrkxGZhNBKeBhBY6H+PUU54
+         zvydwRnRxSC3XBnskmrYlSgykXLPb7daJH1agKAxvNrJgpYGa2OGDQ5jr1Xc4bPar3u3
+         Td+pDmD+Ykl8xQ4OL+lIE+W0taLjCZ+Oq1EOtEebd7+phbZGj+/GqXsaAQnFSurAIP9v
+         lXQdkA2yqYyFf4vtQihmMD/POhmUSE+CxyH8xJ53etOG8r2VJIXMmmK4qTHUKQXKiOP3
+         ErpQ==
+X-Gm-Message-State: AOAM533Nam5QMs/uI9EWfqiTP9ohmgxCxTEZo39vR3rxLT8F0riJGV3U
+        sAJ777cFV0FFZ8o6Mgiu6hEulA==
+X-Google-Smtp-Source: ABdhPJyOjf5KjBka3sjuuTJblzjYJPNhq3qQWCL4Ka/HLlJMZ5H6zRe97rFfZcGYUueSudAaVChZlA==
+X-Received: by 2002:a17:90a:1a16:: with SMTP id 22mr30322559pjk.34.1614094549345;
+        Tue, 23 Feb 2021 07:35:49 -0800 (PST)
 Received: from ?IPv6:2601:646:c200:1ef2:2488:1c5a:27b:935? ([2601:646:c200:1ef2:2488:1c5a:27b:935])
-        by smtp.gmail.com with ESMTPSA id 3sm21357516pfd.45.2021.02.23.07.33.47
+        by smtp.gmail.com with ESMTPSA id t18sm683718pjs.6.2021.02.23.07.35.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 07:33:47 -0800 (PST)
+        Tue, 23 Feb 2021 07:35:48 -0800 (PST)
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 From:   Andy Lutomirski <luto@amacapital.net>
 Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for hwpoison page access.
-Date:   Tue, 23 Feb 2021 07:33:46 -0800
-Message-Id: <788DFBA0-903F-4548-9C2F-B1A1543EE770@amacapital.net>
-References: <20210223204436.1df73153@alex-virtual-machine>
-Cc:     =?utf-8?Q?
-         "HORIGUCHI_NAOYA=28=E5=A0=80=E5=8F=A3=E3=80=80=E7=9B=B4?=
-        =?utf-8?Q?=E4=B9=9F=29" ?= <naoya.horiguchi@nec.com>,
-        tony.luck@intel.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        yangfeng1@kingsoft.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210223204436.1df73153@alex-virtual-machine>
-To:     Aili Yao <yaoaili@kingsoft.com>
+Subject: Re: [PATCH 2/3] x86/entry: Fix entry/exit mismatch on failed fast 32-bit syscalls
+Date:   Tue, 23 Feb 2021 07:35:47 -0800
+Message-Id: <AA835AD1-31C1-4C8A-AEFF-F0D1DD2C834C@amacapital.net>
+References: <YDTm8Q/cvBcfzhPn@hirez.programming.kicks-ass.net>
+Cc:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+In-Reply-To: <YDTm8Q/cvBcfzhPn@hirez.programming.kicks-ass.net>
+To:     Peter Zijlstra <peterz@infradead.org>
 X-Mailer: iPhone Mail (18D52)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> On Feb 23, 2021, at 4:44 AM, Aili Yao <yaoaili@kingsoft.com> wrote:
+
+> On Feb 23, 2021, at 3:29 AM, Peter Zijlstra <peterz@infradead.org> wrote:
 >=20
-> =EF=BB=BFOn Fri, 5 Feb 2021 17:01:35 +0800
-> Aili Yao <yaoaili@kingsoft.com> wrote:
->=20
->> When one page is already hwpoisoned by MCE AO action, processes may not
->> be killed, processes mapping this page may make a syscall include this
->> page and result to trigger a VM_FAULT_HWPOISON fault, as it's in kernel
->> mode it may be fixed by fixup_exception, current code will just return
->> error code to user code.
+> =EF=BB=BFOn Mon, Feb 22, 2021 at 09:50:28PM -0800, Andy Lutomirski wrote:
+>> On a 32-bit fast syscall that fails to read its arguments from user
+>> memory, the kernel currently does syscall exit work but not
+>> syscall exit work.  This would confuse audit and ptrace.
 >>=20
->> This is not sufficient, we should send a SIGBUS to the process and log
->> the info to console, as we can't trust the process will handle the error
->> correctly.
+>> This is a minimal fix intended for ease of backporting.  A more
+>> complete cleanup is coming.
 >>=20
->> Suggested-by: Feng Yang <yangfeng1@kingsoft.com>
->> Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+>> Cc: stable@vger.kernel.org
+>> Fixes: 0b085e68f407 ("x86/entry: Consolidate 32/64 bit syscall entry")
+>> Signed-off-by: Andy Lutomirski <luto@kernel.org>
 >> ---
->> arch/x86/mm/fault.c | 62 +++++++++++++++++++++++++++++----------------
->> 1 file changed, 40 insertions(+), 22 deletions(-)
+>> arch/x86/entry/common.c | 3 ++-
+>> 1 file changed, 2 insertions(+), 1 deletion(-)
 >>=20
-> Hi luto;
->  Is there any feedback?
-
-At the very least, this needs a clear explanation of why your proposed behav=
-ior is better than the existing behavior.
-
+>> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+>> index 0904f5676e4d..cf4dcf346ca8 100644
+>> --- a/arch/x86/entry/common.c
+>> +++ b/arch/x86/entry/common.c
+>> @@ -128,7 +128,8 @@ static noinstr bool __do_fast_syscall_32(struct pt_re=
+gs *regs)
+>>        regs->ax =3D -EFAULT;
+>>=20
+>>        instrumentation_end();
+>> -        syscall_exit_to_user_mode(regs);
+>> +        local_irq_disable();
+>> +        exit_to_user_mode();
+>>        return false;
+>>    }
 >=20
-> Thanks
-> Aili Yao
+> I'm confused, twice. Once by your Changelog, and second by the actual
+> patch. Shouldn't every return to userspace pass through
+> exit_to_user_mode_prepare() ? We shouldn't ignore NEED_RESCHED or
+> NOTIFY_RESUME, both of which can be set I think, even if the SYSCALL
+> didn't actually do anything.
+
+
+Aaaaahhhhhh!  There are too many of these functions. I=E2=80=99ll poke aroun=
+d. I=E2=80=99ll also try to figure out why I didn=E2=80=99t catch this in te=
+sting.=
