@@ -2,77 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603ED322CD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD512322CDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbhBWOvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:51:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232594AbhBWOuc (ORCPT
+        id S232695AbhBWOwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:52:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43551 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231995AbhBWOvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:50:32 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD59FC061786;
-        Tue, 23 Feb 2021 06:49:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=xaG2XnjEAwC4M07KJBi3PgFXfaTqupRbx3G9e9s1FeY=; b=E/QMLfDmUfV2jMzZ8VVexuOQMc
-        mEHrlLj2nUZIRlV+ooE9RpEy/topEzz45PJXZ9a6GIEsWqzknz47U5LZ8eF7+2DC1a0ETz3NbStmT
-        I50Ptd1+YOhlz6jsJlLFWm4IUBGf8VkeNU5JRCeKLkC147ph7t213e3tjaEIQJqy7CBk=;
-Received: from p200300ccff188c001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff18:8c00:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1lEZ0V-0003Xb-15; Tue, 23 Feb 2021 15:49:47 +0100
-Date:   Tue, 23 Feb 2021 15:49:46 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Dan Murphy <dmurphy@ti.com>,
-        Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] power: supply: bq27xxx: fix sign of current_now for
- newer ICs
-Message-ID: <20210223154946.1ef58514@aktux>
-In-Reply-To: <20210223141122.9574-1-matthias.schiffer@ew.tq-group.com>
-References: <20210223141122.9574-1-matthias.schiffer@ew.tq-group.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 23 Feb 2021 09:51:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614091823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M2OsuZx3r6NZflw0QWxaOyg4KYFKBmW4S9BSyB7K63o=;
+        b=fnK7QAP1RubFCwBLd5AtfUm/V/5tl+0PEcAngJSoi9HU1OG2t/YUcTtz1OWEaHa2XcJVpD
+        dNCgs5zn4tistOgsgjGxseDJamXOp6vxdRKR+WXPpqEUNXi8SRG9x8/+2CX7tKRILVTP8Y
+        wQsRvGhZK/diNArU/VzTG/OH4qfRTu0=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-8raEOUfJOa2r56sT9_hoQw-1; Tue, 23 Feb 2021 09:50:21 -0500
+X-MC-Unique: 8raEOUfJOa2r56sT9_hoQw-1
+Received: by mail-wr1-f69.google.com with SMTP id k5so2396444wrw.14
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:50:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M2OsuZx3r6NZflw0QWxaOyg4KYFKBmW4S9BSyB7K63o=;
+        b=R1kmr0ooU8YX5eyoI6Gi3BtUYA89yMDVknGKlBxhhCRBROfJPbPZPIC3rkPviuyDiU
+         0VAAqc7/wu8ZVTk6xvzTzHjFnWH+Wt8LvT5Ic44Z/gDPlmfkWkniETD7L5CFp5VWLmgt
+         HFwmkSo7Tu5D9TAt8W+5GEDA2/5X4aPLt0DA1Jq4hsJYKZIZi8u6CE4qDnOqMRcHrCVy
+         m39pRZDU9X6hBTyDrF5qDyuhOuwlge4tyVLOovlkhRJm6ix2Gy9VRjvu5EB4qehoqx16
+         2uOlZfGu8zvMQ/9QRgVIX4t5c2ZDWMJfSrSg2IqjD1cW0SqUWrtzmx05S8tkm5vPeA1b
+         kemA==
+X-Gm-Message-State: AOAM533Ex2RMNKItA3DMoO1OzXP9WAEiG8iUgpUh48GlnIMWZ/63aMMR
+        w58vpLH2Oqo6Rhim/JKOX180RK5ZUF1GlbubOr2ZcU6nT/sNO8536cj9tCLgrfbmJa1KkjhYKsv
+        81hAaIElIAACRjgf4ltn/PRUo
+X-Received: by 2002:a1c:98c2:: with SMTP id a185mr9344410wme.72.1614091819958;
+        Tue, 23 Feb 2021 06:50:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz9tKk0w/iRNRhb7cnm0SfH7twj8rmJO83bREpU9MxKNF6QINjG5A2hMiz9ZZMxEqXDfAr0og==
+X-Received: by 2002:a1c:98c2:: with SMTP id a185mr9344394wme.72.1614091819741;
+        Tue, 23 Feb 2021 06:50:19 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id o15sm2891607wmh.39.2021.02.23.06.50.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 06:50:19 -0800 (PST)
+Date:   Tue, 23 Feb 2021 15:50:16 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v5 00/19] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210223145016.ddavx6fihq4akdim@steredhat>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210222142311.gekdd7gsm33wglos@steredhat>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0 (-)
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210222142311.gekdd7gsm33wglos@steredhat>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 15:11:20 +0100
-Matthias Schiffer <matthias.schiffer@ew.tq-group.com> wrote:
+On Mon, Feb 22, 2021 at 03:23:11PM +0100, Stefano Garzarella wrote:
+>Hi Arseny,
+>
+>On Thu, Feb 18, 2021 at 08:33:44AM +0300, Arseny Krasnov wrote:
+>>	This patchset impelements support of SOCK_SEQPACKET for virtio
+>>transport.
+>>	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>>do it, two new packet operations were added: first for start of record
+>>and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
+>>both operations carries metadata - to maintain boundaries and payload
+>>integrity. Metadata is introduced by adding special header with two
+>>fields - message count and message length:
+>>
+>>	struct virtio_vsock_seq_hdr {
+>>		__le32  msg_cnt;
+>>		__le32  msg_len;
+>>	} __attribute__((packed));
+>>
+>>	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
+>>packets(buffer of second virtio descriptor in chain) in the same way as
+>>data transmitted in RW packets. Payload was chosen as buffer for this
+>>header to avoid touching first virtio buffer which carries header of
+>>packet, because someone could check that size of this buffer is equal
+>>to size of packet header. To send record, packet with start marker is
+>>sent first(it's header contains length of record and counter), then
+>>counter is incremented and all data is sent as usual 'RW' packets and
+>>finally SEQ_END is sent(it also carries counter of message, which is
+>>counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
+>>incremented again. On receiver's side, length of record is known from
+>>packet with start record marker. To check that no packets were dropped
+>>by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
+>>checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
+>>1) and length of data between two markers is compared to length in
+>>SEQ_BEGIN header.
+>>	Now as  packets of one socket are not reordered neither on
+>>vsock nor on vhost transport layers, such markers allows to restore
+>>original record on receiver's side. If user's buffer is smaller that
+>>record length, when all out of size data is dropped.
+>>	Maximum length of datagram is not limited as in stream socket,
+>>because same credit logic is used. Difference with stream socket is
+>>that user is not woken up until whole record is received or error
+>>occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>>	Tests also implemented.
+>
+>I reviewed the first part (af_vsock.c changes), tomorrow I'll review 
+>the rest. That part looks great to me, only found a few minor issues.
 
-> Commit cd060b4d0868 ("power: supply: bq27xxx: fix polarity of current_now")
-> changed the sign of current_now for all bq27xxx variants, but on BQ28Z610
-> I'm now seeing negated values *with* that patch.
-> 
-> The GTA04/Openmoko device that was used for testing uses a BQ27000 or
-> BQ27010 IC, so I assume only the BQ27XXX_O_ZERO code path was incorrect.
-> Revert the behaviour for newer ICs.
-> 
-> Fixes: cd060b4d0868 "power: supply: bq27xxx: fix polarity of current_now"
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> ---
-> 
-> @Andreas Kemnade: It would be great to get a confirmation that the
-> Openmoko battery indeed uses BQ27000/BQ27010 - I was having some trouble
-> finding that information.
-> 
-I can confirm that.
-here is the corresponding schematic:
+I revieiwed the rest of it as well, left a few minor comments, but I 
+think we're well on track.
 
-http://people.openmoko.org/tony_tu/GTA02/hardware/GTA02/CT-GTA02.pdf
+I'll take a better look at the specification patch tomorrow.
 
-Regards,
-Andreas
+Thanks,
+Stefano
+
+>
+>In the meantime, however, I'm getting a doubt, especially with regard 
+>to other transports besides virtio.
+>
+>Should we hide the begin/end marker sending in the transport?
+>
+>I mean, should the transport just provide a seqpacket_enqueue() 
+>callbacl?
+>Inside it then the transport will send the markers. This is because 
+>some transports might not need to send markers.
+>
+>But thinking about it more, they could actually implement stubs for 
+>that calls, if they don't need to send markers.
+>
+>So I think for now it's fine since it allows us to reuse a lot of 
+>code, unless someone has some objection.
+>
+>Thanks,
+>Stefano
+>
+
