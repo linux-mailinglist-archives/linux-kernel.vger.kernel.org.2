@@ -2,83 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED470322468
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 04:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 399DA32247A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 04:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhBWDBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 22:01:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47618 "EHLO mail.kernel.org"
+        id S231259AbhBWDIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 22:08:12 -0500
+Received: from mga18.intel.com ([134.134.136.126]:39519 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231269AbhBWDBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 22:01:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51DC964E02;
-        Tue, 23 Feb 2021 03:00:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614049255;
-        bh=BM/BvExdZ320QdnWiPWhfUx9Hg67oT8NMu4OlXcckE4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rH8uD2MFNp90oPzOuaCzuyHDv9shc2sXfYAkDUWQMWfDEJ5rHUDt5mdkwFfnIwHqz
-         gZcAjeWgk0H+lf0Dj2VgfJxrTJ+htkPknjBWT6b6pIznAm4z62kghxL9Bdgu4Ug8LR
-         NXGe5PQR3i4aodt6g+ArlS1WYVkIMBGwc5gHth20UwqrV7+QkoSk0Q+WNQfPwWFWC+
-         8PbZdpn75VRaR/h0uMSX76sPcObmTMYe3sqbRU8gnPYsftgKbMZXp4aGDIK+r1yT+H
-         KEctsc8krqeAbIwHS+uWFlQEHVE758iW1/tWaEdK2k/aBj1HJoaA/69m5mHX1IZZ8t
-         rTXrKGQuex3mw==
-Date:   Mon, 22 Feb 2021 19:00:51 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH 1/1] net: fec: ptp: avoid register access when ipg clock
- is disabled
-Message-ID: <20210222190051.40fdc3e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210220065654.25598-1-heiko.thiery@gmail.com>
-References: <20210220065654.25598-1-heiko.thiery@gmail.com>
+        id S230371AbhBWDIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 22:08:06 -0500
+IronPort-SDR: I8wXa8ArozbdbxPwY53kk5faNHIMnlQrp+QCWQlkM0D78onUvC1p8l3h/a6rnRWCSvriJcCtGM
+ NiAqvaiBEibw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="172328668"
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
+   d="scan'208";a="172328668"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 19:06:20 -0800
+IronPort-SDR: /6nIHWVZ2rpqTZY1ehs80a1kmL2cWW/xE31i8LO+JI9Cxx8taUxDi58kqjnss8+AUxM1dUD9GM
+ PXRmw2W6g5eQ==
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
+   d="scan'208";a="402919857"
+Received: from unknown (HELO [10.238.130.200]) ([10.238.130.200])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 19:06:16 -0800
+Subject: Re: [PATCH v1] kvm: x86: Revise guest_fpu xcomp_bv field
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, pbonzini@redhat.com,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210208161659.63020-1-jing2.liu@linux.intel.com>
+ <4e4b37d1-e2f8-6757-003c-d19ae8184088@intel.com>
+ <YCFzztFESzcnKRqQ@google.com>
+ <c33335d3-abbe-04e0-2fa1-47f57ad154ac@linux.intel.com>
+ <YDPWn70DTA64psQb@google.com>
+From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
+Message-ID: <9d23ae5b-9b85-88d7-a2d7-44fd75a068b9@linux.intel.com>
+Date:   Tue, 23 Feb 2021 11:06:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YDPWn70DTA64psQb@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Feb 2021 07:56:55 +0100 Heiko Thiery wrote:
-> When accessing the timecounter register on an i.MX8MQ the kernel hangs.
-> This is only the case when the interface is down. This can be reproduced
-> by reading with 'phc_ctrl eth0 get'.
-> 
-> Like described in the change in 91c0d987a9788dcc5fe26baafd73bf9242b68900
-> the igp clock is disabled when the interface is down and leads to a
-> system hang.
-> 
-> So we check if the ptp clock status before reading the timecounter
-> register.
-> 
-> Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
 
-Please widen the CC list, you should CC Richard on PTP patches.
 
-> diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
-> index 2e344aada4c6..c9882083da02 100644
-> --- a/drivers/net/ethernet/freescale/fec_ptp.c
-> +++ b/drivers/net/ethernet/freescale/fec_ptp.c
-> @@ -377,6 +377,9 @@ static int fec_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
->  	u64 ns;
->  	unsigned long flags;
->  
-> +	/* Check the ptp clock */
+On 2/23/2021 12:06 AM, Sean Christopherson wrote:
+> On Mon, Feb 22, 2021, Liu, Jing2 wrote:
+>> On 2/9/2021 1:24 AM, Sean Christopherson wrote:
+>>> On Mon, Feb 08, 2021, Dave Hansen wrote:
+>>>> On 2/8/21 8:16 AM, Jing Liu wrote:
+>>>>> -#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
+>>>>> -
+>>>>>    static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
+>>>>>    {
+>>>>>    	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
+>>>>> @@ -4494,7 +4492,8 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
+>>>>>    	/* Set XSTATE_BV and possibly XCOMP_BV.  */
+>>>>>    	xsave->header.xfeatures = xstate_bv;
+>>>>>    	if (boot_cpu_has(X86_FEATURE_XSAVES))
+>>>>> -		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
+>>>>> +		xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
+>>>>> +					 xfeatures_mask_all;
+>>> This is wrong, xfeatures_mask_all also tracks supervisor states.
+>> When looking at SDM Vol2 XSAVES instruction Operation part, it says as
+>> follows,
+>>
+>> RFBM ← (XCR0 OR IA32_XSS) AND EDX:EAX;
+>> COMPMASK ← RFBM OR 80000000_00000000H;
+>> ...
+>>
+>> XCOMP_BV field in XSAVE header ← COMPMASK;
+>>
+>>
+>> So it seems xcomp_bv also tracks supervisor states?
+> Yes, sorry, I got distracted by Dave's question and didn't read the changelog
+> closely.
+>
+> Now that I have, I find "Since fpstate_init() has initialized xcomp_bv, let's
+> just use that." confusing.  I think what you intend to say is that we can use
+> the same _logic_ as fpstate_init_xstate() for calculating xcomp_bv.
+Yes, that's the idea.
+>
+> That said, it would be helpful for the changelog to explain why it's correct to
+> use xfeatures_mask_all, e.g. just a short comment stating that the variable holds
+> all XCR0 and XSS bits enabled by the host kernel.  Justifying a change with
+> "because other code does it" is sketchy, becuse there's no guarantee that what
+> something else does is also correct for KVM, or that the existing code itself is
+> even correct.
+Got it, thanks for the details on this.
+Then how about making the commit message like,
 
-Comment is rather redundant. Drop it or say _when_ ptp_clk_on may not
-be true.
+XCOMP_BV[63] field indicates that the save area is in the
+compacted format and XCOMP_BV[62:0] indicates the states that
+have space allocated in the save area, including both XCR0
+and XSS bits enable by the host kernel. Use xfeatures_mask_all
+for calculating xcomp_bv and reuse XCOMP_BV_COMPACTED_FORMAT
+defined by kernel.
 
-> +	if (!adapter->ptp_clk_on)
-> +		return -EINVAL;
+Thanks,
+Jing
 
-Why is the PTP interface registered when it can't be accessed?
 
-Perhaps the driver should unregister the PTP clock when it's brought
-down?
-
->  	spin_lock_irqsave(&adapter->tmreg_lock, flags);
->  	ns = timecounter_read(&adapter->tc);
->  	spin_unlock_irqrestore(&adapter->tmreg_lock, flags);
