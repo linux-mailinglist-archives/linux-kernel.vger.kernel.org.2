@@ -2,116 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C1632277E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC56432277F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbhBWJII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 04:08:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
+        id S232252AbhBWJIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:08:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbhBWJFn (ORCPT
+        with ESMTP id S230459AbhBWJIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:05:43 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC76C061786;
-        Tue, 23 Feb 2021 01:05:02 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id v21so1637008wml.4;
-        Tue, 23 Feb 2021 01:05:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=OP9l4+tBAc5qLLgvql1SglxOFIPcoJxpspW/dlhGxFc=;
-        b=D+xsspyxTzicLSSMff15JtbBdSPX/esqKt+fZl5MFDCmsiQwX3VYIC66B4hgPXpmUB
-         qrpQkNgXq8aPFK4Wj4iCFOh+ZdqppdF3/bl3tEdTp2Q+kPoyimBGPRtiM85PnD6Ry7LH
-         jUBcv64Hg7i431RNd3UB77ajhyK8/hNA2BpQW74dIzn566QVyYCZ0BCx40MZDPH+ANF8
-         Zw5j0xjEECY4P8wVyuXlemMzTHkRsxUW29w3khqWjV/5u5PcMafC6zW+j0QXQlTg1Kjy
-         7uLl+YutXhxCWH4lr4ATGjmuHtOL0+jRi2k8UzKCR/BFjrl1L4eyAD6rb5fOAs49N42x
-         x4aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=OP9l4+tBAc5qLLgvql1SglxOFIPcoJxpspW/dlhGxFc=;
-        b=fXSBfqfOeeIS72kDDtDJg4zc4v8VHrx+7RXTWRKH/geWd6wBGcrEbPM9NkDnoOW+Cc
-         oSCBdT/7EHADutvd5AzKu1f6AAdicjz7fuQcNwJxPVwEUa6VffuxpU4gn5PeIMfMTs+7
-         YXFMmgZP9ph3Bjj4G78lxY2qbHuGD1w/2jtf+z95IqoHuP8cP7+7QbyRo4D5v8uId+1q
-         7sjGSLC8dUlzkvQVhb2sjANZMqkqGN5CZIl7XJo2qKW47yBJtvLMykVcjKZzcuRAL+sJ
-         ndoy/BRmkn1mP6s1NOmgEJZMhmVnCUUWA4E955Vd4NWHq92r59ELfrR7SvIK38uIoaz7
-         ibFQ==
-X-Gm-Message-State: AOAM533mInTW768g1blPISF/Tsdf+sbTrXqLW5HjdAe8i3n7jrtCMjHo
-        vb+eLz22JnUSZswGxcmRZuI=
-X-Google-Smtp-Source: ABdhPJyWrovGji/0s5Q6Um/OWZqneBAYpYG17slMUsGti67alFg5lO7qKpz93PE4uzYGLJyAhskghQ==
-X-Received: by 2002:a1c:ba05:: with SMTP id k5mr22989082wmf.111.1614071101345;
-        Tue, 23 Feb 2021 01:05:01 -0800 (PST)
-Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id y62sm2039875wmy.9.2021.02.23.01.05.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Feb 2021 01:05:00 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH 1/2] leds: bcm6328: improve write and read functions
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <20210223085819.GB9750@amd>
-Date:   Tue, 23 Feb 2021 10:05:00 +0100
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F349F1C2-4D4F-4BF7-9ADC-6E879197405B@gmail.com>
-References: <20210223081732.9362-1-noltari@gmail.com>
- <20210223081732.9362-2-noltari@gmail.com> <20210223083449.GA9750@amd>
- <3826ACDE-EFF2-4CC5-82EE-2DBC991CF996@gmail.com> <20210223085819.GB9750@amd>
-To:     Pavel Machek <pavel@ucw.cz>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Tue, 23 Feb 2021 04:08:10 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D095C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 01:07:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=90CYvbRkeTtw2LjHxZUF9fRU7+4Z7FPgkvOsHErySow=; b=n13MigGwlenLA9Izui3+NOrScn
+        QKrPaD75AzEo96ZYQcdh/80/x0Xo0u0FyAdUcn+bSPDg45RnATGbuMxli40MBFzco9me/hdTR3vl/
+        1NSHF2a3luZR/NYtrZ7MfbM6mita8J6N6IOzAm4qGAasVLUpos916s7wlwjs1MhdNka9INVBwh6nw
+        hpP/F6f0LgzttRpqdXYpJXrp5afsvnZMra1pursiUjvn+dyr9H8yAzzpu+sXT279c4T1XBFAfq+0x
+        nsQk2tmiQIBG7IBvnhpNkD9yFik+adXET0xVh8v3i3y8mTZTTOtNa93shrVK+FW/THS93yto0/4l3
+        4zB6g+Sw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lETdN-007kad-Jv; Tue, 23 Feb 2021 09:05:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EF3DD30477A;
+        Tue, 23 Feb 2021 10:05:29 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4DD732BF456FC; Tue, 23 Feb 2021 10:05:29 +0100 (CET)
+Date:   Tue, 23 Feb 2021 10:05:29 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Chris Hyser <chris.hyser@oracle.com>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core
+ scheduling
+Message-ID: <YDTFWZPdmrDuYd91@hirez.programming.kicks-ass.net>
+References: <20210123011704.1901835-1-joel@joelfernandes.org>
+ <20210123011704.1901835-3-joel@joelfernandes.org>
+ <0e91838e-4cca-4c3b-cb36-226c098f36c9@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e91838e-4cca-4c3b-cb36-226c098f36c9@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 22, 2021 at 11:00:37PM -0500, Chris Hyser wrote:
+> On 1/22/21 8:17 PM, Joel Fernandes (Google) wrote:
+> While trying to test the new prctl() code I'm working on, I ran into a bug I
+> chased back into this v10 code. Under a fair amount of stress, when the
+> function __sched_core_update_cookie() is ultimately called from
+> sched_core_fork(), the system deadlocks or otherwise non-visibly crashes.
+> I've not had much success figuring out why/what. I'm running with LOCKDEP on
+> and seeing no complaints. Duplicating it only requires setting a cookie on a
+> task and forking a bunch of threads ... all of which then want to update
+> their cookie.
 
-
-> El 23 feb 2021, a las 9:58, Pavel Machek <pavel@ucw.cz> escribi=C3=B3:
->=20
-> Hi!
->=20
->>>> This is proven to work in BMIPS BE/LE and ARM BE/LE, as used in =
-bcm2835-rng
->>>> and bcmgenet drivers.
->>>> Both should also be inline functions.
->>>=20
->>>=20
->>>=20
->>>> -#ifdef CONFIG_CPU_BIG_ENDIAN
->>>> -	iowrite32be(data, reg);
->>>> -#else
->>>> -	writel(data, reg);
->>>> -#endif
->>>> +	/* MIPS chips strapped for BE will automagically configure the
->>>> +	 * peripheral registers for CPU-native byte order.
->>>> +	 */
->>>=20
->>> Bad comment style.
->>=20
->> I just wanted to copy the same comment as the one in bcm2835-rng and =
-bcmgenet=E2=80=A6
->> =
-https://github.com/torvalds/linux/blob/3b9cdafb5358eb9f3790de2f728f765fef1=
-00731/drivers/char/hw_random/bcm2835-rng.c#L42-L60
->> =
-https://github.com/torvalds/linux/blob/3b9cdafb5358eb9f3790de2f728f765fef1=
-00731/drivers/net/ethernet/broadcom/genet/bcmgenet.c#L71-L88
->>=20
->=20
-> Yeah, but ideally you should not be copying comments; there should be
-> one central place which does it and does it right.
-
-I=E2=80=99m open to suggestions :).
-Which central place would be a good place for you?
-
->=20
-> 								Pavel
->=20
-> --=20
-> http://www.livejournal.com/~pavelmachek
-
+Can you share the code and reproducer?
