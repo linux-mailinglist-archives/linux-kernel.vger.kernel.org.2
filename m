@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20398322F11
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8991B322F14
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233526AbhBWQuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 11:50:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232715AbhBWQuL (ORCPT
+        id S233599AbhBWQu0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Feb 2021 11:50:26 -0500
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:60881 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232982AbhBWQuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:50:11 -0500
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD5DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:49:30 -0800 (PST)
-Received: by mail-vk1-xa2c.google.com with SMTP id f136so2030997vke.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:49:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hppxaNuvZF4RtoIyCyx97F5+o6L1UtpFhzjnpRDReOU=;
-        b=BCn631Zi8EX1COoO+C9ZI9wESGizzGZ1jl+x4MGHG6ldkf9l3InsoToEB1fZkEinaF
-         RRN1F3gTEpgoCp5TJYpR+4ziIvjHW2L8ck04RM6YcmtBC8KBNLuFwG4gZ2nJdl1fUGN2
-         ICMXi73V+wjUWH3sQ0iK1tQ3kR/52H+bToUGs+a2xEVBXdaAU0QbrrVSo6rMLGlz3vk0
-         2EPx/5J/RBrZvwM7dINFACXJf3Enxtvi8wjhoIPXKwnDX3k8eGubUHYEqXorxomcvjh5
-         VbKpCwun/qTOD6oQeZpyIr6NRDF7u43LyWoxqIJ1nFXBY2IZJv4cSf3bU/fVn9xn+DdD
-         sTug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hppxaNuvZF4RtoIyCyx97F5+o6L1UtpFhzjnpRDReOU=;
-        b=taFyPOw32N0vAWPjj6hPWA5dc7rlhfRZnZ/A85MYIIPfGEI9BD/ahshCEvrHDRtvXO
-         thybc7bQawFcrGw7Tzj+w+I+suP1NsCXEKeOniZOvwfYCTTioLp14KGaAf15x0NdrV0n
-         ZEQyAZKlzs4TuffnH9Qicx4+2Uya56QzGPiRW5IBKlqfgrcZPHs8F/OrBmbJhUj7JwAz
-         jJ9twe1HG0FbU38pAuPtPmKmNTKr5uHsJDHT0twVUfuaZDlNV73ItTtD2OqNTcqBL+H/
-         39pD7NJ2uE2Jb7vAccMFUL3FlAJSAgUbEECgqSI/W3cxNWYIvWbQ/vOuxUpoOvGsWc1V
-         LcMQ==
-X-Gm-Message-State: AOAM530gU6RpwR3gbrw6AgooDOFUVLFBnl6PvJ4ie3G4NNf1cOUzmKtI
-        cdoHPDg08EICbiX/NR83lxU7qJCjJ3Fd+WFewfSBnw==
-X-Google-Smtp-Source: ABdhPJxIldJarzDE6bop7IkLjGMHtktTZHgpT7YiWVyNfUErYV1SP9KN0TEO73Oq9gCpTia4ab3QttCbhHOfvuV+CG4=
-X-Received: by 2002:a1f:3d49:: with SMTP id k70mr1740882vka.3.1614098968880;
- Tue, 23 Feb 2021 08:49:28 -0800 (PST)
+        Tue, 23 Feb 2021 11:50:14 -0500
+X-Originating-IP: 86.210.203.113
+Received: from xps13 (lfbn-tou-1-972-113.w86-210.abo.wanadoo.fr [86.210.203.113])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id AEFDBFF808;
+        Tue, 23 Feb 2021 16:49:23 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 17:49:22 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        boris.brezillon@collabora.com
+Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add a property to declare secure
+ regions in Qcom NANDc
+Message-ID: <20210223174922.052f9776@xps13>
+In-Reply-To: <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
+References: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
+        <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210222072217.15633-1-jindong.yue@nxp.com> <CABCJKudwajnmHAEC1XAH=pouCoOXq7q6NmpLST5pba8ejU6FtA@mail.gmail.com>
- <CANLsYkx0Y_f8tdeioUFrwBRV8M6OtLcSuPDZbgb6noPgrfyjOA@mail.gmail.com>
-In-Reply-To: <CANLsYkx0Y_f8tdeioUFrwBRV8M6OtLcSuPDZbgb6noPgrfyjOA@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 23 Feb 2021 08:49:17 -0800
-Message-ID: <CABCJKuemAmeaSshvb=B6D1kBt-n_unEx11rwzOZmDxAd+EQ31g@mail.gmail.com>
-Subject: Re: [PATCH] remoteproc: core: Remove casting to rproc_handle_resource_t
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Jindong Yue <jindong.yue@nxp.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 8:41 AM Mathieu Poirier
-<mathieu.poirier@linaro.org> wrote:
->
-> On Mon, 22 Feb 2021 at 15:48, Sami Tolvanen <samitolvanen@google.com> wrote:
-> >
-> > Hi,
-> >
-> > On Sun, Feb 21, 2021 at 11:18 PM Jindong Yue <jindong.yue@nxp.com> wrote:
-> > >
-> > > There are four different callback functions that are used for the
-> > > rproc_handle_resource_t callback that all have different second
-> > > parameter types.
-> > >
-> > > rproc_handle_vdev -> struct fw_rsc_vdev
-> > > rproc_handle_trace -> struct fw_rsc_trace
-> > > rproc_handle_devmem -> struct fw_rsc_devmem
-> > > rproc_handle_carveout -> struct fw_rsc_carveout
-> > >
-> > > These callbacks are cast to rproc_handle_resource_t so that there is no
-> > > error about incompatible pointer types. Unfortunately, this is a control
-> > > flow integrity violation, which verifies that the callback function's
-> > > types match the prototypes exactly before jumping.
-> >
-> > Thank you for sending the patch! It might be worth noting that Clang's
-> > Control-Flow Integrity checking is currently used only in Android
-> > kernels, so while the type mismatches are real and should be fixed,
-> > they don't result in runtime errors without this feature.
-> >
-> > > To fix this, change the second parameter of all functions to void * and
-> > > use a local variable with the correct type so that everything works
-> > > properly. With this, we can remove casting to rproc_handle_resource_t
-> > > for these functions.
-> > >
-> > > Signed-off-by: Jindong Yue <jindong.yue@nxp.com>
-> > > Reviewed-by: Peng Fan <peng.fan@nxp.com>
-> >
-> > This looks correct to me. Please feel free to add:
-> >
-> > Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
->
-> Where is the original patch?  I can't find it on the linux-remoteproc
-> and linux-kernel mailing lists.
+Hi Manivannan,
 
-Looks like it was sent to linux-remoteproc, but I also don't see it in
-lore.kernel.org. Not sure what happened there. Jindong, perhaps it's
-worth resending and including linux-kernel too?
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Mon,
+22 Feb 2021 17:32:58 +0530:
 
-Sami
+> On a typical end product, a vendor may choose to secure some regions in
+> the NAND memory which are supposed to stay intact between FW upgrades.
+> The access to those regions will be blocked by a secure element like
+> Trustzone. So the normal world software like Linux kernel should not
+> touch these regions (including reading).
+> 
+> So let's add a property for declaring such secure regions so that the
+> driver can skip touching them.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/mtd/qcom,nandc.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> index 84ad7ff30121..7500e20da9c1 100644
+> --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> @@ -48,6 +48,13 @@ patternProperties:
+>          enum:
+>            - 512
+>  
+> +      qcom,secure-regions:
+> +        $ref: /schemas/types.yaml#/definitions/uint32-array
+> +        description:
+> +          Regions in the NAND memory which are protected using a secure element
+> +          like Trustzone. This property contains the start address and size of
+> +          the secure regions present (optional).
+
+What does this "(optional)" means? If you mean the property is optional
+then it should be described accordingly in the yaml file, or am I
+missing something?
+
+I wonder if it wouldn't be better to make this a NAND chip node
+property. I don't think a qcom prefix is needed as potentially many
+other SoCs might have the same "feature".
+
+I'm fine adding support for it in the qcom driver only though.
+
+> +
+>  allOf:
+>    - $ref: "nand-controller.yaml#"
+>  
+
+Thanks,
+Miquèl
