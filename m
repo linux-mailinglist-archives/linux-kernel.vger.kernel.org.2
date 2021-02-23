@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7025E322723
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE1B322729
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbhBWIgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:36:36 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:44455 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232054AbhBWIgb (ORCPT
+        id S232159AbhBWIhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:37:00 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:44168 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230060AbhBWIgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:36:31 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UPLRz9i_1614069339;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPLRz9i_1614069339)
+        Tue, 23 Feb 2021 03:36:45 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UPLRzCn_1614069359;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPLRzCn_1614069359)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 23 Feb 2021 16:35:47 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     peterz@infradead.org
-Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] perf/core: make perf_pmu_snapshot_aux static
-Date:   Tue, 23 Feb 2021 16:35:37 +0800
-Message-Id: <1614069337-50399-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+          Tue, 23 Feb 2021 16:36:00 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     mika.westerberg@linux.intel.com
+Cc:     andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] gpiolib: acpi: Add missing IRQF_ONESHOT
+Date:   Tue, 23 Feb 2021 16:35:58 +0800
+Message-Id: <1614069358-50943-1-git-send-email-yang.lee@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+fixed the following coccicheck:
+./drivers/gpio/gpiolib-acpi.c:176:7-27: ERROR: Threaded IRQ with no
+primary handler requested without IRQF_ONESHOT
 
-kernel/events/core.c:6524:6: warning: symbol 'perf_pmu_snapshot_aux' was
-not declared. Should it be static?
+Make sure threaded IRQs without a primary handler are always request
+with IRQF_ONESHOT
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- kernel/events/core.c | 2 +-
+ drivers/gpio/gpiolib-acpi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 129dee5..45cb62f 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6521,7 +6521,7 @@ static unsigned long perf_prepare_sample_aux(struct perf_event *event,
- 	return data->aux_size;
- }
+diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+index e37a57d..86efa2d 100644
+--- a/drivers/gpio/gpiolib-acpi.c
++++ b/drivers/gpio/gpiolib-acpi.c
+@@ -174,7 +174,7 @@ static void acpi_gpiochip_request_irq(struct acpi_gpio_chip *acpi_gpio,
+ 	int ret, value;
  
--long perf_pmu_snapshot_aux(struct perf_buffer *rb,
-+static long perf_pmu_snapshot_aux(struct perf_buffer *rb,
- 			   struct perf_event *event,
- 			   struct perf_output_handle *handle,
- 			   unsigned long size)
+ 	ret = request_threaded_irq(event->irq, NULL, event->handler,
+-				   event->irqflags, "ACPI:Event", event);
++				   event->irqflags | IRQF_ONESHOT, "ACPI:Event", event);
+ 	if (ret) {
+ 		dev_err(acpi_gpio->chip->parent,
+ 			"Failed to setup interrupt handler for %d\n",
 -- 
 1.8.3.1
 
