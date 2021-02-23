@@ -2,256 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010C1322752
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D32322755
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbhBWI5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:57:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbhBWI4h (ORCPT
+        id S232211AbhBWI6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:58:15 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:51625 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232225AbhBWI5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:56:37 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F7EC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 00:55:56 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id d9so6814266ybq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 00:55:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lB/a4iMwzZXCVzQKA/wFs+7TeUdvCzpHO2+5MvW6yfU=;
-        b=ANVQQS+Usc9OSyEkwQ0rKjoeqmy7t/RkfPSQKW/yfFbEW/2mjzUT2ghPUfiGN9I2Jw
-         9298v+5cbHBiGasuLAljXkJs/uhAJ/PUbY1XwN/N34AeVliE087Dn3tXfXk2a66KMlbc
-         vFv9gzp0rrpMDG1SHaPr+d78Y/64WEVObZjszfGmUK2pODzXOFa+ISUpkk4yBsBVSltI
-         G3o47TvPg53VtBu4HPd397hYtKz1ejg4+SsRIYpHFLusNfauZg52IjGzxHwCaXrSzQCQ
-         V1WCXwXMnr0MHh+yLbHGoC7RMKoz3VX9F4QCQYZWgqhzFp/LjEPwH5hyxZYO824Zr+GE
-         jFbA==
+        Tue, 23 Feb 2021 03:57:02 -0500
+Received: by mail-il1-f200.google.com with SMTP id y11so1236437ilc.18
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 00:56:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lB/a4iMwzZXCVzQKA/wFs+7TeUdvCzpHO2+5MvW6yfU=;
-        b=HabIURSumh0vTj/+uqofqxZF51IZ0lDUYjwfodtHPlKktlDUxZchgqiw9LKm3d0QLt
-         nH+rYLFnKWMGr/vYSX+JUWFuEZVPMIlvYDz49TA1IXkS7nvQqgP77W77JhkGdp2TTbRq
-         sN44nRSTBij88XHtoB8fLUPfoW+QLZBhwI0xyYUHg72CKoTJXEUQ9vm/V0guphU8hZOK
-         6nYBuDL3OjM99pasYOBSzxVsy97bvZusWY5oMrpz+iBPaYrkXXc8KazzONh9UgFiA4ek
-         z1jXOQ1c0NgA9rCznsjI57PqMWQxEIFRNdqO7KdYHAjCGu1AORgcdEzwHbyX1NHvjk9R
-         DNeg==
-X-Gm-Message-State: AOAM5339GxOjPaI/iBB/TJfkZqSp7q7txY5/MYDDssTHc8PHlgU66zME
-        ZPVv1ziCIplmJklqavKmsuCdTQjdZKg30yYJOXMJWQ==
-X-Google-Smtp-Source: ABdhPJxiG98x7BOMr2s35CNt0d3MmkzHRwBqlPjTMbVGbt3kdfqoekbd94XMkb7+6aAZ3Vii4t6Zl4vrWx9AEn4pVDg=
-X-Received: by 2002:a25:7306:: with SMTP id o6mr39702181ybc.132.1614070555696;
- Tue, 23 Feb 2021 00:55:55 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=8mctaqK5Xe/nm12bfA6IP15m3s7zU7gXEAtDskYQ4P4=;
+        b=EkYWyxECmUYJMe515jb4G9DS386QB964e87hwi88AVt89kI/tyEZKGAu9qV2q6kg6O
+         CTuLIBZE+zj2wgkntbYUuzFFYaF1+ZVDnfX8a/KwecljR+IS56IiDeQBWCq1CG9OxDmU
+         Dax38K1ToKworxeRayJbgH5E76JJn7YI/ivSecMP3ErMzVAg6bUZ/6p1URYRwWWAcbcN
+         i0En2uHGhjbhjgDTacOerjn95tSAPx6y+FMVnmhhKrNLUpFfCIGBTMDfsu+Zqh2LUP9M
+         gL4r4/uMxrEwBiCMzr1taZbR8CGwAkj3P2hC2/MOIIjd0OfdwaibFotqjQgkGdc2WgRj
+         csxg==
+X-Gm-Message-State: AOAM532eqcoxTizv+CxY2AaVWh2SKSw8uMvzjlUlBsWtiolrpJN6fkLq
+        tfwg7MpEsyxZgTeFPXJouwRK4uMtC55G2OpXP8uhd7jbl5bx
+X-Google-Smtp-Source: ABdhPJxn4mXzhlcasRUD+uq+PQiDHwpsVnfyGxvSw96aVfFYUjvMLJ6yu4KyixlQq5vdpbuLAEKvm8/WYc6Wq76f4EEpk58cbLpp
 MIME-Version: 1.0
-References: <20210223055321.3891-1-o.rempel@pengutronix.de> <20210223055321.3891-3-o.rempel@pengutronix.de>
-In-Reply-To: <20210223055321.3891-3-o.rempel@pengutronix.de>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 23 Feb 2021 09:55:43 +0100
-Message-ID: <CANn89iJp6PeiJOQSnsXGRJBVmQ8QR1mNF=cHMnGMrg0J=UmPHQ@mail.gmail.com>
-Subject: Re: [PATCH net v2 2/2] can: fix ref count warning if socket was
- closed before skb was cloned
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Andre Naujoks <nautsch2@gmail.com>, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-wireless@vger.kernel.org
+X-Received: by 2002:a92:6403:: with SMTP id y3mr18312215ilb.90.1614070580999;
+ Tue, 23 Feb 2021 00:56:20 -0800 (PST)
+Date:   Tue, 23 Feb 2021 00:56:20 -0800
+In-Reply-To: <0000000000007ff56205ba985b60@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009f7a7305bbfd17a4@google.com>
+Subject: Re: general protection fault in vmx_vcpu_run (2)
+From:   syzbot <syzbot+42a71c84ef04577f1aef@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com, seanjc@google.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 6:53 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
->
-> There are two ref count variables controlling the free()ing of a socket:
-> - struct sock::sk_refcnt - which is changed by sock_hold()/sock_put()
-> - struct sock::sk_wmem_alloc - which accounts the memory allocated by
->   the skbs in the send path.
->
-> If the socket is closed the struct sock::sk_refcnt will finally reach 0
-> and sk_free() is called. Which then calls
-> refcount_dec_and_test(&sk->sk_wmem_alloc). If sk_wmem_alloc reaches 0
-> the socket is actually free()ed.
->
-> In case there are still TX skbs on the fly and the socket() is closed,
-> the struct sock::sk_refcnt reaches 0. In the TX-path the CAN stack
-> clones an "echo" skb, calls sock_hold() on the original socket and
-> references it. This produces the following back trace:
+syzbot has found a reproducer for the following issue on:
 
-Why not simply fix can_skb_set_owner() instead of adding yet another helper ?
+HEAD commit:    a99163e9 Merge tag 'devicetree-for-5.12' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15cd357f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=49116074dd53b631
+dashboard link: https://syzkaller.appspot.com/bug?extid=42a71c84ef04577f1aef
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12c7f8a8d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=137fc232d00000
 
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index 685f34cfba20741d372d340fe7df1084767b2850..655f33aa99e330b8ffc804b0f3a1d61aa9b00b0b
-100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -65,8 +65,7 @@ static inline void can_skb_reserve(struct sk_buff *skb)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+42a71c84ef04577f1aef@syzkaller.appspotmail.com
 
- static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
- {
--       if (sk) {
--               sock_hold(sk);
-+       if (sk && refcount_inc_not_zero(&sk->sk_refcnt)) {
-                skb->destructor = sock_efree;
-                skb->sk = sk;
-        }
+RBP: 0000000000402ed0 R08: 0000000000400488 R09: 0000000000400488
+R10: 0000000000400488 R11: 0000000000000246 R12: 0000000000402f60
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+==================================================================
+BUG: KASAN: global-out-of-bounds in atomic_switch_perf_msrs arch/x86/kvm/vmx/vmx.c:6604 [inline]
+BUG: KASAN: global-out-of-bounds in vmx_vcpu_run+0x4f1/0x13f0 arch/x86/kvm/vmx/vmx.c:6771
+Read of size 8 at addr ffffffff89a000e9 by task syz-executor198/8346
 
-IMO, CAN seems to use sock_hold() even for tx packets.
+CPU: 0 PID: 8346 Comm: syz-executor198 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x125/0x19e lib/dump_stack.c:120
+ print_address_description+0x5f/0x3a0 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report+0x15e/0x200 mm/kasan/report.c:413
+ atomic_switch_perf_msrs arch/x86/kvm/vmx/vmx.c:6604 [inline]
+ vmx_vcpu_run+0x4f1/0x13f0 arch/x86/kvm/vmx/vmx.c:6771
+ vcpu_enter_guest+0x2ed9/0x8f10 arch/x86/kvm/x86.c:9074
+ vcpu_run+0x316/0xb70 arch/x86/kvm/x86.c:9225
+ kvm_arch_vcpu_ioctl_run+0x4e8/0xa40 arch/x86/kvm/x86.c:9453
+ kvm_vcpu_ioctl+0x62a/0xa30 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3295
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43eee9
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe7ad00d38 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043eee9
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000005
+RBP: 0000000000402ed0 R08: 0000000000400488 R09: 0000000000400488
+R10: 0000000000400488 R11: 0000000000000246 R12: 0000000000402f60
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
 
-But tx packets usually have a reference on sockets based on sk->sk_wmem_alloc ,
-look at skb_set_owner_w() for reference.
+The buggy address belongs to the variable:
+ str__initcall__trace_system_name+0x9/0x40
 
-This might be the reason why you catch a zero sk_refcnt while packets
-are still in flight ?
+Memory state around the buggy address:
+ ffffffff899fff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffffff89a00000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffffff89a00080: 00 00 00 00 00 00 00 00 00 00 00 00 00 01 f9 f9
+                                                          ^
+ ffffffff89a00100: f9 f9 f9 f9 07 f9 f9 f9 f9 f9 f9 f9 00 03 f9 f9
+ ffffffff89a00180: f9 f9 f9 f9 00 06 f9 f9 f9 f9 f9 f9 00 00 00 00
+==================================================================
 
-
-
-> | WARNING: CPU: 0 PID: 280 at lib/refcount.c:25 refcount_warn_saturate+0x114/0x134
-> | refcount_t: addition on 0; use-after-free.
-> | Modules linked in: coda_vpu(E) v4l2_jpeg(E) videobuf2_vmalloc(E) imx_vdoa(E)
-> | CPU: 0 PID: 280 Comm: test_can.sh Tainted: G            E     5.11.0-04577-gf8ff6603c617 #203
-> | Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-> | Backtrace:
-> | [<80bafea4>] (dump_backtrace) from [<80bb0280>] (show_stack+0x20/0x24) r7:00000000 r6:600f0113 r5:00000000 r4:81441220
-> | [<80bb0260>] (show_stack) from [<80bb593c>] (dump_stack+0xa0/0xc8)
-> | [<80bb589c>] (dump_stack) from [<8012b268>] (__warn+0xd4/0x114) r9:00000019 r8:80f4a8c2 r7:83e4150c r6:00000000 r5:00000009 r4:80528f90
-> | [<8012b194>] (__warn) from [<80bb09c4>] (warn_slowpath_fmt+0x88/0xc8) r9:83f26400 r8:80f4a8d1 r7:00000009 r6:80528f90 r5:00000019 r4:80f4a8c2
-> | [<80bb0940>] (warn_slowpath_fmt) from [<80528f90>] (refcount_warn_saturate+0x114/0x134) r8:00000000 r7:00000000 r6:82b44000 r5:834e5600 r4:83f4d540
-> | [<80528e7c>] (refcount_warn_saturate) from [<8079a4c8>] (__refcount_add.constprop.0+0x4c/0x50)
-> | [<8079a47c>] (__refcount_add.constprop.0) from [<8079a57c>] (can_put_echo_skb+0xb0/0x13c)
-> | [<8079a4cc>] (can_put_echo_skb) from [<8079ba98>] (flexcan_start_xmit+0x1c4/0x230) r9:00000010 r8:83f48610 r7:0fdc0000 r6:0c080000 r5:82b44000 r4:834e5600
-> | [<8079b8d4>] (flexcan_start_xmit) from [<80969078>] (netdev_start_xmit+0x44/0x70) r9:814c0ba0 r8:80c8790c r7:00000000 r6:834e5600 r5:82b44000 r4:82ab1f00
-> | [<80969034>] (netdev_start_xmit) from [<809725a4>] (dev_hard_start_xmit+0x19c/0x318) r9:814c0ba0 r8:00000000 r7:82ab1f00 r6:82b44000 r5:00000000 r4:834e5600
-> | [<80972408>] (dev_hard_start_xmit) from [<809c6584>] (sch_direct_xmit+0xcc/0x264) r10:834e5600 r9:00000000 r8:00000000 r7:82b44000 r6:82ab1f00 r5:834e5600 r4:83f27400
-> | [<809c64b8>] (sch_direct_xmit) from [<809c6c0c>] (__qdisc_run+0x4f0/0x534)
->
-> To fix this problem, we have to take into account, that the socket
-> technically still there but should not used (by any new skbs) any more.
-> The function skb_clone_sk_optional() (introduced in the previous patch)
-> takes care of this. It will only clone the skb, if the sk is set and the
-> refcount has not reached 0.
->
-> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-> Cc: Andre Naujoks <nautsch2@gmail.com>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  include/linux/can/skb.h   | 3 +--
->  net/can/af_can.c          | 6 +++---
->  net/can/j1939/main.c      | 3 +--
->  net/can/j1939/socket.c    | 3 +--
->  net/can/j1939/transport.c | 4 +---
->  5 files changed, 7 insertions(+), 12 deletions(-)
->
-> diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-> index 685f34cfba20..bc1af38697a2 100644
-> --- a/include/linux/can/skb.h
-> +++ b/include/linux/can/skb.h
-> @@ -79,13 +79,12 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
->  {
->         struct sk_buff *nskb;
->
-> -       nskb = skb_clone(skb, GFP_ATOMIC);
-> +       nskb = skb_clone_sk_optional(skb);
->         if (unlikely(!nskb)) {
->                 kfree_skb(skb);
->                 return NULL;
->         }
->
-> -       can_skb_set_owner(nskb, skb->sk);
->         consume_skb(skb);
->         return nskb;
->  }
-> diff --git a/net/can/af_can.c b/net/can/af_can.c
-> index cce2af10eb3e..9e1bd60e7e1b 100644
-> --- a/net/can/af_can.c
-> +++ b/net/can/af_can.c
-> @@ -251,20 +251,20 @@ int can_send(struct sk_buff *skb, int loop)
->                  * its own. Example: can_raw sockopt CAN_RAW_RECV_OWN_MSGS
->                  * Therefore we have to ensure that skb->sk remains the
->                  * reference to the originating sock by restoring skb->sk
-> -                * after each skb_clone() or skb_orphan() usage.
-> +                * after each skb_clone() or skb_orphan() usage -
-> +                * skb_clone_sk_optional() takes care of that.
->                  */
->
->                 if (!(skb->dev->flags & IFF_ECHO)) {
->                         /* If the interface is not capable to do loopback
->                          * itself, we do it here.
->                          */
-> -                       newskb = skb_clone(skb, GFP_ATOMIC);
-> +                       newskb = skb_clone_sk_optional(skb);
->                         if (!newskb) {
->                                 kfree_skb(skb);
->                                 return -ENOMEM;
->                         }
->
-> -                       can_skb_set_owner(newskb, skb->sk);
->                         newskb->ip_summed = CHECKSUM_UNNECESSARY;
->                         newskb->pkt_type = PACKET_BROADCAST;
->                 }
-> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-> index da3a7a7bcff2..4f6852d48077 100644
-> --- a/net/can/j1939/main.c
-> +++ b/net/can/j1939/main.c
-> @@ -47,12 +47,11 @@ static void j1939_can_recv(struct sk_buff *iskb, void *data)
->          * the header goes into sockaddr.
->          * j1939 may not touch the incoming skb in such way
->          */
-> -       skb = skb_clone(iskb, GFP_ATOMIC);
-> +       skb = skb_clone_sk_optional(iskb);
->         if (!skb)
->                 return;
->
->         j1939_priv_get(priv);
-> -       can_skb_set_owner(skb, iskb->sk);
->
->         /* get a pointer to the header of the skb
->          * the skb payload (pointer) is moved, so that the next skb_data
-> diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-> index 4e4a510d82f9..c1be6c26ff76 100644
-> --- a/net/can/j1939/socket.c
-> +++ b/net/can/j1939/socket.c
-> @@ -305,12 +305,11 @@ static void j1939_sk_recv_one(struct j1939_sock *jsk, struct sk_buff *oskb)
->         if (!j1939_sk_recv_match_one(jsk, oskcb))
->                 return;
->
-> -       skb = skb_clone(oskb, GFP_ATOMIC);
-> +       skb = skb_clone_sk_optional(oskb);
->         if (!skb) {
->                 pr_warn("skb clone failed\n");
->                 return;
->         }
-> -       can_skb_set_owner(skb, oskb->sk);
->
->         skcb = j1939_skb_to_cb(skb);
->         skcb->msg_flags &= ~(MSG_DONTROUTE);
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index e09d087ba240..e902557bbe17 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1014,12 +1014,10 @@ static int j1939_simple_txnext(struct j1939_session *session)
->         if (!se_skb)
->                 return 0;
->
-> -       skb = skb_clone(se_skb, GFP_ATOMIC);
-> +       skb = skb_clone_sk_optional(se_skb);
->         if (!skb)
->                 return -ENOMEM;
->
-> -       can_skb_set_owner(skb, se_skb->sk);
-> -
->         j1939_tp_set_rxtimeout(session, J1939_SIMPLE_ECHO_TIMEOUT_MS);
->
->         ret = j1939_send_one(priv, skb);
-> --
-> 2.29.2
->
