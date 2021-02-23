@@ -2,86 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508913224A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 04:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6E73224A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 04:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhBWD23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 22:28:29 -0500
-Received: from mail-io1-f45.google.com ([209.85.166.45]:40628 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbhBWD21 (ORCPT
+        id S231527AbhBWD32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 22:29:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230498AbhBWD3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 22:28:27 -0500
-Received: by mail-io1-f45.google.com with SMTP id i8so15639874iog.7
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 19:28:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=HI1IeUcajrSGQGzEM7tIoTC6RGw0rv93ilEN7asvsjo=;
-        b=pOfv5ahQ3dgdNM4kFSM9ka0t4ji3FCyF5eiHcSzC4IxXjtnF/gZTd2cqbJAB90yozs
-         D6Z//+U7jqtrmaqP8wq7zUCKYGf/0mk9A9fYP2cO/oupkzoKCugBA6DO1DoKbUtFVe1t
-         BKetgr6Yfj6jVFgbkDh43PCXmul91qJAa13nNcparF18yYImv1hiA6TwVIvQpz8ueXvi
-         YCRJCV0l7+8SI2NJ0CLbdN2+AfvxYFIP7k9KPgtIWqQhO9HyIYplpRZunGlhOE3aG5iO
-         r5YHSuVoT4u4xsFaUiNID1pJmSqS4IfBhWItSoKlk8wcKZRmjiEF0xg88n366qFUv9YI
-         b16A==
-X-Gm-Message-State: AOAM5331+Ti3OBJ0W2XAFqHnU72Fq0Xrz+H2OFv/rd79oEMI/mV7kGie
-        2ffMGeWfWXnoj2Rrm5Ax2pFtaaqaYi8=
-X-Google-Smtp-Source: ABdhPJzhb9u66SIfGCCsHf+vx/HoQGMVHLdzObOa2U+QErsRxFWXu7KWTWtU6YYWJZmiOqqQSN/BuQ==
-X-Received: by 2002:a6b:3b14:: with SMTP id i20mr18764997ioa.28.1614050866467;
-        Mon, 22 Feb 2021 19:27:46 -0800 (PST)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id c16sm5536698ils.2.2021.02.22.19.27.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 19:27:44 -0800 (PST)
-Date:   Tue, 23 Feb 2021 03:27:41 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] percpu changes for v5.12-rc1
-Message-ID: <YDR2LTclQGy7OHKc@google.com>
+        Mon, 22 Feb 2021 22:29:19 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9111C061574;
+        Mon, 22 Feb 2021 19:28:38 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dl4Jf3K23z9sVF;
+        Tue, 23 Feb 2021 14:28:34 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614050917;
+        bh=V690SKCwLrohnCVI+gCw4TsytrgcasOIs1npBVXhXMo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jVBKqM6wzrc2e1+KV+42Vj+6ATKobYHbyvWPGtSQyd1yMQ/IiyGOW3XD8S62GHpAW
+         7y8cQz11uhaZnCrOsw1eBT4Ci5YzahYmH9Yib2Yyc3vNN4yi8G9z6mkxtfnwjQ9inu
+         spNBBVtdJ5m6EDQjG9eNW9e+lRi8328+5LcRESjXmAtdHb08hWlSga77uV0Kwgq31z
+         NTHCp7mTVBK5hMWeG3Lp9E7ZKNAq/plydXck0EMu2xWBi4B5U3RU/ozI63jHxkynue
+         nSkeyTXORBUE1XGOnjJWWCr9HtXLs4NFkVgF+aIjvK+cEYvc408UYOeQ2OWK5ZjYGH
+         NoK9vPLtAIWdg==
+Date:   Tue, 23 Feb 2021 14:28:33 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mark.gross@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Russ Weight <russell.h.weight@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>
+Subject: Re: linux-next: manual merge of the char-misc tree with the
+ drivers-x86 tree
+Message-ID: <20210223142833.377289f6@canb.auug.org.au>
+In-Reply-To: <20210215074431.7a06b223@canb.auug.org.au>
+References: <20210111130851.374bf4ea@canb.auug.org.au>
+        <20210215074431.7a06b223@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: multipart/signed; boundary="Sig_/D1xfNiQo4XdiSMLL8iqRR22";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--Sig_/D1xfNiQo4XdiSMLL8iqRR22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Percpu had a cleanup come in that makes use of the cpu bitmask helpers
-instead of the current iterative approach. This clean up has an adverse
-interaction when clang's inlining sensitivity is changed such that
-not all sites are inlined resulting in modpost being upset with section
-mismatch due to percpu setup being marked __init. It is fixed by
-introducing __flatten to compiler_attributes.h. This has been supported
-since clang 3.5 and gcc 4.4 [1].
+Hi all,
 
-[1] https://lore.kernel.org/lkml/CAKwvOdnxnooqtyeSem63V_P5980jc0Z2PDG=0iM8ixeYTSaTCg@mail.gmail.com/
+On Mon, 15 Feb 2021 07:44:31 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Mon, 11 Jan 2021 13:08:51 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > Today's linux-next merge of the char-misc tree got conflicts in:
+> >=20
+> >   include/linux/mod_devicetable.h
+> >   scripts/mod/devicetable-offsets.c
+> >   scripts/mod/file2alias.c
+> >=20
+> > between commit:
+> >=20
+> >   eb0e90a82098 ("platform/surface: aggregator: Add dedicated bus and de=
+vice type")
+> >=20
+> > from the drivers-x86 tree and commits:
+> >=20
+> >   9326eecd9365 ("fpga: dfl: move dfl_device_id to mod_devicetable.h")
+> >   4a224acec597 ("fpga: dfl: add dfl bus support to MODULE_DEVICE_TABLE(=
+)")
+> >=20
+> > from the char-misc tree.
+> >=20
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> >=20
+> > diff --cc include/linux/mod_devicetable.h
+> > index 935060955152,b8dae34eca10..000000000000
+> > --- a/include/linux/mod_devicetable.h
+> > +++ b/include/linux/mod_devicetable.h
+> > @@@ -846,22 -846,28 +846,46 @@@ struct auxiliary_device_id=20
+> >   	kernel_ulong_t driver_data;
+> >   };
+> >  =20
+> >  +/* Surface System Aggregator Module */
+> >  +
+> >  +#define SSAM_MATCH_TARGET	0x1
+> >  +#define SSAM_MATCH_INSTANCE	0x2
+> >  +#define SSAM_MATCH_FUNCTION	0x4
+> >  +
+> >  +struct ssam_device_id {
+> >  +	__u8 match_flags;
+> >  +
+> >  +	__u8 domain;
+> >  +	__u8 category;
+> >  +	__u8 target;
+> >  +	__u8 instance;
+> >  +	__u8 function;
+> >  +
+> >  +	kernel_ulong_t driver_data;
+> >  +};
+> >  +
+> > + /*
+> > +  * DFL (Device Feature List)
+> > +  *
+> > +  * DFL defines a linked list of feature headers within the device MMI=
+O space to
+> > +  * provide an extensible way of adding features. Software can walk th=
+rough these
+> > +  * predefined data structures to enumerate features. It is now used i=
+n the FPGA.
+> > +  * See Documentation/fpga/dfl.rst for more information.
+> > +  *
+> > +  * The dfl bus type is introduced to match the individual feature dev=
+ices (dfl
+> > +  * devices) for specific dfl drivers.
+> > +  */
+> > +=20
+> > + /**
+> > +  * struct dfl_device_id -  dfl device identifier
+> > +  * @type: DFL FIU type of the device. See enum dfl_id_type.
+> > +  * @feature_id: feature identifier local to its DFL FIU type.
+> > +  * @driver_data: driver specific data.
+> > +  */
+> > + struct dfl_device_id {
+> > + 	__u16 type;
+> > + 	__u16 feature_id;
+> > + 	kernel_ulong_t driver_data;
+> > + };
+> > +=20
+> >   #endif /* LINUX_MOD_DEVICETABLE_H */
+> > diff --cc scripts/mod/devicetable-offsets.c
+> > index f078eeb0a961,1b14f3cde4e5..000000000000
+> > --- a/scripts/mod/devicetable-offsets.c
+> > +++ b/scripts/mod/devicetable-offsets.c
+> > @@@ -246,13 -246,9 +246,17 @@@ int main(void
+> >   	DEVID(auxiliary_device_id);
+> >   	DEVID_FIELD(auxiliary_device_id, name);
+> >  =20
+> >  +	DEVID(ssam_device_id);
+> >  +	DEVID_FIELD(ssam_device_id, match_flags);
+> >  +	DEVID_FIELD(ssam_device_id, domain);
+> >  +	DEVID_FIELD(ssam_device_id, category);
+> >  +	DEVID_FIELD(ssam_device_id, target);
+> >  +	DEVID_FIELD(ssam_device_id, instance);
+> >  +	DEVID_FIELD(ssam_device_id, function);
+> >  +
+> > + 	DEVID(dfl_device_id);
+> > + 	DEVID_FIELD(dfl_device_id, type);
+> > + 	DEVID_FIELD(dfl_device_id, feature_id);
+> > +=20
+> >   	return 0;
+> >   }
+> > diff --cc scripts/mod/file2alias.c
+> > index d21d2871387b,7ebabeb1e9c9..000000000000
+> > --- a/scripts/mod/file2alias.c
+> > +++ b/scripts/mod/file2alias.c
+> > @@@ -1375,28 -1375,18 +1375,40 @@@ static int do_auxiliary_entry(const =
+cha
+> >   	return 1;
+> >   }
+> >  =20
+> >  +/*
+> >  + * Looks like: ssam:dNcNtNiNfN
+> >  + *
+> >  + * N is exactly 2 digits, where each is an upper-case hex digit.
+> >  + */
+> >  +static int do_ssam_entry(const char *filename, void *symval, char *al=
+ias)
+> >  +{
+> >  +	DEF_FIELD(symval, ssam_device_id, match_flags);
+> >  +	DEF_FIELD(symval, ssam_device_id, domain);
+> >  +	DEF_FIELD(symval, ssam_device_id, category);
+> >  +	DEF_FIELD(symval, ssam_device_id, target);
+> >  +	DEF_FIELD(symval, ssam_device_id, instance);
+> >  +	DEF_FIELD(symval, ssam_device_id, function);
+> >  +
+> >  +	sprintf(alias, "ssam:d%02Xc%02X", domain, category);
+> >  +	ADD(alias, "t", match_flags & SSAM_MATCH_TARGET, target);
+> >  +	ADD(alias, "i", match_flags & SSAM_MATCH_INSTANCE, instance);
+> >  +	ADD(alias, "f", match_flags & SSAM_MATCH_FUNCTION, function);
+> >  +
+> >  +	return 1;
+> >  +}
+> >  +
+> > + /* Looks like: dfl:tNfN */
+> > + static int do_dfl_entry(const char *filename, void *symval, char *ali=
+as)
+> > + {
+> > + 	DEF_FIELD(symval, dfl_device_id, type);
+> > + 	DEF_FIELD(symval, dfl_device_id, feature_id);
+> > +=20
+> > + 	sprintf(alias, "dfl:t%04Xf%04X", type, feature_id);
+> > +=20
+> > + 	add_wildcard(alias);
+> > + 	return 1;
+> > + }
+> > +=20
+> >   /* Does namelen bytes of name exactly match the symbol? */
+> >   static bool sym_is(const char *name, unsigned namelen, const char *sy=
+mbol)
+> >   {
+> > @@@ -1472,7 -1462,7 +1484,8 @@@ static const struct devtable devtable[
+> >   	{"wmi", SIZE_wmi_device_id, do_wmi_entry},
+> >   	{"mhi", SIZE_mhi_device_id, do_mhi_entry},
+> >   	{"auxiliary", SIZE_auxiliary_device_id, do_auxiliary_entry},
+> >  +	{"ssam", SIZE_ssam_device_id, do_ssam_entry},
+> > + 	{"dfl", SIZE_dfl_device_id, do_dfl_entry},
+> >   };
+> >  =20
+> >   /* Create MODULE_ALIAS() statements. =20
+>=20
+> With the merge window about to open, this is a reminder that this
+> conflict still exists.
 
-Thanks,
-Dennis
+This is now a conflict between the char-misc tree and Linus' tree.
 
-The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
+--=20
+Cheers,
+Stephen Rothwell
 
-  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+--Sig_/D1xfNiQo4XdiSMLL8iqRR22
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-are available in the Git repository at:
+-----BEGIN PGP SIGNATURE-----
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git for-5.12
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA0dmEACgkQAVBC80lX
+0GyFvQf9EHd9IqAfYQhgFlwftYAuSNDmqMDbr8QFCA5CPV84ykrgXWm4xC0Bqst2
+3DaUvEd9d85GlYkYMwyzpsQuM12G4xt9mySgKzkLb4bENZLGiNSYY89wV/HKiWOd
+zg278ikVVfb/yfBBNhq1KvQ2NJ3RJq0QGyTuLMux3wNoRC1qx4//kiUZmGbEubBt
++Pb+QEAEYDrM886qtf7AjUImsGeBJqMPOyhhZq6AH2kBXGoHE4NlnpAJ0vNLgO7s
+fgtxOK6BSu9c/Zk8/KcuMNiOjTwGwpmxriIJtIkh5DpZcOlYV2sZqb2GEcR69Wte
+TL3R8yEOQIwT6JvH3/Ce1rNV6o7POA==
+=u76T
+-----END PGP SIGNATURE-----
 
-for you to fetch changes up to 258e0815e2b1706e87c0d874211097aa8a7aa52f:
-
-  percpu: fix clang modpost section mismatch (2021-02-14 18:15:15 +0000)
-
-----------------------------------------------------------------
-Dennis Zhou (1):
-      percpu: fix clang modpost section mismatch
-
-Wonhyuk Yang (1):
-      percpu: reduce the number of cpu distance comparisons
-
- include/linux/compiler_attributes.h |  6 ++++++
- mm/percpu.c                         | 36 +++++++++++++++++++++---------------
- 2 files changed, 27 insertions(+), 15 deletions(-)
+--Sig_/D1xfNiQo4XdiSMLL8iqRR22--
