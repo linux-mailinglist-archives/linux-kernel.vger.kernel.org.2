@@ -2,79 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354DA32257B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8D232257E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:44:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbhBWFke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 00:40:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhBWFkb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 00:40:31 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA34CC06174A;
-        Mon, 22 Feb 2021 21:39:50 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id e9so9164890plh.3;
-        Mon, 22 Feb 2021 21:39:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OQhXBHglD/xII0lAMa2hrFHnBcUAjONe9S0yyl2FFXA=;
-        b=YDgAhXuLMYooOULnSXis+HK+Oxm3DS6EGYdGnvPBtMEr+ONO9AQfJo79hLRKFuUWls
-         52r0+dU6o6NbQlM7viKK6zNXGu84VOBhoHxDgl30OC79vtkjt54pTw3n6g5qlOMJxyuV
-         Jt9joxCajZhCB819JNRkFC4zu5+x9pzuF6Ad/gDBk81WGsZQVgtc/98qTb6j77snyt/y
-         pSO8H8tjB0wZF3Z3hOEUTaQtcmpRzdY494MXuTurhDPJGes18ysnFCHrkxcTnuPx0FlQ
-         uXieQCkV4QVR2a3qzS95tm/pxPnYJ+UBHRFvBnquH9DUZhafY8ccbULEXiqrWn0E6NOa
-         qyww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OQhXBHglD/xII0lAMa2hrFHnBcUAjONe9S0yyl2FFXA=;
-        b=OwmHAG65ugIvkAN//elNEMgoxImSwO/5PaFFCqzjlwDaSzbjhzMFWa7UsNMX6prKT0
-         Y8zgeV5Ql7oEJtfNM/HxXdfB/tH/kDr6K497L0DGaII4dZTz2tsUvPMY38HxXHC24bg3
-         r3V89qRmK1k8ONOU748P2WbJiKABOx9AFE4a5F4M4innnMS0GfpK8IKB3HrwI+7xKO/f
-         DBTXrFSjCVMkRdUDzIQT/RdxO9MeMci93/4rVuzvXRRqqUK6KpDerzWPEvOSMjiww/1j
-         2lI5tk26K/lkWxwNPA9SglfmQ5+UjyD4SyRDoo/3a/s9XDSFRhsvmAUDk65Ya/wWfRFC
-         WgLA==
-X-Gm-Message-State: AOAM530KnJT+bhF7+Q467SxZ9jiU6xzTnlFvLFdOcAHgIcx3anXaedh7
-        0F2adjOlbHTwAEW9nNAM/JQInIstFWc=
-X-Google-Smtp-Source: ABdhPJzj6bc2ZJPBsKsarHyr+N1iAFQ4jNXjq7l1xvMYxtiY8FW9NZxVpmN2T6kf2xKPmPjKqgnCBw==
-X-Received: by 2002:a17:902:9f8b:b029:e0:425:b856 with SMTP id g11-20020a1709029f8bb02900e00425b856mr26184322plq.82.1614058790396;
-        Mon, 22 Feb 2021 21:39:50 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:bc19:4f46:855:edfc])
-        by smtp.gmail.com with ESMTPSA id 15sm1485724pjn.20.2021.02.22.21.39.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 21:39:49 -0800 (PST)
-Date:   Mon, 22 Feb 2021 21:39:47 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, swboyd@chromium.org,
-        dianders@chromium.org, Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 3/3] dt-bindings: input: Fix the keymap for LOCK key
-Message-ID: <YDSVI6vcxjMG6Cxe@google.com>
-References: <20210115143555.v6.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid>
- <20210115143555.v6.3.I96134907488f41f358d03f3c1b08194f9547e670@changeid>
+        id S231341AbhBWFnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 00:43:43 -0500
+Received: from mga18.intel.com ([134.134.136.126]:36790 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230060AbhBWFnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 00:43:41 -0500
+IronPort-SDR: g+oyo/3WWySuM29wub5QOF//C+Z8dmq5tHfH+1XCNqHG1qiBqolJTFIPWbbzmwg8HbK9OjOj/n
+ EhKCnOU+7gJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="172352142"
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
+   d="scan'208";a="172352142"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 21:41:54 -0800
+IronPort-SDR: eKRRZd1CTz9ylWia3EWK3WKqnmUlQrJ1jFvLEwSNJZprSV/G5xVkm/i8lYCxOdzl41N+ydahNY
+ ITM/xOfFEEBA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
+   d="scan'208";a="432536197"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by fmsmga002.fm.intel.com with ESMTP; 22 Feb 2021 21:41:50 -0800
+Subject: Re: [RFC PATCH v1] sched/fair: limit load balance redo times at the
+ same sched_domain level
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Aubrey Li <aubrey.li@intel.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+References: <1611554578-6464-1-git-send-email-aubrey.li@intel.com>
+ <CAKfTPtAxnsEDL436zUypLj2XyMQyhgPvJ8q_23835sQxWzGtxw@mail.gmail.com>
+ <a99d59c3-2023-1e8f-83cd-d964e156ffd6@linux.intel.com>
+ <CAKfTPtCCzy5keKcEOUX6D1+wty0dtYEfA5=oezWRgKY_beO5NQ@mail.gmail.com>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <c7932851-c162-b77f-2802-9b5f46038a9f@linux.intel.com>
+Date:   Tue, 23 Feb 2021 13:41:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210115143555.v6.3.I96134907488f41f358d03f3c1b08194f9547e670@changeid>
+In-Reply-To: <CAKfTPtCCzy5keKcEOUX6D1+wty0dtYEfA5=oezWRgKY_beO5NQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 02:36:17PM -0800, Philip Chen wrote:
-> Decouple LOCK from F13 and directly map the LOCK key (KSI3/KSO9) to
-> KEY_SLEEP action key code.
+Hi Vincent,
+
+Sorry for the delay, I just returned from Chinese New Year holiday.
+
+On 2021/1/25 22:51, Vincent Guittot wrote:
+> On Mon, 25 Jan 2021 at 15:00, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
+>>
+>> On 2021/1/25 18:56, Vincent Guittot wrote:
+>>> On Mon, 25 Jan 2021 at 06:50, Aubrey Li <aubrey.li@intel.com> wrote:
+>>>>
+>>>> A long-tail load balance cost is observed on the newly idle path,
+>>>> this is caused by a race window between the first nr_running check
+>>>> of the busiest runqueue and its nr_running recheck in detach_tasks.
+>>>>
+>>>> Before the busiest runqueue is locked, the tasks on the busiest
+>>>> runqueue could be pulled by other CPUs and nr_running of the busiest
+>>>> runqueu becomes 1, this causes detach_tasks breaks with LBF_ALL_PINNED
+>>>
+>>> We should better detect that when trying to detach task like below
+>>
+>> This should be a compromise from my understanding. If we give up load balance
+>> this time due to the race condition, we do reduce the load balance cost on the
+>> newly idle path, but if there is an imbalance indeed at the same sched_domain
 > 
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
+> Redo path is there in case, LB has found an imbalance but it can't
+> move some loads from this busiest rq to dest rq because of some cpu
+> affinity. So it tries to fix the imbalance by moving load onto another
+> rq of the group. In your case, the imbalance has disappeared because
+> it has already been pulled by another rq so you don't have to try to
+> find another imbalance. And I would even say you should not in order
+> to let other level to take a chance to spread the load
+> 
+>> level, we have to wait the next softirq entry to handle that imbalance. This
+>> means the tasks on the second busiest runqueue have to stay longer, which could
+>> introduce tail latency as well. That's why I introduced a variable to control
+>> the redo loops. I'll send this to the benchmark queue to see if it makes any
+> 
+> TBH, I don't like multiplying the number of knobs
 
-Applied, thank you.
+Sure, I can take your approach, :)
 
--- 
-Dmitry
+>>>
+>>> --- a/kernel/sched/fair.c
+>>> +++ b/kernel/sched/fair.c
+>>> @@ -7688,6 +7688,16 @@ static int detach_tasks(struct lb_env *env)
+>>>
+>>>         lockdep_assert_held(&env->src_rq->lock);
+>>>
+>>> +       /*
+>>> +        * Another CPU has emptied this runqueue in the meantime.
+>>> +        * Just return and leave the load_balance properly.
+>>> +        */
+>>> +       if (env->src_rq->nr_running <= 1 && !env->loop) {
+
+May I know why !env->loop is needed here? IIUC, if detach_tasks is invoked
+from LBF_NEED_BREAK, env->loop could be non-zero, but as long as src_rq's
+nr_running <=1, we should return immediately with LBF_ALL_PINNED flag cleared.
+
+How about the following change?
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 04a3ce20da67..1761d33accaa 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7683,8 +7683,11 @@ static int detach_tasks(struct lb_env *env)
+ 		 * We don't want to steal all, otherwise we may be treated likewise,
+ 		 * which could at worst lead to a livelock crash.
+ 		 */
+-		if (env->idle != CPU_NOT_IDLE && env->src_rq->nr_running <= 1)
++		if (env->idle != CPU_NOT_IDLE && env->src_rq->nr_running <= 1) {
++			/* Clear the flag as we will not test any task */
++			env->flag &= ~LBF_ALL_PINNED;
+ 			break;
++		}
+ 
+ 		p = list_last_entry(tasks, struct task_struct, se.group_node);
+ 
+Thanks,
+-Aubrey
