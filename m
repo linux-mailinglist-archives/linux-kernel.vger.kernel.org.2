@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D70C3231E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 253783231E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234175AbhBWUJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 15:09:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233030AbhBWUHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 15:07:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 138C164EAD;
-        Tue, 23 Feb 2021 20:06:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614110815;
-        bh=18JzbvqWGWvOaX8sGgbXQ8ZBt6M8MWKzgoqyxsrjh/w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Jme//fgHeOes3SI3UlLbu8aQMEsNJIIdLE5iTobsvB3uDhkLnsCtKAu65fqamJwb2
-         DKBCB6HqdngiG1fu/MIctv0Z0jFH/vl6oySNGLr99pvsQkYCdv9UXqIx0kU7+uSOMh
-         m6wYMwMgjbxXHBtUs1JEQcYbhupQL1LVUMCM0kX1I6Rn075pFCBViKUvhkl5/FbtCm
-         4ZwICoq+TTHFBvbeAWOnBjJIIyUEAj+mrNZWBW5U7B/Mzz66sYSTjN5nQY52SMj8n4
-         kNf5FDHyfCs9SiQLoobtwQ75+NoGFoxMcpunKepSVwS5ixSnI02RAphdLJmVJEBcQ0
-         IVnGZK0yjGhLw==
-Received: by mail-oo1-f43.google.com with SMTP id g46so4170634ooi.9;
-        Tue, 23 Feb 2021 12:06:54 -0800 (PST)
-X-Gm-Message-State: AOAM532VG+Y2kou+AotlZ3C8/h/sCv7A0X0kXOT4Jf6d207jqeDJirMx
-        HrMaWEMGh7V1Atn0PhuesiBnPH4++RgHnGep8Yk=
-X-Google-Smtp-Source: ABdhPJwVq3FqhVZjTBFetpO3mOU7GL+78ojBZOQ2pjE3Bh7kqAyWdbPNnj/q23QeJRymW4tpB96Sgwc/UDkiyf761pQ=
-X-Received: by 2002:a4a:8ed2:: with SMTP id c18mr19775387ool.66.1614110814282;
- Tue, 23 Feb 2021 12:06:54 -0800 (PST)
+        id S234118AbhBWUKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 15:10:15 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:47024 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234223AbhBWUIC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 15:08:02 -0500
+Received: by mail-oi1-f180.google.com with SMTP id f3so18921499oiw.13;
+        Tue, 23 Feb 2021 12:07:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=VTLM+6PNxNabUGckCe2Rhdt/lr8ZBT+VmG1d5lG8TeE=;
+        b=mlpwSkITkLqsv4u88/h5kV4qx09PiGGJCSbM2CSYfplaaJJymjwpfnLEdyILaSZ0a8
+         WPDOH+aJNs/jK5gg0BgDbiFUfoM4vBAaVdJ+O/vAj8jwKHudxvF9/Gyyb2j2SmDlxFE3
+         iPYUlSCjevIn8RItm40mrwRHzNd1HdlCuC66EHVCV9S/Tk+sweg2TrkPriUKVJCyCKbp
+         mLzy7vJNseeDgYqR+kmrxYW9Z1j+c5MRhk+OGuiC3r2cSPaWnn/mH2y/ZIkVA1ccXc1e
+         DE5ReAPtNs/n4FJ4CbeRUUuAtXJhbA4onZTcS+G0EqS4f2OvR2C3W+hwrb4qLBKk2FuK
+         OB7w==
+X-Gm-Message-State: AOAM530N6uxSVkdKRtYmD0l1K1Z34MOa2u0XSDa2fhjldy24uFAwMo9P
+        ukRA2XwNwVxi8y093jvAZA1FOm5SEwhj52cXJx97CQXhAIg=
+X-Google-Smtp-Source: ABdhPJwYhKvHiMNiv8EnMJxWAcTb5Ity+CGexm06ZXCyA1vnT3lCvDxTvigyFCZBIoqJQ6UxLXEf12bZ8nRUs7X/Tnc=
+X-Received: by 2002:aca:5dc4:: with SMTP id r187mr320156oib.69.1614110841713;
+ Tue, 23 Feb 2021 12:07:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20210223143426.2412737-1-elver@google.com> <20210223143426.2412737-3-elver@google.com>
- <CAMuHMdXVZ+UvNgoaNC-ZZoiuJ=DOsZs4oZzd8DubA7D+4iLCow@mail.gmail.com>
-In-Reply-To: <CAMuHMdXVZ+UvNgoaNC-ZZoiuJ=DOsZs4oZzd8DubA7D+4iLCow@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 23 Feb 2021 21:06:37 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1nCxY=bF_Z_aDDqHFOFgOSJUmaN5X+46oXN7-x1o5z_g@mail.gmail.com>
-Message-ID: <CAK8P3a1nCxY=bF_Z_aDDqHFOFgOSJUmaN5X+46oXN7-x1o5z_g@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/4] signal: Introduce TRAP_PERF si_code and si_perf
- to siginfo
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Marco Elver <elver@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        mascasa@google.com, Peter Collingbourne <pcc@google.com>,
-        irogers@google.com, kasan-dev <kasan-dev@googlegroups.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 23 Feb 2021 21:07:10 +0100
+Message-ID: <CAJZ5v0g9-LpR2JM4VBotHQhCKj5jYPdW3g_eqh0pGMkRhoSUWA@mail.gmail.com>
+Subject: [GIT PULL] More ACPI updates for v5.12-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 7:01 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> On Tue, Feb 23, 2021 at 3:52 PM Marco Elver <elver@google.com> wrote:
-> > Introduces the TRAP_PERF si_code, and associated siginfo_t field
-> > si_perf. These will be used by the perf event subsystem to send signals
-> > (if requested) to the task where an event occurred.
-> >
-> > Signed-off-by: Marco Elver <elver@google.com>
->
-> >  arch/m68k/kernel/signal.c          |  3 +++
->
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
+Hi Linus,
 
-For asm-generic:
+Please pull from the tag
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.12-rc1-2
+
+with top-most commit 833a18d0715d97db8fa5e8d7eb614fc143ac78e4
+
+ Merge branch 'acpica'
+
+on top of commit 2d4eb3317248c55268685e80f692c2eefb485a31
+
+ Merge branch 'acpi-messages'
+
+to receive more ACPI updates for 5.12-rc1.
+
+These fix a race condition in generic_serial_bus (I2C) and GPIO
+Operation Region handling in ACPICA and reduce some related code
+duplication (Hans de Goede).
+
+Thanks!
+
+
+---------------
+
+Hans de Goede (2):
+      ACPICA: Fix race in generic_serial_bus (I2C) and GPIO op_region
+parameter handling
+      ACPICA: Remove some code duplication from acpi_ev_address_space_dispatch
+
+---------------
+
+ drivers/acpi/acpica/acobject.h  |  1 +
+ drivers/acpi/acpica/evhandler.c |  7 +++++
+ drivers/acpi/acpica/evregion.c  | 69 +++++++++++++++++++++++++----------------
+ drivers/acpi/acpica/evxfregn.c  |  2 ++
+ 4 files changed, 53 insertions(+), 26 deletions(-)
