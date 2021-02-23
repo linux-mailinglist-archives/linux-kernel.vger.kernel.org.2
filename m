@@ -2,155 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD512322CDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED739322CE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 15:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhBWOwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 09:52:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43551 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231995AbhBWOvu (ORCPT
+        id S233108AbhBWOxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 09:53:02 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12567 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232908AbhBWOwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:51:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614091823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M2OsuZx3r6NZflw0QWxaOyg4KYFKBmW4S9BSyB7K63o=;
-        b=fnK7QAP1RubFCwBLd5AtfUm/V/5tl+0PEcAngJSoi9HU1OG2t/YUcTtz1OWEaHa2XcJVpD
-        dNCgs5zn4tistOgsgjGxseDJamXOp6vxdRKR+WXPpqEUNXi8SRG9x8/+2CX7tKRILVTP8Y
-        wQsRvGhZK/diNArU/VzTG/OH4qfRTu0=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-8raEOUfJOa2r56sT9_hoQw-1; Tue, 23 Feb 2021 09:50:21 -0500
-X-MC-Unique: 8raEOUfJOa2r56sT9_hoQw-1
-Received: by mail-wr1-f69.google.com with SMTP id k5so2396444wrw.14
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 06:50:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M2OsuZx3r6NZflw0QWxaOyg4KYFKBmW4S9BSyB7K63o=;
-        b=R1kmr0ooU8YX5eyoI6Gi3BtUYA89yMDVknGKlBxhhCRBROfJPbPZPIC3rkPviuyDiU
-         0VAAqc7/wu8ZVTk6xvzTzHjFnWH+Wt8LvT5Ic44Z/gDPlmfkWkniETD7L5CFp5VWLmgt
-         HFwmkSo7Tu5D9TAt8W+5GEDA2/5X4aPLt0DA1Jq4hsJYKZIZi8u6CE4qDnOqMRcHrCVy
-         m39pRZDU9X6hBTyDrF5qDyuhOuwlge4tyVLOovlkhRJm6ix2Gy9VRjvu5EB4qehoqx16
-         2uOlZfGu8zvMQ/9QRgVIX4t5c2ZDWMJfSrSg2IqjD1cW0SqUWrtzmx05S8tkm5vPeA1b
-         kemA==
-X-Gm-Message-State: AOAM533Ex2RMNKItA3DMoO1OzXP9WAEiG8iUgpUh48GlnIMWZ/63aMMR
-        w58vpLH2Oqo6Rhim/JKOX180RK5ZUF1GlbubOr2ZcU6nT/sNO8536cj9tCLgrfbmJa1KkjhYKsv
-        81hAaIElIAACRjgf4ltn/PRUo
-X-Received: by 2002:a1c:98c2:: with SMTP id a185mr9344410wme.72.1614091819958;
-        Tue, 23 Feb 2021 06:50:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz9tKk0w/iRNRhb7cnm0SfH7twj8rmJO83bREpU9MxKNF6QINjG5A2hMiz9ZZMxEqXDfAr0og==
-X-Received: by 2002:a1c:98c2:: with SMTP id a185mr9344394wme.72.1614091819741;
-        Tue, 23 Feb 2021 06:50:19 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id o15sm2891607wmh.39.2021.02.23.06.50.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 06:50:19 -0800 (PST)
-Date:   Tue, 23 Feb 2021 15:50:16 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v5 00/19] virtio/vsock: introduce SOCK_SEQPACKET
- support
-Message-ID: <20210223145016.ddavx6fihq4akdim@steredhat>
-References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
- <20210222142311.gekdd7gsm33wglos@steredhat>
+        Tue, 23 Feb 2021 09:52:39 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DlMQX3Hl4zMYLm;
+        Tue, 23 Feb 2021 22:49:40 +0800 (CST)
+Received: from [10.67.110.218] (10.67.110.218) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Feb 2021 22:51:30 +0800
+Subject: Re: [PATCH 4.9.257 1/1] futex: Fix OWNER_DEAD fixup
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     Lee Jones <lee.jones@linaro.org>, <stable@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <judy.chenhui@huawei.com>,
+        <zhangjinhao2@huawei.com>, <tglx@linutronix.de>
+References: <20210222110542.3531596-1-zhengyejian1@huawei.com>
+ <20210222110542.3531596-2-zhengyejian1@huawei.com>
+ <20210222115424.GF376568@dell> <YDOec1kosGKKO80g@kroah.com>
+ <4f06340a-e027-f944-3248-2939639d5e07@huawei.com>
+ <YDOlOd9aHQzVCXkk@kroah.com>
+ <42af110f-f492-c11c-397c-e0b5018d9263@huawei.com>
+ <YDT8dsm6XFmfUEi7@kroah.com>
+From:   "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>
+Message-ID: <a3d3e1e5-8956-e1db-840b-40b60e302d69@huawei.com>
+Date:   Tue, 23 Feb 2021 22:51:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210222142311.gekdd7gsm33wglos@steredhat>
+In-Reply-To: <YDT8dsm6XFmfUEi7@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.110.218]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 03:23:11PM +0100, Stefano Garzarella wrote:
->Hi Arseny,
->
->On Thu, Feb 18, 2021 at 08:33:44AM +0300, Arseny Krasnov wrote:
->>	This patchset impelements support of SOCK_SEQPACKET for virtio
->>transport.
->>	As SOCK_SEQPACKET guarantees to save record boundaries, so to
->>do it, two new packet operations were added: first for start of record
->>and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
->>both operations carries metadata - to maintain boundaries and payload
->>integrity. Metadata is introduced by adding special header with two
->>fields - message count and message length:
+
+
+On 2021/2/23 21:00, Greg KH wrote:
+> On Mon, Feb 22, 2021 at 09:11:43PM +0800, Zhengyejian (Zetta) wrote:
 >>
->>	struct virtio_vsock_seq_hdr {
->>		__le32  msg_cnt;
->>		__le32  msg_len;
->>	} __attribute__((packed));
 >>
->>	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
->>packets(buffer of second virtio descriptor in chain) in the same way as
->>data transmitted in RW packets. Payload was chosen as buffer for this
->>header to avoid touching first virtio buffer which carries header of
->>packet, because someone could check that size of this buffer is equal
->>to size of packet header. To send record, packet with start marker is
->>sent first(it's header contains length of record and counter), then
->>counter is incremented and all data is sent as usual 'RW' packets and
->>finally SEQ_END is sent(it also carries counter of message, which is
->>counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
->>incremented again. On receiver's side, length of record is known from
->>packet with start record marker. To check that no packets were dropped
->>by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
->>checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
->>1) and length of data between two markers is compared to length in
->>SEQ_BEGIN header.
->>	Now as  packets of one socket are not reordered neither on
->>vsock nor on vhost transport layers, such markers allows to restore
->>original record on receiver's side. If user's buffer is smaller that
->>record length, when all out of size data is dropped.
->>	Maximum length of datagram is not limited as in stream socket,
->>because same credit logic is used. Difference with stream socket is
->>that user is not woken up until whole record is received or error
->>occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
->>	Tests also implemented.
->
->I reviewed the first part (af_vsock.c changes), tomorrow I'll review 
->the rest. That part looks great to me, only found a few minor issues.
+>> On 2021/2/22 20:36, Greg KH wrote:
+>>> On Mon, Feb 22, 2021 at 08:20:38PM +0800, Zhengyejian (Zetta) wrote:
+>>>>
+>>>>
+>>>> On 2021/2/22 20:07, Greg KH wrote:
+>>>>> On Mon, Feb 22, 2021 at 11:54:24AM +0000, Lee Jones wrote:
+>>>>>> On Mon, 22 Feb 2021, Zheng Yejian wrote:
+>>>>>>
+>>>>>>> From: Peter Zijlstra <peterz@infradead.org>
+>>>>>>>
+>>>>>>> commit a97cb0e7b3f4c6297fd857055ae8e895f402f501 upstream.
+>>>>>>>
+>>>>>>> Both Geert and DaveJ reported that the recent futex commit:
+>>>>>>>
+>>>>>>>      c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
+>>>>>>>
+>>>>>>> introduced a problem with setting OWNER_DEAD. We set the bit on an
+>>>>>>> uninitialized variable and then entirely optimize it away as a
+>>>>>>> dead-store.
+>>>>>>>
+>>>>>>> Move the setting of the bit to where it is more useful.
+>>>>>>>
+>>>>>>> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>>>>>> Reported-by: Dave Jones <davej@codemonkey.org.uk>
+>>>>>>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>>>>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>>>>>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+>>>>>>> Cc: Paul E. McKenney <paulmck@us.ibm.com>
+>>>>>>> Cc: Peter Zijlstra <peterz@infradead.org>
+>>>>>>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>>>>>>> Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
+>>>>>>> Link: http://lkml.kernel.org/r/20180122103947.GD2228@hirez.programming.kicks-ass.net
+>>>>>>> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+>>>>>>> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+>>>>>>> ---
+>>>>>>>     kernel/futex.c | 7 +++----
+>>>>>>>     1 file changed, 3 insertions(+), 4 deletions(-)
+>>>>>>
+>>>>>> Reviewed-by: Lee Jones <lee.jones@linaro.org>
+>>>>>
+>>>>> This does not apply to the 4.9.y tree at all right now, are you all sure
+>>>>> you got the backport correct?
+>>>>>
+>>>>> confused,
+>>>>>
+>>>>> greg k-h
+>>>>> .
+>>>>>
+>>>> I make the patch basing on 282aeb477a10 ("Linux 4.9.257").
+>>>> Should I base on f0cf73f13b39 ("Linux 4.9.258-rc1")?
+>>>
+>>> Yes please as I think this is already there.
+>>>
+>>> How about just waiting for the next release to come out, I will push out
+>>> the 4.4 and 4.9 -rc releases right now as well to give everyone a chance
+>>> to sync up properly.
+>> Ok, I will rebase this patch then.
+> 
+> Great, can you try 4.9.258?
 
-I revieiwed the rest of it as well, left a few minor comments, but I 
-think we're well on track.
+I'm very glad to.
+Rebased patch is ready:
+ 
+https://lore.kernel.org/lkml/20210223144151.916675-1-zhengyejian1@huawei.com/
 
-I'll take a better look at the specification patch tomorrow.
-
-Thanks,
-Stefano
-
->
->In the meantime, however, I'm getting a doubt, especially with regard 
->to other transports besides virtio.
->
->Should we hide the begin/end marker sending in the transport?
->
->I mean, should the transport just provide a seqpacket_enqueue() 
->callbacl?
->Inside it then the transport will send the markers. This is because 
->some transports might not need to send markers.
->
->But thinking about it more, they could actually implement stubs for 
->that calls, if they don't need to send markers.
->
->So I think for now it's fine since it allows us to reuse a lot of 
->code, unless someone has some objection.
->
->Thanks,
->Stefano
->
-
+Zheng Yejian
