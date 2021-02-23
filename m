@@ -2,111 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7969832299D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 025F73229A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:47:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhBWLnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 06:43:17 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:10066 "EHLO m42-2.mailgun.net"
+        id S232426AbhBWLpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 06:45:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34692 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232299AbhBWLnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:43:09 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614080567; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=u4UIo32uH4I3VBRPDY3bek63Jn/ZMnFlBlUbmDlv6YI=; b=xb2iaEzMQ/oP4cH0tJ3dO1c1dED6Ck8jEv8BOQDmm5O7mr0SAX0HsJLwTT+HCicQaSmx1AVc
- OZIjPG5fKvlOowt24NHM9E8ltQFtLEqkf2wNLWBbnzY+DvcqQsA+0WRCA4ctSwnNed7+Ti8O
- uZo0/ZFka7X7cJhrk5iuz6gtOBw=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6034ea11e87943df30ced76f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Feb 2021 11:42:09
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C760AC43463; Tue, 23 Feb 2021 11:42:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.102] (unknown [49.207.203.158])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8C084C433CA;
-        Tue, 23 Feb 2021 11:42:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8C084C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH 03/13] arm64: dts: sc7280: Add basic dts/dtsi files for
- SC7280 soc
-To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        id S232396AbhBWLp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 06:45:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614080683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+kK10yoG2irjSdFkL2yWY8vClAAwl/2I649w+BMdE18=;
+        b=hp6jDeuoAMGib81AFoKi0+y0ICBfMdCipA59OuFdkJ2jEIu4AQ2tQbV9C3NhC3SEu06h1t
+        pwEQ4i1WW99T5p02d8BLb2Jth+C3xMz80xf6WxCYfMBKKtZb8lrVqbD8IrM9BQiabI2MOS
+        NwYx7n3jQY7axF2ov5wchPKZ6i9Y2Pk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1D8CCAC69;
+        Tue, 23 Feb 2021 11:44:43 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 12:44:42 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-References: <1613114930-1661-1-git-send-email-rnayak@codeaurora.org>
- <1613114930-1661-4-git-send-email-rnayak@codeaurora.org>
- <161406585892.1254594.9748953968478715173@swboyd.mtv.corp.google.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <14d2e157-2908-7c59-1c44-f662203fabc5@codeaurora.org>
-Date:   Tue, 23 Feb 2021 17:12:02 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+Subject: Re: [PATCH printk-rework 11/14] printk: remove logbuf_lock
+Message-ID: <YDTqqklNWi9K5oQv@alley>
+References: <20210218081817.28849-1-john.ogness@linutronix.de>
+ <20210218081817.28849-12-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <161406585892.1254594.9748953968478715173@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218081817.28849-12-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 2021-02-18 09:18:14, John Ogness wrote:
+> Since the ringbuffer is lockless, there is no need for it to be
+> protected by @logbuf_lock. Remove @logbuf_lock.
+> 
+> This means that printk_nmi_direct and printk_safe_flush_on_panic()
+> no longer need to acquire any lock to run.
+> 
+> @console_seq, @exclusive_console_stop_seq, @console_dropped are
+> protected by @console_lock.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-On 2/23/2021 1:07 PM, Stephen Boyd wrote:
-> Quoting Rajendra Nayak (2021-02-11 23:28:40)
->> Add initial device tree support for the SC7280 SoC and the IDP
->> boards based on this SoC
->>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->> ---
-> 
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> new file mode 100644
->> index 0000000..428f863
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
->> @@ -0,0 +1,47 @@
->> +// SPDX-License-Identifier: BSD-3-Clause
->> +/*
->> + * sc7280 IDP board device tree source
-> 
-> Is it capitalized or not capitalized for SC?
-
-:) I'll be consistent and make it not capitalized everywhere.
-
-> 
->> + *
->> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
->> + */
->> +
->> +/dts-v1/;
->> +
->> +#include "sc7280.dtsi"
->> +
->> +/ {
->> +       model = "Qualcomm Technologies, Inc. SC7280 IDP platform";
-> 
-> Because it is capitalized here.
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Best Regards,
+Petr
