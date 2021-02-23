@@ -2,171 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A39C3234AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 01:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 193C73234B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 01:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbhBXAml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 19:42:41 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:10113 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234554AbhBWXzs (ORCPT
+        id S233374AbhBXAuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 19:50:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38506 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233666AbhBWX6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 18:55:48 -0500
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210223235502epoutp044fba60dbdf0d8e91a2b457516fcb21c4~mha7zXp652981029810epoutp04L
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:55:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210223235502epoutp044fba60dbdf0d8e91a2b457516fcb21c4~mha7zXp652981029810epoutp04L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614124502;
-        bh=AYruRk8nl6xfKCakVQjyg5hwKFcT7auUu/Wqgs0Ha+Y=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=KHWoVSHVnfLSQR3+f2wUhhN2ZhR/CiOEeUBwsYyGW1pLqnSLu39RHIlmBMfDIsnHs
-         rtxy+1SBOVOVTUKimSgWDGpLwadI1ZQRuVqlyMX5FR6L5+7Sx2+js2J+Lug2pKxGMX
-         lw7CLpL/R0aD+0LbeZmcLHMiZG8g5XeVnuqsGMAs=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210223235501epcas2p188899f67a1d491d98771927922bd5668~mha6VIMLn1754517545epcas2p1g;
-        Tue, 23 Feb 2021 23:55:01 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.185]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DlbWl1jMNz4x9Q0; Tue, 23 Feb
-        2021 23:54:59 +0000 (GMT)
-X-AuditID: b6c32a45-34dff7000001297d-bb-603595d35453
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B1.93.10621.3D595306; Wed, 24 Feb 2021 08:54:59 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: RE: [PATCH v22 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <DM6PR04MB6575DA862FD50130DAF1E573FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210223235458epcms2p666e7cca021e09c715ca3b11ada39ebeb@epcms2p6>
-Date:   Wed, 24 Feb 2021 08:54:58 +0900
-X-CMS-MailID: 20210223235458epcms2p666e7cca021e09c715ca3b11ada39ebeb
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHLsWRmVeSWpSXmKPExsWy7bCmhe7lqaYJBs2fWS0ezNvGZrG37QS7
-        xcufV9ksDt9+x24x7cNPZotP65exWrw8pGmx6kG4RfPi9WwWc842MFn09m9ls3h85zO7xaIb
-        25gs+v+1s1hc3jWHzaL7+g42i+XH/zFZ3N7CZbF0601Gi87pa1gsFi3czeIg6nH5irfH5b5e
-        Jo+ds+6ye0xYdIDRY//cNeweLSf3s3h8fHqLxaNvyypGj8+b5DzaD3QzBXBFNTDaJBYlZ2SW
-        pSqk5iXnp2TmpdsqhYa46VooKWTkF5fYKkUbWhjpGVqa6plY6hmZx1oZGhgYmSop5CXmptoq
-        VehCdSspFCUXAFWXpBaXFKUmpwKFihyKSxLTU/WKE3OLS/PS9ZLzc5UUyhJzSoH6lPTtbDJS
-        E1NSixQSnjBm7L/znb1gpWDF82fb2RoYf3N3MXJySAiYSBzofsfaxcjFISSwg1Hi6J5XzF2M
-        HBy8AoISf3cIg9QIC9hLvGlZzARiCwkoSay/OIsdIq4ncevhGkYQm01AR2L6ifvsIHNEBFaw
-        SFz8dYkNxGEW+MUkceLxB0aIbbwSM9qfskDY0hLbl28Fi3MKxEqsOPuRGSKuIfFjWS+ULSpx
-        c/Vbdhj7/bH5UHNEJFrvnYWqEZR48HM3VFxS4tjuD0wQdr3E1ju/GEGOkBDoYZQ4vPMWK0RC
-        X+Jax0awI3gFfCUur57PBvIxi4CqxJPeEogSF4mZB8+ClTALyEtsfzsHHCjMApoS63fpg5gS
-        AsoSR26xwHzVsPE3OzqbWYBPouPwX7j4jnlPoC5Tk1j3cz3TBEblWYiQnoVk1yyEXQsYmVcx
-        iqUWFOempxYbFRgiR/QmRnAe0HLdwTj57Qe9Q4xMHIyHGCU4mJVEeNnuGiUI8aYkVlalFuXH
-        F5XmpBYfYqwCenIis5Rocj4wE+WVxBuaGRiZmRqbGBubmpiSLWxqZGZmYGlqYWpmZKEkzlts
-        8CBeSCA9sSQ1OzW1ILUIZjkTB6dUAxP3q60m8mxeK7ZU5+/5bHT0RNk0o9ps0fy0B1VhfLc8
-        kya8vrq4NGFVI+sLx+rjXMqJaa8VTvrfuasmlXzCQHUnwxknUc6sj9LMR4znzJ8Vx6jTsZc7
-        aEdB1zNNK8uAQB+nI+Gx2p9PzN+6uVnSMESV94Waa32eQ8vHpD2Ws/QSZj/avV9o+rUfEx6W
-        HyjQ6VludXHWD49fwTesGu5HHd7ZbtWT+810mV9TxpGS2kW/KifLqx29v5Iz832uPrOrxPo5
-        MdFSF0rbJuv+ysj96yIf8zvhu/Dl3nezGqb7Hr3w7ejt72lrfOxzj/u6rX39Y7+J2NxMoZro
-        MoNdk1vvC07ezPT+dDd3TFjGCa2Uw0osxRmJhlrMRcWJAELGdKLRBAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
-References: <DM6PR04MB6575DA862FD50130DAF1E573FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210222092957epcms2p728b0c563f3cfbecbf8692d7e86f9afed@epcms2p7>
-        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
-        <20210222093150epcms2p155352e2255e6bfd8f8d71c737ed05e76@epcms2p1>
-        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p6>
+        Tue, 23 Feb 2021 18:58:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614124627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/BRP8WOD3C7GnixOAaJcuGj6DLx+wECwJIj7jVM8RU0=;
+        b=GXwPKih+WvdYP06FTajRZjl6v6rV0sfhnnbUlLRqUJ0UzM4c6Hhw67WlH4zsaru7sjCezV
+        KrOnjg2Sv+fXh2/kkKJPVhPm19zhlH+JHVIp1BsSr1VCd6q1NKOXbkYe/rzdDB82XHWCBX
+        eW/Nlxslv+00JXgddMRmx8qkBSduHv4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-483-LDBGhwqoPLyuZszq9G7YoA-1; Tue, 23 Feb 2021 18:57:06 -0500
+X-MC-Unique: LDBGhwqoPLyuZszq9G7YoA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD0B91005501;
+        Tue, 23 Feb 2021 23:57:03 +0000 (UTC)
+Received: from Ruby.redhat.com (ovpn-112-95.rdu2.redhat.com [10.10.112.95])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 11D5B19C46;
+        Tue, 23 Feb 2021 23:57:00 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     nouveau@lists.freedesktop.org
+Cc:     Martin Peres <martin.peres@free.fr>,
+        Jeremy Cline <jcline@redhat.com>,
+        Simon Ser <contact@emersion.fr>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] drm/nouveau/kms/nvd9-nv138: Fix CRC calculation for the cursor channel
+Date:   Tue, 23 Feb 2021 18:56:47 -0500
+Message-Id: <20210223235653.66120-1-lyude@redhat.com>
+In-Reply-To: <20210119014849.2509965-5-lyude@redhat.com>
+References: <20210119014849.2509965-5-lyude@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > @@ -2656,7 +2656,12 @@ static int ufshcd_queuecommand(struct Scsi_Host
-> > *host, struct scsi_cmnd *cmd)
-> > 
-> >         lrbp->req_abort_skip = false;
-> > 
-> > -       ufshpb_prep(hba, lrbp);
-> > +       err = ufshpb_prep(hba, lrbp);
-> > +       if (err == -EAGAIN) {
-> > +               lrbp->cmd = NULL;
-> > +               ufshcd_release(hba);
-> > +               goto out;
-> > +       }
-> Did I miss-read it, or are you bailing out of wb failed e.g. because no tag is available?
-> Why not continue with read10?
+Something that didn't get noticed until I started running cursor tests:
+we're accidentally disabling an option for CRC calculation that's enabled
+by default: WidePipeCrc, which controls whether we use the full width of
+the data in the display pipe in order calculate CRCs. Having this disabled
+apparently causes frames with the cursor plane enabled to generate
+different CRCs than frames without the cursor plane enabled, even if the
+frames are pixel-equivalent.
 
-We try to sending HPB read several times within the requeue_timeout_ms.
-Because it strategy has more benefit for overall performance in this
-situation that many requests are queueing.
+So, let's make sure to enable this and fix a bunch of cursor related tests
+in IGT.
 
->  
->  
-> > +       if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
-> > +               return -EAGAIN;
-> Why did you choose to use blk_insert_cloned_request and not e.g. the more common blk_execute_rq_nowait?
+v2:
+* Nvidia added the specific bit we were using to fix this issues to
+  open-gpu-docs, so pull in the actual macro definitions for it
 
-It is the process that sending one more command (write buffer) prior to
-HPB read command. This API makes write buffer to issue directly. Other APIs,
-for example blk_execute_rq_nowait, it can make queueing the command in the
-scheduler, so the order of commands can be inversed.
-Here is comment of the API.
-// blk_insert_cloned_request - Helper for stacking drivers to submit a request
+Cc: Martin Peres <martin.peres@free.fr>
+Cc: Jeremy Cline <jcline@redhat.com>
+Cc: Simon Ser <contact@emersion.fr>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+---
+ drivers/gpu/drm/nouveau/dispnv50/crc907d.c          | 3 ++-
+ drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h | 3 +++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-> > +       hpb->stats.pre_req_cnt++;
-> > +
-> > +       return 0;
-> > +}
->  
-> > -       ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
-> > +       if (ufshpb_is_required_wb(hpb, transfer_len)) {
-> > +               err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
-> > +               if (err) {
-> > +                       unsigned long timeout;
-> > +
-> > +                       timeout = cmd->jiffies_at_alloc + msecs_to_jiffies(
-> > +                                 hpb->params.requeue_timeout_ms);
-> > +                       if (time_before(jiffies, timeout))
-> > +                               return -EAGAIN;
-> Why requeue_timeout_ms needs to be a configurable parameter?
-> Why rq->timeout is not enough?
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/crc907d.c b/drivers/gpu/drm/nouveau/dispnv50/crc907d.c
+index 0a89ae9523d4..f9ad641555b7 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/crc907d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/crc907d.c
+@@ -32,7 +32,8 @@ crc907d_set_src(struct nv50_head *head, int or, enum nv50_crc_source_type source
+ 		       NVDEF(NV907D, HEAD_SET_CRC_CONTROL, EXPECT_BUFFER_COLLAPSE, FALSE) |
+ 		       NVDEF(NV907D, HEAD_SET_CRC_CONTROL, TIMESTAMP_MODE, FALSE) |
+ 		       NVDEF(NV907D, HEAD_SET_CRC_CONTROL, SECONDARY_OUTPUT, NONE) |
+-		       NVDEF(NV907D, HEAD_SET_CRC_CONTROL, CRC_DURING_SNOOZE, DISABLE);
++		       NVDEF(NV907D, HEAD_SET_CRC_CONTROL, CRC_DURING_SNOOZE, DISABLE) |
++		       NVDEF(NV907D, HEAD_SET_CRC_CONTROL, WIDE_PIPE_CRC, ENABLE);
+ 	int ret;
+ 
+ 	switch (source) {
+diff --git a/drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h b/drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h
+index 79aff6ff3138..f972ef1409f4 100644
+--- a/drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h
++++ b/drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h
+@@ -246,6 +246,9 @@
+ #define NV907D_HEAD_SET_CRC_CONTROL_CRC_DURING_SNOOZE                           5:5
+ #define NV907D_HEAD_SET_CRC_CONTROL_CRC_DURING_SNOOZE_DISABLE                   (0x00000000)
+ #define NV907D_HEAD_SET_CRC_CONTROL_CRC_DURING_SNOOZE_ENABLE                    (0x00000001)
++#define NV907D_HEAD_SET_CRC_CONTROL_WIDE_PIPE_CRC                               6:6
++#define NV907D_HEAD_SET_CRC_CONTROL_WIDE_PIPE_CRC_DISABLE                       (0x00000000)
++#define NV907D_HEAD_SET_CRC_CONTROL_WIDE_PIPE_CRC_ENABLE                        (0x00000001)
+ #define NV907D_HEAD_SET_CONTEXT_DMA_CRC(a)                                      (0x00000438 + (a)*0x00000300)
+ #define NV907D_HEAD_SET_CONTEXT_DMA_CRC_HANDLE                                  31:0
+ #define NV907D_HEAD_SET_OUTPUT_LUT_LO(a)                                        (0x00000448 + (a)*0x00000300)
+-- 
+2.29.2
 
-We are using this value for re-trying threshold of HPB read.
-
-Thanks,
-Daejun
-
-> Thanks,
-> Avri
->  
->  
->  
->  
->   
