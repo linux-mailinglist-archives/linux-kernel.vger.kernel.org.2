@@ -2,121 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB2F322A4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 108F9322A4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhBWMHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 07:07:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:45940 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232503AbhBWME7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 07:04:59 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E990B31B;
-        Tue, 23 Feb 2021 04:03:56 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E06C3F70D;
-        Tue, 23 Feb 2021 04:03:55 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     syzbot <syzbot+d7581744d5fd27c9fbe1@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, bp@alien8.de, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: UBSAN: shift-out-of-bounds in load_balance
-In-Reply-To: <000000000000a43f1f05bbefe703@google.com>
-References: <000000000000a43f1f05bbefe703@google.com>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Tue, 23 Feb 2021 12:03:49 +0000
-Message-ID: <jhjlfbfhty2.mognet@arm.com>
+        id S232902AbhBWMHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 07:07:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232489AbhBWMFN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 07:05:13 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F11DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 04:04:32 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id l12so25610493edt.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 04:04:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=u54RcXY8lntpJRKlVhb5dK9TdcZjKTkI7lQxSwGkD7I=;
+        b=Sj3jaLOrk9EgUNB4CMwV5RDi9NW4MNzgeXmP3xvBhZkEUwiYNmudBpdsY9O807ER/5
+         qDjhj+6MigQdUh0/s2lO2tioTo9ek59WLM4IHy3+Bu+ZDTUIgkDyiI/DQTDAdP1RWgBz
+         IVvwSzji17pVJfAk8Fa2kXa02wXSZipmXJJdov+lxE8tBaD2ShoSbSVuNvkS+Y6pzaeC
+         t0TwwjzE2lp8jeMjSjhGKGZdeVW5bCoSi+xGDbDxMCzC6fgXJVia/0ukY3P8w0dMOxZR
+         gBuYMDNqBOHsqOk+pf6efhKav+rrG+DkqLysDVUO+3MjiKNFpx/gEl0DWcVy2QJ3ntVZ
+         jnOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=u54RcXY8lntpJRKlVhb5dK9TdcZjKTkI7lQxSwGkD7I=;
+        b=b3NUkFUXOtxTnyPF1zZDm6kVR7GZ4yqnKlbG/4aoj3d2AHbFdfnqoD0SR+cxLIakM3
+         oYrFEP8B5vso39JS2H9qVlm7YMGanExEjgpyVtrWPHkFvNfBKBU1CsM9mYCrdzFOyPu6
+         2Y6k6KT9Wcen/cRojIgjnOg4Ld1cf/UN0sBCtw6LWQYOP5GreuBaaoDHr2yZ+52n0fZg
+         548xRsjQu3XtipPGmQgZi5NhwFFYQroUtcI1319qWrtu50ZTmHcg7cvvYLwVlVzAXyTg
+         9uDQhsRPGVbqlaERaed69ooHOdMtMwijna9L6PRie2GQdZgVad1TRZlnz7vxTNllGc5Q
+         +/tQ==
+X-Gm-Message-State: AOAM531i6XUIlkZVC2jBD14X8qa/ODNobCI5ctMLWLak2h5BRYzHVjWA
+        EEbbaUWIvZo3yVLaJn+77dbjUPNTIb66bHgzL10eWg==
+X-Google-Smtp-Source: ABdhPJzJAinCv+2pcIKwucmukYorecqSwGho/KIh01RmGZFktqdOABnysMgYqYjpAwm5nm8r0lbCQkFo1Lr2/w3llMg=
+X-Received: by 2002:aa7:cb0d:: with SMTP id s13mr27137270edt.221.1614081871259;
+ Tue, 23 Feb 2021 04:04:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210222121022.546148341@linuxfoundation.org>
+In-Reply-To: <20210222121022.546148341@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 23 Feb 2021 17:34:19 +0530
+Message-ID: <CA+G9fYsyqoo5+Vz_uYf3QkLiaKzT_p4R6r+n3-eQw1Hw3A3B5Q@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/49] 4.9.258-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-+Vincent
-
-On 22/02/21 09:12, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
+On Mon, 22 Feb 2021 at 18:11, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> HEAD commit:    31caf8b2 Merge branch 'linus' of git://git.kernel.org/pub/..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16ab2682d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b81388f0b32761d4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d7581744d5fd27c9fbe1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1277457f500000
+> This is the start of the stable review cycle for the 4.9.258 release.
+> There are 49 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d7581744d5fd27c9fbe1@syzkaller.appspotmail.com
+> Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
+> Anything received after that time might be too late.
 >
-> ================================================================================
-> UBSAN: shift-out-of-bounds in kernel/sched/fair.c:7712:14
-> shift exponent 149 is too large for 64-bit type 'long unsigned int'
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.258-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-That 149 is surprising.
 
-sd->cache_nice_tries is \in {1, 2}, and sd->nr_balanced_failed should be in
-the same ballpark.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-A successful load_balance() resets it to 0; a failed one increments
-it. Once it gets to sd->cache_nice_tries + 3, this should trigger an active
-balance, which will either set it to sd->cache_nice_tries+1 or reset it to
-0. There is this one condition that could let it creep up uncontrollably:
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-  /*
-   * Don't kick the active_load_balance_cpu_stop,
-   * if the curr task on busiest CPU can't be
-   * moved to this_cpu:
-   */
-  if (!cpumask_test_cpu(this_cpu, busiest->curr->cpus_ptr)) {
-          raw_spin_unlock_irqrestore(&busiest->lock,
-                                      flags);
-          goto out_one_pinned;
-  }
+Summary
+------------------------------------------------------------------------
 
-So despite the resulting sd->balance_interval increase, repeatedly hitting
-this might yield the above. Would we then want something like this?
+kernel: 4.9.258-rc1
+git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+git branch: linux-4.9.y
+git commit: f0cf73f13b3979117e50a90dc884d48c1738105a
+git describe: v4.9.257-50-gf0cf73f13b39
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
+y/build/v4.9.257-50-gf0cf73f13b39
 
----
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 8a8bd7b13634..b65c24b5ae91 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7422,6 +7422,11 @@ struct lb_env {
- 	struct list_head	tasks;
- };
- 
-+static inline unsigned int sd_balance_failed_cap(struct sched_domain *sd)
-+{
-+	return sd->cache_nice_tries + 3;
-+}
-+
- /*
-  * Is this task likely cache-hot:
-  */
-@@ -9493,7 +9498,7 @@ imbalanced_active_balance(struct lb_env *env)
- 	 * threads on a system with spare capacity
- 	 */
- 	if ((env->migration_type == migrate_task) &&
--	    (sd->nr_balance_failed > sd->cache_nice_tries+2))
-+	    (sd->nr_balance_failed >= sd_balance_failed_cap(sd)))
- 		return 1;
- 
- 	return 0;
-@@ -9737,8 +9742,10 @@ static int load_balance(int this_cpu, struct rq *this_rq,
- 		 * frequent, pollute the failure counter causing
- 		 * excessive cache_hot migrations and active balances.
- 		 */
--		if (idle != CPU_NEWLY_IDLE)
--			sd->nr_balance_failed++;
-+		if (idle != CPU_NEWLY_IDLE) {
-+			sd->nr_balance_failed = min(sd->nr_balance_failed + 1,
-+						    sd_balance_failed_cap(sd));
-+		}
- 
- 		if (need_active_balance(&env)) {
- 			unsigned long flags;
+No regressions (compared to build v4.9.257)
 
+No fixes (compared to build v4.9.257)
+
+Ran 39549 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-intel_pstate
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* libhugetlbfs
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* network-basic-tests
+* kvm-unit-tests
+* ltp-open-posix-tests
+* kselftest-vm
+* kselftest-kexec
+* kselftest-x86
+
+--
+Linaro LKFT
+https://lkft.linaro.org
