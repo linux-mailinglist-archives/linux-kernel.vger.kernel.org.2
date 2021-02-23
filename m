@@ -2,108 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723343222EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 01:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD263222F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 01:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhBWABi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 19:01:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55994 "EHLO mail.kernel.org"
+        id S230175AbhBWALB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 19:11:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231408AbhBWAB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 19:01:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97E0360C41;
-        Tue, 23 Feb 2021 00:00:46 +0000 (UTC)
+        id S229501AbhBWAK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 19:10:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED49E601FF;
+        Tue, 23 Feb 2021 00:10:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614038446;
-        bh=af3kVTgsG+nH3bM3IYnJBqeSQYehgcaCIygkIvqVjeQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nV6TYhL/oZNC9ifaFgtV5DjQUEKW4ct/RZXzL5cEAO+OEiYaRVvJB6MnQTc1GgLDg
-         ZxZPHOSv1bmmm50hjEKCBKAdJy06dDuQgJws05+gPJ7vhenuXz0IbFL9AHEcQCGmZu
-         imEAdGj/OEhQSAKHAz3rHudTUwkOAJGTbcsmgQ3E4mnIeJk4ydl08iGkjwUVUAN1X+
-         gpuniD1QjbCS0WDVI9g2unaM1LUFoC9It+wtjRh0GXnNVsd+VoG5YBbI4/JwHcPTrq
-         FRtTYoRRzhd2gk02YLalZuf1ZGsh62b0eufN0g4UGVYTpcrawf1WR9HZdvEwjFLc3p
-         nD7cOeD11urKg==
-Date:   Mon, 22 Feb 2021 17:00:45 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Simon Ser <contact@emersion.fr>
-Cc:     stylon.wang@amd.com, sunpeng.li@amd.com, Bhawanpreet.Lakha@amd.com,
-        dri-devel@lists.freedesktop.org, Rodrigo.Siqueira@amd.com,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        nicholas.kazlauskas@amd.com, airlied@linux.ie,
-        aurabindo.pillai@amd.com, Souptick Joarder <jrdr.linux@gmail.com>,
-        daniel@ffwll.ch, bas@basnieuwenhuizen.nl,
-        alexander.deucher@amd.com, harry.wentland@amd.com,
-        christian.koenig@amd.com
-Subject: Re: [PATCH] drm/amdgpu/display: initialize the variable 'i'
-Message-ID: <20210223000045.GA4304@24bbad8f3778>
-References: <1614021931-4386-1-git-send-email-jrdr.linux@gmail.com>
- <32vjVDssCxltB75h5jHin2U3-cvNjmd_HFnRLiKohhbXkTfZea3hw2Knd80SgcHoyIFldMNwqh49t28hMBvta0HeWed1L0q_efLJ8QCgNw8=@emersion.fr>
- <20210222234457.GA36153@24bbad8f3778>
- <yHvp7KbQD2pF5dR6krMc_Zuq9a8GxkYSSiIpjBenuiCjwpFmFxpAOpfzhp0DfHQhH2Z3P81-CGpwmmXp0zjifT93vBXXYd5kJsSucQgXFZI=@emersion.fr>
+        s=k20201202; t=1614039017;
+        bh=aUWRhREIoI4Ot8y8zjIOgpAt3Pq6EOt5+NuB98SlsS0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ybxj1TmDEx6C2TWQh7GLd3EKBQdyknc/il2n1rDl0EMjma5dLY/RXyyzJ2De4mOdO
+         7SFHPIaL2gTIjIgdhOVDYYySXIemE+hzCs11xe1Labfm943yRL2V14Xk4JVi70o7uD
+         RmQbv+Qs5jhIC9xCgieD7Ks5PwxuPNnzitegPx96EZ64sowI7i+tupgcqahHe3goae
+         Nj0W3pBvNty3yjF1wnLjs4F7nxRXiech0rcgmhBrd0qsAG+uSgYvGi4rvKyc7nD9ML
+         z5J6brSh3KwgixP4TnR1IOAhPdXgX+DAZiyJnUftR4JPZAMFgWdPMdBQwtJjmBErWm
+         MCezOvYbKwa5w==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH 00/13] rcu/nocb updates v2 
+Date:   Tue, 23 Feb 2021 01:09:58 +0100
+Message-Id: <20210223001011.127063-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yHvp7KbQD2pF5dR6krMc_Zuq9a8GxkYSSiIpjBenuiCjwpFmFxpAOpfzhp0DfHQhH2Z3P81-CGpwmmXp0zjifT93vBXXYd5kJsSucQgXFZI=@emersion.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 11:50:06PM +0000, Simon Ser wrote:
-> On Tuesday, February 23rd, 2021 at 12:44 AM, Nathan Chancellor <nathan@kernel.org> wrote:
-> 
-> > On Mon, Feb 22, 2021 at 11:05:17PM +0000, Simon Ser wrote:
-> > > On Monday, February 22nd, 2021 at 8:25 PM, Souptick Joarder <jrdr.linux@gmail.com> wrote:
-> > >
-> > > > >> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9804:38:
-> > > > >> warning: variable 'i' is uninitialized when used here
-> > > > >> [-Wuninitialized]
-> > > >                            timing  = &edid->detailed_timings[i];
-> > > >                                                              ^
-> > > >    drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9714:7:
-> > > > note: initialize the variable 'i' to silence this warning
-> > > >            int i;
-> > > >                 ^
-> > > >                  = 0
-> > > >    1 warning generated.
-> > > >
-> > > > Initialize the variable 'i'.
-> > >
-> > > Hm, I see this variable already initialized in the loop:
-> > >
-> > >     for (i = 0; i < 4; i++) {
-> > >
-> > > This is the branch agd5f/drm-next.
-> >
-> > That is in the
-> >
-> > 	if (amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_DISPLAY_PORT
-> > 		|| amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_EDP) {
-> >
-> > branch not the
-> >
-> > 	} else if (edid && amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_HDMI_TYPE_A) {
-> >
-> > branch, where i is indeed used uninitialized like clang complains about.
-> >
-> > I am not at all familiar with the code so I cannot say if this fix is
-> > the proper one but it is definitely a legitimate issue.
-> 
-> I think you have an outdated branch. In my checkout, i is not used in the first
-> branch, and is initialized in the second one.
-> 
-> https://cgit.freedesktop.org/~agd5f/linux/tree/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c?h=drm-next#n9700
+It's a v2 of the previous set (https://lore.kernel.org/lkml/20210128171222.131380-1-frederic@kernel.org/)
+minus the patches already applied in rcu/dev. And this is based on 
+latest rcu/dev.
 
-That branch is the outdated one:
+Changelog since v1:
 
-https://git.kernel.org/linus/a897913a819191550ab2fa2784d3c3ada3a096d3
+"rcu/nocb: Fix potential missed nocb_timer rearm"
+	* Remove nocb_defer_wakeup reset from do_nocb_deferred_wakeup_common() (paulmck)
+	* Only reset/del if the timer is actually armed
+	* Add secondary potential cause for missed rearm in the changelog
 
-Please see:
+"rcu/nocb: Disable bypass when CPU isn't completely offloaded"
+	* Improve comments on state machine (paulmck)
+	* Add comment (a full quote from Paul) explaining why early flush is enough (paulmck)
+	* Move sanity check to the very end of deoffloading (paulmck)
+	* Clarify some comments about nocb locking on de-offloading (paulmck)
 
-https://gitlab.freedesktop.org/agd5f/linux/-/blob/amd-staging-drm-next/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c#L9854
+"rcu/nocb: Remove stale comment above rcu_segcblist_offload()"
+	* New patch, reported by (paulmck)
 
-It was introduced by commit f9b4f20c4777 ("drm/amd/display: Add Freesync
-HDMI support to DM").
+"rcu/nocb: Merge nocb_timer to the rdp leader"
+	* Remove rcu_running_nocb_timer() and its use in rcu_rdp_is_offloaded()
+	  debugging since the timer doesn't refer to any rdp offloading anymore.
+	* Only delete nocb_timer when armed, in nocb_gp_wait()
+	* Clarify some comments about nocb locking on de-offloading (paulmck)
+	* Remove stale code "re-enabling" nocb timer on offloading. Not necessary
+	  anymore and even buggy.
 
-Cheers,
-Nathan
+"timer: Revert "timer: Add timer_curr_running()""
+	* New patch
+
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	rcu/dev-v2
+
+HEAD: 925ee3076eb694db893e2c6664d90ad8fb9cb6e5
+
+Thanks,
+	Frederic
+---
+
+Frederic Weisbecker (13):
+      rcu/nocb: Fix potential missed nocb_timer rearm
+      rcu/nocb: Disable bypass when CPU isn't completely offloaded
+      rcu/nocb: Remove stale comment above rcu_segcblist_offload()
+      rcu/nocb: Move trace_rcu_nocb_wake() calls outside nocb_lock when possible
+      rcu/nocb: Merge nocb_timer to the rdp leader
+      timer: Revert "timer: Add timer_curr_running()"
+      rcu/nocb: Directly call __wake_nocb_gp() from bypass timer
+      rcu/nocb: Allow de-offloading rdp leader
+      rcu/nocb: Cancel nocb_timer upon nocb_gp wakeup
+      rcu/nocb: Delete bypass_timer upon nocb_gp wakeup
+      rcu/nocb: Only cancel nocb timer if not polling
+      rcu/nocb: Prepare for finegrained deferred wakeup
+      rcu/nocb: Unify timers
+
+
+ include/linux/rcu_segcblist.h |   7 +-
+ include/linux/timer.h         |   2 -
+ include/trace/events/rcu.h    |   1 +
+ kernel/rcu/rcu_segcblist.c    |   3 +-
+ kernel/rcu/tree.c             |   2 +-
+ kernel/rcu/tree.h             |   9 +-
+ kernel/rcu/tree_plugin.h      | 233 +++++++++++++++++++++++-------------------
+ kernel/time/timer.c           |  14 ---
+ 8 files changed, 141 insertions(+), 130 deletions(-)
