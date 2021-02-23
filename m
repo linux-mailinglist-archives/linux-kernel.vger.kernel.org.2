@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A60322EF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD13322EFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233513AbhBWQmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 11:42:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbhBWQmV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:42:21 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFA4C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:41:40 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id u20so17765489iot.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:41:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pmPfSnwb9WVL3HWBYOU43s+aaTja6BAXtWKSK5U9rZk=;
-        b=DYBn/AWB8IOwn86jhiwxaefJTaFpiOI8uu8fUG2/mG2HudIzd3AU1KFaB41PLWCMMx
-         kSQMe9CtkmbmFhBHQj/ELY92QI981kY+wcJcs7eOZl8ju9pdyilct4125awQUU8uZOpk
-         8bkqpiRhZeiTyWwY3kdLFhHQEdTj22aMthsGr5k0jALyChQZEqLjaWewXHQgUsjnmiDk
-         OH2QJh/c72QXHPkr/EEJOMLkb58Yruoj3H/57OOvkjlCIBbkINR+s/+3EFd905WzyXJl
-         q4OI0IeOCSwsgIgLsyeMWqE+nDVh3ePcbn2NVGRSCHATkKVIWI04Mw3zQ6LtkbDQYvto
-         Sq3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pmPfSnwb9WVL3HWBYOU43s+aaTja6BAXtWKSK5U9rZk=;
-        b=Rpz7y/+hLI5qJA2AsT9F9f72z6Rs+nKJdjls+5ozScPgK4ETpMa8CrKjFeeYYXRn2q
-         /z8r42BOrnXIV7n5VyeqTFYeYfm4kzYXWevM9G8cDVM+ZF5dkgssoeb5zmc49yfB7vUn
-         1yR4h74dGk9AcJRJiFXjPUQalP4678o5L/ioFEp97TyJHeYaG2n/3jPtv7FQCBV7hamm
-         9U2UVHyhZjfVFyjvC5C8ciMIr9oyxEuKFHh0SvtwiGnVhHB4z7XcWoslo+kHHL5i7gE8
-         tzNMEWXFVjOclujfWXhgYvC13fBlktHIKkV3HwT9oPagPzXa/fstJbrTfmcXu9M47iqE
-         PQ3A==
-X-Gm-Message-State: AOAM533aV3zCiqy9dwLNQyqAYO67uX7V0mLNgwwWY4D7A2gqXWcRU8ix
-        oab54aKWVT8LxdUMcxSJc7Z31ayS+xNLLsrm/hqaRA==
-X-Google-Smtp-Source: ABdhPJwbMFIFE/4C+InN3vcoDlCGPex/eVyjX+Msr152C/ArBe0qRarWWm8l6hjmXO8FbEc4DvT0tYFKqyDGqgH6vvc=
-X-Received: by 2002:a05:6638:1390:: with SMTP id w16mr493408jad.83.1614098499898;
- Tue, 23 Feb 2021 08:41:39 -0800 (PST)
+        id S232715AbhBWQnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 11:43:46 -0500
+Received: from mga17.intel.com ([192.55.52.151]:24406 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232166AbhBWQnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 11:43:42 -0500
+IronPort-SDR: kZYLmZszEFwK+TDzMwcU3586NpQGdlov4isstL5yJo/5HCZp/Oo3s/NXeN058Dtb/ZlvNOROh2
+ NLo/jcoFyTeA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="164713401"
+X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
+   d="scan'208";a="164713401"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 08:43:00 -0800
+IronPort-SDR: LxxGQSXmOxBMVzabOGayCwNZzUooN3yUDHOZITiY+35PA9YN96upVylt9k/b/6RHe9ImCsDbjw
+ pyIbzKxZHg6Q==
+X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
+   d="scan'208";a="364569260"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 08:43:00 -0800
+Date:   Tue, 23 Feb 2021 08:42:59 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Aili Yao <yaoaili@kingsoft.com>,
+        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
+        <naoya.horiguchi@nec.com>, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        yangfeng1@kingsoft.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
+ hwpoison page access.
+Message-ID: <20210223164259.GA166727@agluck-desk2.amr.corp.intel.com>
+References: <20210223204436.1df73153@alex-virtual-machine>
+ <788DFBA0-903F-4548-9C2F-B1A1543EE770@amacapital.net>
 MIME-Version: 1.0
-References: <20210222072217.15633-1-jindong.yue@nxp.com> <CABCJKudwajnmHAEC1XAH=pouCoOXq7q6NmpLST5pba8ejU6FtA@mail.gmail.com>
-In-Reply-To: <CABCJKudwajnmHAEC1XAH=pouCoOXq7q6NmpLST5pba8ejU6FtA@mail.gmail.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Tue, 23 Feb 2021 09:41:28 -0700
-Message-ID: <CANLsYkx0Y_f8tdeioUFrwBRV8M6OtLcSuPDZbgb6noPgrfyjOA@mail.gmail.com>
-Subject: Re: [PATCH] remoteproc: core: Remove casting to rproc_handle_resource_t
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Jindong Yue <jindong.yue@nxp.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <788DFBA0-903F-4548-9C2F-B1A1543EE770@amacapital.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 at 15:48, Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> Hi,
->
-> On Sun, Feb 21, 2021 at 11:18 PM Jindong Yue <jindong.yue@nxp.com> wrote:
-> >
-> > There are four different callback functions that are used for the
-> > rproc_handle_resource_t callback that all have different second
-> > parameter types.
-> >
-> > rproc_handle_vdev -> struct fw_rsc_vdev
-> > rproc_handle_trace -> struct fw_rsc_trace
-> > rproc_handle_devmem -> struct fw_rsc_devmem
-> > rproc_handle_carveout -> struct fw_rsc_carveout
-> >
-> > These callbacks are cast to rproc_handle_resource_t so that there is no
-> > error about incompatible pointer types. Unfortunately, this is a control
-> > flow integrity violation, which verifies that the callback function's
-> > types match the prototypes exactly before jumping.
->
-> Thank you for sending the patch! It might be worth noting that Clang's
-> Control-Flow Integrity checking is currently used only in Android
-> kernels, so while the type mismatches are real and should be fixed,
-> they don't result in runtime errors without this feature.
->
-> > To fix this, change the second parameter of all functions to void * and
-> > use a local variable with the correct type so that everything works
-> > properly. With this, we can remove casting to rproc_handle_resource_t
-> > for these functions.
-> >
-> > Signed-off-by: Jindong Yue <jindong.yue@nxp.com>
-> > Reviewed-by: Peng Fan <peng.fan@nxp.com>
->
-> This looks correct to me. Please feel free to add:
->
-> Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+On Tue, Feb 23, 2021 at 07:33:46AM -0800, Andy Lutomirski wrote:
+> 
+> > On Feb 23, 2021, at 4:44 AM, Aili Yao <yaoaili@kingsoft.com> wrote:
+> > 
+> > ﻿On Fri, 5 Feb 2021 17:01:35 +0800
+> > Aili Yao <yaoaili@kingsoft.com> wrote:
+> > 
+> >> When one page is already hwpoisoned by MCE AO action, processes may not
+> >> be killed, processes mapping this page may make a syscall include this
+> >> page and result to trigger a VM_FAULT_HWPOISON fault, as it's in kernel
+> >> mode it may be fixed by fixup_exception, current code will just return
+> >> error code to user code.
+> >> 
+> >> This is not sufficient, we should send a SIGBUS to the process and log
+> >> the info to console, as we can't trust the process will handle the error
+> >> correctly.
+> >> 
+> >> Suggested-by: Feng Yang <yangfeng1@kingsoft.com>
+> >> Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+> >> ---
+> >> arch/x86/mm/fault.c | 62 +++++++++++++++++++++++++++++----------------
+> >> 1 file changed, 40 insertions(+), 22 deletions(-)
+> >> 
+> > Hi luto;
+> >  Is there any feedback?
+> 
+> At the very least, this needs a clear explanation of why your proposed behavior is better than the existing behavior.
 
-Where is the original patch?  I can't find it on the linux-remoteproc
-and linux-kernel mailing lists.
+The explanation is buried in that "can't trust the process" line.
 
->
-> Sami
+E.g. user space isn't good about checking for failed write(2) syscalls.
+So if the poison was in a user buffer passed to write(fd, buffer, count)
+sending a SIGBUS would be the action if they read the poison directly,
+so it seems reasonable to send the same signal if the kernel read their
+poison for them.
+
+It would avoid users that didn't check the return value merrily proceeding
+as if everything was ok.
+
+-Tony
