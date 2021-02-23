@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86197322E00
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC8E322E03
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbhBWPvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:51:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
+        id S233481AbhBWPwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:52:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233384AbhBWPu6 (ORCPT
+        with ESMTP id S233468AbhBWPv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 10:50:58 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B0DC061786;
-        Tue, 23 Feb 2021 07:50:12 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id w7so480727wmb.5;
-        Tue, 23 Feb 2021 07:50:11 -0800 (PST)
+        Tue, 23 Feb 2021 10:51:28 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0702C06178B
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:50:47 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id o3so8322207oic.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 07:50:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eQwe9NJal+9xVku41hj0jNRXaZ5etqUoeLkfgTJjhEE=;
-        b=k9s0F1WdPXhOc6rInvcXG1IfKqZ1aerGl43gEGEk5apTwif5AKr+DWB3P4dc3Q+bZl
-         r0ODdjWLkd2GmC+U2yaUltCW2oCEiBcCRMW9a+0d27T9R/PoShHvFBBt3c7bLaiMN36J
-         l6NITLjIEUyEAldgvpbrC5yKJ7UcT1PKjo7SmjhOVqDzRR4DLoj1ZJq0v6sbbRln9mFS
-         2T+M6g4pOu71prEVTKJVSYvjB3gp5sbEy+xAwwacJeRKIQ0iF9jyL4s2T33vq55FBX16
-         amWb8FBPZSAKO0cJaHLrGig/7dajuAM7ae978VDo2Xj7Dx2FNfJ3oOeefsQEnQHeegA1
-         Bulw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=23xyttMgUTUc74O8PSZq50RUnpnu4HEpSjkkgbeXd50=;
+        b=bWUUd7DRJ8fxiVDrm/GbzrK0jpBnaJpLAtCLK9iG3/HaqQJokjax0+3WT+am9QiZO/
+         g5ks13ahhiLhszxDWHhPnIybHmixq98QENtwdhuU3eyktbjdG07uYNZK4XQxTdKTnlha
+         GLAE4nSk/+jVaOrO7Kr67vFh3v2Izhnw8v2jWqY1pmra+HMMqYMTF+7uOpQvDuxYTw8z
+         Ebj5uAHeP886aLV711ncIe0L+3N/ideu1m5BqR7l0hQfNSIzf2iGL4jQWv/c9qbmgRRO
+         3GSECONOt3uriBqOprSCId+ynebzD/ODb6KxRzt6P9AGQ4e1UgibMcAEkILVwQbMkC32
+         jKaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eQwe9NJal+9xVku41hj0jNRXaZ5etqUoeLkfgTJjhEE=;
-        b=q8kjCiHicLexpDcEe36xM5hc7PrJh9Ufcv9se996BdUhuN8ndyZjrIyaRA7GBMf+RJ
-         WbENE/n4BcOdXQBzGyXMrt9Bz9Sx30+n3YaDeFBUUcQktmBNsuaZsJwr60Fq56mGKaLN
-         scJVn37URv7wX4Z+4LUPSQVIvjRX912nosptS9l2oQUr2RiR04B+x3+BgJp27WwEVLhD
-         69KIDbBJye6/pky265QtDsEdDar2fRJFVxe3BM1exspkPAJzkS5fLB6e5DVPoYaKdUC4
-         13Gh/rAZDAHlDcx1rLzOt6LMmw+oNQL46Uka9qiNuA5WSEWizSfSXvjVP2rJCzX67iYx
-         jvaQ==
-X-Gm-Message-State: AOAM532MS9ACcqMq24ApxjC0le+ToN+XsCUTZPIJo7Y5WoZsVXwpCf5F
-        doX4kONPEO1KFgdABJOvFvM=
-X-Google-Smtp-Source: ABdhPJwJuLRCrJYSWXYea/XMr57BFa8YkfoPAnCwVgavZ+Kir/O1G9q1OlnbBvOxVICSUe+aTcNFnA==
-X-Received: by 2002:a1c:1b4d:: with SMTP id b74mr10310085wmb.31.1614095410680;
-        Tue, 23 Feb 2021 07:50:10 -0800 (PST)
-Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id t23sm3209201wmn.13.2021.02.23.07.50.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 07:50:10 -0800 (PST)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     f.fainelli@gmail.com, jonas.gorski@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Tony Prisk <linux@prisktech.co.nz>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH 2/2] usb: host: ehci-platform: add ignore-oc DT support
-Date:   Tue, 23 Feb 2021 16:50:05 +0100
-Message-Id: <20210223155005.21712-3-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210223155005.21712-1-noltari@gmail.com>
-References: <20210223155005.21712-1-noltari@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=23xyttMgUTUc74O8PSZq50RUnpnu4HEpSjkkgbeXd50=;
+        b=TJK2dYqs70xLG6nyP1EKnGOxkffOQDHWU089/0TmjJX/E6uU+n0TtVp57HX2D7htMM
+         PZqYsXKZOV5xEO0TOH62lxVbC3h9FdHqUTtK1azAJbTshEIzguH40j/LOrrI+rcJ5L/F
+         UB0Nva9Kg69y901UhQ4fZmdf9cKFqL1xDWqwEtL4l4LLATMDHSSvr8iJ6J6YK8OfSVu7
+         zzN2YZwbi+SMy9ZWnu80Ff0k3vbcm16a5vMEKt2nGQ7uz5hIXaYkz46LUzycux1ViuFI
+         pRUAXZs8iQh2yyyuMsUyZ5fMaTna+9zxrn4GY1mF765fWLHqV8c79W/JTG3z4TlXoMG2
+         oY3g==
+X-Gm-Message-State: AOAM531IL1MoPoiy7a9MnStinC+0tKXTXxzAiIdlMFMnMKwKu76FTQ8Z
+        tOA4x7l4L6A8jCJ+l8KcPZUnXnX4HrZo1NJbJkxe0oAuxV4=
+X-Google-Smtp-Source: ABdhPJwmLfj4P+YB6TA3SbUyXZUMALrC8Q5ZBxxZShUXhi/jO2OYGG1maell7wrySj7E7LUovTo2SSHWlKKikjQ3y6w=
+X-Received: by 2002:a05:6808:1290:: with SMTP id a16mr19426724oiw.161.1614095447221;
+ Tue, 23 Feb 2021 07:50:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210223061905.422659-1-jasowang@redhat.com> <20210223061905.422659-2-jasowang@redhat.com>
+ <533886b3-9979-7a51-5b44-eeefad242cdf@roeck-us.net>
+In-Reply-To: <533886b3-9979-7a51-5b44-eeefad242cdf@roeck-us.net>
+From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Date:   Tue, 23 Feb 2021 09:50:35 -0600
+Message-ID: <CAEUSe7-g=O_=G1fzjLwjQH1taj0YZYKt=874mUxcM-qGv51+9g@mail.gmail.com>
+Subject: Re: [PATCH V4 1/3] virtio: don't prompt CONFIG_VIRTIO_PCI_MODERN
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        open list <linux-kernel@vger.kernel.org>, shahafs@mellanox.com,
+        sgarzare@redhat.com, Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Over-current reporting isn't supported on some platforms such as bcm63xx.
-These devices will incorrectly report over-current if this flag isn't properly
-activated.
+Hello!
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- drivers/usb/host/ehci-platform.c | 3 +++
- 1 file changed, 3 insertions(+)
+If I may add to the nit-picking...
 
-diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
-index a48dd3fac153..f8e58372f7fe 100644
---- a/drivers/usb/host/ehci-platform.c
-+++ b/drivers/usb/host/ehci-platform.c
-@@ -286,6 +286,9 @@ static int ehci_platform_probe(struct platform_device *dev)
- 		if (of_property_read_bool(dev->dev.of_node, "big-endian"))
- 			ehci->big_endian_mmio = ehci->big_endian_desc = 1;
- 
-+		if (of_property_read_bool(dev->dev.of_node, "ignore-oc"))
-+			ehci->ignore_oc = 1;
-+
- 		if (of_property_read_bool(dev->dev.of_node,
- 					  "needs-reset-on-resume"))
- 			priv->reset_on_resume = true;
--- 
-2.20.1
+On Tue, 23 Feb 2021 at 09:23, Guenter Roeck <linux@roeck-us.net> wrote:
+> On 2/22/21 10:19 PM, Jason Wang wrote:
+> > We used to prompt CONFIG_VIRTIO_PCI_MODERN to user which may bring a
+> > lot of confusion. E.g it may break various default configs which want
+> > virtio devices.
+> >
+> > So this patch fixes this by hiding the prompot and documenting the
 
+*prompt
+
+Greetings!
+
+Daniel D=C3=ADaz
+daniel.diaz@linaro.org
