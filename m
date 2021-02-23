@@ -2,64 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7D132288C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14724322896
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbhBWKGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:06:30 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:36772 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230482AbhBWKGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:06:23 -0500
-Received: from zn.tnic (p200300ec2f08d800f4a123a8a64e4d27.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:d800:f4a1:23a8:a64e:4d27])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A34811EC051F;
-        Tue, 23 Feb 2021 11:05:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614074740;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Lj5iIoesPz2ZRWUkdPvplvvFVZPwHPGzrGTJCq2uw3w=;
-        b=gKVSOvOqx4T08vP3y0Evua0nuWO/o/R3IW8mceMGbjnuAgcJuNhLXZ+2qXdVvWRTI4Y4sW
-        2MUTokBZZ5ngPt8Kye9NAPcrWRU5Btd6cFaR6cY+9ijsVO+z6MwwRdOzNSTNeuXdx9wenz
-        6iqc8HU9qjMkvcGAS51IW2F/MCFVlcM=
-Date:   Tue, 23 Feb 2021 11:05:38 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Aili Yao <yaoaili@kingsoft.com>
-Cc:     tony.luck@intel.com, mingo@redhat.com, tglx@linutronix.de,
-        hpa@zytor.com, x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangfeng1@kingsoft.com,
-        yaoaili@kingsoft
-Subject: Re: [PATCH v2] x86/mce: fix wrong no-return-ip logic in
- do_machine_check()
-Message-ID: <20210223100538.GB26060@zn.tnic>
-References: <20210222180819.3998fe33@alex-virtual-machine>
- <20210222102206.GC29063@zn.tnic>
- <20210222192146.76ffec84@alex-virtual-machine>
- <20210222201723.0fcec589@alex-virtual-machine>
- <20210222122241.GA10880@zn.tnic>
- <20210222203549.0e54c26f@alex-virtual-machine>
- <20210222124550.GB10880@zn.tnic>
- <20210223102755.13cbdffd@alex-virtual-machine>
- <20210223094300.GA26060@zn.tnic>
- <20210223175640.5708c7ed@alex-virtual-machine>
+        id S232387AbhBWKId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 05:08:33 -0500
+Received: from conuserg-08.nifty.com ([210.131.2.75]:45189 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232221AbhBWKHs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 05:07:48 -0500
+Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 11NA6MWu027532;
+        Tue, 23 Feb 2021 19:06:22 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 11NA6MWu027532
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614074783;
+        bh=owZQEXlFIQ33aUPBIXx5P3uyVNGtycyIe/UsLJziBHQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l44/E6+HFnGiVvw+YJmuspNes+npkA4ClvTaqyrX7X5+RlJjrF9JNVGcVTqSwK+4r
+         rH8iwhSClDlwVh1Qwc/Lo4VLhx9uP3Fg1pYYNoOIwbQVmF1EKOMqcbtaGOIVB99pZm
+         vB8cWFja1r3rzWUXQDxoybw6rE6CkIbBi80fQifB0oYJMgUtaPve4sPmKtqK81aNzi
+         zB0DBNQ1kH3a5HZbuvBhJ+UpTau5yblloiLiviMtSa/anKZdcxKP53yFE79nl/vuEo
+         99EoCFqOil/yLL64J0bou6fwMlE1fKRP+UB+NDooldit4tKzinjnE0lNPMRWforwAA
+         0Obx6MXyJ1VEg==
+X-Nifty-SrcIP: [126.26.90.165]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-arch@vger.kernel.org
+Subject: [PATCH] asm-generic/ioctl.h: use BUILD_BUG_ON_ZERO() for type check
+Date:   Tue, 23 Feb 2021 19:06:19 +0900
+Message-Id: <20210223100619.798698-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210223175640.5708c7ed@alex-virtual-machine>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 05:56:40PM +0800, Aili Yao wrote:
-> What i inject is AR error, and I don't see MCG_STATUS_RIPV flag.
+With the latest sparse, I do not see the error claimed by commit
+d55875f5d52c ("include/asm-generic/ioctl.h: fix _IOC_TYPECHECK sparse
+error").
 
-Then keep debugging qemu to figure out why that is.
+Anyway, using BUILD_BUG_ON_ZERO() is clearer, and we do not need
+to worry about sparse because BUILD_BUG_ON_ZERO() definition in
+<linux/build_bug.h> is a constant zero when __CHECKER__ is defined.
 
+Also, remove #ifndef __KERNEL__ from <uapi/asm-generic/ioctl.h>.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ include/asm-generic/ioctl.h      | 12 ++++--------
+ include/uapi/asm-generic/ioctl.h | 13 ++++++-------
+ 2 files changed, 10 insertions(+), 15 deletions(-)
+
+diff --git a/include/asm-generic/ioctl.h b/include/asm-generic/ioctl.h
+index 9fda9ed000cd..d5129d70ee1c 100644
+--- a/include/asm-generic/ioctl.h
++++ b/include/asm-generic/ioctl.h
+@@ -2,17 +2,13 @@
+ #ifndef _ASM_GENERIC_IOCTL_H
+ #define _ASM_GENERIC_IOCTL_H
+ 
++#include <linux/build_bug.h>
+ #include <uapi/asm-generic/ioctl.h>
+ 
+-#ifdef __CHECKER__
+-#define _IOC_TYPECHECK(t) (sizeof(t))
+-#else
+ /* provoke compile error for invalid uses of size argument */
+-extern unsigned int __invalid_size_argument_for_IOC;
++#undef _IOC_TYPECHECK
+ #define _IOC_TYPECHECK(t) \
+-	((sizeof(t) == sizeof(t[1]) && \
+-	  sizeof(t) < (1 << _IOC_SIZEBITS)) ? \
+-	  sizeof(t) : __invalid_size_argument_for_IOC)
+-#endif
++	BUILD_BUG_ON_ZERO(sizeof(t) != sizeof(t[1]) || \
++			  sizeof(t) >= (1 << _IOC_SIZEBITS))
+ 
+ #endif /* _ASM_GENERIC_IOCTL_H */
+diff --git a/include/uapi/asm-generic/ioctl.h b/include/uapi/asm-generic/ioctl.h
+index a84f4db8a250..d50bd39ec3e3 100644
+--- a/include/uapi/asm-generic/ioctl.h
++++ b/include/uapi/asm-generic/ioctl.h
+@@ -72,9 +72,8 @@
+ 	 ((nr)   << _IOC_NRSHIFT) | \
+ 	 ((size) << _IOC_SIZESHIFT))
+ 
+-#ifndef __KERNEL__
+-#define _IOC_TYPECHECK(t) (sizeof(t))
+-#endif
++#define _IOC_TYPECHECK(t)	0
++#define _IOC_SIZE_WITH_TYPECHECK(t)	(sizeof(t) + _IOC_TYPECHECK(t))
+ 
+ /*
+  * Used to create numbers.
+@@ -82,10 +81,10 @@
+  * NOTE: _IOW means userland is writing and kernel is reading. _IOR
+  * means userland is reading and kernel is writing.
+  */
+-#define _IO(type,nr)		_IOC(_IOC_NONE,(type),(nr),0)
+-#define _IOR(type,nr,size)	_IOC(_IOC_READ,(type),(nr),(_IOC_TYPECHECK(size)))
+-#define _IOW(type,nr,size)	_IOC(_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
+-#define _IOWR(type,nr,size)	_IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
++#define _IO(type,nr)		_IOC(_IOC_NONE, type, nr, 0)
++#define _IOR(type,nr,size)	_IOC(_IOC_READ, type, nr, _IOC_SIZE_WITH_TYPECHECK(size))
++#define _IOW(type,nr,size)	_IOC(_IOC_WRITE, type, nr, _IOC_SIZE_WITH_TYPECHECK(size))
++#define _IOWR(type,nr,size)	_IOC(_IOC_READ|_IOC_WRITE, type, nr, _IOC_SIZE_WITH_TYPECHECK(size))
+ #define _IOR_BAD(type,nr,size)	_IOC(_IOC_READ,(type),(nr),sizeof(size))
+ #define _IOW_BAD(type,nr,size)	_IOC(_IOC_WRITE,(type),(nr),sizeof(size))
+ #define _IOWR_BAD(type,nr,size)	_IOC(_IOC_READ|_IOC_WRITE,(type),(nr),sizeof(size))
 -- 
-Regards/Gruss,
-    Boris.
+2.27.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
