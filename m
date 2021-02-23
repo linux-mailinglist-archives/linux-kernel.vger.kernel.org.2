@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18076322D8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED05E322D90
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 16:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233335AbhBWPaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 10:30:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58146 "EHLO mail.kernel.org"
+        id S233195AbhBWPaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 10:30:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233319AbhBWP3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233320AbhBWP3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Feb 2021 10:29:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D584464E4B;
-        Tue, 23 Feb 2021 15:28:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8851864E20;
+        Tue, 23 Feb 2021 15:28:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614094124;
-        bh=ASPTFYQJ9aYlx0jP9jf73ncK2t24KFX+ta+1VMzSgQw=;
+        s=k20201202; t=1614094126;
+        bh=/yFNU66U4Xw+JD7FpZgD669dqSm9thssAE43uytWBV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=joCMwd9EN+j1jUbAT42/zqoBbSjMxhmL/vxcEkNfXFNtSQ0GvIOfD0HpfKPOCRNLV
-         nItF1cX2BWOEeYij1329LhFT9ZImkmUUkfxO+X2cxT/nX50U/HiMB22x538xophzvz
-         LX3XnlaQ+42Dr91fhje1xsLppn9tWBquBwhNgYPiuO6mm87EP3Cml0NPf1+kzvTzJJ
-         rMua10YCtj3C0YG/YEh4ZLsJmapvuuyEtrWmLLeIhcH4MqbxoE9VvvPynFteBGnD+A
-         TlVDzwmdyeSW9SCI+HN0xwVeqstBuubJFM38R0WfvnOzfKYsC/vItnDFuGi3cAAK2u
-         JkfCh5FuQZPUw==
+        b=iriA5e9XzHqLm0IOvgqYXsErbMc0pIs3Ve/qrXWEMmls0Ekd/l1MHUZ6090exbi+P
+         zhlCCHsD0pD5tOXsGkPhqTYf+WtPXfLGOkiZnunylfotsEIej3zaKoG1LWh2PuTpXp
+         4j9TgOenknb5FwbWdoT/snGoRHDl9xmOOoOw5fxNQtzAImQN2EV75X6XSoHzEuPWU7
+         Zd9F0lj3TlM0x1ZzP/IpfrP83sbwcEjGGYe+H2k8iTyG0WZ7x0k+0r7gfy0ZXzleDM
+         nIM6Xwuw3RHZukCH/HkguBZVm0gct7vw+R1Oh1nrrFrDKfIWnHG/prdAFowqCsqhVd
+         FwGIVl/Sb1/Bg==
 From:   Will Deacon <will@kernel.org>
-To:     catalin.marinas@arm.com, Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64/mm: Fixed some coding style issues
-Date:   Tue, 23 Feb 2021 15:28:38 +0000
-Message-Id: <161407685558.1401825.16372685933631923628.b4-ty@kernel.org>
+To:     catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
+        He Zhe <zhe.he@windriver.com>, jolsa@redhat.com,
+        alexander.shishkin@linux.intel.com, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, namhyung@kernel.org
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 1/2] arm64: uprobe: Return EOPNOTSUPP for AARCH32 instruction probing
+Date:   Tue, 23 Feb 2021 15:28:39 +0000
+Message-Id: <161407668452.1401335.3864455032595350603.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1613958231-5474-1-git-send-email-daizhiyuan@phytium.com.cn>
-References: <1613958231-5474-1-git-send-email-daizhiyuan@phytium.com.cn>
+In-Reply-To: <20210223082535.48730-1-zhe.he@windriver.com>
+References: <20210223082535.48730-1-zhe.he@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,14 +42,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 09:43:51 +0800, Zhiyuan Dai wrote:
-> This patch move the pointer location to fix coding style issues,
-> improve code reading.
+On Tue, 23 Feb 2021 16:25:34 +0800, He Zhe wrote:
+> As stated in linux/errno.h, ENOTSUPP should never be seen by user programs.
+> When we set up uprobe with 32-bit perf and arm64 kernel, we would see the
+> following vague error without useful hint.
+> 
+> The sys_perf_event_open() syscall returned with 524 (INTERNAL ERROR:
+> strerror_r(524, [buf], 128)=22)
+> 
+> [...]
 
-Applied to arm64 (for-next/fixes), thanks!
+Applied first patch only to arm64 (for-next/fixes), thanks!
 
-[1/1] arm64/mm: Fixed some coding style issues
-      https://git.kernel.org/arm64/c/2e8acca1911b
+[1/2] arm64: uprobe: Return EOPNOTSUPP for AARCH32 instruction probing
+      https://git.kernel.org/arm64/c/d47422d953e2
 
 Cheers,
 -- 
