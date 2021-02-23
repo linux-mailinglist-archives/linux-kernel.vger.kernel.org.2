@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6283223D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2443223C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhBWBsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 20:48:55 -0500
-Received: from mga01.intel.com ([192.55.52.88]:61191 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230318AbhBWBsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 20:48:50 -0500
-IronPort-SDR: ECLckI/qQMMEdpjkKLYnopUp+JvIc6qYnzNFHQrzpoc4+wehv0gCy7vtFtAFgiboxdBVxfJmsw
- x4m7DT8WBC9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="204074441"
-X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; 
-   d="scan'208";a="204074441"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 17:47:05 -0800
-IronPort-SDR: Kzaw0ckMg7nf1MZuYneVHUCT7frutpZl9RQCVFTSnNTarhPJo+cTV5gofd1DBdvKcP2najIqH5
- eW3n/7hgxkSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; 
-   d="scan'208";a="423349306"
-Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Feb 2021 17:47:02 -0800
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] KVM: vmx/pmu: Clear DEBUGCTLMSR_LBR bit on the debug breakpoint event
-Date:   Tue, 23 Feb 2021 09:39:58 +0800
-Message-Id: <20210223013958.1280444-2-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210223013958.1280444-1-like.xu@linux.intel.com>
-References: <20210223013958.1280444-1-like.xu@linux.intel.com>
+        id S230367AbhBWBnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 20:43:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230258AbhBWBnU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 20:43:20 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BACC061574;
+        Mon, 22 Feb 2021 17:42:39 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dl1yP3JMpz9sS8;
+        Tue, 23 Feb 2021 12:42:37 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614044557;
+        bh=gVNsiXGE2bRlvKPDsjmJ5KtA6gn9a3CHhl4fzKMgUjc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ATV/jPlA3Ez3zCBKWpuBnZ0pAGwVm4JQQ1EtdJUHJj1qmUd08xMfqKDM/JHQgrWxo
+         U0UlMyN/6YveIiKB1TdV+C7IGOyoQmrX5bttbMl3nf1IDzc7zTCtaAX2SFLYLBsJE2
+         uzwyC7A2EQRCDrDmXOJrRJKZQ+6cMITgV6ctQ4dlzkutbL/p1GB0Qu2ecqwHgBL0JB
+         oxbAnpi0h8ZjvH+TRikhr3WfRaVFCjTJcal3MefhBptqOnlLZixk8o47l/XA8g5IwI
+         Q7XfwTLBI3KeQIOPDPD1Ehm+TTRVPIAFrHMFyW6I/kg5gPmzyP62N5/ZQcW0BKxoaN
+         WL/j5O5qiHO2Q==
+Date:   Tue, 23 Feb 2021 12:42:36 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the block tree
+Message-ID: <20210223124236.7bdf0871@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/.F.nGcB8KBgDtD__V1h+=2t";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the processor that support model-specific LBR generates a debug
-breakpoint event, it automatically clears the LBR flag. This action
-does not clear previously stored LBR stack MSRs. (Intel SDM 17.4.2)
+--Sig_/.F.nGcB8KBgDtD__V1h+=2t
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- arch/x86/kvm/vmx/vmx.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Hi all,
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index e0a3a9be654b..4951b535eb7f 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4795,6 +4795,7 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
- 	u32 intr_info, ex_no, error_code;
- 	unsigned long cr2, rip, dr6;
- 	u32 vect_info;
-+	u64 lbr_ctl;
- 
- 	vect_info = vmx->idt_vectoring_info;
- 	intr_info = vmx_get_intr_info(vcpu);
-@@ -4886,6 +4887,10 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
- 		rip = kvm_rip_read(vcpu);
- 		kvm_run->debug.arch.pc = vmcs_readl(GUEST_CS_BASE) + rip;
- 		kvm_run->debug.arch.exception = ex_no;
-+		/* On the debug breakpoint event, the LBREn bit is cleared. */
-+		lbr_ctl = vmcs_read64(GUEST_IA32_DEBUGCTL);
-+		if (lbr_ctl & DEBUGCTLMSR_LBR)
-+			vmcs_write64(GUEST_IA32_DEBUGCTL, lbr_ctl & ~DEBUGCTLMSR_LBR);
- 		break;
- 	case AC_VECTOR:
- 		if (guest_inject_ac(vcpu)) {
--- 
-2.29.2
+After merging the block tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
+fs/io_uring.c: In function 'io_sq_thread':
+fs/io_uring.c:6787:3: error: implicit declaration of function 'io_ctx_disab=
+le_sqo_submit' [-Werror=3Dimplicit-function-declaration]
+ 6787 |   io_ctx_disable_sqo_submit(ctx);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~
+
+Caused by commit
+
+  a6afa091d06a ("io_uring: move SQPOLL thread io-wq forked worker")
+
+I have used the block tree from next-20210222 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/.F.nGcB8KBgDtD__V1h+=2t
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA0XYwACgkQAVBC80lX
+0GyK2ggAn9cF4SJ+05mFAkByWQmm3o7loRWxJqNoAFlaciqKXSatmRw8tgmC9Xw3
+EmTQsoFbyjY8Fr3KHGkZZCGE5sjMttPM8VunyQPng/EBTqV9IoFGKESFoYmPtS4d
+Lf+DQJqDcwKHlhK5XPhKi2vhbob4vtjxnfMtDvQ1YfA7d9aQz6uP87TLxahhpO2+
++3VJQAK7emcOLW/Pzv/y3Og5mE3fHy1X61+KTmGtCXSATaxN6XuYHuz7I3hBy8c+
+ejVbB+rPj6Fg8PFMI6lh31QDwBzjajLRFphR9wNGA2cSUVkoFK+ru1zkGvZ9404Z
+dzdIjOO02770ENF4KRLj83GsoUj/Iw==
+=zFF+
+-----END PGP SIGNATURE-----
+
+--Sig_/.F.nGcB8KBgDtD__V1h+=2t--
