@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D39F3229B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E94C3229B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbhBWLvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 06:51:45 -0500
-Received: from conuserg-08.nifty.com ([210.131.2.75]:32382 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbhBWLvT (ORCPT
+        id S232377AbhBWLvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 06:51:21 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12200 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232217AbhBWLvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:51:19 -0500
-Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 11NBnUO9008768;
-        Tue, 23 Feb 2021 20:49:31 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 11NBnUO9008768
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614080971;
-        bh=20NjcQU1B4ppYgU8kV+rHnRJALmX62Ugp8OGsXDr/9I=;
-        h=From:To:Cc:Subject:Date:From;
-        b=B7p58B5NuCKSZsK7xj/VBZxjYqSvlwQHs2EaAYVIbFv0ohc/Sr9gtQMAL3FySuPMy
-         Yuufc20mBNG9AAT3XNESXXeQVIB1di7IB3WVF3kprfctGW+OfzsaznS8FUIcl3VdX5
-         mWtH6di+/9vS9CX1jJVgRrkC1RaMRJGhFh+NS8EnzUZO9Oyx14BBvHCd4icRxZoMMa
-         cMmyym2n6h+6CXHtTkLX6BwtJ71zsM4RP86twRP0WSt6KYPXKmpnhGQ737l/uodlDQ
-         nf/v/XiKakkwyPCRDpzhRoRH0yfh5vKgSaZzW4Rbfa+rCeSOvzxGAw+NClfDTLccY4
-         rhF94kMXUtZAQ==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>
-Subject: [PATCH] compat: remove unneeded declaration from COMPAT_SYSCALL_DEFINEx()
-Date:   Tue, 23 Feb 2021 20:49:24 +0900
-Message-Id: <20210223114924.854794-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Tue, 23 Feb 2021 06:51:13 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DlHPV4GyfzlNJW;
+        Tue, 23 Feb 2021 19:48:30 +0800 (CST)
+Received: from [10.174.178.147] (10.174.178.147) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 23 Feb 2021 19:50:25 +0800
+Subject: Re: [PATCH v1 0/4] ACPI: Get rid of ACPICA message printing from core
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+CC:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <5138173.kHyPcihzTF@kreacher>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <daadf47e-dac2-93a8-3070-9e9cbc0dae50@huawei.com>
+Date:   Tue, 23 Feb 2021 19:50:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5138173.kHyPcihzTF@kreacher>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.147]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-compat_sys##name is declared twice, just one line below.
+On 2021/2/23 2:57, Rafael J. Wysocki wrote:
+> Hi All,
+> 
+> This series replaces ACPI_DEBUG_PRINT() and ACPI_EXCEPTION() in the ACPI
+> processor driver and sysfs code and drops definitions of related symbols
+> that are not used for anything meaningful any more.
+> 
+> Please refer to the patch changelogs for details.
 
-With this removal SYSCALL_DEFINEx() (defined in <linux/syscalls.h>)
-and COMPAT_SYSCALL_DEFINEx() look symmetrical.
+Except patch 1/4, others are looking good to me. some
+legacy printk(PRIFIX ...) are still there, but we can
+clean up them later.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Feel feel to add my review tag with minor issue addressed.
 
- include/linux/compat.h | 1 -
- 1 file changed, 1 deletion(-)
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
 
-diff --git a/include/linux/compat.h b/include/linux/compat.h
-index 6e65be753603..4b69ab7c723f 100644
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -75,7 +75,6 @@
- 	__diag_push();								\
- 	__diag_ignore(GCC, 8, "-Wattribute-alias",				\
- 		      "Type aliasing is used to sanitize syscall arguments");\
--	asmlinkage long compat_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));	\
- 	asmlinkage long compat_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))	\
- 		__attribute__((alias(__stringify(__se_compat_sys##name))));	\
- 	ALLOW_ERROR_INJECTION(compat_sys##name, ERRNO);				\
--- 
-2.27.0
-
+Thanks
+Hanjun
