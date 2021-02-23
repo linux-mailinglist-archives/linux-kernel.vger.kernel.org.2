@@ -2,215 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB86322FF0
+	by mail.lfdr.de (Postfix) with ESMTP id BBA47322FF1
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 18:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbhBWRrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 12:47:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43148 "EHLO
+        id S233854AbhBWRro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 12:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233815AbhBWRqV (ORCPT
+        with ESMTP id S233821AbhBWRqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 12:46:21 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B7CC06178C
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:45:24 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lEbkM-0003pY-Fu; Tue, 23 Feb 2021 18:45:18 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lEbkK-0004xs-VV; Tue, 23 Feb 2021 18:45:16 +0100
-Date:   Tue, 23 Feb 2021 18:45:16 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Tue, 23 Feb 2021 12:46:32 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D74DC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:45:52 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id m6so9273535pfk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:45:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=VyGG3ok5+hvim2EHZCOhmqRAJkjtLpgTA1iWhCaD6x0=;
+        b=FqgAcuUSeyzDfUyHurWW7F4mjvfwNy68igadpk1ez352+ZeNULvxkGYibJLLplgkO5
+         q3u1ZNHMEqO2G5UraZTEoq5G/0cXD6Bnt5aCjqvctqqn4Nfj2xY5vtamgJs6kBcBLxvh
+         uvGOoGECAvPXZIkB4fJeawVGE/r0GSiUVcwab4GfCDNrmlsmC5Rv1CW6dkG0OdIsUu7Q
+         9IkjFszTrePyCmHnq2SDyrQgYzgucohC2ZtZY1g0k6Ac4t+QygwV9rNtekYPvicm7dOb
+         /hIptnnmW77v/TTchOjx20VRMTFiQv5CkrQqtuZN0ZsOI0TvimfyuQmyWemfDy4eriyz
+         CkdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=VyGG3ok5+hvim2EHZCOhmqRAJkjtLpgTA1iWhCaD6x0=;
+        b=ha1kk1pshISNbdQR7r+rHi76usbzdknsmdgWVQ1lKraZxu9U6ilCIe6AaIouNQkNFK
+         3oRItfvy2rm5VeYslk8C9nVkEOSfi51tQxfgq4nOSrRJr2OpF8SJa4SdgrXowQiNDu8f
+         WkLtPKUdkOLFbyrVQh9RL8iGm1W97WhmqtOlEU9GZEOMNZioB2qVAawPFz9GvsWPtQei
+         rMyFFJicxnhke1quFM8pCORwi8jU8R0EKr+UPRgIKhbxdeLeLh+e6mZWDpYvMDqNnnUe
+         kxPPQOOzA4aPwEn1bHGCExLUZvl8zUZGWqXBGDB4aTORY+ApDBo97V0fBk99HNwmqOSy
+         odNg==
+X-Gm-Message-State: AOAM5339YNzEy9VUeI/8vMrG+I1mt24vjzxBYsMiRuECpR70Qm60HOfD
+        Hfy4MJ/1WQ/57+c8G7EumpYo
+X-Google-Smtp-Source: ABdhPJzA7fHOoHjX3O7xgr26Ckw+I6nd4J989A7PeyvQ1mbO3Fz+HGL78AX7076LEi4TPjBHYyTQLQ==
+X-Received: by 2002:a65:654e:: with SMTP id a14mr25432204pgw.265.1614102351464;
+        Tue, 23 Feb 2021 09:45:51 -0800 (PST)
+Received: from work ([103.66.79.25])
+        by smtp.gmail.com with ESMTPSA id s27sm117050pgk.77.2021.02.23.09.45.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 23 Feb 2021 09:45:50 -0800 (PST)
+Date:   Tue, 23 Feb 2021 23:15:46 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v5 2/2] counter: add IRQ or GPIO based event counter
-Message-ID: <20210223174516.wjlh7hnrd5qe5s6w@pengutronix.de>
-References: <20210208135347.18494-1-o.rempel@pengutronix.de>
- <20210208135347.18494-3-o.rempel@pengutronix.de>
- <YCjlPhEtyH+vfSi4@shinobu>
- <20210215091737.fx6dwiz7tt56wbkr@pengutronix.de>
- <YDMMJJ985Zq9oEOv@shinobu>
- <20210223100656.efbshsh5bz66uhj5@pengutronix.de>
+        boris.brezillon@collabora.com
+Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add a property to declare secure
+ regions in Qcom NANDc
+Message-ID: <20210223174546.GA27945@work>
+References: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
+ <20210222120259.94465-3-manivannan.sadhasivam@linaro.org>
+ <20210223174922.052f9776@xps13>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210223100656.efbshsh5bz66uhj5@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 16:46:23 up 83 days,  5:52, 36 users,  load average: 0.05, 0.03,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210223174922.052f9776@xps13>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello William,
+Hi Miquel,
 
-Here is cooled down technical answer. Excuse me for over reacting.
-
-On Tue, Feb 23, 2021 at 11:06:56AM +0100, Oleksij Rempel wrote:
-> On Mon, Feb 22, 2021 at 10:43:00AM +0900, William Breathitt Gray wrote:
-> > On Mon, Feb 15, 2021 at 10:17:37AM +0100, Oleksij Rempel wrote:
-> > > > > +static irqreturn_t event_cnt_isr(int irq, void *dev_id)
-> > > > > +{
-> > > > > +	struct event_cnt_priv *priv = dev_id;
-> > > > > +
-> > > > > +	atomic_inc(&priv->count);
-> > > > 
-> > > > This is just used to count the number of interrupts right? I wonder if
-> > > > we can do this smarter. For example, the kernel already keeps track of
-> > > > number of interrupts that has occurred for any particular IRQ line on a
-> > > > CPU (see the 'kstat_irqs' member of struct irq_desc, and the
-> > > > show_interrupts() function in kernel/irq/proc.c). Would it make sense to
-> > > > simply store the initial interrupt count on driver load or enablement,
-> > > > and then return the difference during a count_read() callback?
-> > > 
-> > > This driver do not makes a lot of sense without your chardev patches. As
-> > > soon as this patches go mainline, this driver will be able to send
-> > > event with a timestamp and counter state to the user space.
-> > > 
-> > > With other words, we will need an irq handler anyway. In this case we
-> > > can't save more RAM or CPU cycles by using system irq counters.
+On Tue, Feb 23, 2021 at 05:49:22PM +0100, Miquel Raynal wrote:
+> Hi Manivannan,
+> 
+> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Mon,
+> 22 Feb 2021 17:32:58 +0530:
+> 
+> > On a typical end product, a vendor may choose to secure some regions in
+> > the NAND memory which are supposed to stay intact between FW upgrades.
+> > The access to those regions will be blocked by a secure element like
+> > Trustzone. So the normal world software like Linux kernel should not
+> > touch these regions (including reading).
 > > 
-> > It's true that this driver will need an IRQ handler when the timestamp
-> > functionality is added, but deriving the count value is different matter
-> > regardless. There's already code in the kernel to retrieve the number of
-> > interrupts, so it makes sense that we use that rather than rolling our
-> > own -- at the very least to ensure the value we provide to users is
-> > consistent with the ones already provided by other areas of the kernel.
-
-The value provided by the driver is consistent only if it is not
-overwritten by user. The driver provides an interface to reset/overwrite it.
-At least after this step the value is not consistent.
-
-> We are talking about one or two code lines. If we will take some
-> duplication search engine, it will find that major part of the kernel
-> is matching against it.
-> 
-> Newer the less, this driver provides a way to reset the counter. Why
-> should we drop this functionality no advantage?
-> 
-> > To that end, I'd like to see your cnt_isr() function removed for this
-> > patchset (you can bring it back once timestamp support is added).
-
-It make no sense to request an interrupt without interrupt service
-routine.
-
-https://elixir.bootlin.com/linux/latest/source/kernel/irq/manage.c#L2072if
-	if (!handler) {
-		if (!thread_fn)
-			return -EINVAL;
-
-As you can see, requesting an irq need at least handler or thread_fn.
-
-enable_irq: this will explode at least here:
-https://elixir.bootlin.com/linux/latest/source/kernel/irq/manage.c#L778
-
-If he have no IRQ handler and some how was able to enable it, at
-some point this IRQ will be disabled by this code:
-https://elixir.bootlin.com/linux/latest/source/kernel/irq/spurious.c#L410
-	if (unlikely(desc->irqs_unhandled > 99900)) {
-		/*
-		 * The interrupt is stuck
-		 */
-		__report_bad_irq(desc, action_ret);
-		/*
-		 * Now kill the IRQ
-		 */
-		printk(KERN_EMERG "Disabling IRQ #%d\n", irq);
-		desc->istate |= IRQS_SPURIOUS_DISABLED;
-		desc->depth++;
-		irq_disable(desc);
-
-With current code, we can't request or enable IRQ without cnt_isr(). Not
-that it is not possible, but it make no sense to me.
-
-> Are you suggesting to enable IRQ without interrupt handler? May be i'm
-> missing some thing.. I do not understand it.
-> 
-> > Reimplement your cnt_read/cnt_write() functions to instead use
-> > kstat_irqs_usr() from <linux/kernel_stat.h> to get the current number of
-> > interrupts the IRQ line and use it to derive your count value for this
-> > driver.
-
-irq descriptor has 3 counters:
-- irq_count: this value can be reset any time by the kernel at least by
-  the note_interrupt()
-- irqs_unhandled: this value is increased in case of missing irq
-  handler. Or if handler has returns IRQ_NONE.
-- tot_count: this value should not be reset.
-
-Non of this values is suitable for cnt_read() and cnt_write(). Only
-tot_count would be suitable if cnt_write() is removed. I do not see it
-as acceptable option.
-
-For this driver, we still need extra counter, where only this driver is
-responsible for writing to it.
-
-> I can follow the counter read way, but overwriting system wide counter
-> for local use is bad idea.
-> 
-> > > > > +static struct counter_signal event_cnt_signals[] = {
-> > > > > +	{
-> > > > > +		.id = 0,
-> > > > > +		.name = "Channel 0 signal",
-> > > > 
-> > > > You should choose a more description name for this Signal;
-> > > > "Channel 0 signal" isn't very useful information for the user. Is this
-> > > > signal the respective GPIO line state?
-> > > 
-> > > Sounds plausible. How about "Channel 0, GPIO line state"?
+> > So let's add a property for declaring such secure regions so that the
+> > driver can skip touching them.
 > > 
-> > Ideally, this would match the GPIO name (or I suppose the IRQ number if
-> > not a GPIO line). So in your probe() function you can do something like
-> > this I believe:
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  Documentation/devicetree/bindings/mtd/qcom,nandc.yaml | 7 +++++++
+> >  1 file changed, 7 insertions(+)
 > > 
-> > 	cnt_signals[0].name = priv->gpio->name;
+> > diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > index 84ad7ff30121..7500e20da9c1 100644
+> > --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > @@ -48,6 +48,13 @@ patternProperties:
+> >          enum:
+> >            - 512
+> >  
+> > +      qcom,secure-regions:
+> > +        $ref: /schemas/types.yaml#/definitions/uint32-array
+> > +        description:
+> > +          Regions in the NAND memory which are protected using a secure element
+> > +          like Trustzone. This property contains the start address and size of
+> > +          the secure regions present (optional).
+> 
+> What does this "(optional)" means? If you mean the property is optional
+> then it should be described accordingly in the yaml file, or am I
+> missing something?
 > 
 
-> to make this possible, i would need hack gpiolib framework and add
-> name/label exporter. But after endless rounds of pingponging me for
-> renaming the driver and removing interrupt handler, i feel like we are
-> not having serious discussion for mainlining this driver.
+IIUC, if a property is not listed under "required" section then it is
+optional. But I've added the quote here to just make it explicit.
 
-Probably for good reason, struct gpio_desc was made local and is located
-in the drivers/gpio/gpiolib.h. It feels like additional hack to include
-it. I assume, it should be done properly so there is a function to
-provide gpio name or label.
+> I wonder if it wouldn't be better to make this a NAND chip node
+> property. I don't think a qcom prefix is needed as potentially many
+> other SoCs might have the same "feature".
+> 
+> I'm fine adding support for it in the qcom driver only though.
+> 
 
-@Linus Walleij are there any good way to get the GPIO name? And which
-name will be actually used? A label provided over devicetree?
+Hmm, sounds good to me.
 
-If I see it correctly, it would need more work to make the kernel infrastructure
-suitable for this suggestions. Some of them are only needed before
-chardev support will go mainline and , in long term, not worth to
-spend time on it.
+Thanks,
+Mani
 
-Probably I do not understand you and i missing some thing?
-
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> > +
+> >  allOf:
+> >    - $ref: "nand-controller.yaml#"
+> >  
+> 
+> Thanks,
+> Miquèl
