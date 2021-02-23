@@ -2,208 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B6232259B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD35B32259E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 06:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231675AbhBWFz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 00:55:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
+        id S231710AbhBWF4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 00:56:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhBWFy7 (ORCPT
+        with ESMTP id S231517AbhBWFz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 00:54:59 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5943C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 21:53:40 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lEQdP-0005FR-I5; Tue, 23 Feb 2021 06:53:23 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lEQdO-00012Q-F2; Tue, 23 Feb 2021 06:53:22 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     mkl@pengutronix.de, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Johannes Berg <johannes@sipsolutions.net>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andre Naujoks <nautsch2@gmail.com>,
-        Eric Dumazet <edumazet@google.com>, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-Subject: [PATCH net v2 2/2] can: fix ref count warning if socket was closed before skb was cloned
-Date:   Tue, 23 Feb 2021 06:53:20 +0100
-Message-Id: <20210223055321.3891-3-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210223055321.3891-1-o.rempel@pengutronix.de>
-References: <20210223055321.3891-1-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Tue, 23 Feb 2021 00:55:56 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6904CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 21:55:16 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id k92so970250pjc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 21:55:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=GraTumaBJkKJQ9u22jVkHqKEy5q/8MUh2zxLlp3bkMw=;
+        b=mlLr7TLkrLx+Rk92G4tH5XwC6B/SUpZurSFzMG3FqiYVoSARCZHnfom+k6wwf6zLFr
+         8tuMk5mKE24yblwMee2PmDHM623gkoTkrleETBBD6ereP74g7sZeODt53TFW6YYP5CzO
+         ZJk8WUYp3eGT1Pi6V2oGyIkiO5dkoiJGQ5b6C06WDIgsObaYjLjOknG6JWiT5fLK1ta9
+         maFpu9MWZGMaXd8ll09/5VLTVcNzPyKhVxstH1KYWw54rRhYhuRdVXzVLuYsUFWvtWhX
+         3X9RfPSW3gtHl24rSTyC+hr5p2+rxzBCx1wH4TjvBerdzT03emfQfBavpeNVaK9U1V9C
+         xSIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=GraTumaBJkKJQ9u22jVkHqKEy5q/8MUh2zxLlp3bkMw=;
+        b=e5Gbfh/dz3/teZmFhCJN4C3Fqam7N3EGJJGdyRberDPjcQY9jXZeK8Vo3inf5Ly5s4
+         1Clu+bHU3j1xyARv/rqOlLo65CQ6do6cBbPAs8K3qHlse3S8wkduxdigVdwYe4yOAUoZ
+         ZMmawBb74FCSD19p0O1SZPKSWFU0LNdUL6jVa/jA2wEtgeRusVhTZzmSOFVdG/lPCOE/
+         mGi9IGYjszcXZ4wxuWBgKSLEqlBYkvdmW1NhLfsUWO7mbcUVgZBSD4ygCLPmiigkU2On
+         RTJEn+9NBhoWYk6l5k9/TNa2p7YgObcXE+8oDuF9PWUzR4AmEv9uvoUMLSvgbzb8diV4
+         WpPQ==
+X-Gm-Message-State: AOAM5337UACn7b8Azpv/PvnA4qhlcyqLL2f33/9Zn1EWvzuTXvTylfYv
+        4UTxJNQ73hzVmc1M2qFghFxREQDzxDKyqQ==
+X-Google-Smtp-Source: ABdhPJxr415/due1RPqAUN1I+8CTWEPv4jZ2W+CLDvUzNW3IWprWUAjzmUWRZ6J1u6y/2woM/K42PzA6GPt6Ag==
+Sender: "shakeelb via sendgmr" <shakeelb@shakeelb.svl.corp.google.com>
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:dcc:e59c:6d4b:fd65])
+ (user=shakeelb job=sendgmr) by 2002:a17:90a:4a84:: with SMTP id
+ f4mr27825277pjh.231.1614059715750; Mon, 22 Feb 2021 21:55:15 -0800 (PST)
+Date:   Mon, 22 Feb 2021 21:55:05 -0800
+Message-Id: <20210223055505.2594953-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+Subject: [PATCH v2] memcg: charge before adding to swapcache on swapin
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two ref count variables controlling the free()ing of a socket:
-- struct sock::sk_refcnt - which is changed by sock_hold()/sock_put()
-- struct sock::sk_wmem_alloc - which accounts the memory allocated by
-  the skbs in the send path.
+Currently the kernel adds the page, allocated for swapin, to the
+swapcache before charging the page. This is fine but now we want a
+per-memcg swapcache stat which is essential for folks who wants to
+transparently migrate from cgroup v1's memsw to cgroup v2's memory and
+swap counters. In addition charging a page before exposing it to other
+parts of the kernel is a step in the right direction.
 
-If the socket is closed the struct sock::sk_refcnt will finally reach 0
-and sk_free() is called. Which then calls
-refcount_dec_and_test(&sk->sk_wmem_alloc). If sk_wmem_alloc reaches 0
-the socket is actually free()ed.
+To correctly maintain the per-memcg swapcache stat, this patch has
+adopted to charge the page before adding it to swapcache. One
+challenge in this option is the failure case of add_to_swap_cache() on
+which we need to undo the mem_cgroup_charge(). Specifically undoing
+mem_cgroup_uncharge_swap() is not simple.
 
-In case there are still TX skbs on the fly and the socket() is closed,
-the struct sock::sk_refcnt reaches 0. In the TX-path the CAN stack
-clones an "echo" skb, calls sock_hold() on the original socket and
-references it. This produces the following back trace:
+To resolve the issue, this patch introduces transaction like interface
+to charge a page for swapin. The function mem_cgroup_charge_swapin_page()
+initiates the charging of the page and mem_cgroup_finish_swapin_page()
+completes the charging process. So, the kernel starts the charging
+process of the page for swapin with mem_cgroup_charge_swapin_page(),
+adds the page to the swapcache and on success completes the charging
+process with mem_cgroup_finish_swapin_page().
 
-| WARNING: CPU: 0 PID: 280 at lib/refcount.c:25 refcount_warn_saturate+0x114/0x134
-| refcount_t: addition on 0; use-after-free.
-| Modules linked in: coda_vpu(E) v4l2_jpeg(E) videobuf2_vmalloc(E) imx_vdoa(E)
-| CPU: 0 PID: 280 Comm: test_can.sh Tainted: G            E     5.11.0-04577-gf8ff6603c617 #203
-| Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-| Backtrace:
-| [<80bafea4>] (dump_backtrace) from [<80bb0280>] (show_stack+0x20/0x24) r7:00000000 r6:600f0113 r5:00000000 r4:81441220
-| [<80bb0260>] (show_stack) from [<80bb593c>] (dump_stack+0xa0/0xc8)
-| [<80bb589c>] (dump_stack) from [<8012b268>] (__warn+0xd4/0x114) r9:00000019 r8:80f4a8c2 r7:83e4150c r6:00000000 r5:00000009 r4:80528f90
-| [<8012b194>] (__warn) from [<80bb09c4>] (warn_slowpath_fmt+0x88/0xc8) r9:83f26400 r8:80f4a8d1 r7:00000009 r6:80528f90 r5:00000019 r4:80f4a8c2
-| [<80bb0940>] (warn_slowpath_fmt) from [<80528f90>] (refcount_warn_saturate+0x114/0x134) r8:00000000 r7:00000000 r6:82b44000 r5:834e5600 r4:83f4d540
-| [<80528e7c>] (refcount_warn_saturate) from [<8079a4c8>] (__refcount_add.constprop.0+0x4c/0x50)
-| [<8079a47c>] (__refcount_add.constprop.0) from [<8079a57c>] (can_put_echo_skb+0xb0/0x13c)
-| [<8079a4cc>] (can_put_echo_skb) from [<8079ba98>] (flexcan_start_xmit+0x1c4/0x230) r9:00000010 r8:83f48610 r7:0fdc0000 r6:0c080000 r5:82b44000 r4:834e5600
-| [<8079b8d4>] (flexcan_start_xmit) from [<80969078>] (netdev_start_xmit+0x44/0x70) r9:814c0ba0 r8:80c8790c r7:00000000 r6:834e5600 r5:82b44000 r4:82ab1f00
-| [<80969034>] (netdev_start_xmit) from [<809725a4>] (dev_hard_start_xmit+0x19c/0x318) r9:814c0ba0 r8:00000000 r7:82ab1f00 r6:82b44000 r5:00000000 r4:834e5600
-| [<80972408>] (dev_hard_start_xmit) from [<809c6584>] (sch_direct_xmit+0xcc/0x264) r10:834e5600 r9:00000000 r8:00000000 r7:82b44000 r6:82ab1f00 r5:834e5600 r4:83f27400
-| [<809c64b8>] (sch_direct_xmit) from [<809c6c0c>] (__qdisc_run+0x4f0/0x534)
-
-To fix this problem, we have to take into account, that the socket
-technically still there but should not used (by any new skbs) any more.
-The function skb_clone_sk_optional() (introduced in the previous patch)
-takes care of this. It will only clone the skb, if the sk is set and the
-refcount has not reached 0.
-
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Andre Naujoks <nautsch2@gmail.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
 ---
- include/linux/can/skb.h   | 3 +--
- net/can/af_can.c          | 6 +++---
- net/can/j1939/main.c      | 3 +--
- net/can/j1939/socket.c    | 3 +--
- net/can/j1939/transport.c | 4 +---
- 5 files changed, 7 insertions(+), 12 deletions(-)
+Changes since v1:
+- Removes __GFP_NOFAIL and introduced transaction interface for charging
+  (suggested by Johannes)
+- Updated the commit message
 
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index 685f34cfba20..bc1af38697a2 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -79,13 +79,12 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
- {
- 	struct sk_buff *nskb;
- 
--	nskb = skb_clone(skb, GFP_ATOMIC);
-+	nskb = skb_clone_sk_optional(skb);
- 	if (unlikely(!nskb)) {
- 		kfree_skb(skb);
- 		return NULL;
- 	}
- 
--	can_skb_set_owner(nskb, skb->sk);
- 	consume_skb(skb);
- 	return nskb;
+ include/linux/memcontrol.h |  14 +++++
+ mm/memcontrol.c            | 116 +++++++++++++++++++++++--------------
+ mm/memory.c                |  14 ++---
+ mm/swap_state.c            |  11 ++--
+ 4 files changed, 97 insertions(+), 58 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index e6dc793d587d..585d96bda4f5 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -596,6 +596,9 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
  }
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index cce2af10eb3e..9e1bd60e7e1b 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -251,20 +251,20 @@ int can_send(struct sk_buff *skb, int loop)
- 		 * its own. Example: can_raw sockopt CAN_RAW_RECV_OWN_MSGS
- 		 * Therefore we have to ensure that skb->sk remains the
- 		 * reference to the originating sock by restoring skb->sk
--		 * after each skb_clone() or skb_orphan() usage.
-+		 * after each skb_clone() or skb_orphan() usage -
-+		 * skb_clone_sk_optional() takes care of that.
- 		 */
  
- 		if (!(skb->dev->flags & IFF_ECHO)) {
- 			/* If the interface is not capable to do loopback
- 			 * itself, we do it here.
- 			 */
--			newskb = skb_clone(skb, GFP_ATOMIC);
-+			newskb = skb_clone_sk_optional(skb);
- 			if (!newskb) {
- 				kfree_skb(skb);
- 				return -ENOMEM;
- 			}
+ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
++int mem_cgroup_charge_swapin_page(struct page *page, struct mm_struct *mm,
++				  gfp_t gfp, swp_entry_t entry);
++void mem_cgroup_finish_swapin_page(struct page *page, swp_entry_t entry);
  
--			can_skb_set_owner(newskb, skb->sk);
- 			newskb->ip_summed = CHECKSUM_UNNECESSARY;
- 			newskb->pkt_type = PACKET_BROADCAST;
- 		}
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index da3a7a7bcff2..4f6852d48077 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -47,12 +47,11 @@ static void j1939_can_recv(struct sk_buff *iskb, void *data)
- 	 * the header goes into sockaddr.
- 	 * j1939 may not touch the incoming skb in such way
+ void mem_cgroup_uncharge(struct page *page);
+ void mem_cgroup_uncharge_list(struct list_head *page_list);
+@@ -1141,6 +1144,17 @@ static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+ 	return 0;
+ }
+ 
++static inline int mem_cgroup_charge_swapin_page(struct page *page,
++			struct mm_struct *mm, gfp_t gfp, swp_entry_t entry);
++{
++	return 0;
++}
++
++static inline void mem_cgroup_finish_swapin_page(struct page *page,
++						 swp_entry_t entry)
++{
++}
++
+ static inline void mem_cgroup_uncharge(struct page *page)
+ {
+ }
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 2db2aeac8a9e..226b7bccb44c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6690,6 +6690,27 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+ 			atomic_long_read(&parent->memory.children_low_usage)));
+ }
+ 
++static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
++			       gfp_t gfp)
++{
++	unsigned int nr_pages = thp_nr_pages(page);
++	int ret;
++
++	ret = try_charge(memcg, gfp, nr_pages);
++	if (ret)
++		goto out;
++
++	css_get(&memcg->css);
++	commit_charge(page, memcg);
++
++	local_irq_disable();
++	mem_cgroup_charge_statistics(memcg, page, nr_pages);
++	memcg_check_events(memcg, page);
++	local_irq_enable();
++out:
++	return ret;
++}
++
+ /**
+  * mem_cgroup_charge - charge a newly allocated page to a cgroup
+  * @page: page to charge
+@@ -6699,55 +6720,70 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+  * Try to charge @page to the memcg that @mm belongs to, reclaiming
+  * pages according to @gfp_mask if necessary.
+  *
++ * Do not use this for pages allocated for swapin.
++ *
+  * Returns 0 on success. Otherwise, an error code is returned.
+  */
+ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+ {
+-	unsigned int nr_pages = thp_nr_pages(page);
+-	struct mem_cgroup *memcg = NULL;
+-	int ret = 0;
++	struct mem_cgroup *memcg;
++	int ret;
+ 
+ 	if (mem_cgroup_disabled())
+-		goto out;
++		return 0;
+ 
+-	if (PageSwapCache(page)) {
+-		swp_entry_t ent = { .val = page_private(page), };
+-		unsigned short id;
++	memcg = get_mem_cgroup_from_mm(mm);
++	ret = __mem_cgroup_charge(page, memcg, gfp_mask);
++	css_put(&memcg->css);
+ 
+-		/*
+-		 * Every swap fault against a single page tries to charge the
+-		 * page, bail as early as possible.  shmem_unuse() encounters
+-		 * already charged pages, too.  page and memcg binding is
+-		 * protected by the page lock, which serializes swap cache
+-		 * removal, which in turn serializes uncharging.
+-		 */
+-		VM_BUG_ON_PAGE(!PageLocked(page), page);
+-		if (page_memcg(compound_head(page)))
+-			goto out;
++	return ret;
++}
+ 
+-		id = lookup_swap_cgroup_id(ent);
+-		rcu_read_lock();
+-		memcg = mem_cgroup_from_id(id);
+-		if (memcg && !css_tryget_online(&memcg->css))
+-			memcg = NULL;
+-		rcu_read_unlock();
+-	}
++/**
++ * mem_cgroup_charge_swapin_page - charge a newly allocated page for swapin
++ * @page: page to charge
++ * @mm: mm context of the victim
++ * @gfp: reclaim mode
++ * @entry: swap entry for which the page is allocated
++ *
++ * This function marks the start of the transaction of charging the page for
++ * swapin. Complete the transaction with mem_cgroup_finish_swapin_page().
++ *
++ * Returns 0 on success. Otherwise, an error code is returned.
++ */
++int mem_cgroup_charge_swapin_page(struct page *page, struct mm_struct *mm,
++				  gfp_t gfp, swp_entry_t entry)
++{
++	struct mem_cgroup *memcg;
++	unsigned short id;
++	int ret;
+ 
+-	if (!memcg)
+-		memcg = get_mem_cgroup_from_mm(mm);
++	if (mem_cgroup_disabled())
++		return 0;
+ 
+-	ret = try_charge(memcg, gfp_mask, nr_pages);
+-	if (ret)
+-		goto out_put;
++	id = lookup_swap_cgroup_id(entry);
++	rcu_read_lock();
++	memcg = mem_cgroup_from_id(id);
++	if (!memcg || !css_tryget_online(&memcg->css))
++		memcg = get_mem_cgroup_from_mm(mm);
++	rcu_read_unlock();
+ 
+-	css_get(&memcg->css);
+-	commit_charge(page, memcg);
++	ret = __mem_cgroup_charge(page, memcg, gfp);
+ 
+-	local_irq_disable();
+-	mem_cgroup_charge_statistics(memcg, page, nr_pages);
+-	memcg_check_events(memcg, page);
+-	local_irq_enable();
++	css_put(&memcg->css);
++	return ret;
++}
+ 
++/*
++ * mem_cgroup_finish_swapin_page - complete the swapin page charge transaction
++ * @page: page charged for swapin
++ * @entry: swap entry for which the page is charged
++ *
++ * This function completes the transaction of charging the page allocated for
++ * swapin.
++ */
++void mem_cgroup_finish_swapin_page(struct page *page, swp_entry_t entry)
++{
+ 	/*
+ 	 * Cgroup1's unified memory+swap counter has been charged with the
+ 	 * new swapcache page, finish the transfer by uncharging the swap
+@@ -6760,20 +6796,14 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+ 	 * correspond 1:1 to page and swap slot lifetimes: we charge the
+ 	 * page to memory here, and uncharge swap when the slot is freed.
  	 */
--	skb = skb_clone(iskb, GFP_ATOMIC);
-+	skb = skb_clone_sk_optional(iskb);
- 	if (!skb)
- 		return;
- 
- 	j1939_priv_get(priv);
--	can_skb_set_owner(skb, iskb->sk);
- 
- 	/* get a pointer to the header of the skb
- 	 * the skb payload (pointer) is moved, so that the next skb_data
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 4e4a510d82f9..c1be6c26ff76 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -305,12 +305,11 @@ static void j1939_sk_recv_one(struct j1939_sock *jsk, struct sk_buff *oskb)
- 	if (!j1939_sk_recv_match_one(jsk, oskcb))
- 		return;
- 
--	skb = skb_clone(oskb, GFP_ATOMIC);
-+	skb = skb_clone_sk_optional(oskb);
- 	if (!skb) {
- 		pr_warn("skb clone failed\n");
- 		return;
+-	if (do_memsw_account() && PageSwapCache(page)) {
+-		swp_entry_t entry = { .val = page_private(page) };
++	if (!mem_cgroup_disabled() && do_memsw_account()) {
+ 		/*
+ 		 * The swap entry might not get freed for a long time,
+ 		 * let's not wait for it.  The page already received a
+ 		 * memory+swap charge, drop the swap entry duplicate.
+ 		 */
+-		mem_cgroup_uncharge_swap(entry, nr_pages);
++		mem_cgroup_uncharge_swap(entry, thp_nr_pages(page));
  	}
--	can_skb_set_owner(skb, oskb->sk);
- 
- 	skcb = j1939_skb_to_cb(skb);
- 	skcb->msg_flags &= ~(MSG_DONTROUTE);
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index e09d087ba240..e902557bbe17 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1014,12 +1014,10 @@ static int j1939_simple_txnext(struct j1939_session *session)
- 	if (!se_skb)
- 		return 0;
- 
--	skb = skb_clone(se_skb, GFP_ATOMIC);
-+	skb = skb_clone_sk_optional(se_skb);
- 	if (!skb)
- 		return -ENOMEM;
- 
--	can_skb_set_owner(skb, se_skb->sk);
 -
- 	j1939_tp_set_rxtimeout(session, J1939_SIMPLE_ECHO_TIMEOUT_MS);
+-out_put:
+-	css_put(&memcg->css);
+-out:
+-	return ret;
+ }
  
- 	ret = j1939_send_one(priv, skb);
+ struct uncharge_gather {
+diff --git a/mm/memory.c b/mm/memory.c
+index c8e357627318..4cd3cd95bb70 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3307,21 +3307,15 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 			page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma,
+ 							vmf->address);
+ 			if (page) {
+-				int err;
+-
+ 				__SetPageLocked(page);
+ 				__SetPageSwapBacked(page);
+-				set_page_private(page, entry.val);
+-
+-				/* Tell memcg to use swap ownership records */
+-				SetPageSwapCache(page);
+-				err = mem_cgroup_charge(page, vma->vm_mm,
+-							GFP_KERNEL);
+-				ClearPageSwapCache(page);
+-				if (err) {
++
++				if (mem_cgroup_charge_swapin_page(page,
++					vma->vm_mm, GFP_KERNEL, entry)) {
+ 					ret = VM_FAULT_OOM;
+ 					goto out_page;
+ 				}
++				mem_cgroup_finish_swapin_page(page, entry);
+ 
+ 				shadow = get_shadow_from_swap_cache(entry);
+ 				if (shadow)
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index 3cdee7b11da9..27a7acbcf880 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -497,16 +497,16 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
+ 	__SetPageLocked(page);
+ 	__SetPageSwapBacked(page);
+ 
++	if (mem_cgroup_charge_swapin_page(page, NULL, gfp_mask, entry))
++		goto fail_unlock;
++
+ 	/* May fail (-ENOMEM) if XArray node allocation failed. */
+ 	if (add_to_swap_cache(page, entry, gfp_mask & GFP_RECLAIM_MASK, &shadow)) {
+-		put_swap_page(page, entry);
++		mem_cgroup_uncharge(page);
+ 		goto fail_unlock;
+ 	}
+ 
+-	if (mem_cgroup_charge(page, NULL, gfp_mask)) {
+-		delete_from_swap_cache(page);
+-		goto fail_unlock;
+-	}
++	mem_cgroup_finish_swapin_page(page, entry);
+ 
+ 	if (shadow)
+ 		workingset_refault(page, shadow);
+@@ -517,6 +517,7 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
+ 	return page;
+ 
+ fail_unlock:
++	put_swap_page(page, entry);
+ 	unlock_page(page);
+ 	put_page(page);
+ 	return NULL;
 -- 
-2.29.2
+2.30.0.617.g56c4b15f3c-goog
 
