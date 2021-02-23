@@ -2,174 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3216F323062
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B1C323078
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbhBWSOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 13:14:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233115AbhBWSOg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 13:14:36 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C67C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:13:56 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id s12so7562490qvq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:13:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=64chh81MrDhbGsEgUYAQK1O320WsxsfdzdSvZe/81Lc=;
-        b=FMcvcTOtJbk9S1OVOWzfwDI5hEJZtOOmWU/jx2w96FB7sbM4dTOUaL9uiX7+DbzOjh
-         SckAfTThgCrNq9MZdWyLykL8A8V2tpZq2WKyEu+IEcuT9vYdy42OJfU0uY5KQmUvOc14
-         IWOySySdL1dIZtnKCoAktLqbu5etA0LNHAujHL8fGQQx/khRZpqpAlO/3G9ifKZOSe7p
-         U/V1t1C2ssrd12UzPv6Tc8TI1ZQmeQL4SBk29m7M3GzQuqVAIvMNKithrg9NzgJ+wPvt
-         p3t+iw8zwvxfIY5nhwTyV9xO8IgyaZDSCJqvoTzizj2jdUg5IQ/zrKmsPyS0Q5cSX+pn
-         /DxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=64chh81MrDhbGsEgUYAQK1O320WsxsfdzdSvZe/81Lc=;
-        b=MQXQZ5XgwqRQLEGagWtWfIVwSqYz/OzehXmRvXJaiDxbh/bshRXtN9tA2T7wHpAcrI
-         JiB8ziC3IAzni6EU2S/dwBgXZKjQj/wrxSO5eKs0czdrKCdODYbT6LALYn1UoMNcnlJz
-         58XVyOpn8ZambCrtnrpDHcw0kMl0xhmWMe58FBX2I3GO/GCgz2ZeRU7eQXUW0WmuXmFt
-         6T1FVB5Bt9H4wmBjPTm+4J/SUrGDN8M4GG9AbbYChcbQ1R2QN7VR7YjZLSGI/oDge/8A
-         loIofc8fA4HyygKJaztvvNWlPWfXDMsSm0tbRz7grxpLwXsu2yHxe/I4e+fRfBLtqAAd
-         YtHg==
-X-Gm-Message-State: AOAM533lSxWUjNXi+oFKPmtJGbHVQ0ANclSLXkgLCnY9RyarsTQ7oYEQ
-        6bF4kbsKqrIjyDtnJQvgf3u/8BjNxVf37UswTcFBjA==
-X-Google-Smtp-Source: ABdhPJzd2W30fvJh6WbDh5Kt5luVUnWfWNcb2OCq6wulmujrbpLeuMCS+sjlsu+6F+H08XVOLW05o0n0O0xTf4LNtqY=
-X-Received: by 2002:a0c:8304:: with SMTP id j4mr26498875qva.18.1614104034885;
- Tue, 23 Feb 2021 10:13:54 -0800 (PST)
+        id S233926AbhBWSRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 13:17:33 -0500
+Received: from mout.gmx.net ([212.227.15.19]:49423 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233907AbhBWSQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 13:16:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614104057;
+        bh=UWN3l183zAbiXXQl5Z1FP79kj4fY8vt9bxdy1C023fE=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=RwdP2vo09Qi6yabb1To6m8GrDpYMCrB9Toz8jPhUmaGzm2NF/CJpAr+fO4FkW6UjQ
+         sSkQC/QiP6gDhhjy91h8xsZ/5YIedpcHVQhCXMTv/vGRB7XbB0y8uhngFmcvMTo1HY
+         q0unAtaYO+aRTwu3lKu6QA3nWsJM5yo8P5wSC6qc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.229.153]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmULr-1leuOO2oWf-00iTJH; Tue, 23
+ Feb 2021 19:14:17 +0100
+Date:   Tue, 23 Feb 2021 19:13:57 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
+Cc:     John Wood <john.wood@gmx.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 3/8] securtiy/brute: Detect a brute force attack
+Message-ID: <20210223181357.GA3068@ubuntu>
+References: <20210221154919.68050-1-john.wood@gmx.com>
+ <20210221154919.68050-4-john.wood@gmx.com>
+ <085f8f05-243e-fbf0-3f9c-ea011511a296@infradead.org>
 MIME-Version: 1.0
-References: <20210223143426.2412737-1-elver@google.com> <20210223143426.2412737-4-elver@google.com>
-In-Reply-To: <20210223143426.2412737-4-elver@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 23 Feb 2021 19:13:42 +0100
-Message-ID: <CACT4Y+byoqr4UjNcYO-VMRZorqVxGyZmQb==pJXiQ0WjqwXvhg@mail.gmail.com>
-Subject: Re: [PATCH RFC 3/4] perf/core: Add support for SIGTRAP on perf events
-To:     Marco Elver <elver@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <085f8f05-243e-fbf0-3f9c-ea011511a296@infradead.org>
+X-Provags-ID: V03:K1:ju0O4S8Nvdn1JuYpx180LYXiBWGpIoiYfkvATFebYMFGyfsTHd9
+ wRuTsXxl4cu79Pht/Vpfew+2jDvQYKv5iUww/OxpFxO6Oy7oVj13CRoP4wzlOw4xwz8Y5xW
+ EV9QLuqoaF7IpDYK0VQf+2Hi29tNzGfTXyrRtfMJ+VHp9d8v+MSrFpBSqlYxp80wKpa8D6C
+ PpBaMCipfTcEh6OPnkTJg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3q+pBoAH1js=:XR39Nzb2x6fGQ/6FFW3zzi
+ Raj2QUKGSNrAnWBTl55EaeZ1FAEaBNFiymAR3DARDcdjHtXDc7MIYW3hdPP2bo/i2u0EES61F
+ 9NtsbISe79UKtCt+N05uJN1Jj/88oJ3KkWVYsHu7dotTKBpSEYBCVlxcFOLPZh3V8uRpWC+js
+ z7UqeD9HfVM+rTCnLJ+N0Du3YMEbVWFnibChC88csO8+qSXSWI8Dza/GbTZAtEeGzU+iPmJ7z
+ E+NzoGw87POsGI2iqlOpObfjATGvlXzkYfSiosJym0t89OTroKOd+jqBGQbfWmpT/ml0HEodo
+ 3m9AC7sPvKRAvk2solGx9x10TF4sa2290yObfJZ2wjoCvMb+ytx3NXZoTerIa3IspleSjeojc
+ gYwa9mNScd1Tt8mzItla7bIEaB2U+J+WuOkgjuffDTL5fg7AF85x5AAsfoFMA9nWCKDGJ9RZV
+ czw8n7SfEqF6+a3gJ2bIKybk2U2I46Adh3I5JxpyPGh1tQz41e/I89PsTzhBhlD9CdvaTKnnD
+ JuKIQUK8MhsAi+8jqBSwJ64rJ4nkTUl0xaQOepAvmRf3pJzPKJ5U1Wc250wLk1VAJIknA6NYx
+ RY8f3TMnEU4JsRUqx5jX0RcbhbNM5IcRbk7qIFKxB+0oKgKC94asTvVS6flNDlNPEmpvt2A8Q
+ gRAllOR73bp9psFz4pAuW5pp4wUF5Yd6MqUbCS7UgojyzF3moz+H248gDVNY/pLCh9AjhxX04
+ 9lI5wVTR3Q1JOkrJ3yRm3KmYuZJ4McTThk2Yj2bAquYSFEPDTeos5Ts6yj24IkEgDYA+QOu88
+ D2rXeCkbRTJEGMzEa7ACchjgimJVFIYF3CZAhF3WfqLgTyHDyAWZMdh9TILAeQH/73t7+I58G
+ oUFu7WyG0wdon7UHw00Q==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 3:34 PM Marco Elver <elver@google.com> wrote:
->
-> Adds bit perf_event_attr::sigtrap, which can be set to cause events to
-> send SIGTRAP (with si_code TRAP_PERF) to the task where the event
-> occurred. To distinguish perf events and allow user space to decode
-> si_perf (if set), the event type is set in si_errno.
->
-> The primary motivation is to support synchronous signals on perf events
-> in the task where an event (such as breakpoints) triggered.
->
-> Link: https://lore.kernel.org/lkml/YBv3rAT566k+6zjg@hirez.programming.kicks-ass.net/
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
->  include/uapi/linux/perf_event.h |  3 ++-
->  kernel/events/core.c            | 21 +++++++++++++++++++++
->  2 files changed, 23 insertions(+), 1 deletion(-)
->
-> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> index ad15e40d7f5d..b9cc6829a40c 100644
-> --- a/include/uapi/linux/perf_event.h
-> +++ b/include/uapi/linux/perf_event.h
-> @@ -389,7 +389,8 @@ struct perf_event_attr {
->                                 cgroup         :  1, /* include cgroup events */
->                                 text_poke      :  1, /* include text poke events */
->                                 build_id       :  1, /* use build id in mmap2 events */
-> -                               __reserved_1   : 29;
-> +                               sigtrap        :  1, /* send synchronous SIGTRAP on event */
-> +                               __reserved_1   : 28;
->
->         union {
->                 __u32           wakeup_events;    /* wakeup every n events */
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 37a8297be164..8718763045fd 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -6288,6 +6288,17 @@ void perf_event_wakeup(struct perf_event *event)
->         }
->  }
->
-> +static void perf_sigtrap(struct perf_event *event)
-> +{
-> +       struct kernel_siginfo info;
-> +
-> +       clear_siginfo(&info);
-> +       info.si_signo = SIGTRAP;
-> +       info.si_code = TRAP_PERF;
-> +       info.si_errno = event->attr.type;
-> +       force_sig_info(&info);
-> +}
-> +
->  static void perf_pending_event_disable(struct perf_event *event)
->  {
->         int cpu = READ_ONCE(event->pending_disable);
-> @@ -6297,6 +6308,13 @@ static void perf_pending_event_disable(struct perf_event *event)
->
->         if (cpu == smp_processor_id()) {
->                 WRITE_ONCE(event->pending_disable, -1);
-> +
-> +               if (event->attr.sigtrap) {
-> +                       atomic_inc(&event->event_limit); /* rearm event */
+Hi,
 
-We send the signal to the current task. Can this fire outside of the
-current task context? E.g. in interrupt/softirq/etc? And then we will
-send the signal to the current task. Watchpoint can be set to
-userspace address and then something asynchronous (some IO completion)
-that does not belong to this task access the userspace address (is
-this possible?). But watchpoints can also be set to kernel addresses,
-then another context can definitely access it.
-(1) can this happen? maybe perf context is somehow disabled when !in_task()?
-(2) if yes, what is the desired behavior?
-
-
-
-
-> +                       perf_sigtrap(event);
-> +                       return;
-> +               }
-> +
->                 perf_event_disable_local(event);
->                 return;
->         }
-> @@ -11325,6 +11343,9 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+On Sun, Feb 21, 2021 at 06:25:51PM -0800, Randy Dunlap wrote:
+> Hi--
 >
->         event->state            = PERF_EVENT_STATE_INACTIVE;
+> On 2/21/21 7:49 AM, John Wood wrote:
+> >
+> > +/**
+> > + * print_fork_attack_running() - Warn about a fork brute force attack=
+.
+> > + */
+> > +static inline void print_fork_attack_running(void)
+> > +{
+> > +	pr_warn("Fork brute force attack detected [%s]\n", current->comm);
+> > +}
 >
-> +       if (event->attr.sigtrap)
-> +               atomic_set(&event->event_limit, 1);
-> +
->         if (task) {
->                 event->attach_state = PERF_ATTACH_TASK;
->                 /*
+> Do these pr_warn() calls need to be rate-limited so that they don't
+> flood the kernel log?
+
+I think it is not necessary since when a brute force attack through the fo=
+rk
+system call is detected, a fork warning appears only once. Then, all the
+offending tasks involved in the attack are killed. But if the parent try t=
+o run
+again the same app already killed, a new crash will trigger a brute force =
+attack
+through the execve system call, then this parent is killed, and a new warn=
+ing
+message appears. Now, the parent and childs are killed, the attacks are
+mitigated and only a few messages (one or two) have been shown in the kern=
+el
+log.
+
+Thanks,
+John Wood
+
+> > +/**
+> > + * print_exec_attack_running() - Warn about an exec brute force attac=
+k.
+> > + * @stats: Statistical data shared by all the fork hierarchy processe=
+s.
+> > + *
+> > + * The statistical data shared by all the fork hierarchy processes ca=
+nnot be
+> > + * NULL.
+> > + *
+> > + * Before showing the process name it is mandatory to find a process =
+that holds
+> > + * a pointer to the exec statistics.
+> > + *
+> > + * Context: Must be called with tasklist_lock and brute_stats_ptr_loc=
+k held.
+> > + */
+> > +static void print_exec_attack_running(const struct brute_stats *stats=
+)
+> > +{
+> > +	struct task_struct *p;
+> > +	struct brute_stats **p_stats;
+> > +	bool found =3D false;
+> > +
+> > +	for_each_process(p) {
+> > +		p_stats =3D brute_stats_ptr(p);
+> > +		if (*p_stats =3D=3D stats) {
+> > +			found =3D true;
+> > +			break;
+> > +		}
+> >  	}
+> > +
+> > +	if (WARN(!found, "No exec process\n"))
+> > +		return;
+> > +
+> > +	pr_warn("Exec brute force attack detected [%s]\n", p->comm);
+> > +}
+>
+>
+> thanks.
 > --
-> 2.30.0.617.g56c4b15f3c-goog
+> ~Randy
 >
