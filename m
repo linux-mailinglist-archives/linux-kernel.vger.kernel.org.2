@@ -2,236 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13A432314D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:22:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B2132315A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233830AbhBWTTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 14:19:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233690AbhBWTSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 14:18:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCFB264E7A;
-        Tue, 23 Feb 2021 19:17:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614107846;
-        bh=x6yh8NGQDb+RifuQ95bjVU+mIpOZUX4pyBPC2FNHGR0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gq/M/WYDurJ4zpz8sBi6sLR2Amq5Mo869ftjEhnuw350zs9DMMVq++DbhhwZ5Fs96
-         tevHhcmO5kWvOMNh4+z3JXveR2ca0H93Vs+ED7xrXVF8xCAnpG2foZqPMFq1ynh6ET
-         g3J9adNC+xiMAzF9cmymf/BNdukIL1qkBi5vOKOf+PALGCo03mHGylZwJociPR1m3H
-         uUfH5nU25Mw24ijJI3qXmjDX/uuVo+CydZRdfz5dcD3XvP9J6Ug3CaA5mK3zs/vOR1
-         eEp1io+NYLljRaAdQqsE/R354L/PcoI8mNT+F0597LfPXKooQ/KxlCa5kK1aYqn8Bh
-         ERpu9LPC7/kBQ==
-Date:   Tue, 23 Feb 2021 21:17:12 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-sgx@vger.kernel.org, haitao.huang@intel.com,
-        dan.j.williams@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/sgx: Add a basic NUMA allocation scheme to
- sgx_alloc_epc_page()
-Message-ID: <YDVUuF3rqnRCr+Bb@kernel.org>
-References: <20210221020631.171404-1-jarkko@kernel.org>
- <7acc3c1c-373e-cfee-e838-2af170e87d98@intel.com>
+        id S232244AbhBWTWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 14:22:14 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:55181 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231895AbhBWTUD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 14:20:03 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lEdDC-0007ll-2R; Tue, 23 Feb 2021 19:19:10 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        Anshuman Gupta <anshuman.gupta@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/i915/hdcp: Fix null pointer dereference of connector->encoder
+Date:   Tue, 23 Feb 2021 19:19:09 +0000
+Message-Id: <20210223191909.16682-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7acc3c1c-373e-cfee-e838-2af170e87d98@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 21, 2021 at 04:54:33PM -0800, Dave Hansen wrote:
-> > +/* Nodes with one or more EPC sections. */
-> > +static nodemask_t sgx_numa_mask;
-> 
-> I'd also add that this is for optimization only.
-> 
-> > +/* Array of lists of EPC sections for each NUMA node. */
-> > +struct list_head *sgx_numa_nodes;
-> 
-> I'd much prefer:
-> 
-> /*
->  * Array with one list_head for each possible NUMA node.  Each
->  * list contains all the sgx_epc_section's which are on that
->  * node.
->  */
-> 
-> Otherwise, it's hard to imagine what this structure looks like.
+From: Colin Ian King <colin.king@canonical.com>
 
-OK.
+The recent commit 6c63e6e14da7 ("drm/i915/hdcp: No HDCP when encoder
+is't initialized") added a null pointer check on connector->encoder
+hence implying that it could potentially be null.  This means that
+the initialization of dig_port via the call intel_attached_dig_port
+may cause a null pointer dereference on connector->encoder. Fix
+this by only assigning dig_port after a null check has been performed
+on connector->encoder.
 
-> >  /*
-> >   * These variables are part of the state of the reclaimer, and must be accessed
-> >   * with sgx_reclaimer_lock acquired.
-> > @@ -473,6 +479,26 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
-> >  	return page;
-> >  }
-> >  
-> > +static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
-> > +{
-> > +	struct sgx_epc_section *section;
-> > +	struct sgx_epc_page *page;
-> > +
-> > +	if (WARN_ON_ONCE(nid < 0 || nid >= MAX_NUMNODES))
-> > +		return NULL;
-> > +
-> > +	if (!node_isset(nid, sgx_numa_mask))
-> > +		return NULL;
-> > +
-> > +	list_for_each_entry(section, &sgx_numa_nodes[nid], section_list) {
-> > +		page = __sgx_alloc_epc_page_from_section(section);
-> > +		if (page)
-> > +			return page;
-> > +	}
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> >  /**
-> >   * __sgx_alloc_epc_page() - Allocate an EPC page
-> >   *
-> > @@ -485,13 +511,17 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
-> >   */
-> >  struct sgx_epc_page *__sgx_alloc_epc_page(void)
-> >  {
-> > +	int current_nid = numa_node_id();
-> >  	struct sgx_epc_section *section;
-> >  	struct sgx_epc_page *page;
-> >  	int i;
-> >  
-> > +	page = __sgx_alloc_epc_page_from_node(current_nid);
-> > +	if (page)
-> > +		return page;
-> 
-> Comments, please.
-> 
-> 	/* Try to allocate EPC from the current node, first: */
-> 
-> then:
-> 
-> 	/* Search all EPC sections, ignoring locality: */
-> 
-> >  	for (i = 0; i < sgx_nr_epc_sections; i++) {
-> >  		section = &sgx_epc_sections[i];
-> > -
-> >  		page = __sgx_alloc_epc_page_from_section(section);
-> >  		if (page)
-> >  			return page;
-> 
-> This still has the problem that it exerts too much pressure on the
-> low-numbered sgx_epc_sections[].  If a node's sections are full, it
-> always tries to go after sgx_epc_sections[0].
+Addresses-Coverity: ("Dereference before null check")
+Fixes: 36e5e7042b20 ("drm/i915: Don't fully disable HDCP on a port if multiple pipes are using it")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/i915/display/intel_hdcp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I have a better idea. See below.
+diff --git a/drivers/gpu/drm/i915/display/intel_hdcp.c b/drivers/gpu/drm/i915/display/intel_hdcp.c
+index ae1371c36a32..7525ea31766c 100644
+--- a/drivers/gpu/drm/i915/display/intel_hdcp.c
++++ b/drivers/gpu/drm/i915/display/intel_hdcp.c
+@@ -2260,7 +2260,7 @@ int intel_hdcp_enable(struct intel_connector *connector,
+ 		      const struct intel_crtc_state *pipe_config, u8 content_type)
+ {
+ 	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+-	struct intel_digital_port *dig_port = intel_attached_dig_port(connector);
++	struct intel_digital_port *dig_port;
+ 	struct intel_hdcp *hdcp = &connector->hdcp;
+ 	unsigned long check_link_interval = DRM_HDCP_CHECK_PERIOD_MS;
+ 	int ret = -EINVAL;
+@@ -2274,6 +2274,7 @@ int intel_hdcp_enable(struct intel_connector *connector,
+ 		return -ENODEV;
+ 	}
+ 
++	dig_port = intel_attached_dig_port(connector);
+ 	mutex_lock(&hdcp->mutex);
+ 	mutex_lock(&dig_port->hdcp_mutex);
+ 	drm_WARN_ON(&dev_priv->drm,
+-- 
+2.30.0
 
-> It can be in another patch, but I think the *minimal* thing we can do
-> here for a NUMA allocator is to try to at least balance the allocations.
-> 
-> Instead of having a for-each-section loop, I'd make it for-each-node ->
-> for-each-section.  Something like:
-> 
-> 	for (i = 0; i < num_possible_nodes(); i++) {
-> 		node = (numa_node_id() + i) % num_possible_nodes()
-> 		
-> 		if (!node_isset(nid, sgx_numa_mask))
-> 			continue;
-> 
-> 		list_for_each_entry(section, &sgx_numa_nodes[nid],
-> 				    section_list) {
-> 			__sgx_alloc_epc_page_from_section(section)
-> 		}
-> 	}
-> 	
-> Then you have a single loop instead of a "try local then a fall back".
-> 
-> Also, that "node++" thing might be able to use next_online_node().
-> 
-> > @@ -665,8 +695,12 @@ static bool __init sgx_page_cache_init(void)
-> >  {
-> >  	u32 eax, ebx, ecx, edx, type;
-> >  	u64 pa, size;
-> > +	int nid;
-> >  	int i;
-> >  
-> > +	nodes_clear(sgx_numa_mask);
-> > +	sgx_numa_nodes = kmalloc_array(MAX_NUMNODES, sizeof(*sgx_numa_nodes), GFP_KERNEL);
-> 
-> MAX_NUMNODES will always be the largest compile-time constant.  That's
-> 4k, IIRC.  num_possible_nodes() might be as small as 1 if NUMA is off.
-
-Right.
-
-> >  	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
-> >  		cpuid_count(SGX_CPUID, i + SGX_CPUID_EPC, &eax, &ebx, &ecx, &edx);
-> >  
-> > @@ -690,6 +724,22 @@ static bool __init sgx_page_cache_init(void)
-> >  		}
-> >  
-> >  		sgx_nr_epc_sections++;
-> > +
-> > +		nid = numa_map_to_online_node(phys_to_target_node(pa));
-> > +
-> > +		if (nid == NUMA_NO_NODE) {
-> > +			pr_err(FW_BUG "unable to map EPC section %d to online node.\n", nid);
-> > +			nid = 0;
-> 
-> Could we dump out the physical address there?  I think that's even more
-> informative than a section number.
-
-Yes.
-
-> > +		} else if (WARN_ON_ONCE(nid < 0 || nid >= MAX_NUMNODES)) {
-> > +			nid = 0;
-> > +		}
-> 
-> I'm not sure we really need to check for these.  If we're worried about
-> the firmware returning these, I'd expect numa_map_to_online_node() to
-> sanity check them for us.
-
-Yes, let's remove it.
-
-> > +		if (!node_isset(nid, sgx_numa_mask)) {
-> > +			INIT_LIST_HEAD(&sgx_numa_nodes[nid]);
-> > +			node_set(nid, sgx_numa_mask);
-> > +		}
-> > +
-> > +		list_add_tail(&sgx_epc_sections[i].section_list, &sgx_numa_nodes[nid]);
-> >  	}
-> >  
-> >  	if (!sgx_nr_epc_sections) {
-> > diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-> > index 5fa42d143feb..4bc31bc4bacf 100644
-> > --- a/arch/x86/kernel/cpu/sgx/sgx.h
-> > +++ b/arch/x86/kernel/cpu/sgx/sgx.h
-> > @@ -45,6 +45,7 @@ struct sgx_epc_section {
-> >  	spinlock_t lock;
-> >  	struct list_head page_list;
-> >  	unsigned long free_cnt;
-> > +	struct list_head section_list;
-> 
-> Maybe name this numa_section_list.
-
-Instead, let's just:
-
-1. Have a global sgx_free_epc_list and remove sgx_epc_section.
-   Pages from this are allocated from this in LIFO fashion.
-2. Instead add struct list_head node_list and use that for node
-   associated pages.
-3. Replace 'int section' with 'int node'.
-
-This will remove one layer of abstraction and provide better fallback
-scheme.
-
-E.g. allocate:
-
-1. Check node_list of current node.
-2. As a fallback check sgx_free_epc_list.
-3. list_del() for two lists.
-
-/Jarkko
