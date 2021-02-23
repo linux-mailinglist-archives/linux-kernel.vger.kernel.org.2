@@ -2,91 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAC63230E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944AB3230EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 19:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbhBWSnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 13:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbhBWSnG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 13:43:06 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F701C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:42:26 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id j19so12692027lfr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:42:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nW1+AMD4PYuhUkEM4FM2B5KEsUAeGbVHXYzkjyeSfIk=;
-        b=d1TNtHWo0c2fjpEv6kjIPQYRTGZgT5yURrXaWeBuWVHjBD9iQ5AVQKpN6dJIpx/Ai8
-         KGKxfLQK+QkHGApZMf/VwslQizlNzZMo91q8DtOSyuhNgLnjmVprfsK0C/fQzFcSPf4T
-         uPUTOPEy5TICl8vs2pej3ewerJc4regAyZv+k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nW1+AMD4PYuhUkEM4FM2B5KEsUAeGbVHXYzkjyeSfIk=;
-        b=jD7SAL73DiElbibMWPF3zDfvjQl12z0VOOMSS3LMKDXrtakb7Y4mnKFR+Yx3L2g3YK
-         5g2h2Wp/QEglq80PVxgWR1fPo1gSslkjb0K6L87vvZYrBPTzUb3aQA2ISdXZ8BMXG9O9
-         HorwhnODsn0nE4H3+Pu9IhL1DQ9k63p440SU7K0sXASIAK8TTkT1z7JIZHIh17VoFw4o
-         PstmS2GVNjFhDScGb5coVSZdc6PQKApLsugFpaHhLkBKmm86oBp5BQsQB6D+/zPb6uj/
-         lNVD8krPbR1ZxZIQofN8b6O5PdFTT+B+W93FdfgexiPxd7+Is2bLdNpwyf2COp5v7ToP
-         dlYA==
-X-Gm-Message-State: AOAM532eJvW/0+rVXS6++IJbN+oMqBqOlSQ2HU/fNZYtv6ldwx+iYXqo
-        b5Dj3opQvsK3jvVp0udiPUtotxVS/TE1rA==
-X-Google-Smtp-Source: ABdhPJz9PY+KRhOuhLaYevOTmqKz5MlVwjAge4zf6SqdBR8FGIDlrr6kgNsbiQzrrx+xrgw+YqEJsw==
-X-Received: by 2002:a19:910e:: with SMTP id t14mr18330029lfd.282.1614105744433;
-        Tue, 23 Feb 2021 10:42:24 -0800 (PST)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id k22sm785109ljj.31.2021.02.23.10.42.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 10:42:23 -0800 (PST)
-Received: by mail-lj1-f173.google.com with SMTP id o16so59653693ljj.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 10:42:23 -0800 (PST)
-X-Received: by 2002:a05:651c:110e:: with SMTP id d14mr18515605ljo.220.1614105743465;
- Tue, 23 Feb 2021 10:42:23 -0800 (PST)
+        id S233897AbhBWSn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 13:43:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55806 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230114AbhBWSnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 13:43:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614105756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QZ33EKFydKYQll/wNBrYJt9SLMpJFdNX6PK6738sxL4=;
+        b=mRqz5RlxY0MleyIZCOCdydEysSrolgNwxZXrgyikDtYy1z8XMTWGF98OFHNS48BU9VNXn+
+        hyu7Y2zGqWmCaeLcc37RctNV3xOx9vTeKixinggl492o/U0QDr7KtYdw/h6EKKOjAClx2o
+        85Yyb5VCteuKVyX9O1ML24HqsJ1TiBo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1CB88AE55;
+        Tue, 23 Feb 2021 18:42:36 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 19:42:27 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, guro@fb.com, shakeelb@google.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: fix slub memory accounting
+Message-ID: <YDVMk+GQ943JXGz6@blackbook>
+References: <20210223092423.42420-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <YDUibKAt5tpA1Hxs@gunter> <CAHk-=wipCbbXswcFvnrGae01H54dY1+XoaL+9YaiU71zGzko3Q@mail.gmail.com>
-In-Reply-To: <CAHk-=wipCbbXswcFvnrGae01H54dY1+XoaL+9YaiU71zGzko3Q@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 23 Feb 2021 10:42:07 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh8vHL43v7GWK9MWrWitSmOmrEw1B0AJD9CrhBc4FvpxA@mail.gmail.com>
-Message-ID: <CAHk-=wh8vHL43v7GWK9MWrWitSmOmrEw1B0AJD9CrhBc4FvpxA@mail.gmail.com>
-Subject: Re: [GIT PULL] Modules updates for v5.12
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="IG0eXaihVNtABiw1"
+Content-Disposition: inline
+In-Reply-To: <20210223092423.42420-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 10:26 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Tue, Feb 23, 2021 at 7:42 AM Jessica Yu <jeyu@kernel.org> wrote:
-> >
-> > Please pull below to receive modules updates for the v5.12 merge window.
->
-> Pulled.
 
-Actually, I take that back.
+--IG0eXaihVNtABiw1
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think there is something horribly wrong in my tree, and my build
-process is now about 30% slower. It went from 5+ minutes to 8+
-minutes. The main suspect would be some lack of parallelism.
+On Tue, Feb 23, 2021 at 05:24:23PM +0800, Muchun Song <songmuchun@bytedance=
+=2Ecom> wrote:
+>  mm/slab_common.c | 4 ++--
+>  mm/slub.c        | 8 ++++----
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
-I can't see anything in the module pull that could possibly cause
-this, but it seems to have coincided with that pull.
+--IG0eXaihVNtABiw1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-I'm investigating, but the output stopped for a long time at
+-----BEGIN PGP SIGNATURE-----
 
-  CHK     include/generated/autoksyms.h
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmA1TI8ACgkQia1+riC5
+qSiWAQ/9HoHZzRkfByT6xtaSn15MABMfGyy9kpE9KTK6y30Id4ErEgc+l0uy9jSz
+W3omUt+e01+K0G7jDAwTN8dK/SevY/IpENprCxKMVkZ3thk4OO72uAy4ip7Ahpc5
+j4YUVofSMiHeM8BRg0jyNURYnAjD5zI1tS3D9xVVe5EFnbhSBw5ur3gTNTjs9ZUd
+N9Iu5BVUmohXes7P0Z1vyFOSuvyf4bWDPb1sHnHPU9n73p6lPQ+0Z9o7ph1nR5zZ
+0SG48AnWW5sEiCDxvGU27NpnNueLfTz9tBiAd5f/k1VJSZyPez1aJXcRYnQDAuxo
+H9AgsQnO7BmHR2+doyHjlfaPkRtXT5QLSq/0z87hf/T78eTYMlG7hLTo2DHMEdKA
+L+Jx7JQo0IasKOmID/nmL14PMDs5XYRWxw1y+DW1G0kW7u/0Th8sgMLkh0qQQYZx
+m5gTJIXJ0mZjnZoK0hQqtxkuVnTvPMTy5fTvFlduzoIp1pILkdjNmFxWg8ZAenIA
+lYoCkkPd17lOF7vC4jXo/L9gFSOyODZamS/jbjnwo9GqadMYiAJNHo4ShIoF3YAz
+dyG5TSSVFDzn9XdwMfwPg7tBUtD6GiLG7GLjKT+IJM6LO5wFoDeQPCag41KgxTDn
+SSwi1GdzHGyrGDH6JcTmAqWDudbmvTdK065ntc7Zj2XmRXMTeDc=
+=7qx0
+-----END PGP SIGNATURE-----
 
-Ring a bell? Did something change in here?
-
-                Linus
+--IG0eXaihVNtABiw1--
