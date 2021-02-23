@@ -2,68 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCD23226CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0B13226CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbhBWIEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:04:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232147AbhBWIDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:03:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C976264DAF;
-        Tue, 23 Feb 2021 08:02:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614067381;
-        bh=jPx4LV2bldX3/+xhN+fFDKFW8lIjZrChpQM5Wnm09qQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YAQTMxw9sO/cekq6q7hkeSF9CuLk9KpT6pOH/OQcYRvwNWGOAIi5b4stdL9qLr2FJ
-         MAr2cxJ0XMh0jyNPWgJ4yjgqLP2i9WHzk9zdRSw8u/xl+run4OV9mA2bCsdOAkyuyW
-         M22hTM3begRWf8Uh731HentmfuP09gIg7wBoioqIRmuSnHX9YIuRBn2hcbXPF7JX/r
-         mXDlG+3r59M5d+g79YGJmNUuRToBeYO6Ybfza7C1EQIlkVrsGxoO9rnfpWBDdWiKDP
-         O+unDD0TL7w4MxTYAtSpkHl4F0zSxVAJRGDVtAWCDaXn/8KLPhC8ml/iZhlkRltpdY
-         75p+g2z6DMmkw==
-Date:   Tue, 23 Feb 2021 09:02:54 +0100
-From:   Robert Richter <rric@kernel.org>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] PCI: Introduce pcim_alloc_irq_vectors()
-Message-ID: <YDS2rkJu7PTJJiZr@rric.localdomain>
-References: <20210218150458.798347-1-zhengdejin5@gmail.com>
- <20210218150458.798347-2-zhengdejin5@gmail.com>
- <YC/NxfsQn2RKkrp8@rric.localdomain>
- <20210219164649.GA814637@nuc8i5>
- <YDONyMSHO9FDeY69@rric.localdomain>
- <20210222151415.GA896979@nuc8i5>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210222151415.GA896979@nuc8i5>
+        id S232003AbhBWIF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:05:29 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:62632 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232155AbhBWIE7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 03:04:59 -0500
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210223080414epoutp031f2e0e0565ee258b4a005d3fa05f0a6f~mUcxNE46h2781027810epoutp038
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:04:14 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210223080414epoutp031f2e0e0565ee258b4a005d3fa05f0a6f~mUcxNE46h2781027810epoutp038
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614067454;
+        bh=VsArMim74poNxoH+XzW3dQThRgDRsxRhbvqOoz51HZo=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=cH7tIk251SnM5mLHPFiMX5jwCSm+RRNywojq0V/CPQ0hfKYC5am3rjFS+pW8cMFjD
+         E/r3Rh3qnjrFomBcxhERww+tm8SCXDNi0fGbNrCmqu67yz7bWwAlr4ygFNq4ut5xCV
+         psV5scDqJwMIKqDZG/rI+1rYGcCGFy6mcRVKiERY=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210223080413epcas2p1605fefab10cece77bba17d10ca32168a~mUcwVpGeH0566705667epcas2p1B;
+        Tue, 23 Feb 2021 08:04:13 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.181]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DlBQg73RLz4x9QP; Tue, 23 Feb
+        2021 08:04:11 +0000 (GMT)
+X-AuditID: b6c32a45-34dff7000001297d-1f-6034b6fb392a
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        81.CC.10621.BF6B4306; Tue, 23 Feb 2021 17:04:11 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: RE: [PATCH v22 4/4] scsi: ufs: Add HPB 2.0 support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <DM6PR04MB657588F1C76DC0D5BFC68862FC819@DM6PR04MB6575.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210223080410epcms2p4704a20bb74cbbc1c1d0af92386eda2c7@epcms2p4>
+Date:   Tue, 23 Feb 2021 17:04:10 +0900
+X-CMS-MailID: 20210223080410epcms2p4704a20bb74cbbc1c1d0af92386eda2c7
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMJsWRmVeSWpSXmKPExsWy7bCmhe7vbSYJBvf3iVs8mLeNzWJv2wl2
+        i5c/r7JZHL79jt1i2oefzBaf1i9jtXh5SNNi1YNwi+bF69ks5pxtYLLo7d/KZvH4zmd2i0U3
+        tjFZ9P9rZ7G4vGsOm0X39R1sFsuP/2OyuL2Fy2Lp1puMFp3T17BYLFq4m8VB1OPyFW+Py329
+        TB47Z91l95iw6ACjx/65a9g9Wk7uZ/H4+PQWi0ffllWMHp83yXm0H+hmCuCKyrHJSE1MSS1S
+        SM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAfpQSaEsMacUKBSQWFys
+        pG9nU5RfWpKqkJFfXGKrlFqQklNgaFigV5yYW1yal66XnJ9rZWhgYGQKVJmQk7H/+gnWgkWi
+        FX9aZjI2ML7h62Lk5JAQMJFYdW4+O4gtJLCDUaL1n1IXIwcHr4CgxN8dwiBhYQF7iTcti5kg
+        SpQk1l+cxQ4R15O49XANI4jNJqAjMf3EfaA4F4eIwAoWiYu/LrGBOMwCv5gkTjz+wAixjFdi
+        RvtTFghbWmL78q1gcU6BWIk9Vw8yQcQ1JH4s62WGsEUlbq5+yw5jvz82H2qOiETrvbNQNYIS
+        D37uhopLShzb/QFqTr3E1ju/GEGOkBDoYZQ4vPMWK0RCX+Jax0awI3gFfCXmP9gI1sAioCrR
+        1zcHaqiLxJOfB8CGMgvIS2x/CxLnALI1Jdbv0gcxJQSUJY7cYoF5q2Hjb3Z0NrMAn0TH4b9w
+        8R3znkCdpiax7ud6pgmMyrMQQT0Lya5ZCLsWMDKvYhRLLSjOTU8tNiowRI7cTYzg1K7luoNx
+        8tsPeocYmTgYDzFKcDArifCy3TVKEOJNSaysSi3Kjy8qzUktPsRoCvTlRGYp0eR8YHbJK4k3
+        NDUyMzOwNLUwNTOyUBLnLTZ4EC8kkJ5YkpqdmlqQWgTTx8TBKdXA1HKY23BV0eEGxpJ5t8/q
+        aXyUb+IR7JjM+uli71v3PLt117fd+dDm/XXz8fKfr569m654JOaOlEhmNEukIkeMV1aNRj7H
+        32VKjfKL3aZ/nxnw4+cmLbHLi1YWNH0NlHI4bccXIfezVSbuQM8+0ayXd+V+6x8yvCPHXHXu
+        W/ByoQ9s+3ZlMzJNLIitKo4R6/L/LOh75MMxlxD9nsmbZgSXHORemO7+W/ng3WmFnY/2HfKv
+        ad4iHlfF1eGytfKTkc3XyawX5HusDzgYikYb3quMm7mQS+bxhwVz3IJLT9RdnpVjlOTomt+v
+        uNFrhUWH3vZcnzVd/zY4rm+bx7v4yfN0njmzFinaTN3PJfnOP/2oEktxRqKhFnNRcSIAaHMa
+        WXYEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
+References: <DM6PR04MB657588F1C76DC0D5BFC68862FC819@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <20210222092957epcms2p728b0c563f3cfbecbf8692d7e86f9afed@epcms2p7>
+        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
+        <20210222093150epcms2p155352e2255e6bfd8f8d71c737ed05e76@epcms2p1>
+        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.02.21 23:14:15, Dejin Zheng wrote:
-> On Mon, Feb 22, 2021 at 11:56:08AM +0100, Robert Richter wrote:
-> > On 20.02.21 00:46:49, Dejin Zheng wrote:
-> > > > On 18.02.21 23:04:55, Dejin Zheng wrote:
+> > @@ -7447,8 +7452,14 @@ static int ufs_get_device_desc(struct ufs_hba *hba)
 > > 
-> > > > > +	if (!dr || !dr->enabled)
-> > > here checks whether the pci device is enabled.
+> >         if (dev_info->wspecversion >= UFS_DEV_HPB_SUPPORT_VERSION &&
+> >             (b_ufs_feature_sup & UFS_DEV_HPB_SUPPORT)) {
+> > -               dev_info->hpb_enabled = true;
+> > -               ufshpb_get_dev_info(hba, desc_buf);
+> > +               bool hpb_en = false;
+> > +
+> > +               err = ufshcd_query_flag_retry(hba,
+> > UPIU_QUERY_OPCODE_READ_FLAG,
+> > +                                             QUERY_FLAG_IDN_HPB_EN, 0, &hpb_en);
+> > +               if (!err && hpb_en) {
+> > +                       dev_info->hpb_enabled = true;
+> > +                       ufshpb_get_dev_info(hba, desc_buf);
+> QUERY_FLAG_IDN_HPB_EN only apply to HPB2.0
+
+OK,
+
+> > +               }
+> >         }
 > > 
-> > What is the purpose of this? The device "is_managed" or not.
-> >
-> The device is managed or not by check whether "dr" is NULL. And
-> check the "dr->enabled" is for the PCI device enable. I think it
-> may not make sense to apply for irq vectors when PCI device is not
-> enabled.
+> > +
+> > +/*
+> > + * WRITE_BUFFER CMD support 36K (len=9) ~ 512K (len=128) default.
+> > + * it is possible to change range of transfer_len through sysfs.
+> > + */
+> Actually the transfer length is limited by its (and read id) single byte.
+> Fixing MAX_HPB_READ_ID = 128  is IMO a reasonable choice,
+> But not limited by spec.  Maybe make note of that ?
+>  
+> > +static inline bool ufshpb_is_required_wb(struct ufshpb_lu *hpb, int len)
+> > +{
+> > +       return (len >= hpb->pre_req_min_tr_len &&
+> > +               len <= hpb->pre_req_max_tr_len);
+> >  }
+> Maybe also check HPB2.0 as well?
 
-I don't see how a disabled device affects in any way the release of
-the irq vectors during device removal. dr is always non-null in case
-the device is managed, a check isn't needed for that.
+OK,
 
--Robert
+> > -void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+> > +int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+> >  {
+> >         struct ufshpb_lu *hpb;
+> >         struct ufshpb_region *rgn;
+> > @@ -282,26 +546,27 @@ void ufshpb_prep(struct ufs_hba *hba, struct
+> > ufshcd_lrb *lrbp)
+> >         u64 ppn;
+> >         unsigned long flags;
+> >         int transfer_len, rgn_idx, srgn_idx, srgn_offset;
+> > +       int read_id = MAX_HPB_READ_ID;
+> Should be 0 if wb is not used?
+
+I will fix it.
+
+> > +
+> > +       hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), GFP_KERNEL);
+> > +       hpb->throttle_pre_req = qd;
+> What is the point in throttling if you are allowing 32 simultaneous commands?
+> There can't be more than qd/2 anyway?
+> On the contrary, it makes much more sense to control the inflight map requests, instead?
+
+OK, I will change it to qd/2.
+ 
+> > +       hpb->num_inflight_pre_req = 0;
+> > +
+>  
+> > -#define HPB_SUPPORT_VERSION                    0x100
+> > +#define HPB_SUPPORT_VERSION                    0x200
+> In ufshpb_get_dev_info you are bailing out if version != HPB_SUPPORT_VERSION
+> Meaning you are no longer backward supporting HPB1.0?
+
+I add to support legacy version of HPB.
+
+Thanks,
+Daejun
