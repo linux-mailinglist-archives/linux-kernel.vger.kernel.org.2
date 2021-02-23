@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DAC032290A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:53:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A8332290E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232156AbhBWKuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:50:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbhBWKum (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:50:42 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDF6C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 02:50:01 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:254f:253d:debc:790b])
-        by baptiste.telenet-ops.be with bizsmtp
-        id Yapz2400X1v7dkx01apzC6; Tue, 23 Feb 2021 11:49:59 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lEVGR-0011PW-91; Tue, 23 Feb 2021 11:49:59 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lEVGQ-009GjK-Ji; Tue, 23 Feb 2021 11:49:58 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Fix virt_addr_valid() W=1 compiler warnings
-Date:   Tue, 23 Feb 2021 11:49:57 +0100
-Message-Id: <20210223104957.2209219-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S232248AbhBWKv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 05:51:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54528 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232033AbhBWKuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 05:50:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A75CCAC69;
+        Tue, 23 Feb 2021 10:50:10 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 11:50:05 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v16 4/9] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+Message-ID: <20210223104957.GA3844@linux>
+References: <20210219104954.67390-1-songmuchun@bytedance.com>
+ <20210219104954.67390-5-songmuchun@bytedance.com>
+ <13a5363c-6af4-1e1f-9a18-972ca18278b5@oracle.com>
+ <20210223092740.GA1998@linux>
+ <CAMZfGtVRSBkKe=tKAKLY8dp_hywotq3xL+EJZNjXuSKt3HK3bQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtVRSBkKe=tKAKLY8dp_hywotq3xL+EJZNjXuSKt3HK3bQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_DEBUG_SG=y, and CONFIG_MMU=y:
+On Tue, Feb 23, 2021 at 06:27:07PM +0800, Muchun Song wrote:
+> > > > +
+> > > > +   if (alloc_huge_page_vmemmap(h, page)) {
+> > > > +           int zeroed;
+> > > > +
+> > > > +           spin_lock(&hugetlb_lock);
+> > > > +           INIT_LIST_HEAD(&page->lru);
+> > > > +           set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
+> > > > +           h->nr_huge_pages++;
+> > > > +           h->nr_huge_pages_node[nid]++;
+> >
+> > I think prep_new_huge_page() does this for us?
+> 
+> Actually, there are some differences. e.g. prep_new_huge_page()
+> will reset hugetlb cgroup and ClearHPageFreed, but we do not need
+> them here. And prep_new_huge_page will acquire and release
+> the hugetlb_lock. But here we also need hold the lock to update
+> the surplus counter and enqueue the page to the free list.
+> So I do not think reuse prep_new_huge_page is a good idea.
 
-    include/linux/scatterlist.h: In function ‘sg_set_buf’:
-    arch/m68k/include/asm/page_mm.h:174:49: warning: ordered comparison of pointer with null pointer [-Wextra]
-      174 | #define virt_addr_valid(kaddr) ((void *)(kaddr) >= (void *)PAGE_OFFSET && (void *)(kaddr) < high_memory)
-	  |                                                 ^~
+I see, I missed that.
 
-or CONFIG_MMU=n:
+> > Can this actually happen? AFAIK, page landed in update_and_free_page should be
+> > zero refcounted, then we increase the reference, and I cannot see how the
+> > reference might have changed in the meantime.
+> 
+> I am not sure whether other modules get the page and then put the
+> page. I see gather_surplus_pages does the same thing. So I copied
+> from there. I try to look at the memory_failure routine.
+> 
+> 
+> CPU0:                           CPU1:
+>                                 set_compound_page_dtor(HUGETLB_PAGE_DTOR);
+> memory_failure_hugetlb
+>   get_hwpoison_page
+>     __get_hwpoison_page
+>       get_page_unless_zero
+>                                 put_page_testzero()
+> 
+> Maybe this can happen. But it is a very corner case. If we want to
+> deal with this. We can put_page_testzero() first and then
+> set_compound_page_dtor(HUGETLB_PAGE_DTOR).
 
-    include/linux/scatterlist.h: In function ‘sg_set_buf’:
-    arch/m68k/include/asm/page_no.h:33:50: warning: ordered comparison of pointer with null pointer [-Wextra]
-       33 | #define virt_addr_valid(kaddr) (((void *)(kaddr) >= (void *)PAGE_OFFSET) && \
-	  |                                                  ^~
+I have to check further, but it looks like this could actually happen.
+Handling this with VM_BUG_ON is wrong, because memory_failure/soft_offline are
+entitled to increase the refcount of the page.
 
-Fix this by doing the comparison in the "unsigned long" instead of the
-"void *" domain.
+AFAICS,
 
-Note that for now this is only seen when compiling btrfs, due to commit
-e9aa7c285d20a69c ("btrfs: enable W=1 checks for btrfs"), but as people
-are doing more W=1 compile testing, it will start to show up elsewhere,
-too.
+ CPU0:                                    CPU1:
+                                          set_compound_page_dtor(HUGETLB_PAGE_DTOR);
+ memory_failure_hugetlb
+   get_hwpoison_page
+     __get_hwpoison_page
+       get_page_unless_zero
+                                          put_page_testzero()
+        identify_page_state
+         me_huge_page
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Probably we want this as a fix for v5.12, to avoid the build bots
-nagging about it all the time?
+I think we can reach me_huge_page with either refcount = 1 or refcount =2,
+depending whether put_page_testzero has been issued.
 
- arch/m68k/include/asm/page_mm.h | 2 +-
- arch/m68k/include/asm/page_no.h | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+For now, I would not re-enqueue the page if put_page_testzero == false.
+I have to see how this can be handled gracefully.
 
-diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/page_mm.h
-index 7f5912af2a52ea0a..9b1672f9b2e22cdf 100644
---- a/arch/m68k/include/asm/page_mm.h
-+++ b/arch/m68k/include/asm/page_mm.h
-@@ -171,7 +171,7 @@ static inline __attribute_const__ int __virt_to_node_shift(void)
- #include <asm-generic/memory_model.h>
- #endif
- 
--#define virt_addr_valid(kaddr)	((void *)(kaddr) >= (void *)PAGE_OFFSET && (void *)(kaddr) < high_memory)
-+#define virt_addr_valid(kaddr)	((unsigned long)(kaddr) >= PAGE_OFFSET && ((unsigned long)kaddr) < (unsigned long)high_memory)
- #define pfn_valid(pfn)		virt_addr_valid(pfn_to_virt(pfn))
- 
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
-index 6bbe52025de3c5c6..8d0f862ee9d79532 100644
---- a/arch/m68k/include/asm/page_no.h
-+++ b/arch/m68k/include/asm/page_no.h
-@@ -30,8 +30,8 @@ extern unsigned long memory_end;
- #define page_to_pfn(page)	virt_to_pfn(page_to_virt(page))
- #define pfn_valid(pfn)	        ((pfn) < max_mapnr)
- 
--#define	virt_addr_valid(kaddr)	(((void *)(kaddr) >= (void *)PAGE_OFFSET) && \
--				((void *)(kaddr) < (void *)memory_end))
-+#define	virt_addr_valid(kaddr)	(((unsigned long)(kaddr) >= PAGE_OFFSET) && \
-+				((unsigned long)(kaddr) < memory_end))
- 
- #endif /* __ASSEMBLY__ */
- 
+
+
 -- 
-2.25.1
-
+Oscar Salvador
+SUSE L3
