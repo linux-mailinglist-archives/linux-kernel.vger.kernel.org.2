@@ -2,148 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3403A323499
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 01:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0D3323492
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 01:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234932AbhBXAXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 19:23:30 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:35053 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233578AbhBWXjs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 18:39:48 -0500
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210223233812epoutp032506697fa1371baa95105716c98acee7~mhMOmOwrI1761417614epoutp03B
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:38:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210223233812epoutp032506697fa1371baa95105716c98acee7~mhMOmOwrI1761417614epoutp03B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614123492;
-        bh=Cmg8gly31DwYa1wINVEhhyx2jlgSoA5nhTLbBh5scmY=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=u9bfjbHW2USj2S0G+unbzAmcDFCVmMqpgBpcw3rT11HY8fSulY4SwzecFUJWRV34y
-         ovn4m70OQwfRsw6Oqrbyf7Fql9Z/0DddYhWTqfBqJTeVx/Lss2xuZ29DWqjQ0F5txn
-         TknM4Lj7/FPdfxgcqjpFrGHFYkFAIIITeT7RyLs4=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210223233811epcas2p4ed57f4c92f00d7d09ed707e6caaa8e01~mhMNvmyfY2813528135epcas2p4Q;
-        Tue, 23 Feb 2021 23:38:11 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.182]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4Dlb8L20t5z4x9Q5; Tue, 23 Feb
-        2021 23:38:10 +0000 (GMT)
-X-AuditID: b6c32a47-b81ff7000000148e-dc-603591e2f1a2
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        73.91.05262.2E195306; Wed, 24 Feb 2021 08:38:10 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: RE: [PATCH v22 3/4] scsi: ufs: Prepare HPB read for cached
- sub-region
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <DM6PR04MB6575E664773FFD81FB16EBF4FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210223233809epcms2p1482aac5e531d692f00cf0fc5ee8c7f4a@epcms2p1>
-Date:   Wed, 24 Feb 2021 08:38:09 +0900
-X-CMS-MailID: 20210223233809epcms2p1482aac5e531d692f00cf0fc5ee8c7f4a
+        id S234228AbhBXALU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 19:11:20 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:33213 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233664AbhBWXkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 18:40:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614123559; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=yGLSBwHnyIykQ5h2PxlcYuvkg18nQYW34O01Qcy7Fxs=; b=h0LvSOUoaX6qjBrf0C4qIIIrd5vE5l9wlhtb+zBxlKCES8xtrAwA6AnDovaCaWUceTBLDI6g
+ 60M+muew6s8qiAOKMTOnx9MdMX0ND0ofFBssECGhuq3D2+RgRoBqM9/nVcBG4tIptCEgzv5v
+ WqIriH7d0vj/pUhQqXOntLiSqBo=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60359201090a774287980e88 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Feb 2021 23:38:41
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 36812C43462; Tue, 23 Feb 2021 23:38:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 57E42C433ED;
+        Tue, 23 Feb 2021 23:38:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 57E42C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH 3/6] firmware: qcom_scm: Workaround lack of "is available"
+ call on SC7180
+To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Elliot Berman <eberman@codeaurora.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Douglas Anderson <dianders@chromium.org>
+References: <20210223214539.1336155-1-swboyd@chromium.org>
+ <20210223214539.1336155-4-swboyd@chromium.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <c7fd9642-7dcb-42bc-18e9-6fd86d8f5be8@codeaurora.org>
+Date:   Tue, 23 Feb 2021 16:38:38 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210223214539.1336155-4-swboyd@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA51Te0xbZRT3u7f0Qex2KeC+odF6CTLmKKVQ+NBVSdhck0WdC7qXC23KDSVC
-        291bCMMwGpmD8Z5mAzvGgCnTDqkjUB5VykseJgsgMqQMhhtgMGN2YsboHEofuMU//e/3/c7v
-        nN8558vh4oJOThA3VaOnaI0yjWT7siy9YSj81hmpQtzU5Ytmqy1s9N2pQQ5aXB1no96puxx0
-        zrGKoz/M9T5osScMmWYPoLxLZjaqumbAUElZCxvdvrHMQXU/WzBUtpbPQmMdVWxUNNHGRpcH
-        1jA01eyLvmiZBOh0RQML1dVaWfGB8rGf9srHSkswebtxmiMvr+sCctuFBo785JCNJb83b2fJ
-        S5tNQL7c9Lw8v6sI2+d72AB2KmmVOjWTElIalTY5VZMiI99NfCMckUK1ltHLyCORSCKKjJOK
-        ouNEktijr0SKxRIpKdQo0ykZmRXuzSaFtEq3rtZTjJ6mVNQ6RcczemUKJWKU6UyGJkWk0qaT
-        wkxlWsZ6Hhnx2k41pUymaKFiDqhHau0c3Tgvq9lWCQzAwC4EPC4koqH5wRCnEPhyBUQbgPed
-        03gh4HL5hB981Obv0vgTiXB4aga4sIAgoXnUyPHwImj/pcHNs4kdsGLwprtOAPElC446f2S7
-        HjjhxODgbQfwuPFhZf48y4Ofha2XW4DLjEcchb2TsR56G3xQX4J7cCCcvLLE2cC/91/0lgmA
-        H89c82r84Oyq1ctvhf1WB+bBubDlhhO4eoBEMYC97XYfTyACXi+46u6BT7wJu88Vuw1YRAg8
-        1THhTd4F8+x/ufU48QJsXapyLwUnwqC5I8IFIREM++ysjakMVx9y/otxYhMs6H30L99WPeet
-        /hJsXDVj5SDY+HjTxie8jI+9agBuAs9QOiY9hWIkuqgnP7oJuG9g+542ULnkEPUAjAt6AOTi
-        ZACfPS1RCPjJyuPZFK1NojPSKKYHZK9PeQYPClRp149Io0+KjBFLYqRR0VFR0mjp/6alkpgY
-        cZwUSWMkiNzCZ8SzSQIiRamnPqAoHUVvmGNcXpAB05WCSVNT447zCSOyfW+bsOOUoj+gI+Or
-        0N0RffA9A0/1iZ//BZxxpA07tJtz8g4W1nwb8nSBiAmZOjize+3u9YVtFvHor0V/atKf0tbf
-        v3TTyaO1dFBq2THzFTzs0Mlye2pnzsMTKwfqHd2KgMMjuXts1tk7C+VnP3MqxO9bu7vxhT5j
-        fMUxE2vv6RNS1eb9b4WaSs82HsloKf4evaj9OzhhOsGn+uss4LBYcmz0eay9XbQsIHf9MDG3
-        GLo/ufJiYI2t9vN3hl/Ojv9wq6Pk1qulnV0DDZ/2lSVSv82Pv34vTNu3ZVOCbEhd9Nwde07X
-        yoqPKXYgU5Zr/eibVknuWOYhksWolZHbcZpR/gM2cpbX0QQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
-References: <DM6PR04MB6575E664773FFD81FB16EBF4FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210222092957epcms2p728b0c563f3cfbecbf8692d7e86f9afed@epcms2p7>
-        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
-        <20210222093117epcms2p80c6904ac3ac7b10349265ed27e83eea4@epcms2p8>
-        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +static int ufshpb_fill_ppn_from_page(struct ufshpb_lu *hpb,
-> > +                                    struct ufshpb_map_ctx *mctx, int pos,
-> > +                                    int len, u64 *ppn_buf)
-> > +{
-> > +       struct page *page;
-> > +       int index, offset;
-> > +       int copied;
-> > +
-> > +       index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
-> > +       offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
-> Maybe cache hpb->entries_per_page in ufshpb_lu_parameter_init as well?
-
-They are just defined constants and complier will optimize them.
-
-Thanks,
-Daejun
-
-> > +
-> > +       if ((offset + len) <= (PAGE_SIZE / HPB_ENTRY_SIZE))
-> > +               copied = len;
-> > +       else
-> > +               copied = (PAGE_SIZE / HPB_ENTRY_SIZE) - offset;
-> > +
-> > +       page = mctx->m_page[index];
-> > +       if (unlikely(!page)) {
-> > +               dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> > +                       "error. cannot find page in mctx\n");
-> > +               return -ENOMEM;
-> > +       }
-> > +
-> > +       memcpy(ppn_buf, page_address(page) + (offset * HPB_ENTRY_SIZE),
-> > +              copied * HPB_ENTRY_SIZE);
-> > +
-> > +       return copied;
-> > +}
->  
->  
+On 2/23/2021 2:45 PM, Stephen Boyd wrote:
+> Some SC7180 firmwares don't implement the QCOM_SCM_INFO_IS_CALL_AVAIL
+> API, so we can't probe the calling convention. We detect the legacy
+> calling convention on these firmwares, because the availability call
+> always fails and legacy is the fallback. This leads to problems where
+> the rmtfs driver fails to probe, because it tries to assign memory with
+> a bad calling convention, which then leads to modem failing to load and
+> all networking, even wifi, to fail. Ouch!
+> 
+> Let's force the calling convention to be what it always is on this SoC,
+> i.e. arm64. Of course, the calling convention is not the same thing as
+> implementing the QCOM_SCM_INFO_IS_CALL_AVAIL API. The absence of the "is
+> this call available" API from the firmware means that any call to
+> __qcom_scm_is_call_available() fails. This is OK for now though because
+> none of the calls that are checked for existence are implemented on
+> firmware running on sc7180. If such a call needs to be checked for
+> existence in the future, we presume that firmware will implement this
+> API and then things will "just work".
+> 
+> Cc: Elliot Berman <eberman@codeaurora.org>
+> Cc: Brian Masney <masneyb@onstation.org>
+> Cc: Stephan Gerhold <stephan@gerhold.net>
+> Cc: Jeffrey Hugo <jhugo@codeaurora.org>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Fixes: 9a434cee773a ("firmware: qcom_scm: Dynamically support SMCCC and legacy conventions")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>   drivers/firmware/qcom_scm.c | 18 ++++++++++++++++--
+>   1 file changed, 16 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+> index 21e07a464bd9..9ac84b5d6ce0 100644
+> --- a/drivers/firmware/qcom_scm.c
+> +++ b/drivers/firmware/qcom_scm.c
+> @@ -131,6 +131,7 @@ static enum qcom_scm_convention __get_convention(void)
+>   	struct qcom_scm_res res;
+>   	enum qcom_scm_convention probed_convention;
+>   	int ret;
+> +	bool forced = false;
 >   
+>   	if (likely(qcom_scm_convention != SMC_CONVENTION_UNKNOWN))
+>   		return qcom_scm_convention;
+> @@ -144,6 +145,18 @@ static enum qcom_scm_convention __get_convention(void)
+>   	if (!ret && res.result[0] == 1)
+>   		goto found;
+>   
+> +	/*
+> +	 * Some SC7180 firmwares didn't implement the
+> +	 * QCOM_SCM_INFO_IS_CALL_AVAIL call, so we fallback to forcing ARM_64
+> +	 * calling conventions on these firmwares. Luckily we don't make any
+> +	 * early calls into the firmware on these SoCs so the device pointer
+> +	 * will be valid here to check if the compatible matches.
+> +	 */
+> +	if (of_device_is_compatible(__scm ? __scm->dev->of_node : NULL, "qcom,scm-sc7180")) {
+> +		forced = true;
+> +		goto found;
+> +	}
+
+All SC7180 targets run DT?  None have ACPI?
+
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
