@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC053231B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1D83231AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbhBWT6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 14:58:05 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:43303 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232179AbhBWT57 (ORCPT
+        id S232764AbhBWT4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 14:56:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230083AbhBWT4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 14:57:59 -0500
-Received: from [192.168.1.155] ([77.9.11.4]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MLA6k-1lWist0W38-00IAI0; Tue, 23 Feb 2021 20:54:49 +0100
-Subject: Re: [PATCH] lib: vsprintf: check for NULL device_node name in
- device_node_string()
-To:     Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20210217121543.13010-1-info@metux.net>
- <YC0fCAp6wxJfizD7@smile.fi.intel.com> <YC5jUqxphRvyuMEv@alley>
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-Message-ID: <29af7ed3-2ca8-133b-387a-375261ed1289@metux.net>
-Date:   Tue, 23 Feb 2021 20:54:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 23 Feb 2021 14:56:49 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281F9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 11:56:09 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id u4so13212317lfs.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 11:56:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L4mlDtwcYBizMphLl0+q8ed7I9ZQvyrwpoUQhcn8W84=;
+        b=aY0gUZnlQaZupCrgaznZC5ecubAzHDCJsqTyJ1WOU692qJNjqyA/ud/NHzOyY/lwxs
+         xExEq5sODTYLLkEESdVIahsKXb7OUwiNi4J5uBr1KUUqgVP97Xvs1apRZLRh0TrZ2YKC
+         kcq1qGwk/GY9lxGRvYtyUSJOnxJge3yFV/f+c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L4mlDtwcYBizMphLl0+q8ed7I9ZQvyrwpoUQhcn8W84=;
+        b=cwHI/8ek1MQHqQrSiojHu/ZIIeR371WcQqYvIYBrGkSn2t+5QGzMh54eWKr6ejg/K+
+         jhv98OvSQ3z75B1RPhzGSBMnF19uu354/C3nZmfl+BbIvyFK+zZDtl+QvpqfT38iDfvB
+         yh7DzdsYRLShZKtRBQfJjQ/1CNlQcDKXZAg3YCDUTrYuRI6G/li9xzKx7Eo6dk5iBzSH
+         pAdD5DkpzWbCwtuii4G6qo63YTVSACndlaipKSjay2oud+AKbFbgRNdLFhEKyDYvFGSJ
+         vCIkfwnjj3ojnURqKVrUuPz+xTt0ghYT4CZ6DuXsEmsNZqZrbUkGOu+2Nis64AwLtQtM
+         ZDRw==
+X-Gm-Message-State: AOAM532XuIp5Pu1fK+nti00sgDQuJvvQBd+IW2jWwqjhgMElPxq2GCVq
+        NT1SFT8iklrQ9lrPLFXYjydDXK3D3d9jMg==
+X-Google-Smtp-Source: ABdhPJzZLljOaW/lPM3wtlszG27dexlhYs3zE6ZEJgXD+d+UbE2b2STsf9Mmqz8nwEt0rlQy9eHNUA==
+X-Received: by 2002:ac2:4d95:: with SMTP id g21mr2068542lfe.29.1614110167392;
+        Tue, 23 Feb 2021 11:56:07 -0800 (PST)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id l18sm2817193lfg.294.2021.02.23.11.56.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Feb 2021 11:56:06 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id o16so59918180ljj.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 11:56:06 -0800 (PST)
+X-Received: by 2002:a2e:b525:: with SMTP id z5mr9452355ljm.251.1614110166022;
+ Tue, 23 Feb 2021 11:56:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YC5jUqxphRvyuMEv@alley>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:+GSdxcAZTu08i7MoQmwW4rr5qQ+FKVRtg/0h9Q+lDDFM+C9FSb5
- m2tlin1ii17wqFrpigGJMCHv2ubNnvu0VkwQosZMjLfp6xYT80yDv5u5Vk19qIQQovi443D
- Lwz33lJ5lgcbBF5XjFTTOvV3O5UavgiS++dGAC4GOmW2rFk7XeKGaCrGmZ7DL/2yEjue0/Z
- zF16vw2H6KiCq2iJRMNrA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5AbnWZgWfis=:wYCSgmvw6t1ok9kheC18cy
- uJRRs8U/pvunagUi4FFTQMpDw0liS9kWKym53eTt7wp65hW0Qd4jh6i7dPT49sjDqgZur+uZr
- DomX8koa2Td5ktfqHIYMCh954tIgLlf0CAs9xUfvWlR+4HSuHbZ5EXqho3YYvv4SmGmYJUGH6
- obK5ULqZHTYXD5KsHPT/xLtWxwUSbsb4ryrd11f99F7fhOIXLLcTPcQAr7sb6OOce/ym1aOgG
- owcOy5uzW3XOu+QLhzEOi1rpMv6TrZbzYheR/tKQeEg4ZkbYmDW9aJxcQgSFc78M/5pwYUdlZ
- XzyLhAT1V/dZ4wIpSSV/N4ZjmH442gZIHRAgKE1XEyiAg/oIP9wvLYngLoxeSYOdYexQWmfFu
- uxZQ8gGoQMCtytRWVh/gd7ExZic1M/3sFf6uPmWdLmwQ+StF6eTMY/pDDShsE
+References: <YDUibKAt5tpA1Hxs@gunter> <CAHk-=wipCbbXswcFvnrGae01H54dY1+XoaL+9YaiU71zGzko3Q@mail.gmail.com>
+ <CAHk-=wh8vHL43v7GWK9MWrWitSmOmrEw1B0AJD9CrhBc4FvpxA@mail.gmail.com>
+In-Reply-To: <CAHk-=wh8vHL43v7GWK9MWrWitSmOmrEw1B0AJD9CrhBc4FvpxA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 23 Feb 2021 11:55:50 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiuoRKa=F3txoVHvnca+H=7gJyL3SFYwd3549v-sa0+QQ@mail.gmail.com>
+Message-ID: <CAHk-=wiuoRKa=F3txoVHvnca+H=7gJyL3SFYwd3549v-sa0+QQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Modules updates for v5.12
+To:     Jessica Yu <jeyu@kernel.org>, Christoph Hellwig <hch@lst.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?=EF=BF=BCMiroslav_Benes?= <mbenes@suse.cz>,
+        Emil Velikov <emil.l.velikov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.02.21 13:53, Petr Mladek wrote:
+On Tue, Feb 23, 2021 at 10:42 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> I think there is something horribly wrong in my tree, and my build
+> process is now about 30% slower. It went from 5+ minutes to 8+
+> minutes. The main suspect would be some lack of parallelism.
 
-> Please, use
-> 
-> 	if (check_pointer(&buf, end, p, spec))
-> 		return buf;
-> 
-> It will print "(null)" instead of the name. It should be enough
-> to inform the user this way. The extra pr_warn() does not help
-> much to localize the problem anyway. And it is better to avoid
-> recursion in this path.
+I don't see quite what is wrong, but bisection is clear, and points
+the finger at
 
-thx, going to use it in v2.
+    367948220fce "module: remove EXPORT_UNUSED_SYMBOL*"
 
+which looks entirely trivial, but clearly isn't.
 
---mtx
+It's repeatable. That commit slows down my build hugely.
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+              Linus
