@@ -2,59 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82893322745
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:55:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2620F32274C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232180AbhBWIzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:55:05 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:40431 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231284AbhBWIzC (ORCPT
+        id S231944AbhBWI4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:56:42 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:12628 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231751AbhBWI4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:55:02 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UPLlkWh_1614070453;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPLlkWh_1614070453)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 23 Feb 2021 16:54:18 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     christian.koenig@amd.com
-Cc:     ray.huang@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] drm/ttm/ttm_bo: make ttm_bo_glob_use_count static
-Date:   Tue, 23 Feb 2021 16:54:12 +0800
-Message-Id: <1614070452-91054-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 23 Feb 2021 03:56:31 -0500
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210223085547epoutp03a08dddfbf613ef6b0366c3c00ddc5a58~mVJxvQfVf0299802998epoutp035
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:55:47 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210223085547epoutp03a08dddfbf613ef6b0366c3c00ddc5a58~mVJxvQfVf0299802998epoutp035
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614070547;
+        bh=d0gOIuQUPCQxZRJQkKwdEW+V7cqTiJ3TqS4Et/IoMh0=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=N4bhozeuwzxqXeZW26u1n+/z4gTOoWrYFW/aS9gqEu7fUOjuxp6R28MnzBgTw3NCR
+         X7LHb9/zA4Gre7WqqU+UdLbjXLAXG/8qSZ9Og5MmjgdA9RSAI1nLf2GgCHuTYG0Pff
+         05n8G8ubetl/nxGwAfdboUkfNEBdnV/sMIal+zO0=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20210223085546epcas2p33b74d382f135e0ff450998680399d4df~mVJw-Zg292016520165epcas2p3_;
+        Tue, 23 Feb 2021 08:55:46 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.190]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DlCZ82xzRz4x9QB; Tue, 23 Feb
+        2021 08:55:44 +0000 (GMT)
+X-AuditID: b6c32a47-b97ff7000000148e-f9-6034c31019bf
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C6.4F.05262.013C4306; Tue, 23 Feb 2021 17:55:44 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: RE: RE: RE: [PATCH v22 2/4] scsi: ufs: L2P map management for
+ HPB read
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <DM6PR04MB657522A864655988A1430E56FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210223085543epcms2p32abd20cbc9dda715eab38a8a382d9057@epcms2p3>
+Date:   Tue, 23 Feb 2021 17:55:43 +0900
+X-CMS-MailID: 20210223085543epcms2p32abd20cbc9dda715eab38a8a382d9057
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEJsWRmVeSWpSXmKPExsWy7bCmqa7AYZMEg1Vn2CwezNvGZrG37QS7
+        xcufV9ksDt9+x24x7cNPZotP65exWrw8pGmx6kG4RfPi9WwWc842MFn09m9ls3h85zO7xaIb
+        25gs+v+1s1hc3jWHzaL7+g42i+XH/zFZ3N7CZbF0601Gi87pa1gsFi3czeIg6nH5irfH5b5e
+        Jo+ds+6ye0xYdIDRY//cNeweLSf3s3h8fHqLxaNvyypGj8+b5DzaD3QzBXBF5dhkpCampBYp
+        pOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAH2opFCWmFMKFApILC5W
+        0rezKcovLUlVyMgvLrFVSi1IySkwNCzQK07MLS7NS9dLzs+1MjQwMDIFqkzIyTgw1aXgEW/F
+        y7fP2RoYz3J2MXJySAiYSJw8to6xi5GLQ0hgB6PE6Ql/mLsYOTh4BQQl/u4QBjGFBUIldl3T
+        AykXElCSWH9xFjuILSygJ3Hr4RpGEJtNQEdi+on77CBjRARWsEhc/HWJDcRhFvjFJHHi8QdG
+        iGW8EjPan7JA2NIS25dvBYtzCsRKnFm6lAkiriHxY1kvM4QtKnFz9Vt2GPv9sflQc0QkWu+d
+        haoRlHjwczdUXFLi2O4PUHPqJbbe+QX2mIRAD6PE4Z23WCES+hLXOjaCHcEr4Ctxv/UuWDOL
+        gKrE9VVXoJpdJPZ3LQOrZxaQl9j+dg44UJgFNCXW79IHMSUElCWO3GKBeath4292dDazAJ9E
+        x+G/cPEd855ATVeTWPdzPdMERuVZiJCehWTXLIRdCxiZVzGKpRYU56anFhsVGCPH7SZGcGLX
+        ct/BOOPtB71DjEwcjIcYJTiYlUR42e4aJQjxpiRWVqUW5ccXleakFh9iNAX6ciKzlGhyPjC3
+        5JXEG5oamZkZWJpamJoZWSiJ8xYbPIgXEkhPLEnNTk0tSC2C6WPi4JRqYJrVeuN7/UnDQp79
+        Z5vuPc9wknnp4iakXm97Ik66KV28KKRnjuKO3wV6hvl3pOwe6dSZRE2cc0N6zSXBUo01Voky
+        S9T5rSRX9Z9ZpKfIV1l8L66IfdeGylDmOoXJdkzzlXIeTm4JYpXe8sZVjinAVEOI7722y9/W
+        k2eSF/EcX+Em+GS2QbTXj2PpCS//ejDel5boWrr2femsNaanwrZEZS+IbW3ddL6A98r1aXKd
+        DE3JZ5MEH0Sz9vxaV3JiQoHoe5brKz3+zLmadYPhnr/B+x93vxUfUfa6cdB+oY/GlremQk3L
+        xXR2lB/ZeyXfVsIsuszLadYMk8Aau2DdzoYqz6bXa28YXHnidCCynydLiaU4I9FQi7moOBEA
+        QZfrAnUEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
+References: <DM6PR04MB657522A864655988A1430E56FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <20210223080043epcms2p83f813841174ade50ef97481b3f4cdef7@epcms2p8>
+        <DM6PR04MB657508BC3F0D0240FDCBB043FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
+        <20210222093050epcms2p6506a476c777785c6212cc80fc6158714@epcms2p6>
+        <20210223083136epcms2p89ada047f0da1fb700ace8b4e3e396697@epcms2p8>
+        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+> > > > +/*
+> > > > + * This function will parse recommended active subregion information in
+> > > > sense
+> > > > + * data field of response UPIU with SAM_STAT_GOOD state.
+> > > > + */
+> > > > +void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+> > > > +{
+> > > > +       struct ufshpb_lu *hpb;
+> > > > +       struct scsi_device *sdev;
+> > > > +       struct utp_hpb_rsp *rsp_field = &lrbp->ucd_rsp_ptr->hr;
+> > > > +       int data_seg_len;
+> > > > +       bool found = false;
+> > > > +
+> > > > +       __shost_for_each_device(sdev, hba->host) {
+> > > > +               hpb = ufshpb_get_hpb_data(sdev);
+> > > > +
+> > > > +               if (!hpb)
+> > > > +                       continue;
+> > > > +
+> > > > +               if (rsp_field->lun == hpb->lun) {
+> > > > +                       found = true;
+> > > > +                       break;
+> > > This piece of code looks awkward, although it is probably working.
+> > > Why not just having a reference to the hpb luns, e.g. something like:
+> > > struct ufshpb_lu *hpb_luns[8] in struct ufs_hba.
+> > > Less elegant - but much more effective than iterating the scsi host on every
+> > completion interrupt.
+> > 
+> > How about checking (cmd->lun == rsp->lun) before the iteration?
+> > Major case will be have same lun. And, it is hard to add struct ufshpb_lu
+> > *hpb_luns[128]
+> > in struct ufs_hba, because LUN can be upto 127.
+> Oh - yes, 8 is for write booster.
+> OK.  Whatever you think.
 
-drivers/gpu/drm/ttm/ttm_bo.c:53:10: warning: symbol
-'ttm_bo_glob_use_count' was not declared. Should it be static?
+Then, I want to keep this code with adding code that checking same LUN for
+fast path.
+  
+> However, I think there can be up to 32 regular luns,
+> meaning UFS_UPIU_MAX_UNIT_NUM_ID need to be fixed as well.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpu/drm/ttm/ttm_bo.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OK, it can be fixed another patch.
 
-diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index b65f4b1..107dd13 100644
---- a/drivers/gpu/drm/ttm/ttm_bo.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -50,7 +50,7 @@
-  * ttm_global_mutex - protecting the global BO state
-  */
- DEFINE_MUTEX(ttm_global_mutex);
--unsigned ttm_bo_glob_use_count;
-+static unsigned ttm_bo_glob_use_count;
- struct ttm_bo_global ttm_bo_glob;
- EXPORT_SYMBOL(ttm_bo_glob);
- 
--- 
-1.8.3.1
-
+Thanks,
+Daejun
