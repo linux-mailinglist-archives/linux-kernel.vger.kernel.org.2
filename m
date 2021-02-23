@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD13322EFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F180F322EE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 17:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbhBWQnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 11:43:46 -0500
-Received: from mga17.intel.com ([192.55.52.151]:24406 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232166AbhBWQnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:43:42 -0500
-IronPort-SDR: kZYLmZszEFwK+TDzMwcU3586NpQGdlov4isstL5yJo/5HCZp/Oo3s/NXeN058Dtb/ZlvNOROh2
- NLo/jcoFyTeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="164713401"
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="164713401"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 08:43:00 -0800
-IronPort-SDR: LxxGQSXmOxBMVzabOGayCwNZzUooN3yUDHOZITiY+35PA9YN96upVylt9k/b/6RHe9ImCsDbjw
- pyIbzKxZHg6Q==
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="364569260"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 08:43:00 -0800
-Date:   Tue, 23 Feb 2021 08:42:59 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Aili Yao <yaoaili@kingsoft.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
-        <naoya.horiguchi@nec.com>, dave.hansen@linux.intel.com,
-        luto@kernel.org, peterz@infradead.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        yangfeng1@kingsoft.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
- hwpoison page access.
-Message-ID: <20210223164259.GA166727@agluck-desk2.amr.corp.intel.com>
-References: <20210223204436.1df73153@alex-virtual-machine>
- <788DFBA0-903F-4548-9C2F-B1A1543EE770@amacapital.net>
+        id S233574AbhBWQh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 11:37:27 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:60908 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233312AbhBWQhS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 11:37:18 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NGTeqS004231;
+        Tue, 23 Feb 2021 11:36:34 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 36tw5bk6t3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Feb 2021 11:36:34 -0500
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 11NGaXZN003439
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Feb 2021 11:36:33 -0500
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
+ Tue, 23 Feb 2021 08:36:31 -0800
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
+ Tue, 23 Feb 2021 08:36:31 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
+ Tue, 23 Feb 2021 08:36:31 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11NGaTkp030454;
+        Tue, 23 Feb 2021 11:36:30 -0500
+From:   <alexandru.tachici@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>
+Subject: [PATCH v3 0/1] iio: adc: ad7124: allow more than 8 channels
+Date:   Tue, 23 Feb 2021 18:44:03 +0200
+Message-ID: <20210223164404.93540-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <788DFBA0-903F-4548-9C2F-B1A1543EE770@amacapital.net>
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-23_08:2021-02-23,2021-02-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ spamscore=0 lowpriorityscore=0 mlxlogscore=864 phishscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 impostorscore=0 adultscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102230138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 07:33:46AM -0800, Andy Lutomirski wrote:
-> 
-> > On Feb 23, 2021, at 4:44 AM, Aili Yao <yaoaili@kingsoft.com> wrote:
-> > 
-> > ﻿On Fri, 5 Feb 2021 17:01:35 +0800
-> > Aili Yao <yaoaili@kingsoft.com> wrote:
-> > 
-> >> When one page is already hwpoisoned by MCE AO action, processes may not
-> >> be killed, processes mapping this page may make a syscall include this
-> >> page and result to trigger a VM_FAULT_HWPOISON fault, as it's in kernel
-> >> mode it may be fixed by fixup_exception, current code will just return
-> >> error code to user code.
-> >> 
-> >> This is not sufficient, we should send a SIGBUS to the process and log
-> >> the info to console, as we can't trust the process will handle the error
-> >> correctly.
-> >> 
-> >> Suggested-by: Feng Yang <yangfeng1@kingsoft.com>
-> >> Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
-> >> ---
-> >> arch/x86/mm/fault.c | 62 +++++++++++++++++++++++++++++----------------
-> >> 1 file changed, 40 insertions(+), 22 deletions(-)
-> >> 
-> > Hi luto;
-> >  Is there any feedback?
-> 
-> At the very least, this needs a clear explanation of why your proposed behavior is better than the existing behavior.
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-The explanation is buried in that "can't trust the process" line.
+Currently AD7124-8 driver cannot use more than 8 IIO channels
+because it was assigning the channel configurations bijectively
+to channels specified in the device-tree. This is not possible
+to do when using more than 8 channels as AD7124-8 has only 8
+configuration registers.
 
-E.g. user space isn't good about checking for failed write(2) syscalls.
-So if the poison was in a user buffer passed to write(fd, buffer, count)
-sending a SIGBUS would be the action if they read the poison directly,
-so it seems reasonable to send the same signal if the kernel read their
-poison for them.
+All configurations are marked as live if they are
+programmed on the device. Any change that happens from
+userspace (sampling rate, filters etc.) will invalidate
+them.
 
-It would avoid users that didn't check the return value merrily proceeding
-as if everything was ok.
+To allow the user to use all channels at once the driver
+will keep in memory configurations for all channels but
+will program only 8 of them at a time on the device.
 
--Tony
+If multiple channels have the same configuration, only
+one configuration register will be used.
+
+If there are more configurations needed than available registers
+only the last 8 used configurations will be allowed to exist
+on the device in a LRU fashion. (in case of raw reads).
+
+If a read is requested on a channel whose configuration
+is not programmed:
+- check if there are similar configurations already programmed
+	if yes: - point channel to that config
+	if no:  - check if there are empty config slots
+			- if yes: write config, push into queue of LRU configs
+			- if no: pop one config, get it's config slot nr,
+			write new config on the old slot, push new config
+			in queue of LRU configs.
+
+Alexandru Tachici (1):
+  iio: adc: ad7124: allow more than 8 channels
+
+ drivers/iio/adc/ad7124.c | 461 ++++++++++++++++++++++++++-------------
+ 1 file changed, 308 insertions(+), 153 deletions(-)
+
+-- 
+2.20.1
+
