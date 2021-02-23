@@ -2,119 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAB4323468
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 00:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84405323466
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 00:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234257AbhBWXt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 18:49:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232948AbhBWXhY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 18:37:24 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AF8C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:35:20 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id 17so7537933pli.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 15:35:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=waytkFv28UuOXcaaNeh19CxfKAUzKWp03mnaFrOUKvo=;
-        b=sufk6rE3/dXnMqzi78VzeEuWwNSyI9Jafh5/gweW9kamLR3HYQEs/qr0R2FCq+SpLV
-         TUHEr6smwUpZYibTMKN+7V+oTpSBLajAf4fbj9gUmGw65vUbNqYScn9J+y3IXVaRdrlk
-         o+YGaCC9XXt/0a3xDztIAps6TaKutwVtyv37jY6lnY0HlCHC6AcZ4+ivZJqp8WjfBJSc
-         uJdJEQnEe6FC5u3mu4/GfQTxlCh1znYrjeWMHinbrt1vE1xJM1XfKZDN6XOCeiv5LUhi
-         fHMpsUs5ArvPYM/UlxQjwiM92KTXDpbOcC4f4zRyqF3aNQP/NtJ9Y1cqQ4JK4nSO3555
-         nPzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=waytkFv28UuOXcaaNeh19CxfKAUzKWp03mnaFrOUKvo=;
-        b=NaOoxH8wvqFS/gH0IVqCtlgscdJLgwrzlhhgdTjwwSEzA4pRQIh4q9GRZKRQqfdi0D
-         3wHz2zv+x7vTzMQUhQocvrsboA9NzeRmv1fNFjd7504AZcmZLYZMjBGUBBYk0hZmebPv
-         nlCxzWiiQgBS6LePc9GZXnqPW2i2+F1AOoXzME3MeByVwE0lFRHu+fFDy9ktpt/s3Cz+
-         fyt31mcAFv5WcAfQ4UHlLPty9ZPhx6mEQM2wV8wkMzjUklGl3C21B6lvp2VG+j4Mp4Fl
-         n3Ys+TV7ICdWzOQtXPEXTa9Ulnzwl23ulKHs2+W31lJ4+vEl/en164uHo6xMWTUPd3O9
-         e/oA==
-X-Gm-Message-State: AOAM533YIG9vvF9pJ0skbsqGq6oAALei5L0hxDMn3rgCwNvNhQW8QOwY
-        DdZW58txpGm2VcPyygaUQaOe0A==
-X-Google-Smtp-Source: ABdhPJyz53wXTScCJJHK+0zal+VXwSHeBnigEJ0IybsgF/8onQIB+fzZZu6AviRn5AHuVdwP6tT/6A==
-X-Received: by 2002:a17:902:e993:b029:e4:1426:8e71 with SMTP id f19-20020a170902e993b02900e414268e71mr5806317plb.74.1614123320126;
-        Tue, 23 Feb 2021 15:35:20 -0800 (PST)
-Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id c24sm311999pfd.11.2021.02.23.15.35.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 15:35:19 -0800 (PST)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        arnaud.pouliquen@st.com
-Cc:     mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v6 03/16] remoteproc: Add new RPROC_ATTACHED state
-Date:   Tue, 23 Feb 2021 16:35:02 -0700
-Message-Id: <20210223233515.3468677-4-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
-References: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234116AbhBWXro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 18:47:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232715AbhBWXg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 18:36:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id A898364DBD;
+        Tue, 23 Feb 2021 23:36:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614123374;
+        bh=+iwX2bRoJoT8m1Q/2/H09Rq+ZccI+5sIKun2f5PlJV8=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=hTjOvxwfN/lrK/EtQTjdxmUFfIXbsbt+0haJEK8ir/XVUFfZphP5LylHpg0vbMtI9
+         VC/Vus+XEnO+TFchmVezdeiXn/DSHThvM+cc4d8f+LwrQjiOTitvg0lSCSPH/oWBuQ
+         HvZREDsmf+w9ybkpoKZEiibbdETV800Hzuj/egpMb/cNoTAhWPv778JVhZXQCZ9K0q
+         7/VBbmYjyvIYeZqMngnFnrzqx4/GlmRy/LFOgX1KoKy/1jCTCUQ/9is6H2jEX92wr4
+         qbiiE21AipLm3B7InhdpDFXZM3ktDYfCFKilw8Cq0/t75OUi30kwnC3Vi6hkudkjz4
+         NzXmKLAe5vw5w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9461660176;
+        Tue, 23 Feb 2021 23:36:14 +0000 (UTC)
+Subject: Re: [GIT PULL] More power management updates for v5.12-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAJZ5v0gOvJ4OXK2Sqt6ncm-G0BVeC1Aiuettd02E=7wq73g=oA@mail.gmail.com>
+References: <CAJZ5v0gOvJ4OXK2Sqt6ncm-G0BVeC1Aiuettd02E=7wq73g=oA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0gOvJ4OXK2Sqt6ncm-G0BVeC1Aiuettd02E=7wq73g=oA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.12-rc1-2
+X-PR-Tracked-Commit-Id: 08c2a406b974eea893dd9b2f159d715f2b15c683
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 005d3bd9e332faa976320cfaa2ae0637c8e94c51
+Message-Id: <161412337454.20258.13397708719153679523.pr-tracker-bot@kernel.org>
+Date:   Tue, 23 Feb 2021 23:36:14 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new RPROC_ATTACHED state to take into account scenarios
-where the remoteproc core needs to attach to a remote processor
-that is booted by another entity.
+The pull request you sent on Tue, 23 Feb 2021 21:05:26 +0100:
 
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Reviewed-by: Peng Fan <peng.fan@nxp.com>
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- drivers/remoteproc/remoteproc_sysfs.c | 1 +
- include/linux/remoteproc.h            | 7 +++++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.12-rc1-2
 
-diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
-index 1dbef895e65e..4b4aab0d4c4b 100644
---- a/drivers/remoteproc/remoteproc_sysfs.c
-+++ b/drivers/remoteproc/remoteproc_sysfs.c
-@@ -172,6 +172,7 @@ static const char * const rproc_state_string[] = {
- 	[RPROC_RUNNING]		= "running",
- 	[RPROC_CRASHED]		= "crashed",
- 	[RPROC_DELETED]		= "deleted",
-+	[RPROC_ATTACHED]	= "attached",
- 	[RPROC_DETACHED]	= "detached",
- 	[RPROC_LAST]		= "invalid",
- };
-diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-index f28ee75d1005..b0a57ff73849 100644
---- a/include/linux/remoteproc.h
-+++ b/include/linux/remoteproc.h
-@@ -405,6 +405,8 @@ struct rproc_ops {
-  * @RPROC_RUNNING:	device is up and running
-  * @RPROC_CRASHED:	device has crashed; need to start recovery
-  * @RPROC_DELETED:	device is deleted
-+ * @RPROC_ATTACHED:	device has been booted by another entity and the core
-+ *			has attached to it
-  * @RPROC_DETACHED:	device has been booted by another entity and waiting
-  *			for the core to attach to it
-  * @RPROC_LAST:		just keep this one at the end
-@@ -421,8 +423,9 @@ enum rproc_state {
- 	RPROC_RUNNING	= 2,
- 	RPROC_CRASHED	= 3,
- 	RPROC_DELETED	= 4,
--	RPROC_DETACHED	= 5,
--	RPROC_LAST	= 6,
-+	RPROC_ATTACHED	= 5,
-+	RPROC_DETACHED	= 6,
-+	RPROC_LAST	= 7,
- };
- 
- /**
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/005d3bd9e332faa976320cfaa2ae0637c8e94c51
+
+Thank you!
+
 -- 
-2.25.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
