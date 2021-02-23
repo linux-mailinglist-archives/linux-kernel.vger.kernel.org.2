@@ -2,189 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D23F323194
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE17D323196
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 20:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbhBWToe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 14:44:34 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:24454 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230142AbhBWTod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 14:44:33 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614109453; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=UUUvxOLTBmHAHH+xUk4kZ6Io2hSw2giUyQETFXr1tWc=;
- b=PThHx4GTigEbbQJG/qmlsDY64WHPN1SIWvp7hYDFpi6xIDSc1PQbaYg5gxKF5bvFIKMtbkRc
- 1i1YKEw640VMNQBXNOS9U/SlH6rRROWpMf/c/rmwlEotdbF++54sA0yMN+lfHjvGSeQztpuF
- i3zo4FQtTxGkz2MYbCCjqr+VB44=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60355aefe9080d5ff7e55a1c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Feb 2021 19:43:43
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1ABE0C43463; Tue, 23 Feb 2021 19:43:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S233946AbhBWTr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 14:47:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20936 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231514AbhBWTrW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 14:47:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614109556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k6yTUk4uiMxB/J45WOwiwNDUQruhsfoPNbtv/+KOvq4=;
+        b=BxNTynZ+GbCYXyQFq7S29WUOcG9xvivZifkiNXH1/GmlLivSNcB1DLx2g7yKZl7sxdociV
+        L506hP82hox2UDP1lV/960cMO/q5o4gP7/cEe9Q0NV068Dlq40H56P+e5XsDeeHBTZIKgM
+        cHFbStmTr++9q39QuLbfzW/oWMihpZo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-207-0o9XgixIO7SOTOk_xRElUw-1; Tue, 23 Feb 2021 14:45:51 -0500
+X-MC-Unique: 0o9XgixIO7SOTOk_xRElUw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34D58C433CA;
-        Tue, 23 Feb 2021 19:43:42 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0C78107ACF8;
+        Tue, 23 Feb 2021 19:45:49 +0000 (UTC)
+Received: from treble (ovpn-118-117.rdu2.redhat.com [10.10.118.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AB5B75C277;
+        Tue, 23 Feb 2021 19:45:48 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 13:45:46 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Evgenii Shatokhin <eshatokhin@virtuozzo.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>,
+        live-patching@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Konstantin Khorenko <khorenko@virtuozzo.com>
+Subject: Re: 'perf probe' and symbols from .text.<something>
+Message-ID: <20210223194546.dhejf4mpugyw3nqq@treble>
+References: <09257fb8-3ded-07b0-b3cc-55d5431698d8@virtuozzo.com>
+ <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
+ <20210222175150.yxgw3sxxaqjqgq56@treble>
+ <20210223102331.147d62de88886a75013c10e0@kernel.org>
+ <20210223163619.0cd580a4290165208c8aa7bb@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 24 Feb 2021 01:13:42 +0530
-From:   mdalam@codeaurora.org
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     mani@kernel.org, boris.brezillon@collabora.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH] mtd: rawnand: qcom: update last code word register
-In-Reply-To: <20210223173449.1a55df1e@xps13>
-References: <1614024267-12529-1-git-send-email-mdalam@codeaurora.org>
- <20210223173449.1a55df1e@xps13>
-Message-ID: <a5650f33b493b987d45525ea57fdfd8a@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210223163619.0cd580a4290165208c8aa7bb@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-23 22:04, Miquel Raynal wrote:
-> Hello,
+On Tue, Feb 23, 2021 at 04:36:19PM +0900, Masami Hiramatsu wrote:
+> On Tue, 23 Feb 2021 10:23:31 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
 > 
-> Md Sadre Alam <mdalam@codeaurora.org> wrote on Tue, 23 Feb 2021
-> 01:34:27 +0530:
+> > On Mon, 22 Feb 2021 11:51:50 -0600
+> > Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > 
+> > > On Tue, Feb 23, 2021 at 12:05:08AM +0900, Masami Hiramatsu wrote:
+> > > > > Of course, one could place probes using absolute addresses of the 
+> > > > > functions but that would be less convenient.
+> > > > > 
+> > > > > This also affects many livepatch modules where the kernel code can be 
+> > > > > compiled with -ffunction-sections and each function may end up in a 
+> > > > > separate section .text.<function_name>. 'perf probe' cannot be used 
+> > > > > there, except with the absolute addresses.
+> > > > > 
+> > > > > Moreover, if FGKASLR patches are merged 
+> > > > > (https://lwn.net/Articles/832434/) and the kernel is built with FGKASLR 
+> > > > > enabled, -ffunction-sections will be used too. 'perf probe' will be 
+> > > > > unable to see the kernel functions then.
+> > > > 
+> > > > Hmm, if the FGKASLAR really randomizes the symbol address, perf-probe
+> > > > should give up "_text-relative" probe for that kernel, and must fallback
+> > > > to the "symbol-based" probe. (Are there any way to check the FGKASLR is on?)
+> > > > The problem of "symbol-based" probe is that local (static) symbols
+> > > > may share a same name sometimes. In that case, it can not find correct
+> > > > symbol. (Maybe I can find a candidate from its size.)
+> > > > Anyway, sometimes the security and usability are trade-off.
+> > > 
+> > > We had a similar issue with FGKASLR and live patching.  The proposed
+> > > solution is a new linker flag which eliminates duplicates: -z
+> > > unique-symbol.
+> > > 
+> > > https://sourceware.org/bugzilla/show_bug.cgi?id=26391
+> > 
+> > Interesting, but it might not be enough for perf-probe.
+> > Since the perf-probe has to handle both dwarf and elf, both must be
+> > changed. I think the problem is that the dwarf is generated while
+> > compiling, but this -z seems converting elf symbols in linkage.
+> > As far as I can see, this appends ".COUNT" suffix to the non-unique
+> > symbols in the linkage phase. Is that also applied to dwarf too?
 > 
->> From QPIC version 2.0 onwards new register got added to read last
-> 
->                                a new
-> 
->> codeword. This change will add the READ_LOCATION_LAST_CW_n register.
-> 
->             Add support for this READ_LOCATION_LAST_CW_n register.
-> 
->> 
->> For first three code word READ_LOCATION_n register will be
->> use.For last code word READ_LOCATION_LAST_CW_n register will be
->> use.
-> 
-> "
-> In the case of QPIC v2, codewords 0, 1 and 2 will be accessed through
-> READ_LOCATION_n, while codeword 3 will be accessed through
-> READ_LOCATION_LAST_CW_n.
-> "
-> 
-> When I read my own sentence, I feel that there is something wrong.
-> If there are only 4 codewords, I guess a QPIC v2 is able to use
-> READ_LOCATION_3 or READ_LOCATION_LAST_CW_0 interchangeably. Isn't it?
-> 
-> I guess the point of having these "last_cw_n" registers is to support
-> up to 8 codewords, am I wrong? If this the case, the current patch
-> completely fails doing that I don't get the point of such change.
+> Ah, OK. If there is an offline elf binary with symbol map, I can convert
+> DWARF symbol -> address -> offline elf symbol (unique name)-> kallsyms.
+> Currently, it directly converts address by kallsyms, so I will change it
+> to find elf-symbol and solve address by kallsyms in post processing.
 
-This register is only use to read last code word.
+DWARF sections have references to the ELF symbols, which are renamed by
+the linker.  So DWARF should automatically show the new symbol name.
 
-I have address all the comments from all the previous sub sequent 
-patches and pushed
-all patches in only one series.
+And kallsyms is generated after the kernel is linked.  So I'm not sure I
+understand the problem.
 
-Please check.
+-- 
+Josh
 
-> 
->> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
->> ---
-> 
-> [...]
-> 
->>  /* helper to configure address register values */
->> @@ -700,8 +727,9 @@ static void set_address(struct qcom_nand_host 
->> *host, u16 column, int page)
->>   *
->>   * @num_cw:		number of steps for the read/write operation
->>   * @read:		read or write operation
->> + * @cw	:		which code word
->>   */
->> -static void update_rw_regs(struct qcom_nand_host *host, int num_cw, 
->> bool read)
->> +static void update_rw_regs(struct qcom_nand_host *host, int num_cw, 
->> bool read, int cw)
->>  {
->>  	struct nand_chip *chip = &host->chip;
->>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->> @@ -740,7 +768,7 @@ static void update_rw_regs(struct qcom_nand_host 
->> *host, int num_cw, bool read)
->>  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
->> 
->>  	if (read)
->> -		nandc_set_read_loc(chip, 0, 0, 0, host->use_ecc ?
->> +		nandc_set_read_loc(chip, cw, 0, 0, host->use_ecc ?
->>  				   host->cw_data : host->cw_size, 1);
->>  }
->> 
->> @@ -1111,18 +1139,34 @@ static void config_nand_page_read(struct 
->> nand_chip *chip)
->>  		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
->>  }
->> 
->> +/* helper to check which location register should be use for this
-> 
->     /*
->      * Check which location...
-> 
->> + * code word. NAND_READ_LOCATION or NAND_READ_LOCATION_LAST_CW
->> + */
->> +static bool config_loc_last_reg(struct nand_chip *chip, int cw)
->> +{
->> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
->> +
->> +	if (nandc->props->qpic_v2 && qcom_nandc_is_last_cw(ecc, cw))
->> +		return true;
-> 
-> Not sure this is really useful, it's probably better to drop this
-> helper and just use...
-> 
->> +
->> +	return false;
->> +}
->>  /*
->>   * Helper to prepare DMA descriptors for configuring registers
->>   * before reading each codeword in NAND page.
->>   */
->>  static void
->> -config_nand_cw_read(struct nand_chip *chip, bool use_ecc)
->> +config_nand_cw_read(struct nand_chip *chip, bool use_ecc, int cw)
->>  {
->>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->> +	int reg = NAND_READ_LOCATION_0;
->> +
->> +	if (config_loc_last_reg(chip, cw))
-> 
-> ...     if (nandc->props->qpic_v2 && qcom_nandc_is_lastcw()) here.
-> 
->> +		reg = NAND_READ_LOCATION_LAST_CW_0;
->> 
->>  	if (nandc->props->is_bam)
->> -		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
->> -			      NAND_BAM_NEXT_SGL);
->> +		write_reg_dma(nandc, reg, 4, NAND_BAM_NEXT_SGL);
->> 
->>  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
->>  	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
->> @@ -1142,12 +1186,12 @@ config_nand_cw_read(struct nand_chip *chip, 
->> bool use_ecc)
-> 
-> Thanks,
-> Miquèl
