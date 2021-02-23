@@ -2,72 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E9C322A4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C553322A5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 13:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232618AbhBWMIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 07:08:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232666AbhBWMGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 07:06:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21EEB601FF;
-        Tue, 23 Feb 2021 12:05:34 +0000 (UTC)
-Date:   Tue, 23 Feb 2021 12:05:32 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: Re: [PATCH v13 4/7] arm64: mte: Enable TCO in functions that can
- read beyond buffer limits
-Message-ID: <20210223120530.GA20769@arm.com>
-References: <20210211153353.29094-1-vincenzo.frascino@arm.com>
- <20210211153353.29094-5-vincenzo.frascino@arm.com>
- <20210212172128.GE7718@arm.com>
- <c3d565da-c446-dea2-266e-ef35edabca9c@arm.com>
- <20210222175825.GE19604@arm.com>
- <6111633c-3bbd-edfa-86a0-be580a9ebcc8@arm.com>
+        id S232378AbhBWMO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 07:14:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231403AbhBWMOw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 07:14:52 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE979C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 04:14:11 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id hs11so34270069ejc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 04:14:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9PxU204J8WNczOF0rVGyc6kqlv6DnjF2PxeJeM6pI+8=;
+        b=eAJ6OxAH76l5//dytdgCBpB25dRPIGsUOM8gQaFRfzveffPD4Ileqpf3PSmmIrGizW
+         ESfT4UJQbqCCgE7eHKCipHsQM5+lgHIZmnv1gphZMQlsh5ZVOdOgnEOQkr/XNytG0b73
+         6122500CHSaSN+A3Vbjs53wscGzH04oZz+Ul3qYmfwV2gabpj98M8TSUf6VeShiGXaiF
+         Eh4EIEM+ouzKu3Yts6lRgjfsvl044A4e/AFewmNZqxIICG0T9v3JYwEDEFOqqahDu36T
+         vT6uCLRS7mpXhdrubTMoPNdTa1gsEUywV0iiHv4GJtw0ZkEv4/TqhETfkjmm2uiawPJ/
+         7BeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9PxU204J8WNczOF0rVGyc6kqlv6DnjF2PxeJeM6pI+8=;
+        b=IhVKfiMbaDHo7YisWRpisDIvbBVVNM4xQg+zvYRuP59gI+byXzRTH5WLSlBsruiFfq
+         000WXo4rz/vK2TVsVEGoMoj+kKEOtvtvLqkFwZY+1bc40V7Pb6O3lF+RPKsoWM1YFRi1
+         7tTSF6HWe/zv0gWYzlM5LNpqRNEHTvDfQlNSUuXC1Zlv/KyOeJ6XB4fHbt6eVGlwhwc0
+         yQmVDd/NIapwx1LpuC+/FyvolbksQP/ZFn9wXIpzT7ke0fe4gVuhLqedfnJkWsFBodlD
+         CK5gGBMgCl3hFXjX8KmJW2Xy/ROdUUOr59vJZRSnfTGigCY7YyN/N/wZAWPMKUlxipmJ
+         uNbw==
+X-Gm-Message-State: AOAM531/KWn6vDjEaKQeZCxZdoeVTECcihohitxPNM9nWjcFuDt+X/OW
+        eMpkbTWOz42SIqdmnhRMggeE6XllghXIM4Y8a8GPxNP7eeKpPVMg
+X-Google-Smtp-Source: ABdhPJwUMQQiwaaHlG4F6+GWyI1ZJduQxPzgfUtzD8YODvjbfyBZUArDisZaH017hF6Vr5W7moVEjj2ti8umiPJGpHU=
+X-Received: by 2002:a17:906:d8ca:: with SMTP id re10mr26047840ejb.18.1614082450491;
+ Tue, 23 Feb 2021 04:14:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6111633c-3bbd-edfa-86a0-be580a9ebcc8@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210222121013.581198717@linuxfoundation.org>
+In-Reply-To: <20210222121013.581198717@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 23 Feb 2021 17:43:59 +0530
+Message-ID: <CA+G9fYtgPD8+F4LWK8h9=i8yU-mX+995j6k2H2fWkTff1TM9Qg@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/35] 4.4.258-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 10:56:46AM +0000, Vincenzo Frascino wrote:
-> On 2/22/21 5:58 PM, Catalin Marinas wrote:
-> > We'll still have an issue with dynamically switching the async/sync mode
-> > at run-time. Luckily kasan doesn't do this now. The problem is that
-> > until the last CPU have been switched from async to sync, we can't
-> > toggle the static label. When switching from sync to async, we need
-> > to do it on the first CPU being switched.
-> 
-> I totally agree on this point. In the case of runtime switching we might need
-> the rethink completely the strategy and depends a lot on what we want to allow
-> and what not. For the kernel I imagine we will need to expose something in sysfs
-> that affects all the cores and then maybe stop_machine() to propagate it to all
-> the cores. Do you think having some of the cores running in sync mode and some
-> in async is a viable solution?
+On Mon, 22 Feb 2021 at 18:10, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.258 release.
+> There are 35 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.258-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-stop_machine() is an option indeed. I think it's still possible to run
-some cores in async while others in sync but the static key here would
-only be toggled when no async CPUs are left.
 
-> Probably it is worth to discuss it further once we cross that bridge.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Yes. For now, a warning should do so that we don't forget.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
--- 
-Catalin
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.258-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 1a954f75c0ee3245a025a60f2a4cccd6722a1bb6
+git describe: v4.4.256-39-g1a954f75c0ee
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.257-36-gd947b6dcd5fc/
+
+
+No regressions (compared to build 4.4.257-rc1)
+
+No fixes (compared to build 4.4.257-rc1)
+
+Ran 31761 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* fwts
+* ssuite
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.258-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.258-rc1-hikey-20210222-938
+git commit: 13d50bac200ebd6562e303c2847856b75c283666
+git describe: 4.4.257-rc1-hikey-20210208-927
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.258-rc1-hikey-20210222-938/
+
+
+No regressions (compared to build 4.4.257-rc1-hikey-20210208-927)
+
+
+No fixes (compared to build 4.4.257-rc1-hikey-20210208-927)
+
+Ran 1897 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
