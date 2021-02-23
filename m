@@ -2,102 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F403233E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 23:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D423233E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 23:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232397AbhBWWmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 17:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbhBWWa3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 17:30:29 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F09C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:29:48 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id 81so389520qkf.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 14:29:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bf1CiVTxRiLHc6u9dFffl/B6A9OxU94+5fQMt8aSHiQ=;
-        b=j3YLbAkkeUM4k5JUJuv1ncXjfeJBhF70Wu+WevNquAGfKJ4iXi+pkO61TOe8ZU/Jq0
-         BRsdPJowgYj2pcym8gfG0ajJAov8g47YZZX6aCJ4Y+Xw2lPRY1IbyhJUPoxqy7dh0u/v
-         hmeCrTUZeIp8Q4kGCE1RyugQJXRRJMkRe10grOAEC4TbM4u1wBUThjSX+deBkv7+CDHG
-         LOo4orQdUjhp3vm5CvLaVx10rwvtI5aJjfpN2iAHCVqEPk5ucpjVuUcdJylQgAba/Rjl
-         TvGi/G/ks9UTRk69ghxZS6J1y3Jf/uFurAxVYc82T0+zj/ZbDqZYPdU+59VmV9V3IH/M
-         uDJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bf1CiVTxRiLHc6u9dFffl/B6A9OxU94+5fQMt8aSHiQ=;
-        b=bahNIdnoQO3CiFOvoU5KlkPrWL1aH5vFZxMfPyvrv/GfLGtG1fM7CQM2CkiCZeN/+/
-         8JaOXPJcBPRxLcRVXmckbXVN3XAnROBCB+mxtrOM9Z8PucUQnPHzCFLt8cfoWO46dcyl
-         NFZM5iaXbrGHlhQfbbm+AQOeDFEEvqz0uIfGl3IXF3fIbIPLzQzL/O84+p2eVZLIAQdD
-         DfQOcGdeslX/RXMT5/8KLznDitg717Gs2s4GW37ZtW29RJsSyOpE4qkXTxjlDPE+ozwS
-         PfLkCHm++Kd0yOyKh1u9000KyTcpu8fCSyRq/oac9huJeJ/CuIUV8qC18YuVPpzWPnE5
-         ZgmA==
-X-Gm-Message-State: AOAM533SKY6KwfTC5we4SB6Gn8xAmcrixXvGdGpZN3vPLkZHgE0cYTn4
-        5otoiVA5DKDxPsb3HP98rU0tdUN0Gax3Pv1xjD6M1g==
-X-Google-Smtp-Source: ABdhPJwBchvPlzQBUj8TvUNJkK5VXun6l9xeXp6E8MFZJc1xphcLyLJHwvQyth2hbpH97jfQivWTSNrTtoTaRWAMVwk=
-X-Received: by 2002:a05:620a:237:: with SMTP id u23mr27678392qkm.229.1614119388270;
- Tue, 23 Feb 2021 14:29:48 -0800 (PST)
+        id S232775AbhBWWq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 17:46:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45930 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232454AbhBWWdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 17:33:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 569EBACE5;
+        Tue, 23 Feb 2021 22:32:04 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 23:31:57 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v16 4/9] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+Message-ID: <20210223223157.GA2740@localhost.localdomain>
+References: <20210219104954.67390-1-songmuchun@bytedance.com>
+ <20210219104954.67390-5-songmuchun@bytedance.com>
+ <13a5363c-6af4-1e1f-9a18-972ca18278b5@oracle.com>
+ <20210223092740.GA1998@linux>
+ <CAMZfGtVRSBkKe=tKAKLY8dp_hywotq3xL+EJZNjXuSKt3HK3bQ@mail.gmail.com>
+ <20210223104957.GA3844@linux>
+ <20210223154128.GA21082@localhost.localdomain>
 MIME-Version: 1.0
-References: <20210214000611.2169820-1-zzyiwei@android.com> <YC+ZQAwwb4RGgjDf@alley>
- <CAKB3++YB3xftQFgSGQXKQucuid9sFywjN1E7nQ6QrqR96+heEg@mail.gmail.com>
- <CAKB3++b4wnsh+Kbgk4U200hLQmudM28sK=s9e6mARpM-eZ2ZZw@mail.gmail.com> <YDUkoTGk2G/GZj8w@alley>
-In-Reply-To: <YDUkoTGk2G/GZj8w@alley>
-From:   =?UTF-8?B?WWl3ZWkgWmhhbmfigI4=?= <zzyiwei@android.com>
-Date:   Tue, 23 Feb 2021 14:29:37 -0800
-Message-ID: <CAKB3++Yf5cv8shHU0T1nqfNTgbknU1uMu54YXWqNGqXHpa_oAA@mail.gmail.com>
-Subject: Re: [PATCH] kthread: add kthread_mod_pending_delayed_work api
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ilias Stamatis <stamatis.iliass@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Liang Chen <cl@rock-chips.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223154128.GA21082@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > which is not cool because it will make the
-> > asynchronous effort a no-op. Is there a way we can include caller
-> > thread metadata(task_struct pointer?) when it enqueues the work so
-> > that the RT worker thread won't preempt the caller thread when that
-> > queued work gets scheduled? Probably require the CPU scheduler to poke
-> > at the next work...or any other ideas will be very appreciated,
-> > thanks!
->
-> This sounds like a very strange use case.
-> Why is the worker kthread RT when the work can be delayed?
->
-> If the kthread has to be RT because of another work then
-> your proposal will not work. The delayed processing of
-> low priority work might block and delay any pending
-> high priority work.
->
-> You should consider handling the less important work in a separate
-> kthread worker with a lower priority or by the system workqueue.
+On Tue, Feb 23, 2021 at 04:41:28PM +0100, Oscar Salvador wrote:
+> On Tue, Feb 23, 2021 at 11:50:05AM +0100, Oscar Salvador wrote:
+> > > CPU0:                           CPU1:
+> > >                                 set_compound_page_dtor(HUGETLB_PAGE_DTOR);
+> > > memory_failure_hugetlb
+> > >   get_hwpoison_page
+> > >     __get_hwpoison_page
+> > >       get_page_unless_zero
+> > >                                 put_page_testzero()
+> > > 
+> > > Maybe this can happen. But it is a very corner case. If we want to
+> > > deal with this. We can put_page_testzero() first and then
+> > > set_compound_page_dtor(HUGETLB_PAGE_DTOR).
+> > 
+> > I have to check further, but it looks like this could actually happen.
+> > Handling this with VM_BUG_ON is wrong, because memory_failure/soft_offline are
+> > entitled to increase the refcount of the page.
+> > 
+> > AFAICS,
+> > 
+> >  CPU0:                                    CPU1:
+> >                                           set_compound_page_dtor(HUGETLB_PAGE_DTOR);
+> >  memory_failure_hugetlb
+> >    get_hwpoison_page
+> >      __get_hwpoison_page
+> >        get_page_unless_zero
+> >                                           put_page_testzero()
+> >         identify_page_state
+> >          me_huge_page
+> > 
+> > I think we can reach me_huge_page with either refcount = 1 or refcount =2,
+> > depending whether put_page_testzero has been issued.
+> > 
+> > For now, I would not re-enqueue the page if put_page_testzero == false.
+> > I have to see how this can be handled gracefully.
+> 
+> I took a brief look.
+> It is not really your patch fault. Hugetlb <-> memory-failure synchronization is
+> a bit odd, it definitely needs improvment.
+> 
+> The thing is, we can have different scenarios here.
+> E.g: by the time we return from put_page_testzero, we might have refcount ==
+> 0 and PageHWPoison, or refcount == 1 PageHWPoison.
+> 
+> The former will let a user get a page from the pool and get a sigbus
+> when it faults in the page, and the latter will be even more odd as we
+> will have a self-refcounted page in the free pool (and hwpoisoned).
+> 
+> As I said, it is not this patchset fault. I just made me realize this
+> problem.
+> 
+> I have to think some more about this.
 
-Just want to clarify that it's not about delayed_work any more. In my
-latest question, it's a RT thread with normal work queued and
-scheduled to be run immediately. However, I simply don't want the
-worker to preempt the thread that queues the work.
+I have been thinking more about this.
+memory failure events can occur at any time, and we might not be in a
+position where we can handle gracefully the error, meaning that the page
+might end up in non desirable state.
 
-It's a high prio work that we don't want other random tasks to preempt
-it. Meanwhile, we don't want it to preempt the called thread. In
-addition, assume we can't raise the priority of those caller
-threads(otherwise I'd be fine with using a workqueue).
+E.g: we could flag the page right before enqueing it.
+
+I still think that VM_BUG_ON should go, as the refcount can be perfectly
+increased by memory-failure/soft_offline handlers, so BUGing there does
+not make much sense.
+
+One think we could do is to check the state of the page we want to
+retrieve from the free hugepage pool.
+We should discard any HWpoisoned ones, and dissolve them.
+
+The thing is, memory-failure/soft_offline should allocate a new hugepage
+for the free pool, so keep the pool stable.
+Something like [1].
+
+Anyway, this is orthogonal to this patch, and something I will work on
+soon.
+
+[1] https://lore.kernel.org/linux-mm/20210222135137.25717-2-osalvador@suse.de/T/#u
+
+-- 
+Oscar Salvador
+SUSE L3
