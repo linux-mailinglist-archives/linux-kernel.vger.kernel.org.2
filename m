@@ -2,222 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34403232B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC9F32328F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 21:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234507AbhBWU67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 15:58:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26906 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234501AbhBWU6r (ORCPT
+        id S233854AbhBWU5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 15:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhBWU5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 15:58:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614113841;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=us9lsbD9lkCV40S8Ssu96U4+rIQ0qhW8ubedw2LURJU=;
-        b=BA7fRhS+FzXcs16w8WzHcUCaNdWobthL0/mLtKF/0K2mqw090v0/c5ZaBTRe79ljeUPIJb
-        9yJeDrrVVskrt3shm9dZQj73OeWZH46jq4smcuyA6UeQuuODJo5Jm7fBuSKLcEz1CTzWLJ
-        mqWrE/skWhiqHVaHasTEY7531SPiNH0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-296-FF9tupmVPuaMCRbjyjRmew-1; Tue, 23 Feb 2021 15:57:17 -0500
-X-MC-Unique: FF9tupmVPuaMCRbjyjRmew-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CFD8518B9ECA;
-        Tue, 23 Feb 2021 20:57:14 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-114-34.ams2.redhat.com [10.36.114.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 881205D9D0;
-        Tue, 23 Feb 2021 20:57:01 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
-        maz@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-        alex.williamson@redhat.com, tn@semihalf.com, zhukeqian1@huawei.com
-Cc:     jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        wangxingang5@huawei.com, jiangkunkun@huawei.com,
-        jean-philippe@linaro.org, zhangfei.gao@linaro.org,
-        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
-        shameerali.kolothum.thodi@huawei.com, yuzenghui@huawei.com,
-        nicoleotsuka@gmail.com, lushenming@huawei.com, vsethi@nvidia.com
-Subject: [PATCH v14 03/13] iommu/smmuv3: Allow s1 and s2 configs to coexist
-Date:   Tue, 23 Feb 2021 21:56:24 +0100
-Message-Id: <20210223205634.604221-4-eric.auger@redhat.com>
-In-Reply-To: <20210223205634.604221-1-eric.auger@redhat.com>
-References: <20210223205634.604221-1-eric.auger@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Tue, 23 Feb 2021 15:57:18 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCF0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 12:56:35 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id m4so6349715pfd.20
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 12:56:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=VjQqR/dV9CmTvhJpIjv+GuV8z4P1stvvAwZgqfJoGxA=;
+        b=mbSLgPRCosw1LgNbfZCQnOf60JkRnE/oZ2dfceOMIrdTSFDoq5FVwWZlenlEN3duNu
+         LohQcoryhXyJfYxvHKWMDVRZhlyTZN7TguKnQS+JgyeHcABPQA1vfuCU7zw9y6PF1NOv
+         vGNMRvc4MSRHE6B10Jeh5MZeB0RSzfOZyOgAKPzC3jN/FH0WswJOXI6mLvbQZC2XS8eW
+         CD7xkAu51CFETtgUy622hl5ARPc+8WRj+WqSjXWQPSYcsO4OkXu6hPon8zk01OvAKWke
+         aFpjOavUMmudXnqIgS/YEaSbEtC8nBwWU4YEvd78Nyscbp3L6S+HxqkqJOSntxdwCHId
+         MHBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=VjQqR/dV9CmTvhJpIjv+GuV8z4P1stvvAwZgqfJoGxA=;
+        b=bu2B90d5BYoDqGr6njBTqOLYhwvKTTl8rXMx7JdHPMrFml4FPLzmQucLKqxi1yGBc1
+         Q1Dji0n0MPX8p26Zlu8Fts0BUPysWqRdRXzW98WZFhz5i8c2nnT9wYxxLdkrCa+svZFp
+         ZlT/pAIHpgr9PSYylrbLfYtKTNNzg4ZQNuPgjQ77wWDaP+kSHWashKlJB3igVnXNw4Gs
+         /2N2IDXtt/0oaBsdG2sKXfcciJdCPy1Wwfnm0b+jW6iOI4MI8LR2WUdGV6jrqQz5gFXs
+         Cf6nR1alcqnkTBxgUG3OVXiCHoR2o30CknEGJBpCuoLAM+wZTKtYZqmxrVIxAh1tAvTa
+         HzLQ==
+X-Gm-Message-State: AOAM533sCLYR8GLI82Iqz8fQd29+O1yTgoV5qKcBF5CW1snqIs/ADpOB
+        t2cJbyS7DuMrxL+84SNOtovf25ypXlJmFg==
+X-Google-Smtp-Source: ABdhPJwty35ymd10NafwoqU0YOhxPbcs9qNH9tWIjjldDeiHkjvYzVWjgVg+F5/TZM+guUKIA4j6kxGHHK/4sw==
+Sender: "shakeelb via sendgmr" <shakeelb@shakeelb.svl.corp.google.com>
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:8ccd:3283:c85b:61eb])
+ (user=shakeelb job=sendgmr) by 2002:a17:90a:ab8b:: with SMTP id
+ n11mr607117pjq.85.1614113794713; Tue, 23 Feb 2021 12:56:34 -0800 (PST)
+Date:   Tue, 23 Feb 2021 12:56:25 -0800
+Message-Id: <20210223205625.2792891-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+Subject: [PATCH] memcg: cleanup root memcg checks
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In true nested mode, both s1_cfg and s2_cfg will coexist.
-Let's remove the union and add a "set" field in each
-config structure telling whether the config is set and needs
-to be applied when writing the STE. In legacy nested mode,
-only the second stage is used. In true nested mode, both stages
-are used and the S1 config is "set" when the guest passes
-its pasid table.
+Replace the implicit checking of root memcg with explicit root memcg
+checking i.e. !css->parent with mem_cgroup_is_root().
 
-No functional change intended.
-
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
-
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
 ---
+ mm/memcontrol.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-v13 -> v14:
-- slight reword of the commit message
-
-v12 -> v13:
-- does not dynamically allocate s1-cfg and s2_cfg anymore. Add
-  the set field
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 43 +++++++++++++--------
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  8 ++--
- 2 files changed, 31 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 0f1264a86eec..14e5666c25dc 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -1239,8 +1239,8 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 	u64 val = le64_to_cpu(dst[0]);
- 	bool ste_live = false;
- 	struct arm_smmu_device *smmu = NULL;
--	struct arm_smmu_s1_cfg *s1_cfg = NULL;
--	struct arm_smmu_s2_cfg *s2_cfg = NULL;
-+	struct arm_smmu_s1_cfg *s1_cfg;
-+	struct arm_smmu_s2_cfg *s2_cfg;
- 	struct arm_smmu_domain *smmu_domain = NULL;
- 	struct arm_smmu_cmdq_ent prefetch_cmd = {
- 		.opcode		= CMDQ_OP_PREFETCH_CFG,
-@@ -1255,13 +1255,24 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 	}
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index dcb5665aeb69..79046ad3eec0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4141,7 +4141,7 @@ static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
+ 	if (val > 100)
+ 		return -EINVAL;
  
- 	if (smmu_domain) {
-+		s1_cfg = &smmu_domain->s1_cfg;
-+		s2_cfg = &smmu_domain->s2_cfg;
-+
- 		switch (smmu_domain->stage) {
- 		case ARM_SMMU_DOMAIN_S1:
--			s1_cfg = &smmu_domain->s1_cfg;
-+			s1_cfg->set = true;
-+			s2_cfg->set = false;
- 			break;
- 		case ARM_SMMU_DOMAIN_S2:
-+			s1_cfg->set = false;
-+			s2_cfg->set = true;
-+			break;
- 		case ARM_SMMU_DOMAIN_NESTED:
--			s2_cfg = &smmu_domain->s2_cfg;
-+			/*
-+			 * Actual usage of stage 1 depends on nested mode:
-+			 * legacy (2d stage only) or true nested mode
-+			 */
-+			s2_cfg->set = true;
- 			break;
- 		default:
- 			break;
-@@ -1288,7 +1299,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 	val = STRTAB_STE_0_V;
+-	if (css->parent)
++	if (!mem_cgroup_is_root(memcg))
+ 		memcg->swappiness = val;
+ 	else
+ 		vm_swappiness = val;
+@@ -4491,7 +4491,7 @@ static int mem_cgroup_oom_control_write(struct cgroup_subsys_state *css,
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
  
- 	/* Bypass/fault */
--	if (!smmu_domain || !(s1_cfg || s2_cfg)) {
-+	if (!smmu_domain || !(s1_cfg->set || s2_cfg->set)) {
- 		if (!smmu_domain && disable_bypass)
- 			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_ABORT);
- 		else
-@@ -1307,7 +1318,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 		return;
- 	}
+ 	/* cannot set to root cgroup and only 0 and 1 are allowed */
+-	if (!css->parent || !((val == 0) || (val == 1)))
++	if (mem_cgroup_is_root(memcg) || !((val == 0) || (val == 1)))
+ 		return -EINVAL;
  
--	if (s1_cfg) {
-+	if (s1_cfg->set) {
- 		u64 strw = smmu->features & ARM_SMMU_FEAT_E2H ?
- 			STRTAB_STE_1_STRW_EL2 : STRTAB_STE_1_STRW_NSEL1;
- 
-@@ -1329,7 +1340,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 			FIELD_PREP(STRTAB_STE_0_S1FMT, s1_cfg->s1fmt);
- 	}
- 
--	if (s2_cfg) {
-+	if (s2_cfg->set) {
- 		BUG_ON(ste_live);
- 		dst[2] = cpu_to_le64(
- 			 FIELD_PREP(STRTAB_STE_2_S2VMID, s2_cfg->vmid) |
-@@ -2016,24 +2027,24 @@ static void arm_smmu_domain_free(struct iommu_domain *domain)
- {
- 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
- 	struct arm_smmu_device *smmu = smmu_domain->smmu;
-+	struct arm_smmu_s1_cfg *s1_cfg = &smmu_domain->s1_cfg;
-+	struct arm_smmu_s2_cfg *s2_cfg = &smmu_domain->s2_cfg;
- 
- 	iommu_put_dma_cookie(domain);
- 	free_io_pgtable_ops(smmu_domain->pgtbl_ops);
- 
- 	/* Free the CD and ASID, if we allocated them */
--	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
--		struct arm_smmu_s1_cfg *cfg = &smmu_domain->s1_cfg;
--
-+	if (s1_cfg->set) {
- 		/* Prevent SVA from touching the CD while we're freeing it */
- 		mutex_lock(&arm_smmu_asid_lock);
--		if (cfg->cdcfg.cdtab)
-+		if (s1_cfg->cdcfg.cdtab)
- 			arm_smmu_free_cd_tables(smmu_domain);
--		arm_smmu_free_asid(&cfg->cd);
-+		arm_smmu_free_asid(&s1_cfg->cd);
- 		mutex_unlock(&arm_smmu_asid_lock);
--	} else {
--		struct arm_smmu_s2_cfg *cfg = &smmu_domain->s2_cfg;
--		if (cfg->vmid)
--			arm_smmu_bitmap_free(smmu->vmid_map, cfg->vmid);
-+	}
-+	if (s2_cfg->set) {
-+		if (s2_cfg->vmid)
-+			arm_smmu_bitmap_free(smmu->vmid_map, s2_cfg->vmid);
- 	}
- 
- 	kfree(smmu_domain);
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index 59af0bbd2f7b..ec2b77596b6a 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -598,12 +598,14 @@ struct arm_smmu_s1_cfg {
- 	struct arm_smmu_ctx_desc	cd;
- 	u8				s1fmt;
- 	u8				s1cdmax;
-+	bool				set;
- };
- 
- struct arm_smmu_s2_cfg {
- 	u16				vmid;
- 	u64				vttbr;
- 	u64				vtcr;
-+	bool				set;
- };
- 
- struct arm_smmu_strtab_cfg {
-@@ -718,10 +720,8 @@ struct arm_smmu_domain {
- 	atomic_t			nr_ats_masters;
- 
- 	enum arm_smmu_domain_stage	stage;
--	union {
--		struct arm_smmu_s1_cfg	s1_cfg;
--		struct arm_smmu_s2_cfg	s2_cfg;
--	};
-+	struct arm_smmu_s1_cfg	s1_cfg;
-+	struct arm_smmu_s2_cfg	s2_cfg;
- 
- 	struct iommu_domain		domain;
- 
+ 	memcg->oom_kill_disable = val;
 -- 
-2.26.2
+2.30.0.617.g56c4b15f3c-goog
 
