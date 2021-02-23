@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C15732294B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BD132294F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 12:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbhBWLJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 06:09:28 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:36405 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232351AbhBWLI4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:08:56 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id E284F5C0219;
-        Tue, 23 Feb 2021 06:08:02 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 23 Feb 2021 06:08:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=U2I4e7
-        bo/e7cpkkwZVTL9XRDCAR7LL7Oi+fIECKIm3Y=; b=Gqv/rqXZ/jmbnn7bIE2bk/
-        mJjV77zkcbMwDXps+l78qmV0K3Ijxnd1O/SrsyekHnhDITSwlqeZGiJlG2tfm7c/
-        U1p0QKo3zWyGvtULcLLgxkfnIqmbbeXMLjVuZSulKMyG6yU4oZt3qX5qTULcaEtc
-        2edfHoN0dz2eiQfh7N13B6PF2FWDAcvcVce3+XkKzBmyq4YAx0faay/U+dAZz6wI
-        fRsShZBG++OgyzzpTIfGIqtq0oJROet1iNTer246APWD8PJi9BeZy1GWpKBONLqQ
-        F0HFQeDd62upVDbb7lLPH6kudPOqF6KyxhbaMAIp8IndTr8er5rMQf+ejtHc34oA
-        ==
-X-ME-Sender: <xms:EeI0YCQ6vH6BDER0E9H9M3fykyQHASYN7ckTOZ4s5U4XWYx72oCHvQ>
-    <xme:EeI0YFtiawuLx2_s3-1yD4F8ksq8Km5Nz3_0zNHIIho4_rZY4BiDkyBLSpF5B2uzs
-    Y08tQUhiKknQGU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeehgddvgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
-    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
-    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
-    necukfhppeekgedrvddvledrudehfedrgeegnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:EeI0YHYgwdaSmfxn7eiV2lhhj4V5NPERIekF9IPddwdpJc0pTahkxg>
-    <xmx:EeI0YKvBxNG9XWcghHictaqW7drYJ6YuhVZxB-IjNy2OnJFMA_AmIA>
-    <xmx:EeI0YJHK_sURjGq6oUdDa2Nabuq5qGeeUDnY30kJiV9Xum7fdU49Rw>
-    <xmx:EuI0YEqWA9OgQdELllh9zGzMH3XwyjTBLnkNEEwqqxRbNeZE_mXCrQ>
-Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5B440240065;
-        Tue, 23 Feb 2021 06:08:01 -0500 (EST)
-Date:   Tue, 23 Feb 2021 13:07:57 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] netdevsim: fib: remove unneeded semicolon
-Message-ID: <YDTiDezR7JmWIzq7@shredder.lan>
-References: <1614047326-16478-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S232299AbhBWLMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 06:12:17 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:47072 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231701AbhBWLMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 06:12:15 -0500
+Received: from zn.tnic (p200300ec2f08d800f4a123a8a64e4d27.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:d800:f4a1:23a8:a64e:4d27])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 400761EC01CE;
+        Tue, 23 Feb 2021 12:11:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614078694;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=PRRcv0X1Lc/+5F9ee4mDYr4SyzrtXxI6gDWofpgstZI=;
+        b=Fs0quUH8ycBXWNVNLda6wXP4Gui/qo7jH1fLn4BFr8wtBx/Xn+KSP/frjSSgOhrp3FSkEM
+        RbtaNeokIx5CPwE+fkdBi9PQRFBmUztCKUKyhoJEvS8yRGrtGvqByQVPcsw4GjUhcfrQdr
+        jlePjg0HYpYQegBI9soY9QR1VFSoFT8=
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/sev-es: Remove subtraction of res variable
+Date:   Tue, 23 Feb 2021 12:11:30 +0100
+Message-Id: <20210223111130.16201-1-bp@alien8.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614047326-16478-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 10:28:46AM +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
-> 
-> ./drivers/net/netdevsim/fib.c:564:2-3: Unneeded semicolon.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Borislav Petkov <bp@suse.de>
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+vc_decode_insn() calls copy_from_kernel_nofault() by way of
+vc_fetch_insn_kernel() to fetch 15 bytes max of opcodes to decode.
+
+copy_from_kernel_nofault() returns negative on error and 0 on success.
+The error case is handled by returning ES_EXCEPTION.
+
+In the success case, the ret variable which contains the return value is
+0 so there's no need to subtract it from MAX_INSN_SIZE when initializing
+the insn buffer for further decoding. Remove it.
+
+No functional changes.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/kernel/sev-es.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 84c1821819af..1e78f4bd7bf2 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -267,7 +267,7 @@ static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
+ 			return ES_EXCEPTION;
+ 		}
+ 
+-		insn_init(&ctxt->insn, buffer, MAX_INSN_SIZE - res, 1);
++		insn_init(&ctxt->insn, buffer, MAX_INSN_SIZE, 1);
+ 		insn_get_length(&ctxt->insn);
+ 	}
+ 
+-- 
+2.29.2
+
