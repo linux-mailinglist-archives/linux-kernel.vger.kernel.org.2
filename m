@@ -2,150 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456F23226BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9E43226C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhBWIBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:01:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhBWIB2 (ORCPT
+        id S232113AbhBWICA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:02:00 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:58834 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232098AbhBWIBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:01:28 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28928C06174A;
-        Tue, 23 Feb 2021 00:00:47 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id p3so1477952wmc.2;
-        Tue, 23 Feb 2021 00:00:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Yf/jVzF7WeOP+s6t7PSyOM3o8ylPOkh3B5ug40L0s8o=;
-        b=r7U+yWY6gmc/AyqP8Zi5+VD8TvOHOr8nyTvhk1Mo8G0maL02gwkWi9I45eV/2gYivV
-         GG+KCbDXjZBC9Um2WesRrwLR3rOkYa0cjYu0qkzK894U/FLK6QOqd/o/VR0CFgeJ4VNO
-         VoJ5iF2f5ozRTFOR092HGc3RU9xs4mOTx4t3+LEKuP0x9pPyTJkbD35ZCnIs+SoxqGsD
-         kVNJZUPYUhbpF69lkGE1HAqnjPtIe2rnHfsMGWTUPrXRfS/Zg2PeXkU79K55De1UgJRe
-         2qqyxS86NNhA37q1WWxlK9sT/rvUWhbt+UwgUFQDdLWhVf7wgFSgHHq9W+FPthXrQnC8
-         gRBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Yf/jVzF7WeOP+s6t7PSyOM3o8ylPOkh3B5ug40L0s8o=;
-        b=BjRyIm1HX+4RvfrzS3YBDmUCJII2ivMhlgeyznojre+nStGd2xlGnJgMNrFlu1l1g9
-         tWvzTbjzJL8H1myeELGRwWe3L6DrP1p7MLcLrcVTauVC10CWE706e3f0UIxwJabpk/fy
-         yqnFUDNeoWcz4c3MmNIjFJNzLfxRYlvbjoI9pOGkB2Nv5wBeYSicYKbKDIUekuLQU8Ch
-         Y0YtR4vktoJPn1nPeLQUvJkqB9IvZ4Xrj8NcaHIiXGhZPIcaq2/TBILFimzV5eoFoLpB
-         uImk3eE4suEaQ+0SQeZXakkG18uUhXNZihPlUOjawz7mmNEYhYxmtADau/kibN03vn51
-         w47g==
-X-Gm-Message-State: AOAM533spBCTG6YiEaTY9j3MguszAsJ/d3S1jEt0STYqquxG0+xPOpl0
-        EA91ByylBtwIA37RA6D7CXh5SPGNp7Dymg==
-X-Google-Smtp-Source: ABdhPJx3mdU+xiEyyx4TyfuGJyih99+x9bNyPnGQV3AMfN+2IrCXSwGbLlZyiZPONS6zpdBZFgizTQ==
-X-Received: by 2002:a05:600c:2291:: with SMTP id 17mr16099038wmf.169.1614067245855;
-        Tue, 23 Feb 2021 00:00:45 -0800 (PST)
-Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id p16sm1772447wmj.8.2021.02.23.00.00.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 00:00:44 -0800 (PST)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     f.fainelli@gmail.com, Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH v2] watchdog: bcm7038_wdt: add big endian support
-Date:   Tue, 23 Feb 2021 09:00:42 +0100
-Message-Id: <20210223080042.29569-1-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210222200338.24696-1-noltari@gmail.com>
-References: <20210222200338.24696-1-noltari@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Tue, 23 Feb 2021 03:01:47 -0500
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210223080104epoutp03f97a0ae9a39207c0bf551d65fe2b7bd1~mUaAG3ok92422724227epoutp038
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 08:01:04 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210223080104epoutp03f97a0ae9a39207c0bf551d65fe2b7bd1~mUaAG3ok92422724227epoutp038
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614067264;
+        bh=iFl192zw7aIW1gOO4DWG4A2+m39kuiBmNdE5zInd9SQ=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=UeP0hOTN+50IMoZ2gb9zSJH2Ty5zIMIXDONRbRTmMjGd6WM7IVbWmCmoW//aaoDOx
+         c1cilSlsxy10Yras+eP0ip921p4dgMM5UZ/1hFkfL6YZ6jgj0v4jB73bgPELugPhE4
+         7E8j68YLr4ndoCBJqoOGABWgciRSNPwGhCrypyBI=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20210223080053epcas2p3f347d14509ea5bf51b41512b97aa3a79~mUZ2bl1BV0968809688epcas2p3a;
+        Tue, 23 Feb 2021 08:00:53 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.181]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DlBLq4MXFz4x9Ps; Tue, 23 Feb
+        2021 08:00:51 +0000 (GMT)
+X-AuditID: b6c32a47-b81ff7000000148e-67-6034b631cbe1
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        99.90.05262.136B4306; Tue, 23 Feb 2021 17:00:49 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: RE: [PATCH v22 2/4] scsi: ufs: L2P map management for HPB read
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <DM6PR04MB657508BC3F0D0240FDCBB043FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210223080043epcms2p83f813841174ade50ef97481b3f4cdef7@epcms2p8>
+Date:   Tue, 23 Feb 2021 17:00:43 +0900
+X-CMS-MailID: 20210223080043epcms2p83f813841174ade50ef97481b3f4cdef7
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMJsWRmVeSWpSXmKPExsWy7bCmha7hNpMEg493VSwezNvGZrG37QS7
+        xcufV9ksDt9+x24x7cNPZotP65exWrw8pGmx6kG4RfPi9WwWc842MFn09m9ls3h85zO7xaIb
+        25gs+v+1s1hc3jWHzaL7+g42i+XH/zFZ3N7CZbF0601Gi87pa1gsFi3czeIg6nH5irfH5b5e
+        Jo+ds+6ye0xYdIDRY//cNeweLSf3s3h8fHqLxaNvyypGj8+b5DzaD3QzBXBF5dhkpCampBYp
+        pOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAH2opFCWmFMKFApILC5W
+        0rezKcovLUlVyMgvLrFVSi1IySkwNCzQK07MLS7NS9dLzs+1MjQwMDIFqkzIyTh4ZwFbwXXR
+        iqM7T7E1MC7i62Lk4JAQMJG43m3XxcjFISSwg1Hi9YtLTCBxXgFBib87hLsYOTmEBbwlXp6b
+        wwJiCwkoSay/OIsdIq4ncevhGkYQm01AR2L6ifvsIHNEBFawSFz8dYkNxGEW+MUkceLxB7Aq
+        CQFeiRntT1kgbGmJ7cu3gsU5BWIlrh07ARXXkPixrJcZwhaVuLn6LTuM/f7YfKg5IhKt985C
+        1QhKPPi5GyouKXFs9wcmCLteYuudX4wgR0gI9DBKHN55ixUioS9xrWMj2DJeAV+JmbvvgjWz
+        CKhK7Lh4AWqZi8SmV//B4swC8hLb385hBoUKs4CmxPpd+pCAU5Y4cosF5q2Gjb/Z0dnMAnwS
+        HYf/wsV3zHsCdZqaxLqf65kmMCrPQgT1LCS7ZiHsWsDIvIpRLLWgODc9tdiowBg5cjcxglO7
+        lvsOxhlvP+gdYmTiYDzEKMHBrCTCy3bXKEGINyWxsiq1KD++qDQntfgQoynQlxOZpUST84HZ
+        Ja8k3tDUyMzMwNLUwtTMyEJJnLfY4EG8kEB6YklqdmpqQWoRTB8TB6dUA1PM1yY5U2WGJl6t
+        tvoeyb7+g/ZFva93L0pZ7KDBW6P04Skn835JppaZYc93bOIOKtza8ETNTPTRT4f52+//5dsq
+        u+FWxKvMBgNunaXcixJV1itHmiU37tvLHKLxzPTUwxgT9u83qxhSv87jd37ce3CzFcuuqN7A
+        OTvephiaayiZp8z5/rD33Q+t3NMbNR6fNcjn+8yjzbJXx+EMd5KjvuazNYlX0i2PL//UPsnG
+        8eA93iy7FeJHrsR2/jaYE3J4v2n5/P99+w7q3zjz6nZ+qITCquOfrgedrLL/IP+yu+TtfSax
+        KxM9i09W3arYvULzwh2bJ+yOHOmcs2d8rWWQDPq1auXtGxc/ftw08c65lCtKLMUZiYZazEXF
+        iQDc8/W2dgQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
+References: <DM6PR04MB657508BC3F0D0240FDCBB043FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
+        <20210222093050epcms2p6506a476c777785c6212cc80fc6158714@epcms2p6>
+        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p8>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bcm7038_wdt can be used on bmips big endian (bcm63xx) devices too.
+> +/*
+> > + * This function will parse recommended active subregion information in
+> > sense
+> > + * data field of response UPIU with SAM_STAT_GOOD state.
+> > + */
+> > +void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+> > +{
+> > +       struct ufshpb_lu *hpb;
+> > +       struct scsi_device *sdev;
+> > +       struct utp_hpb_rsp *rsp_field = &lrbp->ucd_rsp_ptr->hr;
+> > +       int data_seg_len;
+> > +       bool found = false;
+> > +
+> > +       __shost_for_each_device(sdev, hba->host) {
+> > +               hpb = ufshpb_get_hpb_data(sdev);
+> > +
+> > +               if (!hpb)
+> > +                       continue;
+> > +
+> > +               if (rsp_field->lun == hpb->lun) {
+> > +                       found = true;
+> > +                       break;
+> This piece of code looks awkward, although it is probably working.
+> Why not just having a reference to the hpb luns, e.g. something like:
+> struct ufshpb_lu *hpb_luns[8] in struct ufs_hba.
+> Less elegant - but much more effective than iterating the scsi host on every completion interrupt.
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- v2: use approach indicated by Florian (same as bcmgenet.c)
+OK,
 
- drivers/watchdog/bcm7038_wdt.c | 31 +++++++++++++++++++++++++------
- 1 file changed, 25 insertions(+), 6 deletions(-)
+> > +               }
+> > +       }
+> > +
+> > +       if (!found)
+> > +               return;
+> > +
+> > +       if ((ufshpb_get_state(hpb) != HPB_PRESENT) &&
+> > +           (ufshpb_get_state(hpb) != HPB_SUSPEND)) {
+> > +               dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
+> > +                          "%s: ufshpb state is not PRESENT/SUSPEND\n",
+> > +                          __func__);
+> > +               return;
+> > +       }
+> > +
+> > +       data_seg_len = be32_to_cpu(lrbp->ucd_rsp_ptr->header.dword_2)
+> > +               & MASK_RSP_UPIU_DATA_SEG_LEN;
+> > +
+> > +       /* To flush remained rsp_list, we queue the map_work task */
+> > +       if (!data_seg_len) {
+> data_seg_len should be 0x14
 
-diff --git a/drivers/watchdog/bcm7038_wdt.c b/drivers/watchdog/bcm7038_wdt.c
-index 979caa18d3c8..acaaa0005d5b 100644
---- a/drivers/watchdog/bcm7038_wdt.c
-+++ b/drivers/watchdog/bcm7038_wdt.c
-@@ -34,6 +34,25 @@ struct bcm7038_watchdog {
- 
- static bool nowayout = WATCHDOG_NOWAYOUT;
- 
-+static inline void bcm7038_wdt_write(u32 value, void __iomem *addr)
-+{
-+	/* MIPS chips strapped for BE will automagically configure the
-+	 * peripheral registers for CPU-native byte order.
-+	 */
-+	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
-+		__raw_writel(value, addr);
-+	else
-+		writel_relaxed(value, addr);
-+}
-+
-+static inline u32 bcm7038_wdt_read(void __iomem *addr)
-+{
-+	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
-+		return __raw_readl(addr);
-+	else
-+		return readl_relaxed(addr);
-+}
-+
- static void bcm7038_wdt_set_timeout_reg(struct watchdog_device *wdog)
- {
- 	struct bcm7038_watchdog *wdt = watchdog_get_drvdata(wdog);
-@@ -41,15 +60,15 @@ static void bcm7038_wdt_set_timeout_reg(struct watchdog_device *wdog)
- 
- 	timeout = wdt->rate * wdog->timeout;
- 
--	writel(timeout, wdt->base + WDT_TIMEOUT_REG);
-+	bcm7038_wdt_write(timeout, wdt->base + WDT_TIMEOUT_REG);
- }
- 
- static int bcm7038_wdt_ping(struct watchdog_device *wdog)
- {
- 	struct bcm7038_watchdog *wdt = watchdog_get_drvdata(wdog);
- 
--	writel(WDT_START_1, wdt->base + WDT_CMD_REG);
--	writel(WDT_START_2, wdt->base + WDT_CMD_REG);
-+	bcm7038_wdt_write(WDT_START_1, wdt->base + WDT_CMD_REG);
-+	bcm7038_wdt_write(WDT_START_2, wdt->base + WDT_CMD_REG);
- 
- 	return 0;
- }
-@@ -66,8 +85,8 @@ static int bcm7038_wdt_stop(struct watchdog_device *wdog)
- {
- 	struct bcm7038_watchdog *wdt = watchdog_get_drvdata(wdog);
- 
--	writel(WDT_STOP_1, wdt->base + WDT_CMD_REG);
--	writel(WDT_STOP_2, wdt->base + WDT_CMD_REG);
-+	bcm7038_wdt_write(WDT_STOP_1, wdt->base + WDT_CMD_REG);
-+	bcm7038_wdt_write(WDT_STOP_2, wdt->base + WDT_CMD_REG);
- 
- 	return 0;
- }
-@@ -88,7 +107,7 @@ static unsigned int bcm7038_wdt_get_timeleft(struct watchdog_device *wdog)
- 	struct bcm7038_watchdog *wdt = watchdog_get_drvdata(wdog);
- 	u32 time_left;
- 
--	time_left = readl(wdt->base + WDT_CMD_REG);
-+	time_left = bcm7038_wdt_read(wdt->base + WDT_CMD_REG);
- 
- 	return time_left / wdt->rate;
- }
--- 
-2.20.1
+It is checking non-HPB hint UPIU. It is used for kicking map work.
 
+> > +               if (!ufshpb_is_general_lun(hpb->lun))
+> > +                       return;
+> > +
+> > +               ufshpb_kick_map_work(hpb);
+> > +               return;
+> > +       }
+> > +
+> > +       /* Check HPB_UPDATE_ALERT */
+> > +       if (!(lrbp->ucd_rsp_ptr->header.dword_2 &
+> > +             UPIU_HEADER_DWORD(0, 2, 0, 0)))
+> > +               return;
+> > +
+> > +       BUILD_BUG_ON(sizeof(struct utp_hpb_rsp) != UTP_HPB_RSP_SIZE);
+> > +
+> > +       if (!ufshpb_is_hpb_rsp_valid(hba, lrbp, rsp_field))
+> > +               return;
+> How about moving both the data_seg_len and alert bit checks into ufshpb_is_hpb_rsp_valid,
+> And moving ufshpb_is_hpb_rsp_valid to the beginning of the function?
+> This way you would save redundant stuff if not a valid response. 
+
+I will move alert bit check into ufshpb_is_hpb_rsp_valid.
+
+Thanks,
+Daejun
