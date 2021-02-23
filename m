@@ -2,181 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1323D32288E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 770BD32288A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 11:06:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbhBWKHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 05:07:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51938 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231653AbhBWKHN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:07:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614074747;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U9ezWLhwEDgAZeIF3d1ynnogTVpyyQruaUJOC2rtSJM=;
-        b=T01SIS8GUVU6Z+bTXhIKco0EkLIDtsg/EDsV54aWe9i0VCxTt1YLgB9UiurOI5zLY9Lm5q
-        LpRf9oqtwsKtun7EYOpgJfQWFQkMF7HAgjlJgpOecbXyYqNrCthmLB+TPaC1gdd68Dlzof
-        G8cA6y9HpgnDiu/IxUXTRGuXTLykIgI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-7btmxPb9NoKnV01bpqZfTg-1; Tue, 23 Feb 2021 05:04:39 -0500
-X-MC-Unique: 7btmxPb9NoKnV01bpqZfTg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4025780403E;
-        Tue, 23 Feb 2021 10:04:38 +0000 (UTC)
-Received: from gondolin (ovpn-113-126.ams2.redhat.com [10.36.113.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 828665F706;
-        Tue, 23 Feb 2021 10:04:33 +0000 (UTC)
-Date:   Tue, 23 Feb 2021 11:04:30 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        virtio-dev@lists.oasis-open.org
-Subject: Re: [virtio-dev] Re: [PATCH] vdpa/mlx5: set_features should allow
- reset to zero
-Message-ID: <20210223110430.2f098bc0.cohuck@redhat.com>
-In-Reply-To: <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
-References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
-        <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
-        <ee31e93b-5fbb-1999-0e82-983d3e49ad1e@oracle.com>
-        <20210223041740-mutt-send-email-mst@kernel.org>
-        <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
-Organization: Red Hat GmbH
+        id S231591AbhBWKFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 05:05:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230142AbhBWKFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 05:05:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 389EE64E22;
+        Tue, 23 Feb 2021 10:04:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614074701;
+        bh=Wei69MTAw3cAoHZzehtkt6nVDExu19SQg53rlhzIYkc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WZOqzYAfqkinjCDFARp7S1HJXXBR9/a5BpaM0vR+ODhDKzZDPfF/ye7XjKQMUez35
+         gNYf4tHz2dZXzh6zzeOdB4V3qV1z9r5sgXIXTCI0aO5M02BEsGDwODUFLCu1Lt0bOf
+         0DK9G68zNyFKRYC1hCUEsoWO6316kYRolzd+VXquDUZT8xx0YR4ZC9pYlEAwapnwSR
+         iFZl+6xr5ZixbyOTXA4xJh9vWEFM0si3FfsI5NrErO2BOcvcjSnsbqxWi1qJke/gga
+         uJI0eyUbRiuqihtgi0hZ2CyAWZ72G2AC/8FGKqtO9r7yqQCxJpGGZu4aJGwqnQT86v
+         k3LlYOeONI6cg==
+Date:   Tue, 23 Feb 2021 10:04:53 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Jian Cai <jiancai@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        James Morse <james.morse@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v4] ARM: Implement SLS mitigation
+Message-ID: <20210223100453.GB10254@willie-the-truck>
+References: <20210219201852.3213914-1-jiancai@google.com>
+ <20210219230841.875875-1-jiancai@google.com>
+ <20210222115816.GA8605@willie-the-truck>
+ <CA+SOCLJVGJSn67VU24wPDdsOVeHhGe+KO5ekOCusano=bhn1Mg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+SOCLJVGJSn67VU24wPDdsOVeHhGe+KO5ekOCusano=bhn1Mg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 17:46:20 +0800
-Jason Wang <jasowang@redhat.com> wrote:
+On Mon, Feb 22, 2021 at 01:50:06PM -0800, Jian Cai wrote:
+> Please see my comments inlined below.
+> 
+> Thanks,
+> Jian
+> 
+> On Mon, Feb 22, 2021 at 3:58 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Fri, Feb 19, 2021 at 03:08:13PM -0800, Jian Cai wrote:
+> > > This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
+> > > -mharden-sls=all, which mitigates the straight-line speculation
+> > > vulnerability, speculative execution of the instruction following some
+> > > unconditional jumps. Notice -mharden-sls= has other options as below,
+> > > and this config turns on the strongest option.
+> > >
+> > > all: enable all mitigations against Straight Line Speculation that are implemented.
+> > > none: disable all mitigations against Straight Line Speculation.
+> > > retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
+> > > blr: enable the mitigation against Straight Line Speculation for BLR instructions.
+> > >
+> > > Links:
+> > > https://reviews.llvm.org/D93221
+> > > https://reviews.llvm.org/D81404
+> > > https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
+> > > https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
+> > >
+> > > Suggested-by: Manoj Gupta <manojgupta@google.com>
+> > > Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > Suggested-by: Nathan Chancellor  <nathan@kernel.org>
+> > > Suggested-by: David Laight <David.Laight@aculab.com>
+> > > Suggested-by: Will Deacon <will@kernel.org>
+> > > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> > > Signed-off-by: Jian Cai <jiancai@google.com>
+> > > ---
+> >
+> > Please can you reply to my previous questions?
+> >
+> > https://lore.kernel.org/linux-arm-kernel/20210217094859.GA3706@willie-the-truck/
+> >
+> > (apologies if you did, but I don't see them in the archive or my inbox)
+> 
+> I should have clarified the suggested-by tag was in regard to the
+> Kconfig text change. Regarding your earlier questions, please see my
+> comments below.
+> 
+> > So I think that either we enable this unconditionally, or we don't enable it
+> > at all (and people can hack their CFLAGS themselves if they want to).
+> 
+> Not sure if this answers your question but this config should provide
+> a way for people to turn on the mitigation at their own risk.
 
-> On 2021/2/23 =E4=B8=8B=E5=8D=885:25, Michael S. Tsirkin wrote:
-> > On Mon, Feb 22, 2021 at 09:09:28AM -0800, Si-Wei Liu wrote: =20
-> >>
-> >> On 2/21/2021 8:14 PM, Jason Wang wrote: =20
-> >>> On 2021/2/19 7:54 =E4=B8=8B=E5=8D=88, Si-Wei Liu wrote: =20
-> >>>> Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
-> >>>> for legacy") made an exception for legacy guests to reset
-> >>>> features to 0, when config space is accessed before features
-> >>>> are set. We should relieve the verify_min_features() check
-> >>>> and allow features reset to 0 for this case.
-> >>>>
-> >>>> It's worth noting that not just legacy guests could access
-> >>>> config space before features are set. For instance, when
-> >>>> feature VIRTIO_NET_F_MTU is advertised some modern driver
-> >>>> will try to access and validate the MTU present in the config
-> >>>> space before virtio features are set. =20
-> >>>
-> >>> This looks like a spec violation:
-> >>>
-> >>> "
-> >>>
-> >>> The following driver-read-only field, mtu only exists if
-> >>> VIRTIO_NET_F_MTU is set. This field specifies the maximum MTU for the
-> >>> driver to use.
-> >>> "
-> >>>
-> >>> Do we really want to workaround this? =20
-> >> Isn't the commit 452639a64ad8 itself is a workaround for legacy guest?
-> >>
-> >> I think the point is, since there's legacy guest we'd have to support,=
- this
-> >> host side workaround is unavoidable. Although I agree the violating dr=
-iver
-> >> should be fixed (yes, it's in today's upstream kernel which exists for=
- a
-> >> while now). =20
-> > Oh  you are right:
-> >
-> >
-> > static int virtnet_validate(struct virtio_device *vdev)
-> > {
-> >          if (!vdev->config->get) {
-> >                  dev_err(&vdev->dev, "%s failure: config access disable=
-d\n",
-> >                          __func__);
-> >                  return -EINVAL;
-> >          }
-> >
-> >          if (!virtnet_validate_features(vdev))
-> >                  return -EINVAL;
-> >
-> >          if (virtio_has_feature(vdev, VIRTIO_NET_F_MTU)) {
-> >                  int mtu =3D virtio_cread16(vdev,
-> >                                           offsetof(struct virtio_net_co=
-nfig,
-> >                                                    mtu));
-> >                  if (mtu < MIN_MTU)
-> >                          __virtio_clear_bit(vdev, VIRTIO_NET_F_MTU); =20
->=20
->=20
-> I wonder why not simply fail here?
+I'm not sure I see the point; either it's needed or its not. I wonder if
+there's a plan to fix this in future CPUs (another question for the Arm
+folks).
 
-I think both failing or not accepting the feature can be argued to make
-sense: "the device presented us with a mtu size that does not make
-sense" would point to failing, "we cannot work with the mtu size that
-the device presented us" would point to not negotiating the feature.
+> > It would be helpful for one of the Arm folks to chime in, as I'm yet to see any
+> > evidence that this is actually exploitable. Is it any worse that Spectre-v1,
+> > where we _don't_ have a compiler mitigation?
+> 
+> > Finally, do we have to worry about our assembly code?
+> 
+> I am not sure if there are any plans to protect assembly code and I
+> will leave it to the Arm folks since they know a whole lot better. But
+> even without that part, we should still have better protection,
+> especially when overhead does not look too bad: I did some preliminary
+> experiments on ChromeOS, code size of vmlinux increased 3%, and there
+> were no noticeable changes to run-time performance of the benchmarks I
+> used.
 
->=20
->=20
-> >          }
-> >
-> >          return 0;
-> > }
-> >
-> > And the spec says:
-> >
-> >
-> > The driver MUST follow this sequence to initialize a device:
-> > 1. Reset the device.
-> > 2. Set the ACKNOWLEDGE status bit: the guest OS has noticed the device.
-> > 3. Set the DRIVER status bit: the guest OS knows how to drive the devic=
-e.
-> > 4. Read device feature bits, and write the subset of feature bits under=
-stood by the OS and driver to the
-> > device. During this step the driver MAY read (but MUST NOT write) the d=
-evice-specific configuration
-> > fields to check that it can support the device before accepting it.
-> > 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new featu=
-re bits after this step.
-> > 6. Re-read device status to ensure the FEATURES_OK bit is still set: ot=
-herwise, the device does not
-> > support our subset of features and the device is unusable.
-> > 7. Perform device-specific setup, including discovery of virtqueues for=
- the device, optional per-bus setup,
-> > reading and possibly writing the device=E2=80=99s virtio configuration =
-space, and population of virtqueues.
-> > 8. Set the DRIVER_OK status bit. At this point the device is =E2=80=9Cl=
-ive=E2=80=9D.
-> >
-> >
-> > Item 4 on the list explicitly allows reading config space before
-> > FEATURES_OK.
-> >
-> > I conclude that VIRTIO_NET_F_MTU is set means "set in device features".=
- =20
->=20
->=20
-> So this probably need some clarification. "is set" is used many times in=
-=20
-> the spec that has different implications.
+If the mitigation is required, I'm not sure I see a lot of point in only
+doing a half-baked job of it. It feels a bit like a box-ticking exercise,
+in which case any overhead is too much.
 
-Before FEATURES_OK is set by the driver, I guess it means "the device
-has offered the feature"; during normal usage, it means "the feature
-has been negotiated". (This is a bit fuzzy for legacy mode.)
-
-Should we add a wording clarification to the spec?
-
+Will
