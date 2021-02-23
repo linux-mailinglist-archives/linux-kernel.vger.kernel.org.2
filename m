@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D992A32242C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 03:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 321C832242D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 03:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhBWCd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 21:33:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
+        id S230356AbhBWCe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 21:34:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbhBWCdX (ORCPT
+        with ESMTP id S230210AbhBWCex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 21:33:23 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADFAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:32:43 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id q20so7840883pfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:32:43 -0800 (PST)
+        Mon, 22 Feb 2021 21:34:53 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8340AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:34:13 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id n195so14981720ybg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 18:34:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GIWAFhm0yAXQbjsvqea5+Fb3rjUr7WgrcLGVKsm40RE=;
-        b=vOBhoN7p0hdxqBusqwkXV+lLO0nu4NI5mUmh0D3GO0jhVODgSIvLpE9zD5mYLsaePh
-         KGBe1wBD1X/fccVCUgl3jA9X2m7gYRZPdfawrBfQKn01PdcSFzVZuDQRVDbvDgsZgPgn
-         HzSNJBelB3liMcaRL/jrcFrWPeHKrkBYbpqI4Tl03VD611W26y46fMeGtU8PJFGXxxjm
-         a5T2xx2Iu+v3r4KhWZ9REgtrQEZRyZgVzA7GaEpvtkPe18kv5sCzWmFF3nHIoDyW4UDz
-         7ANwRSlP8psIBHRV5uGJR0jeDSZOaBAqoKPfUcw92/vDiaq1U2XRjPWpa4yX7VWCzgdL
-         3UCw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vbEZDn6F+U7fLvG/dV/ekQ+8VtzU/Wmvd2z5pzH+GUE=;
+        b=eymbrX2fFRafVOEdU4Pi6I97vLxaXnBfqWsMLS7i5Y7yCOAPpBukdtgjoCJAsIgqPl
+         npy1vkN/EA/Ou2XkCoSEb1s6N1VUVuaDz7vNXCiY2KKgms8RE7iVMSfKn1JerMSxuhr4
+         fXYmuKeocmTCJkKlL2BtrqdZ91X44alH7svsWDDiAb0K0WP0hSWjylPSwk122Ewy7pBg
+         0CB/Vvhgkd6oHjxT74WYKhfgGlrl0beDlrq5UwpamUTyx/9ygXGGZmTHX/jsVhaj9Vvz
+         yZkCb57OyJR3IPEbcSFswrtWL9/1HGKCW7LrtTaFlk7oYTO2+MV3qRE5xf6cIpAA5B7r
+         UV2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GIWAFhm0yAXQbjsvqea5+Fb3rjUr7WgrcLGVKsm40RE=;
-        b=CQwR6vR0YKoTtNMc7QJqAh7Fx5O3HX2jRJ789sJqPteOENlBsIL4uv0UNxt6rScQvs
-         wqotsnPh0qf7j5CEbBvYrptYUA9xiOSil5+Kj785Sq5igHy+Uvrho4ddrHyz0DK+CyBy
-         q/IxOiqtalTkjaEjhJU+hSLBzVdEvvdSANlRJUflXvxGolWZ7zO3WyBYC+EsWAcU69eX
-         2j4G3RgPQA1TNMNOqiWto0BKNa3mDbHjqwwd2xo5DsoYQXGDtDxGF6IFaBu5c5MKAomn
-         be4gDbXZbptGozfDhwP79gE4jyGOLWDBhpkfrFm5oCEiL7xJA2K0gYutvzn1raYXXNQI
-         IZFQ==
-X-Gm-Message-State: AOAM531U8lXAcnn4DUF9HmJcm3/nFBBOjMRImPVjhNxgxt+8WHU2Ij/9
-        Z2L/DEnFyorOCmOshAoXiadx6w==
-X-Google-Smtp-Source: ABdhPJzr5dOsca7Y6QpIEUtMluuZOZxocSOfKydvprVVOIoPBBUw7L8PfToqcbL1+gk3x7RNV1r0dg==
-X-Received: by 2002:a05:6a00:1502:b029:1d2:72e7:a9db with SMTP id q2-20020a056a001502b02901d272e7a9dbmr210954pfu.42.1614047563032;
-        Mon, 22 Feb 2021 18:32:43 -0800 (PST)
-Received: from ?IPv6:2620:10d:c085:21e8::11af? ([2620:10d:c090:400::5:c361])
-        by smtp.gmail.com with ESMTPSA id j73sm21479975pfd.170.2021.02.22.18.32.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 18:32:42 -0800 (PST)
-Subject: Re: linux-next: build failure after merge of the block tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210223124236.7bdf0871@canb.auug.org.au>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <0c64e6f1-e793-5def-af03-c66221d6b4c4@kernel.dk>
-Date:   Mon, 22 Feb 2021 19:32:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vbEZDn6F+U7fLvG/dV/ekQ+8VtzU/Wmvd2z5pzH+GUE=;
+        b=FZ5roHfHuBfHD9zoRNhz6T6+k913Eg/4ha8UVe3W/JyExxqlhy4Vo3MUKSrvnddwDv
+         MqXtygpDrJNtFQTZyL7OmU75AACzGi0Hdcq9vbO1uelVAoNW9PZWIOBaPig3k2upuEe3
+         4ygYa9eXxeN28g9HczNR7zkoQSfqVNdUjtD3E4LGMCeFCQI853m2lJMARHLU4wZKG9nU
+         o+RZg/d/xbjcJ46OarFD8tlll78JFcD5RjAAq2ms8A7jjLApsW6ydhvVGVznro/foYJD
+         PKgnwTLYVYEobzMXmxFKsn9JMhJJUJwHgxWLslYNpDd9OCNFfzomRIb3Q6h+qUyuh9VJ
+         vyfw==
+X-Gm-Message-State: AOAM5330D3UwcPy2wdAAW9rqlVThJbhOLigbDWBIvUYIJs4scPPcQ1R5
+        MsAJgwzLvC4jPiMs3nsfLRVCokZwbj7XbviNyE2qCQ==
+X-Google-Smtp-Source: ABdhPJwvuAF/gcAoXk64cfSwPxsylDcsCtoq2d0FF8wyE7rZopigHoV0zNOJYSQj+DIVrOfQS+sItg3pskcy+TPMMwU=
+X-Received: by 2002:a25:b74c:: with SMTP id e12mr40069788ybm.20.1614047652553;
+ Mon, 22 Feb 2021 18:34:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210223124236.7bdf0871@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210205013847.1736929-1-saravanak@google.com>
+ <CAOMZO5DRjT4d8gzSZZX4itcOXO_pye-1aq658EX2vQJ5xhEi8A@mail.gmail.com> <CAGETcx9E+dw3HS+DHMhzbrQGcrT6z4kDH=ziS=1=i-7=0rLwgw@mail.gmail.com>
+In-Reply-To: <CAGETcx9E+dw3HS+DHMhzbrQGcrT6z4kDH=ziS=1=i-7=0rLwgw@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 22 Feb 2021 18:33:36 -0800
+Message-ID: <CAGETcx9r5=zZZ445ou3Vd0hWCfb_HH6bHnE_XMTAWwvr7bW=OA@mail.gmail.com>
+Subject: Re: [PATCH v3] ARM: imx: avic: Convert to using IRQCHIP_DECLARE
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Android Kernel Team <kernel-team@android.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 6:42 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the block tree, today's linux-next build (powerpc
-> ppc64_defconfig) failed like this:
-> 
-> fs/io_uring.c: In function 'io_sq_thread':
-> fs/io_uring.c:6787:3: error: implicit declaration of function 'io_ctx_disable_sqo_submit' [-Werror=implicit-function-declaration]
->  6787 |   io_ctx_disable_sqo_submit(ctx);
->       |   ^~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Caused by commit
-> 
->   a6afa091d06a ("io_uring: move SQPOLL thread io-wq forked worker")
-> 
-> I have used the block tree from next-20210222 for today.
+On Thu, Feb 4, 2021 at 6:07 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Thu, Feb 4, 2021 at 5:54 PM Fabio Estevam <festevam@gmail.com> wrote:
+> >
+> > Hi Saravana,
+> >
+> > On Thu, Feb 4, 2021 at 10:39 PM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > Using IRQCHIP_DECLARE lets fw_devlink know that it should not wait for
+> > > these interrupt controllers to be populated as struct devices. Without
+> > > this change, fw_devlink=on will make the consumers of these interrupt
+> > > controllers wait for the struct device to be added and thereby block the
+> > > consumers' probes forever. Converting to IRQCHIP_DECLARE addresses boot
+> > > issues on imx25 with fw_devlink=on that were reported by Martin.
+> > >
+> > > This also removes a lot of boilerplate code.
+> > >
+> > > Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+> > > Reported-by: Martin Kaiser <martin@kaiser.cx>
+> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > Tested-by: Martin Kaiser <martin@kaiser.cx>
+> >
+> > Thanks for the respin:
+> >
+> > Reviewed-by: Fabio Estevam <festevam@gmail.com>
+>
+> Thanks for the quick review.
+>
 
-You got very unlucky, that bad commit only lasted for about 1-2 min.
+Maintainers,
 
--- 
-Jens Axboe
+Is this getting picked up for 5.12?
 
+-Saravana
