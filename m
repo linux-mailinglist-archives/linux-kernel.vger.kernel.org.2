@@ -2,80 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC46322387
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7449C322393
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 02:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhBWBVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 20:21:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhBWBU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 20:20:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AC6960232;
-        Tue, 23 Feb 2021 01:20:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614043217;
-        bh=DrhhhxquQa9mMMAlVDZt621WhowL2G0QRwZ1oprjFoY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=n0L7HNxZpkuc4vsHzjuYh7yIaejq5QIw6JuRdXjNKD0/Gn64F21CXixIszhcuYx9y
-         ED1+P/xk5eOPdiGNKServB7o6OGs4Vint0c1D2M0rYi/ssdYNQsz5DsM+bShMlJx9x
-         YOIOhGkTkNs/ygf+H06eHctMm2t0Saw0axjPJ/J9KHcM9j2YqzuL8b61dasurDDAnd
-         xI9snoLrknDGPxkBtAkNy605tiJeidtTsOujz4Mt2hepw+usuCUzx+tgbcQ35jw0Z4
-         fCSx4hKrSVbRkrwMZ0D/GNq9ADPx3l0S865ekxn065Xv8BitJX2EfuB4moYa5zCSbi
-         h8+peInvB92/A==
-Received: by mail-io1-f46.google.com with SMTP id u8so15378153ior.13;
-        Mon, 22 Feb 2021 17:20:17 -0800 (PST)
-X-Gm-Message-State: AOAM532pXArxnXvabKWs7aB0fS/BWzdVtb68JnpHDf45B3n4oH9dFumu
-        VrjZ3AoL/J93jMlHDgnpftGOge9ovwmEPayfOOw=
-X-Google-Smtp-Source: ABdhPJyTSKQB8sQM5y9f2DjeXYE9RykFsxqlJ4lMOwJSXDAOHhRiNVZL1/oDf9dXcqwVBFhbmtT4cpVfkilz/86CfdQ=
-X-Received: by 2002:a6b:6603:: with SMTP id a3mr17360502ioc.148.1614043216618;
- Mon, 22 Feb 2021 17:20:16 -0800 (PST)
+        id S230326AbhBWBWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 20:22:07 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:18834 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230291AbhBWBV4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 20:21:56 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11N18BLA003795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 17:21:12 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=pEbi9RE7Rh3I3wGDeQBFrv7VjBYIcCKe7RkNvOrCedE=;
+ b=fAPLx0LhGcoLaRz0PeLG734VzQTYTmQtR0NoGW4WcxqeEyFhfk1BZatXAJglqNuIfJo3
+ NeyhrIxxSked+u473LdTUQDW42y9k5YhR42NtCU+RvpoYeiGXRsFBM1x64YtlwVKqNyf
+ 1nyfI1QHU20PSI2bokBTMKGWAd4fWQg3VeI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36uk0n0kwy-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 17:21:12 -0800
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 22 Feb 2021 17:21:11 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id C050762E0887; Mon, 22 Feb 2021 17:21:07 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <peterz@infradead.org>, Song Liu <songliubraving@fb.com>
+Subject: [PATCH v4 bpf-next 0/6] bpf: enable task local storage for tracing programs
+Date:   Mon, 22 Feb 2021 17:20:08 -0800
+Message-ID: <20210223012014.2087583-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20210222161905.1153-1-lukas.bulwahn@gmail.com> <20210222161905.1153-6-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210222161905.1153-6-lukas.bulwahn@gmail.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 23 Feb 2021 09:20:04 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5rmym9_5X9uxAHvAJasNrVCgQSE23tv3XULE60iwMnUw@mail.gmail.com>
-Message-ID: <CAAhV-H5rmym9_5X9uxAHvAJasNrVCgQSE23tv3XULE60iwMnUw@mail.gmail.com>
-Subject: Re: [PATCH 5/5] MIPS: SGI-IP27: fix spelling in Copyright
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
-        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-22_08:2021-02-22,2021-02-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
+ spamscore=0 priorityscore=1501 malwarescore=0 bulkscore=0 phishscore=0
+ adultscore=0 clxscore=1015 mlxlogscore=883 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102230006
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
+This set enables task local storage for non-BPF_LSM programs.
 
-On Tue, Feb 23, 2021 at 12:22 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> This is a Copyright line, and just a typo slipped through.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
->  arch/mips/sgi-ip27/ip27-timer.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/mips/sgi-ip27/ip27-timer.c b/arch/mips/sgi-ip27/ip27-timer.c
-> index 79c434fece52..444b5e0e935f 100644
-> --- a/arch/mips/sgi-ip27/ip27-timer.c
-> +++ b/arch/mips/sgi-ip27/ip27-timer.c
-> @@ -1,7 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * Copytight (C) 1999, 2000, 05, 06 Ralf Baechle (ralf@linux-mips.org)
-> - * Copytight (C) 1999, 2000 Silicon Graphics, Inc.
-> + * Copyright (C) 1999, 2000, 05, 06 Ralf Baechle (ralf@linux-mips.org)
-> + * Copyright (C) 1999, 2000 Silicon Graphics, Inc.
->   */
->  #include <linux/bcd.h>
->  #include <linux/clockchips.h>
-> --
-> 2.17.1
->
+It is common for tracing BPF program to access per-task data. Currently,
+these data are stored in hash tables with pid as the key. In
+bcc/libbpftools [1], 9 out of 23 tools use such hash tables. However,
+hash table is not ideal for many use case. Task local storage provides
+better usability and performance for BPF programs. Please refer to 4/4 fo=
+r
+some performance comparison of task local storage vs. hash table.
+
+Changes v3 =3D> v4:
+1. Prevent deadlock from recursive calls of bpf_task_storage_[get|delete]=
+.
+   (2/6 checks potential deadlock and fails over, 4/6 adds a selftest).
+
+Changes v2 =3D> v3:
+1. Make the selftest more robust. (Andrii)
+2. Small changes with runqslower. (Andrii)
+3. Shortern CC list to make it easy for vger.
+
+Changes v1 =3D> v2:
+1. Do not allocate task local storage when the task is being freed.
+2. Revise the selftest and added a new test for a task being freed.
+3. Minor changes in runqslower.
+
+Song Liu (6):
+  bpf: enable task local storage for tracing programs
+  bpf: prevent deadlock from recursive bpf_task_storage_[get|delete]
+  selftests/bpf: add non-BPF_LSM test for task local storage
+  selftests/bpf: test deadlock from recursive
+    bpf_task_storage_[get|delete]
+  bpf: runqslower: prefer using local vmlimux to generate vmlinux.h
+  bpf: runqslower: use task local storage
+
+ include/linux/bpf.h                           |  7 ++
+ include/linux/bpf_lsm.h                       | 22 -----
+ include/linux/bpf_types.h                     |  2 +-
+ include/linux/sched.h                         |  5 +
+ kernel/bpf/Makefile                           |  3 +-
+ kernel/bpf/bpf_local_storage.c                | 28 +++---
+ kernel/bpf/bpf_lsm.c                          |  4 -
+ kernel/bpf/bpf_task_storage.c                 | 89 +++++++++++-------
+ kernel/fork.c                                 |  5 +
+ kernel/trace/bpf_trace.c                      |  4 +
+ tools/bpf/runqslower/Makefile                 |  5 +-
+ tools/bpf/runqslower/runqslower.bpf.c         | 33 ++++---
+ .../bpf/prog_tests/task_local_storage.c       | 92 +++++++++++++++++++
+ .../selftests/bpf/progs/task_local_storage.c  | 64 +++++++++++++
+ .../bpf/progs/task_local_storage_exit_creds.c | 32 +++++++
+ .../selftests/bpf/progs/task_ls_recursion.c   | 70 ++++++++++++++
+ 16 files changed, 381 insertions(+), 84 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_sto=
+rage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_=
+exit_creds.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_ls_recursion.c
+
+--
+2.24.1
