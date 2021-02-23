@@ -2,135 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C57322822
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C011F322830
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232300AbhBWJw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 04:52:56 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:21545 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232064AbhBWJua (ORCPT
+        id S232310AbhBWJzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:55:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58566 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232129AbhBWJvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:50:30 -0500
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210223094943epoutp0218d243686ac165bd2ba09f09752df3d0~mV431iCfH3100531005epoutp02t
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 09:49:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210223094943epoutp0218d243686ac165bd2ba09f09752df3d0~mV431iCfH3100531005epoutp02t
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614073783;
-        bh=Ubs1kZZFPa5xRlLuSmHTmEfG00R7cgtV0QxxSb4lGmM=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=rSFF91WTpPISwajyYYdiCt3dDSnKZrXiUdWHQcGVdplA1MtT6QoTpNzz+jIN+5vp6
-         aGEhjAyYVu3x2kHMn+WfqzPwan/UFFq3MUU0Ocdo693hg/gd7EtCm/2szTXJ0HxpLZ
-         pcKPQFFRaLAJB4/H3FOGWEkErqkoOJYYlB0K36f8=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210223094942epcas2p15a36958919c80a66aabfc9cf48e2f6c9~mV43C6Q9h1111811118epcas2p1Z;
-        Tue, 23 Feb 2021 09:49:42 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.186]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4DlDmP5B8bz4x9Px; Tue, 23 Feb
-        2021 09:49:41 +0000 (GMT)
-X-AuditID: b6c32a47-b81ff7000000148e-f3-6034cfb5fff0
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        1C.78.05262.5BFC4306; Tue, 23 Feb 2021 18:49:41 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v22 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Bean Huo <huobean@gmail.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <d5393d50a2d7c4752828a5707a6225ff6ca62f68.camel@gmail.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210223094940epcms2p5e22d3981a396fbe4e2421f427019389b@epcms2p5>
-Date:   Tue, 23 Feb 2021 18:49:40 +0900
-X-CMS-MailID: 20210223094940epcms2p5e22d3981a396fbe4e2421f427019389b
+        Tue, 23 Feb 2021 04:51:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614073797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8A4pxXGWG8a3xJa5PU7F4MaUKGA98BAtqJjTrcqSQjk=;
+        b=MiozXcCpnH9qRmWVw/MKhw5pquCLF6ulU8e8oCyz43owlEDtYLNbt+iyncHRrpzaNWabhH
+        suxWEnLKbOo+fiN6bWuzfHh++2R4pkhVNZZfpPdP48/guQiwcp5NzJeduc+SUGp9IxgHEK
+        xpdZIA74AQpU1buauxyNgpNeRv7R304=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-htWRi2jJMLSCgfyIR0hjxg-1; Tue, 23 Feb 2021 04:49:53 -0500
+X-MC-Unique: htWRi2jJMLSCgfyIR0hjxg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C1C3807902;
+        Tue, 23 Feb 2021 09:49:50 +0000 (UTC)
+Received: from [10.36.114.0] (ovpn-114-0.ams2.redhat.com [10.36.114.0])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 886F35D9DC;
+        Tue, 23 Feb 2021 09:49:45 +0000 (UTC)
+Subject: Re: [PATCH v6 1/1] mm/page_alloc.c: refactor initialization of struct
+ page for holes in memory layout
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+References: <20210222105728.28636-1-rppt@kernel.org>
+ <a7f70da1-6733-967f-4d1d-92d23b95a753@redhat.com>
+ <20210223094802.GI1447004@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <aafa291d-ced4-2e4d-f9c4-be99e9394c0c@redhat.com>
+Date:   Tue, 23 Feb 2021 10:49:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210223094802.GI1447004@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA52Tf1CTdRzH79nzsOeBoB4GxFe6aj0cICPGNtj8kg44NZ3HhdLJcWYKa3tu
-        W8C2e55hxD8NCKb81BOFYIHgCScSS3QwpIQD40cdlYeJgBaeWKHOSKoLPbg2NtLrz/57f1+f
-        35/vfQiUdxkPI3R6E83olbkU1w/rGY6Wxtq/S8gWtRdFwLmmHi78smwMhwvLP3Dh8OxDHJ5c
-        XEbhI1ubD1wYioYdc5mw5LSNC60TZg6sqrFz4Z2bSzhsvdHDgTWrFgxOXrJyYcWUgwvbR1c5
-        cPaiHzxjn0bgkbpODLa29GMpIYrJa6mKyeoqjqKv4RauONo6iCgGPu3EFR+PD2CK3+/OYIrq
-        ix2IYqn7FYVlsIKzx+8dM7JFyai0ukM0n9arDGqdXiOnMvbuiIUUX2tgTXJqvxhKhOJEqTAh
-        USjZdOANsUgkkVJ8vTKPllMFsd5ois+ojC5vE82aGFpFuxCTwpqUGlrIKvPYfL1GqDLkUfxD
-        ytx8VxwVl7RFSyvVNMPPnke0DyuWcOOgT0HLzwuIGRlByxFfApAJYNF5lluO+BE80oGAym6r
-        y0AQAWQgWHEEuX2CyGTw69h13K15JAVsVxtwDxeCmdudiFtzyddB3dhPuDtPMHkGA7Wjbaj7
-        gZKPOWDsziLiqRYA6i13MY9+CfS229e4L7kTrDjPcT18I/i7rcrbXQiYPufE1/VvI83ePMGg
-        9McJr08gmFvu9/INYKR/kePRHwH7zceIuwlAViJguG/Gx2OIA9cPn8c8U74FfmnjuTFGRoDi
-        46e9sdtBmd251g9Kvgp6nZ6loGQ0sF2Kc0tAhoMrM9j6VObzT/D/apR8HhweXvmXO5rmvdkj
-        QdeyjXMUCW94uumGZ2o1PK11CkE7kBdpI5unoVmJMf7Zj+5G1m5AsNOB1DsXhUMIh0CGEECg
-        VHAA95YkmxegVn5YSDOGLCY/l2aHkELXlMfQsBCVwXVEelOWWCaSyKTxCfHx0gTp/8ZSiUwm
-        SpRCqUwCqdAAVjSXxSM1ShOdQ9NGmlkvziF8w8ycKNZm0DoE75ZONBGNMrWlUleo+1p3ojc2
-        dXcaL+Y5n03J+dFPjHIqPaN4sKjp87IQeRDRklKi1tzfVuBoLohJMYdLzI/oUMcUIvHfmt7V
-        NDbaeDy1ffP3cv6+F/yPgcAr1qh5i2mXGNMXxOXUTBOvVRanF574YuPJ+gv++SWRMQNvhwpW
-        D/AK9dJZgXHrJ/G1mQ+6bls2b4hKSuu4fPbeA+uFP8zitG8i9yZp0TetByVXp8wf3Hs/p/69
-        8jpzdsyIXBA9vv8z4qs9+7bHqTnjf96vFhftuOHQMruZGUfzkH9mhLmvo/3b8mun1MnDAz0Z
-        L//VyNs1XptZOnkwJoMKOkJhrFYpFqAMq/wH4GVHddEEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
-References: <d5393d50a2d7c4752828a5707a6225ff6ca62f68.camel@gmail.com>
-        <20210222092957epcms2p728b0c563f3cfbecbf8692d7e86f9afed@epcms2p7>
-        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
-        <20210222093150epcms2p155352e2255e6bfd8f8d71c737ed05e76@epcms2p1>
-        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p5>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >                 }
-> >         }
-> > @@ -532,8 +870,8 @@ static int ufshpb_execute_map_req(struct
-> > ufshpb_lu *hpb,
-> >         if (unlikely(last))
-> >                 mem_size = hpb->last_srgn_entries * HPB_ENTRY_SIZE;
-> >  
-> > -       ufshpb_set_read_buf_cmd(rq->cmd, map_req->rgn_idx,
-> > -                               map_req->srgn_idx, mem_size);
-> > +       ufshpb_set_read_buf_cmd(rq->cmd, map_req->rb.rgn_idx,
-> > +                               map_req->rb.srgn_idx, hpb-
-> > >srgn_mem_size);
->  
-> Are you sure here it is hpb->srgn_mem_size, not mem_size???
-> if not mem_size, why you kept mem_size??
-
-I will fix it.
-
-Thanks,
-Daejun
-  
-> Bean
->  
->  
->  
+On 23.02.21 10:48, Mike Rapoport wrote:
+> On Tue, Feb 23, 2021 at 09:04:19AM +0100, David Hildenbrand wrote:
+>> On 22.02.21 11:57, Mike Rapoport wrote:
+>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>
+>>> There could be struct pages that are not backed by actual physical memory.
+>>> This can happen when the actual memory bank is not a multiple of
+>>> SECTION_SIZE or when an architecture does not register memory holes
+>>> reserved by the firmware as memblock.memory.
+>>>
+>>> Such pages are currently initialized using init_unavailable_mem() function
+>>> that iterates through PFNs in holes in memblock.memory and if there is a
+>>> struct page corresponding to a PFN, the fields of this page are set to
+>>> default values and it is marked as Reserved.
+>>>
+>>> init_unavailable_mem() does not take into account zone and node the page
+>>> belongs to and sets both zone and node links in struct page to zero.
+>>>
+>>> Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
+>>> rather that check each PFN") the holes inside a zone were re-initialized
+>>> during memmap_init() and got their zone/node links right. However, after
+>>> that commit nothing updates the struct pages representing such holes.
+>>>
+>>> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+>>> instance in a configuration below:
+>>>
+>>> 	# grep -A1 E820 /proc/iomem
+>>> 	7a17b000-7a216fff : Unknown E820 type
+>>> 	7a217000-7bffffff : System RAM
+>>>
+>>> unset zone link in struct page will trigger
+>>>
+>>> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+>>>
+>>> because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
+>>> in struct page) in the same pageblock.
+>>>
+>>> Interleave initialization of the unavailable pages with the normal
+>>> initialization of memory map, so that zone and node information will be
+>>> properly set on struct pages that are not backed by the actual memory.
+>>>
+>>> With this change the pages for holes inside a zone will get proper
+>>> zone/node links and the pages that are not spanned by any node will get
+>>> links to the adjacent zone/node.
+>>
+>> Does this include pages in the last section has handled by ...
+>> ...
+>>> -	/*
+>>> -	 * Early sections always have a fully populated memmap for the whole
+>>> -	 * section - see pfn_valid(). If the last section has holes at the
+>>> -	 * end and that section is marked "online", the memmap will be
+>>> -	 * considered initialized. Make sure that memmap has a well defined
+>>> -	 * state.
+>>> -	 */
+>>> -	pgcnt += init_unavailable_range(PFN_DOWN(next),
+>>> -					round_up(max_pfn, PAGES_PER_SECTION));
+>>> -
+>>
+>> ^ this code?
+>>
+>> Or how is that case handled now?
+> 
+> Hmm, now it's clamped to node_end_pfn/zone_end_pfn, so in your funny example with
+> 
+>      -object memory-backend-ram,id=bmem0,size=4160M \
+>      -object memory-backend-ram,id=bmem1,size=4032M \
+> 
+> this is not handled :(
+> 
+> But it will be handled with this on top:
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 29bbd08b8e63..6c9b490f5a8b 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -6350,9 +6350,12 @@ void __meminit __weak memmap_init_zone(struct zone *zone)
+>   		hole_pfn = end_pfn;
+>   	}
 >   
+> -	if (hole_pfn < zone_end_pfn)
+> -		pgcnt += init_unavailable_range(hole_pfn, zone_end_pfn,
+> +#ifdef CONFIG_SPARSEMEM
+> +	end_pfn = round_up(zone_end_pfn, PAGES_PER_SECTION);
+> +	if (hole_pfn < end_pfn)
+> +		pgcnt += init_unavailable_range(hole_pfn, end_pfn,
+>   						zone_id, nid);
+> +#endif
+>   
+>   	if (pgcnt)
+>   		pr_info("  %s zone: %lld pages in unavailable ranges\n",
+> 
+
+
+Also, just wondering, will PFN 0 still get initialized?
+
+-- 
+Thanks,
+
+David / dhildenb
+
