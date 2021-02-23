@@ -2,313 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0A3322817
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8AC32282A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 10:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhBWJva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 04:51:30 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61624 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231944AbhBWJtN (ORCPT
+        id S231867AbhBWJyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 04:54:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31385 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232086AbhBWJvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 04:49:13 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11N9Y7rJ066210;
-        Tue, 23 Feb 2021 04:48:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=CNh+Qi5+6FfU2MT5IAkTZy4w15teQtMhWGVk4aN2qRI=;
- b=WrMOSBI908SocpUJ35XR8aR7UplRTp+dlvEXtRl0kjqrliPPfEVF2mjpryIV4kkjhktI
- qnx+4e3Xq6qKyIYyjGRk5w9Cd81WFCDkA8cVnvtuFzDKNTdzybGdqYxd3b9gNRkP1jEm
- K7mz4il8WiAVPKQhjQy5euOWWZ/q6LLYyBhZRr4srpEuZGd9ZfmGQUQWCz1obm+lfRzn
- j2S3oWoMwz/U6pKp9XsmIQDkF5E1PFaFb2ngTHp4pTjfc8sRJEr13+BmX2rFccWqj9Xp
- tytmP4tFWsDEWOu62KKaM7QUKozTKOajziGPqUdZ6qTsEJhtmLpEgoE3NV2DBPvE/Po0 xQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36vkmy92ja-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 04:48:24 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11N9aS9s072130;
-        Tue, 23 Feb 2021 04:48:24 -0500
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36vkmy92hn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 04:48:24 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11N9gWgm006346;
-        Tue, 23 Feb 2021 09:48:22 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 36tt2899mg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 09:48:22 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11N9m68534275590
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Feb 2021 09:48:06 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 325BDA405B;
-        Tue, 23 Feb 2021 09:48:19 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5E99BA405C;
-        Tue, 23 Feb 2021 09:48:18 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.41.180])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue, 23 Feb 2021 09:48:18 +0000 (GMT)
-Date:   Tue, 23 Feb 2021 10:48:05 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
-        pbonzini@redhat.com, alex.williamson@redhat.com,
-        pasic@linux.vnet.ibm.com
-Subject: Re: [PATCH v2 1/1] s390/vfio-ap: fix circular lockdep when
- setting/clearing crypto masks
-Message-ID: <20210223104805.6a8d1872.pasic@linux.ibm.com>
-In-Reply-To: <20210216011547.22277-2-akrowiak@linux.ibm.com>
-References: <20210216011547.22277-1-akrowiak@linux.ibm.com>
-        <20210216011547.22277-2-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 23 Feb 2021 04:51:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614073778;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vKyuU9LWKwPaA0W8b7Zn/93LIBS1BDs8g8bsSMSJ0MM=;
+        b=jLdWk5IW63z59YOK3U/qmznledXRVYkhcL+1tefES6GROVuon9msr6z7hn1X9+lG5+uwtt
+        Uyy1wqjBjuguDtN69esqE75MzCH0n2CyjFS6YC59ZIDkzm6irwcp+B0f8yVrEHanNU/oaI
+        kZCUD0iJmUSkEv2xNAC0ThshWOi6kQM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-147-Ft6zYw1bOe-pQyUCOJ4coQ-1; Tue, 23 Feb 2021 04:48:18 -0500
+X-MC-Unique: Ft6zYw1bOe-pQyUCOJ4coQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DF58E1085927;
+        Tue, 23 Feb 2021 09:48:16 +0000 (UTC)
+Received: from [10.72.13.6] (ovpn-13-6.pek2.redhat.com [10.72.13.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9CC8E19C45;
+        Tue, 23 Feb 2021 09:48:11 +0000 (UTC)
+Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
+To:     "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>
+Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
+ <20210221144437.GA82010@mtl-vdi-166.wap.labs.mlnx>
+ <20210221165047-mutt-send-email-mst@kernel.org>
+ <20210222060526.GA110862@mtl-vdi-166.wap.labs.mlnx>
+ <20210223042559-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <65494f6b-9613-1c0e-4a36-e4af2965235e@redhat.com>
+Date:   Tue, 23 Feb 2021 17:48:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210223042559-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-23_04:2021-02-22,2021-02-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0
- mlxscore=0 phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102230077
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 20:15:47 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-> This patch fixes a circular locking dependency in the CI introduced by
-> commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
-> pointer invalidated"). The lockdep only occurs when starting a Secure
-> Execution guest. Crypto virtualization (vfio_ap) is not yet supported for
-> SE guests; however, in order to avoid CI errors, this fix is being
-> provided.
-> 
-> The circular lockdep was introduced when the masks in the guest's APCB
-> were taken under the matrix_dev->lock. While the lock is definitely
-> needed to protect the setting/unsetting of the KVM pointer, it is not
-> necessarily critical for setting the masks, so this will not be done under
-> protection of the matrix_dev->lock.
+On 2021/2/23 下午5:26, Michael S. Tsirkin wrote:
+> On Mon, Feb 22, 2021 at 08:05:26AM +0200, Eli Cohen wrote:
+>> On Sun, Feb 21, 2021 at 04:52:05PM -0500, Michael S. Tsirkin wrote:
+>>> On Sun, Feb 21, 2021 at 04:44:37PM +0200, Eli Cohen wrote:
+>>>> On Fri, Feb 19, 2021 at 06:54:58AM -0500, Si-Wei Liu wrote:
+>>>>> Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
+>>>>> for legacy") made an exception for legacy guests to reset
+>>>>> features to 0, when config space is accessed before features
+>>>>> are set. We should relieve the verify_min_features() check
+>>>>> and allow features reset to 0 for this case.
+>>>>>
+>>>>> It's worth noting that not just legacy guests could access
+>>>>> config space before features are set. For instance, when
+>>>>> feature VIRTIO_NET_F_MTU is advertised some modern driver
+>>>>> will try to access and validate the MTU present in the config
+>>>>> space before virtio features are set. Rejecting reset to 0
+>>>>> prematurely causes correct MTU and link status unable to load
+>>>>> for the very first config space access, rendering issues like
+>>>>> guest showing inaccurate MTU value, or failure to reject
+>>>>> out-of-range MTU.
+>>>>>
+>>>>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+>>>>> Signed-off-by: Si-Wei Liu<si-wei.liu@oracle.com>
+>>>>> ---
+>>>>>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
+>>>>>   1 file changed, 1 insertion(+), 14 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>> index 7c1f789..540dd67 100644
+>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>> @@ -1490,14 +1490,6 @@ static u64 mlx5_vdpa_get_features(struct vdpa_device *vdev)
+>>>>>   	return mvdev->mlx_features;
+>>>>>   }
+>>>>>   
+>>>>> -static int verify_min_features(struct mlx5_vdpa_dev *mvdev, u64 features)
+>>>>> -{
+>>>>> -	if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
+>>>>> -		return -EOPNOTSUPP;
+>>>>> -
+>>>>> -	return 0;
+>>>>> -}
+>>>>> -
+>>>> But what if VIRTIO_F_ACCESS_PLATFORM is not offerred? This does not
+>>>> support such cases.
+>>> Did you mean "catch such cases" rather than "support"?
+>>>
+>> Actually I meant this driver/device does not support such cases.
+> Well the removed code merely failed without VIRTIO_F_ACCESS_PLATFORM
+> it didn't actually try to support anything ...
 
 
+I think it's used to catch the driver that doesn't support ACCESS_PLATFORM?
 
-With the one little thing I commented on below addressed: 
-Acked-by: Halil Pasic <pasic@linux.ibm.com>  
+Thanks
 
-This solution probably ain't a perfect one, but can't say I see a simple
-way to get around this problem. For instance I played with the thought of
-taking locks in a different order and keeping the critical sections
-intact, but that has problems of its own. Tony should have the best
-understanding of vfio_ap anyway.
 
-In theory the execution of vfio_ap_mdev_group_notifier() and
-vfio_ap_mdev_release() could interleave, and we could loose a clear because
-in theory some permutations of the critical sections need to be
-considered. In practice I hope that won't happen with QEMU.
-
-Tony, you gave this a decent amount of testing or? 
-
-I think we should move forward with this. Any objections? 
-> 
-> Fixes: f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->  drivers/s390/crypto/vfio_ap_ops.c | 119 +++++++++++++++++++++---------
->  1 file changed, 84 insertions(+), 35 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 41fc2e4135fe..8574b6ecc9c5 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -1027,8 +1027,21 @@ static const struct attribute_group *vfio_ap_mdev_attr_groups[] = {
->   * @matrix_mdev: a mediated matrix device
->   * @kvm: reference to KVM instance
->   *
-> - * Verifies no other mediated matrix device has @kvm and sets a reference to
-> - * it in @matrix_mdev->kvm.
-> + * Sets all data for @matrix_mdev that are needed to manage AP resources
-> + * for the guest whose state is represented by @kvm:
-> + * 1. Verifies no other mediated device has a reference to @kvm.
-> + * 2. Increments the ref count for @kvm so it doesn't disappear until the
-> + *    vfio_ap driver is notified the pointer is being nullified.
-> + * 3. Sets a reference to the PQAP hook (i.e., handle_pqap() function) into
-> + *    @kvm to handle interception of the PQAP(AQIC) instruction.
-> + * 4. Sets the masks supplying the AP configuration to the KVM guest.
-> + * 5. Sets the KVM pointer into @kvm so the vfio_ap driver can access it.
-> + *
-
-Could for example a PQAP AQIC run across an unset matrix_mdev->kvm like
-this, in theory? I don't think it's likely to happen in the wild though.
-Why not set it up before setting the mask?
-
-> + * Note: The matrix_dev->lock must be taken prior to calling
-> + * this function; however, the lock will be temporarily released to avoid a
-> + * potential circular lock dependency with other asynchronous processes that
-> + * lock the kvm->lock mutex which is also needed to supply the guest's AP
-> + * configuration.
->   *
->   * Return 0 if no other mediated matrix device has a reference to @kvm;
->   * otherwise, returns an -EPERM.
-> @@ -1043,9 +1056,17 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
->  			return -EPERM;
->  	}
->  
-> -	matrix_mdev->kvm = kvm;
-> -	kvm_get_kvm(kvm);
-> -	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
-> +	if (kvm->arch.crypto.crycbd) {
-> +		kvm_get_kvm(kvm);
-> +		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
-> +		mutex_unlock(&matrix_dev->lock);
-> +		kvm_arch_crypto_set_masks(kvm,
-> +					  matrix_mdev->matrix.apm,
-> +					  matrix_mdev->matrix.aqm,
-> +					  matrix_mdev->matrix.adm);
-> +		mutex_lock(&matrix_dev->lock);
-> +		matrix_mdev->kvm = kvm;
-> +	}
->  
->  	return 0;
->  }
-> @@ -1079,51 +1100,80 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
->  	return NOTIFY_DONE;
->  }
->  
-> +/**
-> + * vfio_ap_mdev_unset_kvm
-> + *
-> + * @matrix_mdev: a matrix mediated device
-> + *
-> + * Performs clean-up of resources no longer needed by @matrix_mdev.
-> + *
-> + * Note: The matrix_dev->lock must be taken prior to calling this
-> + * function; however,  the lock will be temporarily released to avoid a
-> + * potential circular lock dependency with other asynchronous processes that
-> + * lock the kvm->lock mutex which is also needed to update the guest's AP
-> + * configuration as follows:
-> + *	1.  Grab a reference to the KVM pointer stored in @matrix_mdev.
-> + *	2.  Set the KVM pointer in @matrix_mdev to NULL so no other asynchronous
-> + *	    process uses it (e.g., assign_adapter store function) after
-> + *	    unlocking the matrix_dev->lock mutex.
-> + *	3.  Set the PQAP hook to NULL so it will not be invoked after unlocking
-> + *	    the matrix_dev->lock mutex.
-> + *	4.  Unlock the matrix_dev->lock mutex to avoid circular lock
-> + *	    dependencies.
-> + *	5.  Clear the masks in the guest's APCB to remove guest access to AP
-> + *	    resources assigned to @matrix_mdev.
-> + *	6.  Lock the matrix_dev->lock mutex to prevent access to resources
-> + *	    assigned to @matrix_mdev while the remainder of the cleanup
-> + *	    operations take place.
-> + *	7.  Decrement the reference counter incremented in #1.
-> + *	8.  Set the reference to the KVM pointer grabbed in #1 into @matrix_mdev
-> + *	    (set to NULL in #2) because it will be needed when the queues are
-> + *	    reset to clean up any IRQ resources being held.
-> + *	9.  Decrement the reference count that was incremented when the KVM
-> + *	    pointer was originally set by the group notifier.
-> + *	10. Set the KVM pointer @matrix_mdev to NULL to prevent its usage from
-> + *	    here on out.
-> + *
-> + */
->  static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
->  {
-> -	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> -	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> -	vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-> -	kvm_put_kvm(matrix_mdev->kvm);
-> -	matrix_mdev->kvm = NULL;
-> +	struct kvm *kvm;
-> +
-> +	if (matrix_mdev->kvm) {
-> +		kvm = matrix_mdev->kvm;
-> +		kvm_get_kvm(kvm);
-> +		matrix_mdev->kvm = NULL;
-
-I think if there were two threads dong the unset in parallel, one
-of them could bail out and carry on before the cleanup is done. But
-since nothing much happens in release after that, I don't see an
-immediate problem.
-
-Another thing to consider is, that setting ->kvm to NULL arms
-vfio_ap_mdev_remove()...
-
-> +		kvm->arch.crypto.pqap_hook = NULL;
-> +		mutex_unlock(&matrix_dev->lock);
-> +		kvm_arch_crypto_clear_masks(kvm);
-> +		mutex_lock(&matrix_dev->lock);
-> +		kvm_put_kvm(kvm);
-> +		matrix_mdev->kvm = kvm;
-> +		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-> +		kvm_put_kvm(matrix_mdev->kvm);
-> +		matrix_mdev->kvm = NULL;
-> +	}
->  }
->  
->  static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->  				       unsigned long action, void *data)
->  {
-> -	int ret, notify_rc = NOTIFY_OK;
-> +	int notify_rc = NOTIFY_OK;
->  	struct ap_matrix_mdev *matrix_mdev;
->  
->  	if (action != VFIO_GROUP_NOTIFY_SET_KVM)
->  		return NOTIFY_OK;
->  
-> -	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
->  	mutex_lock(&matrix_dev->lock);
-> +	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
->  
-> -	if (!data) {
-> -		if (matrix_mdev->kvm)
-> -			vfio_ap_mdev_unset_kvm(matrix_mdev);
-> -		goto notify_done;
-> -	}
-> -
-> -	ret = vfio_ap_mdev_set_kvm(matrix_mdev, data);
-> -	if (ret) {
-> -		notify_rc = NOTIFY_DONE;
-> -		goto notify_done;
-> -	}
-> -
-> -	/* If there is no CRYCB pointer, then we can't copy the masks */
-> -	if (!matrix_mdev->kvm->arch.crypto.crycbd) {
-> +	if (!data)
-> +		vfio_ap_mdev_unset_kvm(matrix_mdev);
-> +	else if (vfio_ap_mdev_set_kvm(matrix_mdev, data))
->  		notify_rc = NOTIFY_DONE;
-> -		goto notify_done;
-> -	}
-> -
-> -	kvm_arch_crypto_set_masks(matrix_mdev->kvm, matrix_mdev->matrix.apm,
-> -				  matrix_mdev->matrix.aqm,
-> -				  matrix_mdev->matrix.adm);
->  
-> -notify_done:
->  	mutex_unlock(&matrix_dev->lock);
-> +
->  	return notify_rc;
->  }
->  
-> @@ -1258,8 +1308,7 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->  
->  	mutex_lock(&matrix_dev->lock);
-> -	if (matrix_mdev->kvm)
-> -		vfio_ap_mdev_unset_kvm(matrix_mdev);
-> +	vfio_ap_mdev_unset_kvm(matrix_mdev);
->  	mutex_unlock(&matrix_dev->lock);
->  
->  	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
+>
 
