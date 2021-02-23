@@ -2,115 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567F93226E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC15B3226EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 09:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232170AbhBWIIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 03:08:14 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:46385 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbhBWIHC (ORCPT
+        id S232171AbhBWIKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 03:10:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45306 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232190AbhBWII5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:07:02 -0500
-Received: by mail-il1-f198.google.com with SMTP id j5so9718318ila.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 00:06:47 -0800 (PST)
+        Tue, 23 Feb 2021 03:08:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614067651;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QJQaZPz8BU5jNxqGBbzYmwqQYEQoV6UYoqOet8cn2TE=;
+        b=cvViqWf7niinqURt6B8EqjmluOQvEAGs622tq+ovfnB5rO/8KX+ozIh/jtJXkPI4GOUR0S
+        V24Aghaw5BA6+Cy9Ge3B6lpKXVwMcyMDz4dwvT4TMjJ0fyHpdUwKCO9aqzz68jFgsCeQze
+        gPwYgctm+U2bsA9/i7qC7C6aWDf9bXk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-69-JqqCyiTPNyCRz58xa_dN8A-1; Tue, 23 Feb 2021 03:06:59 -0500
+X-MC-Unique: JqqCyiTPNyCRz58xa_dN8A-1
+Received: by mail-wr1-f69.google.com with SMTP id j12so1428008wrt.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 00:06:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=rxBR84xC/Grx3NTiVuFqSuYOWTtyniQJeb3oKST6QEU=;
-        b=IeT+6IWQ0Cwyq9y8fQEVogAFITxq4H3yy0rVenI24n0D6f7wOsh/Nnussv9b9w0CPp
-         TLdgHbg8btGnjY/1r9Gwm8i3tCEs056Ivd2p7K4PXefj6uYmTNI9CMWiEo8hF/FX5ss1
-         abN+19cA/9stVpkTvdtMjTwQk6Y3M3M+IW4L5GNf3NQhHtX3Q/Q12omFxNwQ5208s0QL
-         JatYcl0F6v2EtsrmGqQeERCSezS0GKWIB3elEAx/61rf1C860WDDOXRZiGMG0Pu0821H
-         iMtqjXD8mu7aJxYOo7ymZCSlN9YEfAfWNaL256VAftLjG/TqQuxUO7m9xU8g4xdRMtF1
-         /p6g==
-X-Gm-Message-State: AOAM533dFDXe1rxCJV3gq93NwTDbm+6Y5wnaRGaedGOBuOENPKjZ0QMj
-        nylcGVb/WY8kgRzPVJc6g49SXLsy/yIGAcPmwjQGcwewbLdq
-X-Google-Smtp-Source: ABdhPJyKdWEzRtf8vcujXc4zjsSrPkGUbJLDL738yZkU3rXcRz8RM+y0rKlXZ3n+cY0Ig63Esd1vHcK1Fze6JVcFNmBAr6h3ABfG
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QJQaZPz8BU5jNxqGBbzYmwqQYEQoV6UYoqOet8cn2TE=;
+        b=t+5OuuSnl2NFNkShM1qo2YfMosJlMDaTpYDaSVLh8AAnUGoDf8RHQHd+33UEAzEy+P
+         llyjkTHamQQokgLH/w39kcxTdPPqZSitFR5yZN8JGoUKJVShgFm59hoRpKs/cYFovK06
+         35QbjtXXaGDQg1Hb9WygrHbWZTBdOdAC17fbr4GxC3zmv3WTiVx+epmy8EXZ0ZB+vXVM
+         OxpnT6Fo6kd9FQ8IlEdhiCo+N1fDWQPuyp8jKorrBhfy9mmHhG+Ij0pzFIAiG46mhDCs
+         4qY+uyTqNlHMVsQbbzZwo2cj2IhNMq5ONMi8fiE11oNjhNTznaumKsn+fpxeuk30FwL3
+         ykdA==
+X-Gm-Message-State: AOAM533U93oxat5PUx+usuNRmOOJyr9ftpsDzZbv4oBc5wUV609fFn4D
+        pT1tZyz1ImB5PjRfX89cGmvIpsQFu+DRhzPtlWvLiCOOHZ/x4iH8HOpeTaClfjLXNPOFEHq1HX5
+        mWzOo+hV2SgI5+EnULmlJjs1B
+X-Received: by 2002:a05:6000:2aa:: with SMTP id l10mr25427489wry.368.1614067618437;
+        Tue, 23 Feb 2021 00:06:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxMIH1kwz2CQY7I9V1/kNJmJOFjB038suRPfBB8YuLFHXVn1XserOYC9TniXTjzHgbqy7vqMQ==
+X-Received: by 2002:a05:6000:2aa:: with SMTP id l10mr25427472wry.368.1614067618257;
+        Tue, 23 Feb 2021 00:06:58 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id v188sm302614wme.1.2021.02.23.00.06.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 00:06:57 -0800 (PST)
+Date:   Tue, 23 Feb 2021 09:06:55 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH 5.10 03/29] vdpa_sim: store parsed MAC address in a buffer
+Message-ID: <20210223080655.ps7ujvgvs6wtlszf@steredhat>
+References: <20210222121019.444399883@linuxfoundation.org>
+ <20210222121020.153222666@linuxfoundation.org>
+ <20210222195414.GA24405@amd>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9689:: with SMTP id m9mr18586440ion.165.1614067581845;
- Tue, 23 Feb 2021 00:06:21 -0800 (PST)
-Date:   Tue, 23 Feb 2021 00:06:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dc095b05bbfc6421@google.com>
-Subject: WARNING in hid_alloc_report_buf
-From:   syzbot <syzbot+ab02336a647181a886a6@syzkaller.appspotmail.com>
-To:     benjamin.tissoires@redhat.com, jikos@kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210222195414.GA24405@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Feb 22, 2021 at 08:54:15PM +0100, Pavel Machek wrote:
+>Hi!
+>
+>> From: Stefano Garzarella <sgarzare@redhat.com>
+>>
+>> commit cf1a3b35382c10ce315c32bd2b3d7789897fbe13 upstream.
+>>
+>> As preparation for the next patches, we store the MAC address,
+>> parsed during the vdpasim_create(), in a buffer that will be used
+>> to fill 'config' together with other configurations.
+>
+>I'm not sure why this series is in stable. It is not documented to fix
+>anything bad.
+>
+>> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>> @@ -42,6 +42,8 @@ static char *macaddr;
+>>  module_param(macaddr, charp, 0);
+>>  MODULE_PARM_DESC(macaddr, "Ethernet MAC address");
+>>
+>> +u8 macaddr_buf[ETH_ALEN];
+>> +
+>
+>Should this be static?
 
-syzbot found the following issue on:
+Yes, there is already a patch [1] queued by Michael but not yet 
+upstream. When it will be merged upstream I will make sure it will be 
+backported.
 
-HEAD commit:    f40ddce8 Linux 5.11
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12c5a17f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4b919ebed7b4902
-dashboard link: https://syzkaller.appspot.com/bug?extid=ab02336a647181a886a6
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138bde22d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b82c12d00000
+Thanks,
+Stefano
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ab02336a647181a886a6@syzkaller.appspotmail.com
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git/commit/?h=linux-next&id=8c0bea4adac9f1f9ac827210fa8862be4bde6290
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8428 at mm/page_alloc.c:4979 __alloc_pages_nodemask+0x44e/0x500 mm/page_alloc.c:5023
-Modules linked in:
-CPU: 1 PID: 8428 Comm: syz-executor094 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x44e/0x500 mm/page_alloc.c:5023
-Code: 00 48 ba 00 00 00 00 00 fc ff df e9 fb fd ff ff 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 06 fe ff ff e8 c7 53 09 00 e9 fc fd ff ff <0f> 0b e9 15 fe ff ff 44 89 ed a9 00 00 08 00 75 11 81 e5 7f ff ff
-RSP: 0018:ffffc90001ad7c40 EFLAGS: 00010046
-RAX: ffffc90001ad7c48 RBX: ffffc90001ad7c74 RCX: 0000000000000000
-RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90001ad7c70
-RBP: 0000000000000000 R08: dffffc0000000000 R09: ffffc90001ad7c48
-R10: fffff5200035af8e R11: 0000000000000000 R12: 0000000020000007
-R13: 0000000000040a20 R14: 1ffff9200035af8e R15: 0000000000000012
-FS:  0000000001255300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005573bf3240c0 CR3: 0000000013416000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x40/0x130 mm/slab_common.c:837
- kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
- kmalloc_large include/linux/slab.h:481 [inline]
- __kmalloc+0x257/0x330 mm/slub.c:3974
- kmalloc include/linux/slab.h:557 [inline]
- hid_alloc_report_buf+0x70/0xa0 drivers/hid/hid-core.c:1648
- __usbhid_submit_report drivers/hid/usbhid/hid-core.c:590 [inline]
- usbhid_submit_report+0x3c6/0xa10 drivers/hid/usbhid/hid-core.c:640
- hid_hw_request include/linux/hid.h:1072 [inline]
- hiddev_ioctl+0x196c/0x2780 drivers/hid/usbhid/hiddev.c:726
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x444659
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 21 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff05ace6d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 0000000000444659
-RDX: 0000000020000080 RSI: 00000000400c4808 RDI: 0000000000000004
-RBP: 0000000000403ee0 R08: 0000000000000001 R09: 00000000004004a0
-R10: 000000000000001f R11: 0000000000000246 R12: 0000000000403f70
-R13: 0000000000000000 R14: 00000000004b2018 R15: 00000000004004a0
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
