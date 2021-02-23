@@ -2,568 +2,366 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9151132336F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F05323370
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 22:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbhBWVr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 16:47:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232464AbhBWVrF (ORCPT
+        id S233247AbhBWVs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 16:48:28 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:37322 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232906AbhBWVry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 16:47:05 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18D5C0617AB
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 13:45:48 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id u11so10659761plg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 13:45:48 -0800 (PST)
+        Tue, 23 Feb 2021 16:47:54 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11NLOf2I145609;
+        Tue, 23 Feb 2021 21:46:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=kRoOVAcOR+wj24IwgdyjdUiR+j+iwKnBzYAsNV/Obzc=;
+ b=0bHCUqm5JJuQXY9PcJZ4mOPZOm8LS7lUcCGw+hpuPgLYsx9Y7DS5Fwmj1UxA0SaxzZfZ
+ 10ORBqVm5Q9qvDpEzCJtuql5fKwhLXrZh6hL3xU5FipG3YNjGUKHkt+cFSejHVi3lsC5
+ /xo62gkKWYnCCt5dzh6B1btI6xQGdx90fnAVhMox0X2MwTVzblTCtJwWFRj/BPmg04Cj
+ 2+md7dDMnZXFsjricGIGE66+Z2As65blHSuv4+Iz/XMWe2yhya83k8FhaoNJs6Gl5/l2
+ mC3fbZkkKoJB9dArW/SnenzHVq/rieLowQgQmLwKOR+D6L2YYtS/cpwDG8IHg65CQr9v dg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 36ugq3ftv5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Feb 2021 21:46:37 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11NLkQCe191617;
+        Tue, 23 Feb 2021 21:46:36 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
+        by aserp3030.oracle.com with ESMTP id 36v9m55fvy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Feb 2021 21:46:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ji9kgzhwHcqEr/+Kp5l/wuACZTJAkWa4d6pl8Q9MeN/MOwPBirXGsgOk8HbOPUEmUj2Y3rSKKbLMjR+E4vp6BXTCiWGn4TDYFY0A92qY4F+Gb70Zk9njM3pMdQ19EJaOPVpVW3jLkw5LOE1GtMQM2d9ffdMChYHFCn/0uhFyE6yxGGShRMiIfAG8O2ONdZKamBLBkIVKsCIcLZfxdfiNTyt6OzlWXQa++5Ajktse0JOUwqCyH4o2ucOV+bEJWOjkzlBCxiU8vmGLPNyaD3M7WGrj8utap2Qlvu3ZgDeq8Q8coBRe/jPculPTCgqTrN9h6OHjsh0+83dPhMMYUeVXVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kRoOVAcOR+wj24IwgdyjdUiR+j+iwKnBzYAsNV/Obzc=;
+ b=U0ahULKsgHG2bz7IwuqHIc3NUKl3vRfXXqq4LK25dP2YeO3gG/kh2GJ64GycFnnwXnaqhGMuw/8pIDXqPQsvy07XoJy0Jr8ah3wMHmudi8BwwPzGw5e/GQyar27/1fyaXmYy+y3Qy+36f9fDAmU6iWAsXhFEh5aHn/Lx5zbuwRKA7ImZOBids1i6Rt/fXBc1WMPw7z5t0/hYnVz4HPREetW++hR7h6NJmYbERskN1276vVygm/TfqhHVFVPD1Asj1b1k4LUodep7JLF3Qa5RCWgBLMw+ol2jjDxmpY0OSndIYaNQaDtcHjGkX9Vqp8B58ODvo8Qat3DfeDv1I+hVIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bQ82+4Wlyq0DnXwmZdyFqiZHcz3GXFSdD4dVY14TJHw=;
-        b=mxw6A/EXyvW/djy8xMHHCGfgykW6egYLebpF+cywRSNzN9MxAMDtiUKKUbdP3uf9yK
-         Qow7e/nppWyTe0CMIiAnpsRu72u7jSsaI0Ba+07/d7gn0MVdtRGUOLGXx5fbTF3dJqA0
-         Yqp7eM48ZRkEOWDTKCYUTGp59YzIlvMIGLmfs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bQ82+4Wlyq0DnXwmZdyFqiZHcz3GXFSdD4dVY14TJHw=;
-        b=i7b86xCLtU0JEhiy8H02RRPNy3oYAdfD5PletAb42mTh2087a0IqeZJyUpnUwPDtYY
-         yxVEMJyUpJ/mVBvtaTjISamyHa4+jgvDQP9UT3EnrjVg+4HgO0wFNnxaL0Zr3RJq4iZL
-         YLn9xIRBoF90md/qGjMAGUmKULW5yGOpLcXZPdnNUkT0ya4WL4CO2j43nzP69iPnIJ0o
-         F8ZF2u3AvjgmkZqXeFSbPR1DpA7wH4YIfS7MQr90IC3kxo6UvzIvH3pE7K6bHadv7v+b
-         LDa3tXNyKINn85xX4mmziKc06XU55qBalaFOD4FosFnFwz2Wm0gmXZAoLHNfItwvi6rx
-         Dxrg==
-X-Gm-Message-State: AOAM531OcV5Y5PUM411rnbkdepBtmsUz8wSW5QBo7DSt75TAQG1x3Aaq
-        nMxJLechyCo54K8hSaTGh9wtpA==
-X-Google-Smtp-Source: ABdhPJwH/vZYxpmUX0wFXzI8odTIUydTmfuBNr0O1IX+Ecaj2dfweQ2toW/8srxEtSazl5DKLXqY0Q==
-X-Received: by 2002:a17:90a:4cc6:: with SMTP id k64mr823487pjh.162.1614116748161;
-        Tue, 23 Feb 2021 13:45:48 -0800 (PST)
-Received: from smtp.gmail.com ([2620:15c:202:201:68e6:d68b:3887:f216])
-        by smtp.gmail.com with ESMTPSA id r68sm137951pfc.49.2021.02.23.13.45.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 13:45:47 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Elliot Berman <eberman@codeaurora.org>,
-        Brian Masney <masneyb@onstation.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH 6/6] firmware: qcom_scm: Only compile legacy calls on ARM
-Date:   Tue, 23 Feb 2021 13:45:39 -0800
-Message-Id: <20210223214539.1336155-7-swboyd@chromium.org>
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-In-Reply-To: <20210223214539.1336155-1-swboyd@chromium.org>
-References: <20210223214539.1336155-1-swboyd@chromium.org>
-MIME-Version: 1.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kRoOVAcOR+wj24IwgdyjdUiR+j+iwKnBzYAsNV/Obzc=;
+ b=Z1jAYISuDdxmSZYiXkSPUEKruUHmooZlyoZoQBMES3jFZ6TTBmRxT/E9TvlUlE9OClfUVJRNDsaXfjNwUnG03vXsI0Kz/1AJ5t0ol9pu2OowNnGIG0cLfMumPKDC7323UuYokFbD3yn/oTFtVC2an3LbAnqOW6P45ou3TBMwhLA=
+Received: from DM6PR10MB3851.namprd10.prod.outlook.com (2603:10b6:5:1fb::17)
+ by DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Tue, 23 Feb
+ 2021 21:46:34 +0000
+Received: from DM6PR10MB3851.namprd10.prod.outlook.com
+ ([fe80::5c53:869:7452:46da]) by DM6PR10MB3851.namprd10.prod.outlook.com
+ ([fe80::5c53:869:7452:46da%3]) with mapi id 15.20.3868.033; Tue, 23 Feb 2021
+ 21:46:34 +0000
+Subject: Re: [PATCH] mm, kasan: don't poison boot memory
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Konrad Rzeszutek Wilk <konrad@darnok.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dhaval Giani <dhaval.giani@oracle.com>
+References: <56c97056-6d8b-db0e-e303-421ee625abe3@redhat.com>
+ <cb8564e8-3535-826b-2d42-b273a0d793fb@oracle.com>
+ <20210222215502.GB1741768@linux.ibm.com>
+ <9773282a-2854-25a4-9faa-9da5dd34e371@oracle.com>
+ <20210223103321.GD1741768@linux.ibm.com>
+ <3ef9892f-d657-207f-d4cf-111f98dcb55c@oracle.com>
+ <20210223154758.GF1741768@linux.ibm.com>
+ <3a56ba38-ce91-63a6-b57c-f1726aa1b76e@oracle.com>
+ <20210223200914.GH1741768@linux.ibm.com>
+ <af06267d-00cd-d4e0-1985-b06ce7c993a3@oracle.com>
+ <20210223213237.GI1741768@linux.ibm.com>
+From:   George Kennedy <george.kennedy@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <450a9895-a2b4-d11b-97ca-1bd33d5308d4@oracle.com>
+Date:   Tue, 23 Feb 2021 16:46:28 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+In-Reply-To: <20210223213237.GI1741768@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [108.20.187.119]
+X-ClientProxiedBy: BYAPR08CA0040.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::17) To DM6PR10MB3851.namprd10.prod.outlook.com
+ (2603:10b6:5:1fb::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.246] (108.20.187.119) by BYAPR08CA0040.namprd08.prod.outlook.com (2603:10b6:a03:117::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Tue, 23 Feb 2021 21:46:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: abd3e2a0-319e-4d67-f64d-08d8d8447d0a
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR10MB43130AE76838F6FF303540C5E6809@DM6PR10MB4313.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /FwedqmYKr1bP2/TkEiUMFTm72cZAlGsq6bJ/NFnT1Tze0CN48Si9d2wUG4nPf0JXbAbVN0lDqkOOnLXGz9ZMd32jNO4luXvuNs1Bl0E/NuvphLy6sTVJ/KHEo17wS5S/IGcOV/v128ytw926+ziVGewdzTCVLRNlqITxJNemD4X04LRz7WqxiJq9OAH1MmSK5SILX1wPCh/WlqrRuF4z39NImUTh7PzS/UGrG1I04rQuULW46FIEFxBEDM6r4b+gB85zVFzr+4xxWPQb9z3438u12i30T+gL/kt+LGydyH1PsAb3BBbS82xx5ft7CogHYc4BHETn+jiNFJmXdYn4d9If//poRcPKH4NMGukqyvRoA5x467bgcfgKMbLh9aDMTuUwEFuB/ds3cQfiKDaXSqU4Rf3KZr+lfAAA86LixB1kq8GbFpfeby5x4A8ZIgdfSkU69Il9LSJ4TEUkBorFkyfXEP5wumzwOrZI+CmBUztlI8Uk6Gq5AnoqPIy7mn0pJDTKJ/7y88IHXYf2sYHjJqoiDpWOp87NM0tfv+j6Mo8OiWFFBXjfDV11ZZeEjCH+OBHW/iGhOySeMBSZs/X8LeZXoNtVCKJA60DbLDS8sU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3851.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(366004)(346002)(376002)(39860400002)(6486002)(86362001)(5660300002)(31696002)(44832011)(66946007)(36756003)(186003)(66556008)(16526019)(53546011)(66476007)(54906003)(83380400001)(107886003)(956004)(4326008)(31686004)(8676002)(2616005)(45080400002)(6916009)(26005)(36916002)(316002)(478600001)(16576012)(8936002)(2906002)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bVlibUkyK0xrbGNGOExveDhvT1JVeUFzSW1HbldxTnRKYmhjVlBHa1VNNHI5?=
+ =?utf-8?B?dnNLTmVmYlB6NmMycjJkRnZySEVLTU4vZ0ViaVFzQ2hZNTlXbENvSHVVQW5F?=
+ =?utf-8?B?T05acnRpZTMzZkJYMzhqd2I0RGFMU1lwN1BrR0lnUVVUUWFPR3dPaWw1ODVp?=
+ =?utf-8?B?WGh4RDBzR1Bla2IyL3lCY3VVWlpPYlRyWWNacitzZ3hRZ0dVK3gzVTlOYjh5?=
+ =?utf-8?B?WGRMY2ZMUUtLTDFTd2FpcllCekxjM2ZIbm42T2hBMy96YzE4cEttQ0lUWTdN?=
+ =?utf-8?B?UmdiYkZVSnZvRE9rUVAzRWlPcGRONjFIdGJVdmVRbzdJbFZFc0dWWFpUa2Vh?=
+ =?utf-8?B?MDZIdHRBdG8vWmg4T0JCYlFlc1FMS3VaSWFXV3R0S3dBRFpWQ3FqUE5iejVh?=
+ =?utf-8?B?MFM5Zy9MM3M3UktBby9JLy9UT3dPSGkyYUtKQk8yb1Z5c1BJQ1NjNTFPZC9W?=
+ =?utf-8?B?QlZBRy95Q0dwL2JyRWlkR0ZEMlRoRjRhWjY4eTRUWUtzaUQzNks5VU5vME1G?=
+ =?utf-8?B?OEEzZVEyRHYvQTZKMjJNOExSWG5ZTmdkYTltSTF4aW4xcmM4alJyRi9rV0pD?=
+ =?utf-8?B?QTNoR3VEMWp1N01uMWVaVFpyZENCNFduR2VaRzdTU3ZtTHNkalQ4eTMvRWFp?=
+ =?utf-8?B?RVZuSURLOVBjUFA5VE1IcmR5Zllxd1dGMWh0UUltcjQrWnhrUEN0WlU3QkU3?=
+ =?utf-8?B?UW96TGlKdENmWHB0K2RUY3A3RGY2cXZ1c25SaHN3b09ua1lIZFBZZ3pxQ1VF?=
+ =?utf-8?B?MytWb1Q2REdyZmJDa1J2MTdRYmRsQjRJQ1l1YlhNL25IazN6UXhTU2VDdWhL?=
+ =?utf-8?B?UGxPYVNOY0NjOXRTdHRpZDE5Sk1qeGViSUd3VTNDWmtUakJmSGRXdU15WnFS?=
+ =?utf-8?B?VTc2T2JGY3doclV1bVhTakV4NUs5cFZpeXpXVzAySmc3dUVYN24wYTBsVmM5?=
+ =?utf-8?B?UVVHTkJpMzV3TE5OZVlhN2dPRnVId0NQSDhOcHNqK1BvMzhNdkdBV2N5ajRI?=
+ =?utf-8?B?WHMwYlI2NUh5M2JqYlBGZDU0QTNINVNCRUtXNHB4N2x4TDVWUFhYVUNIOXlS?=
+ =?utf-8?B?Z0ZFdjNaMUZTbDZyTENvem5lbmxwdEIyNWxmVVdHNER5cFVDN2NTRDJJTlhv?=
+ =?utf-8?B?MHhmaWZGSytrYVRmbmgrM2NXd21tY3JyOXQ1eC9nNVRBWmVET1ZhTXFuUnJZ?=
+ =?utf-8?B?d05PMEpSRzljaHhIYlJxdGtvdnNqa0NDVnhuMFpnRnFJSnJJejZUd0R3THFH?=
+ =?utf-8?B?cUxISXFoRjR6VkVZcnNCQmFuTmlES0dYZURoekppKzFFbFRqUVZrQ2lFeWVo?=
+ =?utf-8?B?QlhtdHN5c25GSUhYRm5RU3FjYjBDMzNuL2ZlaVVqcmZaaXRWZWZaclh1ekdr?=
+ =?utf-8?B?U0VnRXQyOVRHTzRkY0JJTDlYRk81eVVueDRBWVM0Um8xYU1sVG9rNm95VzFr?=
+ =?utf-8?B?bjAzckx4U2p3OEtWMU1SRHl3a3JualJhdW0zMmN4ekpja3lVcndhVjdhSmx3?=
+ =?utf-8?B?NGs3L0VCMWdCd1dDUmNwWjB6ZVlZQWJVL2l3NEt3THJDMFZQa1JQc3FrTThz?=
+ =?utf-8?B?S2VUUHpDZ2g3d0MvdWkxSFhhMk1tNEtndEdCVkdtWGRZK2FiZlN2ZndCcis2?=
+ =?utf-8?B?WWFMYWN2bkgvTTM3YUp5NHU0NThvWTRLMEwwYjgzRTNhcy9KVlQyTlp5SHFP?=
+ =?utf-8?B?K2VWWG5HRVI1Vjh3Tm5DZWVjQlBLUzAzaWxGNkpFb0lqakR3T0ZxNmMzenVD?=
+ =?utf-8?Q?9XiN2NxxScpi47Hc5RsBCHosc9sUmKjXWD/3Wqc?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: abd3e2a0-319e-4d67-f64d-08d8d8447d0a
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3851.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2021 21:46:34.2899
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WnmA8ae+yXcwUtixHSPtxtVWjUfygfZhWx31OD7PY2kOSwxEs/ZMX3nXaxC56d+7Ilys23XHF/lB8IZIudKAjX0LcsQtGgjckjfCqf+sdv0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB4313
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
+ suspectscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102230182
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ malwarescore=0 spamscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
+ clxscore=1015 impostorscore=0 lowpriorityscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102230181
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These scm calls are never used outside of legacy ARMv7 based platforms.
-That's because PSCI, mandated on arm64, implements them for modern SoCs
-via the PSCI spec. Let's move them to the legacy file and only compile
-the legacy file into the kernel when CONFIG_ARM=y. Otherwise provide
-stubs and fail the calls. This saves a little bit of space in an
-arm64 allmodconfig.
 
- $ ./scripts/bloat-o-meter vmlinux.before vmlinux.after
- add/remove: 0/8 grow/shrink: 5/7 up/down: 509/-4405 (-3896)
- Function                                     old     new   delta
- __qcom_scm_set_dload_mode.constprop          312     452    +140
- qcom_scm_qsmmu500_wait_safe_toggle           288     416    +128
- qcom_scm_io_writel                           288     408    +120
- qcom_scm_io_readl                            376     492    +116
- __param_str_download_mode                     23      28      +5
- __warned                                    4327    4326      -1
- qcom_iommu_init                              272     268      -4
- e843419@0b3f_00010432_324                      8       -      -8
- qcom_scm_call                                228     208     -20
- CSWTCH                                      5925    5877     -48
- _sub_I_65535_1                            163100  163040     -60
- _sub_D_65535_0                            163100  163040     -60
- qcom_scm_wb                                   64       -     -64
- qcom_scm_lock                                320     160    -160
- qcom_scm_call_atomic                         212       -    -212
- qcom_scm_cpu_power_down                      308       -    -308
- scm_legacy_call_atomic                       520       -    -520
- qcom_scm_set_warm_boot_addr                  720       -    -720
- qcom_scm_set_cold_boot_addr                  728       -    -728
- scm_legacy_call                             1492       -   -1492
- Total: Before=66737642, After=66733746, chg -0.01%
 
-Commit 9a434cee773a ("firmware: qcom_scm: Dynamically support SMCCC and
-legacy conventions") didn't mention any motivating factors for keeping
-the legacy code around on arm64 kernels, i.e. presumably that commit
-wasn't trying to support these legacy APIs on arm64 kernels.
+On 2/23/2021 4:32 PM, Mike Rapoport wrote:
+> diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+> index 7bdc0239a943..c118dd54a747 100644
+> --- a/arch/x86/kernel/acpi/boot.c
+> +++ b/arch/x86/kernel/acpi/boot.c
+> @@ -1551,6 +1551,7 @@ void __init acpi_boot_table_init(void)
+>   	if (acpi_disabled)
+>   		return;
+>   
+> +#if 0
+>   	/*
+>   	 * Initialize the ACPI boot-time table parser.
+>   	 */
+> @@ -1558,6 +1559,7 @@ void __init acpi_boot_table_init(void)
+>   		disable_acpi();
+>   		return;
+>   	}
+> +#endif
+>   
+>   	acpi_table_parse(ACPI_SIG_BOOT, acpi_parse_sbf);
+>   
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index d883176ef2ce..c8a07a7b9577 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -1032,6 +1032,14 @@ void __init setup_arch(char **cmdline_p)
+>   	 */
+>   	find_smp_config();
+>   
+> +	/*
+> +	 * Initialize the ACPI boot-time table parser.
+> +	 */
+> +	if (acpi_table_init()) {
+> +		disable_acpi();
+> +		return;
+> +	}
+> +
+>   	reserve_ibft_region();
+>   
+>   	early_alloc_pgt_buf();
+> diff --git a/drivers/firmware/iscsi_ibft_find.c b/drivers/firmware/iscsi_ibft_find.c
+> index 64bb94523281..1be7481d5c69 100644
+> --- a/drivers/firmware/iscsi_ibft_find.c
+> +++ b/drivers/firmware/iscsi_ibft_find.c
+> @@ -80,6 +80,27 @@ static int __init find_ibft_in_mem(void)
+>   done:
+>   	return len;
+>   }
+> +
+> +static void __init acpi_find_ibft_region(unsigned long *sizep)
+> +{
+> +	int i;
+> +	struct acpi_table_header *table = NULL;
+> +	acpi_status status;
+> +
+> +	if (acpi_disabled)
+> +		return;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(ibft_signs) && !ibft_addr; i++) {
+> +		status = acpi_get_table(ibft_signs[i].sign, 0, &table);
+> +		if (ACPI_SUCCESS(status)) {
+> +			ibft_addr = (struct acpi_table_ibft *)table;
+> +			*sizep = PAGE_ALIGN(ibft_addr->header.length);
+> +			acpi_put_table(table);
+> +			break;
+> +		}
+> +	}
+> +}
+> +
+>   /*
+>    * Routine used to find the iSCSI Boot Format Table. The logical
+>    * kernel address is set in the ibft_addr global variable.
+> @@ -91,14 +112,16 @@ unsigned long __init find_ibft_region(unsigned long *sizep)
+>   	/* iBFT 1.03 section 1.4.3.1 mandates that UEFI machines will
+>   	 * only use ACPI for this */
+>   
+> -	if (!efi_enabled(EFI_BOOT))
+> +	if (!efi_enabled(EFI_BOOT)) {
+>   		find_ibft_in_mem();
+> -
+> -	if (ibft_addr) {
+>   		*sizep = PAGE_ALIGN(ibft_addr->header.length);
+> -		return (u64)virt_to_phys(ibft_addr);
+> +	} else {
+> +		acpi_find_ibft_region(sizep);
+>   	}
+>   
+> +	if (ibft_addr)
+> +		return (u64)virt_to_phys(ibft_addr);
+> +
+>   	*sizep = 0;
+>   	return 0;
+>   }
+>   
+Mike,
 
-Cc: Elliot Berman <eberman@codeaurora.org>
-Cc: Brian Masney <masneyb@onstation.org>
-Cc: Stephan Gerhold <stephan@gerhold.net>
-Cc: Jeffrey Hugo <jhugo@codeaurora.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/firmware/Makefile          |   4 +-
- drivers/firmware/qcom_scm-legacy.c | 133 ++++++++++++++++++++++++++
- drivers/firmware/qcom_scm.c        | 145 +----------------------------
- drivers/firmware/qcom_scm.h        |  33 +++++++
- include/linux/qcom_scm.h           |  21 +++--
- 5 files changed, 183 insertions(+), 153 deletions(-)
+Still no luck.
 
-diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-index 5e013b6a3692..0b7b35555a6c 100644
---- a/drivers/firmware/Makefile
-+++ b/drivers/firmware/Makefile
-@@ -17,7 +17,9 @@ obj-$(CONFIG_ISCSI_IBFT)	+= iscsi_ibft.o
- obj-$(CONFIG_FIRMWARE_MEMMAP)	+= memmap.o
- obj-$(CONFIG_RASPBERRYPI_FIRMWARE) += raspberrypi.o
- obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
--obj-$(CONFIG_QCOM_SCM)		+= qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-+obj-$(CONFIG_QCOM_SCM)		+= qcom_scm_objs.o
-+qcom_scm_objs-$(CONFIG_ARM)	+= qcom_scm-legacy.o
-+qcom_scm_objs-$(CONFIG_QCOM_SCM) += qcom_scm.o qcom_scm-smc.o
- obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
- obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
- obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
-diff --git a/drivers/firmware/qcom_scm-legacy.c b/drivers/firmware/qcom_scm-legacy.c
-index 1829ba220576..d909fa2716bc 100644
---- a/drivers/firmware/qcom_scm-legacy.c
-+++ b/drivers/firmware/qcom_scm-legacy.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2015 Linaro Ltd.
-  */
- 
-+#include <linux/cpumask.h>
- #include <linux/slab.h>
- #include <linux/io.h>
- #include <linux/module.h>
-@@ -240,3 +241,135 @@ int scm_legacy_call_atomic(struct device *unused,
- 
- 	return smc_res.a0;
- }
-+
-+#define QCOM_SCM_FLAG_COLDBOOT_CPU0	0x00
-+#define QCOM_SCM_FLAG_COLDBOOT_CPU1	0x01
-+#define QCOM_SCM_FLAG_COLDBOOT_CPU2	0x08
-+#define QCOM_SCM_FLAG_COLDBOOT_CPU3	0x20
-+
-+#define QCOM_SCM_FLAG_WARMBOOT_CPU0	0x04
-+#define QCOM_SCM_FLAG_WARMBOOT_CPU1	0x02
-+#define QCOM_SCM_FLAG_WARMBOOT_CPU2	0x10
-+#define QCOM_SCM_FLAG_WARMBOOT_CPU3	0x40
-+
-+struct qcom_scm_wb_entry {
-+	int flag;
-+	void *entry;
-+};
-+
-+static struct qcom_scm_wb_entry qcom_scm_wb[] = {
-+	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU0 },
-+	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU1 },
-+	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU2 },
-+	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU3 },
-+};
-+
-+/**
-+ * qcom_scm_set_warm_boot_addr() - Set the warm boot address for cpus
-+ * @entry: Entry point function for the cpus
-+ * @cpus: The cpumask of cpus that will use the entry point
-+ *
-+ * Set the Linux entry point for the SCM to transfer control to when coming
-+ * out of a power down. CPU power down may be executed on cpuidle or hotplug.
-+ */
-+int qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus)
-+{
-+	int ret;
-+	int flags = 0;
-+	int cpu;
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_BOOT,
-+		.cmd = QCOM_SCM_BOOT_SET_ADDR,
-+		.arginfo = QCOM_SCM_ARGS(2),
-+	};
-+
-+	/*
-+	 * Reassign only if we are switching from hotplug entry point
-+	 * to cpuidle entry point or vice versa.
-+	 */
-+	for_each_cpu(cpu, cpus) {
-+		if (entry == qcom_scm_wb[cpu].entry)
-+			continue;
-+		flags |= qcom_scm_wb[cpu].flag;
-+	}
-+
-+	/* No change in entry function */
-+	if (!flags)
-+		return 0;
-+
-+	desc.args[0] = flags;
-+	desc.args[1] = virt_to_phys(entry);
-+
-+	ret = scm_legacy_call(__scm->dev, &desc, NULL);
-+	if (!ret) {
-+		for_each_cpu(cpu, cpus)
-+			qcom_scm_wb[cpu].entry = entry;
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(qcom_scm_set_warm_boot_addr);
-+
-+/**
-+ * qcom_scm_set_cold_boot_addr() - Set the cold boot address for cpus
-+ * @entry: Entry point function for the cpus
-+ * @cpus: The cpumask of cpus that will use the entry point
-+ *
-+ * Set the cold boot address of the cpus. Any cpu outside the supported
-+ * range would be removed from the cpu present mask.
-+ */
-+int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus)
-+{
-+	int flags = 0;
-+	int cpu;
-+	int scm_cb_flags[] = {
-+		QCOM_SCM_FLAG_COLDBOOT_CPU0,
-+		QCOM_SCM_FLAG_COLDBOOT_CPU1,
-+		QCOM_SCM_FLAG_COLDBOOT_CPU2,
-+		QCOM_SCM_FLAG_COLDBOOT_CPU3,
-+	};
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_BOOT,
-+		.cmd = QCOM_SCM_BOOT_SET_ADDR,
-+		.arginfo = QCOM_SCM_ARGS(2),
-+		.owner = ARM_SMCCC_OWNER_SIP,
-+	};
-+
-+	if (!cpus || (cpus && cpumask_empty(cpus)))
-+		return -EINVAL;
-+
-+	for_each_cpu(cpu, cpus) {
-+		if (cpu < ARRAY_SIZE(scm_cb_flags))
-+			flags |= scm_cb_flags[cpu];
-+		else
-+			set_cpu_present(cpu, false);
-+	}
-+
-+	desc.args[0] = flags;
-+	desc.args[1] = virt_to_phys(entry);
-+
-+	return scm_legacy_call_atomic(NULL, &desc, NULL);
-+}
-+EXPORT_SYMBOL(qcom_scm_set_cold_boot_addr);
-+
-+/**
-+ * qcom_scm_cpu_power_down() - Power down the cpu
-+ * @flags - Flags to flush cache
-+ *
-+ * This is an end point to power down cpu. If there was a pending interrupt,
-+ * the control would return from this function, otherwise, the cpu jumps to the
-+ * warm boot entry point set for this cpu upon reset.
-+ */
-+void qcom_scm_cpu_power_down(u32 flags)
-+{
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_BOOT,
-+		.cmd = QCOM_SCM_BOOT_TERMINATE_PC,
-+		.args[0] = flags & QCOM_SCM_FLUSH_FLAG_MASK,
-+		.arginfo = QCOM_SCM_ARGS(1),
-+		.owner = ARM_SMCCC_OWNER_SIP,
-+	};
-+
-+	scm_legacy_call_atomic(NULL, &desc, NULL);
-+}
-+EXPORT_SYMBOL(qcom_scm_cpu_power_down);
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index ee9cb545e73b..29bce83f8a25 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -4,7 +4,6 @@
-  */
- #include <linux/platform_device.h>
- #include <linux/init.h>
--#include <linux/cpumask.h>
- #include <linux/export.h>
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
-@@ -26,16 +25,6 @@ module_param(download_mode, bool, 0);
- #define SCM_HAS_IFACE_CLK	BIT(1)
- #define SCM_HAS_BUS_CLK		BIT(2)
- 
--struct qcom_scm {
--	struct device *dev;
--	struct clk *core_clk;
--	struct clk *iface_clk;
--	struct clk *bus_clk;
--	struct reset_controller_dev reset;
--
--	u64 dload_mode_addr;
--};
--
- struct qcom_scm_current_perm_info {
- 	__le32 vmid;
- 	__le32 perm;
-@@ -49,28 +38,6 @@ struct qcom_scm_mem_map_info {
- 	__le64 mem_size;
- };
- 
--#define QCOM_SCM_FLAG_COLDBOOT_CPU0	0x00
--#define QCOM_SCM_FLAG_COLDBOOT_CPU1	0x01
--#define QCOM_SCM_FLAG_COLDBOOT_CPU2	0x08
--#define QCOM_SCM_FLAG_COLDBOOT_CPU3	0x20
--
--#define QCOM_SCM_FLAG_WARMBOOT_CPU0	0x04
--#define QCOM_SCM_FLAG_WARMBOOT_CPU1	0x02
--#define QCOM_SCM_FLAG_WARMBOOT_CPU2	0x10
--#define QCOM_SCM_FLAG_WARMBOOT_CPU3	0x40
--
--struct qcom_scm_wb_entry {
--	int flag;
--	void *entry;
--};
--
--static struct qcom_scm_wb_entry qcom_scm_wb[] = {
--	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU0 },
--	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU1 },
--	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU2 },
--	{ .flag = QCOM_SCM_FLAG_WARMBOOT_CPU3 },
--};
--
- static const char *qcom_scm_convention_names[] = {
- 	[SMC_CONVENTION_UNKNOWN] = "unknown",
- 	[SMC_CONVENTION_ARM_32] = "smc arm 32",
-@@ -78,7 +45,7 @@ static const char *qcom_scm_convention_names[] = {
- 	[SMC_CONVENTION_LEGACY] = "smc legacy",
- };
- 
--static struct qcom_scm *__scm;
-+struct qcom_scm *__scm;
- 
- static int qcom_scm_clk_enable(void)
- {
-@@ -260,116 +227,6 @@ static bool __qcom_scm_is_call_available(struct device *dev, u32 svc_id,
- 	return ret ? false : !!res.result[0];
- }
- 
--/**
-- * qcom_scm_set_warm_boot_addr() - Set the warm boot address for cpus
-- * @entry: Entry point function for the cpus
-- * @cpus: The cpumask of cpus that will use the entry point
-- *
-- * Set the Linux entry point for the SCM to transfer control to when coming
-- * out of a power down. CPU power down may be executed on cpuidle or hotplug.
-- */
--int qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus)
--{
--	int ret;
--	int flags = 0;
--	int cpu;
--	struct qcom_scm_desc desc = {
--		.svc = QCOM_SCM_SVC_BOOT,
--		.cmd = QCOM_SCM_BOOT_SET_ADDR,
--		.arginfo = QCOM_SCM_ARGS(2),
--	};
--
--	/*
--	 * Reassign only if we are switching from hotplug entry point
--	 * to cpuidle entry point or vice versa.
--	 */
--	for_each_cpu(cpu, cpus) {
--		if (entry == qcom_scm_wb[cpu].entry)
--			continue;
--		flags |= qcom_scm_wb[cpu].flag;
--	}
--
--	/* No change in entry function */
--	if (!flags)
--		return 0;
--
--	desc.args[0] = flags;
--	desc.args[1] = virt_to_phys(entry);
--
--	ret = qcom_scm_call(__scm->dev, &desc, NULL);
--	if (!ret) {
--		for_each_cpu(cpu, cpus)
--			qcom_scm_wb[cpu].entry = entry;
--	}
--
--	return ret;
--}
--EXPORT_SYMBOL(qcom_scm_set_warm_boot_addr);
--
--/**
-- * qcom_scm_set_cold_boot_addr() - Set the cold boot address for cpus
-- * @entry: Entry point function for the cpus
-- * @cpus: The cpumask of cpus that will use the entry point
-- *
-- * Set the cold boot address of the cpus. Any cpu outside the supported
-- * range would be removed from the cpu present mask.
-- */
--int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus)
--{
--	int flags = 0;
--	int cpu;
--	int scm_cb_flags[] = {
--		QCOM_SCM_FLAG_COLDBOOT_CPU0,
--		QCOM_SCM_FLAG_COLDBOOT_CPU1,
--		QCOM_SCM_FLAG_COLDBOOT_CPU2,
--		QCOM_SCM_FLAG_COLDBOOT_CPU3,
--	};
--	struct qcom_scm_desc desc = {
--		.svc = QCOM_SCM_SVC_BOOT,
--		.cmd = QCOM_SCM_BOOT_SET_ADDR,
--		.arginfo = QCOM_SCM_ARGS(2),
--		.owner = ARM_SMCCC_OWNER_SIP,
--	};
--
--	if (!cpus || (cpus && cpumask_empty(cpus)))
--		return -EINVAL;
--
--	for_each_cpu(cpu, cpus) {
--		if (cpu < ARRAY_SIZE(scm_cb_flags))
--			flags |= scm_cb_flags[cpu];
--		else
--			set_cpu_present(cpu, false);
--	}
--
--	desc.args[0] = flags;
--	desc.args[1] = virt_to_phys(entry);
--
--	return qcom_scm_call_atomic(__scm ? __scm->dev : NULL, &desc, NULL);
--}
--EXPORT_SYMBOL(qcom_scm_set_cold_boot_addr);
--
--/**
-- * qcom_scm_cpu_power_down() - Power down the cpu
-- * @flags - Flags to flush cache
-- *
-- * This is an end point to power down cpu. If there was a pending interrupt,
-- * the control would return from this function, otherwise, the cpu jumps to the
-- * warm boot entry point set for this cpu upon reset.
-- */
--void qcom_scm_cpu_power_down(u32 flags)
--{
--	struct qcom_scm_desc desc = {
--		.svc = QCOM_SCM_SVC_BOOT,
--		.cmd = QCOM_SCM_BOOT_TERMINATE_PC,
--		.args[0] = flags & QCOM_SCM_FLUSH_FLAG_MASK,
--		.arginfo = QCOM_SCM_ARGS(1),
--		.owner = ARM_SMCCC_OWNER_SIP,
--	};
--
--	qcom_scm_call_atomic(__scm ? __scm->dev : NULL, &desc, NULL);
--}
--EXPORT_SYMBOL(qcom_scm_cpu_power_down);
--
- int qcom_scm_set_remote_state(u32 state, u32 id)
- {
- 	struct qcom_scm_desc desc = {
-diff --git a/drivers/firmware/qcom_scm.h b/drivers/firmware/qcom_scm.h
-index 632fe3142462..be23f96557da 100644
---- a/drivers/firmware/qcom_scm.h
-+++ b/drivers/firmware/qcom_scm.h
-@@ -4,6 +4,24 @@
- #ifndef __QCOM_SCM_INT_H
- #define __QCOM_SCM_INT_H
- 
-+#include <linux/types.h>
-+#include <linux/reset-controller.h>
-+
-+struct clk;
-+struct device;
-+
-+struct qcom_scm {
-+	struct device *dev;
-+	struct clk *core_clk;
-+	struct clk *iface_clk;
-+	struct clk *bus_clk;
-+	struct reset_controller_dev reset;
-+
-+	u64 dload_mode_addr;
-+};
-+
-+extern struct qcom_scm *__scm;
-+
- enum qcom_scm_convention {
- 	SMC_CONVENTION_UNKNOWN,
- 	SMC_CONVENTION_LEGACY,
-@@ -68,11 +86,26 @@ extern int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 	__scm_smc_call((dev), (desc), qcom_scm_convention, (res), (atomic))
- 
- #define SCM_LEGACY_FNID(s, c)	(((s) << 10) | ((c) & 0x3ff))
-+#if IS_ENABLED(CONFIG_ARM)
- extern int scm_legacy_call_atomic(struct device *dev,
- 				  const struct qcom_scm_desc *desc,
- 				  struct qcom_scm_res *res);
- extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
- 			   struct qcom_scm_res *res);
-+#else
-+static inline int scm_legacy_call_atomic(struct device *dev,
-+					 const struct qcom_scm_desc *desc,
-+					 struct qcom_scm_res *res)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
-+				  struct qcom_scm_res *res)
-+{
-+	return -EINVAL;
-+}
-+#endif
- 
- #define QCOM_SCM_SVC_BOOT		0x01
- #define QCOM_SCM_BOOT_SET_ADDR		0x01
-diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
-index 0165824c5128..0ec905d56e1a 100644
---- a/include/linux/qcom_scm.h
-+++ b/include/linux/qcom_scm.h
-@@ -64,9 +64,6 @@ enum qcom_scm_ice_cipher {
- #if IS_ENABLED(CONFIG_QCOM_SCM)
- extern bool qcom_scm_is_available(void);
- 
--extern int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus);
--extern int qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus);
--extern void qcom_scm_cpu_power_down(u32 flags);
- extern int qcom_scm_set_remote_state(u32 state, u32 id);
- 
- extern int qcom_scm_pas_init_image(u32 peripheral, const void *metadata,
-@@ -115,11 +112,6 @@ extern int qcom_scm_qsmmu500_wait_safe_toggle(bool en);
- 
- static inline bool qcom_scm_is_available(void) { return false; }
- 
--static inline int qcom_scm_set_cold_boot_addr(void *entry,
--		const cpumask_t *cpus) { return -ENODEV; }
--static inline int qcom_scm_set_warm_boot_addr(void *entry,
--		const cpumask_t *cpus) { return -ENODEV; }
--static inline void qcom_scm_cpu_power_down(u32 flags) {}
- static inline u32 qcom_scm_set_remote_state(u32 state,u32 id)
- 		{ return -ENODEV; }
- 
-@@ -171,4 +163,17 @@ static inline int qcom_scm_hdcp_req(struct qcom_scm_hdcp_req *req, u32 req_cnt,
- static inline int qcom_scm_qsmmu500_wait_safe_toggle(bool en)
- 		{ return -ENODEV; }
- #endif
-+
-+#if IS_ENABLED(CONFIG_ARM) && IS_ENABLED(CONFIG_QCOM_SCM)
-+extern int qcom_scm_set_cold_boot_addr(void *entry, const cpumask_t *cpus);
-+extern int qcom_scm_set_warm_boot_addr(void *entry, const cpumask_t *cpus);
-+extern void qcom_scm_cpu_power_down(u32 flags);
-+#else
-+static inline int qcom_scm_set_cold_boot_addr(void *entry,
-+		const cpumask_t *cpus) { return -ENODEV; }
-+static inline int qcom_scm_set_warm_boot_addr(void *entry,
-+		const cpumask_t *cpus) { return -ENODEV; }
-+static inline void qcom_scm_cpu_power_down(u32 flags) {}
-+#endif
-+
- #endif
--- 
-https://chromeos.dev
+[   30.193723] iscsi: registered transport (iser)
+[   30.195970] iBFT detected.
+[   30.196571] BUG: unable to handle page fault for address: 
+ffffffffff240004
+[   30.196824] #PF: supervisor read access in kernel mode
+[   30.196824] #PF: error_code(0x0000) - not-present page
+[   30.196824] PGD 24e34067 P4D 24e34067 PUD 24e36067 PMD 27a0e067 PTE 0
+[   30.196824] Oops: 0000 [#1] SMP KASAN PTI
+[   30.196824] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.11.0-f9593a0 #10
+[   30.196824] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
+BIOS 0.0.0 02/06/2015
+[   30.196824] RIP: 0010:ibft_init+0x13d/0xc33
+[   30.196824] Code: c1 40 84 ce 75 11 83 e0 07 38 c2 0f 9e c1 84 d2 0f 
+95 c0 84 c1 74 0a be 04 00 00 00 e8 77 f2 5f ef 49 8d 7f 08 b8 ff ff 37 
+00 <4d> 63 6f 04 48 89 fa 48 c1 e0 2a 48 c1 ea 03 8a 04 02 48 89 fa 83
+[   30.196824] RSP: 0000:ffff888100fafc30 EFLAGS: 00010246
+[   30.196824] RAX: 000000000037ffff RBX: ffffffff937c6fc0 RCX: 
+ffffffff815fcf01
+[   30.196824] RDX: dffffc0000000000 RSI: 0000000000000001 RDI: 
+ffffffffff240008
+[   30.196824] RBP: ffff888100fafcf8 R08: ffffed10201f5f12 R09: 
+ffffed10201f5f12
+[   30.196824] R10: ffff888100faf88f R11: ffffed10201f5f11 R12: 
+dffffc0000000000
+[   30.196824] R13: ffff888100fafdc0 R14: ffff888100fafcd0 R15: 
+ffffffffff240000
+[   30.196824] FS:  0000000000000000(0000) GS:ffff88810ad80000(0000) 
+knlGS:0000000000000000
+[   30.196824] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   30.196824] CR2: ffffffffff240004 CR3: 0000000024e30000 CR4: 
+00000000000006e0
+[   30.196824] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+0000000000000000
+[   30.196824] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
+0000000000000400
+[   30.196824] Call Trace:
+[   30.196824]  ? write_comp_data+0x2f/0x90
+[   30.196824]  ? __sanitizer_cov_trace_pc+0x21/0x50
+[   30.196824]  ? ibft_check_initiator_for+0x159/0x159
+[   30.196824]  ? dmi_setup+0x46c/0x46c
+[   30.196824]  ? write_comp_data+0x2f/0x90
+[   30.196824]  ? ibft_check_initiator_for+0x159/0x159
+[   30.196824]  do_one_initcall+0xc4/0x3e0
+[   30.196824]  ? perf_trace_initcall_level+0x3e0/0x3e0
+[   30.196824]  ? asm_sysvec_error_interrupt+0x10/0x20
+[   30.196824]  ? do_one_initcall+0x18c/0x3e0
+[   30.196824]  kernel_init_freeable+0x596/0x652
+[   30.196824]  ? console_on_rootfs+0x7d/0x7d
+[   30.196824]  ? __sanitizer_cov_trace_pc+0x21/0x50
+[   30.196824]  ? rest_init+0xf0/0xf0
+[   30.196824]  kernel_init+0x16/0x1d0
+[   30.196824]  ? rest_init+0xf0/0xf0
+[   30.196824]  ret_from_fork+0x22/0x30
+[   30.196824] Modules linked in:
+[   30.196824] Dumping ftrace buffer:
+[   30.196824]    (ftrace buffer empty)
+[   30.196824] CR2: ffffffffff240004
+[   30.196824] ---[ end trace 293eae51adac1398 ]---
+[   30.196824] RIP: 0010:ibft_init+0x13d/0xc33
+[   30.196824] Code: c1 40 84 ce 75 11 83 e0 07 38 c2 0f 9e c1 84 d2 0f 
+95 c0 84 c1 74 0a be 04 00 00 00 e8 77 f2 5f ef 49 8d 7f 08 b8 ff ff 37 
+00 <4d> 63 6f 04 48 89 fa 48 c1 e0 2a 48 c1 ea 03 8a 04 02 48 89 fa 83
+[   30.196824] RSP: 0000:ffff888100fafc30 EFLAGS: 00010246
+[   30.196824] RAX: 000000000037ffff RBX: ffffffff937c6fc0 RCX: 
+ffffffff815fcf01
+[   30.196824] RDX: dffffc0000000000 RSI: 0000000000000001 RDI: 
+ffffffffff240008
+[   30.196824] RBP: ffff888100fafcf8 R08: ffffed10201f5f12 R09: 
+ffffed10201f5f12
+[   30.196824] R10: ffff888100faf88f R11: ffffed10201f5f11 R12: 
+dffffc0000000000
+[   30.196824] R13: ffff888100fafdc0 R14: ffff888100fafcd0 R15: 
+ffffffffff240000
+[   30.196824] FS:  0000000000000000(0000) GS:ffff88810ad80000(0000) 
+knlGS:0000000000000000
+[   30.196824] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   30.196824] CR2: ffffffffff240004 CR3: 0000000024e30000 CR4: 
+00000000000006e0
+[   30.196824] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+0000000000000000
+[   30.196824] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
+0000000000000400
+[   30.196824] Kernel panic - not syncing: Fatal exception
+[   30.196824] Dumping ftrace buffer:
+[   30.196824]    (ftrace buffer empty)
+[   30.196824] Kernel Offset: disabled
+[   30.196824] Rebooting in 1 seconds..
 
+George
