@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7823244A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B91183244A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbhBXTbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 14:31:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232723AbhBXTb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 14:31:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19D5664F06
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614195047;
-        bh=Lq1pRLzytneqVg5GzjUOBxr7UErPTTg7R99LXTu4jks=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bktVaOf6y4/5bWKQQSPfMtneTY1Tf+MYRVmtWsHhJUEljQh7DAFxS/43+Udvclz/P
-         4uwhgkr39vhLwUdkWL3u/xWOMxywvm21AkhIHJOJG35ouSjUs1+cRi74oDketdnCbn
-         UKefUkals+rUocpkVbnWY0GtkV9vSTnJRGPXczv8jYiQ70jAq2tzvmzM19W6d7qZti
-         Kz1/3QOhiAii/afgTNwkzN1PC6UIEW5tmnIUEpmJ3R+ZioNfqokC2yqqwHIWtz5VJ5
-         1cCYanTplUlIoOQHMo+S4ThKZ1Pf/5uiIIhPmqID00nin9wfsBSrcG4p+qE0JaGu6y
-         XfRmlWDIyjn5Q==
-Received: by mail-ed1-f48.google.com with SMTP id g3so3967109edb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:30:46 -0800 (PST)
-X-Gm-Message-State: AOAM532R3d/pEVnUjfQ4OSs76UwD8XU7V0NDF207TKa/KZM3rf+5SjvE
-        PJQZn3ZrQFqMgUnF6UvE0QynX+i8mk1gxcYYKErAfQ==
-X-Google-Smtp-Source: ABdhPJzlogxTsjCGzU5seCvYinL8R6SWLGS7Jdf1y0Dy2HvnH6emgV3LCiR+4/d92EKLQEe1rozYaNkkaap0cgFu/2I=
-X-Received: by 2002:a05:6402:377:: with SMTP id s23mr21425103edw.172.1614195045281;
- Wed, 24 Feb 2021 11:30:45 -0800 (PST)
+        id S234103AbhBXTby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 14:31:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233626AbhBXTbt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 14:31:49 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE416C061574;
+        Wed, 24 Feb 2021 11:31:09 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id a24so1800081plm.11;
+        Wed, 24 Feb 2021 11:31:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hZiOhC5cVS/lH5CzukG4XTtpL4jg+ky/PDgUBqULPBk=;
+        b=apqJN9hPuBFNX+xBGKzYNYUjKJqYmR+xHT6o1uGGIGKxvxq2KjpUAuW357RIAfn6O/
+         d3Z4eN9H1AhnneKW765UzmcczdhXHbqCBEEpv45+COVZsEYos0vCdQB0RuanRK1MK3iG
+         VL8gV0X7z3C6HUgMdHaEQbBFSmHcAaIEvEB2BsQVeovpmFHclOg0HyOWDE8yl7mqDrZu
+         HJYl4dtFKWYSDEIymDXlVfISAzTP0eM5eOm28rS9I+HFl6A45ME2cl4iLFSu6ni0zhjY
+         1z4rsglw+AGoQsig8cEuR8a04h4gZ0xwsYc/H4Tw1w6XTqpk5eZe+N3eiZ2nQREZVs8W
+         sZHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hZiOhC5cVS/lH5CzukG4XTtpL4jg+ky/PDgUBqULPBk=;
+        b=EX57gx3B75qhQBD7DEJ/MrE6oFFZU00753h0WKWOq6lomkXMKdM2gR/F2Lew/+yb2n
+         MfyAu2e7YkAr7lSniiF9/gBvnRbqRwQwjXH3ml8AmWBC5T0Jwzqr1xIpJ5NsCRA4A5EK
+         GCzyM11scpTSuc6hqT5PBNMVPXUCBvY+xotunANAK7+D0JXJxnWg0vX8/NrJvkGB7zeo
+         SgllthipjKD87Sx4VI9ZgFfjLkmKWhGo7BT1NJlJClwjEfz6TX/yELjneWiswSX9kEEQ
+         kSBJTTujJ2qmqRTyZryDy54NHzhZTIhJp1tAaLwIC/+ceKkHD+Gzs6lBbeLG0DvJ7b8j
+         ZX5Q==
+X-Gm-Message-State: AOAM533kJAkhqu/15l2FpHCddar4wnVYZtcKcNDbTnRvjka7FllWtfhU
+        s5uRujj2RRAjeteHr0Cps2Y=
+X-Google-Smtp-Source: ABdhPJyCiCFdIsYMF31z9fvpkljGBP1Ang6kl1t8ml4xCOZNuOCQwco6FdeKp58AeAJVsMs+AfB0QQ==
+X-Received: by 2002:a17:90a:6347:: with SMTP id v7mr6172113pjs.22.1614195069272;
+        Wed, 24 Feb 2021 11:31:09 -0800 (PST)
+Received: from sol (106-69-185-142.dyn.iinet.net.au. [106.69.185.142])
+        by smtp.gmail.com with ESMTPSA id w200sm3692537pfc.200.2021.02.24.11.31.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 11:31:08 -0800 (PST)
+Date:   Thu, 25 Feb 2021 03:31:03 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH] selftests: gpio: update .gitignore
+Message-ID: <20210224193103.GA75630@sol>
+References: <20210224185316.17942-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com> <20210217222730.15819-7-yu-cheng.yu@intel.com>
- <20210224161343.GE20344@zn.tnic> <32ac05ef-b50b-c947-095d-bc31a42947a3@intel.com>
- <20210224165332.GF20344@zn.tnic> <db493c76-2a67-5f53-29a0-8333facac0f5@intel.com>
- <20210224192044.GH20344@zn.tnic>
-In-Reply-To: <20210224192044.GH20344@zn.tnic>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 24 Feb 2021 11:30:34 -0800
-X-Gmail-Original-Message-ID: <CALCETrXKteS9K=OOgsCvBU4in_3zcYccqF9hh2=OdCJPknvB8Q@mail.gmail.com>
-Message-ID: <CALCETrXKteS9K=OOgsCvBU4in_3zcYccqF9hh2=OdCJPknvB8Q@mail.gmail.com>
-Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224185316.17942-1-brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 11:20 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Feb 24, 2021 at 09:56:13AM -0800, Yu, Yu-cheng wrote:
-> > No.  Maybe I am doing too much.  The GP fault sets si_addr to zero, for
-> > example.  So maybe do the same here?
->
-> No, you're looking at this from the wrong angle. This is going to be
-> user-visible and the moment it gets upstream, it is cast in stone.
->
-> So the whole use case of what luserspace needs to do or is going to do
-> or wants to do on a SEGV_CPERR, needs to be described, agreed upon by
-> people etc before it goes out. And thus clarified whether the address
-> gets copied out or not.
+On Wed, Feb 24, 2021 at 07:53:16PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> The executable that we build for GPIO selftests was renamed to
+> gpio-mockup-cdev. Let's update .gitignore so that we don't show it
+> as an untracked file.
+> 
+> Fixes: 8bc395a6a2e2 ("selftests: gpio: rework and simplify test implementation")
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  tools/testing/selftests/gpio/.gitignore | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/gpio/.gitignore b/tools/testing/selftests/gpio/.gitignore
+> index 4c69408f3e84..a4969f7ee020 100644
+> --- a/tools/testing/selftests/gpio/.gitignore
+> +++ b/tools/testing/selftests/gpio/.gitignore
+> @@ -1,2 +1,2 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -gpio-mockup-chardev
+> +gpio-mockup-cdev
+> -- 
 
-I vote 0.  The address is in ucontext->gregs[REG_RIP] [0] regardless.
-Why do we need to stick a copy somewhere else?
+Thanks for picking this one up - I missed it as I don't build the
+selftests in the same environment that I edit them in, and overlooked
+that there was a .gitignore in play.
 
-[0] or however it's spelled.  i can never remember.
+Reviewed-by: Kent Gibson <warthog618@gmail.com>
 
->
-> Thx.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+Cheers,
+Kent.
+
