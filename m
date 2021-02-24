@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D445A32353F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 516BF323540
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhBXBZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 20:25:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234266AbhBXBSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 20:18:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19AEA64E21;
-        Wed, 24 Feb 2021 01:17:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614129480;
-        bh=86XcHlF24lJqHiMo+fdjoQ2fYPikmlQK7DrPdc7bRno=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ueF7RoYxYz8iPaU9NGA6xd65paklKB+k8vqv8jFT+QWFq43XD+lcj/6kxXniAKOiu
-         PmsB7JPU0LmUzK0EUjftALWmFJh3WBZvmx72CcyvOyRuyhKEDNa4MmY2C/sAw6FyKp
-         GfTu9UUybxPsICc5zYkkdK1xQsoQaoRxEM1GKEU0EZ8X4RHVIhtzxnVSdLkGoxrIve
-         V8psx+Tjstaj4FDhagIquZTKhphbUtu0j43qyOirMHlQ0R8C7b6bwX1NKKrKerfkVO
-         TPI3nVhMyjW61EMM90NJTbubqXiUydLRSH10yluwNveTEqqLFGEs3ZnrZxPS38Y5Q0
-         /aRchvxKO1Sng==
-Date:   Wed, 24 Feb 2021 10:17:56 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: Why do kprobes and uprobes singlestep?
-Message-Id: <20210224101756.bbdf95b9b6dfc982bff21324@kernel.org>
-In-Reply-To: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
-References: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231972AbhBXB0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 20:26:13 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12992 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232156AbhBXBUp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 20:20:45 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DldMK1ZKDzjRlK;
+        Wed, 24 Feb 2021 09:17:49 +0800 (CST)
+Received: from [10.67.103.10] (10.67.103.10) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Wed, 24 Feb 2021
+ 09:19:13 +0800
+Subject: Re: [PATCH v9 3/7] crypto: move curve_id of ECDH from the key to
+ algorithm name
+To:     <Tudor.Ambarus@microchip.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>, <marcel@holtmann.org>,
+        <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>,
+        <Nicolas.Ferre@microchip.com>
+References: <1614064219-40701-1-git-send-email-yumeng18@huawei.com>
+ <1614064219-40701-4-git-send-email-yumeng18@huawei.com>
+ <8b96c136-dca9-5b6a-2221-e906d265c40b@microchip.com>
+From:   yumeng <yumeng18@huawei.com>
+Message-ID: <4f16302b-7002-fd96-f08c-245f49e3233c@huawei.com>
+Date:   Wed, 24 Feb 2021 09:19:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <8b96c136-dca9-5b6a-2221-e906d265c40b@microchip.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.103.10]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 15:24:19 -0800
-Andy Lutomirski <luto@kernel.org> wrote:
 
-> A while back, I let myself be convinced that kprobes genuinely need to
-> single-step the kernel on occasion, and I decided that this sucked but
-> I could live with it.  it would, however, be Really Really Nice (tm)
-> if we could have a rule that anyone running x86 Linux who single-steps
-> the kernel (e.g. kgdb and nothing else) gets to keep all the pieces
-> when the system falls apart around them.  Specifically, if we don't
-> allow kernel single-stepping and if we suitably limit kernel
-> instruction breakpoints (the latter isn't actually a major problem),
-> then we don't really really need to use IRET to return to the kernel,
-> and that means we can avoid some massive NMI nastiness.
 
-Would you mean using "pop regs + popf + ret" instead of IRET after
-int3 handled for avoiding IRET releasing the NMI mask? Yeah, it is
-possible. I don't complain about that.
+在 2021/2/23 18:44, Tudor.Ambarus@microchip.com 写道:
+> Hi,
+> 
+> On 2/23/21 9:10 AM, Meng Yu wrote:
+>> --- a/drivers/crypto/atmel-ecc.c
+>> +++ b/drivers/crypto/atmel-ecc.c
+>> @@ -104,7 +104,7 @@ static int atmel_ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
+>>                  return -EINVAL;
+>>          }
+>>
+>> -       ctx->n_sz = atmel_ecdh_supported_curve(params.curve_id);
+>> +       ctx->n_sz = atmel_ecdh_supported_curve(ctx->curve_id);
+>>          if (!ctx->n_sz || params.key_size) {
+>>                  /* fallback to ecdh software implementation */
+>>                  ctx->do_fallback = true;
+> 
+> Now that you moved the curve id info into the alg name, and it is
+> no longer dynamically discovered when decoding the key, does it
+> still make sense to keep the curve id, the key size checks, and
+> the fallback to the software implementation?
+> 
+Yes, I think we can keep this code if 'atmel-ecc' may support
+new other curves at future, and if you're sure P256 is the only curve 
+'atmel-ecc' uses, and it will never be changed, we can delete it.
 
-However, what is the relationship between the IRET and single-stepping?
-I think we can do same thing in do_debug...
+> I don't have an atecc508 at hand to test the changes, but I expect
+> your changes won't affect the functionality.
+> 
+OK, when you or your team members have an atecc508, please help test.
 
-> But I was contemplating the code, and I'm no longer convinced.
-> Uprobes seem to single-step user code for no discernable reason.
-> (They want to trap after executing an out of line instruction, AFAICT.
-> Surely INT3 or even CALL after the out-of-line insn would work as well
-> or better.)  Why does kprobe single-step?  I spend a while staring at
-> the code, and it was entirely unclear to me what the purpose of the
-> single-step is.
-
-For kprobes, there are 2 major reasons for (still relaying on) single stepping.
-One is to provide post_handler, another is executing the original code,
-which is replaced by int3, without modifying code nor emulation.
-Indeed, most of the instructions actually not depends on the ip register,
-in that case (and user doesn't set post_handler), kprobe already skips
-single stepping (a.k.a. kprobe booster, jump back to the kernel code after
-executing out-of-line instruction.)
-However, since some instructions, e.g. jump, call and ret, changes the ip
-register (and stack), we have to do a fixup afterwards. 
-
-But yes, it is possible to emulate, as same as arm/arm64 does. I just
-concern about side-effects of the emulation, need to be carefully
-implemented.
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
