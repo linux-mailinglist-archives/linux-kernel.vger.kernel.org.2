@@ -2,174 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024EC324065
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D7232406C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236541AbhBXO6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:58:44 -0500
-Received: from mga04.intel.com ([192.55.52.120]:46168 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236016AbhBXN6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:58:10 -0500
-IronPort-SDR: 3OSN7SeBU6MfXIwQm4JcLtMqyO4FuWrRcIBsUCJ4hSHajBwrxhtqjcOurZdLgLcKRaIZdCZEJu
- //hf8geQDunA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="182702125"
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="182702125"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 05:57:28 -0800
-IronPort-SDR: 4KzKHCXmFFw/HL2fgDtGSg451Wn3QCPBvd0eWyQDXZBVsm4DxZsHlvkNMqFAzCZdOrKL63McLU
- iJi/lGj+lVhw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="499592639"
-Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Feb 2021 05:57:25 -0800
-Received: from kbuild by 16660e54978b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lEufN-00024t-8b; Wed, 24 Feb 2021 13:57:25 +0000
-Date:   Wed, 24 Feb 2021 21:57:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.02.22a] BUILD SUCCESS
- 311373afafa5d34df56e3b13e87209e45cdc85d7
-Message-ID: <60365b40.P6BTHksxPdPJRKL0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S235277AbhBXPC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:02:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233997AbhBXOE6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 09:04:58 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1506AC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:04:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=FKo27kP6bPoTFaEgNUhT3kOhszGvSDXkiGvKHnLVuc4=; b=v88BLMp8Jlv/IhPa0X6p6VPq/
+        iKsgGbnhHi3O5dmWqDdE8DnAzITrnXxTLp38at5EWC5cV1s9AkLODNcoVUSMHAtON2JrEP5nxozhx
+        pBW9ThJ+07++O5wqpXsFhDPy36Sf6JIEoxvn3e0rjcWQgA6rYfdGUIgmoWd8icvwNBVlYBXykGaem
+        UCDdMcfOjSlivEo/CA2tXZgMrYjejVsjNOyoxuZnDlpqGDO2RdeQyY3zDWral1voZ404FL4gI4MeF
+        tUmuL2Qfr/Wf8WcgWfTgJJuuu8bKQAjx5eLoWMdpB6wIPybw+oN0+6EW9eIStAcaUhdFVSl7Fgwuz
+        NM9TLTFwQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46656)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lEulb-00005z-Dn; Wed, 24 Feb 2021 14:03:51 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lEulX-00042p-Ej; Wed, 24 Feb 2021 14:03:47 +0000
+Date:   Wed, 24 Feb 2021 14:03:47 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Maninder Singh <maninder1.s@samsung.com>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, a.sahrawat@samsung.com,
+        Vaneet Narang <v.narang@samsung.com>
+Subject: Re: [PATCH 1/1] arm: print alloc free paths for address in registers
+Message-ID: <20210224140347.GS1463@shell.armlinux.org.uk>
+References: <CGME20210224123759epcas5p1c1143b69537467c5135283d590c89bf7@epcas5p1.samsung.com>
+ <1614170254-3207-1-git-send-email-maninder1.s@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1614170254-3207-1-git-send-email-maninder1.s@samsung.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.02.22a
-branch HEAD: 311373afafa5d34df56e3b13e87209e45cdc85d7  torture: Consolidate qemu-cmd duration editing into kvm-transform.sh
+On Wed, Feb 24, 2021 at 06:07:34PM +0530, Maninder Singh wrote:
+> +bool slab_page_object(unsigned long address, void **object, struct kmem_cache **cache)
+> +{
+> +	void *addr = (void *)address;
+> +	struct page *page;
+> +
+> +	if ((addr >= (void *)PAGE_OFFSET) &&
+> +			(addr < high_memory)) {
+> +		page = virt_to_head_page(addr);
 
-elapsed time: 724m
+This check is not sufficient. There can be holes in the page array.
+You need to use virt_addr_valid() to validate "addr".
 
-configs tested: 112
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                           ip27_defconfig
-powerpc                       ebony_defconfig
-h8300                    h8300h-sim_defconfig
-powerpc                     stx_gp3_defconfig
-nds32                            alldefconfig
-powerpc                      chrp32_defconfig
-sh                          landisk_defconfig
-arm                      tct_hammer_defconfig
-arm                          pcm027_defconfig
-powerpc                    ge_imp3a_defconfig
-m68k                       m5475evb_defconfig
-arm                       netwinder_defconfig
-powerpc                     tqm5200_defconfig
-mips                     loongson1c_defconfig
-ia64                        generic_defconfig
-m68k                       m5275evb_defconfig
-sh                             shx3_defconfig
-arm                           sama5_defconfig
-arm                         s3c2410_defconfig
-arm                              alldefconfig
-sh                          lboxre2_defconfig
-arm                            zeus_defconfig
-parisc                generic-32bit_defconfig
-sh                     magicpanelr2_defconfig
-xtensa                generic_kc705_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                     pseries_defconfig
-mips                           rs90_defconfig
-mips                         mpc30x_defconfig
-openrisc                    or1ksim_defconfig
-arm                             pxa_defconfig
-powerpc                 mpc8313_rdb_defconfig
-csky                             alldefconfig
-powerpc                     sbc8548_defconfig
-powerpc                  storcenter_defconfig
-powerpc                     mpc512x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210223
-i386                 randconfig-a006-20210223
-i386                 randconfig-a004-20210223
-i386                 randconfig-a003-20210223
-i386                 randconfig-a001-20210223
-i386                 randconfig-a002-20210223
-x86_64               randconfig-a015-20210223
-x86_64               randconfig-a011-20210223
-x86_64               randconfig-a012-20210223
-x86_64               randconfig-a016-20210223
-x86_64               randconfig-a014-20210223
-x86_64               randconfig-a013-20210223
-i386                 randconfig-a013-20210223
-i386                 randconfig-a012-20210223
-i386                 randconfig-a011-20210223
-i386                 randconfig-a014-20210223
-i386                 randconfig-a016-20210223
-i386                 randconfig-a015-20210223
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a001-20210223
-x86_64               randconfig-a002-20210223
-x86_64               randconfig-a003-20210223
-x86_64               randconfig-a005-20210223
-x86_64               randconfig-a006-20210223
-x86_64               randconfig-a004-20210223
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
