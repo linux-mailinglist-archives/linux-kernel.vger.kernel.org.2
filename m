@@ -2,75 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7093234D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C2E3234D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234541AbhBXBFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 20:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47494 "EHLO
+        id S234240AbhBXBCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 20:02:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232723AbhBXAkf (ORCPT
+        with ESMTP id S231809AbhBXAcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 19:40:35 -0500
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F37C06178C;
-        Tue, 23 Feb 2021 16:26:38 -0800 (PST)
-Received: by mail-oo1-xc32.google.com with SMTP id h38so96685ooi.8;
-        Tue, 23 Feb 2021 16:26:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mshc79FXWLD6+BX5Ixyu8Wvz4uIGKF1xS+0L2eeJ0Gc=;
-        b=RsjGITXEW5du7eTT9ZmrWvIOPnbG/xXMCmH17LiledWqsuFzxQAWFndXKErTllkdbN
-         0wpP1Dzrj0+TmckhonJ/d6/1aQcC9fYg7oH82jXcyim0TxnFIxkDtqRwVMjzFi18C3xu
-         +Sj8DkOfUNm3JUuEgQGSp/vQrZCDMGia5oMX1BpNLCwpz2HuTSLv2onS/qoIvm9SN2h5
-         ukOcar7i1td17G101FYekIbtE7ttPnFjE9TKxHCg3yvGWE8Gm+53YFZbcBe5AHGnZaHA
-         nLG054zMqVV/ZT0pcpEh2tOQ/RcUSwKAqS+UhUkmToagh8HMIMxbIgm1lIGC1Gxw/iWU
-         sG8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mshc79FXWLD6+BX5Ixyu8Wvz4uIGKF1xS+0L2eeJ0Gc=;
-        b=e0EwVfA/MPTNqw1e9GM89GMotoXbYsWT2ma8vS2oko9XQd8XMOVg0wQmE25ALPTZ5b
-         8nInAa0y7BzOX3WGy6O7ubkh+R33L2Uhthb3y4ntVE9Wiqf/c5POfZ/qmyZvdW81hlsM
-         xjWbiNH0/O/3YZo3lkHOKwBEQFfF6atba8EX2KEOdJqJwW8y7aVLXOTe1GE+8x9k2PPC
-         I/zsmYfKpIXwcoz1/joTclY69+0iB+N3XFrtQwB7d6cjXEmdYZEE2LSywYThgWLotJTv
-         YCBs42UXkHSVWCOZutK7ftn0jisNZ4gGV7PREbPZYo+TsIAKQEUx97yaamb+GLf4TbDV
-         xk9g==
-X-Gm-Message-State: AOAM5314391g2P40bpNUTYcUmpz+1FIRnGLJB5w3VBURhO0mekM1RvW9
-        Htfbtjt0zEVhrbevqZBa6dDBp0sCjRvKgAHJdLVB9b3/uuY=
-X-Google-Smtp-Source: ABdhPJwMaLzjPvnhlo+HmntTBCnUxW5Pit1e5y0hbhp+2dQFap0jDmGidUpIHwBU5g71nbg3oTMP/UkR9Xnszw5z44M=
-X-Received: by 2002:a4a:da04:: with SMTP id e4mr12600459oou.34.1614126397658;
- Tue, 23 Feb 2021 16:26:37 -0800 (PST)
+        Tue, 23 Feb 2021 19:32:05 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174ACC061797;
+        Tue, 23 Feb 2021 16:31:14 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DlcKT4S5Fz9sW3;
+        Wed, 24 Feb 2021 11:31:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614126669;
+        bh=q90uEgyYHcxn6xBm07NTvA0SmYwt7QYZzJDUPB1hTIw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pvKqSTgmP4RxHLXbWLGsEatAklTXzKCHh9NxWeHALdsLDdCFLL/8Pd5mZZpetIutp
+         6Kqqu/EBV8svlur4vux+61ajssZdFNuk9Gbdd88nJxUcPhR4HoOke0PmOW8Z4K8yND
+         jdf9w7/sY2YJ1rV616v7EMH9P4k5z6PpwJ6SgayP1K4YEt5dmdrMxssoxhPZPUkAaP
+         +HiceKtFr9axccnVa+hOn2JzenDFC4LCFHLfi+F6YbiGosW4rz2ssid+HGsV6mufpD
+         0SdNlmPkgRUjs6vPJqB2b7PFiPveytaob9gxkiFrYxGbvU5iXWPSaZc70yWw+FzUJb
+         pG+rxCq3IMOFw==
+Date:   Wed, 24 Feb 2021 11:31:08 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in Linus' tree
+Message-ID: <20210224113108.4c05915e@canb.auug.org.au>
 MIME-Version: 1.0
-References: <000000000000e37c9805bbe843c1@google.com> <20210223154855.669413bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210223154855.669413bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Alexander Aring <alex.aring@gmail.com>
-Date:   Tue, 23 Feb 2021 19:26:26 -0500
-Message-ID: <CAB_54W6FL2vDto3_1=0kAa8qo_qTduCfULLCfvD_XbS4=+VZyw@mail.gmail.com>
-Subject: Re: UBSAN: shift-out-of-bounds in nl802154_new_interface
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     syzbot <syzbot+7bf7b22759195c9a21e9@syzkaller.appspotmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-wpan - ML <linux-wpan@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Q_b.E1bX5euukwq_pXNPK2b";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/Q_b.E1bX5euukwq_pXNPK2b
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 23 Feb 2021 at 18:48, Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Alex, there seems to be a few more syzbot reports for nl802154 beyond
-> what you posted fixes for. Are you looking at these?
+Hi all,
 
-Yes, I have it on my list. I will try to fix them at the weekend.
+Commits
 
-- Alex
+  b33fff07e3e3 ("x86, build: allow LTO to be selected")
+  d2dcd3e37475 ("x86, cpu: disable LTO for cpu.c")
+  e242db40be27 ("x86, vdso: disable LTO only for vDSO")
+  b1a1a1a09b46 ("kbuild: lto: postpone objtool")
+  41425ebe2024 ("objtool: Split noinstr validation from --vmlinux")
+  6dafca978033 ("x86, build: use objtool mcount")
+  22c8542d7b22 ("tracing: add support for objtool mcount")
+  0e731dbc1824 ("objtool: Don't autodetect vmlinux.o")
+  18a14575ae31 ("objtool: Fix __mcount_loc generation with Clang's assemble=
+r")
+  99d0021569c7 ("objtool: Add a pass for generating __mcount_loc")
+
+are missing a Signed-off-by from their committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Q_b.E1bX5euukwq_pXNPK2b
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA1nkwACgkQAVBC80lX
+0GzkwQf/YezJJc89M08G/SSmDvAr/nNDEIKuML9mmDgBxj4dxVXIotTO6yLfzm14
+8nndQlbRKUjfn5y3zvbtvLEaVNz4OJDT5HSfC7Wg972lbfjKPUL/+//e3vt/w1Pp
+JtCTJ57Mr1aQa4dny+gWpwkvsNHrgUaF6I0EFOc0QwHjKO9oyoQLSIWHbXQvFwtU
+t/N1KMPUwnAhcPfeWLxXfeXEc9YtWJerzwNpUIzD7XBn+SlhDV2Wof5uP8HvjLgb
+5iYAGZedzBPNtzruHk8EVieVYXlCSYcxfuCEkpnN4x27iNOqFn7oKyhrBvMLBXoZ
+x9JtvdxckudMQOjI6RNk8uD8UYmE7Q==
+=TfSi
+-----END PGP SIGNATURE-----
+
+--Sig_/Q_b.E1bX5euukwq_pXNPK2b--
