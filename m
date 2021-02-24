@@ -2,91 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2663245B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 22:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6908E3245C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 22:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235953AbhBXVU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 16:20:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
+        id S235908AbhBXVaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 16:30:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235853AbhBXVUL (ORCPT
+        with ESMTP id S233068AbhBXVan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 16:20:11 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EAEC061788
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 13:19:30 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id a17so4803425lfb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 13:19:30 -0800 (PST)
+        Wed, 24 Feb 2021 16:30:43 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BBAC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 13:30:03 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id h4so2332298pgf.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 13:30:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bNR1KI2pRCEa4jeqkN89XkpppOEohChHDZHILgnnwVE=;
-        b=R5QRo2B2oMgyIpvYMaARSzalCqNsNEewkuyK8GqD+9Hxagz9bsLLkL3DqooEcgoPIS
-         YSn7T5HdPxdYPFyANbYByP47cXHJ+b5zszT61j4rpTxLntkL/dnP9ipBpyOrZFxkHEFn
-         o/db+R45qrMfzJPxh8dHJzvycEmdduga3fFDd6jQXxpjYOQ/L3cfT+FZVVCONeyeZxR9
-         /0OjgZkoBXHeBv1bYlTPezKforNeaHfM6frb60ElrEuYgOj/J6LzkRcNT1cX/Lm0f/GZ
-         2uIXNDIPmpLtYNFoihpO8xrWwxcWbe0ohfc6IAt2doig6ZIQr0c1+DAhN+LQ0JErOTho
-         D7zA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SFrYa/g2KhZxDM1QcNAwYDyDlpxACMJJJgJHoGagEkU=;
+        b=L5+ESNm7SdrsGsVbeE5Kv7w/t2Pu3dHB+QgXMUl4Qt3vW1PMLPDE0ra+lnAljXmA5v
+         5t20FopDOqh9JneqPw922FvyMYoPy14+JsuWaDF2tRIwZCBBaotmMF6RAkhrmWgmVizk
+         ISTKL6j5i7tma7e4c39GM2ncXx/Jen//Toiww=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bNR1KI2pRCEa4jeqkN89XkpppOEohChHDZHILgnnwVE=;
-        b=G/NFfWTQesf0aJ+pdlTlpiONRjXKsLQjMEZjLB/Y+/OyluL/ZaCgAC3fa45h5k25mV
-         7oLJ1/ci2TLLVmNX5peuaQI/I3nkgSqY+Ag5w0gQAl0pR2fA2kFmKZjLPcgpAvuFwHfw
-         0k47Qlnk+i8RlWv37ijS5XGF70L5nPskmZjV6vsWkfs1J3oysL5VA2f5gemUFN/IrY77
-         et/RNJ98GiwX/cVgWBx2iH+59+MoWEPnqNbtQuQ0F6+cgEbANS4QgyNBGWa+JR7rVBiv
-         SBINz5y5KHv15DQdovyoW51Imi0zpQ1tVcZwuAWcXmOY8tKZl9xtx5ksHXlsNRppPrY2
-         Q/VA==
-X-Gm-Message-State: AOAM5334gNSGjn2cYC+1FvgZQ0fHKj5nrwAlJ8OJVWrS3OZCtjOKCd8E
-        OhEspDcnhh9Mmx2flZx8Tb3oFBNVJvI=
-X-Google-Smtp-Source: ABdhPJzQNo1uob0y8vJmKLbHqTEr+Oufmvez2ZwpS3vFdPnaJYuPf7kaRx3OTf4yuzXcJTaxneSGTQ==
-X-Received: by 2002:ac2:420b:: with SMTP id y11mr19798338lfh.215.1614201569046;
-        Wed, 24 Feb 2021 13:19:29 -0800 (PST)
-Received: from localhost.localdomain (h-98-128-229-129.NA.cust.bahnhof.se. [98.128.229.129])
-        by smtp.gmail.com with ESMTPSA id w26sm717116lfr.186.2021.02.24.13.19.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SFrYa/g2KhZxDM1QcNAwYDyDlpxACMJJJgJHoGagEkU=;
+        b=eZNsr66AK+OxBoNCvJH/wqBSm9Anl22JziVja3JpclVTZPIUB1sVTiCHRsIpbfIaK1
+         CXtdB/sASgAgsJQJBVqKea9UuOhVl7HUWTt+2KNLBdgUktbGvM8qMSBuwbdw82t6fuMy
+         YPOWdLw+/5z0m+l/B+QFkWl5U8tEaxxUNKhRlmIoq1fm1acWltzDZd/6/GZQBZ6U7Za/
+         +vl2VLQgk5A1qM2r9ybDjx7KbTCu3EDEgtpK+GjfoXicFYyGHdN14a2IhUNEeZPBdWDk
+         njAMMndLBeLxUGdGozEjM4JRS07XQgHgY7dHcHu4v+tzJiUx4lWRFeK126UFBOFLPohm
+         El8g==
+X-Gm-Message-State: AOAM530zaH7+BnVXNJ5kOoi1ICHJsb9NEN6zujI4LCbwUL9aCQhlCQbt
+        CYBO76t4Hxil2tHHKqo9px0xMA==
+X-Google-Smtp-Source: ABdhPJwYejHHBFJ92aIQ82xsJ3BJ9AuVEfMFV/MvrCLBIZ+hDrzBUsQDMtUMScc2E/rT/LXiPATtig==
+X-Received: by 2002:a63:1565:: with SMTP id 37mr8383973pgv.391.1614202202605;
+        Wed, 24 Feb 2021 13:30:02 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n4sm3705459pgg.68.2021.02.24.13.30.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 13:19:28 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Oder Chiou <oder_chiou@realtek.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 4/4] ASoc: rt5631: Constify static struct coeff_clk_div
-Date:   Wed, 24 Feb 2021 22:19:18 +0100
-Message-Id: <20210224211918.39109-5-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210224211918.39109-1-rikard.falkeborn@gmail.com>
-References: <20210224211918.39109-1-rikard.falkeborn@gmail.com>
+        Wed, 24 Feb 2021 13:30:02 -0800 (PST)
+Date:   Wed, 24 Feb 2021 13:30:01 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: linux-next: Signed-off-by missing for commits in Linus' tree
+Message-ID: <202102241324.E784B6A0@keescook>
+References: <20210224113108.4c05915e@canb.auug.org.au>
+ <CAHk-=wi1FEJfk9r4Jw90kU3aayXka4Y4HOWdgAtVQHRFTgpQ+A@mail.gmail.com>
+ <20210224114942.4b07cece@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224114942.4b07cece@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-coeff_div is only read from, so make it const to show the intent.
+On Wed, Feb 24, 2021 at 11:49:42AM +1100, Stephen Rothwell wrote:
+> Hi Linus,
+> 
+> On Tue, 23 Feb 2021 16:33:47 -0800 Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> >
+> > On Tue, Feb 23, 2021 at 4:31 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > are missing a Signed-off-by from their committer.  
+> > 
+> > Gaah. Maybe I should do some pre-pull hook or something to notice this
+> > automatically (like you clearly do).
+> 
+> I have attached the scripts I run over things after fetching them, but
+> before merging them (so not a hook, sorry).  check_commits runs
+> check_fixes - but just for my convenience.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- sound/soc/codecs/rt5631.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Based on the pre-push.sample file, here is what I've added to my
+.git/hooks/pre-push hook:
 
-diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
-index 653da3eaf355..afc1305a7fa5 100644
---- a/sound/soc/codecs/rt5631.c
-+++ b/sound/soc/codecs/rt5631.c
-@@ -1283,7 +1283,7 @@ static const struct pll_div codec_slave_pll_div[] = {
- 	{3072000,  12288000,  0x0a90},
- };
- 
--static struct coeff_clk_div coeff_div[] = {
-+static const struct coeff_clk_div coeff_div[] = {
- 	/* sysclk is 256fs */
- 	{2048000,  8000 * 32,  8000, 0x1000},
- 	{2048000,  8000 * 64,  8000, 0x0000},
+
+z40=0000000000000000000000000000000000000000
+
+while read local_ref local_sha remote_ref remote_sha
+do
+        if [ "$local_sha" = $z40 ]
+        then
+                # Handle delete
+                :
+        else
+                if [ "$remote_sha" = $z40 ]
+                then
+                        # New branch, examine all commits
+                        range="$local_sha"
+                else
+                        # Update to existing branch, examine new commits
+                        range="$remote_sha..$local_sha"
+                fi
+
+                if ! $HOME/bin/check_commits "$range"; then
+                        exit 1
+                fi
+        fi
+done
+
+(and I modified check_fixes and check_commits to exit non-zero on failure)
+
+
+I wonder if we need this in Documentation/maintainer/configure-git.rst
+and to put check_commits and check_fixes into tools/ somewhere?
+
+(Though goodness, please never aim your hook at your tree's tools/
+directory.)
+
 -- 
-2.30.1
-
+Kees Cook
