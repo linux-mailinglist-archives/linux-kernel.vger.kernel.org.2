@@ -2,117 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493463244CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D063244D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234995AbhBXTxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 14:53:23 -0500
-Received: from mga11.intel.com ([192.55.52.93]:56215 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232392AbhBXTxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 14:53:16 -0500
-IronPort-SDR: DT67NmJxOc44P4KRo695ALANGfG2/Bi+mPFp3Ienf2hc5iGT7zgL6V0kfqZDgABtxDoT5zYWrP
- +fBQKfoyMjaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="181865671"
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="181865671"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 11:52:34 -0800
-IronPort-SDR: yXEcVzW98djE749wmWJeznbw7y/eWDKIg2JFChUy2uVPACaW3lKFTSPh+w1NRB+Semm7HIGoQg
- 1PmH0DR7BcFQ==
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="431800681"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.35.50]) ([10.212.35.50])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 11:52:33 -0800
-Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
-To:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
- <20210217222730.15819-7-yu-cheng.yu@intel.com>
- <20210224161343.GE20344@zn.tnic>
- <32ac05ef-b50b-c947-095d-bc31a42947a3@intel.com>
- <20210224165332.GF20344@zn.tnic>
- <db493c76-2a67-5f53-29a0-8333facac0f5@intel.com>
- <20210224192044.GH20344@zn.tnic>
- <CALCETrXKteS9K=OOgsCvBU4in_3zcYccqF9hh2=OdCJPknvB8Q@mail.gmail.com>
- <20210224194204.GI20344@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <c8077be0-f61f-d84d-fcd1-13c5ba482a38@intel.com>
-Date:   Wed, 24 Feb 2021 11:52:33 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S235211AbhBXT7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 14:59:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234908AbhBXT57 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 14:57:59 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E05C061226
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:57:35 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id i8so3333169iog.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:57:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cj7xDSZ4OTBDVNHg9eGtF0yROH2tLiemgjZrH2v3a8A=;
+        b=KSb/YQBNQQlfZra6JphLhn/QFG01xyt5irxBKdXEWBhIpTfweqCiZ5mt8D2I9j4zk8
+         /Yx5h3tx2UpBnI2bUm/TAHZntsa5oJhwotG1hLumo+wzyDYV9kYw+a3SLNdsjknlNNvz
+         2pGLY6SN0fESLjsPeJSkdLF/JjN5uZiL7IouBxEWPn2t6F33k2KKP8fI/Ccjnvxkg6KI
+         FbiQ4rKrm6rJTZT1z3+oudOVOcBpFUaHfdXUq5ktR5zTRISMoRBDPlFVNfnjgvXsZAgg
+         /jMwGTvTTv51w1w6f9uew0g+5cRy5jlaHExtMk77cGUzH5VqkR8Kg0VeOrds6/Zed8hi
+         edAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cj7xDSZ4OTBDVNHg9eGtF0yROH2tLiemgjZrH2v3a8A=;
+        b=Yi/tetV0b35YFaJDm5hCu8TxiK+mlWvWG8B9XMj8xY3OFKjYKKvqM+njRxd7zOwsD2
+         Kmba9Jo5r0kq/i02/T6DAPfP50kmNhNKC7eM9wDSv8Wcn+bY1SbQ2hfgcY6SItT/Z4ts
+         6PzeAVco9gSd7Wb5AkkqJgJrZcYRuhaiRTkHZYcpiZ4bcbAnoctDZ+LfXgNAtG0XuBNn
+         fW3AztnF3uAe28Myz1sRLMK5ajMQx+sciQ9IMm+bcAUMJocUDR/79NebyEy44AwEMxt5
+         ecbD6NlfV4TWfDjUL2kPirab6Bqc6f5rTNeJ3OlS6MBsPNQ9FLZB7oAODpAdtiI9gcLi
+         ZI6A==
+X-Gm-Message-State: AOAM533nuYiplydlR4bjSRu2e2VwUtIN1b0LvfAVeg2/bUuDTR9/MGn/
+        nywxa69eX/u8S43oOuE6Jf6LlQ==
+X-Google-Smtp-Source: ABdhPJyi7lqcgiHzW2kZ8FF2RxD1OfTb46EGL8vRBVPC9YK99Y83oswhhe8cwDrBDhtUa6wo7KK5RA==
+X-Received: by 2002:a02:6589:: with SMTP id u131mr34640893jab.21.1614196654877;
+        Wed, 24 Feb 2021 11:57:34 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:c037:ba21:bf5e:4d1f])
+        by smtp.gmail.com with ESMTPSA id c7sm2006439ild.65.2021.02.24.11.57.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 11:57:34 -0800 (PST)
+Date:   Wed, 24 Feb 2021 12:57:29 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     vbabka@suse.cz, alex.shi@linux.alibaba.com, guro@fb.com,
+        hannes@cmpxchg.org, hughd@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        willy@infradead.org
+Subject: Re: [PATCH] mm: test page->flags directly in page_lru()
+Message-ID: <YDavqVVajik8Z+SR@google.com>
+References: <20210122220600.906146-11-yuzhao@google.com>
+ <20210224084807.2179942-1-yuzhao@google.com>
+ <20210224051558.79e31c60eea2c088f4a1b300@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210224194204.GI20344@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224051558.79e31c60eea2c088f4a1b300@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/2021 11:42 AM, Borislav Petkov wrote:
-> On Wed, Feb 24, 2021 at 11:30:34AM -0800, Andy Lutomirski wrote:
->> On Wed, Feb 24, 2021 at 11:20 AM Borislav Petkov <bp@alien8.de> wrote:
->>>
->>> On Wed, Feb 24, 2021 at 09:56:13AM -0800, Yu, Yu-cheng wrote:
->>>> No.  Maybe I am doing too much.  The GP fault sets si_addr to zero, for
->>>> example.  So maybe do the same here?
->>>
->>> No, you're looking at this from the wrong angle. This is going to be
->>> user-visible and the moment it gets upstream, it is cast in stone.
->>>
->>> So the whole use case of what luserspace needs to do or is going to do
->>> or wants to do on a SEGV_CPERR, needs to be described, agreed upon by
->>> people etc before it goes out. And thus clarified whether the address
->>> gets copied out or not.
->>
->> I vote 0.  The address is in ucontext->gregs[REG_RIP] [0] regardless.
->> Why do we need to stick a copy somewhere else?
->>
->> [0] or however it's spelled.  i can never remember.
+On Wed, Feb 24, 2021 at 05:15:58AM -0800, Andrew Morton wrote:
+> On Wed, 24 Feb 2021 01:48:07 -0700 Yu Zhao <yuzhao@google.com> wrote:
 > 
-> Fine with me. Let's have this documented in the manpage and then we can
-> move forward with this.
+> > Currently page_lru() uses Page{Active,Unevictable} to determine which
+> > lru list a page belongs to. Page{Active,Unevictable} contain
+> > compound_head() and therefore page_lru() essentially tests
+> > PG_{active,unevictable} against compound_head(page)->flags. Once an
+> > lru list is determined, page->lru, rather than
+> > compound_head(page)->lru, will be added to or deleted from it.
+> > 
+> > Though not bug, having compound_head() in page_lru() increases the
+> > size of vmlinux by O(KB) because page_lru() is inlined many places.
+> > And removing compound_head() entirely from Page{Active,Unevictable}
+> > may not be the best option (for the moment) either because there
+> > may be other cases that need compound_head(). This patch makes
+> > page_lru() and __clear_page_lru_flags(), which are used immediately
+> > before and after operations on page->lru, test
+> > PG_{active,unevictable} directly against page->flags instead.
 > 
-> Thx.
+> Oh geeze.
 > 
+> > --- a/include/linux/mm_inline.h
+> > +++ b/include/linux/mm_inline.h
+> > @@ -46,14 +46,12 @@ static __always_inline void __clear_page_lru_flags(struct page *page)
+> >  {
+> >  	VM_BUG_ON_PAGE(!PageLRU(page), page);
+> >  
+> > -	__ClearPageLRU(page);
+> > -
+> >  	/* this shouldn't happen, so leave the flags to bad_page() */
+> > -	if (PageActive(page) && PageUnevictable(page))
+> > +	if ((page->flags & (BIT(PG_active) | BIT(PG_unevictable))) ==
+> > +	    (BIT(PG_active) | BIT(PG_unevictable)))
+> >  		return;
+> 
+> This isn't very nice.  At the very least we should have (documented!)
+> helper functions for this:
 
-The man page at https://man7.org/linux/man-pages/man2/sigaction.2.html says,
+You are right. Now when I look at this, I s/dislike/hate/ it.
 
-SIGILL, SIGFPE, SIGSEGV, SIGBUS, and SIGTRAP fill in si_addr with the 
-address of the fault.
+> /* comment goes here */
+> static inline bool RawPageActive(struct page *page)
+> {
+> 	...
+> }
+> 
+> 
+> 
+> However.
+> 
+> Here's what the preprocessor produces for an allmodconfig version of
+> PageActive():
+> 
+> static inline __attribute__((__gnu_inline__)) __attribute__((__unused__)) __attribute__((no_instrument_function)) __attribute__((__always_inline__)) int PageActive(struct page *page)
+> {
+> 	return test_bit(PG_active, &({ do { if (__builtin_expect(!!(PagePoisoned(compound_head(page))), 0)) { dump_page(compound_head(page), "VM_BUG_ON_PAGE(" "PagePoisoned(compound_head(page))"")"); do { ({ asm volatile("%c0: nop\n\t" ".pushsection .discard.instr_begin\n\t" ".long %c0b - .\n\t" ".popsection\n\t" : : "i" (373)); }); do { asm volatile("1:\t" ".byte 0x0f, 0x0b" "\n" ".pushsection __bug_table,\"aw\"\n" "2:\t" ".long " "1b" " - 2b" "\t# bug_entry::bug_addr\n" "\t" ".long " "%c0" " - 2b" "\t# bug_entry::file\n" "\t.word %c1" "\t# bug_entry::line\n" "\t.word %c2" "\t# bug_entry::flags\n" "\t.org 2b+%c3\n" ".popsection" : : "i" ("./include/linux/page-flags.h"), "i" (338), "i" (0), "i" (sizeof(struct bug_entry))); } while (0); do { ({ asm volatile("%c0:\n\t" ".pushsection .discard.unreachable\n\t" ".long %c0b - .\n\t" ".popsection\n\t" : : "i" (374)); }); asm volatile(""); __builtin_unreachable(); } while (0); } while (0); } } while (0); compound_head(page); })->flags);
+> 
+> }
+> 
+> That's all to test a single bit!
 
-But it is not entirely true.
+I hear you. Let me spend a couple of days and focus on PG_{lru,active,
+unevictable,swapbacked} first. They are mostly used with lru-related
+operations and therefore can be switched to a compound_head()-free
+policy easily. My estimate is we could save ~8KB by doing so :)
 
-I will send a patch to update it, and another patch for the si_code.
+Weaning off compound_head() completely is a larger commitment neither
+I or Alex are willing to make at the moment -- I did suggest this to
+him last night when I asked him to help test build with GCC, which is
+their default compiler (we've switched to Clang).
 
---
-Yu-cheng
+Another good point he has raised is they did see a slowdown on ARM64
+after compound_head() was first introduced. My point is there may be
+measurable performance benefit too if we could get rid of those
+excessive calls to compound_head(). And I'd be happy to work with
+somebody if they are interested in doing this.
+
+Fair?
+
+> Four calls to compound_head().
+> 
+> Compiling this:
+> 
+> int wibble(struct page *page)
+> {
+> 	return PageActive(page);
+> }
+> 
+> 
+> to the below assembly output (allmodconfig build) and it appears that
+> the compiler did not CSE these calls.  Perhaps it would be beneficial
+> to give it a bit of help.
+
+Another interesting thing I've noticed is the following change from
+patch 10 also makes vmlinux a couple of hundreds bytes larger with
+my GCC 4.9.x.
+
+-unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone_idx)
++static unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru,
++				     int zone_idx)
+
+> This is all nuts.  How much of this inlining is really justifiable?  Do
+> we know we wouldn't get a better kernel if we did
+> 
+> 	mv mm-inline.h mm-not-inline-any-more.c
+> 
+> ?
+> 
+> Methinks that mm-inline.c needs some serious work...
+
+Agreed. I'll send another series of patches on top of the lru cleanup
+series this week.
+
+> 	.type	wibble, @function
+> wibble:
+> 1:	call	__fentry__
+> 	.section __mcount_loc, "a",@progbits
+> 	.quad 1b
+> 	.previous
+> 	pushq	%r12	#
+> 	pushq	%rbp	#
+> 	pushq	%rbx	#
+> # mm/swap.c:1156: {
+> 	movq	%rdi, %rbx	# page, page
+> 	movq	%rbx, %rbp	# page, _14
+> # ./include/linux/page-flags.h:184: 	unsigned long head = READ_ONCE(page->compound_head);
+> 	call	__sanitizer_cov_trace_pc	#
+> 	movq	8(%rbx), %r12	# page_2(D)->D.14210.D.14188.compound_head, _8
+> # ./include/linux/page-flags.h:186: 	if (unlikely(head & 1))
+> 	testb	$1, %r12b	#, _8
+> 	je	.L2945	#,
+> # ./include/linux/page-flags.h:187: 		return (struct page *) (head - 1);
+> 	call	__sanitizer_cov_trace_pc	#
+> 	leaq	-1(%r12), %rbp	#, _14
+> 	jmp	.L2945	#
+> .L2945:
+> 	call	__sanitizer_cov_trace_pc	#
+> # ./include/linux/page-flags.h:338: PAGEFLAG(Active, active, PF_HEAD) __CLEARPAGEFLAG(Active, active, PF_HEAD)
+> 	cmpq	$-1, 0(%rbp)	#, MEM[(long unsigned int *)_15]
+> 	jne	.L2946	#,
+> # ./include/linux/page-flags.h:184: 	unsigned long head = READ_ONCE(page->compound_head);
+> 	call	__sanitizer_cov_trace_pc	#
+> 	movq	8(%rbx), %rbp	#, _16
+> # ./include/linux/page-flags.h:186: 	if (unlikely(head & 1))
+> 	testb	$1, %bpl	#, _16
+> 	je	.L2947	#,
+> # ./include/linux/page-flags.h:187: 		return (struct page *) (head - 1);
+> 	leaq	-1(%rbp), %rbx	#, page
+> 	call	__sanitizer_cov_trace_pc	#
+> .L2947:
+> # ./include/linux/page-flags.h:338: PAGEFLAG(Active, active, PF_HEAD) __CLEARPAGEFLAG(Active, active, PF_HEAD)
+> 	call	__sanitizer_cov_trace_pc	#
+> 	movq	$.LC20, %rsi	#,
+> 	movq	%rbx, %rdi	# page,
+> 	call	dump_page	#
+> #APP
+> # 338 "./include/linux/page-flags.h" 1
+> 	373: nop	#
+> 	.pushsection .discard.instr_begin
+> 	.long 373b - .	#
+> 	.popsection
+> 	
+> # 0 "" 2
+> # 338 "./include/linux/page-flags.h" 1
+> 	1:	.byte 0x0f, 0x0b
+> .pushsection __bug_table,"aw"
+> 2:	.long 1b - 2b	# bug_entry::bug_addr
+> 	.long .LC3 - 2b	# bug_entry::file	#
+> 	.word 338	# bug_entry::line	#
+> 	.word 0	# bug_entry::flags	#
+> 	.org 2b+12	#
+> .popsection
+> # 0 "" 2
+> # 338 "./include/linux/page-flags.h" 1
+> 	374:	#
+> 	.pushsection .discard.unreachable
+> 	.long 374b - .	#
+> 	.popsection
+> 	
+> # 0 "" 2
+> #NO_APP
+> .L2946:
+> # ./include/linux/page-flags.h:184: 	unsigned long head = READ_ONCE(page->compound_head);
+> 	call	__sanitizer_cov_trace_pc	#
+> 	movq	8(%rbx), %rbp	#, _28
+> # ./include/linux/page-flags.h:186: 	if (unlikely(head & 1))
+> 	testb	$1, %bpl	#, _28
+> 	je	.L2948	#,
+> # ./include/linux/page-flags.h:187: 		return (struct page *) (head - 1);
+> 	leaq	-1(%rbp), %rbx	#, page
+> 	call	__sanitizer_cov_trace_pc	#
+> .L2948:
+> # ./arch/x86/include/asm/bitops.h:207: 		(addr[nr >> _BITOPS_LONG_SHIFT])) != 0;
+> 	call	__sanitizer_cov_trace_pc	#
+> 	movq	(%rbx), %rax	# MEM[(const long unsigned int *)_35], _24
+> # mm/swap.c:1158: }
+> 	popq	%rbx	#
+> 	popq	%rbp	#
+> # ./arch/x86/include/asm/bitops.h:207: 		(addr[nr >> _BITOPS_LONG_SHIFT])) != 0;
+> 	shrq	$5, %rax	#, tmp107
+> # ./include/linux/page-flags.h:338: PAGEFLAG(Active, active, PF_HEAD) __CLEARPAGEFLAG(Active, active, PF_HEAD)
+> 	andl	$1, %eax	#, tmp106
+> # mm/swap.c:1158: }
+> 	popq	%r12	#
+> 	ret
+> 
