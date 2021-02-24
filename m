@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCE93242F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CA13242F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233765AbhBXRLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 12:11:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49228 "EHLO mail.kernel.org"
+        id S230494AbhBXRMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 12:12:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231439AbhBXRLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 12:11:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AD5864F0B;
-        Wed, 24 Feb 2021 17:10:32 +0000 (UTC)
+        id S234040AbhBXRL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 12:11:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EA5364F04;
+        Wed, 24 Feb 2021 17:11:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614186632;
-        bh=SJ5Rru5hG1o1K/jlMvVzI1qjCrEGLO45OJ/U+7040fc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HSPR/wWgNMbRQ+S4wYUT05rHBo4pCnm4/8aBrtKFABWfY75ExJsX5cSEMqDXmZkVk
-         B3wtKyPJBOp7d2e5rTI2UQBIRgYeSLMvBWeSkumFH7Sqw7b68djTOmIxt+dZc8ApuP
-         TdKCWjOtexw6313xPABgbZSohP010+hAp7Im7P3sstnrETat77/nOIu7K6qwGP35cc
-         AkH5FFiwidjLOdh4SLs/EOa6oFWqrxlCBCWiGA9f0U5ecLE46Q30Ab3nVY+diRIF+r
-         qcWkWYr1vb+xlHekc0exE6bYBNMNBxFD5mfVilO3H87fa7htEyq5BbVC6f637BMJYi
-         4lHqKDqQ7NClw==
-Received: by mail-ot1-f49.google.com with SMTP id s107so2828668otb.8;
-        Wed, 24 Feb 2021 09:10:32 -0800 (PST)
-X-Gm-Message-State: AOAM5314sw8vasSt/UKqk2Hl7gEQW2A3R8wzueJUUC4Nie7rX3Xl7eA+
-        csIHZ20/vKN6z5iv1vNFTioZl9/k1GHTvxjOUI0=
-X-Google-Smtp-Source: ABdhPJz5tsY3F8T09dNXv8JnxGazL++sEU1h6wwPeb3AK0KRDtvuCHcYpTFjaYYOXIdA5S3OKoKOP24SjVd8wbZsicU=
-X-Received: by 2002:a05:6830:135a:: with SMTP id r26mr9309607otq.77.1614186631597;
- Wed, 24 Feb 2021 09:10:31 -0800 (PST)
+        s=k20201202; t=1614186677;
+        bh=D6GS8765FDJLWrNF8yJDKSQvLQdP5HHbAMpPeWl0CHg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i11fhSKiPKT8gGQ9LjWlroDEvnj9IzZmNOZd2w9lyT9ZlMAEBX18fCa4A9vgRGHsU
+         ioeNippgXZIddPLLhm345bmJM3HplHvXdLpCutBEhQxLzEqNy+rpx9IXYjirkTBESS
+         kEIIVkFiCf6KzOEG1mUYmwX1buN/8iZPCJiuwo+4aNOtAty+rnlxujck+PYRBuw80r
+         fSM5AKKc/3bV1Q8YQ18ctIC2Y8NREyuDqCtwED7q9DXX5ZNAhSytbAblvkwhmO/lOu
+         Uc7d1Ujllsgg4eXwldpBQxMWjungS3FA8agDvRw7mcLo1o5qAjwprrvxYcSpg0vDLM
+         l875Q2n8c4jRw==
+Date:   Wed, 24 Feb 2021 10:11:14 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        masahiroy@kernel.org, akpm@linux-foundation.org,
+        valentin.schneider@arm.com, terrelln@fb.com, qperret@google.com,
+        hannes@cmpxchg.org, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] init: Kconfig: Fix a spelling compier to compiler in the
+ file init/Kconfig
+Message-ID: <20210224171114.GA38192@24bbad8f3778>
+References: <20210224081409.824278-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-References: <cover.1614182415.git.jpoimboe@redhat.com>
-In-Reply-To: <cover.1614182415.git.jpoimboe@redhat.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 24 Feb 2021 18:10:20 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFnfH2OMA=JhzXuM=gT3pGci2=wpmjic-AbxoJLZnEexA@mail.gmail.com>
-Message-ID: <CAMj1kXFnfH2OMA=JhzXuM=gT3pGci2=wpmjic-AbxoJLZnEexA@mail.gmail.com>
-Subject: Re: [PATCH 00/13] x86/crypto/asm: objtool support
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     X86 ML <x86@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224081409.824278-1-unixbhaskar@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Feb 2021 at 17:29, Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> Standardize the crypto asm to make it resemble compiler-generated code,
-> so that objtool can understand it.
->
-> This magically enables ORC unwinding from crypto code.  It also fixes
-> the last known remaining objtool warnings on vmlinux.o, for LTO and
-> more.
->
-> Josh Poimboeuf (13):
->   objtool: Support asm jump tables
->   x86/crypto/aesni-intel_avx: Remove unused macros
->   x86/crypto/aesni-intel_avx: Fix register usage comments
->   x86/crypto/aesni-intel_avx: Standardize stack alignment prologue
->   x86/crypto/camellia-aesni-avx2: Unconditionally allocate stack buffer
->   x86/crypto/crc32c-pcl-intel: Standardize jump table
->   x86/crypto/sha_ni: Standardize stack alignment prologue
->   x86/crypto/sha1_avx2: Standardize stack alignment prologue
->   x86/crypto/sha256-avx2: Standardize stack alignment prologue
->   x86/crypto/sha512-avx: Standardize stack alignment prologue
->   x86/crypto/sha512-avx2: Standardize stack alignment prologue
->   x86/crypto/sha512-ssse3: Standardize stack alignment prologue
->   x86/crypto: Enable objtool in crypto code
->
+On Wed, Feb 24, 2021 at 01:44:09PM +0530, Bhaskar Chowdhury wrote:
+> 
+> s/compier/compiler/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-I gave this series a spin with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y,
-and all the tests still pass.
+I agree with Randy about the awkward wording of the title.
 
-Tested-by: Ard Biesheuvel <ardb@kernel.org>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+I think "init/Kconfig: Fix a typo in CC_VERSION_TEXT help text" would be
+succinct and descriptive.
 
+With that change:
 
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
->  arch/x86/crypto/Makefile                     |  2 -
->  arch/x86/crypto/aesni-intel_avx-x86_64.S     | 28 +++++--------
->  arch/x86/crypto/camellia-aesni-avx2-asm_64.S |  5 +--
->  arch/x86/crypto/crc32c-pcl-intel-asm_64.S    |  7 +---
->  arch/x86/crypto/sha1_avx2_x86_64_asm.S       |  8 ++--
->  arch/x86/crypto/sha1_ni_asm.S                |  8 ++--
->  arch/x86/crypto/sha256-avx2-asm.S            | 13 +++---
->  arch/x86/crypto/sha512-avx-asm.S             | 41 +++++++++----------
->  arch/x86/crypto/sha512-avx2-asm.S            | 42 ++++++++++----------
->  arch/x86/crypto/sha512-ssse3-asm.S           | 41 +++++++++----------
->  tools/objtool/check.c                        | 14 ++++++-
->  11 files changed, 98 insertions(+), 111 deletions(-)
->
+> ---
+>  init/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/init/Kconfig b/init/Kconfig
+> index b77c60f8b963..739c3425777b 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -19,7 +19,7 @@ config CC_VERSION_TEXT
+>  	    CC_VERSION_TEXT so it is recorded in include/config/auto.conf.cmd.
+>  	    When the compiler is updated, Kconfig will be invoked.
+> 
+> -	  - Ensure full rebuild when the compier is updated
+> +	  - Ensure full rebuild when the compiler is updated
+>  	    include/linux/kconfig.h contains this option in the comment line so
+>  	    fixdep adds include/config/cc/version/text.h into the auto-generated
+>  	    dependency. When the compiler is updated, syncconfig will touch it
 > --
-> 2.29.2
->
+> 2.30.1
+> 
