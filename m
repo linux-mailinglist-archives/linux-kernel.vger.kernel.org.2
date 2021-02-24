@@ -2,109 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CDF324150
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2F0324148
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235783AbhBXPqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:46:38 -0500
-Received: from mout.kundenserver.de ([212.227.126.135]:57079 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238573AbhBXPdc (ORCPT
+        id S236050AbhBXPpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:45:38 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:17930 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236848AbhBXPcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:33:32 -0500
-X-Greylist: delayed 69437 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Feb 2021 10:33:30 EST
-Received: from [192.168.1.155] ([77.2.19.91]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MeCYx-1lmu1s3oWN-00bNPe; Wed, 24 Feb 2021 16:30:44 +0100
-Subject: Re: [RFC PATCH 09/12] drivers: base: reintroduce find_bus()
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, rafael@kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        pantelis.antoniou@konsulko.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20210208222203.22335-1-info@metux.net>
- <20210208222203.22335-10-info@metux.net> <YCen7uHqFJQ/U/5p@kroah.com>
- <da82c033-3a82-3420-4d06-f5c39c524ae9@metux.net> <YDYHhYRDBDKGSZ1r@kroah.com>
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-Message-ID: <9db34ee4-30dc-9e69-6e82-00cbf4615ed5@metux.net>
-Date:   Wed, 24 Feb 2021 16:30:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 24 Feb 2021 10:32:25 -0500
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 11OFVM0R013852
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 00:31:22 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 11OFVM0R013852
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614180682;
+        bh=NIWEdfGUaXEX61U7ewWCrRL/WDTFKxJMVqc8souGXLc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ipGu0GmGri8+0bHRB5q3meEs9UQ+CidKup2plvxzqNw2HXnG8G5inGjoILgYdHZWH
+         ls3zbv9Q7yhuo4BXu+B+zCw+sEmUvl6+x8xwVvfBMrU+TZ5RfzHxGRs1XyPVPQeS48
+         K7T/zmqXzUoYu+NIeMok3KfKDUVZfVfFN9EAUAXkXbqdzjMFsRiSgQAhDXjYpT8Sla
+         pYycS+yzmW8eoWJdqcPasel5dH1FBdKX6BHmemJUqtxFNBWMBTHOei8E3jVXORDU88
+         IHRCWffn5COOoFEUMLtJImKOop7sQQ2rfc8xvXi4c62iLS0RionbROCQQDTXPhPDOD
+         C9fHnFsnKMbcw==
+X-Nifty-SrcIP: [209.85.210.178]
+Received: by mail-pf1-f178.google.com with SMTP id b145so1551028pfb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 07:31:22 -0800 (PST)
+X-Gm-Message-State: AOAM531G+6w4knjIOWh1fceTtn4T37Lixw2iwbMO4B1I2bR8apOIZY/E
+        8M3TfDvj2FSePX50QAJjuE2gwD35CHJlhYUOgwU=
+X-Google-Smtp-Source: ABdhPJyQO+w2VB769iQczXSzMuIYSt7WbSl25Nrpjc6Vp1QHQQgzVNm8//JOTENtyjqs2w5mSaFZUoqCs3IQGo6IwHU=
+X-Received: by 2002:a63:cc4f:: with SMTP id q15mr14513218pgi.47.1614180681653;
+ Wed, 24 Feb 2021 07:31:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YDYHhYRDBDKGSZ1r@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:mmo9Pc/0GYHESIzBRv6D4duVXYi0igQdmijnEbfrvu4Oao4dFfX
- G0y5WB2yjQYxEu8yPzpeFzE3k7hWM/cMZkp1vjqo+y9rAg7a6CNNZDV51yWjscyeStjUdYW
- lTz0zEJb6HvFl08t75u+jatWWbONlx5rz47B6g5jItILg5ufHmQ9eSPVLMJB0YO9csGC7lD
- Zr43gdWr3j7oSnQMqnpYQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ylPdVO6clTk=:ta/tLM5X3RdLcmEfayqFsG
- OO1SjQ4QEcInjYBU6ePzx8MW1BeAMSSsGtiwuxwXp3EppERVkX8+IMqPhmSjBuApKgiY+ambg
- SJ6rgtxJ7h+m/ShAyDlk6F5iGXPNC5Jy/DTE16qzYeOTAo5yC1O2JqJoyqcMFiA0YT7Q4Tvf8
- quGJQzhPlRSBeSGpa5IZqVUhQj+R2eqEIHUjbh+WwMshdE+x3MkyjitZTZLUFKgGjg0t/QoAZ
- 932QHG+9Enn5ha0JPTgI3b8lJyRILIKGCTjV6u8SluZrd6w5xQ449BYEzXQ8Byy50ciAXB9Ao
- a7+B2NXFbUI8zNeSx6NO76ZcYhUSQfEzeDzNb/Urh69m3NStdrNLFNoiF6EhCbntC5He+5p7p
- XtcbRjKFwpcXEQHucK784gzmG4foNCGDi4FHU/FqQ3llMa39swrNILX/aHqSR
+References: <YDUibKAt5tpA1Hxs@gunter> <CAHk-=wipCbbXswcFvnrGae01H54dY1+XoaL+9YaiU71zGzko3Q@mail.gmail.com>
+ <CAHk-=wh8vHL43v7GWK9MWrWitSmOmrEw1B0AJD9CrhBc4FvpxA@mail.gmail.com>
+ <CAHk-=wiuoRKa=F3txoVHvnca+H=7gJyL3SFYwd3549v-sa0+QQ@mail.gmail.com>
+ <20210223200130.GA8059@lst.de> <CAHk-=wj27tmZBzFRTZTAEPd6eRBzP5xCkQM+1cuSx7vzv8K4=g@mail.gmail.com>
+ <CAHk-=whudLzx0zmn+xLDmC1su6DF4oMQT6uEgjDEq0RsHRsDwA@mail.gmail.com>
+ <20210224075220.GA546@lst.de> <YDZfGFhgZl0xBlZl@gunter> <CAK7LNASjyTjqoJG=EtPFTUzYv2v96qYBaaymSirS2HLGoRLpGA@mail.gmail.com>
+In-Reply-To: <CAK7LNASjyTjqoJG=EtPFTUzYv2v96qYBaaymSirS2HLGoRLpGA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 25 Feb 2021 00:30:44 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARoLOvNo=EqDeYEW1QBJqxj5t11UyA7DGjweKEoHPjANw@mail.gmail.com>
+Message-ID: <CAK7LNARoLOvNo=EqDeYEW1QBJqxj5t11UyA7DGjweKEoHPjANw@mail.gmail.com>
+Subject: Re: [GIT PULL] Modules updates for v5.12
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?=EF=BF=BCMiroslav_Benes?= <mbenes@suse.cz>,
+        Emil Velikov <emil.l.velikov@gmail.com>
+Content-Type: multipart/mixed; boundary="0000000000002288ab05bc16ba0a"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.02.21 09:00, Greg KH wrote:
+--0000000000002288ab05bc16ba0a
+Content-Type: text/plain; charset="UTF-8"
 
-> Have the firmware code do it itself, do nto try to "reach across" like
-> this.
+On Wed, Feb 24, 2021 at 11:46 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Wed, Feb 24, 2021 at 11:13 PM Jessica Yu <jeyu@kernel.org> wrote:
+> >
+> > +++ Christoph Hellwig [24/02/21 08:52 +0100]:
+> > >On Tue, Feb 23, 2021 at 12:07:39PM -0800, Linus Torvalds wrote:
+> > >> On Tue, Feb 23, 2021 at 12:03 PM Linus Torvalds
+> > >> <torvalds@linux-foundation.org> wrote:
+> > >> >
+> > >> > This is unacceptably slow. If that symbol trimming takes 30% of the
+> > >> > whole kernel build time, it needs to be fixed or removed.
+> > >>
+> > >> I think I'm going to mark TRIM_UNUSED_KSYMS as "depends on BROKEN".
+> > >> There's no way I can accept that horrible overhead, and the rationale
+> > >> for that config option is questionable at best,
+> > >
+> > >I think it is pretty useful for embedded setups.
+> > >
+> > >BROKEN seems pretty strong for something that absolutely works as
+> > >intendended.  I guess to make you (and possibly others) not grumpy
+> > >we just need to ensure it doesn't get pulled in by allmodconfig.
+> > >
+> > >So maybe just invert the symbol, default the KEEP_UNUSED_SYMBOL, and
+> > >add a message to the helptext explaining the slowdown?
+> >
+> > Hm, something like this maybe? (untested)
+>
 
-By "firmware code" you mean Linux acpi core or the board's bios ?
-
-a) Fixing BIOS would be the cleanest solution, but we cant expect all
-    users to do field upgrades. Many of the devices (eg. the customer,
-    I've originally wrote the apu board driver for, deployed them in
-    really remote locations, sometimes even just reachable by ship,
-    heli or horse, litterally)
-
-b) Explicit blacklisting somewhere in apci enumeration code could work,
-    but I really hate the idea of such board and bios version specific
-    quirks in a place, completely unrelated to the actual board driver.
-
-Actually, I'm also hoping to find a proper way for having those things
-in one file per board, in the future. (probably not applicable for
-early stuff, or _OSI(Linux), etc)
-
-> And what problem are you really trying to solve here by doing this?
-
-The problem is that *some* bios versions (that came much later, after
-pcengines-apuv2 driver went into production) added a few things that
-the driver is already doing - different versions doing it differently
-(eg. even enumerating gpio connected leds with completely different
-names, etc), and still some gpio connected devices missing. Some
-versions (just forgot, which one it's been exactly) even enumerate
-*some* gpios (and LEDs behind them) as a different device, whose Linux
-driver just happens to work. Meanwhile I can't find any reference of
-that in the coreboot source, anymore.
-
-As you can see: bios is anything but reliable on that platform.
-
-What I'm trying to achieve: the kernel should behave exactly the
-same, no matter what board revision, bios version, kernel version,
-etc. (there should be especially no need to have special per-board
-quirks in userland, depending on board rev, bios version, kernel
-version).
-
-If you've got a better solution, I'll be glad to hear it.
+A patch attached, if Linus is OK to re-enable this.
 
 
---mtx
 
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Best Regards
+Masahiro Yamada
+
+--0000000000002288ab05bc16ba0a
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="0001-Kbuild-re-enable-TRIM_UNUSED_KSYMS-under-the-conditi.patch"
+Content-Disposition: attachment; 
+	filename="0001-Kbuild-re-enable-TRIM_UNUSED_KSYMS-under-the-conditi.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kljlgcbn0>
+X-Attachment-Id: f_kljlgcbn0
+
+RnJvbSAyZWI4ODY0OGFmZjk1NDdkMWMxMGRmODQxZDFhYzYxYWMyMzY5ZGY2IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBNYXNhaGlybyBZYW1hZGEgPG1hc2FoaXJveUBrZXJuZWwub3Jn
+PgpEYXRlOiBXZWQsIDI0IEZlYiAyMDIxIDIzOjUyOjU0ICswOTAwClN1YmplY3Q6IFtQQVRDSF0g
+S2J1aWxkOiByZS1lbmFibGUgVFJJTV9VTlVTRURfS1NZTVMgdW5kZXIgdGhlIGNvbmRpdGlvbiBv
+ZgogIUNPTVBJTEVfVEVTVAoKVGhpcyBvcHRpb24gaXMgdXNlZnVsIGZvciBlbWJlZGRlZCBzeXN0
+ZW1zLCBhbmQgYWN1dGFsbHkgdXNlZCBieSB0aGUKTUlQUyBnZW5lcmljX2RlZmNvbmZpZy4gQ29t
+bWl0IDE1MThjNjMzZGY3OCAoImtidWlsZDogYWxsb3cgc3ltYm9sCndoaXRlbGlzdGluZyB3aXRo
+IFRSSU1fVU5VU0VEX0tTWU1TIikgYWxzbyBzdGF0ZXMgdGhpcyBpcyB1c2VkIGJ5CkFuZHJvaWQg
+R2VuZXJpYyBLZXJuZWwgSW1hZ2UuIEkgZ3Vlc3Mgc29tZWJvZHkgd2lsbCBzdGFydCBjb21wbGFp
+bmluZy4KCkRpc2FibGUgdGhpcyBvbmx5IGZvciBDT01QSUxFX1RFU1Qgc28gaXQgaXMgaGlkZGVu
+IGZvciBhbGx7eWVzLG1vZH1jb25maWcuCgpGaXhlczogNWNmMGZkNTkxZjJlICgiS2J1aWxkOiBk
+aXNhYmxlIFRSSU1fVU5VU0VEX0tTWU1TIG9wdGlvbiIpClNpZ25lZC1vZmYtYnk6IE1hc2FoaXJv
+IFlhbWFkYSA8bWFzYWhpcm95QGtlcm5lbC5vcmc+Ci0tLQogaW5pdC9LY29uZmlnIHwgMiArLQog
+MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0
+IGEvaW5pdC9LY29uZmlnIGIvaW5pdC9LY29uZmlnCmluZGV4IDJmZjBiNWE1MDczNi4uMTM1ZTIx
+MjllMDRiIDEwMDY0NAotLS0gYS9pbml0L0tjb25maWcKKysrIGIvaW5pdC9LY29uZmlnCkBAIC0y
+MjczLDcgKzIyNzMsNyBAQCBjb25maWcgTU9EVUxFX0FMTE9XX01JU1NJTkdfTkFNRVNQQUNFX0lN
+UE9SVFMKIAogY29uZmlnIFRSSU1fVU5VU0VEX0tTWU1TCiAJYm9vbCAiVHJpbSB1bnVzZWQgZXhw
+b3J0ZWQga2VybmVsIHN5bWJvbHMiCi0JZGVwZW5kcyBvbiBCUk9LRU4KKwlkZXBlbmRzIG9uICFD
+T01QSUxFX1RFU1QKIAloZWxwCiAJICBUaGUga2VybmVsIGFuZCBzb21lIG1vZHVsZXMgbWFrZSBt
+YW55IHN5bWJvbHMgYXZhaWxhYmxlIGZvcgogCSAgb3RoZXIgbW9kdWxlcyB0byB1c2UgdmlhIEVY
+UE9SVF9TWU1CT0woKSBhbmQgdmFyaWFudHMuIERlcGVuZGluZwotLSAKMi4yNy4wCgo=
+--0000000000002288ab05bc16ba0a--
