@@ -2,203 +2,540 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814A23237DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0732B3237E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232672AbhBXHZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:25:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
+        id S231788AbhBXH0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:26:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbhBXHZf (ORCPT
+        with ESMTP id S232823AbhBXH0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:25:35 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22B6C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:24:54 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id s107so1285214otb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:24:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=hVQRk3vsrmZl5N/tvnjO8rhMNKZckQjY8psEJ67EeM8=;
-        b=lHpQY9Xoan3f7RzlfoTCYqMDpB2GYu2zzswfLM+0QwelUNJD+8FU8EhT1+yGzjim0I
-         9uhmS/t6MbMp2OziRC6oa2hVMN930QT9YNZkmMACTP1pxcksLVNwPWsDcYvmIXAMASn6
-         Sl9jqsO0uRpl9vMRiMcV2BGu0jcOEt68pMewVfz9KsUINtV/UQdajoTuJN0p5Nv59xvR
-         DrW2N6oWyo3RmuIQuYeEng/NJSyQks4RvvA5/QCXcgyQztXrtznPlkvR4M6mBZZK9Wb7
-         UiZafRQtPqpF8HAR3legu9HznQoAtT1LX7xvkM4aLZbZ7SLwcgmaRx3EE2DBBMSk7sY5
-         DeMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=hVQRk3vsrmZl5N/tvnjO8rhMNKZckQjY8psEJ67EeM8=;
-        b=BcGXy5e4cVC6N4vR4tKXCEcToPditQ1oUUbW/vg0y0xGRIxhmzZExLog07+YhUIDOy
-         yO/YTiMkb1Yu06W5mb3lDiHDweCvLn1ICqoe2s6gkqV7GrEBaqO9SLzdAmQPIsPnYB29
-         3b3c9dDlWl+IlXkU+X39FP871IvAVdl8BWMT8Ylg2dg7tRQuB2T+gNRWytBpGK0p+Iv6
-         8+0F+ywyVLP8wCg4TybqBxPmItIeLHy7+rAcCIqAsXA9Qk6vaBw3UCn9mW8bz/LgVwef
-         p4yx3qTrdQASATPwb95LbzTLNDnpr4WLJmuYorkiVuiiKwyROsgBy3oZ1KqmJWYYtJSW
-         gE1g==
-X-Gm-Message-State: AOAM531C4ZWM2CvO8fs3hMGXwIeK1ACETnr+fsdFC7oJEkxtKJReRgd/
-        7wJHej09ZZR7uAIt6QwfaK5+JQ==
-X-Google-Smtp-Source: ABdhPJwIf+Ts7WN2ZWmu6PeVEXypBZ7ULkjM0QFA8F1//ByW1QhpvC8/0liMfSE/JiCDssbi21C9dA==
-X-Received: by 2002:a9d:b90:: with SMTP id 16mr7735327oth.304.1614151493564;
-        Tue, 23 Feb 2021 23:24:53 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 64sm227540otu.80.2021.02.23.23.24.52
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 23 Feb 2021 23:24:53 -0800 (PST)
-Date:   Tue, 23 Feb 2021 23:24:23 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Roman Gushchin <guro@fb.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: vmstat: fix /proc/sys/vm/stat_refresh generating
- false warnings
-In-Reply-To: <20200806182555.d7a7fc9853b5a239ffe9f846@linux-foundation.org>
-Message-ID: <alpine.LSU.2.11.2102232210130.9202@eggly.anvils>
-References: <20200714173920.3319063-1-guro@fb.com> <alpine.LSU.2.11.2007291902340.6363@eggly.anvils> <20200730162348.GA679955@carbon.dhcp.thefacebook.com> <alpine.LSU.2.11.2007302018350.2410@eggly.anvils> <20200801011821.GA859734@carbon.dhcp.thefacebook.com>
- <alpine.LSU.2.11.2007311915130.9716@eggly.anvils> <20200804004012.GA1049259@carbon.dhcp.thefacebook.com> <alpine.LSU.2.11.2008051913580.8184@eggly.anvils> <20200806233804.GB1217906@carbon.dhcp.thefacebook.com>
- <20200806182555.d7a7fc9853b5a239ffe9f846@linux-foundation.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Wed, 24 Feb 2021 02:26:02 -0500
+Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A810CC06174A;
+        Tue, 23 Feb 2021 23:25:21 -0800 (PST)
+Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
+        id 1079FB1059E; Wed, 24 Feb 2021 08:25:19 +0100 (CET)
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Haren Myneni <haren@us.ibm.com>,
+        =?UTF-8?q?Breno=20Leit=C3=A3o?= <leitao@debian.org>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+        Steven Royer <seroyer@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Cristobal Forno <cforno12@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Michael Cyr <mikecyr@linux.ibm.com>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        netdev@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org
+Subject: [PATCH v2] vio: make remove callback return void
+Date:   Wed, 24 Feb 2021 08:25:16 +0100
+Message-Id: <20210224072516.74696-1-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 6 Aug 2020, Andrew Morton wrote:
-> On Thu, 6 Aug 2020 16:38:04 -0700 Roman Gushchin <guro@fb.com> wrote:
+The driver core ignores the return value of struct bus_type::remove()
+because there is only little that can be done. To simplify the quest to
+make this function return void, let struct vio_driver::remove() return
+void, too. All users already unconditionally return 0, this commit makes
+it obvious that returning an error code is a bad idea and makes it
+obvious for future driver authors that returning an error code isn't
+intended.
 
-August, yikes, I thought it was much more recent.
+Note there are two nominally different implementations for a vio bus:
+one in arch/sparc/kernel/vio.c and the other in
+arch/powerpc/platforms/pseries/vio.c. I didn't care to check which
+driver is using which of these busses (or if even some of them can be
+used with both) and simply adapt all drivers and the two bus codes in
+one go.
 
-> 
-> > it seems that Hugh and me haven't reached a consensus here.
-> > Can, you, please, not merge this patch into 5.9, so we would have
-> > more time to find a solution, acceptable for all?
-> 
-> No probs.  I already had a big red asterisk on it ;)
+Note that for the powerpc implementation there is a semantical change:
+Before this patch for a device that was bound to a driver without a
+remove callback vio_cmo_bus_remove(viodev) wasn't called. As the device
+core still considers the device unbound after vio_bus_remove() returns
+calling this unconditionally is the consistent behaviour which is
+implemented here.
 
-I've a suspicion that Andrew might be tiring of his big red asterisk,
-and wanting to unload
-mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings.patch
-mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix.patch
-mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix-2.patch
-into 5.12.
+Reviewed-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Acked-by: Lijun Pan <ljp@linux.ibm.com>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+---
+Hello,
 
-I would prefer not, and reiterate my Nack: but no great harm will
-befall the cosmos if he overrules that, and it does go through to
-5.12 - I'll just want to revert it again later.  And I do think a
-more straightforward way of suppressing those warnings would be just
-to delete the code that issues them, rather than brushing them under
-a carpet of overtuning.
+v1 (sent with Message-Id: 20210127215010.99954-1-uwe@kleine-koenig.org>
+had an back then unfulfilled precondition for a patch to
+drivers/net/ethernet/ibm/ibmvnic.c. That patch already got into v5.11 as
+5e9eff5dfa46 "ibmvnic: device remove has higher precedence over reset".
+So the way is free for this patch.
 
-I've been running mmotm with the patch below (shown as sign of good
-faith, and for you to try, but not ready to go yet) for a few months
-now - overriding your max_drift, restoring nr_writeback and friends to
-the same checking, fixing the obvious reason why nr_zone_write_pending
-and nr_writeback are seen negative occasionally (interrupt interrupting
-to decrement those stats before they have even been incremented).
+Compared to v1 I rebased on a later linus/master and added acks.
 
-Two big BUTs (if not asterisks): since adding that patch, I have
-usually forgotten all about it, so forgotten to run the script that
-echoes /proc/sys/vm/stat_refresh at odd intervals while under load:
-so have less data than I'd intended by now.  And secondly (and I've
-just checked again this evening) I do still see nr_zone_write_pending
-and nr_writeback occasionally caught negative while under load.  So,
-there's something more at play, perhaps the predicted Gushchin Effect
-(but wouldn't they go together if so? I've only seen them separately),
-or maybe something else, I don't know.
+Best regards
+Uwe
 
-Those are the only stats I've seen caught negative, but I don't have
-CMA configured at all.  You mention nr_free_cma as the only(?) other
-stat you've seen negative, that of course I won't see, but looking
-at the source I now notice that NR_FREE_CMA_PAGES is incremented
-and decremented according to page migratetype...
+ arch/powerpc/include/asm/vio.h           | 2 +-
+ arch/powerpc/platforms/pseries/vio.c     | 7 +++----
+ arch/sparc/include/asm/vio.h             | 2 +-
+ arch/sparc/kernel/ds.c                   | 6 ------
+ arch/sparc/kernel/vio.c                  | 4 ++--
+ drivers/block/sunvdc.c                   | 3 +--
+ drivers/char/hw_random/pseries-rng.c     | 3 +--
+ drivers/char/tpm/tpm_ibmvtpm.c           | 4 +---
+ drivers/crypto/nx/nx-842-pseries.c       | 4 +---
+ drivers/crypto/nx/nx.c                   | 4 +---
+ drivers/misc/ibmvmc.c                    | 4 +---
+ drivers/net/ethernet/ibm/ibmveth.c       | 4 +---
+ drivers/net/ethernet/ibm/ibmvnic.c       | 4 +---
+ drivers/net/ethernet/sun/ldmvsw.c        | 4 +---
+ drivers/net/ethernet/sun/sunvnet.c       | 3 +--
+ drivers/scsi/ibmvscsi/ibmvfc.c           | 3 +--
+ drivers/scsi/ibmvscsi/ibmvscsi.c         | 4 +---
+ drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c | 4 +---
+ drivers/tty/hvc/hvcs.c                   | 3 +--
+ drivers/tty/vcc.c                        | 4 +---
+ 20 files changed, 22 insertions(+), 54 deletions(-)
 
-... internally we have another stat that's incremented and decremented
-according to page migratetype, and that one has been seen negative too:
-isn't page migratetype something that usually stays the same, but
-sometimes the migratetype of the page's block can change, even while
-some pages of it are allocated?  Not a stable basis for maintaining
-stats, though won't matter much if they are only for display.
-
-vmstat_refresh could just exempt nr_zone_write_pending, nr_writeback
-and nr_free_cma from warnings, if we cannot find a fix to them: but
-I see no reason to suppress warnings on all the other vmstats.
-
-The patch I've been testing with:
-
---- mmotm/mm/page-writeback.c	2021-02-14 14:32:24.000000000 -0800
-+++ hughd/mm/page-writeback.c	2021-02-20 18:01:11.264162616 -0800
-@@ -2769,6 +2769,13 @@ int __test_set_page_writeback(struct pag
- 	int ret, access_ret;
+diff --git a/arch/powerpc/include/asm/vio.h b/arch/powerpc/include/asm/vio.h
+index 0cf52746531b..721c0d6715ac 100644
+--- a/arch/powerpc/include/asm/vio.h
++++ b/arch/powerpc/include/asm/vio.h
+@@ -113,7 +113,7 @@ struct vio_driver {
+ 	const char *name;
+ 	const struct vio_device_id *id_table;
+ 	int (*probe)(struct vio_dev *dev, const struct vio_device_id *id);
+-	int (*remove)(struct vio_dev *dev);
++	void (*remove)(struct vio_dev *dev);
+ 	/* A driver must have a get_desired_dma() function to
+ 	 * be loaded in a CMO environment if it uses DMA.
+ 	 */
+diff --git a/arch/powerpc/platforms/pseries/vio.c b/arch/powerpc/platforms/pseries/vio.c
+index b2797cfe4e2b..9cb4fc839fd5 100644
+--- a/arch/powerpc/platforms/pseries/vio.c
++++ b/arch/powerpc/platforms/pseries/vio.c
+@@ -1261,7 +1261,6 @@ static int vio_bus_remove(struct device *dev)
+ 	struct vio_dev *viodev = to_vio_dev(dev);
+ 	struct vio_driver *viodrv = to_vio_driver(dev->driver);
+ 	struct device *devptr;
+-	int ret = 1;
  
- 	lock_page_memcg(page);
-+	/*
-+	 * Increment counts in advance, so that they will not go negative
-+	 * if test_clear_page_writeback() comes in to decrement them.
-+	 */
-+	inc_lruvec_page_state(page, NR_WRITEBACK);
-+	inc_zone_page_state(page, NR_ZONE_WRITE_PENDING);
-+
- 	if (mapping && mapping_use_writeback_tags(mapping)) {
- 		XA_STATE(xas, &mapping->i_pages, page_index(page));
- 		struct inode *inode = mapping->host;
-@@ -2804,9 +2811,14 @@ int __test_set_page_writeback(struct pag
- 	} else {
- 		ret = TestSetPageWriteback(page);
- 	}
--	if (!ret) {
--		inc_lruvec_page_state(page, NR_WRITEBACK);
--		inc_zone_page_state(page, NR_ZONE_WRITE_PENDING);
-+
-+	if (WARN_ON_ONCE(ret)) {
-+		/*
-+		 * Correct counts in retrospect, if PageWriteback was already
-+		 * set; but does any filesystem ever allow this to happen?
-+		 */
-+		dec_lruvec_page_state(page, NR_WRITEBACK);
-+		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
- 	}
- 	unlock_page_memcg(page);
- 	access_ret = arch_make_page_accessible(page);
---- mmotm/mm/vmstat.c	2021-02-20 17:59:44.838171232 -0800
-+++ hughd/mm/vmstat.c	2021-02-20 18:01:11.272162661 -0800
-@@ -1865,7 +1865,7 @@ int vmstat_refresh(struct ctl_table *tab
+ 	/*
+ 	 * Hold a reference to the device after the remove function is called
+@@ -1270,13 +1269,13 @@ static int vio_bus_remove(struct device *dev)
+ 	devptr = get_device(dev);
  
- 	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
- 		val = atomic_long_read(&vm_zone_stat[i]);
--		if (val < -max_drift) {
-+		if (val < 0) {
- 			pr_warn("%s: %s %ld\n",
- 				__func__, zone_stat_name(i), val);
- 			err = -EINVAL;
-@@ -1874,13 +1874,21 @@ int vmstat_refresh(struct ctl_table *tab
- #ifdef CONFIG_NUMA
- 	for (i = 0; i < NR_VM_NUMA_STAT_ITEMS; i++) {
- 		val = atomic_long_read(&vm_numa_stat[i]);
--		if (val < -max_drift) {
-+		if (val < 0) {
- 			pr_warn("%s: %s %ld\n",
- 				__func__, numa_stat_name(i), val);
- 			err = -EINVAL;
- 		}
+ 	if (viodrv->remove)
+-		ret = viodrv->remove(viodev);
++		viodrv->remove(viodev);
+ 
+-	if (!ret && firmware_has_feature(FW_FEATURE_CMO))
++	if (firmware_has_feature(FW_FEATURE_CMO))
+ 		vio_cmo_bus_remove(viodev);
+ 
+ 	put_device(devptr);
+-	return ret;
++	return 0;
+ }
+ 
+ /**
+diff --git a/arch/sparc/include/asm/vio.h b/arch/sparc/include/asm/vio.h
+index 059f0eb678e0..8a1a83bbb6d5 100644
+--- a/arch/sparc/include/asm/vio.h
++++ b/arch/sparc/include/asm/vio.h
+@@ -362,7 +362,7 @@ struct vio_driver {
+ 	struct list_head		node;
+ 	const struct vio_device_id	*id_table;
+ 	int (*probe)(struct vio_dev *dev, const struct vio_device_id *id);
+-	int (*remove)(struct vio_dev *dev);
++	void (*remove)(struct vio_dev *dev);
+ 	void (*shutdown)(struct vio_dev *dev);
+ 	unsigned long			driver_data;
+ 	struct device_driver		driver;
+diff --git a/arch/sparc/kernel/ds.c b/arch/sparc/kernel/ds.c
+index 522e5b51050c..4a5bdb0df779 100644
+--- a/arch/sparc/kernel/ds.c
++++ b/arch/sparc/kernel/ds.c
+@@ -1236,11 +1236,6 @@ static int ds_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	return err;
+ }
+ 
+-static int ds_remove(struct vio_dev *vdev)
+-{
+-	return 0;
+-}
+-
+ static const struct vio_device_id ds_match[] = {
+ 	{
+ 		.type = "domain-services-port",
+@@ -1251,7 +1246,6 @@ static const struct vio_device_id ds_match[] = {
+ static struct vio_driver ds_driver = {
+ 	.id_table	= ds_match,
+ 	.probe		= ds_probe,
+-	.remove		= ds_remove,
+ 	.name		= "ds",
+ };
+ 
+diff --git a/arch/sparc/kernel/vio.c b/arch/sparc/kernel/vio.c
+index 4f57056ed463..348a88691219 100644
+--- a/arch/sparc/kernel/vio.c
++++ b/arch/sparc/kernel/vio.c
+@@ -105,10 +105,10 @@ static int vio_device_remove(struct device *dev)
+ 		 * routines to do so at the moment. TBD
+ 		 */
+ 
+-		return drv->remove(vdev);
++		drv->remove(vdev);
  	}
- #endif
-+	for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
-+		val = atomic_long_read(&vm_node_stat[i]);
-+		if (val < 0) {
-+			pr_warn("%s: %s %ld\n",
-+				__func__, node_stat_name(i), val);
-+			err = -EINVAL;
-+		}
-+	}
- 	if (err)
- 		return err;
- 	if (write)
+ 
+-	return 1;
++	return 0;
+ }
+ 
+ static ssize_t devspec_show(struct device *dev,
+diff --git a/drivers/block/sunvdc.c b/drivers/block/sunvdc.c
+index 39aeebc6837d..1547d4345ad8 100644
+--- a/drivers/block/sunvdc.c
++++ b/drivers/block/sunvdc.c
+@@ -1071,7 +1071,7 @@ static int vdc_port_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	return err;
+ }
+ 
+-static int vdc_port_remove(struct vio_dev *vdev)
++static void vdc_port_remove(struct vio_dev *vdev)
+ {
+ 	struct vdc_port *port = dev_get_drvdata(&vdev->dev);
+ 
+@@ -1094,7 +1094,6 @@ static int vdc_port_remove(struct vio_dev *vdev)
+ 
+ 		kfree(port);
+ 	}
+-	return 0;
+ }
+ 
+ static void vdc_requeue_inflight(struct vdc_port *port)
+diff --git a/drivers/char/hw_random/pseries-rng.c b/drivers/char/hw_random/pseries-rng.c
+index 8038a8a9fb58..f4949b689bd5 100644
+--- a/drivers/char/hw_random/pseries-rng.c
++++ b/drivers/char/hw_random/pseries-rng.c
+@@ -54,10 +54,9 @@ static int pseries_rng_probe(struct vio_dev *dev,
+ 	return hwrng_register(&pseries_rng);
+ }
+ 
+-static int pseries_rng_remove(struct vio_dev *dev)
++static void pseries_rng_remove(struct vio_dev *dev)
+ {
+ 	hwrng_unregister(&pseries_rng);
+-	return 0;
+ }
+ 
+ static const struct vio_device_id pseries_rng_driver_ids[] = {
+diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
+index 994385bf37c0..903604769de9 100644
+--- a/drivers/char/tpm/tpm_ibmvtpm.c
++++ b/drivers/char/tpm/tpm_ibmvtpm.c
+@@ -343,7 +343,7 @@ static int ibmvtpm_crq_send_init_complete(struct ibmvtpm_dev *ibmvtpm)
+  *
+  * Return: Always 0.
+  */
+-static int tpm_ibmvtpm_remove(struct vio_dev *vdev)
++static void tpm_ibmvtpm_remove(struct vio_dev *vdev)
+ {
+ 	struct tpm_chip *chip = dev_get_drvdata(&vdev->dev);
+ 	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
+@@ -372,8 +372,6 @@ static int tpm_ibmvtpm_remove(struct vio_dev *vdev)
+ 	kfree(ibmvtpm);
+ 	/* For tpm_ibmvtpm_get_desired_dma */
+ 	dev_set_drvdata(&vdev->dev, NULL);
+-
+-	return 0;
+ }
+ 
+ /**
+diff --git a/drivers/crypto/nx/nx-842-pseries.c b/drivers/crypto/nx/nx-842-pseries.c
+index 2de5e3672e42..cc8dd3072b8b 100644
+--- a/drivers/crypto/nx/nx-842-pseries.c
++++ b/drivers/crypto/nx/nx-842-pseries.c
+@@ -1042,7 +1042,7 @@ static int nx842_probe(struct vio_dev *viodev,
+ 	return ret;
+ }
+ 
+-static int nx842_remove(struct vio_dev *viodev)
++static void nx842_remove(struct vio_dev *viodev)
+ {
+ 	struct nx842_devdata *old_devdata;
+ 	unsigned long flags;
+@@ -1063,8 +1063,6 @@ static int nx842_remove(struct vio_dev *viodev)
+ 	if (old_devdata)
+ 		kfree(old_devdata->counters);
+ 	kfree(old_devdata);
+-
+-	return 0;
+ }
+ 
+ static const struct vio_device_id nx842_vio_driver_ids[] = {
+diff --git a/drivers/crypto/nx/nx.c b/drivers/crypto/nx/nx.c
+index 0d2dc5be7f19..1d0e8a1ba160 100644
+--- a/drivers/crypto/nx/nx.c
++++ b/drivers/crypto/nx/nx.c
+@@ -783,7 +783,7 @@ static int nx_probe(struct vio_dev *viodev, const struct vio_device_id *id)
+ 	return nx_register_algs();
+ }
+ 
+-static int nx_remove(struct vio_dev *viodev)
++static void nx_remove(struct vio_dev *viodev)
+ {
+ 	dev_dbg(&viodev->dev, "entering nx_remove for UA 0x%x\n",
+ 		viodev->unit_address);
+@@ -811,8 +811,6 @@ static int nx_remove(struct vio_dev *viodev)
+ 		nx_unregister_skcipher(&nx_ecb_aes_alg, NX_FC_AES,
+ 				       NX_MODE_AES_ECB);
+ 	}
+-
+-	return 0;
+ }
+ 
+ 
+diff --git a/drivers/misc/ibmvmc.c b/drivers/misc/ibmvmc.c
+index 2d778d0f011e..c0fe3295c330 100644
+--- a/drivers/misc/ibmvmc.c
++++ b/drivers/misc/ibmvmc.c
+@@ -2288,15 +2288,13 @@ static int ibmvmc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	return -EPERM;
+ }
+ 
+-static int ibmvmc_remove(struct vio_dev *vdev)
++static void ibmvmc_remove(struct vio_dev *vdev)
+ {
+ 	struct crq_server_adapter *adapter = dev_get_drvdata(&vdev->dev);
+ 
+ 	dev_info(adapter->dev, "Entering remove for UA 0x%x\n",
+ 		 vdev->unit_address);
+ 	ibmvmc_release_crq_queue(adapter);
+-
+-	return 0;
+ }
+ 
+ static struct vio_device_id ibmvmc_device_table[] = {
+diff --git a/drivers/net/ethernet/ibm/ibmveth.c b/drivers/net/ethernet/ibm/ibmveth.c
+index c3ec9ceed833..7fea9ae60f13 100644
+--- a/drivers/net/ethernet/ibm/ibmveth.c
++++ b/drivers/net/ethernet/ibm/ibmveth.c
+@@ -1758,7 +1758,7 @@ static int ibmveth_probe(struct vio_dev *dev, const struct vio_device_id *id)
+ 	return 0;
+ }
+ 
+-static int ibmveth_remove(struct vio_dev *dev)
++static void ibmveth_remove(struct vio_dev *dev)
+ {
+ 	struct net_device *netdev = dev_get_drvdata(&dev->dev);
+ 	struct ibmveth_adapter *adapter = netdev_priv(netdev);
+@@ -1771,8 +1771,6 @@ static int ibmveth_remove(struct vio_dev *dev)
+ 
+ 	free_netdev(netdev);
+ 	dev_set_drvdata(&dev->dev, NULL);
+-
+-	return 0;
+ }
+ 
+ static struct attribute veth_active_attr;
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index 1c0e4beb56e7..53124b06145d 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -5349,7 +5349,7 @@ static int ibmvnic_probe(struct vio_dev *dev, const struct vio_device_id *id)
+ 	return rc;
+ }
+ 
+-static int ibmvnic_remove(struct vio_dev *dev)
++static void ibmvnic_remove(struct vio_dev *dev)
+ {
+ 	struct net_device *netdev = dev_get_drvdata(&dev->dev);
+ 	struct ibmvnic_adapter *adapter = netdev_priv(netdev);
+@@ -5390,8 +5390,6 @@ static int ibmvnic_remove(struct vio_dev *dev)
+ 	device_remove_file(&dev->dev, &dev_attr_failover);
+ 	free_netdev(netdev);
+ 	dev_set_drvdata(&dev->dev, NULL);
+-
+-	return 0;
+ }
+ 
+ static ssize_t failover_store(struct device *dev, struct device_attribute *attr,
+diff --git a/drivers/net/ethernet/sun/ldmvsw.c b/drivers/net/ethernet/sun/ldmvsw.c
+index 01ea0d6f8819..50bd4e3b0af9 100644
+--- a/drivers/net/ethernet/sun/ldmvsw.c
++++ b/drivers/net/ethernet/sun/ldmvsw.c
+@@ -404,7 +404,7 @@ static int vsw_port_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	return err;
+ }
+ 
+-static int vsw_port_remove(struct vio_dev *vdev)
++static void vsw_port_remove(struct vio_dev *vdev)
+ {
+ 	struct vnet_port *port = dev_get_drvdata(&vdev->dev);
+ 	unsigned long flags;
+@@ -430,8 +430,6 @@ static int vsw_port_remove(struct vio_dev *vdev)
+ 
+ 		free_netdev(port->dev);
+ 	}
+-
+-	return 0;
+ }
+ 
+ static void vsw_cleanup(void)
+diff --git a/drivers/net/ethernet/sun/sunvnet.c b/drivers/net/ethernet/sun/sunvnet.c
+index 96b883f965f6..58ee89223951 100644
+--- a/drivers/net/ethernet/sun/sunvnet.c
++++ b/drivers/net/ethernet/sun/sunvnet.c
+@@ -510,7 +510,7 @@ static int vnet_port_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	return err;
+ }
+ 
+-static int vnet_port_remove(struct vio_dev *vdev)
++static void vnet_port_remove(struct vio_dev *vdev)
+ {
+ 	struct vnet_port *port = dev_get_drvdata(&vdev->dev);
+ 
+@@ -533,7 +533,6 @@ static int vnet_port_remove(struct vio_dev *vdev)
+ 
+ 		kfree(port);
+ 	}
+-	return 0;
+ }
+ 
+ static const struct vio_device_id vnet_port_match[] = {
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index 755313b766b9..e663085a8944 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -6038,7 +6038,7 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+  * Return value:
+  * 	0
+  **/
+-static int ibmvfc_remove(struct vio_dev *vdev)
++static void ibmvfc_remove(struct vio_dev *vdev)
+ {
+ 	struct ibmvfc_host *vhost = dev_get_drvdata(&vdev->dev);
+ 	LIST_HEAD(purge);
+@@ -6070,7 +6070,6 @@ static int ibmvfc_remove(struct vio_dev *vdev)
+ 	spin_unlock(&ibmvfc_driver_lock);
+ 	scsi_host_put(vhost->host);
+ 	LEAVE;
+-	return 0;
+ }
+ 
+ /**
+diff --git a/drivers/scsi/ibmvscsi/ibmvscsi.c b/drivers/scsi/ibmvscsi/ibmvscsi.c
+index 29fcc44be2d5..77fafb1bc173 100644
+--- a/drivers/scsi/ibmvscsi/ibmvscsi.c
++++ b/drivers/scsi/ibmvscsi/ibmvscsi.c
+@@ -2335,7 +2335,7 @@ static int ibmvscsi_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	return -1;
+ }
+ 
+-static int ibmvscsi_remove(struct vio_dev *vdev)
++static void ibmvscsi_remove(struct vio_dev *vdev)
+ {
+ 	struct ibmvscsi_host_data *hostdata = dev_get_drvdata(&vdev->dev);
+ 
+@@ -2356,8 +2356,6 @@ static int ibmvscsi_remove(struct vio_dev *vdev)
+ 	spin_unlock(&ibmvscsi_driver_lock);
+ 
+ 	scsi_host_put(hostdata->host);
+-
+-	return 0;
+ }
+ 
+ /**
+diff --git a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
+index cc3908c2d2f9..9abd9e253af6 100644
+--- a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
++++ b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
+@@ -3595,7 +3595,7 @@ static int ibmvscsis_probe(struct vio_dev *vdev,
+ 	return rc;
+ }
+ 
+-static int ibmvscsis_remove(struct vio_dev *vdev)
++static void ibmvscsis_remove(struct vio_dev *vdev)
+ {
+ 	struct scsi_info *vscsi = dev_get_drvdata(&vdev->dev);
+ 
+@@ -3622,8 +3622,6 @@ static int ibmvscsis_remove(struct vio_dev *vdev)
+ 	list_del(&vscsi->list);
+ 	spin_unlock_bh(&ibmvscsis_dev_lock);
+ 	kfree(vscsi);
+-
+-	return 0;
+ }
+ 
+ static ssize_t system_id_show(struct device *dev,
+diff --git a/drivers/tty/hvc/hvcs.c b/drivers/tty/hvc/hvcs.c
+index c90848919644..01fc97e3c5c8 100644
+--- a/drivers/tty/hvc/hvcs.c
++++ b/drivers/tty/hvc/hvcs.c
+@@ -819,7 +819,7 @@ static int hvcs_probe(
+ 	return 0;
+ }
+ 
+-static int hvcs_remove(struct vio_dev *dev)
++static void hvcs_remove(struct vio_dev *dev)
+ {
+ 	struct hvcs_struct *hvcsd = dev_get_drvdata(&dev->dev);
+ 	unsigned long flags;
+@@ -849,7 +849,6 @@ static int hvcs_remove(struct vio_dev *dev)
+ 
+ 	printk(KERN_INFO "HVCS: vty-server@%X removed from the"
+ 			" vio bus.\n", dev->unit_address);
+-	return 0;
+ };
+ 
+ static struct vio_driver hvcs_vio_driver = {
+diff --git a/drivers/tty/vcc.c b/drivers/tty/vcc.c
+index e2d6205f83ce..5f72ebf93821 100644
+--- a/drivers/tty/vcc.c
++++ b/drivers/tty/vcc.c
+@@ -677,7 +677,7 @@ static int vcc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+  *
+  * Return: status of removal
+  */
+-static int vcc_remove(struct vio_dev *vdev)
++static void vcc_remove(struct vio_dev *vdev)
+ {
+ 	struct vcc_port *port = dev_get_drvdata(&vdev->dev);
+ 
+@@ -712,8 +712,6 @@ static int vcc_remove(struct vio_dev *vdev)
+ 		kfree(port->domain);
+ 		kfree(port);
+ 	}
+-
+-	return 0;
+ }
+ 
+ static const struct vio_device_id vcc_match[] = {
+-- 
+2.30.0
+
