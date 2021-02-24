@@ -2,73 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D2F3238B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 921B03238D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234465AbhBXIfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:35:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbhBXIeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:34:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C583264EC9;
-        Wed, 24 Feb 2021 08:33:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614155613;
-        bh=6hpKIts730HVSFW7NEWv++ddBcaF0jNziyKYSQQCVVc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gntEwUaQtIH8fgq1omigfuVpROV+KjDjjgviQ8xMENu4F2X2xT/eRoUNezX1bBbEf
-         yklpbiyER+fMtRtA/LifuX/Nz4IZIl66O4pK1epLMI5yaryLvh4bpdfVr1xyKKc9RI
-         wTltEKr1hrOr1pfPfw2y2bfh1L+T5a8oUiB4hi15qK9PkC3thtUxKoLmMRVDHge3zp
-         H5AahjoBPILfDn8HPup9FfL1DXfKhYv0oIGhDx7BsF+emicxdQHcTk9mCqfRAJQmnD
-         fAg+BzUKV+yT5wea6PRE4pSpfnnFOql3QiI8T1+rdMem12FYx556+1IxIeB1pblvfp
-         WgrPSas+34DaA==
-Date:   Wed, 24 Feb 2021 09:33:28 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?77+8TWlyb3NsYXY=?= Benes <mbenes@suse.cz>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [GIT PULL] Modules updates for v5.12
-Message-ID: <YDYPWAtoDpyD9D4Z@gunter>
-References: <YDUibKAt5tpA1Hxs@gunter>
- <CAHk-=wipCbbXswcFvnrGae01H54dY1+XoaL+9YaiU71zGzko3Q@mail.gmail.com>
- <CAHk-=wh8vHL43v7GWK9MWrWitSmOmrEw1B0AJD9CrhBc4FvpxA@mail.gmail.com>
- <CAHk-=wiuoRKa=F3txoVHvnca+H=7gJyL3SFYwd3549v-sa0+QQ@mail.gmail.com>
- <20210223200130.GA8059@lst.de>
- <CAHk-=wj27tmZBzFRTZTAEPd6eRBzP5xCkQM+1cuSx7vzv8K4=g@mail.gmail.com>
+        id S233521AbhBXIjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:39:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57075 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234515AbhBXIg7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 03:36:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614155725;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u2cCLiq5dRL7OLoCY/lyttfbFxENLjxHql4LOuHz3Jg=;
+        b=FjFJBYtfsrUWXeN943WP+b2U75vOiyYtQPDdbwTHiaMY7kOoMB5D/S829+r24U2XdWiJuJ
+        s30leJMNPZ0aJnuUfNwQoGBcYcqYsZ/mbc4ZyMXA8QyPAiwZ9mEsW7iB6cKhgf/P03OtY2
+        O7WyyU9+FFSxGXZXm95TxWDe3NKSkhI=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-55-IvEcsEzHMHOQDCueIsrbpw-1; Wed, 24 Feb 2021 03:35:21 -0500
+X-MC-Unique: IvEcsEzHMHOQDCueIsrbpw-1
+Received: by mail-wr1-f71.google.com with SMTP id v1so724030wru.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:35:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u2cCLiq5dRL7OLoCY/lyttfbFxENLjxHql4LOuHz3Jg=;
+        b=mmvqhTvpZvOj+u0vrTbWvcRL4rXbkGE+d4KgcltudQnJL0eEsL7h7m3HjS8kIzT0Xr
+         C3dkc2/9nTAJzkRvYQaFI7gkrIQecYQugxNOAlHr1ncsAusWYVXff4KqD9HSjRTOJDsz
+         tmOK5cNyouhyyqxm0Z0G2mrLxpUPahcjRnjTGRAsC/IS9b3+YuOj7e2HxfYOcE7RG4Xx
+         RK9KgCNczsOvxWalTooPYEYbJbFLw69gjJ2ceAToebJq6/FFTKBGIUNRaqYr+w5NTD12
+         UQuo7N6m3SzrHrY1UMfwmdSPdrvew1kuXb5Qo7LEfBHgD6p9MPekD+8oUrzdPH1oltFp
+         Vh3A==
+X-Gm-Message-State: AOAM532vw+Ehr+drTaF9T7KMSvoQ1BQbc0FnwtPwOUqXeBs/lHiw/Ngq
+        bnxEU6F8rNkWS7yEHavD1wdAPFsh6Am5Snjg4e3Pz5MtlRM3FR4i7eqhitC2diUBqVm+ZYJGlxe
+        +DxX7GBC869F9HPfWoMXjUP3B
+X-Received: by 2002:a1c:c906:: with SMTP id f6mr2571791wmb.128.1614155719953;
+        Wed, 24 Feb 2021 00:35:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxKD3EgkojM04mK/2unwdiZBQo5BwpQUu3yMCwRrLcbPtdC8ONeJZN9YjQd8V8wZCs15R2MeQ==
+X-Received: by 2002:a1c:c906:: with SMTP id f6mr2571773wmb.128.1614155719766;
+        Wed, 24 Feb 2021 00:35:19 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id g18sm2173103wrw.40.2021.02.24.00.35.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 00:35:19 -0800 (PST)
+Date:   Wed, 24 Feb 2021 09:35:16 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [RFC PATCH v5 00/19] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210224083516.kkxlkoin632iaqik@steredhat>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210222142311.gekdd7gsm33wglos@steredhat>
+ <20210223145016.ddavx6fihq4akdim@steredhat>
+ <7a280168-cb54-ae26-4697-c797f6b04708@kaspersky.com>
+ <20210224082319.yrmqr6zs7emvghw3@steredhat>
+ <710d9dc2-3a0c-ea0b-fb02-68b460e6282e@kaspersky.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wj27tmZBzFRTZTAEPd6eRBzP5xCkQM+1cuSx7vzv8K4=g@mail.gmail.com>
-X-OS:   Linux gunter 5.11.0-rc4-1-default+ x86_64
+In-Reply-To: <710d9dc2-3a0c-ea0b-fb02-68b460e6282e@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Linus Torvalds [23/02/21 12:03 -0800]:
->On Tue, Feb 23, 2021 at 12:01 PM Christoph Hellwig <hch@lst.de> wrote:
->>
->> Does your build now enable TRIM_UNUSED_KSYMS but previously didn't by
->> chance?
+On Wed, Feb 24, 2021 at 11:28:50AM +0300, Arseny Krasnov wrote:
 >
->Crossed emails.
+>On 24.02.2021 11:23, Stefano Garzarella wrote:
+>> On Wed, Feb 24, 2021 at 07:29:25AM +0300, Arseny Krasnov wrote:
+>>> On 23.02.2021 17:50, Stefano Garzarella wrote:
+>>>> On Mon, Feb 22, 2021 at 03:23:11PM +0100, Stefano Garzarella wrote:
+>>>>> Hi Arseny,
+>>>>>
+>>>>> On Thu, Feb 18, 2021 at 08:33:44AM +0300, Arseny Krasnov wrote:
+>>>>>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
+>>>>>> transport.
+>>>>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>>>>>> do it, two new packet operations were added: first for start of record
+>>>>>> and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
+>>>>>> both operations carries metadata - to maintain boundaries and payload
+>>>>>> integrity. Metadata is introduced by adding special header with two
+>>>>>> fields - message count and message length:
+>>>>>>
+>>>>>> 	struct virtio_vsock_seq_hdr {
+>>>>>> 		__le32  msg_cnt;
+>>>>>> 		__le32  msg_len;
+>>>>>> 	} __attribute__((packed));
+>>>>>>
+>>>>>> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
+>>>>>> packets(buffer of second virtio descriptor in chain) in the same way as
+>>>>>> data transmitted in RW packets. Payload was chosen as buffer for this
+>>>>>> header to avoid touching first virtio buffer which carries header of
+>>>>>> packet, because someone could check that size of this buffer is equal
+>>>>>> to size of packet header. To send record, packet with start marker is
+>>>>>> sent first(it's header contains length of record and counter), then
+>>>>>> counter is incremented and all data is sent as usual 'RW' packets and
+>>>>>> finally SEQ_END is sent(it also carries counter of message, which is
+>>>>>> counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
+>>>>>> incremented again. On receiver's side, length of record is known from
+>>>>>> packet with start record marker. To check that no packets were dropped
+>>>>>> by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
+>>>>>> checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
+>>>>>> 1) and length of data between two markers is compared to length in
+>>>>>> SEQ_BEGIN header.
+>>>>>> 	Now as  packets of one socket are not reordered neither on
+>>>>>> vsock nor on vhost transport layers, such markers allows to restore
+>>>>>> original record on receiver's side. If user's buffer is smaller that
+>>>>>> record length, when all out of size data is dropped.
+>>>>>> 	Maximum length of datagram is not limited as in stream socket,
+>>>>>> because same credit logic is used. Difference with stream socket is
+>>>>>> that user is not woken up until whole record is received or error
+>>>>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>>>>>> 	Tests also implemented.
+>>>>> I reviewed the first part (af_vsock.c changes), tomorrow I'll review
+>>>>> the rest. That part looks great to me, only found a few minor issues.
+>>>> I revieiwed the rest of it as well, left a few minor comments, but I
+>>>> think we're well on track.
+>>>>
+>>>> I'll take a better look at the specification patch tomorrow.
+>>> Great, Thank You
+>>>> Thanks,
+>>>> Stefano
+>>>>
+>>>>> In the meantime, however, I'm getting a doubt, especially with regard
+>>>>> to other transports besides virtio.
+>>>>>
+>>>>> Should we hide the begin/end marker sending in the transport?
+>>>>>
+>>>>> I mean, should the transport just provide a seqpacket_enqueue()
+>>>>> callbacl?
+>>>>> Inside it then the transport will send the markers. This is because
+>>>>> some transports might not need to send markers.
+>>>>>
+>>>>> But thinking about it more, they could actually implement stubs for
+>>>>> that calls, if they don't need to send markers.
+>>>>>
+>>>>> So I think for now it's fine since it allows us to reuse a lot of
+>>>>> code, unless someone has some objection.
+>>> I thought about that, I'll try to implement it in next version. Let's see...
+>> If you want to discuss it first, write down the idea you want to
+>> implement, I wouldn't want to make you do unnecessary work. :-)
 >
->This is plain "make allmodconfig", so yes, now it will enable TRIM_UNUSED_KSYMS.
+>Idea is simple, in iov iterator of 'struct msghdr' which is passed to
 >
->This is unacceptably slow. If that symbol trimming takes 30% of the
->whole kernel build time, it needs to be fixed or removed.
+>enqueue callback we have two fields: 'iov_offset' which is byte
+>
+>offset inside io vector where next data must be picked and 'count'
+>
+>which is rest of unprocessed bytes in io vector. So in seqpacket
+>
+>enqueue callback if 'iov_offset' is 0 i'll send SEQBEGIN, and if
+>
+>'count' is 0 i'll send SEQEND.
+>
 
-[ Adding Masahiro to CC ]
+Got it, make sense and it's defently more transparent for the vsock 
+core!
+Go head, maybe adding a comment in the vsock core explaining this, so 
+other developers can understand better if they want to support SEPACKET 
+in other transports.
 
-It looks like CONFIG_TRIM_UNUSED_KSYMS had been hiding behind
-CONFIG_UNUSED_SYMBOLS all this time, and once the EXPORT_UNUSED_SYMBOL
-stuff was removed, it exposed that option to be selected by
-allyesconfig. That option had previously caused build issues on
-powerpc on linux-next, so I had temporarily marked that as BROKEN on
-powerpc until Masahiro's fix landed in linux-next. I was not aware of
-the additional build slowdown issue :/ In any case, Christoph's
-suggestion to invert the option sounds reasonable, since the mips
-defconfig selects it, it does not seem totally unused.
+Thanks,
+Stefano
+
