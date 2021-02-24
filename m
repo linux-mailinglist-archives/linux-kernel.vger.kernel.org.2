@@ -2,234 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E6532407D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1D532408A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbhBXPI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:08:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235882AbhBXOOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 09:14:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68DA064E6B;
-        Wed, 24 Feb 2021 14:13:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614176031;
-        bh=VyP3xcVVsxiIDvrvtowoCWywy5tp49rAvYkYC6TXFPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VPnVUBJdz+ChcPWRQglkQM3FdKMBLwQm+UHPr6lH8DUc6BYS9z61TVees47Z1Ss5j
-         sYu9N1p8MH2p59Bh7pFY4utUYrchubFeqDEoukYvPyWDceBuqKU07XTJ3RnF4tQ6K1
-         8zHMVeyjp083A6sx46z1UkIokCSEF2jI8N1sZ0Vf2gSM8nAbHCky5+ODW55aNq4Dgq
-         IO0hLly2DlvIXqLSWdqWHqr6AWN0N1LLPLN3CMX19vtz8U9VCDwVsNTpSFeYAeP5Nz
-         7ieWU4WteB26MqsDUUsIewlWwRWJqXIXVYWaJfM39nCShgszDl94fDCZmyiniVLooL
-         AfjQtSYtk3L5A==
-Date:   Wed, 24 Feb 2021 15:13:44 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?77+8TWlyb3NsYXY=?= Benes <mbenes@suse.cz>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [GIT PULL] Modules updates for v5.12
-Message-ID: <YDZfGFhgZl0xBlZl@gunter>
-References: <YDUibKAt5tpA1Hxs@gunter>
- <CAHk-=wipCbbXswcFvnrGae01H54dY1+XoaL+9YaiU71zGzko3Q@mail.gmail.com>
- <CAHk-=wh8vHL43v7GWK9MWrWitSmOmrEw1B0AJD9CrhBc4FvpxA@mail.gmail.com>
- <CAHk-=wiuoRKa=F3txoVHvnca+H=7gJyL3SFYwd3549v-sa0+QQ@mail.gmail.com>
- <20210223200130.GA8059@lst.de>
- <CAHk-=wj27tmZBzFRTZTAEPd6eRBzP5xCkQM+1cuSx7vzv8K4=g@mail.gmail.com>
- <CAHk-=whudLzx0zmn+xLDmC1su6DF4oMQT6uEgjDEq0RsHRsDwA@mail.gmail.com>
- <20210224075220.GA546@lst.de>
+        id S235342AbhBXPL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:11:28 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:60788 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236532AbhBXOW0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 09:22:26 -0500
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 11OEJiYb014000;
+        Wed, 24 Feb 2021 23:19:45 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 11OEJiYb014000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614176385;
+        bh=aJzB7OzKCqIcfX2oZSpzPUhSm27C1UAj+HvFTplVHLY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=W9TsWFXxjLYF5MPcycWR1G5Jdzq6t2tRTyEfrqmG0wiUFcCROTWoJkIjQZnS0hsSk
+         x951Ql8a5dP6S5gfbW/OcVpLy3A4sy/KyFx7OmwvgMTEGwZYXdvZ+C6aQMoOm/yVsw
+         XnwCPXrX9qj5BE+Q+sh4NJ/AdytBplmm7k5LpJZDB861CEmbK00ofwM8sOiiwGHxc7
+         2r324c6wL848GaIrNfs+YchusBXvYWK1E+NxAAoXNQDumrOvKhWbJ+0lMU+JIAf+zN
+         ZwicRCSiaElTwxYATgc13KKl0IcqLmR87FJF3fnw/8HycPmKU00L4zIr3kG/bxrsE/
+         6lsg/OVzN926A==
+X-Nifty-SrcIP: [209.85.208.170]
+Received: by mail-lj1-f170.google.com with SMTP id u4so2597785lja.3;
+        Wed, 24 Feb 2021 06:19:44 -0800 (PST)
+X-Gm-Message-State: AOAM533IeNYsqM0buCk7BzOZPGhByVafe8gcclQm5y+AHRi14kDjhZTe
+        aetJhUAAf2rYDh+9U8Khdl2kAg6gxYp5wBTnKqY=
+X-Google-Smtp-Source: ABdhPJxE5smMki5qDr7XMKjLEMk+aCLpX4qITWe4NBKwxZysjK7Z4nzfkFyXSLwj1Jg+vNG/ZiLbhr4Mq8zHEhyGB3k=
+X-Received: by 2002:a2e:95cf:: with SMTP id y15mr12304603ljh.464.1614176382983;
+ Wed, 24 Feb 2021 06:19:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210224075220.GA546@lst.de>
-X-OS:   Linux gunter 5.11.0-rc4-1-default+ x86_64
+References: <20210221225650.33134-1-linux@roeck-us.net> <YDOeI5+1H3T1ocmQ@osiris>
+ <f35196cc-969f-21ef-0c38-dc6e13831fb0@roeck-us.net> <CAK7LNASdfvJsqq8ubpBZJ5yWPMimt=pF_GFBLTJbFytbtw8jxg@mail.gmail.com>
+ <8d3de6fc-0991-9cef-d5fd-032fdbe2e85e@roeck-us.net> <YDTs4vfjezu3j7rX@osiris>
+ <20210223174140.GA159796@roeck-us.net> <YDVDg/EZWjCZQn2v@osiris> <20210224014642.GA181726@roeck-us.net>
+In-Reply-To: <20210224014642.GA181726@roeck-us.net>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 24 Feb 2021 23:19:06 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQcarKoBf-VGucb4KiOvJqQhjBGSRCoi7yrEp-2u634OQ@mail.gmail.com>
+Message-ID: <CAK7LNAQcarKoBf-VGucb4KiOvJqQhjBGSRCoi7yrEp-2u634OQ@mail.gmail.com>
+Subject: Re: [PATCH] gcc-plugins: Disable GCC_PLUGIN_CYC_COMPLEXITY for s390
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Christoph Hellwig [24/02/21 08:52 +0100]:
->On Tue, Feb 23, 2021 at 12:07:39PM -0800, Linus Torvalds wrote:
->> On Tue, Feb 23, 2021 at 12:03 PM Linus Torvalds
->> <torvalds@linux-foundation.org> wrote:
->> >
->> > This is unacceptably slow. If that symbol trimming takes 30% of the
->> > whole kernel build time, it needs to be fixed or removed.
->>
->> I think I'm going to mark TRIM_UNUSED_KSYMS as "depends on BROKEN".
->> There's no way I can accept that horrible overhead, and the rationale
->> for that config option is questionable at best,
+On Wed, Feb 24, 2021 at 10:46 AM Guenter Roeck <linux@roeck-us.net> wrote:
 >
->I think it is pretty useful for embedded setups.
+> On Tue, Feb 23, 2021 at 07:03:47PM +0100, Heiko Carstens wrote:
+> > On Tue, Feb 23, 2021 at 09:41:40AM -0800, Guenter Roeck wrote:
+> > > > I tried to explain why we don't want to set COMPILE_TEST for s390
+> > > > anymore. It overrides architecture dependencies in Kconfig, and lots
+> > > > of drivers do not set dependencies for HAS_IOMEM, HAS_DMA, and friends
+> > > > correctly.
+> > > > This generates constantly fallout which is irrelevant for s390 and
+> > > > also for other architectures. It generates just work with close to
+> > > > zero benefit. For drivers which matter for s390 we still see those
+> > > > errors.
+> > > >
+> > > > > On the other side, if that flag would be set explicitly by
+> > > > > all{yes,mod}config, it would really beg for being misused. We
+> > > > > might then as well add a new flag that is explicitly associated
+> > > > > with all{yes,mod}config, but not with randconfig.
+> > > >
+> > > > I think that makes most sense, probably also have a flag that is set
+> > > > for randconfig.
+> > >
+> > > Not sure what value such an option would have, and how it would be used.
+> > > I would argue that randconfig should not set COMPILE_TEST to start with,
+> > > since its purpose should be to test random valid configurations and not
+> > > to compile test arbitrary (and in that case random) code. But that is
+> > > a different question, and just my personal opinion.
+> > >
+> > > Overall, the question is what kind of additional option you would find
+> > > useful for s390. You make it clear that you don't want COMPILE_TEST.
+> > > At the same time, you still want all{mod,yes}config, but presumably
+> > > excluding options currently restricted by !COMPILE_TEST (such as
+> > > DEBUG_INFO, BPF_PRELOAD, UBSAN_TRAP, GCC_PLUGIN_CYC_COMPLEXITY,
+> > > and a few others). SUPPRESS_NOISY_TESTS would not cover that, but
+> > > neither would RANDCONFIG (or whatever it would be called).
+> >
+> > Well, if we would have e.g. RANDCONFIG, then we could probably revert
+> > 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390") and
+> > instead let COMPILE_TEST depend on !RANDCONFIG.
+> > I think this _could_ solve all common problems we currently see.
+> >
+> > And it would also do what you suggested.
 >
->BROKEN seems pretty strong for something that absolutely works as
->intendended.  I guess to make you (and possibly others) not grumpy
->we just need to ensure it doesn't get pulled in by allmodconfig.
+> Sounds good.
 >
->So maybe just invert the symbol, default the KEEP_UNUSED_SYMBOL, and
->add a message to the helptext explaining the slowdown?
+> Question is how one would set such a flag. The code in scripts/kconfig/conf.c
+> doesn't really set COMPILE_TEST in conjunction with randconfig; that is
+> just as random as all other configuration flags. Would something like
+> the patch below be acceptable ?
 
-Hm, something like this maybe? (untested)
+NACK.
 
----
- From 08bc08229fc3801b1a580a07ce7ff3e806b3fe90 Mon Sep 17 00:00:00 2001
-From: Jessica Yu <jeyu@kernel.org>
-Date: Wed, 24 Feb 2021 14:54:09 +0100
-Subject: [PATCH] Kconfig: invert TRIM_UNUSED_SYMBOLS option and rename it to
-  KEEP_UNUSED_SYMBOLS
+Such a stupid option is what I really do not want to merge.
+Even allnoconfig_y is also a horrible mistake, and
+I have a plan to kill it.
 
-Removing CONFIG_UNUSED_SYMBOLS (commit 367948220fce "module: remove
-EXPORT_UNUSED_SYMBOL*") unhid the CONFIG_TRIM_UNUSED_SYMBOLS option and
-therefore it now gets automatically enabled with allyesconfig.
+Only the sensible one is 'option modules'.
+The others are really bad hacks.
 
-To prevent allyesconfig from enabling TRIM_UNUSED_SYMBOLS (which is known
-to slow build times), invert the config option and name it
-KEEP_UNUSED_SYMBOLS, which does the same thing as TRIM_UNUSED_SYMBOLS=n.
-That way, allyesconfig will keep the previous behavior of not trimming
-symbols.
 
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
----
-  Makefile                            |  4 ++--
-  arch/mips/configs/generic_defconfig |  2 +-
-  include/asm-generic/export.h        |  2 +-
-  include/linux/export.h              |  2 +-
-  init/Kconfig                        | 21 +++++++++++----------
-  kernel/livepatch/Kconfig            |  2 +-
-  scripts/Makefile.build              |  2 +-
-  7 files changed, 18 insertions(+), 17 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index b18dbc634690..23f50521e97f 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1164,7 +1164,7 @@ vmlinux-deps := $(KBUILD_LDS) $(KBUILD_VMLINUX_OBJS) $(KBUILD_VMLINUX_LIBS)
-  
-  # Recurse until adjust_autoksyms.sh is satisfied
-  PHONY += autoksyms_recursive
--ifdef CONFIG_TRIM_UNUSED_KSYMS
-+ifndef CONFIG_KEEP_UNUSED_KSYMS
-  # For the kernel to actually contain only the needed exported symbols,
-  # we have to build modules as well to determine what those symbols are.
-  # (this can be evaluated only once include/config/auto.conf has been included)
-@@ -1175,7 +1175,7 @@ autoksyms_recursive: descend modules.order
-  	  "$(MAKE) -f $(srctree)/Makefile vmlinux"
-  endif
-  
--autoksyms_h := $(if $(CONFIG_TRIM_UNUSED_KSYMS), include/generated/autoksyms.h)
-+autoksyms_h := $(if $(CONFIG_KEEP_UNUSED_KSYMS),,include/generated/autoksyms.h)
-  
-  quiet_cmd_autoksyms_h = GEN     $@
-        cmd_autoksyms_h = mkdir -p $(dir $@); \
-diff --git a/arch/mips/configs/generic_defconfig b/arch/mips/configs/generic_defconfig
-index 714169e411cf..d46da28ea032 100644
---- a/arch/mips/configs/generic_defconfig
-+++ b/arch/mips/configs/generic_defconfig
-@@ -29,7 +29,7 @@ CONFIG_MIPS_O32_FP64_SUPPORT=y
-  CONFIG_JUMP_LABEL=y
-  CONFIG_MODULES=y
-  CONFIG_MODULE_UNLOAD=y
--CONFIG_TRIM_UNUSED_KSYMS=y
-+CONFIG_KEEP_UNUSED_KSYMS=n
-  CONFIG_NET=y
-  CONFIG_PACKET=y
-  CONFIG_UNIX=y
-diff --git a/include/asm-generic/export.h b/include/asm-generic/export.h
-index 07a36a874dca..06d401464195 100644
---- a/include/asm-generic/export.h
-+++ b/include/asm-generic/export.h
-@@ -57,7 +57,7 @@ __kstrtab_\name:
-  #endif
-  .endm
-  
--#if defined(CONFIG_TRIM_UNUSED_KSYMS)
-+#if !defined(CONFIG_KEEP_UNUSED_KSYMS)
-  
-  #include <linux/kconfig.h>
-  #include <generated/autoksyms.h>
-diff --git a/include/linux/export.h b/include/linux/export.h
-index 6271a5d9c988..449f7d15e580 100644
---- a/include/linux/export.h
-+++ b/include/linux/export.h
-@@ -118,7 +118,7 @@ struct kernel_symbol {
-   */
-  #define __EXPORT_SYMBOL(sym, sec, ns)
-  
--#elif defined(CONFIG_TRIM_UNUSED_KSYMS)
-+#elif !defined(CONFIG_KEEP_UNUSED_KSYMS)
-  
-  #include <generated/autoksyms.h>
-  
-diff --git a/init/Kconfig b/init/Kconfig
-index ba8bd5256980..db5d00bfc239 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -2272,29 +2272,30 @@ config MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS
-  
-  	  If unsure, say N.
-  
--config TRIM_UNUSED_KSYMS
--	bool "Trim unused exported kernel symbols"
--	depends on BROKEN
-+config KEEP_UNUSED_KSYMS
-+	bool "Keep unused exported kernel symbols"
-+	default y
-  	help
-  	  The kernel and some modules make many symbols available for
-  	  other modules to use via EXPORT_SYMBOL() and variants. Depending
-  	  on the set of modules being selected in your kernel configuration,
-  	  many of those exported symbols might never be used.
-  
--	  This option allows for unused exported symbols to be dropped from
--	  the build. In turn, this provides the compiler more opportunities
--	  (especially when using LTO) for optimizing the code and reducing
--	  binary size.  This might have some security advantages as well.
-+	  This option allows for unused exported symbols to be kept in the
-+	  build. Say N when you want to trim unused symbols from the build,
-+	  which provides the compiler more opportunities (especially when using LTO)
-+	  for optimizing the code and reducing binary size. This might have some
-+	  security advantages as well.
-  
--	  If unsure, or if you need to build out-of-tree modules, say N.
-+	  If unsure, or if you need to build out-of-tree modules, say Y.
-  
-  config UNUSED_KSYMS_WHITELIST
-  	string "Whitelist of symbols to keep in ksymtab"
--	depends on TRIM_UNUSED_KSYMS
-+	depends on !KEEP_UNUSED_KSYMS
-  	default "scripts/lto-used-symbollist.txt" if LTO_CLANG
-  	help
-  	  By default, all unused exported symbols will be un-exported from the
--	  build when TRIM_UNUSED_KSYMS is selected.
-+	  build when KEEP_UNUSED_KSYMS is not selected.
-  
-  	  UNUSED_KSYMS_WHITELIST allows to whitelist symbols that must be kept
-  	  exported at all times, even in absence of in-tree users. The value to
-diff --git a/kernel/livepatch/Kconfig b/kernel/livepatch/Kconfig
-index 53d51ed619a3..df8ebb7984e1 100644
---- a/kernel/livepatch/Kconfig
-+++ b/kernel/livepatch/Kconfig
-@@ -11,7 +11,7 @@ config LIVEPATCH
-  	depends on SYSFS
-  	depends on KALLSYMS_ALL
-  	depends on HAVE_LIVEPATCH
--	depends on !TRIM_UNUSED_KSYMS
-+	depends on KEEP_UNUSED_KSYMS
-  	help
-  	  Say Y here if you want to support kernel live patching.
-  	  This option has no runtime impact until a kernel "patch"
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 3f6bf0ea7c0e..e5e95a6948a7 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -242,7 +242,7 @@ objtool_dep = $(objtool_obj)					\
-  	      $(wildcard include/config/orc/unwinder.h		\
-  			 include/config/stack/validation.h)
-  
--ifdef CONFIG_TRIM_UNUSED_KSYMS
-+ifndef CONFIG_KEEP_UNUSED_KSYMS
-  cmd_gen_ksymdeps = \
-  	$(CONFIG_SHELL) $(srctree)/scripts/gen_ksymdeps.sh $@ >> $(dot-target).cmd
-  
+> Thanks,
+> Guenter
+>
+> ---
+> From 301dc1746b259afce02c104ebbf3f0c37189ae4a Mon Sep 17 00:00:00 2001
+> From: Guenter Roeck <linux@roeck-us.net>
+> Date: Tue, 23 Feb 2021 17:21:51 -0800
+> Subject: [PATCH] kconfig: Introduce RANDCONFIG
+>
+> "make randconfig" is intended to be used to generate random valid
+> configurations. It is supposed to verify if configuration dependencies
+> are valid and compile. It is not supposed to be used as replacement
+> for all{mod,yes}config.
+
+This is just your opinion.
+Each sentence should start with "I think".
+
+
+>
+> However, that is not currently the case. "make randconfig" treats all
+> configurations randomly.
+
+Yes, this is what randconfig should do.
+
+
+> This means that "COMPILE_TEST" will be enabled
+> randomly. This defeats the purpose of "make randconfig"
+
+
+If you want to set particular CONFIG option(s) to a fixed value,
+KCONFIG_ALLCONFIG is supported.
+
+See Documentation/kbuild/kconfig.rst
+
+
+
+
+
+
+>
+> To solve the problem, introduce a RANDCONFIG configuration option
+> and set it for all "randconfig" configurations. Disable COMPILE_TEST
+> whenever RANDCONFIG is enabled.
+>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  init/Kconfig               | 12 ++++++++++++
+>  scripts/kconfig/confdata.c | 15 ++++++++++++---
+>  scripts/kconfig/expr.h     |  1 +
+>  scripts/kconfig/lexer.l    |  1 +
+>  scripts/kconfig/lkc.h      |  1 +
+>  scripts/kconfig/menu.c     |  5 +++++
+>  scripts/kconfig/parser.y   |  6 ++++++
+>  7 files changed, 38 insertions(+), 3 deletions(-)
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index ba8bd5256980..a85099c5e383 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -111,9 +111,21 @@ config INIT_ENV_ARG_LIMIT
+>           Maximum of each of the number of arguments and environment
+>           variables passed to init from the kernel command line.
+>
+> +config RANDCONFIG
+> +       bool "Compile random configurations"
+> +       option randconfig_y
+> +       help
+> +         This option indicates that the configuration is random and used to
+> +         test if configuration dependencies are valid and complete.
+> +         Resulting images are not expected to be bootable on real hardware.
+> +
+> +         If you are a developer and want to build test random configurations,
+> +         say Y here. If you are a user/distributor, say N.
+> +
+>  config COMPILE_TEST
+>         bool "Compile also drivers which will not load"
+>         depends on !UML && !S390
+> +       depends on !RANDCONFIG
+>         default n
+>         help
+>           Some drivers can be compiled on a different platform than they are
+> diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+> index 2568dbe16ed6..0b36cc2f702b 100644
+> --- a/scripts/kconfig/confdata.c
+> +++ b/scripts/kconfig/confdata.c
+> @@ -1254,10 +1254,16 @@ bool conf_set_all_new_symbols(enum conf_def_mode mode)
+>                         has_changed = true;
+>                         switch (mode) {
+>                         case def_yes:
+> -                               sym->def[S_DEF_USER].tri = yes;
+> +                               if (sym->flags & SYMBOL_RANDCONFIG_Y)
+> +                                       sym->def[S_DEF_USER].tri = no;
+> +                               else
+> +                                       sym->def[S_DEF_USER].tri = yes;
+>                                 break;
+>                         case def_mod:
+> -                               sym->def[S_DEF_USER].tri = mod;
+> +                               if (sym->flags & SYMBOL_RANDCONFIG_Y)
+> +                                       sym->def[S_DEF_USER].tri = no;
+> +                               else
+> +                                       sym->def[S_DEF_USER].tri = mod;
+>                                 break;
+>                         case def_no:
+>                                 if (sym->flags & SYMBOL_ALLNOCONFIG_Y)
+> @@ -1267,7 +1273,10 @@ bool conf_set_all_new_symbols(enum conf_def_mode mode)
+>                                 break;
+>                         case def_random:
+>                                 sym->def[S_DEF_USER].tri = no;
+> -                               cnt = rand() % 100;
+> +                               if (sym->flags & SYMBOL_RANDCONFIG_Y)
+> +                                       cnt = -1;
+> +                               else
+> +                                       cnt = rand() % 100;
+>                                 if (sym->type == S_TRISTATE) {
+>                                         if (cnt < pty)
+>                                                 sym->def[S_DEF_USER].tri = yes;
+> diff --git a/scripts/kconfig/expr.h b/scripts/kconfig/expr.h
+> index 5c3443692f34..70f4acce2b7b 100644
+> --- a/scripts/kconfig/expr.h
+> +++ b/scripts/kconfig/expr.h
+> @@ -158,6 +158,7 @@ struct symbol {
+>
+>  /* Set symbol to y if allnoconfig; used for symbols that hide others */
+>  #define SYMBOL_ALLNOCONFIG_Y 0x200000
+> +#define SYMBOL_RANDCONFIG_Y  0x400000
+>
+>  #define SYMBOL_MAXLENGTH       256
+>  #define SYMBOL_HASHSIZE                9973
+> diff --git a/scripts/kconfig/lexer.l b/scripts/kconfig/lexer.l
+> index 9c22cb554673..fd9cd3622ea7 100644
+> --- a/scripts/kconfig/lexer.l
+> +++ b/scripts/kconfig/lexer.l
+> @@ -92,6 +92,7 @@ n     [A-Za-z0-9_-]
+>  \\\n                   /* escaped new line */
+>  \n                     return T_EOL;
+>  "allnoconfig_y"                return T_ALLNOCONFIG_Y;
+> +"randconfig_y"         return T_RANDCONFIG_Y;
+>  "bool"                 return T_BOOL;
+>  "choice"               return T_CHOICE;
+>  "comment"              return T_COMMENT;
+> diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
+> index bee2413bda63..871a05f887f0 100644
+> --- a/scripts/kconfig/lkc.h
+> +++ b/scripts/kconfig/lkc.h
+> @@ -110,6 +110,7 @@ void menu_add_symbol(enum prop_type type, struct symbol *sym, struct expr *dep);
+>  void menu_add_option_modules(void);
+>  void menu_add_option_defconfig_list(void);
+>  void menu_add_option_allnoconfig_y(void);
+> +void menu_add_option_randconfig_y(void);
+>  void menu_finalize(struct menu *parent);
+>  void menu_set_type(int type);
+>
+> diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
+> index a5fbd6ccc006..5ec3a26566b8 100644
+> --- a/scripts/kconfig/menu.c
+> +++ b/scripts/kconfig/menu.c
+> @@ -233,6 +233,11 @@ void menu_add_option_allnoconfig_y(void)
+>         current_entry->sym->flags |= SYMBOL_ALLNOCONFIG_Y;
+>  }
+>
+> +void menu_add_option_randconfig_y(void)
+> +{
+> +       current_entry->sym->flags |= SYMBOL_RANDCONFIG_Y;
+> +}
+> +
+>  static int menu_validate_number(struct symbol *sym, struct symbol *sym2)
+>  {
+>         return sym2->type == S_INT || sym2->type == S_HEX ||
+> diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
+> index 190f1117f35a..335ce0554c84 100644
+> --- a/scripts/kconfig/parser.y
+> +++ b/scripts/kconfig/parser.y
+> @@ -46,6 +46,7 @@ static struct menu *current_menu, *current_entry;
+>  %token <string> T_WORD
+>  %token <string> T_WORD_QUOTE
+>  %token T_ALLNOCONFIG_Y
+> +%token T_RANDCONFIG_Y
+>  %token T_BOOL
+>  %token T_CHOICE
+>  %token T_CLOSE_PAREN
+> @@ -233,6 +234,11 @@ config_option: T_OPTION T_ALLNOCONFIG_Y T_EOL
+>         menu_add_option_allnoconfig_y();
+>  };
+>
+> +config_option: T_OPTION T_RANDCONFIG_Y T_EOL
+> +{
+> +       menu_add_option_randconfig_y();
+> +};
+> +
+>  /* choice entry */
+>
+>  choice: T_CHOICE word_opt T_EOL
+> --
+> 2.17.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
