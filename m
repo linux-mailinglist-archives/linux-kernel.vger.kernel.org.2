@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EADF32357C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD03732353A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbhBXBxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 20:53:05 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:49742 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhBXBxC (ORCPT
+        id S232133AbhBXBWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 20:22:45 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44952 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232102AbhBXBPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 20:53:02 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11O09aZW165959;
-        Wed, 24 Feb 2021 00:27:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=1Nm4A+r1q9ED0EiWm2oomBwoPnodn1I8p67FDM/zLpg=;
- b=UQFS4cLeVtMXetfq/vtbPr2/0v4CAZczmdQcNMPXmtDL4GxmF3uqhLpw06QpIlJGrk18
- o5McATNDz9KI3odT97QczKQmLVU5+CClkQTsd76vUoCVf7lIFjw2xpC3j30NOHCflVlZ
- 3ZXPLTEHc/TzLBdR+rftNl0MOBfZEPISLN7TE8JHgDGt9QdY0BgMM09tV6v2dnc04e12
- tWbJYuXowjsGf26cnriRNtpiJKM/6x02GLaTc6a78dMvVCIDlQ/IuZkd7uWi3Q1QD3ep
- 8mFf2NtBdqy2iRuamDBc1Tcx79bm6k8E0ccWVzpZ5N/LFvIAZ1cUzIpjqr1FBeQYaOPE dw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 36tsur19qe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Feb 2021 00:27:31 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11O0QAld137156;
-        Wed, 24 Feb 2021 00:27:31 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 36uc6sesd1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Feb 2021 00:27:30 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11O0RSGd024704;
-        Wed, 24 Feb 2021 00:27:28 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 23 Feb 2021 16:27:28 -0800
-Subject: Re: [PATCH] hugetlb: fix uninitialized subpool pointer
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210223215544.313871-1-mike.kravetz@oracle.com>
- <20210223224540.GB2740@localhost.localdomain>
- <53527e9d-d09b-7287-9f79-ebdbf4e9bc7a@oracle.com>
- <a7f063ea6b5eae4a4fcf038268e3a604@suse.de>
- <ef62ac45-9ec9-2582-3e58-7efc0609221f@oracle.com>
-Message-ID: <3590f7a0-854d-04eb-6d73-7b3ef2ac49b5@oracle.com>
-Date:   Tue, 23 Feb 2021 16:27:27 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Tue, 23 Feb 2021 20:15:37 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11O14vpw066172;
+        Tue, 23 Feb 2021 20:14:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=xIQ9J5il7IdYFetThadoUWnAsHvBSPOp50LddBTelRU=;
+ b=duaKGhtWU7i+UCt8/iUESSbaPSmQIbQ+kILvNrRIw0QfpBBXhXUp7ZK7EaWxVBz0p1rv
+ n2Nh+nlVGkft4101lsMbtCHM758dxjepdleHMlIVzV77WZuuLMB2C3228QCeIe4AfeZq
+ QhJTSHV/bOM0Qe1kesMe/AF1xKthDM9EgmSRRj0fDom7h4jqUKkVSqwo3m3GjKeohqBw
+ VFzcb1FKAnRfxpBvo1tKfg0B6EwTJ62mtt9Q5mgh11jUPkWgn/V1LM+0+dZmWhTCXDsG
+ CV8/21dGPUkDXaBVf19vWb4X0QNbbGAS93sEV7u3sSEP6mN3trDrhfJiF0YOJIWAercP Kw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36wau9ard3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Feb 2021 20:14:10 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11O14WGR062184;
+        Tue, 23 Feb 2021 20:14:09 -0500
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36wau9arch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Feb 2021 20:14:09 -0500
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11O1Cq0C013566;
+        Wed, 24 Feb 2021 01:14:07 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma02wdc.us.ibm.com with ESMTP id 36tt292uj8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 01:14:07 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11O1E7vD29098300
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Feb 2021 01:14:07 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 01BB1AE05C;
+        Wed, 24 Feb 2021 01:14:07 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A32A2AE060;
+        Wed, 24 Feb 2021 01:13:59 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.80.200.35])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Wed, 24 Feb 2021 01:13:59 +0000 (GMT)
+References: <20210221174930.27324-1-nramas@linux.microsoft.com>
+ <20210221174930.27324-5-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, sfr@canb.auug.org.au,
+        james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v19 04/13] x86: Use ELF fields defined in 'struct kimage'
+In-reply-to: <20210221174930.27324-5-nramas@linux.microsoft.com>
+Date:   Tue, 23 Feb 2021 22:13:57 -0300
+Message-ID: <877dmyw9m2.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <ef62ac45-9ec9-2582-3e58-7efc0609221f@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102240001
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 mlxscore=0 malwarescore=0
- clxscore=1015 phishscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102240000
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-23_12:2021-02-23,2021-02-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 clxscore=1015 lowpriorityscore=0 impostorscore=0
+ phishscore=0 mlxscore=0 spamscore=0 malwarescore=0 suspectscore=0
+ adultscore=0 mlxlogscore=925 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102240005
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/23/21 3:21 PM, Mike Kravetz wrote:
-> On 2/23/21 2:58 PM, Oscar Salvador wrote:
->> On 2021-02-23 23:55, Mike Kravetz wrote:
->>> Yes, that is the more common case where the once active hugetlb page
->>> will be simply added to the free list via enqueue_huge_page().  This
->>> path does not go through prep_new_huge_page.
->>
->> Right, I see.
->>
->> Thanks
-> 
-> You got me thinking ...
-> When we dynamically allocate gigantic pages via alloc_contig_pages, we
-> will not use the buddy allocator.  Therefore, the usual 'page prepping'
-> will not take place.  Specifically, I could not find anything in that
-> path which clears page->private of the head page.
-> Am I missing that somewhere?  If not, then we need to clear that as well
-> in prep_compound_gigantic_page.  Or, just clear it in prep_new_huge_page
-> to handle any change in assumptions about the buddy allocator.
-> 
-> This is not something introduced with the recent field shuffling, it
-> looks like something that existed for some time.
 
-nm, we do end up calling the same page prepping code (post_alloc_hook)
-from alloc_contig_range->isolate_freepages_range.
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-Just to make sure, I purpously dirtied page->private of every page as it
-was being freed.  Gigantic page allocation was just fine, and I even ran
-ltp mm tests with this dirtying in place.
+> ELF related fields elf_headers, elf_headers_sz, and elf_load_addr
+> have been moved from 'struct kimage_arch' to 'struct kimage'.
+>
+> Use the ELF fields defined in 'struct kimage'.
+>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Fixes: 33488dc4d61f ("of: Add a common kexec FDT setup function")
+
+Ditto.
+
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>  arch/x86/include/asm/kexec.h       |  5 -----
+>  arch/x86/kernel/crash.c            | 14 +++++++-------
+>  arch/x86/kernel/kexec-bzimage64.c  |  2 +-
+>  arch/x86/kernel/machine_kexec_64.c |  4 ++--
+>  4 files changed, 10 insertions(+), 15 deletions(-)
+
+With that fixed:
+
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+
 -- 
-Mike Kravetz
+Thiago Jung Bauermann
+IBM Linux Technology Center
