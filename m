@@ -2,88 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8D9324708
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 23:43:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E81324710
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 23:44:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235510AbhBXWnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 17:43:21 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:45124 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233557AbhBXWnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 17:43:18 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614206573; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=WczKGquSJgnZUlXASNkqZ5WkLYrasNUrNCB5kZMcP5A=;
- b=RJpuk5rl6K84LiBy3OEaVLOlhOdrkV7q+72GGAvSA8SUwfpoAuX2y2Rj3E5HqwslvCtDCJjp
- wvOqNq4MfL+5yrx71uf1PKcH/jJmKgSls0GjMdGDhxfG/WEqJeP9z74fB9sbNKkYFHBKZKc3
- JDDJPwTNQgesiv0O2TODm755whk=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6036d64cba08663830550c3e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Feb 2021 22:42:20
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1DF91C43462; Wed, 24 Feb 2021 22:42:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70688C433CA;
-        Wed, 24 Feb 2021 22:42:19 +0000 (UTC)
+        id S235612AbhBXWnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 17:43:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235250AbhBXWnc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 17:43:32 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F539C061788
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 14:42:52 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id u11so2077421plg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 14:42:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4qD0bh+6rEBJ6s6+qgDoBSjSKGiQ2q5y7JANudls5vI=;
+        b=I1JHwIT+U9OO58Pc38ZuzAs2QzAh1xLUIAgX6huh6oz167TxF14RSoBid8UxG9B4qr
+         OLWIXx0MZfnvjexW2V6qo9YvswdcbLQ3692oJSi14V+eV8cqWF7ZJ9sHpr6MOsiQR/pn
+         6y+MrmnuWJSbFvzWiB+gcgOHY4RvFpNasRt18=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4qD0bh+6rEBJ6s6+qgDoBSjSKGiQ2q5y7JANudls5vI=;
+        b=tUoFnJoq6ACY1+aWs0SutJY6cvxKjA0rvSRmpVh+7Ey8OnE11xnpZPIddDlms1iETD
+         78dDEF4KrxabL2he081G69gRzH6dSPA3fS+OJgSUO3igRFr69uldoLr++TEQ2xjfkRhb
+         CAgixoKbuu/8VwrB+z/fKr5AAURyBAPBslfVJbgoGDOwRvpvZDd50jIimgRS5cXZp9MB
+         akD9geLoyiC7BbN3RDGZpLyQ2fV+uECieCaxqmKYxb8c+WfjWqHkVUm2XNKvQkAt+/3l
+         rs47yRaRMwkseDugVloN3Ql+FFYaUCmG31ReyFBlndqmEZUwRD+ytlG6uHq7wj8XDHRM
+         JgRw==
+X-Gm-Message-State: AOAM533tRfIQJ+rL4Z58CSVtbh2tPxYg7nXafa4xh76UoEQvJ6JkfZuh
+        fd+5r21Cs1yIy3+U3ze2aZUtQQ==
+X-Google-Smtp-Source: ABdhPJy+FDtnD+N/ZjqgPPbWw42HtyErBlOSrKNol4tmTskqrDwuTPUww2A8PcDziLPJAW0AfGil9w==
+X-Received: by 2002:a17:902:9f94:b029:e3:287f:9a3a with SMTP id g20-20020a1709029f94b02900e3287f9a3amr296408plq.46.1614206571524;
+        Wed, 24 Feb 2021 14:42:51 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b18sm3739586pfb.197.2021.02.24.14.42.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 14:42:50 -0800 (PST)
+Date:   Wed, 24 Feb 2021 14:42:49 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH v9 01/16] tracing: move function tracer options to
+ Kconfig (causing parisc build failures)
+Message-ID: <202102241442.C456318BC0@keescook>
+References: <20201211184633.3213045-1-samitolvanen@google.com>
+ <20201211184633.3213045-2-samitolvanen@google.com>
+ <20210224201723.GA69309@roeck-us.net>
+ <202102241238.93BC4DCF@keescook>
+ <20210224222807.GA74404@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 24 Feb 2021 14:42:19 -0800
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
-        sean@poorly.run, vkoul@kernel.org, tanmay@codeaurora.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] phy/qualcomm: add hbr3_hbr2 voltage and premphasis
- swing table
-In-Reply-To: <161419558963.1254594.762999750680493756@swboyd.mtv.corp.google.com>
-References: <1613667070-27613-1-git-send-email-khsieh@codeaurora.org>
- <161367397738.1254594.12158219605796616035@swboyd.mtv.corp.google.com>
- <161419558963.1254594.762999750680493756@swboyd.mtv.corp.google.com>
-Message-ID: <3fac13ae8e800f5283fb13cbafac2b21@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224222807.GA74404@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-24 11:39, Stephen Boyd wrote:
-> Quoting Stephen Boyd (2021-02-18 10:46:17)
->> Quoting Kuogee Hsieh (2021-02-18 08:51:10)
->> > Add hbr3_hbr2 voltage and premphasis swing table to support
->> > HBR3 link rate.
->> >
->> > Changes in V2:
->> > -- replaced upper case with lower case at hbr3_hbr2 table
->> >
->> > Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> > ---
->> 
->> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
->> 
->> BTW, the DP driver already set rates for HBR2, so does that mean this 
->> is
->> fixing the voltage and preemphasis settings for HBR2? If so we should
->> backport this to stable trees and mark it as fixing commit 
->> 52e013d0bffa
->> ("phy: qcom-qmp: Add support for DP in USB3+DP combo phy").
+On Wed, Feb 24, 2021 at 02:28:07PM -0800, Guenter Roeck wrote:
+> On Wed, Feb 24, 2021 at 12:38:54PM -0800, Kees Cook wrote:
+> > On Wed, Feb 24, 2021 at 12:17:23PM -0800, Guenter Roeck wrote:
+> > > On Fri, Dec 11, 2020 at 10:46:18AM -0800, Sami Tolvanen wrote:
+> > > > Move function tracer options to Kconfig to make it easier to add
+> > > > new methods for generating __mcount_loc, and to make the options
+> > > > available also when building kernel modules.
+> > > > 
+> > > > Note that FTRACE_MCOUNT_USE_* options are updated on rebuild and
+> > > > therefore, work even if the .config was generated in a different
+> > > > environment.
+> > > > 
+> > > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > > > Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > 
+> > > With this patch in place, parisc:allmodconfig no longer builds.
+> > > 
+> > > Error log:
+> > > Arch parisc is not supported with CONFIG_FTRACE_MCOUNT_RECORD at scripts/recordmcount.pl line 405.
+> > > make[2]: *** [scripts/mod/empty.o] Error 2
+> > > 
+> > > Due to this problem, CONFIG_FTRACE_MCOUNT_RECORD can no longer be
+> > > enabled in parisc builds. Since that is auto-selected by DYNAMIC_FTRACE,
+> > > DYNAMIC_FTRACE can no longer be enabled, and with it everything that
+> > > depends on it.
+> > 
+> > Ew. Any idea why this didn't show up while it was in linux-next?
+> > 
 > 
-> Yes? No?
-yes
+> It did, I just wasn't able to bisect it there.
+
+Ah-ha! Okay, thanks. Sorry it's been broken for so long! I've added
+parisc to my local cross builder now.
+
+-- 
+Kees Cook
