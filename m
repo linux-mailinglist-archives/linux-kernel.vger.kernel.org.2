@@ -2,60 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221253240C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A35B93240C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238625AbhBXPZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:25:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59318 "EHLO
+        id S238604AbhBXPZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:25:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235742AbhBXOqm (ORCPT
+        with ESMTP id S235744AbhBXOqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Feb 2021 09:46:42 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E086C061356
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:42:45 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id n4so612689wmq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:42:45 -0800 (PST)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186CCC06121C
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:42:55 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id v15so2136491wrx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:42:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=65QKSsy3lkCh0TOg3Qv5eqQsbUSxRJSlb8pGltzsbn8=;
-        b=aOA3X1qA/raiSVC1ONzrW+LerPrW/uegK5wztMiPKpR4vtgB/F+yAaSbciq1EvjRSh
-         FOdC/O/q7THZDizqc/NnyhjJmS23bM3YuMcLqP5zPyvvUDRKoGrk/dtBqHxHK5mrW23F
-         AuZOKuCPrbA+B3eyK+EjBJ6u0PfzHZER8tL/j51qvj3MTwj6kiSMLnDJeb9jKwP4rAaA
-         jKCtIZ1dgXiSsII+pIKTSqplrMcvPhG+5hAwFZ+YzJCUG8amw/iU4iNZziUQqj8wfsh3
-         B6YyMmZnDwRwpEv7ogeHvRG4Wp9Tbuee6HSBbLQGGB3IyRlp+5wb1Eaw9Vd6JqpT1kTE
-         7y7A==
+        bh=Avv6ZnmbXhgqra1UyQEo1jRqhDV3UEf0fLOb0eDNvQ8=;
+        b=xZoc3hBIVPJJapaC73bDrdlHYiWZTC8Gd5hvzDsj5M/0Gmhz+TXWHtcm5ek2a1poNV
+         ufUQz4YRuGlHWn+djwpPnG9idrsPzvLehgF63M9vJvSXI8aVjU4M97Uy+pXPo2/Us43J
+         pEqwK11wGB8W530jG5HXEptjsuh/Y36OJDe1Dmep04wvfMYezvrwLaQ0al88G8e6zgRU
+         Vr7hrMVjWud3ibSLkxTEMDiQ1mDXzl2/mZCo16DovjoH1aOD0X5nL90um2wcxiB54xyo
+         Pie/uMq/0ZQfO4BXsL8cSZaHcFK29gXfL5l267/39eAo19HMzGdVIRcyqugLzSAV4IhR
+         YPuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=65QKSsy3lkCh0TOg3Qv5eqQsbUSxRJSlb8pGltzsbn8=;
-        b=SgJMiQcKzD10UatMOTyhjpHZGaQVU13rPU+2/eE4piCQHfjO3JPwQDa+gemAPDRFaO
-         Eh3hHFAni6JuxcuME/o+0cHi5I6m8dl4Xvpv78tyiA2Jndd8h5WT/naapZlC+7HCeP8e
-         sU9cjtRxkScXeu1+WsK3XehQulPDNqpNZk6ce5/K/WlIA35rfCVDEYz1xKLnA7Jf4FjQ
-         gL5xYVTon7Vste+sAYlaB8pvOOV1U5Tme3bibtaE1KBmYh4n8a2DpqT79tw69ehlw9V0
-         3oRiEoQgV9bKycojl4kfnsh5ldIjoPJXMpnLvQzjsJr/r31VFI7BW3QWGrheqNp7ig4v
-         SC2A==
-X-Gm-Message-State: AOAM531WFwUTTqvZaSPtUBn9f2zPXflH0rxHPmcLJMAkyo/kFtT7+PNa
-        Kflb+pvoioaym0z8nweI5iRPNw==
-X-Google-Smtp-Source: ABdhPJzN3c+DDio3HKnmVyPDga3bjriwu8sVoanEINW7bsZeHkd6/eck/wyCN4/4JqOwOcO1iyGKUg==
-X-Received: by 2002:a1c:20c7:: with SMTP id g190mr4040398wmg.156.1614177763949;
-        Wed, 24 Feb 2021 06:42:43 -0800 (PST)
+        bh=Avv6ZnmbXhgqra1UyQEo1jRqhDV3UEf0fLOb0eDNvQ8=;
+        b=q5k0o0T/AaBzGaPFxN/x6WDQHyI4E4pBzps65LAOO7XAvp+tuF/ce51pTeAAxbX53G
+         6PUup2Gx2EwB1hEKYWEmJErMtO7wOz+erI3POwrYNmVBFwoiZxYqZzZ/v5syFjLxewEG
+         dNYplQtlOxSEA4z37ycMz5EAKLCuc+M7pkPLYnml3mDFgtaGrtq0rNH7axLI1NFPcA2Y
+         HswWkO4aQVzRnNIswmt++WisQPkBaibqEb3fXBvhTSn0rCH35cNV86d1e9yw5zhS9b+O
+         zAe8jUJ7mXxlCbM/4WiWccawzCcGQLCoaoKGAKIGjD2m0DUVItB0A19FHyZIp11Sqj6f
+         WnkQ==
+X-Gm-Message-State: AOAM530kmbdx9N3cSKqcTWMGvBC4lsn8X7EP8g0Ix9bmM2FRPT2S4pUH
+        LMxeCDircRE+JBgJZD4kd1abJw==
+X-Google-Smtp-Source: ABdhPJxWR8fKAlpBPJGDCmIXiINikw6KX+dWZWtvj338MuerAgimT6gWJKuutkrnfT/iEhLRwvQXkg==
+X-Received: by 2002:a5d:44d2:: with SMTP id z18mr32219677wrr.26.1614177773751;
+        Wed, 24 Feb 2021 06:42:53 -0800 (PST)
 Received: from localhost.localdomain (lns-bzn-59-82-252-157-252.adsl.proxad.net. [82.252.157.252])
-        by smtp.gmail.com with ESMTPSA id p3sm4170669wro.55.2021.02.24.06.42.42
+        by smtp.gmail.com with ESMTPSA id p3sm4170669wro.55.2021.02.24.06.42.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 06:42:43 -0800 (PST)
+        Wed, 24 Feb 2021 06:42:53 -0800 (PST)
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
 To:     rafael@kernel.org, andriy.shevchenko@linux.intel.com
 Cc:     linux-kernel@vger.kernel.org,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org (open list:OMNIVISION OV02A10 SENSOR DRIVER)
-Subject: [PATCH v2 7/9] i2c/drivers/ov02q10: Use HZ macros
-Date:   Wed, 24 Feb 2021 15:42:17 +0100
-Message-Id: <20210224144222.23762-7-daniel.lezcano@linaro.org>
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Ramuthevar Vadivel Murugan 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM)
+Subject: [PATCH v2 8/9] mtd/drivers/nand: Use HZ macros
+Date:   Wed, 24 Feb 2021 15:42:18 +0100
+Message-Id: <20210224144222.23762-8-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210224144222.23762-1-daniel.lezcano@linaro.org>
 References: <20210224144222.23762-1-daniel.lezcano@linaro.org>
@@ -68,29 +72,29 @@ remove the duplicate definition.
 
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- drivers/media/i2c/ov02a10.c | 2 +-
+ drivers/mtd/nand/raw/intel-nand-controller.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/ov02a10.c b/drivers/media/i2c/ov02a10.c
-index 8683ffd3287a..59a34e59774e 100644
---- a/drivers/media/i2c/ov02a10.c
-+++ b/drivers/media/i2c/ov02a10.c
-@@ -9,6 +9,7 @@
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
+diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+index a304fda5d1fa..8d00191a4815 100644
+--- a/drivers/mtd/nand/raw/intel-nand-controller.c
++++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+@@ -20,6 +20,7 @@
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
 +#include <linux/units.h>
- #include <media/media-entity.h>
- #include <media/v4l2-async.h>
- #include <media/v4l2-ctrls.h>
-@@ -64,7 +65,6 @@
- /* Test pattern control */
- #define OV02A10_REG_TEST_PATTERN			0xb6
+ #include <asm/unaligned.h>
  
--#define HZ_PER_MHZ					1000000L
- #define OV02A10_LINK_FREQ_390MHZ			(390 * HZ_PER_MHZ)
- #define OV02A10_ECLK_FREQ				(24 * HZ_PER_MHZ)
+ #define EBU_CLC			0x000
+@@ -102,7 +103,6 @@
  
+ #define MAX_CS	2
+ 
+-#define HZ_PER_MHZ	1000000L
+ #define USEC_PER_SEC	1000000L
+ 
+ struct ebu_nand_cs {
 -- 
 2.17.1
 
