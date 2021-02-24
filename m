@@ -2,62 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C72B32439E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B63D332439A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234650AbhBXSMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:12:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41174 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233732AbhBXSM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:12:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1FFF7AAAE;
-        Wed, 24 Feb 2021 18:11:42 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 50A29DA7B0; Wed, 24 Feb 2021 19:09:42 +0100 (CET)
-Date:   Wed, 24 Feb 2021 19:09:42 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.11 54/67] btrfs: make
- btrfs_start_delalloc_root's nr argument a long
-Message-ID: <20210224180942.GZ1993@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Sasha Levin <sashal@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210224125026.481804-1-sashal@kernel.org>
- <20210224125026.481804-54-sashal@kernel.org>
+        id S234565AbhBXSL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:11:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234502AbhBXSL2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 13:11:28 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D25C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:10:48 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id j19so4390111lfr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:10:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T18j6faUKgGfUyzDSnahU+MQ0EeCWnejsT6SUVEgYQM=;
+        b=XnL74fIb2y442Lkvpqj1K22yiFeODco8tGcnKRQwBtCwyFvHqcQZBuSInsFfIUNBdv
+         654ZiYf4Qc/OEcDKemaLNntKLquuUcAUskAlErz/90JFJaP2Wx+RGhtZEVCDWBCpsn4T
+         cBodHyKHJGLsfEtTnra1Lp+quNIHnRQmXiXjI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T18j6faUKgGfUyzDSnahU+MQ0EeCWnejsT6SUVEgYQM=;
+        b=LO7lnZx6kqSfp+FMyUvK3IzhMLYRkKiwhGmGLkkGmS0Id9sMlUfVD1XZuzWqHwTa1X
+         RHOi9H1mrb5lRKu3aXUbZ0pf5kGbBuW17Smur6FcK8U4mfG46YlUe/odLk8qeys6acmK
+         6FbOaVXrnymP+WKZi4SZuLsq1A5xfmJYk22avqlWxc1AbtIKC/d3TWQ30/7rPmxV9p1Y
+         zcuKe3OMwh7mYBK3NjFDHhoFzHeH8/ezqoKhk99k/ZDWKJHAQNfCjw0R8mIhZ5dIbUjC
+         HAEJDqMOhGvB/LfHwU0RumLXim4TBzIMTURmL9qbeaGFn8mZ4ANkhBlldytk9OFT5C2T
+         4oLA==
+X-Gm-Message-State: AOAM5322JaoRle8+EIl9c+xWOMqOHWgknstvB1DJB83bEynGVaRDpOjY
+        uDuWsR/gEnLqU8qIyqMtSKoazDxB9eYjZA==
+X-Google-Smtp-Source: ABdhPJw3shVcaMwZN8338K2tRpgEjfFvffvrXbXWc7rwGs6WAZJsV2ZS7do0h0Y2f4NxamiCD4M7Og==
+X-Received: by 2002:a19:4c08:: with SMTP id z8mr2064098lfa.157.1614190246646;
+        Wed, 24 Feb 2021 10:10:46 -0800 (PST)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id n8sm626636lfe.276.2021.02.24.10.10.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Feb 2021 10:10:45 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id p21so4405373lfu.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:10:45 -0800 (PST)
+X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr19230530lfu.40.1614190245360;
+ Wed, 24 Feb 2021 10:10:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224125026.481804-54-sashal@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <cover.1614090658.git.dsterba@suse.com> <CAHk-=wijdojzo56FzYqE5TOYw2Vws7ik3LEMGj9SPQaJJ+Z73Q@mail.gmail.com>
+ <20210223192506.GY3014244@iweiny-DESK2.sc.intel.com> <20210224123049.GX1993@twin.jikos.cz>
+ <20210224175912.GA3014244@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20210224175912.GA3014244@iweiny-DESK2.sc.intel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 24 Feb 2021 10:10:29 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiJ9KnCn14TXQdxS6OjxqX_ZoGuezNLrTDYCE0ACQb2Fw@mail.gmail.com>
+Message-ID: <CAHk-=wiJ9KnCn14TXQdxS6OjxqX_ZoGuezNLrTDYCE0ACQb2Fw@mail.gmail.com>
+Subject: Re: [GIT PULL] Kmap conversions for 5.12
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     David Sterba <dsterba@suse.cz>, David Sterba <dsterba@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 07:50:12AM -0500, Sasha Levin wrote:
-> From: Nikolay Borisov <nborisov@suse.com>
-> 
-> [ Upstream commit 9db4dc241e87fccd8301357d5ef908f40b50f2e3 ]
-> 
-> It's currently u64 which gets instantly translated either to LONG_MAX
-> (if U64_MAX is passed) or cast to an unsigned long (which is in fact,
-> wrong because writeback_control::nr_to_write is a signed, long type).
-> 
-> Just convert the function's argument to be long time which obviates the
-> need to manually convert u64 value to a long. Adjust all call sites
-> which pass U64_MAX to pass LONG_MAX. Finally ensure that in
-> shrink_delalloc the u64 is converted to a long without overflowing,
-> resulting in a negative number.
+On Wed, Feb 24, 2021 at 9:59 AM Ira Weiny <ira.weiny@intel.com> wrote:
+>
+> To be clear I'd like to just drop the 2 patches which use zero_user() for this
+> merge window.
+>
+> Is ok to just drop them and merge the rest of this series in 5.12?
 
-This patch is a cleanup and I don't see any other patch depend on it, so
-please drop it from autosel.
+Ack, that sounds like the best way forward.
+
+          Linus
