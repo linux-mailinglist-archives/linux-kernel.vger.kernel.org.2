@@ -2,117 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D413241F3
+	by mail.lfdr.de (Postfix) with ESMTP id E9C893241F5
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbhBXQRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:17:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233614AbhBXQOI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:14:08 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179CDC061788
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:13:23 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id l2so1772264pgb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:13:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3FZdsf6XJR67eODXmbRF6cVAh1XeOXuhlF5t976l7j4=;
-        b=nyplz0egG1ZE6DKF+WBViBtTmkq57r1y4/WrOJRBP+zvNdbtVL9ro3/gUhjk0t3EJY
-         knieBe+/Zqqj8EyI75aZuwydHXn6/glZ4/NlhqzvSo9H8u4iKqSh7t4ojxe7AORg7iTJ
-         /tC7QLdPHHMFfdbQSsap88uhtwzjmh5GO555zmW9OTIGAdEPhWlTHeDmgzZXbKyxndlf
-         jrBS9ld1Bv9+TQTaYtkHFsND+dClH/HUtywBlAxWI9i+8AwTmDoT5RTjInZwdqvKzgbd
-         uRUmF6COHLQ8XGrIpBKuqD9KCaT40tl0Hpc/jaU0GIVGvkY91YUyjyylU1wB7VEZIF9i
-         oFMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3FZdsf6XJR67eODXmbRF6cVAh1XeOXuhlF5t976l7j4=;
-        b=Krnfb5/yumsbiVDl0vra+oscC6OyIlEl5R86iOdTadhaFQLzSMZ0CA06S5RYJLz7lh
-         3me0jtgcpZ5BXfoHiqXT1MmyWbp4uPPk1i6cV8T9oOJIw4p4FIGe5LMH66Q8uSUJqQS5
-         crtiN3IjZzJBFuQ5L8nYBya8YOpzYIRsBUw+eMDAt6YfWsYxfq8tR1Hn6o19V8jdCK7b
-         /zBTslK/CaIu3sU6JYJf6TWAT4TfOF4c1u0z8jlySIRfxeFjR4YFPTMpzi1v0IZ98+2E
-         MbJDvQDUNkEMOT9V8ObD/bsLQYW+K8RvgzLwxM/CSWwmXb8QN8NpRuLH+jPiQhnQ/wcs
-         o8CA==
-X-Gm-Message-State: AOAM530BZskdwvIFStbVFqQCxpiHs9iVOI2bpIdWSuDkop+8gWCnOfHA
-        7fnOkIsRvUy2xIye/UcZrmjCQg==
-X-Google-Smtp-Source: ABdhPJx/DJXPG0XU6qb5mGGFjx1HgwHMwaiQcD3TQBk61ZFy/l3KG8Z04RbBxc7j/J8XkKrY4wuSew==
-X-Received: by 2002:a63:4e26:: with SMTP id c38mr3861088pgb.81.1614183202598;
-        Wed, 24 Feb 2021 08:13:22 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id v4sm3054021pff.156.2021.02.24.08.13.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 08:13:22 -0800 (PST)
-Date:   Wed, 24 Feb 2021 09:13:19 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org, al.grant@arm.com,
-        branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/7] Split Coresight decode by aux records
-Message-ID: <20210224161319.GA3495326@xps15>
-References: <20210212144513.31765-1-james.clark@arm.com>
+        id S235200AbhBXQSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:18:04 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:35762 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231787AbhBXQOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 11:14:30 -0500
+Received: from zn.tnic (p200300ec2f0d1800cad8e5da06da911c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1800:cad8:e5da:6da:911c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 09AED1EC030F;
+        Wed, 24 Feb 2021 17:13:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614183225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Er7y3jCuuCKgbYlCZ7mXOhRm/JIUbE/Vg6GeirSlpE0=;
+        b=O0HDByKCzxkxZNznG50gQwqin4Y2bSk8iAFHgW/VkUdQB4EzOKSXeY5F4aCBIh3AH29Egv
+        4BWKltjoPD8Iwx3H7rWPZTKgkQzDf728LZ1fBpFV8vPm7JnCddiq6gCXR1QPFa+gCn13Ro
+        Ot5RFiZrcITHPz3IDzoKk+BIjMPG8kg=
+Date:   Wed, 24 Feb 2021 17:13:43 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
+Message-ID: <20210224161343.GE20344@zn.tnic>
+References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
+ <20210217222730.15819-7-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210212144513.31765-1-james.clark@arm.com>
+In-Reply-To: <20210217222730.15819-7-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day James,
+On Wed, Feb 17, 2021 at 02:27:10PM -0800, Yu-cheng Yu wrote:
+> +/*
+> + * When a control protection exception occurs, send a signal to the responsible
+> + * application.  Currently, control protection is only enabled for user mode.
+> + * This exception should not come from kernel mode.
+> + */
+> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
+> +{
+> +	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
+> +				      DEFAULT_RATELIMIT_BURST);
 
-I have received your patchset and added it to my queue.  On the flip side it
-will be 3 to 4 weeks (from today) before I get a chance to look at it.  As such
-I suggest you don't wait on me before addressing the issues found by Leo.
+Pls move that out of the function - those "static" qualifiers get missed
+easily when inside a function.
 
-Thanks,
-Mathieu
+> +	struct task_struct *tsk;
+> +
+> +	if (!user_mode(regs)) {
+> +		pr_emerg("PANIC: unexpected kernel control protection fault\n");
+> +		die("kernel control protection fault", regs, error_code);
+> +		panic("Machine halted.");
+> +	}
+> +
+> +	cond_local_irq_enable(regs);
+> +
+> +	if (!boot_cpu_has(X86_FEATURE_CET))
+> +		WARN_ONCE(1, "Control protection fault with CET support disabled\n");
+> +
+> +	tsk = current;
+> +	tsk->thread.error_code = error_code;
+> +	tsk->thread.trap_nr = X86_TRAP_CP;
+> +
+> +	/*
+> +	 * Ratelimit to prevent log spamming.
+> +	 */
+> +	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
+> +	    __ratelimit(&rs)) {
+> +		unsigned long ssp;
+> +		int err;
+> +
+> +		err = array_index_nospec(error_code, ARRAY_SIZE(control_protection_err));
 
-On Fri, Feb 12, 2021 at 04:45:06PM +0200, James Clark wrote:
-> Hi All,
-> 
-> Since my previous RFC, I've fixed --per-thread mode and solved
-> most of the open questions. I've also changed --dump-raw-trace
-> to use the same code path so it's also working now.
-> 
-> I think the only open questions are:
->   * General approach
->   * If aux records need to be saved, or if they can be pulled
->     from elsewhere.
-> 
-> I've also tested perf inject which is now working with troublesome
-> files.
-> 
-> Thanks
-> James
-> 
-> James Clark (7):
->   perf cs-etm: Split up etm queue setup function
->   perf cs-etm: Only search timestamp in current sample's queue.
->   perf cs-etm: Save aux records in each etm queue
->   perf cs-etm: don't process queues until cs_etm__flush_events
->   perf cs-etm: split decode by aux records.
->   perf cs-etm: Use existing decode code path for --dump-raw-trace
->   perf cs-etm: Suppress printing when resetting decoder
-> 
->  .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  10 +-
->  tools/perf/util/cs-etm.c                      | 300 ++++++++++--------
->  2 files changed, 168 insertions(+), 142 deletions(-)
-> 
-> -- 
-> 2.28.0
-> 
+"err" as an automatic variable is confusing - we use those to denote
+whether the function returned an error or not. Call yours "cpf_type" or
+so.
+
+> +
+> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
+> +		pr_emerg("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)",
+> +			 tsk->comm, task_pid_nr(tsk),
+> +			 regs->ip, regs->sp, ssp, error_code,
+> +			 control_protection_err[err]);
+> +		print_vma_addr(KERN_CONT " in ", regs->ip);
+> +		pr_cont("\n");
+> +	}
+> +
+> +	force_sig_fault(SIGSEGV, SEGV_CPERR,
+> +			(void __user *)uprobe_get_trap_addr(regs));
+
+Why is this calling an uprobes function?
+
+Also, do not break that line even if it is longer than 80.
+
+> +	cond_local_irq_disable(regs);
+> +}
+> +#endif
+> +
+>  static bool do_int3(struct pt_regs *regs)
+>  {
+>  	int res;
+> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+> index d2597000407a..1c2ea91284a0 100644
+> --- a/include/uapi/asm-generic/siginfo.h
+> +++ b/include/uapi/asm-generic/siginfo.h
+> @@ -231,7 +231,8 @@ typedef struct siginfo {
+>  #define SEGV_ADIPERR	7	/* Precise MCD exception */
+>  #define SEGV_MTEAERR	8	/* Asynchronous ARM MTE error */
+>  #define SEGV_MTESERR	9	/* Synchronous ARM MTE exception */
+> -#define NSIGSEGV	9
+> +#define SEGV_CPERR	10	/* Control protection fault */
+> +#define NSIGSEGV	10
+
+I still don't see the patch adding this to the manpage of sigaction(2).
+
+There's a git repo there: https://www.kernel.org/doc/man-pages/
+
+and I'm pretty sure Michael takes patches.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
