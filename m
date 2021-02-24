@@ -2,227 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40F3323934
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4180D323938
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234474AbhBXJJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:09:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31645 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234267AbhBXJGr (ORCPT
+        id S234599AbhBXJJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:09:39 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:61946 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234477AbhBXJHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:06:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614157516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QqFm1NSygbJXw0rWa68aFsGxKE3C5g6IlhiIzb/mOPY=;
-        b=P9im5AN/uNSCrpyn3E7l/QvzEUCgB8w+0VQ6794A8pMtbixa0RoK/nVE1bfN9c7RnJj/H3
-        yFboQ9QXh3ihyIxAvhjv0m9xYU2f+RoNfeCC4yo62GyRGLdoThNWnf0rrhdvDcZQFIj5yN
-        ka8DUTO2h3JynGOJTunEvo7Z2/GrMSw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-197-YJAhioV8NvS-MfADh6Xjsg-1; Wed, 24 Feb 2021 04:05:14 -0500
-X-MC-Unique: YJAhioV8NvS-MfADh6Xjsg-1
-Received: by mail-ed1-f71.google.com with SMTP id l6so542750edn.22
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 01:05:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QqFm1NSygbJXw0rWa68aFsGxKE3C5g6IlhiIzb/mOPY=;
-        b=HdtPj1ATFPnFrMq585WEZeJgaPf8i0/z7K6CYU+fXql+mj2h6BVtteQEbfHO3sxO4x
-         yMe1FcbK5FVYG00syY2owvZhyu38EWOmS2oQ+XA7cRtHnfgqBbqcoslOWA4RWsJC2WPF
-         6riF/lSa/TXSOieF8wMSgnPmp7XT7oPLbWOFWRCNk0b3zyxZwreCAIDQbHi9xbWw3WS0
-         mGX6QJ+mFXyPrS4zHOjWobLQ9YY+NfxJ94nH/IDyuOfVBccuer9NaQs2QfBOaMZo8FjP
-         uCd9sqrJo0xuCSJ1NtwOKC2vAR2zLwq6QH0K3LY7JPvYP2ZkoBa4EvtUf5c8YJVMVdhA
-         jGig==
-X-Gm-Message-State: AOAM530jZ06/nCdRFpEDhAyKzct9LH+x4xMDfj92CgrQASkodNggHrEe
-        loXhk8IT1nRERJ3GZWuhGl2F1XphEKW+6moBBbeOsa+lnAK7FX+bawztqn3anrbWA8iziq3o8+5
-        Jx5kSji/UgCJCFAYPMLes5ShH
-X-Received: by 2002:a17:906:27cc:: with SMTP id k12mr30689080ejc.8.1614157512118;
-        Wed, 24 Feb 2021 01:05:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwB+2pkCXGcB7fc6xM7Z1RAg7wAhQFJTErDSVFXdqZyiyFbzB3jPIgR1cW6VaLQuWhn+I2l+w==
-X-Received: by 2002:a17:906:27cc:: with SMTP id k12mr30689054ejc.8.1614157511871;
-        Wed, 24 Feb 2021 01:05:11 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id t8sm818884ejr.71.2021.02.24.01.05.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 01:05:10 -0800 (PST)
-Date:   Wed, 24 Feb 2021 04:05:05 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Adrian Catangiu <acatan@amazon.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qemu-devel@nongnu.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, gregkh@linuxfoundation.org,
-        graf@amazon.com, rdunlap@infradead.org, arnd@arndb.de,
-        ebiederm@xmission.com, rppt@kernel.org, 0x7f454c46@gmail.com,
-        borntraeger@de.ibm.com, Jason@zx2c4.com, jannh@google.com,
-        w@1wt.eu, colmmacc@amazon.com, luto@kernel.org, tytso@mit.edu,
-        ebiggers@kernel.org, dwmw@amazon.co.uk, bonzini@gnu.org,
-        sblbir@amazon.com, raduweis@amazon.com, corbet@lwn.net,
-        mhocko@kernel.org, rafael@kernel.org, pavel@ucw.cz,
-        mpe@ellerman.id.au, areber@redhat.com, ovzxemul@gmail.com,
-        avagin@gmail.com, ptikhomirov@virtuozzo.com, gil@azul.com,
-        asmehra@redhat.com, dgunigun@redhat.com, vijaysun@ca.ibm.com,
-        oridgar@gmail.com, ghammer@redhat.com
-Subject: Re: [PATCH v7 0/2] System Generation ID driver and VMGENID backend
-Message-ID: <20210224040034-mutt-send-email-mst@kernel.org>
-References: <1614156452-17311-1-git-send-email-acatan@amazon.com>
+        Wed, 24 Feb 2021 04:07:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1614157636; x=1645693636;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=zcbkz60hjSlra1EteY53QxsgFJXP2yctVKlpHsEWu+k=;
+  b=JsbDjzIMtpVTxSeFw5UBBCH3x76VodrbbSbo+lHWAgvpQpW3Ze1zdVCA
+   oXurELNDAB08nQgJDcb2zGV4YbDkhH22JJMuQVN4+IA+4tmY0YEOd/e3X
+   kUs/fjgbqd0rhfc2uHD7BxzLYHkpT9nQfU8R8R/RSAwPTL6kJQY1a726Y
+   kcYIZ33ujNUk81LSWtCO86VMnh47wM6rK4oevNNgtXzKuD7Rwgj0c9Uva
+   1FIcXR0pUIq+R9OQcwJ/vKmJqOEaitLFAt8E8e9BwwRANK3HZnTD5FhKP
+   HnTy72tIV+IR2aFn9R/BPPwNU1UO9+lQiQwo2DNsRdbE3tzamhoDHdeS6
+   Q==;
+IronPort-SDR: iA2HxeJ8hU6deKPhsluvnUocQfFEtlfH9J57whL/U9iUsIp1X/B/9shyb9cWPVE7Hl24+5ijiX
+ aaF5NcqC49PZSuqT0lTi9io6oG37OGybseFUtABD8a0KxU6bSd21yxj4M20SQ5ZgHyMxKJRBhd
+ mWfS+QV841CcFMlH9FPMrM5KOMHlCa9jzyAqfGp8Ndj2ASwUmsNOKwrUMrFqa9ILxOjSYy/HKl
+ cLACxIrjB/MW+tqc9MtfzZERx0znmtViUhlUOKjq2soQ9OyqF1AYd/kZ5LFH6emQQf0BnsP6zb
+ izY=
+X-IronPort-AV: E=Sophos;i="5.81,202,1610380800"; 
+   d="scan'208";a="165159864"
+Received: from mail-cys01nam02lp2056.outbound.protection.outlook.com (HELO NAM02-CY1-obe.outbound.protection.outlook.com) ([104.47.37.56])
+  by ob1.hgst.iphmx.com with ESMTP; 24 Feb 2021 17:06:02 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eqPEJuNoR5go89zK0yoqzVewYPItQmUzZLP+VDCLFOt3ODDWvP9jvD7bbeYPn2hhSdhhSYjLZEMk6UhoReuAOWmPuTHLfEMuI1pIlDLzOVL9N1iuJwIan7IskEesxVpJrBELi90ORSP5caHQXUHJKQCIxDModEVdiUOaeX0z592Q8SKMSmhFgMSNntRBoUb2PgclAHm6u1ErSaO9feiRj5aYQAf9H9rffLJRFhsFeBhF5l6H4/OO0jfpvmFsIV51VoLPAuPnAr53U9fSDF7KwLLvbkmv93AyYeQXQIW/TABqPvLSGoracdaROEIDzDsX1/WQWogllFPUHYity86w1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zcbkz60hjSlra1EteY53QxsgFJXP2yctVKlpHsEWu+k=;
+ b=BdiN66BT/lUZa2tbVHCdhYfeXHPaiAo+Z60TG+Rce3QrEXwrWxKmLJsP8mxjMJ8uEwLz0OUFzsg34VNI4qIgDxbKJoN7cRWe2idk4eakav9eU+CGtJsJ8LPUCtNQ3mdqP92lWooByHrFlxVVyRvKT0Qg6zoe//N7+9mv2I0Admb9qpB962YTJCRvcBhVq3SR7REx0F3H7vQ73aYWBnr7DKf9mFfI2PmmPT/08P86Dk/AZNxR3ALB2+OQ/5iip0+c9/VbrklVy9Okm6QP7nrHkqYtzHwX7YrzVSZYuRfZlbj65F9ee12hwtTPI4kKojX1pF2F8K0U+5EqH4HviTrnRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zcbkz60hjSlra1EteY53QxsgFJXP2yctVKlpHsEWu+k=;
+ b=mjtbFyX1RjFN/PW89eiynr35V/soXY9KND5PcT4AIu14NaoN1UfRtWLU1Tl8rnwSaG4Al45unu6TInvPcYN7sfxYl3GCXxQx5FkFf8XTWK5E04xHqfcY/5NoN/1lW6MXa/NzVbSyNkZ9mTOxE1uZtCS9k9hzKT/VHGeG2N5cgkA=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM5PR04MB0971.namprd04.prod.outlook.com (2603:10b6:4:43::35) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3846.42; Wed, 24 Feb 2021 09:06:00 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66%3]) with mapi id 15.20.3868.033; Wed, 24 Feb 2021
+ 09:06:00 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Subject: RE: RE: [PATCH v22 4/4] scsi: ufs: Add HPB 2.0 support
+Thread-Topic: RE: [PATCH v22 4/4] scsi: ufs: Add HPB 2.0 support
+Thread-Index: AQHXCP2Y/e9Fs0BGVk+8HmhkjtrqFaplnxOQgADNhgCAAIxTEIAADQXg
+Date:   Wed, 24 Feb 2021 09:06:00 +0000
+Message-ID: <DM6PR04MB65754EE70E1E61C46309AF9DFC9F9@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <DM6PR04MB6575DA862FD50130DAF1E573FC809@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <20210222092957epcms2p728b0c563f3cfbecbf8692d7e86f9afed@epcms2p7>
+        <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
+        <20210222093150epcms2p155352e2255e6bfd8f8d71c737ed05e76@epcms2p1>
+        <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p6>
+ <20210223235458epcms2p666e7cca021e09c715ca3b11ada39ebeb@epcms2p6>
+ <DM6PR04MB657573102C577230A3079DBBFC9F9@DM6PR04MB6575.namprd04.prod.outlook.com>
+In-Reply-To: <DM6PR04MB657573102C577230A3079DBBFC9F9@DM6PR04MB6575.namprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 479fc4df-9f04-4070-11c3-08d8d8a367c2
+x-ms-traffictypediagnostic: DM5PR04MB0971:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR04MB09712B1CBC1A6BAB25F36C8FFC9F9@DM5PR04MB0971.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: psYHaq2/mQOS9XgkZrJkR7i6vDGIGmDXuQFbrvu6wj3FszYCMV72zSjVioI1YJqSYBzCuU87wAdAO3woiiK0PWIMrRCdxBecAWyfKZ2dL67XM47Xtb+4L6cs19SNzlY7kJsnSSCQkbQPt6+K0OR1tMzfmcqHiMdQw2ovUh295MYbH8x1pGIjc0na/41dRgRBmw42ATDqU3pOLCE0lpEsuU8ZeBNd14XKarnbYaz7d+7mF4phqYFS/fAQlI9eBgwKUkSbwRPpyeRB6Xw9tSbtbgFqb9u+SyaZrHVoif1oQdrXstvQa6v3Ktn6qA6WqqL6qyjpRl86sTRDV6rJFW9XAgdztWkmQx6gaNZf8ln3NZDSR+AFfFbyIEVcsrnb54c3NWcIZK0QoRq75tj4cpIQW3YNXfGfgyo7MMxqwpihWjmEr3WutNkc31vhrhE+mQqTL6ehYF8EHSRubbaeI1SmRaV6mSp6+vIc4uPQGwSZptYsZdux4wyI9NFzjzkDtRvXT7c8AdLYFyQuMWpA0RZsr7jO22Wpc5hST4g9aIOFEg9216ndFoUx3uF6pK4DLhFp
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(376002)(346002)(136003)(186003)(66556008)(66476007)(5660300002)(478600001)(55016002)(66946007)(66446008)(83380400001)(8936002)(54906003)(76116006)(2906002)(110136005)(9686003)(64756008)(52536014)(2940100002)(316002)(921005)(26005)(71200400001)(4326008)(33656002)(86362001)(4744005)(8676002)(6506007)(7696005)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?cEs1RWRPTDhhSUwyWThIa3k3bGppNlFiMDh4ODZ4ZlV0ZHp3VmlEWFNHT1p6?=
+ =?utf-8?B?NFRUbmQzZFdleGR6YWY3Y1NzOWlPTlBCSHhOdCtHenJlMC9MWmZyOU9IeWJN?=
+ =?utf-8?B?ZUpaUGZDUUpvR3Q2Wmd5U3VuNllRLzZEVWgyYTQ0Kzg5TWZsam04dlBabi9s?=
+ =?utf-8?B?b1Q3OUk2d0NoTUZjUUtiRFhlSUpzV09mOGhMaTB2L1NBclJHY0NYdXZsZEhI?=
+ =?utf-8?B?ZG1oMGdSVThEdFRMc1p4eU81Y1VVWGxvY2s4WmlXanFWK1dnb3ovL2hKd2VL?=
+ =?utf-8?B?V0l5M2ZsNHc3MndPTnVDb3hnY08wZ0QremN1ZmtKTm9hWmxpTno3VmlTSXNS?=
+ =?utf-8?B?OU5YZG52dmFyTDJKT3pheE93OURjWXdmYm5jQld4MnlQemgvK3hUVUVWTXNH?=
+ =?utf-8?B?NmM1QjMvamNlQmpCYVBQUi9VZmdiZzhBTnhiYVF3a2ZFdHZZSGRMbXE2bTJ6?=
+ =?utf-8?B?ZWNhbGI3cDduQkJPbTdFZlQwYkxmZXpFRGIwWXFCQWJMQ1FFWktHMlJlTmZn?=
+ =?utf-8?B?UGplanZKRWNjbWlacTF2NmRUMGNzcThDQmRjcW5FeEU4ZllYanlzRTdtci9Y?=
+ =?utf-8?B?c2V6eTFMVVhxMnExZDg1U3hLUWMrYm5TVnVmMjJ1MmZIREc4MlE4QXpoTjlj?=
+ =?utf-8?B?dk51aDViNHM3UWZKNzJKbHI3dWdocnlBY205UmxPa0xLK2dnQi9YTndKank2?=
+ =?utf-8?B?dTYrbFBleEhDdWdGM011N3g4Z3BOOXlLanV0eUpEcmdJOUpSMGhSbTNXQ0g4?=
+ =?utf-8?B?ZXYwTWdqeDE2dndBaS9JL1lSZ25IUG9vK0pzNjdaRFVVNGE4d0lDMWpYNFNa?=
+ =?utf-8?B?YkZBbjE4TGxIVG5GMzl1MHc3UUh0ZDFOcHZCdnNZTy9zODg5cjdGNVlxTjFP?=
+ =?utf-8?B?YU5HdWN2VkxEMVQvOC92a21GZk9xK29xV2FUbk1DRk9mVjQyamJQY2hOdzBt?=
+ =?utf-8?B?d0dEM0w3eUFlZHpGSjlNbkpkemJodHJJa3d0ZXJNU1M0RjdxaHM2U0Q0MEZM?=
+ =?utf-8?B?NFNxdndmVTBuajFUcmdCc1hPdEV1ZHV1RWovZTNycXlDRWtqcEYzY0w4VmJh?=
+ =?utf-8?B?eXlBTDkva3pJeDgrSkhmT2RUak11cVlpeGt6aE54TWlpN3lueFM1cmRKMjU1?=
+ =?utf-8?B?bXEwODhMWGNuQnFDdllJWXlpdzlTMzZRbFFTRlZHcm5vazR2NDlZZ1BjaytI?=
+ =?utf-8?B?SWRKNjFQVkdvRGloTGkwMTN0byt6V2hsMk56Nlc1Zlc1dG9RWTlFRFoxaHFN?=
+ =?utf-8?B?K3h2MWcwOTJYMHV6UDFVdXdxZ24vRHlLMUFQV0xMMHRYNDJwMjlGT3lMai9v?=
+ =?utf-8?B?Z0k0WE1FSENHV1ZXaDhKQ3BqSU9ubnA1ckNLZjd4WFRCVWZ5dmxjU3ZMMmJr?=
+ =?utf-8?B?dEwybkJwVG1zaXV1bGpQMG9jdWk3NGxPZUhDTkhSdlE5L3hrSXd0UUpkcnBU?=
+ =?utf-8?B?eHRma0JOVHZTczJYSFNzbXBaeUR3NUJJSFBITEdQcHdWbitlQmNMWTNGejhw?=
+ =?utf-8?B?bkFEdGkzRi9CZ2NEYWpiTU5SWWxLZWduOEszYjhEUEhMT1JDMTRTZ1VFREc4?=
+ =?utf-8?B?UDQzcWp6WDMwU3J4cU1aZ0hwbVhrbFN4L1RCTXBKMFdJRlkxYWozQ3VBSUUv?=
+ =?utf-8?B?NmJFZXMyMStSalFJTEdsMHdTaFhrZm55T1MrVkpOcTFqNFhRK1BOQmU0bkRT?=
+ =?utf-8?B?WWQzeXY2eXVrZWlWZ3RPK2RIaUxtRmJ0TE5lK3dYcEo1V2Mxa3M0K2JwaHNp?=
+ =?utf-8?Q?+T2/1I0s+8RhyLRp+Ba4HfSNxFo90yyn1iVmhzp?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1614156452-17311-1-git-send-email-acatan@amazon.com>
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 479fc4df-9f04-4070-11c3-08d8d8a367c2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Feb 2021 09:06:00.4209
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SclJOiVcaCfBpQF6n+YbzTHCzzJGhN3/QDiN7V9dxZz4wIloMdRT70Hu3BQG0TBwE94/GMv3sm9oTNPEOlPf5Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0971
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 10:47:30AM +0200, Adrian Catangiu wrote:
-> This feature is aimed at virtualized or containerized environments
-> where VM or container snapshotting duplicates memory state, which is a
-> challenge for applications that want to generate unique data such as
-> request IDs, UUIDs, and cryptographic nonces.
-> 
-> The patch set introduces a mechanism that provides a userspace
-> interface for applications and libraries to be made aware of uniqueness
-> breaking events such as VM or container snapshotting, and allow them to
-> react and adapt to such events.
-> 
-> Solving the uniqueness problem strongly enough for cryptographic
-> purposes requires a mechanism which can deterministically reseed
-> userspace PRNGs with new entropy at restore time. This mechanism must
-> also support the high-throughput and low-latency use-cases that led
-> programmers to pick a userspace PRNG in the first place; be usable by
-> both application code and libraries; allow transparent retrofitting
-> behind existing popular PRNG interfaces without changing application
-> code; it must be efficient, especially on snapshot restore; and be
-> simple enough for wide adoption.
-> 
-> The first patch in the set implements a device driver which exposes a
-> the /dev/sysgenid char device to userspace. Its associated filesystem
-> operations operations can be used to build a system level safe workflow
-> that guest software can follow to protect itself from negative system
-> snapshot effects.
-> 
-> The second patch in the set adds a VmGenId driver which makes use of
-> the ACPI vmgenid device to drive SysGenId and to reseed kernel entropy
-> following VM snapshots.
-> 
-> **Please note**, SysGenID alone does not guarantee complete snapshot
-> safety to applications using it. A certain workflow needs to be
-> followed at the system level, in order to make the system
-> snapshot-resilient. Please see the "Snapshot Safety Prerequisites"
-> section in the included SysGenID documentation.
-> 
-> ---
-> 
-> v6 -> v7:
->   - remove sysgenid uevent
-
-How about we drop mmap too?
-
-There's simply no way I can see to make it safe, and
-no implementation is worse than a racy one imho.
-
-Yea there's some decumentation explaining how it is not
-supposed to be used but it will *seem* to work for people
-and we will be stuck trying to maintain it.
-
-Let's see if userspace using this often enough to make the
-system call 
-
-
-
-> v5 -> v6:
-> 
->   - sysgenid: watcher tracking disabled by default
->   - sysgenid: add SYSGENID_SET_WATCHER_TRACKING ioctl to allow each
->     file descriptor to set whether they should be tracked as watchers
->   - rename SYSGENID_FORCE_GEN_UPDATE -> SYSGENID_TRIGGER_GEN_UPDATE
->   - rework all documentation to clearly capture all prerequisites for
->     achieving snapshot safety when using the provided mechanism
->   - sysgenid documentation: replace individual filesystem operations
->     examples with a higher level example showcasing system-level
->     snapshot-safe workflow
-> 
-> v4 -> v5:
-> 
->   - sysgenid: generation changes are also exported through uevents
->   - remove SYSGENID_GET_OUTDATED_WATCHERS ioctl
->   - document sysgenid ioctl major/minor numbers
-> 
-> v3 -> v4:
-> 
->   - split functionality in two separate kernel modules: 
->     1. drivers/misc/sysgenid.c which provides the generic userspace
->        interface and mechanisms
->     2. drivers/virt/vmgenid.c as VMGENID acpi device driver that seeds
->        kernel entropy and acts as a driving backend for the generic
->        sysgenid
->   - rename /dev/vmgenid -> /dev/sysgenid
->   - rename uapi header file vmgenid.h -> sysgenid.h
->   - rename ioctls VMGENID_* -> SYSGENID_*
->   - add ‘min_gen’ parameter to SYSGENID_FORCE_GEN_UPDATE ioctl
->   - fix races in documentation examples
-> 
-> v2 -> v3:
-> 
->   - separate the core driver logic and interface, from the ACPI device.
->     The ACPI vmgenid device is now one possible backend
->   - fix issue when timeout=0 in VMGENID_WAIT_WATCHERS
->   - add locking to avoid races between fs ops handlers and hw irq
->     driven generation updates
->   - change VMGENID_WAIT_WATCHERS ioctl so if the current caller is
->     outdated or a generation change happens while waiting (thus making
->     current caller outdated), the ioctl returns -EINTR to signal the
->     user to handle event and retry. Fixes blocking on oneself
->   - add VMGENID_FORCE_GEN_UPDATE ioctl conditioned by
->     CAP_CHECKPOINT_RESTORE capability, through which software can force
->     generation bump
-> 
-> v1 -> v2:
-> 
->   - expose to userspace a monotonically increasing u32 Vm Gen Counter
->     instead of the hw VmGen UUID
->   - since the hw/hypervisor-provided 128-bit UUID is not public
->     anymore, add it to the kernel RNG as device randomness
->   - insert driver page containing Vm Gen Counter in the user vma in
->     the driver's mmap handler instead of using a fault handler
->   - turn driver into a misc device driver to auto-create /dev/vmgenid
->   - change ioctl arg to avoid leaking kernel structs to userspace
->   - update documentation
-> 
-> Adrian Catangiu (2):
->   drivers/misc: sysgenid: add system generation id driver
->   drivers/virt: vmgenid: add vm generation id driver
-> 
->  Documentation/misc-devices/sysgenid.rst            | 229 +++++++++++++++
->  Documentation/userspace-api/ioctl/ioctl-number.rst |   1 +
->  Documentation/virt/vmgenid.rst                     |  36 +++
->  MAINTAINERS                                        |  15 +
->  drivers/misc/Kconfig                               |  15 +
->  drivers/misc/Makefile                              |   1 +
->  drivers/misc/sysgenid.c                            | 322 +++++++++++++++++++++
->  drivers/virt/Kconfig                               |  13 +
->  drivers/virt/Makefile                              |   1 +
->  drivers/virt/vmgenid.c                             | 153 ++++++++++
->  include/uapi/linux/sysgenid.h                      |  18 ++
->  11 files changed, 804 insertions(+)
->  create mode 100644 Documentation/misc-devices/sysgenid.rst
->  create mode 100644 Documentation/virt/vmgenid.rst
->  create mode 100644 drivers/misc/sysgenid.c
->  create mode 100644 drivers/virt/vmgenid.c
->  create mode 100644 include/uapi/linux/sysgenid.h
-> 
-> -- 
-> 2.7.4
-> 
-> 
-> 
-> 
-> Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
-
+PiA+DQo+ID4gPiA+IEBAIC0yNjU2LDcgKzI2NTYsMTIgQEAgc3RhdGljIGludCB1ZnNoY2RfcXVl
+dWVjb21tYW5kKHN0cnVjdA0KPiA+IFNjc2lfSG9zdA0KPiA+ID4gPiAqaG9zdCwgc3RydWN0IHNj
+c2lfY21uZCAqY21kKQ0KPiA+ID4gPg0KPiA+ID4gPiAgICAgICAgIGxyYnAtPnJlcV9hYm9ydF9z
+a2lwID0gZmFsc2U7DQo+ID4gPiA+DQo+ID4gPiA+IC0gICAgICAgdWZzaHBiX3ByZXAoaGJhLCBs
+cmJwKTsNCj4gPiA+ID4gKyAgICAgICBlcnIgPSB1ZnNocGJfcHJlcChoYmEsIGxyYnApOw0KPiA+
+ID4gPiArICAgICAgIGlmIChlcnIgPT0gLUVBR0FJTikgew0KPiA+ID4gPiArICAgICAgICAgICAg
+ICAgbHJicC0+Y21kID0gTlVMTDsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIHVmc2hjZF9yZWxl
+YXNlKGhiYSk7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICBnb3RvIG91dDsNCj4gPiA+ID4gKyAg
+ICAgICB9DQo+ID4gPiBEaWQgSSBtaXNzLXJlYWQgaXQsIG9yIGFyZSB5b3UgYmFpbGluZyBvdXQg
+b2Ygd2IgZmFpbGVkIGUuZy4gYmVjYXVzZSBubyB0YWcgaXMNCj4gPiBhdmFpbGFibGU/DQo+ID4g
+PiBXaHkgbm90IGNvbnRpbnVlIHdpdGggcmVhZDEwPw0KPiA+DQo+ID4gV2UgdHJ5IHRvIHNlbmRp
+bmcgSFBCIHJlYWQgc2V2ZXJhbCB0aW1lcyB3aXRoaW4gdGhlIHJlcXVldWVfdGltZW91dF9tcy4N
+Cj4gPiBCZWNhdXNlIGl0IHN0cmF0ZWd5IGhhcyBtb3JlIGJlbmVmaXQgZm9yIG92ZXJhbGwgcGVy
+Zm9ybWFuY2UgaW4gdGhpcw0KPiA+IHNpdHVhdGlvbiB0aGF0IG1hbnkgcmVxdWVzdHMgYXJlIHF1
+ZXVlaW5nLg0KPiBUaGlzIGV4dHJhIGxvZ2ljLCBJTU8sIHNob3VsZCBiZSBvcHRpb25hbC4gIERl
+ZmF1bHQgbm9uZS4NCj4gQW5kIHllcywgaW4gdGhpcyBjYXNlIHJlcXVldWVfdGltZW91dCBzaG91
+bGQgYmUgYSBwYXJhbWV0ZXIgZm9yIGVhY2ggT0VNIHRvDQo+IHNjYWxlLg0KQW5kIGVpdGhlciB3
+YXksIGhwYiBpbnRlcm5hbCBmbG93cyBzaG91bGQgbm90IGNhdXNlIGR1bXBpbmcgdGhlIGNvbW1h
+bmQuDQpXb3JzZSBjYXNlIC0gY29udGludWUgYXMgUkVBRDEwDQo=
