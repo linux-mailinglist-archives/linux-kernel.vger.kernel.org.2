@@ -2,94 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC635324344
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC97324347
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235614AbhBXRmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 12:42:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40538 "EHLO
+        id S235714AbhBXRni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 12:43:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230108AbhBXRmM (ORCPT
+        with ESMTP id S229644AbhBXRnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 12:42:12 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CB3C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 09:41:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AZwEr410feKVIXvCVj35Znp2sGtryfBWRcBLV6+cjK8=; b=GIY8rMdxjvPdrYBLMx7jKiATdp
-        SDZxb5uoY2/trxTRq6TsHskE1B7D3SRtD7eUDNFkLcQwSJH9qvTJDEeos6JE5RvMxTvN8JJNqLheH
-        pqny+EBd4wXKT4ssJkudoTxRxesAzGpSObkguYq9kSd+NV7xBWUseexArtnl2Y6wOC2u+o8e4BNme
-        T0l8IV4MQ1jvKh3Emim8Tt3j5O0QtWQy1frt1Q8ufBUsOzs/ayYVSeXRlp/3idTGKZHUTvpmi13AZ
-        UJe8gtD/Fb9kJFa5tgZYxufaLexLwMvBWmJSZLNwPP1OFMLDJpwP69m0QHd+rVMMNgdlRtM+ihGn4
-        aazUHLdw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lEy9z-0001sx-UO; Wed, 24 Feb 2021 17:41:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 603A2305C11;
-        Wed, 24 Feb 2021 18:41:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 478E2206936D2; Wed, 24 Feb 2021 18:41:09 +0100 (CET)
-Date:   Wed, 24 Feb 2021 18:41:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Qais Yousef <qais.yousef@arm.com>
-Subject: Re: [PATCH 0/7 v4] move update blocked load outside newidle_balance
-Message-ID: <YDaPtc47NnB5BGEW@hirez.programming.kicks-ass.net>
-References: <20210224133007.28644-1-vincent.guittot@linaro.org>
- <YDZ2kl2dpHUgmjTS@hirez.programming.kicks-ass.net>
- <CAKfTPtCwmt9HHDuN7tVhZiy7R3e5XHuExU-PVOb++40fYzu-2Q@mail.gmail.com>
+        Wed, 24 Feb 2021 12:43:33 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B249CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 09:42:52 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id g20so1647244plo.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 09:42:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9wRP5DLkWCzCh+T0vNbWrMthPSfCeaaDqG66jAHUycU=;
+        b=RIjjpYYwNMgz101kT8oIKdx1uRLRXETEKM6Tdp5yGLjckq/XC7caP8TrwFwf0EMMNd
+         bWr9OweNiqfYBO+X9rdV0g1tIMDzDLrhU/fofuFyx9Hb7PSFqj4PUc5evd7rn+yqc3na
+         X9PJbSVUQtKaGdY99MQXs42EQ9adPT0REmKdbrSCgl+LJUwczu3oXgP8Rs3EhEReVDrN
+         cUSpZ0EU5nmkXnm5k+04yxyUveqWThCf765+qiDIOOpaeQWrjzASw0+i1siirkr1PJqL
+         fmYJxo6mnzptX2otjiYW1Ph6v68zrtwdTwyJpXMqa7NOl6r2A+5RcuSINOQ0iQCpvdw8
+         XGXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9wRP5DLkWCzCh+T0vNbWrMthPSfCeaaDqG66jAHUycU=;
+        b=lvPyWvtYjqTODWGghKzIc719TZ7th3oWLrDKuznoNc5DLJJV9VQYdM7yMUgkhd5CUQ
+         RtvJM472747ydQMo2g4TEdvjOIraFVVcGg15+rB6mHpMT/6qC+lajoo3aVFVf73uB32r
+         GCAK3tqYlZMJqti7MS6o0zXfkf8yzvluw8fo4sqBql6QuiAhn6OnPXZwajUT0Myz2Lxx
+         2RpmdVgChd35/zJ+ARur18bP08UnGOKhHZpuxhTOG4YfFcaUW9QUhF2Ftma5xXD/1GsD
+         /qU8axxgzseeyin5BlcQqmsFazAJLGBidCw8i0EioNtEgY7PBO4t2yCxdQ0TdTXSLgFt
+         CciQ==
+X-Gm-Message-State: AOAM5321f5ILtyU19s2+6IkF1/b+QPZHpR5Vuwusa++TygxDg3B2zuqg
+        dOOxkEHoArEawUSnMUKMAZ3tmM0R+ctq
+X-Google-Smtp-Source: ABdhPJzWfqoO2VFDQJVcOdJZFhkDWr/ysdgBxSmrvlzxJdQ75+KKIh6Ba13mZ2WtX9WUuv3N+LesNw==
+X-Received: by 2002:a17:902:ec83:b029:e3:ec1f:9dfe with SMTP id x3-20020a170902ec83b02900e3ec1f9dfemr18714579plg.59.1614188572140;
+        Wed, 24 Feb 2021 09:42:52 -0800 (PST)
+Received: from work ([103.66.79.25])
+        by smtp.gmail.com with ESMTPSA id p26sm3553361pfn.127.2021.02.24.09.42.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 24 Feb 2021 09:42:51 -0800 (PST)
+Date:   Wed, 24 Feb 2021 23:12:48 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] bus: mhi: core: Sanity check values from remote
+ device before use
+Message-ID: <20210224174248.GY27945@work>
+References: <1613578822-18614-1-git-send-email-jhugo@codeaurora.org>
+ <20210224094749.GP27945@work>
+ <4745a9eb-0690-3f19-1046-5032ac9482dc@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtCwmt9HHDuN7tVhZiy7R3e5XHuExU-PVOb++40fYzu-2Q@mail.gmail.com>
+In-Reply-To: <4745a9eb-0690-3f19-1046-5032ac9482dc@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 04:57:15PM +0100, Vincent Guittot wrote:
-> On Wed, 24 Feb 2021 at 16:54, Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Wed, Feb 24, 2021 at 02:30:00PM +0100, Vincent Guittot wrote:
-> > > Joel reported long preempt and irq off sequence in newidle_balance because
-> > > of a large number of CPU cgroups in use and having to be updated. This
-> > > patchset moves the update outside newidle_imblance. This enables to early
-> > > abort during the updates in case of pending irq as an example.
-> > >
-> > > Instead of kicking a normal ILB that will wakes up CPU which is already
-> > > idle, patch 6 triggers the update of statistics in the idle thread of
-> > > the CPU before selecting and entering an idle state.
-> >
-> > I'm confused... update_blocked_averages(), which calls
-> > __update_blocked_fair(), which is the one doing the cgroup iteration
-> > thing, runs with rq->lock held, and thus will have IRQs disabled any
-> > which way around we turn this thing.
-> >
-> > Or is the problem that we called nohz_idle_balance(), which does
-> > update_nohz_stats() -> update_blocked_averages() for evey NOHZ cpu from
-> > newidle balance, such that we get NR_NOHZ_CPUS * NR_CGROUPS IRQ latency?
-> > Which is now reduced to just NR_CGROUPS ?
+On Wed, Feb 24, 2021 at 08:10:06AM -0700, Jeffrey Hugo wrote:
+> On 2/24/2021 2:47 AM, Manivannan Sadhasivam wrote:
+> > On Wed, Feb 17, 2021 at 09:20:22AM -0700, Jeffrey Hugo wrote:
+> > > When parsing the structures in the shared memory, there are values which
+> > > come from the remote device.  For example, a transfer completion event
+> > > will have a pointer to the tre in the relevant channel's transfer ring.
+> > > Such values should be considered to be untrusted, and validated before
+> > > use.  If we blindly use such values, we may access invalid data or crash
+> > > if the values are corrupted.
+> > > 
+> > > If validation fails, drop the relevant event.
+> > > 
+> > > Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+> > > ---
+> > > 
+> > > v2: Fix subject
+> > > 
+> > >   drivers/bus/mhi/core/main.c | 81 +++++++++++++++++++++++++++++++++++++++++----
+> > >   1 file changed, 74 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> > > index c043574..1eb2fd3 100644
+> > > --- a/drivers/bus/mhi/core/main.c
+> > > +++ b/drivers/bus/mhi/core/main.c
+> > > @@ -242,6 +242,11 @@ static void mhi_del_ring_element(struct mhi_controller *mhi_cntrl,
+> > >   	smp_wmb();
+> > >   }
+> > > +static bool is_valid_ring_ptr(struct mhi_ring *ring, dma_addr_t addr)
+> > > +{
+> > > +	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len;
+> > > +}
+> > > +
+> > >   int mhi_destroy_device(struct device *dev, void *data)
+> > >   {
+> > >   	struct mhi_device *mhi_dev;
+> > > @@ -383,7 +388,16 @@ irqreturn_t mhi_irq_handler(int irq_number, void *dev)
+> > >   	struct mhi_event_ctxt *er_ctxt =
+> > >   		&mhi_cntrl->mhi_ctxt->er_ctxt[mhi_event->er_index];
+> > >   	struct mhi_ring *ev_ring = &mhi_event->ring;
+> > > -	void *dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
+> > > +	dma_addr_t ptr = er_ctxt->rp;
+> > > +	void *dev_rp;
+> > > +
+> > > +	if (!is_valid_ring_ptr(ev_ring, ptr)) {
+> > > +		dev_err(&mhi_cntrl->mhi_dev->dev,
+> > > +			"Event ring rp points outside of the event ring\n");
+> > > +		return IRQ_HANDLED;
+> > > +	}
+> > > +
+> > > +	dev_rp = mhi_to_virtual(ev_ring, ptr);
+> > >   	/* Only proceed if event ring has pending events */
+> > >   	if (ev_ring->rp == dev_rp)
+> > > @@ -536,6 +550,11 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+> > >   		struct mhi_buf_info *buf_info;
+> > >   		u16 xfer_len;
+> > > +		if (!is_valid_ring_ptr(tre_ring, ptr)) {
+> > > +			dev_err(&mhi_cntrl->mhi_dev->dev,
+> > > +				"Event element points outside of the tre ring\n");
+> > > +			break;
+> > > +		}
+> > >   		/* Get the TRB this event points to */
+> > >   		ev_tre = mhi_to_virtual(tre_ring, ptr);
+> > > @@ -695,6 +714,12 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
+> > >   	struct mhi_chan *mhi_chan;
+> > >   	u32 chan;
+> > > +	if (!is_valid_ring_ptr(mhi_ring, ptr)) {
+> > > +		dev_err(&mhi_cntrl->mhi_dev->dev,
+> > > +			"Event element points outside of the cmd ring\n");
+> > > +		return;
+> > > +	}
+> > > +
+> > >   	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
+> > >   	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
+> > > @@ -719,6 +744,7 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
+> > >   	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+> > >   	u32 chan;
+> > >   	int count = 0;
+> > > +	dma_addr_t ptr = er_ctxt->rp;
+> > >   	/*
+> > >   	 * This is a quick check to avoid unnecessary event processing
+> > > @@ -728,7 +754,13 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
+> > >   	if (unlikely(MHI_EVENT_ACCESS_INVALID(mhi_cntrl->pm_state)))
+> > >   		return -EIO;
+> > > -	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
+> > > +	if (!is_valid_ring_ptr(ev_ring, ptr)) {
+> > > +		dev_err(&mhi_cntrl->mhi_dev->dev,
+> > > +			"Event ring rp points outside of the event ring\n");
+> > > +		return -EIO;
+> > > +	}
+> > > +
+> > > +	dev_rp = mhi_to_virtual(ev_ring, ptr);
+> > >   	local_rp = ev_ring->rp;
+> > >   	while (dev_rp != local_rp) {
+> > > @@ -834,6 +866,8 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
+> > >   			 */
+> > >   			if (chan < mhi_cntrl->max_chan) {
+> > >   				mhi_chan = &mhi_cntrl->mhi_chan[chan];
+> > > +				if (!mhi_chan->configured)
+> > > +					break;
+> > 
+> > This change is not part of this patch I believe.
 > 
-> Yes we can now abort between each cpu update
+> It is.  The remote device specified an event on a channel.  We already check
+> to see that the specified channel value doesn't exceed the maximum number of
+> channels, but we don't check to see that it is a valid channel within the
+> range of channels.  If its not a valid channel (say 0-5 and 7-10 are valid,
+> max is 10, but the remote end specified 6), bad things could happen because
+> we are implicitly trusting the value before fully checking its validity.
+> 
+> This is still a sanity check of a value from the remote end.
+> 
 
-OK, shall I add something like:
+Okay. Please mention it in the commit message. Currently it mentions
+only the tre pointer.
 
-This reduces the IRQ latency from O(nr_cgroups * nr_nohz_cpus) to
-O(nr_cgroups).
+Thanks,
+Mani
 
-To the changelog of patch #1 ?
+> -- 
+> Jeffrey Hugo
+> Qualcomm Technologies, Inc. is a member of the
+> Code Aurora Forum, a Linux Foundation Collaborative Project.
