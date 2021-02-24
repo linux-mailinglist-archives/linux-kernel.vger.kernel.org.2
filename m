@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2B1323B44
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 12:27:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC4E323B4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 12:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234997AbhBXL1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 06:27:51 -0500
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:46809 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234428AbhBXL1c (ORCPT
+        id S234949AbhBXL3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 06:29:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25638 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234794AbhBXL3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 06:27:32 -0500
-Received: by mail-ot1-f49.google.com with SMTP id k13so1759987otn.13;
-        Wed, 24 Feb 2021 03:27:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ihzmy8wLHJ+Ka8D82jECfgw9aSGEAXyEzPKmvC2YQNk=;
-        b=hHlrvvMUVkOvJNyYgG/h8pRJgNHwmR4OpCxB/70rVEUXrGIW3DYwZOa6s7uh+9XHex
-         9PHn0mUlyv+uk0NKovr3egS5Utq4N5EVGGQpPzomeZ+CTuiv3WR5PGIBoJNodS3XggKp
-         JN3XCKyxbbS5vYgfbpksD1j3f+lKjN/8EedSVAdeT+gdQnKy9EquzLJ+73p3qSuvpkXE
-         jLjTQ5wFY0wi0uCKYs80f60/06nfKVGSC5NIjWhd1mvCndcuMxxD19poAcPq15xzkIze
-         hHnE6zhLG1gFakW9ibwafyGzVbJWeDh9m7Y1wiqjfST9FEW1DP2qD+Q+LP8sKJRcfo+E
-         2KAg==
-X-Gm-Message-State: AOAM530+TGAUElYMCtChAlliYgFZ19AU3Z1T0Y3QsNaNlhonf+vMPvXF
-        Yedwbb6HYDX2980vDd5RAO8OcPqWGMJpGo9ugEhaOPorDYM=
-X-Google-Smtp-Source: ABdhPJwUYE7bxPVB80HS5ZT0of+KV/qAezNt+3eZsEB/2DkVxU4QgYLwSD1krEyN+4Hvh2cR/DfJ6DUQ/cLQmtK8V4I=
-X-Received: by 2002:a9d:328:: with SMTP id 37mr1670671otv.250.1614166011963;
- Wed, 24 Feb 2021 03:26:51 -0800 (PST)
+        Wed, 24 Feb 2021 06:29:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614166074;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uKVLad2iARoW1c2dRwOltL8pSbyE/6ChbP13Q5obmTg=;
+        b=frltFzITAK6GN/3WNJs/BuHPf+FIHb2c+Jf27D4wPKdzEdFoqhU1WTCJmRtNC4MM4bsB5a
+        PVS2YVACW3k9Nj8ckF88+0vKiX9sexGMDRYaRTYE/pWSx21ml7zpLIoxMEzKGoxHswQRrY
+        6V35yhpQCjaL/C1gP08oHauF3gCqGoM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-595-VNUKl0siP7qMYyLUDwGloA-1; Wed, 24 Feb 2021 06:27:31 -0500
+X-MC-Unique: VNUKl0siP7qMYyLUDwGloA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 349E6104ED67;
+        Wed, 24 Feb 2021 11:27:30 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7922360C5F;
+        Wed, 24 Feb 2021 11:27:24 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 12:27:23 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>, brouer@redhat.com
+Subject: Re: [RFC PATCH 0/3] Introduce a bulk order-0 page allocator for
+ sunrpc
+Message-ID: <20210224122723.15943e95@carbon>
+In-Reply-To: <20210224102603.19524-1-mgorman@techsingularity.net>
+References: <20210224102603.19524-1-mgorman@techsingularity.net>
 MIME-Version: 1.0
-References: <20210223181425.4010665-1-robh@kernel.org> <20210223181425.4010665-4-robh@kernel.org>
-In-Reply-To: <20210223181425.4010665-4-robh@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 24 Feb 2021 12:26:40 +0100
-Message-ID: <CAMuHMdVyP4ZfXy_sjCb2NbHRSWz1DFo06Q4MD4DsiL0ASLsGgA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] kbuild: Add a build check for missing gitignore entries
-To:     Rob Herring <robh@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Wed, 24 Feb 2021 10:26:00 +0000
+Mel Gorman <mgorman@techsingularity.net> wrote:
 
-On Tue, Feb 23, 2021 at 7:18 PM Rob Herring <robh@kernel.org> wrote:
-> Any non-phony targets need to be in gitignore. The normal way to check
-> this is doing an in-tree build and running git-status which is easy to
-> miss. Git provides an easy way to check whether a file is ignored with
-> git-check-ignore. Let's add a build time check using it. If the build is
-> not in a git tree, the check will silently fail.
->
-> This also has the side effect of a sanity check for 'always-y',
-> 'extra-y' and 'targets' entries which are not correctly marked as PHONY
-> or have the wrong path.
->
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Michal Marek <michal.lkml@markovi.net>
-> Cc: linux-kbuild@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> This is a prototype series that introduces a bulk order-0 page allocator
+> with sunrpc being the first user. The implementation is not particularly
+> efficient and the intention is to iron out what the semantics of the API
+> should be. That said, sunrpc was reported to have reduced allocation
+> latency when refilling a pool.
 
-Thanks for your patch!
+I also have a use-case in page_pool, and I've been testing with the
+earlier patches, results are here[1]
 
-After removing the .git directory from my repository clone, or
-removing the git command from $PATH:
+[1] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org
 
-    scripts/Makefile.lib:106: scripts/basic/fixdep is missing gitignore entry
-    scripts/Makefile.lib:106: scripts/sorttable is missing gitignore entry
-    [...]
+Awesome to see this newer patchset! thanks a lot for working on this!
+I'll run some new tests based on this.
 
-Gr{oetje,eeting}s,
+> As a side-note, while the implementation could be more efficient, it
+> would require fairly deep surgery in numerous places. The lock scope would
+> need to be significantly reduced, particularly as vmstat, per-cpu and the
+> buddy allocator have different locking protocol that overal -- e.g. all
+> partially depend on irqs being disabled at various points. Secondly,
+> the core of the allocator deals with single pages where as both the bulk
+> allocator and per-cpu allocator operate in batches. All of that has to
+> be reconciled with all the existing users and their constraints (memory
+> offline, CMA and cpusets being the trickiest).
 
-                        Geert
+As you can see in[1], I'm getting a significant speedup from this.  I
+guess that the cost of finding the "zone" is higher than I expected, as
+this basically what we/you amortize for the bulk.
+
+ 
+> In terms of semantics required by new users, my preference is that a pair
+> of patches be applied -- the first which adds the required semantic to
+> the bulk allocator and the second which adds the new user.
+> 
+> Patch 1 of this series is a cleanup to sunrpc, it could be merged
+> 	separately but is included here for convenience.
+> 
+> Patch 2 is the prototype bulk allocator
+> 
+> Patch 3 is the sunrpc user. Chuck also has a patch which further caches
+> 	pages but is not included in this series. It's not directly
+> 	related to the bulk allocator and as it caches pages, it might
+> 	have other concerns (e.g. does it need a shrinker?)
+> 
+> This has only been lightly tested on a low-end NFS server. It did not break
+> but would benefit from an evaluation to see how much, if any, the headline
+> performance changes. The biggest concern is that a light test case showed
+> that there are a *lot* of bulk requests for 1 page which gets delegated to
+> the normal allocator.  The same criteria should apply to any other users.
+
+If you change local_irq_save(flags) to local_irq_disable() then you can
+likely get better performance for 1 page requests via this API.  This
+limits the API to be used in cases where IRQs are enabled (which is
+most cases).  (For my use-case I will not do 1 page requests).
+
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
