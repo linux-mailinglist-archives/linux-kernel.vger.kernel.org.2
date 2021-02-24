@@ -2,167 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382613244AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 932EA3244AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbhBXTc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 14:32:27 -0500
-Received: from mail-dm6nam10on2084.outbound.protection.outlook.com ([40.107.93.84]:7936
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231638AbhBXTcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 14:32:07 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FaoD2TzWwfZH4q8KPXcRnkbf+9WKau94DvpbB3LyZVoAT1j6GMKnIBeLASQMU2Ha1GNhMKEJEtwlP2XYzbTdQerOR5ajFyNAQ2nL2ASwFs/4ieyV2Mg7/r7/pxPO9HBOj48gHoRtLy8BTQzS74qdvUE5ukDPqWQKhDV3lopeA5hP0OqhG85wryCn51qxNmRxrjiLIDJMaI1C/t03nIKJWnGSDP5GPPuBkqLZImbrBLcUGUWlfemErThPuytOeEvBOaYL1hGcXs8hlJ2wQ+PWRsWg5DWnM7QvtyrxH+VwfNok2AXuWCb4BwdY18Rg/bgODXZP+sK7n+wwf4Cm/HntYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cErGVgxsQak98/mIEG9ghB+EClKxs0NMW0DjmHf6Tpo=;
- b=IApyCp0Ewi0N1SdRkV6y/2Iocf+m/0zArzsDi6iom70E0c+vs+v863Jyk7sw1OXCjarFQdTP8lwpzqPujdCqyOuD20exJJsNm+zjM2m+tCqs0jlw2TVYa3SMxO68+lBWPsuDWc/yTsc7JAhYNol50Sls5b1vj4dpVPGuRet0yrpnDkgCv2q/mkW0Tdi7jxpXYUYce+tXcz5DdE2DReYjox9BvJgbYqh2btuD+zLGE598ZSEUDTB7LpiQLVGeewTT9gfGAsiCxtIPcWGrLpo7iTrVUPm14IxZZ1rmBAOZB1e32ccvSSe/XFKIKv597qQTN++I6Sdjrq/ZD7FLYqmJtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cErGVgxsQak98/mIEG9ghB+EClKxs0NMW0DjmHf6Tpo=;
- b=hPqA0vANOoRMDr2i4+dTnMirrBG1hxqGtqUCaSE0jrnfB3Xm6y9o6cHv/NZHYHZaZCi7DMIxzpFgzr4gO0eMD96nl9OYeHWCC09dLH843ITFrMKxX7Fj5UKPtX2jdGz4hHklBh16evmfQDH9d7odTP3eVhPpGEfSZb+QkpMMqr8=
-Received: from BYAPR05MB4470.namprd05.prod.outlook.com (2603:10b6:a02:fc::24)
- by BYAPR05MB6613.namprd05.prod.outlook.com (2603:10b6:a03:f0::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.12; Wed, 24 Feb
- 2021 19:31:06 +0000
-Received: from BYAPR05MB4470.namprd05.prod.outlook.com
- ([fe80::5d18:d12d:f88:e695]) by BYAPR05MB4470.namprd05.prod.outlook.com
- ([fe80::5d18:d12d:f88:e695%6]) with mapi id 15.20.3890.012; Wed, 24 Feb 2021
- 19:31:06 +0000
-From:   Ronak Doshi <doshir@vmware.com>
-To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     Todd Sabin <tsabin@vmware.com>, Pv-drivers <Pv-drivers@vmware.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Dongseok Yi <dseok.yi@samsung.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Keerthana Kalyanasundaram <keerthanak@vmware.com>
-Subject: Re: [PATCH net-next] avoid fragmenting page memory with
- netdev_alloc_cache
-Thread-Topic: [PATCH net-next] avoid fragmenting page memory with
- netdev_alloc_cache
-Thread-Index: AQHXANSilGAx+qFws0aktHnAqC4Np6pnP2gA
-Date:   Wed, 24 Feb 2021 19:31:05 +0000
-Message-ID: <0722D5BF-C05C-4D3B-96C7-71D2FBE6991E@vmware.com>
-References: <20210212001842.32714-1-doshir@vmware.com>
-In-Reply-To: <20210212001842.32714-1-doshir@vmware.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Microsoft-MacOutlook/16.40.20081000
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=vmware.com;
-x-originating-ip: [2601:646:8b00:a90:d0aa:5fa5:40a7:284e]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 562422ec-dd52-4822-6acc-08d8d8fabb0c
-x-ms-traffictypediagnostic: BYAPR05MB6613:
-x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR05MB66130082E2E11764D2576223A49F9@BYAPR05MB6613.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FQPq1u+EEeg5vJBYX8NGJQDfxWfcuk6kUf7SZs+OI5L8anxXowTtiOjndBTm/2KS6hmkB6IN2tJ+liMgku67Zj/a0dLOJfq/E54oZz6lc8U2vOGmnHiFE5YutzttpaQm8LQZpW+KpR/f2L2XA3c//hxfsEZSAAitWbJ4YRydnrJ37nn8fQHXbAnPLBreyhHVfT22yB0z6igwST2vc0+ZvZfQKnf4VAO5ycGw46BCAvvPZh+8s3aV8AoCyoxxkAJJW8H6w90Bzkg+uE0oKvvBvG1r/SQ6BZgGpjJ/cwgZS6hjEwlP1fIgsynmw0fmcK3gpR9imrczEAUHiHHNxnCNHBz01RSDuLKy/RaJYsvygKAQsau9uqI8q3epDBd2D+0D4UaNkK13xDz4lWbGrt2AL9lKQKQc7fpUQKKogosBor9Bz+mCAX5mJnzCvTph0T6xLxS40cVrFyPGKS6zC8KIlkcAXiWghALRtEGmTsiko5leGxQ/eGrbj8mc1/r4ZvWaTqy1f4pYsN0h68DppS6RwXDZaO5idmUV3yXT8mwKmXO0iyA0ApGWoFDpj3pQr9RORLjaS9/8dlTdofCRCO0lMg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4470.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(39860400002)(346002)(366004)(54906003)(6916009)(5660300002)(33656002)(66556008)(4326008)(6506007)(6486002)(7416002)(71200400001)(107886003)(36756003)(64756008)(8936002)(66446008)(86362001)(66476007)(186003)(6512007)(76116006)(8676002)(83380400001)(2906002)(2616005)(316002)(478600001)(66946007)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?LzFaWjUrUHJZM2ZjUmM3c0hJZ280L25UTkl0S1JrdG5GTWtUU21aVE9GSVov?=
- =?utf-8?B?ZDJGNTRPMUZ0U2czcEUyZ3VHUWk2RnFaT2U2NFAzYWNOQUpYRXgwMmJwcDRV?=
- =?utf-8?B?NHlmZnhIdzRBbk1SNFd0bm9adEhyZUVDcERZNnh6b1o5NFIwMis5ZWdwTW9Q?=
- =?utf-8?B?cyt5aXU1bnRxY0lXNXRub2o3S0NydnVFclQxa3F2WFV0a01WK2M4bis1YnhX?=
- =?utf-8?B?cjh5cHlhZzlwMmlEVVpNTVNNRTJJU1NyeU1zazMyQnBKb01ybmtEbk9wdkpz?=
- =?utf-8?B?eC82QmcvOE5MMm0wUElnaHRyY2pzdXNGY2V2OHIrVlNzV1ArOG15dGZpQVh0?=
- =?utf-8?B?dlpaUXFnSzQ3RTZPWWpHdkFBQ0tzaXpkNmVaQk94ejdMRGZwS0srdVo3dXV1?=
- =?utf-8?B?T3BXcVZaU0hSZjREaTIrc1o0L1FuWnM3SXJTN1pDaTNsancvaWM0ZzVqdUFo?=
- =?utf-8?B?bDVZczg3N1VUblpQUzRldXNJb1RBWFRQaTczT3Vlajd2OWd4bnZLbmtOUDhr?=
- =?utf-8?B?T2x2WEhxbDdIc05leXpRMkZ6cGo2L3Z1SFNsazJRNElyaldHWVhnVEZqYmRq?=
- =?utf-8?B?VE1wWDFOdGY2YjMxTzVBVkhVU3pycGRNZ1ZvaC95ZDVHdURQSDhuNTRvdGpz?=
- =?utf-8?B?WDNRQisvblpVZHRUYkdQOXlCVE0vVWEyOVpyNDhXUzFDM2VNbXh0MEJ5MXhn?=
- =?utf-8?B?WWNvYVpxTG5lT1p3K3FoOEpnbHhzdnpwaXVXck5GaGthVHkwVWY2MHlvd05K?=
- =?utf-8?B?cnZnTUlXL1hNWDZ2Z3E5WWwzb3BweWdlYmhRYUo2TUJGRThyRnNXRk0rRkhs?=
- =?utf-8?B?UzlsRVVVOXl3MTVzNnpyZkZWcll3em5MNVA4MXNFYWxGUGdCTVp3VllRRHpR?=
- =?utf-8?B?Z3c2Vll4WGFiZjkydTlIRjkyUXA4V0pzdUoySkpraGxzdzRKR3FBaEE3bzhw?=
- =?utf-8?B?MndFUkhoT1N4LzNOKzRLMzR0TnZpbGxLWk9QZFhBTitlY2UyTGsxaGNtd2xw?=
- =?utf-8?B?SDltT2t3bXA3UWxaTUgrTWs5amtQcFdEQ3grQVZ2cVBENFBGMDg0QTdUc0Vr?=
- =?utf-8?B?L3hzU0JreG9zSkRIMEo2WFJza0F2cG1GOEJtQ0s3REVNT3dCbDNmSnRJeXJu?=
- =?utf-8?B?eHRHSXhibVhkU3RCU3NoWC8zYTQ1c1dLM3JFRFQ1NGtvMEV5YUZYZW1sSUl4?=
- =?utf-8?B?Z01LMWtrYTJPaUZiYS9oOFAzZlFNaFRNMWlCTzc2NHRnOXgzTnR2UlF3ck96?=
- =?utf-8?B?MkZNSGw0Z0F5SnJpZVVwcjhHTng5eW82WGJNaDMwSGJJYWNwUHVpVytVOWxp?=
- =?utf-8?B?aDRyNDd3UDYxMHQyL25CcFFXL096ZzJKbml2QkhNVW1aNWJLNG1DUTc0WWE3?=
- =?utf-8?B?QXU4OUlZeGRZNk5NVmUzeTVJdUZzbDlkZktaQzhLT0FtdTdpSU1nWklNWXFy?=
- =?utf-8?B?dGRNaVdOM0t4L3U5azZ4TzljcE0rNEtkS3h2T09uQUpURnpjVDJBMUhUMkZs?=
- =?utf-8?B?aUJwZVIvd1E3ZEo4cXFRVm5EUTl6cVBPdjl4TWwzSVN4dmtlOTNJNHNXTTVY?=
- =?utf-8?B?aXM4RjVTTXh1UXp3R0YwRkowa1I3L21jN2RVV1Y0bUJnTEhmdy9tMUhZMGRm?=
- =?utf-8?B?UG01UXRkVTF4Vk5GTittbmhndEgrKzZ2dnEwZWJIT1I1SXBGa2w5Nk9YNVNo?=
- =?utf-8?B?dDN2YnRuVWMrOWd0Y1kweFhPUFQzbHE2eUpjY1dydHNFTnpkQjl2NzVzelQy?=
- =?utf-8?B?cGg0Q3JXWURSQW91d0ovSzRxZlZYRG9ONmdBMkUzWHl2OEZTSCtXL2xiSWFh?=
- =?utf-8?B?eVBrcEMweWhNcDVkUmhicjFrMkl1VFhCcmhDTzBYSmF0QkFtbk8yV2ZkalJa?=
- =?utf-8?Q?MsBOxmxSnFsQD?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4D071FAA0732AB4A9EE54AD7DABD7C6D@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S234906AbhBXTez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 14:34:55 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:48998 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234727AbhBXTew (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 14:34:52 -0500
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 121B720B6C40;
+        Wed, 24 Feb 2021 11:34:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 121B720B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1614195250;
+        bh=LCnleJ7I3FtvjkHqm7PYYtADtk9bSt509Ou3yQcfJK0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=PPUCLhsYZvzXHL4PiGGDZM1YE3bvH4dCSCXPOK68RfEqUHCRY/IKYqydG9GEsLWaw
+         Q5ukux9Hgy5pnDvJH0pAU0o1pGk7M4CdJ5IDmm6PyGSbRFHE5YfAd5NoH5x1Mdt+HE
+         SRV2+vcOFV88na3O/XC0cKdoaY3W+UHkNTL11Gvc=
+Subject: Re: [RFC PATCH v1 1/1] arm64: Unwinder enhancements for reliable
+ stack trace
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <bc4761a47ad08ab7fdd555fc8094beb8fc758d33>
+ <20210223181243.6776-1-madvenka@linux.microsoft.com>
+ <20210223181243.6776-2-madvenka@linux.microsoft.com>
+ <20210224121716.GE50741@C02TD0UTHF1T.local>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <4a96b31d-0d16-1f12-fa64-5fdae64cd2d1@linux.microsoft.com>
+Date:   Wed, 24 Feb 2021 13:34:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4470.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 562422ec-dd52-4822-6acc-08d8d8fabb0c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Feb 2021 19:31:06.2772
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uGwxcYf7tzAlM31AHp4jsUYF8vQDwMC8hVvDT2rFc5MfjQvSTF9ltMh0EtkD1pGTnswL+er9YAsp3ogRw7bEhw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB6613
+In-Reply-To: <20210224121716.GE50741@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQrvu79PbiAyLzExLzIxLCA0OjE4IFBNLCAiUm9uYWsgRG9zaGkiIDxkb3NoaXJAdm13YXJlLmNv
-bT4gd3JvdGU6DQo+ICAgIEZyb206IFRvZGQgU2FiaW4gPHRzYWJpbkB2bXdhcmUuY29tPg0KPg0K
-PiAgICBMaW51eCBuZXR3b3JrIHN0YWNrIHVzZXMgYW4gYWxsb2NhdGlvbiBwYWdlIGNhY2hlIGZv
-ciBza2JzLiAgVGhlDQo+ICAgcHVycG9zZSBpcyB0byByZWR1Y2UgdGhlIG51bWJlciBvZiBwYWdl
-IGFsbG9jYXRpb25zIHRoYXQgaXQgbmVlZHMgdG8NCj4gICAgbWFrZSwgYW5kIGl0IHdvcmtzIGJ5
-IGFsbG9jYXRpbmcgYSBncm91cCBvZiBwYWdlcywgYW5kIHRoZW4NCj4gICAgc3ViLWFsbG9jYXRp
-bmcgc2tiIG1lbW9yeSBmcm9tIHRoZW0uICBXaGVuIGFsbCBza2JzIHJlZmVyZW5jaW5nIHRoZQ0K
-PiAgICBzaGFyZWQgcGFnZXMgYXJlIGZyZWVkLCB0aGVuIHRoZSBibG9jayBvZiBwYWdlcyBpcyBm
-aW5hbGx5IGZyZWVkLg0KPg0KPiAgICBXaGVuIHRoZXNlIHNrYnMgYXJlIGFsbCBmcmVlZCBjbG9z
-ZSB0b2dldGhlciBpbiB0aW1lLCB0aGlzIHdvcmtzIGZpbmUuDQo+ICAgIEhvd2V2ZXIsIHdoYXQg
-Y2FuIGhhcHBlbiBpcyB0aGF0IHRoZXJlIGFyZSBtdWx0aXBsZSBuaWNzIChvciBtdWx0aXBsZQ0K
-PiAgICByeC1xdWV1ZXMgaW4gYSBzaW5nbGUgbmljKSwgYW5kIHRoZSBza2JzIGFyZSBhbGxvY2F0
-ZWQgdG8gZmlsbCB0aGUgcngNCj4gICAgcmluZyhzKS4gSWYgc29tZSBuaWNzIG9yIHF1ZXVlcyBh
-cmUgZmFyIG1vcmUgYWN0aXZlIHRoYW4gb3RoZXJzLCB0aGUNCj4gICAgZW50cmllcyBpbiB0aGUg
-bGVzcyBidXN5IG5pYy9xdWV1ZSBtYXkgZW5kIHVwIHJlZmVyZW5jaW5nIGEgcGFnZQ0KPiAgICBi
-bG9jaywgd2hpbGUgYWxsIG9mIHRoZSBvdGhlciBwYWNrZXRzIHRoYXQgcmVmZXJlbmNlZCB0aGF0
-IGJsb2NrIG9mDQo+ICAgIHBhZ2VzIGFyZSBmcmVlZC4NCj4NCj4gICAgVGhlIHJlc3VsdCBvZiB0
-aGlzIGlzIHRoYXQgdGhlIG1lbW9yeSB1c2VkIGJ5IGFuIGFwcGxpYW5jZSBmb3IgaXRzIHJ4DQo+
-ICAgIHJpbmdzIGNhbiBzbG93bHkgZ3JvdyB0byBiZSBtdWNoIGdyZWF0ZXIgdGhhbiBpdCB3YXMg
-b3JpZ2luYWxseS4NCj4NCj4gICAgVGhpcyBwYXRjaCBmaXhlcyB0aGF0IGJ5IGdpdmluZyBlYWNo
-IHZteG5ldDMgZGV2aWNlIGEgcGVyLXJ4LXF1ZXVlIHBhZ2UNCj4gICAgY2FjaGUuDQo+DQo+ICAg
-IFNpZ25lZC1vZmYtYnk6IFRvZGQgU2FiaW4gPHRzYWJpbkB2bXdhcmUuY29tPg0KPiAgICBTaWdu
-ZWQtb2ZmLWJ5OiBSb25hayBEb3NoaSA8ZG9zaGlyQHZtd2FyZS5jb20+DQo+ICAgIC0tLQ0KPiAg
-ICAgZHJpdmVycy9uZXQvdm14bmV0My92bXhuZXQzX2Rydi5jIHwgMzAgKysrKysrKysrKysrKysr
-KysrKysrKysrLS0tLS0tDQo+ICAgICBkcml2ZXJzL25ldC92bXhuZXQzL3ZteG5ldDNfaW50Lmgg
-fCAgMiArKw0KPiAgICAgaW5jbHVkZS9saW51eC9za2J1ZmYuaCAgICAgICAgICAgIHwgIDIgKysN
-Cj4gICAgIG5ldC9jb3JlL3NrYnVmZi5jICAgICAgICAgICAgICAgICB8IDIxICsrKysrKysrKysr
-KysrKy0tLS0tLQ0KPiAgICAgNCBmaWxlcyBjaGFuZ2VkLCA0MyBpbnNlcnRpb25zKCspLCAxMiBk
-ZWxldGlvbnMoLSkNCg0KQW55IHVwZGF0ZSBvbiB0aGlzIHBhdGNoPw0KDQpUaGFua3MsDQpSb25h
-aw0KDQo=
+
+
+On 2/24/21 6:17 AM, Mark Rutland wrote:
+> Hi Madhavan,
+> 
+> As Mark Brown says, I think this needs to be split into several
+> patches. i have some comments on the general approach, but I'll save
+> in-depth review until this has been split.
+> 
+
+OK.
+
+> On Tue, Feb 23, 2021 at 12:12:43PM -0600, madvenka@linux.microsoft.com wrote:
+>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>>
+>> Unwinder changes
+>> ================
+>>
+>> 	Termination
+>> 	===========
+>>
+>> 	Currently, the unwinder terminates when both the FP (frame pointer)
+>> 	and the PC (return address) of a frame are 0. But a frame could get
+>> 	corrupted and zeroed. There needs to be a better check.
+>>
+>> 	The following special terminating frame and function have been
+>> 	defined for this purpose:
+>>
+>> 	const u64    arm64_last_frame[2] __attribute__ ((aligned (16)));
+>>
+>> 	void arm64_last_func(void)
+>> 	{
+>> 	}
+>>
+>> 	So, set the FP to arm64_last_frame and the PC to arm64_last_func in
+>> 	the bottom most frame.
+> 
+> My expectation was that we'd do this per-task, creating an empty frame
+> record (i.e. with fp=NULL and lr=NULL) on the task's stack at the
+> instant it was created, and chaining this into x29. That way the address
+> is known (since it can be derived from the task), and the frame will
+> also implicitly check that the callchain terminates on the task stack
+> without loops. That also means that we can use it to detect the entry
+> code going wrong (e.g. if the SP gets corrupted), since in that case the
+> entry code would place the record at a different location.
+> 
+
+That is exactly what this is doing. arm64_last_frame[] is a marker frame
+that contains fp=0 and pc=0.
+
+>>
+>> 	Exception/Interrupt detection
+>> 	=============================
+>>
+>> 	An EL1 exception renders the stack trace unreliable as it can happen
+>> 	anywhere including the frame pointer prolog and epilog. The
+>> 	unwinder needs to be able to detect the exception on the stack.
+>>
+>> 	Currently, the EL1 exception handler sets up pt_regs on the stack
+>> 	and chains pt_regs->stackframe with the other frames on the stack.
+>> 	But, the unwinder does not know where this exception frame is in
+>> 	the stack trace.
+>>
+>> 	Set the LSB of the exception frame FP to allow the unwinder to
+>> 	detect the exception frame. When the unwinder detects the frame,
+>> 	it needs to make sure that it is really an exception frame and
+>> 	not the result of any stack corruption.
+> 
+> I'm not keen on messing with the encoding of the frame record as this
+> will break external unwinders (e.g. using GDB on a kernel running under
+> QEMU). I'd rather that we detected the exception boundary based on the
+> LR, similar to what we did in commit:
+> 
+
+OK. I will take a look at the commit you mentioned.
+
+>   7326749801396105 ("arm64: unwind: reference pt_regs via embedded stack frame")
+> 
+> ... I reckon once we've moved the last of the exception triage out to C
+> this will be relatively simple, since all of the exception handlers will
+> look like:
+> 
+> | SYM_CODE_START_LOCAL(elX_exception)
+> | 	kernel_entry X
+> | 	mov	x0, sp
+> | 	bl	elX_exception_handler
+> | 	kernel_exit X
+> | SYM_CODE_END(elX_exception)
+> 
+> ... and so we just need to identify the set of elX_exception functions
+> (which we'll never expect to take exceptions from directly). We could be
+> strict and reject unwinding into arbitrary bits of the entry code (e.g.
+> if we took an unexpected exception), and only permit unwinding to the
+> BL.
+> 
+>> 	It can do this if the FP and PC are also recorded elsewhere in the
+>> 	pt_regs for comparison. Currently, the FP is also stored in
+>> 	regs->regs[29]. The PC is stored in regs->pc. However, regs->pc can
+>> 	be changed by lower level functions.
+>>
+>> 	Create a new field, pt_regs->orig_pc, and record the return address
+>> 	PC there. With this, the unwinder can validate the exception frame
+>> 	and set a flag so that the caller of the unwinder can know when
+>> 	an exception frame is encountered.
+> 
+> I don't understand the case you're trying to solve here. When is
+> regs->pc changed in a way that's problematic?
+> 
+
+For instance, I used a test driver in which the driver calls a function
+pointer which is NULL. The low level fault handler sends a signal to the
+task. Looks like it changes regs->pc for this. When I dump the stack
+from the low level handler, the comparison with regs->pc does not work.
+But comparison with regs->orig_pc works.
+
+>> 	Unwinder return value
+>> 	=====================
+>>
+>> 	Currently, the unwinder returns -EINVAL for stack trace termination
+>> 	as well as stack trace error. Return -ENOENT for stack trace
+>> 	termination and -EINVAL for error to disambiguate. This idea has
+>> 	been borrowed from Mark Brown.
+> 
+> IIRC Mark Brown already has a patch for this (and it could be queued on
+> its own if it hasn't already been).
+> 
+
+I saw it. That is fine.
+
+Thanks.
+
+Madhavan
