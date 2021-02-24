@@ -2,384 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2502F323813
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 668C332384D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbhBXHsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:48:55 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:43323 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233625AbhBXHs1 (ORCPT
+        id S233998AbhBXIHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:07:40 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:42320 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233871AbhBXIHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:48:27 -0500
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210224074741epoutp022e1cfb964b41086c0b19ed07b99a0f7d~mn3nNkXq90642506425epoutp02l
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 07:47:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210224074741epoutp022e1cfb964b41086c0b19ed07b99a0f7d~mn3nNkXq90642506425epoutp02l
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614152861;
-        bh=P035y0zmHlLzg94shumKEeUe5Y8UYjSLNUCKnFMbOcw=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=b8HSIP5cs7zSjZLk6IvFHo/syogHipXR/6n9fOnHIFiTNQ1AHXSGbwuwovErlrIyc
-         aBMKQMq2O86Swc/aITTCxIDColCoRnR+ZS2HH6E1sqP2zjgQEdOGsu1IxXeZjTrWfd
-         MYu3WriU0L869Sh/KTgXweL1x51DKBrG7iMdyOJo=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210224074740epcas1p3d3af7e7fe7989a28be97c1a6d3c982fc~mn3mSlhGW3130331303epcas1p3q;
-        Wed, 24 Feb 2021 07:47:40 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.158]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4Dlp161Tk6z4x9Q6; Wed, 24 Feb
-        2021 07:47:38 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        58.25.09582.A9406306; Wed, 24 Feb 2021 16:47:38 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210224074737epcas1p4ab2d977b19ef0844f3421a9712b53882~mn3jIIU0h2819828198epcas1p47;
-        Wed, 24 Feb 2021 07:47:37 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210224074737epsmtrp2ec838e37444d395778c0dfdff313046c~mn3jHLyop0402804028epsmtrp2I;
-        Wed, 24 Feb 2021 07:47:37 +0000 (GMT)
-X-AuditID: b6c32a37-899ff7000000256e-e9-6036049a5694
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B0.DC.08745.99406306; Wed, 24 Feb 2021 16:47:37 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210224074737epsmtip1db7f2bb61ea1292992d8953af627c9df~mn3izLYqh0317503175epsmtip1V;
-        Wed, 24 Feb 2021 07:47:37 +0000 (GMT)
-Subject: Re: [RFC][PATCH 1/3] PM /devfreq: add user frequency limits into
- devfreq struct
-To:     Lukasz Luba <lukasz.luba@arm.com>, cwchoi00@gmail.com
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar.Eggemann@arm.com, amitk@kernel.org,
-        Zhang Rui <rui.zhang@intel.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <131bb44f-803c-4dac-3c60-24c3148e8814@samsung.com>
-Date:   Wed, 24 Feb 2021 17:04:13 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Wed, 24 Feb 2021 03:07:37 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UPR-KCg_1614154005;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UPR-KCg_1614154005)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 24 Feb 2021 16:06:46 +0800
+Subject: Re: [PATCH v2 03/10] mm: don't pass "enum lru_list" to lru list
+ addition functions
+To:     Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     Hugh Dickins <hughd@google.com>, Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210122220600.906146-1-yuzhao@google.com>
+ <20210122220600.906146-4-yuzhao@google.com>
+ <20210126220111.GO308988@casper.infradead.org> <YBCUTinnVrlVVm6n@google.com>
+ <20210223145011.0181eed96ab0091a493b51f6@linux-foundation.org>
+ <YDXkPaKb+nVzkfZX@google.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <ce13ff94-e534-a4ed-4653-d9915f35d45a@linux.alibaba.com>
+Date:   Wed, 24 Feb 2021 16:06:45 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.0; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <89343e3c-3213-19d4-e67e-1dc56afebf4c@arm.com>
-Content-Language: en-US
+In-Reply-To: <YDXkPaKb+nVzkfZX@google.com>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBJsWRmVeSWpSXmKPExsWy7bCmge4sFrMEg3/32C0Oz6+weHZU22Le
-        Z1mLpxO2MlucbXrDbnF51xw2i8+9RxgtFja1sFvcblzBZjH3y1RmiycP+9gsNj84xubA47Fm
-        3hpGj52z7rJ7LN7zkslj06pONo871/awefRtWcXo8XmTXAB7VLZNRmpiSmqRQmpecn5KZl66
-        rZJ3cLxzvKmZgaGuoaWFuZJCXmJuqq2Si0+ArltmDtCZSgpliTmlQKGAxOJiJX07m6L80pJU
-        hYz84hJbpdSClJwCywK94sTc4tK8dL3k/FwrQwMDI1OgwoTsjK3r9rIV9AVXnF4g1cA4xbWL
-        kZNDQsBEYuXvhexdjFwcQgI7GCVWL5vJCOF8YpSYvuoKG4TzmVFi5812FpiWeRPWsoHYQgK7
-        gFouOEAUvWeU2D/zOCNIQlggSmL/ob1gtoiApcTNTa1MIEXMAn+YJHavO8wKkmAT0JLY/+IG
-        2CR+AUWJqz8egzXwCthJnFr1Fmwbi4CqxO/tc5hBbFGBMImT21qgagQlTs58AlbDKWAt8bBp
-        JTuIzSwgLnHryXwmCFteonnrbGaQxRICJzgkzv9bD/WCi8Sk5z+ZIGxhiVfHt7BD2FISn9/t
-        ZYOwqyVWnjzCBtHcwSixZf8FVoiEscT+pZOBmjmANmhKrN+lDxFWlNj5ey4jxGI+iXdfe1hB
-        SiQEeCU62oQgSpQlLj+4C7VWUmJxeyfbBEalWUjemYXkhVlIXpiFsGwBI8sqRrHUguLc9NRi
-        wwJj5NjexAhOwlrmOxinvf2gd4iRiYPxEKMEB7OSCO/mf6YJQrwpiZVVqUX58UWlOanFhxhN
-        gQE8kVlKNDkfmAfySuINTY2MjY0tTAzNTA0NlcR5kwwexAsJpCeWpGanphakFsH0MXFwSjUw
-        RW2KX8bUymZ8NkIzW+fvlTqORxue/VG8Y/2lXWi//cebT09LR4Vqx/plJ93JnW/ZXn15q8Yt
-        IeFH1ltbHiQtWa3SstZC7edml+htzbon1lc4GcRPXaKd/udIuszLu6/NciS2sn94Hp77sePE
-        qpttTgW6NdkRdyTUzZOX/ZWJ2uz0JaH0M2ec7ebSf945vQkeC+QVMsKFbq1cWHG95YHfhsBg
-        mSfPbj/n+hs90b8oTdvq7X3tM1NUdU7uWDzp96xUz9ucR1T/XcjwzhU7tth+WbmXxJ2iZ6dF
-        NU6kxL5reXQ+VrzzAXtq6qvZb80mv2hz5tkszaDTwphT+veHE0eV+wY335YjqluYl18xNfyr
-        xFKckWioxVxUnAgA+hvXvksEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRmVeSWpSXmKPExsWy7bCSnO5MFrMEgzlzpS0Oz6+weHZU22Le
-        Z1mLpxO2MlucbXrDbnF51xw2i8+9RxgtFja1sFvcblzBZjH3y1RmiycP+9gsNj84xubA47Fm
-        3hpGj52z7rJ7LN7zkslj06pONo871/awefRtWcXo8XmTXAB7FJdNSmpOZllqkb5dAlfG1nV7
-        2Qr6gitOL5BqYJzi2sXIySEhYCIxb8Jati5GLg4hgR2MEgemdTFDJCQlpl08CmRzANnCEocP
-        F0PUvGWUOPrxMiNIjbBAlMT+Q3vBbBEBS4mbm1qZQIqYBf4xSez5MYUFouM3s8TdL/PAprIJ
-        aEnsf3GDDcTmF1CUuPrjMVg3r4CdxKlVb1lAbBYBVYnf2+eA1YsKhEnsXPKYCaJGUOLkzCdg
-        NZwC1hIPm1ayg9jMAuoSf+ZdYoawxSVuPZnPBGHLSzRvnc08gVF4FpL2WUhaZiFpmYWkZQEj
-        yypGydSC4tz03GLDAqO81HK94sTc4tK8dL3k/NxNjOB41NLawbhn1Qe9Q4xMHIyHGCU4mJVE
-        eDf/M00Q4k1JrKxKLcqPLyrNSS0+xCjNwaIkznuh62S8kEB6YklqdmpqQWoRTJaJg1OqgcnI
-        MDMk7IOn1z+NydN/+runHHDTe1nrvTRUzb/W/Q23q86sx50XwsouHWHq271y74F6w16V/Tof
-        vvz371xWuIr37N4MmzWCTQ92yWz5lKf6v9+thpHlxI+yTR0d6yonFfMcC31XYt/rO6ny7f2l
-        c9ILjuUIf6vrOvvrq/P9RY76TQUdYukLp8xesyQi5PrroGVpVfNvn/1hrfhkS9/dfSIKHa8e
-        GJm0spYuWfKiNPHq3T72/r7jplvmLmoWSdQo5T9vx5Qlf0P5YIQzh35gcM+rGbp/mdjElBxn
-        7bxTafclMvDXPwV7ofpqqZ2sYYnfF/7JXd7l+v3GTk2Z7CVZKkkVN+vqVe+y8LTHSP+ep8RS
-        nJFoqMVcVJwIAHzJS+c2AwAA
-X-CMS-MailID: 20210224074737epcas1p4ab2d977b19ef0844f3421a9712b53882
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210126104217epcas1p349c717ccf0ea4f964153040b48c72352
-References: <20210126104001.20361-1-lukasz.luba@arm.com>
-        <CGME20210126104217epcas1p349c717ccf0ea4f964153040b48c72352@epcas1p3.samsung.com>
-        <20210126104001.20361-2-lukasz.luba@arm.com>
-        <ea409e2f-f3ca-437f-d787-7ba793a2c226@samsung.com>
-        <5bd13e13-202f-d059-da29-f82806c33a38@arm.com>
-        <fe7763c8-22f7-65ad-94ee-3c4a78a3f6eb@arm.com>
-        <932c04da-46bf-8867-6b10-c6af83a36588@arm.com>
-        <CAGTfZH12DwvKDv7aKwisL-mvx0tyMcXA96nLTbSpO5zVp5UCiA@mail.gmail.com>
-        <89343e3c-3213-19d4-e67e-1dc56afebf4c@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/16/21 7:41 PM, Lukasz Luba wrote:
-> Hi Chanwoo,
-> 
-> On 2/15/21 3:00 PM, Chanwoo Choi wrote:
->> Hi Lukasz,
+
+
+�� 2021/2/24 ����1:29, Yu Zhao д��:
+> On Tue, Feb 23, 2021 at 02:50:11PM -0800, Andrew Morton wrote:
+>> On Tue, 26 Jan 2021 15:14:38 -0700 Yu Zhao <yuzhao@google.com> wrote:
 >>
->> On Fri, Feb 12, 2021 at 7:28 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>
->>>
->>>
->>> On 2/11/21 11:07 AM, Lukasz Luba wrote:
->>>> Hi Chanwoo,
+>>> On Tue, Jan 26, 2021 at 10:01:11PM +0000, Matthew Wilcox wrote:
+>>>> On Fri, Jan 22, 2021 at 03:05:53PM -0700, Yu Zhao wrote:
+>>>>> +++ b/mm/swap.c
+>>>>> @@ -231,7 +231,7 @@ static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec)
+>>>>>  	if (!PageUnevictable(page)) {
+>>>>>  		del_page_from_lru_list(page, lruvec, page_lru(page));
+>>>>>  		ClearPageActive(page);
+>>>>> -		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
+>>>>> +		add_page_to_lru_list_tail(page, lruvec);
+>>>>>  		__count_vm_events(PGROTATED, thp_nr_pages(page));
+>>>>>  	}
 >>>>
->>>> On 2/3/21 10:21 AM, Lukasz Luba wrote:
->>>>> Hi Chanwoo,
->>>>>
->>>>> Thank you for looking at this.
->>>>>
->>>>> On 2/3/21 10:11 AM, Chanwoo Choi wrote:
->>>>>> Hi Lukasz,
->>>>>>
->>>>>> When accessing the max_freq and min_freq at devfreq-cooling.c,
->>>>>> even if can access 'user_max_freq' and 'lock' by using the 'devfreq'
->>>>>> instance,
->>>>>> I think that the direct access of variables
->>>>>> (lock/user_max_freq/user_min_freq)
->>>>>> of struct devfreq are not good.
->>>>>>
->>>>>> Instead, how about using the 'DEVFREQ_TRANSITION_NOTIFIER'
->>>>>> notification with following changes of 'struct devfreq_freq'?
->>>>>
->>>>> I like the idea with devfreq notification. I will have to go through the
->>>>> code to check that possibility.
->>>>>
->>>>>> Also, need to add codes into devfreq_set_target() for initializing
->>>>>> 'new_max_freq' and 'new_min_freq' before sending the DEVFREQ_POSTCHANGE
->>>>>> notification.
->>>>>>
->>>>>> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
->>>>>> index 147a229056d2..d5726592d362 100644
->>>>>> --- a/include/linux/devfreq.h
->>>>>> +++ b/include/linux/devfreq.h
->>>>>> @@ -207,6 +207,8 @@ struct devfreq {
->>>>>>    struct devfreq_freqs {
->>>>>>           unsigned long old;
->>>>>>           unsigned long new;
->>>>>> +       unsigned long new_max_freq;
->>>>>> +       unsigned long new_min_freq;
->>>>>>    };
->>>>>>
->>>>>>
->>>>>> And I think that new 'user_min_freq'/'user_max_freq' are not necessary.
->>>>>> You can get the current max_freq/min_freq by using the following steps:
->>>>>>
->>>>>>      get_freq_range(devfreq, &min_freq, &max_freq);
->>>>>>      dev_pm_opp_find_freq_floor(pdev, &min_freq);
->>>>>>      dev_pm_opp_find_freq_floor(pdev, &max_freq);
->>>>>>
->>>>>> So that you can get the 'max_freq/min_freq' and then
->>>>>> initialize the 'freqs.new_max_freq and freqs.new_min_freq'
->>>>>> with them as following:
->>>>>>
->>>>>> in devfreq_set_target()
->>>>>>      get_freq_range(devfreq, &min_freq, &max_freq);
->>>>>>      dev_pm_opp_find_freq_floor(pdev, &min_freq);
->>>>>>      dev_pm_opp_find_freq_floor(pdev, &max_freq);
->>>>>>      freqs.new_max_freq = min_freq;
->>>>>>      freqs.new_max_freq = max_freq;
->>>>>>      devfreq_notify_transition(devfreq, &freqs, DEVFREQ_POSTCHANGE);
->>>>>
->>>>> I will plumb it in and check that option. My concern is that function
->>>>> get_freq_range() would give me the max_freq value from PM QoS, which
->>>>> might be my thermal limit - lower that user_max_freq. Then I still
->>>>> need
->>>>>
->>>>> I've been playing with PM QoS notifications because I thought it would
->>>>> be possible to be notified in thermal for all new set values - even from
->>>>> devfreq sysfs user max_freq write, which has value higher that the
->>>>> current limit set by thermal governor. Unfortunately PM QoS doesn't
->>>>> send that information by design. PM QoS also by desing won't allow
->>>>> me to check first two limits in the plist - which would be thermal
->>>>> and user sysfs max_freq.
->>>>>
->>>>> I will experiment with this notifications and share the results.
->>>>> That you for your comments.
+>>>> Is it profitable to do ...
 >>>>
->>>> I have experimented with your proposal. Unfortunately, the value stored
->>>> in the pm_qos which is read by get_freq_range() is not the user max
->>>> freq. It's the value from thermal devfreq cooling when that one is
->>>> lower. Which is OK in the overall design, but not for my IPA use case.
->>>>
->>>> What comes to my mind is two options:
->>>> 1) this patch proposal, with simple solution of two new variables
->>>> protected by mutex, which would maintain user stored values
->>>> 2) add a new notification chain in devfreq to notify about new
->>>> user written value, to which devfreq cooling would register; that
->>>> would allow devfreq cooling to get that value instantly and store
->>>> locally
+>>>> -		del_page_from_lru_list(page, lruvec, page_lru(page));
+>>>> +		enum lru_list lru = page_lru(page);
+>>>> +		del_page_from_lru_list(page, lruvec, lru);
+>>>> 		ClearPageActive(page);
+>>>> -		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
+>>>> +		lru &= ~LRU_ACTIVE;
+>>>> +		add_page_to_lru_list_tail(page, lruvec, lru);
 >>>
->>> 3) How about new define for existing notification chain:
->>> #define DEVFREQ_USER_CHANGE            (2)
+>>> Ok, now we want to trade readability for size. Sure, I'll see how
+>>> much we could squeeze.
 >>
->> I think that if we add the notification with specific actor like user change
->> or OPP change or others, it is not proper. But, we can add the notification
->> for min or max frequency change timing. Because the devfreq already has
->> the notification for current frequency like DEVFREQ_PRECHANGE,
->> DEVFREQ_POSTCHANGE.
->>
->> Maybe, we can add the following notification for min/max_freq.
->> The following min_freq and max_freq values will be calculated by
->> get_freq_range().
->> DEVFREQ_MIN_FREQ_PRECHANGE
->> DEVFREQ_MIN_FREQ_POSTCHANGE
->> DEVFREQ_MAX_FREQ_PRECHANGE
->> DEVFREQ_MAX_FREQ_POSTCHANGE
+>> As nothing has happened here and the code bloat issue remains, I'll
+>> hold this series out of 5.12-rc1.
 > 
-> Would it be then possible to pass the user max freq value written via
-> sysfs? Something like in the example below, when writing into max sysfs:
-> 
-> 1) starting in max_freq_store()
->         freqs.new_max_freq = max_freq;
->         devfreq_notify_transition(devfreq, &freqs, DEVFREQ_MAX_FREQ_PRECHANGE);
->     dev_pm_qos_update_request()
-
-
-When we use the PRECHANGE and POSTCHANGE notification,
-we should keep the consistent value.
-
-When PRECHANGE, notify the previous min/max frequency
- containing the user input/cooling policy/OPP.
-When POSTCHANGE, notify the new min/max frequency
- containing the user input/cooling policy/OPP.
-
-But, in case of your suggestion, DEVFREQ_MAX_FREQ_PRECHANGE considers
-only user input without cooling policy/opp.
-
-> 
-> 2)then after a while in devfreq_set_target()
->     get_freq_range(devfreq, &min_freq, &max_freq);
->     dev_pm_opp_find_freq_floor(pdev, &min_freq);
->     dev_pm_opp_find_freq_floor(pdev, &max_freq);
->     freqs.new_min_freq = min_freq;
->     freqs.new_max_freq = max_freq;
->     devfreq_notify_transition(devfreq, &freqs, DEVFREQ_MAX_FREQ_POSTCHANGE);
-> 
-> This 2nd part is called after the PM QoS has changed that limit,
-> so might be missing (in case value was higher that current),
-> but thermal would know about that, so no worries.
-
-It doesn't focus on only thermal. We need to consider
-all potential user of max_freq notification.
-
-In the devfreq subsystem like devfreq governor,
-we might use the user min/max_freq without any restrictions.
-But, in this case, devfreq provides the min/max_freq
-to outside subsystem/drivers like devfreq-cooling.c of thermal.
-IMHO, it is difficult to agree this approach.
-
-If devfreq provides the various min/max_freq value to outside
-of devfreq, it makes the confusion to understand the meaning
-of min/max_freq. Actually, the other user doesn't need to 
-know the user input for min/max_freq.
-
-> 
->>
->>
->>>
->>> Then a modified devfreq_notify_transition() would get:
->>> @@ -339,6 +339,10 @@ static int devfreq_notify_transition(struct devfreq
->>> *devfreq,
->>>
->>> srcu_notifier_call_chain(&devfreq->transition_notifier_list,
->>>                                   DEVFREQ_POSTCHANGE, freqs);
->>>                   break;
->>> +       case DEVFREQ_USER_CHANGE:
->>> +               srcu_notifier_call_chain(&devfreq->transition_notifier_list,
->>> +                               DEVFREQ_USER_CHANGE, freqs);
->>> +               break;
->>>           default:
->>>                   return -EINVAL;
->>>           }
->>>
->>> If that is present, I can plumb your suggestion with:
->>> struct devfreq_freq {
->>> +       unsigned long new_max_freq;
->>> +       unsigned long new_min_freq;
->>>
->>> and populate them with values in the max_freq_store() by adding at the
->>> end:
->>>
->>> freqs.new_max_freq = max_freq;
->>> mutex_lock();
->>> devfreq_notify_transition(devfreq, &freqs, DEVFREQ_USER_CHANGE);
->>> mutex_unlock();
->>>
->>> I would handle this notification in devfreq cooling and keep the
->>> value there, for future IPA checks.
->>>
->>> If you agree, I can send next version of the patch set.
->>>
->>>>
->>>> What do you think Chanwoo?
->>
->> I thought that your suggestion to expose the user input for min/max_freq.
->> But, these values are not valid for the public user. Actually, the devfreq core
->> handles these values only internally without any explicit access from outside.
->>
->> I'm not sure that it is right or not to expose the internal value of
->> devfreq struct.
->> Until now, I think that it is not proper to show the interval value outside.
->>
->> Because the devfreq subsystem only provides the min_freq and max_freq
->> which reflect the all requirement of user input/cooling policy/OPP
->> instead of user_min_freq, user_max_freq.
->>
->> If we provide the user_min_freq, user_max_freq via DEVFREQ notification,
->> we have to make the new sysfs attributes for user_min_freq and user_max_freq
->> to show the value to the user. But, it seems that it is not nice.
-> 
-> I would say we don't have to expose it. Let's take a closer look into
-> an example. The main problem is with GPUs. The middleware is aware of
-> the OPPs in the GPU. If the middleware wants to switch into different
-> power-performance mode e.g. power-saving, it writes into this sysfs
-> the max allowed freq. IPA does not know about it and makes wrong
-> decisions. As you said, the sysfs read operation combines all:
-> user input/cooling policy/OPP, but that's not a problem for this aware
-> middleware. So it can stay as is.
-> The only addition would be this 'notification about user attempt of
-> reducing max device speed' internally inside the kernel, for those
-> subsystems which are interested in it.
-As I commented on above, I'm not sure to provide the multiple
-min/max_freq to outside of devfreq subsytem. Instead, it is ok
-to use user min/max_freq inside of devfreq subsystem.
-
-Unfortunately, I didn't suggests the good solution.
-It is very important changes. So that I want to consider
-the all users of devfreq.
-
-> 
->>
->> Actually, I have no other idea how to support your feature.
->> We try to find the more proper method.
->>
-> 
-> Thank you for coming back with your comments. I know it's not
-> an easy feature but I hope we can find a solution.
-> 
-> Regards,
-> Lukasz
+> Sorry for the slow response. I was trying to ascertain why
+> page_lru(), a tiny helper, could bloat vmlinux by O(KB). It turned out
+> compound_head() included in Page{Active,Unevictable} is a nuisance in
+> our case. Testing PG_{active,unevictable} against
+> compound_head(page)->flags is really unnecessary because all lru
+> operations are eventually done on page->lru not
+> compound_head(page)->lru. With the following change, which sacrifices
+> the readability a bit, we gain 998 bytes with Clang but lose 227 bytes
+> with GCC, which IMO is a win. (We use Clang by default.)
 > 
 > 
+> diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
+> index 355ea1ee32bd..ec0878a3cdfe 100644
+> --- a/include/linux/mm_inline.h
+> +++ b/include/linux/mm_inline.h
+> @@ -46,14 +46,12 @@ static __always_inline void __clear_page_lru_flags(struct page *page)
+>  {
+>  	VM_BUG_ON_PAGE(!PageLRU(page), page);
+>  
+> -	__ClearPageLRU(page);
+> -
+>  	/* this shouldn't happen, so leave the flags to bad_page() */
+> -	if (PageActive(page) && PageUnevictable(page))
+> +	if ((page->flags & (BIT(PG_active) | BIT(PG_unevictable))) ==
+> +	    (BIT(PG_active) | BIT(PG_unevictable)))
+>  		return;
+>  
+> -	__ClearPageActive(page);
+> -	__ClearPageUnevictable(page);
+> +	page->flags &= ~(BIT(PG_lru) | BIT(PG_active) | BIT(PG_unevictable));
+>  }
+>  
+>  /**
+> @@ -65,18 +63,12 @@ static __always_inline void __clear_page_lru_flags(struct page *page)
+>   */
+>  static __always_inline enum lru_list page_lru(struct page *page)
+>  {
+> -	enum lru_list lru;
+> +	unsigned long flags = READ_ONCE(page->flags);
+>  
+>  	VM_BUG_ON_PAGE(PageActive(page) && PageUnevictable(page), page);
+>  
+> -	if (PageUnevictable(page))
+> -		return LRU_UNEVICTABLE;
+> -
+> -	lru = page_is_file_lru(page) ? LRU_INACTIVE_FILE : LRU_INACTIVE_ANON;
+> -	if (PageActive(page))
+> -		lru += LRU_ACTIVE;
+> -
+> -	return lru;
+> +	return (flags & BIT(PG_unevictable)) ? LRU_UNEVICTABLE :
+> +	       (LRU_FILE * !(flags & BIT(PG_swapbacked)) + !!(flags & BIT(PG_active)));
 
+Currently each of page flags used different flags policy, does this mean above flags could be
+change to PF_ANY policy?
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Thanks
+Alex
+
+>  }
+>  
+>  static __always_inline void add_page_to_lru_list(struct page *page,
+> 
+> 
+> I'll post this as a separate patch. Below the bloat-o-meter collected
+> on top of c03c21ba6f4e.
+> 
+> $ ./scripts/bloat-o-meter ../vmlinux.clang.orig ../vmlinux.clang
+> add/remove: 0/1 grow/shrink: 7/10 up/down: 191/-1189 (-998)
+> Function                                     old     new   delta
+> lru_lazyfree_fn                              848     893     +45
+> lru_deactivate_file_fn                      1037    1075     +38
+> perf_trace_mm_lru_insertion                  515     548     +33
+> check_move_unevictable_pages                 983    1006     +23
+> __activate_page                              706     729     +23
+> trace_event_raw_event_mm_lru_insertion       476     497     +21
+> lru_deactivate_fn                            691     699      +8
+> __bpf_trace_mm_lru_insertion                  13      11      -2
+> __traceiter_mm_lru_insertion                  67      62      -5
+> move_pages_to_lru                            964     881     -83
+> __pagevec_lru_add_fn                         665     581     -84
+> isolate_lru_page                             524     419    -105
+> __munlock_pagevec                           1609    1481    -128
+> isolate_migratepages_block                  3370    3237    -133
+> __page_cache_release                         556     413    -143
+> lruvec_lru_size                              151       -    -151
+> release_pages                               1025     866    -159
+> pagevec_move_tail_fn                         805     609    -196
+> Total: Before=19502982, After=19501984, chg -0.01%
+> 
+> $ ./scripts/bloat-o-meter ../vmlinux.gcc.orig ../vmlinux.gcc
+> add/remove: 0/1 grow/shrink: 9/9 up/down: 1010/-783 (227)
+> Function                                     old     new   delta
+> shrink_lruvec                               1690    1950    +260
+> lru_deactivate_file_fn                       961    1128    +167
+> isolate_migratepages_block                  3286    3427    +141
+> check_move_unevictable_pages                1042    1170    +128
+> lru_lazyfree_fn                              709     822    +113
+> lru_deactivate_fn                            665     724     +59
+> __activate_page                              703     760     +57
+> trace_event_raw_event_mm_lru_insertion       432     478     +46
+> perf_trace_mm_lru_insertion                  464     503     +39
+> __bpf_trace_mm_lru_insertion                  13      11      -2
+> __traceiter_mm_lru_insertion                  66      57      -9
+> isolate_lru_page                             472     405     -67
+> __munlock_pagevec                           1282    1212     -70
+> __pagevec_lru_add                            976     893     -83
+> __page_cache_release                         508     418     -90
+> release_pages                                978     887     -91
+> move_pages_to_lru                            954     853    -101
+> lruvec_lru_size                              131       -    -131
+> pagevec_move_tail_fn                         770     631    -139
+> Total: Before=19237248, After=19237475, chg +0.00%
+> 
