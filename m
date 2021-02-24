@@ -2,81 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D633238A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 915383238A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbhBXIbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:31:13 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:34734 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233146AbhBXIax (ORCPT
+        id S230010AbhBXIbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:31:52 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:49523 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234040AbhBXIbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:30:53 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 5BA741C0B81; Wed, 24 Feb 2021 09:29:55 +0100 (CET)
-Date:   Wed, 24 Feb 2021 09:29:54 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH 5.10 03/29] vdpa_sim: store parsed MAC address in a buffer
-Message-ID: <20210224082954.GB8058@amd>
-References: <20210222121019.444399883@linuxfoundation.org>
- <20210222121020.153222666@linuxfoundation.org>
- <20210222195414.GA24405@amd>
- <20210223080655.ps7ujvgvs6wtlszf@steredhat>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ZoaI/ZTpAVc4A5k6"
-Content-Disposition: inline
-In-Reply-To: <20210223080655.ps7ujvgvs6wtlszf@steredhat>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        Wed, 24 Feb 2021 03:31:18 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UPR10aO_1614155430;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPR10aO_1614155430)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 24 Feb 2021 16:30:34 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     paulmck@kernel.org
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] rcu: make nocb_nobypass_lim_per_jiffy static
+Date:   Wed, 24 Feb 2021 16:30:29 +0800
+Message-Id: <1614155429-64546-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following sparse warning:
 
---ZoaI/ZTpAVc4A5k6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kernel/rcu/tree_plugin.h:1497:5: warning: symbol
+'nocb_nobypass_lim_per_jiffy' was not declared. Should it be static?
 
-Hi!
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> >>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> >>@@ -42,6 +42,8 @@ static char *macaddr;
-> >> module_param(macaddr, charp, 0);
-> >> MODULE_PARM_DESC(macaddr, "Ethernet MAC address");
-> >>
-> >>+u8 macaddr_buf[ETH_ALEN];
-> >>+
-> >
-> >Should this be static?
->=20
-> Yes, there is already a patch [1] queued by Michael but not yet upstream.
-> When it will be merged upstream I will make sure it will be backported.
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 2d60377..8ff8cf8 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1494,7 +1494,7 @@ static int __init parse_rcu_nocb_poll(char *arg)
+  * After all, the main point of bypassing is to avoid lock contention
+  * on ->nocb_lock, which only can happen at high call_rcu() rates.
+  */
+-int nocb_nobypass_lim_per_jiffy = 16 * 1000 / HZ;
++static int nocb_nobypass_lim_per_jiffy = 16 * 1000 / HZ;
+ module_param(nocb_nobypass_lim_per_jiffy, int, 0);
+ 
+ /*
+-- 
+1.8.3.1
 
-Having it in mainline is enough, I don't really think it causes
-anything user-visible, so it does not need to be in stable.
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---ZoaI/ZTpAVc4A5k6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmA2DoIACgkQMOfwapXb+vLgNACgj1vpwEzOIwV7Y/g16yUsIzIt
-nXAAoLMothbUEz/o+N8pICvYVwEgfNz7
-=HZ2x
------END PGP SIGNATURE-----
-
---ZoaI/ZTpAVc4A5k6--
