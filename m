@@ -2,182 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4458332417D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3678324184
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237008AbhBXP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:58:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
+        id S234571AbhBXP7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:59:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235989AbhBXPpD (ORCPT
+        with ESMTP id S235717AbhBXPqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:45:03 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38697C06178C;
-        Wed, 24 Feb 2021 07:44:19 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id b3so1694415qtj.10;
-        Wed, 24 Feb 2021 07:44:19 -0800 (PST)
+        Wed, 24 Feb 2021 10:46:45 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC69C06174A;
+        Wed, 24 Feb 2021 07:45:53 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id e9so1589021pjj.0;
+        Wed, 24 Feb 2021 07:45:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fItWJT45gxeZmehLDl9MQvbAFXnDt+Npfk0rq2z6/Gs=;
-        b=AG7c4wQ5+wpzdAg0XrcwfkbS1trFVNCcx/cuRADHgkh88LjGDRnVEZTnQ4WyWdElom
-         Yy5ES4Lk1b+WioJwvV/FJt8pj5AKwQ6DkU6+E/iV8A29YKsstXc4Hc8B9fpbb6u33rgK
-         omtU/He9/MtbCCro2MnDNsD20TYRkm56q61jDi/b8xt/3tksrF/7CjfYbYKRRhFDf9Vz
-         PCAThKb1FyowOxBb9FH4ysw61gJzBPY02hp5NhdWwnpKQlpdRhs1ziJpk5w781uEx2xO
-         KwKMZL7WfSMDhohoZ3QgmzvKq0SCEd7irv4ZMicPt46xupc+FsIHnxpPfOTgDeh9HjXG
-         DyuQ==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=9mcIs48YnQ0B0jfxm+Ftd8IGk+lfKlv4DImWEhLknTU=;
+        b=LKcLH3OTt+vMu4jB/6XyKOhF7yoOZC2CqwGBGkQQOgtTL0508Igr7YfAtWkECMvBjI
+         hmy1wFv6tXY/OHtN4CiwCoiHDKsnTtpqFZfIBoxV164XagZEkGKLGB0tsx0v1e5PV+7C
+         CBWjtCLN3MvnvXhflmzzAEan/pez3fKNmyIb4xHxFq1VeTJrNh3UPR3CtC7EShNNa/gF
+         eAs5rlsuJFYAvGnAxVGXpnBmYY0SJ0Ie/c/esBAbW0MfJxNTxyGEugbE/+9Xl0IYpCqS
+         2tIMwK9sIRM37fGBCW6P9ZVZoACuWVqCyTYD5j19FkFVzmkT9Pv5P4Cv8kWuLUGZYCfA
+         RqOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fItWJT45gxeZmehLDl9MQvbAFXnDt+Npfk0rq2z6/Gs=;
-        b=KWvC22QidUWIgZ4VUR6Wuj4EbBIwFKrDhhnVvFbTzZs5D/fe0GoTEWJlsju2D7MWeE
-         74kH+MK6oSnUu+XZiWZMhi7S0Xhvou+UDqrHfr6IWoEWFK9lo3BZBG1a6uLgggf6oNhz
-         UuidwKsv6wYfOTtohdgM86pJ4TgCayFqOcO920pCe4Yjy+oFLWRbf8NqK4Ip/jg6FBsP
-         WvWNLKldI3Mzk3WBlAnqHrV1J1wcRa4M46oUGUffU6MqpGFPHK7YBMfMA+Wz3dEueOwD
-         1bvEjyC5vMaqNINzFZFdLscSa8N07YiO40bgH9H/TZGt+g98YwYutkojvyc/93fMi1HC
-         3Uew==
-X-Gm-Message-State: AOAM530PkxauFaeW6EDAmG/Mbr/RyO7rHv5XJ06tsaKsexryKy1aFdVL
-        UfL0OgyOHv9/xlloZ9mYU7I=
-X-Google-Smtp-Source: ABdhPJyTZqxs22JUW66YxOkmHqfYrrrtccArQCKwcAP8XHLmFOZeWT8qUOmGIAtgw4W5RG4wKYCXRg==
-X-Received: by 2002:ac8:7383:: with SMTP id t3mr29164779qtp.242.1614181458203;
-        Wed, 24 Feb 2021 07:44:18 -0800 (PST)
-Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id 16sm1461749qtp.38.2021.02.24.07.44.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 07:44:17 -0800 (PST)
-Date:   Wed, 24 Feb 2021 07:44:16 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH] arm64: enable  GENERIC_FIND_FIRST_BIT
-Message-ID: <20210224154416.GA1181413@yury-ThinkPad>
-References: <20201205165406.108990-1-yury.norov@gmail.com>
- <20210224115247.1618-1-alobakin@pm.me>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9mcIs48YnQ0B0jfxm+Ftd8IGk+lfKlv4DImWEhLknTU=;
+        b=Z4uNDparyti5Y51b04zRQFY3gzZ/kculWa5S8bwLOmRl7vuEZ5/RVveQyCgFiWI/rQ
+         0ZCAb3C+B2YP91CS5mWfIvP01u4GOl2/P8zQxVR+WlUQekogO7E6ion10yAyeHvYjQKC
+         I+na/40Lp2L6QxXdSoTJVxKkYRCqI2RgT823usmUrTFGNun2O+WJqTo7fKSoKZzigO/y
+         LGdNTgHsGuwQ4hSm1anAg6Wuwo38rOuKGEVi+OQpiBpmVFYBzMujBoM3EAs3e82jWn40
+         UgjrziGlhPgjWbnBzIwJ4bNm/y3gIbv0Y3iBzBsZ67AXaPzxuS1VfysuTy7aIUG5cCVm
+         ms0A==
+X-Gm-Message-State: AOAM531rKgtjX67XaqwyivtuizIVmhH6Vhl/kW8k7LmyegqEtBeWb58J
+        d846pmgZQq6EwjeQQ7yrdI+BvF90dZk=
+X-Google-Smtp-Source: ABdhPJwMslgfC76N523d/GxrIDheKqx78jiDmZzGbKa1CvkO6uOO08FmVpU1NYsew9NvwsD0N4E8hg==
+X-Received: by 2002:a17:90b:3892:: with SMTP id mu18mr5088239pjb.143.1614181552593;
+        Wed, 24 Feb 2021 07:45:52 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id j3sm2769665pgk.24.2021.02.24.07.45.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Feb 2021 07:45:52 -0800 (PST)
+Subject: Re: [PATCH v2 0/2] leds: bcm63x8: improve read and write functions
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        jonas.gorski@gmail.com, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210224101110.20179-1-noltari@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <a9a9fb30-2d90-33ff-9b80-af9d03b69c69@gmail.com>
+Date:   Wed, 24 Feb 2021 07:45:46 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224115247.1618-1-alobakin@pm.me>
+In-Reply-To: <20210224101110.20179-1-noltari@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 11:52:55AM +0000, Alexander Lobakin wrote:
-> From: Yury Norov <yury.norov@gmail.com>
-> Date: Sat, 5 Dec 2020 08:54:06 -0800
-> 
-> Hi,
-> 
-> > ARM64 doesn't implement find_first_{zero}_bit in arch code and doesn't
-> > enable it in config. It leads to using find_next_bit() which is less
-> > efficient:
-> >
-> > 0000000000000000 <find_first_bit>:
-> >    0:	aa0003e4 	mov	x4, x0
-> >    4:	aa0103e0 	mov	x0, x1
-> >    8:	b4000181 	cbz	x1, 38 <find_first_bit+0x38>
-> >    c:	f9400083 	ldr	x3, [x4]
-> >   10:	d2800802 	mov	x2, #0x40                  	// #64
-> >   14:	91002084 	add	x4, x4, #0x8
-> >   18:	b40000c3 	cbz	x3, 30 <find_first_bit+0x30>
-> >   1c:	14000008 	b	3c <find_first_bit+0x3c>
-> >   20:	f8408483 	ldr	x3, [x4], #8
-> >   24:	91010045 	add	x5, x2, #0x40
-> >   28:	b50000c3 	cbnz	x3, 40 <find_first_bit+0x40>
-> >   2c:	aa0503e2 	mov	x2, x5
-> >   30:	eb02001f 	cmp	x0, x2
-> >   34:	54ffff68 	b.hi	20 <find_first_bit+0x20>  // b.pmore
-> >   38:	d65f03c0 	ret
-> >   3c:	d2800002 	mov	x2, #0x0                   	// #0
-> >   40:	dac00063 	rbit	x3, x3
-> >   44:	dac01063 	clz	x3, x3
-> >   48:	8b020062 	add	x2, x3, x2
-> >   4c:	eb02001f 	cmp	x0, x2
-> >   50:	9a829000 	csel	x0, x0, x2, ls  // ls = plast
-> >   54:	d65f03c0 	ret
-> >
-> >   ...
-> >
-> > 0000000000000118 <_find_next_bit.constprop.1>:
-> >  118:	eb02007f 	cmp	x3, x2
-> >  11c:	540002e2 	b.cs	178 <_find_next_bit.constprop.1+0x60>  // b.hs, b.nlast
-> >  120:	d346fc66 	lsr	x6, x3, #6
-> >  124:	f8667805 	ldr	x5, [x0, x6, lsl #3]
-> >  128:	b4000061 	cbz	x1, 134 <_find_next_bit.constprop.1+0x1c>
-> >  12c:	f8667826 	ldr	x6, [x1, x6, lsl #3]
-> >  130:	8a0600a5 	and	x5, x5, x6
-> >  134:	ca0400a6 	eor	x6, x5, x4
-> >  138:	92800005 	mov	x5, #0xffffffffffffffff    	// #-1
-> >  13c:	9ac320a5 	lsl	x5, x5, x3
-> >  140:	927ae463 	and	x3, x3, #0xffffffffffffffc0
-> >  144:	ea0600a5 	ands	x5, x5, x6
-> >  148:	54000120 	b.eq	16c <_find_next_bit.constprop.1+0x54>  // b.none
-> >  14c:	1400000e 	b	184 <_find_next_bit.constprop.1+0x6c>
-> >  150:	d346fc66 	lsr	x6, x3, #6
-> >  154:	f8667805 	ldr	x5, [x0, x6, lsl #3]
-> >  158:	b4000061 	cbz	x1, 164 <_find_next_bit.constprop.1+0x4c>
-> >  15c:	f8667826 	ldr	x6, [x1, x6, lsl #3]
-> >  160:	8a0600a5 	and	x5, x5, x6
-> >  164:	eb05009f 	cmp	x4, x5
-> >  168:	540000c1 	b.ne	180 <_find_next_bit.constprop.1+0x68>  // b.any
-> >  16c:	91010063 	add	x3, x3, #0x40
-> >  170:	eb03005f 	cmp	x2, x3
-> >  174:	54fffee8 	b.hi	150 <_find_next_bit.constprop.1+0x38>  // b.pmore
-> >  178:	aa0203e0 	mov	x0, x2
-> >  17c:	d65f03c0 	ret
-> >  180:	ca050085 	eor	x5, x4, x5
-> >  184:	dac000a5 	rbit	x5, x5
-> >  188:	dac010a5 	clz	x5, x5
-> >  18c:	8b0300a3 	add	x3, x5, x3
-> >  190:	eb03005f 	cmp	x2, x3
-> >  194:	9a839042 	csel	x2, x2, x3, ls  // ls = plast
-> >  198:	aa0203e0 	mov	x0, x2
-> >  19c:	d65f03c0 	ret
-> >
-> >  ...
-> >
-> > 0000000000000238 <find_next_bit>:
-> >  238:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
-> >  23c:	aa0203e3 	mov	x3, x2
-> >  240:	d2800004 	mov	x4, #0x0                   	// #0
-> >  244:	aa0103e2 	mov	x2, x1
-> >  248:	910003fd 	mov	x29, sp
-> >  24c:	d2800001 	mov	x1, #0x0                   	// #0
-> >  250:	97ffffb2 	bl	118 <_find_next_bit.constprop.1>
-> >  254:	a8c17bfd 	ldp	x29, x30, [sp], #16
-> >  258:	d65f03c0 	ret
-> >
-> > Enabling this functions would also benefit for_each_{set,clear}_bit().
-> > Would it make sense to enable this config for all such architectures by
-> > default?
-> 
-> I confirm that GENERIC_FIND_FIRST_BIT also produces more optimized and
-> fast code on MIPS (32 R2) where there is also no architecture-specific
-> bitsearching routines.
-> So, if it's okay for other folks, I'd suggest to go for it and enable
-> for all similar arches.
- 
-As far as I understand the idea of GENERIC_FIND_FIRST_BIT=n, it's
-intended to save some space in .text. But in fact it bloats the
-kernel:
 
-        yury:linux$ scripts/bloat-o-meter vmlinux vmlinux.ffb
-        add/remove: 4/1 grow/shrink: 19/251 up/down: 564/-1692 (-1128)
-        ...
 
-For the next cycle, I'm going to submit a patch that removes the 
-GENERIC_FIND_FIRST_BIT completely and forces all architectures to
-use find_first{_zero}_bit() 
+On 2/24/2021 2:11 AM, Álvaro Fernández Rojas wrote:
+> This code is proven to work in BMIPS BE/LE and ARM BE/LE.
+> See bcm2835-rng and bcmgenet.c:
+> https://github.com/torvalds/linux/blob/3b9cdafb5358eb9f3790de2f728f765fef100731/drivers/char/hw_random/bcm2835-rng.c#L42-L60
+> https://github.com/torvalds/linux/blob/3b9cdafb5358eb9f3790de2f728f765fef100731/drivers/net/ethernet/broadcom/genet/bcmgenet.c#L71-L88
 
-> (otherwise, I'll publish a separate entry for mips-next after 5.12-rc1
->  release and mention you in "Suggested-by:")
-
-I think it worth to enable GENERIC_FIND_FIRST_BIT for mips and arm now
-and see how it works for people. If there'll be no complains I'll remove
-the config entirely. I'm OK if you submit the patch for mips now, or we
-can make a series and submit together. Works either way.
+What is the motivation for doing this? bcm2835-rng and bcmgenet are used
+across MIPS and ARM platforms therefore they need to be compatible with
+both, but these two LEDs drivers are super specialized, are you working
+on porting the 6328 LED driver to the newer ARM-based DSL SoCs such as
+63138 and 63148?
+-- 
+Florian
