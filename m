@@ -2,43 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0854B32420F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D0A324218
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbhBXQZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:25:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
+        id S234002AbhBXQaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:30:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234002AbhBXQZn (ORCPT
+        with ESMTP id S232861AbhBXQ16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:25:43 -0500
+        Wed, 24 Feb 2021 11:27:58 -0500
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF76CC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:25:01 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B852AC061574;
+        Wed, 24 Feb 2021 08:27:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
         Reply-To:Cc:Content-ID:Content-Description;
-        bh=p1qkrxDjfDnEj5UvJiqqw4roI9nUL2HzQS/jxIkwPFM=; b=tkzNLiWZgK/StBmPaeSAr2Fc4l
-        eIsIs2+1RTqaYNadVQkfCEYjpZsA3TbryT0zUsn0mWFMmRzOm1zKKv/j41LXUUpozrqEOSuOALYw4
-        KT3ATSmlgVOjWg6PioEnS7oNwFJ6ByU/TUdcLLVdn6gKHJlpF6vkhzk4NxLLSYpAgGd+TZCvupFAv
-        UI2KG490XBMWdkgpBi5MyIuBBGSvBFCO8r7aQwIpcdX6EBASEsZRLUvpOujSQ25e7LZSVa27X50jC
-        HFm5qRJecux2gtC9WEONcs+uKl7T0/AwkIQUxZlY7e5evXN6kQSvKvf0xptnOGNDMczLwJIr80YPp
-        fsSToZHA==;
+        bh=oAPR85te3dRyKOTRlbHy17l5x3IzK2Fd4bEuFT+f54M=; b=mRzsInAJ+KnoCbdwoY6jAmutJ+
+        Yp9V7hrJHkvk0gC0cjonBKykXmZWJuyXs4ITsJD++W6544IIPMHGOyFko1U3PFLiDAoV21/BmBZoi
+        B3WA1nsunYjcr+5Xww+G5VNTEaB8v2jEyAKLAGCwL1mZYdivopOmfvGi18ZG2/q/qYak1UMLShBlY
+        yL8IDsuCrMeLHAjNqlAioxlQqTASExnJI6uxMu5e43dcuFV6XASgnAZGpaVNbTSAIPzHYc8YEwC1A
+        hS48Ha0EDUN+QCv4LwQ5ko2mfunB3pOWgC4NNaM06DojK8o/iRUegXQSbbgyOlocaHL7OZ/h4Y2wI
+        Re9thVkA==;
 Received: from [2601:1c0:6280:3f0::d05b]
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lEwyB-0002vc-Aw; Wed, 24 Feb 2021 16:24:59 +0000
-Subject: Re: [PATCH] arch: x86: mm: Fix compied to compiled in the file init.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org
-References: <20210224082942.863874-1-unixbhaskar@gmail.com>
+        id 1lEx0J-0003Gu-JA; Wed, 24 Feb 2021 16:27:11 +0000
+Subject: Re: [PATCH] init: Kconfig: Fix a spelling compier to compiler in the
+ file init/Kconfig
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, masahiroy@kernel.org,
+        akpm@linux-foundation.org, valentin.schneider@arm.com,
+        terrelln@fb.com, qperret@google.com, hannes@cmpxchg.org,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20210224081409.824278-1-unixbhaskar@gmail.com>
 From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <47528e56-bd6b-12a6-8b05-94e8dd4954c4@infradead.org>
-Date:   Wed, 24 Feb 2021 08:24:56 -0800
+Message-ID: <64923623-633f-12cc-41bb-fd705f2c8aa3@infradead.org>
+Date:   Wed, 24 Feb 2021 08:27:03 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210224082942.863874-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210224081409.824278-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,31 +55,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/21 12:29 AM, Bhaskar Chowdhury wrote:
+On 2/24/21 12:14 AM, Bhaskar Chowdhury wrote:
 > 
-> s/compied/compiled/
+> s/compier/compiler/
 > 
 > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
 Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
+in Subject:, "Fix a spelling" is whacked. Maybe "Fix a spello" or
+"Fix typo".
+
+
 > ---
->  arch/x86/mm/init.c | 2 +-
+>  init/Kconfig | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-> index dd694fb93916..34a1f1e19c86 100644
-> --- a/arch/x86/mm/init.c
-> +++ b/arch/x86/mm/init.c
-> @@ -29,7 +29,7 @@
+> diff --git a/init/Kconfig b/init/Kconfig
+> index b77c60f8b963..739c3425777b 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -19,7 +19,7 @@ config CC_VERSION_TEXT
+>  	    CC_VERSION_TEXT so it is recorded in include/config/auto.conf.cmd.
+>  	    When the compiler is updated, Kconfig will be invoked.
 > 
->  /*
->   * We need to define the tracepoints somewhere, and tlb.c
-> - * is only compied when SMP=y.
-> + * is only compiled when SMP=y.
->   */
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/tlb.h>
+> -	  - Ensure full rebuild when the compier is updated
+> +	  - Ensure full rebuild when the compiler is updated
+>  	    include/linux/kconfig.h contains this option in the comment line so
+>  	    fixdep adds include/config/cc/version/text.h into the auto-generated
+>  	    dependency. When the compiler is updated, syncconfig will touch it
 > --
 > 2.30.1
 > 
