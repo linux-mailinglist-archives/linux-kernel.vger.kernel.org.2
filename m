@@ -2,104 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C01324391
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7D3324394
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234073AbhBXSJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
+        id S234326AbhBXSK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:10:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232700AbhBXSJv (ORCPT
+        with ESMTP id S232700AbhBXSKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:09:51 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE95C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:09:11 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id z18so2522492ile.9
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:09:11 -0800 (PST)
+        Wed, 24 Feb 2021 13:10:20 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0780C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:09:39 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id f17so3074737qkl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:09:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=dKCWFwCtere4GZoadEUWnq7pobLJDcHFCquipMb1ruk=;
-        b=hqke137REPFIk08X26O9Qf6S+JDQmGikbvjBbxcfEot4DctxH36v/1Z0sUISy5h2Nx
-         3yUSceQyhSUXD1D7HmWMC4SbfTDFC98ZtgBdyo8N/CEM148DdmxO+n0yvPcEF9s4ky2E
-         2KtG48ooopFe/gzIzAYS8EVjSdc3gnkI9piiA0iLkRGI+u+/fkxcFYxJ2uFsATFFoJ2k
-         56R1JJnJGBTGNOyay/sPvXzGIDii9vZe3SXMIru02NOewoZc1kTF+VUg/Y9dLSuLe5wp
-         RbRZH3n0RJGhAvAWTVooLr05i1lD6pZE02ZRyhqC6+AaghfThafHISJnaH7imAEHE4x3
-         11nQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FZy6N7GCZgUynsIdqwnAeC4Go7jwGa2J7ycwTmlSsCU=;
+        b=MDfl56YmwjZfSTl9u6eM0IrenqYoRdsWbFtd2gmx5jDq0IvGCbPQZQcr35FlKSozlQ
+         Cf4txMmDM2GI+aEj5CAQ3PIZGj9KjCns0lU70Hs506h4Or/eJZDaXxtx2m4yNvOl/RRQ
+         7KdqQR5LFX2qKtaHAupwrH6ET9cduFMHecJCk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=dKCWFwCtere4GZoadEUWnq7pobLJDcHFCquipMb1ruk=;
-        b=WwunH+CwOmRI5Z1mXZkfdIpefOfkybIJrn+u64RPNdwRCKfvbxbHlswo/X3uNWghPz
-         W0tsB5GDviNARhSet/g6cxkL5zYcJ5OBOAYXDl82oBskECAPN7GjJPK+x/Cw8G9PCaEd
-         S4P6WurZgqec4XusvrM2oGFPWzhbWBBEhZMhrxvR4/DIhwD89r4vK61aU3COCHMr69Gq
-         2m+3GRoHZkMvnZP4SZxCpPFKs/igO/RwgP0PRLF3tv70LvHcv3SdE9XFzzNR/NCEoxA/
-         IXHnoo6l2OZzVF8pbun6ZW5lfeCRiNYmT/K+Ls21EP5BXtOTjD+P2xtr8qNSwgukx2zx
-         9l8Q==
-X-Gm-Message-State: AOAM531RwWXPTXhcL/ebdqaZ7W+MG2hPpw04AwkC4GDIhTNsDDHGAOeP
-        Stc58UuL1g6bbkZce52g9JKlKs9mlvmi0EWNjzg=
-X-Google-Smtp-Source: ABdhPJz3GIBdgA4zHbgVmxKw9YsFP/tLTYz2tkBhM/AiHwcN92PZFP+mitQPKNwLrlEkglorYH8lYc6zOj657BmjvVA=
-X-Received: by 2002:a05:6e02:13a6:: with SMTP id h6mr14196474ilo.10.1614190150784;
- Wed, 24 Feb 2021 10:09:10 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FZy6N7GCZgUynsIdqwnAeC4Go7jwGa2J7ycwTmlSsCU=;
+        b=jWeouFbQOSx3tWVNR1iM3A2XD6gEI5K08J5T2CGH++xd3PMIauRSrD7DVGqfEAG+df
+         ILS0EDQ95p1B8wE8I8DCHg6gtDWI/+R2c1tDh7mFOsyAlWdE4fVkpQ9+RxiQnDvOYYdL
+         qD6NFpJfhIgMAiWTPwv4sUB96f+Rh0lj2SjvL7KtPAuBXApMeS2+ztujjb6pa6ZKdJg3
+         x34hCgMXbVcw1z+dVy/9Gxp8rXtMg+OgqLrB645UzjLzCxhscIG3pbSlIcVmSb8FDrEz
+         Y8KAmL7pEepqN5rARPP7BkrP4pbKFb18weaWP/NlLNAhqiqJNFLRPubnFScYwMLQ08eE
+         jyeA==
+X-Gm-Message-State: AOAM5318+8oUJ58nZOS243Uu7GIuiDZokGx6PVON5ldmUl0o76qm77PK
+        mjCBFSDmHSL42MA97HI0oWZhx+3xx3PcBA==
+X-Google-Smtp-Source: ABdhPJxxqW5tYUYxrV/LZUqpAWHWevODgUNhGVjFzNIAYrVofMvAUvXG5KGzJ70vCUHH7yM4FUVRvg==
+X-Received: by 2002:a37:9e92:: with SMTP id h140mr1216973qke.299.1614190178373;
+        Wed, 24 Feb 2021 10:09:38 -0800 (PST)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id y1sm2019920qkf.55.2021.02.24.10.09.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Feb 2021 10:09:37 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id b10so2752835ybn.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:09:37 -0800 (PST)
+X-Received: by 2002:a25:b74d:: with SMTP id e13mr49407214ybm.405.1614190176767;
+ Wed, 24 Feb 2021 10:09:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20210211194258.4137998-1-nathan@kernel.org> <CABCJKueyXp5EQnmZ7a6HR87oKwDBDukprnJWT620McSYFd1SMg@mail.gmail.com>
-In-Reply-To: <CABCJKueyXp5EQnmZ7a6HR87oKwDBDukprnJWT620McSYFd1SMg@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 24 Feb 2021 19:08:59 +0100
-Message-ID: <CA+icZUW=GTV0L884wdohaOdFmg4E4wdtSEOgF+KEGPcKzYOoow@mail.gmail.com>
-Subject: Re: [PATCH] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Gabriel Somlo <somlo@cmu.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>, qemu-devel@nongnu.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20210224081652.587785-1-sumit.garg@linaro.org>
+In-Reply-To: <20210224081652.587785-1-sumit.garg@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 24 Feb 2021 10:09:25 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VOdf1TyXWQOyP=y2xaLxY6_c+xm-VSSUkFasJD1Cbgpw@mail.gmail.com>
+Message-ID: <CAD=FV=VOdf1TyXWQOyP=y2xaLxY6_c+xm-VSSUkFasJD1Cbgpw@mail.gmail.com>
+Subject: Re: [PATCH] kgdb: Fix to kill breakpoints on initmem after boot
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Peter Zijlstra <peterz@infradead.org>, stefan.saecherl@fau.de,
+        qy15sije@cip.cs.fau.de, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 9:41 PM 'Sami Tolvanen' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> Hi Nathan,
->
-> On Thu, Feb 11, 2021 at 11:43 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
-> > which violates clang's CFI checking because fw_cfg_showrev()'s second
-> > parameter is 'struct attribute', whereas the ->show() member of 'struct
-> > kobj_structure' expects the second parameter to be of type 'struct
-> > kobj_attribute'.
-> >
-> > $ cat /sys/firmware/qemu_fw_cfg/rev
-> > 3
-> >
-> > $ dmesg | grep "CFI failure"
-> > [   26.016832] CFI failure (target: fw_cfg_showrev+0x0/0x8):
-> >
-> > Fix this by converting fw_cfg_rev_attr to 'struct kobj_attribute' where
-> > this would have been caught automatically by the incompatible pointer
-> > types compiler warning. Update fw_cfg_showrev() accordingly.
-> >
-> > Fixes: 75f3e8e47f38 ("firmware: introduce sysfs driver for QEMU's fw_cfg device")
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1299
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->
-> Looks good to me. Thank you for sending the patch!
->
-> Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
->
+Hi,
 
-Environment: Linux v5.11-10201-gc03c21ba6f4e plus Clang-CFI as of
-24-Feb-2021 on top built with LLVM v13-git.
+On Wed, Feb 24, 2021 at 12:17 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> Currently breakpoints in kernel .init.text section are not handled
+> correctly while allowing to remove them even after corresponding pages
+> have been freed.
+>
+> Fix it via killing .init.text section breakpoints just prior to initmem
+> pages being freed.
 
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+It might be worth it to mention that HW breakpoints aren't handled by
+this patch but it's probably not such a big deal.
 
-- Sedat -
+
+> Suggested-by: Doug Anderson <dianders@chromium.org>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  include/linux/kgdb.h      |  2 ++
+>  init/main.c               |  1 +
+>  kernel/debug/debug_core.c | 11 +++++++++++
+>  3 files changed, 14 insertions(+)
+>
+> diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+> index 57b8885708e5..3aa503ef06fc 100644
+> --- a/include/linux/kgdb.h
+> +++ b/include/linux/kgdb.h
+> @@ -361,9 +361,11 @@ extern atomic_t                    kgdb_active;
+>  extern bool dbg_is_early;
+>  extern void __init dbg_late_init(void);
+>  extern void kgdb_panic(const char *msg);
+> +extern void kgdb_free_init_mem(void);
+>  #else /* ! CONFIG_KGDB */
+>  #define in_dbg_master() (0)
+>  #define dbg_late_init()
+>  static inline void kgdb_panic(const char *msg) {}
+> +static inline void kgdb_free_init_mem(void) { }
+>  #endif /* ! CONFIG_KGDB */
+>  #endif /* _KGDB_H_ */
+> diff --git a/init/main.c b/init/main.c
+> index c68d784376ca..a446ca3d334e 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -1417,6 +1417,7 @@ static int __ref kernel_init(void *unused)
+>         async_synchronize_full();
+>         kprobe_free_init_mem();
+>         ftrace_free_init_mem();
+> +       kgdb_free_init_mem();
+>         free_initmem();
+>         mark_readonly();
+>
+> diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+> index 229dd119f430..319381e95d1d 100644
+> --- a/kernel/debug/debug_core.c
+> +++ b/kernel/debug/debug_core.c
+> @@ -465,6 +465,17 @@ int dbg_remove_all_break(void)
+>         return 0;
+>  }
+>
+> +void kgdb_free_init_mem(void)
+> +{
+> +       int i;
+> +
+> +       /* Clear init memory breakpoints. */
+> +       for (i = 0; i < KGDB_MAX_BREAKPOINTS; i++) {
+> +               if (init_section_contains((void *)kgdb_break[i].bpt_addr, 0))
+
+A nit, but instead of 0 should this be passing "BREAK_INSTR_SIZE" ?
+
+Also: even if memory is about to get freed it still seems like it'd be
+wise to call this:
+
+  kgdb_arch_remove_breakpoint(&kgdb_break[i]);
+
+It looks like it shouldn't matter today but just in case an
+architecture decides to do something fancy in the future it might not
+hurt to tell it that the breakpoint is going away.
+
+
+Everything here is pretty nitty, though.  This looks good to me now.
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
