@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932113244D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1CD3244DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234839AbhBXUBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:01:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234364AbhBXUAo (ORCPT
+        id S235299AbhBXUFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 15:05:52 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:43861 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235274AbhBXUE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:00:44 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E76BC061788;
-        Wed, 24 Feb 2021 12:00:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=mK+T5LZEHxUksn3PjQrSRU0QW6w+r5cczZPe9bp7WQc=; b=ymChzcmZ4zZ45BLC9ht82keWKW
-        TZOE9uyAotQdztvvzgsaOlE2jfJTL2HGpfDUcmKuHjVX1zvziS4fn6+tbdOOgWZYe0Fb0U7XNiJpd
-        HHqGejZ/CSqYwqVjHJ+eeZcdO0Rf18cJlYPkMHr/KfYjIZRKA29QjN/wfkbBgNRjHLI0JBsWQOfxn
-        WkxCs+0YtPRv64pO/h+s+xLF+vaZ/JMvBu+T+QgwuECIQD7/FwayU5kR5DtONXT4P/NjCx7eqp36K
-        /x+x7e7PhAJdd8E7S6pONo+QFVq6HoCw6aW4sww42C9joDOmpJ6sOjBLmpgG9m5iGn28OFtLTAPrG
-        Jj8d6J9A==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lF0K6-0002CE-7b; Wed, 24 Feb 2021 19:59:50 +0000
-Subject: Re: [PATCH] fbdev: atyfb: add stubs for aty_{ld,st}_lcd()
-To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Sam Ravnborg <sam@ravnborg.org>
-References: <20210222032853.21483-1-rdunlap@infradead.org>
- <YDPtYx1uU5Y4HNZ7@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7d416971-ae9b-52a8-bfba-79c2c920ec6c@infradead.org>
-Date:   Wed, 24 Feb 2021 11:59:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <YDPtYx1uU5Y4HNZ7@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Wed, 24 Feb 2021 15:04:57 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id A87738A2;
+        Wed, 24 Feb 2021 15:04:03 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 24 Feb 2021 15:04:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=
+        content-type:mime-version:subject:from:in-reply-to:date:cc
+        :content-transfer-encoding:message-id:references:to; s=fm2; bh=H
+        r0neFGYwNuWTRB7wbGeKgttlJ7X7Po/GMt76x5UnWM=; b=ZDBEXUY6IcBek3JlW
+        Kw/N0Ph52AEW4/FqbSWaKZPDAlY//0dAdpFnfMrcY47TBWsE/EFd+Bu4dRk+nm+r
+        FNWYUR0gv5YHVNEkotm6ynAe/4B7fMHqjlllIAdN6y0A1s34ajMaJtj+9cs5XdRM
+        v+SIWxUGG84214Hx7hWXtVdcI6Gj22lLrR2L+Qqq/RxRP2X6CQC5wzLeW5sgW/MS
+        Uj8ZPh9FDqwdOC1EDkpKtsbTTUPXD/tBSp0MMfQYErbdp4nitTxZ5ta7ZIyFnqRa
+        XeNZkT+jTqLQHFYwxiE+mgmOxON6aCQcAcFUzH1pawqufw+5+Nxg+4sg7z1wakdr
+        5d7ig==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=Hr0neFGYwNuWTRB7wbGeKgttlJ7X7Po/GMt76x5Un
+        WM=; b=ZAWoVQjQGqwInPJ+G9WXj8t8TvokAcww1PSDDvXim5d5KlmgvpVNupYry
+        ePjrIaBFjmx07oS54xOE/tAKAnFFRczUHf6MbFKSzbIGdrpNmdJX6PgK/c6CdKgJ
+        IQCOEU7TeBo8zCLQVPte2PrbRKhUmo9O4JaYMwkJ9qBNDYrAxlDOATv3XLbIVoJm
+        G6vs1x6TadlOW1O4iHa/gkdF++u8FZL9FrcYuHB+0YbL8Y2FPM9uhc1PMKM6XHqc
+        XJ9NXj99DAWipdsWxYiK8K2fzbNYhnvpgsnqNoCLafzJsQcpXb4KyKRE0qae6pw/
+        S+J/nZzZbkMENNixoEMLDR5gT7F3A==
+X-ME-Sender: <xms:MrE2YA15ZODl8OwWngtZLMkvdZP65askR2QeDYykFvzmbtZFIvWA5w>
+    <xme:MrE2YLFUe_U05N-1SlXTQeU9s_SZIHh4rXzDTTW9JsU5KngaznvwMup7ySPYUFjS7
+    aeVz9yXLz_SwGwTeg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeejgddufedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurheptggguffhjgffgffkfhfvofesthejmhdthhdtvdenucfhrhhomhephghilhhl
+    ihgrmhcuffhurhgrnhguuceofihilhhlodhgihhtsegurhhnugdrmhgvqeenucggtffrrg
+    htthgvrhhnpeejjeeutdekhfekfffffeegteelgfeuteetheffieeitdehleettefhjeej
+    feelveenucfkphepvddujedrvdefkedrvddtkedrjeegnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepfihilhhlodhgihhtsegurhhnugdrmhgv
+X-ME-Proxy: <xmx:MrE2YI5tJtxFWobTyiKIlKNa-KBDiqy7eZ57ZE3EMkJp-2gQ2aQHJA>
+    <xmx:MrE2YJ2llarlITfEkZN0800lEStoDsWKfezqhfZ7poyAMHoyazmHDQ>
+    <xmx:MrE2YDFWgiPmpPcCe9tnPud3IxuW6dLKSIeLCXvxzh1mw9-ZHMQgBQ>
+    <xmx:M7E2YJPnLn3FE11B7Pe6Vju7Q0ihUYp1ec78CR7jKF8g_EncIm4N_g>
+Received: from [192.168.88.38] (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2064024005D;
+        Wed, 24 Feb 2021 15:04:02 -0500 (EST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH 01/13] staging: rtl8192e: remove blank line in bss_ht
+ struct
+From:   William Durand <will+git@drnd.me>
+In-Reply-To: <20210224074117.GR2087@kadam>
+Date:   Wed, 24 Feb 2021 21:04:00 +0100
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <489DBEEB-9F5C-423A-A6D4-4464E67F80E0@drnd.me>
+References: <20210220155418.12282-1-will+git@drnd.me>
+ <20210220155418.12282-2-will+git@drnd.me> <20210224074117.GR2087@kadam>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 9:44 AM, Ville Syrjälä wrote:
-> On Sun, Feb 21, 2021 at 07:28:53PM -0800, Randy Dunlap wrote:
->> Fix build errors when these functions are not defined.
->>
->> ../drivers/video/fbdev/aty/atyfb_base.c: In function 'aty_power_mgmt':
->> ../drivers/video/fbdev/aty/atyfb_base.c:2002:7: error: implicit declaration of function 'aty_ld_lcd'; did you mean 'aty_ld_8'? [-Werror=implicit-function-declaration]
->>  2002 |  pm = aty_ld_lcd(POWER_MANAGEMENT, par);
->> ../drivers/video/fbdev/aty/atyfb_base.c:2004:2: error: implicit declaration of function 'aty_st_lcd'; did you mean 'aty_st_8'? [-Werror=implicit-function-declaration]
->>  2004 |  aty_st_lcd(POWER_MANAGEMENT, pm, par);
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Cc: linux-fbdev@vger.kernel.org
->> Cc: dri-devel@lists.freedesktop.org
->> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
->> Cc: Sam Ravnborg <sam@ravnborg.org>
->> Cc: Daniel Vetter <daniel@ffwll.ch>
->> Cc: David Airlie <airlied@linux.ie>
->> Cc: Jani Nikula <jani.nikula@linux.intel.com>
->> ---
->>  drivers/video/fbdev/aty/atyfb_base.c |    9 +++++++++
->>  1 file changed, 9 insertions(+)
->>
->> --- linux-next-20210219.orig/drivers/video/fbdev/aty/atyfb_base.c
->> +++ linux-next-20210219/drivers/video/fbdev/aty/atyfb_base.c
->> @@ -175,6 +175,15 @@ u32 aty_ld_lcd(int index, const struct a
->>  		return aty_ld_le32(LCD_DATA, par);
->>  	}
->>  }
->> +#else /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) \
->> +	 defined(CONFIG_FB_ATY_GENERIC_LCD) */
+> All these patches have the same vague commit message.  It's okay if the
+> commit message basically restates the commit one line summary.  It
+> should say something like:
 > 
-> A better fix would seem to be to include these functions if
-> CONFIG_PPC_PMAC is enabled. Otherwise the PM code will surely
-> not work correctly. Though I'm not sure if that PPC PM
-> code makes any sense w/o LCD/backlight support anyway.
+> Fix a checkpatch warning about a blank line after an open curly brace.
+> 
+> Rename FooBar to foo_bar to silence a checkpatch warning about
+> CamelCase.
 
-Hi Ville,
-
-I tried this:
-
--#if defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_GENERIC_LCD) || \
--defined(CONFIG_FB_ATY_BACKLIGHT)
-+#if defined(CONFIG_PPC_PMAC)
-
-in both atyfb_base.c and atyfb.h, but then there is a build error in
-mach64_ct.c when PPC_PMAC is not enabled but FB_ATY_GENERIC_LCD is enabled.
-[mach64_ct.c is the only other user of aty_{ld,st}_lcd()]
-
-or did you mean adding CONFIG_PPC_PMAC to that longish #if list?
-(that's not how I understood your comment.)
-
-
-I'll gladly step away and let you submit patches for this. :)
-
->> +void aty_st_lcd(int index, u32 val, const struct atyfb_par *par)
->> +{ }
->> +
->> +u32 aty_ld_lcd(int index, const struct atyfb_par *par)
->> +{
->> +	return 0;
->> +}
->>  #endif /* defined(CONFIG_PMAC_BACKLIGHT) || defined (CONFIG_FB_ATY_GENERIC_LCD) */
->>  
->>  #ifdef CONFIG_FB_ATY_GENERIC_LCD
->> _______________________________________________
-
-
-thanks.
--- 
-~Randy
-
+Thanks, I'll update the patchset!
