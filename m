@@ -2,84 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D112A3243DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3393243E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234555AbhBXSjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:39:39 -0500
-Received: from raptor.unsafe.ru ([5.9.43.93]:51808 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232661AbhBXSjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:39:35 -0500
-Received: from example.org (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        id S234274AbhBXSmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:42:31 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:47084 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230121AbhBXSm2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 13:42:28 -0500
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_smtp) via UNIX with SMTP (IdeaSmtpServer 0.83.537)
+ id ea52b9e47c7a2361; Wed, 24 Feb 2021 19:41:46 +0100
+Received: from kreacher.localnet (89-64-80-80.dynamic.chello.pl [89.64.80.80])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id 5C85520460;
-        Wed, 24 Feb 2021 18:38:33 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 19:38:28 +0100
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        io-uring@vger.kernel.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: d28296d248:  stress-ng.sigsegv.ops_per_sec -82.7% regression
-Message-ID: <20210224183828.j6uut6sholeo2fzh@example.org>
-References: <20210224051845.GB6114@xsang-OptiPlex-9020>
- <m1czwpl83q.fsf@fess.ebiederm.org>
+        by v370.home.net.pl (Postfix) with ESMTPSA id 6B73066152E;
+        Wed, 24 Feb 2021 19:41:45 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Platform Driver <platform-driver-x86@vger.kernel.org>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH v1] platform: x86: ACPI: Get rid of ACPICA message printing
+Date:   Wed, 24 Feb 2021 19:41:44 +0100
+Message-ID: <2074665.VPHYfYaQb6@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <m1czwpl83q.fsf@fess.ebiederm.org>
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Wed, 24 Feb 2021 18:38:52 +0000 (UTC)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrkeejgdduudegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtvdenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeevudefgfeguedtjedvhfetveegleduveeuvedvjeekleefhfduhfefheekffefveenucfkphepkeelrdeigedrkedtrdektdenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrkedtpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepphhlrghtfhhorhhmqdgurhhivhgvrhdqgiekieesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehguhhohhgrnhhjuhhnsehhuhgrfigvihdrtghomhdprhgtphhtthhopehhuggvghhovgguvges
+ rhgvughhrghtrdgtohhmpdhrtghpthhtohephihurdgtrdgthhgvnhesihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 10:54:17AM -0600, Eric W. Biederman wrote:
-> kernel test robot <oliver.sang@intel.com> writes:
-> 
-> > Greeting,
-> >
-> > FYI, we noticed a -82.7% regression of stress-ng.sigsegv.ops_per_sec due to commit:
-> >
-> >
-> > commit: d28296d2484fa11e94dff65e93eb25802a443d47 ("[PATCH v7 5/7] Reimplement RLIMIT_SIGPENDING on top of ucounts")
-> > url: https://github.com/0day-ci/linux/commits/Alexey-Gladkov/Count-rlimits-in-each-user-namespace/20210222-175836
-> > base: https://git.kernel.org/cgit/linux/kernel/git/shuah/linux-kselftest.git next
-> >
-> > in testcase: stress-ng
-> > on test machine: 48 threads Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz with 112G memory
-> > with following parameters:
-> >
-> > 	nr_threads: 100%
-> > 	disk: 1HDD
-> > 	testtime: 60s
-> > 	class: interrupt
-> > 	test: sigsegv
-> > 	cpufreq_governor: performance
-> > 	ucode: 0x42e
-> >
-> >
-> > In addition to that, the commit also has significant impact on the
-> > following tests:
-> 
-> Thank you.  Now we have a sense of where we need to test the performance
-> of these changes carefully.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-One of the reasons for this is that I rolled back the patch that changed
-the ucounts.count type to atomic_t. Now get_ucounts() is forced to use a
-spin_lock to increase the reference count.
+A few x86 platform drivers use ACPI_DEBUG_PRINT() or ACPI_EXCEPTION()
+for printing messages, but that is questionable, because those macros
+belong to ACPICA and they should not be used elsewhere.  In addition,
+ACPI_DEBUG_PRINT() requires special enabling to allow it to actually
+print the message, which is a nuisance, and the _COMPONENT symbol
+generally needed for that is not defined in any of the files in
+question.
 
--- 
-Rgrds, legion
+For this reason, replace the ACPI_DEBUG_PRINT() in lg-laptop.c with
+pr_debug() and the one in xo15-ebook.c with acpi_handle_debug()
+(with the additional benefit that the source object can be identified
+more easily after this change), and replace the ACPI_EXCEPTION() in
+acer-wmi.c with pr_warn().
+
+Also drop the ACPI_MODULE_NAME() definitions that are only used by
+the ACPICA message printing macros from those files and from wmi.c
+and surfacepro3_button.c (while at it).
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/platform/surface/surfacepro3_button.c |    2 --
+ drivers/platform/x86/acer-wmi.c               |    4 ++--
+ drivers/platform/x86/lg-laptop.c              |    2 +-
+ drivers/platform/x86/wmi.c                    |    1 -
+ drivers/platform/x86/xo15-ebook.c             |    6 ++----
+ 5 files changed, 5 insertions(+), 10 deletions(-)
+
+Index: linux-pm/drivers/platform/x86/lg-laptop.c
+===================================================================
+--- linux-pm.orig/drivers/platform/x86/lg-laptop.c
++++ linux-pm/drivers/platform/x86/lg-laptop.c
+@@ -678,7 +678,7 @@ static int __init acpi_init(void)
+ 
+ 	result = acpi_bus_register_driver(&acpi_driver);
+ 	if (result < 0) {
+-		ACPI_DEBUG_PRINT((ACPI_DB_ERROR, "Error registering driver\n"));
++		pr_debug("Error registering driver\n");
+ 		return -ENODEV;
+ 	}
+ 
+Index: linux-pm/drivers/platform/x86/xo15-ebook.c
+===================================================================
+--- linux-pm.orig/drivers/platform/x86/xo15-ebook.c
++++ linux-pm/drivers/platform/x86/xo15-ebook.c
+@@ -26,8 +26,6 @@
+ #define XO15_EBOOK_HID			"XO15EBK"
+ #define XO15_EBOOK_DEVICE_NAME		"EBook Switch"
+ 
+-ACPI_MODULE_NAME(MODULE_NAME);
+-
+ MODULE_DESCRIPTION("OLPC XO-1.5 ebook switch driver");
+ MODULE_LICENSE("GPL");
+ 
+@@ -66,8 +64,8 @@ static void ebook_switch_notify(struct a
+ 		ebook_send_state(device);
+ 		break;
+ 	default:
+-		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+-				  "Unsupported event [0x%x]\n", event));
++		acpi_handle_debug(device->handle,
++				  "Unsupported event [0x%x]\n", event);
+ 		break;
+ 	}
+ }
+Index: linux-pm/drivers/platform/x86/acer-wmi.c
+===================================================================
+--- linux-pm.orig/drivers/platform/x86/acer-wmi.c
++++ linux-pm/drivers/platform/x86/acer-wmi.c
+@@ -30,7 +30,6 @@
+ #include <linux/input/sparse-keymap.h>
+ #include <acpi/video.h>
+ 
+-ACPI_MODULE_NAME(KBUILD_MODNAME);
+ MODULE_AUTHOR("Carlos Corbacho");
+ MODULE_DESCRIPTION("Acer Laptop WMI Extras Driver");
+ MODULE_LICENSE("GPL");
+@@ -1605,7 +1604,8 @@ static void acer_kbd_dock_get_initial_st
+ 
+ 	status = wmi_evaluate_method(WMID_GUID3, 0, 0x2, &input_buf, &output_buf);
+ 	if (ACPI_FAILURE(status)) {
+-		ACPI_EXCEPTION((AE_INFO, status, "Error getting keyboard-dock initial status"));
++		pr_warn("Error getting keyboard-dock initial status: %s\n",
++			acpi_format_exception(status));
+ 		return;
+ 	}
+ 
+Index: linux-pm/drivers/platform/surface/surfacepro3_button.c
+===================================================================
+--- linux-pm.orig/drivers/platform/surface/surfacepro3_button.c
++++ linux-pm/drivers/platform/surface/surfacepro3_button.c
+@@ -40,8 +40,6 @@ static const guid_t MSHW0040_DSM_UUID =
+ #define SURFACE_BUTTON_NOTIFY_PRESS_VOLUME_DOWN		0xc2
+ #define SURFACE_BUTTON_NOTIFY_RELEASE_VOLUME_DOWN	0xc3
+ 
+-ACPI_MODULE_NAME("surface pro 3 button");
+-
+ MODULE_AUTHOR("Chen Yu");
+ MODULE_DESCRIPTION("Surface Pro3 Button Driver");
+ MODULE_LICENSE("GPL v2");
+Index: linux-pm/drivers/platform/x86/wmi.c
+===================================================================
+--- linux-pm.orig/drivers/platform/x86/wmi.c
++++ linux-pm/drivers/platform/x86/wmi.c
+@@ -32,7 +32,6 @@
+ #include <linux/fs.h>
+ #include <uapi/linux/wmi.h>
+ 
+-ACPI_MODULE_NAME("wmi");
+ MODULE_AUTHOR("Carlos Corbacho");
+ MODULE_DESCRIPTION("ACPI-WMI Mapping Driver");
+ MODULE_LICENSE("GPL");
+
+
 
