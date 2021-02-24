@@ -2,116 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FEA32404F
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3EA32404E
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238030AbhBXOur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:50:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233701AbhBXNkO (ORCPT
+        id S237871AbhBXOui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:50:38 -0500
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:36895 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234865AbhBXNkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:40:14 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B58C061574;
-        Wed, 24 Feb 2021 05:35:43 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id t11so3091709ejx.6;
-        Wed, 24 Feb 2021 05:35:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=E35Anx43LiPy05GsYti9BfkgPBUJtvGhlU3qclOt8K4=;
-        b=Qzae4gSdEODSQi/0QwqZBX1N+d+1Ib4hCbF6In4F2pJulVBJpk0rGiziSFVGIdtjk8
-         wPdM97UUjXVmXu7WCjrzvIKG6GNshOfKbNcJHHzjfRFzfNGT9X2/q/vf9s2+HlrMOqtG
-         BKAsdvevRzsxTgebyrfSG50JZtn+SiJa7Oa5ErIyySLihTr1vQzJtYh5/POtBBTwd+85
-         o2lY3ydtCPE6mJIP30PuPJ7rKrPq4If5DKW+e0hJl9iCRuuqwTkg2GD8CjKTj8DZDn4R
-         OJzrmHpNuG6j6SMvPe5VfA0SEZi5ynYd3SbTgN14yt/lxLKM5Y4niPwrdDBGL1axb4Yi
-         lUYg==
+        Wed, 24 Feb 2021 08:40:03 -0500
+Received: by mail-wr1-f54.google.com with SMTP id v15so1918232wrx.4;
+        Wed, 24 Feb 2021 05:36:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=E35Anx43LiPy05GsYti9BfkgPBUJtvGhlU3qclOt8K4=;
-        b=qLzkaXJT1Mor7hAQzMl/J5vREpManaMonSpZ44uP5Y+to5E6UiTCfKLrxadB2F9cZd
-         JfyY2TqVdfG/P0KJ0D4zllJdffgMCh8kKgWa4YWG0w8jSZEWd1tOdJizJlSaLg71o3tZ
-         FcTYknwwXofAzL94GSlfME/Mksw79Dpc6W7sZvJEzOwvWC31F8z/OWjk3iDdp57dko79
-         J9nvOJ8Y/gq/ikzKufn6bjwn4gkNxCwXI7DQSkosQkb3DGMtiKytXI1bDqGuWQJOnOi+
-         iDySdEwffSlOQm8mKvZEe64wYnpvxYLT0GhfaWs6X9lOxsVGWAI1yLW+pWXOemYQnuOe
-         Ycug==
-X-Gm-Message-State: AOAM533umbrn2hgvSAO8uI3EynAv+s9qtEleFaXQqWd+woufm78n7P7H
-        1HpBZj3ZGaTAgqGr7/rn0flWU5aJwhVRzNn1tfbv49ddzHTlbEEt
-X-Google-Smtp-Source: ABdhPJxdMG2w1tsGLAuwbXPxnUmA4TgmD+z8b3xwM7YVdIXnRFUmhM43Z/M81Vo2uxFwX106MXuGz8xFNSblmgKZlBU=
-X-Received: by 2002:a17:906:e0cb:: with SMTP id gl11mr19893581ejb.87.1614173741708;
- Wed, 24 Feb 2021 05:35:41 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dq4qL90OCu8ib/iGkBDTsJu+uvHjzn/c/ym0u/ajUA0=;
+        b=a3qCBCQ1x8jbqz3Ga3Q3muTTwi2OMwKAAa5lNUOcBKlvfLCSyHVXpRbhTdIXqiA1iG
+         Nq0up29Jkf95kN6pJAQ5D7sAiKFDRepTw3kDLjojWnFrQITfK01uMfO5k2ND3HI1n71Z
+         xXtYohcy4NUR4hLvt2fWPHPYOOzfHbEwFvP/347Oxd2c7J6U+wLGKP0ncuEJZYvS1gJM
+         qjYR9FREWYyIQhxT2WCeNCdClC5C86HTiLGyuvU8I0ghR8hBP7XGXnTibAc9nFgxoRiR
+         Q8L+ctsYQSIVVcMFS7YTGXW94uawV55QtUGstekV3AVLJ9lSYv2klkFXiOiFLYEbe8qV
+         dMjA==
+X-Gm-Message-State: AOAM5308otmj9X3o8LsXWJuY8Mv2rsiItEc0LIec3BxcQlbzsvBzot8B
+        luMvZdbl+zwKa5mqzcVT0XR6G0DraC91vw==
+X-Google-Smtp-Source: ABdhPJxhksCAGOk3JAcFq15JrepLPez2XrzSDA7b9WxJVd1Jzq2verZqIaVftogrwqD0KjajojtEsw==
+X-Received: by 2002:a5d:4a09:: with SMTP id m9mr26874209wrq.310.1614173779234;
+        Wed, 24 Feb 2021 05:36:19 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id j125sm3000640wmb.44.2021.02.24.05.36.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 05:36:18 -0800 (PST)
+Date:   Wed, 24 Feb 2021 14:36:16 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, maz@kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
+        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
+        sin_jieyang@mediatek.com, drinkcat@chromium.org,
+        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
+Subject: Re: [v8,3/7] PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
+Message-ID: <YDZWUGcKet/lNWlF@rocinante>
+References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
+ <20210224061132.26526-4-jianjun.wang@mediatek.com>
 MIME-Version: 1.0
-References: <20210215162532.1077098-1-stefanb@linux.ibm.com>
- <20210222175850.1131780-1-saulo.alessandre@gmail.com> <2e829730-bb0c-47eb-70f2-731c184eba33@linux.ibm.com>
-In-Reply-To: <2e829730-bb0c-47eb-70f2-731c184eba33@linux.ibm.com>
-From:   Saulo Alessandre de Lima <saulo.alessandre@gmail.com>
-Date:   Wed, 24 Feb 2021 10:35:30 -0300
-Message-ID: <CABcgGGjc63+b+yp_bsVran5JKTBgLrOh-hoY0zcdoFbr_tTB1g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] add params and ids to support nist_p384
-To:     linux-crypto@vger.kernel.org
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210224061132.26526-4-jianjun.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em seg., 22 de fev. de 2021 =C3=A0s 17:26, Stefan Berger
-<stefanb@linux.ibm.com> escreveu:
->
-> On 2/22/21 12:58 PM, Saulo Alessandre wrote:
-> > From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
-> >
-> > * crypto/asymmetric_keys/x509_cert_parser.c
-> >    - prepare x509 parser to load nist_secp384r1
-> >
-> > * crypto/ecc_curve_defs.h
-> >    - add nist_p384 params
-> >
-> > * include/crypto/ecdh.h
-> >    - add ECC_CURVE_NIST_P384
-> >
-> > * include/linux/oid_registry.h
-> >    - reorder OID_id_ecdsa_with_sha1
-> >    - add OID_id_secp384r1
-> >
-> > Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
->
-> I would separate this patch into an x509: and certs: part since it
-> touches two subsystems.
->
-> I can take this series of patches and post my v9 including them at the
-> end. This would make it easier for others to test. I would massage them
-> a bit, including the separation of the 1st patch into 2 patches, if you
-> don't mind, preserving your Signed-off-by. I need to fix something in my
-> v8 regarding registration failure handling. Let me know whether this is
-> fine with you.
+Hi Jianjun,
 
-For me it's ok.
+Thank you for all the work here!
 
->
-> I had tested your patches over the weekend with my endless test tool
-> creating keys in user space and loading them into the kernel. It worked
-> fine for NIST p256 & p384. Also signing kernel modules with NIST p384 is
-> working fine.
->
-> So, for the series:
->
-> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
->
-> Regards,
->
->      Stefan
->
->
+[...]
+> + * struct mtk_pcie_port - PCIe port information
+> + * @dev: pointer to PCIe device
+> + * @base: IO mapped register base
+> + * @reg_base: Physical register base
+> + * @mac_reset: mac reset control
+> + * @phy_reset: phy reset control
+> + * @phy: PHY controller block
+> + * @clks: PCIe clocks
+> + * @num_clks: PCIe clocks count for this port
 
-Regards
---=20
-[]'s
------
-Saulo Alessandre <saulo.alessandre@gmail.com>
+It would be "MAC" and "PHY" in the above.
+
+[...]
+> + * mtk_pcie_config_tlp_header
+> + * @bus: PCI bus to query
+> + * @devfn: device/function number
+> + * @where: offset in config space
+> + * @size: data size in TLP header
+> + *
+> + * Set byte enable field and device information in configuration TLP header.
+
+The kernel-doc above might be missing brief function description.  See
+the following for more concrete example:
+
+  https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html#function-documentation
+
+[...]
+> +static int mtk_pcie_set_trans_table(struct mtk_pcie_port *port,
+> +				    resource_size_t cpu_addr,
+> +				    resource_size_t pci_addr,
+> +				    resource_size_t size,
+> +				    unsigned long type, int num)
+> +{
+> +	void __iomem *table;
+> +	u32 val;
+> +
+> +	if (num >= PCIE_MAX_TRANS_TABLES) {
+> +		dev_err(port->dev, "not enough translate table[%d] for addr: %#llx, limited to [%d]\n",
+
+The wording of this error message is a little confusing.
+
+> +			num, (unsigned long long) cpu_addr,
+
+No space between the bracket and the variable name.
+
+[...]
+> +	err = phy_init(port->phy);
+> +	if (err) {
+> +		dev_err(dev, "failed to initialize PCIe phy\n");
+> +		goto err_phy_init;
+> +	}
+> +
+> +	err = phy_power_on(port->phy);
+> +	if (err) {
+> +		dev_err(dev, "failed to power on PCIe phy\n");
+> +		goto err_phy_on;
+> +	}
+[...]
+
+It would be "PHY" in the error messages above.
+
+[...]
+> +	if (err) {
+> +		dev_err(dev, "clock init failed\n");
+> +		goto err_clk_init;
+> +	}
+[...]
+
+A nitpick, so feel free to ignore it, of course.  What about "failed to
+initialize clock" to keep the style consistent.
+
+[...]
+> +	err = mtk_pcie_startup_port(port);
+> +	if (err) {
+> +		dev_err(dev, "PCIe startup failed\n");
+[...]
+
+Also a nitpick.  What about "failed to bring PCIe link up"?
+
+Krzysztof
