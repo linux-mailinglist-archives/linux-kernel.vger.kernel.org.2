@@ -2,153 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D57324525
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C13CF32452C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235165AbhBXUYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:24:50 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:43036 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234496AbhBXUYq (ORCPT
+        id S235409AbhBXU15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 15:27:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234346AbhBXU1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:24:46 -0500
-IronPort-SDR: iRvFaHkHvnGExtwf5j2f4Q7FgUCgMO30r5JmTTjyj+YPbnfvAMpn6zUqv4hoBo7m4JrQbg6UAr
- IG+QTMNcqIjbNzzfwvbRK3fUKVuXf6mtFBZGuPm/vY/rYL9of1MZ6rgPXPpoZ/GxVyh+HslmAT
- qas6dtUzyDer3+2i6jVZbDcgS3vgBbiFwpv2vIpqloMbrBKXL3+Lln+R0xKw4h2k427DSHLyox
- WpS5JY3W44CQ6pI2g/fplh5RGk12mWEfBDakLfSnbelntbjI4ERp3Rd8sRXN5JhQ626wB/TVgV
- 4RY=
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="47789412"
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by labrats.qualcomm.com with ESMTP; 24 Feb 2021 12:24:16 -0800
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 24 Feb 2021 12:24:16 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 92687)
-        id 1D6CC219CE; Wed, 24 Feb 2021 12:24:16 -0800 (PST)
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     cang@codeaurora.org, martin.petersen@oracle.com,
-        adrian.hunter@intel.com, linux-scsi@vger.kernel.org
-Cc:     Asutosh Das <asutoshd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Nitin Rawat <nitirawa@codeaurora.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v6 2/2] ufs: sysfs: Resume the proper scsi device
-Date:   Wed, 24 Feb 2021 12:23:05 -0800
-Message-Id: <daf65282badec5f6452a1a705f5a126381d0fa36.1614198015.git.asutoshd@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1614198015.git.asutoshd@codeaurora.org>
-References: <cover.1614198015.git.asutoshd@codeaurora.org>
-In-Reply-To: <cover.1614198015.git.asutoshd@codeaurora.org>
-References: <cover.1614198015.git.asutoshd@codeaurora.org>
+        Wed, 24 Feb 2021 15:27:44 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE7FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:27:04 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id w18so1887107plc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:27:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K6bFzy1IBOO1f9bPCmuHpqHzVfK2W4BUDHnED1osbZM=;
+        b=JFpgG7nk7OGnukIxvu4D34I6ubCsFKHpWidOpQSGfFGdQbDu6OVnxmmbdHYm6nsGlU
+         L32eYLBx1d1hnwiTAjJOQfX1vmob2N1ay/Gyoph/EntoQskJai4N5dfx8ApV9mmnjGxI
+         nvI+dV/7qksjIsrmng5bOU68WLc5lBafzaUEA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K6bFzy1IBOO1f9bPCmuHpqHzVfK2W4BUDHnED1osbZM=;
+        b=I4cE6AVP5JDFyNLNzkg87Pb72FukNjLY7fL0apTsPWK5b7u5INlMb9PzvlHSkB5uTe
+         XpAoRNgdbJsC+K1cCvlBAnGODikWmMpkuCAOflKGoAk0Bia1VScXFkDyFO2XlhzDfNaJ
+         MZDRI4PRuEtqcw64oHaQlUL85W4t92XI1P+NOX3c/+eqdqU1uP7hLOafjYfT31mMSWsQ
+         0oWcqlQC8k+FO9ka+sFnUnxDQ/L2cfT7pQe8uwC4VfxMecyLTKd9QnaYXThGyOW65mh8
+         htUi2b7fnDVKL8B7YPlxEN402gupAv3p3QqtkoQSNclnBdw/xAi2IJHFa3kvKjnnYVV0
+         Kizw==
+X-Gm-Message-State: AOAM531D9LzVuV3cF9tYCHPCKfBDu6xp1SDRzWaNg8yZE+H/5LhcJ1z7
+        0I5W0jCgahrLwTVTEQafwn7Vgg==
+X-Google-Smtp-Source: ABdhPJybQPsJIJy3EWddjbln0YNxI+lgoajIbHsZScO7+Sx0LqJuELxlaN0e3jlnQ0m/jU5d+1cVlg==
+X-Received: by 2002:a17:903:31d1:b029:de:8361:739b with SMTP id v17-20020a17090331d1b02900de8361739bmr33898916ple.85.1614198424186;
+        Wed, 24 Feb 2021 12:27:04 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o185sm3660030pfb.196.2021.02.24.12.27.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 12:27:03 -0800 (PST)
+Date:   Wed, 24 Feb 2021 12:27:02 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commits in Linus' tree
+Message-ID: <202102241225.11226B262@keescook>
+References: <20210224113108.4c05915e@canb.auug.org.au>
+ <CAHk-=wi1FEJfk9r4Jw90kU3aayXka4Y4HOWdgAtVQHRFTgpQ+A@mail.gmail.com>
+ <20210224114942.4b07cece@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224114942.4b07cece@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resumes the actual scsi device the unit descriptor of which
-is being accessed instead of the hba alone.
+On Wed, Feb 24, 2021 at 11:49:42AM +1100, Stephen Rothwell wrote:
+> Hi Linus,
+> 
+> On Tue, 23 Feb 2021 16:33:47 -0800 Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> >
+> > On Tue, Feb 23, 2021 at 4:31 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > are missing a Signed-off-by from their committer.  
+> > 
+> > Gaah. Maybe I should do some pre-pull hook or something to notice this
+> > automatically (like you clearly do).
+> 
+> I have attached the scripts I run over things after fetching them, but
+> before merging them (so not a hook, sorry).  check_commits runs
+> check_fixes - but just for my convenience.
 
-Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
----
- drivers/scsi/ufs/ufs-sysfs.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+Thank you! I've added these to my PR workflow now, and it yells quite loudly.
+I'm still looking at some kind of push hook too...
 
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index acc54f5..34481e3 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -297,10 +297,10 @@ static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 		goto out;
- 	}
- 
--	pm_runtime_get_sync(hba->dev);
-+	scsi_autopm_get_device(hba->sdev_ufs_device);
- 	ret = ufshcd_read_desc_param(hba, desc_id, desc_index,
- 				param_offset, desc_buf, param_size);
--	pm_runtime_put_sync(hba->dev);
-+	scsi_autopm_put_device(hba->sdev_ufs_device);
- 	if (ret) {
- 		ret = -EINVAL;
- 		goto out;
-@@ -678,7 +678,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 		up(&hba->host_sem);					\
- 		return -ENOMEM;						\
- 	}								\
--	pm_runtime_get_sync(hba->dev);					\
-+	scsi_autopm_get_device(hba->sdev_ufs_device);			\
- 	ret = ufshcd_query_descriptor_retry(hba,			\
- 		UPIU_QUERY_OPCODE_READ_DESC, QUERY_DESC_IDN_DEVICE,	\
- 		0, 0, desc_buf, &desc_len);				\
-@@ -695,7 +695,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 		goto out;						\
- 	ret = sysfs_emit(buf, "%s\n", desc_buf);			\
- out:									\
--	pm_runtime_put_sync(hba->dev);					\
-+	scsi_autopm_put_device(hba->sdev_ufs_device);			\
- 	kfree(desc_buf);						\
- 	up(&hba->host_sem);						\
- 	return ret;							\
-@@ -744,10 +744,10 @@ static ssize_t _name##_show(struct device *dev,				\
- 	}								\
- 	if (ufshcd_is_wb_flags(QUERY_FLAG_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
--	pm_runtime_get_sync(hba->dev);					\
-+	scsi_autopm_get_device(hba->sdev_ufs_device);			\
- 	ret = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_READ_FLAG,	\
- 		QUERY_FLAG_IDN##_uname, index, &flag);			\
--	pm_runtime_put_sync(hba->dev);					\
-+	scsi_autopm_put_device(hba->sdev_ufs_device);			\
- 	if (ret) {							\
- 		ret = -EINVAL;						\
- 		goto out;						\
-@@ -813,10 +813,10 @@ static ssize_t _name##_show(struct device *dev,				\
- 	}								\
- 	if (ufshcd_is_wb_attrs(QUERY_ATTR_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
--	pm_runtime_get_sync(hba->dev);					\
-+	scsi_autopm_get_device(hba->sdev_ufs_device);			\
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,	\
- 		QUERY_ATTR_IDN##_uname, index, 0, &value);		\
--	pm_runtime_put_sync(hba->dev);					\
-+	scsi_autopm_put_device(hba->sdev_ufs_device);			\
- 	if (ret) {							\
- 		ret = -EINVAL;						\
- 		goto out;						\
-@@ -899,11 +899,15 @@ static ssize_t _pname##_show(struct device *dev,			\
- 	struct scsi_device *sdev = to_scsi_device(dev);			\
- 	struct ufs_hba *hba = shost_priv(sdev->host);			\
- 	u8 lun = ufshcd_scsi_to_upiu_lun(sdev->lun);			\
-+	int ret;							\
- 	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun,		\
- 				_duname##_DESC_PARAM##_puname))		\
- 		return -EINVAL;						\
--	return ufs_sysfs_read_desc_param(hba, QUERY_DESC_IDN_##_duname,	\
-+	scsi_autopm_get_device(sdev);					\
-+	ret = ufs_sysfs_read_desc_param(hba, QUERY_DESC_IDN_##_duname,	\
- 		lun, _duname##_DESC_PARAM##_puname, buf, _size);	\
-+	scsi_autopm_put_device(sdev);					\
-+	return ret;							\
- }									\
- static DEVICE_ATTR_RO(_pname)
- 
-@@ -964,10 +968,10 @@ static ssize_t dyn_cap_needed_attribute_show(struct device *dev,
- 		goto out;
- 	}
- 
--	pm_runtime_get_sync(hba->dev);
-+	scsi_autopm_get_device(hba->sdev_ufs_device);
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,
- 		QUERY_ATTR_IDN_DYN_CAP_NEEDED, lun, 0, &value);
--	pm_runtime_put_sync(hba->dev);
-+	scsi_autopm_put_device(hba->sdev_ufs_device);
- 	if (ret) {
- 		ret = -EINVAL;
- 		goto out;
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Kees Cook
