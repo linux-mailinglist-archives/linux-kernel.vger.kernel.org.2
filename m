@@ -2,250 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4563237D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E633237D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234428AbhBXHTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:19:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51723 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233204AbhBXHTd (ORCPT
+        id S233158AbhBXHV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:21:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232329AbhBXHVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:19:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614151086;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cUD9i8imHS99V2QE+X6CmyOUFv11LLo8e+TKwIxsJK4=;
-        b=Gd66Aowr3mO/+2x+ZYqnXLej+SsQsShZUZTwyxX+6hEsiJDUjg/nu1dcHM3PF3mGXYe4We
-        wHkoFKqMH0Uz2J3dXFXDIeqH2SrMaHdlB54geXaYMxIok1ab7eQs9P8nUlpsH09xSBENs3
-        pUNHvz3rz8WSIB0kI1o858R1Gi/cEPw=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-0NPXeetpNkWJFZuSMkLCdg-1; Wed, 24 Feb 2021 02:18:04 -0500
-X-MC-Unique: 0NPXeetpNkWJFZuSMkLCdg-1
-Received: by mail-wr1-f69.google.com with SMTP id v1so640563wru.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:18:04 -0800 (PST)
+        Wed, 24 Feb 2021 02:21:25 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FCEC061574;
+        Tue, 23 Feb 2021 23:20:45 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id o16so904693wmh.0;
+        Tue, 23 Feb 2021 23:20:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:content-transfer-encoding:mime-version:subject:date:references
+         :to:in-reply-to:message-id;
+        bh=ZQJKsaY21XjjcT1M+qVN1VwATGUDt68e4WwQtZfPm0E=;
+        b=gA2c6Bp4NDKDJm8M3Z3ClmKgjlnP8k2VNsKduoQCq8+j5l5IaCO6O8o6cYFAsUyjX3
+         e85FLUCj2d9v5e1dnB37qdawdlbg2p4lUyEbS2Amn4V2g58aOytJ1ggUmc99RXqnqNFh
+         k9t33TrqQGBiO0YalYInRqR7LieA2oHNIU651XGhoKgVGXE9kmK2ADe+rYHG6GtNnSVr
+         SXT6QN2Ga/DBM+cQjsM142PfTUCOk2HMllr54GdIZAp78lIrNJ2Dr+18zBlKtFiIW1RC
+         uEtm2jhr4oBMZqxW3ee1ML9U5Of7KZXabgZWYfJXYPaXi2W9TuU0TDRBdGLwiXyxi1j9
+         R0+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=cUD9i8imHS99V2QE+X6CmyOUFv11LLo8e+TKwIxsJK4=;
-        b=DmAC+Tq97vrOnNIhGquHNAJm3ZE2YZdDCPhDhYtgcrNL+uz8m9D9v3jCBaBlH1Z7h3
-         WqeewFig5sYdRZwMWfkW8+MWyb+52Xod4Wsle6aBaj9CEdA5cGddxLODWyF+lpVAVkJk
-         j0Vh3AwI2PJsBYzJv3Zle33s9L5ZNaNbfh8yuRtTGthdzcAHwqjhgh58Otup9oBzOsVQ
-         jInz7y8rAsSbW1R2W8JhhNm7i8hDKQYwoK0CDrq4SHOjN5ALCQ2y4OpY6RGh3/sVmBVk
-         Ut0e8NZhU06fyl0EELbPJaoBd50squXIncEjdLEsQm3vb6Ev7SRohMNIMAP/ItCYKmO/
-         Smwg==
-X-Gm-Message-State: AOAM5314jPw1jg61bbTjQgY+uBQlO5z443BdOzNidy1DV8jAMFQ+TcZ/
-        gYFXzNSrguRnE9eg6b8vrWWOezVeaFCAc+/RGybGrReIylECyx1SzUp/nIVAPuJ5XIozXYlIC4s
-        Nt9gGUXje1xNz4bwJrq2A9W/U
-X-Received: by 2002:adf:a2c2:: with SMTP id t2mr29717908wra.47.1614151083003;
-        Tue, 23 Feb 2021 23:18:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx36dvoVgsKzOY2Q0IHxAEQncvNYFTe0HuoFP02ym271+rmQupV6f2qRhf/njQ/cCS+a70DPA==
-X-Received: by 2002:adf:a2c2:: with SMTP id t2mr29717890wra.47.1614151082811;
-        Tue, 23 Feb 2021 23:18:02 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id w11sm1800313wru.3.2021.02.23.23.18.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 23:18:02 -0800 (PST)
-Date:   Wed, 24 Feb 2021 02:17:59 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-Message-ID: <20210224021222-mutt-send-email-mst@kernel.org>
-References: <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
- <20210222023040-mutt-send-email-mst@kernel.org>
- <22fe5923-635b-59f0-7643-2fd5876937c2@oracle.com>
- <fae0bae7-e4cd-a3aa-57fe-d707df99b634@redhat.com>
- <20210223082536-mutt-send-email-mst@kernel.org>
- <3ff5fd23-1db0-2f95-4cf9-711ef403fb62@oracle.com>
- <20210224000057-mutt-send-email-mst@kernel.org>
- <0559fd8c-ff44-cb7a-8a74-71976dd2ee33@redhat.com>
- <20210224014232-mutt-send-email-mst@kernel.org>
- <ce6b0380-bc4c-bcb8-db82-2605e819702c@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ce6b0380-bc4c-bcb8-db82-2605e819702c@redhat.com>
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version
+         :subject:date:references:to:in-reply-to:message-id;
+        bh=ZQJKsaY21XjjcT1M+qVN1VwATGUDt68e4WwQtZfPm0E=;
+        b=qDl3wwTFsekFwoAjGcQkLF/+ELPhNujsIQREanc+pMr33tJEoyidBCOFkgChi371gm
+         pQGWodQO6Gs56k5AAnQn0d+GMonLqn4L1/JhQnrIl3/77gBtqCpO1KGNvyzzNRqFpU9S
+         pRYJGfc16h1S/ox700txsZTbw7EqKsPaoTbCCd6LE4aeyg5WT8ggO4wFopPeOOqtJteb
+         yWyWxmlLH1mYxZ8Li+5/bytEqT16G/ELnSkRYzOHv3MvNLcKQizdFayNp3FNQdQ8a6vb
+         61J9rrmNbbyrW0sRwMWuVZZt9HRKCj7RV14f4GWOQTPUvzXMNjkGLR/HPlmKIR3jpD9G
+         O5zA==
+X-Gm-Message-State: AOAM530ESVV5L1oiOKtxSYRUUmgH0GV52xGqndlJ8/Y+LiAb1wbrEb/Y
+        Cj6iL2FmkvR24paXydKNayc=
+X-Google-Smtp-Source: ABdhPJwBpEv0pTMBXffRL7705an0dyB9mIksTWZA/whPkMmA6NlvPDpbiHoMAWtuV3t9SShkk9fT5A==
+X-Received: by 2002:a7b:c04c:: with SMTP id u12mr2362830wmc.9.1614151244257;
+        Tue, 23 Feb 2021 23:20:44 -0800 (PST)
+Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id p13sm1872032wrj.52.2021.02.23.23.20.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Feb 2021 23:20:43 -0800 (PST)
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v3 2/3] dt-bindings: usb: generic-ehci: document
+ spurious-oc flag
+Date:   Wed, 24 Feb 2021 08:20:41 +0100
+References: <20210223155005.21712-1-noltari@gmail.com>
+ <20210223174455.1378-1-noltari@gmail.com>
+ <20210223174455.1378-3-noltari@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Tony Prisk <linux@prisktech.co.nz>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20210223174455.1378-3-noltari@gmail.com>
+Message-Id: <880F72F4-82DF-4738-A8F1-D5528AA3FC9E@gmail.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 02:53:08PM +0800, Jason Wang wrote:
-> 
-> On 2021/2/24 2:46 下午, Michael S. Tsirkin wrote:
-> > On Wed, Feb 24, 2021 at 02:04:36PM +0800, Jason Wang wrote:
-> > > On 2021/2/24 1:04 下午, Michael S. Tsirkin wrote:
-> > > > On Tue, Feb 23, 2021 at 11:35:57AM -0800, Si-Wei Liu wrote:
-> > > > > On 2/23/2021 5:26 AM, Michael S. Tsirkin wrote:
-> > > > > > On Tue, Feb 23, 2021 at 10:03:57AM +0800, Jason Wang wrote:
-> > > > > > > On 2021/2/23 9:12 上午, Si-Wei Liu wrote:
-> > > > > > > > On 2/21/2021 11:34 PM, Michael S. Tsirkin wrote:
-> > > > > > > > > On Mon, Feb 22, 2021 at 12:14:17PM +0800, Jason Wang wrote:
-> > > > > > > > > > On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
-> > > > > > > > > > > Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
-> > > > > > > > > > > for legacy") made an exception for legacy guests to reset
-> > > > > > > > > > > features to 0, when config space is accessed before features
-> > > > > > > > > > > are set. We should relieve the verify_min_features() check
-> > > > > > > > > > > and allow features reset to 0 for this case.
-> > > > > > > > > > > 
-> > > > > > > > > > > It's worth noting that not just legacy guests could access
-> > > > > > > > > > > config space before features are set. For instance, when
-> > > > > > > > > > > feature VIRTIO_NET_F_MTU is advertised some modern driver
-> > > > > > > > > > > will try to access and validate the MTU present in the config
-> > > > > > > > > > > space before virtio features are set.
-> > > > > > > > > > This looks like a spec violation:
-> > > > > > > > > > 
-> > > > > > > > > > "
-> > > > > > > > > > 
-> > > > > > > > > > The following driver-read-only field, mtu only exists if
-> > > > > > > > > > VIRTIO_NET_F_MTU is
-> > > > > > > > > > set.
-> > > > > > > > > > This field specifies the maximum MTU for the driver to use.
-> > > > > > > > > > "
-> > > > > > > > > > 
-> > > > > > > > > > Do we really want to workaround this?
-> > > > > > > > > > 
-> > > > > > > > > > Thanks
-> > > > > > > > > And also:
-> > > > > > > > > 
-> > > > > > > > > The driver MUST follow this sequence to initialize a device:
-> > > > > > > > > 1. Reset the device.
-> > > > > > > > > 2. Set the ACKNOWLEDGE status bit: the guest OS has noticed the device.
-> > > > > > > > > 3. Set the DRIVER status bit: the guest OS knows how to drive the
-> > > > > > > > > device.
-> > > > > > > > > 4. Read device feature bits, and write the subset of feature bits
-> > > > > > > > > understood by the OS and driver to the
-> > > > > > > > > device. During this step the driver MAY read (but MUST NOT write)
-> > > > > > > > > the device-specific configuration
-> > > > > > > > > fields to check that it can support the device before accepting it.
-> > > > > > > > > 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new
-> > > > > > > > > feature bits after this step.
-> > > > > > > > > 6. Re-read device status to ensure the FEATURES_OK bit is still set:
-> > > > > > > > > otherwise, the device does not
-> > > > > > > > > support our subset of features and the device is unusable.
-> > > > > > > > > 7. Perform device-specific setup, including discovery of virtqueues
-> > > > > > > > > for the device, optional per-bus setup,
-> > > > > > > > > reading and possibly writing the device’s virtio configuration
-> > > > > > > > > space, and population of virtqueues.
-> > > > > > > > > 8. Set the DRIVER_OK status bit. At this point the device is “live”.
-> > > > > > > > > 
-> > > > > > > > > 
-> > > > > > > > > so accessing config space before FEATURES_OK is a spec violation, right?
-> > > > > > > > It is, but it's not relevant to what this commit tries to address. I
-> > > > > > > > thought the legacy guest still needs to be supported.
-> > > > > > > > 
-> > > > > > > > Having said, a separate patch has to be posted to fix the guest driver
-> > > > > > > > issue where this discrepancy is introduced to virtnet_validate() (since
-> > > > > > > > commit fe36cbe067). But it's not technically related to this patch.
-> > > > > > > > 
-> > > > > > > > -Siwei
-> > > > > > > I think it's a bug to read config space in validate, we should move it to
-> > > > > > > virtnet_probe().
-> > > > > > > 
-> > > > > > > Thanks
-> > > > > > I take it back, reading but not writing seems to be explicitly allowed by spec.
-> > > > > > So our way to detect a legacy guest is bogus, need to think what is
-> > > > > > the best way to handle this.
-> > > > > Then maybe revert commit fe36cbe067 and friends, and have QEMU detect legacy
-> > > > > guest? Supposedly only config space write access needs to be guarded before
-> > > > > setting FEATURES_OK.
-> > > > > 
-> > > > > -Siwie
-> > > > Detecting it isn't enough though, we will need a new ioctl to notify
-> > > > the kernel that it's a legacy guest. Ugh :(
-> > > 
-> > > I'm not sure I get this, how can we know if there's a legacy driver before
-> > > set_features()?
-> > qemu knows for sure. It does not communicate this information to the
-> > kernel right now unfortunately.
-> 
-> 
-> I may miss something, but I still don't get how the new ioctl is supposed to
-> work.
-> 
-> Thanks
+I didn=E2=80=99t change this, but I missed Alan=E2=80=99s Acked-by, so:
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
 
-
-
-Basically on first guest access QEMU would tell kernel whether
-guest is using the legacy or the modern interface.
-E.g. virtio_pci_config_read/virtio_pci_config_write will call ioctl(ENABLE_LEGACY, 1)
-while virtio_pci_common_read will call ioctl(ENABLE_LEGACY, 0)
-
-Or maybe we just add GET_CONFIG_MODERN and GET_CONFIG_LEGACY and
-call the correct ioctl ... there are many ways to build this API.
-
-> 
-> > 
-> > > And I wonder what will hapeen if we just revert the set_features(0)?
-> > > 
-> > > Thanks
-> > > 
-> > > 
-> > > > 
-> > > > > > > > > > > Rejecting reset to 0
-> > > > > > > > > > > prematurely causes correct MTU and link status unable to load
-> > > > > > > > > > > for the very first config space access, rendering issues like
-> > > > > > > > > > > guest showing inaccurate MTU value, or failure to reject
-> > > > > > > > > > > out-of-range MTU.
-> > > > > > > > > > > 
-> > > > > > > > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for
-> > > > > > > > > > > supported mlx5 devices")
-> > > > > > > > > > > Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-> > > > > > > > > > > ---
-> > > > > > > > > > >       drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
-> > > > > > > > > > >       1 file changed, 1 insertion(+), 14 deletions(-)
-> > > > > > > > > > > 
-> > > > > > > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > > > > > b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > > > > > index 7c1f789..540dd67 100644
-> > > > > > > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > > > > > @@ -1490,14 +1490,6 @@ static u64
-> > > > > > > > > > > mlx5_vdpa_get_features(struct vdpa_device *vdev)
-> > > > > > > > > > >           return mvdev->mlx_features;
-> > > > > > > > > > >       }
-> > > > > > > > > > > -static int verify_min_features(struct mlx5_vdpa_dev *mvdev,
-> > > > > > > > > > > u64 features)
-> > > > > > > > > > > -{
-> > > > > > > > > > > -    if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
-> > > > > > > > > > > -        return -EOPNOTSUPP;
-> > > > > > > > > > > -
-> > > > > > > > > > > -    return 0;
-> > > > > > > > > > > -}
-> > > > > > > > > > > -
-> > > > > > > > > > >       static int setup_virtqueues(struct mlx5_vdpa_net *ndev)
-> > > > > > > > > > >       {
-> > > > > > > > > > >           int err;
-> > > > > > > > > > > @@ -1558,18 +1550,13 @@ static int
-> > > > > > > > > > > mlx5_vdpa_set_features(struct vdpa_device *vdev, u64
-> > > > > > > > > > > features)
-> > > > > > > > > > >       {
-> > > > > > > > > > >           struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
-> > > > > > > > > > >           struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
-> > > > > > > > > > > -    int err;
-> > > > > > > > > > >           print_features(mvdev, features, true);
-> > > > > > > > > > > -    err = verify_min_features(mvdev, features);
-> > > > > > > > > > > -    if (err)
-> > > > > > > > > > > -        return err;
-> > > > > > > > > > > -
-> > > > > > > > > > >           ndev->mvdev.actual_features = features &
-> > > > > > > > > > > ndev->mvdev.mlx_features;
-> > > > > > > > > > >           ndev->config.mtu = cpu_to_mlx5vdpa16(mvdev, ndev->mtu);
-> > > > > > > > > > >           ndev->config.status |= cpu_to_mlx5vdpa16(mvdev,
-> > > > > > > > > > > VIRTIO_NET_S_LINK_UP);
-> > > > > > > > > > > -    return err;
-> > > > > > > > > > > +    return 0;
-> > > > > > > > > > >       }
-> > > > > > > > > > >       static void mlx5_vdpa_set_config_cb(struct vdpa_device
-> > > > > > > > > > > *vdev, struct vdpa_callback *cb)
+> El 23 feb 2021, a las 18:44, =C3=81lvaro Fern=C3=A1ndez Rojas =
+<noltari@gmail.com> escribi=C3=B3:
+>=20
+> Over-current reporting isn't supported on some platforms such as =
+bcm63xx.
+> These devices will incorrectly report over-current if this flag isn't =
+properly
+> activated.
+>=20
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> ---
+> v3: no changes.
+> v2: change flag name and improve documentation as suggested by Alan =
+Stern.
+>=20
+> Documentation/devicetree/bindings/usb/generic-ehci.yaml | 6 ++++++
+> 1 file changed, 6 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/usb/generic-ehci.yaml =
+b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+> index cf83f2d9afac..8089dc956ba3 100644
+> --- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+> +++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+> @@ -122,6 +122,12 @@ properties:
+>     description:
+>       Set this flag to force EHCI reset after resume.
+>=20
+> +  spurious-oc:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Set this flag to indicate that the hardware sometimes turns on
+> +      the OC bit when an over-current isn't actually present.
+> +
+>   companion:
+>     $ref: /schemas/types.yaml#/definitions/phandle
+>     description:
+> --=20
+> 2.20.1
+>=20
 
