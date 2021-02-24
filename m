@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621C5323BE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 13:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A28F323BEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 13:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233167AbhBXMe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 07:34:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29419 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232787AbhBXMeX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 07:34:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614169970;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FR1wFd6JiCgf9+go0Q566zCF/9BGYKbMwBEb9YnxoXU=;
-        b=bKC+f4cjYq53/dLCk2yKgYBSqwwqJYCafes78Drr0JZBSbS+XKsFOVlNr+95WxxwCKy5pv
-        uAEJhapDbcUV8CEUrdFWNI/lvwUKb19TmiO0xo/hCqi3e2Wv6T1Wtb3xTsGT+AGUfv7pcu
-        yiswMQUTXbE55QrbTPCdISbrUFaaCGw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-orb-aA9VPIScBH7eND77pA-1; Wed, 24 Feb 2021 07:32:46 -0500
-X-MC-Unique: orb-aA9VPIScBH7eND77pA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9916B193579A;
-        Wed, 24 Feb 2021 12:32:44 +0000 (UTC)
-Received: from krava (unknown [10.40.193.200])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2D99D2C01F;
-        Wed, 24 Feb 2021 12:32:42 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 13:32:41 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 1/2] libperf: Add perf_evlist__reset_id_hash()
-Message-ID: <YDZHaZ+ku5za4+uD@krava>
-References: <20210224081103.715233-1-namhyung@kernel.org>
- <CAM9d7cgMkfZxe+XVoXCBY=t+erpvDjxyk+PYBKCryFDZidBu6w@mail.gmail.com>
+        id S234592AbhBXMfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 07:35:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232767AbhBXMfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 07:35:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBD9064ED3;
+        Wed, 24 Feb 2021 12:34:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614170079;
+        bh=+54c20/fHB+vsC4mh/3vecMne45w1iE6dDHMbiH1IKM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZVbyWGvGLLfWL2PVsf+dQ5uYXW9n6+Ecyob0kYfIptlZew0mV7KLGaO8ePQz5dTY2
+         H6LI+Ui6ZdqQvF0HRNnfb+PAiqmU6ffIEMahAUUlL7gR/B5BX8wsmW/GlICCSFznoP
+         yN8Mvd/ZkZa/0EOV+rtB+o9ojCnDLx6AixvmKBLe+ZbPLF3mm3al1q+ppJs24Dw6VX
+         4Ff1tbsf3cPYyFwTBHLUlV5OdoLP0JaxD2lBHXlPcvjTMRPcDSH+nytWW81g/t5PdW
+         Uot5gaDbG+ppItW0Zp5LE7AcF/37vD3e8P6UkaSt4TPdc1cxI7obLacSmUUd+rOP0H
+         0LH3ZBTZPH5Ow==
+Date:   Wed, 24 Feb 2021 12:33:36 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 1/1] arm64: Unwinder enhancements for reliable
+ stack trace
+Message-ID: <20210224123336.GA4504@sirena.org.uk>
+References: <bc4761a47ad08ab7fdd555fc8094beb8fc758d33>
+ <20210223181243.6776-1-madvenka@linux.microsoft.com>
+ <20210223181243.6776-2-madvenka@linux.microsoft.com>
+ <20210223190240.GK5116@sirena.org.uk>
+ <08e8e02c-8ef0-26bb-1d0d-7dda54b5fefd@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
 Content-Disposition: inline
-In-Reply-To: <CAM9d7cgMkfZxe+XVoXCBY=t+erpvDjxyk+PYBKCryFDZidBu6w@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <08e8e02c-8ef0-26bb-1d0d-7dda54b5fefd@linux.microsoft.com>
+X-Cookie: He's dead, Jim.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 05:42:15PM +0900, Namhyung Kim wrote:
-> On Wed, Feb 24, 2021 at 5:11 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Add the perf_evlist__reset_id_hash() function to libperf API so that
-> > it can be called to reset the hash table.  This is necessary for perf
-> > stat to run the workload multiple times.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> [SNIP]
-> > diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
-> > index 7be1af8a546c..285100143d89 100644
-> > --- a/tools/lib/perf/libperf.map
-> > +++ b/tools/lib/perf/libperf.map
-> > @@ -42,6 +42,7 @@ LIBPERF_0.0.1 {
-> >                 perf_evlist__munmap;
-> >                 perf_evlist__filter_pollfd;
-> >                 perf_evlist__next_mmap;
-> > +               perf_evlist__reset_id_hash;
-> >                 perf_mmap__consume;
-> >                 perf_mmap__read_init;
-> >                 perf_mmap__read_done;
-> 
-> I saw perf_evsel__free_fd and perf_evsel__free_id is called from
-> util/evlist.c without being listed here.  Do we need to add them?
 
-perf is special user of libperf and we link it statically
-at the moment, so it's not needed
+--7JfCtLOvnd9MIVvH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I think we should add perf_evlist__reset_id_hash to internal
-header, because for libperf.so we expose only logical API units
-with described usage, not just single (special purpose) function
+On Tue, Feb 23, 2021 at 01:20:49PM -0600, Madhavan T. Venkataraman wrote:
+> On 2/23/21 1:02 PM, Mark Brown wrote:
+> > On Tue, Feb 23, 2021 at 12:12:43PM -0600, madvenka@linux.microsoft.com wrote:
 
-thanks,
-jirka
+> >> Reliable stack trace function
+> >> =============================
+> >>
+> >> Implement arch_stack_walk_reliable(). This function walks the stack like
+> >> the existing stack trace functions with a couple of additional checks:
 
+> > Again, this should be at least one separate patch.  How does this ensure
+> > that we don't have any issues with any of the various probe mechanisms?
+> > If there's no need to explicitly check anything that should be called
+> > out in the changelog.
+
+> I am trying to do this in an incremental fashion. I have to study the probe
+> mechanisms a little bit more before I can come up with a solution. But
+> if you want to see that addressed in this patch set, I could do that.
+> It will take a little bit of time. That is all.
+
+Handling of the probes stuff seems like it's critical to reliable stack
+walk so we shouldn't claim to have support for reliable stack walk
+without it.  If it was a working implementation we could improve that'd
+be one thing but this would be buggy which is a different thing.
+
+> >> +	(void) on_accessible_stack(task, stackframe, &info);
+
+> > Shouldn't we return NULL if we are not on an accessible stack?
+
+> The prev_fp has already been checked by the unwinder in the previous
+> frame. That is why I don't check the return value. If that is acceptable,
+> I will add a comment.
+
+TBH if you're adding the comment it seems like you may as well add the
+check, it's not like it's expensive and it means there's no possibility
+that some future change could result in this assumption being broken.
+
+--7JfCtLOvnd9MIVvH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA2R58ACgkQJNaLcl1U
+h9AblQf+Ip4D1mZLod2Rli2j6mPrZU5hrwGsSqkDASVi8ze3oU8RMi6w/6s3MOFs
+IBMU7ReV/znwM0f4MHHxXR3HH+pB+m2OgbwTMxZf4iPk+9PFlIkt4QZXVTRV0t8A
+L28n9lbVfjnfScmcHVYo8Kkrs9wO+fzfSXG7ApIPyg0OO1fFTSkRcVM+2UIQ2yPj
+7he+avWS1b+G44VeQxKj0/MYzOuDq4tZOScblOaVVv5P6CaHwlIpPGYL2f9lLd/N
+vbVck3dHthYs1wcyiMpOr5SUIS7TfWa851mgknTQYIf9eL4eqVZz12ERff06FBn/
+NT20sMWw/G/W5YgTfY1aFJzEfjXEzA==
+=WGh3
+-----END PGP SIGNATURE-----
+
+--7JfCtLOvnd9MIVvH--
