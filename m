@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062EB3241A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 716CB3241B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbhBXQG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:06:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45714 "EHLO
+        id S233626AbhBXQHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:07:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236935AbhBXPy4 (ORCPT
+        with ESMTP id S236978AbhBXPzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:54:56 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE53C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 07:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1GQftM3uWmRhOrMJBKJCWIWOXHtZNY7YdAOBVUtpyO4=; b=vNzvwGSTnIQWojyLlnIhoVVEJC
-        xSpv45Z+hXUdbYesOGmtSnIyuLYs8xZLQGSq7EkblncBvNXl8uxcWiKl3x2cZrvtEc+TLIHTM+Fz7
-        owl6ghZSztNZYzsbeLFnY3+4xoqMqvTqxR9+OEa5mvGTakNI06+97lHoQCUtD7n/4WPGwRLeUWS9n
-        kuVth3XqHgB0J3K9iS0w62E3q+wWTuH2bX9ieu+pK8NlgKzAiOOOYYti4eRo7BxoFUNsxz5Lx6uh6
-        CKE9Db7X4Eppt4tXr6tWqGkwp1Dd/EdMFB/fgVjlxV5Br8AGB2y7n9akbb+gbHauDt8kq8/JZ50KK
-        mkUcL87Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lEwUA-00016l-JL; Wed, 24 Feb 2021 15:53:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2172C301A32;
-        Wed, 24 Feb 2021 16:53:54 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1009F206D9577; Wed, 24 Feb 2021 16:53:54 +0100 (CET)
-Date:   Wed, 24 Feb 2021 16:53:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org, valentin.schneider@arm.com,
-        fweisbec@gmail.com, tglx@linutronix.de, qais.yousef@arm.com
-Subject: Re: [PATCH 0/7 v4] move update blocked load outside newidle_balance
-Message-ID: <YDZ2kl2dpHUgmjTS@hirez.programming.kicks-ass.net>
-References: <20210224133007.28644-1-vincent.guittot@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224133007.28644-1-vincent.guittot@linaro.org>
+        Wed, 24 Feb 2021 10:55:17 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA06C06178C;
+        Wed, 24 Feb 2021 07:54:31 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id e10so2145404wro.12;
+        Wed, 24 Feb 2021 07:54:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=cIVtxfG8PJc7xzU/5yPYZk5RJ7dYzO6e765nl1gKTTg=;
+        b=ZAs1eOXFbfh0ERrHdvDEdQt0e84kJOA19L8bSIyIbf0Ii152RG4CF0Q66ZTXoYbMji
+         hZGFOXBPmDlmWlLGlwTtk62iBL/z4EZLZ/jwEW096EL034qq2clXzU1mO+tlilyuWdsi
+         VjzPo+ZvlBIj74fCGj9MPn/XsdiH8FscHoWyxCKPzX6t/TOiVVq8uR1MWmEbQwFbCe3i
+         b1/V5PWv9XfHyAFeMomu/7zqF0t4YJTdzObJZhg0rcfW7CaVhZBssCQUq9FZt4LO2NPX
+         0Ea7cHqZL/aVj6MZjq3eqTDE3XV4X0hVDHsVDC4Ii7k/zeIup//XX5dAOJLx4w45GdT0
+         cwrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=cIVtxfG8PJc7xzU/5yPYZk5RJ7dYzO6e765nl1gKTTg=;
+        b=Duc90RmVWB6fI8fqEgy3dWdqAhnT0DMlj/uQkm2j7U//+YOMtshY5KxSs3gFjNQIo3
+         5MEPRvN1x+GpwQycKIy1N8vC/R9SVX4hLu+if6iN7ZssT72Ix6PiyVBzLWh6otLL3s8A
+         seurjhYp/nNsX69gyYWpg6y8/ACqf+JeE31Lg88Svk1N4PkuKappItvWuiLGGNo7GJ3C
+         qJCn2yyUw66yxJT6o0qFm/rXgdGxhPynIu3LAclsl+xG0pBvyW32RSzaKUw8AgRkEFoJ
+         l5wi0+m5r79rhFuX91CTQjX3ffDegte799d7YAxMIVbVnVRmHdmfZw43XiWSjArsvr/f
+         D2pA==
+X-Gm-Message-State: AOAM533RXCS42ziBCXEMWOGG3OXHpAhspXo86muZlp/a6xkJuEVAJDlz
+        VDoYG9EENCDXJb1Nu2xGN54K0D99k5HkiKa4
+X-Google-Smtp-Source: ABdhPJz7+cTh18NFbXg9TODOeyRY9Y0uuWTTNOW7OT3+zPcaBaOxtJ731r11a3hBG3NWUv1ZKgq3rA==
+X-Received: by 2002:adf:d20c:: with SMTP id j12mr32225015wrh.76.1614182070166;
+        Wed, 24 Feb 2021 07:54:30 -0800 (PST)
+Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id l4sm4231055wrt.42.2021.02.24.07.54.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 24 Feb 2021 07:54:29 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v2 0/2] leds: bcm63x8: improve read and write functions
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+In-Reply-To: <a9a9fb30-2d90-33ff-9b80-af9d03b69c69@gmail.com>
+Date:   Wed, 24 Feb 2021 16:54:29 +0100
+Cc:     Jonas Gorski <jonas.gorski@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B9E7BB0F-00E7-40CC-9571-E17E574E1C3F@gmail.com>
+References: <20210224101110.20179-1-noltari@gmail.com>
+ <a9a9fb30-2d90-33ff-9b80-af9d03b69c69@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 02:30:00PM +0100, Vincent Guittot wrote:
-> Joel reported long preempt and irq off sequence in newidle_balance because
-> of a large number of CPU cgroups in use and having to be updated. This
-> patchset moves the update outside newidle_imblance. This enables to early
-> abort during the updates in case of pending irq as an example.
-> 
-> Instead of kicking a normal ILB that will wakes up CPU which is already
-> idle, patch 6 triggers the update of statistics in the idle thread of
-> the CPU before selecting and entering an idle state.
+Hi Florian,
 
-I'm confused... update_blocked_averages(), which calls
-__update_blocked_fair(), which is the one doing the cgroup iteration
-thing, runs with rq->lock held, and thus will have IRQs disabled any
-which way around we turn this thing.
+> El 24 feb 2021, a las 16:45, Florian Fainelli <f.fainelli@gmail.com> =
+escribi=C3=B3:
+>=20
+>=20
+>=20
+> On 2/24/2021 2:11 AM, =C3=81lvaro Fern=C3=A1ndez Rojas wrote:
+>> This code is proven to work in BMIPS BE/LE and ARM BE/LE.
+>> See bcm2835-rng and bcmgenet.c:
+>> =
+https://github.com/torvalds/linux/blob/3b9cdafb5358eb9f3790de2f728f765fef1=
+00731/drivers/char/hw_random/bcm2835-rng.c#L42-L60
+>> =
+https://github.com/torvalds/linux/blob/3b9cdafb5358eb9f3790de2f728f765fef1=
+00731/drivers/net/ethernet/broadcom/genet/bcmgenet.c#L71-L88
+>=20
+> What is the motivation for doing this? bcm2835-rng and bcmgenet are =
+used
+> across MIPS and ARM platforms therefore they need to be compatible =
+with
+> both, but these two LEDs drivers are super specialized, are you =
+working
+> on porting the 6328 LED driver to the newer ARM-based DSL SoCs such as
+> 63138 and 63148?
 
-Or is the problem that we called nohz_idle_balance(), which does
-update_nohz_stats() -> update_blocked_averages() for evey NOHZ cpu from
-newidle balance, such that we get NR_NOHZ_CPUS * NR_CGROUPS IRQ latency?
-Which is now reduced to just NR_CGROUPS ?
+I just wanted to have all bmips drivers in line (at least regarding =
+read/write).
+If I remember correctly someone told me that this controller was also =
+present on some little endian SoCs, but you can confirm that :).
+Unfortunately I haven=E2=80=99t got any devices with ARM-based DSL SoCs, =
+so the answer is no.
+
+> --=20
+> Florian
+
+Best regards,
+=C3=81lvaro.=
