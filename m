@@ -2,203 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF045323668
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 05:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A952323670
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 05:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhBXELV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 23:11:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbhBXELE (ORCPT
+        id S233251AbhBXEab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 23:30:31 -0500
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:63930 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232132AbhBXEaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 23:11:04 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B515C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 20:10:23 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id d8so803847ejc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 20:10:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r0/3ywDnAOQsjA4thisasGEmCGYC07XpqLCZIebqfNw=;
-        b=tCz/1aerhGbC2OIOScvpy/jeAp6NooTZ19XXPr4uuVgGRolbLZJx9RW7RLnAMplFZM
-         tV/rtPtFj8NkrjKNHoIkdXr0pBCHkPMZot536PLRF2E0v5uzXWteUUm+ug38AP5Y4Tfu
-         CFe9VXj0SKJaRmWpejqefdZnUyJKQCoezS67a397L3YsaMlFqsH9cg95kDVFcUxr0GQY
-         bMrR2GIozSJIPKKZglc6KVyK2QEdh4N+ywq2nbMh19LhRdYzgF+VG6UrfgfTt1dJzycz
-         M8aT9jhHDlRKuZDUmWdwjydWcbNgbRXL/2ePxjSXKXRqw3QObhgxIWT/MhAoEK37WAuE
-         kXsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r0/3ywDnAOQsjA4thisasGEmCGYC07XpqLCZIebqfNw=;
-        b=Etmiu6zwUVnQTwn/2Z1r84lcTsaJ7LTXTT8zcP+1cvKucM17CNlXg4Lw2IdOP8zSjK
-         yTDDGvj4xhca6MYmwk7fsU1DaefJC1XbLYT5gNXriEM+cVSrJWnUHbdrWvh2fY6hbBBO
-         vXQn5jGxbkXJDeynEhwP2uIoq7YvqLpG4Qb8zA1gpEGGwEW5HyHGahXojUehiVgg7ys6
-         HWgRvJnRycpWq1oZoG7Xk+KY2p1zlylcJyUwp8M4tzdvzWRE9vPcrMKQq4boB4r6ChWA
-         DZRrrNb5rHBBdHoHSeAxlISmv7LE9KxTBURcNeUj89d3Iy3CRgfdO5hj6QVfm75xOpaS
-         ftmA==
-X-Gm-Message-State: AOAM533SgR9ae4o/c35gjUZxjQ+CkGXx0C0buhJJXwrdYYfN9L5hQBD4
-        VarTXktk8ko4d/X4zfrmq/SuG1zBpF19+bJS6Gv2uQ==
-X-Google-Smtp-Source: ABdhPJxZ+n/CL570MXr/0CV7mjfLT6eo6BlYzfvM8j4Qn59L5vWSJUidV1w2V6VvcrdjSxwjx2l1swbyvGPHOB17Hbg=
-X-Received: by 2002:a17:906:2818:: with SMTP id r24mr22949127ejc.472.1614139821753;
- Tue, 23 Feb 2021 20:10:21 -0800 (PST)
+        Tue, 23 Feb 2021 23:30:22 -0500
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id BFEB876060;
+        Wed, 24 Feb 2021 07:29:32 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1614140972;
+        bh=381bGtaFmhS3qOT60PG6QEE1cltmmQOxmj6C16TLhcE=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=y8fxogFRj3Gjv7CdI8xp28LeWm+W3Ic2OtzhE3ARE2//NvN2iObn0r0RZwLXQJrB5
+         UsZeg9VKhqUTz61Bz27Gzuj6lB67lR+yciFX0vMc16JbrX/wtSvpE/QscVs5u4/dUN
+         2bqQLAkvTx3WH9LQfvJQwuOvtE9s7I4hrPyIEHdqo8JSfndDWxHRf53I5TwggaD9jC
+         Gr5sDAgQM+Z5I4ojwRA5EWhJIvs5UlTroUS0tfXEn7uhhCBrGs58K7YOGyYvAcBZFJ
+         3iPCmKIug21nXONTLyM7ceXF2zh7IPHCT9lgl61Rdnke7vrwOCDPFWyWMiowvmySGW
+         61N9vBvV3qjAQ==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id AED3375C0C;
+        Wed, 24 Feb 2021 07:29:31 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Wed, 24
+ Feb 2021 07:29:31 +0300
+Subject: Re: [RFC PATCH v5 00/19] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210222142311.gekdd7gsm33wglos@steredhat>
+ <20210223145016.ddavx6fihq4akdim@steredhat>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <7a280168-cb54-ae26-4697-c797f6b04708@kaspersky.com>
+Date:   Wed, 24 Feb 2021 07:29:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAPcyv4gsXbi6Cc71wW5hob8mGuupXKkL5tHLRaZkdLZ1oAuK8Q@mail.gmail.com>
-In-Reply-To: <CAPcyv4gsXbi6Cc71wW5hob8mGuupXKkL5tHLRaZkdLZ1oAuK8Q@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 23 Feb 2021 20:10:17 -0800
-Message-ID: <CAPcyv4gBoCWNDtkKRiwwBBHVEvP57mOGBJ6hmhH=oFKjEpDd9Q@mail.gmail.com>
-Subject: Re: [GIT PULL] Compute Express Linux (CXL) for v5.12-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210223145016.ddavx6fihq4akdim@steredhat>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 02/06/2021 23:52:08
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 161679 [Feb 06 2021]
+X-KSE-AntiSpam-Info: LuaCore: 422 422 763e61bea9fcfcd94e075081cb96e065bc0509b4
+X-KSE-AntiSpam-Info: Version: 5.9.16.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
+X-KSE-AntiSpam-Info: {Tracking_date, moscow}
+X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/06/2021 23:55:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 06.02.2021 21:17:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/02/24 03:43:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/02/24 02:14:00 #16328803
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As much as I'd love to be working on "Compute Express Linux" the
-subject should have read "Compute Express Link".
 
-On Tue, Feb 23, 2021 at 8:05 PM Dan Williams <dan.j.williams@intel.com> wrote:
+On 23.02.2021 17:50, Stefano Garzarella wrote:
+> On Mon, Feb 22, 2021 at 03:23:11PM +0100, Stefano Garzarella wrote:
+>> Hi Arseny,
+>>
+>> On Thu, Feb 18, 2021 at 08:33:44AM +0300, Arseny Krasnov wrote:
+>>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
+>>> transport.
+>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>>> do it, two new packet operations were added: first for start of record
+>>> and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
+>>> both operations carries metadata - to maintain boundaries and payload
+>>> integrity. Metadata is introduced by adding special header with two
+>>> fields - message count and message length:
+>>>
+>>> 	struct virtio_vsock_seq_hdr {
+>>> 		__le32  msg_cnt;
+>>> 		__le32  msg_len;
+>>> 	} __attribute__((packed));
+>>>
+>>> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
+>>> packets(buffer of second virtio descriptor in chain) in the same way as
+>>> data transmitted in RW packets. Payload was chosen as buffer for this
+>>> header to avoid touching first virtio buffer which carries header of
+>>> packet, because someone could check that size of this buffer is equal
+>>> to size of packet header. To send record, packet with start marker is
+>>> sent first(it's header contains length of record and counter), then
+>>> counter is incremented and all data is sent as usual 'RW' packets and
+>>> finally SEQ_END is sent(it also carries counter of message, which is
+>>> counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
+>>> incremented again. On receiver's side, length of record is known from
+>>> packet with start record marker. To check that no packets were dropped
+>>> by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
+>>> checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
+>>> 1) and length of data between two markers is compared to length in
+>>> SEQ_BEGIN header.
+>>> 	Now as  packets of one socket are not reordered neither on
+>>> vsock nor on vhost transport layers, such markers allows to restore
+>>> original record on receiver's side. If user's buffer is smaller that
+>>> record length, when all out of size data is dropped.
+>>> 	Maximum length of datagram is not limited as in stream socket,
+>>> because same credit logic is used. Difference with stream socket is
+>>> that user is not woken up until whole record is received or error
+>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>>> 	Tests also implemented.
+>> I reviewed the first part (af_vsock.c changes), tomorrow I'll review 
+>> the rest. That part looks great to me, only found a few minor issues.
+> I revieiwed the rest of it as well, left a few minor comments, but I 
+> think we're well on track.
 >
-> Hi Linus, please pull from:
+> I'll take a better look at the specification patch tomorrow.
+Great, Thank You
 >
->   git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm tags/cxl-for-5.12
+> Thanks,
+> Stefano
 >
-> ...to receive an initial driver for CXL 2.0 Memory Devices. Technical
-> details are in the tag message and Documentation/. I am taking this
-> through nvdimm.git this first cycle until the cxl.git repository and
-> maintainer team can be set up on git.kernel.org.
+>> In the meantime, however, I'm getting a doubt, especially with regard 
+>> to other transports besides virtio.
+>>
+>> Should we hide the begin/end marker sending in the transport?
+>>
+>> I mean, should the transport just provide a seqpacket_enqueue() 
+>> callbacl?
+>> Inside it then the transport will send the markers. This is because 
+>> some transports might not need to send markers.
+>>
+>> But thinking about it more, they could actually implement stubs for 
+>> that calls, if they don't need to send markers.
+>>
+>> So I think for now it's fine since it allows us to reuse a lot of 
+>> code, unless someone has some objection.
+
+I thought about that, I'll try to implement it in next version. Let's see...
+
+>>
+>> Thanks,
+>> Stefano
+>>
 >
-> In terms of why merge this initial driver now, it establishes just
-> enough functionality to enumerate these devices and issue all
-> administrative commands. It sets a v5.12 baseline to develop the more
-> complicated higher order functionality like memory device
-> interleaving, persistent memory support, and hotplug which entangle
-> with ACPI, LIBNVDIMM, and PCI.
->
-> The focus of this release is establishing the ioctl UAPI for the
-> management commands. Similar to NVME there are a set of standard
-> commands as well as the possibility for vendor specific commands.
-> Unlike the NVME driver the CXL driver does not enable vendor specific
-> command functionality by default. This conservatism is out of concern
-> for the fact that CXL interleaves memory across devices and implements
-> host memory. The system integrity implications of some commands are
-> more severe than NVME and vendor specific functionality is mostly
-> unauditable. This will be an ongoing topic of discussion with the
-> wider CXL community for next few months.
->
-> The driver has been developed in the open since November against a
-> work-in-progress QEMU emulation of the CXL device model. That QEMU
-> effort has recently attracted contributions from multiple hardware
-> vendors.
->
-> The driver has appeared in -next. It collected some initial static
-> analysis fixes and build-robot reports, but all quiet in -next for the
-> past week.
->
-> A list of review tags that arrived after the branch for -next was cut
-> is appended to the tag message below.
->
-> ---
->
-> The following changes since commit 1048ba83fb1c00cd24172e23e8263972f6b5d9ac:
->
->   Linux 5.11-rc6 (2021-01-31 13:50:09 -0800)
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm tags/cxl-for-5.12
->
-> for you to fetch changes up to 88ff5d466c0250259818f3153dbdc4af1f8615dd:
->
->   cxl/mem: Fix potential memory leak (2021-02-22 14:44:39 -0800)
->
-> ----------------------------------------------------------------
-> cxl for 5.12
->
-> Introduce an initial driver for CXL 2.0 Type-3 Memory Devices. CXL is
-> Compute Express Link which released the 2.0 specification in November.
-> The Linux relevant changes in CXL 2.0 are support for an OS to
-> dynamically assign address space to memory devices, support for
-> switches, persistent memory, and hotplug. A Type-3 Memory Device is a
-> PCI enumerated device presenting the CXL Memory Device Class Code and
-> implementing the CXL.mem protocol. CXL.mem allows device to advertise
-> CPU and I/O coherent memory to the system, i.e. typical "System RAM" and
-> "Persistent Memory" in Linux /proc/iomem terms.
->
-> In addition to the CXL.mem fast path there is an administrative command
-> hardware mailbox interface for maintenance and provisioning. It is this
-> command interface that is the focus of the initial driver. With this
-> driver a CXL device that is mapped by the BIOS can be administered by
-> Linux. Linux support for CXL PMEM and dynamic CXL address space
-> management are to be implemented post v5.12.
->
-> 4cdadfd5e0a7 cxl/mem: Introduce a driver for CXL-2.0-Type-3 endpoints
-> Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
->
-> 8adaf747c9f0 cxl/mem: Find device capabilities
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->
-> b39cb1052a5c cxl/mem: Register CXL memX devices
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->
-> 13237183c735 cxl/mem: Add a "RAW" send command
-> Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
->
-> 472b1ce6e9d6 cxl/mem: Enable commands via CEL
-> Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
->
-> 57ee605b976c cxl/mem: Add set of informational commands
-> Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
->
-> ----------------------------------------------------------------
-> Ben Widawsky (7):
->       cxl/mem: Find device capabilities
->       cxl/mem: Add basic IOCTL interface
->       cxl/mem: Add a "RAW" send command
->       cxl/mem: Enable commands via CEL
->       cxl/mem: Add set of informational commands
->       MAINTAINERS: Add maintainers of the CXL driver
->       cxl/mem: Fix potential memory leak
->
-> Dan Carpenter (1):
->       cxl/mem: Return -EFAULT if copy_to_user() fails
->
-> Dan Williams (2):
->       cxl/mem: Introduce a driver for CXL-2.0-Type-3 endpoints
->       cxl/mem: Register CXL memX devices
->
->  .clang-format                                      |    1 +
->  Documentation/ABI/testing/sysfs-bus-cxl            |   26 +
->  Documentation/driver-api/cxl/index.rst             |   12 +
->  Documentation/driver-api/cxl/memory-devices.rst    |   46 +
->  Documentation/driver-api/index.rst                 |    1 +
->  Documentation/userspace-api/ioctl/ioctl-number.rst |    1 +
->  MAINTAINERS                                        |   11 +
->  drivers/Kconfig                                    |    1 +
->  drivers/Makefile                                   |    1 +
->  drivers/cxl/Kconfig                                |   53 +
->  drivers/cxl/Makefile                               |    7 +
->  drivers/cxl/bus.c                                  |   29 +
->  drivers/cxl/cxl.h                                  |   95 ++
->  drivers/cxl/mem.c                                  | 1552 ++++++++++++++++++++
->  drivers/cxl/pci.h                                  |   31 +
->  include/linux/pci_ids.h                            |    1 +
->  include/uapi/linux/cxl_mem.h                       |  172 +++
->  17 files changed, 2040 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-cxl
->  create mode 100644 Documentation/driver-api/cxl/index.rst
->  create mode 100644 Documentation/driver-api/cxl/memory-devices.rst
->  create mode 100644 drivers/cxl/Kconfig
->  create mode 100644 drivers/cxl/Makefile
->  create mode 100644 drivers/cxl/bus.c
->  create mode 100644 drivers/cxl/cxl.h
->  create mode 100644 drivers/cxl/mem.c
->  create mode 100644 drivers/cxl/pci.h
->  create mode 100644 include/uapi/linux/cxl_mem.h
