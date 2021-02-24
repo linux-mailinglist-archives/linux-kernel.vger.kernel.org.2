@@ -2,134 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E90E3245A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 22:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB493245AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 22:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233743AbhBXVPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 16:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
+        id S235434AbhBXVUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 16:20:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbhBXVPN (ORCPT
+        with ESMTP id S229466AbhBXVUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 16:15:13 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41357C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 13:14:33 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lF1UE-00078Y-RH; Wed, 24 Feb 2021 22:14:22 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:55fd:a17b:b4ca:d5fb])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id C3D555E8908;
-        Wed, 24 Feb 2021 21:14:19 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 22:14:18 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Andre Naujoks <nautsch2@gmail.com>, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net v3 1/1] can: can_skb_set_owner(): fix ref counting if
- socket was closed before setting skb ownership
-Message-ID: <20210224211418.74dltgabq2rpfuf2@pengutronix.de>
-References: <20210224075932.20234-1-o.rempel@pengutronix.de>
- <CANn89iLEHpCphH8vKd=0BS7pgdP1YZDGqQfQPeGBkD09RoHtzg@mail.gmail.com>
- <76ec5c10-c051-7a52-9ae7-04af79a0e9e5@hartkopp.net>
+        Wed, 24 Feb 2021 16:20:05 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461A4C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 13:19:25 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id h4so3922155ljl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 13:19:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wS6FEYlpa8V4SEOFzYNw75kR4rI+of4Jli7dMikAW/s=;
+        b=vSNWtu+hdZAgtGKmRpzoRNIgHdtE+qvx53E31I0OX56mL6IjztTv7/ajsYk4wdhrSk
+         IKi9gnrqOcBV+kmvtzjxCz0Duso+Jr1r/ntqEvM/8GT0530QS9J8WGRcJ4IjI1uso5IV
+         mw/Ree6XVGE5leCEI4WLeb0VivamUWvMj8O6o9hypzKRMdn6sSd7hZF4mEWFvQ9KEwCc
+         CBmBSbGPpH5BPYqpNL552wH3yyj2kwPEH1DSSmCkFrxJQgi2RxmmUgp/Rq6O8D6dYRRt
+         wuymtqGgsIbfW5aCyMN+KP6YeHndtmMdfLhbjE29laTRGBDX2zTVnL/IvAO9mfcwsHDw
+         ZyAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wS6FEYlpa8V4SEOFzYNw75kR4rI+of4Jli7dMikAW/s=;
+        b=Hq+k+rWGCdTcjqFj+RQaPHomdknNWr4v2+0aGByGnYof4zQzW9gjf2SCq8P25UqE9r
+         JpqcudzdzG4cxy1bsyW3//z3DbvY2KSDjS96jwy63zd0WfPCEiQI1/FfBbSKQkaLOZFi
+         y6E+REptTaQaac5qaAWNaBlbEeft3hsefzo4mDGp9n/WX9/dAZrSiGT53ThLbMVCyaD5
+         65uL8gNY/Zj+bw/5x8esvzNkZvTwqL8JLh1V5DGzoXvHHvZwcVfwAXH+csy/Yh+X4ci2
+         X+HlsOx1RWl7pZ55zeEHCR6AoF5kTtDaxDppyONrLCzOsScaMk1mFFKEDnkCs3JNVfaH
+         TrTA==
+X-Gm-Message-State: AOAM530u4rsFVNkPdWJQNEs0CUzR2TkdCmgHJiSzMlHIsueKI6MRgDMD
+        9LoiLq26/JW1zpWjNFK/3l4=
+X-Google-Smtp-Source: ABdhPJzTH6jZIK2lpsxudYsQmD0/OWsjX2ws8hrKG2PLJX/OCQVQ9kR/mAXtyt8MnrFOQ0b2CQ5Ktg==
+X-Received: by 2002:a2e:2f16:: with SMTP id v22mr20734452ljv.105.1614201563059;
+        Wed, 24 Feb 2021 13:19:23 -0800 (PST)
+Received: from localhost.localdomain (h-98-128-229-129.NA.cust.bahnhof.se. [98.128.229.129])
+        by smtp.gmail.com with ESMTPSA id w26sm717116lfr.186.2021.02.24.13.19.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 13:19:22 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Oder Chiou <oder_chiou@realtek.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH 0/4] ASoC: rt*: Constify static structs
+Date:   Wed, 24 Feb 2021 22:19:14 +0100
+Message-Id: <20210224211918.39109-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dnjabxnrhdo3b7pb"
-Content-Disposition: inline
-In-Reply-To: <76ec5c10-c051-7a52-9ae7-04af79a0e9e5@hartkopp.net>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Constify a number of static structs that are never modified in RealTek
+codecs. The most important patches are the first two, which constifies
+snd_soc_dai_ops and sdw_slave_ops, both which contain function pointers.
+The other two patches are for good measure, since I was already touching
+the code there.
 
---dnjabxnrhdo3b7pb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When doing this, I discovered sound/soc/codecs/rt1016.c is not in a
+Makefile, so there is not really any way to build it (I added locally to
+the Makefile to compile-test my changes). Is this expected or an oversight?
 
-On 24.02.2021 21:32:29, Oliver Hartkopp wrote:
-> > > To fix this problem, only set skb ownership to sockets which have sti=
-ll
-> > > a ref count > 0.
-> > >=20
-> > > Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-> > > Cc: Andre Naujoks <nautsch2@gmail.com>
-> > > Suggested-by: Eric Dumazet <edumazet@google.com>
-> > > Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
-> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> >=20
-> > SGTM
-> >=20
-> > Reviewed-by: Eric Dumazet <edumazet@google.com>
-> >=20
-> > > ---
-> > >   include/linux/can/skb.h | 3 +--
-> > >   1 file changed, 1 insertion(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-> > > index 685f34cfba20..655f33aa99e3 100644
-> > > --- a/include/linux/can/skb.h
-> > > +++ b/include/linux/can/skb.h
-> > > @@ -65,8 +65,7 @@ static inline void can_skb_reserve(struct sk_buff *=
-skb)
-> > >=20
-> > >   static inline void can_skb_set_owner(struct sk_buff *skb, struct so=
-ck *sk)
-> > >   {
-> > > -       if (sk) {
-> > > -               sock_hold(sk);
->=20
-> Although the commit message gives a comprehensive reason for this patch: =
-Can
-> you please add some comment here as I do not think the use of
-> refcount_inc_not_zero() makes clear what is checked here.
+Rikard Falkeborn (4):
+  ASoC: rt*: Constify static struct sdw_slave_ops
+  ASoC: rt*: Constify static struct snd_soc_dai_ops
+  ASoC: rt*: Constify static struct acpi_device_id
+  ASoc: rt5631: Constify static struct coeff_clk_div
 
-Good point. What about:
+ sound/soc/codecs/rt1011.c     | 2 +-
+ sound/soc/codecs/rt1015.c     | 4 ++--
+ sound/soc/codecs/rt1016.c     | 4 ++--
+ sound/soc/codecs/rt1305.c     | 2 +-
+ sound/soc/codecs/rt1308-sdw.c | 2 +-
+ sound/soc/codecs/rt1308.c     | 2 +-
+ sound/soc/codecs/rt5631.c     | 2 +-
+ sound/soc/codecs/rt5682-sdw.c | 4 ++--
+ sound/soc/codecs/rt700-sdw.c  | 2 +-
+ sound/soc/codecs/rt700.c      | 2 +-
+ sound/soc/codecs/rt711-sdw.c  | 2 +-
+ sound/soc/codecs/rt711.c      | 2 +-
+ sound/soc/codecs/rt715-sdw.c  | 2 +-
+ sound/soc/codecs/rt715.c      | 2 +-
+ 14 files changed, 17 insertions(+), 17 deletions(-)
 
-If the socket has already been closed by user space, the refcount may
-already be 0 (and the socket will be freed after the last TX skb has
-been freed). So only increase socket refcount if the refcount is > 0.
+-- 
+2.30.1
 
-regards
-Marc
-
-P.S.: Have you had time to look at my ISOTOP RFC patch?
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---dnjabxnrhdo3b7pb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA2waYACgkQqclaivrt
-76nYUAf/RrC5ym0WGkJahDL9D9tdBge7At8Sl8OywoWTczF1RKFmTf+rYh+QZryN
-4/8Oyu+FNUIsKueWAukyE9cEzuja9K7RjGHD8j8JlUKxDZtfei9PrXEZh2QqRrAk
-A9rt1Uy9KaHPDAmn9O79gpgbd7/Zaopyz4X8u4lzusibVJD0PoQcAOgC3E7MERZK
-7/FvUYNzePRSGydOFEKCrcwIcxl7zWHIyQGLeioTCWwzqdLGyBn3wTY44fuhuBYE
-uMYY59ePaZk8OIG7YXhgJMtwstiXCEhSUnFINivQcg9va3FnsvBKSxYnInje5S2W
-O0EO83ZMmDTs8XIJZQL55MScMZKtHg==
-=qiPV
------END PGP SIGNATURE-----
-
---dnjabxnrhdo3b7pb--
