@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E31323988
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70879323981
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234664AbhBXJdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:33:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26316 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234633AbhBXJcV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:32:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614159054;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S234604AbhBXJcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:32:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55904 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232563AbhBXJbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 04:31:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614159058; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7aDdkz1NoI966nz5oxyifwdANt/93ivruZ7xE/ouurI=;
-        b=WT4D8b1fVU56E134D5BVfM5bw7+0bxJW7Pw85J7Za2H0IPqQaKZcZBrBjGkg8wIV15+wtu
-        IqD3TC7VtxhodIQSXvJN/6ypUJYYLqxn5WSIvopHvQ4B3Qqj1ByaN5MoAywYqij6kWjMaq
-        buRkNxMoLpmQKwMgtPjxyFRX1L646hg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-25-OesmgzzbMM6P57rwNLKp_A-1; Wed, 24 Feb 2021 04:30:50 -0500
-X-MC-Unique: OesmgzzbMM6P57rwNLKp_A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BFF480364D;
-        Wed, 24 Feb 2021 09:30:49 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-28.pek2.redhat.com [10.72.12.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EADDD6064B;
-        Wed, 24 Feb 2021 09:30:38 +0000 (UTC)
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-References: <22fe5923-635b-59f0-7643-2fd5876937c2@oracle.com>
- <fae0bae7-e4cd-a3aa-57fe-d707df99b634@redhat.com>
- <20210223082536-mutt-send-email-mst@kernel.org>
- <3ff5fd23-1db0-2f95-4cf9-711ef403fb62@oracle.com>
- <20210224000057-mutt-send-email-mst@kernel.org>
- <0559fd8c-ff44-cb7a-8a74-71976dd2ee33@redhat.com>
- <20210224014232-mutt-send-email-mst@kernel.org>
- <ce6b0380-bc4c-bcb8-db82-2605e819702c@redhat.com>
- <20210224021222-mutt-send-email-mst@kernel.org>
- <babc654d-8dcd-d8a2-c3b6-d20cc4fc554c@redhat.com>
- <20210224034240-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <d2992c03-d639-54e3-4599-c168ceeac148@redhat.com>
-Date:   Wed, 24 Feb 2021 17:30:37 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        bh=RHDb1EdzW6ls0b9fIDV8fGOOuVEVrb7XhiXVWuec/l4=;
+        b=sdh8e/w5oTQCb745WEPHxOHWYf5r0wxjB/z4beRQ4u39gmoCbGLGEmfsRGI/HaRqjS4Kmh
+        YIK7mWaAXmjWIOSgk8wZ8aFvrivXgmVghdLlilVsChCKuTF/XPP7ZwytmBizpe8HCFizS8
+        ZBToJTW5QZiLS+U7WWzpcvk663uYC9s=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 60CA8AE05;
+        Wed, 24 Feb 2021 09:30:58 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 10:30:57 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memcg: cleanup root memcg checks
+Message-ID: <YDYc0WHOcCbwOS8h@dhcp22.suse.cz>
+References: <20210223205625.2792891-1-shakeelb@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210224034240-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223205625.2792891-1-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 23-02-21 12:56:25, Shakeel Butt wrote:
+> Replace the implicit checking of root memcg with explicit root memcg
+> checking i.e. !css->parent with mem_cgroup_is_root().
+>
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
-On 2021/2/24 4:43 下午, Michael S. Tsirkin wrote:
-> On Wed, Feb 24, 2021 at 04:26:43PM +0800, Jason Wang wrote:
->>      Basically on first guest access QEMU would tell kernel whether
->>      guest is using the legacy or the modern interface.
->>      E.g. virtio_pci_config_read/virtio_pci_config_write will call ioctl(ENABLE_LEGACY, 1)
->>      while virtio_pci_common_read will call ioctl(ENABLE_LEGACY, 0)
->>
->>
->> But this trick work only for PCI I think?
->>
->> Thanks
-> ccw has a revision it can check. mmio does not have transitional devices
-> at all.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
+Thanks!
 
-Ok, then we can do the workaround in the qemu, isn't it?
+> ---
+>  mm/memcontrol.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index dcb5665aeb69..79046ad3eec0 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -4141,7 +4141,7 @@ static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
+>  	if (val > 100)
+>  		return -EINVAL;
+>  
+> -	if (css->parent)
+> +	if (!mem_cgroup_is_root(memcg))
+>  		memcg->swappiness = val;
+>  	else
+>  		vm_swappiness = val;
+> @@ -4491,7 +4491,7 @@ static int mem_cgroup_oom_control_write(struct cgroup_subsys_state *css,
+>  	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+>  
+>  	/* cannot set to root cgroup and only 0 and 1 are allowed */
+> -	if (!css->parent || !((val == 0) || (val == 1)))
+> +	if (mem_cgroup_is_root(memcg) || !((val == 0) || (val == 1)))
+>  		return -EINVAL;
+>  
+>  	memcg->oom_kill_disable = val;
+> -- 
+> 2.30.0.617.g56c4b15f3c-goog
 
-Thanks
-
-
+-- 
+Michal Hocko
+SUSE Labs
