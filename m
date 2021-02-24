@@ -2,205 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA113235D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 03:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F773235D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 03:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232660AbhBXCik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 21:38:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232343AbhBXCih (ORCPT
+        id S232761AbhBXCjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 21:39:00 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:46540 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232343AbhBXCi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 21:38:37 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E4BC06174A;
-        Tue, 23 Feb 2021 18:37:57 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id 204so837084qke.11;
-        Tue, 23 Feb 2021 18:37:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gew/d97c74HBNGUJfx+Rk0cvl8/ZTJmIMUjr9vTVx7M=;
-        b=Ba9GMlCINUM+zY2JrGDsVLEbfP5OL5LB5Lw8Zm/phXQTYxBbGx1KE8j1zohBruOQKI
-         O0/tmltbBWlopzuFvEvxtJioRfKWXhrusxsyjarp2eL2szg6ZMZJ7o9J+lgTvTOFa2WI
-         Ulwcafe8tfBPsjfdWBRQM0tyAatPbS2YClRL1zMjwXGwMaOo6gY7aPG3ACfHQhcWFuSw
-         Q+5YkT04eJI5IZJhj/RX/meMx4pTWC5xkLcA33T9HuGWo9gjzPlfLFqe1IoNIpxg9A+B
-         ifTmRqN/+mNOc/gqTLAf40Tr4UifQF4DwB2IT1VGfqA/Z0WP83q8OzfvfASkL1hpBU8W
-         /I4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gew/d97c74HBNGUJfx+Rk0cvl8/ZTJmIMUjr9vTVx7M=;
-        b=awpdtZWA/rwDRiemHnGnbmfA21ymMGtnxc1yneEycSnbyPO2tuD2LHTLS5el+Hstmq
-         C4as51ybmOhCUx12O618bWuo6L6/M2ZAQ3NZJt/Ts1q6q3g4sugLdqJzhrb2fKc1Kq1x
-         s8wSXqBcqogyReJEs2x8Pw9hjCfP3moHZ/+kMrG21OtVksnMG8DiIZl19y5H0jG4KKKB
-         J6VdZOxPPeXZ7+xS/Y3Ir2AwpPtYnRUwWUv9ABA+QaTv02DmLnKpn6WBY8q9MNQa55Fo
-         9e6JyVSFAgM2HDyB0ZYFxaUmPwwcoSS4v7il9vsMGDTGftzT+lyZsR7V0j1qHJmvL2+u
-         8JIA==
-X-Gm-Message-State: AOAM5324nqDf5+Z5O6Rihj6B1zLGd/DeiJIM/t3SdFl9hjkpoKxq/Cbk
-        aImdOFOvxqNVU6GVCuF6bbo=
-X-Google-Smtp-Source: ABdhPJyv6fSMmxXyLVhqw8VjDlG1wwoFJhAdl2rxOscK1Ck0FT3LMmAZ/S0HMcFZ+aoVAWLm+IdRLg==
-X-Received: by 2002:a37:389:: with SMTP id 131mr29684614qkd.177.1614134276886;
+        Tue, 23 Feb 2021 21:38:56 -0500
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 11O2buG4011353;
+        Wed, 24 Feb 2021 11:37:56 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 11O2buG4011353
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614134276;
+        bh=pX9K/vCBClh8oGzPBvXQnUV2yh+cgPFd9eXRxBcBQqc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uDKfRRyrhkh/xOGOhZVTP++JqhCak80BQYw6j6b1afnDPBko+EOWCDAnSBn+wXAQB
+         ORLp/2qPynO9sMzzrfnzHU+TPc03au2gYdLPVt0Eir6IlYL49App+a4I5ZgLd8SKkT
+         k/8lgAJlu11niis9TeQ9fBJEy9mdFCC4fVMzKNp5FbBOZFALtobp6+ZqAq4X4uUgqN
+         W6gLk52N1fJFL0u9+DT6Q0nmPgYbESF0FfYvWE8ulqjTfLzL+OeLUOFnf/+LIXbQBM
+         SHK0y9cg4nxEV6msUyVTL/cDo43NzuD3GEWYv3Mecozv0HjWzFz7H33sMB+9e9qPZf
+         bb/roqcuPNCmQ==
+X-Nifty-SrcIP: [209.85.215.179]
+Received: by mail-pg1-f179.google.com with SMTP id o38so489798pgm.9;
         Tue, 23 Feb 2021 18:37:56 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id v187sm578477qkd.50.2021.02.23.18.37.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 18:37:56 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 7279727C0054;
-        Tue, 23 Feb 2021 21:37:54 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 23 Feb 2021 21:37:55 -0500
-X-ME-Sender: <xms:Abw1YGSm55fnSS2IfXVEjvsQALZDXT2FmLIttNcYUAw0Z0MwU_Mw9A>
-    <xme:Abw1YLzMRTFXxC7z7CfA7r8GcSwRcw_f19HGYHT6dr3FbAPJhUzqjoOOOjXrTWfrn
-    3enMbm6IplhWDNt_w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeeigdeghecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
-    jeenucfkphepudefuddruddtjedrudegjedruddvieenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
-    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
-    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:Arw1YD1sWW2t4jgDSfqyNdFYBIOr7SaDAgN6qla8ivhjUpPMTEcXxA>
-    <xmx:Arw1YCBQcdnpuDWsZaon4mpyVs4atIGfgN2rLIEMQMsM_fI11vcuRw>
-    <xmx:Arw1YPih_zyVxAy6eYnGJKRRqwEz5_d54XlulvrXBC5fEmhz3UnQHg>
-    <xmx:Arw1YCoEIJbHHyoZglKSFZlK1BF5Ua1lvOjIB4gjzOLZ-ti4rLk2dIOe1tQ>
-Received: from localhost (unknown [131.107.147.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C334A108005C;
-        Tue, 23 Feb 2021 21:37:53 -0500 (EST)
-Date:   Wed, 24 Feb 2021 10:37:16 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
-        arnd@arndb.de, wei.liu@kernel.org, ardb@kernel.org,
-        daniel.lezcano@linaro.org, kys@microsoft.com
-Subject: Re: [PATCH v8 1/6] arm64: hyperv: Add Hyper-V hypercall and register
- access utilities
-Message-ID: <YDW73Oh//1iAGTka@boqun-archlinux>
-References: <1613690194-102905-1-git-send-email-mikelley@microsoft.com>
- <1613690194-102905-2-git-send-email-mikelley@microsoft.com>
+X-Gm-Message-State: AOAM5320f4iS51QyZ9QJZM3AdWDLueF1OvDj4+CYSCt13so+qDNJjeXp
+        iSNEcVCUmINg5uOsnYeigZ752wcMH6zE47ehUNM=
+X-Google-Smtp-Source: ABdhPJwNSidoBD5D9Ei7aEJTeImQSK0VOfcgranFV5uHW4vWpFFasYyfU0+uYnqGGx2UblAPk0T3Lu0p5iS8osSc2ak=
+X-Received: by 2002:a62:b416:0:b029:1e4:fb5a:55bb with SMTP id
+ h22-20020a62b4160000b02901e4fb5a55bbmr28579569pfn.80.1614134275563; Tue, 23
+ Feb 2021 18:37:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1613690194-102905-2-git-send-email-mikelley@microsoft.com>
+References: <20210205220125.2931504-1-ndesaulniers@google.com>
+ <CAK7LNARKHvjTcnic=ZKntH3NY5meehQbJuBr34y9_tn8b-Ym0w@mail.gmail.com> <CAKwvOd=qh0=tU9fr60DxcJepUfg6+BkqScwifW4s8A2A=ofKpw@mail.gmail.com>
+In-Reply-To: <CAKwvOd=qh0=tU9fr60DxcJepUfg6+BkqScwifW4s8A2A=ofKpw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 24 Feb 2021 11:37:18 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ_4=xaZ71nE5T8V2vEV_7zrEWMrv6n2aRog-sqxjiTLw@mail.gmail.com>
+Message-ID: <CAK7LNAQ_4=xaZ71nE5T8V2vEV_7zrEWMrv6n2aRog-sqxjiTLw@mail.gmail.com>
+Subject: Re: [PATCH] Makefile: reuse CC_VERSION_TEXT
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 03:16:29PM -0800, Michael Kelley wrote:
-[...]
-> +
-> +/*
-> + * Get the value of a single VP register.  One version
-> + * returns just 64 bits and another returns the full 128 bits.
-> + * The two versions are separate to avoid complicating the
-> + * calling sequence for the more frequently used 64 bit version.
-> + */
-> +
-> +void __hv_get_vpreg_128(u32 msr,
-> +			struct hv_get_vp_registers_input  *input,
-> +			struct hv_get_vp_registers_output *res)
-> +{
-> +	u64	status;
-> +
-> +	input->header.partitionid = HV_PARTITION_ID_SELF;
-> +	input->header.vpindex = HV_VP_INDEX_SELF;
-> +	input->header.inputvtl = 0;
-> +	input->element[0].name0 = msr;
-> +	input->element[0].name1 = 0;
-> +
-> +
-> +	status = hv_do_hypercall(
-> +		HVCALL_GET_VP_REGISTERS | HV_HYPERCALL_REP_COMP_1,
-> +		input, res);
-> +
-> +	/*
-> +	 * Something is fundamentally broken in the hypervisor if
-> +	 * getting a VP register fails. There's really no way to
-> +	 * continue as a guest VM, so panic.
-> +	 */
-> +	BUG_ON((status & HV_HYPERCALL_RESULT_MASK) != HV_STATUS_SUCCESS);
-> +}
-> +
-> +u64 hv_get_vpreg(u32 msr)
-> +{
-> +	struct hv_get_vp_registers_input	*input;
-> +	struct hv_get_vp_registers_output	*output;
-> +	u64					result;
-> +
-> +	/*
-> +	 * Allocate a power of 2 size so alignment to that size is
-> +	 * guaranteed, since the hypercall input and output areas
-> +	 * must not cross a page boundary.
-> +	 */
-> +	input = kzalloc(roundup_pow_of_two(sizeof(input->header) +
-> +				sizeof(input->element[0])), GFP_ATOMIC);
-> +	output = kmalloc(roundup_pow_of_two(sizeof(*output)), GFP_ATOMIC);
-> +
+On Wed, Feb 24, 2021 at 5:10 AM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Fri, Feb 5, 2021 at 5:49 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > On Sat, Feb 6, 2021 at 7:01 AM 'Nick Desaulniers' via Clang Built
+> > Linux <clang-built-linux@googlegroups.com> wrote:
+> > >
+> > > I noticed we're invoking $(CC) via $(shell) more than once to check the
+> > > version.  Let's reuse the first string captured in $CC_VERSION_TEXT.
+> > >
+> > > Fixes: 315bab4e972d ("kbuild: fix endless syncconfig in case arch Makefile sets CROSS_COMPILE")
+> >
+> >
+> > I did not touch this hunk because I have a plan
+> > for different refactoring, but I have never got
+> > around to do it.
+> >
+> > Anyway, you beat me, and I will pick this up.
+> > But, the Fixes tag is questionable because
+> > this is code refactoring.
+>
+> Hi Masahiro,
+> A friendly reminder to please pick this up; I don't see it yet in
+> linux-next. I'm ok with you dropping the fixes tag when applied.
 
-Do we need to BUG_ON(!input || !output)? Or we expect the page fault
-(for input being NULL) or the failure of hypercall (for output being
-NULL) to tell us the allocation failed?
 
-Hmm.. think a bit more on this, maybe we'd better retry the allocation
-if it failed. Because say we are under memory pressusre, and only have
-memory enough for doing one hvcall, and one thread allocates that memory
-but gets preempted by another thread trying to do another hvcall:
+Sorry, I had completely forgotten to do this.
+Thanks for the reminder.
 
-	<thread 1>
-	hv_get_vpreg():
-	  input = kzalloc(...);
-	  output = kmalloc(...);
-	<preempted and switch to thread 2>
-	hv_get_vpreg():
-	  intput = kzalloc(...); // allocation fails, but actually if
-	                         // we wait for thread 1 to finish its
-				 // hvcall, we can get enough memory.
+I inserted this before Nathan's "remove # characters" patch.
 
-, in this case, if thread 2 retried, it might get the enough memory,
-therefore there is no need to BUG_ON() on allocation failure. That said,
-I don't think this is likely to happen, and there may be better
-solutions for this, so maybe we can keep it as it is (assuming that
-memory allocation for hvcall never fails) and improve later.
 
-Regards,
-Boqun
 
-> +	__hv_get_vpreg_128(msr, input, output);
-> +
-> +	result = output->as64.low;
-> +	kfree(input);
-> +	kfree(output);
-> +	return result;
-> +}
-> +EXPORT_SYMBOL_GPL(hv_get_vpreg);
-> +
-> +void hv_get_vpreg_128(u32 msr, struct hv_get_vp_registers_output *res)
-> +{
-> +	struct hv_get_vp_registers_input	*input;
-> +	struct hv_get_vp_registers_output	*output;
-> +
-> +	/*
-> +	 * Allocate a power of 2 size so alignment to that size is
-> +	 * guaranteed, since the hypercall input and output areas
-> +	 * must not cross a page boundary.
-> +	 */
-> +	input = kzalloc(roundup_pow_of_two(sizeof(input->header) +
-> +				sizeof(input->element[0])), GFP_ATOMIC);
-> +	output = kmalloc(roundup_pow_of_two(sizeof(*output)), GFP_ATOMIC);
-> +
-> +	__hv_get_vpreg_128(msr, input, output);
-> +
-> +	res->as64.low = output->as64.low;
-> +	res->as64.high = output->as64.high;
-> +	kfree(input);
-> +	kfree(output);
-> +}
-[...]
+
+> (Otherwise, I was about to use `grep -m1` instead of `| head -n1 | grep` here.)
+>
+> >
+> >
+> >
+> >
+> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > ---
+> > >  Makefile | 14 +++++++-------
+> > >  1 file changed, 7 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/Makefile b/Makefile
+> > > index a85535eb6a7d..70034d7c1051 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -557,7 +557,13 @@ ifdef building_out_of_srctree
+> > >         { echo "# this is build directory, ignore it"; echo "*"; } > .gitignore
+> > >  endif
+> > >
+> > > -ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
+> > > +# The expansion should be delayed until arch/$(SRCARCH)/Makefile is included.
+> > > +# Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
+> > > +# CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
+> > > +# and from include/config/auto.conf.cmd to detect the compiler upgrade.
+> > > +CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1)
+> > > +
+> > > +ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+> > >  ifneq ($(CROSS_COMPILE),)
+> > >  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+> > >  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> > > @@ -576,12 +582,6 @@ KBUILD_AFLAGS      += $(CLANG_FLAGS)
+> > >  export CLANG_FLAGS
+> > >  endif
+> > >
+> > > -# The expansion should be delayed until arch/$(SRCARCH)/Makefile is included.
+> > > -# Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
+> > > -# CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
+> > > -# and from include/config/auto.conf.cmd to detect the compiler upgrade.
+> > > -CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1)
+> > > -
+> > >  ifdef config-build
+> > >  # ===========================================================================
+> > >  # *config targets only - make sure prerequisites are updated, and descend
+> > > --
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOd%3Dqh0%3DtU9fr60DxcJepUfg6%2BBkqScwifW4s8A2A%3DofKpw%40mail.gmail.com.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
