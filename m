@@ -2,194 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6B5323728
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CFB323763
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbhBXGKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 01:10:08 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:32957 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232743AbhBXGKE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 01:10:04 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210224060921epoutp025f3743f63ea6222a35e0b005f0b7008a~mmhv72Wpu2261922619epoutp02X
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:09:21 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210224060921epoutp025f3743f63ea6222a35e0b005f0b7008a~mmhv72Wpu2261922619epoutp02X
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614146961;
-        bh=lUNO9sPSxE5o4aS0CTnJy7QerwMb/kkedf/3C7YNiho=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=BoGKshoVS/Ou04W1hxhJxjtQxvetfyPOZ0nsr3BMWUVKMeGkVkjXI7Rww91t10PSx
-         M3sjPO2KreSI2a9TCKZYc62ZaN2quA+paMhx+W6+VpNum8CTnPrLEtX8oDpOHkHfT5
-         6BJLu3xXYuKvpcYPp2F/4P0J2RJ427e4RLDaSSug=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210224060920epcas1p4118ef997ff38056275752b3276c00882~mmhvUNqYt0337803378epcas1p47;
-        Wed, 24 Feb 2021 06:09:20 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.158]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4Dllqd6SsHz4x9QB; Wed, 24 Feb
-        2021 06:09:17 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        22.4C.09577.D8DE5306; Wed, 24 Feb 2021 15:09:17 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210224060917epcas1p37c2d49fee6ee8c7f4e799bc80147cfec~mmhr7v2PQ0758407584epcas1p39;
-        Wed, 24 Feb 2021 06:09:17 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210224060917epsmtrp2f288292bb3a138f14c55bf7b7ee96f10~mmhr62ip92303623036epsmtrp2W;
-        Wed, 24 Feb 2021 06:09:17 +0000 (GMT)
-X-AuditID: b6c32a39-c13ff70000002569-cb-6035ed8db579
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        34.8C.13470.C8DE5306; Wed, 24 Feb 2021 15:09:17 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210224060916epsmtip2774f357f869ce792c8ff0af9f60e8740~mmhrrDAVf2155221552epsmtip2h;
-        Wed, 24 Feb 2021 06:09:16 +0000 (GMT)
-Subject: Re: [PATCH 2/2] units: Use the HZ_PER_KHZ macro
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rafael@kernel.org
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Christian Eggers <ceggers@arri.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        "open list:DEVICE FREQUENCY (DEVFREQ)" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:AMS AS73211 DRIVER" <linux-iio@vger.kernel.org>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <c493dac9-9199-12c9-365a-8c96cb73d91e@samsung.com>
-Date:   Wed, 24 Feb 2021 15:25:52 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
-MIME-Version: 1.0
-In-Reply-To: <20210223203004.7219-2-daniel.lezcano@linaro.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPJsWRmVeSWpSXmKPExsWy7bCmgW7vW9MEg89TjCwOz6+waOy9zmgx
-        77OsxYOmVUwWZ5vesFssmTyf1WLekXcsFpd3zWGz+Nx7hNHiduMKNovfu46xW8z9MpXZ4snD
-        PjYHXo9jazazeize85LJY9OqTjaPO9f2sHkseXOI1eN88xFGj74tqxg9Pm+SC+CIyrbJSE1M
-        SS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAbpYSaEsMacUKBSQ
-        WFyspG9nU5RfWpKqkJFfXGKrlFqQklNgWaBXnJhbXJqXrpecn2tlaGBgZApUmJCdsemcVsEB
-        wYqV17axNzDu5Oti5OSQEDCReHFmFksXIxeHkMAORom5C44xgiSEBD4xSqyeXg5hf2OU+Dgz
-        uYuRA6xh2wpxiPq9jBJbd55mg3DeM0rsuXwWrFlYwELi+/4PTCC2iICjxJe/i9hBipgFXjJL
-        XJjbywKSYBPQktj/4gYbiM0voChx9cdjsGZeATuJmyufMIJsYxFQleidaQESFhUIkzi5rQWq
-        RFDi5MwnLCAlnEDl7e0xIGFmAXGJW0/mM0HY8hLb385hBlkrIXCHQ+LX/mlsEB+7SDxdeJcR
-        whaWeHV8CzuELSXx+d1eqJpqiZUnj7BBNHcwSmzZf4EVImEssX/pZCaQxcwCmhLrd+lDhBUl
-        dv6eywixmE/i3dceVkhg8Up0tAlBlChLXH5wlwnClpRY3N7JNoFRaRaSb2YheWEWkhdmISxb
-        wMiyilEstaA4Nz212LDAFDmmNzGCU7KW5Q7G6W8/6B1iZOJgPMQowcGsJMLLdtcoQYg3JbGy
-        KrUoP76oNCe1+BCjKTB4JzJLiSbnA7NCXkm8oamRsbGxhYmhmamhoZI4b5LBg3ghgfTEktTs
-        1NSC1CKYPiYOTqkGJr3/Ns2PWlJ+bv1QcSFcoMah00ekUtwn/uel2uXdiv9/pHN2tD9INWR6
-        ncMQtLhbyOna45rLq3aFn6zIvnNGn/HPBb0HLaLTF8V29TN8W3BqR8Bl5j+zrGsf+tz/dPxg
-        +IRkHbbwDTvj1ZqEbatqeG9pz2JduK1gziuP2GO52x06hE4c/8DMFaUfYO/3d7Up/6vfJaFL
-        MsTd1s0pdX7Stvpb/+S6L6Y8rs46/vN/iv0vnSpuuL6l3yMgstrpejzP/ugSlV+hCgbrX6Xs
-        e2g4UWBe/JNqwawrqmllGpySm1ccNNj+L/7BOeNzU2acnKVqvn731bVxfNcso+bXRr6L9bu6
-        XNxefYHeB3aLs/zXlFiKMxINtZiLihMBpDq6tVIEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsWy7bCSvG7vW9MEg6bdjBaH51dYNPZeZ7SY
-        91nW4kHTKiaLs01v2C2WTJ7PajHvyDsWi8u75rBZfO49wmhxu3EFm8XvXcfYLeZ+mcps8eRh
-        H5sDr8exNZtZPRbvecnksWlVJ5vHnWt72DyWvDnE6nG++QijR9+WVYwenzfJBXBEcdmkpOZk
-        lqUW6dslcGVsOqdVcECwYuW1bewNjDv5uhg5OCQETCS2rRDvYuTiEBLYzSixbeU5pi5GTqC4
-        pMS0i0eZIWqEJQ4fLoaoecsoMWXhTxaQGmEBC4nv+z+A1YsIOEp8+buIHaSIWeAts8Snjh8s
-        EB1HGSU2fV3HDlLFJqAlsf/FDTYQm19AUeLqj8eMIDavgJ3EzZVPGEG2sQioSvTOtAAJiwqE
-        Sexc8pgJokRQ4uTMJywgJZxA5e3tMSBhZgF1iT/zLjFD2OISt57MZ4Kw5SW2v53DPIFReBaS
-        7llIWmYhaZmFpGUBI8sqRsnUguLc9NxiwwLDvNRyveLE3OLSvHS95PzcTYzg+NTS3MG4fdUH
-        vUOMTByMhxglOJiVRHjZ7holCPGmJFZWpRblxxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1
-        tSC1CCbLxMEp1cB0dMGvWrvp/9eary5vv2s+Ta5+P6cQw9KEHQcDe3qyc9OnJDYsl6/jWlC8
-        Ifjm459M4ekz498fT567x3WR2R6rp9+W8XW+U723/v+GzKpmnh1dliX797V4/ZdZ9XFpwu7L
-        ckaP1xeY26w5/rnMJzht6YPqFwyO1hKPa103px0QCrqfbOcn+HflF468q4sW8F0Km7rgakm8
-        6w8exUiGuxHtOx1s5XMOnD4Sot+n8mfL5jfztglNvr2R0byPq2e1050bcTwRZzWvXNxzQ+KI
-        0OX06DeJTNNsd7ttuvY612fbpcDOyXxxmZG3mFhd1T/Pzm2w4pafpOp8rTJWYj/jHqnEZQEz
-        etVMnBdPNE4rtTVXYinOSDTUYi4qTgQA5pXmpz4DAAA=
-X-CMS-MailID: 20210224060917epcas1p37c2d49fee6ee8c7f4e799bc80147cfec
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210223203223epcas1p43d6a797026eb0d36d4f5b77bd5d79d6d
-References: <20210223203004.7219-1-daniel.lezcano@linaro.org>
-        <CGME20210223203223epcas1p43d6a797026eb0d36d4f5b77bd5d79d6d@epcas1p4.samsung.com>
-        <20210223203004.7219-2-daniel.lezcano@linaro.org>
+        id S232203AbhBXGfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 01:35:13 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:57662 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230165AbhBXGfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 01:35:11 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DlmNZ11TJz9typF;
+        Wed, 24 Feb 2021 07:34:22 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id UrfR2TZ5sEw8; Wed, 24 Feb 2021 07:34:22 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DlmNY6lfZz9tyhP;
+        Wed, 24 Feb 2021 07:34:21 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E205B8B833;
+        Wed, 24 Feb 2021 07:34:22 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ljQKO2k2kZk9; Wed, 24 Feb 2021 07:34:22 +0100 (CET)
+Received: from localhost.localdomain (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A85EB8B766;
+        Wed, 24 Feb 2021 07:34:22 +0100 (CET)
+Received: by localhost.localdomain (Postfix, from userid 0)
+        id 70B6E673C1; Wed, 24 Feb 2021 06:34:22 +0000 (UTC)
+Message-Id: <53f3a1f719441761000c41154602bf097d4350b5.1614148356.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/syscall: Force inlining of
+ __prep_irq_for_enabled_exit()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 24 Feb 2021 06:34:22 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/21 5:30 AM, Daniel Lezcano wrote:
-> The HZ_PER_KHZ macro definition is duplicated in different subsystems.
-> 
-> The macro now exists in include/linux/units.h, make use of it and
-> remove all the duplicated ones.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  drivers/devfreq/devfreq.c         | 2 +-
->  drivers/iio/light/as73211.c       | 3 +--
->  drivers/thermal/devfreq_cooling.c | 2 +-
->  3 files changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index 6aa10de792b3..4c636c336ace 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -26,6 +26,7 @@
->  #include <linux/hrtimer.h>
->  #include <linux/of.h>
->  #include <linux/pm_qos.h>
-> +#include <linux/units.h>
->  #include "governor.h"
->  
->  #define CREATE_TRACE_POINTS
-> @@ -33,7 +34,6 @@
->  
->  #define IS_SUPPORTED_FLAG(f, name) ((f & DEVFREQ_GOV_FLAG_##name) ? true : false)
->  #define IS_SUPPORTED_ATTR(f, name) ((f & DEVFREQ_GOV_ATTR_##name) ? true : false)
-> -#define HZ_PER_KHZ	1000
->  
->  static struct class *devfreq_class;
->  static struct dentry *devfreq_debugfs;
-> diff --git a/drivers/iio/light/as73211.c b/drivers/iio/light/as73211.c
-> index 7b32dfaee9b3..3ba2378df3dd 100644
-> --- a/drivers/iio/light/as73211.c
-> +++ b/drivers/iio/light/as73211.c
-> @@ -24,8 +24,7 @@
->  #include <linux/module.h>
->  #include <linux/mutex.h>
->  #include <linux/pm.h>
-> -
-> -#define HZ_PER_KHZ 1000
-> +#include <linux/units.h>
->  
->  #define AS73211_DRV_NAME "as73211"
->  
-> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-> index fed3121ff2a1..fa5b8b0c7604 100644
-> --- a/drivers/thermal/devfreq_cooling.c
-> +++ b/drivers/thermal/devfreq_cooling.c
-> @@ -19,10 +19,10 @@
->  #include <linux/pm_opp.h>
->  #include <linux/pm_qos.h>
->  #include <linux/thermal.h>
-> +#include <linux/units.h>
->  
->  #include <trace/events/thermal.h>
->  
-> -#define HZ_PER_KHZ		1000
->  #define SCALE_ERROR_MITIGATION	100
->  
->  static DEFINE_IDA(devfreq_ida);
-> 
+As reported by kernel test robot, a randconfig with high amount of
+debuging options can lead to build failure for undefined reference
+to replay_soft_interrupts() on ppc32.
 
-For devfreq part,
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+This is due to gcc not seeing that __prep_irq_for_enabled_exit()
+always returns true on ppc32 because it doesn't inline it for
+some reason.
 
+Force inlining of __prep_irq_for_enabled_exit() to fix the build.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Fixes: 344bb20b159d ("powerpc/syscall: Make interrupt.c buildable on PPC32")
+---
+ arch/powerpc/kernel/interrupt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index 398cd86b6ada..2ef3c4051bb9 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -149,7 +149,7 @@ notrace long system_call_exception(long r3, long r4, long r5,
+  * enabled when the interrupt handler returns (indicating a process-context /
+  * synchronous interrupt) then irqs_enabled should be true.
+  */
+-static notrace inline bool __prep_irq_for_enabled_exit(bool clear_ri)
++static notrace __always_inline bool __prep_irq_for_enabled_exit(bool clear_ri)
+ {
+ 	/* This must be done with RI=1 because tracing may touch vmaps */
+ 	trace_hardirqs_on();
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+2.25.0
+
