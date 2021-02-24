@@ -2,168 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AD232388D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F162323892
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232420AbhBXIXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234189AbhBXIXV (ORCPT
+        id S232417AbhBXIZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:25:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35362 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229556AbhBXIYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:23:21 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45CBC06178B;
-        Wed, 24 Feb 2021 00:22:40 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id 7so1000057wrz.0;
-        Wed, 24 Feb 2021 00:22:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=BAE1Kf2xIrmHE4CG7BguHd5TjWIGOPY8aBCToqo40i8=;
-        b=ON9GDxXWl4h3rVmqaA5nrpo6rfrokVBk8WnqQJNPuEJChQJMKxHMfMkDO/IPttlRmo
-         CG/KT7FuD0UYCnJMpvrUsAF8aozpxxuI23sH68noZOIHEk/hBeAsY32hfNtnkblkiIKL
-         cvzlrmMBFYpmqWK0nTnJiAy8gyWL59EhlJ/Jp/M0GMtMxEHV0+vDuUbEXPnzcFVe7UNo
-         el6+0Ifm2SWXhDhaqNOMmtm1mMp06Gf58D06eXh8nYdF0+0IFKMm6XAIEHpz1NvfbNkz
-         wQGmdQeW8dGnR/ON+XFCWVn3A46cCQ7y3/bRjqlAJh1uJ2NrtfHdZaOFsaM6WiqRR70V
-         dSLg==
+        Wed, 24 Feb 2021 03:24:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614155006;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1JbGPMGc3zR5mJ9ryS3aC3fSGYocZkjlOuNb6WBZZ3I=;
+        b=KSGq+666prtCURPW2NWMu9TT5irzC6T/ytkR3X0+dQZAp65bfqyRkCkL0+ZZklzaFoRmdC
+        a4kx0Wy28vYagEajpFldjPPd9MCwmrRxbbpRVk6Jt/rA1CFq+8aiW9jaD31ozJgEG8Xtf2
+        hUvTV3bR9mLtlMEP+vzC1iqSwXl1u9A=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-Rg6-67G-OQGRN2-sVN3Vlw-1; Wed, 24 Feb 2021 03:23:24 -0500
+X-MC-Unique: Rg6-67G-OQGRN2-sVN3Vlw-1
+Received: by mail-wr1-f70.google.com with SMTP id k5so697270wrw.14
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:23:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BAE1Kf2xIrmHE4CG7BguHd5TjWIGOPY8aBCToqo40i8=;
-        b=Dosf9ZMZrHmlM/ewSIY9XOobtG+enggw2aDoYUtAdhZrw7Dg8BGzn0vgFOos9rhATB
-         U4WU0rw2GOVoxruXuJsHe37N44YLv6COBb4yua3Wc5/qyi25xQzLke2MxyUuh48ENYi1
-         AaXcXm2q5Rb6TnKEgDYgsry5Nm6XF7OdSZ1dP/aVv4jxyR0YpwVxcjChajUKaP96NuI2
-         Ewj0eC8gALZuvsSy2iTTNzJu7fp8CAS0npb4GBJDq45UbP9PP4Bj2DGPHMRJyJ0EJMgP
-         a8oSkOve9kBA5/winS61z1c2TUf7+j6RhK4UTPFyvYZfm1nKsh3a4uFX9f1l1x2ECokx
-         s+fg==
-X-Gm-Message-State: AOAM533+iACYvO1qGguuK6muCNZMJBUbIc7VTmZytExK/NSqwE7TMkpb
-        ysT2ucC8zqV7z9twAbFxcSA=
-X-Google-Smtp-Source: ABdhPJxch8/aZDZYHTx5t2OcR8JeSykfALOIoALHNOtek/GvbLq3PLOnVPo32xcrsVXe9UlVxg9OcQ==
-X-Received: by 2002:adf:d0c5:: with SMTP id z5mr8562622wrh.289.1614154959564;
-        Wed, 24 Feb 2021 00:22:39 -0800 (PST)
-Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id u19sm1501628wmm.46.2021.02.24.00.22.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1JbGPMGc3zR5mJ9ryS3aC3fSGYocZkjlOuNb6WBZZ3I=;
+        b=edhE078mWITh9Ug6hlNWNWRjG1W/P5ansQ7/vxeYa3IbTARx+ZE3hGnd8f0rhqr8DW
+         Y1DqhH/PJu64FWMX7JRiQV2IZIneHVfzYsDSh3miNldFE2Hy2mjkYkHEjK8KMcZQ1yqb
+         jZr9UjNj7pfOnoSFddiD6otMVcuPUZnB8xcSMnRyS6Z77qYtUKevMu6C9WjT0dJWwSHU
+         W4RihdErmLHMZio6prIcX0DknHaI8CF8IWV1Cndts/CotnWbcCgtnffEksVEMHEX/rq1
+         KLzKX2PaqqlHBPzQeqwjkZTA/nI7DGUpKOEDeUQVFZgEbGvJSyg4QZ0PbITRDx8/8C2W
+         jCwA==
+X-Gm-Message-State: AOAM531HNEEnQoaU4BoIs1qemxHc62k+EGAzWPx1b2PvcLz+PC9ndETd
+        TVxIFUHbugx38nUwV/wwuPMBzpkhJCK8uFpq4rzeRFbMPjh6eXAbMH0zRtFRrZCRCt1ZZwY9kUT
+        TnVywhN0639t3MvfvJpqU+pi1
+X-Received: by 2002:a7b:cb81:: with SMTP id m1mr2574142wmi.117.1614155003181;
+        Wed, 24 Feb 2021 00:23:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwr2zof1ZDDqJMUOF+ohaSrHn1X03ArrZY1vRa0Mt+0/xGnqxU7+pV+gRMZdhng3Liw6tsb4Q==
+X-Received: by 2002:a7b:cb81:: with SMTP id m1mr2574122wmi.117.1614155002974;
+        Wed, 24 Feb 2021 00:23:22 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id a1sm2056803wrx.95.2021.02.24.00.23.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 00:22:39 -0800 (PST)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Guenter Roeck <linux@roeck-us.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@protonmail.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] hwrng: bcm2835: add reset support
-Date:   Wed, 24 Feb 2021 09:22:30 +0100
-Message-Id: <20210224082230.29015-3-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210224082230.29015-1-noltari@gmail.com>
-References: <20210223160131.29053-1-noltari@gmail.com>
- <20210224082230.29015-1-noltari@gmail.com>
+        Wed, 24 Feb 2021 00:23:22 -0800 (PST)
+Date:   Wed, 24 Feb 2021 09:23:19 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [RFC PATCH v5 00/19] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210224082319.yrmqr6zs7emvghw3@steredhat>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210222142311.gekdd7gsm33wglos@steredhat>
+ <20210223145016.ddavx6fihq4akdim@steredhat>
+ <7a280168-cb54-ae26-4697-c797f6b04708@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <7a280168-cb54-ae26-4697-c797f6b04708@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BCM6368 devices need to reset the in order to generate true random numbers.
-This is what BCM6368 produces without a reset:
-root@OpenWrt:/# cat /dev/hwrng | rngtest -c 1000
-rngtest 6.10
-Copyright (c) 2004 by Henrique de Moraes Holschuh
-This is free software; see the source for copying conditions.  There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+On Wed, Feb 24, 2021 at 07:29:25AM +0300, Arseny Krasnov wrote:
+>
+>On 23.02.2021 17:50, Stefano Garzarella wrote:
+>> On Mon, Feb 22, 2021 at 03:23:11PM +0100, Stefano Garzarella wrote:
+>>> Hi Arseny,
+>>>
+>>> On Thu, Feb 18, 2021 at 08:33:44AM +0300, Arseny Krasnov wrote:
+>>>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
+>>>> transport.
+>>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>>>> do it, two new packet operations were added: first for start of record
+>>>> and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
+>>>> both operations carries metadata - to maintain boundaries and payload
+>>>> integrity. Metadata is introduced by adding special header with two
+>>>> fields - message count and message length:
+>>>>
+>>>> 	struct virtio_vsock_seq_hdr {
+>>>> 		__le32  msg_cnt;
+>>>> 		__le32  msg_len;
+>>>> 	} __attribute__((packed));
+>>>>
+>>>> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
+>>>> packets(buffer of second virtio descriptor in chain) in the same way as
+>>>> data transmitted in RW packets. Payload was chosen as buffer for this
+>>>> header to avoid touching first virtio buffer which carries header of
+>>>> packet, because someone could check that size of this buffer is equal
+>>>> to size of packet header. To send record, packet with start marker is
+>>>> sent first(it's header contains length of record and counter), then
+>>>> counter is incremented and all data is sent as usual 'RW' packets and
+>>>> finally SEQ_END is sent(it also carries counter of message, which is
+>>>> counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
+>>>> incremented again. On receiver's side, length of record is known from
+>>>> packet with start record marker. To check that no packets were dropped
+>>>> by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
+>>>> checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
+>>>> 1) and length of data between two markers is compared to length in
+>>>> SEQ_BEGIN header.
+>>>> 	Now as  packets of one socket are not reordered neither on
+>>>> vsock nor on vhost transport layers, such markers allows to restore
+>>>> original record on receiver's side. If user's buffer is smaller that
+>>>> record length, when all out of size data is dropped.
+>>>> 	Maximum length of datagram is not limited as in stream socket,
+>>>> because same credit logic is used. Difference with stream socket is
+>>>> that user is not woken up until whole record is received or error
+>>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>>>> 	Tests also implemented.
+>>> I reviewed the first part (af_vsock.c changes), tomorrow I'll review
+>>> the rest. That part looks great to me, only found a few minor issues.
+>> I revieiwed the rest of it as well, left a few minor comments, but I
+>> think we're well on track.
+>>
+>> I'll take a better look at the specification patch tomorrow.
+>Great, Thank You
+>>
+>> Thanks,
+>> Stefano
+>>
+>>> In the meantime, however, I'm getting a doubt, especially with regard
+>>> to other transports besides virtio.
+>>>
+>>> Should we hide the begin/end marker sending in the transport?
+>>>
+>>> I mean, should the transport just provide a seqpacket_enqueue()
+>>> callbacl?
+>>> Inside it then the transport will send the markers. This is because
+>>> some transports might not need to send markers.
+>>>
+>>> But thinking about it more, they could actually implement stubs for
+>>> that calls, if they don't need to send markers.
+>>>
+>>> So I think for now it's fine since it allows us to reuse a lot of
+>>> code, unless someone has some objection.
+>
+>I thought about that, I'll try to implement it in next version. Let's see...
 
-rngtest: starting FIPS tests...
-rngtest: bits received from input: 20000032
-rngtest: FIPS 140-2 successes: 0
-rngtest: FIPS 140-2 failures: 1000
-rngtest: FIPS 140-2(2001-10-10) Monobit: 2
-rngtest: FIPS 140-2(2001-10-10) Poker: 1000
-rngtest: FIPS 140-2(2001-10-10) Runs: 1000
-rngtest: FIPS 140-2(2001-10-10) Long run: 30
-rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
-rngtest: input channel speed: (min=37.253; avg=320.827; max=635.783)Mibits/s
-rngtest: FIPS tests speed: (min=12.141; avg=15.034; max=16.428)Mibits/s
-rngtest: Program run time: 1336176 microseconds
+If you want to discuss it first, write down the idea you want to 
+implement, I wouldn't want to make you do unnecessary work. :-)
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- v4: add reset_control_rearm().
- v3: no changes.
- v2: no changes.
-
- drivers/char/hw_random/bcm2835-rng.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
-index 1a7c43b43c6b..92658edaff22 100644
---- a/drivers/char/hw_random/bcm2835-rng.c
-+++ b/drivers/char/hw_random/bcm2835-rng.c
-@@ -13,6 +13,7 @@
- #include <linux/platform_device.h>
- #include <linux/printk.h>
- #include <linux/clk.h>
-+#include <linux/reset.h>
- 
- #define RNG_CTRL	0x0
- #define RNG_STATUS	0x4
-@@ -32,6 +33,7 @@ struct bcm2835_rng_priv {
- 	void __iomem *base;
- 	bool mask_interrupts;
- 	struct clk *clk;
-+	struct reset_control *reset;
- };
- 
- static inline struct bcm2835_rng_priv *to_rng_priv(struct hwrng *rng)
-@@ -94,6 +96,10 @@ static int bcm2835_rng_init(struct hwrng *rng)
- 			return ret;
- 	}
- 
-+	ret = reset_control_reset(priv->reset);
-+	if (ret)
-+		return ret;
-+
- 	if (priv->mask_interrupts) {
- 		/* mask the interrupt */
- 		val = rng_readl(priv, RNG_INT_MASK);
-@@ -115,6 +121,8 @@ static void bcm2835_rng_cleanup(struct hwrng *rng)
- 	/* disable rng hardware */
- 	rng_writel(priv, 0, RNG_CTRL);
- 
-+	reset_control_rearm(priv->reset);
-+
- 	if (!IS_ERR(priv->clk))
- 		clk_disable_unprepare(priv->clk);
- }
-@@ -159,6 +167,10 @@ static int bcm2835_rng_probe(struct platform_device *pdev)
- 	if (PTR_ERR(priv->clk) == -EPROBE_DEFER)
- 		return -EPROBE_DEFER;
- 
-+	priv->reset = devm_reset_control_get_optional_exclusive(dev, NULL);
-+	if (IS_ERR(priv->reset))
-+		return PTR_ERR(priv->reset);
-+
- 	priv->rng.name = pdev->name;
- 	priv->rng.init = bcm2835_rng_init;
- 	priv->rng.read = bcm2835_rng_read;
--- 
-2.20.1
+Cheers,
+Stefano
 
