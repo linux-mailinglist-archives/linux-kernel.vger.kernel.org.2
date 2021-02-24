@@ -2,90 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA82832398D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:35:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43125323992
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234670AbhBXJfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:35:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43270 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234612AbhBXJeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:34:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98368614A5;
-        Wed, 24 Feb 2021 09:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614159228;
-        bh=/CF20OHQ7K0JhgmeOCBr7qeOZntk0MWyxxmZPAU4v98=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qi1W+/eGUtnIWAUKAzopoH5TWZl7ik9XR7jKSMR1Rf6v1SNwG4lMWVIR2duhS7AuC
-         fjbpTOWdiry0E4J2dUEHu6JgC+yfF348N1VJ/JWZ5OLn0zE8pK/sG2d7rb/eQEmBjw
-         wzB0y7FzhJyXdDqh4F7HUvmXiLnWjSismhgru7TMyvRVI9wzjYgqzYSmH5soEQhSjY
-         gSIu7pqC9jffD1vUwH5Uds2WX0sjMa5c46/uNXzcGZ/hxRuwcDOu1DggT+PERmTAGt
-         m4WZGyVTry5AEtbD+s8r2xQ8NSHQhKe2SCwTdyiiP46LouNSOd5scwmUPYSwCjFl+I
-         EPzhDr2Crt/eg==
-Date:   Wed, 24 Feb 2021 09:33:44 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>
-Subject: Re: [PATCH] arm64: enable GENERIC_FIND_FIRST_BIT
-Message-ID: <20210224093343.GA11306@willie-the-truck>
-References: <20201205165406.108990-1-yury.norov@gmail.com>
- <20201207112530.GB4379@willie-the-truck>
- <CAAH8bW-fb0wPwwvo8P8VW33zV=Wi_LPWxdJH8y2wdGGqPE+3nA@mail.gmail.com>
- <20201208103549.GA5887@willie-the-truck>
- <20210224052744.GA1168363@yury-ThinkPad>
+        id S234636AbhBXJhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:37:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35273 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234194AbhBXJg3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 04:36:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614159302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xDpumoxA9uXAvbvE4QJIt1iLqbsCBPKNd/TgxemxMkY=;
+        b=HND5w+ePLX1iHArWVqcP/jRxGV2AcLQMhq9ExQCxbEOpEM++jZIFog1HWp+Zp52/E36CvA
+        WUdlmz1jtBwEG9LKy79zR1AuaXIJTVisZWml0Qbkey0dlf+RLXa5cIrT5zovR4rUF3KpjY
+        0v7wMOosRoKUUnepmg8CqDL5bZr97YM=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-5u2YJtXdPzq3ZLZEmHiVig-1; Wed, 24 Feb 2021 04:33:57 -0500
+X-MC-Unique: 5u2YJtXdPzq3ZLZEmHiVig-1
+Received: by mail-yb1-f200.google.com with SMTP id q77so1804147ybq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 01:33:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xDpumoxA9uXAvbvE4QJIt1iLqbsCBPKNd/TgxemxMkY=;
+        b=Ck/PPV3GJjyo9n5B9H6XyV8iozi+DiJZ27L8HocAFVQroUcyISYT/PNtb2dG8IdNQ6
+         /ZeTq6fvUIEcF7a6KKyFV8ZIH4O4cY2hzh/cg2yZhYgJJqYz6pOboDTXliiNG0QYIerp
+         YHbys/VAlCMj/liDPlUiSexkbn8K7WN7fVapcmf/PKnRGZZE/kHF/fwYLsCKY6uiqaKO
+         DJUP0t1imselA9Ji5xDLW1NLWN96sLPsMQ7yB2fWma1AMyHB/5LcE847VltEA9RHLGPa
+         GGiHSCj/ez6i70zOEpq2+8h0A9sdNVFgBWaUJYmih+T5af/bJ0QzRnIErFovkLB3vS0Q
+         j7jQ==
+X-Gm-Message-State: AOAM531hmlum/ttosVXbv2ScjdUqzpKMDbUOPOQUkse6bKI/lFtoy0YA
+        uxwkSRU07aRQEfNOoIXhs0KFcTzzldqHopKPtcsVnwxkGWCeetx76ZqMRpKsZQSyIebBv5v3xp6
+        TRChKw/10NghuAUKURazx48kFdyTZLHAktOjCGP/7
+X-Received: by 2002:a5b:ac2:: with SMTP id a2mr44758936ybr.81.1614159236717;
+        Wed, 24 Feb 2021 01:33:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwpYwp7rz1tdZc6MVyGEegVfNnPphVXA8W4qlR+z7XNIP7BwBVjfbStjkgQyv4w9jES9ZUs+L1LQu9g9Lts1ZU=
+X-Received: by 2002:a5b:ac2:: with SMTP id a2mr44758913ybr.81.1614159236426;
+ Wed, 24 Feb 2021 01:33:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224052744.GA1168363@yury-ThinkPad>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210223214346.GB6000@sequoia> <20210223215054.GC6000@sequoia> <20210223223652.GD6000@sequoia>
+In-Reply-To: <20210223223652.GD6000@sequoia>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Wed, 24 Feb 2021 10:33:46 +0100
+Message-ID: <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
+Subject: Re: [BUG] Race between policy reload sidtab conversion and live conversion
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 09:27:44PM -0800, Yury Norov wrote:
-> On Tue, Dec 08, 2020 at 10:35:50AM +0000, Will Deacon wrote:
-> > On Mon, Dec 07, 2020 at 05:59:16PM -0800, Yury Norov wrote:
-> > > (CC: Alexey Klimov)
-> > > 
-> > > On Mon, Dec 7, 2020 at 3:25 AM Will Deacon <will@kernel.org> wrote:
-> > > >
-> > > > On Sat, Dec 05, 2020 at 08:54:06AM -0800, Yury Norov wrote:
-> > > > > ARM64 doesn't implement find_first_{zero}_bit in arch code and doesn't
-> > > > > enable it in config. It leads to using find_next_bit() which is less
-> > > > > efficient:
-> > > >
-> > > > [...]
-> > > >
-> > > > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > > > > index 1515f6f153a0..2b90ef1f548e 100644
-> > > > > --- a/arch/arm64/Kconfig
-> > > > > +++ b/arch/arm64/Kconfig
-> > > > > @@ -106,6 +106,7 @@ config ARM64
-> > > > >       select GENERIC_CPU_AUTOPROBE
-> > > > >       select GENERIC_CPU_VULNERABILITIES
-> > > > >       select GENERIC_EARLY_IOREMAP
-> > > > > +     select GENERIC_FIND_FIRST_BIT
-> > > >
-> > > > Does this actually make any measurable difference? The disassembly with
-> > > > or without this is _very_ similar for me (clang 11).
-> > > >
-> > > > Will
-> > > 
-> > > On A-53 find_first_bit() is almost twice faster than find_next_bit(),
-> > > according to
-> > > lib/find_bit_benchmark. (Thanks to Alexey for testing.)
-> > 
-> > I guess it's more compiler dependent than anything else, and it's a pity
-> > that find_next_bit() isn't implemented in terms of the generic
-> > find_first_bit() tbh, but if the numbers are as you suggest then I don't
-> > have a problem selecting this on arm64.
-> 
-> Ping?
+On Tue, Feb 23, 2021 at 11:37 PM Tyler Hicks
+<tyhicks@linux.microsoft.com> wrote:
+> On 2021-02-23 15:50:56, Tyler Hicks wrote:
+> > On 2021-02-23 15:43:48, Tyler Hicks wrote:
+> > > I'm seeing a race during policy load while the "regular" sidtab
+> > > conversion is happening and a live conversion starts to take place in
+> > > sidtab_context_to_sid().
+> > >
+> > > We have an initial policy that's loaded by systemd ~0.6s into boot and
+> > > then another policy gets loaded ~2-3s into boot. That second policy load
+> > > is what hits the race condition situation because the sidtab is only
+> > > partially populated and there's a decent amount of filesystem operations
+> > > happening, at the same time, which are triggering live conversions.
+>
+> Hmm, perhaps this is the same problem that's fixed by Ondrej's proposed
+> change here:
+>
+>  https://lore.kernel.org/selinux/20210212185930.130477-3-omosnace@redhat.com/
+>
+> I'll put these changes through a validation run (the only place that I
+> can seem to reproduce this crash) and see how it looks.
 
-Not sure what happened to this. Maybe resend at -rc1?
+Hm... I think there is actually another race condition introduced by
+the switch from rwlock to RCU [1]... Judging from the call trace you
+may be hitting that.
 
-Will
+Basically, before the switch the sidtab swapover worked like this:
+1. Start live conversion of new entries.
+2. Convert existing entries.
+[Still only the old sidtab is visible to readers here.]
+3. Swap sidtab under write lock.
+4. Now only the new sidtab is visible to readers, so the old one can
+be destroyed.
+
+After the switch to RCU, we now have:
+1. Start live conversion of new entries.
+2. Convert existing entries.
+3. RCU-assign the new policy pointer to selinux_state.
+[!!! Now actually both old and new sidtab may be referenced by
+readers, since there is no synchronization barrier previously provided
+by the write lock.]
+4. Wait for synchronize_rcu() to return.
+5. Now only the new sidtab is visible to readers, so the old one can
+be destroyed.
+
+So the race can happen between 3. and 5., if one thread already sees
+the new sidtab and adds a new entry there, and a second thread still
+has the reference to the old sidtab and also tires to add a new entry;
+live-converting to the new sidtab, which it doesn't expect to change
+by itself. Unfortunately I failed to realize this when reviewing the
+patch :/
+
+I think the only two options to fix it are A) switching back to
+read-write lock (the easy and safe way; undoing the performance
+benefits of [1]), or B) implementing a safe two-way live conversion of
+new sidtab entries, so that both tables are kept in sync while they
+are both available (more complicated and with possible tricky
+implications of different interpretations of contexts by the two
+policies).
+
+[1] 1b8b31a2e612 ("selinux: convert policy read-write lock to RCU")
+
+--
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
+
