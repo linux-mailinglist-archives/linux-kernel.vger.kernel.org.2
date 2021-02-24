@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3A9324388
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CD5324390
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbhBXSHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:07:50 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:43198 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbhBXSHh (ORCPT
+        id S234049AbhBXSJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:09:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231960AbhBXSIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:07:37 -0500
-Received: by mail-ot1-f53.google.com with SMTP id v12so1903825ott.10;
-        Wed, 24 Feb 2021 10:07:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oUyGjHMdzy5k0NymwhlK4usRhZbPwNaCWNv1VgX9sq4=;
-        b=Pp5d6XH31agMb/PNwaRhcF2uUPC9xGRRTh/nFuwn18cfpN0PBdnnbs4pT/gHSH7lr7
-         ItIIYL/9PPIzZe+uED3QfWaLHF51iZ/jC2pTfO7aqGmQmQDH7TgWsQ6HtapzR9y3twm/
-         HxlbGIPNdJ58BA6XhliD3BproNqS7vvsQPSV3mEpi/4H9bbnshER3xBztvoi7SEhF7ZO
-         GVkUZCeFVCuR8I8cynvLY5J9ihAZSYs7f8ehY9wZ8uMkVeCC4Tuczjp9YNeTv1hghGjg
-         nnDNlMv9WG3KjLxpCdd8xMX7NiWCyELNb4qpZeN7jH1y03OXE7MFK+oSj0TsnShzh30X
-         wNig==
-X-Gm-Message-State: AOAM533JOAulR06GUJuaIRZ1mrFSigEd93dnixfeoJxZnHLbl/tR9f9I
-        OA+KS25fEigY+B+rfzgicSGJi1HQX+ftp3mr22I=
-X-Google-Smtp-Source: ABdhPJxuXkX+666/Lv6ikmFdus5B0e+dUJwf/jEXpLD1oPXJSXdOJc6n6bAAaO45L9rZTfhBgGz28obtt+9kdAhehVE=
-X-Received: by 2002:a9d:22a5:: with SMTP id y34mr21745058ota.321.1614190017269;
- Wed, 24 Feb 2021 10:06:57 -0800 (PST)
+        Wed, 24 Feb 2021 13:08:41 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A43EC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:08:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4CyVpXvHlAs585xhnG2kQ9VRjy+LgRed1HZFwtvjpaA=; b=TcI4at6ji4D4Egi/JfZlkxoZGX
+        huLiPT2ZsxLgBrG+iPNw9WGU0y+Y+v/M7KQBC7dh1HJL5OCDv/HHlVmc2VzF7fuNvMMYDhoJQIpdK
+        YGawluwyzyj40o+a0WdkSiPZDe1T2TSjuz2GUhVlPBHS7RTdKFMnB/yraJDMZnyHiYLfUJ/jCrfJk
+        2DTaoMT+UodsoJtkdp9W3nkMyGpDhvWLhjZDUawyQUqb5WHnwgkZZI9ZAMtBaDD10GaXFR9cnqhgQ
+        5wcaC/2wCzmOQdn05Q1Z1oPzDU9lPs1lTXSsj13XsbTK0zH5cgLKKwEDDGJCXT+TuaLfnphWQlSzv
+        pvfS4ZKQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lEyZQ-009iL3-CD; Wed, 24 Feb 2021 18:07:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C2DEF30504E;
+        Wed, 24 Feb 2021 19:07:31 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A872B20D0BF1F; Wed, 24 Feb 2021 19:07:31 +0100 (CET)
+Date:   Wed, 24 Feb 2021 19:07:31 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Ivan Babrou <ivan@cloudflare.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 2/2] x86/unwind/orc: Silence warnings caused by missing
+ ORC data
+Message-ID: <YDaV47Cw8AEzsnkg@hirez.programming.kicks-ass.net>
+References: <cover.1612534649.git.jpoimboe@redhat.com>
+ <06d02c4bbb220bd31668db579278b0352538efbb.1612534649.git.jpoimboe@redhat.com>
+ <YDZoEehURLLI/lWq@hirez.programming.kicks-ass.net>
+ <20210224151805.zrujocamlb5pxf7m@treble>
 MIME-Version: 1.0
-References: <5138173.kHyPcihzTF@kreacher> <10245832.OiMb8u2cOm@kreacher>
- <0faea0bd-107b-5c4c-5324-e0cd5e5cfba4@huawei.com> <CAJZ5v0i01rX0b-=dDJEdGsK2=6D3tXbC_wdOByTF_mJ0ggTPJQ@mail.gmail.com>
-In-Reply-To: <CAJZ5v0i01rX0b-=dDJEdGsK2=6D3tXbC_wdOByTF_mJ0ggTPJQ@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 24 Feb 2021 19:06:46 +0100
-Message-ID: <CAJZ5v0hwouj_1KpZ_RrC3r50RxngvinBBJVgNhQkwA3bw0oXag@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] ACPI: processor: Get rid of ACPICA message printing
-To:     Hanjun Guo <guohanjun@huawei.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224151805.zrujocamlb5pxf7m@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 3:45 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Tue, Feb 23, 2021 at 12:31 PM Hanjun Guo <guohanjun@huawei.com> wrote:
-> >
-> > On 2021/2/23 2:59, Rafael J. Wysocki wrote:
-> > > Index: linux-pm/drivers/acpi/processor_idle.c
-> > > ===================================================================
-> > > --- linux-pm.orig/drivers/acpi/processor_idle.c
-> > > +++ linux-pm/drivers/acpi/processor_idle.c
-> >
-> > In this file, function acpi_processor_cstate_first_run_checks()
-> > has a wrong pr_notice():
-> >
-> > pr_notice("ACPI: processor limited to max C-state %d\n",
-> >                 max_cstate);
-> >
-> > Since we have pr_fmt() for this file, "ACPI:" is duplicate,
-> > we'd better cleanup this as below:
-> >
-> > pr_notice("processor limited to max C-state %d\n", max_cstate);
->
-> Thanks for pointing this out, I'll make this change when applying the patch.
+On Wed, Feb 24, 2021 at 09:18:05AM -0600, Josh Poimboeuf wrote:
+> On Wed, Feb 24, 2021 at 03:52:01PM +0100, Peter Zijlstra wrote:
+> > On Fri, Feb 05, 2021 at 08:24:03AM -0600, Josh Poimboeuf wrote:
+> > > The ORC unwinder attempts to fall back to frame pointers when ORC data
+> > > is missing for a given instruction.  It sets state->error, but then
+> > > tries to keep going as a best-effort type of thing.  That may result in
+> > > further warnings if the unwinder gets lost.
+> > > 
+> > > Until we have some way to register generated code with the unwinder,
+> > > missing ORC will be expected, and occasionally going off the rails will
+> > > also be expected.  So don't warn about it.
+> > 
+> > I recently ran into another variant of missing ORC data, some files are
+> > simply not processed by objtool, eg. arch/x86/realmode/init.c. Would it
+> > make sense to have the vmlinux pass (when it isn't used to generate orc
+> > in the first place) also check that all code it finds has ORC data?
+> > 
+> > It's not fool proof, but it should help find files we're missing for
+> > some raisin.
+> 
+> Doesn't validate_reachable_instructions() basically already do that?
 
-Actually, this issue is not strictly related to the patch here, so I'm
-going to send a separate patch to fix it.
+Nope, I'm talking about the case where we generate ORC for each .o file
+(and 'forget' to run objtool on some of them). And then run objtool
+again on vmlinux to validate (things like noinstr).
+
+At that point it might make sense to also check that all code does
+indeed have an ORC to double check our initial (per translation unit)
+invocation didn't accidentally miss someone.
