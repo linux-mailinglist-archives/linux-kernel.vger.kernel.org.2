@@ -2,166 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F162323892
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A43C32389C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbhBXIZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:25:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35362 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229556AbhBXIYx (ORCPT
+        id S233954AbhBXI2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:28:07 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:6512 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230459AbhBXI2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:24:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614155006;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1JbGPMGc3zR5mJ9ryS3aC3fSGYocZkjlOuNb6WBZZ3I=;
-        b=KSGq+666prtCURPW2NWMu9TT5irzC6T/ytkR3X0+dQZAp65bfqyRkCkL0+ZZklzaFoRmdC
-        a4kx0Wy28vYagEajpFldjPPd9MCwmrRxbbpRVk6Jt/rA1CFq+8aiW9jaD31ozJgEG8Xtf2
-        hUvTV3bR9mLtlMEP+vzC1iqSwXl1u9A=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-Rg6-67G-OQGRN2-sVN3Vlw-1; Wed, 24 Feb 2021 03:23:24 -0500
-X-MC-Unique: Rg6-67G-OQGRN2-sVN3Vlw-1
-Received: by mail-wr1-f70.google.com with SMTP id k5so697270wrw.14
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:23:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1JbGPMGc3zR5mJ9ryS3aC3fSGYocZkjlOuNb6WBZZ3I=;
-        b=edhE078mWITh9Ug6hlNWNWRjG1W/P5ansQ7/vxeYa3IbTARx+ZE3hGnd8f0rhqr8DW
-         Y1DqhH/PJu64FWMX7JRiQV2IZIneHVfzYsDSh3miNldFE2Hy2mjkYkHEjK8KMcZQ1yqb
-         jZr9UjNj7pfOnoSFddiD6otMVcuPUZnB8xcSMnRyS6Z77qYtUKevMu6C9WjT0dJWwSHU
-         W4RihdErmLHMZio6prIcX0DknHaI8CF8IWV1Cndts/CotnWbcCgtnffEksVEMHEX/rq1
-         KLzKX2PaqqlHBPzQeqwjkZTA/nI7DGUpKOEDeUQVFZgEbGvJSyg4QZ0PbITRDx8/8C2W
-         jCwA==
-X-Gm-Message-State: AOAM531HNEEnQoaU4BoIs1qemxHc62k+EGAzWPx1b2PvcLz+PC9ndETd
-        TVxIFUHbugx38nUwV/wwuPMBzpkhJCK8uFpq4rzeRFbMPjh6eXAbMH0zRtFRrZCRCt1ZZwY9kUT
-        TnVywhN0639t3MvfvJpqU+pi1
-X-Received: by 2002:a7b:cb81:: with SMTP id m1mr2574142wmi.117.1614155003181;
-        Wed, 24 Feb 2021 00:23:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwr2zof1ZDDqJMUOF+ohaSrHn1X03ArrZY1vRa0Mt+0/xGnqxU7+pV+gRMZdhng3Liw6tsb4Q==
-X-Received: by 2002:a7b:cb81:: with SMTP id m1mr2574122wmi.117.1614155002974;
-        Wed, 24 Feb 2021 00:23:22 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id a1sm2056803wrx.95.2021.02.24.00.23.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 00:23:22 -0800 (PST)
-Date:   Wed, 24 Feb 2021 09:23:19 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-Subject: Re: [RFC PATCH v5 00/19] virtio/vsock: introduce SOCK_SEQPACKET
- support
-Message-ID: <20210224082319.yrmqr6zs7emvghw3@steredhat>
-References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
- <20210222142311.gekdd7gsm33wglos@steredhat>
- <20210223145016.ddavx6fihq4akdim@steredhat>
- <7a280168-cb54-ae26-4697-c797f6b04708@kaspersky.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <7a280168-cb54-ae26-4697-c797f6b04708@kaspersky.com>
+        Wed, 24 Feb 2021 03:28:04 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UPRlhND_1614155232;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPRlhND_1614155232)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 24 Feb 2021 16:27:12 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     mark@fasheh.com
+Cc:     jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] ocfs2: Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
+Date:   Wed, 24 Feb 2021 16:27:10 +0800
+Message-Id: <1614155230-57292-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 07:29:25AM +0300, Arseny Krasnov wrote:
->
->On 23.02.2021 17:50, Stefano Garzarella wrote:
->> On Mon, Feb 22, 2021 at 03:23:11PM +0100, Stefano Garzarella wrote:
->>> Hi Arseny,
->>>
->>> On Thu, Feb 18, 2021 at 08:33:44AM +0300, Arseny Krasnov wrote:
->>>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
->>>> transport.
->>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
->>>> do it, two new packet operations were added: first for start of record
->>>> and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
->>>> both operations carries metadata - to maintain boundaries and payload
->>>> integrity. Metadata is introduced by adding special header with two
->>>> fields - message count and message length:
->>>>
->>>> 	struct virtio_vsock_seq_hdr {
->>>> 		__le32  msg_cnt;
->>>> 		__le32  msg_len;
->>>> 	} __attribute__((packed));
->>>>
->>>> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
->>>> packets(buffer of second virtio descriptor in chain) in the same way as
->>>> data transmitted in RW packets. Payload was chosen as buffer for this
->>>> header to avoid touching first virtio buffer which carries header of
->>>> packet, because someone could check that size of this buffer is equal
->>>> to size of packet header. To send record, packet with start marker is
->>>> sent first(it's header contains length of record and counter), then
->>>> counter is incremented and all data is sent as usual 'RW' packets and
->>>> finally SEQ_END is sent(it also carries counter of message, which is
->>>> counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
->>>> incremented again. On receiver's side, length of record is known from
->>>> packet with start record marker. To check that no packets were dropped
->>>> by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
->>>> checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
->>>> 1) and length of data between two markers is compared to length in
->>>> SEQ_BEGIN header.
->>>> 	Now as  packets of one socket are not reordered neither on
->>>> vsock nor on vhost transport layers, such markers allows to restore
->>>> original record on receiver's side. If user's buffer is smaller that
->>>> record length, when all out of size data is dropped.
->>>> 	Maximum length of datagram is not limited as in stream socket,
->>>> because same credit logic is used. Difference with stream socket is
->>>> that user is not woken up until whole record is received or error
->>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
->>>> 	Tests also implemented.
->>> I reviewed the first part (af_vsock.c changes), tomorrow I'll review
->>> the rest. That part looks great to me, only found a few minor issues.
->> I revieiwed the rest of it as well, left a few minor comments, but I
->> think we're well on track.
->>
->> I'll take a better look at the specification patch tomorrow.
->Great, Thank You
->>
->> Thanks,
->> Stefano
->>
->>> In the meantime, however, I'm getting a doubt, especially with regard
->>> to other transports besides virtio.
->>>
->>> Should we hide the begin/end marker sending in the transport?
->>>
->>> I mean, should the transport just provide a seqpacket_enqueue()
->>> callbacl?
->>> Inside it then the transport will send the markers. This is because
->>> some transports might not need to send markers.
->>>
->>> But thinking about it more, they could actually implement stubs for
->>> that calls, if they don't need to send markers.
->>>
->>> So I think for now it's fine since it allows us to reuse a lot of
->>> code, unless someone has some objection.
->
->I thought about that, I'll try to implement it in next version. Let's see...
+Fix the following coccicheck warning:
+./fs/ocfs2/blockcheck.c:232:0-23: WARNING: blockcheck_fops should be
+defined with DEFINE_DEBUGFS_ATTRIBUTE
 
-If you want to discuss it first, write down the idea you want to 
-implement, I wouldn't want to make you do unnecessary work. :-)
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ fs/ocfs2/blockcheck.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers,
-Stefano
+diff --git a/fs/ocfs2/blockcheck.c b/fs/ocfs2/blockcheck.c
+index 6e07ddb..dabfef9 100644
+--- a/fs/ocfs2/blockcheck.c
++++ b/fs/ocfs2/blockcheck.c
+@@ -229,7 +229,7 @@ static int blockcheck_u64_get(void *data, u64 *val)
+ 	*val = *(u64 *)data;
+ 	return 0;
+ }
+-DEFINE_SIMPLE_ATTRIBUTE(blockcheck_fops, blockcheck_u64_get, NULL, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(blockcheck_fops, blockcheck_u64_get, NULL, "%llu\n");
+ 
+ static void ocfs2_blockcheck_debug_remove(struct ocfs2_blockcheck_stats *stats)
+ {
+-- 
+1.8.3.1
 
