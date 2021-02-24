@@ -2,94 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CEC132415E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A9A324163
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236631AbhBXPtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:49:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235144AbhBXPlP (ORCPT
+        id S236773AbhBXPxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:53:03 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:55471 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235321AbhBXPmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:41:15 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC305C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 07:40:32 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614181224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KuEArnJDZcZaDgSDX5/Jl/hUB3QBLTeDqaL/WpUed8Q=;
-        b=NxWBgzelLXW5lBZUKy34rybtn/aJGItegqH441WqEG2Bqu/A9o+ZydKjQmetkicjGxZVw6
-        yyvSEVhbAZZfW11KvkOKzLt8//ZCb9E/Cd7MPppKVHYY5x/j8rgMYoyLZTmwQtbv0+1SU4
-        1xOImHC1h3xFLm81XjYvrmGFVYN6Tcce6Bj3I3RAmYWAjCsCjcorNT/aqIt8YK9F+IwFBz
-        k39SWwyUkuliwKnWYDGmHwmNi0xOxzf60fclpmfFMIMzLSEQDC1hwCKZovsdb1Z3ow+WUi
-        JpR31ZZgshU4nznbpL/yZZI/QK5KQYSJrQc/7eAVpK0gd4cKbBknn2BqJ9Hj7w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614181224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KuEArnJDZcZaDgSDX5/Jl/hUB3QBLTeDqaL/WpUed8Q=;
-        b=9fRQ8NbeXZc3jc2GRuKG/n2w8m1sYkW+ffBCX/qKNFn8W9xLloFDmsiDWVSdcSEE8mUTxR
-        VZX+PQGPMRvqOwBg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Wed, 24 Feb 2021 10:42:04 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 460855C01C1;
+        Wed, 24 Feb 2021 10:40:52 -0500 (EST)
+Received: from imap1 ([10.202.2.51])
+  by compute6.internal (MEProxy); Wed, 24 Feb 2021 10:40:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=pAiG3XWYnlEZcI6S9irEA4KEy1T4LoM
+        z/fCPiuVlZFk=; b=uOtGb5bfa8FTLQDWaYp6zB5RHIu7jK0IymDRMfatiGQJKWb
+        w/WTWHgMDfLcVzJ2ZdqemXUCUvej1kAEXVW4+LzEqoX8snDjOw2pqEb6t0DNKb7l
+        qyosZKMx6PLwYyojPBE0h/D7RFUta4k2Hw6oKyqhFHN5nabr28Qr1cOxAgBRM2Q9
+        7clKpOmVepl9dnsRCxQPZCznWw2h9Q9sDFtHtYjoEqfDAVeoHLw8lc/68XOFgWz9
+        ch2qiWeCSFPVn7q+K8QOhPOXT8N2AjQQ8M856Kg3rmO/j66YURk+9+7Ca8PjMUsv
+        pvusF/mDkm+r3YmOI9VBbxHz6o0N4ca+2psHMsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=pAiG3X
+        WYnlEZcI6S9irEA4KEy1T4LoMz/fCPiuVlZFk=; b=f9YqKFQEtbpkJNVhS4v+Nt
+        MGavQOt+wdXIrLI5V8BXevX6NahE7Dn/Jg701oBFrxKYnVy0VT26/FjATxXoHRXC
+        ogNvCDjaJk8Aap7ojfpb85xByR17qKIVhFwaYaHNALIuFFhLFCpXL3IGdRfsdPFh
+        hVewIYtaiESmys3Ldmyt0Us1FLLx5tmdeMOMSp7lcv9z+VU/sJLolYITPqZ26Zrq
+        PJWKDatxKc5VkNiTft7B2DzJ4TDEjGVhvknviphTuee2e1WOKh3JOh37FjlW+V59
+        zFGpK7ylakjFAPI6pXzjMglU1iAhCecustQyTvv9mknjtNJgdyzHMKsh4ROLrYYg
+        ==
+X-ME-Sender: <xms:gnM2YH1qs7ZiA5hMnVr3w4-FXqktRSFMC8PxvZ1IuKsN9HeiZcSrkw>
+    <xme:gnM2YGHBQtVUA82EpxVPDetAzM8vKig2nZS5a-ZlAb7RADpCWEfIi_bTPNaqeMvWN
+    gHgb70nvNE-EVlGCcg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeejgdejkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedflfhirgig
+    uhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
+    cuggftrfgrthhtvghrnhepkeelheethfehffdttdelieevfeeiheeuudeifeeugeeuieel
+    iedtueejheehhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:gnM2YH7U9SGJgSeRh-7r8bld1MRKX0V79wlLinTgaKclbtl4iYo-7Q>
+    <xmx:gnM2YM0ZoL95rMisBxSc7lTO09eYyZg46i-l6jrsRnaa0FZ9pNmlnQ>
+    <xmx:gnM2YKHumDmbLskRFlQV-2Aoss8_TKITM9UQAZLv1ibzbhzKJi_oUA>
+    <xmx:hHM2YPTO_KEPcvPfy2jhL8Iho1thdUDgVQCOwHHD1JX7mKwMbKLxZQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 5E8E4130005D; Wed, 24 Feb 2021 10:40:50 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-141-gf094924a34-fm-20210210.001-gf094924a
+Mime-Version: 1.0
+Message-Id: <987b0dc5-9306-4271-afc0-7c44dba644b7@www.fastmail.com>
+In-Reply-To: <1614171720-13221-1-git-send-email-hejinyang@loongson.cn>
+References: <1614171720-13221-1-git-send-email-hejinyang@loongson.cn>
+Date:   Wed, 24 Feb 2021 23:40:28 +0800
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Jinyang He" <hejinyang@loongson.cn>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "John Crispin" <john@phrozen.org>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: synchronization model: was: Re: [PATCH printk-rework 09/14] printk: introduce a kmsg_dump iterator
-In-Reply-To: <87eeh51wht.fsf@jogness.linutronix.de>
-References: <20210218081817.28849-1-john.ogness@linutronix.de> <20210218081817.28849-10-john.ogness@linutronix.de> <YC/79JPVKcVaSEEH@alley> <87eeh51wht.fsf@jogness.linutronix.de>
-Date:   Wed, 24 Feb 2021 16:40:24 +0100
-Message-ID: <878s7d1nkn.fsf@jogness.linutronix.de>
-MIME-Version: 1.0
+Subject: Re: [PATCH RFC] MIPS: Remove detect_memory_region()
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-24, John Ogness <john.ogness@linutronix.de> wrote:
-> The @active flag is useless. It should be removed.
 
-I would like to clarify my statement, because the @active flag _did_
-protect the arch/um dumper until now. (Although it didn't actually
-matter because arch/um does not have SMP or preemption support.)
 
-In mainline we have 6 dumpers. They can be classified as follows:
+On Wed, Feb 24, 2021, at 9:02 PM, Jinyang He wrote:
+> detect_memory_region() was committed by Commit 4d9f77d25268 ("MIPS: add
+> detect_memory_region()"). Then it was equipped by Commit dd63b00804a5
+> ("MIPS: ralink: make use of the new memory detection code") and
+> Commit 9b75733b7b5e ("MIPS: ath79: make use of the new memory detection
+> code"). Its code is based on early ath79 platform code.
+> 
+> What puzzles me is that how memcmp() detect the memory region. If `break`
+> was touched, the function could make sense. That means memcmp() should
+> return zero. Otherwise, the loop will be end by size > sz_max.
+> 
+> I have tested detect_memory_region() on Loongson64 3A3000. On our design,
+> kseg0 low 256MB maps real memory and kseg0 high 256MB maps IO/PCI. The
+> function runs and last stopped on kseg1 where is uncached. In this process
+> memcmp also returned non-zero when detected kseg0 high 256MB. Then I did
+> another thing. memcpy first and test memcmp then (after &_end). It works
+> well on 3A3000 but badly on 3A4000. Maybe because kseg0 high 256MB maps
+> IO/PCI and it is dangerous to write like write memory.
+> 
+> At last, read memory from where is not memory region may always return 0.
+> (Or trigger exception.) This function have been used several years and
+> seems no error occur. Maybe it's a fallback way.
 
-1. Dumpers that provide their own synchronization to protect against
-   parallel or nested dump() calls.
+That is not true for other platforms like ath79 or mtk.
+They'll wrap around or return 0xffffffff for out of boundary accessing.
 
-   - arch/powerpc/kernel/nvram_64.c
-   - fs/pstore/platform.c
-   - arch/um/kernel/kmsg_dump.c (after this series)
+Loongson does not apply to this case as it have special "Address Window"
+design to accurately describe address regions.
+Any access beyond described windows will be handled by MC and return 0 or random stuff.
 
-2. Dumpers that are safe because they only dump on KMSG_DUMP_PANIC,
-   which (currently) can never happen in parallel or nested.
+Again, please don't make changes because you can.
 
-   - arch/powerpc/platforms/powernv/opal-kmsg.c
-   - drivers/hv/vmbus_drv.c
+Thanks.
 
-3. Dumpers that are unsafe and even @active did not provide the needed
-   synchronization.
-
-   - drivers/mtd/mtdoops.c
-
-In all 6 dumpers, @action does not provide any help. That is why it can
-be removed.
-
-But I am concerned about drivers/mtd/mtdoops.c that does not have any
-synchronization. Since my series is adding sychronization to
-arch/um/kernel/kmsg_dump.c, I suppose it should also add it to
-drivers/mtd/mtdoops.c also.
-
-And rather than moving the useless @active from kmsg_dumper to
-kmsg_dump_iter, I should just drop it.
-
-Unless there are any objections, I will make these changes for my v3.
-
-John Ogness
+- Jiaxun
