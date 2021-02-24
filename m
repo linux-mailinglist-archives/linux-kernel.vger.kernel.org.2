@@ -2,88 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F384632362E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 04:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76322323630
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 04:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233573AbhBXDrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 22:47:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59064 "EHLO
+        id S233616AbhBXDrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 22:47:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233270AbhBXDq6 (ORCPT
+        with ESMTP id S233036AbhBXDrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 22:46:58 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66755C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 19:46:18 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id v200so466523pfc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 19:46:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=peRxfJ9C3IZO0c7bG0x9AxPdKACtkCjqiet+LT3yHzY=;
-        b=fsjdZIxgdTwB8oTvogm8JDtMaJ+0FAvKcs9Qln6KoXmttxii/7muAZkfRWOA3jI6XN
-         m/BMvpT45eMtCEQ3SEGoqc+pMeaXPePeclDsHH5+Zx8kKB3GTRwoiZDmT0cEYkWt4y3F
-         CpSHhqRsU0W70PWUhsqnLlpzc2YcWQ4RhoChiMWB5hV5u11EeQD1pBqInjIHA7bG6H9d
-         HpFqmaJ5vnkQpfORKxNf9jhH8g50mFmmIHvMDHTumOKTyhWajAsAQc3LuQy9seuOrThm
-         Oe7puHUYj99h4Y4mOXTbkfa8FdtJ94EWqg8vvkEK2a2diwIomAH/xXwS4UJzr96gUKA3
-         U/Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=peRxfJ9C3IZO0c7bG0x9AxPdKACtkCjqiet+LT3yHzY=;
-        b=GSPBZy4dx9w5oJyihto7eGC7SlDiWjPdrVV6wbXivp7Gx0i5SIFolIgZI4X1VSF6xs
-         o/AJDTbSAp4HJQQPLfLpnQ79u3jtUV7DVOjBv8tzujlJBzMi91d8vlUsPHjBe1HMBKh8
-         oqy8+Iy7k2+UyRruk+EhjyXhBLI0dda+I2IUisF2fTiq7dJ5D+hOvaNmQngMhDNxpju8
-         pbJeowWJ2HRgnGuEcWo1DHQEs7rs1pv/C/AskxaZ59/Wb+BumobHF8S9vrC6eYP4p842
-         5N/Zw3CZwYN6U5z3od48l+lEILir+8MDSQC7XerpF5FBprvMaCVb1m6NhqkWioXDvIKk
-         pTVA==
-X-Gm-Message-State: AOAM533xjS8ZBnRVhie1d/GBrd5mbHR91RPzu9un3qyOv9LKLZZawJs9
-        qAu1GyIbd2MI1N3kGAawLjqjquSz/Bw=
-X-Google-Smtp-Source: ABdhPJz2EjcrvKemDGHKbz79qyhOLNvUh+tpZ1tGaf0gLinfyCQP8O4tsrcO294s2iUQJght7Ml2Ww==
-X-Received: by 2002:a63:5fd7:: with SMTP id t206mr4860193pgb.54.1614138377627;
-        Tue, 23 Feb 2021 19:46:17 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id l11sm648463pfd.194.2021.02.23.19.46.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 19:46:16 -0800 (PST)
-Subject: Re: [PATCH] nand: brcmnand: fix OOB R/W with Hamming ECC
-To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
-        Brian Norris <computersforpeace@gmail.com>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-References: <20210222201655.32361-1-noltari@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <32837cb2-f7ba-d59e-de66-051019b21e89@gmail.com>
-Date:   Tue, 23 Feb 2021 19:46:14 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        Tue, 23 Feb 2021 22:47:18 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A115C06174A;
+        Tue, 23 Feb 2021 19:46:38 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dlhg04Bqxz9sBy;
+        Wed, 24 Feb 2021 14:46:36 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614138396;
+        bh=mKqH7eShDbcsdhGhGHni+l4r7Ae9Jmf0pqGXDSX92JY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kpJJeuqg69klCkppGZVZ4DV+dZo0iM/tBciNMtWUtbE5d1JZ690YdX7jVOK47R/wc
+         Hu3bwuOgDHNTld8T1Fbmb3oUz1t8RzOp/IkWxQyJrEFgJJADQQTlvlzHia9pFujAPo
+         PYXsGu2bv44vzH2iVBcj8gZR75xpJgdibl02ktYKzzw2xkwcjce667Iz3UjDhszj8P
+         EXATEQrtIP3f7Enf4vU2UrCf8Wq28S+Qgu5m7Bwt4j/qVUDNSM4/vS9rBeXmeHGPJ8
+         fG6B11pTt6frnCMzgwTBKtMD8TKYfyb6mOpZGWYTdbzJThJK9ffG7bJXPnv2iP60ky
+         CT0Ul5DwcbAhA==
+Date:   Wed, 24 Feb 2021 14:46:35 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the kbuild tree
+Message-ID: <20210224144635.45d68aec@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210222201655.32361-1-noltari@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/fQ1l0XxDzPcJRWSuxJB9iln";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/fQ1l0XxDzPcJRWSuxJB9iln
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2/22/2021 12:16 PM, Álvaro Fernández Rojas wrote:
-> Hamming ECC doesn't cover the OOB data, so reading or writing OOB shall
-> always be done without ECC enabled.
-> This is a problem when adding JFFS2 cleanmarkers to erased blocks. If JFFS2
-> clenmarkers are added to the OOB with ECC enabled, OOB bytes will be changed
-> from ff ff ff to 00 00 00, reporting incorrect ECC errors.
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+Commit
 
-Should there be a Fixes: tag provided here for back porting to stable trees?
--- 
-Florian
+  67cbb9c55759 ("Makefile: reuse CC_VERSION_TEXT")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/fQ1l0XxDzPcJRWSuxJB9iln
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA1zBsACgkQAVBC80lX
+0GwHTAf/YoBZc09yxFEzXo1g2/4j2YarMNQyQDhGmYeng4azqjvH5GlCrNDI4XmO
+bvx3aPenl/Z8TPuueNH1xGsj5WNHb/nA1YZXcseWy8YAd3o1j44I2y5c6z7owylt
+wYBRD7GU6k71hHC8nYw7VcxuGG9+YU7LwfJqsNadjcGRip1qcuxzcC9sOisPdRRa
+yeMQLqwCkexru9HYk/JraAw12AZAn2d06lLZP6iI0eV1/dwpUfFGyN2fhaWTaKoF
+iOlimajSh7qqbWJK4d9tIAvFwuZXfjETb0NUUFOgwlLzMZalQkrQIBIAU8SisPqe
+3LTUcr9vvQwzI7nTFC4yip91FNikLg==
+=8ou9
+-----END PGP SIGNATURE-----
+
+--Sig_/fQ1l0XxDzPcJRWSuxJB9iln--
