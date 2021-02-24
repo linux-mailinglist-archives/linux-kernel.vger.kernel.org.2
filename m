@@ -2,83 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E6F32417C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4458332417D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236369AbhBXP6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:58:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
+        id S237008AbhBXP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:58:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234340AbhBXPol (ORCPT
+        with ESMTP id S235989AbhBXPpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:44:41 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563F5C06178A;
-        Wed, 24 Feb 2021 07:43:57 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id t29so1548262pfg.11;
-        Wed, 24 Feb 2021 07:43:57 -0800 (PST)
+        Wed, 24 Feb 2021 10:45:03 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38697C06178C;
+        Wed, 24 Feb 2021 07:44:19 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id b3so1694415qtj.10;
+        Wed, 24 Feb 2021 07:44:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=F0KLBWS2W58C1mncZrZj6XYYjOTe4I0lLVbrvhxQFPg=;
-        b=rzsP2rqIpc8txgkbOcKSxOuj700vJWZavDofAJxssBIq3xg6Sds0/B5jTZtqjCoGyw
-         iQSycq35TiQDC2QbvtUjqHfiD0vpW4aiBjolXqfRkNwb6zKYrueHVjUDf2cXQlsGw7Ta
-         Q0UIJ2naXAfN4czn88AcI3SWZAnR6JkpzdvA74sUFQcZZR5HDVRfN0T4REuVTdlxrHnT
-         d0U6yTZnpzz6SX+yeYPBld3yfQELrr4Oc099GfxRWujtPtlF5063yQVrFragvn1bYWP+
-         G30XWTFnIe31a1hFVq4WtMV0Ozus8f6tmnxIRPrKjIQsUiUROesYP7+/Y7Q2HrwES1dJ
-         DnNA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fItWJT45gxeZmehLDl9MQvbAFXnDt+Npfk0rq2z6/Gs=;
+        b=AG7c4wQ5+wpzdAg0XrcwfkbS1trFVNCcx/cuRADHgkh88LjGDRnVEZTnQ4WyWdElom
+         Yy5ES4Lk1b+WioJwvV/FJt8pj5AKwQ6DkU6+E/iV8A29YKsstXc4Hc8B9fpbb6u33rgK
+         omtU/He9/MtbCCro2MnDNsD20TYRkm56q61jDi/b8xt/3tksrF/7CjfYbYKRRhFDf9Vz
+         PCAThKb1FyowOxBb9FH4ysw61gJzBPY02hp5NhdWwnpKQlpdRhs1ziJpk5w781uEx2xO
+         KwKMZL7WfSMDhohoZ3QgmzvKq0SCEd7irv4ZMicPt46xupc+FsIHnxpPfOTgDeh9HjXG
+         DyuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=F0KLBWS2W58C1mncZrZj6XYYjOTe4I0lLVbrvhxQFPg=;
-        b=ujV3ssOYKXeVGFOi61VSIvxtUsoVzl8pRERLEB0NHCNsztKs69EgMKOc8YUXMneRSg
-         bsIL2nS+5qRIDmTQQu8EXvKrC4xvu3mtXIOwdZlxgGZ8fZylXxkg65B45S0IDnn+cRvf
-         A1PUUP09PGfN91ttPYaOClzgKolpJdCoAvLgQ8yfMVTAWhz/55t3wnvpR8X1Oa2LwYWk
-         4jjG2gFsM47kmTqS/TupYoPGQpqZSGIDE3uXJIaigTB33Fwi8EO9AIL2qiWtwEZv1LlG
-         J4Ypqk7TXHwzRkWD8bq7lLyCDx5fNeUyW1zcc/rtJ/2YFxyfGiaOS1E9k0Wy1Zpo+FFD
-         L9Yw==
-X-Gm-Message-State: AOAM530f7Rv1FdSVmmWVi6mLSDJ/QAUtbnV0vUUKkxUpmLzIbnW4Unno
-        TocISODxMXJ0+TQYw2sqibioSlxAwY8=
-X-Google-Smtp-Source: ABdhPJyxIdUgANGydRXeaK1ncYAeTWetwo+E0x6He7QUS75cxtS0ZMIM6piwHr29tr8alQQFq9BYFA==
-X-Received: by 2002:a65:67cb:: with SMTP id b11mr6599993pgs.58.1614181436559;
-        Wed, 24 Feb 2021 07:43:56 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 184sm2827216pgj.93.2021.02.24.07.43.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Feb 2021 07:43:56 -0800 (PST)
-Subject: Re: [PATCH v2 2/2] leds: bcm6358: improve write and read functions
-To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
-        jonas.gorski@gmail.com, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210224101110.20179-1-noltari@gmail.com>
- <20210224101110.20179-3-noltari@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <2b8364ff-9b89-f709-365e-d7c3face29f7@gmail.com>
-Date:   Wed, 24 Feb 2021 07:43:49 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fItWJT45gxeZmehLDl9MQvbAFXnDt+Npfk0rq2z6/Gs=;
+        b=KWvC22QidUWIgZ4VUR6Wuj4EbBIwFKrDhhnVvFbTzZs5D/fe0GoTEWJlsju2D7MWeE
+         74kH+MK6oSnUu+XZiWZMhi7S0Xhvou+UDqrHfr6IWoEWFK9lo3BZBG1a6uLgggf6oNhz
+         UuidwKsv6wYfOTtohdgM86pJ4TgCayFqOcO920pCe4Yjy+oFLWRbf8NqK4Ip/jg6FBsP
+         WvWNLKldI3Mzk3WBlAnqHrV1J1wcRa4M46oUGUffU6MqpGFPHK7YBMfMA+Wz3dEueOwD
+         1bvEjyC5vMaqNINzFZFdLscSa8N07YiO40bgH9H/TZGt+g98YwYutkojvyc/93fMi1HC
+         3Uew==
+X-Gm-Message-State: AOAM530PkxauFaeW6EDAmG/Mbr/RyO7rHv5XJ06tsaKsexryKy1aFdVL
+        UfL0OgyOHv9/xlloZ9mYU7I=
+X-Google-Smtp-Source: ABdhPJyTZqxs22JUW66YxOkmHqfYrrrtccArQCKwcAP8XHLmFOZeWT8qUOmGIAtgw4W5RG4wKYCXRg==
+X-Received: by 2002:ac8:7383:: with SMTP id t3mr29164779qtp.242.1614181458203;
+        Wed, 24 Feb 2021 07:44:18 -0800 (PST)
+Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
+        by smtp.gmail.com with ESMTPSA id 16sm1461749qtp.38.2021.02.24.07.44.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 07:44:17 -0800 (PST)
+Date:   Wed, 24 Feb 2021 07:44:16 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH] arm64: enable  GENERIC_FIND_FIRST_BIT
+Message-ID: <20210224154416.GA1181413@yury-ThinkPad>
+References: <20201205165406.108990-1-yury.norov@gmail.com>
+ <20210224115247.1618-1-alobakin@pm.me>
 MIME-Version: 1.0
-In-Reply-To: <20210224101110.20179-3-noltari@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224115247.1618-1-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/24/2021 2:11 AM, Álvaro Fernández Rojas wrote:
-> This is proven to work in BMIPS BE/LE and ARM BE/LE, as used in bcm2835-rng
-> and bcmgenet drivers.
-> Both should also be inline functions.
+On Wed, Feb 24, 2021 at 11:52:55AM +0000, Alexander Lobakin wrote:
+> From: Yury Norov <yury.norov@gmail.com>
+> Date: Sat, 5 Dec 2020 08:54:06 -0800
 > 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> Hi,
+> 
+> > ARM64 doesn't implement find_first_{zero}_bit in arch code and doesn't
+> > enable it in config. It leads to using find_next_bit() which is less
+> > efficient:
+> >
+> > 0000000000000000 <find_first_bit>:
+> >    0:	aa0003e4 	mov	x4, x0
+> >    4:	aa0103e0 	mov	x0, x1
+> >    8:	b4000181 	cbz	x1, 38 <find_first_bit+0x38>
+> >    c:	f9400083 	ldr	x3, [x4]
+> >   10:	d2800802 	mov	x2, #0x40                  	// #64
+> >   14:	91002084 	add	x4, x4, #0x8
+> >   18:	b40000c3 	cbz	x3, 30 <find_first_bit+0x30>
+> >   1c:	14000008 	b	3c <find_first_bit+0x3c>
+> >   20:	f8408483 	ldr	x3, [x4], #8
+> >   24:	91010045 	add	x5, x2, #0x40
+> >   28:	b50000c3 	cbnz	x3, 40 <find_first_bit+0x40>
+> >   2c:	aa0503e2 	mov	x2, x5
+> >   30:	eb02001f 	cmp	x0, x2
+> >   34:	54ffff68 	b.hi	20 <find_first_bit+0x20>  // b.pmore
+> >   38:	d65f03c0 	ret
+> >   3c:	d2800002 	mov	x2, #0x0                   	// #0
+> >   40:	dac00063 	rbit	x3, x3
+> >   44:	dac01063 	clz	x3, x3
+> >   48:	8b020062 	add	x2, x3, x2
+> >   4c:	eb02001f 	cmp	x0, x2
+> >   50:	9a829000 	csel	x0, x0, x2, ls  // ls = plast
+> >   54:	d65f03c0 	ret
+> >
+> >   ...
+> >
+> > 0000000000000118 <_find_next_bit.constprop.1>:
+> >  118:	eb02007f 	cmp	x3, x2
+> >  11c:	540002e2 	b.cs	178 <_find_next_bit.constprop.1+0x60>  // b.hs, b.nlast
+> >  120:	d346fc66 	lsr	x6, x3, #6
+> >  124:	f8667805 	ldr	x5, [x0, x6, lsl #3]
+> >  128:	b4000061 	cbz	x1, 134 <_find_next_bit.constprop.1+0x1c>
+> >  12c:	f8667826 	ldr	x6, [x1, x6, lsl #3]
+> >  130:	8a0600a5 	and	x5, x5, x6
+> >  134:	ca0400a6 	eor	x6, x5, x4
+> >  138:	92800005 	mov	x5, #0xffffffffffffffff    	// #-1
+> >  13c:	9ac320a5 	lsl	x5, x5, x3
+> >  140:	927ae463 	and	x3, x3, #0xffffffffffffffc0
+> >  144:	ea0600a5 	ands	x5, x5, x6
+> >  148:	54000120 	b.eq	16c <_find_next_bit.constprop.1+0x54>  // b.none
+> >  14c:	1400000e 	b	184 <_find_next_bit.constprop.1+0x6c>
+> >  150:	d346fc66 	lsr	x6, x3, #6
+> >  154:	f8667805 	ldr	x5, [x0, x6, lsl #3]
+> >  158:	b4000061 	cbz	x1, 164 <_find_next_bit.constprop.1+0x4c>
+> >  15c:	f8667826 	ldr	x6, [x1, x6, lsl #3]
+> >  160:	8a0600a5 	and	x5, x5, x6
+> >  164:	eb05009f 	cmp	x4, x5
+> >  168:	540000c1 	b.ne	180 <_find_next_bit.constprop.1+0x68>  // b.any
+> >  16c:	91010063 	add	x3, x3, #0x40
+> >  170:	eb03005f 	cmp	x2, x3
+> >  174:	54fffee8 	b.hi	150 <_find_next_bit.constprop.1+0x38>  // b.pmore
+> >  178:	aa0203e0 	mov	x0, x2
+> >  17c:	d65f03c0 	ret
+> >  180:	ca050085 	eor	x5, x4, x5
+> >  184:	dac000a5 	rbit	x5, x5
+> >  188:	dac010a5 	clz	x5, x5
+> >  18c:	8b0300a3 	add	x3, x5, x3
+> >  190:	eb03005f 	cmp	x2, x3
+> >  194:	9a839042 	csel	x2, x2, x3, ls  // ls = plast
+> >  198:	aa0203e0 	mov	x0, x2
+> >  19c:	d65f03c0 	ret
+> >
+> >  ...
+> >
+> > 0000000000000238 <find_next_bit>:
+> >  238:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+> >  23c:	aa0203e3 	mov	x3, x2
+> >  240:	d2800004 	mov	x4, #0x0                   	// #0
+> >  244:	aa0103e2 	mov	x2, x1
+> >  248:	910003fd 	mov	x29, sp
+> >  24c:	d2800001 	mov	x1, #0x0                   	// #0
+> >  250:	97ffffb2 	bl	118 <_find_next_bit.constprop.1>
+> >  254:	a8c17bfd 	ldp	x29, x30, [sp], #16
+> >  258:	d65f03c0 	ret
+> >
+> > Enabling this functions would also benefit for_each_{set,clear}_bit().
+> > Would it make sense to enable this config for all such architectures by
+> > default?
+> 
+> I confirm that GENERIC_FIND_FIRST_BIT also produces more optimized and
+> fast code on MIPS (32 R2) where there is also no architecture-specific
+> bitsearching routines.
+> So, if it's okay for other folks, I'd suggest to go for it and enable
+> for all similar arches.
+ 
+As far as I understand the idea of GENERIC_FIND_FIRST_BIT=n, it's
+intended to save some space in .text. But in fact it bloats the
+kernel:
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+        yury:linux$ scripts/bloat-o-meter vmlinux vmlinux.ffb
+        add/remove: 4/1 grow/shrink: 19/251 up/down: 564/-1692 (-1128)
+        ...
+
+For the next cycle, I'm going to submit a patch that removes the 
+GENERIC_FIND_FIRST_BIT completely and forces all architectures to
+use find_first{_zero}_bit() 
+
+> (otherwise, I'll publish a separate entry for mips-next after 5.12-rc1
+>  release and mention you in "Suggested-by:")
+
+I think it worth to enable GENERIC_FIND_FIRST_BIT for mips and arm now
+and see how it works for people. If there'll be no complains I'll remove
+the config entirely. I'm OK if you submit the patch for mips now, or we
+can make a series and submit together. Works either way.
