@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA8632424F
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF9D32424E
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235685AbhBXQlJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Feb 2021 11:41:09 -0500
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:47373 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235220AbhBXQhg (ORCPT
+        id S235445AbhBXQku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:40:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234826AbhBXQgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:37:36 -0500
-X-Originating-IP: 86.250.253.134
-Received: from xps13 (lfbn-tou-1-813-134.w86-250.abo.wanadoo.fr [86.250.253.134])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id B6DADFF815;
-        Wed, 24 Feb 2021 16:36:45 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 17:36:44 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     mdalam@codeaurora.org
-Cc:     mani@kernel.org, boris.brezillon@collabora.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org, mdalam=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] mtd: rawnand: qcom: update last code word register
-Message-ID: <20210224173644.592e73dc@xps13>
-In-Reply-To: <e0f0282b8552b0225f15a4c45a6894cd@codeaurora.org>
-References: <1614024267-12529-1-git-send-email-mdalam@codeaurora.org>
-        <20210223173449.1a55df1e@xps13>
-        <a5650f33b493b987d45525ea57fdfd8a@codeaurora.org>
-        <38da9d1d4a96f1b42ba0b194da265e6b@codeaurora.org>
-        <20210224074850.0c74154d@xps13>
-        <e0f0282b8552b0225f15a4c45a6894cd@codeaurora.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 24 Feb 2021 11:36:05 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9116EC061574;
+        Wed, 24 Feb 2021 08:35:23 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id w7so2322915wmb.5;
+        Wed, 24 Feb 2021 08:35:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MVmZumu1MFGQXdL/ioPLeL2JHnOHtr9yLNDGu09SiDU=;
+        b=pw5L1f3RLGOqplHvTDu852ma9AAsisWzlTmcgXbJQ9pIv9lusTz/QpJvx+qwUYTNPe
+         Ns0ArGEg+i6MnThU+83EDMrQjAqN9I2AEKhlek+LzJBWrT4fhWPE0TN6ZwUG7n1a9Ejo
+         7RxFMYA5HO9HGGphWYvK/akpLOnJnbCsr804MD9LoLiO4eReezhPeVIkAYyOgIB9Qr4n
+         fGmlRT+tnUVBvNAMBYI0Y/jp0UznSOGAhzRRDSr8ucR/EpgxaXN+YonRZoYLNWCNX2y/
+         7y3Ftf3S0HldrxUL/0/kQYWqxKhgzkwA9D0lXIWKHJPox2ZQR38wKnDEJcPO0Ji3+pWs
+         PsHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MVmZumu1MFGQXdL/ioPLeL2JHnOHtr9yLNDGu09SiDU=;
+        b=sbkwX2cLAkSYKH3TrjUGSapouJLL9fOtXDaJlMPSSJo41t69I1x8yf7KdvxTlqutQj
+         TBqfnAGgpgfQr8D0LG6WX6LRGq0Wdz3q0HyTMdA0PbErMQnZGhfCAsRuP4o9aJMMbq0o
+         5BBMyUdKZIKvCwVSuRVVccfLWC7Tgmb7XNV3jLnuu+Gx42aFZuyIEwmX8+xb3FDEFV7r
+         t7up4hdTY2HzUFMQMRFIho5M+EcXovWqnB/41nDjqn3VyT/SnAMJG8hesbLrsemUJhE1
+         XxlFfQ4uOlXU3hdVMQXTi9JAeXXVmwQdmNJ9nzRCRgOpa+sLXHSt5n1Q9YevfnoBY8re
+         lEsQ==
+X-Gm-Message-State: AOAM533c6nnV1A5sOHu5LjYzUG2V0rvreX5HFyyE43jIilnn8YtGoBZR
+        aXLdC6i7smpWUm52/nT6rZKN/2NEY09NDg==
+X-Google-Smtp-Source: ABdhPJwxS6v9BlqfcuCI1OW0dTrLpo1LCDLoI+Wdi08TD4ObG9RfSSYhOGjwHPRBFqERRT677UvLkw==
+X-Received: by 2002:a05:600c:17d1:: with SMTP id y17mr4526397wmo.164.1614184522411;
+        Wed, 24 Feb 2021 08:35:22 -0800 (PST)
+Received: from little.cd.corp (82-209-154-112.cust.bredband2.com. [82.209.154.112])
+        by smtp.gmail.com with ESMTPSA id 36sm5259254wrj.97.2021.02.24.08.35.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 08:35:21 -0800 (PST)
+From:   Marcus Folkesson <marcus.folkesson@gmail.com>
+To:     Ajay Singh <ajay.kathat@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Marcus Folkesson <marcus.folkesson@gmail.com>
+Subject: [PATCH] wilc1000: write value to WILC_INTR2_ENABLE register
+Date:   Wed, 24 Feb 2021 17:37:06 +0100
+Message-Id: <20210224163706.519658-1-marcus.folkesson@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Write the value instead of reading it twice.
 
-mdalam@codeaurora.org wrote on Wed, 24 Feb 2021 22:00:05 +0530:
+Fixes: 5e63a598441a ("staging: wilc1000: added 'wilc_' prefix for function in wilc_sdio.c file")
 
-> On 2021-02-24 12:18, Miquel Raynal wrote:
-> > Hello,
-> > 
-> > mdalam@codeaurora.org wrote on Wed, 24 Feb 2021 10:09:48 +0530:
-> >   
-> >> On 2021-02-24 01:13, mdalam@codeaurora.org wrote:  
-> >> > On 2021-02-23 22:04, Miquel Raynal wrote:  
-> >> >> Hello,  
-> >> >> >> Md Sadre Alam <mdalam@codeaurora.org> wrote on Tue, 23 Feb 2021  
-> >> >> 01:34:27 +0530:  
-> >> >> >>> From QPIC version 2.0 onwards new register got added to read last  
-> >> >> >>                                a new  
-> >> >> >>> codeword. This change will add the READ_LOCATION_LAST_CW_n register.  
-> >> >> >>             Add support for this READ_LOCATION_LAST_CW_n register.  
-> >> >> >>> >>> For first three code word READ_LOCATION_n register will be  
-> >> >>> use.For last code word READ_LOCATION_LAST_CW_n register will be
-> >> >>> use.  
-> >> >> >> "  
-> >> >> In the case of QPIC v2, codewords 0, 1 and 2 will be accessed through
-> >> >> READ_LOCATION_n, while codeword 3 will be accessed through
-> >> >> READ_LOCATION_LAST_CW_n.
-> >> >> "  
-> >> >> >> When I read my own sentence, I feel that there is something wrong.  
-> >> >> If there are only 4 codewords, I guess a QPIC v2 is able to use
-> >> >> READ_LOCATION_3 or READ_LOCATION_LAST_CW_0 interchangeably. Isn't it?  
-> >> >> >> I guess the point of having these "last_cw_n" registers is to support  
-> >> >> up to 8 codewords, am I wrong? If this the case, the current patch
-> >> >> completely fails doing that I don't get the point of such change.  
-> >> >
-> >> > This register is only use to read last code word.
-> >> >
-> >> > I have address all the comments from all the previous sub sequent
-> >> > patches and pushed
-> >> > all patches in only one series.
-> >> >
-> >> > Please check.  
-> >> >>   The registers READ_LOCATION & READ_LOCATION_LAST are not associated >> with number of code words.  
-> >>   These two registers are used to access the location inside a code >> word.  
-> > 
-> > Ok. Can you please explain what is a location then? Or point me to a
-> > datasheet that explains it.  
-> 
->    The location is the position inside a code word.
-> 
-> > 
-> > Bottom line question: why having READ_LOCATION_0, _1,... an
-> > READ_LOCATION_LAST_0, _1, etc?  
-> 
->   READ_LOCATION_0, _1,... are used to extract multiple chunks from a code word.
-> 
->   e.g If we wanted to extract first 100 bytes from a code word then (0...99) READ_LOCATION_0 will be configured.
->       if we wanted to extract next 100 bytes (100...199) then READ_LOCATION_1 will be configured.
-> 
->       same way for last code word READ_LOCATION_LAST_0, _1, will be used.
-> 
+Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+---
+ drivers/net/wireless/microchip/wilc1000/sdio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Nice explanation, and thanks for the below figures. So I guess there is some kind of "small SRAM" that is
-directly addressable perhaps?
+diff --git a/drivers/net/wireless/microchip/wilc1000/sdio.c b/drivers/net/wireless/microchip/wilc1000/sdio.c
+index 351ff909ab1c..e14b9fc2c67a 100644
+--- a/drivers/net/wireless/microchip/wilc1000/sdio.c
++++ b/drivers/net/wireless/microchip/wilc1000/sdio.c
+@@ -947,7 +947,7 @@ static int wilc_sdio_sync_ext(struct wilc *wilc, int nint)
+ 			for (i = 0; (i < 3) && (nint > 0); i++, nint--)
+ 				reg |= BIT(i);
+ 
+-			ret = wilc_sdio_read_reg(wilc, WILC_INTR2_ENABLE, &reg);
++			ret = wilc_sdio_write_reg(wilc, WILC_INTR2_ENABLE, reg);
+ 			if (ret) {
+ 				dev_err(&func->dev,
+ 					"Failed write reg (%08x)...\n",
+-- 
+2.30.0
 
-I think I'm fine with your series now. Just a small nit: next time you send a series, please update the version number "[PATCH v6]" (automatically added with the -v6 parameter in git-format-patch). But no need to resend just for that.
-
-
-Thanks,
-Miquèl
