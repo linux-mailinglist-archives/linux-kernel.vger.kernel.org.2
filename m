@@ -2,131 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C199732476A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CBA32476F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbhBXXOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 18:14:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
+        id S236205AbhBXXO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 18:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbhBXXOP (ORCPT
+        with ESMTP id S234728AbhBXXOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 18:14:15 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F486C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 15:13:29 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id p21so2506172pgl.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 15:13:29 -0800 (PST)
+        Wed, 24 Feb 2021 18:14:54 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B68C061574;
+        Wed, 24 Feb 2021 15:14:14 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id t1so871022qvj.8;
+        Wed, 24 Feb 2021 15:14:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=muWCsWrQoBXyu4MckQ9XwIgh71Pik8fohBKy8+YwG04=;
-        b=eALgcZew2EajyVeA/DiBEfM4a24dApZHnvUSzXm8kKOfeR1mXWz+bNzjmsq3m/8hka
-         aYPKhw/8/x67hSwUlOdFPiH6qFX9rkoBkdESplPOCsj+JbhWaEasMiAEJ8AgzYIAqm4p
-         yp67ujCmh5HofiMxCbHagDi6aOpZ+DYHw/28E0B6cYsGbwJ2RKhYBUtvsLz9dMsfm8gl
-         1hwODTkdUw1wXyhfduiO3n9tXE81lWrCqXiRDudm/cd+QUo6Vx0uktrikPYHPySKbZ3v
-         Y+quj12JNP7Ur3mxgMxUor82l251R8I8o3h1oJHehxxHbxjaCpy83dNl1o9exjZC+ZeX
-         x6KA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=A3g1rPz4Z5wHrOBN/vss/tpJg+Tks75zY0bAsuzFhro=;
+        b=PzIo4dPGMVWTNOWmnpG1518sEWdaWNVd+7FrLobTTK7tQGFjV+bC6PPsoxmmTXzzoe
+         sr8A7DK9itHpE6DHM1av8OZzTu7O9/NsT2+wMajPfPELgrdCf9wBSTgx0AO/iuMJDXrP
+         ITFBcab6RrNFedl9T5/SxgC9FxudLIG4JeMxncLLzrxMTZi7V2MKjjGvCh78hEEHUYPv
+         2E0cgaS/OT6xG+QdX1/ZiGTN8gZZX7xc9PexJRPKv1h+q7/+RH2HRkm5I2a17Te2MUSW
+         hS5nRgW3eaksqn34WjNgTyivL1QxA0OR+M73blQb5sPK2pLZ8w9CSZDh3dghMK+uSSjN
+         Nh/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=muWCsWrQoBXyu4MckQ9XwIgh71Pik8fohBKy8+YwG04=;
-        b=ca0loMT9dGNPf9bkA3yQ6OXwzRBhq29inB7u9rjyA/YH+aMS7iPcvPVdVhTDUY3bgl
-         o2yB2qwwu+qzYCIKNKJxWSjrCPlmDIbQz1+xkum+ebJXwuE+ty4au/lRpW65MnSCEPOa
-         YLka/88LL9Z1c01V4i+/A+gplrtnsAxoP+UTDVffRA7zc4JzqRy2q6NeoUtyTDUp6X2y
-         GXG12lvZos4UCbtr7IrHg9QK9AsMoWCfU+MdfqoeEoQLTiXRHfXS7wCcoYq6+TqgUxvx
-         WxiyK629ZdXqP+zKO8arShDyaFgh9kyeqiUFg02YaZB/GHtOKbAz46eNdxaZWOoNwGqH
-         3mXw==
-X-Gm-Message-State: AOAM531oqzELcqMNyCX4+Ht/y3/IBGiHtC1OFM2wIXAVG+f9cNcVwm8+
-        Q8jQD6EL6pHrEaxCYV0VnrgpMw==
-X-Google-Smtp-Source: ABdhPJyvL7EJ65szTm5CqCguT3Le4nTVYm9ifanT54NrHZFg7olEuboR95EaeuMWTGAASbHj1KswEQ==
-X-Received: by 2002:aa7:8c49:0:b029:1ed:c1dc:4421 with SMTP id e9-20020aa78c490000b02901edc1dc4421mr318307pfd.43.1614208408889;
-        Wed, 24 Feb 2021 15:13:28 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:94bf:1b67:285c:b7ce])
-        by smtp.gmail.com with ESMTPSA id o65sm2713167pfg.44.2021.02.24.15.13.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 15:13:28 -0800 (PST)
-Date:   Wed, 24 Feb 2021 15:13:23 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     tj@kernel.org, thomas.lendacky@amd.com, brijesh.singh@amd.com,
-        jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
-        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
-        corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-Message-ID: <YDbdk/aY88t/khY2@google.com>
-References: <20210218195549.1696769-1-vipinsh@google.com>
- <20210218195549.1696769-3-vipinsh@google.com>
- <71092e0e-5c72-924b-c848-8ae9a589f6b0@infradead.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A3g1rPz4Z5wHrOBN/vss/tpJg+Tks75zY0bAsuzFhro=;
+        b=ryd3X77i6tiDmtUb+o80hDQug5H7QxSJQKObkeLrtkxhjTySvBk8fjwqJ+Gm/fFj15
+         SRvTFV/WyJq7iihSJ8SzE5ibicbylUGF8dou9XEq+Xv6KuJWc94GTtJdX9B6QCZBsVfA
+         AhV6PD0Fn1GCLvYhMnjaaJZw4bnqFIqJ6xwpPgwVdwd/PZZ61woieO+PI+QZV/m53V/h
+         sdW4FAq1RemmW9gTJrqmiKTBlBW9Ubqd3Eew33osbt8JQsNu/kqQtqOHdx4mS3+swwfw
+         mNiNOvrRxJwShVXzXI+GbVm3Efg6mpHO2XJWoDA2rx5D/o/F8HBro/L333bwyd2idPLm
+         XM2Q==
+X-Gm-Message-State: AOAM531clVZHX3mB1AA5PxvnYryZw0PNQiGQAm5iqRtJHmk61Np8Qdrb
+        OvXPARyFrGP8DSRWtAB6fiA=
+X-Google-Smtp-Source: ABdhPJx4shiVFjCPZin6lyLQRhwTsIspvusBSy1Sie/3lT+KgN1KvXQS+y0LVNEzUv0xoIbLIOeJOA==
+X-Received: by 2002:a0c:ea87:: with SMTP id d7mr8985523qvp.27.1614208453271;
+        Wed, 24 Feb 2021 15:14:13 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id n82sm2650938qkn.114.2021.02.24.15.14.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Feb 2021 15:14:12 -0800 (PST)
+Subject: Re: RFC: oftree based setup of composite board devices
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree@vger.kernel.org, Johan Hovold <johan@kernel.org>
+References: <20210208222203.22335-1-info@metux.net>
+ <CAL_JsqJ-bz35mUM3agYjq5x+Y+u9rL1RwesCaA-x=MW8uv5CrA@mail.gmail.com>
+ <76bf0f7c-9477-f370-8fbd-ce8ef15188b1@gmail.com>
+ <44b9b561-5e0d-6a1c-ca5d-4e9f6000884c@metux.net>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <89086c87-c730-ff35-3865-4cf145883a95@gmail.com>
+Date:   Wed, 24 Feb 2021 17:14:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <71092e0e-5c72-924b-c848-8ae9a589f6b0@infradead.org>
+In-Reply-To: <44b9b561-5e0d-6a1c-ca5d-4e9f6000884c@metux.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 11:02:41AM -0800, Randy Dunlap wrote:
-> > +++ b/Documentation/admin-guide/cgroup-v1/misc.rst
-> > @@ -0,0 +1 @@
-> > +/Documentation/admin-guide/cgroup-v2.rst
-> What is the purpose of this (above) file?
-
-This new controller has both cgroup v1 and v2 support. Tejun suggested
-if we can point to v2 doc from v1. If this is not recommended approach I
-can add all of the v2 documention of misc controller here, let me know.
-
-I missed a heading and adding this file in cgroup-v1/index.rst.
-Fixed it now.
-
-> > +        Limits can be set more than the capacity value in the misc.capacity
+On 2/24/21 7:00 AM, Enrico Weigelt, metux IT consult wrote:
+> On 15.02.21 02:12, Frank Rowand wrote:
 > 
->                              higher than
+>> Why not compile in ACPI data (tables?) instead of devicetree description?
 > 
+> The problem is a bit more complex than it might seem.
+> 
+> Let's take the APU2/37/4 boards as an example. They've got some aux
+> devices, eg. some gpio controller, and some things (leds, keys, reset
+> lines, etc) attached to it.
+> 
+> Now we've got lots of different bios versions in the field,
+> enumerating only some of the devices. For example, older ones didn't
+> even contain the gpio, later ones added just gpio, other ones just
+> added LEDs (with different names than the Linux driver already mainlined
+> and field-deployed at that time), but still other lines unhandled, etc, etc. etc.
+> 
+> A big mess :( And I can't ask everybody to do bios uprade on devices far
+> out in the field (litterally open field, sometimes offshore, ...). So, I
+> need a usable solution, that's also maintainable, w/o testing each
+> single combination of board, bios, etc. IOW: without relying on bios
+> (except for board identification)
+> 
+> OTOH, I'm also looking for a solution get rid writing those kind of
+> relatively huge board drivers, that pretty are much like old fashioned
+> board files from pre-DT times - just made up of lots of tables and
+> a few trivial register-something calls. Sounds pretty much like the
+> original use case of oftree.
+> 
+> The primary difference between classic oftree and this scanario:
+> * this is additional to existing platform information, which is
+>   incomplete or even incorrect (and that can't be fixed)
+> * extra carrier boards that are detected by other means, but no
+>   enumeration of the devices on it.
+> 
+>>> This is something I've wanted to see for a while. There's use cases
+>>> for DT based systems too. The example I'd like to see supported are
+>>> USB serial adapters with downstream serdev, GPIO, I2C, SPI, etc. Then
+>>> plug more than one of those in.
+>>
+>> My understanding from the past is that the experts (those who understand both
+>> devicetree and ACPI) regard trying to mix devicetree and ACPI in a single
+>> running Linux kernel image is insanity, or at least likely to be confusing,
+>> difficult, and problematic.
 
-Done
+Since you have persisted, a more referenced and emphatic "no" to mixing ACPI
+and devicetree:
 
-> > +a process to a different cgroup do not move the charge to the destination
-> 
->                                    does
+  https://elinux.org/Device_Tree_Linux#mixing_devicetree_and_ACPI
 
-Done
 
-> > +Others
-> >  ----
 > 
-> That underline is too short for "Others".
+> Well, mixing different, overlapping data sources tends to be tricky. The
+> same problem exists with the classic approach of hand-written board
+> drivers. So there have to be clear border lines.
 > 
+> In my case (eg. apu2+ boards), the overlap is only that some bios
+> versions enumerate the gpio chip, others even some of the gpio-based
+> devices. I'm attempting to solve this by just kicking out those
+> duplicate devices, if they exist. The alternative could be leaving them
+> in an trying to bind the missing ones to them. But that would be really
+> complicatd and needs to be well crafted for lots of different board and
+> bios versions - a kind of complexity we wanna avoid.
 
-Fixed.
+So you want to use devicetree data to fix broken ACPI data.
 
-> Try building this doc file, please.
-> 
-> next-20210219/Documentation/admin-guide/cgroup-v2.rst:2196: WARNING: Unexpected indentation.
-> next-20210219/Documentation/admin-guide/cgroup-v2.rst:2203: WARNING: Unexpected indentation.
-> next-20210219/Documentation/admin-guide/cgroup-v2.rst:2210: WARNING: Unexpected indentation.
-> next-20210219/Documentation/admin-guide/cgroup-v2.rst:2232: WARNING: Title underline too short.
-> 
-> Others
-> ----
-> next-20210219/Documentation/admin-guide/cgroup-v2.rst:2232: WARNING: Title underline too short.
-> 
-> 
-> I think that the first 3 warnings are due to missing a blank line after ::
-> or they could have something to do with mixed tabs and spaces in the misc.*
-> properties descriptions.
-> 
+Again, why don't you use data in an ACPI format to fix broken ACPI
+data?
 
-Sorry, I was not familiar with Sphinx build and didn't build using that.
-I have fixed all of the above warnings. My next patch will reflect
-fixes.
+-Frank
 
-Thanks
+> 
+> My use cases are actually a bit easier than the average dt overlay
+> cases, as I have almost no interactions with already existing devices
+> (except that some specific devices have to be moved out of the way)
+> 
+> The original DT overlay use case, arbitrary expansion boards (eg. on
+> raspi), are trickier, if the overlays shall be generic over a wider
+> range of base boards (eg. same overlay for any raspi or odroid).
+> This is something calling for an own (pseudo-)bus type that handles
+> the correct probing ... I've hacked up something similar for the APU2+'s
+> combined msata/usb/mpcie ports.
+> 
+> BTW: I've already been thinking of ways for internally transforming ACPI
+> tables into DT data structures (struct device_node) at an early point,
+> before probing. But that would be another research project with unknown
+> outcome, and most likely a HUGE change. Not what I'm talking about now.
+> 
+>> From the devicetree side, I expect nightmares for me if devicetree and ACPI
+>> are mixed in a single running kernel image.
+> 
+> Note that I'm not talking about arbitrary configurations. Just re-using
+> existing device tree code to express things that are currently open
+> coded C into DT.
+> 
+> It's NOT trying to boot an ACPI-based machine with DT. (which would be
+> yet another research project)
+> 
+>> Multiple root nodes and disjoint trees both seem problematic.  Existing
+>> subsystems and drivers expect a single cohesive tree.  Changing that
+>> architecture looks to me to be a painful exercise.
+> 
+> Yes, it's not entirely trivial, but managable. My experiments seemed to
+> work so far, and I couldn't see general blockers yet. Drivers usually
+> expect certain sub-nodes, but haven't found any that expect their node
+> being embedded in some other one. (maybe there really are some, but the
+> likehood that they're applicable in these use cases looks pretty low).
+> 
+> 
+> --mtx
+> 
 
