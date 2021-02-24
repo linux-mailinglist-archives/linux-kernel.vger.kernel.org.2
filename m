@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE43A3244B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B583244BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbhBXTkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 14:40:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37682 "EHLO
+        id S235096AbhBXTmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 14:42:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234283AbhBXTke (ORCPT
+        with ESMTP id S234302AbhBXTmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 14:40:34 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2244C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:39:52 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id s23so2055421pji.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:39:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=3cb0bMohbYt0qtEfL517mkwSwHFgKV21YPkanwuMPDg=;
-        b=QAHjSSGhi2s4UoDcFII/63SMa6ngH02wbFB1hJA6F6OrACOK/6nqyiPGIdlKQbum65
-         6bz1tk0t1h58qRqQeuHQecOH2xz828tebwKAOs1BH4RsWoXeTQ/KXwLqD1FlfHDaVlyp
-         fK4WWq+tmO7TTUco1+KTbkodcvyf0CLaUh8YA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=3cb0bMohbYt0qtEfL517mkwSwHFgKV21YPkanwuMPDg=;
-        b=FVv6H7ZBT3OOfWnFjEkLfx05K+KU6YRyJ1ioGr7SIJ5xFGvwr+JieBHggfiwR4ZFNw
-         tlfWWky9YJGkDQdyl9P4OtrGxtgOLNpD7xrcoF5mONXBjGPHm5BMnvNt9s3kMivyXPDH
-         fiMsba9yiKmhk0AtlvAESkg6ZSeudhk4OMI5+0hWFai1If+810R4MW2VQ9IZFUyAo8DU
-         U7jvC5qXTeqhCTaNcWFneZT87xtpWFOHhmjr7ofnOC77hgn6CM4c0gJcdof+YpaHLn7Y
-         6dF0she9S4afCPjFbuqXOhaA4f8zyRNPoqK26DIBw0ltJ5URj3Wwdnhu1eB5xW13vwk0
-         isVQ==
-X-Gm-Message-State: AOAM530yNfPXLxG86okvnSw7KuSaTFUwPMQtCuGFsjRiOOzpFig0z85e
-        xDo5a18k6KdtLoR2snovk/sNKg==
-X-Google-Smtp-Source: ABdhPJypHHjsYp5jhxrBtvZOoR3lU79knB/axfSDhALXkW+fIXC53VIkhwN+L8ATtEdirWZv8nLV4Q==
-X-Received: by 2002:a17:902:8206:b029:e3:95d2:eb0a with SMTP id x6-20020a1709028206b02900e395d2eb0amr17196116pln.43.1614195592126;
-        Wed, 24 Feb 2021 11:39:52 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:933:e73c:97ad:add3])
-        by smtp.gmail.com with ESMTPSA id q4sm3690774pfs.134.2021.02.24.11.39.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 11:39:51 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 24 Feb 2021 14:42:47 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A083DC061574;
+        Wed, 24 Feb 2021 11:42:07 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0d180087c1c74682a645c2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1800:87c1:c746:82a6:45c2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F109E1EC0328;
+        Wed, 24 Feb 2021 20:42:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614195726;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=9ezgUQlQbbX7408pbcJrxnn71TdUJUjIpNkknyJCDRw=;
+        b=VnSrIXBlqTORmrkgznFXrhpvc+CB1vlkNwYoJMdpewn99QaGbXEvOBOK/lD/XS+//KalF3
+        c5zTEwyImAn3425u7nHBNlLBjwHhiHsMhAQYE1oG76/9ve5NBLA6qumhCn4GNT7MOfmydT
+        zHNMzYp6o5Qbh5hqT78fY22+8M/YJ5g=
+Date:   Wed, 24 Feb 2021 20:42:04 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
+Message-ID: <20210224194204.GI20344@zn.tnic>
+References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
+ <20210217222730.15819-7-yu-cheng.yu@intel.com>
+ <20210224161343.GE20344@zn.tnic>
+ <32ac05ef-b50b-c947-095d-bc31a42947a3@intel.com>
+ <20210224165332.GF20344@zn.tnic>
+ <db493c76-2a67-5f53-29a0-8333facac0f5@intel.com>
+ <20210224192044.GH20344@zn.tnic>
+ <CALCETrXKteS9K=OOgsCvBU4in_3zcYccqF9hh2=OdCJPknvB8Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <161367397738.1254594.12158219605796616035@swboyd.mtv.corp.google.com>
-References: <1613667070-27613-1-git-send-email-khsieh@codeaurora.org> <161367397738.1254594.12158219605796616035@swboyd.mtv.corp.google.com>
-Subject: Re: [PATCH v2 1/2] phy/qualcomm: add hbr3_hbr2 voltage and premphasis swing table
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Date:   Wed, 24 Feb 2021 11:39:49 -0800
-Message-ID: <161419558963.1254594.762999750680493756@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CALCETrXKteS9K=OOgsCvBU4in_3zcYccqF9hh2=OdCJPknvB8Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Boyd (2021-02-18 10:46:17)
-> Quoting Kuogee Hsieh (2021-02-18 08:51:10)
-> > Add hbr3_hbr2 voltage and premphasis swing table to support
-> > HBR3 link rate.
-> >=20
-> > Changes in V2:
-> > -- replaced upper case with lower case at hbr3_hbr2 table
-> >=20
-> > Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> > ---
->=20
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
->=20
-> BTW, the DP driver already set rates for HBR2, so does that mean this is
-> fixing the voltage and preemphasis settings for HBR2? If so we should
-> backport this to stable trees and mark it as fixing commit 52e013d0bffa
-> ("phy: qcom-qmp: Add support for DP in USB3+DP combo phy").
+On Wed, Feb 24, 2021 at 11:30:34AM -0800, Andy Lutomirski wrote:
+> On Wed, Feb 24, 2021 at 11:20 AM Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Wed, Feb 24, 2021 at 09:56:13AM -0800, Yu, Yu-cheng wrote:
+> > > No.  Maybe I am doing too much.  The GP fault sets si_addr to zero, for
+> > > example.  So maybe do the same here?
+> >
+> > No, you're looking at this from the wrong angle. This is going to be
+> > user-visible and the moment it gets upstream, it is cast in stone.
+> >
+> > So the whole use case of what luserspace needs to do or is going to do
+> > or wants to do on a SEGV_CPERR, needs to be described, agreed upon by
+> > people etc before it goes out. And thus clarified whether the address
+> > gets copied out or not.
+> 
+> I vote 0.  The address is in ucontext->gregs[REG_RIP] [0] regardless.
+> Why do we need to stick a copy somewhere else?
+> 
+> [0] or however it's spelled.  i can never remember.
 
-Yes? No?
+Fine with me. Let's have this documented in the manpage and then we can
+move forward with this.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
