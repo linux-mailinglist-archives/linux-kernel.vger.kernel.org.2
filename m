@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBBB323823
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4827732382D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbhBXH5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:57:00 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:51230 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbhBXH4x (ORCPT
+        id S233925AbhBXH6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:58:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233764AbhBXH5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:56:53 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11O7o6E9167503;
-        Wed, 24 Feb 2021 07:56:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=B3Rx9g/G1eftg47QpZJeIvSXopnPcakmqucJsFsfr00=;
- b=r/OXgbigBvJqnM9DBMdYJ0EmYbxZIaaAxKHiEBdekd416odgZGdgG5SiTgLQTOkrXSkb
- quHG8Fo9niEs0v/Ru8D7kvPuDVI/bJT8ZaeEKaE9pUVqlBl0Xqqvw+Kb0lLID2cIum1X
- 96bMcJqyyTA/OGdJPc+kNKodOwvNmq+AyuAPRv+FD3qvC91gNCDTENkrOrxSMC59xGV6
- WLHZvhYN5hWY8QHlG6HFbT3TrRN3Kwi3q0OFq1LVIKzZLWsHiQq0nwDd6zcfnw6BylUw
- NRcFgVAvM3vct+ceYFFk/Ol9LM//AfZG0GGH+8nnadCl6td5EzSr9if65cCZ0Wb/M910 PA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 36ttcm9yky-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Feb 2021 07:56:04 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11O7odE0084378;
-        Wed, 24 Feb 2021 07:56:02 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 36ucb0dpmq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Feb 2021 07:56:02 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11O7u0LC017071;
-        Wed, 24 Feb 2021 07:56:01 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 24 Feb 2021 07:56:00 +0000
-Date:   Wed, 24 Feb 2021 10:55:52 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Roger Quadros <rogerq@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-omap@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memory: gpmc: fix out of bounds read and dereference on
- gpmc_cs[]
-Message-ID: <20210224075552.GS2087@kadam>
-References: <20210223193821.17232-1-colin.king@canonical.com>
+        Wed, 24 Feb 2021 02:57:25 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBBBC061786;
+        Tue, 23 Feb 2021 23:56:44 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id w11so900447wrr.10;
+        Tue, 23 Feb 2021 23:56:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=hQJRhWVV1uzqfhk4zJj4G4Yp1KSigb4fRpUieYvH4gk=;
+        b=M/7Cn0GGRU/RYy8H4+jdBRVsPitfGkfnVKNgjYs2pYT/jdPqG2sQKVh8vr1UvY3dhR
+         s1CEVhovO1F3eXFuar67W7mv7t7vX2MRPbbYPBExpAGnkYDV6wgaUHJ8zL+LoPMAfChk
+         dPGJ1HVmmwERYtfSzFxR1DBdJAHWqHRGk3PsBG6h9Dm6SCR/h5NIo6uD2aOg8zwOzvhX
+         GKiAQ0B6YWBjhOMzmF1LAJXB5iYFh/mkGlt92yK3dencTueO4ZjLrMhMAaQy6Ajro2L7
+         c1/AC75CfmTrgWoMdnM6uHuls+Va64AIW+8m9EBYJgh5qtr1PQJphG8U6HmaRAMUvZJV
+         +1yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hQJRhWVV1uzqfhk4zJj4G4Yp1KSigb4fRpUieYvH4gk=;
+        b=VrOhmH1lFXYaliXWfdGQsjP7S14tRlAM4/7a6s20FqoQ95IwOvlUWvWxyXbjRd+yo0
+         M8R72iGXIaAn4vSJDppBbQyCst+RMUbzuUYPBfeVB+/yDrxSbg9dCxWF37d8ThN10COD
+         AVMbRhw0nMNaC0DjU+J0R41HVuT6ibZdxsct8dgpmEQKfOWJmExo3UvBY4EsO/nBt75p
+         ldmubk5V2jbJi/qOIY4sFK3aAYt/+/p22RZXUhCCOFSVmHIJ6DsqHVd82Av0glHPPDxR
+         WHXzvqZlvav4exN6ePpp2QpdWeYYYPgqCqzMND3y/VqLA/jfVtg695pMeveXuUI4xi9I
+         RRaA==
+X-Gm-Message-State: AOAM531IXo3K84g85ZuTTol7iA6cdmmbhuv8AKKPfELId1/IGa3frmPb
+        p76zHPMJKIkmbBQ7Q155lW0=
+X-Google-Smtp-Source: ABdhPJydg21LRFKCW4fzox0Dn3KlpJ0Vx1SCIRlaAwMsGwEunUbgqdPyn+0HKofkjTs6/vHPKRsDsg==
+X-Received: by 2002:adf:fad2:: with SMTP id a18mr30110729wrs.147.1614153403032;
+        Tue, 23 Feb 2021 23:56:43 -0800 (PST)
+Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id u7sm1954033wrt.67.2021.02.23.23.56.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 23:56:42 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?q?Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
+Subject: [PATCH v2 0/2] irqchip: add support for BCM6345 interrupt controller
+Date:   Wed, 24 Feb 2021 08:56:38 +0100
+Message-Id: <20210224075640.20465-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210223204340.312-1-noltari@gmail.com>
+References: <20210223204340.312-1-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210223193821.17232-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102240062
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 spamscore=0 mlxscore=0 bulkscore=0 clxscore=1011
- priorityscore=1501 malwarescore=0 impostorscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102240062
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 07:38:21PM +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the array gpmc_cs is indexed by cs before it cs is range checked
-> and the pointer read from this out-of-index read is dereferenced. Fix this
-> by performing the range check on cs before the read and the following
-> pointer dereference.
-> 
-> Addresses-Coverity: ("Negative array index read")
-> Fixes: 186401937927 ("memory: gpmc: Move omap gpmc code to live under drivers")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/memory/omap-gpmc.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-> index cfa730cfd145..f80c2ea39ca4 100644
-> --- a/drivers/memory/omap-gpmc.c
-> +++ b/drivers/memory/omap-gpmc.c
-> @@ -1009,8 +1009,8 @@ EXPORT_SYMBOL(gpmc_cs_request);
->  
->  void gpmc_cs_free(int cs)
->  {
-> -	struct gpmc_cs_data *gpmc = &gpmc_cs[cs];
-> -	struct resource *res = &gpmc->mem;
+This interrupt controller is present on bcm63xx SoCs in order to generate
+interrupts based on GPIO status changes.
 
-There is no actual dereferencing going on here, it just taking the
-addresses.  But the patch is also harmless and improves readability.
+v3: pass dt_binding_check.
+v2: fix documentation title typo.
 
-regards,
-dan carpenter
+Álvaro Fernández Rojas (2):
+  dt-bindings: interrupt-controller: document BCM6345 external interrupt
+    controller
+  irqchip: add support for BCM6345 external interrupt controller
+
+ .../brcm,bcm6345-ext-intc.yaml                |  78 +++++
+ drivers/irqchip/Kconfig                       |   4 +
+ drivers/irqchip/Makefile                      |   1 +
+ drivers/irqchip/irq-bcm6345-ext.c             | 271 ++++++++++++++++++
+ 4 files changed, 354 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml
+ create mode 100644 drivers/irqchip/irq-bcm6345-ext.c
+
+-- 
+2.20.1
 
