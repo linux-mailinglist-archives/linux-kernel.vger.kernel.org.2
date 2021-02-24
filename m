@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B983241CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031E43241ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235512AbhBXQLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:11:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235152AbhBXQGr (ORCPT
+        id S234561AbhBXQPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:15:45 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21010 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235700AbhBXQLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:06:47 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB8EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:06:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=3f77s7FhtCsDaYFseaJfdOAC/1AXNuhFWjHHZc+AbRU=; b=wbnsuACT4Zh0mmpleu09iIbQsK
-        xOxqzEFCZUbw0rt9NpLoJOEJCMdQm57jjANGwtsAlJmylF8wOXm0BZarVmAjJkXxn3QUcUPDn3ayp
-        9mMRtGq9yoKCTdCYM8ui1Y6JLvrEmeYPVy5Q6rAp6evcnO+E/FV8A4WiJZzd3kWW5TyXIqbERWUJ1
-        Gq2u8GTZrLnxIqw+g8NhnqNjR2ddOqgQPCartCJEtNYQWWEPiGWBX3g/pytAw+e31AM+TXgtP6yG5
-        ZnzcXd/8kzcEie7q94Yz+GwnV77H/nYylbYYGP+przPwLLFpp/PtBqdACi9WuFv3inHS7oSdFZcRw
-        lpMkrGkQ==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lEwfo-0001u2-48; Wed, 24 Feb 2021 16:06:00 +0000
-Subject: Re: (.text.ks8851_probe_common+0x370): undefined reference to
- `__this_module'
-To:     Marek Vasut <marex@denx.de>, Arnd Bergmann <arnd@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-        kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-References: <202102221437.vHlLwHmG-lkp@intel.com>
- <33c7cb1f-b6c0-24bf-0e6c-23d5472e4c29@infradead.org>
- <CAK8P3a1zfwJs3=mhvTGpLLak1Lqq6N-4N+zHrh-4KMRE75HP8w@mail.gmail.com>
- <bb6e7759-0600-cbd0-c99c-e053285d094f@denx.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2e59ed9d-8618-d846-e2df-caf48c548e81@infradead.org>
-Date:   Wed, 24 Feb 2021 08:05:53 -0800
+        Wed, 24 Feb 2021 11:11:44 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11OG3Di0067168;
+        Wed, 24 Feb 2021 11:10:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=mt66z5SUon43B4XN4SSL9tOftqm41yhSmF8UXK0gtPo=;
+ b=iJnSVN3uvfPtaiHg3tcbAoknuu3/5CHYRWgevGnUwlmfYDkXqP0DacPc7e0Tsu52teeQ
+ EuhLe/3Qg2E6YgLgATWuIKT5FiZ/k8/D5ASqqF9Y6InhCXp/lCLc0+3wINYz9tWnnriA
+ Q5Ir4Zue5lKq96qjMDFX47qzABfzObKcncJeZp/+kqwFPGlydwSTdVT67MF2klcJMTOa
+ 5YqQetOag18ihaDwVl+4K9PI4f6ykJ9uZ9QuVZaz7HlAvZzmYUkqYhSTmzVXYgkeokZU
+ JI5oZBPcexMz9J6rRnYpDCcHKRltj5eSgNYFfmpOHne98ai/NSKjyYDqi5CboP++oDd7 SA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36wma7e32f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 11:10:46 -0500
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11OG3Me2068351;
+        Wed, 24 Feb 2021 11:10:46 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36wma7e31g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 11:10:46 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11OG0UVp015461;
+        Wed, 24 Feb 2021 16:10:44 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 36tt283psy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 16:10:44 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11OGASSG28836202
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Feb 2021 16:10:28 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7EC95A404D;
+        Wed, 24 Feb 2021 16:10:41 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 09231A4051;
+        Wed, 24 Feb 2021 16:10:41 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.95.10])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 24 Feb 2021 16:10:40 +0000 (GMT)
+Subject: Re: [PATCH v2 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+To:     Halil Pasic <pasic@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org, cohuck@redhat.com,
+        kwankhede@nvidia.com, pbonzini@redhat.com,
+        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
+References: <20210216011547.22277-1-akrowiak@linux.ibm.com>
+ <20210216011547.22277-2-akrowiak@linux.ibm.com>
+ <20210223104805.6a8d1872.pasic@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <e07d6f8e-f29e-7c4e-4226-5a5c072e7ae6@de.ibm.com>
+Date:   Wed, 24 Feb 2021 17:10:40 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <bb6e7759-0600-cbd0-c99c-e053285d094f@denx.de>
+In-Reply-To: <20210223104805.6a8d1872.pasic@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-24_06:2021-02-24,2021-02-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=858 spamscore=0 clxscore=1011
+ priorityscore=1501 phishscore=0 adultscore=0 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102240124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/21 3:02 AM, Marek Vasut wrote:
-> On 2/24/21 9:38 AM, Arnd Bergmann wrote:
->> On Wed, Feb 24, 2021 at 3:38 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>
->>> On 2/21/21 10:12 PM, kernel test robot wrote:
->>>> Hi Marek,
->>>>
->>>> FYI, the error/warning still remains.
->>>>
->>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>>> head:   31caf8b2a847214be856f843e251fc2ed2cd1075
->>>> commit: ef3631220d2b3d8d14cf64464760505baa60d6ac net: ks8851: Register MDIO bus and the internal PHY
->>>> date:   7 weeks ago
->>>> config: parisc-randconfig-r034-20210222 (attached as .config)
->>>> compiler: hppa-linux-gcc (GCC) 9.3.0
->>>> reproduce (this is a W=1 build):
->>>>           wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>>           chmod +x ~/bin/make.cross
->>>>           # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ef3631220d2b3d8d14cf64464760505baa60d6ac
->>>>           git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>>           git fetch --no-tags linus master
->>>>           git checkout ef3631220d2b3d8d14cf64464760505baa60d6ac
->>>>           # save the attached .config to linux build tree
->>>>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc
->>>>
->>>> If you fix the issue, kindly add following tag as appropriate
->>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>
->>>> All errors (new ones prefixed by >>):
->>>>
->>>>      hppa-linux-ld: drivers/net/ethernet/micrel/ks8851_common.o: in function `ks8851_probe_common':
->>>>>> (.text.ks8851_probe_common+0x370): undefined reference to `__this_module'
->>>>>> hppa-linux-ld: (.text.ks8851_probe_common+0x374): undefined reference to `__this_module'
->>>
->>> Hey Arnd-
->>>
->>> I wanted to see if you had any ideas about this problem.
->>>
->>> CONFIG_KS8851=y
->>> CONFIG_KS8851_MLL=m
->>>
->>> The problem is that 2 drivers share some common code, but in one case
->>> the shared code is builtin and for the other driver it is a loadable
->>> module. The common code is first built as builtin, so it does not have
->>> the "__this_module" symbol.
+
+
+On 23.02.21 10:48, Halil Pasic wrote:
+> On Mon, 15 Feb 2021 20:15:47 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> 
+>> This patch fixes a circular locking dependency in the CI introduced by
+>> commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
+>> pointer invalidated"). The lockdep only occurs when starting a Secure
+>> Execution guest. Crypto virtualization (vfio_ap) is not yet supported for
+>> SE guests; however, in order to avoid CI errors, this fix is being
+>> provided.
 >>
->> This is the patch I sent for it:
->>
->> https://lore.kernel.org/lkml/20210125121937.3900988-1-arnd@kernel.org/T/#u
+>> The circular lockdep was introduced when the masks in the guest's APCB
+>> were taken under the matrix_dev->lock. While the lock is definitely
+>> needed to protect the setting/unsetting of the KVM pointer, it is not
+>> necessarily critical for setting the masks, so this will not be done under
+>> protection of the matrix_dev->lock.
+> 
+> 
+> 
+> With the one little thing I commented on below addressed: 
+> Acked-by: Halil Pasic <pasic@linux.ibm.com>  
 
-Thanks!
-
-> I was under the impression that the patch was already applied, wasn't it?
-
-Not that I can see/tell.
-
--- 
-~Randy
-
+Tony, can you comment on Halils comment or send a v3 right away?
