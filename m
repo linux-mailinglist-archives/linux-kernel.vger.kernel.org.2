@@ -2,142 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EF73237AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE5C3237B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbhBXHIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:08:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        id S234366AbhBXHJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:09:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234077AbhBXHIm (ORCPT
+        with ESMTP id S232853AbhBXHJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:08:42 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF63FC061786;
-        Tue, 23 Feb 2021 23:08:01 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id p3so849784wmc.2;
-        Tue, 23 Feb 2021 23:08:01 -0800 (PST)
+        Wed, 24 Feb 2021 02:09:09 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B319C06178A;
+        Tue, 23 Feb 2021 23:08:29 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id u4so1521434lfs.0;
+        Tue, 23 Feb 2021 23:08:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=4z9Ua9yaZY1B+vEfftr92vAlb7jCLF0//9CO61p6vrw=;
-        b=XPg3Pm/hIucUrJ/bSkStiZ+oSitZmig/VCwFJex52b/e6osO9pHQ1R5GvVdQPFMqay
-         MXynE3WuEankK8f9LvrIpMPE5UdUcJURaUmDLNH+OtF1z2YuaQ0E1fHYkLfnrx7+r6jh
-         p7zCPhk7AV7xm4yhui2MRDjqCWxjBB/x0Up3Rb97qCBWv+NoeU8c1hDVJ0VB26QNCD4P
-         B310TAJnEemKl0h7pBxWLVZpNYvHp/0Ndx4eAsb2lnziXrqTIw64L2FPPYZkJpul30D4
-         LjEFuqxCBTo9UYaqRIa4NkT8XFoaL1ZViLtNXPpSJk+Al73+n41mqEQM/IJyloOmkuUV
-         bDHw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OhiHzvxVBzMcfj0EAN/kpIbK/2F2capB4/UjOZuTUm4=;
+        b=tLRNDlpYIH9l0xOUQQCs2ThFo0Dy0U6GonTZOVeCaJOcZos7hX5YQOV995jZxAfBUM
+         rA2jaqYuD56AoA7wVTUZtrktzzB52zM8SDLrnzfUhqpXd2zy/Cj1uCrGYWeydhoFwgR4
+         D61cFEgC078N2xSvak2jKjEqVoo186ScX/lTYswKR3PBBzPCdmGwRjhYYeDDFiOEWRiN
+         8WuilQ1Op9cgUm0voCgxU6O2sY19hvuKyVJ0fPUGOEPGpA+kNZc37cxvRr54mCISUaXE
+         MABI6jgC89J8mIzpPX6S474kF6+VGkkCrtL6OnzYvYUdaXvdHcizc0wrxJ7+SkaQgM8I
+         zlDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=4z9Ua9yaZY1B+vEfftr92vAlb7jCLF0//9CO61p6vrw=;
-        b=D9JGj9hCNFXIMvo6XD8d1kfe49YjzoULch3yrmN4MF/ihsDLT41WoeMLLchSQGQhbS
-         m0PN17c4OUJoLryylKY4ThNgNnhT16lUdk0zgrU5HioX6wRn0oVL37o+v4DFGvmNvdEp
-         VjANPg7XVen6SbgyNkCiavGkHm3nQo8pJUAFusSte4Uka6ChgYFZDw4HEZITet+Gndbj
-         EXT+7aiPKvNXuC5vt4MA8DxthAzQN0zs9opQUKwfeEfQ/6nAwVhUGUnHN6FYyvdorfUD
-         I8schTaZJCwYKDu4JPVPlh+w/NXZTDpZ21KtKtuX8tyeVBQWHpwW6kUhKqAbLvIz2Iyp
-         6KKg==
-X-Gm-Message-State: AOAM532PJy7Hs7nJtEdje6MmCroOvWtrvCymtoV3nxRLEogIZwP8DJmI
-        Mu1e3/tKrquL1D/s6amUy5s=
-X-Google-Smtp-Source: ABdhPJwyn0swr++Y+TjIV6KoM9yyHGSyjsoba/arMHUwtLWHChWje0vVF3U2CQx0Uyl+9e3UkKCu6A==
-X-Received: by 2002:a05:600c:20f:: with SMTP id 15mr2266895wmi.88.1614150480571;
-        Tue, 23 Feb 2021 23:08:00 -0800 (PST)
-Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id g11sm1328847wmk.32.2021.02.23.23.07.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Feb 2021 23:07:59 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH] mips: smp-bmips: fix CPU mappings
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <f4b8718c-ee74-2609-40f6-cb8f62247d51@gmail.com>
-Date:   Wed, 24 Feb 2021 08:07:57 +0100
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5B471DA5-E911-4B7F-BD9A-CE2901C427FC@gmail.com>
-References: <20210223124817.26486-1-noltari@gmail.com>
- <f4b8718c-ee74-2609-40f6-cb8f62247d51@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OhiHzvxVBzMcfj0EAN/kpIbK/2F2capB4/UjOZuTUm4=;
+        b=G35YLxXTCR/sbp46tAy9t/6pAKBZUXd8oaGiIqQa/sy44iUO+Rzb2rzD+6Eha3e/BG
+         8bUFTnShtHaHdvd+kIO0fivMDjdgxpnmvpUcIClJdmg/ZU7f3BK9dc0syJIlTQ7ZLhWL
+         R8UfsjrvoN+CFyk+zk7QqGOrGaCldf8CCkOX3sZCjCYvAZIeVkpUhpcDhUdhUUfdTApp
+         p0CDEDClcuhTO5Q+gkION7pZj2HIWnaWX/d81RcHptsVoTWg6gOqgySeVRgJWoNlesX6
+         lxW9KQpiUX8SYopWZPiMTtAnD2jKEqlhLlgJ1HLnZUeEVGexOSgypSGWFPx8KmxfZvJL
+         zkeg==
+X-Gm-Message-State: AOAM5323jNekBkwpqnPQFsgi6xE5Y6PurFvl9qSUcqVt2AuJXDXLWMZX
+        FzOSzDH5PqVht0vlwNj/+3g=
+X-Google-Smtp-Source: ABdhPJzF3RI1oCQDeNNEWtd+K8a0Z3XrJtSDOG3aGifi2mwFwoBLT6FpzOOYMh5L3doXxEUbLOWcFw==
+X-Received: by 2002:a19:8984:: with SMTP id l126mr18093759lfd.213.1614150507698;
+        Tue, 23 Feb 2021 23:08:27 -0800 (PST)
+Received: from curiosity ([5.188.167.245])
+        by smtp.gmail.com with ESMTPSA id v2sm287459lfd.111.2021.02.23.23.08.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 23:08:27 -0800 (PST)
+Date:   Wed, 24 Feb 2021 10:08:26 +0300
+From:   Sergey Matyukevich <geomatsi@gmail.com>
+To:     samirweng1979 <samirweng1979@163.com>
+Cc:     imitsyanko@quantenna.com, kvalo@codeaurora.org, kuba@kernel.org,
+        ohannes.berg@intel.com, dlebed@quantenna.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: Re: [PATCH] qtnfmac: remove meaningless labels
+Message-ID: <YDX7aryD86rcu6GV@curiosity>
+References: <20210223065754.34392-1-samirweng1979@163.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223065754.34392-1-samirweng1979@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+> some function's label meaningless, the return statement follows
+> the goto statement, so just remove it.
+> 
+> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> ---
+>  drivers/net/wireless/quantenna/qtnfmac/cfg80211.c | 27 +++++------------------
+>  1 file changed, 6 insertions(+), 21 deletions(-)
 
-> El 24 feb 2021, a las 4:45, Florian Fainelli <f.fainelli@gmail.com> =
-escribi=C3=B3:
->=20
->=20
->=20
-> On 2/23/2021 4:48 AM, =C3=81lvaro Fern=C3=A1ndez Rojas wrote:
->> When booting bmips with SMP enabled on a BCM6358 running on CPU #1 =
-instead of
->> CPU #0, the current CPU mapping code produces the following:
->> - smp_processor_id(): 0
->> - cpu_logical_map(): 1
->> - cpu_number_map(): 1
->>=20
->> This is because SMP isn't supported on BCM6358 since it has a shared =
-TLB, so
->> it is disabled and max_cpus is decreased from 2 to 1.
->>=20
->> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
->> ---
->> arch/mips/kernel/smp-bmips.c | 27 +++++++++++++++++----------
->> 1 file changed, 17 insertions(+), 10 deletions(-)
->>=20
->> diff --git a/arch/mips/kernel/smp-bmips.c =
-b/arch/mips/kernel/smp-bmips.c
->> index 359b176b665f..c4760cb48a67 100644
->> --- a/arch/mips/kernel/smp-bmips.c
->> +++ b/arch/mips/kernel/smp-bmips.c
->> @@ -134,17 +134,24 @@ static void __init bmips_smp_setup(void)
->> 	if (!board_ebase_setup)
->> 		board_ebase_setup =3D &bmips_ebase_setup;
->>=20
->> -	__cpu_number_map[boot_cpu] =3D 0;
->> -	__cpu_logical_map[0] =3D boot_cpu;
->> -
->> -	for (i =3D 0; i < max_cpus; i++) {
->> -		if (i !=3D boot_cpu) {
->> -			__cpu_number_map[i] =3D cpu;
->> -			__cpu_logical_map[cpu] =3D i;
->> -			cpu++;
->> +	if (max_cpus > 1) {
->> +		__cpu_number_map[boot_cpu] =3D 0;
->> +		__cpu_logical_map[0] =3D boot_cpu;
->> +
->> +		for (i =3D 0; i < max_cpus; i++) {
->> +			if (i !=3D boot_cpu) {
->> +				__cpu_number_map[i] =3D cpu;
->> +				__cpu_logical_map[cpu] =3D i;
->> +				cpu++;
->> +			}
->> +			set_cpu_possible(i, 1);
->> +			set_cpu_present(i, 1);
->> 		}
->> -		set_cpu_possible(i, 1);
->> -		set_cpu_present(i, 1);
->> +	} else {
->> +		__cpu_number_map[0] =3D boot_cpu;
->> +		__cpu_logical_map[0] =3D 0;
->> +		set_cpu_possible(0, 1);
->> +		set_cpu_possible(0, 1);
->=20
-> Duplicate line, with that fixed:
+Thanks for the patch. 
 
-Nice catch, it should be set_cpu_present().
+Reviewed-by: Sergey Matyukevich <geomatsi@gmail.com>
 
->=20
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-> --=20
-> Florian
 
+Regards,
+Sergey
