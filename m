@@ -2,79 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55DA3237BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 157973237BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhBXHMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:12:25 -0500
-Received: from mout.gmx.net ([212.227.17.21]:40913 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230019AbhBXHLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:11:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1614150524;
-        bh=JBUYayNy3evHFwEU8b+lYJeGEoEUDi/DNq0J8g+SPTM=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=QZzTW3UNngrZnLn4yZutnsVTjjnrvfS8H/Lzl8DsGC3af1Y12hCQASjhsNzyk7xgS
-         Anwy3KisJuAbTkjyv28cvjBoAd+VU5L3eaoaMq5IsuP/9ZLRJA+KdFqhNZjfAR6abM
-         hnGZw3RmFeG4UcNCmeBqYJ4Z53IbSoIaxbkd/tOE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Valinor ([213.216.209.188]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOzSu-1lT1DL3Vvg-00PPyQ; Wed, 24
- Feb 2021 08:08:44 +0100
-Date:   Wed, 24 Feb 2021 09:10:27 +0200
-From:   Lauri Kasanen <cand@gmx.com>
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Hulk Robot <hulkci@huawei.com>, Jaroslav Kysela <perex@perex.cz>,
-        "Takashi Iwai" <tiwai@suse.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] sound: n64: Fix return value check in
- n64audio_probe()
-Message-Id: <20210224091027.8d172c0b7aa4d6d651a3d34e@gmx.com>
-In-Reply-To: <20210224013803.2146953-1-weiyongjun1@huawei.com>
-References: <20210224013803.2146953-1-weiyongjun1@huawei.com>
-X-Mailer: Sylpheed 3.5.0 (GTK+ 2.18.6; x86_64-unknown-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:w274xjZp7tauHIHUJ0KH48Knh/UIezK9ZJRHbL1UhsWlkDbMYnc
- m5LxWvYoIQVxD7tt/hQG1T2RMSUiltGCcDsgWmSJBhOCd0LlMFWbwMh4KTxlD9YzpLRdcsw
- 63UJYw14WM9jrH1v2N7paD644KZ9jfmRnPHOAlmnZM9oWth2wlellsd5Yum6LKW9No3I7t3
- PmciFgLpu8J0yMHmm0zMg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Q/4/yVZPhN8=:Zifqb/WYYtNIwpWcDiD4vz
- ovz3Q+qneELNLKYHgnkcIJzlnspUZuN/iIQn3OYtD2OSoymtw0v9RQvUgi0a+3ntweQAC/x8F
- pzjQ65Pz0eEkCgSj72TtvF/plWVgdO+q0/jqkogChVKlTawPOXepVqJsLGZgUZsW7e5JoymXg
- e9cyq6iKsyd9iN6LD6KvSxhiblv4HWmChz7SyfT3rIZgRV8RrZTsRawWNrUUP1x8NDA3WXoSK
- 99pNA1q9qIzM2poNj3snXa1XV6Y+c0G7sJp2UYZ5z/Y/RaytjhaBepdW99CNymVl66q5tiW4N
- gbcrTB7MloJrXhmH688atMbyvb1P4h1KlbYlr6f2bkMTcDMJ9MaVZ4snFd/dasdEWC/hpFR89
- PJj271hPyyfq35GZOrNlyVodU2OERlA/gHYqRPahqnAlCc6T5TzTqx/WnHuXomYU1ZSoxECOB
- 0uCK7t9Gc30mxoY+fliY9CCjIJqkVwldAD6cX0iCQTQB4BxcACcRpHMPdcyjU9pXegvKdKekp
- iJIbddMkTVHokHNCxuT8YV6b2HecfCL63BJE3s1HGqo2MMHE6YhZW+Qx1MzdC5rw1S1a1kIk8
- +dC9GlOFeUy5rTz0hwu3q7V+mr8kaNlnobNtMLTr6cOMrOaV+h7Ov9taDMs+m59v8KBtY9V4s
- lpkgcirPNNllzF6NQLxxjnZPEjsfdPPzHoLn1mBjZfCj8dHfVObwZWpsZvQ9QtbuHlSjNBJbu
- pTxrmTGL3s5I6FYL2OfvEANL6Mqyq9AsVkQBIWvaLpLkUbk3ZEF+AOHUn99GENYOfq3JG3Kao
- ccPIYDCxxECYyVOJKrqI7dymWxvW4zAJVQ024d2G1qhS+NWWM2ng5cmeWnafV2IMs/BX53tFk
- bxQg3OJy3lZK112kPkcQ==
+        id S231193AbhBXHOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:14:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37003 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234381AbhBXHNh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 02:13:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614150727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s5urpx7+14Nbuik1VeRNoEiZMhIyaDIyvE6g+cvtgSs=;
+        b=iWAgH7TQjfMVNTQslIiANLWHRqi8E8u/V9Bc1faPlSidPxQvCVWpNNoVbJOlWmFrSGNEou
+        RRXEupjcrI7L87ph4d/g1WVnlg/idQH15FCtmMBxr36A+xc3DboPYLBtrN3aKngtiZPfFX
+        dd2QfaxbKYq/dhGZtXrh/TWK7VPiX/U=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-409-t2TLvhHBMbGTC5IQgPfjfw-1; Wed, 24 Feb 2021 02:12:05 -0500
+X-MC-Unique: t2TLvhHBMbGTC5IQgPfjfw-1
+Received: by mail-wr1-f72.google.com with SMTP id g5so613746wrd.22
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:12:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=s5urpx7+14Nbuik1VeRNoEiZMhIyaDIyvE6g+cvtgSs=;
+        b=bTgyLCsHfjTEh7VwolMyX2nGjNipP3WmeOgq+Ew44Fv7qjdKA8teYBtdH/EZ5SFjnZ
+         Si/djSdyE5tG8ZSNbWidvlwf5d0cX3AfkFuvegvkqW/bfHhrLeDCSBPr0tgRjwHxn370
+         0KUVgBSy+1rrl9DswArhI8QwY2P1Jl0XQoX1YW9QSK/d7eBeh/fnebuLtyMaVYLESrac
+         TbZpYh8Aw1xfRiAzkwvXNUhn1eMJLfozR3zNKyeEusmpGTCZuVqYvSTY+RQK7x32sOGw
+         9teoc7Em9iWOEVhQP1aPwH3S4C7gszvdwB+Si7GRK7ILGwJZgGK0d/G+raQct7WGghir
+         tSeA==
+X-Gm-Message-State: AOAM533cVHvvDVetJYW7YG8IfHt5ex3H30SqaLiU0rpstLcMzwC2zRr9
+        kOBAxklgtMFg0u6cAdFhQmdFnzMmMTYyGrDzZ8iS0vkKaQWD80OHLLxW7nT2jM1+gMYUHBFaAXM
+        vZiaW/Y6LN4hjl9iXsXIvUHFW
+X-Received: by 2002:a1c:4444:: with SMTP id r65mr2340662wma.22.1614150724366;
+        Tue, 23 Feb 2021 23:12:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwadgw2sbmpJNGXYqDbem1Ufvnw+j0n4YzrCFoLPNbR6eiG3H/7UMUwjHA8tQWn5GnaAdb2QA==
+X-Received: by 2002:a1c:4444:: with SMTP id r65mr2340640wma.22.1614150724189;
+        Tue, 23 Feb 2021 23:12:04 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id p12sm1269626wmq.1.2021.02.23.23.12.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 23:12:03 -0800 (PST)
+Date:   Wed, 24 Feb 2021 02:12:01 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Eli Cohen <elic@nvidia.com>, Si-Wei Liu <si-wei.liu@oracle.com>,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
+Message-ID: <20210224021054-mutt-send-email-mst@kernel.org>
+References: <20210222023040-mutt-send-email-mst@kernel.org>
+ <22fe5923-635b-59f0-7643-2fd5876937c2@oracle.com>
+ <fae0bae7-e4cd-a3aa-57fe-d707df99b634@redhat.com>
+ <20210223082536-mutt-send-email-mst@kernel.org>
+ <3ff5fd23-1db0-2f95-4cf9-711ef403fb62@oracle.com>
+ <7e6291a4-30b1-6b59-a2bf-713e7b56826d@redhat.com>
+ <20210224000528-mutt-send-email-mst@kernel.org>
+ <20210224064520.GA204317@mtl-vdi-166.wap.labs.mlnx>
+ <20210224014700-mutt-send-email-mst@kernel.org>
+ <ef775724-b5fb-ca70-ed2f-f23d8fbf4cd8@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ef775724-b5fb-ca70-ed2f-f23d8fbf4cd8@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Feb 2021 01:38:03 +0000
-Wei Yongjun <weiyongjun1@huawei.com> wrote:
+On Wed, Feb 24, 2021 at 02:55:13PM +0800, Jason Wang wrote:
+> 
+> On 2021/2/24 2:47 下午, Michael S. Tsirkin wrote:
+> > On Wed, Feb 24, 2021 at 08:45:20AM +0200, Eli Cohen wrote:
+> > > On Wed, Feb 24, 2021 at 12:17:58AM -0500, Michael S. Tsirkin wrote:
+> > > > On Wed, Feb 24, 2021 at 11:20:01AM +0800, Jason Wang wrote:
+> > > > > On 2021/2/24 3:35 上午, Si-Wei Liu wrote:
+> > > > > > 
+> > > > > > On 2/23/2021 5:26 AM, Michael S. Tsirkin wrote:
+> > > > > > > On Tue, Feb 23, 2021 at 10:03:57AM +0800, Jason Wang wrote:
+> > > > > > > > On 2021/2/23 9:12 上午, Si-Wei Liu wrote:
+> > > > > > > > > On 2/21/2021 11:34 PM, Michael S. Tsirkin wrote:
+> > > > > > > > > > On Mon, Feb 22, 2021 at 12:14:17PM +0800, Jason Wang wrote:
+> > > > > > > > > > > On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
+> > > > > > > > > > > > Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
+> > > > > > > > > > > > for legacy") made an exception for legacy guests to reset
+> > > > > > > > > > > > features to 0, when config space is accessed before features
+> > > > > > > > > > > > are set. We should relieve the verify_min_features() check
+> > > > > > > > > > > > and allow features reset to 0 for this case.
+> > > > > > > > > > > > 
+> > > > > > > > > > > > It's worth noting that not just legacy guests could access
+> > > > > > > > > > > > config space before features are set. For instance, when
+> > > > > > > > > > > > feature VIRTIO_NET_F_MTU is advertised some modern driver
+> > > > > > > > > > > > will try to access and validate the MTU present in the config
+> > > > > > > > > > > > space before virtio features are set.
+> > > > > > > > > > > This looks like a spec violation:
+> > > > > > > > > > > 
+> > > > > > > > > > > "
+> > > > > > > > > > > 
+> > > > > > > > > > > The following driver-read-only field, mtu only exists if
+> > > > > > > > > > > VIRTIO_NET_F_MTU is
+> > > > > > > > > > > set.
+> > > > > > > > > > > This field specifies the maximum MTU for the driver to use.
+> > > > > > > > > > > "
+> > > > > > > > > > > 
+> > > > > > > > > > > Do we really want to workaround this?
+> > > > > > > > > > > 
+> > > > > > > > > > > Thanks
+> > > > > > > > > > And also:
+> > > > > > > > > > 
+> > > > > > > > > > The driver MUST follow this sequence to initialize a device:
+> > > > > > > > > > 1. Reset the device.
+> > > > > > > > > > 2. Set the ACKNOWLEDGE status bit: the guest OS has
+> > > > > > > > > > noticed the device.
+> > > > > > > > > > 3. Set the DRIVER status bit: the guest OS knows how to drive the
+> > > > > > > > > > device.
+> > > > > > > > > > 4. Read device feature bits, and write the subset of feature bits
+> > > > > > > > > > understood by the OS and driver to the
+> > > > > > > > > > device. During this step the driver MAY read (but MUST NOT write)
+> > > > > > > > > > the device-specific configuration
+> > > > > > > > > > fields to check that it can support the device before accepting it.
+> > > > > > > > > > 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new
+> > > > > > > > > > feature bits after this step.
+> > > > > > > > > > 6. Re-read device status to ensure the FEATURES_OK bit is still set:
+> > > > > > > > > > otherwise, the device does not
+> > > > > > > > > > support our subset of features and the device is unusable.
+> > > > > > > > > > 7. Perform device-specific setup, including discovery of virtqueues
+> > > > > > > > > > for the device, optional per-bus setup,
+> > > > > > > > > > reading and possibly writing the device’s virtio configuration
+> > > > > > > > > > space, and population of virtqueues.
+> > > > > > > > > > 8. Set the DRIVER_OK status bit. At this point the device is “live”.
+> > > > > > > > > > 
+> > > > > > > > > > 
+> > > > > > > > > > so accessing config space before FEATURES_OK is a spec
+> > > > > > > > > > violation, right?
+> > > > > > > > > It is, but it's not relevant to what this commit tries to address. I
+> > > > > > > > > thought the legacy guest still needs to be supported.
+> > > > > > > > > 
+> > > > > > > > > Having said, a separate patch has to be posted to fix the guest driver
+> > > > > > > > > issue where this discrepancy is introduced to
+> > > > > > > > > virtnet_validate() (since
+> > > > > > > > > commit fe36cbe067). But it's not technically related to this patch.
+> > > > > > > > > 
+> > > > > > > > > -Siwei
+> > > > > > > > I think it's a bug to read config space in validate, we should
+> > > > > > > > move it to
+> > > > > > > > virtnet_probe().
+> > > > > > > > 
+> > > > > > > > Thanks
+> > > > > > > I take it back, reading but not writing seems to be explicitly
+> > > > > > > allowed by spec.
+> > > > > > > So our way to detect a legacy guest is bogus, need to think what is
+> > > > > > > the best way to handle this.
+> > > > > > Then maybe revert commit fe36cbe067 and friends, and have QEMU detect
+> > > > > > legacy guest? Supposedly only config space write access needs to be
+> > > > > > guarded before setting FEATURES_OK.
+> > > > > 
+> > > > > I agree. My understanding is that all vDPA must be modern device (since
+> > > > > VIRITO_F_ACCESS_PLATFORM is mandated) instead of transitional device.
+> > > > > 
+> > > > > Thanks
+> > > > Well mlx5 has some code to handle legacy guests ...
+> > > > Eli, could you comment? Is that support unused right now?
+> > > > 
+> > > If you mean support for version 1.0, well the knob is there but it's not
+> > > set in the firmware I use. Note sure if we will support this.
+> > Hmm you mean it's legacy only right now?
+> > Well at some point you will want advanced goodies like RSS
+> > and all that is gated on 1.0 ;)
+> 
+> 
+> So if my understanding is correct the device/firmware is legacy but require
+> VIRTIO_F_ACCESS_PLATFORM semanic? Looks like a spec violation?
+> 
+> Thanks
 
-> In case of error, the function devm_platform_ioremap_resource()
-> returns ERR_PTR() and never returns NULL. The NULL test in the
-> return value check should be replaced with IS_ERR().
->
-> Fixes: 1448f8acf4cc ("sound: Add n64 driver")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->  sound/mips/snd-n64.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+Legacy mode description is the spec is non-normative. As such as long as
+guests work, they work ;)
 
-Reviewed-by: Lauri Kasanen <cand@gmx.com>
+> 
+> > 
+> > > > > > -Siwie
+> > > > > > 
+> > > > > > > > > > > > Rejecting reset to 0
+> > > > > > > > > > > > prematurely causes correct MTU and link status unable to load
+> > > > > > > > > > > > for the very first config space access, rendering issues like
+> > > > > > > > > > > > guest showing inaccurate MTU value, or failure to reject
+> > > > > > > > > > > > out-of-range MTU.
+> > > > > > > > > > > > 
+> > > > > > > > > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for
+> > > > > > > > > > > > supported mlx5 devices")
+> > > > > > > > > > > > Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> > > > > > > > > > > > ---
+> > > > > > > > > > > >      drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
+> > > > > > > > > > > >      1 file changed, 1 insertion(+), 14 deletions(-)
+> > > > > > > > > > > > 
+> > > > > > > > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > > > > > b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > > > > > index 7c1f789..540dd67 100644
+> > > > > > > > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > > > > > @@ -1490,14 +1490,6 @@ static u64
+> > > > > > > > > > > > mlx5_vdpa_get_features(struct vdpa_device *vdev)
+> > > > > > > > > > > >          return mvdev->mlx_features;
+> > > > > > > > > > > >      }
+> > > > > > > > > > > > -static int verify_min_features(struct mlx5_vdpa_dev *mvdev,
+> > > > > > > > > > > > u64 features)
+> > > > > > > > > > > > -{
+> > > > > > > > > > > > -    if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
+> > > > > > > > > > > > -        return -EOPNOTSUPP;
+> > > > > > > > > > > > -
+> > > > > > > > > > > > -    return 0;
+> > > > > > > > > > > > -}
+> > > > > > > > > > > > -
+> > > > > > > > > > > >      static int setup_virtqueues(struct mlx5_vdpa_net *ndev)
+> > > > > > > > > > > >      {
+> > > > > > > > > > > >          int err;
+> > > > > > > > > > > > @@ -1558,18 +1550,13 @@ static int
+> > > > > > > > > > > > mlx5_vdpa_set_features(struct vdpa_device *vdev, u64
+> > > > > > > > > > > > features)
+> > > > > > > > > > > >      {
+> > > > > > > > > > > >          struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+> > > > > > > > > > > >          struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
+> > > > > > > > > > > > -    int err;
+> > > > > > > > > > > >          print_features(mvdev, features, true);
+> > > > > > > > > > > > -    err = verify_min_features(mvdev, features);
+> > > > > > > > > > > > -    if (err)
+> > > > > > > > > > > > -        return err;
+> > > > > > > > > > > > -
+> > > > > > > > > > > >          ndev->mvdev.actual_features = features &
+> > > > > > > > > > > > ndev->mvdev.mlx_features;
+> > > > > > > > > > > >          ndev->config.mtu = cpu_to_mlx5vdpa16(mvdev, ndev->mtu);
+> > > > > > > > > > > >          ndev->config.status |= cpu_to_mlx5vdpa16(mvdev,
+> > > > > > > > > > > > VIRTIO_NET_S_LINK_UP);
+> > > > > > > > > > > > -    return err;
+> > > > > > > > > > > > +    return 0;
+> > > > > > > > > > > >      }
+> > > > > > > > > > > >      static void mlx5_vdpa_set_config_cb(struct vdpa_device
+> > > > > > > > > > > > *vdev, struct vdpa_callback *cb)
 
-- Lauri
