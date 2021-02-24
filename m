@@ -2,109 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D433236D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 06:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DC83236E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 06:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbhBXF23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 00:28:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52514 "EHLO
+        id S233902AbhBXFaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 00:30:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233806AbhBXF21 (ORCPT
+        with ESMTP id S233105AbhBXFaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 00:28:27 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C71C061574;
-        Tue, 23 Feb 2021 21:27:47 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id q85so1118520qke.8;
-        Tue, 23 Feb 2021 21:27:46 -0800 (PST)
+        Wed, 24 Feb 2021 00:30:14 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30039C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 21:29:34 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id v17so983018ljj.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 21:29:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aw/UR5s2IwQPzSQ407eWj98h5EXFMZRfL8iJNo841y4=;
-        b=Zo/TLZUriQC1JcSj0ZK1KudC5T/rV0z51TalrrECdksS/wvnLachxYf/kEUxQ1jIZv
-         veZQlyebujp5Rz3SR8SGVZAAxW3kps1Mmk8qG8C/Xyxg8G56/U/PkZqGesNyr219j2Uk
-         e/DiuwDcAGKcgvKNXcsc+EewxzAMpmelOD5PQeIaIxPWW2IOmhd3fqvF4JYS/IkXrKME
-         02ZrR5GCJWsQ4/7Bn0mF3Bh8q5N/mIb693SpgDTNzE/KZnpcZgF++y9CPCPUCqx2ShF8
-         +ipDvNuim7jAGitwzsslxHE0pwhiVdeOuNRHTjkcYaA5gm2oEbgB5f5hZO2xMOhHyBmt
-         T50g==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g/ihSCYjkGq0mVDgKW7XRfTj3HFK99zD03o5XQ3n2So=;
+        b=OVVAlme8EN5RSBhZYiTwJnY7D3RqoRKvhT8/weafREU78rdsK2RV2qvpeU0De8lemE
+         n3dyapfBvveZpqbutJnF5uA/el7Z0hs4Yarj4gR9am0EbYqgqLG6/i5c3iWFjXPPHn08
+         FbBe0KJKGXr3yMDoIRk4lXbnDsZc7oI4Mmcbgu5ZCaqFVmQSvHCWCsGseOKisFTYeog5
+         L/Q7ibaiyK0Cpojx87l8lqqlEuV+ux77D2Qrx/WkqKxADFX1QT8kIXzbNgt345u5zlL8
+         JhtXlUnLZtW+0UJk2o9LGuqIURvbpxdbB2I+EFJzaDpIyYMRJSQloJPlOL3Y3iEidBdi
+         bLOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aw/UR5s2IwQPzSQ407eWj98h5EXFMZRfL8iJNo841y4=;
-        b=Glps2qBM3yuM2KoFSTG/u/FmvVdOiJLajZorJ90ZLKRdvTlKt8cFW/C/Mcg3+CCsUJ
-         tpfSjK8CzopOcl4eDKoDG/CQD5UDJoG+sOd5ccz4xqfN120q0ccz5ZvMqHEyNTjqxBKu
-         l93QbSgQ7l8CwKTOPhm6lGiUikcpjuVGERTTz/MJ91gstgKp6g6/Vu0oVAel369pANuj
-         5bRCUH7ZyZkQ9Kno0JrKu7hBbtWu7sYeIH49XBTqKYsa+9r9js/beKwTTTXHaiyub3Xe
-         vqFlY+FWpjwSIgSvb5uX4eyTZjBsIBA56szDPAynzXUpgbQwcymqAMWZLans00E3wajs
-         fUOA==
-X-Gm-Message-State: AOAM5320ntTvgYqlFAM0QjXMccNI8XXPLHX80EKCXjSyXebd+l/v6vd0
-        GWCC2yVvrii97lZfYZ8HnvI=
-X-Google-Smtp-Source: ABdhPJx39bkgG69E4mrnlUr3nUMK+9eV9c6HxdyY8sMqYv6jTsxP9WRvHfhPzPoeMF1fdlClPjsefA==
-X-Received: by 2002:a37:a654:: with SMTP id p81mr29167625qke.354.1614144466099;
-        Tue, 23 Feb 2021 21:27:46 -0800 (PST)
-Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id r17sm620719qta.78.2021.02.23.21.27.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 21:27:45 -0800 (PST)
-Date:   Tue, 23 Feb 2021 21:27:44 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>
-Subject: Re: [PATCH] arm64: enable GENERIC_FIND_FIRST_BIT
-Message-ID: <20210224052744.GA1168363@yury-ThinkPad>
-References: <20201205165406.108990-1-yury.norov@gmail.com>
- <20201207112530.GB4379@willie-the-truck>
- <CAAH8bW-fb0wPwwvo8P8VW33zV=Wi_LPWxdJH8y2wdGGqPE+3nA@mail.gmail.com>
- <20201208103549.GA5887@willie-the-truck>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g/ihSCYjkGq0mVDgKW7XRfTj3HFK99zD03o5XQ3n2So=;
+        b=bLbqFHWYcC6eeEh37Z17iydmYTKC3dqFjg8mgMg8hni2tG+ZTmZgaRtK2tPgxoSvSL
+         HrGVYaMy0eWxI2S6S/cC28VCRwgD3s0Zze+hyVi5hPb6lEWDDpJdFnWUpIkU7nDbC2AA
+         HeEy/iTT1iuM2V6q6kHN6bDLFsU8ODBoYicrmWpFPvkJD3+8U7fqU5vmb7r3apo8xYPe
+         YkOSxsurswHSl0YOz+A3Xqjum4D6XSawXLEz2GdSpAK0PB8e5eLqCCek0D3a0lzcKBbt
+         o9ZDSPrIbwvl7EfPOnT9QFNSibONELUvC2ZDQc2C9nQU+zg5QOLIjOogxOkdys0vnv0D
+         dRIQ==
+X-Gm-Message-State: AOAM533vHIm37V3+jgtudHHMYoAZSxWnM/aUhrtQs4ZXKO/mdKWs2ce5
+        gkysoLOI+3UtmM+TXRPP08zgE4I9qu42EU927jFFcRaZ5Jxd2A==
+X-Google-Smtp-Source: ABdhPJwZ879rp2aYmE038GsVn/7cREy2wSJR6ciTugHnAFa77EKK8b8teOcBV8CIfbXReKEHdsDpA/F7DDULF8QdaKs=
+X-Received: by 2002:a2e:99cb:: with SMTP id l11mr9838399ljj.343.1614144572582;
+ Tue, 23 Feb 2021 21:29:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208103549.GA5887@willie-the-truck>
+References: <1613721694-16418-1-git-send-email-sumit.garg@linaro.org>
+ <CAD=FV=X1hsFf08J5JNifzFGw=1ikmXj2mp6K=KMOAzCYDWKZUw@mail.gmail.com>
+ <CAFA6WYO0PkbpXUJp9jayb71LsydpnHfLFyc21bHotC1dLJ7Dhg@mail.gmail.com> <20210223125447.7penkj42hd6ito4i@maple.lan>
+In-Reply-To: <20210223125447.7penkj42hd6ito4i@maple.lan>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 24 Feb 2021 10:59:20 +0530
+Message-ID: <CAFA6WYO9TRyavbTgXMZkHi1YoffrnV8+HxCg-WA=Qf2=-Bcw5Q@mail.gmail.com>
+Subject: Re: [PATCH] kernel: debug: Handle breakpoints in kernel .init.text section
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Peter Zijlstra <peterz@infradead.org>, stefan.saecherl@fau.de,
+        qy15sije@cip.cs.fau.de, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 10:35:50AM +0000, Will Deacon wrote:
-> On Mon, Dec 07, 2020 at 05:59:16PM -0800, Yury Norov wrote:
-> > (CC: Alexey Klimov)
-> > 
-> > On Mon, Dec 7, 2020 at 3:25 AM Will Deacon <will@kernel.org> wrote:
+On Tue, 23 Feb 2021 at 18:24, Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Tue, Feb 23, 2021 at 02:33:50PM +0530, Sumit Garg wrote:
+> > Thanks Doug for your comments.
+> >
+> > On Tue, 23 Feb 2021 at 05:28, Doug Anderson <dianders@chromium.org> wrote:
+> > > > To be clear there is still a very small window between call to
+> > > > free_initmem() and system_state = SYSTEM_RUNNING which can lead to
+> > > > removal of freed .init.text section breakpoints but I think we can live
+> > > > with that.
 > > >
-> > > On Sat, Dec 05, 2020 at 08:54:06AM -0800, Yury Norov wrote:
-> > > > ARM64 doesn't implement find_first_{zero}_bit in arch code and doesn't
-> > > > enable it in config. It leads to using find_next_bit() which is less
-> > > > efficient:
+> > > I know kdb / kgdb tries to keep out of the way of the rest of the
+> > > system and so there's a bias to just try to infer the state of the
+> > > rest of the system, but this feels like a halfway solution when really
+> > > a cleaner solution really wouldn't intrude much on the main kernel.
+> > > It seems like it's at least worth asking if we can just add a call
+> > > like kgdb_drop_init_breakpoints() into main.c.  Then we don't have to
+> > > try to guess the state...
+>
+> Just for the record, +1. This would be a better approach.
+>
+>
+> > Sounds reasonable, will post RFC for this. I think we should call such
+> > function as kgdb_free_init_mem() in similar way as:
+> > - kprobe_free_init_mem()
+> > - ftrace_free_init_mem()
+>
+> As is matching the names...
+>
+>
+> > @@ -378,8 +382,13 @@ int dbg_deactivate_sw_breakpoints(void)
+> >         int i;
+> >
+> >         for (i = 0; i < KGDB_MAX_BREAKPOINTS; i++) {
+> > -               if (kgdb_break[i].state != BP_ACTIVE)
+> > +               if (kgdb_break[i].state < BP_ACTIVE_INIT)
+> > +                       continue;
+> > +               if (system_state >= SYSTEM_RUNNING &&
+> > +                   kgdb_break[i].state == BP_ACTIVE_INIT) {
+> > +                       kgdb_break[i].state = BP_UNDEFINED;
+> >                         continue;
+> > +               }
+> >                 error = kgdb_arch_remove_breakpoint(&kgdb_break[i]);
+> >                 if (error) {
+> >                         pr_info("BP remove failed: %lx\n",
+> >
 > > >
-> > > [...]
+> > > > +                       kgdb_break[i].state = BP_ACTIVE;
+> > > > +               else
+> > > > +                       kgdb_break[i].state = BP_ACTIVE_INIT;
 > > >
-> > > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > > > index 1515f6f153a0..2b90ef1f548e 100644
-> > > > --- a/arch/arm64/Kconfig
-> > > > +++ b/arch/arm64/Kconfig
-> > > > @@ -106,6 +106,7 @@ config ARM64
-> > > >       select GENERIC_CPU_AUTOPROBE
-> > > >       select GENERIC_CPU_VULNERABILITIES
-> > > >       select GENERIC_EARLY_IOREMAP
-> > > > +     select GENERIC_FIND_FIRST_BIT
-> > >
-> > > Does this actually make any measurable difference? The disassembly with
-> > > or without this is _very_ similar for me (clang 11).
-> > >
-> > > Will
-> > 
-> > On A-53 find_first_bit() is almost twice faster than find_next_bit(),
-> > according to
-> > lib/find_bit_benchmark. (Thanks to Alexey for testing.)
-> 
-> I guess it's more compiler dependent than anything else, and it's a pity
-> that find_next_bit() isn't implemented in terms of the generic
-> find_first_bit() tbh, but if the numbers are as you suggest then I don't
-> have a problem selecting this on arm64.
+> > > I don't really see what the "BP_ACTIVE_INIT" state gets you.  Why not
+> > > just leave it as "BP_ACTIVE" and put all the logic fully in
+> > > dbg_deactivate_sw_breakpoints()?
+> >
+> > Please see my response above.
+> >
+> > [which was]
+> > > "BP_ACTIVE_INIT" state is added specifically to handle this scenario
+> > > as to keep track of breakpoints that actually belong to the .init.text
+> > > section. And we should be able to again set breakpoints after free
+> > > since below change in this patch would mark them as "BP_UNDEFINED":
+>
+> This answer does not say whether the BP_ACTIVE_INIT state needs to be
+> per-breakpoint state or whether we can infer it from the global state.
+>
+> Changing the state of breakpoints in .init is a one-shot activity
+> whether it is triggered explicitly (e.g. kgdb_free_init_mem) or implicitly
+> (run the first time dbg_deactivate_sw_breakpoints is called with the system
+> state >= running).
+>
+> As Doug has suggested it is quite possible to unify all the logic to
+> handle .init within a single function by running that function when the
+> state changes globally.
+>
 
-Ping?
+Ah, I see. Thanks for further clarification. Will get rid of
+BP_ACTIVE_INIT state.
 
+-Sumit
+
+>
+> Daniel.
