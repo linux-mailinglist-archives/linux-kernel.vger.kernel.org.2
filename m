@@ -2,117 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323D9324376
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0807B32437C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:05:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233161AbhBXSBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:01:55 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41296 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229498AbhBXSBr (ORCPT
+        id S233143AbhBXSFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:05:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhBXSFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:01:47 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11OHYUs6186082;
-        Wed, 24 Feb 2021 13:00:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=7/iyiJqTTQ43euepQ5R46rfta0qytW9mHq3cQkcFOhA=;
- b=rycovHuMHxJOBJiHGINaW215vwFddh/3XjJ3NlhVfmNwgH3+V94yGQzuPUJG7B2u2Z+L
- Cw+s0JoSp07NaASebApB361naIz5s8+ZiGrWx/GgfP2ECACHfLL/hIbH7a8uri7JnuzO
- ed4G7+jifQiWp0uUZzoLcvASqEM3tAuN6jRHijX/YmQCy5THYtTqNiEDtr2070ShmJAf
- nQaWeRZw0X5ShdJTKxoW6qoe2IPronybjHE7m8yHc4R3gb8LmF4eKqvJuEz5zrTpbfvM
- wm7hK6/UT2CYMMhysYvwTWVGoTsbdksdASUIP3u2817t/y6vgod8IdZ2f+7qlDB7A6lR vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36wmac1r3p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Feb 2021 13:00:59 -0500
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11OHale5005505;
-        Wed, 24 Feb 2021 13:00:58 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36wmac1r32-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Feb 2021 13:00:58 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11OHvRdI016687;
-        Wed, 24 Feb 2021 18:00:57 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma01dal.us.ibm.com with ESMTP id 36tt2a0mb9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Feb 2021 18:00:57 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11OI0uN438797644
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Feb 2021 18:00:56 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8678778063;
-        Wed, 24 Feb 2021 18:00:56 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 98E897805F;
-        Wed, 24 Feb 2021 18:00:54 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.80.227.153])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 24 Feb 2021 18:00:54 +0000 (GMT)
-Message-ID: <b0c4980c8fad14115daa3040979c52f07f7fbe2c.camel@linux.ibm.com>
-Subject: Re: [PATCH 2/9] tpm: Allow PCR 23 to be restricted to kernel-only
- use
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Matthew Garrett <matthewgarrett@google.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-integrity@vger.kernel.org, linux-pm@vger.kernel.org,
-        keyrings@vger.kernel.org, zohar@linux.ibm.com, jarkko@kernel.org,
-        corbet@lwn.net, rjw@rjwysocki.net,
-        Matthew Garrett <mjg59@google.com>
-Date:   Wed, 24 Feb 2021 10:00:53 -0800
-In-Reply-To: <20210220013255.1083202-3-matthewgarrett@google.com>
-References: <20210220013255.1083202-1-matthewgarrett@google.com>
-         <20210220013255.1083202-3-matthewgarrett@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Wed, 24 Feb 2021 13:05:07 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B2DC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:04:27 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id t26so1980413pgv.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:04:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8oyKdQoy6n2rMkEX7kMXfHHxsrCJ0CPEN9zor11kQnE=;
+        b=CCambHuN4LCpOo5sCt3e9KV5M4MRlgTzM/h7J4FYk0axWZavuhsAyfdVSQ551JXG63
+         sIv61nGIlqdKZISi46/kIWqo1t+pMaDAniBBEM5R9J5R+QXHtNpyA2QxTEUKtq9yervy
+         41FQGw1Ch+M+Wzp1a6xkaQUA79yOeoCe7w/GhNkZGl6iAC7PftvKtP8VJCWRaQpasQcQ
+         jNnyzrFSGdf66d4AEHKsN90b8KY0bDZGw76bc6K5Ob0FPJw/Kfh+ZHbqkKVeOmzhDyFp
+         cwf83c8zQ+LvzZB9LbdUqc1cP22ICiVYDM/wy7/eS5ZlhGIG0NzPRbmQiu6lwJjpi0ww
+         ECFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8oyKdQoy6n2rMkEX7kMXfHHxsrCJ0CPEN9zor11kQnE=;
+        b=tpG2SSkf+kNx07PZ02icNTIn6VOgYaI/Nc3UohJ/sQB+8lkSu+EkvOnKLk2f8Y2at9
+         yBcjC3RhOjRjwJbI/Myap9hGktdXiqizIpN+HqCVxeOu4MDPlwdvwVtxicaCm6zKMgoQ
+         vGAQ4W+Whv3qk+AMiz6YqAIHa1Tv7gV0wiEeIu4ITtwEnAwwfbWt0wdW4xa2Bi3AXvug
+         D+RYXnsBPY4d6YAWT35dpW1qNM4IlfyKpvGFld4vEdmnSFdP7mmq5li37w7TgiwDaLuV
+         gmebF7reiD3iRz9Pj11LH0Q2+BBpUkZ0gASKRfDJ5QCwP2BSfCC8GcO+NZsGD4Rl4PLR
+         eS8A==
+X-Gm-Message-State: AOAM532n/e+qKgPBoIJlgM5ompqMzgOA5IkF6Gnmbt5gT88t9Iw9JOu2
+        lkASIyxcuGR5P/GbhJKv8UyCnA==
+X-Google-Smtp-Source: ABdhPJyzPVSGdeH/K5eiwSDWTXEgj41XYlEROJqHK1pQF9VV6HUhI4Y5jyWsBs9APTbw+c/XSbEiRw==
+X-Received: by 2002:a62:7e01:0:b029:1ed:8173:40a1 with SMTP id z1-20020a627e010000b02901ed817340a1mr19468716pfc.6.1614189866571;
+        Wed, 24 Feb 2021 10:04:26 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:385f:4012:d20f:26b5])
+        by smtp.gmail.com with ESMTPSA id m19sm3480979pjn.21.2021.02.24.10.04.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 10:04:26 -0800 (PST)
+Date:   Wed, 24 Feb 2021 10:04:19 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: Remove the best->function == 0x7 assignment
+Message-ID: <YDaVIyWSO2hTVAkp@google.com>
+References: <20210224022931.14094-1-yejune.deng@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-24_08:2021-02-24,2021-02-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- spamscore=0 priorityscore=1501 impostorscore=0 mlxscore=0 clxscore=1011
- lowpriorityscore=0 bulkscore=0 phishscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102240137
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224022931.14094-1-yejune.deng@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-02-20 at 01:32 +0000, Matthew Garrett wrote:
-> Under certain circumstances it might be desirable to enable the
-> creation of TPM-backed secrets that are only accessible to the
-> kernel. In an ideal world this could be achieved by using TPM
-> localities, but these don't appear to be available on consumer
-> systems.
+Hmm, the shortlog should provide a higher level overview of the change.  Stating
+the literal code change doesn't provide much context.  Maybe:
 
-I don't understand this ... the localities seem to work fine on all the
-systems I have ... is this some embedded thing?
+  KVM: x86: Remove an unnecessary best->function check
 
->  An alternative is to simply block userland from modifying one of the
-> resettable PCRs, leaving it available to the kernel. If the kernel
-> ensures that no userland can access the TPM while it is carrying out
-> work, it can reset PCR 23, extend it to an arbitrary value, create or
-> load a secret, and then reset the PCR again. Even if userland somehow
-> obtains the sealed material, it will be unable to unseal it since PCR
-> 23 will never be in the appropriate state.
+On Wed, Feb 24, 2021, Yejune Deng wrote:
+> In kvm_update_cpuid_runtime(), there is no need the best->function
+> == 0x7 assignment, because there is e->function == function in
 
-This seems a bit arbitrary: You're removing this PCR from user space
-accessibility, but PCR 23 is defined as "Application Support" how can
-we be sure no application will actually want to use it (and then fail)?
+s/assignment/check, here and in the shortlog.
 
-Since PCRs are very scarce, why not use a NV index instead.  They're
-still a bounded resource, but most TPMs have far more of them than they
-do PCRs, and the address space is much bigger so picking a nice
-arbitrary 24 bit value reduces the chance of collisions.
+> cpuid_entry2_find().
+> 
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
 
-James
+With the shortlog and changelog cleaned up:
 
+Reviewed-by: Sean Christopherson <seanjc@google.com>
 
+> ---
+>  arch/x86/kvm/cpuid.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index c8f2592ccc99..eb7a01b1907b 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -120,7 +120,7 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+>  	}
+>  
+>  	best = kvm_find_cpuid_entry(vcpu, 7, 0);
+> -	if (best && boot_cpu_has(X86_FEATURE_PKU) && best->function == 0x7)
+> +	if (best && boot_cpu_has(X86_FEATURE_PKU))
+>  		cpuid_entry_change(best, X86_FEATURE_OSPKE,
+>  				   kvm_read_cr4_bits(vcpu, X86_CR4_PKE));
+>  
+> -- 
+> 2.29.0
+> 
