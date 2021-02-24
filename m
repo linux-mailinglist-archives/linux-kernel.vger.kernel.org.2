@@ -2,58 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813FE3244B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9453244B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234738AbhBXTid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 14:38:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48762 "EHLO mail.kernel.org"
+        id S235031AbhBXTip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 14:38:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234317AbhBXTi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234570AbhBXTi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Feb 2021 14:38:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B5C2164EC4;
-        Wed, 24 Feb 2021 19:37:47 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3DFB864EDD;
+        Wed, 24 Feb 2021 19:37:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614195467;
-        bh=yTmI1SK9IK07/gVZ0SM0XXsyNEz5IRximdjuO4rObQ8=;
+        s=k20201202; t=1614195468;
+        bh=R7Rf3OmgcPETgIJMOCqj+me20UNSyasR0Rqa2nJcy6Q=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=NPiOVjN5nJMq1k13QXpBYgU4cbqlK9fkFen8EvEStdABRIDPLCAUxhTO0PmgPIzGa
-         3MlFHDBTy7/4uspELtuo089lhmXdpNW/nV0ntZuPoXVDG3Wer3sn27V9YEaTTOJgst
-         V/x0uymjOfYNOW6rY3cYNcPu9RnWnrpW6dLUPnut+tb6+cwwNHo9WBvJawGIbYuTv6
-         vT8tketrd31tgloIHoyFjGYr1q7Q6tVQtRbTbf6aYlqrk+AJbYW99wtqd2VSOwnnTn
-         1UH70W/07QDEF1Yv03+UbkHls5DRwmchvtzE6so+IB6h816HMRqHZVmQXPzM6vKDOE
-         sGV4DvmdSHU/A==
+        b=LtNlQS/gqBueQQX/h2MJpicGW2WuxtfecKlBz7lvm5yaOQnssKTsJmc8EYotOnoVh
+         3WNQ2u9+UquUEpXyssfXZXnIdy+UxbMtXRhsvc2hZ2X13uJL43siigDJwnrUXFmBeT
+         vcLIRJ6vKgeOIhmYvtTk8n9Ew/vetoBEpGEIBwfsxTeePGgml8imprwEFli4wkcwC/
+         Zzp6PUVJvqBaIux7lXpe76iOxV0P3fq3Q4n7M5YwrY0fDWUHQC7x1ISuXeJLwWWlAe
+         skUBdH7kikIU5CxEZL1Ai4HOlguRnp5ukq9xrKjEjA/NbKysHTjswRWwOeJJH4h7Ny
+         hX3KqDI4AgO8w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A18DF609ED;
-        Wed, 24 Feb 2021 19:37:47 +0000 (UTC)
-Subject: Re: [GIT PULL] hwspinlock updated for v5.12
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 38997609C5;
+        Wed, 24 Feb 2021 19:37:48 +0000 (UTC)
+Subject: Re: [GIT PULL] remoteproc updates for v5.12
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210224191715.192575-1-bjorn.andersson@linaro.org>
-References: <20210224191715.192575-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20210224191732.192685-1-bjorn.andersson@linaro.org>
+References: <20210224191732.192685-1-bjorn.andersson@linaro.org>
 X-PR-Tracked-List-Id: <linux-remoteproc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210224191715.192575-1-bjorn.andersson@linaro.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/hwlock-v5.12
-X-PR-Tracked-Commit-Id: b9ddb2500e7e544410f38476ab928fc2fe01e381
+X-PR-Tracked-Message-Id: <20210224191732.192685-1-bjorn.andersson@linaro.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rproc-v5.12
+X-PR-Tracked-Commit-Id: e8b4e9a21af77b65ea68bd698acf4abe04afd051
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 890caa39a95933f6af3ed395f2a8a3db1fb0a85d
-Message-Id: <161419546760.19197.13115632649140626529.pr-tracker-bot@kernel.org>
-Date:   Wed, 24 Feb 2021 19:37:47 +0000
+X-PR-Merge-Commit-Id: 062c84fccc4444805738d76a2699c4d3c95184ec
+Message-Id: <161419546822.19197.7517510181214804204.pr-tracker-bot@kernel.org>
+Date:   Wed, 24 Feb 2021 19:37:48 +0000
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Ohad Ben-Cohen <ohad@wizery.com>,
         linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Suman Anna <s-anna@ti.com>
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Vinod Koul <vkoul@kernel.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Yang Li <yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 24 Feb 2021 13:17:15 -0600:
+The pull request you sent on Wed, 24 Feb 2021 13:17:32 -0600:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/hwlock-v5.12
+> https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rproc-v5.12
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/890caa39a95933f6af3ed395f2a8a3db1fb0a85d
+https://git.kernel.org/torvalds/c/062c84fccc4444805738d76a2699c4d3c95184ec
 
 Thank you!
 
