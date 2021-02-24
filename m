@@ -2,111 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FC432411B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CDF324150
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234982AbhBXPll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:41:41 -0500
-Received: from mta-02.yadro.com ([89.207.88.252]:45206 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232673AbhBXPUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:20:43 -0500
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id 1A5B6412C6;
-        Wed, 24 Feb 2021 15:20:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-transfer-encoding:mime-version:user-agent:content-type
-        :content-type:organization:references:in-reply-to:date:date:from
-        :from:subject:subject:message-id:received:received:received; s=
-        mta-01; t=1614180000; x=1615994401; bh=UsooEfiw12ky/7CVTzXlfFlCQ
-        3hLw6JhXGizQ85nozA=; b=thydKF/eaLgoKENVZVKWUPa2YT6Trh0BClrxgud4R
-        +IKvw90cQGIAllxwWCOJ/etJYzO8kCQmNFm5luMrBC3bB7AB8pkjC5q6pm43DHzK
-        /md2v8ILq9Ul+Mi7m0yLtSQWWczHWtyA2WFRIqM4ULNhxGAVXBeRuuv3M4vPvINt
-        KQ=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zvprq06JOzZ2; Wed, 24 Feb 2021 18:20:00 +0300 (MSK)
-Received: from T-EXCH-03.corp.yadro.com (t-exch-03.corp.yadro.com [172.17.100.103])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 215CE41243;
-        Wed, 24 Feb 2021 18:20:00 +0300 (MSK)
-Received: from localhost.localdomain (10.199.0.44) by T-EXCH-03.corp.yadro.com
- (172.17.100.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Wed, 24
- Feb 2021 18:19:59 +0300
-Message-ID: <ac9ae3793329e2f3f267c6106b538c4e080be2af.camel@yadro.com>
-Subject: Re: [PATCH 1/2] iio: proximity: vcnl3020: add proximity rate
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Date:   Wed, 24 Feb 2021 18:27:07 +0300
-In-Reply-To: <CAHp75VeFE3BMB+siM4xfnmsgW8=67bgOSmYHseAY++3_ds16XA@mail.gmail.com>
-References: <20210216145346.18304-1-i.mikhaylov@yadro.com>
-         <20210216145346.18304-2-i.mikhaylov@yadro.com>
-         <CAHp75VeFE3BMB+siM4xfnmsgW8=67bgOSmYHseAY++3_ds16XA@mail.gmail.com>
-Organization: YADRO
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S235783AbhBXPqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:46:38 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:57079 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238573AbhBXPdc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 10:33:32 -0500
+X-Greylist: delayed 69437 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Feb 2021 10:33:30 EST
+Received: from [192.168.1.155] ([77.2.19.91]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MeCYx-1lmu1s3oWN-00bNPe; Wed, 24 Feb 2021 16:30:44 +0100
+Subject: Re: [RFC PATCH 09/12] drivers: base: reintroduce find_bus()
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     linux-kernel@vger.kernel.org, rafael@kernel.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        robh+dt@kernel.org, frowand.list@gmail.com,
+        pantelis.antoniou@konsulko.com, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20210208222203.22335-1-info@metux.net>
+ <20210208222203.22335-10-info@metux.net> <YCen7uHqFJQ/U/5p@kroah.com>
+ <da82c033-3a82-3420-4d06-f5c39c524ae9@metux.net> <YDYHhYRDBDKGSZ1r@kroah.com>
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+Message-ID: <9db34ee4-30dc-9e69-6e82-00cbf4615ed5@metux.net>
+Date:   Wed, 24 Feb 2021 16:30:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <YDYHhYRDBDKGSZ1r@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.199.0.44]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-03.corp.yadro.com (172.17.100.103)
+X-Provags-ID: V03:K1:mmo9Pc/0GYHESIzBRv6D4duVXYi0igQdmijnEbfrvu4Oao4dFfX
+ G0y5WB2yjQYxEu8yPzpeFzE3k7hWM/cMZkp1vjqo+y9rAg7a6CNNZDV51yWjscyeStjUdYW
+ lTz0zEJb6HvFl08t75u+jatWWbONlx5rz47B6g5jItILg5ufHmQ9eSPVLMJB0YO9csGC7lD
+ Zr43gdWr3j7oSnQMqnpYQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ylPdVO6clTk=:ta/tLM5X3RdLcmEfayqFsG
+ OO1SjQ4QEcInjYBU6ePzx8MW1BeAMSSsGtiwuxwXp3EppERVkX8+IMqPhmSjBuApKgiY+ambg
+ SJ6rgtxJ7h+m/ShAyDlk6F5iGXPNC5Jy/DTE16qzYeOTAo5yC1O2JqJoyqcMFiA0YT7Q4Tvf8
+ quGJQzhPlRSBeSGpa5IZqVUhQj+R2eqEIHUjbh+WwMshdE+x3MkyjitZTZLUFKgGjg0t/QoAZ
+ 932QHG+9Enn5ha0JPTgI3b8lJyRILIKGCTjV6u8SluZrd6w5xQ449BYEzXQ8Byy50ciAXB9Ao
+ a7+B2NXFbUI8zNeSx6NO76ZcYhUSQfEzeDzNb/Urh69m3NStdrNLFNoiF6EhCbntC5He+5p7p
+ XtcbRjKFwpcXEQHucK784gzmG4foNCGDi4FHU/FqQ3llMa39swrNILX/aHqSR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-02-21 at 22:34 +0200, Andy Shevchenko wrote:
-> 
-> 
-> On Tuesday, February 16, 2021, Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
-> > Add the proximity rate optional option and handling of it for
-> > vishay vcnl3020.
-> > 
-> > Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-> > ---
-> >  drivers/iio/proximity/vcnl3020.c | 123 ++++++++++++++++++++++++++++++-
-> >  1 file changed, 120 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/iio/proximity/vcnl3020.c
-> > b/drivers/iio/proximity/vcnl3020.c
-> > index 37264f801ad0..833c5d5ac0a1 100644
-> > --- a/drivers/iio/proximity/vcnl3020.c
-> > +++ b/drivers/iio/proximity/vcnl3020.c
-> > @@ -40,6 +40,17 @@
-> >  #define VCNL_ON_DEMAND_TIMEOUT_US      100000
-> >  #define VCNL_POLL_US                   20000
-> > 
-> > +static const int vcnl3020_prox_sampling_frequency[][2] = {
-> > +       {1, 950000},
-> 
-> Can you confirm that’s the correct value and shan’t be 953125?
+On 24.02.21 09:00, Greg KH wrote:
 
-Yes, It is described in the documentation for vcnl3020, also vcnl4000.c driver
-has same sampling frequency values for vcnl4020.
+> Have the firmware code do it itself, do nto try to "reach across" like
+> this.
 
-> > +       {3, 906250},
-> > +       {7, 812500},
-> > +       {16, 625000},
-> > +       {31, 250000},
-> > +       {62, 500000},
-> > +       {125, 0},
-> > +       {250, 0},
-> > +};
-> > +
-> >  /**
-> >   * struct vcnl3020_data - vcnl3020 specific data.
-> >   * @regmap:    device register map.
-> > @@ -75,12 +86,37 @@ static u32 microamp_to_reg(u32 *val)
-> >         return *val /= 10000;
-> >  };
-> > 
+By "firmware code" you mean Linux acpi core or the board's bios ?
 
+a) Fixing BIOS would be the cleanest solution, but we cant expect all
+    users to do field upgrades. Many of the devices (eg. the customer,
+    I've originally wrote the apu board driver for, deployed them in
+    really remote locations, sometimes even just reachable by ship,
+    heli or horse, litterally)
+
+b) Explicit blacklisting somewhere in apci enumeration code could work,
+    but I really hate the idea of such board and bios version specific
+    quirks in a place, completely unrelated to the actual board driver.
+
+Actually, I'm also hoping to find a proper way for having those things
+in one file per board, in the future. (probably not applicable for
+early stuff, or _OSI(Linux), etc)
+
+> And what problem are you really trying to solve here by doing this?
+
+The problem is that *some* bios versions (that came much later, after
+pcengines-apuv2 driver went into production) added a few things that
+the driver is already doing - different versions doing it differently
+(eg. even enumerating gpio connected leds with completely different
+names, etc), and still some gpio connected devices missing. Some
+versions (just forgot, which one it's been exactly) even enumerate
+*some* gpios (and LEDs behind them) as a different device, whose Linux
+driver just happens to work. Meanwhile I can't find any reference of
+that in the coreboot source, anymore.
+
+As you can see: bios is anything but reliable on that platform.
+
+What I'm trying to achieve: the kernel should behave exactly the
+same, no matter what board revision, bios version, kernel version,
+etc. (there should be especially no need to have special per-board
+quirks in userland, depending on board rev, bios version, kernel
+version).
+
+If you've got a better solution, I'll be glad to hear it.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
