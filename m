@@ -2,188 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5159632452F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 305B7324533
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235126AbhBXU2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:28:51 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54142 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhBXU2i (ORCPT
+        id S235496AbhBXU3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 15:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235439AbhBXU3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:28:38 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8F2706F2;
-        Wed, 24 Feb 2021 21:27:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1614198470;
-        bh=UZuN+LeOVZPaJG5A5kojFv0S6u0FU5Sxd12id01SG/s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rU6jydl3og5eR3kUeVW2UB9CyuKUp8ouzrQ2HAtOJQEk1/e1PwCAyy7TZS/TQDCuK
-         HoD7/B9D7U2qISTsElHBkL7W63OMXTfiURC0vWdgkfdQhvkhaoudQbgya/mJ6zAMAi
-         a+NG6DQzfRJ2WplE+I/P5BY6ylKG36rXt4ql3BxI=
-Date:   Wed, 24 Feb 2021 22:27:22 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/16] media: i2c: rdacm20: Replace goto with a loop
-Message-ID: <YDa2qh4onPRSHlXq@pendragon.ideasonboard.com>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-4-jacopo+renesas@jmondi.org>
- <c95022bc-3841-4d0a-653c-6d6974e20355@ideasonboard.com>
- <YDMDPymgU/N5wd/i@pendragon.ideasonboard.com>
- <20210222150643.cuv6uye3wpxaykim@uno.localdomain>
+        Wed, 24 Feb 2021 15:29:34 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC21CC061574;
+        Wed, 24 Feb 2021 12:28:53 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id k13so3438353otn.13;
+        Wed, 24 Feb 2021 12:28:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=g8yzyix+IBCeN/i+RiSu4Jq3q/QFYRj0Nua9JyTjFK4=;
+        b=hqDvrFDsQ5MvQSbJVnlL/9wEf+SAx47eVa3PVW0GqFk7CflZ4iulDIBXQVzWD/AdQb
+         z8CdTdSUggVtoa8YgDRhKtV0YjEDogFXBZL3f0BsUodiJzM+g3R+1DkP1gvwRmkXjpx7
+         lkoARERQplIs8XTTwfWSZt6eb5S39YqdWyt1ZlBuULD9OGNFHwPBzZsxF8ftlFqhFYRb
+         ZxoUrR4Szn/5gAYB2ygEUAl/TOSouQjh7feR5eG5rZ/LNoUi6riHzh8Sb0+mXNDUW4X9
+         6DOT19PHUayPbBm4uGZQA0OM6qFPtAC/EQnpsX+QVQRmTiqcOoYYgIPVxk/6yg/Di0VV
+         JyIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=g8yzyix+IBCeN/i+RiSu4Jq3q/QFYRj0Nua9JyTjFK4=;
+        b=tA7iPbEuXqsmVQlSZFaCC3Rw6GyxqUQFf1545xTI0eut2b0yB49DA3HyhyGVtk9rX4
+         v/o4AoIOdNcmdIxpciSKgKJz7X8gyUQlb7SCY7ABtbtXaDrYHSp5LsSbHlLFV/lXjS/y
+         UUxAq608S3gJDUQh8Rm/P5Ui9JVQ0PQ4r5eMYz5ww2iDaLdlhhKArEV7l54dKcovZNOh
+         t62i/cwtzICcO5dBwakXeFHvBqm/IdRqCAkLvwtR28CWEn9Uw19WXlboVAkFbcdh+eox
+         4jC0qK3+e8/3t5G0gkk5/4cPAJvqdSZA15vj0d1dwQtThz/r6zJRn4PMM8KTpA1/q55P
+         GVeA==
+X-Gm-Message-State: AOAM531uCTH+3xJgfqIiwi6XpDqf7ceJmJ56JfKqlAJr2rM+pxD24sIf
+        KGwB8Ks/KfLa8qx6O5IqjU4=
+X-Google-Smtp-Source: ABdhPJyyb/Tctv0HAuz3MFor4ImuhjdoiT5AWIvz+WIQw7tqI/ZQkeGs/rqa/9iNH8KMUN2e4Lak7Q==
+X-Received: by 2002:a9d:7103:: with SMTP id n3mr25109608otj.223.1614198533309;
+        Wed, 24 Feb 2021 12:28:53 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.40])
+        by smtp.googlemail.com with ESMTPSA id h15sm598731otq.13.2021.02.24.12.28.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Feb 2021 12:28:52 -0800 (PST)
+Subject: Re: [PATCH] ipv6: Honor route mtu if it is within limit of dev mtu
+To:     Kaustubh Pandey <kapandey@codeaurora.org>,
+        Stefano Brivio <sbrivio@redhat.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sharathv@codeaurora.org,
+        chinagar@codeaurora.org
+References: <1614011555-21951-1-git-send-email-kapandey@codeaurora.org>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <ef380be3-0a87-9599-f3ea-ec7779ad5db1@gmail.com>
+Date:   Wed, 24 Feb 2021 13:28:49 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <1614011555-21951-1-git-send-email-kapandey@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210222150643.cuv6uye3wpxaykim@uno.localdomain>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
-
-On Mon, Feb 22, 2021 at 04:06:43PM +0100, Jacopo Mondi wrote:
-> On Mon, Feb 22, 2021 at 03:05:03AM +0200, Laurent Pinchart wrote:
-> > Hi Jacopo,
-> >
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> >
-> > On Wed, Feb 17, 2021 at 01:01:26PM +0000, Kieran Bingham wrote:
-> > > On 16/02/2021 17:41, Jacopo Mondi wrote:
-> > > > During the camera module initialization the image sensor PID is read to
-> > > > verify it can correctly be identified. The current implementation is
-> > > > rather confused and uses a loop implemented with a label and a goto.
-> > > >
-> > > > Replace it with a more compact for() loop.
-> > > >
-> > > > No functional changes intended.
-> > >
-> > > I think there is a functional change in here, but I almost like it.
-> > >
-> > > Before, if the read was successful, it would check to see if the
-> > > OV10635_PID == OV10635_VERSION, and if not it would print that the read
-> > > was successful but a mismatch.
-> > >
-> > > Now - it will retry again instead, and if at the end of the retries it
-> > > still fails then it's a failure.
-> > >
-> > > This means we perhaps don't get told if the device id is not correct in
-> > > the same way, but it also means that if the VERSION was not correct
-> > > because of a read error (which I believe i've seen occur), it will retry.
-> >
-> > I was going to ask about that, whether we can have a successful I2C read
-> > operation that would return incorrect data. If we do, aren't we screwed
-> > ? If there's a non-negligible probability that reads will return
-> > incorrect data without any way to know about it (for other registers
-> > than the version register of course), then I would consider that writes
-> > could fail the same way, and that would mean an unusable device,
-> > wouldn't it ?
-> >
-> > If, on the other hand, read failures can always (or nearly always,
-> > ignoring space neutrinos and similar niceties) be detected, then I think
-> > we should avoid the functional change.
-> >
-> > > Because there is a functional change you might want to update the
-> > > commit, but I still think this is a good change overall.
+On 2/22/21 9:32 AM, Kaustubh Pandey wrote:
+> When netdevice MTU is increased via sysfs, NETDEV_CHANGEMTU is raised.
 > 
-> I'm not sure I got your concerns to be honest :/
-> yes before the code flow was like
+> addrconf_notify -> rt6_mtu_change -> rt6_mtu_change_route ->
+> fib6_nh_mtu_change
 > 
->         ret = ov10635_read();
->         if (ret < 0) {
+> As part of handling NETDEV_CHANGEMTU notification we land up on a
+> condition where if route mtu is less than dev mtu and route mtu equals
+> ipv6_devconf mtu, route mtu gets updated.
 > 
->         }
+> Due to this v6 traffic end up using wrong MTU then configured earlier.
+> This commit fixes this by removing comparison with ipv6_devconf
+> and updating route mtu only when it is greater than incoming dev mtu.
 > 
->         if (ret != PID) {
+> This can be easily reproduced with below script:
+> pre-condition:
+> device up(mtu = 1500) and route mtu for both v4 and v6 is 1500
 > 
->         }
+> test-script:
+> ip route change 192.168.0.0/24 dev eth0 src 192.168.0.1 mtu 1400
+> ip -6 route change 2001::/64 dev eth0 metric 256 mtu 1400
+> echo 1400 > /sys/class/net/eth0/mtu
+> ip route change 192.168.0.0/24 dev eth0 src 192.168.0.1 mtu 1500
+> echo 1500 > /sys/class/net/eth0/mtu
 > 
-> But the condition ret != PID implied ret < 0 so I don't really get
-> what changes, apart from the fact that in the previous version we
-> could have had two different error messages for the same issue, and yes,
-> I saw ID mistmatch happening but the value of knowing the i2c read
-> didn't fail but the read data was garbage (usually it's 0x01 when it
-> fails iirc) is, well, questionable.
+> Signed-off-by: Kaustubh Pandey <kapandey@codeaurora.org>
+> ---
+>  net/ipv6/route.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+> index 1536f49..653b6c7 100644
+> --- a/net/ipv6/route.c
+> +++ b/net/ipv6/route.c
+> @@ -4813,8 +4813,7 @@ static int fib6_nh_mtu_change(struct fib6_nh *nh, void *_arg)
+>  		struct inet6_dev *idev = __in6_dev_get(arg->dev);
+>  		u32 mtu = f6i->fib6_pmtu;
+>  
+> -		if (mtu >= arg->mtu ||
+> -		    (mtu < arg->mtu && mtu == idev->cnf.mtu6))
+> +		if (mtu >= arg->mtu)
+>  			fib6_metric_set(f6i, RTAX_MTU, arg->mtu);
+>  
+>  		spin_lock_bh(&rt6_exception_lock);
+> 
 
-That's worrying :-S May we should add a warning message when the read
-succeeds but the ID doesn't match, to at least have a way to track the
-issue, and see if other changes get rid of this problem ?
+The existing logic mirrors what is done for exceptions, see
+rt6_mtu_change_route_allowed and commit e9fa1495d738.
 
-> I'm sorry I didn't fully get this comment.
+It seems right to me to drop the mtu == idev->cnf.mtu6 comparison in
+which case the exceptions should do the same.
 
-You're right, I had missed that the current code retried in case of a
-version number mismatch. There's no functional change.
+Added author of e9fa1495d738 in case I am overlooking something.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> > > Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> > >
-> > > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > > > ---
-> > > >  drivers/media/i2c/rdacm20.c | 27 ++++++++++-----------------
-> > > >  1 file changed, 10 insertions(+), 17 deletions(-)
-> > > >
-> > > > diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> > > > index 4d9bac87cba8..6504ed0bd3bc 100644
-> > > > --- a/drivers/media/i2c/rdacm20.c
-> > > > +++ b/drivers/media/i2c/rdacm20.c
-> > > > @@ -59,6 +59,8 @@
-> > > >   */
-> > > >  #define OV10635_PIXEL_RATE		(44000000)
-> > > >
-> > > > +#define OV10635_PID_TIMEOUT		3
-> > > > +
-> > > >  static const struct ov10635_reg {
-> > > >  	u16	reg;
-> > > >  	u8	val;
-> > > > @@ -452,7 +454,7 @@ static const struct v4l2_subdev_ops rdacm20_subdev_ops = {
-> > > >
-> > > >  static int rdacm20_initialize(struct rdacm20_device *dev)
-> > > >  {
-> > > > -	unsigned int retry = 3;
-> > > > +	unsigned int i;
-> > > >  	int ret;
-> > > >
-> > > >  	/* Verify communication with the MAX9271: ping to wakeup. */
-> > > > @@ -501,23 +503,14 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
-> > > >  		return ret;
-> > > >  	usleep_range(10000, 15000);
-> > > >
-> > > > -again:
-> > > > -	ret = ov10635_read16(dev, OV10635_PID);
-> > > > -	if (ret < 0) {
-> > > > -		if (retry--)
-> > > > -			goto again;
-> > > > -
-> > > > -		dev_err(dev->dev, "OV10635 ID read failed (%d)\n",
-> > > > -			ret);
-> > > > -		return -ENXIO;
-> > > > +	for (i = 0; i < OV10635_PID_TIMEOUT; ++i) {
-> > > > +		ret = ov10635_read16(dev, OV10635_PID);
-> > > > +		if (ret == OV10635_VERSION)
-> > > > +			break;
-> > > > +		usleep_range(1000, 2000);
-> > > >  	}
-> > > > -
-> > > > -	if (ret != OV10635_VERSION) {
-> > > > -		if (retry--)
-> > > > -			goto again;
-> > > > -
-> > > > -		dev_err(dev->dev, "OV10635 ID mismatch (0x%04x)\n",
-> > > > -			ret);
-> > > > +	if (i == OV10635_PID_TIMEOUT) {
-> > > > +		dev_err(dev->dev, "OV10635 ID read failed (%d)\n", ret);
-> > > >  		return -ENXIO;
-> > > >  	}
-> > > >
-
--- 
-Regards,
-
-Laurent Pinchart
+Test case should be added to tools/testing/selftests/net/pmtu.sh, and
+did you run that script with the proposed change?
