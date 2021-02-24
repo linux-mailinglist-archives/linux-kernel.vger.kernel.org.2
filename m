@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1D6323585
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DD6323588
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 03:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbhBXB6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 20:58:21 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:32904 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbhBXB6T (ORCPT
+        id S232392AbhBXB7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 20:59:03 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:19425 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231787AbhBXB65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 20:58:19 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 892BA20B6C40;
-        Tue, 23 Feb 2021 17:57:37 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 892BA20B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1614131858;
-        bh=CNeMw241KcxyH0UAcQxqFz1OLixiG1YC+76tEinbl/E=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GJ+7PxBqW3sVo/IP9/j2K6+Xlq1vNtLWiZTaXGNjvlEw/JDbWhxxdBRa7tLwVsH7S
-         P1x/Uwz2bpke2Y4C8kjt3GCPxe2WUDxAId6KLgJQYQGdy7Rt2uBhlqiikaJcDCTf+J
-         H9ExNZnRI4mIzR/eWi2w4C27Hb3AnKL6f+0qvOm0=
-Subject: Re: [PATCH v19 05/13] of: Add a common kexec FDT setup function
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, sfr@canb.auug.org.au,
-        james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210221174930.27324-1-nramas@linux.microsoft.com>
- <20210221174930.27324-6-nramas@linux.microsoft.com>
- <874ki2w9ak.fsf@manicouagan.localdomain>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <70ee14f5-12ee-f33d-a6ea-b890d390d67c@linux.microsoft.com>
-Date:   Tue, 23 Feb 2021 17:57:36 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 23 Feb 2021 20:58:57 -0500
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 11O1vhIv021809;
+        Wed, 24 Feb 2021 10:57:43 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 11O1vhIv021809
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614131863;
+        bh=oN7IRg3W9fn8dx2VR7makKAXxb9/wBxnTjP722qMAhs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YWBPty69kNzqLAcSjQa1GPIfQfK32pxy29IBm4KOe8RC5Nb7SLeag76l7NMP+p8db
+         I+VXHZZHA14rS63qq5ELg7GVb6nx8ZqatFwPTJMFeFudXkyIzzY5vitaXdemFO+1nF
+         yfTVWsFvYJtQ4/3mXMKZurd/IMHrLpJpRPny95AWoGLjgR/VJW79AyMl14VqY3JXdJ
+         8JFlLUoQsS62/zAuoT7ZPWHBltG/24DfpKBseG6N1LXsacpMWnGxGDkOBOa+ydfMgR
+         HCljnx669LZ0Alwb50A1XHmd1P1qUJNk/YBb0JpNjXm0nqmm8UUHJ7AMs3a3xA31ya
+         19vDostmEl5PQ==
+X-Nifty-SrcIP: [209.85.210.181]
+Received: by mail-pf1-f181.google.com with SMTP id w18so256378pfu.9;
+        Tue, 23 Feb 2021 17:57:43 -0800 (PST)
+X-Gm-Message-State: AOAM53133ncd2P+RhbNk+9HAaIBRh0IXfIr65mxwfbQxYNWyY9KA2Vb+
+        NSHtULX3SezH88NicCdvllj+0s4hI9d127n1Ttc=
+X-Google-Smtp-Source: ABdhPJxBLzZD/EqFNt8nWh1YRvGLep1V38fK34L+ZqltgGaCRgYaOq/PDzT//qBb8G/NRBK4h6ZlUdtsJ3fr3TbufHs=
+X-Received: by 2002:a63:cc4f:: with SMTP id q15mr11813294pgi.47.1614131862821;
+ Tue, 23 Feb 2021 17:57:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <874ki2w9ak.fsf@manicouagan.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210223100619.798698-1-masahiroy@kernel.org> <CAK8P3a1b5Tr8Gt_DcUq9JQj4G6O5ZHf44P2ZdYZRGQY8iPs43Q@mail.gmail.com>
+In-Reply-To: <CAK8P3a1b5Tr8Gt_DcUq9JQj4G6O5ZHf44P2ZdYZRGQY8iPs43Q@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 24 Feb 2021 10:57:05 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ3bYfo03i=LBv8S6dyTTAYw17gGht7TR2AWofNn0VP_A@mail.gmail.com>
+Message-ID: <CAK7LNAQ3bYfo03i=LBv8S6dyTTAYw17gGht7TR2AWofNn0VP_A@mail.gmail.com>
+Subject: Re: [PATCH] asm-generic/ioctl.h: use BUILD_BUG_ON_ZERO() for type check
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/23/21 5:20 PM, Thiago Jung Bauermann wrote:
-> 
-> Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
-> 
->> From: Rob Herring <robh@kernel.org>
->>
->> Both arm64 and powerpc do essentially the same FDT /chosen setup for
->> kexec.  The differences are either omissions that arm64 should have
->> or additional properties that will be ignored.  The setup code can be
->> combined and shared by both powerpc and arm64.
->>
->> The differences relative to the arm64 version:
->>   - If /chosen doesn't exist, it will be created (should never happen).
->>   - Any old dtb and initrd reserved memory will be released.
->>   - The new initrd and elfcorehdr are marked reserved.
->>   - "linux,booted-from-kexec" is set.
->>
->> The differences relative to the powerpc version:
->>   - "kaslr-seed" and "rng-seed" may be set.
->>   - "linux,elfcorehdr" is set.
->>   - Any existing "linux,usable-memory-range" is removed.
->>
->> Combine the code for setting up the /chosen node in the FDT and updating
->> the memory reservation for kexec, for powerpc and arm64, in
->> of_kexec_alloc_and_setup_fdt() and move it to "drivers/of/kexec.c".
->>
->> Signed-off-by: Rob Herring <robh@kernel.org>
->> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->> Fixes: 33488dc4d61f ("of: Add a common kexec FDT setup function")
-> 
-> A patch cannot fix itself. The world would be a much better place if it
-> could. :-)
-
-:)
-
-> 
->> Reported-by: kernel test robot <lkp@intel.com>
->> ---
->>   drivers/of/Makefile |   6 +
->>   drivers/of/kexec.c  | 265 ++++++++++++++++++++++++++++++++++++++++++++
->>   include/linux/of.h  |   5 +
->>   3 files changed, 276 insertions(+)
->>   create mode 100644 drivers/of/kexec.c
-> 
-> With that fixed:
-> 
-> Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-
-Thanks for reviewing the patches Thiago.
-
-  -lakshmi
+On Wed, Feb 24, 2021 at 5:04 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Tue, Feb 23, 2021 at 11:06 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> >
+> > -#ifdef __CHECKER__
+> > -#define _IOC_TYPECHECK(t) (sizeof(t))
+> > -#else
+> >  /* provoke compile error for invalid uses of size argument */
+> > -extern unsigned int __invalid_size_argument_for_IOC;
+> > +#undef _IOC_TYPECHECK
+> >  #define _IOC_TYPECHECK(t) \
+> > -       ((sizeof(t) == sizeof(t[1]) && \
+> > -         sizeof(t) < (1 << _IOC_SIZEBITS)) ? \
+> > -         sizeof(t) : __invalid_size_argument_for_IOC)
+> > -#endif
+> > +       BUILD_BUG_ON_ZERO(sizeof(t) != sizeof(t[1]) || \
+> > +                         sizeof(t) >= (1 << _IOC_SIZEBITS))
+>
+> Using BUILD_BUG_ON_ZERO sounds like a good idea
+>
+> >  #endif /* _ASM_GENERIC_IOCTL_H */
+> > diff --git a/include/uapi/asm-generic/ioctl.h b/include/uapi/asm-generic/ioctl.h
+> > index a84f4db8a250..d50bd39ec3e3 100644
+> > --- a/include/uapi/asm-generic/ioctl.h
+> > +++ b/include/uapi/asm-generic/ioctl.h
+> > @@ -72,9 +72,8 @@
+> >          ((nr)   << _IOC_NRSHIFT) | \
+> >          ((size) << _IOC_SIZESHIFT))
+> >
+> > -#ifndef __KERNEL__
+> > -#define _IOC_TYPECHECK(t) (sizeof(t))
+> > -#endif
+> > +#define _IOC_TYPECHECK(t)      0
+> > +#define _IOC_SIZE_WITH_TYPECHECK(t)    (sizeof(t) + _IOC_TYPECHECK(t))
+>
+> But I think replacing the #ifndef with an #undef in the other file makes it
+> harder to understand when reading through it and trying to understand
+> what it would do when this gets included from kernel and user space.
+>
+>         Arnd
 
 
+My intention is to improve the UAPI/KAPI decoupling
+to decrease the task of scripts/headers_install.sh
+
+Ideally, we could export UAPI headers with
+almost no modification.
+
+It is true that scripts/unifdef can remove #ifndef __KERNEL__
+blocks, but having the kernel-space code in UAPI headers
+does not make sense. Otherwise, our initial motivation
+"separate them by directory structure" would be lost.
+
+So, I believe redefining _IOC_TYPECHECK is the right direction.
+I can add comments if this is not clear.
+
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
