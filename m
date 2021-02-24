@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679D232364F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 04:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5A3323653
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 04:56:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233777AbhBXDwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 22:52:22 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:50337 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233725AbhBXDwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 22:52:08 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614138707; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=gOrw/UcHmWNkjl8nq8znMxGNRdkcx/fwcPGuRWypqVE=; b=hberOoO8fcliOSSLi6DrFg94Kcn4XCZPx4e4B6HwvYtLG8zzLYeil3QzQo2KOGS3Ni0wbgtj
- rkT+3Sw6YeePra5E6XfMK8PIaL8IfebJn9WAWgfIDWzrAJx02bctGuiNxeW2YoQwFjuaky9c
- iqzABwA4nxVPlbyjTD5pMMsX11Y=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6035cd3a2a8ee88ea521117b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Feb 2021 03:51:22
- GMT
-Sender: kgunda=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5F925C433CA; Wed, 24 Feb 2021 03:51:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from kgunda-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kgunda)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 49298C43462;
-        Wed, 24 Feb 2021 03:51:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 49298C43462
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kgunda@codeaurora.org
-From:   Kiran Gunda <kgunda@codeaurora.org>
-To:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
-        lee.jones@linaro.org, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, daniel.thompson@linaro.org,
-        jacek.anaszewski@gmail.com, pavel@ucw.cz, robh+dt@kernel.org,
-        mark.rutland@arm.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-fbdev@vger.kernel.org
-Cc:     phone-devel@vger.kernel.org, Kiran Gunda <kgunda@codeaurora.org>
-Subject: [PATCH V1 2/2] backlight: qcom-wled: Correct the sync_toggle sequence
-Date:   Wed, 24 Feb 2021 09:20:48 +0530
-Message-Id: <1614138648-2963-3-git-send-email-kgunda@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614138648-2963-1-git-send-email-kgunda@codeaurora.org>
-References: <1614138648-2963-1-git-send-email-kgunda@codeaurora.org>
+        id S233764AbhBXDzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 22:55:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231367AbhBXDzv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 22:55:51 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7251EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 19:55:11 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id b21so606421pgk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 19:55:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=o4Xn3srsG5cZJe+1gJ2dbBTvOflBVA+QWuUBaa1OWlQ=;
+        b=Zq7fWg8nPXnQDlMoLsWR9cKDMC5QjUmoqWtJG8yqDKulfABe7dXKMMxmBSUzY2AR4C
+         LcfZb1pRYxpq4L84bCtNSNjcytMlUMF9dQ/2lv2GnfqlcZ/rUSeeF3ZN5cVArY3zgscT
+         az6lk5OBvt3qi5/xuUTN6WvrghR4cKm+ahzliJ5gTwFlvpB0dtbjP4hQ8dC7m5Ryahne
+         aVnrr9qKHuj6hv6J9Qi/jn0wIDbjwcuw3nMc+etC+WUhwyV3DcnitTvtiYMDa5erJ7bQ
+         uhht68T+KmMwyCoQz7sg0t+gXqz2E37rUJ83ccSj0FRpwCx442ubVEFhqPHwcRs/oYnP
+         Cv/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=o4Xn3srsG5cZJe+1gJ2dbBTvOflBVA+QWuUBaa1OWlQ=;
+        b=d3WDGLPEiylIU19n3GLbJqLHwrqMXkol83MviAqbqAS1s4uPxKMSYRHPRB2ZJD4LrN
+         R/3357uedhR1OBlZHV98BODvj2eSfWRI+kxpgIpiwm7AASOslax4o0jMSo/FO3PVXC3v
+         XVYQLRMgEm+oNfVWtRuj7+eu8ED69pNKu1OSXCzodJbfEaUaUWDGmAarx1+OfqYEJw02
+         efS2vz3MKVEq33PGF9n75E0y7IIQplcmHwhJFVZXLB/9nZZzxlrkKQt+Hk0H9Kp8BBxW
+         21i3ZS7AvvGo03/nDU2pcwzhQZsMJcGjb01Fssxf1Hd98rsrSyFt0RV7DaWKmA9bOcx2
+         iHyQ==
+X-Gm-Message-State: AOAM532XCTCHt2BjpS99lZ7JuPQdXFGjGuktldUVa2TvwsMzn3oVbgT7
+        q7n/t4yJRZQbzQuLio8BSySEWA==
+X-Google-Smtp-Source: ABdhPJxLI0p6y/ie5MjpFWg2jQw6hK8Wr0ItIZOkV7Ns0Ak/T6t9deCbXnHEQeDKeDx57I3qf8rpjA==
+X-Received: by 2002:a63:5ec3:: with SMTP id s186mr13034248pgb.179.1614138910945;
+        Tue, 23 Feb 2021 19:55:10 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id p11sm597526pjb.31.2021.02.23.19.55.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Feb 2021 19:55:10 -0800 (PST)
+Date:   Wed, 24 Feb 2021 09:25:06 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scripts/dtc: Add missing fdtoverlay to gitignore
+Message-ID: <20210224035506.k47bp4kzeftitmi4@vireshk-i7>
+References: <20210223211252.66286-1-robh@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223211252.66286-1-robh@kernel.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the FSC SYNC_BIT and MOD_SYNC_BIT are toggled
-from 1 to 0 to update the FSC and brightenss settings.
-Change this sequence form 0 to 1 as per the hardware team
-recommendation to update the FSC and brightness correctly.
+On 23-02-21, 15:12, Rob Herring wrote:
+> Commit 0da6bcd9fcc0 ("scripts: dtc: Build fdtoverlay tool") enabled
+> building fdtoverlay, but failed to add it to .gitignore.
+> 
+> Also add a note to keep hostprogs in sync with .gitignore.
+> 
+> Fixes: 0da6bcd9fcc0 ("scripts: dtc: Build fdtoverlay tool")
+> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> Linus, please pick this up directly if you want. I'm going to be offline
+> most of the next couple of days, will have a few other DT fixes to send 
+> you later this week.
+> 
+> Rob
+> 
+>  scripts/dtc/.gitignore | 1 +
+>  scripts/dtc/Makefile   | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/scripts/dtc/.gitignore b/scripts/dtc/.gitignore
+> index b814e6076bdb..8a8b62bf3d3c 100644
+> --- a/scripts/dtc/.gitignore
+> +++ b/scripts/dtc/.gitignore
+> @@ -1,2 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  dtc
+> +fdtoverlay
+> diff --git a/scripts/dtc/Makefile b/scripts/dtc/Makefile
+> index c8c21e0f2531..95aaf7431bff 100644
+> --- a/scripts/dtc/Makefile
+> +++ b/scripts/dtc/Makefile
+> @@ -1,6 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  # scripts/dtc makefile
+>  
+> +# *** Also keep .gitignore in sync when changing ***
+>  hostprogs-always-$(CONFIG_DTC)		+= dtc fdtoverlay
+>  hostprogs-always-$(CHECK_DT_BINDING)	+= dtc
 
-Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
----
- drivers/video/backlight/qcom-wled.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-index aef52b9..19f83ac 100644
---- a/drivers/video/backlight/qcom-wled.c
-+++ b/drivers/video/backlight/qcom-wled.c
-@@ -337,13 +337,13 @@ static int wled3_sync_toggle(struct wled *wled)
- 
- 	rc = regmap_update_bits(wled->regmap,
- 				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
--				mask, mask);
-+				mask, WLED3_SINK_REG_SYNC_CLEAR);
- 	if (rc < 0)
- 		return rc;
- 
- 	rc = regmap_update_bits(wled->regmap,
- 				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
--				mask, WLED3_SINK_REG_SYNC_CLEAR);
-+				mask, mask);
- 
- 	return rc;
- }
-@@ -353,17 +353,17 @@ static int wled5_mod_sync_toggle(struct wled *wled)
- 	int rc;
- 	u8 val;
- 
--	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
--					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
- 	rc = regmap_update_bits(wled->regmap,
- 				wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
--				WLED5_SINK_REG_SYNC_MASK, val);
-+				WLED5_SINK_REG_SYNC_MASK, 0);
- 	if (rc < 0)
- 		return rc;
- 
-+	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
-+					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
- 	return regmap_update_bits(wled->regmap,
- 				  wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
--				  WLED5_SINK_REG_SYNC_MASK, 0);
-+				  WLED5_SINK_REG_SYNC_MASK, val);
- }
- 
- static int wled_ovp_fault_status(struct wled *wled, bool *fault_set)
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
- a Linux Foundation Collaborative Project
-
+viresh
