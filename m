@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D381324099
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF9F3240C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238507AbhBXPPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:15:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38186 "EHLO mail.kernel.org"
+        id S238073AbhBXPYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:24:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233489AbhBXOct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 09:32:49 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 307BA64ED6;
-        Wed, 24 Feb 2021 14:32:08 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lEvCv-00FhNi-Tm; Wed, 24 Feb 2021 14:32:06 +0000
+        id S235344AbhBXOp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 09:45:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5609964EF5;
+        Wed, 24 Feb 2021 14:33:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614177185;
+        bh=KZhGj6qe5j0syEVNI++CgqtBRU7J+USl4NFuEWBkjVA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QyIh+YMCwbpRAINMvFTccX47lNnfNUsdk+zCV4F4Qw9zcXd/+LXdVJfa4W0xKU1aN
+         QBOuEuJU1oMCpcTNeWcdgzhXTK0cJIsnG/8M+Ysxdo5BA2HMIcuA/wKjXjLaKu47iI
+         iuGobUvyTYJgXpSBwGpvFx7S2SPz9LCiI0qHPf5/WCDMSFdztk6tIkxXYEjY+BokIJ
+         LhbUkRWVf/IacrXFj8m0zsf/NTxlTfmRZiwRX7dHTvibWSRJ1UNwIf2S58RGqRW36g
+         snd8A6NHQ0IagRboGDJHZjD61tu3EIcyWDrjAoHXTkgjxRQGCLQgVFdPfD/Sfv+TpO
+         r5Py3qIDifz4g==
+Received: by mail-ed1-f54.google.com with SMTP id cf12so1945784edb.8;
+        Wed, 24 Feb 2021 06:33:05 -0800 (PST)
+X-Gm-Message-State: AOAM531K4Ayfmq4swkH5i5fGq9OeJ7qJy+8sldlhA+MQ9ZS9J22FExGo
+        XRYzBoEWpJzNhz5GoJaiwOFPZj4l4xOGziOlb7I=
+X-Google-Smtp-Source: ABdhPJyGdFxiQsQv4scJMUh5ZIZPJ9YHWxjHVyJ9CKEA66GBNayYBVB67ycSuwQRa6mGxkRNruowf8J2XkFZSRs3Z7c=
+X-Received: by 2002:a05:6402:1152:: with SMTP id g18mr34147943edw.18.1614177183720;
+ Wed, 24 Feb 2021 06:33:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 24 Feb 2021 14:32:05 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st,
-        tglx@linutronix.de, will@kernel.org
-Subject: Re: [PATCH 0/8] arm64: Support FIQ controller registration
-In-Reply-To: <20210224140656.GG50741@C02TD0UTHF1T.local>
-References: <20210219113904.41736-1-mark.rutland@arm.com>
- <87a6s0orm7.wl-maz@kernel.org> <20210224140656.GG50741@C02TD0UTHF1T.local>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <f69e51e4161f48442933c0c5296b313d@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st, tglx@linutronix.de, will@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20210223210127.55455-1-robh@kernel.org>
+In-Reply-To: <20210223210127.55455-1-robh@kernel.org>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 24 Feb 2021 15:32:52 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPds-Qh2Hvs2fAvrM59xgTWtYROwocTVuqFaBBd=JYwmow@mail.gmail.com>
+Message-ID: <CAJKOXPds-Qh2Hvs2fAvrM59xgTWtYROwocTVuqFaBBd=JYwmow@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: media: Use graph and video-interfaces
+ schemas, round 2
+To:     Rob Herring <robh@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        "Paul J. Murphy" <paul.j.murphy@intel.com>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-24 14:06, Mark Rutland wrote:
-> On Fri, Feb 19, 2021 at 06:10:56PM +0000, Marc Zyngier wrote:
->> Hi Mark,
->> 
->> On Fri, 19 Feb 2021 11:38:56 +0000,
->> Mark Rutland <mark.rutland@arm.com> wrote:
->> >
->> > Hector's M1 support series [1] shows that some platforms have critical
->> > interrupts wired to FIQ, and to support these platforms we need to support
->> > handling FIQ exceptions. Other contemporary platforms don't use FIQ (since e.g.
->> > this is usually routed to EL3), and as we never expect to take an FIQ, we have
->> > the FIQ vector cause a panic.
->> >
->> > Since the use of FIQ is a platform integration detail (which can differ across
->> > bare-metal and virtualized environments), we need be able to explicitly opt-in
->> > to handling FIQs while retaining the existing behaviour otherwise. This series
->> > adds a new set_handle_fiq() hook so that the FIQ controller can do so, and
->> > where no controller is registered the default handler will panic(). For
->> > consistency the set_handle_irq() code is made to do the same.
->> >
->> > The first couple of patches are from Marc's irq/drop-generic_irq_multi_handler
->> > branch [2] on kernel.org, and clean up CONFIG_GENERIC_IRQ_MULTI_HANDLER usage.
->> > The next four patches move arm64 over to a local set_handle_irq()
->> > implementation, which is written to share code with a set_handle_fiq() function
->> > in the last two patches. The only functional difference here is that if an IRQ
->> > is somehow taken prior to set_handle_irq() the default handler will directly
->> > panic() rather than the vector branching to NULL.
->> >
->> > The penultimate patch is cherry-picked from the v2 M1 series, and as per
->> > discussion there [3] will need a few additional fixups. I've included it for
->> > now as the DAIF.IF alignment is necessary for the FIQ exception handling added
->> > in the final patch.
->> >
->> > The final patch adds the low-level FIQ exception handling and registration
->> > mechanism atop the prior rework.
->> 
->> Thanks for putting this together. I have an extra patch on top of this
->> series[1] that prevents the kernel from catching fire if a FIQ fires
->> whilst running a guest. Nothing urgent, we can queue it at a later 
->> time.
->> 
->> Thanks,
->> 
->> 	M.
->> 
->> [1] 
->> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/fiq
-> 
-> IIUC for that "invalid_vect" should be changed to "valid_vect", to 
-> match
-> the other valid vector entries, but otherwise that looks sane to me.
+On Tue, 23 Feb 2021 at 22:02, Rob Herring <robh@kernel.org> wrote:
+>
+> A couple of media schemas got applied without using or incorrectly
+> using the video-interfaces.yaml and graph.yaml schemas. Fix them up
+> before we have more copy-n-paste errors.
+>
+> Fixes: 41b3e23376e9 ("media: dt-bindings: media: Add bindings for imx334")
+> Fixes: d899e5f1db7a ("media: dt-bindings: media: imx258: add bindings for IMX258 sensor")
+> Fixes: 918b866edfec ("media: dt-bindings: Remove old ov5647.yaml file, update ovti,ov5647.yaml")
+> Fixes: 22f2b47517a6 ("media: dt-bindings: media: i2c: Add OV8865 bindings documentation")
+> Fixes: 29a202fa7acc ("media: dt-bindings: media: i2c: Add OV5648 bindings documentation")
+> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> Cc: Jacopo Mondi <jacopo@jmondi.org>
+> Cc: "Paul J. Murphy" <paul.j.murphy@intel.com>
+> Cc: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> Cc: linux-media@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> Please ack and I'll send to Linus for rc1.
+>
+>  .../devicetree/bindings/media/i2c/imx258.yaml    | 14 +++++++-------
 
-Err, yes. I though I had fixed that, but obviously didn't.
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-> I guess we could take that as a prerequisite ahead of the rest?
-
-Sure, that's mostly independent anyway. And it would make more sense
-for an unexpected FIQ to crash the host at at the point where we
-handle interrupts rather than in KVM with very little debug information.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Best regards,
+Krzysztof
