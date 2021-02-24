@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBEF323870
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8670932384A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhBXIQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:16:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234317AbhBXIPM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:15:12 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EED1C06174A;
-        Wed, 24 Feb 2021 00:14:31 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id c1so866905qtc.1;
-        Wed, 24 Feb 2021 00:14:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j2K/SUFIFZUghbC0EKiKQeI7b0lM+QlWgzKTZl7hblc=;
-        b=OsdFAKf+XYQ8sFpOuJLvRX0xJGJ9dHJby3UPS7NMn5ZuRB5Kvr9Dn5Voky5utLw4SF
-         y//IQw3Wwi52qRyDw575rk25ug3BP/2se59yHMpny3d4kkNhNbPmnBDzR6LjOiupUoWN
-         wK+IyAON+AbErlpCac6OzXLLaSTHRnEM/RsODmlvahKSgj2awy/pTTeXA6+hIsqXJxdG
-         uPpIFBGYrZmIowRfE6XBFwT7oAvdbOiMgSqYSDZlpX5vGB+7q1mBDkm2WGgGRQYOSOR3
-         Vu/N27ErEyXaFkghHtA9IAgUh1gFjQLYC5S0KAjFdvwQrU2xPGNqTS/ufnaVF1yQ3jEq
-         h+Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j2K/SUFIFZUghbC0EKiKQeI7b0lM+QlWgzKTZl7hblc=;
-        b=J3Ld5eNO0JN3RZst2bGCIMW+VP/wYK4NUNPgfA4J9NrnBeNIkagB0SsMtcKb+KLLAP
-         44nEp+6y49xKFcJ6Q6Lc4Z3Tmm1YbawhPcWFyeqvHxCLB4TPI1rXL4DMB2/z9IVyyZWl
-         4QXQ6WscWa9TZBXhNv0bdIXbs25DGDGqkUt1sXxxwol32YCCLBh/bIxP6J5aktfzJhoi
-         FGoj4e8eWJT1kP9DxkGp7QcdcRc6Ne6aR09wJ+iQojgKaajas1Ka/vx43xcR/bjAgvFW
-         MzN2Pm+e5LfK05GPUnNfJ1X5e8MYbR+YGYgxLV9hRMHKUFXURffsGg6j92iInblMkL5E
-         DZyA==
-X-Gm-Message-State: AOAM530W0mQWahBxcn9y6ZIfUuUPMVCIu/bwkzGPrf0IPhjCgq0+ozRT
-        Vx1io8MQpFwmgDVs1U2yM8w=
-X-Google-Smtp-Source: ABdhPJyHUtBLDQfPQ2kie2WMPDvAcsw7flG3KZV5ITVSZr10QtTug50VBEp4zam9H0r+9Ok9klxuBg==
-X-Received: by 2002:ac8:6a09:: with SMTP id t9mr13276421qtr.334.1614154470387;
-        Wed, 24 Feb 2021 00:14:30 -0800 (PST)
-Received: from localhost.localdomain ([156.146.55.69])
-        by smtp.gmail.com with ESMTPSA id y15sm836878qth.52.2021.02.24.00.14.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 00:14:29 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        masahiroy@kernel.org, akpm@linux-foundation.org,
-        valentin.schneider@arm.com, terrelln@fb.com, qperret@google.com,
-        hannes@cmpxchg.org, keescook@chromium.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] init: Kconfig: Fix a spelling compier to compiler in the file init/Kconfig
-Date:   Wed, 24 Feb 2021 13:44:09 +0530
-Message-Id: <20210224081409.824278-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232465AbhBXIGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:06:52 -0500
+Received: from mga12.intel.com ([192.55.52.136]:27997 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230010AbhBXIGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 03:06:49 -0500
+IronPort-SDR: DVBEM5nC088uzGWSRlAaZW48ZY/EHW4pCYq4r1aufXRgxdmSBFBux1LTS6ab/w89HLA+1+VgK1
+ QgoMMKFgyRng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="164304608"
+X-IronPort-AV: E=Sophos;i="5.81,202,1610438400"; 
+   d="scan'208";a="164304608"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 00:06:08 -0800
+IronPort-SDR: G+vnAu6JCZJLXYRZd3lK1ODn3Lvab4u5CdsUjcUy8A8UT0ZWqp3xLY+LWd3Iyvr1j8PocUiVrh
+ R+rGtI4zw+6g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,202,1610438400"; 
+   d="scan'208";a="423955222"
+Received: from aubrey-ubuntu.sh.intel.com ([10.239.53.27])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Feb 2021 00:06:05 -0800
+From:   Aubrey Li <aubrey.li@intel.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com,
+        mgorman@techsingularity.net, bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>
+Subject: [PATCH v2] sched/fair: reduce long-tail newly idle balance cost
+Date:   Wed, 24 Feb 2021 16:15:49 +0800
+Message-Id: <1614154549-116078-1-git-send-email-aubrey.li@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A long-tail load balance cost is observed on the newly idle path,
+this is caused by a race window between the first nr_running check
+of the busiest runqueue and its nr_running recheck in detach_tasks.
 
-s/compier/compiler/
+Before the busiest runqueue is locked, the tasks on the busiest
+runqueue could be pulled by other CPUs and nr_running of the busiest
+runqueu becomes 1 or even 0 if the running task becomes idle, this
+causes detach_tasks breaks with LBF_ALL_PINNED flag set, and triggers
+load_balance redo at the same sched_domain level.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+In order to find the new busiest sched_group and CPU, load balance will
+recompute and update the various load statistics, which eventually leads
+to the long-tail load balance cost.
+
+This patch clears LBF_ALL_PINNED flag for this race condition, and hence
+reduces the long-tail cost of newly idle balance.
+
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
 ---
- init/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/fair.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/init/Kconfig b/init/Kconfig
-index b77c60f8b963..739c3425777b 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -19,7 +19,7 @@ config CC_VERSION_TEXT
- 	    CC_VERSION_TEXT so it is recorded in include/config/auto.conf.cmd.
- 	    When the compiler is updated, Kconfig will be invoked.
-
--	  - Ensure full rebuild when the compier is updated
-+	  - Ensure full rebuild when the compiler is updated
- 	    include/linux/kconfig.h contains this option in the comment line so
- 	    fixdep adds include/config/cc/version/text.h into the auto-generated
- 	    dependency. When the compiler is updated, syncconfig will touch it
---
-2.30.1
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 04a3ce2..5c67804 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7675,6 +7675,15 @@ static int detach_tasks(struct lb_env *env)
+ 
+ 	lockdep_assert_held(&env->src_rq->lock);
+ 
++	/*
++	 * Source run queue has been emptied by another CPU, clear
++	 * LBF_ALL_PINNED flag as we will not test any task.
++	 */
++	if (env->src_rq->nr_running <= 1) {
++		env->flags &= ~LBF_ALL_PINNED;
++		return 0;
++	}
++
+ 	if (env->imbalance <= 0)
+ 		return 0;
+ 
+-- 
+2.7.4
 
