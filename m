@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48BE324724
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 23:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 305C932472A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 23:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235489AbhBXWts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 17:49:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235365AbhBXWtq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 17:49:46 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4E0C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 14:49:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XbA6TlSG8cohloQ6JT5bPa8tRn+Sri1QB1baZ+jGvOo=; b=a+t3MaKCLIK05PAG+wf61LEp8K
-        meEktumY8DILhz0wq75h3QK/pQO3p3eXgxKQ7XEdzEJvlcXsJcPRYoazZPHkWOaFD+Xy40jm0JNGm
-        IPlguJbKbGEnCCbHIWTC3sOG+l7V+IQJWwyt+UOAJXYJcJ2K0cmZYsRMQmsYhFCwaIXMAEk2cZJik
-        ooNlOiSKQe5oyv2eW8zUHqrxjv87kTrSykgDGiqGVPZBKSw/Q6x2qQ52ZoUErDvVwzvZuqcmM1jWk
-        KA5ThEZL12MJc6x144zNuY9pOEcYyDfbluwDTbg2DAJSQNkKbfmlT45m02bwOZ1x7Tw3m2Y4j/Cxb
-        U45S6V1Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lF2xa-009z1I-Ce; Wed, 24 Feb 2021 22:48:49 +0000
-Date:   Wed, 24 Feb 2021 22:48:46 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, vbabka@suse.cz,
-        alex.shi@linux.alibaba.com, guro@fb.com, hannes@cmpxchg.org,
-        hughd@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com
-Subject: Re: [PATCH] mm: test page->flags directly in page_lru()
-Message-ID: <20210224224846.GU2858050@casper.infradead.org>
-References: <20210122220600.906146-11-yuzhao@google.com>
- <20210224084807.2179942-1-yuzhao@google.com>
- <20210224051558.79e31c60eea2c088f4a1b300@linux-foundation.org>
- <20210224215639.GT2858050@casper.infradead.org>
- <YDbUaJ0j2YisyyuK@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDbUaJ0j2YisyyuK@google.com>
+        id S235585AbhBXWyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 17:54:44 -0500
+Received: from smtp-17.italiaonline.it ([213.209.10.17]:55626 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234308AbhBXWyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 17:54:38 -0500
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([87.20.116.197])
+        by smtp-17.iol.local with ESMTPA
+        id F32VlxCf1lChfF32Ylf7W1; Wed, 24 Feb 2021 23:53:56 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1614207236; bh=6o6jDBvR5XQjgJ8BGNlWOmm64d1YNEr7t6lmSQ620tU=;
+        h=From;
+        b=eMZ0ljuDRUWKxtg+LRiec7AwT//WdWV8DapMtlEaTrbn3xmFeSnqYmc/m2KojXnLE
+         7o3pac8rWyodynOZ4n6q6MymMlO83caXAORJF2C0jm8C8V7CYRYNFImIpLfITzZXOI
+         nio6wM29gj9urJiiAvMQdErK5bNi0Mbj3p/5Wj/QHHshe+Wz6Dv5zua1vXUhgKMnZx
+         8R45rkF2jlJGujmU1qhNQFGSi4jAby2QavNwvUgWmK/h7X3PYhrZk75L6rT9JRdqMo
+         6EjyVRWBdezFc7isgpa78NNHgxmMfhfH7RevBaAZGVQjUVPdjKC00xyopIqdzsPoUP
+         PC0aEJ/+ClVIQ==
+X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=6036d904 cx=a_exe
+ a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17 a=gu6fZOg2AAAA:8
+ a=FCneKAZuOMEC46B4a7wA:9 a=-FEs8UIgK8oA:10 a=NWVoK91CQyQA:10
+ a=2RSlZUUhi9gRBrsHwhhZ:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 0/6] can: c_can: add support to 64 messages objects
+Date:   Wed, 24 Feb 2021 23:52:40 +0100
+Message-Id: <20210224225246.11346-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfMOLlCecWLvUGrZ7U5u1wIQsmh8zYjADupowNCTunlqn3AYJ7cx8lPJ5yDyX/ogisOrWL37tzz2APPsamdAFFz7RVfq6ILVDTaGTkwAYAyYMKMmju+Xq
+ ePNcq/wACcZ5kKxR5dJ/AUMgfJ+odwsBZqSD9gsmUVWbH4CAHg5j+lllLg14qWp1UytCf11ESQZ9TGbEvW+asfU2+au/UIyKp0/jI6vrbaM14GyH9hmXLChT
+ hbjtTFRt8arwVuXsjGfMkIaxiROIHm0WWNye3GNqan2EKzOpJYsNlqs5qxrUekH3XvGqbyJ24Nh6wvDi5OOEV+aiMqVZCnI0yqo6HEUBPgfXEgQMqmM/+mNw
+ +dfF8VhFQabo+sb2C3hUcatQCudUvCfQfP8FHZNWtYYNeHB28eap5vmwElBfxDp6K5ognpcMr4+bH3+cLstLS4RLve3UpUIFsQ3407/G77JTxlJdGFBkB956
+ tds9OXOuvwXkUZVkO+Hh0mnH+o0ZhN6aL2/r9uHb/m9QFn8+yGLg1u7aOvAa4NEBjIg/Id48aGuWTa11wQpx9/0mNjF4nOZM7PrjoLZdbJo3Uifc/lJzkJ/c
+ aLniYsX/CbTlG5xsV7fqGUKQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 03:34:16PM -0700, Yu Zhao wrote:
-> > If only somebody were working on a patch series to get rid of
-> > all those calls to compound_head()!  Some reviews on
-> > https://lore.kernel.org/linux-mm/20210128070404.1922318-2-willy@infradead.org/
-> > would be nice.
-> 
-> I'm on board with the idea and have done some research in this
-> direction. We've found that the ideal *anon* page size for Chrome OS
-> is not 4KB or 2MB, but 32KB. I hope we could leverage the folio to
-> support flexible anon page size to reduce the number of page faults
-> (vs 4KB) or internal fragmentation (vs 2MB).
-> 
-> That being said, it seems to me this is a long term plan and right
-> now we need something smaller. So if you don't mind, I'll just go
-> ahead and remove compound_head() from Page{LRU,Active,Unevictable,
-> SwapBacked} first?
 
-It's really not a big change I'm suggesting here.  You need
-https://lore.kernel.org/linux-mm/20210128070404.1922318-2-willy@infradead.org/
-https://lore.kernel.org/linux-mm/20210128070404.1922318-5-willy@infradead.org/
-https://lore.kernel.org/linux-mm/20210128070404.1922318-8-willy@infradead.org/
-and then the patch I sent above to create folio_lru().
+The D_CAN controller supports up to 128 messages. Until now the driver
+only managed 32 messages although Sitara processors and DRA7 SOC can
+handle 64.
 
-Then any changes you want to make to use folios more broadly will
-incrementally move us towards your goal of 32kB anon pages.
+The series was tested on a beaglebone board.
+
+Note:
+I have not changed the type of tx_field (belonging to the c_can_priv
+structure) to atomic64_t because I think the atomic_t type has size
+of at least 32 bits on x86 and arm, which is enough to handle 64
+messages.
+http://marc.info/?l=linux-can&m=139746476821294&w=2 reports the results
+of tests performed just on x86 and arm architectures.
+
+
+Dario Binacchi (6):
+  can: c_can: remove unused code
+  can: c_can: fix indentation
+  can: c_can: fix control interface used by c_can_do_tx
+  can: c_can: use 32-bit write to set arbitration register
+  can: c_can: prepare to up the message objects number
+  can: c_can: add support to 64 messages objects
+
+ drivers/net/can/c_can/c_can.c          | 83 ++++++++++++++++----------
+ drivers/net/can/c_can/c_can.h          | 32 ++++------
+ drivers/net/can/c_can/c_can_platform.c |  6 +-
+ 3 files changed, 69 insertions(+), 52 deletions(-)
+
+-- 
+2.17.1
+
