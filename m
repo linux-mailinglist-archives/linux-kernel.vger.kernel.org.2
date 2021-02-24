@@ -2,79 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76322323630
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 04:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C80323634
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 04:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233616AbhBXDrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 22:47:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
+        id S233453AbhBXDtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 22:49:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233036AbhBXDrS (ORCPT
+        with ESMTP id S232594AbhBXDtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 22:47:18 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A115C06174A;
-        Tue, 23 Feb 2021 19:46:38 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dlhg04Bqxz9sBy;
-        Wed, 24 Feb 2021 14:46:36 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614138396;
-        bh=mKqH7eShDbcsdhGhGHni+l4r7Ae9Jmf0pqGXDSX92JY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kpJJeuqg69klCkppGZVZ4DV+dZo0iM/tBciNMtWUtbE5d1JZ690YdX7jVOK47R/wc
-         Hu3bwuOgDHNTld8T1Fbmb3oUz1t8RzOp/IkWxQyJrEFgJJADQQTlvlzHia9pFujAPo
-         PYXsGu2bv44vzH2iVBcj8gZR75xpJgdibl02ktYKzzw2xkwcjce667Iz3UjDhszj8P
-         EXATEQrtIP3f7Enf4vU2UrCf8Wq28S+Qgu5m7Bwt4j/qVUDNSM4/vS9rBeXmeHGPJ8
-         fG6B11pTt6frnCMzgwTBKtMD8TKYfyb6mOpZGWYTdbzJThJK9ffG7bJXPnv2iP60ky
-         CT0Ul5DwcbAhA==
-Date:   Wed, 24 Feb 2021 14:46:35 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the kbuild tree
-Message-ID: <20210224144635.45d68aec@canb.auug.org.au>
+        Tue, 23 Feb 2021 22:49:08 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED10C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 19:48:28 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d16so403707plg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 19:48:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I3jEBbY4A/UGX153lu2E72Jwi3lU4l9DJKDSt9tjW5Q=;
+        b=oOOuEBK72Tmj/AsITLSIjEWrvt7HNB/gWSE+VBImqLREZdfVm1dpZI8mf4k72Hxa/i
+         yz6rqpz2vNUXnB1OxaJodya7pzUj87q/qibBdEQMTtVsQVKfuzEhmJMzAfyJ+Mbb2Fn9
+         i65JdEo2JKdsp/A2cpG5N6kMA2fCekFGx9tDv5NKfhPCcdKHU2CdBfmMMm9qnY9ovJr4
+         hhaeVaGjHvJ65SuOfuxbvFjlLDme47Q8kr9h2QXnHT+HFfbH9RURUJIUHpk7pMQg3iw7
+         eQ3kBof44riyepos3rgTe6Mcloz+QQOhOmUHH0OrAw8lEEZZJwuWTz+mTEgrTksKjtyT
+         TX8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I3jEBbY4A/UGX153lu2E72Jwi3lU4l9DJKDSt9tjW5Q=;
+        b=HBQrlY9XqPsLUaMt4Opd526uyCUUE1FVjnfAsUIoey21lbQbRSrzdD+l5tbesYdOwM
+         UWMja47nI/g3wDsCZTGVFRFWO68FkNM02Ioc++Ym4RD6h9hytXyCMqQgvKmBuo+gecLK
+         h8MWmLZhRpIQOAzjB3betNHrdDtH6fl5pO6QnKnSpNYudps3nFXXvLQbHmrBFFdGVnNu
+         MBwFChKhta6I7qLoCsvG9qgraLL0V0a+OyGYBHNYGwTWqZRkFEqSK19DwedRNZWjnhaM
+         2ghgUTKCqLQFPOfIWee7FbtZmEv/YXBgn8AtjRo7Ke1fHvXkyFUvMu+Gzn/9I8mZNVya
+         LtKw==
+X-Gm-Message-State: AOAM531/p7Hcy2S5ctwC551b0M8ShbyPAP8RtxJiFntyVUorWPXiQkhB
+        xsng9yUfyQ0rx4jB897r2Oo0nmzmD+D5bUPOQxCGDQ==
+X-Google-Smtp-Source: ABdhPJzp43cIb2gX9ENgBjGVlI9FQm0pVDYzvzqm2ZG0XDH8tXJp7biWDBSXXBsr0JJO9Dml11ss+IuaBHVyoXMHfB8=
+X-Received: by 2002:a17:90a:778a:: with SMTP id v10mr2148311pjk.229.1614138507328;
+ Tue, 23 Feb 2021 19:48:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fQ1l0XxDzPcJRWSuxJB9iln";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210219104954.67390-1-songmuchun@bytedance.com>
+ <20210219104954.67390-5-songmuchun@bytedance.com> <13a5363c-6af4-1e1f-9a18-972ca18278b5@oracle.com>
+ <20210223092740.GA1998@linux> <CAMZfGtVRSBkKe=tKAKLY8dp_hywotq3xL+EJZNjXuSKt3HK3bQ@mail.gmail.com>
+ <20210223104957.GA3844@linux> <20210223154128.GA21082@localhost.localdomain> <20210223223157.GA2740@localhost.localdomain>
+In-Reply-To: <20210223223157.GA2740@localhost.localdomain>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 24 Feb 2021 11:47:49 +0800
+Message-ID: <CAMZfGtUBMzAgPVgm=9wgJg+yytxwSGOK_BVOw93RPLb3_tFS_g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v16 4/9] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fQ1l0XxDzPcJRWSuxJB9iln
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Feb 24, 2021 at 6:32 AM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Tue, Feb 23, 2021 at 04:41:28PM +0100, Oscar Salvador wrote:
+> > On Tue, Feb 23, 2021 at 11:50:05AM +0100, Oscar Salvador wrote:
+> > > > CPU0:                           CPU1:
+> > > >                                 set_compound_page_dtor(HUGETLB_PAGE_DTOR);
+> > > > memory_failure_hugetlb
+> > > >   get_hwpoison_page
+> > > >     __get_hwpoison_page
+> > > >       get_page_unless_zero
+> > > >                                 put_page_testzero()
+> > > >
+> > > > Maybe this can happen. But it is a very corner case. If we want to
+> > > > deal with this. We can put_page_testzero() first and then
+> > > > set_compound_page_dtor(HUGETLB_PAGE_DTOR).
+> > >
+> > > I have to check further, but it looks like this could actually happen.
+> > > Handling this with VM_BUG_ON is wrong, because memory_failure/soft_offline are
+> > > entitled to increase the refcount of the page.
+> > >
+> > > AFAICS,
+> > >
+> > >  CPU0:                                    CPU1:
+> > >                                           set_compound_page_dtor(HUGETLB_PAGE_DTOR);
+> > >  memory_failure_hugetlb
+> > >    get_hwpoison_page
+> > >      __get_hwpoison_page
+> > >        get_page_unless_zero
+> > >                                           put_page_testzero()
+> > >         identify_page_state
+> > >          me_huge_page
+> > >
+> > > I think we can reach me_huge_page with either refcount = 1 or refcount =2,
+> > > depending whether put_page_testzero has been issued.
+> > >
+> > > For now, I would not re-enqueue the page if put_page_testzero == false.
+> > > I have to see how this can be handled gracefully.
+> >
+> > I took a brief look.
+> > It is not really your patch fault. Hugetlb <-> memory-failure synchronization is
+> > a bit odd, it definitely needs improvment.
+> >
+> > The thing is, we can have different scenarios here.
+> > E.g: by the time we return from put_page_testzero, we might have refcount ==
+> > 0 and PageHWPoison, or refcount == 1 PageHWPoison.
+> >
+> > The former will let a user get a page from the pool and get a sigbus
+> > when it faults in the page, and the latter will be even more odd as we
+> > will have a self-refcounted page in the free pool (and hwpoisoned).
 
-Hi all,
+I have been looking at the dequeue_huge_page_node_exact().
+If a PageHWPoison huge page is in the free pool list, the page will
+not be allocated to the user. The PageHWPoison huge page
+will be skip in the dequeue_huge_page_node_exact().
 
-Commit
+> >
+> > As I said, it is not this patchset fault. I just made me realize this
+> > problem.
+> >
+> > I have to think some more about this.
+>
+> I have been thinking more about this.
+> memory failure events can occur at any time, and we might not be in a
+> position where we can handle gracefully the error, meaning that the page
+> might end up in non desirable state.
+>
+> E.g: we could flag the page right before enqueing it.
+>
+> I still think that VM_BUG_ON should go, as the refcount can be perfectly
+> increased by memory-failure/soft_offline handlers, so BUGing there does
+> not make much sense.
 
-  67cbb9c55759 ("Makefile: reuse CC_VERSION_TEXT")
+Make sense. I will remove the VM_BUG_ON.
 
-is missing a Signed-off-by from its committer.
+>
+> One think we could do is to check the state of the page we want to
+> retrieve from the free hugepage pool.
+> We should discard any HWpoisoned ones, and dissolve them.
+>
+> The thing is, memory-failure/soft_offline should allocate a new hugepage
+> for the free pool, so keep the pool stable.
+> Something like [1].
+>
+> Anyway, this is orthogonal to this patch, and something I will work on
+> soon.
+>
+> [1] https://lore.kernel.org/linux-mm/20210222135137.25717-2-osalvador@suse.de/T/#u
 
---=20
-Cheers,
-Stephen Rothwell
+Thanks for your efforts on this.
 
---Sig_/fQ1l0XxDzPcJRWSuxJB9iln
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA1zBsACgkQAVBC80lX
-0GwHTAf/YoBZc09yxFEzXo1g2/4j2YarMNQyQDhGmYeng4azqjvH5GlCrNDI4XmO
-bvx3aPenl/Z8TPuueNH1xGsj5WNHb/nA1YZXcseWy8YAd3o1j44I2y5c6z7owylt
-wYBRD7GU6k71hHC8nYw7VcxuGG9+YU7LwfJqsNadjcGRip1qcuxzcC9sOisPdRRa
-yeMQLqwCkexru9HYk/JraAw12AZAn2d06lLZP6iI0eV1/dwpUfFGyN2fhaWTaKoF
-iOlimajSh7qqbWJK4d9tIAvFwuZXfjETb0NUUFOgwlLzMZalQkrQIBIAU8SisPqe
-3LTUcr9vvQwzI7nTFC4yip91FNikLg==
-=8ou9
------END PGP SIGNATURE-----
-
---Sig_/fQ1l0XxDzPcJRWSuxJB9iln--
+>
+> --
+> Oscar Salvador
+> SUSE L3
