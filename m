@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B989E3242A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3373242A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235434AbhBXQz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:55:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235756AbhBXQyU (ORCPT
+        id S235772AbhBXQ4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:56:07 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:57816 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235762AbhBXQy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:54:20 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEDFC061786;
-        Wed, 24 Feb 2021 08:53:36 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0d1800cad8e5da06da911c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1800:cad8:e5da:6da:911c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 82A2A1EC0531;
-        Wed, 24 Feb 2021 17:53:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614185614;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=zOeBFbmurGj2suyzyPT2GMRd0IroJnET77mPeR4/Ncg=;
-        b=R/2WRrCIWmVthrB+I78FYN+IY8shvdqh1yeCIanSd6GjieZDGa7W8lvI+ympdG3Ja0UF2A
-        xPsNbQBqjQFjga7jTK0n6EaKzu3m1PlQVEhaRIy1HPClbAW0ezM8ccMdS/PQO4sYnz2KUH
-        cWr4wWCrMTA+2xkZOOsF3BO7bGmbS9M=
-Date:   Wed, 24 Feb 2021 17:53:32 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
-Message-ID: <20210224165332.GF20344@zn.tnic>
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
- <20210217222730.15819-7-yu-cheng.yu@intel.com>
- <20210224161343.GE20344@zn.tnic>
- <32ac05ef-b50b-c947-095d-bc31a42947a3@intel.com>
+        Wed, 24 Feb 2021 11:54:29 -0500
+Received: from [192.168.0.114] (unknown [49.207.206.154])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 70D7320B6C40;
+        Wed, 24 Feb 2021 08:53:37 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 70D7320B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1614185620;
+        bh=8YbxFx9Hocxmd6u3Eq78VVDiouONns5HyeEedD7A2HU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=kMq11BtNKsvhQGtuYMUpR5yK7YNhjYofyHUhgYloHkmWl9wsOQwWELn1DMa8gwW+I
+         /iNsyGAc2l5/wXLxAktg6W8KzgRlF9fmcW4M1Z9w4+4DaJ6Ru/FPHQ8xhViFGVyfGK
+         sE5dixBwUAGcZsOCGIB4dJhxkhwWxg351zSRxG74=
+Subject: Re: [PATCH 1/2] optee: fix tee out of memory failure seen during
+ kexec reboot
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Dhananjay Phadke <dphadke@linux.microsoft.com>,
+        allen.lkml@gmail.com, zajec5@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com
+References: <20210217092714.121297-2-allen.lkml@gmail.com>
+ <20210217092714.121297-2-allen.lkml@gmail.com>
+ <8d87655f-27c6-6a66-6eb0-9244279fbf2c@linux.microsoft.com>
+ <20210223081948.GA1836717@jade>
+ <cbc963d5-6c4b-7e69-4a9b-3d66b95affab@linux.microsoft.com>
+ <20210224081553.GB2653493@jade>
+From:   Allen Pais <apais@linux.microsoft.com>
+Message-ID: <9f4b44c1-cf86-a061-a9c6-726c4e23f99b@linux.microsoft.com>
+Date:   Wed, 24 Feb 2021 22:23:34 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <32ac05ef-b50b-c947-095d-bc31a42947a3@intel.com>
+In-Reply-To: <20210224081553.GB2653493@jade>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 08:44:45AM -0800, Yu, Yu-cheng wrote:
-> > > +	force_sig_fault(SIGSEGV, SEGV_CPERR,
-> > > +			(void __user *)uprobe_get_trap_addr(regs));
-> > 
-> > Why is this calling an uprobes function?
-> > 
+
+>>>>>> -	/*
+>>>>>> -	 * Ask OP-TEE to free all cached shared memory objects to decrease
+>>>>>> -	 * reference counters and also avoid wild pointers in secure world
+>>>>>> -	 * into the old shared memory range.
+>>>>>> -	 */
+>>>>>> -	optee_disable_shm_cache(optee);
+>>>>>> +	if (shutdown) {
+>>>>>> +		optee_disable_shm_cache(optee);
+>>>>>> +	} else {
+>>>>>> +		/*
+>>>>>> +		 * Ask OP-TEE to free all cached shared memory
+>>>>>> +		 * objects to decrease reference counters and
+>>>>>> +		 * also avoid wild pointers in secure world
+>>>>>> +		 * into the old shared memory range.
+>>>>>> +		 */
+>>>>>> +		optee_disable_shm_cache(optee);
+>>>>> Calling optee_disable_shm_cache() in both if and else. It could be
+>>>>> put in front of if().
+>>>>>
+>>>>
+>>>>     Ideally, I could just use optee_remove for shutdown() too.
+>>>> But it would not look good. Hence this approach.
+>>>
+>>> What is the problem with using optee_remove() for shutdown()?
+>>>
+>>
+>>   There is no problem, I just thought it would be more cleaner/readable
+>> with this approach. If you'd like to keep it simple by just calling
+>> optee_remove() for shutdown() too, I could quickly send out V2.
 > 
-> I will change it to error_get_trap_addr().
+> In the patch you posted it looks like you'd like to call
+> only optee_disable_shm_cache() in the case of shutdown. Like:
+> 
+> static void optee_shutdown(struct platform_device *pdev)
+> {
+>          optee_disable_shm_cache(platform_get_drvdata(pdev));
+> }
+> 
+> and optee_remove() kept as it was before this patch.
+> 
 
-"/*
-  * Posix requires to provide the address of the faulting instruction for
-  * SIGILL (#UD) and SIGFPE (#DE) in the si_addr member of siginfo_t.
-  ..."
+  Sure, Will have it fixed and send out V2.
 
-Is yours SIGILL or SIGFPE?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks.
