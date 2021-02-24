@@ -2,107 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD0B32478E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DB3324795
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhBXXdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 18:33:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59298 "EHLO
+        id S233283AbhBXXmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 18:42:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233662AbhBXXdB (ORCPT
+        with ESMTP id S232975AbhBXXmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 18:33:01 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5A9C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 15:32:21 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id o38so2539026pgm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 15:32:21 -0800 (PST)
+        Wed, 24 Feb 2021 18:42:36 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC09AC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 15:41:55 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id j12so2361815pfj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 15:41:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g5Gy0p/FQq9jX447dEvvCmbDqR5vUzjHm6T2Y74f/1I=;
-        b=QFkVgQNTiu+/N75DJ6Z59aF8QOPIoxiX6qncyFFy4xTBds6g3WqzTlBjfdpPLRXISu
-         iL89TgGf1xUQeRrY/5A2kdhWaGsYPaq3X7FaK8prs4/0BZ6aNr2Jqg1gfyp705qAqTRL
-         OPlGqFU6exNaqMHv4QmNzz20egGMt7rHAhEPc=
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=4UhgtQR/t587K6mVK4U2DYeO7naX+sDjiM4fag1OV18=;
+        b=UCHNVl5Da3JFTBW8+pGqiZqF3bzDtSF0orUCgAF9eV9zayf5gmyBBjXm7SXmYSTtEI
+         3c3O4Tr5RVylKRTVn+wVTUZoBik929n7RmjWjX4SktZvsC/hD9Ke4xXa7oxcepeGiO3l
+         pgKvHtJeyEQnlw3PHFmYK/0TJeSEPEgEDzbdfD19ZFEoUx/B2CBceyxtZ/Q2uIMLYvoa
+         7z5qu4PWPl+15sAcZVr4N+u6JPvTeTLULwvgdmFceP3dnqEdrGbtmnnJYmzOXqnGkP+d
+         5ircMiHuexRa81L4k8zeBwxynxEZ975pptAZ9xLyC6IeA4ju+6DrHAm9GBQkkG2kcThT
+         afxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g5Gy0p/FQq9jX447dEvvCmbDqR5vUzjHm6T2Y74f/1I=;
-        b=WkvCv3cFGotryx/5eVmuR3wXAJKhagGBeCx6Fuy8zVlp8nyrJm0Xgpyy2fJuVJuntG
-         t713wItt/kCrG7uV1WmQtAz6N/OesPX88nopa2oi/vNg48t73E687loefRKgZJWOhzL5
-         DDDJgs7jnQ/QWk06Sb0tJoSrkcHG/YEg3NSuYfukjZa8UN9LVtq1dlc/Pw61H5L90ICg
-         6FIFxBwQcYkZwDtVgnmglre5Z0/gz6CwlNYrNptJKJNEPtU4Pqji+jzljgGKPwKIHmYO
-         4v1tNmJt6AGo935mHCmoMOjNOkWT85DSx81+Y2WggjlMVTWgP94rS3gSbnAvQjLDcjvP
-         MwJQ==
-X-Gm-Message-State: AOAM532sJNi5vUm7CBdFLZajcbBqdDZ9WxaUUkwwjrAE8JnriXOXvRQk
-        w4u0vteaer9SdJnAv/A86pwT3A==
-X-Google-Smtp-Source: ABdhPJyEOHGWDGnSX+oJgmdx37VbyypUjZW+35RnUDRvzjr6jKfJ4VQJNyRorCN9sLTIUKVtbYHrFg==
-X-Received: by 2002:a63:e42:: with SMTP id 2mr335730pgo.100.1614209540694;
-        Wed, 24 Feb 2021 15:32:20 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o18sm3956468pjq.44.2021.02.24.15.32.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 15:32:20 -0800 (PST)
-Date:   Wed, 24 Feb 2021 15:32:19 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] parisc: select
- FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY
-Message-ID: <202102241508.A10EB51C8@keescook>
-References: <20210224225706.2726050-1-samitolvanen@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224225706.2726050-1-samitolvanen@google.com>
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=4UhgtQR/t587K6mVK4U2DYeO7naX+sDjiM4fag1OV18=;
+        b=Af+usFUIBTHJnjRwbaaPoeRtaQLWyaskCkqI/87Hdu55Ef8hnJIdoZlN4fm868Sc+x
+         dzO0wcj9LRoVNNUVifUULv2nOTGZ35Mm/TwEw1jgCZphvHM8B3TbLptGzL4MjWsTAW4h
+         iA6dC2y89j9qdYnh6jSuP5q0uEhe0Yg9muv4PBkqQjtqgWSdx0igo9tPDNXDbPBtER23
+         6aNo1gtjlOGeOeizGO437jk3VPng0t/tWbzxgluqFvgSfBa+xHain4z8CfRCfEakt+rX
+         VCZqhQA5mvGZPoeDsnsk7uwBZkF88aPrjwbMtTyBi76RKv8IGff4w+oUNsLAHed7K2Md
+         xHtg==
+X-Gm-Message-State: AOAM5316XbitL21uFdOl4Y9aGFMfKfed+Bof/hnNJby5NyidNfZCL9fg
+        ZeO4kfsm814YdvHtzhEUa7QjOQ==
+X-Google-Smtp-Source: ABdhPJyrbBHtNmE8F4ML4DgkDenKEBh2vSSfnpeT2tpY94wj1oiKECGzl+PbPmiO3Oed33HdgAqRFQ==
+X-Received: by 2002:a62:2c85:0:b029:1ed:39f4:ca0f with SMTP id s127-20020a622c850000b02901ed39f4ca0fmr380980pfs.11.1614210115277;
+        Wed, 24 Feb 2021 15:41:55 -0800 (PST)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id h8sm3675214pfv.154.2021.02.24.15.41.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 24 Feb 2021 15:41:54 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <DC74377C-DFFD-4E26-90AB-213577DB3081@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_A23EAC69-E4AD-4741-A190-B2F252287FD8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [RFC] Better page cache error handling
+Date:   Wed, 24 Feb 2021 16:41:26 -0700
+In-Reply-To: <20210224134115.GP2858050@casper.infradead.org>
+Cc:     Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+References: <20210205161142.GI308988@casper.infradead.org>
+ <20210224123848.GA27695@quack2.suse.cz>
+ <20210224134115.GP2858050@casper.infradead.org>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 02:57:06PM -0800, Sami Tolvanen wrote:
-> parisc uses -fpatchable-function-entry with dynamic ftrace, which means we
-> don't need recordmcount. Select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY
-> to tell that to the build system.
-> 
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Fixes: 3b15cdc15956 ("tracing: move function tracer options to Kconfig")
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+--Apple-Mail=_A23EAC69-E4AD-4741-A190-B2F252287FD8
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Cross-build tested for defconfig, allmodconfig, allyesconfig:
+On Feb 24, 2021, at 6:41 AM, Matthew Wilcox <willy@infradead.org> wrote:
+>=20
+> On Wed, Feb 24, 2021 at 01:38:48PM +0100, Jan Kara wrote:
+>>> We allocate a page and try to read it.  29 threads pile up waiting
+>>> for the page lock in filemap_update_page().  The error returned by =
+the
+>>> original I/O is shared between all 29 waiters as well as being =
+returned
+>>> to the requesting thread.  The next request for index.html will send
+>>> another I/O, and more waiters will pile up trying to get the page =
+lock,
+>>> but at no time will more than 30 threads be waiting for the I/O to =
+fail.
+>>=20
+>> Interesting idea. It certainly improves current behavior. I just =
+wonder
+>> whether this isn't a partial solution to a problem and a full =
+solution of
+>> it would have to go in a different direction? I mean it just seems
+>> wrong that each reader (let's assume they just won't overlap) has to =
+retry
+>> the failed IO and wait for the HW to figure out it's not going to =
+work.
+>> Shouldn't we cache the error state with the page? And I understand =
+that we
+>> then also have to deal with the problem how to invalidate the error =
+state
+>> when the block might eventually become readable (for stuff like =
+temporary
+>> IO failures). That would need some signalling from the driver to the =
+page
+>> cache, maybe in a form of some error recovery sequence counter or =
+something
+>> like that. For stuff like iSCSI, multipath, or NBD it could be doable =
+I
+>> believe...
+>=20
+> That felt like a larger change than I wanted to make.  I already have
+> a few big projects on my plate!
+>=20
+> Also, it's not clear to me that the host can necessarily figure out =
+when
+> a device has fixed an error -- certainly for the three cases you list
+> it can be done.  I think we'd want a timer to indicate that it's worth
+> retrying instead of returning the error.
+>=20
+> Anyway, that seems like a lot of data to cram into a struct page.  So =
+I
+> think my proposal is still worth pursuing while waiting for someone to
+> come up with a perfect solution.
 
-Tested-by: Kees Cook <keescook@chromium.org>
+Since you would know that the page is bad at this point (not uptodate,
+does not contain valid data) you could potentially re-use some other
+fields in struct page, or potentially store something in the page =
+itself?
+That would avoid bloating struct page with fields that are only rarely
+needed.  Userspace shouldn't be able to read the page at that point if
+it is not marked uptodate, but they could overwrite it, so you wouldn't
+want to store any kind of complex data structure there, but you _could_
+store a magic, an error value, and a timeout, that are only valid if
+!uptodate (cleared if the page were totally overwritten by userspace).
 
--Kees
+Yes, it's nasty, but better than growing struct page, and better than
+blocking userspace threads for tens of minutes when a block is bad.
 
-> ---
->  arch/parisc/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-> index ecef9aff9d72..f56c67bbe495 100644
-> --- a/arch/parisc/Kconfig
-> +++ b/arch/parisc/Kconfig
-> @@ -61,6 +61,7 @@ config PARISC
->  	select HAVE_KRETPROBES
->  	select HAVE_DYNAMIC_FTRACE if $(cc-option,-fpatchable-function-entry=1,1)
->  	select HAVE_FTRACE_MCOUNT_RECORD if HAVE_DYNAMIC_FTRACE
-> +	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY if DYNAMIC_FTRACE
->  	select HAVE_KPROBES_ON_FTRACE
->  	select HAVE_DYNAMIC_FTRACE_WITH_REGS
->  	select SET_FS
-> 
-> base-commit: 062c84fccc4444805738d76a2699c4d3c95184ec
-> -- 
-> 2.30.0.617.g56c4b15f3c-goog
-> 
+Cheers, Andreas
 
--- 
-Kees Cook
+
+
+
+
+
+--Apple-Mail=_A23EAC69-E4AD-4741-A190-B2F252287FD8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmA25CYACgkQcqXauRfM
+H+AAERAAj0OTDKFuMVf0UEx4aC5GMp8vcZnxg7PM1tYxaxK9IkCzbmIvx0Cg52lp
+5QkaINbs7U16rCrNRY8gkpl9VbU5p8zEyAGfbnZqTjxz8n++vx0LvsOxMjIgzDDn
+KdcgrpkMZ0oFiSXcBjoE4+kCroWA1pM7hACvDkgBAZQV3sWZANmqZCAeDLpWz1kK
+q+6shGiG/w410YHh/y72g1X2e+/9oSZ7xjGHx2IxuHXh6XEPHu8h2Oy2TusPpJ7P
+VEmuCRQ19eDJSUw57F03p8MdQ3kD3dhPXWquO3vv2rcCsG/CAwF54O7CWGTwdSWl
+60Zutxxlgst3zZHdgnLcHquHC2yitRz8ejSc5u/PUYYK8HQJ8wGtoc87dUUJYFZg
+vBzYrOIHlBmqgoQ0lUj3WMS+GvHtyeWYRybImQXZ0Q8NL10kBmtT7GdlWhWBAdy7
+YEZczQUSnOuRpJenXKVOkCHzH+Asu8Hicc9QiAii6iAts/gFw/E88dGACyM5cGqN
+jkc/5bjuhev2rbQgXTesFlXUb/fVDmKKKIV/mMjHWc7vx3xHbNoRPkXy2JhVA1Km
+25iTbybhiZCdm+IqMVXmSOyrzeIrsWhgA/k4JBZ0LMVPmq5mu7+QzIMYzthkGxla
+7CRd0zvTR1bNWlhpffPHu3kIUzdI+7QTAdNHJA7TqF22tbgod4k=
+=H6NE
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_A23EAC69-E4AD-4741-A190-B2F252287FD8--
