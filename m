@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27223243A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:19:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA1D3243AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234878AbhBXSSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:18:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48234 "EHLO
+        id S233770AbhBXSVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:21:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234128AbhBXSR6 (ORCPT
+        with ESMTP id S229599AbhBXSVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:17:58 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EF5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:17:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mW17obZYHxgqq8NqyID1PaWyTvdWia3zxGHSfanX3QQ=; b=LTb9ekPDBE2BlPrNsDs+p3oxmg
-        zOSxObzCWyCKogG024Wlz2b16A1kf+j4aifINmkMOjIYBxndKt9pUXzE/oFn7bx8m9TG6ZKGmGrCq
-        sj6Nl6mL88+LMh6fR+Hn7fWm/T6SMfafN08ypHUmwbNCuBG2eyq0s3dCLx4Hpclt4G6NjqQFNuXsm
-        i9lkh6CHPTegXHN5inyVzb1gSignhRw8GR5OWT2W8ThMgZX98MBJEUyNUcvU2PNcJRewdQxBPttxd
-        aJ5eG//KtVCXWZab8a/6wvfiSlS5FSQSUHBGkfWwmG1zdkPUDwWQjV0NKALhD4E6fmUni1GZ20D5l
-        uvHlB3+g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lEyie-0003xN-7P; Wed, 24 Feb 2021 18:17:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 91253301A32;
-        Wed, 24 Feb 2021 19:17:02 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 72FAA206FA6AD; Wed, 24 Feb 2021 19:17:02 +0100 (CET)
-Date:   Wed, 24 Feb 2021 19:17:02 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Qais Yousef <qais.yousef@arm.com>
-Subject: Re: [PATCH 0/7 v4] move update blocked load outside newidle_balance
-Message-ID: <YDaYHglbHOrCb1Ph@hirez.programming.kicks-ass.net>
-References: <20210224133007.28644-1-vincent.guittot@linaro.org>
- <YDZ2kl2dpHUgmjTS@hirez.programming.kicks-ass.net>
- <CAKfTPtCwmt9HHDuN7tVhZiy7R3e5XHuExU-PVOb++40fYzu-2Q@mail.gmail.com>
- <YDaPtc47NnB5BGEW@hirez.programming.kicks-ass.net>
- <CAKfTPtAa5wCUbNs4+6sTJmSi8wkoEdbtUyzSGpkA0OuRHB67GA@mail.gmail.com>
+        Wed, 24 Feb 2021 13:21:50 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA08C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:21:10 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id v17so3483121ljj.9
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:21:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CrtuukhPXQ5trgm/Ohmf8LNWrlvZuO1xjRlOBOh5s3c=;
+        b=cspPLorMXiQn/Fspzpq/DJvDPSIdIJgSiGP10/8G7BWm7l2+o3a91GW/zctpbzWp9C
+         N2lfaBA+DeH1qJV6qnDXWmjKmPGtupKYZbnaAocy05NHnewNBbMOuOuGwoe7aY6utFNu
+         EOmutkqR62yCwBndo1dyTgPtH+OcOjdewQcbM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CrtuukhPXQ5trgm/Ohmf8LNWrlvZuO1xjRlOBOh5s3c=;
+        b=dJT634ip84ZuXreM3aFhibk8+MM1qoINI2chasOuOAXFPNW/imkYtlWC+0eCGVbCBj
+         +rwwjh3hdR6t0YuaBybjyzTI9+LVZXnOjIwlfqsWU5Dfqn41BkVohWwkBDZ13NP6HlFw
+         sGLOW45xTigC2L21wNRAMB7d9nAwCFuN0guvvKj0t2XpdlSz+v2K2+CGqQ+JUURslL12
+         V046KRWxel1nIrIFIEQ5WQLPDLox+vvGowQ8rtcjRPrBgnG0/L8Rfo7CF0dN8FXO0Yth
+         b2RPuI4tnTaapA7PJeD7a9IqSkwjJ8PZYelEV3c0y5EAiYaailTES+aJrhqzCKtjNrnE
+         /OlA==
+X-Gm-Message-State: AOAM531FPhLcRlq0NUp+C0lX6xyQbYoZlh4rtF0RsXWb6rrtNH4a56EO
+        HuddYeBa9d6DLNdFS0jzwNuKzFHGASK5cA==
+X-Google-Smtp-Source: ABdhPJw4NLSuJ7/RI93wMJWbGvMNLosDQ94nj7xKYUAkhwidvb1TwkvpTqDhT+zYVtYYPId8TevzUQ==
+X-Received: by 2002:a2e:9007:: with SMTP id h7mr15613276ljg.447.1614190861795;
+        Wed, 24 Feb 2021 10:21:01 -0800 (PST)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id p10sm624469lfo.293.2021.02.24.10.21.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Feb 2021 10:21:01 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id z11so4459288lfb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:21:00 -0800 (PST)
+X-Received: by 2002:a19:8186:: with SMTP id c128mr19882702lfd.377.1614190860554;
+ Wed, 24 Feb 2021 10:21:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtAa5wCUbNs4+6sTJmSi8wkoEdbtUyzSGpkA0OuRHB67GA@mail.gmail.com>
+References: <YDZiQoP8h/QDSNkJ@kroah.com>
+In-Reply-To: <YDZiQoP8h/QDSNkJ@kroah.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 24 Feb 2021 10:20:44 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj2kJRPWx8B09AAtzj+_g+T6UBX11TP0ebs1WJdTtv=WQ@mail.gmail.com>
+Message-ID: <CAHk-=wj2kJRPWx8B09AAtzj+_g+T6UBX11TP0ebs1WJdTtv=WQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Driver core / debugfs changes for 5.12-rc1
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Saravana Kannan <saravanak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 06:51:01PM +0100, Vincent Guittot wrote:
+On Wed, Feb 24, 2021 at 6:27 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+>  [..] I've reverted that change at
+> the very end so we don't have to worry about regressions in 5.12.
 
-> > OK, shall I add something like:
-> >
-> > This reduces the IRQ latency from O(nr_cgroups * nr_nohz_cpus) to
-> > O(nr_cgroups).
-> >
-> > To the changelog of patch #1 ?
-> 
-> Yes, good point. This will clarify the range of improvement
+Side note: it would have been really nice to see links to the actual
+problem reports in the revert commit.
 
-OK, done.
+Yes, there's a "Link:" line there, but that points to the
+less-than-useful patch submission for the revert, not to the actual
+_reasons_ for the revert.
+
+Now I'm looking at that revert, and I have absolutely no idea why it
+happened. Only a very vague "there are still reported regressions
+happening".
+
+I've pulled it, but wanted to just point out that when there's some
+fairly fundamental revert like this, it really would be good to link
+to the problems, so that when people try to re-enable it, they have
+the history for why it didn't work the first time.
+
+Now all that history is basically lost (well, hopefully Saravana and
+you actually remember, but you get my point).
+
+               Linus
