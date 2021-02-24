@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75150323805
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16173323814
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbhBXHpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:45:13 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:34512 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230315AbhBXHpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:45:08 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614152688; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=x99euNNRJLLgAM+BgTQQDetLzkrbH3jmkzxNTvi0kBk=; b=oKhZMBBnTyWIWJJwMNiY69tThAdX3e/fr/uRtyt7c69jIvAHKimGhp+LycNLq7sYtP4bCDqt
- y6pY9hpi/bmOUyrhENOURZv6FyEWEYXSCASKL6LBv/hcfpVKPRGdxdXFslU9rOlwHEXaNsqb
- 1PlSHMAA+ACeBYnoV6Qt+RFfdeE=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 603603f0ba08663830dd51c2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Feb 2021 07:44:48
- GMT
-Sender: mojha=qti.qualcomm.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 33088C43462; Wed, 24 Feb 2021 07:44:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from mojha-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mojha)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E9E9AC433C6;
-        Wed, 24 Feb 2021 07:44:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E9E9AC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=qti.qualcomm.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mojha@qti.qualcomm.com
-From:   Mukesh Ojha <mojha@qti.qualcomm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     keescook@chromium.org, anton@enomsg.org, ccross@android.com,
-        tony.luck@intel.com, Huang Yiwei <hyiwei@codeaurora.org>,
-        Mukesh Ojha <mojha@codeaurora.org>
-Subject: [PATCH 2/2] pstore: Add buffer start check during init
-Date:   Wed, 24 Feb 2021 13:14:26 +0530
-Message-Id: <1614152666-30137-2-git-send-email-mojha@qti.qualcomm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614152666-30137-1-git-send-email-mojha@qti.qualcomm.com>
-References: <1614152666-30137-1-git-send-email-mojha@qti.qualcomm.com>
+        id S234387AbhBXHuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:50:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233340AbhBXHtH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 02:49:07 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5A8C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:48:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=vml+hkIwuOnmZog02I4fUIFk3ENnUomHJWuHDEIs+N8=; b=A8I3Z3HaOAG6Lae6lrwpudICvK
+        B3Kn9NTFTuFDqbcdW4n5r0RijFjXTKcVk5E3iZAek+q3ib4YBiiNqRlF1IYxxnljfA3qW8Hy68gO9
+        wg44Ve6EfK8tlzQrzYIZwixZ28VYuELzLE4AzDA9zO/cr/k+5pQTqm0evHRbhkb+IdEZvEhbxTfNz
+        LHTrX/m8b22+var4MgDfdKKXCUahOw5TR++T/Gscgp1nrBWSqNqhb6szmMKL1lbmaCtikCpSc2uge
+        009ykv6heSsDeoU3sUKLdFhkdUNejbYWgdTpxAPVYx0182+gPQvfpFvTzHJvxYsCBNT6n74InyYWT
+        OHBebxvw==;
+Received: from 213-225-9-156.nat.highway.a1.net ([213.225.9.156] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lEou3-0097qn-I7; Wed, 24 Feb 2021 07:48:18 +0000
+Date:   Wed, 24 Feb 2021 08:46:01 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: [GIT PULL] dma-mapping updates for 5.12
+Message-ID: <YDYEOTIu02GKL8T2@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Yiwei <hyiwei@codeaurora.org>
+The following changes since commit 9f5f8ec50165630cfc49897410b30997d4d677b5:
 
-In a scenario of panic, when we use DRAM to store log instead
-of persistant storage and during warm reset when we copy these
-data outside of ram. Missing check on prz->start(write position)
-can cause crash because it can be any value and can point outside
-the mapped region. So add the start check to avoid.
+  dma-mapping: benchmark: use u8 for reserved field in uAPI structure (2021-02-05 12:48:46 +0100)
 
-Signed-off-by: Huang Yiwei <hyiwei@codeaurora.org>
-Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
----
-change in v2:
- - this is on top of first patchset.
+are available in the Git repository at:
 
- fs/pstore/ram_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.12
 
-diff --git a/fs/pstore/ram_core.c b/fs/pstore/ram_core.c
-index 0da012f..a15748a 100644
---- a/fs/pstore/ram_core.c
-+++ b/fs/pstore/ram_core.c
-@@ -514,7 +514,7 @@ static int persistent_ram_post_init(struct persistent_ram_zone *prz, u32 sig,
- 	sig ^= PERSISTENT_RAM_SIG;
- 
- 	if (prz->buffer->sig == sig) {
--		if (buffer_size(prz) == 0) {
-+		if (buffer_size(prz) == 0 && buffer_start(prz) == 0) {
- 			pr_debug("found existing empty buffer\n");
- 			return 0;
- 		}
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+for you to fetch changes up to 81d88ce55092edf1a1f928efb373f289c6b90efd:
 
+  dma-mapping: remove the {alloc,free}_noncoherent methods (2021-02-09 18:01:38 +0100)
+
+----------------------------------------------------------------
+dma-mapping updates for 5.12:
+
+ - add support to emulate processing delays in the DMA API benchmark
+   selftest (Barry Song)
+ - remove support for non-contiguous noncoherent allocations,
+   which aren't used and will be replaced by a different API
+
+----------------------------------------------------------------
+Barry Song (1):
+      dma-mapping: benchmark: pretend DMA is transmitting
+
+Christoph Hellwig (1):
+      dma-mapping: remove the {alloc,free}_noncoherent methods
+
+ Documentation/core-api/dma-api.rst              | 64 +++++++++----------------
+ drivers/iommu/dma-iommu.c                       | 30 ------------
+ include/linux/dma-map-ops.h                     |  5 --
+ include/linux/dma-mapping.h                     | 17 +++++--
+ kernel/dma/map_benchmark.c                      | 12 ++++-
+ kernel/dma/mapping.c                            | 40 ----------------
+ tools/testing/selftests/dma/dma_map_benchmark.c | 21 ++++++--
+ 7 files changed, 64 insertions(+), 125 deletions(-)
