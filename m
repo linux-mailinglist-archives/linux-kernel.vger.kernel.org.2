@@ -2,190 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CBA32476F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFE8324774
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236205AbhBXXO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 18:14:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbhBXXOy (ORCPT
+        id S236268AbhBXXXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 18:23:44 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:10574 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236237AbhBXXXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 18:14:54 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B68C061574;
-        Wed, 24 Feb 2021 15:14:14 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id t1so871022qvj.8;
-        Wed, 24 Feb 2021 15:14:13 -0800 (PST)
+        Wed, 24 Feb 2021 18:23:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=A3g1rPz4Z5wHrOBN/vss/tpJg+Tks75zY0bAsuzFhro=;
-        b=PzIo4dPGMVWTNOWmnpG1518sEWdaWNVd+7FrLobTTK7tQGFjV+bC6PPsoxmmTXzzoe
-         sr8A7DK9itHpE6DHM1av8OZzTu7O9/NsT2+wMajPfPELgrdCf9wBSTgx0AO/iuMJDXrP
-         ITFBcab6RrNFedl9T5/SxgC9FxudLIG4JeMxncLLzrxMTZi7V2MKjjGvCh78hEEHUYPv
-         2E0cgaS/OT6xG+QdX1/ZiGTN8gZZX7xc9PexJRPKv1h+q7/+RH2HRkm5I2a17Te2MUSW
-         hS5nRgW3eaksqn34WjNgTyivL1QxA0OR+M73blQb5sPK2pLZ8w9CSZDh3dghMK+uSSjN
-         Nh/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=A3g1rPz4Z5wHrOBN/vss/tpJg+Tks75zY0bAsuzFhro=;
-        b=ryd3X77i6tiDmtUb+o80hDQug5H7QxSJQKObkeLrtkxhjTySvBk8fjwqJ+Gm/fFj15
-         SRvTFV/WyJq7iihSJ8SzE5ibicbylUGF8dou9XEq+Xv6KuJWc94GTtJdX9B6QCZBsVfA
-         AhV6PD0Fn1GCLvYhMnjaaJZw4bnqFIqJ6xwpPgwVdwd/PZZ61woieO+PI+QZV/m53V/h
-         sdW4FAq1RemmW9gTJrqmiKTBlBW9Ubqd3Eew33osbt8JQsNu/kqQtqOHdx4mS3+swwfw
-         mNiNOvrRxJwShVXzXI+GbVm3Efg6mpHO2XJWoDA2rx5D/o/F8HBro/L333bwyd2idPLm
-         XM2Q==
-X-Gm-Message-State: AOAM531clVZHX3mB1AA5PxvnYryZw0PNQiGQAm5iqRtJHmk61Np8Qdrb
-        OvXPARyFrGP8DSRWtAB6fiA=
-X-Google-Smtp-Source: ABdhPJx4shiVFjCPZin6lyLQRhwTsIspvusBSy1Sie/3lT+KgN1KvXQS+y0LVNEzUv0xoIbLIOeJOA==
-X-Received: by 2002:a0c:ea87:: with SMTP id d7mr8985523qvp.27.1614208453271;
-        Wed, 24 Feb 2021 15:14:13 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id n82sm2650938qkn.114.2021.02.24.15.14.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Feb 2021 15:14:12 -0800 (PST)
-Subject: Re: RFC: oftree based setup of composite board devices
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org, Johan Hovold <johan@kernel.org>
-References: <20210208222203.22335-1-info@metux.net>
- <CAL_JsqJ-bz35mUM3agYjq5x+Y+u9rL1RwesCaA-x=MW8uv5CrA@mail.gmail.com>
- <76bf0f7c-9477-f370-8fbd-ce8ef15188b1@gmail.com>
- <44b9b561-5e0d-6a1c-ca5d-4e9f6000884c@metux.net>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <89086c87-c730-ff35-3865-4cf145883a95@gmail.com>
-Date:   Wed, 24 Feb 2021 17:14:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1614209020; x=1645745020;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=ajbqqzyw00MhpTl6JbnnxX80P4gpbBT5SgRo7F/hXQg=;
+  b=V76yx5iRokjnNjF9M8sjQfHt9Wte/qzDVXnW/eejH2XDKvo2nA7Lc5nX
+   PbXpoCeC/MOLrb4AopB82Tk6bflDaMAjR6ZRK2Yfk/EE7Qm2do05iwjXo
+   bLS6MpaUaPy4+dotfu+a96owrjGEPetm5//ImDQw/wEzGEU2VonPFonvL
+   g=;
+X-IronPort-AV: E=Sophos;i="5.81,203,1610409600"; 
+   d="scan'208";a="87715762"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 24 Feb 2021 23:22:56 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-4e24fd92.us-west-2.amazon.com (Postfix) with ESMTPS id B4778A22EC;
+        Wed, 24 Feb 2021 23:22:53 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 24 Feb 2021 23:22:51 +0000
+Received: from Alexanders-MacBook-Air.local (10.43.160.146) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 24 Feb 2021 23:22:43 +0000
+Subject: Re: [PATCH v7 1/2] drivers/misc: sysgenid: add system generation id
+ driver
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Adrian Catangiu <acatan@amazon.com>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <qemu-devel@nongnu.org>,
+        <kvm@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        <gregkh@linuxfoundation.org>, <rdunlap@infradead.org>,
+        <arnd@arndb.de>, <ebiederm@xmission.com>, <rppt@kernel.org>,
+        <0x7f454c46@gmail.com>, <borntraeger@de.ibm.com>,
+        <Jason@zx2c4.com>, <jannh@google.com>, <w@1wt.eu>,
+        <colmmacc@amazon.com>, <luto@kernel.org>, <tytso@mit.edu>,
+        <ebiggers@kernel.org>, <dwmw@amazon.co.uk>, <bonzini@gnu.org>,
+        <sblbir@amazon.com>, <raduweis@amazon.com>, <corbet@lwn.net>,
+        <mhocko@kernel.org>, <rafael@kernel.org>, <pavel@ucw.cz>,
+        <mpe@ellerman.id.au>, <areber@redhat.com>, <ovzxemul@gmail.com>,
+        <avagin@gmail.com>, <ptikhomirov@virtuozzo.com>, <gil@azul.com>,
+        <asmehra@redhat.com>, <dgunigun@redhat.com>, <vijaysun@ca.ibm.com>,
+        <oridgar@gmail.com>, <ghammer@redhat.com>
+References: <1614156452-17311-1-git-send-email-acatan@amazon.com>
+ <1614156452-17311-2-git-send-email-acatan@amazon.com>
+ <20210224040516-mutt-send-email-mst@kernel.org>
+ <d63146a9-a3f8-14ea-2b16-cb5b3fe7aecf@amazon.com>
+ <20210224173205-mutt-send-email-mst@kernel.org>
+From:   Alexander Graf <graf@amazon.com>
+Message-ID: <e7768780-ce08-9998-8200-d3c33d34fade@amazon.com>
+Date:   Thu, 25 Feb 2021 00:22:41 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <44b9b561-5e0d-6a1c-ca5d-4e9f6000884c@metux.net>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210224173205-mutt-send-email-mst@kernel.org>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.160.146]
+X-ClientProxiedBy: EX13D36UWB003.ant.amazon.com (10.43.161.118) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/21 7:00 AM, Enrico Weigelt, metux IT consult wrote:
-> On 15.02.21 02:12, Frank Rowand wrote:
-> 
->> Why not compile in ACPI data (tables?) instead of devicetree description?
-> 
-> The problem is a bit more complex than it might seem.
-> 
-> Let's take the APU2/37/4 boards as an example. They've got some aux
-> devices, eg. some gpio controller, and some things (leds, keys, reset
-> lines, etc) attached to it.
-> 
-> Now we've got lots of different bios versions in the field,
-> enumerating only some of the devices. For example, older ones didn't
-> even contain the gpio, later ones added just gpio, other ones just
-> added LEDs (with different names than the Linux driver already mainlined
-> and field-deployed at that time), but still other lines unhandled, etc, etc. etc.
-> 
-> A big mess :( And I can't ask everybody to do bios uprade on devices far
-> out in the field (litterally open field, sometimes offshore, ...). So, I
-> need a usable solution, that's also maintainable, w/o testing each
-> single combination of board, bios, etc. IOW: without relying on bios
-> (except for board identification)
-> 
-> OTOH, I'm also looking for a solution get rid writing those kind of
-> relatively huge board drivers, that pretty are much like old fashioned
-> board files from pre-DT times - just made up of lots of tables and
-> a few trivial register-something calls. Sounds pretty much like the
-> original use case of oftree.
-> 
-> The primary difference between classic oftree and this scanario:
-> * this is additional to existing platform information, which is
->   incomplete or even incorrect (and that can't be fixed)
-> * extra carrier boards that are detected by other means, but no
->   enumeration of the devices on it.
-> 
->>> This is something I've wanted to see for a while. There's use cases
->>> for DT based systems too. The example I'd like to see supported are
->>> USB serial adapters with downstream serdev, GPIO, I2C, SPI, etc. Then
->>> plug more than one of those in.
+
+
+On 24.02.21 23:41, Michael S. Tsirkin wrote:
+> =
+
+> On Wed, Feb 24, 2021 at 02:45:03PM +0100, Alexander Graf wrote:
+>>> Above should try harder to explan what are the things that need to be
+>>> scrubbed and why. For example, I personally don't really know what is
+>>> the OpenSSL session token example and what makes it vulnerable. I guess
+>>> snapshots can attack each other?
+>>>
+>>>
+>>>
+>>>
+>>> Here's a simple example of a workflow that submits transactions
+>>> to a database and wants to avoid duplicate transactions.
+>>> This does not require overseer magic. It does however require
+>>> a correct genid from hypervisor, so no mmap tricks work.
+>>>
+>>>
+>>>
+>>>           int genid, oldgenid;
+>>>           read(&genid);
+>>> start:
+>>>           oldgenid =3D genid;
+>>>           transid =3D submit transaction
+>>>           read(&genid);
+>>>           if (genid !=3D oldgenid) {
+>>>                           revert transaction (transid);
+>>>                           goto start:
+>>>           }
 >>
->> My understanding from the past is that the experts (those who understand both
->> devicetree and ACPI) regard trying to mix devicetree and ACPI in a single
->> running Linux kernel image is insanity, or at least likely to be confusing,
->> difficult, and problematic.
+>> I'm not sure I fully follow. For starters, if this is a VM local databas=
+e, I
+>> don't think you'd care about the genid. If it's a remote database, your
+>> connection would get dropped already at the point when you clone/resume,
+>> because TCP and your connection state machine will get really confused w=
+hen
+>> you suddenly have a different IP address or two consumers of the same st=
+ream
+>> :).
+>>
+>> But for the sake of the argument, let's assume you can have a connection=
+less
+>> database connection that maintains its own connection uniqueness logic.
+> =
 
-Since you have persisted, a more referenced and emphatic "no" to mixing ACPI
-and devicetree:
+> Right. E.g. not uncommon with REST APIs. They survive disconnect easily
+> and use cookies or such.
+> =
 
-  https://elinux.org/Device_Tree_Linux#mixing_devicetree_and_ACPI
+>> That
+>> database connector would need to understand how to abort the connection =
+(and
+>> thus the transaction!) when the generation changes.
+> =
+
+> the point is that instead of all that you discover transaction as
+> a duplicate and revert it.
+> =
+
+> =
+
+>> And that's logic you
+>> would do with the read/write/notify mechanism. So your main loop would c=
+heck
+>> for reads on the genid fd and after sending a connection termination, no=
+tify
+>> the overlord that it's safe to use the VM now.
+>>
+>> The OpenSSL case (with mmap) is for libraries that are stateless and can=
+ not
+>> guarantee that they receive a genid notification event timely.
+>>
+>> Since you asked, this is mainly important for the PRNG. Imagine an https
+>> server. You create a snapshot. You resume from that snapshot. OpenSSL is
+>> fully initialized with a user space PRNG randomness pool that it conside=
+rs
+>> safe to consume. However, that means your first connection after resume =
+will
+>> be 100% predictable randomness wise.
+> =
+
+> I wonder whether something similar is possible here. I.e. use the secret
+> to encrypt stuff but check the gen ID before actually sending data.
+> If it changed re-encrypt. Hmm?
+
+I don't see why you would though. Once you control the application =
+
+level, just use the event based API. That's the much easier to use one. =
+
+The mmap one is really just there to cover cases where you don't own the =
+
+main event loop, but can't spend the syscall overhead on every =
+
+invocation to check if the genid changed.
+
+> =
+
+>>
+>> The mmap mechanism allows the PRNG to reseed after a genid change. Becau=
+se
+>> we don't have an event mechanism for this code path, that can happen min=
+utes
+>> after the resume. But that's ok, we "just" have to ensure that nobody is
+>> consuming secret data at the point of the snapshot.
+> =
+
+> =
+
+> Something I am still not clear on is whether it's really important to
+> skip the system call here. If not I think it's prudent to just stick
+> to read for now, I think there's a slightly lower chance that
+> it will get misused. mmap which gives you a laggy gen id value
+> really seems like it would be hard to use correctly.
+
+The read is not any less racy than the mmap. The real "safety" of the =
+
+read interface comes from the acknowledge path. And that path requires =
+
+you to be part of the event loop.
+
+> =
+
+> =
+
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>> +Simplifyng assumption - safety prerequisite
+>>>> +-------------------------------------------
+>>>> +
+>>>> +**Control the snapshot flow**, disallow snapshots coming at arbitrary
+>>>> +moments in the workload lifetime.
+>>>> +
+>>>> +Use a system-level overseer entity that quiesces the system before
+>>>> +snapshot, and post-snapshot-resume oversees that software components
+>>>> +have readjusted to new environment, to the new generation. Only after,
+>>>> +will the overseer un-quiesce the system and allow active workloads.
+>>>> +
+>>>> +Software components can choose whether they want to be tracked and
+>>>> +waited on by the overseer by using the ``SYSGENID_SET_WATCHER_TRACKIN=
+G``
+>>>> +IOCTL.
+>>>> +
+>>>> +The sysgenid framework standardizes the API for system software to
+>>>> +find out about needing to readjust and at the same time provides a
+>>>> +mechanism for the overseer entity to wait for everyone to be done, the
+>>>> +system to have readjusted, so it can un-quiesce.
+>>>> +
+>>>> +Example snapshot-safe workflow
+>>>> +------------------------------
+>>>> +
+>>>> +1) Before taking a snapshot, quiesce the VM/container/system. Exactly
+>>>> +   how this is achieved is very workload-specific, but the general
+>>>> +   description is to get all software to an expected state where their
+>>>> +   event loops dry up and they are effectively quiesced.
+>>>
+>>> If you have ability to do this by communicating with
+>>> all processes e.g. through a unix domain socket,
+>>> why do you need the rest of the stuff in the kernel?
+>>> Quescing is a harder problem than waking up.
+>>
+>> That depends. Think of a typical VM workload. Let's take the web server
+>> example again. You can preboot the full VM and snapshot it as is. As lon=
+g as
+>> you don't allow any incoming connections, you can guarantee that the sys=
+tem
+>> is "quiesced" well enough for the snapshot.
+> =
+
+> Well you can use a firewall or such to block incoming packets,
+> but I am not at all sure that means e.g. all socket buffers
+> are empty.
+
+If it's a fresh VM that only started the web server and did nothing =
+
+else, there shouldn't be anything in its socket buffers :).
+
+I agree that it won't allow us to cover 100% of all cases automatically =
+
+and seamlessly. I can't think of any solution that does - if you can =
+
+think of something I'm all ears. But this API at least gives us a path =
+
+to slowly move the ecosystem to a point where applications and libraries =
+
+can enable themselves to become vm/container clone aware. Today we don't =
+
+even give them the opportunity to self adjust.
 
 
-> 
-> Well, mixing different, overlapping data sources tends to be tricky. The
-> same problem exists with the classic approach of hand-written board
-> drivers. So there have to be clear border lines.
-> 
-> In my case (eg. apu2+ boards), the overlap is only that some bios
-> versions enumerate the gpio chip, others even some of the gpio-based
-> devices. I'm attempting to solve this by just kicking out those
-> duplicate devices, if they exist. The alternative could be leaving them
-> in an trying to bind the missing ones to them. But that would be really
-> complicatd and needs to be well crafted for lots of different board and
-> bios versions - a kind of complexity we wanna avoid.
+Alex
 
-So you want to use devicetree data to fix broken ACPI data.
 
-Again, why don't you use data in an ACPI format to fix broken ACPI
-data?
 
--Frank
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
 
-> 
-> My use cases are actually a bit easier than the average dt overlay
-> cases, as I have almost no interactions with already existing devices
-> (except that some specific devices have to be moved out of the way)
-> 
-> The original DT overlay use case, arbitrary expansion boards (eg. on
-> raspi), are trickier, if the overlays shall be generic over a wider
-> range of base boards (eg. same overlay for any raspi or odroid).
-> This is something calling for an own (pseudo-)bus type that handles
-> the correct probing ... I've hacked up something similar for the APU2+'s
-> combined msata/usb/mpcie ports.
-> 
-> BTW: I've already been thinking of ways for internally transforming ACPI
-> tables into DT data structures (struct device_node) at an early point,
-> before probing. But that would be another research project with unknown
-> outcome, and most likely a HUGE change. Not what I'm talking about now.
-> 
->> From the devicetree side, I expect nightmares for me if devicetree and ACPI
->> are mixed in a single running kernel image.
-> 
-> Note that I'm not talking about arbitrary configurations. Just re-using
-> existing device tree code to express things that are currently open
-> coded C into DT.
-> 
-> It's NOT trying to boot an ACPI-based machine with DT. (which would be
-> yet another research project)
-> 
->> Multiple root nodes and disjoint trees both seem problematic.  Existing
->> subsystems and drivers expect a single cohesive tree.  Changing that
->> architecture looks to me to be a painful exercise.
-> 
-> Yes, it's not entirely trivial, but managable. My experiments seemed to
-> work so far, and I couldn't see general blockers yet. Drivers usually
-> expect certain sub-nodes, but haven't found any that expect their node
-> being embedded in some other one. (maybe there really are some, but the
-> likehood that they're applicable in these use cases looks pretty low).
-> 
-> 
-> --mtx
-> 
+
 
