@@ -2,128 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFE4323A82
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3119D323A8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234859AbhBXK1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 05:27:22 -0500
-Received: from outbound-smtp48.blacknight.com ([46.22.136.219]:54019 "EHLO
-        outbound-smtp48.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234701AbhBXK05 (ORCPT
+        id S234658AbhBXKbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 05:31:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232560AbhBXKbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 05:26:57 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp48.blacknight.com (Postfix) with ESMTPS id 925C2FAE71
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:26:04 +0000 (GMT)
-Received: (qmail 23478 invoked from network); 24 Feb 2021 10:26:04 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 24 Feb 2021 10:26:04 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 3/3] SUNRPC: Refresh rq_pages using a bulk page allocator
-Date:   Wed, 24 Feb 2021 10:26:03 +0000
-Message-Id: <20210224102603.19524-4-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210224102603.19524-1-mgorman@techsingularity.net>
-References: <20210224102603.19524-1-mgorman@techsingularity.net>
+        Wed, 24 Feb 2021 05:31:08 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D86C061574;
+        Wed, 24 Feb 2021 02:30:27 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id s3so1681088otg.5;
+        Wed, 24 Feb 2021 02:30:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LHRQW4ov53dg8KtZocnNCqA58r4Ul8zUg/imzVFJZFc=;
+        b=EnkaliE1ciq3lJsaGMsd9guJwPz3qqBhkyv705iky4f2luq6423jNunBujtuRHTR63
+         VcZ69LgprCzJdbV+BzZn/7s5p18kO+2bE1W64iC0Ax/MYg7z1/qVptQJi9tdY3IOtACk
+         LGEtzSznv6EMxiji9FAo4IE/q5wAeMqisJj6M3RLFpFctazqBVjVhwky2Ro2f6izQ2ll
+         lzhY6fFaRkgRdkZYy970aB+yBiUL9lJxmx8dv5fh0GEL9Pxes6eA9jrphM+V7fYnYy9Y
+         dqCsdMdVH+WFx2k32wDd3VvcpO0bjpuVE9Z6DiBpFAyiMEcIXvwgcNmhbtaC6B9tZjOh
+         uleA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LHRQW4ov53dg8KtZocnNCqA58r4Ul8zUg/imzVFJZFc=;
+        b=GYPoMgfkRBfnDxkNBq8jqy1cO6I97mlGTXpyl0Z5yqu04FX0cHxGadPqZ3CgBRRipd
+         DpxmfSsdXKYdtsYpszVst4BiA3QVi7EZ5+m4ZJ0Ne6mavoG/jKiD0KsSE8jwBtlRX7QP
+         Cns0Gav1H55Ywa75YXYoH6LYAeWNOCm4ykrY3i8AhbmI7N05ETma3boCD/NuCjYenOVa
+         U1qa0XHE313Qg09oiR2TwzSqrSvCl+k1EVUq9mrjN8hi5XjoiaA9NyLRYHCmrKRPdbgm
+         26CXhb0oS/nKMcmqz6oseZN8TPdFymx66wWPeMAdDlntYZUNz1eLigXkn4XC1Zi3bNcJ
+         Qk/g==
+X-Gm-Message-State: AOAM5306kUDcNuosnO2ClWKCYmwv23MELlNleZLslLKmgJ5S4VFMObda
+        0kK5CKFbbQHPJLFpcV5rKx7fHioPzI3avxvA+ZI=
+X-Google-Smtp-Source: ABdhPJxh5OIPDq2CBTjJ7ZNMjE/kYFTRuFbby9aNHs2PdkfliYoiudGLr9iuEZPgWbQ2v7uHDEcuPl+Kk1u1ifAaMeQ=
+X-Received: by 2002:a9d:7f86:: with SMTP id t6mr23808369otp.362.1614162626506;
+ Wed, 24 Feb 2021 02:30:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210224091742.1060508-1-ikjn@chromium.org>
+In-Reply-To: <20210224091742.1060508-1-ikjn@chromium.org>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Wed, 24 Feb 2021 11:30:14 +0100
+Message-ID: <CAFqH_50BWF4sQnJAnVZDf3Dbuw+LaN67q39DvOh7ipzqNeNEMw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: mt8183: Add power-domains properity to mfgcfg
+To:     Ikjoon Jang <ikjn@chromium.org>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Weiyi Lu <weiyi.lu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+Hi Ikjoon,
 
-Reduce the rate at which nfsd threads hammer on the page allocator.
-This improve throughput scalability by enabling the threads to run
-more independently of each other.
+Thank you for your patch.
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- net/sunrpc/svc_xprt.c | 43 +++++++++++++++++++++++++++++++------------
- 1 file changed, 31 insertions(+), 12 deletions(-)
+Missatge de Ikjoon Jang <ikjn@chromium.org> del dia dc., 24 de febr.
+2021 a les 10:21:
+>
+> mfgcfg clock is under MFG_ASYNC power domain
+>
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> ---
+>
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index 5b782a4769e7..3384df5284c0 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -962,6 +962,7 @@ mfgcfg: syscon@13000000 {
+>                         compatible = "mediatek,mt8183-mfgcfg", "syscon";
+>                         reg = <0 0x13000000 0 0x1000>;
+>                         #clock-cells = <1>;
+> +                       power-domains = <&scpsys MT8183_POWER_DOMAIN_MFG_ASYNC>;
 
-diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
-index cfa7e4776d0e..38a8d6283801 100644
---- a/net/sunrpc/svc_xprt.c
-+++ b/net/sunrpc/svc_xprt.c
-@@ -642,11 +642,12 @@ static void svc_check_conn_limits(struct svc_serv *serv)
- static int svc_alloc_arg(struct svc_rqst *rqstp)
- {
- 	struct svc_serv *serv = rqstp->rq_server;
-+	unsigned long needed;
- 	struct xdr_buf *arg;
-+	struct page *page;
- 	int pages;
- 	int i;
- 
--	/* now allocate needed pages.  If we get a failure, sleep briefly */
- 	pages = (serv->sv_max_mesg + 2 * PAGE_SIZE) >> PAGE_SHIFT;
- 	if (pages > RPCSVC_MAXPAGES) {
- 		pr_warn_once("svc: warning: pages=%u > RPCSVC_MAXPAGES=%lu\n",
-@@ -654,19 +655,28 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
- 		/* use as many pages as possible */
- 		pages = RPCSVC_MAXPAGES;
- 	}
--	for (i = 0; i < pages ; i++)
--		while (rqstp->rq_pages[i] == NULL) {
--			struct page *p = alloc_page(GFP_KERNEL);
--			if (!p) {
--				set_current_state(TASK_INTERRUPTIBLE);
--				if (signalled() || kthread_should_stop()) {
--					set_current_state(TASK_RUNNING);
--					return -EINTR;
--				}
--				schedule_timeout(msecs_to_jiffies(500));
-+
-+	for (needed = 0, i = 0; i < pages ; i++)
-+		if (!rqstp->rq_pages[i])
-+			needed++;
-+	if (needed) {
-+		LIST_HEAD(list);
-+
-+retry:
-+		alloc_pages_bulk(GFP_KERNEL, needed, &list);
-+		for (i = 0; i < pages; i++) {
-+			if (!rqstp->rq_pages[i]) {
-+				page = list_first_entry_or_null(&list,
-+								struct page,
-+								lru);
-+				if (unlikely(!page))
-+					goto empty_list;
-+				list_del(&page->lru);
-+				rqstp->rq_pages[i] = page;
-+				needed--;
- 			}
--			rqstp->rq_pages[i] = p;
- 		}
-+	}
- 	rqstp->rq_page_end = &rqstp->rq_pages[pages];
- 	rqstp->rq_pages[pages] = NULL; /* this might be seen in nfsd_splice_actor() */
- 
-@@ -681,6 +691,15 @@ static int svc_alloc_arg(struct svc_rqst *rqstp)
- 	arg->len = (pages-1)*PAGE_SIZE;
- 	arg->tail[0].iov_len = 0;
- 	return 0;
-+
-+empty_list:
-+	set_current_state(TASK_INTERRUPTIBLE);
-+	if (signalled() || kthread_should_stop()) {
-+		set_current_state(TASK_RUNNING);
-+		return -EINTR;
-+	}
-+	schedule_timeout(msecs_to_jiffies(500));
-+	goto retry;
- }
- 
- static bool
--- 
-2.26.2
+I don't think this will work in mainline, at least, the reference name
+should be &spm
 
+Thanks,
+  Enric
+>                 };
+>
+>                 mmsys: syscon@14000000 {
+> --
+> 2.30.0.617.g56c4b15f3c-goog
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
