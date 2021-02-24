@@ -2,121 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2FA323517
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1EF32351E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbhBXBQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 20:16:21 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49098 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234488AbhBXBKP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 20:10:15 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11O14BoH099423;
-        Tue, 23 Feb 2021 20:08:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=WhTJiyZ25jK1DK8i367jxWJ083phI3DK+oUpaMZ1r98=;
- b=GJjSHmQe31TxHg0O5xqSzWutS7vHNxNl+q4eMyuMRasOORaIU0H6069RGQ7A9R8aaLGT
- 37BHl5fq0Vz14IZZueVZGE2Un8iBr3VNg0pNGH3V/7hqVEpOg741tc7REf2dsyFobdWh
- itTE/kQ1l1wGzDcLINrlzYGE6UKmZvibozhU/LjMIjuNCSL932Jd+kWJPPlHbUY432LH
- g4ACHwc7FDIuapiuC5knW2wTVwKa9zuNoWmwc45JJi0HQAtB2Vw9hArnrdfkHXwsK7KE
- bEtYXD+P0ap9cw+D5KRAvTlNlNXnuyYPwrdManVzQPG2m/4op0dpflygwXH/TIHbg3TD 0w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36vkfuu9nc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 20:08:51 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11O14dVu100483;
-        Tue, 23 Feb 2021 20:08:50 -0500
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36vkfuu9mq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 20:08:50 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11O18689003870;
-        Wed, 24 Feb 2021 01:08:48 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma04wdc.us.ibm.com with ESMTP id 36tt29jubu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Feb 2021 01:08:48 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11O18lGm45023682
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Feb 2021 01:08:47 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 76D5F78067;
-        Wed, 24 Feb 2021 01:08:47 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EEDFF7805F;
-        Wed, 24 Feb 2021 01:08:38 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.80.200.35])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Wed, 24 Feb 2021 01:08:38 +0000 (GMT)
-References: <20210221174930.27324-1-nramas@linux.microsoft.com>
- <20210221174930.27324-5-nramas@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, sfr@canb.auug.org.au,
-        james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v19 04/13] x86: Use ELF fields defined in 'struct kimage'
-In-reply-to: <20210221174930.27324-5-nramas@linux.microsoft.com>
-Date:   Tue, 23 Feb 2021 22:08:36 -0300
-Message-ID: <87a6ruw9uz.fsf@manicouagan.localdomain>
+        id S233808AbhBXBRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 20:17:12 -0500
+Received: from mga07.intel.com ([134.134.136.100]:63176 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234668AbhBXBMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 20:12:38 -0500
+IronPort-SDR: Vj4XR2QglwdpQMhBAzMB+3aTZcTfRCLvlKlIJxb0an04bFqlx6vvSEg+GxNX3XXCuizL6nEcHu
+ qyPpITEHi0Ag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="249065603"
+X-IronPort-AV: E=Sophos;i="5.81,201,1610438400"; 
+   d="scan'208";a="249065603"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 17:11:51 -0800
+IronPort-SDR: WaACZKmiY0IRR9yOQtd09Mbo11q6wWM3zuPagSCaqco92Vn8GlIr6Tbj1KJm5pNZ37BSlMmvly
+ eZGWDG1yCsGg==
+X-IronPort-AV: E=Sophos;i="5.81,201,1610438400"; 
+   d="scan'208";a="499373345"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 17:11:49 -0800
+Date:   Wed, 24 Feb 2021 09:11:47 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-next@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Thomas Gleixner" <tglx@linutronix.de>
+Subject: Re: [PATCH RESEND v2 2/2] virt: acrn: Make remove_cpu sysfs
+ invisible with !CONFIG_HOTPLUG_CPU
+Message-ID: <20210224011147.GD30008@shuo-intel.sh.intel.com>
+References: <20210221134339.57851-1-shuo.a.liu@intel.com>
+ <20210221134339.57851-2-shuo.a.liu@intel.com>
+ <20210223152530.y2qfyozdaowmfcat@e107158-lin>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-23_12:2021-02-23,2021-02-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=963
- phishscore=0 spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0
- adultscore=0 suspectscore=0 priorityscore=1501 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102240005
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210223152530.y2qfyozdaowmfcat@e107158-lin>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
-
-> ELF related fields elf_headers, elf_headers_sz, and elf_load_addr
-> have been moved from 'struct kimage_arch' to 'struct kimage'.
+On Tue 23.Feb'21 at 15:25:30 +0000, Qais Yousef wrote:
+>On 02/21/21 21:43, shuo.a.liu@intel.com wrote:
+>> From: Shuo Liu <shuo.a.liu@intel.com>
+>>
+>> Without cpu hotplug support, vCPU cannot be removed from a Service VM.
+>> Don't expose remove_cpu sysfs when CONFIG_HOTPLUG_CPU disabled.
+>>
+>> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+>> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+>> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> Cc: Qais Yousef <qais.yousef@arm.com>
+>> ---
+>>  drivers/virt/acrn/hsm.c | 9 +++++++++
+>>  1 file changed, 9 insertions(+)
+>>
+>> diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+>> index 1f6b7c54a1a4..6996ea6219e5 100644
+>> --- a/drivers/virt/acrn/hsm.c
+>> +++ b/drivers/virt/acrn/hsm.c
+>> @@ -404,6 +404,14 @@ static ssize_t remove_cpu_store(struct device *dev,
+>>  }
+>>  static DEVICE_ATTR_WO(remove_cpu);
+>>
+>> +static umode_t acrn_attr_visible(struct kobject *kobj, struct attribute *a, int n)
+>> +{
+>> +       if (a == &dev_attr_remove_cpu.attr)
+>> +               return IS_ENABLED(CONFIG_HOTPLUG_CPU) ? a->mode : 0;
+>> +
+>> +       return a->mode;
+>> +}
+>> +
 >
-> Use the ELF fields defined in 'struct kimage'.
->
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> Suggested-by: Rob Herring <robh@kernel.org>
-> Fixes: 33488dc4d61f ("of: Add a common kexec FDT setup function")
+>I can't find this code in Linus' master. But this looks fine from my narrow
 
-Same thing. :-)
+Now, the code is still in linux-next tree only.
 
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  arch/x86/include/asm/kexec.h       |  5 -----
->  arch/x86/kernel/crash.c            | 14 +++++++-------
->  arch/x86/kernel/kexec-bzimage64.c  |  2 +-
->  arch/x86/kernel/machine_kexec_64.c |  4 ++--
->  4 files changed, 10 insertions(+), 15 deletions(-)
+>PoV. Protecting the attribute with ifdef CONFIG_HOTPLUG_CPU is easier to read
+>for me, but this doesn't mean this approach is not fine.
 
-With that fixed:
+Just FYI, Greg prefers this solution.
+https://lore.kernel.org/lkml/20210212045724.77846-1-shuo.a.liu@intel.com/
 
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+Thanks
+shuo
