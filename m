@@ -2,162 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07133323D27
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 14:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890AA323DFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 14:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234002AbhBXNE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 08:04:58 -0500
-Received: from mga18.intel.com ([134.134.136.126]:12671 "EHLO mga18.intel.com"
+        id S236501AbhBXNVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 08:21:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235266AbhBXMw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 07:52:57 -0500
-IronPort-SDR: 4eawBURkoU4OOMLMMXMVEDhXqOVgvGWhLiLkYZhaNahWzE4stpt5Pt/U1nNRkTf13bPcRf72j4
- MjcK5sNtoAvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="172809157"
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="172809157"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 04:51:11 -0800
-IronPort-SDR: NVhkLXqSmRpTe1KT9ucg9QFiHu/DzGjpEJ0jcAUrAQ0o2WQqR8s0tUDcL5L8XZpveRw1xi3l9F
- I7IY6T+e61Qg==
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="499567378"
-Received: from unknown (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 04:51:10 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lEtdD-007lqb-Ky; Wed, 24 Feb 2021 14:51:07 +0200
-Date:   Wed, 24 Feb 2021 14:51:07 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] i2c: cht-wc: Use fwnode for the controller and
- IRQ domain
-Message-ID: <YDZLuzNivBP4HcPd@smile.fi.intel.com>
-References: <20210223172231.2224-1-andriy.shevchenko@linux.intel.com>
- <fea7ce9a-01a9-cab8-8675-be5c44cb8a27@redhat.com>
+        id S235325AbhBXM5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 07:57:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2AB064EF1;
+        Wed, 24 Feb 2021 12:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614171134;
+        bh=c8X0HV894pJBiANVg6efLkwkO+ReRjB5fQ/es0cqU5k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gPkxxnI9xQTlTBcT+D7wIG4PBaVkChFsYtLBPwgsUb9Ij/HObjpixYdh78yDbms8K
+         XgKVbET1421clMM7VptIwGBBOzgjyknbh8hE7jYTfJPOp7TWZ6QUIHPQb91VIWj8pi
+         6nBTgUhUWRfXl2QfBUtYmDRHK9ldZEWSxhePqPQePxVGJTth7IODlqBhC6O1NziijQ
+         /6T66wiqbo0/frXyLuXxM53zv0d62Nd0zr5ZcW9gd4tD5ANR1mPLFNFSyc7b10r4r6
+         RUFi+fisB5vt1KwMDS0uWRyTulN2iysZf5MzAHHQRn8yjg4Q60Bkl/t6FJSD7xlT+N
+         DNKE4zcrJf9uA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Borislav Petkov <bp@suse.de>, Don Curtis <bugrprt21882@online.de>,
+        Sasha Levin <sashal@kernel.org>, linux-edac@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 01/56] EDAC/amd64: Do not load on family 0x15, model 0x13
+Date:   Wed, 24 Feb 2021 07:51:17 -0500
+Message-Id: <20210224125212.482485-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <fea7ce9a-01a9-cab8-8675-be5c44cb8a27@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 08:25:35PM +0100, Hans de Goede wrote:
-> On 2/23/21 6:22 PM, Andy Shevchenko wrote:
-> > It's better to describe the I²C controller and associated IRQ domain with
-> > fwnode, so they will find their place in the hierarchy in sysfs and also
-> > make easier to debug.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> > 
-> > Hans, unfortunately I have no device at hand with INT34D3. This is only compile
-> > tested in that sense. Also I would like to hear if you like the idea in general.
-> > 
-> >  drivers/i2c/busses/i2c-cht-wc.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/i2c/busses/i2c-cht-wc.c b/drivers/i2c/busses/i2c-cht-wc.c
-> > index f80d79e973cd..dbf55842b0dc 100644
-> > --- a/drivers/i2c/busses/i2c-cht-wc.c
-> > +++ b/drivers/i2c/busses/i2c-cht-wc.c
-> > @@ -303,6 +303,7 @@ static struct bq24190_platform_data bq24190_pdata = {
-> >  static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
-> >  {
-> >  	struct intel_soc_pmic *pmic = dev_get_drvdata(pdev->dev.parent);
-> > +	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
-> 
-> So this will point to the ACPi-companion fwnode of the CHT Whiskey Cove PMIC
-> controller.
+From: Borislav Petkov <bp@suse.de>
 
-Right.
+[ Upstream commit 6c13d7ff81e6d2f01f62ccbfa49d1b8d87f274d0 ]
 
-> >  	struct cht_wc_i2c_adap *adap;
-> >  	struct i2c_board_info board_info = {
-> >  		.type = "bq24190",
-> > @@ -333,6 +334,7 @@ static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
-> >  	strlcpy(adap->adapter.name, "PMIC I2C Adapter",
-> >  		sizeof(adap->adapter.name));
-> >  	adap->adapter.dev.parent = &pdev->dev;
-> > +	set_primary_fwnode(&adap->adapter.dev, fwnode);
-> 
-> So now we have the main PMIC device i2c-client, the platform-device instantiated
-> for the MFD-cell for the PMIC's builtin I2C-controller; and the device instantiated
-> for the adapter-device all 3 share the same ACPI-companion fwnode.
+Those were only laptops and are very very unlikely to have ECC memory.
+Currently, when the driver attempts to load, it issues:
 
-Okay, this step in this patch maybe not needed (or should be a separate change,
-but I don't see clearly what would be the benefit out of it).
+  EDAC amd64: Error: F1 not found: device 0x1601 (broken BIOS?)
 
-> >  	/* Clear and activate i2c-adapter interrupts, disable client IRQ */
-> >  	adap->old_irq_mask = adap->irq_mask = ~CHT_WC_EXTCHGRIRQ_ADAP_IRQMASK;
-> > @@ -350,8 +352,8 @@ static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
-> >  		return ret;
-> >  
-> >  	/* Alloc and register client IRQ */
-> > -	adap->irq_domain = irq_domain_add_linear(pdev->dev.of_node, 1,
-> > -						 &irq_domain_simple_ops, NULL);
-> > +	adap->irq_domain = irq_domain_create_linear(fwnode, 1,
-> > +						    &irq_domain_simple_ops, NULL);
-> 
-> Hmm, not sure this is right, admittedly the old code looks weird too, but now we
-> are creating a second irq_domain at the same level as the irq_domain created for
-> the IRQ-chip part of the PMIC. But this is really more of a child-domain of just
-> the I2C-controller MFD-cell. The IRQ-CHIP part of the PMIC has a single IRQ for the
-> I2C controller which gets raised both on i2c-transfer completions and when the
-> pin on the PMIC which is reserved as input for the IRQ coming out of the charger-chip
-> gets triggered.
-> 
-> IOW we have this:
-> 
-> 
->                PMIC
->                  |
->     ------------------------------
->     |       |        |           |
->    IRQ1   IRQ2      IRQ3       I2C-IRQ
->                                  |
->                    ----------------------------------
->                    |        |         |             |
->                  READIRQ   WRIRQ    NACKIRQ     CLIENT-IRQ
-> 
-> Where READIRQ, WRIRQ and NACKIRQ are directly consumed
-> and the CLIENT-IRQ is being represented as a single IRQ on
-> a new irqchip so that we can pass it along to the i2c-driver
-> for the charger-chip which is connected to the Whiskey Cove's
-> builtin I2C controller.
-> 
-> But doing as you suggest would model the IRQs as:
-> 
->                PMIC
->                  |
->     --------------------------------------------------
->     |       |        |           |                    |
->    IRQ1   IRQ2      IRQ3       I2C-IRQ           CLIENT-IRQ
-> 
-> Which is not the same really. I guess it is better then what we
-> have though ?
+because the PCI device is the wrong one (it uses the F15h default one).
 
-Hmm... There should not be difference in the hierarchy. add_linear ==
-create_linear. The propagation of *device* (not an IRQ) fwnode is just
-convenient way to have IRQ domain be named (instead of 'unknown-N' or so).
-Maybe I have read __irq_domain_add() code wrongly.
+So do not load the driver on them as that is pointless.
 
-Nevertheless, thinking more about it, why we don't add an IRQ chip via regmap
-IRQ API?
+Reported-by: Don Curtis <bugrprt21882@online.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Don Curtis <bugrprt21882@online.de>
+Link: http://bugzilla.opensuse.org/show_bug.cgi?id=1179763
+Link: https://lkml.kernel.org/r/20201218160622.20146-1-bp@alien8.de
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/edac/amd64_edac.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-> Note I can test any changes made here, but I'm not 100% convinced that
-> the current version of this patch is correct.
-
-If we settle on the idea first. I'm (slowly) looking forward to check another
-CherryTrail device we have at the lab, but we lack of some (power) equipment
-right now to setup it properly. I hope it may have the Whiskey Cove PMIC there.
-
+diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+index 620f7041db6b5..b36d5879b91e0 100644
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -3350,10 +3350,13 @@ static struct amd64_family_type *per_family_init(struct amd64_pvt *pvt)
+ 			fam_type = &family_types[F15_M60H_CPUS];
+ 			pvt->ops = &family_types[F15_M60H_CPUS].ops;
+ 			break;
++		/* Richland is only client */
++		} else if (pvt->model == 0x13) {
++			return NULL;
++		} else {
++			fam_type	= &family_types[F15_CPUS];
++			pvt->ops	= &family_types[F15_CPUS].ops;
+ 		}
+-
+-		fam_type	= &family_types[F15_CPUS];
+-		pvt->ops	= &family_types[F15_CPUS].ops;
+ 		break;
+ 
+ 	case 0x16:
+@@ -3547,6 +3550,7 @@ static int probe_one_instance(unsigned int nid)
+ 	pvt->mc_node_id	= nid;
+ 	pvt->F3 = F3;
+ 
++	ret = -ENODEV;
+ 	fam_type = per_family_init(pvt);
+ 	if (!fam_type)
+ 		goto err_enable;
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.27.0
 
