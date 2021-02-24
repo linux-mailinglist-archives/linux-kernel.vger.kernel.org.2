@@ -2,160 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C893241F5
+	by mail.lfdr.de (Postfix) with ESMTP id 78DFB3241F4
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235200AbhBXQSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:18:04 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:35762 "EHLO mail.skyhub.de"
+        id S234942AbhBXQRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:17:48 -0500
+Received: from verein.lst.de ([213.95.11.211]:38442 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231787AbhBXQOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:14:30 -0500
-Received: from zn.tnic (p200300ec2f0d1800cad8e5da06da911c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1800:cad8:e5da:6da:911c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 09AED1EC030F;
-        Wed, 24 Feb 2021 17:13:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614183225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Er7y3jCuuCKgbYlCZ7mXOhRm/JIUbE/Vg6GeirSlpE0=;
-        b=O0HDByKCzxkxZNznG50gQwqin4Y2bSk8iAFHgW/VkUdQB4EzOKSXeY5F4aCBIh3AH29Egv
-        4BWKltjoPD8Iwx3H7rWPZTKgkQzDf728LZ1fBpFV8vPm7JnCddiq6gCXR1QPFa+gCn13Ro
-        Ot5RFiZrcITHPz3IDzoKk+BIjMPG8kg=
-Date:   Wed, 24 Feb 2021 17:13:43 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
-Message-ID: <20210224161343.GE20344@zn.tnic>
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
- <20210217222730.15819-7-yu-cheng.yu@intel.com>
+        id S233896AbhBXQOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 11:14:51 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1EC7968BEB; Wed, 24 Feb 2021 17:14:05 +0100 (CET)
+Date:   Wed, 24 Feb 2021 17:14:02 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, "Ewan D . Milne" <emilne@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 0/3] block: avoid to drop & re-add partitions if
+ partitions aren't changed
+Message-ID: <20210224161402.GB9127@lst.de>
+References: <20210224035830.990123-1-ming.lei@redhat.com> <20210224081825.GA1339@lst.de> <YDY3SqyNTeiYMdpG@T590>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217222730.15819-7-yu-cheng.yu@intel.com>
+In-Reply-To: <YDY3SqyNTeiYMdpG@T590>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 02:27:10PM -0800, Yu-cheng Yu wrote:
-> +/*
-> + * When a control protection exception occurs, send a signal to the responsible
-> + * application.  Currently, control protection is only enabled for user mode.
-> + * This exception should not come from kernel mode.
-> + */
-> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
-> +{
-> +	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
-> +				      DEFAULT_RATELIMIT_BURST);
+On Wed, Feb 24, 2021 at 07:23:54PM +0800, Ming Lei wrote:
+> > > The two patches changes block ioctl(BLKRRPART) for avoiding drop &
+> > > re-add partitions if partitions state isn't changed. The current
+> > > behavior confuses userspace because partitions can disappear anytime
+> > > when calling into ioctl(BLKRRPART).
+> > 
+> > Which is the f***king point of BLKRRPART and the behavior it had
+> > since day 1.  Please fix the application(s) that all it all the time
+> > instead of bloating the kernel, as said before.
+> > 
+> 
+> ioctl(BLKRRPART) can be called without changing partition table in
+> fdisk, cfdisk, sfdisk, systemd and blockdev at least, and it isn't only
+> on one single application. Even for blockdev, not sure if it can be fixed
+> because '--rereadpt' is simply one subcommand.
 
-Pls move that out of the function - those "static" qualifiers get missed
-easily when inside a function.
+I can also do all kinds of other bad things when I really want to.  So
+if a privileged user uses *fdisk, or explicitly calls
+blockdev --rereadpt, we can expect this behavior, and all of them above
+should not be frequent.
 
-> +	struct task_struct *tsk;
-> +
-> +	if (!user_mode(regs)) {
-> +		pr_emerg("PANIC: unexpected kernel control protection fault\n");
-> +		die("kernel control protection fault", regs, error_code);
-> +		panic("Machine halted.");
-> +	}
-> +
-> +	cond_local_irq_enable(regs);
-> +
-> +	if (!boot_cpu_has(X86_FEATURE_CET))
-> +		WARN_ONCE(1, "Control protection fault with CET support disabled\n");
-> +
-> +	tsk = current;
-> +	tsk->thread.error_code = error_code;
-> +	tsk->thread.trap_nr = X86_TRAP_CP;
-> +
-> +	/*
-> +	 * Ratelimit to prevent log spamming.
-> +	 */
-> +	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
-> +	    __ratelimit(&rs)) {
-> +		unsigned long ssp;
-> +		int err;
-> +
-> +		err = array_index_nospec(error_code, ARRAY_SIZE(control_protection_err));
-
-"err" as an automatic variable is confusing - we use those to denote
-whether the function returned an error or not. Call yours "cpf_type" or
-so.
-
-> +
-> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
-> +		pr_emerg("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)",
-> +			 tsk->comm, task_pid_nr(tsk),
-> +			 regs->ip, regs->sp, ssp, error_code,
-> +			 control_protection_err[err]);
-> +		print_vma_addr(KERN_CONT " in ", regs->ip);
-> +		pr_cont("\n");
-> +	}
-> +
-> +	force_sig_fault(SIGSEGV, SEGV_CPERR,
-> +			(void __user *)uprobe_get_trap_addr(regs));
-
-Why is this calling an uprobes function?
-
-Also, do not break that line even if it is longer than 80.
-
-> +	cond_local_irq_disable(regs);
-> +}
-> +#endif
-> +
->  static bool do_int3(struct pt_regs *regs)
->  {
->  	int res;
-> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
-> index d2597000407a..1c2ea91284a0 100644
-> --- a/include/uapi/asm-generic/siginfo.h
-> +++ b/include/uapi/asm-generic/siginfo.h
-> @@ -231,7 +231,8 @@ typedef struct siginfo {
->  #define SEGV_ADIPERR	7	/* Precise MCD exception */
->  #define SEGV_MTEAERR	8	/* Asynchronous ARM MTE error */
->  #define SEGV_MTESERR	9	/* Synchronous ARM MTE exception */
-> -#define NSIGSEGV	9
-> +#define SEGV_CPERR	10	/* Control protection fault */
-> +#define NSIGSEGV	10
-
-I still don't see the patch adding this to the manpage of sigaction(2).
-
-There's a git repo there: https://www.kernel.org/doc/man-pages/
-
-and I'm pretty sure Michael takes patches.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+It seems like the main culprit is systemd, so please look into what is
+going wrong there.
