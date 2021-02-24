@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17723242B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BD23242B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235957AbhBXQ5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:57:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233814AbhBXQz6 (ORCPT
+        id S235999AbhBXQ6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:58:01 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43084 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235807AbhBXQ4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:55:58 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB65DC06178C;
-        Wed, 24 Feb 2021 08:55:15 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id i14so58164pjz.4;
-        Wed, 24 Feb 2021 08:55:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HuE/AQ6Vh6xvo8ua5ZF0xBQXux+yrBrz/8Rh+Go0F8g=;
-        b=aSrANCEvgZkQhK3OPS6sxk6dOcqgEZgvr75qmrr9KvBKaX/B9vuSW+WLqjMhkHhW5+
-         BltSqEuHIGiq7KG1/mkQ6j7GenjavEK0wri9dmfg7m+IrawC57jEce3Cvf4LAOh2Yy/M
-         aIv+/qS2VWusmAtIudnleD+79+1KRPOMHR4RGZ1CqkRnWjFDhZFhuredAFeoYUmVJmps
-         0/JGDuuKn2CT2M1D1hk22ZH2yMSCmkhhrhJQBPVy0gIfaxx9l/xo/LbeoGzrceUAewrR
-         smSjuBMgPBV2HSYZdfItumxlcfeyTD7YJwtn2bNOAMyHwT6pkxFOGiOxAZ/RcVDxyYdd
-         97XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HuE/AQ6Vh6xvo8ua5ZF0xBQXux+yrBrz/8Rh+Go0F8g=;
-        b=bhp6ely3YfdPjhSuSGET1gK8zUqg+791jgve9JSt8tDK+0OqzQLbfUOKoCKcaP13vp
-         GA7a9suDd15yQk2ps7B6WT09/G8s9HQNMknmg8XOuIe2fxWkbkHWKBT9PT4y9/cTZx7+
-         MpUnDG48S/AjmFvNNRbKKu9QbGEROYvw5c04TyJuqZzqUTmmpR8XHgTMjGoIG0QTC/Py
-         sRwwJDESmerADwMvJ5HQq6hhYyN3+qqD+yhxa6Qe7SvDAjcNqzgFY6c4Tv4nruJHUnN1
-         5rOswaZjMT2K8h+s90AFCQLSWsbtIBBs5LCT5gLmFFG6RLuvJOJJri4RMl0aPyxCJEtK
-         s39A==
-X-Gm-Message-State: AOAM531fxafRHzDfiWRTmGLtNgb318dH63+8GdteIDJeqUBk3mveOHLC
-        2sn2a3s9be7qO3QOg9tbGos=
-X-Google-Smtp-Source: ABdhPJwHgPvwxHVjX1vHznt6GbMNRSY5lix9heTWVB5dmjOG6nJuLv0k5g6080iF+UGUULgIPuctUw==
-X-Received: by 2002:a17:90a:1b4b:: with SMTP id q69mr5348553pjq.108.1614185715447;
-        Wed, 24 Feb 2021 08:55:15 -0800 (PST)
-Received: from [172.30.1.41] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id j201sm3668368pfd.143.2021.02.24.08.55.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Feb 2021 08:55:14 -0800 (PST)
-Subject: Re: [RESEND PATCH v6 2/3] bindings: pm8941-misc: Add support for VBUS
- detection
-To:     Guru Das Srinagesh <gurus@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Anirudh Ghayal <aghayal@codeaurora.org>
-References: <cover.1611621365.git.gurus@codeaurora.org>
- <f75e75985a06b38ba77c618e108d797b7de17f09.1611621365.git.gurus@codeaurora.org>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <2b0fa0f4-b5df-10d2-c09d-7c8c4c22ad39@gmail.com>
-Date:   Thu, 25 Feb 2021 01:55:10 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 24 Feb 2021 11:56:20 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11OGZCsL146530;
+        Wed, 24 Feb 2021 11:55:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=AmVyFiDlcXmNzyd+x5VKFRhFShv0SsXZhacZ0vpQhTA=;
+ b=aQqLJeFq9VbwKsKLv3RwktG/BUNNgD880jb23SXrVZhLNRJnFvT+mA/IIdK8nkPiKR3W
+ rd/RUrS4HiRQRD79ms3CA/WeHjZVwLFJYGLwb47QpwIzDatoxW+2CgUW4G0ZVjPvi9Mq
+ 4qZuHfoKgPXGub1EPKfzsf+/joxeDlUuVkqytzCWLLBQ4KkwpzBHGnbkEGmWzrqYYp+m
+ JwMBhrpoL2JoxhriODMWwL/PyUgUYTUeZpzzgL8k+h9YYGLQLUDr3RwMjdDmLL2KTxdM
+ DBE60FwSe3wLnxcnq11eo/cSwchFSAPlvIzrKyoF5hvIrFcm7vBk+mF/bMgjdYJsyNti xA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36wmfwdrdv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 11:55:28 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11OGZYDE149680;
+        Wed, 24 Feb 2021 11:55:27 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36wmfwdrcs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 11:55:27 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11OGq8ll023939;
+        Wed, 24 Feb 2021 16:55:25 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 36tt283qns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 16:55:25 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11OGt9ZZ27525480
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Feb 2021 16:55:09 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3356742054;
+        Wed, 24 Feb 2021 16:55:22 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 912A34204F;
+        Wed, 24 Feb 2021 16:55:21 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.7.180])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 24 Feb 2021 16:55:21 +0000 (GMT)
+Date:   Wed, 24 Feb 2021 17:55:20 +0100
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        shu wang <malate_wangshu@hotmail.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michel Lespinasse <walken@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 1/5] hugetlb: add hugetlb helpers for soft dirty
+ support
+Message-ID: <20210224175520.76ba0e68@thinkpad>
+In-Reply-To: <20210224174608.7c9ca5ed@thinkpad>
+References: <20210211000322.159437-1-mike.kravetz@oracle.com>
+        <20210211000322.159437-2-mike.kravetz@oracle.com>
+        <20210217162415.GA6519@xz-x1>
+        <20210224174608.7c9ca5ed@thinkpad>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <f75e75985a06b38ba77c618e108d797b7de17f09.1611621365.git.gurus@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-24_06:2021-02-24,2021-02-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 mlxscore=0 spamscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102240127
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 24 Feb 2021 17:46:08 +0100
+Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
 
+[...]
+> Then we fundamentally changed the way how we deal with that "hugetlb code
+> is treating pmds as ptes" issue. Instead of caring about that in all
+> huge_pte_xxx primitives, huge_ptep_get() will now return a nicely faked pte
+> for s390, i.e. something that looks like a pte would look like, and not the
+> real pmd/pud value. With that, hugetlb code can do all its pte handling on
+> that fake pte, and the conversion back to a proper pmd/pud is done in
+> set_huge_pte().
 
-On 21. 1. 26. 오전 9:38, Guru Das Srinagesh wrote:
-> Add interrupt support for reporting VBUS detection status that can be
-> detected via a dedicated PMIC pin.
-> 
-> Signed-off-by: Anirudh Ghayal <aghayal@codeaurora.org>
-> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->   Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml b/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
-> index e8eea83..6a9c96f 100644
-> --- a/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
-> +++ b/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
-> @@ -22,11 +22,14 @@ properties:
->       maxItems: 1
->   
->     interrupts:
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 2
->   
->     interrupt-names:
-> +    minItems: 1
->       items:
->         - const: usb_id
-> +      - const: usb_vbus
->   
->   required:
->     - compatible
-> 
-
-Applied it.
-
-Thanks,
-Chanwoo Choi
+BTW, in case anybody is wondering, this conversion from and to pmd for s390
+will also care about the soft dirty bit, even though it was not really used
+before for hugetlb. So Mikes approach to add the default primitives for s390
+should work fine.
