@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1A1323A26
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:07:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32681323A28
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234751AbhBXKFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 05:05:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50256 "EHLO mail.kernel.org"
+        id S234768AbhBXKG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 05:06:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55612 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234636AbhBXKFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 05:05:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A05964ED3;
-        Wed, 24 Feb 2021 10:04:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614161062;
-        bh=Nw0mgdgis9xCN8z4FpRfRyO/GxKvWT8srH/JZMirdj4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UmsFkDeA6uKkNj+XRC8h6nMYId32B2FEl/B8EpyS1jCmqT0XZ3UV7jyKlBsnJn0sm
-         0mrSUZ8/UUx7GYJgMGK0Fa3Gz/yIcc5SeGGaeW4Ai0SdhlhGi7eOWCwO3xBOPlJeOR
-         sJL3/wWp/RYHVETdcBu0/v/2WjRfO6q7xC7lbC3xxnKM2VI5oDiy+V4AabTj0vGyWi
-         Ipfsxd4cMAeBm38zV9qAtkAxLxWeGuOKyjAu6N0dYvpw7OMX8c05FD1Tv/VAQS1bgP
-         CiaJdJDj/kgA2m4aoomFFBsxegRFvVXHV9XqGz9GhkgsscvjMgpBTbB1arO0dvMGLk
-         M2kyZ+eqtF7Ow==
-Date:   Wed, 24 Feb 2021 12:04:19 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Julian Braha <julianbraha@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drivers: infiniband: sw: rxe: fix kconfig dependency on
- CRYPTO
-Message-ID: <YDYko5zdCkssqw3t@unreal>
-References: <21525878.NYvzQUHefP@ubuntu-mate-laptop>
- <CAJ-ZY99xZEsS5pCbZ7evi_ohozQBpHcNHDcXxfoeaLzuWRzyzw@mail.gmail.com>
- <CAK8P3a1jRS=QyTxJzSxfEsaAuF5HnOXbv4MOu8b5EZWEhUep=Q@mail.gmail.com>
- <10464303.FBcTZR2von@ubuntu-mate-laptop>
- <CAK8P3a1XW0NTFHiEUoLgeHGpKUfYgM8T8Or7ix3m6Fd-TLEn5w@mail.gmail.com>
+        id S234314AbhBXKFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 05:05:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B31DEAE05;
+        Wed, 24 Feb 2021 10:05:09 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 6EAFE1E14EF; Wed, 24 Feb 2021 11:05:09 +0100 (CET)
+Date:   Wed, 24 Feb 2021 11:05:09 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Cc:     jack@suse.cz, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+a8b4b0c60155e87e9484@syzkaller.appspotmail.com,
+        tytso@mit.edu
+Subject: Re: [PATCH v2] fs/ext4: fix integer overflow in s_log_groups_per_flex
+Message-ID: <20210224100509.GB20583@quack2.suse.cz>
+References: <20210223170118.GD30433@quack2.suse.cz>
+ <20210224095800.3350002-1-snovitoll@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a1XW0NTFHiEUoLgeHGpKUfYgM8T8Or7ix3m6Fd-TLEn5w@mail.gmail.com>
+In-Reply-To: <20210224095800.3350002-1-snovitoll@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 11:05:45PM +0100, Arnd Bergmann wrote:
-> On Tue, Feb 23, 2021 at 10:54 PM Julian Braha <julianbraha@gmail.com> wrote:
-> > On Tuesday, February 23, 2021 4:26:44 PM EST Arnd Bergmann wrote:
-> > > On Tue, Feb 23, 2021 at 9:46 PM Julian Braha <julianbraha@gmail.com> wrote:
-> > > >
-> > > > I have other similar patches that I intend to submit. What should I do,
-> > > > going forward? Should I use "depends on CRYPTO" for cases like these?
-> > > > Should I resubmit this patch with that change?
-> > >
-> > > No, we should not mix the two methods, that just leads to circular dependencies.
-> > >
-> > > How many more patches do you have that need to get merged?
-> > >
-> > > If it's only a few, I'd suggest merging them first before we consider a
-> > > broader change. If the problem is very common, we may want to
-> > > think about alternative approaches first, and then change everything
-> > > at once.
-> >
-> > Sorry, I don't have a specific number, but it's certainly under a dozen patches.
->
-> It's probably best to continue pushing those first then.
+On Wed 24-02-21 15:58:00, Sabyrzhan Tasbolatov wrote:
+> syzbot found UBSAN: shift-out-of-bounds in ext4_mb_init [1], when
+> 1 << sbi->s_es->s_log_groups_per_flex is bigger than UINT_MAX,
+> where sbi->s_mb_prefetch is unsigned integer type.
+> 
+> 32 is the maximum allowed power of s_log_groups_per_flex. Following if
+> check will also trigger UBSAN shift-out-of-bound:
+> 
+> if (1 << sbi->s_es->s_log_groups_per_flex >= UINT_MAX) {
+> 
+> So I'm checking it against the raw number, perhaps there is another way
+> to calculate UINT_MAX max power. Also use min_t as to make sure it's
+> uint type.
+> 
+> [1] UBSAN: shift-out-of-bounds in fs/ext4/mballoc.c:2713:24
+> shift exponent 60 is too large for 32-bit type 'int'
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x137/0x1be lib/dump_stack.c:120
+>  ubsan_epilogue lib/ubsan.c:148 [inline]
+>  __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
+>  ext4_mb_init_backend fs/ext4/mballoc.c:2713 [inline]
+>  ext4_mb_init+0x19bc/0x19f0 fs/ext4/mballoc.c:2898
+>  ext4_fill_super+0xc2ec/0xfbe0 fs/ext4/super.c:4983
+> 
+> Reported-by: syzbot+a8b4b0c60155e87e9484@syzkaller.appspotmail.com
+> Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 
-Arnd,
+Looks good. Feel free to add:
 
-I'm hearing it over and over for a long time already. People are focused
-on micro-solutions instead of one, powerful change, which is not hard to
-do.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Thanks
+								Honza
 
->
->         Arnd
+> ---
+> v2: updated > 32 condition to >= 32
+> 
+> > > +		if (sbi->s_es->s_log_groups_per_flex > 32) {
+> > 						    ^^ >= 32?
+> > 
+> > Otherwise the patch looks good.
+> > 
+> 
+> Thanks! Updated to >= 32 condition.
+> ---
+>  fs/ext4/mballoc.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 99bf091fee10..a02fadf4fc84 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2709,8 +2709,15 @@ static int ext4_mb_init_backend(struct super_block *sb)
+>  	}
+>  
+>  	if (ext4_has_feature_flex_bg(sb)) {
+> -		/* a single flex group is supposed to be read by a single IO */
+> -		sbi->s_mb_prefetch = min(1 << sbi->s_es->s_log_groups_per_flex,
+> +		/* a single flex group is supposed to be read by a single IO.
+> +		 * 2 ^ s_log_groups_per_flex != UINT_MAX as s_mb_prefetch is
+> +		 * unsigned integer, so the maximum shift is 32.
+> +		 */
+> +		if (sbi->s_es->s_log_groups_per_flex >= 32) {
+> +			ext4_msg(sb, KERN_ERR, "too many log groups per flexible block group");
+> +			goto err_freesgi;
+> +		}
+> +		sbi->s_mb_prefetch = min_t(uint, 1 << sbi->s_es->s_log_groups_per_flex,
+>  			BLK_MAX_SEGMENT_SIZE >> (sb->s_blocksize_bits - 9));
+>  		sbi->s_mb_prefetch *= 8; /* 8 prefetch IOs in flight at most */
+>  	} else {
+> -- 
+> 2.25.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
