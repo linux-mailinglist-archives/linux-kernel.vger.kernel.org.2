@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697E2324022
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF46323FF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237815AbhBXOkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:40:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236429AbhBXNUm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:20:42 -0500
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F65EC06121C
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:18:45 -0800 (PST)
-Received: by mail-oo1-xc2c.google.com with SMTP id n19so489128ooj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:18:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2QMkH64M8As4l+KSDTQdK+u4M5qrIN7PaZOHlR51wic=;
-        b=QmN0FsJYiPxmCNa2Tha1APhsUK8o/7UaZLHeTlgpjASwj19luMRyZbWjrLxbXnOWSq
-         QX3Widqm0McOoSM3HTXHxcQmOE55BROws/lIjp65Idz5F6TUFsQCip3AEZUVrDi4802W
-         a1DgYxiomsD1lW1EmR4QuPaF4FxC5XnzYOdkw7NhBJMriRHA9/xsyO/aNXKB4gX+Akwl
-         XZDq3lTBz1baGF2HPr2Zj2AtovQtHjgyajNkzw0upFslmhr/BtBhrG2tOL3fl4ZgMHp+
-         eyKWP2uXQHTgp4Q/AvKzKs1YWSL4aGdSzROSCh8GqzzcYz7IiSTyQg3cPlVOLhACAypy
-         MH3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2QMkH64M8As4l+KSDTQdK+u4M5qrIN7PaZOHlR51wic=;
-        b=r+uK2+2sF/kUB4D4kkMjb39B0mZ+KONPlqeBFeWTwHObTUe+dQsx/PWarvsMD8pfs/
-         +wwvtlZp68RDb9A1QxrXoYnKffUzYgGRbFbf/jW1dWXJbbtTYGi5Ea++wLTm03mj02Pt
-         bqNNddTmQa8YJVJyERBENwOlG+cyy2/n+j+9FST2N5xO9G6G2x3fxuhX3pnMsTf6yBCn
-         5brXBijL0AsHQHQmrBBQig9s2BEwP6ZVJRMI0iBLAEfPz3yTJgOcrIl1Y2jlKaWAm3zj
-         iIqFGvtYYQO/c5/U9g3/C1GaF2B1vFa+ApvSOpjt8+N7TgaRyYhYP3ViDqxu8yNI5gic
-         Se3Q==
-X-Gm-Message-State: AOAM5332/d/wgzZ2VaFR1zErQ25zR2qxoC/42QJjfxiQTnayTWtQl4MG
-        VGYxsbP3jyTQMrwZ9RdisQ7djQ==
-X-Google-Smtp-Source: ABdhPJzZENaJ/w4FIbF/u86i6KIgI4boKlF8cypFxWZArBN+CEJ43ycBpfR7AD/CKXEZpGzOO2u34Q==
-X-Received: by 2002:a4a:c44:: with SMTP id n4mr23749084ooe.62.1614172725035;
-        Wed, 24 Feb 2021 05:18:45 -0800 (PST)
-Received: from winterfell.papolivre.org (winterfell.papolivre.org. [198.58.116.17])
-        by smtp.gmail.com with ESMTPSA id b21sm380149oot.34.2021.02.24.05.18.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 05:18:44 -0800 (PST)
-Received: from localhost (unknown [IPv6:2001:1284:f016:4cfd:27e0:441e:870:6787])
-        by winterfell.papolivre.org (Postfix) with ESMTPSA id 7BFBE1C2F43;
-        Wed, 24 Feb 2021 10:18:43 -0300 (-03)
-From:   Antonio Terceiro <antonio.terceiro@linaro.org>
-To:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jiong Wang <jiong.wang@netronome.com>
-Subject: [PATCH] Documentation: cgroup-v2: fix path to example BPF program
-Date:   Wed, 24 Feb 2021 10:16:31 -0300
-Message-Id: <20210224131631.349287-1-antonio.terceiro@linaro.org>
-X-Mailer: git-send-email 2.30.1
+        id S235625AbhBXO3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:29:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234545AbhBXNSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 08:18:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DB7664E02;
+        Wed, 24 Feb 2021 13:16:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614172618;
+        bh=1OYA70c3B5fW2I4c9I6qukLQFWmQmyDKzf/6xmqd7yw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DunTstwYrC0zZRkwW7RIhvcIx30okzmVYogmvnpPP/VSr7XU3sKC2WtP11a3YXy/9
+         ZTG1jfQUzBnt8Fxg6v4tRNhMUVMDtVUWolzKmFTNIJiAmxlnqQDmbeZ/9tgpHSpr0I
+         fg0N0iH1yxP7Ye/+UxPaQJDiX7KCTW5f8i5hXFumNjuTRUQv3iIRcWw6SXnYaFQH1e
+         BArz1E+Roti2GhLu4psN7VCctp1U8Z3Y/QOERK48TI1PSCirPE/r/e5w91BtuNUI/Z
+         glWLBagHjOVswV65v18gWtS+/hdp6EZVaoKaoAT4wuKCkgS3MB6rPQzKtnfhfZ+yeG
+         HbGMS1DAHq0Bg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 489B240CD9; Wed, 24 Feb 2021 10:16:55 -0300 (-03)
+Date:   Wed, 24 Feb 2021 10:16:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Juxin Gao <gaojuxin@loongson.cn>
+Subject: Re: [PATCH v2 0/3] Add some perf support for mips
+Message-ID: <YDZRxz1yRwgWc47F@kernel.org>
+References: <1612409724-3516-1-git-send-email-yangtiezhu@loongson.cn>
+ <1d3c4abd-4b14-90e3-6528-457a8248cb52@loongson.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d3c4abd-4b14-90e3-6528-457a8248cb52@loongson.cn>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This file has been moved into the "progs" subdirectory in
-bd4aed0ee73ca873bef3cb3ec746dd796f03df28, together with all test BPF
-programs.
+Em Mon, Feb 22, 2021 at 02:43:39PM +0800, Tiezhu Yang escreveu:
+> On 02/04/2021 11:35 AM, Tiezhu Yang wrote:
+> > v2: add R26 and R27 to the enum perf_event_mips_regs in patch #1
+> > 
+> > Tiezhu Yang (3):
+> >    MIPS: kernel: Support extracting off-line stack traces from user-space
+> >      with perf
+> >    perf tools: Support mips unwinding and dwarf-regs
+> >    perf tools: Generate mips syscalls_n64.c syscall table
+> 
+> Hi Arnaldo,
+> 
+> The kernel part patch #1 has been merged.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1ddc96bd42da
+> 
+> Could the perf tool patches #2 and #3 have a chance to be merged before
+> 5.12-rc1?
+> If yes, we can use this feature in 5.12-rc1.
 
-Signed-off-by: Antonio Terceiro <antonio.terceiro@linaro.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Jiong Wang <jiong.wang@netronome.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks, applied, should make it into 5.12-rc1.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index c513eafaddea..befe9425d028 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2094,7 +2094,7 @@ If the program returns 0, the attempt fails with -EPERM, otherwise
- it succeeds.
+- Arnaldo
  
- An example of BPF_CGROUP_DEVICE program may be found in the kernel
--source tree in the tools/testing/selftests/bpf/dev_cgroup.c file.
-+source tree in the tools/testing/selftests/bpf/progs/dev_cgroup.c file.
- 
- 
- RDMA
+> https://lore.kernel.org/patchwork/patch/1375476/
+> https://lore.kernel.org/patchwork/patch/1375475/
+> 
+> 
+> Thanks,
+> Tiezhu
+> 
+> > 
+> >   arch/mips/Kconfig                                  |   2 +
+> >   arch/mips/include/uapi/asm/perf_regs.h             |  40 +++
+> >   arch/mips/kernel/Makefile                          |   2 +-
+> >   arch/mips/kernel/perf_regs.c                       |  68 ++++
+> >   tools/perf/Makefile.config                         |   9 +-
+> >   tools/perf/arch/mips/Makefile                      |  22 ++
+> >   tools/perf/arch/mips/entry/syscalls/mksyscalltbl   |  32 ++
+> >   .../perf/arch/mips/entry/syscalls/syscall_n64.tbl  | 358 +++++++++++++++++++++
+> >   tools/perf/arch/mips/include/dwarf-regs-table.h    |  31 ++
+> >   tools/perf/arch/mips/include/perf_regs.h           |  84 +++++
+> >   tools/perf/arch/mips/util/Build                    |   3 +
+> >   tools/perf/arch/mips/util/dwarf-regs.c             |  38 +++
+> >   tools/perf/arch/mips/util/perf_regs.c              |   6 +
+> >   tools/perf/arch/mips/util/unwind-libunwind.c       |  22 ++
+> >   tools/perf/check-headers.sh                        |   1 +
+> >   tools/perf/util/dwarf-regs.c                       |   3 +
+> >   tools/perf/util/syscalltbl.c                       |   4 +
+> >   17 files changed, 723 insertions(+), 2 deletions(-)
+> >   create mode 100644 arch/mips/include/uapi/asm/perf_regs.h
+> >   create mode 100644 arch/mips/kernel/perf_regs.c
+> >   create mode 100644 tools/perf/arch/mips/Makefile
+> >   create mode 100644 tools/perf/arch/mips/entry/syscalls/mksyscalltbl
+> >   create mode 100644 tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl
+> >   create mode 100644 tools/perf/arch/mips/include/dwarf-regs-table.h
+> >   create mode 100644 tools/perf/arch/mips/include/perf_regs.h
+> >   create mode 100644 tools/perf/arch/mips/util/Build
+> >   create mode 100644 tools/perf/arch/mips/util/dwarf-regs.c
+> >   create mode 100644 tools/perf/arch/mips/util/perf_regs.c
+> >   create mode 100644 tools/perf/arch/mips/util/unwind-libunwind.c
+> > 
+> 
+
 -- 
-2.30.1
 
+- Arnaldo
