@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EE5323B17
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 12:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86461323B1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 12:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233977AbhBXLMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 06:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234957AbhBXLEH (ORCPT
+        id S235021AbhBXLNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 06:13:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22005 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235033AbhBXLJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 06:04:07 -0500
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58ADC061793
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 03:02:52 -0800 (PST)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4DltLD6zbxz1s0Br;
-        Wed, 24 Feb 2021 12:02:44 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4DltLD6J2xz1r13Y;
-        Wed, 24 Feb 2021 12:02:44 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id C65dSZQMuRwa; Wed, 24 Feb 2021 12:02:42 +0100 (CET)
-X-Auth-Info: AzEMq/rhpBSWVMD9XvQLi8U/+QL68CRH6dnsMBbKKyM=
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 24 Feb 2021 06:09:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614164879;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CwikFej3RL0CZJY9+yS7Zo6x46gCYURZjb6JZAuGJg8=;
+        b=KqvKs9d0hXSeVpQpvAtmckLTmzpUGY6HA/nFSDvp7rQwCr06fd/kgTBJEk+EaDdcJQLzhV
+        Tb7GlVhIb5nqbl4Zcmiwh0qQ2H3tBAZVGLG2AxKvhLzyCtYHJJ6kqTUtCPsrwzNu2s4Nbp
+        llPQp25E+gg7MCD/DvPRVnXPcKu4WIk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-7ejCefaZP3OCLK8P1waffA-1; Wed, 24 Feb 2021 06:06:51 -0500
+X-MC-Unique: 7ejCefaZP3OCLK8P1waffA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed, 24 Feb 2021 12:02:42 +0100 (CET)
-Subject: Re: (.text.ks8851_probe_common+0x370): undefined reference to
- `__this_module'
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-        kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-References: <202102221437.vHlLwHmG-lkp@intel.com>
- <33c7cb1f-b6c0-24bf-0e6c-23d5472e4c29@infradead.org>
- <CAK8P3a1zfwJs3=mhvTGpLLak1Lqq6N-4N+zHrh-4KMRE75HP8w@mail.gmail.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <bb6e7759-0600-cbd0-c99c-e053285d094f@denx.de>
-Date:   Wed, 24 Feb 2021 12:02:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F98C801978;
+        Wed, 24 Feb 2021 11:06:49 +0000 (UTC)
+Received: from krava (unknown [10.40.193.200])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5044860C5F;
+        Wed, 24 Feb 2021 11:06:47 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 12:06:46 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH] perf daemon: Fix compile error with Asan
+Message-ID: <YDYzRoig7zUWAVZM@krava>
+References: <20210224071438.686677-1-namhyung@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1zfwJs3=mhvTGpLLak1Lqq6N-4N+zHrh-4KMRE75HP8w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210224071438.686677-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/21 9:38 AM, Arnd Bergmann wrote:
-> On Wed, Feb 24, 2021 at 3:38 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 2/21/21 10:12 PM, kernel test robot wrote:
->>> Hi Marek,
->>>
->>> FYI, the error/warning still remains.
->>>
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   31caf8b2a847214be856f843e251fc2ed2cd1075
->>> commit: ef3631220d2b3d8d14cf64464760505baa60d6ac net: ks8851: Register MDIO bus and the internal PHY
->>> date:   7 weeks ago
->>> config: parisc-randconfig-r034-20210222 (attached as .config)
->>> compiler: hppa-linux-gcc (GCC) 9.3.0
->>> reproduce (this is a W=1 build):
->>>           wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>           chmod +x ~/bin/make.cross
->>>           # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ef3631220d2b3d8d14cf64464760505baa60d6ac
->>>           git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>           git fetch --no-tags linus master
->>>           git checkout ef3631220d2b3d8d14cf64464760505baa60d6ac
->>>           # save the attached .config to linux build tree
->>>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>      hppa-linux-ld: drivers/net/ethernet/micrel/ks8851_common.o: in function `ks8851_probe_common':
->>>>> (.text.ks8851_probe_common+0x370): undefined reference to `__this_module'
->>>>> hppa-linux-ld: (.text.ks8851_probe_common+0x374): undefined reference to `__this_module'
->>
->> Hey Arnd-
->>
->> I wanted to see if you had any ideas about this problem.
->>
->> CONFIG_KS8851=y
->> CONFIG_KS8851_MLL=m
->>
->> The problem is that 2 drivers share some common code, but in one case
->> the shared code is builtin and for the other driver it is a loadable
->> module. The common code is first built as builtin, so it does not have
->> the "__this_module" symbol.
+On Wed, Feb 24, 2021 at 04:14:38PM +0900, Namhyung Kim wrote:
+> I'm seeing a build failure when build with address sanitizer.
+> It seems we could write to the name[100] if the var is longer.
 > 
-> This is the patch I sent for it:
+>   $ make EXTRA_CFLAGS=-fsanitize=address
+>   ...
+>     CC       builtin-daemon.o
+>   In function ‘get_session_name’,
+>     inlined from ‘session_config’ at builtin-daemon.c:164:6,
+>     inlined from ‘server_config’ at builtin-daemon.c:223:10:
+>   builtin-daemon.c:155:11: error: writing 1 byte into a region of size 0 [-Werror=stringop-overflow=]
+>     155 |  *session = 0;
+>         |  ~~~~~~~~~^~~
+>   builtin-daemon.c: In function ‘server_config’:
+>   builtin-daemon.c:162:7: note: at offset 100 to object ‘name’ with size 100 declared here
+>     162 |  char name[100];
+>         |       ^~~~
 > 
-> https://lore.kernel.org/lkml/20210125121937.3900988-1-arnd@kernel.org/T/#u
+> Fixes: c0666261ff38 ("perf daemon: Add config file support")
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-I was under the impression that the patch was already applied, wasn't it?
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
+> ---
+>  tools/perf/builtin-daemon.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+> index 617feaf020f6..8f9fc61691da 100644
+> --- a/tools/perf/builtin-daemon.c
+> +++ b/tools/perf/builtin-daemon.c
+> @@ -161,7 +161,7 @@ static int session_config(struct daemon *daemon, const char *var, const char *va
+>  	struct daemon_session *session;
+>  	char name[100];
+>  
+> -	if (get_session_name(var, name, sizeof(name)))
+> +	if (get_session_name(var, name, sizeof(name) - 1))
+>  		return -EINVAL;
+>  
+>  	var = strchr(var, '.');
+> -- 
+> 2.30.0.617.g56c4b15f3c-goog
+> 
+
