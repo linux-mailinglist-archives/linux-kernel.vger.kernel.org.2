@@ -2,98 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27AF324256
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:45:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5502932425C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:48:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235120AbhBXQpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:45:06 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:57455 "EHLO z11.mailgun.us"
+        id S235406AbhBXQpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:45:47 -0500
+Received: from mga01.intel.com ([192.55.52.88]:10250 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234973AbhBXQo6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:44:58 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614185078; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=47RZdZMX6h81pOYJV0C4w+7D68ydw/vNclxkO6cmVt0=; b=q+KZA0QFJDuOD32KwV96yAmYZlh/cB/VdxOTbf+2KLfLOe8XgzrBZY0r0dVEe0P0kQgt4cXI
- OXXWkgiPeX7ouX4tK2tKxwjsV5P/HjJnU1zuCcfblkTrFavYjjMVBq7B/JWEqIrI/JGOhKEQ
- gDBFOnPhIiQnl2ZOmPPbHAeupJc=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60368254095efe1816fbc6f2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Feb 2021 16:44:04
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DA8DAC433C6; Wed, 24 Feb 2021 16:44:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F319FC433CA;
-        Wed, 24 Feb 2021 16:44:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F319FC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Marcus Folkesson <marcus.folkesson@gmail.com>
-Cc:     Ajay Singh <ajay.kathat@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] wilc1000: write value to WILC_INTR2_ENABLE register
-References: <20210224163706.519658-1-marcus.folkesson@gmail.com>
-Date:   Wed, 24 Feb 2021 18:43:59 +0200
-In-Reply-To: <20210224163706.519658-1-marcus.folkesson@gmail.com> (Marcus
-        Folkesson's message of "Wed, 24 Feb 2021 17:37:06 +0100")
-Message-ID: <87pn0pfmb4.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S235028AbhBXQp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 11:45:26 -0500
+IronPort-SDR: QJ4mQOkCJcpgh+vq3l6xsJcmmQCRv1YzTibnBE+orJZeOLaBA3n0UWljO7J10T66B3Mx+E6Yau
+ BL6nZ+eecfLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="204702379"
+X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
+   d="scan'208";a="204702379"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 08:44:47 -0800
+IronPort-SDR: cO6tUP/okEbGeERP7ncSscGvWFoqHF2wSdnLMFWdPr4Y3w9ngVkS4ODpHA5fLWv9bzRuj4JBHJ
+ y3psIq07rtLw==
+X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
+   d="scan'208";a="515715838"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.35.50]) ([10.212.35.50])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 08:44:45 -0800
+Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
+ <20210217222730.15819-7-yu-cheng.yu@intel.com>
+ <20210224161343.GE20344@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <32ac05ef-b50b-c947-095d-bc31a42947a3@intel.com>
+Date:   Wed, 24 Feb 2021 08:44:45 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210224161343.GE20344@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marcus Folkesson <marcus.folkesson@gmail.com> writes:
+On 2/24/2021 8:13 AM, Borislav Petkov wrote:
+> On Wed, Feb 17, 2021 at 02:27:10PM -0800, Yu-cheng Yu wrote:
+>> +/*
+>> + * When a control protection exception occurs, send a signal to the responsible
+>> + * application.  Currently, control protection is only enabled for user mode.
+>> + * This exception should not come from kernel mode.
+>> + */
+>> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
+>> +{
+>> +	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
+>> +				      DEFAULT_RATELIMIT_BURST);
 
-> Write the value instead of reading it twice.
->
-> Fixes: 5e63a598441a ("staging: wilc1000: added 'wilc_' prefix for function in wilc_sdio.c file")
->
-> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
-> ---
->  drivers/net/wireless/microchip/wilc1000/sdio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/microchip/wilc1000/sdio.c b/drivers/net/wireless/microchip/wilc1000/sdio.c
-> index 351ff909ab1c..e14b9fc2c67a 100644
-> --- a/drivers/net/wireless/microchip/wilc1000/sdio.c
-> +++ b/drivers/net/wireless/microchip/wilc1000/sdio.c
-> @@ -947,7 +947,7 @@ static int wilc_sdio_sync_ext(struct wilc *wilc, int nint)
->  			for (i = 0; (i < 3) && (nint > 0); i++, nint--)
->  				reg |= BIT(i);
->  
-> -			ret = wilc_sdio_read_reg(wilc, WILC_INTR2_ENABLE, &reg);
-> +			ret = wilc_sdio_write_reg(wilc, WILC_INTR2_ENABLE, reg);
+[...]
 
-To me it looks like the bug existed before commit 5e63a598441a:
+>> +
+>> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
+>> +		pr_emerg("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)",
+>> +			 tsk->comm, task_pid_nr(tsk),
+>> +			 regs->ip, regs->sp, ssp, error_code,
+>> +			 control_protection_err[err]);
+>> +		print_vma_addr(KERN_CONT " in ", regs->ip);
+>> +		pr_cont("\n");
+>> +	}
+>> +
+>> +	force_sig_fault(SIGSEGV, SEGV_CPERR,
+>> +			(void __user *)uprobe_get_trap_addr(regs));
+> 
+> Why is this calling an uprobes function?
+> 
 
--			ret = sdio_read_reg(wilc, WILC_INTR2_ENABLE, &reg);
-+			ret = wilc_sdio_read_reg(wilc, WILC_INTR2_ENABLE, &reg);
+I will change it to error_get_trap_addr().
 
-https://git.kernel.org/linus/5e63a598441a
+> Also, do not break that line even if it is longer than 80.
+> 
+>> +	cond_local_irq_disable(regs);
+>> +}
+>> +#endif
+>> +
+>>   static bool do_int3(struct pt_regs *regs)
+>>   {
+>>   	int res;
+>> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+>> index d2597000407a..1c2ea91284a0 100644
+>> --- a/include/uapi/asm-generic/siginfo.h
+>> +++ b/include/uapi/asm-generic/siginfo.h
+>> @@ -231,7 +231,8 @@ typedef struct siginfo {
+>>   #define SEGV_ADIPERR	7	/* Precise MCD exception */
+>>   #define SEGV_MTEAERR	8	/* Asynchronous ARM MTE error */
+>>   #define SEGV_MTESERR	9	/* Synchronous ARM MTE exception */
+>> -#define NSIGSEGV	9
+>> +#define SEGV_CPERR	10	/* Control protection fault */
+>> +#define NSIGSEGV	10
+> 
+> I still don't see the patch adding this to the manpage of sigaction(2).
+> 
+> There's a git repo there: https://www.kernel.org/doc/man-pages/
+> 
+> and I'm pretty sure Michael takes patches.
+> 
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+I will send a patch.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+--
+Yu-cheng
