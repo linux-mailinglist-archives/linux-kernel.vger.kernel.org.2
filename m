@@ -2,123 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0997F324342
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1A1324343
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235439AbhBXRlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 12:41:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbhBXRlB (ORCPT
+        id S232672AbhBXRlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 12:41:37 -0500
+Received: from mail.codeweavers.com ([50.203.203.244]:46550 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230108AbhBXRl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 12:41:01 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E80DC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 09:40:21 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id i18so2421752ilq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 09:40:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=KVEFF/e3cq8hSLAqkkWzb/tsBUvxw8HxL0663tRmoQo=;
-        b=rYBE3tx41p3vC7kUwVnZVOt8IudcouNv90aVHp5aRhAJWTwWstiIG9UaRmHFnBkT1J
-         U24fewXNjZGiaZFhZpq2ulihxcffmastRktVQy01PCBiB0hV5Cns2qWgzjvMr3b9EU7k
-         7XcN6DV9zH3YcToGb6XW27xkxP6Y2joVmWEVJS0m83PlcBp/DY0IawGND8xawJA+4Fwq
-         lZhMZvy6HTWMHwcbp1cPGDjsnr591C0nHLhw1Q5L8I/hgf9LLjcSUFGDZBlNpJOleUki
-         HlKTFrumpxZPh7ICSMsxUmo5wRAeraFG4DAyIMeNb4NSZWcsNG/c01XghtRuzsus7PjG
-         OiEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=KVEFF/e3cq8hSLAqkkWzb/tsBUvxw8HxL0663tRmoQo=;
-        b=X3aMM4KxgJ1qaGGmtDOmELlGu0K/BCjdwswbeos9jCu/1dGzcjjS5TBo00W1oG7Mdm
-         Ogb08HrVygWtqJwkONVLG2ZHLj42zdJT3utVz3QB2IWa7OvlLeGKGtdjEmek6yRHCdzn
-         7xqYSSeJkksdp/YqSVIIfmsaHGXeUW5vXxvPcAEaT4t8pjytKodFj6G/RucTT+ywYTPP
-         85FVlav6HKAuYuJYp5VHHm7N4GoqQmHqk+aFTQplFjGIWPlg4C1uahQzOD6fgUu9aNre
-         yiau+IP7uoL92IbwzWGzD9jh5IJVUWWqaBXVTWArR6QljQnKlxlsy1MEPU2LNCK/0fD1
-         wlcA==
-X-Gm-Message-State: AOAM532D0wVlh8DCvAhRx2+bs5KFgrk8OivierHcEtsRGH05uoDwnPsC
-        cbcVPFKdUtRSuGy7+6zQlEtAJoqun74eiRuntDw=
-X-Google-Smtp-Source: ABdhPJx86Fjs3j/bSxZdqqIGrInEz4YE62R4z11rDBzdrMiNUtL9AvS8Ry4ssztrLtAXwA9epgL09On9AhA7jn5fI64=
-X-Received: by 2002:a92:c145:: with SMTP id b5mr19179398ilh.186.1614188420558;
- Wed, 24 Feb 2021 09:40:20 -0800 (PST)
+        Wed, 24 Feb 2021 12:41:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=jnaSaxfEHhw1J07WY7gtDPPBBJbzuT1XJjGtuK7YTXI=; b=MJS5Q70T4+yXL8ga8J+OZv9CJz
+        XQGpCeTUkjlzbWLOsIyPiaCqRp1h6JlPX3ouS1RgeUl8R6X8Ud2HcbScTXWxODs7HxjGTrd6LRUuB
+        sZn/0JXlwaPUGeKcmei2J/KFK3Fsh4R8IFfnwNnLMUdU8cbBCNwhzOsBLD31nBFHN/b0=;
+Received: from [10.69.141.136]
+        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <nfraser@codeweavers.com>)
+        id 1lEy9S-0002fd-5B; Wed, 24 Feb 2021 11:40:42 -0600
+Subject: Re: [PATCH 2/2] perf buildid-cache: Add test for PE executable
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+        Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+References: <295f5380-93a1-78fa-884b-afd4319b96d7@codeweavers.com>
+ <YDZYEKJ7w+XgqA7S@krava>
+From:   Nicholas Fraser <nfraser@codeweavers.com>
+Message-ID: <5766cbc3-1fc3-7776-561d-8916474e205a@codeweavers.com>
+Date:   Wed, 24 Feb 2021 12:40:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210218224849.5591-1-nathan@kernel.org>
-In-Reply-To: <20210218224849.5591-1-nathan@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 24 Feb 2021 18:40:09 +0100
-Message-ID: <CA+icZUXGS_bbVRsMVJowVPTZpi8NYQ_18Ec9bXBTztWL6dA=hQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm/swsmu: Avoid using structure_size
- uninitialized in smu_cmn_init_soft_gpu_metrics
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YDZYEKJ7w+XgqA7S@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 11:49 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> Clang warns:
->
-> drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:764:2: warning:
-> variable 'structure_size' is used uninitialized whenever switch default
-> is taken [-Wsometimes-uninitialized]
->         default:
->         ^~~~~~~
-> drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:770:23: note:
-> uninitialized use occurs here
->         memset(header, 0xFF, structure_size);
->                              ^~~~~~~~~~~~~~
-> drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:753:25: note:
-> initialize the variable 'structure_size' to silence this warning
->         uint16_t structure_size;
->                                ^
->                                 = 0
-> 1 warning generated.
->
-> Return in the default case, as the size of the header will not be known.
->
-> Fixes: de4b7cd8cb87 ("drm/amd/pm/swsmu: unify the init soft gpu metrics function")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1304
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-I fell over this today with Linux v5.11-10201-gc03c21ba6f4e.
+On 2021-02-24 8:43 a.m., Jiri Olsa wrote:
+> On Fri, Feb 19, 2021 at 11:10:34AM -0500, Nicholas Fraser wrote:
+>> +		# the build id must be rearranged into a GUID
+>> +		id=`objcopy -O binary --only-section=.buildid $1 /dev/stdout | \
+>> +			cut -c 33-48 | hexdump -ve '/1 "%02x"' | \
+>> +			sed 's@^\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(.*\)0a$@\4\3\2\1\6\5\8\7\9@'`
+>> +		;;
+> 
+> wow ;-) could this have some more info on what's going on in here?
+> what's the .buildid PE section format?
+> 
 
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM/Clang v13-git
+The .buildid section is in the PE debug directory format. This has a 28-byte
+header:
 
-- Sedat -
+https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#the-debug-section
 
-> ---
->  drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-> index bb620fdd4cd2..bcedd4d92e35 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-> @@ -762,7 +762,7 @@ void smu_cmn_init_soft_gpu_metrics(void *table, uint8_t frev, uint8_t crev)
->                 structure_size = sizeof(struct gpu_metrics_v2_0);
->                 break;
->         default:
-> -               break;
-> +               return;
->         }
->
->  #undef METRICS_VERSION
-> --
-> 2.30.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210218224849.5591-1-nathan%40kernel.org.
+This contains a CodeView entry with a GUID only (no path). The GUID is 4 bytes in:
+
+https://github.com/dotnet/runtime/blob/master/docs/design/specs/PE-COFF.md#codeview-debug-directory-entry-type-2
+
+This means the GUID starts at byte 32 (or 33 since cut uses 1-based indexing.)
+The snippet of code extracts the .buildid section with objcopy, cuts bytes
+33-48, converts them to hex, and re-arranges the bytes to form a GUID (the
+first three fields of a GUID are little-endian.)
+
+Technically, bytes 20-24 contain a pointer to the data, which could be
+anywhere. In practice the format of this section is fixed in order to support
+reproducible builds (so the TimeDateStamp for example is always zero.) This is
+something created by the MinGW (and Cygwin?) compilers only; as far as I know
+it's not created by MSVC tools. So I don't think we need to do any more
+complicated parsing than just pulling out those bytes.
+
+Of course if there is a tool that can pull out the build-id directly we should
+use that instead. I don't know of any at the moment though.
+
+I'll supply another patch to fix the other issues here. I'll add a couple more
+comments and a better commit message as well.
+
+> 
+> I'm getting lot of wine's output, we should redirect that
+
+No problem, I can redirect the output. I left it in because if the output is
+hidden it's not clear when the command hangs or fails. I could redirect it to a
+temp file instead and leave the temp file in case of failure.
+
+> 
+> every other run I'm getting some small window popup saying it's
+> updating wine and stuck forever.. could this be prevented?
+> 
+
+Hmm. It's possible it's stuck behind a GUI prompt. For example if you don't
+have wine-gecko installed it might waiting on a dialog asking to install it.
+I'll unset DISPLAY so it can't pop up any dialogs; this should make it fully
+non-interactive.
+
+Other than that, it could take some time to set up the wine prefix (the
+location where wine stores its runtime configuration) and it might have
+something broken in the prefix, for example if it was interrupted while setting
+it up. I'll change it to use a temporary wine prefix instead. This means it
+will have to do the initialization on every run but it should be more reliable.
