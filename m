@@ -2,86 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CD5324390
+	by mail.lfdr.de (Postfix) with ESMTP id 66D8332438F
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbhBXSJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:09:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
+        id S233743AbhBXSIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:08:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231960AbhBXSIl (ORCPT
+        with ESMTP id S230386AbhBXSIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Feb 2021 13:08:41 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A43EC061786
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247A3C061574
         for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:08:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4CyVpXvHlAs585xhnG2kQ9VRjy+LgRed1HZFwtvjpaA=; b=TcI4at6ji4D4Egi/JfZlkxoZGX
-        huLiPT2ZsxLgBrG+iPNw9WGU0y+Y+v/M7KQBC7dh1HJL5OCDv/HHlVmc2VzF7fuNvMMYDhoJQIpdK
-        YGawluwyzyj40o+a0WdkSiPZDe1T2TSjuz2GUhVlPBHS7RTdKFMnB/yraJDMZnyHiYLfUJ/jCrfJk
-        2DTaoMT+UodsoJtkdp9W3nkMyGpDhvWLhjZDUawyQUqb5WHnwgkZZI9ZAMtBaDD10GaXFR9cnqhgQ
-        5wcaC/2wCzmOQdn05Q1Z1oPzDU9lPs1lTXSsj13XsbTK0zH5cgLKKwEDDGJCXT+TuaLfnphWQlSzv
-        pvfS4ZKQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lEyZQ-009iL3-CD; Wed, 24 Feb 2021 18:07:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C2DEF30504E;
-        Wed, 24 Feb 2021 19:07:31 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A872B20D0BF1F; Wed, 24 Feb 2021 19:07:31 +0100 (CET)
-Date:   Wed, 24 Feb 2021 19:07:31 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Ivan Babrou <ivan@cloudflare.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 2/2] x86/unwind/orc: Silence warnings caused by missing
- ORC data
-Message-ID: <YDaV47Cw8AEzsnkg@hirez.programming.kicks-ass.net>
-References: <cover.1612534649.git.jpoimboe@redhat.com>
- <06d02c4bbb220bd31668db579278b0352538efbb.1612534649.git.jpoimboe@redhat.com>
- <YDZoEehURLLI/lWq@hirez.programming.kicks-ass.net>
- <20210224151805.zrujocamlb5pxf7m@treble>
+Received: by mail-pf1-x42c.google.com with SMTP id t29so1820866pfg.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:08:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tm7j2omSybNiiT8Csv1rxsiGhueuDiqHKYeICDRJGvk=;
+        b=BXtD87R6wPqyE/17Z0OIrblukbmZY6FkHZPkucn8Jg0M37hYhwIGKd0D7XUX+qzhtt
+         EG8xKa7/YlpUsnAQUFRlfUAglXql3VvGTUtlTrIPV2SDt8C53HJQTbTIuMIdGyzvGQgr
+         eCzBon+W6CypQ+hvstnRkB5WVqy1KjXxa01Zm4bzvP32SN6ugbGKhh1PW7gh9SCZ6iAa
+         3K+cmFVaVollNaPo90c7Z6IVWWmTaepR+/p6LPh3hvtbcRSusmhO1Em+TmM4+MlK1lo4
+         8f6p6s3Tr5Ijm8RBmxR7wzd6XhWmtfqGopJ48a92Jm4eHiLBaZyZ/afaNZ/PS6rtCfLD
+         d7mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tm7j2omSybNiiT8Csv1rxsiGhueuDiqHKYeICDRJGvk=;
+        b=cyv0/lpX+pIuenDDEhlOK5JJ/kHNBO4PKoyAcoM98i4YCP8whgat1S7dAIDleTg4t+
+         x42mmqaIIxSgVZuH/efzavlhuurzjlxMtReZpn/Vv/I71Xzj0VfG2DnZn52pXf0skMfx
+         QpGf+Uy4lu8zCWVAhe9bGznaye0f4s7NpsOXS+HiR6i/P8DYZ/YnuBpJ1qzfesfFwl8D
+         fIeu1iij1FcwNgqaEtKPiPQO2fjFIq6NBy1nBdWGi9e4oORbsWbw+jUOhy6hefS3E5Xj
+         D0qkkavNFmQci04DRBknvwpqUbOrYFFXXFXsuEMX8/lCH6CJG6sDRQdWguvQo/LI0ssk
+         M7IA==
+X-Gm-Message-State: AOAM530vzPbI6h0XZkArZ62T99CCvoJ8YCY08MvRWR42hv3vpxRu3hX+
+        neqYscS3wmDmm8/Imag4JSqm+A==
+X-Google-Smtp-Source: ABdhPJwnP8SclXDpGpjZzVqI/vtae4Z2PJ9dTLzKkzpDyC9Q5If7aIQKga+QnbliG4ce2R09tevDCg==
+X-Received: by 2002:aa7:848b:0:b029:1ed:5cb9:9e61 with SMTP id u11-20020aa7848b0000b02901ed5cb99e61mr23553561pfn.41.1614190080532;
+        Wed, 24 Feb 2021 10:08:00 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:385f:4012:d20f:26b5])
+        by smtp.gmail.com with ESMTPSA id i13sm3427448pfe.46.2021.02.24.10.07.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 10:07:59 -0800 (PST)
+Date:   Wed, 24 Feb 2021 10:07:53 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+42a71c84ef04577f1aef@syzkaller.appspotmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, wanpengli@tencent.com,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: general protection fault in vmx_vcpu_run (2)
+Message-ID: <YDaV+ThL4c+vTo4e@google.com>
+References: <0000000000007ff56205ba985b60@google.com>
+ <00000000000004e7d105bc091e06@google.com>
+ <20210224122710.GB20344@zn.tnic>
+ <CACT4Y+ZaGOpJ1+dxfTVWhNuV5hFJmx=HgPqVf6bqWE==7PeFFQ@mail.gmail.com>
+ <20210224174936.GG20344@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210224151805.zrujocamlb5pxf7m@treble>
+In-Reply-To: <20210224174936.GG20344@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 09:18:05AM -0600, Josh Poimboeuf wrote:
-> On Wed, Feb 24, 2021 at 03:52:01PM +0100, Peter Zijlstra wrote:
-> > On Fri, Feb 05, 2021 at 08:24:03AM -0600, Josh Poimboeuf wrote:
-> > > The ORC unwinder attempts to fall back to frame pointers when ORC data
-> > > is missing for a given instruction.  It sets state->error, but then
-> > > tries to keep going as a best-effort type of thing.  That may result in
-> > > further warnings if the unwinder gets lost.
-> > > 
-> > > Until we have some way to register generated code with the unwinder,
-> > > missing ORC will be expected, and occasionally going off the rails will
-> > > also be expected.  So don't warn about it.
-> > 
-> > I recently ran into another variant of missing ORC data, some files are
-> > simply not processed by objtool, eg. arch/x86/realmode/init.c. Would it
-> > make sense to have the vmlinux pass (when it isn't used to generate orc
-> > in the first place) also check that all code it finds has ORC data?
-> > 
-> > It's not fool proof, but it should help find files we're missing for
-> > some raisin.
+On Wed, Feb 24, 2021, Borislav Petkov wrote:
+> Hi Dmitry,
 > 
-> Doesn't validate_reachable_instructions() basically already do that?
+> On Wed, Feb 24, 2021 at 06:12:57PM +0100, Dmitry Vyukov wrote:
+> > Looking at the bisection log, the bisection was distracted by something else.
+> 
+> Meaning the bisection result:
+> 
+> 167dcfc08b0b ("x86/mm: Increase pgt_buf size for 5-level page tables")
+> 
+> is bogus?
 
-Nope, I'm talking about the case where we generate ORC for each .o file
-(and 'forget' to run objtool on some of them). And then run objtool
-again on vmlinux to validate (things like noinstr).
+Ya, looks 100% bogus.
 
-At that point it might make sense to also check that all code does
-indeed have an ORC to double check our initial (per translation unit)
-invocation didn't accidentally miss someone.
+> > You can always find the original reported issue over the dashboard link:
+> > https://syzkaller.appspot.com/bug?extid=42a71c84ef04577f1aef
+> > or on lore:
+> > https://lore.kernel.org/lkml/0000000000007ff56205ba985b60@google.com/
+> 
+> Ok, so this looks like this is trying to run kvm ioctls *in* a guest,
+> i.e., nested. Right?
+
+Yep.  I tried to run the reproducer yesterday, but the kernel config wouldn't
+boot my VM.  I haven't had time to dig in.  Anyways, I think you can safely
+assume this is a KVM issue unless more data comes along that says otherwise.
