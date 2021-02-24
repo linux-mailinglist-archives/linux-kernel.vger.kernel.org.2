@@ -2,90 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C2E3234D3
+	by mail.lfdr.de (Postfix) with ESMTP id A79A03234D4
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234240AbhBXBCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 20:02:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231809AbhBXAcF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 19:32:05 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174ACC061797;
-        Tue, 23 Feb 2021 16:31:14 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DlcKT4S5Fz9sW3;
-        Wed, 24 Feb 2021 11:31:08 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614126669;
-        bh=q90uEgyYHcxn6xBm07NTvA0SmYwt7QYZzJDUPB1hTIw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pvKqSTgmP4RxHLXbWLGsEatAklTXzKCHh9NxWeHALdsLDdCFLL/8Pd5mZZpetIutp
-         6Kqqu/EBV8svlur4vux+61ajssZdFNuk9Gbdd88nJxUcPhR4HoOke0PmOW8Z4K8yND
-         jdf9w7/sY2YJ1rV616v7EMH9P4k5z6PpwJ6SgayP1K4YEt5dmdrMxssoxhPZPUkAaP
-         +HiceKtFr9axccnVa+hOn2JzenDFC4LCFHLfi+F6YbiGosW4rz2ssid+HGsV6mufpD
-         0SdNlmPkgRUjs6vPJqB2b7PFiPveytaob9gxkiFrYxGbvU5iXWPSaZc70yWw+FzUJb
-         pG+rxCq3IMOFw==
-Date:   Wed, 24 Feb 2021 11:31:08 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commits in Linus' tree
-Message-ID: <20210224113108.4c05915e@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Q_b.E1bX5euukwq_pXNPK2b";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S232864AbhBXBDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 20:03:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233755AbhBXAfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 19:35:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 79C2764EC3;
+        Wed, 24 Feb 2021 00:32:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614126737;
+        bh=jOJmSCxtenO1WTtfL7d1uP4jeqm3TLos+sg+rh3P7pI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=q/R/xA7ZNgWlqegXEi6CPoImKZT00/Ze/oDKl4UUpwwlit1kqYViSzgwJ0WN7cu49
+         F7daU7OqW/5l8IuazW/f6t8gn2YoVjAEZ79/NYaY7x0Wg7koIenIPWja3ybzzSfneL
+         CObP3rokZiK66bM1xtWtu4hX4qJbXxhrn+Tl5+sUABFqpbTDGfXFqsmfX9jSkGvxcv
+         3STQXzSvyx83oLSfVHOxNTUqN5MiwwG5tHLnSEatGT7zJkVNl8vpwzY1svqsWrG7vs
+         BaFLuITpYs4s3ULokcvOmCVy1bxYeAOVRpQ0ic2XsfRwf2SWri7aPbpi2Q5v4btWg1
+         FYaAe+VsXb08A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 638B2609CC;
+        Wed, 24 Feb 2021 00:32:17 +0000 (UTC)
+Subject: Re: [GIT PULL] keys: Collected minor fixes and cleanups
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <1322896.1612969174@warthog.procyon.org.uk>
+References: <1322896.1612969174@warthog.procyon.org.uk>
+X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
+X-PR-Tracked-Message-Id: <1322896.1612969174@warthog.procyon.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/keys-misc-20210126
+X-PR-Tracked-Commit-Id: 8f0bfc25c907f38e7f9dc498e8f43000d77327ef
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c03c21ba6f4e95e406a1a7b4c34ef334b977c194
+Message-Id: <161412673735.16978.8992204250231676229.pr-tracker-bot@kernel.org>
+Date:   Wed, 24 Feb 2021 00:32:17 +0000
+To:     David Howells <dhowells@redhat.com>
+Cc:     torvalds@linux-foundation.org, dhowells@redhat.com,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Ben Boeckel <mathstuf@gmail.com>,
+        Denis Efremov <efremov@linux.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Jann Horn <jannh@google.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Tom Rix <trix@redhat.com>, YueHaibing <yuehaibing@huawei.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Q_b.E1bX5euukwq_pXNPK2b
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The pull request you sent on Wed, 10 Feb 2021 14:59:34 +0000:
 
-Hi all,
+> git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/keys-misc-20210126
 
-Commits
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c03c21ba6f4e95e406a1a7b4c34ef334b977c194
 
-  b33fff07e3e3 ("x86, build: allow LTO to be selected")
-  d2dcd3e37475 ("x86, cpu: disable LTO for cpu.c")
-  e242db40be27 ("x86, vdso: disable LTO only for vDSO")
-  b1a1a1a09b46 ("kbuild: lto: postpone objtool")
-  41425ebe2024 ("objtool: Split noinstr validation from --vmlinux")
-  6dafca978033 ("x86, build: use objtool mcount")
-  22c8542d7b22 ("tracing: add support for objtool mcount")
-  0e731dbc1824 ("objtool: Don't autodetect vmlinux.o")
-  18a14575ae31 ("objtool: Fix __mcount_loc generation with Clang's assemble=
-r")
-  99d0021569c7 ("objtool: Add a pass for generating __mcount_loc")
+Thank you!
 
-are missing a Signed-off-by from their committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Q_b.E1bX5euukwq_pXNPK2b
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA1nkwACgkQAVBC80lX
-0GzkwQf/YezJJc89M08G/SSmDvAr/nNDEIKuML9mmDgBxj4dxVXIotTO6yLfzm14
-8nndQlbRKUjfn5y3zvbtvLEaVNz4OJDT5HSfC7Wg972lbfjKPUL/+//e3vt/w1Pp
-JtCTJ57Mr1aQa4dny+gWpwkvsNHrgUaF6I0EFOc0QwHjKO9oyoQLSIWHbXQvFwtU
-t/N1KMPUwnAhcPfeWLxXfeXEc9YtWJerzwNpUIzD7XBn+SlhDV2Wof5uP8HvjLgb
-5iYAGZedzBPNtzruHk8EVieVYXlCSYcxfuCEkpnN4x27iNOqFn7oKyhrBvMLBXoZ
-x9JtvdxckudMQOjI6RNk8uD8UYmE7Q==
-=TfSi
------END PGP SIGNATURE-----
-
---Sig_/Q_b.E1bX5euukwq_pXNPK2b--
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
