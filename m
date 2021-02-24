@@ -2,133 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EA532478C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:31:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD0B32478E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbhBXXbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 18:31:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58924 "EHLO
+        id S233791AbhBXXdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 18:33:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbhBXXbQ (ORCPT
+        with ESMTP id S233662AbhBXXdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 18:31:16 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A69C061574;
-        Wed, 24 Feb 2021 15:30:35 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id i14so742901pjz.4;
-        Wed, 24 Feb 2021 15:30:35 -0800 (PST)
+        Wed, 24 Feb 2021 18:33:01 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5A9C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 15:32:21 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id o38so2539026pgm.9
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 15:32:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IDa353spEJ99h0ZFQUn0JxkftZINLCJU+PEprlTyhaI=;
-        b=TyyUsZqsySftNQxWmnrfTsh4J4HitmgvQ/B0QvALBieq+QP1A67AvXOOPHcz/ueXqq
-         /X5l+9IZ9yh0qqGjk23abkJX1DJONjj7+hEHYJy6ci5Z2BlkseGFLyzyPfWaz2vTywg1
-         Q90J3mBuvyDwgJkg8DIOJyJ5hSdLSdmw1Zg+4/cG5Xk0ug8dIeol9VSV0QsU6PcdYEYT
-         2WkADTa3D73t2GaXjEKE2ZPlIPHmDSo8C4XiLckFZ2RI33Ka5olWp4ZjAzbvYpVSdUW8
-         h8AwdMflCyS26VPkMtpEODm4qjJLwNXsMxLagvlcwvk7Gz4Uu0cjpUj5wvhPUn08ufJz
-         dm1g==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g5Gy0p/FQq9jX447dEvvCmbDqR5vUzjHm6T2Y74f/1I=;
+        b=QFkVgQNTiu+/N75DJ6Z59aF8QOPIoxiX6qncyFFy4xTBds6g3WqzTlBjfdpPLRXISu
+         iL89TgGf1xUQeRrY/5A2kdhWaGsYPaq3X7FaK8prs4/0BZ6aNr2Jqg1gfyp705qAqTRL
+         OPlGqFU6exNaqMHv4QmNzz20egGMt7rHAhEPc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IDa353spEJ99h0ZFQUn0JxkftZINLCJU+PEprlTyhaI=;
-        b=m/sC3yYcDUTLsab4fz+uxf9FgSjW4gysa7CzZ4IxuKF76zjnnIp1cq9yMcbDwJQ0bl
-         SIQWmm7XQ4T+Ron5KaYfWcLS7T8rPb1dL4nv4De/8RDfzS9oSjmFSm2sOJwYHjBw5+v0
-         NqH7bmyOhrdKz8dabR3kZsmsttMU/Jgmq1J9iLo3n8AyJosNQgzbDmCEmAuoaB5FpU73
-         bQTQ5omaabtwxnuK8+8yHkM6D5N934/Ri0mMrBnrG7C5ap+nswrFJpg85mDntRFJ5g7G
-         ha6N/9W3DHvPt6r+3giSDUUqkTHP21jls/L+LB+scfI/uGmXCDzZYFFmBv3z8VGh58qH
-         ulnw==
-X-Gm-Message-State: AOAM530IZHVCcQc4t2s+0kY+cZtNCHim6I3ePWZtE8nImwN89zLUd9BN
-        yqZpuBzqZblcDvJqQ1WMMtWOVuWewuRELPP6
-X-Google-Smtp-Source: ABdhPJy6MP53YivXGyD8hnmjkeFryG2XzIxzHA+nId3Yu+8WXHbfJKtjl2+9RErLwrTTaAddiERh+w==
-X-Received: by 2002:a17:90a:3ba2:: with SMTP id e31mr250133pjc.201.1614209434852;
-        Wed, 24 Feb 2021 15:30:34 -0800 (PST)
-Received: from vm-123.slytdz3n204uxoeeqq2h5obquh.xx.internal.cloudapp.net ([52.151.19.72])
-        by smtp.gmail.com with ESMTPSA id m16sm3835033pfd.203.2021.02.24.15.30.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g5Gy0p/FQq9jX447dEvvCmbDqR5vUzjHm6T2Y74f/1I=;
+        b=WkvCv3cFGotryx/5eVmuR3wXAJKhagGBeCx6Fuy8zVlp8nyrJm0Xgpyy2fJuVJuntG
+         t713wItt/kCrG7uV1WmQtAz6N/OesPX88nopa2oi/vNg48t73E687loefRKgZJWOhzL5
+         DDDJgs7jnQ/QWk06Sb0tJoSrkcHG/YEg3NSuYfukjZa8UN9LVtq1dlc/Pw61H5L90ICg
+         6FIFxBwQcYkZwDtVgnmglre5Z0/gz6CwlNYrNptJKJNEPtU4Pqji+jzljgGKPwKIHmYO
+         4v1tNmJt6AGo935mHCmoMOjNOkWT85DSx81+Y2WggjlMVTWgP94rS3gSbnAvQjLDcjvP
+         MwJQ==
+X-Gm-Message-State: AOAM532sJNi5vUm7CBdFLZajcbBqdDZ9WxaUUkwwjrAE8JnriXOXvRQk
+        w4u0vteaer9SdJnAv/A86pwT3A==
+X-Google-Smtp-Source: ABdhPJyEOHGWDGnSX+oJgmdx37VbyypUjZW+35RnUDRvzjr6jKfJ4VQJNyRorCN9sLTIUKVtbYHrFg==
+X-Received: by 2002:a63:e42:: with SMTP id 2mr335730pgo.100.1614209540694;
+        Wed, 24 Feb 2021 15:32:20 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o18sm3956468pjq.44.2021.02.24.15.32.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 15:30:34 -0800 (PST)
-From:   "Melanie Plageman (Microsoft)" <melanieplageman@gmail.com>
-To:     linux-scsi@vger.kernel.org
-Cc:     andres@anarazel.de, haiyangz@microsoft.com, jejb@linux.ibm.com,
-        kys@microsoft.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        mikelley@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        "Melanie Plageman (Microsoft)" <melanieplageman@gmail.com>
-Subject: [PATCH v4] scsi: storvsc: Parameterize number hardware queues
-Date:   Wed, 24 Feb 2021 23:29:48 +0000
-Message-Id: <20210224232948.4651-1-melanieplageman@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 24 Feb 2021 15:32:20 -0800 (PST)
+Date:   Wed, 24 Feb 2021 15:32:19 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] parisc: select
+ FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY
+Message-ID: <202102241508.A10EB51C8@keescook>
+References: <20210224225706.2726050-1-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224225706.2726050-1-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ability to set the number of hardware queues with new module parameter,
-storvsc_max_hw_queues. The default value remains the number of CPUs.  This
-functionality is useful in some environments (e.g. Microsoft Azure) where
-decreasing the number of hardware queues has been shown to improve
-performance.
+On Wed, Feb 24, 2021 at 02:57:06PM -0800, Sami Tolvanen wrote:
+> parisc uses -fpatchable-function-entry with dynamic ftrace, which means we
+> don't need recordmcount. Select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY
+> to tell that to the build system.
+> 
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Fixes: 3b15cdc15956 ("tracing: move function tracer options to Kconfig")
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-Signed-off-by: Melanie Plageman (Microsoft) <melanieplageman@gmail.com>
----
-Updated since v3:
-- permissions in octal
-- param type changed to unsigned int
-- removed value checking from module init function
-- simplified value checking logic in probe function
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
- drivers/scsi/storvsc_drv.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+Cross-build tested for defconfig, allmodconfig, allyesconfig:
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 6bc5453cea8a..dfe005c03734 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -366,10 +366,14 @@ static u32 max_outstanding_req_per_channel;
- static int storvsc_change_queue_depth(struct scsi_device *sdev, int queue_depth);
- 
- static int storvsc_vcpus_per_sub_channel = 4;
-+static unsigned int storvsc_max_hw_queues;
- 
- module_param(storvsc_ringbuffer_size, int, S_IRUGO);
- MODULE_PARM_DESC(storvsc_ringbuffer_size, "Ring buffer size (bytes)");
- 
-+module_param(storvsc_max_hw_queues, uint, 0644);
-+MODULE_PARM_DESC(storvsc_max_hw_queues, "Maximum number of hardware queues");
-+
- module_param(storvsc_vcpus_per_sub_channel, int, S_IRUGO);
- MODULE_PARM_DESC(storvsc_vcpus_per_sub_channel, "Ratio of VCPUs to subchannels");
- 
-@@ -1907,6 +1911,7 @@ static int storvsc_probe(struct hv_device *device,
- {
- 	int ret;
- 	int num_cpus = num_online_cpus();
-+	int num_present_cpus = num_present_cpus();
- 	struct Scsi_Host *host;
- 	struct hv_host_device *host_dev;
- 	bool dev_is_ide = ((dev_id->driver_data == IDE_GUID) ? true : false);
-@@ -2015,8 +2020,17 @@ static int storvsc_probe(struct hv_device *device,
- 	 * For non-IDE disks, the host supports multiple channels.
- 	 * Set the number of HW queues we are supporting.
- 	 */
--	if (!dev_is_ide)
--		host->nr_hw_queues = num_present_cpus();
-+	if (!dev_is_ide) {
-+		if (storvsc_max_hw_queues > num_present_cpus) {
-+			storvsc_max_hw_queues = 0;
-+			storvsc_log(device, STORVSC_LOGGING_WARN,
-+				"Resetting invalid storvsc_max_hw_queues value to default.\n");
-+		}
-+		if (storvsc_max_hw_queues)
-+			host->nr_hw_queues = storvsc_max_hw_queues;
-+		else
-+			host->nr_hw_queues = num_present_cpus;
-+	}
- 
- 	/*
- 	 * Set the error handler work queue.
+Tested-by: Kees Cook <keescook@chromium.org>
+
+-Kees
+
+> ---
+>  arch/parisc/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+> index ecef9aff9d72..f56c67bbe495 100644
+> --- a/arch/parisc/Kconfig
+> +++ b/arch/parisc/Kconfig
+> @@ -61,6 +61,7 @@ config PARISC
+>  	select HAVE_KRETPROBES
+>  	select HAVE_DYNAMIC_FTRACE if $(cc-option,-fpatchable-function-entry=1,1)
+>  	select HAVE_FTRACE_MCOUNT_RECORD if HAVE_DYNAMIC_FTRACE
+> +	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY if DYNAMIC_FTRACE
+>  	select HAVE_KPROBES_ON_FTRACE
+>  	select HAVE_DYNAMIC_FTRACE_WITH_REGS
+>  	select SET_FS
+> 
+> base-commit: 062c84fccc4444805738d76a2699c4d3c95184ec
+> -- 
+> 2.30.0.617.g56c4b15f3c-goog
+> 
+
 -- 
-2.20.1
-
+Kees Cook
