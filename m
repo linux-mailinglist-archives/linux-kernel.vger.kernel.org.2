@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A22E32442C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21199324431
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234302AbhBXS5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:57:16 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:25750 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235769AbhBXS4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:56:05 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614192948; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Z5u2cRx3ByB7G8IrAi2oTdK/ZKiZVPt/6qkdsiccOyc=;
- b=YqLq+at7/aP7bTocgENYhSNKm0D+Lsb/yBFGICeleEQJOeNWYSJuNbzB0vSaikREl9CiXXt2
- JWGa7hrGw1yUugsSrdT2i7NLFCqahOgbds7FBLrGW4Yizuhb+onHGTdHOenzQtvb37V8PRgb
- Twyz2b/0+3OY4ATJwUv+DWcDiSc=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 6036a11748e80e1dc59dcbbb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Feb 2021 18:55:19
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 97169C433ED; Wed, 24 Feb 2021 18:55:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 06655C433CA;
-        Wed, 24 Feb 2021 18:55:17 +0000 (UTC)
+        id S234567AbhBXS5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:57:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235785AbhBXS4h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 13:56:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BFDC06174A;
+        Wed, 24 Feb 2021 10:55:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aSmBycH0uJ6bas2Xybb1KrzwdkDReh73b+85qbDRdQ4=; b=wDrxERWdH7aSgsyr5QwIDqAZ9y
+        oImtMcG8bftvnoTIalKWfhjsmoeEQiczbkbMnhBawibN5m3IZe+Ezn0jI0b3N7tECV/3HeXJAnUYd
+        W8o5Q+tHmoAEZcP7sSK80cahp6xqAHvfIjb4bN8Ah047kgyT5ZhaNeG0/jPTWlSqKyBU7etOCLtYN
+        UuRrWoJkFf/F6dQlZwdj9eyXoEsDUO4A6dKqDRIppjs9lgVMTw9xvCOlkTv9PjwkBjqGkds7hfBnX
+        k9uCfpbd5dSsERxkH6+KjD/pI/UT/wx5E8492nwTdjwfaMfUvAVVXreaqY7SB/05ZO8+FYmcicczo
+        a0ns1/qg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lEzJh-009lGy-25; Wed, 24 Feb 2021 18:55:26 +0000
+Date:   Wed, 24 Feb 2021 18:55:21 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-ide@vger.kernel.org, linux-mmc@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-block@vger.kernel.org, dm-devel@redhat.com,
+        fujita.tomonori@lab.ntt.co.jp, tim@cyberelk.net, mst@redhat.com,
+        jasowang@redhat.com, pbonzini@redhat.com, davem@davemloft.net,
+        bp@alien8.de, agk@redhat.com, snitzer@redhat.com,
+        ulf.hansson@linaro.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, dgilbert@interlog.com,
+        Kai.Makisara@kolumbus.fi, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bfields@fieldses.org, chuck.lever@oracle.com,
+        baolin.wang@linaro.org, vbadigan@codeaurora.org, zliua@micron.com,
+        richard.peng@oppo.com, guoqing.jiang@cloud.ionos.com,
+        stanley.chu@mediatek.com, cang@codeaurora.org,
+        asutoshd@codeaurora.org, beanhuo@micron.com, jaegeuk@kernel.org
+Subject: Re: [RFC PATCH] blk-core: remove blk_put_request()
+Message-ID: <20210224185521.GA2326119@infradead.org>
+References: <20210222211115.30416-1-chaitanya.kulkarni@wdc.com>
+ <YDY+ObNNiBMMuSEt@stefanha-x1.localdomain>
+ <f3141eb3-9938-a216-a9f8-cb193589a657@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 24 Feb 2021 10:55:17 -0800
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v6 8/8] bus: mhi: core: Do not clear channel context more
- than once
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20210224101013.GV27945@work>
-References: <1612470486-10440-1-git-send-email-bbhatt@codeaurora.org>
- <1612470486-10440-9-git-send-email-bbhatt@codeaurora.org>
- <20210224101013.GV27945@work>
-Message-ID: <e18295810c7ef7d2a0932f42351e542d@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f3141eb3-9938-a216-a9f8-cb193589a657@kernel.dk>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-24 02:10 AM, Manivannan Sadhasivam wrote:
-> On Thu, Feb 04, 2021 at 12:28:06PM -0800, Bhaumik Bhatt wrote:
->> Clearing a channel context can happen twice if the client driver
->> unprepares and reset the channels from the remove() callback from
->> a controller requested MHI power down sequence. If there are
->> multiple attempts at calling the mhi_free_coherent() API, we see
->> kernel warnings such as "trying to free invalid coherent area".
->> Example for one such client is the QRTR MHI driver. Avoid these
->> warnings by skipping mhi_deinit_chan_ctxt() API call and prevent
->> extra work from MHI as the channels are already disabled.
->> 
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+On Wed, Feb 24, 2021 at 09:48:21AM -0700, Jens Axboe wrote:
+> Would make sense to rename blk_get_request() to blk_mq_alloc_request()
+> and then we have API symmetry. The get/put don't make sense when there
+> are no references involved.
 > 
-> Is this patch still valid? We merged a similar fix from Loic for v5.11.
-> 
-Yes, both the patches work to solve the same problem. This one just does 
-it
-sooner and relies on internal state variable rather than context being 
-NULL.
-> Thanks,
-> Mani
-> 
->> ---
->>  drivers/bus/mhi/core/init.c | 1 +
->>  1 file changed, 1 insertion(+)
->> 
->> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
->> index 30eef19..272f350 100644
->> --- a/drivers/bus/mhi/core/init.c
->> +++ b/drivers/bus/mhi/core/init.c
->> @@ -1314,6 +1314,7 @@ static int mhi_driver_remove(struct device *dev)
->> 
->>  		if ((ch_state[dir] == MHI_CH_STATE_ENABLED ||
->>  		     ch_state[dir] == MHI_CH_STATE_STOP) &&
->> +		    mhi_chan->ch_state != MHI_CH_STATE_DISABLED &&
->>  		    !mhi_chan->offload_ch)
->>  			mhi_deinit_chan_ctxt(mhi_cntrl, mhi_chan);
->> 
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+> But it's a lot of churn for very little reward, which is always kind
+> of annoying. Especially for the person that has to carry the patches.
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Let's do the following:
+
+ - move the initialize_rq_fn call from blk_get_request into
+   blk_mq_alloc_request and make the former a trivial alias for the
+   latter
+ - migrate to the blk_mq_* versions on a per-driver/subsystem basis.
+   The scsi migration depends on the first item above, so it will have
+   to go with that or wait for the next merge window
+ - don't migrate the legacy ide driver, as it is about to be removed and
+   has a huge number of blk_get_request calls
