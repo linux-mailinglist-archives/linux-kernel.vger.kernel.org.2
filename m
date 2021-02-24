@@ -2,333 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D720323AEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 12:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF17323AD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234871AbhBXLAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 06:00:17 -0500
-Received: from pmg01-out2.zxcs.nl ([185.104.28.188]:51293 "EHLO
-        pmg01-out2.zxcs.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233841AbhBXLAL (ORCPT
+        id S234936AbhBXKxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 05:53:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234913AbhBXKxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 06:00:11 -0500
-Received: from pmg01.zxcs.nl (localhost.localdomain [127.0.0.1])
-        by pmg01.zxcs.nl (ZXCS) with ESMTP id 26076106752;
-        Wed, 24 Feb 2021 11:53:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=pascalroeleven.nl; s=x; h=Content-Transfer-Encoding:MIME-Version:References
-        :In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=0ezqB/1a+OwcYabQdqNCgm+GNs+ai2gxOlbTrgpqe6Y=; b=OO0pN2wc9ZoYsoujfIJXXQ5B5O
-        vi0dyZLfo26hLB51fxZ9pkwGZWKC8vln1uKqeFnBywI2v7b829sPnBZ19Nw/wPwmpVY2+KFvyQM5x
-        g0oJ71DsgqPSbutdJJHGC0BsedPSmkUFOIUF0VbwfmPAotShU7fUre0pkuXdUQoxnIQCtAUZsZkGe
-        Oc6rV84QDCP/whRyqtA7p5DKhyR9gGkaJkW1rdayXnbZXIkr4VwrvlcTwlvfI9ln/zXHGJaJrdfnK
-        M0AXGxrHDacFcyQdp1rim1dSkvZUlRcEGHu9FwV4KIl476rrJzfU2O2c31YVUH8oeLBbOnyHmCVIA
-        mtxfZwZQ==;
-From:   Pascal Roeleven <dev@pascalroeleven.nl>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Martin Cerveny <m.cerveny@computer.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-sunxi@googlegroups.com,
-        Pascal Roeleven <dev@pascalroeleven.nl>
-Subject: [PATCH v5 2/2] ARM: dts: sun4i: Add support for Topwise A721 tablet
-Date:   Wed, 24 Feb 2021 11:52:40 +0100
-Message-Id: <20210224105240.47754-3-dev@pascalroeleven.nl>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210224105240.47754-1-dev@pascalroeleven.nl>
-References: <20210224105240.47754-1-dev@pascalroeleven.nl>
+        Wed, 24 Feb 2021 05:53:44 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07590C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 02:53:01 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id lr13so2257390ejb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 02:53:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hg6HWR5e/o2fjZiKVbSJJcv/7HlVrgm4ZudMig7R0Es=;
+        b=eQfRdeLlNwywZ3VO5Ag/LtBRTWyRHGqhLYlryXGkDitRLxjsM1HYDPw1lpw4i+6fKj
+         kD8xp4xaxYSuA5x1XLeEI1fwE5/YbP2FTfePTkBmZA6OJnEVD4pdnzmx+zInUtF0T+eY
+         EnkTL2XICUxVx3qIiFgsIeO7hKilM+LATpSTM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hg6HWR5e/o2fjZiKVbSJJcv/7HlVrgm4ZudMig7R0Es=;
+        b=drQxbkm0z9wJ3JoNNGu2+XCg6DprfvVBH34reQtvr6MjDU5L2SxCUavscQo0s1JaCv
+         CofO09gzintGbilJxQlKFJuvugrJnkq/4as/PSEU3M9GmBWBdwVdNCh94B4JNkGsTv+W
+         gUk9kLm1pgeT0vHnhT+NhB8+u/pdnYUw/uYUSxUnMj5vQv1PfzJ8ah2LSRQBq4l8QJRk
+         ZsJGGSzsyEbxWmkORYQMe35rc8qe+adGIL4BZxol+/q4d4wyysYFMox1dMwOKZaowTXr
+         yyYxcuscxo/TXZZJm1Cy7ooXuYwnBMygBIIcbNq0pHbXxqo0JOpCQ0AvtTe38sEFWka9
+         gB9g==
+X-Gm-Message-State: AOAM531o1IdcGXDJc2ytL+zwMrMC9u2zY9i3VodaBm1hCAjKDupC9kQV
+        diudMWT7OWRSdqHfMssVcIKsiw==
+X-Google-Smtp-Source: ABdhPJx9mntsNxQt94eKyBdg0ZATMqpYxIVyemxFMXGrTJh1KmX3ygLn7VbNon//73V0QbsbcJjWTg==
+X-Received: by 2002:a17:907:a087:: with SMTP id hu7mr14819167ejc.122.1614163979808;
+        Wed, 24 Feb 2021 02:52:59 -0800 (PST)
+Received: from prevas-ravi.prevas.se ([80.208.71.141])
+        by smtp.gmail.com with ESMTPSA id pk5sm1036529ejb.119.2021.02.24.02.52.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 02:52:59 -0800 (PST)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: [PATCH] kbuild: add CONFIG_VMLINUX_MAP expert option
+Date:   Wed, 24 Feb 2021 11:52:55 +0100
+Message-Id: <20210224105256.1939169-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-AuthUser: dev@pascalroeleven.nl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Topwise A721/LY-F1 tablet is a tablet sold around 2012 under
-different brands. The mainboard mentions A721 clearly, so this tablet
-is best known under this name.
+It can be quite useful to have ld emit a link map file, in order to
+debug or verify that special sections end up where they are supposed
+to, and to see what LD_DEAD_CODE_DATA_ELIMINATION manages to get rid
+of.
 
-Signed-off-by: Pascal Roeleven <dev@pascalroeleven.nl>
+The only reason I'm not just adding this unconditionally is that the
+.map file can be rather large (several MB), and that's a waste of
+space when one isn't interested in these things. Also hide the prompt
+behind CONFIG_EXPERT.
+
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 ---
- arch/arm/boot/dts/Makefile                   |   3 +-
- arch/arm/boot/dts/sun4i-a10-topwise-a721.dts | 242 +++++++++++++++++++
- 2 files changed, 244 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm/boot/dts/sun4i-a10-topwise-a721.dts
+ .gitignore              | 1 +
+ Makefile                | 3 ++-
+ lib/Kconfig.debug       | 9 +++++++++
+ scripts/link-vmlinux.sh | 9 +++++++++
+ 4 files changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 8e5d4ab4e7..53b6e06bf1 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1105,7 +1105,8 @@ dtb-$(CONFIG_MACH_SUN4I) += \
- 	sun4i-a10-olinuxino-lime.dtb \
- 	sun4i-a10-pcduino.dtb \
- 	sun4i-a10-pcduino2.dtb \
--	sun4i-a10-pov-protab2-ips9.dtb
-+	sun4i-a10-pov-protab2-ips9.dtb \
-+	sun4i-a10-topwise-a721.dtb
- dtb-$(CONFIG_MACH_SUN5I) += \
- 	sun5i-a10s-auxtek-t003.dtb \
- 	sun5i-a10s-auxtek-t004.dtb \
-diff --git a/arch/arm/boot/dts/sun4i-a10-topwise-a721.dts b/arch/arm/boot/dts/sun4i-a10-topwise-a721.dts
-new file mode 100644
-index 0000000000..3628f12d25
---- /dev/null
-+++ b/arch/arm/boot/dts/sun4i-a10-topwise-a721.dts
-@@ -0,0 +1,242 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright 2020 Pascal Roeleven <dev@pascalroeleven.nl>
-+ */
+diff --git a/.gitignore b/.gitignore
+index 3af66272d6f1..d3038aff4485 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -58,6 +58,7 @@ modules.order
+ /TAGS
+ /linux
+ /vmlinux
++/vmlinux.map
+ /vmlinux.32
+ /vmlinux.symvers
+ /vmlinux-gdb.py
+diff --git a/Makefile b/Makefile
+index b18dbc634690..be6fbd99a214 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1501,7 +1501,8 @@ endif # CONFIG_MODULES
+ # Directories & files removed with 'make clean'
+ CLEAN_FILES += include/ksym vmlinux.symvers \
+ 	       modules.builtin modules.builtin.modinfo modules.nsdeps \
+-	       compile_commands.json
++	       compile_commands.json \
++	       vmlinux.map
+ 
+ # Directories & files removed with 'make mrproper'
+ MRPROPER_FILES += include/config include/generated          \
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 5ea0c1773b0a..d6af084c11ae 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -412,6 +412,15 @@ config VMLINUX_VALIDATION
+ 	depends on STACK_VALIDATION && DEBUG_ENTRY && !PARAVIRT
+ 	default y
+ 
++config VMLINUX_MAP
++	bool "Generate vmlinux.map file when linking" if EXPERT
++	help
++	  Selecting this option will pass "-Map=vmlinux.map" to ld
++	  when linking vmlinux. That file can be useful for verifying
++	  and debugging magic section games, and for seeing which
++	  pieces of code get eliminated with
++	  CONFIG_LD_DEAD_CODE_DATA_ELIMINATION.
 +
-+/dts-v1/;
-+#include "sun4i-a10.dtsi"
-+#include "sunxi-common-regulators.dtsi"
+ config DEBUG_FORCE_WEAK_PER_CPU
+ 	bool "Force weak per-cpu definitions"
+ 	depends on DEBUG_KERNEL
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 3b261b0f74f0..bba58839db40 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -166,6 +166,12 @@ vmlinux_link()
+ 		strip_debug=-Wl,--strip-debug
+ 	fi
+ 
++	if [ -n "${CONFIG_VMLINUX_MAP}" ]; then
++		map_option="-Map=${output}.map"
++	else
++		map_option=""
++	fi
 +
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/pwm/pwm.h>
-+
-+/ {
-+	model = "Topwise A721";
-+	compatible = "topwise,a721", "allwinner,sun4i-a10";
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pwms = <&pwm 0 100000 PWM_POLARITY_INVERTED>;
-+		power-supply = <&reg_vbat>;
-+		enable-gpios = <&pio 7 7 GPIO_ACTIVE_HIGH>; /* PH7 */
-+		brightness-levels = <0 30 40 50 60 70 80 90 100>;
-+		default-brightness-level = <8>;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	panel {
-+		compatible = "starry,kr070pe2t";
-+		backlight = <&backlight>;
-+		power-supply = <&reg_lcd_power>;
-+
-+		port {
-+			panel_input: endpoint {
-+				remote-endpoint = <&tcon0_out_panel>;
-+			};
-+		};
-+	};
-+
-+	reg_lcd_power: reg-lcd-power {
-+		compatible = "regulator-fixed";
-+		regulator-name = "reg-lcd-power";
-+		gpio = <&pio 7 8 GPIO_ACTIVE_HIGH>; /* PH8 */
-+		enable-active-high;
-+	};
-+
-+	reg_vbat: reg-vbat {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vbat";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+	};
-+
-+};
-+
-+&codec {
-+	status = "okay";
-+};
-+
-+&cpu0 {
-+	cpu-supply = <&reg_dcdc2>;
-+};
-+
-+&de {
-+	status = "okay";
-+};
-+
-+&ehci0 {
-+	status = "okay";
-+};
-+
-+&ehci1 {
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+
-+	axp209: pmic@34 {
-+		reg = <0x34>;
-+		interrupts = <0>;
-+	};
-+};
-+
-+#include "axp209.dtsi"
-+
-+&ac_power_supply {
-+	status = "okay";
-+};
-+
-+&battery_power_supply {
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	accelerometer@4c {
-+		compatible = "fsl,mma7660";
-+		reg = <0x4c>;
-+	};
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+
-+	touchscreen@38 {
-+		compatible = "edt,edt-ft5406";
-+		reg = <0x38>;
-+		interrupt-parent = <&pio>;
-+		interrupts = <7 21 IRQ_TYPE_EDGE_FALLING>;
-+		touchscreen-size-x = <800>;
-+		touchscreen-size-y = <480>;
-+		vcc-supply = <&reg_vcc3v3>;
-+	};
-+};
-+
-+&lradc {
-+	vref-supply = <&reg_ldo2>;
-+	status = "okay";
-+
-+	button-571 {
-+		label = "Volume Up";
-+		linux,code = <KEY_VOLUMEUP>;
-+		channel = <0>;
-+		voltage = <571428>;
-+	};
-+
-+	button-761 {
-+		label = "Volume Down";
-+		linux,code = <KEY_VOLUMEDOWN>;
-+		channel = <0>;
-+		voltage = <761904>;
-+	};
-+};
-+
-+&mmc0 {
-+	vmmc-supply = <&reg_vcc3v3>;
-+	bus-width = <4>;
-+	cd-gpios = <&pio 7 1 GPIO_ACTIVE_LOW>; /* PH01 */
-+	status = "okay";
-+};
-+
-+&ohci0 {
-+	status = "okay";
-+};
-+
-+&ohci1 {
-+	status = "okay";
-+};
-+
-+&otg_sram {
-+	status = "okay";
-+};
-+
-+&pio {
-+	vcc-pb-supply = <&reg_vcc3v3>;
-+	vcc-pf-supply = <&reg_vcc3v3>;
-+	vcc-ph-supply = <&reg_vcc3v3>;
-+};
-+
-+&pwm {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pwm0_pin>;
-+	status = "okay";
-+};
-+
-+&reg_dcdc2 {
-+	regulator-always-on;
-+	regulator-min-microvolt = <1000000>;
-+	regulator-max-microvolt = <1400000>;
-+	regulator-name = "vdd-cpu";
-+};
-+
-+&reg_dcdc3 {
-+	regulator-always-on;
-+	regulator-min-microvolt = <1250000>;
-+	regulator-max-microvolt = <1250000>;
-+	regulator-name = "vdd-int-dll";
-+};
-+
-+&reg_ldo1 {
-+	regulator-name = "vdd-rtc";
-+};
-+
-+&reg_ldo2 {
-+	regulator-always-on;
-+	regulator-min-microvolt = <3000000>;
-+	regulator-max-microvolt = <3000000>;
-+	regulator-name = "avcc";
-+};
-+
-+&reg_usb0_vbus {
-+	status = "okay";
-+};
-+
-+&reg_usb1_vbus {
-+	status = "okay";
-+};
-+
-+&reg_usb2_vbus {
-+	status = "okay";
-+};
-+
-+&tcon0_out {
-+	tcon0_out_panel: endpoint@0 {
-+		reg = <0>;
-+		remote-endpoint = <&panel_input>;
-+	};
-+};
-+
-+&uart0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart0_pb_pins>;
-+	status = "okay";
-+};
-+
-+&usb_otg {
-+	dr_mode = "otg";
-+	status = "okay";
-+};
-+
-+&usb_power_supply {
-+	status = "okay";
-+};
-+
-+&usbphy {
-+	usb0_id_det-gpios = <&pio 7 4 GPIO_ACTIVE_HIGH>; /* PH4 */
-+	usb0_vbus_det-gpios = <&pio 7 5 GPIO_ACTIVE_HIGH>; /* PH5 */
-+	usb0_vbus-supply = <&reg_usb0_vbus>;
-+	usb1_vbus-supply = <&reg_usb1_vbus>;
-+	usb2_vbus-supply = <&reg_usb2_vbus>;
-+	status = "okay";
-+};
+ 	if [ "${SRCARCH}" != "um" ]; then
+ 		if [ -n "${CONFIG_LTO_CLANG}" ]; then
+ 			# Use vmlinux.o instead of performing the slow LTO
+@@ -187,6 +193,7 @@ vmlinux_link()
+ 		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}	\
+ 			${strip_debug#-Wl,}			\
+ 			-o ${output}				\
++			${map_option}				\
+ 			-T ${lds} ${objects}
+ 	else
+ 		objects="-Wl,--whole-archive			\
+@@ -200,6 +207,7 @@ vmlinux_link()
+ 		${CC} ${CFLAGS_vmlinux}				\
+ 			${strip_debug}				\
+ 			-o ${output}				\
++			${map_option:+-Wl,${map_option}}	\
+ 			-Wl,-T,${lds}				\
+ 			${objects}				\
+ 			-lutil -lrt -lpthread
+@@ -303,6 +311,7 @@ cleanup()
+ 	rm -f .tmp_vmlinux*
+ 	rm -f System.map
+ 	rm -f vmlinux
++	rm -f vmlinux.map
+ 	rm -f vmlinux.o
+ }
+ 
 -- 
-2.27.0
-
+2.29.2
 
