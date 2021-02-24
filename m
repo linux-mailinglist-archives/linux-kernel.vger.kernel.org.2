@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941C03240C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B08EF3240C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238644AbhBXPZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:25:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
+        id S238567AbhBXPYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:24:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235764AbhBXOqm (ORCPT
+        with ESMTP id S235736AbhBXOqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Feb 2021 09:46:42 -0500
 Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E65C061797
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:42:40 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id d11so2123721wrj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:42:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1AFC0617AA
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:42:43 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id r3so2118383wro.9
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:42:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=EgUEnyJu/P3709V222xt9PUcmOUvMnUAFsY0bMwnwt8=;
-        b=eL6+4Xb1pR/CPkBOwcJnNsjuIt00pQ1rGiBu5DnyjFAKDikmDdWGVspex8LNluYyK5
-         RlRkVeKiJwToE3Tc6NvinhMotYLrZoRuqa7XlYdGA/jqeJa66w3IAgSnSgithdBOZ5P0
-         IuBP+S3s70OiyuAgClsdvDkDq+mfPQhHdsd6cgrPL08qB47aGd88bQxPDzH9Uy2YxKx6
-         pbmHFlhzGP7LECKn9J8iA0PZpmpAn1fRDfm/kPLiFNmLHsBEDuBwhGMWt867qN29kiGw
-         lI/fPHMR4Xz5uXoC5wKbltFUAx/LdwxHAt3Mj9RaX53blgUuo1PpyxJLP40/QO4Bqkv/
-         TUTQ==
+        bh=HokQBU/ghtYugnhNg9omsYh8OE2+9P/WNHGHi5BtboA=;
+        b=EFfGqrAUxLxs7rxfUGLf3i6T0VC0f+RwiaqLbB/jSzDZBUoP4NqhOPE15LATWpYsWu
+         wyCdt8bFHnke7XVmgeJGm+xmNPRt6umRxgbeH2ROMIi40CWAaPeGQQbCUUy32P4uPMuR
+         69K5T1+51WIuUOHX4zeD9uZ/R6SjJcgAVQJ5OAqN88SNJDE++cYVRfLmEWV1QLhzhsA5
+         OjYpdcQngjNlMagS3tPN8FBtVMJFFCQAm4DWEmbx2CWy72bBEJ2WACe/5GiyHxrjfcJH
+         RbAV5FfcJMuFoImHof3PGbkGfXTow6vgLF9inyz0MySlJngEZp2AUyODX6PH4V/cqsD3
+         yV2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=EgUEnyJu/P3709V222xt9PUcmOUvMnUAFsY0bMwnwt8=;
-        b=tBAQBk0Uzkw1qsNnHvl46VWelHT+SQyRseI2y+/e8U0RGCE8DU+WBIQiyxd3uynZYr
-         7xEqnQbBOtMYY4OFTgXd7xQNtQ67nlTkeUuKeRDahzxJyZ+21p8r9gGeSL/IJCYJ6gAL
-         cm6XZy6Erl8QRGh6E3Ec7tAt4iMiYxAjhVYmLSjw+P2be82fMASUm6WWQ85/jcBGXVSQ
-         7HHFEuACPvBh8UDsqm6ctxU5yeYGZ49CMYl1ZHhE025pqqnI3Np+boP2K4XqsbyM4jup
-         d/YRia19Wd9qwljcfLrFnnVPXvleYawRRgob2y1c3IxtDlHnlQ21/6R40JUqnKmQxef3
-         bAAw==
-X-Gm-Message-State: AOAM530JLCjmvi5DC5Na7qtrSIGYEq5IjxdO8Qec2sSGjTgMiC+0jSIV
-        jbKmozzOrXQF1dyuQ94rMRy03t7quejZww==
-X-Google-Smtp-Source: ABdhPJy6oa0zxrD392i6w4EiM4SUJqNf2xFVfiqJEZ3cqLJqPenbPKYlB587VlgqsGQlXKDEaP3Zsw==
-X-Received: by 2002:adf:d088:: with SMTP id y8mr30526431wrh.101.1614177758831;
-        Wed, 24 Feb 2021 06:42:38 -0800 (PST)
+        bh=HokQBU/ghtYugnhNg9omsYh8OE2+9P/WNHGHi5BtboA=;
+        b=NFV2kurW1JHZk2zVE7dfP4+5tEryFWeGUv1xaouSThxJ2iKuCOnh9JlSzr4mnJ18dW
+         1wkRV6hnhzTRKN6Km33R7om2+cSJPR5dU5kCSi/N2ruyIxjRNxlo0qKBloEwoYZyL6sI
+         s/t0ZtanMTPkQECa2DAOSC52wKkMlukzhCdH06MFc09OAIIgClwKvdPwUw1Vt6g+7Kav
+         spNw9RAAk1vjMYZWBSOxvpCvzeOTMsncgZgnSugol0/P9r3o6S7VJ9L50csGaRUZXpae
+         HPvVkuTEx34b0mAAJcXm/FNurTnzpca2ZhkhEOrUn/mjnR3sj6u0THZgd282TVk90zr2
+         ZxAA==
+X-Gm-Message-State: AOAM531GD6GNHJK7j5NBhSos9zsuHsi8OAunkwHH+3IGiEC245DR1EBE
+        NBRGeGdAXYW+/HwV7XM3C6SYdA==
+X-Google-Smtp-Source: ABdhPJxeswn6KrlSUcAY2vMoNAOfRftd8Gvei+4zong6S8ryra1+kdYb1YpVaIJ1rIGpAYoBHuhx1w==
+X-Received: by 2002:adf:f6cd:: with SMTP id y13mr11491952wrp.309.1614177762464;
+        Wed, 24 Feb 2021 06:42:42 -0800 (PST)
 Received: from localhost.localdomain (lns-bzn-59-82-252-157-252.adsl.proxad.net. [82.252.157.252])
-        by smtp.gmail.com with ESMTPSA id p3sm4170669wro.55.2021.02.24.06.42.37
+        by smtp.gmail.com with ESMTPSA id p3sm4170669wro.55.2021.02.24.06.42.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 06:42:38 -0800 (PST)
+        Wed, 24 Feb 2021 06:42:41 -0800 (PST)
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
 To:     rafael@kernel.org, andriy.shevchenko@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org (open list:HARDWARE MONITORING)
-Subject: [PATCH v2 5/9] hwmon/drivers/mr75203: Use HZ macros
-Date:   Wed, 24 Feb 2021 15:42:15 +0100
-Message-Id: <20210224144222.23762-5-daniel.lezcano@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org (open list:IIO SUBSYSTEM AND DRIVERS)
+Subject: [PATCH v2 6/9] iio/drivers/hid-sensor: Use HZ macros
+Date:   Wed, 24 Feb 2021 15:42:16 +0100
+Message-Id: <20210224144222.23762-6-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210224144222.23762-1-daniel.lezcano@linaro.org>
 References: <20210224144222.23762-1-daniel.lezcano@linaro.org>
@@ -66,31 +67,29 @@ HZ unit conversion macros are available in units.h, use them and
 remove the duplicate definition.
 
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Reviewed-by: Christian Eggers <ceggers@arri.de>
 ---
- drivers/hwmon/mr75203.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/common/hid-sensors/hid-sensor-attributes.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/hwmon/mr75203.c b/drivers/hwmon/mr75203.c
-index 18da5a25e89a..868243dba1ee 100644
---- a/drivers/hwmon/mr75203.c
-+++ b/drivers/hwmon/mr75203.c
-@@ -17,6 +17,7 @@
- #include <linux/property.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
+diff --git a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
+index 442ff787f7af..dda3b67e494f 100644
+--- a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
++++ b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
+@@ -11,13 +11,12 @@
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <linux/time.h>
 +#include <linux/units.h>
  
- /* PVT Common register */
- #define PVT_IP_CONFIG	0x04
-@@ -37,7 +38,6 @@
- #define CLK_SYNTH_EN		BIT(24)
- #define CLK_SYS_CYCLES_MAX	514
- #define CLK_SYS_CYCLES_MIN	2
--#define HZ_PER_MHZ		1000000L
+ #include <linux/hid-sensor-hub.h>
+ #include <linux/iio/iio.h>
+ #include <linux/iio/sysfs.h>
  
- #define SDIF_DISABLE	0x04
- 
+-#define HZ_PER_MHZ	1000000L
+-
+ static struct {
+ 	u32 usage_id;
+ 	int unit; /* 0 for default others from HID sensor spec */
 -- 
 2.17.1
 
