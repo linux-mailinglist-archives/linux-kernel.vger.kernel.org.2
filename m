@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004CA32455B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4905324564
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235820AbhBXUix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:38:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
+        id S235120AbhBXUjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 15:39:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235808AbhBXUir (ORCPT
+        with ESMTP id S235830AbhBXUjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:38:47 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A33EDC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:38:07 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id b14so3613451qkk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:38:07 -0800 (PST)
+        Wed, 24 Feb 2021 15:39:36 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F6CC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:38:56 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id u11so1902594plg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:38:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=k+Ml1eYPwjOONJLtwcZvZvyigCe2sKPobwXhkk2LCr8=;
-        b=o683AocjgiZ8dTsfbgOPsZ0aNJ93D7mHTzh53sWfdoei5j0GUCUom8CTWS2haEcrTz
-         Etc0lxlpqsu/wejXMugE69CVKPANUh9/hPseekOUrWhEMhp+HxppQ7M5KMfPNpi+8uv6
-         Pz2E9Ft44GezYCi1smMUl2sf/q2/uIT6JFHyb6POyQmgE90TJJO+qvx9OvOLjRQKQrPP
-         98KVonZFM0YhzjL/p4lSzkDV2hP53C4rZNzuKz6HucLSusO72qjeKVfWwXEzBL94NV7/
-         wCsvay/o2YDZeBYyR/5tRu7x7EKdsyXlFM45IJLzvzrmNl71lG8xorzEwLULc3Ys92bd
-         6NaQ==
+        bh=GZwVz+by9nHRK/VgqqFp4hya3sLU12ve4q94Q8a1TOw=;
+        b=PkCcl/k7NfbtPwMQr8z5WhePJ8T22XJy9sfGUI5eow2vQmOTwG1B3B6CsQhjz6CARN
+         hfN1R2ddWbMTYj9tE1Lwh+a/L635lr64afHtTZRdXvbYHBmR84iGmARmfeZH96r9Q2bl
+         rylrULoicn3EwqmyKEvuCNlKTjG3ImD8g1etA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=k+Ml1eYPwjOONJLtwcZvZvyigCe2sKPobwXhkk2LCr8=;
-        b=peieYB+tupDfxH73bps6zUSurL4TGrh7wEct2yUjj1Kmrj2p9AgztR/j5vaX7inN7c
-         R2uXPfr7TqhhUDSAJLcs5ikavaGHCAFVkPYFrGEkTkn83JWxuTcas6CNvnh4CFJTFY1/
-         bmRT9m3plHTeWniuJkaZrBLbRTdkiOLi2bd1nQRQLnWIyEbhwzUmNjxMxKH7E59PA9n+
-         t10wunEB7kkUapMt9g/tXGLguUsPqlOHRY/QZnxsEwLuIbimwGFXpsjlArr7lr9WbsYx
-         6ZkS7W1R7M84tJTxql5GRJW43GmqDZVrp6jgjC254wxQKQSF6WMifYRZIFQVMOiQXTRp
-         ad0Q==
-X-Gm-Message-State: AOAM5315GT1SgWuBfJ6HNIyYXg4PFerTOLjuJrKQrHsSjZKZGCzaXl5u
-        D1a6XgLMXhjbM94P1DEBAThzAg==
-X-Google-Smtp-Source: ABdhPJxE7Kk7WVegfW0dA3yem37nnEyNTOTba6gF7TKuZQhgqeiPc6vBrRVVN2Z1PlsTot+hhmq9cA==
-X-Received: by 2002:ae9:e50c:: with SMTP id w12mr32981266qkf.42.1614199086632;
-        Wed, 24 Feb 2021 12:38:06 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id j20sm2399834qtl.36.2021.02.24.12.38.05
+        bh=GZwVz+by9nHRK/VgqqFp4hya3sLU12ve4q94Q8a1TOw=;
+        b=Kjk2Wcc/jA6O0xcfgbio280TLx0HgwZJ79e4FxzpbPm9pKCdXupxYbMeF9nw0ee9lZ
+         +SUQUhQ2JF9KiMRT9vRul+sHILLgHaKMPUV81zvSwCAmcS8dj1w6zawAND+5NnegTR2R
+         NA43rRVTtebE3MSLQL8yjzAG9s1mDXbcM4chwXdAQtkQcEzdvghV60pd1XCuKR1NnaXA
+         TwJa70Uhfb7Tn7gLkmNhhFlvlwyvzf9tSip4bubDM1fPNlnxyoRDQhB4wisJ74/InbZX
+         i3ZDIaVKKhusnBBKArowwKs2ZbzHX6trnrCobPc3egIwfFbwwI46qbOBhZn3GlnMaZdg
+         I0lA==
+X-Gm-Message-State: AOAM533+pWF7ZxDbeRfZkGe1+CfrT8LaAyQY1QXeKwpWbKu8P3ujTzkZ
+        pwZa3//oWkvHhrvDXXhGsbCosg==
+X-Google-Smtp-Source: ABdhPJxYx1U060YI3/ocToHHmhrh3XN5Wc9YJIVgqhXdsuC8TDQUbe866zMWKSPIdD0ty9NbhhGm4g==
+X-Received: by 2002:a17:902:8d82:b029:e2:e8f7:ac44 with SMTP id v2-20020a1709028d82b02900e2e8f7ac44mr34308993plo.60.1614199135689;
+        Wed, 24 Feb 2021 12:38:55 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v1sm4268137pfi.99.2021.02.24.12.38.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 12:38:06 -0800 (PST)
-Date:   Wed, 24 Feb 2021 15:38:05 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     David Rientjes <rientjes@google.com>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: enable memcg oom-kill for __GFP_NOFAIL
-Message-ID: <YDa5LcoaaUXszPXz@cmpxchg.org>
-References: <20210223204337.2785120-1-shakeelb@google.com>
+        Wed, 24 Feb 2021 12:38:55 -0800 (PST)
+Date:   Wed, 24 Feb 2021 12:38:54 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH v9 01/16] tracing: move function tracer options to
+ Kconfig (causing parisc build failures)
+Message-ID: <202102241238.93BC4DCF@keescook>
+References: <20201211184633.3213045-1-samitolvanen@google.com>
+ <20201211184633.3213045-2-samitolvanen@google.com>
+ <20210224201723.GA69309@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210223204337.2785120-1-shakeelb@google.com>
+In-Reply-To: <20210224201723.GA69309@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 12:43:37PM -0800, Shakeel Butt wrote:
-> In the era of async memcg oom-killer, the commit a0d8b00a3381 ("mm:
-> memcg: do not declare OOM from __GFP_NOFAIL allocations") added the code
-> to skip memcg oom-killer for __GFP_NOFAIL allocations. The reason was
-> that the __GFP_NOFAIL callers will not enter aync oom synchronization
-> path and will keep the task marked as in memcg oom. At that time the
-> tasks marked in memcg oom can bypass the memcg limits and the oom
-> synchronization would have happened later in the later userspace
-> triggered page fault. Thus letting the task marked as under memcg oom
-> bypass the memcg limit for arbitrary time.
+On Wed, Feb 24, 2021 at 12:17:23PM -0800, Guenter Roeck wrote:
+> On Fri, Dec 11, 2020 at 10:46:18AM -0800, Sami Tolvanen wrote:
+> > Move function tracer options to Kconfig to make it easier to add
+> > new methods for generating __mcount_loc, and to make the options
+> > available also when building kernel modules.
+> > 
+> > Note that FTRACE_MCOUNT_USE_* options are updated on rebuild and
+> > therefore, work even if the .config was generated in a different
+> > environment.
+> > 
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > 
-> With the synchronous memcg oom-killer (commit 29ef680ae7c21 ("memcg,
-> oom: move out_of_memory back to the charge path")) and not letting the
-> task marked under memcg oom to bypass the memcg limits (commit
-> 1f14c1ac19aa4 ("mm: memcg: do not allow task about to OOM kill to bypass
-> the limit")), we can again allow __GFP_NOFAIL allocations to trigger
-> memcg oom-kill. This will make memcg oom behavior closer to page
-> allocator oom behavior.
+> With this patch in place, parisc:allmodconfig no longer builds.
 > 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> Error log:
+> Arch parisc is not supported with CONFIG_FTRACE_MCOUNT_RECORD at scripts/recordmcount.pl line 405.
+> make[2]: *** [scripts/mod/empty.o] Error 2
+> 
+> Due to this problem, CONFIG_FTRACE_MCOUNT_RECORD can no longer be
+> enabled in parisc builds. Since that is auto-selected by DYNAMIC_FTRACE,
+> DYNAMIC_FTRACE can no longer be enabled, and with it everything that
+> depends on it.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Ew. Any idea why this didn't show up while it was in linux-next?
+
+-- 
+Kees Cook
