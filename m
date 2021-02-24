@@ -2,90 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D6C323BA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 12:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB94C323BB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 12:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235209AbhBXL4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 06:56:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59490 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235192AbhBXLyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 06:54:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614167617; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XzLsHGcL8bQEwd8q77IJXXPxrQFmDs82g85prap2dQ4=;
-        b=nXir09DKObx9wu/my6Ugn5gdRgCXHFR7PCmDobwcx3KpR14Hr90pvWZwBEJmLtYJWI0B6R
-        /7z86SKpQROZRhKPQ27B778WIRwrt3MZQrt6wYpdGaX1fLA4BtZg0qAxf16zW7CAYZFcpg
-        onHSk/VsZtl2Lnilzk6yEZSaiE8fcvk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 71AE5ADDB;
-        Wed, 24 Feb 2021 11:53:37 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 12:53:35 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
- usage excess
-Message-ID: <YDY+PydRUGQpHNaJ@dhcp22.suse.cz>
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
- <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
- <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
- <YDNuAIztiGJpLEtw@dhcp22.suse.cz>
- <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
- <YDQBh5th9txxEFUm@dhcp22.suse.cz>
- <cf5ca7a1-7965-f307-22e1-e216316904cf@linux.intel.com>
+        id S235161AbhBXL5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 06:57:31 -0500
+Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:43671 "EHLO
+        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235206AbhBXL4F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 06:56:05 -0500
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id 4331CCAB0A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:55:11 +0000 (GMT)
+Received: (qmail 8759 invoked from network); 24 Feb 2021 11:55:11 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 24 Feb 2021 11:55:11 -0000
+Date:   Wed, 24 Feb 2021 11:55:08 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/3] Introduce a bulk order-0 page allocator for
+ sunrpc
+Message-ID: <20210224115508.GL3697@techsingularity.net>
+References: <20210224102603.19524-1-mgorman@techsingularity.net>
+ <20210224122723.15943e95@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <cf5ca7a1-7965-f307-22e1-e216316904cf@linux.intel.com>
+In-Reply-To: <20210224122723.15943e95@carbon>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 22-02-21 11:48:37, Tim Chen wrote:
+On Wed, Feb 24, 2021 at 12:27:23PM +0100, Jesper Dangaard Brouer wrote:
+> On Wed, 24 Feb 2021 10:26:00 +0000
+> Mel Gorman <mgorman@techsingularity.net> wrote:
 > 
+> > This is a prototype series that introduces a bulk order-0 page allocator
+> > with sunrpc being the first user. The implementation is not particularly
+> > efficient and the intention is to iron out what the semantics of the API
+> > should be. That said, sunrpc was reported to have reduced allocation
+> > latency when refilling a pool.
 > 
-> On 2/22/21 11:09 AM, Michal Hocko wrote:
+> I also have a use-case in page_pool, and I've been testing with the
+> earlier patches, results are here[1]
 > 
-> >>
-> >> I actually have tried adjusting the threshold but found that it doesn't work well for
-> >> the case with unenven memory access frequency between cgroups.  The soft
-> >> limit for the low memory event cgroup could creep up quite a lot, exceeding
-> >> the soft limit by hundreds of MB, even
-> >> if I drop the SOFTLIMIT_EVENTS_TARGET from 1024 to something like 8.
-> > 
-> > What was the underlying reason? Higher order allocations?
-> > 
+> [1] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org
 > 
-> Not high order allocation.
+> Awesome to see this newer patchset! thanks a lot for working on this!
+> I'll run some new tests based on this.
 > 
-> The reason was because the run away memcg asks for memory much less often, compared
-> to the other memcgs in the system.  So it escapes the sampling update and
-> was not put onto the tree and exceeds the soft limit
-> pretty badly.  Even if it was put onto the tree and gets page reclaimed below the
-> limit, it could escape the sampling the next time it exceeds the soft limit.
 
-I am sorry but I really do not follow. Maybe I am missing something
-obvious but the the rate of events (charge/uncharge) shouldn't be really
-important. There is no way to exceed the limit without charging memory
-(either a new or via task migration in v1 and immigrate_on_move). If you
-have SOFTLIMIT_EVENTS_TARGET 8 then you should be 128 * 8 events to
-re-evaluate. Huge pages can make the runaway much bigger but how it
-would be possible to runaway outside of that bound.
+Thanks and if they get finalised, a patch on top for review would be
+nice with the results included in the changelog. Obviously any change
+that would need to be made to the allocator would happen first.
 
-Btw. do we really need SOFTLIMIT_EVENTS_TARGET at all? Why cannot we
-just stick with a single threshold? mem_cgroup_update_tree can be made
-a effectivelly a noop when there is no soft limit in place so overhead
-shouldn't matter for the vast majority of workloads.
+> > As a side-note, while the implementation could be more efficient, it
+> > would require fairly deep surgery in numerous places. The lock scope would
+> > need to be significantly reduced, particularly as vmstat, per-cpu and the
+> > buddy allocator have different locking protocol that overal -- e.g. all
+> > partially depend on irqs being disabled at various points. Secondly,
+> > the core of the allocator deals with single pages where as both the bulk
+> > allocator and per-cpu allocator operate in batches. All of that has to
+> > be reconciled with all the existing users and their constraints (memory
+> > offline, CMA and cpusets being the trickiest).
+> 
+> As you can see in[1], I'm getting a significant speedup from this.  I
+> guess that the cost of finding the "zone" is higher than I expected, as
+> this basically what we/you amortize for the bulk.
+> 
+
+The obvious goal would be that if a refactoring did happen that the
+performance would be at least neutral but hopefully improved.
+
+> > In terms of semantics required by new users, my preference is that a pair
+> > of patches be applied -- the first which adds the required semantic to
+> > the bulk allocator and the second which adds the new user.
+> > 
+> > Patch 1 of this series is a cleanup to sunrpc, it could be merged
+> > 	separately but is included here for convenience.
+> > 
+> > Patch 2 is the prototype bulk allocator
+> > 
+> > Patch 3 is the sunrpc user. Chuck also has a patch which further caches
+> > 	pages but is not included in this series. It's not directly
+> > 	related to the bulk allocator and as it caches pages, it might
+> > 	have other concerns (e.g. does it need a shrinker?)
+> > 
+> > This has only been lightly tested on a low-end NFS server. It did not break
+> > but would benefit from an evaluation to see how much, if any, the headline
+> > performance changes. The biggest concern is that a light test case showed
+> > that there are a *lot* of bulk requests for 1 page which gets delegated to
+> > the normal allocator.  The same criteria should apply to any other users.
+> 
+> If you change local_irq_save(flags) to local_irq_disable() then you can
+> likely get better performance for 1 page requests via this API.  This
+> limits the API to be used in cases where IRQs are enabled (which is
+> most cases).  (For my use-case I will not do 1 page requests).
+> 
+
+I do not want to constrain the API to being IRQ-only prematurely. An
+obvious alternative use case is the SLUB allocation path when a high-order
+allocation fails. It's known that if the SLUB order is reduced that it has
+an impact on hackbench communicating over sockets.  It would be interesting
+to see what happens if order-0 pages are bulk allocated when s->min == 0
+and that can be called from a blocking context. Tricky to test but could
+be fudged by forcing all high-order allocations to fail when s->min ==
+0 to evaluate the worst case scenario.  In addition, it would constrain
+any potential refactoring if the lower levels have to choose between
+local_irq_disable() vs local_irq_save() depending on the caller context.
+
 -- 
-Michal Hocko
+Mel Gorman
 SUSE Labs
