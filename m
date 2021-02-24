@@ -2,250 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157973237BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74FF3237BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhBXHOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:14:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37003 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234381AbhBXHNh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:13:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614150727;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s5urpx7+14Nbuik1VeRNoEiZMhIyaDIyvE6g+cvtgSs=;
-        b=iWAgH7TQjfMVNTQslIiANLWHRqi8E8u/V9Bc1faPlSidPxQvCVWpNNoVbJOlWmFrSGNEou
-        RRXEupjcrI7L87ph4d/g1WVnlg/idQH15FCtmMBxr36A+xc3DboPYLBtrN3aKngtiZPfFX
-        dd2QfaxbKYq/dhGZtXrh/TWK7VPiX/U=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-t2TLvhHBMbGTC5IQgPfjfw-1; Wed, 24 Feb 2021 02:12:05 -0500
-X-MC-Unique: t2TLvhHBMbGTC5IQgPfjfw-1
-Received: by mail-wr1-f72.google.com with SMTP id g5so613746wrd.22
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:12:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=s5urpx7+14Nbuik1VeRNoEiZMhIyaDIyvE6g+cvtgSs=;
-        b=bTgyLCsHfjTEh7VwolMyX2nGjNipP3WmeOgq+Ew44Fv7qjdKA8teYBtdH/EZ5SFjnZ
-         Si/djSdyE5tG8ZSNbWidvlwf5d0cX3AfkFuvegvkqW/bfHhrLeDCSBPr0tgRjwHxn370
-         0KUVgBSy+1rrl9DswArhI8QwY2P1Jl0XQoX1YW9QSK/d7eBeh/fnebuLtyMaVYLESrac
-         TbZpYh8Aw1xfRiAzkwvXNUhn1eMJLfozR3zNKyeEusmpGTCZuVqYvSTY+RQK7x32sOGw
-         9teoc7Em9iWOEVhQP1aPwH3S4C7gszvdwB+Si7GRK7ILGwJZgGK0d/G+raQct7WGghir
-         tSeA==
-X-Gm-Message-State: AOAM533cVHvvDVetJYW7YG8IfHt5ex3H30SqaLiU0rpstLcMzwC2zRr9
-        kOBAxklgtMFg0u6cAdFhQmdFnzMmMTYyGrDzZ8iS0vkKaQWD80OHLLxW7nT2jM1+gMYUHBFaAXM
-        vZiaW/Y6LN4hjl9iXsXIvUHFW
-X-Received: by 2002:a1c:4444:: with SMTP id r65mr2340662wma.22.1614150724366;
-        Tue, 23 Feb 2021 23:12:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwadgw2sbmpJNGXYqDbem1Ufvnw+j0n4YzrCFoLPNbR6eiG3H/7UMUwjHA8tQWn5GnaAdb2QA==
-X-Received: by 2002:a1c:4444:: with SMTP id r65mr2340640wma.22.1614150724189;
-        Tue, 23 Feb 2021 23:12:04 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id p12sm1269626wmq.1.2021.02.23.23.12.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 23:12:03 -0800 (PST)
-Date:   Wed, 24 Feb 2021 02:12:01 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Eli Cohen <elic@nvidia.com>, Si-Wei Liu <si-wei.liu@oracle.com>,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-Message-ID: <20210224021054-mutt-send-email-mst@kernel.org>
-References: <20210222023040-mutt-send-email-mst@kernel.org>
- <22fe5923-635b-59f0-7643-2fd5876937c2@oracle.com>
- <fae0bae7-e4cd-a3aa-57fe-d707df99b634@redhat.com>
- <20210223082536-mutt-send-email-mst@kernel.org>
- <3ff5fd23-1db0-2f95-4cf9-711ef403fb62@oracle.com>
- <7e6291a4-30b1-6b59-a2bf-713e7b56826d@redhat.com>
- <20210224000528-mutt-send-email-mst@kernel.org>
- <20210224064520.GA204317@mtl-vdi-166.wap.labs.mlnx>
- <20210224014700-mutt-send-email-mst@kernel.org>
- <ef775724-b5fb-ca70-ed2f-f23d8fbf4cd8@redhat.com>
+        id S232473AbhBXHNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:13:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:43288 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230019AbhBXHMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 02:12:55 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85CD71FB;
+        Tue, 23 Feb 2021 23:12:06 -0800 (PST)
+Received: from [10.163.64.181] (unknown [10.163.64.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 35D053F73D;
+        Tue, 23 Feb 2021 23:12:01 -0800 (PST)
+Subject: Re: [PATCH v3 1/1] arm64: mm: correct the inside linear map range
+ during hotplug check
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        tyhicks@linux.microsoft.com, jmorris@namei.org,
+        catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org, rppt@kernel.org, logang@deltatee.com,
+        ardb@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, mhocko@suse.com, linux-mm@kvack.org
+References: <20210216150351.129018-1-pasha.tatashin@soleen.com>
+ <20210216150351.129018-2-pasha.tatashin@soleen.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <605fb3ad-7208-6d27-f055-cb642be8804b@arm.com>
+Date:   Wed, 24 Feb 2021 12:42:31 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210216150351.129018-2-pasha.tatashin@soleen.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ef775724-b5fb-ca70-ed2f-f23d8fbf4cd8@redhat.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 02:55:13PM +0800, Jason Wang wrote:
-> 
-> On 2021/2/24 2:47 下午, Michael S. Tsirkin wrote:
-> > On Wed, Feb 24, 2021 at 08:45:20AM +0200, Eli Cohen wrote:
-> > > On Wed, Feb 24, 2021 at 12:17:58AM -0500, Michael S. Tsirkin wrote:
-> > > > On Wed, Feb 24, 2021 at 11:20:01AM +0800, Jason Wang wrote:
-> > > > > On 2021/2/24 3:35 上午, Si-Wei Liu wrote:
-> > > > > > 
-> > > > > > On 2/23/2021 5:26 AM, Michael S. Tsirkin wrote:
-> > > > > > > On Tue, Feb 23, 2021 at 10:03:57AM +0800, Jason Wang wrote:
-> > > > > > > > On 2021/2/23 9:12 上午, Si-Wei Liu wrote:
-> > > > > > > > > On 2/21/2021 11:34 PM, Michael S. Tsirkin wrote:
-> > > > > > > > > > On Mon, Feb 22, 2021 at 12:14:17PM +0800, Jason Wang wrote:
-> > > > > > > > > > > On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
-> > > > > > > > > > > > Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
-> > > > > > > > > > > > for legacy") made an exception for legacy guests to reset
-> > > > > > > > > > > > features to 0, when config space is accessed before features
-> > > > > > > > > > > > are set. We should relieve the verify_min_features() check
-> > > > > > > > > > > > and allow features reset to 0 for this case.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > It's worth noting that not just legacy guests could access
-> > > > > > > > > > > > config space before features are set. For instance, when
-> > > > > > > > > > > > feature VIRTIO_NET_F_MTU is advertised some modern driver
-> > > > > > > > > > > > will try to access and validate the MTU present in the config
-> > > > > > > > > > > > space before virtio features are set.
-> > > > > > > > > > > This looks like a spec violation:
-> > > > > > > > > > > 
-> > > > > > > > > > > "
-> > > > > > > > > > > 
-> > > > > > > > > > > The following driver-read-only field, mtu only exists if
-> > > > > > > > > > > VIRTIO_NET_F_MTU is
-> > > > > > > > > > > set.
-> > > > > > > > > > > This field specifies the maximum MTU for the driver to use.
-> > > > > > > > > > > "
-> > > > > > > > > > > 
-> > > > > > > > > > > Do we really want to workaround this?
-> > > > > > > > > > > 
-> > > > > > > > > > > Thanks
-> > > > > > > > > > And also:
-> > > > > > > > > > 
-> > > > > > > > > > The driver MUST follow this sequence to initialize a device:
-> > > > > > > > > > 1. Reset the device.
-> > > > > > > > > > 2. Set the ACKNOWLEDGE status bit: the guest OS has
-> > > > > > > > > > noticed the device.
-> > > > > > > > > > 3. Set the DRIVER status bit: the guest OS knows how to drive the
-> > > > > > > > > > device.
-> > > > > > > > > > 4. Read device feature bits, and write the subset of feature bits
-> > > > > > > > > > understood by the OS and driver to the
-> > > > > > > > > > device. During this step the driver MAY read (but MUST NOT write)
-> > > > > > > > > > the device-specific configuration
-> > > > > > > > > > fields to check that it can support the device before accepting it.
-> > > > > > > > > > 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new
-> > > > > > > > > > feature bits after this step.
-> > > > > > > > > > 6. Re-read device status to ensure the FEATURES_OK bit is still set:
-> > > > > > > > > > otherwise, the device does not
-> > > > > > > > > > support our subset of features and the device is unusable.
-> > > > > > > > > > 7. Perform device-specific setup, including discovery of virtqueues
-> > > > > > > > > > for the device, optional per-bus setup,
-> > > > > > > > > > reading and possibly writing the device’s virtio configuration
-> > > > > > > > > > space, and population of virtqueues.
-> > > > > > > > > > 8. Set the DRIVER_OK status bit. At this point the device is “live”.
-> > > > > > > > > > 
-> > > > > > > > > > 
-> > > > > > > > > > so accessing config space before FEATURES_OK is a spec
-> > > > > > > > > > violation, right?
-> > > > > > > > > It is, but it's not relevant to what this commit tries to address. I
-> > > > > > > > > thought the legacy guest still needs to be supported.
-> > > > > > > > > 
-> > > > > > > > > Having said, a separate patch has to be posted to fix the guest driver
-> > > > > > > > > issue where this discrepancy is introduced to
-> > > > > > > > > virtnet_validate() (since
-> > > > > > > > > commit fe36cbe067). But it's not technically related to this patch.
-> > > > > > > > > 
-> > > > > > > > > -Siwei
-> > > > > > > > I think it's a bug to read config space in validate, we should
-> > > > > > > > move it to
-> > > > > > > > virtnet_probe().
-> > > > > > > > 
-> > > > > > > > Thanks
-> > > > > > > I take it back, reading but not writing seems to be explicitly
-> > > > > > > allowed by spec.
-> > > > > > > So our way to detect a legacy guest is bogus, need to think what is
-> > > > > > > the best way to handle this.
-> > > > > > Then maybe revert commit fe36cbe067 and friends, and have QEMU detect
-> > > > > > legacy guest? Supposedly only config space write access needs to be
-> > > > > > guarded before setting FEATURES_OK.
-> > > > > 
-> > > > > I agree. My understanding is that all vDPA must be modern device (since
-> > > > > VIRITO_F_ACCESS_PLATFORM is mandated) instead of transitional device.
-> > > > > 
-> > > > > Thanks
-> > > > Well mlx5 has some code to handle legacy guests ...
-> > > > Eli, could you comment? Is that support unused right now?
-> > > > 
-> > > If you mean support for version 1.0, well the knob is there but it's not
-> > > set in the firmware I use. Note sure if we will support this.
-> > Hmm you mean it's legacy only right now?
-> > Well at some point you will want advanced goodies like RSS
-> > and all that is gated on 1.0 ;)
-> 
-> 
-> So if my understanding is correct the device/firmware is legacy but require
-> VIRTIO_F_ACCESS_PLATFORM semanic? Looks like a spec violation?
-> 
-> Thanks
 
-Legacy mode description is the spec is non-normative. As such as long as
-guests work, they work ;)
+
+On 2/16/21 8:33 PM, Pavel Tatashin wrote:
+> Memory hotplug may fail on systems with CONFIG_RANDOMIZE_BASE because the
+> linear map range is not checked correctly.
+> 
+> The start physical address that linear map covers can be actually at the
+> end of the range because of randomization. Check that and if so reduce it
+> to 0.
+> 
+> This can be verified on QEMU with setting kaslr-seed to ~0ul:
+> 
+> memstart_offset_seed = 0xffff
+> START: __pa(_PAGE_OFFSET(vabits_actual)) = ffff9000c0000000
+> END:   __pa(PAGE_END - 1) =  1000bfffffff
+
+This would have tripped the check in mhp_get_pluggable_range()
+with errors something like here, which is expected.
+
+Hotplug memory [0x680000000-0x688000000] exceeds maximum addressable range [0x0-0x0]
+Hotplug memory [0x6c0000000-0x6c8000000] exceeds maximum addressable range [0x0-0x0]
+Hotplug memory [0x700000000-0x708000000] exceeds maximum addressable range [0x0-0x0]
+Hotplug memory [0x780000000-0x788000000] exceeds maximum addressable range [0x0-0x0]
+Hotplug memory [0x7c0000000-0x7c8000000] exceeds maximum addressable range [0x0-0x0]
 
 > 
-> > 
-> > > > > > -Siwie
-> > > > > > 
-> > > > > > > > > > > > Rejecting reset to 0
-> > > > > > > > > > > > prematurely causes correct MTU and link status unable to load
-> > > > > > > > > > > > for the very first config space access, rendering issues like
-> > > > > > > > > > > > guest showing inaccurate MTU value, or failure to reject
-> > > > > > > > > > > > out-of-range MTU.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for
-> > > > > > > > > > > > supported mlx5 devices")
-> > > > > > > > > > > > Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-> > > > > > > > > > > > ---
-> > > > > > > > > > > >      drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
-> > > > > > > > > > > >      1 file changed, 1 insertion(+), 14 deletions(-)
-> > > > > > > > > > > > 
-> > > > > > > > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > > > > > > b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > > > > > > index 7c1f789..540dd67 100644
-> > > > > > > > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > > > > > > @@ -1490,14 +1490,6 @@ static u64
-> > > > > > > > > > > > mlx5_vdpa_get_features(struct vdpa_device *vdev)
-> > > > > > > > > > > >          return mvdev->mlx_features;
-> > > > > > > > > > > >      }
-> > > > > > > > > > > > -static int verify_min_features(struct mlx5_vdpa_dev *mvdev,
-> > > > > > > > > > > > u64 features)
-> > > > > > > > > > > > -{
-> > > > > > > > > > > > -    if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
-> > > > > > > > > > > > -        return -EOPNOTSUPP;
-> > > > > > > > > > > > -
-> > > > > > > > > > > > -    return 0;
-> > > > > > > > > > > > -}
-> > > > > > > > > > > > -
-> > > > > > > > > > > >      static int setup_virtqueues(struct mlx5_vdpa_net *ndev)
-> > > > > > > > > > > >      {
-> > > > > > > > > > > >          int err;
-> > > > > > > > > > > > @@ -1558,18 +1550,13 @@ static int
-> > > > > > > > > > > > mlx5_vdpa_set_features(struct vdpa_device *vdev, u64
-> > > > > > > > > > > > features)
-> > > > > > > > > > > >      {
-> > > > > > > > > > > >          struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
-> > > > > > > > > > > >          struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
-> > > > > > > > > > > > -    int err;
-> > > > > > > > > > > >          print_features(mvdev, features, true);
-> > > > > > > > > > > > -    err = verify_min_features(mvdev, features);
-> > > > > > > > > > > > -    if (err)
-> > > > > > > > > > > > -        return err;
-> > > > > > > > > > > > -
-> > > > > > > > > > > >          ndev->mvdev.actual_features = features &
-> > > > > > > > > > > > ndev->mvdev.mlx_features;
-> > > > > > > > > > > >          ndev->config.mtu = cpu_to_mlx5vdpa16(mvdev, ndev->mtu);
-> > > > > > > > > > > >          ndev->config.status |= cpu_to_mlx5vdpa16(mvdev,
-> > > > > > > > > > > > VIRTIO_NET_S_LINK_UP);
-> > > > > > > > > > > > -    return err;
-> > > > > > > > > > > > +    return 0;
-> > > > > > > > > > > >      }
-> > > > > > > > > > > >      static void mlx5_vdpa_set_config_cb(struct vdpa_device
-> > > > > > > > > > > > *vdev, struct vdpa_callback *cb)
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Fixes: 58284a901b42 ("arm64/mm: Validate hotplug range before creating linear mapping")
+> Tested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+>  arch/arm64/mm/mmu.c | 21 +++++++++++++++++++--
+>  1 file changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index ef7698c4e2f0..0d9c115e427f 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -1447,6 +1447,22 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+>  struct range arch_get_mappable_range(void)
+>  {
+>  	struct range mhp_range;
+> +	u64 start_linear_pa = __pa(_PAGE_OFFSET(vabits_actual));
+> +	u64 end_linear_pa = __pa(PAGE_END - 1);
+> +
+> +	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE)) {
+> +		/*
+> +		 * Check for a wrap, it is possible because of randomized linear
+> +		 * mapping the start physical address is actually bigger than
+> +		 * the end physical address. In this case set start to zero
+> +		 * because [0, end_linear_pa] range must still be able to cover
+> +		 * all addressable physical addresses.
+> +		 */
+> +		if (start_linear_pa > end_linear_pa)
+> +			start_linear_pa = 0;
+> +	}
+> +
+> +	WARN_ON(start_linear_pa > end_linear_pa);
+>  
+>  	/*
+>  	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
+> @@ -1454,8 +1470,9 @@ struct range arch_get_mappable_range(void)
+>  	 * range which can be mapped inside this linear mapping range, must
+>  	 * also be derived from its end points.
+>  	 */
+> -	mhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
+> -	mhp_range.end =  __pa(PAGE_END - 1);
+> +	mhp_range.start = start_linear_pa;
+> +	mhp_range.end =  end_linear_pa;
+> +
+>  	return mhp_range;
+>  }
 
+LGTM.
+
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
