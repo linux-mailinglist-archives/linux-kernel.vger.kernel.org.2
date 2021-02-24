@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F61B3240D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BDA3240D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237039AbhBXP33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:29:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60708 "EHLO
+        id S238497AbhBXP3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:29:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233351AbhBXOxm (ORCPT
+        with ESMTP id S232564AbhBXOy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 09:53:42 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF82C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:52:09 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id v15so2166828wrx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:52:09 -0800 (PST)
+        Wed, 24 Feb 2021 09:54:26 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09E8C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:53:45 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id z5so1489101pfe.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:53:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+YAiSFXMR2t0ZYfr2igypWEMxKL7wzw6/Ye1sAumeUU=;
-        b=A3uGYR3HYCD4CJdZ15lXO7ibOA5JYNaE2gunwTkvREx1Eqfp8zXShRkLkRfzJ99s85
-         szym1QthYekYvbPyH7AeR03rtXn6O/rbZ7QxqHby1xHU3VcrM00usrrU4J3A/PlLRWYC
-         Pn3VOYtzpoXB/b+iP3NTOBrg0Suycd4Nc2vct8JZfOsOM8M1tHtJOkghmZs5O3Lp0RLg
-         klNr7Zwy1Lavl/0UC8DmZ2B4QNGYMGVXXlsxiIO/GG444nXg3MWnlB3T/6Ly70q19hRR
-         PiKsjYIESxrm0ZRZQP4nwLio0qmdk8kSnbq5/i2AFLPiSUclyE0tnhPriduuOnsscUem
-         Ud3A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BI8tzk0bTa3w11ruMEPTU8t0ne9enBgfWEJ0ImBJsEA=;
+        b=TA1T8dIkRQrmL+2z52ArQzQ7YLPMbNMS4BPXwoDyQjWviLUJUKtXfvJGJ4XPCUBD8h
+         rH8V6ApP6uBZzAmVkSZ8jXs9X9htA7atNy2ULoie9NF/lIJq5+JHVlI9GiMexLgUdh5Z
+         sExX4j++PBMz/d+qA1BcquZniW252SvKL523Fsio6++OZjQ6GIZKJELdKA9qyYRq6uiH
+         UsblNSPu7hXwgPkWJgP4MIzg2oeBMuru4QF8OFhM6IJedYHUqiDrHW8qScPfyiqNvVOq
+         6uaxjXI4/SfKUpgmMmnt7bspJknb5Q49aHQktZRQ/hgjdYY6GBNO22DULKmaFt7cdH8K
+         fiqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+YAiSFXMR2t0ZYfr2igypWEMxKL7wzw6/Ye1sAumeUU=;
-        b=VBrNelWn7OtO9HDSc1iCpJ4pS92IahYlftPPRw6MDqsFIhL5/8Nj9IlLZ4PiiM6ks0
-         MJ5biCdr2scWiCCuzJpHJr4nWDgXKzIMtzYBH5ErnMwLq1kK+BhhC0mmOWqg7L5TMBDE
-         fe29fx+sVvPYmsjZxrYrWK4UlHimYTup1M46yLwHOq0/PBEE0SM4KhWv7cYHj5aFMPQq
-         JiPDv9yOjvqA9iQB7V+Jjjzp9omoM1S7+HaeRomt05cSAxHzKIW1BxCiE0zr+f0b9B5v
-         mzifyX1Mh2OhV0CcjOdRYGQxCWqcn/3JplTUwEFkWaz2KU4jTZMp0/eGdh3jk5WzEyE9
-         2f0w==
-X-Gm-Message-State: AOAM531I9lflMbuPlD70ZMOQ99RnpVOrfvwl1Vi78Hn102EBPpKtdmSS
-        0STG6rXD83Qqw9FewvRLmNLkifKMrliE2A==
-X-Google-Smtp-Source: ABdhPJzsjrLPWJSyfGWeLhexFMZpBfpkLog+aGztyiLkBogJw7T3KpbL3GdrSatRRy0nr2fT6tRTrw==
-X-Received: by 2002:a5d:474c:: with SMTP id o12mr31048855wrs.161.1614178328098;
-        Wed, 24 Feb 2021 06:52:08 -0800 (PST)
-Received: from linaro.org ([2a01:e34:ed2f:f020:f137:d18c:50a6:cc6a])
-        by smtp.gmail.com with ESMTPSA id d20sm4529774wrc.12.2021.02.24.06.52.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 06:52:07 -0800 (PST)
-Date:   Wed, 24 Feb 2021 15:52:05 +0100
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     rafael@kernel.org, andriy.shevchenko@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: Re: [PATCH v2 1/9] units: Add the HZ macros
-Message-ID: <20210224145205.GB534385@linaro.org>
-References: <20210224144222.23762-1-daniel.lezcano@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BI8tzk0bTa3w11ruMEPTU8t0ne9enBgfWEJ0ImBJsEA=;
+        b=sfHNg/Rbv6vyLn7HaUabIWWBqayxhZr4TbpM11YmS6ek91RSFvBaMtbM9e+7sNDCNi
+         zpX+MU/dGw908r9DIRLtmAbYXZ0D/vT0E2VBp88S8IKd1KT+n9SzZHxnlz8DQuR5KYbU
+         z5Czi2TZk5K1YxQh3fm5x10zvtATi0H8J7r48mDD7UNvAJdHceE2PjPe4uSB2CvCI+6M
+         uUiaqa1g/rZeOdkqqLkoUgzOroC3TvX9K5XEMJPsmKxmZ+NI8iFRpEgabMRrFK1IwnA1
+         o0BxsvN35+52pI0JivDIXgj83WPeV48eu9ZWFX1tx4M3xcdBd77IWAanemL5UDrHDOrC
+         Hjzw==
+X-Gm-Message-State: AOAM532+/Ua+QOWgg85i3xpfE76BvSkJX9fz1h1CXXWlELrfq1Cov3Xk
+        KkGqD77zAhOLkn5mbU5Cz9T3OFhajhgL8DyYdqcPSw==
+X-Google-Smtp-Source: ABdhPJwrgFEiH2Ascm/wxKiYFBShzYRAAgGfjnPMoJbqNsWJxHoZMh+ezqbCWJloaKg6y2qCJ+oWOWWROotNI+bu2WE=
+X-Received: by 2002:aa7:9281:0:b029:1ec:48b2:811c with SMTP id
+ j1-20020aa792810000b02901ec48b2811cmr32041815pfa.18.1614178425423; Wed, 24
+ Feb 2021 06:53:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210224144222.23762-1-daniel.lezcano@linaro.org>
+References: <20210217112122.424236-1-robert.foss@linaro.org>
+ <20210217112122.424236-13-robert.foss@linaro.org> <32b2cd1d-e41a-4571-ac4f-4ec055b3f6cb@linaro.org>
+In-Reply-To: <32b2cd1d-e41a-4571-ac4f-4ec055b3f6cb@linaro.org>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Wed, 24 Feb 2021 15:53:34 +0100
+Message-ID: <CAG3jFysEkRNXsaXudXd9msLPU3RiFcPpAgS6ecbOjeVfdwpb4A@mail.gmail.com>
+Subject: Re: [PATCH v5 12/22] media: camss: Remove per VFE power domain toggling
+To:     Andrey Konovalov <andrey.konovalov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        angelogioacchino.delregno@somainline.org,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 03:42:11PM +0100, Daniel Lezcano wrote:
-> The macros for the unit conversion for frequency are duplicated in
-> different places.
-> 
-> Provide these macros in the 'units' header, so they can be reused.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Reviewed-by: Christian Eggers <ceggers@arri.de>
-> Reviewed-by: Andy Shevchenko <Andy.Shevchenko@gmail.com>
-> ---
+Hey Andrey,
 
-Is it possible to have these patches merged through the linux-pm tree ?
+>
+> On 17.02.2021 14:21, Robert Foss wrote:
+> > For Titan ISPs clocks fail to re-enable during vfe_get()
+> > after any vfe has been halted and its corresponding power
+> > domain power has been detached.
+>
+> OK.
+>
+> > Since all of the clocks depend on all of the PDs, per
+> > VFE PD detaching is no option for this generation of HW.
+>
+> But this patch removes camss_pm_domain_on/off calls from
+> vfe_get/put() for all the SOCs, not only for sdm845.
+> And this looks like a regression (higher power consumption)
+> for all the generation1 devices.
 
+Yeah, that is a serious problem with the approach I picked here. The
+power difference shouldn't be huge however, since the best case
+scenario savings of the previous implementation was being able to
+power down 1 VFE when the other one is working. If none of the VFEs is
+working, nothing is powered up both in the previous implementation &
+using this patch.
 
+>
+> Is it possible to handle gen1 and gen2 hardware differently,
+> so that gen1 continued to use camss_pm_domain_on/off as
+> before?
 
-
--- 
-
- <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+I hesitated going down this gen1/gen2 split here, due to how deep into
+the common code some of this functionality is. Let me have another
+look at this though, not having a power regression for gen1 devices
+would definitely be preferable.
