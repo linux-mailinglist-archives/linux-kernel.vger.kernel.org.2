@@ -2,63 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E769832431B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6433C32431C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235249AbhBXRWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 12:22:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50802 "EHLO mail.kernel.org"
+        id S235165AbhBXRW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 12:22:29 -0500
+Received: from foss.arm.com ([217.140.110.172]:40978 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234704AbhBXRVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233502AbhBXRVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Feb 2021 12:21:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5374964F0B;
-        Wed, 24 Feb 2021 17:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614187273;
-        bh=NXWjf57sYNaJSH0gZdTTslFvP5uVci8Rc5jXJAkjRs4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zlwI5GC2fLOTHSSRoe1bJsYgI8Q9JzQkdp8/5xcXYGhpoS3b9pz5TGeTixj2eDkJD
-         V897p0S4FZir+EX0eh3FzZmWFVTFh1dV840l96hCsItJd7rmBr6GaFlPnF5zLq+qWe
-         +UnR1+rMXNsObsDavJAnb6Oc3+FFXxE42sh0pMzU=
-Date:   Wed, 24 Feb 2021 18:21:09 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     sashal@kernel.org, aams@amazon.com, markubo@amazon.com,
-        linux-kernel@vger.kernel.org,
-        "# 4 . 4 . y" <stable@vger.kernel.org>,
-        David Vrabel <david.vrabel@citrix.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: Please apply "xen-netback: delete NAPI instance when queue fails
- to initialize" to v4.4.y
-Message-ID: <YDaLBcj5DJrSWXqU@kroah.com>
-References: <20210224170356.20697-1-sjpark@amazon.com>
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4A1B101E;
+        Wed, 24 Feb 2021 09:21:07 -0800 (PST)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC35F3F73B;
+        Wed, 24 Feb 2021 09:21:05 -0800 (PST)
+Subject: Re: [RFC PATCH 1/4] KVM: arm64: Move the clean of dcache to the map
+ handler
+To:     Yanan Wang <wangyanan55@huawei.com>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210208112250.163568-1-wangyanan55@huawei.com>
+ <20210208112250.163568-2-wangyanan55@huawei.com>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <70b2d6c2-709b-d63b-1409-b16dad89b9b6@arm.com>
+Date:   Wed, 24 Feb 2021 17:21:22 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224170356.20697-1-sjpark@amazon.com>
+In-Reply-To: <20210208112250.163568-2-wangyanan55@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 06:03:56PM +0100, SeongJae Park wrote:
-> This is a request for merge of upstream commit 4a658527271b ("xen-netback:
-> delete NAPI instance when queue fails to initialize") on v4.4.y tree.
-> 
-> If 'xenvif_connect()' fails after successful 'netif_napi_add()', the napi is
-> not cleaned up.  Because 'create_queues()' frees the queues in its error
-> handling code, if the 'xenvif_free()' is called for the vif, use-after-free
-> occurs. The upstream commit fixes the problem by cleaning up the napi in the
-> 'xenvif_connect()'.
-> 
-> Attaching the original patch below for your convenience.
+Hello,
 
-The original patch does not apply cleanly.
+On 2/8/21 11:22 AM, Yanan Wang wrote:
+> We currently uniformly clean dcache in user_mem_abort() before calling the
+> fault handlers, if we take a translation fault and the pfn is cacheable.
+> But if there are concurrent translation faults on the same page or block,
+> clean of dcache for the first time is necessary while the others are not.
+>
+> By moving clean of dcache to the map handler, we can easily identify the
+> conditions where CMOs are really needed and avoid the unnecessary ones.
+> As it's a time consuming process to perform CMOs especially when flushing
+> a block range, so this solution reduces much load of kvm and improve the
+> efficiency of creating mappings.
+>
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  arch/arm64/include/asm/kvm_mmu.h | 16 --------------
+>  arch/arm64/kvm/hyp/pgtable.c     | 38 ++++++++++++++++++++------------
+>  arch/arm64/kvm/mmu.c             | 14 +++---------
+>  3 files changed, 27 insertions(+), 41 deletions(-)
+>
+> diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+> index e52d82aeadca..4ec9879e82ed 100644
+> --- a/arch/arm64/include/asm/kvm_mmu.h
+> +++ b/arch/arm64/include/asm/kvm_mmu.h
+> @@ -204,22 +204,6 @@ static inline bool vcpu_has_cache_enabled(struct kvm_vcpu *vcpu)
+>  	return (vcpu_read_sys_reg(vcpu, SCTLR_EL1) & 0b101) == 0b101;
+>  }
+>  
+> -static inline void __clean_dcache_guest_page(kvm_pfn_t pfn, unsigned long size)
+> -{
+> -	void *va = page_address(pfn_to_page(pfn));
+> -
+> -	/*
+> -	 * With FWB, we ensure that the guest always accesses memory using
+> -	 * cacheable attributes, and we don't have to clean to PoC when
+> -	 * faulting in pages. Furthermore, FWB implies IDC, so cleaning to
+> -	 * PoU is not required either in this case.
+> -	 */
+> -	if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
+> -		return;
+> -
+> -	kvm_flush_dcache_to_poc(va, size);
+> -}
+> -
+>  static inline void __invalidate_icache_guest_page(kvm_pfn_t pfn,
+>  						  unsigned long size)
+>  {
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index 4d177ce1d536..2f4f87021980 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -464,6 +464,26 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
+>  	return 0;
+>  }
+>  
+> +static bool stage2_pte_cacheable(kvm_pte_t pte)
+> +{
+> +	u64 memattr = pte & KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR;
+> +	return memattr == PAGE_S2_MEMATTR(NORMAL);
+> +}
+> +
+> +static void stage2_flush_dcache(void *addr, u64 size)
+> +{
+> +	/*
+> +	 * With FWB, we ensure that the guest always accesses memory using
+> +	 * cacheable attributes, and we don't have to clean to PoC when
+> +	 * faulting in pages. Furthermore, FWB implies IDC, so cleaning to
+> +	 * PoU is not required either in this case.
+> +	 */
+> +	if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
+> +		return;
+> +
+> +	__flush_dcache_area(addr, size);
+> +}
+> +
+>  static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>  				      kvm_pte_t *ptep,
+>  				      struct stage2_map_data *data)
+> @@ -495,6 +515,10 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>  		put_page(page);
+>  	}
+>  
+> +	/* Flush data cache before installation of the new PTE */
+> +	if (stage2_pte_cacheable(new))
+> +		stage2_flush_dcache(__va(phys), granule);
 
-> Tested-by: Markus Boehme <markubo@amazon.de>
+This makes sense to me. kvm_pgtable_stage2_map() is protected against concurrent
+calls by the kvm->mmu_lock, so only one VCPU can change the stage 2 translation
+table at any given moment. In the case of concurrent translation faults on the
+same IPA, the first VCPU that will take the lock will create the mapping and do
+the dcache clean+invalidate. The other VCPUs will return -EAGAIN because the
+mapping they are trying to install is almost identical* to the mapping created by
+the first VCPU that took the lock.
 
-What was tested?
+I have a question. Why are you doing the cache maintenance *before* installing the
+new mapping? This is what the kernel already does, so I'm not saying it's
+incorrect, I'm just curious about the reason behind it.
 
-I backported the patch, but next time, please provide the patch that
-will work properly.
+*permissions might be different.
 
-greg k-h
+Thanks,
+
+Alex
+
+> +
+>  	smp_store_release(ptep, new);
+>  	get_page(page);
+>  	data->phys += granule;
+> @@ -651,20 +675,6 @@ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
+>  	return ret;
+>  }
+>  
+> -static void stage2_flush_dcache(void *addr, u64 size)
+> -{
+> -	if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
+> -		return;
+> -
+> -	__flush_dcache_area(addr, size);
+> -}
+> -
+> -static bool stage2_pte_cacheable(kvm_pte_t pte)
+> -{
+> -	u64 memattr = pte & KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR;
+> -	return memattr == PAGE_S2_MEMATTR(NORMAL);
+> -}
+> -
+>  static int stage2_unmap_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
+>  			       enum kvm_pgtable_walk_flags flag,
+>  			       void * const arg)
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 77cb2d28f2a4..d151927a7d62 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -609,11 +609,6 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
+>  	kvm_mmu_write_protect_pt_masked(kvm, slot, gfn_offset, mask);
+>  }
+>  
+> -static void clean_dcache_guest_page(kvm_pfn_t pfn, unsigned long size)
+> -{
+> -	__clean_dcache_guest_page(pfn, size);
+> -}
+> -
+>  static void invalidate_icache_guest_page(kvm_pfn_t pfn, unsigned long size)
+>  {
+>  	__invalidate_icache_guest_page(pfn, size);
+> @@ -882,9 +877,6 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  	if (writable)
+>  		prot |= KVM_PGTABLE_PROT_W;
+>  
+> -	if (fault_status != FSC_PERM && !device)
+> -		clean_dcache_guest_page(pfn, vma_pagesize);
+> -
+>  	if (exec_fault) {
+>  		prot |= KVM_PGTABLE_PROT_X;
+>  		invalidate_icache_guest_page(pfn, vma_pagesize);
+> @@ -1144,10 +1136,10 @@ int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
+>  	trace_kvm_set_spte_hva(hva);
+>  
+>  	/*
+> -	 * We've moved a page around, probably through CoW, so let's treat it
+> -	 * just like a translation fault and clean the cache to the PoC.
+> +	 * We've moved a page around, probably through CoW, so let's treat
+> +	 * it just like a translation fault and the map handler will clean
+> +	 * the cache to the PoC.
+>  	 */
+> -	clean_dcache_guest_page(pfn, PAGE_SIZE);
+>  	handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &pfn);
+>  	return 0;
+>  }
