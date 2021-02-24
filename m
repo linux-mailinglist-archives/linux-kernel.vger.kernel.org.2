@@ -2,124 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2F3324516
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD7532451C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235175AbhBXURm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:17:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
+        id S235657AbhBXUTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 15:19:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235437AbhBXUQG (ORCPT
+        with ESMTP id S235728AbhBXUSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:16:06 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AD6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:15:26 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id l13so2940683wmg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:15:26 -0800 (PST)
+        Wed, 24 Feb 2021 15:18:06 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C529C061574;
+        Wed, 24 Feb 2021 12:17:26 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id 18so3715765oiz.7;
+        Wed, 24 Feb 2021 12:17:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=J1gJV1o9Sl1Wnh9xWJQFa/KkawfMsaygfgB8RdQE8os=;
-        b=PcA0tffJHzRc0QDxWkZcmb6WbGBYLYs9WEMRBSGCgpFlPrgGJCTauBZS1e0nR+TIuo
-         P7bS/cIRp3mXEScNS+sPOjB/weotyBiu2bFS8B4AIMQmUHok6E0B6AqYR3HHAytYr24i
-         uN8Z4aDXQlcyRdC8w9kyOasCEF5+QrJ0cMzcCNw7vE4fgPegZEsEMmV9qVhb+IEOTzYA
-         Kng0odzvZpmNLSNsAfEgTkIEpPQYeei+X7ma2gcmv4yxuiRcwOtHljf2UzuxtGwIGhVd
-         M8mDL6Ir4geuuDKHscHvoJ6c5rfKglpo4UMtOUmkY3h9yFYWzfiF7Cz65NRfB9RHhRnT
-         vkKQ==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ylNlgfdcvRYOD6kXq/95XnGE6RgCAMqXvQ1uBMMg7TU=;
+        b=RhNsZyzXgtTZGyid5j7nVxfjC5vdc5cxSATcD8rc+cg00YD/Uu1qopgE0wLckdrrfh
+         AMbMPE6l42p5jtO2qEMlB6RBoiy/u6oeOfBKxB9YDRU+CyIdVN+OqiFMfONkZ5OBUyJT
+         pYqWHcQ9YjSGTuxG6MK2ztRqiuOxyxd7MkbB895Aoxto9JgmmfUqRh2iu5hVc54oWKUI
+         Gq97bliEvUmmhPnIPYtuOBB/ESNbs1xmeQ5jhfh/sAVUw4iaxufO7htAed0SwH5o4oJe
+         scdddBN+FqryhHDKlk8OmTM346/xXlWpfcKrSkUNbd9PEEnxF6oU6vnbhOaAA+zbLoP9
+         RTHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J1gJV1o9Sl1Wnh9xWJQFa/KkawfMsaygfgB8RdQE8os=;
-        b=iMZ3dr+RFbUvDXJNGAFzHRy5QHaFhTrPzANvKl/4h4QQFwZ0/u4xCibGiFk9XCRLjO
-         AP42wSo1R3L8yOu5SgdQGttWjtsFFbXvQp2wi3BVrLW/zq3wkp4NwdiwtIxw/45DPcjd
-         DCGbQ8JS6210IE8cWIzAgKPo9UPv2M4o7kzXFa+Lgq15c4iJ/WR65cBFApM0hPdSlXls
-         B4enDBO7beI4CN6A+XnhESzb0m2oJcQVawbAS4Vmo9POBIh3jGjStCylylvKspI38wjE
-         ZU4vIN31HWwFTCtV2ogvGu9u+a8F/EB/lzmXQ+UboiQLFJZtZ8Ok1YZ9YE/avhvw3mU7
-         CVQg==
-X-Gm-Message-State: AOAM53291vHpV45nlhEuOSYPU0M4j7NjIhAG/JaD5LnJVYl3mPu19eS2
-        cLvVQ2hLxomrMnuxtevJ1Xwz3w==
-X-Google-Smtp-Source: ABdhPJxf2wBacwv+7nH21lGN1XxSnXmyTznri5GC7Ka7XM0MNYSpX5qm+NtljVGMt7wCrErHGVhWNQ==
-X-Received: by 2002:a1c:f60b:: with SMTP id w11mr5227838wmc.3.1614197725456;
-        Wed, 24 Feb 2021 12:15:25 -0800 (PST)
-Received: from apalos.home (ppp-94-64-113-158.home.otenet.gr. [94.64.113.158])
-        by smtp.gmail.com with ESMTPSA id y9sm1850442wrm.88.2021.02.24.12.15.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 12:15:25 -0800 (PST)
-Date:   Wed, 24 Feb 2021 22:15:22 +0200
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
-        chuck.lever@oracle.com, netdev@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 2/3] net: page_pool: use alloc_pages_bulk in
- refill code path
-Message-ID: <YDaz2tXXxEkcBfRR@apalos.home>
-References: <161419296941.2718959.12575257358107256094.stgit@firesoul>
- <161419300618.2718959.11165518489200268845.stgit@firesoul>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ylNlgfdcvRYOD6kXq/95XnGE6RgCAMqXvQ1uBMMg7TU=;
+        b=YGC7euZ5PUqaO7Xk+uCvufUqnIKXA2RBj6FjYNmpe29GjRa9zcy2/91LbNfrlu8JJi
+         67FqRsz09rCaIFgAiQ/S+xAY98+cN0XNFbM/OPh1HvyKZ7jGRT/0iDF36yxQ4iRmnf5S
+         lIte+f2olPsa2VFMVQcE/Dq/2kLSdEhl57oEvaNh2zUCmqlGBBbs6AtqPmiQDHqEw822
+         FWhKKosySqiDZgQqLDBFzeJW7A0qRYFkOe1SBeU4qkY0i1TJqP4vPehIdyvEC9Ukf+so
+         TIQKUzBmHu5/dWOS/9FKuGp/fSZNaE31yhCC1sSxk16CRUC5iCv2H03jHRn189QmPola
+         tcMA==
+X-Gm-Message-State: AOAM5324hpkIL5vSocIcPEx6ITCxnKxoEZYpOrRU0V1rKz5GkL34DPKI
+        1xf+9oL08N+PB/xjSzdnRhI=
+X-Google-Smtp-Source: ABdhPJzDBcW556aZO7mgeeunZgHfhSVx/5GFriwJvwVEbAj9sOwTknCGBEak65KhGzHJp7g/DrTp8Q==
+X-Received: by 2002:aca:ad0d:: with SMTP id w13mr3743625oie.170.1614197845430;
+        Wed, 24 Feb 2021 12:17:25 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n93sm572233ota.37.2021.02.24.12.17.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 24 Feb 2021 12:17:24 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 24 Feb 2021 12:17:23 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH v9 01/16] tracing: move function tracer options to
+ Kconfig (causing parisc build failures)
+Message-ID: <20210224201723.GA69309@roeck-us.net>
+References: <20201211184633.3213045-1-samitolvanen@google.com>
+ <20201211184633.3213045-2-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <161419300618.2718959.11165518489200268845.stgit@firesoul>
+In-Reply-To: <20201211184633.3213045-2-samitolvanen@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jesper, 
-
-On Wed, Feb 24, 2021 at 07:56:46PM +0100, Jesper Dangaard Brouer wrote:
-> There are cases where the page_pool need to refill with pages from the
-> page allocator. Some workloads cause the page_pool to release pages
-> instead of recycling these pages.
+On Fri, Dec 11, 2020 at 10:46:18AM -0800, Sami Tolvanen wrote:
+> Move function tracer options to Kconfig to make it easier to add
+> new methods for generating __mcount_loc, and to make the options
+> available also when building kernel modules.
 > 
-> For these workload it can improve performance to bulk alloc pages from
-> the page-allocator to refill the alloc cache.
+> Note that FTRACE_MCOUNT_USE_* options are updated on rebuild and
+> therefore, work even if the .config was generated in a different
+> environment.
 > 
-> For XDP-redirect workload with 100G mlx5 driver (that use page_pool)
-> redirecting xdp_frame packets into a veth, that does XDP_PASS to create
-> an SKB from the xdp_frame, which then cannot return the page to the
-> page_pool. In this case, we saw[1] an improvement of 18.8% from using
-> the alloc_pages_bulk API (3,677,958 pps -> 4,368,926 pps).
-> 
-> [1] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org
-> 
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-[...]
+With this patch in place, parisc:allmodconfig no longer builds.
 
-> +	/* Remaining pages store in alloc.cache */
-> +	list_for_each_entry_safe(page, next, &page_list, lru) {
-> +		list_del(&page->lru);
-> +		if (pp_flags & PP_FLAG_DMA_MAP) {
-> +			page = page_pool_dma_map(pool, page);
-> +			if (!page)
+Error log:
+Arch parisc is not supported with CONFIG_FTRACE_MCOUNT_RECORD at scripts/recordmcount.pl line 405.
+make[2]: *** [scripts/mod/empty.o] Error 2
 
-As I commented on the previous patch, i'd prefer the put_page() here to be
-explicitly called, instead of hiding in the page_pool_dma_map()
+Due to this problem, CONFIG_FTRACE_MCOUNT_RECORD can no longer be
+enabled in parisc builds. Since that is auto-selected by DYNAMIC_FTRACE,
+DYNAMIC_FTRACE can no longer be enabled, and with it everything that
+depends on it.
 
-> +				continue;
-> +		}
-> +		if (likely(pool->alloc.count < PP_ALLOC_CACHE_SIZE)) {
-> +			pool->alloc.cache[pool->alloc.count++] = page;
-> +			pool->pages_state_hold_cnt++;
-> +			trace_page_pool_state_hold(pool, page,
-> +						   pool->pages_state_hold_cnt);
-> +		} else {
-> +			put_page(page);
-> +		}
-> +	}
-> +out:
->  	if (pool->p.flags & PP_FLAG_DMA_MAP) {
-> -		page = page_pool_dma_map(pool, page);
-> -		if (!page)
-> +		first_page = page_pool_dma_map(pool, first_page);
-> +		if (!first_page)
->  			return NULL;
->  	}
->  
-[...]
+Bisect log attached.
 
-Cheers
-/Ilias
+Guenter
+
+---
+# bad: [414eece95b98b209cef0f49cfcac108fd00b8ced] Merge tag 'clang-lto-v5.12-rc1-part2' of git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux
+# good: [b12b47249688915e987a9a2a393b522f86f6b7ab] Merge tag 'powerpc-5.12-1' of git://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux
+git bisect start '414eece95b98' 'b12b47249688'
+# bad: [f6e1e1d1e149802ed4062fa514c2d184d30aacdf] Merge tag 'gfs2-for-5.12' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2
+git bisect bad f6e1e1d1e149802ed4062fa514c2d184d30aacdf
+# bad: [79db4d2293eba2ce6265a341bedf6caecad5eeb3] Merge tag 'clang-lto-v5.12-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux
+git bisect bad 79db4d2293eba2ce6265a341bedf6caecad5eeb3
+# good: [9d5032f97e9e0655e8c507ab1f43237e31520b00] dt-bindings: mediatek: mt8192: Fix dt_binding_check warning
+git bisect good 9d5032f97e9e0655e8c507ab1f43237e31520b00
+# good: [f81f213850ca84b3d5e59e17d17acb2ecfc24076] Merge tag 'for-linus-5.12-1' of git://github.com/cminyard/linux-ipmi
+git bisect good f81f213850ca84b3d5e59e17d17acb2ecfc24076
+# bad: [112b6a8e038d793d016e330f53acb9383ac504b3] arm64: allow LTO to be selected
+git bisect bad 112b6a8e038d793d016e330f53acb9383ac504b3
+# bad: [3578ad11f3fba07e64c26d8db68cfd3dde28c59e] init: lto: fix PREL32 relocations
+git bisect bad 3578ad11f3fba07e64c26d8db68cfd3dde28c59e
+# bad: [22d429e75f24d114d99223389d6ba7047e952e32] kbuild: lto: limit inlining
+git bisect bad 22d429e75f24d114d99223389d6ba7047e952e32
+# bad: [dc5723b02e523b2c4a68667f7e28c65018f7202f] kbuild: add support for Clang LTO
+git bisect bad dc5723b02e523b2c4a68667f7e28c65018f7202f
+# bad: [3b15cdc15956673ba1551d79bceae471436ac6a9] tracing: move function tracer options to Kconfig
+git bisect bad 3b15cdc15956673ba1551d79bceae471436ac6a9
+# first bad commit: [3b15cdc15956673ba1551d79bceae471436ac6a9] tracing: move function tracer options to Kconfig
