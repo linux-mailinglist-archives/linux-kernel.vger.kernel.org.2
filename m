@@ -2,162 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3218323E79
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 14:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA1032401A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235635AbhBXNiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 08:38:11 -0500
-Received: from mout.kundenserver.de ([212.227.126.133]:37341 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233093AbhBXNC6 (ORCPT
+        id S237559AbhBXOil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:38:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234857AbhBXNTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:02:58 -0500
-Received: from [192.168.1.155] ([77.2.19.91]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MDyoW-1l51sv2CX6-009v7T; Wed, 24 Feb 2021 14:00:13 +0100
-Subject: Re: RFC: oftree based setup of composite board devices
-To:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org, Johan Hovold <johan@kernel.org>
-References: <20210208222203.22335-1-info@metux.net>
- <CAL_JsqJ-bz35mUM3agYjq5x+Y+u9rL1RwesCaA-x=MW8uv5CrA@mail.gmail.com>
- <76bf0f7c-9477-f370-8fbd-ce8ef15188b1@gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-Message-ID: <44b9b561-5e0d-6a1c-ca5d-4e9f6000884c@metux.net>
-Date:   Wed, 24 Feb 2021 14:00:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 24 Feb 2021 08:19:14 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C52C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:18:33 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id c16so2110644otp.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:18:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hz6BWGl7qa7h/rRrM/u0WCVRkmbtUFWO0Cr4wwVxXjY=;
+        b=Wr+r6Gd6YiIT1RvRDMDejiuUXKyYgtB2MpoPj2b3REeXwS40+RrCjZUkwACLoxf4gT
+         o/rd+peXH6NGy7ycvrW70vh8mQurSQ/vf+UMMP76QGzUIz1Pi2kWv8rzW8VtAg1Dee7L
+         vyz3DndX9AuiBZgEYka2INaLRiEWG2EtSKVpz3YAkcynhPoftCHahRAyncfPSDHwOeW5
+         XAiKbA7+VyGED1P7TFv1qLzL862DrDR1hbfdhloNhb6vcV52ldsNWrFtoggj9scep0pM
+         5JVPjjg8yfHJZz0h8N+X2c8yyHEZro/iAVijjJOCxfyMKfsoXdiHmt41njDkst7xY33l
+         dCiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hz6BWGl7qa7h/rRrM/u0WCVRkmbtUFWO0Cr4wwVxXjY=;
+        b=mmDcEc3aE1sDT3d9Sqaa6wAnQNX+FOMQInfxl9tWgfYSHkRtmigAd8K/5BAOncnzGt
+         /jIDZOIWqo2gWN1FGTUwvbmHma9QaMFAX0nnvDFuDVQSsKP4W4khHLUB4nFH0i5KFd+y
+         PKzJabrNivkiCq0lYpFyOVBiVT1tndfQlgXavpVbUyfRjfAVWv/4ojpz4CkFFvnF/QQ/
+         NZh+2rAwWlwsosgiPHqeyONVLM9mtB8DG6e0tDhiqSpk2GWjksfDjfFUJ+jC70NmK+m9
+         IOqA1PyDkT74DE2NchA81sox9rtcWgdy/fGhbVgj2rZFcC5w6ZhB8jTvisZn4z34Evzb
+         kASw==
+X-Gm-Message-State: AOAM531YVAz33ckrRWDSHPNVRa2wfL0+QK9Bg6Nfy81d1we9BA9RSUmd
+        hQr/YGegY+fmzHgss9uCUgaEdA==
+X-Google-Smtp-Source: ABdhPJz/cyH96Ef6ooNYUXuVy7sefqG5p5mJLZudZuy+rwZK1FGd75K1lFTGrg2zpDdPT0u1O1oQHw==
+X-Received: by 2002:a9d:6958:: with SMTP id p24mr12470520oto.297.1614172712725;
+        Wed, 24 Feb 2021 05:18:32 -0800 (PST)
+Received: from winterfell.papolivre.org (winterfell.papolivre.org. [2600:3c00::f03c:91ff:fe69:3960])
+        by smtp.gmail.com with ESMTPSA id w4sm378114ool.44.2021.02.24.05.18.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 05:18:32 -0800 (PST)
+Received: from localhost (unknown [IPv6:2001:1284:f016:4cfd:27e0:441e:870:6787])
+        by winterfell.papolivre.org (Postfix) with ESMTPSA id 1C7821C2F43;
+        Wed, 24 Feb 2021 10:18:30 -0300 (-03)
+From:   Antonio Terceiro <antonio.terceiro@linaro.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        He Zhe <zhe.he@windriver.com>, stable@vger.kernel.org
+Subject: [PATCH] perf: fix ccache usage in $(CC) when generating arch errno table
+Date:   Wed, 24 Feb 2021 10:00:46 -0300
+Message-Id: <20210224130046.346977-1-antonio.terceiro@linaro.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <76bf0f7c-9477-f370-8fbd-ce8ef15188b1@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:S4Magus5iVB7A/3HjqzU9h7iO3+zDZz8Fom6lDp95WYIGBug4nN
- 75Z+K0t6EoVgSE03r91wssD5swxiLRIKp4nL0Tvcv58a8NfUURZO48IDwJA5TpPanVEBY6U
- lqRSvOBRVGYQHeUmlNJ7jf9x2yYLgD+CJbXOwCQCUx+bNTd6jBj3ubFPcouJw0X8NLOzgKC
- Vl1v5LqB0Q1afibhnuR7g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YUfW6Jymwu0=:mWF+wApwLToD13uqyydVmw
- yz0tjJoinmtzo4QIhnPsrrVq/xqVc9A+HNCgOLzb2LqtYsgzgc704Kj0XH8O3FCJblYa0A7BN
- FMrWWjo/v76RpnKOd/RRNnjISy7mK3SIG3XEkHB4GaOdIPYrwVd8ar4+xLgoz/Ssoyx+1fMqQ
- 9+aFLozd/3oApFaARTLL72FHJoW1mp7rDch9R4ua9Kg/6gPKgnyyvq+WZJj9YjKscLqrqZBaP
- H98QtUMaAK3Yd7hMGH5NCndv6IDa2T/nxorz5RdTrLAP1aLE+sQMbq2u2OH5OBmcGf4Pq1CUB
- 1bbpIqWno1/TNZ1+EkLTwYWhRc99d2QaLE0p8cPymTJWEdbhAtajlHRFGVo5BfJRhWRt8KhDc
- KCJwjx8dlOLNmS36mvZPRs58+Clg9yyCDhcMBbWc1JQMQhAZK7CYIMy0TaaliYArvfPCnv04h
- cAM9BcRwKI50mRc/sWfAkJgE0mOhtmYSlT4/+v/uVOlgfLqGwK4f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.02.21 02:12, Frank Rowand wrote:
+This was introduced by commit e4ffd066ff440a57097e9140fa9e16ceef905de8.
 
-> Why not compile in ACPI data (tables?) instead of devicetree description?
+Assuming the first word of $(CC) is the actual compiler breaks usage
+like CC="ccache gcc": the script ends up calling ccache directly with
+gcc arguments, what fails. Instead of getting the first word, just
+remove from $(CC) any word that starts with a "-". This maintains the
+spirit of the original patch, while not breaking ccache users.
 
-The problem is a bit more complex than it might seem.
+Signed-off-by: Antonio Terceiro <antonio.terceiro@linaro.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: He Zhe <zhe.he@windriver.com>
+CC: stable@vger.kernel.org
+---
+ tools/perf/Makefile.perf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Let's take the APU2/37/4 boards as an example. They've got some aux
-devices, eg. some gpio controller, and some things (leds, keys, reset
-lines, etc) attached to it.
-
-Now we've got lots of different bios versions in the field,
-enumerating only some of the devices. For example, older ones didn't
-even contain the gpio, later ones added just gpio, other ones just
-added LEDs (with different names than the Linux driver already mainlined
-and field-deployed at that time), but still other lines unhandled, etc, 
-etc. etc.
-
-A big mess :( And I can't ask everybody to do bios uprade on devices far
-out in the field (litterally open field, sometimes offshore, ...). So, I
-need a usable solution, that's also maintainable, w/o testing each
-single combination of board, bios, etc. IOW: without relying on bios
-(except for board identification)
-
-OTOH, I'm also looking for a solution get rid writing those kind of
-relatively huge board drivers, that pretty are much like old fashioned
-board files from pre-DT times - just made up of lots of tables and
-a few trivial register-something calls. Sounds pretty much like the
-original use case of oftree.
-
-The primary difference between classic oftree and this scanario:
-* this is additional to existing platform information, which is
-   incomplete or even incorrect (and that can't be fixed)
-* extra carrier boards that are detected by other means, but no
-   enumeration of the devices on it.
-
->> This is something I've wanted to see for a while. There's use cases
->> for DT based systems too. The example I'd like to see supported are
->> USB serial adapters with downstream serdev, GPIO, I2C, SPI, etc. Then
->> plug more than one of those in.
-> 
-> My understanding from the past is that the experts (those who understand both
-> devicetree and ACPI) regard trying to mix devicetree and ACPI in a single
-> running Linux kernel image is insanity, or at least likely to be confusing,
-> difficult, and problematic.
-
-Well, mixing different, overlapping data sources tends to be tricky. The
-same problem exists with the classic approach of hand-written board
-drivers. So there have to be clear border lines.
-
-In my case (eg. apu2+ boards), the overlap is only that some bios
-versions enumerate the gpio chip, others even some of the gpio-based
-devices. I'm attempting to solve this by just kicking out those
-duplicate devices, if they exist. The alternative could be leaving them
-in an trying to bind the missing ones to them. But that would be really
-complicatd and needs to be well crafted for lots of different board and
-bios versions - a kind of complexity we wanna avoid.
-
-My use cases are actually a bit easier than the average dt overlay
-cases, as I have almost no interactions with already existing devices
-(except that some specific devices have to be moved out of the way)
-
-The original DT overlay use case, arbitrary expansion boards (eg. on
-raspi), are trickier, if the overlays shall be generic over a wider
-range of base boards (eg. same overlay for any raspi or odroid).
-This is something calling for an own (pseudo-)bus type that handles
-the correct probing ... I've hacked up something similar for the APU2+'s
-combined msata/usb/mpcie ports.
-
-BTW: I've already been thinking of ways for internally transforming ACPI
-tables into DT data structures (struct device_node) at an early point,
-before probing. But that would be another research project with unknown
-outcome, and most likely a HUGE change. Not what I'm talking about now.
-
-> From the devicetree side, I expect nightmares for me if devicetree and ACPI
-> are mixed in a single running kernel image.
-
-Note that I'm not talking about arbitrary configurations. Just re-using
-existing device tree code to express things that are currently open
-coded C into DT.
-
-It's NOT trying to boot an ACPI-based machine with DT. (which would be
-yet another research project)
-
-> Multiple root nodes and disjoint trees both seem problematic.  Existing
-> subsystems and drivers expect a single cohesive tree.  Changing that
-> architecture looks to me to be a painful exercise.
-
-Yes, it's not entirely trivial, but managable. My experiments seemed to
-work so far, and I couldn't see general blockers yet. Drivers usually
-expect certain sub-nodes, but haven't found any that expect their node
-being embedded in some other one. (maybe there really are some, but the
-likehood that they're applicable in these use cases looks pretty low).
-
-
---mtx
-
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 5345ac70cd83..9bfc725db608 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -607,7 +607,7 @@ arch_errno_hdr_dir := $(srctree)/tools
+ arch_errno_tbl := $(srctree)/tools/perf/trace/beauty/arch_errno_names.sh
+ 
+ $(arch_errno_name_array): $(arch_errno_tbl)
+-	$(Q)$(SHELL) '$(arch_errno_tbl)' $(firstword $(CC)) $(arch_errno_hdr_dir) > $@
++	$(Q)$(SHELL) '$(arch_errno_tbl)' '$(patsubst -%,,$(CC))' $(arch_errno_hdr_dir) > $@
+ 
+ sync_file_range_arrays := $(beauty_outdir)/sync_file_range_arrays.c
+ sync_file_range_tbls := $(srctree)/tools/perf/trace/beauty/sync_file_range.sh
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+2.30.1
+
