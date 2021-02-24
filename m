@@ -2,124 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD08323A41
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C773F323A45
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:15:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234891AbhBXKMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 05:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
+        id S234865AbhBXKOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 05:14:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234851AbhBXKL4 (ORCPT
+        with ESMTP id S234375AbhBXKNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 05:11:56 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F0DC06174A;
-        Wed, 24 Feb 2021 02:11:16 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id w11so1283419wrr.10;
-        Wed, 24 Feb 2021 02:11:16 -0800 (PST)
+        Wed, 24 Feb 2021 05:13:21 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5667C061574;
+        Wed, 24 Feb 2021 02:12:36 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id z7so907041plk.7;
+        Wed, 24 Feb 2021 02:12:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Xio+fpATjQPBtlCF5IdCsyWm8QAS5cdYxc9ta78hmOY=;
-        b=jSV6iSSFXACjKaQ6XT4veg+fhoZLvyUwkcv+egAGAxXSZgTpD8vGu/ksgm2MQ0h04z
-         KHaVPwhnGjwnj3MBXi9PsuihHDKjH7xxaobIPFMU1vcG968mn7/aymmd+kRdJSIyoU+8
-         B+zeoTXFSz0hzTZR52z+90uzZZCJtCrOoVyzGBeiJSzLfRCnlPy9NIQ2uGy4Xvj5RriQ
-         fLAJzolN3HlUL84Qj7XCOTIQZzCm4q/Q5mJIYfhgn/uuReEmWTZxl1EI5FgJje6z2bZ3
-         4mUwcP4JTNDgWyfZZUCzx/1N/gQyo0AO/5zbOpSw5pt1SGLdJhmRjv9xDD8VMj8R1h4i
-         hn6A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RvISrt6vYqvUm9PHBD/p/wweiIQ+cNzFh5pQ6zkWASM=;
+        b=sD8bWvD1vcfd3uRV/4Fo8JnspSgsE2jadK1HkywrLcdhUhMXMWjq4/6atvUaSi3D7w
+         6dW+N44WH5F7Og/Te0BcRwoFFGSoUL9jH4PDzy6I262gIjIPTEJalpji6U5Hsit3vsHn
+         fqIDUDjg138qyAujmWD+Y88DLXTEpMDNzc7pjLvibvHqOq5aQs5LrCHdzbEQZT8Bha4Y
+         PW3htTRzEaqh4/lyS6fJiR8Vd/+e+rIjJY9JBhWdnH7ZYzOrhqiSdTz2eg96ucwVahwF
+         Zbvms0WFZY4PoeYuGRkRHuqCIxGLI9b5klqYl4prZrfTNWIdK3wPSGOEmuJg9SKqFmX4
+         nN7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Xio+fpATjQPBtlCF5IdCsyWm8QAS5cdYxc9ta78hmOY=;
-        b=GWL4WLW4eiajJiiMNLlNAoDSLFSACjEUbna+C/4AG3Nk7BSTVY1ThdaplCBy2UFTVT
-         WHhVtnpAOEP7m+75dGRSFsYGCTTKC9/oFEZujuQIvjr7i3vUhAyAV9xZ0WqvaNkz3LUt
-         zFYuOBsImNPJDoeSTbskiLjrd8SinFsBar3UwjzKUBNeysTC2pCDD3/AhUx21z0to3OO
-         Mtuo1KAnVMFIT5rMzZqhqOfPNIqfvH5HI4UbFbNwQTOAwEH+XdAHTzHH716oKixCryih
-         Sx+fCTn1HRs+9u7ObIdi9OVqxUNVQcaAE7V8j48ukX68bsb2ZZmS5qUVWyHkSyvngk9m
-         XgJw==
-X-Gm-Message-State: AOAM532oQB148z2UHKo7zGXMGeRyE/jJLiSJyRq31DDJuFwa8YZmORjI
-        KrwH8eLRSJG2Gfi+8Q6Fwy8=
-X-Google-Smtp-Source: ABdhPJyevah7TqE1RxFVZP342lOb4KWaEPUF444YdhMGECQgMsv0J4n2Ocs7PFAAdly8tE67Zyt6nw==
-X-Received: by 2002:adf:8445:: with SMTP id 63mr31322644wrf.222.1614161474911;
-        Wed, 24 Feb 2021 02:11:14 -0800 (PST)
-Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id a14sm2842573wrg.84.2021.02.24.02.11.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 02:11:14 -0800 (PST)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     f.fainelli@gmail.com, jonas.gorski@gmail.com,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH v2 2/2] leds: bcm6358: improve write and read functions
-Date:   Wed, 24 Feb 2021 11:11:10 +0100
-Message-Id: <20210224101110.20179-3-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210224101110.20179-1-noltari@gmail.com>
-References: <20210224101110.20179-1-noltari@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RvISrt6vYqvUm9PHBD/p/wweiIQ+cNzFh5pQ6zkWASM=;
+        b=JZ/nyHtmhbEsLxAY99dPOWWvSbuPNa3XMuAYv8PMDubTWqZF1tf3KQeBX4KEkQqLbR
+         j+jsKTnxqPVfflAw8AJMfL4LKGOXCyutmkgsBg/B6NxWi7wSLa8umsltM1743vogPuY/
+         WVF8o6T9mgDcRUjwW5mjVMgCw1vWoq97RGoibBzJwVKFLPvnZOSpU5m0NYz9j+ZkQZwl
+         vehTVrEvW/mFIYhz5sc7LYy2XrT75Z2HPH0GHYsLVJYhMPbV7idadvAgXx50jpWwrCPW
+         MchVXDnPmNVjJqDlAME92hUO8IYQclaPtETsLGOgrj9aLFEg4jAjeJAbGGWMj9xKKYO0
+         Nx6A==
+X-Gm-Message-State: AOAM531yOTEq2UwbY6gX7Jm/xqfjSO4lNFYDUhk+TB63LP3CwEl6Sfux
+        Y1SLv2eYyV3fQmbLJJxRKE2JkPSKCnV7wg3ZrrE=
+X-Google-Smtp-Source: ABdhPJxKDFMwtTGODQK28m5lHAr4T/V7FvHh0JKisx6pW5W3afq3SiVj0xMdvgRslblb6Fj8nQXwONCnaEPtAZItn4k=
+X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr1493951pjx.181.1614161556497;
+ Wed, 24 Feb 2021 02:12:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <1614154581-33967-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1614154581-33967-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 24 Feb 2021 12:12:20 +0200
+Message-ID: <CAHp75VcDeoSvu6RjJ7JrycrxS2umL5Cx-B_8NrLLcgZR6VVrZw@mail.gmail.com>
+Subject: Re: [PATCH] x86: platform: iosf_mbi: Replace DEFINE_SIMPLE_ATTRIBUTE
+ with DEFINE_DEBUGFS_ATTRIBUTE
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is proven to work in BMIPS BE/LE and ARM BE/LE, as used in bcm2835-rng
-and bcmgenet drivers.
-Both should also be inline functions.
+On Wed, Feb 24, 2021 at 10:16 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warning:
+> ./arch/x86/platform/intel/iosf_mbi.c:482:0-23: WARNING: iosf_mcr_fops
+> should be defined with DEFINE_DEBUGFS_ATTRIBUTE
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- v2: Fix comment style.
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
- drivers/leds/leds-bcm6358.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  arch/x86/platform/intel/iosf_mbi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/platform/intel/iosf_mbi.c b/arch/x86/platform/intel/iosf_mbi.c
+> index 526f70f..ba70597 100644
+> --- a/arch/x86/platform/intel/iosf_mbi.c
+> +++ b/arch/x86/platform/intel/iosf_mbi.c
+> @@ -479,7 +479,7 @@ static int mcr_set(void *data, u64 val)
+>
+>         return err;
+>  }
+> -DEFINE_SIMPLE_ATTRIBUTE(iosf_mcr_fops, mcr_get, mcr_set , "%llx\n");
+> +DEFINE_DEBUGFS_ATTRIBUTE(iosf_mcr_fops, mcr_get, mcr_set, "%llx\n");
+>
+>  static struct dentry *iosf_dbg;
+>
+> --
+> 1.8.3.1
+>
 
-diff --git a/drivers/leds/leds-bcm6358.c b/drivers/leds/leds-bcm6358.c
-index 9d2e487fa08a..37d27b7c58a8 100644
---- a/drivers/leds/leds-bcm6358.c
-+++ b/drivers/leds/leds-bcm6358.c
-@@ -43,22 +43,24 @@ struct bcm6358_led {
- 	bool active_low;
- };
- 
--static void bcm6358_led_write(void __iomem *reg, unsigned long data)
-+static inline void bcm6358_led_write(void __iomem *reg, unsigned long data)
- {
--#ifdef CONFIG_CPU_BIG_ENDIAN
--	iowrite32be(data, reg);
--#else
--	writel(data, reg);
--#endif
-+	/*
-+	 * MIPS chips strapped for BE will automagically configure the
-+	 * peripheral registers for CPU-native byte order.
-+	 */
-+	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
-+		__raw_writel(data, reg);
-+	else
-+		writel_relaxed(data, reg);
- }
- 
--static unsigned long bcm6358_led_read(void __iomem *reg)
-+static inline unsigned long bcm6358_led_read(void __iomem *reg)
- {
--#ifdef CONFIG_CPU_BIG_ENDIAN
--	return ioread32be(reg);
--#else
--	return readl(reg);
--#endif
-+	if (IS_ENABLED(CONFIG_MIPS) && IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
-+		return __raw_readl(reg);
-+	else
-+		return readl_relaxed(reg);
- }
- 
- static unsigned long bcm6358_led_busy(void __iomem *mem)
+
 -- 
-2.20.1
-
+With Best Regards,
+Andy Shevchenko
