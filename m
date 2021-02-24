@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470883238A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D633238A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233764AbhBXIam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:30:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbhBXIaf (ORCPT
+        id S233931AbhBXIbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:31:13 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:34734 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233146AbhBXIax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:30:35 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601A5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:29:53 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id w19so1362370qki.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:29:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RpU7wiB2viRDoJBxDY+B8fHhVuUV2u2xnN7aurcCHGA=;
-        b=eECcClOIr8qPSiuoNP4nPtCCAjLglclTXMYZNWJOm1vRucLfGDVkhQE5YaUj1NL1wt
-         88dIIakQzaDVFDBtDpfBUTLVTgP2fGVpXFU5bjh5rQumuhTRKLpOA8HLLBtFq8Fa8e7A
-         2qNQRJsfP5Zu3XW66L8nEzwephpMAvaLUr3SCsbp2ot7y0lNjjHm1PR25bdbNg29V33Z
-         uj90T4EqPamref4uagpeVWQIMxdjjLE7gXIMqL56iDQkABzm0bRvFzyLEXaZT4RF1edq
-         G/1OJL6bLrCPGY23i6uQkVu4DL0Evij/NDVKTmiHvVVZr6S1sFe48Xw1X4yOoQqddr4d
-         SsdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RpU7wiB2viRDoJBxDY+B8fHhVuUV2u2xnN7aurcCHGA=;
-        b=ZeyQYcA5fNBx9sn74zZ7I7RAYzuk9NrVrcaPOy6WB+3WVJh+E9js33utmpFQFOj5NP
-         +09Pujubf4LBHtBc8jyff/B0KZV7Uj/MLJC8drC1aYZFjmWDINjVVwFC6YE6SF2sC9tb
-         +H2gUXeTTeRnEL0G6JaNyK256UeNcT0o3KC7kFoXNhnM1dS4mE4Hj7ddLARPcxrHKR4U
-         QyebAeMVD4PavvOV5BOcQzg0YppZVWj3UVnWDxxjq6EYnTWtZ8adnNjsG+L/OgW3S2T6
-         4aIjrO5C+uuXoaG85y6OqdWLbgvMkn7B+9pS+VsbAbTOhDS28j4HY6dwGjUuVBLLGsl/
-         adOA==
-X-Gm-Message-State: AOAM530RQkoM/2q4ZRdzbDJ6YPBKdKcEMeZ5McMYSm4ZwyQOQRtIwLYr
-        pV10E4J5a8AZH8LVancKyUc=
-X-Google-Smtp-Source: ABdhPJxT8Akg+rYB8nhD2e/0WTqS0ONFv62PaPns8jpnaZvq9Nskyue1Q21uivfjwMzuaPw63NcwMw==
-X-Received: by 2002:a05:620a:11aa:: with SMTP id c10mr29275306qkk.35.1614155392711;
-        Wed, 24 Feb 2021 00:29:52 -0800 (PST)
-Received: from localhost.localdomain ([156.146.55.69])
-        by smtp.gmail.com with ESMTPSA id q6sm1003206qkd.41.2021.02.24.00.29.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 00:29:52 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] arch: x86: mm: Fix compied to compiled in the file init.c
-Date:   Wed, 24 Feb 2021 13:59:42 +0530
-Message-Id: <20210224082942.863874-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        Wed, 24 Feb 2021 03:30:53 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 5BA741C0B81; Wed, 24 Feb 2021 09:29:55 +0100 (CET)
+Date:   Wed, 24 Feb 2021 09:29:54 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH 5.10 03/29] vdpa_sim: store parsed MAC address in a buffer
+Message-ID: <20210224082954.GB8058@amd>
+References: <20210222121019.444399883@linuxfoundation.org>
+ <20210222121020.153222666@linuxfoundation.org>
+ <20210222195414.GA24405@amd>
+ <20210223080655.ps7ujvgvs6wtlszf@steredhat>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ZoaI/ZTpAVc4A5k6"
+Content-Disposition: inline
+In-Reply-To: <20210223080655.ps7ujvgvs6wtlszf@steredhat>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-s/compied/compiled/
+--ZoaI/ZTpAVc4A5k6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- arch/x86/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi!
 
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index dd694fb93916..34a1f1e19c86 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -29,7 +29,7 @@
+> >>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> >>@@ -42,6 +42,8 @@ static char *macaddr;
+> >> module_param(macaddr, charp, 0);
+> >> MODULE_PARM_DESC(macaddr, "Ethernet MAC address");
+> >>
+> >>+u8 macaddr_buf[ETH_ALEN];
+> >>+
+> >
+> >Should this be static?
+>=20
+> Yes, there is already a patch [1] queued by Michael but not yet upstream.
+> When it will be merged upstream I will make sure it will be backported.
 
- /*
-  * We need to define the tracepoints somewhere, and tlb.c
-- * is only compied when SMP=y.
-+ * is only compiled when SMP=y.
-  */
- #define CREATE_TRACE_POINTS
- #include <trace/events/tlb.h>
---
-2.30.1
+Having it in mainline is enough, I don't really think it causes
+anything user-visible, so it does not need to be in stable.
 
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--ZoaI/ZTpAVc4A5k6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmA2DoIACgkQMOfwapXb+vLgNACgj1vpwEzOIwV7Y/g16yUsIzIt
+nXAAoLMothbUEz/o+N8pICvYVwEgfNz7
+=HZ2x
+-----END PGP SIGNATURE-----
+
+--ZoaI/ZTpAVc4A5k6--
