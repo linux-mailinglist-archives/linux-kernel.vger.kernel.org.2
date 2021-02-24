@@ -2,109 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5658E32410E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD9F32415C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbhBXPj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:39:26 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:59652 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234387AbhBXPId (ORCPT
+        id S236564AbhBXPt0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Feb 2021 10:49:26 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:33394 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234675AbhBXPjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:08:33 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11OF5IDj014479;
-        Wed, 24 Feb 2021 15:07:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=yQ/9VJGRYC7HFFhoXhvUs5lWlOzidOwHTk2AtkXU7ak=;
- b=YiZKqeHm5szYWHOskDIGUeQQeLwjPF7UodXg+jpmW/lQdmxWwSReWhBS1ZGbk24BjGyJ
- WboDoB9ojcQHllvtnnJ9JDoEYo77G7sE8dpx2h5ERCEjToLl9zbJTOfs3D56KpVph5ML
- iWn/ao0PEjOPTi3a40z1W/dPjaJ53BMUIE67YOHIT2YleVCoY1Q5q9k27a+Y8pDkFegL
- mBVJaAYoD6EIWw6Hvz6ayrYx5ym11BSUDOsAPc/fAQmtIDsZ/J935IZRjJU+GVowfbie
- yXVcwroJUHYxmtCQ4SE+No8+X+WTKu7PQzev3k1p/DONgWSGuYdpN2uDyw+chi6iA5qJ jA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 36tsur3913-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Feb 2021 15:07:05 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11OF0f3Q129549;
-        Wed, 24 Feb 2021 15:07:03 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 36ucb0uj3q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Feb 2021 15:07:03 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11OF6uG9011706;
-        Wed, 24 Feb 2021 15:06:57 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 24 Feb 2021 07:06:56 -0800
-Date:   Wed, 24 Feb 2021 18:06:48 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     karthek <mail@karthek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] fix sparse warnings
-Message-ID: <20210224150648.GT2087@kadam>
-References: <cover.1613921277.git.mail@karthek.com>
- <YDZpKcXLkiueequk@karthik-strix-linux.karthek.com>
+        Wed, 24 Feb 2021 10:39:25 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-zC_RvgkBOTKB4w5IQULp9w-1; Wed, 24 Feb 2021 10:38:19 -0500
+X-MC-Unique: zC_RvgkBOTKB4w5IQULp9w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 879BD14E306;
+        Wed, 24 Feb 2021 15:08:39 +0000 (UTC)
+Received: from krava.cust.in.nbox.cz (unknown [10.40.193.200])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0E7BE1002C11;
+        Wed, 24 Feb 2021 15:08:31 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH] perf tools: Move feature cleanup under tools/build
+Date:   Wed, 24 Feb 2021 16:08:31 +0100
+Message-Id: <20210224150831.409639-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDZpKcXLkiueequk@karthik-strix-linux.karthek.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102240119
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 mlxscore=0 malwarescore=0
- clxscore=1015 phishscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102240119
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 08:26:41PM +0530, karthek wrote:
-> On Sun, Feb 21, 2021 at 09:00:48PM +0530, karthik alapati wrote:
-> > the following patches fixes two  byte-order issues
-> > and fixes these sparse warnings
-> > 
-> > 
-> > drivers/staging//wimax/i2400m/op-rfkill.c:89:25: warning: incorrect type in assignment (different base types)
-> > drivers/staging//wimax/i2400m/op-rfkill.c:89:25:    expected restricted __le16 [usertype] length
-> > drivers/staging//wimax/i2400m/op-rfkill.c:89:25:    got unsigned long
-> > .
-> > drivers/staging//wimax/i2400m/fw.c:514:27: warning: restricted __le32 degrades to integer
-> > 
-> > 
-> > karthik alapati (2):
-> >   staging: wimax/i2400m: fix byte-order issue
-> >   staging: wimax/i2400m: convert __le32 type to host byte-order
-> > 
-> >  drivers/staging/wimax/i2400m/fw.c        | 2 +-
-> >  drivers/staging/wimax/i2400m/op-rfkill.c | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > -- 
-> > 2.30.1
-> > 
-> ping?
+Arnaldo reported issue for following build command:
 
-The merge window is open so no one is merging these types of fixes now.
-Wait until -rc1 is out, and then give the maintainer two weeks to look
-at your patch and get back to you.
+  $ rm -rf /tmp/krava; mkdir /tmp/krava; make O=/tmp/krava clean
+    CLEAN    config
+  /bin/sh: line 0: cd: /tmp/krava/feature/: No such file or directory
+  ../../scripts/Makefile.include:17: *** output directory "/tmp/krava/feature/" does not exist.  Stop.
+  make[1]: *** [Makefile.perf:1010: config-clean] Error 2
+  make: *** [Makefile:90: clean] Error 2
 
-regards,
-dan carpenter
+The problem is that now that we include scripts/Makefile.include
+in feature's Makefile (which is fine and needed), we need to ensure
+the OUTPUT directory exists, before executing (out of tree) clean
+command.
+
+Removing the feature's cleanup from perf Makefile and fixing
+feature's cleanup under build Makefile, so it now checks that
+there's existing OUTPUT directory before calling the clean.
+
+Cc: Sedat Dilek <sedat.dilek@gmail.com>
+Fixes: 211a741cd3e1 ("tools: Factor Clang, LLC and LLVM utils definitions")
+Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/build/Makefile     |  8 +++++++-
+ tools/perf/Makefile.perf | 10 +---------
+ 2 files changed, 8 insertions(+), 10 deletions(-)
+
+diff --git a/tools/build/Makefile b/tools/build/Makefile
+index bae48e6fa995..5ed41b96fcde 100644
+--- a/tools/build/Makefile
++++ b/tools/build/Makefile
+@@ -30,12 +30,18 @@ build     := -f $(srctree)/tools/build/Makefile.build dir=. obj
+ 
+ all: $(OUTPUT)fixdep
+ 
++# Make sure there's anything to clean,
++# feature contains check for existing OUTPUT
++TMP_O := $(if $(OUTPUT),$(OUTPUT)/feature,./)
++
+ clean:
+ 	$(call QUIET_CLEAN, fixdep)
+ 	$(Q)find $(if $(OUTPUT),$(OUTPUT),.) -name '*.o' -delete -o -name '\.*.cmd' -delete -o -name '\.*.d' -delete
+ 	$(Q)rm -f $(OUTPUT)fixdep
+ 	$(call QUIET_CLEAN, feature-detect)
+-	$(Q)$(MAKE) -C feature/ clean >/dev/null
++ifneq ($(wildcard $(TMP_O)),)
++	$(Q)$(MAKE) -C feature OUTPUT=$(TMP_O) clean >/dev/null
++endif
+ 
+ $(OUTPUT)fixdep-in.o: FORCE
+ 	$(Q)$(MAKE) $(build)=fixdep
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 5345ac70cd83..536f6f90af92 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -1001,14 +1001,6 @@ $(INSTALL_DOC_TARGETS):
+ 
+ ### Cleaning rules
+ 
+-#
+-# This is here, not in Makefile.config, because Makefile.config does
+-# not get included for the clean target:
+-#
+-config-clean:
+-	$(call QUIET_CLEAN, config)
+-	$(Q)$(MAKE) -C $(srctree)/tools/build/feature/ $(if $(OUTPUT),OUTPUT=$(OUTPUT)feature/,) clean >/dev/null
+-
+ python-clean:
+ 	$(python-clean)
+ 
+@@ -1048,7 +1040,7 @@ endif # BUILD_BPF_SKEL
+ bpf-skel-clean:
+ 	$(call QUIET_CLEAN, bpf-skel) $(RM) -r $(SKEL_TMP_OUT) $(SKELETONS)
+ 
+-clean:: $(LIBTRACEEVENT)-clean $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBPERF)-clean config-clean fixdep-clean python-clean bpf-skel-clean
++clean:: $(LIBTRACEEVENT)-clean $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBPERF)-clean fixdep-clean python-clean bpf-skel-clean
+ 	$(call QUIET_CLEAN, core-objs)  $(RM) $(LIBPERF_A) $(OUTPUT)perf-archive $(OUTPUT)perf-with-kcore $(LANG_BINDINGS)
+ 	$(Q)find $(if $(OUTPUT),$(OUTPUT),.) -name '*.o' -delete -o -name '\.*.cmd' -delete -o -name '\.*.d' -delete
+ 	$(Q)$(RM) $(OUTPUT).config-detected
+-- 
+2.29.2
 
