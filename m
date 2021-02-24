@@ -2,120 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C571F323BE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 13:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3A2323BE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 13:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235000AbhBXM23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 07:28:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhBXM20 (ORCPT
+        id S232644AbhBXMbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 07:31:46 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62436 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231895AbhBXMbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 07:28:26 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3884FC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 04:27:45 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614169663;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d8D96xwlLlGmvQwFfBmCZIKGOORDeUvfAfzM5df4y+w=;
-        b=stSPGXX1ETYl0eye8Ly/VEmrR0dTiT1HG7RNYu3/HGJWQuhsl5EssNBCnBzmJjE01BN0V7
-        bZiItJ+QH3xg77oQ3jG+f0Y89n3/CxQto/zkZBOLw2HRfP6t4vzjqLRP8+DYIe4jCFbCzQ
-        j7H24kuDV5FJAeNeHV1rahfumTBN1LJRZtx58ggvbk5uulgvAMJB+1ucanJ1BLeIErBiA1
-        4s6VkI09Ej4GlObWNnowPzPLnUS+DY1yQ86CpOfQ6GZyJSkiunUXVnVFAoWapc1pN8FWMh
-        elN2+BYyfCExtBw5Mowo4VAABYP7KvHXDEENvn9SGnrCQQiHUvtFmQcjAgpnEA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614169663;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d8D96xwlLlGmvQwFfBmCZIKGOORDeUvfAfzM5df4y+w=;
-        b=L0cZoFhjG8cRqjLuLOLAi0QGcR1yDqoI0gs0jFNwZv5MgDCkcvbHO47hXnN6lzLMNHw3eD
-        Z/JbwJdSFyvc2KDA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: synchronization model: was: Re: [PATCH printk-rework 09/14] printk: introduce a kmsg_dump iterator
-In-Reply-To: <YC/79JPVKcVaSEEH@alley>
-References: <20210218081817.28849-1-john.ogness@linutronix.de> <20210218081817.28849-10-john.ogness@linutronix.de> <YC/79JPVKcVaSEEH@alley>
-Date:   Wed, 24 Feb 2021 13:27:42 +0100
-Message-ID: <87eeh51wht.fsf@jogness.linutronix.de>
+        Wed, 24 Feb 2021 07:31:40 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11OCRmhp127435;
+        Wed, 24 Feb 2021 07:30:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=sDGC3IlHnY0OT5SHt5UoDvKYvNTYjnotwLh/JHfl0AQ=;
+ b=m0FTg3y/GgC3VwoBsf/sPzK4i5i5Mmn4Dkh7nYS43xoxkXxYrna1o83rsOHeywFpsV+K
+ 42M9/2DjSNo2+8+16bL99hdE7Qwwxfwboz4dH7maxz4jpfcekDyZ7c047OZZdpnpx92P
+ sNAX1JuaPQ/iv0cPq4sgk0DYEkQ8hER3cbg1ZmL+wNGgU0mi+1QwZfuGU9mzrrTcALHz
+ lywYuuIgomS/Mp7ZjcbLDcQXMoIW6eXV6UfJr98VzvljXqVPMyWhXabj5xorBZ6mtmb6
+ sJ/yJt1vywD5KyIpl022gTHlqjF7N+OLai9AU/DE4sXefdUTVhDpjxDLqbUUXRZ2JBzb tw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36wptrr23r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 07:30:36 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11OCTIDr130659;
+        Wed, 24 Feb 2021 07:30:34 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36wptrr229-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 07:30:34 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11OCN4ML003610;
+        Wed, 24 Feb 2021 12:30:30 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04fra.de.ibm.com with ESMTP id 36tt289v2g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 12:30:30 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11OCURjk34013614
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Feb 2021 12:30:27 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AB4904C046;
+        Wed, 24 Feb 2021 12:30:27 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE97D4C050;
+        Wed, 24 Feb 2021 12:30:26 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.95.10])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 24 Feb 2021 12:30:26 +0000 (GMT)
+Subject: Re: [PATCH V4 1/3] virtio: don't prompt CONFIG_VIRTIO_PCI_MODERN
+To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
+        sgarzare@redhat.com, rdunlap@infradead.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+References: <20210223061905.422659-1-jasowang@redhat.com>
+ <20210223061905.422659-2-jasowang@redhat.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <536d6fe7-f4b1-09bb-0883-b03d6f60a229@de.ibm.com>
+Date:   Wed, 24 Feb 2021 13:30:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210223061905.422659-2-jasowang@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-24_04:2021-02-24,2021-02-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 impostorscore=0 mlxscore=0 spamscore=0 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102240096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-19, Petr Mladek <pmladek@suse.com> wrote:
-> This is likely beyond the scope of this patchset.
 
-It would be beyond the scope of this patchset because it is not related
-to logbuf_lock removal.
 
-> I am still scratching my head about the synchronization if these dumpers.
->
-> There is the "active" flag. It has been introduced by the commit
-> e2ae715d66bf4becfb ("kmsg - kmsg_dump() use iterator to receive log
-> buffer content"). I do not see any explanation there.
->
-> It might prevent some misuse of the API. But the synchronization
-> model is not much clear:
->
-> 	+ cur_seq and next_seq might be manipulated by
-> 	  kmsg_dump_rewind() even when the flag is not set.
->
-> 	+ It is possible to use the same dumper more times in parallel.
-> 	  The API will fill the provided buffer of all callers
-> 	  as long as the active flag is set.
->
-> 	+ The "active" flag does not synchronize other operations with
-> 	  the provided buffer. The "dump" callback is responsible
-> 	  to provide some synchronization on its own.
->
-> In fact, it is not much clear how struct kmsg_dumper_iter, struct kmsg_dumper,
-> and the used buffers are connected with each other and synchronized.
+On 23.02.21 07:19, Jason Wang wrote:
+> We used to prompt CONFIG_VIRTIO_PCI_MODERN to user which may bring a
+> lot of confusion. E.g it may break various default configs which want
+> virtio devices.
+> 
+> So this patch fixes this by hiding the prompot and documenting the
+> dependency. While at it, rename the module to VIRTIO_PCI_LIB.
+> 
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Anders Roxell <anders.roxell@linaro.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Fixes: 86b87c9d858b6 ("virtio-pci: introduce modern device module")
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
 
-With this series applied, there is no connection between them. And
-actually you have made me realize that the iterator should be named
-"kmsg_dump_iter" instead. I will change that for v3.
+Michael,
 
-> It might some sense to have the iterator in a separate structure.
-> But the only safe scenario seems to be when all these three things
-> (both structures and the buffer) are connected together and
-> synchronized by the same lock. Also the "active" flag does not look
-> much helpful and can be removed.
+Can we please add this NOW to next? virtio-pci is broken without it on
+many defconfigs including s390. So linux-next is broken for more than 
+2 weeks now and it actively breaks several parts of our CI.
+I guess there are other CIs that will not run several testcases because
+of this. And Naresh reported that on Feb 9th.
+There IS value in CI tools on next. Not caring about regressions introduced
+by a tree in next is harmful. Especially when we are close or in the
+merge window. So please: either fix things quickly OR revert.
 
-The @active flag is useless. It should be removed.
+Christian
 
-We have kmsg_dump_get_line(), kmsg_dump_get_buffer(), kmsg_dump_rewind()
-as an in-kernel interface to allow retrieving the kernel buffer
-contents. To use these interfaces, the caller only needs to have an
-iterator that is initialized using kmsg_dump_rewind(). These functions
-can be (and are) used, regardless if a dumper has been registered. And I
-think that is OK.
 
-The used buffers (like the iterator) are local to the caller. So there
-is no need for the kmsg_dump_*() functions to be concerned about any
-synchronization there.
 
-Then we have kmsg_dump_register() and kmsg_dump_unregister() to allow
-for registration of a dump() callback, to be called when the kernel does
-panic/oops/emergency/shutdown. Presumably the registered callback would
-use the kmsg_dump_*() functions to access the kernel buffer. Again, no
-need for kmsg_dump_*() functions to be concerned about synchronization
-because the buffers are provided by the callbacks.
-
-> As I said, this is likely beyond this patchset. This patch does more
-> or less just a refactoring and helps to understand the dependencies.
-
-Aside from removing the useless @active flag, I am not sure what else
-you would want to change. Perhaps just fixup the comments/documentation
-to clarify these interfaces and what their purpose is.
-
-John Ogness
+> ---
+>  drivers/virtio/Kconfig  | 11 ++++++-----
+>  drivers/virtio/Makefile |  2 +-
+>  2 files changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
+> index 6b9b81f4b8c2..ce1b3f6ec325 100644
+> --- a/drivers/virtio/Kconfig
+> +++ b/drivers/virtio/Kconfig
+> @@ -12,13 +12,13 @@ config ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
+>  	  This option is selected if the architecture may need to enforce
+>  	  VIRTIO_F_ACCESS_PLATFORM
+>  
+> -config VIRTIO_PCI_MODERN
+> -	tristate "Modern Virtio PCI Device"
+> -	depends on PCI
+> +config VIRTIO_PCI_LIB
+> +	tristate
+>  	help
+>  	  Modern PCI device implementation. This module implements the
+>  	  basic probe and control for devices which are based on modern
+> -	  PCI device with possible vendor specific extensions.
+> +	  PCI device with possible vendor specific extensions. Any
+> +	  module that selects this module must depend on PCI.
+>  
+>  menuconfig VIRTIO_MENU
+>  	bool "Virtio drivers"
+> @@ -28,7 +28,8 @@ if VIRTIO_MENU
+>  
+>  config VIRTIO_PCI
+>  	tristate "PCI driver for virtio devices"
+> -	depends on VIRTIO_PCI_MODERN
+> +	depends on PCI
+> +	select VIRTIO_PCI_LIB
+>  	select VIRTIO
+>  	help
+>  	  This driver provides support for virtio based paravirtual device
+> diff --git a/drivers/virtio/Makefile b/drivers/virtio/Makefile
+> index f097578aaa8f..699bbea0465f 100644
+> --- a/drivers/virtio/Makefile
+> +++ b/drivers/virtio/Makefile
+> @@ -1,6 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_VIRTIO) += virtio.o virtio_ring.o
+> -obj-$(CONFIG_VIRTIO_PCI_MODERN) += virtio_pci_modern_dev.o
+> +obj-$(CONFIG_VIRTIO_PCI_LIB) += virtio_pci_modern_dev.o
+>  obj-$(CONFIG_VIRTIO_MMIO) += virtio_mmio.o
+>  obj-$(CONFIG_VIRTIO_PCI) += virtio_pci.o
+>  virtio_pci-y := virtio_pci_modern.o virtio_pci_common.o
+> 
