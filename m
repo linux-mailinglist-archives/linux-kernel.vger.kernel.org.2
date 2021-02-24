@@ -2,177 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DB3324795
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A212324797
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233283AbhBXXmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 18:42:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232975AbhBXXmg (ORCPT
+        id S233585AbhBXXpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 18:45:33 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64852 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232929AbhBXXpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 18:42:36 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC09AC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 15:41:55 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id j12so2361815pfj.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 15:41:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=4UhgtQR/t587K6mVK4U2DYeO7naX+sDjiM4fag1OV18=;
-        b=UCHNVl5Da3JFTBW8+pGqiZqF3bzDtSF0orUCgAF9eV9zayf5gmyBBjXm7SXmYSTtEI
-         3c3O4Tr5RVylKRTVn+wVTUZoBik929n7RmjWjX4SktZvsC/hD9Ke4xXa7oxcepeGiO3l
-         pgKvHtJeyEQnlw3PHFmYK/0TJeSEPEgEDzbdfD19ZFEoUx/B2CBceyxtZ/Q2uIMLYvoa
-         7z5qu4PWPl+15sAcZVr4N+u6JPvTeTLULwvgdmFceP3dnqEdrGbtmnnJYmzOXqnGkP+d
-         5ircMiHuexRa81L4k8zeBwxynxEZ975pptAZ9xLyC6IeA4ju+6DrHAm9GBQkkG2kcThT
-         afxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=4UhgtQR/t587K6mVK4U2DYeO7naX+sDjiM4fag1OV18=;
-        b=Af+usFUIBTHJnjRwbaaPoeRtaQLWyaskCkqI/87Hdu55Ef8hnJIdoZlN4fm868Sc+x
-         dzO0wcj9LRoVNNUVifUULv2nOTGZ35Mm/TwEw1jgCZphvHM8B3TbLptGzL4MjWsTAW4h
-         iA6dC2y89j9qdYnh6jSuP5q0uEhe0Yg9muv4PBkqQjtqgWSdx0igo9tPDNXDbPBtER23
-         6aNo1gtjlOGeOeizGO437jk3VPng0t/tWbzxgluqFvgSfBa+xHain4z8CfRCfEakt+rX
-         VCZqhQA5mvGZPoeDsnsk7uwBZkF88aPrjwbMtTyBi76RKv8IGff4w+oUNsLAHed7K2Md
-         xHtg==
-X-Gm-Message-State: AOAM5316XbitL21uFdOl4Y9aGFMfKfed+Bof/hnNJby5NyidNfZCL9fg
-        ZeO4kfsm814YdvHtzhEUa7QjOQ==
-X-Google-Smtp-Source: ABdhPJyrbBHtNmE8F4ML4DgkDenKEBh2vSSfnpeT2tpY94wj1oiKECGzl+PbPmiO3Oed33HdgAqRFQ==
-X-Received: by 2002:a62:2c85:0:b029:1ed:39f4:ca0f with SMTP id s127-20020a622c850000b02901ed39f4ca0fmr380980pfs.11.1614210115277;
-        Wed, 24 Feb 2021 15:41:55 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id h8sm3675214pfv.154.2021.02.24.15.41.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 24 Feb 2021 15:41:54 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <DC74377C-DFFD-4E26-90AB-213577DB3081@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_A23EAC69-E4AD-4741-A190-B2F252287FD8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [RFC] Better page cache error handling
-Date:   Wed, 24 Feb 2021 16:41:26 -0700
-In-Reply-To: <20210224134115.GP2858050@casper.infradead.org>
-Cc:     Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-References: <20210205161142.GI308988@casper.infradead.org>
- <20210224123848.GA27695@quack2.suse.cz>
- <20210224134115.GP2858050@casper.infradead.org>
-X-Mailer: Apple Mail (2.3273)
+        Wed, 24 Feb 2021 18:45:23 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11ONWlNE120212;
+        Wed, 24 Feb 2021 18:44:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=NN4jfYvyRSWFGnlFke7guafjERw9ajAyWEwiI3jDW1s=;
+ b=HQz+1ZhpSFnjVOC+ZN2OCaQJOuJYJhtjI3XiWSfzrB8O5DEfifgsE7g77UTpEYZXz5ZZ
+ zCXtqJmZybFsXFum6N/yvGoHX97DvDm8kZ6HquaxtRkqFhU1fjOxzE3DRnXkvpKJTpre
+ MTaN8vlNi1+Veha0zcnW+LIORRnXU3pC4O7exC9qf8ffWvi2PE4TSKCGfHR9QS6LQUNr
+ 2RQhp478Zxr5qD8E7YC01QqO1YfvBWdWu8Z0FyyRXwjNwbSwuvSFYr5uul+z4JvmahOc
+ wH2dNtYFuYpN37NnnaZVxrOti78uZBmaO073UWkuuXrHdlZ3xp7r4rxJ8LMq3EH1/2nt +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36wwv9vsqr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 18:44:42 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11ONZ8KG130317;
+        Wed, 24 Feb 2021 18:44:42 -0500
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36wwv9vsqd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 18:44:42 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11ONg9gA012741;
+        Wed, 24 Feb 2021 23:44:41 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma04wdc.us.ibm.com with ESMTP id 36tt29tftc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 23:44:41 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11ONieLl38207838
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Feb 2021 23:44:40 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 81E92112063;
+        Wed, 24 Feb 2021 23:44:40 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F3714112062;
+        Wed, 24 Feb 2021 23:44:39 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.150.254])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 24 Feb 2021 23:44:39 +0000 (GMT)
+Subject: Re: [PATCH v2 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org, cohuck@redhat.com,
+        kwankhede@nvidia.com, pbonzini@redhat.com,
+        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
+References: <20210216011547.22277-1-akrowiak@linux.ibm.com>
+ <20210216011547.22277-2-akrowiak@linux.ibm.com>
+ <20210223104805.6a8d1872.pasic@linux.ibm.com>
+ <e07d6f8e-f29e-7c4e-4226-5a5c072e7ae6@de.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <358b4b68-1bfb-4a5c-960d-d442271c5852@linux.ibm.com>
+Date:   Wed, 24 Feb 2021 18:44:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <e07d6f8e-f29e-7c4e-4226-5a5c072e7ae6@de.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-24_13:2021-02-24,2021-02-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 impostorscore=0 spamscore=0 bulkscore=0 clxscore=1015
+ mlxscore=0 malwarescore=0 adultscore=0 mlxlogscore=999 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102240184
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Apple-Mail=_A23EAC69-E4AD-4741-A190-B2F252287FD8
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
 
-On Feb 24, 2021, at 6:41 AM, Matthew Wilcox <willy@infradead.org> wrote:
->=20
-> On Wed, Feb 24, 2021 at 01:38:48PM +0100, Jan Kara wrote:
->>> We allocate a page and try to read it.  29 threads pile up waiting
->>> for the page lock in filemap_update_page().  The error returned by =
-the
->>> original I/O is shared between all 29 waiters as well as being =
-returned
->>> to the requesting thread.  The next request for index.html will send
->>> another I/O, and more waiters will pile up trying to get the page =
-lock,
->>> but at no time will more than 30 threads be waiting for the I/O to =
-fail.
->>=20
->> Interesting idea. It certainly improves current behavior. I just =
-wonder
->> whether this isn't a partial solution to a problem and a full =
-solution of
->> it would have to go in a different direction? I mean it just seems
->> wrong that each reader (let's assume they just won't overlap) has to =
-retry
->> the failed IO and wait for the HW to figure out it's not going to =
-work.
->> Shouldn't we cache the error state with the page? And I understand =
-that we
->> then also have to deal with the problem how to invalidate the error =
-state
->> when the block might eventually become readable (for stuff like =
-temporary
->> IO failures). That would need some signalling from the driver to the =
-page
->> cache, maybe in a form of some error recovery sequence counter or =
-something
->> like that. For stuff like iSCSI, multipath, or NBD it could be doable =
-I
->> believe...
->=20
-> That felt like a larger change than I wanted to make.  I already have
-> a few big projects on my plate!
->=20
-> Also, it's not clear to me that the host can necessarily figure out =
-when
-> a device has fixed an error -- certainly for the three cases you list
-> it can be done.  I think we'd want a timer to indicate that it's worth
-> retrying instead of returning the error.
->=20
-> Anyway, that seems like a lot of data to cram into a struct page.  So =
-I
-> think my proposal is still worth pursuing while waiting for someone to
-> come up with a perfect solution.
+On 2/24/21 11:10 AM, Christian Borntraeger wrote:
+>
+> On 23.02.21 10:48, Halil Pasic wrote:
+>> On Mon, 15 Feb 2021 20:15:47 -0500
+>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>>
+>>> This patch fixes a circular locking dependency in the CI introduced by
+>>> commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
+>>> pointer invalidated"). The lockdep only occurs when starting a Secure
+>>> Execution guest. Crypto virtualization (vfio_ap) is not yet supported for
+>>> SE guests; however, in order to avoid CI errors, this fix is being
+>>> provided.
+>>>
+>>> The circular lockdep was introduced when the masks in the guest's APCB
+>>> were taken under the matrix_dev->lock. While the lock is definitely
+>>> needed to protect the setting/unsetting of the KVM pointer, it is not
+>>> necessarily critical for setting the masks, so this will not be done under
+>>> protection of the matrix_dev->lock.
+>>
+>>
+>> With the one little thing I commented on below addressed:
+>> Acked-by: Halil Pasic <pasic@linux.ibm.com>
+> Tony, can you comment on Halils comment or send a v3 right away?
 
-Since you would know that the page is bad at this point (not uptodate,
-does not contain valid data) you could potentially re-use some other
-fields in struct page, or potentially store something in the page =
-itself?
-That would avoid bloating struct page with fields that are only rarely
-needed.  Userspace shouldn't be able to read the page at that point if
-it is not marked uptodate, but they could overwrite it, so you wouldn't
-want to store any kind of complex data structure there, but you _could_
-store a magic, an error value, and a timeout, that are only valid if
-!uptodate (cleared if the page were totally overwritten by userspace).
-
-Yes, it's nasty, but better than growing struct page, and better than
-blocking userspace threads for tens of minutes when a block is bad.
-
-Cheers, Andreas
+I was locked out of email due to expiration of my w3 password.
+I am working on the response now.
 
 
-
-
-
-
---Apple-Mail=_A23EAC69-E4AD-4741-A190-B2F252287FD8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmA25CYACgkQcqXauRfM
-H+AAERAAj0OTDKFuMVf0UEx4aC5GMp8vcZnxg7PM1tYxaxK9IkCzbmIvx0Cg52lp
-5QkaINbs7U16rCrNRY8gkpl9VbU5p8zEyAGfbnZqTjxz8n++vx0LvsOxMjIgzDDn
-KdcgrpkMZ0oFiSXcBjoE4+kCroWA1pM7hACvDkgBAZQV3sWZANmqZCAeDLpWz1kK
-q+6shGiG/w410YHh/y72g1X2e+/9oSZ7xjGHx2IxuHXh6XEPHu8h2Oy2TusPpJ7P
-VEmuCRQ19eDJSUw57F03p8MdQ3kD3dhPXWquO3vv2rcCsG/CAwF54O7CWGTwdSWl
-60Zutxxlgst3zZHdgnLcHquHC2yitRz8ejSc5u/PUYYK8HQJ8wGtoc87dUUJYFZg
-vBzYrOIHlBmqgoQ0lUj3WMS+GvHtyeWYRybImQXZ0Q8NL10kBmtT7GdlWhWBAdy7
-YEZczQUSnOuRpJenXKVOkCHzH+Asu8Hicc9QiAii6iAts/gFw/E88dGACyM5cGqN
-jkc/5bjuhev2rbQgXTesFlXUb/fVDmKKKIV/mMjHWc7vx3xHbNoRPkXy2JhVA1Km
-25iTbybhiZCdm+IqMVXmSOyrzeIrsWhgA/k4JBZ0LMVPmq5mu7+QzIMYzthkGxla
-7CRd0zvTR1bNWlhpffPHu3kIUzdI+7QTAdNHJA7TqF22tbgod4k=
-=H6NE
------END PGP SIGNATURE-----
-
---Apple-Mail=_A23EAC69-E4AD-4741-A190-B2F252287FD8--
