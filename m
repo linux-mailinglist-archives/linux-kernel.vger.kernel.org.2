@@ -2,145 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2E8324749
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A74324750
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236167AbhBXXBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 18:01:47 -0500
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:60220 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbhBXXBk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 18:01:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1614207700; x=1645743700;
-  h=from:to:cc:subject:date:message-id:content-id:
-   content-transfer-encoding:mime-version;
-  bh=hVGYeWL8BzQFMK+Thejfp/GrKUl+IMBQ9zDAz5P0VSo=;
-  b=PZyg9S/f1R+PSsKCnZ6HsI0nXRdbxbdTpxYQf7E3D8xlUo5R5wOfsSy9
-   PvunFoNuu0mIQUXXFiUdaaiedmsBSF4DpBVeXqeuA+pn795U5NF0uDlS7
-   Pjduxk9GalfqCUguEK+NE29fSxW2hxeKj+5Bh1PQekNG0OYxfvAI2OrqD
-   I=;
-X-IronPort-AV: E=Sophos;i="5.81,203,1610409600"; 
-   d="scan'208";a="87841545"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 24 Feb 2021 23:00:58 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id E0FA6A1F1B;
-        Wed, 24 Feb 2021 23:00:47 +0000 (UTC)
-Received: from EX13D20UWA004.ant.amazon.com (10.43.160.62) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 24 Feb 2021 23:00:47 +0000
-Received: from EX13D01UWA003.ant.amazon.com (10.43.160.107) by
- EX13D20UWA004.ant.amazon.com (10.43.160.62) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 24 Feb 2021 23:00:46 +0000
-Received: from EX13D01UWA003.ant.amazon.com ([10.43.160.107]) by
- EX13d01UWA003.ant.amazon.com ([10.43.160.107]) with mapi id 15.00.1497.010;
- Wed, 24 Feb 2021 23:00:46 +0000
-From:   "MacCarthaigh, Colm" <colmmacc@amazon.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "Graf (AWS), Alexander" <graf@amazon.de>
-CC:     "Catangiu, Adrian Costin" <acatan@amazon.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "0x7f454c46@gmail.com" <0x7f454c46@gmail.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "Jason@zx2c4.com" <Jason@zx2c4.com>,
-        "jannh@google.com" <jannh@google.com>, "w@1wt.eu" <w@1wt.eu>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "bonzini@gnu.org" <bonzini@gnu.org>,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "areber@redhat.com" <areber@redhat.com>,
-        "ovzxemul@gmail.com" <ovzxemul@gmail.com>,
-        "avagin@gmail.com" <avagin@gmail.com>,
-        "ptikhomirov@virtuozzo.com" <ptikhomirov@virtuozzo.com>,
-        "gil@azul.com" <gil@azul.com>,
-        "asmehra@redhat.com" <asmehra@redhat.com>,
-        "dgunigun@redhat.com" <dgunigun@redhat.com>,
-        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>,
-        "oridgar@gmail.com" <oridgar@gmail.com>,
-        "ghammer@redhat.com" <ghammer@redhat.com>
-Subject: Re: [PATCH v7 1/2] drivers/misc: sysgenid: add system generation id
- driver
-Thread-Topic: [PATCH v7 1/2] drivers/misc: sysgenid: add system generation id
- driver
-Thread-Index: AQHXCwDjfClcwtiNEEGBvSi4FTnt7w==
-Date:   Wed, 24 Feb 2021 23:00:46 +0000
-Message-ID: <7DE31E14-D6E9-41EA-9A43-6608ACC7CD87@amazon.com>
-Accept-Language: en-IE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Microsoft-MacOutlook/16.44.20121301
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.161.244]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D1A111C137DBAA4BB71F7D8D56D5B152@amazon.com>
-Content-Transfer-Encoding: base64
+        id S236268AbhBXXDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 18:03:41 -0500
+Received: from mga06.intel.com ([134.134.136.31]:59508 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236169AbhBXXDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 18:03:39 -0500
+IronPort-SDR: OO0a5f9u6tOGpflourjBbj8kOKFXwtuyeXjHs3vH+Lu7lNW0ABt7NSFe7DjzfLM1woEGsG80AN
+ XtP/Uvh/pTyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="246751274"
+X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
+   d="scan'208";a="246751274"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 15:01:50 -0800
+IronPort-SDR: h+2RPi2OzYuEaNndyIK6zqK4KdInzQr7GhcSJueF3UyfHRZbnVl1/4nPgIhm/kEOMZU3AtMTd1
+ Q+tZzEfJSk3g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
+   d="scan'208";a="597555568"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Feb 2021 15:01:50 -0800
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.55])
+        by linux.intel.com (Postfix) with ESMTP id 85B1558066A;
+        Wed, 24 Feb 2021 15:01:50 -0800 (PST)
+Message-ID: <dc97f44840890ccb0bc2cde1f1ef1e0ca47a64ab.camel@linux.intel.com>
+Subject: Re: [PATCH V2 1/2] MFD: intel_pmt: Fix nuisance messages and
+ handling of disabled capabilities
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Hans de Goede <hdegoede@redhat.com>, lee.jones@linaro.org,
+        mgross@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Date:   Wed, 24 Feb 2021 15:01:50 -0800
+In-Reply-To: <6d45db24-7741-1956-9cf1-35a7dec517c5@redhat.com>
+References: <20210128172846.99352-1-david.e.box@linux.intel.com>
+         <20210224201005.1034005-1-david.e.box@linux.intel.com>
+         <6d45db24-7741-1956-9cf1-35a7dec517c5@redhat.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCk9uIDIvMjQvMjEsIDI6NDQgUE0sICJNaWNoYWVsIFMuIFRzaXJraW4iIDxtc3RAcmVkaGF0
-LmNvbT4gd3JvdGU6DQogICAgPiBUaGUgbW1hcCBtZWNoYW5pc20gYWxsb3dzIHRoZSBQUk5HIHRv
-IHJlc2VlZCBhZnRlciBhIGdlbmlkIGNoYW5nZS4gQmVjYXVzZQ0KICAgID4gd2UgZG9uJ3QgaGF2
-ZSBhbiBldmVudCBtZWNoYW5pc20gZm9yIHRoaXMgY29kZSBwYXRoLCB0aGF0IGNhbiBoYXBwZW4g
-bWludXRlcw0KICAgID4gYWZ0ZXIgdGhlIHJlc3VtZS4gQnV0IHRoYXQncyBvaywgd2UgImp1c3Qi
-IGhhdmUgdG8gZW5zdXJlIHRoYXQgbm9ib2R5IGlzDQogICAgPiBjb25zdW1pbmcgc2VjcmV0IGRh
-dGEgYXQgdGhlIHBvaW50IG9mIHRoZSBzbmFwc2hvdC4NCg0KDQogICAgU29tZXRoaW5nIEkgYW0g
-c3RpbGwgbm90IGNsZWFyIG9uIGlzIHdoZXRoZXIgaXQncyByZWFsbHkgaW1wb3J0YW50IHRvDQog
-ICAgc2tpcCB0aGUgc3lzdGVtIGNhbGwgaGVyZS4gSWYgbm90IEkgdGhpbmsgaXQncyBwcnVkZW50
-IHRvIGp1c3Qgc3RpY2sNCiAgICB0byByZWFkIGZvciBub3csIEkgdGhpbmsgdGhlcmUncyBhIHNs
-aWdodGx5IGxvd2VyIGNoYW5jZSB0aGF0DQogICAgaXQgd2lsbCBnZXQgbWlzdXNlZC4gbW1hcCB3
-aGljaCBnaXZlcyB5b3UgYSBsYWdneSBnZW4gaWQgdmFsdWUNCiAgICByZWFsbHkgc2VlbXMgbGlr
-ZSBpdCB3b3VsZCBiZSBoYXJkIHRvIHVzZSBjb3JyZWN0bHkuDQoNCkl0J3Mgbm90IHVuY29tbW9u
-IGZvciB0aGVzZSB1c2VyLXNwYWNlIFBSTkdzIHRvIHVzZWQgcXVpdGUgYSBsb3QgaW4gdmVyeSBw
-ZXJmb3JtYW5jZSBjcml0aWNhbCBwYXRocy4gSWYgeW91IG5lZ290aWF0ZSBhIFRMUyBzZXNzaW9u
-IHRoYXQgdXNlcyBhbiBleHBsaWNpdCBJViwgdGhlIFJORyBpcyBiZWluZyBjYWxsZWQgZm9yIGV2
-ZXJ5IFRMUyByZWNvcmQgc2VudC4gU2FtZSBmb3IgSVBTZWMgZGVwZW5kaW5nIG9uIHRoZSBjaXBo
-ZXItc3VpdGUuIEV2ZXJ5IFRMUyBoZWxsbyBtZXNzYWdlIGhhcyAyOC0zMiBieXRlcyBvZiBkYXRh
-IGZyb20gdGhlIFJORywgb3IgaWYgeW91J3ZlIGdvdCBFQ0RTQSBhcyB5b3VyIHNpZ25hdHVyZSBh
-bGdvcml0aG0sIGl0J3MgaW5saW5lIGFnYWluLiBVc2luZyBSU0FfUFNTPyBTYW1lIGFnYWluLiBN
-YW55IFBvc3QtUXVhbnR1bSBhbGdvcml0aG1zIGFyZSBldmVuIG1vcmUgdmVyYWNpb3VzbHkgZW50
-cm9weSBodW5ncnkuICBXZSBleGFtaW5lIHRoZSBjb21waWxlZCBpbnN0cnVjdGlvbnMgZm9yIG91
-cnMgYnkgaGFuZCB0byBjaGVjayBpdCdzIGFsbCBhcyB0aWdodCBhcyBpdCBjYW4gYmUuIA0KDQpU
-byBnaXZlIG1vcmUgb2YgYW4gaWRlYSwgc2V2ZXJhbCBjcnlwdG8gbGlicmFyaWVzIHRvb2sgb3V0
-IHRoZSBnZXRwaWQoKSBndWFyZHMgdGhleSBoYWQgZm9yIGZvcmsgZGV0ZWN0aW9uIGluIHRoZSBS
-TkdzLCB0aG91Z2ggVkRTTyBjb3VsZCBoYXZlIGhlbHBlZCB0aGVyZSBhbmQgSSdtIG5vdCBzdXJl
-IHRoZXkgd291bGQgaGF2ZSBuZWVkZWQgdG8gaWYgVkRTTyB3ZXJlIG1vcmUgd2lkZWx5IHVzZWQg
-YXQgdGhlIHRpbWUuICBJIGRvbid0IHRoaW5rIHdlJ2QgZ2V0IGEgcGF0Y2ggaW50byBPcGVuU1NM
-L2xpYmNyeXB0byB0aGF0IGludm9sdmVzIGEgZnVsbCBzeXNjYWxsLiBWRFNPIG1pZ2h0IGJlIG9r
-LCBidXQgZXZlbiB0aGF0J3Mgbm90IGdvaW5nIHRvIGhhdmUgdGhlIHNwZWVkIHRoYXQgYSBzaW5n
-bGUgbWVtb3J5IGxvb2t1cCBjYW4gZG8gd2l0aCB0aGUgbW1hcC9tYWR2aXNlIGFwcHJvYWNoIC4u
-LiBzaW5jZSB3ZSBhbHJlYWR5IGhhdmUgdG8gdXNlIFdJUEVPTkZPUksuDQoNCkluIHByYWN0aWNl
-IEkgZG9uJ3QgdGhpbmsgaXQgd2lsbCBiZSB0aGF0IGhhcmQgdG8gdXNlIGNvcnJlY3RseTsgc25h
-cHNob3RzIGFuZCByZXN0b3JlcyBvZiB0aGlzIG5hdHVyZSByZWFsbHkgaGF2ZSB0byBoYXBwZW4g
-b25seSB3aGVuIHRoZSBhY3Rpdml0eSBpcyBxdWllc2NlbnQuIElmIG9wZXJhdGlvbnMgYXJlIGlu
-LWZsaWdodCwgaXQncyBub3QgZWFzeSB0byByZWFzb24gYWJvdXQgdGhlIHBvdGVudGlhbCBtdWx0
-aS1yZXN0b3JlIHByb2JsZW1zIGF0IGFsbCBhbmQgaXQgb25seSBtYWtlcyBzZW5zZSB0byB0aGlu
-ayBhYm91dCB0cmFuc2FjdGlvbmFsIGNvcnJlY3RuZXNzIGF0IHRoZSBsZXZlbCBvZiBhbGwgdHJh
-bnNhY3Rpb25zIHRoYXQgbWF5IGhhdmUgYmVlbiBpbi1mbGlnaHQuIFRoZSBtbWFwIHNvbHV0aW9u
-IGlzIG1vcmUgYWJvdXQgaW50ZWdyYXRpbmcgd2l0aCBleGlzdGluZyBsaWJyYXJ5IEFQSXMgYW5k
-IHNlbWFudGljcyB0aGFuIGl0IGlzIGFib3V0IHNvbWVob3cgc29sdmluZyB0aGF0IGF0IHRoZSBr
-ZXJuZWwgbGV2ZWwuIFRoYXQgcGFydCBoYXMgdG8gYmUgc29sdmVkIGF0IHRoZSBzeXN0ZW0gbGV2
-ZWwuDQoNCi0gDQpDb2xtDQoNCg==
+On Wed, 2021-02-24 at 21:22 +0100, Hans de Goede wrote:
+> Hi,
+> 
+> On 2/24/21 9:10 PM, David E. Box wrote:
+> > Some products will be available that have PMT capabilities that are
+> > not
+> > supported. Remove the warnings in this instance to avoid nuisance
+> > messages
+> > and confusion.
+> > 
+> > Also return an error code for capabilities that are disabled by
+> > quirk to
+> > prevent them from keeping the driver loaded if only disabled
+> > capabilities
+> > are found.
+> > 
+> > Fixes: 4f8217d5b0ca ("mfd: Intel Platform Monitoring Technology
+> > support")
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> > ---
+> > For merge in platform-drivers-x86
+> > 
+> > Based on 5.11-rc1 review-hans branch:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+> 
+> Which, assuming you did a git remote update recently is AKA platform-
+> drivers-x86-v5.12-1 .
+
+That it is.
+
+> 
+> > Changes from V1:
+> > 
+> >         - None. Patch 2 added.
+> 
+> The series looks good to me, so for the series:
+> 
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> Lee, since both patches touch mfd files (and patch 2 also touches
+> files under drivers/platform/x86)
+> I think it would be best if you just merge the entire series.
+
+Ack
+
+David
+
+> 
+> As always I would appreciate a pull-req from you to also pull the
+> changes
+> into my tree, in case further drivers/platform/x86/intel_pmt* changes
+> show up during this cycle.
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> 
+> 
+> 
+> 
+> > 
+> >  drivers/mfd/intel_pmt.c | 11 +++--------
+> >  1 file changed, 3 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
+> > index 744b230cdcca..65da2b17a204 100644
+> > --- a/drivers/mfd/intel_pmt.c
+> > +++ b/drivers/mfd/intel_pmt.c
+> > @@ -79,19 +79,18 @@ static int pmt_add_dev(struct pci_dev *pdev,
+> > struct intel_dvsec_header *header,
+> >         case DVSEC_INTEL_ID_WATCHER:
+> >                 if (quirks & PMT_QUIRK_NO_WATCHER) {
+> >                         dev_info(dev, "Watcher not supported\n");
+> > -                       return 0;
+> > +                       return -EINVAL;
+> >                 }
+> >                 name = "pmt_watcher";
+> >                 break;
+> >         case DVSEC_INTEL_ID_CRASHLOG:
+> >                 if (quirks & PMT_QUIRK_NO_CRASHLOG) {
+> >                         dev_info(dev, "Crashlog not supported\n");
+> > -                       return 0;
+> > +                       return -EINVAL;
+> >                 }
+> >                 name = "pmt_crashlog";
+> >                 break;
+> >         default:
+> > -               dev_err(dev, "Unrecognized PMT capability: %d\n",
+> > id);
+> >                 return -EINVAL;
+> >         }
+> >  
+> > @@ -174,12 +173,8 @@ static int pmt_pci_probe(struct pci_dev *pdev,
+> > const struct pci_device_id *id)
+> >                 header.offset = INTEL_DVSEC_TABLE_OFFSET(table);
+> >  
+> >                 ret = pmt_add_dev(pdev, &header, quirks);
+> > -               if (ret) {
+> > -                       dev_warn(&pdev->dev,
+> > -                                "Failed to add device for DVSEC id
+> > %d\n",
+> > -                                header.id);
+> > +               if (ret)
+> >                         continue;
+> > -               }
+> >  
+> >                 found_devices = true;
+> >         } while (true);
+> > 
+> > base-commit: a7d53dbbc70a81d5781da7fc905b656f41ad2381
+> > 
+> 
+
+
