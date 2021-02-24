@@ -2,176 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F153B323589
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 03:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D56932358F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 03:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbhBXCAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 21:00:13 -0500
-Received: from mga07.intel.com ([134.134.136.100]:1794 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231787AbhBXCAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 21:00:05 -0500
-IronPort-SDR: fkvV5ec1yD90IgBFCB93F0Md6FsVGAh7BKPjrngtiZYtCkUUsrRORoCC+paCdx80Lp9NJdAblx
- u1Y7hr/aS94Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="249075192"
-X-IronPort-AV: E=Sophos;i="5.81,201,1610438400"; 
-   d="scan'208";a="249075192"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 17:59:23 -0800
-IronPort-SDR: /oybaOZqBvfeYvwdOleo+6QkCQZsdNL9BjqZ1iS/kdmZJDvJw8jAkwPGxOQLHHAGX2eqQ5ZS5I
- oT4QRelErOBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,201,1610438400"; 
-   d="scan'208";a="391346915"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by fmsmga008.fm.intel.com with ESMTP; 23 Feb 2021 17:59:23 -0800
-Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 23 Feb 2021 17:59:22 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Tue, 23 Feb 2021 17:59:22 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.104)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Tue, 23 Feb 2021 17:59:22 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=flPnhfl9MVYC2zQqbP3uCF/Gqsy5BsrkbJmKHwSqjWctb8smIR8qZxZ7ljFYVz/Z+JsAaH/4zpGwOzcvHG9Ec/aJXJ2IBEHOCbHwxJ1Lko2lILXVLh6RqqtdjK0XTGq48+kpX+AKjyExrVx4yOHfeasdPqkrm1hqnwLbj9dvx+TgS3qjp1My3XAOLEESnuAJQNhApwjVgZbzrPhVuprlgVWB143dJTukiDV2ZPxoHvFyylyZoyuOKJo8pGIjif0XTcM1G29UENHUCI2ev+IbZIB5lPF3+jb2GWgOdFfsMswzYV2mR4DNPzUM7qOMeX7lQUHIGT9tU2Yh71CEhxUjuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jgsisC8v+6DQBgHUS+L1JR0Vv1Z6/ONYLP//TrcJUZM=;
- b=VCUifL1BC5sJqT3ExGCrkdQIGhjt6vSElX7ApG/P/5dTWvyCn3YbsGFHeMJu2fNyE24sZlKTrUuLSvCN8V3+TA57jSPmS01CeEVJw7tXFWA62xMNpflQ5EJrdJd3281eBqpUWnx0w8hlUPeJO5SFhc9Rdbm9rMep+Duaoj/uufcjwHAZydW193J+y5tOqDEQGSNCoUbP4aB+HXw5hewRf2uS+Z887Nx7gHM4jtiVp8Qbr6n8YNYlu22apnt+eOtN+FC92UL8g1t998moXALHMTZkgtB2eeFQVnIHQm7IBNKrlHGhrMi/+9iUrrnA9SomIvuoniic2sJhQzMgt5SVzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jgsisC8v+6DQBgHUS+L1JR0Vv1Z6/ONYLP//TrcJUZM=;
- b=OIEjsk/7tJy1a9snGdnWgcojS51FREUdrnZPrZYxauSNjasaxQND+Qc3O51IRMyy6uChn+kh36a9VekTKSXBADQxnmvgCmcWcNrK0DPPvBs2zkX3RqJrIEvc13ZatAWZE55tc/gXJKTTy9XWSm5yMAnsDW3DuS3EbFJpv+cmD14=
-Received: from BY5PR11MB3893.namprd11.prod.outlook.com (2603:10b6:a03:183::26)
- by BY5PR11MB3896.namprd11.prod.outlook.com (2603:10b6:a03:187::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Wed, 24 Feb
- 2021 01:59:21 +0000
-Received: from BY5PR11MB3893.namprd11.prod.outlook.com
- ([fe80::d058:b0e4:5ebb:a3fd]) by BY5PR11MB3893.namprd11.prod.outlook.com
- ([fe80::d058:b0e4:5ebb:a3fd%7]) with mapi id 15.20.3846.041; Wed, 24 Feb 2021
- 01:59:21 +0000
-From:   "Tan, Ley Foon" <ley.foon.tan@intel.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Ley Foon Tan" <lftan.linux@gmail.com>,
-        Andreas Oetken <andreas.oetken@siemens.com>
-Subject: [GIT PULL] arch/nios2 update for 5.12-rc1
-Thread-Topic: [GIT PULL] arch/nios2 update for 5.12-rc1
-Thread-Index: AdcKUD09Mbxnz/EmSJqZmkAtnsMmDA==
-Date:   Wed, 24 Feb 2021 01:59:21 +0000
-Message-ID: <BY5PR11MB3893BFDB87B74CC384B9224DCC9F9@BY5PR11MB3893.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-authentication-results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=intel.com;
-x-originating-ip: [42.189.137.40]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 138e8fda-65e1-464f-430f-08d8d867cd77
-x-ms-traffictypediagnostic: BY5PR11MB3896:
-x-microsoft-antispam-prvs: <BY5PR11MB3896DAAEC928DD0248F3A01BCC9F9@BY5PR11MB3896.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1265;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +sOjvLx5ECXEHZPQJVpeufOmnlcxTIs6pn9TfzeiZUn0Rr9y+UkljtS4FcC2R+H+M9QYdq6vfB6wwFHjBIAV5BiA2u26Ld5jBH1naPKsPkuQVwl2PqA3j6bD7Ng9KyvZy22h/QbXoIHCTxKmXw4QjNOhPUZ8IdQREUKm7f4thSA6GcoZuLA7WC0i8uvE7A0WjZ1GwLTeIUiBwx3yRifv64kT5dCjWWbf3GBD6RrYZb1ejWGoOEHA89o+Qa1ILRK+/t3b3vRyiN2+kR+1DCwopPA9TVygpOixFy9Sk1z6u4ZA/sXg+70YfG0dPBCxjezLP5TzhA0N0S7MURvYp7ri1UE8t0OrbVsOjSkky9UsMwRQ5795gU19tc5mMNiErh9492X4Yu2QVOgR8oLqfscG2fbRuQ5UmpP1CdU1N/Hw7T7DTKiLwFOpcak0FwBvo5CBQVQFsk+UnBbsT1Hr4Mg1jze6C/DsBS4kKhIdy8gC4yZsOXzDdSfU1RxmAVdV7vsGj89G8biUPe+P57zJkfRqZA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB3893.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(39860400002)(376002)(396003)(346002)(8936002)(55016002)(5660300002)(9686003)(6506007)(76116006)(66946007)(26005)(64756008)(83380400001)(186003)(478600001)(54906003)(86362001)(66556008)(4326008)(33656002)(6916009)(66476007)(8676002)(52536014)(15650500001)(71200400001)(2906002)(7696005)(66446008)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?vi89Mv6Zxcj8/vba5C6YH1GULQY97b5RCW2LMbFRTJ+JdNQDNj+EgqrD2PCm?=
- =?us-ascii?Q?qn/wjj6aUCG3/wmulwsmRB86xJSTWogs+2o+zErL7wlVHTpICvH/azdjTx2C?=
- =?us-ascii?Q?6sogPu1XBFO4taDuQJu3vkLWCbb0EdfuyzNQn+hWzj6PkWqPDVnnJRhLCnjq?=
- =?us-ascii?Q?/d20E8YVd3vffOHJIHLMXfHG/AVJe3lJoGAzV2/OBjldczhy7qqwbVOBtiEK?=
- =?us-ascii?Q?mu8ASKTD8V4MEdv6gpSFqaY38iHJfCFXw5gpLn5KLtocr29a7TTNjJeK6CSo?=
- =?us-ascii?Q?L6hp05hEMiKQSTFGreXdClwJ55rIquLKSDJhkufXdppQTy2Mgaf8GPpyDpLT?=
- =?us-ascii?Q?U7FBdjoNN6l7BXCjIO3bRyGdj7XpygclfF08UWMIjtHkXkkvz+dBUEaLKWKr?=
- =?us-ascii?Q?xn6q6uO+buaVFuQXpcUgFjvubjSwgylumobAj4CkuaUYa+ELSPvxDJKgtZBj?=
- =?us-ascii?Q?ZmmbJ8HBn2+hEhl3MN3aVw1u8gL5DP9CB+/y9K1sXICByG6tqG0W5vtg1Z28?=
- =?us-ascii?Q?leNLlJsOIIZ3LW7HYamT019OrUWBcj+2A0/ZY5njG3AtoMP4vr2DpsIxmqLO?=
- =?us-ascii?Q?ye3flbzJbIzm2/dqkei6czD2kJPVjyV3+cD9SdGVJr1v3utfhK/NFmFRbO+L?=
- =?us-ascii?Q?QoxV24HNe6u78872UypuWxHz1gjJP3dZh8hD4L9byvK34hxlb11anu9Dgfi1?=
- =?us-ascii?Q?nUHV0zs+Enr1W24diEvcvu/tlKVaqd0po4vBmv2kA6ppM9dJoJgw/6DKN3hn?=
- =?us-ascii?Q?/0p28ilCYmabQiqHQ5eayXd2B5qfAsBCCB2dZuG9CxWbLxa4XVh8dsFBehrq?=
- =?us-ascii?Q?soUSglMtiwHBPg7OSJrjYSzORDxqPfl4XkeJqBNG7pArHrfvfrEaLWbEpZ0e?=
- =?us-ascii?Q?iLhV5Z541N2R8oEgXbZgkH0P7qUES803yKCrjOQpRukyzTsB9IvfJ5lStWlU?=
- =?us-ascii?Q?rWBcVlVCN9TtOzx7QEj89nHKwZXBU7hC04UHYLnO6uT7EAVR/FXwARWdCOwn?=
- =?us-ascii?Q?uZ9p6eKH6xhViKD+Aczb60IyPMMsq9Q+Z8yU51pqCa3B6MRqJaSdlEnTHpFo?=
- =?us-ascii?Q?I3pHBQLP3NpogRUxrN2XystSsrgJfBs4dRSPk2dkVC9N1OYgUJbtH2M0Aroi?=
- =?us-ascii?Q?3BRAcdJIfRcsDFdyl5UMRMxCw9lniJ2z0ISQpC6beo5CINSa2Y1hn8cdzdsA?=
- =?us-ascii?Q?X1l6nYjmB6L7ozjSI+ZgjjLNsiHjbmhTuzrCyOQ3/nvZxwwdvztB3ECjMKEb?=
- =?us-ascii?Q?MtuuaBdJvOzJhnO/JmLg3wGw1lipTYlCpjOivFxUXoIeHV/wBPKG7acOHu9p?=
- =?us-ascii?Q?5mJpyNF1mu3Q9dPhbrQhkO1V?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231830AbhBXCEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 21:04:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33765 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230367AbhBXCEo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 21:04:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614132196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=siwtgD2blYbpkLf/zd/V2KOlk6z8qUONC+KwBbaVWMQ=;
+        b=iGLm9hefIeiWe4cFBARHbNANTUbPf+Bfq9Hn0xjg6w3RXVaAY64/HKuXwmlV2kIKPK0Ala
+        aHuCduSJk9/iEETX0MAjfP33c0Eea2mEtL/R4m4FgUXfZqTN4LiWdCxbAOT3WVeUAAuxXT
+        Twx42GMaR0BGNUiKEa6yK2UTRQfWtAM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-550-Ej3oitpFONqvH4kfe04Vcw-1; Tue, 23 Feb 2021 21:03:12 -0500
+X-MC-Unique: Ej3oitpFONqvH4kfe04Vcw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83AE9107ACC7;
+        Wed, 24 Feb 2021 02:03:08 +0000 (UTC)
+Received: from localhost (ovpn-12-189.pek2.redhat.com [10.72.12.189])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3D9815D74A;
+        Wed, 24 Feb 2021 02:03:04 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 10:03:01 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     john.p.donnelly@oracle.com, Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] kernel/crash_core: Add crashkernel=auto for
+ vmcore creation
+Message-ID: <20210224020301.GC3553@MiWiFi-R3L-srv>
+References: <20210211180814.69708-1-saeed.mirzamohammadi@oracle.com>
+ <20210224015410.GB3553@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB3893.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 138e8fda-65e1-464f-430f-08d8d867cd77
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Feb 2021 01:59:21.1592
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sOWMM/No5NuCsCVdZYspoc8qIJ9xvDoh4kosm0CvLbNvtTbJlBZW0UpoHacuFhqlrOiqdDXXUtoQWKsvkMKgNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3896
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224015410.GB3553@MiWiFi-R3L-srv>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus
+On 02/24/21 at 09:54am, Baoquan He wrote:
+> On 02/11/21 at 10:08am, Saeed Mirzamohammadi wrote:
+> > This adds crashkernel=auto feature to configure reserved memory for
+> > vmcore creation. CONFIG_CRASH_AUTO_STR is defined to be set for
+> > different kernel distributions and different archs based on their
+> > needs.
+> > 
+> > Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+> > Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+> > Tested-by: John Donnelly <john.p.donnelly@oracle.com>
+> > ---
+> >  Documentation/admin-guide/kdump/kdump.rst     |  3 ++-
+> >  .../admin-guide/kernel-parameters.txt         |  6 +++++
+> >  arch/Kconfig                                  | 24 +++++++++++++++++++
+> >  kernel/crash_core.c                           |  7 ++++++
+> >  4 files changed, 39 insertions(+), 1 deletion(-)
+> 
+> Acked-by: Baoquan He <bhe@redhat.com>
 
-Please pull the arch/nios2 updates for v5.12-rc1.
+Sorry, I just acked on wrong version of patch, please ignore this.
 
-Regards
-Ley Foon
+> 
+> > 
+> > diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+> > index 2da65fef2a1c..e55cdc404c6b 100644
+> > --- a/Documentation/admin-guide/kdump/kdump.rst
+> > +++ b/Documentation/admin-guide/kdump/kdump.rst
+> > @@ -285,7 +285,8 @@ This would mean:
+> >      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
+> >      3) if the RAM size is larger than 2G, then reserve 128M
+> >  
+> > -
+> > +Or you can use crashkernel=auto to choose the crash kernel memory size
+> > +based on the recommended configuration set for each arch.
+> >  
+> >  Boot into System Kernel
+> >  =======================
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 7d4e523646c3..aa2099465458 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -736,6 +736,12 @@
+> >  			a memory unit (amount[KMG]). See also
+> >  			Documentation/admin-guide/kdump/kdump.rst for an example.
+> >  
+> > +	crashkernel=auto
+> > +			[KNL] This parameter will set the reserved memory for
+> > +			the crash kernel based on the value of the CRASH_AUTO_STR
+> > +			that is the best effort estimation for each arch. See also
+> > +			arch/Kconfig for further details.
+> > +
+> >  	crashkernel=size[KMG],high
+> >  			[KNL, X86-64] range could be above 4G. Allow kernel
+> >  			to allocate physical memory region from top, so could
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index af14a567b493..f87c88ffa2f8 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -14,6 +14,30 @@ menu "General architecture-dependent options"
+> >  config CRASH_CORE
+> >  	bool
+> >  
+> > +if CRASH_CORE
+> > +
+> > +config CRASH_AUTO_STR
+> > +	string "Memory reserved for crash kernel"
+> > +	depends on CRASH_CORE
+> > +	default "1G-64G:128M,64G-1T:256M,1T-:512M"
+> > +	help
+> > +	  This configures the reserved memory dependent
+> > +	  on the value of System RAM. The syntax is:
+> > +	  crashkernel=<range1>:<size1>[,<range2>:<size2>,...][@offset]
+> > +	              range=start-[end]
+> > +
+> > +	  For example:
+> > +	      crashkernel=512M-2G:64M,2G-:128M
+> > +
+> > +	  This would mean:
+> > +
+> > +	      1) if the RAM is smaller than 512M, then don't reserve anything
+> > +	         (this is the "rescue" case)
+> > +	      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
+> > +	      3) if the RAM size is larger than 2G, then reserve 128M
+> > +
+> > +endif # CRASH_CORE
+> > +
+> >  config KEXEC_CORE
+> >  	select CRASH_CORE
+> >  	bool
+> > diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> > index 106e4500fd53..ab0a2b4b1ffa 100644
+> > --- a/kernel/crash_core.c
+> > +++ b/kernel/crash_core.c
+> > @@ -7,6 +7,7 @@
+> >  #include <linux/crash_core.h>
+> >  #include <linux/utsname.h>
+> >  #include <linux/vmalloc.h>
+> > +#include <linux/kexec.h>
+> >  
+> >  #include <asm/page.h>
+> >  #include <asm/sections.h>
+> > @@ -250,6 +251,12 @@ static int __init __parse_crashkernel(char *cmdline,
+> >  	if (suffix)
+> >  		return parse_crashkernel_suffix(ck_cmdline, crash_size,
+> >  				suffix);
+> > +#ifdef CONFIG_CRASH_AUTO_STR
+> > +	if (strncmp(ck_cmdline, "auto", 4) == 0) {
+> > +		ck_cmdline = CONFIG_CRASH_AUTO_STR;
+> > +		pr_info("Using crashkernel=auto, the size chosen is a best effort estimation.\n");
+> > +	}
+> > +#endif
+> >  	/*
+> >  	 * if the commandline contains a ':', then that's the extended
+> >  	 * syntax -- if not, it must be the classic syntax
+> > -- 
+> > 2.27.0
+> > 
 
-
-The following changes since commit f40ddce88593482919761f74910f42f4b84c004b=
-:
-
-  Linux 5.11 (2021-02-14 14:32:24 -0800)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lftan/nios2.git tags/nios2-=
-5.12-rc1
-
-for you to fetch changes up to 7f7bc20bc41a4fbcd2db75b375ac95e5faf958ae:
-
-  nios2: Don't use _end for calculating min_low_pfn (2021-02-19 15:02:09 +0=
-800)
-
-----------------------------------------------------------------
-nios2 update for nios2-5.12-rc1
-
-nios2: Don't use _end for calculating min_low_pfn
-nios2: fixed broken sys_clone syscall
-Take mmap lock in cacheflush syscall
-
-----------------------------------------------------------------
-Andreas Oetken (2):
-      nios2: fixed broken sys_clone syscall
-      nios2: Don't use _end for calculating min_low_pfn
-
-Jann Horn (1):
-      Take mmap lock in cacheflush syscall
-
- arch/nios2/kernel/entry.S     |  3 +++
- arch/nios2/kernel/setup.c     | 21 ++++++++++++---------
- arch/nios2/kernel/sys_nios2.c | 11 +++++++++--
- 3 files changed, 24 insertions(+), 11 deletions(-)
