@@ -2,297 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE61323572
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F27F323581
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbhBXBr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 20:47:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhBXBr0 (ORCPT
+        id S229999AbhBXBzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 20:55:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23480 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231193AbhBXBzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 20:47:26 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782F7C06174A;
-        Tue, 23 Feb 2021 17:46:46 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id q186so769449oig.12;
-        Tue, 23 Feb 2021 17:46:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=O/Mam68uqT/7NKtSyDp1Dxtmz4+Do/gcLBHjPfV74R0=;
-        b=d8nsk7WmaG4nHbLxq02FFY8onINdxCGOAbJ7F6djTxmFzH7rZ9shp96XWBBdyt5+I9
-         p56AExalAaTARFEwXD+4dUEZ1+E7oWpVvQPDzQt8ik9sDamHCpiphoNIBTtq5j42vDz6
-         Mz6GdP7uQpNVdnemlZflp9xLWB2NmZJNxrkkq2EWR1JS9BljFUwk/EJGPwkGkGS1ykoV
-         DaFKLsBYsKD+BI8GfzbQm6+/DcJBn62UVgMBSlSzaKRk4DPhNxNc8vmwIEIsRTfZuRJx
-         g9AqFc9Io/d5QGGZtRtf8vR4M5bmkfvpvm8TF/bUG2gUeXHrIV9qUUlSF3qianO6lfnY
-         6FJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=O/Mam68uqT/7NKtSyDp1Dxtmz4+Do/gcLBHjPfV74R0=;
-        b=g9/qpEl/8P4YMOiBNEtoOi8K8PRADkMKIJS1YCNMzw+KUgZqlhCYM5KTuOoZ3P4H2+
-         3anZSrV6Ukh2NDSrOFdnTFD4HUnNvtj4AYZrGsLF4CAIJMtSyVYJDn/bAX9bpa+NIVf9
-         XfV0o/RayTl3nBCVeNZWiDIKvm5HbXAnRtQRUIKnF9Frsk56YQQy8O5qr0uEti7oR+fy
-         Kospy3RwH904H/ALc6fyTaykmM8tlnC5VeM2oaliGFhIsGWAc9GiSCVzTi4T6PEMXTuS
-         PeSOo/e0txBA1+QRZcJ/7lrAMndrmvDsa/AyQorDn+ByTe9rbv3WDkc0hGNW65eo20G+
-         xVTg==
-X-Gm-Message-State: AOAM531GVaazTL/gsScosV9Pq46eFyx1+90MWv5V/8MvzZ7xGUYWdvHh
-        mm2rKzZo7ZZz3eFhgfAnndAbQVp7kQY=
-X-Google-Smtp-Source: ABdhPJwJBsqQV4YS5w7ZQSpekxdrNZ7vsnXsAbxPKwB+o9ACD6MW3VOc9MZaqGaw3m2TDyB13ABjXA==
-X-Received: by 2002:aca:30d8:: with SMTP id w207mr1147976oiw.59.1614131205898;
-        Tue, 23 Feb 2021 17:46:45 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d13sm86661otf.52.2021.02.23.17.46.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Feb 2021 17:46:43 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 23 Feb 2021 17:46:42 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Tue, 23 Feb 2021 20:55:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614131664;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rWPPiQSh37awcZCREt3lwojOaGUPEOwun1dmgRBC6Vs=;
+        b=XKn28isBiR+UY8nGI0zNDWTIJbg1nNGx5kGtXEbta170bVcRyWJG6rbsR1nQ/NNihYsDYO
+        KJ1mgoYSW0UwnXU/77xUQ4wIMMAVX37rRJ08+Csqz3AGYxcJxnby9QEYFbijgPSILG041o
+        f7izo7hlzFEqnvd43qAtq3ffyuSFr9g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-536-MQOuF6gEPE2c03M4-uyOBg-1; Tue, 23 Feb 2021 20:54:20 -0500
+X-MC-Unique: MQOuF6gEPE2c03M4-uyOBg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D2E0B1005501;
+        Wed, 24 Feb 2021 01:54:16 +0000 (UTC)
+Received: from localhost (ovpn-12-189.pek2.redhat.com [10.72.12.189])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9091D2C01F;
+        Wed, 24 Feb 2021 01:54:12 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 09:54:10 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     john.p.donnelly@oracle.com, Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
         Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH] gcc-plugins: Disable GCC_PLUGIN_CYC_COMPLEXITY for s390
-Message-ID: <20210224014642.GA181726@roeck-us.net>
-References: <20210221225650.33134-1-linux@roeck-us.net>
- <YDOeI5+1H3T1ocmQ@osiris>
- <f35196cc-969f-21ef-0c38-dc6e13831fb0@roeck-us.net>
- <CAK7LNASdfvJsqq8ubpBZJ5yWPMimt=pF_GFBLTJbFytbtw8jxg@mail.gmail.com>
- <8d3de6fc-0991-9cef-d5fd-032fdbe2e85e@roeck-us.net>
- <YDTs4vfjezu3j7rX@osiris>
- <20210223174140.GA159796@roeck-us.net>
- <YDVDg/EZWjCZQn2v@osiris>
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] kernel/crash_core: Add crashkernel=auto for
+ vmcore creation
+Message-ID: <20210224015410.GB3553@MiWiFi-R3L-srv>
+References: <20210211180814.69708-1-saeed.mirzamohammadi@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YDVDg/EZWjCZQn2v@osiris>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210211180814.69708-1-saeed.mirzamohammadi@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 07:03:47PM +0100, Heiko Carstens wrote:
-> On Tue, Feb 23, 2021 at 09:41:40AM -0800, Guenter Roeck wrote:
-> > > I tried to explain why we don't want to set COMPILE_TEST for s390
-> > > anymore. It overrides architecture dependencies in Kconfig, and lots
-> > > of drivers do not set dependencies for HAS_IOMEM, HAS_DMA, and friends
-> > > correctly.
-> > > This generates constantly fallout which is irrelevant for s390 and
-> > > also for other architectures. It generates just work with close to
-> > > zero benefit. For drivers which matter for s390 we still see those
-> > > errors.
-> > > 
-> > > > On the other side, if that flag would be set explicitly by
-> > > > all{yes,mod}config, it would really beg for being misused. We
-> > > > might then as well add a new flag that is explicitly associated
-> > > > with all{yes,mod}config, but not with randconfig.
-> > > 
-> > > I think that makes most sense, probably also have a flag that is set
-> > > for randconfig.
-> > 
-> > Not sure what value such an option would have, and how it would be used.
-> > I would argue that randconfig should not set COMPILE_TEST to start with,
-> > since its purpose should be to test random valid configurations and not
-> > to compile test arbitrary (and in that case random) code. But that is
-> > a different question, and just my personal opinion.
-> > 
-> > Overall, the question is what kind of additional option you would find
-> > useful for s390. You make it clear that you don't want COMPILE_TEST.
-> > At the same time, you still want all{mod,yes}config, but presumably
-> > excluding options currently restricted by !COMPILE_TEST (such as
-> > DEBUG_INFO, BPF_PRELOAD, UBSAN_TRAP, GCC_PLUGIN_CYC_COMPLEXITY,
-> > and a few others). SUPPRESS_NOISY_TESTS would not cover that, but
-> > neither would RANDCONFIG (or whatever it would be called).
+On 02/11/21 at 10:08am, Saeed Mirzamohammadi wrote:
+> This adds crashkernel=auto feature to configure reserved memory for
+> vmcore creation. CONFIG_CRASH_AUTO_STR is defined to be set for
+> different kernel distributions and different archs based on their
+> needs.
 > 
-> Well, if we would have e.g. RANDCONFIG, then we could probably revert
-> 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390") and
-> instead let COMPILE_TEST depend on !RANDCONFIG.
-> I think this _could_ solve all common problems we currently see.
+> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+> Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+> Tested-by: John Donnelly <john.p.donnelly@oracle.com>
+> ---
+>  Documentation/admin-guide/kdump/kdump.rst     |  3 ++-
+>  .../admin-guide/kernel-parameters.txt         |  6 +++++
+>  arch/Kconfig                                  | 24 +++++++++++++++++++
+>  kernel/crash_core.c                           |  7 ++++++
+>  4 files changed, 39 insertions(+), 1 deletion(-)
+
+Acked-by: Baoquan He <bhe@redhat.com>
+
 > 
-> And it would also do what you suggested.
-
-Sounds good.
-
-Question is how one would set such a flag. The code in scripts/kconfig/conf.c
-doesn't really set COMPILE_TEST in conjunction with randconfig; that is
-just as random as all other configuration flags. Would something like
-the patch below be acceptable ?
-
-Thanks,
-Guenter
-
----
-From 301dc1746b259afce02c104ebbf3f0c37189ae4a Mon Sep 17 00:00:00 2001
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Tue, 23 Feb 2021 17:21:51 -0800
-Subject: [PATCH] kconfig: Introduce RANDCONFIG
-
-"make randconfig" is intended to be used to generate random valid
-configurations. It is supposed to verify if configuration dependencies
-are valid and compile. It is not supposed to be used as replacement
-for all{mod,yes}config.
-
-However, that is not currently the case. "make randconfig" treats all
-configurations randomly. This means that "COMPILE_TEST" will be enabled
-randomly. This defeats the purpose of "make randconfig"
-
-To solve the problem, introduce a RANDCONFIG configuration option
-and set it for all "randconfig" configurations. Disable COMPILE_TEST
-whenever RANDCONFIG is enabled.
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- init/Kconfig               | 12 ++++++++++++
- scripts/kconfig/confdata.c | 15 ++++++++++++---
- scripts/kconfig/expr.h     |  1 +
- scripts/kconfig/lexer.l    |  1 +
- scripts/kconfig/lkc.h      |  1 +
- scripts/kconfig/menu.c     |  5 +++++
- scripts/kconfig/parser.y   |  6 ++++++
- 7 files changed, 38 insertions(+), 3 deletions(-)
-
-diff --git a/init/Kconfig b/init/Kconfig
-index ba8bd5256980..a85099c5e383 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -111,9 +111,21 @@ config INIT_ENV_ARG_LIMIT
- 	  Maximum of each of the number of arguments and environment
- 	  variables passed to init from the kernel command line.
- 
-+config RANDCONFIG
-+	bool "Compile random configurations"
-+	option randconfig_y
-+	help
-+	  This option indicates that the configuration is random and used to
-+	  test if configuration dependencies are valid and complete.
-+	  Resulting images are not expected to be bootable on real hardware.
-+
-+	  If you are a developer and want to build test random configurations,
-+	  say Y here. If you are a user/distributor, say N.
-+
- config COMPILE_TEST
- 	bool "Compile also drivers which will not load"
- 	depends on !UML && !S390
-+	depends on !RANDCONFIG
- 	default n
- 	help
- 	  Some drivers can be compiled on a different platform than they are
-diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
-index 2568dbe16ed6..0b36cc2f702b 100644
---- a/scripts/kconfig/confdata.c
-+++ b/scripts/kconfig/confdata.c
-@@ -1254,10 +1254,16 @@ bool conf_set_all_new_symbols(enum conf_def_mode mode)
- 			has_changed = true;
- 			switch (mode) {
- 			case def_yes:
--				sym->def[S_DEF_USER].tri = yes;
-+				if (sym->flags & SYMBOL_RANDCONFIG_Y)
-+					sym->def[S_DEF_USER].tri = no;
-+				else
-+					sym->def[S_DEF_USER].tri = yes;
- 				break;
- 			case def_mod:
--				sym->def[S_DEF_USER].tri = mod;
-+				if (sym->flags & SYMBOL_RANDCONFIG_Y)
-+					sym->def[S_DEF_USER].tri = no;
-+				else
-+					sym->def[S_DEF_USER].tri = mod;
- 				break;
- 			case def_no:
- 				if (sym->flags & SYMBOL_ALLNOCONFIG_Y)
-@@ -1267,7 +1273,10 @@ bool conf_set_all_new_symbols(enum conf_def_mode mode)
- 				break;
- 			case def_random:
- 				sym->def[S_DEF_USER].tri = no;
--				cnt = rand() % 100;
-+				if (sym->flags & SYMBOL_RANDCONFIG_Y)
-+					cnt = -1;
-+				else
-+					cnt = rand() % 100;
- 				if (sym->type == S_TRISTATE) {
- 					if (cnt < pty)
- 						sym->def[S_DEF_USER].tri = yes;
-diff --git a/scripts/kconfig/expr.h b/scripts/kconfig/expr.h
-index 5c3443692f34..70f4acce2b7b 100644
---- a/scripts/kconfig/expr.h
-+++ b/scripts/kconfig/expr.h
-@@ -158,6 +158,7 @@ struct symbol {
- 
- /* Set symbol to y if allnoconfig; used for symbols that hide others */
- #define SYMBOL_ALLNOCONFIG_Y 0x200000
-+#define SYMBOL_RANDCONFIG_Y  0x400000
- 
- #define SYMBOL_MAXLENGTH	256
- #define SYMBOL_HASHSIZE		9973
-diff --git a/scripts/kconfig/lexer.l b/scripts/kconfig/lexer.l
-index 9c22cb554673..fd9cd3622ea7 100644
---- a/scripts/kconfig/lexer.l
-+++ b/scripts/kconfig/lexer.l
-@@ -92,6 +92,7 @@ n	[A-Za-z0-9_-]
- \\\n			/* escaped new line */
- \n			return T_EOL;
- "allnoconfig_y"		return T_ALLNOCONFIG_Y;
-+"randconfig_y"		return T_RANDCONFIG_Y;
- "bool"			return T_BOOL;
- "choice"		return T_CHOICE;
- "comment"		return T_COMMENT;
-diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
-index bee2413bda63..871a05f887f0 100644
---- a/scripts/kconfig/lkc.h
-+++ b/scripts/kconfig/lkc.h
-@@ -110,6 +110,7 @@ void menu_add_symbol(enum prop_type type, struct symbol *sym, struct expr *dep);
- void menu_add_option_modules(void);
- void menu_add_option_defconfig_list(void);
- void menu_add_option_allnoconfig_y(void);
-+void menu_add_option_randconfig_y(void);
- void menu_finalize(struct menu *parent);
- void menu_set_type(int type);
- 
-diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
-index a5fbd6ccc006..5ec3a26566b8 100644
---- a/scripts/kconfig/menu.c
-+++ b/scripts/kconfig/menu.c
-@@ -233,6 +233,11 @@ void menu_add_option_allnoconfig_y(void)
- 	current_entry->sym->flags |= SYMBOL_ALLNOCONFIG_Y;
- }
- 
-+void menu_add_option_randconfig_y(void)
-+{
-+	current_entry->sym->flags |= SYMBOL_RANDCONFIG_Y;
-+}
-+
- static int menu_validate_number(struct symbol *sym, struct symbol *sym2)
- {
- 	return sym2->type == S_INT || sym2->type == S_HEX ||
-diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
-index 190f1117f35a..335ce0554c84 100644
---- a/scripts/kconfig/parser.y
-+++ b/scripts/kconfig/parser.y
-@@ -46,6 +46,7 @@ static struct menu *current_menu, *current_entry;
- %token <string> T_WORD
- %token <string> T_WORD_QUOTE
- %token T_ALLNOCONFIG_Y
-+%token T_RANDCONFIG_Y
- %token T_BOOL
- %token T_CHOICE
- %token T_CLOSE_PAREN
-@@ -233,6 +234,11 @@ config_option: T_OPTION T_ALLNOCONFIG_Y T_EOL
- 	menu_add_option_allnoconfig_y();
- };
- 
-+config_option: T_OPTION T_RANDCONFIG_Y T_EOL
-+{
-+	menu_add_option_randconfig_y();
-+};
-+
- /* choice entry */
- 
- choice: T_CHOICE word_opt T_EOL
--- 
-2.17.1
+> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+> index 2da65fef2a1c..e55cdc404c6b 100644
+> --- a/Documentation/admin-guide/kdump/kdump.rst
+> +++ b/Documentation/admin-guide/kdump/kdump.rst
+> @@ -285,7 +285,8 @@ This would mean:
+>      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
+>      3) if the RAM size is larger than 2G, then reserve 128M
+>  
+> -
+> +Or you can use crashkernel=auto to choose the crash kernel memory size
+> +based on the recommended configuration set for each arch.
+>  
+>  Boot into System Kernel
+>  =======================
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 7d4e523646c3..aa2099465458 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -736,6 +736,12 @@
+>  			a memory unit (amount[KMG]). See also
+>  			Documentation/admin-guide/kdump/kdump.rst for an example.
+>  
+> +	crashkernel=auto
+> +			[KNL] This parameter will set the reserved memory for
+> +			the crash kernel based on the value of the CRASH_AUTO_STR
+> +			that is the best effort estimation for each arch. See also
+> +			arch/Kconfig for further details.
+> +
+>  	crashkernel=size[KMG],high
+>  			[KNL, X86-64] range could be above 4G. Allow kernel
+>  			to allocate physical memory region from top, so could
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index af14a567b493..f87c88ffa2f8 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -14,6 +14,30 @@ menu "General architecture-dependent options"
+>  config CRASH_CORE
+>  	bool
+>  
+> +if CRASH_CORE
+> +
+> +config CRASH_AUTO_STR
+> +	string "Memory reserved for crash kernel"
+> +	depends on CRASH_CORE
+> +	default "1G-64G:128M,64G-1T:256M,1T-:512M"
+> +	help
+> +	  This configures the reserved memory dependent
+> +	  on the value of System RAM. The syntax is:
+> +	  crashkernel=<range1>:<size1>[,<range2>:<size2>,...][@offset]
+> +	              range=start-[end]
+> +
+> +	  For example:
+> +	      crashkernel=512M-2G:64M,2G-:128M
+> +
+> +	  This would mean:
+> +
+> +	      1) if the RAM is smaller than 512M, then don't reserve anything
+> +	         (this is the "rescue" case)
+> +	      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
+> +	      3) if the RAM size is larger than 2G, then reserve 128M
+> +
+> +endif # CRASH_CORE
+> +
+>  config KEXEC_CORE
+>  	select CRASH_CORE
+>  	bool
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index 106e4500fd53..ab0a2b4b1ffa 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/crash_core.h>
+>  #include <linux/utsname.h>
+>  #include <linux/vmalloc.h>
+> +#include <linux/kexec.h>
+>  
+>  #include <asm/page.h>
+>  #include <asm/sections.h>
+> @@ -250,6 +251,12 @@ static int __init __parse_crashkernel(char *cmdline,
+>  	if (suffix)
+>  		return parse_crashkernel_suffix(ck_cmdline, crash_size,
+>  				suffix);
+> +#ifdef CONFIG_CRASH_AUTO_STR
+> +	if (strncmp(ck_cmdline, "auto", 4) == 0) {
+> +		ck_cmdline = CONFIG_CRASH_AUTO_STR;
+> +		pr_info("Using crashkernel=auto, the size chosen is a best effort estimation.\n");
+> +	}
+> +#endif
+>  	/*
+>  	 * if the commandline contains a ':', then that's the extended
+>  	 * syntax -- if not, it must be the classic syntax
+> -- 
+> 2.27.0
+> 
 
