@@ -2,231 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3B5324713
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 23:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8D9324708
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 23:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235628AbhBXWny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 17:43:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42064 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235258AbhBXWng (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 17:43:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614206529;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7loNY6a/CYvNtMJopL3QUeRwqTiWCpARGe5VL/q/8gs=;
-        b=PgRL9zUgUEx2Y6UNAxqZ3EIlqc1bwxTKkwc5W0mL+ugBE3aB3vrE8I0ca2h1LOQPjKCqtd
-        Hl1dRuv34ztev2/IUMNZMmOP9jXYqkqHQPCAJR3sFzyFrmziY5LeP7DjDKkoVnqtsTp/Cv
-        Vzz7iVsPAGQH0J0o+cBz+1hq7Nj+uus=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-l5I9bcFJPYi5FTTukFIyOA-1; Wed, 24 Feb 2021 17:42:07 -0500
-X-MC-Unique: l5I9bcFJPYi5FTTukFIyOA-1
-Received: by mail-ej1-f69.google.com with SMTP id m4so1516517ejc.14
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 14:42:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7loNY6a/CYvNtMJopL3QUeRwqTiWCpARGe5VL/q/8gs=;
-        b=PYv20amXkEfNV+H6LLVwI4H13kOLtyPQCSDc6FaFCO96R4pgkBjfa1bpwaJTjxSz//
-         qFA2pT3lGJl4S1oPK2JMA85cX0vBoSaGabo8cF3Iuc7Ga2E/wn5bfufoD8N65fWq0QVe
-         M8YvRc/e5/aUWEf2tyqLpkHbGyRZx+FMnEcGSrFVq5XW3qZHJ3+T/n4VYvrsVcgohsg7
-         PB9KPRGFdHEif+cQQNFyLErMe/+JF5V0YCS/uMIcwDC4pjuswtZmc0UiDDZK15XUKkk+
-         zdfUOKPi/pwX/UHT5JsrJaR1BNKI5fKBJ7eNBWGaSl75DaZOdPmZYSIo4ENJxPv2JUtW
-         FbVQ==
-X-Gm-Message-State: AOAM533AkQm67tzvc0IYkiFqUuzowSRWxgvjChsd9VtMkeCuh+Ac1gG+
-        JoDNwjsrwpWWLDjtmUbsd55H/HzNv56YF6RSIoj+6hB76UD+79HcLqLxTCDGNtIiWEJ+YyPGgNY
-        exv5YXyfAp0Jq96LmS+vNHVhq
-X-Received: by 2002:aa7:c905:: with SMTP id b5mr45134edt.161.1614206525814;
-        Wed, 24 Feb 2021 14:42:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxX6wHCinOs4mbPbm2b7t4ZXywkzoSCLQSDAz3ddGk0HJEmKYxvUxfEaGzcRz0oxz/i60stnA==
-X-Received: by 2002:aa7:c905:: with SMTP id b5mr45085edt.161.1614206525568;
-        Wed, 24 Feb 2021 14:42:05 -0800 (PST)
-Received: from redhat.com (212.116.168.114.static.012.net.il. [212.116.168.114])
-        by smtp.gmail.com with ESMTPSA id w24sm2387595edv.67.2021.02.24.14.42.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 14:42:04 -0800 (PST)
-Date:   Wed, 24 Feb 2021 17:41:59 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Alexander Graf <graf@amazon.com>
-Cc:     Adrian Catangiu <acatan@amazon.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, qemu-devel@nongnu.org,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        gregkh@linuxfoundation.org, rdunlap@infradead.org, arnd@arndb.de,
-        ebiederm@xmission.com, rppt@kernel.org, 0x7f454c46@gmail.com,
-        borntraeger@de.ibm.com, Jason@zx2c4.com, jannh@google.com,
-        w@1wt.eu, colmmacc@amazon.com, luto@kernel.org, tytso@mit.edu,
-        ebiggers@kernel.org, dwmw@amazon.co.uk, bonzini@gnu.org,
-        sblbir@amazon.com, raduweis@amazon.com, corbet@lwn.net,
-        mhocko@kernel.org, rafael@kernel.org, pavel@ucw.cz,
-        mpe@ellerman.id.au, areber@redhat.com, ovzxemul@gmail.com,
-        avagin@gmail.com, ptikhomirov@virtuozzo.com, gil@azul.com,
-        asmehra@redhat.com, dgunigun@redhat.com, vijaysun@ca.ibm.com,
-        oridgar@gmail.com, ghammer@redhat.com
-Subject: Re: [PATCH v7 1/2] drivers/misc: sysgenid: add system generation id
- driver
-Message-ID: <20210224173205-mutt-send-email-mst@kernel.org>
-References: <1614156452-17311-1-git-send-email-acatan@amazon.com>
- <1614156452-17311-2-git-send-email-acatan@amazon.com>
- <20210224040516-mutt-send-email-mst@kernel.org>
- <d63146a9-a3f8-14ea-2b16-cb5b3fe7aecf@amazon.com>
+        id S235510AbhBXWnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 17:43:21 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:45124 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233557AbhBXWnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 17:43:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614206573; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WczKGquSJgnZUlXASNkqZ5WkLYrasNUrNCB5kZMcP5A=;
+ b=RJpuk5rl6K84LiBy3OEaVLOlhOdrkV7q+72GGAvSA8SUwfpoAuX2y2Rj3E5HqwslvCtDCJjp
+ wvOqNq4MfL+5yrx71uf1PKcH/jJmKgSls0GjMdGDhxfG/WEqJeP9z74fB9sbNKkYFHBKZKc3
+ JDDJPwTNQgesiv0O2TODm755whk=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6036d64cba08663830550c3e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Feb 2021 22:42:20
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1DF91C43462; Wed, 24 Feb 2021 22:42:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70688C433CA;
+        Wed, 24 Feb 2021 22:42:19 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d63146a9-a3f8-14ea-2b16-cb5b3fe7aecf@amazon.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 24 Feb 2021 14:42:19 -0800
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
+        sean@poorly.run, vkoul@kernel.org, tanmay@codeaurora.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] phy/qualcomm: add hbr3_hbr2 voltage and premphasis
+ swing table
+In-Reply-To: <161419558963.1254594.762999750680493756@swboyd.mtv.corp.google.com>
+References: <1613667070-27613-1-git-send-email-khsieh@codeaurora.org>
+ <161367397738.1254594.12158219605796616035@swboyd.mtv.corp.google.com>
+ <161419558963.1254594.762999750680493756@swboyd.mtv.corp.google.com>
+Message-ID: <3fac13ae8e800f5283fb13cbafac2b21@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 02:45:03PM +0100, Alexander Graf wrote:
-> > Above should try harder to explan what are the things that need to be
-> > scrubbed and why. For example, I personally don't really know what is
-> > the OpenSSL session token example and what makes it vulnerable. I guess
-> > snapshots can attack each other?
-> > 
-> > 
-> > 
-> > 
-> > Here's a simple example of a workflow that submits transactions
-> > to a database and wants to avoid duplicate transactions.
-> > This does not require overseer magic. It does however require
-> > a correct genid from hypervisor, so no mmap tricks work.
-> > 
-> > 
-> > 
-> >          int genid, oldgenid;
-> >          read(&genid);
-> > start:
-> >          oldgenid = genid;
-> >          transid = submit transaction
-> >          read(&genid);
-> >          if (genid != oldgenid) {
-> >                          revert transaction (transid);
-> >                          goto start:
-> >          }
+On 2021-02-24 11:39, Stephen Boyd wrote:
+> Quoting Stephen Boyd (2021-02-18 10:46:17)
+>> Quoting Kuogee Hsieh (2021-02-18 08:51:10)
+>> > Add hbr3_hbr2 voltage and premphasis swing table to support
+>> > HBR3 link rate.
+>> >
+>> > Changes in V2:
+>> > -- replaced upper case with lower case at hbr3_hbr2 table
+>> >
+>> > Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> > ---
+>> 
+>> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>> 
+>> BTW, the DP driver already set rates for HBR2, so does that mean this 
+>> is
+>> fixing the voltage and preemphasis settings for HBR2? If so we should
+>> backport this to stable trees and mark it as fixing commit 
+>> 52e013d0bffa
+>> ("phy: qcom-qmp: Add support for DP in USB3+DP combo phy").
 > 
-> I'm not sure I fully follow. For starters, if this is a VM local database, I
-> don't think you'd care about the genid. If it's a remote database, your
-> connection would get dropped already at the point when you clone/resume,
-> because TCP and your connection state machine will get really confused when
-> you suddenly have a different IP address or two consumers of the same stream
-> :).
->
-> But for the sake of the argument, let's assume you can have a connectionless
-> database connection that maintains its own connection uniqueness logic.
-
-Right. E.g. not uncommon with REST APIs. They survive disconnect easily
-and use cookies or such.
-
-> That
-> database connector would need to understand how to abort the connection (and
-> thus the transaction!) when the generation changes.
-
-the point is that instead of all that you discover transaction as
-a duplicate and revert it.
-
-
-> And that's logic you
-> would do with the read/write/notify mechanism. So your main loop would check
-> for reads on the genid fd and after sending a connection termination, notify
-> the overlord that it's safe to use the VM now.
-> 
-> The OpenSSL case (with mmap) is for libraries that are stateless and can not
-> guarantee that they receive a genid notification event timely.
-> 
-> Since you asked, this is mainly important for the PRNG. Imagine an https
-> server. You create a snapshot. You resume from that snapshot. OpenSSL is
-> fully initialized with a user space PRNG randomness pool that it considers
-> safe to consume. However, that means your first connection after resume will
-> be 100% predictable randomness wise.
-
-I wonder whether something similar is possible here. I.e. use the secret
-to encrypt stuff but check the gen ID before actually sending data.
-If it changed re-encrypt. Hmm?
-
-> 
-> The mmap mechanism allows the PRNG to reseed after a genid change. Because
-> we don't have an event mechanism for this code path, that can happen minutes
-> after the resume. But that's ok, we "just" have to ensure that nobody is
-> consuming secret data at the point of the snapshot.
-
-
-Something I am still not clear on is whether it's really important to
-skip the system call here. If not I think it's prudent to just stick
-to read for now, I think there's a slightly lower chance that
-it will get misused. mmap which gives you a laggy gen id value
-really seems like it would be hard to use correctly.
-
-
-> > 
-> > 
-> > 
-> > 
-> > 
-> > 
-> > > +Simplifyng assumption - safety prerequisite
-> > > +-------------------------------------------
-> > > +
-> > > +**Control the snapshot flow**, disallow snapshots coming at arbitrary
-> > > +moments in the workload lifetime.
-> > > +
-> > > +Use a system-level overseer entity that quiesces the system before
-> > > +snapshot, and post-snapshot-resume oversees that software components
-> > > +have readjusted to new environment, to the new generation. Only after,
-> > > +will the overseer un-quiesce the system and allow active workloads.
-> > > +
-> > > +Software components can choose whether they want to be tracked and
-> > > +waited on by the overseer by using the ``SYSGENID_SET_WATCHER_TRACKING``
-> > > +IOCTL.
-> > > +
-> > > +The sysgenid framework standardizes the API for system software to
-> > > +find out about needing to readjust and at the same time provides a
-> > > +mechanism for the overseer entity to wait for everyone to be done, the
-> > > +system to have readjusted, so it can un-quiesce.
-> > > +
-> > > +Example snapshot-safe workflow
-> > > +------------------------------
-> > > +
-> > > +1) Before taking a snapshot, quiesce the VM/container/system. Exactly
-> > > +   how this is achieved is very workload-specific, but the general
-> > > +   description is to get all software to an expected state where their
-> > > +   event loops dry up and they are effectively quiesced.
-> > 
-> > If you have ability to do this by communicating with
-> > all processes e.g. through a unix domain socket,
-> > why do you need the rest of the stuff in the kernel?
-> > Quescing is a harder problem than waking up.
-> 
-> That depends. Think of a typical VM workload. Let's take the web server
-> example again. You can preboot the full VM and snapshot it as is. As long as
-> you don't allow any incoming connections, you can guarantee that the system
-> is "quiesced" well enough for the snapshot.
-
-Well you can use a firewall or such to block incoming packets,
-but I am not at all sure that means e.g. all socket buffers
-are empty.
-
-
-> This is really what this bullet point is about. The point is that you're not
-> consuming randomness you can't reseed asynchronously (see the above OpenSSL
-> PRNG example).
-> 
-> 
-> Alex
-> 
-> 
-> 
-> Amazon Development Center Germany GmbH
-> Krausenstr. 38
-> 10117 Berlin
-> Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-> Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-> Sitz: Berlin
-> Ust-ID: DE 289 237 879
-> 
-> 
-
+> Yes? No?
+yes
