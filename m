@@ -2,118 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74683324157
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E064F32415B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236305AbhBXPs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:48:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41704 "EHLO
+        id S236508AbhBXPtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:49:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbhBXPgW (ORCPT
+        with ESMTP id S233488AbhBXPhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:36:22 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C47C061788
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 07:35:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JCkYrcZlxdxfoVNc1cEMypWzJ6c2NYyR/a+MaqpLe9A=; b=oqxleu2C5+KgJv4XfxQdzfxl4M
-        peJjjpdoPGzkTbIFBLAfkRNNh9jyHn3No2a77BMrzCoQXAzO3ArVGmgS5OIUlU+T0uiLNeKFrHXq3
-        6jNIKcH1BR/E9fPZy/wAN88P+WjXhWsiH4v+HdejI8xrscY/sFYNjyMNC5BWZnfdk4cEpRq8J2Xc6
-        hUBjMv0nB9cTyy6GG39Lej8IJpVbbkMn4fjchUqekeGVJISC5anvSLQwMBZimGktuF9S2T/xaeXEb
-        58PTVUrgSTtJ0pmaPgGNujCNA8oJMyTqMQjadDlx2IiRPwk6MSvKA+nT9jKVVHNddIbRNO4BfZXFH
-        8a1jcjPA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lEwBn-009ZOG-KF; Wed, 24 Feb 2021 15:35:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6BC5630477A;
-        Wed, 24 Feb 2021 16:34:58 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5700C200E0496; Wed, 24 Feb 2021 16:34:58 +0100 (CET)
-Date:   Wed, 24 Feb 2021 16:34:58 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>
-Subject: Re: [PATCH 6/6] sched: Simplify set_affinity_pending refcounts
-Message-ID: <YDZyIugiyxAq0tVz@hirez.programming.kicks-ass.net>
-References: <20210224122439.176543586@infradead.org>
- <20210224131355.724130207@infradead.org>
+        Wed, 24 Feb 2021 10:37:55 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88275C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 07:36:53 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id d2so3022650edq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 07:36:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ji4BzJAQTuKp7DKTd2/l/jJe85G+oyb88MSqcOQIPcA=;
+        b=nhJ2TEc9D954m2fmyp5t8t7hJTdxfopcBqtHu9wVsn5KLseijAl9KUPnpG7ywhzlTf
+         fkr3SJqtGld4KfbBPtR6j5y/QNVK86Y3shePJVsksHlmISu3GKmyqfhPNMTrAGP/9a39
+         vB0Y2AOegdmTaBbqQlX1U1pfff3bLA7a/7D3sW4xzWO5XHDpJr10lEjYeZ+HlNYkF2QC
+         tG/S3KajEB1wgoan1EdBGf04KkkGOP+Z56FiRauMXPmRobp/OusHvxMICffzZ/72G8ns
+         HgdLkUJ529S1AAwkudZDrI0RVWpKo9XrTopc0hbWcEronl6tqkds0ii74/HZyC9IpYBT
+         Y/GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ji4BzJAQTuKp7DKTd2/l/jJe85G+oyb88MSqcOQIPcA=;
+        b=NAPWD5KWjTiIyygpeMw+2F6aUYOyC3/YX1cfdawYMV6kzlLQhSbhU/CTZoIxiSeulb
+         CvXgTK58fUJvwepX75mP21M9BGCUoxU2JydTfO2hnnQko5EzsKopwRMdv5iMGCHpAR5v
+         GY9NBvxziYI1v8HHtPRVp2f6SRtIUp9tpBR+Kid3bTs6kI3zqfQAtOtx14jTu+ZB5YUS
+         o920OcaeZxRMgmaWlHHj2aoud40eSgQQYhUansv6xgMNFKvYrBbPBOl51aRYR6K3XEyb
+         vszfXGG/pPoK3hkz7VWdsGquIIM/+7tOtihNm6le3kOFlfl8fp7xGfwIHM8iFh6t4voS
+         lDmw==
+X-Gm-Message-State: AOAM531VKFqRy32Pv9IHK3brF4Fdhm9kfBM2QWRYKCYSbjKUXfGnJIMz
+        +LhMjtAKV5+gtYePVm1u5AXFEwc6unz65JgGt9vptEm9
+X-Google-Smtp-Source: ABdhPJypVFQDXuXdKTrlFsegIYz2rvz2bQ+ux+ytJLboHYJ5K5LYIJdTg0KTOkN/Uqpr5HMy4a8QBQ6NeGXKFqYoRHM=
+X-Received: by 2002:a05:6402:348c:: with SMTP id v12mr11144995edc.314.1614181012339;
+ Wed, 24 Feb 2021 07:36:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224131355.724130207@infradead.org>
+References: <1613970647-23272-1-git-send-email-daizhiyuan@phytium.com.cn> <CAG_fn=WqixC0B+dW50gRFn3Qm63rQ5x6jP+2eGVAkRcuBOwQ6A@mail.gmail.com>
+In-Reply-To: <CAG_fn=WqixC0B+dW50gRFn3Qm63rQ5x6jP+2eGVAkRcuBOwQ6A@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Wed, 24 Feb 2021 16:36:41 +0100
+Message-ID: <CA+fCnZdSS9RojAAeF-tNT6jsFtUm34C1Khpsqz0N=4duDe+bqQ@mail.gmail.com>
+Subject: Re: [PATCH] mm/kasan: switch from strlcpy to strscpy
+To:     Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 01:24:45PM +0100, Peter Zijlstra wrote:
-> @@ -2199,12 +2199,16 @@ static int affine_move_task(struct rq *r
->  			push_task = get_task_struct(p);
->  		}
->  
-> +		/*
-> +		 * If there are pending waiters, but no pending stop_work,
-> +		 * then complete now.
-> +		 */
->  		pending = p->migration_pending;
-> +		if (pending && !pending->stop_pending) {
->  			p->migration_pending = NULL;
->  			complete = true;
->  		}
+On Mon, Feb 22, 2021 at 8:45 AM Alexander Potapenko <glider@google.com> wrote:
+>
+> On Mon, Feb 22, 2021 at 6:10 AM Zhiyuan Dai <daizhiyuan@phytium.com.cn> wrote:
+> >
+> > strlcpy is marked as deprecated in Documentation/process/deprecated.rst,
+> > and there is no functional difference when the caller expects truncation
+> > (when not checking the return value). strscpy is relatively better as it
+> > also avoids scanning the whole source string.
+>
+> Looks like a good thing to do.
+>
+> > Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+> Acked-by: Alexander Potapenko <glider@google.com>
+>
+> > ---
+> >  mm/kasan/report_generic.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
+> > index 8a9c889..fc7f7ad 100644
+> > --- a/mm/kasan/report_generic.c
+> > +++ b/mm/kasan/report_generic.c
+> > @@ -148,7 +148,7 @@ static bool __must_check tokenize_frame_descr(const char **frame_descr,
+> >                 }
+> >
+> >                 /* Copy token (+ 1 byte for '\0'). */
+> > -               strlcpy(token, *frame_descr, tok_len + 1);
+> > +               strscpy(token, *frame_descr, tok_len + 1);
+> >         }
+> >
+> >         /* Advance frame_descr past separator. */
+> > --
+> > 1.8.3.1
+> >
 
-> @@ -2282,12 +2286,13 @@ static int affine_move_task(struct rq *r
->  			if (task_on_rq_queued(p))
->  				rq = move_queued_task(rq, rf, p, dest_cpu);
->  
-> +			if (!pending->stop_pending) {
-> +				p->migration_pending = NULL;
-> +				complete = true;
-> +			}
->  		}
->  		task_rq_unlock(rq, p, rf);
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
 
-Elsewhere Valentin argued something like the below ought to be possible.
-I've not drawn diagrams yet, but if I understood his argument right it
-should be possible.
-
----
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 1c56ac4df2c9..3ffbd1b76f3e 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2204,9 +2204,10 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 		 * then complete now.
- 		 */
- 		pending = p->migration_pending;
--		if (pending && !pending->stop_pending) {
-+		if (pending) {
- 			p->migration_pending = NULL;
--			complete = true;
-+			if (!pending->stop_pending)
-+				complete = true;
- 		}
- 
- 		task_rq_unlock(rq, p, rf);
-@@ -2286,10 +2287,9 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 			if (task_on_rq_queued(p))
- 				rq = move_queued_task(rq, rf, p, dest_cpu);
- 
--			if (!pending->stop_pending) {
--				p->migration_pending = NULL;
-+			p->migration_pending = NULL;
-+			if (!pending->stop_pending)
- 				complete = true;
--			}
- 		}
- 		task_rq_unlock(rq, p, rf);
- 
+Thanks!
