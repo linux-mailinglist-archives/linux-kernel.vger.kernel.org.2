@@ -2,130 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98EFD324418
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9154A32441C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235369AbhBXSxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:53:37 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:58082 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235536AbhBXSve (ORCPT
+        id S235567AbhBXSzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:55:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235530AbhBXSyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:51:34 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lEzF9-00BE5k-Cx; Wed, 24 Feb 2021 11:50:39 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lEzF8-0003fV-Ej; Wed, 24 Feb 2021 11:50:39 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexey Gladkov <gladkov.alexey@gmail.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        io-uring@vger.kernel.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-References: <20210224051845.GB6114@xsang-OptiPlex-9020>
-        <m1czwpl83q.fsf@fess.ebiederm.org>
-        <20210224183828.j6uut6sholeo2fzh@example.org>
-Date:   Wed, 24 Feb 2021 12:50:21 -0600
-In-Reply-To: <20210224183828.j6uut6sholeo2fzh@example.org> (Alexey Gladkov's
-        message of "Wed, 24 Feb 2021 19:38:28 +0100")
-Message-ID: <m17dmxl2qa.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 24 Feb 2021 13:54:03 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4505FC061788
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:53:23 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id x16so2664977wmk.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:53:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wSDwhm/B1nWo0YlDilnMA2vAdsLISNow4izMT6iWvdo=;
+        b=bXx0TC7khU2YQJiIWSJUaY2tY0YZ5qs8ZG9rBMaTJxeKvS6l97yBFfz8pleY5CAcVC
+         H5Fxn8Y8HMrm+2rRZLfJms1r3QInfziKa+KPiKiaaKabaQA3I3aVdqykgooY4fGlumVL
+         9L/XTaiD9FjyxChT0oO6Ma/hoKVefEgxFub3oh+zFXpg59Clw9nOZT52liTsyR2zQWQ2
+         y6bBPHcFSKhOoIczxbJj368qklPgMxRauYVdSiEX2fBuA8ILdTRHbJlEkmaPJG15wQ9x
+         vP2TJs4BiPnw3N2bn4MDWGycjpV/JEdOcYBurfDnV37bmL7yLv6eCrRDddQti8OU0tLg
+         EpVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wSDwhm/B1nWo0YlDilnMA2vAdsLISNow4izMT6iWvdo=;
+        b=gipzKG4j2FrzgvyxVGI47bCeTfzFDWojNGEWjv8/HGIGs7BJbFNDZgIl3WJsfdXVFh
+         dPVHSIWaCXMXgSiUQxbz6BZ4scSvInFdLqHYYZxOI96ctc3OWCoMCTTq5mMsricVYfUx
+         C5kswTRwNcggpR2iFCmt/33HqEhQL8ViT54bUGauCWAsy5NF8EbXig7mKwVoZPc0MGyS
+         8q5aIwZGFIzzHTKEjtNHVZI9fM8JcHxqar2zXp30TCv7ZKoINlYZfCr5eBqTj9WSyJIK
+         ejvYPGcQ90SBXrLpp4pT1p1LFKMtde9Gm20/M/lzgw9VjQqMpj7dDll2GPFYuvXUOgMI
+         X9Rg==
+X-Gm-Message-State: AOAM533L1XJw4amewjmjuBSlkdHek4lAbQXJ/J9yftRwb3eBQSrMD7qo
+        w9s2qEeXhTXLUn4QIV6SJ0sXTQ==
+X-Google-Smtp-Source: ABdhPJwf1WSX8JSwkGLulrchv8DPoj7L6b+WpKbVRfmXKpvRS9bB1jvM2fJE3Wk8hjBrvP4Zqy4Iag==
+X-Received: by 2002:a1c:e402:: with SMTP id b2mr4941472wmh.103.1614192801807;
+        Wed, 24 Feb 2021 10:53:21 -0800 (PST)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id s11sm4568791wme.22.2021.02.24.10.53.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 10:53:21 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Kent Gibson <warthog618@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH] selftests: gpio: update .gitignore
+Date:   Wed, 24 Feb 2021 19:53:16 +0100
+Message-Id: <20210224185316.17942-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lEzF8-0003fV-Ej;;;mid=<m17dmxl2qa.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19uDlW3DrHDIu/oovVJEMOIV0VkW2WC9Yw=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Alexey Gladkov <gladkov.alexey@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 363 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.4 (0.9%), b_tie_ro: 2.3 (0.6%), parse: 0.65
-        (0.2%), extract_message_metadata: 9 (2.4%), get_uri_detail_list: 1.19
-        (0.3%), tests_pri_-1000: 11 (3.1%), tests_pri_-950: 0.96 (0.3%),
-        tests_pri_-900: 0.86 (0.2%), tests_pri_-90: 84 (23.2%), check_bayes:
-        83 (22.8%), b_tokenize: 6 (1.6%), b_tok_get_all: 8 (2.1%),
-        b_comp_prob: 1.63 (0.4%), b_tok_touch_all: 65 (17.8%), b_finish: 0.74
-        (0.2%), tests_pri_0: 243 (66.9%), check_dkim_signature: 0.38 (0.1%),
-        check_dkim_adsp: 2.1 (0.6%), poll_dns_idle: 0.56 (0.2%), tests_pri_10:
-        1.76 (0.5%), tests_pri_500: 6 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: d28296d248:  stress-ng.sigsegv.ops_per_sec -82.7% regression
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Gladkov <gladkov.alexey@gmail.com> writes:
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-> On Wed, Feb 24, 2021 at 10:54:17AM -0600, Eric W. Biederman wrote:
->> kernel test robot <oliver.sang@intel.com> writes:
->> 
->> > Greeting,
->> >
->> > FYI, we noticed a -82.7% regression of stress-ng.sigsegv.ops_per_sec due to commit:
->> >
->> >
->> > commit: d28296d2484fa11e94dff65e93eb25802a443d47 ("[PATCH v7 5/7] Reimplement RLIMIT_SIGPENDING on top of ucounts")
->> > url: https://github.com/0day-ci/linux/commits/Alexey-Gladkov/Count-rlimits-in-each-user-namespace/20210222-175836
->> > base: https://git.kernel.org/cgit/linux/kernel/git/shuah/linux-kselftest.git next
->> >
->> > in testcase: stress-ng
->> > on test machine: 48 threads Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz with 112G memory
->> > with following parameters:
->> >
->> > 	nr_threads: 100%
->> > 	disk: 1HDD
->> > 	testtime: 60s
->> > 	class: interrupt
->> > 	test: sigsegv
->> > 	cpufreq_governor: performance
->> > 	ucode: 0x42e
->> >
->> >
->> > In addition to that, the commit also has significant impact on the
->> > following tests:
->> 
->> Thank you.  Now we have a sense of where we need to test the performance
->> of these changes carefully.
->
-> One of the reasons for this is that I rolled back the patch that changed
-> the ucounts.count type to atomic_t. Now get_ucounts() is forced to use a
-> spin_lock to increase the reference count.
+The executable that we build for GPIO selftests was renamed to
+gpio-mockup-cdev. Let's update .gitignore so that we don't show it
+as an untracked file.
 
-Which given the hickups with getting a working version seems justified.
+Fixes: 8bc395a6a2e2 ("selftests: gpio: rework and simplify test implementation")
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ tools/testing/selftests/gpio/.gitignore | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Now we can add incremental patches on top to improve the performance.
-
-
-Eric
+diff --git a/tools/testing/selftests/gpio/.gitignore b/tools/testing/selftests/gpio/.gitignore
+index 4c69408f3e84..a4969f7ee020 100644
+--- a/tools/testing/selftests/gpio/.gitignore
++++ b/tools/testing/selftests/gpio/.gitignore
+@@ -1,2 +1,2 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-gpio-mockup-chardev
++gpio-mockup-cdev
+-- 
+2.29.1
 
