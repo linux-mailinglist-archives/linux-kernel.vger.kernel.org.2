@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A9A324163
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 663D2324179
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236773AbhBXPxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:53:03 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:55471 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235321AbhBXPmE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:42:04 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 460855C01C1;
-        Wed, 24 Feb 2021 10:40:52 -0500 (EST)
-Received: from imap1 ([10.202.2.51])
-  by compute6.internal (MEProxy); Wed, 24 Feb 2021 10:40:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=pAiG3XWYnlEZcI6S9irEA4KEy1T4LoM
-        z/fCPiuVlZFk=; b=uOtGb5bfa8FTLQDWaYp6zB5RHIu7jK0IymDRMfatiGQJKWb
-        w/WTWHgMDfLcVzJ2ZdqemXUCUvej1kAEXVW4+LzEqoX8snDjOw2pqEb6t0DNKb7l
-        qyosZKMx6PLwYyojPBE0h/D7RFUta4k2Hw6oKyqhFHN5nabr28Qr1cOxAgBRM2Q9
-        7clKpOmVepl9dnsRCxQPZCznWw2h9Q9sDFtHtYjoEqfDAVeoHLw8lc/68XOFgWz9
-        ch2qiWeCSFPVn7q+K8QOhPOXT8N2AjQQ8M856Kg3rmO/j66YURk+9+7Ca8PjMUsv
-        pvusF/mDkm+r3YmOI9VBbxHz6o0N4ca+2psHMsQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=pAiG3X
-        WYnlEZcI6S9irEA4KEy1T4LoMz/fCPiuVlZFk=; b=f9YqKFQEtbpkJNVhS4v+Nt
-        MGavQOt+wdXIrLI5V8BXevX6NahE7Dn/Jg701oBFrxKYnVy0VT26/FjATxXoHRXC
-        ogNvCDjaJk8Aap7ojfpb85xByR17qKIVhFwaYaHNALIuFFhLFCpXL3IGdRfsdPFh
-        hVewIYtaiESmys3Ldmyt0Us1FLLx5tmdeMOMSp7lcv9z+VU/sJLolYITPqZ26Zrq
-        PJWKDatxKc5VkNiTft7B2DzJ4TDEjGVhvknviphTuee2e1WOKh3JOh37FjlW+V59
-        zFGpK7ylakjFAPI6pXzjMglU1iAhCecustQyTvv9mknjtNJgdyzHMKsh4ROLrYYg
-        ==
-X-ME-Sender: <xms:gnM2YH1qs7ZiA5hMnVr3w4-FXqktRSFMC8PxvZ1IuKsN9HeiZcSrkw>
-    <xme:gnM2YGHBQtVUA82EpxVPDetAzM8vKig2nZS5a-ZlAb7RADpCWEfIi_bTPNaqeMvWN
-    gHgb70nvNE-EVlGCcg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeejgdejkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedflfhirgig
-    uhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepkeelheethfehffdttdelieevfeeiheeuudeifeeugeeuieel
-    iedtueejheehhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:gnM2YH7U9SGJgSeRh-7r8bld1MRKX0V79wlLinTgaKclbtl4iYo-7Q>
-    <xmx:gnM2YM0ZoL95rMisBxSc7lTO09eYyZg46i-l6jrsRnaa0FZ9pNmlnQ>
-    <xmx:gnM2YKHumDmbLskRFlQV-2Aoss8_TKITM9UQAZLv1ibzbhzKJi_oUA>
-    <xmx:hHM2YPTO_KEPcvPfy2jhL8Iho1thdUDgVQCOwHHD1JX7mKwMbKLxZQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 5E8E4130005D; Wed, 24 Feb 2021 10:40:50 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-141-gf094924a34-fm-20210210.001-gf094924a
-Mime-Version: 1.0
-Message-Id: <987b0dc5-9306-4271-afc0-7c44dba644b7@www.fastmail.com>
-In-Reply-To: <1614171720-13221-1-git-send-email-hejinyang@loongson.cn>
-References: <1614171720-13221-1-git-send-email-hejinyang@loongson.cn>
-Date:   Wed, 24 Feb 2021 23:40:28 +0800
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     "Jinyang He" <hejinyang@loongson.cn>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "John Crispin" <john@phrozen.org>
-Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC] MIPS: Remove detect_memory_region()
-Content-Type: text/plain
+        id S235883AbhBXP5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:57:18 -0500
+Received: from mga05.intel.com ([192.55.52.43]:27974 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235975AbhBXPo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 10:44:28 -0500
+IronPort-SDR: sOFU6kPdQt0nSsVmWLGDBWh3/qo56297LB6UYhJCqx13LvbdoXJFHYANGyKAkCwGCgD0pwSC7I
+ KWed7JweLg+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="270171594"
+X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
+   d="scan'208";a="270171594"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 07:42:08 -0800
+IronPort-SDR: jVuiEXB3Ug+T7q0ChWO76c7J/zB516uphMzYjgWe5wHSF8FdwZb9pfX+9diNdIylxZgSfwptVM
+ /+B2F5+DiIWg==
+X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
+   d="scan'208";a="431718569"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.35.50]) ([10.212.35.50])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 07:42:05 -0800
+Subject: Re: [PATCH v21 05/26] x86/fpu/xstate: Introduce CET MSR and XSAVES
+ supervisor states
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
+ <20210217222730.15819-6-yu-cheng.yu@intel.com>
+ <20210224153457.GC20344@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <6e644e1d-7034-20f1-4850-336b143ba01c@intel.com>
+Date:   Wed, 24 Feb 2021 07:42:05 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210224153457.GC20344@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Wed, Feb 24, 2021, at 9:02 PM, Jinyang He wrote:
-> detect_memory_region() was committed by Commit 4d9f77d25268 ("MIPS: add
-> detect_memory_region()"). Then it was equipped by Commit dd63b00804a5
-> ("MIPS: ralink: make use of the new memory detection code") and
-> Commit 9b75733b7b5e ("MIPS: ath79: make use of the new memory detection
-> code"). Its code is based on early ath79 platform code.
+On 2/24/2021 7:34 AM, Borislav Petkov wrote:
+> On Wed, Feb 17, 2021 at 02:27:09PM -0800, Yu-cheng Yu wrote:
+>> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+>> index 546d6ecf0a35..fae6b3ea1f6d 100644
+>> --- a/arch/x86/include/asm/msr-index.h
+>> +++ b/arch/x86/include/asm/msr-index.h
+>> @@ -933,4 +933,23 @@
+>>   #define MSR_VM_IGNNE                    0xc0010115
+>>   #define MSR_VM_HSAVE_PA                 0xc0010117
+>>   
+>> +/* Control-flow Enforcement Technology MSRs */
+>> +#define MSR_IA32_U_CET		0x6a0 /* user mode cet setting */
+>> +#define MSR_IA32_S_CET		0x6a2 /* kernel mode cet setting */
+>> +#define CET_SHSTK_EN		BIT_ULL(0)
+>> +#define CET_WRSS_EN		BIT_ULL(1)
+>> +#define CET_ENDBR_EN		BIT_ULL(2)
+>> +#define CET_LEG_IW_EN		BIT_ULL(3)
+>> +#define CET_NO_TRACK_EN		BIT_ULL(4)
+>> +#define CET_SUPPRESS_DISABLE	BIT_ULL(5)
+>> +#define CET_RESERVED		(BIT_ULL(6) | BIT_ULL(7) | BIT_ULL(8) | BIT_ULL(9))
+>> +#define CET_SUPPRESS		BIT_ULL(10)
+>> +#define CET_WAIT_ENDBR		BIT_ULL(11)
+>> +
+>> +#define MSR_IA32_PL0_SSP	0x6a4 /* kernel shadow stack pointer */
+>> +#define MSR_IA32_PL1_SSP	0x6a5 /* ring-1 shadow stack pointer */
+>> +#define MSR_IA32_PL2_SSP	0x6a6 /* ring-2 shadow stack pointer */
+>> +#define MSR_IA32_PL3_SSP	0x6a7 /* user shadow stack pointer */
+>> +#define MSR_IA32_INT_SSP_TAB	0x6a8 /* exception shadow stack table */
 > 
-> What puzzles me is that how memcmp() detect the memory region. If `break`
-> was touched, the function could make sense. That means memcmp() should
-> return zero. Otherwise, the loop will be end by size > sz_max.
+> When you look at the formatting in that file and the MSR numbers in it, what
+> stops you from formatting your addition the same way?
 > 
-> I have tested detect_memory_region() on Loongson64 3A3000. On our design,
-> kseg0 low 256MB maps real memory and kseg0 high 256MB maps IO/PCI. The
-> function runs and last stopped on kseg1 where is uncached. In this process
-> memcmp also returned non-zero when detected kseg0 high 256MB. Then I did
-> another thing. memcpy first and test memcmp then (after &_end). It works
-> well on 3A3000 but badly on 3A4000. Maybe because kseg0 high 256MB maps
-> IO/PCI and it is dangerous to write like write memory.
-> 
-> At last, read memory from where is not memory region may always return 0.
-> (Or trigger exception.) This function have been used several years and
-> seems no error occur. Maybe it's a fallback way.
 
-That is not true for other platforms like ath79 or mtk.
-They'll wrap around or return 0xffffffff for out of boundary accessing.
+Ah, got it.  I will add some leading zeros.  Thanks!
 
-Loongson does not apply to this case as it have special "Address Window"
-design to accurately describe address regions.
-Any access beyond described windows will be handled by MC and return 0 or random stuff.
-
-Again, please don't make changes because you can.
-
-Thanks.
-
-- Jiaxun
+--
+Yu-cheng
