@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D182324369
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA4A324370
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234187AbhBXR5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 12:57:16 -0500
-Received: from mga03.intel.com ([134.134.136.65]:40330 "EHLO mga03.intel.com"
+        id S232417AbhBXR77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 12:59:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:42482 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232821AbhBXR5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 12:57:09 -0500
-IronPort-SDR: /nEY0p/EBP6zLAHj2QtZac80hNgV6oBY2nUEYm2CDKPkAMxmEsULw1gsPI8moPRPt4XcEfzBVW
- CZHwnJHAh0PA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="185310653"
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="185310653"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 09:56:15 -0800
-IronPort-SDR: YqNXWLdfdbMrk/tJAmUlXvygcJmEDG35gmknOvPRHqoirvT4udUb1v+3bX1fFs6ZUJKV/Imeip
- XRSLDAYPVYUw==
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="391684126"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.35.50]) ([10.212.35.50])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 09:56:14 -0800
-Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
- <20210217222730.15819-7-yu-cheng.yu@intel.com>
- <20210224161343.GE20344@zn.tnic>
- <32ac05ef-b50b-c947-095d-bc31a42947a3@intel.com>
- <20210224165332.GF20344@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <db493c76-2a67-5f53-29a0-8333facac0f5@intel.com>
-Date:   Wed, 24 Feb 2021 09:56:13 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231701AbhBXR74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 12:59:56 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46E1E1FB;
+        Wed, 24 Feb 2021 09:59:10 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2AB563F73B;
+        Wed, 24 Feb 2021 09:59:09 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>
+Subject: Re: [PATCH 6/6] sched: Simplify set_affinity_pending refcounts
+In-Reply-To: <YDZyIugiyxAq0tVz@hirez.programming.kicks-ass.net>
+References: <20210224122439.176543586@infradead.org> <20210224131355.724130207@infradead.org> <YDZyIugiyxAq0tVz@hirez.programming.kicks-ass.net>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Wed, 24 Feb 2021 17:59:01 +0000
+Message-ID: <jhjeeh55ouy.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210224165332.GF20344@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/2021 8:53 AM, Borislav Petkov wrote:
-> On Wed, Feb 24, 2021 at 08:44:45AM -0800, Yu, Yu-cheng wrote:
->>>> +	force_sig_fault(SIGSEGV, SEGV_CPERR,
->>>> +			(void __user *)uprobe_get_trap_addr(regs));
->>>
->>> Why is this calling an uprobes function?
->>>
->>
->> I will change it to error_get_trap_addr().
-> 
-> "/*
->    * Posix requires to provide the address of the faulting instruction for
->    * SIGILL (#UD) and SIGFPE (#DE) in the si_addr member of siginfo_t.
->    ..."
-> 
-> Is yours SIGILL or SIGFPE?
-> 
+On 24/02/21 16:34, Peter Zijlstra wrote:
+> Elsewhere Valentin argued something like the below ought to be possible.
+> I've not drawn diagrams yet, but if I understood his argument right it
+> should be possible.
+>
+> ---
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 1c56ac4df2c9..3ffbd1b76f3e 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2204,9 +2204,10 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+>  		 * then complete now.
+>  		 */
+>  		pending = p->migration_pending;
+> -		if (pending && !pending->stop_pending) {
+> +		if (pending) {
+>  			p->migration_pending = NULL;
+> -			complete = true;
+> +			if (!pending->stop_pending)
+> +				complete = true;
+>  		}
+>  
+>  		task_rq_unlock(rq, p, rf);
+> @@ -2286,10 +2287,9 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+>  			if (task_on_rq_queued(p))
+>  				rq = move_queued_task(rq, rf, p, dest_cpu);
+>  
+> -			if (!pending->stop_pending) {
+> -				p->migration_pending = NULL;
+> +			p->migration_pending = NULL;
+> +			if (!pending->stop_pending)
+>  				complete = true;
+> -			}
+>  		}
+>  		task_rq_unlock(rq, p, rf);
+>  
 
-No.  Maybe I am doing too much.  The GP fault sets si_addr to zero, for 
-example.  So maybe do the same here?
+I was thinking of the "other way around"; i.e. modify migration_cpu_stop()
+into:
+
+---
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9492f8eb242a..9546f0263970 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1926,6 +1926,11 @@ static int migration_cpu_stop(void *data)
+ 	raw_spin_lock(&p->pi_lock);
+ 	rq_lock(rq, &rf);
+ 
++	/*
++	 * If we were passed a pending, then ->stop_pending was set, thus
++	 * p->migration_pending must have remained stable.
++	 */
++	WARN_ON_ONCE(pending && pending != p->migration_pending);
+ 	/*
+ 	 * If task_rq(p) != rq, it cannot be migrated here, because we're
+ 	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
+@@ -1936,8 +1941,7 @@ static int migration_cpu_stop(void *data)
+ 			goto out;
+ 
+ 		if (pending) {
+-			if (p->migration_pending == pending)
+-				p->migration_pending = NULL;
++			p->migration_pending = NULL;
+ 			complete = true;
+ 		}
+ 
+@@ -1976,8 +1980,7 @@ static int migration_cpu_stop(void *data)
+ 		 * somewhere allowed, we're done.
+ 		 */
+ 		if (cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
+-			if (p->migration_pending == pending)
+-				p->migration_pending = NULL;
++			p->migration_pending = NULL;
+ 			complete = true;
+ 			goto out;
+ 		}
+---
+
+Your change reinstores the "triple SCA" pattern, where a stopper can run
+with arg->pending && arg->pending != p->migration_pending, which I was
+kinda happy to see go away...
