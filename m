@@ -2,52 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F0032381A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 210E832381D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233871AbhBXHxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:53:07 -0500
-Received: from verein.lst.de ([213.95.11.211]:36506 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232164AbhBXHxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:53:03 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 81C9868D0A; Wed, 24 Feb 2021 08:52:20 +0100 (CET)
-Date:   Wed, 24 Feb 2021 08:52:20 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Jessica Yu <jeyu@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?77+8TWlyb3NsYXY=?= Benes <mbenes@suse.cz>,
-        Emil Velikov <emil.l.velikov@gmail.com>
-Subject: Re: [GIT PULL] Modules updates for v5.12
-Message-ID: <20210224075220.GA546@lst.de>
-References: <YDUibKAt5tpA1Hxs@gunter> <CAHk-=wipCbbXswcFvnrGae01H54dY1+XoaL+9YaiU71zGzko3Q@mail.gmail.com> <CAHk-=wh8vHL43v7GWK9MWrWitSmOmrEw1B0AJD9CrhBc4FvpxA@mail.gmail.com> <CAHk-=wiuoRKa=F3txoVHvnca+H=7gJyL3SFYwd3549v-sa0+QQ@mail.gmail.com> <20210223200130.GA8059@lst.de> <CAHk-=wj27tmZBzFRTZTAEPd6eRBzP5xCkQM+1cuSx7vzv8K4=g@mail.gmail.com> <CAHk-=whudLzx0zmn+xLDmC1su6DF4oMQT6uEgjDEq0RsHRsDwA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whudLzx0zmn+xLDmC1su6DF4oMQT6uEgjDEq0RsHRsDwA@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S233509AbhBXHyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:54:09 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:33370 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230315AbhBXHyB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 02:54:01 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UPRToA5_1614153194;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPRToA5_1614153194)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 24 Feb 2021 15:53:18 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     jejb@linux.ibm.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] scsi: remove unneeded semicolon
+Date:   Wed, 24 Feb 2021 15:53:12 +0800
+Message-Id: <1614153192-109283-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 12:07:39PM -0800, Linus Torvalds wrote:
-> On Tue, Feb 23, 2021 at 12:03 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > This is unacceptably slow. If that symbol trimming takes 30% of the
-> > whole kernel build time, it needs to be fixed or removed.
-> 
-> I think I'm going to mark TRIM_UNUSED_KSYMS as "depends on BROKEN".
-> There's no way I can accept that horrible overhead, and the rationale
-> for that config option is questionable at best,
+Fix the following coccicheck warnings:
 
-I think it is pretty useful for embedded setups.
+./drivers/scsi/aha1542.c:300:2-3: Unneeded semicolon.
 
-BROKEN seems pretty strong for something that absolutely works as
-intendended.  I guess to make you (and possibly others) not grumpy
-we just need to ensure it doesn't get pulled in by allmodconfig.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/scsi/aha1542.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-So maybe just invert the symbol, default the KEEP_UNUSED_SYMBOL, and
-add a message to the helptext explaining the slowdown?
+diff --git a/drivers/scsi/aha1542.c b/drivers/scsi/aha1542.c
+index 21aab9f..5e68982 100644
+--- a/drivers/scsi/aha1542.c
++++ b/drivers/scsi/aha1542.c
+@@ -297,7 +297,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
+ 		if (flag & SCRD)
+ 			printk("SCRD ");
+ 		printk("status %02x\n", inb(STATUS(sh->io_port)));
+-	};
++	}
+ #endif
+ 	number_serviced = 0;
+ 
+@@ -339,7 +339,7 @@ static irqreturn_t aha1542_interrupt(int irq, void *dev_id)
+ 			if (!number_serviced)
+ 				shost_printk(KERN_WARNING, sh, "interrupt received, but no mail.\n");
+ 			return IRQ_HANDLED;
+-		};
++		}
+ 
+ 		mbo = (scsi2int(mb[mbi].ccbptr) - (unsigned long)aha1542->ccb_handle) / sizeof(struct ccb);
+ 		mbistatus = mb[mbi].status;
+-- 
+1.8.3.1
+
