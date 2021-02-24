@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014343246FC
+	by mail.lfdr.de (Postfix) with ESMTP id E59FE3246FE
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 23:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235489AbhBXWi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 17:38:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233034AbhBXWiu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 17:38:50 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504D1C061574;
-        Wed, 24 Feb 2021 14:38:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=hF+4yCBHQa17tqR3iHLnQ3LH8re9yqS55BXFv+jnqgU=; b=yOG2LMnRC6eIKUrqSstoLdq4Mz
-        6Zzg2x6Zc7P/C2SR6jDwP4s/0b5RJnMWv1SJc7U50A+5tyyLTzZz/xESDEXZNsUpKdFdUxvYB9wUc
-        rFbRB1j+dnzksrwAQzLm4zx6Fc4O2hY8ofYxzNyiw9KH8zY05WyKtMy1xx2L5tCnfwlaeZLixHOd9
-        tkDtKB4rDoGRqykmdipJb42sMCZGC6J/3tRUt3ySQGMfGzc6Fwyk9JlyOEMnFZ3s3Z6k0zuBvKomc
-        5+SiuUxgg0vYQ1NLPPHeVrWdJKiNIggpFoBvQYqeeKYqI2cx2KPns++snRhS49z1KgDep2+01BMrl
-        U3lgGhgg==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lF2nG-0004y3-K7; Wed, 24 Feb 2021 22:38:06 +0000
-Subject: Re: [PATCH V2] init/Kconfig: Fix a typo in CC_VERSION_TEXT help text
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, natechancellor@gmail.com,
-        ndesaulniers@google.com, masahiroy@kernel.org,
-        akpm@linux-foundation.org, valentin.schneider@arm.com,
-        terrelln@fb.com, hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20210224223325.29099-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <116fc2d7-91e7-7d6f-b8bb-50fdeddc9d0e@infradead.org>
-Date:   Wed, 24 Feb 2021 14:37:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231974AbhBXWjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 17:39:42 -0500
+Received: from ozlabs.org ([203.11.71.1]:43839 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233034AbhBXWji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 17:39:38 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dm9nW3D18z9sBJ;
+        Thu, 25 Feb 2021 09:38:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614206336;
+        bh=Rc3QiwgPzVRHJ9mxb8+bpBLad5vmlVEkzHBZ8PWvVO4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uxFLncE66/CnPdZBdKiLUWkiPaL0CnfTVeF50LKFRIQcIyMkr8u3DDZMhNAH/cSPS
+         mZ5gMg+bE68FErtCu8H2qdqSGPVsjPtiekQNUPkWvo1nZHWHcgY/Qw8P62fS9lC18q
+         HsFwGUE1+7cyw7oRwlWqiNx12W8w7ulUoLOW7CQQV+BVCnHgCBa7uj6Mv351MLzq+D
+         yKQ088PleXE7yJKY2+sPxJa9UPocYjuO4uTTCwUr5APLfFOe15sxmQlqTgRp48ga7X
+         fl9VCi3YLsXFMnkWhua9Xipatp7Bv8ZHhbGcIc/R3G/bp3TyAMruzm9rA3+UzzGx3x
+         uGGIRST6ijBSg==
+Date:   Thu, 25 Feb 2021 09:38:52 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christian Brauner <christian@brauner.io>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the pidfd tree with the vfs tree
+Message-ID: <20210225093852.668345a1@canb.auug.org.au>
+In-Reply-To: <20210215075514.2d1f8728@canb.auug.org.au>
+References: <20210125161706.05873f95@canb.auug.org.au>
+        <20210215075514.2d1f8728@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210224223325.29099-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/Di8uM2MV_zh=UEMo9T5S7Iv";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/21 2:33 PM, Bhaskar Chowdhury wrote:
-> 
-> s/compier/compiler/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+--Sig_/Di8uM2MV_zh=UEMo9T5S7Iv
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Hi all,
 
-> ---
->  Changes from V1:
->  Nathan and Randy, suggested  better subject line texts,so incorporated.
-> 
->  init/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/init/Kconfig b/init/Kconfig
-> index ba8bd5256980..2cfed79cc6ec 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -19,7 +19,7 @@ config CC_VERSION_TEXT
->  	    CC_VERSION_TEXT so it is recorded in include/config/auto.conf.cmd.
->  	    When the compiler is updated, Kconfig will be invoked.
-> 
-> -	  - Ensure full rebuild when the compier is updated
-> +	  - Ensure full rebuild when the compiler is updated
->  	    include/linux/kconfig.h contains this option in the comment line so
->  	    fixdep adds include/config/cc/version/text.h into the auto-generated
->  	    dependency. When the compiler is updated, syncconfig will touch it
-> --
+On Mon, 15 Feb 2021 07:55:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> On Mon, 25 Jan 2021 16:17:06 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >=20
+> > Today's linux-next merge of the pidfd tree got a conflict in:
+> >=20
+> >   fs/coredump.c
+> >=20
+> > between commit:
+> >=20
+> >   8a3cc755b138 ("coredump: don't bother with do_truncate()")
 
+Now:
 
--- 
-~Randy
+  0016c9bb87a7 ("coredump: don't bother with do_truncate()")
 
+> >=20
+> > from the vfs tree and commit:
+> >=20
+> >   643fe55a0679 ("open: handle idmapped mounts in do_truncate()")
+> >=20
+> > from the pidfd tree.
+> >=20
+> > I fixed it up (the former removes dump_truncate(), so I did that) and
+> > can carry the fix as necessary. This is now fixed as far as linux-next
+> > is concerned, but any non trivial conflicts should be mentioned to your
+> > upstream maintainer when your tree is submitted for merging.  You may
+> > also want to consider cooperating with the maintainer of the conflicting
+> > tree to minimise any particularly complex conflicts. =20
+>=20
+> With the merge window about to open, this is a reminder that this
+> conflict still exists.
+
+This is now a conflict between the vfs tree and Linus' tree.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Di8uM2MV_zh=UEMo9T5S7Iv
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA21XwACgkQAVBC80lX
+0GwUGQf/Zw994BmJehth5KYaCHgkfsJCuV3XA5OvOFvVejU21b3PrJJjP4IYfV1d
+Xt2bftADEiiIJ69bD0S34VdCTIzijq+udMv5WPBJrbhnZ9VQsQ7DIUTLm74pQD5K
+KzMN23HkAa6IIRO0xeVilzn+r1BUIinLwQUZuUWPHVn11+ilidvBChGMh2PgiSm/
+APTm7im7q38J0Kh7I8e1/gxld4+uhWEjEvYbhkhFLWVNuKRs9kzRjuVoj04J09FX
+I4EscdhSsdqncg7gGmi8RYnMBuwe9OgM0oak92yvDRFLgt0DLN1CpSn+y1lkmV97
+PTZwa32s3xts8hQYqqmjuEefnDboYQ==
+=5tl6
+-----END PGP SIGNATURE-----
+
+--Sig_/Di8uM2MV_zh=UEMo9T5S7Iv--
