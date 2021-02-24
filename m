@@ -2,91 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3E2323816
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8875323818
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbhBXHuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:50:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233695AbhBXHuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:50:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85BB264ECB;
-        Wed, 24 Feb 2021 07:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614152980;
-        bh=SEbKfXxCR6DNQ4kVpaNjbe58/pQSEVJrjdf2buv8r1U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q7tmumvu48/NochGEipuz2vmyPlweksbrbHYaKUQ/kk2mTODGYr8aMNsmLh3m/n96
-         M1rXy2eF07f4ZRRQwc5fPOa5G67R4nKmdTNUx/SPvCeQnpBV+OuYW2obdDhOg9tfRf
-         LLCHXFCnej97JroqeenCBpUyxNH1kzL8nk+jP+/I=
-Date:   Wed, 24 Feb 2021 08:49:37 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 00/12] 5.11.1-rc1 review
-Message-ID: <YDYFEYOs0RYIjOnc@kroah.com>
-References: <20210222121013.586597942@linuxfoundation.org>
- <9edd3b90-aa95-379f-01b1-ccbb3afec6ce@linuxfoundation.org>
- <6359a822-c0b2-75f7-40e3-c0c7bf002e3f@linuxfoundation.org>
+        id S233084AbhBXHvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:51:49 -0500
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:36562 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233695AbhBXHva (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 02:51:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1614153089; x=1645689089;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   in-reply-to:content-transfer-encoding;
+  bh=DXdAXbodLJFLCACHgM3UuUQ3p+oQUqas3URxarIcAkE=;
+  b=mMNdKlxaExpMO2Ctz9N/56LPn07ocvRLGHt9HEAignd8c04/yX89lIHG
+   DmWuQZcVvWyO3H7nVK+jlsT2L0X5d80wSGdcErxnEC85eifAkkt+Y6iwd
+   RxzKjoqHemv4Mi1Ho/UAWTvHc0iuwQm52IXG6hDoMKm/KCFc4RZeHFHgW
+   I=;
+X-IronPort-AV: E=Sophos;i="5.81,202,1610409600"; 
+   d="scan'208";a="87490840"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-81e76b79.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 24 Feb 2021 07:50:35 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2b-81e76b79.us-west-2.amazon.com (Postfix) with ESMTPS id 8B170A1C18;
+        Wed, 24 Feb 2021 07:50:32 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.228) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 24 Feb 2021 07:50:14 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     SeongJae Park <sjpark@amazon.com>
+CC:     <akpm@linux-foundation.org>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
+        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v24 11/14] Documentation: Add documents for DAMON
+Date:   Wed, 24 Feb 2021 08:49:55 +0100
+Message-ID: <20210224074955.20173-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20210204153150.15948-12-sjpark@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6359a822-c0b2-75f7-40e3-c0c7bf002e3f@linuxfoundation.org>
+X-Originating-IP: [10.43.162.228]
+X-ClientProxiedBy: EX13D21UWA003.ant.amazon.com (10.43.160.184) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 05:12:56PM -0700, Shuah Khan wrote:
-> On 2/23/21 2:05 PM, Shuah Khan wrote:
-> > On 2/22/21 5:12 AM, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 5.11.1 release.
-> > > There are 12 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > > 
-> > > Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
-> > > Anything received after that time might be too late.
-> > > 
-> > > The whole patch series can be found in one patch at:
-> > >     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.1-rc1.gz
-> > > 
-> > > or in the git tree and branch at:
-> > >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > > linux-5.11.y
-> > > and the diffstat can be found below.
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > > 
-> > 
-> > Compiled and booted on my test system. No dmesg regressions.
-> > 
-> > I made some progress on the drm/amdgpu display and kepboard
-> > problem.
-> > 
-> > My system has
-> >   amdgpu: ATOM BIOS: 113-RENOIR-026
-> > 
-> > I narrowed it down to the following as a possible lead to
-> > start looking:
-> > amdgpu 0000:0b:00.0: [drm] Cannot find any crtc or sizes
-> > 
-> 
-> It is resolved now. A hot-unplugged/plugged the HDMI cable which
-> triggered reset sequence. There might be link to  AMD_DC_HDCP
-> support, amdgpu_dm_atomic_commit changes that went into 5.10 and
-> this behavior.
-> 
-> I am basing this on not seeing the problem on Linux 5.4 and until
-> Linux 5.10. In any case, I wish I know more, but life is back to
-> normal now.
+On Thu, 4 Feb 2021 16:31:47 +0100 SeongJae Park <sjpark@amazon.com> wrote:
 
-Great, thanks for testing and tracking this down.
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> This commit adds documents for DAMON under
+> `Documentation/admin-guide/mm/damon/` and `Documentation/vm/damon/`.
+> 
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>  Documentation/admin-guide/mm/damon/guide.rst | 159 ++++++++++
+>  Documentation/admin-guide/mm/damon/index.rst |  15 +
+>  Documentation/admin-guide/mm/damon/plans.rst |  29 ++
+>  Documentation/admin-guide/mm/damon/start.rst |  97 ++++++
+>  Documentation/admin-guide/mm/damon/usage.rst | 304 +++++++++++++++++++
+>  Documentation/admin-guide/mm/index.rst       |   1 +
+>  Documentation/vm/damon/api.rst               |  20 ++
+>  Documentation/vm/damon/design.rst            | 166 ++++++++++
+>  Documentation/vm/damon/eval.rst              | 232 ++++++++++++++
+>  Documentation/vm/damon/faq.rst               |  58 ++++
+>  Documentation/vm/damon/index.rst             |  31 ++
+>  Documentation/vm/index.rst                   |   1 +
+>  12 files changed, 1113 insertions(+)
+>  create mode 100644 Documentation/admin-guide/mm/damon/guide.rst
+>  create mode 100644 Documentation/admin-guide/mm/damon/index.rst
+>  create mode 100644 Documentation/admin-guide/mm/damon/plans.rst
+>  create mode 100644 Documentation/admin-guide/mm/damon/start.rst
+>  create mode 100644 Documentation/admin-guide/mm/damon/usage.rst
+>  create mode 100644 Documentation/vm/damon/api.rst
+>  create mode 100644 Documentation/vm/damon/design.rst
+>  create mode 100644 Documentation/vm/damon/eval.rst
+>  create mode 100644 Documentation/vm/damon/faq.rst
+>  create mode 100644 Documentation/vm/damon/index.rst
+> 
+[...]
+> diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
+> new file mode 100644
+> index 000000000000..32436cf853c7
+> --- /dev/null
+> +++ b/Documentation/admin-guide/mm/damon/usage.rst
+> @@ -0,0 +1,304 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +===============
+> +Detailed Usages
+> +===============
+> +
+> +DAMON provides below three interfaces for different users.
+> +
+> +- *DAMON user space tool.*
+> +  This is for privileged people such as system administrators who want a
+> +  just-working human-friendly interface.  Using this, users can use the DAMONÃ¢â‚¬â„¢s
+> +  major features in a human-friendly way.  It may not be highly tuned for
+> +  special cases, though.  It supports only virtual address spaces monitoring.
+> +- *debugfs interface.*
+> +  This is for privileged user space programmers who want more optimized use of
+> +  DAMON.  Using this, users can use DAMONÃ¢â‚¬â„¢s major features by reading
+> +  from and writing to special debugfs files.  Therefore, you can write and use
+> +  your personalized DAMON debugfs wrapper programs that reads/writes the
+> +  debugfs files instead of you.  The DAMON user space tool is also a reference
+> +  implementation of such programs.  It supports only virtual address spaces
+> +  monitoring.
+> +- *Kernel Space Programming Interface.*
+> +  This is for kernel space programmers.  Using this, users can utilize every
+> +  feature of DAMON most flexibly and efficiently by writing kernel space
+> +  DAMON application programs for you.  You can even extend DAMON for various
+> +  address spaces.
+> +
+> +This document does not describe the kernel space programming interface in
+> +detail.  For that, please refer to the :doc:`/vm/damon/api`.
+> +
+> +
+> +DAMON User Space Tool
+> +=====================
 
-greg k-h
+This version of the patchset doesn't introduce the user space tool source code,
+so putting the detailed usage here might make no sense.  I will remove this
+section in the next version.  If you will review this patch, please skip this
+section.
+[...]
+> +
+> +debugfs Interface
+> +=================
+
+But, this section will not be removed.  Please review.
+
+[...]
+
+
+Thanks,
+SeongJae Park
