@@ -2,129 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFF332396C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6695C32396B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbhBXJ1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:27:54 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:54888 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234507AbhBXJ1t (ORCPT
+        id S234625AbhBXJ2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:28:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234230AbhBXJ2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:27:49 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 81E931F45AAE
-Subject: Re: mainline/master bisection: baseline.login on
- meson-sm1-khadas-vim3l
-To:     maz@kernel.org
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Brown <broonie@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Remi Denis-Courmont <remi.denis.courmont@huawei.com>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>
-References: <6033a5da.1c69fb81.9be93.66e6@mx.google.com>
- <00e098ec-671b-1117-c9c6-7f8fa96519f7@collabora.com>
- <87blca27fy.wl-maz@kernel.org>
- <d9156098-f512-09bc-fa42-7a0f0bdee978@collabora.com>
- <877dmx26gh.wl-maz@kernel.org>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <a7bfc0a6-19a8-9691-f206-76212849d108@collabora.com>
-Date:   Wed, 24 Feb 2021 09:26:59 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 24 Feb 2021 04:28:15 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CFEC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 01:27:34 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id e9so852933plh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 01:27:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9CHIGqRTR4CpVrwPax1Th8sgFV6l7EPgJLkKjNdxhIk=;
+        b=xsTA71e4zW4V1lpQyWlmtLwY1axG6YSbNhcPe2bGmyO3GjI0QwMmhQU3a2Fm7blPzM
+         zBwPVVS7fihzrB7QcRo+iLgJd8QjBiKkTfJ2cMTcar0mDnOOyWaJvKo8uYNRatn5gowz
+         x5KGo9j79hTUywutzBUFuADUAJklwqwgr8nP4Ea8SoAxsLvMaeVY3wprsYfO+Y0JP6qz
+         CEvEwQPzwqNjj66qm+6TTnd2B9VQh6aMG3YKI2TiZ1qJLlSwwYaYxpRcizl25a20hbPx
+         mU0DxYpgbphfVXMOOawDQ9G73F8SGXHOU+BkFUs9Gs4Ij0B7/LnVkyzKOujKUGbrPZBQ
+         fZ7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9CHIGqRTR4CpVrwPax1Th8sgFV6l7EPgJLkKjNdxhIk=;
+        b=oi1eonLJygXsR6jY9ritL9sAK+kXsoTfxvgggbdkT2moWMsEx/aPaOfsZ1yt+eO4R4
+         PMlnFFycDBvGllolJEQb7ijzSNNkdTiP32T9WZEEz3pRkSJ6gLz1ctX8NtndW1ojFjq4
+         aeF47jqLetN9idS2pAMTzH/fML8fjCsSLSp2xPcqpsPmktO41ZyGuOQw/UKkEvpRTzB/
+         lZyiopX8bBy84wp5ydObcdQ6shuz/p3+YhfV8QBG4fwrEoW8ggCMfkHYM/Lojp7IXADV
+         nLfalqlZekOZHHwTLAFsvVjZBAy/GHgiRgVi89BeDjw5USVIrMd9LAfdllvrC5XgOtyA
+         DGVQ==
+X-Gm-Message-State: AOAM533ZP3usQb1rjoVar0aR4iYNlMJMIAxxARD9SzMENyY7mFJZ4qef
+        H5clgS7gdQNxSU9tsRJJaV0J
+X-Google-Smtp-Source: ABdhPJyQklV/tRNBeP6QeXncSIa5VmyhQnE5PJ3KwX7RX74+N32c1t1kXu2c7QocDTB/U3U54SSepg==
+X-Received: by 2002:a17:902:d4cd:b029:e4:1abc:37e3 with SMTP id o13-20020a170902d4cdb02900e41abc37e3mr6873973plg.29.1614158854279;
+        Wed, 24 Feb 2021 01:27:34 -0800 (PST)
+Received: from work ([103.66.79.25])
+        by smtp.gmail.com with ESMTPSA id w2sm1879246pgh.54.2021.02.24.01.27.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 24 Feb 2021 01:27:33 -0800 (PST)
+Date:   Wed, 24 Feb 2021 14:57:29 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, carl.yin@quectel.com,
+        naveen.kumar@quectel.com
+Subject: Re: [PATCH v3 0/3] Polling for MHI ready
+Message-ID: <20210224092729.GM27945@work>
+References: <1614138270-2374-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <877dmx26gh.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614138270-2374-1-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/02/2021 08:52, Marc Zyngier wrote:
-> On Tue, 23 Feb 2021 21:03:52 +0000,
-> Guillaume Tucker <guillaume.tucker@collabora.com> wrote:
->>
->> On 23/02/2021 14:18, Marc Zyngier wrote:
->>> Hi Guillaume,
->>>
->>> On Tue, 23 Feb 2021 09:46:30 +0000,
->>> Guillaume Tucker <guillaume.tucker@collabora.com> wrote:
->>>>
->>>> Hello Marc,
->>>>
->>>> Please see the bisection report below about a boot failure on
->>>> meson-sm1-khadas-vim3l on mainline.  It seems to only be
->>>> affecting kernels built with CONFIG_ARM64_64K_PAGES=y.
->>>>
->>>> Reports aren't automatically sent to the public while we're
->>>> trialing new bisection features on kernelci.org but this one
->>>> looks valid.
->>>>
->>>> There's no output in the log, so the kernel is most likely
->>>> crashing early.  Some more details can be found here:
->>>>
->>>>   https://kernelci.org/test/case/id/6034bed3b344e2860daddcc8/
->>>>
->>>> Please let us know if you need any help to debug the issue or try
->>>> a fix on this platform.
->>>
->>> Thanks for the heads up.
->>>
->>> There is actually a fundamental problem with the patch you bisected
->>> to: it provides no guarantee that the point where we enable the EL2
->>> MMU is in the idmap and, as it turns out, the code we're running from
->>> disappears from under our feet, leading to a translation fault we're
->>> not prepared to handle.
->>>
->>> How does it work with 4kB pages? Luck.
->>
->> There may be a fascinating explanation for it, but luck works
->> too.  It really seems to be booting happily with 4k pages:
->>
->>   https://kernelci.org/test/plan/id/60347b358de339d1b7addcc5/
+On Tue, Feb 23, 2021 at 07:44:27PM -0800, Bhaumik Bhatt wrote:
+> v3:
+> -Removed config changes that crept in in the first patch
 > 
-> Oh, I know it boots fine with 4k, that's what I used everywhere.
-> We're just lucky that the bit of code that deals with the MMU happens
-> to *also* be in the idmap. With 64k pages, it gets pushed further down
-> the line, and bad things happen. Short of explicit statements in the
-> code, luck rules.
-
-OK I see that now, thanks for the explanation.
-
->>> Do you mind giving the patch below a go? It does work on my vim3l and
->>> on a FVP, so odds are that it will solve it for you too.
->>
->> Sure, and that worked here as well:
->>
->>   http://lava.baylibre.com:10080/scheduler/job/752416
->>
->> and here's the test branch where I applied your fix, for
->> completeness:
->>
->>   https://gitlab.collabora.com/gtucker/linux/-/commits/v5.11-vim3l-vhe/
+> v2:
+> -Addressed review comments
+> -Introduce new patch for to use controller defined read_reg() for polling
+> -Add usage in RDDM download panic path as well
 > 
-> Awesome. thanks for having tested it.
+> Use polling instead of interrupt driven approach to wait for MHI ready state.
 > 
->> As always, if you do send a patch with the fix, please give some
->> credit to the bot:
->>
->>   Reported-by: "kernelci.org bot" <bot@kernelci.org> 
+> In certain devices, it is likely that there is no incoming MHI
+> interrupt for a transition to MHI READY state. One such example
+> is the move from Pass Through to an SBL or AMSS execution
+> environment. In order to facilitate faster bootup times as there
+> is no need to wait until timeout_ms completes, MHI host can poll
+> every 25 milliseconds to check if device has entered MHI READY
+> until a maximum timeout of twice the timeout_ms is reached.
 > 
-> Will do. Mind if I credit you too for the testing?
+> This patch series has been tested on an arm64 device.
+> 
 
-Sure:
-
-  Tested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+So this is a spinoff from "Execution environment updates from MHI"?
+Please mention it in the cover letter and which one is the latest.
 
 Thanks,
-Guillaume
+Mani
+
+> Bhaumik Bhatt (3):
+>   bus: mhi: core: Introduce internal register poll helper function
+>   bus: mhi: core: Move to polling method to wait for MHI ready
+>   bus: mhi: core: Use poll register read API for RDDM download
+> 
+>  drivers/bus/mhi/core/boot.c     | 20 ++++++--------------
+>  drivers/bus/mhi/core/internal.h |  3 +++
+>  drivers/bus/mhi/core/main.c     | 23 +++++++++++++++++++++++
+>  drivers/bus/mhi/core/pm.c       | 31 ++++++++++++++-----------------
+>  4 files changed, 46 insertions(+), 31 deletions(-)
+> 
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
