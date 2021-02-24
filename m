@@ -2,131 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E06F3236A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 06:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDCF3236A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 06:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233839AbhBXFQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 00:16:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233743AbhBXFQw (ORCPT
+        id S233845AbhBXFTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 00:19:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50723 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232164AbhBXFTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 00:16:52 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E9AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 21:16:11 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id x124so1148949qkc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 21:16:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bUvWJYrXAuGzpS9fS9+tPQGfdm51KBNj7fCxiqur/W4=;
-        b=Ulx78aW7pwQUhvRUIGQwRIKK7P8C4yFz0OBXNfJ9ue4wan0M9Vl2xKLi4S1AHfd4I0
-         DQs5O2iRjk3g1hcJ8loFdyjeCSrYzND5ypqxx09lqK/bvbVit6uggOtkg/rkwDMTH+rx
-         4MHqH5fuYGUmYNn3YsQjlL147kFD0YHZpW0aEYr8NKGJXrdx5jiJSQE1KHZMwTSILXtG
-         gUjqKuD/KJcY5CKR09jKUTKVWhcgM7ODATAyHMkLa11UyK+ltzvVnXbAQI5z2ygk1Iw6
-         JXZW+KYZSWLAKdjPSWBfEuryFwNMi6X6O7C9c3nxBDfs1LMP/cuZiV2e0d7KOHtrF1Zy
-         5V7Q==
+        Wed, 24 Feb 2021 00:19:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614143885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v+FQbzfl8xPTmpVnSjFrXH2vFi0y7Xcyj00X2gFWzBM=;
+        b=DKdgbPfp5+zii2eIIcLMZ3AupauIQm/a7+BJWAqIhgq5q6z/HaYPIoWqWwhU6oD+TOU72o
+        hFPXcZs7pzChUi4uxWVUb6wWes485KoH/3LrNO+vA+Z9sw3BEjRzS11nTzz8pjCFw/a/cZ
+        W5XD1mSzRALr13dkK/RUFD7+ajuVe/Y=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-550-AZBFtnczMva-Awl_aq9HgQ-1; Wed, 24 Feb 2021 00:18:03 -0500
+X-MC-Unique: AZBFtnczMva-Awl_aq9HgQ-1
+Received: by mail-wr1-f71.google.com with SMTP id v3so498338wro.21
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 21:18:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bUvWJYrXAuGzpS9fS9+tPQGfdm51KBNj7fCxiqur/W4=;
-        b=NF6KJBMTob4+9VgNT2Ng6mRY/sYGrqlo7E7NxfDCpronnvVyCoxLO8gZ2qmc1npcrL
-         d1LEyxqCBa2xVJyDphms9rwZP6JPj+t2mz7JwVyIAVjZPUpwgFgn3xUE5/yQWMTKk50g
-         IpDxiEIr1NLbVwLvdFCou1xpWBlYiqgH9t6t4fYlGyQxrV0+tHwRyHA4S4Yk4n3RGTAl
-         3dpCRchcKkRIMKnvkiaigY6ER9trjNma/VY2f5s90FQyU5LE4rddWLTCN2SVQpYVq8Ss
-         ttvwBq/++6ly1eOAjJg+1+GTaaRl4ivB2gFqIiHuoy6CMgMRRTzh3OKO85hh6YH++jHG
-         /JNw==
-X-Gm-Message-State: AOAM532R+ou2wA11gVrHXHxKOg+1Rw1DveeU4UyEKtIL/fYyUgO+M3iq
-        9d1w539daGEA8yBhL5cXWhMmrALCdyZ8qDMW/Xg8EA==
-X-Google-Smtp-Source: ABdhPJwVtVcsosketbfwboWYRQdvwwJa4H45fNyNHqmFQzIwsHv9E0PUfv7jf1y8BWP8Hv41J8gsqJlYPtgBve0SLMA=
-X-Received: by 2002:a37:27c8:: with SMTP id n191mr29004102qkn.146.1614143770799;
- Tue, 23 Feb 2021 21:16:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=v+FQbzfl8xPTmpVnSjFrXH2vFi0y7Xcyj00X2gFWzBM=;
+        b=iah074TpGJMwkq6/Ke4Fcf5RG7fxxO7ygxMDseVL1Pc/0trW64N+uLNRXQAKIpt7dm
+         OMvsAcUothz09NqxWQbp3NgkrkVcRiE6T0g7clwx4ds/6MOTp7Q3BgRbLLecuZ0n47cF
+         PvKt34fkg6SLInhoxJbUvT6Yv2WTgxG6eQGUoqxcx2kIhiRt8fNUSl63Eu06qmCzbJt4
+         KYpUWVX1GS5AKTBj/x6aZGQh0h8NSirIOXmClJ3wQnqHqNg7xx4aRrmCjeXItgQHMoJc
+         lC4VYYHbQwwLe6aZFGXUyGrdE46OfBekhScaK6QBq1dFQCZQ+F0x2LvyVvYKUxPlgxqX
+         HcqA==
+X-Gm-Message-State: AOAM530xCHXkdUYixPAzSulfcup8KLbwy93Ds8bbEZAzh0qq03HNcMaQ
+        tt6jPogJHTQ18h4Acnyu+FEzSz00JyRNWLfqGVlqKMz/Jy+S9AT0owhrQ5iqz1viuEOW5kOw3hq
+        fLrR88TwbyZQe9yIp8YuRxUoX
+X-Received: by 2002:a05:6000:108f:: with SMTP id y15mr29792489wrw.195.1614143882046;
+        Tue, 23 Feb 2021 21:18:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzZj5iXghX2KMaamnnLepYpAma4TuhSeDZ/aKLhkf/u9BKoEKXshIrFgkMUlDiGNv+eKdEvMQ==
+X-Received: by 2002:a05:6000:108f:: with SMTP id y15mr29792474wrw.195.1614143881889;
+        Tue, 23 Feb 2021 21:18:01 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id z13sm935723wmi.45.2021.02.23.21.18.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 21:18:01 -0800 (PST)
+Date:   Wed, 24 Feb 2021 00:17:58 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
+Message-ID: <20210224000528-mutt-send-email-mst@kernel.org>
+References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
+ <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
+ <20210222023040-mutt-send-email-mst@kernel.org>
+ <22fe5923-635b-59f0-7643-2fd5876937c2@oracle.com>
+ <fae0bae7-e4cd-a3aa-57fe-d707df99b634@redhat.com>
+ <20210223082536-mutt-send-email-mst@kernel.org>
+ <3ff5fd23-1db0-2f95-4cf9-711ef403fb62@oracle.com>
+ <7e6291a4-30b1-6b59-a2bf-713e7b56826d@redhat.com>
 MIME-Version: 1.0
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org> <0e91838e-4cca-4c3b-cb36-226c098f36c9@oracle.com>
- <YDTFWZPdmrDuYd91@hirez.programming.kicks-ass.net> <e1ee6187-77a7-dbf2-3e14-adba48460f5b@oracle.com>
-In-Reply-To: <e1ee6187-77a7-dbf2-3e14-adba48460f5b@oracle.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 23 Feb 2021 21:15:59 -0800
-Message-ID: <CABk29NvX9_RxpZ71ihR7Y_Nhpg0TpBfdXzehptO52VuwOmS2Ww@mail.gmail.com>
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core scheduling
-To:     Chris Hyser <chris.hyser@oracle.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7e6291a4-30b1-6b59-a2bf-713e7b56826d@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 11:26 AM Chris Hyser <chris.hyser@oracle.com> wrote:
->
-> On 2/23/21 4:05 AM, Peter Zijlstra wrote:
-> > On Mon, Feb 22, 2021 at 11:00:37PM -0500, Chris Hyser wrote:
-> >> On 1/22/21 8:17 PM, Joel Fernandes (Google) wrote:
-> >> While trying to test the new prctl() code I'm working on, I ran into a bug I
-> >> chased back into this v10 code. Under a fair amount of stress, when the
-> >> function __sched_core_update_cookie() is ultimately called from
-> >> sched_core_fork(), the system deadlocks or otherwise non-visibly crashes.
-> >> I've not had much success figuring out why/what. I'm running with LOCKDEP on
-> >> and seeing no complaints. Duplicating it only requires setting a cookie on a
-> >> task and forking a bunch of threads ... all of which then want to update
-> >> their cookie.
-> >
-> > Can you share the code and reproducer?
->
-> Attached is a tarball with c code (source) and scripts. Just run ./setup_bug which will compile the source and start a
-> bash with a cs cookie. Then run ./show_bug which dumps the cookie and then fires off some processes and threads. Note
-> the cs_clone command is not doing any core sched prctls for this test (not needed and currently coded for a diff prctl
-> interface). It just creates processes and threads. I see this hang almost instantly.
->
-> Josh, I did verify that this occurs on Joel's coresched tree both with and w/o the kprot patch and that should exactly
-> correspond to these patches.
->
-> -chrish
->
+On Wed, Feb 24, 2021 at 11:20:01AM +0800, Jason Wang wrote:
+> 
+> On 2021/2/24 3:35 上午, Si-Wei Liu wrote:
+> > 
+> > 
+> > On 2/23/2021 5:26 AM, Michael S. Tsirkin wrote:
+> > > On Tue, Feb 23, 2021 at 10:03:57AM +0800, Jason Wang wrote:
+> > > > On 2021/2/23 9:12 上午, Si-Wei Liu wrote:
+> > > > > 
+> > > > > On 2/21/2021 11:34 PM, Michael S. Tsirkin wrote:
+> > > > > > On Mon, Feb 22, 2021 at 12:14:17PM +0800, Jason Wang wrote:
+> > > > > > > On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
+> > > > > > > > Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
+> > > > > > > > for legacy") made an exception for legacy guests to reset
+> > > > > > > > features to 0, when config space is accessed before features
+> > > > > > > > are set. We should relieve the verify_min_features() check
+> > > > > > > > and allow features reset to 0 for this case.
+> > > > > > > > 
+> > > > > > > > It's worth noting that not just legacy guests could access
+> > > > > > > > config space before features are set. For instance, when
+> > > > > > > > feature VIRTIO_NET_F_MTU is advertised some modern driver
+> > > > > > > > will try to access and validate the MTU present in the config
+> > > > > > > > space before virtio features are set.
+> > > > > > > This looks like a spec violation:
+> > > > > > > 
+> > > > > > > "
+> > > > > > > 
+> > > > > > > The following driver-read-only field, mtu only exists if
+> > > > > > > VIRTIO_NET_F_MTU is
+> > > > > > > set.
+> > > > > > > This field specifies the maximum MTU for the driver to use.
+> > > > > > > "
+> > > > > > > 
+> > > > > > > Do we really want to workaround this?
+> > > > > > > 
+> > > > > > > Thanks
+> > > > > > And also:
+> > > > > > 
+> > > > > > The driver MUST follow this sequence to initialize a device:
+> > > > > > 1. Reset the device.
+> > > > > > 2. Set the ACKNOWLEDGE status bit: the guest OS has
+> > > > > > noticed the device.
+> > > > > > 3. Set the DRIVER status bit: the guest OS knows how to drive the
+> > > > > > device.
+> > > > > > 4. Read device feature bits, and write the subset of feature bits
+> > > > > > understood by the OS and driver to the
+> > > > > > device. During this step the driver MAY read (but MUST NOT write)
+> > > > > > the device-specific configuration
+> > > > > > fields to check that it can support the device before accepting it.
+> > > > > > 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new
+> > > > > > feature bits after this step.
+> > > > > > 6. Re-read device status to ensure the FEATURES_OK bit is still set:
+> > > > > > otherwise, the device does not
+> > > > > > support our subset of features and the device is unusable.
+> > > > > > 7. Perform device-specific setup, including discovery of virtqueues
+> > > > > > for the device, optional per-bus setup,
+> > > > > > reading and possibly writing the device’s virtio configuration
+> > > > > > space, and population of virtqueues.
+> > > > > > 8. Set the DRIVER_OK status bit. At this point the device is “live”.
+> > > > > > 
+> > > > > > 
+> > > > > > so accessing config space before FEATURES_OK is a spec
+> > > > > > violation, right?
+> > > > > It is, but it's not relevant to what this commit tries to address. I
+> > > > > thought the legacy guest still needs to be supported.
+> > > > > 
+> > > > > Having said, a separate patch has to be posted to fix the guest driver
+> > > > > issue where this discrepancy is introduced to
+> > > > > virtnet_validate() (since
+> > > > > commit fe36cbe067). But it's not technically related to this patch.
+> > > > > 
+> > > > > -Siwei
+> > > > 
+> > > > I think it's a bug to read config space in validate, we should
+> > > > move it to
+> > > > virtnet_probe().
+> > > > 
+> > > > Thanks
+> > > I take it back, reading but not writing seems to be explicitly
+> > > allowed by spec.
+> > > So our way to detect a legacy guest is bogus, need to think what is
+> > > the best way to handle this.
+> > Then maybe revert commit fe36cbe067 and friends, and have QEMU detect
+> > legacy guest? Supposedly only config space write access needs to be
+> > guarded before setting FEATURES_OK.
+> 
+> 
+> I agree. My understanding is that all vDPA must be modern device (since
+> VIRITO_F_ACCESS_PLATFORM is mandated) instead of transitional device.
+> 
+> Thanks
 
-I think I've gotten to the root of this. In the fork code, our cases
-for inheriting task_cookie are inverted for CLONE_THREAD vs
-!CLONE_THREAD. As a result, we are creating a new cookie per-thread,
-rather than inheriting from the parent. Now this is actually ok; I'm
-not observing a scalability problem with creating this many cookies.
-However, it means that overall throughput of your binary is cut in
-~half, since none of the threads can share a core. Note that I never
-saw an indefinite deadlock, just ~2x runtime for your binary vs the
-control. I've verified that both a) manually hardcoding all threads to
-be able to share regardless of cookie, and b) using a machine with 6
-cores instead of 2, both allow your binary to complete in the same
-amount of time as without the new API.
+Well mlx5 has some code to handle legacy guests ...
+Eli, could you comment? Is that support unused right now?
+
+
+> 
+> > 
+> > -Siwie
+> > 
+> > > > > > 
+> > > > > > > > Rejecting reset to 0
+> > > > > > > > prematurely causes correct MTU and link status unable to load
+> > > > > > > > for the very first config space access, rendering issues like
+> > > > > > > > guest showing inaccurate MTU value, or failure to reject
+> > > > > > > > out-of-range MTU.
+> > > > > > > > 
+> > > > > > > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for
+> > > > > > > > supported mlx5 devices")
+> > > > > > > > Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> > > > > > > > ---
+> > > > > > > >     drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
+> > > > > > > >     1 file changed, 1 insertion(+), 14 deletions(-)
+> > > > > > > > 
+> > > > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > index 7c1f789..540dd67 100644
+> > > > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > > > > @@ -1490,14 +1490,6 @@ static u64
+> > > > > > > > mlx5_vdpa_get_features(struct vdpa_device *vdev)
+> > > > > > > >         return mvdev->mlx_features;
+> > > > > > > >     }
+> > > > > > > > -static int verify_min_features(struct mlx5_vdpa_dev *mvdev,
+> > > > > > > > u64 features)
+> > > > > > > > -{
+> > > > > > > > -    if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
+> > > > > > > > -        return -EOPNOTSUPP;
+> > > > > > > > -
+> > > > > > > > -    return 0;
+> > > > > > > > -}
+> > > > > > > > -
+> > > > > > > >     static int setup_virtqueues(struct mlx5_vdpa_net *ndev)
+> > > > > > > >     {
+> > > > > > > >         int err;
+> > > > > > > > @@ -1558,18 +1550,13 @@ static int
+> > > > > > > > mlx5_vdpa_set_features(struct vdpa_device *vdev, u64
+> > > > > > > > features)
+> > > > > > > >     {
+> > > > > > > >         struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+> > > > > > > >         struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
+> > > > > > > > -    int err;
+> > > > > > > >         print_features(mvdev, features, true);
+> > > > > > > > -    err = verify_min_features(mvdev, features);
+> > > > > > > > -    if (err)
+> > > > > > > > -        return err;
+> > > > > > > > -
+> > > > > > > >         ndev->mvdev.actual_features = features &
+> > > > > > > > ndev->mvdev.mlx_features;
+> > > > > > > >         ndev->config.mtu = cpu_to_mlx5vdpa16(mvdev, ndev->mtu);
+> > > > > > > >         ndev->config.status |= cpu_to_mlx5vdpa16(mvdev,
+> > > > > > > > VIRTIO_NET_S_LINK_UP);
+> > > > > > > > -    return err;
+> > > > > > > > +    return 0;
+> > > > > > > >     }
+> > > > > > > >     static void mlx5_vdpa_set_config_cb(struct vdpa_device
+> > > > > > > > *vdev, struct vdpa_callback *cb)
+> > 
+
