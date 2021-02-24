@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0E6324492
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8483E324494
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235307AbhBXTVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 14:21:37 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:38334 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233844AbhBXTV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 14:21:28 -0500
-Received: from zn.tnic (p200300ec2f0d180087c1c74682a645c2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1800:87c1:c746:82a6:45c2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 507A51EC059E;
-        Wed, 24 Feb 2021 20:20:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614194445;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3KL8YvjOAtjWZ0z5XApK+XEOauVtwVi+B47aqtn8H6I=;
-        b=mU+6+QiGhPI3QgSfJO8WtdDUQZczU4O1+XkxsiCcohvgO2ZUPgfOPNq+vKM7H/RVGw7+lC
-        Xd0Wn/6HNCoNle0dTSziAJ5HGWBmhtk9M0qDr8E75eRDkB1kzvwBRgKsHJLnNpU/0VWxt0
-        j1KQhgTDMPpwZUm1maEaStjwTKf/gPU=
-Date:   Wed, 24 Feb 2021 20:20:44 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
-Message-ID: <20210224192044.GH20344@zn.tnic>
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
- <20210217222730.15819-7-yu-cheng.yu@intel.com>
- <20210224161343.GE20344@zn.tnic>
- <32ac05ef-b50b-c947-095d-bc31a42947a3@intel.com>
- <20210224165332.GF20344@zn.tnic>
- <db493c76-2a67-5f53-29a0-8333facac0f5@intel.com>
+        id S234751AbhBXTWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 14:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233743AbhBXTWn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 14:22:43 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1ABC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:22:03 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id a17so3746306ljq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:22:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YLkIzfKvA1tdVHUtMb/iXKnZBm8DzytxyIIS1uOtFXs=;
+        b=Cykmeg2BJZxLL6B3CqFN8bYWXedcpxSrxU0obGXA67ldt53T1Zpp1kfII/YTsRxyGR
+         7+PgVrl1GpAP3zASXR1P6ptK9NfrEIUej74r3llcPs1dZHaUDziptxNdAuOecoOUHHak
+         y8TaQG7xMC0xTVy8H2BjUgVzI1nDYOoyh4Gg4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YLkIzfKvA1tdVHUtMb/iXKnZBm8DzytxyIIS1uOtFXs=;
+        b=Rc++oOBX+oqOGPSRCDhlHYEqrI/uohPGTzPhtYI6dQjyOG3GOROkROikbPJebVnBkv
+         quqBYuIEr6eIcoq++9peD6kgu6wJ7Y97ZXuIN5lqu0vO4LOFvNU0xnxdTPhGdiGyPl1F
+         hXwz3RjLq7apNPKnRFHulyTK2Li2vojzFEqNTpH1kzyqXmWWLipfnGwBByWHL5Mty9vD
+         tjHK0dvrA2eCQs0+Nej2ydZCqjcDOQAvYL67qk9P3dz9EmTWUtxjSekkDkpcc/ZhOO7S
+         lzw6TsJmYRF0sjiXucSIu5wvU3UNYaM9JshI0I2AfjbMsYXD84BKHRflZNc16WGTEUCF
+         hKUw==
+X-Gm-Message-State: AOAM533Rv/r9kNYXGZgPkibdLnWXBy7nLA0O0jvSxqw0+wrz6M63x8ej
+        om6oV1SeAlZqn+BA3sJnB2M8YLYgDsidcg==
+X-Google-Smtp-Source: ABdhPJz+FtTOR571JvkwMzHO36MRMwSHqiOFMF2NtYWP1xHpwT5Et3tpeeya3IysehUpQgz3cIXHPw==
+X-Received: by 2002:a05:651c:2112:: with SMTP id a18mr21133609ljq.341.1614194521663;
+        Wed, 24 Feb 2021 11:22:01 -0800 (PST)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id k27sm658603lfm.125.2021.02.24.11.22.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Feb 2021 11:22:00 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id u4so3729860ljh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:22:00 -0800 (PST)
+X-Received: by 2002:a05:651c:110e:: with SMTP id d14mr21545549ljo.220.1614194520371;
+ Wed, 24 Feb 2021 11:22:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <db493c76-2a67-5f53-29a0-8333facac0f5@intel.com>
+References: <20210224190335.GA1583051@bjorn-Precision-5520>
+In-Reply-To: <20210224190335.GA1583051@bjorn-Precision-5520>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 24 Feb 2021 11:21:44 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiUjFdHYxQzTPJX+J38iSz-hS8Sn9sNx=+B=uMX+Q3wwQ@mail.gmail.com>
+Message-ID: <CAHk-=wiUjFdHYxQzTPJX+J38iSz-hS8Sn9sNx=+B=uMX+Q3wwQ@mail.gmail.com>
+Subject: Re: [GIT PULL] PCI changes for v5.12
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 09:56:13AM -0800, Yu, Yu-cheng wrote:
-> No.  Maybe I am doing too much.  The GP fault sets si_addr to zero, for
-> example.  So maybe do the same here?
+On Wed, Feb 24, 2021 at 11:03 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.12-changes
 
-No, you're looking at this from the wrong angle. This is going to be
-user-visible and the moment it gets upstream, it is cast in stone.
+I pulled this, but I'm now unpulling it again.
 
-So the whole use case of what luserspace needs to do or is going to do
-or wants to do on a SEGV_CPERR, needs to be described, agreed upon by
-people etc before it goes out. And thus clarified whether the address
-gets copied out or not.
+Why are many of those commits only two hours old, and most of the rest
+is from yesterday?
 
-Thx.
+Has any of this been in linux-next?
 
--- 
-Regards/Gruss,
-    Boris.
+And if it has, then why was it rebased, and why didn't you explain
+*why* it was rebased if so?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+I'm willing to pull this if it turns out it _has_ been in linux-next,
+but I need explanations.
+
+               Linus
