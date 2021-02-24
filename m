@@ -2,86 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392C83241F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A503241FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhBXQTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:19:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50634 "EHLO
+        id S234292AbhBXQVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:21:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234968AbhBXQRs (ORCPT
+        with ESMTP id S232578AbhBXQTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:17:48 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7222BC06178A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:17:01 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id 15so1217626qvp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:17:01 -0800 (PST)
+        Wed, 24 Feb 2021 11:19:20 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466D8C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:18:39 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id u26so1630712pfn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:18:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rz5RhReura4CcmI0uFLwnF+N34P1WN0iecznbdW2HMo=;
-        b=WGpCLLl1ryOZCXK7onehQGkJAtjJs4oZKyW1YuWcgRF2Q7W9IjAwCznxRg+15u34yd
-         uvaIvvA0+SoA1hh6NYTBY8W1ne/UgkPZLFf3yoruB7CXPwRpzEQ9YQB9AoqKRMUFUSBs
-         vkhZGtFlIqP2/DeUrRlB2BtzcyQwdIj5wRsd0=
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=lteuOHvfo4K4/+NJPA032TcNQF+JRBgKzkoDcHJYOeU=;
+        b=uCCBhDCiEOSzFvDq8hugaWh/4pBpmUkUgVRmolQ8lW0uFuHMzJvGIgmPL4r8kj3n2l
+         01nDGBc4uXPWXEBYFUYjKC5zR2diGc96pCYSa0TJ7bJo3Ll38Y0hEMSXhUYacQW9v9Xx
+         am3Z3d5h+oL9sffF9MC+Op2fdaEek0PJThOjiCXJf1hng3UAcrancae4fy52JJP46G5L
+         J4eofy0ONPNKGBqSVa4T8n11S/TvXgpMsVDaxDBMnt/6ykECd71r5+E+Ku4bkyvdDKyY
+         3MifsS3qqXObyJaomc97p6GiRN+AdOg1lMBqiURpgnS0szSIBhq4vkR6lu00kdBWQitB
+         Yliw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rz5RhReura4CcmI0uFLwnF+N34P1WN0iecznbdW2HMo=;
-        b=akaeg3D1M7r+/0d/0J9vkFjBql+vyU3Y0U2tF5xepH/V/hLzv+gp0SH1yj8I7pNIeS
-         +Wj2jH8Ex6w/ml73bgpgfDjR3zBRfoxhMA9ZvrSLO4joc52/D6K68bjO/5ycsTQE5TpR
-         NY7Kv6PrE2ysJDrD3X0rbtyYKFQki6qRydJQLrcB7Sh/LDRHJYLCONi7t93MOArpxSO2
-         KMPixqlGh51C6tlewcJag7ehkO+FOrqncSCkA7RkgzV2E6g2tJrJVvn9mcVGrUORi/HC
-         GH/RIsMqJIWNpjV7KPH5zmxrQQmxR+vHnVd1RlSqC5iCs0enLEBI69UC6553D3f+a5wM
-         zTHQ==
-X-Gm-Message-State: AOAM531eBvWHTyjoO5/A5I/ukHvYxuURRW5TOtNwxtCYm6135WnHzl2A
-        6XHU8M9UAQw0wgakvAkWBj6DFCCL7w+tHg==
-X-Google-Smtp-Source: ABdhPJzKXX+Ot0/AIkbFEIaWtf0Ym6s6NA2nq5nORRJhj1DbWPOrHQPVv0ozlmya4sBjg87VnlEdeQ==
-X-Received: by 2002:a0c:8365:: with SMTP id j92mr7421840qva.19.1614183419946;
-        Wed, 24 Feb 2021 08:16:59 -0800 (PST)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id o1sm1569270qtq.81.2021.02.24.08.16.59
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=lteuOHvfo4K4/+NJPA032TcNQF+JRBgKzkoDcHJYOeU=;
+        b=dSniu/Hgto2jyB8j3/DZ2b6MSN80R6tHiaMqMfPjQe53Gs89y3yM0pbHwTm33tLKfa
+         B9cS+BZfHpLpz627a8TvwYL/K4rttMRhN/IUvzHWh/EVUEma5+wY8kJg7VXgMndz8Rpw
+         JqMfiP/7PpCo2bd/HjQ1W1KXioJbe+9D/N7nyisJZL0jkU3oLiSOHXqKqgxqnNDu2iup
+         ICOdV5O1Zg281WP7mcnuapsP6PW9JufNWt9VFJHHX0ooYnUgBC9XM4L54BCAgT5zbPOE
+         npJNjDDoFPU1qAaxmWmZZak/qAKdLGpB/LhcEfxl1lOSgHtfZct3ouII4Eh6irHjGUyP
+         SMdQ==
+X-Gm-Message-State: AOAM532E0dHPC7oy60dDkw+vSsYTgKr6b/64gfUCpH164LK9PM34UzFF
+        waq+0afWI5zeE4wXoIBenl9/ag==
+X-Google-Smtp-Source: ABdhPJyDwLpbyvL71TWNq5m3Blk+xEoWJgoXaTBodv14KeO97PF/M4n3D1ftcLakL1bJecWKk1RjlA==
+X-Received: by 2002:a63:db08:: with SMTP id e8mr29626323pgg.261.1614183518749;
+        Wed, 24 Feb 2021 08:18:38 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:f023:34a9:302a:60b6? ([2601:646:c200:1ef2:f023:34a9:302a:60b6])
+        by smtp.gmail.com with ESMTPSA id v4sm3283538pjo.32.2021.02.24.08.18.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Feb 2021 08:16:59 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id c131so2363036ybf.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:16:59 -0800 (PST)
-X-Received: by 2002:a25:4e83:: with SMTP id c125mr17357577ybb.343.1614183418740;
- Wed, 24 Feb 2021 08:16:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20210224071653.409150-1-sumit.garg@linaro.org>
-In-Reply-To: <20210224071653.409150-1-sumit.garg@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 24 Feb 2021 08:16:46 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VZr=fEr9O6eKVs7T1DH_ptMM2=8rH9fVN+=uDQpwFtrA@mail.gmail.com>
-Message-ID: <CAD=FV=VZr=fEr9O6eKVs7T1DH_ptMM2=8rH9fVN+=uDQpwFtrA@mail.gmail.com>
-Subject: Re: [PATCH v2] kdb: Remove redundant function definitions/prototypes
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 24 Feb 2021 08:18:37 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v3] seccomp: Improve performace by optimizing rmb()
+Date:   Wed, 24 Feb 2021 08:18:36 -0800
+Message-Id: <638D44BA-0ACA-4041-8213-217233656A70@amacapital.net>
+References: <1614156585-18842-1-git-send-email-wanghongzhe@huawei.com>
+Cc:     keescook@chromium.org, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, wad@chromium.org, yhs@fb.com,
+        tongxiaomeng@huawei.com
+In-Reply-To: <1614156585-18842-1-git-send-email-wanghongzhe@huawei.com>
+To:     wanghongzhe <wanghongzhe@huawei.com>
+X-Mailer: iPhone Mail (18D52)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Tue, Feb 23, 2021 at 11:17 PM Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> Cleanup kdb code to get rid of unused function definitions/prototypes.
->
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> On Feb 24, 2021, at 12:03 AM, wanghongzhe <wanghongzhe@huawei.com> wrote:
+>=20
+> =EF=BB=BFAs Kees haved accepted the v2 patch at a381b70a1 which just
+> replaced rmb() with smp_rmb(), this patch will base on that and just adjus=
+t
+> the smp_rmb() to the correct position.
+>=20
+> As the original comment shown (and indeed it should be):
+>   /*
+>    * Make sure that any changes to mode from another thread have
+>    * been seen after SYSCALL_WORK_SECCOMP was seen.
+>    */
+> the smp_rmb() should be put between reading SYSCALL_WORK_SECCOMP and readi=
+ng
+> seccomp.mode to make sure that any changes to mode from another thread hav=
+e
+> been seen after SYSCALL_WORK_SECCOMP was seen, for TSYNC situation. Howeve=
+r,
+> it is misplaced between reading seccomp.mode and seccomp->filter. This iss=
+ue
+> seems to be misintroduced at 13aa72f0fd0a9f98a41cefb662487269e2f1ad65 whic=
+h
+> aims to refactor the filter callback and the API. So let's just adjust the=
+
+> smp_rmb() to the correct position.
+>=20
+> A next optimization patch will be provided if this ajustment is appropriat=
+e.
+
+Would it be better to make the syscall work read be smp_load_acquire()?
+
+>=20
+> v2 -> v3:
+> - move the smp_rmb() to the correct position
+>=20
+> v1 -> v2:
+> - only replace rmb() with smp_rmb()
+> - provide the performance test number
+>=20
+> RFC -> v1:
+> - replace rmb() with smp_rmb()
+> - move the smp_rmb() logic to the middle between TIF_SECCOMP and mode
+>=20
+> Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
 > ---
->
-> Changes in v2:
-> - Keep kdbgetu64arg() the way it was.
->
->  kernel/debug/kdb/kdb_private.h |  2 --
->  kernel/debug/kdb/kdb_support.c | 18 ------------------
->  2 files changed, 20 deletions(-)
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> kernel/seccomp.c | 15 +++++++--------
+> 1 file changed, 7 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 1d60fc2c9987..64b236cb8a7f 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -1160,12 +1160,6 @@ static int __seccomp_filter(int this_syscall, const=
+ struct seccomp_data *sd,
+>    int data;
+>    struct seccomp_data sd_local;
+>=20
+> -    /*
+> -     * Make sure that any changes to mode from another thread have
+> -     * been seen after SYSCALL_WORK_SECCOMP was seen.
+> -     */
+> -    smp_rmb();
+> -
+>    if (!sd) {
+>        populate_seccomp_data(&sd_local);
+>        sd =3D &sd_local;
+> @@ -1291,7 +1285,6 @@ static int __seccomp_filter(int this_syscall, const s=
+truct seccomp_data *sd,
+>=20
+> int __secure_computing(const struct seccomp_data *sd)
+> {
+> -    int mode =3D current->seccomp.mode;
+>    int this_syscall;
+>=20
+>    if (IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) &&
+> @@ -1301,7 +1294,13 @@ int __secure_computing(const struct seccomp_data *s=
+d)
+>    this_syscall =3D sd ? sd->nr :
+>        syscall_get_nr(current, current_pt_regs());
+>=20
+> -    switch (mode) {
+> +    /*=20
+> +     * Make sure that any changes to mode from another thread have
+> +     * been seen after SYSCALL_WORK_SECCOMP was seen.
+> +     */
+> +    smp_rmb();
+> +
+> +    switch (current->seccomp.mode) {
+>    case SECCOMP_MODE_STRICT:
+>        __secure_computing_strict(this_syscall);  /* may call do_exit */
+>        return 0;
+> --=20
+> 2.19.1
+>=20
