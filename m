@@ -2,92 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9554324077
+	by mail.lfdr.de (Postfix) with ESMTP id 37537324076
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238442AbhBXPF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:05:57 -0500
-Received: from conuserg-10.nifty.com ([210.131.2.77]:28971 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234236AbhBXOKr (ORCPT
+        id S238392AbhBXPFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:05:54 -0500
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:42600 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234674AbhBXOK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 09:10:47 -0500
-Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 11OE8GiZ010024;
-        Wed, 24 Feb 2021 23:08:16 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 11OE8GiZ010024
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614175697;
-        bh=0plXlyBwS0CIS1+01uCTb+XHeEQAva1YcsxsVYVl0dc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=D2qyEG3tkQrRyIDJXuWOjymsupzH4qoxRT8Z02u2nByMTaXC9xovFIIOIV6if8CR0
-         efV5S1mgKq6mY+NorWnjH65fXjibY1qiDPYjgs7Yt0/Ya5DTYFxL7jG3EDIWsqmI1e
-         XrtZJZ6gnl9p6KsBdql17YdAJ2O3JzVDz5oLVH94gGmR79/Enupu4PigTMKh6pXVzd
-         8SjZiYf5oPcD92hE/5MB/Ek6XjS4lrfyEk/9faCiSofhaw1Rjs4nHStdzIw2BOpHmC
-         k0waPOlX/VgsgPX6CBCh7Sy8Xp/6e5HtjbuMio2hLNyqHiKFBnFBPDgtZJkcuCRvvi
-         oLd3TrLOYV4+Q==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        KP Singh <kpsingh@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH] init/Kconfig: make COMPILE_TEST depend on HAS_IOMEM
-Date:   Wed, 24 Feb 2021 23:08:09 +0900
-Message-Id: <20210224140809.1067582-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 24 Feb 2021 09:10:57 -0500
+Received: by mail-lj1-f170.google.com with SMTP id v17so2516675ljj.9;
+        Wed, 24 Feb 2021 06:10:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rp6xFbMVcSNr3U+KePG0/i37RYbSH1lUEiS0Y/RzdOU=;
+        b=gLuRYKwqytwVlTdgWXXJZGidDRnz4Fq29+G/1/flO15N0gKUMgEgdtXga3QlbUdhdx
+         2nbXjOtv1bGb+REQO11xyYEq00wC3qRRZeHrND2lmlKF+sfsF+ZL9+7yrXDxejvX1AkO
+         JwTGbgeNI6JnjvwKp+L+YqUUb7BcHVmTNDukhLvtBK7QohEDbs2aDlsf4Jja4lJCfSuO
+         bDKE/xtVflpjc9OVBfdCSP53EQEntJfmWMCQ/8MsUrY1fzaoECuaws+yahPIH0vclkM/
+         /WPLOSYcRKKkEtf+insaqVgK+gah4whRrIgiqgM+Idpqr3aKlqCxkTn1yb9qevR5FoYO
+         2kQw==
+X-Gm-Message-State: AOAM531PS8BCMUWAQ1LAfbAyu4fBnwLHl1Rx+28OA4H1RJvdjuVxC1Pe
+        Jt4LUOmFsqmHRQCS45RY/iU=
+X-Google-Smtp-Source: ABdhPJw0MxwBtXUxHE7ZBUDyzNlLM4MxrrjRipAt6fYrgf8jDMdyN1rtiQm3NBCDC0X9YA8LNWW25A==
+X-Received: by 2002:a2e:7409:: with SMTP id p9mr19032678ljc.404.1614175815511;
+        Wed, 24 Feb 2021 06:10:15 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id n13sm509705lfu.265.2021.02.24.06.10.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 06:10:15 -0800 (PST)
+Date:   Wed, 24 Feb 2021 15:10:13 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, maz@kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
+        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
+        sin_jieyang@mediatek.com, drinkcat@chromium.org,
+        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
+Subject: Re: [v8,6/7] PCI: mediatek-gen3: Add system PM support
+Message-ID: <YDZeRc6CHV/WzyCm@rocinante>
+References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
+ <20210224061132.26526-7-jianjun.wang@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210224061132.26526-7-jianjun.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I read the commit log of the following two:
+Hi Jianjun,
 
-- bc083a64b6c0 ("init/Kconfig: make COMPILE_TEST depend on !UML")
-- 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390")
+> Add suspend_noirq and resume_noirq callback functions to implement
+> PM system suspend hooks for MediaTek Gen3 PCIe controller.
 
-Both are talking about HAS_IOMEM dependency missing in many drivers.
+So, "systems suspend" and "resume" hooks, correct?
 
-So, 'depends on HAS_IOMEM' seems the direct, sensible solution to me.
+> When system suspend, trigger the PCIe link to L2 state and pull down
 
-This does not change the behavior of UML. UML still cannot enable
-COMPILE_TEST because it does not provide HAS_IOMEM.
+It probably would be "the system suspends".
 
-The current dependency for S390 is too strong. Under the condition of
-CONFIG_PCI=y, S390 provides HAS_IOMEM, hence can enable COMPILE_TEST.
+[...]
+> When system resum, the PCIe link should be re-established and the
+> related control register values should be restored.
 
-I also removed the meaningless 'default n'.
+Similarly to the above: "the system resumes".
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+[...]
+> +	if (err) {
+> +		dev_err(port->dev, "can not enter L2 state\n");
+> +		return err;
+> +	}
 
- init/Kconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Most likely you want "cannot" or "can't" in the above error message.
 
-diff --git a/init/Kconfig b/init/Kconfig
-index ba8bd5256980..2ff0b5a50736 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -113,8 +113,7 @@ config INIT_ENV_ARG_LIMIT
- 
- config COMPILE_TEST
- 	bool "Compile also drivers which will not load"
--	depends on !UML && !S390
--	default n
-+	depends on HAS_IOMEM
- 	help
- 	  Some drivers can be compiled on a different platform than they are
- 	  intended to be run on. Despite they cannot be loaded there (or even
--- 
-2.27.0
+> +	/* Pull down the PERST# pin */
+> +	val = readl_relaxed(port->base + PCIE_RST_CTRL_REG);
+> +	val |= PCIE_PE_RSTB;
+> +	writel_relaxed(val, port->base + PCIE_RST_CTRL_REG);
+> +
+> +	dev_dbg(port->dev, "enter L2 state success");
 
+Just a nitpick.  What about "entered L2 states successfully"?
+
+[...]
+> +	if (err) {
+> +		dev_err(port->dev, "resume failed\n");
+> +		return err;
+> +	}
+
+This error message does not quite convey that the mtk_pcie_startup_port()
+was the function that failed, which is only a part of what you have to do
+to successfully resume.
+
+> +	dev_dbg(port->dev, "resume done\n");
+
+A nitpick.  Probably not needed, as lack of error message would mean
+that the device resumed successfully after being suspended.
+
+Krzysztof
