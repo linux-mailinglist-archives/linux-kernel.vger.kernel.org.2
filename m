@@ -2,103 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA13D3234D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B25D3234E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234091AbhBXBBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 20:01:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234843AbhBXAVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 19:21:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD45964EBA;
-        Tue, 23 Feb 2021 23:59:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614124771;
-        bh=d8bhfTDGI9W39QzlxnPPLrP0VWvKUzQ7BK1mYKgo9bA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tyPZC6RjnjTj5pSU0VB5e1epmkPcWqFelbhkY5W/hh2lFen0FTZzCmFc5u17S2UCk
-         IUSj3R471D3GfQF/drgrtOjwe7spQ1LnOgtgOzfnMDBUQ2OGFkyfHqVYvrKXQZCiSB
-         eRxQSOkQP17CrQDHw7ddHEbq2DSmVh6i/dhiZFVf3otifw20icBRYDmZep5ju9LM2u
-         euuj2/2vGT/CBWoMf2XS1HiYHF9GO9uZirW5lFTyg2VyilW+BT9i6qDnYgiN/1uYMD
-         LNj0mMEZa+V0yE4oEd7A+yGNHhVoDIWWj8Ur2EBsMn3sjpWwuA83Ccp+0fj7cm7z8i
-         PkV5hwELppe5Q==
-Received: by mail-ed1-f42.google.com with SMTP id j9so475807edp.1;
-        Tue, 23 Feb 2021 15:59:30 -0800 (PST)
-X-Gm-Message-State: AOAM5301dM/ZRoxwJI9xTVMMbuO9CwTQ5ZyIFMKPaBWLIITLSpc2tbhz
-        hfrKqogjlmxpgbOGPP0h+V6/NvgubxiJJInyuw==
-X-Google-Smtp-Source: ABdhPJzy2WY+J2dV1PUUmZu/lKy62FdvqPm74QE245X5CUGwMtEVPr93/MqHapjUWaxZ7K8UKNyNqMBVEaiqnQR3nn4=
-X-Received: by 2002:a05:6402:164e:: with SMTP id s14mr17830402edx.62.1614124769468;
- Tue, 23 Feb 2021 15:59:29 -0800 (PST)
+        id S233158AbhBXBHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 20:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhBXAkf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 19:40:35 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7E0C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 16:12:58 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id y202so188408iof.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 16:12:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mZKDqHKHj9qwHLca+lbB5XOXD5NDI9hcA0G6Uy9fJ68=;
+        b=GPv0rl3IdxPKGPX1LtHCHxw/PnB5w50MhdQRmo8X0IMwDe/X7vIhiCROtiDcMwWIL+
+         5YloWTq4v/e+pqLTSExj+HleUlfLkFB8GudIemvY54uLfkOvvcY7wqaO0MWaFu7ik2My
+         8kdsNHNMoE39KWqYM5iK9fObtCOky/uyNaTf0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mZKDqHKHj9qwHLca+lbB5XOXD5NDI9hcA0G6Uy9fJ68=;
+        b=lPaxsCrta4owLzIU8ByHwgRGrusn2IqYuHVvjdnmgD7kZ149tuHcwF7+LDImzswi7o
+         l/IaWClja4HfLxu1dKkf4as1zvsvdCuNqna2sRYC2fqygKlZxuBlB8lkKZgs3W16xKKc
+         01V/Ama5J7H6/0is7dyY1wuusqbj1n/oNIw4qk2RBtKQOuu421AINnhCmCEWlb18eo4Y
+         SYlrkLDcI5fWVoL/EdMhHUK0Uiv94JWyVvUPT4b7X3gZVS1f8fTOUbx/zHUc2JMIMXyL
+         iKmMf3+DeHzQNtpjL4200r4Uez5kFmjoBbSi0AHveOL4dlfBKXV2jyPcJJH/R+OE/3NG
+         psGg==
+X-Gm-Message-State: AOAM532ohIF+mrcVz7/1WjqxkEkHSKWmwhUA3mmiZIddeKL187+TUjgL
+        NcFq5hKfhBLiR43pOl1po5c7vw==
+X-Google-Smtp-Source: ABdhPJyWXfN0VZUcedY3IOGrq7iLmDA0JxXvIR6NNj7H+n68+eyQ2eRh4QeTpsj4EUJZ0f6lhyquwA==
+X-Received: by 2002:a02:cadd:: with SMTP id f29mr2827082jap.48.1614125578171;
+        Tue, 23 Feb 2021 16:12:58 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id x15sm299294ilv.31.2021.02.23.16.12.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Feb 2021 16:12:57 -0800 (PST)
+Subject: Re: [PATCH 5.11 00/12] 5.11.1-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20210222121013.586597942@linuxfoundation.org>
+ <9edd3b90-aa95-379f-01b1-ccbb3afec6ce@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <6359a822-c0b2-75f7-40e3-c0c7bf002e3f@linuxfoundation.org>
+Date:   Tue, 23 Feb 2021 17:12:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210223181425.4010665-1-robh@kernel.org> <20210223181425.4010665-4-robh@kernel.org>
- <CAHk-=wiWoqUt5z0Phvr-0HQkohi2SkYRPuCGi0xefV0KE+t4kA@mail.gmail.com>
-In-Reply-To: <CAHk-=wiWoqUt5z0Phvr-0HQkohi2SkYRPuCGi0xefV0KE+t4kA@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 23 Feb 2021 17:59:17 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLNVy4KHSViVWePermXsG1K_W=Buj8a1wxQ1pdEVYFr3w@mail.gmail.com>
-Message-ID: <CAL_JsqLNVy4KHSViVWePermXsG1K_W=Buj8a1wxQ1pdEVYFr3w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] kbuild: Add a build check for missing gitignore entries
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9edd3b90-aa95-379f-01b1-ccbb3afec6ce@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 5:20 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Tue, Feb 23, 2021 at 10:14 AM Rob Herring <robh@kernel.org> wrote:
-> >
-> > Any non-phony targets need to be in gitignore. The normal way to check
-> > this is doing an in-tree build and running git-status which is easy to
-> > miss. Git provides an easy way to check whether a file is ignored with
-> > git-check-ignore. Let's add a build time check using it.
->
-> This looks ridiculously expensive with a shell and git invocation for
-> every single target just for this check.
+On 2/23/21 2:05 PM, Shuah Khan wrote:
+> On 2/22/21 5:12 AM, Greg Kroah-Hartman wrote:
+>> This is the start of the stable review cycle for the 5.11.1 release.
+>> There are 12 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
+>>
+>> Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
+>> Anything received after that time might be too late.
+>>
+>> The whole patch series can be found in one patch at:
+>>     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.1-rc1.gz 
+>>
+>> or in the git tree and branch at:
+>>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git 
+>> linux-5.11.y
+>> and the diffstat can be found below.
+>>
+>> thanks,
+>>
+>> greg k-h
+>>
+> 
+> Compiled and booted on my test system. No dmesg regressions.
+> 
+> I made some progress on the drm/amdgpu display and kepboard
+> problem.
+> 
+> My system has
+>   amdgpu: ATOM BIOS: 113-RENOIR-026
+> 
+> I narrowed it down to the following as a possible lead to
+> start looking:
+> amdgpu 0000:0b:00.0: [drm] Cannot find any crtc or sizes
+> 
 
-I was a bit worried too initially, but casually didn't notice any
-difference so I didn't do any measurements. Now I have, and it looks
-like it adds about 2 sec on a rebuild with no changes. I probably can
-rework it to a single shell and git call per invocation of
-Makefile.lib. What I really need is git-check-ignore to take '-n'
-without '-v', but grep can solve that.
+It is resolved now. A hot-unplugged/plugged the HDMI cable which
+triggered reset sequence. There might be link to  AMD_DC_HDCP
+support, amdgpu_dm_atomic_commit changes that went into 5.10 and
+this behavior.
 
-Here's the raw data:
+I am basing this on not seeing the problem on Linux 5.4 and until
+Linux 5.10. In any case, I wish I know more, but life is back to
+normal now.
 
-clean x86 defconfig:
-1805.08user 165.87system 5:05.15elapsed 645%CPU (0avgtext+0avgdata
-260180maxresident)k
-110536inputs+1390704outputs (11major+52491225minor)pagefaults 0swaps
+When I hot-unplugged/plugged the cable, saw the following dmesg:
 
-rebuild with no changes:
-12.61user 3.56system 0:04.32elapsed 374%CPU (0avgtext+0avgdata
-38876maxresident)k
-0inputs+1984outputs (0major+755708minor)pagefaults 0swaps
+amdgpu 0000:0b:00.0: [drm] fb0: amdgpudrmfb frame buffer device
+kernel: [ 6704.580326] [drm:drm_atomic_helper_wait_for_flip_done 
+[drm_kms_helper]] *ERROR* [CRTC:67:crtc-0] flip_done timed out
+kernel: [ 6773.444316] [drm:drm_atomic_helper_wait_for_dependencies 
+[drm_kms_helper]] *ERROR* [CRTC:67:crtc-0] flip_done timed out
+kernel: [ 6783.684306] [drm:drm_atomic_helper_wait_for_dependencies 
+[drm_kms_helper]] *ERROR* [PLANE:55:plane-3] flip_done timed out
 
-adding this commit and rebuild:
-14.90user 4.80system 0:06.50elapsed 303%CPU (0avgtext+0avgdata
-39160maxresident)k
-80inputs+1992outputs (0major+1402830minor)pagefaults 0swaps
+The following
 
-clean x86 defconfig with this commit:
-1799.10user 165.84system 5:06.19elapsed 641%CPU (0avgtext+0avgdata
-259932maxresident)k
-8inputs+1390712outputs (0major+53146757minor)pagefaults 0swaps
+WARN_ON(acrtc_attach->pflip_status != AMDGPU_FLIP_NONE); fires:
 
-another rebuild with this commit:
-14.55user 4.85system 0:06.14elapsed 315%CPU (0avgtext+0avgdata
-38664maxresident)k
-0inputs+1992outputs (0major+1402878minor)pagefaults 0swaps
 
-Rob
+kernel: [ 6783.750035] WARNING: CPU: 7 PID: 190 at 
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:7754 
+amdgpu_dm_atomic_commit_tail+0x2542/0x25d0 [amdgpu]
+Feb 23 16:20:39 shuah-IC5 kernel: [ 6783.750392] Modules linked in: 
+btrfs blake2b_generic xor raid6_pq ufs qnx4 hfsplus hfs minix ntfs msdos 
+jfs xfs libcrc32c rfcomm ccm cmac algif_hash algif_skcipher af_alg bnep 
+intel_rapl_msr intel_rapl_common amdgpu edac_mce_amd 
+snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio nls_iso8859_1 
+snd_hda_codec_hdmi snd_hda_intel kvm_amd snd_intel_dspcfg snd_hda_codec 
+kvm snd_hda_core ath10k_pci snd_hwdep snd_pcm crct10dif_pclmul 
+ath10k_core ghash_clmulni_intel ath iommu_v2 snd_seq_midi gpu_sched 
+aesni_intel snd_seq_midi_event drm_ttm_helper mac80211 ttm snd_rawmidi 
+btusb drm_kms_helper crypto_simd btrtl snd_seq cryptd btbcm rtsx_usb_ms 
+cec glue_helper btintel snd_seq_device snd_timer rapl memstick rc_core 
+bluetooth cfg80211 i2c_algo_bit snd fb_sys_fops syscopyarea sysfillrect 
+snd_rn_pci_acp3x ecdh_generic wmi_bmof sysimgblt efi_pstore soundcore 
+ccp joydev ecc k10temp input_leds snd_pci_acp3x libarc4 mac_hid 
+sch_fq_codel parport_pc ppdev lp parport drm ip_tables x_tables autofs4
+Feb 23 16:20:39 shuah-IC5 kernel: [ 6783.750506]  hid_generic usbhid 
+rtsx_usb_sdmmc hid rtsx_usb nvme crc32_pclmul i2c_piix4 r8169 nvme_core 
+ahci xhci_pci realtek libahci xhci_pci_renesas wmi video gpio_amdpt 
+gpio_generic
+
+kernel: [ 6783.750532] CPU: 7 PID: 190 Comm: kworker/7:1 Not tainted 
+5.11.1 #1
+kernel: [ 6783.750537] Hardware name: LENOVO 90Q30008US/3728, BIOS 
+O4ZKT1CA 09/16/2020
+kernel: [ 6783.750541] Workqueue: events dm_irq_work_func [amdgpu]
+kernel: [ 6783.750859] RIP: 
+0010:amdgpu_dm_atomic_commit_tail+0x2542/0x25d0 [amdgpu]
+kernel: [ 6783.751159] Code: a0 fd ff ff 01 c7 85 9c fd ff ff 37 00 00 
+00 c7 85 a4 fd ff ff 20 00 00 00 e8 ca ef 12 00 e9 e9 fa ff ff 0f 0b e9 
+39 f9 ff ff <0f> 0b e9 88 f9 ff ff 0f 0b 0f 0b e9 9e f9 ff ff 49 8b 06 
+41 0f b6
+kernel: [ 6783.751162] RSP: 0018:ffffac390068fa48 EFLAGS: 00010002
+kernel: [ 6783.751167] RAX: 0000000000000002 RBX: 0000000000000004 RCX: 
+ffff9604442d7918
+kernel: [ 6783.751169] RDX: 0000000000000001 RSI: 0000000000000297 RDI: 
+ffff960444a80188
+kernel: [ 6783.751172] RBP: ffffac390068fd48 R08: 0000000000000005 R09: 
+0000000000000000
+kernel: [ 6783.751174] R10: ffffac390068f998 R11: ffffac390068f99c R12: 
+0000000000000297
+kernel: [ 6783.751176] R13: ffff96048d131a00 R14: ffff9604442d7800 R15: 
+ffff96048da29c00
+kernel: [ 6783.751179] FS:  0000000000000000(0000) 
+GS:ffff96073f1c0000(0000) knlGS:0000000000000000
+kernel: [ 6783.751182] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+kernel: [ 6783.751185] CR2: 00005612d2a1a000 CR3: 0000000030010000 CR4: 
+0000000000350ee0
+kernel: [ 6783.751188] Call Trace:
+kernel: [ 6783.751197]  ? irq_work_queue+0x2a/0x40
+kernel: [ 6783.751205]  ? vprintk_emit+0x139/0x240
+kernel: [ 6783.751218]  commit_tail+0x99/0x130 [drm_kms_helper]
+kernel: [ 6783.751247]  drm_atomic_helper_commit+0x123/0x150 
+[drm_kms_helper]
+kernel: [ 6783.751273]  drm_atomic_commit+0x4a/0x50 [drm]
+kernel: [ 6783.751323]  dm_restore_drm_connector_state+0xf3/0x170 [amdgpu]
+kernel: [ 6783.751628]  handle_hpd_irq+0x11a/0x150 [amdgpu]
+kernel: [ 6783.751923]  dm_irq_work_func+0x4e/0x60 [amdgpu]
+kernel: [ 6783.752018]  process_one_work+0x220/0x3c0
+kernel: [ 6783.752018]  worker_thread+0x53/0x420
+kernel: [ 6783.752018]  kthread+0x12f/0x150
+kernel: [ 6783.752018]  ? process_one_work+0x3c0/0x3c0
+kernel: [ 6783.752018]  ? __kthread_bind_mask+0x70/0x70
+kernel: [ 6783.752018]  ret_from_fork+0x22/0x30
+
+thanks,
+-- Shuah
+
