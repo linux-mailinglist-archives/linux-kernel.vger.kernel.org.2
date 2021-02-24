@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C14A323ADE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E5C323AF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 12:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234953AbhBXKyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 05:54:06 -0500
-Received: from pmg02-out2.zxcs.nl ([185.104.28.196]:49947 "EHLO
+        id S234763AbhBXLA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 06:00:57 -0500
+Received: from pmg02-out2.zxcs.nl ([185.104.28.196]:60055 "EHLO
         pmg02-out2.zxcs.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234937AbhBXKx5 (ORCPT
+        with ESMTP id S234375AbhBXLAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 05:53:57 -0500
+        Wed, 24 Feb 2021 06:00:11 -0500
 Received: from pmg02.zxcs.nl (localhost.localdomain [127.0.0.1])
-        by pmg02.zxcs.nl (ZXCS) with ESMTP id 11E50836CF;
-        Wed, 24 Feb 2021 11:53:14 +0100 (CET)
+        by pmg02.zxcs.nl (ZXCS) with ESMTP id 285EE83B1F;
+        Wed, 24 Feb 2021 11:53:15 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=pascalroeleven.nl; s=x; h=Content-Transfer-Encoding:MIME-Version:Message-Id
-        :Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        d=pascalroeleven.nl; s=x; h=Content-Transfer-Encoding:MIME-Version:References
+        :In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
         List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LieaRHuE7NqSgW/06u6/oNTdLnEXxyMsmUNcQJgFjTQ=; b=NJL7ObititnNGhi/HImSRY3BEF
-        0+wXpSj/DqIjUVb9gyw7aMtIcWggNPb3JMvv7m2+1wKYzi29Y3dCivsTAO8Aw723ZfldChvZCAmaq
-        tLxsgTFP4AGsCuxOTWbDc0BXh8DvGsMf2j1e4OaKe63/MiRpRuRvyhWDyjQnmHCK2qrlTxDaPRI8G
-        MkZ8wuBSKCosnn7Q4gBj8kYo6Np8JcpsAgnL1TIM0skvZueYqD93npCDD6nZ9pqevu+akZp9p1aeM
-        9f2+zGwrragMWMkLlOy7zzcMKLKMUKeaZ80R1k9o2xjzbCsczOTIaAX6JRrx4hSVeRsgHGbwvt72K
-        VoRtydIQ==;
+        bh=5iH+f0B18ifcjxW9mghCrDKfJx2VEwYdRjMyyarrnlE=; b=OAMLsf6EsGYaPWvh77MF+kOiMq
+        swTMcgC92IJ+vHNg6rUVTGbYypWoHMoCuWLbtBHaSJ3Wp96o+zK9N2Ml+QnVsVFyNYgrX+1hGl55u
+        mjkEyBvqD5Za7HZQGe6LI4amXfQXY0Nouik+0CoeYaQpIyeVCoGZ5h55PJ5yLb0JS9OQxkALdf31y
+        BTV0dqJrdjUFwdzZYffQT5DcAvXu9SJHXE/cKkTM++f6CED3k6Am/SmCmsKfnNh0TJNaxttOm8mwL
+        TvunH+jUfHBYS3d0HLHFTPNyOVZ3FML+/uW5EMdTA0v57vCuCJdNGG4fovm7GhoctIv9tSmodQ22y
+        mo30/jNA==;
 From:   Pascal Roeleven <dev@pascalroeleven.nl>
 To:     Rob Herring <robh+dt@kernel.org>,
         Maxime Ripard <mripard@kernel.org>,
@@ -41,11 +41,14 @@ To:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Cc:     linux-sunxi@googlegroups.com,
-        Pascal Roeleven <dev@pascalroeleven.nl>
-Subject: [PATCH v5 0/2] Add support for Topwise A721 tablet
-Date:   Wed, 24 Feb 2021 11:52:38 +0100
-Message-Id: <20210224105240.47754-1-dev@pascalroeleven.nl>
+        Pascal Roeleven <dev@pascalroeleven.nl>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 1/2] dt-bindings: arm: Add Topwise A721
+Date:   Wed, 24 Feb 2021 11:52:39 +0100
+Message-Id: <20210224105240.47754-2-dev@pascalroeleven.nl>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210224105240.47754-1-dev@pascalroeleven.nl>
+References: <20210224105240.47754-1-dev@pascalroeleven.nl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-AuthUser: dev@pascalroeleven.nl
@@ -53,45 +56,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On request I'm resending the last two patches from the Topwise A721 tablet
-series from a year ago as they weren't picked up. The other patches are
-already merged, so I didn't resend them.
+Add the bindings for Topwise A721 tablet
 
-Changes from v4:
-* Reorder nodes alphabetically
+Signed-off-by: Pascal Roeleven <dev@pascalroeleven.nl>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/arm/sunxi.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Changes from v3:
-* Fix DT validation warnings
-* Remove leftover labels
-
-Changes from v2:
-* Collected acked-by.
-
-Original cover letter:
-
-This series add support for the Topwise A721 tablet and it's display.
-It is an old tablet (around 2012) but it might be useful as reference
-as the devicetree is pretty complete.
-
-Changes from v1:
-* Split into multiple patches
-* dt-binding: use yaml instead of txt
-* dt-binding: add Topwise A721 to sunxi.yaml
-* dt-binding: add Topwise to vendor-prefixes
-* drm: Add bus_format, bus_flags and connector_type
-* dts: Use SPDX license identifier instead of boilerplate license text
-* dts: Remove pinctrl leftovers
-
-Pascal Roeleven (2):
-  dt-bindings: arm: Add Topwise A721
-  ARM: dts: sun4i: Add support for Topwise A721 tablet
-
- .../devicetree/bindings/arm/sunxi.yaml        |   5 +
- arch/arm/boot/dts/Makefile                    |   3 +-
- arch/arm/boot/dts/sun4i-a10-topwise-a721.dts  | 242 ++++++++++++++++++
- 3 files changed, 249 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm/boot/dts/sun4i-a10-topwise-a721.dts
-
+diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
+index 08607c7ec1..ac750025a2 100644
+--- a/Documentation/devicetree/bindings/arm/sunxi.yaml
++++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
+@@ -802,6 +802,11 @@ properties:
+           - const: tbs-biometrics,a711
+           - const: allwinner,sun8i-a83t
+ 
++      - description: Topwise A721 Tablet
++        items:
++          - const: topwise,a721
++          - const: allwinner,sun4i-a10
++
+       - description: Utoo P66
+         items:
+           - const: utoo,p66
 -- 
 2.27.0
 
