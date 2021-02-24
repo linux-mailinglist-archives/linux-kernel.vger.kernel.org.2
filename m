@@ -2,120 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D8D324158
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDA832415A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236363AbhBXPsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:48:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:36904 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232806AbhBXPgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236433AbhBXPtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:49:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231274AbhBXPgI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Feb 2021 10:36:08 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1050101E;
-        Wed, 24 Feb 2021 07:34:53 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A5EE3F70D;
-        Wed, 24 Feb 2021 07:34:52 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        Andi Kleen <andi@firstfloor.org>
-Subject: Re: [PATCH 6/6] sched: Simplify set_affinity_pending refcounts
-In-Reply-To: <20210224131355.724130207@infradead.org>
-References: <20210224122439.176543586@infradead.org> <20210224131355.724130207@infradead.org>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Wed, 24 Feb 2021 15:34:49 +0000
-Message-ID: <jhjlfbd5vja.mognet@arm.com>
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21330C061786;
+        Wed, 24 Feb 2021 07:35:01 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0d1800cad8e5da06da911c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1800:cad8:e5da:6da:911c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E7B071EC059E;
+        Wed, 24 Feb 2021 16:34:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614180899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=/uJb+CugCxZSQUf2FuIWyTbep6Ia1H3jI84SFaxyhw8=;
+        b=g15qgOUyEATYclyqm0SXIr/lZQRAmKe+KRgwywS0gTeOvIMNDng/GQNY4CFW5Kl1dKILle
+        oIoqGn6Qq6iSko7NfmUeUntU7oa+PCUqiEZAMKevWNOkWbzkHYJhra8M1Uuli6KS4LRXON
+        +KeHJcSC6fnFYw2qKrTefLylBVr+GvE=
+Date:   Wed, 24 Feb 2021 16:34:57 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v21 05/26] x86/fpu/xstate: Introduce CET MSR and XSAVES
+ supervisor states
+Message-ID: <20210224153457.GC20344@zn.tnic>
+References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
+ <20210217222730.15819-6-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210217222730.15819-6-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/02/21 13:24, Peter Zijlstra wrote:
-> Now that we have set_affinity_pending::stop_pending to indicate if a
-> stopper is in progress, and we have the guarantee that if that stopper
-> exists, it will (eventually) complete our @pending we can simplify the
-> refcount scheme by no longer counting the stopper thread.
->
-> Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
-> @@ -2199,12 +2199,16 @@ static int affine_move_task(struct rq *r
->                       push_task = get_task_struct(p);
->               }
->
-> +		/*
-> +		 * If there are pending waiters, but no pending stop_work,
-> +		 * then complete now.
-> +		 */
->               pending = p->migration_pending;
-> -		if (pending) {
-> -			refcount_inc(&pending->refs);
-> +		if (pending && !pending->stop_pending) {
->                       p->migration_pending = NULL;
->                       complete = true;
->               }
+On Wed, Feb 17, 2021 at 02:27:09PM -0800, Yu-cheng Yu wrote:
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index 546d6ecf0a35..fae6b3ea1f6d 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -933,4 +933,23 @@
+>  #define MSR_VM_IGNNE                    0xc0010115
+>  #define MSR_VM_HSAVE_PA                 0xc0010117
+>  
+> +/* Control-flow Enforcement Technology MSRs */
+> +#define MSR_IA32_U_CET		0x6a0 /* user mode cet setting */
+> +#define MSR_IA32_S_CET		0x6a2 /* kernel mode cet setting */
+> +#define CET_SHSTK_EN		BIT_ULL(0)
+> +#define CET_WRSS_EN		BIT_ULL(1)
+> +#define CET_ENDBR_EN		BIT_ULL(2)
+> +#define CET_LEG_IW_EN		BIT_ULL(3)
+> +#define CET_NO_TRACK_EN		BIT_ULL(4)
+> +#define CET_SUPPRESS_DISABLE	BIT_ULL(5)
+> +#define CET_RESERVED		(BIT_ULL(6) | BIT_ULL(7) | BIT_ULL(8) | BIT_ULL(9))
+> +#define CET_SUPPRESS		BIT_ULL(10)
+> +#define CET_WAIT_ENDBR		BIT_ULL(11)
 > +
->               task_rq_unlock(rq, p, rf);
->
->               if (push_task) {
-> @@ -2213,7 +2217,7 @@ static int affine_move_task(struct rq *r
->               }
->
->               if (complete)
-> -			goto do_complete;
-> +			complete_all(&pending->done);
+> +#define MSR_IA32_PL0_SSP	0x6a4 /* kernel shadow stack pointer */
+> +#define MSR_IA32_PL1_SSP	0x6a5 /* ring-1 shadow stack pointer */
+> +#define MSR_IA32_PL2_SSP	0x6a6 /* ring-2 shadow stack pointer */
+> +#define MSR_IA32_PL3_SSP	0x6a7 /* user shadow stack pointer */
+> +#define MSR_IA32_INT_SSP_TAB	0x6a8 /* exception shadow stack table */
 
-We could've done this in the first place, right? I don't think this path
-actually needed to deal with the refcounts (at least not since we started
-counting the stoppers).
+When you look at the formatting in that file and the MSR numbers in it, what
+stops you from formatting your addition the same way?
 
-Musings aside, I believe the above means, for migration_cpu_stop():
+-- 
+Regards/Gruss,
+    Boris.
 
-  (pending != NULL) => (pending == p->migration_pending)
-
-Since, when ->stop_pending, only the stopper can uninstall
-p->migration_pending. This could simplify a few if's.
-
-Also, the fatty comment above affine_move_task() probably needs a bit of
-gardening:
-
----
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9492f8eb242a..6f649aa2795c 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2165,16 +2165,21 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
-  *
-  * (1) In the cases covered above. There is one more where the completion is
-  * signaled within affine_move_task() itself: when a subsequent affinity request
-- * cancels the need for an active migration. Consider:
-+ * occurs after the stopper bailed out due to the targeted task still being
-+ * Migrate-Disable. Consider:
-  *
-  *     Initial conditions: P0->cpus_mask = [0, 1]
-  *
-- *     P0@CPU0            P1                             P2
-- *
-- *     migrate_disable();
-- *     <preempted>
-+ *     CPU0               P1                             P2
-+ *     <P0>
-+ *       migrate_disable();
-+ *       <preempted>
-  *                        set_cpus_allowed_ptr(P0, [1]);
-  *                          <blocks>
-+ *     <migration/0>
-+ *       migration_cpu_stop()
-+ *         is_migration_disabled()
-+ *           <bails>
-  *                                                       set_cpus_allowed_ptr(P0, [0, 1]);
-  *                                                         <signal completion>
-  *                          <awakes>
+https://people.kernel.org/tglx/notes-about-netiquette
