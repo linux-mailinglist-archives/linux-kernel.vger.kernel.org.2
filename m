@@ -2,94 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E14B3238EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DDB3238EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234507AbhBXIrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:47:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59331 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234170AbhBXIoq (ORCPT
+        id S234499AbhBXIqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:46:53 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:58834 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234039AbhBXIoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:44:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614156199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NVOivrQkbhUYYYcVGD6e4aORmI1x2sDphQp+U9sGHXA=;
-        b=F9+tRs+DVtxq94MecSunsk7kXVDBdIC7nGvfShJtoED/2bkFkAn/rxVB/Uh9JuoTSVydmo
-        hbQnpn7536gQa5YpO7coRqdrgCGTihFtki26NGAS2Jdjc+W/aQ+SKeHvNihFNumOxiEUAW
-        ipVwRdPKe/Vi7lxFPrTDubRLM1bC4Hk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-533-2_TAnItdOHSxO8nsN6OIyw-1; Wed, 24 Feb 2021 03:43:18 -0500
-X-MC-Unique: 2_TAnItdOHSxO8nsN6OIyw-1
-Received: by mail-wm1-f71.google.com with SMTP id r21so108129wmq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:43:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NVOivrQkbhUYYYcVGD6e4aORmI1x2sDphQp+U9sGHXA=;
-        b=DXSS/kjBAu40amIvy7TFzUJwhFf3AUb3NFkfCRxEA/Aokj9pnoA4rJ8Ad1w9BO2XwV
-         dFF/PjH98yySC2ss9vpk/jTG44voNSP0F2y8kDV5CKdR0Aatys8ojFxqjMYNSWZ3M45f
-         jRhjQ1NrXfg29tOfE5tulLXYlMiy9VDx6Mz1ESh41BHNU1b1q/qZzfyV6G1W9s3ptBy0
-         UIEf/nhZeKVhBLJAmHhj4jSHOAh2buJmyjloyB6g9JJqeOFUUFKaNA0KMXx+PV7FsfRg
-         4Q9w9vheVQvpKx3gRh0UiNEOFkU4uVk5krMSDE1HdhOsaa03LGsLwfX3+wlT13c1uNxn
-         Isvg==
-X-Gm-Message-State: AOAM533cMWFMzLXvCQIbSCdIMa9YK0tMh1SKBswLqENIOf0dvZzu/wvs
-        vOb/J9u3TwSEp7ZgX9lF014qVldsFUs+XlAxfpy7sPqk+XvonDMsstVB/8jPInlLIYt5Lw3kcHA
-        lMxepzWZy3QR2EQ7dZl8tml1+
-X-Received: by 2002:a7b:cc0c:: with SMTP id f12mr2668465wmh.111.1614156196959;
-        Wed, 24 Feb 2021 00:43:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzRkCwcT9hRuAmpCp7SDuEw17ulTeSXlbxTyKBOWvlFkXiNm9VLPs2WH/dTrgyX5sOSIXsenA==
-X-Received: by 2002:a7b:cc0c:: with SMTP id f12mr2668455wmh.111.1614156196796;
-        Wed, 24 Feb 2021 00:43:16 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id q20sm1614382wmc.14.2021.02.24.00.43.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 00:43:16 -0800 (PST)
-Date:   Wed, 24 Feb 2021 03:43:13 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-Message-ID: <20210224034240-mutt-send-email-mst@kernel.org>
-References: <22fe5923-635b-59f0-7643-2fd5876937c2@oracle.com>
- <fae0bae7-e4cd-a3aa-57fe-d707df99b634@redhat.com>
- <20210223082536-mutt-send-email-mst@kernel.org>
- <3ff5fd23-1db0-2f95-4cf9-711ef403fb62@oracle.com>
- <20210224000057-mutt-send-email-mst@kernel.org>
- <0559fd8c-ff44-cb7a-8a74-71976dd2ee33@redhat.com>
- <20210224014232-mutt-send-email-mst@kernel.org>
- <ce6b0380-bc4c-bcb8-db82-2605e819702c@redhat.com>
- <20210224021222-mutt-send-email-mst@kernel.org>
- <babc654d-8dcd-d8a2-c3b6-d20cc4fc554c@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <babc654d-8dcd-d8a2-c3b6-d20cc4fc554c@redhat.com>
+        Wed, 24 Feb 2021 03:44:11 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UPR-PAi_1614156207;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPR-PAi_1614156207)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 24 Feb 2021 16:43:27 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     dmitry.torokhov@gmail.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] Input: edt-ft5x06: Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
+Date:   Wed, 24 Feb 2021 16:43:26 +0800
+Message-Id: <1614156206-94124-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 04:26:43PM +0800, Jason Wang wrote:
->     Basically on first guest access QEMU would tell kernel whether
->     guest is using the legacy or the modern interface.
->     E.g. virtio_pci_config_read/virtio_pci_config_write will call ioctl(ENABLE_LEGACY, 1)
->     while virtio_pci_common_read will call ioctl(ENABLE_LEGACY, 0)
-> 
-> 
-> But this trick work only for PCI I think?
-> 
-> Thanks
+Fix the following coccicheck warning:
+./drivers/input/touchscreen/edt-ft5x06.c:697:0-23: WARNING:
+debugfs_mode_fops should be defined with DEFINE_DEBUGFS_ATTRIBUTE
 
-ccw has a revision it can check. mmio does not have transitional devices
-at all.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/input/touchscreen/edt-ft5x06.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/input/touchscreen/edt-ft5x06.c b/drivers/input/touchscreen/edt-ft5x06.c
+index 2eefbc2..12bbc58 100644
+--- a/drivers/input/touchscreen/edt-ft5x06.c
++++ b/drivers/input/touchscreen/edt-ft5x06.c
+@@ -694,7 +694,7 @@ static int edt_ft5x06_debugfs_mode_set(void *data, u64 mode)
+ 	return retval;
+ };
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(debugfs_mode_fops, edt_ft5x06_debugfs_mode_get,
++DEFINE_DEBUGFS_ATTRIBUTE(debugfs_mode_fops, edt_ft5x06_debugfs_mode_get,
+ 			edt_ft5x06_debugfs_mode_set, "%llu\n");
+ 
+ static ssize_t edt_ft5x06_debugfs_raw_data_read(struct file *file,
 -- 
-MST
+1.8.3.1
 
