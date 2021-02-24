@@ -2,211 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8852D324477
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DF432447C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234888AbhBXTPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 14:15:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51943 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236147AbhBXTOE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 14:14:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614193957;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R1nPZdLLEujUDoG3y2UCPe4/5w/0ZZBej+r55eTDHpI=;
-        b=Z+/tw8WGroI/KjSBQy5eE9X5jYkLxaUTm42fYiOd81cdCXHF/YGuci02h73yXOAwnnLVKb
-        U8nmNErO0iZCcvV2PTcWw/VhzuWkP7WuvIzZycSu9YRELdUtQhOrJ0fdNcDswtE4adNy27
-        zgAuv/l0NU6UH8tCtM6yWEliILLDDeI=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-9RQEsrOXNeiP0f9xQkkEqQ-1; Wed, 24 Feb 2021 14:12:34 -0500
-X-MC-Unique: 9RQEsrOXNeiP0f9xQkkEqQ-1
-Received: by mail-ej1-f71.google.com with SMTP id h8so602573ejx.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:12:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=R1nPZdLLEujUDoG3y2UCPe4/5w/0ZZBej+r55eTDHpI=;
-        b=Ux6DBMEhYUOZ0/c9EgoOD8pBYCvsCIDVsEXAggqHsCHF96wMxPD55aQevfA9beW7Ot
-         Ds+TOpHC39RUvIMPcCCcOqz15XQiOac13hzBD+EpRmUIQhwvYjay8zOZ/jDU1TXoVeQn
-         OC1hXHT38/YPs1hRtNJmaSds7vuR1yrtgQiriTdEzO76xUw6iqV0wJqaVNdC3yADhT0t
-         a3qMCnimjYF0u+1J1GEaVUCErlX49V+VerhewHw4iEIVlxQ9QDpBAcPo+lenzEYdTWsH
-         GS9lBnEzr1GyRptGKbAQakVgPs/nYoocqH2QhCtoAlZFnZV7jHhdEhldx2fB+9yxmnK4
-         nDLw==
-X-Gm-Message-State: AOAM530wt28Q0vh4MzT9AyS26SV4G7K0YUh7edNvKQe1zwKje8WUGqvs
-        eCDRi37+gVa/47wZ7TcSBlkRkkUVGT6YLBOV1a8mR4T4jECNPhtl+nuw1BBJ8kc2ZPQNkDpDqnS
-        BMtOkFnsf3GyclUHVo7ZHqLNaAFBaCkjpZEQNa3FxwqE4if09lXZbDiH+JVR0h+a2Yc3TF+kfxz
-        Tx
-X-Received: by 2002:a17:907:d86:: with SMTP id go6mr31329730ejc.337.1614193953200;
-        Wed, 24 Feb 2021 11:12:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz4SdbV/WPoy9YHkKBQTsJjahnYzDnHy531S+6gpK15yqgaq/hV6zbmyh3pNUTPOADdv2mN3Q==
-X-Received: by 2002:a17:907:d86:: with SMTP id go6mr31329711ejc.337.1614193952968;
-        Wed, 24 Feb 2021 11:12:32 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id lu26sm227422ejb.33.2021.02.24.11.12.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Feb 2021 11:12:32 -0800 (PST)
-Subject: Re: [PATCH v1 1/1] i2c: cht-wc: Use fwnode for the controller and IRQ
- domain
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210223172231.2224-1-andriy.shevchenko@linux.intel.com>
- <fea7ce9a-01a9-cab8-8675-be5c44cb8a27@redhat.com>
- <YDZLuzNivBP4HcPd@smile.fi.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <7e5f8d81-0ee5-b8ad-ed72-06d4677cd8f7@redhat.com>
-Date:   Wed, 24 Feb 2021 20:12:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S234495AbhBXTQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 14:16:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33216 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234927AbhBXTQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 14:16:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D7EC7AB95;
+        Wed, 24 Feb 2021 19:15:37 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 08C5CDA734; Wed, 24 Feb 2021 20:13:37 +0100 (CET)
+Date:   Wed, 24 Feb 2021 20:13:37 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Maheep Kumar Kathuria <me@maheepk.net>
+Cc:     clm@fb.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Fixed a brace coding style issue
+Message-ID: <20210224191337.GB1993@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Maheep Kumar Kathuria <me@maheepk.net>,
+        clm@fb.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210215150820.83069-1-me@maheepk.net>
 MIME-Version: 1.0
-In-Reply-To: <YDZLuzNivBP4HcPd@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215150820.83069-1-me@maheepk.net>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 2/24/21 1:51 PM, Andy Shevchenko wrote:
-> On Tue, Feb 23, 2021 at 08:25:35PM +0100, Hans de Goede wrote:
->> On 2/23/21 6:22 PM, Andy Shevchenko wrote:
->>> It's better to describe the I²C controller and associated IRQ domain with
->>> fwnode, so they will find their place in the hierarchy in sysfs and also
->>> make easier to debug.
->>>
->>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>> ---
->>>
->>> Hans, unfortunately I have no device at hand with INT34D3. This is only compile
->>> tested in that sense. Also I would like to hear if you like the idea in general.
->>>
->>>  drivers/i2c/busses/i2c-cht-wc.c | 6 ++++--
->>>  1 file changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/i2c/busses/i2c-cht-wc.c b/drivers/i2c/busses/i2c-cht-wc.c
->>> index f80d79e973cd..dbf55842b0dc 100644
->>> --- a/drivers/i2c/busses/i2c-cht-wc.c
->>> +++ b/drivers/i2c/busses/i2c-cht-wc.c
->>> @@ -303,6 +303,7 @@ static struct bq24190_platform_data bq24190_pdata = {
->>>  static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
->>>  {
->>>  	struct intel_soc_pmic *pmic = dev_get_drvdata(pdev->dev.parent);
->>> +	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
->>
->> So this will point to the ACPi-companion fwnode of the CHT Whiskey Cove PMIC
->> controller.
+On Mon, Feb 15, 2021 at 08:38:20PM +0530, Maheep Kumar Kathuria wrote:
+> Fixed a coding style issue in thresh_exec_hook()
 > 
-> Right.
+> Signed-off-by: Maheep Kumar Kathuria <me@maheepk.net>
+> ---
+>  fs/btrfs/async-thread.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
->>>  	struct cht_wc_i2c_adap *adap;
->>>  	struct i2c_board_info board_info = {
->>>  		.type = "bq24190",
->>> @@ -333,6 +334,7 @@ static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
->>>  	strlcpy(adap->adapter.name, "PMIC I2C Adapter",
->>>  		sizeof(adap->adapter.name));
->>>  	adap->adapter.dev.parent = &pdev->dev;
->>> +	set_primary_fwnode(&adap->adapter.dev, fwnode);
->>
->> So now we have the main PMIC device i2c-client, the platform-device instantiated
->> for the MFD-cell for the PMIC's builtin I2C-controller; and the device instantiated
->> for the adapter-device all 3 share the same ACPI-companion fwnode.
-> 
-> Okay, this step in this patch maybe not needed (or should be a separate change,
-> but I don't see clearly what would be the benefit out of it).
-> 
->>>  	/* Clear and activate i2c-adapter interrupts, disable client IRQ */
->>>  	adap->old_irq_mask = adap->irq_mask = ~CHT_WC_EXTCHGRIRQ_ADAP_IRQMASK;
->>> @@ -350,8 +352,8 @@ static int cht_wc_i2c_adap_i2c_probe(struct platform_device *pdev)
->>>  		return ret;
->>>  
->>>  	/* Alloc and register client IRQ */
->>> -	adap->irq_domain = irq_domain_add_linear(pdev->dev.of_node, 1,
->>> -						 &irq_domain_simple_ops, NULL);
->>> +	adap->irq_domain = irq_domain_create_linear(fwnode, 1,
->>> +						    &irq_domain_simple_ops, NULL);
->>
->> Hmm, not sure this is right, admittedly the old code looks weird too, but now we
->> are creating a second irq_domain at the same level as the irq_domain created for
->> the IRQ-chip part of the PMIC. But this is really more of a child-domain of just
->> the I2C-controller MFD-cell. The IRQ-CHIP part of the PMIC has a single IRQ for the
->> I2C controller which gets raised both on i2c-transfer completions and when the
->> pin on the PMIC which is reserved as input for the IRQ coming out of the charger-chip
->> gets triggered.
->>
->> IOW we have this:
->>
->>
->>                PMIC
->>                  |
->>     ------------------------------
->>     |       |        |           |
->>    IRQ1   IRQ2      IRQ3       I2C-IRQ
->>                                  |
->>                    ----------------------------------
->>                    |        |         |             |
->>                  READIRQ   WRIRQ    NACKIRQ     CLIENT-IRQ
->>
->> Where READIRQ, WRIRQ and NACKIRQ are directly consumed
->> and the CLIENT-IRQ is being represented as a single IRQ on
->> a new irqchip so that we can pass it along to the i2c-driver
->> for the charger-chip which is connected to the Whiskey Cove's
->> builtin I2C controller.
->>
->> But doing as you suggest would model the IRQs as:
->>
->>                PMIC
->>                  |
->>     --------------------------------------------------
->>     |       |        |           |                    |
->>    IRQ1   IRQ2      IRQ3       I2C-IRQ           CLIENT-IRQ
->>
->> Which is not the same really. I guess it is better then what we
->> have though ?
-> 
-> Hmm... There should not be difference in the hierarchy. add_linear ==
-> create_linear. The propagation of *device* (not an IRQ) fwnode is just
-> convenient way to have IRQ domain be named (instead of 'unknown-N' or so).
-> Maybe I have read __irq_domain_add() code wrongly.
+> diff --git a/fs/btrfs/async-thread.c b/fs/btrfs/async-thread.c
+> index 309516e6a968..38abeff7af69 100644
+> --- a/fs/btrfs/async-thread.c
+> +++ b/fs/btrfs/async-thread.c
+> @@ -212,9 +212,8 @@ static inline void thresh_exec_hook(struct __btrfs_workqueue *wq)
+>  out:
+>  	spin_unlock(&wq->thres_lock);
+>  
+> -	if (need_change) {
+> +	if (need_change)
+>  		workqueue_set_max_active(wq->normal_wq, wq->current_active);
+> -	}
 
-Sorry, this is probably my bad. The first ASCII-art which I posted is
-how things actually work in HW. The second one is how I assumed that
-things would look like in some nested representation of the IRQ-domains
-given that all the IRQs mentioned in the ASCII-art now use the same fwnode
-as parent for their domain. But poking around in sysfs I don't see any
-hierarchical representation of the domains at all. Actually I cannot
-find any representation of the IRQ domains inside sysfs (I've never
-looked at / into this before) ?
-
-If what you say is right and the fwnode is only used to set a name (where can
-I see those names ?) then your patch is probably correct.
-
-> Nevertheless, thinking more about it, why we don't add an IRQ chip via regmap
-> IRQ API?
-
-There already is a regmap IRQ chip associated with the MFD device and the
-IRQ handling required here is somewhat tricky (see the comments in the driver)
-so I would prefer to keep this as is.
-
->> Note I can test any changes made here, but I'm not 100% convinced that
->> the current version of this patch is correct.
-> 
-> If we settle on the idea first. I'm (slowly) looking forward to check another
-> CherryTrail device we have at the lab, but we lack of some (power) equipment
-> right now to setup it properly. I hope it may have the Whiskey Cove PMIC there.
-
-More testing is always welcome :)   With that said, testing these changes really
-is not a lot of work for me.
-
-Regards,
-
-Hans
-
+This is really a trivial change, have you checked if there are more?
+Fixing them in a larger batch would be better than one by one.
