@@ -2,205 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654B63235CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 03:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA113235D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 03:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbhBXCfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 21:35:55 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4634 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232645AbhBXCfv (ORCPT
+        id S232660AbhBXCik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 21:38:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232343AbhBXCih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 21:35:51 -0500
-Received: from dggeme770-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Dlg2s4ZTdzYCNZ;
-        Wed, 24 Feb 2021 10:33:41 +0800 (CST)
-Received: from [10.174.187.128] (10.174.187.128) by
- dggeme770-chm.china.huawei.com (10.3.19.116) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 24 Feb 2021 10:35:07 +0800
-Subject: Re: [RFC PATCH 0/4] KVM: arm64: Improve efficiency of stage2 page
- table
-To:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210208112250.163568-1-wangyanan55@huawei.com>
- <3a128c43-ff18-2132-1eaa-1fc882c80b1e@arm.com>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <0dd3a764-0e11-af6a-2b46-84509bef7294@huawei.com>
-Date:   Wed, 24 Feb 2021 10:35:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 23 Feb 2021 21:38:37 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E4BC06174A;
+        Tue, 23 Feb 2021 18:37:57 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id 204so837084qke.11;
+        Tue, 23 Feb 2021 18:37:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gew/d97c74HBNGUJfx+Rk0cvl8/ZTJmIMUjr9vTVx7M=;
+        b=Ba9GMlCINUM+zY2JrGDsVLEbfP5OL5LB5Lw8Zm/phXQTYxBbGx1KE8j1zohBruOQKI
+         O0/tmltbBWlopzuFvEvxtJioRfKWXhrusxsyjarp2eL2szg6ZMZJ7o9J+lgTvTOFa2WI
+         Ulwcafe8tfBPsjfdWBRQM0tyAatPbS2YClRL1zMjwXGwMaOo6gY7aPG3ACfHQhcWFuSw
+         Q+5YkT04eJI5IZJhj/RX/meMx4pTWC5xkLcA33T9HuGWo9gjzPlfLFqe1IoNIpxg9A+B
+         ifTmRqN/+mNOc/gqTLAf40Tr4UifQF4DwB2IT1VGfqA/Z0WP83q8OzfvfASkL1hpBU8W
+         /I4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gew/d97c74HBNGUJfx+Rk0cvl8/ZTJmIMUjr9vTVx7M=;
+        b=awpdtZWA/rwDRiemHnGnbmfA21ymMGtnxc1yneEycSnbyPO2tuD2LHTLS5el+Hstmq
+         C4as51ybmOhCUx12O618bWuo6L6/M2ZAQ3NZJt/Ts1q6q3g4sugLdqJzhrb2fKc1Kq1x
+         s8wSXqBcqogyReJEs2x8Pw9hjCfP3moHZ/+kMrG21OtVksnMG8DiIZl19y5H0jG4KKKB
+         J6VdZOxPPeXZ7+xS/Y3Ir2AwpPtYnRUwWUv9ABA+QaTv02DmLnKpn6WBY8q9MNQa55Fo
+         9e6JyVSFAgM2HDyB0ZYFxaUmPwwcoSS4v7il9vsMGDTGftzT+lyZsR7V0j1qHJmvL2+u
+         8JIA==
+X-Gm-Message-State: AOAM5324nqDf5+Z5O6Rihj6B1zLGd/DeiJIM/t3SdFl9hjkpoKxq/Cbk
+        aImdOFOvxqNVU6GVCuF6bbo=
+X-Google-Smtp-Source: ABdhPJyv6fSMmxXyLVhqw8VjDlG1wwoFJhAdl2rxOscK1Ck0FT3LMmAZ/S0HMcFZ+aoVAWLm+IdRLg==
+X-Received: by 2002:a37:389:: with SMTP id 131mr29684614qkd.177.1614134276886;
+        Tue, 23 Feb 2021 18:37:56 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id v187sm578477qkd.50.2021.02.23.18.37.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 18:37:56 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 7279727C0054;
+        Tue, 23 Feb 2021 21:37:54 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 23 Feb 2021 21:37:55 -0500
+X-ME-Sender: <xms:Abw1YGSm55fnSS2IfXVEjvsQALZDXT2FmLIttNcYUAw0Z0MwU_Mw9A>
+    <xme:Abw1YLzMRTFXxC7z7CfA7r8GcSwRcw_f19HGYHT6dr3FbAPJhUzqjoOOOjXrTWfrn
+    3enMbm6IplhWDNt_w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeeigdeghecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
+    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
+    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
+    jeenucfkphepudefuddruddtjedrudegjedruddvieenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
+    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
+    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:Arw1YD1sWW2t4jgDSfqyNdFYBIOr7SaDAgN6qla8ivhjUpPMTEcXxA>
+    <xmx:Arw1YCBQcdnpuDWsZaon4mpyVs4atIGfgN2rLIEMQMsM_fI11vcuRw>
+    <xmx:Arw1YPih_zyVxAy6eYnGJKRRqwEz5_d54XlulvrXBC5fEmhz3UnQHg>
+    <xmx:Arw1YCoEIJbHHyoZglKSFZlK1BF5Ua1lvOjIB4gjzOLZ-ti4rLk2dIOe1tQ>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C334A108005C;
+        Tue, 23 Feb 2021 21:37:53 -0500 (EST)
+Date:   Wed, 24 Feb 2021 10:37:16 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
+        arnd@arndb.de, wei.liu@kernel.org, ardb@kernel.org,
+        daniel.lezcano@linaro.org, kys@microsoft.com
+Subject: Re: [PATCH v8 1/6] arm64: hyperv: Add Hyper-V hypercall and register
+ access utilities
+Message-ID: <YDW73Oh//1iAGTka@boqun-archlinux>
+References: <1613690194-102905-1-git-send-email-mikelley@microsoft.com>
+ <1613690194-102905-2-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <3a128c43-ff18-2132-1eaa-1fc882c80b1e@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme717-chm.china.huawei.com (10.1.199.113) To
- dggeme770-chm.china.huawei.com (10.3.19.116)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1613690194-102905-2-git-send-email-mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+On Thu, Feb 18, 2021 at 03:16:29PM -0800, Michael Kelley wrote:
+[...]
+> +
+> +/*
+> + * Get the value of a single VP register.  One version
+> + * returns just 64 bits and another returns the full 128 bits.
+> + * The two versions are separate to avoid complicating the
+> + * calling sequence for the more frequently used 64 bit version.
+> + */
+> +
+> +void __hv_get_vpreg_128(u32 msr,
+> +			struct hv_get_vp_registers_input  *input,
+> +			struct hv_get_vp_registers_output *res)
+> +{
+> +	u64	status;
+> +
+> +	input->header.partitionid = HV_PARTITION_ID_SELF;
+> +	input->header.vpindex = HV_VP_INDEX_SELF;
+> +	input->header.inputvtl = 0;
+> +	input->element[0].name0 = msr;
+> +	input->element[0].name1 = 0;
+> +
+> +
+> +	status = hv_do_hypercall(
+> +		HVCALL_GET_VP_REGISTERS | HV_HYPERCALL_REP_COMP_1,
+> +		input, res);
+> +
+> +	/*
+> +	 * Something is fundamentally broken in the hypervisor if
+> +	 * getting a VP register fails. There's really no way to
+> +	 * continue as a guest VM, so panic.
+> +	 */
+> +	BUG_ON((status & HV_HYPERCALL_RESULT_MASK) != HV_STATUS_SUCCESS);
+> +}
+> +
+> +u64 hv_get_vpreg(u32 msr)
+> +{
+> +	struct hv_get_vp_registers_input	*input;
+> +	struct hv_get_vp_registers_output	*output;
+> +	u64					result;
+> +
+> +	/*
+> +	 * Allocate a power of 2 size so alignment to that size is
+> +	 * guaranteed, since the hypercall input and output areas
+> +	 * must not cross a page boundary.
+> +	 */
+> +	input = kzalloc(roundup_pow_of_two(sizeof(input->header) +
+> +				sizeof(input->element[0])), GFP_ATOMIC);
+> +	output = kmalloc(roundup_pow_of_two(sizeof(*output)), GFP_ATOMIC);
+> +
 
-On 2021/2/23 23:55, Alexandru Elisei wrote:
-> Hi Yanan,
->
-> I wanted to review the patches, but unfortunately I get an error when trying to
-> apply the first patch in the series:
->
-> Applying: KVM: arm64: Move the clean of dcache to the map handler
-> error: patch failed: arch/arm64/kvm/hyp/pgtable.c:464
-> error: arch/arm64/kvm/hyp/pgtable.c: patch does not apply
-> error: patch failed: arch/arm64/kvm/mmu.c:882
-> error: arch/arm64/kvm/mmu.c: patch does not apply
-> Patch failed at 0001 KVM: arm64: Move the clean of dcache to the map handler
-> hint: Use 'git am --show-current-patch=diff' to see the failed patch
-> When you have resolved this problem, run "git am --continue".
-> If you prefer to skip this patch, run "git am --skip" instead.
-> To restore the original branch and stop patching, run "git am --abort".
->
-> Tried this with Linux tags v5.11-rc1 to v5.11-rc7. It looks like pgtable.c and
-> mmu.c from your patch is different than what is found on upstream master. Did you
-> use another branch as the base for your patches?
-Thanks for your attention.
-Indeed, this series was  more or less based on the patches I post before 
-(Link: 
-https://lore.kernel.org/r/20210114121350.123684-4-wangyanan55@huawei.com).
-And they have already been merged into up-to-data upstream master 
-(commit: 509552e65ae8287178a5cdea2d734dcd2d6380ab), but not into tags 
-v5.11-rc1 to v5.11-rc7.
-Could you please try the newest upstream master(since commit: 
-509552e65ae8287178a5cdea2d734dcd2d6380ab) ? I have tested on my local 
-and no apply errors occur.
+Do we need to BUG_ON(!input || !output)? Or we expect the page fault
+(for input being NULL) or the failure of hypercall (for output being
+NULL) to tell us the allocation failed?
 
-Thanks,
+Hmm.. think a bit more on this, maybe we'd better retry the allocation
+if it failed. Because say we are under memory pressusre, and only have
+memory enough for doing one hvcall, and one thread allocates that memory
+but gets preempted by another thread trying to do another hvcall:
 
-Yanan.
+	<thread 1>
+	hv_get_vpreg():
+	  input = kzalloc(...);
+	  output = kmalloc(...);
+	<preempted and switch to thread 2>
+	hv_get_vpreg():
+	  intput = kzalloc(...); // allocation fails, but actually if
+	                         // we wait for thread 1 to finish its
+				 // hvcall, we can get enough memory.
 
-> Thanks,
->
-> Alex
->
-> On 2/8/21 11:22 AM, Yanan Wang wrote:
->> Hi,
->>
->> This series makes some efficiency improvement of stage2 page table code,
->> and there are some test results to present the performance changes, which
->> were tested by a kvm selftest [1] that I have post:
->> [1] https://lore.kernel.org/lkml/20210208090841.333724-1-wangyanan55@huawei.com/
->>
->> About patch 1:
->> We currently uniformly clean dcache in user_mem_abort() before calling the
->> fault handlers, if we take a translation fault and the pfn is cacheable.
->> But if there are concurrent translation faults on the same page or block,
->> clean of dcache for the first time is necessary while the others are not.
->>
->> By moving clean of dcache to the map handler, we can easily identify the
->> conditions where CMOs are really needed and avoid the unnecessary ones.
->> As it's a time consuming process to perform CMOs especially when flushing
->> a block range, so this solution reduces much load of kvm and improve the
->> efficiency of creating mappings.
->>
->> Test results:
->> (1) when 20 vCPUs concurrently access 20G ram (all 1G hugepages):
->> KVM create block mappings time: 52.83s -> 3.70s
->> KVM recover block mappings time(after dirty-logging): 52.0s -> 2.87s
->>
->> (2) when 40 vCPUs concurrently access 20G ram (all 1G hugepages):
->> KVM creating block mappings time: 104.56s -> 3.70s
->> KVM recover block mappings time(after dirty-logging): 103.93s -> 2.96s
->>
->> About patch 2, 3:
->> When KVM needs to coalesce the normal page mappings into a block mapping,
->> we currently invalidate the old table entry first followed by invalidation
->> of TLB, then unmap the page mappings, and install the block entry at last.
->>
->> It will cost a lot of time to unmap the numerous page mappings, which means
->> the table entry will be left invalid for a long time before installation of
->> the block entry, and this will cause many spurious translation faults.
->>
->> So let's quickly install the block entry at first to ensure uninterrupted
->> memory access of the other vCPUs, and then unmap the page mappings after
->> installation. This will reduce most of the time when the table entry is
->> invalid, and avoid most of the unnecessary translation faults.
->>
->> Test results based on patch 1:
->> (1) when 20 vCPUs concurrently access 20G ram (all 1G hugepages):
->> KVM recover block mappings time(after dirty-logging): 2.87s -> 0.30s
->>
->> (2) when 40 vCPUs concurrently access 20G ram (all 1G hugepages):
->> KVM recover block mappings time(after dirty-logging): 2.96s -> 0.35s
->>
->> So combined with patch 1, it makes a big difference of KVM creating mappings
->> and recovering block mappings with not much code change.
->>
->> About patch 4:
->> A new method to distinguish cases of memcache allocations is introduced.
->> By comparing fault_granule and vma_pagesize, cases that require allocations
->> from memcache and cases that don't can be distinguished completely.
->>
->> ---
->>
->> Details of test results
->> platform: HiSilicon Kunpeng920 (FWB not supported)
->> host kernel: Linux mainline (v5.11-rc6)
->>
->> (1) performance change of patch 1
->> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 20
->> 	   (20 vcpus, 20G memory, block mappings(granule 1G))
->> Before patch: KVM_CREATE_MAPPINGS: 52.8338s 52.8327s 52.8336s 52.8255s 52.8303s
->> After  patch: KVM_CREATE_MAPPINGS:  3.7022s  3.7031s  3.7028s  3.7012s  3.7024s
->>
->> Before patch: KVM_ADJUST_MAPPINGS: 52.0466s 52.0473s 52.0550s 52.0518s 52.0467s
->> After  patch: KVM_ADJUST_MAPPINGS:  2.8787s  2.8781s  2.8785s  2.8742s  2.8759s
->>
->> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 40
->> 	   (40 vcpus, 20G memory, block mappings(granule 1G))
->> Before patch: KVM_CREATE_MAPPINGS: 104.560s 104.556s 104.554s 104.556s 104.550s
->> After  patch: KVM_CREATE_MAPPINGS:  3.7011s  3.7103s  3.7005s  3.7024s  3.7106s
->>
->> Before patch: KVM_ADJUST_MAPPINGS: 103.931s 103.936s 103.927s 103.942s 103.927s
->> After  patch: KVM_ADJUST_MAPPINGS:  2.9621s  2.9648s  2.9474s  2.9587s  2.9603s
->>
->> (2) performance change of patch 2, 3(based on patch 1)
->> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 1
->> 	   (1 vcpu, 20G memory, block mappings(granule 1G))
->> Before patch: KVM_ADJUST_MAPPINGS: 2.8241s 2.8234s 2.8245s 2.8230s 2.8652s
->> After  patch: KVM_ADJUST_MAPPINGS: 0.2444s 0.2442s 0.2423s 0.2441s 0.2429s
->>
->> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 20
->> 	   (20 vcpus, 20G memory, block mappings(granule 1G))
->> Before patch: KVM_ADJUST_MAPPINGS: 2.8787s 2.8781s 2.8785s 2.8742s 2.8759s
->> After  patch: KVM_ADJUST_MAPPINGS: 0.3008s 0.3004s 0.2974s 0.2917s 0.2900s
->>
->> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 40
->> 	   (40 vcpus, 20G memory, block mappings(granule 1G))
->> Before patch: KVM_ADJUST_MAPPINGS: 2.9621s 2.9648s 2.9474s 2.9587s 2.9603s
->> After  patch: KVM_ADJUST_MAPPINGS: 0.3541s 0.3694s 0.3656s 0.3693s 0.3687s
->>
->> ---
->>
->> Yanan Wang (4):
->>    KVM: arm64: Move the clean of dcache to the map handler
->>    KVM: arm64: Add an independent API for coalescing tables
->>    KVM: arm64: Install the block entry before unmapping the page mappings
->>    KVM: arm64: Distinguish cases of memcache allocations completely
->>
->>   arch/arm64/include/asm/kvm_mmu.h | 16 -------
->>   arch/arm64/kvm/hyp/pgtable.c     | 82 +++++++++++++++++++++-----------
->>   arch/arm64/kvm/mmu.c             | 39 ++++++---------
->>   3 files changed, 69 insertions(+), 68 deletions(-)
->>
-> .
+, in this case, if thread 2 retried, it might get the enough memory,
+therefore there is no need to BUG_ON() on allocation failure. That said,
+I don't think this is likely to happen, and there may be better
+solutions for this, so maybe we can keep it as it is (assuming that
+memory allocation for hvcall never fails) and improve later.
+
+Regards,
+Boqun
+
+> +	__hv_get_vpreg_128(msr, input, output);
+> +
+> +	result = output->as64.low;
+> +	kfree(input);
+> +	kfree(output);
+> +	return result;
+> +}
+> +EXPORT_SYMBOL_GPL(hv_get_vpreg);
+> +
+> +void hv_get_vpreg_128(u32 msr, struct hv_get_vp_registers_output *res)
+> +{
+> +	struct hv_get_vp_registers_input	*input;
+> +	struct hv_get_vp_registers_output	*output;
+> +
+> +	/*
+> +	 * Allocate a power of 2 size so alignment to that size is
+> +	 * guaranteed, since the hypercall input and output areas
+> +	 * must not cross a page boundary.
+> +	 */
+> +	input = kzalloc(roundup_pow_of_two(sizeof(input->header) +
+> +				sizeof(input->element[0])), GFP_ATOMIC);
+> +	output = kmalloc(roundup_pow_of_two(sizeof(*output)), GFP_ATOMIC);
+> +
+> +	__hv_get_vpreg_128(msr, input, output);
+> +
+> +	res->as64.low = output->as64.low;
+> +	res->as64.high = output->as64.high;
+> +	kfree(input);
+> +	kfree(output);
+> +}
+[...]
