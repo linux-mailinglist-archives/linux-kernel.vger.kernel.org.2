@@ -2,254 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD06323BFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 13:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5FA323BFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 13:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbhBXMjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 07:39:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60492 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232787AbhBXMjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 07:39:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 475C8AD5C;
-        Wed, 24 Feb 2021 12:38:49 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8A4D61E14EF; Wed, 24 Feb 2021 13:38:48 +0100 (CET)
-Date:   Wed, 24 Feb 2021 13:38:48 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-Subject: Re: [RFC] Better page cache error handling
-Message-ID: <20210224123848.GA27695@quack2.suse.cz>
-References: <20210205161142.GI308988@casper.infradead.org>
+        id S233538AbhBXMlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 07:41:05 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12951 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231822AbhBXMlC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 07:41:02 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DlwTJ0jnNzjQ53;
+        Wed, 24 Feb 2021 20:39:00 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 24 Feb 2021 20:40:08 +0800
+Subject: Re: [PATCH stable-rc queue/4.9 1/1] futex: Provide distinct return
+ value when owner is exiting
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        <sashal@kernel.org>, <tglx@linutronix.de>, <wangle6@huawei.com>,
+        <zhengyejian1@huawei.com>
+References: <20210222070328.102384-1-nixiaoming@huawei.com>
+ <20210222070328.102384-2-nixiaoming@huawei.com> <YDOEZhmKqjTVxtMn@kroah.com>
+ <3bc570f6-f8af-b0a2-4d62-13ed4adc1f33@huawei.com>
+ <YDOe9GNivoHQphQc@kroah.com>
+ <76f6a446-41db-3b7a-dcab-a85d0841654f@huawei.com>
+ <YDT8ZsMqVqihECoE@kroah.com>
+ <2e8cf845-30ee-22c2-428a-b56e03cb49e4@huawei.com>
+ <YDYEjmfcykR3achs@kroah.com>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <0b9d35bd-12a9-22f2-e08e-b3e8f0d268dd@huawei.com>
+Date:   Wed, 24 Feb 2021 20:40:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205161142.GI308988@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YDYEjmfcykR3achs@kroah.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew!
+On 2021/2/24 15:47, Greg KH wrote:
+> On Wed, Feb 24, 2021 at 09:41:01AM +0800, Xiaoming Ni wrote:
+>> On 2021/2/23 21:00, Greg KH wrote:
+>>> On Mon, Feb 22, 2021 at 10:11:37PM +0800, Xiaoming Ni wrote:
+>>>> On 2021/2/22 20:09, Greg KH wrote:
+>>>>> On Mon, Feb 22, 2021 at 06:54:06PM +0800, Xiaoming Ni wrote:
+>>>>>> On 2021/2/22 18:16, Greg KH wrote:
+>>>>>>> On Mon, Feb 22, 2021 at 03:03:28PM +0800, Xiaoming Ni wrote:
+>>>>>>>> From: Thomas Gleixner<tglx@linutronix.de>
+>>>>>>>>
+>>>>>>>> commit ac31c7ff8624409ba3c4901df9237a616c187a5d upstream.
+>>>>>>> This commit is already in the 4.9 tree.  If the backport was incorrect,
+>>>>>>> say that here, and describe what went wrong and why this commit fixes
+>>>>>>> it.
+>>>>>>>
+>>>>>>> Also state what commit this fixes as well, otherwise this changelog just
+>>>>>>> looks like it is being applied again to the tree, which doesn't make
+>>>>>>> much sense.
+>>>>>>>
+>>>>>>> thanks,
+>>>>>>>
+>>>>>>> greg k-h
+>>>>>>> .
+>>>>>>
+>>>>>> I wrote a cover for it. but forgot to adjust the title of the cover:
+>>>>>>
+>>>>>> https://lore.kernel.org/lkml/20210222070328.102384-1-nixiaoming@huawei.com/
+>>>>>>
+>>>>>>
+>>>>>> I found a dead code in the queue/4.9 branch of the stable-rc repository.
+>>>>>>
+>>>>>> 2021-02-03:
+>>>>>> commit c27f392040e2f6 ("futex: Provide distinct return value when
+>>>>>>     owner is exiting")
+>>>>>> 	The function handle_exit_race does not exist. Therefore, the
+>>>>>> 	change in handle_exit_race() is ignored in the patch round.
+>>>>>>
+>>>>>> 2021-02-22:
+>>>>>> commit e55cb811e612 ("futex: Cure exit race")
+>>>>>> 	Define the handle_exit_race() function,
+>>>>>> 	but no branch in the function returns EBUSY.
+>>>>>> 	As a result, dead code occurs in the attach_to_pi_owner():
+>>>>>>
+>>>>>> 		int ret = handle_exit_race(uaddr, uval, p);
+>>>>>> 		...
+>>>>>> 		if (ret == -EBUSY)
+>>>>>> 			*exiting = p; /* dead code */
+>>>>>>
+>>>>>> To fix the dead code, modify the commit e55cb811e612 ("futex: Cure exit
+>>>>>> race"),
+>>>>>> or install a patch to incorporate the changes in handle_exit_race().
+>>>>>>
+>>>>>> I am unfamiliar with the processing of the stable-rc queue branch,
+>>>>>> and I cannot find the patch mail of the current branch in
+>>>>>> 	https://lore.kernel.org/lkml/?q=%22futex%3A+Cure+exit+race%22
+>>>>>> Therefore, I re-integrated commit ac31c7ff8624 ("futex: Provide distinct
+>>>>>>     return value when owner is exiting").
+>>>>>>     And wrote a cover (but forgot to adjust the title of the cover):
+>>>>>>
+>>>>>> https://lore.kernel.org/lkml/20210222070328.102384-1-nixiaoming@huawei.com/
+>>>>>
+>>>>> So this is a "fixup" patch, right?
+>>>>>
+>>>>> Please clearly label it as such in your patch description and resend
+>>>>> this as what is here I can not apply at all.
+>>>>>
+>>>>> thanks,
+>>>>>
+>>>>> greg k-h
+>>>>> .
+>>>>>
+>>>> Thank you for your guidance.
+>>>> I have updated the patch description and resent the patch based on
+>>>> v4.9.258-rc1
+>>>> https://lore.kernel.org/lkml/20210222125352.110124-1-nixiaoming@huawei.com/
+>>>
+>>> Can you please try 4.9.258 and let me know if this is still needed or
+>>> not?
+>>>
+>>> thanks,
+>>>
+>>> greg k-h
+>>> .
+>>>
+>> The dead code problem still exists in V4.9.258. No conflict occurs during my
+>> patch integration. Do I need to correct the version number marked in the cc
+>> table in the patch and resend the patch?
+> 
+> Please do.
+> 
+> thanks,
+> 
+> greg k-h
+> .
+> 
+I have resend the patch based on v4.9.258.
+link:
+https://lore.kernel.org/lkml/20210224100923.51315-1-nixiaoming@huawei.com/
 
-On Fri 05-02-21 16:11:42, Matthew Wilcox wrote:
-> Scenario:
-> 
-> You have a disk with a bad sector.  This disk will take 30 seconds of
-> trying progressively harder to recover the sector before timing the
-> I/O out and returning BLK_STS_MEDIUM to the filesystem.  Unfortunately
-> for you, this bad sector happens to have landed in index.html on your
-> webserver which gets one hit per second.  You have configured 500
-> threads on your webserver.
-> 
-> Today:
-> 
-> We allocate a page and try to read it.  29 threads pile up waiting
-> for the page lock in filemap_update_page() (or whatever variant of
-> that you're looking at; I'm talking about linux-next).  The original
-> requester gets the error and returns -EIO to userspace.  One of the
-> lucky 29 waiting threads sends another read.  30 more threads pile up
-> while it's processing.  Eventually, all 500 threads of your webserver
-> are sleeping waiting for their turn to get an EIO.
-> 
-> With the below patch:
-> 
-> We allocate a page and try to read it.  29 threads pile up waiting
-> for the page lock in filemap_update_page().  The error returned by the
-> original I/O is shared between all 29 waiters as well as being returned
-> to the requesting thread.  The next request for index.html will send
-> another I/O, and more waiters will pile up trying to get the page lock,
-> but at no time will more than 30 threads be waiting for the I/O to fail.
+Thanks
 
-Interesting idea. It certainly improves current behavior. I just wonder
-whether this isn't a partial solution to a problem and a full solution of
-it would have to go in a different direction? I mean it just seems
-wrong that each reader (let's assume they just won't overlap) has to retry
-the failed IO and wait for the HW to figure out it's not going to work.
-Shouldn't we cache the error state with the page? And I understand that we
-then also have to deal with the problem how to invalidate the error state
-when the block might eventually become readable (for stuff like temporary
-IO failures). That would need some signalling from the driver to the page
-cache, maybe in a form of some error recovery sequence counter or something
-like that. For stuff like iSCSI, multipath, or NBD it could be doable I
-believe...
+Xiaoming Ni
 
-								Honza
 
-> 
-> ----
-> 
-> Individual filesystems will have to be modified to call unlock_page_err()
-> to take advantage of this.  Unconverted filesystems will continue to
-> behave as in the first scenario.
-> 
-> I've only tested it lightly, but it doesn't seem to break anything.
-> It needs some targetted testing with error injection which I haven't
-> done yet.  It probably also needs some refinement to not report
-> errors from readahead.  Also need to audit the other callers of
-> put_and_wait_on_page_locked().  This patch interferes with the page
-> folio work, so I'm not planning on pushing it for a couple of releases.
-> 
-> ----
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 16a1e82e3aeb..faeb6c4af7fd 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -183,7 +183,7 @@ iomap_read_page_end_io(struct bio_vec *bvec, int error)
->  	}
->  
->  	if (!iop || atomic_sub_and_test(bvec->bv_len, &iop->read_bytes_pending))
-> -		unlock_page(page);
-> +		unlock_page_err(page, error);
->  }
->  
->  static void
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index fda84e88b2ba..e750881bedfe 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -564,11 +564,13 @@ struct wait_page_key {
->  	struct page *page;
->  	int bit_nr;
->  	int page_match;
-> +	int err;
->  };
->  
->  struct wait_page_queue {
->  	struct page *page;
->  	int bit_nr;
-> +	int err;
->  	wait_queue_entry_t wait;
->  };
->  
-> @@ -591,6 +593,7 @@ extern int __lock_page_async(struct page *page, struct wait_page_queue *wait);
->  extern int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
->  				unsigned int flags);
->  extern void unlock_page(struct page *page);
-> +extern void unlock_page_err(struct page *page, int err);
->  extern void unlock_page_fscache(struct page *page);
->  
->  /*
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 97ff7294516e..515e0136f00f 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -1077,6 +1077,7 @@ static int wake_page_function(wait_queue_entry_t *wait, unsigned mode, int sync,
->  	 * afterwards to avoid any races. This store-release pairs
->  	 * with the load-acquire in wait_on_page_bit_common().
->  	 */
-> +	wait_page->err = key->err;
->  	smp_store_release(&wait->flags, flags | WQ_FLAG_WOKEN);
->  	wake_up_state(wait->private, mode);
->  
-> @@ -1094,7 +1095,7 @@ static int wake_page_function(wait_queue_entry_t *wait, unsigned mode, int sync,
->  	return (flags & WQ_FLAG_EXCLUSIVE) != 0;
->  }
->  
-> -static void wake_up_page_bit(struct page *page, int bit_nr)
-> +static void wake_up_page_bit(struct page *page, int bit_nr, int err)
->  {
->  	wait_queue_head_t *q = page_waitqueue(page);
->  	struct wait_page_key key;
-> @@ -1103,6 +1104,7 @@ static void wake_up_page_bit(struct page *page, int bit_nr)
->  
->  	key.page = page;
->  	key.bit_nr = bit_nr;
-> +	key.err = err;
->  	key.page_match = 0;
->  
->  	bookmark.flags = 0;
-> @@ -1152,7 +1154,7 @@ static void wake_up_page(struct page *page, int bit)
->  {
->  	if (!PageWaiters(page))
->  		return;
-> -	wake_up_page_bit(page, bit);
-> +	wake_up_page_bit(page, bit, 0);
->  }
->  
->  /*
-> @@ -1214,6 +1216,7 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
->  	wait->func = wake_page_function;
->  	wait_page.page = page;
->  	wait_page.bit_nr = bit_nr;
-> +	wait_page.err = 0;
->  
->  repeat:
->  	wait->flags = 0;
-> @@ -1325,8 +1328,10 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
->  	 */
->  	if (behavior == EXCLUSIVE)
->  		return wait->flags & WQ_FLAG_DONE ? 0 : -EINTR;
-> +	if (behavior != DROP)
-> +		wait_page.err = 0;
->  
-> -	return wait->flags & WQ_FLAG_WOKEN ? 0 : -EINTR;
-> +	return wait->flags & WQ_FLAG_WOKEN ? wait_page.err : -EINTR;
->  }
->  
->  void wait_on_page_bit(struct page *page, int bit_nr)
-> @@ -1408,8 +1413,9 @@ static inline bool clear_bit_unlock_is_negative_byte(long nr, volatile void *mem
->  #endif
->  
->  /**
-> - * unlock_page - unlock a locked page
-> + * unlock_page_err - unlock a locked page
->   * @page: the page
-> + * @err: errno to be communicated to waiters
->   *
->   * Unlocks the page and wakes up sleepers in wait_on_page_locked().
->   * Also wakes sleepers in wait_on_page_writeback() because the wakeup
-> @@ -1422,13 +1428,19 @@ static inline bool clear_bit_unlock_is_negative_byte(long nr, volatile void *mem
->   * portably (architectures that do LL/SC can test any bit, while x86 can
->   * test the sign bit).
->   */
-> -void unlock_page(struct page *page)
-> +void unlock_page_err(struct page *page, int err)
->  {
->  	BUILD_BUG_ON(PG_waiters != 7);
->  	page = compound_head(page);
->  	VM_BUG_ON_PAGE(!PageLocked(page), page);
->  	if (clear_bit_unlock_is_negative_byte(PG_locked, &page->flags))
-> -		wake_up_page_bit(page, PG_locked);
-> +		wake_up_page_bit(page, PG_locked, err);
-> +}
-> +EXPORT_SYMBOL(unlock_page_err);
-> +
-> +void unlock_page(struct page *page)
-> +{
-> +	unlock_page_err(page, 0);
->  }
->  EXPORT_SYMBOL(unlock_page);
->  
-> @@ -1446,7 +1458,7 @@ void unlock_page_fscache(struct page *page)
->  	page = compound_head(page);
->  	VM_BUG_ON_PAGE(!PagePrivate2(page), page);
->  	clear_bit_unlock(PG_fscache, &page->flags);
-> -	wake_up_page_bit(page, PG_fscache);
-> +	wake_up_page_bit(page, PG_fscache, 0);
->  }
->  EXPORT_SYMBOL(unlock_page_fscache);
->  
-> @@ -2298,8 +2310,11 @@ static int filemap_update_page(struct kiocb *iocb,
->  		if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_NOIO))
->  			return -EAGAIN;
->  		if (!(iocb->ki_flags & IOCB_WAITQ)) {
-> -			put_and_wait_on_page_locked(page, TASK_KILLABLE);
-> -			return AOP_TRUNCATED_PAGE;
-> +			error = put_and_wait_on_page_locked(page,
-> +					TASK_KILLABLE);
-> +			if (!error)
-> +				return AOP_TRUNCATED_PAGE;
-> +			return error;
->  		}
->  		error = __lock_page_async(page, iocb->ki_waitq);
->  		if (error)
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
