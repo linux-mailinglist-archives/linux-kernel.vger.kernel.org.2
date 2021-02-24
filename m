@@ -2,107 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A2332430E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 892B8324318
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235368AbhBXRSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 12:18:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50384 "EHLO mail.kernel.org"
+        id S234654AbhBXRVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 12:21:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:40948 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234736AbhBXRSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 12:18:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E7E664F0B;
-        Wed, 24 Feb 2021 17:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614187061;
-        bh=u8ZNuqYInVQANFsOD5T+PXy7b7+EOuQxFZ7y03PJ+gw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DPpJPlXn5B7lZRP7yQOHgAs3XfYC7RiXpIbnaySmOlYIIIKeMMBBrsVCSlZLIo/GN
-         zKRiqVGnlGlQN8lo2mhYsN1rxU3VDh/bG0Za0x06bXMhwjPGBJvOQBcjz7vkG/PEsD
-         IVIQP2jhjzBMH0ALPTXguGEBMfGBal/Kxey6XQOMeVLHtlgSti/gPT9xpdwJWKz+aw
-         D5hdb7P84eDsAsLS+MxZqDilZbmo8743PV8dnO/T/qn5hjqdKSjtpPvUSDZMTiL3xh
-         9LxWL8GFqibOP53lK6puYLabd4pFuV6gfw6lWY0fSEnLTHKqNz0+y8AX1oaDbGDryS
-         GJevlVIOBdulg==
-Date:   Wed, 24 Feb 2021 10:17:40 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] Makefile: reuse CC_VERSION_TEXT
-Message-ID: <20210224171740.GA7180@24bbad8f3778>
-References: <20210205220125.2931504-1-ndesaulniers@google.com>
- <CAK7LNARKHvjTcnic=ZKntH3NY5meehQbJuBr34y9_tn8b-Ym0w@mail.gmail.com>
- <CA+icZUVkFOZq=5K=dKsQAFJPTmEE2gr_hVmYM=Q+rn70bSOh2w@mail.gmail.com>
- <CAK7LNAQGUnzLSOHAwF6ebH7oOuNETAyf3nrdNgNNq7JsDgiFkA@mail.gmail.com>
+        id S233502AbhBXRVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 12:21:42 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E17D331B;
+        Wed, 24 Feb 2021 09:20:54 -0800 (PST)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 342113F73B;
+        Wed, 24 Feb 2021 09:20:53 -0800 (PST)
+Subject: Re: [RFC PATCH 0/4] KVM: arm64: Improve efficiency of stage2 page
+ table
+To:     "wangyanan (Y)" <wangyanan55@huawei.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210208112250.163568-1-wangyanan55@huawei.com>
+ <3a128c43-ff18-2132-1eaa-1fc882c80b1e@arm.com>
+ <0dd3a764-0e11-af6a-2b46-84509bef7294@huawei.com>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <0385a692-efed-9c1d-0e7f-a3e3af8258d5@arm.com>
+Date:   Wed, 24 Feb 2021 17:20:38 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAQGUnzLSOHAwF6ebH7oOuNETAyf3nrdNgNNq7JsDgiFkA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0dd3a764-0e11-af6a-2b46-84509bef7294@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 12:14:04PM +0900, Masahiro Yamada wrote:
-> On Sat, Feb 6, 2021 at 12:46 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Sat, Feb 6, 2021 at 2:49 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > > On Sat, Feb 6, 2021 at 7:01 AM 'Nick Desaulniers' via Clang Built
-> > > Linux <clang-built-linux@googlegroups.com> wrote:
-> > > >
-> > > > I noticed we're invoking $(CC) via $(shell) more than once to check the
-> > > > version.  Let's reuse the first string captured in $CC_VERSION_TEXT.
-> > > >
-> > > > Fixes: 315bab4e972d ("kbuild: fix endless syncconfig in case arch Makefile sets CROSS_COMPILE")
-> > >
-> > >
-> > > I did not touch this hunk because I have a plan
-> > > for different refactoring, but I have never got
-> > > around to do it.
-> > >
-> > > Anyway, you beat me, and I will pick this up.
-> > > But, the Fixes tag is questionable because
-> > > this is code refactoring.
-> > >
-> >
-> > When I see this... and hear refactoring... As a suggestion/improvement...
-> >
-> > Can we have LD_VERSION_TEXT analogue to CC_VERSION_TEXT?
-> > Both are shown when doing a `cat /proc/version` (and IIRC in file
-> > include/generated/compile.h).
-> 
-> Sorry, I had forgotten to answer this question.
-> 
-> Probably, we should do so.
-> 
-> Feeding it to Kconfig allows us to re-evaluate
-> config settings when tools are upgraded.
-> 
-> One question is where we should draw a line.
-> If we record the version text of CC, LD,
-> we should do that for more tools?
-> 
-> For LD, I will be probably OK because
-> some features rely on LD_VERSION or $(ld-option ).
-> 
-> 
-> -- 
-> Best Regards
-> Masahiro Yamada
+Hi,
 
-It probably makes sense to do this for tools that we depend on in
-Kconfig, like CC and LD. Those will usually paint a good enough picture
-for what tools were used on a whole since CC will tell us about the GCC
-or LLVM version used (as well as distribution usually) and LD will tell
-us about the binutils or LLVM version.
+On 2/24/21 2:35 AM, wangyanan (Y) wrote:
 
-LTO does check $(AR) and $(NM) but it also depends on LLVM=1 LLVM_IAS=1,
-which would get covered by the $(CC) and $(LD) print outs.
+> Hi Alex,
+>
+> On 2021/2/23 23:55, Alexandru Elisei wrote:
+>> Hi Yanan,
+>>
+>> I wanted to review the patches, but unfortunately I get an error when trying to
+>> apply the first patch in the series:
+>>
+>> Applying: KVM: arm64: Move the clean of dcache to the map handler
+>> error: patch failed: arch/arm64/kvm/hyp/pgtable.c:464
+>> error: arch/arm64/kvm/hyp/pgtable.c: patch does not apply
+>> error: patch failed: arch/arm64/kvm/mmu.c:882
+>> error: arch/arm64/kvm/mmu.c: patch does not apply
+>> Patch failed at 0001 KVM: arm64: Move the clean of dcache to the map handler
+>> hint: Use 'git am --show-current-patch=diff' to see the failed patch
+>> When you have resolved this problem, run "git am --continue".
+>> If you prefer to skip this patch, run "git am --skip" instead.
+>> To restore the original branch and stop patching, run "git am --abort".
+>>
+>> Tried this with Linux tags v5.11-rc1 to v5.11-rc7. It looks like pgtable.c and
+>> mmu.c from your patch is different than what is found on upstream master. Did you
+>> use another branch as the base for your patches?
+> Thanks for your attention.
+> Indeed, this series was  more or less based on the patches I post before (Link:
+> https://lore.kernel.org/r/20210114121350.123684-4-wangyanan55@huawei.com).
+> And they have already been merged into up-to-data upstream master (commit:
+> 509552e65ae8287178a5cdea2d734dcd2d6380ab), but not into tags v5.11-rc1 to
+> v5.11-rc7.
+> Could you please try the newest upstream master(since commit:
+> 509552e65ae8287178a5cdea2d734dcd2d6380ab) ? I have tested on my local and no
+> apply errors occur.
 
-Cheers,
-Nathan
+That worked for me, thank you for the quick reply.
+
+Just to double check, when you run the benchmarks, the before results are for a
+kernel built from commit 509552e65ae8 ("KVM: arm64: Mark the page dirty only if
+the fault is handled successfully"), and the after results are with this series on
+top, right?
+
+Thanks,
+
+Alex
+
+>
+> Thanks,
+>
+> Yanan.
+>
+>> Thanks,
+>>
+>> Alex
+>>
+>> On 2/8/21 11:22 AM, Yanan Wang wrote:
+>>> Hi,
+>>>
+>>> This series makes some efficiency improvement of stage2 page table code,
+>>> and there are some test results to present the performance changes, which
+>>> were tested by a kvm selftest [1] that I have post:
+>>> [1] https://lore.kernel.org/lkml/20210208090841.333724-1-wangyanan55@huawei.com/
+>>>
+>>> About patch 1:
+>>> We currently uniformly clean dcache in user_mem_abort() before calling the
+>>> fault handlers, if we take a translation fault and the pfn is cacheable.
+>>> But if there are concurrent translation faults on the same page or block,
+>>> clean of dcache for the first time is necessary while the others are not.
+>>>
+>>> By moving clean of dcache to the map handler, we can easily identify the
+>>> conditions where CMOs are really needed and avoid the unnecessary ones.
+>>> As it's a time consuming process to perform CMOs especially when flushing
+>>> a block range, so this solution reduces much load of kvm and improve the
+>>> efficiency of creating mappings.
+>>>
+>>> Test results:
+>>> (1) when 20 vCPUs concurrently access 20G ram (all 1G hugepages):
+>>> KVM create block mappings time: 52.83s -> 3.70s
+>>> KVM recover block mappings time(after dirty-logging): 52.0s -> 2.87s
+>>>
+>>> (2) when 40 vCPUs concurrently access 20G ram (all 1G hugepages):
+>>> KVM creating block mappings time: 104.56s -> 3.70s
+>>> KVM recover block mappings time(after dirty-logging): 103.93s -> 2.96s
+>>>
+>>> About patch 2, 3:
+>>> When KVM needs to coalesce the normal page mappings into a block mapping,
+>>> we currently invalidate the old table entry first followed by invalidation
+>>> of TLB, then unmap the page mappings, and install the block entry at last.
+>>>
+>>> It will cost a lot of time to unmap the numerous page mappings, which means
+>>> the table entry will be left invalid for a long time before installation of
+>>> the block entry, and this will cause many spurious translation faults.
+>>>
+>>> So let's quickly install the block entry at first to ensure uninterrupted
+>>> memory access of the other vCPUs, and then unmap the page mappings after
+>>> installation. This will reduce most of the time when the table entry is
+>>> invalid, and avoid most of the unnecessary translation faults.
+>>>
+>>> Test results based on patch 1:
+>>> (1) when 20 vCPUs concurrently access 20G ram (all 1G hugepages):
+>>> KVM recover block mappings time(after dirty-logging): 2.87s -> 0.30s
+>>>
+>>> (2) when 40 vCPUs concurrently access 20G ram (all 1G hugepages):
+>>> KVM recover block mappings time(after dirty-logging): 2.96s -> 0.35s
+>>>
+>>> So combined with patch 1, it makes a big difference of KVM creating mappings
+>>> and recovering block mappings with not much code change.
+>>>
+>>> About patch 4:
+>>> A new method to distinguish cases of memcache allocations is introduced.
+>>> By comparing fault_granule and vma_pagesize, cases that require allocations
+>>> from memcache and cases that don't can be distinguished completely.
+>>>
+>>> ---
+>>>
+>>> Details of test results
+>>> platform: HiSilicon Kunpeng920 (FWB not supported)
+>>> host kernel: Linux mainline (v5.11-rc6)
+>>>
+>>> (1) performance change of patch 1
+>>> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 20
+>>>        (20 vcpus, 20G memory, block mappings(granule 1G))
+>>> Before patch: KVM_CREATE_MAPPINGS: 52.8338s 52.8327s 52.8336s 52.8255s 52.8303s
+>>> After  patch: KVM_CREATE_MAPPINGS:  3.7022s  3.7031s  3.7028s  3.7012s  3.7024s
+>>>
+>>> Before patch: KVM_ADJUST_MAPPINGS: 52.0466s 52.0473s 52.0550s 52.0518s 52.0467s
+>>> After  patch: KVM_ADJUST_MAPPINGS:  2.8787s  2.8781s  2.8785s  2.8742s  2.8759s
+>>>
+>>> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 40
+>>>        (40 vcpus, 20G memory, block mappings(granule 1G))
+>>> Before patch: KVM_CREATE_MAPPINGS: 104.560s 104.556s 104.554s 104.556s 104.550s
+>>> After  patch: KVM_CREATE_MAPPINGS:  3.7011s  3.7103s  3.7005s  3.7024s  3.7106s
+>>>
+>>> Before patch: KVM_ADJUST_MAPPINGS: 103.931s 103.936s 103.927s 103.942s 103.927s
+>>> After  patch: KVM_ADJUST_MAPPINGS:  2.9621s  2.9648s  2.9474s  2.9587s  2.9603s
+>>>
+>>> (2) performance change of patch 2, 3(based on patch 1)
+>>> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 1
+>>>        (1 vcpu, 20G memory, block mappings(granule 1G))
+>>> Before patch: KVM_ADJUST_MAPPINGS: 2.8241s 2.8234s 2.8245s 2.8230s 2.8652s
+>>> After  patch: KVM_ADJUST_MAPPINGS: 0.2444s 0.2442s 0.2423s 0.2441s 0.2429s
+>>>
+>>> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 20
+>>>        (20 vcpus, 20G memory, block mappings(granule 1G))
+>>> Before patch: KVM_ADJUST_MAPPINGS: 2.8787s 2.8781s 2.8785s 2.8742s 2.8759s
+>>> After  patch: KVM_ADJUST_MAPPINGS: 0.3008s 0.3004s 0.2974s 0.2917s 0.2900s
+>>>
+>>> cmdline: ./kvm_page_table_test -m 4 -t 2 -g 1G -s 20G -v 40
+>>>        (40 vcpus, 20G memory, block mappings(granule 1G))
+>>> Before patch: KVM_ADJUST_MAPPINGS: 2.9621s 2.9648s 2.9474s 2.9587s 2.9603s
+>>> After  patch: KVM_ADJUST_MAPPINGS: 0.3541s 0.3694s 0.3656s 0.3693s 0.3687s
+>>>
+>>> ---
+>>>
+>>> Yanan Wang (4):
+>>>    KVM: arm64: Move the clean of dcache to the map handler
+>>>    KVM: arm64: Add an independent API for coalescing tables
+>>>    KVM: arm64: Install the block entry before unmapping the page mappings
+>>>    KVM: arm64: Distinguish cases of memcache allocations completely
+>>>
+>>>   arch/arm64/include/asm/kvm_mmu.h | 16 -------
+>>>   arch/arm64/kvm/hyp/pgtable.c     | 82 +++++++++++++++++++++-----------
+>>>   arch/arm64/kvm/mmu.c             | 39 ++++++---------
+>>>   3 files changed, 69 insertions(+), 68 deletions(-)
+>>>
+>> .
