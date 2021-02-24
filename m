@@ -2,69 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB853237F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B98253237F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbhBXHba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:31:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232343AbhBXHbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:31:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E69E64ECB;
-        Wed, 24 Feb 2021 07:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614151838;
-        bh=6KWcfVE7ehtOI43lndv+QRd+lKd96Y/+ShOkch0BvBo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FZHdrLqNH9uYP4vwZ06tHXixoDEsOIIeNQG4EdVvL7nVAYr01/NALZADmr5WLBX66
-         l/CUvVBaVrpsn08NRUIVUuwwsveAAi8h5jwjMVegQNhbR8i5Q+R8cJiwkJuFQJXMVP
-         7HC8e6PCqBmVISCDhgKqnWm+eaXrYAY4YLFxEu1w=
-Date:   Wed, 24 Feb 2021 08:30:35 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     chakravarthi Kulkarni <chakravarthikulkarni2021@gmail.com>
-Cc:     Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Ethan Edwards <ethancarteredwards@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: staging: comedi: Fixed side effects from macro
- definition.
-Message-ID: <YDYAm4GeMD/M4gic@kroah.com>
-References: <20210217142008.29699-1-chakravarthikulkarni2021@gmail.com>
- <3c1ddf91-da6c-5620-61e7-1ec453b2aa93@mev.co.uk>
- <CAEwrQWZEXYJDsTDiOAZLOr5jLXXyuZamwqRMquCyBdYPa8anow@mail.gmail.com>
+        id S233084AbhBXHe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:34:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232855AbhBXHeV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 02:34:21 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603F1C061574;
+        Tue, 23 Feb 2021 23:33:40 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id d11so859617wrj.7;
+        Tue, 23 Feb 2021 23:33:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ngrIjKk22xJlSVhCaumQHcOAqUwk1OGJLsfqi4lKIBo=;
+        b=EL9OEmHcHAEb0qcfyHUsls1XhXzzJA8Od1BU+7l9y4uXzEH7yZtjrVWVYptzvHbPiW
+         VeDCLMFT0kOPJWfKMsKB4PbLuQugFehxHdAE+KERaBEW508b+eyW0Wh07FiPD8FqS6RK
+         JYtJxK6hKQ9+iYW6GxyI8vbpm8ir0ocTPmSMH/2qj9796ykqzYwM/gB1bDWlbKaCpgr3
+         YZh//XPdnub6KbnNBIfBkwZtsqK6boKuPP+euktOALXBuRSLLYZ2QcZu6tm3wTSRnVHX
+         QtTC6iPSpxI/9Wdgg6ICLP2bhfU9XopjMkK6przvjCS4aEiGzuHlwo9MnopY2ztAYFQu
+         J3nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ngrIjKk22xJlSVhCaumQHcOAqUwk1OGJLsfqi4lKIBo=;
+        b=JHMmxyrvgy89rkCQ1PwlAQSJYmcJsEshozlYVGfdg1T0KZamDcJzXbVjrh7VJV0iQ2
+         a9dtKDdJ5DScSRLc5XjIFqqjznT3RDY+fJXTPQyq9xMNabP12ACiYvMuz48ZwMLGf58u
+         VRbTOeXULR2IPrkBgkJjBvan3fSzrNfeE9Rmr503Sm/jKVzi4E1OXKijnac5MW7kyneV
+         GW9sWLw+pzFzKtekZrW3Yt4SBzyQzl5oamoi4ROnTA4ZyjEGpZqabFc5gb+lRXSfp6ZU
+         EUfiooLSPJkUT57pCAgY8zO8u5NEfVfhepVP0oV9zEaO5M0TecmDEPmfGxMPSl/kiUji
+         59Zw==
+X-Gm-Message-State: AOAM531lFY5LR26VVRRY3s32C9U8ow/rLn7guTONuJQgRQ8xWiLCbXNR
+        QXZeOib96JrpujWK7BVwJZA=
+X-Google-Smtp-Source: ABdhPJwySs16PorVSXAIzG2mrMIXqnP7+7mpbX3ZWTHaWmF5wxm+NwI5OOrJcHd4Th8/CE2n3CaptQ==
+X-Received: by 2002:adf:fe8c:: with SMTP id l12mr27423312wrr.217.1614152019170;
+        Tue, 23 Feb 2021 23:33:39 -0800 (PST)
+Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id b7sm1930073wrv.6.2021.02.23.23.33.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 23:33:38 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     jonas.gorski@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v2] mips: smp-bmips: fix CPU mappings
+Date:   Wed, 24 Feb 2021 08:33:36 +0100
+Message-Id: <20210224073336.32265-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210223124817.26486-1-noltari@gmail.com>
+References: <20210223124817.26486-1-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEwrQWZEXYJDsTDiOAZLOr5jLXXyuZamwqRMquCyBdYPa8anow@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A: http://en.wikipedia.org/wiki/Top_post
-Q: Were do I find info about this thing called top-posting?
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+When booting bmips with SMP enabled on a BCM6358 running on CPU #1 instead of
+CPU #0, the current CPU mapping code produces the following:
+- smp_processor_id(): 0
+- cpu_logical_map(0): 1
+- cpu_number_map(0): 1
 
-A: No.
-Q: Should I include quotations after my reply?
+This is because SMP isn't supported on BCM6358 since it has a shared TLB, so
+it is disabled and max_cpus is decreased from 2 to 1.
 
-http://daringfireball.net/2007/07/on_top
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ v2: Fix duplicated line
 
-On Wed, Feb 24, 2021 at 12:47:26PM +0530, chakravarthi Kulkarni wrote:
-> Hi,
-> 
-> I tested it will unit test cases it looks fine.
-> int x = 10;
-> NI_USUAL_PFI_SELECT(x++)
-> 
-> will not have side effects as it is taken care using local variable in
-> macro.
+ arch/mips/kernel/smp-bmips.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-You ignored what Ian said about why this change was not ok :(
+diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bmips.c
+index 359b176b665f..b6ef5f7312cf 100644
+--- a/arch/mips/kernel/smp-bmips.c
++++ b/arch/mips/kernel/smp-bmips.c
+@@ -134,17 +134,24 @@ static void __init bmips_smp_setup(void)
+ 	if (!board_ebase_setup)
+ 		board_ebase_setup = &bmips_ebase_setup;
+ 
+-	__cpu_number_map[boot_cpu] = 0;
+-	__cpu_logical_map[0] = boot_cpu;
+-
+-	for (i = 0; i < max_cpus; i++) {
+-		if (i != boot_cpu) {
+-			__cpu_number_map[i] = cpu;
+-			__cpu_logical_map[cpu] = i;
+-			cpu++;
++	if (max_cpus > 1) {
++		__cpu_number_map[boot_cpu] = 0;
++		__cpu_logical_map[0] = boot_cpu;
++
++		for (i = 0; i < max_cpus; i++) {
++			if (i != boot_cpu) {
++				__cpu_number_map[i] = cpu;
++				__cpu_logical_map[cpu] = i;
++				cpu++;
++			}
++			set_cpu_possible(i, 1);
++			set_cpu_present(i, 1);
+ 		}
+-		set_cpu_possible(i, 1);
+-		set_cpu_present(i, 1);
++	} else {
++		__cpu_number_map[0] = boot_cpu;
++		__cpu_logical_map[0] = 0;
++		set_cpu_possible(0, 1);
++		set_cpu_present(0, 1);
+ 	}
+ }
+ 
+-- 
+2.20.1
 
-It's long deleted from my review queue, sorry.
-
-greg k-h
