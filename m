@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5E032449A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7823244A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhBXT1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 14:27:46 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:48140 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhBXT1i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 14:27:38 -0500
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1851920B6C40;
-        Wed, 24 Feb 2021 11:26:57 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1851920B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1614194817;
-        bh=Qrxzv4fZytREq3iP5HW1b0UZZBB53F52KA2598ST9R8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=VRHRBtm9VPjzWbAq4uOs1QpDm9d/UjC3CdBHUOHn1C1y7rpeMi63TaoP8Rb2gMy9e
-         PI2lEkJa+R/ZxF4N9L7GHPmCLeSEFIklfBA60UtsZEGFtXzUySH3OG+FYt/gitQt3y
-         LgneMV6NbEelIgk6MSBDYPShG1WdWa5bsGanhjNA=
-Subject: Re: [RFC PATCH v1 1/1] arm64: Unwinder enhancements for reliable
- stack trace
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <bc4761a47ad08ab7fdd555fc8094beb8fc758d33>
- <20210223181243.6776-1-madvenka@linux.microsoft.com>
- <20210223181243.6776-2-madvenka@linux.microsoft.com>
- <20210223190240.GK5116@sirena.org.uk>
- <08e8e02c-8ef0-26bb-1d0d-7dda54b5fefd@linux.microsoft.com>
- <20210224123336.GA4504@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <685d583b-f3c1-8cb3-aeca-78e2fbb3fd25@linux.microsoft.com>
-Date:   Wed, 24 Feb 2021 13:26:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233542AbhBXTbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 14:31:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232723AbhBXTb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 14:31:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19D5664F06
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:30:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614195047;
+        bh=Lq1pRLzytneqVg5GzjUOBxr7UErPTTg7R99LXTu4jks=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bktVaOf6y4/5bWKQQSPfMtneTY1Tf+MYRVmtWsHhJUEljQh7DAFxS/43+Udvclz/P
+         4uwhgkr39vhLwUdkWL3u/xWOMxywvm21AkhIHJOJG35ouSjUs1+cRi74oDketdnCbn
+         UKefUkals+rUocpkVbnWY0GtkV9vSTnJRGPXczv8jYiQ70jAq2tzvmzM19W6d7qZti
+         Kz1/3QOhiAii/afgTNwkzN1PC6UIEW5tmnIUEpmJ3R+ZioNfqokC2yqqwHIWtz5VJ5
+         1cCYanTplUlIoOQHMo+S4ThKZ1Pf/5uiIIhPmqID00nin9wfsBSrcG4p+qE0JaGu6y
+         XfRmlWDIyjn5Q==
+Received: by mail-ed1-f48.google.com with SMTP id g3so3967109edb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:30:46 -0800 (PST)
+X-Gm-Message-State: AOAM532R3d/pEVnUjfQ4OSs76UwD8XU7V0NDF207TKa/KZM3rf+5SjvE
+        PJQZn3ZrQFqMgUnF6UvE0QynX+i8mk1gxcYYKErAfQ==
+X-Google-Smtp-Source: ABdhPJzlogxTsjCGzU5seCvYinL8R6SWLGS7Jdf1y0Dy2HvnH6emgV3LCiR+4/d92EKLQEe1rozYaNkkaap0cgFu/2I=
+X-Received: by 2002:a05:6402:377:: with SMTP id s23mr21425103edw.172.1614195045281;
+ Wed, 24 Feb 2021 11:30:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210224123336.GA4504@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210217222730.15819-1-yu-cheng.yu@intel.com> <20210217222730.15819-7-yu-cheng.yu@intel.com>
+ <20210224161343.GE20344@zn.tnic> <32ac05ef-b50b-c947-095d-bc31a42947a3@intel.com>
+ <20210224165332.GF20344@zn.tnic> <db493c76-2a67-5f53-29a0-8333facac0f5@intel.com>
+ <20210224192044.GH20344@zn.tnic>
+In-Reply-To: <20210224192044.GH20344@zn.tnic>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 24 Feb 2021 11:30:34 -0800
+X-Gmail-Original-Message-ID: <CALCETrXKteS9K=OOgsCvBU4in_3zcYccqF9hh2=OdCJPknvB8Q@mail.gmail.com>
+Message-ID: <CALCETrXKteS9K=OOgsCvBU4in_3zcYccqF9hh2=OdCJPknvB8Q@mail.gmail.com>
+Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 24, 2021 at 11:20 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Wed, Feb 24, 2021 at 09:56:13AM -0800, Yu, Yu-cheng wrote:
+> > No.  Maybe I am doing too much.  The GP fault sets si_addr to zero, for
+> > example.  So maybe do the same here?
+>
+> No, you're looking at this from the wrong angle. This is going to be
+> user-visible and the moment it gets upstream, it is cast in stone.
+>
+> So the whole use case of what luserspace needs to do or is going to do
+> or wants to do on a SEGV_CPERR, needs to be described, agreed upon by
+> people etc before it goes out. And thus clarified whether the address
+> gets copied out or not.
 
+I vote 0.  The address is in ucontext->gregs[REG_RIP] [0] regardless.
+Why do we need to stick a copy somewhere else?
 
-On 2/24/21 6:33 AM, Mark Brown wrote:
-> On Tue, Feb 23, 2021 at 01:20:49PM -0600, Madhavan T. Venkataraman wrote:
->> On 2/23/21 1:02 PM, Mark Brown wrote:
->>> On Tue, Feb 23, 2021 at 12:12:43PM -0600, madvenka@linux.microsoft.com wrote:
-> 
->>>> Reliable stack trace function
->>>> =============================
->>>>
->>>> Implement arch_stack_walk_reliable(). This function walks the stack like
->>>> the existing stack trace functions with a couple of additional checks:
-> 
->>> Again, this should be at least one separate patch.  How does this ensure
->>> that we don't have any issues with any of the various probe mechanisms?
->>> If there's no need to explicitly check anything that should be called
->>> out in the changelog.
-> 
->> I am trying to do this in an incremental fashion. I have to study the probe
->> mechanisms a little bit more before I can come up with a solution. But
->> if you want to see that addressed in this patch set, I could do that.
->> It will take a little bit of time. That is all.
-> 
-> Handling of the probes stuff seems like it's critical to reliable stack
-> walk so we shouldn't claim to have support for reliable stack walk
-> without it.  If it was a working implementation we could improve that'd
-> be one thing but this would be buggy which is a different thing.
-> 
+[0] or however it's spelled.  i can never remember.
 
-OK. I will address the probe stuff in my resend.
-
->>>> +	(void) on_accessible_stack(task, stackframe, &info);
-> 
->>> Shouldn't we return NULL if we are not on an accessible stack?
-> 
->> The prev_fp has already been checked by the unwinder in the previous
->> frame. That is why I don't check the return value. If that is acceptable,
->> I will add a comment.
-> 
-> TBH if you're adding the comment it seems like you may as well add the
-> check, it's not like it's expensive and it means there's no possibility
-> that some future change could result in this assumption being broken.
-> 
-
-OK. I will add the check.
-
-Thanks.
-
-Madhavan
+>
+> Thx.
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
