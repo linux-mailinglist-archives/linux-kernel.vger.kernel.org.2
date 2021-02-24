@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF093242F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCE93242F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbhBXRLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 12:11:08 -0500
-Received: from shelob.surriel.com ([96.67.55.147]:50078 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbhBXRLF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 12:11:05 -0500
-Received: from [2603:3005:d05:2b00:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1lExg2-0000fq-F3; Wed, 24 Feb 2021 12:10:18 -0500
-Date:   Wed, 24 Feb 2021 12:10:16 -0500
-From:   Rik van Riel <riel@surriel.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        xuyu@linux.alibaba.com, mgorman@suse.de, aarcange@redhat.com,
-        willy@infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, linux-mm@kvack.org, mhocko@suse.com
-Subject: [PATCH 4/3] mm,shmem,thp: limit shmem THP allocations to requested
- zones
-Message-ID: <20210224121016.1314ed6d@imladris.surriel.com>
-In-Reply-To: <alpine.LSU.2.11.2102240854140.10197@eggly.anvils>
-References: <20201124194925.623931-1-riel@surriel.com>
-        <alpine.LSU.2.11.2012141226350.1925@eggly.anvils>
-        <e3f67a5f-9835-2752-3d35-fb5f6d701cf1@suse.cz>
-        <alpine.LSU.2.11.2102232329180.9202@eggly.anvils>
-        <a7a85f81bd21254805bc91772530f237c9b73c04.camel@surriel.com>
-        <alpine.LSU.2.11.2102240854140.10197@eggly.anvils>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S233765AbhBXRLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 12:11:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231439AbhBXRLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 12:11:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AD5864F0B;
+        Wed, 24 Feb 2021 17:10:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614186632;
+        bh=SJ5Rru5hG1o1K/jlMvVzI1qjCrEGLO45OJ/U+7040fc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HSPR/wWgNMbRQ+S4wYUT05rHBo4pCnm4/8aBrtKFABWfY75ExJsX5cSEMqDXmZkVk
+         B3wtKyPJBOp7d2e5rTI2UQBIRgYeSLMvBWeSkumFH7Sqw7b68djTOmIxt+dZc8ApuP
+         TdKCWjOtexw6313xPABgbZSohP010+hAp7Im7P3sstnrETat77/nOIu7K6qwGP35cc
+         AkH5FFiwidjLOdh4SLs/EOa6oFWqrxlCBCWiGA9f0U5ecLE46Q30Ab3nVY+diRIF+r
+         qcWkWYr1vb+xlHekc0exE6bYBNMNBxFD5mfVilO3H87fa7htEyq5BbVC6f637BMJYi
+         4lHqKDqQ7NClw==
+Received: by mail-ot1-f49.google.com with SMTP id s107so2828668otb.8;
+        Wed, 24 Feb 2021 09:10:32 -0800 (PST)
+X-Gm-Message-State: AOAM5314sw8vasSt/UKqk2Hl7gEQW2A3R8wzueJUUC4Nie7rX3Xl7eA+
+        csIHZ20/vKN6z5iv1vNFTioZl9/k1GHTvxjOUI0=
+X-Google-Smtp-Source: ABdhPJz5tsY3F8T09dNXv8JnxGazL++sEU1h6wwPeb3AK0KRDtvuCHcYpTFjaYYOXIdA5S3OKoKOP24SjVd8wbZsicU=
+X-Received: by 2002:a05:6830:135a:: with SMTP id r26mr9309607otq.77.1614186631597;
+ Wed, 24 Feb 2021 09:10:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Sender: riel@shelob.surriel.com
+References: <cover.1614182415.git.jpoimboe@redhat.com>
+In-Reply-To: <cover.1614182415.git.jpoimboe@redhat.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 24 Feb 2021 18:10:20 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFnfH2OMA=JhzXuM=gT3pGci2=wpmjic-AbxoJLZnEexA@mail.gmail.com>
+Message-ID: <CAMj1kXFnfH2OMA=JhzXuM=gT3pGci2=wpmjic-AbxoJLZnEexA@mail.gmail.com>
+Subject: Re: [PATCH 00/13] x86/crypto/asm: objtool support
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     X86 ML <x86@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Feb 2021 08:55:40 -0800 (PST)
-Hugh Dickins <hughd@google.com> wrote:
-> On Wed, 24 Feb 2021, Rik van Riel wrote:
-> > On Wed, 2021-02-24 at 00:41 -0800, Hugh Dickins wrote:  
-> > > Oh, I'd forgotten all about that gma500 aspect:
-> > > well, I can send a fixup later on.  
-> > 
-> > I already have code to fix that, which somebody earlier
-> > in this discussion convinced me to throw away. Want me
-> > to send it as a patch 4/3 ?  
-> 
-> If Andrew wants it all, yes, please do add that - thanks Rik.
+On Wed, 24 Feb 2021 at 17:29, Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> Standardize the crypto asm to make it resemble compiler-generated code,
+> so that objtool can understand it.
+>
+> This magically enables ORC unwinding from crypto code.  It also fixes
+> the last known remaining objtool warnings on vmlinux.o, for LTO and
+> more.
+>
+> Josh Poimboeuf (13):
+>   objtool: Support asm jump tables
+>   x86/crypto/aesni-intel_avx: Remove unused macros
+>   x86/crypto/aesni-intel_avx: Fix register usage comments
+>   x86/crypto/aesni-intel_avx: Standardize stack alignment prologue
+>   x86/crypto/camellia-aesni-avx2: Unconditionally allocate stack buffer
+>   x86/crypto/crc32c-pcl-intel: Standardize jump table
+>   x86/crypto/sha_ni: Standardize stack alignment prologue
+>   x86/crypto/sha1_avx2: Standardize stack alignment prologue
+>   x86/crypto/sha256-avx2: Standardize stack alignment prologue
+>   x86/crypto/sha512-avx: Standardize stack alignment prologue
+>   x86/crypto/sha512-avx2: Standardize stack alignment prologue
+>   x86/crypto/sha512-ssse3: Standardize stack alignment prologue
+>   x86/crypto: Enable objtool in crypto code
+>
 
-Trivial patch to fix the gma500 thing below:
+I gave this series a spin with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y,
+and all the tests still pass.
 
----8<---
+Tested-by: Ard Biesheuvel <ardb@kernel.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-mm,shmem,thp: limit shmem THP allocations to requested zones
 
-Hugh pointed out that the gma500 driver uses shmem pages, but needs
-to limit them to the DMA32 zone. Ensure the allocations resulting from
-the gfp_mask returned by limit_gfp_mask use the zone flags that were
-originally passed to shmem_getpage_gfp.
 
-Signed-off-by: Rik van Riel <riel@surriel.com>
-Suggested-by: Hugh Dickins <hughd@google.com>
----
- mm/shmem.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/mm/shmem.c b/mm/shmem.c
-index ee3cea10c2a4..876fec89686f 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1539,7 +1539,11 @@ static gfp_t limit_gfp_mask(gfp_t huge_gfp, gfp_t limit_gfp)
- {
- 	gfp_t allowflags = __GFP_IO | __GFP_FS | __GFP_RECLAIM;
- 	gfp_t denyflags = __GFP_NOWARN | __GFP_NORETRY;
--	gfp_t result = huge_gfp & ~allowflags;
-+	gfp_t zoneflags = limit_gfp & GFP_ZONEMASK;
-+	gfp_t result = huge_gfp & ~(allowflags | GFP_ZONEMASK);
-+
-+	/* Allow allocations only from the originally specified zones. */
-+	result |= zoneflags;
- 
- 	/*
- 	 * Minimize the result gfp by taking the union with the deny flags,
-
+>  arch/x86/crypto/Makefile                     |  2 -
+>  arch/x86/crypto/aesni-intel_avx-x86_64.S     | 28 +++++--------
+>  arch/x86/crypto/camellia-aesni-avx2-asm_64.S |  5 +--
+>  arch/x86/crypto/crc32c-pcl-intel-asm_64.S    |  7 +---
+>  arch/x86/crypto/sha1_avx2_x86_64_asm.S       |  8 ++--
+>  arch/x86/crypto/sha1_ni_asm.S                |  8 ++--
+>  arch/x86/crypto/sha256-avx2-asm.S            | 13 +++---
+>  arch/x86/crypto/sha512-avx-asm.S             | 41 +++++++++----------
+>  arch/x86/crypto/sha512-avx2-asm.S            | 42 ++++++++++----------
+>  arch/x86/crypto/sha512-ssse3-asm.S           | 41 +++++++++----------
+>  tools/objtool/check.c                        | 14 ++++++-
+>  11 files changed, 98 insertions(+), 111 deletions(-)
+>
+> --
+> 2.29.2
+>
