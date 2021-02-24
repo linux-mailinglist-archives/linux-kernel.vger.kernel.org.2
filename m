@@ -2,93 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5E4323986
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA82832398D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234647AbhBXJc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:32:27 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:57553 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232166AbhBXJcD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:32:03 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R981e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UPS1eWx_1614159062;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UPS1eWx_1614159062)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 24 Feb 2021 17:31:03 +0800
-Subject: Re: [PATCH v5 3/3] x86/sgx: Remove redundant if conditions in
- sgx_encl_create
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20210216033133.79543-1-tianjia.zhang@linux.alibaba.com>
- <20210216033133.79543-4-tianjia.zhang@linux.alibaba.com>
- <YCuCaG2CWNeoKQFQ@kernel.org>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <04aea989-13b3-1046-b8cd-86abb27f09c0@linux.alibaba.com>
-Date:   Wed, 24 Feb 2021 17:31:02 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        id S234670AbhBXJfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:35:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234612AbhBXJeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 04:34:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98368614A5;
+        Wed, 24 Feb 2021 09:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614159228;
+        bh=/CF20OHQ7K0JhgmeOCBr7qeOZntk0MWyxxmZPAU4v98=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qi1W+/eGUtnIWAUKAzopoH5TWZl7ik9XR7jKSMR1Rf6v1SNwG4lMWVIR2duhS7AuC
+         fjbpTOWdiry0E4J2dUEHu6JgC+yfF348N1VJ/JWZ5OLn0zE8pK/sG2d7rb/eQEmBjw
+         wzB0y7FzhJyXdDqh4F7HUvmXiLnWjSismhgru7TMyvRVI9wzjYgqzYSmH5soEQhSjY
+         gSIu7pqC9jffD1vUwH5Uds2WX0sjMa5c46/uNXzcGZ/hxRuwcDOu1DggT+PERmTAGt
+         m4WZGyVTry5AEtbD+s8r2xQ8NSHQhKe2SCwTdyiiP46LouNSOd5scwmUPYSwCjFl+I
+         EPzhDr2Crt/eg==
+Date:   Wed, 24 Feb 2021 09:33:44 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>
+Subject: Re: [PATCH] arm64: enable GENERIC_FIND_FIRST_BIT
+Message-ID: <20210224093343.GA11306@willie-the-truck>
+References: <20201205165406.108990-1-yury.norov@gmail.com>
+ <20201207112530.GB4379@willie-the-truck>
+ <CAAH8bW-fb0wPwwvo8P8VW33zV=Wi_LPWxdJH8y2wdGGqPE+3nA@mail.gmail.com>
+ <20201208103549.GA5887@willie-the-truck>
+ <20210224052744.GA1168363@yury-ThinkPad>
 MIME-Version: 1.0
-In-Reply-To: <YCuCaG2CWNeoKQFQ@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224052744.GA1168363@yury-ThinkPad>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/16/21 4:29 PM, Jarkko Sakkinen wrote:
-> On Tue, Feb 16, 2021 at 11:31:33AM +0800, Tianjia Zhang wrote:
->> In this scenario, there is no case where va_page is NULL, and
->> the error has been checked. The if-condition statement here is
->> redundant, so remove the condition detection.
->>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
->> ---
->>   arch/x86/kernel/cpu/sgx/ioctl.c | 7 ++++---
->>   1 file changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
->> index 1c6ecf9fbeff..719c21cca569 100644
->> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
->> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
->> @@ -66,9 +66,10 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
->>   	va_page = sgx_encl_grow(encl);
->>   	if (IS_ERR(va_page))
->>   		return PTR_ERR(va_page);
->> -	else if (va_page)
->> -		list_add(&va_page->list, &encl->va_pages);
->> -	/* else the tail page of the VA page list had free slots. */
->> +	if (!va_page)
->> +		return -EIO;
+On Tue, Feb 23, 2021 at 09:27:44PM -0800, Yury Norov wrote:
+> On Tue, Dec 08, 2020 at 10:35:50AM +0000, Will Deacon wrote:
+> > On Mon, Dec 07, 2020 at 05:59:16PM -0800, Yury Norov wrote:
+> > > (CC: Alexey Klimov)
+> > > 
+> > > On Mon, Dec 7, 2020 at 3:25 AM Will Deacon <will@kernel.org> wrote:
+> > > >
+> > > > On Sat, Dec 05, 2020 at 08:54:06AM -0800, Yury Norov wrote:
+> > > > > ARM64 doesn't implement find_first_{zero}_bit in arch code and doesn't
+> > > > > enable it in config. It leads to using find_next_bit() which is less
+> > > > > efficient:
+> > > >
+> > > > [...]
+> > > >
+> > > > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > > > > index 1515f6f153a0..2b90ef1f548e 100644
+> > > > > --- a/arch/arm64/Kconfig
+> > > > > +++ b/arch/arm64/Kconfig
+> > > > > @@ -106,6 +106,7 @@ config ARM64
+> > > > >       select GENERIC_CPU_AUTOPROBE
+> > > > >       select GENERIC_CPU_VULNERABILITIES
+> > > > >       select GENERIC_EARLY_IOREMAP
+> > > > > +     select GENERIC_FIND_FIRST_BIT
+> > > >
+> > > > Does this actually make any measurable difference? The disassembly with
+> > > > or without this is _very_ similar for me (clang 11).
+> > > >
+> > > > Will
+> > > 
+> > > On A-53 find_first_bit() is almost twice faster than find_next_bit(),
+> > > according to
+> > > lib/find_bit_benchmark. (Thanks to Alexey for testing.)
+> > 
+> > I guess it's more compiler dependent than anything else, and it's a pity
+> > that find_next_bit() isn't implemented in terms of the generic
+> > find_first_bit() tbh, but if the numbers are as you suggest then I don't
+> > have a problem selecting this on arm64.
 > 
-> Why this check?
-> 
+> Ping?
 
-The value of va_page may be a negative error value, it may be NULL, or 
-it may be a valid pointer, so check this return value.
+Not sure what happened to this. Maybe resend at -rc1?
 
-Tianjia
-
->> +
->> +	list_add(&va_page->list, &encl->va_pages);
->>   
->>   	/* The extra page goes to SECS. */
->>   	encl_size = secs->size + PAGE_SIZE;
->> -- 
->> 2.19.1.3.ge56e4f7
->>
->>
-> 
-> /Jarkko
-> 
+Will
