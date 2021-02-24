@@ -2,122 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E9D3241BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C6D3241C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235665AbhBXQIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:08:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234674AbhBXP7f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:59:35 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CACC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 07:58:53 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d11so1438743plo.8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 07:58:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rtWJKbzVZIPHzIALjaxF691HrwljObBoamtutHjoveQ=;
-        b=w2j6YI435I/oGZtY1rcbUSxt1cFZ77IE75fgu2lg11eSTHFhBjQRr1/8qZzqNimUvY
-         2a7nthsB7mTH6js1i60hmvV9HJr4Lvw3YTRlScpCnV6NdW1jL+5vCHtE1K1lDmxJ1BjF
-         877i8bxQL3YJlH62Mn2QjjgMOrlkU+oFIQSUjq1Psm+mvIbucaqqqvMsxB/QDBkcGjjR
-         IaNUMKVHeecdETPg1sBlQcWi824ZIP6wt3S5AKI/qnyYyiP8SQ+kAA8N8JbIcBM/+iLX
-         ataq7TWQMiict6rGeZ+53bmfKfGdYV3Ogf158rPJKmhxdf1Hyg9X+nkCLfOcKtrpYNbB
-         d/Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rtWJKbzVZIPHzIALjaxF691HrwljObBoamtutHjoveQ=;
-        b=q+4gTj/vLtgij8womQHXsYfaZTPophxQoevDAPF6sIpZ4rBv0puv8Ab7LSUCeHtdZ3
-         s9+WUS3Xajh3Z+Yyk4yFk/AigYL/ifOg+2SEGhGA5K0WJMlFnggesuebgv1zGHUssp6P
-         2PGKEqwq+S2ktSUyhn4VZH3+Hcfg6Aya6XUjcpP++QkoeQT2UM4izn5YYwU89rFaezvE
-         zhpg8JWFgvGXYyhhQFrIwcpzkizWz0Em8ZM0EDOr59pri6hY12CA7G//7IV6sU8g7gJU
-         6qVOFK25DwwsnfPxKZWZDGecbhoaYQIj4xYe8AhPCCGlPR270JinJZS9B2MCguzqJ4e8
-         CT6w==
-X-Gm-Message-State: AOAM533DdWg7nAwsyQv7m0zyKn7E3TE7Xa1i7CnR5r8dv1xULOPA/oCO
-        aJ8nohYri9vtyc9diaOmzvkt
-X-Google-Smtp-Source: ABdhPJwPHB7YornvtsOFDkXpoF32hxV9KPtqRuwyOAYoWGXpUvlCQJFwhOheOgcrz+ZZOHSIrYCq1w==
-X-Received: by 2002:a17:902:a3cb:b029:e3:23b7:ef2f with SMTP id q11-20020a170902a3cbb02900e323b7ef2fmr33428089plb.44.1614182332447;
-        Wed, 24 Feb 2021 07:58:52 -0800 (PST)
-Received: from work ([103.66.79.25])
-        by smtp.gmail.com with ESMTPSA id d27sm3282934pfq.40.2021.02.24.07.58.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 24 Feb 2021 07:58:51 -0800 (PST)
-Date:   Wed, 24 Feb 2021 21:28:48 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] bus: mhi: core: Check state before processing
- power_down
-Message-ID: <20210224155848.GX27945@work>
-References: <1613580211-22744-1-git-send-email-jhugo@codeaurora.org>
- <20210224095504.GQ27945@work>
- <c67dac35-49d8-212f-824d-5ba52513ac8a@codeaurora.org>
+        id S234282AbhBXQJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:09:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234059AbhBXQFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 11:05:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77C4264E6C;
+        Wed, 24 Feb 2021 16:04:11 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 16:04:08 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Chen Zhou <chenzhou10@huawei.com>
+Cc:     mingo@redhat.com, tglx@linutronix.de, rppt@kernel.org,
+        dyoung@redhat.com, bhe@redhat.com, will@kernel.org,
+        nsaenzjulienne@suse.de, corbet@lwn.net, John.P.donnelly@oracle.com,
+        bhsharma@redhat.com, prabhakar.pkin@gmail.com, horms@verge.net.au,
+        robh+dt@kernel.org, arnd@arndb.de, james.morse@arm.com,
+        xiexiuqi@huawei.com, guohanjun@huawei.com, huawei.libin@huawei.com,
+        wangkefeng.wang@huawei.com, linux-doc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH v14 08/11] arm64: kdump: reimplement crashkernel=X
+Message-ID: <20210224160408.GC28965@arm.com>
+References: <20210130071025.65258-1-chenzhou10@huawei.com>
+ <20210130071025.65258-9-chenzhou10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c67dac35-49d8-212f-824d-5ba52513ac8a@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210130071025.65258-9-chenzhou10@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 08:14:53AM -0700, Jeffrey Hugo wrote:
-> On 2/24/2021 2:55 AM, Manivannan Sadhasivam wrote:
-> > On Wed, Feb 17, 2021 at 09:43:31AM -0700, Jeffrey Hugo wrote:
-> > > We cannot process a power_down if the power state is DISABLED.  There is
-> > > no valid mhi_ctxt in that case, so attepting to process the power_down
-> > > will likely result in a null pointer dereference.  If the power state is
-> > > DISABLED, there is nothing to do anyways, so just bail early.
-> > > 
-> > > Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
-> > > ---
-> > > 
-> > > v2: Fix subject and tweak the locking to avoid needless lock/unlock/relock
-> > > 
-> > >   drivers/bus/mhi/core/pm.c | 9 ++++++++-
-> > >   1 file changed, 8 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> > > index 56ba3ab..47f6621 100644
-> > > --- a/drivers/bus/mhi/core/pm.c
-> > > +++ b/drivers/bus/mhi/core/pm.c
-> > > @@ -1144,6 +1144,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
-> > >   		mhi_deinit_dev_ctxt(mhi_cntrl);
-> > >   error_dev_ctxt:
-> > > +	mhi_cntrl->pm_state = MHI_PM_DISABLE;
-> > >   	mutex_unlock(&mhi_cntrl->pm_mutex);
-> > >   	return ret;
-> > > @@ -1155,11 +1156,17 @@ void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
-> > >   	enum mhi_pm_state cur_state, transition_state;
-> > >   	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> > > +	mutex_lock(&mhi_cntrl->pm_mutex);
-> > > +	cur_state = mhi_cntrl->pm_state;
-> > 
-> > As I said in my previous review, you should use pm_lock for reading the
-> > pm_state.
+On Sat, Jan 30, 2021 at 03:10:22PM +0800, Chen Zhou wrote:
+> There are following issues in arm64 kdump:
+> 1. We use crashkernel=X to reserve crashkernel below 4G, which
+> will fail when there is no enough low memory.
+> 2. If reserving crashkernel above 4G, in this case, crash dump
+> kernel will boot failure because there is no low memory available
+> for allocation.
 > 
-> You also said on IRC that is a refactor of the entire driver, and not a
-> blocker for this fix.  Based on that, I intrepreted your comments as nothing
-> needed to be done regarding the locking, so I'm confused by this comment.
+> To solve these issues, change the behavior of crashkernel=X and
+> introduce crashkernel=X,[high,low]. crashkernel=X tries low allocation
+> in DMA zone, and fall back to high allocation if it fails.
+> We can also use "crashkernel=X,high" to select a region above DMA zone,
+> which also tries to allocate at least 256M in DMA zone automatically.
+> "crashkernel=Y,low" can be used to allocate specified size low memory.
 > 
-> I'm not entirely sure what you want since I feel like you are giving
-> conflicting direction, but I'm guessing you want the lock of the pm_lock to
-> be moved up to just under the mutex lock then?
-> 
+> Another minor change, there may be two regions reserved for crash
+> dump kernel, in order to distinct from the high region and make no
+> effect to the use of existing kexec-tools, rename the low region as
+> "Crash kernel (low)".
 
-Yes, that's what my intention is. Sorry if I confused you.
+I think we discussed this but I don't remember the conclusion. Is this
+only renamed conditionally so that we don't break current kexec-tools?
 
-Thanks,
-Mani
+IOW, assuming that the full crashkernel region is reserved below 4GB,
+does the "(low)" suffix still appear or it's only if a high region is
+additionally reserved?
 
-> -- 
-> Jeffrey Hugo
-> Qualcomm Technologies, Inc. is a member of the
-> Code Aurora Forum, a Linux Foundation Collaborative Project.
+> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
+> index 3f6ecae0bc68..f0caed0cb5e1 100644
+> --- a/arch/arm64/include/asm/kexec.h
+> +++ b/arch/arm64/include/asm/kexec.h
+> @@ -96,6 +96,10 @@ static inline void crash_prepare_suspend(void) {}
+>  static inline void crash_post_resume(void) {}
+>  #endif
+>  
+> +#ifdef CONFIG_KEXEC_CORE
+> +extern void __init reserve_crashkernel(void);
+> +#endif
+
+Why not have this in some generic header?
+
+> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+> index c18aacde8bb0..69c592c546de 100644
+> --- a/arch/arm64/kernel/setup.c
+> +++ b/arch/arm64/kernel/setup.c
+> @@ -238,7 +238,18 @@ static void __init request_standard_resources(void)
+>  		    kernel_data.end <= res->end)
+>  			request_resource(res, &kernel_data);
+>  #ifdef CONFIG_KEXEC_CORE
+> -		/* Userspace will find "Crash kernel" region in /proc/iomem. */
+> +		/*
+> +		 * Userspace will find "Crash kernel" or "Crash kernel (low)"
+> +		 * region in /proc/iomem.
+> +		 * In order to distinct from the high region and make no effect
+> +		 * to the use of existing kexec-tools, rename the low region as
+> +		 * "Crash kernel (low)".
+> +		 */
+> +		if (crashk_low_res.end && crashk_low_res.start >= res->start &&
+> +				crashk_low_res.end <= res->end) {
+> +			crashk_low_res.name = "Crash kernel (low)";
+> +			request_resource(res, &crashk_low_res);
+> +		}
+>  		if (crashk_res.end && crashk_res.start >= res->start &&
+>  		    crashk_res.end <= res->end)
+>  			request_resource(res, &crashk_res);
+
+My reading of the new generic reserve_crashkernel() is that
+crashk_low_res will only be populated if crask_res is above 4GB. If
+that's correct, I'm fine with the renaming here since current systems
+would not get a renamed low reservation (as long as they don't change
+the kernel cmdline).
+
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 912f64f505f7..d20f5c444ebf 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -35,6 +35,7 @@
+>  #include <asm/fixmap.h>
+>  #include <asm/kasan.h>
+>  #include <asm/kernel-pgtable.h>
+> +#include <asm/kexec.h>
+>  #include <asm/memory.h>
+>  #include <asm/numa.h>
+>  #include <asm/sections.h>
+> @@ -61,66 +62,11 @@ EXPORT_SYMBOL(memstart_addr);
+>   */
+>  phys_addr_t arm64_dma_phys_limit __ro_after_init;
+>  
+> -#ifdef CONFIG_KEXEC_CORE
+> -/*
+> - * reserve_crashkernel() - reserves memory for crash kernel
+> - *
+> - * This function reserves memory area given in "crashkernel=" kernel command
+> - * line parameter. The memory reserved is used by dump capture kernel when
+> - * primary kernel is crashing.
+> - */
+> +#ifndef CONFIG_KEXEC_CORE
+>  static void __init reserve_crashkernel(void)
+>  {
+[...]
+>  }
+> +#endif
+
+Can we not have the dummy reserve_crashkernel() in the generic code as
+well and avoid the #ifndef here?
+
+>  #ifdef CONFIG_CRASH_DUMP
+>  static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
+> @@ -446,6 +392,14 @@ void __init bootmem_init(void)
+>  	 * reserved, so do it here.
+>  	 */
+>  	reserve_crashkernel();
+> +#ifdef CONFIG_KEXEC_CORE
+> +	/*
+> +	 * The low region is intended to be used for crash dump kernel devices,
+> +	 * just mark the low region as "nomap" simply.
+> +	 */
+> +	if (crashk_low_res.end)
+> +		memblock_mark_nomap(crashk_low_res.start, resource_size(&crashk_low_res));
+> +#endif
+
+Do we do something similar for crashk_res?
+
+Also, I can see we call crash_exclude_mem_range() only for crashk_res.
+Do we need to do this for crashk_low_res as well?
+
+-- 
+Catalin
