@@ -2,203 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB0032372D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5188132374C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234087AbhBXGNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 01:13:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
+        id S234196AbhBXGRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 01:17:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhBXGM4 (ORCPT
+        with ESMTP id S234201AbhBXGOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 01:12:56 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225EBC06174A;
-        Tue, 23 Feb 2021 22:12:16 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id c11so643898pfp.10;
-        Tue, 23 Feb 2021 22:12:16 -0800 (PST)
+        Wed, 24 Feb 2021 01:14:55 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4090DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 22:14:15 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id j24so674220pfi.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 22:14:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=C87YIkKVKFI0DF8+vH+AndEGXxxyw3xKzlEeNU6y0vc=;
-        b=bHHw2gywDdAUFeCpeLk3CTX99bSYtvvc1DJJ5Bi24nTF7MMaJWKz9LlCbKa1mwX4hy
-         LKBfSOWvTfkAFlEjtYXgX3EEL3io0zWv5KIs5QvBJuW1dP81PGLl33uHjS2yhWVcnG1M
-         3EZSHd36QgNx6zvrmMuwhb6Z1yaZOdmrBlzSqmqxcvQtIMG4uM4URbQq/eGAFUXvOLJg
-         eZ1AhvkPd8Zapm2WQNdz2QdSVNB6zqOPaqYGma3NAF7io5mktQpsroil3waXPpqHnpsO
-         A7KRVveZwN5/mJgghOHLFSmnswyyW9amP4DoZ7ZyctTgKT7Z8uO5F9H4DVxq2L215cQD
-         znVQ==
+        bh=yxOYlDcAmFrvsseVFQZnlbu4c+MCg9v+/OLc+k95JMI=;
+        b=h11vlpce4XGbBFbk13afoWc/iYSBMme7SCx6TA7PPG8goj0ZamXqmwYnchAylwh/kG
+         G334yWOoUrSCVEiaQ2b11Ns6QtNTs6lyIv0I/sP/H6R2B45KRaZjH4ftfQ11MHnI52wq
+         oq6Yme52ovnyQ1MJodGTN8XLzANyTf+v8UvSw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=C87YIkKVKFI0DF8+vH+AndEGXxxyw3xKzlEeNU6y0vc=;
-        b=aHm55P/6iZjIe7KvcuXiKVDk+AxynynyEfa+3vfovN73YL9pK256tUCPSdV1NE1/cn
-         6pDP/Q7Rnf6c6E7WcPMyoHDis2FLXvxPMvw1h7bA7I1AK9dfbqwPS7cbV5CTQ3ivSdi6
-         YZa8JKLf1Itk4coS8W419ZiiPmUHXA9JLy2m9IbfEC791ByoZpnd349WrJcqi5CW3bb2
-         q0iC3fFKEif3NTN53dd4k0kIoFa+kEYkwONqDJ+lgmZ/lwLk+m8XGVdAcYQrYcKOsOl9
-         NKavAMWLI1C4ChBaH4XcOdki7LZmGEhAanuxcek3Hor7PSiiOV50WpDWsCXOEqVP+swq
-         CiOQ==
-X-Gm-Message-State: AOAM531auVFmnaF/KPf8AxggipzY20LFEz6MkFZKCgv7LLcdLP0eai5j
-        3yWu+lBvN9drTDoFxvZbDhw=
-X-Google-Smtp-Source: ABdhPJxx27iwZoozg4I5N8jqrNc8CIXT2Bc99UOsVWNYodi7D6RHOPk9MvTW8VFYnf1BHuvUaF40sQ==
-X-Received: by 2002:a63:da57:: with SMTP id l23mr11770660pgj.11.1614147135716;
-        Tue, 23 Feb 2021 22:12:15 -0800 (PST)
-Received: from container-ubuntu.lan ([171.211.28.221])
-        by smtp.gmail.com with ESMTPSA id g6sm1226533pfi.15.2021.02.23.22.12.09
+        bh=yxOYlDcAmFrvsseVFQZnlbu4c+MCg9v+/OLc+k95JMI=;
+        b=dhvyvkfoASy7IXTTqlwTyN5kjFYS3nX8JL/1dkjzDXXTrra2MCJ9bRBLBCmGRGJD7U
+         VYENgXtIHnDn78Yd8+mB7KH8Wf9f0VI6Jmlsnba+bMVkUJUzSDk1TM4rBYea8A8kkcTK
+         LrcI8iqODPQjy79ElSTCdb19srrtFRCdqrZdFYQNNh81ROoh7+Qb3pT9waAnyvZ9Aimm
+         JaCBrm83Qgx9/KYYIoG9AZPbXc25uiufM6RhFWRzGBP95NH2qWDGrvj4bKSC3rUDQGJR
+         odelirVx3+a+41X1dvBXvc1abW4IFmrVcOnD038m8F0AGCGSG+rc34gxh6SUSfoCt71A
+         uatA==
+X-Gm-Message-State: AOAM5338M3j9ZjS7uh8egqLNQZV7qNDUr1c/tQCrC1ml5s0erggnadCX
+        cXXXtwAouc+Twrln8HGu7HiMfw==
+X-Google-Smtp-Source: ABdhPJxy2AVlk5Xq7aOvwN63bI6UesMrVz7TGyZ2uLn4UrK2JqH1Tv0V+HKRxOP7f5vWqaG+1ITTig==
+X-Received: by 2002:aa7:888b:0:b029:1ec:df4a:4da2 with SMTP id z11-20020aa7888b0000b02901ecdf4a4da2mr29828733pfe.66.1614147254429;
+        Tue, 23 Feb 2021 22:14:14 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:5003:b035:5243:160e])
+        by smtp.gmail.com with ESMTPSA id r13sm1266765pfg.37.2021.02.23.22.14.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 22:12:14 -0800 (PST)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC net-next] net: dsa: rtl8366rb: support bridge offloading
-Date:   Wed, 24 Feb 2021 14:12:05 +0800
-Message-Id: <20210224061205.23270-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 23 Feb 2021 22:14:14 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Xin Ji <xji@analogixsemi.com>, dri-devel@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v4 1/2] dt-bindings: drm/bridge: anx7625: Add power supplies
+Date:   Wed, 24 Feb 2021 14:14:08 +0800
+Message-Id: <20210224061409.3996755-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use port isolation registers to configure bridge offloading.
-Remove the VLAN init, as we have proper CPU tag and bridge offloading
-support now.
+anx7625 requires 3 power supply regulators.
 
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
 ---
-This is not tested, as I don't have a RTL8366RB board. And I think there
-is potential race condition in port_bridge_{join,leave}.
+v3->v4: rebase to drm-misc/for-linux-next
+---
+ .../bindings/display/bridge/analogix,anx7625.yaml | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
- drivers/net/dsa/rtl8366rb.c | 73 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 67 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/dsa/rtl8366rb.c b/drivers/net/dsa/rtl8366rb.c
-index a89093bc6c6a..9f6e2b361216 100644
---- a/drivers/net/dsa/rtl8366rb.c
-+++ b/drivers/net/dsa/rtl8366rb.c
-@@ -300,6 +300,12 @@
- #define RTL8366RB_INTERRUPT_STATUS_REG	0x0442
- #define RTL8366RB_NUM_INTERRUPT		14 /* 0..13 */
+diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+index c789784efe306..ab48ab2f4240d 100644
+--- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+@@ -34,6 +34,15 @@ properties:
+     description: used for reset chip control, RESET_N pin B7.
+     maxItems: 1
  
-+/* Port isolation registers */
-+#define RTL8366RB_PORT_ISO_BASE		0x0F08
-+#define RTL8366RB_PORT_ISO(pnum)	(RTL8366RB_PORT_ISO_BASE + (pnum))
-+#define RTL8366RB_PORT_ISO_EN		BIT(0)
-+#define RTL8366RB_PORT_ISO_PORTS_MASK	GENMASK(7, 1)
++  vdd10-supply:
++    description: Regulator that provides the supply 1.0V power.
 +
- /* bits 0..5 enable force when cleared */
- #define RTL8366RB_MAC_FORCE_CTRL_REG	0x0F11
++  vdd18-supply:
++    description: Regulator that provides the supply 1.8V power.
++
++  vdd33-supply:
++    description: Regulator that provides the supply 3.3V power.
++
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
  
-@@ -835,6 +841,15 @@ static int rtl8366rb_setup(struct dsa_switch *ds)
- 	if (ret)
- 		return ret;
+@@ -55,6 +64,9 @@ properties:
+ required:
+   - compatible
+   - reg
++  - vdd10-supply
++  - vdd18-supply
++  - vdd33-supply
+   - ports
  
-+	/* Isolate user ports */
-+	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
-+		ret = regmap_write(smi->map, RTL8366RB_PORT_ISO(i),
-+				   RTL8366RB_PORT_ISO_EN |
-+				   BIT(RTL8366RB_PORT_NUM_CPU + 1));
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/* Set up the "green ethernet" feature */
- 	ret = rtl8366rb_jam_table(rtl8366rb_green_jam,
- 				  ARRAY_SIZE(rtl8366rb_green_jam), smi, false);
-@@ -963,10 +978,6 @@ static int rtl8366rb_setup(struct dsa_switch *ds)
- 			return ret;
- 	}
+ additionalProperties: false
+@@ -72,6 +84,9 @@ examples:
+             reg = <0x58>;
+             enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
+             reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
++            vdd10-supply = <&pp1000_mipibrdg>;
++            vdd18-supply = <&pp1800_mipibrdg>;
++            vdd33-supply = <&pp3300_mipibrdg>;
  
--	ret = rtl8366_init_vlan(smi);
--	if (ret)
--		return ret;
--
- 	ret = rtl8366rb_setup_cascaded_irq(smi);
- 	if (ret)
- 		dev_info(smi->dev, "no interrupt support\n");
-@@ -977,8 +988,6 @@ static int rtl8366rb_setup(struct dsa_switch *ds)
- 		return -ENODEV;
- 	}
- 
--	ds->configure_vlan_while_not_filtering = false;
--
- 	return 0;
- }
- 
-@@ -1127,6 +1136,56 @@ rtl8366rb_port_disable(struct dsa_switch *ds, int port)
- 	rb8366rb_set_port_led(smi, port, false);
- }
- 
-+static int
-+rtl8366rb_port_bridge_join(struct dsa_switch *ds, int port,
-+			   struct net_device *bridge)
-+{
-+	struct realtek_smi *smi = ds->priv;
-+	unsigned int port_bitmap = 0;
-+	int ret, i;
-+
-+	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
-+		if (i == port)
-+			continue;
-+		if (dsa_to_port(ds, i)->bridge_dev != bridge)
-+			continue;
-+		ret = regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(i),
-+					 0, BIT(port + 1));
-+		if (ret)
-+			return ret;
-+
-+		port_bitmap |= BIT(i);
-+	}
-+
-+	return regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(port),
-+				  0, port_bitmap << 1);
-+}
-+
-+static int
-+rtl8366rb_port_bridge_leave(struct dsa_switch *ds, int port,
-+			    struct net_device *bridge)
-+{
-+	struct realtek_smi *smi = ds->priv;
-+	unsigned int port_bitmap = 0;
-+	int ret, i;
-+
-+	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
-+		if (i == port)
-+			continue;
-+		if (dsa_to_port(ds, i)->bridge_dev != bridge)
-+			continue;
-+		ret = regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(i),
-+					 BIT(port + 1), 0);
-+		if (ret)
-+			return ret;
-+
-+		port_bitmap |= BIT(i);
-+	}
-+
-+	return regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(port),
-+				  port_bitmap << 1, 0);
-+}
-+
- static int rtl8366rb_change_mtu(struct dsa_switch *ds, int port, int new_mtu)
- {
- 	struct realtek_smi *smi = ds->priv;
-@@ -1510,6 +1569,8 @@ static const struct dsa_switch_ops rtl8366rb_switch_ops = {
- 	.get_strings = rtl8366_get_strings,
- 	.get_ethtool_stats = rtl8366_get_ethtool_stats,
- 	.get_sset_count = rtl8366_get_sset_count,
-+	.port_bridge_join = rtl8366rb_port_bridge_join,
-+	.port_bridge_leave = rtl8366rb_port_bridge_leave,
- 	.port_vlan_filtering = rtl8366_vlan_filtering,
- 	.port_vlan_add = rtl8366_vlan_add,
- 	.port_vlan_del = rtl8366_vlan_del,
+             ports {
+                 #address-cells = <1>;
 -- 
-2.25.1
+2.30.1.766.gb4fecdf3b7-goog
 
