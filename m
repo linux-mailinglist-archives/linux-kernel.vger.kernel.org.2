@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120613234D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B28AB3234EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhBXBFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 20:05:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234666AbhBXAfT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 19:35:19 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FFDC0617AB
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 16:34:05 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id p21so403272lfu.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 16:34:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vF7F/YfjrUV7i8G4F7JJg0GaVxlhAz8y2lLIBvTolGs=;
-        b=R6rhwbibBYZfR0wRPEZZe1mYiCGuRMMhoYXWj7TvwvTXNVSgjD/1qgPSKv3q04Hdvb
-         LlVWnaI26z3SMkymarqseBOJxqSKT14HCFEHhXeD83bQCBaSRq3kca75dXn5gGTOaSZd
-         pxfB2RThU3RMWxDsWXTf5V1GLSChgFVScH4I4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vF7F/YfjrUV7i8G4F7JJg0GaVxlhAz8y2lLIBvTolGs=;
-        b=aGQ8jxDNj/tqoyFdS7mu+EG5ohRbiIkZH6Y/Ci3nErGikxroyLOovvh5IhkXjFa44C
-         5s6ybi1QJkXj+zGqPRDLj0eCLolEzHn7SnHohCvo64TXb7EL/p6yh3GPLDsSkvCfVOpH
-         1KkuOgkb5sKYqkLMzo9jIQY+UQUGNhPDlouNPW9Lb7qy8YOCGGIRAnHaY9uKvOqnksKJ
-         8TiUlJCiwGvlnWuS8ZP6pu9QO6xDcHAxyz0sLBlKLxz7dDr3p4wERKD3uf7Eo86apRsA
-         sr0PwJ6agSve+dMVpBK/nrq/Hrx9u3P9WJT71ZMJh7a5ISqjGxqLgxGxH+apGT8vxSKg
-         CQxQ==
-X-Gm-Message-State: AOAM533qcn5+2kyIWEXiFsOb3TP1kLY4Mtu1FsiPR3r5et264rwhOS5f
-        hXolgB1w9C8wQob6DmI16Nm0SOoF9Q+7Ng==
-X-Google-Smtp-Source: ABdhPJxUjOkhAMkPP/dvbK+ak+f/j4jZXLfNmRrzf72qGxc5JC9PG8qwCIb9JgJxMpYLVUrclW5BSw==
-X-Received: by 2002:a05:6512:39c3:: with SMTP id k3mr17533455lfu.501.1614126844101;
-        Tue, 23 Feb 2021 16:34:04 -0800 (PST)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id a1sm86508lfk.148.2021.02.23.16.34.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 16:34:03 -0800 (PST)
-Received: by mail-lf1-f48.google.com with SMTP id u4so484987lfs.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 16:34:03 -0800 (PST)
-X-Received: by 2002:a19:8186:: with SMTP id c128mr17747117lfd.377.1614126842985;
- Tue, 23 Feb 2021 16:34:02 -0800 (PST)
+        id S233956AbhBXBIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 20:08:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234383AbhBXAoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 19:44:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9ED060C3E;
+        Wed, 24 Feb 2021 00:40:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614127230;
+        bh=B9KRZo0voEyKZK+SLYtkKhTZe66u0VoBC9SE8Szq7Sk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pYy+nzg2Ig72u2lWGdkgoJFChLv5LnVuqvRPOpvFCMUARd9XFO3m7dozQyoQVWI3w
+         9YLAXGshyTqkW2ltj6ckNGZtbjgpcxPlmOM0Rwrz2bNKQjgmog/ELHbAYSZCH0e+OV
+         jlx1NH6of293Pn7BIphj+CX+TaP6iaawBBND//VGrHHEGCICuRI59ZPKqFNVXiLy/m
+         +qxNYjWzgeMfUXXQImQ/yj48uZ/TfCIvDzBVPd1hgJtbGdkIhFqIK/KGo4p2NvTPZH
+         e9PaOpSxwPUaSGWveXe9Zf+ZCRFBPSPdkxmp1nyJw9tBvMg9MHUHCb0Mknza3rDbYs
+         syh6RRvuE8Jng==
+Date:   Tue, 23 Feb 2021 16:40:26 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     netdev@vger.kernel.org, Denis Kirjanov <kda@linux-powerpc.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Subject: Re: [PATCHSET] making unix_bind() undo mknod on failure
+Message-ID: <20210223164026.01b56449@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YDQAmH9zSsaqf+Dg@zeniv-ca.linux.org.uk>
+References: <20210129131855.GA2346744@infradead.org>
+        <YClpVIfHYyzd6EWu@zeniv-ca.linux.org.uk>
+        <CAOJe8K00srtuD+VAJOFcFepOqgNUm0mC8C=hLq2=qhUFSfhpuw@mail.gmail.com>
+        <YCwIQmsxWxuw+dnt@zeniv-ca.linux.org.uk>
+        <YC86WeSTkYZqRlJY@zeniv-ca.linux.org.uk>
+        <YC88acS6dN6cU1y0@zeniv-ca.linux.org.uk>
+        <CAM_iQpVpJwRNKjKo3p1jFvCjYAXAY83ux09rd2Mt0hKmvx=RgQ@mail.gmail.com>
+        <YDFj3OZ4DMQSqylH@zeniv-ca.linux.org.uk>
+        <CAM_iQpXX7SBGgUkBUY6BEjCqJYbHAUW5Z3VtV2U=yhiw1YJr=w@mail.gmail.com>
+        <YDF6Z8QHh3yw7es9@zeniv-ca.linux.org.uk>
+        <YDQAmH9zSsaqf+Dg@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-References: <20210224113108.4c05915e@canb.auug.org.au>
-In-Reply-To: <20210224113108.4c05915e@canb.auug.org.au>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 23 Feb 2021 16:33:47 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi1FEJfk9r4Jw90kU3aayXka4Y4HOWdgAtVQHRFTgpQ+A@mail.gmail.com>
-Message-ID: <CAHk-=wi1FEJfk9r4Jw90kU3aayXka4Y4HOWdgAtVQHRFTgpQ+A@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commits in Linus' tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 4:31 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> are missing a Signed-off-by from their committer.
+On Mon, 22 Feb 2021 19:06:00 +0000 Al Viro wrote:
+> On Sat, Feb 20, 2021 at 09:08:56PM +0000, Al Viro wrote:
+> 
+> > *shrug*
+> > 
+> > If anything, __unix_complete_bind() might make a better name for that,
+> > with dropping ->bindlock also pulled in, but TBH I don't have sufficiently
+> > strong preferences - might as well leave dropping the lock to caller.
+> > 
+> > I'll post that series to netdev tonight.  
+> 
+> 	Took longer than I hoped...  Anyway, here's the current variant;
+> it's 5.11-based, lives in
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git misc.af_unix
+> 
+> Shortlog:
+> Al Viro (8):
+>       af_unix: take address assignment/hash insertion into a new helper
+>       unix_bind(): allocate addr earlier
+>       unix_bind(): separate BSD and abstract cases
+>       unix_bind(): take BSD and abstract address cases into new helpers
+>       fold unix_mknod() into unix_bind_bsd()
+>       unix_bind_bsd(): move done_path_create() call after dealing with ->bindlock
+>       unix_bind_bsd(): unlink if we fail after successful mknod
+>       __unix_find_socket_byname(): don't pass hash and type separately
+> 
+> Diffstat:
+>  net/unix/af_unix.c | 186 +++++++++++++++++++++++++++--------------------------
+>  1 file changed, 94 insertions(+), 92 deletions(-)
+> 
+> The actual fix is in #7/8, the first 6 are massage in preparation to that
+> and #8/8 is a minor followup cleanup.  Individual patches in followups.
 
-Gaah. Maybe I should do some pre-pull hook or something to notice this
-automatically (like you clearly do).
+Dave is out this week, but this looks good to me. You said "please
+review" - I'm assuming you'll send these to Linus yourself, so:
 
-            Linus
+Acked-by: Jakub Kicinski <kuba@kernel.org>
