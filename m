@@ -2,107 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A28F323BEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 13:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84301323BED
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 13:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234592AbhBXMfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 07:35:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46340 "EHLO mail.kernel.org"
+        id S233165AbhBXMgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 07:36:06 -0500
+Received: from mga18.intel.com ([134.134.136.126]:11514 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232767AbhBXMfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 07:35:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBD9064ED3;
-        Wed, 24 Feb 2021 12:34:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614170079;
-        bh=+54c20/fHB+vsC4mh/3vecMne45w1iE6dDHMbiH1IKM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZVbyWGvGLLfWL2PVsf+dQ5uYXW9n6+Ecyob0kYfIptlZew0mV7KLGaO8ePQz5dTY2
-         H6LI+Ui6ZdqQvF0HRNnfb+PAiqmU6ffIEMahAUUlL7gR/B5BX8wsmW/GlICCSFznoP
-         yN8Mvd/ZkZa/0EOV+rtB+o9ojCnDLx6AixvmKBLe+ZbPLF3mm3al1q+ppJs24Dw6VX
-         4Ff1tbsf3cPYyFwTBHLUlV5OdoLP0JaxD2lBHXlPcvjTMRPcDSH+nytWW81g/t5PdW
-         Uot5gaDbG+ppItW0Zp5LE7AcF/37vD3e8P6UkaSt4TPdc1cxI7obLacSmUUd+rOP0H
-         0LH3ZBTZPH5Ow==
-Date:   Wed, 24 Feb 2021 12:33:36 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] arm64: Unwinder enhancements for reliable
- stack trace
-Message-ID: <20210224123336.GA4504@sirena.org.uk>
-References: <bc4761a47ad08ab7fdd555fc8094beb8fc758d33>
- <20210223181243.6776-1-madvenka@linux.microsoft.com>
- <20210223181243.6776-2-madvenka@linux.microsoft.com>
- <20210223190240.GK5116@sirena.org.uk>
- <08e8e02c-8ef0-26bb-1d0d-7dda54b5fefd@linux.microsoft.com>
+        id S232326AbhBXMgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 07:36:00 -0500
+IronPort-SDR: BN6KV5eTlNTAaqmmYB+jSp0Kj0z89WaFkZRHcx/ANfzAb+EyNeRZrhJ51nkZ7CGkUAJkYQds3K
+ NV3OPLYMo5gA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="172805629"
+X-IronPort-AV: E=Sophos;i="5.81,202,1610438400"; 
+   d="scan'208";a="172805629"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 04:35:18 -0800
+IronPort-SDR: lOWTuQuPwEatviph3d5yB+yGDOnHekXV2HjV4s+iICjhIuI6L8pg7Mcy6JQGWtfI4W9iYtBnTb
+ DVJ3Rfk325hg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,202,1610438400"; 
+   d="scan'208";a="442053482"
+Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 24 Feb 2021 04:35:16 -0800
+Received: from kbuild by 16660e54978b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lEtNs-00021L-8E; Wed, 24 Feb 2021 12:35:16 +0000
+Date:   Wed, 24 Feb 2021 20:34:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/f2fs] BUILD SUCCESS
+ 91c34f031dc565fec3a1799effb6a9fa25dc367b
+Message-ID: <603647e4.DeEFbl4eqljuwAUe%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
-Content-Disposition: inline
-In-Reply-To: <08e8e02c-8ef0-26bb-1d0d-7dda54b5fefd@linux.microsoft.com>
-X-Cookie: He's dead, Jim.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/f2fs
+branch HEAD: 91c34f031dc565fec3a1799effb6a9fa25dc367b  f2fs: Replace one-element array with flexible-array member
 
---7JfCtLOvnd9MIVvH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+elapsed time: 726m
 
-On Tue, Feb 23, 2021 at 01:20:49PM -0600, Madhavan T. Venkataraman wrote:
-> On 2/23/21 1:02 PM, Mark Brown wrote:
-> > On Tue, Feb 23, 2021 at 12:12:43PM -0600, madvenka@linux.microsoft.com wrote:
+configs tested: 105
+configs skipped: 2
 
-> >> Reliable stack trace function
-> >> =============================
-> >>
-> >> Implement arch_stack_walk_reliable(). This function walks the stack like
-> >> the existing stack trace functions with a couple of additional checks:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> > Again, this should be at least one separate patch.  How does this ensure
-> > that we don't have any issues with any of the various probe mechanisms?
-> > If there's no need to explicitly check anything that should be called
-> > out in the changelog.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+nds32                            alldefconfig
+powerpc                      chrp32_defconfig
+sh                          landisk_defconfig
+arm                      tct_hammer_defconfig
+arm                          pcm027_defconfig
+nds32                               defconfig
+m68k                       m5275evb_defconfig
+sh                           se7619_defconfig
+microblaze                      mmu_defconfig
+m68k                             allyesconfig
+xtensa                generic_kc705_defconfig
+arm                           omap1_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                     tqm8560_defconfig
+powerpc                    ge_imp3a_defconfig
+m68k                       m5475evb_defconfig
+arm                       netwinder_defconfig
+arm                           sama5_defconfig
+arm                         s3c2410_defconfig
+arm                              alldefconfig
+sh                          lboxre2_defconfig
+arm                      footbridge_defconfig
+powerpc                     sequoia_defconfig
+arm                        multi_v5_defconfig
+mips                          ath79_defconfig
+mips                      maltaaprp_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                     pseries_defconfig
+mips                           rs90_defconfig
+mips                         mpc30x_defconfig
+openrisc                    or1ksim_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210223
+i386                 randconfig-a006-20210223
+i386                 randconfig-a004-20210223
+i386                 randconfig-a003-20210223
+i386                 randconfig-a001-20210223
+i386                 randconfig-a002-20210223
+x86_64               randconfig-a015-20210223
+x86_64               randconfig-a011-20210223
+x86_64               randconfig-a012-20210223
+x86_64               randconfig-a016-20210223
+x86_64               randconfig-a014-20210223
+x86_64               randconfig-a013-20210223
+i386                 randconfig-a013-20210223
+i386                 randconfig-a012-20210223
+i386                 randconfig-a011-20210223
+i386                 randconfig-a014-20210223
+i386                 randconfig-a016-20210223
+i386                 randconfig-a015-20210223
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> I am trying to do this in an incremental fashion. I have to study the probe
-> mechanisms a little bit more before I can come up with a solution. But
-> if you want to see that addressed in this patch set, I could do that.
-> It will take a little bit of time. That is all.
+clang tested configs:
+x86_64               randconfig-a005-20210223
+x86_64               randconfig-a006-20210223
+x86_64               randconfig-a004-20210223
+x86_64               randconfig-a001-20210223
+x86_64               randconfig-a002-20210223
+x86_64               randconfig-a003-20210223
 
-Handling of the probes stuff seems like it's critical to reliable stack
-walk so we shouldn't claim to have support for reliable stack walk
-without it.  If it was a working implementation we could improve that'd
-be one thing but this would be buggy which is a different thing.
-
-> >> +	(void) on_accessible_stack(task, stackframe, &info);
-
-> > Shouldn't we return NULL if we are not on an accessible stack?
-
-> The prev_fp has already been checked by the unwinder in the previous
-> frame. That is why I don't check the return value. If that is acceptable,
-> I will add a comment.
-
-TBH if you're adding the comment it seems like you may as well add the
-check, it's not like it's expensive and it means there's no possibility
-that some future change could result in this assumption being broken.
-
---7JfCtLOvnd9MIVvH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA2R58ACgkQJNaLcl1U
-h9AblQf+Ip4D1mZLod2Rli2j6mPrZU5hrwGsSqkDASVi8ze3oU8RMi6w/6s3MOFs
-IBMU7ReV/znwM0f4MHHxXR3HH+pB+m2OgbwTMxZf4iPk+9PFlIkt4QZXVTRV0t8A
-L28n9lbVfjnfScmcHVYo8Kkrs9wO+fzfSXG7ApIPyg0OO1fFTSkRcVM+2UIQ2yPj
-7he+avWS1b+G44VeQxKj0/MYzOuDq4tZOScblOaVVv5P6CaHwlIpPGYL2f9lLd/N
-vbVck3dHthYs1wcyiMpOr5SUIS7TfWa851mgknTQYIf9eL4eqVZz12ERff06FBn/
-NT20sMWw/G/W5YgTfY1aFJzEfjXEzA==
-=WGh3
------END PGP SIGNATURE-----
-
---7JfCtLOvnd9MIVvH--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
