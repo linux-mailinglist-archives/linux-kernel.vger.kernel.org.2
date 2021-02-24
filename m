@@ -2,111 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B583244BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD34E3244BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbhBXTmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 14:42:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234302AbhBXTmr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 14:42:47 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A083DC061574;
-        Wed, 24 Feb 2021 11:42:07 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0d180087c1c74682a645c2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1800:87c1:c746:82a6:45c2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F109E1EC0328;
-        Wed, 24 Feb 2021 20:42:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614195726;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9ezgUQlQbbX7408pbcJrxnn71TdUJUjIpNkknyJCDRw=;
-        b=VnSrIXBlqTORmrkgznFXrhpvc+CB1vlkNwYoJMdpewn99QaGbXEvOBOK/lD/XS+//KalF3
-        c5zTEwyImAn3425u7nHBNlLBjwHhiHsMhAQYE1oG76/9ve5NBLA6qumhCn4GNT7MOfmydT
-        zHNMzYp6o5Qbh5hqT78fY22+8M/YJ5g=
-Date:   Wed, 24 Feb 2021 20:42:04 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
-Message-ID: <20210224194204.GI20344@zn.tnic>
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
- <20210217222730.15819-7-yu-cheng.yu@intel.com>
- <20210224161343.GE20344@zn.tnic>
- <32ac05ef-b50b-c947-095d-bc31a42947a3@intel.com>
- <20210224165332.GF20344@zn.tnic>
- <db493c76-2a67-5f53-29a0-8333facac0f5@intel.com>
- <20210224192044.GH20344@zn.tnic>
- <CALCETrXKteS9K=OOgsCvBU4in_3zcYccqF9hh2=OdCJPknvB8Q@mail.gmail.com>
+        id S234317AbhBXTqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 14:46:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232392AbhBXTqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 14:46:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D55964EDD
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:45:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614195924;
+        bh=LfQXoknJnKVbOBg04Drxni9CXS4PBfq5QMqoj1lDLe4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qjFNcpfrEj7+RKhcovMLEWE+fr7MyNKQDA6oH+yhSwA2DlW1XSz12WmN6dnwW0Wdx
+         IHYAkvxKEH0G+ngeFKxFWAxHkfAJRmJZko6qKOp2YTbb6MzzmhckWc9yue3xu96jVg
+         xYkWQI2uq/7X2Yr+iAC2dqFbL9F4gqOHxQSnuynAWPIXCyccs+0/6/x+zPiJvOLHpb
+         B8PjzFBOpjKWARxgxbnEGg4ooTnuvVxRrCKdLx5d0wSanGIWEN1S6oHVLxUxxh1ZOe
+         +Wy7vgNyHgX5GkFLcKVjjGNIuavk7ddiG6ZazmHMsxVpVhsmsTDLvuFb/rRLKvo/PQ
+         CTbz1GrO0xEtQ==
+Received: by mail-ej1-f51.google.com with SMTP id k13so4965801ejs.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:45:24 -0800 (PST)
+X-Gm-Message-State: AOAM530J42QXz2tVypEt23zb0Q0CZzb1M93S7xQww6pLTIGD2tIGvZfz
+        gj2Enl4lp0Dvl3popXP89dZ80rNA4h3xuvOKZCu6hQ==
+X-Google-Smtp-Source: ABdhPJzspvZ4+VyJhHC42XdWTdsLh0GKsOAMGkUa3xGhV7C9hlfZz2wwwk0EiwDCBnbWLUSbfQm9ON9E+/PfdX7tUpo=
+X-Received: by 2002:a17:906:7d87:: with SMTP id v7mr29214938ejo.214.1614195922091;
+ Wed, 24 Feb 2021 11:45:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CALCETrXKteS9K=OOgsCvBU4in_3zcYccqF9hh2=OdCJPknvB8Q@mail.gmail.com>
+References: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
+ <20210224101756.bbdf95b9b6dfc982bff21324@kernel.org>
+In-Reply-To: <20210224101756.bbdf95b9b6dfc982bff21324@kernel.org>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 24 Feb 2021 11:45:10 -0800
+X-Gmail-Original-Message-ID: <CALCETrWoKh0aemrvTGZ13bUzN27s3WGW3CyvTptvayWLQEk91Q@mail.gmail.com>
+Message-ID: <CALCETrWoKh0aemrvTGZ13bUzN27s3WGW3CyvTptvayWLQEk91Q@mail.gmail.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 11:30:34AM -0800, Andy Lutomirski wrote:
-> On Wed, Feb 24, 2021 at 11:20 AM Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Wed, Feb 24, 2021 at 09:56:13AM -0800, Yu, Yu-cheng wrote:
-> > > No.  Maybe I am doing too much.  The GP fault sets si_addr to zero, for
-> > > example.  So maybe do the same here?
-> >
-> > No, you're looking at this from the wrong angle. This is going to be
-> > user-visible and the moment it gets upstream, it is cast in stone.
-> >
-> > So the whole use case of what luserspace needs to do or is going to do
-> > or wants to do on a SEGV_CPERR, needs to be described, agreed upon by
-> > people etc before it goes out. And thus clarified whether the address
-> > gets copied out or not.
-> 
-> I vote 0.  The address is in ucontext->gregs[REG_RIP] [0] regardless.
-> Why do we need to stick a copy somewhere else?
-> 
-> [0] or however it's spelled.  i can never remember.
+On Tue, Feb 23, 2021 at 5:18 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> On Tue, 23 Feb 2021 15:24:19 -0800
+> Andy Lutomirski <luto@kernel.org> wrote:
+>
+> > A while back, I let myself be convinced that kprobes genuinely need to
+> > single-step the kernel on occasion, and I decided that this sucked but
+> > I could live with it.  it would, however, be Really Really Nice (tm)
+> > if we could have a rule that anyone running x86 Linux who single-steps
+> > the kernel (e.g. kgdb and nothing else) gets to keep all the pieces
+> > when the system falls apart around them.  Specifically, if we don't
+> > allow kernel single-stepping and if we suitably limit kernel
+> > instruction breakpoints (the latter isn't actually a major problem),
+> > then we don't really really need to use IRET to return to the kernel,
+> > and that means we can avoid some massive NMI nastiness.
+>
+> Would you mean using "pop regs + popf + ret" instead of IRET after
+> int3 handled for avoiding IRET releasing the NMI mask? Yeah, it is
+> possible. I don't complain about that.
 
-Fine with me. Let's have this documented in the manpage and then we can
-move forward with this.
+Yes, more or less.
 
-Thx.
+>
+> However, what is the relationship between the IRET and single-stepping?
+> I think we can do same thing in do_debug...
 
--- 
-Regards/Gruss,
-    Boris.
+Because there is no way to single-step without using IRET.  POPF; RET
+will trap after RET and you won't make forward progress.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+>
+> > But I was contemplating the code, and I'm no longer convinced.
+> > Uprobes seem to single-step user code for no discernable reason.
+> > (They want to trap after executing an out of line instruction, AFAICT.
+> > Surely INT3 or even CALL after the out-of-line insn would work as well
+> > or better.)  Why does kprobe single-step?  I spend a while staring at
+> > the code, and it was entirely unclear to me what the purpose of the
+> > single-step is.
+>
+> For kprobes, there are 2 major reasons for (still relaying on) single stepping.
+> One is to provide post_handler, another is executing the original code,
+> which is replaced by int3, without modifying code nor emulation.
+
+I don't follow.  Suppose we execute out of line.  If we originally have:
+
+INSN
+
+we replace it with:
+
+INT3
+
+and we have, out of line:
+
+INSN [but with displacement modified if it's RIP-relative]
+
+right now, we single-step the out of line copy.  But couldn't we instead do:
+
+INSN [but with displacement modified if it's RIP-relative]
+INT3
+
+or even
+
+INSN [but with displacement modified if it's RIP-relative]
+JMP kprobe_post_handler
+
+and avoid single-stepping?
+
+I guess I see the point for CALL, JMP and RET, but it seems like we
+could emulate those cases instead fairly easily.
