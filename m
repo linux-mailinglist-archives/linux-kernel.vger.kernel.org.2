@@ -2,258 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CCC32410D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9510D3240AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234626AbhBXPjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:39:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43817 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233845AbhBXPIN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:08:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614179169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hE/JW8Dw5e6ABCMHC+aiwNgbhT17E1ZqRTDBWqvHAHE=;
-        b=cfyexALChXT7zf6RREJ6miqZmVm7cMzstEPTMK/60c0vQpYfudYhR/1wnmhOp1U8bOmvlw
-        iMfhOLHmwQWwHCQmdt8KONIfQeSZDG+NCNYjOnt4rsadI0dpuWps7iNJt4Tsr7vUqoaQZi
-        j3SyFP/HVH0FdusxSM6519z7aILY9HY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-WeJ4SY0uNIOI_e9AL1yUkw-1; Wed, 24 Feb 2021 10:06:05 -0500
-X-MC-Unique: WeJ4SY0uNIOI_e9AL1yUkw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A17918C6C52;
-        Wed, 24 Feb 2021 14:38:34 +0000 (UTC)
-Received: from [10.36.114.83] (ovpn-114-83.ams2.redhat.com [10.36.114.83])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B293D19D9C;
-        Wed, 24 Feb 2021 14:38:25 +0000 (UTC)
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <4bb9071b-e6c1-a732-0ed6-46aff0eaa70c@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <0f1c6f39-6a51-f8a6-8542-be1eb9c6fa0a@redhat.com>
-Date:   Wed, 24 Feb 2021 15:38:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <4bb9071b-e6c1-a732-0ed6-46aff0eaa70c@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S238539AbhBXPTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:19:38 -0500
+Received: from mail-eopbgr1320108.outbound.protection.outlook.com ([40.107.132.108]:34213
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238133AbhBXOlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 09:41:22 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z5ZLxX9Iz7FFeuybohmIinwWlChmekDwvrFGz9quMw+PkKNVMaP+LlzPQPhm3IZCZIrpc+XvLqXZvQKGGZs1oHS8SqGcBeFK7+2hG6rrWR5HjIs7qxV/uUwb2JPLZuD52LxlhB/VijEigEXaYiy3wNxjCVP9WUEB3MlBwKaq1DbmdaatHqtEbpzkbjKLceEkZ8cThaty/Byh6LoOE41MXGjWsD8QT6OrLfWOuAp2c1RnhQiogwaaxJP9uZg80U9gZadW1zf8EgyXPt6L3stFl/SjQ/U96D77qylhdVKsYXBPELExLjpvsVAWRH+IXZB2QZhZhKJ+e/5Kr0nEt+CNUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ib+n3nDui+eVVFoX20SX4f4vIrBJPdHWHEzS3IOnEiI=;
+ b=c5iGNdcj3J0YKin8TA2M7rZjvrsrryee4RxE8b7RgByOuAV+4CJbRi0q9ASk/vYqvkW//dut9cVNjxX9Wjus5xw5ahqJpxgE8YUjeO5uGuyT//0B+cwHhaOCYBzxsV1Q03SQuALDMWXyEEpEHfT97KC+qE7TBUSdHNk3Qn9y3pzZCa99eWsd9fr1o9JZeR1GK70HBsSrnwNiNpSnpjRZbjuo1BAx3bXljmoOxBnq/cKpXCiDWWTzGna8VeuakTvLJ+qS0cjj9dyBEdHZiEpxt3yw8zW9WbSFEpYizOZh5P13x46bxOA2LM5J+0pNP++XhmL+rXa+eYKNS6DzF4usJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ib+n3nDui+eVVFoX20SX4f4vIrBJPdHWHEzS3IOnEiI=;
+ b=HVlcWtBAjW8Gb8KuunQnAMWJiVOGm7Om3G0xbLybNI8gdDWnK3Ocm3mYP/ULx8JXj/LiJ1+piYTFm3RaRgM8IhiPjKHgaz7gcgmDh6d6HrwkRg3R7DZH1nS+hXze/Owp2ej9vIgW7ZBfZp621mzO4MEKA3+oLzh74WCS72ALcwI=
+Received: from SG2P15301MB0063.APCP153.PROD.OUTLOOK.COM (2603:1096:3:10::19)
+ by SG2P153MB0271.APCP153.PROD.OUTLOOK.COM (2603:1096:4:ad::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3912.4; Wed, 24 Feb 2021 14:39:49 +0000
+Received: from SG2P15301MB0063.APCP153.PROD.OUTLOOK.COM
+ ([fe80::5d0e:cc2a:fa6d:fa05]) by SG2P15301MB0063.APCP153.PROD.OUTLOOK.COM
+ ([fe80::5d0e:cc2a:fa6d:fa05%6]) with mapi id 15.20.3912.009; Wed, 24 Feb 2021
+ 14:39:49 +0000
+From:   Shyam Prasad <Shyam.Prasad@microsoft.com>
+To:     Colin Ian King <colin.king@canonical.com>
+CC:     Steve French <sfrench@samba.org>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXTERNAL] re: cifs: Retain old ACEs when converting between mode
+ bits and ACL.
+Thread-Topic: [EXTERNAL] re: cifs: Retain old ACEs when converting between
+ mode bits and ACL.
+Thread-Index: AQHXCqrIw9zDZtQZXUOLyaxc7/KTFqpnYEZA
+Date:   Wed, 24 Feb 2021 14:39:49 +0000
+Message-ID: <SG2P15301MB00639032FD6F37360A458E2D949F9@SG2P15301MB0063.APCP153.PROD.OUTLOOK.COM>
+References: <1ca0f87e-83b3-b4dd-4448-b44f2a9d1698@canonical.com>
+In-Reply-To: <1ca0f87e-83b3-b4dd-4448-b44f2a9d1698@canonical.com>
+Accept-Language: en-IN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=91c84b95-1c93-4685-afa3-63f144f4b2d5;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-02-24T14:39:06Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [2404:f801:8028:3:60f4:ca47:5dfc:b1d0]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 3c9aa288-99da-4e23-84c0-08d8d8d20a18
+x-ms-traffictypediagnostic: SG2P153MB0271:
+x-microsoft-antispam-prvs: <SG2P153MB0271F21B31DED7440CC9E318949F9@SG2P153MB0271.APCP153.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: k05JOo1msoBzmhjefV8aFR/YoostyGt2UZTjfuGfCcYr00R7b4fbgpWqoaLuwmcRv9F1agAPu7PMoBG1o9YDpmTK2/PW646dURZWiuB1ipLZWzm9b/ykKGydNqcrPDdn7VKySmD6zvp0Bo0CZMG7IV5MCRDKnZlPPfKD8LmvAIZAYwhWALqbTE1fAJfB28aca93AgXFrTYRvDmYdQWhpbT5mQg9zp0VXL0ymyZiE38vdHhwXn2G5t0EnWFyewEyeheTUvSs0FEcwPSIRvI3yjIDIvpsAKVokAdWBReMuZ3BsYc2MXZskPfMCkbnlA61V75UXljD0UshzRkHVTfw5tsP4TGoRK4vr13ycS5zXQgd5eQp4R20rJMMyp1luXmAszUId/P+GihJt0lARdkon+fq4IKQhqwtcG3nM6lO2itVuAPGlbLvYFR+rEExx1fA++/71ecnUgfbizgbW4qa3cLiqu8U7HLHyNXL3b3E95p8rKC5O1hkk+sSOgSf6p5ZvVKg6FnNyM1mY/jbkHAu/pA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2P15301MB0063.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(376002)(39860400002)(136003)(186003)(6916009)(7696005)(4326008)(8990500004)(8936002)(55016002)(316002)(71200400001)(6506007)(53546011)(8676002)(54906003)(5660300002)(82950400001)(2906002)(9686003)(82960400001)(52536014)(86362001)(478600001)(83380400001)(76116006)(33656002)(66476007)(66446008)(10290500003)(64756008)(66556008)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?QXZhMUFYVjRXWVFCMzNsY0Z5d3QvU1BNYlNFTVU3K0lOeHhQL29MdEJIazcv?=
+ =?utf-8?B?aEZvSGFsSXM0Q2NyWkRrbTZ0S253Yis3WXRJQW9FdVlWVFdyTkliS3hJVy8r?=
+ =?utf-8?B?S0s1RWtaZkkwaU8rL1JrUE9kaldCMm85Mk9Qb0tsMWxuU0ZnYUJiYlN4ZlBl?=
+ =?utf-8?B?N1o1aTBDRTdYOUFtUDVHNklzNzRDbWRYNk1CLzBWRnRrY09SVE11VWNPb0J0?=
+ =?utf-8?B?OHpRbWR5MnAvS0VVdHdOSThhdnovc0hXa2ZaWnRBQUZNNXliM21wbW1yQlhO?=
+ =?utf-8?B?clloR2Vxc09lUmZ1YW4wbU1mM3d0OTM2WHMyNXRXMERRRzZKbUd1U3VvQ3ZG?=
+ =?utf-8?B?YzV1RktIUzJ3UUdlYTlXRHhBdVI0eXFYZ2lzRC9OWmFBYjlrS3VmK1NodVNH?=
+ =?utf-8?B?V0ZCZ1lwdjZOZkxVOVdYRFkzbmUvdUFxOWZkV1lhemw3anhiQlJnRVFvYUtT?=
+ =?utf-8?B?SzFmaHZTMjAxb3lnM1ZERkNkcGJoZCtWdCtHaWxVNXB4Q1lvQUxyNS9ld2N4?=
+ =?utf-8?B?MkFvSkgvemR3SlBxaGZUUU9Ga0ZtcWdBWFNmK3ZPSUhBTWQyTzJYaU8yc2Qz?=
+ =?utf-8?B?dGdqb0ZIby9Ra1A3VkZ4TzlxOGMwVDMvRjNicllSZVVNRHpKclJORjlyeFNz?=
+ =?utf-8?B?RnFSVytUN3orMDhENjFBNEx3WDcvWkF6MDNkT3FIOEp3a3UzaDJXUURhRDk4?=
+ =?utf-8?B?eENjVXNBcXp5T0dNOW5aQnYxcXFNamRHMU5sUE9uZ1ZhMXkzQmdnam9yREJU?=
+ =?utf-8?B?UEt6QW5Hc09yNkF0SkRCZ3UzTkViMTV4aWJETnNYR1RqTmkyekdnSUpjVHk1?=
+ =?utf-8?B?dGNuL1BSVWZBbCt4WThMRnlCa2M2T0wwaEpERUIzVGJyTjJ1OFVkY0pDRjRw?=
+ =?utf-8?B?TjF0eHRiUUp6OEJpei82ODB5b1czL0cwMHZocFZlUWg4SkZNZXRMYnQ1eDAz?=
+ =?utf-8?B?VjlRL2R0K0VGKzhRNTV1dWJNVVh4ajhrOVJwa3NPT1V5ZE45QTdQanlvS29l?=
+ =?utf-8?B?a2ZuNFlxY21Mak9WOHRSRmh4dlBzTlNUMXRQdExTZDdRNmFXZytSd1ZxaFJu?=
+ =?utf-8?B?V0lGTXJENVdsS1p4YTZNclR4RmFQOVZ2Q05iczQwbExaV2R5czJvVGNwZ1p3?=
+ =?utf-8?B?RnE0UDJNWDB0ZHFnTXl3TW4vZ3hEL2dnM1htTjBQUk1vMVVKWW9yc2hoUmc0?=
+ =?utf-8?B?eWxSSmd4ai93RFN1UnR5VEYwamNCczhybWk2V2lxSEVJbWY2QnNBcURMVUNP?=
+ =?utf-8?B?T2ZWMGxmazZpNTV4RWcwY3RITFJUcGZDMDBwd1N4MnlhZzRoNmVxcGZWN3pE?=
+ =?utf-8?B?UDFTZW40ek1vTG12S2RSRzhFaGUzUllJQURYVEVrbEo3VlIwMk5hbDFQb1hQ?=
+ =?utf-8?B?UGJwUVB1WG9oZHlJdUExUi9rWnFHK1RqVTNiQk9wcVpScFVaV2lrUlJUck83?=
+ =?utf-8?B?Nm5nbDZ3UjgzTllreXdaTzJUb1JJbjY2TjVRVk13SFpJYVR3RnRUbzNnejZv?=
+ =?utf-8?B?R1QrN3VaNHIrM1VIWFVCYURLWkRFS1NuSklHYVhnNG1nd29mUlJQSXBuYjZu?=
+ =?utf-8?B?TzBYZWRPcHRUbWk0Y3huc3hDWGVsUUZoZ0g0VUYrS2dqaG9QdCtHRTdkOGJT?=
+ =?utf-8?B?eWZYeEtnWlhyNlp4bER6eEdya0tWdllFU3BhVTJIL05COGFBT2pweVM3aW1s?=
+ =?utf-8?B?M0lDKzBtaTdTSXJtTzlRa2R0SFdSRGtrM0RROEpFYzNUVm5EeEMxVVgxdzd0?=
+ =?utf-8?B?TjI3R2ozbFhkVnNYb3FWTmFmTjc5cWtSTEJIT1RYZ2p0SktTejRtczlUMmI4?=
+ =?utf-8?Q?oRI30mFLIoDG7k/F9HR3HCMTPbg0NL/nLlytQ=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SG2P15301MB0063.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c9aa288-99da-4e23-84c0-08d8d8d20a18
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Feb 2021 14:39:49.4357
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ga3dhjW/iNryqii41SZVEY01L6Ul2cgp3dVh9bPvnCMXswr9dfebuRInmIPgELCp9a1SjeFgeVmAb4aQA0j8Pw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2P153MB0271
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.02.21 15:25, David Hildenbrand wrote:
->> +		tmp_end = min_t(unsigned long, end, vma->vm_end);
->> +		pages = populate_vma_page_range(vma, start, tmp_end, &locked);
->> +		if (!locked) {
->> +			mmap_read_lock(mm);
->> +			*prev = NULL;
->> +			vma = NULL;
-> 
-> ^ locked = 1; is missing here.
-> 
-> 
-> --- Simple benchmark ---
-> 
-> I implemented MADV_POPULATE_READ and MADV_POPULATE_WRITE and performed
-> some simple measurements to simulate memory preallocation with empty files:
-> 
-> 1) mmap a 2 MiB/128 MiB/4 GiB region (anonymous, memfd, memfd hugetlb)
-> 2) Discard all memory using fallocate/madvise
-> 3) Prefault memory using different approaches and measure the time this
->      takes.
-> 
-> I repeat 2)+3) 10 times and compute the average. I only use a single thread.
-> 
-> Read: Read from each page a byte.
-> Write: Write one byte of each page (0).
-> Read/Write: Read one byte and write the value back for each page
-> POPULATE: MADV_POPULATE (this patch)
-> POPULATE_READ: MADV_POPULATE_READ
-> POPULATE_WRITE: MADV_POPULATE_WRITE
-> 
-> --- Benchmark results ---
-> 
-> Measuring 10 iterations each:
-> ==================================================
-> 2 MiB MAP_PRIVATE:
-> **************************************************
-> Anonymous      : Read           :     0.159 ms
-> Anonymous      : Write          :     0.244 ms
-> Anonymous      : Read+Write     :     0.383 ms
-> Anonymous      : POPULATE       :     0.167 ms
-> Anonymous      : POPULATE_READ  :     0.064 ms
-> Anonymous      : POPULATE_WRITE :     0.165 ms
-> Memfd 4 KiB    : Read           :     0.401 ms
-> Memfd 4 KiB    : Write          :     0.056 ms
-> Memfd 4 KiB    : Read+Write     :     0.075 ms
-> Memfd 4 KiB    : POPULATE       :     0.057 ms
-> Memfd 4 KiB    : POPULATE_READ  :     0.337 ms
-> Memfd 4 KiB    : POPULATE_WRITE :     0.056 ms
-> Memfd 2 MiB    : Read           :     0.041 ms
-> Memfd 2 MiB    : Write          :     0.030 ms
-> Memfd 2 MiB    : Read+Write     :     0.031 ms
-> Memfd 2 MiB    : POPULATE       :     0.031 ms
-> Memfd 2 MiB    : POPULATE_READ  :     0.031 ms
-> Memfd 2 MiB    : POPULATE_WRITE :     0.031 ms
-> **************************************************
-> 2 MiB MAP_SHARED:
-> **************************************************
-> Anonymous      : Read           :     0.071 ms
-> Anonymous      : Write          :     0.181 ms
-> Anonymous      : Read+Write     :     0.081 ms
-> Anonymous      : POPULATE       :     0.069 ms
-> Anonymous      : POPULATE_READ  :     0.069 ms
-> Anonymous      : POPULATE_WRITE :     0.115 ms
-> Memfd 4 KiB    : Read           :     0.401 ms
-> Memfd 4 KiB    : Write          :     0.351 ms
-> Memfd 4 KiB    : Read+Write     :     0.414 ms
-> Memfd 4 KiB    : POPULATE       :     0.338 ms
-> Memfd 4 KiB    : POPULATE_READ  :     0.339 ms
-> Memfd 4 KiB    : POPULATE_WRITE :     0.279 ms
-> Memfd 2 MiB    : Read           :     0.031 ms
-> Memfd 2 MiB    : Write          :     0.031 ms
-> Memfd 2 MiB    : Read+Write     :     0.031 ms
-> Memfd 2 MiB    : POPULATE       :     0.031 ms
-> Memfd 2 MiB    : POPULATE_READ  :     0.031 ms
-> Memfd 2 MiB    : POPULATE_WRITE :     0.031 ms
-> **************************************************
-> 128 MiB MAP_PRIVATE:
-> **************************************************
-> Anonymous      : Read           :     7.517 ms
-> Anonymous      : Write          :    22.503 ms
-> Anonymous      : Read+Write     :    33.186 ms
-> Anonymous      : POPULATE       :    18.381 ms
-> Anonymous      : POPULATE_READ  :     3.952 ms
-> Anonymous      : POPULATE_WRITE :    18.354 ms
-> Memfd 4 KiB    : Read           :    34.300 ms
-> Memfd 4 KiB    : Write          :     4.659 ms
-> Memfd 4 KiB    : Read+Write     :     6.531 ms
-> Memfd 4 KiB    : POPULATE       :     5.219 ms
-> Memfd 4 KiB    : POPULATE_READ  :    29.744 ms
-> Memfd 4 KiB    : POPULATE_WRITE :     5.244 ms
-> Memfd 2 MiB    : Read           :    10.228 ms
-> Memfd 2 MiB    : Write          :    10.130 ms
-> Memfd 2 MiB    : Read+Write     :    10.190 ms
-> Memfd 2 MiB    : POPULATE       :    10.007 ms
-> Memfd 2 MiB    : POPULATE_READ  :    10.008 ms
-> Memfd 2 MiB    : POPULATE_WRITE :    10.010 ms
-> **************************************************
-> 128 MiB MAP_SHARED:
-> **************************************************
-> Anonymous      : Read           :     7.295 ms
-> Anonymous      : Write          :    15.234 ms
-> Anonymous      : Read+Write     :     7.460 ms
-> Anonymous      : POPULATE       :     5.196 ms
-> Anonymous      : POPULATE_READ  :     5.190 ms
-> Anonymous      : POPULATE_WRITE :     8.245 ms
-> Memfd 4 KiB    : Read           :    34.412 ms
-> Memfd 4 KiB    : Write          :    30.586 ms
-> Memfd 4 KiB    : Read+Write     :    35.157 ms
-> Memfd 4 KiB    : POPULATE       :    29.643 ms
-> Memfd 4 KiB    : POPULATE_READ  :    29.691 ms
-> Memfd 4 KiB    : POPULATE_WRITE :    25.790 ms
-> Memfd 2 MiB    : Read           :    10.210 ms
-> Memfd 2 MiB    : Write          :    10.074 ms
-> Memfd 2 MiB    : Read+Write     :    10.068 ms
-> Memfd 2 MiB    : POPULATE       :    10.034 ms
-> Memfd 2 MiB    : POPULATE_READ  :    10.037 ms
-> Memfd 2 MiB    : POPULATE_WRITE :    10.031 ms
-> **************************************************
-> 4096 MiB MAP_PRIVATE:
-> **************************************************
-> Anonymous      : Read           :   240.947 ms
-> Anonymous      : Write          :   712.941 ms
-> Anonymous      : Read+Write     :  1027.636 ms
-> Anonymous      : POPULATE       :   571.816 ms
-> Anonymous      : POPULATE_READ  :   120.215 ms
-> Anonymous      : POPULATE_WRITE :   570.750 ms
-> Memfd 4 KiB    : Read           :  1054.739 ms
-> Memfd 4 KiB    : Write          :   145.534 ms
-> Memfd 4 KiB    : Read+Write     :   202.275 ms
-> Memfd 4 KiB    : POPULATE       :   162.597 ms
-> Memfd 4 KiB    : POPULATE_READ  :   914.747 ms
-> Memfd 4 KiB    : POPULATE_WRITE :   161.281 ms
-> Memfd 2 MiB    : Read           :   351.818 ms
-> Memfd 2 MiB    : Write          :   352.357 ms
-> Memfd 2 MiB    : Read+Write     :   352.762 ms
-> Memfd 2 MiB    : POPULATE       :   351.471 ms
-> Memfd 2 MiB    : POPULATE_READ  :   351.553 ms
-> Memfd 2 MiB    : POPULATE_WRITE :   351.931 ms
-> **************************************************
-> 4096 MiB MAP_SHARED:
-> **************************************************
-> Anonymous      : Read           :   229.338 ms
-> Anonymous      : Write          :   478.964 ms
-> Anonymous      : Read+Write     :   234.546 ms
-> Anonymous      : POPULATE       :   161.635 ms
-> Anonymous      : POPULATE_READ  :   160.943 ms
-> Anonymous      : POPULATE_WRITE :   252.686 ms
-> Memfd 4 KiB    : Read           :  1052.828 ms
-> Memfd 4 KiB    : Write          :   929.237 ms
-> Memfd 4 KiB    : Read+Write     :  1074.494 ms
-> Memfd 4 KiB    : POPULATE       :   915.663 ms
-> Memfd 4 KiB    : POPULATE_READ  :   915.001 ms
-> Memfd 4 KiB    : POPULATE_WRITE :   787.388 ms
-> Memfd 2 MiB    : Read           :   353.580 ms
-> Memfd 2 MiB    : Write          :   353.197 ms
-> Memfd 2 MiB    : Read+Write     :   353.172 ms
-> Memfd 2 MiB    : POPULATE       :   353.686 ms
-> Memfd 2 MiB    : POPULATE_READ  :   353.465 ms
-> Memfd 2 MiB    : POPULATE_WRITE :   352.776 ms
-> **************************************************
-> 
-> 
-> --- Discussion ---
-> 
-> 1) With huge pages, the performance benefit is negligible with the sizes
-> I tried, because there are little actual page faults. Most time is spent
-> zeroing huge pages I guess. It will take quite a lot of memory to pay off.
-> 
-> 2) In all 4k cases, the POPULATE_READ/POPULATE_WRITE variants are faster
-> than manually reading or writing from user space.
-
-Forgot to mention one case: Except on Memfd 4 KiB with MAP_PRIVATE: 
-POPULATE_WRITE is slower than a simple write. And a read fault is 
-exceptionally slower than a write fault (what?).
-
--- 
-Thanks,
-
-David / dhildenb
-
+SGkgQ29saW4sDQoNClRoYW5rcyBmb3IgcmVwb3J0aW5nIHRoaXMuIEknbGwgc3VibWl0IGEgZml4
+Lg0KDQpSZWdhcmRzLA0KU2h5YW0NCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206
+IENvbGluIElhbiBLaW5nIDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+IA0KU2VudDogV2VkbmVz
+ZGF5LCBGZWJydWFyeSAyNCwgMjAyMSA2OjE0IFBNDQpUbzogU2h5YW0gUHJhc2FkIDxTaHlhbS5Q
+cmFzYWRAbWljcm9zb2Z0LmNvbT4NCkNjOiBTdGV2ZSBGcmVuY2ggPHNmcmVuY2hAc2FtYmEub3Jn
+PjsgbGludXgtY2lmc0B2Z2VyLmtlcm5lbC5vcmc7IHNhbWJhLXRlY2huaWNhbEBsaXN0cy5zYW1i
+YS5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFtFWFRFUk5BTF0g
+cmU6IGNpZnM6IFJldGFpbiBvbGQgQUNFcyB3aGVuIGNvbnZlcnRpbmcgYmV0d2VlbiBtb2RlIGJp
+dHMgYW5kIEFDTC4NCg0KSGksDQoNClN0YXRpYyBhbmFseXNpcyBvbiBsaW51eC1uZXh0IHdpdGgg
+Q292ZXJpdHkgaGFkIGRldGVjdGVkIGEgcG90ZW50aWFsIG51bGwgcG9pbnRlciBkZXJlZmVyZW5j
+ZSB3aXRoIHRoZSBmb2xsb3dpbmcgY29tbWl0Og0KDQpjb21taXQgZjUwNjU1MDg4OTdhOTIyMzI3
+ZjMyMjIzMDgyMzI1ZDEwYjA2OWViYw0KQXV0aG9yOiBTaHlhbSBQcmFzYWQgTiA8c3ByYXNhZEBt
+aWNyb3NvZnQuY29tPg0KRGF0ZTogICBGcmkgRmViIDEyIDA0OjM4OjQzIDIwMjEgLTA4MDANCg0K
+ICAgIGNpZnM6IFJldGFpbiBvbGQgQUNFcyB3aGVuIGNvbnZlcnRpbmcgYmV0d2VlbiBtb2RlIGJp
+dHMgYW5kIEFDTC4NCg0KVGhlIGFuYWx5c2lzIGlzIGFzIGZvbGxvd3M6DQoNCjEyNTggLyogQ29u
+dmVydCBwZXJtaXNzaW9uIGJpdHMgZnJvbSBtb2RlIHRvIGVxdWl2YWxlbnQgQ0lGUyBBQ0wgKi8N
+CjEyNTkgc3RhdGljIGludCBidWlsZF9zZWNfZGVzYyhzdHJ1Y3QgY2lmc19udHNkICpwbnRzZCwg
+c3RydWN0IGNpZnNfbnRzZCAqcG5udHNkLA0KMTI2MCAgICAgICAgX191MzIgc2VjZGVzY2xlbiwg
+X191MzIgKnBuc2VjZGVzY2xlbiwgX191NjQgKnBubW9kZSwga3VpZF90DQp1aWQsIGtnaWRfdCBn
+aWQsDQoxMjYxICAgICAgICBib29sIG1vZGVfZnJvbV9zaWQsIGJvb2wgaWRfZnJvbV9zaWQsIGlu
+dCAqYWNsZmxhZykNCjEyNjIgew0KMTI2MyAgICAgICAgaW50IHJjID0gMDsNCjEyNjQgICAgICAg
+IF9fdTMyIGRhY2xvZmZzZXQ7DQoxMjY1ICAgICAgICBfX3UzMiBuZGFjbG9mZnNldDsNCjEyNjYg
+ICAgICAgIF9fdTMyIHNpZHNvZmZzZXQ7DQoxMjY3ICAgICAgICBzdHJ1Y3QgY2lmc19zaWQgKm93
+bmVyX3NpZF9wdHIsICpncm91cF9zaWRfcHRyOw0KMTI2OCAgICAgICAgc3RydWN0IGNpZnNfc2lk
+ICpub3duZXJfc2lkX3B0ciA9IE5VTEwsICpuZ3JvdXBfc2lkX3B0ciA9IE5VTEw7DQoNCiAgICAx
+LiBhc3NpZ25femVybzogQXNzaWduaW5nOiBkYWNsX3B0ciA9IE5VTEwuDQoNCjEyNjkgICAgICAg
+IHN0cnVjdCBjaWZzX2FjbCAqZGFjbF9wdHIgPSBOVUxMOyAgLyogbm8gbmVlZCBmb3IgU0FDTCBw
+dHIgKi8NCjEyNzAgICAgICAgIHN0cnVjdCBjaWZzX2FjbCAqbmRhY2xfcHRyID0gTlVMTDsgLyog
+bm8gbmVlZCBmb3IgU0FDTCBwdHIgKi8NCjEyNzEgICAgICAgIGNoYXIgKmVuZF9vZl9hY2wgPSAo
+KGNoYXIgKilwbnRzZCkgKyBzZWNkZXNjbGVuOw0KMTI3MiAgICAgICAgdTE2IHNpemUgPSAwOw0K
+MTI3Mw0KMTI3NCAgICAgICAgZGFjbG9mZnNldCA9IGxlMzJfdG9fY3B1KHBudHNkLT5kYWNsb2Zm
+c2V0KTsNCg0KICAgIDIuIENvbmRpdGlvbiBkYWNsb2Zmc2V0LCB0YWtpbmcgZmFsc2UgYnJhbmNo
+Lg0KDQoxMjc1ICAgICAgICBpZiAoZGFjbG9mZnNldCkgew0KMTI3NiAgICAgICAgICAgICAgICBk
+YWNsX3B0ciA9IChzdHJ1Y3QgY2lmc19hY2wgKikoKGNoYXIgKilwbnRzZCArDQpkYWNsb2Zmc2V0
+KTsNCjEyNzcgICAgICAgICAgICAgICAgaWYgKGVuZF9vZl9hY2wgPCAoY2hhciAqKWRhY2xfcHRy
+ICsNCmxlMTZfdG9fY3B1KGRhY2xfcHRyLT5zaXplKSkgew0KMTI3OCAgICAgICAgICAgICAgICAg
+ICAgICAgIGNpZnNfZGJnKFZGUywgIkV4aXN0aW5nIEFDTCBzaXplIGlzIHdyb25nLg0KRGlzY2Fy
+ZGluZyBvbGQgQUNMXG4iKTsNCjEyNzkgICAgICAgICAgICAgICAgICAgICAgICBkYWNsX3B0ciA9
+IE5VTEw7DQoNCk5PVEU6IGRhY2xfcHRyIGlzIHNldCB0byBOVUxMIGFuZCBkYWNsb2Zmc2V0IGlz
+IHRydWUNCg0KMTI4MCAgICAgICAgICAgICAgICB9DQoxMjgxICAgICAgICB9DQoxMjgyDQoxMjgz
+ICAgICAgICBvd25lcl9zaWRfcHRyID0gKHN0cnVjdCBjaWZzX3NpZCAqKSgoY2hhciAqKXBudHNk
+ICsNCjEyODQgICAgICAgICAgICAgICAgICAgICAgICBsZTMyX3RvX2NwdShwbnRzZC0+b3NpZG9m
+ZnNldCkpOw0KMTI4NSAgICAgICAgZ3JvdXBfc2lkX3B0ciA9IChzdHJ1Y3QgY2lmc19zaWQgKiko
+KGNoYXIgKilwbnRzZCArDQoxMjg2ICAgICAgICAgICAgICAgICAgICAgICAgbGUzMl90b19jcHUo
+cG50c2QtPmdzaWRvZmZzZXQpKTsNCjEyODcNCg0KICAgIDMuIENvbmRpdGlvbiBwbm1vZGUsIHRh
+a2luZyB0cnVlIGJyYW5jaC4NCiAgICA0LiBDb25kaXRpb24gKnBubW9kZSAhPSAxODQ0Njc0NDA3
+MzcwOTU1MTYxNVVMTCwgdGFraW5nIGZhbHNlIGJyYW5jaC4NCg0KMTI4OCAgICAgICAgaWYgKHBu
+bW9kZSAmJiAqcG5tb2RlICE9IE5PX0NIQU5HRV82NCkgeyAvKiBjaG1vZCAqLw0KMTI4OSAgICAg
+ICAgICAgICAgICBuZGFjbG9mZnNldCA9IHNpemVvZihzdHJ1Y3QgY2lmc19udHNkKTsNCjEyOTAg
+ICAgICAgICAgICAgICAgbmRhY2xfcHRyID0gKHN0cnVjdCBjaWZzX2FjbCAqKSgoY2hhciAqKXBu
+bnRzZCArDQpuZGFjbG9mZnNldCk7DQoxMjkxICAgICAgICAgICAgICAgIG5kYWNsX3B0ci0+cmV2
+aXNpb24gPQ0KMTI5MiAgICAgICAgICAgICAgICAgICAgICAgIGRhY2xvZmZzZXQgPyBkYWNsX3B0
+ci0+cmV2aXNpb24gOg0KY3B1X3RvX2xlMTYoQUNMX1JFVklTSU9OKTsNCjEyOTMNCjEyOTQgICAg
+ICAgICAgICAgICAgbmRhY2xfcHRyLT5zaXplID0gY3B1X3RvX2xlMTYoMCk7DQoxMjk1ICAgICAg
+ICAgICAgICAgIG5kYWNsX3B0ci0+bnVtX2FjZXMgPSBjcHVfdG9fbGUzMigwKTsNCjEyOTYNCjEy
+OTcgICAgICAgICAgICAgICAgcmMgPSBzZXRfY2htb2RfZGFjbChkYWNsX3B0ciwgbmRhY2xfcHRy
+LA0Kb3duZXJfc2lkX3B0ciwgZ3JvdXBfc2lkX3B0ciwNCjEyOTggICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBwbm1vZGUsIG1vZGVfZnJvbV9zaWQpOw0KMTI5OQ0KMTMwMCAgICAg
+ICAgICAgICAgICBzaWRzb2Zmc2V0ID0gbmRhY2xvZmZzZXQgKyBsZTE2X3RvX2NwdShuZGFjbF9w
+dHItPnNpemUpOw0KMTMwMSAgICAgICAgICAgICAgICAvKiBjb3B5IHRoZSBub24tZGFjbCBwb3J0
+aW9uIG9mIHNlY2Rlc2MgKi8NCjEzMDIgICAgICAgICAgICAgICAgKnBuc2VjZGVzY2xlbiA9IGNv
+cHlfc2VjX2Rlc2MocG50c2QsIHBubnRzZCwgc2lkc29mZnNldCwNCjEzMDMgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIE5VTEwsIE5VTEwpOw0KMTMwNA0KMTMwNSAgICAgICAgICAgICAg
+ICAqYWNsZmxhZyB8PSBDSUZTX0FDTF9EQUNMOw0KMTMwNiAgICAgICAgfSBlbHNlIHsNCjEzMDcg
+ICAgICAgICAgICAgICAgbmRhY2xvZmZzZXQgPSBzaXplb2Yoc3RydWN0IGNpZnNfbnRzZCk7DQox
+MzA4ICAgICAgICAgICAgICAgIG5kYWNsX3B0ciA9IChzdHJ1Y3QgY2lmc19hY2wgKikoKGNoYXIg
+Kilwbm50c2QgKw0KbmRhY2xvZmZzZXQpOw0KDQogICAgNS4gQ29uZGl0aW9uIGRhY2xvZmZzZXQs
+IHRha2luZyBmYWxzZSBicmFuY2guDQoNCjEzMDkgICAgICAgICAgICAgICAgbmRhY2xfcHRyLT5y
+ZXZpc2lvbiA9DQoxMzEwICAgICAgICAgICAgICAgICAgICAgICAgZGFjbG9mZnNldCA/IGRhY2xf
+cHRyLT5yZXZpc2lvbiA6DQpjcHVfdG9fbGUxNihBQ0xfUkVWSVNJT04pOw0KDQogICAgRXhwbGlj
+aXQgbnVsbCBkZXJlZmVyZW5jZWQgKEZPUldBUkRfTlVMTCkNCg0KICAgIDYuIHZhcl9kZXJlZl9v
+cDogRGVyZWZlcmVuY2luZyBudWxsIHBvaW50ZXIgZGFjbF9wdHIuDQoNCjEzMTEgICAgICAgICAg
+ICAgICAgbmRhY2xfcHRyLT5udW1fYWNlcyA9IGRhY2xfcHRyLT5udW1fYWNlczsNCg0KDQpMaW5l
+IDEzMDkuLjEzMTEsIHdoZW4gZGFjbG9mZnNldCBhbmQgZGFjbF9wdHIgaXMgbnVsbCB3ZSBoaXQg
+YSBudWxsIHB0ciBkZXJlZmVyZW5jZSBvbiBkYWNsX3B0ci4NCg0K
