@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43125323992
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A5D323990
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234636AbhBXJhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:37:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35273 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234194AbhBXJg3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:36:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614159302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S234678AbhBXJgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:36:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58530 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234454AbhBXJfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 04:35:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614159266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=xDpumoxA9uXAvbvE4QJIt1iLqbsCBPKNd/TgxemxMkY=;
-        b=HND5w+ePLX1iHArWVqcP/jRxGV2AcLQMhq9ExQCxbEOpEM++jZIFog1HWp+Zp52/E36CvA
-        WUdlmz1jtBwEG9LKy79zR1AuaXIJTVisZWml0Qbkey0dlf+RLXa5cIrT5zovR4rUF3KpjY
-        0v7wMOosRoKUUnepmg8CqDL5bZr97YM=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-5u2YJtXdPzq3ZLZEmHiVig-1; Wed, 24 Feb 2021 04:33:57 -0500
-X-MC-Unique: 5u2YJtXdPzq3ZLZEmHiVig-1
-Received: by mail-yb1-f200.google.com with SMTP id q77so1804147ybq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 01:33:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xDpumoxA9uXAvbvE4QJIt1iLqbsCBPKNd/TgxemxMkY=;
-        b=Ck/PPV3GJjyo9n5B9H6XyV8iozi+DiJZ27L8HocAFVQroUcyISYT/PNtb2dG8IdNQ6
-         /ZeTq6fvUIEcF7a6KKyFV8ZIH4O4cY2hzh/cg2yZhYgJJqYz6pOboDTXliiNG0QYIerp
-         YHbys/VAlCMj/liDPlUiSexkbn8K7WN7fVapcmf/PKnRGZZE/kHF/fwYLsCKY6uiqaKO
-         DJUP0t1imselA9Ji5xDLW1NLWN96sLPsMQ7yB2fWma1AMyHB/5LcE847VltEA9RHLGPa
-         GGiHSCj/ez6i70zOEpq2+8h0A9sdNVFgBWaUJYmih+T5af/bJ0QzRnIErFovkLB3vS0Q
-         j7jQ==
-X-Gm-Message-State: AOAM531hmlum/ttosVXbv2ScjdUqzpKMDbUOPOQUkse6bKI/lFtoy0YA
-        uxwkSRU07aRQEfNOoIXhs0KFcTzzldqHopKPtcsVnwxkGWCeetx76ZqMRpKsZQSyIebBv5v3xp6
-        TRChKw/10NghuAUKURazx48kFdyTZLHAktOjCGP/7
-X-Received: by 2002:a5b:ac2:: with SMTP id a2mr44758936ybr.81.1614159236717;
-        Wed, 24 Feb 2021 01:33:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwpYwp7rz1tdZc6MVyGEegVfNnPphVXA8W4qlR+z7XNIP7BwBVjfbStjkgQyv4w9jES9ZUs+L1LQu9g9Lts1ZU=
-X-Received: by 2002:a5b:ac2:: with SMTP id a2mr44758913ybr.81.1614159236426;
- Wed, 24 Feb 2021 01:33:56 -0800 (PST)
+        bh=IB369nwp5DwxTBQfx+mYNcS//1xC7eRg/MH+Z8hl/hQ=;
+        b=K0OkMI9Hs2bizmiP2geYKw2ebpXJ7PJakNHPDRdm98hwLB/ynySIDr5dEwzZTje2An5paw
+        +YIabbxjb5gqwC6of57yf2ADasBNCaBjwlNWnhKPRU8rIMY1N+WZ4uictp5DACgKC0yTM7
+        D4OVDB6/XjGjkI+OlvJCgvUP2k0rmiQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4ECB4AE05;
+        Wed, 24 Feb 2021 09:34:26 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 10:34:25 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Yiwei Zhang <zzyiwei@android.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ilias Stamatis <stamatis.iliass@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Liang Chen <cl@rock-chips.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH] kthread: add kthread_mod_pending_delayed_work api
+Message-ID: <YDYdoRwezfVsWS4W@alley>
+References: <20210214000611.2169820-1-zzyiwei@android.com>
+ <YC+ZQAwwb4RGgjDf@alley>
+ <CAKB3++YB3xftQFgSGQXKQucuid9sFywjN1E7nQ6QrqR96+heEg@mail.gmail.com>
+ <CAKB3++b4wnsh+Kbgk4U200hLQmudM28sK=s9e6mARpM-eZ2ZZw@mail.gmail.com>
+ <YDUkoTGk2G/GZj8w@alley>
+ <CAKB3++Yf5cv8shHU0T1nqfNTgbknU1uMu54YXWqNGqXHpa_oAA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210223214346.GB6000@sequoia> <20210223215054.GC6000@sequoia> <20210223223652.GD6000@sequoia>
-In-Reply-To: <20210223223652.GD6000@sequoia>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Wed, 24 Feb 2021 10:33:46 +0100
-Message-ID: <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
-Subject: Re: [BUG] Race between policy reload sidtab conversion and live conversion
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKB3++Yf5cv8shHU0T1nqfNTgbknU1uMu54YXWqNGqXHpa_oAA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 11:37 PM Tyler Hicks
-<tyhicks@linux.microsoft.com> wrote:
-> On 2021-02-23 15:50:56, Tyler Hicks wrote:
-> > On 2021-02-23 15:43:48, Tyler Hicks wrote:
-> > > I'm seeing a race during policy load while the "regular" sidtab
-> > > conversion is happening and a live conversion starts to take place in
-> > > sidtab_context_to_sid().
-> > >
-> > > We have an initial policy that's loaded by systemd ~0.6s into boot and
-> > > then another policy gets loaded ~2-3s into boot. That second policy load
-> > > is what hits the race condition situation because the sidtab is only
-> > > partially populated and there's a decent amount of filesystem operations
-> > > happening, at the same time, which are triggering live conversions.
->
-> Hmm, perhaps this is the same problem that's fixed by Ondrej's proposed
-> change here:
->
->  https://lore.kernel.org/selinux/20210212185930.130477-3-omosnace@redhat.com/
->
-> I'll put these changes through a validation run (the only place that I
-> can seem to reproduce this crash) and see how it looks.
+On Tue 2021-02-23 14:29:37, Yiwei Zhang wrote:
+> > > which is not cool because it will make the
+> > > asynchronous effort a no-op. Is there a way we can include caller
+> > > thread metadata(task_struct pointer?) when it enqueues the work so
+> > > that the RT worker thread won't preempt the caller thread when that
+> > > queued work gets scheduled? Probably require the CPU scheduler to poke
+> > > at the next work...or any other ideas will be very appreciated,
+> > > thanks!
+> >
+> > This sounds like a very strange use case.
+> > Why is the worker kthread RT when the work can be delayed?
+> >
+> > If the kthread has to be RT because of another work then
+> > your proposal will not work. The delayed processing of
+> > low priority work might block and delay any pending
+> > high priority work.
+> >
+> > You should consider handling the less important work in a separate
+> > kthread worker with a lower priority or by the system workqueue.
+> 
+> Just want to clarify that it's not about delayed_work any more. In my
+> latest question, it's a RT thread with normal work queued and
+> scheduled to be run immediately. However, I simply don't want the
+> worker to preempt the thread that queues the work.
+> 
+> It's a high prio work that we don't want other random tasks to preempt
+> it. Meanwhile, we don't want it to preempt the called thread. In
+> addition, assume we can't raise the priority of those caller
+> threads(otherwise I'd be fine with using a workqueue).
 
-Hm... I think there is actually another race condition introduced by
-the switch from rwlock to RCU [1]... Judging from the call trace you
-may be hitting that.
+Honestly, it sounds weird to me. Either the caller or the
+worker has higher priority.
 
-Basically, before the switch the sidtab swapover worked like this:
-1. Start live conversion of new entries.
-2. Convert existing entries.
-[Still only the old sidtab is visible to readers here.]
-3. Swap sidtab under write lock.
-4. Now only the new sidtab is visible to readers, so the old one can
-be destroyed.
+Well, I think that behavior could be achieved by
+CONFIG_PREEMPT_NONE or CONFIG_PREEMPT_VOLUNTARY.
 
-After the switch to RCU, we now have:
-1. Start live conversion of new entries.
-2. Convert existing entries.
-3. RCU-assign the new policy pointer to selinux_state.
-[!!! Now actually both old and new sidtab may be referenced by
-readers, since there is no synchronization barrier previously provided
-by the write lock.]
-4. Wait for synchronize_rcu() to return.
-5. Now only the new sidtab is visible to readers, so the old one can
-be destroyed.
+Anyway, this is rather a question for scheduler experts.
+It is possible that it has some solution. But it is also
+possible that it is so specific behavior and it would
+complicate the scheduler too much.
 
-So the race can happen between 3. and 5., if one thread already sees
-the new sidtab and adds a new entry there, and a second thread still
-has the reference to the old sidtab and also tires to add a new entry;
-live-converting to the new sidtab, which it doesn't expect to change
-by itself. Unfortunately I failed to realize this when reviewing the
-patch :/
-
-I think the only two options to fix it are A) switching back to
-read-write lock (the easy and safe way; undoing the performance
-benefits of [1]), or B) implementing a safe two-way live conversion of
-new sidtab entries, so that both tables are kept in sync while they
-are both available (more complicated and with possible tricky
-implications of different interpretations of contexts by the two
-policies).
-
-[1] 1b8b31a2e612 ("selinux: convert policy read-write lock to RCU")
-
---
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
-
+Best Regards,
+Petr
