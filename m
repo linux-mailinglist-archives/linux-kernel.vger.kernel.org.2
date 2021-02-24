@@ -2,95 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B18F323955
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFF332396C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234612AbhBXJVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:21:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234349AbhBXJVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:21:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE3B064EA4;
-        Wed, 24 Feb 2021 09:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614158423;
-        bh=IrLAU3ugJrfvTSrSD1TnLn5QGUShe0MmumG5QwEaAtg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IhFb1Us4ZRrPR8xB26Zf6ZMsVs81djq8l1k661frOd4t14tK9mSSRVf9+NLd7LA2D
-         tGTQs1tvXJscTYZRCFOwYJIvZBR/uL0Cy3tHPLvEvDeEdHn4yXb661IZG0CYc0Z22q
-         f6Xa9yjUg4N2+sOOsgB4BdxbbpFK2hf7m5K0UiYIw3RS7itEXph7jM8N+t7aJs09E1
-         6LuYESp7BZub3jIP3mQ3inj6SdkjB7kbGEHuD6bj4YM5W3I3948hcvhdyS6QNpSJHD
-         xIkN/IH2gHEV4HjrhRxHtcBTM+YhgPGrTMwgbl3p71GSI6cvdw3hZgyOlquTlDgTaF
-         r/M5WEYMwRJfg==
-Date:   Wed, 24 Feb 2021 10:20:11 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     rojay@codeaurora.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, akashast@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH V8 1/1] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-Message-ID: <20210224092011.GA1992@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, rojay@codeaurora.org,
-        dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
-        gregkh@linuxfoundation.org, mka@chromium.org,
-        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-References: <20210108150545.2018-1-rojay@codeaurora.org>
- <20210108150545.2018-2-rojay@codeaurora.org>
- <161052087940.3661239.14609415796697267628@swboyd.mtv.corp.google.com>
- <9ec10130df230a0ff078d9eec47e94b2@codeaurora.org>
- <161415039142.1254594.3043511127113195221@swboyd.mtv.corp.google.com>
+        id S234610AbhBXJ1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:27:54 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54888 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234507AbhBXJ1t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 04:27:49 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 81E931F45AAE
+Subject: Re: mainline/master bisection: baseline.login on
+ meson-sm1-khadas-vim3l
+To:     maz@kernel.org
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Brown <broonie@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Remi Denis-Courmont <remi.denis.courmont@huawei.com>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>
+References: <6033a5da.1c69fb81.9be93.66e6@mx.google.com>
+ <00e098ec-671b-1117-c9c6-7f8fa96519f7@collabora.com>
+ <87blca27fy.wl-maz@kernel.org>
+ <d9156098-f512-09bc-fa42-7a0f0bdee978@collabora.com>
+ <877dmx26gh.wl-maz@kernel.org>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <a7bfc0a6-19a8-9691-f206-76212849d108@collabora.com>
+Date:   Wed, 24 Feb 2021 09:26:59 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
-Content-Disposition: inline
-In-Reply-To: <161415039142.1254594.3043511127113195221@swboyd.mtv.corp.google.com>
+In-Reply-To: <877dmx26gh.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24/02/2021 08:52, Marc Zyngier wrote:
+> On Tue, 23 Feb 2021 21:03:52 +0000,
+> Guillaume Tucker <guillaume.tucker@collabora.com> wrote:
+>>
+>> On 23/02/2021 14:18, Marc Zyngier wrote:
+>>> Hi Guillaume,
+>>>
+>>> On Tue, 23 Feb 2021 09:46:30 +0000,
+>>> Guillaume Tucker <guillaume.tucker@collabora.com> wrote:
+>>>>
+>>>> Hello Marc,
+>>>>
+>>>> Please see the bisection report below about a boot failure on
+>>>> meson-sm1-khadas-vim3l on mainline.  It seems to only be
+>>>> affecting kernels built with CONFIG_ARM64_64K_PAGES=y.
+>>>>
+>>>> Reports aren't automatically sent to the public while we're
+>>>> trialing new bisection features on kernelci.org but this one
+>>>> looks valid.
+>>>>
+>>>> There's no output in the log, so the kernel is most likely
+>>>> crashing early.  Some more details can be found here:
+>>>>
+>>>>   https://kernelci.org/test/case/id/6034bed3b344e2860daddcc8/
+>>>>
+>>>> Please let us know if you need any help to debug the issue or try
+>>>> a fix on this platform.
+>>>
+>>> Thanks for the heads up.
+>>>
+>>> There is actually a fundamental problem with the patch you bisected
+>>> to: it provides no guarantee that the point where we enable the EL2
+>>> MMU is in the idmap and, as it turns out, the code we're running from
+>>> disappears from under our feet, leading to a translation fault we're
+>>> not prepared to handle.
+>>>
+>>> How does it work with 4kB pages? Luck.
+>>
+>> There may be a fascinating explanation for it, but luck works
+>> too.  It really seems to be booting happily with 4k pages:
+>>
+>>   https://kernelci.org/test/plan/id/60347b358de339d1b7addcc5/
+> 
+> Oh, I know it boots fine with 4k, that's what I used everywhere.
+> We're just lucky that the bit of code that deals with the MMU happens
+> to *also* be in the idmap. With 64k pages, it gets pushed further down
+> the line, and bad things happen. Short of explicit statements in the
+> code, luck rules.
 
---BOKacYhQ+x31HxR3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+OK I see that now, thanks for the explanation.
 
+>>> Do you mind giving the patch below a go? It does work on my vim3l and
+>>> on a FVP, so odds are that it will solve it for you too.
+>>
+>> Sure, and that worked here as well:
+>>
+>>   http://lava.baylibre.com:10080/scheduler/job/752416
+>>
+>> and here's the test branch where I applied your fix, for
+>> completeness:
+>>
+>>   https://gitlab.collabora.com/gtucker/linux/-/commits/v5.11-vim3l-vhe/
+> 
+> Awesome. thanks for having tested it.
+> 
+>> As always, if you do send a patch with the fix, please give some
+>> credit to the bot:
+>>
+>>   Reported-by: "kernelci.org bot" <bot@kernelci.org> 
+> 
+> Will do. Mind if I credit you too for the testing?
 
-> BTW, I see this is merged upstream. That's great, but it seems broken.
-> Please fix it or revert it out.
+Sure:
 
-Sorry, that was my mistake! I was aware of this discussion. It seems I
-accidently applied it. I'll send a revert and we can reapply it once
-everyone is happy.
+  Tested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
 
-
---BOKacYhQ+x31HxR3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmA2GkcACgkQFA3kzBSg
-Kbb7HRAAl+AJ6t9lEHOThuxIHyeFSriAePrTQu7CluRht0vaAuVSPQVLqmTpQXPm
-NscbTGR86BgfOK4iFDRejsTojodP8LDl1iCwcOyNkhtE2lc5j+hnxbmo0NTnNmGE
-cew+KMgeXOsrVFibH5P2YFwS+ZyqHb5l4ZirRcMlcVNqXtTdSiu9O2Gjlx4Pkl5I
-Pj/DpCvcLJAFqiHXGfn4jGHmoM+DK4OmeWmlKHMelNywzXcr+jm0CBfPTS38O80e
-/Kiadj//Cug4f5IMCvUX0mMoiv5QVYXEyW2Lm2Vrk7O6SDT4/6He9athGwbVCYiU
-29tsDJPpeUCitR78/sPac8w7SJF8ETyZjZGLELbLeghNy2d+k3UTV6xUqt4X58mS
-IT5WIJtqaoAL4o3J2qQUXPN9e69h64GQXelWCmI28fjmkrvV+lXMXe8qES1a9eUf
-JSNhKc/9ocNAHFdTJOfYGqUzUsxLR/FzQNOOIPxbMamD4gO50VVJfUmQknV6muNh
-yDT/s1Zi+v2m6t1fpoUdU9hjGDJeeuaDxkhEyU8iSGypGnlugWK/u6hGOPeL/G0o
-EMSLQZH7Fw+JKXosY2nhOStaMD9kNOPVNatZ1lmMyArwA81ulML9JiLQQ37aqrpV
-+o1j+SCvmBqF/ePMn+wln6nl4FTziK47e+jDHajC59wwzIAAfnA=
-=XMWR
------END PGP SIGNATURE-----
-
---BOKacYhQ+x31HxR3--
+Thanks,
+Guillaume
