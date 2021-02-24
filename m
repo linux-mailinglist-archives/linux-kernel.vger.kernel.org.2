@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D227D3239FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F2E3239DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234777AbhBXJ41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:56:27 -0500
-Received: from mail.a-eberle.de ([213.95.140.213]:58348 "EHLO mail.a-eberle.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234637AbhBXJz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:55:57 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.a-eberle.de (Postfix) with ESMTP id 4575E3802F4;
-        Wed, 24 Feb 2021 10:47:33 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at aeberle-mx.softwerk.noris.de
-Received: from mail.a-eberle.de ([127.0.0.1])
-        by localhost (ebl-mx-02.a-eberle.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id YE1xn1JGbirt; Wed, 24 Feb 2021 10:47:32 +0100 (CET)
-Received: from localhost.localdomain (ipbcc2c2a9.dynamic.kabel-deutschland.de [188.194.194.169])
-        (Authenticated sender: marco.wenzel@a-eberle.de)
-        by mail.a-eberle.de (Postfix) with ESMTPA;
-        Wed, 24 Feb 2021 10:47:31 +0100 (CET)
-From:   Marco Wenzel <marco.wenzel@a-eberle.de>
-To:     george.mccollister@gmail.com
-Cc:     Marco Wenzel <marco.wenzel@a-eberle.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Andreas Oetken <andreas.oetken@siemens.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Arvid Brodin <Arvid.Brodin@xdin.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net] net: hsr: add support for EntryForgetTime
-Date:   Wed, 24 Feb 2021 10:46:49 +0100
-Message-Id: <20210224094653.1440-1-marco.wenzel@a-eberle.de>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <CAFSKS=PnV-aLnGeNqjqrsT4nfFby18uYQpScCCurz6dZ39AynQ@mail.gmail.com>
-References: <CAFSKS=PnV-aLnGeNqjqrsT4nfFby18uYQpScCCurz6dZ39AynQ@mail.gmail.com>
+        id S234715AbhBXJtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:49:36 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:46404 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234759AbhBXJs2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 04:48:28 -0500
+Received: by mail-ot1-f51.google.com with SMTP id k13so1546747otn.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 01:47:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LOkFQkSyGmGbTSK7UVWwJcmirkVFS7HN51aqBFsnaZM=;
+        b=LiKFBqX/D5KSjRrsmjyntriGkZAy6zeeT7tHtZklyiT0glBZTLJPWFkgvLULcWpa9a
+         frezFxL09NiusZpw+/5engWuj0Vj5pzfQwyDiDv3VAYMYPX7aOhJ6cPC7ywhliPEQ6xA
+         WS13tQ8jroKBXm9uaB0krwTJZ7Z97ANI8YAppYdEvr5WNxRlH6EueUJ7AN21RkODZsNF
+         hDTKer/zlmAypD+t5NikHdwEu2KMddjSDuJncCvHERTVTADIDraERtVATJ0yuBIpwhDS
+         nllDPUAW/8BcM/3Zzfo21uxThkXbJgnOTkfl9FUv1mmxHbwOvhz2+RTKgyLFOV8L7Pc3
+         RxNA==
+X-Gm-Message-State: AOAM531wSLHvPyl2uPzC5S0KzwtHhEh0sr/d+zEigniA4LJxkeGT06JN
+        OYhBheEHGtdKQrDeO9ZqeELS7WVZpdTsdTc8QCc=
+X-Google-Smtp-Source: ABdhPJzbt796VXqH/2Q5eGwqQ/2vS4JY7MHMruI8T9KuXwsCXs4Kb5ejbxELgtMu/ApwS3m6yACL0Bf78v2qiM0TivA=
+X-Received: by 2002:a9d:77d6:: with SMTP id w22mr24104785otl.145.1614160052930;
+ Wed, 24 Feb 2021 01:47:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210223152707.408995-1-johannes@sipsolutions.net> <d2c3b464d782809298670b1ecbc199f56d776600.camel@sipsolutions.net>
+In-Reply-To: <d2c3b464d782809298670b1ecbc199f56d776600.camel@sipsolutions.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 24 Feb 2021 10:47:21 +0100
+Message-ID: <CAMuHMdWymKxYQHPC4Rqc1A7WSdQZDm6noaedHgXqfXPttmGV6w@mail.gmail.com>
+Subject: Re: [PATCH 0/7] PCI support for UML
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-um <linux-um@lists.infradead.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In IEC 62439-3 EntryForgetTime is defined with a value of 400 ms. When a
-node does not send any frame within this time, the sequence number check
-for can be ignored. This solves communication issues with Cisco IE 2000
-in Redbox mode.
+Hi Johannes,
 
-Fixes: f421436a591d ("net/hsr: Add support for the High-availability Seamless Redundancy protocol (HSRv0)")
-Signed-off-by: Marco Wenzel <marco.wenzel@a-eberle.de>
-Reviewed-by: George McCollister <george.mccollister@gmail.com>
-Tested-by: George McCollister <george.mccollister@gmail.com>
----
- net/hsr/hsr_framereg.c | 9 +++++++--
- net/hsr/hsr_framereg.h | 1 +
- net/hsr/hsr_main.h     | 1 +
- 3 files changed, 9 insertions(+), 2 deletions(-)
+On Tue, Feb 23, 2021 at 10:24 PM Johannes Berg
+<johannes@sipsolutions.net> wrote:
+> On Tue, 2021-02-23 at 16:27 +0100, Johannes Berg wrote:
+> > In order to simulate some devices and write tests completely
+> > independent of real PCI devices, we continued the development
+> > of time-travel and related bits, and are adding PCI support
+> > here now.
+> >
+> > The way it works is that it communicates with the outside (of
+> > UML) with virtio, which we previously added using vhost-user,
+> > and then offers a PCI bus to the inside system, where normal
+> > PCI probing etc. happens, but all config space & IO accesses
+> > are forwarded over virtio.
+>
+> I hadn't sent it out until now, but the userspace bits for all the time-
+> travel and PCI-over-vhost-user are here:
+>
+> https://github.com/linux-test-project/usfstl/
+>
+> If anyone has any suggestions on a good example PCI device that already
+> has a driver upstream I'd be interested - I looked for something simple
+> like LED or GPIO but no such thing I could find (that wasn't platform
+> dependent in some way). So far I've only implemented a virtual Intel
+> WiFi NIC, but that depends on a large body of code I can't publish. As
+> an example, it would be nice to write (and publish there) a simple PCI
+> device implementation. :)
 
-diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c
-index f9a8cc82ae2e..bb1351c38397 100644
---- a/net/hsr/hsr_framereg.c
-+++ b/net/hsr/hsr_framereg.c
-@@ -164,8 +164,10 @@ static struct hsr_node *hsr_add_node(struct hsr_priv *hsr,
- 	 * as initialization. (0 could trigger an spurious ring error warning).
- 	 */
- 	now = jiffies;
--	for (i = 0; i < HSR_PT_PORTS; i++)
-+	for (i = 0; i < HSR_PT_PORTS; i++) {
- 		new_node->time_in[i] = now;
-+		new_node->time_out[i] = now;
-+	}
- 	for (i = 0; i < HSR_PT_PORTS; i++)
- 		new_node->seq_out[i] = seq_out;
- 
-@@ -413,9 +415,12 @@ void hsr_register_frame_in(struct hsr_node *node, struct hsr_port *port,
- int hsr_register_frame_out(struct hsr_port *port, struct hsr_node *node,
- 			   u16 sequence_nr)
- {
--	if (seq_nr_before_or_eq(sequence_nr, node->seq_out[port->type]))
-+	if (seq_nr_before_or_eq(sequence_nr, node->seq_out[port->type]) &&
-+	    time_is_after_jiffies(node->time_out[port->type] +
-+	    msecs_to_jiffies(HSR_ENTRY_FORGET_TIME)))
- 		return 1;
- 
-+	node->time_out[port->type] = jiffies;
- 	node->seq_out[port->type] = sequence_nr;
- 	return 0;
- }
-diff --git a/net/hsr/hsr_framereg.h b/net/hsr/hsr_framereg.h
-index 86b43f539f2c..d9628e7a5f05 100644
---- a/net/hsr/hsr_framereg.h
-+++ b/net/hsr/hsr_framereg.h
-@@ -75,6 +75,7 @@ struct hsr_node {
- 	enum hsr_port_type	addr_B_port;
- 	unsigned long		time_in[HSR_PT_PORTS];
- 	bool			time_in_stale[HSR_PT_PORTS];
-+	unsigned long		time_out[HSR_PT_PORTS];
- 	/* if the node is a SAN */
- 	bool			san_a;
- 	bool			san_b;
-diff --git a/net/hsr/hsr_main.h b/net/hsr/hsr_main.h
-index a169808ee78a..8f264672b70b 100644
---- a/net/hsr/hsr_main.h
-+++ b/net/hsr/hsr_main.h
-@@ -22,6 +22,7 @@
- #define HSR_LIFE_CHECK_INTERVAL		 2000 /* ms */
- #define HSR_NODE_FORGET_TIME		60000 /* ms */
- #define HSR_ANNOUNCE_INTERVAL		  100 /* ms */
-+#define HSR_ENTRY_FORGET_TIME		  400 /* ms */
- 
- /* By how much may slave1 and slave2 timestamps of latest received frame from
-  * each node differ before we notify of communication problem?
+ bt8xxgpio?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.30.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
