@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3E5324058
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 757EA324051
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbhBXOwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:52:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46220 "EHLO
+        id S238318AbhBXOvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:51:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237756AbhBXNrN (ORCPT
+        with ESMTP id S237680AbhBXNmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:47:13 -0500
-X-Greylist: delayed 353 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 24 Feb 2021 05:46:30 PST
-Received: from proxima.lasnet.de (proxima.lasnet.de [IPv6:2a01:4f8:121:31eb:3::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD140C06178B
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:46:30 -0800 (PST)
-Received: from [IPv6:2003:e9:d72b:2a0f:18df:1c4d:541:33a8] (p200300e9d72b2a0f18df1c4d054133a8.dip0.t-ipconnect.de [IPv6:2003:e9:d72b:2a0f:18df:1c4d:541:33a8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: stefan@datenfreihafen.org)
-        by proxima.lasnet.de (Postfix) with ESMTPSA id 8364DC0D3E;
-        Wed, 24 Feb 2021 14:40:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=datenfreihafen.org;
-        s=2021; t=1614174035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6j7YP2Ey14mrtaHj/1pakHKVgEIqc/hDGUcOde+JIDw=;
-        b=Q2Yc8Il2NuaojT91b5GqZaeb4JYXvhEdo3GeS67C71KsnT4hXWFRD0MeJa8GGs4AmPUy2s
-        tRd7cj9KIOHNnJfhvGp1LF8m/qVKkL9NyCtoqmxk2+xdHRIdLUN34aaiLMUadaO0Eojob1
-        Jsj6297J0MDoq9a5zA6gFaTxRjAzvCf8TGaaN3kpAWlahsa4JJhsOG2Juf6JC4OrPIfGHK
-        GfI9qgDA2PAppXI+DMnFNJ3N7DZt5DI4pGsn8jjjQeYPJ3NwrsE2oNFG8dnv0N9bJ30d0f
-        pG7BFHEyeFZK10tewPVAZaz8V7ppePeoF95oYaPRgB3E/kIdiHXO/UWp43QA2g==
-Subject: Re: UBSAN: shift-out-of-bounds in nl802154_new_interface
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Alexander Aring <alex.aring@gmail.com>
-Cc:     syzbot <syzbot+7bf7b22759195c9a21e9@syzkaller.appspotmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-wpan - ML <linux-wpan@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000e37c9805bbe843c1@google.com>
- <20210223154855.669413bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAB_54W6FL2vDto3_1=0kAa8qo_qTduCfULLCfvD_XbS4=+VZyw@mail.gmail.com>
- <20210223164924.080fa605@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Stefan Schmidt <stefan@datenfreihafen.org>
-Message-ID: <75f80c0a-6990-c392-d28a-a296475bbc29@datenfreihafen.org>
-Date:   Wed, 24 Feb 2021 14:40:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 24 Feb 2021 08:42:14 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB702C061797;
+        Wed, 24 Feb 2021 05:41:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xqha6KaFHgtvIKBaYdn52JwvfxXRN9RcHQ72fzYOeuc=; b=sXng7xDNXehmcnr+hW/CSKnK/Q
+        rvJT1OrIAsqWa9NN8xPC9n3JB67aLuQc2z/fV0E1k3Ec/VnIEdSzmtm1OAdBOJq1uPxrXe9j35Var
+        hgFb42qG7+e4qFPooFPcxYWXx5OwRaM5RixwDaIlmOM4BaZFTtYvMZpL57/LvY9Pq/ufZ7zgSNxH6
+        YirC1u+3y9MMSC14hmmHiSkNiAI9PSRdM5kq0tTHEU8xFm74X0qWSGMpNyG4yP+YTs+LTIn9rvQw2
+        n1NkwimRKMjDpd5nbMqzJHT5MoOlSfnFjidjke0IfLaJQJPsUAq8vIocd5kZE8FA2HsJJsdogN0B2
+        wHLmVtyA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lEuPj-009SVQ-M3; Wed, 24 Feb 2021 13:41:16 +0000
+Date:   Wed, 24 Feb 2021 13:41:15 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Subject: Re: [RFC] Better page cache error handling
+Message-ID: <20210224134115.GP2858050@casper.infradead.org>
+References: <20210205161142.GI308988@casper.infradead.org>
+ <20210224123848.GA27695@quack2.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210223164924.080fa605@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224123848.GA27695@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alex.
-
-On 24.02.21 01:49, Jakub Kicinski wrote:
-> On Tue, 23 Feb 2021 19:26:26 -0500 Alexander Aring wrote:
->> Hi,
->>
->> On Tue, 23 Feb 2021 at 18:48, Jakub Kicinski <kuba@kernel.org> wrote:
->>>
->>> Alex, there seems to be a few more syzbot reports for nl802154 beyond
->>> what you posted fixes for. Are you looking at these?
->>
->> Yes, I have it on my list. I will try to fix them at the weekend.
+On Wed, Feb 24, 2021 at 01:38:48PM +0100, Jan Kara wrote:
+> > We allocate a page and try to read it.  29 threads pile up waiting
+> > for the page lock in filemap_update_page().  The error returned by the
+> > original I/O is shared between all 29 waiters as well as being returned
+> > to the requesting thread.  The next request for index.html will send
+> > another I/O, and more waiters will pile up trying to get the page lock,
+> > but at no time will more than 30 threads be waiting for the I/O to fail.
 > 
-> Great, thank you!
+> Interesting idea. It certainly improves current behavior. I just wonder
+> whether this isn't a partial solution to a problem and a full solution of
+> it would have to go in a different direction? I mean it just seems
+> wrong that each reader (let's assume they just won't overlap) has to retry
+> the failed IO and wait for the HW to figure out it's not going to work.
+> Shouldn't we cache the error state with the page? And I understand that we
+> then also have to deal with the problem how to invalidate the error state
+> when the block might eventually become readable (for stuff like temporary
+> IO failures). That would need some signalling from the driver to the page
+> cache, maybe in a form of some error recovery sequence counter or something
+> like that. For stuff like iSCSI, multipath, or NBD it could be doable I
+> believe...
 
-Thanks for handling these. Your first batch is reviewed and applied. I 
-will wait for the next round before I send a pull request to net.
+That felt like a larger change than I wanted to make.  I already have
+a few big projects on my plate!
 
-regards
-Stefan Schmidt
+Also, it's not clear to me that the host can necessarily figure out when
+a device has fixed an error -- certainly for the three cases you list
+it can be done.  I think we'd want a timer to indicate that it's worth
+retrying instead of returning the error.
+
+Anyway, that seems like a lot of data to cram into a struct page.  So I
+think my proposal is still worth pursuing while waiting for someone to
+come up with a perfect solution.
