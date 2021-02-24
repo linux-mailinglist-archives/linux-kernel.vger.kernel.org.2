@@ -2,127 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6A3323AB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7649A323ABC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbhBXKp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 05:45:29 -0500
-Received: from mail-eopbgr110129.outbound.protection.outlook.com ([40.107.11.129]:26944
-        "EHLO GBR01-CWL-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234893AbhBXKpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 05:45:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O3pO3a1nWZOJ7aSKKkOQISbWMHIwxVd2aYGvpcN+p1uwPOHFen9IqrzFjXg5rsJ22FJK3AiQPcwduPPtuhVZx6x2NVeZ2JUfTzcKc0Ek+FNTVWo5/s9ZYAtz6pKUyTGDQ12yqPYZzaCbqeLZyALma7R/FzakTcBb64/8SkbLtQihMRs/ZNkeBZLahy9SS4Y0lDNQxtqJJoKgZwkU8gfOy3Xqr1tVsoxeYTdNmQs/YOUwwY6w+yryPPVYs4hmsy/p8OKQGzVUzBOzHmgeDlGoKtAkVNy3op2cpHp9vzNk9SsCR/CC3XEnV3plvAliSk3Bch66zAAudd00zI+daK735w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gUW+8U5qw9rl8QSA0szVrZbwS2IF7aTAP5PwkWt9QII=;
- b=lKU04dFeFEBoE/BBr8b/xOr1HFSnEiV/XjXGz7mYLj5+vCyboFnVIYIMfD+w4c3RusK/xw9euMWIcQfnAxJ4+XKRPzqkNRQzSPZE75NkR2Ef7f9qtlVN1SxapTNQFBK9vhMvfudJKbfWjq3lFPCk3mCbZXMcuxZgovbQmEMMPKkl7oJ6Y5HxSm1r2tUzGRAQoi6IYoIeubWE9AZuK1LkkVvFjK+NCGSGgmN8WroOqZNEHzBy89mE3715PXSmhPIfug+LokBxanjwpS+0nCwF1i0WDYeq6f6HAT3kp10XtCJq3w/8JWui4isTamTgiS2fIeEt/pKzAH56noa9uBSYRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=purelifi.com; dmarc=pass action=none header.from=purelifi.com;
- dkim=pass header.d=purelifi.com; arc=none
+        id S234931AbhBXKqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 05:46:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234919AbhBXKpb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 05:45:31 -0500
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8833C06178A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 02:44:50 -0800 (PST)
+Received: by mail-vk1-xa29.google.com with SMTP id j188so280443vke.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 02:44:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=purevlc.onmicrosoft.com; s=selector2-purevlc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gUW+8U5qw9rl8QSA0szVrZbwS2IF7aTAP5PwkWt9QII=;
- b=Pkl9b7c9IUfC4BTWTCbmWfNwVk0UJ6KcSYGqBgnZDhqhTbwquSJ36c2ElH3yaeh9A6g0dNOYI5KIR7g74KQXwA04Ph5ePKrjescUZWwtCOZAMRVxasnyiPBqSOx6EnNisuTQ6vLTDGhowRZ2A5YlaTv6KlPUVLu1v0jDkErGtoE=
-Received: from CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:3a::14)
- by CWLP265MB3282.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:e2::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.29; Wed, 24 Feb
- 2021 10:44:20 +0000
-Received: from CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM
- ([fe80::908e:e6f1:b223:9167]) by CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM
- ([fe80::908e:e6f1:b223:9167%9]) with mapi id 15.20.3868.033; Wed, 24 Feb 2021
- 10:44:20 +0000
-From:   Srinivasan Raju <srini.raju@purelifi.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-CC:     Mostafa Afgani <mostafa.afgani@purelifi.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS (WIRELESS)" 
-        <linux-wireless@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
-Subject: RE: [PATCH] [v13] wireless: Initial driver submission for pureLiFi
- STA devices
-Thread-Topic: [PATCH] [v13] wireless: Initial driver submission for pureLiFi
- STA devices
-Thread-Index: AQHXATVZ5f5l6UkeM0GGLk69Yeo12qpcKnA9gAsG29A=
-Date:   Wed, 24 Feb 2021 10:44:19 +0000
-Message-ID: <CWXP265MB1799C770207CA7BDC35D11B8E09F9@CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM>
-References: <20200928102008.32568-1-srini.raju@purelifi.com>
-        <20210212115030.124490-1-srini.raju@purelifi.com>
- <87im6rov2q.fsf@codeaurora.org>
-In-Reply-To: <87im6rov2q.fsf@codeaurora.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none
- header.from=purelifi.com;
-x-originating-ip: [103.213.193.217]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d60254c6-aa69-403e-7d02-08d8d8b12435
-x-ms-traffictypediagnostic: CWLP265MB3282:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CWLP265MB328202091928DDAF48078150E09F9@CWLP265MB3282.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Xy0Nbb8ihdEfJeQe7O9srLB7dGGdAMvJoABi9HTU+VJVLIrMMIERyBMeIlGlewul6nKXq9ezl2AyOZCwMoRRs0VkrmEIQg7O3B6EsCe2MglFis510ZW1RHC2HLT3LBDLKX/L0qhh7MK7XPeZiT8RslCjUg8lkT45WoO4zQo0+tHctzUdiMvx3GAJXVODOi6t9BQhG2kZePKnE7hZiXs4fmo7PbrTdufuYtgQ1mhNwP12QVkPJQUPX5vddWcNIbYkQPknFaEWr/7jS1bahp+CGy6UToCsO65oRGBdsW01Ul6cLZ6QtXL2015FzBzyBfaR9hvsAD306SXKoVWkzFKsijvoMgLmW//IZKlP4DgEbrNNtHHdwEh4ZsEgJbos63H0lxAxzXlV3fRsfoNgFQxDm3LPQwCGJymv/fBo5HoUSynDP2nt09tOrhIDCP0gUi19Iaofyn9Xy8xKji+MtfzVx5koVPGZTIKr+NNr/sD94n84SxVprFF0YAxdICOGI7tljWfnqQu30OoR1l3PI/wwlg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(6029001)(4636009)(396003)(366004)(346002)(39830400003)(136003)(376002)(2906002)(55016002)(9686003)(86362001)(6506007)(5660300002)(8676002)(26005)(52536014)(478600001)(186003)(66946007)(8936002)(6916009)(76116006)(66446008)(7696005)(66476007)(66556008)(64756008)(4744005)(4326008)(71200400001)(54906003)(316002)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?m+P13kvrCILKH0ixTKK+8u0tpbn35KziZGOo3I8lcK9ltsjGd86rs4KCyACI?=
- =?us-ascii?Q?WTD+MNN9iQqLmVMHlS2284/PwZdpul8R4fvJ3N4lFJQaXIHKTQyvSVScGFk4?=
- =?us-ascii?Q?2i75WE4Q8oxMHA5UXRxcwyL21zg1rgQlAnkn8nwBCSbk23uPLJh2TRwH9BCc?=
- =?us-ascii?Q?WIrQ5p/pc7tRPB+E3UnVjOnT3dVtjvmBchVG+BCaWjUdfwCeeqjPt76NiplN?=
- =?us-ascii?Q?OwHYMWo115ldeghJO2ojvt8SPy9rUBVzAB29pLYy7KjRGQTm6r7YQuplQw3t?=
- =?us-ascii?Q?VhihjDy+IMR3hyKNbjA7qZS8xnIJXAc0FMNkUSz32x7i4i+zDhcUpdWGs8bl?=
- =?us-ascii?Q?C490ZhQ5phhALqr2eEegjDtKcGbThJO7+D8suKnBqXgrHkoJUAPz1gLgRX8Z?=
- =?us-ascii?Q?dd3ZU50vZHIkMXcGXiu1B65Wy5tpOlrMhgxgv4iBE6LIOufsFowpsAjTb0qA?=
- =?us-ascii?Q?wI9lbXWkxuA2xW9MPdo/XoOsrke1h3TW09JVQfcMqPUxSphdy4ir2C1CrAiM?=
- =?us-ascii?Q?zzD1/ldnhcZML6Mk9hN2knlRFbceFJe0yM7dv+ebK1zPfDUorEaIHIYrMBV7?=
- =?us-ascii?Q?wBG3Vt5qWrBhAg5l3fFMk2EV7Y+k2OE7jTiq/fbmG9cy+qBy3Z0kXlnK44HB?=
- =?us-ascii?Q?yFLiMErTF4vcfzs+uHwJj8frvOnlhTaDfnjUkYaqUM6TJQ4Hdb6WfToV3gbQ?=
- =?us-ascii?Q?7kC+jdqIH639yzKtTlQ0m3J6oyeY8mRhGdT1Xom3KAUG7Ube1WA8tMx03IJX?=
- =?us-ascii?Q?lbFA9w4wgT/4F6nndO6Qfv+buef9SZEMtM6aYf9Ni55ITIsrak425Q2CYqDq?=
- =?us-ascii?Q?Yiff7PoXJIRrQPaMWZxSnrNIbAX5WV8l/HX7WSrdtQdLfWMZVElo9K2FvWb7?=
- =?us-ascii?Q?YVqa2vCkFuPbEFm+1ZkuEeQ4UVTiaA6xH2Sfj/HHuNJlJgh5MayZeVMcSfMX?=
- =?us-ascii?Q?ggMWjqDSsJsAzHcp+KIGUYiO4WQFn9fjMB4CIVHvUWFA9Y7f9yA7oHe6R7fk?=
- =?us-ascii?Q?WPuVlQnc2qw9as9zA09Z3oZ+aMo13Xjn6ATP3rK/Dt8+DfvTzXIqCmPfbMAy?=
- =?us-ascii?Q?TYQy+6Hoe06UEPFDwFK5FKhyxFYn8M8UENQS6A2BZIhFiVMh2ndWe6lDiW/u?=
- =?us-ascii?Q?34YVE5Wtjtk53AAduF+nPGzBH945Tc1nAeWpbLT985G6qYBxRyKUluFg/3B/?=
- =?us-ascii?Q?67/4juxs4j9Zmv8kW8vaXPJHN4epxhAaT37Dq1gw9to39+XoPFQNoiN41sDF?=
- =?us-ascii?Q?JmPPLs7buHTPL30uf+qcFY/NbJlP6VjEXxBRxX2D48cT/xk/cQMds54udUAS?=
- =?us-ascii?Q?z4tKMhEndMvXKq7QugQMGE37?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7IeVrluan2r2kYEdEBttnfq/zM9jcQl9nm+rI5Hkr4o=;
+        b=av1wcjABNicK94u3ElvqGuVPfJykZiudez3NH0qMVLgXPS7gyUY6TPG5Uu5OEuYCsM
+         sJ+9LQeebUu6iRayXoqXLEhXxqLpGm8ar+uwgnNpWp0YFFIi9vPezL7VykoxNJrLW9Zo
+         QcwhNWs8X3Gx/1fqCcCv+wtkuRdJHjiuy7qW8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7IeVrluan2r2kYEdEBttnfq/zM9jcQl9nm+rI5Hkr4o=;
+        b=nmbFJLfktLzZ3tktzmrjqO1az6Tt65o2UD7rYEWwwY234kzHv3VRT/wQs09DUgGIUn
+         +PepV2/4XbpDFp0rk0OxFM9MJMBZ9tCuFp0Wd9GvH//2Kl6IGQPdgCH2w6IIOfTeu/4H
+         uYRdg575BjkZHFzUCTn0wdimUABiT0592cjZ5d+Md9Vx9MU3ThK8hekVcqQkqcE83ak7
+         PO38Qq/+bTe8b92CTm2ihhIge5pv5aY4zSaoij58VWomLiejVHUn8xNzC1kY3JlZgNo9
+         nlswv6aEvLNYiqZwT9KeW5fFZpKD7HfhSy4o/L9IWbboMfPqwSnknaRsRBmld28DDzpC
+         26RQ==
+X-Gm-Message-State: AOAM530DsiH/Crl/IGU5KWOHQuESsXGQCy/C1OVI/FO7eHojsKyVt/pd
+        ijjE7b6qgm/KlTuE996qcnAPtuD2WqtRsHd4rI/lng==
+X-Google-Smtp-Source: ABdhPJwcNF1awAfqI71jc+osdOvaKBSAu3tcjeQYXjwNeU8VD31ZIj0UmTyh4zCeNoXqu9c1BxTl4zi+NBhRQ2wYoTw=
+X-Received: by 2002:a1f:ab52:: with SMTP id u79mr19791797vke.9.1614163489899;
+ Wed, 24 Feb 2021 02:44:49 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: purelifi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: d60254c6-aa69-403e-7d02-08d8d8b12435
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Feb 2021 10:44:20.0076
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5cf4eba2-7b8f-4236-bed4-a2ac41f1a6dc
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yyAUtkaTJnKuLDHwQ2gFUm2urPoxDlR5HLVzKWlrTTtct3AScC7W0WG+BhJIz/R+ohIxlUpdl2m+uFO+SlLiVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB3282
+References: <20210221195833.23828-1-lhenriques@suse.de> <20210222102456.6692-1-lhenriques@suse.de>
+ <CAN-5tyELMY7b7CKO-+an47ydq8r_4+SOyhuvdH0qE0-JmdZ44Q@mail.gmail.com> <YDYpHccgM7agpdTQ@suse.de>
+In-Reply-To: <YDYpHccgM7agpdTQ@suse.de>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Wed, 24 Feb 2021 18:44:38 +0800
+Message-ID: <CANMq1KBgwEXFh8AxpPW2t1SA0NVsyR45m0paLEU4D4w80dc_fA@mail.gmail.com>
+Subject: Re: [PATCH v8] vfs: fix copy_file_range regression in cross-fs copies
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Olga Kornievskaia <aglo@umich.edu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nfs <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 24, 2021 at 6:22 PM Luis Henriques <lhenriques@suse.de> wrote:
+>
+> On Tue, Feb 23, 2021 at 08:00:54PM -0500, Olga Kornievskaia wrote:
+> > On Mon, Feb 22, 2021 at 5:25 AM Luis Henriques <lhenriques@suse.de> wro=
+te:
+> > >
+> > > A regression has been reported by Nicolas Boichat, found while using =
+the
+> > > copy_file_range syscall to copy a tracefs file.  Before commit
+> > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") th=
+e
+> > > kernel would return -EXDEV to userspace when trying to copy a file ac=
+ross
+> > > different filesystems.  After this commit, the syscall doesn't fail a=
+nymore
+> > > and instead returns zero (zero bytes copied), as this file's content =
+is
+> > > generated on-the-fly and thus reports a size of zero.
+> > >
+> > > This patch restores some cross-filesystem copy restrictions that exis=
+ted
+> > > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy acr=
+oss
+> > > devices").  Filesystems are still allowed to fall-back to the VFS
+> > > generic_copy_file_range() implementation, but that has now to be done
+> > > explicitly.
+> > >
+> > > nfsd is also modified to fall-back into generic_copy_file_range() in =
+case
+> > > vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+> > >
+> > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devic=
+es")
+> > > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-=
+drinkcat@chromium.org/
+> > > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+=
+BnvW=3DZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+> > > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cd=
+c3ff707bc1efa17f5366057d60603c45f@changeid/
+> > > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> >
+> > I tested v8 and I believe it works for NFS.
+>
+> Thanks a lot for the testing.  And to everyone else for reviews,
+> feedback,... and patience.
 
-> Having the firmware files under plfxlc/ directory looks good to me. But I=
-'m not really a fan of upper case filenames, is there a reason for that? I =
-would prefer have all lowercase filenames.
+Thanks so much to you!!!
 
-Thanks for your suggestions. We have renamed the firmware names to lower-ca=
-se and will submit v14
+Works here, you can add my
+Tested-by: Nicolas Boichat <drinkcat@chromium.org>
 
-Thanks
-Srini
-
+>
+> I'll now go look into the manpage and see what needs to be changed.
+>
+> Cheers,
+> --
+> Lu=C3=ADs
