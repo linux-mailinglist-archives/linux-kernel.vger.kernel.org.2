@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203B6323BE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 13:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C571F323BE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 13:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234592AbhBXM17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 07:27:59 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:54080 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233576AbhBXM1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 07:27:55 -0500
-Received: from zn.tnic (p200300ec2f0d18008b247b078bad9a72.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1800:8b24:7b07:8bad:9a72])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C29331EC026D;
-        Wed, 24 Feb 2021 13:27:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614169632;
+        id S235000AbhBXM23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 07:28:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231274AbhBXM20 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 07:28:26 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3884FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 04:27:45 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614169663;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=M5+WPT6nlnouK7l+/mNJ2w4w6/uAxYuT5kmxmJdTrr8=;
-        b=Bh9v/pSs45AhY7FHbXtE6kMBWaXUyiyLPh6m+VmffZT9J/uY1S3B8646j7EZh3TCT/nqif
-        o9qnHs0SEoo0N6ezBOCq1jupROaDgALvEViKXWMWpBkFtM09TyANDkym0h76IGNNvIFM8T
-        Flc9DrovFcGIpMmR9lY37tnfodMsVL0=
-Date:   Wed, 24 Feb 2021 13:27:10 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     syzbot <syzbot+42a71c84ef04577f1aef@syzkaller.appspotmail.com>
-Cc:     dave.hansen@intel.com, hpa@zytor.com, jmattson@google.com,
-        joro@8bytes.org, kirill.shutemov@linux.intel.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lstoakes@gmail.com, mingo@redhat.com, pbonzini@redhat.com,
-        seanjc@google.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-Subject: Re: general protection fault in vmx_vcpu_run (2)
-Message-ID: <20210224122710.GB20344@zn.tnic>
-References: <0000000000007ff56205ba985b60@google.com>
- <00000000000004e7d105bc091e06@google.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=d8D96xwlLlGmvQwFfBmCZIKGOORDeUvfAfzM5df4y+w=;
+        b=stSPGXX1ETYl0eye8Ly/VEmrR0dTiT1HG7RNYu3/HGJWQuhsl5EssNBCnBzmJjE01BN0V7
+        bZiItJ+QH3xg77oQ3jG+f0Y89n3/CxQto/zkZBOLw2HRfP6t4vzjqLRP8+DYIe4jCFbCzQ
+        j7H24kuDV5FJAeNeHV1rahfumTBN1LJRZtx58ggvbk5uulgvAMJB+1ucanJ1BLeIErBiA1
+        4s6VkI09Ej4GlObWNnowPzPLnUS+DY1yQ86CpOfQ6GZyJSkiunUXVnVFAoWapc1pN8FWMh
+        elN2+BYyfCExtBw5Mowo4VAABYP7KvHXDEENvn9SGnrCQQiHUvtFmQcjAgpnEA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614169663;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d8D96xwlLlGmvQwFfBmCZIKGOORDeUvfAfzM5df4y+w=;
+        b=L0cZoFhjG8cRqjLuLOLAi0QGcR1yDqoI0gs0jFNwZv5MgDCkcvbHO47hXnN6lzLMNHw3eD
+        Z/JbwJdSFyvc2KDA==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: synchronization model: was: Re: [PATCH printk-rework 09/14] printk: introduce a kmsg_dump iterator
+In-Reply-To: <YC/79JPVKcVaSEEH@alley>
+References: <20210218081817.28849-1-john.ogness@linutronix.de> <20210218081817.28849-10-john.ogness@linutronix.de> <YC/79JPVKcVaSEEH@alley>
+Date:   Wed, 24 Feb 2021 13:27:42 +0100
+Message-ID: <87eeh51wht.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <00000000000004e7d105bc091e06@google.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 03:17:07PM -0800, syzbot wrote:
-> syzbot has bisected this issue to:
-> 
-> commit 167dcfc08b0b1f964ea95d410aa496fd78adf475
-> Author: Lorenzo Stoakes <lstoakes@gmail.com>
-> Date:   Tue Dec 15 20:56:41 2020 +0000
-> 
->     x86/mm: Increase pgt_buf size for 5-level page tables
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13fe3ea8d00000
-> start commit:   a99163e9 Merge tag 'devicetree-for-5.12' of git://git.kern..
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10013ea8d00000
+On 2021-02-19, Petr Mladek <pmladek@suse.com> wrote:
+> This is likely beyond the scope of this patchset.
 
-No oops here.
+It would be beyond the scope of this patchset because it is not related
+to logbuf_lock removal.
 
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17fe3ea8d00000
+> I am still scratching my head about the synchronization if these dumpers.
+>
+> There is the "active" flag. It has been introduced by the commit
+> e2ae715d66bf4becfb ("kmsg - kmsg_dump() use iterator to receive log
+> buffer content"). I do not see any explanation there.
+>
+> It might prevent some misuse of the API. But the synchronization
+> model is not much clear:
+>
+> 	+ cur_seq and next_seq might be manipulated by
+> 	  kmsg_dump_rewind() even when the flag is not set.
+>
+> 	+ It is possible to use the same dumper more times in parallel.
+> 	  The API will fill the provided buffer of all callers
+> 	  as long as the active flag is set.
+>
+> 	+ The "active" flag does not synchronize other operations with
+> 	  the provided buffer. The "dump" callback is responsible
+> 	  to provide some synchronization on its own.
+>
+> In fact, it is not much clear how struct kmsg_dumper_iter, struct kmsg_dumper,
+> and the used buffers are connected with each other and synchronized.
 
-Nothing special here too.
+With this series applied, there is no connection between them. And
+actually you have made me realize that the iterator should be named
+"kmsg_dump_iter" instead. I will change that for v3.
 
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=49116074dd53b631
+> It might some sense to have the iterator in a separate structure.
+> But the only safe scenario seems to be when all these three things
+> (both structures and the buffer) are connected together and
+> synchronized by the same lock. Also the "active" flag does not look
+> much helpful and can be removed.
 
-Tried this on two boxes, the Intel one doesn't even boot with that
-config - and it is pretty standard one - and on the AMD one the
-reproducer doesn't trigger anything. It probably won't because the GP
-is in vmx_vcpu_run() but since the ioctls were doing something with
-IRQCHIP, I thought it is probably vendor-agnostic.
+The @active flag is useless. It should be removed.
 
-So, all in all, I could use some more info on how you're reproducing and
-maybe you could show the oops too.
+We have kmsg_dump_get_line(), kmsg_dump_get_buffer(), kmsg_dump_rewind()
+as an in-kernel interface to allow retrieving the kernel buffer
+contents. To use these interfaces, the caller only needs to have an
+iterator that is initialized using kmsg_dump_rewind(). These functions
+can be (and are) used, regardless if a dumper has been registered. And I
+think that is OK.
 
-Thx.
+The used buffers (like the iterator) are local to the caller. So there
+is no need for the kmsg_dump_*() functions to be concerned about any
+synchronization there.
 
--- 
-Regards/Gruss,
-    Boris.
+Then we have kmsg_dump_register() and kmsg_dump_unregister() to allow
+for registration of a dump() callback, to be called when the kernel does
+panic/oops/emergency/shutdown. Presumably the registered callback would
+use the kmsg_dump_*() functions to access the kernel buffer. Again, no
+need for kmsg_dump_*() functions to be concerned about synchronization
+because the buffers are provided by the callbacks.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> As I said, this is likely beyond this patchset. This patch does more
+> or less just a refactoring and helps to understand the dependencies.
+
+Aside from removing the useless @active flag, I am not sure what else
+you would want to change. Perhaps just fixup the comments/documentation
+to clarify these interfaces and what their purpose is.
+
+John Ogness
