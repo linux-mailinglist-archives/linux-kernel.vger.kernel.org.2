@@ -2,118 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EADBE323842
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A688D323846
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhBXIC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:02:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234069AbhBXIBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:01:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E93964DA1;
-        Wed, 24 Feb 2021 08:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614153630;
-        bh=63Zmf/E3b/3bpOMZyuG6pJsv9DRPtP/oIUJnTF/QqYI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oGHIh0Fe4jWkEqJCDIsBsuArSbgDWm5HIiNJNjqqhQHQA1ltO+pZPkqfCiAl7uTTT
-         E5ecZHjhEhmzfvvLGPpsR5RoQ81H1lVuSQ8MDG9jeJk8ORiLHh1gapRgxj2coC47bm
-         91ZbfPIFhJyVtCYLeQivUqHhxVlJfnoI45nShZPXt9Qxfw1pNEg0XhOuy5520OBnew
-         BOfkKu/Xxlb1uFgwavjlDo5T38EMKfg4y4LxAaAeqw6srLJKsgHTlF9CSQtvSUwy4U
-         377fWijOnqc+wFVfRHQrfpbI0Y1/w7oaLKpRTmm8oxQAxCOyx3GFk/oNfsrblwBJ0x
-         tiJKxpvKTLMKw==
-Date:   Wed, 24 Feb 2021 17:00:24 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Evgenii Shatokhin <eshatokhin@virtuozzo.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        live-patching@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Konstantin Khorenko <khorenko@virtuozzo.com>
-Subject: Re: 'perf probe' and symbols from .text.<something>
-Message-Id: <20210224170024.cf1ec706aab9b1f5f0f9db7b@kernel.org>
-In-Reply-To: <20210223194546.dhejf4mpugyw3nqq@treble>
-References: <09257fb8-3ded-07b0-b3cc-55d5431698d8@virtuozzo.com>
-        <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
-        <20210222175150.yxgw3sxxaqjqgq56@treble>
-        <20210223102331.147d62de88886a75013c10e0@kernel.org>
-        <20210223163619.0cd580a4290165208c8aa7bb@kernel.org>
-        <20210223194546.dhejf4mpugyw3nqq@treble>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232144AbhBXIDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:03:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234387AbhBXICz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 03:02:55 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A327C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:02:15 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id k66so988742wmf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:02:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Z7NDGuuBGpr0KObSoWksVh7Rk18owzLbRpVZKUClVHk=;
+        b=phSaXRdNBIcPj+25JdRCrfUfBMQMOTXde8Kv7aE5D7NUM4w/odWQeDNODqpanDm+Ji
+         c+tQTl0IERpCPCtIITxwUmaPGU6kJoCZEatltPyS0zhTpVskoTJNXd+PkQWNZCTvisl9
+         8EeMzXJLoFXID2nXlKpAYlPMrgXu4iagh8RIQ1EoGFGVJcoMyV3OZn3D1t3nuWZuEmpn
+         Ny41u/6ZoQE90f2SIAaHSqaL9sA8poFnJw0IY80cceDubkCvERoStM/UAZO9Zl5igqL8
+         qh48P5Hw2XO55yZJ5h7tU8Aq0FyM+wOXSHGxgbYnQdxSaMibVu5c7NVE9KvdBvtUJuCv
+         UxdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Z7NDGuuBGpr0KObSoWksVh7Rk18owzLbRpVZKUClVHk=;
+        b=Yh709KjdAimAE9HBVumZ4OAiR06cEUzSO80bbxCaaSCzwg7XQOcuomvJVDySVhURBu
+         /5LeiuTp6E1VP3R/2+8kIvpk/V5ibccbhXuhEjR/6lWVDImGWSr1YqMKaJMmDsGAWCz4
+         gGR7AnQztnjdGMO2PvUaIrDdmXk2SAX2g6iAFcvek49PMu93UgCYjVHL7ceGIDm8aoys
+         eXVEOEE63WZX2Sfo9V/hFE5vg2yCAkzNxLh9D1r8AXRVrBSs9lDfFFuGPeKW2tmJmwLR
+         T/54EM7iPLrlYMXQFZMdLhEzkSDAg3qVcb8DyfsedsMBKFuD/+MJM+bdlhazuZdXUOF+
+         /9Fg==
+X-Gm-Message-State: AOAM532g9xeps4WhLqCEqu63wkgCV7x0jlLxbfPIxkNYKHeUhwkpZPoP
+        wWJ/YJLH2Q8t1dhqOugw4t0=
+X-Google-Smtp-Source: ABdhPJxj2t7kjl3+qt+9micKV54J8dXmVOUHc/fDxjZMccJim1Rw+YD+y4T3p+Lc1UcOzaLYVjee6A==
+X-Received: by 2002:a7b:c20a:: with SMTP id x10mr2486521wmi.137.1614153734148;
+        Wed, 24 Feb 2021 00:02:14 -0800 (PST)
+Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id 2sm2098489wre.24.2021.02.24.00.02.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 00:02:13 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     f.fainelli@gmail.com, Brian Norris <computersforpeace@gmail.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v2] nand: brcmnand: fix OOB R/W with Hamming ECC
+Date:   Wed, 24 Feb 2021 09:02:10 +0100
+Message-Id: <20210224080210.23686-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210222201655.32361-1-noltari@gmail.com>
+References: <20210222201655.32361-1-noltari@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 13:45:46 -0600
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+Hamming ECC doesn't cover the OOB data, so reading or writing OOB shall
+always be done without ECC enabled.
+This is a problem when adding JFFS2 cleanmarkers to erased blocks. If JFFS2
+clenmarkers are added to the OOB with ECC enabled, OOB bytes will be changed
+from ff ff ff to 00 00 00, reporting incorrect ECC errors.
 
-> On Tue, Feb 23, 2021 at 04:36:19PM +0900, Masami Hiramatsu wrote:
-> > On Tue, 23 Feb 2021 10:23:31 +0900
-> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > 
-> > > On Mon, 22 Feb 2021 11:51:50 -0600
-> > > Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > > 
-> > > > On Tue, Feb 23, 2021 at 12:05:08AM +0900, Masami Hiramatsu wrote:
-> > > > > > Of course, one could place probes using absolute addresses of the 
-> > > > > > functions but that would be less convenient.
-> > > > > > 
-> > > > > > This also affects many livepatch modules where the kernel code can be 
-> > > > > > compiled with -ffunction-sections and each function may end up in a 
-> > > > > > separate section .text.<function_name>. 'perf probe' cannot be used 
-> > > > > > there, except with the absolute addresses.
-> > > > > > 
-> > > > > > Moreover, if FGKASLR patches are merged 
-> > > > > > (https://lwn.net/Articles/832434/) and the kernel is built with FGKASLR 
-> > > > > > enabled, -ffunction-sections will be used too. 'perf probe' will be 
-> > > > > > unable to see the kernel functions then.
-> > > > > 
-> > > > > Hmm, if the FGKASLAR really randomizes the symbol address, perf-probe
-> > > > > should give up "_text-relative" probe for that kernel, and must fallback
-> > > > > to the "symbol-based" probe. (Are there any way to check the FGKASLR is on?)
-> > > > > The problem of "symbol-based" probe is that local (static) symbols
-> > > > > may share a same name sometimes. In that case, it can not find correct
-> > > > > symbol. (Maybe I can find a candidate from its size.)
-> > > > > Anyway, sometimes the security and usability are trade-off.
-> > > > 
-> > > > We had a similar issue with FGKASLR and live patching.  The proposed
-> > > > solution is a new linker flag which eliminates duplicates: -z
-> > > > unique-symbol.
-> > > > 
-> > > > https://sourceware.org/bugzilla/show_bug.cgi?id=26391
-> > > 
-> > > Interesting, but it might not be enough for perf-probe.
-> > > Since the perf-probe has to handle both dwarf and elf, both must be
-> > > changed. I think the problem is that the dwarf is generated while
-> > > compiling, but this -z seems converting elf symbols in linkage.
-> > > As far as I can see, this appends ".COUNT" suffix to the non-unique
-> > > symbols in the linkage phase. Is that also applied to dwarf too?
-> > 
-> > Ah, OK. If there is an offline elf binary with symbol map, I can convert
-> > DWARF symbol -> address -> offline elf symbol (unique name)-> kallsyms.
-> > Currently, it directly converts address by kallsyms, so I will change it
-> > to find elf-symbol and solve address by kallsyms in post processing.
-> 
-> DWARF sections have references to the ELF symbols, which are renamed by
-> the linker.  So DWARF should automatically show the new symbol name.
+Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+---
+ v2: Add fixed tag.
 
-OK, I'll check what elfutils provides about that information.
-> 
-> And kallsyms is generated after the kernel is linked.  So I'm not sure I
-> understand the problem.
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Actually, perf-probe currently uses subprogram DIE(Dwarf node) name for
-the symbol name and post-process tries to find correct symbol name
-from kallsyms by the address.
-So I have to change it to find the ELF symbol name from DIE itself.
-
-Thank you,
-
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index 659eaa6f0980..5ff4291380c5 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -2688,6 +2688,12 @@ static int brcmnand_attach_chip(struct nand_chip *chip)
+ 
+ 	ret = brcmstb_choose_ecc_layout(host);
+ 
++	/* If OOB is written with ECC enabled it will cause ECC errors */
++	if (is_hamming_ecc(host->ctrl, &host->hwcfg)) {
++		chip->ecc.write_oob = brcmnand_write_oob_raw;
++		chip->ecc.read_oob = brcmnand_read_oob_raw;
++	}
++
+ 	return ret;
+ }
+ 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.20.1
+
