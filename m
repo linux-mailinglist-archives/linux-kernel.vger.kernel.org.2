@@ -2,78 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757EA324051
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6267F3240A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238318AbhBXOvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237680AbhBXNmO (ORCPT
+        id S238467AbhBXPTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:19:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36844 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237767AbhBXOkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:42:14 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB702C061797;
-        Wed, 24 Feb 2021 05:41:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xqha6KaFHgtvIKBaYdn52JwvfxXRN9RcHQ72fzYOeuc=; b=sXng7xDNXehmcnr+hW/CSKnK/Q
-        rvJT1OrIAsqWa9NN8xPC9n3JB67aLuQc2z/fV0E1k3Ec/VnIEdSzmtm1OAdBOJq1uPxrXe9j35Var
-        hgFb42qG7+e4qFPooFPcxYWXx5OwRaM5RixwDaIlmOM4BaZFTtYvMZpL57/LvY9Pq/ufZ7zgSNxH6
-        YirC1u+3y9MMSC14hmmHiSkNiAI9PSRdM5kq0tTHEU8xFm74X0qWSGMpNyG4yP+YTs+LTIn9rvQw2
-        n1NkwimRKMjDpd5nbMqzJHT5MoOlSfnFjidjke0IfLaJQJPsUAq8vIocd5kZE8FA2HsJJsdogN0B2
-        wHLmVtyA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lEuPj-009SVQ-M3; Wed, 24 Feb 2021 13:41:16 +0000
-Date:   Wed, 24 Feb 2021 13:41:15 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-Subject: Re: [RFC] Better page cache error handling
-Message-ID: <20210224134115.GP2858050@casper.infradead.org>
-References: <20210205161142.GI308988@casper.infradead.org>
- <20210224123848.GA27695@quack2.suse.cz>
+        Wed, 24 Feb 2021 09:40:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614177519;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cClZ4arkqcsGEilDhwa9v6Cj8IXTZ3mm/jsLqqThEsQ=;
+        b=LV/clOdrvJkevlIjFeyD56sH3i5eMozSBILkIfhC3/yUPuXVmX/JMLqRpqBMd3AuvJcd+T
+        yI3qtHQgxDcPYHCzxvfLB6ym2ALviEj59g8wrq43D/jKllfpm2lgcrDL09VCasXx1XhhxN
+        kYSt2IBNcIcK3pPFC8I6MtXrQ+7iG3Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-5df787PPMneRfs8pTt_H6A-1; Wed, 24 Feb 2021 09:37:00 -0500
+X-MC-Unique: 5df787PPMneRfs8pTt_H6A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 604898C249F;
+        Wed, 24 Feb 2021 13:43:48 +0000 (UTC)
+Received: from krava (unknown [10.40.193.200])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B059C19C46;
+        Wed, 24 Feb 2021 13:43:45 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 14:43:44 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Nicholas Fraser <nfraser@codeweavers.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+        Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+Subject: Re: [PATCH 2/2] perf buildid-cache: Add test for PE executable
+Message-ID: <YDZYEKJ7w+XgqA7S@krava>
+References: <295f5380-93a1-78fa-884b-afd4319b96d7@codeweavers.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210224123848.GA27695@quack2.suse.cz>
+In-Reply-To: <295f5380-93a1-78fa-884b-afd4319b96d7@codeweavers.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 01:38:48PM +0100, Jan Kara wrote:
-> > We allocate a page and try to read it.  29 threads pile up waiting
-> > for the page lock in filemap_update_page().  The error returned by the
-> > original I/O is shared between all 29 waiters as well as being returned
-> > to the requesting thread.  The next request for index.html will send
-> > another I/O, and more waiters will pile up trying to get the page lock,
-> > but at no time will more than 30 threads be waiting for the I/O to fail.
+On Fri, Feb 19, 2021 at 11:10:34AM -0500, Nicholas Fraser wrote:
+
+SNIP
+
+> +if ! which wine > /dev/null; then
+> +    echo "WARNING: wine not found. PE binaries will not be run."
+> +    run_pe=0
+> +fi
+> +
+>  ex_md5=$(mktemp /tmp/perf.ex.MD5.XXX)
+>  ex_sha1=$(mktemp /tmp/perf.ex.SHA1.XXX)
+> +ex_pe=$(dirname $0)/../pe-file.exe
+>  
+>  echo 'int main(void) { return 0; }' | cc -Wl,--build-id=sha1 -o ${ex_sha1} -x c -
+>  echo 'int main(void) { return 0; }' | cc -Wl,--build-id=md5 -o ${ex_md5} -x c -
+>  
+> -echo "test binaries: ${ex_sha1} ${ex_md5}"
+> +echo "test binaries: ${ex_sha1} ${ex_md5} ${ex_pe}"
+>  
+>  check()
+>  {
+> -	id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
+> -
+> +	case $1 in
+> +	*.exe)
+> +		# the build id must be rearranged into a GUID
+> +		id=`objcopy -O binary --only-section=.buildid $1 /dev/stdout | \
+> +			cut -c 33-48 | hexdump -ve '/1 "%02x"' | \
+> +			sed 's@^\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(.*\)0a$@\4\3\2\1\6\5\8\7\9@'`
+> +		;;
+
+wow ;-) could this have some more info on what's going on in here?
+what's the .buildid PE section format?
+
+> +	*)
+> +		id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
+> +		;;
+> +	esac
+>  	echo "build id: ${id}"
+>  
+>  	link=${build_id_dir}/.build-id/${id:0:2}/${id:2}
+> @@ -50,7 +73,7 @@ check()
+>  		exit 1
+>  	fi
+>  
+> -	${perf} buildid-cache -l | grep $id
+> +	${perf} buildid-cache -l | grep ${id}
+>  	if [ $? -ne 0 ]; then
+>  		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
+>  		exit 1
+> @@ -81,7 +104,7 @@ test_record()
+>  	build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
+>  	perf="perf --buildid-dir ${build_id_dir}"
+>  
+> -	${perf} record --buildid-all -o ${data} ${1}
+> +	${perf} record --buildid-all -o ${data} ${2} ${1}
+
+it could be better just pass $@ and make sure test_record
+args are passed in a way that record would accept them
+
+  test_record wine ${ex_pe}
+
+
+>  	if [ $? -ne 0 ]; then
+>  		echo "failed: record ${1}"
+>  		exit 1
+> @@ -96,12 +119,22 @@ test_record()
+>  # add binaries manual via perf buildid-cache -a
+>  test_add ${ex_sha1}
+>  test_add ${ex_md5}
+> +if [ $add_pe -eq 1 ]; then
+
+${add_pe}
+
+> +    test_add ${ex_pe}
+> +fi
+>  
+>  # add binaries via perf record post processing
+>  test_record ${ex_sha1}
+>  test_record ${ex_md5}
+> +if [ $run_pe -eq 1 ]; then
+
+${run_pe}
+
+> +    test_record ${ex_pe} wine
+
+I'm getting lot of wine's output, we should redirect that
+
+every other run I'm getting some small window popup saying it's
+updating wine and stuck forever.. could this be prevented?
+
+> +fi
+>  
+>  # cleanup
+>  rm ${ex_sha1} ${ex_md5}
+>  
+> +if [ $add_pe -eq 0 ] || [ $run_pe -eq 0 ]; then
+> +    echo "WARNING: some PE tests were skipped. See previous warnings."
+> +fi
+
+there's already a warning for this at the beginning,
+I dont think we need another one
+
+thanks,
+jirka
+
+> +
+>  exit ${err}
+> -- 
+> 2.30.1
 > 
-> Interesting idea. It certainly improves current behavior. I just wonder
-> whether this isn't a partial solution to a problem and a full solution of
-> it would have to go in a different direction? I mean it just seems
-> wrong that each reader (let's assume they just won't overlap) has to retry
-> the failed IO and wait for the HW to figure out it's not going to work.
-> Shouldn't we cache the error state with the page? And I understand that we
-> then also have to deal with the problem how to invalidate the error state
-> when the block might eventually become readable (for stuff like temporary
-> IO failures). That would need some signalling from the driver to the page
-> cache, maybe in a form of some error recovery sequence counter or something
-> like that. For stuff like iSCSI, multipath, or NBD it could be doable I
-> believe...
 
-That felt like a larger change than I wanted to make.  I already have
-a few big projects on my plate!
-
-Also, it's not clear to me that the host can necessarily figure out when
-a device has fixed an error -- certainly for the three cases you list
-it can be done.  I think we'd want a timer to indicate that it's worth
-retrying instead of returning the error.
-
-Anyway, that seems like a lot of data to cram into a struct page.  So I
-think my proposal is still worth pursuing while waiting for someone to
-come up with a perfect solution.
