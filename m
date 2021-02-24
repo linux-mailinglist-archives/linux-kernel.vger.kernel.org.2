@@ -2,141 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC871324046
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CC932402C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236847AbhBXOsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:48:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237011AbhBXNcr (ORCPT
+        id S238164AbhBXOl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:41:26 -0500
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:23954 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232662AbhBXNcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:32:47 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDF2C0617AB
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:30:32 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id b3so1901521wrj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:30:32 -0800 (PST)
+        Wed, 24 Feb 2021 08:32:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=fAbWdFY6DYzN+++zeWPYuMwDEhyxBpMHbQVhnizHst4=;
-        b=dO5U1Ewm0zUCNnPPEXHQuviaijLYeenKQ+ACeXU449GtzJ0rAx9Tmzu+zdo0+Dg2G3
-         ccIQAiy6ZgD60SuZJ79EI3jIHo6Os3+Ts7v68SPk+Z4I6xxguYmmmVU0VdKE88b9Bfbf
-         6Ic9J5RPiH7tg0dgsugOn8X34TW1bor2vgECeSzoXRZESi1JzRLjmL9FG9V/EughDua1
-         iutEjhCnxcZfhuNewAqH0oyGARwhcyuA2TlfmQrN1AdMFU+cOv1YBEHsa2BM0RMlAD/M
-         bUs+7HS/RX+d8UPOcFQcKgmiya3ohnCS4yp/zIMXc5ccns/az+6gJoHLEiDOchesYOzh
-         POTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=fAbWdFY6DYzN+++zeWPYuMwDEhyxBpMHbQVhnizHst4=;
-        b=NEEsZOuT/FIpaxoF8oQ+QCbiVeMmeCOnl1+8PPF1DShhpPyQgQQtSGE3DzQeCuwVsC
-         9si+rCkTKDDRTPfYzLdbZgVrE/n8m92rD3X0soDYWJH4g6QlmpVQM7UXodqID1KMBWgY
-         ruphCgeCn1P9M/nnH37w1wX6PYO01gsJG+eR92QUnEJQgiTuQoa8DJQBhM5AZwR9bEEx
-         53cF90xCurGt37ytwCfTsWlcuK7HstDnDZlo9V0Ry7n5eJ5zeAtJS0oGAOB7T6lW46q5
-         3RJUBRuv+cbtghU4IBZ7uwhPS5q5SXEynL1IEEC8eeTb9ogwx4EW4wuNIkmjknGoTF8v
-         0OlQ==
-X-Gm-Message-State: AOAM5314N4ujuhyoOk8M8WPNIuWaqph5LdHralwV0B/W0mrBMnM4w4hP
-        XJ7x/yNcz9uNOdrxmhUzlju4KnZ+8NyIKw==
-X-Google-Smtp-Source: ABdhPJymMQeWbROYbWMTVArGEeE106K60M/Bgjzj+l5wEoTs43QgpTsCa4ZTZ02FLSS93ec1DVDiXg==
-X-Received: by 2002:a05:6000:1542:: with SMTP id 2mr32095000wry.356.1614173430983;
-        Wed, 24 Feb 2021 05:30:30 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:58e9:8af9:3cd4:ded2])
-        by smtp.gmail.com with ESMTPSA id h10sm552611wrp.22.2021.02.24.05.30.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 05:30:30 -0800 (PST)
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org, valentin.schneider@arm.com
-Cc:     fweisbec@gmail.com, tglx@linutronix.de, qais.yousef@arm.com,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH 4/7 v4] sched/fair: merge for each idle cpu loop of ILB
-Date:   Wed, 24 Feb 2021 14:30:04 +0100
-Message-Id: <20210224133007.28644-5-vincent.guittot@linaro.org>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1614173524; x=1645709524;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=XgvjsOMBy0W2i8h9nrIbreu3UIpB0UjjUMV8skAtoL0=;
+  b=udqcbbUYxbyau3hJAdgoCmvFBAwbVD2mX1s8jzEPGg1/01bS+IUztZSt
+   3OCzRlW421Sa3gUPQRXaay2mkSRrBKmQjfGff3zmJ5kcYdhoGbVbKRa2K
+   SsO2Dy3CErN4C7LW3ovCDNoGX+Tqyy/xiptI6VdnFAPUfMB2/Ksw/V1VM
+   Y=;
+X-IronPort-AV: E=Sophos;i="5.81,203,1610409600"; 
+   d="scan'208";a="91700011"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 24 Feb 2021 13:30:46 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-d0be17ee.us-west-2.amazon.com (Postfix) with ESMTPS id 5DD37A1900;
+        Wed, 24 Feb 2021 13:30:43 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.207) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 24 Feb 2021 13:30:26 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     SeongJae Park <sjpark@amazon.com>
+CC:     <akpm@linux-foundation.org>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
+        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v24 00/14] Subject: Introduce Data Access MONitor (DAMON)
+Date:   Wed, 24 Feb 2021 14:30:05 +0100
+Message-ID: <20210224133005.9265-1-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210224133007.28644-1-vincent.guittot@linaro.org>
-References: <20210224133007.28644-1-vincent.guittot@linaro.org>
+In-Reply-To: <20210204153150.15948-1-sjpark@amazon.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.207]
+X-ClientProxiedBy: EX13D23UWC001.ant.amazon.com (10.43.162.196) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the specific case for handling this_cpu outside for_each_cpu() loop
-when running ILB. Instead we use for_each_cpu_wrap() and start with the
-next cpu after this_cpu so we will continue to finish with this_cpu.
+On Thu, 4 Feb 2021 16:31:36 +0100 SeongJae Park <sjpark@amazon.com> wrote:
 
-update_nohz_stats() is now used for this_cpu too and will prevents
-unnecessary update. We don't need a special case for handling the update of
-nohz.next_balance for this_cpu anymore because it is now handled by the
-loop like others.
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+[...]
+> 
+> Introduction
+> ============
+> 
+> DAMON is a data access monitoring framework for the Linux kernel.  The core
+> mechanisms of DAMON called 'region based sampling' and 'adaptive regions
+> adjustment' (refer to 'mechanisms.rst' in the 11th patch of this patchset for
+> the detail) make it
+> 
+>  - accurate (The monitored information is useful for DRAM level memory
+>    management. It might not appropriate for Cache-level accuracy, though.),
+>  - light-weight (The monitoring overhead is low enough to be applied online
+>    while making no impact on the performance of the target workloads.), and
+>  - scalable (the upper-bound of the instrumentation overhead is controllable
+>    regardless of the size of target workloads.).
+> 
+> Using this framework, therefore, several memory management mechanisms such as
+> reclamation and THP can be optimized to aware real data access patterns.
+> Experimental access pattern aware memory management optimization works that
+> incurring high instrumentation overhead will be able to have another try.
+> 
+> Though DAMON is for kernel subsystems, it can be easily exposed to the user
+> space by writing a DAMON-wrapper kernel subsystem.  Then, user space users who
+> have some special workloads will be able to write personalized tools or
+> applications for deeper understanding and specialized optimizations of their
+> systems.
+> 
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
----
- kernel/sched/fair.c | 32 +++++++-------------------------
- 1 file changed, 7 insertions(+), 25 deletions(-)
+I realized I didn't introduce a good, intuitive example use case of DAMON for
+profiling so far, though DAMON is not for only profiling.  One straightforward
+and realistic usage of DAMON as a profiling tool would be recording the
+monitoring results with callstack and visualize those by timeline together.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index f52f4dd3fb9e..0323fda07682 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10043,22 +10043,9 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
- 	 * When the cpu is attached to null domain for ex, it will not be
- 	 * updated.
- 	 */
--	if (likely(update_next_balance)) {
-+	if (likely(update_next_balance))
- 		rq->next_balance = next_balance;
- 
--#ifdef CONFIG_NO_HZ_COMMON
--		/*
--		 * If this CPU has been elected to perform the nohz idle
--		 * balance. Other idle CPUs have already rebalanced with
--		 * nohz_idle_balance() and nohz.next_balance has been
--		 * updated accordingly. This CPU is now running the idle load
--		 * balance for itself and we need to update the
--		 * nohz.next_balance accordingly.
--		 */
--		if ((idle == CPU_IDLE) && time_after(nohz.next_balance, rq->next_balance))
--			nohz.next_balance = rq->next_balance;
--#endif
--	}
- }
- 
- static inline int on_null_domain(struct rq *rq)
-@@ -10385,8 +10372,12 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	 */
- 	smp_mb();
- 
--	for_each_cpu(balance_cpu, nohz.idle_cpus_mask) {
--		if (balance_cpu == this_cpu || !idle_cpu(balance_cpu))
-+	/*
-+	 * Start with the next CPU after this_cpu so we will end with this_cpu and let a
-+	 * chance for other idle cpu to pull load.
-+	 */
-+	for_each_cpu_wrap(balance_cpu,  nohz.idle_cpus_mask, this_cpu+1) {
-+		if (!idle_cpu(balance_cpu))
- 			continue;
- 
- 		/*
-@@ -10432,15 +10423,6 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	if (likely(update_next_balance))
- 		nohz.next_balance = next_balance;
- 
--	/* Newly idle CPU doesn't need an update */
--	if (idle != CPU_NEWLY_IDLE) {
--		update_blocked_averages(this_cpu);
--		has_blocked_load |= this_rq->has_blocked_load;
--	}
--
--	if (flags & NOHZ_BALANCE_KICK)
--		rebalance_domains(this_rq, CPU_IDLE);
--
- 	WRITE_ONCE(nohz.next_blocked,
- 		now + msecs_to_jiffies(LOAD_AVG_PERIOD));
- 
--- 
-2.17.1
+For example, below link shows that visualization for a realistic workload,
+namely 'fft' in SPLASH-2X benchmark suite.  From that, you can know there are
+three memory access bursting phases in the workload and
+'FFT1DOnce.cons::prop.2()' looks responsible for the first and second hot
+phase, while 'Transpose()' is responsible for the last one.  Now the programmer
+can take a deep look in the functions and optimize the code (e.g., adding
+madvise() or mlock() calls).
 
+    https://damonitor.github.io/temporal/damon_callstack.png
+
+We used the approach for 'mlock()'-based optimization of a range of other
+realistic benchmark workloads.  The optimized versions achieved up to about
+2.5x performance improvement under memory pressure[1].
+
+Note: I made the uppermost two figures in above 'fft' visualization (working
+set size and access frequency of each memory region by time) via the DAMON user
+space tool[2], while the lowermost one (callstack by time) is made using perf
+and speedscope[3].  We have no descent and totally automated tool for that yet
+(will be implemented soon, maybe under perf as a perf-script[4]), but you could
+reproduce that with below commands.
+
+    $ # run the workload
+    $ sudo damo record $(pidof <your_workload>) &
+    $ sudo perf record -g $(pidof <your_workload>)
+    $ # after your workload finished (you should also finish perf on your own)
+    $ damo report wss --sortby time --plot wss.pdf
+    $ damo report heats --heatmap freq.pdf
+    $ sudo perf script | speedscope -
+    $ # open wss.pdf and freq.pdf with our favorite pdf viewer
+
+[1] https://linuxplumbersconf.org/event/4/contributions/548/attachments/311/590/damon_ksummit19.pdf
+[2] https://lore.kernel.org/linux-mm/20201215115448.25633-8-sjpark@amazon.com/
+[3] https://www.speedscope.app/
+[4] https://lore.kernel.org/linux-mm/20210107120729.22328-1-sjpark@amazon.com/
