@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E107F323837
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A43B032383C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234023AbhBXIAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:00:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
+        id S233988AbhBXIBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:01:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234002AbhBXH72 (ORCPT
+        with ESMTP id S234003AbhBXIA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:59:28 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B00C061574;
-        Tue, 23 Feb 2021 23:58:47 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id l13so960339wmg.5;
-        Tue, 23 Feb 2021 23:58:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:content-transfer-encoding:mime-version:subject:date:references
-         :to:in-reply-to:message-id;
-        bh=x1jxjjLDASCMlTc1udMdVoMLB+6UDTS14GcvKV5F870=;
-        b=EUJXnHT4N8+s9AlEtT4XP7Nbn+2XCqpqJSey5pyJ7c9VV4a7B6dzMa1Z3pIbeexsVu
-         r26rT5BkAGT2MX9LvmqggEIpuowICAfVB4KlVVinNS+NU8TWQTRNCGUnFtPnU3cvYgWb
-         hoDNT35+2z8u7x6GnnPFvn1mKCRc41Zs9+zFrGYHU2YAveemABnOmEQ8Dw5iGkjc309A
-         YkxtZYKH9HlLkaNL4UxNkdtz9cjU3I6YqQB5ha7cOohLLw8sQUiUahszhwamCANvGA92
-         ApqJjJNMmF0657q3o8XcvFyo4Fe2uZHSu1V6TNaQ2JZdL7JvvYvVO+wT++AUc57jJ4Ng
-         i/zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:date:references:to:in-reply-to:message-id;
-        bh=x1jxjjLDASCMlTc1udMdVoMLB+6UDTS14GcvKV5F870=;
-        b=sXZp7xCZCeSHIYEYi0HH2YGgEaEl6zHAE5JcTjpsLOo9/H3oEPSJIIzDl0EeYRaOPN
-         4RA1mHSKgxo4MUGfQSjugNwU9nJ66evqLnSP0UPlL+gkeFzqa1y3s6vsHSsA7obBYUQS
-         Ee6gthmhdpxQ/UDV12fAo1GLK0LoQtH175l2WrMsXhq4ca5tS7Lac5H7+grSJjctvOPm
-         Cij98uGN2QrAKTXHkM8Woq1sEdFPd8E8ZBm1Jiy4gt+FFK4Tn+Bh7xNr7d6UI5tKzW+q
-         0JjVC6TOkfi1053aNxhiQDSrsE07U1rlewlqnCJnFjGBsNnMhtzfohjPKxp0838JIgRR
-         50qA==
-X-Gm-Message-State: AOAM533HZB0YzlXr6YVTOE5ZtL/gMVyDmpwoQDNWyd/2wn5yxDJ81lSL
-        aLBp+xpyPHNY4l01Gmn+qkgKrwmApOCuHk7/
-X-Google-Smtp-Source: ABdhPJwocmDHjsMb/bjg/PqDqbyy7KyVYGgYrogiTBCQkLsjFb0n1e/uOT81cP3Yjm50WxCfDzr4Kg==
-X-Received: by 2002:a7b:c5d6:: with SMTP id n22mr2421297wmk.70.1614153526385;
-        Tue, 23 Feb 2021 23:58:46 -0800 (PST)
-Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id t23sm1531021wmn.13.2021.02.23.23.58.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Feb 2021 23:58:45 -0800 (PST)
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v2 0/2] irqchip: add support for BCM6345 interrupt
- controller
-Date:   Wed, 24 Feb 2021 08:58:44 +0100
-References: <20210223204340.312-1-noltari@gmail.com>
- <20210224075640.20465-1-noltari@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
-In-Reply-To: <20210224075640.20465-1-noltari@gmail.com>
-Message-Id: <D10F711C-ECEF-4F8B-AA0A-7DACFFDD1FEB@gmail.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Wed, 24 Feb 2021 03:00:26 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF4FC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:59:46 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lEp54-0001vy-D9; Wed, 24 Feb 2021 08:59:34 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lEp53-0005HD-4q; Wed, 24 Feb 2021 08:59:33 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     mkl@pengutronix.de, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Robin van der Gracht <robin@protonic.nl>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andre Naujoks <nautsch2@gmail.com>,
+        Eric Dumazet <edumazet@google.com>, kernel@pengutronix.de,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net v3 1/1] can: can_skb_set_owner(): fix ref counting if socket was closed before setting skb ownership
+Date:   Wed, 24 Feb 2021 08:59:32 +0100
+Message-Id: <20210224075932.20234-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is supposed to be v3=E2=80=A6
-Sorry for that. Should I resend?
+There are two ref count variables controlling the free()ing of a socket:
+- struct sock::sk_refcnt - which is changed by sock_hold()/sock_put()
+- struct sock::sk_wmem_alloc - which accounts the memory allocated by
+  the skbs in the send path.
 
-> El 24 feb 2021, a las 8:56, =C3=81lvaro Fern=C3=A1ndez Rojas =
-<noltari@gmail.com> escribi=C3=B3:
->=20
-> This interrupt controller is present on bcm63xx SoCs in order to =
-generate
-> interrupts based on GPIO status changes.
->=20
-> v3: pass dt_binding_check.
-> v2: fix documentation title typo.
->=20
-> =C3=81lvaro Fern=C3=A1ndez Rojas (2):
->  dt-bindings: interrupt-controller: document BCM6345 external =
-interrupt
->    controller
->  irqchip: add support for BCM6345 external interrupt controller
->=20
-> .../brcm,bcm6345-ext-intc.yaml                |  78 +++++
-> drivers/irqchip/Kconfig                       |   4 +
-> drivers/irqchip/Makefile                      |   1 +
-> drivers/irqchip/irq-bcm6345-ext.c             | 271 ++++++++++++++++++
-> 4 files changed, 354 insertions(+)
-> create mode 100644 =
-Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-in=
-tc.yaml
-> create mode 100644 drivers/irqchip/irq-bcm6345-ext.c
->=20
-> --=20
-> 2.20.1
->=20
+In case there are still TX skbs on the fly and the socket() is closed,
+the struct sock::sk_refcnt reaches 0. In the TX-path the CAN stack
+clones an "echo" skb, calls sock_hold() on the original socket and
+references it. This produces the following back trace:
+
+| WARNING: CPU: 0 PID: 280 at lib/refcount.c:25 refcount_warn_saturate+0x114/0x134
+| refcount_t: addition on 0; use-after-free.
+| Modules linked in: coda_vpu(E) v4l2_jpeg(E) videobuf2_vmalloc(E) imx_vdoa(E)
+| CPU: 0 PID: 280 Comm: test_can.sh Tainted: G            E     5.11.0-04577-gf8ff6603c617 #203
+| Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+| Backtrace:
+| [<80bafea4>] (dump_backtrace) from [<80bb0280>] (show_stack+0x20/0x24) r7:00000000 r6:600f0113 r5:00000000 r4:81441220
+| [<80bb0260>] (show_stack) from [<80bb593c>] (dump_stack+0xa0/0xc8)
+| [<80bb589c>] (dump_stack) from [<8012b268>] (__warn+0xd4/0x114) r9:00000019 r8:80f4a8c2 r7:83e4150c r6:00000000 r5:00000009 r4:80528f90
+| [<8012b194>] (__warn) from [<80bb09c4>] (warn_slowpath_fmt+0x88/0xc8) r9:83f26400 r8:80f4a8d1 r7:00000009 r6:80528f90 r5:00000019 r4:80f4a8c2
+| [<80bb0940>] (warn_slowpath_fmt) from [<80528f90>] (refcount_warn_saturate+0x114/0x134) r8:00000000 r7:00000000 r6:82b44000 r5:834e5600 r4:83f4d540
+| [<80528e7c>] (refcount_warn_saturate) from [<8079a4c8>] (__refcount_add.constprop.0+0x4c/0x50)
+| [<8079a47c>] (__refcount_add.constprop.0) from [<8079a57c>] (can_put_echo_skb+0xb0/0x13c)
+| [<8079a4cc>] (can_put_echo_skb) from [<8079ba98>] (flexcan_start_xmit+0x1c4/0x230) r9:00000010 r8:83f48610 r7:0fdc0000 r6:0c080000 r5:82b44000 r4:834e5600
+| [<8079b8d4>] (flexcan_start_xmit) from [<80969078>] (netdev_start_xmit+0x44/0x70) r9:814c0ba0 r8:80c8790c r7:00000000 r6:834e5600 r5:82b44000 r4:82ab1f00
+| [<80969034>] (netdev_start_xmit) from [<809725a4>] (dev_hard_start_xmit+0x19c/0x318) r9:814c0ba0 r8:00000000 r7:82ab1f00 r6:82b44000 r5:00000000 r4:834e5600
+| [<80972408>] (dev_hard_start_xmit) from [<809c6584>] (sch_direct_xmit+0xcc/0x264) r10:834e5600 r9:00000000 r8:00000000 r7:82b44000 r6:82ab1f00 r5:834e5600 r4:83f27400
+| [<809c64b8>] (sch_direct_xmit) from [<809c6c0c>] (__qdisc_run+0x4f0/0x534)
+
+To fix this problem, only set skb ownership to sockets which have still
+a ref count > 0.
+
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Andre Naujoks <nautsch2@gmail.com>
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ include/linux/can/skb.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index 685f34cfba20..655f33aa99e3 100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -65,8 +65,7 @@ static inline void can_skb_reserve(struct sk_buff *skb)
+ 
+ static inline void can_skb_set_owner(struct sk_buff *skb, struct sock *sk)
+ {
+-	if (sk) {
+-		sock_hold(sk);
++	if (sk && refcount_inc_not_zero(&sk->sk_refcnt)) {
+ 		skb->destructor = sock_efree;
+ 		skb->sk = sk;
+ 	}
+-- 
+2.29.2
 
