@@ -2,183 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A47324024
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B85D0324029
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237870AbhBXOkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:40:40 -0500
-Received: from mail-dm6nam10on2052.outbound.protection.outlook.com ([40.107.93.52]:42433
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236807AbhBXN0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:26:20 -0500
+        id S238041AbhBXOlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:41:11 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:37966 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232673AbhBXNcH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 08:32:07 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ODTMUv160548;
+        Wed, 24 Feb 2021 13:29:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=iys3HEbXDXRkK+VKVQuM+F8FtraW1Rp6yixwV/lQN4k=;
+ b=d1wmejH0Locuner3Kxga+Zmv67k8Oseez1Or0BFaNSYa2r8x3iDCGl53NqSfP6eihq/g
+ aG7OdOWraWGhigBlTWU+fMkmT+eCNVGsUlXqXymCjEKumM26dq6HZXL0KgIudYtJCALh
+ moxy2+Qu8Vn+h0FAHXf2F0FnOdyJTHGXIVivsUjS39YqA+vYBGIcq5rjWys25DCU1/A1
+ k3XnPglvfdWQwsisuTTdOp75qtz4FyGmLWuuZh7EDVg4knFVKg64Ew0sdl7ip8aSN8y4
+ RFfZv0JL7ceVPHmFEuZHjdF9iwiBkr5RRUn86pPoBCbZWyWMEhyRi5DXR6dIcvXSYmIB Lw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 36vr6258dr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Feb 2021 13:29:28 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ODOabE081658;
+        Wed, 24 Feb 2021 13:29:27 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
+        by aserp3020.oracle.com with ESMTP id 36ucb0r5ts-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Feb 2021 13:29:27 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S7eeuWf4ykRgXzfd+jq97jTy7pdAOaXWc3SVwHUt9XRZK2Vo70ljFyoiMeyZLwMq+ng5tNOc+v9xMIWEv/LqU+yRdtDhox1kJxT+6Nq9y484orBr799O/iZhUpOrF72EXbTn1OkrFXoOjZmQqgOZcMHBXP0bByVGkfj20t4+d+aaJtgdzbLL+mtmpiwsqBei2WntXUjbf0OrglVQsmeouzt57aBHS0lqy1pn7DO9dTp8f6kDfrXzilaxULMJGnMi7GCdsjwqO6+TpBEMPIMlZrqLal97qi+C1aSCSNvMpWyOvV3KlCo/QFMUdmOxKJeD6pVIF8LVKPSlmhJn7y5tOQ==
+ b=CW108FDxX1Kf3WRRXFUn87qDUqKHHB5AggVXaK72r4HQ+YY8wntHbVXLtUk9OLGF7pky+Hw0znTuFI5mgoJnWzD0Axj7+gQsUPQqXbTsnQiSpB49h4CG1BdN/ow8ovvx92mr7jI5as8Ap65sJ1QQ551xXRWASAru+7RLFSETUsfSpC1yIZM0fQEUVJtKZlvEaShYvyRIG9FYaC0UwztX0PR75z2qSNEe5XrJCblgMOqxkPh6HgFuc7ltH8VvLn1GitjbY0c4eBzGhFMrQkFfXI4M6F0W5OoaHU8uSWXkhF3JCMAJK2eXGMmecD5iu0VMRQJUwA4ZtfBuRBU8R2OTSA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=llxU1S+43FCpVCliTg+lyiNWjCTYeaf/751Rmzfdnd8=;
- b=fQrBH3SIv3FktB1uuRE813rV/LMJQ4Cwr4CdfNg8MUVu2iVGmRQaAAkvi2IPDSLG5OMbBG7E9+0ncfXtxTnib4bbUZ7W19UZX45Cf1nPiU6ZYMYSLCQDkKqrr9rDhLdWTTgt8arX/W8aIjX8DUzIHLXU5N/d1NBviCTc0YJkHBC1he0XRpzjdxgEWtDLI5ythMlfvfhG0mH50z4FW3QcF2VIJRhpqIlVWkeiW/U6hUIQiQjH95wXC7IxgEcreE/avSvg5V3oX9wxIIcujYemRvLH/5eLres+iXUo+VMHeHTSaBQV6Z6E9sTdlz6foBxgmHme/X6rX9lGbTcf/fgplw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+ bh=iys3HEbXDXRkK+VKVQuM+F8FtraW1Rp6yixwV/lQN4k=;
+ b=gKdfc1GP6yvxWWyG9KDiPPeD191QSSLEjihXq4yZWfKWByslYfwpTt07l9LfORwN8o+VB7hwvBK+uiKcHI/3aszQenxxHtsEsEiKz2pcvfXufL/admCl5nIJzAGgTEt5tBBFRMm9G1lEu8DGA8KDi0Y925XrCyvI47Qdr7irjCwmmnyhw0yLKPgNH2QRnhRQY0yVoBS/hBzcfSWWc9hvzWCf1Rr5nHkxVDAtFPi9+wQHvwYSV/JSJTvIoRfTqNDvbtxf8NG6nRWzdmwz4sHr3ATVhWU8mE4wIJACXancab+r1SV6/cnm6nV8zG32U+hXX+UmIczQhECTH9zsZXNy2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=llxU1S+43FCpVCliTg+lyiNWjCTYeaf/751Rmzfdnd8=;
- b=okgbDpeUbjSPWpqjHSMMx6p3e0moKz0BO+P3l6mPfatEY7LxFeixGWxFplwP+BVHRDHFTy0kdtUyW4vmLpzFdF9CdA+5GqEnX5ifeV7Qc0ELbIW4PnGmT4BtqDNWiMNONm5c+MYqk0iIpnrGjC6sHUQ6W+XdsSfnm0vCFfZDOXw=
-Received: from BL0PR02CA0024.namprd02.prod.outlook.com (2603:10b6:207:3c::37)
- by SJ0PR02MB7664.namprd02.prod.outlook.com (2603:10b6:a03:323::24) with
+ bh=iys3HEbXDXRkK+VKVQuM+F8FtraW1Rp6yixwV/lQN4k=;
+ b=qGROGt9jouzWTLFlho+2pgL/3KgVNLm0+a6yGrNWm6PwnXSsTKIfjiwEBgKfN/ZjbqJeIxJpVEK3l+kQ/WMnr65C/Jq8cHo/Ih5gS5poQaGRaj8r7h38JNmc+dllXKjMfjQ+t11GQSxt5GkDyRr9k+kkvuvtQgijQ89n0n11D68=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
+Received: from DM6PR10MB3148.namprd10.prod.outlook.com (2603:10b6:5:1a4::21)
+ by DM5PR1001MB2265.namprd10.prod.outlook.com (2603:10b6:4:30::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.32; Wed, 24 Feb
- 2021 13:25:26 +0000
-Received: from BL2NAM02FT019.eop-nam02.prod.protection.outlook.com
- (2603:10b6:207:3c:cafe::8) by BL0PR02CA0024.outlook.office365.com
- (2603:10b6:207:3c::37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend
- Transport; Wed, 24 Feb 2021 13:25:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- BL2NAM02FT019.mail.protection.outlook.com (10.152.77.166) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3890.19 via Frontend Transport; Wed, 24 Feb 2021 13:25:25 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Wed, 24 Feb 2021 05:25:23 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Wed, 24 Feb 2021 05:25:23 -0800
-Envelope-to: michal.simek@xilinx.com,
- linux-arm-msm@vger.kernel.org,
- mathias.nyman@intel.com,
- masahiroy@kernel.org,
- bjorn.andersson@linaro.org,
- agross@kernel.org,
- grandmaster@al2klimov.de,
- alcooperx@gmail.com,
- krzk@kernel.org,
- linux-usb@vger.kernel.org,
- dianders@chromium.org,
- linux-kernel@vger.kernel.org,
- hadess@hadess.net,
- ravisadineni@chromium.org,
- stern@rowland.harvard.edu,
- swboyd@chromium.org,
- peter.chen@nxp.com,
- devicetree@vger.kernel.org,
- frowand.list@gmail.com,
- robh+dt@kernel.org,
- gregkh@linuxfoundation.org,
- mka@chromium.org
-Received: from [172.30.17.109] (port=45350)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1lEuAN-0003kA-7j; Wed, 24 Feb 2021 05:25:23 -0800
-To:     Matthias Kaehlcke <mka@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-CC:     <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>,
-        "Stephen Boyd" <swboyd@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        "Ravi Chandra Sadineni" <ravisadineni@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        <linux-usb@vger.kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Mathias Nyman" <mathias.nyman@intel.com>,
-        <linux-arm-msm@vger.kernel.org>,
-        "Michal Simek" <michal.simek@xilinx.com>
-References: <20210210171040.684659-1-mka@chromium.org>
-From:   Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH v5 0/4] USB: misc: Add onboard_usb_hub driver
-Message-ID: <64179b81-454c-0d26-5413-a8df2e292b05@xilinx.com>
-Date:   Wed, 24 Feb 2021 14:25:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210210171040.684659-1-mka@chromium.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.33; Wed, 24 Feb
+ 2021 13:29:26 +0000
+Received: from DM6PR10MB3148.namprd10.prod.outlook.com
+ ([fe80::f871:5965:2081:3934]) by DM6PR10MB3148.namprd10.prod.outlook.com
+ ([fe80::f871:5965:2081:3934%5]) with mapi id 15.20.3868.033; Wed, 24 Feb 2021
+ 13:29:26 +0000
+From:   David Edmondson <david.edmondson@oracle.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Edmondson <david.edmondson@oracle.com>
+Subject: [PATCH v3 0/5] KVM: x86: dump_vmcs: don't assume GUEST_IA32_EFER, show MSR autoloads/autosaves
+Date:   Wed, 24 Feb 2021 13:29:14 +0000
+Message-Id: <20210224132919.2467444-1-david.edmondson@oracle.com>
+X-Mailer: git-send-email 2.30.0
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
+Content-Type: text/plain
+X-Originating-IP: [2001:8b0:bb71:7140:64::1]
+X-ClientProxiedBy: LO2P265CA0155.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:9::23) To DM6PR10MB3148.namprd10.prod.outlook.com
+ (2603:10b6:5:1a4::21)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from disaster-area.hh.sledj.net (2001:8b0:bb71:7140:64::1) by LO2P265CA0155.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:9::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Wed, 24 Feb 2021 13:29:23 +0000
+Received: from localhost (disaster-area.hh.sledj.net [local])   by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 0a7b5d02;      Wed, 24 Feb 2021 13:29:19 +0000 (UTC)
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4644e484-fa00-4b77-c456-08d8d8c7a54c
-X-MS-TrafficTypeDiagnostic: SJ0PR02MB7664:
-X-Microsoft-Antispam-PRVS: <SJ0PR02MB766469612B164674C00D7D3EC69F9@SJ0PR02MB7664.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: 7ed5ce97-13aa-4200-34cd-08d8d8c83436
+X-MS-TrafficTypeDiagnostic: DM5PR1001MB2265:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR1001MB2265536FE139D1353C8ECAD8889F9@DM5PR1001MB2265.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fKT/lORXJ29rpnQZdF0cISKLAMBCFHTC/pdNO81qwp9LveeF2GQ+ZFd2L9arPkmml9Hcle9qD02gvl38wUB63/U90c4A0CNHgtDC0K05gD8w1ho177Ec6zy0s+wXhAPPq/83fVBrWVygZ5zJvY1pbJz4Xw3nxqo/V6jdcQ7wpJX1QIYUaf+v+uOiYUTC6UitgvKzoP0BA6DsSsgbNFjDFezxzscWUM9WFtn7Tab2b3EGU38RJPCSHr8BzJnwVFtPZW208YuaccfXqED0I9b0SMEXdS2BV1fuv6KMI/2xYusityG0kkBip0XKOJmE5NmyASqIPjO/FICI4sLFwjAtpwBEbp7HvlPhInNLsPdlytKg/9BdEwaNDrPoouZeOGEkWy8vTMm2Mm927tKh8nAnzS5kzIEp9a7yI11pz/nvLBKNpxzTL8GAkLXetPN+zPDhRxKdRGrlTZhwklRu4Na4TXO6RlNjkUC3h+OpfLSa2Yw9p3VP0PpNsDH8ZFi80p33DtLnPsa/4QVX6WBZ5RVvbvYplbmBfUuOjA81rlWJmEofDLIRKtzYmiNUD/TE9deRQEDfaNcgB7e0sA503UX332y/841PLRV6GQIMnYKAuqSO0Q5OqXNE1o11HGS9rsrdfzGL62X57YG35Az8rNfbmxfUN9ezqDro3F6eK5KPCz5Rn4RRYE4NdlTYwTDJ2BKJHXu3dLbNiEPq+MGSGSpXXRTE44Uh26v9hcvKIsK2Cy+DSTeOk3jLAL0R3zgQbrBmxxszUTosWRKWeMVy73lJITmJdVTvyEr/Ks0251RIP+c=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(346002)(39860400002)(36840700001)(46966006)(5660300002)(31696002)(36860700001)(9786002)(47076005)(2906002)(70206006)(7636003)(6666004)(70586007)(7416002)(316002)(82740400003)(8936002)(2616005)(107886003)(36756003)(110136005)(966005)(478600001)(44832011)(53546011)(26005)(426003)(186003)(356005)(54906003)(336012)(31686004)(82310400003)(4326008)(83380400001)(8676002)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2021 13:25:25.4819
+X-Microsoft-Antispam-Message-Info: +xl2N8wZ7A9gXo8KqeQEGluagqHVxcsZ0t7Yls660GPckvDriQ8cVBc6S5SDzbouPcwCznJG+gkTmW5XdnKqa1cvosAQkDepuVKYN3a7NxsNmaiHfF9zKGGxX1Ka3q59wz6V8MjX9wBs2I4FUvqyAQvwmoviklt/fpRy/GywYDArGPvgDVRfkCTAoZtSNByyZw3wvBaV36kEoH94XU9fLXfZlOf3ru+OhCyn6AdCCVdGUAmqnMYJEhOAJJXmSvAILAHcs2nbSWFk6KSSMEtUa/CcCOjMC9/mYhR7ndSAe6jj7g8GSu6lSLDrpt9rNAOdwEW526weKjAg40Als2SU7XQ79rJh5g9Gs7nBmdvaXAKn8vFF4f8atzme9/QPaYfM/C3cCswSRiDwe13GB/kWbL53EuDU0KvTraVqiuCiyMLxAiv0GfN5F/g/N9YQPm0CaoxagTcYBjReAZlFlx3++Se5SGjKHfDxvGPFd8MQn6zW4l0G856vi+1ZH5mkBvllKsUedN0uiiMBjL7FM+Imhg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3148.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(376002)(39860400002)(396003)(4744005)(86362001)(4326008)(54906003)(66946007)(44832011)(6916009)(2616005)(36756003)(8936002)(7416002)(2906002)(66556008)(52116002)(5660300002)(66476007)(186003)(1076003)(6666004)(8676002)(478600001)(316002)(83380400001)(107886003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?0pmjoQPFFcYRcp9W7sxTsKpZgW4j0WZqeQeQNqdH8HGeP/GtoDO6L3E1Kwk/?=
+ =?us-ascii?Q?wMFo5GcHhP1o0ug8t9nGTtu0vKY2dVei1yuBpW/XFXz+Q3Lt0sHCY2szPWEy?=
+ =?us-ascii?Q?uNdncQvIIcSStmzXtOuyKuFvfRyqmavbR21n3kWTTkmRV/4iNIFmsWvivs3v?=
+ =?us-ascii?Q?9aoVKWNDC/AkizI9Q5lGDJowhrS9fCOe28BjFVq8XwtuuxoLa5z1H+eMF1yk?=
+ =?us-ascii?Q?iKm9D6W1AzGfeqXyk/R6SMdfupzAAnuoJLKBG51qiwfwjZnIXrBbAFLo6VkG?=
+ =?us-ascii?Q?N91gGbAvUP551U/RgahTzQzSEqUv0rfM88hRXPucOSqJtOmzlL2JG/IPcoAJ?=
+ =?us-ascii?Q?4JRcY55QMc4pkqs3NcFJ6/q0Gv2Tss32YWFR8u7BgudbCqEnN8nJ+RjcGyi3?=
+ =?us-ascii?Q?pvgSypY8oH2YSs2bpvRXA36w9R8QLSxn5MqzjyWlWR1wVJNhaayyLrbhO7UG?=
+ =?us-ascii?Q?Y26rKe/TlxPm9ep5OSnDYZi/lzOFr8IoNKaF62/gAt7QDvUho1k4MMWF9oum?=
+ =?us-ascii?Q?bG3bVRtxo4c6k5Bq3S4dTPiXWsjp8knwRez7BnNOQYJJNS872ySzMBQY3QCz?=
+ =?us-ascii?Q?ZDGcAZYRyQ/YMKImQAqWn/nbF+SClyyFmGIWa/OKmzLZf/WH+8uvZjBricpj?=
+ =?us-ascii?Q?ATD33x9oz/2EkHb5KtXta6zf/hJLLA5Jwo34rmt66Q8EKMhlGTsDVruRdcef?=
+ =?us-ascii?Q?OVi36AfDVj7bz3DRKTQCyCsGQM9xYEo5vG1bH1bEGJLfzp/Dw+PmTReMVs2/?=
+ =?us-ascii?Q?n2qga5KcC37QspV46Bq+SJWl2WUJ7l81OZXXHoTzvkOfnmIb6GEDQTYLSYPb?=
+ =?us-ascii?Q?APdlWwQZf5sZXoYhQuTbKiIXSk7AV7DCCKkhNqylXRJ7X9murfckxNzejoi7?=
+ =?us-ascii?Q?p1G9735gwsePoaU/uiEDBdB2W4uRyqx3vphsSNsQwHBFbSl/co5as9UkbgWK?=
+ =?us-ascii?Q?oJJC1vW/hlKN1c9hXhxilewkvqtuT8s8k3Q9r4h1ZNWAVpMq4s/YIJXMQ6vI?=
+ =?us-ascii?Q?OI3PsBu6y5fqDIcr3C5fn0E+/ZhngazMaFBMwsoEmosBYl9/Z/wOpmF+YLMm?=
+ =?us-ascii?Q?5pzaLCb+hKHaCTEyU6tAAFTZf98/qBeQ+oQhzxD3CB8sosLeuw0gH2CuM/Oi?=
+ =?us-ascii?Q?MOzVBTNliq2ui/WIzC7xGizeiyIUG3M/2bFrTNtfW88eIhtuwl30UFZDYf20?=
+ =?us-ascii?Q?bl5PbnqDrSINHUwazHx/r+2qRzyNk6PEBUHc76i9VpiRTQgQ15KhddEI6a5X?=
+ =?us-ascii?Q?mQXMwWww0p+A/HZArwDQS0s2V193RKte01/VWj0ZG0aouAb5rcoKwf4rUemE?=
+ =?us-ascii?Q?8QlY+ard5iOF+/8866Xh8P/jPF9WNLzE6dIH7dXg8/HHrg=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ed5ce97-13aa-4200-34cd-08d8d8c83436
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3148.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2021 13:29:26.0058
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4644e484-fa00-4b77-c456-08d8d8c7a54c
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT019.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7664
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UUcDlsaF+Ums4X2LKNp5F3q50dRh0lBYVLbjJZnj9gfiwZdJGUxl6M0f3H0Y11CK60UxrbXfY3ab+nbEAKQUPWayHsUhZQkMpI/OY7hU3C8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1001MB2265
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ malwarescore=0 mlxlogscore=728 adultscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102240104
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ clxscore=1015 mlxlogscore=975 lowpriorityscore=0 phishscore=0
+ impostorscore=0 adultscore=0 mlxscore=0 priorityscore=1501 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102240105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+v2:
+- Don't use vcpu->arch.efer when GUEST_IA32_EFER is not available (Paolo).
+- Dump the MSR autoload/autosave lists (Paolo).
 
-On 2/10/21 6:10 PM, Matthias Kaehlcke wrote:
-> This series adds the onboard_usb_hub_driver, the corresponding
-> device tree bindings and creation of onboard_usb_hub platform in
-> the xhci-plat driver during probe().
-> 
-> The main issue the driver addresses is that a USB hub needs to be
-> powered before it can be discovered. For discrete onboard hubs (an
-> example for such a hub is the Realtek RTS5411) this is often solved
-> by supplying the hub with an 'always-on' regulator, which is kind
-> of a hack. Some onboard hubs may require further initialization
-> steps, like changing the state of a GPIO or enabling a clock, which
-> requires even more hacks. This driver creates a platform device
-> representing the hub which performs the necessary initialization.
-> Currently it only supports switching on a single regulator, support
-> for multiple regulators or other actions can be added as needed.
-> Different initialization sequences can be supported based on the
-> compatible string.
-> 
-> Besides performing the initialization the driver can be configured
-> to power the hub off during system suspend. This can help to extend
-> battery life on battery powered devices which have no requirements
-> to keep the hub powered during suspend. The driver can also be
-> configured to leave the hub powered when a wakeup capable USB device
-> is connected when suspending, and power it off otherwise.
-> 
+v3:
+- Rebase to master.
+- Check only the load controls (Sean).
+- Always show the PTPRs from the VMCS if they exist (Jim/Sean).
+- Dig EFER out of the MSR autoload list if it's there (Paulo).
+- Calculate and show the effective EFER if it is not coming from
+  either the VMCS or the MSR autoload list (Sean).
 
-Rob pointed me here at your series.
-http://lore.kernel.org/r/CAL_JsqJedhX6typpUKbnzV7CLK6UZVjq3CyG9iY_j5DLPqvVdw@mail.gmail.com
+David Edmondson (5):
+  KVM: x86: dump_vmcs should not assume GUEST_IA32_EFER is valid
+  KVM: x86: dump_vmcs should not conflate EFER and PAT presence in VMCS
+  KVM: x86: dump_vmcs should consider only the load controls of EFER/PAT
+  KVM: x86: dump_vmcs should show the effective EFER
+  KVM: x86: dump_vmcs should include the autoload/autostore MSR lists
 
-And I have looked at RTS5411 datasheet and it looks very similar to
-Microchip usb5744 chip we use.
-Both have i2c/smbus and spi interfaces and also input clock.
-usb5744 has also external gpio reset.
+ arch/x86/kvm/vmx/vmx.c | 58 +++++++++++++++++++++++++++++-------------
+ arch/x86/kvm/vmx/vmx.h |  2 +-
+ 2 files changed, 42 insertions(+), 18 deletions(-)
 
-There are also usb3503 and others which should fit to this generic DT
-binding.
+-- 
+2.30.0
 
-Thanks,
-Michal
-
-That's why please keep me in the loop on v6 because I think
