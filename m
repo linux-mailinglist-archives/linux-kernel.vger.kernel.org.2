@@ -2,213 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016CE32375B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6B5323728
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234153AbhBXGXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 01:23:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57399 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229769AbhBXGXV (ORCPT
+        id S234105AbhBXGKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 01:10:08 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:32957 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232743AbhBXGKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 01:23:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614147713;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z57+CG+M9Eh23TG6DAPI/lxAHjPDjJOX3QFONzYVNs8=;
-        b=LOfgjN2+KbtRxbycFpDKYCvxfhc0kk27K4GVjOGDCEEg1MUFmzD7ueKH+BtoREG199hjj4
-        isYf9zxttmRdKy9RyzYpjPJpWZDlcZ6VfhnzDhwhLSA22+1Eoib0smOnYjjW1Y1KO4EtlQ
-        +PZq/ye/QMmAGfoigpeQv8t8HRFhZKc=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-198-KAzce362MFmZwuPiVwBGhQ-1; Wed, 24 Feb 2021 01:21:48 -0500
-X-MC-Unique: KAzce362MFmZwuPiVwBGhQ-1
-Received: by mail-il1-f200.google.com with SMTP id y11so778006ilc.18
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 22:21:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z57+CG+M9Eh23TG6DAPI/lxAHjPDjJOX3QFONzYVNs8=;
-        b=dqH4zmZ4XFFZ7GsngqQhMnubN3tA8EVuFfCVa0AEzpzMLWV6B3c14EQWACHWq0uAsm
-         3X4HQLcagF8tAT7Qb6Cs7AE2YaaN8l04zsF7d0312832nPCMU0PEQhs9I8AmUZW1FiWG
-         8q/UNBM15CZj3FlCl9viIBUAbMP2XiestHLLr6vJKWWS3FOSUPwZ2tjYxpQHJwSYc4Gp
-         7+EXvmSwVJSuhbdqLgam+1nKB9Q2kxXDTPMe+DRERUABalbUtzoihdKcoOY2To0uTvhs
-         lxD+wdw9nd1Z9Hki0rmf0wqTOS8ZKVT1kIcrVPldHj9LbkgcjPOJQVfJ41f4igOikVme
-         nZHQ==
-X-Gm-Message-State: AOAM532kBaqOuOfc++SXX7/oZ8bCd0Z0bybJUDUw3yrg6VltBPGC020k
-        6MDnIfhacInwu3ccrVUhqUj8iKSuyqUS7Yj6fdzjaG1vIqRjyvX0ubBNKWLdCDkcXCLQ5hUaV0h
-        8VxtFS11PQ0YBr2dTUYKsLRisNVHMPgtFxH2nakQs
-X-Received: by 2002:a92:4a07:: with SMTP id m7mr14860726ilf.51.1614147707274;
-        Tue, 23 Feb 2021 22:21:47 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzUE5E17/IqjMXLGNS9EuvKkA8xztrgsqBgHsdr/nHmPGVY9UC2nPPWkLzwnuL/BqCfevMiurSupd6wZLFyzYE=
-X-Received: by 2002:a92:4a07:: with SMTP id m7mr14860697ilf.51.1614147707031;
- Tue, 23 Feb 2021 22:21:47 -0800 (PST)
+        Wed, 24 Feb 2021 01:10:04 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210224060921epoutp025f3743f63ea6222a35e0b005f0b7008a~mmhv72Wpu2261922619epoutp02X
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 06:09:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210224060921epoutp025f3743f63ea6222a35e0b005f0b7008a~mmhv72Wpu2261922619epoutp02X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614146961;
+        bh=lUNO9sPSxE5o4aS0CTnJy7QerwMb/kkedf/3C7YNiho=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=BoGKshoVS/Ou04W1hxhJxjtQxvetfyPOZ0nsr3BMWUVKMeGkVkjXI7Rww91t10PSx
+         M3sjPO2KreSI2a9TCKZYc62ZaN2quA+paMhx+W6+VpNum8CTnPrLEtX8oDpOHkHfT5
+         6BJLu3xXYuKvpcYPp2F/4P0J2RJ427e4RLDaSSug=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210224060920epcas1p4118ef997ff38056275752b3276c00882~mmhvUNqYt0337803378epcas1p47;
+        Wed, 24 Feb 2021 06:09:20 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4Dllqd6SsHz4x9QB; Wed, 24 Feb
+        2021 06:09:17 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        22.4C.09577.D8DE5306; Wed, 24 Feb 2021 15:09:17 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210224060917epcas1p37c2d49fee6ee8c7f4e799bc80147cfec~mmhr7v2PQ0758407584epcas1p39;
+        Wed, 24 Feb 2021 06:09:17 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210224060917epsmtrp2f288292bb3a138f14c55bf7b7ee96f10~mmhr62ip92303623036epsmtrp2W;
+        Wed, 24 Feb 2021 06:09:17 +0000 (GMT)
+X-AuditID: b6c32a39-c13ff70000002569-cb-6035ed8db579
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        34.8C.13470.C8DE5306; Wed, 24 Feb 2021 15:09:17 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210224060916epsmtip2774f357f869ce792c8ff0af9f60e8740~mmhrrDAVf2155221552epsmtip2h;
+        Wed, 24 Feb 2021 06:09:16 +0000 (GMT)
+Subject: Re: [PATCH 2/2] units: Use the HZ_PER_KHZ macro
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rafael@kernel.org
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Christian Eggers <ceggers@arri.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        "open list:DEVICE FREQUENCY (DEVFREQ)" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:AMS AS73211 DRIVER" <linux-iio@vger.kernel.org>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <c493dac9-9199-12c9-365a-8c96cb73d91e@samsung.com>
+Date:   Wed, 24 Feb 2021 15:25:52 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-References: <20210223174153.72802-1-saeed.mirzamohammadi@oracle.com>
-In-Reply-To: <20210223174153.72802-1-saeed.mirzamohammadi@oracle.com>
-From:   Kairui Song <kasong@redhat.com>
-Date:   Wed, 24 Feb 2021 14:21:35 +0800
-Message-ID: <CACPcB9dgH34bSd2WzOF3aJAx4VMH=iY4X_KZ2Lanh99ycObBiQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] kernel/crash_core: Add crashkernel=auto for vmcore creation
-To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Cc:     linux-doc@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        John Donnelly <john.p.donnelly@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210223203004.7219-2-daniel.lezcano@linaro.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPJsWRmVeSWpSXmKPExsWy7bCmgW7vW9MEg89TjCwOz6+waOy9zmgx
+        77OsxYOmVUwWZ5vesFssmTyf1WLekXcsFpd3zWGz+Nx7hNHiduMKNovfu46xW8z9MpXZ4snD
+        PjYHXo9jazazeize85LJY9OqTjaPO9f2sHkseXOI1eN88xFGj74tqxg9Pm+SC+CIyrbJSE1M
+        SS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAbpYSaEsMacUKBSQ
+        WFyspG9nU5RfWpKqkJFfXGKrlFqQklNgWaBXnJhbXJqXrpecn2tlaGBgZApUmJCdsemcVsEB
+        wYqV17axNzDu5Oti5OSQEDCReHFmFksXIxeHkMAORom5C44xgiSEBD4xSqyeXg5hf2OU+Dgz
+        uYuRA6xh2wpxiPq9jBJbd55mg3DeM0rsuXwWrFlYwELi+/4PTCC2iICjxJe/i9hBipgFXjJL
+        XJjbywKSYBPQktj/4gYbiM0voChx9cdjsGZeATuJmyufMIJsYxFQleidaQESFhUIkzi5rQWq
+        RFDi5MwnLCAlnEDl7e0xIGFmAXGJW0/mM0HY8hLb385hBlkrIXCHQ+LX/mlsEB+7SDxdeJcR
+        whaWeHV8CzuELSXx+d1eqJpqiZUnj7BBNHcwSmzZf4EVImEssX/pZCaQxcwCmhLrd+lDhBUl
+        dv6eywixmE/i3dceVkhg8Up0tAlBlChLXH5wlwnClpRY3N7JNoFRaRaSb2YheWEWkhdmISxb
+        wMiyilEstaA4Nz212LDAFDmmNzGCU7KW5Q7G6W8/6B1iZOJgPMQowcGsJMLLdtcoQYg3JbGy
+        KrUoP76oNCe1+BCjKTB4JzJLiSbnA7NCXkm8oamRsbGxhYmhmamhoZI4b5LBg3ghgfTEktTs
+        1NSC1CKYPiYOTqkGJr3/Ns2PWlJ+bv1QcSFcoMah00ekUtwn/uel2uXdiv9/pHN2tD9INWR6
+        ncMQtLhbyOna45rLq3aFn6zIvnNGn/HPBb0HLaLTF8V29TN8W3BqR8Bl5j+zrGsf+tz/dPxg
+        +IRkHbbwDTvj1ZqEbatqeG9pz2JduK1gziuP2GO52x06hE4c/8DMFaUfYO/3d7Up/6vfJaFL
+        MsTd1s0pdX7Stvpb/+S6L6Y8rs46/vN/iv0vnSpuuL6l3yMgstrpejzP/ugSlV+hCgbrX6Xs
+        e2g4UWBe/JNqwawrqmllGpySm1ccNNj+L/7BOeNzU2acnKVqvn731bVxfNcso+bXRr6L9bu6
+        XNxefYHeB3aLs/zXlFiKMxINtZiLihMBpDq6tVIEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsWy7bCSvG7vW9MEg6bdjBaH51dYNPZeZ7SY
+        91nW4kHTKiaLs01v2C2WTJ7PajHvyDsWi8u75rBZfO49wmhxu3EFm8XvXcfYLeZ+mcps8eRh
+        H5sDr8exNZtZPRbvecnksWlVJ5vHnWt72DyWvDnE6nG++QijR9+WVYwenzfJBXBEcdmkpOZk
+        lqUW6dslcGVsOqdVcECwYuW1bewNjDv5uhg5OCQETCS2rRDvYuTiEBLYzSixbeU5pi5GTqC4
+        pMS0i0eZIWqEJQ4fLoaoecsoMWXhTxaQGmEBC4nv+z+A1YsIOEp8+buIHaSIWeAts8Snjh8s
+        EB1HGSU2fV3HDlLFJqAlsf/FDTYQm19AUeLqj8eMIDavgJ3EzZVPGEG2sQioSvTOtAAJiwqE
+        Sexc8pgJokRQ4uTMJywgJZxA5e3tMSBhZgF1iT/zLjFD2OISt57MZ4Kw5SW2v53DPIFReBaS
+        7llIWmYhaZmFpGUBI8sqRsnUguLc9NxiwwLDvNRyveLE3OLSvHS95PzcTYzg+NTS3MG4fdUH
+        vUOMTByMhxglOJiVRHjZ7holCPGmJFZWpRblxxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1
+        tSC1CCbLxMEp1cB0dMGvWrvp/9eary5vv2s+Ta5+P6cQw9KEHQcDe3qyc9OnJDYsl6/jWlC8
+        Ifjm459M4ekz498fT567x3WR2R6rp9+W8XW+U723/v+GzKpmnh1dliX797V4/ZdZ9XFpwu7L
+        ckaP1xeY26w5/rnMJzht6YPqFwyO1hKPa103px0QCrqfbOcn+HflF468q4sW8F0Km7rgakm8
+        6w8exUiGuxHtOx1s5XMOnD4Sot+n8mfL5jfztglNvr2R0byPq2e1050bcTwRZzWvXNxzQ+KI
+        0OX06DeJTNNsd7ttuvY612fbpcDOyXxxmZG3mFhd1T/Pzm2w4pafpOp8rTJWYj/jHqnEZQEz
+        etVMnBdPNE4rtTVXYinOSDTUYi4qTgQA5pXmpz4DAAA=
+X-CMS-MailID: 20210224060917epcas1p37c2d49fee6ee8c7f4e799bc80147cfec
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210223203223epcas1p43d6a797026eb0d36d4f5b77bd5d79d6d
+References: <20210223203004.7219-1-daniel.lezcano@linaro.org>
+        <CGME20210223203223epcas1p43d6a797026eb0d36d4f5b77bd5d79d6d@epcas1p4.samsung.com>
+        <20210223203004.7219-2-daniel.lezcano@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 1:45 AM Saeed Mirzamohammadi
-<saeed.mirzamohammadi@oracle.com> wrote:
->
-> This adds crashkernel=auto feature to configure reserved memory for
-> vmcore creation. CONFIG_CRASH_AUTO_STR is defined to be set for
-> different kernel distributions and different archs based on their
-> needs.
->
-> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
-> Tested-by: John Donnelly <john.p.donnelly@oracle.com>
+On 2/24/21 5:30 AM, Daniel Lezcano wrote:
+> The HZ_PER_KHZ macro definition is duplicated in different subsystems.
+> 
+> The macro now exists in include/linux/units.h, make use of it and
+> remove all the duplicated ones.
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 > ---
->  Documentation/admin-guide/kdump/kdump.rst     |  3 ++-
->  .../admin-guide/kernel-parameters.txt         |  6 ++++++
->  arch/Kconfig                                  | 20 +++++++++++++++++++
->  kernel/crash_core.c                           |  7 +++++++
->  4 files changed, 35 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-> index 75a9dd98e76e..ae030111e22a 100644
-> --- a/Documentation/admin-guide/kdump/kdump.rst
-> +++ b/Documentation/admin-guide/kdump/kdump.rst
-> @@ -285,7 +285,8 @@ This would mean:
->      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
->      3) if the RAM size is larger than 2G, then reserve 128M
->
+>  drivers/devfreq/devfreq.c         | 2 +-
+>  drivers/iio/light/as73211.c       | 3 +--
+>  drivers/thermal/devfreq_cooling.c | 2 +-
+>  3 files changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> index 6aa10de792b3..4c636c336ace 100644
+> --- a/drivers/devfreq/devfreq.c
+> +++ b/drivers/devfreq/devfreq.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/hrtimer.h>
+>  #include <linux/of.h>
+>  #include <linux/pm_qos.h>
+> +#include <linux/units.h>
+>  #include "governor.h"
+>  
+>  #define CREATE_TRACE_POINTS
+> @@ -33,7 +34,6 @@
+>  
+>  #define IS_SUPPORTED_FLAG(f, name) ((f & DEVFREQ_GOV_FLAG_##name) ? true : false)
+>  #define IS_SUPPORTED_ATTR(f, name) ((f & DEVFREQ_GOV_ATTR_##name) ? true : false)
+> -#define HZ_PER_KHZ	1000
+>  
+>  static struct class *devfreq_class;
+>  static struct dentry *devfreq_debugfs;
+> diff --git a/drivers/iio/light/as73211.c b/drivers/iio/light/as73211.c
+> index 7b32dfaee9b3..3ba2378df3dd 100644
+> --- a/drivers/iio/light/as73211.c
+> +++ b/drivers/iio/light/as73211.c
+> @@ -24,8 +24,7 @@
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+>  #include <linux/pm.h>
 > -
-> +Or you can use crashkernel=auto to choose the crash kernel memory size
-> +based on the recommended configuration set for each arch.
->
->  Boot into System Kernel
->  =======================
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 9e3cdb271d06..a5deda5c85fe 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -747,6 +747,12 @@
->                         a memory unit (amount[KMG]). See also
->                         Documentation/admin-guide/kdump/kdump.rst for an example.
->
-> +       crashkernel=auto
-> +                       [KNL] This parameter will set the reserved memory for
-> +                       the crash kernel based on the value of the CRASH_AUTO_STR
-> +                       that is the best effort estimation for each arch. See also
-> +                       arch/Kconfig for further details.
-> +
->         crashkernel=size[KMG],high
->                         [KNL, X86-64] range could be above 4G. Allow kernel
->                         to allocate physical memory region from top, so could
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 24862d15f3a3..23d047548772 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -14,6 +14,26 @@ menu "General architecture-dependent options"
->  config CRASH_CORE
->         bool
->
-> +config CRASH_AUTO_STR
-> +       string "Memory reserved for crash kernel"
-> +       depends on CRASH_CORE
-> +       default "1G-64G:128M,64G-1T:256M,1T-:512M"
-> +       help
-> +         This configures the reserved memory dependent
-> +         on the value of System RAM. The syntax is:
-> +         crashkernel=<range1>:<size1>[,<range2>:<size2>,...][@offset]
-> +                     range=start-[end]
-> +
-> +         For example:
-> +             crashkernel=512M-2G:64M,2G-:128M
-> +
-> +         This would mean:
-> +
-> +             1) if the RAM is smaller than 512M, then don't reserve anything
-> +                (this is the "rescue" case)
-> +             2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
-> +             3) if the RAM size is larger than 2G, then reserve 128M
-> +
->  config KEXEC_CORE
->         select CRASH_CORE
->         bool
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index 825284baaf46..90f9e4bb6704 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -7,6 +7,7 @@
->  #include <linux/crash_core.h>
->  #include <linux/utsname.h>
->  #include <linux/vmalloc.h>
-> +#include <linux/kexec.h>
->
->  #include <asm/page.h>
->  #include <asm/sections.h>
-> @@ -250,6 +251,12 @@ static int __init __parse_crashkernel(char *cmdline,
->         if (suffix)
->                 return parse_crashkernel_suffix(ck_cmdline, crash_size,
->                                 suffix);
-> +#ifdef CONFIG_CRASH_AUTO_STR
-> +       if (strncmp(ck_cmdline, "auto", 4) == 0) {
-> +               ck_cmdline = CONFIG_CRASH_AUTO_STR;
-> +               pr_info("Using crashkernel=auto, the size chosen is a best effort estimation.\n");
-> +       }
-> +#endif
->         /*
->          * if the commandline contains a ':', then that's the extended
->          * syntax -- if not, it must be the classic syntax
-> --
-> 2.27.0
->
->
-> _______________________________________________
-> kexec mailing list
-> kexec@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kexec
->
+> -#define HZ_PER_KHZ 1000
+> +#include <linux/units.h>
+>  
+>  #define AS73211_DRV_NAME "as73211"
+>  
+> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+> index fed3121ff2a1..fa5b8b0c7604 100644
+> --- a/drivers/thermal/devfreq_cooling.c
+> +++ b/drivers/thermal/devfreq_cooling.c
+> @@ -19,10 +19,10 @@
+>  #include <linux/pm_opp.h>
+>  #include <linux/pm_qos.h>
+>  #include <linux/thermal.h>
+> +#include <linux/units.h>
+>  
+>  #include <trace/events/thermal.h>
+>  
+> -#define HZ_PER_KHZ		1000
+>  #define SCALE_ERROR_MITIGATION	100
+>  
+>  static DEFINE_IDA(devfreq_ida);
+> 
 
-Thanks for help pushing the crashkernel=auto to upstream
-This patch works well.
+For devfreq part,
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
-Tested-by: Kairui Song <kasong@redhat.com>
-
-
---
+-- 
 Best Regards,
-Kairui Song
-
+Chanwoo Choi
+Samsung Electronics
