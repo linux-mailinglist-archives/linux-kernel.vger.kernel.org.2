@@ -2,216 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6433C32431C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C84324323
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235165AbhBXRW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 12:22:29 -0500
-Received: from foss.arm.com ([217.140.110.172]:40978 "EHLO foss.arm.com"
+        id S235420AbhBXRXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 12:23:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233502AbhBXRVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 12:21:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4A1B101E;
-        Wed, 24 Feb 2021 09:21:07 -0800 (PST)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC35F3F73B;
-        Wed, 24 Feb 2021 09:21:05 -0800 (PST)
-Subject: Re: [RFC PATCH 1/4] KVM: arm64: Move the clean of dcache to the map
- handler
-To:     Yanan Wang <wangyanan55@huawei.com>, Marc Zyngier <maz@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210208112250.163568-1-wangyanan55@huawei.com>
- <20210208112250.163568-2-wangyanan55@huawei.com>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <70b2d6c2-709b-d63b-1409-b16dad89b9b6@arm.com>
-Date:   Wed, 24 Feb 2021 17:21:22 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233502AbhBXRXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 12:23:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0D5364F0B;
+        Wed, 24 Feb 2021 17:23:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614187383;
+        bh=yM3gTzozh38TOrtlF44CT4e+9SY2u5O47HHG/3thchw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Urv0L9Z777BEgwBfiogkGzqzX3a7DuHcP3qVAsEU6budUH/VtqxbjAnsmmHMgGEJW
+         0RnpvncW8Qho1IV/MSilN3cbzqMNLz0p/RJE/knhNU6391jKGwCteRKXLILUedKBuQ
+         OqS4KeWimf6HHtSZqJ9STMGZ1pAxKkrc9iDNsTJgvLCLAW5poQ/ITvtmgx5Hdg9r7Y
+         21IPplVsfsX2H+ZFzndouaFFoqUALhPSizyjnU5ka05HRm3MZRwvFJtA1OxH36KFxX
+         zqFBIXrH6yQwCNBQ+IWaL66ZoMN8NsBsejtG/EOwcTmxfF3WPDwElJnp4+iQMYDd0s
+         ROM6J8aZtXxiA==
+Date:   Wed, 24 Feb 2021 19:22:45 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Matthew Garrett <mjg59@srcf.ucam.org>
+Cc:     Matthew Garrett <matthewgarrett@google.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-pm@vger.kernel.org, keyrings@vger.kernel.org,
+        zohar@linux.ibm.com, jejb@linux.ibm.com, corbet@lwn.net,
+        rjw@rjwysocki.net, Matthew Garrett <mjg59@google.com>
+Subject: Re: [PATCH 3/9] security: keys: trusted: Parse out individual
+ components of the key blob
+Message-ID: <YDaLZW+27o6Cgutk@kernel.org>
+References: <20210220013255.1083202-1-matthewgarrett@google.com>
+ <20210220013255.1083202-4-matthewgarrett@google.com>
+ <YDB8gM6Z9OOKujQu@kernel.org>
+ <20210222073627.GB30403@codon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210208112250.163568-2-wangyanan55@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210222073627.GB30403@codon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Feb 22, 2021 at 07:36:27AM +0000, Matthew Garrett wrote:
+> On Sat, Feb 20, 2021 at 05:05:36AM +0200, Jarkko Sakkinen wrote:
+> > On Sat, Feb 20, 2021 at 01:32:49AM +0000, Matthew Garrett wrote:
+> > > Performing any sort of state validation of a sealed TPM blob requires
+> > > being able to access the individual members in the response. Parse the
+> > > blob sufficiently to be able to stash pointers to each member, along
+> > > with the length.
+> > > 
+> > > Signed-off-by: Matthew Garrett <mjg59@google.com>
+> > 
+> > I'll just say LGTM for now. Did not see anything obviously wrong in
+> > the code change (and does make sense to nitpick minor things just
+> > yet).
+> > 
+> > Need to understand the whole use case just a little bit better.
+> 
+> I wrote this up with some more detail at 
+> https://mjg59.dreamwidth.org/55845.html - it seemed longer than
+> appropriate for a commit message, but if you'd like more detail
+> somewhere I can certainly add it.
 
-On 2/8/21 11:22 AM, Yanan Wang wrote:
-> We currently uniformly clean dcache in user_mem_abort() before calling the
-> fault handlers, if we take a translation fault and the pfn is cacheable.
-> But if there are concurrent translation faults on the same page or block,
-> clean of dcache for the first time is necessary while the others are not.
->
-> By moving clean of dcache to the map handler, we can easily identify the
-> conditions where CMOs are really needed and avoid the unnecessary ones.
-> As it's a time consuming process to perform CMOs especially when flushing
-> a block range, so this solution reduces much load of kvm and improve the
-> efficiency of creating mappings.
->
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-> ---
->  arch/arm64/include/asm/kvm_mmu.h | 16 --------------
->  arch/arm64/kvm/hyp/pgtable.c     | 38 ++++++++++++++++++++------------
->  arch/arm64/kvm/mmu.c             | 14 +++---------
->  3 files changed, 27 insertions(+), 41 deletions(-)
->
-> diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-> index e52d82aeadca..4ec9879e82ed 100644
-> --- a/arch/arm64/include/asm/kvm_mmu.h
-> +++ b/arch/arm64/include/asm/kvm_mmu.h
-> @@ -204,22 +204,6 @@ static inline bool vcpu_has_cache_enabled(struct kvm_vcpu *vcpu)
->  	return (vcpu_read_sys_reg(vcpu, SCTLR_EL1) & 0b101) == 0b101;
->  }
->  
-> -static inline void __clean_dcache_guest_page(kvm_pfn_t pfn, unsigned long size)
-> -{
-> -	void *va = page_address(pfn_to_page(pfn));
-> -
-> -	/*
-> -	 * With FWB, we ensure that the guest always accesses memory using
-> -	 * cacheable attributes, and we don't have to clean to PoC when
-> -	 * faulting in pages. Furthermore, FWB implies IDC, so cleaning to
-> -	 * PoU is not required either in this case.
-> -	 */
-> -	if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
-> -		return;
-> -
-> -	kvm_flush_dcache_to_poc(va, size);
-> -}
-> -
->  static inline void __invalidate_icache_guest_page(kvm_pfn_t pfn,
->  						  unsigned long size)
->  {
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 4d177ce1d536..2f4f87021980 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -464,6 +464,26 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
->  	return 0;
->  }
->  
-> +static bool stage2_pte_cacheable(kvm_pte_t pte)
-> +{
-> +	u64 memattr = pte & KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR;
-> +	return memattr == PAGE_S2_MEMATTR(NORMAL);
-> +}
-> +
-> +static void stage2_flush_dcache(void *addr, u64 size)
-> +{
-> +	/*
-> +	 * With FWB, we ensure that the guest always accesses memory using
-> +	 * cacheable attributes, and we don't have to clean to PoC when
-> +	 * faulting in pages. Furthermore, FWB implies IDC, so cleaning to
-> +	 * PoU is not required either in this case.
-> +	 */
-> +	if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
-> +		return;
-> +
-> +	__flush_dcache_area(addr, size);
-> +}
-> +
->  static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->  				      kvm_pte_t *ptep,
->  				      struct stage2_map_data *data)
-> @@ -495,6 +515,10 @@ static int stage2_map_walker_try_leaf(u64 addr, u64 end, u32 level,
->  		put_page(page);
->  	}
->  
-> +	/* Flush data cache before installation of the new PTE */
-> +	if (stage2_pte_cacheable(new))
-> +		stage2_flush_dcache(__va(phys), granule);
+Thanks (bookmarked). I'll read it before reviewing +1 version.
 
-This makes sense to me. kvm_pgtable_stage2_map() is protected against concurrent
-calls by the kvm->mmu_lock, so only one VCPU can change the stage 2 translation
-table at any given moment. In the case of concurrent translation faults on the
-same IPA, the first VCPU that will take the lock will create the mapping and do
-the dcache clean+invalidate. The other VCPUs will return -EAGAIN because the
-mapping they are trying to install is almost identical* to the mapping created by
-the first VCPU that took the lock.
+Requiring a config flag is something that slows down adoption in the
+stock kernels.
 
-I have a question. Why are you doing the cache maintenance *before* installing the
-new mapping? This is what the kernel already does, so I'm not saying it's
-incorrect, I'm just curious about the reason behind it.
+Since we are talking about hibernate the decision whether to have this
+feature set, does not have to be something that needs to be changed
+dynamically to a running system.
 
-*permissions might be different.
+So: maybe the best compromise would be to have it kernel command line
+option? That way it's easier feature to adapt (e.g. with GRUB
+configuration) and to enable in the kernel.
 
-Thanks,
-
-Alex
-
-> +
->  	smp_store_release(ptep, new);
->  	get_page(page);
->  	data->phys += granule;
-> @@ -651,20 +675,6 @@ int kvm_pgtable_stage2_map(struct kvm_pgtable *pgt, u64 addr, u64 size,
->  	return ret;
->  }
->  
-> -static void stage2_flush_dcache(void *addr, u64 size)
-> -{
-> -	if (cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
-> -		return;
-> -
-> -	__flush_dcache_area(addr, size);
-> -}
-> -
-> -static bool stage2_pte_cacheable(kvm_pte_t pte)
-> -{
-> -	u64 memattr = pte & KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR;
-> -	return memattr == PAGE_S2_MEMATTR(NORMAL);
-> -}
-> -
->  static int stage2_unmap_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
->  			       enum kvm_pgtable_walk_flags flag,
->  			       void * const arg)
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 77cb2d28f2a4..d151927a7d62 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -609,11 +609,6 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
->  	kvm_mmu_write_protect_pt_masked(kvm, slot, gfn_offset, mask);
->  }
->  
-> -static void clean_dcache_guest_page(kvm_pfn_t pfn, unsigned long size)
-> -{
-> -	__clean_dcache_guest_page(pfn, size);
-> -}
-> -
->  static void invalidate_icache_guest_page(kvm_pfn_t pfn, unsigned long size)
->  {
->  	__invalidate_icache_guest_page(pfn, size);
-> @@ -882,9 +877,6 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  	if (writable)
->  		prot |= KVM_PGTABLE_PROT_W;
->  
-> -	if (fault_status != FSC_PERM && !device)
-> -		clean_dcache_guest_page(pfn, vma_pagesize);
-> -
->  	if (exec_fault) {
->  		prot |= KVM_PGTABLE_PROT_X;
->  		invalidate_icache_guest_page(pfn, vma_pagesize);
-> @@ -1144,10 +1136,10 @@ int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
->  	trace_kvm_set_spte_hva(hva);
->  
->  	/*
-> -	 * We've moved a page around, probably through CoW, so let's treat it
-> -	 * just like a translation fault and clean the cache to the PoC.
-> +	 * We've moved a page around, probably through CoW, so let's treat
-> +	 * it just like a translation fault and the map handler will clean
-> +	 * the cache to the PoC.
->  	 */
-> -	clean_dcache_guest_page(pfn, PAGE_SIZE);
->  	handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &pfn);
->  	return 0;
->  }
+/Jarkko
