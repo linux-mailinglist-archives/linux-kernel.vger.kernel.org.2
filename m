@@ -2,114 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32681323A28
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 092C3323A31
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234768AbhBXKG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 05:06:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55612 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234314AbhBXKFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 05:05:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B31DEAE05;
-        Wed, 24 Feb 2021 10:05:09 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6EAFE1E14EF; Wed, 24 Feb 2021 11:05:09 +0100 (CET)
-Date:   Wed, 24 Feb 2021 11:05:09 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Cc:     jack@suse.cz, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+a8b4b0c60155e87e9484@syzkaller.appspotmail.com,
-        tytso@mit.edu
-Subject: Re: [PATCH v2] fs/ext4: fix integer overflow in s_log_groups_per_flex
-Message-ID: <20210224100509.GB20583@quack2.suse.cz>
-References: <20210223170118.GD30433@quack2.suse.cz>
- <20210224095800.3350002-1-snovitoll@gmail.com>
+        id S234780AbhBXKI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 05:08:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49194 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234739AbhBXKIp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 05:08:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614161239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ct8hFxvmCySJqlX+fRfODC3NtSCfV+aDErfoZFPlly0=;
+        b=WX1hOQyIAtTtru1g0KuYfLDGX5ZJOQZ66N7dZrwDFHa4wf1PmeQNSuZ1bGzbv+uQ5aUE83
+        cVXOB9iSFP/WYf2zzSkEACCBZKXDWEg4pZk0y6VpGnGOQ2E0/kZ9RS6azJtE58Ey/GVCU3
+        2s1wc0iI2TB3BNW1aS7+MmHhwO/ZCMU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-TV1x0vLNOuCwnqxCkZhXiQ-1; Wed, 24 Feb 2021 05:06:43 -0500
+X-MC-Unique: TV1x0vLNOuCwnqxCkZhXiQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1B64193579C;
+        Wed, 24 Feb 2021 10:06:41 +0000 (UTC)
+Received: from [10.36.114.83] (ovpn-114-83.ams2.redhat.com [10.36.114.83])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F11C10016F7;
+        Wed, 24 Feb 2021 10:06:40 +0000 (UTC)
+Subject: Re: [PATCH] hugetlb: document the new location of page subpool
+ pointer
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210223180820.ee39f1544f2630d0eecf3a57@linux-foundation.org>
+ <20210224040439.351882-1-mike.kravetz@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <c34d52f9-1e77-7ed4-2209-df8af9f2e96d@redhat.com>
+Date:   Wed, 24 Feb 2021 11:06:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224095800.3350002-1-snovitoll@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210224040439.351882-1-mike.kravetz@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 24-02-21 15:58:00, Sabyrzhan Tasbolatov wrote:
-> syzbot found UBSAN: shift-out-of-bounds in ext4_mb_init [1], when
-> 1 << sbi->s_es->s_log_groups_per_flex is bigger than UINT_MAX,
-> where sbi->s_mb_prefetch is unsigned integer type.
+On 24.02.21 05:04, Mike Kravetz wrote:
+> Expand comments, no functional change.
 > 
-> 32 is the maximum allowed power of s_log_groups_per_flex. Following if
-> check will also trigger UBSAN shift-out-of-bound:
-> 
-> if (1 << sbi->s_es->s_log_groups_per_flex >= UINT_MAX) {
-> 
-> So I'm checking it against the raw number, perhaps there is another way
-> to calculate UINT_MAX max power. Also use min_t as to make sure it's
-> uint type.
-> 
-> [1] UBSAN: shift-out-of-bounds in fs/ext4/mballoc.c:2713:24
-> shift exponent 60 is too large for 32-bit type 'int'
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x137/0x1be lib/dump_stack.c:120
->  ubsan_epilogue lib/ubsan.c:148 [inline]
->  __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
->  ext4_mb_init_backend fs/ext4/mballoc.c:2713 [inline]
->  ext4_mb_init+0x19bc/0x19f0 fs/ext4/mballoc.c:2898
->  ext4_fill_super+0xc2ec/0xfbe0 fs/ext4/super.c:4983
-> 
-> Reported-by: syzbot+a8b4b0c60155e87e9484@syzkaller.appspotmail.com
-> Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 > ---
-> v2: updated > 32 condition to >= 32
+>   include/linux/hugetlb.h | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> > > +		if (sbi->s_es->s_log_groups_per_flex > 32) {
-> > 						    ^^ >= 32?
-> > 
-> > Otherwise the patch looks good.
-> > 
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index cccd1aab69dd..c0467a7a1fe0 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -476,6 +476,9 @@ unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+>    * huegtlb page specific state flags.  These flags are located in page.private
+>    * of the hugetlb head page.  Functions created via the below macros should be
+>    * used to manipulate these flags.
+> + * Note: The hugetlb page subpool pointer previously located at page.private
+> + * was moved to page[1].private to make room for flags in the head page.  See
+> + * hugetlb_page_subpool().
+>    *
+>    * HPG_restore_reserve - Set when a hugetlb page consumes a reservation at
+>    *	allocation time.  Cleared when page is fully instantiated.  Free
 > 
-> Thanks! Updated to >= 32 condition.
-> ---
->  fs/ext4/mballoc.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 99bf091fee10..a02fadf4fc84 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2709,8 +2709,15 @@ static int ext4_mb_init_backend(struct super_block *sb)
->  	}
->  
->  	if (ext4_has_feature_flex_bg(sb)) {
-> -		/* a single flex group is supposed to be read by a single IO */
-> -		sbi->s_mb_prefetch = min(1 << sbi->s_es->s_log_groups_per_flex,
-> +		/* a single flex group is supposed to be read by a single IO.
-> +		 * 2 ^ s_log_groups_per_flex != UINT_MAX as s_mb_prefetch is
-> +		 * unsigned integer, so the maximum shift is 32.
-> +		 */
-> +		if (sbi->s_es->s_log_groups_per_flex >= 32) {
-> +			ext4_msg(sb, KERN_ERR, "too many log groups per flexible block group");
-> +			goto err_freesgi;
-> +		}
-> +		sbi->s_mb_prefetch = min_t(uint, 1 << sbi->s_es->s_log_groups_per_flex,
->  			BLK_MAX_SEGMENT_SIZE >> (sb->s_blocksize_bits - 9));
->  		sbi->s_mb_prefetch *= 8; /* 8 prefetch IOs in flight at most */
->  	} else {
-> -- 
-> 2.25.1
-> 
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+
+David / dhildenb
+
