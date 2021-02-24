@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE983235D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 03:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6443235D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 03:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhBXCjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 21:39:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232735AbhBXCjj (ORCPT
+        id S232343AbhBXCkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 21:40:15 -0500
+Received: from mail.kingsoft.com ([114.255.44.145]:12208 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhBXCkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 21:39:39 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2162C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 18:38:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=CfKc8Zl91y/e9nLuryOR1lxmVNVLD/3iL2XJbPBkUqo=; b=tG785LS2wbirihl4sE8m0cI9Gr
-        2aJlAkM06ZQASa1k3rFb0sqtPeKSynvNGMcUHoukaTfIjMqnQgFWNcSywZuDWBZNzACk9rfYDSy7S
-        mpvLrX7ltXKt6y7KWQo84KKr0rOD76Igx/cdjFlOxVNiEK6PnRxQ2bMc0fHMjmxTiiI/7jtvZ8EK0
-        h/8A08SzGbfaHKSkfIiqNxS/fWsvppZgA2uIDQ7Aq/zS6rpKMskRcQzbpgXCH3ujRjij/I1va4aq5
-        1UpZHNNpc9UQEpLV8DT2BZjPJQtmqbWi+a3WIVChCyIhf58AMIHwx8RUsrxT2/9GKhrMT9pkwLHU4
-        uC2OV7MQ==;
-Received: from [2601:1c0:6280:3f0::6d64]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lEk4j-008qGo-VM; Wed, 24 Feb 2021 02:38:54 +0000
-Subject: Re: (.text.ks8851_probe_common+0x370): undefined reference to
- `__this_module'
-To:     kernel test robot <lkp@intel.com>, Marek Vasut <marex@denx.de>,
-        arnd@arndb.de
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>
-References: <202102221437.vHlLwHmG-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <33c7cb1f-b6c0-24bf-0e6c-23d5472e4c29@infradead.org>
-Date:   Tue, 23 Feb 2021 18:38:49 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 23 Feb 2021 21:40:10 -0500
+X-AuditID: 0a580157-f21ff7000005df43-5a-6035b61ade2a
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 43.CE.57155.A16B5306; Wed, 24 Feb 2021 10:12:42 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Wed, 24 Feb
+ 2021 10:39:21 +0800
+Date:   Wed, 24 Feb 2021 10:39:21 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     Borislav Petkov <bp@alien8.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>,
+        <yaoaili@kingsoft.com>
+Subject: Re: [PATCH v2] x86/mce: fix wrong no-return-ip logic in
+ do_machine_check()
+Message-ID: <20210224103921.3dcf0b65@alex-virtual-machine>
+In-Reply-To: <9232988079334ab8801cccec6557f9c3@intel.com>
+References: <20210222180819.3998fe33@alex-virtual-machine>
+        <20210222102206.GC29063@zn.tnic>
+        <20210222192146.76ffec84@alex-virtual-machine>
+        <20210222201723.0fcec589@alex-virtual-machine>
+        <20210222122241.GA10880@zn.tnic>
+        <20210222203549.0e54c26f@alex-virtual-machine>
+        <20210222124550.GB10880@zn.tnic>
+        <20210223102755.13cbdffd@alex-virtual-machine>
+        <20210223094300.GA26060@zn.tnic>
+        <20210223175640.5708c7ed@alex-virtual-machine>
+        <20210223100538.GB26060@zn.tnic>
+        <20210223192711.0b517745@alex-virtual-machine>
+        <9232988079334ab8801cccec6557f9c3@intel.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <202102221437.vHlLwHmG-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHLMWRmVeSWpSXmKPExsXCFcGooCu1zTTBYMlHGYvPG/6xWUzbKG5x
+        4VQDk8XlXXPYLC4dWMBksXnTVGaLNxfusVj82PCY1YHD43trH4vH4j0vmTw2repk83h37hy7
+        x/t9V9k8Pm+S8zjR8oU1gD2KyyYlNSezLLVI3y6BK+NcU33BGu6KJ8+6mBsY33J0MXJySAiY
+        SJx8fJyli5GLQ0hgOpPEzq8rGCGcV4wS1478Z+9i5OBgEVCVODrNFKSBDcjcdW8WK4gtIqAm
+        cWnxA2aQemaBdmaJA1fOM4PUCwuESiyZVghSwytgJXHzyxE2kDCngKXEkdcKEOP3sUhsWnOO
+        BaSGX0BMovfKfyaIg+wl2rYsYoToFZQ4OfMJWA2zgI7EiVXHmCFseYntb+eA2UICihKHl/xi
+        h+hVkjjSPYMNwo6VWDbvFesERuFZSEbNQjJqFpJRCxiZVzGyFOemG25ihERJ+A7GeU0f9Q4x
+        MnEwHmKU4GBWEuFlu2uUIMSbklhZlVqUH19UmpNafIhRmoNFSZw3cJtJgpBAemJJanZqakFq
+        EUyWiYNTqoHJXFRDif1i4tHvc7mr7789f2Eaw6X8xU/eKFn3L47UY2TOl747XcvjwN0rh3uu
+        P9c8tVvTn+Ne259P27/wlnCVXTc+unfui/qVgXYbzh87GhlsP/OpFr+tUR/L3ChptWtPgj2/
+        K0QFN/958OPfwy/aAoJhL9eYHjvYq/itKmX+qmfc24TPX/621LHB0HVvUG5ukvWSi4bRVyxM
+        /s5YcZltX4B16ln/UyYPrj50qf+fGV4foubRn+9WeFJ944qabdV/PleqVN2c/Lpqkc17g9aa
+        OZXibnYqXvsnfdrnkm2xoEz8XumWqTn2YjGe4t4/6ty5mScfm9h9pHHOIa+T/Z8ay76oRTD8
+        NNasSTF3OiegxFKckWioxVxUnAgARQPFMwEDAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/21/21 10:12 PM, kernel test robot wrote:
-> Hi Marek,
-> 
-> FYI, the error/warning still remains.
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   31caf8b2a847214be856f843e251fc2ed2cd1075
-> commit: ef3631220d2b3d8d14cf64464760505baa60d6ac net: ks8851: Register MDIO bus and the internal PHY
-> date:   7 weeks ago
-> config: parisc-randconfig-r034-20210222 (attached as .config)
-> compiler: hppa-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ef3631220d2b3d8d14cf64464760505baa60d6ac
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout ef3631220d2b3d8d14cf64464760505baa60d6ac
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->     hppa-linux-ld: drivers/net/ethernet/micrel/ks8851_common.o: in function `ks8851_probe_common':
->>> (.text.ks8851_probe_common+0x370): undefined reference to `__this_module'
->>> hppa-linux-ld: (.text.ks8851_probe_common+0x374): undefined reference to `__this_module'
+On Tue, 23 Feb 2021 16:12:43 +0000
+"Luck, Tony" <tony.luck@intel.com> wrote:
 
-Hey Arnd-
+> > What I think is qemu has not an easy to get the MCE signature from host or currently no methods for this
+> > So qemu treat all AR will be No RIPV, Do more is better than do less.  
+> 
+> RIPV would be important in the guest in the case where the guest can fix the problem that caused
+> the machine check and return to the failed instruction to continue.
+> 
+> I think the only case where this happens is a fault in a read-only page mapped from a file (typically
+> code page, but could be a data page). In this case memory-failure() unmaps the page with the posion
+> but Linux can recover by reading data from the file into a new page.
+> 
+> Other cases we send SIGBUS (so go to the signal handler instead of to the faulting instruction).
+> 
+> So it would be good if the state of RIPV could be added to the signal state sent to qemu. If that
+> isn't possible, then this full recovery case turns into another SIGBUS case.
 
-I wanted to see if you had any ideas about this problem.
+This KVM and VM case of failing recovery for SRAR is just one scenario I think,
+If Intel guarantee that when memory SRAR is triggered, RIPV will always be set, then it's the job of qemu to
+set the RIPV instead.
+Or if When SRAR is triggered with RIPV cleared, the same issue will be true for host.
 
-CONFIG_KS8851=y
-CONFIG_KS8851_MLL=m
+And I think it's better for VM to know the real RIPV value, It need more work in qemu and kernel if possible.
 
-The problem is that 2 drivers share some common code, but in one case
-the shared code is builtin and for the other driver it is a loadable
-module. The common code is first built as builtin, so it does not have
-the "__this_module" symbol.
-
-Thanks.
+Thanks
+Aili Yao
