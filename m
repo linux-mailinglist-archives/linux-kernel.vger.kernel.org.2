@@ -2,88 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5E3323A0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C7C323A13
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234884AbhBXJ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:58:10 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12996 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234767AbhBXJ5M (ORCPT
+        id S234838AbhBXJ7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:59:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234767AbhBXJ6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:57:12 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dlrqx6LFrzjRHk;
-        Wed, 24 Feb 2021 17:54:53 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.196) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Wed, 24 Feb 2021
- 17:56:20 +0800
-Subject: Re: [PATCH 1/4] driver core: Use subdir-ccflags-* to inherit debug
- flag
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-CC:     Greg KH <gregkh@linuxfoundation.org>, <jdelvare@suse.com>,
-        <linux@roeck-us.net>, <giometti@enneenne.com>, <abbotti@mev.co.uk>,
-        <hsweeten@visionengravers.com>, <kw@linux.com>,
-        <helgaas@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
-        <devel@driverdev.osuosl.org>, <linux-kbuild@vger.kernel.org>,
-        <masahiroy@kernel.org>, <michal.lkml@markovi.net>,
-        <linuxarm@openeuler.org>, <prime.zeng@huawei.com>
-References: <1612518255-23052-1-git-send-email-yangyicong@hisilicon.com>
- <1612518255-23052-2-git-send-email-yangyicong@hisilicon.com>
- <YB0Vk6ERJ3lFc3WD@kroah.com>
- <08017751-a1be-ea07-50de-73d14ab6d57e@hisilicon.com>
- <YCEWtxYgbRPET4Sr@kroah.com>
- <1f0b2f37-db56-c220-dfe1-8c376031404f@hisilicon.com>
- <20210210114203.jvhst2veqbx73r5g@maple.lan>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <ea4ff7f8-11c8-010c-7b6e-f7faa4e14db4@hisilicon.com>
-Date:   Wed, 24 Feb 2021 17:56:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Wed, 24 Feb 2021 04:58:46 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B67C06178A;
+        Wed, 24 Feb 2021 01:58:05 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id u4so1701315ljh.6;
+        Wed, 24 Feb 2021 01:58:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=16S2vm4wQ2IbRIOxoNNSW+kBc6NWYn4yeVHfBztHcWo=;
+        b=LUoeD/F3Lo6PadAq3VNHNqMMYlBtncEGy9/8znErhbvHz+Bru0Acsa3E5i3HFguV3B
+         dpp4IGwKwzjFaQzsg/yhEXWukt3fdakSNmbal++swXNMpUHvdTwFvHRByIT11uRZ7YHR
+         6bTRuIZP99pf43VlZ60QbAO4FUrRvWAvJWn3v1XZQHqU5D6evvUDD5LVXYpwjy+OJbd0
+         xY3yQOzTdu+bY5kTMXEDKIOEJQOgp0BUbPZEvZ0uV89GLrzRZ9xRqMxWA0k8/3PV6Q8P
+         5YnkrGNcFh2mNGvuA0sgBjJ5re0bKvbeMOgS4/YKgGWA67+admJyftHkavW2QlnWC1an
+         U5ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=16S2vm4wQ2IbRIOxoNNSW+kBc6NWYn4yeVHfBztHcWo=;
+        b=r+axUKdv5ENW0TuRIE9c38cmandKyd5jnQqwJcKzRhYPgIV3nsmLRlpOP1S/JIqDH0
+         8HLsXbwk5gbooykZC/03KpUYy/8oIPZFZPFnqSloSlveJNt5kcQ4AuAUs7+aGTx8Sfw6
+         kXajcEotkH5oYSNnaytgj9ALyH7iMc2f7PQD1ZB9JZ6kpRzfs2PcCgCJC2/+1P8iHpF/
+         KqMlTsHiqVUlSna1IwIqTnfQlKuZB26CWbpB78lnf70ZlXxZRE2cvUrFlWXC/lLUp4If
+         9TyIrRhgJn0dU/lHFmj/yafjFRQYnrt+yZrXyn5C0cMQtGQipyRSuC2x68BTErVkgpW3
+         4dVg==
+X-Gm-Message-State: AOAM533oonI80r+Bi7IBzUGOmm7P2AU97uS+/cIDrRANuXopJo7aEGmK
+        Eq27pqy2Zl6o8gGiIgrVAos=
+X-Google-Smtp-Source: ABdhPJzcrjZ0sAHN6x3QnQwig4P/dTLiGpKycsbM11Cmy+UFaz5kYbCa4OhnLNgyAhJrNeRZC7S0hw==
+X-Received: by 2002:a05:651c:1351:: with SMTP id j17mr19049387ljb.241.1614160684280;
+        Wed, 24 Feb 2021 01:58:04 -0800 (PST)
+Received: from localhost.localdomain ([146.158.65.227])
+        by smtp.googlemail.com with ESMTPSA id k27sm379234lfm.125.2021.02.24.01.58.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 01:58:03 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     jack@suse.cz
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, snovitoll@gmail.com,
+        syzbot+a8b4b0c60155e87e9484@syzkaller.appspotmail.com,
+        tytso@mit.edu
+Subject: [PATCH v2] fs/ext4: fix integer overflow in s_log_groups_per_flex
+Date:   Wed, 24 Feb 2021 15:58:00 +0600
+Message-Id: <20210224095800.3350002-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210223170118.GD30433@quack2.suse.cz>
+References: <20210223170118.GD30433@quack2.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210210114203.jvhst2veqbx73r5g@maple.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.196]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/10 19:42, Daniel Thompson wrote:
-> On Mon, Feb 08, 2021 at 09:09:20PM +0800, Yicong Yang wrote:
->> On 2021/2/8 18:47, Greg KH wrote:
->>> On Mon, Feb 08, 2021 at 06:44:52PM +0800, Yicong Yang wrote:
->>>> On 2021/2/5 17:53, Greg KH wrote:
->>>>> What does this offer in benefit of the existing way?  What is it fixing?
->>>>> Why do this "churn"?
->>>>
->>>> currently we have added ccflags-$(CONFIG_DEBUG_DRIVER) := -DDEBUG in the Makefile
->>>> of driver/base and driver/base/power, but not in the subdirectory
->>>> driver/base/firmware_loader. we cannot turn the debug on for subdirectory
->>>> firmware_loader if we config DEBUG_DRIVER and there is no kconfig option
->>>> for the it.
->>>
->>> Is that necessary?  Does that directory need it?
->>
->> there are several debug prints in firmware_loader/main.c:
->>
->> ./main.c:207:   pr_debug("%s: fw-%s fw_priv=%p\n", __func__, fw_name, fw_priv);
->> ./main.c:245:                   pr_debug("batched request - sharing the same struct fw_priv and lookup for multiple requests\n");
->> <snip>
+syzbot found UBSAN: shift-out-of-bounds in ext4_mb_init [1], when
+1 << sbi->s_es->s_log_groups_per_flex is bigger than UINT_MAX,
+where sbi->s_mb_prefetch is unsigned integer type.
+
+32 is the maximum allowed power of s_log_groups_per_flex. Following if
+check will also trigger UBSAN shift-out-of-bound:
+
+if (1 << sbi->s_es->s_log_groups_per_flex >= UINT_MAX) {
+
+So I'm checking it against the raw number, perhaps there is another way
+to calculate UINT_MAX max power. Also use min_t as to make sure it's
+uint type.
+
+[1] UBSAN: shift-out-of-bounds in fs/ext4/mballoc.c:2713:24
+shift exponent 60 is too large for 32-bit type 'int'
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x137/0x1be lib/dump_stack.c:120
+ ubsan_epilogue lib/ubsan.c:148 [inline]
+ __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
+ ext4_mb_init_backend fs/ext4/mballoc.c:2713 [inline]
+ ext4_mb_init+0x19bc/0x19f0 fs/ext4/mballoc.c:2898
+ ext4_fill_super+0xc2ec/0xfbe0 fs/ext4/super.c:4983
+
+Reported-by: syzbot+a8b4b0c60155e87e9484@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+---
+v2: updated > 32 condition to >= 32
+
+> > +		if (sbi->s_es->s_log_groups_per_flex > 32) {
+> 						    ^^ >= 32?
 > 
-> Even if these are not in scope for CONFIG_DEBUG_DRVIER there is a
-> config option that would allow you to observe them without changing
-> any code (CONFIG_DYNAMIC_DEBUG).
+> Otherwise the patch looks good.
 > 
 
-yes. they're two mechanisms of debug. i think it's the right thing to make
-both work properly.
+Thanks! Updated to >= 32 condition.
+---
+ fs/ext4/mballoc.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-> 
-> Daniel.
-> 
-> .
-> 
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 99bf091fee10..a02fadf4fc84 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2709,8 +2709,15 @@ static int ext4_mb_init_backend(struct super_block *sb)
+ 	}
+ 
+ 	if (ext4_has_feature_flex_bg(sb)) {
+-		/* a single flex group is supposed to be read by a single IO */
+-		sbi->s_mb_prefetch = min(1 << sbi->s_es->s_log_groups_per_flex,
++		/* a single flex group is supposed to be read by a single IO.
++		 * 2 ^ s_log_groups_per_flex != UINT_MAX as s_mb_prefetch is
++		 * unsigned integer, so the maximum shift is 32.
++		 */
++		if (sbi->s_es->s_log_groups_per_flex >= 32) {
++			ext4_msg(sb, KERN_ERR, "too many log groups per flexible block group");
++			goto err_freesgi;
++		}
++		sbi->s_mb_prefetch = min_t(uint, 1 << sbi->s_es->s_log_groups_per_flex,
+ 			BLK_MAX_SEGMENT_SIZE >> (sb->s_blocksize_bits - 9));
+ 		sbi->s_mb_prefetch *= 8; /* 8 prefetch IOs in flight at most */
+ 	} else {
+-- 
+2.25.1
 
