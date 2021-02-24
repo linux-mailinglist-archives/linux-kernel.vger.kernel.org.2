@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F393235AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 03:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30E83235B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 03:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhBXC3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 21:29:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbhBXC3e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 21:29:34 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324D0C06174A;
-        Tue, 23 Feb 2021 18:28:54 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DlfxG5d7pz9sVR;
-        Wed, 24 Feb 2021 13:28:50 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614133730;
-        bh=kEJN/s7n1Org9UskoU7vvPrWoElvp1X6pfjRPHvJOXg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KOE9GvppnI7lSkeUlgH5656faNNxd1l1uExf47ia9RV1PY4V7PjxJvNN5tE8Sw/zZ
-         FBHCqEkyBYsLxBjISoQpnjCI7S1CLZBXlHSjekOQ9n88TCasoDPlbNgIKMNCnmhMpv
-         Cwww19XK8JaPTbD3wwg8aQ/O0W8mSAFCco6Vky3IIOvdn3boz+a8Yn5NVFBx6N7U71
-         MhRNm3UQEWEGLuZDmyqGwsUK4+WVbk7RYw1J5+6BU5PMmeyvihr5P0g+8k4zcPp75P
-         qpvI9/5fMZHetgg0exo8D3WLuyqrnIV5GRQG+lK2GzCMWPOIF/qs2UPUoSV/WPlaKd
-         6ZZq36NLglCIQ==
-Date:   Wed, 24 Feb 2021 13:28:49 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the amdgpu tree
-Message-ID: <20210224132849.439973d5@canb.auug.org.au>
+        id S232148AbhBXCay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 21:30:54 -0500
+Received: from mga09.intel.com ([134.134.136.24]:5600 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232069AbhBXCau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 21:30:50 -0500
+IronPort-SDR: VWX6Ucpoi/ZzXqtEK06rSQYkxlEPBpRrQc4BB//jk3bUS3z8sMT3nWLIhozbW1PMtC2a00fTP4
+ egT/HgA2AaXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="185132740"
+X-IronPort-AV: E=Sophos;i="5.81,201,1610438400"; 
+   d="scan'208";a="185132740"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 18:30:09 -0800
+IronPort-SDR: l5y4F4I+79QYi/fkh8bjbiV835CNzbTXm15jq+twyycv6hCN5vcps+28xV//CePwERPTy3aBFp
+ MS+I7UfsbgPA==
+X-IronPort-AV: E=Sophos;i="5.81,201,1610438400"; 
+   d="scan'208";a="441930688"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 18:29:10 -0800
+Subject: Re: [PATCH 1/2] KVM: vmx/pmu: Fix dummy check if lbr_desc->event is
+ created
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210223013958.1280444-1-like.xu@linux.intel.com>
+ <YDU4II6Jt+E5nFmG@google.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <ca26c4e9-207a-2882-649d-fe82604f68f9@intel.com>
+Date:   Wed, 24 Feb 2021 10:29:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Y3w=68c/7c2xhxac/lTfvOe";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <YDU4II6Jt+E5nFmG@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Y3w=68c/7c2xhxac/lTfvOe
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2021/2/24 1:15, Sean Christopherson wrote:
+> On Tue, Feb 23, 2021, Like Xu wrote:
+>> If lbr_desc->event is successfully created, the intel_pmu_create_
+>> guest_lbr_event() will return 0, otherwise it will return -ENOENT,
+>> and then jump to LBR msrs dummy handling.
+>>
+>> Fixes: 1b5ac3226a1a ("KVM: vmx/pmu: Pass-through LBR msrs when the guest LBR event is ACTIVE")
+>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>> ---
+>>   arch/x86/kvm/vmx/pmu_intel.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+>> index d1df618cb7de..d6a5fe19ff09 100644
+>> --- a/arch/x86/kvm/vmx/pmu_intel.c
+>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+>> @@ -320,7 +320,7 @@ static bool intel_pmu_handle_lbr_msrs_access(struct kvm_vcpu *vcpu,
+>>   	if (!intel_pmu_is_valid_lbr_msr(vcpu, index))
+>>   		return false;
+>>   
+>> -	if (!lbr_desc->event && !intel_pmu_create_guest_lbr_event(vcpu))
+>> +	if (!lbr_desc->event && intel_pmu_create_guest_lbr_event(vcpu))
+>>   		goto dummy;
+> Wouldn't it be better to create an event only on write?  And really, why create
+> the event in this flow in the first place?  In normal operation, can't event
+> creation be deferred until GUEST_IA32_DEBUGCTL.DEBUGCTLMSR_LBR=1?
 
-Hi all,
+We need event creation and pass-through for both read and write.
 
-After merging the amdgpu tree, today's linux-next build (htmldocs)
-produced these warnings:
+The LBR driver would firstly access the MSR_LBR_SELECT to configure branch 
+types
+and we also create LBR event for GUEST_IA32_DEBUGCTL.DEBUGCTLMSR_LBR=1 trap.
+A lazy approach requests more cached values and more traps.
 
-drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:380: warning: Function pa=
-rameter or member 'vblank_lock' not described in 'amdgpu_display_manager'
-drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:380: warning: Function pa=
-rameter or member 'vblank_workqueue' not described in 'amdgpu_display_manag=
-er'
+> If event
+> creation fails in that flow, I would think KVM would do its best to create an
+> event in future runs without waiting for additional actions from the guest.
 
-Introduced by commit
+We have done this via releasing the LBR event for next creation and 
+pass-through try.
 
-  3cfd14b67b2c ("drm/amd/display: Fix system hang after multiple hotplugs (=
-v2)")
+>
+> Also, this bug suggests there's a big gaping hole in the test coverage.
 
---=20
-Cheers,
-Stephen Rothwell
+Not a big but concern one. To hit that, we need run LBR agent on the host
+and grab LBR from the guest. And it's not covered in the current test cases
+since we do not recommend this kind of usage in the comment.
 
---Sig_/Y3w=68c/7c2xhxac/lTfvOe
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> AFAICT,
+> event contention would lead to a #GP crash in the host due to lbr_desc->event
+> being dereferenced, no?
 
------BEGIN PGP SIGNATURE-----
+a #GP crash in the host ？Can you share more understanding about it ?
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA1ueEACgkQAVBC80lX
-0GzRZgf7BkQDCvY/14IYRb/7LKGWiQVbSuEdK1Pssvh8dSxWUR5ldM2Wupk/Cyy2
-UeGN2sBgrRIYgx1KrV9cknoBniqI0ZM1arp03Rr0cMli2WRkAw79vyDheXHRxUmC
-xVQPYhvcx0DOy4cyywylDc5CscBWphCdKHMOx/ndqbxfwV4vC5OdlgNRCcW3czUa
-NcCxVOvgc72lgOnRfOZUrD1A6hT23W8VVmGcfBl78ARRAXGKnbENI6hdjJFD8AT9
-iVxI+ARKPqdFqYI1IKoxaiWbkYZ5brvF2v9ESbCNtuJ3eXVfeoY7dlVD+7BxJrbR
-4Rp7g9NKeDhClU2YfZ3hPxv7b+GAzQ==
-=eNul
------END PGP SIGNATURE-----
+>
+>>   
+>>   	/*
+>> -- 
+>> 2.29.2
+>>
 
---Sig_/Y3w=68c/7c2xhxac/lTfvOe--
