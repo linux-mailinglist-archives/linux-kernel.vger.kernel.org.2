@@ -2,130 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9011932457E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C39324588
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 22:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235772AbhBXUzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:55:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
+        id S235813AbhBXVA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 16:00:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235479AbhBXUzI (ORCPT
+        with ESMTP id S232058AbhBXVAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:55:08 -0500
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307A0C061788
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:54:28 -0800 (PST)
-Received: by mail-ua1-x92d.google.com with SMTP id t15so1185624ual.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:54:28 -0800 (PST)
+        Wed, 24 Feb 2021 16:00:22 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEDBC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:59:42 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id ba14so2512399qvb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:59:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LLIfyeFIub3muB/CP7Hm2VoepJyVW4tHjdnBCk4yhLg=;
-        b=ollMcONV3bdQ14QYtVBWt6OyYXIP4whd8nwR5FrAAoQprgeHlmN1Lh632mEYtxVBSI
-         G4+0oh8aEKmX6WHRxZ/cD3de2wT6ITxtYGBJRwApyx5JOWST1pJvimvC7kIIEcRmJIhX
-         cxWpev8Q9LWPytWtDWk5kkB7hijixTdqVkP5KuyaHMKZiVa/Quydp+bZJyfzHOEo3S0y
-         10d7fNSsZkyAahwGnT4i6pWEhNAUdZpnmNn9XiLqYORRONogk6w8ca+FtsbgpAxmHru+
-         GjzVvfuqXIq5M68x+natPnOzaLGwVMOrCilUbMYcEktclLWM0NLBY34qeQmJ/lQ8dJzi
-         lEAg==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=YwiIAFcQXSeOyp/B8vNFcEf24Aae8LYt2opoMrIBm4w=;
+        b=nP+vgqZ0dzk4IGVqW8m5HtrSUTpQlMCc1E3sUtxbLr4f9qcUlVRhyhzXENZ+P3BsOS
+         AxPzzISWVGYh9dQX+C7ep0FPPCcePXgSt4guAVfmKdINo7+IXRw9pChj28dozoinOIxv
+         WouUfuFgv4kwScX9SYN4b/dqKvXmet/Gu/TQVfOMny5LlgvbS4/L3yn7dgBCIrZsTTK6
+         29JcyQjRTx93Lp7KyNG3bPfA5Dx8+rAvIdBJsqi6D5ZF3rbswJdsqyqY+NduF/FW07yg
+         B/qn512iGpIL1KzO8GeSUUWO5DY3PXm/tjxGpNxN05JTr8JOKrtW+MG2EAVvggu5H+6J
+         0r2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LLIfyeFIub3muB/CP7Hm2VoepJyVW4tHjdnBCk4yhLg=;
-        b=RHrE5Xl4mHBvm6vzvutde5IvCCTfoPBrx1CKoqQjuwRrKnCr02D6q31kef876O8zXs
-         YDgW7WrwQR69Gfpeg+Xy0W4iytgnmMpJyNiP31YdPSaM3aZIdMqxTl60Unc6EPVHZTen
-         mLny7RMRCRBLNMliKtE4/3P8aDJ4rg7xJYjARNsuWJv9V8WJzrefo/PP9j7IiZM87Ry6
-         r4iv4iwRezXQLZFmc3swdLHOGeOTvOqlRFimM/SApNDZdaB/rFUCMy7qgrjekE2v6jTl
-         5eBWvAsIEc0ZT9YjiZEm4Zm6obYGcM63UitPLOdY4kKG45Ppoqhjas9qjfICYVNPqw6R
-         v/Ew==
-X-Gm-Message-State: AOAM533Y+0RwisRK8MxnJK9MCClWnDaYEe7+K4Dpwdz6iMpmYkxiI2Zd
-        CQA2WEK/pLKalEiR583Nrnipt5dS3JWzAvhU0+V69g==
-X-Google-Smtp-Source: ABdhPJwDkAZHxqTqNM1na6tlHBSoIcFQFsNIy4TN5WNwBY+1hn1Ea0NqgKnjX2WoQcdN6Tf/Ph1uK9pKsYI+hEdPksc=
-X-Received: by 2002:a9f:2021:: with SMTP id 30mr11157082uam.66.1614200066849;
- Wed, 24 Feb 2021 12:54:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20201211184633.3213045-1-samitolvanen@google.com>
- <20201211184633.3213045-2-samitolvanen@google.com> <20210224201723.GA69309@roeck-us.net>
- <202102241238.93BC4DCF@keescook>
-In-Reply-To: <202102241238.93BC4DCF@keescook>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=YwiIAFcQXSeOyp/B8vNFcEf24Aae8LYt2opoMrIBm4w=;
+        b=ir6tC10Sny7alNGRZqa4d1x7oKP/gVjLlEyVKywhMaUsnOIXZ6e1Nn0223Kk4vxvkl
+         c2fpP7o+kPmW45SDzU5ol3cW+ODqh0YDv2XLe26fVs62qAORqWYQe0M2DHB6QfLUXaPF
+         4GtfrOourLFrJMCULjp1i759z56Q97BIc5wPv5kSfowB4NFG95lJF9hERWTeQT37TyWm
+         uFU2aRLJN6TgynPLA3REwUeC6wYChn9QO8ytnN8W8jrCQH6DRdh1+kUqT49kY6O6glbX
+         LnXpPsya4ocXsanoqwReJRc0rYEA8dPAlW07uecewhTAXW7yfriN8mdSTVgDJyasAFmm
+         sshQ==
+X-Gm-Message-State: AOAM531mogMkjmOKMIyRJkGspkWJ9wAVpz+1asP6JBYiYgmsiyFWhm5a
+        HoGpETHmnzS+khclDgKdp7QosAbtYb2nbgyFvxc=
+X-Google-Smtp-Source: ABdhPJxLvqBsrn6Tk4z+azNaXS+pIsaPj9yOQChrOZY+UeProfXJUK31ge+jhddPN97Q8GSNA6HuD3JhsDSMUfS6j+8=
+Sender: "samitolvanen via sendgmr" 
+        <samitolvanen@samitolvanen1.mtv.corp.google.com>
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:2c05:1953:5dce:c3b0])
+ (user=samitolvanen job=sendgmr) by 2002:a0c:e884:: with SMTP id
+ b4mr19273642qvo.38.1614200381556; Wed, 24 Feb 2021 12:59:41 -0800 (PST)
+Date:   Wed, 24 Feb 2021 12:59:38 -0800
+Message-Id: <20210224205938.4104543-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+Subject: [PATCH] parisc: select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY
 From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 24 Feb 2021 12:54:15 -0800
-Message-ID: <CABCJKufph4se58eiJNSJUd3ASBgbJGmL2e3wg4Jwo4Bi2UxP=Q@mail.gmail.com>
-Subject: Re: [PATCH v9 01/16] tracing: move function tracer options to Kconfig
- (causing parisc build failures)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, linux-parisc@vger.kernel.org,
-        Helge Deller <deller@gmx.de>
+To:     "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 12:38 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Wed, Feb 24, 2021 at 12:17:23PM -0800, Guenter Roeck wrote:
-> > On Fri, Dec 11, 2020 at 10:46:18AM -0800, Sami Tolvanen wrote:
-> > > Move function tracer options to Kconfig to make it easier to add
-> > > new methods for generating __mcount_loc, and to make the options
-> > > available also when building kernel modules.
-> > >
-> > > Note that FTRACE_MCOUNT_USE_* options are updated on rebuild and
-> > > therefore, work even if the .config was generated in a different
-> > > environment.
-> > >
-> > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > > Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> >
-> > With this patch in place, parisc:allmodconfig no longer builds.
-> >
-> > Error log:
-> > Arch parisc is not supported with CONFIG_FTRACE_MCOUNT_RECORD at scripts/recordmcount.pl line 405.
-> > make[2]: *** [scripts/mod/empty.o] Error 2
-> >
-> > Due to this problem, CONFIG_FTRACE_MCOUNT_RECORD can no longer be
-> > enabled in parisc builds. Since that is auto-selected by DYNAMIC_FTRACE,
-> > DYNAMIC_FTRACE can no longer be enabled, and with it everything that
-> > depends on it.
->
-> Ew. Any idea why this didn't show up while it was in linux-next?
+parisc uses -fpatchable-function-entry with dynamic ftrace, which means we
+don't need recordmcount. Select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY
+to tell that to the build system.
 
-Does anyone build parisc allmodconfig from -next?
-
-parisc seems to always use -fpatchable-function-entry with dynamic
-ftrace, so we just need to select
-FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY to stop it from defaulting
-to recordmcount:
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: 3b15cdc15956 ("tracing: move function tracer options to Kconfig")
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+---
+ arch/parisc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
 index ecef9aff9d72..9ee806f68123 100644
 --- a/arch/parisc/Kconfig
 +++ b/arch/parisc/Kconfig
 @@ -60,6 +60,7 @@ config PARISC
-        select HAVE_KPROBES
-        select HAVE_KRETPROBES
-        select HAVE_DYNAMIC_FTRACE if
-$(cc-option,-fpatchable-function-entry=1,1)
-+       select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY if HAVE_DYNAMIC_FTRACE
-        select HAVE_FTRACE_MCOUNT_RECORD if HAVE_DYNAMIC_FTRACE
-        select HAVE_KPROBES_ON_FTRACE
-        select HAVE_DYNAMIC_FTRACE_WITH_REGS
+ 	select HAVE_KPROBES
+ 	select HAVE_KRETPROBES
+ 	select HAVE_DYNAMIC_FTRACE if $(cc-option,-fpatchable-function-entry=1,1)
++	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY if HAVE_DYNAMIC_FTRACE
+ 	select HAVE_FTRACE_MCOUNT_RECORD if HAVE_DYNAMIC_FTRACE
+ 	select HAVE_KPROBES_ON_FTRACE
+ 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
 
-I'll send a proper patch shortly.
+base-commit: 719bbd4a509f403f537adcaefd8ce17532be2e84
+-- 
+2.30.0.617.g56c4b15f3c-goog
 
-Sami
