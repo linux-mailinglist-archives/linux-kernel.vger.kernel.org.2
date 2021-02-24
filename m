@@ -2,67 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E5B3239D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D227D3239FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbhBXJsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:48:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234637AbhBXJqL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:46:11 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2D5C061786;
-        Wed, 24 Feb 2021 01:45:29 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id v1so1218640wrd.6;
-        Wed, 24 Feb 2021 01:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/dg/fW+QOf5xcSw93zMmIAfZ9zqtrux4+CIo9C+zlcQ=;
-        b=pxppe/V5vHpZrmxxmJGBMVQMK8j/epu0+LnQUa46nD6ObrplEsRJtF1lJLeyYI79Oq
-         5W2mP+MO0JPg8rMKoMzaVEwboJBc1jjVBJs7mYcMc7TcBvoQqPBUsN2TpHJEXUcH5Clq
-         h2qu3z9sWdJtg7UbXrrSNLAvwHZzP5FR5oW1wRQ/wwM52E/M9hDB/MQGAqIYpzW9jgl8
-         VyM3PB8Za1JPgTi831nRNpQfl1XOOXBx6p7A0dCHVkCFaP64MaT/LT1oSs0bODOsNOHt
-         rWAKzKDT5Nx/HlnS0UFoCo3JHUAxdnH4ifWeUA6mwSxoBRyBtDix4fAgmbgstXQP0xVH
-         iimg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/dg/fW+QOf5xcSw93zMmIAfZ9zqtrux4+CIo9C+zlcQ=;
-        b=et6xuIVKGUsgFAFXWi/bUfUQ7Ezodbrko7Wc8FlefYf59Sr0mFUNvYB+tdL08SEojT
-         MCOKUZ6gErFCL5JDNjPSMA9Hh6geJKXMcn9QjhtJ2i+HnI8U7ko3KheUJX6JdFvFgJvR
-         veXMiOXEb3wSqkpxU4baIWsRs2As75uLVVnrGLyCZNDjqdg9uo34Ln0UGwGw5KDr8xSj
-         4OjN30BFTOus32AbtSe18B70SpeU7Y/h81q3vbfrAQq6EW604kp3V9Cu6dAOYwFgmUch
-         hMs9kMlYbnqp88g/TIMbAarnF/k0JUscK3sUHzDRcxLpyOSKrvmU60L3xNbzFo/Bm9yV
-         4qBA==
-X-Gm-Message-State: AOAM533xM7+5Wz92VFv3FmEnoaSlKb8dk1FJRSKtwVe8Ij0bIoyDW9OI
-        VCSY/RgDqmtgDbJqcCrX54Q=
-X-Google-Smtp-Source: ABdhPJw1v2kmdaxDop4bmrKUhD/BYqxz8HV11tDX+fi/WL7Jl/wSL7R9X/XHTkWttOhUyk0HO6aE7A==
-X-Received: by 2002:adf:8104:: with SMTP id 4mr30824649wrm.265.1614159928780;
-        Wed, 24 Feb 2021 01:45:28 -0800 (PST)
-Received: from localhost.localdomain (bzq-79-179-86-219.red.bezeqint.net. [79.179.86.219])
-        by smtp.googlemail.com with ESMTPSA id g15sm2454425wrx.1.2021.02.24.01.45.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 01:45:28 -0800 (PST)
-From:   Lior Ribak <liorribak@gmail.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        liorribak@gmail.com
-Subject: Re: [PATCH] binfmt_misc: Fix possible deadlock in bm_register_write
-Date:   Wed, 24 Feb 2021 01:45:24 -0800
-Message-Id: <20210224094524.123033-1-liorribak@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201224111533.24719-1-liorribak@gmail.com>
-References: <20201224111533.24719-1-liorribak@gmail.com>
+        id S234777AbhBXJ41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:56:27 -0500
+Received: from mail.a-eberle.de ([213.95.140.213]:58348 "EHLO mail.a-eberle.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234637AbhBXJz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 04:55:57 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.a-eberle.de (Postfix) with ESMTP id 4575E3802F4;
+        Wed, 24 Feb 2021 10:47:33 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at aeberle-mx.softwerk.noris.de
+Received: from mail.a-eberle.de ([127.0.0.1])
+        by localhost (ebl-mx-02.a-eberle.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id YE1xn1JGbirt; Wed, 24 Feb 2021 10:47:32 +0100 (CET)
+Received: from localhost.localdomain (ipbcc2c2a9.dynamic.kabel-deutschland.de [188.194.194.169])
+        (Authenticated sender: marco.wenzel@a-eberle.de)
+        by mail.a-eberle.de (Postfix) with ESMTPA;
+        Wed, 24 Feb 2021 10:47:31 +0100 (CET)
+From:   Marco Wenzel <marco.wenzel@a-eberle.de>
+To:     george.mccollister@gmail.com
+Cc:     Marco Wenzel <marco.wenzel@a-eberle.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Andreas Oetken <andreas.oetken@siemens.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Arvid Brodin <Arvid.Brodin@xdin.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: hsr: add support for EntryForgetTime
+Date:   Wed, 24 Feb 2021 10:46:49 +0100
+Message-Id: <20210224094653.1440-1-marco.wenzel@a-eberle.de>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <CAFSKS=PnV-aLnGeNqjqrsT4nfFby18uYQpScCCurz6dZ39AynQ@mail.gmail.com>
+References: <CAFSKS=PnV-aLnGeNqjqrsT4nfFby18uYQpScCCurz6dZ39AynQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, a long period of time passed and I haven't received any response to this patch.
-Please take a look at it, it will be much appreciated.
+In IEC 62439-3 EntryForgetTime is defined with a value of 400 ms. When a
+node does not send any frame within this time, the sequence number check
+for can be ignored. This solves communication issues with Cisco IE 2000
+in Redbox mode.
+
+Fixes: f421436a591d ("net/hsr: Add support for the High-availability Seamless Redundancy protocol (HSRv0)")
+Signed-off-by: Marco Wenzel <marco.wenzel@a-eberle.de>
+Reviewed-by: George McCollister <george.mccollister@gmail.com>
+Tested-by: George McCollister <george.mccollister@gmail.com>
+---
+ net/hsr/hsr_framereg.c | 9 +++++++--
+ net/hsr/hsr_framereg.h | 1 +
+ net/hsr/hsr_main.h     | 1 +
+ 3 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c
+index f9a8cc82ae2e..bb1351c38397 100644
+--- a/net/hsr/hsr_framereg.c
++++ b/net/hsr/hsr_framereg.c
+@@ -164,8 +164,10 @@ static struct hsr_node *hsr_add_node(struct hsr_priv *hsr,
+ 	 * as initialization. (0 could trigger an spurious ring error warning).
+ 	 */
+ 	now = jiffies;
+-	for (i = 0; i < HSR_PT_PORTS; i++)
++	for (i = 0; i < HSR_PT_PORTS; i++) {
+ 		new_node->time_in[i] = now;
++		new_node->time_out[i] = now;
++	}
+ 	for (i = 0; i < HSR_PT_PORTS; i++)
+ 		new_node->seq_out[i] = seq_out;
+ 
+@@ -413,9 +415,12 @@ void hsr_register_frame_in(struct hsr_node *node, struct hsr_port *port,
+ int hsr_register_frame_out(struct hsr_port *port, struct hsr_node *node,
+ 			   u16 sequence_nr)
+ {
+-	if (seq_nr_before_or_eq(sequence_nr, node->seq_out[port->type]))
++	if (seq_nr_before_or_eq(sequence_nr, node->seq_out[port->type]) &&
++	    time_is_after_jiffies(node->time_out[port->type] +
++	    msecs_to_jiffies(HSR_ENTRY_FORGET_TIME)))
+ 		return 1;
+ 
++	node->time_out[port->type] = jiffies;
+ 	node->seq_out[port->type] = sequence_nr;
+ 	return 0;
+ }
+diff --git a/net/hsr/hsr_framereg.h b/net/hsr/hsr_framereg.h
+index 86b43f539f2c..d9628e7a5f05 100644
+--- a/net/hsr/hsr_framereg.h
++++ b/net/hsr/hsr_framereg.h
+@@ -75,6 +75,7 @@ struct hsr_node {
+ 	enum hsr_port_type	addr_B_port;
+ 	unsigned long		time_in[HSR_PT_PORTS];
+ 	bool			time_in_stale[HSR_PT_PORTS];
++	unsigned long		time_out[HSR_PT_PORTS];
+ 	/* if the node is a SAN */
+ 	bool			san_a;
+ 	bool			san_b;
+diff --git a/net/hsr/hsr_main.h b/net/hsr/hsr_main.h
+index a169808ee78a..8f264672b70b 100644
+--- a/net/hsr/hsr_main.h
++++ b/net/hsr/hsr_main.h
+@@ -22,6 +22,7 @@
+ #define HSR_LIFE_CHECK_INTERVAL		 2000 /* ms */
+ #define HSR_NODE_FORGET_TIME		60000 /* ms */
+ #define HSR_ANNOUNCE_INTERVAL		  100 /* ms */
++#define HSR_ENTRY_FORGET_TIME		  400 /* ms */
+ 
+ /* By how much may slave1 and slave2 timestamps of latest received frame from
+  * each node differ before we notify of communication problem?
+-- 
+2.30.0
+
