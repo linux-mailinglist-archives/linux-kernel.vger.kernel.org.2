@@ -2,154 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9308732404B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9109D32404D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237369AbhBXOtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237180AbhBXNew (ORCPT
+        id S237725AbhBXOuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:50:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57458 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233288AbhBXNgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:34:52 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4499C061221
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:31:13 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id l12so1909433wry.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:31:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dme-org.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:subject:in-reply-to:references:from:date:message-id
-         :mime-version;
-        bh=0wojTu++d3zG8QHPBKHQdj7qcA4E471xrkGjRsrDSb0=;
-        b=oZd1EcmHmtQPmA9Pu8sMJZLsld9SX5t3gJrkLSULaOO9WgLtecjPiTY99HLEv2kSYy
-         SizvE1GTXqP5veBcF5toHTKRgB8qF9OrBfwYf1pEa6j17wGznSMGSsna7cPXVk9UoIVt
-         zffxefVmWqam2Pod7wrUyjsi9KH0y6mqvhOkQuKwXtCnJvT/DKddlu09ec2ED7F4TyDf
-         /pPHQNXenaslou5LTLM8FAGQpKzoQeAFudiS2UlRS4VEyOBR4HUku5IoE9GljD5v8oo+
-         PF6SgvdkmpcBmV+urNG8Eyfce456yLyRKyqet24NiKjdcUST+PLM3V1H78B+vyl5regy
-         V8Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:subject:in-reply-to:references:from:date
-         :message-id:mime-version;
-        bh=0wojTu++d3zG8QHPBKHQdj7qcA4E471xrkGjRsrDSb0=;
-        b=LLP3n/+voh1U1XWfzolpn1S8QmZdF2wrj/mKCZonNPAwfjIHljfFzrbqkal0PUQRke
-         KkfV8Tbknf2V5DC0JRARjOGmTIxIUZ79RpgVQyRlAqXjX80YwCfnPyjYvXd2hlPNzYV5
-         bBIRFUidgiSDXylVebldVbnWH+Vo8Ofe0VKmZGstTChOTwGezZHCZMFFLoVqUS4aLDA8
-         UW8lr+ib8SbJVlLzbE0inVnXt6QHEt9xeB1AzehHxcQVljMgGaYA4q8l/XD13s7TavUU
-         4gNTompAvf4a0L+KF1Bl/X0XNugBPMkmn+qPeyiNaji0m34nEoAOD8RatGy+AWko4BSb
-         yAIQ==
-X-Gm-Message-State: AOAM533T4hLg6O90QnvsvU0h7Cfdyc94SIIFGFmp9vfZ10GGXJcTMirv
-        OQ0ZJAue709uOboolwK/0EswUg==
-X-Google-Smtp-Source: ABdhPJxTsG02fCn7cHHlqxULP/A5A6ze8umKX4wMVBiqa3ngsMpHsi/I0sl08ULa7nJjjgYPvZMzeQ==
-X-Received: by 2002:adf:f841:: with SMTP id d1mr2607478wrq.36.1614173472040;
-        Wed, 24 Feb 2021 05:31:12 -0800 (PST)
-Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net. [2001:8b0:bb71:7140:64::1])
-        by smtp.gmail.com with ESMTPSA id h17sm2842251wrt.74.2021.02.24.05.31.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 05:31:11 -0800 (PST)
-Received: from localhost (disaster-area.hh.sledj.net [local])
-        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 68da51e6;
-        Wed, 24 Feb 2021 13:31:10 +0000 (UTC)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH v2 2/3] KVM: x86: dump_vmcs should not conflate EFER and
- PAT presence in VMCS
-In-Reply-To: <YDWIlb0epWBcxFNr@google.com>
-References: <20210219144632.2288189-1-david.edmondson@oracle.com>
- <20210219144632.2288189-3-david.edmondson@oracle.com>
- <YDWIlb0epWBcxFNr@google.com>
-X-HGTTG: heart-of-gold
-From:   David Edmondson <dme@dme.org>
-Date:   Wed, 24 Feb 2021 13:31:10 +0000
-Message-ID: <m2zgztego1.fsf@dme.org>
+        Wed, 24 Feb 2021 08:36:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614173667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FGAEWcqi7R+QLdnM9l4hJ0vRCcM6Gnle1kdY4AuWCGU=;
+        b=iwtB4CCQXriIDPqyRir8X8BAPknWo7PFFPNB/PQPC9WgdW79Vj1aDHd0XIoC+A62IBdvQ3
+        E+1V56FNvcV7V1X3/ypwAoRgaIIwe0DpjrS+rnXEQ5SmzY+e+Gxltim4D7bW5nw4mGKnF8
+        PCV20Uf57boIK2nR8hI300auZ71yKhw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-3MKbxeFLOOeiKKs9HaYL0w-1; Wed, 24 Feb 2021 08:33:46 -0500
+X-MC-Unique: 3MKbxeFLOOeiKKs9HaYL0w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82D3BD547E;
+        Wed, 24 Feb 2021 13:32:07 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 320E35D9F1;
+        Wed, 24 Feb 2021 13:32:03 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAH2r5mv=PZk_wn2=b0VQcaom9TEw1MGLz+qB_Ktxxm2bnV9Nig@mail.gmail.com>
+References: <CAH2r5mv=PZk_wn2=b0VQcaom9TEw1MGLz+qB_Ktxxm2bnV9Nig@mail.gmail.com> <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk> <9e49f96cd80eaf9c8ed267a7fbbcb4c6467ee790.camel@redhat.com> <CAH2r5mvPLivjuE=cbijzGSHOvx-hkWSWbcxpoBnJX-BR9pBskQ@mail.gmail.com> <20210216021015.GH2858050@casper.infradead.org>
+To:     Steve French <smfrench@gmail.com>
+Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        CIFS <linux-cifs@vger.kernel.org>, ceph-devel@vger.kernel.org,
+        linux-cachefs@redhat.com, Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-mm <linux-mm@kvack.org>, linux-afs@lists.infradead.org,
+        v9fs-developer@lists.sourceforge.net,
+        Christoph Hellwig <hch@lst.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nfs <linux-nfs@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Wysochanski <dwysocha@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH 00/33] Network fs helper library & fscache kiocb API [ver #3]
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3743318.1614173522.1@warthog.procyon.org.uk>
+Date:   Wed, 24 Feb 2021 13:32:02 +0000
+Message-ID: <3743319.1614173522@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, 2021-02-23 at 14:58:29 -08, Sean Christopherson wrote:
+Steve French <smfrench@gmail.com> wrote:
 
-> On Fri, Feb 19, 2021, David Edmondson wrote:
->> Show EFER and PAT based on their individual entry/exit controls.
->> 
->> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
->> ---
->>  arch/x86/kvm/vmx/vmx.c | 19 ++++++++++---------
->>  1 file changed, 10 insertions(+), 9 deletions(-)
->> 
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 818051c9fa10..25090e3683ca 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -5805,11 +5805,12 @@ void dump_vmcs(void)
->>  	vmx_dump_sel("LDTR:", GUEST_LDTR_SELECTOR);
->>  	vmx_dump_dtsel("IDTR:", GUEST_IDTR_LIMIT);
->>  	vmx_dump_sel("TR:  ", GUEST_TR_SELECTOR);
->> -	if ((vmexit_ctl & (VM_EXIT_SAVE_IA32_PAT | VM_EXIT_SAVE_IA32_EFER)) ||
->> -	    (vmentry_ctl & (VM_ENTRY_LOAD_IA32_PAT | VM_ENTRY_LOAD_IA32_EFER)))
->> -		pr_err("EFER =     0x%016llx  PAT = 0x%016llx\n",
->> -		       vmcs_read64(GUEST_IA32_EFER),
->> -		       vmcs_read64(GUEST_IA32_PAT));
->> +	if ((vmexit_ctl & VM_EXIT_SAVE_IA32_EFER) ||
->
-> Not your code, and completely benign since VM_EXIT_SAVE is never set, but I
-> don't like checking the VM_EXIT_SAVE_* flag as saving a field on VM-Exit has
-> zero impact on whether VM-Entry succeeds or fails.  Same complaint on the PAT
-> field.
+> This (readahead behavior improvements in Linux, on single large file
+> sequential read workloads like cp or grep) gets particularly interesting
+> with SMB3 as multichannel becomes more common.  With one channel having one
+> readahead request pending on the network is suboptimal - but not as bad as
+> when multichannel is negotiated. Interestingly in most cases two network
+> connections to the same server (different TCP sockets,but the same mount,
+> even in cases where only network adapter) can achieve better performance -
+> but still significantly lags Windows (and probably other clients) as in
+> Linux we don't keep multiple I/Os in flight at one time (unless different
+> files are being read at the same time by different threads).
 
-Added to v3.
+I think it should be relatively straightforward to make the netfs_readahead()
+function generate multiple read requests.  If I wasn't handed sufficient pages
+by the VM upfront to do two or more read requests, I would need to do extra
+expansion.  There are a couple of ways this could be done:
 
->> +	    (vmentry_ctl & VM_ENTRY_LOAD_IA32_EFER))
->> +		pr_err("EFER= 0x%016llx\n", vmcs_read64(GUEST_IA32_EFER));
->
-> Tying into the previous patch, I think we should print both the effective EFER
-> and vmcs.EFER.  The effective EFER is relevant for several consistency checks.
-> Maybe something like this?
->
-> 	pr_err("EFER= 0x%016llx  ", effective_efer);
-> 	if (vmentry_ctl & VM_ENTRY_LOAD_IA32_EFER)
-> 		pr_cont("vmcs.EFER= 0x%016llx\n", vmcs_read64(GUEST_IA32_EFER));
-> 	else
-> 		pr_cont("vmcs.EFER not loaded\n")
+ (1) I could expand the readahead_control after fully starting a read request
+     and then create another independent read request, and another for how
+     ever many we want.
 
-Added something similar, that makes it clear where the value came from,
-in v3.
+ (2) I could expand the readahead_control first to cover however many requests
+     I'm going to generate, then chop it up into individual read requests.
 
->> +	if ((vmexit_ctl & VM_EXIT_SAVE_IA32_PAT) ||
->> +	    (vmentry_ctl & VM_ENTRY_LOAD_IA32_PAT))
->> +		pr_err("PAT = 0x%016llx\n", vmcs_read64(GUEST_IA32_PAT));
->>  	pr_err("DebugCtl = 0x%016llx  DebugExceptions = 0x%016lx\n",
->>  	       vmcs_read64(GUEST_IA32_DEBUGCTL),
->>  	       vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS));
->> @@ -5846,10 +5847,10 @@ void dump_vmcs(void)
->>  	       vmcs_readl(HOST_IA32_SYSENTER_ESP),
->>  	       vmcs_read32(HOST_IA32_SYSENTER_CS),
->>  	       vmcs_readl(HOST_IA32_SYSENTER_EIP));
->> -	if (vmexit_ctl & (VM_EXIT_LOAD_IA32_PAT | VM_EXIT_LOAD_IA32_EFER))
->> -		pr_err("EFER = 0x%016llx  PAT = 0x%016llx\n",
->> -		       vmcs_read64(HOST_IA32_EFER),
->> -		       vmcs_read64(HOST_IA32_PAT));
->> +	if (vmexit_ctl & VM_EXIT_LOAD_IA32_EFER)
->> +		pr_err("EFER= 0x%016llx\n", vmcs_read64(HOST_IA32_EFER));
->> +	if (vmexit_ctl & VM_EXIT_LOAD_IA32_PAT)
->> +		pr_err("PAT = 0x%016llx\n", vmcs_read64(HOST_IA32_PAT));
->>  	if (cpu_has_load_perf_global_ctrl() &&
->>  	    vmexit_ctl & VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL)
->>  		pr_err("PerfGlobCtl = 0x%016llx\n",
->> -- 
->> 2.30.0
->> 
+However, generating larger requests means we're more likely to run into a
+problem for the cache: if we can't allocate enough pages to fill out a cache
+block, we don't have enough data to write to the cache.  Further, if the pages
+are just unlocked and abandoned, readpage will be called to read them
+individually - which means they likely won't get cached unless the cache
+granularity is PAGE_SIZE.  But that's probably okay if ENOMEM occurred.
 
-dme.
--- 
-And the sign said: long haired freaky people need not apply.
+There are some other considerations too:
+
+ (*) I would need to query the filesystem to find out if I should create
+     another request.  The fs would have to keep track of how many I/O reqs
+     are in flight and what the limit is.
+
+ (*) How and where should the readahead triggers be emplaced?  I'm guessing
+     that each block would need a trigger and that this should cause more
+     requests to be generated until we hit the limit.
+
+ (*) I would probably need to shuffle the request generation for the second
+     and subsequent blocks in a single netfs_readahead() call to a worker
+     thread because it'll probably be in a userspace kernel-side context and
+     blocking an application from proceeding and consuming the pages already
+     committed.
+
+David
+
