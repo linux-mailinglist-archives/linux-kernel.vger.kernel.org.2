@@ -2,167 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C6D3241C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D2B3241C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234282AbhBXQJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:09:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57924 "EHLO mail.kernel.org"
+        id S234781AbhBXQKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:10:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234059AbhBXQFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:05:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77C4264E6C;
-        Wed, 24 Feb 2021 16:04:11 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 16:04:08 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     mingo@redhat.com, tglx@linutronix.de, rppt@kernel.org,
-        dyoung@redhat.com, bhe@redhat.com, will@kernel.org,
-        nsaenzjulienne@suse.de, corbet@lwn.net, John.P.donnelly@oracle.com,
-        bhsharma@redhat.com, prabhakar.pkin@gmail.com, horms@verge.net.au,
-        robh+dt@kernel.org, arnd@arndb.de, james.morse@arm.com,
-        xiexiuqi@huawei.com, guohanjun@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com, linux-doc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org
-Subject: Re: [PATCH v14 08/11] arm64: kdump: reimplement crashkernel=X
-Message-ID: <20210224160408.GC28965@arm.com>
-References: <20210130071025.65258-1-chenzhou10@huawei.com>
- <20210130071025.65258-9-chenzhou10@huawei.com>
+        id S235248AbhBXQGD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 11:06:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A75F364EFC
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 16:05:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614182705;
+        bh=stKj60ej/VtHcUVpEicz7vhAWELNIunpuFuM/MvNJas=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IVIG2WseXbGfH1qerk2Hx6hB1LNCqI0ZYO3DO4n/M8PhKATcfBBJjmx8Mw06/VrXK
+         YD31mXK8DtDMZd/KaMDBf42hZzhVDaiQE1I75kdXShgrFmp/IMIb9v9VVYdxT6YFe2
+         BE7N53OskH4PwEAyiD7fDiykl8W4H5eYByVIghrnwmkGHJ7pvpQ1QBcMB0firLd/JF
+         WB8LqvnI26Cg+DRmq7DASGv7rO7/Zt71HZfJ+iAbwtuBtzSsZPpfJyNYENC1js6IyM
+         lxgvgpRcQ+AvH/OlZXAbQ79x+HVBHAl96tFRjhSumkQafvHdVk8asuQDDKYDRQVRLw
+         w2UCeTmy+OKow==
+Received: by mail-ot1-f41.google.com with SMTP id h22so2612311otr.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:05:05 -0800 (PST)
+X-Gm-Message-State: AOAM531TH6XUJStA8zRA4khEt37b+h4SFD4liBdHzNNjcsc2CjDWIKz7
+        /7P6ijlt474YYgcFr+rDOxf1PsZp1wtVTYU9HOA=
+X-Google-Smtp-Source: ABdhPJz8CsSlVeUe5UWoWlqhaRUmSie9cxXYeGRvdbLN4kGb8QDafzr1njK+JtWgKQ991fSqchEDdHIqzJKqJa46Zuc=
+X-Received: by 2002:a05:6830:18e6:: with SMTP id d6mr25843902otf.251.1614182704665;
+ Wed, 24 Feb 2021 08:05:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130071025.65258-9-chenzhou10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <202102221504.0418BE2D1@keescook> <CAHk-=wgUS-vqCk_d0wwBWgk4tRgFpYvfyob5y28c85msqpbjuw@mail.gmail.com>
+ <CAHk-=wgQ=oaLD_ybzhOP+8LFNZH3Qzpc-dp4XB4cXxXLReCdnQ@mail.gmail.com> <20210223204919.549167-1-alobakin@pm.me>
+In-Reply-To: <20210223204919.549167-1-alobakin@pm.me>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 24 Feb 2021 17:04:47 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a05VZ9hSKRzVTxTn+1nf9E+gqebJWTj6N23nfm+ELHt9A@mail.gmail.com>
+Message-ID: <CAK8P3a05VZ9hSKRzVTxTn+1nf9E+gqebJWTj6N23nfm+ELHt9A@mail.gmail.com>
+Subject: Re: [GIT PULL v2] clang-lto for v5.12-rc1
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        George Burgess IV <gbiv@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 03:10:22PM +0800, Chen Zhou wrote:
-> There are following issues in arm64 kdump:
-> 1. We use crashkernel=X to reserve crashkernel below 4G, which
-> will fail when there is no enough low memory.
-> 2. If reserving crashkernel above 4G, in this case, crash dump
-> kernel will boot failure because there is no low memory available
-> for allocation.
-> 
-> To solve these issues, change the behavior of crashkernel=X and
-> introduce crashkernel=X,[high,low]. crashkernel=X tries low allocation
-> in DMA zone, and fall back to high allocation if it fails.
-> We can also use "crashkernel=X,high" to select a region above DMA zone,
-> which also tries to allocate at least 256M in DMA zone automatically.
-> "crashkernel=Y,low" can be used to allocate specified size low memory.
-> 
-> Another minor change, there may be two regions reserved for crash
-> dump kernel, in order to distinct from the high region and make no
-> effect to the use of existing kexec-tools, rename the low region as
-> "Crash kernel (low)".
+On Wed, Feb 24, 2021 at 1:10 AM Alexander Lobakin <alobakin@pm.me> wrote:
+> From: Linus Torvalds <torvalds@linux-foundation.org> Date: Tue, 23 Feb 2021 12:33:05 -0800
+>> > On Tue, Feb 23, 2021 at 9:49 AM Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> > > On Mon, Feb 22, 2021 at 3:11 PM Kees Cook <keescook@chromium.org> wrote:
+> > > >
+> > > > While x86 LTO enablement is done[1], it depends on some objtool
+> > > > clean-ups[2], though it appears those actually have been in linux-next
+> > > > (via tip/objtool/core), so it's possible that if that tree lands [..]
+> > >
+> > > That tree is actually next on my list of things to merge after this
+> > > one, so it should be out soonish.
+> >
+> > "soonish" turned out to be later than I thought, because my "build
+> > changes" set of pulls included the module change that I then wasted a
+> > lot of time on trying to figure out why it slowed down my build so
+> > much.
+>
+> I guess it's about CONFIG_TRIM_UNUSED_KSYMS you disabled in your tree.
+> Well, it's actually widely used, mostly in the embedded world where
+> there are often no out-of-tree modules, but a need to save as much
+> space as possible.
+> For full-blown systems and distributions it's almost needless, right.
 
-I think we discussed this but I don't remember the conclusion. Is this
-only renamed conditionally so that we don't break current kexec-tools?
+Generally, CONFIG_TRIM_UNUSED_KSYMS helps mostly
+when combined with either LTO or --gc-sections
+(CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION), though
+the effect seems to be smaller than I expected. For example on m68k:
 
-IOW, assuming that the full crashkernel region is reserved below 4GB,
-does the "(low)" suffix still appear or it's only if a high region is
-additionally reserved?
+4005135 1374302 167108 5546545 54a231 vmlinux-normal
+3916254 1378078 167108 5461440 5355c0 vmlinux+trim
+4012933 1362514 164280 5539727 54878f vmlinux+gcsection
+3797884 1334194 164640 5296718 50d24e vmlinux+gcsection+trim
 
-> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-> index 3f6ecae0bc68..f0caed0cb5e1 100644
-> --- a/arch/arm64/include/asm/kexec.h
-> +++ b/arch/arm64/include/asm/kexec.h
-> @@ -96,6 +96,10 @@ static inline void crash_prepare_suspend(void) {}
->  static inline void crash_post_resume(void) {}
->  #endif
->  
-> +#ifdef CONFIG_KEXEC_CORE
-> +extern void __init reserve_crashkernel(void);
-> +#endif
+For arm64 defconfig, CONFIG_TRIM_UNUSED_KSYMS saves around
+700KB by itself, or when combined with either gc-sections or LTO,
+but saves a full megabyte when all three are combined:
 
-Why not have this in some generic header?
+   text    data     bss     dec     hex filename
+16570322 10998617 506468 28075407 1ac658f defconfig/vmlinux
+16318793 10569913 506468 27395174 1a20466 trim_defconfig/vmlinux
+16281234 10984848 504291 27770373 1a7be05 gc_defconfig/vmlinux
+16029705 10556880 504355 27090940 19d5ffc gc+trim_defconfig/vmlinux
+17040142 11102945 504196 28647283 1b51f73 thinlto_defconfig/vmlinux
+16788613 10663201 504196 27956010 1aa932a thinlto+trim_defconfig/vmlinux
+16347062 11043384 502499 27892945 1a99cd1 gc+thinlto_defconfig/vmlinux
+15759453 10532792 502395 26794640 198da90 gc+thinlto+trim_defconfig/vmlinux
 
-> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> index c18aacde8bb0..69c592c546de 100644
-> --- a/arch/arm64/kernel/setup.c
-> +++ b/arch/arm64/kernel/setup.c
-> @@ -238,7 +238,18 @@ static void __init request_standard_resources(void)
->  		    kernel_data.end <= res->end)
->  			request_resource(res, &kernel_data);
->  #ifdef CONFIG_KEXEC_CORE
-> -		/* Userspace will find "Crash kernel" region in /proc/iomem. */
-> +		/*
-> +		 * Userspace will find "Crash kernel" or "Crash kernel (low)"
-> +		 * region in /proc/iomem.
-> +		 * In order to distinct from the high region and make no effect
-> +		 * to the use of existing kexec-tools, rename the low region as
-> +		 * "Crash kernel (low)".
-> +		 */
-> +		if (crashk_low_res.end && crashk_low_res.start >= res->start &&
-> +				crashk_low_res.end <= res->end) {
-> +			crashk_low_res.name = "Crash kernel (low)";
-> +			request_resource(res, &crashk_low_res);
-> +		}
->  		if (crashk_res.end && crashk_res.start >= res->start &&
->  		    crashk_res.end <= res->end)
->  			request_resource(res, &crashk_res);
+However, the combination of thinlto and trim indeed has a steep
+cost in compile time, taking almost twice as long as a normal
+defconfig (gc-sections makes it slightly faster).
 
-My reading of the new generic reserve_crashkernel() is that
-crashk_low_res will only be populated if crask_res is above 4GB. If
-that's correct, I'm fine with the renaming here since current systems
-would not get a renamed low reservation (as long as they don't change
-the kernel cmdline).
+==== defconfig ====
+     332.001786355 seconds time elapsed
+    8599.464163000 seconds user
+     676.919635000 seconds sys
+==== trim_defconfig ====
+     448.378576012 seconds time elapsed
+   10735.489271000 seconds user
+     964.006504000 seconds sys
+==== gc_defconfig ====
+     324.347492236 seconds time elapsed
+    8465.785800000 seconds user
+     614.899797000 seconds sys
+==== gc+trim_defconfig ====
+     429.188875620 seconds time elapsed
+   10203.759658000 seconds user
+     871.307973000 seconds sys
+==== thinlto_defconfig ====
+     389.793540200 seconds time elapsed
+    9491.665320000 seconds user
+     664.858109000 seconds sys
+==== thinlto+trim_defconfig ====
+     580.431820561 seconds time elapsed
+   11429.515538000 seconds user
+    1056.985745000 seconds sys
+==== gc+thinlto_defconfig ====
+     389.484364525 seconds time elapsed
+    9473.831980000 seconds user
+     675.057675000 seconds sys
+==== gc+thinlto+trim_defconfig ====
+     580.824912807 seconds time elapsed
+   11433.650337000 seconds user
+    1049.845569000 seconds sys
 
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 912f64f505f7..d20f5c444ebf 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -35,6 +35,7 @@
->  #include <asm/fixmap.h>
->  #include <asm/kasan.h>
->  #include <asm/kernel-pgtable.h>
-> +#include <asm/kexec.h>
->  #include <asm/memory.h>
->  #include <asm/numa.h>
->  #include <asm/sections.h>
-> @@ -61,66 +62,11 @@ EXPORT_SYMBOL(memstart_addr);
->   */
->  phys_addr_t arm64_dma_phys_limit __ro_after_init;
->  
-> -#ifdef CONFIG_KEXEC_CORE
-> -/*
-> - * reserve_crashkernel() - reserves memory for crash kernel
-> - *
-> - * This function reserves memory area given in "crashkernel=" kernel command
-> - * line parameter. The memory reserved is used by dump capture kernel when
-> - * primary kernel is crashing.
-> - */
-> +#ifndef CONFIG_KEXEC_CORE
->  static void __init reserve_crashkernel(void)
->  {
-[...]
->  }
-> +#endif
-
-Can we not have the dummy reserve_crashkernel() in the generic code as
-well and avoid the #ifndef here?
-
->  #ifdef CONFIG_CRASH_DUMP
->  static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
-> @@ -446,6 +392,14 @@ void __init bootmem_init(void)
->  	 * reserved, so do it here.
->  	 */
->  	reserve_crashkernel();
-> +#ifdef CONFIG_KEXEC_CORE
-> +	/*
-> +	 * The low region is intended to be used for crash dump kernel devices,
-> +	 * just mark the low region as "nomap" simply.
-> +	 */
-> +	if (crashk_low_res.end)
-> +		memblock_mark_nomap(crashk_low_res.start, resource_size(&crashk_low_res));
-> +#endif
-
-Do we do something similar for crashk_res?
-
-Also, I can see we call crash_exclude_mem_range() only for crashk_res.
-Do we need to do this for crashk_low_res as well?
-
--- 
-Catalin
+         Arnd
