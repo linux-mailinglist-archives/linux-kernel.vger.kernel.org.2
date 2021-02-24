@@ -2,144 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4533244FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E55324514
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbhBXULM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:11:12 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:38666 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235384AbhBXUJ5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:09:57 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 0AAE61C0B80; Wed, 24 Feb 2021 21:09:13 +0100 (CET)
-Date:   Wed, 24 Feb 2021 21:09:12 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     kernel list <linux-kernel@vger.kernel.org>,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, intel-gfx@lists.freedesktop.org,
-        airlied@redhat.com, sean@poorly.run, tzimmermann@suse.de,
-        dri-devel@lists.freedesktop.org
-Subject: udldrmfb: causes WARN in i915 on X60 (x86-32)
-Message-ID: <20210224200912.GA27905@duo.ucw.cz>
+        id S235677AbhBXUQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 15:16:44 -0500
+Received: from mga17.intel.com ([192.55.52.151]:7357 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235605AbhBXUMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 15:12:44 -0500
+IronPort-SDR: gv6AbQYvGAKiqubHclKpiNViOx0hb+rkMZF7aFteD1HhpgaUD5cXf1Ll94+pi4b/kH8kBaMUGl
+ LoTWRV/okSnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="165162186"
+X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
+   d="scan'208";a="165162186"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 12:10:55 -0800
+IronPort-SDR: GnkWRUM9MVOWcyCXKaQbxOOe9sQjawPljt1KyH6E4NxKDODyVKntO9NfBQuPX1eKcAUcGMMCw1
+ cj/ApTkB1tiA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
+   d="scan'208";a="404080289"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga007.jf.intel.com with ESMTP; 24 Feb 2021 12:10:55 -0800
+Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
+        by linux.intel.com (Postfix) with ESMTP id 3DCA15804A9;
+        Wed, 24 Feb 2021 12:10:55 -0800 (PST)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [PATCH V2 1/2] MFD: intel_pmt: Fix nuisance messages and handling of disabled capabilities
+Date:   Wed, 24 Feb 2021 12:10:04 -0800
+Message-Id: <20210224201005.1034005-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210128172846.99352-1-david.e.box@linux.intel.com>
+References: <20210128172846.99352-1-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some products will be available that have PMT capabilities that are not
+supported. Remove the warnings in this instance to avoid nuisance messages
+and confusion.
 
---82I3+IH0IqGh5yIs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Also return an error code for capabilities that are disabled by quirk to
+prevent them from keeping the driver loaded if only disabled capabilities
+are found.
 
-Hi!
+Fixes: 4f8217d5b0ca ("mfd: Intel Platform Monitoring Technology support")
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+---
+For merge in platform-drivers-x86
 
-This is in -next, but I get same behaviour on 5.11; and no, udl does
-not work, but monitor is detected:
+Based on 5.11-rc1 review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-pavel@amd:~/g/tui/crashled$ xrandr=20
-Screen 0: minimum 320 x 200, current 1024 x 768, maximum 4096 x 4096
-LVDS1 connected 1024x768+0+0 (normal left inverted right x axis y axis) 246=
-mm x 185mm
-   1024x768      50.00*+  60.00    40.00 =20
-   800x600       60.32    56.25 =20
-   640x480       59.94 =20
-VGA1 disconnected (normal left inverted right x axis y axis)
-DVI-1-0 connected 1024x768+0+0 304mm x 228mm
-   1024x768      60.00*+  75.03 =20
-   800x600       75.00    60.32 =20
-   640x480       75.00    59.94 =20
-   720x400       70.08 =20
-  1024x768 (0x45) 65.000MHz -HSync -VSync
-        h: width  1024 start 1048 end 1184 total 1344 skew    0 clock  48.3=
-6KHz
-        v: height  768 start  771 end  777 total  806           clock  60.0=
-0Hz
-  800x600 (0x47) 40.000MHz +HSync +VSync
-        h: width   800 start  840 end  968 total 1056 skew    0 clock  37.8=
-8KHz
-        v: height  600 start  601 end  605 total  628           clock  60.3=
-2Hz
-  640x480 (0x49) 25.175MHz -HSync -VSync
-        h: width   640 start  656 end  752 total  800 skew    0 clock  31.4=
-7KHz
-        v: height  480 start  490 end  492 total  525           clock  59.9=
-4Hz
-pavel@amd:~/g/tui/crashled$=20
+Changes from V1:
 
+	- None. Patch 2 added.
 
-[13957.499755] wlan0: associated
-[13962.906368] udl 1-5:1.0: [drm] fb1: udldrmfb frame buffer device
-[13972.585101] ------------[ cut here ]------------
-[13972.585117] WARNING: CPU: 0 PID: 3159 at kernel/dma/mapping.c:192 dma_ma=
-p_sg_attrs+0x38/0x50
-[13972.585137] Modules linked in:
-[13972.585149] CPU: 0 PID: 3159 Comm: Xorg Not tainted 5.11.0-next-20210223=
-+ #176
-[13972.585158] Hardware name: LENOVO 17097HU/17097HU, BIOS 7BETD8WW (2.19 )=
- 03/31/2011
-[13972.585166] EIP: dma_map_sg_attrs+0x38/0x50
-[13972.585176] Code: f0 01 00 00 00 74 23 ff 75 0c 53 e8 72 1b 00 00 5a 59 =
-85 c0 78 1c 8b 5d fc c9 c3 8d b4 26 00 00 00 00 0f 0b 8d b6 00 00 00 00 <0f=
-> 0b 31 c0 eb e6 66 90 0f 0b 8d b4 26 00 00 00 00 8d b4 26 00 00
-[13972.585186] EAX: c296c41c EBX: 00000000 ECX: 00000055 EDX: dbbc4800
-[13972.585194] ESI: c69f9ea0 EDI: d2c313c0 EBP: c5cbdda8 ESP: c5cbdda4
-[13972.585202] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00210246
-[13972.585211] CR0: 80050033 CR2: b6b99000 CR3: 05d42000 CR4: 000006b0
-[13972.585219] Call Trace:
-[13972.585227]  i915_gem_map_dma_buf+0xee/0x160
-[13972.585240]  dma_buf_map_attachment+0xb8/0x140
-[13972.585251]  drm_gem_prime_import_dev.part.0+0x33/0xc0
-[13972.585262]  ? drm_gem_shmem_create+0x10/0x10
-[13972.585271]  drm_gem_prime_import_dev+0x22/0x70
-[13972.585280]  drm_gem_prime_fd_to_handle+0x186/0x1c0
-[13972.585289]  ? drm_gem_prime_import_dev+0x70/0x70
-[13972.585298]  ? drm_prime_destroy_file_private+0x20/0x20
-[13972.585307]  drm_prime_fd_to_handle_ioctl+0x1c/0x30
-[13972.585315]  drm_ioctl_kernel+0x8e/0xe0
-[13972.585325]  ? drm_prime_destroy_file_private+0x20/0x20
-[13972.585334]  drm_ioctl+0x1fd/0x380
-[13972.585343]  ? drm_prime_destroy_file_private+0x20/0x20
-[13972.585352]  ? ksys_write+0x5c/0xd0
-[13972.585363]  ? vfs_write+0xeb/0x3f0
-[13972.585371]  ? drm_ioctl_kernel+0xe0/0xe0
-[13972.585380]  __ia32_sys_ioctl+0x369/0x7d0
-[13972.585389]  ? exit_to_user_mode_prepare+0x4e/0x170
-[13972.585398]  do_int80_syscall_32+0x2c/0x40
-[13972.585409]  entry_INT80_32+0x111/0x111
-[13972.585419] EIP: 0xb7f68092
-[13972.585427] Code: 00 00 00 e9 90 ff ff ff ff a3 24 00 00 00 68 30 00 00 =
-00 e9 80 ff ff ff ff a3 e8 ff ff ff 66 90 00 00 00 00 00 00 00 00 cd 80 <c3=
-> 8d b4 26 00 00 00 00 8d b6 00 00 00 00 8b 1c 24 c3 8d b4 26 00
-[13972.585436] EAX: ffffffda EBX: 00000030 ECX: c00c642e EDX: bfaeda30
-[13972.585444] ESI: 00915790 EDI: c00c642e EBP: 00000030 ESP: bfaed9e4
-[13972.585452] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00200296
-[13972.585461]  ? asm_exc_nmi+0xcc/0x2bc
-[13972.585470] ---[ end trace 46a21fad0595bc89 ]---
-pavel@amd:~/g/tui/crashled$=20
+ drivers/mfd/intel_pmt.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-Any ideas?
+diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
+index 744b230cdcca..65da2b17a204 100644
+--- a/drivers/mfd/intel_pmt.c
++++ b/drivers/mfd/intel_pmt.c
+@@ -79,19 +79,18 @@ static int pmt_add_dev(struct pci_dev *pdev, struct intel_dvsec_header *header,
+ 	case DVSEC_INTEL_ID_WATCHER:
+ 		if (quirks & PMT_QUIRK_NO_WATCHER) {
+ 			dev_info(dev, "Watcher not supported\n");
+-			return 0;
++			return -EINVAL;
+ 		}
+ 		name = "pmt_watcher";
+ 		break;
+ 	case DVSEC_INTEL_ID_CRASHLOG:
+ 		if (quirks & PMT_QUIRK_NO_CRASHLOG) {
+ 			dev_info(dev, "Crashlog not supported\n");
+-			return 0;
++			return -EINVAL;
+ 		}
+ 		name = "pmt_crashlog";
+ 		break;
+ 	default:
+-		dev_err(dev, "Unrecognized PMT capability: %d\n", id);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -174,12 +173,8 @@ static int pmt_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		header.offset = INTEL_DVSEC_TABLE_OFFSET(table);
+ 
+ 		ret = pmt_add_dev(pdev, &header, quirks);
+-		if (ret) {
+-			dev_warn(&pdev->dev,
+-				 "Failed to add device for DVSEC id %d\n",
+-				 header.id);
++		if (ret)
+ 			continue;
+-		}
+ 
+ 		found_devices = true;
+ 	} while (true);
 
-Best regards,
+base-commit: a7d53dbbc70a81d5781da7fc905b656f41ad2381
+-- 
+2.25.1
 
-									Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---82I3+IH0IqGh5yIs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYDayaAAKCRAw5/Bqldv6
-8iSEAKDBkf7JQqx5xJs5omtox+yEPx8jAwCeIQwmTgx3Sra8FoAllIGkX2a4kB0=
-=1+My
------END PGP SIGNATURE-----
-
---82I3+IH0IqGh5yIs--
