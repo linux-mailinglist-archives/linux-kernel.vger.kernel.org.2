@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F69B324402
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B32C3243FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:48:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbhBXSr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:47:58 -0500
-Received: from foss.arm.com ([217.140.110.172]:44212 "EHLO foss.arm.com"
+        id S234851AbhBXSrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:47:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234634AbhBXSrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:47:13 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14FE9D6E;
-        Wed, 24 Feb 2021 10:46:28 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 314433F73B;
-        Wed, 24 Feb 2021 10:46:26 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org
-Cc:     fweisbec@gmail.com, tglx@linutronix.de, qais.yousef@arm.com,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH 0/7 v4] move update blocked load outside newidle_balance
-In-Reply-To: <20210224133007.28644-1-vincent.guittot@linaro.org>
-References: <20210224133007.28644-1-vincent.guittot@linaro.org>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Wed, 24 Feb 2021 18:46:23 +0000
-Message-ID: <jhjblc95mo0.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S233204AbhBXSrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 13:47:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2326C64F0D;
+        Wed, 24 Feb 2021 18:46:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614192388;
+        bh=FrQixc8e3rZo/OEW1ahxLjAM38zkv7Y4pqS9ZqgfZlM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=AhW6kbqKV/lbu583tecQWjEh+TLQ/wQej38W/Fb/QxRVhKVri+y3rNvURqyAppquP
+         QHT7UZlq0YAzxNqmWZVZxKMRCGrvBIa5tSp+N1pE4vvYm2gxYCjCgFxS6jwh4SX0y0
+         We6v6WnT3cqBIv9JcItV2yBCGOPw4jlPQHHQU8/8j4hbdgqQ9pw7sKifn7AnBdRaTc
+         lOpmbZAez5jtqYXViUH/v8DcQJ7V72XLBPmwOuZNoqAGCSsYKeDLE880DXpwABg1GV
+         6yoKyWK15Rl52sOghGFr4h8MM3TP9Ke0yhdlfL99Nq6MpdOLaKkpqOFoHDH9SY3lec
+         jCCOY8Ofiz4zw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0665F60176;
+        Wed, 24 Feb 2021 18:46:28 +0000 (UTC)
+Subject: Re: [GIT PULL] Compute Express Linux (CXL) for v5.12-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAPcyv4gsXbi6Cc71wW5hob8mGuupXKkL5tHLRaZkdLZ1oAuK8Q@mail.gmail.com>
+References: <CAPcyv4gsXbi6Cc71wW5hob8mGuupXKkL5tHLRaZkdLZ1oAuK8Q@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-cxl.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAPcyv4gsXbi6Cc71wW5hob8mGuupXKkL5tHLRaZkdLZ1oAuK8Q@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm tags/cxl-for-5.12
+X-PR-Tracked-Commit-Id: 88ff5d466c0250259818f3153dbdc4af1f8615dd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 825d1508750c0cad13e5da564d47a6d59c7612d6
+Message-Id: <161419238797.20610.4661050005924774981.pr-tracker-bot@kernel.org>
+Date:   Wed, 24 Feb 2021 18:46:27 +0000
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/02/21 14:30, Vincent Guittot wrote:
-> Joel reported long preempt and irq off sequence in newidle_balance because
-> of a large number of CPU cgroups in use and having to be updated. This
-> patchset moves the update outside newidle_imblance. This enables to early
-> abort during the updates in case of pending irq as an example.
->
-> Instead of kicking a normal ILB that will wakes up CPU which is already
-> idle, patch 6 triggers the update of statistics in the idle thread of
-> the CPU before selecting and entering an idle state.
->
-> Changes on v4:
-> - Add a dedicated bit for updating blocked load when entering idle.
->   This simplifies the management of concurrency with kick_ilb.
->
+The pull request you sent on Tue, 23 Feb 2021 20:05:36 -0800:
 
-I believe that solves the issues vs nohz balance.
+> git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm tags/cxl-for-5.12
 
-One last thing for patch 7: mayhaps we could do a tad better to avoid
-duplicate updates going through a heapful of leaf cfs rqs, see
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/825d1508750c0cad13e5da564d47a6d59c7612d6
 
-  http://lore.kernel.org/r/jhj4kiht7oh.mognet@arm.com
+Thank you!
 
-
-Otherwise, feel free to add to the lot:
-
-  Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
