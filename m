@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB15324354
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6353E324358
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 18:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235994AbhBXRso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 12:48:44 -0500
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:59955 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234789AbhBXRsk (ORCPT
+        id S233311AbhBXRuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 12:50:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhBXRuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 12:48:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1614188919; x=1645724919;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=9vMc5IDtWIWHzA5qb6nps20KNvfTWHSoLjMmqyQPdcE=;
-  b=dNcY+iahmNNJqSRSzHp/TufCYAFF0lUliLfUJQIY21AXSqc6JxVW2nhz
-   bEhLKedVlyjKbt4fBNVnqp0PP6aWgf2mUyEcPRVOatc6Yr6vIRblnprU6
-   KqN2mzRbWvW8C/477Lk4FUwcwNreICQIdKfUxDFGfliJesPsNQQH0Ojv/
-   o=;
-X-IronPort-AV: E=Sophos;i="5.81,203,1610409600"; 
-   d="scan'208";a="87725213"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 24 Feb 2021 17:47:52 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id 6FE2FA1B7C;
-        Wed, 24 Feb 2021 17:47:50 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.207) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 24 Feb 2021 17:47:45 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     SeongJae Park <sjpark@amazon.com>, <sashal@kernel.org>,
-        <aams@amazon.com>, <markubo@amazon.com>,
-        <linux-kernel@vger.kernel.org>,
-        "# 4 . 4 . y" <stable@vger.kernel.org>,
-        David Vrabel <david.vrabel@citrix.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: Please apply "xen-netback: delete NAPI instance when queue fails to initialize" to v4.4.y
-Date:   Wed, 24 Feb 2021 18:47:32 +0100
-Message-ID: <20210224174732.30014-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <YDaLBcj5DJrSWXqU@kroah.com>
+        Wed, 24 Feb 2021 12:50:25 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E42FC061786;
+        Wed, 24 Feb 2021 09:49:45 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0d18008c044bec5d14e7fe.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1800:8c04:4bec:5d14:e7fe])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6A99C1EC0531;
+        Wed, 24 Feb 2021 18:49:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614188981;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=UnSGBFPmpQGqlrhDmBc2nnYtZYpR52FfmiTAsW6NcAQ=;
+        b=D4lTT1hsfeIzIWYgO4MpDODdZ65bEVmsbDLPCzfmXS5nQt5MeHGGfmF34wEoTJkZWEHTqY
+        FUGRlY+2bH6Pq753tiPOh7qFVa0AsgpJ1FFwctpwaC2by/MbxgY2ychRmLKXOAat7sWlYt
+        GBqtFb5Ii9JBcNcc3lfMIdF+igj5pm8=
+Date:   Wed, 24 Feb 2021 18:49:36 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+42a71c84ef04577f1aef@syzkaller.appspotmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, seanjc@google.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, wanpengli@tencent.com,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: general protection fault in vmx_vcpu_run (2)
+Message-ID: <20210224174936.GG20344@zn.tnic>
+References: <0000000000007ff56205ba985b60@google.com>
+ <00000000000004e7d105bc091e06@google.com>
+ <20210224122710.GB20344@zn.tnic>
+ <CACT4Y+ZaGOpJ1+dxfTVWhNuV5hFJmx=HgPqVf6bqWE==7PeFFQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.207]
-X-ClientProxiedBy: EX13D41UWB002.ant.amazon.com (10.43.161.109) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+ZaGOpJ1+dxfTVWhNuV5hFJmx=HgPqVf6bqWE==7PeFFQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Feb 2021 18:21:09 +0100 Greg KH <gregkh@linuxfoundation.org> wrote:
+Hi Dmitry,
 
-> On Wed, Feb 24, 2021 at 06:03:56PM +0100, SeongJae Park wrote:
-> > This is a request for merge of upstream commit 4a658527271b ("xen-netback:
-> > delete NAPI instance when queue fails to initialize") on v4.4.y tree.
-> > 
-> > If 'xenvif_connect()' fails after successful 'netif_napi_add()', the napi is
-> > not cleaned up.  Because 'create_queues()' frees the queues in its error
-> > handling code, if the 'xenvif_free()' is called for the vif, use-after-free
-> > occurs. The upstream commit fixes the problem by cleaning up the napi in the
-> > 'xenvif_connect()'.
-> > 
-> > Attaching the original patch below for your convenience.
-> 
-> The original patch does not apply cleanly.
+On Wed, Feb 24, 2021 at 06:12:57PM +0100, Dmitry Vyukov wrote:
+> Looking at the bisection log, the bisection was distracted by something else.
 
-I tested the commit is cleanly applicable with 'git cherry-pick' before posting
-this.  I just tried 'git format-patch ... && git am ...' and confirmed it
-doesn't work.  Sorry, my fault.
+Meaning the bisection result:
 
-> 
-> > Tested-by: Markus Boehme <markubo@amazon.de>
-> 
-> What was tested?
+167dcfc08b0b ("x86/mm: Increase pgt_buf size for 5-level page tables")
 
-We confirmed the unmodified v4.4.y kernel crashes on a stress test that
-repeatedly doing netdev attach/detach, while the patch applied version doesn't.
+is bogus?
 
-> 
-> I backported the patch, but next time, please provide the patch that
-> will work properly.
+> You can always find the original reported issue over the dashboard link:
+> https://syzkaller.appspot.com/bug?extid=42a71c84ef04577f1aef
+> or on lore:
+> https://lore.kernel.org/lkml/0000000000007ff56205ba985b60@google.com/
 
-Thanks, and apology for the inconvenience.  I will do the check with posting
-patch again rather than only 'git cherry-pick' from next time.
+Ok, so this looks like this is trying to run kvm ioctls *in* a guest,
+i.e., nested. Right?
 
+Thx.
 
-Thanks,
-SeongJae Park
+-- 
+Regards/Gruss,
+    Boris.
 
-> 
-> greg k-h
+https://people.kernel.org/tglx/notes-about-netiquette
