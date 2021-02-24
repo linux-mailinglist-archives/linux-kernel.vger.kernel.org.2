@@ -2,119 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF793237B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:11:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E55DA3237BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbhBXHKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233586AbhBXHJM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:09:12 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430D7C06178B;
-        Tue, 23 Feb 2021 23:08:32 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id u125so848898wmg.4;
-        Tue, 23 Feb 2021 23:08:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=WNJb+cFGEmltmiIpeUcE3s+DhhV7whlTmcB3qCDm1ds=;
-        b=rBdGdw7+v7r8TPreyHYwHOXDmMeNiL3gsvCddNhYhtPQKaZo/YzyJ8OswpMlSJH2qU
-         tb8TMNKEVwNkLJZGOfLsHROMHb/720uT4WZHRf28wuv7IiX2EXtt6QflnJLUy4PH+xMv
-         VxuTAJYbJoEJGV8OKPboQ0DIJPq8MKFmg7lZf8Pst1KZH+aVLXT9FCrQ20jW3VmlhmPg
-         AZ1Cuxkrw15E3+H5iywotie93+z/DizdB8EE6StWNVBuZDGy53VU/pdbEQT98rFJtedH
-         B9quVIUSWc/2bgsHTeVZaZBpvthbG9borTMNjiInuecDBcbd8iEV9C5x5LQNxkfLey39
-         yHhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=WNJb+cFGEmltmiIpeUcE3s+DhhV7whlTmcB3qCDm1ds=;
-        b=HVcWBTcE7jSqYraCuJOGtbDMuj7L5D07XK1U8h6/Gpc57aAYHmO+Dzz52yo+9ul0ff
-         WjY8MREltZ7o20mDrBzGILzrAJ/3dlOW58lCNVbhhgxMZUS2b3UfeE9y3jH0b8OuUE0E
-         rf2C4c34QVnwl20rwDGaQpRUhCHQu1MS8Bf8wdJBYBX9lIk1TQVsEc+qAFpYmmYLijtG
-         mVkSXcb1XZ0l/wOLpWIvkGfRy5cf0vuRkulvbyQ5rfsFkfugqBYOG4b0pZ1GZnDdCr5R
-         9Rds1cQGOgGCYBq9qpl7ll1bmMhpZoLVLQa9yUqkrCiDdPg5Y1GQgw/1TBjtzFZFSice
-         wyFw==
-X-Gm-Message-State: AOAM5320UB1t/OWRGnMUpyyJtT6ruzHb7o2ivYy7LA0MGFO5IMEGdjMv
-        gdSLf6otdFhJdbKc5dq89TE=
-X-Google-Smtp-Source: ABdhPJwEdmMQswHCMTHXPS5CSqlomT9/VLjXhKgVzBBGo21ZapSkST+VbNJ/yBokXNJg2BORRyVXcA==
-X-Received: by 2002:a7b:cd04:: with SMTP id f4mr2039264wmj.81.1614150511056;
-        Tue, 23 Feb 2021 23:08:31 -0800 (PST)
-Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id g11sm1328847wmk.32.2021.02.23.23.08.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Feb 2021 23:08:30 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v2 2/2] irqchip: add support for BCM6345 external
- interrupt controller
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-In-Reply-To: <7de8507d-82dd-291e-1f63-7c1460e6a6b2@gmail.com>
-Date:   Wed, 24 Feb 2021 08:08:28 +0100
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
+        id S232277AbhBXHMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:12:25 -0500
+Received: from mout.gmx.net ([212.227.17.21]:40913 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230019AbhBXHLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 02:11:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614150524;
+        bh=JBUYayNy3evHFwEU8b+lYJeGEoEUDi/DNq0J8g+SPTM=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=QZzTW3UNngrZnLn4yZutnsVTjjnrvfS8H/Lzl8DsGC3af1Y12hCQASjhsNzyk7xgS
+         Anwy3KisJuAbTkjyv28cvjBoAd+VU5L3eaoaMq5IsuP/9ZLRJA+KdFqhNZjfAR6abM
+         hnGZw3RmFeG4UcNCmeBqYJ4Z53IbSoIaxbkd/tOE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Valinor ([213.216.209.188]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOzSu-1lT1DL3Vvg-00PPyQ; Wed, 24
+ Feb 2021 08:08:44 +0100
+Date:   Wed, 24 Feb 2021 09:10:27 +0200
+From:   Lauri Kasanen <cand@gmx.com>
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Hulk Robot <hulkci@huawei.com>, Jaroslav Kysela <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] sound: n64: Fix return value check in
+ n64audio_probe()
+Message-Id: <20210224091027.8d172c0b7aa4d6d651a3d34e@gmx.com>
+In-Reply-To: <20210224013803.2146953-1-weiyongjun1@huawei.com>
+References: <20210224013803.2146953-1-weiyongjun1@huawei.com>
+X-Mailer: Sylpheed 3.5.0 (GTK+ 2.18.6; x86_64-unknown-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <C423E680-1741-43C0-A4DA-DCF65509C510@gmail.com>
-References: <20210223180840.28771-1-noltari@gmail.com>
- <20210223204340.312-1-noltari@gmail.com>
- <20210223204340.312-3-noltari@gmail.com>
- <7de8507d-82dd-291e-1f63-7c1460e6a6b2@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+X-Provags-ID: V03:K1:w274xjZp7tauHIHUJ0KH48Knh/UIezK9ZJRHbL1UhsWlkDbMYnc
+ m5LxWvYoIQVxD7tt/hQG1T2RMSUiltGCcDsgWmSJBhOCd0LlMFWbwMh4KTxlD9YzpLRdcsw
+ 63UJYw14WM9jrH1v2N7paD644KZ9jfmRnPHOAlmnZM9oWth2wlellsd5Yum6LKW9No3I7t3
+ PmciFgLpu8J0yMHmm0zMg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Q/4/yVZPhN8=:Zifqb/WYYtNIwpWcDiD4vz
+ ovz3Q+qneELNLKYHgnkcIJzlnspUZuN/iIQn3OYtD2OSoymtw0v9RQvUgi0a+3ntweQAC/x8F
+ pzjQ65Pz0eEkCgSj72TtvF/plWVgdO+q0/jqkogChVKlTawPOXepVqJsLGZgUZsW7e5JoymXg
+ e9cyq6iKsyd9iN6LD6KvSxhiblv4HWmChz7SyfT3rIZgRV8RrZTsRawWNrUUP1x8NDA3WXoSK
+ 99pNA1q9qIzM2poNj3snXa1XV6Y+c0G7sJp2UYZ5z/Y/RaytjhaBepdW99CNymVl66q5tiW4N
+ gbcrTB7MloJrXhmH688atMbyvb1P4h1KlbYlr6f2bkMTcDMJ9MaVZ4snFd/dasdEWC/hpFR89
+ PJj271hPyyfq35GZOrNlyVodU2OERlA/gHYqRPahqnAlCc6T5TzTqx/WnHuXomYU1ZSoxECOB
+ 0uCK7t9Gc30mxoY+fliY9CCjIJqkVwldAD6cX0iCQTQB4BxcACcRpHMPdcyjU9pXegvKdKekp
+ iJIbddMkTVHokHNCxuT8YV6b2HecfCL63BJE3s1HGqo2MMHE6YhZW+Qx1MzdC5rw1S1a1kIk8
+ +dC9GlOFeUy5rTz0hwu3q7V+mr8kaNlnobNtMLTr6cOMrOaV+h7Ov9taDMs+m59v8KBtY9V4s
+ lpkgcirPNNllzF6NQLxxjnZPEjsfdPPzHoLn1mBjZfCj8dHfVObwZWpsZvQ9QtbuHlSjNBJbu
+ pTxrmTGL3s5I6FYL2OfvEANL6Mqyq9AsVkQBIWvaLpLkUbk3ZEF+AOHUn99GENYOfq3JG3Kao
+ ccPIYDCxxECYyVOJKrqI7dymWxvW4zAJVQ024d2G1qhS+NWWM2ng5cmeWnafV2IMs/BX53tFk
+ bxQg3OJy3lZK112kPkcQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+On Wed, 24 Feb 2021 01:38:03 +0000
+Wei Yongjun <weiyongjun1@huawei.com> wrote:
 
-> El 24 feb 2021, a las 4:43, Florian Fainelli <f.fainelli@gmail.com> =
-escribi=C3=B3:
->=20
->=20
->=20
-> On 2/23/2021 12:43 PM, =C3=81lvaro Fern=C3=A1ndez Rojas wrote:
->> This interrupt controller is present on bcm63xx SoCs in order to =
-generate
->> interrupts based on GPIO status changes.
->>=20
->> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
->> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
->> ---
->=20
-> [snip]
->> +static int __init bcm6345_ext_intc_of_init(struct device_node *node,
->> +					   struct device_node *parent)
->> +{
->> +	int num_irqs, ret =3D -EINVAL;
->> +	unsigned i;
->> +	void __iomem *base;
->> +	int irqs[MAX_IRQS] =3D { 0 };
->> +	u32 shift;
->> +	bool toggle_clear_on_ack =3D false;
->> +
->> +	num_irqs =3D of_irq_count(node);
->> +
->> +	if (!num_irqs || num_irqs > MAX_IRQS)
->> +		return -EINVAL;
->> +
->> +	if (of_property_read_u32(node, "brcm,field-width", &shift))
->> +		shift =3D 4;
->=20
-> This property is not documented in the binding, other than that:
+> In case of error, the function devm_platform_ioremap_resource()
+> returns ERR_PTR() and never returns NULL. The NULL test in the
+> return value check should be replaced with IS_ERR().
+>
+> Fixes: 1448f8acf4cc ("sound: Add n64 driver")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
+>  sound/mips/snd-n64.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-Nice catch, I will add it in next version.
+Reviewed-by: Lauri Kasanen <cand@gmx.com>
 
->=20
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-> --=20
-> Florian
-
+- Lauri
