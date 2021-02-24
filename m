@@ -2,101 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6C832404A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9308732404B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237241AbhBXOs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:48:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
+        id S237369AbhBXOtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:49:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237155AbhBXNek (ORCPT
+        with ESMTP id S237180AbhBXNew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:34:40 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA198C06121E;
-        Wed, 24 Feb 2021 05:31:01 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id g3so2466075edb.11;
-        Wed, 24 Feb 2021 05:31:01 -0800 (PST)
+        Wed, 24 Feb 2021 08:34:52 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4499C061221
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:31:13 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id l12so1909433wry.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:31:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+D22QqFza76XYDyI5h+Kb2jRVllujtZ/ibY1WzgnNsQ=;
-        b=oKUu2AHHj+H7wa2vWELhYt/uQghh+NrEpE5TV0p/V8g+CMHuLrhHdMQK3iF/td5O2y
-         ZCfIflnBKDKUxlDgEXeOM3iiqKr6WNiI+jf3NsDVQ0mwyH0tEm5zPwKefwtloKLoLnel
-         9OgsDv/Ekeih0VuRxPfbmo6PNM53RZ3kHc8e3FOoOZdIA+PRlS+RoazSSfVR3ZRtKOeQ
-         zSh26k78uRGpMjd+rBqGN51k05uewZ+8vXJLSEaCj+QMFwrQx/JA/xwmO5vPIqSXalyO
-         WcgymuW+ZnoagwIQGK9rWOWK28GmXxtjUJu2XUB4MwFK9xDNezQUvY/V74LzDcwxC6qC
-         x0/Q==
+        d=dme-org.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:subject:in-reply-to:references:from:date:message-id
+         :mime-version;
+        bh=0wojTu++d3zG8QHPBKHQdj7qcA4E471xrkGjRsrDSb0=;
+        b=oZd1EcmHmtQPmA9Pu8sMJZLsld9SX5t3gJrkLSULaOO9WgLtecjPiTY99HLEv2kSYy
+         SizvE1GTXqP5veBcF5toHTKRgB8qF9OrBfwYf1pEa6j17wGznSMGSsna7cPXVk9UoIVt
+         zffxefVmWqam2Pod7wrUyjsi9KH0y6mqvhOkQuKwXtCnJvT/DKddlu09ec2ED7F4TyDf
+         /pPHQNXenaslou5LTLM8FAGQpKzoQeAFudiS2UlRS4VEyOBR4HUku5IoE9GljD5v8oo+
+         PF6SgvdkmpcBmV+urNG8Eyfce456yLyRKyqet24NiKjdcUST+PLM3V1H78B+vyl5regy
+         V8Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+D22QqFza76XYDyI5h+Kb2jRVllujtZ/ibY1WzgnNsQ=;
-        b=Iyy05Pt5A1+BasZRrs3sh44BxOlltSthvdyndO2b7wTRnyJL5EhWUAO4ZrKZta/wPR
-         w75/yoT3+8JuYDG1hGo/xRJVl4NUY2jfQ9lEHKLIExsofGOR/0dDToRuh0xBb3JqeJAz
-         iP56Hn3JZ0HMbshuzdtRjKfktPJ0mInjP8bILRfkNx30Neo3MyCWTOCpzbrKJqq4zQxJ
-         tqRfrk5wrTzn1hmy0YGfi6We7OMjwhQcZwew8xpuVqP40rN/w6NF4pHdbR4MOjQq3XSL
-         6qSZCnd+yAvwf7/vA4KsuBIJUzQH5olew9bGS+Kx+4FPBTqF+Zic3hqRMYW9GiYkTKL6
-         KEwA==
-X-Gm-Message-State: AOAM531XcxYVG4erS+FDKtZkvudq+aUJrqUYsutxvhGop0av7YoJZsWc
-        Ft/44yvQdaF16LGTb7srEr8=
-X-Google-Smtp-Source: ABdhPJzvo7FBR6hnVwNq9QkUgUvH7CcoYZMpXtj8AeYuQWxzKHggaywlIGCY8UX52Lh47xC8QfG4gw==
-X-Received: by 2002:aa7:cf16:: with SMTP id a22mr950855edy.288.1614173460533;
-        Wed, 24 Feb 2021 05:31:00 -0800 (PST)
-Received: from anparri (host-82-59-6-76.retail.telecomitalia.it. [82.59.6.76])
-        by smtp.gmail.com with ESMTPSA id t8sm1302210ejr.71.2021.02.24.05.30.59
+        h=x-gm-message-state:to:cc:subject:in-reply-to:references:from:date
+         :message-id:mime-version;
+        bh=0wojTu++d3zG8QHPBKHQdj7qcA4E471xrkGjRsrDSb0=;
+        b=LLP3n/+voh1U1XWfzolpn1S8QmZdF2wrj/mKCZonNPAwfjIHljfFzrbqkal0PUQRke
+         KkfV8Tbknf2V5DC0JRARjOGmTIxIUZ79RpgVQyRlAqXjX80YwCfnPyjYvXd2hlPNzYV5
+         bBIRFUidgiSDXylVebldVbnWH+Vo8Ofe0VKmZGstTChOTwGezZHCZMFFLoVqUS4aLDA8
+         UW8lr+ib8SbJVlLzbE0inVnXt6QHEt9xeB1AzehHxcQVljMgGaYA4q8l/XD13s7TavUU
+         4gNTompAvf4a0L+KF1Bl/X0XNugBPMkmn+qPeyiNaji0m34nEoAOD8RatGy+AWko4BSb
+         yAIQ==
+X-Gm-Message-State: AOAM533T4hLg6O90QnvsvU0h7Cfdyc94SIIFGFmp9vfZ10GGXJcTMirv
+        OQ0ZJAue709uOboolwK/0EswUg==
+X-Google-Smtp-Source: ABdhPJxTsG02fCn7cHHlqxULP/A5A6ze8umKX4wMVBiqa3ngsMpHsi/I0sl08ULa7nJjjgYPvZMzeQ==
+X-Received: by 2002:adf:f841:: with SMTP id d1mr2607478wrq.36.1614173472040;
+        Wed, 24 Feb 2021 05:31:12 -0800 (PST)
+Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net. [2001:8b0:bb71:7140:64::1])
+        by smtp.gmail.com with ESMTPSA id h17sm2842251wrt.74.2021.02.24.05.31.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 05:31:00 -0800 (PST)
-Date:   Wed, 24 Feb 2021 14:30:52 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Juan Vazquez <juvazq@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.11 50/67] Drivers: hv: vmbus: Initialize memory
- to be sent to the host
-Message-ID: <20210224133052.GA2058@anparri>
-References: <20210224125026.481804-1-sashal@kernel.org>
- <20210224125026.481804-50-sashal@kernel.org>
- <20210224131457.GA1920@anparri>
+        Wed, 24 Feb 2021 05:31:11 -0800 (PST)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 68da51e6;
+        Wed, 24 Feb 2021 13:31:10 +0000 (UTC)
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH v2 2/3] KVM: x86: dump_vmcs should not conflate EFER and
+ PAT presence in VMCS
+In-Reply-To: <YDWIlb0epWBcxFNr@google.com>
+References: <20210219144632.2288189-1-david.edmondson@oracle.com>
+ <20210219144632.2288189-3-david.edmondson@oracle.com>
+ <YDWIlb0epWBcxFNr@google.com>
+X-HGTTG: heart-of-gold
+From:   David Edmondson <dme@dme.org>
+Date:   Wed, 24 Feb 2021 13:31:10 +0000
+Message-ID: <m2zgztego1.fsf@dme.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224131457.GA1920@anparri>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 02:16:00PM +0100, Andrea Parri wrote:
-> On Wed, Feb 24, 2021 at 07:50:08AM -0500, Sasha Levin wrote:
-> > From: "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-> > 
-> > [ Upstream commit e99c4afbee07e9323e9191a20b24d74dbf815bdf ]
-> > 
-> > __vmbus_open() and vmbus_teardown_gpadl() do not inizialite the memory
-> > for the vmbus_channel_open_channel and the vmbus_channel_gpadl_teardown
-> > objects they allocate respectively.  These objects contain padding bytes
-> > and fields that are left uninitialized and that are later sent to the
-> > host, potentially leaking guest data.  Zero initialize such fields to
-> > avoid leaking sensitive information to the host.
-> > 
-> > Reported-by: Juan Vazquez <juvazq@microsoft.com>
-> > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> > Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> > Link: https://lore.kernel.org/r/20201209070827.29335-2-parri.andrea@gmail.com
-> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> 
-> Sasha - This patch is one of a group of patches where a Linux guest running on
-> Hyper-V will start assuming that hypervisor behavior might be malicious, and
-> guards against such behavior.  Because this is a new assumption, these patches
-> are more properly treated as new functionality rather than as bug fixes.  So I
-> would propose that we *not* bring such patches back to stable branches.
+On Tuesday, 2021-02-23 at 14:58:29 -08, Sean Christopherson wrote:
 
-For future/similar cases: I'm wondering, is there some way to annotate a patch
-with "please do not bring it back"?
+> On Fri, Feb 19, 2021, David Edmondson wrote:
+>> Show EFER and PAT based on their individual entry/exit controls.
+>> 
+>> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+>> ---
+>>  arch/x86/kvm/vmx/vmx.c | 19 ++++++++++---------
+>>  1 file changed, 10 insertions(+), 9 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>> index 818051c9fa10..25090e3683ca 100644
+>> --- a/arch/x86/kvm/vmx/vmx.c
+>> +++ b/arch/x86/kvm/vmx/vmx.c
+>> @@ -5805,11 +5805,12 @@ void dump_vmcs(void)
+>>  	vmx_dump_sel("LDTR:", GUEST_LDTR_SELECTOR);
+>>  	vmx_dump_dtsel("IDTR:", GUEST_IDTR_LIMIT);
+>>  	vmx_dump_sel("TR:  ", GUEST_TR_SELECTOR);
+>> -	if ((vmexit_ctl & (VM_EXIT_SAVE_IA32_PAT | VM_EXIT_SAVE_IA32_EFER)) ||
+>> -	    (vmentry_ctl & (VM_ENTRY_LOAD_IA32_PAT | VM_ENTRY_LOAD_IA32_EFER)))
+>> -		pr_err("EFER =     0x%016llx  PAT = 0x%016llx\n",
+>> -		       vmcs_read64(GUEST_IA32_EFER),
+>> -		       vmcs_read64(GUEST_IA32_PAT));
+>> +	if ((vmexit_ctl & VM_EXIT_SAVE_IA32_EFER) ||
+>
+> Not your code, and completely benign since VM_EXIT_SAVE is never set, but I
+> don't like checking the VM_EXIT_SAVE_* flag as saving a field on VM-Exit has
+> zero impact on whether VM-Entry succeeds or fails.  Same complaint on the PAT
+> field.
 
-Thanks,
-  Andrea
+Added to v3.
+
+>> +	    (vmentry_ctl & VM_ENTRY_LOAD_IA32_EFER))
+>> +		pr_err("EFER= 0x%016llx\n", vmcs_read64(GUEST_IA32_EFER));
+>
+> Tying into the previous patch, I think we should print both the effective EFER
+> and vmcs.EFER.  The effective EFER is relevant for several consistency checks.
+> Maybe something like this?
+>
+> 	pr_err("EFER= 0x%016llx  ", effective_efer);
+> 	if (vmentry_ctl & VM_ENTRY_LOAD_IA32_EFER)
+> 		pr_cont("vmcs.EFER= 0x%016llx\n", vmcs_read64(GUEST_IA32_EFER));
+> 	else
+> 		pr_cont("vmcs.EFER not loaded\n")
+
+Added something similar, that makes it clear where the value came from,
+in v3.
+
+>> +	if ((vmexit_ctl & VM_EXIT_SAVE_IA32_PAT) ||
+>> +	    (vmentry_ctl & VM_ENTRY_LOAD_IA32_PAT))
+>> +		pr_err("PAT = 0x%016llx\n", vmcs_read64(GUEST_IA32_PAT));
+>>  	pr_err("DebugCtl = 0x%016llx  DebugExceptions = 0x%016lx\n",
+>>  	       vmcs_read64(GUEST_IA32_DEBUGCTL),
+>>  	       vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS));
+>> @@ -5846,10 +5847,10 @@ void dump_vmcs(void)
+>>  	       vmcs_readl(HOST_IA32_SYSENTER_ESP),
+>>  	       vmcs_read32(HOST_IA32_SYSENTER_CS),
+>>  	       vmcs_readl(HOST_IA32_SYSENTER_EIP));
+>> -	if (vmexit_ctl & (VM_EXIT_LOAD_IA32_PAT | VM_EXIT_LOAD_IA32_EFER))
+>> -		pr_err("EFER = 0x%016llx  PAT = 0x%016llx\n",
+>> -		       vmcs_read64(HOST_IA32_EFER),
+>> -		       vmcs_read64(HOST_IA32_PAT));
+>> +	if (vmexit_ctl & VM_EXIT_LOAD_IA32_EFER)
+>> +		pr_err("EFER= 0x%016llx\n", vmcs_read64(HOST_IA32_EFER));
+>> +	if (vmexit_ctl & VM_EXIT_LOAD_IA32_PAT)
+>> +		pr_err("PAT = 0x%016llx\n", vmcs_read64(HOST_IA32_PAT));
+>>  	if (cpu_has_load_perf_global_ctrl() &&
+>>  	    vmexit_ctl & VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL)
+>>  		pr_err("PerfGlobCtl = 0x%016llx\n",
+>> -- 
+>> 2.30.0
+>> 
+
+dme.
+-- 
+And the sign said: long haired freaky people need not apply.
