@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34BB324047
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23913324048
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236911AbhBXOsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:48:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
+        id S237046AbhBXOsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:48:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237018AbhBXNdU (ORCPT
+        with ESMTP id S235260AbhBXNdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:33:20 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C767C061356
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:30:33 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id t15so1872660wrx.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:30:33 -0800 (PST)
+        Wed, 24 Feb 2021 08:33:08 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912A3C06121C
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:30:35 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id j187so1804255wmj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:30:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=nmdj7HExKKLHZh7fCMth8tcKoMXKbV3mej6JN8TxnLQ=;
-        b=aPeqnr1o854ZRbctr+oJP68VqImfcqt2FpickfEodXsEBCjN64Xtqh4HIewXbDxHdU
-         kTPS5zuxf0V03meM+MPQmB18BdVoTco7Kv3AQo+3+I082Udskrw4BoZOdHQdhyIJP1gQ
-         KdxypkWCM+y/D7EB9mQGOQVTiRXwbw1EQO5yGzWywQF/wJttTmDbEmgQIN2ApqMdsEFY
-         GWgmuUJPNdHPC0JSM1E7PLBlzf5oiwiy0UxzDjQVeFlYeQZuO5ER1Efa4M+jTo8ZDCQW
-         /4MCp+Xy6o5kpsA2LEXhB9/vM2LuSwsuKF8RD2SUW7Y2BtmJsGHexj+XudA0wD684wlO
-         JGKw==
+        bh=x3DZPVMqMe5IsoUl4Vd0CNaarS2R8YmSAL4wfZrBejE=;
+        b=I8w9y8g649aKff41Ubj9aOy6CiH50Qnby94mku9ntJAlTGDtRZFo+1kufsSKQykzBW
+         VwHlbY457YO49hwv3JjYwYJR3wBZQ9n5jUaacy27sNsLGWK0LlMJdmkfWLKJOYSYRfJF
+         c4mxXyuroV3XfaxY8Yu/xXnghsTmvG5+kU+Qvb6ZlMI1igKr4UH6Rn3A4JEV+YiP0fgf
+         sONQH9CDlO3eRcqua2n6XXNmsuK31Hibarj9mjxMDR9e798VAtnU4AWeTukO3mksYQSH
+         0jbYg9feboSd8DXPANqFazkUU4A0rrE9nvROvw1Wuu1Cu3dehL6TDCcoPeM0WE/TtHX+
+         YF8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=nmdj7HExKKLHZh7fCMth8tcKoMXKbV3mej6JN8TxnLQ=;
-        b=qqHkiSb3eyi3Pv5wZ705oLSUyf3SioazuVziDRuYY6j8l4+SjVbvdzPAB23HfyKgnq
-         L2xvbSFle7g21ITNPX1ZQlhUS0D3DDESMyi9r9Cwgbv73COXiuMQIZ5vAcUGHjP5dafz
-         p2Mqw/9FQgJaG7QUNO/hFM6L/+O1uNCbFd9rsIFLGmJl7wNfpiuAPBQF/FALZzGA5OJa
-         0m3pjB58fJLEy18FHhwspPGKfMb/1XQXAbxhClgqciKhT1wcKDlRM98qAY+2d3yLiHyz
-         gP8b1Dzib4Wqe+2QucW/DRS11ArlaEUBOQAG5PnnVrmcoHUM1dVYrV8d4ksZ4e9XGqRS
-         AB/g==
-X-Gm-Message-State: AOAM532uSRZr0gvaYQWkYIR2pAWINjmwAm2ljj7sdv2fzecxb8/AgjiI
-        KSvCgo68dX1AVsuAUrbYNslOiA==
-X-Google-Smtp-Source: ABdhPJxe+zRWwW/6T+527Mj/5MN1E+bM39qdWMfdeuZ2wO0zg6OmbjWMPM03cH3Vq6Gm5bmhpvSWtw==
-X-Received: by 2002:a5d:4e50:: with SMTP id r16mr31272356wrt.127.1614173432401;
-        Wed, 24 Feb 2021 05:30:32 -0800 (PST)
+        bh=x3DZPVMqMe5IsoUl4Vd0CNaarS2R8YmSAL4wfZrBejE=;
+        b=eHrY2qFLpCW2n4l1exy+kQKRhdM4FphmtZDBuuDhbLIkSCm250fZdWanKKn567Ejcc
+         O0E8X47JySoGTBytqU5ppPYw657LNlMcLlKiTJK6m08UNcsuJfoTv8+xWv2fGpCNvDr1
+         ci/PHRcxqE8/ZEukF3tO1x4DAEOsn5LBbgJ+OR2AILM4Mhe7oXGIib/iGHn5O8VY83NK
+         IAePPFuitfhI65Syt/aCChNr7ABNqRM6b1/QTvdu/dDa36h8EDXF0q+cBAqgIMLhKIO3
+         Tnrf+VrumPqe3Uhn9i7kdeicIMaX/K6bqMJ0KKUVZsfHtyIuu/cf15Ky4rCh+1DxuTKP
+         FeEA==
+X-Gm-Message-State: AOAM531vnGzEZCB4Wa0EEMvYENRDnhjCRMAvXNYOrWRyCFJmW4PGT9vV
+        RrwVBARH2ciLD6U6z8yX0mVFs8u5JXgoFw==
+X-Google-Smtp-Source: ABdhPJzpg7YR07bwyVjj5iyNZmTvIwH/VEb413D8p03vrpjlLQVUZ/r9rX466yQJ8NB+toCpr2upug==
+X-Received: by 2002:a7b:cb05:: with SMTP id u5mr3833587wmj.46.1614173434333;
+        Wed, 24 Feb 2021 05:30:34 -0800 (PST)
 Received: from localhost.localdomain ([2a01:e0a:f:6020:58e9:8af9:3cd4:ded2])
-        by smtp.gmail.com with ESMTPSA id h10sm552611wrp.22.2021.02.24.05.30.31
+        by smtp.gmail.com with ESMTPSA id h10sm552611wrp.22.2021.02.24.05.30.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 05:30:31 -0800 (PST)
+        Wed, 24 Feb 2021 05:30:33 -0800 (PST)
 From:   Vincent Guittot <vincent.guittot@linaro.org>
 To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
@@ -54,9 +54,9 @@ To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         joel@joelfernandes.org, valentin.schneider@arm.com
 Cc:     fweisbec@gmail.com, tglx@linutronix.de, qais.yousef@arm.com,
         Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH 5/7 v4] sched/fair: reorder newidle_balance pulled_task tests
-Date:   Wed, 24 Feb 2021 14:30:05 +0100
-Message-Id: <20210224133007.28644-6-vincent.guittot@linaro.org>
+Subject: [PATCH 6/7 v4] sched/fair: trigger the update of blocked load on newly idle cpu
+Date:   Wed, 24 Feb 2021 14:30:06 +0100
+Message-Id: <20210224133007.28644-7-vincent.guittot@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210224133007.28644-1-vincent.guittot@linaro.org>
 References: <20210224133007.28644-1-vincent.guittot@linaro.org>
@@ -64,46 +64,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reorder the tests and skip useless ones when no load balance has been
-performed and rq lock has not been released.
+Instead of waking up a random and already idle CPU, we can take advantage
+of this_cpu being about to enter idle to run the ILB and update the
+blocked load.
 
 Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 ---
- kernel/sched/fair.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/sched/core.c  |  2 +-
+ kernel/sched/fair.c  | 24 +++++++++++++++++++++---
+ kernel/sched/idle.c  |  6 ++++++
+ kernel/sched/sched.h |  7 +++++++
+ 4 files changed, 35 insertions(+), 4 deletions(-)
 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 88a2e2bdbabe..61ec83e52a08 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -737,7 +737,7 @@ static void nohz_csd_func(void *info)
+ 	/*
+ 	 * Release the rq::nohz_csd.
+ 	 */
+-	flags = atomic_fetch_andnot(NOHZ_KICK_MASK, nohz_flags(cpu));
++	flags = atomic_fetch_andnot(NOHZ_KICK_MASK | NOHZ_NEWILB_KICK, nohz_flags(cpu));
+ 	WARN_ON(!(flags & NOHZ_KICK_MASK));
+ 
+ 	rq->idle_balance = idle_cpu(cpu);
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 0323fda07682..586f6ce0d302 100644
+index 586f6ce0d302..46c220a4f7ed 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -10584,7 +10584,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 	if (curr_cost > this_rq->max_idle_balance_cost)
- 		this_rq->max_idle_balance_cost = curr_cost;
+@@ -10453,6 +10453,24 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
+ 	return true;
+ }
  
--out:
- 	/*
- 	 * While browsing the domains, we released the rq lock, a task could
- 	 * have been enqueued in the meantime. Since we're not going idle,
-@@ -10593,14 +10592,15 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 	if (this_rq->cfs.h_nr_running && !pulled_task)
- 		pulled_task = 1;
- 
--	/* Move the next balance forward */
--	if (time_after(this_rq->next_balance, next_balance))
--		this_rq->next_balance = next_balance;
--
- 	/* Is there a task of a high priority class? */
- 	if (this_rq->nr_running != this_rq->cfs.h_nr_running)
- 		pulled_task = -1;
- 
-+out:
-+	/* Move the next balance forward */
-+	if (time_after(this_rq->next_balance, next_balance))
-+		this_rq->next_balance = next_balance;
++/*
++ * Check if we need to run the ILB for updating blocked load before entering
++ * idle state.
++ */
++void nohz_run_idle_balance(int cpu)
++{
++	unsigned int flags;
 +
- 	if (pulled_task)
- 		this_rq->idle_stamp = 0;
- 	else
++	flags = atomic_fetch_andnot(NOHZ_NEWILB_KICK, nohz_flags(cpu));
++
++	/*
++	 * Update the blocked load only if no SCHED_SOFTIRQ is about to happen
++	 * (ie NOHZ_STATS_KICK set) and will do the same.
++	 */
++	if ((flags == NOHZ_NEWILB_KICK) && !need_resched())
++		_nohz_idle_balance(cpu_rq(cpu), NOHZ_STATS_KICK, CPU_IDLE);
++}
++
+ static void nohz_newidle_balance(struct rq *this_rq)
+ {
+ 	int this_cpu = this_rq->cpu;
+@@ -10474,10 +10492,10 @@ static void nohz_newidle_balance(struct rq *this_rq)
+ 		return;
+ 
+ 	/*
+-	 * Blocked load of idle CPUs need to be updated.
+-	 * Kick an ILB to update statistics.
++	 * Set the need to trigger ILB in order to update blocked load
++	 * before entering idle state.
+ 	 */
+-	kick_ilb(NOHZ_STATS_KICK);
++	atomic_or(NOHZ_NEWILB_KICK, nohz_flags(this_cpu));
+ }
+ 
+ #else /* !CONFIG_NO_HZ_COMMON */
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index 7199e6f23789..7a92d6054aba 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -261,6 +261,12 @@ static void cpuidle_idle_call(void)
+ static void do_idle(void)
+ {
+ 	int cpu = smp_processor_id();
++
++	/*
++	 * Check if we need to update blocked load
++	 */
++	nohz_run_idle_balance(cpu);
++
+ 	/*
+ 	 * If the arch has a polling bit, we maintain an invariant:
+ 	 *
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 10a1522b1e30..0ddc9a6ff03a 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2385,9 +2385,11 @@ extern void cfs_bandwidth_usage_dec(void);
+ #ifdef CONFIG_NO_HZ_COMMON
+ #define NOHZ_BALANCE_KICK_BIT	0
+ #define NOHZ_STATS_KICK_BIT	1
++#define NOHZ_NEWILB_KICK_BIT	2
+ 
+ #define NOHZ_BALANCE_KICK	BIT(NOHZ_BALANCE_KICK_BIT)
+ #define NOHZ_STATS_KICK		BIT(NOHZ_STATS_KICK_BIT)
++#define NOHZ_NEWILB_KICK	BIT(NOHZ_NEWILB_KICK_BIT)
+ 
+ #define NOHZ_KICK_MASK	(NOHZ_BALANCE_KICK | NOHZ_STATS_KICK)
+ 
+@@ -2398,6 +2400,11 @@ extern void nohz_balance_exit_idle(struct rq *rq);
+ static inline void nohz_balance_exit_idle(struct rq *rq) { }
+ #endif
+ 
++#if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
++extern void nohz_run_idle_balance(int cpu);
++#else
++static inline void nohz_run_idle_balance(int cpu) { }
++#endif
+ 
+ #ifdef CONFIG_SMP
+ static inline
 -- 
 2.17.1
 
