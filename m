@@ -2,80 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63D332439A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D62C32439F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234565AbhBXSL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:11:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234502AbhBXSL2 (ORCPT
+        id S234674AbhBXSOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:14:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42092 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233912AbhBXSOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:11:28 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D25C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:10:48 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id j19so4390111lfr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:10:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T18j6faUKgGfUyzDSnahU+MQ0EeCWnejsT6SUVEgYQM=;
-        b=XnL74fIb2y442Lkvpqj1K22yiFeODco8tGcnKRQwBtCwyFvHqcQZBuSInsFfIUNBdv
-         654ZiYf4Qc/OEcDKemaLNntKLquuUcAUskAlErz/90JFJaP2Wx+RGhtZEVCDWBCpsn4T
-         cBodHyKHJGLsfEtTnra1Lp+quNIHnRQmXiXjI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T18j6faUKgGfUyzDSnahU+MQ0EeCWnejsT6SUVEgYQM=;
-        b=LO7lnZx6kqSfp+FMyUvK3IzhMLYRkKiwhGmGLkkGmS0Id9sMlUfVD1XZuzWqHwTa1X
-         RHOi9H1mrb5lRKu3aXUbZ0pf5kGbBuW17Smur6FcK8U4mfG46YlUe/odLk8qeys6acmK
-         6FbOaVXrnymP+WKZi4SZuLsq1A5xfmJYk22avqlWxc1AbtIKC/d3TWQ30/7rPmxV9p1Y
-         zcuKe3OMwh7mYBK3NjFDHhoFzHeH8/ezqoKhk99k/ZDWKJHAQNfCjw0R8mIhZ5dIbUjC
-         HAEJDqMOhGvB/LfHwU0RumLXim4TBzIMTURmL9qbeaGFn8mZ4ANkhBlldytk9OFT5C2T
-         4oLA==
-X-Gm-Message-State: AOAM5322JaoRle8+EIl9c+xWOMqOHWgknstvB1DJB83bEynGVaRDpOjY
-        uDuWsR/gEnLqU8qIyqMtSKoazDxB9eYjZA==
-X-Google-Smtp-Source: ABdhPJw3shVcaMwZN8338K2tRpgEjfFvffvrXbXWc7rwGs6WAZJsV2ZS7do0h0Y2f4NxamiCD4M7Og==
-X-Received: by 2002:a19:4c08:: with SMTP id z8mr2064098lfa.157.1614190246646;
-        Wed, 24 Feb 2021 10:10:46 -0800 (PST)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id n8sm626636lfe.276.2021.02.24.10.10.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Feb 2021 10:10:45 -0800 (PST)
-Received: by mail-lf1-f54.google.com with SMTP id p21so4405373lfu.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:10:45 -0800 (PST)
-X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr19230530lfu.40.1614190245360;
- Wed, 24 Feb 2021 10:10:45 -0800 (PST)
+        Wed, 24 Feb 2021 13:14:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614190361;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Q3FXi0hQvn8pTwg2Nl9y14ZmyNsebtglhIHEb4N6mQ=;
+        b=cJbQZELYjOgHtw5wjMO/0Cd38HWal+RWCSFB/+zcxl2tIHbvHHPPAi4l2c3o/BTWaLM/Jw
+        vE3QQ/WoWeSqcV464yBIUPXcWnhSlnXssO62slWz1GKqvNBhALzqoroK4/kvALeoaJ1FIv
+        SHcmYGX+Pczt2G6WCqZM5JiYQCP96BQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-dZT2pBPqNbiXRp00Wlpx2Q-1; Wed, 24 Feb 2021 13:12:37 -0500
+X-MC-Unique: dZT2pBPqNbiXRp00Wlpx2Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53ADEC7401;
+        Wed, 24 Feb 2021 18:12:36 +0000 (UTC)
+Received: from treble (ovpn-118-134.rdu2.redhat.com [10.10.118.134])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 93B6750DE6;
+        Wed, 24 Feb 2021 18:12:35 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 12:12:33 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Ivan Babrou <ivan@cloudflare.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 2/2] x86/unwind/orc: Silence warnings caused by missing
+ ORC data
+Message-ID: <20210224181233.f5q2scq43e2j372j@treble>
+References: <cover.1612534649.git.jpoimboe@redhat.com>
+ <06d02c4bbb220bd31668db579278b0352538efbb.1612534649.git.jpoimboe@redhat.com>
+ <YDZoEehURLLI/lWq@hirez.programming.kicks-ass.net>
+ <20210224151805.zrujocamlb5pxf7m@treble>
+ <YDaV47Cw8AEzsnkg@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <cover.1614090658.git.dsterba@suse.com> <CAHk-=wijdojzo56FzYqE5TOYw2Vws7ik3LEMGj9SPQaJJ+Z73Q@mail.gmail.com>
- <20210223192506.GY3014244@iweiny-DESK2.sc.intel.com> <20210224123049.GX1993@twin.jikos.cz>
- <20210224175912.GA3014244@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20210224175912.GA3014244@iweiny-DESK2.sc.intel.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 24 Feb 2021 10:10:29 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiJ9KnCn14TXQdxS6OjxqX_ZoGuezNLrTDYCE0ACQb2Fw@mail.gmail.com>
-Message-ID: <CAHk-=wiJ9KnCn14TXQdxS6OjxqX_ZoGuezNLrTDYCE0ACQb2Fw@mail.gmail.com>
-Subject: Re: [GIT PULL] Kmap conversions for 5.12
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     David Sterba <dsterba@suse.cz>, David Sterba <dsterba@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YDaV47Cw8AEzsnkg@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 9:59 AM Ira Weiny <ira.weiny@intel.com> wrote:
->
-> To be clear I'd like to just drop the 2 patches which use zero_user() for this
-> merge window.
->
-> Is ok to just drop them and merge the rest of this series in 5.12?
+On Wed, Feb 24, 2021 at 07:07:31PM +0100, Peter Zijlstra wrote:
+> On Wed, Feb 24, 2021 at 09:18:05AM -0600, Josh Poimboeuf wrote:
+> > On Wed, Feb 24, 2021 at 03:52:01PM +0100, Peter Zijlstra wrote:
+> > > On Fri, Feb 05, 2021 at 08:24:03AM -0600, Josh Poimboeuf wrote:
+> > > > The ORC unwinder attempts to fall back to frame pointers when ORC data
+> > > > is missing for a given instruction.  It sets state->error, but then
+> > > > tries to keep going as a best-effort type of thing.  That may result in
+> > > > further warnings if the unwinder gets lost.
+> > > > 
+> > > > Until we have some way to register generated code with the unwinder,
+> > > > missing ORC will be expected, and occasionally going off the rails will
+> > > > also be expected.  So don't warn about it.
+> > > 
+> > > I recently ran into another variant of missing ORC data, some files are
+> > > simply not processed by objtool, eg. arch/x86/realmode/init.c. Would it
+> > > make sense to have the vmlinux pass (when it isn't used to generate orc
+> > > in the first place) also check that all code it finds has ORC data?
+> > > 
+> > > It's not fool proof, but it should help find files we're missing for
+> > > some raisin.
+> > 
+> > Doesn't validate_reachable_instructions() basically already do that?
+> 
+> Nope, I'm talking about the case where we generate ORC for each .o file
+> (and 'forget' to run objtool on some of them). And then run objtool
+> again on vmlinux to validate (things like noinstr).
+> 
+> At that point it might make sense to also check that all code does
+> indeed have an ORC to double check our initial (per translation unit)
+> invocation didn't accidentally miss someone.
 
-Ack, that sounds like the best way forward.
+What I meant was, validate_reachable_instructions() should already be
+able to report that situation, if it were called on vmlinux.  Right now
+I think noinstr avoids calling it.
 
-          Linus
+I'm already working on some vmlinux rework which will enable that
+checking.  Then we'll have to go through the unreachable warnings and
+try to fix them.
+
+-- 
+Josh
+
