@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CD8324289
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3874532428C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235601AbhBXQvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:51:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57542 "EHLO
+        id S235767AbhBXQv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:51:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235705AbhBXQtv (ORCPT
+        with ESMTP id S235413AbhBXQtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:49:51 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C80EC0617AA
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:48:42 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id p21so1799351pgl.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:48:42 -0800 (PST)
+        Wed, 24 Feb 2021 11:49:53 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381D1C0617AB
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:48:43 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id o10so1823264pgg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:48:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WJ9CWLx2SrWUq/hh48DgFiOY7h1Fej0UywIRMqUv0R8=;
-        b=RlQiOXdErQv5lTFk7nmrEQGazixBihx8nByWY+9Q4pwU8DhP8w6Ob4zjUfdGyJ9kX8
-         oTJ/lXU5SKUJaqYW6DJTpzMFZ1YlHSRIdMY+nWYsjy0iVopvCf0MEPY8WWvAebr5AiTi
-         XW7rC6KtWH0xPWgdFalJB9DPzgm30BGrx7k/mpiMj5/J9AscL8RsVztjrfX0qykIpcr1
-         dS0v+jVf3bqMwB0nphK95FLvGDSEAyQVYpHWk7T5TdsFfW+JEKhZ1YWT4QNR/jsFS48y
-         XJEW1LERZ0MUPHPUkv40mJJpF4JWw/Ve5zwYRrIlBe21MBpswYwm51oF8PFQ53WxZ3Ua
-         Qz+Q==
+        bh=glJhZa+yFUzXCGkagQvUI+4doW8HmcIalftw83QfG70=;
+        b=N0zhfZCvUAlulRmcD70wR+wCkyMBEcSGdTvUISKL6EsUxvIl5Q8YRpc7sqcilgdYLi
+         BiSIBE8J3uNMQQ9Bb/uD+4qlo6zvnFcBFD7ZAQseeh9+UnjW3GNVZsd4KroKrDelhkEq
+         7AfBVWPLkOG2powRDMrT9soRv/F1ZAbpJH3at647WbmBr+dst/p6Xg2hXgVznj8+bpYw
+         gzGMAC7O7RhmOVKJ763aVYlzfPRekoSzBVc4lILNvIMb/L93E6bM8r3vmSb9yG26mcsf
+         /GmGuBP5qDtZ3Y+8Mq2e+NYpNHdQw1gCv/yiSDaWwhBUGXVhW7SmevnjfL8zPsdrjGOP
+         +q1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WJ9CWLx2SrWUq/hh48DgFiOY7h1Fej0UywIRMqUv0R8=;
-        b=XlxAyiAfVfzEtzaBjqoirzIPvhmDcDNI/DSrR60Jw+ST5sgZPONccYYYP2d1oVjPaV
-         3bGcVeFms/0kF0xE9ZGVBGXQY4huYSr5FDyyVjIpkHk4OPpoNTLQ7DTGMgHWCt+guWJ5
-         F5x419KRlIXTFBm8w6d4s2TQ1RjM0g/Yz9PPYBHzuYB0IGMjnMJ7vbgq2OIFsFCiPs8Q
-         usMOB9mRhh4k6WLp9pRAxIjHqFWBtou/KfP2W/Qn6wNH2U2fZJHbe32wde5GL6ppXdiE
-         hHiEi4qr5uJQJhcVR9MThMF3X337T/BCgZ8pz5PhsuTbal1fEFc1E/IFaTry+26qP41J
-         21bw==
-X-Gm-Message-State: AOAM532LDCB7k4O3TBy2Opjcu4E4Xa0+Jc7kk7i/fhlk/NER/GQQVu0r
-        xPuvvrSq/rwHHIlxmjBEcMIkXR5vaocy0Q==
-X-Google-Smtp-Source: ABdhPJw8cdNkUmFPla2oHioCIi+LNQO3Cl87pdaWwxyK93BDbrF2idxOKXsWKiSEfYTOtCq8oi9MEg==
-X-Received: by 2002:a63:5f17:: with SMTP id t23mr5741874pgb.145.1614185321898;
-        Wed, 24 Feb 2021 08:48:41 -0800 (PST)
+        bh=glJhZa+yFUzXCGkagQvUI+4doW8HmcIalftw83QfG70=;
+        b=jcGFLIjLoZKuwgvhNzK3RSk73yagQHSszTpbUeJC6Qun6x8ijHzb1s+jBqSR+xEOTS
+         ULB+indlyeIiK5FXCt9i94eZ/iNi2BzLvgcgoZbTE3SttZicnUBED9eBMapOWEENTICv
+         kD88DYoJHeLDpOknaxjhB+h/CIcN3KCfQGW1ZR8SY1+XCWl2C3/zv0OWOwFJiP9Jsj6G
+         wkmDufqZrGcH9nxQzUv3gaZ88L9dmWUy2JbjdUtFyH6xiFgVwe41IYNrsG4DVvNnblXD
+         sC+BobYZJdWrOW2qhUK7+qFTNuNYfFxgOQASwuhOL+tPKN6Wde4tArFzY3UvK7jXdFiE
+         plbg==
+X-Gm-Message-State: AOAM530h3oraKcCZCZAh6WiOFZ1Ro/teaF0Hnz7k/O4enWFLWRbWjpa4
+        u/+mG/znphK4ZupULGrrnIbImmZfpPy9zA==
+X-Google-Smtp-Source: ABdhPJy9cNIUI88RDI+939SAf9kLyNgwQidkhaPbzExR9UiKuYP+tMMuUAzp9p9ej5EE3tuyfCE6Zw==
+X-Received: by 2002:a65:5a0a:: with SMTP id y10mr1825659pgs.122.1614185322778;
+        Wed, 24 Feb 2021 08:48:42 -0800 (PST)
 Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id m6sm3284793pfc.56.2021.02.24.08.48.41
+        by smtp.gmail.com with ESMTPSA id m6sm3284793pfc.56.2021.02.24.08.48.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 08:48:41 -0800 (PST)
+        Wed, 24 Feb 2021 08:48:42 -0800 (PST)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     acme@kernel.org
 Cc:     mike.leach@linaro.org, leo.yan@linaro.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 5/6] perf cs-etm: Add helper cs_etm__get_pid_fmt()
-Date:   Wed, 24 Feb 2021 09:48:34 -0700
-Message-Id: <20210224164835.3497311-6-mathieu.poirier@linaro.org>
+Subject: [PATCH 6/6] perf cs-etm: Detect pid in VMID for kernel running at EL2
+Date:   Wed, 24 Feb 2021 09:48:35 -0700
+Message-Id: <20210224164835.3497311-7-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210224164835.3497311-1-mathieu.poirier@linaro.org>
 References: <20210224164835.3497311-1-mathieu.poirier@linaro.org>
@@ -64,92 +64,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-This patch adds helper function cs_etm__get_pid_fmt(), by passing
-parameter "traceID", it returns the PID format.
+The PID of the task could be traced as VMID when the kernel is running
+at EL2.  Teach the decoder to look for VMID when the CONTEXTIDR (Arm32)
+or CONTEXTIDR_EL1 (Arm64) is invalid but we have a valid VMID.
 
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Al Grant <al.grant@arm.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Co-developed-by: Leo Yan <leo.yan@linaro.org>
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Link: https://lore.kernel.org/r/20210213113220.292229-5-leo.yan@linaro.org
+Link: https://lore.kernel.org/r/20210213113220.292229-6-leo.yan@linaro.org
 ---
- tools/perf/util/cs-etm.c | 42 ++++++++++++++++++++++++++++++++++++++++
- tools/perf/util/cs-etm.h |  1 +
- 2 files changed, 43 insertions(+)
+ .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 38 +++++++++++++++++--
+ 1 file changed, 34 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-index ee32d023e9bd..9ac80fc23c58 100644
---- a/tools/perf/util/cs-etm.c
-+++ b/tools/perf/util/cs-etm.c
-@@ -7,6 +7,7 @@
+diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+index 3f4bc4050477..4052c9ce6e2f 100644
+--- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
++++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+@@ -6,6 +6,7 @@
+  * Author: Mathieu Poirier <mathieu.poirier@linaro.org>
   */
  
- #include <linux/bitops.h>
 +#include <linux/coresight-pmu.h>
  #include <linux/err.h>
- #include <linux/kernel.h>
- #include <linux/log2.h>
-@@ -156,6 +157,47 @@ int cs_etm__get_cpu(u8 trace_chan_id, int *cpu)
- 	return 0;
- }
+ #include <linux/list.h>
+ #include <linux/zalloc.h>
+@@ -491,13 +492,42 @@ cs_etm_decoder__set_tid(struct cs_etm_queue *etmq,
+ 			const ocsd_generic_trace_elem *elem,
+ 			const uint8_t trace_chan_id)
+ {
+-	pid_t tid;
++	pid_t tid = -1;
++	static u64 pid_fmt;
++	int ret;
  
-+/*
-+ * The returned PID format is presented by two bits:
-+ *
-+ *   Bit ETM_OPT_CTXTID: CONTEXTIDR or CONTEXTIDR_EL1 is traced;
-+ *   Bit ETM_OPT_CTXTID2: CONTEXTIDR_EL2 is traced.
-+ *
-+ * It's possible that the two bits ETM_OPT_CTXTID and ETM_OPT_CTXTID2
-+ * are enabled at the same time when the session runs on an EL2 kernel.
-+ * This means the CONTEXTIDR_EL1 and CONTEXTIDR_EL2 both will be
-+ * recorded in the trace data, the tool will selectively use
-+ * CONTEXTIDR_EL2 as PID.
-+ */
-+int cs_etm__get_pid_fmt(u8 trace_chan_id, u64 *pid_fmt)
-+{
-+	struct int_node *inode;
-+	u64 *metadata, val;
-+
-+	inode = intlist__find(traceid_list, trace_chan_id);
-+	if (!inode)
-+		return -EINVAL;
-+
-+	metadata = inode->priv;
-+
-+	if (metadata[CS_ETM_MAGIC] == __perf_cs_etmv3_magic) {
-+		val = metadata[CS_ETM_ETMCR];
-+		/* CONTEXTIDR is traced */
-+		if (val & BIT(ETM_OPT_CTXTID))
-+			*pid_fmt = BIT(ETM_OPT_CTXTID);
-+	} else {
-+		val = metadata[CS_ETMV4_TRCCONFIGR];
-+		/* CONTEXTIDR_EL2 is traced */
-+		if (val & (BIT(ETM4_CFG_BIT_VMID) | BIT(ETM4_CFG_BIT_VMID_OPT)))
-+			*pid_fmt = BIT(ETM_OPT_CTXTID2);
-+		/* CONTEXTIDR_EL1 is traced */
-+		else if (val & BIT(ETM4_CFG_BIT_CTXTID))
-+			*pid_fmt = BIT(ETM_OPT_CTXTID);
+-	/* Ignore PE_CONTEXT packets that don't have a valid contextID */
+-	if (!elem->context.ctxt_id_valid)
++	/*
++	 * As all the ETMs run at the same exception level, the system should
++	 * have the same PID format crossing CPUs.  So cache the PID format
++	 * and reuse it for sequential decoding.
++	 */
++	if (!pid_fmt) {
++		ret = cs_etm__get_pid_fmt(trace_chan_id, &pid_fmt);
++		if (ret)
++			return OCSD_RESP_FATAL_SYS_ERR;
 +	}
 +
-+	return 0;
-+}
++	/*
++	 * Process the PE_CONTEXT packets if we have a valid contextID or VMID.
++	 * If the kernel is running at EL2, the PID is traced in CONTEXTIDR_EL2
++	 * as VMID, Bit ETM_OPT_CTXTID2 is set in this case.
++	 */
++	switch (pid_fmt) {
++	case BIT(ETM_OPT_CTXTID):
++		if (elem->context.ctxt_id_valid)
++			tid = elem->context.context_id;
++		break;
++	case BIT(ETM_OPT_CTXTID2):
++		if (elem->context.vmid_valid)
++			tid = elem->context.vmid;
++		break;
++	default:
++		break;
++	}
 +
- void cs_etm__etmq_set_traceid_queue_timestamp(struct cs_etm_queue *etmq,
- 					      u8 trace_chan_id)
- {
-diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
-index e153d02df0de..85ed11e9d2a7 100644
---- a/tools/perf/util/cs-etm.h
-+++ b/tools/perf/util/cs-etm.h
-@@ -193,6 +193,7 @@ struct cs_etm_packet_queue {
- int cs_etm__process_auxtrace_info(union perf_event *event,
- 				  struct perf_session *session);
- int cs_etm__get_cpu(u8 trace_chan_id, int *cpu);
-+int cs_etm__get_pid_fmt(u8 trace_chan_id, u64 *pid_fmt);
- int cs_etm__etmq_set_tid(struct cs_etm_queue *etmq,
- 			 pid_t tid, u8 trace_chan_id);
- bool cs_etm__etmq_is_timeless(struct cs_etm_queue *etmq);
++	if (tid == -1)
+ 		return OCSD_RESP_CONT;
+ 
+-	tid =  elem->context.context_id;
+ 	if (cs_etm__etmq_set_tid(etmq, tid, trace_chan_id))
+ 		return OCSD_RESP_FATAL_SYS_ERR;
+ 
 -- 
 2.25.1
 
