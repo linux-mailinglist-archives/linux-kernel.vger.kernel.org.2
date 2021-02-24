@@ -2,79 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C95A324371
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 323D9324376
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233291AbhBXSAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:00:20 -0500
-Received: from mga04.intel.com ([192.55.52.120]:5235 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231701AbhBXSAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:00:14 -0500
-IronPort-SDR: WBbidW5v/GuiMwH71KlDpI5G4lqgFmkKZGY1KRJYAqHddmmNtWPVa1V58XDP8jHcTWkuUUT1wX
- SK2oWpulPI9Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="182788400"
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="182788400"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 09:59:24 -0800
-IronPort-SDR: Cr/ZBKaFYZ1YyMhbhIdg8+vZGFxobraT6gGpHI/ZcgRiJc0zAm/g94qzVOwlDSm3qXrdIlPhUo
- fUk6pH+j+ayA==
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="403827752"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 09:59:24 -0800
-Date:   Wed, 24 Feb 2021 09:59:12 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     dsterba@suse.cz, Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [GIT PULL] Kmap conversions for 5.12
-Message-ID: <20210224175912.GA3014244@iweiny-DESK2.sc.intel.com>
-References: <cover.1614090658.git.dsterba@suse.com>
- <CAHk-=wijdojzo56FzYqE5TOYw2Vws7ik3LEMGj9SPQaJJ+Z73Q@mail.gmail.com>
- <20210223192506.GY3014244@iweiny-DESK2.sc.intel.com>
- <20210224123049.GX1993@twin.jikos.cz>
+        id S233161AbhBXSBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:01:55 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41296 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229498AbhBXSBr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 13:01:47 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11OHYUs6186082;
+        Wed, 24 Feb 2021 13:00:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=7/iyiJqTTQ43euepQ5R46rfta0qytW9mHq3cQkcFOhA=;
+ b=rycovHuMHxJOBJiHGINaW215vwFddh/3XjJ3NlhVfmNwgH3+V94yGQzuPUJG7B2u2Z+L
+ Cw+s0JoSp07NaASebApB361naIz5s8+ZiGrWx/GgfP2ECACHfLL/hIbH7a8uri7JnuzO
+ ed4G7+jifQiWp0uUZzoLcvASqEM3tAuN6jRHijX/YmQCy5THYtTqNiEDtr2070ShmJAf
+ nQaWeRZw0X5ShdJTKxoW6qoe2IPronybjHE7m8yHc4R3gb8LmF4eKqvJuEz5zrTpbfvM
+ wm7hK6/UT2CYMMhysYvwTWVGoTsbdksdASUIP3u2817t/y6vgod8IdZ2f+7qlDB7A6lR vw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36wmac1r3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 13:00:59 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11OHale5005505;
+        Wed, 24 Feb 2021 13:00:58 -0500
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36wmac1r32-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 13:00:58 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11OHvRdI016687;
+        Wed, 24 Feb 2021 18:00:57 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma01dal.us.ibm.com with ESMTP id 36tt2a0mb9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 18:00:57 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11OI0uN438797644
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Feb 2021 18:00:56 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8678778063;
+        Wed, 24 Feb 2021 18:00:56 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 98E897805F;
+        Wed, 24 Feb 2021 18:00:54 +0000 (GMT)
+Received: from jarvis.int.hansenpartnership.com (unknown [9.80.227.153])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 24 Feb 2021 18:00:54 +0000 (GMT)
+Message-ID: <b0c4980c8fad14115daa3040979c52f07f7fbe2c.camel@linux.ibm.com>
+Subject: Re: [PATCH 2/9] tpm: Allow PCR 23 to be restricted to kernel-only
+ use
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Matthew Garrett <matthewgarrett@google.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-integrity@vger.kernel.org, linux-pm@vger.kernel.org,
+        keyrings@vger.kernel.org, zohar@linux.ibm.com, jarkko@kernel.org,
+        corbet@lwn.net, rjw@rjwysocki.net,
+        Matthew Garrett <mjg59@google.com>
+Date:   Wed, 24 Feb 2021 10:00:53 -0800
+In-Reply-To: <20210220013255.1083202-3-matthewgarrett@google.com>
+References: <20210220013255.1083202-1-matthewgarrett@google.com>
+         <20210220013255.1083202-3-matthewgarrett@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224123049.GX1993@twin.jikos.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-24_08:2021-02-24,2021-02-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ spamscore=0 priorityscore=1501 impostorscore=0 mlxscore=0 clxscore=1011
+ lowpriorityscore=0 bulkscore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102240137
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 01:30:49PM +0100, David Sterba wrote:
-> On Tue, Feb 23, 2021 at 11:25:06AM -0800, Ira Weiny wrote:
-> > On Tue, Feb 23, 2021 at 09:13:42AM -0800, Linus Torvalds wrote:
-> > > On Tue, Feb 23, 2021 at 7:03 AM David Sterba <dsterba@suse.com> wrote:
-> [...]
-> 
-> > Sorry.  I will change it.
-> 
-> Let me know how you want to proceed with the patchset/pull request.
+On Sat, 2021-02-20 at 01:32 +0000, Matthew Garrett wrote:
+> Under certain circumstances it might be desirable to enable the
+> creation of TPM-backed secrets that are only accessible to the
+> kernel. In an ideal world this could be achieved by using TPM
+> localities, but these don't appear to be available on consumer
+> systems.
 
-To be clear I'd like to just drop the 2 patches which use zero_user() for this
-merge window.
+I don't understand this ... the localities seem to work fine on all the
+systems I have ... is this some embedded thing?
 
-I've already submitted some additional btrfs changes for 5.13[1].  I can rework
-these zero_user() patches and submit them through Andrew for 5.13 as separate
-set.  That is what I meant by 'I will change it'.
+>  An alternative is to simply block userland from modifying one of the
+> resettable PCRs, leaving it available to the kernel. If the kernel
+> ensures that no userland can access the TPM while it is carrying out
+> work, it can reset PCR 23, extend it to an arbitrary value, create or
+> load a secret, and then reset the PCR again. Even if userland somehow
+> obtains the sealed material, it will be unable to unseal it since PCR
+> 23 will never be in the appropriate state.
 
-> I
-> can play the messenger again but now it seems a round of review is
-> needed and with some testing it'll be possible in some -rc. At that
-> point you may take the patches via the mm tree, unless Linus is ok with
-> a late pull.
+This seems a bit arbitrary: You're removing this PCR from user space
+accessibility, but PCR 23 is defined as "Application Support" how can
+we be sure no application will actually want to use it (and then fail)?
 
-I'm ok with delaying the memzero_page() change to 5.13.  There are a lot of
-kmap changes to come.  But I'm trying to do them as smaller series just for
-this reason.  I don't want valid changes to be denied due to my messing up just
-a few patches...  :-(  Hopefully you and Linus can forgive me on this one.
+Since PCRs are very scarce, why not use a NV index instead.  They're
+still a bounded resource, but most TPMs have far more of them than they
+do PCRs, and the address space is much bigger so picking a nice
+arbitrary 24 bit value reduces the chance of collisions.
 
-Is ok to just drop them and merge the rest of this series in 5.12?
+James
 
-Ira
 
-[1] https://lore.kernel.org/lkml/20210217024826.3466046-1-ira.weiny@intel.com/
