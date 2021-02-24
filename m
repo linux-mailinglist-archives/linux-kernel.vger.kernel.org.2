@@ -2,108 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663D2324179
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 390E3324170
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:06:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235883AbhBXP5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:57:18 -0500
-Received: from mga05.intel.com ([192.55.52.43]:27974 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235975AbhBXPo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:44:28 -0500
-IronPort-SDR: sOFU6kPdQt0nSsVmWLGDBWh3/qo56297LB6UYhJCqx13LvbdoXJFHYANGyKAkCwGCgD0pwSC7I
- KWed7JweLg+w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="270171594"
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="270171594"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 07:42:08 -0800
-IronPort-SDR: jVuiEXB3Ug+T7q0ChWO76c7J/zB516uphMzYjgWe5wHSF8FdwZb9pfX+9diNdIylxZgSfwptVM
- /+B2F5+DiIWg==
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="431718569"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.35.50]) ([10.212.35.50])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 07:42:05 -0800
-Subject: Re: [PATCH v21 05/26] x86/fpu/xstate: Introduce CET MSR and XSAVES
- supervisor states
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
- <20210217222730.15819-6-yu-cheng.yu@intel.com>
- <20210224153457.GC20344@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <6e644e1d-7034-20f1-4850-336b143ba01c@intel.com>
-Date:   Wed, 24 Feb 2021 07:42:05 -0800
+        id S235402AbhBXP4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:56:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235930AbhBXPoR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 10:44:17 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB53C061788;
+        Wed, 24 Feb 2021 07:43:33 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id q20so1557965pfu.8;
+        Wed, 24 Feb 2021 07:43:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=F0KLBWS2W58C1mncZrZj6XYYjOTe4I0lLVbrvhxQFPg=;
+        b=fsOnGihbrMnh4NyBcZ13Zfl9nPi7YXnNhk3S/hqMqdqz4gYhj6jdyZm5uxxkW2u10+
+         6pqCnJo5SMazt8VR3WNcD7TBL9XxRDjQcIWsFI0CFJIE50d//08QNIfVUMTt75jlCbIZ
+         9sUpj0C91gVJW9BKsjC8ekeNX0iyaxtQfTEl08X0ZfKWqKEVxZBpWYcrOtT/ogiiIxiB
+         M6vPZbDgsIhgD7PTTFFXP16F8METL6oI1xZ9hFobLd7PaYkox7Q86WwPHGEUae7gkc4h
+         AauLnnT/+C0qYcGcigWRRNmxMELpJ1zqQxKbqY7AJJEKGxYNwzIi3c3gGIjoF2dvJ2Th
+         pZwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=F0KLBWS2W58C1mncZrZj6XYYjOTe4I0lLVbrvhxQFPg=;
+        b=JAV+ZxTCuOS4Q5Cj2v8EgQd+84tlc3UZGE/tkDZO/4mv/qYVRq9i5OVdZL3ItWRoJo
+         /fuwHmHNsDkm1NetLiEzM8sNofNurvWP+visJRL05PD15j+7fZdPjHKaNkzVo2v8loSx
+         4nKUZpf/V7IIJ8cPhFm9UbJjSRgGOT8zN/xnqdtZ/vNDFPFLDIRnS9jCCFDT1wGMI2OA
+         0CbwM5gZ43R5y0o9Zj8tteRmptOLY7kAi1KyJFE/7EFNphFlVOaRRbYaq1CBbvgl+Vf5
+         TykFnktOI71wuewiiGDQ3gI3b1IQ3Jpj1mqknMJNiK2kcj+fYaiZoiAAwReJw5KVI51j
+         W7iQ==
+X-Gm-Message-State: AOAM530yEAVPhNzDyBEGBdo9JQlbQKRCV6SEiILDs0SOnMJKSxmI/pBo
+        AzKkA4jC98fWU4iKGotQK1EK8UWzIls=
+X-Google-Smtp-Source: ABdhPJxMtFxXQUuJ/9tlIcKcRMqu9KbleLwHT7qmN8X4E2naDvc0VxxKFVLIipJsoz/NNiKhKtUo0g==
+X-Received: by 2002:a63:ff53:: with SMTP id s19mr25935894pgk.347.1614181412804;
+        Wed, 24 Feb 2021 07:43:32 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id d24sm2779692pfr.139.2021.02.24.07.43.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Feb 2021 07:43:32 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] leds: bcm6328: improve write and read functions
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        jonas.gorski@gmail.com, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210224101110.20179-1-noltari@gmail.com>
+ <20210224101110.20179-2-noltari@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <d920067d-3045-754a-c852-e1550311be9d@gmail.com>
+Date:   Wed, 24 Feb 2021 07:43:30 -0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210224153457.GC20344@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210224101110.20179-2-noltari@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/2021 7:34 AM, Borislav Petkov wrote:
-> On Wed, Feb 17, 2021 at 02:27:09PM -0800, Yu-cheng Yu wrote:
->> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
->> index 546d6ecf0a35..fae6b3ea1f6d 100644
->> --- a/arch/x86/include/asm/msr-index.h
->> +++ b/arch/x86/include/asm/msr-index.h
->> @@ -933,4 +933,23 @@
->>   #define MSR_VM_IGNNE                    0xc0010115
->>   #define MSR_VM_HSAVE_PA                 0xc0010117
->>   
->> +/* Control-flow Enforcement Technology MSRs */
->> +#define MSR_IA32_U_CET		0x6a0 /* user mode cet setting */
->> +#define MSR_IA32_S_CET		0x6a2 /* kernel mode cet setting */
->> +#define CET_SHSTK_EN		BIT_ULL(0)
->> +#define CET_WRSS_EN		BIT_ULL(1)
->> +#define CET_ENDBR_EN		BIT_ULL(2)
->> +#define CET_LEG_IW_EN		BIT_ULL(3)
->> +#define CET_NO_TRACK_EN		BIT_ULL(4)
->> +#define CET_SUPPRESS_DISABLE	BIT_ULL(5)
->> +#define CET_RESERVED		(BIT_ULL(6) | BIT_ULL(7) | BIT_ULL(8) | BIT_ULL(9))
->> +#define CET_SUPPRESS		BIT_ULL(10)
->> +#define CET_WAIT_ENDBR		BIT_ULL(11)
->> +
->> +#define MSR_IA32_PL0_SSP	0x6a4 /* kernel shadow stack pointer */
->> +#define MSR_IA32_PL1_SSP	0x6a5 /* ring-1 shadow stack pointer */
->> +#define MSR_IA32_PL2_SSP	0x6a6 /* ring-2 shadow stack pointer */
->> +#define MSR_IA32_PL3_SSP	0x6a7 /* user shadow stack pointer */
->> +#define MSR_IA32_INT_SSP_TAB	0x6a8 /* exception shadow stack table */
-> 
-> When you look at the formatting in that file and the MSR numbers in it, what
-> stops you from formatting your addition the same way?
-> 
 
-Ah, got it.  I will add some leading zeros.  Thanks!
 
---
-Yu-cheng
+On 2/24/2021 2:11 AM, Álvaro Fernández Rojas wrote:
+> This is proven to work in BMIPS BE/LE and ARM BE/LE, as used in bcm2835-rng
+> and bcmgenet drivers.
+> Both should also be inline functions.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
