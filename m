@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF52F3243EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BC832401C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbhBXSn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:43:26 -0500
-Received: from m12-17.163.com ([220.181.12.17]:33467 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234713AbhBXSnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:43:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=M7lgOilBE4+RiTqnQt
-        8/YITeMu7EbnvDl36J3i8eanY=; b=AdAOgUGqwUoV5CxA3Wagy6iRPS4vt8QIg3
-        GIRpW/ZxCs7yQkT9je21MUA1OUQWrderqfTuM36qJY5JJ/u0ITxsaVXoaTO2I/uL
-        v95lXOWb1lBr+eCujMR/DA5SFRL0lPpkKpNu6M+0ePpnJBNQO5x0ncMC2QU4D+QD
-        L38k89smg=
-Received: from localhost.localdomain (unknown [36.170.35.29])
-        by smtp13 (Coremail) with SMTP id EcCowABnDXrRTjZg3uC1mg--.22722S2;
-        Wed, 24 Feb 2021 21:04:18 +0800 (CST)
-From:   zhangkun4jr@163.com
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath9k-devel@qca.qualcomm.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhang Kun <zhangkun@cdjrlc.com>
-Subject: [PATCH] ath9k:remove unneeded variable in ath9k_dump_legacy_btcoex
-Date:   Wed, 24 Feb 2021 21:03:56 +0800
-Message-Id: <20210224130356.51444-1-zhangkun4jr@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: EcCowABnDXrRTjZg3uC1mg--.22722S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKF4fGFWrJw4kJFWUXr1UWrg_yoWkGwb_CF
-        y8Kr97Jr1UJw1F9F47Ja1avryqkws0qF1xX3ZFvF95Jw47JrnrZ3y5Zr95Xr929r4FyF9I
-        kF1DGF12ya4qgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5RwZ7UUUUU==
-X-Originating-IP: [36.170.35.29]
-X-CM-SenderInfo: x2kd0whnxqkyru6rljoofrz/1tbirApDtVr7sVyZcwAAs2
+        id S237619AbhBXOjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:39:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235406AbhBXNT4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 08:19:56 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160B8C0617AB
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:18:39 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id r19so2105266otk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:18:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=COjV3N0ToYDZxDDGk/b79HOkWGjdIOUR0bjGwTUhLI4=;
+        b=FoyWNq//WVhTJNg+Cpr51IOfa9z17QiYZLALQW0f/kG6rg+oBWmK3JxCAJZ83J2RgC
+         Gy+UAXdqSurDT79Kfau4ONhRWfhcCqVYaig1RGeSpRc2KuOotWRre+69+f55OBION/Ru
+         fzbfF4XxgqNCsvPhBRhQdj0L7E27w0s3qGUto3G/kIdmOBfdV7XhXyWrsXvMR/BZ1Bn7
+         FN940rXOjKL/zHPmYPTYoCr6HeV57nFjHuIk/9BDHeYq8YDXPq746ZK+f1wpnwP9RQ4q
+         XpeyLxjGb2r/Bf+o7pIRfcUeFZ4zm05V7lsgpw37owDcW6DypcDt9hn0buW++QNLbS4h
+         GCIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=COjV3N0ToYDZxDDGk/b79HOkWGjdIOUR0bjGwTUhLI4=;
+        b=udfcHdUaaMdjhdgYx7vsE5a2lflsd6gWqyN3J7f/GzFlVulXodQJ7O9uP3k4B2bF9j
+         NtYnF0MZHMspymKr/Wj7KZmsdE6+X9jubR5kmeXv2esXHvSK8zNJ2PgB7sZYn0MdnFL2
+         WWJPKqEfe/tSPikQpWFgZrIrJ+PWM5LmPj1YSSHdmY+uMLB8z3ebPCbuIvbKCYotd5By
+         W6ImMTQ67jebbqcSKMvoYT7AHqd/BiaK0SMGwFkAa1SdttKSlKQFbtx50kihD/TfqLq+
+         NqooZDOlDJ4ueaDsFjumG2oH/SxiKiukXjYAJaAc8fkzHzn2sdDGh60xG9oXZp/Vq70u
+         OBqA==
+X-Gm-Message-State: AOAM533YLAFF1paxWA8GyVFku42pxCNGmMrrlpDUDFCqy/zAh/BYX6C5
+        F1zGY2CmtwJ3b2yC1LhKzwlVHQ==
+X-Google-Smtp-Source: ABdhPJwSvAWrC7SF1Ki0wbLNl8L/MA7aKQkO20w/rnGGKFIGkAu5rn/ynt6NDxGrgRQ3Xu9C9k5rgg==
+X-Received: by 2002:a9d:5cc3:: with SMTP id r3mr1089483oti.0.1614172718548;
+        Wed, 24 Feb 2021 05:18:38 -0800 (PST)
+Received: from winterfell.papolivre.org (winterfell.papolivre.org. [2600:3c00::f03c:91ff:fe69:3960])
+        by smtp.gmail.com with ESMTPSA id b21sm380069oot.34.2021.02.24.05.18.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 05:18:38 -0800 (PST)
+Received: from localhost (unknown [IPv6:2001:1284:f016:4cfd:27e0:441e:870:6787])
+        by winterfell.papolivre.org (Postfix) with ESMTPSA id 580871C2F43;
+        Wed, 24 Feb 2021 10:18:37 -0300 (-03)
+From:   Antonio Terceiro <antonio.terceiro@linaro.org>
+To:     linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH] Documentation: kselftest: fix path to test module files
+Date:   Wed, 24 Feb 2021 10:06:05 -0300
+Message-Id: <20210224130605.347728-1-antonio.terceiro@linaro.org>
+X-Mailer: git-send-email 2.30.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Kun <zhangkun@cdjrlc.com>
+The top-level kselftest directory is not called kselftest, but
+selftests.
 
-Remove unneeded variable 'len' in ath9k_dump_legacy_btcoex.
-
-Signed-off-by: Zhang Kun <zhangkun@cdjrlc.com>
+Signed-off-by: Antonio Terceiro <antonio.terceiro@linaro.org>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
 ---
- drivers/net/wireless/ath/ath9k/gpio.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ Documentation/dev-tools/kselftest.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/gpio.c b/drivers/net/wireless/ath/ath9k/gpio.c
-index b457e52dd365..09ec937024c0 100644
---- a/drivers/net/wireless/ath/ath9k/gpio.c
-+++ b/drivers/net/wireless/ath/ath9k/gpio.c
-@@ -496,16 +496,14 @@ static int ath9k_dump_mci_btcoex(struct ath_softc *sc, u8 *buf, u32 size)
+diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
+index a901def730d9..dcefee707ccd 100644
+--- a/Documentation/dev-tools/kselftest.rst
++++ b/Documentation/dev-tools/kselftest.rst
+@@ -239,8 +239,8 @@ using a shell script test runner.  ``kselftest/module.sh`` is designed
+ to facilitate this process.  There is also a header file provided to
+ assist writing kernel modules that are for use with kselftest:
  
- static int ath9k_dump_legacy_btcoex(struct ath_softc *sc, u8 *buf, u32 size)
- {
--
- 	struct ath_btcoex *btcoex = &sc->btcoex;
--	u32 len = 0;
+-- ``tools/testing/kselftest/kselftest_module.h``
+-- ``tools/testing/kselftest/kselftest/module.sh``
++- ``tools/testing/selftests/kselftest_module.h``
++- ``tools/testing/selftests/kselftest/module.sh``
  
- 	ATH_DUMP_BTCOEX("Stomp Type", btcoex->bt_stomp_type);
- 	ATH_DUMP_BTCOEX("BTCoex Period (msec)", btcoex->btcoex_period);
- 	ATH_DUMP_BTCOEX("Duty Cycle", btcoex->duty_cycle);
- 	ATH_DUMP_BTCOEX("BT Wait time", btcoex->bt_wait_time);
- 
--	return len;
-+	return 0;
- }
- 
- int ath9k_dump_btcoex(struct ath_softc *sc, u8 *buf, u32 size)
+ How to use
+ ----------
 -- 
-2.17.1
-
+2.30.1
 
