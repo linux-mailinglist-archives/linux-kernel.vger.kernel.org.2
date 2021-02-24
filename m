@@ -2,189 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A952323670
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 05:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435B1323677
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 05:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233251AbhBXEab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 23:30:31 -0500
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:63930 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232132AbhBXEaW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Feb 2021 23:30:22 -0500
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id BFEB876060;
-        Wed, 24 Feb 2021 07:29:32 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1614140972;
-        bh=381bGtaFmhS3qOT60PG6QEE1cltmmQOxmj6C16TLhcE=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=y8fxogFRj3Gjv7CdI8xp28LeWm+W3Ic2OtzhE3ARE2//NvN2iObn0r0RZwLXQJrB5
-         UsZeg9VKhqUTz61Bz27Gzuj6lB67lR+yciFX0vMc16JbrX/wtSvpE/QscVs5u4/dUN
-         2bqQLAkvTx3WH9LQfvJQwuOvtE9s7I4hrPyIEHdqo8JSfndDWxHRf53I5TwggaD9jC
-         Gr5sDAgQM+Z5I4ojwRA5EWhJIvs5UlTroUS0tfXEn7uhhCBrGs58K7YOGyYvAcBZFJ
-         3iPCmKIug21nXONTLyM7ceXF2zh7IPHCT9lgl61Rdnke7vrwOCDPFWyWMiowvmySGW
-         61N9vBvV3qjAQ==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id AED3375C0C;
-        Wed, 24 Feb 2021 07:29:31 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.68.128) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Wed, 24
- Feb 2021 07:29:31 +0300
-Subject: Re: [RFC PATCH v5 00/19] virtio/vsock: introduce SOCK_SEQPACKET
- support
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
- <20210222142311.gekdd7gsm33wglos@steredhat>
- <20210223145016.ddavx6fihq4akdim@steredhat>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <7a280168-cb54-ae26-4697-c797f6b04708@kaspersky.com>
-Date:   Wed, 24 Feb 2021 07:29:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232903AbhBXEku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 23:40:50 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:14811 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230380AbhBXEks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Feb 2021 23:40:48 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614141629; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=+B0mH6apvUdJkS+cEEk0LUEvE5wfHcYOXZMmbJjRkb0=;
+ b=bZ+J3yD0QojS+3MW8LoYCDxc7NZgHO7omh+cCzBgj7i60DylYZk8o13HO+jh4VlZ7xHdMKt7
+ jvox4WRCS57UA+ViEvB2U/cdP8oPpfdpl4LUzzHcmi556uZWGWT9q/4EAHHI7KVDMkjNvJCB
+ Bo862zYFGeZX3uFDwHyEe8o3ssE=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6035d895090a7742874b9dfa (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Feb 2021 04:39:49
+ GMT
+Sender: mdalam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2FC35C433CA; Wed, 24 Feb 2021 04:39:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdalam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3A7DCC433C6;
+        Wed, 24 Feb 2021 04:39:48 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210223145016.ddavx6fihq4akdim@steredhat>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.64.68.128]
-X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 02/06/2021 23:52:08
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 161679 [Feb 06 2021]
-X-KSE-AntiSpam-Info: LuaCore: 422 422 763e61bea9fcfcd94e075081cb96e065bc0509b4
-X-KSE-AntiSpam-Info: Version: 5.9.16.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
-X-KSE-AntiSpam-Info: {Tracking_date, moscow}
-X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 02/06/2021 23:55:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 06.02.2021 21:17:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/02/24 03:43:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/02/24 02:14:00 #16328803
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Wed, 24 Feb 2021 10:09:48 +0530
+From:   mdalam@codeaurora.org
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     mani@kernel.org, boris.brezillon@collabora.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        sricharan@codeaurora.org, mdalam=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH] mtd: rawnand: qcom: update last code word register
+In-Reply-To: <a5650f33b493b987d45525ea57fdfd8a@codeaurora.org>
+References: <1614024267-12529-1-git-send-email-mdalam@codeaurora.org>
+ <20210223173449.1a55df1e@xps13>
+ <a5650f33b493b987d45525ea57fdfd8a@codeaurora.org>
+Message-ID: <38da9d1d4a96f1b42ba0b194da265e6b@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-02-24 01:13, mdalam@codeaurora.org wrote:
+> On 2021-02-23 22:04, Miquel Raynal wrote:
+>> Hello,
+>> 
+>> Md Sadre Alam <mdalam@codeaurora.org> wrote on Tue, 23 Feb 2021
+>> 01:34:27 +0530:
+>> 
+>>> From QPIC version 2.0 onwards new register got added to read last
+>> 
+>>                                a new
+>> 
+>>> codeword. This change will add the READ_LOCATION_LAST_CW_n register.
+>> 
+>>             Add support for this READ_LOCATION_LAST_CW_n register.
+>> 
+>>> 
+>>> For first three code word READ_LOCATION_n register will be
+>>> use.For last code word READ_LOCATION_LAST_CW_n register will be
+>>> use.
+>> 
+>> "
+>> In the case of QPIC v2, codewords 0, 1 and 2 will be accessed through
+>> READ_LOCATION_n, while codeword 3 will be accessed through
+>> READ_LOCATION_LAST_CW_n.
+>> "
+>> 
+>> When I read my own sentence, I feel that there is something wrong.
+>> If there are only 4 codewords, I guess a QPIC v2 is able to use
+>> READ_LOCATION_3 or READ_LOCATION_LAST_CW_0 interchangeably. Isn't it?
+>> 
+>> I guess the point of having these "last_cw_n" registers is to support
+>> up to 8 codewords, am I wrong? If this the case, the current patch
+>> completely fails doing that I don't get the point of such change.
+> 
+> This register is only use to read last code word.
+> 
+> I have address all the comments from all the previous sub sequent
+> patches and pushed
+> all patches in only one series.
+> 
+> Please check.
 
-On 23.02.2021 17:50, Stefano Garzarella wrote:
-> On Mon, Feb 22, 2021 at 03:23:11PM +0100, Stefano Garzarella wrote:
->> Hi Arseny,
->>
->> On Thu, Feb 18, 2021 at 08:33:44AM +0300, Arseny Krasnov wrote:
->>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
->>> transport.
->>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
->>> do it, two new packet operations were added: first for start of record
->>> and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
->>> both operations carries metadata - to maintain boundaries and payload
->>> integrity. Metadata is introduced by adding special header with two
->>> fields - message count and message length:
->>>
->>> 	struct virtio_vsock_seq_hdr {
->>> 		__le32  msg_cnt;
->>> 		__le32  msg_len;
->>> 	} __attribute__((packed));
->>>
->>> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
->>> packets(buffer of second virtio descriptor in chain) in the same way as
->>> data transmitted in RW packets. Payload was chosen as buffer for this
->>> header to avoid touching first virtio buffer which carries header of
->>> packet, because someone could check that size of this buffer is equal
->>> to size of packet header. To send record, packet with start marker is
->>> sent first(it's header contains length of record and counter), then
->>> counter is incremented and all data is sent as usual 'RW' packets and
->>> finally SEQ_END is sent(it also carries counter of message, which is
->>> counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
->>> incremented again. On receiver's side, length of record is known from
->>> packet with start record marker. To check that no packets were dropped
->>> by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
->>> checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
->>> 1) and length of data between two markers is compared to length in
->>> SEQ_BEGIN header.
->>> 	Now as  packets of one socket are not reordered neither on
->>> vsock nor on vhost transport layers, such markers allows to restore
->>> original record on receiver's side. If user's buffer is smaller that
->>> record length, when all out of size data is dropped.
->>> 	Maximum length of datagram is not limited as in stream socket,
->>> because same credit logic is used. Difference with stream socket is
->>> that user is not woken up until whole record is received or error
->>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
->>> 	Tests also implemented.
->> I reviewed the first part (af_vsock.c changes), tomorrow I'll review 
->> the rest. That part looks great to me, only found a few minor issues.
-> I revieiwed the rest of it as well, left a few minor comments, but I 
-> think we're well on track.
->
-> I'll take a better look at the specification patch tomorrow.
-Great, Thank You
->
-> Thanks,
-> Stefano
->
->> In the meantime, however, I'm getting a doubt, especially with regard 
->> to other transports besides virtio.
->>
->> Should we hide the begin/end marker sending in the transport?
->>
->> I mean, should the transport just provide a seqpacket_enqueue() 
->> callbacl?
->> Inside it then the transport will send the markers. This is because 
->> some transports might not need to send markers.
->>
->> But thinking about it more, they could actually implement stubs for 
->> that calls, if they don't need to send markers.
->>
->> So I think for now it's fine since it allows us to reuse a lot of 
->> code, unless someone has some objection.
-
-I thought about that, I'll try to implement it in next version. Let's see...
-
->>
+  The registers READ_LOCATION & READ_LOCATION_LAST are not associated 
+with number of code words.
+  These two registers are used to access the location inside a code word. 
+So whether we are having 4 code words
+  or 8 code words it doesn't matter. If we wanted access the location 
+within normal code word we have to
+  use READ_LOCATION register and if we wanted to access location in last 
+code word then we have to use
+  READ_LOCATION_LAST.
+> 
+>> 
+>>> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+>>> ---
+>> 
+>> [...]
+>> 
+>>>  /* helper to configure address register values */
+>>> @@ -700,8 +727,9 @@ static void set_address(struct qcom_nand_host 
+>>> *host, u16 column, int page)
+>>>   *
+>>>   * @num_cw:		number of steps for the read/write operation
+>>>   * @read:		read or write operation
+>>> + * @cw	:		which code word
+>>>   */
+>>> -static void update_rw_regs(struct qcom_nand_host *host, int num_cw, 
+>>> bool read)
+>>> +static void update_rw_regs(struct qcom_nand_host *host, int num_cw, 
+>>> bool read, int cw)
+>>>  {
+>>>  	struct nand_chip *chip = &host->chip;
+>>>  	struct qcom_nand_controller *nandc = 
+>>> get_qcom_nand_controller(chip);
+>>> @@ -740,7 +768,7 @@ static void update_rw_regs(struct qcom_nand_host 
+>>> *host, int num_cw, bool read)
+>>>  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+>>> 
+>>>  	if (read)
+>>> -		nandc_set_read_loc(chip, 0, 0, 0, host->use_ecc ?
+>>> +		nandc_set_read_loc(chip, cw, 0, 0, host->use_ecc ?
+>>>  				   host->cw_data : host->cw_size, 1);
+>>>  }
+>>> 
+>>> @@ -1111,18 +1139,34 @@ static void config_nand_page_read(struct 
+>>> nand_chip *chip)
+>>>  		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+>>>  }
+>>> 
+>>> +/* helper to check which location register should be use for this
+>> 
+>>     /*
+>>      * Check which location...
+>> 
+>>> + * code word. NAND_READ_LOCATION or NAND_READ_LOCATION_LAST_CW
+>>> + */
+>>> +static bool config_loc_last_reg(struct nand_chip *chip, int cw)
+>>> +{
+>>> +	struct qcom_nand_controller *nandc = 
+>>> get_qcom_nand_controller(chip);
+>>> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>>> +
+>>> +	if (nandc->props->qpic_v2 && qcom_nandc_is_last_cw(ecc, cw))
+>>> +		return true;
+>> 
+>> Not sure this is really useful, it's probably better to drop this
+>> helper and just use...
+>> 
+>>> +
+>>> +	return false;
+>>> +}
+>>>  /*
+>>>   * Helper to prepare DMA descriptors for configuring registers
+>>>   * before reading each codeword in NAND page.
+>>>   */
+>>>  static void
+>>> -config_nand_cw_read(struct nand_chip *chip, bool use_ecc)
+>>> +config_nand_cw_read(struct nand_chip *chip, bool use_ecc, int cw)
+>>>  {
+>>>  	struct qcom_nand_controller *nandc = 
+>>> get_qcom_nand_controller(chip);
+>>> +	int reg = NAND_READ_LOCATION_0;
+>>> +
+>>> +	if (config_loc_last_reg(chip, cw))
+>> 
+>> ...     if (nandc->props->qpic_v2 && qcom_nandc_is_lastcw()) here.
+>> 
+>>> +		reg = NAND_READ_LOCATION_LAST_CW_0;
+>>> 
+>>>  	if (nandc->props->is_bam)
+>>> -		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+>>> -			      NAND_BAM_NEXT_SGL);
+>>> +		write_reg_dma(nandc, reg, 4, NAND_BAM_NEXT_SGL);
+>>> 
+>>>  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+>>>  	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>>> @@ -1142,12 +1186,12 @@ config_nand_cw_read(struct nand_chip *chip, 
+>>> bool use_ecc)
+>> 
 >> Thanks,
->> Stefano
->>
->
+>> Miquèl
