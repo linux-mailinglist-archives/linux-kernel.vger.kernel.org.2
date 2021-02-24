@@ -2,71 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7B532412F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3710E324136
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235835AbhBXPnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:43:55 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:59234 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236609AbhBXPXQ (ORCPT
+        id S235920AbhBXPoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:44:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233331AbhBXP0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:23:16 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lEvzd-0004ye-U9; Wed, 24 Feb 2021 15:22:26 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] mt76: mt7921: remove redundant check on variable type
-Date:   Wed, 24 Feb 2021 15:22:25 +0000
-Message-Id: <20210224152225.202705-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.0
+        Wed, 24 Feb 2021 10:26:15 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBB1C061574;
+        Wed, 24 Feb 2021 07:25:32 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id l133so2762674oib.4;
+        Wed, 24 Feb 2021 07:25:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PKMBgyiQ3hDdl7FbPyDOO9Us6EgKa0GCpWs3TRxqYBQ=;
+        b=lBcYlcVBOrlhGx/QHSj530pPTtynhE6eKADo+KQDEfgoLH3E4i27/M0KHXblMnDEf2
+         q4yJRoCF/PvZCJmeNhaUra0LLRicYwqV9+7MO3CebD0K9fekfmk/OgNBBFTzSF96bDDh
+         KHx/UbtaNDRjq6SRjP1ieDbncN54WQFtpQoy4YOI9cCBCCygbToeleTFuYNBC0Y7UN/e
+         FyqEJNfknxIuNg32vf6yimH10bRYNXpNov1YYE1Mzxns7D7wnyrqyqIpADNuC8O0WoaW
+         3fjT68fRTCBVbVLF71hlPDW8VCBYKog1Fc1Jxkcyhu65LiFuTN9k2NuoVpr1/hdAbtOV
+         +aew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PKMBgyiQ3hDdl7FbPyDOO9Us6EgKa0GCpWs3TRxqYBQ=;
+        b=R0FcEg0/bjXW5darHU7nxxRQxnT5fXyg+xik86fGJyjLRZlBky2ztGWyYqvi/4UUS4
+         7Bfkjk2RFmUS6C93MA9IOFINcFUxouIx1NiXqWRoGdIY8upFXmOSyl2pyxz2RyhSLabH
+         KWRSjN+eLcpcJLH+Mc6GxI2WeoLrx7nwjTLebVN1NAXSMApoTb4tQ1U8wKTo3MbaNmmp
+         SwvCqmER4VrsquqPhhi5WaoHhOOzsqqwo3hB2AxCLK3EGMWLxsUhUJrKp0Ex3ErmF+Dq
+         IrDXoCfkwVKPYXtd3aLEmarC6nXF1FyLdBe/O/mnmJL+GSfTKrmtuvhkePpx4tU4lU3X
+         Gm8g==
+X-Gm-Message-State: AOAM5305pzL4j6VQhZlJeClZP2CrbL4oy1RCBMW7Es3TBLxEvfC2Fcec
+        v9vvr1LY+uEplCf7xQtsFUWIUgMT9lA=
+X-Google-Smtp-Source: ABdhPJyidE9YuERxBbuFixruSokWU5RV/sXMQ+TmXxzQiiS3vKJOQTcnaILEuAlLopArrHxVtvauAA==
+X-Received: by 2002:aca:1119:: with SMTP id 25mr3070505oir.156.1614180331649;
+        Wed, 24 Feb 2021 07:25:31 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e72sm425303ote.26.2021.02.24.07.25.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 24 Feb 2021 07:25:30 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 24 Feb 2021 07:25:29 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Bruno Thomsen <bruno.thomsen@gmail.com>,
+        linux-watchdog@vger.kernel.org, linux-rtc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Lars Alex Pedersen <laa@kamstrup.com>,
+        Bruno Thomsen <bth@kamstrup.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: watchdog: pcf2127: systemd fails on 5.11
+Message-ID: <20210224152529.GA242356@roeck-us.net>
+References: <CAH+2xPDs8f=bR7y5QYCpYpJTE1KJPfuiML1og3S9TfSFtOFBHw@mail.gmail.com>
+ <20210222224325.GB177866@roeck-us.net>
+ <CAH+2xPDDiUxKk3Y3R=fj0cOU+7vJRSC5yUb_XmfOUXnqoe+2Zg@mail.gmail.com>
+ <YDZp/u+fO/8HX8qo@piout.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDZp/u+fO/8HX8qo@piout.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Feb 24, 2021 at 04:00:14PM +0100, Alexandre Belloni wrote:
+> Hi,
+> 
+> On 24/02/2021 15:55:00+0100, Bruno Thomsen wrote:
+> > You could be right about that, I don't think the watchdog feature should
+> > be available for use if the alarm feature is enabled due to how CTRL2
+> > register behaves.
+> > 
+> > The hardware I am testing on is a custom board, but it's actually
+> > possible to get a Raspberry Pi module called RasClock that has
+> > the chip.
+> > 
+> 
+> I have an eval board for the PCF2127 (and PCF2129), the OM13513.
+> 
+> > I will test some locking around WD_VAL register access as that is used
+> > in pcf2127_wdt_ping function.
+> > 
+> > My initial test shows that spin_lock_irqsave around regmap calls are not
+> > a good idea as it result in:
+> > BUG: scheduling while atomic: watchdog/70/0x00000002
+> > BUG: scheduling while atomic: systemd/1/0x00000002
+> > 
+> 
+> The issue is not only regmap but the fact that i2C and spi accesses are
+> allowed to sleep.
+> 
+Correct, those would have to be mutexes.
 
-In the switch statement case where type is NL80211_IFTYPE_STATION
-there is a check for type != NL80211_IFTYPE_STATION which is always
-false and hence it is redundant dead code and can be removed.
-
-Addresses-Coverity: ("Logically dead code")
-Fixes: e0f9fdda81bd ("mt76: mt7921: add ieee80211_ops")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/mediatek/mt76/mt7921/main.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/main.c b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-index 729f6c42cdde..c8975f372cf2 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-@@ -224,9 +224,6 @@ static int get_omac_idx(enum nl80211_iftype type, u64 mask)
- 		if (i)
- 			return i - 1;
- 
--		if (type != NL80211_IFTYPE_STATION)
--			break;
--
- 		/* next, try to find a free repeater entry for the sta */
- 		i = get_free_idx(mask >> REPEATER_BSSID_START, 0,
- 				 REPEATER_BSSID_MAX - REPEATER_BSSID_START);
--- 
-2.30.0
-
+Thanks,
+Guenter
