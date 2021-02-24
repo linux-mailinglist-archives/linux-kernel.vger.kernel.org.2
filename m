@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDFF323820
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBBB323823
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 08:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbhBXH4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 02:56:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhBXH4v (ORCPT
+        id S233664AbhBXH5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 02:57:00 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:51230 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230459AbhBXH4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 02:56:51 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74442C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:56:11 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id v64so828382qtd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 23:56:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=piJQ2+eVg7Z4RtyyaGqKuQT5hzrDLRvoDnnVb4fGjF8=;
-        b=ZKxcX7ci+X9BoqAJguVITDxBXaOs0nGZWnSD8GyXV8+ZXAE972NYOlkdRyqGrq3/Kq
-         ig8kXx+QWZp4gGOt11Xb2bkQvXkDBmx/0rSRjEOKd6UWdPpT+okWRUpPDZlouNA/d4d+
-         4S+GQ+0hP1y28/6ROgy6oZ/qcn5PEoOWu6KzbAzCzzK4PDXCSi0GsugdEYmcqLY8rtWv
-         TADSRWlcFvTZ/auDcEsJzoJK1efPsUQQyNwYlCGHQD7ikdYZR+yfWGoMPxop52jsBfOu
-         53e/HiZIMaHT5xGRh5PPl7uz14mSI/sVwFRkxYeDJV3PHGiBTHqyol79sA1bo1MEAkA5
-         Wapw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=piJQ2+eVg7Z4RtyyaGqKuQT5hzrDLRvoDnnVb4fGjF8=;
-        b=ekjIq3oKxtEieZA8yCEXZ0ni6IxJbXTw5yqNtpayNJHXyYtWhvQwsDWKYmKp4tZ51I
-         Zw/UR8zuGFfXcDS3V5lihnN3uX5wpYBFCkU20Tg7d6kw3EiBkIWkfFx0ol7f0Dsrge1x
-         cTtU6nP7xgmf8oCQYMynCVMn8K0GqjBjTR8dArkEThvOZZqUJCB2MMJfxloQMJkHCDMB
-         RGUvuptFqzjw3dt8s2VlNHUsBUG94hFudm3OBLVHO8hLnWeqtJw6mvSqeHCIZtmI3H0E
-         /YBdvpRIkt2xnz8A7ccoTnYXtm6RUi3AGa9pxgtKk1SewNtd5EGiNMbFG1cAsM0arKfO
-         MaVA==
-X-Gm-Message-State: AOAM531mlgG7bEp6ZpNhhGa4stbf/k+wPSzksKgdHaQYmTnPRXnzdsxp
-        8slK9a4FFoFibjD+TDNpdL/YNixt8Ul6RbP5
-X-Google-Smtp-Source: ABdhPJwDKkaHSAlJ7clDw+zIhE/tpefzRxBFPn/L3xDOvQo5JYZDZ0XnhiQ25PIJpDfXIHl9llXV0A==
-X-Received: by 2002:ac8:5ac9:: with SMTP id d9mr27112093qtd.123.1614153370751;
-        Tue, 23 Feb 2021 23:56:10 -0800 (PST)
-Received: from localhost.localdomain ([156.146.55.69])
-        by smtp.gmail.com with ESMTPSA id i75sm960295qke.47.2021.02.23.23.56.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 23:56:09 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        christophe.leroy@csgroup.eu, npiggin@gmail.com, jniethe5@gmail.com,
-        alistair@popple.id.au, mikey@neuling.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] arch: powerpc: kernel: Change droping to dropping in the file traps.c
-Date:   Wed, 24 Feb 2021 13:25:47 +0530
-Message-Id: <20210224075547.763063-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        Wed, 24 Feb 2021 02:56:53 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11O7o6E9167503;
+        Wed, 24 Feb 2021 07:56:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=B3Rx9g/G1eftg47QpZJeIvSXopnPcakmqucJsFsfr00=;
+ b=r/OXgbigBvJqnM9DBMdYJ0EmYbxZIaaAxKHiEBdekd416odgZGdgG5SiTgLQTOkrXSkb
+ quHG8Fo9niEs0v/Ru8D7kvPuDVI/bJT8ZaeEKaE9pUVqlBl0Xqqvw+Kb0lLID2cIum1X
+ 96bMcJqyyTA/OGdJPc+kNKodOwvNmq+AyuAPRv+FD3qvC91gNCDTENkrOrxSMC59xGV6
+ WLHZvhYN5hWY8QHlG6HFbT3TrRN3Kwi3q0OFq1LVIKzZLWsHiQq0nwDd6zcfnw6BylUw
+ NRcFgVAvM3vct+ceYFFk/Ol9LM//AfZG0GGH+8nnadCl6td5EzSr9if65cCZ0Wb/M910 PA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 36ttcm9yky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Feb 2021 07:56:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11O7odE0084378;
+        Wed, 24 Feb 2021 07:56:02 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 36ucb0dpmq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Feb 2021 07:56:02 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11O7u0LC017071;
+        Wed, 24 Feb 2021 07:56:01 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 24 Feb 2021 07:56:00 +0000
+Date:   Wed, 24 Feb 2021 10:55:52 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Roger Quadros <rogerq@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-omap@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memory: gpmc: fix out of bounds read and dereference on
+ gpmc_cs[]
+Message-ID: <20210224075552.GS2087@kadam>
+References: <20210223193821.17232-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223193821.17232-1-colin.king@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102240062
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 spamscore=0 mlxscore=0 bulkscore=0 clxscore=1011
+ priorityscore=1501 malwarescore=0 impostorscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102240062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 23, 2021 at 07:38:21PM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Currently the array gpmc_cs is indexed by cs before it cs is range checked
+> and the pointer read from this out-of-index read is dereferenced. Fix this
+> by performing the range check on cs before the read and the following
+> pointer dereference.
+> 
+> Addresses-Coverity: ("Negative array index read")
+> Fixes: 186401937927 ("memory: gpmc: Move omap gpmc code to live under drivers")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/memory/omap-gpmc.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+> index cfa730cfd145..f80c2ea39ca4 100644
+> --- a/drivers/memory/omap-gpmc.c
+> +++ b/drivers/memory/omap-gpmc.c
+> @@ -1009,8 +1009,8 @@ EXPORT_SYMBOL(gpmc_cs_request);
+>  
+>  void gpmc_cs_free(int cs)
+>  {
+> -	struct gpmc_cs_data *gpmc = &gpmc_cs[cs];
+> -	struct resource *res = &gpmc->mem;
 
-s/droping/dropping/
+There is no actual dereferencing going on here, it just taking the
+addresses.  But the patch is also harmless and improves readability.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- arch/powerpc/kernel/traps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index 1583fd1c6010..83a53b67412a 100644
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -405,7 +405,7 @@ void hv_nmi_check_nonrecoverable(struct pt_regs *regs)
- 	 * Now test if the interrupt has hit a range that may be using
- 	 * HSPRG1 without having RI=0 (i.e., an HSRR interrupt). The
- 	 * problem ranges all run un-relocated. Test real and virt modes
--	 * at the same time by droping the high bit of the nip (virt mode
-+	 * at the same time by dropping the high bit of the nip (virt mode
- 	 * entry points still have the +0x4000 offset).
- 	 */
- 	nip &= ~0xc000000000000000ULL;
---
-2.30.1
+regards,
+dan carpenter
 
