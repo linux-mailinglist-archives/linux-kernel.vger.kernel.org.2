@@ -2,99 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC83C323775
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE1A323778
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhBXGio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 01:38:44 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:16069 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233944AbhBXGi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 01:38:28 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614148682; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=48yz8jIM52Gzthc3eIwA3MFNH39afr9/7f7lqtwUPCM=;
- b=tu3IkUgwJ7q758rkzfnyyhXlibWNBBlgecdlAxGiymqucQSkcXIz/+vPylfAJylVyjXzv9uL
- BzPdaj1rGj6XlRWn9gJvd0bKlP5ZPPbExJrndAS2hpaGglnVHpe/9LgyK6/h4kav0ekO1jUC
- 6OmgJ7GKL26CTyQPUiROb4mdKlQ=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6035f430ba08663830c13759 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Feb 2021 06:37:36
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CE9B5C43462; Wed, 24 Feb 2021 06:37:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 25611C433CA;
-        Wed, 24 Feb 2021 06:37:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 25611C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S234204AbhBXGlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 01:41:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232203AbhBXGk4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 01:40:56 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA24C061574;
+        Tue, 23 Feb 2021 22:40:16 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id k22so603003pll.6;
+        Tue, 23 Feb 2021 22:40:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tnfLHKb8PnK3wMlFGuTjuy8dr5DaMueUKDvEoOo23ts=;
+        b=ooV/NUuBeLTvju2bqo2BCkPvu05YTvy0x7E73rn1ZUvznH6in3YIWeAXT53Qp4Sxh2
+         uTBTm7Mw88eUKg4etJTddRf8oBZVSLq5ACgufuLGL+mrVc1wrsK56LDWcry0H5Z2k9SQ
+         NKKTJ68GTXUtn+BtwuyzZ0cBTT2ov+CS/7+tO0mYSk2DSTzIctCC5DmtnX1N4KTlieCp
+         V6EldqiK8B3VjR77gw9I5prYLD0lJmJmuRZPI2xHbz+94k0mo4pkZcbOPrvpdpzPiuMz
+         LS7PZZESW1NXOWju32bBDCnoVAgfcIXGnSbKFJL7pcifC8ROK883tpzAqAC0kYW0OO+X
+         ecUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tnfLHKb8PnK3wMlFGuTjuy8dr5DaMueUKDvEoOo23ts=;
+        b=WVlspZ1sCdH9dp2KDB9DBJcAxVGV3jlUY4wRVvugMSbLPzbSA6I9dyr21AKYH+Sp5T
+         TABGHwJrUkPTaK0U7ejJ6mvrVg7MH9fOgORyZbwJOKVc+kOl44UDD+GgxE5uwDwYSGxc
+         bqyflvcorjuf1eDOQx7lQoxG91CLgOZMbTw25LwrxyB4vcaELjZKsqXEyqkB+b937iOg
+         k3+QDoSyRgidDV+i3pjfvL/QMAevh0ELK3oqNHkvAhZh9jbWDfrwFV16O9JPBrU65xbH
+         qa4LsrdEQZqQtqTxcV+eL59LAIpyPHHz1bjh0HAICfmn4eECXqfL+tEUHM2vilB0yBvq
+         uGFQ==
+X-Gm-Message-State: AOAM5338WYE6Ldqf8bQbj3dlWy7IOaynDOOTp9SDGFBeHHcpSFud8Sc1
+        Yz2AMC+O2Eys/mIw2psq4VY=
+X-Google-Smtp-Source: ABdhPJzfhIpP9eycfEJuLWaIZNlnuFikw6LElUxgzlG551RSSIOJFdm8o9rLnJOCyV/asXs202apfA==
+X-Received: by 2002:a17:90a:4a06:: with SMTP id e6mr2899624pjh.141.1614148815593;
+        Tue, 23 Feb 2021 22:40:15 -0800 (PST)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id w2sm1132973pgh.54.2021.02.23.22.40.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 22:40:15 -0800 (PST)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: [PATCH v2] cpufreq: schedutil: Call sugov_update_next_freq() before check to fast_switch_enabled
+Date:   Wed, 24 Feb 2021 14:39:27 +0800
+Message-Id: <20210224063927.1298-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] ath11k: qmi: use %pad to format dma_addr_t
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210221182754.2071863-1-geert@linux-m68k.org>
-References: <20210221182754.2071863-1-geert@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210224063736.CE9B5C43462@smtp.codeaurora.org>
-Date:   Wed, 24 Feb 2021 06:37:36 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+From: Yue Hu <huyue2@yulong.com>
 
-> If CONFIG_ARCH_DMA_ADDR_T_64BIT=n:
-> 
->     drivers/net/wireless/ath/ath11k/qmi.c: In function ‘ath11k_qmi_respond_fw_mem_request’:
->     drivers/net/wireless/ath/ath11k/qmi.c:1690:8: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘dma_addr_t’ {aka ‘unsigned int’} [-Wformat=]
->      1690 |        "qmi req mem_seg[%d] 0x%llx %u %u\n", i,
-> 	  |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->      1691 |         ab->qmi.target_mem[i].paddr,
-> 	  |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 	  |                              |
-> 	  |                              dma_addr_t {aka unsigned int}
->     drivers/net/wireless/ath/ath11k/debug.h:64:30: note: in definition of macro ‘ath11k_dbg’
->        64 |   __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
-> 	  |                              ^~~
->     drivers/net/wireless/ath/ath11k/qmi.c:1690:34: note: format string is defined here
->      1690 |        "qmi req mem_seg[%d] 0x%llx %u %u\n", i,
-> 	  |                               ~~~^
-> 	  |                                  |
-> 	  |                                  long long unsigned int
-> 	  |                               %x
-> 
-> Fixes: d5395a5486596308 ("ath11k: qmi: add debug message for allocated memory segment addresses and sizes")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Note that sugov_update_next_freq() may return false, that means the
+caller sugov_fast_switch() will do nothing except fast switch check.
 
-Patch applied to wireless-drivers.git, thanks.
+Similarly, sugov_deferred_update() also has unnecessary operations
+of raw_spin_{lock,unlock} in sugov_update_single_freq() for that case.
 
-ebb9d34e073d ath11k: qmi: use %pad to format dma_addr_t
+So, let's call sugov_update_next_freq() before the fast switch check
+to avoid unnecessary behaviors above. Accordingly, update interface
+definition to sugov_deferred_update() and remove sugov_fast_switch()
+since we will call cpufreq_driver_fast_switch() directly instead.
 
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+v2: remove sugov_fast_switch() and call cpufreq_driver_fast_switch()
+    directly instead, also update minor log message.
+
+ kernel/sched/cpufreq_schedutil.c | 29 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
+
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 41e498b..65fe2c8 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -114,19 +114,8 @@ static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
+ 	return true;
+ }
+ 
+-static void sugov_fast_switch(struct sugov_policy *sg_policy, u64 time,
+-			      unsigned int next_freq)
++static void sugov_deferred_update(struct sugov_policy *sg_policy)
+ {
+-	if (sugov_update_next_freq(sg_policy, time, next_freq))
+-		cpufreq_driver_fast_switch(sg_policy->policy, next_freq);
+-}
+-
+-static void sugov_deferred_update(struct sugov_policy *sg_policy, u64 time,
+-				  unsigned int next_freq)
+-{
+-	if (!sugov_update_next_freq(sg_policy, time, next_freq))
+-		return;
+-
+ 	if (!sg_policy->work_in_progress) {
+ 		sg_policy->work_in_progress = true;
+ 		irq_work_queue(&sg_policy->irq_work);
+@@ -368,16 +357,19 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
+ 		sg_policy->cached_raw_freq = cached_freq;
+ 	}
+ 
++	if (!sugov_update_next_freq(sg_policy, time, next_f))
++		return;
++
+ 	/*
+ 	 * This code runs under rq->lock for the target CPU, so it won't run
+ 	 * concurrently on two different CPUs for the same target and it is not
+ 	 * necessary to acquire the lock in the fast switch case.
+ 	 */
+ 	if (sg_policy->policy->fast_switch_enabled) {
+-		sugov_fast_switch(sg_policy, time, next_f);
++		cpufreq_driver_fast_switch(sg_policy->policy, next_f);
+ 	} else {
+ 		raw_spin_lock(&sg_policy->update_lock);
+-		sugov_deferred_update(sg_policy, time, next_f);
++		sugov_deferred_update(sg_policy);
+ 		raw_spin_unlock(&sg_policy->update_lock);
+ 	}
+ }
+@@ -456,12 +448,15 @@ static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
+ 	if (sugov_should_update_freq(sg_policy, time)) {
+ 		next_f = sugov_next_freq_shared(sg_cpu, time);
+ 
++		if (!sugov_update_next_freq(sg_policy, time, next_f))
++			goto unlock;
++
+ 		if (sg_policy->policy->fast_switch_enabled)
+-			sugov_fast_switch(sg_policy, time, next_f);
++			cpufreq_driver_fast_switch(sg_policy->policy, next_f);
+ 		else
+-			sugov_deferred_update(sg_policy, time, next_f);
++			sugov_deferred_update(sg_policy);
+ 	}
+-
++unlock:
+ 	raw_spin_unlock(&sg_policy->update_lock);
+ }
+ 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210221182754.2071863-1-geert@linux-m68k.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+1.9.1
 
