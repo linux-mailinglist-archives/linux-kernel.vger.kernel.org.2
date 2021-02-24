@@ -2,168 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A752323725
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB39323738
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbhBXGIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 01:08:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233293AbhBXGIm (ORCPT
+        id S234109AbhBXGNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 01:13:38 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:34569 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234100AbhBXGNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 01:08:42 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05157C061574;
-        Tue, 23 Feb 2021 22:08:02 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id k22so560862pll.6;
-        Tue, 23 Feb 2021 22:08:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BQ8HmhyVFRIgPGngY6Pdp4TolEjCuBVV8yWklhP2kzU=;
-        b=QXLPiB/CEJBl20yQPUpotoyUi8Vybv36BXrZmOY4KiZmW94l0Jlw5by4IlvPYjsaO4
-         W7pGfd1AI8lE5x535fmCVT+SeHh/ngaE5Tc0kl0aQg0mcloKM5gGzzAdfzE6ZT9Ar0lG
-         ZECgbBLxscLzGFVNEG7mwacERo4LwQaT1ff9MDmO6TrQNOr0LaZslPGKTGVAh1lY+1ok
-         J4Wc2Paw6elSMnsuz/tor/B/VuP8yWwrfm4J3y+Fipp/cMziWfqQsOrpK0fcUyTjUdNh
-         /zVieSjXUfDSlMmxvdrG75eJQabcYJ3L2m65S2EkCudJH5D+CsCAPaaPYRAX0STdXuVV
-         I6uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BQ8HmhyVFRIgPGngY6Pdp4TolEjCuBVV8yWklhP2kzU=;
-        b=SYcPvslHKpGNEdTMuBJdtrvCKuYbGuS3IiDuVYIQOg2/shJSL7rhCN4lUhDcyZnPCZ
-         JB9w60Rgg+FAN5Z0ekiIdAEhH3MXBW34NpZ6H/J7cgUUonyDlHrGsZPvL1Ufw73eygrM
-         9Jbokf+xpZC2duwOnOZZGHRlLWJB764HgjQF8eQADIjx1XXnB2THW2aOQWbAZ/CcA7bL
-         d8EY4lxvEQ7fndn63fABgRc06NzN2U46quIBGEHk4SwWCbThNnE8F0JuYgKE6UNjW+WH
-         TyagpVJRdIQlVa7P+avoiMZ88qYb4vIjaybc6xYhgzI1kuftJJF1kG7ntdbue+2NnSTu
-         Pcjw==
-X-Gm-Message-State: AOAM530oonp7fC11VeqZyeqCsSenJmZdcNvGTzuEgzosLKKeU5M7sdC3
-        8vB7PzsGMimqGAYGmjOvT4c=
-X-Google-Smtp-Source: ABdhPJwYJzqGk7NVC/ovE0T0od48YMxevDn2pNwtPmDA6rXx4re11pKNJUReckisPvJKl+oC22errA==
-X-Received: by 2002:a17:902:b68f:b029:e3:b18:7a48 with SMTP id c15-20020a170902b68fb02900e30b187a48mr31138371pls.65.1614146881539;
-        Tue, 23 Feb 2021 22:08:01 -0800 (PST)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id z11sm851514pgk.65.2021.02.23.22.07.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Feb 2021 22:08:01 -0800 (PST)
-Date:   Wed, 24 Feb 2021 14:07:50 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     rjw@rjwysocki.net, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: Re: [PATCH] cpufreq: schedutil: Call sugov_update_next_freq()
- before check to fast_switch_enabled
-Message-ID: <20210224140750.00004e38.zbestahu@gmail.com>
-In-Reply-To: <20210224060236.xaviwqfsujjvwnne@vireshk-i7>
-References: <20210224054232.1222-1-zbestahu@gmail.com>
-        <20210224060236.xaviwqfsujjvwnne@vireshk-i7>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+        Wed, 24 Feb 2021 01:13:17 -0500
+X-UUID: 0c372d5a61ea40aeb0fb04b13382a96a-20210224
+X-UUID: 0c372d5a61ea40aeb0fb04b13382a96a-20210224
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1734089674; Wed, 24 Feb 2021 14:12:26 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 24 Feb 2021 14:12:24 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 24 Feb 2021 14:12:23 +0800
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>, <maz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Sj Huang <sj.huang@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        <youlin.pei@mediatek.com>, <chuanjia.liu@mediatek.com>,
+        <qizhong.cheng@mediatek.com>, <sin_jieyang@mediatek.com>,
+        <drinkcat@chromium.org>, <Rex-BC.Chen@mediatek.com>,
+        <anson.chuang@mediatek.com>
+Subject: [v8,0/7] PCI: mediatek: Add new generation controller support
+Date:   Wed, 24 Feb 2021 14:11:25 +0800
+Message-ID: <20210224061132.26526-1-jianjun.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Feb 2021 11:32:36 +0530
-Viresh Kumar <viresh.kumar@linaro.org> wrote:
+These series patches add pcie-mediatek-gen3.c and dt-bindings file to
+support new generation PCIe controller.
 
-> On 24-02-21, 13:42, Yue Hu wrote:
-> > From: Yue Hu <huyue2@yulong.com>
-> > 
-> > Note that sugov_update_next_freq() may return false, that means the
-> > caller sugov_fast_switch() will do nothing except fast switch check.
-> > 
-> > Similarly, sugov_deferred_update() also has unnecessary operations
-> > of raw_spin_{lock,unlock} in sugov_update_single_freq() for that case.
-> > 
-> > So, let's call sugov_update_next_freq() before the fast switch check
-> > to avoid unnecessary behaviors above. Update the related interface
-> > definitions accordingly.
-> > 
-> > Signed-off-by: Yue Hu <huyue2@yulong.com>
-> > ---
-> >  kernel/sched/cpufreq_schedutil.c | 28 ++++++++++++++--------------
-> >  1 file changed, 14 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > index 41e498b..d23e5be 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -114,19 +114,13 @@ static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
-> >  	return true;
-> >  }
-> >  
-> > -static void sugov_fast_switch(struct sugov_policy *sg_policy, u64 time,
-> > -			      unsigned int next_freq)
-> > +static void sugov_fast_switch(struct sugov_policy *sg_policy, unsigned int next_freq)
-> >  {
-> > -	if (sugov_update_next_freq(sg_policy, time, next_freq))
-> > -		cpufreq_driver_fast_switch(sg_policy->policy, next_freq);
-> > +	cpufreq_driver_fast_switch(sg_policy->policy, next_freq);  
-> 
-> I will call this directly instead, no need of the wrapper anymore.
+Changes in v8:
+1. Add irq_clock to protect IRQ register access;
+2. Mask all INTx interrupt when startup port;
+3. Remove activate/deactivate callbacks from bottom_domain_ops;
+4. Add unmask/mask callbacks in mtk_msi_bottom_irq_chip;
+5. Add property information for reg-names.
 
-To fix it in next version.
+Changes in v7:
+1. Split the driver patch to core PCIe, INTx, MSI and PM patches;
+2. Reshape MSI init and handle flow, use msi_bottom_domain to cover all sets;
+3. Replace readl/writel with their relaxed version;
+4. Add MSI description in binding document;
+5. Add pl_250m clock in binding document.
 
-Thank you.
+Changes in v6:
+1. Export pci_pio_to_address() to support compiling as kernel module;
+2. Replace usleep_range(100 * 1000, 120 * 1000) with msleep(100);
+3. Replace dev_notice with dev_err;
+4. Fix MSI get hwirq flow;
+5. Fix warning for possible recursive locking in mtk_pcie_set_affinity.
 
-> 
-> >  }
-> >  
-> > -static void sugov_deferred_update(struct sugov_policy *sg_policy, u64 time,
-> > -				  unsigned int next_freq)
-> > +static void sugov_deferred_update(struct sugov_policy *sg_policy)
-> >  {
-> > -	if (!sugov_update_next_freq(sg_policy, time, next_freq))
-> > -		return;
-> > -
-> >  	if (!sg_policy->work_in_progress) {
-> >  		sg_policy->work_in_progress = true;
-> >  		irq_work_queue(&sg_policy->irq_work);
-> > @@ -368,16 +362,19 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
-> >  		sg_policy->cached_raw_freq = cached_freq;
-> >  	}
-> >  
-> > +	if (!sugov_update_next_freq(sg_policy, time, next_f))
-> > +		return;
-> > +
-> >  	/*
-> >  	 * This code runs under rq->lock for the target CPU, so it won't run
-> >  	 * concurrently on two different CPUs for the same target and it is not
-> >  	 * necessary to acquire the lock in the fast switch case.
-> >  	 */
-> >  	if (sg_policy->policy->fast_switch_enabled) {
-> > -		sugov_fast_switch(sg_policy, time, next_f);
-> > +		sugov_fast_switch(sg_policy, next_f);
-> >  	} else {
-> >  		raw_spin_lock(&sg_policy->update_lock);
-> > -		sugov_deferred_update(sg_policy, time, next_f);
-> > +		sugov_deferred_update(sg_policy);
-> >  		raw_spin_unlock(&sg_policy->update_lock);
-> >  	}
-> >  }
-> > @@ -456,12 +453,15 @@ static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
-> >  	if (sugov_should_update_freq(sg_policy, time)) {
-> >  		next_f = sugov_next_freq_shared(sg_cpu, time);
-> >  
-> > +		if (!sugov_update_next_freq(sg_policy, time, next_f))
-> > +			goto unlock;
-> > +
-> >  		if (sg_policy->policy->fast_switch_enabled)
-> > -			sugov_fast_switch(sg_policy, time, next_f);
-> > +			sugov_fast_switch(sg_policy, next_f);
-> >  		else
-> > -			sugov_deferred_update(sg_policy, time, next_f);
-> > +			sugov_deferred_update(sg_policy);
-> >  	}
-> > -
-> > +unlock:
-> >  	raw_spin_unlock(&sg_policy->update_lock);
-> >  }  
-> 
+Changes in v5:
+1. Remove unused macros
+2. Modify the config read/write callbacks, set the config byte field
+   in TLP header and use pci_generic_config_read32/write32
+   to access the config space
+3. Fix the settings of translation window, both MEM and IO regions
+   works properly
+4. Fix typos
+
+Changes in v4:
+1. Fix PCIe power up/down flow
+2. Use "mac" and "phy" for reset names
+3. Add clock names
+4. Fix the variables type
+
+Changes in v3:
+1. Remove standard property in binding document
+2. Return error number when get_optional* API throws an error
+3. Use the bulk clk APIs
+
+Changes in v2:
+1. Fix the typo of dt-bindings patch
+2. Remove the unnecessary properties in binding document
+3. dispos the irq mappings of msi top domain when irq teardown
+
+Jianjun Wang (7):
+  dt-bindings: PCI: mediatek-gen3: Add YAML schema
+  PCI: Export pci_pio_to_address() for module use
+  PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
+  PCI: mediatek-gen3: Add INTx support
+  PCI: mediatek-gen3: Add MSI support
+  PCI: mediatek-gen3: Add system PM support
+  MAINTAINERS: Add Jianjun Wang as MediaTek PCI co-maintainer
+
+ .../bindings/pci/mediatek-pcie-gen3.yaml      | 181 ++++
+ MAINTAINERS                                   |   1 +
+ drivers/pci/controller/Kconfig                |  13 +
+ drivers/pci/controller/Makefile               |   1 +
+ drivers/pci/controller/pcie-mediatek-gen3.c   | 994 ++++++++++++++++++
+ drivers/pci/pci.c                             |   1 +
+ 6 files changed, 1191 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+ create mode 100644 drivers/pci/controller/pcie-mediatek-gen3.c
+
+-- 
+2.25.1
 
