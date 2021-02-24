@@ -2,163 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA776324414
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9975A32441A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235289AbhBXSvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:51:45 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:47494 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235166AbhBXSsE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:48:04 -0500
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_smtp) via UNIX with SMTP (IdeaSmtpServer 0.83.537)
- id f4fe5d91c4c6e91b; Wed, 24 Feb 2021 19:47:17 +0100
-Received: from kreacher.localnet (89-64-80-80.dynamic.chello.pl [89.64.80.80])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id BF1AE661E2A;
-        Wed, 24 Feb 2021 19:47:16 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org
-Subject: [PATCH v1] xen: ACPI: Get rid of ACPICA message printing
-Date:   Wed, 24 Feb 2021 19:47:15 +0100
-Message-ID: <1709720.Zl72FGBfpD@kreacher>
+        id S234927AbhBXSyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:54:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235091AbhBXSx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 13:53:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61CE164F6E;
+        Wed, 24 Feb 2021 18:47:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614192446;
+        bh=1NA7qcES3t/vO/ZkcZZXDfpfXyYaG6cYJqooPeHG5x4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IrCqghMeogb8DwA4gyWpcqutctX/5RDC4hILQs9TpSAvmDZWz/oDdTxr3ITHIPvd5
+         wZ+MD3P0NApKP7xIW83XF9iC78MZUgjusdH0y/DlWZH5nXPzuJkWMN2oMPWsjDmVCB
+         tzm01bY3+knwPp/qAJ7I8pxf0DwIAzsfxk+85dMqx1X1s/Nr1q7aCPdQFCU/arFEzT
+         fESaXX2ulv0uU/QtIuFdy7OI57Z6CgLIAsv+AliKNFmrH2oWR5/3+yjMeHwR9wgwP0
+         vcEM4pqb1pdHdPJbsi5da2wEo81PW4BPE424g17LKnwJvULr/y5Nt6q0f1gY+5Ve09
+         S+M28Hg+h1FAA==
+Date:   Wed, 24 Feb 2021 10:47:21 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>
+Cc:     Kaustubh Pandey <kapandey@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sharathv@codeaurora.org,
+        chinagar@codeaurora.org
+Subject: Re: [PATCH] ipv6: Honor route mtu if it is within limit of dev mtu
+Message-ID: <20210224104721.6a86d972@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1614011555-21951-1-git-send-email-kapandey@codeaurora.org>
+References: <1614011555-21951-1-git-send-email-kapandey@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrkeejgdduudehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtvdenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeevudefgfeguedtjedvhfetveegleduveeuvedvjeekleefhfduhfefheekffefveenucfkphepkeelrdeigedrkedtrdektdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrkedtpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghorhhishdrohhsthhrohhvshhkhiesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepshhsthgrsggvlhhlihhniheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhgrhhoshhssehsuhhsvgdrtghomhdp
- rhgtphhtthhopeigvghnqdguvghvvghlsehlihhsthhsrdigvghnphhrohhjvggtthdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, 22 Feb 2021 22:02:35 +0530 Kaustubh Pandey wrote:
+> When netdevice MTU is increased via sysfs, NETDEV_CHANGEMTU is raised.
+> 
+> addrconf_notify -> rt6_mtu_change -> rt6_mtu_change_route ->
+> fib6_nh_mtu_change
+> 
+> As part of handling NETDEV_CHANGEMTU notification we land up on a
+> condition where if route mtu is less than dev mtu and route mtu equals
+> ipv6_devconf mtu, route mtu gets updated.
+> 
+> Due to this v6 traffic end up using wrong MTU then configured earlier.
+> This commit fixes this by removing comparison with ipv6_devconf
+> and updating route mtu only when it is greater than incoming dev mtu.
+> 
+> This can be easily reproduced with below script:
+> pre-condition:
+> device up(mtu = 1500) and route mtu for both v4 and v6 is 1500
+> 
+> test-script:
+> ip route change 192.168.0.0/24 dev eth0 src 192.168.0.1 mtu 1400
+> ip -6 route change 2001::/64 dev eth0 metric 256 mtu 1400
+> echo 1400 > /sys/class/net/eth0/mtu
+> ip route change 192.168.0.0/24 dev eth0 src 192.168.0.1 mtu 1500
+> echo 1500 > /sys/class/net/eth0/mtu
+> 
+> Signed-off-by: Kaustubh Pandey <kapandey@codeaurora.org>
+> ---
+>  net/ipv6/route.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+> index 1536f49..653b6c7 100644
+> --- a/net/ipv6/route.c
+> +++ b/net/ipv6/route.c
+> @@ -4813,8 +4813,7 @@ static int fib6_nh_mtu_change(struct fib6_nh *nh, void *_arg)
+>  		struct inet6_dev *idev = __in6_dev_get(arg->dev);
+>  		u32 mtu = f6i->fib6_pmtu;
+>  
+> -		if (mtu >= arg->mtu ||
+> -		    (mtu < arg->mtu && mtu == idev->cnf.mtu6))
+> +		if (mtu >= arg->mtu)
+>  			fib6_metric_set(f6i, RTAX_MTU, arg->mtu);
+>  
+>  		spin_lock_bh(&rt6_exception_lock);
 
-The ACPI_DEBUG_PRINT() macro is used in a few places in
-xen-acpi-cpuhotplug.c and xen-acpi-memhotplug.c for printing debug
-messages, but that is questionable, because that macro belongs to
-ACPICA and it should not be used elsewhere.  In addition,
-ACPI_DEBUG_PRINT() requires special enabling to allow it to actually
-print the message and the _COMPONENT symbol generally needed for
-that is not defined in any of the files in question.
-
-For this reason, replace all of the ACPI_DEBUG_PRINT() instances in
-the Xen code with acpi_handle_debug() (with the additional benefit
-that the source object can be identified more easily after this
-change) and drop the ACPI_MODULE_NAME() definitions that are only
-used by the ACPICA message printing macros from that code.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/xen/xen-acpi-cpuhotplug.c |   12 +++++-------
- drivers/xen/xen-acpi-memhotplug.c |   16 +++++++---------
- 2 files changed, 12 insertions(+), 16 deletions(-)
-
-Index: linux-pm/drivers/xen/xen-acpi-cpuhotplug.c
-===================================================================
---- linux-pm.orig/drivers/xen/xen-acpi-cpuhotplug.c
-+++ linux-pm/drivers/xen/xen-acpi-cpuhotplug.c
-@@ -242,10 +242,10 @@ static void acpi_processor_hotplug_notif
- 	switch (event) {
- 	case ACPI_NOTIFY_BUS_CHECK:
- 	case ACPI_NOTIFY_DEVICE_CHECK:
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
-+		acpi_handle_debug(handle,
- 			"Processor driver received %s event\n",
- 			(event == ACPI_NOTIFY_BUS_CHECK) ?
--			"ACPI_NOTIFY_BUS_CHECK" : "ACPI_NOTIFY_DEVICE_CHECK"));
-+			"ACPI_NOTIFY_BUS_CHECK" : "ACPI_NOTIFY_DEVICE_CHECK");
- 
- 		if (!is_processor_present(handle))
- 			break;
-@@ -269,8 +269,8 @@ static void acpi_processor_hotplug_notif
- 		break;
- 
- 	case ACPI_NOTIFY_EJECT_REQUEST:
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--				  "received ACPI_NOTIFY_EJECT_REQUEST\n"));
-+		acpi_handle_debug(handle,
-+				  "received ACPI_NOTIFY_EJECT_REQUEST\n");
- 
- 		if (acpi_bus_get_device(handle, &device)) {
- 			pr_err(PREFIX "Device don't exist, dropping EJECT\n");
-@@ -290,8 +290,7 @@ static void acpi_processor_hotplug_notif
- 		break;
- 
- 	default:
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--				  "Unsupported event [0x%x]\n", event));
-+		acpi_handle_debug(handle, "Unsupported event [0x%x]\n", event);
- 
- 		/* non-hotplug event; possibly handled by other handler */
- 		goto out;
-@@ -440,7 +439,6 @@ static void __exit xen_acpi_processor_ex
- 
- module_init(xen_acpi_processor_init);
- module_exit(xen_acpi_processor_exit);
--ACPI_MODULE_NAME("xen-acpi-cpuhotplug");
- MODULE_AUTHOR("Liu Jinsong <jinsong.liu@intel.com>");
- MODULE_DESCRIPTION("Xen Hotplug CPU Driver");
- MODULE_LICENSE("GPL");
-Index: linux-pm/drivers/xen/xen-acpi-memhotplug.c
-===================================================================
---- linux-pm.orig/drivers/xen/xen-acpi-memhotplug.c
-+++ linux-pm/drivers/xen/xen-acpi-memhotplug.c
-@@ -227,13 +227,13 @@ static void acpi_memory_device_notify(ac
- 
- 	switch (event) {
- 	case ACPI_NOTIFY_BUS_CHECK:
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--			"\nReceived BUS CHECK notification for device\n"));
-+		acpi_handle_debug(handle,
-+			"Received BUS CHECK notification for device\n");
- 		fallthrough;
- 	case ACPI_NOTIFY_DEVICE_CHECK:
- 		if (event == ACPI_NOTIFY_DEVICE_CHECK)
--			ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--			"\nReceived DEVICE CHECK notification for device\n"));
-+			acpi_handle_debug(handle,
-+			"Received DEVICE CHECK notification for device\n");
- 
- 		if (acpi_memory_get_device(handle, &mem_device)) {
- 			pr_err(PREFIX "Cannot find driver data\n");
-@@ -244,8 +244,8 @@ static void acpi_memory_device_notify(ac
- 		break;
- 
- 	case ACPI_NOTIFY_EJECT_REQUEST:
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--			"\nReceived EJECT REQUEST notification for device\n"));
-+		acpi_handle_debug(handle,
-+			"Received EJECT REQUEST notification for device\n");
- 
- 		acpi_scan_lock_acquire();
- 		if (acpi_bus_get_device(handle, &device)) {
-@@ -269,8 +269,7 @@ static void acpi_memory_device_notify(ac
- 		break;
- 
- 	default:
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--				  "Unsupported event [0x%x]\n", event));
-+		acpi_handle_debug(handle, "Unsupported event [0x%x]\n", event);
- 		/* non-hotplug event; possibly handled by other handler */
- 		return;
- 	}
-@@ -469,7 +468,6 @@ static void __exit xen_acpi_memory_devic
- 
- module_init(xen_acpi_memory_device_init);
- module_exit(xen_acpi_memory_device_exit);
--ACPI_MODULE_NAME("xen-acpi-memhotplug");
- MODULE_AUTHOR("Liu Jinsong <jinsong.liu@intel.com>");
- MODULE_DESCRIPTION("Xen Hotplug Mem Driver");
- MODULE_LICENSE("GPL");
-
-
-
+David, Hideaki - any thoughts on this one? Can we change this long
+standing behavior?
