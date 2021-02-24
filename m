@@ -2,117 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF46323FF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE07F323FFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235625AbhBXO3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:29:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234545AbhBXNSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:18:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DB7664E02;
-        Wed, 24 Feb 2021 13:16:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614172618;
-        bh=1OYA70c3B5fW2I4c9I6qukLQFWmQmyDKzf/6xmqd7yw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DunTstwYrC0zZRkwW7RIhvcIx30okzmVYogmvnpPP/VSr7XU3sKC2WtP11a3YXy/9
-         ZTG1jfQUzBnt8Fxg6v4tRNhMUVMDtVUWolzKmFTNIJiAmxlnqQDmbeZ/9tgpHSpr0I
-         fg0N0iH1yxP7Ye/+UxPaQJDiX7KCTW5f8i5hXFumNjuTRUQv3iIRcWw6SXnYaFQH1e
-         BArz1E+Roti2GhLu4psN7VCctp1U8Z3Y/QOERK48TI1PSCirPE/r/e5w91BtuNUI/Z
-         glWLBagHjOVswV65v18gWtS+/hdp6EZVaoKaoAT4wuKCkgS3MB6rPQzKtnfhfZ+yeG
-         HbGMS1DAHq0Bg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 489B240CD9; Wed, 24 Feb 2021 10:16:55 -0300 (-03)
-Date:   Wed, 24 Feb 2021 10:16:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Juxin Gao <gaojuxin@loongson.cn>
-Subject: Re: [PATCH v2 0/3] Add some perf support for mips
-Message-ID: <YDZRxz1yRwgWc47F@kernel.org>
-References: <1612409724-3516-1-git-send-email-yangtiezhu@loongson.cn>
- <1d3c4abd-4b14-90e3-6528-457a8248cb52@loongson.cn>
+        id S237122AbhBXOa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:30:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234798AbhBXNTD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 08:19:03 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2CFC06174A;
+        Wed, 24 Feb 2021 05:18:00 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id g5so3016040ejt.2;
+        Wed, 24 Feb 2021 05:18:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LXMkDdorsWFPtdrDM7+glKcfLi3dZE94irm5Fz1OGxk=;
+        b=DMXFCNhDdgPWnsMshFEUe6+gFqCEQhp4+1z73CkPWntA8Skg0pqJ8uyg+Nh4Z6/BKs
+         lX8RbffPYPls23fJnmJe2C5oL+uo3sITmH/0tBaIfP370Ql95gmEZUsQ/wtUY9TkpYTk
+         84yGq19NsHryOT8/XshQHwvewpLQRD5GIsNNhutYMwYaiTM+bhokMyMVCQ4WP4iPcaHD
+         AJ2S+WqX6APOKcKzfd6dNMIw7GZNo6WMYATNRGmZ9EsEku7DZhkI7C4jiR+F3+EG0+tl
+         vsMnk6o6PeO6lO2mmJzhGIQz7ecITcOJXzunHU0fI7MgW78cN6GAszLdcvePKfr0NtXL
+         53ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LXMkDdorsWFPtdrDM7+glKcfLi3dZE94irm5Fz1OGxk=;
+        b=EIycH/VARUBVmFuMFreSjoXov6rZd0a9Rqwa8fOxaSiVLP7HRhfeW+xWF/B/uEVPoG
+         HbEhOWnAvq6Bk4e6nK2NR1sv1bVT3H6SbSaqPZMFkW8KubAcT6ndEUjMXw5MmMRX9BMC
+         AzQNICvKep70kwcNsAaFUcorSvE9bRLI28zUT0DPQ3I8BlrXz9TP8gqBrCv+CvN3xsNV
+         lmsfQzDbWp2qLBUHl6kWUBXhD1KJKRB8A4bBpWxvud6cwmQRI2oFJtqAKB9frnJNoIyA
+         Ug3YHfy8lXB90LGHJDNBbDD+ta0AGH576OSYFhOL6zuQtbqEiOiZCzHjl3iRhX8HmziC
+         mixg==
+X-Gm-Message-State: AOAM533fHzrKaAZpCJM/apKQZsLW6KNlMfEGYgzhEGP0U/RyeT2c6F7I
+        mS5OqAbA9cI0Gx0llfRVBRk=
+X-Google-Smtp-Source: ABdhPJyI37ZlW3HePqgevNJIQC3//kd1P+tYfwt17Tc+iTjt+edpUd/xYjWHDPwjhEXZbDdqICZt+Q==
+X-Received: by 2002:a17:906:5391:: with SMTP id g17mr14490550ejo.283.1614172678863;
+        Wed, 24 Feb 2021 05:17:58 -0800 (PST)
+Received: from anparri (host-82-59-6-76.retail.telecomitalia.it. [82.59.6.76])
+        by smtp.gmail.com with ESMTPSA id p3sm1552520edu.64.2021.02.24.05.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 05:17:58 -0800 (PST)
+Date:   Wed, 24 Feb 2021 14:17:55 +0100
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.11 51/67] Drivers: hv: vmbus: Resolve race
+ condition in vmbus_onoffer_rescind()
+Message-ID: <20210224131755.GB1920@anparri>
+References: <20210224125026.481804-1-sashal@kernel.org>
+ <20210224125026.481804-51-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1d3c4abd-4b14-90e3-6528-457a8248cb52@loongson.cn>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210224125026.481804-51-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Feb 22, 2021 at 02:43:39PM +0800, Tiezhu Yang escreveu:
-> On 02/04/2021 11:35 AM, Tiezhu Yang wrote:
-> > v2: add R26 and R27 to the enum perf_event_mips_regs in patch #1
-> > 
-> > Tiezhu Yang (3):
-> >    MIPS: kernel: Support extracting off-line stack traces from user-space
-> >      with perf
-> >    perf tools: Support mips unwinding and dwarf-regs
-> >    perf tools: Generate mips syscalls_n64.c syscall table
+On Wed, Feb 24, 2021 at 07:50:09AM -0500, Sasha Levin wrote:
+> From: "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
 > 
-> Hi Arnaldo,
+> [ Upstream commit e4d221b42354b2e2ddb9187a806afb651eee2cda ]
 > 
-> The kernel part patch #1 has been merged.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1ddc96bd42da
+> An erroneous or malicious host could send multiple rescind messages for
+> a same channel.  In vmbus_onoffer_rescind(), the guest maps the channel
+> ID to obtain a pointer to the channel object and it eventually releases
+> such object and associated data.  The host could time rescind messages
+> and lead to an use-after-free.  Add a new flag to the channel structure
+> to make sure that only one instance of vmbus_onoffer_rescind() can get
+> the reference to the channel object.
 > 
-> Could the perf tool patches #2 and #3 have a chance to be merged before
-> 5.12-rc1?
-> If yes, we can use this feature in 5.12-rc1.
+> Reported-by: Juan Vazquez <juvazq@microsoft.com>
+> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> Link: https://lore.kernel.org/r/20201209070827.29335-6-parri.andrea@gmail.com
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Thanks, applied, should make it into 5.12-rc1.
+Sasha - This patch is one of a group of patches where a Linux guest running on
+Hyper-V will start assuming that hypervisor behavior might be malicious, and
+guards against such behavior.  Because this is a new assumption, these patches
+are more properly treated as new functionality rather than as bug fixes.  So I
+would propose that we *not* bring such patches back to stable branches.
 
-- Arnaldo
- 
-> https://lore.kernel.org/patchwork/patch/1375476/
-> https://lore.kernel.org/patchwork/patch/1375475/
-> 
-> 
-> Thanks,
-> Tiezhu
-> 
-> > 
-> >   arch/mips/Kconfig                                  |   2 +
-> >   arch/mips/include/uapi/asm/perf_regs.h             |  40 +++
-> >   arch/mips/kernel/Makefile                          |   2 +-
-> >   arch/mips/kernel/perf_regs.c                       |  68 ++++
-> >   tools/perf/Makefile.config                         |   9 +-
-> >   tools/perf/arch/mips/Makefile                      |  22 ++
-> >   tools/perf/arch/mips/entry/syscalls/mksyscalltbl   |  32 ++
-> >   .../perf/arch/mips/entry/syscalls/syscall_n64.tbl  | 358 +++++++++++++++++++++
-> >   tools/perf/arch/mips/include/dwarf-regs-table.h    |  31 ++
-> >   tools/perf/arch/mips/include/perf_regs.h           |  84 +++++
-> >   tools/perf/arch/mips/util/Build                    |   3 +
-> >   tools/perf/arch/mips/util/dwarf-regs.c             |  38 +++
-> >   tools/perf/arch/mips/util/perf_regs.c              |   6 +
-> >   tools/perf/arch/mips/util/unwind-libunwind.c       |  22 ++
-> >   tools/perf/check-headers.sh                        |   1 +
-> >   tools/perf/util/dwarf-regs.c                       |   3 +
-> >   tools/perf/util/syscalltbl.c                       |   4 +
-> >   17 files changed, 723 insertions(+), 2 deletions(-)
-> >   create mode 100644 arch/mips/include/uapi/asm/perf_regs.h
-> >   create mode 100644 arch/mips/kernel/perf_regs.c
-> >   create mode 100644 tools/perf/arch/mips/Makefile
-> >   create mode 100644 tools/perf/arch/mips/entry/syscalls/mksyscalltbl
-> >   create mode 100644 tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl
-> >   create mode 100644 tools/perf/arch/mips/include/dwarf-regs-table.h
-> >   create mode 100644 tools/perf/arch/mips/include/perf_regs.h
-> >   create mode 100644 tools/perf/arch/mips/util/Build
-> >   create mode 100644 tools/perf/arch/mips/util/dwarf-regs.c
-> >   create mode 100644 tools/perf/arch/mips/util/perf_regs.c
-> >   create mode 100644 tools/perf/arch/mips/util/unwind-libunwind.c
-> > 
-> 
+Thanks,
+  Andrea
 
--- 
 
-- Arnaldo
+> ---
+>  drivers/hv/channel_mgmt.c | 12 ++++++++++++
+>  include/linux/hyperv.h    |  1 +
+>  2 files changed, 13 insertions(+)
+> 
+> diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+> index 1d44bb635bb84..a9f58840f85dc 100644
+> --- a/drivers/hv/channel_mgmt.c
+> +++ b/drivers/hv/channel_mgmt.c
+> @@ -1049,6 +1049,18 @@ static void vmbus_onoffer_rescind(struct vmbus_channel_message_header *hdr)
+>  
+>  	mutex_lock(&vmbus_connection.channel_mutex);
+>  	channel = relid2channel(rescind->child_relid);
+> +	if (channel != NULL) {
+> +		/*
+> +		 * Guarantee that no other instance of vmbus_onoffer_rescind()
+> +		 * has got a reference to the channel object.  Synchronize on
+> +		 * &vmbus_connection.channel_mutex.
+> +		 */
+> +		if (channel->rescind_ref) {
+> +			mutex_unlock(&vmbus_connection.channel_mutex);
+> +			return;
+> +		}
+> +		channel->rescind_ref = true;
+> +	}
+>  	mutex_unlock(&vmbus_connection.channel_mutex);
+>  
+>  	if (channel == NULL) {
+> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+> index 5ddb479c4d4cb..ef3573e99d989 100644
+> --- a/include/linux/hyperv.h
+> +++ b/include/linux/hyperv.h
+> @@ -803,6 +803,7 @@ struct vmbus_channel {
+>  	u8 monitor_bit;
+>  
+>  	bool rescind; /* got rescind msg */
+> +	bool rescind_ref; /* got rescind msg, got channel reference */
+>  	struct completion rescind_event;
+>  
+>  	u32 ringbuffer_gpadlhandle;
+> -- 
+> 2.27.0
+> 
