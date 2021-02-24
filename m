@@ -2,131 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD7532451C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE5B32451E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235657AbhBXUTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:19:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235728AbhBXUSG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:18:06 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C529C061574;
-        Wed, 24 Feb 2021 12:17:26 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id 18so3715765oiz.7;
-        Wed, 24 Feb 2021 12:17:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ylNlgfdcvRYOD6kXq/95XnGE6RgCAMqXvQ1uBMMg7TU=;
-        b=RhNsZyzXgtTZGyid5j7nVxfjC5vdc5cxSATcD8rc+cg00YD/Uu1qopgE0wLckdrrfh
-         AMbMPE6l42p5jtO2qEMlB6RBoiy/u6oeOfBKxB9YDRU+CyIdVN+OqiFMfONkZ5OBUyJT
-         pYqWHcQ9YjSGTuxG6MK2ztRqiuOxyxd7MkbB895Aoxto9JgmmfUqRh2iu5hVc54oWKUI
-         Gq97bliEvUmmhPnIPYtuOBB/ESNbs1xmeQ5jhfh/sAVUw4iaxufO7htAed0SwH5o4oJe
-         scdddBN+FqryhHDKlk8OmTM346/xXlWpfcKrSkUNbd9PEEnxF6oU6vnbhOaAA+zbLoP9
-         RTHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ylNlgfdcvRYOD6kXq/95XnGE6RgCAMqXvQ1uBMMg7TU=;
-        b=YGC7euZ5PUqaO7Xk+uCvufUqnIKXA2RBj6FjYNmpe29GjRa9zcy2/91LbNfrlu8JJi
-         67FqRsz09rCaIFgAiQ/S+xAY98+cN0XNFbM/OPh1HvyKZ7jGRT/0iDF36yxQ4iRmnf5S
-         lIte+f2olPsa2VFMVQcE/Dq/2kLSdEhl57oEvaNh2zUCmqlGBBbs6AtqPmiQDHqEw822
-         FWhKKosySqiDZgQqLDBFzeJW7A0qRYFkOe1SBeU4qkY0i1TJqP4vPehIdyvEC9Ukf+so
-         TIQKUzBmHu5/dWOS/9FKuGp/fSZNaE31yhCC1sSxk16CRUC5iCv2H03jHRn189QmPola
-         tcMA==
-X-Gm-Message-State: AOAM5324hpkIL5vSocIcPEx6ITCxnKxoEZYpOrRU0V1rKz5GkL34DPKI
-        1xf+9oL08N+PB/xjSzdnRhI=
-X-Google-Smtp-Source: ABdhPJzDBcW556aZO7mgeeunZgHfhSVx/5GFriwJvwVEbAj9sOwTknCGBEak65KhGzHJp7g/DrTp8Q==
-X-Received: by 2002:aca:ad0d:: with SMTP id w13mr3743625oie.170.1614197845430;
-        Wed, 24 Feb 2021 12:17:25 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n93sm572233ota.37.2021.02.24.12.17.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 24 Feb 2021 12:17:24 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 24 Feb 2021 12:17:23 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH v9 01/16] tracing: move function tracer options to
- Kconfig (causing parisc build failures)
-Message-ID: <20210224201723.GA69309@roeck-us.net>
-References: <20201211184633.3213045-1-samitolvanen@google.com>
- <20201211184633.3213045-2-samitolvanen@google.com>
+        id S234570AbhBXUWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 15:22:40 -0500
+Received: from ozlabs.org ([203.11.71.1]:35747 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232446AbhBXUWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 15:22:23 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dm6l01rsjz9sBJ;
+        Thu, 25 Feb 2021 07:21:31 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614198092;
+        bh=o1R0leeYTuocMTa7R8knZ5N5njuSTip985B70fN7mbc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qlY1bFS2edbBjJyr/NqZqq32xTrR/YnJQ6jMFflFmZG9NgdlH8sWDsRfg5ELzer9j
+         GJ4BLhaJAHyeeaBik/YWkzJIlVDsXeuFin42NpwYod7xHFCHneZ3J1ZlmyirG/3rcv
+         mVicrEaEZDikRsNHmIcqZUhOv8B7jfyvngdR3VlSwULI2Ze7qwa+7K6gSFe6+D59PC
+         XpFVAlXHbe5KeJYPjlFs5ik29V+jLrL58B8YcFshEFffL3j417uAz6y2bGqZYxBLPR
+         KD3Y4C2jWAWmH9iHTwulRdH1Vm1SZ7oTCx/G5lX4xrZOvz67vqXekGbzau17RZUjGr
+         W3N81zExaDTpA==
+Date:   Thu, 25 Feb 2021 07:21:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the pci tree
+Message-ID: <20210225072131.7e30277f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211184633.3213045-2-samitolvanen@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/uwxZF1E8B0PAPqF=ewKT70E";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 10:46:18AM -0800, Sami Tolvanen wrote:
-> Move function tracer options to Kconfig to make it easier to add
-> new methods for generating __mcount_loc, and to make the options
-> available also when building kernel modules.
-> 
-> Note that FTRACE_MCOUNT_USE_* options are updated on rebuild and
-> therefore, work even if the .config was generated in a different
-> environment.
-> 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+--Sig_/uwxZF1E8B0PAPqF=ewKT70E
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-With this patch in place, parisc:allmodconfig no longer builds.
+Hi all,
 
-Error log:
-Arch parisc is not supported with CONFIG_FTRACE_MCOUNT_RECORD at scripts/recordmcount.pl line 405.
-make[2]: *** [scripts/mod/empty.o] Error 2
+Commits
 
-Due to this problem, CONFIG_FTRACE_MCOUNT_RECORD can no longer be
-enabled in parisc builds. Since that is auto-selected by DYNAMIC_FTRACE,
-DYNAMIC_FTRACE can no longer be enabled, and with it everything that
-depends on it.
+  557fb5faf4ca ("PCI: qcom: Add support for ddrss_sf_tbu clock")
+  3d0e5cf9c062 ("dt-bindings: PCI: qcom: Document ddrss_sf_tbu clock for sm=
+8250")
 
-Bisect log attached.
+are missing a Signed-off-by from their committer.
 
-Guenter
+--=20
+Cheers,
+Stephen Rothwell
 
----
-# bad: [414eece95b98b209cef0f49cfcac108fd00b8ced] Merge tag 'clang-lto-v5.12-rc1-part2' of git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux
-# good: [b12b47249688915e987a9a2a393b522f86f6b7ab] Merge tag 'powerpc-5.12-1' of git://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux
-git bisect start '414eece95b98' 'b12b47249688'
-# bad: [f6e1e1d1e149802ed4062fa514c2d184d30aacdf] Merge tag 'gfs2-for-5.12' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2
-git bisect bad f6e1e1d1e149802ed4062fa514c2d184d30aacdf
-# bad: [79db4d2293eba2ce6265a341bedf6caecad5eeb3] Merge tag 'clang-lto-v5.12-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux
-git bisect bad 79db4d2293eba2ce6265a341bedf6caecad5eeb3
-# good: [9d5032f97e9e0655e8c507ab1f43237e31520b00] dt-bindings: mediatek: mt8192: Fix dt_binding_check warning
-git bisect good 9d5032f97e9e0655e8c507ab1f43237e31520b00
-# good: [f81f213850ca84b3d5e59e17d17acb2ecfc24076] Merge tag 'for-linus-5.12-1' of git://github.com/cminyard/linux-ipmi
-git bisect good f81f213850ca84b3d5e59e17d17acb2ecfc24076
-# bad: [112b6a8e038d793d016e330f53acb9383ac504b3] arm64: allow LTO to be selected
-git bisect bad 112b6a8e038d793d016e330f53acb9383ac504b3
-# bad: [3578ad11f3fba07e64c26d8db68cfd3dde28c59e] init: lto: fix PREL32 relocations
-git bisect bad 3578ad11f3fba07e64c26d8db68cfd3dde28c59e
-# bad: [22d429e75f24d114d99223389d6ba7047e952e32] kbuild: lto: limit inlining
-git bisect bad 22d429e75f24d114d99223389d6ba7047e952e32
-# bad: [dc5723b02e523b2c4a68667f7e28c65018f7202f] kbuild: add support for Clang LTO
-git bisect bad dc5723b02e523b2c4a68667f7e28c65018f7202f
-# bad: [3b15cdc15956673ba1551d79bceae471436ac6a9] tracing: move function tracer options to Kconfig
-git bisect bad 3b15cdc15956673ba1551d79bceae471436ac6a9
-# first bad commit: [3b15cdc15956673ba1551d79bceae471436ac6a9] tracing: move function tracer options to Kconfig
+--Sig_/uwxZF1E8B0PAPqF=ewKT70E
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA2tUsACgkQAVBC80lX
+0GxyLwf+MvnxLcbPZgz/TPCtJ6JAj9FOQ3yBg+eg+hUj9Ucow65zSYTv14WNkina
+9Gjsk8wwQaFfdhcZkglac4d7iSg0OrY0m3oE4nVApS16L99dKb5ERaJGFqsJEv9T
+J7LoBCeuc9LB5QfrB/7aCLcqZa62o1NXMpbxju4bd9SJ3qn2SPm155XCPB7/yQdu
+/eLJtpukeNeunTg0H2s/zlf0ZVuKZ3x3xG7JtypnQFbdqB6B/UW1TvVKzxEzlJIw
+2qc6bd7tdVuciSgAHt/LN7gb5L/4fMeuLNaJKx0JFgvCWBQaN9TPfup7DH9wyllm
+x26l+SRe5SJ2IcSK8xvgpROQTZbysg==
+=uCQR
+-----END PGP SIGNATURE-----
+
+--Sig_/uwxZF1E8B0PAPqF=ewKT70E--
