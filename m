@@ -2,130 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305B7324533
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E922324537
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235496AbhBXU3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:29:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235439AbhBXU3e (ORCPT
+        id S235545AbhBXUaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 15:30:21 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54180 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235116AbhBXUaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:29:34 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC21CC061574;
-        Wed, 24 Feb 2021 12:28:53 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id k13so3438353otn.13;
-        Wed, 24 Feb 2021 12:28:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g8yzyix+IBCeN/i+RiSu4Jq3q/QFYRj0Nua9JyTjFK4=;
-        b=hqDvrFDsQ5MvQSbJVnlL/9wEf+SAx47eVa3PVW0GqFk7CflZ4iulDIBXQVzWD/AdQb
-         z8CdTdSUggVtoa8YgDRhKtV0YjEDogFXBZL3f0BsUodiJzM+g3R+1DkP1gvwRmkXjpx7
-         lkoARERQplIs8XTTwfWSZt6eb5S39YqdWyt1ZlBuULD9OGNFHwPBzZsxF8ftlFqhFYRb
-         ZxoUrR4Szn/5gAYB2ygEUAl/TOSouQjh7feR5eG5rZ/LNoUi6riHzh8Sb0+mXNDUW4X9
-         6DOT19PHUayPbBm4uGZQA0OM6qFPtAC/EQnpsX+QVQRmTiqcOoYYgIPVxk/6yg/Di0VV
-         JyIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g8yzyix+IBCeN/i+RiSu4Jq3q/QFYRj0Nua9JyTjFK4=;
-        b=tA7iPbEuXqsmVQlSZFaCC3Rw6GyxqUQFf1545xTI0eut2b0yB49DA3HyhyGVtk9rX4
-         v/o4AoIOdNcmdIxpciSKgKJz7X8gyUQlb7SCY7ABtbtXaDrYHSp5LsSbHlLFV/lXjS/y
-         UUxAq608S3gJDUQh8Rm/P5Ui9JVQ0PQ4r5eMYz5ww2iDaLdlhhKArEV7l54dKcovZNOh
-         t62i/cwtzICcO5dBwakXeFHvBqm/IdRqCAkLvwtR28CWEn9Uw19WXlboVAkFbcdh+eox
-         4jC0qK3+e8/3t5G0gkk5/4cPAJvqdSZA15vj0d1dwQtThz/r6zJRn4PMM8KTpA1/q55P
-         GVeA==
-X-Gm-Message-State: AOAM531uCTH+3xJgfqIiwi6XpDqf7ceJmJ56JfKqlAJr2rM+pxD24sIf
-        KGwB8Ks/KfLa8qx6O5IqjU4=
-X-Google-Smtp-Source: ABdhPJyyb/Tctv0HAuz3MFor4ImuhjdoiT5AWIvz+WIQw7tqI/ZQkeGs/rqa/9iNH8KMUN2e4Lak7Q==
-X-Received: by 2002:a9d:7103:: with SMTP id n3mr25109608otj.223.1614198533309;
-        Wed, 24 Feb 2021 12:28:53 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([8.48.134.40])
-        by smtp.googlemail.com with ESMTPSA id h15sm598731otq.13.2021.02.24.12.28.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Feb 2021 12:28:52 -0800 (PST)
-Subject: Re: [PATCH] ipv6: Honor route mtu if it is within limit of dev mtu
-To:     Kaustubh Pandey <kapandey@codeaurora.org>,
-        Stefano Brivio <sbrivio@redhat.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sharathv@codeaurora.org,
-        chinagar@codeaurora.org
-References: <1614011555-21951-1-git-send-email-kapandey@codeaurora.org>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <ef380be3-0a87-9599-f3ea-ec7779ad5db1@gmail.com>
-Date:   Wed, 24 Feb 2021 13:28:49 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Wed, 24 Feb 2021 15:30:11 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E72376F2;
+        Wed, 24 Feb 2021 21:29:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1614198569;
+        bh=xB+t/dbl8MPLz86P0E8LwwNoxS6LpK7iEniBg30Noms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MBWu8P9qXAZCXJdzxHY+l9g6bFWVhvqsFhEIG7R/7oodjlX6qDoLuwftX9uC1CXVN
+         Y03RUgzjBFnNCSyi2mznA+NYTrsuV7PVkHvdXjLvEorN4A9ICiAD9xBNTQLNOvytQ0
+         1P1uKizy7Z37+Qs/QXSn8DUzJhLr+nOyKqPvs768=
+Date:   Wed, 24 Feb 2021 22:29:01 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo@jmondi.org>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 07/16] media: i2c: rdacm2x: Fix wake up delay
+Message-ID: <YDa3DZ/ynR324EuZ@pendragon.ideasonboard.com>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-8-jacopo+renesas@jmondi.org>
+ <3e759da5-9bba-54ae-fe39-a7db2cbbb31c@ideasonboard.com>
+ <YDMGfQFKWUq9hyDv@pendragon.ideasonboard.com>
+ <20210222151141.4cydkhwiw4ylbebj@uno.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <1614011555-21951-1-git-send-email-kapandey@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210222151141.4cydkhwiw4ylbebj@uno.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 9:32 AM, Kaustubh Pandey wrote:
-> When netdevice MTU is increased via sysfs, NETDEV_CHANGEMTU is raised.
-> 
-> addrconf_notify -> rt6_mtu_change -> rt6_mtu_change_route ->
-> fib6_nh_mtu_change
-> 
-> As part of handling NETDEV_CHANGEMTU notification we land up on a
-> condition where if route mtu is less than dev mtu and route mtu equals
-> ipv6_devconf mtu, route mtu gets updated.
-> 
-> Due to this v6 traffic end up using wrong MTU then configured earlier.
-> This commit fixes this by removing comparison with ipv6_devconf
-> and updating route mtu only when it is greater than incoming dev mtu.
-> 
-> This can be easily reproduced with below script:
-> pre-condition:
-> device up(mtu = 1500) and route mtu for both v4 and v6 is 1500
-> 
-> test-script:
-> ip route change 192.168.0.0/24 dev eth0 src 192.168.0.1 mtu 1400
-> ip -6 route change 2001::/64 dev eth0 metric 256 mtu 1400
-> echo 1400 > /sys/class/net/eth0/mtu
-> ip route change 192.168.0.0/24 dev eth0 src 192.168.0.1 mtu 1500
-> echo 1500 > /sys/class/net/eth0/mtu
-> 
-> Signed-off-by: Kaustubh Pandey <kapandey@codeaurora.org>
-> ---
->  net/ipv6/route.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-> index 1536f49..653b6c7 100644
-> --- a/net/ipv6/route.c
-> +++ b/net/ipv6/route.c
-> @@ -4813,8 +4813,7 @@ static int fib6_nh_mtu_change(struct fib6_nh *nh, void *_arg)
->  		struct inet6_dev *idev = __in6_dev_get(arg->dev);
->  		u32 mtu = f6i->fib6_pmtu;
->  
-> -		if (mtu >= arg->mtu ||
-> -		    (mtu < arg->mtu && mtu == idev->cnf.mtu6))
-> +		if (mtu >= arg->mtu)
->  			fib6_metric_set(f6i, RTAX_MTU, arg->mtu);
->  
->  		spin_lock_bh(&rt6_exception_lock);
-> 
+Hi Jacopo,
 
-The existing logic mirrors what is done for exceptions, see
-rt6_mtu_change_route_allowed and commit e9fa1495d738.
+On Mon, Feb 22, 2021 at 04:11:41PM +0100, Jacopo Mondi wrote:
+> On Mon, Feb 22, 2021 at 03:18:53AM +0200, Laurent Pinchart wrote:
+> > On Wed, Feb 17, 2021 at 01:33:01PM +0000, Kieran Bingham wrote:
+> > > On 16/02/2021 17:41, Jacopo Mondi wrote:
+> > > > The MAX9271 chip manual prescribes a delay of 5 milliseconds
+> > > > after the chip exists from low power state.
+> > > >
+> > > > Adjust the required delay in the rdacm21 camera module and add it
+> > > > to the rdacm20 that currently doesn't implement one.
+> > >
+> > > This sounds to me like it should be a common function in the max9271 module:
+> > >
+> > > >         /* Verify communication with the MAX9271: ping to wakeup. */
+> > > >         dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> > > >         i2c_smbus_read_byte(dev->serializer.client);
+> > > >         usleep_range(5000, 8000);
+> > >
+> > > Especially as that MAX9271_DEFAULT_ADDR should probably be handled
+> > > directly in the max9271.c file too, and the RDACM's shouldn't care about it.
+> >
+> > I think this is a good idea. With this addressed,
+> 
+> The address reprogramming was exactly why I refrained from adding a
+> function to the max9271 library, as handling of the addresses there
+> would introduce a precendece order in the function calls, ie the newly
+> introduced function would require to be called first after a chip
+> reset and that's something I considered better handled by the camera
+> driver (even if it wouldn't be suprising a 'wake up' function to be
+> called first).
 
-It seems right to me to drop the mtu == idev->cnf.mtu6 comparison in
-which case the exceptions should do the same.
+I'm not sure this would be an issue, it's fine for library code to set
+requirements on how APIs have to be used, including which order
+functions have to be called.
 
-Added author of e9fa1495d738 in case I am overlooking something.
+> please also note that I will next try to make the max9271 a proper i2c
+> driver so this might be even less relevant that what it is right now
 
-Test case should be added to tools/testing/selftests/net/pmtu.sh, and
-did you run that script with the proposed change?
+Let's see how that works out.
+
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> >
+> > > If we end up moving the max9271 'library' into more of a module/device
+> > > then this would have to be done in it's 'probe' anyway, so it's likely
+> > > better handled down there...?
+> > >
+> > > But ... it's not essential at this point in the series, so if you want
+> > > to keep this patch as is,
+> > >
+> > > Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> > > 	> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > > > ---
+> > > >  drivers/media/i2c/rdacm20.c | 1 +
+> > > >  drivers/media/i2c/rdacm21.c | 2 +-
+> > > >  2 files changed, 2 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> > > > index ea30cc936531..39e4b4241870 100644
+> > > > --- a/drivers/media/i2c/rdacm20.c
+> > > > +++ b/drivers/media/i2c/rdacm20.c
+> > > > @@ -460,6 +460,7 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+> > > >  	/* Verify communication with the MAX9271: ping to wakeup. */
+> > > >  	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> > > >  	i2c_smbus_read_byte(dev->serializer.client);
+> > > > +	usleep_range(5000, 8000);
+> > > >
+> > > >  	/* Serial link disabled during config as it needs a valid pixel clock. */
+> > > >  	ret = max9271_set_serial_link(&dev->serializer, false);
+> > > > diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> > > > index 179d107f494c..b22a2ca5340b 100644
+> > > > --- a/drivers/media/i2c/rdacm21.c
+> > > > +++ b/drivers/media/i2c/rdacm21.c
+> > > > @@ -453,7 +453,7 @@ static int rdacm21_initialize(struct rdacm21_device *dev)
+> > > >  	/* Verify communication with the MAX9271: ping to wakeup. */
+> > > >  	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> > > >  	i2c_smbus_read_byte(dev->serializer.client);
+> > > > -	usleep_range(3000, 5000);
+> > > > +	usleep_range(5000, 8000);
+> > > >
+> > > >  	/* Enable reverse channel and disable the serial link. */
+> > > >  	ret = max9271_set_serial_link(&dev->serializer, false);
+
+-- 
+Regards,
+
+Laurent Pinchart
