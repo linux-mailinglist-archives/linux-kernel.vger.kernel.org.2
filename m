@@ -2,189 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40FE323505
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BD3323506
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 02:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234318AbhBXBMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Feb 2021 20:12:15 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29080 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234202AbhBXBCV (ORCPT
+        id S234662AbhBXBM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Feb 2021 20:12:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234220AbhBXBCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Feb 2021 20:02:21 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 11O0wPKN003128;
-        Tue, 23 Feb 2021 17:00:42 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=zEXuvjNRuzfts/sFbXCDoU2/y8w4M6rWyfZrT9g7/Y0=;
- b=AGN6sRIB3Ioc7lvPbaCIqliNyfWzu7Yowvst3o6vTzXhygHHGr6W0ELU4360QLmu0z3X
- RYXtvR9lDxOZOzTpJq6zUeiL/Bwi8p9STW4F+bwipLA6dmRsLMUch0UfijzN5cJo1kVz
- shqSIJQiTeyTVqKTk+4LZY/3ZVmSBiKt9W8= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 36u0341xcw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 23 Feb 2021 17:00:42 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Feb 2021 17:00:40 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MqPtGnh88dRqH/G80Rurepp9to10WnPeB5uHxKEMH0vOKlHlbhYFkTd5v5LGLopm37R+PjkdyspbhkNhP+4DiEFve7LSeDoBxZ1Drihh/04g1MZrAwnEKF+62eXcsBH2xGOrWORAlWIXB4cUcM3yxs3JtyytNeK2jeDw+pfPaZNcdE6zZd9kBl5wm0V6i87m5PzOs6vtP5tSHrC9OAHhHy9V9Cw9eda2823tE+7V7TTsqEXXDZF+pAAeayP+t0DnDzpUAwDgAMggMSB+V+KS04xepKeHM3z203mBsJy3RgIiJ/NfzW9WUyxViKay7SIP40ALwtMmXLHcBLImNDo8hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zEXuvjNRuzfts/sFbXCDoU2/y8w4M6rWyfZrT9g7/Y0=;
- b=WsyP110y4FOXSsjnPvdN53Mrwn8WOXjVG6/NlfeIK0ZsaWHpAeaKGj7amoxiJ2zri+F38L/f4r6DyA/wMSw1KmyuxRpmwOI20LbCqtd2finQdTcsCh3XqVAhttSLq03LWXqKAuuof4pBujgqVN/ZS0UnfvXlt4pFOXp2XQEf74jN2rBa8IKgkp6KGmfIJvQkzFoI/SAfz0+Kn0kKem4ofVqFvoc0fvLi+jibDQmyqRIpkpsz8o7B4gcm7OA7fIwDS+URFbJ1cS7Yvy2Uzh0MZca81hHhTZaZ1S4stYt6Ov1EN+21B+zTy5Htgzefoj6KCSSfTVhWs6Lm+F/MLJfRWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA0PR15MB3935.namprd15.prod.outlook.com (2603:10b6:806:8d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.31; Wed, 24 Feb
- 2021 01:00:40 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::e5af:7efb:8079:2c93]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::e5af:7efb:8079:2c93%6]) with mapi id 15.20.3868.033; Wed, 24 Feb 2021
- 01:00:40 +0000
-Subject: Re: [PATCH v5 bpf-next 1/6] bpf: enable task local storage for
- tracing programs
-To:     Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <peterz@infradead.org>, kernel test robot <lkp@intel.com>,
-        KP Singh <kpsingh@kernel.org>
-References: <20210223222845.2866124-1-songliubraving@fb.com>
- <20210223222845.2866124-2-songliubraving@fb.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <a6779ede-f077-4c15-2c31-a7610cca1ecb@fb.com>
-Date:   Tue, 23 Feb 2021 17:00:36 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
-In-Reply-To: <20210223222845.2866124-2-songliubraving@fb.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:5f4c]
-X-ClientProxiedBy: MW4PR03CA0370.namprd03.prod.outlook.com
- (2603:10b6:303:114::15) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FF7C061574;
+        Tue, 23 Feb 2021 17:01:07 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id t11so366975ejx.6;
+        Tue, 23 Feb 2021 17:01:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Vm9xBe5PM6MmRSaKGqIJs8poTm+3t4yGBEisapYD5Es=;
+        b=dGGZqD8uEQMQldGOZLMsGwyC7niw3puMdqHnPAxUHKf3rGy3qhLT8qzgL0iDVOGlKH
+         QKIfQ/uHbrOlnlMn50zmWwI5zc77s+AI1w2XeT+zGVF1/sLb52X5eRbQUWnAucYGsjtz
+         XG3rEZT5eyk8/CsqVk7SSq/6G+h7qe1EiJvP5ktT6Pmv+C8gpZ7Pa+kprtadO5W83Xi1
+         M4iAtmR/sp9owb722NsqThG0Nx0+5Pd3q2yGxVk6gaq+F2jIG4AfJcogvGhwMi8mUSc4
+         g0ZzbDq6f1AJgkkLiRvCHAqQkbaeg8kSr2Ydea4Kfod3TQu1inakVLKC0RavYN+2CzDo
+         nfbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Vm9xBe5PM6MmRSaKGqIJs8poTm+3t4yGBEisapYD5Es=;
+        b=CyHdbCo/OXTh7BnoC1e16WtzXtvWeWNTflOtsNdvFPly+hmUzmLQHkzlU1jf+8vjx0
+         YZIYE/D9Qk0YJRUVUuku4BQi9Y2XY3zZ/4tS0FwswqP56jwKdW9c0MPMo+daq1knNnGV
+         dnteB3JE+YY2psAdwQxDrnsM9G0nWSCYo0xo/JmQuW3jgJI35xs0Swjr7+jCJX5G1MWJ
+         ysFdjiJ2myT7jhxhTzQbdW2bHDraUchOMUVqqrJ4HAIPx6nD+1+H/3Q/HmQOJo4vurkQ
+         fJZ3qDw7kvMD9vkQhgO/yPNi1bTDZT7tim3Hw65Aozl2s9AuHmtKLmbhZudcJuMt0zpZ
+         AIxQ==
+X-Gm-Message-State: AOAM533lbcIRQWaJXUrKmOiJlCPnyD5peAo/RsP8kXqPJhI0+GMl5fL7
+        Dree8OKt0DM3uQjh4rPD4LuliGHq6uAuE9FPLd4=
+X-Google-Smtp-Source: ABdhPJyVSJT8Om5osq9q1Ui7W36kFAT6ebJRWvHvxf7JsVbb976GBLC1faTNjLpl7oPk6lxQ1nx5MF7+IUO0QXHTKLs=
+X-Received: by 2002:a17:906:c08e:: with SMTP id f14mr29826415ejz.388.1614128465592;
+ Tue, 23 Feb 2021 17:01:05 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::19ec] (2620:10d:c090:400::5:5f4c) by MW4PR03CA0370.namprd03.prod.outlook.com (2603:10b6:303:114::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Wed, 24 Feb 2021 01:00:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5ecaa9be-e43d-4d64-0ea0-08d8d85f9a89
-X-MS-TrafficTypeDiagnostic: SA0PR15MB3935:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR15MB39358D8C53B98921E37730BCD39F9@SA0PR15MB3935.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LfjrzLbvHn1bSJGZ4zlKaSvPjag8Pp9Fur5dvpJUIDrrnnzcrnK1LcFJAt8YmS8I7HZqvAm7ZfQXYTpSqwcc94phnGVX7B+4pfpgvTLR+7XcfuMMPb29biwZiKhOfhQ+vgqsfAQhQh1l/1CDJkidQG9vTzGFqhgTmVNMCEUJnhetTnB8AmJ3w08BkFw4uCYFU10GO4lQLgpZcmIjFBAb2eHYdpYQfvi5jr0KbKy8/ZbPub8VFqHHcrgRpSWc2D9MNMZZZM9qGIToh8xYYTnxYV7IbyHdXU6K88roDFIxq4Het7ZW+gLLTUd+fcQkeoQkwdhDZ/zVnTjxUan9TWbsasgm16Mg2fPC82Zdl6HwreTlwjwsSyWtvklgM6rM9sIWxwdl908V160pwfOyizI/f3kGrXI6uyzwKwKrrWqJPbDu2OdGJbURSd4BBnn4+mH6w8Uc7HdBO39hUV80iWIUJwy0bgoEGtcI1mUZX9ET1RmYQggzhYlE1PuJTrC5IqNf7tRlcpeXMwFL76hnNRp05I3glFOHH/6tl9KRaMmTBrkUwI69FsyIVojffbx/87ParK4XYu/wdycV/S03v03pMyDNss2wElx8Xi/pUzYN9JU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(39860400002)(396003)(376002)(2906002)(316002)(53546011)(52116002)(8676002)(31696002)(8936002)(83380400001)(36756003)(31686004)(16526019)(2616005)(6486002)(66556008)(4326008)(66946007)(54906003)(86362001)(5660300002)(66476007)(186003)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UlE2QmgvZGxCRHNtZGFTS2NmQ1pWZk5iR3dUSHNuUjhDaEZuY1pBRW84ajJu?=
- =?utf-8?B?bWVDS0NOOUFuTUhXTGxwOGFMalg3N3kvQW9lb0N3V0FvSWgzVmhwNmZ5dytG?=
- =?utf-8?B?K1dmRW1LZFVuQjNvYXpucG5lbWl3UXFuR1VRVkNDdGJEWndWMnBpdmlUNjZX?=
- =?utf-8?B?Q0VvMnhyd2NCOVRxMFRTaFVGRElvcXU5K1VhKzVQWEhwWnUzdWFhSEF2RW9V?=
- =?utf-8?B?YWd0dFUzOEtNT1BySlNZREVJYlh6QTAxY05mdHpqWVIwWjQvV2RTc3lSSWhy?=
- =?utf-8?B?ZEdaWURJZXEzTWJEVlQ2QVpLZnNtZ3NKRE9SOTV6ZW9Wc1BVcGhjbmhsa2RI?=
- =?utf-8?B?RldFbXB6UmtWVEJneHJrNkFQWmxBcFN4Q2lzL2VEQjY1U2o1OWdUczYzMG5D?=
- =?utf-8?B?bmR2N0tSWTVrb2RTaVdjWWFYTjNKTlJ5VUxhU0dBTEp0N2ZMSVdyOXFGOEpw?=
- =?utf-8?B?MFVVQldiMElheUVUd2RwbWozY1M4MVBVMTVSZ2tDZ0s5cmZ3NDM0NnpHZUpm?=
- =?utf-8?B?ZHg1MjcrN2I1UTlhRElYUmZkOTBVQXk1L01DeklYQWZrd0NBNUI1cDh0Q0kv?=
- =?utf-8?B?U0ltUUdiTEhId0w2VDgrNHp2dEFVelQ2ZWUrbkV0eW9vSG1XMVA0YkVsRm9T?=
- =?utf-8?B?N2tXci9vdGdSdUw5UEdJaVpaQThkdW9YTnpFOTR3WERRWUk4NjRSb2dFbSt2?=
- =?utf-8?B?WEpheFdLbkg4TjN1MGZYV2VVQ0N4cWhvUjFmem9neGNrVHVXbE5KZlZUUStW?=
- =?utf-8?B?d2hUaW8zMkNtVm9iU2pjVjNkTDJsT1c2ZWp5bmpzT2poSlRFeE9hU0xYTVZs?=
- =?utf-8?B?Q0xRRHk5TlhIUEFyWmJ6THh6MjVxUkIzN3VCVENrRGQ1YnZrS3ZCWWZaMS9t?=
- =?utf-8?B?R3ltVkJWZGVpMUlOVW9PQjhlOGVaZUljc0J2c1FjTDFCUElFc1dzS2hycWoz?=
- =?utf-8?B?SUNKNlhyT1B0dXM2TnN1SC85aGxFdjlHbFgyTnZIL1M1YzdBTVBBRDdQMnM1?=
- =?utf-8?B?WmFad2NPZmgrTnVCWHVOenR3MklXTXlqV3ArSlVGSitrNW9aaXk0d0diTUcw?=
- =?utf-8?B?dW9td3BaU3lSdlcyY2RUNHJCdGNiN3lXTXkxRjRJbW96eTR1ckxvRzc4RVBY?=
- =?utf-8?B?WGxuZSt1TDdodkZGcmlINit2TjNGWEVrNklNRXZhYmZSQjNlcnU5M0FoS0t0?=
- =?utf-8?B?aXdnWUhCeGRBb2I4YXEyUno1aDJDVm9ENnQ4c2NhVVExU3BkdEZZeVdneEM5?=
- =?utf-8?B?Q1pNYnJVclV2bW02aU5BbjNRQ0dIZVBYMXBkY1JUMUxVRjJieit5bHliSjVt?=
- =?utf-8?B?QTdzcGd1MW9mcEd1dG5KVmZEVVVIbStNS29rRVhRa2xBZWJoU3NJMzFTay9E?=
- =?utf-8?B?bmtoMWQveDlFQ3pJUUNNQjhOZXBpWjVFWWtmNEFhYnhNQkl5MkIwYW5LMzhC?=
- =?utf-8?B?bVBoNWM5c3Z3ZFRDT1VGektiZlpEQmVhWFdwTGpQV3Vaejd2MHBnU1ljNy9C?=
- =?utf-8?B?bWJiOWdrQklhVDBQT2ZTY2syazdHd09vLzBVanZsWnJNc09ia3RrYXJYQjcz?=
- =?utf-8?B?MVFRUXl6STdnSEV6eEl4Y3JqcnRFL1l5RE1TODZtM0VUbkc4RkgvaThLS2ZN?=
- =?utf-8?B?UFN2aWRaMjBRK2plQ0tGdjZ6N3FvT0JxR09BcHI3NW5xSmYvQWFSR0FhbzZk?=
- =?utf-8?B?MTAxZE94Yk10VW9kOW1SeFNNSkw3SStOM2FnMmVhY1F5NTJZMFd2V2ZTRXFa?=
- =?utf-8?B?aldVc2lmY2hjYTJiU0V1Nm9ZL1BybHlCQWZYbVJXbGF5cFNPTUxxMTZuSU5z?=
- =?utf-8?Q?2HhMvAj3pKNTmhQ10FHOJmJb76qO+QQ1HkufM=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5ecaa9be-e43d-4d64-0ea0-08d8d85f9a89
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2021 01:00:40.0030
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i1WfxIgKppq25RtNZC/gtoJqjjEyDpZbdVn+oEEbrGnElFdnXAkY6eFy+IhM/cBG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3935
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-23_12:2021-02-23,2021-02-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- impostorscore=0 spamscore=0 phishscore=0 malwarescore=0 bulkscore=0
- mlxlogscore=923 clxscore=1015 lowpriorityscore=0 suspectscore=0
- adultscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102240004
-X-FB-Internal: deliver
+References: <20210221195833.23828-1-lhenriques@suse.de> <20210222102456.6692-1-lhenriques@suse.de>
+In-Reply-To: <20210222102456.6692-1-lhenriques@suse.de>
+From:   Olga Kornievskaia <aglo@umich.edu>
+Date:   Tue, 23 Feb 2021 20:00:54 -0500
+Message-ID: <CAN-5tyELMY7b7CKO-+an47ydq8r_4+SOyhuvdH0qE0-JmdZ44Q@mail.gmail.com>
+Subject: Re: [PATCH v8] vfs: fix copy_file_range regression in cross-fs copies
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nfs <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 22, 2021 at 5:25 AM Luis Henriques <lhenriques@suse.de> wrote:
+>
+> A regression has been reported by Nicolas Boichat, found while using the
+> copy_file_range syscall to copy a tracefs file.  Before commit
+> 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+> kernel would return -EXDEV to userspace when trying to copy a file across
+> different filesystems.  After this commit, the syscall doesn't fail anymore
+> and instead returns zero (zero bytes copied), as this file's content is
+> generated on-the-fly and thus reports a size of zero.
+>
+> This patch restores some cross-filesystem copy restrictions that existed
+> prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+> devices").  Filesystems are still allowed to fall-back to the VFS
+> generic_copy_file_range() implementation, but that has now to be done
+> explicitly.
+>
+> nfsd is also modified to fall-back into generic_copy_file_range() in case
+> vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+>
+> Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+> Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+> Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+> Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+> Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
 
+I tested v8 and I believe it works for NFS.
 
-On 2/23/21 2:28 PM, Song Liu wrote:
-> To access per-task data, BPF programs usually creates a hash table with
-> pid as the key. This is not ideal because:
->   1. The user need to estimate the proper size of the hash table, which may
->      be inaccurate;
->   2. Big hash tables are slow;
->   3. To clean up the data properly during task terminations, the user need
->      to write extra logic.
-> 
-> Task local storage overcomes these issues and offers a better option for
-> these per-task data. Task local storage is only available to BPF_LSM. Now
-> enable it for tracing programs.
-> 
-> Unlike LSM programs, tracing programs can be called in IRQ contexts.
-> Helpers that access task local storage are updated to use
-> raw_spin_lock_irqsave() instead of raw_spin_lock_bh().
-> 
-> Tracing programs can attach to functions on the task free path, e.g.
-> exit_creds(). To avoid allocating task local storage after
-> bpf_task_storage_free(). bpf_task_storage_get() is updated to not allocate
-> new storage when the task is not refcounted (task->usage == 0).
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-
-For a patch like this, typically we do not put the above
-Reported-by here as it is not really reported by the
-kernel test robot. If no revision is required, maybe
-maintainer can remove it before applying.
-
-> Acked-by: KP Singh <kpsingh@kernel.org>
-> Signed-off-by: Song Liu <songliubraving@fb.com>
 > ---
->   include/linux/bpf.h            |  7 ++++++
->   include/linux/bpf_lsm.h        | 22 -----------------
->   include/linux/bpf_types.h      |  2 +-
->   include/linux/sched.h          |  5 ++++
->   kernel/bpf/Makefile            |  3 +--
->   kernel/bpf/bpf_local_storage.c | 28 +++++++++++++---------
->   kernel/bpf/bpf_lsm.c           |  4 ----
->   kernel/bpf/bpf_task_storage.c  | 43 +++++++++-------------------------
->   kernel/fork.c                  |  5 ++++
->   kernel/trace/bpf_trace.c       |  4 ++++
->   10 files changed, 51 insertions(+), 72 deletions(-)
-> 
-[...]
+> Changes since v7
+> - set 'ret' to '-EOPNOTSUPP' before the clone 'if' statement so that the
+>   error returned is always related to the 'copy' operation
+> Changes since v6
+> - restored i_sb checks for the clone operation
+> Changes since v5
+> - check if ->copy_file_range is NULL before calling it
+> Changes since v4
+> - nfsd falls-back to generic_copy_file_range() only *if* it gets -EOPNOTSUPP
+>   or -EXDEV.
+> Changes since v3
+> - dropped the COPY_FILE_SPLICE flag
+> - kept the f_op's checks early in generic_copy_file_checks, implementing
+>   Amir's suggestions
+> - modified nfsd to use generic_copy_file_range()
+> Changes since v2
+> - do all the required checks earlier, in generic_copy_file_checks(),
+>   adding new checks for ->remap_file_range
+> - new COPY_FILE_SPLICE flag
+> - don't remove filesystem's fallback to generic_copy_file_range()
+> - updated commit changelog (and subject)
+> Changes since v1 (after Amir review)
+> - restored do_copy_file_range() helper
+> - return -EOPNOTSUPP if fs doesn't implement CFR
+> - updated commit description
+>
+>  fs/nfsd/vfs.c   |  8 +++++++-
+>  fs/read_write.c | 49 ++++++++++++++++++++++++-------------------------
+>  2 files changed, 31 insertions(+), 26 deletions(-)
+>
+> diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+> index 04937e51de56..23dab0fa9087 100644
+> --- a/fs/nfsd/vfs.c
+> +++ b/fs/nfsd/vfs.c
+> @@ -568,6 +568,7 @@ __be32 nfsd4_clone_file_range(struct nfsd_file *nf_src, u64 src_pos,
+>  ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
+>                              u64 dst_pos, u64 count)
+>  {
+> +       ssize_t ret;
+>
+>         /*
+>          * Limit copy to 4MB to prevent indefinitely blocking an nfsd
+> @@ -578,7 +579,12 @@ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
+>          * limit like this and pipeline multiple COPY requests.
+>          */
+>         count = min_t(u64, count, 1 << 22);
+> -       return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
+> +       ret = vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
+> +
+> +       if (ret == -EOPNOTSUPP || ret == -EXDEV)
+> +               ret = generic_copy_file_range(src, src_pos, dst, dst_pos,
+> +                                             count, 0);
+> +       return ret;
+>  }
+>
+>  __be32 nfsd4_vfs_fallocate(struct svc_rqst *rqstp, struct svc_fh *fhp,
+> diff --git a/fs/read_write.c b/fs/read_write.c
+> index 75f764b43418..5a26297fd410 100644
+> --- a/fs/read_write.c
+> +++ b/fs/read_write.c
+> @@ -1388,28 +1388,6 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
+>  }
+>  EXPORT_SYMBOL(generic_copy_file_range);
+>
+> -static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
+> -                                 struct file *file_out, loff_t pos_out,
+> -                                 size_t len, unsigned int flags)
+> -{
+> -       /*
+> -        * Although we now allow filesystems to handle cross sb copy, passing
+> -        * a file of the wrong filesystem type to filesystem driver can result
+> -        * in an attempt to dereference the wrong type of ->private_data, so
+> -        * avoid doing that until we really have a good reason.  NFS defines
+> -        * several different file_system_type structures, but they all end up
+> -        * using the same ->copy_file_range() function pointer.
+> -        */
+> -       if (file_out->f_op->copy_file_range &&
+> -           file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
+> -               return file_out->f_op->copy_file_range(file_in, pos_in,
+> -                                                      file_out, pos_out,
+> -                                                      len, flags);
+> -
+> -       return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+> -                                      flags);
+> -}
+> -
+>  /*
+>   * Performs necessary checks before doing a file copy
+>   *
+> @@ -1427,6 +1405,25 @@ static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
+>         loff_t size_in;
+>         int ret;
+>
+> +       /*
+> +        * Although we now allow filesystems to handle cross sb copy, passing
+> +        * a file of the wrong filesystem type to filesystem driver can result
+> +        * in an attempt to dereference the wrong type of ->private_data, so
+> +        * avoid doing that until we really have a good reason.  NFS defines
+> +        * several different file_system_type structures, but they all end up
+> +        * using the same ->copy_file_range() function pointer.
+> +        */
+> +       if (file_out->f_op->copy_file_range) {
+> +               if (file_in->f_op->copy_file_range !=
+> +                   file_out->f_op->copy_file_range)
+> +                       return -EXDEV;
+> +       } else if (file_in->f_op->remap_file_range) {
+> +               if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
+> +                       return -EXDEV;
+> +       } else {
+> +                return -EOPNOTSUPP;
+> +       }
+> +
+>         ret = generic_file_rw_checks(file_in, file_out);
+>         if (ret)
+>                 return ret;
+> @@ -1495,6 +1492,7 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+>
+>         file_start_write(file_out);
+>
+> +       ret = -EOPNOTSUPP;
+>         /*
+>          * Try cloning first, this is supported by more file systems, and
+>          * more efficient if both clone and copy are supported (e.g. NFS).
+> @@ -1513,9 +1511,10 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+>                 }
+>         }
+>
+> -       ret = do_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+> -                               flags);
+> -       WARN_ON_ONCE(ret == -EOPNOTSUPP);
+> +       if (file_out->f_op->copy_file_range)
+> +               ret = file_out->f_op->copy_file_range(file_in, pos_in,
+> +                                                     file_out, pos_out,
+> +                                                     len, flags);
+>  done:
+>         if (ret > 0) {
+>                 fsnotify_access(file_in);
