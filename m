@@ -2,155 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE1A323778
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7177232377C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 07:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbhBXGlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 01:41:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232203AbhBXGk4 (ORCPT
+        id S232328AbhBXGnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 01:43:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33515 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232290AbhBXGnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 01:40:56 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA24C061574;
-        Tue, 23 Feb 2021 22:40:16 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id k22so603003pll.6;
-        Tue, 23 Feb 2021 22:40:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tnfLHKb8PnK3wMlFGuTjuy8dr5DaMueUKDvEoOo23ts=;
-        b=ooV/NUuBeLTvju2bqo2BCkPvu05YTvy0x7E73rn1ZUvznH6in3YIWeAXT53Qp4Sxh2
-         uTBTm7Mw88eUKg4etJTddRf8oBZVSLq5ACgufuLGL+mrVc1wrsK56LDWcry0H5Z2k9SQ
-         NKKTJ68GTXUtn+BtwuyzZ0cBTT2ov+CS/7+tO0mYSk2DSTzIctCC5DmtnX1N4KTlieCp
-         V6EldqiK8B3VjR77gw9I5prYLD0lJmJmuRZPI2xHbz+94k0mo4pkZcbOPrvpdpzPiuMz
-         LS7PZZESW1NXOWju32bBDCnoVAgfcIXGnSbKFJL7pcifC8ROK883tpzAqAC0kYW0OO+X
-         ecUA==
+        Wed, 24 Feb 2021 01:43:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614148924;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s55ilkit8AyvB8H+EC0E/iht8b+fHdOebNn3zsK85Zo=;
+        b=OrSR0MvT01Po2p14zuxWNYX6xxZAUYUamAgS7q02BQhOakV0ONjXAN2Ia6AU8Rh59tdybA
+        yP2eltlaNrteeq8mOdajiBrgN+LMujGySOtaje3sIig69g+NhNp1awx1hnj63oGTWrZmdS
+        pKCc2jEogE/bzz+/MHmmBHnooHw84wk=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-130-VQGgANniOS6tePs4Md_uuQ-1; Wed, 24 Feb 2021 01:42:02 -0500
+X-MC-Unique: VQGgANniOS6tePs4Md_uuQ-1
+Received: by mail-wm1-f69.google.com with SMTP id b201so141685wmb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Feb 2021 22:42:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tnfLHKb8PnK3wMlFGuTjuy8dr5DaMueUKDvEoOo23ts=;
-        b=WVlspZ1sCdH9dp2KDB9DBJcAxVGV3jlUY4wRVvugMSbLPzbSA6I9dyr21AKYH+Sp5T
-         TABGHwJrUkPTaK0U7ejJ6mvrVg7MH9fOgORyZbwJOKVc+kOl44UDD+GgxE5uwDwYSGxc
-         bqyflvcorjuf1eDOQx7lQoxG91CLgOZMbTw25LwrxyB4vcaELjZKsqXEyqkB+b937iOg
-         k3+QDoSyRgidDV+i3pjfvL/QMAevh0ELK3oqNHkvAhZh9jbWDfrwFV16O9JPBrU65xbH
-         qa4LsrdEQZqQtqTxcV+eL59LAIpyPHHz1bjh0HAICfmn4eECXqfL+tEUHM2vilB0yBvq
-         uGFQ==
-X-Gm-Message-State: AOAM5338WYE6Ldqf8bQbj3dlWy7IOaynDOOTp9SDGFBeHHcpSFud8Sc1
-        Yz2AMC+O2Eys/mIw2psq4VY=
-X-Google-Smtp-Source: ABdhPJzfhIpP9eycfEJuLWaIZNlnuFikw6LElUxgzlG551RSSIOJFdm8o9rLnJOCyV/asXs202apfA==
-X-Received: by 2002:a17:90a:4a06:: with SMTP id e6mr2899624pjh.141.1614148815593;
-        Tue, 23 Feb 2021 22:40:15 -0800 (PST)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id w2sm1132973pgh.54.2021.02.23.22.40.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s55ilkit8AyvB8H+EC0E/iht8b+fHdOebNn3zsK85Zo=;
+        b=LrVdb/vBpebgjl8rLUfuwir6jFVoMjhV76AEFibjH7pswY5vtAFilyE7ub5hvvlHfY
+         iEH7zisFLD+CBaovSxNkP7sEp9VIb9W8JFCnXmjHBYwHCv3mnLYgsnbn2EfNPdg8axrx
+         IbTMCWYOxKnh9eV9WswejVvwCOySzw83J8OGgBevvzV/wFe8909VsAli+Tn13rQAnrXh
+         jQ1dOIomRE4khP3El2NYJ6+A6e33Lx0I9AEzXzQwXet8JGOtaD2PQMKOp96kvzEQsngE
+         MrIzx5ZG2z5EcjBhbx2ehEv8HceGj6udd60ut2VEkNqXL0y1uSQHV7XUhQ8FXVJMr2so
+         Q9YA==
+X-Gm-Message-State: AOAM5318cycf2YRI7+/or3HPzLCYjjHt0342rRm+GAYst7icir8a/6xM
+        usHf1G4Ox8R4F5zxuiQBdyccU0zJGCjJM0WEVlbDFn11Rv6C35tbfgsgDkOSw47rVHFDebdUV8D
+        yWmQEjR0FYZ2ZVP8uYl17VgDR
+X-Received: by 2002:a05:6000:1542:: with SMTP id 2mr30358416wry.356.1614148921286;
+        Tue, 23 Feb 2021 22:42:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwEyzdsr3Ow3I/chOE2lEJ38C0hLHhjGkBn0ZJ3D6ow25zrmvo6OLG2W707+P84HiKWMouE/g==
+X-Received: by 2002:a05:6000:1542:: with SMTP id 2mr30358406wry.356.1614148921120;
+        Tue, 23 Feb 2021 22:42:01 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id n5sm1172955wmq.7.2021.02.23.22.41.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 22:40:15 -0800 (PST)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: [PATCH v2] cpufreq: schedutil: Call sugov_update_next_freq() before check to fast_switch_enabled
-Date:   Wed, 24 Feb 2021 14:39:27 +0800
-Message-Id: <20210224063927.1298-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        Tue, 23 Feb 2021 22:42:00 -0800 (PST)
+Date:   Wed, 24 Feb 2021 01:41:56 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [RFC PATCH v5 11/19] virtio/vsock: dequeue callback for
+ SOCK_SEQPACKET
+Message-ID: <20210224002315-mutt-send-email-mst@kernel.org>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210218053940.1068164-1-arseny.krasnov@kaspersky.com>
+ <20210223091536-mutt-send-email-mst@kernel.org>
+ <661fd81f-daf5-a3eb-6946-8f4e83d1ee54@kaspersky.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <661fd81f-daf5-a3eb-6946-8f4e83d1ee54@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+On Wed, Feb 24, 2021 at 08:07:48AM +0300, Arseny Krasnov wrote:
+> 
+> On 23.02.2021 17:17, Michael S. Tsirkin wrote:
+> > On Thu, Feb 18, 2021 at 08:39:37AM +0300, Arseny Krasnov wrote:
+> >> This adds transport callback and it's logic for SEQPACKET dequeue.
+> >> Callback fetches RW packets from rx queue of socket until whole record
+> >> is copied(if user's buffer is full, user is not woken up). This is done
+> >> to not stall sender, because if we wake up user and it leaves syscall,
+> >> nobody will send credit update for rest of record, and sender will wait
+> >> for next enter of read syscall at receiver's side. So if user buffer is
+> >> full, we just send credit update and drop data. If during copy SEQ_BEGIN
+> >> was found(and not all data was copied), copying is restarted by reset
+> >> user's iov iterator(previous unfinished data is dropped).
+> >>
+> >> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+> >> ---
+> >>  include/linux/virtio_vsock.h            |  10 +++
+> >>  include/uapi/linux/virtio_vsock.h       |  16 ++++
+> >>  net/vmw_vsock/virtio_transport_common.c | 114 ++++++++++++++++++++++++
+> >>  3 files changed, 140 insertions(+)
+> >>
+> >> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+> >> index dc636b727179..003d06ae4a85 100644
+> >> --- a/include/linux/virtio_vsock.h
+> >> +++ b/include/linux/virtio_vsock.h
+> >> @@ -36,6 +36,11 @@ struct virtio_vsock_sock {
+> >>  	u32 rx_bytes;
+> >>  	u32 buf_alloc;
+> >>  	struct list_head rx_queue;
+> >> +
+> >> +	/* For SOCK_SEQPACKET */
+> >> +	u32 user_read_seq_len;
+> >> +	u32 user_read_copied;
+> >> +	u32 curr_rx_msg_cnt;
+> >
+> > wrap these in a struct to make it's clearer they
+> > are related?
+> Ack
+> >
+> >>  };
+> >>  
+> >>  struct virtio_vsock_pkt {
+> >> @@ -80,6 +85,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+> >>  			       struct msghdr *msg,
+> >>  			       size_t len, int flags);
+> >>  
+> >> +int
+> >> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+> >> +				   struct msghdr *msg,
+> >> +				   int flags,
+> >> +				   bool *msg_ready);
+> >>  s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+> >>  s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+> >>  
+> >> diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
+> >> index 1d57ed3d84d2..cf9c165e5cca 100644
+> >> --- a/include/uapi/linux/virtio_vsock.h
+> >> +++ b/include/uapi/linux/virtio_vsock.h
+> >> @@ -63,8 +63,14 @@ struct virtio_vsock_hdr {
+> >>  	__le32	fwd_cnt;
+> >>  } __attribute__((packed));
+> >>  
+> >> +struct virtio_vsock_seq_hdr {
+> >> +	__le32  msg_cnt;
+> >> +	__le32  msg_len;
+> >> +} __attribute__((packed));
+> >> +
+> >>  enum virtio_vsock_type {
+> >>  	VIRTIO_VSOCK_TYPE_STREAM = 1,
+> >> +	VIRTIO_VSOCK_TYPE_SEQPACKET = 2,
+> >>  };
+> >>  
+> >>  enum virtio_vsock_op {
+> >> @@ -83,6 +89,11 @@ enum virtio_vsock_op {
+> >>  	VIRTIO_VSOCK_OP_CREDIT_UPDATE = 6,
+> >>  	/* Request the peer to send the credit info to us */
+> >>  	VIRTIO_VSOCK_OP_CREDIT_REQUEST = 7,
+> >> +
+> >> +	/* Record begin for SOCK_SEQPACKET */
+> >> +	VIRTIO_VSOCK_OP_SEQ_BEGIN = 8,
+> >> +	/* Record end for SOCK_SEQPACKET */
+> >> +	VIRTIO_VSOCK_OP_SEQ_END = 9,
+> >>  };
+> >>  
+> >>  /* VIRTIO_VSOCK_OP_SHUTDOWN flags values */
+> >> @@ -91,4 +102,9 @@ enum virtio_vsock_shutdown {
+> >>  	VIRTIO_VSOCK_SHUTDOWN_SEND = 2,
+> >>  };
+> >>  
+> >> +/* VIRTIO_VSOCK_OP_RW flags values */
+> >> +enum virtio_vsock_rw {
+> >> +	VIRTIO_VSOCK_RW_EOR = 1,
+> >> +};
+> >> +
+> >>  #endif /* _UAPI_LINUX_VIRTIO_VSOCK_H */
+> > Probably a good idea to also have a feature bit gating
+> > this functionality.
+> 
+> IIUC this also requires some qemu patch, because in current
+> 
+> implementation of vsock device in qemu, there is no 'set_features'
+> 
+> callback for such device. This callback will handle guest's write
+> 
+> to feature register, by calling vhost kernel backend, where this
+> 
+> bit will be processed by host.
 
-Note that sugov_update_next_freq() may return false, that means the
-caller sugov_fast_switch() will do nothing except fast switch check.
+Well patching userspace to make use of a kernel feature
+is par for the course, isn't it?
 
-Similarly, sugov_deferred_update() also has unnecessary operations
-of raw_spin_{lock,unlock} in sugov_update_single_freq() for that case.
+> 
+> IMHO I'm not sure that SEQPACKET support needs feature
+> 
+> bit - it is just two new ops for virtio vsock protocol, and from point
+> 
+> of view of virtio device it is same as STREAM. May be it is needed
+> 
+> for cases when client tries to connect to server which doesn't support
+> 
+> SEQPACKET, so without bit result will be "Connection reset by peer",
+> 
+> and with such bit client will know that server doesn't support it and
+> 
+> 'socket(SOCK_SEQPACKET)' will return error?
 
-So, let's call sugov_update_next_freq() before the fast switch check
-to avoid unnecessary behaviors above. Accordingly, update interface
-definition to sugov_deferred_update() and remove sugov_fast_switch()
-since we will call cpufreq_driver_fast_switch() directly instead.
+Yes, a better error handling would be one reason to do it like this.
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
-v2: remove sugov_fast_switch() and call cpufreq_driver_fast_switch()
-    directly instead, also update minor log message.
-
- kernel/sched/cpufreq_schedutil.c | 29 ++++++++++++-----------------
- 1 file changed, 12 insertions(+), 17 deletions(-)
-
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 41e498b..65fe2c8 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -114,19 +114,8 @@ static bool sugov_update_next_freq(struct sugov_policy *sg_policy, u64 time,
- 	return true;
- }
- 
--static void sugov_fast_switch(struct sugov_policy *sg_policy, u64 time,
--			      unsigned int next_freq)
-+static void sugov_deferred_update(struct sugov_policy *sg_policy)
- {
--	if (sugov_update_next_freq(sg_policy, time, next_freq))
--		cpufreq_driver_fast_switch(sg_policy->policy, next_freq);
--}
--
--static void sugov_deferred_update(struct sugov_policy *sg_policy, u64 time,
--				  unsigned int next_freq)
--{
--	if (!sugov_update_next_freq(sg_policy, time, next_freq))
--		return;
--
- 	if (!sg_policy->work_in_progress) {
- 		sg_policy->work_in_progress = true;
- 		irq_work_queue(&sg_policy->irq_work);
-@@ -368,16 +357,19 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
- 		sg_policy->cached_raw_freq = cached_freq;
- 	}
- 
-+	if (!sugov_update_next_freq(sg_policy, time, next_f))
-+		return;
-+
- 	/*
- 	 * This code runs under rq->lock for the target CPU, so it won't run
- 	 * concurrently on two different CPUs for the same target and it is not
- 	 * necessary to acquire the lock in the fast switch case.
- 	 */
- 	if (sg_policy->policy->fast_switch_enabled) {
--		sugov_fast_switch(sg_policy, time, next_f);
-+		cpufreq_driver_fast_switch(sg_policy->policy, next_f);
- 	} else {
- 		raw_spin_lock(&sg_policy->update_lock);
--		sugov_deferred_update(sg_policy, time, next_f);
-+		sugov_deferred_update(sg_policy);
- 		raw_spin_unlock(&sg_policy->update_lock);
- 	}
- }
-@@ -456,12 +448,15 @@ static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
- 	if (sugov_should_update_freq(sg_policy, time)) {
- 		next_f = sugov_next_freq_shared(sg_cpu, time);
- 
-+		if (!sugov_update_next_freq(sg_policy, time, next_f))
-+			goto unlock;
-+
- 		if (sg_policy->policy->fast_switch_enabled)
--			sugov_fast_switch(sg_policy, time, next_f);
-+			cpufreq_driver_fast_switch(sg_policy->policy, next_f);
- 		else
--			sugov_deferred_update(sg_policy, time, next_f);
-+			sugov_deferred_update(sg_policy);
- 	}
--
-+unlock:
- 	raw_spin_unlock(&sg_policy->update_lock);
- }
- 
 -- 
-1.9.1
+MST
 
