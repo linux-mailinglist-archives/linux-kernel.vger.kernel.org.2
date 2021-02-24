@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8483E324494
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5E032449A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234751AbhBXTWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 14:22:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233743AbhBXTWn (ORCPT
+        id S232349AbhBXT1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 14:27:46 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:48140 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhBXT1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 14:22:43 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1ABC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:22:03 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id a17so3746306ljq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:22:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YLkIzfKvA1tdVHUtMb/iXKnZBm8DzytxyIIS1uOtFXs=;
-        b=Cykmeg2BJZxLL6B3CqFN8bYWXedcpxSrxU0obGXA67ldt53T1Zpp1kfII/YTsRxyGR
-         7+PgVrl1GpAP3zASXR1P6ptK9NfrEIUej74r3llcPs1dZHaUDziptxNdAuOecoOUHHak
-         y8TaQG7xMC0xTVy8H2BjUgVzI1nDYOoyh4Gg4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YLkIzfKvA1tdVHUtMb/iXKnZBm8DzytxyIIS1uOtFXs=;
-        b=Rc++oOBX+oqOGPSRCDhlHYEqrI/uohPGTzPhtYI6dQjyOG3GOROkROikbPJebVnBkv
-         quqBYuIEr6eIcoq++9peD6kgu6wJ7Y97ZXuIN5lqu0vO4LOFvNU0xnxdTPhGdiGyPl1F
-         hXwz3RjLq7apNPKnRFHulyTK2Li2vojzFEqNTpH1kzyqXmWWLipfnGwBByWHL5Mty9vD
-         tjHK0dvrA2eCQs0+Nej2ydZCqjcDOQAvYL67qk9P3dz9EmTWUtxjSekkDkpcc/ZhOO7S
-         lzw6TsJmYRF0sjiXucSIu5wvU3UNYaM9JshI0I2AfjbMsYXD84BKHRflZNc16WGTEUCF
-         hKUw==
-X-Gm-Message-State: AOAM533Rv/r9kNYXGZgPkibdLnWXBy7nLA0O0jvSxqw0+wrz6M63x8ej
-        om6oV1SeAlZqn+BA3sJnB2M8YLYgDsidcg==
-X-Google-Smtp-Source: ABdhPJz+FtTOR571JvkwMzHO36MRMwSHqiOFMF2NtYWP1xHpwT5Et3tpeeya3IysehUpQgz3cIXHPw==
-X-Received: by 2002:a05:651c:2112:: with SMTP id a18mr21133609ljq.341.1614194521663;
-        Wed, 24 Feb 2021 11:22:01 -0800 (PST)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id k27sm658603lfm.125.2021.02.24.11.22.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Feb 2021 11:22:00 -0800 (PST)
-Received: by mail-lj1-f175.google.com with SMTP id u4so3729860ljh.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:22:00 -0800 (PST)
-X-Received: by 2002:a05:651c:110e:: with SMTP id d14mr21545549ljo.220.1614194520371;
- Wed, 24 Feb 2021 11:22:00 -0800 (PST)
+        Wed, 24 Feb 2021 14:27:38 -0500
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 1851920B6C40;
+        Wed, 24 Feb 2021 11:26:57 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1851920B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1614194817;
+        bh=Qrxzv4fZytREq3iP5HW1b0UZZBB53F52KA2598ST9R8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VRHRBtm9VPjzWbAq4uOs1QpDm9d/UjC3CdBHUOHn1C1y7rpeMi63TaoP8Rb2gMy9e
+         PI2lEkJa+R/ZxF4N9L7GHPmCLeSEFIklfBA60UtsZEGFtXzUySH3OG+FYt/gitQt3y
+         LgneMV6NbEelIgk6MSBDYPShG1WdWa5bsGanhjNA=
+Subject: Re: [RFC PATCH v1 1/1] arm64: Unwinder enhancements for reliable
+ stack trace
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <bc4761a47ad08ab7fdd555fc8094beb8fc758d33>
+ <20210223181243.6776-1-madvenka@linux.microsoft.com>
+ <20210223181243.6776-2-madvenka@linux.microsoft.com>
+ <20210223190240.GK5116@sirena.org.uk>
+ <08e8e02c-8ef0-26bb-1d0d-7dda54b5fefd@linux.microsoft.com>
+ <20210224123336.GA4504@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <685d583b-f3c1-8cb3-aeca-78e2fbb3fd25@linux.microsoft.com>
+Date:   Wed, 24 Feb 2021 13:26:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210224190335.GA1583051@bjorn-Precision-5520>
-In-Reply-To: <20210224190335.GA1583051@bjorn-Precision-5520>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 24 Feb 2021 11:21:44 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiUjFdHYxQzTPJX+J38iSz-hS8Sn9sNx=+B=uMX+Q3wwQ@mail.gmail.com>
-Message-ID: <CAHk-=wiUjFdHYxQzTPJX+J38iSz-hS8Sn9sNx=+B=uMX+Q3wwQ@mail.gmail.com>
-Subject: Re: [GIT PULL] PCI changes for v5.12
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210224123336.GA4504@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 11:03 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.12-changes
 
-I pulled this, but I'm now unpulling it again.
 
-Why are many of those commits only two hours old, and most of the rest
-is from yesterday?
+On 2/24/21 6:33 AM, Mark Brown wrote:
+> On Tue, Feb 23, 2021 at 01:20:49PM -0600, Madhavan T. Venkataraman wrote:
+>> On 2/23/21 1:02 PM, Mark Brown wrote:
+>>> On Tue, Feb 23, 2021 at 12:12:43PM -0600, madvenka@linux.microsoft.com wrote:
+> 
+>>>> Reliable stack trace function
+>>>> =============================
+>>>>
+>>>> Implement arch_stack_walk_reliable(). This function walks the stack like
+>>>> the existing stack trace functions with a couple of additional checks:
+> 
+>>> Again, this should be at least one separate patch.  How does this ensure
+>>> that we don't have any issues with any of the various probe mechanisms?
+>>> If there's no need to explicitly check anything that should be called
+>>> out in the changelog.
+> 
+>> I am trying to do this in an incremental fashion. I have to study the probe
+>> mechanisms a little bit more before I can come up with a solution. But
+>> if you want to see that addressed in this patch set, I could do that.
+>> It will take a little bit of time. That is all.
+> 
+> Handling of the probes stuff seems like it's critical to reliable stack
+> walk so we shouldn't claim to have support for reliable stack walk
+> without it.  If it was a working implementation we could improve that'd
+> be one thing but this would be buggy which is a different thing.
+> 
 
-Has any of this been in linux-next?
+OK. I will address the probe stuff in my resend.
 
-And if it has, then why was it rebased, and why didn't you explain
-*why* it was rebased if so?
+>>>> +	(void) on_accessible_stack(task, stackframe, &info);
+> 
+>>> Shouldn't we return NULL if we are not on an accessible stack?
+> 
+>> The prev_fp has already been checked by the unwinder in the previous
+>> frame. That is why I don't check the return value. If that is acceptable,
+>> I will add a comment.
+> 
+> TBH if you're adding the comment it seems like you may as well add the
+> check, it's not like it's expensive and it means there's no possibility
+> that some future change could result in this assumption being broken.
+> 
 
-I'm willing to pull this if it turns out it _has_ been in linux-next,
-but I need explanations.
+OK. I will add the check.
 
-               Linus
+Thanks.
+
+Madhavan
