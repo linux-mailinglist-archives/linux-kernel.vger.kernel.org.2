@@ -2,98 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7BC3238D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9BC3238DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234554AbhBXIlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:41:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35478 "EHLO mail.kernel.org"
+        id S233070AbhBXInb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:43:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234539AbhBXIj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:39:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F58264ED6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 08:38:46 +0000 (UTC)
+        id S234538AbhBXImS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 03:42:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8482964ED4;
+        Wed, 24 Feb 2021 08:41:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614155926;
-        bh=js1QlWJlitsFZrR0Rg5ILWFvVbVJKg/oOAHlh2xG76w=;
+        s=k20201202; t=1614156097;
+        bh=2u9wsGlo7sAstFS7alrtBLEQ7jlLQXyGrglLta9pQLs=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=espoFEfA06X6fpnH54hGdG8+jHadSzrbFWC3NacQuoec6LQwnCXkys24m3OG0MJRw
-         8z+dLieLitjpJJUCvJvNTS735I05Dka3aszl830tg4YsSMLZoEobNkyUAlXaIlZGk6
-         mT2+e+gy5/DTYOwqq8Z1LrSA89r/BGSESlWQHK08tis/4o53+BW498RgZEAlalA94m
-         inG2f0l81bvgOd8KcOPn2FoqWGM+gQr954ctsh2YO8CQ6+Xex72d1gDZ+JToLST0Tw
-         gDQwTz3AbXvLGHkgqQZqbNy6eTSgJjOmXoh8nmZtQYDnXHCXvlcy99hy8yXab0Lt/I
-         Ip03aDdZXVQ9A==
-Received: by mail-oi1-f174.google.com with SMTP id z126so1654841oiz.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:38:46 -0800 (PST)
-X-Gm-Message-State: AOAM533nBIec8kZr1XDqavirf73D8HSiL8XR3U+C3Ytv1/9Rn2cBrasO
-        p626YO+VXfR5QP7z+lpKETOafdFxHb6EmGJeA+Y=
-X-Google-Smtp-Source: ABdhPJyQArhicbKOE3+jiFNKc6a5pkxbY0M0MS74wlKXN/w4TzsCFbFoOlf1Ba5P3ZDb9gNUKMXKhhlu9yC7AoCJeGM=
-X-Received: by 2002:aca:b457:: with SMTP id d84mr2068966oif.4.1614155925485;
- Wed, 24 Feb 2021 00:38:45 -0800 (PST)
+        b=uN0bUfFDBiLVq32hJndalsoZyspL6z2Gf7MwTCrAOCA7wCyr8uHFZYZgce7k3ENP/
+         9sRx1JZxii8kHho8sz29USgl8CGuu3cv55cABgdtiuo/hoK92cp2gvcQtANYQrBgPY
+         4FxHhg7G9AgPECGkEXPird7yTRXP1sQZtEFiRolv06FSbkbGuq9D85oiqk1gLajm8J
+         J+FFJgPDbA0a6P2k0AOVeO3HfEigFrJL1w22oVAEcQJAOfA4pOK30Si7QBpFaWbfp7
+         i2GO2XDtlsMGrvtpkEono6KCrIorE93qdcTbu35qbvrcAqKjK/GX1WqkHwHI8kRKQq
+         QMIFJFKY6QFkw==
+Received: by mail-oi1-f174.google.com with SMTP id h17so1674983oih.5;
+        Wed, 24 Feb 2021 00:41:37 -0800 (PST)
+X-Gm-Message-State: AOAM531L17iap+oH6YmhvtOA4MfEXjUiuapywiLhgWtm3r3mQkKHUNxR
+        D8tI52GonID72p7PwbJYmi+8Jb4oxkZCgpmjnxk=
+X-Google-Smtp-Source: ABdhPJwjmKC7+AWmQCirVwXx41S9h7HiL9JLm1CIERTHFkqrhi/RM6Xsksd1ZFcRGTbiNRRmcpDhcWurq8+ZFAP3EMc=
+X-Received: by 2002:aca:4a47:: with SMTP id x68mr1917194oia.67.1614156096771;
+ Wed, 24 Feb 2021 00:41:36 -0800 (PST)
 MIME-Version: 1.0
-References: <202102221437.vHlLwHmG-lkp@intel.com> <33c7cb1f-b6c0-24bf-0e6c-23d5472e4c29@infradead.org>
-In-Reply-To: <33c7cb1f-b6c0-24bf-0e6c-23d5472e4c29@infradead.org>
+References: <20210223100619.798698-1-masahiroy@kernel.org> <CAK8P3a1b5Tr8Gt_DcUq9JQj4G6O5ZHf44P2ZdYZRGQY8iPs43Q@mail.gmail.com>
+ <CAK7LNAQ3bYfo03i=LBv8S6dyTTAYw17gGht7TR2AWofNn0VP_A@mail.gmail.com>
+In-Reply-To: <CAK7LNAQ3bYfo03i=LBv8S6dyTTAYw17gGht7TR2AWofNn0VP_A@mail.gmail.com>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 24 Feb 2021 09:38:29 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1zfwJs3=mhvTGpLLak1Lqq6N-4N+zHrh-4KMRE75HP8w@mail.gmail.com>
-Message-ID: <CAK8P3a1zfwJs3=mhvTGpLLak1Lqq6N-4N+zHrh-4KMRE75HP8w@mail.gmail.com>
-Subject: Re: (.text.ks8851_probe_common+0x370): undefined reference to `__this_module'
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, Marek Vasut <marex@denx.de>,
-        Arnd Bergmann <arnd@arndb.de>, kbuild-all@lists.01.org,
+Date:   Wed, 24 Feb 2021 09:41:20 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a34sHv05FYwcmuJzsR4NM4r2TcrhCE8LTDtRtNvhN9hWw@mail.gmail.com>
+Message-ID: <CAK8P3a34sHv05FYwcmuJzsR4NM4r2TcrhCE8LTDtRtNvhN9hWw@mail.gmail.com>
+Subject: Re: [PATCH] asm-generic/ioctl.h: use BUILD_BUG_ON_ZERO() for type check
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
+        linux-arch <linux-arch@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 3:38 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+On Wed, Feb 24, 2021 at 2:57 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> On 2/21/21 10:12 PM, kernel test robot wrote:
-> > Hi Marek,
+> On Wed, Feb 24, 2021 at 5:04 AM Arnd Bergmann <arnd@kernel.org> wrote:
 > >
-> > FYI, the error/warning still remains.
-> >
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   31caf8b2a847214be856f843e251fc2ed2cd1075
-> > commit: ef3631220d2b3d8d14cf64464760505baa60d6ac net: ks8851: Register MDIO bus and the internal PHY
-> > date:   7 weeks ago
-> > config: parisc-randconfig-r034-20210222 (attached as .config)
-> > compiler: hppa-linux-gcc (GCC) 9.3.0
-> > reproduce (this is a W=1 build):
-> >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >          chmod +x ~/bin/make.cross
-> >          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ef3631220d2b3d8d14cf64464760505baa60d6ac
-> >          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >          git fetch --no-tags linus master
-> >          git checkout ef3631220d2b3d8d14cf64464760505baa60d6ac
-> >          # save the attached .config to linux build tree
-> >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >     hppa-linux-ld: drivers/net/ethernet/micrel/ks8851_common.o: in function `ks8851_probe_common':
-> >>> (.text.ks8851_probe_common+0x370): undefined reference to `__this_module'
-> >>> hppa-linux-ld: (.text.ks8851_probe_common+0x374): undefined reference to `__this_module'
+> > On Tue, Feb 23, 2021 at 11:06 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> Hey Arnd-
+> My intention is to improve the UAPI/KAPI decoupling
+> to decrease the task of scripts/headers_install.sh
 >
-> I wanted to see if you had any ideas about this problem.
+> Ideally, we could export UAPI headers with
+> almost no modification.
 >
-> CONFIG_KS8851=y
-> CONFIG_KS8851_MLL=m
+> It is true that scripts/unifdef can remove #ifndef __KERNEL__
+> blocks, but having the kernel-space code in UAPI headers
+> does not make sense. Otherwise, our initial motivation
+> "separate them by directory structure" would be lost.
 >
-> The problem is that 2 drivers share some common code, but in one case
-> the shared code is builtin and for the other driver it is a loadable
-> module. The common code is first built as builtin, so it does not have
-> the "__this_module" symbol.
+> So, I believe redefining _IOC_TYPECHECK is the right direction.
+> I can add comments if this is not clear.
 
-This is the patch I sent for it:
+Maybe using '#ifndef _IOC_TYPECHECK' would help here?
 
-https://lore.kernel.org/lkml/20210125121937.3900988-1-arnd@kernel.org/T/#u
+Another alternative might be to find a way to rewrite the typecheck
+macro to make it safe to be used in user space as well, and not
+have two different versions.
 
-        Arnd
+       Arnd
