@@ -2,119 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EEB32385E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD09323862
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234170AbhBXIMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:12:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
+        id S234274AbhBXIMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:12:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233900AbhBXILj (ORCPT
+        with ESMTP id S234103AbhBXILx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:11:39 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2B2C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:10:58 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id u4so1381773ljh.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:10:58 -0800 (PST)
+        Wed, 24 Feb 2021 03:11:53 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8382C06178A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:11:09 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id o6so815084pjf.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 00:11:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iaNQ0/x4wJABaIxpOlTlMzY4E0tMtNEPzTAE22Eqw1c=;
-        b=RIrvGMvDbAEOIa9mCIYpti7ebILOp4DFAIBw8a7xY0r2+jv2Nim+K2cH9KtYBOa6bz
-         0gyHVWEyffWKl5HgNzFzEpzX518d3ZEU+J21zi7tFcJPUG8DeK9rH0NoSKYX320r1gHC
-         jJnSyJ2l7J+zdQWTGzGYtRzFLMT1ClFdzMTp3+odi8eSTweXJX/vKHoBuwmqdvZeiLF7
-         KTUAMx3XksO9XCnB7P6N9cUEYOeS59DKD2StqaCdmotcspuhL7KqU6o2a8ra8L8qxBOn
-         NKgS7n0e7EorYloxyd1rtvsvaiJnTR5+gYGS/1jK0H3dqSvQsUdoF0KWMNW2sQhlLUMS
-         SpJg==
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dzvWe5KYzVxUDj8aZ56OYFB3s0MdfMluOZxbIUvjdKI=;
+        b=F9knFy/Bn6JVHhao8AV+fSuRF26TCbFpNtORzP6hvfmQc+wBIaCrF9CSEswXZp4uTt
+         Z2e+qY/YR59SG27gDDUQVhwIzblj7OAwDP1DEqmUPXnnq1Y2k1GHxsB48L3ZBW81Q8Bw
+         OqgWjpqYgP7GjbJhwJf+K3Qke8kPGzX81tNiSUob21MYZBBI0rjlXGr+9eMChaSkAcqL
+         LRzCRaJCO/zkY/6bOE4RDHxHRVKVPgRu9EorwIUVmdUHL20iiyfGz8hny+67HW49o59f
+         eFuGuQJRwqLdl/s76SIer0OKHEOSpDtItxXgjZWd0zRPGLgW7FopJ1KaAhQHzReiP7jy
+         ki2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iaNQ0/x4wJABaIxpOlTlMzY4E0tMtNEPzTAE22Eqw1c=;
-        b=RonaNyZkLrpZQs558Z5YXOz+voZT53feqtKt8VyAeartFPnVi45VR5ThaD80PG+jMY
-         Z2cPvCmoE9qABKDD9z61oGbD1410D2D21J/Dr5a9vbO1ieOajWqqlL/t8K49wgIbc3zk
-         QflF3O7twkI1m9rj9uUQEoMB8GwhQ6IrEm6LUHo11wq6bbrbLtq/qOVUCtW/qQNhIvdy
-         4VLN1R6RqyB2YDKpCmX/W2iYaCsVzk3oyhpoiMTsXRpJ5NtWTctrUuGZ6DqNhyvtgYi8
-         Ig+rCdZLNWmz+Equk1DKS2NYrTiF6vg3UZ9L/P1cmTx/7fLVyZWA9ORXcHSiU5Z5ZcdC
-         SCYg==
-X-Gm-Message-State: AOAM530WfLvPVDYfRKfdK8dspFiSiS1c/4fFlhqVCqOEr4nYAjc76rJs
-        zZ5G4lV923UO458rCutXmRqErQ==
-X-Google-Smtp-Source: ABdhPJxe41qfIAQ3R0LAzRwzVqwdgecZz2yhwQIK1ccJyvmIyUo934mlNbW08qNB94n5jqhlFgnLWw==
-X-Received: by 2002:a2e:5412:: with SMTP id i18mr9138650ljb.186.1614154257274;
-        Wed, 24 Feb 2021 00:10:57 -0800 (PST)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id r28sm276804ljd.107.2021.02.24.00.10.55
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=dzvWe5KYzVxUDj8aZ56OYFB3s0MdfMluOZxbIUvjdKI=;
+        b=oQ+LJAR/HBsn0ANDESyYyOkEsd4Z5NBYmCJqO/s5oeEObKoOkmnnGBJVJLXxQeMvfz
+         GFAORghC86UPYF1+fVKc3c0lqSM7pT6dNv4kij3gnCYtipCL76ui36qPEXrFl6zMzfav
+         8aIbg9ocjVvGD40EGeaneEkoSBhjxK7MFSVEuAXGOUgxOAgP9eNk3UVdymjqlZWXW8GP
+         iT1zFJaxLIuU686LdMMBsq9xNIYuUpFLFGWf+B2wYt9mrc5Z2mWYz5IgIGfbnTl6cpIq
+         Vh2eKp2QOnf2dkJDlEwQ9ZuJrap9SBSKvXI9BcJuXuW0QrpiBe3trEo4zGSNNmXdfB1S
+         28Sg==
+X-Gm-Message-State: AOAM533kitNc6TBrkER5+AcRGs+PKpWSNq+3D2TE+mAwXkf/7sO2jEAU
+        uAjjddRQG/N4IP6m/AgVnt8=
+X-Google-Smtp-Source: ABdhPJwx5vZ2+QpNSX0+vHXXEhu+QdKePj0H3G9iMzWEZZvnDzvHjPzbAU2SdbEhE8XcLTJz8VLfJQ==
+X-Received: by 2002:a17:90b:fce:: with SMTP id gd14mr3272496pjb.64.1614154269299;
+        Wed, 24 Feb 2021 00:11:09 -0800 (PST)
+Received: from balhae.roam.corp.google.com ([114.129.115.223])
+        by smtp.gmail.com with ESMTPSA id y68sm1607780pgy.5.2021.02.24.00.11.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 00:10:56 -0800 (PST)
-Date:   Wed, 24 Feb 2021 09:10:54 +0100
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        op-tee@lists.trustedfirmware.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] tee: optee: add invoke_fn tracepoints
-Message-ID: <20210224081054.GA2653493@jade>
-References: <20210210144409.36ecdaed@xhacker.debian>
- <CAHUa44E-_czjhRxr2JjggYu0sDCsRvOA3Uc=hqp7j5Cmtb9q0w@mail.gmail.com>
- <20210223184026.22c86356@xhacker.debian>
- <20210223131124.GA2303918@jade>
- <20210223091936.5b390f35@gandalf.local.home>
+        Wed, 24 Feb 2021 00:11:08 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH 1/2] libperf: Add perf_evlist__reset_id_hash()
+Date:   Wed, 24 Feb 2021 17:11:02 +0900
+Message-Id: <20210224081103.715233-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210223091936.5b390f35@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 09:19:36AM -0500, Steven Rostedt wrote:
-> On Tue, 23 Feb 2021 14:11:24 +0100
-> Jens Wiklander <jens.wiklander@linaro.org> wrote:
-> 
-> > I used the -strict option.
-> > 
-> > ./scripts/checkpatch.pl -strict 0001-tee-optee-add-invoke_fn-tracepoints.patch
-> > WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-> > #44: 
-> > new file mode 100644
-> 
-> The above is just asking for someone to take maintainership of the new file.
-> 
-> > 
-> > CHECK: Alignment should match open parenthesis
-> > #68: FILE: drivers/tee/optee/optee_trace.h:20:
-> > +TRACE_EVENT(optee_invoke_fn_begin,
-> > +	TP_PROTO(struct optee_rpc_param *param),
-> > 
-> > CHECK: Lines should not end with a '('
-> > #71: FILE: drivers/tee/optee/optee_trace.h:23:
-> > +	TP_STRUCT__entry(
-> > 
-> > CHECK: Lines should not end with a '('
-> > #76: FILE: drivers/tee/optee/optee_trace.h:28:
-> > +	TP_fast_assign(
-> > 
-> > CHECK: Alignment should match open parenthesis
-> > #89: FILE: drivers/tee/optee/optee_trace.h:41:
-> > +TRACE_EVENT(optee_invoke_fn_end,
-> > +	TP_PROTO(struct optee_rpc_param *param, struct arm_smccc_res *res),
-> > 
-> > CHECK: Lines should not end with a '('
-> > #92: FILE: drivers/tee/optee/optee_trace.h:44:
-> > +	TP_STRUCT__entry(
-> > 
-> > CHECK: Lines should not end with a '('
-> > #97: FILE: drivers/tee/optee/optee_trace.h:49:
-> > +	TP_fast_assign(
-> 
-> The TRACE_EVENT() macro is "special", and checkpatch notoriously stumbles
-> over it. I usually recommend that people ignore the checkpatch warnings on
-> TRACE_EVENT() macros.
+Add the perf_evlist__reset_id_hash() function to libperf API so that
+it can be called to reset the hash table.  This is necessary for perf
+stat to run the workload multiple times.
 
-Makes sense. I'll pick this up as it is.
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/lib/perf/evlist.c              | 13 +++++++++----
+ tools/lib/perf/include/perf/evlist.h |  2 ++
+ tools/lib/perf/libperf.map           |  1 +
+ 3 files changed, 12 insertions(+), 4 deletions(-)
 
-Thanks,
-Jens
+diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
+index 17465d454a0e..a0aaf385cbb5 100644
+--- a/tools/lib/perf/evlist.c
++++ b/tools/lib/perf/evlist.c
+@@ -26,13 +26,10 @@
+ 
+ void perf_evlist__init(struct perf_evlist *evlist)
+ {
+-	int i;
+-
+-	for (i = 0; i < PERF_EVLIST__HLIST_SIZE; ++i)
+-		INIT_HLIST_HEAD(&evlist->heads[i]);
+ 	INIT_LIST_HEAD(&evlist->entries);
+ 	evlist->nr_entries = 0;
+ 	fdarray__init(&evlist->pollfd, 64);
++	perf_evlist__reset_id_hash(evlist);
+ }
+ 
+ static void __perf_evlist__propagate_maps(struct perf_evlist *evlist,
+@@ -237,6 +234,14 @@ static void perf_evlist__id_hash(struct perf_evlist *evlist,
+ 	hlist_add_head(&sid->node, &evlist->heads[hash]);
+ }
+ 
++void perf_evlist__reset_id_hash(struct perf_evlist *evlist)
++{
++	int i;
++
++	for (i = 0; i < PERF_EVLIST__HLIST_SIZE; ++i)
++		INIT_HLIST_HEAD(&evlist->heads[i]);
++}
++
+ void perf_evlist__id_add(struct perf_evlist *evlist,
+ 			 struct perf_evsel *evsel,
+ 			 int cpu, int thread, u64 id)
+diff --git a/tools/lib/perf/include/perf/evlist.h b/tools/lib/perf/include/perf/evlist.h
+index 0a7479dc13bf..0085732e8cd9 100644
+--- a/tools/lib/perf/include/perf/evlist.h
++++ b/tools/lib/perf/include/perf/evlist.h
+@@ -46,4 +46,6 @@ LIBPERF_API struct perf_mmap *perf_evlist__next_mmap(struct perf_evlist *evlist,
+ 	     (pos) != NULL;						\
+ 	     (pos) = perf_evlist__next_mmap((evlist), (pos), overwrite))
+ 
++LIBPERF_API void perf_evlist__reset_id_hash(struct perf_evlist *evlist);
++
+ #endif /* __LIBPERF_EVLIST_H */
+diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+index 7be1af8a546c..285100143d89 100644
+--- a/tools/lib/perf/libperf.map
++++ b/tools/lib/perf/libperf.map
+@@ -42,6 +42,7 @@ LIBPERF_0.0.1 {
+ 		perf_evlist__munmap;
+ 		perf_evlist__filter_pollfd;
+ 		perf_evlist__next_mmap;
++		perf_evlist__reset_id_hash;
+ 		perf_mmap__consume;
+ 		perf_mmap__read_init;
+ 		perf_mmap__read_done;
+-- 
+2.30.0.617.g56c4b15f3c-goog
+
