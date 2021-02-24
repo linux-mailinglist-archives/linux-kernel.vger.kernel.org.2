@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8A6324095
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D381324099
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237891AbhBXPOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:14:53 -0500
-Received: from mail-wr1-f46.google.com ([209.85.221.46]:39102 "EHLO
-        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237519AbhBXOcF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 09:32:05 -0500
-Received: by mail-wr1-f46.google.com with SMTP id v1so2086779wrd.6;
-        Wed, 24 Feb 2021 06:31:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/YBrPEr1lwJ23lddEC25NzuV+KrdNuFPq/A3hHw3CPA=;
-        b=VbL5wlt9h/bjh8BTlOF5cqKjmyds0QHqrQ9reZ/GpDJMoZct6cs/dattBdgCvPu2ex
-         SwcC3gWwDpd6AthSaOyw/AOehv0HHm8plcGZyZ1DgyuAuYD+4YsIbr4wku8OLELXgF8G
-         dT/mH7SWc80l4qkwlzugKPrXmUk3JQ4M4t8VBzWaJMqht6C66ApdKV79zMmVicimRPKh
-         7yMFZhNsSSGTSXjQiaTkHgVMKs5Q/a6ZpQM9/Ztn3vlBRrKSmvE5yYFCzundSq3I9BIo
-         z3hxDeUuPorf8DTErxFOoW24Ou0T75rzMPy0dmj6PYnn5NAnNLD38vOqWH6mtXRN2jel
-         A//A==
-X-Gm-Message-State: AOAM532GhGS7jK6D9IHcgGqUdrvSqJfTRYc8yHRfw9XKYwFF/daQhA+j
-        xr8hHNe+uFkHQP7y7611wY0=
-X-Google-Smtp-Source: ABdhPJyzlsFi0TiJ96xPkqKJZCTCILLB53zE4mEccCvTsH8l1EMpfBxoyYXPQQOyfwXHU3MmYnxVGQ==
-X-Received: by 2002:adf:b355:: with SMTP id k21mr288693wrd.156.1614177082777;
-        Wed, 24 Feb 2021 06:31:22 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id c2sm3973759wrx.70.2021.02.24.06.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 06:31:22 -0800 (PST)
-Date:   Wed, 24 Feb 2021 15:31:20 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, maz@kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
-        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
-        sin_jieyang@mediatek.com, drinkcat@chromium.org,
-        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
-Subject: Re: [v8,5/7] PCI: mediatek-gen3: Add MSI support
-Message-ID: <YDZjOHKmks9ChFQI@rocinante>
-References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
- <20210224061132.26526-6-jianjun.wang@mediatek.com>
+        id S238507AbhBXPPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:15:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233489AbhBXOct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 09:32:49 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 307BA64ED6;
+        Wed, 24 Feb 2021 14:32:08 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lEvCv-00FhNi-Tm; Wed, 24 Feb 2021 14:32:06 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210224061132.26526-6-jianjun.wang@mediatek.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 24 Feb 2021 14:32:05 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st,
+        tglx@linutronix.de, will@kernel.org
+Subject: Re: [PATCH 0/8] arm64: Support FIQ controller registration
+In-Reply-To: <20210224140656.GG50741@C02TD0UTHF1T.local>
+References: <20210219113904.41736-1-mark.rutland@arm.com>
+ <87a6s0orm7.wl-maz@kernel.org> <20210224140656.GG50741@C02TD0UTHF1T.local>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <f69e51e4161f48442933c0c5296b313d@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st, tglx@linutronix.de, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jianjun,
+On 2021-02-24 14:06, Mark Rutland wrote:
+> On Fri, Feb 19, 2021 at 06:10:56PM +0000, Marc Zyngier wrote:
+>> Hi Mark,
+>> 
+>> On Fri, 19 Feb 2021 11:38:56 +0000,
+>> Mark Rutland <mark.rutland@arm.com> wrote:
+>> >
+>> > Hector's M1 support series [1] shows that some platforms have critical
+>> > interrupts wired to FIQ, and to support these platforms we need to support
+>> > handling FIQ exceptions. Other contemporary platforms don't use FIQ (since e.g.
+>> > this is usually routed to EL3), and as we never expect to take an FIQ, we have
+>> > the FIQ vector cause a panic.
+>> >
+>> > Since the use of FIQ is a platform integration detail (which can differ across
+>> > bare-metal and virtualized environments), we need be able to explicitly opt-in
+>> > to handling FIQs while retaining the existing behaviour otherwise. This series
+>> > adds a new set_handle_fiq() hook so that the FIQ controller can do so, and
+>> > where no controller is registered the default handler will panic(). For
+>> > consistency the set_handle_irq() code is made to do the same.
+>> >
+>> > The first couple of patches are from Marc's irq/drop-generic_irq_multi_handler
+>> > branch [2] on kernel.org, and clean up CONFIG_GENERIC_IRQ_MULTI_HANDLER usage.
+>> > The next four patches move arm64 over to a local set_handle_irq()
+>> > implementation, which is written to share code with a set_handle_fiq() function
+>> > in the last two patches. The only functional difference here is that if an IRQ
+>> > is somehow taken prior to set_handle_irq() the default handler will directly
+>> > panic() rather than the vector branching to NULL.
+>> >
+>> > The penultimate patch is cherry-picked from the v2 M1 series, and as per
+>> > discussion there [3] will need a few additional fixups. I've included it for
+>> > now as the DAIF.IF alignment is necessary for the FIQ exception handling added
+>> > in the final patch.
+>> >
+>> > The final patch adds the low-level FIQ exception handling and registration
+>> > mechanism atop the prior rework.
+>> 
+>> Thanks for putting this together. I have an extra patch on top of this
+>> series[1] that prevents the kernel from catching fire if a FIQ fires
+>> whilst running a guest. Nothing urgent, we can queue it at a later 
+>> time.
+>> 
+>> Thanks,
+>> 
+>> 	M.
+>> 
+>> [1] 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/fiq
+> 
+> IIUC for that "invalid_vect" should be changed to "valid_vect", to 
+> match
+> the other valid vector entries, but otherwise that looks sane to me.
 
-[...]
-> +static struct irq_chip mtk_msi_irq_chip = {
-> +	.name = "MSI",
-> +	.irq_enable = mtk_pcie_irq_unmask,
-> +	.irq_disable = mtk_pcie_irq_mask,
-> +	.irq_ack = irq_chip_ack_parent,
-> +	.irq_mask = mtk_pcie_irq_mask,
-> +	.irq_unmask = mtk_pcie_irq_unmask,
-> +};
+Err, yes. I though I had fixed that, but obviously didn't.
 
-For consistency sake, what about aligning this like the
-struct mtk_msi_bottom_irq_chip has been?  See immediately below.
+> I guess we could take that as a prerequisite ahead of the rest?
 
-[...]
-> +static struct irq_chip mtk_msi_bottom_irq_chip = {
-> +	.irq_ack		= mtk_msi_bottom_irq_ack,
-> +	.irq_mask		= mtk_msi_bottom_irq_mask,
-> +	.irq_unmask		= mtk_msi_bottom_irq_unmask,
-> +	.irq_compose_msi_msg	= mtk_compose_msi_msg,
-> +	.irq_set_affinity	= mtk_pcie_set_affinity,
-> +	.name			= "MSI",
-> +};
+Sure, that's mostly independent anyway. And it would make more sense
+for an unexpected FIQ to crash the host at at the point where we
+handle interrupts rather than in KVM with very little debug information.
 
-Krzysztof
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
