@@ -2,81 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055BB32464C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 23:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFBA324696
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 23:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234633AbhBXWTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 17:19:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233615AbhBXWTq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 17:19:46 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DBBC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 14:19:06 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id d8so5587606ejc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 14:19:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=esgHPFAXtJraAFZeVMnbgtLoIpVTIBSPXC2kaE9EIyo=;
-        b=Bk62oPLB6TXDuzwnMS2NVq6cZU2EJ+AgM1xn5jV+9BsuyYK0qKJTJ/1QjllD0IpCIx
-         C0+vR8F8imu7znz7XfUVRtxSj6vyCbzzt8h7YyWqTTT8M88zCKOKkfMeCKTG8Pdj5Ljw
-         2AgNFO6k0WOlAPxrmeYAKCUVW2ktlwKBGt5JE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=esgHPFAXtJraAFZeVMnbgtLoIpVTIBSPXC2kaE9EIyo=;
-        b=uFPkcVI1zglEvbCalvbM/IR+qqybk6lmDWYOLjLARE8gI/CK47QO3BbT7Z0SahcC/w
-         4cexjzo+FAVLDkim4NNA3sTNHejOVCqwiAAp5U0IV5Kra+EbCXfidXPxNPoyJxhUuwvh
-         PggKWpEN9XIuiFhqzh676nJ/kx19sgC9V8FYD71iduLnDysN6McBRf/3hWrsA6a5G4JO
-         tDrMeHGnq5FZsp3n8a9KquDk6mwkcF3MsLQTLU7oy5H5mqo8vjK4F+4PvUnHaHkq22mq
-         vW6IQZpjvcJ8STz9Uye3ET/jQNwM2jn+g3IysX+5btBzVH3KS62ZlLfMhRJ/WLip2jPh
-         nv4Q==
-X-Gm-Message-State: AOAM5329sKli3Sx9ZjlehLUW8wraVfVYvujlFX/daSx89Wa6xf7cgUTl
-        gQ5rSanv+YaYAHuguaZq4MuF4o6JJxaWtQ==
-X-Google-Smtp-Source: ABdhPJxjiD5KAeODBCv+FcuEH0jO8vVbYzDx7TZOo87cBVxKIdxa0Yg5W3ud56iHmkQMwwQ8RBhiPQ==
-X-Received: by 2002:a17:906:32d1:: with SMTP id k17mr33393373ejk.141.1614205144864;
-        Wed, 24 Feb 2021 14:19:04 -0800 (PST)
-Received: from [192.168.1.149] ([80.208.71.141])
-        by smtp.gmail.com with ESMTPSA id t19sm1987576ejs.122.2021.02.24.14.19.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Feb 2021 14:19:04 -0800 (PST)
-Subject: Re: [PATCH/RFC 0/2] background initramfs unpacking, and
- CONFIG_MODPROBE_PATH
-To:     linux-kernel@vger.kernel.org
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210224142909.2092914-1-linux@rasmusvillemoes.dk>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <e240d10c-2c81-d3f2-9973-5527297db8de@rasmusvillemoes.dk>
-Date:   Wed, 24 Feb 2021 23:19:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234773AbhBXWVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 17:21:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234147AbhBXWVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 17:21:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 094F064E05;
+        Wed, 24 Feb 2021 22:20:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614205238;
+        bh=S2yZyBOFkSePiXlAXkn4okVjIDCQjqacx6ZRgMYxcHU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E9K3QJgsVNhzUx+7v/HZmyGGeVUyRuEDBbto7+MSwReE3SQWABZnwNC3UGFjlUeet
+         DqgoPaqu05uD+SkfGUq9H86k+10lMgZ3X9PCNKXyeVhYeYbORos+iRc3FBuShXMHGg
+         8n2Qg8lzYnEh5XK2FTeatPq6jnUC+qiPKWsw9eBBq8ElNmKrm7nyV10hCaGdXWISdZ
+         AUnmdE5O8XkhFs+L93vqLpyu9Igph6j7r1As04/yBP3iZhJE8p7ooV4PYpZe7kIit8
+         AA7RV56U60xgXdLVylHxZgcmt42DmJgdIzjiBvEZ3gCpxkO60HZ3dpTt0DoYIvJHKq
+         6aQuKpgRyuCWg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6D2B140CD9; Wed, 24 Feb 2021 19:20:36 -0300 (-03)
+Date:   Wed, 24 Feb 2021 19:20:36 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     mike.leach@linaro.org, leo.yan@linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] coresight: Patches for v5.12 (perf tools)
+Message-ID: <YDbRNJemiGQrHNIP@kernel.org>
+References: <20210224164835.3497311-1-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210224142909.2092914-1-linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224164835.3497311-1-mathieu.poirier@linaro.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/02/2021 15.29, Rasmus Villemoes wrote:
-> These two patches are independent, but better-together.
+Em Wed, Feb 24, 2021 at 09:48:29AM -0700, Mathieu Poirier escreveu:
+> Good day Arnaldo,
+> 
+> I noticed there is a couple of patchsets [1][2] that haven't made it
+> to your tree for the coming v5.12 cycle.  Do you think that can still
+> be done? 
 
-kernel test robot says I'll have to add a 0/2 patch:
+Sure, I'll go thru them, hopefully we'll get it in v5.12-rc1.
 
-linux/initrd.h: grow an include guard
+Thanks,
 
-[because defining a macro a second time with the same contents is ok, so
-is doing another extern declaration, but a trivial static inline
-definition can't be repeated sigh]
+- Arnaldo
+ 
+> I tallied the patches here to make it easier for you to pick up.
+> 
+> Applies cleanly on perf/core (84b7725536d8)
+> 
+> Thanks,
+> Mathieu
+> 
+> [1]. https://lore.kernel.org/lkml/20210202214040.32349-1-mike.leach@linaro.org/
+> [2]. https://lore.kernel.org/lkml/20210213113220.292229-1-leo.yan@linaro.org/
+> 
+> Leo Yan (2):
+>   tools headers UAPI: Update tools' copy of linux/coresight-pmu.h
+>   perf cs-etm: Add helper cs_etm__get_pid_fmt()
+> 
+> Mike Leach (1):
+>   perf: cs-etm: update ETM metadata format
+> 
+> Suzuki K Poulose (3):
+>   perf cs-etm: Fix bitmap for option
+>   perf cs-etm: Support PID tracing in config
+>   perf cs-etm: Detect pid in VMID for kernel running at EL2
+> 
+>  tools/include/linux/coresight-pmu.h           |  20 +-
+>  tools/perf/arch/arm/util/cs-etm.c             |  76 +++--
+>  .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  38 ++-
+>  tools/perf/util/cs-etm.c                      | 277 +++++++++++++++---
+>  tools/perf/util/cs-etm.h                      |  31 +-
+>  5 files changed, 368 insertions(+), 74 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
+
+-- 
+
+- Arnaldo
