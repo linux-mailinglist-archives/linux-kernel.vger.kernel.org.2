@@ -2,118 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166A1324384
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3A9324388
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbhBXSGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbhBXSGc (ORCPT
+        id S232954AbhBXSHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:07:50 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:43198 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230386AbhBXSHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:06:32 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488D5C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:05:52 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id m144so3026146qke.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:05:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IUVbPpVZ4+NgeP6WqeHK/Kh6aJQsEUlwdu/Vg1IkVWc=;
-        b=BbuezdHJhX0VaqiVhs3QX24iZqeWNYYI9JPFBgxbVH7NCORNudB31SneVA7WkWMAR7
-         aLqFN6jUzJfTUH3cpxX5XVNx+9Zfgyak6IILCCgbsx/owKKhL/HmpbeyUz/FuafT/D40
-         xbUd6myC/Nl+LIlJGuSCogXQTTKbfo6B4c70Q=
+        Wed, 24 Feb 2021 13:07:37 -0500
+Received: by mail-ot1-f53.google.com with SMTP id v12so1903825ott.10;
+        Wed, 24 Feb 2021 10:07:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IUVbPpVZ4+NgeP6WqeHK/Kh6aJQsEUlwdu/Vg1IkVWc=;
-        b=no+6DhaCjX4HPsug0dQPt2KD5UBnl/YP4cjCIA+3mexfkOFtcmOYlP9HCWfGh1FmQs
-         +peIeCM7C2Bj/Mu3DrwjVBrvblkt4L/igLSS951cDJgNeFynR05Ko30AV9y/8m0/Xh0A
-         LpCo+REkIsriDnQGS2z+EmNZlGWtJ0nKlcVhdvJ1ARfuZg1vZEzCQCqIECHVArPYPtAi
-         gRCD7/hlv+z4d0BpjSBvaeZVjU/nrB7mMAqwNaHvmzqhLyL5bdGGY/8EDEpXjEzOC1I5
-         DTfaptadf1MkN1r2p1N2Ff+/DqSkZMrZTf9/EksG8d627rzlQ+bVoXFhBiXdg3lhsEyL
-         aJoA==
-X-Gm-Message-State: AOAM530Y0Q9+Wvh70xfzhTnHqIH6mKRV/gy9Y1QmjErLVGxFmTQFEjew
-        QTTXMQpx6m18/Zmyz9lnVomPQ/FL7JPLvt4sQb9e3Q==
-X-Google-Smtp-Source: ABdhPJzxG+t4ePEvNgAjEffIj7RO+NTXPSKnP7rszVjKHwIoimFIoB8HXaiwIpUXbvSbxz8DA+m6YZaoxm9PDlX+dHs=
-X-Received: by 2002:a37:9444:: with SMTP id w65mr12635158qkd.88.1614189951332;
- Wed, 24 Feb 2021 10:05:51 -0800 (PST)
+        bh=oUyGjHMdzy5k0NymwhlK4usRhZbPwNaCWNv1VgX9sq4=;
+        b=Pp5d6XH31agMb/PNwaRhcF2uUPC9xGRRTh/nFuwn18cfpN0PBdnnbs4pT/gHSH7lr7
+         ItIIYL/9PPIzZe+uED3QfWaLHF51iZ/jC2pTfO7aqGmQmQDH7TgWsQ6HtapzR9y3twm/
+         HxlbGIPNdJ58BA6XhliD3BproNqS7vvsQPSV3mEpi/4H9bbnshER3xBztvoi7SEhF7ZO
+         GVkUZCeFVCuR8I8cynvLY5J9ihAZSYs7f8ehY9wZ8uMkVeCC4Tuczjp9YNeTv1hghGjg
+         nnDNlMv9WG3KjLxpCdd8xMX7NiWCyELNb4qpZeN7jH1y03OXE7MFK+oSj0TsnShzh30X
+         wNig==
+X-Gm-Message-State: AOAM533JOAulR06GUJuaIRZ1mrFSigEd93dnixfeoJxZnHLbl/tR9f9I
+        OA+KS25fEigY+B+rfzgicSGJi1HQX+ftp3mr22I=
+X-Google-Smtp-Source: ABdhPJxuXkX+666/Lv6ikmFdus5B0e+dUJwf/jEXpLD1oPXJSXdOJc6n6bAAaO45L9rZTfhBgGz28obtt+9kdAhehVE=
+X-Received: by 2002:a9d:22a5:: with SMTP id y34mr21745058ota.321.1614190017269;
+ Wed, 24 Feb 2021 10:06:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201223191402.378560-1-jagan@amarulasolutions.com>
- <20201223191402.378560-3-jagan@amarulasolutions.com> <21398844-c334-f753-0fac-144a0cdc29dc@foss.st.com>
-In-Reply-To: <21398844-c334-f753-0fac-144a0cdc29dc@foss.st.com>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Wed, 24 Feb 2021 23:35:39 +0530
-Message-ID: <CAMty3ZBotTi2RwkKUpb+8KBOJ484hHzOV0p4J_dJ-fBVSDoMAg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] ARM: dts: stm32: Add Engicam MicroGEA STM32MP1 SoM
-To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Francesco Utel <francesco.utel@engicam.com>,
-        Mirko Ardinghi <mirko.ardinghi@engicam.com>
+References: <5138173.kHyPcihzTF@kreacher> <10245832.OiMb8u2cOm@kreacher>
+ <0faea0bd-107b-5c4c-5324-e0cd5e5cfba4@huawei.com> <CAJZ5v0i01rX0b-=dDJEdGsK2=6D3tXbC_wdOByTF_mJ0ggTPJQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0i01rX0b-=dDJEdGsK2=6D3tXbC_wdOByTF_mJ0ggTPJQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 24 Feb 2021 19:06:46 +0100
+Message-ID: <CAJZ5v0hwouj_1KpZ_RrC3r50RxngvinBBJVgNhQkwA3bw0oXag@mail.gmail.com>
+Subject: Re: [PATCH v1 1/4] ACPI: processor: Get rid of ACPICA message printing
+To:     Hanjun Guo <guohanjun@huawei.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 8:35 PM Alexandre TORGUE
-<alexandre.torgue@foss.st.com> wrote:
+On Tue, Feb 23, 2021 at 3:45 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
 >
-> Hi,
+> On Tue, Feb 23, 2021 at 12:31 PM Hanjun Guo <guohanjun@huawei.com> wrote:
+> >
+> > On 2021/2/23 2:59, Rafael J. Wysocki wrote:
+> > > Index: linux-pm/drivers/acpi/processor_idle.c
+> > > ===================================================================
+> > > --- linux-pm.orig/drivers/acpi/processor_idle.c
+> > > +++ linux-pm/drivers/acpi/processor_idle.c
+> >
+> > In this file, function acpi_processor_cstate_first_run_checks()
+> > has a wrong pr_notice():
+> >
+> > pr_notice("ACPI: processor limited to max C-state %d\n",
+> >                 max_cstate);
+> >
+> > Since we have pr_fmt() for this file, "ACPI:" is duplicate,
+> > we'd better cleanup this as below:
+> >
+> > pr_notice("processor limited to max C-state %d\n", max_cstate);
 >
-> On 12/23/20 8:13 PM, Jagan Teki wrote:
-> > MicroGEA STM32MP1 is an EDIMM SoM based on STM32MP157A from Engicam.
-> >
-> > General features:
-> > - STM32MP157AAC
-> > - Up to 1GB DDR3L-800
-> > - 512MB Nand flash
-> > - I2S
-> >
-> > MicroGEA STM32MP1 needs to mount on top of Engicam MicroDev carrier
-> > boards for creating complete platform solutions.
-> >
-> > Add support for it.
-> >
-> > Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
-> > Signed-off-by: Francesco Utel <francesco.utel@engicam.com>
-> > Signed-off-by: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> > ---
-> >   .../dts/stm32mp157a-microgea-stm32mp1.dtsi    | 147 ++++++++++++++++++
-> >   1 file changed, 147 insertions(+)
-> >   create mode 100644 arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
-> >
-> > diff --git a/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi b/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
-> > new file mode 100644
-> > index 000000000000..97d569107bfe
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
-> > @@ -0,0 +1,147 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
-> > +/*
-> > + * Copyright (c) STMicroelectronics 2019 - All Rights Reserved
-> > + * Copyright (c) 2020 Engicam srl
-> > + * Copyright (c) 2020 Amarula Solutons(India)
-> > + */
-> > +
->
-> If STM32MP157AAC is soldered onto this board, you should include SoC
-> dtsi here and no into MicroDev 2.0 board. No ?
+> Thanks for pointing this out, I'll make this change when applying the patch.
 
-No, it's an SoM dtsi. and it can be associated with the respective
-carrier board and include files are attached in its dts.
-
-Please check the next patches on this series.
-
-Jagan.
+Actually, this issue is not strictly related to the patch here, so I'm
+going to send a separate patch to fix it.
