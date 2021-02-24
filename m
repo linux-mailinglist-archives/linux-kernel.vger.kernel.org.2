@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D62C32439F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBB23243A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234674AbhBXSOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:14:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42092 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233912AbhBXSOI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:14:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614190361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Q3FXi0hQvn8pTwg2Nl9y14ZmyNsebtglhIHEb4N6mQ=;
-        b=cJbQZELYjOgHtw5wjMO/0Cd38HWal+RWCSFB/+zcxl2tIHbvHHPPAi4l2c3o/BTWaLM/Jw
-        vE3QQ/WoWeSqcV464yBIUPXcWnhSlnXssO62slWz1GKqvNBhALzqoroK4/kvALeoaJ1FIv
-        SHcmYGX+Pczt2G6WCqZM5JiYQCP96BQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-dZT2pBPqNbiXRp00Wlpx2Q-1; Wed, 24 Feb 2021 13:12:37 -0500
-X-MC-Unique: dZT2pBPqNbiXRp00Wlpx2Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S234782AbhBXSO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:14:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234451AbhBXSOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 13:14:49 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53ADEC7401;
-        Wed, 24 Feb 2021 18:12:36 +0000 (UTC)
-Received: from treble (ovpn-118-134.rdu2.redhat.com [10.10.118.134])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 93B6750DE6;
-        Wed, 24 Feb 2021 18:12:35 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 12:12:33 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Ivan Babrou <ivan@cloudflare.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 2/2] x86/unwind/orc: Silence warnings caused by missing
- ORC data
-Message-ID: <20210224181233.f5q2scq43e2j372j@treble>
-References: <cover.1612534649.git.jpoimboe@redhat.com>
- <06d02c4bbb220bd31668db579278b0352538efbb.1612534649.git.jpoimboe@redhat.com>
- <YDZoEehURLLI/lWq@hirez.programming.kicks-ass.net>
- <20210224151805.zrujocamlb5pxf7m@treble>
- <YDaV47Cw8AEzsnkg@hirez.programming.kicks-ass.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CC8164EDD;
+        Wed, 24 Feb 2021 18:14:07 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 13:14:05 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/6] [RFC] Faultable tracepoints (v2)
+Message-ID: <20210224131405.20d64b49@gandalf.local.home>
+In-Reply-To: <915297635.2997.1614185975415.JavaMail.zimbra@efficios.com>
+References: <20210218222125.46565-1-mjeanson@efficios.com>
+        <20210223211639.670db85c@gandalf.local.home>
+        <083bce0f-bd66-ab83-1211-be9838499b45@efficios.com>
+        <915297635.2997.1614185975415.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YDaV47Cw8AEzsnkg@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 07:07:31PM +0100, Peter Zijlstra wrote:
-> On Wed, Feb 24, 2021 at 09:18:05AM -0600, Josh Poimboeuf wrote:
-> > On Wed, Feb 24, 2021 at 03:52:01PM +0100, Peter Zijlstra wrote:
-> > > On Fri, Feb 05, 2021 at 08:24:03AM -0600, Josh Poimboeuf wrote:
-> > > > The ORC unwinder attempts to fall back to frame pointers when ORC data
-> > > > is missing for a given instruction.  It sets state->error, but then
-> > > > tries to keep going as a best-effort type of thing.  That may result in
-> > > > further warnings if the unwinder gets lost.
-> > > > 
-> > > > Until we have some way to register generated code with the unwinder,
-> > > > missing ORC will be expected, and occasionally going off the rails will
-> > > > also be expected.  So don't warn about it.
-> > > 
-> > > I recently ran into another variant of missing ORC data, some files are
-> > > simply not processed by objtool, eg. arch/x86/realmode/init.c. Would it
-> > > make sense to have the vmlinux pass (when it isn't used to generate orc
-> > > in the first place) also check that all code it finds has ORC data?
-> > > 
-> > > It's not fool proof, but it should help find files we're missing for
-> > > some raisin.
-> > 
-> > Doesn't validate_reachable_instructions() basically already do that?
+On Wed, 24 Feb 2021 11:59:35 -0500 (EST)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 > 
-> Nope, I'm talking about the case where we generate ORC for each .o file
-> (and 'forget' to run objtool on some of them). And then run objtool
-> again on vmlinux to validate (things like noinstr).
+> As a prototype solution, what I've done currently is to copy the user-space
+> data into a kmalloc'd buffer in a preparation step before disabling preemption
+> and copying data over into the per-cpu buffers. It works, but I think we should
+> be able to do it without the needless copy.
 > 
-> At that point it might make sense to also check that all code does
-> indeed have an ORC to double check our initial (per translation unit)
-> invocation didn't accidentally miss someone.
+> What I have in mind as an efficient solution (not implemented yet) for the LTTng
+> kernel tracer goes as follows:
+> 
+> #define COMMIT_LOCAL 0
+> #define COMMIT_REMOTE 1
+> 
+> - faultable probe is called from system call tracepoint [ preemption/blocking/migration is allowed ]
+>   - probe code calculate the length which needs to be reserved to store the event
+>     (e.g. user strlen),
+> 
+>   - preempt disable -> [ preemption/blocking/migration is not allowed from here ]
+>     - reserve_cpu = smp_processor_id()
+>     - reserve space in the ring buffer for reserve_cpu
+>       [ from that point on, we have _exclusive_ access to write into the ring buffer "slot"
+>         from any cpu until we commit. ]
+>   - preempt enable -> [ preemption/blocking/migration is allowed from here ]
+> 
 
-What I meant was, validate_reachable_instructions() should already be
-able to report that situation, if it were called on vmlinux.  Right now
-I think noinstr avoids calling it.
+So basically the commit position here doesn't move until this task is
+scheduled back in and the commit (remote or local) is updated.
 
-I'm already working on some vmlinux rework which will enable that
-checking.  Then we'll have to go through the unreachable warnings and
-try to fix them.
+To put it in terms of the ftrace ring buffer, where we have both a commit
+page and a commit index, and it only gets moved by the first one to start a
+commit stack (that is, interrupts that interrupted a write will not
+increment the commit).
 
--- 
-Josh
+Now, I'm not sure how LTTng does it, but I could see issues for ftrace to
+try to move the commit pointer (the pointer to the new commit page), as the
+design is currently dependent on the fact that it can't happen while
+commits are taken place.
 
+Are the pages of the LTTng indexed by an array of pages?
+
+-- Steve
