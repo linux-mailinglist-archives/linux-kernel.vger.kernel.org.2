@@ -2,154 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE30323AD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6A0323AD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234903AbhBXKvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 05:51:17 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2908 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233279AbhBXKvB (ORCPT
+        id S234945AbhBXKyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 05:54:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57344 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234891AbhBXKxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 05:51:01 -0500
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Dlt1V33SFz5VG2;
-        Wed, 24 Feb 2021 18:48:14 +0800 (CST)
-Received: from dggemi710-chm.china.huawei.com (10.3.20.109) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 24 Feb 2021 18:50:14 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi710-chm.china.huawei.com (10.3.20.109) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 24 Feb 2021 18:50:14 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Wed, 24 Feb 2021 18:50:14 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Finn Thain <fthain@telegraphics.com.au>
-CC:     tanxiaofei <tanxiaofei@huawei.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
-Subject: RE: [Linuxarm]  Re: [PATCH for-next 00/32] spin lock usage
- optimization for SCSI drivers
-Thread-Topic: [Linuxarm]  Re: [PATCH for-next 00/32] spin lock usage
- optimization for SCSI drivers
-Thread-Index: AQHXCmzcm1+9CefWtUG8kvjjNsr6mqpnFSvg
-Date:   Wed, 24 Feb 2021 10:50:14 +0000
-Message-ID: <79b5bdb1b5d94b248671bf99a930d971@hisilicon.com>
-References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com>
- <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au>
- <e949a474a9284ac6951813bfc8b34945@hisilicon.com>
- <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
- <7bc39d19-f4cc-8028-11e6-c0e45421a765@huawei.com>
- <588a87f-ae42-0b7-749e-c780ce5c3e4f@telegraphics.com.au>
- <8c99b5c060eb4e5aa5b604666a8db516@hisilicon.com>
- <f38b950-c76e-39da-f386-9e77cfcecb3@telegraphics.com.au>
- <4d2f90d2157045a7b0800a4004f539ba@hisilicon.com>
- <7293ba4c-c5ab-528f-1feb-dc59bfb0df2d@telegraphics.com.au>
-In-Reply-To: <7293ba4c-c5ab-528f-1feb-dc59bfb0df2d@telegraphics.com.au>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.203.110]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 24 Feb 2021 05:53:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614163932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GH11eDVLhD/SidI1qdEzLb3AWqWR9ut66Endvy0g5sg=;
+        b=a4e5jg8ioUV6fCB3Y1Qu6ySo6k8A+We6Vcb8GiePmGBKF3TU2ix6paYT24qEdvPBEYslc5
+        yUrfcVQwrd5sKcYe0+gI45I46JOnPOVK0/ie41YUsvkvdO62x8FxrNheUVC1l+Sg62oOYX
+        pQsl9HTmk7L9m0vCBhVPpvR0uu/0LlM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-402-5MJlS2NeP7-XzypAY4PELg-1; Wed, 24 Feb 2021 05:52:00 -0500
+X-MC-Unique: 5MJlS2NeP7-XzypAY4PELg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 771A18018AB;
+        Wed, 24 Feb 2021 10:51:59 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 980EA2D035;
+        Wed, 24 Feb 2021 10:51:57 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <F6980CA4-737D-416A-BBE3-390CEBA8B192@oracle.com>
+References: <F6980CA4-737D-416A-BBE3-390CEBA8B192@oracle.com> <20210217165058.1336155-1-eric.snowberg@oracle.com> <3524595.1614124044@warthog.procyon.org.uk>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cert: Add kconfig dependency for validate_trust
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3731127.1614163916.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 24 Feb 2021 10:51:56 +0000
+Message-ID: <3731128.1614163916@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRmlubiBUaGFpbiBbbWFp
-bHRvOmZ0aGFpbkB0ZWxlZ3JhcGhpY3MuY29tLmF1XQ0KPiBTZW50OiBXZWRuZXNkYXksIEZlYnJ1
-YXJ5IDI0LCAyMDIxIDY6MjEgUE0NCj4gVG86IFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykgPHNv
-bmcuYmFvLmh1YUBoaXNpbGljb24uY29tPg0KPiBDYzogdGFueGlhb2ZlaSA8dGFueGlhb2ZlaUBo
-dWF3ZWkuY29tPjsgamVqYkBsaW51eC5pYm0uY29tOw0KPiBtYXJ0aW4ucGV0ZXJzZW5Ab3JhY2xl
-LmNvbTsgbGludXgtc2NzaUB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
-cm5lbC5vcmc7IGxpbnV4YXJtQG9wZW5ldWxlci5vcmc7DQo+IGxpbnV4LW02OGtAdmdlci5rZXJu
-ZWwub3JnDQo+IFN1YmplY3Q6IFtMaW51eGFybV0gUmU6IFtQQVRDSCBmb3ItbmV4dCAwMC8zMl0g
-c3BpbiBsb2NrIHVzYWdlIG9wdGltaXphdGlvbg0KPiBmb3IgU0NTSSBkcml2ZXJzDQo+IA0KPiBP
-biBUdWUsIDIzIEZlYiAyMDIxLCBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcpIHdyb3RlOg0KPiAN
-Cj4gPiA+DQo+ID4gPiBSZWdhcmRpbmcgbTY4aywgeW91ciBhbmFseXNpcyBvdmVybG9va3MgdGhl
-IHRpbWluZyBpc3N1ZS4gRS5nLiBwYXRjaA0KPiA+ID4gMTEvMzIgY291bGQgYmUgYSBwcm9ibGVt
-IGJlY2F1c2UgcmVtb3ZpbmcgdGhlIGlycXNhdmUgd291bGQgYWxsb3cgUERNQQ0KPiA+ID4gdHJh
-bnNmZXJzIHRvIGJlIGludGVycnVwdGVkLiBBc2lkZSBmcm9tIHRoZSB0aW1pbmcgaXNzdWVzLCBJ
-IGFncmVlDQo+ID4gPiB3aXRoIHlvdXIgYW5hbHlzaXMgYWJvdmUgcmVnYXJkaW5nIG02OGsuDQo+
-ID4NCj4gPiBZb3UgbWVudGlvbmVkIHlvdSBuZWVkIHJlYWx0aW1lIHNvIHlvdSB3YW50IGFuIGlu
-dGVycnVwdCB0byBiZSBhYmxlIHRvDQo+ID4gcHJlZW1wdCBhbm90aGVyIG9uZS4NCj4gDQo+IFRo
-YXQncyBub3Qgd2hhdCBJIHNhaWQuIEJ1dCBmb3IgdGhlIHNha2Ugb2YgZGlzY3Vzc2lvbiwgeWVz
-LCBJIGRvIGtub3cNCj4gcGVvcGxlIHdobyBydW4gTGludXggb24gQVJNIGhhcmR3YXJlIChpZiBB
-bmRyb2lkIHZlbmRvciBrZXJuZWxzIGNhbiBiZQ0KPiBjYWxsZWQgIkxpbnV4IikgYW5kIHdobyB3
-b3VsZCBiZW5lZml0IGZyb20gcmVhbHRpbWUgc3VwcG9ydCBvbiB0aG9zZQ0KPiBkZXZpY2VzLg0K
-DQpSZWFsdGltZSByZXF1aXJlbWVudCBpcyBkZWZpbml0ZWx5IGEgdHJ1ZSByZXF1aXJlbWVudCBv
-biBBUk0gTGludXguDQoNCkkgb25jZSB0YWxrZWQvd29ya2VkICB3aXRoIHNvbWUgZ3V5cyB3aG8g
-d2VyZSB1c2luZyBBUk0gZm9yIHJlYWx0aW1lDQpzeXN0ZW0uDQpUaGUgZmVhc2libGUgYXBwcm9h
-Y2hlcyBpbmNsdWRlOg0KMS4gRHVhbCBPUyhSVE9TICsgTGludXgpOiBlLmcuICBRTlgrTGludXgg
-WEVOT01BSStMaW51eCBMNCtMaW51eA0KMi4gcHJlZW1wdC1ydA0KV2hpY2ggaXMgY29udGludW91
-c2x5IG1haW50YWluZWQgbGlrZToNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMTAy
-MTgyMDEwNDEuNjVma25yN2JkcGx3cWJlekBsaW51dHJvbml4LmRlLw0KMy4gYm9vdGFyZ3MgaXNv
-bGNwdXM9DQp0byBpc29sYXRlIGEgY3B1IGZvciBhIHNwZWNpZmljIHJlYWx0aW1lIHRhc2sgb3Ig
-aW50ZXJydXB0DQpodHRwczovL2FjY2Vzcy5yZWRoYXQuY29tL2RvY3VtZW50YXRpb24vZW4tdXMv
-cmVkX2hhdF9lbnRlcnByaXNlX2xpbnV4X2Zvcl9yZWFsX3RpbWUvNy9odG1sL3R1bmluZ19ndWlk
-ZS9pc29sYXRpbmdfY3B1c191c2luZ190dW5lZC1wcm9maWxlcy1yZWFsdGltZQ0KNC4gQVJNIEZJ
-USB3aGljaCBoYXMgc2VwYXJhdGUgZmlxIEFQSSwgYW4gZXhhbXBsZSBpbiBmc2wgc291bmQ6DQpo
-dHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9s
-aW51eC5naXQvdHJlZS9zb3VuZC9zb2MvZnNsL2lteC1wY20tZmlxLmMNCjUuIExldCBvbmUgY29y
-ZSBpbnZpc2libGUgdG8gTGludXgNClJ1bm5pbmcgbm9uLW9zIHN5c3RlbSBhbmQgcnRvcyBvbiB0
-aGUgY29yZQ0KDQpIb25lc3RseSwgSSd2ZSBuZXZlciBzZWVuIGFueW9uZSB3aG8gZGVwZW5kcyBv
-biBpcnEgcHJpb3JpdHkgdG8gc3VwcG9ydA0KcmVhbHRpbWUgaW4gQVJNIExpbnV4IHRob3VnaCBB
-Uk0ncyBSVE9TLWVzIHVzZSBpdCBxdWl0ZSBjb21tb25seS4NCg0KPiANCj4gPiBOb3cgeW91IHNh
-aWQgeW91IHdhbnQgYW4gaW50ZXJydXB0IG5vdCB0byBiZSBwcmVlbXB0ZWQgYXMgaXQgd2lsbCBt
-YWtlIGENCj4gPiB0aW1pbmcgaXNzdWUuDQo+IA0KPiBtYWNfZXNwIGRlbGliZXJhdGVseSBjb25z
-dHJhaW5zIHNlZ21lbnQgc2l6ZXMgc28gdGhhdCBpdCBjYW4gaGFybWxlc3NseQ0KPiBkaXNhYmxl
-IGludGVycnVwdHMgZm9yIHRoZSBkdXJhdGlvbiBvZiB0aGUgdHJhbnNmZXIuDQo+IA0KPiBNYXli
-ZSB0aGUgaXJxc2F2ZSBpbiB0aGlzIGRyaXZlciBpcyBvdmVyLWNhdXRpb3VzLiBXaG8ga25vd3M/
-IFRoZSBQRE1BDQo+IHRpbWluZyBwcm9ibGVtIHJlbGF0ZXMgdG8gU0NTSSBidXMgc2lnbmFsbGlu
-ZyBhbmQgdGhlIHRvbGVyYW5jZSBvZiByZWFsLQ0KPiB3b3JsZCBTQ1NJIGRldmljZXMgdG8gc2Ft
-ZS4gVGhlIG90aGVyIHByb2JsZW0gaXMgdGhhdCB0aGUgUERNQSBsb2dpYw0KPiBjaXJjdWl0IGlz
-IHVuZG9jdW1lbnRlZCBoYXJkd2FyZS4gU28gdGhlcmUgbWF5IGJlIGZ1cnRoZXIgdGltaW5nDQo+
-IHJlcXVpcmVtZW50cyBsdXJraW5nIHRoZXJlLiBUaGVyZWZvcmUsIHBhdGNoIDExLzMyIGlzIHRv
-byByaXNreS4NCj4gDQo+ID4gSWYgdGhpcyBQRE1BIHRyYW5zZmVyIHdpbGwgaGF2ZSBzb21lIHBy
-b2JsZW0gd2hlbiBpdCBpcyBwcmVlbXB0ZWQsIEkNCj4gPiBiZWxpZXZlIHdlIG5lZWQgc29tZSBl
-bmhhbmNlZCB3YXlzIHRvIGhhbmRsZSB0aGlzLCBvdGhlcndpc2UsIG9uY2Ugd2UNCj4gPiBlbmFi
-bGUgcHJlZW1wdF9ydCBvciB0aHJlYWRlZF9pcnEsIGl0IHdpbGwgZ2V0IHRoZSB0aW1pbmcgaXNz
-dWUuIHNvIGhlcmUNCj4gPiBpdCBuZWVkcyBhIGNsZWFyIGNvbW1lbnQgYW5kIElSUUZfTk9fVEhS
-RUFEIGlmIHRoaXMgaXMgdGhlIGNhc2UuDQo+ID4NCj4gDQo+IFBlb3BsZSB3aG8gcmVxdWlyZSBm
-YXN0IHJlc3BvbnNlIHRpbWVzIGNhbm5vdCBleHBlY3QgcmFuZG9tIGRyaXZlcnMgb3INCj4gcGxh
-dGZvcm1zIHRvIG1lZXQgc3VjaCByZXF1aXJlbWVudHMuIEkgZmVhciB5b3UgbWF5IGJlIGFza2lu
-ZyB0b28gbXVjaA0KPiBmcm9tIE1hYyBRdWFkcmEgbWFjaGluZXMuDQoNCk9uY2UgcHJlZW1wdF9y
-dCBpcyBlbmFibGVkLCB0aG9zZSB3aG8gd2FudCBhIGZhc3QgaXJxIGVudmlyb25tZW50IG5lZWQN
-CmEgbm9fdGhyZWFkIGZsYWcsIG9yIG5lZWQgdG8gc2V0IGl0cyBpcnEgdGhyZWFkIHRvIGhpZ2hl
-ciBzY2hlZF9maWZvL3JyDQpwcmlvcml0eS4NCg0KPiANCj4gPiA+DQo+ID4gPiBXaXRoIHJlZ2Fy
-ZCB0byBvdGhlciBhcmNoaXRlY3R1cmVzIGFuZCBwbGF0Zm9ybXMsIGluIHNwZWNpZmljIGNhc2Vz
-LA0KPiA+ID4gZS5nLiB3aGVyZSB0aGVyZSdzIG5ldmVyIG1vcmUgdGhhbiBvbmUgSVJRIGludm9s
-dmVkLCB0aGVuIEkgY291bGQNCj4gPiA+IGFncmVlIHRoYXQgeW91ciBhc3N1bXB0aW9ucyBwcm9i
-YWJseSBob2xkIGFuZCBhbiBpcnFzYXZlIHdvdWxkIGJlDQo+ID4gPiBwcm9iYWJseSByZWR1bmRh
-bnQuDQo+ID4gPg0KPiA+ID4gV2hlbiB5b3UgZmluZCBhIHJlZHVuZGFudCBpcnFzYXZlLCB0byBh
-Y3R1YWxseSBwYXRjaCBpdCB3b3VsZCBicmluZyBhDQo+ID4gPiByaXNrIG9mIHJlZ3Jlc3Npb24g
-d2l0aCBsaXR0bGUgb3Igbm8gcmV3YXJkLiBJdCdzIG5vdCBteSBwbGFjZSB0byB2ZXRvDQo+ID4g
-PiB0aGlzIGVudGlyZSBwYXRjaCBzZXJpZXMgb24gdGhhdCBiYXNpcyBidXQgSU1PIHRoaXMga2lu
-ZCBvZiBjaHVybiBpcw0KPiA+ID4gbWlzZ3VpZGVkLg0KPiA+DQo+ID4gTm9wZS4NCj4gPg0KPiA+
-IEkgd291bGQgc2F5IHRoZSByZWFsIG1pc2d1aWRhbmNlIGlzIHRoYXQgdGhlIGNvZGUgYWRkcyBv
-bmUgbG9jayB3aGlsZSBpdA0KPiA+IGRvZXNuJ3QgbmVlZCB0aGUgbG9jay4gRWFzaWx5IHdlIGNh
-biBhZGQgcmVkdW5kYW50IGxvY2tzIG9yIGV4YWdnZXJhdGUNCj4gPiB0aGUgY292ZXJhZ2UgcmFu
-Z2Ugb2YgbG9ja3MsIGJ1dCB0aGUgc21hcnRlciB3YXkgaXMgdGhhdCBwZW9wbGUgYWRkDQo+ID4g
-bG9ja3Mgb25seSB3aGVuIHRoZXkgcmVhbGx5IG5lZWQgdGhlIGxvY2sgYnkgY29uc2lkZXJpbmcg
-Y29uY3VycmVuY3kgYW5kDQo+ID4gcmVhbHRpbWUgcGVyZm9ybWFuY2UuDQo+ID4NCj4gDQo+IFlv
-dSBhcHBlYXIgdG8gYmUgZGViYXRpbmcgYSBzdHJhd21hbi4gTm8tb25lIGlzIGFkdm9jYXRpbmcg
-ZXhjZXNzaXZlDQo+IGxvY2tpbmcgaW4gbmV3IGNvZGUuDQo+IA0KDQpJIGFjdHVhbGx5IG1lYW50
-IG1vc3QgaXJxc2F2ZShzKSBpbiBoYXJkaXJxIHdlcmUgYWRkZWQgY2FyZWxlc3NseS4NCldoZW4g
-aXJxIGFuZCB0aHJlYWRzIGNvdWxkIGFjY2VzcyBzYW1lIGRhdGEsIHBlb3BsZSBhZGRlZCBpcnFz
-YXZlDQppbiB0aHJlYWRzLCB0aGF0IGlzIHBlcmZlY3RseSBnb29kIGFzIGl0IGNvdWxkIGJsb2Nr
-IGlycS4gQnV0DQpwZW9wbGUgd2VyZSBsaWtlbHkgdG8gcHV0IGFuIGlycXNhdmUgaW4gaXJxIHdp
-dGhvdXQgYW55IHRoaW5raW5nLg0KDQpXZSBkbyBoYXZlIHNvbWUgZHJpdmVycyB3aGljaCBhcmUg
-ZG9pbmcgdGhhdCB3aXRoIGEgY2xlYXIgaW50ZW50aW9uDQphcyB5b3VyIHNvbmljX2ludGVycnVw
-dCgpLCBidXQgSSBiZXQgbW9zdCB3ZXJlIGRvbmUgYWltbGVzc2x5Lg0KDQpBbnl3YXksIHRoZSBk
-ZWJhdGUgaXMgbG9uZyBlbm91Z2gsIGxldCdzIG1vdmUgdG8gc29tZSBtb3JlIGltcG9ydGFudA0K
-dGhpbmdzLiBJIGFwcHJlY2lhdGUgdGhhdCB5b3Ugc2hhcmVkIGEgbG90IG9mIGtub3dsZWRnZSBv
-ZiBtNjhrLg0KDQpUaGFua3MNCkJhcnJ5DQo=
+How about these changes?
+
+I've added an extra config option to turn on SYSTEM_REVOCATION_LIST suppor=
+t.
+
+I've also added kerneldoc comments and moved the functions so that they're=
+ not
+in the middle of the blacklist-specific stuff.
+
+I'm not sure uefi_revocation_list_x509() needs conditionalising as the
+optimiser should just inline it if SYSTEM_REVOCATION_LIST=3Dn (assuming __=
+init
+doesn't disable inlining).
+
+David
+---
+diff --git a/certs/Kconfig b/certs/Kconfig
+index c94e93d8bccf..76e469b56a77 100644
+--- a/certs/Kconfig
++++ b/certs/Kconfig
+@@ -83,4 +83,13 @@ config SYSTEM_BLACKLIST_HASH_LIST
+ 	  wrapper to incorporate the list into the kernel.  Each <hash> should
+ 	  be a string of hex digits.
+ =
+
++config SYSTEM_REVOCATION_LIST
++	bool "Provide system-wide ring of revocation certificates"
++	depends on SYSTEM_BLACKLIST_KEYRING
++	depends on PKCS7_MESSAGE_PARSER=3Dy
++	help
++	  If set, this allows revocation certificates to be stored in the
++	  blacklist keyring and implements a hook whereby a PKCS#7 message can
++	  be checked to see if it matches such a certificate.
++
+ endmenu
+diff --git a/certs/blacklist.c b/certs/blacklist.c
+index e9f5fc632f0d..2b8644123d5f 100644
+--- a/certs/blacklist.c
++++ b/certs/blacklist.c
+@@ -101,38 +101,6 @@ int mark_hash_blacklisted(const char *hash)
+ 	return 0;
+ }
+ =
+
+-int add_key_to_revocation_list(const char *data, size_t size)
+-{
+-	key_ref_t key;
+-
+-	key =3D key_create_or_update(make_key_ref(blacklist_keyring, true),
+-				   "asymmetric",
+-				   NULL,
+-				   data,
+-				   size,
+-				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW),
+-				   KEY_ALLOC_NOT_IN_QUOTA | KEY_ALLOC_BUILT_IN);
+-
+-	if (IS_ERR(key)) {
+-		pr_err("Problem with revocation key (%ld)\n", PTR_ERR(key));
+-		return PTR_ERR(key);
+-	}
+-
+-	return 0;
+-}
+-
+-int is_key_on_revocation_list(struct pkcs7_message *pkcs7)
+-{
+-	int ret;
+-
+-	ret =3D validate_trust(pkcs7, blacklist_keyring);
+-
+-	if (ret =3D=3D 0)
+-		return -EKEYREJECTED;
+-
+-	return -ENOKEY;
+-}
+-
+ /**
+  * is_hash_blacklisted - Determine if a hash is blacklisted
+  * @hash: The hash to be checked as a binary blob
+@@ -177,6 +145,49 @@ int is_binary_blacklisted(const u8 *hash, size_t hash=
+_len)
+ }
+ EXPORT_SYMBOL_GPL(is_binary_blacklisted);
+ =
+
++#ifdef CONFIG_SYSTEM_REVOCATION_LIST
++/**
++ * add_key_to_revocation_list - Add a revocation certificate to the black=
+list
++ * @data: The data blob containing the certificate
++ * @size: The size of data blob
++ */
++int add_key_to_revocation_list(const char *data, size_t size)
++{
++	key_ref_t key;
++
++	key =3D key_create_or_update(make_key_ref(blacklist_keyring, true),
++				   "asymmetric",
++				   NULL,
++				   data,
++				   size,
++				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW),
++				   KEY_ALLOC_NOT_IN_QUOTA | KEY_ALLOC_BUILT_IN);
++
++	if (IS_ERR(key)) {
++		pr_err("Problem with revocation key (%ld)\n", PTR_ERR(key));
++		return PTR_ERR(key);
++	}
++
++	return 0;
++}
++
++/**
++ * is_key_on_revocation_list - Determine if the key for a PKCS#7 message =
+is revoked
++ * @pkcs7: The PKCS#7 message to check
++ */
++int is_key_on_revocation_list(struct pkcs7_message *pkcs7)
++{
++	int ret;
++
++	ret =3D pkcs7_validate_trust(pkcs7, blacklist_keyring);
++
++	if (ret =3D=3D 0)
++		return -EKEYREJECTED;
++
++	return -ENOKEY;
++}
++#endif
++
+ /*
+  * Initialise the blacklist
+  */
+diff --git a/certs/blacklist.h b/certs/blacklist.h
+index 420bb7c86e07..51b320cf8574 100644
+--- a/certs/blacklist.h
++++ b/certs/blacklist.h
+@@ -3,13 +3,3 @@
+ #include <crypto/pkcs7.h>
+ =
+
+ extern const char __initconst *const blacklist_hashes[];
+-
+-#ifdef CONFIG_INTEGRITY_PLATFORM_KEYRING
+-#define validate_trust pkcs7_validate_trust
+-#else
+-static inline int validate_trust(struct pkcs7_message *pkcs7,
+-				 struct key *trust_keyring)
+-{
+-	return -ENOKEY;
+-}
+-#endif
+diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
+index 61f98739e8b1..875e002a4180 100644
+--- a/include/keys/system_keyring.h
++++ b/include/keys/system_keyring.h
+@@ -34,11 +34,9 @@ extern int restrict_link_by_builtin_and_secondary_trust=
+ed(
+ extern struct pkcs7_message *pkcs7;
+ #ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
+ extern int mark_hash_blacklisted(const char *hash);
+-extern int add_key_to_revocation_list(const char *data, size_t size);
+ extern int is_hash_blacklisted(const u8 *hash, size_t hash_len,
+ 			       const char *type);
+ extern int is_binary_blacklisted(const u8 *hash, size_t hash_len);
+-extern int is_key_on_revocation_list(struct pkcs7_message *pkcs7);
+ #else
+ static inline int is_hash_blacklisted(const u8 *hash, size_t hash_len,
+ 				      const char *type)
+@@ -50,6 +48,12 @@ static inline int is_binary_blacklisted(const u8 *hash,=
+ size_t hash_len)
+ {
+ 	return 0;
+ }
++#endif
++
++#ifdef CONFIG_SYSTEM_REVOCATION_LIST
++extern int add_key_to_revocation_list(const char *data, size_t size);
++extern int is_key_on_revocation_list(struct pkcs7_message *pkcs7);
++#else
+ static inline int add_key_to_revocation_list(const char *data, size_t siz=
+e)
+ {
+ 	return 0;
+
