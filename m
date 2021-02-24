@@ -2,51 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2551F32392B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D40F3323934
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234441AbhBXJFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:05:37 -0500
-Received: from verein.lst.de ([213.95.11.211]:36710 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234359AbhBXJDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:03:44 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 81EFD68D0A; Wed, 24 Feb 2021 10:02:59 +0100 (CET)
-Date:   Wed, 24 Feb 2021 10:02:59 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Greentime Hu <green.hu@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Nick Hu <nickhu@andestech.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] nds32: use get_kernel_nofault in dump_mem
-Message-ID: <20210224090259.GA4630@lst.de>
-References: <20200720114448.205876-1-hch@lst.de> <20200720114448.205876-2-hch@lst.de> <20200721110717.GA19721@atcfdc88> <20200721112800.GA27356@lst.de> <20210128101633.GA6249@lst.de> <20210224074742.GA509@lst.de> <CAEbi=3cQ+5ir3X6R3=cn3q1w4JqsRYVw5REqnQVLY5icyT8=xQ@mail.gmail.com>
+        id S234474AbhBXJJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:09:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31645 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234267AbhBXJGr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 04:06:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614157516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QqFm1NSygbJXw0rWa68aFsGxKE3C5g6IlhiIzb/mOPY=;
+        b=P9im5AN/uNSCrpyn3E7l/QvzEUCgB8w+0VQ6794A8pMtbixa0RoK/nVE1bfN9c7RnJj/H3
+        yFboQ9QXh3ihyIxAvhjv0m9xYU2f+RoNfeCC4yo62GyRGLdoThNWnf0rrhdvDcZQFIj5yN
+        ka8DUTO2h3JynGOJTunEvo7Z2/GrMSw=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-197-YJAhioV8NvS-MfADh6Xjsg-1; Wed, 24 Feb 2021 04:05:14 -0500
+X-MC-Unique: YJAhioV8NvS-MfADh6Xjsg-1
+Received: by mail-ed1-f71.google.com with SMTP id l6so542750edn.22
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 01:05:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=QqFm1NSygbJXw0rWa68aFsGxKE3C5g6IlhiIzb/mOPY=;
+        b=HdtPj1ATFPnFrMq585WEZeJgaPf8i0/z7K6CYU+fXql+mj2h6BVtteQEbfHO3sxO4x
+         yMe1FcbK5FVYG00syY2owvZhyu38EWOmS2oQ+XA7cRtHnfgqBbqcoslOWA4RWsJC2WPF
+         6riF/lSa/TXSOieF8wMSgnPmp7XT7oPLbWOFWRCNk0b3zyxZwreCAIDQbHi9xbWw3WS0
+         mGX6QJ+mFXyPrS4zHOjWobLQ9YY+NfxJ94nH/IDyuOfVBccuer9NaQs2QfBOaMZo8FjP
+         uCd9sqrJo0xuCSJ1NtwOKC2vAR2zLwq6QH0K3LY7JPvYP2ZkoBa4EvtUf5c8YJVMVdhA
+         jGig==
+X-Gm-Message-State: AOAM530jZ06/nCdRFpEDhAyKzct9LH+x4xMDfj92CgrQASkodNggHrEe
+        loXhk8IT1nRERJ3GZWuhGl2F1XphEKW+6moBBbeOsa+lnAK7FX+bawztqn3anrbWA8iziq3o8+5
+        Jx5kSji/UgCJCFAYPMLes5ShH
+X-Received: by 2002:a17:906:27cc:: with SMTP id k12mr30689080ejc.8.1614157512118;
+        Wed, 24 Feb 2021 01:05:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwB+2pkCXGcB7fc6xM7Z1RAg7wAhQFJTErDSVFXdqZyiyFbzB3jPIgR1cW6VaLQuWhn+I2l+w==
+X-Received: by 2002:a17:906:27cc:: with SMTP id k12mr30689054ejc.8.1614157511871;
+        Wed, 24 Feb 2021 01:05:11 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id t8sm818884ejr.71.2021.02.24.01.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 01:05:10 -0800 (PST)
+Date:   Wed, 24 Feb 2021 04:05:05 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Adrian Catangiu <acatan@amazon.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qemu-devel@nongnu.org, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, gregkh@linuxfoundation.org,
+        graf@amazon.com, rdunlap@infradead.org, arnd@arndb.de,
+        ebiederm@xmission.com, rppt@kernel.org, 0x7f454c46@gmail.com,
+        borntraeger@de.ibm.com, Jason@zx2c4.com, jannh@google.com,
+        w@1wt.eu, colmmacc@amazon.com, luto@kernel.org, tytso@mit.edu,
+        ebiggers@kernel.org, dwmw@amazon.co.uk, bonzini@gnu.org,
+        sblbir@amazon.com, raduweis@amazon.com, corbet@lwn.net,
+        mhocko@kernel.org, rafael@kernel.org, pavel@ucw.cz,
+        mpe@ellerman.id.au, areber@redhat.com, ovzxemul@gmail.com,
+        avagin@gmail.com, ptikhomirov@virtuozzo.com, gil@azul.com,
+        asmehra@redhat.com, dgunigun@redhat.com, vijaysun@ca.ibm.com,
+        oridgar@gmail.com, ghammer@redhat.com
+Subject: Re: [PATCH v7 0/2] System Generation ID driver and VMGENID backend
+Message-ID: <20210224040034-mutt-send-email-mst@kernel.org>
+References: <1614156452-17311-1-git-send-email-acatan@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEbi=3cQ+5ir3X6R3=cn3q1w4JqsRYVw5REqnQVLY5icyT8=xQ@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <1614156452-17311-1-git-send-email-acatan@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 04:59:37PM +0800, Greentime Hu wrote:
-> Christoph Hellwig <hch@lst.de> 於 2021年2月24日 週三 下午3:47寫道：
-> >
-> > On Thu, Jan 28, 2021 at 11:16:33AM +0100, Christoph Hellwig wrote:
-> > > On Tue, Jul 21, 2020 at 01:28:00PM +0200, Christoph Hellwig wrote:
-> > > > Can you pich the patches up in the nds32 tree for Linus?  There are
-> > > > not short-term dependencies on them.
-> > >
-> > > It seems like these patches are still sitting in linux-next and never
-> > > made it to Linus/
-> >
-> > ping?
+On Wed, Feb 24, 2021 at 10:47:30AM +0200, Adrian Catangiu wrote:
+> This feature is aimed at virtualized or containerized environments
+> where VM or container snapshotting duplicates memory state, which is a
+> challenge for applications that want to generate unique data such as
+> request IDs, UUIDs, and cryptographic nonces.
 > 
-> Sorry for late.
-> Acked-by: Greentime Hu <green.hu@gmail.com>
+> The patch set introduces a mechanism that provides a userspace
+> interface for applications and libraries to be made aware of uniqueness
+> breaking events such as VM or container snapshotting, and allow them to
+> react and adapt to such events.
+> 
+> Solving the uniqueness problem strongly enough for cryptographic
+> purposes requires a mechanism which can deterministically reseed
+> userspace PRNGs with new entropy at restore time. This mechanism must
+> also support the high-throughput and low-latency use-cases that led
+> programmers to pick a userspace PRNG in the first place; be usable by
+> both application code and libraries; allow transparent retrofitting
+> behind existing popular PRNG interfaces without changing application
+> code; it must be efficient, especially on snapshot restore; and be
+> simple enough for wide adoption.
+> 
+> The first patch in the set implements a device driver which exposes a
+> the /dev/sysgenid char device to userspace. Its associated filesystem
+> operations operations can be used to build a system level safe workflow
+> that guest software can follow to protect itself from negative system
+> snapshot effects.
+> 
+> The second patch in the set adds a VmGenId driver which makes use of
+> the ACPI vmgenid device to drive SysGenId and to reseed kernel entropy
+> following VM snapshots.
+> 
+> **Please note**, SysGenID alone does not guarantee complete snapshot
+> safety to applications using it. A certain workflow needs to be
+> followed at the system level, in order to make the system
+> snapshot-resilient. Please see the "Snapshot Safety Prerequisites"
+> section in the included SysGenID documentation.
+> 
+> ---
+> 
+> v6 -> v7:
+>   - remove sysgenid uevent
 
-Well, I'm mostly interested in eventually getting it sent to Linus
-given that it has been in linux-next for months.
+How about we drop mmap too?
+
+There's simply no way I can see to make it safe, and
+no implementation is worse than a racy one imho.
+
+Yea there's some decumentation explaining how it is not
+supposed to be used but it will *seem* to work for people
+and we will be stuck trying to maintain it.
+
+Let's see if userspace using this often enough to make the
+system call 
+
+
+
+> v5 -> v6:
+> 
+>   - sysgenid: watcher tracking disabled by default
+>   - sysgenid: add SYSGENID_SET_WATCHER_TRACKING ioctl to allow each
+>     file descriptor to set whether they should be tracked as watchers
+>   - rename SYSGENID_FORCE_GEN_UPDATE -> SYSGENID_TRIGGER_GEN_UPDATE
+>   - rework all documentation to clearly capture all prerequisites for
+>     achieving snapshot safety when using the provided mechanism
+>   - sysgenid documentation: replace individual filesystem operations
+>     examples with a higher level example showcasing system-level
+>     snapshot-safe workflow
+> 
+> v4 -> v5:
+> 
+>   - sysgenid: generation changes are also exported through uevents
+>   - remove SYSGENID_GET_OUTDATED_WATCHERS ioctl
+>   - document sysgenid ioctl major/minor numbers
+> 
+> v3 -> v4:
+> 
+>   - split functionality in two separate kernel modules: 
+>     1. drivers/misc/sysgenid.c which provides the generic userspace
+>        interface and mechanisms
+>     2. drivers/virt/vmgenid.c as VMGENID acpi device driver that seeds
+>        kernel entropy and acts as a driving backend for the generic
+>        sysgenid
+>   - rename /dev/vmgenid -> /dev/sysgenid
+>   - rename uapi header file vmgenid.h -> sysgenid.h
+>   - rename ioctls VMGENID_* -> SYSGENID_*
+>   - add ‘min_gen’ parameter to SYSGENID_FORCE_GEN_UPDATE ioctl
+>   - fix races in documentation examples
+> 
+> v2 -> v3:
+> 
+>   - separate the core driver logic and interface, from the ACPI device.
+>     The ACPI vmgenid device is now one possible backend
+>   - fix issue when timeout=0 in VMGENID_WAIT_WATCHERS
+>   - add locking to avoid races between fs ops handlers and hw irq
+>     driven generation updates
+>   - change VMGENID_WAIT_WATCHERS ioctl so if the current caller is
+>     outdated or a generation change happens while waiting (thus making
+>     current caller outdated), the ioctl returns -EINTR to signal the
+>     user to handle event and retry. Fixes blocking on oneself
+>   - add VMGENID_FORCE_GEN_UPDATE ioctl conditioned by
+>     CAP_CHECKPOINT_RESTORE capability, through which software can force
+>     generation bump
+> 
+> v1 -> v2:
+> 
+>   - expose to userspace a monotonically increasing u32 Vm Gen Counter
+>     instead of the hw VmGen UUID
+>   - since the hw/hypervisor-provided 128-bit UUID is not public
+>     anymore, add it to the kernel RNG as device randomness
+>   - insert driver page containing Vm Gen Counter in the user vma in
+>     the driver's mmap handler instead of using a fault handler
+>   - turn driver into a misc device driver to auto-create /dev/vmgenid
+>   - change ioctl arg to avoid leaking kernel structs to userspace
+>   - update documentation
+> 
+> Adrian Catangiu (2):
+>   drivers/misc: sysgenid: add system generation id driver
+>   drivers/virt: vmgenid: add vm generation id driver
+> 
+>  Documentation/misc-devices/sysgenid.rst            | 229 +++++++++++++++
+>  Documentation/userspace-api/ioctl/ioctl-number.rst |   1 +
+>  Documentation/virt/vmgenid.rst                     |  36 +++
+>  MAINTAINERS                                        |  15 +
+>  drivers/misc/Kconfig                               |  15 +
+>  drivers/misc/Makefile                              |   1 +
+>  drivers/misc/sysgenid.c                            | 322 +++++++++++++++++++++
+>  drivers/virt/Kconfig                               |  13 +
+>  drivers/virt/Makefile                              |   1 +
+>  drivers/virt/vmgenid.c                             | 153 ++++++++++
+>  include/uapi/linux/sysgenid.h                      |  18 ++
+>  11 files changed, 804 insertions(+)
+>  create mode 100644 Documentation/misc-devices/sysgenid.rst
+>  create mode 100644 Documentation/virt/vmgenid.rst
+>  create mode 100644 drivers/misc/sysgenid.c
+>  create mode 100644 drivers/virt/vmgenid.c
+>  create mode 100644 include/uapi/linux/sysgenid.h
+> 
+> -- 
+> 2.7.4
+> 
+> 
+> 
+> 
+> Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+
