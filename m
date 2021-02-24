@@ -2,409 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCD73246CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 23:23:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD593246D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 23:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235319AbhBXWWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 17:22:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234662AbhBXWWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 17:22:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80F5E64F0B;
-        Wed, 24 Feb 2021 22:21:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614205285;
-        bh=o98Mlt2gWstc9DXeEDyoN5gsnD4yEL83MR6I373jI8k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sZW+WVojrUj00veGp7holiDQ+Mzvnyh6yQbQ7TkENlsSns3tKcWYokk4Ps52A1u4p
-         k+bQI0B7F6PM8Hr7AI89wjQr3QbH8M59an6UpUN51Gl3gsrm3TTQjIwL2QgjXcBhbU
-         i8huYWoH1ZovPtVaCuK7pWLrBYBmQBtFso/Ll2j3oH7ZiSpc8AjBgI54sstYZiOvXB
-         tGhLmSqDuKHVsAgDwAEwK6R70VLB2hT826QI1YyFqqsIzJ/mzJ1cMnroDsIAHCSlBl
-         8qeZ7Lbdgx0WobXx1niMyXiWPfxjkI3NHVS0OOqRRui15kQTObsuWBgrib0/8JqNG5
-         A9nHstR3HrFDQ==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     linux-sgx@vger.kernel.org
-Cc:     haitao.huang@intel.com, dan.j.williams@intel.com,
-        dave.hansen@linux.intel.com, bp@alien8.de, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 3/3] x86/sgx: Use sgx_va for the enclave's version array
-Date:   Thu, 25 Feb 2021 00:20:49 +0200
-Message-Id: <20210224222049.240754-4-jarkko@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210224222049.240754-1-jarkko@kernel.org>
-References: <20210224222049.240754-1-jarkko@kernel.org>
+        id S234834AbhBXW27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 17:28:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhBXW2u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 17:28:50 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4420C061574;
+        Wed, 24 Feb 2021 14:28:10 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id a13so4150305oid.0;
+        Wed, 24 Feb 2021 14:28:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ml1ODi0kbhU+05qftW0EgSQZXlvbak4aIvECP0XMcr8=;
+        b=ohs7z461rdqHw8Oi3RZE/9WV1ZMBLPT3vLMCXgoNS8EmuP0zSGScn+MzJAW+zvP8oh
+         c1e27DB/qNX255+Hfq/0aAa1AVAWEGIH1P1CFlUPosGMvkj1+amoqZJpTiqVcoVY2pOf
+         mW28RZJjH9hkv5kauVt+eLaGq5e1NlnngdWVSTidlou5xN7onkFlX7ERwzo28Gj0Wr7c
+         zwLP4z4E68BJaTzPr0uHLIWXs/6Y2wiHHDv+EutoNdsYgzY4Q5QQYNtUxJA+v0fA8fZX
+         gjA37SeedzGgK75GqKTxPShJUMeu7QiL2Pf8XYDy4ixHIEDCsGpc7ahP36alKnfr7OHl
+         HGPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ml1ODi0kbhU+05qftW0EgSQZXlvbak4aIvECP0XMcr8=;
+        b=Ha9+VLc1Jhp5rYhU9ClwSSAQd2HA6KZqw1tQ3mza/oHhiv9/6h5SAHXGCmEYM+6J7K
+         +t4Dz9594osPFDfrzlFuMW/ZAfLk5NeOyYfgYCEL5A/ZJABBDD0pBFBKLDUdGXrvKEST
+         EjkPE1ewM90fYN0uK2RC1KyCfPoOhiKg+c20X5pyWOCA3RHV6zwQBOzYTag1RBLeNVGL
+         14gObwj6qWv4zPW3Xm/YqfSKPI52LsgH6lQDdotBC9RofxLdfU/6bHamta30sao6D9lg
+         rcPocBrVEoNO0fg2zEvpPGVT8g9cL4WIs6A2tIxxMhZp5ts0h1awDYU1mIt4mC7Vlz9k
+         fDWw==
+X-Gm-Message-State: AOAM533wZj01hNKv6Jfb8b6luWYGAU9m8hyQBNi4MI9rdXeKOHSd+SOt
+        +Rzju9mq7qTrarmIV4sk924=
+X-Google-Smtp-Source: ABdhPJw5khRVoPOKf4Clkys33gUDj/xuRsVY2C8UyDiecRo0VXwWrOcHycZmchRPbxDhZkQD9ya4Kw==
+X-Received: by 2002:a05:6808:1290:: with SMTP id a16mr4146086oiw.161.1614205689974;
+        Wed, 24 Feb 2021 14:28:09 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l2sm636595otf.44.2021.02.24.14.28.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 24 Feb 2021 14:28:09 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 24 Feb 2021 14:28:07 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH v9 01/16] tracing: move function tracer options to
+ Kconfig (causing parisc build failures)
+Message-ID: <20210224222807.GA74404@roeck-us.net>
+References: <20201211184633.3213045-1-samitolvanen@google.com>
+ <20201211184633.3213045-2-samitolvanen@google.com>
+ <20210224201723.GA69309@roeck-us.net>
+ <202102241238.93BC4DCF@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202102241238.93BC4DCF@keescook>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the xarray based sgx_va to maintain VA slots for an enclave. This
-effectively removes the need for any complex dynamic behaviour as the
-slots are assigned only in during the enclave construction.
+On Wed, Feb 24, 2021 at 12:38:54PM -0800, Kees Cook wrote:
+> On Wed, Feb 24, 2021 at 12:17:23PM -0800, Guenter Roeck wrote:
+> > On Fri, Dec 11, 2020 at 10:46:18AM -0800, Sami Tolvanen wrote:
+> > > Move function tracer options to Kconfig to make it easier to add
+> > > new methods for generating __mcount_loc, and to make the options
+> > > available also when building kernel modules.
+> > > 
+> > > Note that FTRACE_MCOUNT_USE_* options are updated on rebuild and
+> > > therefore, work even if the .config was generated in a different
+> > > environment.
+> > > 
+> > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > > Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > 
+> > With this patch in place, parisc:allmodconfig no longer builds.
+> > 
+> > Error log:
+> > Arch parisc is not supported with CONFIG_FTRACE_MCOUNT_RECORD at scripts/recordmcount.pl line 405.
+> > make[2]: *** [scripts/mod/empty.o] Error 2
+> > 
+> > Due to this problem, CONFIG_FTRACE_MCOUNT_RECORD can no longer be
+> > enabled in parisc builds. Since that is auto-selected by DYNAMIC_FTRACE,
+> > DYNAMIC_FTRACE can no longer be enabled, and with it everything that
+> > depends on it.
+> 
+> Ew. Any idea why this didn't show up while it was in linux-next?
+> 
 
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- arch/x86/kernel/cpu/sgx/driver.c |  3 +-
- arch/x86/kernel/cpu/sgx/encl.c   | 60 ++---------------------------
- arch/x86/kernel/cpu/sgx/encl.h   | 12 ++----
- arch/x86/kernel/cpu/sgx/ioctl.c  | 65 ++++++++++++--------------------
- arch/x86/kernel/cpu/sgx/main.c   | 18 ++-------
- 5 files changed, 37 insertions(+), 121 deletions(-)
+It did, I just wasn't able to bisect it there.
 
-diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
-index 8ce6d8371cfb..3fa52d962456 100644
---- a/arch/x86/kernel/cpu/sgx/driver.c
-+++ b/arch/x86/kernel/cpu/sgx/driver.c
-@@ -26,9 +26,10 @@ static int sgx_open(struct inode *inode, struct file *file)
- 	kref_init(&encl->refcount);
- 	xa_init(&encl->page_array);
- 	mutex_init(&encl->lock);
--	INIT_LIST_HEAD(&encl->va_pages);
- 	INIT_LIST_HEAD(&encl->mm_list);
- 	spin_lock_init(&encl->mm_lock);
-+	ida_init(&encl->va_index);
-+	sgx_va_init(&encl->va);
- 
- 	ret = init_srcu_struct(&encl->srcu);
- 	if (ret) {
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index c8ce3779eaa7..6aef00814afc 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -20,7 +20,7 @@ static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
- 			   struct sgx_epc_page *epc_page,
- 			   struct sgx_epc_page *secs_page)
- {
--	unsigned long va_offset = encl_page->desc & SGX_ENCL_PAGE_VA_OFFSET_MASK;
-+	unsigned long va_offset = 8 * (encl_page->va_index & (SGX_VA_SLOT_COUNT - 1));
- 	struct sgx_encl *encl = encl_page->encl;
- 	struct sgx_pageinfo pginfo;
- 	struct sgx_backing b;
-@@ -67,8 +67,6 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
- 					  struct sgx_epc_page *secs_page)
- {
- 
--	unsigned long va_offset = encl_page->desc & SGX_ENCL_PAGE_VA_OFFSET_MASK;
--	struct sgx_encl *encl = encl_page->encl;
- 	struct sgx_epc_page *epc_page;
- 	int ret;
- 
-@@ -82,9 +80,6 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
- 		return ERR_PTR(ret);
- 	}
- 
--	sgx_free_va_slot(encl_page->va_page, va_offset);
--	list_move(&encl_page->va_page->list, &encl->va_pages);
--	encl_page->desc &= ~SGX_ENCL_PAGE_VA_OFFSET_MASK;
- 	encl_page->epc_page = epc_page;
- 
- 	return epc_page;
-@@ -391,7 +386,6 @@ const struct vm_operations_struct sgx_vm_ops = {
- void sgx_encl_release(struct kref *ref)
- {
- 	struct sgx_encl *encl = container_of(ref, struct sgx_encl, refcount);
--	struct sgx_va_page *va_page;
- 	struct sgx_encl_page *entry;
- 	unsigned long index;
- 
-@@ -419,13 +413,8 @@ void sgx_encl_release(struct kref *ref)
- 		encl->secs.epc_page = NULL;
- 	}
- 
--	while (!list_empty(&encl->va_pages)) {
--		va_page = list_first_entry(&encl->va_pages, struct sgx_va_page,
--					   list);
--		list_del(&va_page->list);
--		sgx_free_epc_page(va_page->epc_page);
--		kfree(va_page);
--	}
-+	sgx_va_destroy(&encl->va);
-+	ida_destroy(&encl->va_index);
- 
- 	if (encl->backing)
- 		fput(encl->backing);
-@@ -707,49 +696,6 @@ struct sgx_va_page *sgx_alloc_va_page(void)
- 	return ERR_PTR(ret);
- }
- 
--/**
-- * sgx_alloc_va_slot - allocate a VA slot
-- * @va_page:	a &struct sgx_va_page instance
-- *
-- * Allocates a slot from a &struct sgx_va_page instance.
-- *
-- * Return: offset of the slot inside the VA page
-- */
--unsigned int sgx_alloc_va_slot(struct sgx_va_page *va_page)
--{
--	int slot = find_first_zero_bit(va_page->slots, SGX_VA_SLOT_COUNT);
--
--	if (slot < SGX_VA_SLOT_COUNT)
--		set_bit(slot, va_page->slots);
--
--	return slot << 3;
--}
--
--/**
-- * sgx_free_va_slot - free a VA slot
-- * @va_page:	a &struct sgx_va_page instance
-- * @offset:	offset of the slot inside the VA page
-- *
-- * Frees a slot from a &struct sgx_va_page instance.
-- */
--void sgx_free_va_slot(struct sgx_va_page *va_page, unsigned int offset)
--{
--	clear_bit(offset >> 3, va_page->slots);
--}
--
--/**
-- * sgx_va_page_full - is the VA page full?
-- * @va_page:	a &struct sgx_va_page instance
-- *
-- * Return: true if all slots have been taken
-- */
--bool sgx_va_page_full(struct sgx_va_page *va_page)
--{
--	int slot = find_first_zero_bit(va_page->slots, SGX_VA_SLOT_COUNT);
--
--	return slot == SGX_VA_SLOT_COUNT;
--}
--
- /**
-  * sgx_va_init() - Initialize a version array (VA)
-  * @va:		A version array.
-diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
-index 806cf3ff7391..a1d6280029f0 100644
---- a/arch/x86/kernel/cpu/sgx/encl.h
-+++ b/arch/x86/kernel/cpu/sgx/encl.h
-@@ -8,6 +8,7 @@
- #define _X86_ENCL_H
- 
- #include <linux/cpumask.h>
-+#include <linux/idr.h>
- #include <linux/kref.h>
- #include <linux/list.h>
- #include <linux/mm_types.h>
-@@ -24,7 +25,6 @@
- struct sgx_va_page {
- 	struct sgx_epc_page *epc_page;
- 	DECLARE_BITMAP(slots, SGX_VA_SLOT_COUNT);
--	struct list_head list;
- };
- 
- struct sgx_va {
-@@ -32,9 +32,6 @@ struct sgx_va {
- 	struct mutex lock;
- };
- 
--/* 'desc' bits holding the offset in the VA (version array) page. */
--#define SGX_ENCL_PAGE_VA_OFFSET_MASK	GENMASK_ULL(11, 3)
--
- /* 'desc' bit marking that the page is being reclaimed. */
- #define SGX_ENCL_PAGE_BEING_RECLAIMED	BIT(3)
- 
-@@ -44,6 +41,7 @@ struct sgx_encl_page {
- 	struct sgx_epc_page *epc_page;
- 	struct sgx_encl *encl;
- 	struct sgx_va_page *va_page;
-+	int va_index;
- };
- 
- enum sgx_encl_flags {
-@@ -75,7 +73,8 @@ struct sgx_encl {
- 	cpumask_t cpumask;
- 	struct file *backing;
- 	struct kref refcount;
--	struct list_head va_pages;
-+	struct ida va_index;
-+	struct sgx_va va;
- 	unsigned long mm_list_version;
- 	struct list_head mm_list;
- 	spinlock_t mm_lock;
-@@ -117,9 +116,6 @@ int sgx_encl_test_and_clear_young(struct mm_struct *mm,
- 				  struct sgx_encl_page *page);
- 
- struct sgx_va_page *sgx_alloc_va_page(void);
--unsigned int sgx_alloc_va_slot(struct sgx_va_page *va_page);
--void sgx_free_va_slot(struct sgx_va_page *va_page, unsigned int offset);
--bool sgx_va_page_full(struct sgx_va_page *va_page);
- 
- void sgx_va_init(struct sgx_va *va);
- void sgx_va_destroy(struct sgx_va *va);
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index db6e2c6ad42d..4a5393b25edd 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -16,47 +16,38 @@
- #include "encl.h"
- #include "encls.h"
- 
--static struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl)
-+static int sgx_encl_alloc_va_slot(struct sgx_encl *encl, struct sgx_encl_page *encl_page)
- {
--	struct sgx_va_page *va_page = NULL;
--
--	BUILD_BUG_ON(SGX_VA_SLOT_COUNT != (SGX_ENCL_PAGE_VA_OFFSET_MASK >> 3) + 1);
--
--	if (!(encl->page_cnt % SGX_VA_SLOT_COUNT))
--		va_page = sgx_alloc_va_page();
-+	struct sgx_va_page *va_page;
-+	int ret;
- 
--	encl->page_cnt++;
-+	ret = ida_alloc(&encl->va_index, GFP_KERNEL);
-+	if (ret < 0)
-+		return ret;
- 
--	return va_page;
--}
-+	va_page = sgx_va_get(&encl->va, ret);
-+	if (IS_ERR(va_page)) {
-+		ida_free(&encl->va_index, ret);
-+		return PTR_ERR(va_page);
-+	}
- 
--static void sgx_encl_shrink(struct sgx_encl *encl, struct sgx_va_page *va_page)
--{
--	encl->page_cnt--;
-+	encl_page->va_page = va_page;
-+	encl_page->va_index = ret;
- 
--	if (va_page) {
--		sgx_free_epc_page(va_page->epc_page);
--		list_del(&va_page->list);
--		kfree(va_page);
--	}
-+	return 0;
- }
- 
- static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- {
- 	struct sgx_epc_page *secs_epc;
--	struct sgx_va_page *va_page;
- 	struct sgx_pageinfo pginfo;
- 	struct sgx_secinfo secinfo;
- 	unsigned long encl_size;
- 	struct file *backing;
- 	long ret;
- 
--	va_page = sgx_encl_grow(encl);
--	if (IS_ERR(va_page))
--		return PTR_ERR(va_page);
--	else if (va_page)
--		list_add(&va_page->list, &encl->va_pages);
--	/* else the tail page of the VA page list had free slots. */
-+	/* Get a VA slot for swapping the SECS. */
-+	ret = sgx_encl_alloc_va_slot(encl, &encl->secs);
- 
- 	/* The extra page goes to SECS. */
- 	encl_size = secs->size + PAGE_SIZE;
-@@ -65,7 +56,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- 				   VM_NORESERVE);
- 	if (IS_ERR(backing)) {
- 		ret = PTR_ERR(backing);
--		goto err_out_shrink;
-+		goto err_out_va;
- 	}
- 
- 	encl->backing = backing;
-@@ -112,8 +103,9 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- 	fput(encl->backing);
- 	encl->backing = NULL;
- 
--err_out_shrink:
--	sgx_encl_shrink(encl, va_page);
-+err_out_va:
-+	sgx_va_put(&encl->va, encl->secs.va_index);
-+	ida_free(&encl->va_index, encl->secs.va_index);
- 
- 	return ret;
- }
-@@ -280,7 +272,6 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
- {
- 	struct sgx_encl_page *encl_page;
- 	struct sgx_epc_page *epc_page;
--	struct sgx_va_page *va_page;
- 	int ret;
- 
- 	encl_page = sgx_encl_page_alloc(encl, offset, secinfo->flags);
-@@ -293,22 +284,13 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
- 		return PTR_ERR(epc_page);
- 	}
- 
--	va_page = sgx_encl_grow(encl);
--	if (IS_ERR(va_page)) {
--		ret = PTR_ERR(va_page);
-+	ret = sgx_encl_alloc_va_slot(encl, encl_page);
-+	if (ret)
- 		goto err_out_free;
--	}
- 
- 	mmap_read_lock(current->mm);
- 	mutex_lock(&encl->lock);
- 
--	/*
--	 * Adding to encl->va_pages must be done under encl->lock.  Ditto for
--	 * deleting (via sgx_encl_shrink()) in the error path.
--	 */
--	if (va_page)
--		list_add(&va_page->list, &encl->va_pages);
--
- 	/*
- 	 * Insert prior to EADD in case of OOM.  EADD modifies MRENCLAVE, i.e.
- 	 * can't be gracefully unwound, while failure on EADD/EXTEND is limited
-@@ -348,7 +330,8 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
- 	xa_erase(&encl->page_array, PFN_DOWN(encl_page->desc));
- 
- err_out_unlock:
--	sgx_encl_shrink(encl, va_page);
-+	sgx_va_put(&encl->va, encl_page->va_index);
-+	ida_free(&encl->va_index, encl_page->va_index);
- 	mutex_unlock(&encl->lock);
- 	mmap_read_unlock(current->mm);
- 
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 26dfe6aecd72..5b2e5767419c 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -215,12 +215,9 @@ static void sgx_encl_ewb(struct sgx_epc_page *epc_page,
- 
- 	encl_page->desc &= ~SGX_ENCL_PAGE_BEING_RECLAIMED;
- 
--	va_page = list_first_entry(&encl->va_pages, struct sgx_va_page,
--				   list);
--	va_offset = sgx_alloc_va_slot(va_page);
-+	va_page = encl_page->va_page;
-+	va_offset = 8 * (encl_page->va_index & (SGX_VA_SLOT_COUNT - 1));
- 	va_slot = sgx_get_epc_virt_addr(va_page->epc_page) + va_offset;
--	if (sgx_va_page_full(va_page))
--		list_move_tail(&va_page->list, &encl->va_pages);
- 
- 	ret = __sgx_encl_ewb(epc_page, va_slot, backing);
- 	if (ret == SGX_NOT_TRACKED) {
-@@ -245,15 +242,8 @@ static void sgx_encl_ewb(struct sgx_epc_page *epc_page,
- 		}
- 	}
- 
--	if (ret) {
--		if (encls_failed(ret))
--			ENCLS_WARN(ret, "EWB");
--
--		sgx_free_va_slot(va_page, va_offset);
--	} else {
--		encl_page->desc |= va_offset;
--		encl_page->va_page = va_page;
--	}
-+	if (ret && encls_failed(ret))
-+		ENCLS_WARN(ret, "EWB");
- }
- 
- static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
--- 
-2.30.1
-
+Guenter
