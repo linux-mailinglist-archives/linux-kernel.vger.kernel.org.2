@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD51F32393E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4DB3323944
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 10:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbhBXJNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 04:13:14 -0500
-Received: from mout.kundenserver.de ([217.72.192.73]:53557 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234538AbhBXJLp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 04:11:45 -0500
-Received: from mail.cetitecgmbh.com ([87.190.42.90]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MRnXY-1lPOpV2sAs-00TCfi; Wed, 24 Feb 2021 10:08:27 +0100
-Received: from pflvmailgateway.corp.cetitec.com (unknown [127.0.0.1])
-        by mail.cetitecgmbh.com (Postfix) with ESMTP id 732881E01E7;
-        Wed, 24 Feb 2021 09:08:26 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at cetitec.com
-Received: from mail.cetitecgmbh.com ([127.0.0.1])
-        by pflvmailgateway.corp.cetitec.com (pflvmailgateway.corp.cetitec.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Wonho7DAe5NY; Wed, 24 Feb 2021 10:08:26 +0100 (CET)
-Received: from pflmari.corp.cetitec.com (67-usr-pf-main.vpn.it.cetitec.com [10.8.5.67])
-        by mail.cetitecgmbh.com (Postfix) with ESMTPSA id F367C1E01E6;
-        Wed, 24 Feb 2021 10:08:25 +0100 (CET)
-Received: by pflmari.corp.cetitec.com (Postfix, from local account)
-Date:   Wed, 24 Feb 2021 10:08:25 +0100
-From:   Alex Riesen <alexander.riesen@cetitec.com>
-To:     Ilia Mirkin <imirkin@alum.mit.edu>
-Cc:     Lyude Paul <lyude@redhat.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        James Jones <jajones@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Jeremy Cline <jcline@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Dave Airlie <airlied@redhat.com>
-Subject: Re: [PATCH 2/3] drm/nouveau/kms/nv50-: Report max cursor size to
- userspace
-Message-ID: <YDYXiTm7MDXgYT7H@pflmari>
-References: <20210119015415.2511028-1-lyude@redhat.com>
- <20210119015415.2511028-2-lyude@redhat.com>
- <YDUN+Re/alMVL0Zn@pflmari>
- <CAKb7UvhFkw23so-a4JKLzpQLhphzjzarOy-9h+FiKP-aAC=4xw@mail.gmail.com>
- <YDUg/9fjsvTkRUqr@pflmari>
- <CAKb7Uvji_+N+b8HghZckU-uSBWn-=BZwNAiUff2oitbVuNUE2Q@mail.gmail.com>
- <YDUkfjDA4xLJlxE5@pflmari>
- <YDUr2OGDsxDyC0l2@pflmari>
- <CAKb7UvjmdgS536tNzisomi_oXOGk3Q+anp0AfPvA8OruU_9m5Q@mail.gmail.com>
+        id S234480AbhBXJPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 04:15:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46202 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234349AbhBXJPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 04:15:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614158072; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FeA/2l27nVF/DGAxR2L37LYDHmL612+GcS6A2XoF94U=;
+        b=aaBZQMHz3G2QqX4ncvXcTnQO6jkI1yH4iqWbcFQWhBD7EViANhw9jiT2vp3seI1HsyFSHz
+        ZGrnILaRTgItVS3oEERlci6psg1StBolgA/TJ9EfmWhvjHMFwKMRGLT9uASLTYL9THTzg8
+        2dQ0FGLeQuWebMaa7i6C5FzcFk63OKs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D3323AE47;
+        Wed, 24 Feb 2021 09:14:31 +0000 (UTC)
+Date:   Wed, 24 Feb 2021 10:14:31 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memcg: enable memcg oom-kill for __GFP_NOFAIL
+Message-ID: <YDYY96mqxfUSBgdp@dhcp22.suse.cz>
+References: <20210223204337.2785120-1-shakeelb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKb7UvjmdgS536tNzisomi_oXOGk3Q+anp0AfPvA8OruU_9m5Q@mail.gmail.com>
-X-Provags-ID: V03:K1:cGed9gPj+JIzUf3H2cRPnpC8QpnkW70X803lIk1/AQ44QAF3SiG
- g00oP6MNRxFYbzW5J6kmzHnCpI4c/LDd38xnOztL0+JpRVTlNJ+ysrNYIMSQHb8oAhSYPrG
- dMIhKmyX+E84qo9WDcwMMFo5MQai1bLvFCFIoioHlAmS1ZHLwhW+bLLBrylJHWbLeHKhJ20
- vmGWGvRrwXt6K8J4SJBTw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7bn3tjKrTjE=:rZQSYL5WOWbhb84kuRdpMs
- Y1NbTu4ibzvvwGDO/ld8k+duIBAKUuVMUTil71dDP/n0iSMt2a9iv5v7n1Q9lv/XFD2psI7yM
- q0g8MLqyWRTks9I95NkXTgRA/0WP+R7nyR8eErOuHgyNu4NB60s66nogT2iR7Y0qPZW6WFvY1
- vWa+TlbEFmORlXryDe0SLeoZR7Sr1+zCAINHL+Fu7PtOkU0rsP8Wpcyat3ysrtSXtbTNa6ItM
- UDs3aogTL8XlBJGle1cbKCvQheUnGR0uG58pc0wXXee3zwUPS2VOTIC26viatLAkqrGE0hGaL
- Xu4B6YM+CzPrb3bBpNJgHXjIEgR86T7yB8y2x1LNjF54vkFE/6GSnI58sAj30dCDQjAEh6ZBT
- ohmnmwKhZwYoqq3H1eqtDexX7JXUyAua3wmS1bkiyBzI1b7FeDStj19HhO9JpmZAhUcPnpRJ4
- evW7IlubQA==
+In-Reply-To: <20210223204337.2785120-1-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ilia Mirkin, Tue, Feb 23, 2021 19:13:59 +0100:
-> On Tue, Feb 23, 2021 at 11:23 AM Alex Riesen <alexander.riesen@cetitec.com> wrote:
-> >
-> >     $ xrandr  --listproviders
-> >     Providers: number : 1
-> >     Provider 0: id: 0x68 cap: 0x7, Source Output, Sink Output, Source Offload crtcs: 4 outputs: 5 associated providers: 0 name:nouveau
-> >
-> > And yes, the cursor looks good in v5.11 even without reverting the commit.
+On Tue 23-02-21 12:43:37, Shakeel Butt wrote:
+> In the era of async memcg oom-killer, the commit a0d8b00a3381 ("mm:
+> memcg: do not declare OOM from __GFP_NOFAIL allocations") added the code
+> to skip memcg oom-killer for __GFP_NOFAIL allocations. The reason was
+> that the __GFP_NOFAIL callers will not enter aync oom synchronization
+> path and will keep the task marked as in memcg oom. At that time the
+> tasks marked in memcg oom can bypass the memcg limits and the oom
+> synchronization would have happened later in the later userspace
+> triggered page fault. Thus letting the task marked as under memcg oom
+> bypass the memcg limit for arbitrary time.
 > 
-> FWIW it's not immediately apparent to me what grave error modesetting
-> is committing in setting the cursor. The logic looks perfectly
-> reasonable. It's not trying to be fancy with rendering the cursor/etc.
-> 
-> The one thing is that it's using drmModeSetCursor2 which sets the
-> hotspot at the same time. But internally inside nouveau I think it
-> should work out to the same thing. Perhaps setting the hotspot, or
-> something in that path, doesn't quite work for 256x256? [Again, no
-> clue what that might be.]
-> 
-> It might also be worthwhile just testing if the 256x256 cursor works
-> quite the way one would want. If you're interested, grab libdrm,
-> there's a test called 'modetest', which has an option to enable a
-> moving cursor (-c iirc). It's hard-coded to 64x64, so you'll have to
-> modify it there too (and probably change the pattern from plain gray
-> to any one of the other ones).
+> With the synchronous memcg oom-killer (commit 29ef680ae7c21 ("memcg,
+> oom: move out_of_memory back to the charge path")) and not letting the
+> task marked under memcg oom to bypass the memcg limits (commit
+> 1f14c1ac19aa4 ("mm: memcg: do not allow task about to OOM kill to bypass
+> the limit")), we can again allow __GFP_NOFAIL allocations to trigger
+> memcg oom-kill. This will make memcg oom behavior closer to page
+> allocator oom behavior.
 
-I am interested, so I did.
-
-If I start the test without X running, the sprite of 256x256 cursor always
-contained horizontal lines across it, both with commit reverted and vanilla
-v5.11. Similarly, the 64x64 cursor has no lines across it in both kernels.
-
-The test does not seem to work at all if there is an X server running (using
-modesetting driver): modetest complained about permission denied to set the
-mode, and just sits there, drawing nothing on the displays.
-So I could not run the test in the environment of original problem.
-Am I starting it correctly? Is the change in modetest.c correct?
-
-    $ ./modetest -c |grep '^[0-9]\|preferred'
-    85	86	connected	LVDS-1         	340x190		13	86
-      #0 1920x1080 60.01 1920 2010 2070 2226 1080 1086 1095 1142 152540 flags: phsync, nvsync; type: preferred, driver
-    87	89	connected	DP-1           	470x300		18	88, 89
-      #0 1680x1050 59.88 1680 1728 1760 1840 1050 1053 1059 1080 119000 flags: phsync, nvsync; type: preferred, driver
-    90	0	disconnected	DP-2           	0x0		0	91, 92
-    93	95	connected	DP-3           	520x320		10	94, 95
-      #0 1920x1200 59.95 1920 1968 2000 2080 1200 1203 1209 1235 154000 flags: phsync, nvsync; type: preferred, driver
-    96	0	disconnected	VGA-1          	0x0		0	97
-
-    $ ./modetest -s 85:1920x1080 -s 93:1920x1200 -s 87:1680x1050  -C
-    trying to open device 'i915'...failed
-    trying to open device 'amdgpu'...failed
-    trying to open device 'radeon'...failed
-    trying to open device 'nouveau'...done
-    setting mode 1920x1080-60.01Hz on connectors 85, crtc 50
-    starting cursor
-
-    cursor stopped
-
-This is the change on top of 1225171b (master):
-
-diff --git a/tests/modetest/modetest.c b/tests/modetest/modetest.c
-index fc75383a..cdba7b4e 100644
---- a/tests/modetest/modetest.c
-+++ b/tests/modetest/modetest.c
-@@ -1730,14 +1730,14 @@ static void set_cursors(struct device *dev, struct pipe_arg *pipes, unsigned int
- 	int ret;
+The patch is correct, I just do follow why 1f14c1ac19aa4 is really
+relevant here. There nomem label wouldn't make any difference for
+__GFP_NOFAIL requests. The code has has changed quite a lot since then.
  
- 	/* maybe make cursor width/height configurable some day */
--	uint32_t cw = 64;
--	uint32_t ch = 64;
-+	uint32_t cw = 256;
-+	uint32_t ch = 256;
- 
- 	/* create cursor bo.. just using PATTERN_PLAIN as it has
- 	 * translucent alpha
- 	 */
- 	bo = bo_create(dev->fd, DRM_FORMAT_ARGB8888, cw, ch, handles, pitches,
--		       offsets, UTIL_PATTERN_PLAIN);
-+		       offsets, UTIL_PATTERN_SMPTE);
- 	if (bo == NULL)
- 		return;
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
+This is a clear overlook when I moved the oom handling back to the
+charge path. Thanks for the fixup.
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/memcontrol.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 2db2aeac8a9e..dcb5665aeb69 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2797,9 +2797,6 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	if (gfp_mask & __GFP_RETRY_MAYFAIL)
+>  		goto nomem;
+>  
+> -	if (gfp_mask & __GFP_NOFAIL)
+> -		goto force;
+> -
+>  	if (fatal_signal_pending(current))
+>  		goto force;
+>  
+> -- 
+> 2.30.0.617.g56c4b15f3c-goog
+
+-- 
+Michal Hocko
+SUSE Labs
