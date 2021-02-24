@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0807B32437C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166A1324384
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 19:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhBXSFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 13:05:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        id S233576AbhBXSGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 13:06:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhBXSFH (ORCPT
+        with ESMTP id S231895AbhBXSGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 13:05:07 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B2DC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:04:27 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id t26so1980413pgv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:04:27 -0800 (PST)
+        Wed, 24 Feb 2021 13:06:32 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488D5C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:05:52 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id m144so3026146qke.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 10:05:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8oyKdQoy6n2rMkEX7kMXfHHxsrCJ0CPEN9zor11kQnE=;
-        b=CCambHuN4LCpOo5sCt3e9KV5M4MRlgTzM/h7J4FYk0axWZavuhsAyfdVSQ551JXG63
-         sIv61nGIlqdKZISi46/kIWqo1t+pMaDAniBBEM5R9J5R+QXHtNpyA2QxTEUKtq9yervy
-         41FQGw1Ch+M+Wzp1a6xkaQUA79yOeoCe7w/GhNkZGl6iAC7PftvKtP8VJCWRaQpasQcQ
-         jNnyzrFSGdf66d4AEHKsN90b8KY0bDZGw76bc6K5Ob0FPJw/Kfh+ZHbqkKVeOmzhDyFp
-         cwf83c8zQ+LvzZB9LbdUqc1cP22ICiVYDM/wy7/eS5ZlhGIG0NzPRbmQiu6lwJjpi0ww
-         ECFg==
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IUVbPpVZ4+NgeP6WqeHK/Kh6aJQsEUlwdu/Vg1IkVWc=;
+        b=BbuezdHJhX0VaqiVhs3QX24iZqeWNYYI9JPFBgxbVH7NCORNudB31SneVA7WkWMAR7
+         aLqFN6jUzJfTUH3cpxX5XVNx+9Zfgyak6IILCCgbsx/owKKhL/HmpbeyUz/FuafT/D40
+         xbUd6myC/Nl+LIlJGuSCogXQTTKbfo6B4c70Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8oyKdQoy6n2rMkEX7kMXfHHxsrCJ0CPEN9zor11kQnE=;
-        b=tpG2SSkf+kNx07PZ02icNTIn6VOgYaI/Nc3UohJ/sQB+8lkSu+EkvOnKLk2f8Y2at9
-         yBcjC3RhOjRjwJbI/Myap9hGktdXiqizIpN+HqCVxeOu4MDPlwdvwVtxicaCm6zKMgoQ
-         vGAQ4W+Whv3qk+AMiz6YqAIHa1Tv7gV0wiEeIu4ITtwEnAwwfbWt0wdW4xa2Bi3AXvug
-         D+RYXnsBPY4d6YAWT35dpW1qNM4IlfyKpvGFld4vEdmnSFdP7mmq5li37w7TgiwDaLuV
-         gmebF7reiD3iRz9Pj11LH0Q2+BBpUkZ0gASKRfDJ5QCwP2BSfCC8GcO+NZsGD4Rl4PLR
-         eS8A==
-X-Gm-Message-State: AOAM532n/e+qKgPBoIJlgM5ompqMzgOA5IkF6Gnmbt5gT88t9Iw9JOu2
-        lkASIyxcuGR5P/GbhJKv8UyCnA==
-X-Google-Smtp-Source: ABdhPJyzPVSGdeH/K5eiwSDWTXEgj41XYlEROJqHK1pQF9VV6HUhI4Y5jyWsBs9APTbw+c/XSbEiRw==
-X-Received: by 2002:a62:7e01:0:b029:1ed:8173:40a1 with SMTP id z1-20020a627e010000b02901ed817340a1mr19468716pfc.6.1614189866571;
-        Wed, 24 Feb 2021 10:04:26 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:385f:4012:d20f:26b5])
-        by smtp.gmail.com with ESMTPSA id m19sm3480979pjn.21.2021.02.24.10.04.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 10:04:26 -0800 (PST)
-Date:   Wed, 24 Feb 2021 10:04:19 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: Remove the best->function == 0x7 assignment
-Message-ID: <YDaVIyWSO2hTVAkp@google.com>
-References: <20210224022931.14094-1-yejune.deng@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IUVbPpVZ4+NgeP6WqeHK/Kh6aJQsEUlwdu/Vg1IkVWc=;
+        b=no+6DhaCjX4HPsug0dQPt2KD5UBnl/YP4cjCIA+3mexfkOFtcmOYlP9HCWfGh1FmQs
+         +peIeCM7C2Bj/Mu3DrwjVBrvblkt4L/igLSS951cDJgNeFynR05Ko30AV9y/8m0/Xh0A
+         LpCo+REkIsriDnQGS2z+EmNZlGWtJ0nKlcVhdvJ1ARfuZg1vZEzCQCqIECHVArPYPtAi
+         gRCD7/hlv+z4d0BpjSBvaeZVjU/nrB7mMAqwNaHvmzqhLyL5bdGGY/8EDEpXjEzOC1I5
+         DTfaptadf1MkN1r2p1N2Ff+/DqSkZMrZTf9/EksG8d627rzlQ+bVoXFhBiXdg3lhsEyL
+         aJoA==
+X-Gm-Message-State: AOAM530Y0Q9+Wvh70xfzhTnHqIH6mKRV/gy9Y1QmjErLVGxFmTQFEjew
+        QTTXMQpx6m18/Zmyz9lnVomPQ/FL7JPLvt4sQb9e3Q==
+X-Google-Smtp-Source: ABdhPJzxG+t4ePEvNgAjEffIj7RO+NTXPSKnP7rszVjKHwIoimFIoB8HXaiwIpUXbvSbxz8DA+m6YZaoxm9PDlX+dHs=
+X-Received: by 2002:a37:9444:: with SMTP id w65mr12635158qkd.88.1614189951332;
+ Wed, 24 Feb 2021 10:05:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224022931.14094-1-yejune.deng@gmail.com>
+References: <20201223191402.378560-1-jagan@amarulasolutions.com>
+ <20201223191402.378560-3-jagan@amarulasolutions.com> <21398844-c334-f753-0fac-144a0cdc29dc@foss.st.com>
+In-Reply-To: <21398844-c334-f753-0fac-144a0cdc29dc@foss.st.com>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Wed, 24 Feb 2021 23:35:39 +0530
+Message-ID: <CAMty3ZBotTi2RwkKUpb+8KBOJ484hHzOV0p4J_dJ-fBVSDoMAg@mail.gmail.com>
+Subject: Re: [PATCH 2/5] ARM: dts: stm32: Add Engicam MicroGEA STM32MP1 SoM
+To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Francesco Utel <francesco.utel@engicam.com>,
+        Mirko Ardinghi <mirko.ardinghi@engicam.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hmm, the shortlog should provide a higher level overview of the change.  Stating
-the literal code change doesn't provide much context.  Maybe:
+On Mon, Jan 25, 2021 at 8:35 PM Alexandre TORGUE
+<alexandre.torgue@foss.st.com> wrote:
+>
+> Hi,
+>
+> On 12/23/20 8:13 PM, Jagan Teki wrote:
+> > MicroGEA STM32MP1 is an EDIMM SoM based on STM32MP157A from Engicam.
+> >
+> > General features:
+> > - STM32MP157AAC
+> > - Up to 1GB DDR3L-800
+> > - 512MB Nand flash
+> > - I2S
+> >
+> > MicroGEA STM32MP1 needs to mount on top of Engicam MicroDev carrier
+> > boards for creating complete platform solutions.
+> >
+> > Add support for it.
+> >
+> > Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
+> > Signed-off-by: Francesco Utel <francesco.utel@engicam.com>
+> > Signed-off-by: Mirko Ardinghi <mirko.ardinghi@engicam.com>
+> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > ---
+> >   .../dts/stm32mp157a-microgea-stm32mp1.dtsi    | 147 ++++++++++++++++++
+> >   1 file changed, 147 insertions(+)
+> >   create mode 100644 arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
+> >
+> > diff --git a/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi b/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
+> > new file mode 100644
+> > index 000000000000..97d569107bfe
+> > --- /dev/null
+> > +++ b/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
+> > @@ -0,0 +1,147 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+> > +/*
+> > + * Copyright (c) STMicroelectronics 2019 - All Rights Reserved
+> > + * Copyright (c) 2020 Engicam srl
+> > + * Copyright (c) 2020 Amarula Solutons(India)
+> > + */
+> > +
+>
+> If STM32MP157AAC is soldered onto this board, you should include SoC
+> dtsi here and no into MicroDev 2.0 board. No ?
 
-  KVM: x86: Remove an unnecessary best->function check
+No, it's an SoM dtsi. and it can be associated with the respective
+carrier board and include files are attached in its dts.
 
-On Wed, Feb 24, 2021, Yejune Deng wrote:
-> In kvm_update_cpuid_runtime(), there is no need the best->function
-> == 0x7 assignment, because there is e->function == function in
+Please check the next patches on this series.
 
-s/assignment/check, here and in the shortlog.
-
-> cpuid_entry2_find().
-> 
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-
-With the shortlog and changelog cleaned up:
-
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-
-> ---
->  arch/x86/kvm/cpuid.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index c8f2592ccc99..eb7a01b1907b 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -120,7 +120,7 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
->  	}
->  
->  	best = kvm_find_cpuid_entry(vcpu, 7, 0);
-> -	if (best && boot_cpu_has(X86_FEATURE_PKU) && best->function == 0x7)
-> +	if (best && boot_cpu_has(X86_FEATURE_PKU))
->  		cpuid_entry_change(best, X86_FEATURE_OSPKE,
->  				   kvm_read_cr4_bits(vcpu, X86_CR4_PKE));
->  
-> -- 
-> 2.29.0
-> 
+Jagan.
