@@ -2,144 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F557323A68
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A55D323A6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 11:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbhBXKUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 05:20:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
+        id S234846AbhBXKVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 05:21:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232560AbhBXKU3 (ORCPT
+        with ESMTP id S232042AbhBXKVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 05:20:29 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78615C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 02:19:47 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id d11so1323681wrj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 02:19:47 -0800 (PST)
+        Wed, 24 Feb 2021 05:21:06 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C0C9C06174A;
+        Wed, 24 Feb 2021 02:20:25 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id v1so1325509wrd.6;
+        Wed, 24 Feb 2021 02:20:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/FE7tvrvqoJrGxZtO1M2WLOCJzVWjV9STY44PZX27ks=;
-        b=I+hKBBRhc37miRhiK8ZHrqDkDbC9ZQjaR5dVS+zd58oLtjUmKZm5Zq5kbd4+AwzinV
-         L5Mykd0nm3IjEea2Rzw8z3ekuMvJHPInvHCZx/h8DGBqUQooGetyjVlF+7RgyAP8R8hQ
-         mgBlVMqp4d9I1wwMJ7mYi/kTGeFmNrgu9a+43IKP3OYuJ+1N3j2N/z3Y4Wed9txt1qQV
-         YE5Yu0tgHe4NGY6kWQHm/bgOf0NQXzC0aqwOG4C+y0QK0NZCcHJM6aPY6paaRZV5aoBl
-         fG+XXh+JXLPl7e9TwPOy4rAkFYKSXm2aMjZQ50wtP3BngAZEVQIFWHIOI5yBQ9wanzEE
-         VwdQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=+ynFYq7eMGJx1ln+zWV+b0o9T/BW44U3HpTLuEIXEk4=;
+        b=gVKwmps2YnnodY5iuPpamwE87ADKZx3WagV/HVFdp48iAk8XKWQKGiE4GnZUjCIbA1
+         ajN2Kgjt/0T8bUxPm/xy3wqPOlgpagzfQoXrDWRYFlkddJH9yCMMfrPxdt7+cr3CO1yN
+         WxSCjeK9sIl3dk1LcxsaQuL2p+D8MxDNL2LjvjH1DwKoxFQ7LYfmkbYH8aStnJNLNJHf
+         M8bzLOToMI6fdSkCTRVeKHSg8ZDAiS+HjbA9NptzWYvnKvrAj2Qgn2b8OqBqFdxU4UKU
+         qqrcYhVyzvgsMUtKiigu8FcPhByLH9+lgpPC5BN00J6XtJ15JRhPhpXrKkpRTWxa2R6q
+         iW6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/FE7tvrvqoJrGxZtO1M2WLOCJzVWjV9STY44PZX27ks=;
-        b=hCa9NRJjZHq4dSeltZetgjD33wTdeRJEJZrz4XFHCbtDccepz9WzsJgudC3m7+gyt6
-         10CmcOPTVXh+Ck25RIqkkvl78KvR/naf0/+l5VcdHSdfNeCnhAPaop/7y/w5gZr+3dnj
-         Yp4h9HA1Uy1+tA4bJs2g0bXIqK3AqtlfOgNrKyx3Gt0gBFlEG4Z5LW9PcjBzPZt0cK72
-         wI66Qu50/Q8TzV7uL0IMC6XQl8rf6zFxFsHNoiNeruHxvQMOe3We1lmLKVN4hnyYBpr1
-         W7EwDhWXgEB7cM7Je4u85NOaeoGWL5Hg08n8ZaJ8OMxuZQVlm64yas/v9nA0MElCs04O
-         39Jw==
-X-Gm-Message-State: AOAM530rZaoRJNDBJXv3A8hGDNUMaa19acqnwisSQrIanXNbDgOGgEBq
-        XFpw6SWj5uu2ZgWazFTZ0EZ7wg==
-X-Google-Smtp-Source: ABdhPJyKndYC691It/7gqXtAE5RbW9Z17Tm2vdDWURKYH/LNKjlcRD8BPcuGIEs1+3EkHAospr4whg==
-X-Received: by 2002:adf:f941:: with SMTP id q1mr31859042wrr.189.1614161986271;
-        Wed, 24 Feb 2021 02:19:46 -0800 (PST)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id v5sm2015023wmh.2.2021.02.24.02.19.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 02:19:45 -0800 (PST)
-Date:   Wed, 24 Feb 2021 11:19:27 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, zhangfei.gao@foxmail.com,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v6 08/12] fork: Clear PASID for new mm
-Message-ID: <YDYoL/zZ9YaGgwSV@myrica>
-References: <1594684087-61184-1-git-send-email-fenghua.yu@intel.com>
- <1594684087-61184-9-git-send-email-fenghua.yu@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=+ynFYq7eMGJx1ln+zWV+b0o9T/BW44U3HpTLuEIXEk4=;
+        b=YluFOCGeEHGAuOF8Ax3rkwPnGrI43HIDUI9lJWtt9kTaXauXL1iQF3B9Vh0pDSLc54
+         vcujbN4J3UxUxIobnZlJzQ6lUDkGNE395HmdLzKMK7Ent75S4cICKqguaO6AM8KYbuk9
+         gkkcJnoxkUlLQdOC5GSYaiot+AudIdPtefpb3HXekfGlkUOm/1gQhH35/3a8XzVEX47O
+         iUvZZjTv0fnMmQ6PujDUlB1RhsgNoBXz4685SR57UcNdMZo5nb9hG+aRQVL6MSNNuNt4
+         JsdiHca8F4kesm72MZOF6Zg+JCv6S73MaF1Lk5EygddKa4DVvTuCcauC/JfeIlNp8kA6
+         ykgw==
+X-Gm-Message-State: AOAM533X8Uo2sQtlBItoED8/bjm4/IRKUReCBedTK44/3s6Myll4gxhA
+        bSpvoiemsAmZejCtM75byK0=
+X-Google-Smtp-Source: ABdhPJxyz7gcbh1gakgOpaIkF6ifM7VuSjfCg5KjKbVjLf5UVR1vPE/QJelLB3m3OXr8qA8tTfbJoA==
+X-Received: by 2002:adf:bc01:: with SMTP id s1mr1122726wrg.240.1614162023821;
+        Wed, 24 Feb 2021 02:20:23 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.123])
+        by smtp.gmail.com with ESMTPSA id o129sm2117043wme.21.2021.02.24.02.20.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Feb 2021 02:20:23 -0800 (PST)
+Subject: Re: [PATCH v3 5/6] platform/x86: Add intel_skl_int3472 driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Rajmohan Mani <rajmohan.mani@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        andy.shevchenko@linux.intel.com,
+        kieran.bingham+renesas@ideasonboard.com,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>, me@fabwu.ch,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        devel@acpica.org
+References: <20210222130735.1313443-1-djrscally@gmail.com>
+ <20210222130735.1313443-6-djrscally@gmail.com>
+ <YDVfyt2d2Nhsa7l3@pendragon.ideasonboard.com>
+ <1360fc85-3f39-1dce-eee9-c4e76c2087ae@gmail.com>
+ <YDYmv0PpSndAlnDC@pendragon.ideasonboard.com>
+ <CAHp75VcKUjnwh4fi-mofooBuBYiqXjXOspU4twKg6-Lfvzf=QA@mail.gmail.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <fff9d990-53b0-0bdb-5127-5d118bfd7e13@gmail.com>
+Date:   Wed, 24 Feb 2021 10:20:22 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1594684087-61184-9-git-send-email-fenghua.yu@intel.com>
+In-Reply-To: <CAHp75VcKUjnwh4fi-mofooBuBYiqXjXOspU4twKg6-Lfvzf=QA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fenghua,
+Hi Andy, Laurent
 
-[Trimmed the Cc list]
-
-On Mon, Jul 13, 2020 at 04:48:03PM -0700, Fenghua Yu wrote:
-> When a new mm is created, its PASID should be cleared, i.e. the PASID is
-> initialized to its init state 0 on both ARM and X86.
-
-I just noticed this patch was dropped in v7, and am wondering whether we
-could still upstream it. Does x86 need a child with a new address space
-(!CLONE_VM) to inherit the PASID of the parent?  That doesn't make much
-sense with regard to IOMMU structures - same PASID indexing multiple PGDs?
-
-Currently iommu_sva_alloc_pasid() assumes mm->pasid is always initialized
-to 0 and fails on forked tasks. I'm trying to figure out how to fix this.
-Could we clear the pasid on fork or does it break the x86 model?
-
-Thanks,
-Jean
-
-> 
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> ---
-> v2:
-> - Add this patch to initialize PASID value for a new mm.
-> 
->  include/linux/mm_types.h | 2 ++
->  kernel/fork.c            | 8 ++++++++
->  2 files changed, 10 insertions(+)
-> 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index d61285cfe027..d60d2ec10881 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -22,6 +22,8 @@
->  #endif
->  #define AT_VECTOR_SIZE (2*(AT_VECTOR_SIZE_ARCH + AT_VECTOR_SIZE_BASE + 1))
->  
-> +/* Initial PASID value is 0. */
-> +#define INIT_PASID	0
->  
->  struct address_space;
->  struct mem_cgroup;
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 142b23645d82..43b5f112604d 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1007,6 +1007,13 @@ static void mm_init_owner(struct mm_struct *mm, struct task_struct *p)
->  #endif
->  }
->  
-> +static void mm_init_pasid(struct mm_struct *mm)
-> +{
-> +#ifdef CONFIG_IOMMU_SUPPORT
-> +	mm->pasid = INIT_PASID;
-> +#endif
-> +}
-> +
->  static void mm_init_uprobes_state(struct mm_struct *mm)
->  {
->  #ifdef CONFIG_UPROBES
-> @@ -1035,6 +1042,7 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
->  	mm_init_cpumask(mm);
->  	mm_init_aio(mm);
->  	mm_init_owner(mm, p);
-> +	mm_init_pasid(mm);
->  	RCU_INIT_POINTER(mm->exe_file, NULL);
->  	mmu_notifier_subscriptions_init(mm);
->  	init_tlb_flush_pending(mm);
-> -- 
-> 2.19.1
-> 
+On 24/02/2021 10:18, Andy Shevchenko wrote:
+> On Wed, Feb 24, 2021 at 12:16 PM Laurent Pinchart
+> <laurent.pinchart@ideasonboard.com> wrote:
+>> On Tue, Feb 23, 2021 at 10:36:18PM +0000, Daniel Scally wrote:
+>>> On 23/02/2021 20:04, Laurent Pinchart wrote:
+> ...
+>
+>>>>> +  get_device(&int3472->sensor->dev);
+>>>> I see no corresponding put_device(), am I missing something ? I'm also
+>>>> not sure why this is needed.
+>>> The put is acpi_dev_put() in skl_int3472_discrete_remove(); there seems
+>>> to be no acpi_dev_get() for some reason. We use the sensor acpi_device
+>>> to get the clock frequency, and to fetch the sensor module string, so I
+>>> thought it ought to hold a reference on those grounds.
+>> Shouldn't acpi_dev_get_dependent_dev() increase the reference count
+>> then, instead of doing it manually here ?
+> That's what I expected as well.
+> We have plenty of acpi_dev_get_*() and they do increase the reference
+> counter one way or the other.
+>
+Okedokey, I'll move the get() to that function and drop it from here.
