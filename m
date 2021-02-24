@@ -2,120 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DDC324049
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9997D324031
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237137AbhBXOsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 09:48:47 -0500
+        id S238258AbhBXOlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 09:41:37 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237154AbhBXNek (ORCPT
+        with ESMTP id S236998AbhBXNcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:34:40 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED649C06121D
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:30:36 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id b3so1901730wrj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:30:36 -0800 (PST)
+        Wed, 24 Feb 2021 08:32:25 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C3BC061797
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:30:26 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id v21so1791418wml.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 05:30:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=eLFEI/Kp7iKjAmKkKRnhlxgvK81SjpVSsncewURdRkY=;
-        b=c5SoQTDQudyi0BVCVPK7JStPJRJGB1/pvR0bTthbht3C7GpLeem2f1fLV0dP4GFdMJ
-         OUW3qYSL7Qg2vNIb5kRdc+bxMhMn7i45UZTw616JSaSv16oQJ6PZ+VNitH1gQcNy6INm
-         YPfcDUUFBT/6wKQXXO86i1Fu5ZXiFiDeKcVEv/dxWC2IlpgYDuRf1vTnIe6TywhqS4HS
-         TU/4imkoDfWEugmMXAVh2atG8U86Ky5A8TQhX46uxQPgyz3JJG8OoYxEgnurBoxZBwlt
-         3BdoIG4sr1ElitIA0vIuMTq0uKRM9Y7jPyYkJL4S5JsnAIBMixC8Wi3tkJJQtHi1Ku6U
-         MVgw==
+        d=dme-org.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:subject:in-reply-to:references:from:date:message-id
+         :mime-version;
+        bh=ES8CxboQIz6AjW5CHFU/CWTM4pBsOa7xcnXnVMVbXkU=;
+        b=M9MugLXrFlb6ovZc+2MkUMDKnZIFGwzVaJMCZC8H15KQhB9QTv07B/4l6aOOaCRGsY
+         jmo8+QwH/mj3P46D6nrpIu4fM/KC6W2DiQL4XyK27Joxs8MJ36ZzrU3rU38hbEGJqq3p
+         my4lrImakbrPn8uVVZyohRZq+G64YLIB4aprKOocEfDS1kI+rXT4UYJZBjN/Y651AUke
+         cjYyW4wE+vt3GLUeR18tECJsqU3WTl8wzUsZDZlOcF5squqZrBkU+evkXGJZxiKO2pjp
+         xdI3KpG21qEz35nOVlONTAHISx0CzCuCCbbDEbR/3jnKhMOu8fLAj2UgLWU3Jpi9ERYs
+         d1LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=eLFEI/Kp7iKjAmKkKRnhlxgvK81SjpVSsncewURdRkY=;
-        b=RgAULbMok5hxRYgAPbncfF7mPvlNZ7twhtNklnROne3vlv6rccm4+UjHCf9XAY7Onp
-         QVwlK7bMbFV+E9ueMFQDysWwKJ7Jh7WAwe1WW3GF/V2UtMO/yyNnXbKd08l74wL6I3wB
-         UWJrl9b8Hw7rRipPgS9iMczynrqIHfMGD5STptQYxq9mOrjz6deSIz4ccG2fm2WuO/sl
-         nKptIo2h8eUnaK55Ad/jtBNDRb0QcjNEce2wSJ97MwZgAMGFHtOyuoGUlycd/pKkpMjw
-         30s4XrYS9Fl/o3sAMd6SFG8spMw0BET8HE8IuJg6Y8+A5tuWl35Ltvpp9hMJJPwCQDnH
-         9vhw==
-X-Gm-Message-State: AOAM533GzMQ4xHFiJ2v8MrVddohqkinrTLNrr5+WrP0Mlx2LCbJaK/s5
-        sbISyh23aaCfsLlOMhAG+gXJ+A==
-X-Google-Smtp-Source: ABdhPJzRvpLanpIWMKdj55U1iIs+ym8Dnk4kyPUYE+tpt2LMJEBjqFw0Ayxjod9n1Ihf+MBL78K6tA==
-X-Received: by 2002:adf:edcb:: with SMTP id v11mr10185613wro.358.1614173435734;
-        Wed, 24 Feb 2021 05:30:35 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:58e9:8af9:3cd4:ded2])
-        by smtp.gmail.com with ESMTPSA id h10sm552611wrp.22.2021.02.24.05.30.34
+        h=x-gm-message-state:to:cc:subject:in-reply-to:references:from:date
+         :message-id:mime-version;
+        bh=ES8CxboQIz6AjW5CHFU/CWTM4pBsOa7xcnXnVMVbXkU=;
+        b=B33lspvLHVrcaobwHzVdpvwIS2SL8gwsuBZD7OluK1uo/AK2i1Upe4uV2ml499Y5Nb
+         eE8659X4nqFe57f8A/M5yYY3aTqJs2PkhFSz2UJ61aWEngmLeUfDrENpQFsqU6X6qFD6
+         fJS0AluZF8wwX5rFPDYRELc3fwpTY84r2l3g6coMS0m+Z44TPzePLOSViLflZeElMkcr
+         YQcUrft+Q1zJQWyCdsJN7LYqFVeq0Hv4GQf62Xk2Hrwi2QjbdpddDaOtEB6HG53G+f4R
+         W6FS1i9TrAUPMeGyKrpqVmeHI2Ij4eDPqGh5FYyzsnEi+geceLc8ZIPqXcgRNX2LXqeq
+         QaiQ==
+X-Gm-Message-State: AOAM533gGFtQPE4FeO453Ca7Ca+sa2i3mgGWNGGD8w91Tl2i3PkmhAgA
+        mgNmYiYtWdBi+1lhYyCXXgD/UA==
+X-Google-Smtp-Source: ABdhPJy7QgdrOQ3ILS2wBu6KOoHtnzv5EMq+MxCuh453z4TPTFMNPwoKeG5PVUf74ZcPeJs17jIllg==
+X-Received: by 2002:a7b:c5d0:: with SMTP id n16mr3762898wmk.27.1614173425170;
+        Wed, 24 Feb 2021 05:30:25 -0800 (PST)
+Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net. [2001:8b0:bb71:7140:64::1])
+        by smtp.gmail.com with ESMTPSA id h12sm4575853wru.18.2021.02.24.05.30.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 05:30:35 -0800 (PST)
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org, valentin.schneider@arm.com
-Cc:     fweisbec@gmail.com, tglx@linutronix.de, qais.yousef@arm.com,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH 7/7 v4] sched/fair: reduce the window for duplicated update
-Date:   Wed, 24 Feb 2021 14:30:07 +0100
-Message-Id: <20210224133007.28644-8-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210224133007.28644-1-vincent.guittot@linaro.org>
-References: <20210224133007.28644-1-vincent.guittot@linaro.org>
+        Wed, 24 Feb 2021 05:30:24 -0800 (PST)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 8d0efa31;
+        Wed, 24 Feb 2021 13:30:23 +0000 (UTC)
+To:     Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: dump_vmcs should not assume
+ GUEST_IA32_EFER is valid
+In-Reply-To: <CALMp9eQ5HQqRRBu0HJbuTOJwKSUA950JWSHrLkXz7cHWKt+ymg@mail.gmail.com>
+References: <20210219144632.2288189-1-david.edmondson@oracle.com>
+ <20210219144632.2288189-2-david.edmondson@oracle.com>
+ <YDWG51Io0VJEBHGg@google.com>
+ <CALMp9eQ5HQqRRBu0HJbuTOJwKSUA950JWSHrLkXz7cHWKt+ymg@mail.gmail.com>
+X-HGTTG: heart-of-gold
+From:   David Edmondson <dme@dme.org>
+Date:   Wed, 24 Feb 2021 13:30:23 +0000
+Message-ID: <m235xlfv9s.fsf@dme.org>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Start to update last_blocked_load_update_tick to reduce the possibility
-of another cpu starting the update one more time
+On Tuesday, 2021-02-23 at 15:13:54 -08, Jim Mattson wrote:
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
----
- kernel/sched/fair.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+> On Tue, Feb 23, 2021 at 2:51 PM Sean Christopherson <seanjc@google.com> wrote:
+>>
+>> On Fri, Feb 19, 2021, David Edmondson wrote:
+>> > If the VM entry/exit controls for loading/saving MSR_EFER are either
+>> > not available (an older processor or explicitly disabled) or not
+>> > used (host and guest values are the same), reading GUEST_IA32_EFER
+>> > from the VMCS returns an inaccurate value.
+>> >
+>> > Because of this, in dump_vmcs() don't use GUEST_IA32_EFER to decide
+>> > whether to print the PDPTRs - do so if the EPT is in use and CR4.PAE
+>> > is set.
+>>
+>> This isn't necessarily correct either.  In a way, it's less correct as PDPTRs
+>> are more likely to be printed when they shouldn't, assuming most guests are
+>> 64-bit guests.  It's annoying to calculate the effective guest EFER, but so
+>> awful that it's worth risking confusion over PDTPRs.
+>
+> I still prefer a dump_vmcs that always dumps every VMCS field.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 46c220a4f7ed..38a1297edd76 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7852,16 +7852,20 @@ static inline bool others_have_blocked(struct rq *rq)
- 	return false;
- }
- 
--static inline void update_blocked_load_status(struct rq *rq, bool has_blocked)
-+static inline void update_blocked_load_tick(struct rq *rq)
- {
--	rq->last_blocked_load_update_tick = jiffies;
-+	WRITE_ONCE(rq->last_blocked_load_update_tick, jiffies);
-+}
- 
-+static inline void update_blocked_load_status(struct rq *rq, bool has_blocked)
-+{
- 	if (!has_blocked)
- 		rq->has_blocked_load = 0;
- }
- #else
- static inline bool cfs_rq_has_blocked(struct cfs_rq *cfs_rq) { return false; }
- static inline bool others_have_blocked(struct rq *rq) { return false; }
-+static inline void update_blocked_load_tick(struct rq *rq) {}
- static inline void update_blocked_load_status(struct rq *rq, bool has_blocked) {}
- #endif
- 
-@@ -8022,6 +8026,7 @@ static void update_blocked_averages(int cpu)
- 	struct rq_flags rf;
- 
- 	rq_lock_irqsave(rq, &rf);
-+	update_blocked_load_tick(rq);
- 	update_rq_clock(rq);
- 
- 	decayed |= __update_blocked_others(rq, &done);
-@@ -8363,7 +8368,7 @@ static bool update_nohz_stats(struct rq *rq)
- 	if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
- 		return false;
- 
--	if (!time_after(jiffies, rq->last_blocked_load_update_tick))
-+	if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
- 		return true;
- 
- 	update_blocked_averages(cpu);
+v3 now always shows the PDPTRs if they exist.
+
+dme.
 -- 
-2.17.1
-
+I've got a little black book with my poems in.
