@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47584324074
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9554324077
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 16:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238099AbhBXPFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 10:05:44 -0500
-Received: from foss.arm.com ([217.140.110.172]:33000 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232541AbhBXOIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 09:08:30 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7962731B;
-        Wed, 24 Feb 2021 06:07:01 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.52.137])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 642C43F70D;
-        Wed, 24 Feb 2021 06:06:59 -0800 (PST)
-Date:   Wed, 24 Feb 2021 14:06:56 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st,
-        tglx@linutronix.de, will@kernel.org
-Subject: Re: [PATCH 0/8] arm64: Support FIQ controller registration
-Message-ID: <20210224140656.GG50741@C02TD0UTHF1T.local>
-References: <20210219113904.41736-1-mark.rutland@arm.com>
- <87a6s0orm7.wl-maz@kernel.org>
+        id S238442AbhBXPF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 10:05:57 -0500
+Received: from conuserg-10.nifty.com ([210.131.2.77]:28971 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234236AbhBXOKr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 09:10:47 -0500
+Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 11OE8GiZ010024;
+        Wed, 24 Feb 2021 23:08:16 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 11OE8GiZ010024
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614175697;
+        bh=0plXlyBwS0CIS1+01uCTb+XHeEQAva1YcsxsVYVl0dc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=D2qyEG3tkQrRyIDJXuWOjymsupzH4qoxRT8Z02u2nByMTaXC9xovFIIOIV6if8CR0
+         efV5S1mgKq6mY+NorWnjH65fXjibY1qiDPYjgs7Yt0/Ya5DTYFxL7jG3EDIWsqmI1e
+         XrtZJZ6gnl9p6KsBdql17YdAJ2O3JzVDz5oLVH94gGmR79/Enupu4PigTMKh6pXVzd
+         8SjZiYf5oPcD92hE/5MB/Ek6XjS4lrfyEk/9faCiSofhaw1Rjs4nHStdzIw2BOpHmC
+         k0waPOlX/VgsgPX6CBCh7Sy8Xp/6e5HtjbuMio2hLNyqHiKFBnFBPDgtZJkcuCRvvi
+         oLd3TrLOYV4+Q==
+X-Nifty-SrcIP: [126.26.90.165]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        KP Singh <kpsingh@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: [PATCH] init/Kconfig: make COMPILE_TEST depend on HAS_IOMEM
+Date:   Wed, 24 Feb 2021 23:08:09 +0900
+Message-Id: <20210224140809.1067582-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6s0orm7.wl-maz@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 06:10:56PM +0000, Marc Zyngier wrote:
-> Hi Mark,
-> 
-> On Fri, 19 Feb 2021 11:38:56 +0000,
-> Mark Rutland <mark.rutland@arm.com> wrote:
-> > 
-> > Hector's M1 support series [1] shows that some platforms have critical
-> > interrupts wired to FIQ, and to support these platforms we need to support
-> > handling FIQ exceptions. Other contemporary platforms don't use FIQ (since e.g.
-> > this is usually routed to EL3), and as we never expect to take an FIQ, we have
-> > the FIQ vector cause a panic.
-> > 
-> > Since the use of FIQ is a platform integration detail (which can differ across
-> > bare-metal and virtualized environments), we need be able to explicitly opt-in
-> > to handling FIQs while retaining the existing behaviour otherwise. This series
-> > adds a new set_handle_fiq() hook so that the FIQ controller can do so, and
-> > where no controller is registered the default handler will panic(). For
-> > consistency the set_handle_irq() code is made to do the same.
-> > 
-> > The first couple of patches are from Marc's irq/drop-generic_irq_multi_handler
-> > branch [2] on kernel.org, and clean up CONFIG_GENERIC_IRQ_MULTI_HANDLER usage.
-> > The next four patches move arm64 over to a local set_handle_irq()
-> > implementation, which is written to share code with a set_handle_fiq() function
-> > in the last two patches. The only functional difference here is that if an IRQ
-> > is somehow taken prior to set_handle_irq() the default handler will directly
-> > panic() rather than the vector branching to NULL.
-> > 
-> > The penultimate patch is cherry-picked from the v2 M1 series, and as per
-> > discussion there [3] will need a few additional fixups. I've included it for
-> > now as the DAIF.IF alignment is necessary for the FIQ exception handling added
-> > in the final patch.
-> > 
-> > The final patch adds the low-level FIQ exception handling and registration
-> > mechanism atop the prior rework.
-> 
-> Thanks for putting this together. I have an extra patch on top of this
-> series[1] that prevents the kernel from catching fire if a FIQ fires
-> whilst running a guest. Nothing urgent, we can queue it at a later time.
-> 
-> Thanks,
-> 
-> 	M.
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=irq/fiq
+I read the commit log of the following two:
 
-IIUC for that "invalid_vect" should be changed to "valid_vect", to match
-the other valid vector entries, but otherwise that looks sane to me.
+- bc083a64b6c0 ("init/Kconfig: make COMPILE_TEST depend on !UML")
+- 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390")
 
-I guess we could take that as a prerequisite ahead of the rest?
+Both are talking about HAS_IOMEM dependency missing in many drivers.
 
-Thanks,
-Mark.
+So, 'depends on HAS_IOMEM' seems the direct, sensible solution to me.
+
+This does not change the behavior of UML. UML still cannot enable
+COMPILE_TEST because it does not provide HAS_IOMEM.
+
+The current dependency for S390 is too strong. Under the condition of
+CONFIG_PCI=y, S390 provides HAS_IOMEM, hence can enable COMPILE_TEST.
+
+I also removed the meaningless 'default n'.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ init/Kconfig | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/init/Kconfig b/init/Kconfig
+index ba8bd5256980..2ff0b5a50736 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -113,8 +113,7 @@ config INIT_ENV_ARG_LIMIT
+ 
+ config COMPILE_TEST
+ 	bool "Compile also drivers which will not load"
+-	depends on !UML && !S390
+-	default n
++	depends on HAS_IOMEM
+ 	help
+ 	  Some drivers can be compiled on a different platform than they are
+ 	  intended to be run on. Despite they cannot be loaded there (or even
+-- 
+2.27.0
+
