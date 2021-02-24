@@ -2,55 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9212932387F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0487B323889
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 09:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbhBXIVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 03:21:18 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:50460 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232343AbhBXIVP (ORCPT
+        id S234267AbhBXIXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 03:23:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231880AbhBXIXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:21:15 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UPRGZ72_1614154832;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPRGZ72_1614154832)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 24 Feb 2021 16:20:32 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     ohad@wizery.com
-Cc:     bjorn.andersson@linaro.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] remoteproc: pru: Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
-Date:   Wed, 24 Feb 2021 16:20:29 +0800
-Message-Id: <1614154829-42461-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 24 Feb 2021 03:23:19 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED0CC061786;
+        Wed, 24 Feb 2021 00:22:38 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id h98so963452wrh.11;
+        Wed, 24 Feb 2021 00:22:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=QwOfJNfv6re2ebmSZFTKETkYLwXhNoR6kG6RlRtNKOk=;
+        b=CV8pemUoNR37LLS/u/MsIWiuLsb7RqvPwrPfL7W+fJ4neqO6qpFQF++1yOfGGLSOhX
+         31tqCwUOR8GFeM9zE7s1wXvS4cLky+ASqdwNs7cyltInwDez74GFFtF8fo+2XBfyhq9X
+         GKokl43wWyB1zFt9ERkXpZqmPyKam7/SimOG6L49oFPq4vnhVuNJz+RQZ21awAjZbagg
+         IGZ4FwISbeK32foy8Z6w6rzZkNnEGFW6WFMAaHs2seraFMQAjY3Y+N9COwxcuE1Erget
+         /5WOAzN5zH8B0bPLzS+cqA2GDdZnPf4NLqlhEj6Zg6OKVrTB0qd2O/JRrrg3xfpWnpbS
+         O3ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QwOfJNfv6re2ebmSZFTKETkYLwXhNoR6kG6RlRtNKOk=;
+        b=p4rv2vovLvBUn2SCm+gFfptPoPQj7FuVKHLUmscj4Z0ZezYHJSTsqMUqtaIVjkWsOP
+         +lddL8m7/FaWsZmpc1tbvZAG0k78xtj/CDXxRY+0fTZrv7ReRvbnLYixPCJZePMKIlWW
+         gH56eHXJ6/luNW4NHkUq7Rxl5bhYkkiatLYxlESSpe9m0EcDHGB4UZPL+bKBjPpnArUh
+         n41ojzKOj3oBmO3ld9hDvOOR6xvPVka706Gf/MnM1FgxEj9n3zvYii6tZfXFvidRiSUB
+         MmteluYsaaen9vny8LNLLp/99soJt7LM+dj7ZkmNu76sfvBAkTnpUNpjBqu2rDD3KH88
+         ruqw==
+X-Gm-Message-State: AOAM532Y3balBU2kngGkVWZwdoDflKztGt7gudi4Az/poxyy/stwtLdV
+        s6D0TUDy8lRWaVAAE5Z2L3s=
+X-Google-Smtp-Source: ABdhPJyOUFmigiz2HrodPNhPN+sPCXo+ZD2tvzS+6wd5jfnYbMWkpQbOLXGWDSqOJIFEa745jZEUDg==
+X-Received: by 2002:adf:ec8b:: with SMTP id z11mr30102893wrn.374.1614154956936;
+        Wed, 24 Feb 2021 00:22:36 -0800 (PST)
+Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id u19sm1501628wmm.46.2021.02.24.00.22.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 00:22:36 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Guenter Roeck <linux@roeck-us.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@protonmail.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/2] hwrng: bcm2835: add reset support
+Date:   Wed, 24 Feb 2021 09:22:28 +0100
+Message-Id: <20210224082230.29015-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210223160131.29053-1-noltari@gmail.com>
+References: <20210223160131.29053-1-noltari@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
-./drivers/remoteproc/pru_rproc.c:247:0-23: WARNING:
-pru_rproc_debug_ss_fops should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+v4: fix documentation, add reset_control_rearm().
+v3: make resets required if brcm,bcm6368-rng.
+v2: document reset support.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/remoteproc/pru_rproc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Álvaro Fernández Rojas (2):
+  dt-bindings: rng: bcm2835: document reset support
+  hwrng: bcm2835: add reset support
 
-diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-index 2667919..04a9d99 100644
---- a/drivers/remoteproc/pru_rproc.c
-+++ b/drivers/remoteproc/pru_rproc.c
-@@ -244,7 +244,7 @@ static int pru_rproc_debug_ss_get(void *data, u64 *val)
- 
- 	return 0;
- }
--DEFINE_SIMPLE_ATTRIBUTE(pru_rproc_debug_ss_fops, pru_rproc_debug_ss_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(pru_rproc_debug_ss_fops, pru_rproc_debug_ss_get,
- 			pru_rproc_debug_ss_set, "%llu\n");
- 
- /*
+ .../devicetree/bindings/rng/brcm,bcm2835.yaml      | 14 ++++++++++++++
+ drivers/char/hw_random/bcm2835-rng.c               | 12 ++++++++++++
+ 2 files changed, 26 insertions(+)
+
 -- 
-1.8.3.1
+2.20.1
 
