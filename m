@@ -2,373 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6866C324470
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5817132448A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 20:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235369AbhBXTKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 14:10:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235981AbhBXTJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 14:09:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3878D64F19;
-        Wed, 24 Feb 2021 19:03:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614193418;
-        bh=Hly0qc2rcGx5rC+eSIjorIZ9n3/XacOcce+dmg3qeDg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bsq7k2YK1JUFtRjsyz+mpaHQYXOlWAx56/TXIXyckaT6u/9UI9zqps6inYeSpNVbA
-         Q/gGVdXsjmAyTrKvJ+71VBARVDmDo3TUWOtNXZ8Bwtr6oAhbZpDUyHt7VuEZBpNhYr
-         Gwx9INQo+3JcXp1cgoFQwNMbaSqwzkhWiPY1lw5oP/P87jiIL/86Sgza5nTRnGPw3T
-         yzUP+HL5TFSN/UbpmN72iMpApX/rAEFd52kXu2rFezgmrcMwJuXu3ohphz3b3Q4OjE
-         REgjNNI9zklwGSx00tZc/OatUDil5WwlE9QyAszt1SvLrTHZDBEKavUQJ2vwM/xfzl
-         U4St6dvqr6Zqw==
-Date:   Wed, 24 Feb 2021 13:03:35 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [GIT PULL] PCI changes for v5.12
-Message-ID: <20210224190335.GA1583051@bjorn-Precision-5520>
+        id S232723AbhBXTTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 14:19:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236139AbhBXTTR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 14:19:17 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE38C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:18:37 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id w36so4758794lfu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:18:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LsetPJB5m47FCg13KC6GjSTLKBsPDI7MuzXhPKMTnS4=;
+        b=g0wCVRLuZhRAZSx2tZaeQKkHmjHJt6HcVeX1wF81XK3ID/P21CzwT5FyHF6bzyJiaK
+         7Wbpg65iES9Lwj24IG8yT/fkKOgtfPxfvdKC+qXihnsfhzxP5qlnVz0sgNHOO9KXWCV6
+         eIoO/wnpUtMRNAs14sprZgujgxrvqBNk1ASSY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LsetPJB5m47FCg13KC6GjSTLKBsPDI7MuzXhPKMTnS4=;
+        b=tr+ieX7K9ikVuAzad0r/4Lvec/TuNvshWpoR1cw4mZYJ5jfmenVoZYHPIZmQevESYF
+         A4jhIrrlTUday2OWiJv6P34NKdGdAcIZuEbm4kEhjwuVcoHlO3p8rXLUCpKCnewc0y9P
+         WbgPcx1I60ncRKWks142pBJXDXtALsrOFRKeJhqPrFUHjc0GIEZnHFBK+eJcnccrYhkh
+         h5B+NYOrOk1Nse1Arv+eTF9WKl3Gs2heBn/G8QXtIgDzFYTIQxoi9vMGE3kpZsP7NS9N
+         DCgtMbCmlArhLL7s7LWehNdDg8OPjGzqXr8OiqBvgQK1pC9sqiQWU0EtcO0fUC0fNKLO
+         yLTQ==
+X-Gm-Message-State: AOAM531pIo72+ilbsqcGDCxUhVEncwnZPOvu3L0yuPN3FoqlRhKhcBgR
+        FabCDIEzuyiJSQLwvU4Gw99mrR/C7No/Gg==
+X-Google-Smtp-Source: ABdhPJzsOMkMiPJ9tAdHJGXEJnFgMIfuP/B5SKNYKQ8g885aahve0eUbtiXJdhWZbd5Uqo8rW0viJQ==
+X-Received: by 2002:a05:6512:31c1:: with SMTP id j1mr21033408lfe.313.1614194315379;
+        Wed, 24 Feb 2021 11:18:35 -0800 (PST)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id h28sm650452lfg.234.2021.02.24.11.18.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Feb 2021 11:18:35 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id f1so4783121lfu.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 11:18:34 -0800 (PST)
+X-Received: by 2002:a05:6512:a8c:: with SMTP id m12mr20000602lfu.253.1614193859813;
+ Wed, 24 Feb 2021 11:10:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20210224051845.GB6114@xsang-OptiPlex-9020> <m1czwpl83q.fsf@fess.ebiederm.org>
+ <20210224183828.j6uut6sholeo2fzh@example.org>
+In-Reply-To: <20210224183828.j6uut6sholeo2fzh@example.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 24 Feb 2021 11:10:43 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh3wVpx97e=n2D98W+PSDWUkQrX3O+c7n7MGRbn_k9JMg@mail.gmail.com>
+Message-ID: <CAHk-=wh3wVpx97e=n2D98W+PSDWUkQrX3O+c7n7MGRbn_k9JMg@mail.gmail.com>
+Subject: Re: d28296d248: stress-ng.sigsegv.ops_per_sec -82.7% regression
+To:     Alexey Gladkov <gladkov.alexey@gmail.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com,
+        io-uring <io-uring@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+On Wed, Feb 24, 2021 at 10:38 AM Alexey Gladkov
+<gladkov.alexey@gmail.com> wrote:
+>
+> One of the reasons for this is that I rolled back the patch that changed
+> the ucounts.count type to atomic_t. Now get_ucounts() is forced to use a
+> spin_lock to increase the reference count.
 
-  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
+Yeah, that definitely should be an atomic type, since the extended use
+of ucounts clearly puts way too much pressure on that ucount lock.
 
-are available in the Git repository at:
+I remember complaining about one version of that patch, but my
+complaint wasabout it changing semantics of the saturation logic (and
+I think it was also wrong because it still kept the spinlock for
+get_ucounts(), so it didn't even take advantage of the atomic
+refcount).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.12-changes
+Side note: I don't think a refcount_t" is necessarily the right thing
+to do, since the ucount reference counter does its own saturation
+logic, and the refcount_t version is imho not great.
 
-for you to fetch changes up to 2bd36c391515cba855b8db8ae5708154f1082b8e:
+So it probably just needs to use an atomic_t, and do the saturation
+thing manually.
 
-  Merge branch 'remotes/lorenzo/pci/misc' (2021-02-24 11:17:05 -0600)
+Side note: look at try_get_page(). That one actually does refcounting
+with overflow protection better than refcount_t, in my opinion. But I
+am obviously biased, since I wrote it ;)
 
-----------------------------------------------------------------
+See commits
 
-Enumeration:
-  - Remove unnecessary locking around _OSC (Bjorn Helgaas)
-  - Clarify message about _OSC failure (Bjorn Helgaas)
-  - Remove notification of PCIe bandwidth changes (Bjorn Helgaas)
-  - Tidy checking of syscall user config accessors (Heiner Kallweit)
+    88b1a17dfc3e mm: add 'try_get_page()' helper function
+    f958d7b528b1 mm: make page ref count overflow check tighter and
+more explicit
 
-Resource management:
-  - Decline to resize resources if boot config must be preserved (Ard
-    Biesheuvel)
-  - Fix pci_register_io_range() memory leak (Geert Uytterhoeven)
+with that "page->_recount" being just a regular atomic_t.
 
-Error handling (Keith Busch):
-  - Clear error status from the correct device
-  - Retain error recovery status so drivers can use it after reset
-  - Log the type of Port (Root or Switch Downstream) that we reset
-  - Always request a reset for Downstream Ports in frozen state
-
-Endpoint framework and NTB (Kishon Vijay Abraham I):
-  - Make *_get_first_free_bar() take into account 64 bit BAR
-  - Add helper API to get the 'next' unreserved BAR
-  - Make *_free_bar() return error codes on failure
-  - Remove unused pci_epf_match_device()
-  - Add support to associate secondary EPC with EPF
-  - Add support in configfs to associate two EPCs with EPF
-  - Add pci_epc_ops to map MSI IRQ
-  - Add pci_epf_ops to expose function-specific attrs
-  - Allow user to create sub-directory of 'EPF Device' directory
-  - Implement ->msi_map_irq() ops for cadence
-  - Configure LM_EP_FUNC_CFG based on epc->function_num_map for cadence
-  - Add EP function driver to provide NTB functionality
-  - Add support for EPF PCI Non-Transparent Bridge
-  - Add specification for PCI NTB function device
-  - Add PCI endpoint NTB function user guide
-  - Add configfs binding documentation for pci-ntb endpoint function
-
-Broadcom STB PCIe controller driver:
-  - Add support for BCM4908 and external PERST# signal controller (Rafał
-    Miłecki)
-
-Cadence PCIe controller driver:
-  - Retrain Link to work around Gen2 training defect (Nadeem Athani)
-  - Fix merge botch in cdns_pcie_host_map_dma_ranges() (Krzysztof
-    Wilczyński)
-
-Freescale Layerscape PCIe controller driver:
-  - Add LX2160A rev2 EP mode support (Hou Zhiqiang)
-  - Convert to builtin_platform_driver() (Michael Walle)
-
-MediaTek PCIe controller driver:
-  - Fix OF node reference leak (Krzysztof Wilczyński)
-
-Microchip PolarFlare PCIe controller driver:
-  - Add Microchip PolarFire PCIe controller driver (Daire McNamara)
-
-Qualcomm PCIe controller driver:
-  - Use PHY_REFCLK_USE_PAD only for ipq8064 (Ansuel Smith)
-  - Add support for ddrss_sf_tbu clock for sm8250 (Dmitry Baryshkov)
-
-Renesas R-Car PCIe controller driver:
-  - Drop PCIE_RCAR config option (Lad Prabhakar)
-  - Always allocate MSI addresses in 32bit space (Marek Vasut)
-
-Rockchip PCIe controller driver:
-  - Add FriendlyARM NanoPi M4B DT binding (Chen-Yu Tsai)
-  - Make 'ep-gpios' DT property optional (Chen-Yu Tsai)
-
-Synopsys DesignWare PCIe controller driver:
-  - Work around ECRC configuration hardware defect (Vidya Sagar)
-  - Drop support for config space in DT 'ranges' (Rob Herring)
-  - Change size to u64 for EP outbound iATU (Shradha Todi)
-  - Add upper limit address for outbound iATU (Shradha Todi)
-  - Make dw_pcie ops optional (Jisheng Zhang)
-  - Remove unnecessary dw_pcie_ops from al driver (Jisheng Zhang)
-
-Xilinx Versal CPM PCIe controller driver:
-  - Fix OF node reference leak (Pan Bian)
-
-Miscellaneous:
-  - Remove tango host controller driver (Arnd Bergmann)
-  - Remove IRQ handler & data together (altera-msi, brcmstb, dwc) (Martin
-    Kaiser)
-  - Fix xgene-msi race in installing chained IRQ handler (Martin Kaiser)
-  - Apply CONFIG_PCI_DEBUG to entire drivers/pci hierarchy (Junhao He)
-  - Fix pci-bridge-emul array overruns (Russell King)
-  - Remove obsolete uses of WARN_ON(in_interrupt()) (Sebastian Andrzej
-    Siewior)
-
-----------------------------------------------------------------
-Ansuel Smith (1):
-      PCI: qcom: Use PHY_REFCLK_USE_PAD only for ipq8064
-
-Ard Biesheuvel (1):
-      PCI: Decline to resize resources if boot config must be preserved
-
-Arnd Bergmann (1):
-      PCI: Remove tango host controller driver
-
-Bjorn Helgaas (28):
-      PCI/ACPI: Make acpi_pci_osc_control_set() static
-      PCI/ACPI: Remove unnecessary osc_lock
-      PCI/ACPI: Clarify message about _OSC failure
-      PCI: xgene: Fix CRS SV comment
-      PCI: hv: Fix typo
-      Fix "ordering" comment typos
-      MAINTAINERS: Fix 'ARM/TEXAS INSTRUMENT KEYSTONE CLOCKSOURCE' capitalization
-      PCI/LINK: Remove bandwidth notification
-      Merge branch 'pci/enumeration'
-      Merge branch 'pci/error'
-      Merge branch 'pci/hotplug'
-      Merge branch 'pci/link'
-      Merge branch 'pci/resource'
-      Merge branch 'pci/host-probe-refactor'
-      Merge branch 'pci/misc'
-      Merge branch 'remotes/lorenzo/pci/brcmstb'
-      Merge branch 'remotes/lorenzo/pci/cadence'
-      Merge branch 'pci/dwc'
-      Merge branch 'pci/layerscape'
-      Merge branch 'remotes/lorenzo/pci/mediatek'
-      Merge branch 'pci/microchip'
-      Merge branch 'pci/ntb'
-      Merge branch 'pci/qcom'
-      Merge branch 'remotes/lorenzo/pci/rcar'
-      Merge branch 'pci/rockchip'
-      Merge branch 'remotes/lorenzo/pci/tango'
-      Merge branch 'remotes/lorenzo/pci/xilinx'
-      Merge branch 'remotes/lorenzo/pci/misc'
-
-Chen Lin (1):
-      PCI: acpiphp: Remove unused acpiphp_callback typedef
-
-Chen-Yu Tsai (2):
-      PCI: rockchip: Make 'ep-gpios' DT property optional
-      dt-bindings: arm: rockchip: Add FriendlyARM NanoPi M4B
-
-Daire McNamara (4):
-      PCI: Call platform_set_drvdata earlier in devm_pci_alloc_host_bridge
-      dt-bindings: PCI: microchip: Add Microchip PolarFire host binding
-      PCI: microchip: Add Microchip PolarFire PCIe controller driver
-      MAINTAINERS: Add Daire McNamara as Microchip PCIe driver maintainer
-
-Dmitry Baryshkov (2):
-      dt-bindings: PCI: qcom: Document ddrss_sf_tbu clock for sm8250
-      PCI: qcom: Add support for ddrss_sf_tbu clock
-
-Geert Uytterhoeven (1):
-      PCI: Fix pci_register_io_range() memory leak
-
-Heiner Kallweit (1):
-      PCI: Align checking of syscall user config accessors
-
-Hou Zhiqiang (2):
-      dt-bindings: PCI: layerscape: Add LX2160A rev2 compatible strings
-      PCI: layerscape: Add LX2160A rev2 EP mode support
-
-Jisheng Zhang (2):
-      PCI: dwc: Don't assume the ops in dw_pcie always exist
-      PCI: al: Remove useless dw_pcie_ops
-
-Junhao He (1):
-      PCI: Apply CONFIG_PCI_DEBUG to entire drivers/pci hierarchy
-
-Keith Busch (5):
-      PCI/ERR: Clear status of the reporting device
-      PCI/AER: Clear AER status from Root Port when resetting Downstream Port
-      PCI/ERR: Retain status from error notification
-      PCI/AER: Specify the type of Port that was reset
-      PCI/portdrv: Report reset for frozen channel
-
-Kishon Vijay Abraham I (17):
-      Documentation: PCI: Add specification for the PCI NTB function device
-      PCI: endpoint: Make *_get_first_free_bar() take into account 64 bit BAR
-      PCI: endpoint: Add helper API to get the 'next' unreserved BAR
-      PCI: endpoint: Make *_free_bar() to return error codes on failure
-      PCI: endpoint: Remove unused pci_epf_match_device()
-      PCI: endpoint: Add support to associate secondary EPC with EPF
-      PCI: endpoint: Add support in configfs to associate two EPCs with EPF
-      PCI: endpoint: Add pci_epc_ops to map MSI IRQ
-      PCI: endpoint: Add pci_epf_ops to expose function-specific attrs
-      PCI: endpoint: Allow user to create sub-directory of 'EPF Device' directory
-      PCI: cadence: Implement ->msi_map_irq() ops
-      PCI: cadence: Configure LM_EP_FUNC_CFG based on epc->function_num_map
-      PCI: endpoint: Add EP function driver to provide NTB functionality
-      PCI: Add TI J721E device to PCI IDs
-      NTB: Add support for EPF PCI Non-Transparent Bridge
-      Documentation: PCI: Add configfs binding documentation for pci-ntb endpoint function
-      Documentation: PCI: Add PCI endpoint NTB function user guide
-
-Krzysztof Wilczyński (2):
-      PCI: mediatek: Add missing of_node_put() to fix reference leak
-      PCI: cadence: Fix DMA range mapping early return error
-
-Lad Prabhakar (1):
-      PCI: Drop PCIE_RCAR config option
-
-Marek Vasut (1):
-      PCI: rcar: Always allocate MSI addresses in 32bit space
-
-Martin Hundebøll (1):
-      PCI: Add Silicom Denmark vendor ID
-
-Martin Kaiser (4):
-      PCI: altera-msi: Remove IRQ handler and data in one go
-      PCI: dwc: Remove IRQ handler and data in one go
-      PCI: xgene-msi: Fix race in installing chained irq handler
-      PCI: brcmstb: Remove chained IRQ handler and data in one go
-
-Michael Walle (1):
-      PCI: layerscape: Convert to builtin_platform_driver()
-
-Nadeem Athani (1):
-      PCI: cadence: Retrain Link to work around Gen2 training defect
-
-Pan Bian (1):
-      PCI: xilinx-cpm: Fix reference count leak on error path
-
-Rafał Miłecki (2):
-      dt-bindings: PCI: brcmstb: add BCM4908 binding
-      PCI: brcmstb: support BCM4908 with external PERST# signal controller
-
-Rob Herring (1):
-      PCI: dwc: Drop support for config space in 'ranges'
-
-Russell King (1):
-      PCI: pci-bridge-emul: Fix array overruns, improve safety
-
-Sebastian Andrzej Siewior (1):
-      PCI: Remove WARN_ON(in_interrupt())
-
-Shradha Todi (2):
-      PCI: dwc: Change size to u64 for EP outbound iATU
-      PCI: dwc: Add upper limit address for outbound iATU
-
-Vidya Sagar (1):
-      PCI: dwc: Work around ECRC configuration issue
-
- .../PCI/endpoint/function/binding/pci-ntb.rst      |   38 +
- Documentation/PCI/endpoint/index.rst               |    3 +
- Documentation/PCI/endpoint/pci-endpoint-cfs.rst    |   10 +
- Documentation/PCI/endpoint/pci-ntb-function.rst    |  348 ++++
- Documentation/PCI/endpoint/pci-ntb-howto.rst       |  161 ++
- .../devicetree/bindings/arm/rockchip.yaml          |    1 +
- .../devicetree/bindings/pci/brcm,stb-pcie.yaml     |   37 +-
- .../devicetree/bindings/pci/layerscape-pci.txt     |    1 +
- .../bindings/pci/microchip,pcie-host.yaml          |   92 +
- .../devicetree/bindings/pci/qcom,pcie.txt          |   17 +-
- MAINTAINERS                                        |    9 +-
- arch/s390/include/asm/facility.h                   |    2 +-
- drivers/acpi/pci_root.c                            |   40 +-
- drivers/gpu/drm/qxl/qxl_drv.c                      |    2 +-
- drivers/misc/pci_endpoint_test.c                   |    1 -
- drivers/net/wireless/intel/iwlwifi/fw/file.h       |    2 +-
- drivers/ntb/hw/Kconfig                             |    1 +
- drivers/ntb/hw/Makefile                            |    1 +
- drivers/ntb/hw/epf/Kconfig                         |    6 +
- drivers/ntb/hw/epf/Makefile                        |    1 +
- drivers/ntb/hw/epf/ntb_hw_epf.c                    |  753 +++++++
- drivers/pci/Makefile                               |    2 +-
- drivers/pci/controller/Kconfig                     |   35 +-
- drivers/pci/controller/Makefile                    |    2 +-
- drivers/pci/controller/cadence/pci-j721e.c         |    3 +
- drivers/pci/controller/cadence/pcie-cadence-ep.c   |   60 +-
- drivers/pci/controller/cadence/pcie-cadence-host.c |   86 +-
- drivers/pci/controller/cadence/pcie-cadence.h      |   11 +-
- drivers/pci/controller/dwc/pci-layerscape-ep.c     |    7 +
- drivers/pci/controller/dwc/pci-layerscape.c        |    5 +-
- drivers/pci/controller/dwc/pcie-al.c               |    4 -
- drivers/pci/controller/dwc/pcie-designware-ep.c    |    8 +-
- drivers/pci/controller/dwc/pcie-designware-host.c  |   53 +-
- drivers/pci/controller/dwc/pcie-designware.c       |   70 +-
- drivers/pci/controller/dwc/pcie-designware.h       |    4 +-
- drivers/pci/controller/dwc/pcie-qcom.c             |   22 +-
- drivers/pci/controller/pci-host-common.c           |    4 +-
- drivers/pci/controller/pci-hyperv.c                |    2 +-
- drivers/pci/controller/pci-xgene-msi.c             |   10 +-
- drivers/pci/controller/pci-xgene.c                 |   13 +-
- drivers/pci/controller/pcie-altera-msi.c           |    3 +-
- drivers/pci/controller/pcie-brcmstb.c              |   35 +-
- drivers/pci/controller/pcie-mediatek.c             |    7 +-
- drivers/pci/controller/pcie-microchip-host.c       | 1138 +++++++++++
- drivers/pci/controller/pcie-rcar-host.c            |    2 +-
- drivers/pci/controller/pcie-rockchip.c             |   12 +-
- drivers/pci/controller/pcie-tango.c                |  341 ----
- drivers/pci/controller/pcie-xilinx-cpm.c           |    1 +
- drivers/pci/endpoint/functions/Kconfig             |   13 +
- drivers/pci/endpoint/functions/Makefile            |    1 +
- drivers/pci/endpoint/functions/pci-epf-ntb.c       | 2128 ++++++++++++++++++++
- drivers/pci/endpoint/functions/pci-epf-test.c      |   13 +-
- drivers/pci/endpoint/pci-ep-cfs.c                  |  176 +-
- drivers/pci/endpoint/pci-epc-core.c                |  130 +-
- drivers/pci/endpoint/pci-epf-core.c                |  105 +-
- drivers/pci/hotplug/acpiphp.h                      |    3 -
- drivers/pci/pci-bridge-emul.c                      |   11 +-
- drivers/pci/pci.c                                  |    4 +
- drivers/pci/pcie/Kconfig                           |    8 -
- drivers/pci/pcie/Makefile                          |    1 -
- drivers/pci/pcie/aer.c                             |    5 +-
- drivers/pci/pcie/bw_notification.c                 |  138 --
- drivers/pci/pcie/err.c                             |   16 +-
- drivers/pci/pcie/portdrv.h                         |    6 -
- drivers/pci/pcie/portdrv_pci.c                     |    4 +-
- drivers/pci/search.c                               |    4 -
- drivers/pci/setup-res.c                            |    6 +
- drivers/pci/syscall.c                              |   10 +-
- include/linux/acpi.h                               |    3 -
- include/linux/pci-epc.h                            |   39 +-
- include/linux/pci-epf.h                            |   28 +-
- include/linux/pci_ids.h                            |    3 +
- lib/logic_pio.c                                    |    3 +
- 73 files changed, 5543 insertions(+), 781 deletions(-)
- create mode 100644 Documentation/PCI/endpoint/function/binding/pci-ntb.rst
- create mode 100644 Documentation/PCI/endpoint/pci-ntb-function.rst
- create mode 100644 Documentation/PCI/endpoint/pci-ntb-howto.rst
- create mode 100644 Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
- create mode 100644 drivers/ntb/hw/epf/Kconfig
- create mode 100644 drivers/ntb/hw/epf/Makefile
- create mode 100644 drivers/ntb/hw/epf/ntb_hw_epf.c
- create mode 100644 drivers/pci/controller/pcie-microchip-host.c
- delete mode 100644 drivers/pci/controller/pcie-tango.c
- create mode 100644 drivers/pci/endpoint/functions/pci-epf-ntb.c
- delete mode 100644 drivers/pci/pcie/bw_notification.c
+            Linus
