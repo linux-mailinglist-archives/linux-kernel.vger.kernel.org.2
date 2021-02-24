@@ -2,135 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5502932425C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8830A324265
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 17:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235406AbhBXQpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 11:45:47 -0500
-Received: from mga01.intel.com ([192.55.52.88]:10250 "EHLO mga01.intel.com"
+        id S234952AbhBXQqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 11:46:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235028AbhBXQp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:45:26 -0500
-IronPort-SDR: QJ4mQOkCJcpgh+vq3l6xsJcmmQCRv1YzTibnBE+orJZeOLaBA3n0UWljO7J10T66B3Mx+E6Yau
- BL6nZ+eecfLA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="204702379"
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="204702379"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 08:44:47 -0800
-IronPort-SDR: cO6tUP/okEbGeERP7ncSscGvWFoqHF2wSdnLMFWdPr4Y3w9ngVkS4ODpHA5fLWv9bzRuj4JBHJ
- y3psIq07rtLw==
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="515715838"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.35.50]) ([10.212.35.50])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 08:44:45 -0800
-Subject: Re: [PATCH v21 06/26] x86/cet: Add control-protection fault handler
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
- <20210217222730.15819-7-yu-cheng.yu@intel.com>
- <20210224161343.GE20344@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <32ac05ef-b50b-c947-095d-bc31a42947a3@intel.com>
-Date:   Wed, 24 Feb 2021 08:44:45 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S235301AbhBXQqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 11:46:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A330764F04;
+        Wed, 24 Feb 2021 16:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614185153;
+        bh=Isqqlscrz8r/lMK8N8O5Ru369KorfLi3sBZm8ZIdTlM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Uw5dkrtFZ0jP4jQ4UNoVqvYgqsLrjo30okxdOq7fWhz1aMR7uF0zb7tsKp6PC3+x/
+         BAJPAr0RkoYSyNkEDndnF2UM8nWIkDqFAO+lEyUjR6zpqlFFCeRLJqB7COteNjrFI7
+         K5btcsHbhXdlmZJZ503MG79jJrr0dJU5/3L3XjTVj3tWi0ZJVAqAWR6JSB5fTQxvKz
+         10zmqfEOuioJqdVkN6s+KGil6+LnfsIdIAF3L81tg/LpGOIrzLciXf3mS8CF/fOzMX
+         NizMxtt0qKpHBS0OjLJG2Eks3gUp+Qs3r2llf82ObiE3lCGafa0ae/bC0xaSuShFz/
+         bFFMdnA4wp/VA==
+Date:   Wed, 24 Feb 2021 18:45:35 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com, David.Laight@aculab.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v6] tpm: fix reference counting for struct tpm_chip
+Message-ID: <YDaCrwnoZZ/b3VmP@kernel.org>
+References: <1613680181-31920-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1613680181-31920-2-git-send-email-LinoSanfilippo@gmx.de>
+ <YC+BRfvtA3n7yeaR@kernel.org>
+ <aa2ec878-f8ea-d28b-c7c2-ecdc3d19f71e@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <20210224161343.GE20344@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aa2ec878-f8ea-d28b-c7c2-ecdc3d19f71e@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/2021 8:13 AM, Borislav Petkov wrote:
-> On Wed, Feb 17, 2021 at 02:27:10PM -0800, Yu-cheng Yu wrote:
->> +/*
->> + * When a control protection exception occurs, send a signal to the responsible
->> + * application.  Currently, control protection is only enabled for user mode.
->> + * This exception should not come from kernel mode.
->> + */
->> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
->> +{
->> +	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
->> +				      DEFAULT_RATELIMIT_BURST);
+On Sun, Feb 21, 2021 at 11:19:28AM +0100, Lino Sanfilippo wrote:
+> 
+> Hi,
+> 
+> On 19.02.21 at 10:13, Jarkko Sakkinen wrote:
+> 
+> >> +	rc = cdev_device_add(&chip->cdevs, &chip->devs);
+> >> +	if (rc) {
+> >> +		dev_err(&chip->devs,
+> >> +			"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
+> >> +			dev_name(&chip->devs), MAJOR(chip->devs.devt),
+> >> +			MINOR(chip->devs.devt), rc);
+> >> +		goto out_put_devs;
+> >> +	}
+> >> +
+> >> +	return 0;
+> >> +
+> >> +out_put_devs:
+> >
+> > A nit:
+> >
+> > 1. You have already del_cdev:
+> > 2. Here you use a differing convention with out prefix.
+> >
+> > I'd suggest that you put err_ to both:
+> >
+> > 1. err_del_cdev
+> > 2. err_put_devs
+> >
+> > It's quite coherent what we have already:
+> >
+> > linux-tpmdd on  next took 8s
+> > ❯ git grep "^err_.*" drivers/char/tpm/ |  wc -l
+> > 17
+> >
+> 
+> 
+> The label del_cdev is indeed a bit inconsistent with the rest of the code.
+> But AFAICS out_put_devs is not:
+> 1. all labels in tpm2-space.c start with out_
+> 2. there are more hits for out_ across the whole TPM code (i.e. with the same command
+> you used above I get 31 hits for _out) than for err_.
+> 
+> I suggest to rename del_cdev to something like out_del_cdev or maybe out_cdev which
+> seems to be even closer to the existing naming scheme for labels.
 
-[...]
+Generally, I'd prefer the following pattern:
 
->> +
->> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
->> +		pr_emerg("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)",
->> +			 tsk->comm, task_pid_nr(tsk),
->> +			 regs->ip, regs->sp, ssp, error_code,
->> +			 control_protection_err[err]);
->> +		print_vma_addr(KERN_CONT " in ", regs->ip);
->> +		pr_cont("\n");
->> +	}
->> +
->> +	force_sig_fault(SIGSEGV, SEGV_CPERR,
->> +			(void __user *)uprobe_get_trap_addr(regs));
-> 
-> Why is this calling an uprobes function?
-> 
+out: /* out for success path if needed */
 
-I will change it to error_get_trap_addr().
+        return 0;
 
-> Also, do not break that line even if it is longer than 80.
-> 
->> +	cond_local_irq_disable(regs);
->> +}
->> +#endif
->> +
->>   static bool do_int3(struct pt_regs *regs)
->>   {
->>   	int res;
->> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
->> index d2597000407a..1c2ea91284a0 100644
->> --- a/include/uapi/asm-generic/siginfo.h
->> +++ b/include/uapi/asm-generic/siginfo.h
->> @@ -231,7 +231,8 @@ typedef struct siginfo {
->>   #define SEGV_ADIPERR	7	/* Precise MCD exception */
->>   #define SEGV_MTEAERR	8	/* Asynchronous ARM MTE error */
->>   #define SEGV_MTESERR	9	/* Synchronous ARM MTE exception */
->> -#define NSIGSEGV	9
->> +#define SEGV_CPERR	10	/* Control protection fault */
->> +#define NSIGSEGV	10
-> 
-> I still don't see the patch adding this to the manpage of sigaction(2).
-> 
-> There's a git repo there: https://www.kernel.org/doc/man-pages/
-> 
-> and I'm pretty sure Michael takes patches.
-> 
+err_foo:
 
-I will send a patch.
+err_bar:
 
---
-Yu-cheng
+        return ret;
+
+Existing naming scheme is not something to hang into, and I don't care
+to preserve it.
+
+> Regards,
+> Lino
+
+/Jarkko
+ 
