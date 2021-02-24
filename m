@@ -2,74 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D3D324573
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9011932457E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235937AbhBXUmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:42:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
+        id S235772AbhBXUzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 15:55:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235781AbhBXUmc (ORCPT
+        with ESMTP id S235479AbhBXUzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:42:32 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C209C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:41:46 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id b14so3625267qkk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:41:46 -0800 (PST)
+        Wed, 24 Feb 2021 15:55:08 -0500
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307A0C061788
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:54:28 -0800 (PST)
+Received: by mail-ua1-x92d.google.com with SMTP id t15so1185624ual.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 12:54:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EwNM4IQrP65m3pBxQdPq3PIkStWcpBTasxWsf7+C0lo=;
-        b=oynA0tAUXRRCGRxkmQGoFtzMRLvf+22xVNOkpXfaZ3ShiECJzsBik78xQsBCe2C7Ey
-         uv/GVxd8ChE9O5nHMvqVZBh+PuvvYDYAENDW5HjbHyecOl9ca+i361mperXkFpE/ckHp
-         AbJGwXquplMfFHdrnYcGkVAYrgUneo/hCd91ApPj9Fe/mDlLz3fNjPoou6lbl+UPqc26
-         LoT5jV/vczsQTsBXcNmR1HX7Xqu3ITA//sVu5lz8AM1TIivwA9pWY1IrRD+of6J0s4lE
-         SRKdT2CGdxuUGNRCrXK5YBk4EyH3UAVXqS/agvlVNAUqVFt2Q9cT27TzExcL7mR0aJFt
-         je4A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LLIfyeFIub3muB/CP7Hm2VoepJyVW4tHjdnBCk4yhLg=;
+        b=ollMcONV3bdQ14QYtVBWt6OyYXIP4whd8nwR5FrAAoQprgeHlmN1Lh632mEYtxVBSI
+         G4+0oh8aEKmX6WHRxZ/cD3de2wT6ITxtYGBJRwApyx5JOWST1pJvimvC7kIIEcRmJIhX
+         cxWpev8Q9LWPytWtDWk5kkB7hijixTdqVkP5KuyaHMKZiVa/Quydp+bZJyfzHOEo3S0y
+         10d7fNSsZkyAahwGnT4i6pWEhNAUdZpnmNn9XiLqYORRONogk6w8ca+FtsbgpAxmHru+
+         GjzVvfuqXIq5M68x+natPnOzaLGwVMOrCilUbMYcEktclLWM0NLBY34qeQmJ/lQ8dJzi
+         lEAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EwNM4IQrP65m3pBxQdPq3PIkStWcpBTasxWsf7+C0lo=;
-        b=Qby3LWD3AFtDknogADGbatb2uqtXTC/XsozOFwQE52eL+t1TOtjev9ZZd+kZcGW7pp
-         p7cOMqMv8lC7LXtgNqhcIoqvt1wXpqEzjnX4sLJmsI7RKwneDHA9qgggZqBOzv/vyvi3
-         n/Si1MbU5nRl04CubRVeu9C1edyqtDnLAZZlRpJ4bmTTTYUr+zSq/ejyn8pdUiYEZmKw
-         b+GDNmeA0jpkaQ19gD2Ilf5RAMBfZAxac6F2YppJVZGIMynxXWBMSUu/5DCgcPnaORZE
-         xvHrrZOSRDwm3TL0xKmi6Tt3vueLwnoXYrWYMb3yt4BYA5EcyvsbqtKOjTU7ZcUqWySf
-         +06Q==
-X-Gm-Message-State: AOAM530656SSYbG9RRDmpstfixoQIHV+O+zcDfy79e4VChGOipkD67dg
-        Y82D519yK+mwjp3epLSdBgC3pZkcivwjUw==
-X-Google-Smtp-Source: ABdhPJzPS1yWCPSlG7/+kI7/ZUfr3RkdEDSt24AmwG/AErCzG1jrWZb7GS3fFAgUS97mURwqQfPsCw==
-X-Received: by 2002:a37:4d09:: with SMTP id a9mr17091263qkb.469.1614199305734;
-        Wed, 24 Feb 2021 12:41:45 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id l128sm2315474qkf.68.2021.02.24.12.41.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 12:41:45 -0800 (PST)
-Date:   Wed, 24 Feb 2021 15:41:44 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: cleanup root memcg checks
-Message-ID: <YDa6CPuLBPwclYp6@cmpxchg.org>
-References: <20210223205625.2792891-1-shakeelb@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LLIfyeFIub3muB/CP7Hm2VoepJyVW4tHjdnBCk4yhLg=;
+        b=RHrE5Xl4mHBvm6vzvutde5IvCCTfoPBrx1CKoqQjuwRrKnCr02D6q31kef876O8zXs
+         YDgW7WrwQR69Gfpeg+Xy0W4iytgnmMpJyNiP31YdPSaM3aZIdMqxTl60Unc6EPVHZTen
+         mLny7RMRCRBLNMliKtE4/3P8aDJ4rg7xJYjARNsuWJv9V8WJzrefo/PP9j7IiZM87Ry6
+         r4iv4iwRezXQLZFmc3swdLHOGeOTvOqlRFimM/SApNDZdaB/rFUCMy7qgrjekE2v6jTl
+         5eBWvAsIEc0ZT9YjiZEm4Zm6obYGcM63UitPLOdY4kKG45Ppoqhjas9qjfICYVNPqw6R
+         v/Ew==
+X-Gm-Message-State: AOAM533Y+0RwisRK8MxnJK9MCClWnDaYEe7+K4Dpwdz6iMpmYkxiI2Zd
+        CQA2WEK/pLKalEiR583Nrnipt5dS3JWzAvhU0+V69g==
+X-Google-Smtp-Source: ABdhPJwDkAZHxqTqNM1na6tlHBSoIcFQFsNIy4TN5WNwBY+1hn1Ea0NqgKnjX2WoQcdN6Tf/Ph1uK9pKsYI+hEdPksc=
+X-Received: by 2002:a9f:2021:: with SMTP id 30mr11157082uam.66.1614200066849;
+ Wed, 24 Feb 2021 12:54:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210223205625.2792891-1-shakeelb@google.com>
+References: <20201211184633.3213045-1-samitolvanen@google.com>
+ <20201211184633.3213045-2-samitolvanen@google.com> <20210224201723.GA69309@roeck-us.net>
+ <202102241238.93BC4DCF@keescook>
+In-Reply-To: <202102241238.93BC4DCF@keescook>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 24 Feb 2021 12:54:15 -0800
+Message-ID: <CABCJKufph4se58eiJNSJUd3ASBgbJGmL2e3wg4Jwo4Bi2UxP=Q@mail.gmail.com>
+Subject: Re: [PATCH v9 01/16] tracing: move function tracer options to Kconfig
+ (causing parisc build failures)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, linux-parisc@vger.kernel.org,
+        Helge Deller <deller@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 12:56:25PM -0800, Shakeel Butt wrote:
-> Replace the implicit checking of root memcg with explicit root memcg
-> checking i.e. !css->parent with mem_cgroup_is_root().
-> 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+On Wed, Feb 24, 2021 at 12:38 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Feb 24, 2021 at 12:17:23PM -0800, Guenter Roeck wrote:
+> > On Fri, Dec 11, 2020 at 10:46:18AM -0800, Sami Tolvanen wrote:
+> > > Move function tracer options to Kconfig to make it easier to add
+> > > new methods for generating __mcount_loc, and to make the options
+> > > available also when building kernel modules.
+> > >
+> > > Note that FTRACE_MCOUNT_USE_* options are updated on rebuild and
+> > > therefore, work even if the .config was generated in a different
+> > > environment.
+> > >
+> > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > > Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> >
+> > With this patch in place, parisc:allmodconfig no longer builds.
+> >
+> > Error log:
+> > Arch parisc is not supported with CONFIG_FTRACE_MCOUNT_RECORD at scripts/recordmcount.pl line 405.
+> > make[2]: *** [scripts/mod/empty.o] Error 2
+> >
+> > Due to this problem, CONFIG_FTRACE_MCOUNT_RECORD can no longer be
+> > enabled in parisc builds. Since that is auto-selected by DYNAMIC_FTRACE,
+> > DYNAMIC_FTRACE can no longer be enabled, and with it everything that
+> > depends on it.
+>
+> Ew. Any idea why this didn't show up while it was in linux-next?
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Does anyone build parisc allmodconfig from -next?
+
+parisc seems to always use -fpatchable-function-entry with dynamic
+ftrace, so we just need to select
+FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY to stop it from defaulting
+to recordmcount:
+
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index ecef9aff9d72..9ee806f68123 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -60,6 +60,7 @@ config PARISC
+        select HAVE_KPROBES
+        select HAVE_KRETPROBES
+        select HAVE_DYNAMIC_FTRACE if
+$(cc-option,-fpatchable-function-entry=1,1)
++       select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY if HAVE_DYNAMIC_FTRACE
+        select HAVE_FTRACE_MCOUNT_RECORD if HAVE_DYNAMIC_FTRACE
+        select HAVE_KPROBES_ON_FTRACE
+        select HAVE_DYNAMIC_FTRACE_WITH_REGS
+
+I'll send a proper patch shortly.
+
+Sami
