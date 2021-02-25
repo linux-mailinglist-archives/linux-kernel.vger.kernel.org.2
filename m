@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F231632501A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E95E332501B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhBYNAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 08:00:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53808 "EHLO mail.kernel.org"
+        id S232429AbhBYNBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 08:01:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229919AbhBYNAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:00:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6EBC64F1E;
-        Thu, 25 Feb 2021 12:59:32 +0000 (UTC)
+        id S229800AbhBYNAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 08:00:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9868364F1F;
+        Thu, 25 Feb 2021 12:59:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614257976;
-        bh=MsNF8DWYQD/tTk1mZpSeLETJRpSBgEH/y2mRLEnwdkA=;
+        s=k20201202; t=1614257979;
+        bh=iC4xPAAEf5Q25zrpO9QDpQdb8NdCLLgIwAsn5EyY2y8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QDTq801HD7ecpBkv6MP3z/prgHAOpWzQQR3vgFK80pp3ZxM0pZ2gkrbzOdCiceLbA
-         EAk4xo2bZUNgNpgxgBhGiQdfOBx+ag1ZNOhaTG7olQqa1q+TLcVmEydWyzrYcy1WmS
-         qx2rGAbjXt/6n5Q3fG+/pxWl3qMNhBGRzyVNN6KqxCN75Ywh4YDr07kHzsSHJsGdat
-         8TbNz6cGL+bimscAxUjoNgHgdawirqL2sJlQgt8qjCRusSM/J+QqkAOIMtByAAr+A0
-         LV+K9S9EC4AcToYZ3dHtdhwjPtu53r+xN5eBuvMnlPb7JatEBlfpYEb5pDyqQr6KZM
-         iwkiopcKjvWQg==
+        b=Q1/8xkLkE0hSUhWick6mrwsZPeS4qyH3hqUYvsD4+gKdKfmRkNpu+3ZT8vDztt8q2
+         QPER5uBGs9Vj8iCXDOO+kPIkXeWTnrURYYH7CyjhJqvnP7atg04ZsmPZIVe/IlEx83
+         BCPsxK41NpvtI5zv3XVnSWDpnc3A6Uz14t2/f/QET26v7D5FA7hA679LPLs2BJAPbg
+         Bury2yiPBIAVQsjP5nIIsC5JFBQlZkwIrEIMmVhjCEDbmarsEbIjTCJgRBu8+M0Pn3
+         QR3xhVbPUFODfYfqf65HE1Mh/VbnzbOQQaYB+L8mZVYikWhE7yRmozXkZrMhnB9CPO
+         F+vrmJ0JpCQzQ==
 From:   Will Deacon <will@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>, Max Uvarov <muvarov@gmail.com>,
@@ -38,9 +38,9 @@ Cc:     Will Deacon <will@kernel.org>, Max Uvarov <muvarov@gmail.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
         devicetree@vger.kernel.org
-Subject: [PATCH 1/2] arm64: cpufeatures: Fix handling of CONFIG_CMDLINE for idreg overrides
-Date:   Thu, 25 Feb 2021 12:59:20 +0000
-Message-Id: <20210225125921.13147-2-will@kernel.org>
+Subject: [PATCH 2/2] of/fdt: Append bootloader arguments when CMDLINE_EXTEND=y
+Date:   Thu, 25 Feb 2021 12:59:21 +0000
+Message-Id: <20210225125921.13147-3-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210225125921.13147-1-will@kernel.org>
 References: <20210225125921.13147-1-will@kernel.org>
@@ -50,91 +50,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The built-in kernel commandline (CONFIG_CMDLINE) can be configured in
-three different ways:
+The Kconfig help text for CMDLINE_EXTEND is sadly duplicated across all
+architectures that implement it (arm, arm64, powerpc, riscv and sh), but
+they all seem to agree that the bootloader arguments will be appended to
+the CONFIG_CMDLINE. For example, on arm64:
 
-  1. CMDLINE_FORCE: Use CONFIG_CMDLINE instead of any bootloader args
-  2. CMDLINE_EXTEND: Append the bootloader args to CONFIG_CMDLINE
-  3. CMDLINE_FROM_BOOTLOADER: Only use CONFIG_CMDLINE if there aren't
-     any bootloader args.
+  | The command-line arguments provided by the boot loader will be
+  | appended to the default kernel command string.
 
-The early cmdline parsing to detect idreg overrides gets (2) and (3)
-slightly wrong: in the case of (2) the bootloader args are parsed first
-and in the case of (3) the CMDLINE is always parsed.
+This also matches the behaviour of the EFI stub, which parses the
+bootloader arguments first if CMDLINE_EXTEND is set, as well as the
+out-of-tree CMDLINE_EXTEND implementation in Android.
 
-Fix these issues by moving the bootargs parsing out into a helper
-function and following the same logic as that used by the EFI stub.
+However, the behaviour in the upstream fdt code appears to be the other
+way around: CONFIG_CMDLINE is appended to the bootloader arguments.
 
+Fix the code to follow the documentation by moving the cmdline
+processing out into a new function, early_init_dt_retrieve_cmdline(),
+and copying CONFIG_CMDLINE to the beginning of the cmdline buffer rather
+than concatenating it onto the end.
+
+Cc: Max Uvarov <muvarov@gmail.com>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
 Cc: Marc Zyngier <maz@kernel.org>
-Fixes: 33200303553d ("arm64: cpufeature: Add an early command-line cpufeature override facility")
+Cc: Doug Anderson <dianders@chromium.org>
+Cc: Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Fixes: 34b82026a507 ("fdt: fix extend of cmd line")
 Signed-off-by: Will Deacon <will@kernel.org>
 ---
- arch/arm64/kernel/idreg-override.c | 44 +++++++++++++++++-------------
- 1 file changed, 25 insertions(+), 19 deletions(-)
+ drivers/of/fdt.c | 64 +++++++++++++++++++++++++++++-------------------
+ 1 file changed, 39 insertions(+), 25 deletions(-)
 
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index dffb16682330..cc071712c6f9 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -163,33 +163,39 @@ static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
- 	} while (1);
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index dcc1dd96911a..83b9d065e58d 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1033,11 +1033,48 @@ int __init early_init_dt_scan_memory(unsigned long node, const char *uname,
+ 	return 0;
  }
  
--static __init void parse_cmdline(void)
-+static __init const u8 *get_bootargs_cmdline(void)
- {
--	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE)) {
--		const u8 *prop;
--		void *fdt;
--		int node;
-+	const u8 *prop;
-+	void *fdt;
-+	int node;
- 
--		fdt = get_early_fdt_ptr();
--		if (!fdt)
--			goto out;
-+	fdt = get_early_fdt_ptr();
-+	if (!fdt)
-+		return NULL;
- 
--		node = fdt_path_offset(fdt, "/chosen");
--		if (node < 0)
--			goto out;
-+	node = fdt_path_offset(fdt, "/chosen");
-+	if (node < 0)
-+		return NULL;
- 
--		prop = fdt_getprop(fdt, node, "bootargs", NULL);
--		if (!prop)
--			goto out;
-+	prop = fdt_getprop(fdt, node, "bootargs", NULL);
-+	if (!prop)
-+		return NULL;
- 
--		__parse_cmdline(prop, true);
-+	return strlen(prop) ? prop : NULL;
-+}
- 
--		if (!IS_ENABLED(CONFIG_CMDLINE_EXTEND))
--			return;
-+static __init void parse_cmdline(void)
++static int __init cmdline_from_bootargs(unsigned long node, void *dst, int sz)
 +{
-+	const u8 *prop = get_bootargs_cmdline();
++	int l;
++	const char *p = of_get_flat_dt_prop(node, "bootargs", &l);
 +
-+	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) ||
-+	    IS_ENABLED(CONFIG_CMDLINE_FORCE) ||
-+	    !prop) {
-+		__parse_cmdline(CONFIG_CMDLINE, true);
- 	}
++	if (!p || l <= 0)
++		return -EINVAL;
++
++	return strlcpy(dst, p, min(l, sz));
++}
++
++/* dst is a zero-initialised buffer of COMMAND_LINE_SIZE bytes */
++static void __init early_init_dt_retrieve_cmdline(unsigned long node, char *dst)
++{
++	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND)) {
++		/* Copy CONFIG_CMDLINE to the start of destination buffer */
++		size_t idx = strlcpy(dst, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
++
++		/* Check that we have enough space to concatenate */
++		if (idx + 1 >= COMMAND_LINE_SIZE)
++			return;
++
++		/* Append the bootloader arguments */
++		dst[idx++] = ' ';
++		cmdline_from_bootargs(node, &dst[idx], COMMAND_LINE_SIZE - idx);
++	} else if (IS_ENABLED(CONFIG_CMDLINE_FORCE)) {
++		/* Just use CONFIG_CMDLINE */
++		strlcpy(dst, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
++	} else if (IS_ENABLED(CONFIG_CMDLINE_FROM_BOOTLOADER)) {
++		/* Use CONFIG_CMDLINE if no arguments from bootloader. */
++		if (cmdline_from_bootargs(node, dst, COMMAND_LINE_SIZE) <= 0)
++			strlcpy(dst, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
++	} else {
++		/* Just use bootloader arguments */
++		cmdline_from_bootargs(node, dst, COMMAND_LINE_SIZE);
++	}
++}
++
+ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+ 				     int depth, void *data)
+ {
+ 	int l;
+-	const char *p;
+ 	const void *rng_seed;
  
--out:
--	__parse_cmdline(CONFIG_CMDLINE, true);
-+	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && prop)
-+		__parse_cmdline(prop, true);
- }
+ 	pr_debug("search \"chosen\", depth: %d, uname: %s\n", depth, uname);
+@@ -1047,30 +1084,7 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+ 		return 0;
  
- /* Keep checkers quiet */
+ 	early_init_dt_check_for_initrd(node);
+-
+-	/* Retrieve command line */
+-	p = of_get_flat_dt_prop(node, "bootargs", &l);
+-	if (p != NULL && l > 0)
+-		strlcpy(data, p, min(l, COMMAND_LINE_SIZE));
+-
+-	/*
+-	 * CONFIG_CMDLINE is meant to be a default in case nothing else
+-	 * managed to set the command line, unless CONFIG_CMDLINE_FORCE
+-	 * is set in which case we override whatever was found earlier.
+-	 */
+-#ifdef CONFIG_CMDLINE
+-#if defined(CONFIG_CMDLINE_EXTEND)
+-	strlcat(data, " ", COMMAND_LINE_SIZE);
+-	strlcat(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+-#elif defined(CONFIG_CMDLINE_FORCE)
+-	strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+-#else
+-	/* No arguments from boot loader, use kernel's  cmdl*/
+-	if (!((char *)data)[0])
+-		strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+-#endif
+-#endif /* CONFIG_CMDLINE */
+-
++	early_init_dt_retrieve_cmdline(node, data);
+ 	pr_debug("Command line is: %s\n", (char *)data);
+ 
+ 	rng_seed = of_get_flat_dt_prop(node, "rng-seed", &l);
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
