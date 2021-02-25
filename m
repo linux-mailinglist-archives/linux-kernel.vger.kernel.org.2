@@ -2,146 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA89324D0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CACF2324D11
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236448AbhBYJhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:37:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
+        id S234384AbhBYJku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:40:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236439AbhBYJdk (ORCPT
+        with ESMTP id S233291AbhBYJjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:33:40 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96AEC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 01:32:59 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id b15so3166485pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 01:32:59 -0800 (PST)
+        Thu, 25 Feb 2021 04:39:33 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115D5C061A2D;
+        Thu, 25 Feb 2021 01:33:45 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id s16so2869111plr.9;
+        Thu, 25 Feb 2021 01:33:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=XeHCZmG5dqvm6nspXM9z8zBCHfkWPz+HLqA1CUKopco=;
-        b=uZTjyzu8DHdajNqbqGXRonXkyLoQDrofd0yFAHFvRES67VWhrMinQ9kQbdwYAEd3gv
-         kLjzkt2/e7TUZWrKHnJjn4QYN8v/NoWBOOJmDUMalzAuM8JGGtMyds+mZecwzlsY/HXD
-         8cQhvdDapm2pRgT8f6oQNJfuwTjGJ06wu25NAi3xUGi5WRWt3kMYOWe/DfgFuLMiJyh8
-         KcLBK8q6/i3B5M56CT0xI+PDC4GwxOhK1I0NNd0kNUmeunjpuBfamFqC12I2wf2vDYLp
-         kNVM9/+hAtoFJlHm2kcqGHc1skdNRzivGnR7pvHmoNJZiBPvFtWm+wIXaGKiee/84kkG
-         yi7Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rRc8kqJLiL0cteqcYhIFKGNwREHFOWiYv8Q/pdnFteg=;
+        b=AmZ474y7XCT4XraclC/jEJxomJg/vBDaJUYqXxEJoefw9gvSG4N8lBO+mxzfF+Xzf4
+         6ZMxr9k4p30eGwEWBrbnnAS3mHMFjRk1zrb5POjmbNZNG5TyoGVl3U6mXaaZ/4jLOjvs
+         qum8SjWgrmStNpAY2fskdVM0Ei3aEmiKJPSboTMxw6eVx8moQtdVvEU4+TQxbWnRM1IW
+         fdVC7bsySkGjH2U4juVkVWcqah1u6u7WUq0G1+d/lz/B33js5Br/IDo6znUhr+j1VD3v
+         8sehKoVY8l+AZI/7bQ4oiCc3yqoBSw1sWKwWxugv6M3lLEO9jzKI84Q/i1DreHTlqbbt
+         efEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=XeHCZmG5dqvm6nspXM9z8zBCHfkWPz+HLqA1CUKopco=;
-        b=Oq/i1j9HMLogFQBnIVrvOG6l9yoTmojNANA+IE/duTOKK/XyGckmNLVxFm+C8DDf1w
-         tAKvbBcDBEEPwNZrU2VoNb0CrY58XU4eR9qXPXivdRIXJXbyksn+KuHsPStPz0VG2B5J
-         mQDxR+PlBY2uIcICRQfDhenDMh18CEmibOJjezXxCgosTrnZATx0D1t1++8wucbgPKzG
-         a2wrjKFoUySD6I4msZmXdFVUT5gu5e5rD1Q+vNzZn4dp8WLuG0+f9E25cU/trkJp4hW4
-         eNjR5O6eXMR+h5DiZawJ2R3rDJSbuS8i2BTd9wyt362oi3/uHGkgcih3Fmvx0mRwkQ2k
-         gTZQ==
-X-Gm-Message-State: AOAM530Xfz60vz6c+fZz7IgjcRQKl3Q5SKwsd2ODS1pxrzl9bw3N7yCp
-        WixuP+ujIdrXvgZMseNZ6fg=
-X-Google-Smtp-Source: ABdhPJy3aIw7HUgtN5MwSlRPIeCMci2omEtHCAQC/8e4+WurdradiUgIeMmgrkjGQapldtqk2Phy4A==
-X-Received: by 2002:a17:90b:718:: with SMTP id s24mr2491061pjz.160.1614245579190;
-        Thu, 25 Feb 2021 01:32:59 -0800 (PST)
-Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id w8sm5326685pgk.46.2021.02.25.01.32.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rRc8kqJLiL0cteqcYhIFKGNwREHFOWiYv8Q/pdnFteg=;
+        b=nQePnFomOw1x0u/1nxrGj5gx/rVhkY3Pr4SvBRMVqdt9st7CJRJWiNhVJM2K27GwYS
+         fPgQwOO7ODhLU6OP4FdfUPmhg4xZJZ1hxv/P+4cKh6mXkkXg3WnP8xZLSpGhQM5lbbWD
+         YWIoD+gi29YRcC4ki/NGBRtHzPQbMjg1kpl3iKe37ymMEiXVuWs0rz4FuXYAI8fVgLJ6
+         /KiuZ9qVXoWeq/SfJOjWYua1Pssf1xZNuY5gmdI9eFaAQAvXnYIaGby2sVXMwXbcGDio
+         Aq6zQLzA/nNVkOtSRm6lLPLkVvxHEUDKlc6xfex0j+9ggHAn9AgM++dLrZAEoRplCBUI
+         4/CA==
+X-Gm-Message-State: AOAM5313F0tqYyP6SkwwUX02uWSXJDKH6HS4PsJq9ftBxkzxaAf/ls6E
+        ONnNKeKddj04uEUy94G7OPY=
+X-Google-Smtp-Source: ABdhPJxk/XyvL7WKQtCwfaruntT3KsHzZP+/PIMi0gxdtO8oWzzDTbjFpJKksuieb7w9MumbQvP9Jw==
+X-Received: by 2002:a17:902:e54e:b029:e1:2817:f900 with SMTP id n14-20020a170902e54eb02900e12817f900mr2139481plf.15.1614245624464;
+        Thu, 25 Feb 2021 01:33:44 -0800 (PST)
+Received: from localhost.localdomain ([27.122.242.75])
+        by smtp.gmail.com with ESMTPSA id e129sm5739463pfh.87.2021.02.25.01.33.42
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Feb 2021 01:32:58 -0800 (PST)
-From:   Nadav Amit <nadav.amit@gmail.com>
-Message-Id: <D3DF6AC2-679F-4E64-B511-B1A03D1C6048@gmail.com>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_41CB083A-5C98-4549-BEB4-96CA2ADD4E60";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [RFC 0/6] x86: prefetch_page() vDSO call
-Date:   Thu, 25 Feb 2021 01:32:56 -0800
-In-Reply-To: <64538CCF-AD11-43C2-9632-E054301F9E6D@gmail.com>
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org
-To:     Peter Zijlstra <peterz@infradead.org>
-References: <20210225072910.2811795-1-namit@vmware.com>
- <YDdiZ1SFRrvRPhkR@hirez.programming.kicks-ass.net>
- <64538CCF-AD11-43C2-9632-E054301F9E6D@gmail.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Thu, 25 Feb 2021 01:33:44 -0800 (PST)
+From:   Hyeongseok Kim <hyeongseok@gmail.com>
+To:     namjae.jeon@samsung.com, sj1557.seo@samsung.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hyeongseok Kim <hyeongseok@gmail.com>
+Subject: [PATCH] exfat: fix erroneous discard when clear cluster bit
+Date:   Thu, 25 Feb 2021 18:33:33 +0900
+Message-Id: <20210225093333.144829-1-hyeongseok@gmail.com>
+X-Mailer: git-send-email 2.27.0.83.g0313f36
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If mounted with discard option, exFAT issues discard command when clear
+cluster bit to remove file. But the input parameter of cluster-to-sector
+calculation is abnormally adds reserved cluster size which is 2, leading
+to discard unrelated sectors included in target+2 cluster.
 
---Apple-Mail=_41CB083A-5C98-4549-BEB4-96CA2ADD4E60
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
+Fixes: 1e49a94cf707 ("exfat: add bitmap operations")
+Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
+---
+ fs/exfat/balloc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/fs/exfat/balloc.c b/fs/exfat/balloc.c
+index 761c79c3a4ba..41a1dfd9d98a 100644
+--- a/fs/exfat/balloc.c
++++ b/fs/exfat/balloc.c
+@@ -186,8 +186,7 @@ void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)
+ 		int ret_discard;
+ 
+ 		ret_discard = sb_issue_discard(sb,
+-			exfat_cluster_to_sector(sbi, clu +
+-						EXFAT_RESERVED_CLUSTERS),
++			exfat_cluster_to_sector(sbi, clu),
+ 			(1 << sbi->sect_per_clus_bits), GFP_NOFS, 0);
+ 
+ 		if (ret_discard == -EOPNOTSUPP) {
+-- 
+2.27.0.83.g0313f36
 
-
-> On Feb 25, 2021, at 12:52 AM, Nadav Amit <nadav.amit@gmail.com> wrote:
->=20
->=20
->=20
->> On Feb 25, 2021, at 12:40 AM, Peter Zijlstra <peterz@infradead.org> =
-wrote:
->>=20
->> On Wed, Feb 24, 2021 at 11:29:04PM -0800, Nadav Amit wrote:
->>> From: Nadav Amit <namit@vmware.com>
->>>=20
->>> Just as applications can use prefetch instructions to overlap
->>> computations and memory accesses, applications may want to overlap =
-the
->>> page-faults and compute or overlap the I/O accesses that are =
-required
->>> for page-faults of different pages.
-[
-[ snip ]
-
->> Interesting, but given we've been removing explicit prefetch from =
-some
->> parts of the kernel how useful is this in actual use? I'm thinking =
-there
->> should at least be a real user and performance numbers with this =
-before
->> merging.
->=20
-> Can you give me a reference to the =E2=80=9Cremoving explicit prefetch =
-from some
-> parts of the kernel=E2=80=9D?
-
-Oh. I get it - you mean we remove we remove the use of explicit memory
-prefetch from the kernel code. Well, I don=E2=80=99t think it is really =
-related,
-but yes, performance numbers are needed.
-
-
---Apple-Mail=_41CB083A-5C98-4549-BEB4-96CA2ADD4E60
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEESJL3osl5Ymx/w9I1HaAqSabaD1oFAmA3bsgACgkQHaAqSaba
-D1qI7A//U0PnZXNVHZqLmdN2PfFUqLYy/Qh8jX882OkqHSofgdFMg+rMZBngRn9H
-g2iXsmlpxVhWqQC0O7/Z/s2LBM7e2lbemWIhkJWwDK2cyYo1Y/ZkDweil8adXp7u
-fUIiS4gxSnd3qp7sJN3si9fZW7zd7DinSktSCH1RvmN8exMqW0bnjYuStJlE3sTf
-Hl/CU1UydIH+XzxWhl7f0SVMxe8RCWYJ7CO+19gDLuP1+TTmVoOeFa6beV5ctaEp
-dBqTDslBNIZkWXP27Y32ENkb3hQleQF7YSOM+Ust835v/o46bjL6ynBoEE4r6WYa
-baYRKAM0Tq9RCcHAiPOwcmcwKez0Fi0+p9Y5NJxc6UFYKmoThxks7ADqkiOXxFjv
-uvfhNSpdI6qC0RclIuSCG2pkpj85kbuSHCrtZ3GBvsVMi26PPipBWWR4bwOSKYfE
-WapHT75BlsCdIPrRZw3WQ1Gid4nh8wLCue/D26yylzxl7VKReVOv5UQTgySb5vH5
-JX4B8FcgqSct19kwe6K3+x2RGrUytIQWQxD7PfM1Ny4xI7aqtikrbMqB3wmF3Zv4
-7skYi/4qwnXy+ZuXyka8VHWsG6IeChLi/IMat69Klb0O7eLYfFLLguTyO3eL0mVH
-zXAuaE39u6HrCIvEp+xKJ+WhEOxHIbeLmTvdvDZtcz4JDO+qeX8=
-=LWIC
------END PGP SIGNATURE-----
-
---Apple-Mail=_41CB083A-5C98-4549-BEB4-96CA2ADD4E60--
