@@ -2,84 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E205B324BC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B9E324BCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:14:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235671AbhBYIJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 03:09:45 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12575 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235637AbhBYIIf (ORCPT
+        id S235642AbhBYIKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 03:10:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235560AbhBYIKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 03:08:35 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DmQMd1XhwzMdZj;
-        Thu, 25 Feb 2021 16:05:49 +0800 (CST)
-Received: from huawei.com (10.69.192.56) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Feb 2021
- 16:07:45 +0800
-From:   Luo Jiaxing <luojiaxing@huawei.com>
-To:     <nouveau@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <bskeggs@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <luojiaxing@huawei.com>
-Subject: [PATCH v1] drm/nouveau: delete unused variables "dev" in nouveau_ttm_tt_populate()
-Date:   Thu, 25 Feb 2021 16:08:39 +0800
-Message-ID: <1614240519-5347-1-git-send-email-luojiaxing@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 25 Feb 2021 03:10:15 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DCAC06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 00:09:34 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id l12so4296582wry.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 00:09:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=RiN2cMKC+xppmO732DXmQGbrhZydASnzlrEnedGOXzk=;
+        b=uz8UY5WABQ1HPTdrd0DwD7/+9T18JDPE2qP3nlNToxyH4/CNdzlBOcl2wcOiAm2xl+
+         kZN1T1vKaXZm3l47Y281/BtBFbFvYHfZgkHvWkoTJFjK5B/dsvzaAgPnYXdKxbVXGt5D
+         nNMu5mbuhLBdgGYoGJDIAbe3UxU46BXq061ppegxYHvA5n3/KrnR9HgL47p1FZkruNdA
+         ZlNTKkeR1qgn81R10e1GLC76t8bx34rJJ0AtimZWYl7N9iogYF7cxwva0VxGFdY0tasd
+         LiqiVcjGrjcnXYZXKVO72rCdrjgzXZvpTHGxuJO6eI1TjEdk/F5kI+gkcZt0Sr6ezEEc
+         D59w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=RiN2cMKC+xppmO732DXmQGbrhZydASnzlrEnedGOXzk=;
+        b=MFLagUvOu1cya7S8wdFDp4ZI4pmV3xRYNFLgUNhpThk3JgcpEWkvTOQZpl4CiylGoX
+         dxvbuukBMQw6u4DI0eQ04uPlGCgUasTmeW5KwPVDnT4weU9fYyBtnzNJhAPmSbooNcqw
+         Eeyg0GlxgoNiQA7lnJnVsVuf/Kss2sZeo7t3rGdzI8/rjn6yVXJHLlOLKRd7GxKThL68
+         jTpvp2xoUF6TS+VaHL+Dh74k9a9uQ69Dw8LFFSoElVRnZEW1bfgwEdzm2iNXDWv1sMAT
+         +NrIv4aV9cJVf7J7x5rfUQvDbe+iOfGaXNKOIQFYcY87ZEmeOhwOZ8UYDZbubtvGvIol
+         KseA==
+X-Gm-Message-State: AOAM532xqpuQxh1vN9lDdczDD37FHHb8cjfb/HY2H1HLE26wkqQ1vdWi
+        BNylSqkIUH6o3F4yGOTPbxFMVw==
+X-Google-Smtp-Source: ABdhPJxpeMmvf6CphQDye6ONrdfqLu2AHEXTJlN9fCIJ9VGJ3RJAsLyNggV8hsXDMhQ/CGWZm4KksQ==
+X-Received: by 2002:a05:6000:89:: with SMTP id m9mr2113738wrx.3.1614240573667;
+        Thu, 25 Feb 2021 00:09:33 -0800 (PST)
+Received: from dell ([91.110.221.155])
+        by smtp.gmail.com with ESMTPSA id h17sm6676991wrt.74.2021.02.25.00.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 00:09:32 -0800 (PST)
+Date:   Thu, 25 Feb 2021 08:09:30 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>
+Cc:     gregkh@linuxfoundation.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        cj.chengjian@huawei.com, judy.chenhui@huawei.com,
+        zhangjinhao2@huawei.com
+Subject: Re: [PATCH 4.9.y 1/1] futex: Fix OWNER_DEAD fixup
+Message-ID: <20210225080930.GB641347@dell>
+References: <20210223144151.916675-1-zhengyejian1@huawei.com>
+ <20210223144151.916675-2-zhengyejian1@huawei.com>
+ <20210224111915.GA641347@dell>
+ <09cd79ce-291a-1750-6954-ecde0a6bdfcf@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <09cd79ce-291a-1750-6954-ecde0a6bdfcf@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After switch to new allocator, dev is no longer used here and should be
-deleted.
+On Thu, 25 Feb 2021, Zhengyejian (Zetta) wrote:
 
-Fixes: 461619f5c324 ("drm/nouveau: switch to new allocator")
+> 
+> 
+> On 2021/2/24 19:19, Lee Jones wrote:
+> > On Tue, 23 Feb 2021, Zheng Yejian wrote:
+> > 
+> > > From: Peter Zijlstra <peterz@infradead.org>
+> > > 
+> > > commit a97cb0e7b3f4c6297fd857055ae8e895f402f501 upstream.
+> > > 
+> > > Both Geert and DaveJ reported that the recent futex commit:
+> > > 
+> > >    c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
+> > > 
+> > > introduced a problem with setting OWNER_DEAD. We set the bit on an
+> > > uninitialized variable and then entirely optimize it away as a
+> > > dead-store.
+> > > 
+> > > Move the setting of the bit to where it is more useful.
+> > > 
+> > > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > Reported-by: Dave Jones <davej@codemonkey.org.uk>
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > > Cc: Paul E. McKenney <paulmck@us.ibm.com>
+> > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
+> > > Link: http://lkml.kernel.org/r/20180122103947.GD2228@hirez.programming.kicks-ass.net
+> > > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> > > Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> > 
+> > Why have you dropped my Reviewed-by?
+> > 
+> Really sorry. I thought that a changed patchset needs another review.
+> Then I do need to append your Reviewed-by and send a "V2" patchset, Do I?
 
-Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
----
- drivers/gpu/drm/nouveau/nouveau_bo.c | 4 ----
- 1 file changed, 4 deletions(-)
+No need.  I won't hold up merging just for that.
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
-index 2375711..0b94f8a 100644
---- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-@@ -1251,7 +1251,6 @@ nouveau_ttm_tt_populate(struct ttm_bo_device *bdev,
- {
- 	struct ttm_tt *ttm_dma = (void *)ttm;
- 	struct nouveau_drm *drm;
--	struct device *dev;
- 	bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
- 
- 	if (ttm_tt_is_populated(ttm))
-@@ -1264,7 +1263,6 @@ nouveau_ttm_tt_populate(struct ttm_bo_device *bdev,
- 	}
- 
- 	drm = nouveau_bdev(bdev);
--	dev = drm->dev->dev;
- 
- 	return ttm_pool_alloc(&drm->ttm.bdev.pool, ttm, ctx);
- }
-@@ -1274,14 +1272,12 @@ nouveau_ttm_tt_unpopulate(struct ttm_bo_device *bdev,
- 			  struct ttm_tt *ttm)
- {
- 	struct nouveau_drm *drm;
--	struct device *dev;
- 	bool slave = !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
- 
- 	if (slave)
- 		return;
- 
- 	drm = nouveau_bdev(bdev);
--	dev = drm->dev->dev;
- 
- 	return ttm_pool_free(&drm->ttm.bdev.pool, ttm);
- }
+Just bear in mind that you should apply and carry forward *-by tags
+unless there have been significant/functional changes.
+
+Reviewed-by: Lee Jones <lee.jones@linaro.org>
+
+> > > ---
+> > >   kernel/futex.c | 6 +++---
+> > >   1 file changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/kernel/futex.c b/kernel/futex.c
+> > > index b65dbb5d60bb..604d1cb9839d 100644
+> > > --- a/kernel/futex.c
+> > > +++ b/kernel/futex.c
+> > > @@ -2424,9 +2424,6 @@ static int __fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
+> > >   	int err = 0;
+> > >   	oldowner = pi_state->owner;
+> > > -	/* Owner died? */
+> > > -	if (!pi_state->owner)
+> > > -		newtid |= FUTEX_OWNER_DIED;
+> > >   	/*
+> > >   	 * We are here because either:
+> > > @@ -2484,6 +2481,9 @@ static int __fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
+> > >   	}
+> > >   	newtid = task_pid_vnr(newowner) | FUTEX_WAITERS;
+> > > +	/* Owner died? */
+> > > +	if (!pi_state->owner)
+> > > +		newtid |= FUTEX_OWNER_DIED;
+> > >   	if (get_futex_value_locked(&uval, uaddr))
+> > >   		goto handle_fault;
+> > 
+
 -- 
-2.7.4
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
