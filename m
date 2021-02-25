@@ -2,98 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37034324F3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 992C6324F50
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:39:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235573AbhBYLae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 06:30:34 -0500
-Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:32967 "EHLO
-        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235168AbhBYL3r (ORCPT
+        id S232196AbhBYLjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 06:39:08 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13088 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231895AbhBYLjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 06:29:47 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id 4F3741D79
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:28:51 +0000 (GMT)
-Received: (qmail 7064 invoked from network); 25 Feb 2021 11:28:51 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 Feb 2021 11:28:50 -0000
-Date:   Thu, 25 Feb 2021 11:28:49 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     linux-mm@kvack.org, chuck.lever@oracle.com, netdev@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 3/3] mm: make zone->free_area[order] access
- faster
-Message-ID: <20210225112849.GM3697@techsingularity.net>
-References: <161419296941.2718959.12575257358107256094.stgit@firesoul>
- <161419301128.2718959.4838557038019199822.stgit@firesoul>
+        Thu, 25 Feb 2021 06:39:04 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DmW2l0pD6z16CZf;
+        Thu, 25 Feb 2021 19:36:31 +0800 (CST)
+Received: from huawei.com (10.69.192.56) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Feb 2021
+ 19:37:58 +0800
+From:   Luo Jiaxing <luojiaxing@huawei.com>
+To:     <nouveau@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <bskeggs@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <luojiaxing@huawei.com>
+Subject: [PATCH v1] drm/nouveau/device: append a NUL-terminated character for the string which filled by strncpy()
+Date:   Thu, 25 Feb 2021 19:38:52 +0800
+Message-ID: <1614253132-21793-1-git-send-email-luojiaxing@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <161419301128.2718959.4838557038019199822.stgit@firesoul>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a side-node, I didn't pick up the other patches as there is review
-feedback and I didn't have strong opinions either way. Patch 3 is curious
-though, it probably should be split out and sent separetly but still;
+Following warning is found when using W=1 to build kernel:
 
-On Wed, Feb 24, 2021 at 07:56:51PM +0100, Jesper Dangaard Brouer wrote:
-> Avoid multiplication (imul) operations when accessing:
->  zone->free_area[order].nr_free
-> 
-> This was really tricky to find. I was puzzled why perf reported that
-> rmqueue_bulk was using 44% of the time in an imul operation:
-> 
->        ???     del_page_from_free_list():
->  44,54 ??? e2:   imul   $0x58,%rax,%rax
-> 
-> This operation was generated (by compiler) because the struct free_area have
-> size 88 bytes or 0x58 hex. The compiler cannot find a shift operation to use
-> and instead choose to use a more expensive imul, to find the offset into the
-> array free_area[].
-> 
-> The patch align struct free_area to a cache-line, which cause the
-> compiler avoid the imul operation. The imul operation is very fast on
-> modern Intel CPUs. To help fast-path that decrement 'nr_free' move the
-> member 'nr_free' to be first element, which saves one 'add' operation.
-> 
-> Looking up instruction latency this exchange a 3-cycle imul with a
-> 1-cycle shl, saving 2-cycles. It does trade some space to do this.
-> 
-> Used: gcc (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2)
-> 
+In function ‘nvkm_udevice_info’,
+    inlined from ‘nvkm_udevice_mthd’ at drivers/gpu/drm/nouveau/nvkm/engine/device/user.c:195:10:
+drivers/gpu/drm/nouveau/nvkm/engine/device/user.c:164:2: warning: ‘strncpy’ specified bound 16 equals destination size [-Wstringop-truncation]
+  164 |  strncpy(args->v0.chip, device->chip->name, sizeof(args->v0.chip));
+drivers/gpu/drm/nouveau/nvkm/engine/device/user.c:165:2: warning: ‘strncpy’ specified bound 64 equals destination size [-Wstringop-truncation]
+  165 |  strncpy(args->v0.name, device->name, sizeof(args->v0.name));
 
-I'm having some trouble parsing this and matching it to the patch itself.
+The reason of this warning is strncpy() does not guarantee that the
+destination buffer will be NUL terminated. If the length of source string
+is bigger than number we set by third input parameter, only first [number]
+of characters is copied to the destination, and no NUL-terminated is
+automatically added. There are some potential risks.
 
-First off, on my system (x86-64), the size of struct free area is 72,
-not 88 bytes. For either size, cache-aligning the structure is a big
-increase in the struct size.
+Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+---
+ drivers/gpu/drm/nouveau/nvkm/engine/device/user.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-struct free_area {
-        struct list_head           free_list[4];         /*     0    64 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        long unsigned int          nr_free;              /*    64     8 */
-
-        /* size: 72, cachelines: 2, members: 2 */
-        /* last cacheline: 8 bytes */
-};
-
-Are there other patches in the tree? What does pahole say?
-
-With gcc-9, I'm also not seeing the imul instruction outputted like you
-described in rmqueue_pcplist which inlines rmqueue_bulk. At the point
-where it calls get_page_from_free_area, it's using shl for the page list
-operation. This might be a compiler glitch but given that free_area is a
-different size, I'm less certain and wonder if something else is going on.
-
-Finally, moving nr_free to the end and cache aligning it will make the
-started of each free_list cache-aligned because of its location in the
-struct zone so what purpose does __pad_to_align_free_list serve?
-
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c b/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c
+index fea9d8f..2a32fe0 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c
+@@ -161,8 +161,10 @@ nvkm_udevice_info(struct nvkm_udevice *udev, void *data, u32 size)
+ 	if (imem && args->v0.ram_size > 0)
+ 		args->v0.ram_user = args->v0.ram_user - imem->reserved;
+ 
+-	strncpy(args->v0.chip, device->chip->name, sizeof(args->v0.chip));
+-	strncpy(args->v0.name, device->name, sizeof(args->v0.name));
++	strncpy(args->v0.chip, device->chip->name, sizeof(args->v0.chip) - 1);
++	args->v0.chip[sizeof(args->v0.chip) - 1] = '\0';
++	strncpy(args->v0.name, device->name, sizeof(args->v0.name) - 1);
++	args->v0.name[sizeof(args->v0.name) - 1] = '\0';
+ 	return 0;
+ }
+ 
 -- 
-Mel Gorman
-SUSE Labs
+2.7.4
+
