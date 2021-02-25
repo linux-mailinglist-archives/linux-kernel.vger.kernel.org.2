@@ -2,133 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB45F324816
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 02:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22683324840
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 02:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236625AbhBYA70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 19:59:26 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15304 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236597AbhBYA6R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 19:58:17 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6036f6000000>; Wed, 24 Feb 2021 16:57:36 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Feb
- 2021 00:57:36 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.170)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Thu, 25 Feb 2021 00:57:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RBzq0j4Qjbvx5fiVUzYmEoQPURPA1xptygD6SDFZOFXXdRbdq4zq+gRVELCq71MzwvhIyoo+1iRSURWERuvNM/CD10kBDsz7238yv7tsZ12oTaWZWqVCDKLfdmmYCH8+t0P74cm8v42EGgqNXd8TplGAcPwkap8zyLYN9OcHAVjWjuH4bHNHDY8GftjYvMJ7jfodGXHH9T9L07zFpT4DkT/AU2XyS2LbsJPGXlouSf2XoEm55qeuDauxV9Ge7ss5IUcomytzy81uNSvs2vEazkjUJ+CW3dYBY82CUYEpb39dYMrNrJqEDILzdEJR3sWeT5xXD5X/A4rWVRkijbMKLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bdWgnAGjw7dJyHL4hlNRYI7E4OCVFSZEfpeNwMphoAM=;
- b=GqEuJOfsRMAQThp9x+ZzV21acH/5o2vtanAAVTmgzbv/A4Qy4PABkd0x+9dz7hyE1F16u74cpoUdrv4jNXxZcdUu2OGg15ZC4YIEbnBiz0XZD/SsesOXlBwQzuY+wgLPB6OwmKplQw/A6vPf5MVm+pn1Ju7DHRweL+gPWdVv/ktblcpT+7gy4wcz43twSXz8sGgL2emXca99AtbUqNTqContsT6PMQvUok6fr6CYJF5lxaWl64EdAPu7bax6vi7g7uM0JzjzvQxv0uiAHcqToReNUfAZ8fHTH9m90ug+HyX6Gs6Y2EWfCondF9rEBjBYSAPUHLmap1PGWTvKEfprlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB2438.namprd12.prod.outlook.com (2603:10b6:4:b5::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.38; Thu, 25 Feb
- 2021 00:57:35 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3868.033; Thu, 25 Feb 2021
- 00:57:34 +0000
-Date:   Wed, 24 Feb 2021 20:57:32 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
-Subject: Re: [RFC PATCH 04/10] vfio/pci: Use vfio_device_unmap_mapping_range()
-Message-ID: <20210225005732.GR4247@nvidia.com>
-References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
- <161401267316.16443.11184767955094847849.stgit@gimli.home>
- <20210222172230.GO4247@nvidia.com>
- <20210224145505.61a4fbc1@omen.home.shazbot.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210224145505.61a4fbc1@omen.home.shazbot.org>
-X-ClientProxiedBy: MN2PR15CA0044.namprd15.prod.outlook.com
- (2603:10b6:208:237::13) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S233153AbhBYBDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 20:03:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236708AbhBYBCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 20:02:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 560CD64EDD;
+        Thu, 25 Feb 2021 01:02:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614214931;
+        bh=zSaKKSiyZKraVWz5FbpVQIblGPLB0AVTulXPF08cecE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PI24cwjME1bYxLdzO4ZtC1uf4giWIR9zShuYVePhMi1Tf2WlkAfiWGphoUTC7z/yV
+         sROM80OtycHY7h8X/HTU+S1YiAP/Js/4yYv2COTES6UxxMwu1RMTx0vcWlM32wpHKf
+         MqvQQ3XPPl5IuZPQBXQQxRDDiARnn1/2CfFJr0aUbncdhvKH1c+v4YUwTP/K+ZEXOM
+         hp19hJUUw+gKebluj4ZqWziLSeUxXlNzdQCNO/qpm7Bof6YyNH481tgSrNlG5pKwSm
+         8q/Stk3GTm+MmRyhLds81X5fnwFOq3RWqM5GEiB2BKCUDXlx8StRezHoiw4eKGVZoy
+         JvwtcxAmssDWQ==
+Date:   Thu, 25 Feb 2021 03:01:54 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-sgx@vger.kernel.org, haitao.huang@intel.com,
+        dan.j.williams@intel.com, dave.hansen@linux.intel.com,
+        bp@alien8.de, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH 0/3] Introduce version array structure: sgx_va
+Message-ID: <YDb3Atu0ZbOpPZf5@kernel.org>
+References: <20210224222049.240754-1-jarkko@kernel.org>
+ <64cac2aa-0c69-5438-1f0e-aa1386551198@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR15CA0044.namprd15.prod.outlook.com (2603:10b6:208:237::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Thu, 25 Feb 2021 00:57:34 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lF4yC-00Gtmh-WB; Wed, 24 Feb 2021 20:57:33 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614214656; bh=bdWgnAGjw7dJyHL4hlNRYI7E4OCVFSZEfpeNwMphoAM=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=g+CdlpCG6km4KuGjf8MJQzjjCU8K3MyOr3tp9+SFwP7JSl6YBL3ToB6BmQ0k1ltCL
-         eJrYHip6UbtOnUHDWZXmlpnEKxLl11o1GHBNNtf1rojXW6DlTnZuIhQhNHon76QmgC
-         2rbmK8fv9MhZcJlFOPZv62bIN180wYEsv8+T2adyEzngm5gr4oFTIdeKyUisbXCGv8
-         fxRMjA7fcBlI19in3GrqBZCmvAcLH7jpkjVTsTfnnx0GZYrUKmnTNYg++YyeJgybaK
-         xWqpx5aCpaQ1sEGk/IMCDD9UpbmpoTX4nVFgASUW+Xbab6pMqkpuPJrlbDOUJKogCg
-         6Jt1sEfOsRDuA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64cac2aa-0c69-5438-1f0e-aa1386551198@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 02:55:05PM -0700, Alex Williamson wrote:
-
-> Ok, but how does this really help us, unless you're also proposing some
-> redesign of the memory_lock semaphore?  Even if we're zapping all the
-> affected devices for a bus reset that doesn't eliminate that we still
-> require device level granularity for other events.
-
-Ok, I missed the device level one, forget this remark about the reflk
-then, per vfio_pci_device is the right granularity
-
-> > >  struct vfio_pci_device {
-> > >  	struct pci_dev		*pdev;
-> > > +	struct vfio_device	*device;  
+On Wed, Feb 24, 2021 at 03:48:50PM -0800, Dave Hansen wrote:
+> On 2/24/21 2:20 PM, Jarkko Sakkinen wrote:
+> > The use of sgx_va can be later on extended to the following use cases:
 > > 
-> > Ah, I did this too, but I didn't use a pointer :)
+> > - A global VA for reclaimed SECS pages.
+> > - A global VA for reclaimed VA pages.
+> ...
+> >  arch/x86/kernel/cpu/sgx/driver.c |   3 +-
+> >  arch/x86/kernel/cpu/sgx/encl.c   | 180 ++++++++++++++++++++++---------
+> >  arch/x86/kernel/cpu/sgx/encl.h   |  36 ++++---
+> >  arch/x86/kernel/cpu/sgx/ioctl.c  |  77 +++++--------
+> >  arch/x86/kernel/cpu/sgx/main.c   |  19 +---
+> >  5 files changed, 184 insertions(+), 131 deletions(-)
 > 
-> vfio_device is embedded in vfio.c, so that worries me.
-
-I'm working on what we talked about in the other thread to show how
-VFIO looks if it follows the normal Linux container_of idiom and to
-then remove the vfio_mdev.c indirection as an illustration.
-
-I want to directly make the case the VFIO is better off following the
-standard kernel designs and driver core norms so we can find an
-agreement to get Max's work on vfio_pci going forward.
-
-You were concerned about hand waving, and maintainability so I'm
-willing to put in some more work to make it concrete.
-
-I hope you'll keep an open mind
-
-> > All the places trying to call vfio_device_put() when they really want
-> > a vfio_pci_device * become simpler now. Eg struct vfio_devices wants
-> > to have an array of vfio_pci_device, and get_pf_vdev() only needs to
-> > return one pointer.
+> It looks interesting.
 > 
-> Sure, that example would be a good simplification.  I'm not sure see
-> other cases where we're going out of our way to manage the vfio_device
-> versus vfio_pci_device objects though.
+> Were you planning on keeping this on the back burner until we need it
+> more acutely?  Or, were you thinking it should be merged immediately?
 
-What I've found is there are lots of little costs all over the
-place. The above was just easy to describe in this context.
+I think this can wait. Perhaps, this could be picked to some other patch
+set, such as EDMM.
 
-In my mind the biggest negative cost is the type erasure. Lots of
-places are using 'device *', 'void *', 'kobj *' as generic handles to
-things that are actually already concretely typed. In the kernel I
-would say concretely typing things is considered a virtue.
+Let's just say that this should be part of anything that touches the page
+reclaimer.
 
-Having gone through alot of VFIO now, as it relates to the
-vfio_device, I think the type erasure directly hurts readability and
-maintainability. It just takes too much information away from the
-reader and the compiler. The core code is managable, but when you
-chuck mdev into it that follows the same, it really starts hurting.
+IDA might look odd. Mapping through IDA allocated ID's is for conserving
+the amount of used EPC pages for the version array.
 
-Jason
+Alternative would be to linearly map enclave page offset to the VA page
+index but that would introduce a sloppy allocation of EPC.
+
+The selected approach, on the other hand, no matter how sparsely you create
+enclave pages, that does not add to the amount of EPC VA page usage.
+
+BTW, encl_page->va_page could be removed, and use sgx_va_get() to locate
+the VA page, when needed. I'm open for opinions with this one: it's space
+vs the cost of access question.
+
+/Jarkko
