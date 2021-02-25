@@ -2,226 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A39324DB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1145324E09
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbhBYKK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:10:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43800 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232282AbhBYJ6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:58:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614247074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EPf2fM16KD0kREgBjB6ua+rUylDq8AlBvOuagV32ch8=;
-        b=pbX7XxuES5kDjdVmxKOG4XJlDdNepmvI3JJOseAZZPFF1+P9Rm8/cRwCoNXlnYjYV6fuOY
-        +E35+FuiaT4n7m0slMdcR0KUW8apwwTs+BrR3RXcR5qR6sNw8Q9qhelKuU5uwcDHlKdn3Q
-        reOIWqAHddziPOK8i4GF3/sA4quKT98=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 66FCDAC1D;
-        Thu, 25 Feb 2021 09:57:54 +0000 (UTC)
-Message-ID: <b71b85a588c3e27d2de129723468263d932ab435.camel@suse.com>
-Subject: Re: usb: cdc-acm: BUG kmalloc-128 Poison overwritten
-From:   Oliver Neukum <oneukum@suse.com>
-To:     Bruno Thomsen <bruno.thomsen@gmail.com>
-Cc:     linux-usb@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Bruno Thomsen <bth@kamstrup.com>,
-        Lars Alex Pedersen <laa@kamstrup.com>
-Date:   Thu, 25 Feb 2021 10:57:50 +0100
-In-Reply-To: <CAH+2xPAB4bWN9NiTQr4WggUX6eDXzMikzYJySx3sAj3Ho3AdxA@mail.gmail.com>
-References: <CAH+2xPCmZNW0ct8XoBmAnd0QK53guv2e4HLn40NvWrEA7pj3qw@mail.gmail.com>
-         <CAH+2xPCkKRhXJSqMx7kzsO53JwXbrmYPLLL-_ANO9waNJREDWA@mail.gmail.com>
-         <777991bb72f8842e3e730f9b600b2086478f5d36.camel@suse.com>
-         <CAH+2xPAB4bWN9NiTQr4WggUX6eDXzMikzYJySx3sAj3Ho3AdxA@mail.gmail.com>
-Content-Type: multipart/mixed; boundary="=-dR9FkrW5twny4+EEnyrJ"
-User-Agent: Evolution 3.34.4 
+        id S235666AbhBYKXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:23:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233285AbhBYKAs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 05:00:48 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736C0C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:00:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dBYHNHpjiMscbLFgcCRhnWMmA09aZCR09/PS/cqEOA0=; b=J6k0rjgmvniMx0Hs5rZuQyv8qP
+        jfopzIqHaLBLoOD6MNP/xyhFf8bVcvBJjw1PuTc0SYrqCdNVGEYqqj03+XUnPkwGGzQyBGYfkeUvE
+        LTdp6vwIpX2GzSiRNAzO4Qg6BU2mtJpWV5/Hl9pqKumIQCo41u9dr4/6C0ohs2trq1w4bxfGhnhle
+        iIHbtUYf5msvt+eDNL/otVmNr115sP+6GadhD/dQxIWhpW7MYP94rh5+PI/neRC9PBezTMBPX4pyA
+        wkAW14kEQtPZrH+al2Yacg0TOrq5OqeGxbnfsTxwqDGdBfFKOxWiqIj+7vt4bb48YEbEHLuxzYFPc
+        ferYFfog==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lFDR9-000129-Nh; Thu, 25 Feb 2021 09:59:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 237883006D0;
+        Thu, 25 Feb 2021 10:59:58 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 02B5120BC9284; Thu, 25 Feb 2021 10:59:57 +0100 (CET)
+Date:   Thu, 25 Feb 2021 10:59:57 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+Message-ID: <YDd1HTDv/Yg3ZX6p@hirez.programming.kicks-ass.net>
+References: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
+ <20210224101756.bbdf95b9b6dfc982bff21324@kernel.org>
+ <CALCETrWoKh0aemrvTGZ13bUzN27s3WGW3CyvTptvayWLQEk91Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrWoKh0aemrvTGZ13bUzN27s3WGW3CyvTptvayWLQEk91Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 24, 2021 at 11:45:10AM -0800, Andy Lutomirski wrote:
+> I guess I see the point for CALL, JMP and RET, but it seems like we
+> could emulate those cases instead fairly easily.
 
---=-dR9FkrW5twny4+EEnyrJ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
-Am Mittwoch, den 24.02.2021, 16:21 +0100 schrieb Bruno Thomsen:
-
-Hi,
-
-> No, this is not a regression from 5.10. It seems that many attempts to
-> fix cdc-acm in the 5.x kernel series have failed to fix the root cause of
-> these oops. I have not seen this on 4.14 and 4.19, but I have observed
-> it on at least 5.3 and newer kernels in slight variations.
-> I guess this is because cdc-acm is very common in the embedded
-> ARM world and rarely used on servers or laptops. Combined with
-> ARM devices still commonly use 4.x LTS kernels. Not sure if
-> hardening options on the kernel has increased change of reproducing
-> oops.
-
-OK, so this is not an additional problem.
-According to your logs, an URB that should have been killed wasn't.
-
-> I am ready to test new patches and will continue to report oops
-
-Could you test the attached patches?
-
-	Regards
-		Oliver
-
-
---=-dR9FkrW5twny4+EEnyrJ
-Content-Disposition: attachment;
-	filename*0=0001-cdc-wdm-untangle-a-circular-dependency-between-callb.pat;
-	filename*1=ch
-Content-Transfer-Encoding: base64
-Content-Type: text/x-patch;
-	name="0001-cdc-wdm-untangle-a-circular-dependency-between-callb.patch";
-	charset="UTF-8"
-
-RnJvbSAzMDcwOTdlODA2NTdjYTQ0YWM5OWRhOGVmYzgzOTcwNzBiMWFmZjNmIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBPbGl2ZXIgTmV1a3VtIDxvbmV1a3VtQHN1c2UuY29tPgpEYXRl
-OiBUaHUsIDE4IEZlYiAyMDIxIDEzOjQyOjQwICswMTAwClN1YmplY3Q6IFtQQVRDSCAxLzJdIGNk
-Yy13ZG06IHVudGFuZ2xlIGEgY2lyY3VsYXIgZGVwZW5kZW5jeSBiZXR3ZWVuIGNhbGxiYWNrCiBh
-bmQgc29mdGludAoKV2UgaGF2ZSBhIGN5Y2xlIG9mIGNhbGxiYWNrcyBzY2hlZHVsaW5nIHdvcmtz
-IHdoaWNoIHN1Ym1pdApVUkJzIHdpdGggdGhvcyBjYWxsYmFja3MuIFRoaXMgbmVlZHMgdG8gYmUg
-YmxvY2tlZCwgc3RvcHBlZAphbmQgdW5ibG9ja2VkIHRvIHVudGFuZ2xlIHRoZSBjaXJjbGUuLgoK
-U2lnbmVkLW9mZi1ieTogT2xpdmVyIE5ldWt1bSA8b25ldWt1bUBzdXNlLmNvbT4KLS0tCiBkcml2
-ZXJzL3VzYi9jbGFzcy9jZGMtd2RtLmMgfCAzMCArKysrKysrKysrKysrKysrKysrKysrLS0tLS0t
-LS0KIDEgZmlsZSBjaGFuZ2VkLCAyMiBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQoKZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2NsYXNzL2NkYy13ZG0uYyBiL2RyaXZlcnMvdXNiL2NsYXNz
-L2NkYy13ZG0uYwppbmRleCA1MDhiMWMzZjhiNzMuLmQxZTRhNzM3OWJlYiAxMDA2NDQKLS0tIGEv
-ZHJpdmVycy91c2IvY2xhc3MvY2RjLXdkbS5jCisrKyBiL2RyaXZlcnMvdXNiL2NsYXNzL2NkYy13
-ZG0uYwpAQCAtMzIxLDEyICszMjEsMjMgQEAgc3RhdGljIHZvaWQgd2RtX2ludF9jYWxsYmFjayhz
-dHJ1Y3QgdXJiICp1cmIpCiAKIH0KIAotc3RhdGljIHZvaWQga2lsbF91cmJzKHN0cnVjdCB3ZG1f
-ZGV2aWNlICpkZXNjKQorc3RhdGljIHZvaWQgcG9pc29uX3VyYnMoc3RydWN0IHdkbV9kZXZpY2Ug
-KmRlc2MpCiB7CiAJLyogdGhlIG9yZGVyIGhlcmUgaXMgZXNzZW50aWFsICovCi0JdXNiX2tpbGxf
-dXJiKGRlc2MtPmNvbW1hbmQpOwotCXVzYl9raWxsX3VyYihkZXNjLT52YWxpZGl0eSk7Ci0JdXNi
-X2tpbGxfdXJiKGRlc2MtPnJlc3BvbnNlKTsKKwl1c2JfcG9pc29uX3VyYihkZXNjLT5jb21tYW5k
-KTsKKwl1c2JfcG9pc29uX3VyYihkZXNjLT52YWxpZGl0eSk7CisJdXNiX3BvaXNvbl91cmIoZGVz
-Yy0+cmVzcG9uc2UpOworfQorCitzdGF0aWMgdm9pZCB1bnBvaXNvbl91cmJzKHN0cnVjdCB3ZG1f
-ZGV2aWNlICpkZXNjKQoreworCS8qCisJICogIHRoZSBvcmRlciBoZXJlIGlzIG5vdCBlc3NlbnRp
-YWwKKwkgKiAgaXQgaXMgc3ltbWV0cmljYWwganVzdCB0byBiZSBuaWNlCisJICovCisJdXNiX3Vu
-cG9pc29uX3VyYihkZXNjLT5yZXNwb25zZSk7CisJdXNiX3VucG9pc29uX3VyYihkZXNjLT52YWxp
-ZGl0eSk7CisJdXNiX3VucG9pc29uX3VyYihkZXNjLT5jb21tYW5kKTsKIH0KIAogc3RhdGljIHZv
-aWQgZnJlZV91cmJzKHN0cnVjdCB3ZG1fZGV2aWNlICpkZXNjKQpAQCAtNzQxLDExICs3NTIsMTIg
-QEAgc3RhdGljIGludCB3ZG1fcmVsZWFzZShzdHJ1Y3QgaW5vZGUgKmlub2RlLCBzdHJ1Y3QgZmls
-ZSAqZmlsZSkKIAlpZiAoIWRlc2MtPmNvdW50KSB7CiAJCWlmICghdGVzdF9iaXQoV0RNX0RJU0NP
-Tk5FQ1RJTkcsICZkZXNjLT5mbGFncykpIHsKIAkJCWRldl9kYmcoJmRlc2MtPmludGYtPmRldiwg
-IndkbV9yZWxlYXNlOiBjbGVhbnVwXG4iKTsKLQkJCWtpbGxfdXJicyhkZXNjKTsKKwkJCXBvaXNv
-bl91cmJzKGRlc2MpOwogCQkJc3Bpbl9sb2NrX2lycSgmZGVzYy0+aXVzcGluKTsKIAkJCWRlc2Mt
-PnJlc3BfY291bnQgPSAwOwogCQkJc3Bpbl91bmxvY2tfaXJxKCZkZXNjLT5pdXNwaW4pOwogCQkJ
-ZGVzYy0+bWFuYWdlX3Bvd2VyKGRlc2MtPmludGYsIDApOworCQkJdW5wb2lzb25fdXJicyhkZXNj
-KTsKIAkJfSBlbHNlIHsKIAkJCS8qIG11c3QgYXZvaWQgZGV2X3ByaW50ayBoZXJlIGFzIGRlc2Mt
-PmludGYgaXMgaW52YWxpZCAqLwogCQkJcHJfZGVidWcoS0JVSUxEX01PRE5BTUUgIiAlczogZGV2
-aWNlIGdvbmUgLSBjbGVhbmluZyB1cFxuIiwgX19mdW5jX18pOwpAQCAtMTAzNyw5ICsxMDQ5LDkg
-QEAgc3RhdGljIHZvaWQgd2RtX2Rpc2Nvbm5lY3Qoc3RydWN0IHVzYl9pbnRlcmZhY2UgKmludGYp
-CiAJd2FrZV91cF9hbGwoJmRlc2MtPndhaXQpOwogCW11dGV4X2xvY2soJmRlc2MtPnJsb2NrKTsK
-IAltdXRleF9sb2NrKCZkZXNjLT53bG9jayk7CisJcG9pc29uX3VyYnMoZGVzYyk7CiAJY2FuY2Vs
-X3dvcmtfc3luYygmZGVzYy0+cnh3b3JrKTsKIAljYW5jZWxfd29ya19zeW5jKCZkZXNjLT5zZXJ2
-aWNlX291dHNfaW50cik7Ci0Ja2lsbF91cmJzKGRlc2MpOwogCW11dGV4X3VubG9jaygmZGVzYy0+
-d2xvY2spOwogCW11dGV4X3VubG9jaygmZGVzYy0+cmxvY2spOwogCkBAIC0xMDgwLDkgKzEwOTIs
-MTAgQEAgc3RhdGljIGludCB3ZG1fc3VzcGVuZChzdHJ1Y3QgdXNiX2ludGVyZmFjZSAqaW50Ziwg
-cG1fbWVzc2FnZV90IG1lc3NhZ2UpCiAJCXNldF9iaXQoV0RNX1NVU1BFTkRJTkcsICZkZXNjLT5m
-bGFncyk7CiAJCXNwaW5fdW5sb2NrX2lycSgmZGVzYy0+aXVzcGluKTsKIAkJLyogY2FsbGJhY2sg
-c3VibWl0cyB3b3JrIC0gb3JkZXIgaXMgZXNzZW50aWFsICovCi0JCWtpbGxfdXJicyhkZXNjKTsK
-KwkJcG9pc29uX3VyYnMoZGVzYyk7CiAJCWNhbmNlbF93b3JrX3N5bmMoJmRlc2MtPnJ4d29yayk7
-CiAJCWNhbmNlbF93b3JrX3N5bmMoJmRlc2MtPnNlcnZpY2Vfb3V0c19pbnRyKTsKKwkJdW5wb2lz
-b25fdXJicyhkZXNjKTsKIAl9CiAJaWYgKCFQTVNHX0lTX0FVVE8obWVzc2FnZSkpIHsKIAkJbXV0
-ZXhfdW5sb2NrKCZkZXNjLT53bG9jayk7CkBAIC0xMTQwLDcgKzExNTMsNyBAQCBzdGF0aWMgaW50
-IHdkbV9wcmVfcmVzZXQoc3RydWN0IHVzYl9pbnRlcmZhY2UgKmludGYpCiAJd2FrZV91cF9hbGwo
-JmRlc2MtPndhaXQpOwogCW11dGV4X2xvY2soJmRlc2MtPnJsb2NrKTsKIAltdXRleF9sb2NrKCZk
-ZXNjLT53bG9jayk7Ci0Ja2lsbF91cmJzKGRlc2MpOworCXBvaXNvbl91cmJzKGRlc2MpOwogCWNh
-bmNlbF93b3JrX3N5bmMoJmRlc2MtPnJ4d29yayk7CiAJY2FuY2VsX3dvcmtfc3luYygmZGVzYy0+
-c2VydmljZV9vdXRzX2ludHIpOwogCXJldHVybiAwOwpAQCAtMTE1MSw2ICsxMTY0LDcgQEAgc3Rh
-dGljIGludCB3ZG1fcG9zdF9yZXNldChzdHJ1Y3QgdXNiX2ludGVyZmFjZSAqaW50ZikKIAlzdHJ1
-Y3Qgd2RtX2RldmljZSAqZGVzYyA9IHdkbV9maW5kX2RldmljZShpbnRmKTsKIAlpbnQgcnY7CiAK
-Kwl1bnBvaXNvbl91cmJzKGRlc2MpOwogCWNsZWFyX2JpdChXRE1fT1ZFUkZMT1csICZkZXNjLT5m
-bGFncyk7CiAJY2xlYXJfYml0KFdETV9SRVNFVFRJTkcsICZkZXNjLT5mbGFncyk7CiAJcnYgPSBy
-ZWNvdmVyX2Zyb21fdXJiX2xvc3MoZGVzYyk7Ci0tIAoyLjI2LjIKCg==
-
-
---=-dR9FkrW5twny4+EEnyrJ
-Content-Disposition: attachment;
-	filename*0=0002-cdc-acm-untangle-a-circular-dependency-between-callb.pat;
-	filename*1=ch
-Content-Transfer-Encoding: base64
-Content-Type: text/x-patch;
-	name="0002-cdc-acm-untangle-a-circular-dependency-between-callb.patch";
-	charset="UTF-8"
-
-RnJvbSAzZWViNjQ0YWYxNDAxNzRlYmFkNmRkY2U1NTI2YmNhZjQyY2NkOWM5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBPbGl2ZXIgTmV1a3VtIDxvbmV1a3VtQHN1c2UuY29tPgpEYXRl
-OiBUaHUsIDE4IEZlYiAyMDIxIDEzOjUyOjI4ICswMTAwClN1YmplY3Q6IFtQQVRDSCAyLzJdIGNk
-Yy1hY206IHVudGFuZ2xlIGEgY2lyY3VsYXIgZGVwZW5kZW5jeSBiZXR3ZWVuIGNhbGxiYWNrCiBh
-bmQgc29mdGludAoKV2UgaGF2ZSBhIGN5Y2xlIG9mIGNhbGxiYWNrcyBzY2hlZHVsaW5nIHdvcmtz
-IHdoaWNoIHN1Ym1pdApVUkJzIHdpdGggdGhvcyBjYWxsYmFja3MuIFRoaXMgbmVlZHMgdG8gYmUg
-YmxvY2tlZCwgc3RvcHBlZAphbmQgdW5ibG9ja2VkIHRvIHVudGFuZ2xlIHRoZSBjaXJjbGUuCgpT
-aWduZWQtb2ZmLWJ5OiBPbGl2ZXIgTmV1a3VtIDxvbmV1a3VtQHN1c2UuY29tPgotLS0KIGRyaXZl
-cnMvdXNiL2NsYXNzL2NkYy1hY20uYyB8IDQxICsrKysrKysrKysrKysrKysrKysrKysrKystLS0t
-LS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyOCBpbnNlcnRpb25zKCspLCAxMyBkZWxldGlvbnMo
-LSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9jbGFzcy9jZGMtYWNtLmMgYi9kcml2ZXJzL3Vz
-Yi9jbGFzcy9jZGMtYWNtLmMKaW5kZXggNzgxOTA1NzQ1ODEyLi4yMzVmZDFmNjU0YTQgMTAwNjQ0
-Ci0tLSBhL2RyaXZlcnMvdXNiL2NsYXNzL2NkYy1hY20uYworKysgYi9kcml2ZXJzL3VzYi9jbGFz
-cy9jZGMtYWNtLmMKQEAgLTE0NywxNyArMTQ3LDI5IEBAIHN0YXRpYyBpbmxpbmUgaW50IGFjbV9z
-ZXRfY29udHJvbChzdHJ1Y3QgYWNtICphY20sIGludCBjb250cm9sKQogI2RlZmluZSBhY21fc2Vu
-ZF9icmVhayhhY20sIG1zKSBcCiAJYWNtX2N0cmxfbXNnKGFjbSwgVVNCX0NEQ19SRVFfU0VORF9C
-UkVBSywgbXMsIE5VTEwsIDApCiAKLXN0YXRpYyB2b2lkIGFjbV9raWxsX3VyYnMoc3RydWN0IGFj
-bSAqYWNtKQorc3RhdGljIHZvaWQgYWNtX3BvaXNvbl91cmJzKHN0cnVjdCBhY20gKmFjbSkKIHsK
-IAlpbnQgaTsKIAotCXVzYl9raWxsX3VyYihhY20tPmN0cmx1cmIpOworCXVzYl9wb2lzb25fdXJi
-KGFjbS0+Y3RybHVyYik7CiAJZm9yIChpID0gMDsgaSA8IEFDTV9OVzsgaSsrKQotCQl1c2Jfa2ls
-bF91cmIoYWNtLT53YltpXS51cmIpOworCQl1c2JfcG9pc29uX3VyYihhY20tPndiW2ldLnVyYik7
-CiAJZm9yIChpID0gMDsgaSA8IGFjbS0+cnhfYnVmbGltaXQ7IGkrKykKLQkJdXNiX2tpbGxfdXJi
-KGFjbS0+cmVhZF91cmJzW2ldKTsKKwkJdXNiX3BvaXNvbl91cmIoYWNtLT5yZWFkX3VyYnNbaV0p
-OworfQorCitzdGF0aWMgdm9pZCBhY21fdW5wb2lzb25fdXJicyhzdHJ1Y3QgYWNtICphY20pCit7
-CisJaW50IGk7CisKKwlmb3IgKGkgPSAwOyBpIDwgYWNtLT5yeF9idWZsaW1pdDsgaSsrKQorCQl1
-c2JfdW5wb2lzb25fdXJiKGFjbS0+cmVhZF91cmJzW2ldKTsKKwlmb3IgKGkgPSAwOyBpIDwgQUNN
-X05XOyBpKyspCisJCXVzYl91bnBvaXNvbl91cmIoYWNtLT53YltpXS51cmIpOworCXVzYl91bnBv
-aXNvbl91cmIoYWNtLT5jdHJsdXJiKTsKIH0KIAorCiAvKgogICogV3JpdGUgYnVmZmVyIG1hbmFn
-ZW1lbnQuCiAgKiBBbGwgb2YgdGhlc2UgYXNzdW1lIHByb3BlciBsb2NrcyB0YWtlbiBieSB0aGUg
-Y2FsbGVyLgpAQCAtNDgwLDExICs0OTIsNiBAQCBzdGF0aWMgdm9pZCBhY21fcmVhZF9idWxrX2Nh
-bGxiYWNrKHN0cnVjdCB1cmIgKnVyYikKIAlkZXZfdmRiZygmYWNtLT5kYXRhLT5kZXYsICJnb3Qg
-dXJiICVkLCBsZW4gJWQsIHN0YXR1cyAlZFxuIiwKIAkJcmItPmluZGV4LCB1cmItPmFjdHVhbF9s
-ZW5ndGgsIHN0YXR1cyk7CiAKLQlpZiAoIWFjbS0+ZGV2KSB7Ci0JCWRldl9kYmcoJmFjbS0+ZGF0
-YS0+ZGV2LCAiJXMgLSBkaXNjb25uZWN0ZWRcbiIsIF9fZnVuY19fKTsKLQkJcmV0dXJuOwotCX0K
-LQogCXN3aXRjaCAoc3RhdHVzKSB7CiAJY2FzZSAwOgogCQl1c2JfbWFya19sYXN0X2J1c3koYWNt
-LT5kZXYpOwpAQCAtNzMxLDYgKzczOCw3IEBAIHN0YXRpYyB2b2lkIGFjbV9wb3J0X3NodXRkb3du
-KHN0cnVjdCB0dHlfcG9ydCAqcG9ydCkKIAkgKiBOZWVkIHRvIGdyYWIgd3JpdGVfbG9jayB0byBw
-cmV2ZW50IHJhY2Ugd2l0aCByZXN1bWUsIGJ1dCBubyBuZWVkIHRvCiAJICogaG9sZCBpdCBkdWUg
-dG8gdGhlIHR0eS1wb3J0IGluaXRpYWxpc2VkIGZsYWcuCiAJICovCisJYWNtX3BvaXNvbl91cmJz
-KGFjbSk7CiAJc3Bpbl9sb2NrX2lycSgmYWNtLT53cml0ZV9sb2NrKTsKIAlzcGluX3VubG9ja19p
-cnEoJmFjbS0+d3JpdGVfbG9jayk7CiAKQEAgLTc0Nyw3ICs3NTUsOCBAQCBzdGF0aWMgdm9pZCBh
-Y21fcG9ydF9zaHV0ZG93bihzdHJ1Y3QgdHR5X3BvcnQgKnBvcnQpCiAJCXVzYl9hdXRvcG1fcHV0
-X2ludGVyZmFjZV9hc3luYyhhY20tPmNvbnRyb2wpOwogCX0KIAotCWFjbV9raWxsX3VyYnMoYWNt
-KTsKKwlhY21fdW5wb2lzb25fdXJicyhhY20pOworCiB9CiAKIHN0YXRpYyB2b2lkIGFjbV90dHlf
-Y2xlYW51cChzdHJ1Y3QgdHR5X3N0cnVjdCAqdHR5KQpAQCAtMTU0MCw4ICsxNTQ5LDE0IEBAIHN0
-YXRpYyB2b2lkIGFjbV9kaXNjb25uZWN0KHN0cnVjdCB1c2JfaW50ZXJmYWNlICppbnRmKQogCWlm
-ICghYWNtKQogCQlyZXR1cm47CiAKLQltdXRleF9sb2NrKCZhY20tPm11dGV4KTsKIAlhY20tPmRp
-c2Nvbm5lY3RlZCA9IHRydWU7CisJLyoKKwkgKiB0aGVyZSBpcyBhIGNpcmN1bGFyIGRlcGVuZGVu
-Y3kuIGFjbV9zb2Z0aW50KCkgY2FuIHJlc3VibWl0CisJICogdGhlIFVSQnMgaW4gZXJyb3IgaGFu
-ZGxpbmcgc28gd2UgbmVlZCB0byBibG9jayBhbnkKKwkgKiBzdWJtaXNzaW9uIHJpZ2h0IGF3YXkK
-KwkgKi8KKwlhY21fcG9pc29uX3VyYnMoYWNtKTsKKwltdXRleF9sb2NrKCZhY20tPm11dGV4KTsK
-IAlpZiAoYWNtLT5jb3VudHJ5X2NvZGVzKSB7CiAJCWRldmljZV9yZW1vdmVfZmlsZSgmYWNtLT5j
-b250cm9sLT5kZXYsCiAJCQkJJmRldl9hdHRyX3dDb3VudHJ5Q29kZXMpOwpAQCAtMTU2MCw3ICsx
-NTc1LDYgQEAgc3RhdGljIHZvaWQgYWNtX2Rpc2Nvbm5lY3Qoc3RydWN0IHVzYl9pbnRlcmZhY2Ug
-KmludGYpCiAJCXR0eV9rcmVmX3B1dCh0dHkpOwogCX0KIAotCWFjbV9raWxsX3VyYnMoYWNtKTsK
-IAljYW5jZWxfZGVsYXllZF93b3JrX3N5bmMoJmFjbS0+ZHdvcmspOwogCiAJdHR5X3VucmVnaXN0
-ZXJfZGV2aWNlKGFjbV90dHlfZHJpdmVyLCBhY20tPm1pbm9yKTsKQEAgLTE2MDIsNyArMTYxNiw3
-IEBAIHN0YXRpYyBpbnQgYWNtX3N1c3BlbmQoc3RydWN0IHVzYl9pbnRlcmZhY2UgKmludGYsIHBt
-X21lc3NhZ2VfdCBtZXNzYWdlKQogCWlmIChjbnQpCiAJCXJldHVybiAwOwogCi0JYWNtX2tpbGxf
-dXJicyhhY20pOworCWFjbV9wb2lzb25fdXJicyhhY20pOwogCWNhbmNlbF9kZWxheWVkX3dvcmtf
-c3luYygmYWNtLT5kd29yayk7CiAJYWNtLT51cmJzX2luX2Vycm9yX2RlbGF5ID0gMDsKIApAQCAt
-MTYxNSw2ICsxNjI5LDcgQEAgc3RhdGljIGludCBhY21fcmVzdW1lKHN0cnVjdCB1c2JfaW50ZXJm
-YWNlICppbnRmKQogCXN0cnVjdCB1cmIgKnVyYjsKIAlpbnQgcnYgPSAwOwogCisJYWNtX3VucG9p
-c29uX3VyYnMoYWNtKTsKIAlzcGluX2xvY2tfaXJxKCZhY20tPndyaXRlX2xvY2spOwogCiAJaWYg
-KC0tYWNtLT5zdXNwX2NvdW50KQotLSAKMi4yNi4yCgo=
-
-
---=-dR9FkrW5twny4+EEnyrJ--
-
+Today, yes. CALL emulation was 'recently' made possible by having #BP
+have a stack gap. We have emulation for all 3 those instructions
+implemented in asm/text-patching.h, see int3_emulate_$insn().
