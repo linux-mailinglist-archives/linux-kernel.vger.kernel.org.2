@@ -2,150 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BD13254B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3A53254B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbhBYRpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 12:45:42 -0500
-Received: from mga11.intel.com ([192.55.52.93]:7784 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230467AbhBYRpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:45:38 -0500
-IronPort-SDR: 226DbYQPejJ0XWhpHFDdhfQ5OX+LuVWgcuclbZuhzQ+9xR8rfftYoRamFRpVZvB4GhavezaO3y
- ZCwon503KscQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="182186540"
-X-IronPort-AV: E=Sophos;i="5.81,206,1610438400"; 
-   d="scan'208";a="182186540"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 09:44:14 -0800
-IronPort-SDR: MdE/2JXDMxf/6hAKFVoQsz9Bghq2G4HJbcyRB163dDm8UY55irKSDqYxsfibRJ2/7mrEHIyTfm
- EM/icq5g7erQ==
-X-IronPort-AV: E=Sophos;i="5.81,206,1610438400"; 
-   d="scan'208";a="424735971"
-Received: from rajinder-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.104.209])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 09:44:13 -0800
-Subject: Re: [PATCH 1/2] PCI: controller: thunder: fix compile testing
-To:     Arnd Bergmann <arnd@kernel.org>, Robert Richter <rric@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210225143727.3912204-1-arnd@kernel.org>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <de0dd513-dc7d-d7ca-c0b6-4bc9db355a53@linux.intel.com>
-Date:   Thu, 25 Feb 2021 09:44:12 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232008AbhBYRqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 12:46:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhBYRqv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 12:46:51 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D027C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 09:46:11 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id j20so1077479vsm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 09:46:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iZdQVu0YTjgvqWM6YV5GN6FZiLrUPo1sTuUcqvtmiDE=;
+        b=Yl7XrfEW2Oji49LODi01o9FSSvX1xrX9nmypHSJUdSqC2NK/eS7S55RPjU1AGdqp6y
+         ZNMHd8Uwzefgteu2i4yj2/YkfEW1+QoKQ5dE7uiyCDmcxo4VGAF32nnvtj/SHAXkbLKl
+         rlgiro0gCBTamkfpitYRXRIUs4O/4/5V08G/KGYGoSPqBDQwQkzY7jgm39AbxJTwO+/2
+         PEfuX6KZIQYFvNEEtFLvGTSH6AWkrXK6h06hGuoZoGxNaXypvczNPM25HPKKdfUn6PRs
+         EO5j3jDQI+tsqdkxD3As4oOqr3SRZs52lgDIPTmzTfz+lO/KLcZDpQ+P0NgJXXzHk89P
+         UFOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iZdQVu0YTjgvqWM6YV5GN6FZiLrUPo1sTuUcqvtmiDE=;
+        b=sfDofdFzLgxDkA+ZtNLlCxGXdLw5QSDHNuCAo91uyDw1BiL9b/wwKNzfBIncDCP5Qv
+         d2p+jpoZveLi+3I8fRgjFMAVQQFSqXaOpPRGIYIkGH5Y43WdOzT1N0hElDHW1ch4sNyD
+         xpuGGaIYpCFoTX05Q8AFgoC5aBqmw76BcxglL2VZyvMS5yRYYG8iXJY1U09ZSOZKo0wG
+         asGJ8umz7cCXWiggdq4Q+jRWT3/uY0DPzFLFA2hb+jxLNhKAfbtoU4Yw8KgcSL+BsT8x
+         PZm2fOtfwHSbJHDYfhQeIO5/plG6ZDx5G3K4jlwreaeJlbdiBgeUUDMPSShs5gE6UqRW
+         nPog==
+X-Gm-Message-State: AOAM532O7D1UTxSDdqnIl3J/05lTvsTMmEq3RxqWCZJDtvv7ubQBUWhc
+        2g24pCVjUpMI7HrnkGPueGOIlEGl24b6bAXrdpd2og==
+X-Google-Smtp-Source: ABdhPJwd6hMIAmoKxZSKz8FdWCcoFufcn1uWAoOht9xhyg7s548LRUcVB4PQ1EWppzTIGJi3PPVbFa1HgM9E6i75jQg=
+X-Received: by 2002:a67:ed4a:: with SMTP id m10mr2621118vsp.14.1614275170095;
+ Thu, 25 Feb 2021 09:46:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210225143727.3912204-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210225160247.2959903-1-masahiroy@kernel.org> <20210225160247.2959903-2-masahiroy@kernel.org>
+In-Reply-To: <20210225160247.2959903-2-masahiroy@kernel.org>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Thu, 25 Feb 2021 09:45:58 -0800
+Message-ID: <CABCJKufovCMH9iyA9hFjq1Pt4VNWEPid+rqNWtTvYPTC19LfeA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] kbuild: fix UNUSED_KSYMS_WHITELIST for Clang LTO
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>, Nicolas Pitre <nico@fluxnic.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Masahiro,
 
-
-On 2/25/21 6:37 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Compile-testing these drivers is currently broken. Enabling
-> it causes a couple of build failures though:
-> 
-> drivers/pci/controller/pci-thunder-ecam.c:119:30: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
-> drivers/pci/controller/pci-thunder-pem.c:54:2: error: implicit declaration of function 'writeq' [-Werror,-Wimplicit-function-declaration]
-> drivers/pci/controller/pci-thunder-pem.c:392:8: error: implicit declaration of function 'acpi_get_rc_resources' [-Werror,-Wimplicit-function-declaration]
-> 
-> Fix them with the obvious one-line changes.
-Looks good to me.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Thu, Feb 25, 2021 at 8:03 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Commit fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+> does not work as expected if the .config file has already specified
+> CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list" before enabling
+> CONFIG_LTO_CLANG.
+>
+> So, the user-supplied whitelist and LTO-specific white list must be
+> independent of each other.
+>
+> I refactored the shell script so CONFIG_MODVERSIONS and CONFIG_CLANG_LTO
+> handle whitelists in the same way.
+>
+> Fixes: fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->   drivers/pci/controller/pci-thunder-ecam.c |  2 +-
->   drivers/pci/controller/pci-thunder-pem.c  | 13 +++++++------
->   drivers/pci/pci.h                         |  6 ++++++
->   3 files changed, 14 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pci-thunder-ecam.c b/drivers/pci/controller/pci-thunder-ecam.c
-> index f964fd26f7e0..ffd84656544f 100644
-> --- a/drivers/pci/controller/pci-thunder-ecam.c
-> +++ b/drivers/pci/controller/pci-thunder-ecam.c
-> @@ -116,7 +116,7 @@ static int thunder_ecam_p2_config_read(struct pci_bus *bus, unsigned int devfn,
->   	 * the config space access window.  Since we are working with
->   	 * the high-order 32 bits, shift everything down by 32 bits.
->   	 */
-> -	node_bits = (cfg->res.start >> 32) & (1 << 12);
-> +	node_bits = upper_32_bits(cfg->res.start) & (1 << 12);
->   
->   	v |= node_bits;
->   	set_val(v, where, size, val);
-> diff --git a/drivers/pci/controller/pci-thunder-pem.c b/drivers/pci/controller/pci-thunder-pem.c
-> index 1a3f70ac61fc..0660b9da204f 100644
-> --- a/drivers/pci/controller/pci-thunder-pem.c
-> +++ b/drivers/pci/controller/pci-thunder-pem.c
-> @@ -12,6 +12,7 @@
->   #include <linux/pci-acpi.h>
->   #include <linux/pci-ecam.h>
->   #include <linux/platform_device.h>
-> +#include <linux/io-64-nonatomic-lo-hi.h>
->   #include "../pci.h"
->   
->   #if defined(CONFIG_PCI_HOST_THUNDER_PEM) || (defined(CONFIG_ACPI) && defined(CONFIG_PCI_QUIRKS))
-> @@ -324,9 +325,9 @@ static int thunder_pem_init(struct device *dev, struct pci_config_window *cfg,
->   	 * structure here for the BAR.
->   	 */
->   	bar4_start = res_pem->start + 0xf00000;
-> -	pem_pci->ea_entry[0] = (u32)bar4_start | 2;
-> -	pem_pci->ea_entry[1] = (u32)(res_pem->end - bar4_start) & ~3u;
-> -	pem_pci->ea_entry[2] = (u32)(bar4_start >> 32);
-> +	pem_pci->ea_entry[0] = lower_32_bits(bar4_start) | 2;
-> +	pem_pci->ea_entry[1] = lower_32_bits(res_pem->end - bar4_start) & ~3u;
-> +	pem_pci->ea_entry[2] = upper_32_bits(bar4_start);
->   
->   	cfg->priv = pem_pci;
->   	return 0;
-> @@ -334,9 +335,9 @@ static int thunder_pem_init(struct device *dev, struct pci_config_window *cfg,
->   
->   #if defined(CONFIG_ACPI) && defined(CONFIG_PCI_QUIRKS)
->   
-> -#define PEM_RES_BASE		0x87e0c0000000UL
-> -#define PEM_NODE_MASK		GENMASK(45, 44)
-> -#define PEM_INDX_MASK		GENMASK(26, 24)
-> +#define PEM_RES_BASE		0x87e0c0000000ULL
-> +#define PEM_NODE_MASK		GENMASK_ULL(45, 44)
-> +#define PEM_INDX_MASK		GENMASK_ULL(26, 24)
->   #define PEM_MIN_DOM_IN_NODE	4
->   #define PEM_MAX_DOM_IN_NODE	10
->   
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 0a2b6d993fe1..022c2f433676 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -625,6 +625,12 @@ static inline int pci_dev_specific_reset(struct pci_dev *dev, int probe)
->   #if defined(CONFIG_PCI_QUIRKS) && defined(CONFIG_ARM64)
->   int acpi_get_rc_resources(struct device *dev, const char *hid, u16 segment,
->   			  struct resource *res);
-> +#else
-> +static inline int acpi_get_rc_resources(struct device *dev, const char *hid,
-> +					u16 segment, struct resource *res)
-> +{
-> +	return -ENODEV;
-> +}
->   #endif
->   
->   int pci_rebar_get_current_size(struct pci_dev *pdev, int bar);
-> 
+>
+>  init/Kconfig                    |  1 -
+>  scripts/gen_autoksyms.sh        | 33 ++++++++++++++++++++++++---------
+>  scripts/lto-used-symbollist.txt |  5 -----
+>  3 files changed, 24 insertions(+), 15 deletions(-)
+>  delete mode 100644 scripts/lto-used-symbollist.txt
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+> +
+> +ksym_wl=
+>  if [ -n "$CONFIG_UNUSED_KSYMS_WHITELIST" ]; then
+>         # Use 'eval' to expand the whitelist path and check if it is relative
+>         eval ksym_wl="$CONFIG_UNUSED_KSYMS_WHITELIST"
+> @@ -40,16 +57,14 @@ cat > "$output_file" << EOT
+>  EOT
+>
+>  [ -f modules.order ] && modlist=modules.order || modlist=/dev/null
+> -sed 's/ko$/mod/' $modlist |
+> -xargs -n1 sed -n -e '2{s/ /\n/g;/^$/!p;}' -- |
+> -cat - "$ksym_wl" |
+> +
+> +{
+> +       sed 's/ko$/mod/' $modlist | xargs -n1 sed -n -e '2p'
+> +       echo "$needed_symbols"
+> +       [ -n "$ksym_wl" ] && cat "$ksym_wl"
+> +} | sed -e 's/ /\n/g' | sed -n -e '/^$/!p' |
+>  # Remove the dot prefix for ppc64; symbol names with a dot (.) hold entry
+>  # point addresses.
+>  sed -e 's/^\.//' |
+>  sort -u |
+>  sed -e 's/\(.*\)/#define __KSYM_\1 1/' >> "$output_file"
+> -
+> -# Special case for modversions (see modpost.c)
+> -if [ -n "$CONFIG_MODVERSIONS" ]; then
+> -       echo "#define __KSYM_module_layout 1" >> "$output_file"
+> -fi
+> diff --git a/scripts/lto-used-symbollist.txt b/scripts/lto-used-symbollist.txt
+> deleted file mode 100644
+> index 38e7bb9ebaae..000000000000
+> --- a/scripts/lto-used-symbollist.txt
+> +++ /dev/null
+> @@ -1,5 +0,0 @@
+> -memcpy
+> -memmove
+> -memset
+> -__stack_chk_fail
+> -__stack_chk_guard
+> --
+> 2.27.0
+>
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 0bf5b340b80e..351161326e3c 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -2277,7 +2277,6 @@ config TRIM_UNUSED_KSYMS
+>  config UNUSED_KSYMS_WHITELIST
+>         string "Whitelist of symbols to keep in ksymtab"
+>         depends on TRIM_UNUSED_KSYMS
+> -       default "scripts/lto-used-symbollist.txt" if LTO_CLANG
+>         help
+>           By default, all unused exported symbols will be un-exported from the
+>           build when TRIM_UNUSED_KSYMS is selected.
+> diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
+> index d54dfba15bf2..b74d5949fea6 100755
+> --- a/scripts/gen_autoksyms.sh
+> +++ b/scripts/gen_autoksyms.sh
+> @@ -19,7 +19,24 @@ esac
+>  # We need access to CONFIG_ symbols
+>  . include/config/auto.conf
+>
+> -ksym_wl=/dev/null
+> +needed_symbols=
+> +
+> +# Special case for modversions (see modpost.c)
+> +if [ -n "$CONFIG_MODVERSIONS" ]; then
+> +       needed_symbols="$needed_symbols module_layout"
+> +fi
+> +
+> +# With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a binary
+> +# when the .mod files are generated, which means they don't yet contain
+> +# references to certain symbols that will be present in the final binaries.
+> +if [ -n "$CONFIG_LTO_CLANG" ]; then
+> +       # intrinsic functions
+> +       needed_symbols="$needed_symbols memcpy memmove memset"
+> +       # stack protector symbols
+> +       needed_symbols="$needed_symbols __stack_chk_fail __stack_chk_guard"
+> +fi
+
+Thank you for the patch!
+
+Arnd just reported that _mcount is also needed with some
+configurations. Would you mind including that in the next version?
+
+https://lore.kernel.org/r/20210225143456.3829513-1-arnd@kernel.org/
+
+Sami
