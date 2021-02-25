@@ -2,77 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CE232550A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7FC32550C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbhBYSAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:00:10 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:32382 "EHLO pegase1.c-s.fr"
+        id S233896AbhBYSAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:00:53 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:49941 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233043AbhBYRwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:52:42 -0500
+        id S233025AbhBYRwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 12:52:43 -0500
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DmgLV74Y4z9v1BG;
-        Thu, 25 Feb 2021 18:50:42 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4DmgLX0Htzz9v1BJ;
+        Thu, 25 Feb 2021 18:50:44 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Nbs45xOKHs7u; Thu, 25 Feb 2021 18:50:42 +0100 (CET)
+        with ESMTP id h81q8LE4tMZU; Thu, 25 Feb 2021 18:50:43 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DmgLV6BK3z9v19y;
-        Thu, 25 Feb 2021 18:50:42 +0100 (CET)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DmgLW64t9z9v19y;
+        Thu, 25 Feb 2021 18:50:43 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B04B58B895;
-        Thu, 25 Feb 2021 18:50:44 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A9AB98B895;
+        Thu, 25 Feb 2021 18:50:45 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id uWEk6KeL33cy; Thu, 25 Feb 2021 18:50:44 +0100 (CET)
+        with ESMTP id fZp56yAH2JLR; Thu, 25 Feb 2021 18:50:45 +0100 (CET)
 Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6A4F68B88B;
-        Thu, 25 Feb 2021 18:50:44 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 71BF28B88B;
+        Thu, 25 Feb 2021 18:50:45 +0100 (CET)
 Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 4444567442; Thu, 25 Feb 2021 17:50:44 +0000 (UTC)
-Message-Id: <ac83ef352de8618606fe57126b14ff0b611275ad.1614275314.git.christophe.leroy@csgroup.eu>
+        id 4C1BA67442; Thu, 25 Feb 2021 17:50:45 +0000 (UTC)
+Message-Id: <be54efc6b1561f4fa4960692e71567ee1442ad07.1614275314.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1614275314.git.christophe.leroy@csgroup.eu>
 References: <cover.1614275314.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 14/15] powerpc/uaccess: Also perform 64 bits copies in
- unsafe_copy_to_user() on ppc32
+Subject: [PATCH v1 15/15] powerpc/uaccess: Move copy_mc_xxx() functions down
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 25 Feb 2021 17:50:44 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 17:50:45 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ppc32 has an efficiant 64 bits __put_user(), so also use it in
-order to unroll loops more.
+copy_mc_xxx() functions are in the middle of raw_copy functions.
+
+For clarity, move them out of the raw_copy functions block.
+
+They are using access_ok, so they need to be after the general
+functions in order to eventually allow the inclusion of
+asm-generic/uaccess.h in some future.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/include/asm/uaccess.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/powerpc/include/asm/uaccess.h | 52 +++++++++++++++---------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
 
 diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
-index b3bd1fb42242..e831653db51a 100644
+index e831653db51a..f1f9237ed857 100644
 --- a/arch/powerpc/include/asm/uaccess.h
 +++ b/arch/powerpc/include/asm/uaccess.h
-@@ -371,9 +371,9 @@ do {									\
- 	size_t _len = (l);						\
- 	int _i;								\
- 									\
--	for (_i = 0; _i < (_len & ~(sizeof(long) - 1)); _i += sizeof(long))		\
--		unsafe_put_user(*(long*)(_src + _i), (long __user *)(_dst + _i), e); \
--	if (IS_ENABLED(CONFIG_PPC64) && (_len & 4)) {			\
-+	for (_i = 0; _i < (_len & ~(sizeof(u64) - 1)); _i += sizeof(u64))	\
-+		unsafe_put_user(*(u64 *)(_src + _i), (u64 __user *)(_dst + _i), e); \
-+	if (_len & 4) {							\
- 		unsafe_put_user(*(u32*)(_src + _i), (u32 __user *)(_dst + _i), e); \
- 		_i += 4;						\
- 	}								\
+@@ -220,32 +220,6 @@ do {								\
+ extern unsigned long __copy_tofrom_user(void __user *to,
+ 		const void __user *from, unsigned long size);
+ 
+-#ifdef CONFIG_ARCH_HAS_COPY_MC
+-unsigned long __must_check
+-copy_mc_generic(void *to, const void *from, unsigned long size);
+-
+-static inline unsigned long __must_check
+-copy_mc_to_kernel(void *to, const void *from, unsigned long size)
+-{
+-	return copy_mc_generic(to, from, size);
+-}
+-#define copy_mc_to_kernel copy_mc_to_kernel
+-
+-static inline unsigned long __must_check
+-copy_mc_to_user(void __user *to, const void *from, unsigned long n)
+-{
+-	if (likely(check_copy_size(from, n, true))) {
+-		if (access_ok(to, n)) {
+-			allow_write_to_user(to, n);
+-			n = copy_mc_generic((void *)to, from, n);
+-			prevent_write_to_user(to, n);
+-		}
+-	}
+-
+-	return n;
+-}
+-#endif
+-
+ #ifdef __powerpc64__
+ static inline unsigned long
+ raw_copy_in_user(void __user *to, const void __user *from, unsigned long n)
+@@ -302,6 +276,32 @@ static inline unsigned long clear_user(void __user *addr, unsigned long size)
+ extern long strncpy_from_user(char *dst, const char __user *src, long count);
+ extern __must_check long strnlen_user(const char __user *str, long n);
+ 
++#ifdef CONFIG_ARCH_HAS_COPY_MC
++unsigned long __must_check
++copy_mc_generic(void *to, const void *from, unsigned long size);
++
++static inline unsigned long __must_check
++copy_mc_to_kernel(void *to, const void *from, unsigned long size)
++{
++	return copy_mc_generic(to, from, size);
++}
++#define copy_mc_to_kernel copy_mc_to_kernel
++
++static inline unsigned long __must_check
++copy_mc_to_user(void __user *to, const void *from, unsigned long n)
++{
++	if (likely(check_copy_size(from, n, true))) {
++		if (access_ok(to, n)) {
++			allow_write_to_user(to, n);
++			n = copy_mc_generic((void *)to, from, n);
++			prevent_write_to_user(to, n);
++		}
++	}
++
++	return n;
++}
++#endif
++
+ extern long __copy_from_user_flushcache(void *dst, const void __user *src,
+ 		unsigned size);
+ extern void memcpy_page_flushcache(char *to, struct page *page, size_t offset,
 -- 
 2.25.0
 
