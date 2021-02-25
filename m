@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5AA32584F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:05:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76487325852
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234946AbhBYVC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:02:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
+        id S235244AbhBYVDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:03:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234634AbhBYUw1 (ORCPT
+        with ESMTP id S234704AbhBYUwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:52:27 -0500
+        Thu, 25 Feb 2021 15:52:39 -0500
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E3CC061A2D
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:55 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id d8so7630019ybs.11
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F1AC061A31
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:58 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id a63so7644501yba.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=pSgzcPeZf7CkEyKNT+UwT5BWJSvRnduOvKwxLFb/Sls=;
-        b=TBmuXSjKcURclFdq9gj6ZPJwNEOkGFuZvmeiwtuR2iDyfiEmsbnL8B5qNH/rXy1JR+
-         VHjplhHdfNYXbHEM6d0jXneCHW194c8TZWVoNojdTEP37fblNS8FL9jCmab23FWu45Ns
-         nwKvDJn+4RqTWofvtjmhRtLSmEtc0G0f5c8qCesLctd5jL7cMDlquUyyXEAPEpm0yUMf
-         u/Nu3R2Kv7jsMqzskDLe48jDtCgVS9dZk4jZigwRa0qh1/8OcjN8lFxWoMqrR2ruE50n
-         qTVYV363Yjhh9nEmBgKGyQvvECRNe87Va7VU60vD6OZjtrdq0JteJ/3XOe3FUIIzsjRc
-         HsOQ==
+        bh=y8jiycfjUxxVO938X7a576VwC4HXLrVyvTnTPoiD+9s=;
+        b=eNCsODt7UEHMvR1/ED+Zj+vz21xpXM/UQzn/+fZ0hiti6zgJjcBXAFJGQHgoD/KcQy
+         xc3OLsfeE+yFMC3MvjVP05B16WvpjlNqzE1NopMAgH438ueOh4228lgH4WSj0nAXgqcA
+         mva+SKPevaWJ3y9nlYApr3VMpwnHODzAu+a7GOwByn1VoWZcVNk5UQGztQ0s8Uy4Bun/
+         ljpouolUDjt+bWiDo1feIAzeqKADIObgXHOHoJVmm5AN6K4tuJ62PAzDAQhe9qEJAMAc
+         bAi251md3xfZs0xP3GRNhRf9F2s4LdBLL0qoF0OIac0BzUlZO4KiDMGb4j07161ctLbO
+         wTmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=pSgzcPeZf7CkEyKNT+UwT5BWJSvRnduOvKwxLFb/Sls=;
-        b=IRY5Tnek8mL1RemQ3AUfaD9zOi6XfNPCXx1iTdMQtxe25wFiT92NGtxxMrSu2ykhuU
-         e8nB1M+NbhvEqxSzfPW8XctV0Rwh9P2XZ20yA88Dvnmi7IHJL3pVyx6PrTyerUsIdsHc
-         6QUXTvacnWnBhMRm7x8+6AUD+P9QGeOi20w2O3ongKxgCi6tnTSWWsJ8/7QyZ+qVPnBW
-         t6GKh3uOR+1x5JkxSYJ7Ak0VhEV4ieKsKed8y0A6WnAPTGNB13oalXg3duZBNu4WfOVB
-         UE0281D+OyX1asTfIcNKtQ+J0MC/H11SH454/X5UsAgmfHTy33fShUtpMVmzkLcccfbM
-         XIgQ==
-X-Gm-Message-State: AOAM53358cx6Hh+oa9WBveQPoiZKk852VhJCnmVyZpjOlmdWVxItCT5J
-        hkuUb+8oaiosVEhIvqjuv4hREtUT+ow=
-X-Google-Smtp-Source: ABdhPJzM+tP1BCqhl0RNwjgmMOiVVSkdZlGjTMGi6o07If4pYkbeB92gckA1zO0PISIf9TNUDxKRApSkHSs=
+        bh=y8jiycfjUxxVO938X7a576VwC4HXLrVyvTnTPoiD+9s=;
+        b=ZmiMhF92JplrtgrZhnA9CWwvFRJU9DkInbKkR8d4qM7fDVnrjamJfOcveNOSWWgZMz
+         5bpGgEMBCy5hJAAnvYQ46eeCwG4RmEhcYEdFZLv4RJfo0jajH41uDSgqz7afKkVCJ2IV
+         GrziJ0UVhvOd2QqxfzHHY/IuKyPmlri3NjD4865OIyJOv9JfDh84nLIqxx+W6DO6Btgs
+         w3XlQwYndc0Eg+yVI3xoxR2D9K+QOAIZ+pz6kKQasMIU7UrX/tVIq9rU8c7fdy/psfzP
+         vugAxevmnaRlUmjjKU9fplfHRvZRyk0OPTJmggrWjVb7XEUcr9ngZeKm7ZbA/cOg9Rse
+         fcng==
+X-Gm-Message-State: AOAM532dTR5vu5ejzO/N1gW6XZ+YoGPHiH6lrq+T/GHusDRydtx9GGiM
+        lQY3oN18bHU4MYX1HXo5E55Iwz5v1ug=
+X-Google-Smtp-Source: ABdhPJwJMDv/GfYEkzf+62vi+Eu4Ngvn08CT2146trjLMXX0WtWN34n3K9I88D3lijgn6A2CyulqkDQl0pE=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:34c4:7c1d:f9ba:4576])
- (user=seanjc job=sendgmr) by 2002:a25:af52:: with SMTP id c18mr7183399ybj.196.1614286135191;
- Thu, 25 Feb 2021 12:48:55 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:6191:: with SMTP id v139mr6967857ybb.447.1614286137935;
+ Thu, 25 Feb 2021 12:48:57 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Feb 2021 12:47:46 -0800
+Date:   Thu, 25 Feb 2021 12:47:47 -0800
 In-Reply-To: <20210225204749.1512652-1-seanjc@google.com>
-Message-Id: <20210225204749.1512652-22-seanjc@google.com>
+Message-Id: <20210225204749.1512652-23-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210225204749.1512652-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH 21/24] KVM: x86/mmu: Tweak auditing WARN for A/D bits to
- !PRESENT (was MMIO)
+Subject: [PATCH 22/24] KVM: x86/mmu: Use is_removed_spte() instead of open
+ coded equivalents
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,77 +68,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tweak the MMU_WARN that guards against weirdness when querying A/D status
-to fire on a !MMU_PRESENT SPTE, as opposed to a MMIO SPTE.  Attempting to
-query A/D status on any kind of !MMU_PRESENT SPTE, MMIO or otherwise,
-indicates a KVM bug.  Case in point, several now-fixed bugs were
-identified by enabling this new WARN.
+Use the is_removed_spte() helper instead of open coding the check.
 
+No functional change intended.
+
+Cc: Ben Gardon <bgardon@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/spte.h | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-index 645e9bc2d4a2..2fad4ccd3679 100644
---- a/arch/x86/kvm/mmu/spte.h
-+++ b/arch/x86/kvm/mmu/spte.h
-@@ -209,6 +209,11 @@ static inline bool is_mmio_spte(u64 spte)
- 	       likely(shadow_mmio_value);
- }
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index bef0e1908e82..7f2c4760b84d 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -490,7 +490,7 @@ static inline bool tdp_mmu_set_spte_atomic(struct kvm *kvm,
+ 	 * Do not change removed SPTEs. Only the thread that froze the SPTE
+ 	 * may modify it.
+ 	 */
+-	if (iter->old_spte == REMOVED_SPTE)
++	if (is_removed_spte(iter->old_spte))
+ 		return false;
  
-+static inline bool is_shadow_present_pte(u64 pte)
-+{
-+	return !!(pte & SPTE_MMU_PRESENT_MASK);
-+}
-+
- static inline bool sp_ad_disabled(struct kvm_mmu_page *sp)
- {
- 	return sp->role.ad_disabled;
-@@ -216,13 +221,13 @@ static inline bool sp_ad_disabled(struct kvm_mmu_page *sp)
+ 	if (cmpxchg64(rcu_dereference(iter->sptep), iter->old_spte,
+@@ -565,7 +565,7 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
+ 	 * should be used. If operating under the MMU lock in write mode, the
+ 	 * use of the removed SPTE should not be necessary.
+ 	 */
+-	WARN_ON(iter->old_spte == REMOVED_SPTE);
++	WARN_ON(is_removed_spte(iter->old_spte));
  
- static inline bool spte_ad_enabled(u64 spte)
- {
--	MMU_WARN_ON(is_mmio_spte(spte));
-+	MMU_WARN_ON(!is_shadow_present_pte(spte));
- 	return (spte & SPTE_TDP_AD_MASK) != SPTE_TDP_AD_DISABLED_MASK;
- }
+ 	WRITE_ONCE(*rcu_dereference(iter->sptep), new_spte);
  
- static inline bool spte_ad_need_write_protect(u64 spte)
- {
--	MMU_WARN_ON(is_mmio_spte(spte));
-+	MMU_WARN_ON(!is_shadow_present_pte(spte));
- 	/*
- 	 * This is benign for non-TDP SPTEs as SPTE_TDP_AD_ENABLED_MASK is '0',
- 	 * and non-TDP SPTEs will never set these bits.  Optimize for 64-bit
-@@ -233,13 +238,13 @@ static inline bool spte_ad_need_write_protect(u64 spte)
- 
- static inline u64 spte_shadow_accessed_mask(u64 spte)
- {
--	MMU_WARN_ON(is_mmio_spte(spte));
-+	MMU_WARN_ON(!is_shadow_present_pte(spte));
- 	return spte_ad_enabled(spte) ? shadow_accessed_mask : 0;
- }
- 
- static inline u64 spte_shadow_dirty_mask(u64 spte)
- {
--	MMU_WARN_ON(is_mmio_spte(spte));
-+	MMU_WARN_ON(!is_shadow_present_pte(spte));
- 	return spte_ad_enabled(spte) ? shadow_dirty_mask : 0;
- }
- 
-@@ -248,11 +253,6 @@ static inline bool is_access_track_spte(u64 spte)
- 	return !spte_ad_enabled(spte) && (spte & shadow_acc_track_mask) == 0;
- }
- 
--static inline bool is_shadow_present_pte(u64 pte)
--{
--	return !!(pte & SPTE_MMU_PRESENT_MASK);
--}
--
- static inline bool is_large_pte(u64 pte)
- {
- 	return pte & PT_PAGE_SIZE_MASK;
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
