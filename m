@@ -2,144 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B13324962
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 130FA324947
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236091AbhBYDXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 22:23:53 -0500
-Received: from mail-eopbgr40063.outbound.protection.outlook.com ([40.107.4.63]:28622
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232723AbhBYDXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 22:23:50 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FWu0i/zb40KEGYua7u6obAeZSTiBv8+YQmdILuZQQwGkao9aY2rDl9/UupRN3f5MZP3Uo8ihqGKBjp/leUV4KhkNft+0EsU/Vqpj/NRJ470+z5f/mRWGVZ1ej4EjxCYB/+7IkAIDlYQBfI/rE6XyhgkgcS0oIUHe/bhchXN13zfMi09xgbssMeu+AgSK8Cpvn1Ng5YTdomoogYLetDslFwcF4tisTF7oS2jpjbWmYLrJl8XI/wgC7vBHieOFYpzOngsDflLlBOzq37csinQ4OUe0nXH34Ik5A6Px9WWsg8b+3zzKeKtKYOLuqKbL+9BQuhEVXhfsYo0T1frjtDzVXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lck6ZS8A2U9T+PdekfnW8U8SUFXIjFDjy5TRKWl5XXM=;
- b=Nzx3oAP37m5yDM9ysjXNKZhHtCxA3ZZSex+xI0lFrwrO5D/rlCvtYh2a5LpgVc26ju5f2nM8agH/4iedG0LKIt5lPSZvdKSKCD6N59XEy6xOB/FwvMkCzNXWBLKASsXnSY9x5fcfHVgpiRNjr643jFe2Pan1Pe9juNX3JcHk6sD7MpoaPChZUQHouThM6Qa42Kr0zubh9bi3aioIiyr09EhhU3q7fpdpLsdvrf57WAwvCrb0V6c9Y6BIp0Fe85JYIDNq03jIZtLe30ou9OTjnqptp0qTsgX0tNtogCSscrm2LIfXMC1iYCI+95Yu8jf4/HQ1UA4FZQAwUNBGStAWDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lck6ZS8A2U9T+PdekfnW8U8SUFXIjFDjy5TRKWl5XXM=;
- b=Qi1BDqQY1ZozV6lnsm0giqNX6Map9psX3K/S2ZqwFTWZWYVgM7YzaVpHpgNmSiASoYVrSxWho34v9QOd6PlAUk7kKq13TPQ01QiGLvW1KRN5XtztaEJG+qRATVEErlupGAgsaZ762r1e/SIVwCp4pNDFcYENjffg03p3CE17NC0=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DBAPR04MB7222.eurprd04.prod.outlook.com (2603:10a6:10:1af::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Thu, 25 Feb
- 2021 03:22:59 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d58c:d479:d094:43d0]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d58c:d479:d094:43d0%9]) with mapi id 15.20.3846.043; Thu, 25 Feb 2021
- 03:22:59 +0000
-From:   peng.fan@oss.nxp.com
-To:     sboyd@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V3 5/5] mmc: sdhci-esdhc-imx: validate pinctrl before use it
-Date:   Thu, 25 Feb 2021 11:10:04 +0800
-Message-Id: <1614222604-27066-6-git-send-email-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614222604-27066-1-git-send-email-peng.fan@oss.nxp.com>
-References: <1614222604-27066-1-git-send-email-peng.fan@oss.nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SGAP274CA0007.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::19)
- To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+        id S236014AbhBYDLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 22:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232237AbhBYDLb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 22:11:31 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5299C061574;
+        Wed, 24 Feb 2021 19:10:50 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id f1so6383791lfu.3;
+        Wed, 24 Feb 2021 19:10:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EnWKtR8Gi6MBZCyGkt9dN20MUD2l2Ye826UGjeumL/M=;
+        b=bH9vGPAt9TT8vyB02A3LusGmI+8chLo2PIYd/qdVnAoXcA4p9U8W5tREoMsyzsBZ4Z
+         Q9NWpJGzbzKuGHL8s6oMt0bLW3cEcmbC9NdcLISbdy921Vh/wsagj4AH++LZuIzRDEbT
+         /WeaCZUdRo1TnFila95eDP1Wh6V9uR/3XL/ldcc37WLU90lRiqTi5RA7028rpBzspYn0
+         uzW+qM+xaP557V5nIjT5QocjQY/t2x2za9ZZhZ52SkaDpq5OPJHeeJmMELdtjDXjttJT
+         B9WSVRITYzuXvO6JzTkJ79NxGhasXXQhMfU3k2UQOy3nrYfAVvhpTpohOVYNphQy7Wsl
+         Pj9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EnWKtR8Gi6MBZCyGkt9dN20MUD2l2Ye826UGjeumL/M=;
+        b=IO4xRyBtIV27Y0x18dRMPFhwoTwDg+E4I46T2sns8g6uQukn6K9bo+gOYKpeOtH67c
+         NfFlWYsUgTz4aFQP8zr2h8TGRxTv6+s3t8XiNSg/vNnnc/+clpcvx3v8LdESIC5K7ZCS
+         3QpMePSToxoetgS8TbcsmYtOQ1MZMH4gN+q4tgFs7Ys2lUxJC5uz0iHMWwNldd+KQl5I
+         3BJBQ78jApa68swxRC0mFqsw4UbMUNXXA5SymGIe+nooTV7vP1ADqRXM2FMZmXkAkUaN
+         9CVZVV0wbonLeR3wwqVVQqNSvZXzx5F6noe98+60b6XFSrE4SXGAwYAWrgil7BmAZAgR
+         9v3Q==
+X-Gm-Message-State: AOAM531IaFsxZnpn/NO1DEELaxqgUyuFNbmMK6vKEKVondJrS5JhlcIh
+        oFwGVeiqZqud9Sbaw/5e1FGmzDvmvv9o2n/dvN4=
+X-Google-Smtp-Source: ABdhPJxCV+TqWtFTdMF/6bZM7j6af9TKwjCsqsLP5PqihQfPd5E2/w9l1zUzIOTZC6eXqdEZ1+/twFQLRzEl5p88ras=
+X-Received: by 2002:a19:4147:: with SMTP id o68mr691484lfa.295.1614222649170;
+ Wed, 24 Feb 2021 19:10:49 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SGAP274CA0007.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3890.19 via Frontend Transport; Thu, 25 Feb 2021 03:22:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f408410d-0c89-4925-92b8-08d8d93ca6cf
-X-MS-TrafficTypeDiagnostic: DBAPR04MB7222:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DBAPR04MB7222285E2EE003B18C9AB8A9C99E9@DBAPR04MB7222.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:546;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WNvVANhwfWvA3vTXVH/e9+IIOctca6BZ9rNhErMK1S8tq+XrweGG9Dc9nCqlJb73iNXHHK6fB0/jvjYtFmrmzlWa9Pwm/Bz3KUbcdOyNsrGjarDY8lB3vWWj/6gwxiXblmafGPaTWaJzw7cYgzR2UDksEtdTa0ux+NirVxq2t0DudXv0TVA8Mr1zOgg5sq0MD5zqVKu8e6t/bx0S0ZjUdbhYkT2CJhtG4NUDUaKokW7ljAy7uw9d+k5oZsqDdHmTCDO0DaYhNKVjh5uZmBwqMZXpd8z5gYTY4p/I2CMomPgy8SEAQGXXnn0DqRytceVMwYN2vjlGze2ZjC4mq7whkWqtmXsnH1tg3RRvT/dEGEnI10aOKgzA6Nkes4WfD7njm0USP3NcpkTgrtDBhN7R/kp/CGHezsYzPDIEHhW95K/vTaDfoF4OIhswIvbBPecIJ0+TqzmLLoDK59nYQA85UNMPC5WZEFjSaKW93lcTnFHATE6wmOnn9sSPvCpFD6CtnsINydHgDPPcprXTSbXuSCql7SY4fTdBkKExehuR4n7C75ubF9tseIj8WqB6serpbNRCQzde/76yyjRSOYWvhg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39860400002)(366004)(396003)(26005)(6486002)(5660300002)(66556008)(66946007)(66476007)(478600001)(86362001)(7416002)(956004)(6506007)(2906002)(6512007)(2616005)(6666004)(9686003)(83380400001)(16526019)(8676002)(69590400012)(4326008)(316002)(186003)(52116002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?SPGrzSHYtxpOYXFVSfTyy66FHRj2o6w1AckK8GddO5z9yrG6rmlPqGcUBLVL?=
- =?us-ascii?Q?ezlwdu4QQiKNGP897BsVZqH/Ed3+JLk+7HLRZYYEypP6kxcgxv7xSZRCF5FR?=
- =?us-ascii?Q?wrOY5knBcOKPlGbH2m55+jn2zhzC+9p6zSHv73JA622NGxM5EWr6dt/ibMVV?=
- =?us-ascii?Q?vRcIxHvulPu3Y6oww+LxwJ8TLA+1ygeEfey5Usdh1CMGrh/lDA3/THaDUblC?=
- =?us-ascii?Q?3iXJxpXM6n03p/C3Gn2Y+/moVvmbQ4YNWFU9XXOctaNb5sBhjnUFzUSn8/9o?=
- =?us-ascii?Q?mWZuB72YPzByQAk6krZnRkorrpng8zTOmKJUqFFagoma08PZCi+BiAXfIFiC?=
- =?us-ascii?Q?B4mqzzCr3lCBnXevDYVBaC+O/DxbRbqAWvSC14yMUcL2kcPapddeXoM/dC4M?=
- =?us-ascii?Q?Bl0oOgvZEoF/QiGR5MxBXq/CUWnJL6miCcdDYqtbLQxLWJ2PXlg96DigA1y3?=
- =?us-ascii?Q?WF90A8ooC5SzCiJ0gENyRNPUZxN7G+5VFXjsBFYxyedg9O4HyVEfHOapk8w1?=
- =?us-ascii?Q?TPnWS3Pa+yHP3RaqAkcI8mEGoVqYJoH7TegP3laaeVem3OBeMDZwDNDyb/Os?=
- =?us-ascii?Q?M+Ht7iDh2q5zgtikyZogYigLoCFy4p6zbSSbCmimRXFe7nn3YtgUQi5QqHE7?=
- =?us-ascii?Q?B5ugDOxhM3PZRDFHh2o5G78lSWCZMvkU8DI5Cpm2ELajC02NvjgkHv8Nvxk+?=
- =?us-ascii?Q?JSh/4gYmJhRXbfryOMf+pNn6Clpv5g5sqJ5K0E69k8mdlonaBtnchQq36dfM?=
- =?us-ascii?Q?Jbj6xUxwKjk4eded56FOTsaSL/l3uipU/xAB9b+TIPfydXxtHGyo8IaBh0p4?=
- =?us-ascii?Q?OEivjRbxIG+cRXuvK1Is6EXTFuLPrO/ifUc96/QIVpIn5ZqgfjsZ+neYDHw+?=
- =?us-ascii?Q?cDljirM0nOS5sbddehYrnFQaBrhx7triJiEJPTk1NqHVnU9iFeRnkPO/tCrh?=
- =?us-ascii?Q?HL25nrHjlvW1swCzxxsarpmrGnSqV2URJ87yPuZDxDmVLCkbUvDTlnrIeXgZ?=
- =?us-ascii?Q?RoKkX3WxdhClWJDYcVtaEistmvSQYUKDBlsFp2C53Qlv+p7F5uf5bXavtHeM?=
- =?us-ascii?Q?bkA5YfF3tPVzQ74s1aRsadHtVdlBGFZd69I5ID2hCF2OJxWxtbHRg+HTpwjN?=
- =?us-ascii?Q?CSdKAB1PJb5UU315qZR8KMqGLLfwSwvUF+0vfPwhB0OUFGDI5lDVOqVl8McO?=
- =?us-ascii?Q?YwMQyRs0XGM+JUY1KMSCA6MLf+nWH/YsaFfuj14Rm8DlpIoZDKxlJm0LHRCI?=
- =?us-ascii?Q?02zZoUvksZTHzf31zlbOJe7IHN+5AJNaW3WImdCCkIFuk4Ij8cbKDjOQtpmC?=
- =?us-ascii?Q?VZxRwQ+qNqfcWfDZcElAu7l4?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f408410d-0c89-4925-92b8-08d8d93ca6cf
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2021 03:22:59.6659
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: srLEI1leelfHm0DpJBd0oAWo12FUorhLW++ZzNpobwY4S6b4EYeM8YH/eozEZAQqMIQykXSVJXvq4HCkJdSptA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7222
+References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
+ <1612693435-31418-4-git-send-email-shengjiu.wang@nxp.com> <20210210221252.GA2885308@robh.at.kernel.org>
+ <CAA+D8APfd8trC8cFsT8k8G54nhrYDrwXxECx9RpDAgw3rco9DQ@mail.gmail.com>
+In-Reply-To: <CAA+D8APfd8trC8cFsT8k8G54nhrYDrwXxECx9RpDAgw3rco9DQ@mail.gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 25 Feb 2021 00:10:38 -0300
+Message-ID: <CAOMZO5D3HgVF6Gq6sFo7j7OJ63NVN--ZtmwZCoM7=dmmhVZchQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] ASoC: dt-bindings: fsl_rpmsg: Add binding doc for
+ rpmsg cpu dai driver
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Timur Tabi <timur@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+On Thu, Feb 18, 2021 at 4:21 AM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
 
-When imx_data->pinctrl is not a valid pointer, pinctrl_lookup_state
-will trigger kernel panic.
+> > rpmsg is a protocol. What's the h/w block?
+>
+> On Linux side this driver is a virtual driver, it is running
+> on Arm Cortex-A core. The h/w block is controlled by
+> another core (cortex-M core). so this driver actually
+> doesn't touch any hardware, it just does configuration
+> for rpmsg channel.
+> fsl,version: There are maybe different image running on M core, this
+> is the image version, different image has different function.
 
-When we boot Dual OS on Jailhouse hypervisor, we let the 1st Linux to
-configure pinmux ready for the 2nd OS, so the 2nd OS not have pinctrl
-settings.
-
-Similar to this commit b62eee9f804e ("mmc: sdhci-esdhc-imx: no fail when no pinctrl available").
-
-Reviewed-by: Bough Chen <haobo.chen@nxp.com>
-Reviewed-by: Alice Guo <alice.guo@nxp.com>
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/mmc/host/sdhci-esdhc-imx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
-index a20459744d21..94327988da91 100644
---- a/drivers/mmc/host/sdhci-esdhc-imx.c
-+++ b/drivers/mmc/host/sdhci-esdhc-imx.c
-@@ -1488,7 +1488,7 @@ sdhci_esdhc_imx_probe_dt(struct platform_device *pdev,
- 
- 	mmc_of_parse_voltage(np, &host->ocr_mask);
- 
--	if (esdhc_is_usdhc(imx_data)) {
-+	if (esdhc_is_usdhc(imx_data) && !IS_ERR(imx_data->pinctrl)) {
- 		imx_data->pins_100mhz = pinctrl_lookup_state(imx_data->pinctrl,
- 						ESDHC_PINCTRL_STATE_100MHZ);
- 		imx_data->pins_200mhz = pinctrl_lookup_state(imx_data->pinctrl,
--- 
-2.30.0
-
+To answer Rob's question: the hardware block that handles these
+messages is the Message Unit block.
