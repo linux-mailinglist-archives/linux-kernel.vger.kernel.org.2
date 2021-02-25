@@ -2,105 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB23324D1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BEFE324D19
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbhBYJnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:43:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234107AbhBYJmi (ORCPT
+        id S233671AbhBYJld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:41:33 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:35450 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233755AbhBYJkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:42:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AA6C061793;
-        Thu, 25 Feb 2021 01:39:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2r8qTWCQuEAeQqk6EF6ekYZa+LRQpOnq8QiY31W/zA4=; b=PGIQVeqlTsjn8OCEcdTziCcyIB
-        /7/qqI0p+RJJuAikuzXWsW2yFyGB1LCyvt/IyWJUdPzuR0YP/wHShezLq0yHpCTK96IQ2o5VGqUC+
-        Xn8ebk1tvFBEugxYldRHqgtiYDuKKn3kqiyCrsd6P2As7DpdYFJMs9RxcloU1MIptblNNTEMH6IVf
-        Z5nvP/99ja1TmUOfg/PAmibgg8rSOBghLFV449VIKjy+++iU4KjocoGzjEc6q3i9WzHaFgFuwamLy
-        RTgOd0heoXK+kFUwErTNN9DFeUrxxYarVw74Q5b+dUCfY+1osuZGxHKH6pz32kBAR50n346SF9MN6
-        yDx79NYA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lFD6j-00AWyD-IP; Thu, 25 Feb 2021 09:38:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 349733010D2;
-        Thu, 25 Feb 2021 10:38:51 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DB22B20BC92B4; Thu, 25 Feb 2021 10:38:51 +0100 (CET)
-Date:   Thu, 25 Feb 2021 10:38:51 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
-        Eric Biggers <ebiggers@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-crypto@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 04/13] x86/crypto/aesni-intel_avx: Standardize stack
- alignment prologue
-Message-ID: <YDdwK8aPnc6X9WTB@hirez.programming.kicks-ass.net>
-References: <cover.1614182415.git.jpoimboe@redhat.com>
- <02d00a0903a0959f4787e186e2a07d271e1f63d4.1614182415.git.jpoimboe@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <02d00a0903a0959f4787e186e2a07d271e1f63d4.1614182415.git.jpoimboe@redhat.com>
+        Thu, 25 Feb 2021 04:40:41 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UPXi4Du_1614245992;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPXi4Du_1614245992)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 25 Feb 2021 17:39:57 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     stanimir.varbanov@linaro.org
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] media: venus: helpers: remove unnecessary conversion to bool
+Date:   Thu, 25 Feb 2021 17:39:51 +0800
+Message-Id: <1614245991-82986-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 10:29:17AM -0600, Josh Poimboeuf wrote:
-> Use RBP instead of R14 for saving the old stack pointer before
-> realignment.  This resembles what compilers normally do.
-> 
-> This enables ORC unwinding by allowing objtool to understand the stack
-> realignment.
-> 
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> ---
->  arch/x86/crypto/aesni-intel_avx-x86_64.S | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/crypto/aesni-intel_avx-x86_64.S b/arch/x86/crypto/aesni-intel_avx-x86_64.S
-> index 188f1848a730..98e3552b6e03 100644
-> --- a/arch/x86/crypto/aesni-intel_avx-x86_64.S
-> +++ b/arch/x86/crypto/aesni-intel_avx-x86_64.S
-> @@ -251,22 +251,20 @@ VARIABLE_OFFSET = 16*8
->  .macro FUNC_SAVE
->          push    %r12
->          push    %r13
-> -        push    %r14
->          push    %r15
->  
-> -        mov     %rsp, %r14
-> -
-> -
-> +	push	%rbp
-> +	mov	%rsp, %rbp
->  
->          sub     $VARIABLE_OFFSET, %rsp
->          and     $~63, %rsp                    # align rsp to 64 bytes
->  .endm
->  
->  .macro FUNC_RESTORE
-> -        mov     %r14, %rsp
-> +        mov     %rbp, %rsp
-> +	pop	%rbp
->  
->          pop     %r15
-> -        pop     %r14
->          pop     %r13
->          pop     %r12
->  .endm
+Fix the following coccicheck warnings:
 
-Urgh, I was about to say your patch is whitespace damaged, but it's the
-original file :-/
+./drivers/media/platform/qcom/venus/helpers.c:585:11-16: WARNING:
+conversion to bool not needed here.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/media/platform/qcom/venus/helpers.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+index 76ece2f..35091c6 100644
+--- a/drivers/media/platform/qcom/venus/helpers.c
++++ b/drivers/media/platform/qcom/venus/helpers.c
+@@ -581,8 +581,7 @@ static int platform_get_bufreq(struct venus_inst *inst, u32 buftype,
+ 		params.dec.is_secondary_output =
+ 			inst->opb_buftype == HFI_BUFFER_OUTPUT2;
+ 		params.dec.is_interlaced =
+-			inst->pic_struct != HFI_INTERLACE_FRAME_PROGRESSIVE ?
+-				true : false;
++			inst->pic_struct != HFI_INTERLACE_FRAME_PROGRESSIVE;
+ 	} else {
+ 		params.width = inst->out_width;
+ 		params.height = inst->out_height;
+-- 
+1.8.3.1
+
