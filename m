@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49053255B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8033255A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbhBYSiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:38:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233635AbhBYSeb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 13:34:31 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83D1C0617AB
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 10:33:51 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id p5so3681770plo.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 10:33:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JpUDXb+08O73zaMFvPArwT11W4r8PqHrJ9N7vVR10KU=;
-        b=M82C3UnDP8wzdzQ+dqrcf1VmMJ8J+Mmayd4/zcdCx1c2dDyJ1zBWOL51jVynxPbMWo
-         fnzrMrZ8arDWhM3KoXSxaep3ladV4mZDHYRopeiiGjOH8aRdbEyHTi6ITSQPWWDpcP/C
-         jWwEtAmdI+DInbIndeW0v4hNmAz5EnTBbVvj8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JpUDXb+08O73zaMFvPArwT11W4r8PqHrJ9N7vVR10KU=;
-        b=Jy01vsX0zAu06ru/MD76K0u79QMTjLtNbL+ZkUjHgEIeBtZxFiTBd8XvZZAaZc+F14
-         IT1hIfh61TmNc5jc42Yze1XmweoB8orCHSpm37pEfOlVtpAV+MSgs5ImZFwFIXgYEBQ5
-         zQJJ1yopRTaQTBhJayh6V90rcjX8GqYsJ39EWdWa9hMq6ZLyiweiRUKK/usrIu/TKzVC
-         n3NllGasmUCsnCQDr5radesnXQVAab2CYJOKWi/SVvyjy4JwvP8QCIixN7Q6mS9JEoTj
-         303CQtcT5Wf0+ZdLlK1DHjN/WDWb7b+/HwAwMl7PTm5WDISEqmNrfSFBcRJxQ9hObsG2
-         3UuA==
-X-Gm-Message-State: AOAM533zYtvo7Rq+0oV74+MFGho5SwwIBp20ebcV8qD1Vcs1OtMLu+NX
-        YUYcbmuMMTPYclu4HEnYXM2sqA==
-X-Google-Smtp-Source: ABdhPJwxxmKD5BkvQ0tPShEjl8xcqLMiOSez7ywyUWkxzveGyfx8EpKbj0qiKYEFiy2tHZWLk46r7w==
-X-Received: by 2002:a17:90b:8a:: with SMTP id bb10mr4648192pjb.207.1614278031222;
-        Thu, 25 Feb 2021 10:33:51 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:1d8:8d0c:f75e:edd8])
-        by smtp.gmail.com with UTF8SMTPSA id js2sm6581089pjb.54.2021.02.25.10.33.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Feb 2021 10:33:50 -0800 (PST)
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH v2 4/4] arm64: dts: qcom: sc7180: trogdor: Use ADC TM channel 0 instead of 1 for charger temperature
-Date:   Thu, 25 Feb 2021 10:33:37 -0800
-Message-Id: <20210225103330.v2.4.I67e29f2854bad22e3581d6a6e1879b9fc8abbdea@changeid>
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-In-Reply-To: <20210225103330.v2.1.I6a426324db3d98d6cfae8adf2598831bb30bba74@changeid>
-References: <20210225103330.v2.1.I6a426324db3d98d6cfae8adf2598831bb30bba74@changeid>
+        id S234081AbhBYShs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:37:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233158AbhBYSfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 13:35:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C13F64F25;
+        Thu, 25 Feb 2021 18:34:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614278080;
+        bh=D+o2eGuxk/96TykauSFPUt++BF/ZEYWd6AdWAF7lWnE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iYswuWlR9ns7uatgoMx+SnWVyeJJwej3QpXCRAOfhxQoNvtykdbAm+8gbNrLi8FEQ
+         Qtmve/Mjwf+xOXayAV4V6cO8teMH/nIKxvaqbosZbAds1LC5y8blKLCenXjMuz4zrf
+         itIW9lchhtnUy8smBKroglsmC4iGmYbK9O7Q3zXPvaIV4I0aW8XufxY8lC7zrRvXsY
+         nnnuYwyrB5W9ovdgJNQna+KPf49nmRXXsRDioWpuZWd1alOLe8jUVyN04Z6+Dr/Wvz
+         j+U6Ya2iZIzryK3icEXbWHCa9bDwwk02L4Qtc+/jWRzpfNKRo13MH1wZAtJ2L7Yk20
+         mddu6MscP4hgg==
+Date:   Thu, 25 Feb 2021 11:34:36 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Rong Chen <rong.a.chen@intel.com>
+Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [kbuild-all] Re: WARNING: modpost: vmlinux.o(.text+0x1a8edb8):
+ Section mismatch in reference from the function stop_machine() to the
+ function .init.text:intel_rng_hw_init()
+Message-ID: <20210225183436.GA1349@MSI.localdomain>
+References: <202102242224.Cpiog92Y-lkp@intel.com>
+ <83ab58cb-581f-135f-21fd-05c15860cafa@suse.com>
+ <a7013b23-af0b-e1dd-324c-904a536d9f01@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <a7013b23-af0b-e1dd-324c-904a536d9f01@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On trogdor the ADC thermal monitor is used for monitoring certain
-device temperatures. All trogdor boards have at least a thermistor
-for the charger temperature, optionally they may have others.
+On Thu, Feb 25, 2021 at 04:17:21PM +0800, Rong Chen wrote:
+> 
+> 
+> On 2/24/21 10:26 PM, Jürgen Groß wrote:
+> > On 24.02.21 15:20, kernel test robot wrote:
+> > > tree:
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> > > master
+> > > head:   c03c21ba6f4e95e406a1a7b4c34ef334b977c194
+> > > commit: ab234a260b1f625b26cbefa93ca365b0ae66df33 x86/pv: Rework
+> > > arch_local_irq_restore() to not use popf
+> > > date:   2 weeks ago
+> > > config: x86_64-randconfig-a005-20210223 (attached as .config)
+> > > compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project
+> > > f14a14dd2564703db02f80c00db8ae492b594f77)
+> > > reproduce (this is a W=1 build):
+> > >          wget
+> > > https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
+> > > -O ~/bin/make.cross
+> > >          chmod +x ~/bin/make.cross
+> > >          # install x86_64 cross compiling tool for clang build
+> > >          # apt-get install binutils-x86-64-linux-gnu
+> > >          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ab234a260b1f625b26cbefa93ca365b0ae66df33
+> > >          git remote add linus
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> > >          git fetch --no-tags linus master
+> > >          git checkout ab234a260b1f625b26cbefa93ca365b0ae66df33
+> > >          # save the attached .config to linux build tree
+> > >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross
+> > > ARCH=x86_64
+> > > 
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> > > 
+> > > > > WARNING: modpost: vmlinux.o(.text+0x1a8edb8): Section
+> > > > > mismatch in reference from the function stop_machine() to
+> > > > > the function .init.text:intel_rng_hw_init()
+> > > The function stop_machine() references
+> > > the function __init intel_rng_hw_init().
+> > > This is often because stop_machine lacks a __init
+> > > annotation or the annotation of intel_rng_hw_init is wrong.
+> > 
+> > I'd be very interested to know how the identified patch would be able to
+> > have this effect.
+> 
+> Hi Clang Team,
+> 
+> The problem is found by the latest clang, and I can't reproduce it with
+> clang-11,
+> could you take a look?
+> 
+> Best Regards,
+> Rong Chen
 
-Currently the ADC thermal monitor is configured to use channel 1
-for the charger temperature. Given that all trogdor boards have
-the charger thermistor it makes more sense to use channel 0,
-and then let boards with other thermistors use channels 1, 2, 3,
-rather than 0, 2, 3.
+Hi Rong,
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
----
+Known issue. LLVM 13 cut over to the new pass manager (NPM) which has
+changed some of the inlining heuristics. I would probably recommend
+cutting over to the "release/12.x" branch for now, which should be more
+up to date but also stable.
 
-Changes in v2:
-- patch added to the series
+Additionally, Arnd sent a fix for this particular warning here:
+https://lore.kernel.org/lkml/20210225130153.1956990-1-arnd@kernel.org/
 
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index ab4efaece5cb..58e127b6ba1e 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -19,7 +19,7 @@ charger_thermal: charger-thermal {
- 			polling-delay-passive = <0>;
- 			polling-delay = <0>;
- 
--			thermal-sensors = <&pm6150_adc_tm 1>;
-+			thermal-sensors = <&pm6150_adc_tm 0>;
- 
- 			trips {
- 				charger-crit {
-@@ -718,8 +718,8 @@ charger-thermistor@4f {
- &pm6150_adc_tm {
- 	status = "okay";
- 
--	charger-thermistor@1 {
--		reg = <1>;
-+	charger-thermistor@0 {
-+		reg = <0>;
- 		io-channels = <&pm6150_adc ADC5_AMUX_THM3_100K_PU>;
- 		qcom,ratiometric;
- 		qcom,hw-settle-time-us = <200>;
--- 
-2.30.0.617.g56c4b15f3c-goog
-
+Cheers,
+Nathan
