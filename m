@@ -2,59 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB49324EE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E858324EE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233864AbhBYLNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 06:13:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:54228 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233501AbhBYLMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 06:12:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69B55113E;
-        Thu, 25 Feb 2021 03:11:17 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E5FD3F73D;
-        Thu, 25 Feb 2021 03:11:16 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>
-Subject: Re: [PATCH 6/6] sched: Simplify set_affinity_pending refcounts
-In-Reply-To: <YDdtkvUFxLs6zlyu@hirez.programming.kicks-ass.net>
-References: <20210224122439.176543586@infradead.org> <20210224131355.724130207@infradead.org> <YDZyIugiyxAq0tVz@hirez.programming.kicks-ass.net> <jhjeeh55ouy.mognet@arm.com> <YDdtkvUFxLs6zlyu@hirez.programming.kicks-ass.net>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Thu, 25 Feb 2021 11:11:13 +0000
-Message-ID: <jhj4ki05rn2.mognet@arm.com>
+        id S233501AbhBYLOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 06:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233396AbhBYLNw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 06:13:52 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C2FC061574;
+        Thu, 25 Feb 2021 03:13:12 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id a4so3542557pgc.11;
+        Thu, 25 Feb 2021 03:13:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p37Q2U2usAvIKlqmjz2805mUMvZ9x/KKmC2ght6nM2o=;
+        b=cn/BiB9R7U+mSNvJQA91EF4vQHwJHjh/0XaSh1KQpZ/6SYVqwtkIIagsI/TWyOPPJd
+         nQByfNlL3foOEZPp1pZlaXwqcawWfotjXLZw7oJW18LDJqKId/rDINZOv1IEMgYJAKmr
+         kydSOrdarWcSzqywhADB1ISZ5VJo6MvFwC2TgSk/93tL1dEXeYHx2LWW1tZi7JxUtm8Q
+         kdCEAWRKaPGqQnl8fTu1OKGMo/VrdfMAMzCxX8lk+idsOWG0doQ0IAUyHCR/xFnLwzfM
+         nWHoL+nsnOjwlWYoPzZoLFrCPWvRQyF8HY2d8w8AptceDxRAfvjxfyMAtOK1XMfLnL2Q
+         ippw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p37Q2U2usAvIKlqmjz2805mUMvZ9x/KKmC2ght6nM2o=;
+        b=Lj0Wvvb1/IcnVS4Tl8T/r8FvE0RKXTSSIrfHOddllPhO9juYEI8jYrQHDRm4Ryg4Gw
+         Xcwyc5+eNckpp+x7o3guXoKfCazQNBuhn2eQvU+fgX8yFTc3E+eyuqvufVYmfAiUUnaI
+         tn86jY12D2j+kPMQrBoF0E1G4/XYdzSmL5pirUnz+tlDz2t8DzmRWI/W5PbfAS1cWbbe
+         26t3q5uWG5lcNSIxixeZDvEEfkG2aSmpzd2PqxYppT0Y6o1InYwGGejvrs9dd5CJ+cP0
+         taJSHvGHH7jPBI4qBYYaH80WG6jkd7WyDzgqd2jLrFVr/i9hWoVzVpZASi+Bdwu5bOhH
+         eBZQ==
+X-Gm-Message-State: AOAM530d4v1vbA6uMOelohA+VyWnuGnCGiLQURRE615FmuWlgj8KokAr
+        g4PTH+4pHRnqmcoHf10RESw=
+X-Google-Smtp-Source: ABdhPJxwqsie0rFEvCl2hjsVFCgqtHFonqebIfRNoTUdgQo13W6KVwA+QNipwzXcf/g71ulmFQ0fdA==
+X-Received: by 2002:a05:6a00:1681:b029:1ec:c756:7ec3 with SMTP id k1-20020a056a001681b02901ecc7567ec3mr2784510pfc.13.1614251592111;
+        Thu, 25 Feb 2021 03:13:12 -0800 (PST)
+Received: from gli-System-Product-Name.genesyslogic.com.tw (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
+        by smtp.gmail.com with ESMTPSA id g3sm6800959pfo.90.2021.02.25.03.13.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 03:13:11 -0800 (PST)
+From:   Renius Chen <reniuschengl@gmail.com>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw,
+        Renius Chen <reniuschengl@gmail.com>
+Subject: [PATCH] mmc: sdhci-pci-gli: Enable short circuit protection mechanism of GL9755
+Date:   Thu, 25 Feb 2021 19:13:07 +0800
+Message-Id: <20210225111307.62975-1-reniuschengl@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/02/21 10:27, Peter Zijlstra wrote:
-> On Wed, Feb 24, 2021 at 05:59:01PM +0000, Valentin Schneider wrote:
->
->> Your change reinstores the "triple SCA" pattern, where a stopper can run
->> with arg->pending && arg->pending != p->migration_pending, which I was
->> kinda happy to see go away...
->
-> Right, fair enough. Any workload that can tell the difference is doing
-> it wrong anyway :-)
->
-> OK, I've munged your two patches together into the below.
->
+Short circuit protection mechanism of GL9755 is disabled by HW default
+setting. Enable short circuit protection to prevent GL9755 from being
+damaged by short circuit or over current.
 
-Thanks!
+Signed-off-by: Renius Chen <reniuschengl@gmail.com>
+---
+ drivers/mmc/host/sdhci-pci-gli.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-I haven't found much else to say on the series after having slept on it, so
-feel free to add:
+diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+index 5606bdc08a96..7ba0fd601696 100644
+--- a/drivers/mmc/host/sdhci-pci-gli.c
++++ b/drivers/mmc/host/sdhci-pci-gli.c
+@@ -123,6 +123,9 @@
+ #define PCI_GLI_9755_PLLSSC        0x68
+ #define   PCI_GLI_9755_PLLSSC_PPM    GENMASK(15, 0)
+ 
++#define PCI_GLI_9755_SerDes  0x70
++#define PCI_GLI_9755_SCP_DIS   BIT(19)
++
+ #define GLI_MAX_TUNING_LOOP 40
+ 
+ /* Genesys Logic chipset */
+@@ -547,6 +550,11 @@ static void gl9755_hw_setting(struct sdhci_pci_slot *slot)
+ 	value &= ~PCI_GLI_9755_DMACLK;
+ 	pci_write_config_dword(pdev, PCI_GLI_9755_PECONF, value);
+ 
++	/* enable short circuit protection */
++	pci_read_config_dword(pdev, PCI_GLI_9755_SerDes, &value);
++	value &= ~PCI_GLI_9755_SCP_DIS;
++	pci_write_config_dword(pdev, PCI_GLI_9755_SerDes, value);
++
+ 	gl9755_wt_off(pdev);
+ }
+ 
+-- 
+2.27.0
 
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
-to the rest. I'll go see about testing it in some way.
