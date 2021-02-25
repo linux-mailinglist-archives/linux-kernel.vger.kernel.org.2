@@ -2,100 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA45324FB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 13:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C1B324FB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 13:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233254AbhBYMN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 07:13:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbhBYMNZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 07:13:25 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B99C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 04:12:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2kQOHAtExAXN9R7ZqFlbGG4l/kVsDVtdNUTjvtMTBM=; b=Mph664UogEaRWHjnRI1mGxwAxQ
-        lb4JaWQZcccyCrNbxNJk4hGSoBNSw3dKNxRCjXEQEWsNTPfckm7141v+vOpDYm0NS2U+5Bg8noZnU
-        hYdZvfIhRLG+OQ5cCNlksriaX7MzKkGNioV5bD8cpqwQoWAIHYyb2d6Vie13PbkH5P1Npr4wMqK02
-        ct3ZaVvIg3R17CfrwbyFqfiyyw70x2r6K87Iiekg1alEvNU3bfl0/b8tK+2y6HW9e20Vxd5cs1fBZ
-        dy7BasmQWBiwvGrOiadBN4yb6UnuVc834Zu7cZ0u6OIfQZfq22P2aQ2AOo3lLsiBR3I8STxB8iIJU
-        RPags8YA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lFFV1-00Ag7L-LW; Thu, 25 Feb 2021 12:12:10 +0000
-Date:   Thu, 25 Feb 2021 12:12:07 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, vbabka@suse.cz,
-        alex.shi@linux.alibaba.com, guro@fb.com, hannes@cmpxchg.org,
-        hughd@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com
-Subject: Re: [PATCH] mm: test page->flags directly in page_lru()
-Message-ID: <20210225121207.GY2858050@casper.infradead.org>
-References: <20210122220600.906146-11-yuzhao@google.com>
- <20210224084807.2179942-1-yuzhao@google.com>
- <20210224051558.79e31c60eea2c088f4a1b300@linux-foundation.org>
- <20210224215639.GT2858050@casper.infradead.org>
- <YDbUaJ0j2YisyyuK@google.com>
- <20210224224846.GU2858050@casper.infradead.org>
- <YDbmT87E106uS1Xa@google.com>
- <20210225035553.GX2858050@casper.infradead.org>
- <YDc0Hqk+A4wvN7jg@google.com>
+        id S232469AbhBYMN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 07:13:57 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:43328 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229571AbhBYMNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 07:13:51 -0500
+Received: from zn.tnic (p200300ec2f03dc0059e4821217d1e808.dip0.t-ipconnect.de [IPv6:2003:ec:2f03:dc00:59e4:8212:17d1:e808])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AD79C1EC052A;
+        Thu, 25 Feb 2021 13:13:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614255189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uowjjR43yhHROzZrr8+GTPAe1G0Z7p+VXIsXmHZT/DI=;
+        b=C7l6RDM9UJMC40fLu4YLfez5BF6dXTtgOjtsFeZ/yBsJes9E+fS6f7NKObR7VNz8+enqge
+        oZxlN/KVgnpBzKfk8dFfgDpWPFElVwVzwKnICt6v34WSqLKFNRlg3fvdIsUv7gp7wsl9Lr
+        BQe/61MPSqaoFWiR09QP9VR+WflWms8=
+Date:   Thu, 25 Feb 2021 13:13:08 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 4/7] x86/boot/compressed/64: Add 32-bit boot #VC handler
+Message-ID: <20210225121308.GB380@zn.tnic>
+References: <20210210102135.30667-1-joro@8bytes.org>
+ <20210210102135.30667-5-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YDc0Hqk+A4wvN7jg@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210210102135.30667-5-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 10:22:38PM -0700, Yu Zhao wrote:
-> On Thu, Feb 25, 2021 at 03:55:53AM +0000, Matthew Wilcox wrote:
-> > On Wed, Feb 24, 2021 at 04:50:39PM -0700, Yu Zhao wrote:
-> > > Let me work out something *conceptually* smaller first, and if you
-> > > think folio is absolutely more suitable even for this specific issue,
-> > > I'll go review and test the four patches you listed. Sounds good?
-> > 
-> > Umm.  It seems to me that no matter what you do, it'll be equivalent to
-> > this, only without the type-safety?
+On Wed, Feb 10, 2021 at 11:21:32AM +0100, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
 > 
-> I'm thinking about something trivial but still very effective. So far
-> I've only tested it with PG_{active,unevictable}, and I'm already
-> seeing a 4KB gain less the 2KB loss from page_lru().
+> Add a #VC exception handler which is used when the kernel still executes
+> in protected mode. This boot-path already uses CPUID, which will cause #VC
+> exceptions in an SEV-ES guest.
 > 
-> I didn't go with this at the beginning because it's also time-
-> consuming. I need to go over every single use of
-> PG_{active,unevictable,swapbacked,lru}.
-
-Well, yes.  If you went with the folio, it'd also be typesafe.
-What you've done here makes it a runtime error, and it's only detected
-if you enable CONFIG_DEBUG_VM_PGFLAGS, which people don't do, in general.
-
-> +++ b/fs/proc/task_mmu.c
-> @@ -1712,6 +1712,7 @@ static void gather_stats(struct page *page, struct numa_maps *md, int pte_dirty,
->                         unsigned long nr_pages)
->  {
->         int count = page_mapcount(page);
-> +       struct page *head = compound_head(page);
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  arch/x86/boot/compressed/head_64.S     |  6 ++
+>  arch/x86/boot/compressed/mem_encrypt.S | 77 +++++++++++++++++++++++++-
+>  2 files changed, 82 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+> index 8deeec78cdb4..eadaa0a082b8 100644
+> --- a/arch/x86/boot/compressed/head_64.S
+> +++ b/arch/x86/boot/compressed/head_64.S
+> @@ -34,6 +34,7 @@
+>  #include <asm/asm-offsets.h>
+>  #include <asm/bootparam.h>
+>  #include <asm/desc_defs.h>
+> +#include <asm/trapnr.h>
+>  #include "pgtable.h"
 >  
->         md->pages += nr_pages;
->         if (pte_dirty || PageDirty(page))
-
-... if you went full-on folio in this function, you could also make this
-FolioDirty, saving another call to compound_head.
-
-> @@ -1720,7 +1721,7 @@ static void gather_stats(struct page *page, struct numa_maps *md, int pte_dirty,
->         if (PageSwapCache(page))
-... ditto ...
->                 md->swapcache += nr_pages;
+>  /*
+> @@ -856,6 +857,11 @@ SYM_FUNC_START(startup32_set_idt_entry)
+>  SYM_FUNC_END(startup32_set_idt_entry)
 >  
-> -       if (PageActive(page) || PageUnevictable(page))
-> +       if (PageActive(head) || PageUnevictable(head))
->                 md->active += nr_pages;
+>  SYM_FUNC_START(startup32_load_idt)
+> +	/* #VC handler */
+> +	leal    rva(startup32_vc_handler)(%ebp), %eax
+> +	movl    $X86_TRAP_VC, %edx
+> +	call    startup32_set_idt_entry
+> +
+>  	/* Load IDT */
+>  	leal	rva(boot32_idt)(%ebp), %eax
+>  	movl	%eax, rva(boot32_idt_desc+2)(%ebp)
+> diff --git a/arch/x86/boot/compressed/mem_encrypt.S b/arch/x86/boot/compressed/mem_encrypt.S
+> index aa561795efd1..350ecb56c7e4 100644
+> --- a/arch/x86/boot/compressed/mem_encrypt.S
+> +++ b/arch/x86/boot/compressed/mem_encrypt.S
+> @@ -67,10 +67,85 @@ SYM_FUNC_START(get_sev_encryption_bit)
+>  	ret
+>  SYM_FUNC_END(get_sev_encryption_bit)
 >  
->         if (PageWriteback(page))
-... ditto...
+> +/*
+> + * Emit code to request an CPUID register from the Hypervisor using
+> + * the MSR-based protocol.
+> + *
+> + * fn: The register containing the CPUID function
+> + * reg: Register requested
+> + *	1 = EAX
+> + *	2 = EBX
+> + *	3 = ECX
+> + *	4 = EDX
+> + *
+> + * Result is in EDX. Jumps to .Lfail on error
+> + */
+> +.macro	SEV_ES_REQ_CPUID fn:req reg:req
+
+I'm wondering - instead of replicating this 4 times, can this be a
+function which you CALL? You do have a stack so you should be able to.
+
+> +	/* Request CPUID[%ebx].EAX */
+> +	movl	$\reg, %eax
+> +	shll	$30, %eax
+> +	orl	$0x00000004, %eax
+> +	movl	\fn, %edx
+> +	movl	$MSR_AMD64_SEV_ES_GHCB, %ecx
+> +	wrmsr
+> +	rep; vmmcall
+> +	rdmsr
+> +	/* Check response code */
+
+Before you do that, I guess you wanna check:
+
+GHCBData[29:12] – Reserved, must be zero
+
+in the HV response.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
