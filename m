@@ -2,125 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF02D325862
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:10:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E014B325864
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbhBYVHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:07:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234612AbhBYU42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:56:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BEBF64E28;
-        Thu, 25 Feb 2021 20:55:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614286544;
-        bh=xp+Ya1f7eA0CAwrMV+RyvxCVmV65qyl6ZQeqq3b5zNI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FN8t790iSgUqSVAwJ5xFvuQfXmE8LFx3NH8isZ7HAShyGbefJENPRs63HLBoiS9rX
-         xlVF41e9KHpMnw/PpHKjAz4v6+PKbLi6KAS9B6t9WWQOwtBG/QJjIGSVrRASijHvID
-         CB3LOETUstUTBnrrYXDR6J+E+1HndkENtoawB2H3eExnrECE009ambM6Q3HS2FJyRV
-         1Q+Q7Lbwln/G2YTDgdOAtG6W5veLOC877MiGQUSGw4I+h70EMQc1Em/bf2UiJtCdCu
-         /nUjz6z+EpF3XARZQ+0sy0lLDziumw1s5D24r6ESlhnGCvdH0CpNJMYD27fB4Zawjk
-         K/Bm8z3Sfnphg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id F39EE35227D5; Thu, 25 Feb 2021 12:55:43 -0800 (PST)
-Date:   Thu, 25 Feb 2021 12:55:43 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        rostedt <rostedt@goodmis.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>
-Subject: Re: tasks-trace RCU: question about grace period forward progress
-Message-ID: <20210225205543.GV2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <354598689.4868.1614262968890.JavaMail.zimbra@efficios.com>
- <20210225153656.GQ2743@paulmck-ThinkPad-P72>
- <47558398.5024.1614268052985.JavaMail.zimbra@efficios.com>
- <20210225183321.GT2743@paulmck-ThinkPad-P72>
- <2096901411.5697.1614284434230.JavaMail.zimbra@efficios.com>
+        id S235307AbhBYVIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:08:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232403AbhBYU7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 15:59:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF78C061756;
+        Thu, 25 Feb 2021 12:58:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Fb28fR8D4293sacImRBpNCIWgpc/QGNK8lBvO/1bYzg=; b=Nin3NxV9mb61KAV3Ka9c6CkJOo
+        CO75+0rPm7YtE02SFNN+05E/mv3JMOCIU23JcT5Bwnp222OF4KGYM+j66gP3eoerx0YQ97McoJXWZ
+        6l6aW7GsZ+2hN1d8NSYTQbD39T5RDOpPYrh+1aEjbf+ibrPds5JV6js5BTJt2w4b6r7ItWlCSbo7W
+        fSx8yper9oa7cZu6vk4gvqhI9jq1xd2H2hGEs5/Q6iOqdW0PnAojQb2RoytNT+kjWP6RVqwnMQwKj
+        KvwwOYuC1F6L/1aiFly2NRckR12/6oVAPbdmFH2x+aJE7pfFZUhb7UQz3jZQXVaQaaLKwRzmXu//l
+        tzmdbAyg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lFNiG-00BAcs-P4; Thu, 25 Feb 2021 20:58:23 +0000
+Date:   Thu, 25 Feb 2021 20:58:20 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Freeing page tables through RCU
+Message-ID: <20210225205820.GC2858050@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2096901411.5697.1614284434230.JavaMail.zimbra@efficios.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 03:20:34PM -0500, Mathieu Desnoyers wrote:
-> ----- On Feb 25, 2021, at 1:33 PM, paulmck paulmck@kernel.org wrote:
-> [...]
-> > commit 581f79546b6be406a9c7280b2d3511b60821efe0
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Thu Feb 25 10:26:00 2021 -0800
-> > 
-> >    rcu-tasks: Add block comment laying out RCU Tasks Trace design
-> >    
-> >    This commit adds a block comment that gives a high-level overview of
-> >    how RCU tasks trace grace periods progress.  It also adds a note about
-> >    how exiting tasks are handles, plus it gives an overview of the memory
-> 
-> handles -> handled
+In order to walk the page tables without the mmap semaphore, it must
+be possible to prevent them from being freed and reused (eg if munmap()
+races with viewing /proc/$pid/smaps).
 
-Good eyes, fixed!
+There is various commentary within the mm on how to prevent this.  One way
+is to disable interrupts, relying on that to block rcu_sched or IPIs.
+I don't think the RT people are terribly happy about reading a proc file
+disabling interrupts, and it doesn't work for architectures that free
+page tables directly instead of batching them into an rcu_sched (because
+the IPI may not be sent to this CPU if the task has never run on it).
 
-> >    ordering.
-> >    
-> >    Reported-by: Peter Zijlstra <peterz@infradead.org>
-> >    Reported-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> >    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index 17c8ebe..f818357 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -726,6 +726,42 @@ EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
-> > // flavors, rcu_preempt and rcu_sched.  The fact that RCU Tasks Trace
-> > // readers can operate from idle, offline, and exception entry/exit in no
-> > // way allows rcu_preempt and rcu_sched readers to also do so.
-> > +//
-> > +// The implementation uses rcu_tasks_wait_gp(), which relies on function
-> > +// pointers in the rcu_tasks structure.  The rcu_spawn_tasks_trace_kthread()
-> > +// function sets these function pointers up so that rcu_tasks_wait_gp()
-> > +// invokes these functions in this order:
-> > +//
-> > +// rcu_tasks_trace_pregp_step():
-> > +//	Initialize the count of readers and block CPU-hotplug operations.
-> > +// rcu_tasks_trace_pertask(), invoked on every non-idle task:
-> > +//	Initialize per-task state and attempt to identify an immediate
-> > +//	quiescent state for that task, or, failing that, attempt to set
-> > +//	that task's .need_qs flag so that that task's next outermost
-> > +//	rcu_read_unlock_trace() will report the quiescent state (in which
-> > +//	case the count of readers is incremented).  If both attempts fail,
-> > +//	the task is added to a "holdout" list.
-> > +// rcu_tasks_trace_postscan():
-> > +//	Initialize state and attempt to identify an immediate quiescent
-> > +//	state as above (but only for idle tasks), unblock CPU-hotplug
-> > +//	operations, and wait for an RCU grace period to avoid races with
-> > +//	tasks that are in the process of exiting.
-> > +// check_all_holdout_tasks_trace(), repeatedly until holdout list is empty:
-> > +//	Scans the holdout list, attempting to identify a quiescent state
-> > +//	for each task on the list.  If there is a quiescent state, the
-> > +//	corresponding task is removed from the holdout list.
-> > +// rcu_tasks_trace_postgp():
-> > +//	Wait for the count of readers do drop to zero, reporting any stalls.
-> > +//	Also execute full memory barriers to maintain ordering with code
-> > +//	executing after the grace period.
-> > +//
-> > +// The exit_tasks_rcu_finish_trace() synchronizes with exiting tasks.
-> > +//
-> > +// Pre-grace-period update-side code is ordered before the grace
-> > +// period via the ->cbs_lock and barriers in rcu_tasks_kthread().
-> > +// Pre-grace-period read-side code is ordered before the grace period by
-> > +// atomic_dec_and_test() of the count of readers (for IPIed readers) and by
-> > +// scheduler context-switch ordering (for locked-down non-running readers).
-> 
-> The rest looks good, thanks!
+See "Fast GUP" in mm/gup.c
 
-Thank you for looking it over!
+Ideally, I'd like rcu_read_lock() to delay page table reuse.  This is
+close to trivial for architectures which use entire pages or multiple
+pages for levels of their page tables as we can use the rcu_head embedded
+in struct page to queue the page for RCU.
 
-							Thanx, Paul
+s390 and powerpc are the only two architectures I know of that have
+levels of their page table that are smaller than their PAGE_SIZE.
+I'd like to discuss options.  There may be a complicated scheme that
+allows partial pages to be freed via RCU, but I have something simpler
+in mind.  For powerpc in particular, it can have a PAGE_SIZE of 64kB
+and then the MMU wants to see 4kB entries in the PMD.  I suggest that
+instead of allocating each 4kB entry individually, we allocate a 64kB
+page and fill in 16 consecutive PMDs.  This could cost a bit more memory
+(although if you've asked for a CONFIG_PAGE_SIZE of 64kB, you presumably
+don't care too much about it), but it'll make future page faults cheaper
+(as the PMDs will already be present, assuming you have good locality
+of reference).
+
+I'd like to hear better ideas than this.
