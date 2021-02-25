@@ -2,288 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109F9324E59
+	by mail.lfdr.de (Postfix) with ESMTP id F3550324E5B
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhBYKgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:36:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhBYKPa (ORCPT
+        id S235334AbhBYKhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:37:17 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47892 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232177AbhBYKPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:15:30 -0500
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B9AC0617A9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:13:39 -0800 (PST)
-Received: by mail-ua1-x92e.google.com with SMTP id c44so1705426uad.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:13:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1rwdBW0LAuJT29U18RbZg+7dDhrtIMwM8XGpp8ROhvA=;
-        b=FU6ytM8QB25u4uEGM3w/0vqufiuzVnkI06gj4bOLXkPmRSvcYJSzU5MzEMUQd0Uf3Y
-         xO6a/BnYszCWKNkC0i62ttuzeeWgCvBO4UewkIk7X6+kB2LnaIe97VC34H/Cba1HhbES
-         hkoAw1pqXkUppF3K7zV3KDfwU6oxNfbvpQTyjsN9Xc7OuYjvSl0lT4oPDOF49b2Plrhg
-         HFv/FO/IrST6F+GRW9Z/zQDWPfm7PNcr7FCTDuJM/qZuUZptF7wUQk3+lyjIswYGL+K8
-         D+RTxerH34BL1ZeXQaQA8xgpfAxaPtVDLiXm/8WdcJxsRWLVtbahz1we5RaI/WsUPNCM
-         s6eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1rwdBW0LAuJT29U18RbZg+7dDhrtIMwM8XGpp8ROhvA=;
-        b=BgNYv1O+5E7lk+TqTmhLj38vS9tmw0Z5boUVZFM0L9eRQ/CK2Gxw55ydf+osusJxkU
-         ycoDZH27Q7U+JGTCkpyHSHfEQoeiObFvzCJ2nHWQtNjRxFPVpMEuH/1CXmc67ZJVNfcm
-         qxRZzyIbOs+IqEip97MoiS8SiAlsPua0JKBy3ALxk5PvEMRd1KJeip6pDtBBHRfz70l1
-         UNHUIpp31zZ9BD8ON076zjrFYzCPaeTSiAOGfxNB/jb/Se5m+muD+0ITPn33UU8o0563
-         SsCPbMOCeNMmKIgi1VLcEJgRkhSiwO9oymu1AFElt4fLIuPdpNrOD1ntlETX+1+hwrAs
-         iMoQ==
-X-Gm-Message-State: AOAM531ML8rt7/Lzyhm59UrxIV32UOOUepaTEpCvQnbpv1d4npLfSHHK
-        t4xaMwnkWr0FJc8f+tdt7NXcm6yYs6pZlIbSykQr/A==
-X-Google-Smtp-Source: ABdhPJwJozf9VE/9g7E7vKLycikS7uqN3OXoyJk6oVUQSwSe8WrSJ2f9m+onS8ieEf4pWVssO6bQ8OAgvC3t7H1wL3k=
-X-Received: by 2002:ab0:1d11:: with SMTP id j17mr1144266uak.99.1614248018333;
- Thu, 25 Feb 2021 02:13:38 -0800 (PST)
+        Thu, 25 Feb 2021 05:15:50 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id A82021C0B81; Thu, 25 Feb 2021 11:15:06 +0100 (CET)
+Date:   Thu, 25 Feb 2021 11:15:06 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     intel-gfx@lists.freedesktop.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org, rodrigo.vivi@intel.com,
+        airlied@redhat.com, sean@poorly.run
+Subject: Re: udldrm does not recover from powersave? Re: udldrmfb: causes
+ WARN in i915 on X60 (x86-32)
+Message-ID: <20210225101506.GA17499@duo.ucw.cz>
+References: <20210224200912.GA27905@duo.ucw.cz>
+ <452585d5-9d18-f5a8-9d6b-6d39aa037480@suse.de>
+ <20210225095322.GA5089@amd>
+ <4fb31ea5-ef20-4752-4782-8d9f1afdf51d@suse.de>
 MIME-Version: 1.0
-References: <20210219090409.325492-1-badhri@google.com> <c0fbb198-a905-cdd0-3c6e-6af484512a5b@roeck-us.net>
- <CAPTae5LMQQHkvWqcOC7D93kEJ4uJQuUu9Aq_RWTgiBfV74UC+g@mail.gmail.com>
-In-Reply-To: <CAPTae5LMQQHkvWqcOC7D93kEJ4uJQuUu9Aq_RWTgiBfV74UC+g@mail.gmail.com>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Thu, 25 Feb 2021 02:13:01 -0800
-Message-ID: <CAPTae5KHy5jfiSnfD9oNjC5Gf_-R-WWHmvRHC1KVs1WKzH4oKA@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V
- before toggling
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyle Tso <kyletso@google.com>, USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="lrZ03NoBR/3+SXJZ"
+Content-Disposition: inline
+In-Reply-To: <4fb31ea5-ef20-4752-4782-8d9f1afdf51d@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 9:46 PM Badhri Jagan Sridharan
-<badhri@google.com> wrote:
->
-> On Fri, Feb 19, 2021 at 7:56 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > On 2/19/21 1:04 AM, Badhri Jagan Sridharan wrote:
-> > > When vbus auto discharge is enabled, TCPM can sometimes be faster than
-> > > the TCPC i.e. TCPM can go ahead and move the port to unattached state
-> > > (involves disabling vbus auto discharge) before TCPC could effectively
-> > > discharge vbus to VSAFE0V. This leaves vbus with residual charge and
-> > > increases the decay time which prevents tsafe0v from being met.
-> > > This change introduces a new state VBUS_DISCHARGE where the TCPM waits
-> > > for a maximum of tSafe0V(max) for vbus to discharge to VSAFE0V before
-> > > transitioning to unattached state and re-enable toggling. If vbus
-> > > discharges to vsafe0v sooner, then, transition to unattached state
-> > > happens right away.
-> > >
-> > > Also, while in SNK_READY, when auto discharge is enabled, drive
-> > > disconnect based on vbus turning off instead of Rp disappearing on
-> > > CC pins. Rp disappearing on CC pins is almost instanteous compared
-> > > to vbus decay.
-> > >
-> > > Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto
-> > > Discharge disconnect support")
-> > > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > > ---
-> > > Changes since V1:
-> > > - Add Fixes tag
-> > > ---
-> > >  drivers/usb/typec/tcpm/tcpm.c | 60 +++++++++++++++++++++++++++++++----
-> > >  1 file changed, 53 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> > > index be0b6469dd3d..0ed71725980f 100644
-> > > --- a/drivers/usb/typec/tcpm/tcpm.c
-> > > +++ b/drivers/usb/typec/tcpm/tcpm.c
-> > > @@ -62,6 +62,8 @@
-> > >       S(SNK_TRANSITION_SINK_VBUS),            \
-> > >       S(SNK_READY),                           \
-> > >                                               \
-> > > +     S(VBUS_DISCHARGE),                      \
-> > > +                                             \
-> > >       S(ACC_UNATTACHED),                      \
-> > >       S(DEBUG_ACC_ATTACHED),                  \
-> > >       S(AUDIO_ACC_ATTACHED),                  \
-> > > @@ -438,6 +440,9 @@ struct tcpm_port {
-> > >       enum tcpm_ams next_ams;
-> > >       bool in_ams;
-> > >
-> > > +     /* Auto vbus discharge state */
-> > > +     bool auto_vbus_discharge_enabled;
-> > > +
-> > >  #ifdef CONFIG_DEBUG_FS
-> > >       struct dentry *dentry;
-> > >       struct mutex logbuffer_lock;    /* log buffer access lock */
-> > > @@ -3413,6 +3418,8 @@ static int tcpm_src_attach(struct tcpm_port *port)
-> > >       if (port->tcpc->enable_auto_vbus_discharge) {
-> > >               ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, true);
-> > >               tcpm_log_force(port, "enable vbus discharge ret:%d", ret);
-> > > +             if (!ret)
-> > > +                     port->auto_vbus_discharge_enabled = true;
-> > >       }
-> > >
-> > >       ret = tcpm_set_roles(port, true, TYPEC_SOURCE, tcpm_data_role_for_source(port));
-> > > @@ -3495,6 +3502,8 @@ static void tcpm_reset_port(struct tcpm_port *port)
-> > >       if (port->tcpc->enable_auto_vbus_discharge) {
-> > >               ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, false);
-> > >               tcpm_log_force(port, "Disable vbus discharge ret:%d", ret);
-> > > +             if (!ret)
-> > > +                     port->auto_vbus_discharge_enabled = false;
-> > >       }
-> > >       port->in_ams = false;
-> > >       port->ams = NONE_AMS;
-> > > @@ -3568,6 +3577,8 @@ static int tcpm_snk_attach(struct tcpm_port *port)
-> > >               tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, VSAFE5V);
-> > >               ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, true);
-> > >               tcpm_log_force(port, "enable vbus discharge ret:%d", ret);
-> > > +             if (!ret)
-> > > +                     port->auto_vbus_discharge_enabled = true;
-> > >       }
-> > >
-> > >       ret = tcpm_set_roles(port, true, TYPEC_SINK, tcpm_data_role_for_sink(port));
-> > > @@ -3684,6 +3695,12 @@ static void run_state_machine(struct tcpm_port *port)
-> > >       switch (port->state) {
-> > >       case TOGGLING:
-> > >               break;
-> > > +     case VBUS_DISCHARGE:
-> > > +             if (port->port_type == TYPEC_PORT_SRC)
-> > > +                     tcpm_set_state(port, SRC_UNATTACHED, PD_T_SAFE_0V);
-> > > +             else
-> > > +                     tcpm_set_state(port, SNK_UNATTACHED, PD_T_SAFE_0V);
-> > > +             break;
-> > >       /* SRC states */
-> > >       case SRC_UNATTACHED:
-> > >               if (!port->non_pd_role_swap)
-> > > @@ -4669,7 +4686,9 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
-> > >       case SRC_READY:
-> > >               if (tcpm_port_is_disconnected(port) ||
-> > >                   !tcpm_port_is_source(port)) {
-> > > -                     if (port->port_type == TYPEC_PORT_SRC)
-> > > +                     if (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v)
-> > > +                             tcpm_set_state(port, VBUS_DISCHARGE, 0);
-> > > +                     else if (port->port_type == TYPEC_PORT_SRC)
-> > >                               tcpm_set_state(port, SRC_UNATTACHED, 0);
-> > >                       else
-> > >                               tcpm_set_state(port, SNK_UNATTACHED, 0);
-> >
-> > Unless I am missing something, the new state is only used to set the
-> > PD_T_SAFE_0V timeout. Is it really necessary/useful to add a new state
-> > just for that, while keeping the rest of if/else statements ?
-> > Personally I would prefer something like
-> >                         timeout = (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v) ? PD_T_SAFE_0V : 0;
-> >                         if (port->port_type == TYPEC_PORT_SRC)
-> >                                 tcpm_set_state(port, SRC_UNATTACHED, timeout);
-> >                         else
-> >                                 tcpm_set_state(port, SNK_UNATTACHED, timeout);
-> >
-> Yes this should be OK as well. I was thinking  it would be more
-> clearer during debug if there
-> was a separate state altogether, but, looks like we should be fine.
-> Implementing/Validating it now. Will send a follow up version today.
 
-Just sent out the V3 version of the patch.
+--lrZ03NoBR/3+SXJZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
 
+> > Thank you, that fixes the DMA issue, and I can use the udl.
+> >=20
+> > ...for a while. Then screensaver blanks laptop screen, udl screen
+> > blanks too. Upon hitting a key, internal screen shows up, udl does
+> > not.
+> >=20
+> > I try rerunning xrandr ... --auto, but could not recover it.
+> >=20
+> > Any ideas?
+>=20
+> Did it work before the regression?
 
->
-> > In this context, any idea why port_type==TYPEC_PORT_DRP results in
-> > SNK_UNATTACHED state ? That seems a bit odd.
->
-> This comes from the patch here:
-> https://lore.kernel.org/r/1582128343-22438-1-git-send-email-jun.li@nxp.com
->
-> Looks reasonable to me as tcpm_*_detach functions call  tcpm_detach so
-> teardown should
-> happen anyways.
->
-> static void tcpm_snk_detach(struct tcpm_port *port)
-> {
->         tcpm_detach(port);
-> }
->
->
-> static void tcpm_src_detach(struct tcpm_port *port)
-> {
->         tcpm_detach(port);
-> }
->
-> Thanks,
-> Badhri
->
-> >
-> > Guenter
-> >
-> > > @@ -4703,7 +4722,18 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
-> > >                       tcpm_set_state(port, SNK_DEBOUNCED, 0);
-> > >               break;
-> > >       case SNK_READY:
-> > > -             if (tcpm_port_is_disconnected(port))
-> > > +             /*
-> > > +              * When set_auto_vbus_discharge_threshold is enabled, CC pins go
-> > > +              * away before vbus decays to disconnect threshold. Allow
-> > > +              * disconnect to be driven by vbus disconnect when auto vbus
-> > > +              * discharge is enabled.
-> > > +              *
-> > > +              * EXIT condition is based primarily on vbus disconnect and CC is secondary.
-> > > +              * "A port that has entered into USB PD communications with the Source and
-> > > +              * has seen the CC voltage exceed vRd-USB may monitor the CC pin to detect
-> > > +              * cable disconnect in addition to monitoring VBUS.
-> > > +              */
-> > > +             if (!port->auto_vbus_discharge_enabled && tcpm_port_is_disconnected(port))
-> > >                       tcpm_set_state(port, unattached_state(port), 0);
-> > >               else if (!port->pd_capable &&
-> > >                        (cc1 != old_cc1 || cc2 != old_cc2))
-> > > @@ -4803,9 +4833,16 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
-> > >                */
-> > >               break;
-> > >
-> > > +     case VBUS_DISCHARGE:
-> > > +             /* Do nothing. Waiting for vsafe0v signal */
-> > > +             break;
-> > >       default:
-> > > -             if (tcpm_port_is_disconnected(port))
-> > > -                     tcpm_set_state(port, unattached_state(port), 0);
-> > > +             if (tcpm_port_is_disconnected(port)) {
-> > > +                     if (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v)
-> > > +                             tcpm_set_state(port, VBUS_DISCHARGE, 0);
-> > > +                     else
-> > > +                             tcpm_set_state(port, unattached_state(port), 0);
-> > > +             }
-> > >               break;
-> > >       }
-> > >  }
-> > > @@ -4988,9 +5025,12 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
-> > >               break;
-> > >
-> > >       default:
-> > > -             if (port->pwr_role == TYPEC_SINK &&
-> > > -                 port->attached)
-> > > -                     tcpm_set_state(port, SNK_UNATTACHED, 0);
-> > > +             if (port->pwr_role == TYPEC_SINK && port->attached) {
-> > > +                     if (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v)
-> > > +                             tcpm_set_state(port, VBUS_DISCHARGE, 0);
-> > > +                     else
-> > > +                             tcpm_set_state(port, SNK_UNATTACHED, 0);
-> > > +             }
-> > >               break;
-> > >       }
-> > >  }
-> > > @@ -5012,6 +5052,12 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
-> > >                       tcpm_set_state(port, tcpm_try_snk(port) ? SNK_TRY : SRC_ATTACHED,
-> > >                                      PD_T_CC_DEBOUNCE);
-> > >               break;
-> > > +     case VBUS_DISCHARGE:
-> > > +             if (port->port_type == TYPEC_PORT_SRC)
-> > > +                     tcpm_set_state(port, SRC_UNATTACHED, 0);
-> > > +             else
-> > > +                     tcpm_set_state(port, SNK_UNATTACHED, 0);
-> > > +             break;
-> > >       default:
-> > >               break;
-> > >       }
-> > >
-> >
+I don't know. I'm trying to get it to work, I basically did not use it befo=
+re.
+
+> For testing, could you please remove the fix and then do
+>=20
+>   git revert 6eb0233ec2d0
+>=20
+> This would restore the old version. Please report back on the results.
+
+I doubt this is related, but I can try.
+
+Best regards,
+									Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--lrZ03NoBR/3+SXJZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYDd4qgAKCRAw5/Bqldv6
+8s4MAJwMEpPvM8Uj3RqK+M5x8Kvx5bKlKwCePvQAZYLSesysWma9mbGP3nNG4jU=
+=qjfI
+-----END PGP SIGNATURE-----
+
+--lrZ03NoBR/3+SXJZ--
