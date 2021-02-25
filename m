@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2F7324E80
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 394F2324E81
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbhBYKpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:45:20 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:37071 "EHLO m42-2.mailgun.net"
+        id S234986AbhBYKpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:45:55 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:20853 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233502AbhBYKYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:24:01 -0500
+        id S234083AbhBYKZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 05:25:16 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614248630; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=OnrGOA7+vtKJaM77uUe4Y7LYAd/8kech7ZlLX5tFEs0=; b=iLCmvJvoEcIE1UEGyuvk67+TYQubKZ3Ri6ZiZl1138r8TbCuJxMXJn++duXPgch3QqTpdVXp
- jBZ1GBIwupOGcbISmi07wCU/xfAR8yMmKt7yXiLyDIq7g4VTdUSuVWl4VIo+mjqCoh3kOrwO
- vYZH/Dv4b8ysu+Y+u9n64vOA+IE=
-X-Mailgun-Sending-Ip: 69.72.42.2
+ s=smtp; t=1614248697; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=kZ3EMOaKS5IAZIa7bBrmkp5+qMtaCy7G4UeFlRuYhzw=; b=DvWG3HyTmx6Y7gk8XAfsiaq4aQsGch8UMoEfRMrQZpO1XLIxLT5ujDt/Ls6+oTL4B0uwXFLd
+ 6J81VrXKunFUTu+PA6JDIhB7+T9Y3fPZ+ZQh22gxPGC7trL2mROolRtLpLp4U1QQAuIr98Qm
+ VjMn+zi0F0MxbKOUqX0GwpHdnq0=
+X-Mailgun-Sending-Ip: 104.130.96.11
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60377a86cc1f7d7e95a066be (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Feb 2021 10:23:02
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60377ad9a27401dc6527e67f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Feb 2021 10:24:25
  GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 30A44C433ED; Thu, 25 Feb 2021 10:23:02 +0000 (UTC)
+        id CFAD3C433ED; Thu, 25 Feb 2021 10:24:25 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C14B4C433C6;
-        Thu, 25 Feb 2021 10:22:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C14B4C433C6
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 42383C433C6;
+        Thu, 25 Feb 2021 10:24:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 42383C433C6
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     samirweng1979 <samirweng1979@163.com>, imitsyanko@quantenna.com,
-        geomatsi@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        colin.king@canonical.com, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: Re: [PATCH] qtnfmac: remove meaningless goto statement and labels
-References: <20210225064842.36952-1-samirweng1979@163.com>
-        <202102251757.V6qESTrL-lkp@intel.com>
-Date:   Thu, 25 Feb 2021 12:22:54 +0200
-In-Reply-To: <202102251757.V6qESTrL-lkp@intel.com> (kernel test robot's
-        message of "Thu, 25 Feb 2021 18:04:03 +0800")
-Message-ID: <875z2gfnup.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH 0/2] iommu/arm-smmu-qcom: Add SC7280 support
+Date:   Thu, 25 Feb 2021 15:54:08 +0530
+Message-Id: <cover.1614247752.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot <lkp@intel.com> writes:
+Patch 1 adds the sc7280 smmu compatible.
+Patch 2 moves the adreno smmu check before apss smmu to enable
+adreno smmu specific implementation.
 
-> Hi samirweng1979,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on wireless-drivers-next/master]
-> [also build test ERROR on wireless-drivers/master sparc-next/master v5.11 next-20210225]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/samirweng1979/qtnfmac-remove-meaningless-goto-statement-and-labels/20210225-145714
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next.git master
-> config: x86_64-randconfig-a001-20210225 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a921aaf789912d981cbb2036bdc91ad7289e1523)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install x86_64 cross compiling tool for clang build
->         # apt-get install binutils-x86-64-linux-gnu
->         # https://github.com/0day-ci/linux/commit/d18bea1fd25dee219ae56343ff9caf9cb6eb1519
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review samirweng1979/qtnfmac-remove-meaningless-goto-statement-and-labels/20210225-145714
->         git checkout d18bea1fd25dee219ae56343ff9caf9cb6eb1519
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->>> drivers/net/wireless/quantenna/qtnfmac/commands.c:1901:8: error: use of undeclared label 'out'
->                    goto out;
+Sai Prakash Ranjan (2):
+  iommu/arm-smmu-qcom: Add SC7280 SMMU compatible
+  iommu/arm-smmu-qcom: Move the adreno smmu specific impl earlier
 
-Do you compile test your patches? This error implies that not.
-Compilation test is a hard requirement for patches.
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
+
+base-commit: 7060377ce06f9cd3ed6274c0f2310463feb5baec
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
