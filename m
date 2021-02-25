@@ -2,131 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A318325409
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B28B32540B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233984AbhBYQvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 11:51:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50230 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233844AbhBYQrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:47:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4DB91AC1D;
-        Thu, 25 Feb 2021 16:46:47 +0000 (UTC)
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Timur Tabi <timur@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH] printk: clarify the documentation for plain pointer printing
-Date:   Thu, 25 Feb 2021 17:46:39 +0100
-Message-Id: <20210225164639.27212-1-vbabka@suse.cz>
-X-Mailer: git-send-email 2.30.1
+        id S230201AbhBYQwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 11:52:00 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:47142 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233536AbhBYQsF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 11:48:05 -0500
+Received: by mail-io1-f72.google.com with SMTP id o4so4790024ioh.14
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 08:47:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=KLzSL1b6FT2V1YojiYBz1dYOvRuvevGZ/eoF31S1Iy8=;
+        b=FFEHcfyz18ja7gTS7Mxw409mPPC+K3qesx5rxAJDnLD7B3qvKYSuYF3MMql7gPMGyE
+         6Ie+S8/RaaTQVt0tgl0/7sJF/mgwobJl13xfx6tItnahqI52XFh8GcOB9ejfn7yLTO20
+         y7+Xuyrletw/9Qq92n1ZwJvICTu9NKtaI7xN6igu8GHOdNe3MVUKIHezASPPl76UFil3
+         MoCI2I+hcqQTfhemRtg8bIOb8rDQshO78eBp8oOJNPq+g7A+aPvQnRaOoVKK7F/skEF/
+         95C2EOI6TKXiaKljkQvbDycgiDJH6V61ysYjihFLeUXAL/dXpijs9oqv8CKDcLMH1tsG
+         sSxA==
+X-Gm-Message-State: AOAM531JAji2uF+3mNDdj2IKmfJcJ6anOVkARzQXn5PbaeLkuDfAGweP
+        VntkqL/eS4mqdptM/1iEdzAyT2swfVSxZqc3SuVaPtMXsFLA
+X-Google-Smtp-Source: ABdhPJwRkP/TlDR0wn3uFHK5d7AkLML2A84vf/rmRqvlFo2wxguRFCqS7mB7j6a6KroeNpWgn3EP3xl0qWuUeGI+Onb8EJkPswcv
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:189:: with SMTP id a9mr3512182jaq.22.1614271643076;
+ Thu, 25 Feb 2021 08:47:23 -0800 (PST)
+Date:   Thu, 25 Feb 2021 08:47:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000db4fe805bc2be7fc@google.com>
+Subject: KASAN: use-after-free Read in try_to_wake_up
+From:   syzbot <syzbot+7bf785eedca35ca05501@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, christian@brauner.io,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have several modifiers for plain pointers (%p, %px and %pK) and now also
-the no_hash_pointers boot parameter. The documentation should help to choose
-which variant to use. Importantly, we should discourage %px in favour of %p
-(with the new boot parameter when debugging), and stress that %pK should be
-only used for procfs and similar files, not dmesg buffer. This patch clarifies
-the documentation in that regard.
+Hello,
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+syzbot found the following issue on:
+
+HEAD commit:    577c2835 Add linux-next specific files for 20210224
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1586e0dad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e9bb3d369b3bf49
+dashboard link: https://syzkaller.appspot.com/bug?extid=7bf785eedca35ca05501
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16609646d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1529c5a8d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7bf785eedca35ca05501@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in __lock_acquire+0x3e6f/0x54c0 kernel/locking/lockdep.c:4770
+Read of size 8 at addr ffff888030dc08d0 by task syz-executor199/9383
+
+CPU: 1 PID: 9383 Comm: syz-executor199 Not tainted 5.11.0-next-20210224-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0xfa/0x151 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+ __lock_acquire+0x3e6f/0x54c0 kernel/locking/lockdep.c:4770
+ lock_acquire kernel/locking/lockdep.c:5510 [inline]
+ lock_acquire+0x1ab/0x730 kernel/locking/lockdep.c:5475
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+ try_to_wake_up+0x98/0x14a0 kernel/sched/core.c:3347
+ io_wq_destroy+0x74/0x3d0 fs/io-wq.c:1013
+ __io_uring_files_cancel+0x195/0x230 fs/io_uring.c:8810
+ io_uring_files_cancel include/linux/io_uring.h:47 [inline]
+ do_exit+0x299/0x2a60 kernel/exit.c:780
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43e989
+Code: 00 49 c7 c0 c0 ff ff ff be e7 00 00 00 ba 3c 00 00 00 eb 12 0f 1f 44 00 00 89 d0 0f 05 48 3d 00 f0 ff ff 77 1c f4 89 f0 0f 05 <48> 3d 00 f0 ff ff 76 e7 f7 d8 64 41 89 00 eb df 0f 1f 80 00 00 00
+RSP: 002b:00007ffe3a2de828 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00000000004b02f0 RCX: 000000000043e989
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 0000000010000000
+R10: 0000000000008011 R11: 0000000000000246 R12: 00000000004b02f0
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+
+Allocated by task 9383:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:427 [inline]
+ __kasan_slab_alloc+0x75/0x90 mm/kasan/common.c:460
+ kasan_slab_alloc include/linux/kasan.h:223 [inline]
+ slab_post_alloc_hook mm/slab.h:516 [inline]
+ slab_alloc_node mm/slub.c:2907 [inline]
+ kmem_cache_alloc_node+0x16d/0x3c0 mm/slub.c:2943
+ alloc_task_struct_node kernel/fork.c:170 [inline]
+ dup_task_struct kernel/fork.c:860 [inline]
+ copy_process+0x613/0x6fd0 kernel/fork.c:1940
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2462
+ io_wq_fork_thread+0xa7/0xe0 fs/io-wq.c:601
+ io_wq_create+0x81c/0xab0 fs/io-wq.c:985
+ io_init_wq_offload fs/io_uring.c:7779 [inline]
+ io_uring_alloc_task_context+0x185/0x510 fs/io_uring.c:7798
+ io_uring_add_task_file+0x261/0x350 fs/io_uring.c:8737
+ io_uring_install_fd fs/io_uring.c:9336 [inline]
+ io_uring_create fs/io_uring.c:9487 [inline]
+ io_uring_setup+0x14c7/0x2c20 fs/io_uring.c:9526
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 12:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
+ kasan_slab_free include/linux/kasan.h:199 [inline]
+ slab_free_hook mm/slub.c:1562 [inline]
+ slab_free_freelist_hook+0x72/0x1b0 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kmem_cache_free+0x8b/0x730 mm/slub.c:3177
+ __put_task_struct+0x267/0x3f0 kernel/fork.c:742
+ put_task_struct include/linux/sched/task.h:111 [inline]
+ delayed_put_task_struct+0x1f6/0x340 kernel/exit.c:173
+ rcu_do_batch kernel/rcu/tree.c:2559 [inline]
+ rcu_core+0x722/0x1280 kernel/rcu/tree.c:2794
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3039 [inline]
+ call_rcu+0xb1/0x700 kernel/rcu/tree.c:3114
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:179
+ context_switch kernel/sched/core.c:4327 [inline]
+ __schedule+0x914/0x21a0 kernel/sched/core.c:5075
+ preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:5235
+ preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
+ _raw_spin_unlock_irqrestore+0x46/0x50 kernel/locking/spinlock.c:191
+ io_wq_manager+0x13c/0x5b0 fs/io-wq.c:715
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+The buggy address belongs to the object at ffff888030dc0000
+ which belongs to the cache task_struct of size 6912
+The buggy address is located 2256 bytes inside of
+ 6912-byte region [ffff888030dc0000, ffff888030dc1b00)
+The buggy address belongs to the page:
+page:00000000deb921bd refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x30dc0
+head:00000000deb921bd order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888140004000
+raw: 0000000000000000 0000000080040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888030dc0780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888030dc0800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888030dc0880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                 ^
+ ffff888030dc0900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888030dc0980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
 ---
- Documentation/core-api/printk-formats.rst | 26 ++++++++++++++++++++++-
- lib/vsprintf.c                            |  7 ++++--
- 2 files changed, 30 insertions(+), 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
-index 160e710d992f..6724adf58082 100644
---- a/Documentation/core-api/printk-formats.rst
-+++ b/Documentation/core-api/printk-formats.rst
-@@ -79,7 +79,19 @@ Pointers printed without a specifier extension (i.e unadorned %p) are
- hashed to prevent leaking information about the kernel memory layout. This
- has the added benefit of providing a unique identifier. On 64-bit machines
- the first 32 bits are zeroed. The kernel will print ``(ptrval)`` until it
--gathers enough entropy. If you *really* want the address see %px below.
-+gathers enough entropy.
-+
-+When possible, use specialised modifiers such as %pS or %pB (described below)
-+to avoid the need of providing an unhashed address that has to be interpreted
-+post-hoc. If not possible, and the aim of printing the address is to provide
-+more information for debugging, use %p and boot the kernel with the
-+``no_hash_pointers`` parameter during debugging, which will print all %p
-+addresses unmodified. If you *really* always want the unmodified address, see
-+%px below.
-+
-+If (and only if) you are printing addresses as a content of a virtual file in
-+e.g. procfs or sysfs (using e.g. seq_printf(), not printk()) read by a
-+userspace process, use the %pK modifier described below instead of %p or %px.
- 
- Error Pointers
- --------------
-@@ -139,6 +151,11 @@ For printing kernel pointers which should be hidden from unprivileged
- users. The behaviour of %pK depends on the kptr_restrict sysctl - see
- Documentation/admin-guide/sysctl/kernel.rst for more details.
- 
-+This modifier is *only* intended when producing content of a file read by
-+userspace from e.g. procfs or sysfs, not for dmesg. Please refer to the
-+section about %p above for discussion about how to manage hashing pointers
-+in printk().
-+
- Unmodified Addresses
- --------------------
- 
-@@ -153,6 +170,13 @@ equivalent to %lx (or %lu). %px is preferred because it is more uniquely
- grep'able. If in the future we need to modify the way the kernel handles
- printing pointers we will be better equipped to find the call sites.
- 
-+Before using %px, consider if using %p is sufficient together with enabling the
-+``no_hash_pointers`` kernel parameter during debugging sessions (see the %p
-+description above). One valid scenario for %px might be printing information
-+immediately before a panic, which prevents any sensitive information to be
-+exploited anyway, and with %px there would be no need to reproduce the panic
-+with no_hash_pointers.
-+
- Pointer Differences
- -------------------
- 
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index 41ddc353ebb8..c4dc971e5ca5 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -2186,7 +2186,9 @@ early_param("no_hash_pointers", no_hash_pointers_enable);
-  *       Implements a "recursive vsnprintf".
-  *       Do not use this feature without some mechanism to verify the
-  *       correctness of the format string and va_list arguments.
-- * - 'K' For a kernel pointer that should be hidden from unprivileged users
-+ * - 'K' For a kernel pointer that should be hidden from unprivileged users.
-+ *       Use only for procfs, sysfs and similar files, not printk(); please
-+ *       read the documentation (path below) first.
-  * - 'NF' For a netdev_features_t
-  * - 'h[CDN]' For a variable-length buffer, it prints it as a hex string with
-  *            a certain separator (' ' by default):
-@@ -2225,7 +2227,8 @@ early_param("no_hash_pointers", no_hash_pointers_enable);
-  *		Without an option prints the full name of the node
-  *		f full name
-  *		P node name, including a possible unit address
-- * - 'x' For printing the address. Equivalent to "%lx".
-+ * - 'x' For printing the address unmodified. Equivalent to "%lx".
-+ *       Please read the documentation (path below) before using!
-  * - '[ku]s' For a BPF/tracing related format specifier, e.g. used out of
-  *           bpf_trace_printk() where [ku] prefix specifies either kernel (k)
-  *           or user (u) memory to probe, and:
--- 
-2.30.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
