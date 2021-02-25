@@ -2,99 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC87B32540F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CAB325414
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234328AbhBYQw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 11:52:57 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:32873 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233942AbhBYQs7 (ORCPT
+        id S232923AbhBYQxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 11:53:40 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23004 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231160AbhBYQvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:48:59 -0500
-Received: by mail-il1-f197.google.com with SMTP id k5so4796859ilu.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 08:48:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=nX0Cf5vZFbT+N+HBBohCxcH2b8JvYZMgS6veByKimgw=;
-        b=cb/TsWV4hLp/XtYHcnKWRfVItEuoXNGkSmWkiZGdB+8dMX+pqSAC0kpNJ+wJcJVyKR
-         VZWgKckLlFAOJQuc5vChWYHiaVKx4pg/Nl1CynVIrJRIR12A0kp0XQn1vSQ+C22s+Nas
-         rB6WCI9Ao+bu9OriZJmdgLwmXGUK79I95gITBN7vG7z1fXtiX6ngH2iYG15ihlnulqyV
-         CKi0uhzL17+Vh9eXZVA+E8CYSvROd+tRBzU6Jr2JOUa0wPYo69+I3yDN1rCSUTVtTViO
-         ioCylJ14HfZdv9IMJd1mhdZ1H6iajtD1xhsa6GkDwk5Op9KpgJox6PaAlHeW6ccWSSJN
-         pxEw==
-X-Gm-Message-State: AOAM530EzFKgOkzvOLju+iyhSB6x6yv16ujFRRK7ZvSpI35ti8bTzzPb
-        ltTIcqf55nZZUkw3oHUKio33Nwe32WsQ5ulXjOaUsu2Cxqea
-X-Google-Smtp-Source: ABdhPJzVbbZrL1uatl5r1j83gRzAUg3IfR++bWUoAsgWUs4PQwKmsx8zWff7yFvb3+RNTNOFSS7v3/NRMYdV+XajBroLoAWlOUlR
-MIME-Version: 1.0
-X-Received: by 2002:a92:8e0c:: with SMTP id c12mr3290064ild.35.1614271697116;
- Thu, 25 Feb 2021 08:48:17 -0800 (PST)
-Date:   Thu, 25 Feb 2021 08:48:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000013eb5105bc2bebd9@google.com>
-Subject: memory leak in v4l2_ctrl_handler_init_class
-From:   syzbot <syzbot+efe9aefc31ae1e6f7675@syzkaller.appspotmail.com>
-To:     ezequiel@collabora.com, hverkuil-cisco@xs4all.nl,
-        jacopo@jmondi.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 25 Feb 2021 11:51:10 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PGi8ZV091934;
+        Thu, 25 Feb 2021 11:50:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=tvQlYMW626CVGrNIfQdRMSvmVjTXwJOzrDsJ7QDBYDc=;
+ b=ls+USaX0HzbOomVzKoxd6zcTHcARgvTJ+bhnApIRI4x3Lxu08jiXgnmzHoxhZE247+KE
+ zGZqOuLGqfqZ+GHdvsHm2nN+WnUKJaYa78PYy7ens0e5EWulReudAXhDR8Wpl+GRL+iE
+ V+TUvKTj6mGmhkUGKKXevG9p34NPyhFIZHKGeO108Yb/k5flWVyWggP4W6xxMHSdmorL
+ 9KvH7colGdL+F41xgY8GSfe0en3XCiithHxqsMYXwDRJDgFhZUUWcGaWmXoFoiuHsfN8
+ PSyAbDpMe6P1YAkR3lCdTRblxrObYes42M33WYaBVhEpOE2xMt+KHFkG0k42wTKftr5x HQ== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36x8dwrdr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Feb 2021 11:50:12 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11PGh5mM024872;
+        Thu, 25 Feb 2021 16:50:10 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma02fra.de.ibm.com with ESMTP id 36tt28ae7h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Feb 2021 16:50:09 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11PGo7R451315064
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Feb 2021 16:50:07 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 163CC4C040;
+        Thu, 25 Feb 2021 16:50:06 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3EA744C046;
+        Thu, 25 Feb 2021 16:50:03 +0000 (GMT)
+Received: from localhost.localdomain.localdomain (unknown [9.195.39.192])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 25 Feb 2021 16:50:03 +0000 (GMT)
+From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+To:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, mpe@ellerman.id.au,
+        acme@kernel.org, jolsa@kernel.org
+Cc:     maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
+        srikar@linux.vnet.ibm.com, kjain@linux.ibm.com,
+        kan.liang@linux.intel.com, peterz@infradead.org
+Subject: [PATCH] perf bench numa: Fix the condition checks for max number of numa nodes
+Date:   Thu, 25 Feb 2021 11:50:02 -0500
+Message-Id: <1614271802-1503-1-git-send-email-atrajeev@linux.vnet.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-25_10:2021-02-24,2021-02-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 lowpriorityscore=0 spamscore=0 clxscore=1011 phishscore=0
+ suspectscore=0 malwarescore=0 bulkscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102250128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+In systems having higher node numbers available like node
+255, perf numa bench will fail with SIGABORT.
 
-syzbot found the following issue on:
+<<>>
+perf: bench/numa.c:1416: init: Assertion `!(g->p.nr_nodes > 64 || g->p.nr_nodes < 0)' failed.
+Aborted (core dumped)
+<<>>
 
-HEAD commit:    c03c21ba Merge tag 'keys-misc-20210126' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1590796cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=24acb838051d8b5b
-dashboard link: https://syzkaller.appspot.com/bug?extid=efe9aefc31ae1e6f7675
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13f1bf5ad00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158a8632d00000
+Snippet from 'numactl -H' below on a powerpc system where the highest
+node number available is 255.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+efe9aefc31ae1e6f7675@syzkaller.appspotmail.com
+available: 6 nodes (0,8,252-255)
+node 0 cpus: <cpu-list>
+node 0 size: 519587 MB
+node 0 free: 516659 MB
+node 8 cpus: <cpu-list>
+node 8 size: 523607 MB
+node 8 free: 486757 MB
+node 252 cpus:
+node 252 size: 0 MB
+node 252 free: 0 MB
+node 253 cpus:
+node 253 size: 0 MB
+node 253 free: 0 MB
+node 254 cpus:
+node 254 size: 0 MB
+node 254 free: 0 MB
+node 255 cpus:
+node 255 size: 0 MB
+node 255 free: 0 MB
+node distances:
+node   0   8  252  253  254  255
 
-BUG: memory leak
-unreferenced object 0xffff888110ed0800 (size 32):
-  comm "kworker/0:2", pid 3639, jiffies 4294942900 (age 8.280s)
-  hex dump (first 32 bytes):
-    00 63 ec 0c 81 88 ff ff 00 00 00 00 00 00 00 00  .c..............
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e17942dc>] kmalloc_node include/linux/slab.h:577 [inline]
-    [<00000000e17942dc>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<00000000a704dd11>] kvmalloc include/linux/mm.h:785 [inline]
-    [<00000000a704dd11>] kvmalloc_array include/linux/mm.h:803 [inline]
-    [<00000000a704dd11>] v4l2_ctrl_handler_init_class+0x86/0xb0 drivers/media/v4l2-core/v4l2-ctrls.c:2525
-    [<0000000062f5fe33>] zr364xx_probe+0x110/0x851 drivers/media/usb/zr364xx/zr364xx.c:1427
-    [<000000002a7dee6e>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<0000000042b3f5b0>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
-    [<00000000bb6e5b5c>] driver_probe_device+0x84/0x100 drivers/base/dd.c:740
-    [<00000000968b09c2>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:846
-    [<00000000516485c0>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<000000003b640743>] __device_attach+0x122/0x250 drivers/base/dd.c:914
-    [<000000008dc09474>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<00000000247c2336>] device_add+0x5be/0xc30 drivers/base/core.c:3115
-    [<0000000083594ecc>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
-    [<0000000093a9f7aa>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<000000000a86609a>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<0000000042b3f5b0>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
-    [<00000000bb6e5b5c>] driver_probe_device+0x84/0x100 drivers/base/dd.c:740
+Note: <cpu-list> expands to actual cpu list in the original output.
+These nodes 252-255 are to represent the memory on GPUs and are valid
+nodes.
 
+The perf numa bench init code has a condition check to see if the number
+of numa nodes (nr_nodes) exceeds MAX_NR_NODES. The value of MAX_NR_NODES
+defined in perf code is 64. And the 'nr_nodes' is the value from
+numa_max_node() which represents the highest node number available in the
+system. In some systems where we could have numa node 255, this condition
+check fails and results in SIGABORT.
 
+The numa benchmark uses static value of MAX_NR_NODES in the code to
+represent size of two numa node arrays and node bitmask used for setting
+memory policy. Patch adds a fix to dynamically allocate size for the
+two arrays and bitmask value based on the node numbers available in the
+system. With the fix, perf numa benchmark will work with node configuration
+on any system and thus removes the static MAX_NR_NODES value.
 
+Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ tools/perf/bench/numa.c | 42 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 29 insertions(+), 13 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/tools/perf/bench/numa.c b/tools/perf/bench/numa.c
+index 11726ec..20b87e2 100644
+--- a/tools/perf/bench/numa.c
++++ b/tools/perf/bench/numa.c
+@@ -344,18 +344,22 @@ static void mempol_restore(void)
+ 
+ static void bind_to_memnode(int node)
+ {
+-	unsigned long nodemask;
++	struct bitmask *node_mask;
+ 	int ret;
+ 
+ 	if (node == NUMA_NO_NODE)
+ 		return;
+ 
+-	BUG_ON(g->p.nr_nodes > (int)sizeof(nodemask)*8);
+-	nodemask = 1L << node;
++	node_mask = numa_allocate_nodemask();
++	BUG_ON(!node_mask);
+ 
+-	ret = set_mempolicy(MPOL_BIND, &nodemask, sizeof(nodemask)*8);
+-	dprintf("binding to node %d, mask: %016lx => %d\n", node, nodemask, ret);
++	numa_bitmask_clearall(node_mask);
++	numa_bitmask_setbit(node_mask, node);
+ 
++	ret = set_mempolicy(MPOL_BIND, node_mask->maskp, node_mask->size + 1);
++	dprintf("binding to node %d, mask: %016lx => %d\n", node, *node_mask->maskp, ret);
++
++	numa_bitmask_free(node_mask);
+ 	BUG_ON(ret);
+ }
+ 
+@@ -876,8 +880,6 @@ static void update_curr_cpu(int task_nr, unsigned long bytes_worked)
+ 	prctl(0, bytes_worked);
+ }
+ 
+-#define MAX_NR_NODES	64
+-
+ /*
+  * Count the number of nodes a process's threads
+  * are spread out on.
+@@ -888,10 +890,15 @@ static void update_curr_cpu(int task_nr, unsigned long bytes_worked)
+  */
+ static int count_process_nodes(int process_nr)
+ {
+-	char node_present[MAX_NR_NODES] = { 0, };
++	char *node_present;
+ 	int nodes;
+ 	int n, t;
+ 
++	node_present = (char *)malloc(g->p.nr_nodes * sizeof(char));
++	BUG_ON(!node_present);
++	for (nodes = 0; nodes < g->p.nr_nodes; nodes++)
++		node_present[nodes] = 0;
++
+ 	for (t = 0; t < g->p.nr_threads; t++) {
+ 		struct thread_data *td;
+ 		int task_nr;
+@@ -901,17 +908,20 @@ static int count_process_nodes(int process_nr)
+ 		td = g->threads + task_nr;
+ 
+ 		node = numa_node_of_cpu(td->curr_cpu);
+-		if (node < 0) /* curr_cpu was likely still -1 */
++		if (node < 0) /* curr_cpu was likely still -1 */ {
++			free(node_present);
+ 			return 0;
++		}
+ 
+ 		node_present[node] = 1;
+ 	}
+ 
+ 	nodes = 0;
+ 
+-	for (n = 0; n < MAX_NR_NODES; n++)
++	for (n = 0; n < g->p.nr_nodes; n++)
+ 		nodes += node_present[n];
+ 
++	free(node_present);
+ 	return nodes;
+ }
+ 
+@@ -980,7 +990,7 @@ static void calc_convergence(double runtime_ns_max, double *convergence)
+ {
+ 	unsigned int loops_done_min, loops_done_max;
+ 	int process_groups;
+-	int nodes[MAX_NR_NODES];
++	int *nodes;
+ 	int distance;
+ 	int nr_min;
+ 	int nr_max;
+@@ -994,6 +1004,8 @@ static void calc_convergence(double runtime_ns_max, double *convergence)
+ 	if (!g->p.show_convergence && !g->p.measure_convergence)
+ 		return;
+ 
++	nodes = (int *)malloc(g->p.nr_nodes * sizeof(int));
++	BUG_ON(!nodes);
+ 	for (node = 0; node < g->p.nr_nodes; node++)
+ 		nodes[node] = 0;
+ 
+@@ -1035,8 +1047,10 @@ static void calc_convergence(double runtime_ns_max, double *convergence)
+ 
+ 	BUG_ON(sum > g->p.nr_tasks);
+ 
+-	if (0 && (sum < g->p.nr_tasks))
++	if (0 && (sum < g->p.nr_tasks)) {
++		free(nodes);
+ 		return;
++	}
+ 
+ 	/*
+ 	 * Count the number of distinct process groups present
+@@ -1088,6 +1102,8 @@ static void calc_convergence(double runtime_ns_max, double *convergence)
+ 		}
+ 		tprintf("\n");
+ 	}
++
++	free(nodes);
+ }
+ 
+ static void show_summary(double runtime_ns_max, int l, double *convergence)
+@@ -1413,7 +1429,7 @@ static int init(void)
+ 	g->p.nr_nodes = numa_max_node() + 1;
+ 
+ 	/* char array in count_process_nodes(): */
+-	BUG_ON(g->p.nr_nodes > MAX_NR_NODES || g->p.nr_nodes < 0);
++	BUG_ON(g->p.nr_nodes < 0);
+ 
+ 	if (g->p.show_quiet && !g->p.show_details)
+ 		g->p.show_details = -1;
+-- 
+1.8.3.1
+
