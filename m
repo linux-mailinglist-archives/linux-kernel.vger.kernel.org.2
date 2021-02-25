@@ -2,198 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5CA3252B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6783252C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232588AbhBYPsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 10:48:52 -0500
-Received: from mail.efficios.com ([167.114.26.124]:56058 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232787AbhBYPsQ (ORCPT
+        id S229890AbhBYPuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 10:50:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25943 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231843AbhBYPt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 10:48:16 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id A61A531D38F;
-        Thu, 25 Feb 2021 10:47:33 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id FwTvnPePBsJb; Thu, 25 Feb 2021 10:47:33 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3325731DCA8;
-        Thu, 25 Feb 2021 10:47:33 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3325731DCA8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1614268053;
-        bh=Dwsmhua/nRZFvhh4nU5tUhxY4iuNco/M6opv1tYMNFM=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=ClzkcOdTtrGLQWqjYN8LyN8LNZj89bbN+00UcIk6uA21XdXDIDjTcqRqWcU2iyBYl
-         CPyp3tl1mv5q7a8W2YHCAEengUr1qnQuNDQjE6d90qjTb98y+QB74UhN4k5JqbZpeN
-         tboVmwtKvw9eBpAzdrOFRLIMPzhYg2KYcdX4Xc3ezqdj0P5CXxtb8L2WG3yTj1jdt+
-         vdu82Nn0jVG8/3bCPTdOWhmhOiK98CW4iOOa03WaEwrEtr61vNJzGwvB6lfb8x91Tk
-         7XndXyE6XQdtePWn+0nX9CU5j66QkBiVZUrIYaCRbttU+5qmt5AH+hXStGGovfMSH5
-         Zl0QjKpEYV31A==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id rVclInozgsqV; Thu, 25 Feb 2021 10:47:33 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 1B9D831DCA7;
-        Thu, 25 Feb 2021 10:47:33 -0500 (EST)
-Date:   Thu, 25 Feb 2021 10:47:32 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        rostedt <rostedt@goodmis.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>
-Message-ID: <47558398.5024.1614268052985.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210225153656.GQ2743@paulmck-ThinkPad-P72>
-References: <354598689.4868.1614262968890.JavaMail.zimbra@efficios.com> <20210225153656.GQ2743@paulmck-ThinkPad-P72>
-Subject: Re: tasks-trace RCU: question about grace period forward progress
+        Thu, 25 Feb 2021 10:49:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614268112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=N9GLjxM82UmKwC+trKdjUK/mS52WV9a4z9ieR35APG4=;
+        b=F7P0KGUDGaiiCiR4+YXd1Mz8+d7J/6H8DXpxY7O6rQP8v1tPOlnzrj4ZTrrkKj6/Ns5W8I
+        zc5BcplyazK3Ajg0SQYJTizG+yU9gwniC80acrfwQmPeOg6Jd3O+ZKX8++GgED61BuMM0M
+        S5ZT92rs2BSbc5MKccCNs2D7e0QnP24=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242-xOxUSVHhN9CfceFfHUA_Gg-1; Thu, 25 Feb 2021 10:48:26 -0500
+X-MC-Unique: xOxUSVHhN9CfceFfHUA_Gg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B23E8030BB;
+        Thu, 25 Feb 2021 15:48:24 +0000 (UTC)
+Received: from starship (unknown [10.35.207.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 51018189C7;
+        Thu, 25 Feb 2021 15:48:21 +0000 (UTC)
+Message-ID: <ecf0e5d9213d04d0f168c289e840b966210f99d5.camel@redhat.com>
+Subject: Re: [PATCH 0/4] RFC/WIP: KVM: separate injected and pending
+ exception +  few more fixes
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Date:   Thu, 25 Feb 2021 17:48:20 +0200
+In-Reply-To: <20210225154135.405125-1-mlevitsk@redhat.com>
+References: <20210225154135.405125-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
-Thread-Topic: tasks-trace RCU: question about grace period forward progress
-Thread-Index: pwK/WXjIrT7rEqZmBrlQyKVe9bflUA==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Feb 25, 2021, at 10:36 AM, paulmck paulmck@kernel.org wrote:
-
-> On Thu, Feb 25, 2021 at 09:22:48AM -0500, Mathieu Desnoyers wrote:
->> Hi Paul,
->> 
->> Answering a question from Peter on IRC got me to look at rcu_read_lock_trace(),
->> and I see this:
->> 
->> static inline void rcu_read_lock_trace(void)
->> {
->>         struct task_struct *t = current;
->> 
->>         WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
->>         barrier();
->>         if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
->>             t->trc_reader_special.b.need_mb)
->>                 smp_mb(); // Pairs with update-side barriers
->>         rcu_lock_acquire(&rcu_trace_lock_map);
->> }
->> 
->> static inline void rcu_read_unlock_trace(void)
->> {
->>         int nesting;
->>         struct task_struct *t = current;
->> 
->>         rcu_lock_release(&rcu_trace_lock_map);
->>         nesting = READ_ONCE(t->trc_reader_nesting) - 1;
->>         barrier(); // Critical section before disabling.
->>         // Disable IPI-based setting of .need_qs.
->>         WRITE_ONCE(t->trc_reader_nesting, INT_MIN);
->>         if (likely(!READ_ONCE(t->trc_reader_special.s)) || nesting) {
->>                 WRITE_ONCE(t->trc_reader_nesting, nesting);
->>                 return;  // We assume shallow reader nesting.
->>         }
->>         rcu_read_unlock_trace_special(t, nesting);
->> }
->> 
->> AFAIU, each thread keeps track of whether it is nested within a RCU read-side
->> critical
->> section with a counter, and grace periods iterate over all threads to make sure
->> they
->> are not within a read-side critical section before they can complete:
->> 
->> # define rcu_tasks_trace_qs(t)                                          \
->>         do {                                                            \
->>                 if (!likely(READ_ONCE((t)->trc_reader_checked)) &&      \
->>                     !unlikely(READ_ONCE((t)->trc_reader_nesting))) {    \
->>                         smp_store_release(&(t)->trc_reader_checked, true); \
->>                         smp_mb(); /* Readers partitioned by store. */   \
->>                 }                                                       \
->>         } while (0)
->> 
->> It reminds me of the liburcu urcu-mb flavor which also deals with per-thread
->> state to track whether threads are nested within a critical section:
->> 
->> https://github.com/urcu/userspace-rcu/blob/master/include/urcu/static/urcu-mb.h#L90
->> https://github.com/urcu/userspace-rcu/blob/master/include/urcu/static/urcu-mb.h#L125
->> 
->> static inline void _urcu_mb_read_lock_update(unsigned long tmp)
->> {
->> 	if (caa_likely(!(tmp & URCU_GP_CTR_NEST_MASK))) {
->> 		_CMM_STORE_SHARED(URCU_TLS(urcu_mb_reader).ctr,
->> 		_CMM_LOAD_SHARED(urcu_mb_gp.ctr));
->> 		cmm_smp_mb();
->> 	} else
->> 		_CMM_STORE_SHARED(URCU_TLS(urcu_mb_reader).ctr, tmp + URCU_GP_COUNT);
->> }
->> 
->> static inline void _urcu_mb_read_lock(void)
->> {
->> 	unsigned long tmp;
->> 
->> 	urcu_assert(URCU_TLS(urcu_mb_reader).registered);
->> 	cmm_barrier();
->> 	tmp = URCU_TLS(urcu_mb_reader).ctr;
->> 	urcu_assert((tmp & URCU_GP_CTR_NEST_MASK) != URCU_GP_CTR_NEST_MASK);
->> 	_urcu_mb_read_lock_update(tmp);
->> }
->> 
->> The main difference between the two algorithm is that task-trace within the
->> kernel lacks the global "urcu_mb_gp.ctr" state snapshot, which is either
->> incremented or flipped between 0 and 1 by the grace period. This allow RCU
->> readers
->> outermost nesting starting after the beginning of the grace period not to
->> prevent
->> progress of the grace period.
->> 
->> Without this, a steady flow of incoming tasks-trace-RCU readers can prevent the
->> grace period from ever completing.
->> 
->> Or is this handled in a clever way that I am missing here ?
+On Thu, 2021-02-25 at 17:41 +0200, Maxim Levitsky wrote:
+> clone of "kernel-starship-5.11"
 > 
-> There are several mechanisms designed to handle this.  The following
-> paragraphs describe these at a high level.
+> Maxim Levitsky (4):
+>   KVM: x86: determine if an exception has an error code only when
+>     injecting it.
+>   KVM: x86: mmu: initialize fault.async_page_fault in walk_addr_generic
+>   KVM: x86: pending exception must be be injected even with an injected
+>     event
+>   kvm: WIP separation of injected and pending exception
 > 
-> The trc_wait_for_one_reader() is invoked on each task.  It uses the
-> try_invoke_on_locked_down_task(), which, if the task is currently not
-> running, keeps it that way and invokes trc_inspect_reader().  If the
-> locked-down task is in a read-side critical section, the need_qs field
-> is set, which will cause the task's next rcu_read_lock_trace() to report
-> the quiescent state.
-
-I suspect you meant "rcu_read_unlock_trace()" here.
-
+>  arch/x86/include/asm/kvm_host.h |  23 +-
+>  arch/x86/include/uapi/asm/kvm.h |  14 +-
+>  arch/x86/kvm/mmu/paging_tmpl.h  |   1 +
+>  arch/x86/kvm/svm/nested.c       |  57 +++--
+>  arch/x86/kvm/svm/svm.c          |   8 +-
+>  arch/x86/kvm/vmx/nested.c       | 109 +++++----
+>  arch/x86/kvm/vmx/vmx.c          |  14 +-
+>  arch/x86/kvm/x86.c              | 377 +++++++++++++++++++-------------
+>  arch/x86/kvm/x86.h              |   6 +-
+>  include/uapi/linux/kvm.h        |   1 +
+>  10 files changed, 374 insertions(+), 236 deletions(-)
 > 
-> If read-side memory barriers have been enabled, trc_inspect_reader()
-> is able to check for a reader being active, and if not, reports the
-> quiescent state.  If there is a reader, trc_inspect_reader() reports
-> failure, which is another path to the following paragraph.
+> -- 
+> 2.26.2
 > 
-> If the task could not be locked down due its currently running,
-> then trc_wait_for_one_reader() attempts to send an IPI, which results in
-> trc_read_check_handler() rechecking for a read-side critical section
-> and either reporting the quiescent state immediately or proceding in the
-> same way that trc_inspect_reader() does.  The trc_read_check_handler()
-> of course checks to make sure that the target task is still running
-> before doing anything.  If the attempt to send the IPI fails, then
-> the task is rechecked in a later pass.
-> 
-> So what sequence of events did you find that causes these mechanisms
-> to fail?
-
-The explanation you provide takes care of my concerns, so I don't have
-any remaining problematic scenario in mind.
-
-Thanks,
-
-Mathieu
+git-publish ate the cover letter, so here it goes:
 
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+RFC/WIP: KVM: separate injected and pending exception + few more fixes
+
+This is a result of my deep dive on why do we need special .inject_page_fault
+for cases when TDP paging is disabled on the host for running nested guests.
+
+First 3 patches fix relatively small issues I found.
+Some of them can be squashed with patch 4 assuming that it is accepted.
+
+Patch 4 is WIP and I would like to hear your feedback on it:
+
+Basically the issue is that during delivery of one exception
+we (emulator or mmu) can signal another exception, and if the new exception
+is intercepted by the nested guest, we should do VM exit with
+former exception signaled in exitintinfo (or equivalent IDT_VECTORING_INFO_FIELD)
+
+We sadly either loose the former exception and signal an VM exit, or deliver
+a #DF since we only store either pending or injected exception
+and we merge them in kvm_multiple_exception although we shouldn't.
+
+Only later we deliver the VM exit in .check_nested_events when already wrong
+data is in the pending/injected exception.
+
+There are multiple ways to fix it, and I choose somewhat hard but I think
+the most correct way of dealing with it.
+
+1. I split pending and injected exceptions in kvm_vcpu_arch thus allowing
+both to co-exist.
+
+2. I made kvm_multiple_exception avoid merging exceptions, but instead only
+setup either pending or injected exception
+(there is another bug that we don't deliver triple fault as nested vm exit,
+which I'll fix later)
+
+3. I created kvm_deliver_pending_exception which its goal is to
+convert the pending exception to injected exception or deliver a VM exit
+with both pending and injected exception/interrupt/nmi.
+
+It itself only deals with non-vmexit cases while it calls a new
+'kvm_x86_ops.nested_ops->deliver_exception' to deliver exception VM exit
+if needed.
+
+The later implementation is simple as it just checks if we should VM exit
+and then delivers both exceptions (or interrupt and exception, in case
+interrupt delivery was interrupted by exception).
+This new callback returns 0 if it had delivered this VM exit,
+0 if no vm exit is needed, or -EBUSY when nested run is pending,
+in which case the exception delivery will be retried after nested
+run is done.
+
+kvm_deliver_pending_exception is called each time we inject pending events
+and all exception related code is removed from .check_nested_events which now only deals
+with pending interrupts and events such as INIT,NMI,SMI, etc.
+
+New KVM cap is added to expose both pending and injected exception via
+KVM_GET_VCPU_EVENTS/KVM_SET_VCPU_EVENTS
+
+If this cap is not enabled, and we have both pending and injected exception
+when KVM_GET_VCPU_EVENTS is called, the exception is delivered.
+
+The code was tested with SVM, and it currently seems to pass all the tests I usually
+do (including nested migration). KVM unit tests seem to pass as well.
+
+I still almost sure that I broke something since this is far from trivial change,
+therefore this is RFC/WIP.
+
+Also VMX side was not yet tested other than basic compile and I am sure that there
+are at least few issues that remain to be fixed.
+
+I should also note that with these patches I can boot nested guests with npt=0 without
+any changes to .inject_page_fault.
+
+I also wrote 2 KVM unit tests to test for this issue, and for similar issue when
+interrupt is lost when delivery of it causes exception.
+These tests pass now.
+
+Best regards,
+	Maxim Levitsky
+
+
