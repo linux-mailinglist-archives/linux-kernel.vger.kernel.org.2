@@ -2,341 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A04232502C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0668632502D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhBYNK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 08:10:58 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43162 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhBYNKx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:10:53 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 960F61F460CD
-Message-ID: <2109948614dc0e3f253d69ca92a4b63fe8828bfb.camel@collabora.com>
-Subject: Re: [PATCH v3 1/9] media: hevc: Modify structures to follow H265
- ITU spec
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, peng.fan@nxp.com,
-        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-Date:   Thu, 25 Feb 2021 10:09:52 -0300
-In-Reply-To: <20210222122406.41782-2-benjamin.gaignard@collabora.com>
-References: <20210222122406.41782-1-benjamin.gaignard@collabora.com>
-         <20210222122406.41782-2-benjamin.gaignard@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        id S230330AbhBYNLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 08:11:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229919AbhBYNKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 08:10:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A62B364F14;
+        Thu, 25 Feb 2021 13:10:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614258614;
+        bh=QJtYXSGO/SdBVtbPRfmRNqo5ZzftkRJCRZSNTCuYkGk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cevttnrJqn04pWPo2NKC8lloj2m5zSJF8jEm/iA30u2vnKz2E18pKuXTXblhUKWX7
+         PjjeieynjSMTsbWIIXnncpx+8OEIt3OV4P4Il+iEjEwqxVvF/G2NluNV2k2yN3zWAk
+         dsrEzarcw35Yj4H30Zj3saZMuCyBsGuDoOW4+0uhpd/mLd6nnMauz7C7JAqnNFkrMQ
+         6tSASfiQ8Im4HZ+qCHx8rL5XUz437XObGYc2HpHFHO4LRqjT1djV/xtn8WpXefed7G
+         X4PMgx1L9h0CCavYcyIDsuXBFYQyAhDcldO2X2r/t3FohRW6knGMiB0e/broOJsVeJ
+         LULC3a2HJoG7w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1B1C440CD9; Thu, 25 Feb 2021 10:10:12 -0300 (-03)
+Date:   Thu, 25 Feb 2021 10:10:12 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Juxin Gao <gaojuxin@loongson.cn>
+Subject: Re: [PATCH v2 0/3] Add some perf support for mips
+Message-ID: <YDehtDi4q+lFO2l6@kernel.org>
+References: <1612409724-3516-1-git-send-email-yangtiezhu@loongson.cn>
+ <1d3c4abd-4b14-90e3-6528-457a8248cb52@loongson.cn>
+ <YDZRxz1yRwgWc47F@kernel.org>
+ <YDec9LIikZ9EVufH@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDec9LIikZ9EVufH@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
-
-Thanks for the good work.
-
-On Mon, 2021-02-22 at 13:23 +0100, Benjamin Gaignard wrote:
-> The H.265 ITU specification (section 7.4) define the general
-> slice segment header semantics.
-> Modified/added fields are:
-> - video_parameter_set_id: (7.4.3.1) identifies the VPS for
-> reference by other syntax elements.
-> - seq_parameter_set_id: (7.4.3.2.1) specifies the value of
-> the vps_video_parameter_set_id of the active VPS.
-> - chroma_format_idc: (7.4.3.2.1) specifies the chroma sampling
->  relative to the luma sampling
-> - pic_parameter_set_id: (7.4.3.3.1) identifies the PPS for
-> reference by other syntax elements
-> - num_ref_idx_l0_default_active_minus1: (7.4.3.3.1) specifies
-> the inferred value of num_ref_idx_l0_active_minus1
-> - num_ref_idx_l1_default_active_minus1: (7.4.3.3.1) specifies
-> the inferred value of num_ref_idx_l1_active_minus1
-> - slice_segment_addr: (7.4.7.1) specifies the address of
-> the first coding tree block in the slice segment
-> - num_entry_point_offsets: (7.4.7.1) specifies the number of
-> entry_point_offset_minus1[ i ] syntax elements in the slice header
+Em Thu, Feb 25, 2021 at 09:49:56AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Feb 24, 2021 at 10:16:55AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Mon, Feb 22, 2021 at 02:43:39PM +0800, Tiezhu Yang escreveu:
+> > > On 02/04/2021 11:35 AM, Tiezhu Yang wrote:
+> > > > v2: add R26 and R27 to the enum perf_event_mips_regs in patch #1
+> > > > 
+> > > > Tiezhu Yang (3):
+> > > >    MIPS: kernel: Support extracting off-line stack traces from user-space
+> > > >      with perf
+> > > >    perf tools: Support mips unwinding and dwarf-regs
+> > > >    perf tools: Generate mips syscalls_n64.c syscall table
+> > > 
+> > > Hi Arnaldo,
+> > > 
+> > > The kernel part patch #1 has been merged.
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1ddc96bd42da
+> > > 
+> > > Could the perf tool patches #2 and #3 have a chance to be merged before
+> > > 5.12-rc1?
+> > > If yes, we can use this feature in 5.12-rc1.
+> > 
+> > Thanks, applied, should make it into 5.12-rc1.
 > 
-> Add HEVC decode params contains the information used in section
-> "8.3 Slice decoding process" of the specification to let the hardware
-> perform decoding of a slices.
+> First we'll have to fix this problem:
 > 
-> Adapt Cedrus driver according to these changes.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
-> version 3:
-> - Add documentation about the new structuers and fields.
-> 
-> version 2:
-> - remove all change related to scaling
-> - squash commits to a coherent split
-> - be more verbose about the added fields
-> 
->  .../media/v4l/ext-ctrls-codec.rst             | 126 +++++++++++++++---
->  .../media/v4l/vidioc-queryctrl.rst            |   6 +
->  drivers/media/v4l2-core/v4l2-ctrls.c          |  26 +++-
->  drivers/staging/media/sunxi/cedrus/cedrus.c   |   6 +
->  drivers/staging/media/sunxi/cedrus/cedrus.h   |   1 +
->  .../staging/media/sunxi/cedrus/cedrus_dec.c   |   2 +
->  .../staging/media/sunxi/cedrus/cedrus_h265.c  |   6 +-
->  include/media/hevc-ctrls.h                    |  45 +++++--
->  8 files changed, 186 insertions(+), 32 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index 00944e97d638..5e6d77e858c0 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -3109,6 +3109,15 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->      :stub-columns: 0
->      :widths:       1 1 2
->  
-> +    * - __u8
-> +      - ``video_parameter_set_id``
-> +      - Identifies the VPS for reference by other syntax elements
-> +    * - __u8
-> +      - ``seq_parameter_set_id̀``
-> +      - Specifies the value of the vps_video_parameter_set_id of the active VPS
-> +    * - __u8
-> +      - ``chroma_format_idc``
-> +      - Specifies the chroma sampling relative to the luma sampling
+>   28    12.45 debian:experimental-x-mips64  : FAIL gcc version 10.2.1 20201224 (Debian 10.2.1-3)
+>                      from builtin-diff.c:12:
+>     /git/linux/tools/perf/arch/mips/include/perf_regs.h:7:10: fatal error: asm/perf_regs.h: No such file or directory
+>         7 | #include <asm/perf_regs.h>
+>           |          ^~~~~~~~~~~~~~~~~
+>     compilation terminated.
+>     In file included from util/perf_regs.h:30,
+>                      from util/event.h:15,
+>                      from util/branch.h:15,
+>                      from util/callchain.h:8,
+>                      from builtin-record.c:16:
+>     /git/linux/tools/perf/arch/mips/include/perf_regs.h:7:10: fatal error: asm/perf_regs.h: No such file or directory
 
-None of these fields seem needed for the Hantro G2 driver,
-so I suggest you drop them for now.
+I'm not finding it in the debian cross build packages:
 
->      * - __u16
->        - ``pic_width_in_luma_samples``
->        -
-> @@ -3172,6 +3181,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->      * - __u8
->        - ``chroma_format_idc``
->        -
-> +    * - __u8
-> +      - ``num_slices``
-> +
+root@d77a78c0aa1c:/# apt-file find perf_regs.h | grep cross
+linux-libc-dev-amd64-cross: /usr/x86_64-linux-gnu/include/asm/perf_regs.h
+linux-libc-dev-arm64-cross: /usr/aarch64-linux-gnu/include/asm/perf_regs.h
+linux-libc-dev-armel-cross: /usr/arm-linux-gnueabi/include/asm/perf_regs.h
+linux-libc-dev-armhf-cross: /usr/arm-linux-gnueabihf/include/asm/perf_regs.h
+linux-libc-dev-i386-cross: /usr/i686-linux-gnu/include/asm/perf_regs.h
+linux-libc-dev-powerpc-cross: /usr/powerpc-linux-gnu/include/asm/perf_regs.h
+linux-libc-dev-ppc64-cross: /usr/powerpc64-linux-gnu/include/asm/perf_regs.h
+linux-libc-dev-ppc64el-cross: /usr/powerpc64le-linux-gnu/include/asm/perf_regs.h
+linux-libc-dev-riscv64-cross: /usr/riscv64-linux-gnu/include/asm/perf_regs.h
+linux-libc-dev-s390x-cross: /usr/s390x-linux-gnu/include/asm/perf_regs.h
+linux-libc-dev-x32-cross: /usr/x86_64-linux-gnux32/include/asm/perf_regs.h
+root@d77a78c0aa1c:/#
 
-Not used, but also doesn't seem part of the SPS syntax. If we have to
-pass the number of slices, we'll need another mechanism.
+Ideas?
 
->       -
->      * - __u64
->        - ``flags``
->        - See :ref:`Sequence Parameter Set Flags <hevc_sps_flags>`
-> @@ -3231,9 +3243,18 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->      :stub-columns: 0
->      :widths:       1 1 2
->  
-> +    * - __u8
-> +      - ``pic_parameter_set_id``
-> +      - Identifies the PPS for reference by other syntax elements
-
-Not used.
-
->      * - __u8
->        - ``num_extra_slice_header_bits``
->        -
-> +    * - __u8
-> +      - ``num_ref_idx_l0_default_active_minus1``
-> +      - Specifies the inferred value of num_ref_idx_l0_active_minus1
-> +    * - __u8
-> +      - ``num_ref_idx_l1_default_active_minus1``
-> +      - Specifies the inferred value of num_ref_idx_l1_active_minus1
->      * - __s8
->        - ``init_qp_minus26``
->        -
-> @@ -3342,6 +3363,12 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->      * - ``V4L2_HEVC_PPS_FLAG_SLICE_SEGMENT_HEADER_EXTENSION_PRESENT``
->        - 0x00040000
->        -
-> +    * - ``V4L2_HEVC_PPS_FLAG_DEBLOCKING_FILTER_CONTROL_PRESENT``
-> +      - 0x00080000
-> +      -
-> +    * - ``V4L2_HEVC_PPS_FLAG_UNIFORM_SPACING``
-> +      - 0x00100000
-> +      -
->  
-
-I suggest to do all the PPS control changes in a separate patch,
-feels easier to review and cleaner as you can explain the
-changes with more detail in the commit description.
-
-Looking at the PPS syntax for tiles, I'm wondering if these
-deserve their own control, which would be used if tiles are enabled,
-i.e. V4L2_HEVC_PPS_FLAG_TILES_ENABLED is set.
-
-        __u8    num_tile_columns_minus1;                                         
-        __u8    num_tile_rows_minus1;                                            
-        __u8    column_width_minus1[20];                                         
-        __u8    row_height_minus1[22];    
-
-Not something we necessarily have to tackle now.
-
->  ``V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS (struct)``
->      Specifies various slice-specific parameters, especially from the NAL unit
-> @@ -3366,6 +3393,12 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->      * - __u32
->        - ``data_bit_offset``
->        - Offset (in bits) to the video data in the current slice data.
-> +    * - __u32
-> +      - ``slice_segment_addr``
-> +      - Specifies the address of the first coding tree block in the slice segment
-
-Not used.
-
-> +    * - __u32
-> +      - ``num_entry_point_offsets``
-> +      - Specifies the number of entry_point_offset_minus1[ i ] syntax elements in the slice header
-
-Not used.
-
->      * - __u8
->        - ``nal_unit_type``
->        -
-> @@ -3422,28 +3455,20 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->      * - __u8
->        - ``pic_struct``
->        -
-> -    * - __u8
-> -      - ``num_active_dpb_entries``
-> -      - The number of entries in ``dpb``.
-
-Need to explain in the commit description why this field is moved.
-
->      * - __u8
->        - ``ref_idx_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
->        - The list of L0 reference elements as indices in the DPB.
->      * - __u8
->        - ``ref_idx_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
->        - The list of L1 reference elements as indices in the DPB.
-> +    * - __u16
-> +      - ``short_term_ref_pic_set_size``
-> +
-
-Not used.
-
->       -
-> +    * - __u16
-> +      - ``long_term_ref_pic_set_size``
-> +      -
-
-Not used.
-
->      * - __u8
-> -      - ``num_rps_poc_st_curr_before``
-> -      - The number of reference pictures in the short-term set that come before
-> -        the current frame.
-
-If this matches NumPocStCurrBefore from section 8.3.2 "Decoding process for reference picture set"
-then I would document that. And perhaps rename it to num_poc_st_curr_before.
-
-> -    * - __u8
-> -      - ``num_rps_poc_st_curr_after``
-> -      - The number of reference pictures in the short-term set that come after
-> -        the current frame.
-
-Ditto.
-
-> -    * - __u8
-> -      - ``num_rps_poc_lt_curr``
-> -      - The number of reference pictures in the long-term set.
-
-Ditto.
-
-Also, I'd like the changes that move fields from V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS
-to the new V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS control, to be in their
-patch.
-
-That will allow us to put in the commit description a proper
-explanation of why are fields being moved. Nothing fancy, simply
-explaining that these variables come from section 8.3.2
-"Decoding process for reference picture set", which describes
-a process invoked once per picture, so they are not per-slice.
-
-> -    * - __u8
-> -      - ``padding[7]``
-> +      - ``padding``
->        - Applications and drivers must set this to zero.
->      * - struct :c:type:`v4l2_hevc_dpb_entry`
->        - ``dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> @@ -3646,3 +3671,74 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->      so this has to come from client.
->      This is applicable to H264 and valid Range is from 0 to 63.
->      Source Rec. ITU-T H.264 (06/2019); G.7.4.1.1, G.8.8.1.
-> +
-> +``V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS (struct)``
-> +    Specifies various decode parameters, especially the references picture order
-> +    count (POC) for all the lists (short, long, before, current, after) and the
-> +    number of entries for each of them.
-> +    These parameters are defined according to :ref:`hevc`.
-> +    They are described in section 8.3 "Slice decoding process" of the
-> +    specification.
-> +
-> +.. c:type:: v4l2_ctrl_hevc_decode_params
-> +
-> +.. cssclass:: longtable
-> +
-> +.. flat-table:: struct v4l2_ctrl_hevc_decode_params
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +    :widths:       1 1 2
-> +
-> +    * - __s32
-> +      - ``pic_order_cnt_val``
-> +      -
-
-Can be documented as:
-
-"""
-PicOrderCntVal as described in section 8.3.1 "Decoding process
-for picture order count" of the specification.
-"""
-
-Note that snake case is used to match the kernel style,
-but other than that we try to keep the HEVC spec variable
-names.
-
-> +    * - __u8
-> +      - ``num_active_dpb_entries``
-> +      - The number of entries in ``dpb``.
-> +    * - struct :c:type:`v4l2_hevc_dpb_entry`
-> +      - ``dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> +      - The decoded picture buffer, for meta-data about reference frames.
-
-The DPB is here, but it seems it's also in the slice control?
-
-> +    * - __u8
-> +      - ``num_rps_poc_st_curr_before``
-> +      - The number of reference pictures in the short-term set that come before
-> +        the current frame.
-> +    * - __u8
-> +      - ``num_rps_poc_st_curr_after``
-> +      - The number of reference pictures in the short-term set that come after
-> +        the current frame.
-> +    * - __u8
-> +      - ``num_rps_poc_lt_curr``
-> +      - The number of reference pictures in the long-term set.
-> +    * - __u8
-> +      - ``rps_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> +      -
-> +    * - __u8
-> +      - ``rps_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> +      -
-> +    * - __u8
-> +      - ``rps_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> +      -
-
-Could you document these as well?
-
-Thanks a lot,
-Ezequiel
-
+- Arnaldo
