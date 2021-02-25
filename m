@@ -2,77 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8344F324948
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 182CB324965
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbhBYDLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 22:11:50 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:5522 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235745AbhBYDLi (ORCPT
+        id S236875AbhBYDYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 22:24:16 -0500
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:56723
+        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S232723AbhBYDYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 22:11:38 -0500
-X-UUID: 853e14c8a2d044ef8095201542d43cb8-20210225
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=8AfxQgMLd5LAOyHUuhbTLCDggQdgcP/KVwPluxawHEI=;
-        b=Np7Elwv0qmDQN7s5zBQSUifBPwgKxBYmhoh55d72XYgiAnkm0+21XQ2hFC4vxAkOyR15kw3FT1ZGSq7yUB/1Eo+MNIR+7Fp7EpoMMTkT+d4KJspj2+W/vgXIbARArwynKvc5+ZDCHO8Qd4WbZWFVQsjKcK+/+nto3wZiEl48Tek=;
-X-UUID: 853e14c8a2d044ef8095201542d43cb8-20210225
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 883676415; Thu, 25 Feb 2021 11:10:53 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Feb
- 2021 11:10:47 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 25 Feb 2021 11:10:46 +0800
-Message-ID: <1614222646.25750.8.camel@mhfsdcap03>
-Subject: Re: [v8,4/7] PCI: mediatek-gen3: Add INTx support
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-CC:     Bjorn Helgaas <helgaas@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <maz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "Sj Huang" <sj.huang@mediatek.com>, <youlin.pei@mediatek.com>,
-        <chuanjia.liu@mediatek.com>, <qizhong.cheng@mediatek.com>,
-        <sin_jieyang@mediatek.com>, <drinkcat@chromium.org>,
-        <Rex-BC.Chen@mediatek.com>, <anson.chuang@mediatek.com>
-Date:   Thu, 25 Feb 2021 11:10:46 +0800
-In-Reply-To: <YDZhuwbgdUsnBD/0@rocinante>
-References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
-         <20210224061132.26526-5-jianjun.wang@mediatek.com>
-         <YDZhuwbgdUsnBD/0@rocinante>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 4481712F5FD8DB778D110BBC2B7BB028FF4AF1B4B16E4CAF6ACB5AA1DB123F3D2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Wed, 24 Feb 2021 22:24:10 -0500
+Received: from centos7u5.localdomain (unknown [202.43.158.76])
+        by c1app2 (Coremail) with SMTP id AgINCgD3_sIVGDdgB88fAw--.56445S3;
+        Thu, 25 Feb 2021 11:23:01 +0800 (CST)
+From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Subject: [PATCH] mm/memremap: Fixes improper SPDX comment style
+Date:   Thu, 25 Feb 2021 11:22:28 +0800
+Message-Id: <1614223348-15516-1-git-send-email-daizhiyuan@phytium.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AgINCgD3_sIVGDdgB88fAw--.56445S3
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYr7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87
+        Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+        4I1lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
+        IFyTuYvjfUboGQDUUUU
+X-Originating-IP: [202.43.158.76]
+X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQpUaGFua3MgZm9yIHlvdXIgcmV2aWV3LCBJIHdpbGwgZml4IGl0IGF0
-IG5leHQgdmVyc2lvbi4NCg0KT24gV2VkLCAyMDIxLTAyLTI0IGF0IDE1OjI0ICswMTAwLCBLcnp5
-c3p0b2YgV2lsY3p5xYRza2kgd3JvdGU6DQo+IEhpIEppYW5qdW4sDQo+IA0KPiBbLi4uXQ0KPiA+
-ICsvKioNCj4gPiArICogbXRrX2ludHhfZW9pDQo+ID4gKyAqIEBkYXRhOiBwb2ludGVyIHRvIGNo
-aXAgc3BlY2lmaWMgZGF0YQ0KPiA+ICsgKg0KPiA+ICsgKiBBcyBhbiBlbXVsYXRlZCBsZXZlbCBJ
-UlEsIGl0cyBpbnRlcnJ1cHQgc3RhdHVzIHdpbGwgcmVtYWluDQo+ID4gKyAqIHVudGlsIHRoZSBj
-b3JyZXNwb25kaW5nIGRlLWFzc2VydCBtZXNzYWdlIGlzIHJlY2VpdmVkOyBoZW5jZSB0aGF0DQo+
-ID4gKyAqIHRoZSBzdGF0dXMgY2FuIG9ubHkgYmUgY2xlYXJlZCB3aGVuIHRoZSBpbnRlcnJ1cHQg
-aGFzIGJlZW4gc2VydmljZWQuDQo+ID4gKyAqLw0KPiBbLi4uXQ0KPiANCj4gU2VlIG15IGNvbW1l
-bnQgYWJvdXQgdGhlIGtlcm5lbC1kb2MgZnJvbSB0aGUgZm9sbG93aW5nOg0KPiANCj4gICBodHRw
-czovL2xvcmUua2VybmVsLm9yZy9saW51eC1wY2kvWURaV1VHY0tldCUyRmxOV2xGQHJvY2luYW50
-ZS8NCj4gDQo+IFsuLi5dDQo+ID4gKwlpZiAoZXJyKSB7DQo+ID4gKwkJZGV2X2VycihkZXYsICJm
-YWlsZWQgdG8gaW5pdCBQQ0llIElSUSBkb21haW5cbiIpOw0KPiA+ICsJCXJldHVybiBlcnI7DQo+
-ID4gKwl9DQo+IFsuLi5dDQo+IA0KPiBKdXN0IGEgbml0cGljay4gIFdoYXQgYWJvdXQgdXNpbmcg
-ImluaXRpYWxpemUiIGluIHRoZSBhYm92ZT8NCj4gDQo+IEtyenlzenRvZg0KDQpUaGFua3MuDQoN
-Cg==
+Replace /* */ comment with //, fix SPDX comment style.
+
+see: Documentation/process/license-rules.rst
+
+Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+---
+ mm/memremap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/memremap.c b/mm/memremap.c
+index 16b2fb4..ffafac0 100644
+--- a/mm/memremap.c
++++ b/mm/memremap.c
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++// SPDX-License-Identifier: GPL-2.0
+ /* Copyright(c) 2015 Intel Corporation. All rights reserved. */
+ #include <linux/device.h>
+ #include <linux/io.h>
+-- 
+1.8.3.1
 
