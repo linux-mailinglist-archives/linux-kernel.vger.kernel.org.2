@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DDE3258D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B253258D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234322AbhBYVjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:39:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232649AbhBYVjg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:39:36 -0500
-Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04273C06174A;
-        Thu, 25 Feb 2021 13:38:55 -0800 (PST)
-Received: from localhost.localdomain (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 22B8C3F400;
-        Thu, 25 Feb 2021 22:38:53 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: pm8004: Enable the PMIC peripherals by default
-Date:   Thu, 25 Feb 2021 22:38:42 +0100
-Message-Id: <20210225213842.117694-1-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.30.1
+        id S234584AbhBYVk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:40:29 -0500
+Received: from ms.lwn.net ([45.79.88.28]:38272 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233242AbhBYVkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 16:40:14 -0500
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id BAE668B2;
+        Thu, 25 Feb 2021 21:39:33 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BAE668B2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614289173; bh=1Un8cfaLsFI+U4Z+qytxlqyMLxZAbAbbKGb98C1S2og=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=h9tpOTXRo0ZJRt6qrmzmGXpkzpwjTcZIJAmIsn1AwQI+7w0x+yiaQuiv9BFRP9rOU
+         svMrRMCijUs9C8oZdClPGHbaMYIhYyGZF00bZpkdiomHfMlgeHSQ0cLKtn1LB+o6is
+         6KPtoCy8RR+YWYylPvw1/rBV2hCW60Kckgehk69y2aHhpOy6isGFA5FoEhRbnLmHaP
+         yX5tuokTLmA5OHM3VCqRL6KLHC+8woLd83A8A8r89HGx3yK8/lpoBKat9mma6CtAlh
+         gjp+7TOl36FKxnt4pGFBC0b8VNxzztpfHTfHFc3/Uu/Eig5A62/ehWTD5/wEOdbg4K
+         eaffhZSXRWoXw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Donnellan <ajd@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the jc_docs tree
+In-Reply-To: <20210226083433.1419e9c9@canb.auug.org.au>
+References: <20210226083433.1419e9c9@canb.auug.org.au>
+Date:   Thu, 25 Feb 2021 14:39:33 -0700
+Message-ID: <87a6rrbze2.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It makes no sense to require one more step to enable the PMIC features.
-If the PMIC is present, it already has to be explicitly #included anyway.
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- arch/arm64/boot/dts/qcom/pm8004.dtsi | 2 --
- 1 file changed, 2 deletions(-)
+> Hi all,
+>
+> In commit
+>
+>   36eaf08fc283 ("docs: powerpc: Fix tables in syscall64-abi.rst")
+>
+> Fixes tag
+>
+>   Fixes: 209b44c804c ("docs: powerpc: syscall64-abi.rst: fix a malformed table")
+>
+> has these problem(s):
+>
+>   - SHA1 should be at least 12 digits long
+>
+> I don't think this is worth rebasing for, but in the future it can be
+> fixed by setting core.abbrev to 12 (or more) or (for git v2.11 or later)
+> just making sure it is not set (or set to "auto").
 
-diff --git a/arch/arm64/boot/dts/qcom/pm8004.dtsi b/arch/arm64/boot/dts/qcom/pm8004.dtsi
-index 0abd1abe12fc..532b79acf0e8 100644
---- a/arch/arm64/boot/dts/qcom/pm8004.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8004.dtsi
-@@ -9,7 +9,6 @@ pm8004_lsid4: pmic@4 {
- 		reg = <0x4 SPMI_USID>;
- 		#address-cells = <1>;
- 		#size-cells = <0>;
--		status = "disabled";
- 	};
- 
- 	pm8004_lsid5: pmic@5 {
-@@ -17,7 +16,6 @@ pm8004_lsid5: pmic@5 {
- 		reg = <0x5 SPMI_USID>;
- 		#address-cells = <1>;
- 		#size-cells = <0>;
--		status = "disabled";
- 
- 		pm8004_spmi_regulators: regulators {
- 			compatible = "qcom,pm8004-regulators";
--- 
-2.30.1
+I made that tag by hand while "fixing" the changlog on that commit,
+which included the full ID.  Obviously, counting to 12 is a challenging
+task for a slow guy like me...:)
 
+Thanks,
+
+jon
