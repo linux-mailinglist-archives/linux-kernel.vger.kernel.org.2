@@ -2,133 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785EB32599D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2C73259A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233248AbhBYWYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:24:42 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:28393 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbhBYWUP (ORCPT
+        id S232847AbhBYWZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:25:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46106 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233498AbhBYWWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:20:15 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id A94DAA12BA;
-        Thu, 25 Feb 2021 23:19:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=VmhpQ9IAKsvf
-        k7oW2kDn8RfoCMyYDunAm6/v4M1Pbss=; b=HB1IjxBZ/F80GewGIjqAmYzCRU46
-        9xVvfpcNpK0cvywrxzB1X11Yj2CBkL0ybUaLST83nCliwQRdxZ/RV1GlEyz8KqqY
-        L286M1bSSYStGAgLMQjA/IZIo5eELlnwc3vMZb7bwianKhdfNV/+ORG3UVe8cfMB
-        13mc6kuRo7noC774WSY5WXS4TSXZQVS3WMag1kS0P/z7BjG5RBepgjGY7rEiOqcP
-        9d7m2+0ZJi+BuRD27GtkWIyA9uVnvq1vZwAsN5PWvwV/RG1ynHRLTt8aKyJDde7m
-        aLh8h3c6eJSKchmZ5ojU4k1Ngi4AtXfK6zOp3c+nfrgZWpijgzqpoYdZig==
-Subject: Re: [PATCH v5 6/9] ALSA: virtio: PCM substream operators
-To:     Takashi Iwai <tiwai@suse.de>, "Michael S. Tsirkin" <mst@redhat.com>
-CC:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-References: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
- <20210222153444.348390-7-anton.yakovlev@opensynergy.com>
- <s5h35xkquvj.wl-tiwai@suse.de>
- <d9b6e8fa-7356-1cbf-029b-6f7c8bad4994@opensynergy.com>
- <s5hlfbcpayj.wl-tiwai@suse.de>
- <20210225135951-mutt-send-email-mst@kernel.org>
- <s5hblc7opok.wl-tiwai@suse.de>
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Message-ID: <0a9f6dea-ed75-16eb-9fc2-84148fa820be@opensynergy.com>
-Date:   Thu, 25 Feb 2021 23:19:31 +0100
+        Thu, 25 Feb 2021 17:22:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614291682;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ccfUoSqyqBopC60NplQ5jqhwhcyBVDA6jI4bJ7yvEPI=;
+        b=K1wn7uYhfeDVpj2H2EgxNS+gbYYHrHBzxy/rc9hUmpb2RtERlOjQ9n6E25UdgPZg88OEfy
+        L7RSKwK5bBgvy9rS3xQoDvNPsvi4sAse2UvQtQkf1FBdpOzSApL+evCeanZBBAi+IuOHlY
+        BabP6E6upi67kIH6ZAov582+bwmuExw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-54-IkYSw3fGPv2SryrOnyVQmQ-1; Thu, 25 Feb 2021 17:21:18 -0500
+X-MC-Unique: IkYSw3fGPv2SryrOnyVQmQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BAB8107ACE3;
+        Thu, 25 Feb 2021 22:21:17 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 414886090F;
+        Thu, 25 Feb 2021 22:21:14 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 15:21:13 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
+Subject: Re: [RFC PATCH 05/10] vfio: Create a vfio_device from vma lookup
+Message-ID: <20210225152113.3e083b4a@omen.home.shazbot.org>
+In-Reply-To: <20210225000610.GP4247@nvidia.com>
+References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
+        <161401268537.16443.2329805617992345365.stgit@gimli.home>
+        <20210222172913.GP4247@nvidia.com>
+        <20210224145506.48f6e0b4@omen.home.shazbot.org>
+        <20210225000610.GP4247@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <s5hblc7opok.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
- SR-MAIL-02.open-synergy.com (10.26.10.22)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.02.2021 21:30, Takashi Iwai wrote:> On Thu, 25 Feb 2021 20:02:50 
-+0100,
-> Michael S. Tsirkin wrote:
->>
->> On Thu, Feb 25, 2021 at 01:51:16PM +0100, Takashi Iwai wrote:
->>> On Thu, 25 Feb 2021 13:14:37 +0100,
->>> Anton Yakovlev wrote:
+On Wed, 24 Feb 2021 20:06:10 -0400
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-
-[snip]
-
-
->> Takashi given I was in my tree for a while and I planned to merge
->> it this merge window.
+> On Wed, Feb 24, 2021 at 02:55:06PM -0700, Alex Williamson wrote:
 > 
-> Hmm, that's too quick, I'm afraid.  I see still a few rough edges in
-> the code.  e.g. the reset work should be canceled at the driver
-> removal, but it's missing right now.  And that'll become tricky
-> because the reset work itself unbinds the device, hence it'll get
-> stuck if calling cancel_work_sync() at remove callback.
+> > > The only use of the special ops would be if there are multiple types
+> > > of mmap's going on, but for this narrow use case those would be safely
+> > > distinguished by the vm_pgoff instead  
+> > 
+> > We potentially do have device specific regions which can support mmap,
+> > for example the migration region.  We'll need to think about how we
+> > could even know if portions of those regions map to a device.  We could
+> > use the notifier to announce it and require the code supporting those
+> > device specific regions manage it.  
+> 
+> So, the above basically says any VFIO VMA is allowed for VFIO to map
+> to the IOMMU.
+> 
+> If there are places creating mmaps for VFIO that should not go to the
+> IOMMU then they need to return NULL from this function.
+> 
+> > I'm not really clear what you're getting at with vm_pgoff though, could
+> > you explain further?  
+> 
+> Ah, so I have to take a side discussion to explain what I ment.
+> 
+> The vm_pgoff is a bit confused because we change it here in vfio_pci:
+> 
+>     vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
+> 
+> But the address_space invalidation assumes it still has the region
+> based encoding:
+> 
+> +	vfio_device_unmap_mapping_range(vdev->device,
+> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX),
+> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_ROM_REGION_INDEX) -
+> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX));
+> 
+> Those three indexes are in the vm_pgoff numberspace and so vm_pgoff
+> must always be set to the same thing - either the
+> VFIO_PCI_INDEX_TO_OFFSET() coding or the physical pfn. 
 
-Yes, you made a good point here! In this case, we need some external
-mutex for synchronization. This is just a rough idea, but maybe
-something like this might work:
+Aha, I hadn't made that connection.
 
-struct reset_work {
-     struct mutex mutex;
-     struct work_struct work;
-     struct virtio_snd *snd;
-     bool resetting;
-};
+> Since you say we need a limited invalidation this looks like a bug to
+> me - and it must always be the VFIO_PCI_INDEX_TO_OFFSET coding.
 
-static struct reset_work reset_works[SNDRV_CARDS];
+Yes, this must have only worked in testing because I mmap'd BAR0 which
+is at index/offset zero, so the pfn range overlapped the user offset.
+I'm glad you caught that...
 
-init()
-     // init mutexes and workers
+> So, the PCI vma needs to get switched to use the
+> VFIO_PCI_INDEX_TO_OFFSET coding and then we can always extract the
+> region number from the vm_pgoff and thus access any additional data,
+> such as the base pfn or a flag saying this cannot be mapped to the
+> IOMMU. Do the reverse of VFIO_PCI_INDEX_TO_OFFSET and consult
+> information attached to that region ID.
+> 
+> All places creating vfio mmaps have to set the vm_pgoff to
+> VFIO_PCI_INDEX_TO_OFFSET().
 
+This is where it gets tricky.  The vm_pgoff we get from
+file_operations.mmap is already essentially describing an offset from
+the base of a specific resource.  We could convert that from an absolute
+offset to a pfn offset, but it's only the bus driver code (ex.
+vfio-pci) that knows how to get the base, assuming there is a single
+base per region (we can't assume enough bits per region to store
+absolute pfn).  Also note that you're suggesting that all vfio mmaps
+would need to standardize on the vfio-pci implementation of region
+layouts.  Not that most drivers haven't copied vfio-pci, but we've
+specifically avoided exposing it as a fixed uAPI such that we could have
+the flexibility for a bus driver to implement regions offsets however
+they need.
 
-virtsnd_probe()
-     snd_card_new(snd->card)
-     reset_works[snd->card->number].snd = snd;
+So I'm not really sure what this looks like.  Within vfio-pci we could
+keep the index bits in place to allow unmmap_mapping_range() to
+selectively zap matching vm_pgoffs but expanding that to a vfio
+standard such that the IOMMU backend can also extract a pfn looks very
+limiting, or ugly.  Thanks,
 
+Alex
 
-virtsnd_remove()
-     mutex_lock(reset_works[snd->card->number].mutex)
-     reset_works[snd->card->number].snd = NULL;
-     resetting = reset_works[snd->card->number].resetting;
-     mutex_unlock(reset_works[snd->card->number].mutex)
-
-     if (!resetting)
-         // cancel worker reset_works[snd->card->number].work
-     // remove device
-
-
-virtsnd_reset_fn(work)
-     mutex_lock(work->mutex)
-     if (!work->snd)
-         // do nothing and take an exit path
-     work->resetting = true;
-     mutex_unlock(work->mutex)
-
-     device_reprobe()
-
-     work->resetting = false;
-
-
-interrupt_handler()
-     schedule_work(reset_works[snd->card->number].work);
-
-
-What do you think?
-
-
--- 
-Anton Yakovlev
-Senior Software Engineer
-
-OpenSynergy GmbH
-Rotherstr. 20, 10245 Berlin
+> But we have these violations that need fixing:
+> 
+> drivers/vfio/fsl-mc/vfio_fsl_mc.c:      vma->vm_pgoff = (region.addr >> PAGE_SHIFT) + pgoff;
+> drivers/vfio/platform/vfio_platform_common.c:   vma->vm_pgoff = (region.addr >> PAGE_SHIFT) + pgoff;
+> 
+> Couldn't see any purpose to this code, cargo cult copy? Just delete
+> it.
+> 
+> drivers/vfio/pci/vfio_pci.c:    vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
+> 
+> Used to implement fault() but we could get the region number and
+> extract the pfn from the vfio_pci_device's data easy enough.
+> 
+> I manually checked that other parts of VFIO not under drivers/vfio are
+> doing it OK, looks fine.
+> 
+> Jason
+> 
 
