@@ -2,67 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182CB324965
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CCE324977
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236875AbhBYDYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 22:24:16 -0500
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:56723
-        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S232723AbhBYDYK (ORCPT
+        id S234718AbhBYD0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 22:26:33 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:33636 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234029AbhBYD0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 22:24:10 -0500
-Received: from centos7u5.localdomain (unknown [202.43.158.76])
-        by c1app2 (Coremail) with SMTP id AgINCgD3_sIVGDdgB88fAw--.56445S3;
-        Thu, 25 Feb 2021 11:23:01 +0800 (CST)
-From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Subject: [PATCH] mm/memremap: Fixes improper SPDX comment style
-Date:   Thu, 25 Feb 2021 11:22:28 +0800
-Message-Id: <1614223348-15516-1-git-send-email-daizhiyuan@phytium.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AgINCgD3_sIVGDdgB88fAw--.56445S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYr7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87
-        Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-        4I1lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
-        IFyTuYvjfUboGQDUUUU
-X-Originating-IP: [202.43.158.76]
-X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
+        Wed, 24 Feb 2021 22:26:21 -0500
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210225032537epoutp010be4b33549d4c38f3de650112cb666b5~m38Ew4-nG0068200682epoutp01S
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 03:25:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210225032537epoutp010be4b33549d4c38f3de650112cb666b5~m38Ew4-nG0068200682epoutp01S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614223537;
+        bh=vdHMQ9cj5fSLY+qawb39ZN8USKDpHdE2wqUvWNmLv2c=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=DH0gMXidt+oO794iVHGDXA5XzzutrDuhBrHEA40jqlDFFdKWtcqGitGVElaCyttV/
+         QaZ1ENsjOIVFJYN/F5HZGsjH/m98ux60qm4CQoRIOT7YMM8yPTCv5b9nabyefHVa7K
+         LRMBCHoKgrlrgx1no9N0fpFuupO2ys5aMYrrN1bo=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210225032536epcas2p40bab6d28a9c2026a68e68c9a6cd7d3b4~m38D8LEoh0953709537epcas2p4E;
+        Thu, 25 Feb 2021 03:25:36 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.181]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4DmJ8H2Hzbz4x9QK; Thu, 25 Feb
+        2021 03:25:35 +0000 (GMT)
+X-AuditID: b6c32a45-34dff7000001297d-5b-603718af009e
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F7.D3.10621.FA817306; Thu, 25 Feb 2021 12:25:35 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: RE: [PATCH v24 4/4] scsi: ufs: Add HPB 2.0 support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <DM6PR04MB6575ECC05596740425EC948EFC9F9@DM6PR04MB6575.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210225032534epcms2p5cf03d488df6c16923eb1ddfaa50c1266@epcms2p5>
+Date:   Thu, 25 Feb 2021 12:25:34 +0900
+X-CMS-MailID: 20210225032534epcms2p5cf03d488df6c16923eb1ddfaa50c1266
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA12Te1BUVRzH5+y97F222bzy0MOSSpcgYNoXuXBgIJsR4xbRUM7kjE6zrHDd
+        JffF3qWUalqFQnkJoyO4wUawwIjoisCyQCRCGRKWSokCJiRMs9OsUTjlSjCxLKTTf9/zOd/z
+        e51zeFjANFfIy9GZGKNOqaG4fNwxGB0nssP4TOlQjwBNWR1c1PfpEIFcnp+4aHDiPoFOznkw
+        9Ke9yQ+5BqJRy9QuVNBg56Kaq2YOKjvWyUX3JucJVH/LwUHHlopwNNpTw0UlY04uav52iYMm
+        OviosfM2QEerWnFU/0Uv/nIwPfpjGj1aXsahuy13CLqivh/QF2tbCbrwykWc/mN2HKfLO1oA
+        PX9hM13UX8LJ4O/WJKkZZTZjDGN0WfrsHJ0qmUrbqdiukMdJZSJZAoqnwnRKLZNMpbyeIXol
+        R7PcIRX2nlKTt4wylCxLSV5KMurzTEyYWs+akinGkK0xyGQGMavUsnk6lThLr02USaWx8mVn
+        pkZ945KVMNznHShsrMXN4HtuMeDxILkVVrk3FgM+L4B0AnjjyxHcywXkerjoDCwG/rxAchus
+        /3sY9+oAkoL26xbCx8VwfLoVeDWXfAFWDd0lvHGCyAUMXnef9PMuMLIRg2dmzZjXBUkBrC6a
+        xX06FHY1dwJvMn/yHbg4ssWHo+DDprJVezC8fcZNrOnfL38OfDoIfvLz1VXPejjl6V3lIfBy
+        7xzHpz+GnZOPgLcGSJYCONg97ufbkMCbR9pWahCQ6fD8g/MrgXAyAt4rLMN9Q0mB/9hCvBgj
+        t8Audw3mxRgZDe09Ep8jHH49jq81ZW5bIP6vMfJpeGRw8T/utM6sVhYJz3nsnAoQbnk8aMsT
+        uSyPc9UBrAVsYAysVsWwsQbZk1d7Aay89ZgdTnDcPSceABweGACQh1FBgvYleWaAIFt5MJ8x
+        6hXGPA3DDgD5cpOVmDA4S7/8WXQmhUweGxcnTZAjeVwsojYKWOmUIoBUKU3MfoYxMMa1cxye
+        v9DM2f3cw4IFZ47RZrt2J7RS3tg+F12ZvznFLL674aDHVn1o0wnrb1rPXzNvrhv+aqwvsieh
+        VLhn5Nyz4RGmOkmmpjzl0SV1Wdq1U00FqZENQ/hh5+mzEdIsXft0ktXPLXIC/vvq+Fvf5Oe9
+        GuU4lSh6vv2j0X3iiX7Xd3sn6naGbrfxj77YIPnBsYdwuvcNllSoCp6ZIjBdc/a6A7mHs6KE
+        qYrP3vqFTsUSXfOyvl7LmOrB291nhenHt+W+W/pBYKfmKe1MmGQTdqI+5rRgJNdvqTby5hul
+        Wla5y9agnix9TX+oMmTrQp2jyxjsyshvY0VF+zv2ourCYdmvLaHpVz4ssLocFM6qlbIYzMgq
+        /wWHp5yjdAQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0
+References: <DM6PR04MB6575ECC05596740425EC948EFC9F9@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p6>
+        <20210224045532epcms2p2215025506b062e2fdbad73e51563dca6@epcms2p2>
+        <DM6PR04MB65759C2968CDEFF32A0A95FDFC9F9@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <CGME20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace /* */ comment with //, fix SPDX comment style.
+> > 
+> > > +static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
+> > Maybe ufshpb_issue_umap_all_req is just a wrapper for
+> > ufshpb_issue_umap_req?
+> > e.g it calls ufshpb_issue_umap_req(hpb, int read_buferr_id = 0x3) ?
+> > Then on host mode inactivation:
+> > static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb)
+> > {
+> >         return ufshpb_issue_umap_req(hpb, 0x1);
+> > }
+> Better yet, ufshpb_execute_umap_req can get *rgn as an extra argument.
+> ufshpb_issue_umap_all_req will call it with NULL, while
+> ufshpb_issue_umap_single_req will call it with the rgn to inactivate.
+> 
+> Then,  ufshpb_set_unmap_cmd takes the form:
+> static void ufshpb_set_unmap_cmd(unsigned char *cdb, struct ufshpb_region *rgn)
+> {
+>         cdb[0] = UFSHPB_WRITE_BUFFER;
+> 
+>         if (rgn) {
+>                 cdb[1] = UFSHPB_WRITE_BUFFER_INACT_SINGLE_ID;
+>                 put_unaligned_be16(rgn->rgn_idx, &cdb[2]);
+>         } else {
+>                 cdb[1] = UFSHPB_WRITE_BUFFER_INACT_ALL_ID;
+>         }
+> 
+>         cdb[9] = 0x00;
+> }
+> 
+> Does it make sense?
 
-see: Documentation/process/license-rules.rst
+I got it.
 
-Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
----
- mm/memremap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/memremap.c b/mm/memremap.c
-index 16b2fb4..ffafac0 100644
---- a/mm/memremap.c
-+++ b/mm/memremap.c
-@@ -1,4 +1,4 @@
--/* SPDX-License-Identifier: GPL-2.0 */
-+// SPDX-License-Identifier: GPL-2.0
- /* Copyright(c) 2015 Intel Corporation. All rights reserved. */
- #include <linux/device.h>
- #include <linux/io.h>
--- 
-1.8.3.1
-
+Thanks,
+Daejun
