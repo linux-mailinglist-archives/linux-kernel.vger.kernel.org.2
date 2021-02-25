@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C870F325851
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0F9325853
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbhBYVD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:03:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
+        id S235283AbhBYVDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:03:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234708AbhBYUwk (ORCPT
+        with ESMTP id S234780AbhBYUwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:52:40 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EA8C061A32
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:49:02 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id p136so7625229ybc.21
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:49:01 -0800 (PST)
+        Thu, 25 Feb 2021 15:52:54 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8536C0610CE
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:49:04 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id v184so5432765qkd.22
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:49:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=wygaDEDOrN320QX+DWUCOdywurQj1DTKqvUyYvvMFVc=;
-        b=XBC/vyeLmlxmeTcNjRlbqndRFXV+OZIx4QATdTRaHc1LavPxAbhNt3VVKMB9y3UVST
-         1tpr+Hi90L0/JFgKAzP4XqkVHr8L3PP8fjUn7CUwzfeiS7KYy+QonEMof+4S0Rc8xPj+
-         kP7bjvKDGpSZQXG/IUUY+IJzoqcvjUskD/Ye24nnzM9VHLhVVxQ91yd5E5AtcjTHzCdk
-         nKNL5qO+xSHMZyLjXkhhNmc8IlsQ3hFFBYBZIll65QqzbADKcYbHTRnw92DgrqQ88DB6
-         jO+kb/ADc4XSnonJlCOjR24kcqI/o9XmUcw0bp0z8ZHNHSjnb51y2qS17+zOkNn6RnCr
-         z38A==
+        bh=l9F4DorkP8gKSgQry0nnCoDwWHQFJ/Yd6axivFAM3KI=;
+        b=BXGXxUgQwzbVMrMVuXoL6Bp+6pkXFq5rQ7HKLURvABsuJOVvgcdCTRaHjGRq8tVrj7
+         GOr+wqSc/eYIT8EltXKfXDeQyc/uVLVlDH/H/BpvBT7eZgxUSiCI2ZQhgMg0sTltcJPs
+         7fwR8SgK8tUT9zG08ZUotGyxO6ac0acL8/4e77/odr2ucncR/3QwkGITyC1b4auIBz3n
+         OqBkeMO8c5JsIh/UJiMp7NQJq0hd8eIcvhNVEYR0IdUp4DC2riVaJ9S3IaS54dqOON8E
+         m2NT/ivmdMW1e5dLtYIN7xfhqpWkbGtlOy94Wy1F5eggDQxyKAfIvBCI9pjLZi8VWcWu
+         WTMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=wygaDEDOrN320QX+DWUCOdywurQj1DTKqvUyYvvMFVc=;
-        b=Wn8eMVG9RJHWbaegE3NLie4F1nZT+4QcVfwp6hHXXADkJl7eFqjeqzSDaltN+uW/2X
-         AeOksVN3w1n9/dm7+AC4DwmhHR883cqm/+8YwgSF8znfsWlnodgY/dljOQRnf68X8Qxz
-         OIEWUVR6d7xOF0Cmtqzcf0Kq4/JkIf/bs4/wScXlXbJsbCMP0ysmWLU/i6N+OrD2+mib
-         RuaJWcEu12d5jqi6Eu758cTHTLnMeOt56J4OtiEw6goqccnSFgw58Tz1K75Y1WLdsJ3L
-         1H9tBDhiLaD7oB070f/PukvR1qTD/C8A8WRNGOy7VttooCKIhfn8HekAYekMRruKJuJV
-         IH6g==
-X-Gm-Message-State: AOAM531FEK8jBWtcPT18kLcvK9DsX+ffxZaRoDKVC7/4OMu/AKBN8+K2
-        MerzDb54xWghyqeiKcPE1ZtYCodzi8Q=
-X-Google-Smtp-Source: ABdhPJzLHrCi7n/k+RGSDGErQ6Z/2NGtl3jE/sgHMSbkuQMSHmfEfyHVaWh3au5M/Qq0b4enfZio+I+VsQE=
+        bh=l9F4DorkP8gKSgQry0nnCoDwWHQFJ/Yd6axivFAM3KI=;
+        b=Wr+FdtkKAuY8TTilz3qzjCO/2/re7SJUnAs1PIYmqdSRX1M9JidKGplrKuaTi4Mkhf
+         1XwlFV0Uc9XNP7JqpwzQTMvssAkvBFcFFLiH5ZqwGPPIcF39mDVDyt78HzrtyyuwDejR
+         Ksia+cFs4MFewet8H1n/8/tjJaTQUxa2QMMI++mHu1CudGgDLj1d41+slPfxVjkg3/6+
+         olvAXYw4En3aKQ4/6DvKr2ZhApkmfwZLN18RA/wmV9H/DqCF7Kby5m6KT8MdNwidc7xz
+         X09FHoHgWebK6pP5gJuliVvfYwDzPxgV/g6ReFMnoFBqoUYXPfO916PzoCAYbTO7+tQw
+         UU2w==
+X-Gm-Message-State: AOAM533TU1vg9qp932tZURhawRK3SC2dYj3W3ArQHGX2WV+9NiRwWlUG
+        kieyRuC6rd1XXhrR/TEcVhlCLw7kJAA=
+X-Google-Smtp-Source: ABdhPJxZysNY09Fn0/MqcmMOKBvO+oahfT8mzibqA2JJ3M8rPKMWbd+I3ciJ3VpHGVUfIxoxY98OO/RZSQI=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:34c4:7c1d:f9ba:4576])
- (user=seanjc job=sendgmr) by 2002:a25:9108:: with SMTP id v8mr6916513ybl.321.1614286140867;
- Thu, 25 Feb 2021 12:49:00 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:ad4:59c7:: with SMTP id el7mr4534210qvb.16.1614286143847;
+ Thu, 25 Feb 2021 12:49:03 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Feb 2021 12:47:48 -0800
+Date:   Thu, 25 Feb 2021 12:47:49 -0800
 In-Reply-To: <20210225204749.1512652-1-seanjc@google.com>
-Message-Id: <20210225204749.1512652-24-seanjc@google.com>
+Message-Id: <20210225204749.1512652-25-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210225204749.1512652-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH 23/24] KVM: x86/mmu: Use low available bits for removed SPTEs
+Subject: [PATCH 24/24] KVM: x86/mmu: Dump reserved bits if they're detected on
+ non-MMIO SPTE
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,65 +68,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use low "available" bits to tag REMOVED SPTEs.  Using a high bit is
-moderately costly as it often causes the compiler to generate a 64-bit
-immediate.  More importantly, this makes it very clear REMOVED_SPTE is
-a value, not a flag.
+Debugging unexpected reserved bit page faults sucks.  Dump the reserved
+bits that (likely) caused the page fault to make debugging suck a little
+less.
 
-Cc: Ben Gardon <bgardon@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/spte.c | 11 ++++++++++-
- arch/x86/kvm/mmu/spte.h | 11 +++++++----
- 2 files changed, 17 insertions(+), 5 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index e07aabb23b8a..66d43cec0c31 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -277,7 +277,16 @@ void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask)
- 				  SHADOW_NONPRESENT_OR_RSVD_MASK_LEN)))
- 		mmio_value = 0;
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index e636fcd529d2..dab0e950a54e 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3555,11 +3555,12 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+ 			    __is_rsvd_bits_set(rsvd_check, sptes[level], level);
  
--	WARN_ON((mmio_value & mmio_mask) != mmio_value);
-+	/*
-+	 * The masked MMIO value must obviously match itself and a removed SPTE
-+	 * must not get a false positive.  Removed SPTEs and MMIO SPTEs should
-+	 * never collide as MMIO must set some RWX bits, and removed SPTEs must
-+	 * not set any RWX bits.
-+	 */
-+	if (WARN_ON((mmio_value & mmio_mask) != mmio_value) ||
-+	    WARN_ON(mmio_value && (REMOVED_SPTE & mmio_mask) == mmio_value))
-+		mmio_value = 0;
-+
- 	shadow_mmio_value = mmio_value;
- 	shadow_mmio_mask  = mmio_mask;
- 	shadow_mmio_access_mask = access_mask;
-diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-index 2fad4ccd3679..b53036d9ddf3 100644
---- a/arch/x86/kvm/mmu/spte.h
-+++ b/arch/x86/kvm/mmu/spte.h
-@@ -174,13 +174,16 @@ extern u64 __read_mostly shadow_nonpresent_or_rsvd_mask;
-  * non-present intermediate value. Other threads which encounter this value
-  * should not modify the SPTE.
-  *
-- * This constant works because it is considered non-present on both AMD and
-- * Intel CPUs and does not create a L1TF vulnerability because the pfn section
-- * is zeroed out.
-+ * Use a semi-arbitrary value that doesn't set RWX bits, i.e. is not-present on
-+ * bot AMD and Intel CPUs, and doesn't set PFN bits, i.e. doesn't create a L1TF
-+ * vulnerability.  Use only low bits to avoid 64-bit immediates.
-  *
-  * Only used by the TDP MMU.
-  */
--#define REMOVED_SPTE (1ull << 59)
-+#define REMOVED_SPTE	0x5a0ULL
-+
-+/* Removed SPTEs must not be misconstrued as shadow present PTEs. */
-+static_assert(!(REMOVED_SPTE & SPTE_MMU_PRESENT_MASK));
+ 	if (reserved) {
+-		pr_err("%s: detect reserved bits on spte, addr 0x%llx, dump hierarchy:\n",
++		pr_err("%s: reserved bits set on MMU-present spte, addr 0x%llx, hierarchy:\n",
+ 		       __func__, addr);
+ 		for (level = root; level >= leaf; level--)
+-			pr_err("------ spte 0x%llx level %d.\n",
+-			       sptes[level], level);
++			pr_err("------ spte = 0x%llx level = %d, rsvd bits = 0x%llx",
++			       sptes[level], level,
++			       rsvd_check->rsvd_bits_mask[(sptes[level] >> 7) & 1][level-1]);
+ 	}
  
- static inline bool is_removed_spte(u64 spte)
- {
+ 	return reserved;
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
