@@ -2,201 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1158324C99
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9B1324C9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236334AbhBYJOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:14:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236084AbhBYJL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:11:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A109464EC3;
-        Thu, 25 Feb 2021 09:11:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614244278;
-        bh=X5KBf9U/WobuVOv+5t26GFL+AWng3GR196FyiFebKpc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ion9QI3SaDmFVBubZgTlqOG+wr2ovnWaWNJkKlQitEA5BT7PEfA3dPT01D+jngZwe
-         O3AXmfTFyrAc4jOEIuQjbtEqi1V48deQK7Yk0k+Rs5LgbvHxwlrS0uEOpHVqGtFOIv
-         sNY6vbHfA+JhzBx8eFmRVJyhcasdGCPKdGzHtp4FxQ+Jsz4Kaje0KqCvbBImAxJvLg
-         WsuMXrumUYowYcr3hdSLSa9cF+Rf8RYdN4fzN3ZIEpOPBean1cuWrK9afS5oXv23na
-         tH5US1o7oHxKpiOk4PuWaQAL5pPAmqY1s6F1BbrqTC47T1DtiNVv1fnQzWUYdAi4+f
-         quYxNiHakwGEw==
-Date:   Thu, 25 Feb 2021 18:11:14 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: Why do kprobes and uprobes singlestep?
-Message-Id: <20210225181114.e8e92e2fc2a204219b1bd28d@kernel.org>
-In-Reply-To: <CALCETrVUBd5CuAh5TRTFqbCE2mYCiBvqrPouTicC0pyO7A6GWw@mail.gmail.com>
-References: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
-        <20210224101756.bbdf95b9b6dfc982bff21324@kernel.org>
-        <CALCETrWoKh0aemrvTGZ13bUzN27s3WGW3CyvTptvayWLQEk91Q@mail.gmail.com>
-        <20210225112245.607c70ec13cf8d279390e89e@kernel.org>
-        <CALCETrVUBd5CuAh5TRTFqbCE2mYCiBvqrPouTicC0pyO7A6GWw@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S236153AbhBYJP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:15:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236161AbhBYJML (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:12:11 -0500
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8224C06178C
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 01:11:30 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:bd01:18f7:df2b:b765])
+        by andre.telenet-ops.be with bizsmtp
+        id ZMBS2400Z3wXKmD01MBTUz; Thu, 25 Feb 2021 10:11:27 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lFCgA-001asd-Hp; Thu, 25 Feb 2021 10:11:26 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lFCgA-002sUX-0P; Thu, 25 Feb 2021 10:11:26 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] docs: driver-model: Remove obsolete device class documentation
+Date:   Thu, 25 Feb 2021 10:11:24 +0100
+Message-Id: <20210225091124.686078-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Feb 2021 22:03:12 -0800
-Andy Lutomirski <luto@kernel.org> wrote:
+None of this is valid since v2.5.69.
 
-> On Wed, Feb 24, 2021 at 6:22 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Wed, 24 Feb 2021 11:45:10 -0800
-> > Andy Lutomirski <luto@kernel.org> wrote:
-> >
-> > > On Tue, Feb 23, 2021 at 5:18 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > >
-> > > > On Tue, 23 Feb 2021 15:24:19 -0800
-> > > > Andy Lutomirski <luto@kernel.org> wrote:
-> > > >
-> > > > > A while back, I let myself be convinced that kprobes genuinely need to
-> > > > > single-step the kernel on occasion, and I decided that this sucked but
-> > > > > I could live with it.  it would, however, be Really Really Nice (tm)
-> > > > > if we could have a rule that anyone running x86 Linux who single-steps
-> > > > > the kernel (e.g. kgdb and nothing else) gets to keep all the pieces
-> > > > > when the system falls apart around them.  Specifically, if we don't
-> > > > > allow kernel single-stepping and if we suitably limit kernel
-> > > > > instruction breakpoints (the latter isn't actually a major problem),
-> > > > > then we don't really really need to use IRET to return to the kernel,
-> > > > > and that means we can avoid some massive NMI nastiness.
-> > > >
-> > > > Would you mean using "pop regs + popf + ret" instead of IRET after
-> > > > int3 handled for avoiding IRET releasing the NMI mask? Yeah, it is
-> > > > possible. I don't complain about that.
-> > >
-> > > Yes, more or less.
-> > >
-> > > >
-> > > > However, what is the relationship between the IRET and single-stepping?
-> > > > I think we can do same thing in do_debug...
-> > >
-> > > Because there is no way to single-step without using IRET.  POPF; RET
-> > > will trap after RET and you won't make forward progress.
-> >
-> > Ah, indeed. "POPF; RET" is not atomically exceute.
-> >
-> > > > > But I was contemplating the code, and I'm no longer convinced.
-> > > > > Uprobes seem to single-step user code for no discernable reason.
-> > > > > (They want to trap after executing an out of line instruction, AFAICT.
-> > > > > Surely INT3 or even CALL after the out-of-line insn would work as well
-> > > > > or better.)  Why does kprobe single-step?  I spend a while staring at
-> > > > > the code, and it was entirely unclear to me what the purpose of the
-> > > > > single-step is.
-> > > >
-> > > > For kprobes, there are 2 major reasons for (still relaying on) single stepping.
-> > > > One is to provide post_handler, another is executing the original code,
-> > > > which is replaced by int3, without modifying code nor emulation.
-> > >
-> > > I don't follow.  Suppose we execute out of line.  If we originally have:
-> > >
-> > > INSN
-> > >
-> > > we replace it with:
-> > >
-> > > INT3
-> > >
-> > > and we have, out of line:
-> > >
-> > > INSN [but with displacement modified if it's RIP-relative]
-> > >
-> > > right now, we single-step the out of line copy.  But couldn't we instead do:
-> > >
-> > > INSN [but with displacement modified if it's RIP-relative]
-> > > INT3
-> >
-> > If the INSN is "jmp +127", it will skip the INT3. So those instructions
-> > must be identified and emulated. We did it already in the arm64 (see commit
-> > 7ee31a3aa8f4 ("arm64: kprobes: Use BRK instead of single-step when executing
-> >  instructions out-of-line")), because arm64 already emulated the branch
-> > instructions. I have to check x86 insns can be emulated without side-effects.
-> 
-> Off the top of my head:
-> 
-> JMP changes RIP but has no other side effects.  Jcc is the same except
-> that the condition needs checking, which would be a bit tedious.
-> 
-> CALL changes RIP and does a push but has no other side effects.  We
-> have special infrastructure to emulate CALL from int3 context:
-> int3_emulate_call().
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+I started updating the document, until I realized that all of the
+typedefs, structures, functions, defines, and sysfs layout have been
+renamed, changed, or removed.  So I think it's better (for an expert in
+the field) to start from scratch.
+---
+ .../driver-api/driver-model/class.rst         | 149 ------------------
+ .../driver-api/driver-model/index.rst         |   1 -
+ 2 files changed, 150 deletions(-)
+ delete mode 100644 Documentation/driver-api/driver-model/class.rst
 
-Yeah, I remember that a gap was introduced for int3_emulate_call().
-These helps me to implement emulation.
-
-> 
-> RET pops and changes RIP.  No other side effects.
-> 
-> RET imm is rare.  I don't think it occurs in the kernel at all.
-> 
-> LRET is rare.  I don't think kprobe needs to support it.
-> 
-> JMP FAR and CALL FAR are rare.  I see no reason to support them.
-
-I see those are rare, but supporting those is not hard.
-
-> 
-> IRET is rare, and trying to kprobe it seems likely to cause a
-> disaster, although it's within the realm of possibility that the IRET
-> in sync_core() could work.
-
-Agreed. Iret should not be probed.
-
-
-> > > or even
-> > >
-> > > INSN [but with displacement modified if it's RIP-relative]
-> > > JMP kprobe_post_handler
-> >
-> > This needs a sequence of push-regs etc. ;)
-> >
-> > >
-> > > and avoid single-stepping?
-> > >
-> > > I guess I see the point for CALL, JMP and RET, but it seems like we
-> > > could emulate those cases instead fairly easily.
-> >
-> > OK, let's try to do it. I think it should be possible because even in the
-> > current code, resume fixup code (adjust IP register) works only for a few
-> > groups of instructions.
-> 
-> I suspect that emulating them would give a nice performance boost,
-> too.  Single-stepping is very slow on x86.
-
-Yeah, that's same on arm64. Jean reported eliminating single-step
-gained the performance.
-
-> 
-> I should let you know, though, that I might have found a sneaky
-> alternative solution to handling NMIs, so this is a bit lower priority
-> from my perspective than I thought it was.  I'm not quite 100%
-> convinced my idea works, but I'll play with it.
-
-Does that involve kprobes? Anyway, I'll try to remove single-step by
-emulation and int3.
-
-Thank you,
-
-
-> 
-> --Andy
-> 
-> >
-> > Thank you,
-> >
-> > --
-> > Masami Hiramatsu <mhiramat@kernel.org>
-
-
+diff --git a/Documentation/driver-api/driver-model/class.rst b/Documentation/driver-api/driver-model/class.rst
+deleted file mode 100644
+index fff55b80e86a54a4..0000000000000000
+--- a/Documentation/driver-api/driver-model/class.rst
++++ /dev/null
+@@ -1,149 +0,0 @@
+-==============
+-Device Classes
+-==============
+-
+-Introduction
+-~~~~~~~~~~~~
+-A device class describes a type of device, like an audio or network
+-device. The following device classes have been identified:
+-
+-<Insert List of Device Classes Here>
+-
+-
+-Each device class defines a set of semantics and a programming interface
+-that devices of that class adhere to. Device drivers are the
+-implementation of that programming interface for a particular device on
+-a particular bus.
+-
+-Device classes are agnostic with respect to what bus a device resides
+-on.
+-
+-
+-Programming Interface
+-~~~~~~~~~~~~~~~~~~~~~
+-The device class structure looks like::
+-
+-
+-  typedef int (*devclass_add)(struct device *);
+-  typedef void (*devclass_remove)(struct device *);
+-
+-See the kerneldoc for the struct class.
+-
+-A typical device class definition would look like::
+-
+-  struct device_class input_devclass = {
+-        .name		= "input",
+-        .add_device	= input_add_device,
+-	.remove_device	= input_remove_device,
+-  };
+-
+-Each device class structure should be exported in a header file so it
+-can be used by drivers, extensions and interfaces.
+-
+-Device classes are registered and unregistered with the core using::
+-
+-  int devclass_register(struct device_class * cls);
+-  void devclass_unregister(struct device_class * cls);
+-
+-
+-Devices
+-~~~~~~~
+-As devices are bound to drivers, they are added to the device class
+-that the driver belongs to. Before the driver model core, this would
+-typically happen during the driver's probe() callback, once the device
+-has been initialized. It now happens after the probe() callback
+-finishes from the core.
+-
+-The device is enumerated in the class. Each time a device is added to
+-the class, the class's devnum field is incremented and assigned to the
+-device. The field is never decremented, so if the device is removed
+-from the class and re-added, it will receive a different enumerated
+-value.
+-
+-The class is allowed to create a class-specific structure for the
+-device and store it in the device's class_data pointer.
+-
+-There is no list of devices in the device class. Each driver has a
+-list of devices that it supports. The device class has a list of
+-drivers of that particular class. To access all of the devices in the
+-class, iterate over the device lists of each driver in the class.
+-
+-
+-Device Drivers
+-~~~~~~~~~~~~~~
+-Device drivers are added to device classes when they are registered
+-with the core. A driver specifies the class it belongs to by setting
+-the struct device_driver::devclass field.
+-
+-
+-sysfs directory structure
+-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-There is a top-level sysfs directory named 'class'.
+-
+-Each class gets a directory in the class directory, along with two
+-default subdirectories::
+-
+-        class/
+-        `-- input
+-            |-- devices
+-            `-- drivers
+-
+-
+-Drivers registered with the class get a symlink in the drivers/ directory
+-that points to the driver's directory (under its bus directory)::
+-
+-   class/
+-   `-- input
+-       |-- devices
+-       `-- drivers
+-           `-- usb:usb_mouse -> ../../../bus/drivers/usb_mouse/
+-
+-
+-Each device gets a symlink in the devices/ directory that points to the
+-device's directory in the physical hierarchy::
+-
+-   class/
+-   `-- input
+-       |-- devices
+-       |   `-- 1 -> ../../../root/pci0/00:1f.0/usb_bus/00:1f.2-1:0/
+-       `-- drivers
+-
+-
+-Exporting Attributes
+-~~~~~~~~~~~~~~~~~~~~
+-
+-::
+-
+-  struct devclass_attribute {
+-        struct attribute        attr;
+-        ssize_t (*show)(struct device_class *, char * buf, size_t count, loff_t off);
+-        ssize_t (*store)(struct device_class *, const char * buf, size_t count, loff_t off);
+-  };
+-
+-Class drivers can export attributes using the DEVCLASS_ATTR macro that works
+-similarly to the DEVICE_ATTR macro for devices. For example, a definition
+-like this::
+-
+-  static DEVCLASS_ATTR(debug,0644,show_debug,store_debug);
+-
+-is equivalent to declaring::
+-
+-  static devclass_attribute devclass_attr_debug;
+-
+-The bus driver can add and remove the attribute from the class's
+-sysfs directory using::
+-
+-  int devclass_create_file(struct device_class *, struct devclass_attribute *);
+-  void devclass_remove_file(struct device_class *, struct devclass_attribute *);
+-
+-In the example above, the file will be named 'debug' in placed in the
+-class's directory in sysfs.
+-
+-
+-Interfaces
+-~~~~~~~~~~
+-There may exist multiple mechanisms for accessing the same device of a
+-particular class type. Device interfaces describe these mechanisms.
+-
+-When a device is added to a device class, the core attempts to add it
+-to every interface that is registered with the device class.
+diff --git a/Documentation/driver-api/driver-model/index.rst b/Documentation/driver-api/driver-model/index.rst
+index 755016422269fb6e..4831bdd92e5cd42a 100644
+--- a/Documentation/driver-api/driver-model/index.rst
++++ b/Documentation/driver-api/driver-model/index.rst
+@@ -7,7 +7,6 @@ Driver Model
+ 
+    binding
+    bus
+-   class
+    design-patterns
+    device
+    devres
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.25.1
+
