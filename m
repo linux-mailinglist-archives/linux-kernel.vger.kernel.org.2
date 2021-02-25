@@ -2,91 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DB33258B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5FE3258BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbhBYVfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:35:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbhBYVfT (ORCPT
+        id S232403AbhBYVg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:36:26 -0500
+Received: from relay04.th.seeweb.it ([5.144.164.165]:59403 "EHLO
+        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231160AbhBYVgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:35:19 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E580C06174A;
-        Thu, 25 Feb 2021 13:34:38 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DmmJp73GKz9s1l;
-        Fri, 26 Feb 2021 08:34:34 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614288875;
-        bh=bYzddqNNDqTWFGwnYvyyMr3F6WxG2IVuzQfE0YRr03w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kz7G1oyVHFF3WxqkGCynw7zYUxvP4ygfe7ULheUW7o5KmS8MiOAASB6asjk79Kjog
-         sZdhtn/4v7JSTeZD1d0fkiWzXkLt1g4Xj+OLE/123Guz9A+AVuPd8UvslGwszmc0Uq
-         TT6X4JgaXFyq8yhcozKXZMFdpFe3+KGOKhR6MyxJJRKCNnDDHca59Oi1TfvI6YWoBP
-         cg3LXOo8goZUkCTUnJ7/rcsArkBLZIo5By7ivAUlp2a9EU3pETKmscD+DW9Vlo7dpx
-         RNWgJl8aNg1o18ZnxaMwLpSIECQX7gwEWCEg6tPNEHMBapgvjTlqy6pRt5BSm9mDXH
-         c5S97OjGQ7/iw==
-Date:   Fri, 26 Feb 2021 08:34:33 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Andrew Donnellan <ajd@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the jc_docs tree
-Message-ID: <20210226083433.1419e9c9@canb.auug.org.au>
+        Thu, 25 Feb 2021 16:36:16 -0500
+Received: from localhost.localdomain (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 624012019E;
+        Thu, 25 Feb 2021 22:35:18 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] qcom: spmi-regulator: Add support for ULT LV_P50 and ULT P300
+Date:   Thu, 25 Feb 2021 22:35:13 +0100
+Message-Id: <20210225213514.117031-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vMjOURVoPVQx/M_sLwpcgrz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vMjOURVoPVQx/M_sLwpcgrz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 
-Hi all,
+The ULT LV_P50 shares the same configuration as the other ULT LV_Pxxx
+and the ULT P300 shares the same as the other ULT Pxxx.
 
-In commit
+These two regulator types are found on PM8950 and its variants.
 
-  36eaf08fc283 ("docs: powerpc: Fix tables in syscall64-abi.rst")
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ drivers/regulator/qcom_spmi-regulator.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Fixes tag
+diff --git a/drivers/regulator/qcom_spmi-regulator.c b/drivers/regulator/qcom_spmi-regulator.c
+index e62e1d72d943..00e1d8e9637e 100644
+--- a/drivers/regulator/qcom_spmi-regulator.c
++++ b/drivers/regulator/qcom_spmi-regulator.c
+@@ -1522,10 +1522,12 @@ static const struct spmi_regulator_mapping supported_regulators[] = {
+ 	SPMI_VREG(ULT_LDO, N600_ST, 0, INF, ULT_LDO, ult_ldo, ult_nldo, 10000),
+ 	SPMI_VREG(ULT_LDO, N900_ST, 0, INF, ULT_LDO, ult_ldo, ult_nldo, 10000),
+ 	SPMI_VREG(ULT_LDO, N1200_ST, 0, INF, ULT_LDO, ult_ldo, ult_nldo, 10000),
++	SPMI_VREG(ULT_LDO, LV_P50,   0, INF, ULT_LDO, ult_ldo, ult_pldo, 10000),
+ 	SPMI_VREG(ULT_LDO, LV_P150,  0, INF, ULT_LDO, ult_ldo, ult_pldo, 10000),
+ 	SPMI_VREG(ULT_LDO, LV_P300,  0, INF, ULT_LDO, ult_ldo, ult_pldo, 10000),
+ 	SPMI_VREG(ULT_LDO, LV_P450,  0, INF, ULT_LDO, ult_ldo, ult_pldo, 10000),
+ 	SPMI_VREG(ULT_LDO, P600,     0, INF, ULT_LDO, ult_ldo, ult_pldo, 10000),
++	SPMI_VREG(ULT_LDO, P300,     0, INF, ULT_LDO, ult_ldo, ult_pldo, 10000),
+ 	SPMI_VREG(ULT_LDO, P150,     0, INF, ULT_LDO, ult_ldo, ult_pldo, 10000),
+ 	SPMI_VREG(ULT_LDO, P50,     0, INF, ULT_LDO, ult_ldo, ult_pldo, 5000),
+ };
+-- 
+2.30.1
 
-  Fixes: 209b44c804c ("docs: powerpc: syscall64-abi.rst: fix a malformed ta=
-ble")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-I don't think this is worth rebasing for, but in the future it can be
-fixed by setting core.abbrev to 12 (or more) or (for git v2.11 or later)
-just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/vMjOURVoPVQx/M_sLwpcgrz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA4F+kACgkQAVBC80lX
-0GwKWAf+LFBk/Lmj7tF+b4JQzlDFXWRGa1s3qToyGT5fynznvrsqqzBEd/cGDu2N
-xCViSdkOZLwHEL0Nnagm7X6Gpe+5Fr9A15KVX5syNC3qM3xZtHxI9wwe9ixPx3nw
-RfihlA/MwUaT1XMJBN5aIfYHP01sHTm5Mlul9BNol99Im3Wv6TwQHqOjFUJiN3cf
-5SqtIQY3UdA1SIwEzSQAeycsuopkj3rLZwTnPNw2imKNAqTzkcYLl4e15XinqjYu
-1uLoG6OI2nwjIwfq6eVxJaclvRn6YbcjHK6z7upKg5q9K7R21HfB4BJg8G7j5AVc
-MK3/jgf/5KP+IdU6WzsglHmM8HRewA==
-=wuFJ
------END PGP SIGNATURE-----
-
---Sig_/vMjOURVoPVQx/M_sLwpcgrz--
