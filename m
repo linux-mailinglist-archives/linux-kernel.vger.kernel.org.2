@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8313252F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BB03252F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhBYQC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 11:02:58 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:24573 "EHLO m42-2.mailgun.net"
+        id S233251AbhBYQCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 11:02:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229886AbhBYQCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:02:43 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614268942; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=x99euNNRJLLgAM+BgTQQDetLzkrbH3jmkzxNTvi0kBk=; b=mmtJwWeXtJ3Sbe96eXk5BavEQOMNnYBFFXdOu0XO+Qp8E72gwmC4LQBkE/DDexDuDxqEn4eH
- HHyaTZgZzF+V/bxgiEH8NMJhh7fEZX8pXmjK6JsBRI7LkbL32/vxrqDDB+aZ+oEPyQ+AgzIJ
- qC4UX2aLiLAhQFaHtDv8lTRlzu4=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6037c9abba1dc157804c2b20 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Feb 2021 16:00:43
- GMT
-Sender: mojha=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8DB7AC43463; Thu, 25 Feb 2021 16:00:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from mojha-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mojha)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1DCC2C433C6;
-        Thu, 25 Feb 2021 16:00:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1DCC2C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mojha@codeaurora.org
-From:   Mukesh Ojha <mojha@codeaurora.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     keescook@chromium.org, anton@enomsg.org, ccross@android.com,
-        tony.luck@intel.com, Huang Yiwei <hyiwei@codeaurora.org>,
-        Mukesh Ojha <mojha@codeaurora.org>
-Subject: [RESEND PATCH v2 2/2] pstore: Add buffer start check during init
-Date:   Thu, 25 Feb 2021 21:30:17 +0530
-Message-Id: <1614268817-7596-2-git-send-email-mojha@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614268817-7596-1-git-send-email-mojha@codeaurora.org>
-References: <1614268817-7596-1-git-send-email-mojha@codeaurora.org>
+        id S229548AbhBYQCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 11:02:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E5D964EDB;
+        Thu, 25 Feb 2021 16:01:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614268882;
+        bh=nyR5e5Sw00AV8E+QvgPhcwRlboPNI2VFPrdUASzSmnc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j1QM7b31tj393PX+O5gCyJlNEYUHRI1Ykhhb8q2HNwX/cZjai6sf2DqRaXIQKf/Tu
+         4MBH7KrC5XDOrF5Xp8KZrcFw3nIquE4Te8hpS9R3fQmaZrzEID29IC0yRCi/dQ36/X
+         MhOgnudGLTMk2PGqQug2VOrymjUcEIBEPwFVvKPFNrnoY4/Z9ljR05YWe7mjZPAmjw
+         c4oup5HE5gHZtcxWRgpLr0AVWH1Jm0/TqwILYOcCkBXV5VjwN5WyJIIb2ay0gbRnr7
+         0Cl6+TAJ9CJWpscANbXy2GQKIElWtYTI30ACEq+vBqk+n6wyhxvKbWVzceh130bu1i
+         Su/uLFQQ621CQ==
+Date:   Thu, 25 Feb 2021 16:01:17 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Li Huafei <lihuafei1@huawei.com>, gregory.herrero@oracle.com,
+        catalin.marinas@arm.com, christophe.leroy@csgroup.eu,
+        linux-kernel@vger.kernel.org, zhangjinhao2@huawei.com,
+        yangjihong1@huawei.com, xukuohai@huawei.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] recordmcount: Fix the wrong use of w* in
+ arm64_is_fake_mcount()
+Message-ID: <20210225160116.GA13604@willie-the-truck>
+References: <20210225140747.10818-1-lihuafei1@huawei.com>
+ <20210225094426.7729b9cc@gandalf.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225094426.7729b9cc@gandalf.local.home>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Yiwei <hyiwei@codeaurora.org>
+On Thu, Feb 25, 2021 at 09:44:26AM -0500, Steven Rostedt wrote:
+> This requires an acked-by from one of the ARM64 maintainers.
+> 
+> -- Steve
+> 
+> 
+> On Thu, 25 Feb 2021 22:07:47 +0800
+> Li Huafei <lihuafei1@huawei.com> wrote:
+> 
+> > When cross-compiling the kernel, the endian of the target machine and
+> > the local machine may not match, at this time the recordmcount tool
+> > needs byte reversal when processing elf's variables to get the correct
+> > value. w* callback function is used to solve this problem, w is used for
+> > 4-byte variable processing, while w8 is used for 8-byte.
+> > 
+> > arm64_is_fake_mcount() is used to filter '_mcount' relocations that are
+> > not used by ftrace. In arm64_is_fake_mcount(), rp->info is 8 bytes in
+> > size, but w is used. This causes arm64_is_fake_mcount() to get the wrong
+> > type of relocation when we cross-compile the arm64_be kernel image on an
+> > x86_le machine, and all valid '_mcount' is filtered out. The
+> > recordmcount tool does not collect any mcount function call locations.
+> > At kernel startup, the following ftrace log is seen:
+> > 
+> > 	ftrace: No functions to be traced?
+> > 
+> > and thus ftrace cannot be used.
+> > 
+> > Using w8 to get the value of rp->r_info will fix the problem.
+> > 
+> > Fixes: ea0eada45632 ("recordmcount: only record relocation of type
+> > R_AARCH64_CALL26 on arm64")
+> > Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+> > ---
+> >  scripts/recordmcount.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
+> > index b9c2ee7ab43f..cce12e1971d8 100644
+> > --- a/scripts/recordmcount.c
+> > +++ b/scripts/recordmcount.c
+> > @@ -438,7 +438,7 @@ static int arm_is_fake_mcount(Elf32_Rel const *rp)
+> >  
+> >  static int arm64_is_fake_mcount(Elf64_Rel const *rp)
+> >  {
+> > -	return ELF64_R_TYPE(w(rp->r_info)) != R_AARCH64_CALL26;
+> > +	return ELF64_R_TYPE(w8(rp->r_info)) != R_AARCH64_CALL26;
 
-In a scenario of panic, when we use DRAM to store log instead
-of persistant storage and during warm reset when we copy these
-data outside of ram. Missing check on prz->start(write position)
-can cause crash because it can be any value and can point outside
-the mapped region. So add the start check to avoid.
+Acked-by: Will Deacon <will@kernel.org>
 
-Signed-off-by: Huang Yiwei <hyiwei@codeaurora.org>
-Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
----
-change in v2:
- - this is on top of first patchset.
+But you know you could avoid these sorts of problems by moving to little
+endian along with everybody else? ;)
 
- fs/pstore/ram_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/pstore/ram_core.c b/fs/pstore/ram_core.c
-index 0da012f..a15748a 100644
---- a/fs/pstore/ram_core.c
-+++ b/fs/pstore/ram_core.c
-@@ -514,7 +514,7 @@ static int persistent_ram_post_init(struct persistent_ram_zone *prz, u32 sig,
- 	sig ^= PERSISTENT_RAM_SIG;
- 
- 	if (prz->buffer->sig == sig) {
--		if (buffer_size(prz) == 0) {
-+		if (buffer_size(prz) == 0 && buffer_start(prz) == 0) {
- 			pr_debug("found existing empty buffer\n");
- 			return 0;
- 		}
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
-
+Will
