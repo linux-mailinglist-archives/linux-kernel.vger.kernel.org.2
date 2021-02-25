@@ -2,212 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1133255D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 297A13255CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhBYSu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:50:28 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:43910 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhBYSuI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 13:50:08 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11PIYpkY049716;
-        Thu, 25 Feb 2021 18:48:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=Vxes36Qnz2vXs1LoOGy/DV1sZnh6f5CbUfeod5l9hPE=;
- b=B9AzW/NDFHjJZQKEK3zq/tLmmq5fE/ZEV7H5Z0h2woww4I2E5TtyIrMNh05Mxba2LIlG
- dmgB5LyZps+w0HXl2liYM27BpjWh2FnpaG7ukWD+KMpZLxZVTR7v/w2mNWeuo+o6UibH
- NqGpNoyOxpGhmt1qdhyxVb8mr4/WY4Kz1UzjQyLRfU0YgEQrYUIB6RvWjNoYp8re6CxR
- ccGMn9ExwU3QerfFAksNbsiXUrRbbzEjcmzl4TfCbw2yD+Pv4pZHnukNPQSTGui08zvE
- Mo3T0t8XZe0S6Id3rtEUAOo7s6bBjJz5ZatWvVUgPXPUhR7p3hssuiEdlPwJ//UaA7K1 6A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 36vr629vk9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 18:48:10 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11PIagQA074230;
-        Thu, 25 Feb 2021 18:48:10 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by aserp3020.oracle.com with ESMTP id 36ucb2dny4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 18:48:10 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ckVPjlxGARpoqgdp7RsbQWrOtyGnP1VciFNmuu9Z4sFubm7lVUhqeJSrbh9RynnWsN7tF8IpwJVzY/pFCXMk2A8x7vs+3QYURhVCSMsNxjNYciQ/Hy9ULaK2VWROPHEPsYNRWfkeBWXeO3d2g2esbwXFRvOBQEo2sqiD0SatsfvTaO79yAWxnlY+egOr6L2yZGYXA6TC6ko4S8BXWcmdW8fi1hjg5fC4gZGbUdrCYLPq20/WQ1Ipf5XI9vXxfhZTa8Li6XZTjgEYUFGybPEI6jtMLSbSmdtg7ufb4rsFiiw5qqptztdnxTYws4DJPYWszdY9qji9rbVC+QO/l2zizw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vxes36Qnz2vXs1LoOGy/DV1sZnh6f5CbUfeod5l9hPE=;
- b=hgAbMl1qKpmRDhm2zjUWqURIIAzbI4kNkwqIax/rmUc+1OCa/086hmXS1EtTDDIH58+V8WPT3OHokQPeSlCH/b3IX+doXsgsnM85VEX+Cx79Eyvqp3rKy5c7EOjFK6j5l3VW4T74twlmlD3MkMCTdmbdIaAjGCxO19uM+3Uu1cBjKjwVel/UP+I9fwHuB1HpkO67C7f1WJt6aHL/lJ4hcK0BwHCeyVwYKI6kb2i38YUo8IArimN3Dr6TbSqWLvOSo9HfSFIZUpXOPHgte0coEZAUGqeWdpMWyaUvlPPxiifDCFoW4/dDZpT1U6jpvgQNGTiMunUYF65YyB+27L6Paw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vxes36Qnz2vXs1LoOGy/DV1sZnh6f5CbUfeod5l9hPE=;
- b=SGWTj1fHKEmQdSpggB/6VhWXHNGSs0vtS8y4+sDkmjVxfs0ts3uM/sqsnt1UywGComJtkczq6x55RQWTJA6fyC+P+Ig43VLxEe0kf85tA2NYwMV+Mu2aX0oZe+N4gaYy3GrcqX1KtxufvuF6/q3WMn5+ZJsFEDnTy3iu7zQKGyk=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BY5PR10MB4356.namprd10.prod.outlook.com (2603:10b6:a03:210::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Thu, 25 Feb
- 2021 18:48:07 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee%6]) with mapi id 15.20.3890.019; Thu, 25 Feb 2021
- 18:48:07 +0000
-Subject: Re: [PATCH v7 1/6] userfaultfd: add minor fault registration mode
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-References: <20210219004824.2899045-1-axelrasmussen@google.com>
- <20210219004824.2899045-2-axelrasmussen@google.com>
- <6aefd704-f720-35dc-d71c-da9840dc93a6@oracle.com>
- <CAJHvVch4iweAW274Ub5Q_oKgZaTHvEkGnE4=jo6SfxOs1qCf6A@mail.gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <0c0c8e86-cf60-12d1-2260-2a7215493fd5@oracle.com>
-Date:   Thu, 25 Feb 2021 10:48:04 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <CAJHvVch4iweAW274Ub5Q_oKgZaTHvEkGnE4=jo6SfxOs1qCf6A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MWHPR1401CA0021.namprd14.prod.outlook.com
- (2603:10b6:301:4b::31) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        id S233132AbhBYStQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:49:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230386AbhBYStJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 13:49:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9233E64EFA;
+        Thu, 25 Feb 2021 18:48:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614278908;
+        bh=4UebTgRLi77SnAeLjgffrb31OrNc1IqCeOWcPmWIwNw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=buM6bp7psz169tu7rI7xNajrkvlpxGG8nFaTJpHn72WsJkkoq1O4Zkny31KNU8Zfd
+         KPu2fDOwPsdqNvbmeM3G0/KxcsSyjfr8tivbqT4OWZiVVPspvk+HFLDkD3jQpr7L1i
+         5EC18TFZaZPt1L1jBkotv6DmWg1rKhoiPHr2sAutGYgMZlGoLv7joyJk8gVHXfjYwG
+         f6V8bbNC/19kpGN55EwRJ1b9KpTiEj5E7dPWau12xqOUyYtGJAykZTswj7hSpkdSK3
+         fvPL1+uf09s7yWgI0cqyJmQvj0vluuU//j+Lze3qXcUrpIX9HMAUxoHEps3NgI5I0w
+         LyU2E7vqciVSg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Networking for 5.12-rc1
+Date:   Thu, 25 Feb 2021 10:48:26 -0800
+Message-Id: <20210225184826.2269264-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MWHPR1401CA0021.namprd14.prod.outlook.com (2603:10b6:301:4b::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Thu, 25 Feb 2021 18:48:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3bcadf89-bc8a-4d0e-6b1d-08d8d9bde42d
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4356:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB43569919098A6D351F1A42BEE29E9@BY5PR10MB4356.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +1UmIUu+TYv4rsTRVKIm7D/ydOOXH5z3pY86oIvBokYdIIn2a2YLHikd1sldibs3pvXfz1I/KKO/f5gJvLkllcchWbEpYvShdhi8M+7SxAh67n+srs5kpFYRoQ80zltVRLBPfxU4rx24awtguyX4Q9eMenloHE2y0yHmcZDbEHCEdNBN81jz3IA7lm6k1zwv+xxqzQuDoY1MKk5XBGRG4/yuwPv2O8InkxBWJUoYzu9Lh+BWkDEp20JIunPt8WP7rFCSIaakyYQP+xQHiz1Sj0/yE12Nv2YDenyRW9SCJQYYFCvUuQGiFGCzszEWulyg61GnssYvJT/G0fZkR/Ro8WhaR0OI++NiH472xc0Y18UWh2jyyV90FXSnBAUs+YnkYhRcqFAtOrB3guOwe6b4ft/XND+vmbBCLfsL1n1Vmsi9SGVnItigFefDTjDOY4mQHTdvyriGlDl1Vklr5Jr4dr6kDEtn0x9hUTBGHwl8t0cHqRrt7jM8+JDBQcGjcLaW3CnWuk6YfjZcaPfEKG4WvwQxWyZuBdCcA96bCtm7D2xVW4ZnLB6pySJQXRlj1FALY7lBIL54jNobUeuZcVeiNKmtuV0ljWIBTvecUklkP+s08hrH5iCap3JjL4we6dAvh1vDsaOiRLgubag2U8owlgxQuML0W8oWsnDlOodApD9yklIK68IAF1o8SY+HrdmB
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(366004)(376002)(136003)(39860400002)(31696002)(5660300002)(2906002)(36756003)(966005)(6486002)(66476007)(478600001)(2616005)(52116002)(956004)(186003)(316002)(54906003)(16576012)(44832011)(8936002)(31686004)(8676002)(53546011)(7406005)(66946007)(16526019)(86362001)(7416002)(66556008)(26005)(4326008)(6916009)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?c2F5eDFZZzIwc0pCSHRxV3hrUmF6VW8xY3laU3RjSXZPQUdFTFpvdndUZWtH?=
- =?utf-8?B?a1B4L1NYc2ZsQjNVbVZlaG9sUXQ3Z2NqK1FLd2M1eGJqU2U0dzU2UDdrL01T?=
- =?utf-8?B?ZkxqaElVS2ducWs5ZWkrVk5ybDdYc3puMEpjSXBKQkVRN2tiQkpCMFNZV2Q2?=
- =?utf-8?B?eDJoa2gwWEFiVjB1V0ViZ3RRaENNQk1FYnpMM1N2YXR5VS9tNEUrakJMK2c2?=
- =?utf-8?B?S3Byb2VQRUYzTnUweGcrY242bk9RZjcxbFJiYTArKzhlMDBnMHZrVURKazJO?=
- =?utf-8?B?R2lOR1NVUXQ4TC9mMXltcVc1MFFkY3ZwbDJBNlJlc1JxY3AzZzYyRDh2Z2Jv?=
- =?utf-8?B?QUxCUURQd2ZTcS90dnJpbHV6UnpoWGZvODYrOTJrRVV6QldIR2ZTQjdxZTgz?=
- =?utf-8?B?blpsVmpONjN3TmgwRmo0L1JjTGMwNTZkSVNzMGl2aWMzZGhZeWcyOGpCK1JP?=
- =?utf-8?B?UDcrMUF1N3F2TnRzR0NDTGtRRXNOZkkxb1BGRDQvUTZDTHMxYUdJaGFBcU5n?=
- =?utf-8?B?ZkN3eVRYekRrMlNhSXlSSnUvTXkyWmFOSEZxcVZwN0RQZlpHbVNtdkpscEJI?=
- =?utf-8?B?NWZqVnJqZUFOeWRmSzdUcytZeUF4cGoyNEhpOXdlVDhKeGNDblVQdXE3OGFZ?=
- =?utf-8?B?L0JlcFVXcnhBQ2hhd1g3R0NWNWh4N0FvQTlPU29meDdxb1RnRHVnTW9oUGNX?=
- =?utf-8?B?TC9mTFBXdWc0VDIrSnY2Zi92ajNYeVZJR0lBRzBxYXRlTVArS1dOVERVV1c1?=
- =?utf-8?B?blNtWXgwSEU2S1hEVjd4UkxYNHV5L2twWVNKcDE2TGpoazR2OUVSV3MxSU9V?=
- =?utf-8?B?SzNSaEhhZnE2cU1SYjBITENjZ3pqYjlUOCtJb3BHUXZrZ2MwYVZGTy9IaDl4?=
- =?utf-8?B?eDc3UUdGS3p5WGlGZkE4d1ZIQ1pEdDZ1MzRLdHcyTStLb3ZUSlFaZ3ZieUdq?=
- =?utf-8?B?eWxNOE1sdzJoOGZHYTJZM3cyRVVySjJqMWxNem50Z2JPeWx4a2txRUZTTjds?=
- =?utf-8?B?TEkyMXJXODZoOEpMbHF4WmpYL3NiaTNIQ0xxRDA2TCtLOCtDYjNDb1J0VGFM?=
- =?utf-8?B?aTR4ZTNVd3BremY1VnJ3RC8xY1FWWWNDVjI4ZkFSdzJoWEtiaDA5TDZwSDR6?=
- =?utf-8?B?ZGo3UGVhL3pTcWdmV3BTYU15SUcwbVFIMjNCN3dxNlhNalJUY3BKaGFwajJD?=
- =?utf-8?B?Zmk5L1JoZnpPbWhxZHFPSzJ5MlpSUmoydldLR1dFMHVGV1ArZ0haSnB4NUVD?=
- =?utf-8?B?ZVJ0TGZZR25NMlE3YzA2T29ZNXpJYTNWSlcyMCt6eXlNSHZuS3d2NXEwZUhD?=
- =?utf-8?B?ZFZwWmlRNFo5dmIvRDltb09ZSDM0WExwcGwyQ0dTcS9SaktBTnRKSXVZeFNj?=
- =?utf-8?B?ZWRCVzhwcmFYeTlrNzVIU0VuU2VSUDBYMEVvWDJqSmhIOFRuTk1jMHBNOXJh?=
- =?utf-8?B?Rm5jSm5jQkxTcXFtT2FUK1BwTTY5eWtYTmNEb3ZMb0hLQXNRaVR0NnpqQzhB?=
- =?utf-8?B?NHlTS2RibnRXMWlZK1A5aHpmcmQwT1lPZnQ1bDJaNFhhVmVxTFlPM0FVVlBP?=
- =?utf-8?B?NkFiVFF0allPUWtCNjVrcTR0cTJSRlBoYlNxUHYvT0E1Nnl5VTNKQktHYnRQ?=
- =?utf-8?B?dmk2dk1PNjU2MDluNXluSTY0RFQ0THJMdGRoMWpzdTZHYlpnOWhiT2sxKzNt?=
- =?utf-8?B?WjY4WHFMZEdabTgyTVVuNlJiTURGNG5Sa0hNOU80QTlFOFZnb2hPLzYwSGtK?=
- =?utf-8?Q?M1aJU1jE2IHSRicZvFWngL4soj9llnOWgplkBQi?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bcadf89-bc8a-4d0e-6b1d-08d8d9bde42d
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2021 18:48:07.5801
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bFmBleoTynCIrSviMcezN0mOxdpqQ/LhTxJWq9sr6eiDS7lOfYDAVjusdZjLVFoPifBTxFLwE+AmSKVbdfRBRw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4356
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9906 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102250140
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9906 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- clxscore=1015 mlxlogscore=999 lowpriorityscore=0 phishscore=0
- impostorscore=0 adultscore=0 mlxscore=0 priorityscore=1501 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102250140
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/25/21 9:49 AM, Axel Rasmussen wrote:
-> On Wed, Feb 24, 2021 at 4:26 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->>
->> On 2/18/21 4:48 PM, Axel Rasmussen wrote:
->> <snip>
->>> @@ -401,8 +398,10 @@ vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason)
->>>
->>>       BUG_ON(ctx->mm != mm);
->>>
->>> -     VM_BUG_ON(reason & ~(VM_UFFD_MISSING|VM_UFFD_WP));
->>> -     VM_BUG_ON(!(reason & VM_UFFD_MISSING) ^ !!(reason & VM_UFFD_WP));
->>> +     /* Any unrecognized flag is a bug. */
->>> +     VM_BUG_ON(reason & ~__VM_UFFD_FLAGS);
->>> +     /* 0 or > 1 flags set is a bug; we expect exactly 1. */
->>> +     VM_BUG_ON(!reason || !!(reason & (reason - 1)));
->>
->> I may be confused, but that seems to be checking for a flag value of 1
->> as opposed to one flag being set?
-> 
-> (Assuming I implemented it correctly!) It's the logical negation of
-> this trick: https://graphics.stanford.edu/~seander/bithacks.html#DetermineIfPowerOf2
-> So, it's "VM_BUG_ON(reason is *not* a power of 2)".
-> 
-> Maybe the double negation makes it overly confusing? It ought to be
-> equivalent if we remove it and just say:
-> VM_BUG_ON(!reason || (reason & (reason - 1)));
+The following changes since commit d310ec03a34e92a77302edb804f7d68ee4f01ba0:
 
-Sorry, my bad.  In my mind I was thinking,
+  Merge tag 'perf-core-2021-02-17' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2021-02-21 12:49:32 -0800)
 
-	VM_BUG_ON(!reason || !!(reason && (reason - 1)));
+are available in the Git repository at:
 
--- 
-Mike Kravetz
+  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.12-rc1
+
+for you to fetch changes up to 6cf739131a15e4177e58a1b4f2bede9d5da78552:
+
+  r8169: fix jumbo packet handling on RTL8168e (2021-02-25 09:55:16 -0800)
+
+----------------------------------------------------------------
+Networking fixes for 5.12-rc1. Rather small batch this time.
+
+Current release - regressions:
+
+ - bcm63xx_enet: fix sporadic kernel panic due to queue length
+                 mis-accounting
+
+Current release - new code bugs:
+
+ - bcm4908_enet: fix RX path possible mem leak
+
+ - bcm4908_enet: fix NAPI poll returned value
+
+ - stmmac: fix missing spin_lock_init in visconti_eth_dwmac_probe()
+
+ - sched: cls_flower: validate ct_state for invalid and reply flags
+
+Previous releases - regressions:
+
+ - net: introduce CAN specific pointer in the struct net_device to
+        prevent mis-interpreting memory
+
+ - phy: micrel: set soft_reset callback to genphy_soft_reset for KSZ8081
+
+ - psample: fix netlink skb length with tunnel info
+
+Previous releases - always broken:
+
+ - icmp: pass zeroed opts from icmp{,v6}_ndo_send before sending
+
+ - wireguard: device: do not generate ICMP for non-IP packets
+
+ - mptcp: provide subflow aware release function to avoid a mem leak
+
+ - hsr: add support for EntryForgetTime
+
+ - r8169: fix jumbo packet handling on RTL8168e
+
+ - octeontx2-af: fix an off by one in rvu_dbg_qsize_write()
+
+ - i40e: fix flow for IPv6 next header (extension header)
+
+ - phy: icplus: call phy_restore_page() when phy_select_page() fails
+
+ - dpaa_eth: fix the access method for the dpaa_napi_portal
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+
+----------------------------------------------------------------
+Antonio Quartulli (1):
+      wireguard: avoid double unlikely() notation when using IS_ERR()
+
+Brett Creeley (2):
+      ice: Set trusted VF as default VSI when setting allmulti on
+      ice: Account for port VLAN in VF max packet size calculation
+
+Camelia Groza (1):
+      dpaa_eth: fix the access method for the dpaa_napi_portal
+
+Chris Mi (1):
+      net: psample: Fix netlink skb length with tunnel info
+
+Christian Melki (1):
+      net: phy: micrel: set soft_reset callback to genphy_soft_reset for KSZ8081
+
+Chuhong Yuan (1):
+      net/mlx4_core: Add missed mlx4_free_cmd_mailbox()
+
+DENG Qingfang (1):
+      net: ag71xx: remove unnecessary MTU reservation
+
+Dan Carpenter (2):
+      octeontx2-af: Fix an off by one in rvu_dbg_qsize_write()
+      net: phy: icplus: call phy_restore_page() when phy_select_page() fails
+
+Dave Ertman (2):
+      ice: report correct max number of TCs
+      ice: Fix state bits on LLDP mode switch
+
+Florian Fainelli (3):
+      net: dsa: Fix dependencies with HSR
+      net: dsa: bcm_sf2: Wire-up br_flags_pre, br_flags and set_mrouter
+      net: dsa: b53: Support setting learning on port
+
+Florian Westphal (1):
+      mptcp: provide subflow aware release function
+
+Geert Uytterhoeven (1):
+      net: dsa: sja1105: Remove unneeded cast in sja1105_crc32()
+
+Hayes Wang (4):
+      r8152: enable U1/U2 for USB_SPEED_SUPER
+      r8152: check if the pointer of the function exists
+      r8152: replace netif_err with dev_err
+      r8152: spilt rtl_set_eee_plus and r8153b_green_en
+
+Heiner Kallweit (1):
+      r8169: fix jumbo packet handling on RTL8168e
+
+Henry Tieman (1):
+      ice: update the number of available RSS queues
+
+Jakub Kicinski (6):
+      Merge branch 'mptcp-a-bunch-of-fixes'
+      Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
+      Merge branch 'net-dsa-learning-fixes-for-b53-bcm_sf2'
+      Merge branch 'r8152-minor-adjustments'
+      Merge branch 'wireguard-fixes-for-5-12-rc1'
+      Merge branch '100GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
+
+Jann Horn (1):
+      wireguard: socket: remove bogus __be32 annotation
+
+Jason A. Donenfeld (6):
+      net: icmp: pass zeroed opts from icmp{,v6}_ndo_send before sending
+      wireguard: selftests: test multiple parallel streams
+      wireguard: peer: put frequently used members above cache lines
+      wireguard: device: do not generate ICMP for non-IP packets
+      wireguard: queueing: get rid of per-peer ring buffers
+      wireguard: kconfig: use arm chacha even with no neon
+
+Keita Suzuki (1):
+      i40e: Fix memory leak in i40e_probe
+
+Krzysztof Halasa (1):
+      Marvell Sky2 Ethernet adapter: fix warning messages.
+
+Lech Perczak (1):
+      net: usb: qmi_wwan: support ZTE P685M modem
+
+Marco Wenzel (1):
+      net: hsr: add support for EntryForgetTime
+
+Mateusz Palczewski (4):
+      i40e: Add zero-initialization of AQ command structures
+      i40e: Fix overwriting flow control settings during driver loading
+      i40e: Fix addition of RX filters after enabling FW LLDP agent
+      i40e: Fix add TC filter for IPv6
+
+Norbert Ciosek (1):
+      i40e: Fix endianness conversions
+
+Oleksij Rempel (1):
+      net: introduce CAN specific pointer in the struct net_device
+
+Paolo Abeni (3):
+      mptcp: fix DATA_FIN processing for orphaned sockets
+      mptcp: fix DATA_FIN generation on early shutdown
+      mptcp: do not wakeup listener for MPJ subflows
+
+Rafał Miłecki (2):
+      net: broadcom: bcm4908_enet: fix RX path possible mem leak
+      net: broadcom: bcm4908_enet: fix NAPI poll returned value
+
+Sieng Piaw Liew (1):
+      bcm63xx_enet: fix sporadic kernel panic
+
+Slawomir Laba (1):
+      i40e: Fix flow for IPv6 next header (extension header)
+
+Song, Yoong Siang (1):
+      net: stmmac: fix CBS idleslope and sendslope calculation
+
+Stefan Chulski (1):
+      net: mvpp2: skip RSS configurations on loopback port
+
+Sukadev Bhattiprolu (1):
+      ibmvnic: fix a race between open and reset
+
+Sylwester Dziedziuch (1):
+      i40e: Fix VFs not created
+
+Taehee Yoo (1):
+      vxlan: move debug check after netdev unregister
+
+Takeshi Misawa (1):
+      net: qrtr: Fix memory leak in qrtr_tun_open
+
+Wei Yongjun (1):
+      net: stmmac: Fix missing spin_lock_init in visconti_eth_dwmac_probe()
+
+wenxu (1):
+      net/sched: cls_flower: validate ct_state for invalid and reply flags
+
+ drivers/net/Kconfig                                |  2 +-
+ drivers/net/can/dev/dev.c                          |  4 +-
+ drivers/net/can/slcan.c                            |  4 +-
+ drivers/net/can/vcan.c                             |  2 +-
+ drivers/net/can/vxcan.c                            |  6 +-
+ drivers/net/dsa/b53/b53_common.c                   | 39 +++++++---
+ drivers/net/dsa/b53/b53_priv.h                     |  8 ++
+ drivers/net/dsa/b53/b53_regs.h                     |  1 +
+ drivers/net/dsa/bcm_sf2.c                          | 18 +----
+ drivers/net/dsa/sja1105/sja1105_static_config.c    |  2 +-
+ drivers/net/ethernet/atheros/ag71xx.c              |  4 +-
+ drivers/net/ethernet/broadcom/bcm4908_enet.c       |  3 +
+ drivers/net/ethernet/broadcom/bcm63xx_enet.c       |  8 +-
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c     |  2 +-
+ drivers/net/ethernet/ibm/ibmvnic.c                 | 63 ++++++++++++++--
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c     | 16 ++--
+ drivers/net/ethernet/intel/i40e/i40e_main.c        | 64 ++++++----------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c        | 11 ++-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c         |  2 +-
+ drivers/net/ethernet/intel/ice/ice.h               |  2 -
+ drivers/net/ethernet/intel/ice/ice_dcb_nl.c        |  6 +-
+ drivers/net/ethernet/intel/ice/ice_ethtool.c       | 34 +++++++--
+ drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c   | 35 ++++++++-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    | 25 ++++---
+ .../ethernet/marvell/octeontx2/af/rvu_debugfs.c    |  2 +-
+ drivers/net/ethernet/marvell/sky2.c                |  5 +-
+ .../net/ethernet/mellanox/mlx4/resource_tracker.c  |  1 +
+ drivers/net/ethernet/realtek/r8169_main.c          |  4 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-visconti.c   |  1 +
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c    | 30 +++++++-
+ drivers/net/gtp.c                                  |  1 -
+ drivers/net/phy/icplus.c                           |  9 ++-
+ drivers/net/phy/micrel.c                           |  1 +
+ drivers/net/usb/qmi_wwan.c                         |  1 +
+ drivers/net/usb/r8152.c                            | 67 +++++++++++------
+ drivers/net/vxlan.c                                | 11 ++-
+ drivers/net/wireguard/device.c                     | 21 +++---
+ drivers/net/wireguard/device.h                     | 15 ++--
+ drivers/net/wireguard/peer.c                       | 28 +++----
+ drivers/net/wireguard/peer.h                       |  8 +-
+ drivers/net/wireguard/queueing.c                   | 86 +++++++++++++++++-----
+ drivers/net/wireguard/queueing.h                   | 45 ++++++++---
+ drivers/net/wireguard/receive.c                    | 16 ++--
+ drivers/net/wireguard/send.c                       | 31 +++-----
+ drivers/net/wireguard/socket.c                     |  8 +-
+ include/linux/can/can-ml.h                         | 12 +++
+ include/linux/icmpv6.h                             | 26 +++++--
+ include/linux/ipv6.h                               |  1 -
+ include/linux/netdevice.h                          | 34 ++++++++-
+ include/net/icmp.h                                 |  6 +-
+ net/can/af_can.c                                   | 34 +--------
+ net/can/j1939/main.c                               | 22 ++----
+ net/can/j1939/socket.c                             | 13 +---
+ net/can/proc.c                                     | 19 +++--
+ net/dsa/Kconfig                                    |  1 +
+ net/hsr/hsr_framereg.c                             |  9 ++-
+ net/hsr/hsr_framereg.h                             |  1 +
+ net/hsr/hsr_main.h                                 |  1 +
+ net/ipv4/icmp.c                                    |  5 +-
+ net/ipv6/icmp.c                                    | 18 ++---
+ net/ipv6/ip6_icmp.c                                | 12 +--
+ net/mptcp/options.c                                | 23 +++---
+ net/mptcp/protocol.c                               | 64 ++++++++++++++--
+ net/mptcp/subflow.c                                |  6 ++
+ net/psample/psample.c                              |  4 +-
+ net/qrtr/tun.c                                     | 12 ++-
+ net/sched/cls_flower.c                             | 15 ++++
+ tools/testing/selftests/wireguard/netns.sh         | 15 +++-
+ 68 files changed, 734 insertions(+), 371 deletions(-)
