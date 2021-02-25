@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801C332583B
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9BC32583A
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbhBYU7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:59:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
+        id S234459AbhBYU7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:59:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234234AbhBYUuN (ORCPT
+        with ESMTP id S234212AbhBYUuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 25 Feb 2021 15:50:13 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9928C0611C0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:30 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id v6so7592839ybk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:30 -0800 (PST)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4765C0611C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:33 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id g17so7639655ybh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=CStveBKOEZIJIuu0d29PcoMsbDwro7qz1nDfW0Tyl2s=;
-        b=DeIPOSTh5jTvcOHDAOsTHxIsbsJUCUg9SYNF479Xcm0IjuOKIRiqzI+dRIclQJY4I/
-         59EbcpFa92utRPo8I+dh33vNkxfsMfM42m5+nRoJ2hA4ofJN4QAaldzUavKj7eu+U3/J
-         vbIuv9Mb8amcgyoR9L4NsqRQVOPKXxW64qKhtf9TE4RdweoSwjvEwn+bDhJYJbIqoUiC
-         9E2PtbFGedDwj6nRoeR9LY6caxe+vs3wtcRtzR5pgHxAt3Ael07XZ+R6NUKSxMHeEyNR
-         cmMap0umW0+Jpghl+ENc3jZXR5q+0DDGp3/S5UIhItKC05EFcKBYuYm9AvZjGU+vy02e
-         lr0Q==
+        bh=iKJLs+velK3tbbbqG24O5VyKgRTy3wHLluGHdOvzpgU=;
+        b=c16m5fP+SpCoY8+Sz3VL1bRlpB0IOoWxnO0jmB37hGhNGm2KgtoNzrIye/2rFrSAt8
+         KhBU9Q9IloU6akt/33FAi29Elcb+fD7Ldf3WQWpKeayx/39ZbGeeLnVXYTOJqi+qjOJw
+         xHGGweXg+BWHNZvy6ML1iAKUTK9y5c9Jv3NtsLgD+DV0ueb5W9MJX9OcMNIgBnFVfaVA
+         3FLemBZ0WblYjTtAa3Mxavr/gGaEvm+xn53jy2B6Vh8U2lQ4oMuxZvT6+4mGKVrtazWl
+         KEMcpAI1Pf90DZIqpxlarn52e+A8PAZ8jDvKHd6UE7gd3oaRRVzp64/u/bnhYS0ovZwb
+         sw7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=CStveBKOEZIJIuu0d29PcoMsbDwro7qz1nDfW0Tyl2s=;
-        b=Er7jAfxi67VA7S+QNb6qxX1n8TrZX1LSMd6EPwTbvNJL6qp0DUb511e7K3NAretQXp
-         kpE2qljAzEyBJN3H1z9nn7dbGUblqZRCzXaSNgir8Jo0XC+yKQn8mEfp5tnIGKWcNCty
-         gcw/P9lXEwWYXUxQlB++XBbl4jLrl9hQ5hmBuDalxPNak00PfaxQd5m7B3QYAPGAB95n
-         tvNqoQFzSrevA9y5/Zcgbb/zgRhz5H9rhjdL6VF/qFJiJwgANTtOqZcuFjf7OV7lHlry
-         Y7vYGZaLWbvNbF1aOgVfg6yZr6ZGM1NvS1Kece5JvNXJMvYXsjM2oS8iu7v/6JXk5Qby
-         bM5A==
-X-Gm-Message-State: AOAM532kLCQf9ELRp4NwlkK3mXxO1xi9laDAwnRvsCrQuDgxhEGMA/bA
-        sG0xbyuoGSVijMW+gMQw0wk+FbHLVQo=
-X-Google-Smtp-Source: ABdhPJzeXKlrJOe/IPappNVx1l6zaaiJ4tcWs9xEBvZDyOG6iQDDa1JpG82lHTnqQBzQOa42grLFkzRI7dM=
+        bh=iKJLs+velK3tbbbqG24O5VyKgRTy3wHLluGHdOvzpgU=;
+        b=Z3BdBSzV2xeTzr3GFEsR531VXzfVsBywT7TqUyF2kgDxIfD3c5jflhU05hIVjjmVAQ
+         IgEEpOzuPXcpq+RtBmfND69iXRxu4uFzbjXJanxbPTc/NZZwiQokgR3D1LPLP0Uv0ThU
+         i5fWyIUS6InDIyg6fhYo2qY0evJjNFW5lqd84L1erpZV7CVNdxQl9n3vObZVJ2sGwFpP
+         xZS018HSM9DyjIhru352vf3LfkyqPyq6s88we9oBoYx3dhBhJEi8iNyPhFv19IiGGyT6
+         KM7BblynQ9NSJ9w1BU2MUc6KxTrIsJJrgP4RBKwxVtZQcDqrm7wgRzguVlhTV4yO6KjR
+         dHKA==
+X-Gm-Message-State: AOAM532krF1smwLy7n5l+XO8BooZPl4NaytLHyWasSpb4+HtDrrIwmTb
+        5SOJclmCuF3IqaTgpCDxHq284WJS8c0=
+X-Google-Smtp-Source: ABdhPJyxdfNw7gAbChySrqKHw9zv/yCfvcjoe75Yr2KYX6LuA2A8TRL9xhG7JHcEgHCraEL9ypNV3Ztjmy8=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:34c4:7c1d:f9ba:4576])
- (user=seanjc job=sendgmr) by 2002:a25:f0b:: with SMTP id 11mr5204604ybp.208.1614286110008;
- Thu, 25 Feb 2021 12:48:30 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:482:: with SMTP id 124mr6891292ybe.315.1614286112926;
+ Thu, 25 Feb 2021 12:48:32 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Feb 2021 12:47:37 -0800
+Date:   Thu, 25 Feb 2021 12:47:38 -0800
 In-Reply-To: <20210225204749.1512652-1-seanjc@google.com>
-Message-Id: <20210225204749.1512652-13-seanjc@google.com>
+Message-Id: <20210225204749.1512652-14-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210225204749.1512652-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH 12/24] KVM: x86/mmu: Rename and document A/D scheme for TDP SPTEs
+Subject: [PATCH 13/24] KVM: x86/mmu: Use MMIO SPTE bits 53 and 52 for the MMIO generation
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,198 +67,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename the various A/D status defines to explicitly associated them with
-TDP.  There is a subtle dependency on the bits in question never being
-set when using PAE paging, as those bits are reserved, not available.
-I.e. using these bits outside of TDP (technically EPT) would cause
-explosions.
-
-No functional change intended.
+Use bits 53 and 52 for the MMIO generation now that they're not used to
+identify MMIO SPTEs.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- Documentation/virt/kvm/locking.rst | 37 +++++++++++++++---------------
- arch/x86/kvm/mmu/spte.c            | 17 ++++++++++----
- arch/x86/kvm/mmu/spte.h            | 34 ++++++++++++++++++++-------
- 3 files changed, 56 insertions(+), 32 deletions(-)
+ arch/x86/kvm/mmu/spte.c | 1 -
+ arch/x86/kvm/mmu/spte.h | 8 ++++----
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
-index 0aa4817b466d..85876afe0441 100644
---- a/Documentation/virt/kvm/locking.rst
-+++ b/Documentation/virt/kvm/locking.rst
-@@ -38,12 +38,11 @@ the mmu-lock on x86. Currently, the page fault can be fast in one of the
- following two cases:
- 
- 1. Access Tracking: The SPTE is not present, but it is marked for access
--   tracking i.e. the SPTE_SPECIAL_MASK is set. That means we need to
--   restore the saved R/X bits. This is described in more detail later below.
-+   tracking. That means we need to restore the saved R/X bits. This is
-+   described in more detail later below.
- 
--2. Write-Protection: The SPTE is present and the fault is
--   caused by write-protect. That means we just need to change the W bit of
--   the spte.
-+2. Write-Protection: The SPTE is present and the fault is caused by
-+   write-protect. That means we just need to change the W bit of the spte.
- 
- What we use to avoid all the race is the SPTE_HOST_WRITEABLE bit and
- SPTE_MMU_WRITEABLE bit on the spte:
-@@ -54,9 +53,9 @@ SPTE_MMU_WRITEABLE bit on the spte:
-   page write-protection.
- 
- On fast page fault path, we will use cmpxchg to atomically set the spte W
--bit if spte.SPTE_HOST_WRITEABLE = 1 and spte.SPTE_WRITE_PROTECT = 1, or
--restore the saved R/X bits if VMX_EPT_TRACK_ACCESS mask is set, or both. This
--is safe because whenever changing these bits can be detected by cmpxchg.
-+bit if spte.SPTE_HOST_WRITEABLE = 1 and spte.SPTE_WRITE_PROTECT = 1, to
-+restore the saved R/X bits if for an access-traced spte, or both. This is
-+safe because whenever changing these bits can be detected by cmpxchg.
- 
- But we need carefully check these cases:
- 
-@@ -185,17 +184,17 @@ See the comments in spte_has_volatile_bits() and mmu_spte_update().
- Lockless Access Tracking:
- 
- This is used for Intel CPUs that are using EPT but do not support the EPT A/D
--bits. In this case, when the KVM MMU notifier is called to track accesses to a
--page (via kvm_mmu_notifier_clear_flush_young), it marks the PTE as not-present
--by clearing the RWX bits in the PTE and storing the original R & X bits in
--some unused/ignored bits. In addition, the SPTE_SPECIAL_MASK is also set on the
--PTE (using the ignored bit 62). When the VM tries to access the page later on,
--a fault is generated and the fast page fault mechanism described above is used
--to atomically restore the PTE to a Present state. The W bit is not saved when
--the PTE is marked for access tracking and during restoration to the Present
--state, the W bit is set depending on whether or not it was a write access. If
--it wasn't, then the W bit will remain clear until a write access happens, at
--which time it will be set using the Dirty tracking mechanism described above.
-+bits. In this case, PTEs are tagged as A/D disabled (using ignored bits), and
-+when the KVM MMU notifier is called to track accesses to a page (via
-+kvm_mmu_notifier_clear_flush_young), it marks the PTE not-present in hardware
-+by clearing the RWX bits in the PTE and storing the original R & X bits in more
-+unused/ignored bits. When the VM tries to access the page later on, a fault is
-+generated and the fast page fault mechanism described above is used to
-+atomically restore the PTE to a Present state. The W bit is not saved when the
-+PTE is marked for access tracking and during restoration to the Present state,
-+the W bit is set depending on whether or not it was a write access. If it
-+wasn't, then the W bit will remain clear until a write access happens, at which
-+time it will be set using the Dirty tracking mechanism described above.
- 
- 3. Reference
- ------------
 diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index 503dec3f8c7a..3eaf143b7d12 100644
+index 3eaf143b7d12..cf0e20b34cd3 100644
 --- a/arch/x86/kvm/mmu/spte.c
 +++ b/arch/x86/kvm/mmu/spte.c
-@@ -42,7 +42,7 @@ static u64 generation_mmio_spte_mask(u64 gen)
+@@ -42,7 +42,6 @@ static u64 generation_mmio_spte_mask(u64 gen)
  	u64 mask;
  
  	WARN_ON(gen & ~MMIO_SPTE_GEN_MASK);
--	BUILD_BUG_ON((MMIO_SPTE_GEN_HIGH_MASK | MMIO_SPTE_GEN_LOW_MASK) & SPTE_SPECIAL_MASK);
-+	BUILD_BUG_ON((MMIO_SPTE_GEN_HIGH_MASK | MMIO_SPTE_GEN_LOW_MASK) & SPTE_TDP_AD_MASK);
+-	BUILD_BUG_ON((MMIO_SPTE_GEN_HIGH_MASK | MMIO_SPTE_GEN_LOW_MASK) & SPTE_TDP_AD_MASK);
  
  	mask = (gen << MMIO_SPTE_GEN_LOW_SHIFT) & MMIO_SPTE_GEN_LOW_MASK;
  	mask |= (gen << MMIO_SPTE_GEN_HIGH_SHIFT) & MMIO_SPTE_GEN_HIGH_MASK;
-@@ -96,9 +96,16 @@ int make_spte(struct kvm_vcpu *vcpu, unsigned int pte_access, int level,
- 	int ret = 0;
- 
- 	if (ad_disabled)
--		spte |= SPTE_AD_DISABLED_MASK;
-+		spte |= SPTE_TDP_AD_DISABLED_MASK;
- 	else if (kvm_vcpu_ad_need_write_protect(vcpu))
--		spte |= SPTE_AD_WRPROT_ONLY_MASK;
-+		spte |= SPTE_TDP_AD_WRPROT_ONLY_MASK;
-+
-+	/*
-+	 * Bits 62:52 of PAE SPTEs are reserved.  WARN if said bits are set
-+	 * if PAE paging may be employed (shadow paging or any 32-bit KVM).
-+	 */
-+	WARN_ON_ONCE((!tdp_enabled || !IS_ENABLED(CONFIG_X86_64)) &&
-+		     (spte & SPTE_TDP_AD_MASK));
- 
- 	/*
- 	 * For the EPT case, shadow_present_mask is 0 if hardware
-@@ -180,7 +187,7 @@ u64 make_nonleaf_spte(u64 *child_pt, bool ad_disabled)
- 	       shadow_user_mask | shadow_x_mask | shadow_me_mask;
- 
- 	if (ad_disabled)
--		spte |= SPTE_AD_DISABLED_MASK;
-+		spte |= SPTE_TDP_AD_DISABLED_MASK;
- 	else
- 		spte |= shadow_accessed_mask;
- 
-@@ -288,7 +295,7 @@ void kvm_mmu_set_mask_ptes(u64 user_mask, u64 accessed_mask,
- {
- 	BUG_ON(!dirty_mask != !accessed_mask);
- 	BUG_ON(!accessed_mask && !acc_track_mask);
--	BUG_ON(acc_track_mask & SPTE_SPECIAL_MASK);
-+	BUG_ON(acc_track_mask & SPTE_TDP_AD_MASK);
- 
- 	shadow_user_mask = user_mask;
- 	shadow_accessed_mask = accessed_mask;
 diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-index 642a17b9964c..fd0a7911f098 100644
+index fd0a7911f098..bf4f49890606 100644
 --- a/arch/x86/kvm/mmu/spte.h
 +++ b/arch/x86/kvm/mmu/spte.h
-@@ -8,11 +8,24 @@
- #define PT_FIRST_AVAIL_BITS_SHIFT 10
- #define PT64_SECOND_AVAIL_BITS_SHIFT 54
- 
--/* The mask used to denote Access Tracking SPTEs.  Note, val=3 is available. */
--#define SPTE_SPECIAL_MASK (3ULL << 52)
--#define SPTE_AD_ENABLED_MASK (0ULL << 52)
--#define SPTE_AD_DISABLED_MASK (1ULL << 52)
--#define SPTE_AD_WRPROT_ONLY_MASK (2ULL << 52)
-+/*
-+ * TDP SPTES (more specifically, EPT SPTEs) may not have A/D bits, and may also
-+ * be restricted to using write-protection (for L2 when CPU dirty logging, i.e.
-+ * PML, is enabled).  Use bits 52 and 53 to hold the type of A/D tracking that
-+ * is must be employed for a given TDP SPTE.
-+ *
-+ * Note, the "enabled" mask must be '0', as bits 62:52 are _reserved_ for PAE
-+ * paging, including NPT PAE.  This scheme works because legacy shadow paging
-+ * is guaranteed to have A/D bits and write-protection is forced only for
-+ * TDP with CPU dirty logging (PML).  If NPT ever gains PML-like support, it
-+ * must be restricted to 64-bit KVM.
-+ */
-+#define SPTE_TDP_AD_SHIFT		52
-+#define SPTE_TDP_AD_MASK		(3ULL << SPTE_TDP_AD_SHIFT)
-+#define SPTE_TDP_AD_ENABLED_MASK	(0ULL << SPTE_TDP_AD_SHIFT)
-+#define SPTE_TDP_AD_DISABLED_MASK	(1ULL << SPTE_TDP_AD_SHIFT)
-+#define SPTE_TDP_AD_WRPROT_ONLY_MASK	(2ULL << SPTE_TDP_AD_SHIFT)
-+static_assert(SPTE_TDP_AD_ENABLED_MASK == 0);
- 
- #ifdef CONFIG_DYNAMIC_PHYSICAL_MASK
- #define PT64_BASE_ADDR_MASK (physical_mask & ~(u64)(PAGE_SIZE-1))
-@@ -100,7 +113,7 @@ extern u64 __read_mostly shadow_present_mask;
- extern u64 __read_mostly shadow_me_mask;
+@@ -65,11 +65,11 @@ static_assert(SPTE_TDP_AD_ENABLED_MASK == 0);
+ #define SPTE_MMU_WRITEABLE	(1ULL << (PT_FIRST_AVAIL_BITS_SHIFT + 1))
  
  /*
-- * SPTEs used by MMUs without A/D bits are marked with SPTE_AD_DISABLED_MASK;
-+ * SPTEs in MMUs without A/D bits are marked with SPTE_TDP_AD_DISABLED_MASK;
-  * shadow_acc_track_mask is the set of bits to be cleared in non-accessed
-  * pages.
-  */
-@@ -176,13 +189,18 @@ static inline bool sp_ad_disabled(struct kvm_mmu_page *sp)
- static inline bool spte_ad_enabled(u64 spte)
- {
- 	MMU_WARN_ON(is_mmio_spte(spte));
--	return (spte & SPTE_SPECIAL_MASK) != SPTE_AD_DISABLED_MASK;
-+	return (spte & SPTE_TDP_AD_MASK) != SPTE_TDP_AD_DISABLED_MASK;
- }
+- * Due to limited space in PTEs, the MMIO generation is a 18 bit subset of
++ * Due to limited space in PTEs, the MMIO generation is a 20 bit subset of
+  * the memslots generation and is derived as follows:
+  *
+  * Bits 0-8 of the MMIO generation are propagated to spte bits 3-11
+- * Bits 9-17 of the MMIO generation are propagated to spte bits 54-62
++ * Bits 9-19 of the MMIO generation are propagated to spte bits 52-62
+  *
+  * The KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS flag is intentionally not included in
+  * the MMIO generation number, as doing so would require stealing a bit from
+@@ -82,7 +82,7 @@ static_assert(SPTE_TDP_AD_ENABLED_MASK == 0);
+ #define MMIO_SPTE_GEN_LOW_START		3
+ #define MMIO_SPTE_GEN_LOW_END		11
  
- static inline bool spte_ad_need_write_protect(u64 spte)
- {
- 	MMU_WARN_ON(is_mmio_spte(spte));
--	return (spte & SPTE_SPECIAL_MASK) != SPTE_AD_ENABLED_MASK;
-+	/*
-+	 * This is benign for non-TDP SPTEs as SPTE_TDP_AD_ENABLED_MASK is '0',
-+	 * and non-TDP SPTEs will never set these bits.  Optimize for 64-bit
-+	 * TDP and do the A/D type check unconditionally.
-+	 */
-+	return (spte & SPTE_TDP_AD_MASK) != SPTE_TDP_AD_ENABLED_MASK;
- }
+-#define MMIO_SPTE_GEN_HIGH_START	PT64_SECOND_AVAIL_BITS_SHIFT
++#define MMIO_SPTE_GEN_HIGH_START	52
+ #define MMIO_SPTE_GEN_HIGH_END		62
  
- static inline u64 spte_shadow_accessed_mask(u64 spte)
+ #define MMIO_SPTE_GEN_LOW_MASK		GENMASK_ULL(MMIO_SPTE_GEN_LOW_END, \
+@@ -94,7 +94,7 @@ static_assert(SPTE_TDP_AD_ENABLED_MASK == 0);
+ #define MMIO_SPTE_GEN_HIGH_BITS		(MMIO_SPTE_GEN_HIGH_END - MMIO_SPTE_GEN_HIGH_START + 1)
+ 
+ /* remember to adjust the comment above as well if you change these */
+-static_assert(MMIO_SPTE_GEN_LOW_BITS == 9 && MMIO_SPTE_GEN_HIGH_BITS == 9);
++static_assert(MMIO_SPTE_GEN_LOW_BITS == 9 && MMIO_SPTE_GEN_HIGH_BITS == 11);
+ 
+ #define MMIO_SPTE_GEN_LOW_SHIFT		(MMIO_SPTE_GEN_LOW_START - 0)
+ #define MMIO_SPTE_GEN_HIGH_SHIFT	(MMIO_SPTE_GEN_HIGH_START - MMIO_SPTE_GEN_LOW_BITS)
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
