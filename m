@@ -2,114 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED0032547C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B98B832547E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbhBYRWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 12:22:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:42116 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232033AbhBYRV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:21:56 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 810F8101E;
-        Thu, 25 Feb 2021 09:21:08 -0800 (PST)
-Received: from [10.57.49.35] (unknown [10.57.49.35])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9339C3F73D;
-        Thu, 25 Feb 2021 09:21:04 -0800 (PST)
-Subject: Re: [PATCH] coresight: etm4x: work around clang-12+ build failure
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210225094324.3542511-1-arnd@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <19c9eba2-c5cd-301f-4dfa-a31c971728f9@arm.com>
-Date:   Thu, 25 Feb 2021 17:20:57 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233077AbhBYRWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 12:22:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232746AbhBYRV7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 12:21:59 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2536C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 09:21:18 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id o3so6797595oic.8
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 09:21:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=QP8wik+2o5omyOnnYki4P85PvKiXC4TVtgCE2LHXuUg=;
+        b=KfPK9SYm6gD/9Iv7tlbdngynvJMG/5ekBBKEfv0A89GryOsGFaL3BHQW2BYtE1cplT
+         Dq+mg3kRrGUgQkkJL47CLVd9aYgeF3REdYPdQSxyXL+cNTiDRQ2e69qPiWDc+C4HVCAV
+         5ntef4kB8VHzUM6jrnJ79Zu4Kk3ymdI+WuYZNAWxZl26HFfGmeI8fcgMZjt9tG8GqEqB
+         JU++T4rni/U2/vv1OOVxqK1NrRBtG/ZJxoJ6Ad4/j8Z/9HzrXIOBBmnmdQ6OAbWFMTRF
+         jXhmXP4/210cF8CxzipMuy1PV3Ix73ZeHyUQNkNM3TpDI6qCeng8AIAmDEH+fUZ1TgyO
+         S3BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=QP8wik+2o5omyOnnYki4P85PvKiXC4TVtgCE2LHXuUg=;
+        b=bUp7qVSkMtzY1fON8StiFQpcTvsOiEOJe7k5UNzACoL1AFSGfxWo5aZyolovAV1JNx
+         YoQbMMfwlnFuxUe/3Xr5OlDTaL82lO6yNS2JQ7v51MNOm0Ql33SnV0Ao2NqXzfmmfcAV
+         54eHntkn7D9+OuGccv/0OjsvGO3DxoPSiXG24lunlNIJtroN2xoiXLkA6OMx4/CDZbPN
+         LQhg2ZwVna2DW5ALhWOcfnJ216Z42rUUjAiFp1NE5jgwL23lZbu1r1JtVU6ENPM13HJi
+         FSJb4r2yyS9hJFrzdMgMcyqqSR3CKRvssqiw+XITP2tRoROxruR+W8ufNAAVooPzM0K/
+         qYrQ==
+X-Gm-Message-State: AOAM533gfx0FvB7lYc/gQjxgJUxOlfesQ2A8UAyMHjaMPwnKFO3d5Vi2
+        4hTkDm5c/yAFT+6vO+OtmqWFnA==
+X-Google-Smtp-Source: ABdhPJxT008u6Mx8R7E2Rb9HdqEjl0MRBTlVsijJC9UySPKw0Ot8rczlZ98TR1RSzBxf4YZiTnqu+A==
+X-Received: by 2002:aca:5f44:: with SMTP id t65mr2721122oib.46.1614273677560;
+        Thu, 25 Feb 2021 09:21:17 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id g18sm1235379otq.33.2021.02.25.09.21.16
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 25 Feb 2021 09:21:17 -0800 (PST)
+Date:   Thu, 25 Feb 2021 09:21:04 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Roman Gushchin <guro@fb.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: vmstat: fix /proc/sys/vm/stat_refresh generating
+ false warnings
+In-Reply-To: <YDcDAOxKXSopVe3b@carbon.dhcp.thefacebook.com>
+Message-ID: <alpine.LSU.2.11.2102250905350.11720@eggly.anvils>
+References: <alpine.LSU.2.11.2007291902340.6363@eggly.anvils> <20200730162348.GA679955@carbon.dhcp.thefacebook.com> <alpine.LSU.2.11.2007302018350.2410@eggly.anvils> <20200801011821.GA859734@carbon.dhcp.thefacebook.com> <alpine.LSU.2.11.2007311915130.9716@eggly.anvils>
+ <20200804004012.GA1049259@carbon.dhcp.thefacebook.com> <alpine.LSU.2.11.2008051913580.8184@eggly.anvils> <20200806233804.GB1217906@carbon.dhcp.thefacebook.com> <20200806182555.d7a7fc9853b5a239ffe9f846@linux-foundation.org> <alpine.LSU.2.11.2102232210130.9202@eggly.anvils>
+ <YDcDAOxKXSopVe3b@carbon.dhcp.thefacebook.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <20210225094324.3542511-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/25/21 9:42 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Wed, 24 Feb 2021, Roman Gushchin wrote:
+> On Tue, Feb 23, 2021 at 11:24:23PM -0800, Hugh Dickins wrote:
+> > On Thu, 6 Aug 2020, Andrew Morton wrote:
+> > > On Thu, 6 Aug 2020 16:38:04 -0700 Roman Gushchin <guro@fb.com> wrote:
+> > 
+> > August, yikes, I thought it was much more recent.
+> > 
+> > > 
+> > > > it seems that Hugh and me haven't reached a consensus here.
+> > > > Can, you, please, not merge this patch into 5.9, so we would have
+> > > > more time to find a solution, acceptable for all?
+> > > 
+> > > No probs.  I already had a big red asterisk on it ;)
+> > 
+> > I've a suspicion that Andrew might be tiring of his big red asterisk,
+> > and wanting to unload
+> > mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings.patch
+> > mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix.patch
+> > mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix-2.patch
+> > into 5.12.
+> > 
+> > I would prefer not, and reiterate my Nack: but no great harm will
+> > befall the cosmos if he overrules that, and it does go through to
+> > 5.12 - I'll just want to revert it again later.  And I do think a
+> > more straightforward way of suppressing those warnings would be just
+> > to delete the code that issues them, rather than brushing them under
+> > a carpet of overtuning.
 > 
-> clang-12 fails to build the etm4x driver with -fsanitize=array-bounds:
+> I'm actually fine with either option. My only concern is that if somebody
+> will try to use the hugetlb_cma boot option AND /proc/sys/vm/stat_refresh
+> together, they will get a false warning and report them to mm@ or will
+> waste their time trying to debug a non-existing problem. It's not the end
+> of the world.
+> We can also make the warning conditional on CONFIG_DEBUG_VM, for example.
 > 
-> <instantiation>:1:7: error: expected constant expression in '.inst' directive
-> .inst (0xd5200000|((((2) << 19) | ((1) << 16) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 7) & 0x7)) << 12) | ((((((((((0x160 + (i * 4))))) >> 2))) & 0xf)) << 8) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 4) & 0x7)) << 5)))|(.L__reg_num_x8))
->        ^
-> drivers/hwtracing/coresight/coresight-etm4x-core.c:702:4: note: while in macro instantiation
->                          etm4x_relaxed_read32(csa, TRCCNTVRn(i));
->                          ^
-> drivers/hwtracing/coresight/coresight-etm4x.h:403:4: note: expanded from macro 'etm4x_relaxed_read32'
->                   read_etm4x_sysreg_offset((offset), false)))
->                   ^
-> drivers/hwtracing/coresight/coresight-etm4x.h:383:12: note: expanded from macro 'read_etm4x_sysreg_offset'
->                          __val = read_etm4x_sysreg_const_offset((offset));       \
->                                  ^
-> drivers/hwtracing/coresight/coresight-etm4x.h:149:2: note: expanded from macro 'read_etm4x_sysreg_const_offset'
->          READ_ETM4x_REG(ETM4x_OFFSET_TO_REG(offset))
->          ^
-> drivers/hwtracing/coresight/coresight-etm4x.h:144:2: note: expanded from macro 'READ_ETM4x_REG'
->          read_sysreg_s(ETM4x_REG_NUM_TO_SYSREG((reg)))
->          ^
-> arch/arm64/include/asm/sysreg.h:1108:15: note: expanded from macro 'read_sysreg_s'
->          asm volatile(__mrs_s("%0", r) : "=r" (__val));                  \
->                       ^
-> arch/arm64/include/asm/sysreg.h:1074:2: note: expanded from macro '__mrs_s'
-> "       mrs_s " v ", " __stringify(r) "\n"                      \
->   ^
-> 
-> It appears that the __builin_constant_p() check in
-> read_etm4x_sysreg_offset() falsely returns 'true' here because clang
-> decides finds that an out-of-bounds access to config->cntr_val[] cannot
+> Please, let me know what's your preferred way to go forward.
 
-s/decides finds/decides/ ?
+My preferred way forward (for now: since we're all too busy to fix
+the misbehaving stats) is for Andrew to drop your patch, and I'll post
+three patches against current 5.12 in a few hours: one to restore the
+check on the missing NR_VM_NODE_STAT_ITEMS, one to remove the -EINVAL
+(which upsets test scripts at our end), one to suppress the warning on
+nr_zone_write_pending, nr_writeback and nr_free_cma.
 
-> happen, and then it unrolls the loop with constant register numbers. Then
-> when actually emitting the output, it fails to figure out the value again.
-> 
-> While this is incorrect behavior in clang, it is easy to work around
-> by avoiding the out-of-bounds array access. Do this by limiting the
-> loop counter to the actual dimension of the array.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1310
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/hwtracing/coresight/coresight-etm4x-core.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 15016f757828..4cccf874a602 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -691,13 +691,13 @@ static void etm4_disable_hw(void *info)
->   			"timeout while waiting for PM stable Trace Status\n");
->   
->   	/* read the status of the single shot comparators */
-> -	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
-> +	for (i = 0; i < min_t(u32, drvdata->nr_ss_cmp, ETM_MAX_SS_CMP); i++) {
->   		config->ss_status[i] =
->   			etm4x_relaxed_read32(csa, TRCSSCSRn(i));
->   	}
->   
-
-There are more places where we do this. So I believe you need the similar
-change elsewhere too in the driver. So, that becomes cumbersome for circumventing
-the compiler issue.
-
-Suzuki
+Hugh
