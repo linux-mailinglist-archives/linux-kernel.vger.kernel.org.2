@@ -2,122 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764CC3258B1
+	by mail.lfdr.de (Postfix) with ESMTP id E718F3258B2
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbhBYVdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:33:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
+        id S233637AbhBYVey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:34:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhBYVdr (ORCPT
+        with ESMTP id S231326AbhBYVeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:33:47 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6A2C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:33:07 -0800 (PST)
-Received: from zn.tnic (p200300ec2f03dc0050646025c69cd84e.dip0.t-ipconnect.de [IPv6:2003:ec:2f03:dc00:5064:6025:c69c:d84e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC5611EC05BB;
-        Thu, 25 Feb 2021 22:33:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614288785;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=eDmRKFZ4fbRtPN7JebMoB9LbU72F1jrH4quqxZDE/y0=;
-        b=OIobfCmiFfyF5uVl0F3uCHX2g/nWeiQ4C6gtBATLU9Ey3j6P0ZzBtuOOaml973FqbYrap3
-        noV5gJCNo5xfH9/Ofuzs7ZjFne32TE5vied+oy5t91g889vpbCKmejojFcAXPUpeFXXeqk
-        +n//lmcNr/Dn3/yB+S3bUM5jpr3z5q8=
-Date:   Thu, 25 Feb 2021 22:33:00 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Arthur Eubanks <aeubanks@google.com>,
-        Chandler Carruth <chandlerc@google.com>
-Subject: Re: [PATCH] x86: mark some mpspec inline functions as __init
-Message-ID: <20210225213300.GF380@zn.tnic>
-References: <20210225112247.2240389-1-arnd@kernel.org>
- <20210225114533.GA380@zn.tnic>
- <CAK8P3a0BN3p0F3UAxs9TKsHs--AiAPE0uf6126GVJNhmVTGCsw@mail.gmail.com>
- <20210225124218.GC380@zn.tnic>
- <CAK8P3a1ZiUHRxKr=SFgEFETLcSQeViPnR+XB2gBvbVk24vGvqQ@mail.gmail.com>
- <CAKwvOd=B=cHpp_XfPTtyVpQyrwQrFZX9SXKw=SJC1VC-VbEwFA@mail.gmail.com>
+        Thu, 25 Feb 2021 16:34:50 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A82C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:34:09 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id d24so10762685lfs.8
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:34:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z33fwCKGRLdRggSVLa36+oxEo5k56+kIObYh56DIr1o=;
+        b=iVOvgwBHTElHBmSyV8PIt+/n4PL5NWhFj7/q6FN4WduvYDrIce/fCRUQYtkupW2DJ2
+         WAkqWlxLpGMGuZuQzh5k/1CYCcKI/HswXTLxgiylWtVEldlvWj9jCLVmA8rlGH9/5IDc
+         W0KAGWMSe9u1PUJ9XO6r5QuvrlGbRgs6HM3O/HwMXFweNW5RbmKimMXu3HcyA2xiikkY
+         3jCvA6OtwNK0/kic08DPa5I6tVW7VIQzCDdLC5oqzC0bfT8Tk8cSjjPgvaM+nWkm2BuW
+         +NUABQpD18/jDPEFRuwHFY8SGx35eolwPjMCHURDTydHrY1IK863vZMSZdU63aOONaRg
+         TSXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z33fwCKGRLdRggSVLa36+oxEo5k56+kIObYh56DIr1o=;
+        b=KspxOurOvj9dpD5QByTBv3TYGHHSuIWtfbKBWpeGuitlc9TSmLR/1nN56kxtCzvjEK
+         YogDFfkIWUFA8QERKom/KhcvpvgafF9donjCxXi198DSfYWjDrc/F8hc6VIYzNgA6o8C
+         tpq7NaD4cXrqBkZTBoPAcHHFwKfrVZvHcC1bbqcHKuz3mcrj57n3nZSTz4x1exgVp9vb
+         4FBLw3Y575s/Qr/QRWrLOd2rtL0YkWCY+IuOGtBKXFwzkeBLcXeZIYkVk2+ABUfVSKM3
+         7L3nhWzmf6UL/o8qbGB7iU5wpg3rjWchgB4pvTmiH8Oapa0q2wcCui+2/9wrytEs5S4u
+         ECiA==
+X-Gm-Message-State: AOAM531DQoVrBzo8RECSV2QEx/WY7d+O/8nKMCMy6NCR9ghxS8m1yPbs
+        ytbSG5KwsQDMgEH/m2ZBk1djBisUYRewUonLNzdhIQ==
+X-Google-Smtp-Source: ABdhPJwidz3VEFA1ImAO0a1g5OYBZZNdfVwrSeMhrhMW+jPSmbGKY9IlX0eQ/dAZ/ZuXoIxIYaDlY8Fz4hPCCRSI9ZA=
+X-Received: by 2002:a05:6512:12c1:: with SMTP id p1mr3098656lfg.374.1614288847058;
+ Thu, 25 Feb 2021 13:34:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=B=cHpp_XfPTtyVpQyrwQrFZX9SXKw=SJC1VC-VbEwFA@mail.gmail.com>
+References: <20210225150119.405469-1-arnd@kernel.org>
+In-Reply-To: <20210225150119.405469-1-arnd@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 25 Feb 2021 13:33:56 -0800
+Message-ID: <CAKwvOdkWfQi4vPphJ9X+xQ5MdzGhrHr1mj=oFGh3Yv5TB=76_Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Fix an uninitialized index variable
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Simon Ser <contact@emersion.fr>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+On Thu, Feb 25, 2021 at 7:01 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang points out that the new logic uses an always-uninitialized
+> array index:
+>
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9810:38: warning: variable 'i' is uninitialized when used here [-Wuninitialized]
+>                         timing  = &edid->detailed_timings[i];
+>                                                           ^
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9720:7: note: initialize the variable 'i' to silence this warning
+>
+> My best guess is that the index should have been returned by the
+> parse_hdmi_amd_vsdb() function that walks an array here, so do that.
+>
+> Fixes: f9b4f20c4777 ("drm/amd/display: Add Freesync HDMI support to DM")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c    | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index b19b93c74bae..667c0d52dbfa 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -9736,7 +9736,7 @@ static bool parse_edid_cea(struct amdgpu_dm_connector *aconnector,
+>         return false;
+>  }
+>
+> -static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+> +static int parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+>                 struct edid *edid, struct amdgpu_hdmi_vsdb_info *vsdb_info)
+>  {
+>         uint8_t *edid_ext = NULL;
+> @@ -9746,7 +9746,7 @@ static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+>         /*----- drm_find_cea_extension() -----*/
+>         /* No EDID or EDID extensions */
+>         if (edid == NULL || edid->extensions == 0)
+> -               return false;
+> +               return -ENODEV;
+>
+>         /* Find CEA extension */
+>         for (i = 0; i < edid->extensions; i++) {
+> @@ -9756,14 +9756,15 @@ static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+>         }
+>
+>         if (i == edid->extensions)
+> -               return false;
+> +               return -ENODEV;
+>
+>         /*----- cea_db_offsets() -----*/
+>         if (edid_ext[0] != CEA_EXT)
+> -               return false;
+> +               return -ENODEV;
+>
+>         valid_vsdb_found = parse_edid_cea(aconnector, edid_ext, EDID_LENGTH, vsdb_info);
+> -       return valid_vsdb_found;
+> +
+> +       return valid_vsdb_found ? i : -ENODEV;
 
-On Thu, Feb 25, 2021 at 12:31:33PM -0800, Nick Desaulniers wrote:
-> So LLVM is telling us bar() was inlined into foo(); (baz() can't be
-> because it wasn't defined in this TU).  You can use this to "watch"
-> the compiler make decisions about inlining.
+Thanks for the patch!
 
-thanks for taking the time to write all this - it is very interesting
-and reminds me that I simply won't have time in this life of mine to
-learn about compiler inlining - that's a whole another universe. :-)
+I don't think we need a local variable to store the return value from
+one function call that's immediately returned, ie.
 
-I hope you can use that text in a blog post too - it is an interesting
-read.
+return parse_edid_cea(aconnector, edid_ext, EDID_LENGTH, vsdb_info) ?
+i : -ENODEV;
 
-> (full thread: https://lore.kernel.org/lkml/20210225112247.2240389-1-arnd@kernel.org/)
-> I suspect in this specific case, "Interprocedural Sparse Conditional
-> Constant Propagation" sees the calls to the same fn with different
-> constants, propagates those down creating two specialized versions of
-> the callee (so they are distinct functions now), inlines those into
-> get_smp_config()/early_get_smp_config(), then there's too many callers
-> of those in a single TU where inlining would cause excessive code
-> bloat.
+would suffice, but the patch is still fine as is.
 
-Well, there's exactly one caller of get_smp_config - that's setup_arch().
-early_get_smp_config() gets called also exactly once in amd_numa_init().
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Now, with my simplistic approach, I can replace the lines at those call
-sites by hand with the
+>  }
+>
+>  void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+> @@ -9781,7 +9782,6 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+>         struct amdgpu_device *adev = drm_to_adev(dev);
+>         bool freesync_capable = false;
+>         struct amdgpu_hdmi_vsdb_info vsdb_info = {0};
+> -       bool hdmi_valid_vsdb_found = false;
+>
+>         if (!connector->state) {
+>                 DRM_ERROR("%s - Connector has no state", __func__);
+> @@ -9857,8 +9857,8 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+>                         }
+>                 }
+>         } else if (edid && amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_HDMI_TYPE_A) {
+> -               hdmi_valid_vsdb_found = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
+> -               if (hdmi_valid_vsdb_found && vsdb_info.freesync_supported) {
+> +               i = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
+> +               if (i >= 0 && vsdb_info.freesync_supported) {
 
-	x86_init.mpparse.get_smp_config(<arg>);
+reusing `i` here is safe, for now, but reuse of variables like this in
+separate branches like this might not get noticed if the function is
+amended in the future.
 
-call. So those become exactly one function call. I still don't see how
-that can be done any differently, frankly.
+>                         timing  = &edid->detailed_timings[i];
+>                         data    = &timing->data.other_data;
+>
+> --
+> 2.29.2
+>
 
-But apparently the cost model has decided that this is not inlineable.
-Maybe because that function ptr is assigned at boot time and that
-somehow gets the cost model to give it a very high (or low) value. Or
-maybe because the wrappers are calling through a variable - the x86_init
-thing - which is in a different section and that confuses the inliner.
-Or whatever - totally speculating here.
-
-And this brings me to my point - you can't expect people to do all that
-crazy dance of compiler introspection and understand cost models and
-compiler optimization just to fix stuff like that.
-
-Now, imagine we "fix" this to clang-13's inliner's satisfaction. Now
-imagine too that gcc Version Next changes their inliner and that inliner
-says that that "fix" is wrong, for whatever reason, bottom up, top down,
-whatever. Do you feel the annoyance all around?
-
-And since, as you say, there are no silver bullets here, I think for
-cases like that we'll need a "I know what I'm doing Mr. Compiler, TYVM,
-even if your cost model says otherwise" facility. And in this case I
-still think __always_inline is correct.
-
-Thx.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+~Nick Desaulniers
