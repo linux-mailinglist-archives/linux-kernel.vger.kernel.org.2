@@ -2,120 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840303259FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12240325A02
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 00:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhBYW6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:58:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50102 "EHLO
+        id S232549AbhBYXAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 18:00:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbhBYW6i (ORCPT
+        with ESMTP id S229993AbhBYXAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:58:38 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C47C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:57:57 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id f17so5434408qth.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:57:57 -0800 (PST)
+        Thu, 25 Feb 2021 18:00:45 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA25C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:00:05 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id f10so5889513ilq.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:00:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=U1hhikhUfJgUYoJWHOz5mYG43dgdqvD25NKJhwkGGME=;
-        b=W1Lg/r85qkEkqlSzP3K7bUkT8hCe1cymIs3mOxfNemlRXXDK1J99kIUqTtEdKHoD5P
-         YrOMdAXcg4Y5Vqz8s0EoLdA6z553GS5BJPSOEyq6PKNcVO0NYEqr2XiIXYjyyIDEArGe
-         AoKfPOdmJLAqN4FOF2o0ENH1UB6kPJ7E76H+E=
+        bh=5XspxK0PdIQsovjLyVyGdSX6BoQMz+G/8K5JhMr+loc=;
+        b=pkh4T7ynn+GB+pZAd1CZylm7bj8M2Xc+JTtE118zzJdpjKIMiDStQIRKnGP9zdyYf0
+         BcpHSYoF6BYT45oSWTGema+9VDxw3PKp3ap9LoceEXBA/Sknxf7Kr7EZrWKL8BqJ2KUG
+         9ELfgX5pqNvwEb5ihIYdyjdykB5OTHsBKxYeu+A2my1Wgq7Rf0D1r5qbi2QA+3pDlbxm
+         VqiRRMYFfMxVNCRHFejZHzJwJdGqzbxA1snO5BsDXDbRO4kb4a8niLoE3BlbV71085K7
+         h4482SDdLc5pKRUj1JubV008AxQdlD6wElzH+woME/Sk4C/vp1FUil43I/fuMWEtH0tV
+         8REw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=U1hhikhUfJgUYoJWHOz5mYG43dgdqvD25NKJhwkGGME=;
-        b=AlKB//3ozdOyKmL+C38x0eB8d424qoqopwc3fmNVG9r3tZoyuVKCeWP/32ZvnTnG69
-         brhPpFHUz3pGi7tlzKVgFG6iUBCObDpwXe8r1g1K/UX3f3ZEZ3FviGTSAN2DFR1u2h3b
-         QjZB/JKmUjPeHEfsdDDW37l2kxpNVWd/3zukiNPJHu54PkG5uWm8q4p3RPe56IUguTU8
-         2ovT2hALe9yAWyILTZC+VsErEAM5JZcURueV5eVJn+hoMommQ61IR3hNtzEFP/xPwIEM
-         JYFVSQ0hRyfY2J3n3VAduURlYFq44fkTkUkRiBKG8gRiAqZZiKIERyXh1I7sEm3g5gya
-         KiyQ==
-X-Gm-Message-State: AOAM531bvar6Uv6QWZjiyZ2fukZiZVTcHgsTj4bvFoJIT1kX56Jv433d
-        U/WFW81jhZ1C1ZMZmCSTWLQbQEAqsCTrNA==
-X-Google-Smtp-Source: ABdhPJznmCKxHPJQFTIAuhPzjzwe+auto5/hVcUcHVXxsWsCOg8K/5sYuffTcV2/62/uvErEgHyU+w==
-X-Received: by 2002:ac8:6a16:: with SMTP id t22mr362641qtr.333.1614293876996;
-        Thu, 25 Feb 2021 14:57:56 -0800 (PST)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id e15sm4637546qti.79.2021.02.25.14.57.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Feb 2021 14:57:56 -0800 (PST)
-Received: by mail-yb1-f178.google.com with SMTP id c131so7071090ybf.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:57:56 -0800 (PST)
-X-Received: by 2002:a25:4e83:: with SMTP id c125mr201182ybb.343.1614293875603;
- Thu, 25 Feb 2021 14:57:55 -0800 (PST)
+        bh=5XspxK0PdIQsovjLyVyGdSX6BoQMz+G/8K5JhMr+loc=;
+        b=CGLk9HrugfwL8F7clIFiTLp2frUcueskh/iY3PfGsq2k/Yv1G5OjOtYWFajcHmmeZt
+         phKMP4Qddfy8zwPraOEWGH1T68x8t3KWhi9ssS0S98yqLZAVHI7GFOkKuAFboI7bZd9L
+         xZSQV1/+4CD1sRqRx6ORJDmTEz11CbZpNETttVXtE3iS2moXEXuSSDPNSsBM0v10CxEX
+         q4MGO34y1FNk3FezpLeF/r8TAbcuNj1rlQdRzpTs8FTGNbJcr5RKH2nEmpupX3prnjcY
+         xXbjBDgd8+nW1FEMbbjaFd15IUKn692Lw0uwQpvg3+pq92uJ/0jczqdG1zqXNNDghlnJ
+         P+0g==
+X-Gm-Message-State: AOAM533Cxg3ShF4VsyBZD9xZyZkTEgaQgYG5oI5wcXcMG+2FMEoL1HXU
+        7PKzfnitBwqIQ2GAXSs/W8AzZD7wGocyg4yL8vmcqA==
+X-Google-Smtp-Source: ABdhPJwp0cGVsBrOff0RWqDvOFDayYL0EnOuJDctsNFXCzoR26aNVdPACoTevyNH5XNtYOTmSaV/qHGqQOJBUUo4HNI=
+X-Received: by 2002:a92:cd8a:: with SMTP id r10mr35361ilb.110.1614294004761;
+ Thu, 25 Feb 2021 15:00:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225221310.1939599-1-dianders@chromium.org>
- <20210225141022.2.Id27e7e6f90c29bf623fa4880e18a14ba1dffd2d2@changeid> <a4a83576-9d95-80eb-0090-62526eba9095@somainline.org>
-In-Reply-To: <a4a83576-9d95-80eb-0090-62526eba9095@somainline.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 25 Feb 2021 14:57:44 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WhjvqUau_Jz9ZLFukGUxRqGJTJN+sUt=yv2Q81FRzUWQ@mail.gmail.com>
-Message-ID: <CAD=FV=WhjvqUau_Jz9ZLFukGUxRqGJTJN+sUt=yv2Q81FRzUWQ@mail.gmail.com>
-Subject: Re: [PATCH 02/13] arm64: dts: qcom: Move sc7180 MI2S config to board
- files and make pulldown
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexandru M Stan <amstan@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Judy Hsiao <judyhsiao@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1612398155.git.ashish.kalra@amd.com> <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
+ <YCxrV4u98ZQtInOE@google.com> <SN6PR12MB27672FF8358D122EDD8CC0188E859@SN6PR12MB2767.namprd12.prod.outlook.com>
+ <20210224175122.GA19661@ashkalra_ubuntu_server> <YDaZacLqNQ4nK/Ex@google.com> <20210225202008.GA5208@ashkalra_ubuntu_server>
+In-Reply-To: <20210225202008.GA5208@ashkalra_ubuntu_server>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Thu, 25 Feb 2021 14:59:27 -0800
+Message-ID: <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
+Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST ioctl
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "rkrcmar@redhat.com" <rkrcmar@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>, "bp@suse.de" <bp@suse.de>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Feb 25, 2021 at 2:55 PM Konrad Dybcio
-<konrad.dybcio@somainline.org> wrote:
+On Thu, Feb 25, 2021 at 12:20 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
 >
-> Hi,
->
->
+> On Wed, Feb 24, 2021 at 10:22:33AM -0800, Sean Christopherson wrote:
+> > On Wed, Feb 24, 2021, Ashish Kalra wrote:
+> > > # Samples: 19K of event 'kvm:kvm_hypercall'
+> > > # Event count (approx.): 19573
+> > > #
+> > > # Overhead  Command          Shared Object     Symbol
+> > > # ........  ...............  ................  .........................
+> > > #
+> > >    100.00%  qemu-system-x86  [kernel.vmlinux]  [k] kvm_emulate_hypercall
+> > >
+> > > Out of these 19573 hypercalls, # of page encryption status hcalls are 19479,
+> > > so almost all hypercalls here are page encryption status hypercalls.
 > >
-> > +&pri_mi2s_active {
-> > +     pinconf {
-> > +             pins = "gpio53", "gpio54", "gpio55", "gpio56";
-> > +             drive-strength = <2>;
-> > +             bias-pull-down;
-> > +     };
-> > +};
-> > +
+> > Oof.
+> >
+> > > The above data indicates that there will be ~2% more Heavyweight VMEXITs
+> > > during SEV guest boot if we do page encryption status hypercalls
+> > > pass-through to host userspace.
+> > >
+> > > But, then Brijesh pointed out to me and highlighted that currently
+> > > OVMF is doing lot of VMEXITs because they don't use the DMA pool to minimize the C-bit toggles,
+> > > in other words, OVMF bounce buffer does page state change on every DMA allocate and free.
+> > >
+> > > So here is the performance analysis after kernel and initrd have been
+> > > loaded into memory using grub and then starting perf just before booting the kernel.
+> > >
+> > > These are the performance #'s after kernel and initrd have been loaded into memory,
+> > > then perf is attached and kernel is booted :
+> > >
+> > > # Samples: 1M of event 'kvm:kvm_userspace_exit'
+> > > # Event count (approx.): 1081235
+> > > #
+> > > # Overhead  Trace output
+> > > # ........  ........................
+> > > #
+> > >     99.77%  reason KVM_EXIT_IO (2)
+> > >      0.23%  reason KVM_EXIT_MMIO (6)
+> > >
+> > > # Samples: 1K of event 'kvm:kvm_hypercall'
+> > > # Event count (approx.): 1279
+> > > #
+> > >
+> > > So as the above data indicates, Linux is only making ~1K hypercalls,
+> > > compared to ~18K hypercalls made by OVMF in the above use case.
+> > >
+> > > Does the above adds a prerequisite that OVMF needs to be optimized if
+> > > and before hypercall pass-through can be done ?
+> >
+> > Disclaimer: my math could be totally wrong.
+> >
+> > I doubt it's a hard requirement.  Assuming a conversative roundtrip time of 50k
+> > cycles, those 18K hypercalls will add well under a 1/2 a second of boot time.
+> > If userspace can push the roundtrip time down to 10k cycles, the overhead is
+> > more like 50 milliseconds.
+> >
+> > That being said, this does seem like a good OVMF cleanup, irrespective of this
+> > new hypercall.  I assume it's not cheap to convert a page between encrypted and
+> > decrypted.
+> >
+> > Thanks much for getting the numbers!
 >
-> You can omit pinconf{}, so the outcome would be:
-> &pri_mi2s_active {
+> Considering the above data and guest boot time latencies
+> (and potential issues with OVMF and optimizations required there),
+> do we have any consensus on whether we want to do page encryption
+> status hypercall passthrough or not ?
 >
->     pins = ...
->
->     ...
->
-> };
->
->
-> This makes the DTs ever so shorter and is the style that's currently used for new submissions.
->
-> Same goes for the nodes that are being referenced.
+> Thanks,
+> Ashish
 
-Yes, I agree.  That definitely makes sense going forward, but I think
-it'll just add to the confusion to switch a dts for a given SoC
-mid-stride.  ...or, if we do switch the style it should be done in a
-separate (no-op) patch series.  This series is already giant enough...
+Thanks for grabbing the data!
 
--Doug
+I am fine with both paths. Sean has stated an explicit desire for
+hypercall exiting, so I think that would be the current consensus.
+
+If we want to do hypercall exiting, this should be in a follow-up
+series where we implement something more generic, e.g. a hypercall
+exiting bitmap or hypercall exit list. If we are taking the hypercall
+exit route, we can drop the kvm side of the hypercall. Userspace could
+also handle the MSR using MSR filters (would need to confirm that).
+Then userspace could also be in control of the cpuid bit.
+
+Essentially, I think you could drop most of the host kernel work if
+there were generic support for hypercall exiting. Then userspace would
+be responsible for all of that. Thoughts on this?
+
+--Steve
