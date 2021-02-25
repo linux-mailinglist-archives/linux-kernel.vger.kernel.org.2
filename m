@@ -2,175 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1017A325963
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84382325991
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbhBYWPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:15:48 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57358 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233902AbhBYWOr (ORCPT
+        id S232398AbhBYWVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:21:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27926 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234326AbhBYWQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:14:47 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PM2mgN004827;
-        Thu, 25 Feb 2021 17:13:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=OF+xJHlYMnB7oeiL0q32FeC0pfWAxPe/KrGKJazKw3I=;
- b=iJ1pOHs8SUhK0cmRFP9x51TQedcFBstEEqTYR/1JZTn65j0UvpwoB/vrXPXUPC4oHqC5
- fkogjiExeZVOFLh8tWSfddhfTqiTUUTMlsyIWa7EnjmINXzoLNdC7RIKHMXQtS1XRr+M
- X9o5vkJFd0+bGOFRqwIRYmA6mIW7aVjwRB91ids7RcazgabtNx495oKdC5WPpNbKmqYz
- 14NSrPe8TYK52hAKQ8bvDfeC+oBymmYABn9b83449l15ezR9gZoln3WZpnP2Fx4rEQNr
- vt8ndGqd1T+3ZuU8YHzru/Lq9tc6ppEaQlUodb6a3Wl5cWi4P2hDq0Tw6sZFiLaJxQxE PQ== 
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36xfcxhp3h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 17:13:33 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11PMCDcF002387;
-        Thu, 25 Feb 2021 22:13:32 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04wdc.us.ibm.com with ESMTP id 36tt2a20qg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 22:13:32 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11PMDV8r12190114
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 22:13:31 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E0ABBE051;
-        Thu, 25 Feb 2021 22:13:31 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EBD3DBE04F;
-        Thu, 25 Feb 2021 22:13:29 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.44.137])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 25 Feb 2021 22:13:29 +0000 (GMT)
-Subject: Re: [PATCH v3 2/5] ibmvfc: fix invalid sub-CRQ handles after hard
- reset
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20210225214237.22400-1-tyreld@linux.ibm.com>
- <20210225214237.22400-3-tyreld@linux.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <c4e0c5db-2743-ea2e-8dd4-6dc4bdc9d572@linux.ibm.com>
-Date:   Thu, 25 Feb 2021 14:13:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210225214237.22400-3-tyreld@linux.ibm.com>
+        Thu, 25 Feb 2021 17:16:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614291321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+533owFFoe3g0xTq7seU8RN9Dccv2HdyDhgPBrwMfSM=;
+        b=QBYD9AzjfwOy7FUJ28dldZi7L+h46/u/YaZOhLh2ACNHR4ZVQ+5O6Uc0a8j51h/G21daMa
+        xX8me5yicb/+mFDENgoJyiN5oOWrfmIRhcgoAPNxQbV/9OTTDfMCX5PG5DXGeEwTGXyzR4
+        6fDpydKNBUBeJULmwXnIuBSQgo6i560=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-393-rQM6TUUnNFiBNjy3LLlibg-1; Thu, 25 Feb 2021 17:15:19 -0500
+X-MC-Unique: rQM6TUUnNFiBNjy3LLlibg-1
+Received: by mail-ej1-f72.google.com with SMTP id y3so2937066ejj.20
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:15:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=+533owFFoe3g0xTq7seU8RN9Dccv2HdyDhgPBrwMfSM=;
+        b=ByjrdKp4w/jQoDpyJrVhQmmGOyPL9fjEYBfiEmHyhisSCLh2kE5+PEJq+/55IXbYbk
+         tx5oinZeoPE7dGwGF6gQiZnhmjEa6yKgQSSM4hIIzSTKl32JZx+Bl6xhyPRYLfn15rm0
+         wIj3FFeOhyHZQNnH/0YIREtBEPGUJBLQoSpSU+xZ4GfoJMHrYxPoyUTxG5Lo0NhjFIcv
+         /rGJIaqDb1Bs2upZ6T7BH4jn2BX1GdZ2KkL9tSV4VrUSnhJaMQSokpQDexXuTrPK/Pt6
+         BaPKrd0Ra/k8WtL0sxSdRbYBo2DbfQSJ0ZRjNTBAlv/IN9NoLzCemrK6SFp9pUMA/5h0
+         51uA==
+X-Gm-Message-State: AOAM533hCwqLvZBcRupcmyJdg1vfBCc97sbqzZriBZcF55znE5u8Jny8
+        qAXX/UtRngim7nFWAqqfNskBJLkywuVqsPrc0f99njgCqwiQMqS1n5cbBmDuzmGOF/TGmBWGZxk
+        rj98NgtH+K+LroU44Uj+W83N9
+X-Received: by 2002:a17:906:5acd:: with SMTP id x13mr4841441ejs.211.1614291318592;
+        Thu, 25 Feb 2021 14:15:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwsLOW/8G5/Ak1nix7I8hM+mG5Fh/maJBwHMgKJbldwwCRfHbbA63oUAdYER2wiGlo1aFp3nw==
+X-Received: by 2002:a17:906:5acd:: with SMTP id x13mr4841423ejs.211.1614291318397;
+        Thu, 25 Feb 2021 14:15:18 -0800 (PST)
+Received: from ?IPv6:2a01:598:b880:cd5f:2452:43b8:4b31:c43? ([2a01:598:b880:cd5f:2452:43b8:4b31:c43])
+        by smtp.gmail.com with ESMTPSA id a3sm3531876ejv.40.2021.02.25.14.15.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Feb 2021 14:15:17 -0800 (PST)
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-25_14:2021-02-24,2021-02-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxscore=0 spamscore=0 priorityscore=1501 impostorscore=0 clxscore=1015
- malwarescore=0 adultscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102250165
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [RFC PATCH 2/2] mm,page_alloc: Make alloc_contig_range handle free hugetlb pages
+Date:   Thu, 25 Feb 2021 23:15:15 +0100
+Message-Id: <1C808F10-158D-4DB8-A393-01829A398B17@redhat.com>
+References: <b4bf7fcf-449d-daed-e490-994b1072652a@oracle.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <b4bf7fcf-449d-daed-e490-994b1072652a@oracle.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+X-Mailer: iPhone Mail (18D52)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/25/21 1:42 PM, Tyrel Datwyler wrote:
-> A hard reset results in a complete transport disconnect such that the
-> CRQ connection with the partner VIOS is broken. This has the side effect
-> of also invalidating the associated sub-CRQs. The current code assumes
-> that the sub-CRQs are perserved resulting in a protocol violation after
-> trying to reconnect them with the VIOS. This introduces an infinite loop
-> such that the VIOS forces a disconnect after each subsequent attempt to
-> re-register with invalid handles.
-> 
-> Avoid the aforementioned issue by releasing the sub-CRQs prior to CRQ
-> disconnect, and driving a reinitialization of the sub-CRQs once a new
-> CRQ is registered with the hypervisor.
-> 
-> fixes: faacf8c5f1d5 ("ibmvfc: add alloc/dealloc routines for SCSI Sub-CRQ Channels")
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> Reviewed-by: Brian King <brking@linux.ibm.com>
-> ---
->  drivers/scsi/ibmvscsi/ibmvfc.c | 21 +++++++++------------
->  1 file changed, 9 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> index 384960036f8b..2cca55f2e464 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> @@ -158,6 +158,9 @@ static void ibmvfc_npiv_logout(struct ibmvfc_host *);
->  static void ibmvfc_tgt_implicit_logout_and_del(struct ibmvfc_target *);
->  static void ibmvfc_tgt_move_login(struct ibmvfc_target *);
->  
-> +static void ibmvfc_release_sub_crqs(struct ibmvfc_host *);
-> +static void ibmvfc_init_sub_crqs(struct ibmvfc_host *);
-> +
->  static const char *unknown_error = "unknown error";
->  
->  static long h_reg_sub_crq(unsigned long unit_address, unsigned long ioba,
-> @@ -926,8 +929,8 @@ static int ibmvfc_reset_crq(struct ibmvfc_host *vhost)
->  	unsigned long flags;
->  	struct vio_dev *vdev = to_vio_dev(vhost->dev);
->  	struct ibmvfc_queue *crq = &vhost->crq;
-> -	struct ibmvfc_queue *scrq;
-> -	int i;
-> +
-> +	ibmvfc_release_sub_crqs(vhost);
->  
->  	/* Close the CRQ */
->  	do {
-> @@ -936,6 +939,8 @@ static int ibmvfc_reset_crq(struct ibmvfc_host *vhost)
->  		rc = plpar_hcall_norets(H_FREE_CRQ, vdev->unit_address);
->  	} while (rc == H_BUSY || H_IS_LONG_BUSY(rc));
->  
-> +	ibmvfc_init_sub_crqs(vhost);
 
-This has the same issue as patch 5 in that if fail to set up sub-crqs do_enquiry
-will be set to zero, but the locked code region below will then flip it back to
-one which we don't want.
+> Am 25.02.2021 um 22:43 schrieb Mike Kravetz <mike.kravetz@oracle.com>:
+>=20
+> =EF=BB=BFOn 2/10/21 12:23 AM, David Hildenbrand wrote:
+>>> On 08.02.21 11:38, Oscar Salvador wrote:
+>>> --- a/mm/compaction.c
+>>> +++ b/mm/compaction.c
+>>> @@ -952,6 +952,17 @@ isolate_migratepages_block(struct compact_control *=
+cc, unsigned long low_pfn,
+>>>                      low_pfn +=3D compound_nr(page) - 1;
+>>>                      goto isolate_success_no_list;
+>>>                  }
+>>> +            } else {
+>>=20
+>> } else if (alloc_and_dissolve_huge_page(page))) {
+>>=20
+>> ...
+>>=20
+>>> +                /*
+>>> +                 * Free hugetlb page. Allocate a new one and
+>>> +                 * dissolve this is if succeed.
+>>> +                 */
+>>> +                if (alloc_and_dissolve_huge_page(page)) {
+>>> +                    unsigned long order =3D buddy_order_unsafe(page);
+>>> +
+>>> +                    low_pfn +=3D (1UL << order) - 1;
+>>> +                    continue;
+>>> +                }
+>>=20
+>>=20
+>>=20
+>> Note that there is a very ugly corner case we will have to handle gracefu=
+lly (I think also in patch #1):
+>>=20
+>> Assume you allocated a gigantic page (and assume that we are not using CM=
+A for gigantic pages for simplicity). Assume you want to allocate another on=
+e. alloc_pool_huge_page()->...->alloc_contig_pages() will stumble over the f=
+irst allocated page. It will try to alloc_and_dissolve_huge_page() the exist=
+ing gigantic page. To do that, it will alloc_pool_huge_page()->...->alloc_co=
+ntig_pages() ... and so on. Bad.
+>>=20
+>=20
+> Sorry for resurrecting an old thread.
+> While looking at V3 of these patches, I was exploring all the calling
+> sequences looking for races and other issues.  It 'may' be that the
+> issue about infinitely allocating and freeing gigantic pages may not be
+> an issue.  Of course, I could be mistaken.  Here is my reasoning:
+>=20
+> alloc_and_dissolve_huge_page (now isolate_or_dissolve_huge_page) will be
+> called from __alloc_contig_migrate_range() within alloc_contig_range().
+> Before calling __alloc_contig_migrate_range, we call start_isolate_page_ra=
+nge
+> to isolate all page blocks in the range.  Because all the page blocks in
+> the range are isolated, another invocation of alloc_contig_range will
+> not operate on any part of that range.  See the comments for
+> start_isolate_page_range or commit 2c7452a075d4.  So, when
+> start_isolate_page_range goes to allocate another gigantic page it will
+> never notice/operate on the existing gigantic page.
+>=20
+> Again, this is confusing and I might be missing something.
 
--T
+I think you are right that the endless loop is blocked. But I think the whol=
+e thing could cascade once we have multiple gigantic pages allocated.
 
-> +
->  	spin_lock_irqsave(vhost->host->host_lock, flags);
->  	spin_lock(vhost->crq.q_lock);
->  	vhost->state = IBMVFC_NO_CRQ;
-> @@ -947,16 +952,6 @@ static int ibmvfc_reset_crq(struct ibmvfc_host *vhost)
->  	memset(crq->msgs.crq, 0, PAGE_SIZE);
->  	crq->cur = 0;
->  
-> -	if (vhost->scsi_scrqs.scrqs) {
-> -		for (i = 0; i < nr_scsi_hw_queues; i++) {
-> -			scrq = &vhost->scsi_scrqs.scrqs[i];
-> -			spin_lock(scrq->q_lock);
-> -			memset(scrq->msgs.scrq, 0, PAGE_SIZE);
-> -			scrq->cur = 0;
-> -			spin_unlock(scrq->q_lock);
-> -		}
-> -	}
-> -
->  	/* And re-open it again */
->  	rc = plpar_hcall_norets(H_REG_CRQ, vdev->unit_address,
->  				crq->msg_token, PAGE_SIZE);
-> @@ -966,6 +961,7 @@ static int ibmvfc_reset_crq(struct ibmvfc_host *vhost)
->  		dev_warn(vhost->dev, "Partner adapter not ready\n");
->  	else if (rc != 0)
->  		dev_warn(vhost->dev, "Couldn't register crq (rc=%d)\n", rc);
-> +
->  	spin_unlock(vhost->crq.q_lock);
->  	spin_unlock_irqrestore(vhost->host->host_lock, flags);
->  
-> @@ -5692,6 +5688,7 @@ static void ibmvfc_deregister_scsi_channel(struct ibmvfc_host *vhost, int index)
->  
->  	free_irq(scrq->irq, scrq);
->  	irq_dispose_mapping(scrq->irq);
-> +	scrq->irq = 0;
->  
->  	do {
->  		rc = plpar_hcall_norets(H_FREE_SUB_CRQ, vdev->unit_address,
-> 
+Try allocating a new gpage. We find an existing gpage, isolate it and try to=
+ migrate it. To do that, we try allocating a new gpage. We find yet another e=
+xisting gpage, isolate and try to migrate it ... until we isolated all gpage=
+s on out way to an actual usable area. Then we have to actually migrate all t=
+hese in reverse order ...
+
+Of course this only works if we can actually isolate a gigantic page - which=
+ should be the case I think (they are migratable and should be marked as mov=
+able).
+
+>=20
+> In any case, I agree that gigantic pages are tricky and we should leave
+> them out of the discussion for now.  We can rethink this later if
+> necessary.
+
+Yes, it=E2=80=98s tricky and not strictly required right now because we neve=
+r place them on ZONE_MOVABLE. And as I said, actual use cases might be rare.=
 
