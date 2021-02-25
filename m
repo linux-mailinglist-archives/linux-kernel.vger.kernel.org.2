@@ -2,145 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5538324E38
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4EE324DD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:21:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234800AbhBYKbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:31:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36374 "EHLO mail.kernel.org"
+        id S234634AbhBYKOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:14:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235233AbhBYKC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:02:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7292A64F35;
-        Thu, 25 Feb 2021 09:56:30 +0000 (UTC)
+        id S233791AbhBYJ72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:59:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3776E64F1E;
+        Thu, 25 Feb 2021 09:55:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246990;
-        bh=smERLzUcuqkoVkdqzDf5LYEFUoZ0il8ZClueyStKnVc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hQ7eLB/hJXs0WNV25O3Z4WUoQ9G5YwILnGoNT+5xKgy7YE1ZNXrhzVBU6Nkfjuano
-         0Z5pCQ1WcUq1ONNzOpp12xEp5tJlvX47p8WPDssmYttFkTvQSzTO+7MsgHHdA0R+9l
-         49VNGu8KJ3eAaPS0GpsC4zJ2l+TCJiueOGVeUVDk=
+        s=korg; t=1614246917;
+        bh=dc+mqs92eqr14fLxaCWbl3fx8EdlXbDOtaLnJ4ct3ic=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KoM6pJTEFo9KaU8edrRwxltCsZ94QejhsHXgo856bFx1KxZUKYrCbpHQdg/3UMCx9
+         tOlWa7dn6X436VaDCZ+E8iCcWFy0G+s5jcKw0SllNIt+mkjqwUHL7a3PvQvpmmXDBQ
+         5v8n8O5piCEJpIpZqO6K6IyvhjD/iEUFfOfnu6PE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 5.4 00/17] 5.4.101-rc1 review
-Date:   Thu, 25 Feb 2021 10:53:45 +0100
-Message-Id: <20210225092515.001992375@linuxfoundation.org>
+        stable@vger.kernel.org, David Stevens <stevensd@google.com>,
+        3pvd@google.com, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 15/23] KVM: do not assume PTE is writable after follow_pfn
+Date:   Thu, 25 Feb 2021 10:53:46 +0100
+Message-Id: <20210225092517.255507506@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-MIME-Version: 1.0
+In-Reply-To: <20210225092516.531932232@linuxfoundation.org>
+References: <20210225092516.531932232@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.4.101-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.4.101-rc1
-X-KernelTest-Deadline: 2021-02-27T09:25+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.4.101 release.
-There are 17 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-Responses should be made by Sat, 27 Feb 2021 09:25:06 +0000.
-Anything received after that time might be too late.
+commit bd2fae8da794b55bf2ac02632da3a151b10e664c upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.101-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-and the diffstat can be found below.
+In order to convert an HVA to a PFN, KVM usually tries to use
+the get_user_pages family of functinso.  This however is not
+possible for VM_IO vmas; in that case, KVM instead uses follow_pfn.
 
-thanks,
+In doing this however KVM loses the information on whether the
+PFN is writable.  That is usually not a problem because the main
+use of VM_IO vmas with KVM is for BARs in PCI device assignment,
+however it is a bug.  To fix it, use follow_pte and check pte_write
+while under the protection of the PTE lock.  The information can
+be used to fail hva_to_pfn_remapped or passed back to the
+caller via *writable.
 
-greg k-h
+Usage of follow_pfn was introduced in commit add6a0cd1c5b ("KVM: MMU: try to fix
+up page faults before giving up", 2016-07-05); however, even older version
+have the same issue, all the way back to commit 2e2e3738af33 ("KVM:
+Handle vma regions with no backing page", 2008-07-20), as they also did
+not check whether the PFN was writable.
 
--------------
-Pseudo-Shortlog of commits:
+Fixes: 2e2e3738af33 ("KVM: Handle vma regions with no backing page")
+Reported-by: David Stevens <stevensd@google.com>
+Cc: 3pvd@google.com
+Cc: Jann Horn <jannh@google.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ virt/kvm/kvm_main.c |   15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.4.101-rc1
-
-Rong Chen <rong.a.chen@intel.com>
-    scripts/recordmcount.pl: support big endian for ARCH sh
-
-Shyam Prasad N <sprasad@microsoft.com>
-    cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
-
-Raju Rangoju <rajur@chelsio.com>
-    cxgb4: Add new T6 PCI device id 0x6092
-
-Christoph Schemmel <christoph.schemmel@gmail.com>
-    NET: usb: qmi_wwan: Adding support for Cinterion MV31
-
-Sean Christopherson <seanjc@google.com>
-    KVM: Use kvm_pfn_t for local PFN variable in hva_to_pfn_remapped()
-
-Paolo Bonzini <pbonzini@redhat.com>
-    mm: provide a saner PTE walking API for modules
-
-Paolo Bonzini <pbonzini@redhat.com>
-    KVM: do not assume PTE is writable after follow_pfn
-
-Christoph Hellwig <hch@lst.de>
-    mm: simplify follow_pte{,pmd}
-
-Christoph Hellwig <hch@lst.de>
-    mm: unexport follow_pte_pmd
-
-Rolf Eike Beer <eb@emlix.com>
-    scripts: set proper OpenSSL include dir also for sign-file
-
-Rolf Eike Beer <eb@emlix.com>
-    scripts: use pkg-config to locate libcrypto
-
-Sameer Pujar <spujar@nvidia.com>
-    arm64: tegra: Add power-domain for Tegra210 HDA
-
-Rustam Kovhaev <rkovhaev@gmail.com>
-    ntfs: check for valid standard information attribute
-
-Stefan Ursella <stefan.ursella@wolfvision.net>
-    usb: quirks: add quirk to start video capture on ELMO L-12F document camera reliable
-
-Johan Hovold <johan@kernel.org>
-    USB: quirks: sort quirk entries
-
-Will McVicker <willmcvicker@google.com>
-    HID: make arrays usage and value to be the same
-
-Daniel Borkmann <daniel@iogearbox.net>
-    bpf: Fix truncation handling for mod32 dst reg wrt zero
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |  4 +-
- arch/arm64/boot/dts/nvidia/tegra210.dtsi           |  1 +
- drivers/hid/hid-core.c                             |  6 +--
- drivers/net/ethernet/chelsio/cxgb4/t4_pci_id_tbl.h |  1 +
- drivers/net/usb/qmi_wwan.c                         |  1 +
- drivers/usb/core/quirks.c                          |  9 ++--
- fs/cifs/connect.c                                  |  1 +
- fs/dax.c                                           | 10 ++--
- fs/ntfs/inode.c                                    |  6 +++
- include/linux/mm.h                                 |  8 +--
- kernel/bpf/verifier.c                              | 10 ++--
- mm/memory.c                                        | 57 ++++++++++++----------
- scripts/Makefile                                   |  9 +++-
- scripts/recordmcount.pl                            |  6 ++-
- virt/kvm/kvm_main.c                                | 17 +++++--
- 15 files changed, 93 insertions(+), 53 deletions(-)
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1889,9 +1889,11 @@ static int hva_to_pfn_remapped(struct vm
+ 			       kvm_pfn_t *p_pfn)
+ {
+ 	unsigned long pfn;
++	pte_t *ptep;
++	spinlock_t *ptl;
+ 	int r;
+ 
+-	r = follow_pfn(vma, addr, &pfn);
++	r = follow_pte(vma->vm_mm, addr, NULL, &ptep, NULL, &ptl);
+ 	if (r) {
+ 		/*
+ 		 * get_user_pages fails for VM_IO and VM_PFNMAP vmas and does
+@@ -1906,14 +1908,19 @@ static int hva_to_pfn_remapped(struct vm
+ 		if (r)
+ 			return r;
+ 
+-		r = follow_pfn(vma, addr, &pfn);
++		r = follow_pte(vma->vm_mm, addr, NULL, &ptep, NULL, &ptl);
+ 		if (r)
+ 			return r;
++	}
+ 
++	if (write_fault && !pte_write(*ptep)) {
++		pfn = KVM_PFN_ERR_RO_FAULT;
++		goto out;
+ 	}
+ 
+ 	if (writable)
+-		*writable = true;
++		*writable = pte_write(*ptep);
++	pfn = pte_pfn(*ptep);
+ 
+ 	/*
+ 	 * Get a reference here because callers of *hva_to_pfn* and
+@@ -1928,6 +1935,8 @@ static int hva_to_pfn_remapped(struct vm
+ 	 */ 
+ 	kvm_get_pfn(pfn);
+ 
++out:
++	pte_unmap_unlock(ptep, ptl);
+ 	*p_pfn = pfn;
+ 	return 0;
+ }
 
 
