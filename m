@@ -2,279 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CCC324A40
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 06:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 196DD324A4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 07:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235307AbhBYFrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 00:47:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhBYFr2 (ORCPT
+        id S235338AbhBYGAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 01:00:40 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12648 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229954AbhBYGAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 00:47:28 -0500
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738F5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 21:46:42 -0800 (PST)
-Received: by mail-vs1-xe2d.google.com with SMTP id t23so2371614vsk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 21:46:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7rjxHnpyYn9L8b5/UDQL6DJ1bU7foo2uFq2+dZ8sa4Y=;
-        b=q6SaxgMehhZKqHr35k4EhsbU7RgRd2N6TlC5zRxFfrx7ADEhd+X5erKoplc/AwXcju
-         Dy0/MHQox2Fke9+SpXgXQ2/nAEa6NvE7VmDkWf2fDE69GMFZMu0AdOURM7Nka+s568NP
-         R048xtZUf2lSOHFED/00TKEXA03aBxSv0iaF0Cyd/mjo/PPKCxuSdD28Ut9Y5622YPLd
-         m/X5K7J2Nmp7qdxNvYPmxcnJNQIaeTWKAQX1Y8rmUB5+H2dn12D1iYdZNDVgLon35/p/
-         Tvd9TwA9w7bQhkc28Ehf+M5mNFGvZiupmbNNNndLaHa726HpZ6QtSjH2ttPTbtC3My7B
-         9azQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7rjxHnpyYn9L8b5/UDQL6DJ1bU7foo2uFq2+dZ8sa4Y=;
-        b=ZIpwBQtDpQ3ZVtY0+cAC+wdaJNO8VXe5hmlpk54Ha22DDVmnnivoTC6Gc50FGV6bl2
-         2kcxjYg5/+BfzFEKrsdiOPhd4xPMN3KdlAV4FpvF0fnUxIptIND7C7j20BXFaMWoc4oG
-         Xnu2sSNuoTFRWAZw9nc9Uylf6mvf8RfSwCj8coKbxzsQJeBBT7BkKFRVeEUR0qyRBJeq
-         SBW0Ofq2R1wDywQtpKZp87HVNIZ/SUr6RVurQP54BxmYB//p09oRGgMqXoJ14taTli+S
-         BtNqW0VMnvqX8jyxBsq9RKPP5xZrVCniWFVk6H+33maPlzuobgtJPtCrqZZfB5Q3DUCr
-         Vepw==
-X-Gm-Message-State: AOAM532l7XIi8eSLJJcIldhya/JlU9YrwmC5g2Nwk09Z+mdjcMQq0/mi
-        6sI5aBV3obHZK866OEI5+ZOdtOJLX2h2AEs5K5FMnA==
-X-Google-Smtp-Source: ABdhPJxEPwVthGsdGSRPx7Effuj2Mji3bxKzcuMjub0N8jASxnKfkethKtBAD1IEyxWE8X63GJEE6Ps/1iLJ/Ne+4Uw=
-X-Received: by 2002:a05:6102:1275:: with SMTP id q21mr689951vsg.43.1614232001065;
- Wed, 24 Feb 2021 21:46:41 -0800 (PST)
+        Thu, 25 Feb 2021 01:00:32 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DmMXM71F5z16CZL;
+        Thu, 25 Feb 2021 13:58:11 +0800 (CST)
+Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 25 Feb 2021 13:59:42 +0800
+From:   Yanan Wang <wangyanan55@huawei.com>
+To:     <kvm@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Paolo Bonzini <pbonzini@redhat.com>,
+        Ben Gardon <bgardon@google.com>,
+        "Sean Christopherson" <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        "Yanan Wang" <wangyanan55@huawei.com>
+Subject: [RFC PATCH v2 0/7] Some improvement and a new test for kvm page table
+Date:   Thu, 25 Feb 2021 13:59:33 +0800
+Message-ID: <20210225055940.18748-1-wangyanan55@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-References: <20210219090409.325492-1-badhri@google.com> <c0fbb198-a905-cdd0-3c6e-6af484512a5b@roeck-us.net>
-In-Reply-To: <c0fbb198-a905-cdd0-3c6e-6af484512a5b@roeck-us.net>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Wed, 24 Feb 2021 21:46:04 -0800
-Message-ID: <CAPTae5LMQQHkvWqcOC7D93kEJ4uJQuUu9Aq_RWTgiBfV74UC+g@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V
- before toggling
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyle Tso <kyletso@google.com>, USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.128]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 7:56 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 2/19/21 1:04 AM, Badhri Jagan Sridharan wrote:
-> > When vbus auto discharge is enabled, TCPM can sometimes be faster than
-> > the TCPC i.e. TCPM can go ahead and move the port to unattached state
-> > (involves disabling vbus auto discharge) before TCPC could effectively
-> > discharge vbus to VSAFE0V. This leaves vbus with residual charge and
-> > increases the decay time which prevents tsafe0v from being met.
-> > This change introduces a new state VBUS_DISCHARGE where the TCPM waits
-> > for a maximum of tSafe0V(max) for vbus to discharge to VSAFE0V before
-> > transitioning to unattached state and re-enable toggling. If vbus
-> > discharges to vsafe0v sooner, then, transition to unattached state
-> > happens right away.
-> >
-> > Also, while in SNK_READY, when auto discharge is enabled, drive
-> > disconnect based on vbus turning off instead of Rp disappearing on
-> > CC pins. Rp disappearing on CC pins is almost instanteous compared
-> > to vbus decay.
-> >
-> > Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto
-> > Discharge disconnect support")
-> > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > ---
-> > Changes since V1:
-> > - Add Fixes tag
-> > ---
-> >  drivers/usb/typec/tcpm/tcpm.c | 60 +++++++++++++++++++++++++++++++----
-> >  1 file changed, 53 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> > index be0b6469dd3d..0ed71725980f 100644
-> > --- a/drivers/usb/typec/tcpm/tcpm.c
-> > +++ b/drivers/usb/typec/tcpm/tcpm.c
-> > @@ -62,6 +62,8 @@
-> >       S(SNK_TRANSITION_SINK_VBUS),            \
-> >       S(SNK_READY),                           \
-> >                                               \
-> > +     S(VBUS_DISCHARGE),                      \
-> > +                                             \
-> >       S(ACC_UNATTACHED),                      \
-> >       S(DEBUG_ACC_ATTACHED),                  \
-> >       S(AUDIO_ACC_ATTACHED),                  \
-> > @@ -438,6 +440,9 @@ struct tcpm_port {
-> >       enum tcpm_ams next_ams;
-> >       bool in_ams;
-> >
-> > +     /* Auto vbus discharge state */
-> > +     bool auto_vbus_discharge_enabled;
-> > +
-> >  #ifdef CONFIG_DEBUG_FS
-> >       struct dentry *dentry;
-> >       struct mutex logbuffer_lock;    /* log buffer access lock */
-> > @@ -3413,6 +3418,8 @@ static int tcpm_src_attach(struct tcpm_port *port)
-> >       if (port->tcpc->enable_auto_vbus_discharge) {
-> >               ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, true);
-> >               tcpm_log_force(port, "enable vbus discharge ret:%d", ret);
-> > +             if (!ret)
-> > +                     port->auto_vbus_discharge_enabled = true;
-> >       }
-> >
-> >       ret = tcpm_set_roles(port, true, TYPEC_SOURCE, tcpm_data_role_for_source(port));
-> > @@ -3495,6 +3502,8 @@ static void tcpm_reset_port(struct tcpm_port *port)
-> >       if (port->tcpc->enable_auto_vbus_discharge) {
-> >               ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, false);
-> >               tcpm_log_force(port, "Disable vbus discharge ret:%d", ret);
-> > +             if (!ret)
-> > +                     port->auto_vbus_discharge_enabled = false;
-> >       }
-> >       port->in_ams = false;
-> >       port->ams = NONE_AMS;
-> > @@ -3568,6 +3577,8 @@ static int tcpm_snk_attach(struct tcpm_port *port)
-> >               tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, VSAFE5V);
-> >               ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, true);
-> >               tcpm_log_force(port, "enable vbus discharge ret:%d", ret);
-> > +             if (!ret)
-> > +                     port->auto_vbus_discharge_enabled = true;
-> >       }
-> >
-> >       ret = tcpm_set_roles(port, true, TYPEC_SINK, tcpm_data_role_for_sink(port));
-> > @@ -3684,6 +3695,12 @@ static void run_state_machine(struct tcpm_port *port)
-> >       switch (port->state) {
-> >       case TOGGLING:
-> >               break;
-> > +     case VBUS_DISCHARGE:
-> > +             if (port->port_type == TYPEC_PORT_SRC)
-> > +                     tcpm_set_state(port, SRC_UNATTACHED, PD_T_SAFE_0V);
-> > +             else
-> > +                     tcpm_set_state(port, SNK_UNATTACHED, PD_T_SAFE_0V);
-> > +             break;
-> >       /* SRC states */
-> >       case SRC_UNATTACHED:
-> >               if (!port->non_pd_role_swap)
-> > @@ -4669,7 +4686,9 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
-> >       case SRC_READY:
-> >               if (tcpm_port_is_disconnected(port) ||
-> >                   !tcpm_port_is_source(port)) {
-> > -                     if (port->port_type == TYPEC_PORT_SRC)
-> > +                     if (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v)
-> > +                             tcpm_set_state(port, VBUS_DISCHARGE, 0);
-> > +                     else if (port->port_type == TYPEC_PORT_SRC)
-> >                               tcpm_set_state(port, SRC_UNATTACHED, 0);
-> >                       else
-> >                               tcpm_set_state(port, SNK_UNATTACHED, 0);
->
-> Unless I am missing something, the new state is only used to set the
-> PD_T_SAFE_0V timeout. Is it really necessary/useful to add a new state
-> just for that, while keeping the rest of if/else statements ?
-> Personally I would prefer something like
->                         timeout = (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v) ? PD_T_SAFE_0V : 0;
->                         if (port->port_type == TYPEC_PORT_SRC)
->                                 tcpm_set_state(port, SRC_UNATTACHED, timeout);
->                         else
->                                 tcpm_set_state(port, SNK_UNATTACHED, timeout);
->
-Yes this should be OK as well. I was thinking  it would be more
-clearer during debug if there
-was a separate state altogether, but, looks like we should be fine.
-Implementing/Validating it now. Will send a follow up version today.
+Hi,
+This v2 series can mainly include two parts.
+Based on kvm queue branch: https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=queue
+Links of v1: https://lore.kernel.org/lkml/20210208090841.333724-1-wangyanan55@huawei.com/
 
-> In this context, any idea why port_type==TYPEC_PORT_DRP results in
-> SNK_UNATTACHED state ? That seems a bit odd.
+In the first part, all the known hugetlb backing src types specified
+with different hugepage sizes are listed, so that we can specify use
+of hugetlb source of the exact granularity that we want, instead of
+the system default ones. And as all the known hugetlb page sizes are
+listed, it's appropriate for all architectures. Besides, a helper that
+can get granularity of different backing src types(anonumous/thp/hugetlb)
+is added, so that we can use the accurate backing src granularity for
+kinds of alignment or guest memory accessing of vcpus.
 
-This comes from the patch here:
-https://lore.kernel.org/r/1582128343-22438-1-git-send-email-jun.li@nxp.com
+In the second part, a new test is added:
+This test is added to serve as a performance tester and a bug reproducer
+for kvm page table code (GPA->HPA mappings), it gives guidance for the
+people trying to make some improvement for kvm. And the following explains
+what we can exactly do through this test.
 
-Looks reasonable to me as tcpm_*_detach functions call  tcpm_detach so
-teardown should
-happen anyways.
+The function guest_code() can cover the conditions where a single vcpu or
+multiple vcpus access guest pages within the same memory region, in three
+VM stages(before dirty logging, during dirty logging, after dirty logging).
+Besides, the backing src memory type(ANONYMOUS/THP/HUGETLB) of the tested
+memory region can be specified by users, which means normal page mappings
+or block mappings can be chosen by users to be created in the test.
 
-static void tcpm_snk_detach(struct tcpm_port *port)
-{
-        tcpm_detach(port);
-}
+If ANONYMOUS memory is specified, kvm will create normal page mappings
+for the tested memory region before dirty logging, and update attributes
+of the page mappings from RO to RW during dirty logging. If THP/HUGETLB
+memory is specified, kvm will create block mappings for the tested memory
+region before dirty logging, and split the blcok mappings into normal page
+mappings during dirty logging, and coalesce the page mappings back into
+block mappings after dirty logging is stopped.
 
+So in summary, as a performance tester, this test can present the
+performance of kvm creating/updating normal page mappings, or the
+performance of kvm creating/splitting/recovering block mappings,
+through execution time.
 
-static void tcpm_src_detach(struct tcpm_port *port)
-{
-        tcpm_detach(port);
-}
+When we need to coalesce the page mappings back to block mappings after
+dirty logging is stopped, we have to firstly invalidate *all* the TLB
+entries for the page mappings right before installation of the block entry,
+because a TLB conflict abort error could occur if we can't invalidate the
+TLB entries fully. We have hit this TLB conflict twice on aarch64 software
+implementation and fixed it. As this test can imulate process from dirty
+logging enabled to dirty logging stopped of a VM with block mappings,
+so it can also reproduce this TLB conflict abort due to inadequate TLB
+invalidation when coalescing tables.
 
-Thanks,
-Badhri
+Links about the TLB conflict abort:
+https://lore.kernel.org/lkml/20201201201034.116760-3-wangyanan55@huawei.com/
 
->
-> Guenter
->
-> > @@ -4703,7 +4722,18 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
-> >                       tcpm_set_state(port, SNK_DEBOUNCED, 0);
-> >               break;
-> >       case SNK_READY:
-> > -             if (tcpm_port_is_disconnected(port))
-> > +             /*
-> > +              * When set_auto_vbus_discharge_threshold is enabled, CC pins go
-> > +              * away before vbus decays to disconnect threshold. Allow
-> > +              * disconnect to be driven by vbus disconnect when auto vbus
-> > +              * discharge is enabled.
-> > +              *
-> > +              * EXIT condition is based primarily on vbus disconnect and CC is secondary.
-> > +              * "A port that has entered into USB PD communications with the Source and
-> > +              * has seen the CC voltage exceed vRd-USB may monitor the CC pin to detect
-> > +              * cable disconnect in addition to monitoring VBUS.
-> > +              */
-> > +             if (!port->auto_vbus_discharge_enabled && tcpm_port_is_disconnected(port))
-> >                       tcpm_set_state(port, unattached_state(port), 0);
-> >               else if (!port->pd_capable &&
-> >                        (cc1 != old_cc1 || cc2 != old_cc2))
-> > @@ -4803,9 +4833,16 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
-> >                */
-> >               break;
-> >
-> > +     case VBUS_DISCHARGE:
-> > +             /* Do nothing. Waiting for vsafe0v signal */
-> > +             break;
-> >       default:
-> > -             if (tcpm_port_is_disconnected(port))
-> > -                     tcpm_set_state(port, unattached_state(port), 0);
-> > +             if (tcpm_port_is_disconnected(port)) {
-> > +                     if (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v)
-> > +                             tcpm_set_state(port, VBUS_DISCHARGE, 0);
-> > +                     else
-> > +                             tcpm_set_state(port, unattached_state(port), 0);
-> > +             }
-> >               break;
-> >       }
-> >  }
-> > @@ -4988,9 +5025,12 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
-> >               break;
-> >
-> >       default:
-> > -             if (port->pwr_role == TYPEC_SINK &&
-> > -                 port->attached)
-> > -                     tcpm_set_state(port, SNK_UNATTACHED, 0);
-> > +             if (port->pwr_role == TYPEC_SINK && port->attached) {
-> > +                     if (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v)
-> > +                             tcpm_set_state(port, VBUS_DISCHARGE, 0);
-> > +                     else
-> > +                             tcpm_set_state(port, SNK_UNATTACHED, 0);
-> > +             }
-> >               break;
-> >       }
-> >  }
-> > @@ -5012,6 +5052,12 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
-> >                       tcpm_set_state(port, tcpm_try_snk(port) ? SNK_TRY : SRC_ATTACHED,
-> >                                      PD_T_CC_DEBOUNCE);
-> >               break;
-> > +     case VBUS_DISCHARGE:
-> > +             if (port->port_type == TYPEC_PORT_SRC)
-> > +                     tcpm_set_state(port, SRC_UNATTACHED, 0);
-> > +             else
-> > +                     tcpm_set_state(port, SNK_UNATTACHED, 0);
-> > +             break;
-> >       default:
-> >               break;
-> >       }
-> >
->
+Yanan Wang (7):
+  tools include: sync head files of mmap flag encodings about hugetlb
+  KVM: selftests: Use flag CLOCK_MONOTONIC_RAW for timing
+  KVM: selftests: Make a generic helper to get vm guest mode strings
+  KVM: selftests: Add a helper to get system configured THP page size
+  KVM: selftests: List all hugetlb src types specified with page sizes
+  KVM: selftests: Adapt vm_userspace_mem_region_add to new helpers
+  KVM: selftests: Add a test for kvm page table code
+
+ tools/include/asm-generic/hugetlb_encode.h    |   3 +
+ tools/testing/selftests/kvm/Makefile          |   3 +
+ .../selftests/kvm/demand_paging_test.c        |   8 +-
+ .../selftests/kvm/dirty_log_perf_test.c       |  14 +-
+ .../testing/selftests/kvm/include/kvm_util.h  |   4 +-
+ .../testing/selftests/kvm/include/test_util.h |  21 +-
+ .../selftests/kvm/kvm_page_table_test.c       | 476 ++++++++++++++++++
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  58 +--
+ tools/testing/selftests/kvm/lib/test_util.c   |  92 +++-
+ tools/testing/selftests/kvm/steal_time.c      |   4 +-
+ 10 files changed, 623 insertions(+), 60 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/kvm_page_table_test.c
+
+-- 
+2.19.1
+
