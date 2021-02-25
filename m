@@ -2,304 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 167953255DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 602F13255E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhBYSzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:55:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47783 "EHLO
+        id S233204AbhBYS4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:56:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30963 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232588AbhBYSzF (ORCPT
+        by vger.kernel.org with ESMTP id S232139AbhBYS4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 13:55:05 -0500
+        Thu, 25 Feb 2021 13:56:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614279217;
+        s=mimecast20190719; t=1614279283;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gCb9F0alpv/C/6a5TITUVUu2eCteBI8pa1A/BxbZecM=;
-        b=ZX9Ts0DYGoM7w4C1t4I9ReYd/pwRXJKcaifMSfMFfYwFpvhj6m92AcyrfcvRnzSoZMi+R3
-        fOsjmBMgIwsZilX6Mxtc4eRjl5qEXi7Qyj2laLLaQeNqaviWja9SrrOIL5Ko2nfmtuVnfu
-        yRWRUoKjwth0217WpGD3flahMsI9WMw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-LhJaq9yNOvqWm33eGsQUeA-1; Thu, 25 Feb 2021 13:53:34 -0500
-X-MC-Unique: LhJaq9yNOvqWm33eGsQUeA-1
-Received: by mail-ed1-f71.google.com with SMTP id t27so1044694edi.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 10:53:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=gCb9F0alpv/C/6a5TITUVUu2eCteBI8pa1A/BxbZecM=;
-        b=Q7dxA33NcKMNK3KROJyY1WPBHiPTnl0uSROpejqGOKF3IVurY9orsAtLXhdDzvll5e
-         WVJTvillwlmnQ7jAStfihN58xGiUdAxuuNQAc1hRLtuu2DO9TkPV1/ZAwSx3/k1IqABR
-         0T5Z9TtirXg3ZVoYZaah1GDH5+oqIHqqR4aX6hqNsu/yigJWQQg0HcsVQT3Bp2xlv4wo
-         N8cR1NEw08pZoUG5Ewd3iE6a/aJLuLlIHbrHv4vKPs+iB8L8TuzMQMWCr6QhyvPs436v
-         kGg+OJCDjCT/p8gQOyaoOwIZDDaY6kf9Vu8nXFcvQe4/ocsRGzO5Z6a19pkMIjDTq5VZ
-         9aFw==
-X-Gm-Message-State: AOAM530i2vnvq29/kA5ApWOBMY89jgKj9mH6aAyhNUQeheYkbGzOcMVs
-        7Kwg03CIxVX9klfwMQVU4L7QUpfXHZKvpSnkv+MmqTrYwGnBWdvBI1NP/nKoqpEd+PdOT5/HgUd
-        30L697m4IA+YhHd9szzWd6MD8
-X-Received: by 2002:a17:906:3444:: with SMTP id d4mr4048049ejb.410.1614279212518;
-        Thu, 25 Feb 2021 10:53:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJztb5cYLMbjSVzxJ4cay7R//2C0FApeQaJ9usI4r3nY/W5+f6CAAK3gOxO2d845kovrA1lyng==
-X-Received: by 2002:a17:906:3444:: with SMTP id d4mr4048020ejb.410.1614279212295;
-        Thu, 25 Feb 2021 10:53:32 -0800 (PST)
-Received: from redhat.com (212.116.168.114.static.012.net.il. [212.116.168.114])
-        by smtp.gmail.com with ESMTPSA id b2sm4247596edk.11.2021.02.25.10.53.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 10:53:31 -0800 (PST)
-Date:   Thu, 25 Feb 2021 13:53:28 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        virtio-dev@lists.oasis-open.org
-Subject: Re: [virtio-dev] Re: [PATCH] vdpa/mlx5: set_features should allow
- reset to zero
-Message-ID: <20210225135229-mutt-send-email-mst@kernel.org>
-References: <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
- <ee31e93b-5fbb-1999-0e82-983d3e49ad1e@oracle.com>
- <20210223041740-mutt-send-email-mst@kernel.org>
- <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
- <20210223110430.2f098bc0.cohuck@redhat.com>
- <bbb0a09e-17e1-a397-1b64-6ce9afe18e44@redhat.com>
- <20210223115833.732d809c.cohuck@redhat.com>
- <8355f9b3-4cda-cd2e-98df-fed020193008@redhat.com>
- <20210224121234.0127ae4b.cohuck@redhat.com>
- <be6713d3-ac98-bbbf-1dc1-a003ed06a156@redhat.com>
+        bh=/Nmu8lS9GcfL56W+O1LacVBcIs/jNpzJgTsMtUx8rIo=;
+        b=Pd8Q3QvBaCEE1HS8SEEMS3yIU9I6yz22ujTdG+RIvHhCmKq5bhYgI1hcsk+mQ4poy1nW6z
+        erIr8b75OCZgRbVaNOSVKuq+uR+n3cgNemRlPBm1O/PygATkTKbT32n++wBno5K7PQZGA3
+        RwOpJhCqOgmdSjzyON7X0ZxXDp//+YE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-507-yJg8rr-PMi-Rjp7CX9wHvQ-1; Thu, 25 Feb 2021 13:54:41 -0500
+X-MC-Unique: yJg8rr-PMi-Rjp7CX9wHvQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B6A018BA28A;
+        Thu, 25 Feb 2021 18:54:39 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.194.200])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 31F4460854;
+        Thu, 25 Feb 2021 18:54:33 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 19:54:30 +0100
+From:   Andrew Jones <drjones@redhat.com>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Peter Xu <peterx@redhat.com>,
+        Marc Zyngier <maz@kernel.org>, wanghaibin.wang@huawei.com,
+        yuzenghui@huawei.com
+Subject: Re: [RFC PATCH v2 2/7] KVM: selftests: Use flag CLOCK_MONOTONIC_RAW
+ for timing
+Message-ID: <20210225185430.fgafepkqo42u2yci@kamzik.brq.redhat.com>
+References: <20210225055940.18748-1-wangyanan55@huawei.com>
+ <20210225055940.18748-3-wangyanan55@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <be6713d3-ac98-bbbf-1dc1-a003ed06a156@redhat.com>
+In-Reply-To: <20210225055940.18748-3-wangyanan55@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 12:36:07PM +0800, Jason Wang wrote:
-> 
-> On 2021/2/24 7:12 下午, Cornelia Huck wrote:
-> > On Wed, 24 Feb 2021 17:29:07 +0800
-> > Jason Wang <jasowang@redhat.com> wrote:
-> > 
-> > > On 2021/2/23 6:58 下午, Cornelia Huck wrote:
-> > > > On Tue, 23 Feb 2021 18:31:07 +0800
-> > > > Jason Wang <jasowang@redhat.com> wrote:
-> > > > > On 2021/2/23 6:04 下午, Cornelia Huck wrote:
-> > > > > > On Tue, 23 Feb 2021 17:46:20 +0800
-> > > > > > Jason Wang <jasowang@redhat.com> wrote:
-> > > > > > > On 2021/2/23 下午5:25, Michael S. Tsirkin wrote:
-> > > > > > > > On Mon, Feb 22, 2021 at 09:09:28AM -0800, Si-Wei Liu wrote:
-> > > > > > > > > On 2/21/2021 8:14 PM, Jason Wang wrote:
-> > > > > > > > > > On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
-> > > > > > > > > > > Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
-> > > > > > > > > > > for legacy") made an exception for legacy guests to reset
-> > > > > > > > > > > features to 0, when config space is accessed before features
-> > > > > > > > > > > are set. We should relieve the verify_min_features() check
-> > > > > > > > > > > and allow features reset to 0 for this case.
-> > > > > > > > > > > 
-> > > > > > > > > > > It's worth noting that not just legacy guests could access
-> > > > > > > > > > > config space before features are set. For instance, when
-> > > > > > > > > > > feature VIRTIO_NET_F_MTU is advertised some modern driver
-> > > > > > > > > > > will try to access and validate the MTU present in the config
-> > > > > > > > > > > space before virtio features are set.
-> > > > > > > > > > This looks like a spec violation:
-> > > > > > > > > > 
-> > > > > > > > > > "
-> > > > > > > > > > 
-> > > > > > > > > > The following driver-read-only field, mtu only exists if
-> > > > > > > > > > VIRTIO_NET_F_MTU is set. This field specifies the maximum MTU for the
-> > > > > > > > > > driver to use.
-> > > > > > > > > > "
-> > > > > > > > > > 
-> > > > > > > > > > Do we really want to workaround this?
-> > > > > > > > > Isn't the commit 452639a64ad8 itself is a workaround for legacy guest?
-> > > > > > > > > 
-> > > > > > > > > I think the point is, since there's legacy guest we'd have to support, this
-> > > > > > > > > host side workaround is unavoidable. Although I agree the violating driver
-> > > > > > > > > should be fixed (yes, it's in today's upstream kernel which exists for a
-> > > > > > > > > while now).
-> > > > > > > > Oh  you are right:
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > static int virtnet_validate(struct virtio_device *vdev)
-> > > > > > > > {
-> > > > > > > >             if (!vdev->config->get) {
-> > > > > > > >                     dev_err(&vdev->dev, "%s failure: config access disabled\n",
-> > > > > > > >                             __func__);
-> > > > > > > >                     return -EINVAL;
-> > > > > > > >             }
-> > > > > > > > 
-> > > > > > > >             if (!virtnet_validate_features(vdev))
-> > > > > > > >                     return -EINVAL;
-> > > > > > > > 
-> > > > > > > >             if (virtio_has_feature(vdev, VIRTIO_NET_F_MTU)) {
-> > > > > > > >                     int mtu = virtio_cread16(vdev,
-> > > > > > > >                                              offsetof(struct virtio_net_config,
-> > > > > > > >                                                       mtu));
-> > > > > > > >                     if (mtu < MIN_MTU)
-> > > > > > > >                             __virtio_clear_bit(vdev, VIRTIO_NET_F_MTU);
-> > > > > > > I wonder why not simply fail here?
-> > > > > > I think both failing or not accepting the feature can be argued to make
-> > > > > > sense: "the device presented us with a mtu size that does not make
-> > > > > > sense" would point to failing, "we cannot work with the mtu size that
-> > > > > > the device presented us" would point to not negotiating the feature.
-> > > > > > > >             }
-> > > > > > > > 
-> > > > > > > >             return 0;
-> > > > > > > > }
-> > > > > > > > 
-> > > > > > > > And the spec says:
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > The driver MUST follow this sequence to initialize a device:
-> > > > > > > > 1. Reset the device.
-> > > > > > > > 2. Set the ACKNOWLEDGE status bit: the guest OS has noticed the device.
-> > > > > > > > 3. Set the DRIVER status bit: the guest OS knows how to drive the device.
-> > > > > > > > 4. Read device feature bits, and write the subset of feature bits understood by the OS and driver to the
-> > > > > > > > device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration
-> > > > > > > > fields to check that it can support the device before accepting it.
-> > > > > > > > 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step.
-> > > > > > > > 6. Re-read device status to ensure the FEATURES_OK bit is still set: otherwise, the device does not
-> > > > > > > > support our subset of features and the device is unusable.
-> > > > > > > > 7. Perform device-specific setup, including discovery of virtqueues for the device, optional per-bus setup,
-> > > > > > > > reading and possibly writing the device’s virtio configuration space, and population of virtqueues.
-> > > > > > > > 8. Set the DRIVER_OK status bit. At this point the device is “live”.
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > Item 4 on the list explicitly allows reading config space before
-> > > > > > > > FEATURES_OK.
-> > > > > > > > 
-> > > > > > > > I conclude that VIRTIO_NET_F_MTU is set means "set in device features".
-> > > > > > > So this probably need some clarification. "is set" is used many times in
-> > > > > > > the spec that has different implications.
-> > > > > > Before FEATURES_OK is set by the driver, I guess it means "the device
-> > > > > > has offered the feature";
-> > > > > For me this part is ok since it clarify that it's the driver that set
-> > > > > the bit.
-> > > > > 
-> > > > > 
-> > > > > > during normal usage, it means "the feature
-> > > > > > has been negotiated".
-> > > > > /?
-> > > > > 
-> > > > > It looks to me the feature negotiation is done only after device set
-> > > > > FEATURES_OK, or FEATURES_OK could be read from device status?
-> > > > I'd consider feature negotiation done when the driver reads FEATURES_OK
-> > > > back from the status.
-> > > 
-> > > I agree.
-> > > 
-> > > 
-> > > > > >     (This is a bit fuzzy for legacy mode.)
-> > > > ...because legacy does not have FEATURES_OK.
-> > > > > The problem is the MTU description for example:
-> > > > > 
-> > > > > "The following driver-read-only field, mtu only exists if
-> > > > > VIRTIO_NET_F_MTU is set."
-> > > > > 
-> > > > > It looks to me need to use "if VIRTIO_NET_F_MTU is set by device".
-> > > > "offered by the device"? I don't think it should 'disappear' from the
-> > > > config space if the driver won't use it. (Same for other config space
-> > > > fields that are tied to feature bits.)
-> > > 
-> > > But what happens if e.g device doesn't offer VIRTIO_NET_F_MTU? It looks
-> > > to according to the spec there will be no mtu field.
-> > I think so, yes.
-> > 
-> > > And a more interesting case is VIRTIO_NET_F_MQ is not offered but
-> > > VIRTIO_NET_F_MTU offered. To me, it means we don't have
-> > > max_virtqueue_pairs but it's not how the driver is wrote today.
-> > That would be a bug, but it seems to me that the virtio-net driver
-> > reads max_virtqueue_pairs conditionally and handles absence of the
-> > feature correctly?
-> 
-> 
-> Yes, see the avove codes:
-> 
->         if (virtio_has_feature(vdev, VIRTIO_NET_F_MTU)) {
->                 int mtu = virtio_cread16(vdev,
->                                          offsetof(struct virtio_net_config,
->                                                   mtu));
->                 if (mtu < MIN_MTU)
->                         __virtio_clear_bit(vdev, VIRTIO_NET_F_MTU);
->         }
-> 
-> So it's probably too late to fix the driver.
-> 
+On Thu, Feb 25, 2021 at 01:59:35PM +0800, Yanan Wang wrote:
+> In addition to function of CLOCK_MONOTONIC, flag CLOCK_MONOTONIC_RAW can
+> also shield possiable impact of NTP, which can provide more robustness.
 
-Confused. What is wrong with the above? It never reads the
-field unless the feature has been offered by device.
+IIRC, this should include
 
+Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-> > 
-> > > 
-> > > > > Otherwise readers (at least for me), may think the MTU is only valid
-> > > > > if driver set the bit.
-> > > > I think it would still be 'valid' in the sense that it exists and has
-> > > > some value in there filled in by the device, but a driver reading it
-> > > > without negotiating the feature would be buggy. (Like in the kernel
-> > > > code above; the kernel not liking the value does not make the field
-> > > > invalid.)
-> > > 
-> > > See Michael's reply, the spec allows read the config before setting
-> > > features.
-> > Yes, the period prior to finishing negotiation is obviously special.
-> > 
-> > > 
-> > > > Maybe a statement covering everything would be:
-> > > > 
-> > > > "The following driver-read-only field mtu only exists if the device
-> > > > offers VIRTIO_NET_F_MTU and may be read by the driver during feature
-> > > > negotiation and after VIRTIO_NET_F_MTU has been successfully
-> > > > negotiated."
-> > > > > > Should we add a wording clarification to the spec?
-> > > > > I think so.
-> > > > Some clarification would be needed for each field that depends on a
-> > > > feature; that would be quite verbose. Maybe we can get away with a
-> > > > clarifying statement?
-> > > > 
-> > > > "Some config space fields may depend on a certain feature. In that
-> > > > case, the field exits if the device has offered the corresponding
-> > > > feature,
-> > > 
-> > > So this implies for !VIRTIO_NET_F_MQ && VIRTIO_NET_F_MTU, the config
-> > > will look like:
-> > > 
-> > > struct virtio_net_config {
-> > >           u8 mac[6];
-> > >           le16 status;
-> > >           le16 mtu;
-> > > };
-> > > 
-> > I agree.
 > 
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  tools/testing/selftests/kvm/demand_paging_test.c  |  8 ++++----
+>  tools/testing/selftests/kvm/dirty_log_perf_test.c | 14 +++++++-------
+>  tools/testing/selftests/kvm/lib/test_util.c       |  2 +-
+>  tools/testing/selftests/kvm/steal_time.c          |  4 ++--
+>  4 files changed, 14 insertions(+), 14 deletions(-)
 > 
-> So consider it's probably too late to fix the driver which assumes some
-> field are always persent, it looks to me need fix the spec do declare the
-> fields are always existing instead.
-> 
-> 
-> > 
-> > > >    and may be read by the driver during feature negotiation, and
-> > > > accessed by the driver after the feature has been successfully
-> > > > negotiated. A shorthand for this is a statement that a field only
-> > > > exists if a certain feature bit is set."
-> > > 
-> > > I'm not sure using "shorthand" is good for the spec, at least we can
-> > > limit the its scope only to the configuration space part.
-> > Maybe "a shorthand expression"?
-> 
-> 
-> So the questions is should we use this for all over the spec or it will be
-> only used in this speicifc part (device configuration).
-> 
-> Thanks
+> diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+> index 5f7a229c3af1..efbf0c1e9130 100644
+> --- a/tools/testing/selftests/kvm/demand_paging_test.c
+> +++ b/tools/testing/selftests/kvm/demand_paging_test.c
+> @@ -53,7 +53,7 @@ static void *vcpu_worker(void *data)
+>  	vcpu_args_set(vm, vcpu_id, 1, vcpu_id);
+>  	run = vcpu_state(vm, vcpu_id);
+>  
+> -	clock_gettime(CLOCK_MONOTONIC, &start);
+> +	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+>  
+>  	/* Let the guest access its memory */
+>  	ret = _vcpu_run(vm, vcpu_id);
+> @@ -86,7 +86,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+>  	copy.len = perf_test_args.host_page_size;
+>  	copy.mode = 0;
+>  
+> -	clock_gettime(CLOCK_MONOTONIC, &start);
+> +	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+>  
+>  	r = ioctl(uffd, UFFDIO_COPY, &copy);
+>  	if (r == -1) {
+> @@ -123,7 +123,7 @@ static void *uffd_handler_thread_fn(void *arg)
+>  	struct timespec start;
+>  	struct timespec ts_diff;
+>  
+> -	clock_gettime(CLOCK_MONOTONIC, &start);
+> +	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+>  	while (!quit_uffd_thread) {
+>  		struct uffd_msg msg;
+>  		struct pollfd pollfd[2];
+> @@ -336,7 +336,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>  
+>  	pr_info("Finished creating vCPUs and starting uffd threads\n");
+>  
+> -	clock_gettime(CLOCK_MONOTONIC, &start);
+> +	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+>  
+>  	for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+>  		pthread_create(&vcpu_threads[vcpu_id], NULL, vcpu_worker,
+> diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> index 04a2641261be..6cff4ccf9525 100644
+> --- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> +++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> @@ -50,7 +50,7 @@ static void *vcpu_worker(void *data)
+>  	while (!READ_ONCE(host_quit)) {
+>  		int current_iteration = READ_ONCE(iteration);
+>  
+> -		clock_gettime(CLOCK_MONOTONIC, &start);
+> +		clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+>  		ret = _vcpu_run(vm, vcpu_id);
+>  		ts_diff = timespec_elapsed(start);
+>  
+> @@ -141,7 +141,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>  	iteration = 0;
+>  	host_quit = false;
+>  
+> -	clock_gettime(CLOCK_MONOTONIC, &start);
+> +	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+>  	for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++) {
+>  		vcpu_last_completed_iteration[vcpu_id] = -1;
+>  
+> @@ -162,7 +162,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>  		ts_diff.tv_sec, ts_diff.tv_nsec);
+>  
+>  	/* Enable dirty logging */
+> -	clock_gettime(CLOCK_MONOTONIC, &start);
+> +	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+>  	vm_mem_region_set_flags(vm, PERF_TEST_MEM_SLOT_INDEX,
+>  				KVM_MEM_LOG_DIRTY_PAGES);
+>  	ts_diff = timespec_elapsed(start);
+> @@ -174,7 +174,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>  		 * Incrementing the iteration number will start the vCPUs
+>  		 * dirtying memory again.
+>  		 */
+> -		clock_gettime(CLOCK_MONOTONIC, &start);
+> +		clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+>  		iteration++;
+>  
+>  		pr_debug("Starting iteration %d\n", iteration);
+> @@ -189,7 +189,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>  		pr_info("Iteration %d dirty memory time: %ld.%.9lds\n",
+>  			iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
+>  
+> -		clock_gettime(CLOCK_MONOTONIC, &start);
+> +		clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+>  		kvm_vm_get_dirty_log(vm, PERF_TEST_MEM_SLOT_INDEX, bmap);
+>  
+>  		ts_diff = timespec_elapsed(start);
+> @@ -199,7 +199,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>  			iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
+>  
+>  		if (dirty_log_manual_caps) {
+> -			clock_gettime(CLOCK_MONOTONIC, &start);
+> +			clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+>  			kvm_vm_clear_dirty_log(vm, PERF_TEST_MEM_SLOT_INDEX, bmap, 0,
+>  					       host_num_pages);
+>  
+> @@ -212,7 +212,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>  	}
+>  
+>  	/* Disable dirty logging */
+> -	clock_gettime(CLOCK_MONOTONIC, &start);
+> +	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+>  	vm_mem_region_set_flags(vm, PERF_TEST_MEM_SLOT_INDEX, 0);
+>  	ts_diff = timespec_elapsed(start);
+>  	pr_info("Disabling dirty logging time: %ld.%.9lds\n",
+> diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
+> index 906c955384e2..c7c0627c6842 100644
+> --- a/tools/testing/selftests/kvm/lib/test_util.c
+> +++ b/tools/testing/selftests/kvm/lib/test_util.c
+> @@ -89,7 +89,7 @@ struct timespec timespec_elapsed(struct timespec start)
+>  {
+>  	struct timespec end;
+>  
+> -	clock_gettime(CLOCK_MONOTONIC, &end);
+> +	clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+>  	return timespec_sub(end, start);
+>  }
+>  
+> diff --git a/tools/testing/selftests/kvm/steal_time.c b/tools/testing/selftests/kvm/steal_time.c
+> index fcc840088c91..5bc582d3f2a2 100644
+> --- a/tools/testing/selftests/kvm/steal_time.c
+> +++ b/tools/testing/selftests/kvm/steal_time.c
+> @@ -237,11 +237,11 @@ static void *do_steal_time(void *arg)
+>  {
+>  	struct timespec ts, stop;
+>  
+> -	clock_gettime(CLOCK_MONOTONIC, &ts);
+> +	clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
+>  	stop = timespec_add_ns(ts, MIN_RUN_DELAY_NS);
+>  
+>  	while (1) {
+> -		clock_gettime(CLOCK_MONOTONIC, &ts);
+> +		clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
+>  		if (timespec_to_ns(timespec_sub(ts, stop)) >= 0)
+>  			break;
+>  	}
+> -- 
+> 2.19.1
 > 
 
