@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE97325764
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5563325770
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbhBYUPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:15:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34430 "EHLO mail.kernel.org"
+        id S234003AbhBYUQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:16:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233556AbhBYUP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:15:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id AB70E64F2C;
-        Thu, 25 Feb 2021 20:14:45 +0000 (UTC)
+        id S233604AbhBYUPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 15:15:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id B83E264F34;
+        Thu, 25 Feb 2021 20:14:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614284085;
-        bh=+kyHhMSELA7u0ljOd/RrnjS0EEam6Tj7onyzl/Iok6Q=;
+        s=k20201202; t=1614284097;
+        bh=fPMivAazjMW28Uh0DrhdSs3hl5qHy6LZK/ULoxO8Yrw=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=XPlRHEU2b7PqaDxbMLHtBDGTFMXpTLWJg+jvm1hLHFNJjStSV/FE+iMGtvgX3WU7i
-         PzSgqNx2HhGuFxky74p3/NU8YoIlN1XI72PJjs8wpzwSJMcD+Lb/SkEu4VkHf5WCUZ
-         UgutSHhKiX4njzQb+ozMkvAibKC5Sb3H2Wy2E5gMg7nTv/jHxDjfPY3RL4UU6Lke5G
-         wA7dH3TR2myMutqHKn6mgbR1FyuUwcDQSntvrtafEixVA17zaSS0Qm2ByopA43CHn2
-         +wbdWtQABwPe1+67MQUhjbGU4otmqKUQbDUxPY8dip9VyPuhJUtcoDB+22qq3GBl6p
-         tJdRwkcNN5HoA==
+        b=b8XKcbJBWLCq5MpGfDKxIOH+rJeIbtSFGiKrJiO0a/wHsFK5ht5Jm2m/VwqXYD4ve
+         6SD0JNs7KQfFgGPRK64dItPXakrx915ccbWjfRuXWz1soum7Jsepy24Fk6cx1d/ODS
+         n7KwEBiZDy/2WCpfWBjwrDh8muniwUZdh+uUedtEzf/BI2hWie9c4o5LF7lDMe7y8s
+         VifIcwKRo7WQlHYurNnQf7+Yxucgs3zxA7v7ytTqR61GQt/ZMGGHAYeUuPSkzrHHrm
+         gRu90J9BadAb33N2juZOggoMpySVLSbccPfYv0hr+0Z1HCFh3cyAnWccVvy4Lb5eBr
+         YmNsCDrd8OqEw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7BA1560A0E;
-        Thu, 25 Feb 2021 20:14:45 +0000 (UTC)
-Subject: Re: [git pull] drm fixes + msm-next for 5.12-rc1
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B31F160A0E;
+        Thu, 25 Feb 2021 20:14:57 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for 5.12-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9tyht2VHck6c0oh21+H=b_M=h1dvm4BNqe6AkPYZ+Ph_Uw@mail.gmail.com>
-References: <CAPM=9tyht2VHck6c0oh21+H=b_M=h1dvm4BNqe6AkPYZ+Ph_Uw@mail.gmail.com>
-X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
- <dri-devel.lists.freedesktop.org>
-X-PR-Tracked-Message-Id: <CAPM=9tyht2VHck6c0oh21+H=b_M=h1dvm4BNqe6AkPYZ+Ph_Uw@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-02-26
-X-PR-Tracked-Commit-Id: d153e8c156dafeb847fd655f416cf81c007e8706
+In-Reply-To: <20210225184826.2269264-1-kuba@kernel.org>
+References: <20210225184826.2269264-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210225184826.2269264-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.12-rc1
+X-PR-Tracked-Commit-Id: 6cf739131a15e4177e58a1b4f2bede9d5da78552
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fdce29602f865b016012eadeaec99800da916d3d
-Message-Id: <161428408544.10391.12019334825346782312.pr-tracker-bot@kernel.org>
-Date:   Thu, 25 Feb 2021 20:14:45 +0000
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+X-PR-Merge-Commit-Id: 5ad3dbab569ac39e88fae31690401895c37368b6
+Message-Id: <161428409772.10391.367644792141423844.pr-tracker-bot@kernel.org>
+Date:   Thu, 25 Feb 2021 20:14:57 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 26 Feb 2021 05:23:53 +1000:
+The pull request you sent on Thu, 25 Feb 2021 10:48:26 -0800:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-02-26
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.12-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fdce29602f865b016012eadeaec99800da916d3d
+https://git.kernel.org/torvalds/c/5ad3dbab569ac39e88fae31690401895c37368b6
 
 Thank you!
 
