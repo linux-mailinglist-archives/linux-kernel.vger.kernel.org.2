@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AE6324D52
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB37324DB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbhBYJ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:56:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60932 "EHLO mail.kernel.org"
+        id S232077AbhBYKN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:13:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235489AbhBYJyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:54:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9D1664ECE;
-        Thu, 25 Feb 2021 09:53:56 +0000 (UTC)
+        id S235483AbhBYJ7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:59:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6673D64F20;
+        Thu, 25 Feb 2021 09:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246837;
-        bh=XbJE3ajrQhiIyoghJaJ8dsQbDIkBCIFomDioDXnxT4w=;
+        s=korg; t=1614246915;
+        bh=vB6rxebxntfOVBLahpQwVeHkkIIhS6QSp2wWiPj8TR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DtLoh3rytclzlm4cgCqr0RjQvEjc5XBAn6Yb/XzFgBIPTfUxH3G/JesuKEuZ6wx3M
-         KeRPnS2HifimzlP9RcaSCEWH6OiMvZGNj1QOO5Ej0/9btw126spebF0ybA33kMhBrW
-         Q5WDERaXgrQKv+awZqKPbQVwCWheuTuNlxtvfEd4=
+        b=LkAnWlAAbZT7JAVPOj8UHjjMjv3nxbu6OjqJ1SZsMW4XwIj1Rss06OkV1GM4IvfqO
+         ukjLdW9BUFVa5lxoFSvhniLfgbj7RrWkuXrKSLx/BKs+dkVKMzZzhI0vjoHCJSd8hb
+         +85eUWYtEd9L9+rWqnbj6ognyPaAHxqEpeU9naMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Stevens <stevensd@google.com>,
-        3pvd@google.com, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.11 10/12] KVM: do not assume PTE is writable after follow_pfn
-Date:   Thu, 25 Feb 2021 10:53:44 +0100
-Message-Id: <20210225092515.478386370@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 14/23] mm: simplify follow_pte{,pmd}
+Date:   Thu, 25 Feb 2021 10:53:45 +0100
+Message-Id: <20210225092517.211062201@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210225092515.015261674@linuxfoundation.org>
-References: <20210225092515.015261674@linuxfoundation.org>
+In-Reply-To: <20210225092516.531932232@linuxfoundation.org>
+References: <20210225092516.531932232@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,85 +44,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Christoph Hellwig <hch@lst.de>
 
-commit bd2fae8da794b55bf2ac02632da3a151b10e664c upstream.
+commit ff5c19ed4b087073cea38ff0edc80c23d7256943 upstream.
 
-In order to convert an HVA to a PFN, KVM usually tries to use
-the get_user_pages family of functinso.  This however is not
-possible for VM_IO vmas; in that case, KVM instead uses follow_pfn.
+Merge __follow_pte_pmd, follow_pte_pmd and follow_pte into a single
+follow_pte function and just pass two additional NULL arguments for the
+two previous follow_pte callers.
 
-In doing this however KVM loses the information on whether the
-PFN is writable.  That is usually not a problem because the main
-use of VM_IO vmas with KVM is for BARs in PCI device assignment,
-however it is a bug.  To fix it, use follow_pte and check pte_write
-while under the protection of the PTE lock.  The information can
-be used to fail hva_to_pfn_remapped or passed back to the
-caller via *writable.
+[sfr@canb.auug.org.au: merge fix for "s390/pci: remove races against pte updates"]
+  Link: https://lkml.kernel.org/r/20201111221254.7f6a3658@canb.auug.org.au
 
-Usage of follow_pfn was introduced in commit add6a0cd1c5b ("KVM: MMU: try to fix
-up page faults before giving up", 2016-07-05); however, even older version
-have the same issue, all the way back to commit 2e2e3738af33 ("KVM:
-Handle vma regions with no backing page", 2008-07-20), as they also did
-not check whether the PFN was writable.
-
-Fixes: 2e2e3738af33 ("KVM: Handle vma regions with no backing page")
-Reported-by: David Stevens <stevensd@google.com>
-Cc: 3pvd@google.com
-Cc: Jann Horn <jannh@google.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Link: https://lkml.kernel.org/r/20201029101432.47011-3-hch@lst.de
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- virt/kvm/kvm_main.c |   15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ fs/dax.c           |    9 ++++-----
+ include/linux/mm.h |    6 +++---
+ mm/memory.c        |   35 +++++------------------------------
+ 3 files changed, 12 insertions(+), 38 deletions(-)
 
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1904,9 +1904,11 @@ static int hva_to_pfn_remapped(struct vm
- 			       kvm_pfn_t *p_pfn)
- {
- 	unsigned long pfn;
-+	pte_t *ptep;
-+	spinlock_t *ptl;
- 	int r;
+--- a/fs/dax.c
++++ b/fs/dax.c
+@@ -810,12 +810,11 @@ static void dax_entry_mkclean(struct add
+ 		address = pgoff_address(index, vma);
  
--	r = follow_pfn(vma, addr, &pfn);
-+	r = follow_pte(vma->vm_mm, addr, NULL, &ptep, NULL, &ptl);
- 	if (r) {
  		/*
- 		 * get_user_pages fails for VM_IO and VM_PFNMAP vmas and does
-@@ -1921,14 +1923,19 @@ static int hva_to_pfn_remapped(struct vm
- 		if (r)
- 			return r;
+-		 * Note because we provide range to follow_pte_pmd it will
+-		 * call mmu_notifier_invalidate_range_start() on our behalf
+-		 * before taking any lock.
++		 * Note because we provide range to follow_pte it will call
++		 * mmu_notifier_invalidate_range_start() on our behalf before
++		 * taking any lock.
+ 		 */
+-		if (follow_pte_pmd(vma->vm_mm, address, &range,
+-				   &ptep, &pmdp, &ptl))
++		if (follow_pte(vma->vm_mm, address, &range, &ptep, &pmdp, &ptl))
+ 			continue;
  
--		r = follow_pfn(vma, addr, &pfn);
-+		r = follow_pte(vma->vm_mm, addr, NULL, &ptep, NULL, &ptl);
- 		if (r)
- 			return r;
-+	}
- 
-+	if (write_fault && !pte_write(*ptep)) {
-+		pfn = KVM_PFN_ERR_RO_FAULT;
-+		goto out;
- 	}
- 
- 	if (writable)
--		*writable = true;
-+		*writable = pte_write(*ptep);
-+	pfn = pte_pfn(*ptep);
- 
- 	/*
- 	 * Get a reference here because callers of *hva_to_pfn* and
-@@ -1943,6 +1950,8 @@ static int hva_to_pfn_remapped(struct vm
- 	 */ 
- 	kvm_get_pfn(pfn);
- 
-+out:
-+	pte_unmap_unlock(ptep, ptl);
- 	*p_pfn = pfn;
- 	return 0;
+ 		/*
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1655,9 +1655,9 @@ void free_pgd_range(struct mmu_gather *t
+ 		unsigned long end, unsigned long floor, unsigned long ceiling);
+ int
+ copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma);
+-int follow_pte_pmd(struct mm_struct *mm, unsigned long address,
+-		   struct mmu_notifier_range *range,
+-		   pte_t **ptepp, pmd_t **pmdpp, spinlock_t **ptlp);
++int follow_pte(struct mm_struct *mm, unsigned long address,
++		struct mmu_notifier_range *range, pte_t **ptepp, pmd_t **pmdpp,
++		spinlock_t **ptlp);
+ int follow_pfn(struct vm_area_struct *vma, unsigned long address,
+ 	unsigned long *pfn);
+ int follow_phys(struct vm_area_struct *vma, unsigned long address,
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4707,9 +4707,9 @@ int __pmd_alloc(struct mm_struct *mm, pu
  }
+ #endif /* __PAGETABLE_PMD_FOLDED */
+ 
+-static int __follow_pte_pmd(struct mm_struct *mm, unsigned long address,
+-			    struct mmu_notifier_range *range,
+-			    pte_t **ptepp, pmd_t **pmdpp, spinlock_t **ptlp)
++int follow_pte(struct mm_struct *mm, unsigned long address,
++	       struct mmu_notifier_range *range, pte_t **ptepp, pmd_t **pmdpp,
++	       spinlock_t **ptlp)
+ {
+ 	pgd_t *pgd;
+ 	p4d_t *p4d;
+@@ -4774,31 +4774,6 @@ out:
+ 	return -EINVAL;
+ }
+ 
+-static inline int follow_pte(struct mm_struct *mm, unsigned long address,
+-			     pte_t **ptepp, spinlock_t **ptlp)
+-{
+-	int res;
+-
+-	/* (void) is needed to make gcc happy */
+-	(void) __cond_lock(*ptlp,
+-			   !(res = __follow_pte_pmd(mm, address, NULL,
+-						    ptepp, NULL, ptlp)));
+-	return res;
+-}
+-
+-int follow_pte_pmd(struct mm_struct *mm, unsigned long address,
+-		   struct mmu_notifier_range *range,
+-		   pte_t **ptepp, pmd_t **pmdpp, spinlock_t **ptlp)
+-{
+-	int res;
+-
+-	/* (void) is needed to make gcc happy */
+-	(void) __cond_lock(*ptlp,
+-			   !(res = __follow_pte_pmd(mm, address, range,
+-						    ptepp, pmdpp, ptlp)));
+-	return res;
+-}
+-
+ /**
+  * follow_pfn - look up PFN at a user virtual address
+  * @vma: memory mapping
+@@ -4819,7 +4794,7 @@ int follow_pfn(struct vm_area_struct *vm
+ 	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
+ 		return ret;
+ 
+-	ret = follow_pte(vma->vm_mm, address, &ptep, &ptl);
++	ret = follow_pte(vma->vm_mm, address, NULL, &ptep, NULL, &ptl);
+ 	if (ret)
+ 		return ret;
+ 	*pfn = pte_pfn(*ptep);
+@@ -4840,7 +4815,7 @@ int follow_phys(struct vm_area_struct *v
+ 	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
+ 		goto out;
+ 
+-	if (follow_pte(vma->vm_mm, address, &ptep, &ptl))
++	if (follow_pte(vma->vm_mm, address, NULL, &ptep, NULL, &ptl))
+ 		goto out;
+ 	pte = *ptep;
+ 
 
 
