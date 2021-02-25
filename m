@@ -2,318 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718A1325053
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D5B325081
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbhBYNWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 08:22:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbhBYNWs (ORCPT
+        id S232982AbhBYN33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 08:29:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47921 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233121AbhBYN2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:22:48 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45773C061574;
-        Thu, 25 Feb 2021 05:22:08 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id j12so3575884pfj.12;
-        Thu, 25 Feb 2021 05:22:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dbkQpNd5Wc1Bh81qcstyrrHXrqv5XpRWDvj0O1psJbw=;
-        b=QXwYFJOhkT8yELYTe4PluG9O0HQW6nlLuRYLCjSRfqgEOnYGTpRJ8WeIR8HmVytLly
-         uYwbFi7yoRwLFrZ9O2Fs0sWMPlm9DWu8pIo1HB0TAgsSvIm5gaCurN2T3nKvKCO9pbXN
-         U5114B7otySof1hdMyh24EBAnoRcn/GADeIC/0bTN8cY26tyfsu42X0DFEAzlChD1Exf
-         vZl0y4Lv44GXNxkhpDVeefrA2fVUMk/jNLCCGTeO1tn9yYk6EjORqeg53bwa6GzjlEyr
-         iNIcqq5Oo5FxiuZ16dDR8cv0IMlPaPg0snZKKwEbKMPv3dw72m6Uh7/KBhjbpzVCuL9l
-         2+7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dbkQpNd5Wc1Bh81qcstyrrHXrqv5XpRWDvj0O1psJbw=;
-        b=FcIonQGsDkp/tpdai9WwS471oI380fIFvSv9Lhw+3xntEqcrobOxQ2nhl2+/ZPqDYn
-         ncL128OBngnvL73xsssT1G2MgbE1xokxoWjxKcGr3T8qdOcP1/6IMl5mqb0Mw4+ZHdTz
-         Txu/teubDb6ASWgqPeKuk6y91BYzSDJ/nL9AHXkv8Y4YDtXYFF4mZsah0p3Oc362qaSZ
-         G7mQ7+iBdCiN1knx07i4j4ltmR2IavmIU9vEq2bbK8Ob0Fkv2i7xlcC4C/KDORNpz5YR
-         rG1OBA56rpiYksVCpwg1Muwk6N7V5pMmDKP4RL0d/hoS9LrzhcM91a9UNipJ2PU/8v9i
-         wROA==
-X-Gm-Message-State: AOAM533O2yO3X3zkfAIfDTmm7JiJdhpDJgVCWNYGcqlF38qShNX5ajxu
-        FQuDmvBebnd/uqeZa1VrSD8=
-X-Google-Smtp-Source: ABdhPJx5B2zDz1NmyernrPD2VdZbdhb3KcHlWxb8WvzeAKI+vSi5tRZbFee/JCtsAEfn4B7UccP5Hw==
-X-Received: by 2002:a63:2164:: with SMTP id s36mr3017110pgm.268.1614259327859;
-        Thu, 25 Feb 2021 05:22:07 -0800 (PST)
-Received: from shinobu (113x37x72x20.ap113.ftth.ucom.ne.jp. [113.37.72.20])
-        by smtp.gmail.com with ESMTPSA id a2sm6424041pfi.64.2021.02.25.05.22.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 05:22:06 -0800 (PST)
-Date:   Thu, 25 Feb 2021 22:22:00 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc:     jic23@kernel.org, Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] counter: stm32-timer-cnt: Report count function when
- SLAVE_MODE_DISABLED
-Message-ID: <YDekeKfygdUht3HL@shinobu>
-References: <20210219095906.220382-1-vilhelm.gray@gmail.com>
- <288929fc-6984-072b-359a-10e163056bad@foss.st.com>
+        Thu, 25 Feb 2021 08:28:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614259599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eXUvZpa0/Gfdi/WbDQrtIYaPffDzy8NMBiJQiT8MF2I=;
+        b=KvIsdO1iyg0GwYmLgzzX8/LJht8ZU6mEyir+iuBNkPLD+4hN+3p2YBJ/K0UTQkkUJW+Chd
+        i2m5o/PcaLLi1UaJzzajWGnqDaNfdJY3LLA1+Cyk010y95d5NaG14xGhZiAylk7aGC3jHG
+        f5F973aBnSGp6qDmmcCCH19AgNIKmWc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-CzbjGrFwMg-IyRC5cRsJ2Q-1; Thu, 25 Feb 2021 08:26:36 -0500
+X-MC-Unique: CzbjGrFwMg-IyRC5cRsJ2Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CF9F801979;
+        Thu, 25 Feb 2021 13:26:35 +0000 (UTC)
+Received: from gondolin (ovpn-113-228.ams2.redhat.com [10.36.113.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D170C5C234;
+        Thu, 25 Feb 2021 13:26:30 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 14:26:28 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        virtio-dev@lists.oasis-open.org
+Subject: Re: [virtio-dev] Re: [PATCH] vdpa/mlx5: set_features should allow
+ reset to zero
+Message-ID: <20210225142628.3659af58.cohuck@redhat.com>
+In-Reply-To: <be6713d3-ac98-bbbf-1dc1-a003ed06a156@redhat.com>
+References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
+        <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
+        <ee31e93b-5fbb-1999-0e82-983d3e49ad1e@oracle.com>
+        <20210223041740-mutt-send-email-mst@kernel.org>
+        <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
+        <20210223110430.2f098bc0.cohuck@redhat.com>
+        <bbb0a09e-17e1-a397-1b64-6ce9afe18e44@redhat.com>
+        <20210223115833.732d809c.cohuck@redhat.com>
+        <8355f9b3-4cda-cd2e-98df-fed020193008@redhat.com>
+        <20210224121234.0127ae4b.cohuck@redhat.com>
+        <be6713d3-ac98-bbbf-1dc1-a003ed06a156@redhat.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4fpeKnoH9IErCEuJ"
-Content-Disposition: inline
-In-Reply-To: <288929fc-6984-072b-359a-10e163056bad@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 25 Feb 2021 12:36:07 +0800
+Jason Wang <jasowang@redhat.com> wrote:
 
---4fpeKnoH9IErCEuJ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Feb 25, 2021 at 12:19:18PM +0100, Fabrice Gasnier wrote:
-> On 2/19/21 10:59 AM, William Breathitt Gray wrote:
-> > When in SLAVE_MODE_DISABLED mode, the count still increases if the
-> > counter is enabled because an internal clock is used. This patch fixes
-> > the stm32_count_function_get() function to properly report this
-> > behavior.
->=20
-> Hi William,
->=20
-> Thanks for the patch, that's something I also noticed earlier.
-> Please find few comment below.
->=20
-> >=20
-> > Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
-> > Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-> > Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> > Cc: Alexandre Torgue <alexandre.torgue@st.com>
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> > ---
-> >  drivers/counter/stm32-timer-cnt.c | 31 +++++++++++++++++++------------
-> >  1 file changed, 19 insertions(+), 12 deletions(-)
-> >=20
-> > diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-=
-timer-cnt.c
-> > index ef2a974a2f10..ec6d9e89c028 100644
-> > --- a/drivers/counter/stm32-timer-cnt.c
-> > +++ b/drivers/counter/stm32-timer-cnt.c
-> > @@ -44,13 +44,14 @@ struct stm32_timer_cnt {
-> >   * @STM32_COUNT_ENCODER_MODE_3: counts on both TI1FP1 and TI2FP2 edges
-> >   */
-> >  enum stm32_count_function {
-> > -	STM32_COUNT_SLAVE_MODE_DISABLED =3D -1,
-> > +	STM32_COUNT_SLAVE_MODE_DISABLED,
-> >  	STM32_COUNT_ENCODER_MODE_1,
-> >  	STM32_COUNT_ENCODER_MODE_2,
-> >  	STM32_COUNT_ENCODER_MODE_3,
-> >  };
+> On 2021/2/24 7:12 =E4=B8=8B=E5=8D=88, Cornelia Huck wrote:
+> > On Wed, 24 Feb 2021 17:29:07 +0800
+> > Jason Wang <jasowang@redhat.com> wrote:
 > > =20
-> >  static enum counter_count_function stm32_count_functions[] =3D {
-> > +	[STM32_COUNT_SLAVE_MODE_DISABLED] =3D COUNTER_COUNT_FUNCTION_INCREASE,
-> >  	[STM32_COUNT_ENCODER_MODE_1] =3D COUNTER_COUNT_FUNCTION_QUADRATURE_X2=
-_A,
-> >  	[STM32_COUNT_ENCODER_MODE_2] =3D COUNTER_COUNT_FUNCTION_QUADRATURE_X2=
-_B,
-> >  	[STM32_COUNT_ENCODER_MODE_3] =3D COUNTER_COUNT_FUNCTION_QUADRATURE_X4,
-> > @@ -99,9 +100,10 @@ static int stm32_count_function_get(struct counter_=
-device *counter,
-> >  	case 3:
-> >  		*function =3D STM32_COUNT_ENCODER_MODE_3;
-> >  		return 0;
-> > +	default:
->=20
-> I'd rather add a 'case 0', as that's the real value for slave mode
-> disabled. For reference, here's what the STM32 timer spec says on slave
-> mode selection:
-> 0000: Slave mode disabled - if CEN =3D =E2=80=981=E2=80=99 then the presc=
-aler is clocked
-> directly by the internal clock.
+> >> On 2021/2/23 6:58 =E4=B8=8B=E5=8D=88, Cornelia Huck wrote: =20
+> >>> On Tue, 23 Feb 2021 18:31:07 +0800
+> >>> Jason Wang <jasowang@redhat.com> wrote:
 
-Ack.
-
-> > +		*function =3D STM32_COUNT_SLAVE_MODE_DISABLED;
-> > +		return 0;
-> >  	}
-> > -
-> > -	return -EINVAL;
->=20
-> Other slave modes could be added later (like counting on external
-> signals: channel A, B, ETR or other signals). But this isn't supported
-> right now in the driver.
-> Then I suggest to keep the returning -EINVAL for the default case here.
-> Do you agree with this approach ?
-
-That should be fine; we'll fill in the additional cases as the
-functionalities are introduced to this driver in the future.
-
-> >  }
+> >>>> The problem is the MTU description for example:
+> >>>>
+> >>>> "The following driver-read-only field, mtu only exists if
+> >>>> VIRTIO_NET_F_MTU is set."
+> >>>>
+> >>>> It looks to me need to use "if VIRTIO_NET_F_MTU is set by device". =
+=20
+> >>> "offered by the device"? I don't think it should 'disappear' from the
+> >>> config space if the driver won't use it. (Same for other config space
+> >>> fields that are tied to feature bits.) =20
+> >>
+> >> But what happens if e.g device doesn't offer VIRTIO_NET_F_MTU? It looks
+> >> to according to the spec there will be no mtu field. =20
+> > I think so, yes.
 > > =20
-> >  static int stm32_count_function_set(struct counter_device *counter,
-> > @@ -274,31 +276,36 @@ static int stm32_action_get(struct counter_device=
- *counter,
-> >  	size_t function;
-> >  	int err;
+> >> And a more interesting case is VIRTIO_NET_F_MQ is not offered but
+> >> VIRTIO_NET_F_MTU offered. To me, it means we don't have
+> >> max_virtqueue_pairs but it's not how the driver is wrote today. =20
+> > That would be a bug, but it seems to me that the virtio-net driver
+> > reads max_virtqueue_pairs conditionally and handles absence of the
+> > feature correctly? =20
+>=20
+>=20
+> Yes, see the avove codes:
+>=20
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (virtio_has_feature(vdev, =
+VIRTIO_NET_F_MTU)) {
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 int mtu =3D virtio_cread16(vdev,
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 offsetof(struct virtio_net_config,
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mt=
+u));
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 if (mtu < MIN_MTU)
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __virtio=
+_clear_bit(vdev, VIRTIO_NET_F_MTU);
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>=20
+
+Ouch, you're right. The virtio_cread accessors all operate on offsets
+into a structure, it's just more obvious here.
+
+> So it's probably too late to fix the driver.
+
+It is never too late to fix a driver :)
+
+It seems involved, though. We'd need different config space structures
+based upon which set of features has been negotiated. It's not too bad
+when features build upon each other and add fields at the end (this
+should be fine right now, if the code remembered to check for the
+feature), but can become ugly if an in-between field depends upon a
+feature.
+
+I guess we've been lucky that it seems to be an extremely uncommon
+configuration.
+
+>=20
+>=20
 > > =20
-> > -	/* Default action mode (e.g. STM32_COUNT_SLAVE_MODE_DISABLED) */
-> > -	*action =3D STM32_SYNAPSE_ACTION_NONE;
-> > -
-> >  	err =3D stm32_count_function_get(counter, count, &function);
-> >  	if (err)
-> > -		return 0;
-> > +		return err;
->=20
-> This makes sense, in case the error reporting is kept above. Otherwise,
-> it always returns 0.
-
-Conceptually, a nonzero value from the function_get() callback should
-indicate an invalid function mode for a Counter driver. The changes in
-this patch should bring us to that behavior so fortunately we won't have
-to worry about remembering whether the stm32_count_function_get() return
-value is valid or not.
-
+> >> =20
+> >>>       =20
+> >>>> Otherwise readers (at least for me), may think the MTU is only valid
+> >>>> if driver set the bit. =20
+> >>> I think it would still be 'valid' in the sense that it exists and has
+> >>> some value in there filled in by the device, but a driver reading it
+> >>> without negotiating the feature would be buggy. (Like in the kernel
+> >>> code above; the kernel not liking the value does not make the field
+> >>> invalid.) =20
+> >>
+> >> See Michael's reply, the spec allows read the config before setting
+> >> features. =20
+> > Yes, the period prior to finishing negotiation is obviously special.
 > > =20
-> >  	switch (function) {
-> >  	case STM32_COUNT_ENCODER_MODE_1:
-> >  		/* counts up/down on TI1FP1 edge depending on TI2FP2 level */
-> >  		if (synapse->signal->id =3D=3D count->synapses[0].signal->id)
-> >  			*action =3D STM32_SYNAPSE_ACTION_BOTH_EDGES;
-> > -		break;
-> > +		else
-> > +			*action =3D STM32_SYNAPSE_ACTION_NONE;
->=20
-> More a question here...
->=20
-> > +		return 0;
-> >  	case STM32_COUNT_ENCODER_MODE_2:
-> >  		/* counts up/down on TI2FP2 edge depending on TI1FP1 level */
-> >  		if (synapse->signal->id =3D=3D count->synapses[1].signal->id)
-> >  			*action =3D STM32_SYNAPSE_ACTION_BOTH_EDGES;
-> > -		break;
-> > +		else
-> > +			*action =3D STM32_SYNAPSE_ACTION_NONE;
->=20
-> ..., not related to your fix: In "quadrature x2 a" or "quadrature x2 b",
-> the other signal determines the counting direction.
-> I feel like this isn't really represented with the "none" action.
-
-Be careful not to confuse the Generic Counter paradigm with the hardware
-description of your device. Within the context of the Generic Counter
-paradigm, Synapse actions are the trigger conditions of a hypothetical
-counting function evaluating Signals for an idealized Counter. In other
-words, a Synapse action indicates whether a Signal triggers a change in
-the Count value, not whether the Signal value is evaluated by the
-counting function.
-
-"Quadrature x2 A" and "Quadrature x2 B" are two different counting
-functions. Both happen to evaluate two Signals, but only one of those
-Signals is ever triggering the counting function evaluation to update
-the Count value. In other words, the Signal serving as a direction can
-change value as much as you like but it will never trigger a change in
-the respective Count's value; i.e. that Signal's Synapse action is
-"none" because it does not trigger the count function evaluation.
-
-> I just realized if we want to extend this driver to add new signals
-> (e.g. like counting on chA, chB or even by adding other signals like ETR
-> on STM32 with the increase function), this may start to be confusing.
-> Currently only the two signal names could give some hint (so it's rather
-> obvious currently).
->=20
-> Maybe there could be some change later to indicate the other signal
-> (channel A or channel B) participates in quadrature encoding ?
+> >> =20
+> >>> Maybe a statement covering everything would be:
+> >>>
+> >>> "The following driver-read-only field mtu only exists if the device
+> >>> offers VIRTIO_NET_F_MTU and may be read by the driver during feature
+> >>> negotiation and after VIRTIO_NET_F_MTU has been successfully
+> >>> negotiated."
+> >>>    =20
+> >>>>    =20
+> >>>>> Should we add a wording clarification to the spec? =20
+> >>>> I think so. =20
+> >>> Some clarification would be needed for each field that depends on a
+> >>> feature; that would be quite verbose. Maybe we can get away with a
+> >>> clarifying statement?
+> >>>
+> >>> "Some config space fields may depend on a certain feature. In that
+> >>> case, the field exits if the device has offered the corresponding
+> >>> feature, =20
+> >>
+> >> So this implies for !VIRTIO_NET_F_MQ && VIRTIO_NET_F_MTU, the config
+> >> will look like:
+> >>
+> >> struct virtio_net_config {
+> >>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 mac[6];
+> >>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 le16 status;
+> >>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 le16 mtu;
+> >> };
+> >> =20
+> > I agree. =20
 >=20
 >=20
-> Thanks and best regards,
-> Fabrice
+> So consider it's probably too late to fix the driver which assumes some=20
+> field are always persent, it looks to me need fix the spec do declare=20
+> the fields are always existing instead.
 
-Well, one thing could try is to introduce new count functions in the
-future if there is some configuration you want to support with a count
-function evaluation that doesn't really fit one of the ones currently
-available; we can create a new enum counter_count_function constant to
-represent it.
+The problem with that is that it has been in the spec already, and a
+compliant device that did not provide the fields without the features
+would suddenly become non-compliant...
 
-Remember that in the Generic Counter paradigm we are not necessarily
-matching hardware layout of your device, but rather abstracting its
-functionality. Because of that, you can associate multiple Signals to
-your Count component, even if your hardware device has only two physical
-lines.
+>=20
+>=20
+> > =20
+> >>>    and may be read by the driver during feature negotiation, and
+> >>> accessed by the driver after the feature has been successfully
+> >>> negotiated. A shorthand for this is a statement that a field only
+> >>> exists if a certain feature bit is set." =20
+> >>
+> >> I'm not sure using "shorthand" is good for the spec, at least we can
+> >> limit the its scope only to the configuration space part. =20
+> > Maybe "a shorthand expression"? =20
+>=20
+>=20
+> So the questions is should we use this for all over the spec or it will=20
+> be only used in this speicifc part (device configuration).
 
-For example, let's say a counter device has 3 modes: quadrature lines,
-external pulses, clock source. In quadrature lines mode, a "QUADA" and
-"QUADB" signal are evaluate as a quadrature x4 encoding; in external
-pulses mode, a "PULSE" signal is evaluated for both falling and rising
-edges; and in clock source mode, a "CLOCK" signal is evaluated for
-rising edges.
+For command structures and the like, "feature is set" should always
+mean "feature has been negotiated"; I think config space is special
+because the driver can read it before feature negotiation is finished,
+so device configuration is probably the proper place for it.
 
-Using the Generic Counter paradigm, we would construct a Count with 4
-Synapes associating the four Signals: QUADA, QUADB, PULSE, CLOCK. There
-would be 2 count functions: COUNTER_COUNT_FUNCTION_QUADRATURE_X4,
-COUNTER_COUNT_FUNCTION_INCREASE. The following 3 configurations would be
-possible:
-
-* Count Function: COUNTER_COUNT_FUNCTION_QUADRATURE_X4
-  Synapse Actions: QUADA =3D> COUNTER_SYNAPSE_ACTION_BOTH_EDGES
-                   QUADB =3D> COUNTER_SYNAPSE_ACTION_BOTH_EDGES
-		   PULSE =3D> COUNTER_SYNAPSE_ACTION_NONE
-		   CLOCK =3D> COUNTER_SYNAPSE_ACTION_NONE
-
-* Count Function: COUNTER_COUNT_FUNCTION_INCREASE
-  Synapse Actions: QUADA =3D> COUNTER_SYNAPSE_ACTION_NONE
-                   QUADB =3D> COUNTER_SYNAPSE_ACTION_NONE
-		   PULSE =3D> COUNTER_SYNAPSE_ACTION_BOTH_EDGES
-		   CLOCK =3D> COUNTER_SYNAPSE_ACTION_NONE
-
-* Count Function: COUNTER_COUNT_FUNCTION_INCREASE
-  Synapse Actions: QUADA =3D> COUNTER_SYNAPSE_ACTION_NONE
-                   QUADB =3D> COUNTER_SYNAPSE_ACTION_NONE
-		   PULSE =3D> COUNTER_SYNAPSE_ACTION_NONE
-		   CLOCK =3D> COUNTER_SYNAPSE_ACTION_RISING_EDGE
-
-So a Synapse action isn't where the differentiation occurs between which
-Signals are evaluated by a particular count function; the Synapse
-actions only indicate whether a change in the respective Signal value
-will trigger an update of the associated Count value.
-
-However, I see what you mean that this does leave some ambiguity when we
-have multiple Signals associated to the same Count, yet various possible
-count functions that only evaluate a subsection of those Signals.
-
-Perhaps one solution is to create a second Count component dedicated to
-just those Signals: so we impose a requirement that the only Signals
-associated with a particular Count component are Signals that are
-evaluated by all the specified count functions. Alternatively, perhaps
-we can expose a new attribute to communicate which Signals are
-evaluated.
-
-We're starting to go off on a tangent here though, so lets postpone
-this discussion to a later time, perhaps when support for the ETR signal
-is proposed for this driver.
-
-William Breathitt Gray
-
---4fpeKnoH9IErCEuJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmA3pFwACgkQhvpINdm7
-VJIz8xAAkNBJ9CbKbEINNZHmehMRuz8Jh0VyG8CB8730GBAcPVHiRvgt/GAO1okb
-NiDnZrTpThAnA6Wq2FJqDmeMIOqgxzgogeS/XD8zSLaXxnDELC72zbZA2adyBUX1
-9E7gtWPXDLiuXyt371sWSCmJFV2AnMVyNrmoY6qT7Gm5iODQvkFpiqS47r4mRSFs
-cdGbBf3t1vvB15wMvs2fGT48Tf6Cxc85nx/Qfcmp1D5DPsUb1MKJwBw3EvlkExpw
-qpqgacIjmIqAUitqJRS8g/8qo4BRZ/pyqP74QIMgovOfnzAffdhuD9BJ7rotHMjo
-axVmrrBxZuwinvbhfmRwq4RntKpXW+oLrgcKJe/cpnKqh9IvEUyXvUNZb2szbsZD
-9tbtMwMMHzVQjNnRLyLuaZG8H2LcdVtHeZtkkJL635xSLMirPv+pnpa7d4wbNtNu
-BCLbGnXq17S7jAE8DeiaGATrIevkA+njaQnlxoo8Vxvtw/33mJZB1ha0S2/N1r2d
-klYM/88HSgMBywGiDF6lZSbKlavX/56OfMjWyjzHy+0ZukMXySYqIatfT29koIYh
-Z85TrkWz9QjdHzHt/ngq8EjkEIwdl/mjq/ZVbg5FDs2NhiLYUywOrrbjSzmgAmk6
-rE3/TYDLdO1zZ9j4h9v7XfLgHkZV3Fkeq4kigsVoZa0GuSfScMw=
-=Hwqs
------END PGP SIGNATURE-----
-
---4fpeKnoH9IErCEuJ--
