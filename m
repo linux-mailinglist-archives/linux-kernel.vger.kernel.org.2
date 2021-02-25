@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04862325A67
+	by mail.lfdr.de (Postfix) with ESMTP id E6B85325A69
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 00:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbhBYXro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 18:47:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
+        id S232113AbhBYXsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 18:48:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233204AbhBYXpU (ORCPT
+        with ESMTP id S232412AbhBYXqa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 18:45:20 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6EBC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:44:40 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id d5so6537733iln.6
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:44:40 -0800 (PST)
+        Thu, 25 Feb 2021 18:46:30 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8E0C061793
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:45:26 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id z18so6510389ile.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:45:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dLG1p58PGnMeY59AWuFvydGWLoGBCF7NOPt6FH+DeFY=;
-        b=heegkJvkrTBZirIS56mT/RBkWAmZwf/NMGW4/ZI0wY4XFSepwTMXcfEs8vlEQ3UpWE
-         AsizNPevw//YyLeJciOVLFdlcHc/6i6y3vlcDpzOPRamaF0e/QUGSsgHRcEa+y8xgO7y
-         1ohxFWP38vpxKlsbj2JxS2iqbASH1qqlDg6X3+kFob0vqlUARsPG8lJpEtoyt0B77HrR
-         9XmvSFzxvyPBwJg7ixL61/vwx0YOoL+M2+wXz/DrkI86wjOqRfX54hhiA5OHGV+Y41RN
-         aZK+HJcWADj1E4IKNABpA2CeEhklAGH3SXV5ykkjeiYkekW42pQmjGTf3EfZUXVL2CgX
-         ul9A==
+        bh=Vrszq5gHGap3Ga7KBY8i2VMSG41dYORDbuUui0l8S80=;
+        b=MdbI32UIQbnzFUn/KLKTOeTY888IaQWsiBYInWsaKps44u3O/v6rz/hZTJMdAU5TrR
+         FH0V9U4o/erRKAfFYkjO31p7hUsh4+IwnFTAs2fOMup9rJ49tXry+KYO5Hu8lD2YiIqR
+         fhVlrBm/6rXyPWbH6qNmdmDX3+HQ6vyXYiURL11uPPLYL7B6E0Q/KOggYehiF2C8EIII
+         9J9YzeBdIov9GgPuAvSjNownfUAVTHfduzvTJzo0jzll3ARJedlG6t6Da2qQ0CTH7oud
+         HRzbeiZ8ybL7xtDaYJsZEDgDAzpN6fjpn+wIuM+qTuk+8m8laq8YdgZfsonhutWNV/pm
+         39rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dLG1p58PGnMeY59AWuFvydGWLoGBCF7NOPt6FH+DeFY=;
-        b=X3Am/jRm3VC+v1CK757jgG50hYYfDQbequeoXAt7hVOzozpUynYSSLmRpL1M8cLs75
-         QUiN8XgCCuIMijdw35uVpW/dmCYk/J7077ALK6nZr2zlQynze+0/5C6rqmUiGikVBgpM
-         V21PZq+A/+v7nCp1j2yn/h0ogw0FsI6eBzrXY+wzzUBcG/WhJv6AnGNrjDWIyih2bjML
-         EXl4cDQAsK1bRqkPFkLGGn8Mj4AixFfMiQw9uAal0cgrz6Cgvb+okkkEQ/Vn5lBMPW40
-         PXvMfXKZFMqQ1w0Eiyoq2Z9qjWrRPQ03EUDXH0D+boihU9ZAe2JAZe9kG7+UKklKLwzK
-         ZTEg==
-X-Gm-Message-State: AOAM532JZJ9J5BWP6Fpclf8YGGZrUfqB0AaZ0ZtGinhc/Tr8ULLMS7Bn
-        zC6MyoB7q2fVAUqc7mxWfkFbJCBXAAINh9h32BN+jhz4HUs=
-X-Google-Smtp-Source: ABdhPJzqvt2pkVZczh1txxMCAeHftiBFSQXbJ1LIWZAsfWb9xX+u9eYQttwySMwGKTNFi/j9LIs2a1vFB9RCZv1p9GQ=
-X-Received: by 2002:a05:6e02:1888:: with SMTP id o8mr151577ilu.154.1614296679963;
- Thu, 25 Feb 2021 15:44:39 -0800 (PST)
+        bh=Vrszq5gHGap3Ga7KBY8i2VMSG41dYORDbuUui0l8S80=;
+        b=mwmi7I2WnOMkTVtFKIXSV1JCkwaFZSAydazXlxze7YbmFGEa0jLX+sgf6V8RDk8bqD
+         KywC/t6OA3l7kBI46ZmyocvCR3tJUBp9U98lgLDbtYKXYbkGMXnhDP8mCeDNf1TpWiXy
+         P+RLNe92VBOiSJuxI35cUWgsFM2+A1R+PzwIPMvF/J2MKmi4zx/VMH0z8whOKKhYqZp0
+         6tHrd0gXzcuXzaPj2wakY7+jW2yMPUHKQIw0sWKOx1KZCkPE45/w8/ghsFgtGbmHp0qX
+         RmnATh3RSYE0zR1Sag4QbNC4Js/AQRdjf2Cd2aGbZPid2rEImmMmlO4t7fI2lC3LHIxG
+         3aUQ==
+X-Gm-Message-State: AOAM532/l/AS7WFe3ESNcgGpIChCgsnlWBK6iF3KQEU/QIwoYckCkbli
+        6o+mCBsQkLjcap3/rNh5v1tBKlIye88LCwY/d6VOFg==
+X-Google-Smtp-Source: ABdhPJxHNvKHDpF9JxpytLO8SkPIAYchHYa1lAMgnpA8IyvVVy8KmCOnh3YK8XJpaUxWUYkciTXAsLIf0jg1FErdb00=
+X-Received: by 2002:a92:6408:: with SMTP id y8mr128098ilb.203.1614296725854;
+ Thu, 25 Feb 2021 15:45:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225055940.18748-1-wangyanan55@huawei.com> <20210225055940.18748-7-wangyanan55@huawei.com>
-In-Reply-To: <20210225055940.18748-7-wangyanan55@huawei.com>
+References: <20210225055940.18748-1-wangyanan55@huawei.com>
+In-Reply-To: <20210225055940.18748-1-wangyanan55@huawei.com>
 From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 25 Feb 2021 15:44:28 -0800
-Message-ID: <CANgfPd9EF6Yc_SAR9sRY7oXMx3um+6phb71yNL=AsHDV4+tCRA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 6/7] KVM: selftests: Adapt vm_userspace_mem_region_add
- to new helpers
+Date:   Thu, 25 Feb 2021 15:45:14 -0800
+Message-ID: <CANgfPd-q=WNmJj95OJhWSERvwihtgkhxXZ_BoUSkhXwW8E3A1w@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/7] Some improvement and a new test for kvm page table
 To:     Yanan Wang <wangyanan55@huawei.com>
 Cc:     kvm <kvm@vger.kernel.org>, linux-kselftest@vger.kernel.org,
         LKML <linux-kernel@vger.kernel.org>,
@@ -68,89 +67,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 10:03 PM Yanan Wang <wangyanan55@huawei.com> wrote:
+On Wed, Feb 24, 2021 at 9:59 PM Yanan Wang <wangyanan55@huawei.com> wrote:
 >
-> With VM_MEM_SRC_ANONYMOUS_THP specified in vm_userspace_mem_region_add(),
-> we have to get the transparent hugepage size for HVA alignment. With the
-> new helpers, we can use get_backing_src_pagesz() to check whether THP is
-> configured and then get the exact configured hugepage size.
+> Hi,
+> This v2 series can mainly include two parts.
+> Based on kvm queue branch: https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=queue
+> Links of v1: https://lore.kernel.org/lkml/20210208090841.333724-1-wangyanan55@huawei.com/
 >
-> As different architectures may have different THP page sizes configured,
-> this can get the accurate THP page sizes on any platform.
+> In the first part, all the known hugetlb backing src types specified
+> with different hugepage sizes are listed, so that we can specify use
+> of hugetlb source of the exact granularity that we want, instead of
+> the system default ones. And as all the known hugetlb page sizes are
+> listed, it's appropriate for all architectures. Besides, a helper that
+> can get granularity of different backing src types(anonumous/thp/hugetlb)
+> is added, so that we can use the accurate backing src granularity for
+> kinds of alignment or guest memory accessing of vcpus.
 >
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-> ---
->  tools/testing/selftests/kvm/lib/kvm_util.c | 27 +++++++---------------
->  1 file changed, 8 insertions(+), 19 deletions(-)
+> In the second part, a new test is added:
+> This test is added to serve as a performance tester and a bug reproducer
+> for kvm page table code (GPA->HPA mappings), it gives guidance for the
+> people trying to make some improvement for kvm. And the following explains
+> what we can exactly do through this test.
 >
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index b91c8e3a7ee1..0105fbfed036 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -18,7 +18,6 @@
->  #include <unistd.h>
->  #include <linux/kernel.h>
+> The function guest_code() can cover the conditions where a single vcpu or
+> multiple vcpus access guest pages within the same memory region, in three
+> VM stages(before dirty logging, during dirty logging, after dirty logging).
+> Besides, the backing src memory type(ANONYMOUS/THP/HUGETLB) of the tested
+> memory region can be specified by users, which means normal page mappings
+> or block mappings can be chosen by users to be created in the test.
 >
-> -#define KVM_UTIL_PGS_PER_HUGEPG 512
->  #define KVM_UTIL_MIN_PFN       2
+> If ANONYMOUS memory is specified, kvm will create normal page mappings
+> for the tested memory region before dirty logging, and update attributes
+> of the page mappings from RO to RW during dirty logging. If THP/HUGETLB
+> memory is specified, kvm will create block mappings for the tested memory
+> region before dirty logging, and split the blcok mappings into normal page
+> mappings during dirty logging, and coalesce the page mappings back into
+> block mappings after dirty logging is stopped.
 >
->  /* Aligns x up to the next multiple of size. Size must be a power of 2. */
-> @@ -686,7 +685,7 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
->  {
->         int ret;
->         struct userspace_mem_region *region;
-> -       size_t huge_page_size = KVM_UTIL_PGS_PER_HUGEPG * vm->page_size;
-> +       size_t backing_src_pagesz = get_backing_src_pagesz(src_type);
->         size_t alignment;
+> So in summary, as a performance tester, this test can present the
+> performance of kvm creating/updating normal page mappings, or the
+> performance of kvm creating/splitting/recovering block mappings,
+> through execution time.
 >
->         TEST_ASSERT(vm_adjust_num_guest_pages(vm->mode, npages) == npages,
-> @@ -748,7 +747,7 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
->  #endif
+> When we need to coalesce the page mappings back to block mappings after
+> dirty logging is stopped, we have to firstly invalidate *all* the TLB
+> entries for the page mappings right before installation of the block entry,
+> because a TLB conflict abort error could occur if we can't invalidate the
+> TLB entries fully. We have hit this TLB conflict twice on aarch64 software
+> implementation and fixed it. As this test can imulate process from dirty
+> logging enabled to dirty logging stopped of a VM with block mappings,
+> so it can also reproduce this TLB conflict abort due to inadequate TLB
+> invalidation when coalescing tables.
 >
->         if (src_type == VM_MEM_SRC_ANONYMOUS_THP)
-> -               alignment = max(huge_page_size, alignment);
-> +               alignment = max(backing_src_pagesz, alignment);
->
->         /* Add enough memory to align up if necessary */
->         if (alignment > 1)
-> @@ -767,22 +766,12 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
->         region->host_mem = align(region->mmap_start, alignment);
->
->         /* As needed perform madvise */
-> -       if (src_type == VM_MEM_SRC_ANONYMOUS || src_type == VM_MEM_SRC_ANONYMOUS_THP) {
-> -               struct stat statbuf;
-> -
-> -               ret = stat("/sys/kernel/mm/transparent_hugepage", &statbuf);
-> -               TEST_ASSERT(ret == 0 || (ret == -1 && errno == ENOENT),
-> -                           "stat /sys/kernel/mm/transparent_hugepage");
-> -
-> -               TEST_ASSERT(ret == 0 || src_type != VM_MEM_SRC_ANONYMOUS_THP,
-> -                           "VM_MEM_SRC_ANONYMOUS_THP requires THP to be configured in the host kernel");
-> -
-> -               if (ret == 0) {
-> -                       ret = madvise(region->host_mem, npages * vm->page_size,
-> -                                     src_type == VM_MEM_SRC_ANONYMOUS ? MADV_NOHUGEPAGE : MADV_HUGEPAGE);
-> -                       TEST_ASSERT(ret == 0, "madvise failed, addr: %p length: 0x%lx src_type: %x",
-> -                                   region->host_mem, npages * vm->page_size, src_type);
-> -               }
-> +       if (src_type <= VM_MEM_SRC_ANONYMOUS_THP && thp_configured()) {
+> Links about the TLB conflict abort:
+> https://lore.kernel.org/lkml/20201201201034.116760-3-wangyanan55@huawei.com/
 
-This check relies on an unstated property of the backing src type
-enums where VM_MEM_SRC_ANONYMOUS and VM_MEM_SRC_ANONYMOUS_THP are
-declared first.
-It would probably be more readable for folks if the check was explicit:
-if ((src_type == VM_MEM_SRC_ANONYMOUS || src_type ==
-VM_MEM_SRC_ANONYMOUS_THP) && thp_configured()) {
+Besides a few style / readability comments, this series looks good to
+me. Thanks for generalizing the way these selftests handle different
+hugeTLB sizes!
 
 
-> +               ret = madvise(region->host_mem, npages * vm->page_size,
-> +                             src_type == VM_MEM_SRC_ANONYMOUS ? MADV_NOHUGEPAGE : MADV_HUGEPAGE);
-> +               TEST_ASSERT(ret == 0, "madvise failed, addr: %p length: 0x%lx src_type: %s",
-> +                           region->host_mem, npages * vm->page_size,
-> +                           vm_mem_backing_src_alias(src_type)->name);
->         }
 >
->         region->unused_phy_pages = sparsebit_alloc();
+> Yanan Wang (7):
+>   tools include: sync head files of mmap flag encodings about hugetlb
+>   KVM: selftests: Use flag CLOCK_MONOTONIC_RAW for timing
+>   KVM: selftests: Make a generic helper to get vm guest mode strings
+>   KVM: selftests: Add a helper to get system configured THP page size
+>   KVM: selftests: List all hugetlb src types specified with page sizes
+>   KVM: selftests: Adapt vm_userspace_mem_region_add to new helpers
+>   KVM: selftests: Add a test for kvm page table code
+>
+>  tools/include/asm-generic/hugetlb_encode.h    |   3 +
+>  tools/testing/selftests/kvm/Makefile          |   3 +
+>  .../selftests/kvm/demand_paging_test.c        |   8 +-
+>  .../selftests/kvm/dirty_log_perf_test.c       |  14 +-
+>  .../testing/selftests/kvm/include/kvm_util.h  |   4 +-
+>  .../testing/selftests/kvm/include/test_util.h |  21 +-
+>  .../selftests/kvm/kvm_page_table_test.c       | 476 ++++++++++++++++++
+>  tools/testing/selftests/kvm/lib/kvm_util.c    |  58 +--
+>  tools/testing/selftests/kvm/lib/test_util.c   |  92 +++-
+>  tools/testing/selftests/kvm/steal_time.c      |   4 +-
+>  10 files changed, 623 insertions(+), 60 deletions(-)
+>  create mode 100644 tools/testing/selftests/kvm/kvm_page_table_test.c
+>
 > --
 > 2.19.1
 >
