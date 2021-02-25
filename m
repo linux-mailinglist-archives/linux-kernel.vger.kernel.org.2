@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FB0324808
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 01:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E8D32480A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 01:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236400AbhBYAsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 19:48:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44086 "EHLO mail.kernel.org"
+        id S236451AbhBYAtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 19:49:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236366AbhBYAsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 19:48:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B22DA6146B;
-        Thu, 25 Feb 2021 00:47:22 +0000 (UTC)
+        id S236421AbhBYAs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 19:48:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 684EA6146B;
+        Thu, 25 Feb 2021 00:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614214044;
-        bh=v9Cemz6+5QAlytl+WWIeYFPOPcg34dVPzVpn7Ai5Kbw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MbLCz8HFy4albGGaAxeg4DicoNj4dZI5iynJgXU/NsF8WsILKvj+eqHB9Vphr5thB
-         a+v8u35WFikt58r/new7tuteQEpeXz0BPZda2yKfwfAXywmHnlGc8GdcXjW/DHn4f8
-         9S/m2GeerM10HksfNa/H89VAgmt8HzUYiUrjVK13ZRxb+QA6lCQKqbeZPTjwdBDVlb
-         MaVHRzW29g0Q/aD6awdU3cHJniScZwcYcR1Opfy/gYImRqa4Wp+qM3NWbSaCDYrdmA
-         h4+gY6mCiZcqGJrFctn8iIDBaQStqYzHlDaLRoNhnUfadNgwTrmxX83v4Tafma2exe
-         6ZCL5ZFfEF05A==
-Date:   Wed, 24 Feb 2021 16:47:20 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Coiby Xu <coxu@redhat.com>
-Cc:     netdev@vger.kernel.org, kexec@lists.infradead.org,
-        intel-wired-lan@lists.osuosl.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 4/4] i40e: don't open i40iw client for kdump
-Message-ID: <20210224164720.2228c580@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210225002101.hvbpq7f6zbvylqy4@Rk>
-References: <20210222070701.16416-1-coxu@redhat.com>
-        <20210222070701.16416-5-coxu@redhat.com>
-        <20210223122207.08835e0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210224114141.ziywca4dvn5fs6js@Rk>
-        <20210224084841.50620776@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210225002101.hvbpq7f6zbvylqy4@Rk>
+        s=k20201202; t=1614214096;
+        bh=P6YhKinu23PkPP/k4EIifcZhpqaz7+hAFMZPWD9ydqw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YnciVnY0U5Lq9txw9Utq5s5oIj/cjMLXbwnMAK2V9DohXcNKzS8uCHJUQhznFjpca
+         SOt4TnUjtzN0nUxG/3R5/RvH1c4lFEBzxDOSQlGddaihTng6zuMFANX0l2VswfN/2n
+         lMKDxUZqdfTDvPBMvQYlxBMIdFEVV9Ozi9AyuErQVfs/8V/ex8knfPBDHSWuF6CxiC
+         hEOsWkVWLMeb7vPosjtLQDcONJ+D5oQCVBrVzZzWZj2JRwHDLJCvYne4YLP7a5jCkh
+         pQi0YTcX7K8JFWbABg3BfX2guAOLVmqb26SvHsQRYUa5c8fUrWleJiCuyLauiNbved
+         onePSotlk5WBg==
+Date:   Thu, 25 Feb 2021 01:48:13 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Stable <stable@vger.kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 01/13] rcu/nocb: Fix potential missed nocb_timer rearm
+Message-ID: <20210225004813.GB12431@lothringen>
+References: <20210223001011.127063-1-frederic@kernel.org>
+ <20210223001011.127063-2-frederic@kernel.org>
+ <20210224183709.GI2743@paulmck-ThinkPad-P72>
+ <20210224220606.GA3179@lothringen>
+ <20210225001425.GL2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225001425.GL2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 08:21:01 +0800 Coiby Xu wrote:
-> On Wed, Feb 24, 2021 at 08:48:41AM -0800, Jakub Kicinski wrote:
-> >On Wed, 24 Feb 2021 19:41:41 +0800 Coiby Xu wrote:  
-> >> I'm not sure if I understand you correctly. Do you mean we shouldn't
-> >> disable i40iw for kdump?  
-> >
-> >Forgive my ignorance - are the kdump kernels separate builds?
+On Wed, Feb 24, 2021 at 04:14:25PM -0800, Paul E. McKenney wrote:
+> On Wed, Feb 24, 2021 at 11:06:06PM +0100, Frederic Weisbecker wrote:
+> > I managed to recollect some pieces of my brain. So keep the above but
+> > let's change the point 10:
+> > 
+> > 10.     CPU 0 enqueues its second callback, this time with interrupts
+> >  	enabled so it can wake directly	->nocb_gp_kthread.
+> > 	It does so with calling __wake_nocb_gp() which also cancels the
+> > 	pending timer that got queued in step 2. But that doesn't reset
+> > 	CPU 0's ->nocb_defer_wakeup which is still set to RCU_NOCB_WAKE.
+> > 	So CPU 0's ->nocb_defer_wakeup and CPU 0's ->nocb_timer are now
+> > 	desynchronized.
+> > 
+> > 11.	->nocb_gp_kthread associates the callback queued in 10 with a new
+> > 	grace period, arrange for it to start and sleeps on it.
+> > 
+> > 12.     The grace period ends, ->nocb_gp_kthread awakens and wakes up
+> > 	CPU 0's ->nocb_cb_kthread which invokes the callback queued in 10.
+> > 
+> > 13.	CPU 0 enqueues its third callback, this time with interrupts
+> > 	disabled so it tries to queue a deferred wakeup. However
+> > 	->nocb_defer_wakeup has a stalled RCU_NOCB_WAKE value which prevents
+> > 	the CPU 0's ->nocb_timer, that got cancelled in 10, from being armed.
+> > 
+> > 14.     CPU 0 has its pending callback and it may go unnoticed until
+> >         some other CPU ever wakes up ->nocb_gp_kthread or CPU 0 ever calls
+> > 	an explicit deferred wake up caller like idle entry.
+> > 
+> > I hope I'm not missing something this time...
 > 
-> AFAIK we don't build a kernel exclusively for kdump. 
-> 
-> >If they are it'd be better to leave the choice of enabling RDMA
-> >to the user - through appropriate Kconfig options.
-> 
-> i40iw is usually built as a loadable module. So if we want to leave the
-> choce of enabling RDMA to the user, we could exclude this driver when
-> building the initramfs for kdump, for example, dracut provides the 
-> omit_drivers option for this purpose. 
-> 
-> On the other hand, the users expect "crashkernel=auto" to work out of
-> the box. So i40iw defeats this purpose. 
-> 
-> I'll discuss with my Red Hat team and the Intel team about whether RDMA
-> is needed for kdump. Thanks for bringing up this issue!
+> Thank you, that does sound plausible.  I guess I can see how rcutorture
+> might have missed this one!
 
-Great, talking to experts here at FB it seems that building a cut-down
-kernel for kdump is easier than chasing all the drivers to react to
-is_kdump_kernel(). But if you guys need it and Intel is fine with 
-the change I won't complain.
+I must admit it requires a lot of stars to be aligned :-)
+
+Thanks.
