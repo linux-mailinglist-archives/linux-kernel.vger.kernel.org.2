@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EEE324C12
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C282324C1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235920AbhBYI3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 03:29:34 -0500
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:42249 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235901AbhBYI3X (ORCPT
+        id S235852AbhBYIeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 03:34:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233826AbhBYIeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 03:29:23 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 963C62C0;
-        Thu, 25 Feb 2021 03:28:34 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 25 Feb 2021 03:28:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=Y9Gv6iZZQ2bb0yIwpCDfsgvAtPi
-        Vd7qD5mlt0Bt0XeI=; b=iUj8SrA8pMuMSHzXqNfpdkRTv5LHEHrqNsUWJWPG92y
-        n5XX3wQPuxLyDYZe6diiXkxlpBNS7atD8ZlfLQ2imGuvYd9vjCHN+4356r85Ajb3
-        gIUtl3IHiUyTuiy9p763tQUV/N1s3GzXChAittz3oQ3Bt+O9MHzWREOpEmgcUO8C
-        PD7vWGsUUTjC5zp9oMutEEOUavv+kz7eMxplejGD8HohJCUw7E4Ix3B8634plLv2
-        hCMnnfz6cYtNOvc7VHtpJ1nYeHqTJr8tcDYtlXlO+VTXxK/Dc5n4HZiccohenDF/
-        NSYHx/EpU0OKFgCmB8wt7xV1YNvU6N7PmjmqDlnG69Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Y9Gv6i
-        ZZQ2bb0yIwpCDfsgvAtPiVd7qD5mlt0Bt0XeI=; b=DiUUdZr5pBX9Vde/BYmOxx
-        +/ETiGbxbC/CblLDUmjZy8mfjTRN4+AiZk5Tx+opWp08we7QNZMs2w+8sxQpWQ8e
-        R+GVvzewIdzUVvVVE8tIGqv4VC8cPblVa6SQdXFW4l0qTW9R1B+Q2bytCE3B92B6
-        FPDdR/ZFsUMwNRUDCzzeCZvKeeofB+gKxsB7nWTJoAFpQ7U4uyNN4t5Z9cHV6G/F
-        pCnnxAqQtOEAMbfWJ+5cDmKXuCrTTh6k2Jc9DmA1LLrv9HoytvNwnfeMd6dZi8Fg
-        gY35vtcHs/Biv4iOnRYEXL44oawDk1ywo+IPrO79sa5YJ4lDTAOdRJBz4c02+XwA
-        ==
-X-ME-Sender: <xms:r183YDya3pr2fDcU8f1LWuHWaePm4yGPCxour8BSw8XOE1laBpw4fw>
-    <xme:r183YLSvn27zl5KP7GrNN_B9gR19cFPUPJEs8Urd3vd06On39SjJOVGbGLnBCOVhd
-    1zzwufSFViNigttRq4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeekgdduudekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:r183YNXfKZunF6ifUUEBA_9I_mLbW3AoHGkdVL-LTC8PzZhRiBcsvQ>
-    <xmx:r183YNgXLQPMiHwx-yI-Oxy2U5zGaZyF17Rj9gT6i2GW_A5Su1RqhQ>
-    <xmx:r183YFD7AmVyaBHAZ-8WF9L0ZbsafLJGz2FRY773L_YjWDVViN_8hg>
-    <xmx:sl83YJ6QDgf3_lrjxK0dkem5mx8a7y-5E3XdS9htJRKRaeePkoc9WVaM0i0>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D1A281080068;
-        Thu, 25 Feb 2021 03:28:30 -0500 (EST)
-Date:   Thu, 25 Feb 2021 09:28:28 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Pascal Roeleven <dev@pascalroeleven.nl>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org,
-        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Martin Cerveny <m.cerveny@computer.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v5 0/2] Add support for Topwise A721 tablet
-Message-ID: <20210225082828.orqttturwbt6ckov@gilmour>
-References: <20210224105240.47754-1-dev@pascalroeleven.nl>
+        Thu, 25 Feb 2021 03:34:03 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FB7C06174A;
+        Thu, 25 Feb 2021 00:33:23 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id f17so4928332qkl.5;
+        Thu, 25 Feb 2021 00:33:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rzXO5uwkd4UlJ7sr2WOeKxv8d9eLoFxx3aBaT5I3Xd0=;
+        b=c+Gb2y3lvWIdiTTwJEZYdb4xQO2rmh9hHZCSxVIafHZtsJ3ATYKqx2+eCcNTkcwEvf
+         BgBsK0kt+eeDcIrLyT+qsS22xe8PiT4tueyRXW+d5n/h3ckRC+TNJJCNRsWFbQZBa5aX
+         1U/Yn+VeQBHJan47Yr6k66r3YqnNFyTTBhAwB/HvsaZycOAupY4h33OjaVF8K27zsdDs
+         VcL2iFRaEWbQc144yfY1LMldK7R30ojmBGDTrpdXaiAlgGXb44ANsgCv90KvooVelwER
+         QH5h7kFUCt3HXLjvENF9R3axiohnb4XfkGfdWWrMyt+fj/muH2iPRXpfXzj+7qW6NxRK
+         AnEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=rzXO5uwkd4UlJ7sr2WOeKxv8d9eLoFxx3aBaT5I3Xd0=;
+        b=QOuDbn9m/OcBmiofmTVNhP9VR5Si7nvTKNQ0hdq1ev6uOCy3P2Mo1TvdLk06MUSBGe
+         /OxKCljh6vOvf58lglzgL9TSJQFlsCNoXxbqxt6+TekUFUHe9Lz/egD/6wZ5QR0BvNjT
+         hcV5tb1kLYRtdW6XoiOMOWkrknSwkekyFktkLcYChftadTCX1x9bfXZr+W6BdOXy574Z
+         Ahmhc3zkknn1z3D0c6fPmpZc8yhgQJdHOzz8UZdJe02XvF82Mep6b/ZLc4LSvcn6vc2+
+         E6S4rlgEgsSLXp47MceJaaCajqxxXcofLcg+OrA2hWQ8JknfUjzFctSy+zx+tA3Tzbdm
+         FBhQ==
+X-Gm-Message-State: AOAM530nmkV6z6Gde3ZwZLxVR/PBJIraDNhW41yhzaku696FJpD2NHtG
+        BNezQ2W8UO7dQGz6iGN7LYk=
+X-Google-Smtp-Source: ABdhPJz8y38zscafFLc9OKZ/olaRjt8Bu/8KetP9TXgOr1f0pUCfBPvgZNXfAjfbUpOSmxOhKv7d3w==
+X-Received: by 2002:a37:806:: with SMTP id 6mr1652231qki.258.1614242002195;
+        Thu, 25 Feb 2021 00:33:22 -0800 (PST)
+Received: from kde-neon-desktop.orld.fl.wtsky.net ([208.64.158.251])
+        by smtp.gmail.com with ESMTPSA id g74sm171054qke.3.2021.02.25.00.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 00:33:20 -0800 (PST)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     linus.walleij@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH v1] drivers: pinctrl: qcom: fix Kconfig dependency on GPIOLIB
+Date:   Thu, 25 Feb 2021 03:33:06 -0500
+Message-Id: <20210225083306.25792-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mddrviwckt3hjn4y"
-Content-Disposition: inline
-In-Reply-To: <20210224105240.47754-1-dev@pascalroeleven.nl>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When PINCTRL_MSM is enabled, and GPIOLIB is disabled,
+Kbuild gives the following warning:
 
---mddrviwckt3hjn4y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+WARNING: unmet direct dependencies detected for GPIOLIB_IRQCHIP
+  Depends on [n]: GPIOLIB [=n]
+  Selected by [y]:
+  - PINCTRL_MSM [=y] && PINCTRL [=y] && (ARCH_QCOM || COMPILE_TEST [=y])
 
-On Wed, Feb 24, 2021 at 11:52:38AM +0100, Pascal Roeleven wrote:
-> On request I'm resending the last two patches from the Topwise A721 tablet
-> series from a year ago as they weren't picked up. The other patches are
-> already merged, so I didn't resend them.
->=20
-> Changes from v4:
-> * Reorder nodes alphabetically
->=20
-> Changes from v3:
-> * Fix DT validation warnings
-> * Remove leftover labels
->=20
-> Changes from v2:
-> * Collected acked-by.
+This is because PINCTRL_MSM selects GPIOLIB_IRQCHIP,
+without selecting or depending on GPIOLIB, despite
+GPIOLIB_IRQCHIP depending on GPIOLIB. Having PINCTRL_MSM
+select GPIOLIB will cause a recursive dependency error.
 
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ drivers/pinctrl/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Queued for 5.13, thanks!
-Maxime
+diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
+index 6853a896c476..d42ac59875ab 100644
+--- a/drivers/pinctrl/qcom/Kconfig
++++ b/drivers/pinctrl/qcom/Kconfig
+@@ -3,7 +3,7 @@ if (ARCH_QCOM || COMPILE_TEST)
 
---mddrviwckt3hjn4y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYDdfrAAKCRDj7w1vZxhR
-xXolAQCEdwE59axZzlSV9vxCO+BA65ZY6hptY7stXyvrttkM8gD/YcZtMXvHoayg
-T/Vbe+6f7Wg1eadL4IzRckWcMm1S9wg=
-=lnHG
------END PGP SIGNATURE-----
-
---mddrviwckt3hjn4y--
+ config PINCTRL_MSM
+ 	tristate "Qualcomm core pin controller driver"
+-	depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
++	depends on GPIOLIB && (QCOM_SCM || !QCOM_SCM) #if QCOM_SCM=m this can't be =y
+ 	select PINMUX
+ 	select PINCONF
+ 	select GENERIC_PINCONF
+--
+2.27.0
