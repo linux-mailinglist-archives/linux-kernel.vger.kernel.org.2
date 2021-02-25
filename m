@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AE0324E65
+	by mail.lfdr.de (Postfix) with ESMTP id 85B8D324E66
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhBYKkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:40:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
+        id S235313AbhBYKk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:40:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235425AbhBYKSL (ORCPT
+        with ESMTP id S235350AbhBYKSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:18:11 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB63AC061221
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:16:43 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id u12so3016612pjr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:16:43 -0800 (PST)
+        Thu, 25 Feb 2021 05:18:05 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7FAC061224
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:16:46 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id s23so3265299pji.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:16:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rPds8Sv7GUEEyk1zAIR4OmJkrFu7mzc9HWc+V93Z198=;
-        b=CKCsGqiAB/HRbKsOO7yduvsdNknZ8XUSNFN//yKVMirfy2a2RDYD8QFKysTP49c9JN
-         MJfnyRH3fgCHajl3+wef+FuzDmmwE6GeU2X1USMZlwMVJpWK4jBGTes8e+WKuDJl39SN
-         gh08iC6o/idUnrGwqb5H2Hl1BmrYSJkXpPNz0=
+        bh=AOnu5+rwwrxagaBbf8x0GjKsvpo3db+Itt5LI3BY7eA=;
+        b=FN0DasRvoVznQ6E4Y/uUENAY0JjGIAWRWInz95h/Puo/8Tm4QEnbA8qhftyt4NyklR
+         FKF2qeGViS7xGwJViornwpXb4Cnd/kyfU9BFEHHF7YbGr+2IQJfc+IDMV9C2jo3p6Ry6
+         xk5TZxJqO8SneFI5R43DkmyQ1pRg1hYCnKpX8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rPds8Sv7GUEEyk1zAIR4OmJkrFu7mzc9HWc+V93Z198=;
-        b=QQelMBaYb2RsjPo31iF5psqgx2m61w/qLy8cLpChF04YZdBLE06iQS7pL3p1RLk3mF
-         gi+HCvvi5LJsKwR/0iRh4CZiGZrMZXqK5iw+nYr+0PsrZJe5MOnSeut+LU/Ckj7I59s4
-         h0IpSzMwc+wqysIE+iOCY3/nVwf3WOdCZQTYu3uMIgoadUVPOTax/PdcdFzLF16kIdIN
-         /a4+ivmUKOSSMaddh95bWY28aj9huuozQc0ksBxRUCbd19CpFbIF5+XmfrQyh9FtVXqY
-         cZQjYucSP+Kdn9wzUVWex8JJXN5VRpN+MAs/08PrYEdDWHvKtsLCAyQYmCFLAJFclNHW
-         +Nug==
-X-Gm-Message-State: AOAM533Q2ZHoDPCScQ8WKyDODpTamI5HYoUPRcBsOJST3xWApetWFNk+
-        n575TkivJLiMf9qLPoTUj2mUnmt9zYRQ3w==
-X-Google-Smtp-Source: ABdhPJzLvuKzJmtBTws3k3mugVhnelvdDoWGrtYgLJq0rmswBRVYtRxeXogQwxa3aUJPy3oiWm7jEg==
-X-Received: by 2002:a17:902:9304:b029:e4:12f4:bdb0 with SMTP id bc4-20020a1709029304b02900e412f4bdb0mr2483934plb.55.1614248203466;
-        Thu, 25 Feb 2021 02:16:43 -0800 (PST)
+        bh=AOnu5+rwwrxagaBbf8x0GjKsvpo3db+Itt5LI3BY7eA=;
+        b=ZCCZQigYFlWbKLKb9qPLExRX73jZxa75QjitTnaN8YoUkcvjGR9MR01fWwc5lVkjmP
+         P04d/BDJ8/Q6vMycPHttE7tNLqbhiA2vpFmH4cF5bEQO7SBlINsz+hZ7ItBk9uCzwY58
+         ZV7TIYFv66lvbV0w2s/2EU7Gt/qd28HBDveKIYGDKRP8cRJ4/3b0yN0Q+7nWHKPxPx03
+         IBwrgF9hFvtq8JEummzdfUa68Mvv8IssFv08VuqpeFlh5u0uh6OW680oQoQtw4mJBFH9
+         NBTWHNuV5Spgi7qIGVkccidDBiQLD29oFeentMudqlrLPCVVkfVfY1tcQMieiZdaJ86n
+         /JEw==
+X-Gm-Message-State: AOAM532DdxFqA0AP4sS7lC47I0QUxMjJsoPYt7sV6x5O5qZFtdtc0Doq
+        mBD3SI7CB/hd/WkCuq66RbuP95kN67A4ZQ==
+X-Google-Smtp-Source: ABdhPJxYnrlwLEA12Pq2yUQxpxKVdVUC1QRTp2SRT75TUZk3NGgHWKkRD2dvNBrC5K6NHMWXR+6sIA==
+X-Received: by 2002:a17:90a:b28b:: with SMTP id c11mr2638559pjr.62.1614248206231;
+        Thu, 25 Feb 2021 02:16:46 -0800 (PST)
 Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:2550:3154:2c53:b6e7])
-        by smtp.gmail.com with ESMTPSA id z2sm5848193pfc.8.2021.02.25.02.16.40
+        by smtp.gmail.com with ESMTPSA id z2sm5848193pfc.8.2021.02.25.02.16.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 02:16:42 -0800 (PST)
+        Thu, 25 Feb 2021 02:16:45 -0800 (PST)
 From:   Alexandre Courbot <acourbot@chromium.org>
 To:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -55,9 +55,9 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org,
         Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH v2 6/8] media: mtk-vcodec: vdec: add media device if using stateless api
-Date:   Thu, 25 Feb 2021 19:16:10 +0900
-Message-Id: <20210225101612.2832444-7-acourbot@chromium.org>
+Subject: [PATCH v2 7/8] dt-bindings: media: document mediatek,mt8183-vcodec-dec
+Date:   Thu, 25 Feb 2021 19:16:11 +0900
+Message-Id: <20210225101612.2832444-8-acourbot@chromium.org>
 X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
 In-Reply-To: <20210225101612.2832444-1-acourbot@chromium.org>
 References: <20210225101612.2832444-1-acourbot@chromium.org>
@@ -67,124 +67,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunfei Dong <yunfei.dong@mediatek.com>
+MT8183's decoder is instantiated similarly to MT8173's.
 
-The stateless API requires a media device for issuing requests. Add one
-if we are being instantiated as a stateless decoder.
-
-Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-[acourbot: refactor, cleanup and split]
-Co-developed-by: Alexandre Courbot <acourbot@chromium.org>
 Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 ---
- drivers/media/platform/Kconfig                |  1 +
- .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  | 39 +++++++++++++++++++
- .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  2 +
- 3 files changed, 42 insertions(+)
+ Documentation/devicetree/bindings/media/mediatek-vcodec.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index c27db5643712..9d83b4223ecc 100644
---- a/drivers/media/platform/Kconfig
-+++ b/drivers/media/platform/Kconfig
-@@ -296,6 +296,7 @@ config VIDEO_MEDIATEK_VCODEC
- 	select VIDEO_MEDIATEK_VCODEC_VPU if VIDEO_MEDIATEK_VPU
- 	select VIDEO_MEDIATEK_VCODEC_SCP if MTK_SCP
- 	select V4L2_H264
-+	select MEDIA_CONTROLLER
- 	help
- 	  Mediatek video codec driver provides HW capability to
- 	  encode and decode in a range of video formats on MT8173
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-index 533781d4680a..e942e28f96fe 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-@@ -14,6 +14,7 @@
- #include <media/v4l2-event.h>
- #include <media/v4l2-mem2mem.h>
- #include <media/videobuf2-dma-contig.h>
-+#include <media/v4l2-device.h>
- 
- #include "mtk_vcodec_drv.h"
- #include "mtk_vcodec_dec.h"
-@@ -324,6 +325,31 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
- 		goto err_event_workq;
- 	}
- 
-+	if (dev->vdec_pdata->uses_stateless_api) {
-+		dev->mdev_dec.dev = &pdev->dev;
-+		strscpy(dev->mdev_dec.model, MTK_VCODEC_DEC_NAME,
-+				sizeof(dev->mdev_dec.model));
-+
-+		media_device_init(&dev->mdev_dec);
-+		dev->mdev_dec.ops = &mtk_vcodec_media_ops;
-+		dev->v4l2_dev.mdev = &dev->mdev_dec;
-+
-+		ret = v4l2_m2m_register_media_controller(dev->m2m_dev_dec,
-+			dev->vfd_dec, MEDIA_ENT_F_PROC_VIDEO_DECODER);
-+		if (ret) {
-+			mtk_v4l2_err("Failed to register media controller");
-+			goto err_reg_cont;
-+		}
-+
-+		ret = media_device_register(&dev->mdev_dec);
-+		if (ret) {
-+			mtk_v4l2_err("Failed to register media device");
-+			goto err_media_reg;
-+		}
-+
-+		mtk_v4l2_debug(0, "media registered as /dev/media%d",
-+			vfd_dec->num);
-+	}
- 	ret = video_register_device(vfd_dec, VFL_TYPE_VIDEO, 0);
- 	if (ret) {
- 		mtk_v4l2_err("Failed to register video device");
-@@ -336,6 +362,12 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
- 	return 0;
- 
- err_dec_reg:
-+	if (dev->vdec_pdata->uses_stateless_api)
-+		media_device_unregister(&dev->mdev_dec);
-+err_media_reg:
-+	if (dev->vdec_pdata->uses_stateless_api)
-+		v4l2_m2m_unregister_media_controller(dev->m2m_dev_dec);
-+err_reg_cont:
- 	destroy_workqueue(dev->decode_workqueue);
- err_event_workq:
- 	v4l2_m2m_release(dev->m2m_dev_dec);
-@@ -368,6 +400,13 @@ static int mtk_vcodec_dec_remove(struct platform_device *pdev)
- 
- 	flush_workqueue(dev->decode_workqueue);
- 	destroy_workqueue(dev->decode_workqueue);
-+
-+	if (media_devnode_is_registered(dev->mdev_dec.devnode)) {
-+		media_device_unregister(&dev->mdev_dec);
-+		v4l2_m2m_unregister_media_controller(dev->m2m_dev_dec);
-+		media_device_cleanup(&dev->mdev_dec);
-+	}
-+
- 	if (dev->m2m_dev_dec)
- 		v4l2_m2m_release(dev->m2m_dev_dec);
- 
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-index 3b884a321883..79d6a1e6c916 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-@@ -384,6 +384,7 @@ struct mtk_vcodec_enc_pdata {
-  * struct mtk_vcodec_dev - driver data
-  * @v4l2_dev: V4L2 device to register video devices for.
-  * @vfd_dec: Video device for decoder
-+ * @mdev_dec: Media device for decoder
-  * @vfd_enc: Video device for encoder.
-  *
-  * @m2m_dev_dec: m2m device for decoder
-@@ -420,6 +421,7 @@ struct mtk_vcodec_enc_pdata {
- struct mtk_vcodec_dev {
- 	struct v4l2_device v4l2_dev;
- 	struct video_device *vfd_dec;
-+	struct media_device mdev_dec;
- 	struct video_device *vfd_enc;
- 
- 	struct v4l2_m2m_dev *m2m_dev_dec;
+diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+index 8217424fd4bd..30c5888bf2d6 100644
+--- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
++++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+@@ -7,6 +7,7 @@ Required properties:
+ - compatible : "mediatek,mt8173-vcodec-enc" for MT8173 encoder
+   "mediatek,mt8183-vcodec-enc" for MT8183 encoder.
+   "mediatek,mt8173-vcodec-dec" for MT8173 decoder.
++  "mediatek,mt8183-vcodec-dec" for MT8183 decoder.
+ - reg : Physical base address of the video codec registers and length of
+   memory mapped region.
+ - interrupts : interrupt number to the cpu.
 -- 
 2.30.0.617.g56c4b15f3c-goog
 
