@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7FA325834
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB3D325833
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbhBYU6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:58:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
+        id S231822AbhBYU5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:57:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234022AbhBYUt4 (ORCPT
+        with ESMTP id S234048AbhBYUt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:49:56 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A1CC061356
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:17 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id x5so5012728qti.23
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:17 -0800 (PST)
+        Thu, 25 Feb 2021 15:49:57 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8CAC06121E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:20 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id u8so5228540qvm.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=DM1qAEmP5vcSYf3rgtbYxteKXUrb+lcNyYCUDv3yLOQ=;
-        b=jFieCwfy3h6lwGBHiM8luxx6QrR+gEE6E5SrdJyhG1HUzaUWgCNyBY5g5OBj5LoL78
-         SQ3SNHuUzw+lziT3yp3jICHEgZtR7Q0Od+Mglfp324M4pTprI8vz8uKDXz8se9nywHj8
-         I7TMwaB+3ElDgNUTqkX7LGxaFWKrAtZr3uDb/hOp/YQieDkqOGg/cBiaKNkfcnp7GptT
-         vJ+WQRvUqNhtENU8c3zF3S87AHqfaw0/mmkJeL+6v++6+Zwp48BWVuJDpGRln28I6GfP
-         BGPydtbj3SZAHzV1Vqm1iwNvDZOyCsQRLva+TDWvU4R8stNQ6C25AsPyxy3Y7/vQ7avr
-         s+Xg==
+        bh=hmkVhLp1GC7NIyuf9NPmUl90mCViucnjMMJ9e8WzMHo=;
+        b=dUYOs8ob4aIG9pQFtyyXzH3bzJ8rsFLrxxUirvqk6GDqVEdmKd6dCmw4myHH+sjNYc
+         6B5GbjL3IAlA3gXpv6nY52kevEkoZtwUDCNGGYV90DL6f3uP9sQzi2K219qXf64aH5Tx
+         +c1Cq1S2rr1TbFIeNLDSiXCUgK5keT4DONM+65FFVqqBubgKeyulZj4DrXU9y77PaYW6
+         7vZuPRPktSaomGM7NSWI0iHJtPgTWbn3amdZsmoKKakaqBTkQw818B2ZPRAX2d2Tle9F
+         ftnDWHPiDP+tN6S877e49DPrjHuFv1NxrdWtjaBWNCHpfniEfi10b/DEiotfkwUFWt63
+         KJlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=DM1qAEmP5vcSYf3rgtbYxteKXUrb+lcNyYCUDv3yLOQ=;
-        b=B2UGWRe0KV2LlbW3QDyMMwqN5BWkEumNAtrMFZZoV5DU/vTpqlb38CYe7N2taNOv4n
-         QwMrpLMWLlHOgO8wpiqcssoWrTJKwMgipOB34MBJxnfjSMjME0EkvJuKO1sB6QgV1TKs
-         SOXTXE3U4OBzeI6uEYl3oH7aGlpoZSEupdCyMc4+gtTBUdxU7/Vwac9in1iQlT1kPxZQ
-         ua1C446UcqXrtH+LaRi/LaCYkjMvSTYu+pD1+bLyvV0RpwcSXf9bR3XAux/s4olmBUuB
-         Dlw/txeuz+qd3l2yNvIucJQTtmnwnbxayzY89g1N1aZ/7s1M0SlqjMIEEtu5IAiIAhr9
-         QnVQ==
-X-Gm-Message-State: AOAM532PHQoH2WZZ3uJepzQaFEQywt6wYjkNTpFzQ8JjKu+V7oUOyKYV
-        LiFnxQZqCTDMt5+BSqyiNFtBYMuduYI=
-X-Google-Smtp-Source: ABdhPJxT6pBdGVJUan0VMfxpqpDlOWmP38QMUiqE51EoL0OYKpibDAY3S8ka0tGPT9m+ik4osCDk0BYQGb0=
+        bh=hmkVhLp1GC7NIyuf9NPmUl90mCViucnjMMJ9e8WzMHo=;
+        b=QXkKi+ICidK6+CzkHLFyoHuUqd38e+dNkhuf21/1nqMVxs+JGD4POjWk/QbW1yI8Sm
+         7PUj8X6yNVX6W+p6TD6bvJFkHzOyaQEQZlrhZjZOlBllHub/Whw0M/1jQnoPQPZ3WbAD
+         X/grcGrwHx+zIlsxCfQt+4V4hl25P1xgBoDbgPsXB9UkvfCciKxK5sD9KduXmZS6rHEd
+         hmRek0VxuSAXOaznQeuIG4NFeELuBRzp9VJhQOMl6GZsHRlHj2mLyFeeNQykyoKKGOWA
+         n/AziLNGsfPwOD6nfGBUMCwOUqsyteAqezOTPKDOrbC8dmTphyLx+QR5EOBTq/3CpRN0
+         GDfQ==
+X-Gm-Message-State: AOAM530dkWlYxwvgwMgSMjxkrJm7cGlkFKcLMj6N5fqvdSiS6hBxqW+a
+        xxyLKXTY8S9W6iykAorEdQeqhZb5IGc=
+X-Google-Smtp-Source: ABdhPJwsArN9RBH6GJNh6qdRsI1Sg9jrkAfcEjBj31C2XnPtrMZuIAoQMw2x/HhJKBeQUdH5kqOVRVtWaNE=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:34c4:7c1d:f9ba:4576])
- (user=seanjc job=sendgmr) by 2002:a0c:b526:: with SMTP id d38mr4582364qve.7.1614286096636;
- Thu, 25 Feb 2021 12:48:16 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:d6d:: with SMTP id
+ 13mr4706063qvs.60.1614286099247; Thu, 25 Feb 2021 12:48:19 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Feb 2021 12:47:32 -0800
+Date:   Thu, 25 Feb 2021 12:47:33 -0800
 In-Reply-To: <20210225204749.1512652-1-seanjc@google.com>
-Message-Id: <20210225204749.1512652-8-seanjc@google.com>
+Message-Id: <20210225204749.1512652-9-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210225204749.1512652-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH 07/24] KVM: x86/mmu: Handle MMIO SPTEs directly in mmu_set_spte()
+Subject: [PATCH 08/24] KVM: x86/mmu: Drop redundant trace_kvm_mmu_set_spte()
+ in the TDP MMU
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,78 +68,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that it should be impossible to convert a valid SPTE to an MMIO SPTE,
-handle MMIO SPTEs early in mmu_set_spte() without going through
-set_spte() and all the logic for removing an existing, valid SPTE.
-The other caller of set_spte(), FNAME(sync_page)(), explicitly handles
-MMIO SPTEs prior to calling set_spte().
+Remove TDP MMU's call to trace_kvm_mmu_set_spte() that is done for both
+shadow-present SPTEs and MMIO SPTEs.  It's fully redundant for the
+former, and unnecessary for the latter.  This aligns TDP MMU tracing
+behavior with that of the legacy MMU.
 
-This simplifies mmu_set_spte() and set_spte(), and also "fixes" an oddity
-where MMIO SPTEs are traced by both trace_kvm_mmu_set_spte() and
-trace_mark_mmio_spte().
-
-Note, mmu_spte_set() will WARN if this new approach causes KVM to create
-an MMIO SPTE overtop a valid SPTE.
-
+Fixes: 33dd3574f5fe ("kvm: x86/mmu: Add existing trace points to TDP MMU")
+Cc: Ben Gardon <bgardon@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 22 +++++-----------------
- 1 file changed, 5 insertions(+), 17 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 37c68abc54b8..4a24beefff94 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -236,17 +236,6 @@ static unsigned get_mmio_spte_access(u64 spte)
- 	return spte & shadow_mmio_access_mask;
- }
- 
--static bool set_mmio_spte(struct kvm_vcpu *vcpu, u64 *sptep, gfn_t gfn,
--			  kvm_pfn_t pfn, unsigned int access)
--{
--	if (unlikely(is_noslot_pfn(pfn))) {
--		mark_mmio_spte(vcpu, sptep, gfn, access);
--		return true;
--	}
--
--	return false;
--}
--
- static bool check_mmio_spte(struct kvm_vcpu *vcpu, u64 spte)
- {
- 	u64 kvm_gen, spte_gen, gen;
-@@ -2561,9 +2550,6 @@ static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
- 	struct kvm_mmu_page *sp;
- 	int ret;
- 
--	if (set_mmio_spte(vcpu, sptep, gfn, pfn, pte_access))
--		return 0;
--
- 	sp = sptep_to_sp(sptep);
- 
- 	ret = make_spte(vcpu, pte_access, level, gfn, pfn, *sptep, speculative,
-@@ -2593,6 +2579,11 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
- 	pgprintk("%s: spte %llx write_fault %d gfn %llx\n", __func__,
- 		 *sptep, write_fault, gfn);
- 
-+	if (unlikely(is_noslot_pfn(pfn))) {
-+		mark_mmio_spte(vcpu, sptep, gfn, pte_access);
-+		return RET_PF_EMULATE;
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index f46972892a2d..782cae1eb5e1 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -773,12 +773,11 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu, int write,
+ 		trace_mark_mmio_spte(rcu_dereference(iter->sptep), iter->gfn,
+ 				     new_spte);
+ 		ret = RET_PF_EMULATE;
+-	} else
++	} else {
+ 		trace_kvm_mmu_set_spte(iter->level, iter->gfn,
+ 				       rcu_dereference(iter->sptep));
 +	}
-+
- 	if (is_shadow_present_pte(*sptep)) {
- 		/*
- 		 * If we overwrite a PTE page pointer with a 2MB PMD, unlink
-@@ -2626,9 +2617,6 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
- 		kvm_flush_remote_tlbs_with_address(vcpu->kvm, gfn,
- 				KVM_PAGES_PER_HPAGE(level));
  
--	if (unlikely(is_mmio_spte(*sptep)))
--		ret = RET_PF_EMULATE;
--
- 	/*
- 	 * The fault is fully spurious if and only if the new SPTE and old SPTE
- 	 * are identical, and emulation is not required.
+-	trace_kvm_mmu_set_spte(iter->level, iter->gfn,
+-			       rcu_dereference(iter->sptep));
+ 	if (!prefault)
+ 		vcpu->stat.pf_fixed++;
+ 
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
