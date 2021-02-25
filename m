@@ -2,67 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D03325A0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 00:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 159B2325A11
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 00:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhBYXGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 18:06:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229845AbhBYXGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 18:06:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 466F86148E;
-        Thu, 25 Feb 2021 23:05:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614294332;
-        bh=u5cNwC/0SBRpVqhs1EzbZYC3OkzpGcKrfdb1YzTIUdY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KwKQ7rPc0MY6Fyegj/4Jxr9w05oINHgTd9haFcexkb2zllWr+kYMiiHOa3PxWiYnS
-         r+bv5X8RoeQWxTYeHXCHEtDWrtCHU7DwmmqPlCLBonrMNrJxUs7/m/2xjUl+THQB21
-         py2BLiYljc96fMz145ktswWH6DOEL3Hr38uEJt5GSeC3tyrxTkeNLJjP9DgA54XHTV
-         k97wPG9rT8DwvQYJt5e617+MRrtLcWHYuvhOqFL+W1vnvPFK890+soDxLLsk0SiioB
-         dYkm+bpmN29mAOzcDVUPyXAqtaOiphIzPdy1yHcq/rZ0phR+iAvGA1sR/Vz3yH+G/y
-         mBCOcf3ARSuIw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id F2D8E352260A; Thu, 25 Feb 2021 15:05:31 -0800 (PST)
-Date:   Thu, 25 Feb 2021 15:05:31 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>, Josh Triplett <josh@joshtriplett.org>,
-        rostedt <rostedt@goodmis.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>
-Subject: Re: tasks-trace RCU: question about grace period forward progress
-Message-ID: <20210225230531.GW2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <354598689.4868.1614262968890.JavaMail.zimbra@efficios.com>
- <20210225153656.GQ2743@paulmck-ThinkPad-P72>
- <47558398.5024.1614268052985.JavaMail.zimbra@efficios.com>
- <20210225183321.GT2743@paulmck-ThinkPad-P72>
- <20210225222318.GG4746@worktop.programming.kicks-ass.net>
+        id S232033AbhBYXID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 18:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhBYXH5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 18:07:57 -0500
+Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51433C061574;
+        Thu, 25 Feb 2021 15:07:17 -0800 (PST)
+Received: from [192.168.1.101] (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 0761C1F5D4;
+        Fri, 26 Feb 2021 00:07:14 +0100 (CET)
+Subject: Re: [PATCH 02/13] arm64: dts: qcom: Move sc7180 MI2S config to board
+ files and make pulldown
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexandru M Stan <amstan@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210225221310.1939599-1-dianders@chromium.org>
+ <20210225141022.2.Id27e7e6f90c29bf623fa4880e18a14ba1dffd2d2@changeid>
+ <a4a83576-9d95-80eb-0090-62526eba9095@somainline.org>
+ <CAD=FV=WhjvqUau_Jz9ZLFukGUxRqGJTJN+sUt=yv2Q81FRzUWQ@mail.gmail.com>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <b5efbf02-ad9a-6771-327b-d4a9c2855181@somainline.org>
+Date:   Fri, 26 Feb 2021 00:07:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225222318.GG4746@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAD=FV=WhjvqUau_Jz9ZLFukGUxRqGJTJN+sUt=yv2Q81FRzUWQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 11:23:18PM +0100, Peter Zijlstra wrote:
-> On Thu, Feb 25, 2021 at 10:33:21AM -0800, Paul E. McKenney wrote:
-> > One question for Peter...  Does each and every context switch imply a
-> > full barrier?
-> 
-> Yes, also see the smp_mb__after_spinlock() in __schedule() :-)
 
-Whew!!!  ;-)
 
-Yeah, I could make RCU Tasks Trace deal with lack of a full barrier in
-that case, but I would rather not...  I could imagine optimizing so
-that the full barrier happened only when tasks migrated, but I could
-also imagine a world of hurt stemming from such an optimization!
+> Yes, I agree.  That definitely makes sense going forward, but I think
+> it'll just add to the confusion to switch a dts for a given SoC
+> mid-stride.  ...or, if we do switch the style it should be done in a
+> separate (no-op) patch series.  This series is already giant enough...
+>
+> -Doug
 
-							Thanx, Paul
+Sounds good to me!
+
+
+Konrad
+
