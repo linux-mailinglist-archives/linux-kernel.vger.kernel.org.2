@@ -2,123 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ED83259D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 585683259D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232081AbhBYWu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:50:56 -0500
-Received: from mga17.intel.com ([192.55.52.151]:41696 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231326AbhBYWuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:50:50 -0500
-IronPort-SDR: U4+q9rhKLJ/oHQ8W6WkAK+iUy4PGP/ljldIjDJCif5ebdZrfnKOqSFNJCQWcYXfJFp2u4NE+i/
- aORolfRPHSbQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="165566197"
-X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
-   d="scan'208";a="165566197"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 14:49:05 -0800
-IronPort-SDR: iNQrhR4B49D66thWy+kAZeBWhban/MHq1DSL3qHgMM8rR/clwTk3ySMQQF0TJ3oixjADsJcSNG
- AfByzWW6o0dQ==
-X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
-   d="scan'208";a="442790842"
-Received: from schen9-mobl.amr.corp.intel.com ([10.254.86.33])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 14:49:03 -0800
-Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
- usage excess
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
- <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
- <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
- <YDNuAIztiGJpLEtw@dhcp22.suse.cz>
- <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
- <YDQBh5th9txxEFUm@dhcp22.suse.cz>
- <cf5ca7a1-7965-f307-22e1-e216316904cf@linux.intel.com>
- <YDY+PydRUGQpHNaJ@dhcp22.suse.cz>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <b5b1944d-846b-3212-fe4a-f10f5fcb87d7@linux.intel.com>
-Date:   Thu, 25 Feb 2021 14:48:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S231604AbhBYWxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:53:38 -0500
+Received: from relmlor2.renesas.com ([210.160.252.172]:7678 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229966AbhBYWxf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 17:53:35 -0500
+X-IronPort-AV: E=Sophos;i="5.81,207,1610377200"; 
+   d="scan'208";a="73172325"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 26 Feb 2021 07:52:42 +0900
+Received: from devel.example.org?044ree.adwin.renesas.com (unknown [10.226.36.120])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0DCB64002643;
+        Fri, 26 Feb 2021 07:52:38 +0900 (JST)
+From:   Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+To:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        Dirk Behme <Dirk.Behme@de.bosch.com>,
+        Peter Erben <Peter.Erben@de.bosch.com>
+Subject: [PATCH 0/7] Add FFT Support for R-Car Gen3 devices
+Date:   Thu, 25 Feb 2021 22:51:40 +0000
+Message-Id: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YDY+PydRUGQpHNaJ@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The DAB hardware accelerator found on R-Car E3 (a.k.a. r8a77990)
+and R-Car M3-N (a.k.a. r8a77965) devices is a hardware accelerator
+for software DAB demodulators.
+It consists of one FFT (Fast Fourier Transform) module and one
+decoder module, compatible with DAB specification (ETSI EN 300 401
+and ETSI TS 102 563).
+The decoder module can perform FIC decoding and MSC decoding
+processing from de-puncture to final decoded result.
 
+This series adds FFT support only for R-Car E3 and R-Car M3-N,
+FIC and MSC support will be added later on.
 
-On 2/24/21 3:53 AM, Michal Hocko wrote:
-> On Mon 22-02-21 11:48:37, Tim Chen wrote:
->>
->>
->> On 2/22/21 11:09 AM, Michal Hocko wrote:
->>
->>>>
->>>> I actually have tried adjusting the threshold but found that it doesn't work well for
->>>> the case with unenven memory access frequency between cgroups.  The soft
->>>> limit for the low memory event cgroup could creep up quite a lot, exceeding
->>>> the soft limit by hundreds of MB, even
->>>> if I drop the SOFTLIMIT_EVENTS_TARGET from 1024 to something like 8.
->>>
->>> What was the underlying reason? Higher order allocations?
->>>
->>
->> Not high order allocation.
->>
->> The reason was because the run away memcg asks for memory much less often, compared
->> to the other memcgs in the system.  So it escapes the sampling update and
->> was not put onto the tree and exceeds the soft limit
->> pretty badly.  Even if it was put onto the tree and gets page reclaimed below the
->> limit, it could escape the sampling the next time it exceeds the soft limit.
-> 
-> I am sorry but I really do not follow. Maybe I am missing something
-> obvious but the the rate of events (charge/uncharge) shouldn't be really
-> important. There is no way to exceed the limit without charging memory
-> (either a new or via task migration in v1 and immigrate_on_move). If you
-> have SOFTLIMIT_EVENTS_TARGET 8 then you should be 128 * 8 events to
-> re-evaluate. Huge pages can make the runaway much bigger but how it
-> would be possible to runaway outside of that bound.
+Thanks,
+Fab
 
+Fabrizio Castro (7):
+  clk: renesas: r8a77990: Add DAB clock
+  clk: renesas: r8a77965: Add DAB clock
+  dt-bindings: misc: Add binding for R-Car DAB
+  misc: Add driver for DAB IP found on Renesas R-Car devices
+  arm64: dts: renesas: r8a77990: Add DAB support
+  arm64: dts: renesas: r8a77965: Add DAB support
+  arm64: configs: Add R-Car DAB support
 
-Michal,
+ .../devicetree/bindings/misc/renesas,dab.yaml |  75 ++++++++
+ MAINTAINERS                                   |   7 +
+ arch/arm64/boot/dts/renesas/r8a77965.dtsi     |  12 ++
+ arch/arm64/boot/dts/renesas/r8a77990.dtsi     |  12 ++
+ arch/arm64/configs/defconfig                  |   1 +
+ drivers/clk/renesas/r8a77965-cpg-mssr.c       |   1 +
+ drivers/clk/renesas/r8a77990-cpg-mssr.c       |   1 +
+ drivers/misc/Kconfig                          |   1 +
+ drivers/misc/Makefile                         |   1 +
+ drivers/misc/rcar_dab/Kconfig                 |  11 ++
+ drivers/misc/rcar_dab/Makefile                |   8 +
+ drivers/misc/rcar_dab/rcar_dev.c              | 176 ++++++++++++++++++
+ drivers/misc/rcar_dab/rcar_dev.h              | 116 ++++++++++++
+ drivers/misc/rcar_dab/rcar_fft.c              | 160 ++++++++++++++++
+ include/uapi/linux/rcar_dab.h                 |  35 ++++
+ 15 files changed, 617 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/misc/renesas,dab.yaml
+ create mode 100644 drivers/misc/rcar_dab/Kconfig
+ create mode 100644 drivers/misc/rcar_dab/Makefile
+ create mode 100644 drivers/misc/rcar_dab/rcar_dev.c
+ create mode 100644 drivers/misc/rcar_dab/rcar_dev.h
+ create mode 100644 drivers/misc/rcar_dab/rcar_fft.c
+ create mode 100644 include/uapi/linux/rcar_dab.h
 
-Let's take an extreme case where memcg 1 always generate the
-first event and memcg 2 generates the rest of 128*8-1 events
-and the pattern repeat.  The update tree happens on the 128*8th event
-so memcg 1 did not trigger update tree.  In this case we will
-keep missing memcg 1's event and not put memcg 1 on the tree.
+-- 
+2.25.1
 
-Something like this pattern of memory events
-
-
-cg1 cg2 cg2 cg2 ....cg2 cg1 cg2 cg2 cg2....cg2 cg1 cg2 .....
-                     ^                      ^
-		  update tree              update tree
-
-Of course in real life the update events are random in nature.
-However, due to the low occurrence of memcg 1 event, we can miss
-updating it for a long time due to its lower probability of occurrence.
-
-> 
-> Btw. do we really need SOFTLIMIT_EVENTS_TARGET at all? Why cannot we
-> just stick with a single threshold? mem_cgroup_update_tree can be made
-> a effectivelly a noop when there is no soft limit in place so overhead
-> shouldn't matter for the vast majority of workloads.
-> 
-
-I think there are two limits because the original code wants
-memc_cgroup_threshold to be updated more frequently than the
-soft_limit_tree.  The soft limit tree update is more costly.
-
-Tim
