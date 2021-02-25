@@ -2,308 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF303259C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 461073259CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbhBYWpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:45:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhBYWpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:45:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E7C864EDC;
-        Thu, 25 Feb 2021 22:44:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614293061;
-        bh=detox8qlMqSyvNouatLGwPyUgUdnIhtkxS0rmzHuamk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RoRJYEBkwZxYpXCh1znRdEHVmML/cqDpMbtkIolK8fbPGp2APtSCFUW5zmNipyO1Q
-         nBEpkv4rBhsqepxLrvLEmZcxqj61BG7J90uivn4H5fRhIxSDCHfdFQjZsUl3iVzWqT
-         UeyIOiSTkGlpdaOoPV6KJRtBhoyQazsGfeDhgrJmNYydjCYHdYOPIqGwQbdSm7BT5N
-         ksuqwWrV3uI/3hYFpNJU+dOW1tkTC7KZbiqvfsBpPnuttaof0rKinMFK+uuddOKva4
-         b0pWHOTjA+alCybOPQ1AcXPVaii0EVX56qBivUO7FEWCj0syKfcx4dYp+QJtM63wzS
-         Ovr3gjKEte62w==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?q?=C5=81ukasz=20Majczak?= <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v8 1/1] mm/page_alloc.c: refactor initialization of struct page for holes in memory layout
-Date:   Fri, 26 Feb 2021 00:43:51 +0200
-Message-Id: <20210225224351.7356-2-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210225224351.7356-1-rppt@kernel.org>
-References: <20210225224351.7356-1-rppt@kernel.org>
+        id S232394AbhBYWs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:48:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56588 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230019AbhBYWsU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 17:48:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614293212;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
+        bh=G1drA3UFDqdiqdbIwoMwc6KQ+nh7S59hCx8uMqafaGY=;
+        b=f16zBZnVc2c3Kz/jPUh7uwDtQoPFcn0v5tR62+A7dWZftW1jqxPlO1e75R1wipxBLZkVEb
+        iODXXhKX95i378FSKwECe9fyvWuLcOD2VYIJ7Rws/7DXXUL4eRdkfk7HQ8Evg3NUXEDVj8
+        qqnPSslYLhsaWKGgJ/eFDWSnSzQ9XFA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-120-brv95CxDP7yiP7wOmBm2FA-1; Thu, 25 Feb 2021 17:46:50 -0500
+X-MC-Unique: brv95CxDP7yiP7wOmBm2FA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EADEA106BC6B;
+        Thu, 25 Feb 2021 22:46:48 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DF4A61A86B;
+        Thu, 25 Feb 2021 22:46:48 +0000 (UTC)
+Received: from zmail20.collab.prod.int.phx2.redhat.com (zmail20.collab.prod.int.phx2.redhat.com [10.5.83.23])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id CA14C18095C7;
+        Thu, 25 Feb 2021 22:46:48 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 17:46:47 -0500 (EST)
+From:   Tony Asleson <tasleson@redhat.com>
+To:     axboe@kernel.dk, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <640349190.32399497.1614293207910.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1400296846.32399218.1614292826918.JavaMail.zimbra@redhat.com>
+Subject: WARNING: CPU: 11 PID: 7118 at drivers/ata/libata-core.c:4561
+ __ata_qc_complete+0x102/0x120
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.10.112.124, 10.4.195.12]
+Thread-Topic: WARNING: CPU: 11 PID: 7118 at drivers/ata/libata-core.c:4561 __ata_qc_complete+0x102/0x120
+Thread-Index: e8sivIpafpURdDCGRn9Q8kH2aWWFxw==
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+New SATA disk drive (/dev/sde) install yesterday and was copying some
+files to it when I ran into this.
 
-There could be struct pages that are not backed by actual physical memory.
-This can happen when the actual memory bank is not a multiple of
-SECTION_SIZE or when an architecture does not register memory holes
-reserved by the firmware as memblock.memory.
 
-Such pages are currently initialized using init_unavailable_mem() function
-that iterates through PFNs in holes in memblock.memory and if there is a
-struct page corresponding to a PFN, the fields of this page are set to
-default values and it is marked as Reserved.
-
-init_unavailable_mem() does not take into account zone and node the page
-belongs to and sets both zone and node links in struct page to zero.
-
-Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
-rather that check each PFN") the holes inside a zone were re-initialized
-during memmap_init() and got their zone/node links right. However, after
-that commit nothing updates the struct pages representing such holes.
-
-On a system that has firmware reserved holes in a zone above ZONE_DMA, for
-instance in a configuration below:
-
-	# grep -A1 E820 /proc/iomem
-	7a17b000-7a216fff : Unknown E820 type
-	7a217000-7bffffff : System RAM
-
-unset zone link in struct page will trigger
-
-	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
-
-in set_pfnblock_flags_mask() when called with a struct page from a range
-other than E820_TYPE_RAM because there are pages in the range of ZONE_DMA32
-but the unset zone link in struct page makes them appear as a part of
-ZONE_DMA.
-
-Interleave initialization of the unavailable pages with the normal
-initialization of memory map, so that zone and node information will be
-properly set on struct pages that are not backed by the actual memory.
-
-With this change the pages for holes inside a zone will get proper
-zone/node links and the pages that are not spanned by any node will get
-links to the adjacent zone/node. The holes between nodes will be prepended
-to the zone/node above the hole and the trailing pages in the last section
-that will be appended to the zone/node below.
-
-Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Reported-by: Qian Cai <cai@lca.pw>
-Reported-by: Andrea Arcangeli <aarcange@redhat.com>
-Reviewed-by: Baoquan He <bhe@redhat.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/page_alloc.c | 158 +++++++++++++++++++++++-------------------------
- 1 file changed, 75 insertions(+), 83 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3e93f8b29bae..b6b8b9396c1e 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6280,12 +6280,65 @@ static void __meminit zone_init_free_lists(struct zone *zone)
- 	}
- }
- 
-+#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
-+/*
-+ * Only struct pages that correspond to ranges defined by memblock.memory
-+ * are zeroed and initialized by going through __init_single_page() during
-+ * memmap_init_zone().
-+ *
-+ * But, there could be struct pages that correspond to holes in
-+ * memblock.memory. This can happen because of the following reasons:
-+ * - physical memory bank size is not necessarily the exact multiple of the
-+ *   arbitrary section size
-+ * - early reserved memory may not be listed in memblock.memory
-+ * - memory layouts defined with memmap= kernel parameter may not align
-+ *   nicely with memmap sections
-+ *
-+ * Explicitly initialize those struct pages so that:
-+ * - PG_Reserved is set
-+ * - zone and node links point to zone and node that span the page if the
-+ *   hole is in the middle of a zone
-+ * - zone and node links point to adjacent zone/node if the hole falls on
-+ *   the zone boundary; the pages in such holes will be prepended to the
-+ *   zone/node above the hole except for the trailing pages in the last
-+ *   section that will be appended to the zone/node below.
-+ */
-+static u64 __meminit init_unavailable_range(unsigned long spfn,
-+					    unsigned long epfn,
-+					    int zone, int node)
-+{
-+	unsigned long pfn;
-+	u64 pgcnt = 0;
-+
-+	for (pfn = spfn; pfn < epfn; pfn++) {
-+		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
-+			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
-+				+ pageblock_nr_pages - 1;
-+			continue;
-+		}
-+		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
-+		__SetPageReserved(pfn_to_page(pfn));
-+		pgcnt++;
-+	}
-+
-+	return pgcnt;
-+}
-+#else
-+static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
-+					 int zone, int node)
-+{
-+	return 0;
-+}
-+#endif
-+
- void __meminit __weak memmap_init_zone(struct zone *zone)
- {
- 	unsigned long zone_start_pfn = zone->zone_start_pfn;
- 	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
- 	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
-+	static unsigned long hole_pfn = 0;
- 	unsigned long start_pfn, end_pfn;
-+	u64 pgcnt = 0;
- 
- 	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
- 		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
-@@ -6295,7 +6348,29 @@ void __meminit __weak memmap_init_zone(struct zone *zone)
- 			memmap_init_range(end_pfn - start_pfn, nid,
- 					zone_id, start_pfn, zone_end_pfn,
- 					MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
-+
-+		if (hole_pfn < start_pfn)
-+			pgcnt += init_unavailable_range(hole_pfn, start_pfn,
-+							zone_id, nid);
-+		hole_pfn = end_pfn;
- 	}
-+
-+#ifdef CONFIG_SPARSEMEM
-+	/*
-+	 * Initialize the hole in the range [zone_end_pfn, section_end].
-+	 * If zone boundary falls in the middle of a section, this hole
-+	 * will be re-initialized during the call to this function for the
-+	 * higher zone.
-+	 */
-+	end_pfn = round_up(zone_end_pfn, PAGES_PER_SECTION);
-+	if (hole_pfn < end_pfn)
-+		pgcnt += init_unavailable_range(hole_pfn, end_pfn,
-+						zone_id, nid);
-+#endif
-+
-+	if (pgcnt)
-+		pr_info("  %s zone: %lld pages in unavailable ranges\n",
-+			zone->name, pgcnt);
- }
- 
- static int zone_batchsize(struct zone *zone)
-@@ -7092,88 +7167,6 @@ void __init free_area_init_memoryless_node(int nid)
- 	free_area_init_node(nid);
- }
- 
--#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
--/*
-- * Initialize all valid struct pages in the range [spfn, epfn) and mark them
-- * PageReserved(). Return the number of struct pages that were initialized.
-- */
--static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
--{
--	unsigned long pfn;
--	u64 pgcnt = 0;
--
--	for (pfn = spfn; pfn < epfn; pfn++) {
--		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
--			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
--				+ pageblock_nr_pages - 1;
--			continue;
--		}
--		/*
--		 * Use a fake node/zone (0) for now. Some of these pages
--		 * (in memblock.reserved but not in memblock.memory) will
--		 * get re-initialized via reserve_bootmem_region() later.
--		 */
--		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
--		__SetPageReserved(pfn_to_page(pfn));
--		pgcnt++;
--	}
--
--	return pgcnt;
--}
--
--/*
-- * Only struct pages that are backed by physical memory are zeroed and
-- * initialized by going through __init_single_page(). But, there are some
-- * struct pages which are reserved in memblock allocator and their fields
-- * may be accessed (for example page_to_pfn() on some configuration accesses
-- * flags). We must explicitly initialize those struct pages.
-- *
-- * This function also addresses a similar issue where struct pages are left
-- * uninitialized because the physical address range is not covered by
-- * memblock.memory or memblock.reserved. That could happen when memblock
-- * layout is manually configured via memmap=, or when the highest physical
-- * address (max_pfn) does not end on a section boundary.
-- */
--static void __init init_unavailable_mem(void)
--{
--	phys_addr_t start, end;
--	u64 i, pgcnt;
--	phys_addr_t next = 0;
--
--	/*
--	 * Loop through unavailable ranges not covered by memblock.memory.
--	 */
--	pgcnt = 0;
--	for_each_mem_range(i, &start, &end) {
--		if (next < start)
--			pgcnt += init_unavailable_range(PFN_DOWN(next),
--							PFN_UP(start));
--		next = end;
--	}
--
--	/*
--	 * Early sections always have a fully populated memmap for the whole
--	 * section - see pfn_valid(). If the last section has holes at the
--	 * end and that section is marked "online", the memmap will be
--	 * considered initialized. Make sure that memmap has a well defined
--	 * state.
--	 */
--	pgcnt += init_unavailable_range(PFN_DOWN(next),
--					round_up(max_pfn, PAGES_PER_SECTION));
--
--	/*
--	 * Struct pages that do not have backing memory. This could be because
--	 * firmware is using some of this memory, or for some other reasons.
--	 */
--	if (pgcnt)
--		pr_info("Zeroed struct page in unavailable ranges: %lld pages", pgcnt);
--}
--#else
--static inline void __init init_unavailable_mem(void)
--{
--}
--#endif /* !CONFIG_FLAT_NODE_MEM_MAP */
--
- #if MAX_NUMNODES > 1
- /*
-  * Figure out the number of possible node ids.
-@@ -7597,7 +7590,6 @@ void __init free_area_init(unsigned long *max_zone_pfn)
- 	/* Initialise every node */
- 	mminit_verify_pageflags_layout();
- 	setup_nr_node_ids();
--	init_unavailable_mem();
- 	for_each_online_node(nid) {
- 		pg_data_t *pgdat = NODE_DATA(nid);
- 		free_area_init_node(nid);
--- 
-2.28.0
+Feb 25 13:22:57 kernel: sas: Enter sas_scsi_recover_host busy: 4 failed: 4
+Feb 25 13:22:57 kernel: sas: trying to find task 0x0000000054c16ca6
+Feb 25 13:22:57 kernel: sas: sas_scsi_find_task: aborting task 0x0000000054c16ca6
+Feb 25 13:22:57 kernel: sas: sas_scsi_find_task: task 0x0000000054c16ca6 is aborted
+Feb 25 13:22:57 kernel: sas: sas_eh_handle_sas_errors: task 0x0000000054c16ca6 is aborted
+Feb 25 13:22:57 kernel: sas: trying to find task 0x000000003d036aed
+Feb 25 13:22:57 kernel: sas: sas_scsi_find_task: aborting task 0x000000003d036aed
+Feb 25 13:22:57 kernel: sas: sas_scsi_find_task: task 0x000000003d036aed is aborted
+Feb 25 13:22:57 kernel: sas: sas_eh_handle_sas_errors: task 0x000000003d036aed is aborted
+Feb 25 13:23:19 kernel: sas: trying to find task 0x000000001981ff45
+Feb 25 13:23:19 kernel: sas: sas_scsi_find_task: aborting task 0x000000001981ff45
+Feb 25 13:23:19 kernel: sas: sas_scsi_find_task: task 0x000000001981ff45 is aborted
+Feb 25 13:23:19 kernel: sas: sas_eh_handle_sas_errors: task 0x000000001981ff45 is aborted
+Feb 25 13:23:19 kernel: sas: trying to find task 0x0000000067682310
+Feb 25 13:23:19 kernel: sas: sas_scsi_find_task: aborting task 0x0000000067682310
+Feb 25 13:23:19 kernel: sas: sas_scsi_find_task: task 0x0000000067682310 is aborted
+Feb 25 13:23:19 kernel: sas: sas_eh_handle_sas_errors: task 0x0000000067682310 is aborted
+Feb 25 13:23:19 kernel: sas: ata7: end_device-7:0: cmd error handler
+Feb 25 13:23:19 kernel: sas: ata7: end_device-7:0: dev error handler
+Feb 25 13:23:19 kernel: ata7.00: exception Emask 0x0 SAct 0x780000 SErr 0x0 action 0x6 frozen
+Feb 25 13:23:19 kernel: ata7.00: failed command: READ FPDMA QUEUED
+Feb 25 13:23:19 kernel: ata7.00: cmd 60/f0:00:00:30:8f/07:00:04:00:00/40 tag 19 ncq dma 1040384 in
+                                 res 40/00:00:00:00:00/00:00:00:00:00/a0 Emask 0x4 (timeout)
+Feb 25 13:23:19 kernel: ata7.00: status: { DRDY }
+Feb 25 13:23:19 kernel: ata7.00: failed command: READ FPDMA QUEUED
+Feb 25 13:23:19 kernel: ata7.00: cmd 60/10:00:f0:37:8f/02:00:04:00:00/40 tag 20 ncq dma 270336 in
+                                 res 40/00:00:00:00:00/00:00:00:00:00/a0 Emask 0x4 (timeout)
+Feb 25 13:23:19 kernel: ata7.00: status: { DRDY }
+Feb 25 13:23:19 kernel: ata7.00: failed command: READ FPDMA QUEUED
+Feb 25 13:23:19 kernel: ata7.00: cmd 60/98:00:00:3a:8f/03:00:04:00:00/40 tag 21 ncq dma 471040 in
+                                 res 40/00:ff:ff:00:00/00:00:00:00:00/40 Emask 0x4 (timeout)
+Feb 25 13:23:19 kernel: ata7.00: status: { DRDY }
+Feb 25 13:23:19 kernel: ata7.00: failed command: WRITE FPDMA QUEUED
+Feb 25 13:23:19 kernel: ata7.00: cmd 61/20:00:d0:c2:06/00:00:46:02:00/40 tag 22 ncq dma 16384 out
+                                 res 40/00:00:00:4f:c2/00:00:00:00:00/40 Emask 0x4 (timeout)
+Feb 25 13:23:19 kernel: ata7.00: status: { DRDY }
+Feb 25 13:23:19 kernel: ata7: hard resetting link
+Feb 25 13:23:19 kernel: sas: ata8: end_device-7:1: dev error handler
+Feb 25 13:23:19 kernel: sas: ata9: end_device-7:2: dev error handler
+Feb 25 13:23:19 kernel: drivers/scsi/mvsas/mv_sas.c 1417:mvs_I_T_nexus_reset for device[0]:rc= 0
+Feb 25 13:23:19 kernel: sas: sas_ata_task_done: SAS error 0x8a
+Feb 25 13:23:19 kernel: ------------[ cut here ]------------
+Feb 25 13:23:19 kernel: WARNING: CPU: 11 PID: 7118 at drivers/ata/libata-core.c:4561 __ata_qc_complete+0x102/0x120
+Feb 25 13:23:19 kernel: Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 ip6table_mangle ip6table_nat iptable_mangle iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ebtable_filter ebtables ip6table_fil>
+Feb 25 13:23:19 kernel:  crc32c_intel drm firewire_ohci ghash_clmulni_intel mvsas firewire_core uas tg3 crc_itu_t usb_storage libsas scsi_transport_sas wmi fuse
+Feb 25 13:23:19 kernel: CPU: 11 PID: 7118 Comm: kworker/u34:0 Not tainted 5.10.16-200.fc33.x86_64 #1
+Feb 25 13:23:19 kernel: Hardware name: LENOVO 4158D6U/Lenovo, BIOS 61KT50AUS 01/14/2014
+Feb 25 13:23:19 kernel: Workqueue: events_unbound async_run_entry_fn
+Feb 25 13:23:19 kernel: RIP: 0010:__ata_qc_complete+0x102/0x120
+Feb 25 13:23:19 kernel: Code: 00 00 00 00 00 00 48 8b 45 50 eb 9c 8b 4d 68 8b 55 64 45 31 c0 48 8b bb 40 35 00 00 e8 17 41 93 ff 48 8b 45 50 e9 49 ff ff ff <0f> 0b e9 18 ff ff ff 0f 0b e9 05 ff ff ff 0f 0b e9 29 ff ff ff 66
+Feb 25 13:23:19 kernel: RSP: 0018:ffffaa12c7a37b60 EFLAGS: 00010046
+Feb 25 13:23:19 kernel: RAX: 0000000000010010 RBX: ffffaa12c7a37c48 RCX: 0000000000000010
+Feb 25 13:23:19 kernel: RDX: 0000000000000046 RSI: ffff8d2d63d6dfe8 RDI: ffff8d2d63d6df30
+Feb 25 13:23:19 kernel: RBP: ffff8d2d63d6df30 R08: ffff8d2d6736f3e0 R09: 0000000c23d6f9c0
+Feb 25 13:23:19 kernel: R10: 0000000c23d6f9c0 R11: 00000000db7a0000 R12: ffff8d2d63d6e4c0
+Feb 25 13:23:19 kernel: R13: 0000000000000001 R14: 0000000000000000 R15: ffff8d2d63d6c000
+Feb 25 13:23:19 kernel: FS:  0000000000000000(0000) GS:ffff8d353fd40000(0000) knlGS:0000000000000000
+Feb 25 13:23:19 kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+Feb 25 13:23:19 kernel: CR2: 00007fead0312080 CR3: 00000010a0a10006 CR4: 00000000000206e0
+Feb 25 13:23:19 kernel: Call Trace:
+Feb 25 13:23:19 kernel:  ata_exec_internal_sg+0x2b8/0x560
+Feb 25 13:23:19 kernel:  ata_dev_read_id+0x3c5/0x460
+Feb 25 13:23:19 kernel:  ata_dev_reread_id+0x38/0xc0
+Feb 25 13:23:19 kernel:  ata_dev_revalidate+0x4d/0xb0
+Feb 25 13:23:19 kernel:  ata_eh_recover+0x635/0x1330
+Feb 25 13:23:19 kernel:  ? ata_eh_link_autopsy+0x411/0xbc0
+Feb 25 13:23:19 kernel:  ? sas_ata_sched_eh+0x60/0x60 [libsas]
+Feb 25 13:23:19 kernel:  ? sas_ata_prereset+0x50/0x50 [libsas]
+Feb 25 13:23:19 kernel:  ? sas_ata_sched_eh+0x60/0x60 [libsas]
+Feb 25 13:23:19 kernel:  ? sas_ata_prereset+0x50/0x50 [libsas]
+Feb 25 13:23:19 kernel:  ata_do_eh+0x71/0xd0
+Feb 25 13:23:19 kernel:  ata_scsi_port_error_handler+0x3cd/0x870
+Feb 25 13:23:19 kernel:  async_sas_ata_eh+0x44/0x7b [libsas]
+Feb 25 13:23:19 kernel:  async_run_entry_fn+0x39/0x160
+Feb 25 13:23:19 kernel:  process_one_work+0x1b6/0x350
+Feb 25 13:23:19 kernel:  worker_thread+0x53/0x3e0
+Feb 25 13:23:19 kernel:  ? process_one_work+0x350/0x350
+Feb 25 13:23:19 kernel:  kthread+0x11b/0x140
+Feb 25 13:23:19 kernel:  ? __kthread_bind_mask+0x60/0x60
+Feb 25 13:23:19 kernel:  ret_from_fork+0x22/0x30
+Feb 25 13:23:19 kernel: ---[ end trace 62f71487916db9f9 ]---
+Feb 25 13:23:19 kernel: ata7.00: failed to IDENTIFY (I/O error, err_mask=0x11)
+Feb 25 13:23:19 kernel: ata7.00: revalidation failed (errno=-5)
+Feb 25 13:23:19 kernel: ata7: hard resetting link
+Feb 25 13:23:19 kernel: ata7.00: failed to IDENTIFY (INIT_DEV_PARAMS failed, err_mask=0x80)
+Feb 25 13:23:19 kernel: ata7.00: revalidation failed (errno=-5)
+Feb 25 13:23:19 kernel: ata7: hard resetting link
+Feb 25 13:23:19 kernel: ata7.00: qc timeout (cmd 0xec)
+Feb 25 13:23:19 kernel: ata7.00: failed to IDENTIFY (I/O error, err_mask=0x4)
+Feb 25 13:23:19 kernel: ata7.00: revalidation failed (errno=-5)
+Feb 25 13:23:19 kernel: ata7.00: disabled
+Feb 25 13:23:19 kernel: drivers/scsi/mvsas/mv_sas.c 1417:mvs_I_T_nexus_reset for device[0]:rc= 0
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#115 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE cmd_age=54s
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#115 Sense Key : Not Ready [current]
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#115 Add. Sense: Logical unit not ready, hard reset required
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#115 CDB: Read(16) 88 00 00 00 00 00 04 8f 30 00 00 00 07 f0 00 00
+Feb 25 13:23:19 kernel: blk_update_request: I/O error, dev sde, sector 76492800 op 0x0:(READ) flags 0x84700 phys_seg 64 prio class 0
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#116 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE cmd_age=54s
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#116 Sense Key : Not Ready [current]
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#116 Add. Sense: Logical unit not ready, hard reset required
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#116 CDB: Read(16) 88 00 00 00 00 00 04 8f 37 f0 00 00 02 10 00 00
+Feb 25 13:23:19 kernel: blk_update_request: I/O error, dev sde, sector 76494832 op 0x0:(READ) flags 0x80700 phys_seg 17 prio class 0
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#117 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_SENSE cmd_age=54s
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#117 Sense Key : Not Ready [current]
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#117 Add. Sense: Logical unit not ready, hard reset required
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#117 CDB: Read(16) 88 00 00 00 00 00 04 8f 3a 00 00 00 03 98 00 00
+Feb 25 13:23:19 kernel: blk_update_request: I/O error, dev sde, sector 76495360 op 0x0:(READ) flags 0x80700 phys_seg 30 prio class 0
+Feb 25 13:23:19 kernel: ata7: EH complete
+Feb 25 13:23:19 kernel: sas: --- Exit sas_scsi_recover_host: busy: 0 failed: 4 tries: 1
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#922 FAILED Result: hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK cmd_age=51s
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#922 CDB: Write(16) 8a 00 00 00 00 02 46 06 c2 d0 00 00 00 20 00 00
+Feb 25 13:23:19 kernel: blk_update_request: I/O error, dev sde, sector 9764782800 op 0x1:(WRITE) flags 0x800 phys_seg 4 prio class 0
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#923 FAILED Result: hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK cmd_age=0s
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#923 CDB: Write(16) 8a 00 00 00 00 02 a0 7b 08 00 00 00 00 08 00 00
+Feb 25 13:23:19 kernel: blk_update_request: I/O error, dev sde, sector 11282352128 op 0x1:(WRITE) flags 0x103000 phys_seg 1 prio class 0
+Feb 25 13:23:19 kernel: Buffer I/O error on dev sde1, logical block 1410293760, lost async page write
+Feb 25 13:23:19 kernel: Aborting journal on device sde1-8.
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#926 FAILED Result: hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK cmd_age=0s
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#926 CDB: Write(16) 8a 00 00 00 00 02 a6 40 08 10 00 00 00 48 00 00
+Feb 25 13:23:19 kernel: blk_update_request: I/O error, dev sde, sector 11379148816 op 0x1:(WRITE) flags 0x103000 phys_seg 9 prio class 0
+Feb 25 13:23:19 kernel: Buffer I/O error on dev sde1, logical block 1422393346, lost async page write
+Feb 25 13:23:19 kernel: Buffer I/O error on dev sde1, logical block 1422393347, lost async page write
+Feb 25 13:23:19 kernel: Buffer I/O error on dev sde1, logical block 1422393348, lost async page write
+Feb 25 13:23:19 kernel: Buffer I/O error on dev sde1, logical block 1422393349, lost async page write
+Feb 25 13:23:19 kernel: Buffer I/O error on dev sde1, logical block 1422393350, lost async page write
+Feb 25 13:23:19 kernel: Buffer I/O error on dev sde1, logical block 1422393351, lost async page write
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#927 FAILED Result: hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK cmd_age=0s
+Feb 25 13:23:19 kernel: Buffer I/O error on dev sde1, logical block 1422393352, lost async page write
+Feb 25 13:23:19 kernel: Buffer I/O error on dev sde1, logical block 1422393353, lost async page write
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#927 CDB: Write(16) 8a 00 00 00 00 02 46 04 08 00 00 00 00 08 00 00
+Feb 25 13:23:19 kernel: blk_update_request: I/O error, dev sde, sector 9764603904 op 0x1:(WRITE) flags 0x800 phys_seg 1 prio class 0
+Feb 25 13:23:19 kernel: Buffer I/O error on dev sde1, logical block 1422393354, lost async page write
+Feb 25 13:23:19 kernel: blk_update_request: I/O error, dev sde, sector 9764603904 op 0x1:(WRITE) flags 0x800 phys_seg 1 prio class 0
+Feb 25 13:23:19 kernel: JBD2: Error -5 detected when updating journal superblock for sde1-8.
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#928 FAILED Result: hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK cmd_age=0s
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#928 CDB: Write(16) 8a 00 00 00 00 00 00 00 1d 38 00 00 00 08 00 00
+Feb 25 13:23:19 kernel: blk_update_request: I/O error, dev sde, sector 7480 op 0x1:(WRITE) flags 0x103000 phys_seg 1 prio class 0
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#929 FAILED Result: hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK cmd_age=0s
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#929 CDB: Write(16) 8a 00 00 00 00 01 53 00 13 f8 00 00 00 90 00 00
+Feb 25 13:23:19 kernel: blk_update_request: I/O error, dev sde, sector 5687481336 op 0x1:(WRITE) flags 0x103000 phys_seg 18 prio class 0
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#930 FAILED Result: hostbyte=DID_BAD_TARGET driverbyte=DRIVER_OK cmd_age=0s
+Feb 25 13:23:19 kernel: sd 7:0:0:0: [sde] tag#930 CDB: Read(16) 88 00 00 00 00 00 04 8f 30 00 00 00 00 08 00 00
+Feb 25 13:23:19 kernel: EXT4-fs (sde1): Delayed block allocation failed for inode 152174593 at logical offset 97986880 with max blocks 2048 with error 30
+Feb 25 13:23:19 kernel: EXT4-fs (sde1): This should not happen!! Data will be lost
+Feb 25 13:23:19 kernel: EXT4-fs error (device sde1) in ext4_writepages:2814: Journal has aborted
+Feb 25 13:23:19 kernel: EXT4-fs (sde1): I/O error while writing superblock
+Feb 25 13:23:19 kernel: EXT4-fs (sde1): I/O error while writing superblock
+Feb 25 13:23:19 kernel: EXT4-fs error (device sde1): ext4_journal_check_start:83: Detected aborted journal
+Feb 25 13:23:19 kernel: EXT4-fs (sde1): Remounting filesystem read-only
+Feb 25 13:23:19 kernel: EXT4-fs error (device sde1) in ext4_da_write_end:3117: IO failure
+Feb 25 13:23:19 kernel: EXT4-fs (sde1): I/O error while writing superblock
+Feb 25 13:23:19 kernel: mvsas 0000:01:00.0: Phy1 : No sig fis
 
