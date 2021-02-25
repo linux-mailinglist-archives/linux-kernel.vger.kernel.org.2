@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5792A32586E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3185325865
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbhBYVKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:10:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29460 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234875AbhBYVAq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:00:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614286749;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GaPCWMrUePGJJoknBQo5jOHASSWRrtnBlimP7nH0gxY=;
-        b=gAWfR6z1ohHNDW0LJfawmMlsdofuWjrO4q6WdnCQXSUgXAY0kajt/vxd66c959swNJ6Gg6
-        pwt1MFqpQyE03MihM/gMrLDcXb5GdgVkVVChgHL2YmhD0LBti9PqqS6/DqZnTdQcoNHe4V
-        8UJRvH0pBdVpTiG2E+TKtBmNliZPTFc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-ep0hnRerPpOGyC-8WdqOGQ-1; Thu, 25 Feb 2021 15:59:06 -0500
-X-MC-Unique: ep0hnRerPpOGyC-8WdqOGQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 69ABE19611A8;
-        Thu, 25 Feb 2021 20:59:05 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A59660BF3;
-        Thu, 25 Feb 2021 20:59:03 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 4/4] integrity: Load mokx variables into the blacklist keyring
-From:   David Howells <dhowells@redhat.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>, dhowells@redhat.com,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 25 Feb 2021 20:59:03 +0000
-Message-ID: <161428674320.677100.12637282414018170743.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk>
-References: <161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S235374AbhBYVIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:08:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232591AbhBYVAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 16:00:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3712D64DA3;
+        Thu, 25 Feb 2021 20:59:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614286757;
+        bh=eV1kJaWfevV6RouK8LRLTU3ZuWjF9BEgVywj5uj8o6Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SGtJ0wvdv7iWICnifbRB9ajKhBV1vF/UjYU9qAnPikX4mRlJw3Kipi7kFBjUOTsz5
+         22dHxT8QzrP/KE7GmhTzY1gobQr/51iaTYjazU6/9mDt4zBvsMUaQ0OZtu7ROQQsCy
+         XKLdR1uRqIW48YGCOv+ohHnHNdvgYIkS8/SCuTNgRolnhbJaamXHXJkGlFyKmxQ4W3
+         kqaRYIFV+XTMVQElQPc63YRc8TVVRUcRq7qfIj3rtLX+u/X/QQzmx9GohC/L+e12oT
+         PqcZxjlcHx8rYMRnkHkgX2ydCqeOgkkvXNu+DTTBPOwvdS406ljHSvUxAxXpe04viZ
+         3QI6GUp43wZYw==
+Date:   Thu, 25 Feb 2021 22:59:08 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Faiyaz Mohammed <faiyazm@codeaurora.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baoquan He <bhe@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        David Hildenbrand <david@redhat.com>,
+        Aslan Bakirov <aslan@fb.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] memblock: fix section mismatch warning
+Message-ID: <20210225205908.GM1447004@kernel.org>
+References: <20210225133808.2188581-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225133808.2188581-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Snowberg <eric.snowberg@oracle.com>
+On Thu, Feb 25, 2021 at 02:38:00PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The inlining logic in clang-13 is rewritten to often not inline
+> some functions that were inlined by all earlier compilers.
+> 
+> In case of the memblock interfaces, this exposed a harmless bug
+> of a missing __init annotation:
+> 
+> WARNING: modpost: vmlinux.o(.text+0x507c0a): Section mismatch in reference from the function memblock_bottom_up() to the variable .meminit.data:memblock
+> The function memblock_bottom_up() references
+> the variable __meminitdata memblock.
+> This is often because memblock_bottom_up lacks a __meminitdata
+> annotation or the annotation of memblock is wrong.
+> 
+> Interestingly, these annotations were present originally, but got removed
+> with the explanation that the __init annotation prevents the function
+> from getting inlined. I checked this again and found that while this
+> is the case with clang, gcc (version 7 through 10, did not test others)
+> does inline the functions regardless.
+> 
+> As the previous change was apparently intended to help the clang
+> builds, reverting it to help the newer clang versions seems appropriate
+> as well. gcc builds don't seem to care either way.
+> 
+> Fixes: 5bdba520c1b3 ("mm: memblock: drop __init from memblock functions to make it inline")
+> Reference: 2cfb3665e864 ("include/linux/memblock.h: add __init to memblock_set_bottom_up()")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-During boot the Secure Boot Forbidden Signature Database, dbx,
-is loaded into the blacklist keyring.  Systems booted with shim
-have an equivalent Forbidden Signature Database called mokx.
-Currently mokx is only used by shim and grub, the contents are
-ignored by the kernel.
+I thought it'll go via memblock tree but since Andrew has already took it
 
-Add the ability to load mokx into the blacklist keyring during boot.
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-Suggested-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Jarkko Sakkinen <jarkko@kernel.org>
-Link: https://lore.kernel.org/r/20210122181054.32635-5-eric.snowberg@oracle.com/ # v5
-Link: https://lore.kernel.org/r/c33c8e3839a41e9654f41cc92c7231104931b1d7.camel@HansenPartnership.com/
----
+> ---
+>  include/linux/memblock.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index c88bc24e31aa..d13e3cd938b4 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -460,7 +460,7 @@ static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
+>  /*
+>   * Set the allocation direction to bottom-up or top-down.
+>   */
+> -static inline void memblock_set_bottom_up(bool enable)
+> +static inline __init void memblock_set_bottom_up(bool enable)
+>  {
+>  	memblock.bottom_up = enable;
+>  }
+> @@ -470,7 +470,7 @@ static inline void memblock_set_bottom_up(bool enable)
+>   * if this is true, that said, memblock will allocate memory
+>   * in bottom-up direction.
+>   */
+> -static inline bool memblock_bottom_up(void)
+> +static inline __init bool memblock_bottom_up(void)
+>  {
+>  	return memblock.bottom_up;
+>  }
+> -- 
+> 2.29.2
+> 
 
- security/integrity/platform_certs/load_uefi.c |   20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/security/integrity/platform_certs/load_uefi.c b/security/integrity/platform_certs/load_uefi.c
-index ee4b4c666854..f290f78c3f30 100644
---- a/security/integrity/platform_certs/load_uefi.c
-+++ b/security/integrity/platform_certs/load_uefi.c
-@@ -132,8 +132,9 @@ static int __init load_moklist_certs(void)
- static int __init load_uefi_certs(void)
- {
- 	efi_guid_t secure_var = EFI_IMAGE_SECURITY_DATABASE_GUID;
--	void *db = NULL, *dbx = NULL;
--	unsigned long dbsize = 0, dbxsize = 0;
-+	efi_guid_t mok_var = EFI_SHIM_LOCK_GUID;
-+	void *db = NULL, *dbx = NULL, *mokx = NULL;
-+	unsigned long dbsize = 0, dbxsize = 0, mokxsize = 0;
- 	efi_status_t status;
- 	int rc = 0;
- 
-@@ -175,6 +176,21 @@ static int __init load_uefi_certs(void)
- 		kfree(dbx);
- 	}
- 
-+	mokx = get_cert_list(L"MokListXRT", &mok_var, &mokxsize, &status);
-+	if (!mokx) {
-+		if (status == EFI_NOT_FOUND)
-+			pr_debug("mokx variable wasn't found\n");
-+		else
-+			pr_info("Couldn't get mokx list\n");
-+	} else {
-+		rc = parse_efi_signature_list("UEFI:MokListXRT",
-+					      mokx, mokxsize,
-+					      get_handler_for_dbx);
-+		if (rc)
-+			pr_err("Couldn't parse mokx signatures %d\n", rc);
-+		kfree(mokx);
-+	}
-+
- 	/* Load the MokListRT certs */
- 	rc = load_moklist_certs();
- 
-
-
+-- 
+Sincerely yours,
+Mike.
