@@ -2,154 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5567B325555
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:18:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C733325558
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbhBYSSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:18:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42484 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231895AbhBYSSS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 13:18:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614277011;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=91KG0dW4h8eaWVtd75/f30WhAILKsN5As4nR1hNXNAQ=;
-        b=TrCRaRzlzPNwDdVTsbNrrEXi5KCG5TKtUDxCuVTfObt4ckqHpqaRID6VkbVVoxyh7D4CPP
-        L0IPenDKrDUZTxnM1g8//4mQrh8lyZyl7yqdUP5rdM9AQZ5/Rtf6miD8NQwGK8hs1VRBgE
-        P+IbpxMdqZhunq740SIH+jlD5AMvk9Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-184-EH_OXAIdOLS5_Rd1Seojpg-1; Thu, 25 Feb 2021 13:16:46 -0500
-X-MC-Unique: EH_OXAIdOLS5_Rd1Seojpg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A3FF106BAEE;
-        Thu, 25 Feb 2021 18:16:44 +0000 (UTC)
-Received: from krava (unknown [10.40.192.91])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 16A225D9D2;
-        Thu, 25 Feb 2021 18:16:40 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 19:16:39 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Liang, Kan" <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>,
-        "Yi, Ammy" <ammy.yi@intel.com>
-Subject: Re: [drm/i915/gt] 8c3b1ba0e7:
- perf-sanity-tests.Parse_event_definition_strings.fail
-Message-ID: <YDfph8b9p8sSk1AF@krava>
-References: <20210224074841.GD6114@xsang-OptiPlex-9020>
- <cabd8692-07ca-13c8-efb5-e088b4547f80@linux.intel.com>
- <YDenRVGzh5Dv1pC2@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S231960AbhBYSTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:19:18 -0500
+Received: from mail-dm6nam11on2078.outbound.protection.outlook.com ([40.107.223.78]:15520
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230166AbhBYSTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 13:19:12 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DUVDd/GpBWkDiuG/ZoNE15FXe9DJwPLqnrBGv+r8IL6UAy2PJlSd0o+ZD8lqtyLuyVg5HwxtqFT1xgFEYlnti08g26YKh8toEyWH9SV/6t8AUJLvB0gbBgbAtVSaY98dsIZH0yzcUast+9FHevpbZLpAE/QINcVruWN6MGsUK8ucuRGaQ8vb7JAHrHl1Tzns387CZxYcE8G4Rxb7RPcQ1bGRNWSFwGhw2/mznTDJ/FwT5CmBnk8ZUPz3ws8SsUby1FYubYdZjWK9faCPhViSBZzVI6DJTZTrUR0mOUc48/KpkaRYRI4Et8IjRpvzvrYgRT31k4T9llGit4x+VimDXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9gGDzg95XZhyKhDNkAFCXWMKwWqVBfl28tDw3rcfV8M=;
+ b=Tb0zBaGS7gmzNVJVGtVOiOD9eAyBcyk6Li9iL+xpt+iz47cgOf/RNoo/7LMwJJPageM+wAFIJuXxTS+hHDbQAuXyGKxK49UDJdfZIgFCUJzogbfZhTW3EywqwdVv3rLeMlPyk6e2fakM0Fhe+gJL77et63xwZe95QM55akMgvI1taJNcmiWAjRoyHDq/n/Ugn6tLnhaaSbo6hdoNYY568Mr9yltJFXihj0RzuVL8bb6NToQ5F5n7b8T9Hv9GWwcMabHMLIVJsAZPuYojbKip4ZVHiALpR8+fg4zFRr5JAMLI7NQclhSLfRVRZQTg4t63HFvm1hrGkg1wNMVLZC+iHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9gGDzg95XZhyKhDNkAFCXWMKwWqVBfl28tDw3rcfV8M=;
+ b=kF5qPiUk9U38LZfGHU1Qh+kJNx5XpCUZzNE6d7BJyTA71C40WixImEPsnVaCtoUC1rPLEwS1scwRXtIEisH8S5gNPeF9sSdc+SZbGuvGTn79gSB/c9sAeTuMQtY8VwGBJwYwv785eoeVEi9fVTMH9+jldGZ3FQ1uIAbCYczuSek=
+Authentication-Results: HansenPartnership.com; dkim=none (message not signed)
+ header.d=none;HansenPartnership.com; dmarc=none action=none
+ header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SN6PR12MB2685.namprd12.prod.outlook.com (2603:10b6:805:67::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.34; Thu, 25 Feb
+ 2021 18:18:18 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::24bb:3e53:c95e:cb8e]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::24bb:3e53:c95e:cb8e%7]) with mapi id 15.20.3890.020; Thu, 25 Feb 2021
+ 18:18:18 +0000
+Date:   Thu, 25 Feb 2021 18:18:12 +0000
+From:   Ashish Kalra <ashish.kalra@amd.com>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     natet@google.com, brijesh.singh@amd.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        rientjes@google.com, seanjc@google.com, srutherford@google.com,
+        thomas.lendacky@amd.com, x86@kernel.org,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        DOV MURIK <Dov.Murik1@il.ibm.com>
+Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
+Message-ID: <20210225181812.GA5046@ashkalra_ubuntu_server>
+References: <20210224085915.28751-1-natet@google.com>
+ <7cb132ce522728f7689618832a65e31e37788201.camel@HansenPartnership.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YDenRVGzh5Dv1pC2@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <7cb132ce522728f7689618832a65e31e37788201.camel@HansenPartnership.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SA9PR13CA0087.namprd13.prod.outlook.com
+ (2603:10b6:806:23::32) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server (165.204.77.1) by SA9PR13CA0087.namprd13.prod.outlook.com (2603:10b6:806:23::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.12 via Frontend Transport; Thu, 25 Feb 2021 18:18:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d4632d10-529e-4b34-78f7-08d8d9b9b9ef
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2685:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB2685D4DFC42AFC31168559CE8E9E9@SN6PR12MB2685.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: M1GW0P89L5KOnUia1peJgk9oNz81TWgzL0OyFp9IfTsTDQwtNbqg3qjYWPaE/UXhg603iQEJq/U6ne/+Q8DaWDByKNWa+IfHxXqlN8oreZJtIWD1RfoRId5wTTb+JXzYZHvXaqV1IQ9bkjGTEn88D7o9oXO3oAUGTf5voCVek/+OUHVmrA7DIb5+boJx49t46zwDPUTiwn9255v+qudFFk/7Y+ZQ+oziaOoPUDQK+CqShSarwulYY+eWcUajluUE5dJuy+bVDbh5bWmJ8d9/Pjm1cQnLOu07qAxTQFLFCuZ+fRQy/NAL6XfYC9EYBz/dJLEXUPMsj4r1unOI8STi0Gv3WB/nz7cd+Hkiy4Qw61sSuo/Rc9nGDe4yMZCdULeOhDmBP0XPSTHgSqtU3OYmC3GW1FHZghGEtSl7SsTtgEPJcXk8xSVpKj8ndPeDQ4jmG6uQW/Ji/Jw5rxoqnecITzuyfKPqs2Sr+Nnps2DMnqyrxOATVDcIvAFn7Zsh0iNAssnPsb0xDh+nsK7eIFBJVQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(346002)(396003)(366004)(478600001)(33716001)(7416002)(66476007)(66556008)(54906003)(9686003)(33656002)(55016002)(6496006)(316002)(66946007)(44832011)(4744005)(6666004)(5660300002)(8676002)(16526019)(186003)(86362001)(2906002)(4326008)(52116002)(6916009)(956004)(1076003)(8936002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?kZ7xk2Lmd/+JcR2b141okrYC3U9rq7lElAVjWUjAeuN0OiCLhlor/tWe8uHm?=
+ =?us-ascii?Q?p96ztWstPxBoXRD5f9l7Vk0yxb23q8jPiHZh/h3hP2pyCjPD+eqB77IPZVDx?=
+ =?us-ascii?Q?GldzJf80HQQU8VeVFI7EQiUQArTk3lGjGfV5AunyjIHSicYhYg1ESXoYEiI2?=
+ =?us-ascii?Q?KDc8ufptn9CEynbZ6XF4WICf2fC5wQx3K4snRweN4Z1Hv+gRAxgEXB0zetlY?=
+ =?us-ascii?Q?O6xmZIvw97ZmKlyDvoMO5LechRixE6TA6jq4x9PP0nmG1+8spCo8/l/2usVd?=
+ =?us-ascii?Q?ttfktrTUnVOOKJ0ZObzU38WWcCv2vbtL59v941MUCn0AfESUgW7ttjknPZ23?=
+ =?us-ascii?Q?FV4itzd1QRalTVp/eegJ1xmfEddsMVkCYEVw+0HAfqc5YT6reBgCep3bS0qs?=
+ =?us-ascii?Q?lrii2OIaPiiz3xfCIq0c1DmCB0UJKVXMzIcusVHoIpuJRp3IeLqcJKsLU1ol?=
+ =?us-ascii?Q?2xo0lOT6x/yKWFzga8aelFE+YKmykE2vMTS7untCxRsblSwFistJ7Mcgvf+X?=
+ =?us-ascii?Q?Njh33MBwmbae3V/NSuWVD48CP83mtgIyV3KHZL4BfdHNe+ywpdztzhx1LLxo?=
+ =?us-ascii?Q?3gnaW0dYqBygZNQFG/XxXLGh2PlxE4RPAT52eB37yWQC6XmRCXaqil8BzhV1?=
+ =?us-ascii?Q?ZKaOl0HOXQ3ZbQdaIsTR0U5mZIha3vDrGEzt3WYKX4UJdNNHJBtlJ+t919jT?=
+ =?us-ascii?Q?PW38f7iMnbimBQZwIm5u4yoArRkGJ+llsrEYOLO+pdIGAcEMGkKEPVOd7Nyc?=
+ =?us-ascii?Q?4VSB6BSJ20ZKwbTHGRn6WMZva71ifUSbBKjgrpYXGDTnGTAoWd9HKuWtJx2p?=
+ =?us-ascii?Q?JtoFpG/GRxDQYg0aSiQwrG7ABIn7U/RWNFFE/pvumHOEwZziUyY20iaObFbh?=
+ =?us-ascii?Q?Z98td8/96naAR6+k0iJqK//aGCh8V5G0qQ/7z3ytOH35mkn9VCSrr1/3fOmn?=
+ =?us-ascii?Q?qmBf2x5Pp5nppQ7nLrEP4rudZ03XmY7E7PEj2bn3ozvmmvLIdgW2XQZcpbK/?=
+ =?us-ascii?Q?uUkU1o06yw7JIp/r5aPDjijILv8NpDPHCo+rAbET8YL4HnI870202peAIZB0?=
+ =?us-ascii?Q?mNjHWZPAwmXff4tF4sLv7AQE0/h55tQAEJJLRaSNrxMneJ7AH7LcBKn4Me3/?=
+ =?us-ascii?Q?FmAJ8nQJZMuTftomrjS4TGJe2oTt5fiM5jAWTKftidfSvGPNWNdZ7Fcyry6E?=
+ =?us-ascii?Q?Z+0bgG8tbv2L+yctMR0fovofUvmMcVdh+lCpvsuAj/n9/IebGJ268ur5ulrz?=
+ =?us-ascii?Q?5bf1G3Et3r7VgLT4VI5TVhSq0xqst3uj3B7JKk2Q590cB8EkHQhVpYsdYiWh?=
+ =?us-ascii?Q?dP8u3zwWpGEZkAd1q1u3+oDW?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4632d10-529e-4b34-78f7-08d8d9b9b9ef
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2021 18:18:18.5990
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QrGWbUWgjy2xuPK8b4tODZnvM2df1J0ZlDuMDVvtq4FZVx/h4t3wZhoUychd+jKbc/vYbQAdh+alXvH/Ta9rOw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2685
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 02:33:57PM +0100, Jiri Olsa wrote:
-> On Thu, Feb 25, 2021 at 04:06:23PM +0800, Jin, Yao wrote:
-> > Hi Chris, Arnaldo, Jiri,
-> > 
-> > We observe the parsing error for "software/xxx/" on some platforms.
-> > 
-> > For example,
-> > 
-> > # perf stat -e software/r1a/ -a -- sleep 1
-> > event syntax error: 'software/r1a/'
-> >                      \___ parser error
-> > Run 'perf list' for a list of valid events
-> > 
-> >  Usage: perf stat [<options>] [<command>]
-> > 
-> >     -e, --event <event>   event selector. use 'perf list' to list available events
-> > 
-> > And perf test is failed too.
-> > 
-> > # perf test 6 -vv
-> > ...
-> > running test 4 'software/r1a/'failed to parse event 'software/r1a/', err 1, str 'parser error'
-> > event syntax error: 'software/r1a/'
-> >                      \___ parser error
-> > 
-> > running test 4 'software/r0x1a/'failed to parse event 'software/r0x1a/', err 1, str 'parser error'
-> > event syntax error: 'software/r0x1a/'
-> >                      \___ parser error
-> > ...
-> > 
-> > The issue should be the conflict between event "i915/software-gt-awake-time/" and pmu "software".
-> > 
-> > # perf list | grep i915/software
-> >   i915/software-gt-awake-time/                       [Kernel PMU event]
-> > 
-> > Perf supports the event format as "prefix-xxx-suffix", so the "software"
-> > string in "software-gt-awake-time" is added to perf_pmu_events_list as
-> > PMU_EVENT_SYMBOL_PREFIX. When parsing the string such as "software/xxx/",
-> > it’s parsed as PMU_EVENT_SYMBOL_PREFIX for "software", then it would error
-> > out in next processing.
-> > 
-> > So the easy way is to rename "software-gt-awake-time" to "gt-awake-time",
-> > right? Otherwise we have to hardcode something in perf tool.
-> > 
-> > What do you think of this issue and the solution?
-> > 
-> > BTW, as the robot reported, it's related to the commit 8c3b1ba0e7ea
-> > ("drm/i915/gt: Track the overall awake/busy time").
-> 
-> yes, I think you're right.. I'll try to reproduce and check on this
-> 
-> I'm still not clear why is that parsing fail if those 2 events are
-> distinguished by - and / ... but yep, we are asking for trouble in
-> here ;-)
-> 
-> I think we could either prioritaze one or add extra check when we
-> add prefix-xxx-suffix events and do not add ones that have conflict..
-> that seems like best solution to me now
+>> > For additional context, we need a Migration Helper because SEV PSP
+>> > migration is far too slow for our live migration on its own. Using an
+>> > in-guest migrator lets us speed this up significantly.
+>> 
+>> We have the same problem here at IBM, hence the RFC referred to above.
+>> 
 
-would patch below work for you?
+I do believe that some of these alternative SEV live migration support
+or Migration helper (MH) solutions will still use SEV PSP migration for 
+migrating the MH itself, therefore the SEV live migration patches
+(currently v10 posted upstream) still make sense and will be used.
 
-jirka
-
-
----
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 42c84adeb2fb..e1d0f1028401 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2041,8 +2041,16 @@ static void perf_pmu__parse_init(void)
- 			char *tmp = strchr(alias->name, '-');
- 
- 			if (tmp != NULL) {
--				SET_SYMBOL(strndup(alias->name, tmp - alias->name),
--						PMU_EVENT_SYMBOL_PREFIX);
-+				char *prefix = strndup(alias->name, tmp - alias->name);
-+
-+				if (perf_pmu__find(prefix)) {
-+					pr_debug("perf_pmu__parse_init: skipping conflicting alias '%s'\n",
-+						 alias->name);
-+					free(prefix);
-+					continue;
-+				}
-+
-+				SET_SYMBOL(prefix, PMU_EVENT_SYMBOL_PREFIX);
- 				p++;
- 				SET_SYMBOL(strdup(++tmp), PMU_EVENT_SYMBOL_SUFFIX);
- 				len += 2;
-
+Thanks,
+Ashish
