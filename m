@@ -2,61 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2263248E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 03:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 810FD3248EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 03:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236107AbhBYCg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 21:36:27 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:39020 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234554AbhBYCgU (ORCPT
+        id S236853AbhBYCiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 21:38:15 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12646 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234044AbhBYCiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 21:36:20 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UPUjdrG_1614220530;
-Received: from localhost(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0UPUjdrG_1614220530)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 25 Feb 2021 10:35:37 +0800
-From:   Liguang Zhang <zhangliguang@linux.alibaba.com>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Liguang Zhang <zhangliguang@linux.alibaba.com>
-Subject: [PATCH] i2c: designware: Get right data length
-Date:   Thu, 25 Feb 2021 10:35:28 +0800
-Message-Id: <20210225023528.121135-1-zhangliguang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+        Wed, 24 Feb 2021 21:38:11 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DmH2v6nBLz16CR4;
+        Thu, 25 Feb 2021 10:35:51 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.162) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Feb 2021
+ 10:37:26 +0800
+Subject: Re: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage
+ optimization for SCSI drivers
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com>
+ <CAMuHMdXwmjq_MPr=R9twkYRoun2buuSrPDbLo6zdkGFb7XQHoQ@mail.gmail.com>
+CC:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        scsi <linux-scsi@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+Message-ID: <58053d07-ca58-2b78-36ff-40ecf162ed49@huawei.com>
+Date:   Thu, 25 Feb 2021 10:37:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdXwmjq_MPr=R9twkYRoun2buuSrPDbLo6zdkGFb7XQHoQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.192.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IC_DATA_CMD[11] indicates the first data byte received after the address
-phase for receive transfer in Master receiver or Slave receiver mode,
-this bit was set in some transfer flow. IC_DATA_CMD[7:0] contains the
-data to be transmitted or received on the I2C bus, so we should use the
-lower 8 bits to get the right data length.
+Hi Geert,
 
-Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
----
- drivers/i2c/busses/i2c-designware-master.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2021/2/24 17:41, Geert Uytterhoeven wrote:
+> Hi Xiaofei,
+>
+> On Sun, Feb 7, 2021 at 12:46 PM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
+>> Replace spin_lock_irqsave with spin_lock in hard IRQ of SCSI drivers.
+>> There are no function changes, but may speed up if interrupt happen
+>> too often.
+>
+> I'll bite: how much does this speed up interrupt processing?
+> What's the typical cost of saving/disabling, and restoring interrupt
+> state?
 
-diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-index d6425ad6e6a3..c3cf76f6c607 100644
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -432,7 +432,7 @@ i2c_dw_read(struct dw_i2c_dev *dev)
- 			regmap_read(dev->map, DW_IC_DATA_CMD, &tmp);
- 			/* Ensure length byte is a valid value */
- 			if (flags & I2C_M_RECV_LEN &&
--			    tmp <= I2C_SMBUS_BLOCK_MAX && tmp > 0) {
-+			    (tmp & 0xff) <= I2C_SMBUS_BLOCK_MAX && tmp > 0) {
- 				len = i2c_dw_recv_len(dev, tmp);
- 			}
- 			*buf++ = tmp;
--- 
-2.19.1.6.gb485710b
+It could only take a few CPU cycles. So there is little benefit for 
+speeding up interrupt processing.You could take them as cleanup.
+
+Is removing this cost worth the risk of introducing subtle
+> regressions on platforms you cannot test yourself?
+>
+
+Currently, only found M68K platform support that high-priority interrupt 
+preempts low-priority. No other platform has such services. Therefore, 
+these changes do not affect non-M68K platforms.
+
+For M68K platform, no one report such interrupt preemption case in these 
+SCSI drivers.
+
+> BTW, how many of these legacy SCSI controllers do you have access to?
+>
+
+Actually, no.
+
+> Thanks for your answers!
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
 
