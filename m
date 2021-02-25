@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F8E32546A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72930325471
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhBYRMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 12:12:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41972 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229491AbhBYRMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:12:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FAC364EB7;
-        Thu, 25 Feb 2021 17:11:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614273108;
-        bh=n8uLJw43X+qDZY8YywYDV90h9+kiQjUwlZR/Y7VjDcU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ndr63J4VX7PmwVLZHzjy9JmHuuRJugC5JkcqjAmCMdiLf0AkN5dRxVraHgEbFCCPF
-         G1T6BgRiriTQyK18VlsLxKAWA8qj4AZlx8yDafDzvHdmNl2sXEhouTu552pOGGMeNL
-         9BgTtBFUZBoKVV7ebhlGA6F1ejTrDRC5d0+75iGQ=
-Date:   Thu, 25 Feb 2021 18:11:45 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, olteanv@gmail.com, sashal@kernel.org
-Subject: Re: [PATCH stable 0/8] net: dsa: b53: Correct learning for
- standalone ports
-Message-ID: <YDfaUaaoc+u3HCDC@kroah.com>
-References: <20210225010853.946338-1-f.fainelli@gmail.com>
- <YDdcvkQQoAs2yc3C@kroah.com>
- <7d32ff3e-eea7-90ac-a458-348b07410f85@gmail.com>
+        id S233311AbhBYRPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 12:15:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232679AbhBYRPi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 12:15:38 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA02AC06174A;
+        Thu, 25 Feb 2021 09:14:57 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id n10so4199194pgl.10;
+        Thu, 25 Feb 2021 09:14:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ptZSGNduCqA0B2NGqlCeIXaHGJ3fPPC3dn9cLh0I7ik=;
+        b=G4fJAsJeWfC0GWoeHmYOrWgnNJgBFX4n2XNIpHlFU+vDhdvcG2r9MnKWm0Zo+J9YHP
+         8Eiq1mCHQM6BnGYZkyO7DMW5sqyDb0uFXGn1epmUwM0xj9pmjtAlCqR87C0aqKdn8Bzj
+         /4UFnNZcwCzVQrHd1YmRD3Ci+/YqTs83yQ4+TjV/OMWwgmIrECsp18sxLFBVT/2j2eKo
+         bvhPI/GsFSEyTQ2dMYR2I3ZAc8tJXvVNgKjkmQT0/12BrVhHB240xfRk7yNEHLcMGi+l
+         9ugdfZhdGmtMrfxhgA1HSTnu+MMdi3WCJvSTP9ArYfR06o83+DvBv8INo+G6EFCHaUJv
+         QL+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ptZSGNduCqA0B2NGqlCeIXaHGJ3fPPC3dn9cLh0I7ik=;
+        b=umiS5IgoZmQ3SxkSCYFPE8AtGhdljfv3T27K7d/huLvgUS7uPqnqqGD5EW/WoEw8PH
+         Dzta25tpZsTAKCwGedv56/fIIHG3xQvTItonC7LCZvlc0ygXpnrWaxhoQwb7IlEajuES
+         6fN2eVLhr6PrpNNVOa56U9ZJtG7lEDGzxRxseUOymtbRd3Xz+H+GXRt7AThLctf6azab
+         2f3cT6WAl4bTfuzRkPjfpYMf3v6TTnBydqXdVyFKcYe462xbubjp9/TnRW6fW89lQu9y
+         MKbzGKE5YEFmqtEDi+6TtC7vjjeE8EqBkUTP2IBZfG4h3Opt328FsLo65vTX95mAtVVa
+         9b7g==
+X-Gm-Message-State: AOAM5326ipWivQsIW0g7+7CS1ZiMzTmQjTVrU0JGsMDlSyJZZAkIRhn7
+        u2+Gm7OdUqAnp5W4Xg2WEVc=
+X-Google-Smtp-Source: ABdhPJyqsHOcMi4gNm4EvkknlyZr1OERkUkLw7+t0OXfCo2O7JbPogfykEWOwhV/S4DvJNyqbRb7Dg==
+X-Received: by 2002:a63:a401:: with SMTP id c1mr3921545pgf.60.1614273297497;
+        Thu, 25 Feb 2021 09:14:57 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id h123sm4755228pfe.115.2021.02.25.09.14.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 09:14:56 -0800 (PST)
+Date:   Thu, 25 Feb 2021 09:14:54 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Heiko Thiery <heiko.thiery@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Fugang Duan <fugang.duan@nxp.com>
+Subject: Re: [PATCH 1/1] net: fec: ptp: avoid register access when ipg clock
+ is disabled
+Message-ID: <20210225171454.GD17490@hoboy.vegasvil.org>
+References: <20210220065654.25598-1-heiko.thiery@gmail.com>
+ <20210222190051.40fdc3e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAEyMn7ZM7_pPor0S=dMGbmnp0hmZMrpquGqq4VNu-ixSPp+0UQ@mail.gmail.com>
+ <20210223142726.GA4711@hoboy.vegasvil.org>
+ <CAEyMn7Za9z9TUdhb8egf8mOFJyA3hgqX5fwLED8HDKw8Smyocg@mail.gmail.com>
+ <20210223161136.GA5894@hoboy.vegasvil.org>
+ <CAEyMn7YwvZD6T=oHp2AcmsA+R6Ho2SCYYkt2NcK8hZNUT7_TSQ@mail.gmail.com>
+ <CAEyMn7Yjug3S=2mRC8uA=_+Tdxe=m6G-ga1YuupLSx3mPqUoug@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7d32ff3e-eea7-90ac-a458-348b07410f85@gmail.com>
+In-Reply-To: <CAEyMn7Yjug3S=2mRC8uA=_+Tdxe=m6G-ga1YuupLSx3mPqUoug@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 08:53:22AM -0800, Florian Fainelli wrote:
-> 
-> 
-> On 2/25/2021 12:15 AM, Greg KH wrote:
-> > On Wed, Feb 24, 2021 at 05:08:53PM -0800, Florian Fainelli wrote:
-> >> From: Florian Fainelli <florian.fainelli@broadcom.com>
-> >>
-> >> Hi Greg, Sasha, Jaakub and David,
-> >>
-> >> This patch series contains backports for a change that recently made it
-> >> upstream as:
-> >>
-> >> commit f3f9be9c58085d11f4448ec199bf49dc2f9b7fb9
-> >> Merge: 18755e270666 f9b3827ee66c
-> >> Author: Jakub Kicinski <kuba@kernel.org>
-> >> Date:   Tue Feb 23 12:23:06 2021 -0800
-> >>
-> >>     Merge branch 'net-dsa-learning-fixes-for-b53-bcm_sf2'
-> > 
-> > That is a merge commit, not a "real" commit.
-> > 
-> > What is the upstream git commit id for this?
-> 
-> The commit upstream is f9b3827ee66cfcf297d0acd6ecf33653a5f297ef ("net:
-> dsa: b53: Support setting learning on port") it may still only be in
-> netdev-net/master at this point, though it will likely reach Linus' tree
-> soon.
+On Thu, Feb 25, 2021 at 03:05:32PM +0100, Heiko Thiery wrote:
 
-Ah, I can't do anything with them until that hits Linus's tree, you know
-this :)
+> But the explanation why it is currently disabled that way can be found
+> in the commit 91c0d987a9788dcc5fe26baafd73bf9242b68900.
 
-> >> The way this was fixed in the netdev group's net tree is slightly
-> >> different from how it should be backported to stable trees which is why
-> >> you will find a patch for each branch in the thread started by this
-> >> cover letter.
-> >>
-> >> Let me know if this does not apply for some reason. The changes from 4.9
-> >> through 4.19 are nearly identical and then from 5.4 through 5.11 are
-> >> about the same.
-> > 
-> > Thanks for the backports, but I still need a real git id to match these
-> > up with :)
-> 
-> You should have it in the Fixes: tag of each patch which all point to
-> when the bug dates back to when the driver was introduced. Let me know
-> if you need me to tag the patches differently.
+Okay, without re-factoring the entire driver, I agree that the gettime
+lock up aught to be fixed in a similar way.  I missed the original
+patch, but the diff fragment in this thread doesn't appear to take the
+mutex as it should.
 
-The fixes: tag shows what id this patch fixes, not the git id of this
-specific patch, like all stable patches show in their changelog text.
-
-That's the id I need.  I'll just wait until this hits Linus's tree
-before worrying about it.
-
-thanks,
-
-greg k-h
+Thanks,
+Richard
