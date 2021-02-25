@@ -2,75 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFED43247AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 00:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9741F3247BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 01:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234492AbhBXX4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 18:56:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232491AbhBXXz4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 18:55:56 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650F0C06174A;
-        Wed, 24 Feb 2021 15:55:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZKtbljNjRDo6cY0QPHsZ6Rnq2DeZQM19dzIHGg5f4PY=; b=R11gkp4K6rehkkXSl4PSRzx65l
-        omOs9KB4haZFN5IszYClFTlIXNmakpAsz4fAxZC7AP4NT0be48ChODM8fR9s0/eXa/4Ty3HZvM4gt
-        6lHCl7SJswDAajgVgHI2iVL4pUKvNycpwzbn5KTaT/ENMXWr5tq2GMvgVbbwKIMXRywuv/Ful5xhu
-        dCtFqPDsR9IhaO+ztDoHOy2wHWc42wdSRaZ4WQzmlL79HDrh2j26nL25+BanEl5FxoMxfOgGAMVT0
-        NhWxnqlvn8KV9j6D0BCcqR4RJuPlTFObo0dTO2Kd5vzwZhGp+60qiUC+RVhmrTZBXgKvRn100zgST
-        WvXhqM/w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lF3za-00A2mh-3j; Wed, 24 Feb 2021 23:54:57 +0000
-Date:   Wed, 24 Feb 2021 23:54:54 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-Subject: Re: [RFC] Better page cache error handling
-Message-ID: <20210224235454.GV2858050@casper.infradead.org>
-References: <20210205161142.GI308988@casper.infradead.org>
- <20210224123848.GA27695@quack2.suse.cz>
- <20210224134115.GP2858050@casper.infradead.org>
- <DC74377C-DFFD-4E26-90AB-213577DB3081@dilger.ca>
+        id S234824AbhBYACk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 19:02:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234222AbhBYACh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 19:02:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 545EB64F0A;
+        Thu, 25 Feb 2021 00:01:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614211317;
+        bh=RZw7aXwSowOYZ/ITqJac2+QYEPCN7r6HREQezJSZFr8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o9yj+qpJ3hActRg6sCxeY/X+EHaBUdpyapD29YzS3wrUIbE/y2V+D3vzYPeRy5Mij
+         JQuYYO9RZnFAXgEj5vsx/DDVPn4h9c5P3EBqv7zDsWxiyW46kopjYwcAiDjqkCiFpj
+         t9UYFJc9foAHbSJiQF/yKtbqVVvzzOUWraJ5fVJpG84DP3pLmULVxtohI+oF3dDi6w
+         kCTES+n8TXjWKwyU6DeMu3aDa4BNlUQluIPtCvQgVlEHaHhDXawajnXGna+8YHiyJc
+         HBLVEvaPDl+KUwps9eFKbbpmFaOAAfxQJdRuMG+pNBDNbqeCiITY6ZRHyiOtmDSgmd
+         IpF2tUq7HdU9g==
+Date:   Wed, 24 Feb 2021 17:01:54 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        masahiroy@kernel.org, akpm@linux-foundation.org,
+        valentin.schneider@arm.com, terrelln@fb.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        rdunlap@infradead.org
+Subject: Re: [PATCH V2] init/Kconfig: Fix a typo in CC_VERSION_TEXT help text
+Message-ID: <20210225000154.GA7875@24bbad8f3778>
+References: <20210224223325.29099-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DC74377C-DFFD-4E26-90AB-213577DB3081@dilger.ca>
+In-Reply-To: <20210224223325.29099-1-unixbhaskar@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 04:41:26PM -0700, Andreas Dilger wrote:
-> Since you would know that the page is bad at this point (not uptodate,
-> does not contain valid data) you could potentially re-use some other
-
-Oh, we don't know that.  We know _a_ read has failed.  There could be
-up to 128 blocks that comprise this (64kB) page, and we don't want to
-prevent reads to those other blocks in the page to fail unnecessarily.
-
-> fields in struct page, or potentially store something in the page itself?
-> That would avoid bloating struct page with fields that are only rarely
-> needed.  Userspace shouldn't be able to read the page at that point if
-> it is not marked uptodate, but they could overwrite it, so you wouldn't
-> want to store any kind of complex data structure there, but you _could_
-> store a magic, an error value, and a timeout, that are only valid if
-> !uptodate (cleared if the page were totally overwritten by userspace).
+On Thu, Feb 25, 2021 at 04:03:25AM +0530, Bhaskar Chowdhury wrote:
 > 
-> Yes, it's nasty, but better than growing struct page, and better than
-> blocking userspace threads for tens of minutes when a block is bad.
+> s/compier/compiler/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-The current state blocks threads for tens of minutes.  I'm proposing
-reducing it down to 30 seconds.  I'd want to see a more concrete
-proposal than this ...
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-(also, a per-page data structure might blow up nastily if the entire
-drive is inaccessible, rather than just a single bad block)
+> ---
+>  Changes from V1:
+>  Nathan and Randy, suggested  better subject line texts,so incorporated.
+> 
+>  init/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/init/Kconfig b/init/Kconfig
+> index ba8bd5256980..2cfed79cc6ec 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -19,7 +19,7 @@ config CC_VERSION_TEXT
+>  	    CC_VERSION_TEXT so it is recorded in include/config/auto.conf.cmd.
+>  	    When the compiler is updated, Kconfig will be invoked.
+> 
+> -	  - Ensure full rebuild when the compier is updated
+> +	  - Ensure full rebuild when the compiler is updated
+>  	    include/linux/kconfig.h contains this option in the comment line so
+>  	    fixdep adds include/config/cc/version/text.h into the auto-generated
+>  	    dependency. When the compiler is updated, syncconfig will touch it
+> --
+> 2.29.2
+> 
