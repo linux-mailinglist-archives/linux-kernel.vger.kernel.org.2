@@ -2,111 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4978325091
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A69325094
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbhBYNee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 08:34:34 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:41226 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232008AbhBYNeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:34:17 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lFGlh-00022t-5Q; Thu, 25 Feb 2021 14:33:25 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     heiko@sntech.de
-Cc:     finley.xiao@rock-chips.com, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        cmuellner@linux.com,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Subject: [PATCH 3/3] arm64: dts: rockchip: drop separate opp table on rk3399-puma
-Date:   Thu, 25 Feb 2021 14:33:22 +0100
-Message-Id: <20210225133322.3420724-3-heiko@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210225133322.3420724-1-heiko@sntech.de>
-References: <20210225133322.3420724-1-heiko@sntech.de>
+        id S232290AbhBYNfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 08:35:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35485 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229596AbhBYNff (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 08:35:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614260048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AS6EiwtZyyoU3dNAZrLEKhdhiP8jwGeoxh5a78NRZnI=;
+        b=hlGjiIgIHegbdWEckhP+QUv5aEEf8qFlPV9XbUa5x7E+U3olVeg6bdWs452vMcrLj+4Zji
+        nJWe3wuWYX6o32LMsqIHdeAtOTzQkn56gANwhbVAlaa2sEqiiTouaUYKIbvtFE8XMUpY/M
+        DBxD5xKdsyGuuClgB/xj3pgzzIL0b4k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-QaXpD2MkMz6NMm6sYYJKeA-1; Thu, 25 Feb 2021 08:34:04 -0500
+X-MC-Unique: QaXpD2MkMz6NMm6sYYJKeA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DF8B6193578B;
+        Thu, 25 Feb 2021 13:34:01 +0000 (UTC)
+Received: from krava (unknown [10.40.194.234])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3609E5D6D7;
+        Thu, 25 Feb 2021 13:33:58 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 14:33:57 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Liang, Kan" <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>,
+        "Yi, Ammy" <ammy.yi@intel.com>
+Subject: Re: [drm/i915/gt] 8c3b1ba0e7:
+ perf-sanity-tests.Parse_event_definition_strings.fail
+Message-ID: <YDenRVGzh5Dv1pC2@krava>
+References: <20210224074841.GD6114@xsang-OptiPlex-9020>
+ <cabd8692-07ca-13c8-efb5-e088b4547f80@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <cabd8692-07ca-13c8-efb5-e088b4547f80@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+On Thu, Feb 25, 2021 at 04:06:23PM +0800, Jin, Yao wrote:
+> Hi Chris, Arnaldo, Jiri,
+> 
+> We observe the parsing error for "software/xxx/" on some platforms.
+> 
+> For example,
+> 
+> # perf stat -e software/r1a/ -a -- sleep 1
+> event syntax error: 'software/r1a/'
+>                      \___ parser error
+> Run 'perf list' for a list of valid events
+> 
+>  Usage: perf stat [<options>] [<command>]
+> 
+>     -e, --event <event>   event selector. use 'perf list' to list available events
+> 
+> And perf test is failed too.
+> 
+> # perf test 6 -vv
+> ...
+> running test 4 'software/r1a/'failed to parse event 'software/r1a/', err 1, str 'parser error'
+> event syntax error: 'software/r1a/'
+>                      \___ parser error
+> 
+> running test 4 'software/r0x1a/'failed to parse event 'software/r0x1a/', err 1, str 'parser error'
+> event syntax error: 'software/r0x1a/'
+>                      \___ parser error
+> ...
+> 
+> The issue should be the conflict between event "i915/software-gt-awake-time/" and pmu "software".
+> 
+> # perf list | grep i915/software
+>   i915/software-gt-awake-time/                       [Kernel PMU event]
+> 
+> Perf supports the event format as "prefix-xxx-suffix", so the "software"
+> string in "software-gt-awake-time" is added to perf_pmu_events_list as
+> PMU_EVENT_SYMBOL_PREFIX. When parsing the string such as "software/xxx/",
+> it’s parsed as PMU_EVENT_SYMBOL_PREFIX for "software", then it would error
+> out in next processing.
+> 
+> So the easy way is to rename "software-gt-awake-time" to "gt-awake-time",
+> right? Otherwise we have to hardcode something in perf tool.
+> 
+> What do you think of this issue and the solution?
+> 
+> BTW, as the robot reported, it's related to the commit 8c3b1ba0e7ea
+> ("drm/i915/gt: Track the overall awake/busy time").
 
-We're using OPPs with a range now, so the fact that the cpu regulator
-on puma can't provide the needed 5mV steps requested in the minimal
-voltage values can be handled automatically by the opp framework.
+yes, I think you're right.. I'll try to reproduce and check on this
 
-Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
----
- arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi | 51 -------------------
- 1 file changed, 51 deletions(-)
+I'm still not clear why is that parsing fail if those 2 events are
+distinguished by - and / ... but yep, we are asking for trouble in
+here ;-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-index 4660416c8f38..6ae9032d85f4 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-@@ -21,57 +21,6 @@ module_led: led-0 {
- 		};
- 	};
- 
--	/*
--	 * Overwrite the opp-table for CPUB as this board uses a different
--	 * regulator (FAN53555) that only allows 10mV steps and therefore
--	 * can't reach the operation point target voltages from rk3399-opp.dtsi
--	 */
--	/delete-node/ opp-table1;
--	cluster1_opp: opp-table1 {
--		compatible = "operating-points-v2";
--		opp-shared;
--
--		opp00 {
--			opp-hz = /bits/ 64 <408000000>;
--			opp-microvolt = <800000>;
--			clock-latency-ns = <40000>;
--		};
--		opp01 {
--			opp-hz = /bits/ 64 <600000000>;
--			opp-microvolt = <800000>;
--		};
--		opp02 {
--			opp-hz = /bits/ 64 <816000000>;
--			opp-microvolt = <830000>;
--			opp-suspend;
--		};
--		opp03 {
--			opp-hz = /bits/ 64 <1008000000>;
--			opp-microvolt = <880000>;
--		};
--		opp04 {
--			opp-hz = /bits/ 64 <1200000000>;
--			opp-microvolt = <950000>;
--		};
--		opp05 {
--			opp-hz = /bits/ 64 <1416000000>;
--			opp-microvolt = <1030000>;
--		};
--		opp06 {
--			opp-hz = /bits/ 64 <1608000000>;
--			opp-microvolt = <1100000>;
--		};
--		opp07 {
--			opp-hz = /bits/ 64 <1800000000>;
--			opp-microvolt = <1200000>;
--		};
--		opp08 {
--			opp-hz = /bits/ 64 <1992000000>;
--			opp-microvolt = <1230000>;
--			turbo-mode;
--		};
--	};
--
- 	clkin_gmac: external-gmac-clock {
- 		compatible = "fixed-clock";
- 		clock-frequency = <125000000>;
--- 
-2.29.2
+I think we could either prioritaze one or add extra check when we
+add prefix-xxx-suffix events and do not add ones that have conflict..
+that seems like best solution to me now
+
+thanks,
+jirka
 
