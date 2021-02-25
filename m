@@ -2,66 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C624A32518A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A74325192
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbhBYOdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 09:33:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56298 "EHLO mail.kernel.org"
+        id S229507AbhBYOez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 09:34:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232139AbhBYOd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 09:33:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86F1464F06;
-        Thu, 25 Feb 2021 14:32:46 +0000 (UTC)
+        id S229954AbhBYOea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 09:34:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01B5A64F06;
+        Thu, 25 Feb 2021 14:33:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614263566;
-        bh=pweKDcCfbwiPFpgl8eYLrSmwbhz1890DPEAEgI0kxXM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WaR3MzFHqW+EdsjzeI9f6EjF0XbqDCNLzBKDnmo5nM3B8P86LmTTK5OhSOanDdJzr
-         J9xVZwTEcxW6yOQ3ESG8tJAynaLAXeu8VS8YsqJ+bWtmrMVItP0Su6qM0xnzp3a9H0
-         RCs+0TdHYQPadlL6XTrTqQGAbs/7j+2gdnyo2/MP30HQnR59iolk6zglNS7ZRBjnwH
-         /2mNxWBZyf4ef1gJPmP1+88/YrXRUayVUFvSdqWxLCsZ59KmvQSN9VZ1gDarGrSm7E
-         /ZopQI5vVtJZL7SIrQWC2Zouaz7DQpHBlO875V2yqFIahV6Ga0i1hgK1lDnszX37QP
-         b+2xnRN0G8RpQ==
-Received: by mail-ot1-f49.google.com with SMTP id d9so5786356ote.12;
-        Thu, 25 Feb 2021 06:32:46 -0800 (PST)
-X-Gm-Message-State: AOAM532R6c1UZ12yahyQ7cKcfEZlD9ItveZFUdBF8jH2MOk7xvobHE95
-        pll837jg5V+lPNx9+rhMSd9PuSANuSUmju4AayI=
-X-Google-Smtp-Source: ABdhPJxtdthWZ8TUXpcqxTVamctwd2ch7Pb0DhXDRuDJl/T0ZFFF2LvSRKDa8UmjGVCGmOV4lrtoc0LOKBY8tmr4wE0=
-X-Received: by 2002:a9d:6b8b:: with SMTP id b11mr2518462otq.210.1614263565720;
- Thu, 25 Feb 2021 06:32:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20210225125638.1841436-1-arnd@kernel.org> <347810.1614262328@warthog.procyon.org.uk>
-In-Reply-To: <347810.1614262328@warthog.procyon.org.uk>
+        s=k20201202; t=1614263626;
+        bh=Z2omBoic64a0PUjdoMoaR0OyACh47HBLzcZeuDlhik8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=t3TA/rm0jyHEsX+ESwjyhby/pDRYG3VklwLyJpX0uy51tUHf2D1aAk3gFhefN5AmN
+         bP40IIn9Xx242Od2pE3asN7aDZUH4QNpY29v9tmXGvJhaFUkGDNdRngzXXoJwZn/d/
+         wyjYp/IuzPKbI/AZ4ejInh1oPSKcKx4zpreV6UFKgW5JIV2NyA5eXwlxpj1d5ye6gv
+         QeI/8E9ClzOrLxqMWAVWpLTdisDpKvehJ8gIdeyLWxnyPVCFGsiHX10MqE2zJ1Wagv
+         DAHTSLBQGsYkfnNyggAxWFNuO67gIgl/17ZV/jewll5cdSmd05VjUsJWomko8ZeBWt
+         FPOY8rKDhWuVQ==
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 25 Feb 2021 15:32:29 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1dTn--2_3d6HXD0Dx13av8dJLB57790SQ2L0Ag0b_xaQ@mail.gmail.com>
-Message-ID: <CAK8P3a1dTn--2_3d6HXD0Dx13av8dJLB57790SQ2L0Ag0b_xaQ@mail.gmail.com>
-Subject: Re: [PATCH] certs: select PKCS7_MESSAGE_PARSER if needed
-To:     David Howells <dhowells@redhat.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, keyrings@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bindu Ramamurthy <bindu.r@amd.com>,
+        Vladimir Stempen <vladimir.stempen@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd/display: fix 64-bit integer division
+Date:   Thu, 25 Feb 2021 15:33:10 +0100
+Message-Id: <20210225143339.3693838-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 3:12 PM David Howells <dhowells@redhat.com> wrote:
->
-> Arnd Bergmann <arnd@kernel.org> wrote:
->
-> > +     select PKCS7_MESSAGE_PARSER if INTEGRITY_PLATFORM_KEYRING
->
-> I think a better way to do it is to add a separate config option for dealing
-> with revocation certs, which is part of what I suggested here:
->
->         https://lore.kernel.org/keyrings/3731128.1614163916@warthog.procyon.org.uk/
+From: Arnd Bergmann <arnd@arndb.de>
 
-Ok, sounds good. Can this make it into v5.12 though, or do we need an
-intermediate
-fix to avoid the build failure?
+The new display synchronization code caused a regression
+on all 32-bit architectures:
 
-        Arnd
+ld.lld: error: undefined symbol: __aeabi_uldivmod
+>>> referenced by dce_clock_source.c
+>>>               gpu/drm/amd/display/dc/dce/dce_clock_source.o:(get_pixel_clk_frequency_100hz) in archive drivers/built-in.a
+
+ld.lld: error: undefined symbol: __aeabi_ldivmod
+>>> referenced by dc_resource.c
+>>>               gpu/drm/amd/display/dc/core/dc_resource.o:(resource_are_vblanks_synchronizable) in archive drivers/built-in.a
+>>> referenced by dc_resource.c
+>>>               gpu/drm/amd/display/dc/core/dc_resource.o:(resource_are_vblanks_synchronizable) in archive drivers/built-in.a
+>>> referenced by dc_resource.c
+>>>               gpu/drm/amd/display/dc/core/dc_resource.o:(resource_are_vblanks_synchronizable) in archive drivers/built-in.a
+
+This is not a fast path, so the use of an explicit div_u64/div_s64
+seems appropriate.
+
+Fixes: 77a2b7265f20 ("drm/amd/display: Synchronize displays with different timings")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/amd/display/dc/core/dc_resource.c    | 12 ++++++------
+ .../gpu/drm/amd/display/dc/dce/dce_clock_source.c    |  6 +++---
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+index 0241c9d96d7a..49214c59c836 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+@@ -441,15 +441,15 @@ bool resource_are_vblanks_synchronizable(
+ 		if (stream2->timing.pix_clk_100hz*100/stream2->timing.h_total/
+ 				stream2->timing.v_total > 60)
+ 			return false;
+-		frame_time_diff = (int64_t)10000 *
++		frame_time_diff = div_s64(10000ll *
+ 			stream1->timing.h_total *
+ 			stream1->timing.v_total *
+-			stream2->timing.pix_clk_100hz /
+-			stream1->timing.pix_clk_100hz /
+-			stream2->timing.h_total /
+-			stream2->timing.v_total;
++			stream2->timing.pix_clk_100hz,
++			stream1->timing.pix_clk_100hz *
++			stream2->timing.h_total *
++			stream2->timing.v_total);
+ 		for (i = 0; i < rr_count; i++) {
+-			int64_t diff = (frame_time_diff * base60_refresh_rates[i]) / 10 - 10000;
++			int64_t diff = div_s64(frame_time_diff * base60_refresh_rates[i], 10) - 10000;
+ 
+ 			if (diff < 0)
+ 				diff = -diff;
+diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c b/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
+index 6f47f9bab5ee..85ed6f2c9647 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
++++ b/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
+@@ -1013,9 +1013,9 @@ static bool get_pixel_clk_frequency_100hz(
+ 			 * not be programmed equal to DPREFCLK
+ 			 */
+ 			modulo_hz = REG_READ(MODULO[inst]);
+-			*pixel_clk_khz = ((uint64_t)clock_hz*
+-				clock_source->ctx->dc->clk_mgr->dprefclk_khz*10)/
+-				modulo_hz;
++			*pixel_clk_khz = div_u64((uint64_t)clock_hz * 10 *
++				clock_source->ctx->dc->clk_mgr->dprefclk_khz,
++				modulo_hz);
+ 		} else {
+ 			/* NOTE: There is agreement with VBIOS here that MODULO is
+ 			 * programmed equal to DPREFCLK, in which case PHASE will be
+-- 
+2.29.2
+
