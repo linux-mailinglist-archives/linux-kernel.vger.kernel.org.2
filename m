@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF573248C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 03:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766B6324E9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236753AbhBYCFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 21:05:42 -0500
-Received: from mga03.intel.com ([134.134.136.65]:15399 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235527AbhBYCFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 21:05:39 -0500
-IronPort-SDR: 0Oq0OtVrfTxkfF8IE/rlKvy9hqtlCEbA9vtNx7aXFAYdB4fnHqk91ArR303xR+InwDMBg7qGu7
- g+74G0/yDuWA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="185432101"
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="185432101"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 18:03:53 -0800
-IronPort-SDR: deqi13EprK5XusdLMH1m5cIV/y6T78cCGIGj9ILsMn55gwwJD9BTVIlNDTRIAq1RiApkWy4/kt
- rf2uVs4W6Mzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="367209747"
-Received: from vmmteam.bj.intel.com ([10.240.193.86])
-  by orsmga006.jf.intel.com with ESMTP; 24 Feb 2021 18:03:50 -0800
-From:   Jing Liu <jing2.liu@linux.intel.com>
-To:     pbonzini@redhat.com, seanjc@google.com
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] KVM: x86: Revise guest_fpu xcomp_bv field
-Date:   Thu, 25 Feb 2021 05:49:54 -0500
-Message-Id: <20210225104955.3553-1-jing2.liu@linux.intel.com>
-X-Mailer: git-send-email 2.18.4
+        id S234637AbhBYKzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:55:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233805AbhBYKxN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 05:53:13 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C53BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:52:32 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id u11so2963356plg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:52:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=D9ceHkRWopAfZY+M1nz75DyCbP32W8Pm3rrNwuMcCQQ=;
+        b=JaY4tBNYjtKmCwBirMFUEBxaE7utPSyyL2dIFC9TM1sCLcbGTSqi4h9mviUPq9XvnZ
+         VYjKfW5wcvqU+UJow9jioiDvmeyGXcLlaDG6LjNpA6pRH14qVrD49fW5Tozrv94qoBXm
+         cdh7n9yFCo6BlrwZ1CSqx1v7ogEi6mcXfYKIE411pUN5n+KGT8jjX4OsNUhMEAySxCRG
+         75cBLSmL7QotBIIIDHeZudbW9GHjHywLWE8DgtgX4jIMySN/Xi3foVnYsaU1hJTr7Wql
+         AgWasVfJN2o+ZRJEe4H7NsQY7pOGbOnDRP/KEWlseJYc2yVAOULMVmT2+Av36Xoxc2/t
+         tc6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=D9ceHkRWopAfZY+M1nz75DyCbP32W8Pm3rrNwuMcCQQ=;
+        b=nP8dlW7smpdP/trJwTEKNZuoPnnnD35Tvvo4Owu77BEhy6mOu7oErSTIW6cePuLsGa
+         +QEneDU9VtTRjw7SCIdnjzmGeauefIDUZGAJfwofrQ0QcfbF3KMAyZt+E8sLztrOaYva
+         ty/++2tp23p6m2Jfn0yWQi8DfoKCbgmBsRZNKgfEbBZy7CJt6qHmCh9ysJQCJoTqd/R8
+         Cl1YP6JoLlAkynZhoAHx2w7WRcRwpyan2RnQKvKtdg2xlQk7ipo2Teimkn+VUT3LuIQ0
+         D92LkBVtG1qzvUSy/BveIpKw+hpdM7Q7DI8Pde9MllNL8dE0eN3kwftN087XP8FCDV0P
+         pHUw==
+X-Gm-Message-State: AOAM532pXdoTPkmjJTLg6+vHDGfAaJSMOcXPgh1ZbjS2vgqKh5+7HmML
+        O+Y5SN0un+dUgoDAw5c/7ibajYte0YJwrA==
+X-Google-Smtp-Source: ABdhPJz2SpAMWHJwuwceLTjQOTEJerL2MfQ7sD1wVgIxUmkxwbmrwXrAjBKcLZ6Y9KUSxfUBP3oLSA==
+X-Received: by 2002:a17:902:e551:b029:de:8dba:84a3 with SMTP id n17-20020a170902e551b02900de8dba84a3mr2637711plf.8.1614250352254;
+        Thu, 25 Feb 2021 02:52:32 -0800 (PST)
+Received: from localhost (58-6-239-121.tpgi.com.au. [58.6.239.121])
+        by smtp.gmail.com with ESMTPSA id j1sm5858952pjf.26.2021.02.25.02.52.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 02:52:31 -0800 (PST)
+Date:   Thu, 25 Feb 2021 20:52:26 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH] powerpc/syscall: Force inlining of
+ __prep_irq_for_enabled_exit()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <53f3a1f719441761000c41154602bf097d4350b5.1614148356.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <53f3a1f719441761000c41154602bf097d4350b5.1614148356.git.christophe.leroy@csgroup.eu>
+MIME-Version: 1.0
+Message-Id: <1614250330.9u6pqclx87.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-XCOMP_BV[63] field indicates that the save area is in the compacted
-format and XCOMP_BV[62:0] indicates the states that have space allocated
-in the save area, including both XCR0 and XSS bits enabled by the host
-kernel. Use xfeatures_mask_all for calculating xcomp_bv and reuse
-XCOMP_BV_COMPACTED_FORMAT defined by kernel.
+Excerpts from Christophe Leroy's message of February 24, 2021 4:34 pm:
+> As reported by kernel test robot, a randconfig with high amount of
+> debuging options can lead to build failure for undefined reference
+> to replay_soft_interrupts() on ppc32.
+>=20
+> This is due to gcc not seeing that __prep_irq_for_enabled_exit()
+> always returns true on ppc32 because it doesn't inline it for
+> some reason.
+>=20
+> Force inlining of __prep_irq_for_enabled_exit() to fix the build.
+>=20
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
----
- arch/x86/kvm/x86.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+Acked-by: Nicholas Piggin <npiggin@gmail.com>
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 1b404e4d7dd8..f115493f577d 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4435,8 +4435,6 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
- 	return 0;
- }
- 
--#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
--
- static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
- {
- 	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
-@@ -4494,7 +4492,8 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
- 	/* Set XSTATE_BV and possibly XCOMP_BV.  */
- 	xsave->header.xfeatures = xstate_bv;
- 	if (boot_cpu_has(X86_FEATURE_XSAVES))
--		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
-+		xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
-+					 xfeatures_mask_all;
- 
- 	/*
- 	 * Copy each region from the non-compacted offset to the
-@@ -9912,9 +9911,6 @@ static void fx_init(struct kvm_vcpu *vcpu)
- 		return;
- 
- 	fpstate_init(&vcpu->arch.guest_fpu->state);
--	if (boot_cpu_has(X86_FEATURE_XSAVES))
--		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =
--			host_xcr0 | XSTATE_COMPACTION_ENABLED;
- 
- 	/*
- 	 * Ensure guest xcr0 is valid for loading
--- 
-2.18.4
-
+> Fixes: 344bb20b159d ("powerpc/syscall: Make interrupt.c buildable on PPC3=
+2")
+> ---
+>  arch/powerpc/kernel/interrupt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interr=
+upt.c
+> index 398cd86b6ada..2ef3c4051bb9 100644
+> --- a/arch/powerpc/kernel/interrupt.c
+> +++ b/arch/powerpc/kernel/interrupt.c
+> @@ -149,7 +149,7 @@ notrace long system_call_exception(long r3, long r4, =
+long r5,
+>   * enabled when the interrupt handler returns (indicating a process-cont=
+ext /
+>   * synchronous interrupt) then irqs_enabled should be true.
+>   */
+> -static notrace inline bool __prep_irq_for_enabled_exit(bool clear_ri)
+> +static notrace __always_inline bool __prep_irq_for_enabled_exit(bool cle=
+ar_ri)
+>  {
+>  	/* This must be done with RI=3D1 because tracing may touch vmaps */
+>  	trace_hardirqs_on();
+> --=20
+> 2.25.0
+>=20
+>=20
