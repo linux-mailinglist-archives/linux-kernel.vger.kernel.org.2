@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1491B3258A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:30:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDFF3258AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbhBYV35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:29:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
+        id S232649AbhBYVbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:31:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhBYV3w (ORCPT
+        with ESMTP id S232113AbhBYVbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:29:52 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703FEC061574;
-        Thu, 25 Feb 2021 13:29:12 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id z126so7593875oiz.6;
-        Thu, 25 Feb 2021 13:29:12 -0800 (PST)
+        Thu, 25 Feb 2021 16:31:44 -0500
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75435C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:31:04 -0800 (PST)
+Received: by mail-oo1-xc35.google.com with SMTP id n19so1722542ooj.11
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:31:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vNmAJW/zyB5XEgw8h6FvBxPzYo4y5t37treLZpDOceo=;
-        b=sCz9tTsaYlGjyP3OVvfQHFE1Jq6AsnZXv+DwdO+YsX5JKbirG+dxUiAQcZel9UnGqe
-         6wGtCpgN4+68XYtWekQ6PmZOEBre3BbkSMKVINyqWimLyYkrhbZqL7I+Pb6YzzwEQZhT
-         gm+7dCJdIkCE6jhtx+dyFrKO+viz0wd7E2zM+HVtjx1Gp/NN2nuwMudtsDs3lmM46eHc
-         R8NWfSK2tB8EAIYdNkB2CGiGq+JL77iXK2UEhm7e6lABHemU0KDRpjD3lR1BCtVoSZjd
-         KrHd5WrbJXGoIp9ZylUcomEIHcByTk90TUvzltlJ9lASAaQPDvdZP7/7qPrA1Zfj2fu+
-         gxdw==
+        bh=6iJBm8mwb9g0tbzXMjQMrV+sZ/dkoZZpwUu4VHqMwWs=;
+        b=saAXPMJHPwxOKN9qHujc6Ftk1IhGH00YldtkPbXQx3+a3J1pTSu/Yb2tjmjutFWZhA
+         8plWq8Ark/GQeSFOT0SmX0WX1aXZssKwlutFSMSKrHAKq5vZogkhREelec2C/gHuONws
+         kqDP0VF2OJ0YyUDcV7kfHLPfr9zKm6IqeFy4MPOaqsXLInh23ohAnn/y1MwPj9grwvlD
+         s9gRKC/NGiSUiV84o5AZmM/0O+SGlh0BBCdw2IZkEsxklVT4XQjQNc2cU145ft7uIKCh
+         cxTi98cRbe773Fg1YJZgKY3LwBwqRbtqYCUPiajCu5hqKyfdat7rwFAieRk7vmAHz70c
+         NVZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vNmAJW/zyB5XEgw8h6FvBxPzYo4y5t37treLZpDOceo=;
-        b=E+MV7xulRY9eneszjfsJhJmP3g17xylAoEsMHnLTHH+Fl9VAqwg1iUgH8sRPBMHItK
-         Cl0WLU+676YV+r8AuGZPyYonLfmgOsU9wiVUrFCVgkc4GurtU36eCE3trTR9QbgDFABR
-         y3mtcL6MUNy4ghQKdaltrRB4ITZPmAz7X2wvofVQMZ/cKr+6EUnM8rrXkU+iQ36Pmo0t
-         tN2k2RUYL600pCeOWa91qDwSt7J9bIdFJ8hXqmJ7VFJmfyv96n1F27UKHOypIbZipggK
-         /qgz8pswN+4tQ7WVkweFXEYhJae3xKroSefvZu3oTUmm9eIa2soZvJD5WFg1rded3czV
-         ZjxA==
-X-Gm-Message-State: AOAM5338L5X0xASPxhVHeRO0Uv0piKhEk1WEkLqTPA33XOpqrRU04AzI
-        E670MWFBXaxkhPkc+e3fcJLgCqJf3HgdEftyT0M=
-X-Google-Smtp-Source: ABdhPJz8h5CbpNmNWFW+5CPs0D5Ot6TYcO6pJ5ZglZgFse6a4n332blIPY1hL7WS4TLDebN2ONgPU+pxu72DeVZttco=
-X-Received: by 2002:a05:6808:f15:: with SMTP id m21mr254325oiw.123.1614288551794;
- Thu, 25 Feb 2021 13:29:11 -0800 (PST)
+        bh=6iJBm8mwb9g0tbzXMjQMrV+sZ/dkoZZpwUu4VHqMwWs=;
+        b=f3m19WTeFrqpKE5u7ABKSgz3fovh+kFWBlKHgdEhDDtTidd1wlGEjoychmSJG8Y9Bs
+         rBDYlGOVS2SzHHgXpLSTAQim0T0CAmHz1Eir7R5P3kc1ZU4mdqjkxYoXUjMnDxvlON48
+         ssuTwGOmZDRP1iZ4daqDqa9XGp564uL072PFWPvKocHs/lk/IsN/Vg4jkX+/pgfy870H
+         rSou1RRhyGSEMs6zpFaDjuSH65V2Aq5BKpC6MKFOXlrM/s7/vEcGMpWP5bqBBWLcUCIm
+         sLyOzbi3AMwQTLzFUsTymA8VVkcK+GvidKybAbAJgFbCh0FILhhFE8lJlyy4mp5SPOCq
+         /gMA==
+X-Gm-Message-State: AOAM531yp8194qHxyswGx28h/DplaJQeCWnZEj1Dn71fWDTJA4PYE3S6
+        hNcRpNwyIGQ9bQvxE82y2nR4YBFizyAadFKiMhM=
+X-Google-Smtp-Source: ABdhPJwzqcw5WVktyTlPS7c1vX8XU71qqt0U0NU7W3IdGqEL6xrX54Tk5v2JI/V57TOa0LGRExqirx6rzZes2A/Z/4o=
+X-Received: by 2002:a4a:88ee:: with SMTP id q43mr3928324ooh.61.1614288663762;
+ Thu, 25 Feb 2021 13:31:03 -0800 (PST)
 MIME-Version: 1.0
-References: <1614243728-52952-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1614243728-52952-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1614244742-67869-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1614244742-67869-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 25 Feb 2021 16:29:00 -0500
-Message-ID: <CADnq5_Net7GN_zaMJWeO_b-zXwOQMNNsx5YqvhR_UdWxP-rsYA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Dave Airlie <airlied@linux.ie>,
+Date:   Thu, 25 Feb 2021 16:30:52 -0500
+Message-ID: <CADnq5_OwCB1+uXRoqHfkHp3t6kvY8Emu=pLgoTJ6VkyWPFJDLw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: remove unnecessary conversion to bool
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
         LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
         "Deucher, Alexander" <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
+        Christian Koenig <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 4:02 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+On Thu, Feb 25, 2021 at 4:19 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
 >
-> Fix the following coccicheck warning:
-> ./drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:1589:0-23: WARNING:
-> fops_ib_preempt should be defined with DEFINE_DEBUGFS_ATTRIBUTE
-> ./drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:1592:0-23: WARNING:
-> fops_sclk_set should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+> Fix the following coccicheck warnings:
+>
+> ./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c:243:67-72:
+> WARNING: conversion to bool not needed here.
 >
 > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
 Applied.  Thanks!
 
 Alex
 
-
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> index 0a25fec..52ef488 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-> @@ -1586,10 +1586,10 @@ static int amdgpu_debugfs_sclk_set(void *data, u64 val)
->         return 0;
->  }
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
+> index 3398540..102f6a0 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
+> @@ -240,7 +240,7 @@ bool dpp3_program_gamcor_lut(
+>                 next_mode = LUT_RAM_A;
 >
-> -DEFINE_SIMPLE_ATTRIBUTE(fops_ib_preempt, NULL,
-> +DEFINE_DEBUGFS_ATTRIBUTE(fops_ib_preempt, NULL,
->                         amdgpu_debugfs_ib_preempt, "%llu\n");
+>         dpp3_power_on_gamcor_lut(dpp_base, true);
+> -       dpp3_configure_gamcor_lut(dpp_base, next_mode == LUT_RAM_A ? true:false);
+> +       dpp3_configure_gamcor_lut(dpp_base, next_mode == LUT_RAM_A);
 >
-> -DEFINE_SIMPLE_ATTRIBUTE(fops_sclk_set, NULL,
-> +DEFINE_DEBUGFS_ATTRIBUTE(fops_sclk_set, NULL,
->                         amdgpu_debugfs_sclk_set, "%llu\n");
->
->  int amdgpu_debugfs_init(struct amdgpu_device *adev)
+>         if (next_mode == LUT_RAM_B) {
+>                 gam_regs.start_cntl_b = REG(CM_GAMCOR_RAMB_START_CNTL_B);
 > --
 > 1.8.3.1
 >
