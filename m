@@ -2,153 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A222D325170
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC549325176
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhBYOXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 09:23:37 -0500
-Received: from mail.efficios.com ([167.114.26.124]:41660 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhBYOXb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 09:23:31 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 5D5EC31D705;
-        Thu, 25 Feb 2021 09:22:49 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id CMvxleI3lHWk; Thu, 25 Feb 2021 09:22:49 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0C8DC31D1E6;
-        Thu, 25 Feb 2021 09:22:49 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 0C8DC31D1E6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1614262969;
-        bh=5AwSGkef8Ae6ouZFtUD3Z4g5cvPxFOrSreD0Z5ZT0qE=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=gBXS4nZ5ux9HdD46OZFPd1jeEGi+TI4iwr1a8g3NC3dh01zPWLs+bc8oaa3D4GsXn
-         98n5kwBfkTaLdX/gpF/s9JeDUtLgbgEzQaHP9o6PwlrakRdOcYnNImPO214/xCn3S7
-         p5HjTpsjJZ30h5eaUCI9wUTID80E+gq3yh6XDT6sySXo48kWnkTF+BpfZKO5QG+YM2
-         Ys7jA+xdqZKb4W3fE/qUT9NLs40aXRT+rRAxaqMZ1HdF4kU/tNaHjHcj8FeFsgOXLT
-         ETmLpbNZsE2+OW7LfThj+VsKanYUx6p9QGa2OhMu8qIlAKpLzs8aXYQJGJU3eXs8VY
-         TBPc6LJfqfDkA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id pWsDtSoAVXZh; Thu, 25 Feb 2021 09:22:49 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id F24BA31D279;
-        Thu, 25 Feb 2021 09:22:48 -0500 (EST)
-Date:   Thu, 25 Feb 2021 09:22:48 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        rostedt <rostedt@goodmis.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>
-Message-ID: <354598689.4868.1614262968890.JavaMail.zimbra@efficios.com>
-Subject: tasks-trace RCU: question about grace period forward progress
+        id S231815AbhBYOZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 09:25:21 -0500
+Received: from mail-mw2nam12on2048.outbound.protection.outlook.com ([40.107.244.48]:32865
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229507AbhBYOZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 09:25:13 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VKNXFMWDcvGeEr4TmlZ4zdOFpKY6mckEBhA5k5lHEAg4tY07273Ubbz9oCq2fdOF58gQu0JJuMNMVE91qDpkpZ30lYZb0XH0/61jNFAISVzwtp0AQCzI0Tvw2IMyj7XfIQWgJvA3Ad/jo+QvZuCmi6ezS0SDqL/62j3/7l6nuM6PZ+a2qz7NZ+aCEQrvZZWeyg7iXDXUFvd+u7s6P3d8qHnfdCPVaw4F3G6en/wKjtdoPwTQa+cb21PAQek6uzlbZC03AORMmvck4nQW/Vh7yQJr5QXn4ipz5WQxGZeNX8nEeTNxZPDSveP27cQQEnSxeojhzwK9wbeXw5qwr8HEWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hUoHGqgtelWCZoljcYfPre9P/E4XrR28OLleU+tOo2U=;
+ b=fX8K3Zwc99iJvmzvDpTKV30whyDb1OYS9rGFLBU6p95iIatI4Buv9UNoxWveoC5lhDdO3no6q9Y1vDePYXifeFsuotEII66+YFPRuIDfn4B7Fw3qwUYymE2Ab2FylAC2sdYCXPDjBeRkenNG6YRQuYkC9/0D3fOvbkrDZloRW8cQa2+Rb+vXZGAX0RQVoWqc3oIFJCZU1h2CsL7x6p+asVQM4sFnj6Y+wLiVjie1PBBmOEnguNMC9hlIRzej4cZ0N/oy6hLZKiLJWco7QIz170tRIqPzHKaE+9NVV6FXznl4PoG7xz9OenUHS9IgEep/a7hlVM8yYFq5DRHf2Faw8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hUoHGqgtelWCZoljcYfPre9P/E4XrR28OLleU+tOo2U=;
+ b=pRBE3Pe/e5OEIhecfhEXqguZNX9YimYRj0a+AcbakKGgC4zS4wMUnJaPCNIVHtZTkRyA1oWGvQ1rZnZeJPeI1GO+/rjoEpNTAKlcptUBumT8sp+Q6/nzGdsqJ3UKfPsQ/lAGD06GJYZtuFsenMl2zddi9twOw4FOmkcMAWKjESc=
+Received: from DM5PR05MB3452.namprd05.prod.outlook.com (2603:10b6:4:41::11) by
+ DM6PR05MB4764.namprd05.prod.outlook.com (2603:10b6:5:10::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3868.17; Thu, 25 Feb 2021 14:24:18 +0000
+Received: from DM5PR05MB3452.namprd05.prod.outlook.com
+ ([fe80::6d72:f94:9524:f08]) by DM5PR05MB3452.namprd05.prod.outlook.com
+ ([fe80::6d72:f94:9524:f08%4]) with mapi id 15.20.3805.007; Thu, 25 Feb 2021
+ 14:24:18 +0000
+From:   Jorgen Hansen <jhansen@vmware.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [RFC PATCH v5 02/19] af_vsock: separate wait data loop
+Thread-Topic: [RFC PATCH v5 02/19] af_vsock: separate wait data loop
+Thread-Index: AQHXBbgT8xYZjtD2jUmP/0PaXiKqaKpo9yOA
+Date:   Thu, 25 Feb 2021 14:24:17 +0000
+Message-ID: <E5526501-3A87-4349-8D7F-61782AA1F513@vmware.com>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210218053637.1066959-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <20210218053637.1066959-1-arseny.krasnov@kaspersky.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: kaspersky.com; dkim=none (message not signed)
+ header.d=none;kaspersky.com; dmarc=none action=none header.from=vmware.com;
+x-originating-ip: [83.92.5.149]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 864d0d56-5c6f-4850-3a25-08d8d9990933
+x-ms-traffictypediagnostic: DM6PR05MB4764:
+x-microsoft-antispam-prvs: <DM6PR05MB4764042A79AF48A244355C0BDA9E9@DM6PR05MB4764.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qVe7cPImi9dEsO3ybzYQoazFtHoFz8b0znBoqPtTiHoCHiDIdz8+oiUNlmHawC0YrDIDIjX9mQMpAkiP3DPatHQqcV/wvXHn0T/ilRNT4nhCWyrCcSqx32oztufxEcNU3smDBTTR6j9WM8bY2S2qSEgh2OfVB2crO8LKkL3f4Sh8IrCpPnRG0XMrPt4mdSCzgoRtktXtZsvzK4PePeIpx0eJUSCTtRdbZZZDlNGc9FWXE+rIhfmqiFkSwqpYbtLlxE5Xh62wzlDnuea26IGSUe4qSoKvydLnQhtNs1ZfEu4X1hw5AGvmuKGYNXgk6UDSOzXRjoZWpbrOtPnk48CgEdcKZCYDvUmhtMVYLhoaxsUotDdfKu3VYXts7R0wr6UjVIaWE/5PUkpGWtZWPb7hSYlpHK0VZC4CtJ8LKimRxgYJLUG/Q1aQXGtzME7o412roLVaJ88jcqtdf/yIUSUPtwB6r4l+iDsTrnH4ZzE3G3FzGuUWDnXoPn9bi/0udaM8oRRI/bWLgcDJk3fkDm+tKW1gwhFL+1aYhJU2ML4NMOHTk6BHOhW7WRy/B+cuO0pZOBfjeZ6uh9WI73FR+UyxDlzwX7keCW0e2vCc/Yp/2Jw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR05MB3452.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(376002)(366004)(136003)(4326008)(186003)(64756008)(26005)(478600001)(6506007)(53546011)(7416002)(83380400001)(8676002)(2906002)(76116006)(54906003)(6486002)(66476007)(8936002)(91956017)(2616005)(66946007)(316002)(6512007)(36756003)(33656002)(5660300002)(66446008)(6916009)(86362001)(71200400001)(66556008)(21314003)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?crOnY383uEpgBIDnpMzC1g/f5YZnTjr+nAHZfXCfWpusy6IkqJM/qBaVnP3X?=
+ =?us-ascii?Q?UkCX8Y8NmlC5hKoSJ8Yqty7bOFuOYaBfySzNrE2gBiDUGx23fnfX4X8KvABG?=
+ =?us-ascii?Q?tr32AmGdnCyoy6KsaXe13ooQSRMa0WJSMC4Y9ko5ZkepbMSmlWJZMXcQZPwI?=
+ =?us-ascii?Q?1t60uX/LEruPJN2BdFbuxUL+PNocHM+Y2MqNSkdQlXC4ajz+fT/u2QBTRNRU?=
+ =?us-ascii?Q?JmHqIzT4GI9y2msFQVWyi8paEE4C6wIZyQd/Xd5fvG5iDOJgimB2QIWDp64U?=
+ =?us-ascii?Q?cnAeFC4UwoX12RL38Ju9+Ox/Rwk8O4EslwjYLGvkIoIeK2X4nwZ1Nueb8TLA?=
+ =?us-ascii?Q?f8BoJyMLgMon44mFwbIGFztOAPvjZdHLGNyss9DZVAcoXof26C43j1DOY8go?=
+ =?us-ascii?Q?MtESME2OZa5xn/kjozkKhUv9BkY9rD/rZyIF/EZ8ZsrgPLfJkpaFJICtLJas?=
+ =?us-ascii?Q?2b+iLbLz/1VvR38v63nO/jyb5+GljgmMomeD5620XVnpfEc9zzlnAK+DOOkl?=
+ =?us-ascii?Q?EqiGGN+FMMbQJPkMtdN47GS8IpAIlYYQtgFybaW2/0c7LKE4qUsuUXPe16yL?=
+ =?us-ascii?Q?laSUCH69dRngdBAgr+T9DIsr09AnwNb7k7U9P++B/8F7P5Mjw/Ckfmhp/rDJ?=
+ =?us-ascii?Q?/QqmLlzuHtLXODdqvgTDJkeppJCOjC+3E/0Bw5Uf71YfQmzwoEDFB88YpU0j?=
+ =?us-ascii?Q?l+xAxg8/tcLut0gOIIbCRBCE9iNnfpHgRtfMtktwyFY0om8pa8ZAbTn3pWZB?=
+ =?us-ascii?Q?0ineSAucqeAkwxrVaj2ZxSySriVsJQzkjy0AI9lmmlhYLMZ9Wq6Ad8TZEN/X?=
+ =?us-ascii?Q?zW411ywK6VfzbKskp5PBfqoeunPEsVlPVo4P0B3ACMl9eIV1umsvk6BcsO1+?=
+ =?us-ascii?Q?bgZph9s/7C7Yhs1tk8VHKICP5lhuw198x7plPTQ3F70qPt0Uq2zbLGqo6K9/?=
+ =?us-ascii?Q?KS63kVfD2cM4+hK4XABQmuqAxu/NI9BrW92ia9vyPXy0LzsdAVYaezVlYawb?=
+ =?us-ascii?Q?kCNwavPnm/v7iaBZ1goHfxMLc/p5PJ3dYWIufoEXBS18C+d0PBaoj3aduxWD?=
+ =?us-ascii?Q?8euQ3GGAs8bbCScAWBKwHnAI3OqBKZiLC3KENwSafedYFEpMn+AAG2la8DDj?=
+ =?us-ascii?Q?bjAU42YHXYIMke1oHLdQYARZq+wCvWUnBoBXP/rssRkN/4iOHYVqRC5ecBMP?=
+ =?us-ascii?Q?BPgKjp/vZVQ2YdPcMXNMPNp91/mc+NYJgu3JGXX794r0k+Qx5Y7oms6abUZ3?=
+ =?us-ascii?Q?ff2aAMfEoYks4r7NdVEs3nbK05hTuim4ClMf/ycYtGR/cvgw3aWc7CsXKblB?=
+ =?us-ascii?Q?LExuKoYOgZji69a3ZVMfa5as?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <E2DA3715B3C2C74A87E35C2975B4238E@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
-Thread-Index: sSG7Ub40qB4Id9CUEFqvfU2H9yo9Lg==
-Thread-Topic: tasks-trace RCU: question about grace period forward progress
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR05MB3452.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 864d0d56-5c6f-4850-3a25-08d8d9990933
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Feb 2021 14:24:17.9071
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZnSOm+YiRDzpzUDUhKMVTXqBIhoZuOfLDKxCML+JZOmhu0D2VPdkkBhhJZ2Prs9KMPApMtjv5QADgDIsqeKZhA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR05MB4764
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
 
-Answering a question from Peter on IRC got me to look at rcu_read_lock_trace(), and I see this:
+> On 18 Feb 2021, at 06:36, Arseny Krasnov <arseny.krasnov@kaspersky.com> w=
+rote:
+>=20
+> This moves wait loop for data to dedicated function, because later
+> it will be used by SEQPACKET data receive loop.
+>=20
+> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+> ---
+> net/vmw_vsock/af_vsock.c | 155 +++++++++++++++++++++------------------
+> 1 file changed, 83 insertions(+), 72 deletions(-)
+>=20
+> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+> index 656370e11707..6cf7bb977aa1 100644
+> --- a/net/vmw_vsock/af_vsock.c
+> +++ b/net/vmw_vsock/af_vsock.c
+> @@ -1832,6 +1832,68 @@ static int vsock_connectible_sendmsg(struct socket=
+ *sock, struct msghdr *msg,
+> 	return err;
+> }
+>=20
+> +static int vsock_wait_data(struct sock *sk, struct wait_queue_entry *wai=
+t,
+> +			   long timeout,
+> +			   struct vsock_transport_recv_notify_data *recv_data,
+> +			   size_t target)
+> +{
+> +	const struct vsock_transport *transport;
+> +	struct vsock_sock *vsk;
+> +	s64 data;
+> +	int err;
+> +
+> +	vsk =3D vsock_sk(sk);
+> +	err =3D 0;
+> +	transport =3D vsk->transport;
+> +	prepare_to_wait(sk_sleep(sk), wait, TASK_INTERRUPTIBLE);
+> +
+> +	while ((data =3D vsock_stream_has_data(vsk)) =3D=3D 0) {
 
-static inline void rcu_read_lock_trace(void)
-{
-        struct task_struct *t = current;
+In the original code, the prepare_to_wait() is called for each iteration of=
+ the while loop. In this
+version, it is only called once. So if we do multiple iterations, the threa=
+d would be in the
+TASK_RUNNING state, and subsequent schedule_timeout() will return immediate=
+ly. So
+looks like the prepare_to_wait() should be move here, in case we have a spu=
+rious wake_up.
 
-        WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
-        barrier();
-        if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
-            t->trc_reader_special.b.need_mb)
-                smp_mb(); // Pairs with update-side barriers
-        rcu_lock_acquire(&rcu_trace_lock_map);
-}
+> +		if (sk->sk_err !=3D 0 ||
+> +		    (sk->sk_shutdown & RCV_SHUTDOWN) ||
+> +		    (vsk->peer_shutdown & SEND_SHUTDOWN)) {
+> +			break;
+> +		}
+> +
+> +		/* Don't wait for non-blocking sockets. */
+> +		if (timeout =3D=3D 0) {
+> +			err =3D -EAGAIN;
+> +			break;
+> +		}
+> +
+> +		if (recv_data) {
+> +			err =3D transport->notify_recv_pre_block(vsk, target, recv_data);
+> +			if (err < 0)
+> +				break;
+> +		}
+> +
+> +		release_sock(sk);
+> +		timeout =3D schedule_timeout(timeout);
+> +		lock_sock(sk);
+> +
+> +		if (signal_pending(current)) {
+> +			err =3D sock_intr_errno(timeout);
+> +			break;
+> +		} else if (timeout =3D=3D 0) {
+> +			err =3D -EAGAIN;
+> +			break;
+> +		}
+> +	}
+> +
+> +	finish_wait(sk_sleep(sk), wait);
+> +
+> +	if (err)
+> +		return err;
+> +
+> +	/* Internal transport error when checking for available
+> +	 * data. XXX This should be changed to a connection
+> +	 * reset in a later change.
+> +	 */
+> +	if (data < 0)
+> +		return -ENOMEM;
+> +
+> +	return data;
+> +}
+> +
+> static int
+> vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t=
+ len,
+> 			  int flags)
+> @@ -1911,85 +1973,34 @@ vsock_connectible_recvmsg(struct socket *sock, st=
+ruct msghdr *msg, size_t len,
+>=20
+>=20
+> 	while (1) {
+> -		s64 ready;
+> -
+> -		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+> -		ready =3D vsock_stream_has_data(vsk);
+> -
+> -		if (ready =3D=3D 0) {
+> -			if (sk->sk_err !=3D 0 ||
+> -			    (sk->sk_shutdown & RCV_SHUTDOWN) ||
+> -			    (vsk->peer_shutdown & SEND_SHUTDOWN)) {
+> -				finish_wait(sk_sleep(sk), &wait);
+> -				break;
+> -			}
+> -			/* Don't wait for non-blocking sockets. */
+> -			if (timeout =3D=3D 0) {
+> -				err =3D -EAGAIN;
+> -				finish_wait(sk_sleep(sk), &wait);
+> -				break;
+> -			}
+> +		ssize_t read;
+>=20
+> -			err =3D transport->notify_recv_pre_block(
+> -					vsk, target, &recv_data);
+> -			if (err < 0) {
+> -				finish_wait(sk_sleep(sk), &wait);
+> -				break;
+> -			}
+> -			release_sock(sk);
+> -			timeout =3D schedule_timeout(timeout);
+> -			lock_sock(sk);
+> +		err =3D vsock_wait_data(sk, &wait, timeout, &recv_data, target);
+> +		if (err <=3D 0)
+> +			break;
+>=20
+> -			if (signal_pending(current)) {
+> -				err =3D sock_intr_errno(timeout);
+> -				finish_wait(sk_sleep(sk), &wait);
+> -				break;
+> -			} else if (timeout =3D=3D 0) {
+> -				err =3D -EAGAIN;
+> -				finish_wait(sk_sleep(sk), &wait);
+> -				break;
+> -			}
+> -		} else {
+> -			ssize_t read;
+> -
+> -			finish_wait(sk_sleep(sk), &wait);
+> -
+> -			if (ready < 0) {
+> -				/* Invalid queue pair content. XXX This should
+> -				* be changed to a connection reset in a later
+> -				* change.
+> -				*/
+> -
+> -				err =3D -ENOMEM;
+> -				goto out;
+> -			}
+> -
+> -			err =3D transport->notify_recv_pre_dequeue(
+> -					vsk, target, &recv_data);
+> -			if (err < 0)
+> -				break;
+> +		err =3D transport->notify_recv_pre_dequeue(vsk, target,
+> +							 &recv_data);
+> +		if (err < 0)
+> +			break;
+>=20
+> -			read =3D transport->stream_dequeue(
+> -					vsk, msg,
+> -					len - copied, flags);
+> -			if (read < 0) {
+> -				err =3D -ENOMEM;
+> -				break;
+> -			}
+> +		read =3D transport->stream_dequeue(vsk, msg, len - copied, flags);
+> +		if (read < 0) {
+> +			err =3D -ENOMEM;
+> +			break;
+> +		}
+>=20
+> -			copied +=3D read;
+> +		copied +=3D read;
+>=20
+> -			err =3D transport->notify_recv_post_dequeue(
+> -					vsk, target, read,
+> -					!(flags & MSG_PEEK), &recv_data);
+> -			if (err < 0)
+> -				goto out;
+> +		err =3D transport->notify_recv_post_dequeue(vsk, target, read,
+> +						!(flags & MSG_PEEK), &recv_data);
+> +		if (err < 0)
+> +			goto out;
+>=20
+> -			if (read >=3D target || flags & MSG_PEEK)
+> -				break;
+> +		if (read >=3D target || flags & MSG_PEEK)
+> +			break;
+>=20
+> -			target -=3D read;
+> -		}
+> +		target -=3D read;
+> 	}
+>=20
+> 	if (sk->sk_err)
+> --=20
+> 2.25.1
+>=20
 
-static inline void rcu_read_unlock_trace(void)
-{
-        int nesting;
-        struct task_struct *t = current;
-
-        rcu_lock_release(&rcu_trace_lock_map);
-        nesting = READ_ONCE(t->trc_reader_nesting) - 1;
-        barrier(); // Critical section before disabling.
-        // Disable IPI-based setting of .need_qs.
-        WRITE_ONCE(t->trc_reader_nesting, INT_MIN);
-        if (likely(!READ_ONCE(t->trc_reader_special.s)) || nesting) {
-                WRITE_ONCE(t->trc_reader_nesting, nesting);
-                return;  // We assume shallow reader nesting.
-        }
-        rcu_read_unlock_trace_special(t, nesting);
-}
-
-AFAIU, each thread keeps track of whether it is nested within a RCU read-side critical
-section with a counter, and grace periods iterate over all threads to make sure they
-are not within a read-side critical section before they can complete:
-
-# define rcu_tasks_trace_qs(t)                                          \
-        do {                                                            \
-                if (!likely(READ_ONCE((t)->trc_reader_checked)) &&      \
-                    !unlikely(READ_ONCE((t)->trc_reader_nesting))) {    \
-                        smp_store_release(&(t)->trc_reader_checked, true); \
-                        smp_mb(); /* Readers partitioned by store. */   \
-                }                                                       \
-        } while (0)
-
-It reminds me of the liburcu urcu-mb flavor which also deals with per-thread
-state to track whether threads are nested within a critical section:
-
-https://github.com/urcu/userspace-rcu/blob/master/include/urcu/static/urcu-mb.h#L90
-https://github.com/urcu/userspace-rcu/blob/master/include/urcu/static/urcu-mb.h#L125
-
-static inline void _urcu_mb_read_lock_update(unsigned long tmp)
-{
-	if (caa_likely(!(tmp & URCU_GP_CTR_NEST_MASK))) {
-		_CMM_STORE_SHARED(URCU_TLS(urcu_mb_reader).ctr, _CMM_LOAD_SHARED(urcu_mb_gp.ctr));
-		cmm_smp_mb();
-	} else
-		_CMM_STORE_SHARED(URCU_TLS(urcu_mb_reader).ctr, tmp + URCU_GP_COUNT);
-}
-
-static inline void _urcu_mb_read_lock(void)
-{
-	unsigned long tmp;
-
-	urcu_assert(URCU_TLS(urcu_mb_reader).registered);
-	cmm_barrier();
-	tmp = URCU_TLS(urcu_mb_reader).ctr;
-	urcu_assert((tmp & URCU_GP_CTR_NEST_MASK) != URCU_GP_CTR_NEST_MASK);
-	_urcu_mb_read_lock_update(tmp);
-}
-
-The main difference between the two algorithm is that task-trace within the
-kernel lacks the global "urcu_mb_gp.ctr" state snapshot, which is either
-incremented or flipped between 0 and 1 by the grace period. This allow RCU readers
-outermost nesting starting after the beginning of the grace period not to prevent
-progress of the grace period.
-
-Without this, a steady flow of incoming tasks-trace-RCU readers can prevent the
-grace period from ever completing.
-
-Or is this handled in a clever way that I am missing here ?
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
