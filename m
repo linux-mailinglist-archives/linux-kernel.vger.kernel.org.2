@@ -2,114 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3185325865
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D6F32586F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235374AbhBYVIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:08:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232591AbhBYVAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:00:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3712D64DA3;
-        Thu, 25 Feb 2021 20:59:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614286757;
-        bh=eV1kJaWfevV6RouK8LRLTU3ZuWjF9BEgVywj5uj8o6Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SGtJ0wvdv7iWICnifbRB9ajKhBV1vF/UjYU9qAnPikX4mRlJw3Kipi7kFBjUOTsz5
-         22dHxT8QzrP/KE7GmhTzY1gobQr/51iaTYjazU6/9mDt4zBvsMUaQ0OZtu7ROQQsCy
-         XKLdR1uRqIW48YGCOv+ohHnHNdvgYIkS8/SCuTNgRolnhbJaamXHXJkGlFyKmxQ4W3
-         kqaRYIFV+XTMVQElQPc63YRc8TVVRUcRq7qfIj3rtLX+u/X/QQzmx9GohC/L+e12oT
-         PqcZxjlcHx8rYMRnkHkgX2ydCqeOgkkvXNu+DTTBPOwvdS406ljHSvUxAxXpe04viZ
-         3QI6GUp43wZYw==
-Date:   Thu, 25 Feb 2021 22:59:08 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Baoquan He <bhe@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        David Hildenbrand <david@redhat.com>,
-        Aslan Bakirov <aslan@fb.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] memblock: fix section mismatch warning
-Message-ID: <20210225205908.GM1447004@kernel.org>
-References: <20210225133808.2188581-1-arnd@kernel.org>
+        id S234498AbhBYVLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:11:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31328 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234920AbhBYVAw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 16:00:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614286757;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zhZABIuY3Pbl4Q8JCgU55Qt/FN0W7Zsvua1ePi1iSNU=;
+        b=MLJDpz+It1I53fr9JlotrX/D9rPpZzqpITvjpEwEOGdzfWmkHi2ZOaXq7PiNiGLy3mX3sI
+        uhgju64cgnBAzIuEVaA6UQFqTj7SDIPOplsMJP+Y8raS8QbVuQKKnsfVF17K5blxWisyFu
+        RzxwRVx9vgdQi+sq3U8OJ7DoGWBwfI0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-549-j4eOeKVRNtK6n3D8Ldac1Q-1; Thu, 25 Feb 2021 15:59:15 -0500
+X-MC-Unique: j4eOeKVRNtK6n3D8Ldac1Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8DC7A50741;
+        Thu, 25 Feb 2021 20:59:13 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2CF1861F55;
+        Thu, 25 Feb 2021 20:59:13 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] Second batch of KVM changes for Linux 5.12
+Date:   Thu, 25 Feb 2021 15:59:12 -0500
+Message-Id: <20210225205912.61184-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225133808.2188581-1-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 02:38:00PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The inlining logic in clang-13 is rewritten to often not inline
-> some functions that were inlined by all earlier compilers.
-> 
-> In case of the memblock interfaces, this exposed a harmless bug
-> of a missing __init annotation:
-> 
-> WARNING: modpost: vmlinux.o(.text+0x507c0a): Section mismatch in reference from the function memblock_bottom_up() to the variable .meminit.data:memblock
-> The function memblock_bottom_up() references
-> the variable __meminitdata memblock.
-> This is often because memblock_bottom_up lacks a __meminitdata
-> annotation or the annotation of memblock is wrong.
-> 
-> Interestingly, these annotations were present originally, but got removed
-> with the explanation that the __init annotation prevents the function
-> from getting inlined. I checked this again and found that while this
-> is the case with clang, gcc (version 7 through 10, did not test others)
-> does inline the functions regardless.
-> 
-> As the previous change was apparently intended to help the clang
-> builds, reverting it to help the newer clang versions seems appropriate
-> as well. gcc builds don't seem to care either way.
-> 
-> Fixes: 5bdba520c1b3 ("mm: memblock: drop __init from memblock functions to make it inline")
-> Reference: 2cfb3665e864 ("include/linux/memblock.h: add __init to memblock_set_bottom_up()")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Linus,
 
-I thought it'll go via memblock tree but since Andrew has already took it
+The following changes since commit 8c6e67bec3192f16fa624203c8131e10cc4814ba:
 
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+  Merge tag 'kvmarm-5.12' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD (2021-02-12 11:23:44 -0500)
 
-> ---
->  include/linux/memblock.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index c88bc24e31aa..d13e3cd938b4 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -460,7 +460,7 @@ static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
->  /*
->   * Set the allocation direction to bottom-up or top-down.
->   */
-> -static inline void memblock_set_bottom_up(bool enable)
-> +static inline __init void memblock_set_bottom_up(bool enable)
->  {
->  	memblock.bottom_up = enable;
->  }
-> @@ -470,7 +470,7 @@ static inline void memblock_set_bottom_up(bool enable)
->   * if this is true, that said, memblock will allocate memory
->   * in bottom-up direction.
->   */
-> -static inline bool memblock_bottom_up(void)
-> +static inline __init bool memblock_bottom_up(void)
->  {
->  	return memblock.bottom_up;
->  }
-> -- 
-> 2.29.2
-> 
+are available in the Git repository at:
 
--- 
-Sincerely yours,
-Mike.
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to 2df8d3807ce7f75bb975f1aeae8fc6757527c62d:
+
+  KVM: SVM: Fix nested VM-Exit on #GP interception handling (2021-02-25 05:13:05 -0500)
+
+----------------------------------------------------------------
+x86:
+- take into account HVA before retrying on MMU notifier race
+- fixes for nested AMD guests without NPT
+- allow INVPCID in guest without PCID
+- disable PML in hardware when not in use
+- MMU code cleanups
+
+----------------------------------------------------------------
+David Stevens (1):
+      KVM: x86/mmu: Consider the hva in mmu_notifier retry
+
+Ignacio Alvarado (1):
+      selftests: kvm: add hardware_disable test
+
+Like Xu (1):
+      KVM: vmx/pmu: Fix dummy check if lbr_desc->event is created
+
+Lukas Bulwahn (1):
+      KVM: Documentation: rectify rst markup in KVM_GET_SUPPORTED_HV_CPUID
+
+Makarand Sonare (1):
+      KVM: VMX: Dynamically enable/disable PML based on memslot dirty logging
+
+Maxim Levitsky (2):
+      KVM: VMX: read idt_vectoring_info a bit earlier
+      KVM: nSVM: move nested vmrun tracepoint to enter_svm_guest_mode
+
+Paolo Bonzini (4):
+      selftests: kvm: avoid uninitialized variable warning
+      KVM: nSVM: fix running nested guests when npt=0
+      KVM: nVMX: no need to undo inject_page_fault change on nested vmexit
+      KVM: nSVM: prepare guest save area while is_guest_mode is true
+
+Sean Christopherson (17):
+      KVM: SVM: Intercept INVPCID when it's disabled to inject #UD
+      KVM: x86: Advertise INVPCID by default
+      KVM: VMX: Allow INVPCID in guest without PCID
+      KVM: x86/mmu: Expand collapsible SPTE zap for TDP MMU to ZONE_DEVICE and HugeTLB pages
+      KVM: x86/mmu: Split out max mapping level calculation to helper
+      KVM: x86/mmu: Pass the memslot to the rmap callbacks
+      KVM: x86/mmu: Consult max mapping level when zapping collapsible SPTEs
+      KVM: nVMX: Disable PML in hardware when running L2
+      KVM: x86/mmu: Expand on the comment in kvm_vcpu_ad_need_write_protect()
+      KVM: x86/mmu: Make dirty log size hook (PML) a value, not a function
+      KVM: x86: Move MMU's PML logic to common code
+      KVM: x86: Further clarify the logic and comments for toggling log dirty
+      KVM: x86/mmu: Don't set dirty bits when disabling dirty logging w/ PML
+      KVM: x86: Fold "write-protect large" use case into generic write-protect
+      KVM: x86/mmu: Remove a variety of unnecessary exports
+      KVM: x86/mmu: Skip mmu_notifier check when handling MMIO page fault
+      KVM: SVM: Fix nested VM-Exit on #GP interception handling
+
+ Documentation/virt/kvm/api.rst                     |   2 +
+ arch/powerpc/kvm/book3s_64_mmu_hv.c                |   2 +-
+ arch/powerpc/kvm/book3s_64_mmu_radix.c             |   2 +-
+ arch/x86/include/asm/kvm-x86-ops.h                 |   6 +-
+ arch/x86/include/asm/kvm_host.h                    |  36 +---
+ arch/x86/kvm/cpuid.c                               |   2 +-
+ arch/x86/kvm/mmu/mmu.c                             | 224 ++++++++-------------
+ arch/x86/kvm/mmu/mmu_internal.h                    |   7 +-
+ arch/x86/kvm/mmu/paging_tmpl.h                     |  14 +-
+ arch/x86/kvm/mmu/tdp_mmu.c                         |  66 +-----
+ arch/x86/kvm/mmu/tdp_mmu.h                         |   3 +-
+ arch/x86/kvm/svm/nested.c                          |  48 +++--
+ arch/x86/kvm/svm/svm.c                             |  22 +-
+ arch/x86/kvm/vmx/nested.c                          |  37 ++--
+ arch/x86/kvm/vmx/pmu_intel.c                       |   4 +-
+ arch/x86/kvm/vmx/vmx.c                             | 112 ++++-------
+ arch/x86/kvm/vmx/vmx.h                             |   2 +
+ arch/x86/kvm/x86.c                                 | 143 +++++++------
+ include/linux/kvm_host.h                           |  25 ++-
+ tools/testing/selftests/kvm/.gitignore             |   1 +
+ tools/testing/selftests/kvm/Makefile               |   1 +
+ .../testing/selftests/kvm/hardware_disable_test.c  | 165 +++++++++++++++
+ tools/testing/selftests/kvm/lib/x86_64/processor.c |   3 +-
+ virt/kvm/kvm_main.c                                |  29 ++-
+ 24 files changed, 533 insertions(+), 423 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/hardware_disable_test.c
+
