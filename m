@@ -2,119 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6144332542B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B4F32543D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233960AbhBYQ7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 11:59:20 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:36556 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233387AbhBYQ64 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:58:56 -0500
-Received: by mail-il1-f198.google.com with SMTP id s13so4823656ilp.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 08:58:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=BPbe88GcXlpz0yaOYhUzPhZwlga1V2ICU1dgMJbmTmU=;
-        b=jSEMDnTdpoDTBoA9Wz6zOAFIFAHbV4cjJmha0qjdOlNoqvyx+MDRVmzbeZbtY1Ggpy
-         zuZNJm/Ij+KS1j0PCSk0moYS8WOl+9UfYvhpyXvjiMLrcJEOIGXLugmW1eN4Wqt1QV6W
-         SUfiySj0EIsLoYf10FbJcB00bZnmr83UXtLtPIxSjplXxYU8eHF1NWhQYBk0g91IiMY1
-         mb4eMcYeT0M9hSbO//H7INO/NNw/jGSRlji2GIxKGWFlVh3FHm1Bv6vAeRSxE7sk0L6x
-         MCunBA0djQpljPA9GSEX4lwqjkHvys8D077scfgjdP49SgkCyyTR7K++kJOtCfD3eMRv
-         wLXw==
-X-Gm-Message-State: AOAM530/2W7/o2oe6TQIWg5rJA+yC1nrx28VlcaP+nKMFq+6QrysYug+
-        Zp6rEPVIZn02DK9lN8KnVfuMSgzVAxuGU3ZY4UitSz6lCpNo
-X-Google-Smtp-Source: ABdhPJzkzeO1lwwnQ83blFrR5MbrVv+jbYw+MK2hJLd1ji7p8ObeUOTGMooaD1yc484Cp4eSSteTvUFgSZtx4bBXyv0U+BSRxMEI
+        id S233251AbhBYRAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 12:00:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:41098 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233984AbhBYQ72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 11:59:28 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7CEF0D6E;
+        Thu, 25 Feb 2021 08:58:41 -0800 (PST)
+Received: from e124901.arm.com (unknown [10.57.11.52])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6937D3F73D;
+        Thu, 25 Feb 2021 08:58:39 -0800 (PST)
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     peterz@infradead.org, mingo@readhat.com, vincent.guittot@linaro.org
+Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net, valentin.schneider@arm.com,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: [PATCH v2] sched/pelt: Fix task util_est update filtering
+Date:   Thu, 25 Feb 2021 16:58:20 +0000
+Message-Id: <20210225165820.1377125-1-vincent.donnefort@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:3ec7:: with SMTP id s190mr4084646jas.11.1614272293550;
- Thu, 25 Feb 2021 08:58:13 -0800 (PST)
-Date:   Thu, 25 Feb 2021 08:58:13 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a0c3fe05bc2c0eeb@google.com>
-Subject: WARNING in __alloc_skb
-From:   syzbot <syzbot+80dccaee7c6630fa9dcf@syzkaller.appspotmail.com>
-To:     bjorn.andersson@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        mani@kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Being called for each dequeue, util_est reduces the number of its updates
+by filtering out when the EWMA signal is different from the task util_avg
+by less than 1%. It is a problem for a sudden util_avg ramp-up. Due to the
+decay from a previous high util_avg, EWMA might now be close enough to
+the new util_avg. No update would then happen while it would leave
+ue.enqueued with an out-of-date value.
 
-syzbot found the following issue on:
+Taking into consideration the two util_est members, EWMA and enqueued for
+the filtering, ensures, for both, an up-to-date value.
 
-HEAD commit:    291009f6 Merge tag 'pm-5.11-rc8' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1481fbacd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1106b4b91e8dfab8
-dashboard link: https://syzkaller.appspot.com/bug?extid=80dccaee7c6630fa9dcf
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1358ba02d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12dfb1e2d00000
+This is for now an issue only for the trace probe that might return the
+stale value. Functional-wise, it isn't a problem, as the value is always
+accessed through max(enqueued, ewma).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+80dccaee7c6630fa9dcf@syzkaller.appspotmail.com
+This problem has been observed using LISA's UtilConvergence:test_means on
+the sd845c board.
 
-netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8482 at mm/page_alloc.c:4979 __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5014
-Modules linked in:
-CPU: 0 PID: 8482 Comm: syz-executor948 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4979
-Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
-RSP: 0018:ffffc90001777aa0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 1ffff920002eef58 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000060a20
-RBP: 0000000000020a20 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff86f1b13e R11: 0000000000000000 R12: 000000000000000b
-R13: 0000000000400180 R14: 0000000000060a20 R15: ffff888018932dc0
-FS:  000000000192b300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020400000 CR3: 0000000025ae7000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __alloc_pages include/linux/gfp.h:511 [inline]
- __alloc_pages_node include/linux/gfp.h:524 [inline]
- alloc_pages_node include/linux/gfp.h:538 [inline]
- kmalloc_large_node+0x60/0x110 mm/slub.c:3999
- __kmalloc_node_track_caller+0x319/0x3f0 mm/slub.c:4496
- __kmalloc_reserve net/core/skbuff.c:150 [inline]
- __alloc_skb+0x4e4/0x5a0 net/core/skbuff.c:210
- __netdev_alloc_skb+0x70/0x400 net/core/skbuff.c:446
- netdev_alloc_skb include/linux/skbuff.h:2832 [inline]
- qrtr_endpoint_post+0x84/0x11b0 net/qrtr/qrtr.c:442
- qrtr_tun_write_iter+0x11f/0x1a0 net/qrtr/tun.c:98
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x791/0xa30 fs/read_write.c:605
- ksys_write+0x12d/0x250 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x442fe9
-Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc007c27a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007ffc007c27b8 RCX: 0000000000442fe9
-RDX: 0000000000400000 RSI: 0000000020000040 RDI: 0000000000000003
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc007c27c0
-R13: 00007ffc007c27e0 R14: 00000000004b8018 R15: 00000000004004b8
+No regression observed with Hackbench on sd845c and Perf-bench sched pipe
+on hikey/hikey960.
 
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 9e4104ae39ae..214e02862994 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3966,24 +3966,27 @@ static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
+ 	trace_sched_util_est_cfs_tp(cfs_rq);
+ }
+ 
++#define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
++
+ /*
+- * Check if a (signed) value is within a specified (unsigned) margin,
++ * Check if a (signed) value is within the (unsigned) util_est margin,
+  * based on the observation that:
+  *
+  *     abs(x) < y := (unsigned)(x + y - 1) < (2 * y - 1)
+  *
+- * NOTE: this only works when value + maring < INT_MAX.
++ * NOTE: this only works when value + UTIL_EST_MARGIN < INT_MAX.
+  */
+-static inline bool within_margin(int value, int margin)
++static inline bool util_est_within_margin(int value)
+ {
+-	return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
++	return ((unsigned int)(value + UTIL_EST_MARGIN - 1) <
++		(2 * UTIL_EST_MARGIN - 1));
+ }
+ 
+ static inline void util_est_update(struct cfs_rq *cfs_rq,
+ 				   struct task_struct *p,
+ 				   bool task_sleep)
+ {
+-	long last_ewma_diff;
++	long last_ewma_diff, last_enqueued_diff;
+ 	struct util_est ue;
+ 
+ 	if (!sched_feat(UTIL_EST))
+@@ -4004,6 +4007,8 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
+ 	if (ue.enqueued & UTIL_AVG_UNCHANGED)
+ 		return;
+ 
++	last_enqueued_diff = ue.enqueued;
++
+ 	/*
+ 	 * Reset EWMA on utilization increases, the moving average is used only
+ 	 * to smooth utilization decreases.
+@@ -4017,12 +4022,17 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
+ 	}
+ 
+ 	/*
+-	 * Skip update of task's estimated utilization when its EWMA is
++	 * Skip update of task's estimated utilization when its members are
+ 	 * already ~1% close to its last activation value.
+ 	 */
+ 	last_ewma_diff = ue.enqueued - ue.ewma;
+-	if (within_margin(last_ewma_diff, (SCHED_CAPACITY_SCALE / 100)))
++	last_enqueued_diff -= ue.enqueued;
++	if (util_est_within_margin(last_ewma_diff)) {
++		if (!util_est_within_margin(last_enqueued_diff))
++			goto done;
++
+ 		return;
++	}
+ 
+ 	/*
+ 	 * To avoid overestimation of actual task utilization, skip updates if
+-- 
+2.25.1
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
