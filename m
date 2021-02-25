@@ -2,179 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3A53254B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF083254BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbhBYRqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 12:46:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhBYRqv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:46:51 -0500
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D027C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 09:46:11 -0800 (PST)
-Received: by mail-vs1-xe2f.google.com with SMTP id j20so1077479vsm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 09:46:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iZdQVu0YTjgvqWM6YV5GN6FZiLrUPo1sTuUcqvtmiDE=;
-        b=Yl7XrfEW2Oji49LODi01o9FSSvX1xrX9nmypHSJUdSqC2NK/eS7S55RPjU1AGdqp6y
-         ZNMHd8Uwzefgteu2i4yj2/YkfEW1+QoKQ5dE7uiyCDmcxo4VGAF32nnvtj/SHAXkbLKl
-         rlgiro0gCBTamkfpitYRXRIUs4O/4/5V08G/KGYGoSPqBDQwQkzY7jgm39AbxJTwO+/2
-         PEfuX6KZIQYFvNEEtFLvGTSH6AWkrXK6h06hGuoZoGxNaXypvczNPM25HPKKdfUn6PRs
-         EO5j3jDQI+tsqdkxD3As4oOqr3SRZs52lgDIPTmzTfz+lO/KLcZDpQ+P0NgJXXzHk89P
-         UFOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iZdQVu0YTjgvqWM6YV5GN6FZiLrUPo1sTuUcqvtmiDE=;
-        b=sfDofdFzLgxDkA+ZtNLlCxGXdLw5QSDHNuCAo91uyDw1BiL9b/wwKNzfBIncDCP5Qv
-         d2p+jpoZveLi+3I8fRgjFMAVQQFSqXaOpPRGIYIkGH5Y43WdOzT1N0hElDHW1ch4sNyD
-         xpuGGaIYpCFoTX05Q8AFgoC5aBqmw76BcxglL2VZyvMS5yRYYG8iXJY1U09ZSOZKo0wG
-         asGJ8umz7cCXWiggdq4Q+jRWT3/uY0DPzFLFA2hb+jxLNhKAfbtoU4Yw8KgcSL+BsT8x
-         PZm2fOtfwHSbJHDYfhQeIO5/plG6ZDx5G3K4jlwreaeJlbdiBgeUUDMPSShs5gE6UqRW
-         nPog==
-X-Gm-Message-State: AOAM532O7D1UTxSDdqnIl3J/05lTvsTMmEq3RxqWCZJDtvv7ubQBUWhc
-        2g24pCVjUpMI7HrnkGPueGOIlEGl24b6bAXrdpd2og==
-X-Google-Smtp-Source: ABdhPJwd6hMIAmoKxZSKz8FdWCcoFufcn1uWAoOht9xhyg7s548LRUcVB4PQ1EWppzTIGJi3PPVbFa1HgM9E6i75jQg=
-X-Received: by 2002:a67:ed4a:: with SMTP id m10mr2621118vsp.14.1614275170095;
- Thu, 25 Feb 2021 09:46:10 -0800 (PST)
+        id S232077AbhBYRtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 12:49:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229522AbhBYRtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 12:49:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE58364F24;
+        Thu, 25 Feb 2021 17:49:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614275342;
+        bh=hjKk6M+dmIawgZS3JaWfTQ04sRlB/jwqry70VBDUv2c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kKBqYhk7tB58K6eAY0Uvka+n15r3Wibw7Dc4n1qucOZgvV7emIFjOVYlVbQXgYMUS
+         AQOMoWyzeFUvGFug840WpwDXVBvNcNw+Bv5J67XSccxImVU/wy5Da+Fx8jlX7ROJSP
+         kDqixs3MJYVLiOfndpuxvXh/TrtoQnf5CXxRpMFCwbM68xQ/45GUDpkYtoUS/VQXRK
+         eSxp1goinV7GT3A67shGbz4haYvA5YV+bO0XIoYrn2CPIUWW8V3tkf5VJhFrJ831xq
+         9rSuUznTd2FnjY0NhuJtbCA/aH+HjiUlaCNoknHsqIOV2N7eT6L3TA//j0njEnQUVq
+         CptYVGeIiDk/w==
+Date:   Thu, 25 Feb 2021 09:49:00 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Marco Wenzel <marco.wenzel@a-eberle.de>,
+        george.mccollister@gmail.com
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Andreas Oetken <andreas.oetken@siemens.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Arvid Brodin <Arvid.Brodin@xdin.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: hsr: add support for EntryForgetTime
+Message-ID: <20210225094900.10ba8346@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YDZaxXkP25RjN02G@lunn.ch>
+References: <CAFSKS=PnV-aLnGeNqjqrsT4nfFby18uYQpScCCurz6dZ39AynQ@mail.gmail.com>
+        <20210224094653.1440-1-marco.wenzel@a-eberle.de>
+        <YDZaxXkP25RjN02G@lunn.ch>
 MIME-Version: 1.0
-References: <20210225160247.2959903-1-masahiroy@kernel.org> <20210225160247.2959903-2-masahiroy@kernel.org>
-In-Reply-To: <20210225160247.2959903-2-masahiroy@kernel.org>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 25 Feb 2021 09:45:58 -0800
-Message-ID: <CABCJKufovCMH9iyA9hFjq1Pt4VNWEPid+rqNWtTvYPTC19LfeA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] kbuild: fix UNUSED_KSYMS_WHITELIST for Clang LTO
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>, Nicolas Pitre <nico@fluxnic.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
+On Wed, 24 Feb 2021 14:55:17 +0100 Andrew Lunn wrote:
+> On Wed, Feb 24, 2021 at 10:46:49AM +0100, Marco Wenzel wrote:
+> > In IEC 62439-3 EntryForgetTime is defined with a value of 400 ms. When a
+> > node does not send any frame within this time, the sequence number check
+> > for can be ignored. This solves communication issues with Cisco IE 2000
+> > in Redbox mode.
+> > 
+> > Fixes: f421436a591d ("net/hsr: Add support for the High-availability Seamless Redundancy protocol (HSRv0)")
+> > Signed-off-by: Marco Wenzel <marco.wenzel@a-eberle.de>
+> > Reviewed-by: George McCollister <george.mccollister@gmail.com>
+> > Tested-by: George McCollister <george.mccollister@gmail.com>  
+> 
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-On Thu, Feb 25, 2021 at 8:03 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Commit fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
-> does not work as expected if the .config file has already specified
-> CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list" before enabling
-> CONFIG_LTO_CLANG.
->
-> So, the user-supplied whitelist and LTO-specific white list must be
-> independent of each other.
->
-> I refactored the shell script so CONFIG_MODVERSIONS and CONFIG_CLANG_LTO
-> handle whitelists in the same way.
->
-> Fixes: fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  init/Kconfig                    |  1 -
->  scripts/gen_autoksyms.sh        | 33 ++++++++++++++++++++++++---------
->  scripts/lto-used-symbollist.txt |  5 -----
->  3 files changed, 24 insertions(+), 15 deletions(-)
->  delete mode 100644 scripts/lto-used-symbollist.txt
-
-> +
-> +ksym_wl=
->  if [ -n "$CONFIG_UNUSED_KSYMS_WHITELIST" ]; then
->         # Use 'eval' to expand the whitelist path and check if it is relative
->         eval ksym_wl="$CONFIG_UNUSED_KSYMS_WHITELIST"
-> @@ -40,16 +57,14 @@ cat > "$output_file" << EOT
->  EOT
->
->  [ -f modules.order ] && modlist=modules.order || modlist=/dev/null
-> -sed 's/ko$/mod/' $modlist |
-> -xargs -n1 sed -n -e '2{s/ /\n/g;/^$/!p;}' -- |
-> -cat - "$ksym_wl" |
-> +
-> +{
-> +       sed 's/ko$/mod/' $modlist | xargs -n1 sed -n -e '2p'
-> +       echo "$needed_symbols"
-> +       [ -n "$ksym_wl" ] && cat "$ksym_wl"
-> +} | sed -e 's/ /\n/g' | sed -n -e '/^$/!p' |
->  # Remove the dot prefix for ppc64; symbol names with a dot (.) hold entry
->  # point addresses.
->  sed -e 's/^\.//' |
->  sort -u |
->  sed -e 's/\(.*\)/#define __KSYM_\1 1/' >> "$output_file"
-> -
-> -# Special case for modversions (see modpost.c)
-> -if [ -n "$CONFIG_MODVERSIONS" ]; then
-> -       echo "#define __KSYM_module_layout 1" >> "$output_file"
-> -fi
-> diff --git a/scripts/lto-used-symbollist.txt b/scripts/lto-used-symbollist.txt
-> deleted file mode 100644
-> index 38e7bb9ebaae..000000000000
-> --- a/scripts/lto-used-symbollist.txt
-> +++ /dev/null
-> @@ -1,5 +0,0 @@
-> -memcpy
-> -memmove
-> -memset
-> -__stack_chk_fail
-> -__stack_chk_guard
-> --
-> 2.27.0
->
->
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 0bf5b340b80e..351161326e3c 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -2277,7 +2277,6 @@ config TRIM_UNUSED_KSYMS
->  config UNUSED_KSYMS_WHITELIST
->         string "Whitelist of symbols to keep in ksymtab"
->         depends on TRIM_UNUSED_KSYMS
-> -       default "scripts/lto-used-symbollist.txt" if LTO_CLANG
->         help
->           By default, all unused exported symbols will be un-exported from the
->           build when TRIM_UNUSED_KSYMS is selected.
-> diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
-> index d54dfba15bf2..b74d5949fea6 100755
-> --- a/scripts/gen_autoksyms.sh
-> +++ b/scripts/gen_autoksyms.sh
-> @@ -19,7 +19,24 @@ esac
->  # We need access to CONFIG_ symbols
->  . include/config/auto.conf
->
-> -ksym_wl=/dev/null
-> +needed_symbols=
-> +
-> +# Special case for modversions (see modpost.c)
-> +if [ -n "$CONFIG_MODVERSIONS" ]; then
-> +       needed_symbols="$needed_symbols module_layout"
-> +fi
-> +
-> +# With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a binary
-> +# when the .mod files are generated, which means they don't yet contain
-> +# references to certain symbols that will be present in the final binaries.
-> +if [ -n "$CONFIG_LTO_CLANG" ]; then
-> +       # intrinsic functions
-> +       needed_symbols="$needed_symbols memcpy memmove memset"
-> +       # stack protector symbols
-> +       needed_symbols="$needed_symbols __stack_chk_fail __stack_chk_guard"
-> +fi
-
-Thank you for the patch!
-
-Arnd just reported that _mcount is also needed with some
-configurations. Would you mind including that in the next version?
-
-https://lore.kernel.org/r/20210225143456.3829513-1-arnd@kernel.org/
-
-Sami
+Applied, thanks!
