@@ -2,107 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9367D325870
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10859325871
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbhBYVLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:11:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbhBYVCE (ORCPT
+        id S234796AbhBYVMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:12:06 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51846 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234891AbhBYVGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:02:04 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94431C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:01:17 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id 2so3567134ljr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:01:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7bPn1CTU2aFElE/GlnQTS2oN7n5wO4Fs2imlJntYkTw=;
-        b=EruuQTwqE3lqMBIPcITdvKno7SehJMpApPb/pZBloV8AeuWgS9dxXFa6S4CP4mZ8HL
-         A+tb06UdX2iUYozJx3n+oi47NwcNF7GDkUne5DiViTr597HVoysxV3C7wouzWE2dOfcS
-         cFzQSoYBl9ccSrQNoOMVsxd6sFLL30yoKSSan1RODGpFPCSnKGeM9vzneAVkuZlyLzRh
-         cYK8t4kzn5/jw7C34l0RDZswrCnO0E+IFiGa3MppykDoLR3yPJNi6+R8sCfI6ZPLZHLH
-         k/ey0/m9jFHolcEH1Zu8vZq+pEpIHLwFGCnk+82CvgzG8cfOeD2L1N521s91kcAU5Kry
-         v6aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7bPn1CTU2aFElE/GlnQTS2oN7n5wO4Fs2imlJntYkTw=;
-        b=TS3XS8RuiXwYS5phYocEvLFUjPxduRPuzDVffI32LOJijqW9KWLJSIXn3R0QebpP2B
-         xtS1gL9ocO3WvIPI2zQvIkpSGSt40dNFGRETMdQ1ICxOzuAvwso00K1NuCaex8bbRlWj
-         sJIKKPeeD0qo6TD6VBkE5MeZUqZwGcnoa+B+eMIabG/fXiB4lsr2BETl5cx7DIalwk34
-         UUg26awsWZw3CKK7LAy1FshsYIz1ColT3Y9dX2ei4/qqdpJKEeWAVxbXTcQZjTld2TfA
-         l69PR54c3i7bgRO1Q5PtlwU2txl3mJcUQmAJgz5oSOWPsXi4HuEIB5P7IDnttN9w2H6V
-         ha0g==
-X-Gm-Message-State: AOAM530gWMwFC2cGJkSpgbXOvLJuYt30OOdfgn5I7z4IC2yMG3LvjMhJ
-        0rGZUrq4JoQsI//Ino8TcSqoqF0P+jzlfVcGv8/i6g==
-X-Google-Smtp-Source: ABdhPJy7eeRazFH/rVJHDxRwOUgQEHaxudPSRiK9Via/RVV1Cb4qT+kTMEiqV0YlhjqK0Sfrlv9ZGlnDsn5I87Dwxis=
-X-Received: by 2002:a05:651c:2112:: with SMTP id a18mr2618568ljq.341.1614286875687;
- Thu, 25 Feb 2021 13:01:15 -0800 (PST)
+        Thu, 25 Feb 2021 16:06:48 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PL4Lxv166532;
+        Thu, 25 Feb 2021 16:05:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pqOo7IEXZuN4o2GJtHjkXskjvWSpvNljjvnukPmdQyc=;
+ b=Et7Jb1Xw5qUZjYtE1oWTeQpGjEs7bT+ZKyRBuhpLtFZ4/57LbkEdVaRdKixq90JVYmp4
+ O2/7vgBOEuwIWSqXnJrTrbU9lLq95N86iS0bJ9tl/zSI1N0KLuYVu26Ii8tkD3fHwgHG
+ dYS6zO8Zju/FGnPamkvcVxSj6YwRCsaXyLHg0VAduhJqwZfe6i+P7nuHfFTiFSAt3Aek
+ +GYKAFl/w+Q/zni/yIZ/M21XqLglRJo4WeVXthQ0dmu6yUMcI77EDFqM1LG+kCzZSTvJ
+ VL8dRWaj6iPOeVIYcl8m26HPCIbj89N3OtjlNNK58QBESu/Xyyl8rtJn6pdtjRRoCZ7b WQ== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36xh8jv328-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Feb 2021 16:05:37 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11PL26iH021277;
+        Thu, 25 Feb 2021 21:05:36 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma03wdc.us.ibm.com with ESMTP id 36tt29hnmn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Feb 2021 21:05:36 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11PL5ZKw33030518
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Feb 2021 21:05:35 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B1879AE060;
+        Thu, 25 Feb 2021 21:05:35 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AA767AE05F;
+        Thu, 25 Feb 2021 21:05:34 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.211.123.159])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 25 Feb 2021 21:05:34 +0000 (GMT)
+Subject: Re: [PATCH v2 4/5] ibmvfc: store return code of H_FREE_SUB_CRQ during
+ cleanup
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20210225204824.14570-1-tyreld@linux.ibm.com>
+ <20210225204824.14570-5-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <46ef110f-238e-50bf-731a-ba3a4392dba6@linux.vnet.ibm.com>
+Date:   Thu, 25 Feb 2021 15:05:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210225164513.3667778-1-arnd@kernel.org> <202102251203.03762F77@keescook>
- <20210225120637.8e2a234f192952829fc5f471@linux-foundation.org>
-In-Reply-To: <20210225120637.8e2a234f192952829fc5f471@linux-foundation.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 25 Feb 2021 13:01:04 -0800
-Message-ID: <CAKwvOdmHSgDMMgwowTWyvy4voyD_TtTY811jtKsZR+kUciittg@mail.gmail.com>
-Subject: Re: [PATCH] linux/compiler-clang.h: define HAVE_BUILTIN_BSWAP*
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
-        Marco Elver <elver@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210225204824.14570-5-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-25_14:2021-02-24,2021-02-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ clxscore=1015 phishscore=0 malwarescore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102250161
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 12:06 PM Andrew Morton
-<akpm@linux-foundation.org> wrote:
->
-> On Thu, 25 Feb 2021 12:03:48 -0800 Kees Cook <keescook@chromium.org> wrote:
->
-> > On Thu, Feb 25, 2021 at 05:45:09PM +0100, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > Separating compiler-clang.h from compiler-gcc.h inadventently dropped the
-> > > definitions of the three HAVE_BUILTIN_BSWAP macros, which requires falling
-> > > back to the open-coded version and hoping that the compiler detects it.
-> > >
-> > > Since all versions of clang support the __builtin_bswap interfaces,
-> > > add back the flags and have the headers pick these up automatically.
-> > >
-> > > This results in a 4% improvement of compilation speed for arm defconfig.
-> > >
-> > > Fixes: 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Cc: stable@vger.kernel.org
->
-> I figured 4% better compile time isn't significant enough to justify a
-> backport.  Thoughts?
-
-If I made a mistake in 815f0ddb346c, then it would be important to
-correct it since 815f0ddb346c has existed for a few stable branches
-(first landed in v4.19-rc1).
-Acked-by: Nick Desaulniers <ndesaulniers@google.com>
-
->
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
->
-
+Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
 
 -- 
-Thanks,
-~Nick Desaulniers
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
+
