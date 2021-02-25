@@ -2,106 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DF63249C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DF83249C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbhBYEdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 23:33:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbhBYEdi (ORCPT
+        id S235120AbhBYEfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 23:35:48 -0500
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:60451
+        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S231284AbhBYEfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 23:33:38 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEF4C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 20:32:58 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id u12so2542602pjr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 20:32:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ksjOCtJ0nuu5aqjShvr266w7TXx5g4TaGEaQoeTbXfo=;
-        b=ip4GM9wxAb9xv375Nqpbu1+mSvZw2nCzmYBxVyqCJXSx0HEbk1bCThuCIXdwzIJlB3
-         PsOnD71/w9p7LkOKrskeYQCM5m1n8IXa7n5erFZ2HwdhNCv/DZZVoC59GwvYHKyLoq0P
-         NvJltsXOGhy1FXlpbwVQrUGVWx6xzKB6PqCyS9IK6XGm7eWPotUMQafT7R0aZKw8JXzA
-         wuBz0cxWznshnnNuEGj1zwuqREAkQC56RNzxMm11M0685r80nx0Rr7noxzFKXXvVX8m4
-         wQYg+pXz9B0lPmt7ARZUQDewhrkXshAzHIeruNTAgXJIApUCixVLrYJaH7ba23B+Zk0m
-         b8dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ksjOCtJ0nuu5aqjShvr266w7TXx5g4TaGEaQoeTbXfo=;
-        b=qa1w0m9JZT93sWJnQ5GQBb7Rb3bxzvAzCBaufwFxyv7lWrz1cn0z2KBSbTnJCc+Zca
-         yql/CUBOuxbBOLLjM9xCiKa1Zly4zIhcS8m6NS+88CPadv4UcnpVKlq8MpCqBZ8I8E0p
-         574E/GGk5gSnDRAr5q5uWwhINiI+uIjAUPe3cq5Hhj6UEFhaQebvbHpV8o1V5XHW/Ezb
-         jFd/e2tOAPzl3unYkQvbNNTJ3UYnUteGEqJwhxWWFkavrf6LrjLeUtcgPfAblXet9WGG
-         aJu2ZSosR7Fyfe9Y6k1vZhCnyu9iOC3H5fAhsuxSCI5vaz8RjgMPPosFS9UMWeXfVfio
-         WwFQ==
-X-Gm-Message-State: AOAM533Q9Z0+YqpkOd2zvmrsRiKV8CqfwCpu7pxh80sudp76zrmvcnra
-        G2aQDjRFZegcxbcYFAoBmZM=
-X-Google-Smtp-Source: ABdhPJyPwVMcqUaFUrEW3dUmCarbud+mGcEnTBHX8+oDBeJeF3sugARwq0y2DK88gTOvxadtZ9wh4w==
-X-Received: by 2002:a17:90a:7e0a:: with SMTP id i10mr1354443pjl.152.1614227577882;
-        Wed, 24 Feb 2021 20:32:57 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:552:720f:2933:5745])
-        by smtp.gmail.com with ESMTPSA id z16sm3978894pgj.51.2021.02.24.20.32.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 20:32:56 -0800 (PST)
-Date:   Wed, 24 Feb 2021 20:32:54 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Chris Ye <lzye@google.com>
-Cc:     Chris Ye <linzhao.ye@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, trivial@kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH] Input: Add "Share" button to Microsoft Xbox One
- controller.
-Message-ID: <YDcoduCkBjC8EM3F@google.com>
-References: <20210225040032.684590-1-lzye@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225040032.684590-1-lzye@google.com>
+        Wed, 24 Feb 2021 23:35:45 -0500
+Received: from centos7u5.localdomain (unknown [202.43.158.76])
+        by c1app2 (Coremail) with SMTP id AgINCgC3v8PgKDdgePUfAw--.17619S3;
+        Thu, 25 Feb 2021 12:34:40 +0800 (CST)
+From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Subject: [PATCH] mm/vmscan: minor coding style tweaks
+Date:   Thu, 25 Feb 2021 12:34:09 +0800
+Message-Id: <1614227649-19853-1-git-send-email-daizhiyuan@phytium.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AgINCgC3v8PgKDdgePUfAw--.17619S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrGF1UWF15Ar45Xr1fWr1rZwb_yoWxWwbE9a
+        yIgr4vgryDJF92kw1akF4IqFZ3Xw1q9r1DAr18ZF42qa4UGrWfZFykCryrZ34UXw13AF9I
+        q3Z0vr9aq34xujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4xFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_
+        Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        XwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU22NtUUU
+        UU=
+X-Originating-IP: [202.43.158.76]
+X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris,
+Add whitespace to fix coding style issues, improve code reading.
 
-On Thu, Feb 25, 2021 at 04:00:32AM +0000, Chris Ye wrote:
-> Add "Share" button input capability and input event mapping for
-> Microsoft Xbox One controller.
-> Fixed Microsoft Xbox One controller share button not working under USB
-> connection.
-> 
-> Signed-off-by: Chris Ye <lzye@google.com>
-> ---
->  drivers/input/joystick/xpad.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-> index 9f0d07dcbf06..08c3e93ccb2f 100644
-> --- a/drivers/input/joystick/xpad.c
-> +++ b/drivers/input/joystick/xpad.c
-> @@ -368,6 +368,14 @@ static const signed short xpad360_btn[] = {  /* buttons for x360 controller */
->  	-1
->  };
->  
-> +static const signed short xpad_xboxone_btn[] = {
-> +	/* buttons for xbox one controller */
-> +	BTN_TL, BTN_TR,		/* Button LB/RB */
-> +	BTN_MODE,		/* The big X button */
-> +	KEY_RECORD,		/* The share button */
+Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+---
+ mm/vmscan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If I understand this correctly, not all Xbox One controllers have this
-new key. Is it possible to determine if it is present and only set
-capability for controllers that actually have it?
-
-Also, I am unsure if KEY_RECORD is the best keycode for this. It might,
-but does your controller supports bluetooth? What HID usage code does it
-send for this key?
-
-Thanks.
-
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index b1b574a..333c43b 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -3872,7 +3872,7 @@ static int kswapd(void *p)
+ {
+ 	unsigned int alloc_order, reclaim_order;
+ 	unsigned int highest_zoneidx = MAX_NR_ZONES - 1;
+-	pg_data_t *pgdat = (pg_data_t*)p;
++	pg_data_t *pgdat = (pg_data_t *)p;
+ 	struct task_struct *tsk = current;
+ 	const struct cpumask *cpumask = cpumask_of_node(pgdat->node_id);
+ 
 -- 
-Dmitry
+1.8.3.1
+
