@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D3F324800
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 01:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6306C324806
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 01:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235608AbhBYApP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 19:45:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234294AbhBYApL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 19:45:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C09E64EC4;
-        Thu, 25 Feb 2021 00:44:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614213871;
-        bh=fyH4DGa7GSd0xYi4vBiKElcW2dOIEx2HBFx2q9HF7FE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cLcE6/dc0DdXnUPc/KU+El7FJ3OGldfLawPvfPDBPzztYDiD5lUP0Is/cur8APns8
-         uN15heotH5NpGqznmbscRM2DhVV09J7qv+fg3Hj5BEHmUHa7uNdahUED2/wGtv2YLd
-         6EBCgXWj3VkAGA1PNrjcbjZH94QFjoNi5g9aJTD9fSSIP9hUTc91xsPNijk7l16Q83
-         9mEG3Z2uDjKuJ0NG4KPAN9q6891yy/foDjVZ/C8jygkYB20apJFaXfj4BcJS57wZBe
-         r2Q9sTP24K05URW3EE3Vc4s87nsJ+HWolCVT9siz+UtHG311rWb8BpxiZIKYOcwH4c
-         Zp+eT1Sa3OQog==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id CBEEC3520D1E; Wed, 24 Feb 2021 16:44:30 -0800 (PST)
-Date:   Wed, 24 Feb 2021 16:44:30 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: make nocb_nobypass_lim_per_jiffy static
-Message-ID: <20210225004430.GA9420@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <1614155429-64546-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S236345AbhBYAri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 19:47:38 -0500
+Received: from www62.your-server.de ([213.133.104.62]:38714 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235647AbhBYAr3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 19:47:29 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lF4nT-0000J2-K3; Thu, 25 Feb 2021 01:46:27 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lF4nT-000Mzt-72; Thu, 25 Feb 2021 01:46:27 +0100
+Subject: Re: [PATCH v8 bpf-next 0/5] xsk: build skb by page (aka generic
+ zerocopy xmit)
+To:     Alexander Lobakin <alobakin@pm.me>,
+        Magnus Karlsson <magnus.karlsson@intel.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20210218204908.5455-1-alobakin@pm.me>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <925e70eb-3cc6-a135-decc-22167f2ecaf0@iogearbox.net>
+Date:   Thu, 25 Feb 2021 01:46:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614155429-64546-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210218204908.5455-1-alobakin@pm.me>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26090/Wed Feb 24 13:09:42 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 04:30:29PM +0800, Jiapeng Chong wrote:
-> Fix the following sparse warning:
-> 
-> kernel/rcu/tree_plugin.h:1497:5: warning: symbol
-> 'nocb_nobypass_lim_per_jiffy' was not declared. Should it be static?
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On 2/18/21 9:49 PM, Alexander Lobakin wrote:
+> This series introduces XSK generic zerocopy xmit by adding XSK umem
+> pages as skb frags instead of copying data to linear space.
+> The only requirement for this for drivers is to be able to xmit skbs
+> with skb_headlen(skb) == 0, i.e. all data including hard headers
+> starts from frag 0.
+> To indicate whether a particular driver supports this, a new netdev
+> priv flag, IFF_TX_SKB_NO_LINEAR, is added (and declared in virtio_net
+> as it's already capable of doing it). So consider implementing this
+> in your drivers to greatly speed-up generic XSK xmit.
+[...]
 
-Queued with Frederic's ack (given offlist), thank you both!
-
-						Thanx, Paul
-
-> ---
->  kernel/rcu/tree_plugin.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 2d60377..8ff8cf8 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -1494,7 +1494,7 @@ static int __init parse_rcu_nocb_poll(char *arg)
->   * After all, the main point of bypassing is to avoid lock contention
->   * on ->nocb_lock, which only can happen at high call_rcu() rates.
->   */
-> -int nocb_nobypass_lim_per_jiffy = 16 * 1000 / HZ;
-> +static int nocb_nobypass_lim_per_jiffy = 16 * 1000 / HZ;
->  module_param(nocb_nobypass_lim_per_jiffy, int, 0);
->  
->  /*
-> -- 
-> 1.8.3.1
-> 
+Applied, thanks!
