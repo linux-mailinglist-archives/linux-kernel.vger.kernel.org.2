@@ -2,114 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401193259B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE2C3259BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhBYWhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:37:06 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8804 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230386AbhBYWgy (ORCPT
+        id S230494AbhBYWk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:40:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229800AbhBYWkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:36:54 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PMWu7O194326;
-        Thu, 25 Feb 2021 17:36:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=mHKwSgepPZfDmj38IHgbJ9+M5MpnFlYOsbj2cozvhSU=;
- b=U3CvZK/FK4wwk6nclbyIGaOYAS1S1Rxf8jEyZtYTiS6/XMqeChMBbs4bMR82Gc+Wmh6w
- TccfZSEyuMpnGah6NSAYvn9VkBTfLQWaDpmLe+6kPFHTXdS25RSvsdjrMzSyHL1GdIGE
- MOtc3/UA9DEU98ndKXEmG8JkXk8aV7xcMZh3J3MGOWLV0HaFLY6/Z8uT7yPNm4IBop8r
- WfWkKNC/iqpir0R0vu31717vOfFDWgSj2YqWgU390v8Er4K8cHpIU4n2wXOnKY9rSrpY
- aMGu5EKNpBQYceHjHvvXeEhKHbJTb6rq0lPcR2RbCcHTcyKgziB8IAj2MScXHHWqP+RS Eg== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36xfck1yx7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 17:36:08 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11PMThmr018850;
-        Thu, 25 Feb 2021 22:36:05 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 36tsph4t8c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 22:36:05 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11PMZowT35389916
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 22:35:50 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 806494C08B;
-        Thu, 25 Feb 2021 22:36:03 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 373614C086;
-        Thu, 25 Feb 2021 22:36:03 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 25 Feb 2021 22:36:03 +0000 (GMT)
-Received: from [9.206.188.228] (unknown [9.206.188.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id DA6BE6023F;
-        Fri, 26 Feb 2021 09:35:59 +1100 (AEDT)
-Subject: Re: linux-next: Fixes tag needs some work in the jc_docs tree
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210226083433.1419e9c9@canb.auug.org.au>
- <87a6rrbze2.fsf@meer.lwn.net>
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-Message-ID: <89ce7fd6-f71c-b9b2-febd-bbfafdd7b484@linux.ibm.com>
-Date:   Fri, 26 Feb 2021 09:35:54 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 25 Feb 2021 17:40:25 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4252C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:39:45 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id w18so4007187plc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:39:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=MFcjE/WeEn+IVJZnnDEHAQYjU7Vfx+Vn0PTYrMBIKFU=;
+        b=KqNSfj9xZCGyrV6LQ6aapAMGI4R5TQKWo617kctqQSCQtQjGB7YF1L26d0NXIEoGlS
+         6CM3RbUej77nIuoorMYvIIsuYiXg5r6OX1Mwi6Q64yDJRJ1SsnAIsn4kovpKa5EDYGZV
+         nILAg9UOCgPwf8+38FfgPvdO6q9SVYilECZ5s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=MFcjE/WeEn+IVJZnnDEHAQYjU7Vfx+Vn0PTYrMBIKFU=;
+        b=I7rOexzcLOJ8b8Fzio8+8D8rQ5XJAFyqBMIGTv71aOhb61bmDV/ZG2/UW+OqnnJ01N
+         ospMZVm28piYr06Y4GGVA0fldi+I2VqRrL6F1ZQyGLcvcdyHG0KVCM1SHFsD7k4S3LqZ
+         XAVsfXMcBovDSY2PQlb8VkIBcG8pAsO9U6dVFMWrvQPFnaHR4nEfQHSAzacvAFbAmhUG
+         Abp3NcNrnYZdH5z+qRK8mLedikQvIohXd3TBKdttM7z040wy1NJWgHb3MO8hVRqF1eiN
+         QY+ViyxzRIiGvqer6gOPwecU6CfXYO7t7iT2MrLG5OoC5G5gonpEBC6/IQlnJ19lHgLD
+         pgoA==
+X-Gm-Message-State: AOAM5315ligMeTUTn3X/lnbtUHNhFtWWtL1MBTGqkTLT1n81CYsJunYd
+        n+qZ/E3ZRHzkS1Wg5AHq89k/0w==
+X-Google-Smtp-Source: ABdhPJwfIEceIF0MkV8wu2chf+y8M9QK7pX8fvuYLa9p1J/EOAR66cE8x9qiLnLJ2TxHL/Jfkotevw==
+X-Received: by 2002:a17:902:bf01:b029:e4:3287:f8da with SMTP id bi1-20020a170902bf01b02900e43287f8damr26558plb.45.1614292785077;
+        Thu, 25 Feb 2021 14:39:45 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:b942:93a8:e68d:5a90])
+        by smtp.gmail.com with ESMTPSA id z22sm7435586pfa.41.2021.02.25.14.39.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 14:39:44 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <87a6rrbze2.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-25_14:2021-02-24,2021-02-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
- mlxlogscore=999 mlxscore=0 adultscore=0 impostorscore=0 suspectscore=0
- bulkscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102250170
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210225103330.v2.3.Ife7768b6b4765026c9d233ad4982da0e365ddbca@changeid>
+References: <20210225103330.v2.1.I6a426324db3d98d6cfae8adf2598831bb30bba74@changeid> <20210225103330.v2.3.Ife7768b6b4765026c9d233ad4982da0e365ddbca@changeid>
+Subject: Re: [PATCH v2 3/4] arm64: dts: qcom: sc7180: trogdor: Fix trip point config of charger thermal zone
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Antony Wang <antony_wang@compal.corp-partner.google.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 25 Feb 2021 14:39:43 -0800
+Message-ID: <161429278310.1254594.15181773052326295788@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/2/21 8:39 am, Jonathan Corbet wrote:
-> Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> 
->> Hi all,
->>
->> In commit
->>
->>    36eaf08fc283 ("docs: powerpc: Fix tables in syscall64-abi.rst")
->>
->> Fixes tag
->>
->>    Fixes: 209b44c804c ("docs: powerpc: syscall64-abi.rst: fix a malformed table")
->>
->> has these problem(s):
->>
->>    - SHA1 should be at least 12 digits long
->>
->> I don't think this is worth rebasing for, but in the future it can be
->> fixed by setting core.abbrev to 12 (or more) or (for git v2.11 or later)
->> just making sure it is not set (or set to "auto").
-> 
-> I made that tag by hand while "fixing" the changlog on that commit,
-> which included the full ID.  Obviously, counting to 12 is a challenging
-> task for a slow guy like me...:)
+Quoting Matthias Kaehlcke (2021-02-25 10:33:36)
+> The trip point configuration of the charger thermal zone for trogdor
+> is missing a node for the critical trip point. Add the missing node.
+>=20
+> Fixes: bb06eb3607e9 ("arm64: qcom: sc7180: trogdor: Add ADC nodes and the=
+rmal zone for charger thermistor")
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
 
-No, no, my local tree tells me that *I* made that tag by hand and failed 
-to count properly... sorry for the noise!
-
--- 
-Andrew Donnellan              OzLabs, ADL Canberra
-ajd@linux.ibm.com             IBM Australia Limited
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
