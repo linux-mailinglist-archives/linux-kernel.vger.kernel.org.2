@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72566324DA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A81324DA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234328AbhBYKHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:07:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33482 "EHLO mail.kernel.org"
+        id S233266AbhBYKJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:09:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233964AbhBYJ6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:58:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 250A964F19;
-        Thu, 25 Feb 2021 09:54:52 +0000 (UTC)
+        id S235515AbhBYJ6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:58:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78DB364F17;
+        Thu, 25 Feb 2021 09:54:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246893;
-        bh=DZ0xcnks63hkG0sZOQbcAvAOYB9mcIuUFP7X3UMXmCU=;
+        s=korg; t=1614246897;
+        bh=U0yKkXXoyeOfOxGD+VHPoEYk+aqobOW6r/YYfpZGwVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DALWmvmaCntWfJz5hGjFq79tSEeI2YpsHvTVLxXlnAH0NNc7YHyk+iqSYgR2Lb/PZ
-         A+S9S0aP6sSNCK2dKVngkw28xNO5oQUC0vcfREnGAb6xggsOVIAXGnqquERVvp79SB
-         WzeQgkXPdNPJI/aSVKOiUmCZBolbgSeRHha6zai8=
+        b=Ct/OoncVyvE4r7r7aGnJ7/FnI2eyM0edQfPgU/tBMMRQW3Yl9QAIhTeENOIXDKStr
+         CYeBc2yF8mcq/T21a9FbvE5z12KgGG5R5Kgh9eVbYuBJtKI+e88JZrUTiw+9AsV3CW
+         /GU95nz7ZxUHqutiHm45kXTqsckom0InT5ASdpNU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stefan Ursella <stefan.ursella@wolfvision.net>
-Subject: [PATCH 5.10 06/23] usb: quirks: add quirk to start video capture on ELMO L-12F document camera reliable
-Date:   Thu, 25 Feb 2021 10:53:37 +0100
-Message-Id: <20210225092516.840545073@linuxfoundation.org>
+        stable@vger.kernel.org, Luis Henriques <lhenriques@suse.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>
+Subject: [PATCH 5.10 07/23] ceph: downgrade warning from mdsmap decode to debug
+Date:   Thu, 25 Feb 2021 10:53:38 +0100
+Message-Id: <20210225092516.889427128@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210225092516.531932232@linuxfoundation.org>
 References: <20210225092516.531932232@linuxfoundation.org>
@@ -39,33 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Ursella <stefan.ursella@wolfvision.net>
+From: Luis Henriques <lhenriques@suse.de>
 
-commit 1ebe718bb48278105816ba03a0408ecc2d6cf47f upstream.
+commit ccd1acdf1c49b835504b235461fd24e2ed826764 upstream.
 
-Without this quirk starting a video capture from the device often fails with
+While the MDS cluster is unstable and changing state the client may get
+mdsmap updates that will trigger warnings:
 
-kernel: uvcvideo: Failed to set UVC probe control : -110 (exp. 34).
+  [144692.478400] ceph: mdsmap_decode got incorrect state(up:standby-replay)
+  [144697.489552] ceph: mdsmap_decode got incorrect state(up:standby-replay)
+  [144697.489580] ceph: mdsmap_decode got incorrect state(up:standby-replay)
 
-Signed-off-by: Stefan Ursella <stefan.ursella@wolfvision.net>
-Link: https://lore.kernel.org/r/20210210140713.18711-1-stefan.ursella@wolfvision.net
-Cc: stable <stable@vger.kernel.org>
+This patch downgrades these warnings to debug, as they may flood the logs
+if the cluster is unstable for a while.
+
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/core/quirks.c |    3 +++
- 1 file changed, 3 insertions(+)
+ fs/ceph/mdsmap.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -391,6 +391,9 @@ static const struct usb_device_id usb_qu
- 	/* X-Rite/Gretag-Macbeth Eye-One Pro display colorimeter */
- 	{ USB_DEVICE(0x0971, 0x2000), .driver_info = USB_QUIRK_NO_SET_INTF },
+--- a/fs/ceph/mdsmap.c
++++ b/fs/ceph/mdsmap.c
+@@ -243,8 +243,8 @@ struct ceph_mdsmap *ceph_mdsmap_decode(v
+ 		}
  
-+	/* ELMO L-12F document camera */
-+	{ USB_DEVICE(0x09a1, 0x0028), .driver_info = USB_QUIRK_DELAY_CTRL_MSG },
-+
- 	/* Broadcom BCM92035DGROM BT dongle */
- 	{ USB_DEVICE(0x0a5c, 0x2021), .driver_info = USB_QUIRK_RESET_RESUME },
+ 		if (state <= 0) {
+-			pr_warn("mdsmap_decode got incorrect state(%s)\n",
+-				ceph_mds_state_name(state));
++			dout("mdsmap_decode got incorrect state(%s)\n",
++			     ceph_mds_state_name(state));
+ 			continue;
+ 		}
  
 
 
