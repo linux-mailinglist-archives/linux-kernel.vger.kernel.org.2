@@ -2,114 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C607932587A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8417A325878
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:17:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhBYVQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:16:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
+        id S232938AbhBYVQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:16:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbhBYVQV (ORCPT
+        with ESMTP id S232196AbhBYVQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:16:21 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB375C06174A;
-        Thu, 25 Feb 2021 13:15:40 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id a11so2515415wmd.5;
-        Thu, 25 Feb 2021 13:15:40 -0800 (PST)
+        Thu, 25 Feb 2021 16:16:11 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA47C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:15:30 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id e7so10745440lft.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:15:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pOO48CRVDwuK4MdBDmN0ZaayDswN2bcw5RsSh3NXzK4=;
-        b=H50sSvw9F8zkWIzdOX+9Q/1CIiSrcErSJudYopuz3opDJ+GKFS4T1VZNHrzsvuu26+
-         jKxCxB2Nlxxr3s13+aKQwU/zAIoESDMuzV9X/41WMEEA76KxPRZngAmBRsJECJyXyF1l
-         v1By6iya2G5cPQ/gyAkJFMMXyXt9WEz5geGKRPBei8uH/axjY2WQVkz+h2iced85vA7q
-         SLO6XOmztohvkl+rC781l2jXCvtAExWFRgcZ1sXVOQbpBl6ITUlonF4dGefZFAwo1w1v
-         AlknttOPWpdIWgAaUF1DSYcDVEn1DfvWNYIUhlO0UioOeVKAwUEKwWOs2kpWwrHHEfcX
-         itWg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jGFsjEI1gQ2OR3E02XGNTuUq+EFNUhZz/AXFp1fN+CM=;
+        b=QUDef+8oQUsKGQT4TI2l9XVZteXXw1VhFhn66wtfEG8uEuN0kxAQbVKdcyc8STPRdT
+         NXHOtDdoV/syJMcKLTumsInPyhtizLTsxUPJnAtTBDV4BmCQ1h/UpaxTcHPmXywZ2xKq
+         cL8d+Hx5Sa3VCps7utdsANgeELZq9iQJxuoPh5occw2FeYot6NU3q9JNvGf+U4iCT44S
+         +g4LMDNUu2Bpj+9LPLiYCUHVN3U8cdjzHymQec7uhNcsyoFxwRMdVJqGvgH8FP7EtatW
+         +9qpTMU8VsEWkfyPZYCv/Un7xRgo7fmwQz3Px9jMvpHSdAXlSRhY4MDEjNYz3P7VBcpJ
+         XPbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pOO48CRVDwuK4MdBDmN0ZaayDswN2bcw5RsSh3NXzK4=;
-        b=Xx0REBX0rtqe5hHzMlAXxKSn2ck1K1SG5gLg48MEIlnBIktp5CWrEMBuUmH9UlomPd
-         Nl3Uzc133d9EKf+rJJbpdfiNaZeVYhuuGa9qDWIXJb/NiJQmeZYk1CUxTotv7CnblGl+
-         pmV8Vz3DOab1w4sUomjPyyw2bDbkqa7Ie9AicW12fSeWjwdlh4tuLAiDtc6DUNnWQzcj
-         OmviVnAxZhzjb/kiz/cK2I0eB8P6S8qCmi7RxbDZZ1+UT1LjNHXNu4SDsKmgY6u6LG8f
-         1+1U5gpNWkKidDLBoocz0cYPQQGVqu2oDCVnIeqomIGO/fmr/Y5g/wpSzRZrApZB9Tkj
-         0cfg==
-X-Gm-Message-State: AOAM530OAAHbwBbcSi2xgTYzr7+Gv7yjI3qBbELkljrAUfMSO0Br5Lz+
-        GeeOZ/rNDBUGu8thUFBze0Bd5JCX/SAoylrx
-X-Google-Smtp-Source: ABdhPJw2bmmrZ6V3DJtiCOw/Q64l19Wv131uwA+GqkvuG7FI/02eU3nX/58yd9vBQPhJRnqRov1+5w==
-X-Received: by 2002:a1c:9a46:: with SMTP id c67mr230998wme.159.1614287739208;
-        Thu, 25 Feb 2021 13:15:39 -0800 (PST)
-Received: from hthiery.fritz.box (ip1f1322f8.dynamic.kabel-deutschland.de. [31.19.34.248])
-        by smtp.gmail.com with ESMTPSA id s124sm8636373wms.40.2021.02.25.13.15.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 13:15:38 -0800 (PST)
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Fugang Duan <fugang.duan@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Heiko Thiery <heiko.thiery@gmail.com>
-Subject: [PATCH v2 1/1] net: fec: ptp: avoid register access when ipg clock is disabled
-Date:   Thu, 25 Feb 2021 22:15:16 +0100
-Message-Id: <20210225211514.9115-1-heiko.thiery@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jGFsjEI1gQ2OR3E02XGNTuUq+EFNUhZz/AXFp1fN+CM=;
+        b=ChKBb7H4I+3/WzSKYtehD3WG8f9Dd/tzzDIa9K/Bn0hz4ukUS9GIqp4gPvzsTrvw+3
+         R17tAYETDOMfB0fiFwXWzZHuRZ1tptL9KHwYMTuxeJH+aPtyTWhZxT98SOXIOgiMQn9h
+         MNH87MiCZesfMnPiHKlg0b1v5o5u3PxFu8xQNMavG/8Wj+WQ1Cjj8R3Npdncvdg5QQhJ
+         1cFrjRTgCbs/UQV3U4jz2G2Sh89wmYTsMltxPx4nHijeJZeWI9GGYca4XSV3fOet4+gV
+         m7XewbqoIYPf8zcSLXaLK1sh01UR/N6goGabgwh3sX4qeeVO5IVKVrxyTizfyHgUMFQZ
+         0cbg==
+X-Gm-Message-State: AOAM5318J0Qw/Qt0Z+djjb1d+soWtOUzsd31hkvjWzbTQya6b6wvj4gb
+        PXXFCQfACXDJ/jszBpYDhrhld9XJvl7KB/8sMK2vkg==
+X-Google-Smtp-Source: ABdhPJydo50QZMsFLHFdcrMQccawsp0xycWnRC92VTYdUGqAk9yNquqaLfJDSCFQ77zzPTByIW3fPz7ApE1HLgLvYx4=
+X-Received: by 2002:a19:f11d:: with SMTP id p29mr2961781lfh.547.1614287728943;
+ Thu, 25 Feb 2021 13:15:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <202102242224.Cpiog92Y-lkp@intel.com> <83ab58cb-581f-135f-21fd-05c15860cafa@suse.com>
+ <a7013b23-af0b-e1dd-324c-904a536d9f01@intel.com> <20210225183436.GA1349@MSI.localdomain>
+In-Reply-To: <20210225183436.GA1349@MSI.localdomain>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 25 Feb 2021 13:15:18 -0800
+Message-ID: <CAKwvOd=UvZ8Gy0-E8c9EFooCAC4tOALQ4hZ2kZqQsFCPT1Ehfw@mail.gmail.com>
+Subject: Re: [kbuild-all] Re: WARNING: modpost: vmlinux.o(.text+0x1a8edb8):
+ Section mismatch in reference from the function stop_machine() to the
+ function .init.text:intel_rng_hw_init()
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Rong Chen <rong.a.chen@intel.com>,
+        =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When accessing the timecounter register on an i.MX8MQ the kernel hangs.
-This is only the case when the interface is down. This can be reproduced
-by reading with 'phc_ctrl eth0 get'.
+On Thu, Feb 25, 2021 at 10:34 AM Nathan Chancellor <nathan@kernel.org> wrot=
+e:
+>
+> On Thu, Feb 25, 2021 at 04:17:21PM +0800, Rong Chen wrote:
+> >
+> >
+> > On 2/24/21 10:26 PM, J=C3=BCrgen Gro=C3=9F wrote:
+> > > On 24.02.21 15:20, kernel test robot wrote:
+> > > > tree:
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> > > > master
+> > > > head:   c03c21ba6f4e95e406a1a7b4c34ef334b977c194
+> > > > commit: ab234a260b1f625b26cbefa93ca365b0ae66df33 x86/pv: Rework
+> > > > arch_local_irq_restore() to not use popf
+> > > > date:   2 weeks ago
+> > > > config: x86_64-randconfig-a005-20210223 (attached as .config)
+> > > > compiler: clang version 13.0.0 (https://github.com/llvm/llvm-projec=
+t
+> > > > f14a14dd2564703db02f80c00db8ae492b594f77)
+> > > > reproduce (this is a W=3D1 build):
+> > > >          wget
+> > > > https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.=
+cross
+> > > > -O ~/bin/make.cross
+> > > >          chmod +x ~/bin/make.cross
+> > > >          # install x86_64 cross compiling tool for clang build
+> > > >          # apt-get install binutils-x86-64-linux-gnu
+> > > >          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds=
+/linux.git/commit/?id=3Dab234a260b1f625b26cbefa93ca365b0ae66df33
+> > > >          git remote add linus
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> > > >          git fetch --no-tags linus master
+> > > >          git checkout ab234a260b1f625b26cbefa93ca365b0ae66df33
+> > > >          # save the attached .config to linux build tree
+> > > >          COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.c=
+ross
+> > > > ARCH=3Dx86_64
+> > > >
+> > > > If you fix the issue, kindly add following tag as appropriate
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > >
+> > > > All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> > > >
+> > > > > > WARNING: modpost: vmlinux.o(.text+0x1a8edb8): Section
+> > > > > > mismatch in reference from the function stop_machine() to
+> > > > > > the function .init.text:intel_rng_hw_init()
+> > > > The function stop_machine() references
+> > > > the function __init intel_rng_hw_init().
+> > > > This is often because stop_machine lacks a __init
+> > > > annotation or the annotation of intel_rng_hw_init is wrong.
+> > >
+> > > I'd be very interested to know how the identified patch would be able=
+ to
+> > > have this effect.
 
-Like described in the change in 91c0d987a9788dcc5fe26baafd73bf9242b68900
-the igp clock is disabled when the interface is down and leads to a
-system hang.
+Sorry, this looks like fallout from a recent LLVM change, see also:
+https://lore.kernel.org/lkml/CAKwvOd=3DB=3DcHpp_XfPTtyVpQyrwQrFZX9SXKw=3DSJ=
+C1VC-VbEwFA@mail.gmail.com/
 
-So we check if the ptp clock status before reading the timecounter
-register.
+> >
+> > Hi Clang Team,
+> >
+> > The problem is found by the latest clang, and I can't reproduce it with
+> > clang-11,
+> > could you take a look?
+> >
+> > Best Regards,
+> > Rong Chen
+>
+> Hi Rong,
+>
+> Known issue. LLVM 13 cut over to the new pass manager (NPM) which has
+> changed some of the inlining heuristics. I would probably recommend
+> cutting over to the "release/12.x" branch for now, which should be more
 
-Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
----
-v2:
- - add mutex (thanks to Richard)
+ehh...we still want coverage of ToT LLVM though, to spot potential
+issues like this.  I'd take both (clang-12 and 13) if possible; both
+are pre-release and still undergoing active development.
 
-v3:
-I did a mistake and did not test properly
- - add parenteses
- - fix the used variable
+> up to date but also stable.
+>
+> Additionally, Arnd sent a fix for this particular warning here:
+> https://lore.kernel.org/lkml/20210225130153.1956990-1-arnd@kernel.org/
 
- drivers/net/ethernet/freescale/fec_ptp.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Looks like it got picked up by akpm@ in -mm?
 
-diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
-index 2e344aada4c6..1753807cbf97 100644
---- a/drivers/net/ethernet/freescale/fec_ptp.c
-+++ b/drivers/net/ethernet/freescale/fec_ptp.c
-@@ -377,9 +377,16 @@ static int fec_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
- 	u64 ns;
- 	unsigned long flags;
- 
-+	mutex_lock(&adapter->ptp_clk_mutex);
-+	/* Check the ptp clock */
-+	if (!adapter->ptp_clk_on) {
-+		mutex_unlock(&adapter->ptp_clk_mutex);
-+		return -EINVAL;
-+	}
- 	spin_lock_irqsave(&adapter->tmreg_lock, flags);
- 	ns = timecounter_read(&adapter->tc);
- 	spin_unlock_irqrestore(&adapter->tmreg_lock, flags);
-+	mutex_unlock(&adapter->ptp_clk_mutex);
- 
- 	*ts = ns_to_timespec64(ns);
- 
--- 
-2.30.0
+>
+> Cheers,
+> Nathan
 
+
+
+--=20
+Thanks,
+~Nick Desaulniers
