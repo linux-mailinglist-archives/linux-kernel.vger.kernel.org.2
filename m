@@ -2,69 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA15F3249DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F313249DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbhBYEsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 23:48:20 -0500
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:46752
-        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S235189AbhBYErq (ORCPT
+        id S235307AbhBYEsf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Feb 2021 23:48:35 -0500
+Received: from mail.kingsoft.com ([114.255.44.145]:12347 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235270AbhBYEr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 23:47:46 -0500
-Received: from centos7u5.localdomain (unknown [202.43.158.76])
-        by c1app2 (Coremail) with SMTP id AgINCgDHzfmkKzdguvsfAw--.8688S3;
-        Thu, 25 Feb 2021 12:46:28 +0800 (CST)
-From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Subject: [PATCH] mm/oom_kill: minor coding style tweaks
-Date:   Thu, 25 Feb 2021 12:46:00 +0800
-Message-Id: <1614228360-21168-1-git-send-email-daizhiyuan@phytium.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AgINCgDHzfmkKzdguvsfAw--.8688S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrGF1UWF15Ar45Xr1fGF4xXrb_yoWxXFXE93
-        4qkrWjg34xWryayFnFqrsIqrWIgw45ur18ZFn2qrWUta4qvr15WF4DGw4kZFy3ur1jqFy7
-        Z3srXrW7Ars8AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        XwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr
-        0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUbvtCUUUUU
-X-Originating-IP: [202.43.158.76]
-X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
+        Wed, 24 Feb 2021 23:47:59 -0500
+X-AuditID: 0a580157-f39ff7000005df43-90-603725882e1d
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 5F.A1.57155.88527306; Thu, 25 Feb 2021 12:20:24 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 25 Feb
+ 2021 12:47:12 +0800
+Date:   Thu, 25 Feb 2021 12:47:11 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     Andy Lutomirski <luto@amacapital.net>,
+        "HORIGUCHI =?UTF-8?B?TkFPWUE=?=( =?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
+        <naoya.horiguchi@nec.com>, <dave.hansen@linux.intel.com>,
+        <luto@kernel.org>, <peterz@infradead.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <x86@kernel.org>, <yangfeng1@kingsoft.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <yaoaili@kingsoft.com>
+Subject: Re: [PATCH v3] x86/fault: Send a SIGBUS to user process always for
+ hwpoison page access.
+Message-ID: <20210225124711.35b31965@alex-virtual-machine>
+In-Reply-To: <20210223164259.GA166727@agluck-desk2.amr.corp.intel.com>
+References: <20210223204436.1df73153@alex-virtual-machine>
+        <788DFBA0-903F-4548-9C2F-B1A1543EE770@amacapital.net>
+        <20210223164259.GA166727@agluck-desk2.amr.corp.intel.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsXCFcGooNuhap5gcOGdpcXnDf/YLF5saGe0
+        mLZR3OLyrjlsFvfW/Ge1WL22gdXi/K61rBaXDixgsrjYeIDR4njvASaLzZumMlu8uXCPxeLH
+        hsesDrwe31v7WDzuv/nL4rF5hZbH4j0vmTw2repk89j0aRK7x7tz59g95p0M9HhxdSOLx/t9
+        V9k8Pm+S8zjR8oU1gCeKyyYlNSezLLVI3y6BK+NETx9jwVnhittHXrA1MC7g72Lk5JAQMJH4
+        13GdEcQWEpjOJHHvm2sXIxeQ/YpRou/JbjaQBIuAqsS9U3vBbDYge9e9WawgtoiAmsSlxQ+Y
+        QRqYBRYyS3x48hqsSFggWeLMpAdgU3kFrCTOr10EZnMKuEl0rz7IDLFhHaPEnPWbwBr4BcQk
+        eq/8Z4I4yV6ibcsiqGZBiZMzn7CA2MwCmhKt23+zQ9jaEssWvmaGOFtR4vCSX+wQvUoSR7pn
+        sEHYsRLL5r1incAoPAvJqFlIRs1CMmoBI/MqRpbi3HTDTYyQWAzfwTiv6aPeIUYmDsZDjBIc
+        zEoivJv/mSYI8aYkVlalFuXHF5XmpBYfYpTmYFES55ViM08QEkhPLEnNTk0tSC2CyTJxcEo1
+        MM3YEO7777Xmj8+PVS+t/fVo7ZXjc+Y+4fovc0GSS+DwCs13lzLjbDtclgeGt+7h6JWd+unL
+        xXdiD1cxBaaqz27N//5wwwavZXdeMfG9XfHFy3PyxQufX3k4dmXxL1vxY6v/5LSM/fek/X/K
+        Me188WCKNIPM5JdHlCPE5/msaTgems8e9CnkEsshkzMPD7EIbNPlnf6lwa55/kNV5qRbcTIe
+        P3ITHuT1qVdJBbL1LehQnmo8eT1rXaZbXLvWU6sDipxLvzomuPlpqdw3zzmQbZj3Xv/4r/S0
+        1ZtECth+ytRu+a976dOdWTeXy09ffn9izB/lvx+j+oSW+GbnCK4uu+t4ZHn8rgUTli8QuKWi
+        edJEiaU4I9FQi7moOBEA4HFBwTQDAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add whitespace to fix coding style issues, improve code reading.
+On Tue, 23 Feb 2021 08:42:59 -0800
+"Luck, Tony" <tony.luck@intel.com> wrote:
 
-Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
----
- mm/oom_kill.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Tue, Feb 23, 2021 at 07:33:46AM -0800, Andy Lutomirski wrote:
+> >   
+> > > On Feb 23, 2021, at 4:44 AM, Aili Yao <yaoaili@kingsoft.com> wrote:
+> > > 
+> > > ﻿On Fri, 5 Feb 2021 17:01:35 +0800
+> > > Aili Yao <yaoaili@kingsoft.com> wrote:
+> > >   
+> > >> When one page is already hwpoisoned by MCE AO action, processes may not
+> > >> be killed, processes mapping this page may make a syscall include this
+> > >> page and result to trigger a VM_FAULT_HWPOISON fault, as it's in kernel
+> > >> mode it may be fixed by fixup_exception, current code will just return
+> > >> error code to user code.
+> > >> 
+> > >> This is not sufficient, we should send a SIGBUS to the process and log
+> > >> the info to console, as we can't trust the process will handle the error
+> > >> correctly.
+> > >> 
+> > >> Suggested-by: Feng Yang <yangfeng1@kingsoft.com>
+> > >> Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+> > >> ---
+> > >> arch/x86/mm/fault.c | 62 +++++++++++++++++++++++++++++----------------
+> > >> 1 file changed, 40 insertions(+), 22 deletions(-)
+> > >>   
+> > > Hi luto;
+> > >  Is there any feedback?  
+> > 
+> > At the very least, this needs a clear explanation of why your proposed behavior is better than the existing behavior.  
+> 
+> The explanation is buried in that "can't trust the process" line.
+> 
+> E.g. user space isn't good about checking for failed write(2) syscalls.
+> So if the poison was in a user buffer passed to write(fd, buffer, count)
+> sending a SIGBUS would be the action if they read the poison directly,
+> so it seems reasonable to send the same signal if the kernel read their
+> poison for them.
+> 
+> It would avoid users that didn't check the return value merrily proceeding
+> as if everything was ok.
 
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index c9a33ff..dd12dad7 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -994,7 +994,7 @@ static void oom_kill_process(struct oom_control *oc, const char *message)
- 	if (oom_group) {
- 		mem_cgroup_print_oom_group(oom_group);
- 		mem_cgroup_scan_tasks(oom_group, oom_kill_memcg_member,
--				      (void*)message);
-+				      (void *)message);
- 		mem_cgroup_put(oom_group);
- 	}
- }
--- 
-1.8.3.1
+Hi luto:
+   I will add more infomation:
+   Even if the process will check return value of syscall like write, I don't think
+process will take proper action for this.
+   In test example, the return value will be errno is 14 (Bad Address), the process may not realize
+this is a hw issue, and may take wrong action not as expected.
+   And totally, A hw error will rarely happen, and the hw error hitting this branch will be
+more unlikely, the impaction without this patch is quite minor, but this is still not good enough, we should
+make it better, right?
+
+Thanks
+Aili Yao
+    
+
 
