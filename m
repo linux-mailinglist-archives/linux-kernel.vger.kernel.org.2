@@ -2,90 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B833257D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FED63257D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234109AbhBYUhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:37:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34854 "EHLO
+        id S233578AbhBYUi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:38:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43719 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234102AbhBYUez (ORCPT
+        by vger.kernel.org with ESMTP id S234606AbhBYUgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:34:55 -0500
+        Thu, 25 Feb 2021 15:36:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614285194;
+        s=mimecast20190719; t=1614285314;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qrF+Ni2Yvil2kIq/7VfKLEGp6/CXFjij6cAq88xAmxE=;
-        b=fOLV0jvcXfr2ilU4CWZfdXDJqRJPaDuXFph5nK4Z6nKNN+wpn3NzfsMwWM5QOuUtuU/f6s
-        YyeuLk2JYtia3WAo2GtOgmbB/gsXt+H36Ns005a/OVlNq18VYPJPqXDBjzwXKUliOgm5Jm
-        kyulFCL5jyHjgA2i/N4WP/m8V5mxxYw=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-iAiW_Jf3N5SUPHZossBoDw-1; Thu, 25 Feb 2021 15:33:13 -0500
-X-MC-Unique: iAiW_Jf3N5SUPHZossBoDw-1
-Received: by mail-wr1-f71.google.com with SMTP id p15so3548324wre.13
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:33:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qrF+Ni2Yvil2kIq/7VfKLEGp6/CXFjij6cAq88xAmxE=;
-        b=PbrRb9gDSZAyBN5YnTmsxZCigoOtoR3j/wVYkmTKToqfol8sJ73Y6Vgkedg0XZb99w
-         lBMBUts0+edSsYf4KUYqF99AkeNRQcTbzi8s9sG/kk3lbdLoyCRwkZ8oGq0KquqZYRUO
-         juBRzL1XFLUnMhmVKk0NXqHbjDfUHLemjTHcfmGy6VMoowWl8TjavVwWAn9OPVoWdCRK
-         29uZnJfDykYsv48J/uAMrG9Lkjc1r+229qMj8HWnvWzjjt/FQYsFDJr4gP1WEGudy+WX
-         qggUPOS5CoYDqDlzI575MK1lfYPwMadCVko/FRnN2oqkZ3vGA6WiLVo3GgstY+dJf3Hm
-         jpNw==
-X-Gm-Message-State: AOAM5301p3KQQsE/P88W6slT3VIUwqzMJBC6jRHt09k9H/7KAAlAfcUA
-        +2ux3JQvYl3CTWfM11vHQage8LsrVt7m44WOKray4DSQCM19fW1jvgFmL9XX0PtiBZ1lG7l92Mk
-        3mtwBmSE0J3jIRkfSff3KsIUq
-X-Received: by 2002:adf:c54a:: with SMTP id s10mr5332872wrf.58.1614285191799;
-        Thu, 25 Feb 2021 12:33:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyiUc9+l4ySZeqyFxoKprpfooBMz8zXXybLQPxr5oMIikAdNnqwvHSl61IP+s6ufodA9vyIZQ==
-X-Received: by 2002:adf:c54a:: with SMTP id s10mr5332864wrf.58.1614285191591;
-        Thu, 25 Feb 2021 12:33:11 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id k15sm8569395wmj.6.2021.02.25.12.33.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Feb 2021 12:33:10 -0800 (PST)
-Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
-To:     Ashish Kalra <ashish.kalra@amd.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     natet@google.com, brijesh.singh@amd.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rientjes@google.com,
-        seanjc@google.com, srutherford@google.com, thomas.lendacky@amd.com,
-        x86@kernel.org, Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        DOV MURIK <Dov.Murik1@il.ibm.com>
-References: <20210224085915.28751-1-natet@google.com>
- <7cb132ce522728f7689618832a65e31e37788201.camel@HansenPartnership.com>
- <20210225181812.GA5046@ashkalra_ubuntu_server>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b885c283-ceb3-b9bc-516b-c28771652a7c@redhat.com>
-Date:   Thu, 25 Feb 2021 21:33:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=XqCMFhwUlnyqm6Lv1VYrybaA/cljgkrXlwbFsgvGlhc=;
+        b=NxDwIzR8cF1XX+cgZk99H7+ehwUkqeplHWsocTdJI3d27Piww0oojW4/XyNHbb6BW2IV+H
+        RQOj4wuMFtnwoLHFiGSf1F8N/qnCGqVE7u/rfVFFyGVYzLlvp1v7MQwYNV4htVluJi7uOC
+        bHmLvNnHdSYah6bFfgfa8kwpCgLcAN4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-d4Ic5LAyMQiOFemV_vwI0Q-1; Thu, 25 Feb 2021 15:35:09 -0500
+X-MC-Unique: d4Ic5LAyMQiOFemV_vwI0Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F185C1E561;
+        Thu, 25 Feb 2021 20:35:07 +0000 (UTC)
+Received: from krava (unknown [10.40.192.91])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 78A7260BE5;
+        Thu, 25 Feb 2021 20:35:05 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 21:35:04 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Nicholas Fraser <nfraser@codeweavers.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+        Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+Subject: Re: [PATCH] perf buildid-cache: Add test for PE executable
+Message-ID: <YDgJ+JTiOsGX288R@krava>
+References: <790bfe67-2155-a426-7130-ae7c45cb055b@codeweavers.com>
 MIME-Version: 1.0
-In-Reply-To: <20210225181812.GA5046@ashkalra_ubuntu_server>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <790bfe67-2155-a426-7130-ae7c45cb055b@codeweavers.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/02/21 19:18, Ashish Kalra wrote:
-> I do believe that some of these alternative SEV live migration support
-> or Migration helper (MH) solutions will still use SEV PSP migration for
-> migrating the MH itself, therefore the SEV live migration patches
-> (currently v10 posted upstream) still make sense and will be used.
+On Wed, Feb 24, 2021 at 02:59:16PM -0500, Nicholas Fraser wrote:
+> From 9fd0b3889f00ad13662879767d833309d8a035b6 Mon Sep 17 00:00:00 2001
+> From: Nicholas Fraser <nfraser@codeweavers.com>
+> Date: Thu, 18 Feb 2021 13:24:03 -0500
+> Subject: [PATCH] perf buildid-cache: Add test for PE executable
+> 
+> This builds on the previous changes to tests/shell/buildid.sh, adding
+> tests for a PE file. It adds it to the build-id cache manually and, if
+> Wine is available, runs it under "perf record" and verifies that it was
+> added automatically.
+> 
+> If wine is not installed, only warnings are printed; the test can still
+> exit 0.
+> 
+> Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
 
-I think that since the migration helper (at least for SEV, not -ES) is 
-part of the attested firmware, it can be started on the destination 
-before the rest of the VM.
+works nicely now, thanks
 
-Paolo
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+jirka
+
+> ---
+>  tools/perf/tests/shell/buildid.sh | 65 +++++++++++++++++++++++++++----
+>  1 file changed, 58 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
+> index 416af614bbe0..f05670d1e39e 100755
+> --- a/tools/perf/tests/shell/buildid.sh
+> +++ b/tools/perf/tests/shell/buildid.sh
+> @@ -14,18 +14,56 @@ if ! [ -x "$(command -v cc)" ]; then
+>  	exit 2
+>  fi
+>  
+> +# check what we need to test windows binaries
+> +add_pe=1
+> +run_pe=1
+> +if ! perf version --build-options | grep -q 'libbfd: .* on '; then
+> +	echo "WARNING: perf not built with libbfd. PE binaries will not be tested."
+> +	add_pe=0
+> +	run_pe=0
+> +fi
+> +if ! which wine > /dev/null; then
+> +	echo "WARNING: wine not found. PE binaries will not be run."
+> +	run_pe=0
+> +fi
+> +
+> +# set up wine
+> +if [ ${run_pe} -eq 1 ]; then
+> +	wineprefix=$(mktemp -d /tmp/perf.wineprefix.XXX)
+> +	export WINEPREFIX=${wineprefix}
+> +	# clear display variables to prevent wine from popping up dialogs
+> +	unset DISPLAY
+> +	unset WAYLAND_DISPLAY
+> +fi
+> +
+>  ex_md5=$(mktemp /tmp/perf.ex.MD5.XXX)
+>  ex_sha1=$(mktemp /tmp/perf.ex.SHA1.XXX)
+> +ex_pe=$(dirname $0)/../pe-file.exe
+>  
+>  echo 'int main(void) { return 0; }' | cc -Wl,--build-id=sha1 -o ${ex_sha1} -x c -
+>  echo 'int main(void) { return 0; }' | cc -Wl,--build-id=md5 -o ${ex_md5} -x c -
+>  
+> -echo "test binaries: ${ex_sha1} ${ex_md5}"
+> +echo "test binaries: ${ex_sha1} ${ex_md5} ${ex_pe}"
+>  
+>  check()
+>  {
+> -	id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
+> -
+> +	case $1 in
+> +	*.exe)
+> +		# We don't have a tool that can pull a nicely formatted build-id out of
+> +		# a PE file, but we can extract the whole section with objcopy and
+> +		# format it ourselves. The .buildid section is a Debug Directory
+> +		# containing a CodeView entry:
+> +		#     https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#debug-directory-image-only
+> +		#     https://github.com/dotnet/runtime/blob/da94c022576a5c3bbc0e896f006565905eb137f9/docs/design/specs/PE-COFF.md
+> +		# The build-id starts at byte 33 and must be rearranged into a GUID.
+> +		id=`objcopy -O binary --only-section=.buildid $1 /dev/stdout | \
+> +			cut -c 33-48 | hexdump -ve '/1 "%02x"' | \
+> +			sed 's@^\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(.*\)0a$@\4\3\2\1\6\5\8\7\9@'`
+> +		;;
+> +	*)
+> +		id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
+> +		;;
+> +	esac
+>  	echo "build id: ${id}"
+>  
+>  	link=${build_id_dir}/.build-id/${id:0:2}/${id:2}
+> @@ -50,7 +88,7 @@ check()
+>  		exit 1
+>  	fi
+>  
+> -	${perf} buildid-cache -l | grep $id
+> +	${perf} buildid-cache -l | grep ${id}
+>  	if [ $? -ne 0 ]; then
+>  		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
+>  		exit 1
+> @@ -79,16 +117,20 @@ test_record()
+>  {
+>  	data=$(mktemp /tmp/perf.data.XXX)
+>  	build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
+> +	log=$(mktemp /tmp/perf.log.XXX)
+>  	perf="perf --buildid-dir ${build_id_dir}"
+>  
+> -	${perf} record --buildid-all -o ${data} ${1}
+> +	echo "running: perf record $@"
+> +	${perf} record --buildid-all -o ${data} $@ &> ${log}
+>  	if [ $? -ne 0 ]; then
+> -		echo "failed: record ${1}"
+> +		echo "failed: record $@"
+> +		echo "see log: ${log}"
+>  		exit 1
+>  	fi
+>  
+> -	check ${1}
+> +	check ${@: -1}
+>  
+> +	rm -f ${log}
+>  	rm -rf ${build_id_dir}
+>  	rm -rf ${data}
+>  }
+> @@ -96,12 +138,21 @@ test_record()
+>  # add binaries manual via perf buildid-cache -a
+>  test_add ${ex_sha1}
+>  test_add ${ex_md5}
+> +if [ ${add_pe} -eq 1 ]; then
+> +	test_add ${ex_pe}
+> +fi
+>  
+>  # add binaries via perf record post processing
+>  test_record ${ex_sha1}
+>  test_record ${ex_md5}
+> +if [ ${run_pe} -eq 1 ]; then
+> +	test_record wine ${ex_pe}
+> +fi
+>  
+>  # cleanup
+>  rm ${ex_sha1} ${ex_md5}
+> +if [ ${run_pe} -eq 1 ]; then
+> +	rm -r ${wineprefix}
+> +fi
+>  
+>  exit ${err}
+> -- 
+> 2.30.1
+> 
+> 
 
