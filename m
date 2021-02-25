@@ -2,137 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C9332593F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07257325943
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbhBYWHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:07:09 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39038 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbhBYWHG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:07:06 -0500
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614290784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=y1kOxZAz1PS35rSHX1Q1Ehy2Rvgctil+MlY8VvUpVeM=;
-        b=bqphPTJ9Qo1TuGLHrUjO6wVHCBNeSADaPV0XwqTE0Bpab+6ikJi7H4vu4atASKb6IH3Qw1
-        opUOyrZLWDCrk5wexObxu0agdUNkZ0/0wa/UGytDwneezeO6dVSiD25bE5Y7KtDUxTW8qQ
-        S4C9fBAX+mqy+1kifk9Ayc7eWMfuOTmcz/AnROBaLFpDgfVd17tHR9gkGVJJW1orOI3fq4
-        U1EY2Q1x165411WMmukJXegwyAb1nSg8TU5+v0ybpPkriAJH2IG1+kZEzlMpmCa4kV/t26
-        H5xt62luD8p0t77Zqc05I+AKPCMnKCzHOyLFHdj+A/Jx6rn5ESxRi1CUUE2nnQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614290784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=y1kOxZAz1PS35rSHX1Q1Ehy2Rvgctil+MlY8VvUpVeM=;
-        b=PCci/Pr0JkVNcGiz0S5XvXVc3KWN8mW8tJ2wd55lhAvIGql3p7Ek93TByeCcpMB3zO1eEO
-        tMScaHc5VP7yBiAQ==
-To:     Paul Mackerras <paulus@samba.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] powerpc: low_i2c: change @lock to raw_spinlock_t
-Date:   Thu, 25 Feb 2021 23:06:23 +0100
-Message-Id: <20210225220623.30543-1-john.ogness@linutronix.de>
+        id S233819AbhBYWJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:09:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231326AbhBYWJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 17:09:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AD3164EC3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:08:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614290920;
+        bh=lgsSKsv5WWGw6seu4nq2AHtd41HuWunf07o+L8YoEzI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZggjfsYN5FrR9SupneuU2IRJjdzTdVaTsxv1Ie4wAMfYkcPd+2sXuu4YGSeIaV4nv
+         8/01nMunkI7RZIO4i803veSZ5IaPoiJndTcXU4x5+ANnUNfxgDqUYUKhbUsdQKhIdk
+         GPgHbFuaNAnvOdTwF9w6UIEpudU/zxKsHFuQQ3oyEpDDUOaEjKgL6new7zEyVv/0h4
+         nsrowbXbCT3VeigwR5X56xc5bKhu4SjL6UvAN3PLtkvxs1/56GIcXJgXwOwOSvX487
+         wY7RcofYniaCfx6I9No7ymbnohUh12JsTNf3q9iayJoDFm8rJnPsUs65OjqYj1GbLj
+         96rt4hYCqdguQ==
+Received: by mail-ot1-f44.google.com with SMTP id s3so7262041otg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:08:40 -0800 (PST)
+X-Gm-Message-State: AOAM5333/aKlygN/jdk95NPHU3fQ4t0qP1dk688JukyUXoY0Ceyw1YZH
+        1LPyQtsEAB4ktpezdkxyNGqzkdrm5HDDxG9GcYI=
+X-Google-Smtp-Source: ABdhPJy2J3/ZUvDiUbXnSkH6WsBBt1QpKTB1bWQ5CobTQTvdZQ++1o1JSl+X0cNGw2xDt070WbD+2Vi6fwPPHNEcwTI=
+X-Received: by 2002:a9d:6b8b:: with SMTP id b11mr4028035otq.210.1614290919292;
+ Thu, 25 Feb 2021 14:08:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210225150119.405469-1-arnd@kernel.org> <CAKwvOdkWfQi4vPphJ9X+xQ5MdzGhrHr1mj=oFGh3Yv5TB=76_Q@mail.gmail.com>
+In-Reply-To: <CAKwvOdkWfQi4vPphJ9X+xQ5MdzGhrHr1mj=oFGh3Yv5TB=76_Q@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 25 Feb 2021 23:08:23 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a32ECSnoi=4Ux5RFLdtTxZQe3vuyoLht1SdZ8zujtNrQw@mail.gmail.com>
+Message-ID: <CAK8P3a32ECSnoi=4Ux5RFLdtTxZQe3vuyoLht1SdZ8zujtNrQw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Fix an uninitialized index variable
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Simon Ser <contact@emersion.fr>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i2c transfers are occurring with local interrupts disabled:
+On Thu, Feb 25, 2021 at 10:34 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+> return parse_edid_cea(aconnector, edid_ext, EDID_LENGTH, vsdb_info) ? i : -ENODEV;
+>
+> would suffice, but the patch is still fine as is.
 
-smp_core99_give_timebase()
-  local_irq_save();
-  smp_core99_cypress_tb_freeze()
-    pmac_i2c_xfer()
-      kw_i2c_xfer()
-        spin_lock_irqsave(&host->lock, flags)
+Right, I did not want to change more than necessary here, and the
+original code already had the extra assignment instead of returning
+the value.
 
-This is a problem because with PREEMPT_RT a spinlock_t can sleep,
-causing the system to hang. Convert the spinlock_t to the
-non-sleeping raw_spinlock_t.
+> > @@ -9857,8 +9857,8 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+> >                         }
+> >                 }
+> >         } else if (edid && amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_HDMI_TYPE_A) {
+> > -               hdmi_valid_vsdb_found = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
+> > -               if (hdmi_valid_vsdb_found && vsdb_info.freesync_supported) {
+> > +               i = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
+> > +               if (i >= 0 && vsdb_info.freesync_supported) {
+>
+> reusing `i` here is safe, for now, but reuse of variables like this in
+> separate branches like this might not get noticed if the function is
+> amended in the future.
+>
+> >                         timing  = &edid->detailed_timings[i];
+> >                         data    = &timing->data.other_data;
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- arch/powerpc/platforms/powermac/low_i2c.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+The entire point of the patch is that 'i' is in fact used in the following line,
+but was lacking an intialization.
 
-diff --git a/arch/powerpc/platforms/powermac/low_i2c.c b/arch/powerpc/platforms/powermac/low_i2c.c
-index f77a59b5c2e1..ba89c95ef290 100644
---- a/arch/powerpc/platforms/powermac/low_i2c.c
-+++ b/arch/powerpc/platforms/powermac/low_i2c.c
-@@ -116,7 +116,7 @@ struct pmac_i2c_host_kw
- 	int			polled;
- 	int			result;
- 	struct completion	complete;
--	spinlock_t		lock;
-+	raw_spinlock_t		lock;
- 	struct timer_list	timeout_timer;
- };
- 
-@@ -346,14 +346,14 @@ static irqreturn_t kw_i2c_irq(int irq, void *dev_id)
- 	struct pmac_i2c_host_kw *host = dev_id;
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&host->lock, flags);
-+	raw_spin_lock_irqsave(&host->lock, flags);
- 	del_timer(&host->timeout_timer);
- 	kw_i2c_handle_interrupt(host, kw_read_reg(reg_isr));
- 	if (host->state != state_idle) {
- 		host->timeout_timer.expires = jiffies + KW_POLL_TIMEOUT;
- 		add_timer(&host->timeout_timer);
- 	}
--	spin_unlock_irqrestore(&host->lock, flags);
-+	raw_spin_unlock_irqrestore(&host->lock, flags);
- 	return IRQ_HANDLED;
- }
- 
-@@ -362,7 +362,7 @@ static void kw_i2c_timeout(struct timer_list *t)
- 	struct pmac_i2c_host_kw *host = from_timer(host, t, timeout_timer);
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&host->lock, flags);
-+	raw_spin_lock_irqsave(&host->lock, flags);
- 
- 	/*
- 	 * If the timer is pending, that means we raced with the
-@@ -377,7 +377,7 @@ static void kw_i2c_timeout(struct timer_list *t)
- 		add_timer(&host->timeout_timer);
- 	}
-  skip:
--	spin_unlock_irqrestore(&host->lock, flags);
-+	raw_spin_unlock_irqrestore(&host->lock, flags);
- }
- 
- static int kw_i2c_open(struct pmac_i2c_bus *bus)
-@@ -470,9 +470,9 @@ static int kw_i2c_xfer(struct pmac_i2c_bus *bus, u8 addrdir, int subsize,
- 			unsigned long flags;
- 
- 			u8 isr = kw_i2c_wait_interrupt(host);
--			spin_lock_irqsave(&host->lock, flags);
-+			raw_spin_lock_irqsave(&host->lock, flags);
- 			kw_i2c_handle_interrupt(host, isr);
--			spin_unlock_irqrestore(&host->lock, flags);
-+			raw_spin_unlock_irqrestore(&host->lock, flags);
- 		}
- 	}
- 
-@@ -508,7 +508,7 @@ static struct pmac_i2c_host_kw *__init kw_i2c_host_init(struct device_node *np)
- 	}
- 	mutex_init(&host->mutex);
- 	init_completion(&host->complete);
--	spin_lock_init(&host->lock);
-+	raw_spin_lock_init(&host->lock);
- 	timer_setup(&host->timeout_timer, kw_i2c_timeout, 0);
- 
- 	psteps = of_get_property(np, "AAPL,address-step", NULL);
--- 
-2.20.1
-
+       Arnd
