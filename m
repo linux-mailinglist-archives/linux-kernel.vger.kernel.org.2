@@ -2,311 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA7632550B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D16F2325511
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbhBYSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:00:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60978 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232982AbhBYRwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:52:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 37A0BAD57;
-        Thu, 25 Feb 2021 17:51:54 +0000 (UTC)
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        id S233158AbhBYSBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:01:51 -0500
+Received: from mail-dm6nam11on2066.outbound.protection.outlook.com ([40.107.223.66]:26017
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231445AbhBYRyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 12:54:05 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X4yNRcCci6uoLSg9lJ54xgsJlUCob8SB3+gkEhpW63z9baovC3eMFzRZtnYw1CKV96e34yJiWWqndC4BxIROcMvGd4ZM6MoZssnFF9+Mc5cr1RXKCHxRScNWqq+tBSJhJd5qNe6XEEdIKB5kEvU2Zw81hrpaaQj5b/XZe2XYPFoTGwkixWe9BvqDNjtrORNzhEHKazGotfOO04Fcxoip3hXCTiuK1zJdW3xVwTpyIQhyaAgJqrkxYVdSTf28kdIGpa/taF7eIRX7yRm2IyQOqdlAYZz8ZSWpu2dW2n2prFlxks493LNeLp9MOwBbKkPjJ0bGVc5eijacke45yf6t4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lPUs2RQkBKnSWt3tfO90vmdfytlepOortjCD6+Dfa8g=;
+ b=RXb3iqe+uUvmUEWBBXxyBvH7pgZ0beiuoXX8m6TjeLGSPnQ+Km/BgI/HaB9MculTATx3L6CTbFIKTR6HGm5906/l43XhkiGXwrqg6jEqrgdpn+YeUh4DJSD98iACG/Pafes8AKwSImpiRM7cXRzkzMkoI23dqOhhIOkX9LY//d2ZIpD5GAN3WJ9alEkg9BG0/h1LVoBp0/47960VSF3eCcbB3PskXtk7zJPCzdqvE/8H2uEkZXSkrZn2KOjOBbWEFgrUlACrgP3gf75RsXAT79yR8aEIcl3n8BsJq68usV7yL0D8AtXLABFKHByEShud6weRX2H4RjLXW/8TMXmDhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lPUs2RQkBKnSWt3tfO90vmdfytlepOortjCD6+Dfa8g=;
+ b=Axuf1lKvtsHgMI8PNkNENFI2VdXP42AsMvORTfDHJjX6siWJAqIJYRsFHdEwq7Ulutqp5iLqMltBbx9d9HGO6Y+7aSLGZoktNLTsTa0aGx8U69DJTENNCcQWKqIpF/Ujy5i07EYA1g90fp2opXw9OnGPFvRli+wgormK/x++7z0=
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com (2603:10b6:a03:4a::18)
+ by SJ0PR05MB7644.namprd05.prod.outlook.com (2603:10b6:a03:2eb::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.18; Thu, 25 Feb
+ 2021 17:53:12 +0000
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::5905:ca03:9fa3:ab50]) by BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::5905:ca03:9fa3:ab50%6]) with mapi id 15.20.3890.013; Thu, 25 Feb 2021
+ 17:53:12 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org, x86@kernel.org
-References: <20210224153950.20789-1-rppt@kernel.org>
- <20210224153950.20789-2-rppt@kernel.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v7 1/1] mm/page_alloc.c: refactor initialization of struct
- page for holes in memory layout
-Message-ID: <a4b2ba7e-96a5-6a75-dad7-626d054f9e8b@suse.cz>
-Date:   Thu, 25 Feb 2021 18:51:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210224153950.20789-2-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [RFC 0/6] x86: prefetch_page() vDSO call
+Thread-Topic: [RFC 0/6] x86: prefetch_page() vDSO call
+Thread-Index: AQHXC3A3AKdXDDevAkSbJ7drCRkvXKppF4sAgAAKEoCAAAWsgA==
+Date:   Thu, 25 Feb 2021 17:53:12 +0000
+Message-ID: <C47CFA1A-2183-4EC8-B201-C95BB1C7F882@vmware.com>
+References: <20210225072910.2811795-1-namit@vmware.com>
+ <20210225121645.GZ2858050@casper.infradead.org>
+ <0EFCDB0B-DB73-4866-9C0B-7192737CA372@vmware.com>
+ <20210225173253.GB2858050@casper.infradead.org>
+In-Reply-To: <20210225173253.GB2858050@casper.infradead.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.60.0.2.21)
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=vmware.com;
+x-originating-ip: [24.6.216.183]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 944e52f7-cc78-483b-8e14-08d8d9b63830
+x-ms-traffictypediagnostic: SJ0PR05MB7644:
+x-microsoft-antispam-prvs: <SJ0PR05MB7644773DF2F85877F54C32CFD09E9@SJ0PR05MB7644.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: blubTBW0sjrTW9gpeUCqAeaS9KplSJ+fBuJaZn++KeY4sYAstpNJioLGy034qUG9E3nF4DXXcfeNMtFWVZnBkEphWfcEsTxzoavk7lvoUbbPpk1DfXW4Olpq7Dp7DoPrqlmvZeOKexWYmRlj8jQZpEOWUNzpJ/dWFJR4sXwnpeeT9kyJkm32gmtks6IBRXIgjLztfq/aXRvcdpjRkIk5Lsed+tFXb+airCYPpGMJH9Yc8m10ORO5K0FNIWokOVJA5cKKaa5/y448YSBznt/w7PRQdSogwUY/NyTr86pHrkHO7JwoKKvgbfUpmvMNZGI0FhFq/sVUkAaWd3xzRi7Y35SPxfGN5iJvYsHO0Q4AiwWG1nmGyVoSO/75WG7VuZif3qKrnsnLTPxFXZpZrnfMQkKglpaCA2ppeTwFMl+F31GpEW60INFZ8pFm1STtf+vFGnWdPTy9K1uZ3fljTTaoNJOxmRROGtvaW6fowWGOVz3i/74KuRl8+dWKhRFq5ysmoL802QGqLZHhMXL0O/z/s1zd9lyzk14Bc9r8NKu2OYXIs5sdmNdHLI6cAUhW6cKOccGRDyIP6kb75Cu5Nl9Kcw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(39860400002)(136003)(376002)(66556008)(64756008)(186003)(66476007)(83380400001)(2906002)(33656002)(6506007)(66446008)(8936002)(76116006)(5660300002)(8676002)(66946007)(54906003)(36756003)(6512007)(86362001)(316002)(6486002)(478600001)(6916009)(53546011)(7416002)(71200400001)(26005)(4326008)(2616005)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?XSN9fTm1j3CijfkYgxRuqiIVEP1tOiW7K4sfZIfCcaddAfar5tWmlmuWkspM?=
+ =?us-ascii?Q?OhvY950reFPuvRMVHTcKQGCOmOnaBy0+zIyDTCJW5w8MdodURdSV4Twinfkt?=
+ =?us-ascii?Q?oRzZyAFrBBU8uUqs7nvx2F8Occ65tPN/u6PbyJvIhUCQCuMFzarjsQZYDY/o?=
+ =?us-ascii?Q?D0q37YsprGA5P04YBhGocA1QHd5MKTEm6+K0atOG9sQciho30qCGOAx/WQ0R?=
+ =?us-ascii?Q?IePGR5ihHjuCB/5aqlXYx5JGxnJkWrLaeZFER/dqEY0ZLJPWHUBdx7VCxMe+?=
+ =?us-ascii?Q?HoDJLzWmlQlltfyWXz3lObLGSWw8PO9To8N/x0fTYEIfQ13BVaqJ0zNOXR7Q?=
+ =?us-ascii?Q?5IFxvxvOX0hBpHAD5OeizxbqnKsdyhsMpfHQhp6F9TKrlhKy0p55UkXPaTO4?=
+ =?us-ascii?Q?8of8fODY7rNNzfXGjylwbzIG8itSH+swO9xMCdQUwVCBixbYJMoqZd6rBH14?=
+ =?us-ascii?Q?cW8femgoAwHD7c132w8tYN/9VANNQtgF9iMA07xNwC19HJnvhttNottV7uEs?=
+ =?us-ascii?Q?jQvC4P2F72cP5ijD14S2fpg4KRU5I8Y7ZciHJs3jKitruELALre1/FQOksvI?=
+ =?us-ascii?Q?C8JsewrYZOTcu71k8RyE7bw/8d0HWRUiu7fn2uKg8Fs+Z4ax6DEqwFJ9S9sP?=
+ =?us-ascii?Q?VGel3ATk96WmuKZKRDkmWCBnFb52/yGjm+XxLXvTJr4x911HU2ONcWopzf7X?=
+ =?us-ascii?Q?iekGWModH+r/Ax/SORJc5Qn60YPOJX3eXKO+e4atOvPxz0v1m2k6wIDsefLQ?=
+ =?us-ascii?Q?HRyYWOzWs5rIzUJNdO6yRSkzazPxpf8P1jR8ArQpj1UvGLZ5r9W8eCGfG2Gu?=
+ =?us-ascii?Q?VsgkgOAltoaEiu7bSrjWYLeMqYqi66F8VJzzuyWE1VcqZftlQcHv06yY1W37?=
+ =?us-ascii?Q?JaTIWCInXvaU8WMu+6wg6MXzjluDogV2tOf2mduxERP2y4RauhsmAa43T1/6?=
+ =?us-ascii?Q?93hZAsfcVT4X7tkEKXb1zqD+wcIFpyecmF01QrlHGSXISArdyrtb5QZh207k?=
+ =?us-ascii?Q?G+2V83igCyb7GqTymwiP8g1W2T4Hz4LF7vQ/OPgvimjWJeHfyo3sMF3/lG9U?=
+ =?us-ascii?Q?unCC9CwqtZSa3NN1tJX7Jc8+IHQwRTxD9l3/WhyF92bU6f8qywjb+XCA+aRL?=
+ =?us-ascii?Q?t4gLZJ5tPdMT9eD3oNdgGP+fnJkvL5v72WEw/8B5O8C3x1QZBvrckftilCvU?=
+ =?us-ascii?Q?1gVP8O2e4oEXlOnZUQNCNLrgmnLpJw03QocbY9JYpZr0JfDbi1K+cNFvGTZZ?=
+ =?us-ascii?Q?aiw8QDXh2WO6GIFLQiNKlql8d8AGJoF6S+TfV/TGTfh50/F5LWg4KqFIhD+/?=
+ =?us-ascii?Q?KhIyN/3V6HtwU7QhduG8YMcO?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <AFDF8ECAA403AD40AC358C22B7D2F7B8@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4776.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 944e52f7-cc78-483b-8e14-08d8d9b63830
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Feb 2021 17:53:12.2237
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HWWw1zKQVADCtNFopUOq2umYPIvazN0o8EGb1X4LkR0CgVQLEy0w8LtsD68uIUmYgw4JwTcrh6k+5nkqGAn9DQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR05MB7644
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/21 4:39 PM, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
 
-Hi, thanks for your efforts. I'll just nit pick on the description/comments as I
-don't feel confident about judging the implementation correctness, sorry :)
 
-> There could be struct pages that are not backed by actual physical memory.
-> This can happen when the actual memory bank is not a multiple of
-> SECTION_SIZE or when an architecture does not register memory holes
-> reserved by the firmware as memblock.memory.
-> 
-> Such pages are currently initialized using init_unavailable_mem() function
-> that iterates through PFNs in holes in memblock.memory and if there is a
-> struct page corresponding to a PFN, the fields of this page are set to
-> default values and it is marked as Reserved.
-> 
-> init_unavailable_mem() does not take into account zone and node the page
-> belongs to and sets both zone and node links in struct page to zero.
-> 
-> Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
-> rather that check each PFN") the holes inside a zone were re-initialized
-> during memmap_init() and got their zone/node links right. However, after
-> that commit nothing updates the struct pages representing such holes.
-> 
-> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
-> instance in a configuration below:
-> 
-> 	# grep -A1 E820 /proc/iomem
-> 	7a17b000-7a216fff : Unknown E820 type
-> 	7a217000-7bffffff : System RAM
-> 
-> unset zone link in struct page will trigger
-> 
-> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+> On Feb 25, 2021, at 9:32 AM, Matthew Wilcox <willy@infradead.org> wrote:
+>=20
+> On Thu, Feb 25, 2021 at 04:56:50PM +0000, Nadav Amit wrote:
+>>=20
+>>> On Feb 25, 2021, at 4:16 AM, Matthew Wilcox <willy@infradead.org> wrote=
+:
+>>>=20
+>>> On Wed, Feb 24, 2021 at 11:29:04PM -0800, Nadav Amit wrote:
+>>>> Just as applications can use prefetch instructions to overlap
+>>>> computations and memory accesses, applications may want to overlap the
+>>>> page-faults and compute or overlap the I/O accesses that are required
+>>>> for page-faults of different pages.
+>>>=20
+>>> Isn't this madvise(MADV_WILLNEED)?
+>>=20
+>> Good point that I should have mentioned. In a way prefetch_page() a
+>> combination of mincore() and MADV_WILLNEED.
+>>=20
+>> There are 4 main differences from MADV_WILLNEED:
+>>=20
+>> 1. Much lower invocation cost if the readahead is not needed: this allow=
+s
+>> to prefetch pages more abundantly.
+>=20
+> That seems like something that could be fixed in libc -- if we add a
+> page prefetch vdso call, an application calling posix_madvise() could
+> be implemented by calling this fast path.  Assuming the performance
+> increase justifies this extra complexity.
+>=20
+>> 2. Return value: return value tells you whether the page is accessible.
+>> This makes it usable for coroutines, for instance. In this regard the
+>> call is more similar to mincore() than MADV_WILLNEED.
+>=20
+> I don't quite understand the programming model you're describing here.
+>=20
+>> 3. The PTEs are mapped if the pages are already present in the
+>> swap/page-cache, preventing an additional page-fault just to map them.
+>=20
+> We could enhance madvise() to do this, no?
+>=20
+>> 4. Avoiding heavy-weight reclamation on low memory (this may need to
+>> be selective, and can be integrated with MADV_WILLNEED).
+>=20
+> Likewise.
+>=20
+> I don't want to add a new Linux-specific call when there's already a
+> POSIX interface that communicates the exact same thing.  The return
+> value seems like the only problem.
 
-... in set_pfnblock_flags_mask() when called with a struct page from the
-"Unknown E820 type" range.
+I agree that this call does not have to be exposed to the application.
 
-> because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
-> in struct page) in the same pageblock.
+I am not sure there is a lot of extra complexity now, but obviously
+some evaluations are needed.
 
-I would say "there are apparently pages" ... "and ZONE_DMA does not span this range"
-
-> Interleave initialization of the unavailable pages with the normal
-> initialization of memory map, so that zone and node information will be
-> properly set on struct pages that are not backed by the actual memory.
-> 
-> With this change the pages for holes inside a zone will get proper
-> zone/node links and the pages that are not spanned by any node will get
-> links to the adjacent zone/node.
-
-What if two zones are adjacent? I.e. if the hole was at a boundary between two
-zones.
-
-> Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Reported-by: Qian Cai <cai@lca.pw>
-> Reported-by: Andrea Arcangeli <aarcange@redhat.com>
-> Reviewed-by: Baoquan He <bhe@redhat.com>
-
-For the approach:
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
->  mm/page_alloc.c | 147 +++++++++++++++++++++---------------------------
->  1 file changed, 64 insertions(+), 83 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3e93f8b29bae..a11a9acde708 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6280,12 +6280,60 @@ static void __meminit zone_init_free_lists(struct zone *zone)
->  	}
->  }
->  
-> +#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
-> +/*
-> + * Only struct pages that correspond to ranges defined by memblock.memory
-> + * are zeroed and initialized by going through __init_single_page() during
-> + * memmap_init_zone().
-> + *
-> + * But, there could be struct pages that correspond to holes in
-> + * memblock.memory. This can happen because of the following reasons:
-> + * - phyiscal memory bank size is not necessarily the exact multiple of the
-
-        physical
-
-> + *   arbitrary section size
-> + * - early reserved memory may not be listed in memblock.memory
-> + * - memory layouts defined with memmap= kernel parameter may not align
-> + *   nicely with memmap sections
-> + *
-> + * Explicitly initialize those struct pages so that:
-> + * - PG_Reserved is set
-> + * - zone and node links point to zone and node that span the page
-
-Yes spanned pages are the most important, but should you also describe here the
-adjacent ones, as you do in commit log?
-
-> + */
-> +static u64 __meminit init_unavailable_range(unsigned long spfn,
-> +					    unsigned long epfn,
-> +					    int zone, int node)
-> +{
-> +	unsigned long pfn;
-> +	u64 pgcnt = 0;
-> +
-> +	for (pfn = spfn; pfn < epfn; pfn++) {
-> +		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
-> +			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
-> +				+ pageblock_nr_pages - 1;
-> +			continue;
-> +		}
-> +		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
-> +		__SetPageReserved(pfn_to_page(pfn));
-> +		pgcnt++;
-> +	}
-> +
-> +	return pgcnt;
-> +}
-> +#else
-> +static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
-> +					 int zone, int node)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
->  void __meminit __weak memmap_init_zone(struct zone *zone)
->  {
->  	unsigned long zone_start_pfn = zone->zone_start_pfn;
->  	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
->  	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
-> +	static unsigned long hole_pfn = 0;
->  	unsigned long start_pfn, end_pfn;
-> +	u64 pgcnt = 0;
->  
->  	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
->  		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
-> @@ -6295,7 +6343,23 @@ void __meminit __weak memmap_init_zone(struct zone *zone)
->  			memmap_init_range(end_pfn - start_pfn, nid,
->  					zone_id, start_pfn, zone_end_pfn,
->  					MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
-> +
-> +		if (hole_pfn < start_pfn)
-> +			pgcnt += init_unavailable_range(hole_pfn, start_pfn,
-> +							zone_id, nid);
-> +		hole_pfn = end_pfn;
->  	}
-> +
-> +#ifdef CONFIG_SPARSEMEM
-> +	end_pfn = round_up(zone_end_pfn, PAGES_PER_SECTION);
-> +	if (hole_pfn < end_pfn)
-> +		pgcnt += init_unavailable_range(hole_pfn, end_pfn,
-> +						zone_id, nid);
-> +#endif
-> +
-> +	if (pgcnt)
-> +		pr_info("  %s zone: %lld pages in unavailable ranges\n",
-> +			zone->name, pgcnt);
->  }
->  
->  static int zone_batchsize(struct zone *zone)
-> @@ -7092,88 +7156,6 @@ void __init free_area_init_memoryless_node(int nid)
->  	free_area_init_node(nid);
->  }
->  
-> -#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
-> -/*
-> - * Initialize all valid struct pages in the range [spfn, epfn) and mark them
-> - * PageReserved(). Return the number of struct pages that were initialized.
-> - */
-> -static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
-> -{
-> -	unsigned long pfn;
-> -	u64 pgcnt = 0;
-> -
-> -	for (pfn = spfn; pfn < epfn; pfn++) {
-> -		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
-> -			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
-> -				+ pageblock_nr_pages - 1;
-> -			continue;
-> -		}
-> -		/*
-> -		 * Use a fake node/zone (0) for now. Some of these pages
-> -		 * (in memblock.reserved but not in memblock.memory) will
-> -		 * get re-initialized via reserve_bootmem_region() later.
-> -		 */
-> -		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
-> -		__SetPageReserved(pfn_to_page(pfn));
-> -		pgcnt++;
-> -	}
-> -
-> -	return pgcnt;
-> -}
-> -
-> -/*
-> - * Only struct pages that are backed by physical memory are zeroed and
-> - * initialized by going through __init_single_page(). But, there are some
-> - * struct pages which are reserved in memblock allocator and their fields
-> - * may be accessed (for example page_to_pfn() on some configuration accesses
-> - * flags). We must explicitly initialize those struct pages.
-> - *
-> - * This function also addresses a similar issue where struct pages are left
-> - * uninitialized because the physical address range is not covered by
-> - * memblock.memory or memblock.reserved. That could happen when memblock
-> - * layout is manually configured via memmap=, or when the highest physical
-> - * address (max_pfn) does not end on a section boundary.
-> - */
-> -static void __init init_unavailable_mem(void)
-> -{
-> -	phys_addr_t start, end;
-> -	u64 i, pgcnt;
-> -	phys_addr_t next = 0;
-> -
-> -	/*
-> -	 * Loop through unavailable ranges not covered by memblock.memory.
-> -	 */
-> -	pgcnt = 0;
-> -	for_each_mem_range(i, &start, &end) {
-> -		if (next < start)
-> -			pgcnt += init_unavailable_range(PFN_DOWN(next),
-> -							PFN_UP(start));
-> -		next = end;
-> -	}
-> -
-> -	/*
-> -	 * Early sections always have a fully populated memmap for the whole
-> -	 * section - see pfn_valid(). If the last section has holes at the
-> -	 * end and that section is marked "online", the memmap will be
-> -	 * considered initialized. Make sure that memmap has a well defined
-> -	 * state.
-> -	 */
-> -	pgcnt += init_unavailable_range(PFN_DOWN(next),
-> -					round_up(max_pfn, PAGES_PER_SECTION));
-> -
-> -	/*
-> -	 * Struct pages that do not have backing memory. This could be because
-> -	 * firmware is using some of this memory, or for some other reasons.
-> -	 */
-> -	if (pgcnt)
-> -		pr_info("Zeroed struct page in unavailable ranges: %lld pages", pgcnt);
-> -}
-> -#else
-> -static inline void __init init_unavailable_mem(void)
-> -{
-> -}
-> -#endif /* !CONFIG_FLAT_NODE_MEM_MAP */
-> -
->  #if MAX_NUMNODES > 1
->  /*
->   * Figure out the number of possible node ids.
-> @@ -7597,7 +7579,6 @@ void __init free_area_init(unsigned long *max_zone_pfn)
->  	/* Initialise every node */
->  	mminit_verify_pageflags_layout();
->  	setup_nr_node_ids();
-> -	init_unavailable_mem();
->  	for_each_online_node(nid) {
->  		pg_data_t *pgdat = NODE_DATA(nid);
->  		free_area_init_node(nid);
-> 
 
