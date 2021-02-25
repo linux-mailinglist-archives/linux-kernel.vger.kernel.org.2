@@ -2,446 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1359F325530
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5090732553F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:11:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhBYSIj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Feb 2021 13:08:39 -0500
-Received: from mailoutvs31.siol.net ([185.57.226.222]:56643 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233192AbhBYSGy (ORCPT
+        id S233404AbhBYSKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:10:21 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12341 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232491AbhBYSHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 13:06:54 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 662A1522698;
-        Thu, 25 Feb 2021 19:05:57 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id cOwmNd4Uc02L; Thu, 25 Feb 2021 19:05:56 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 960035240FB;
-        Thu, 25 Feb 2021 19:05:56 +0100 (CET)
-Received: from kista.localnet (cpe-86-58-17-133.cable.triera.net [86.58.17.133])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id A2167522698;
-        Thu, 25 Feb 2021 19:05:55 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        peng.fan@nxp.com, hverkuil-cisco@xs4all.nl,
-        dan.carpenter@oracle.com, Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-Subject: Re: Re: Re: [PATCH v3 1/9] media: hevc: Modify structures to follow H265 ITU spec
-Date:   Thu, 25 Feb 2021 19:05:55 +0100
-Message-ID: <5861676.snnbt3pK2g@kista>
-In-Reply-To: <a227da5c0a7cda42aedf470fff34ae0e4227b626.camel@collabora.com>
-References: <20210222122406.41782-1-benjamin.gaignard@collabora.com> <233731323.ucs1DXFtIZ@kista> <a227da5c0a7cda42aedf470fff34ae0e4227b626.camel@collabora.com>
+        Thu, 25 Feb 2021 13:07:32 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6037e72c0001>; Thu, 25 Feb 2021 10:06:36 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Feb
+ 2021 18:06:35 +0000
+Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 25 Feb 2021 18:06:33 +0000
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <broonie@kernel.org>, <robh@kernel.org>
+CC:     <jonathanh@nvidia.com>, <kuninori.morimoto.gx@renesas.com>,
+        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Sameer Pujar <spujar@nvidia.com>
+Subject: [RFC PATCH 0/5] Flexible sysclk/pll configuration
+Date:   Thu, 25 Feb 2021 23:35:59 +0530
+Message-ID: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614276396; bh=gxxMP7OqiMM8DpcE1CtsHVPkt0PT+Ai1EBJJpiR+6vA=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Type;
+        b=Qg/Kqpj79vjtl23ujzE4nmEFGbuzbG5Di6uRtFLKDAzJ/BKNkX2pA9PjH2pTNw/ku
+         Vf3eqFwoK2NI7ouzhsLCzoyIKor5WYVSlgT1dCzDp0KJpMnNr10sDi06mwr3A9Rk7N
+         KOAn3WvlCGXW9LKjVZXsHY3kNqE4hE8j+ON1+KRUJtfM04iZlCV5MSLCzaGxn/FK06
+         4c87LeyNfV6crtAWz9qMXGnw2x98w11ow6m2lPeN3AQlcHgNETb+d82IdVjc+bal/m
+         8VKi9eaRnj1NAogzLotz9YwpFBS3svt/9Ph/82dDK5LAw5hydUGta7/SQozT5x+/l0
+         ULY99YMArlaeQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne četrtek, 25. februar 2021 ob 18:34:48 CET je Ezequiel Garcia napisal(a):
-> Hey Jernej,
-> 
-> On Thu, 2021-02-25 at 18:01 +0100, Jernej Škrabec wrote:
-> > Hi Ezequiel,
-> > 
-> > Dne četrtek, 25. februar 2021 ob 14:09:52 CET je Ezequiel Garcia 
-napisal(a):
-> > > Hi Benjamin,
-> > > 
-> > > Thanks for the good work.
-> > > 
-> > > On Mon, 2021-02-22 at 13:23 +0100, Benjamin Gaignard wrote:
-> > > > The H.265 ITU specification (section 7.4) define the general
-> > > > slice segment header semantics.
-> > > > Modified/added fields are:
-> > > > - video_parameter_set_id: (7.4.3.1) identifies the VPS for
-> > > > reference by other syntax elements.
-> > > > - seq_parameter_set_id: (7.4.3.2.1) specifies the value of
-> > > > the vps_video_parameter_set_id of the active VPS.
-> > > > - chroma_format_idc: (7.4.3.2.1) specifies the chroma sampling
-> > > >  relative to the luma sampling
-> > > > - pic_parameter_set_id: (7.4.3.3.1) identifies the PPS for
-> > > > reference by other syntax elements
-> > > > - num_ref_idx_l0_default_active_minus1: (7.4.3.3.1) specifies
-> > > > the inferred value of num_ref_idx_l0_active_minus1
-> > > > - num_ref_idx_l1_default_active_minus1: (7.4.3.3.1) specifies
-> > > > the inferred value of num_ref_idx_l1_active_minus1
-> > > > - slice_segment_addr: (7.4.7.1) specifies the address of
-> > > > the first coding tree block in the slice segment
-> > > > - num_entry_point_offsets: (7.4.7.1) specifies the number of
-> > > > entry_point_offset_minus1[ i ] syntax elements in the slice header
-> > > > 
-> > > > Add HEVC decode params contains the information used in section
-> > > > "8.3 Slice decoding process" of the specification to let the hardware
-> > > > perform decoding of a slices.
-> > > > 
-> > > > Adapt Cedrus driver according to these changes.
-> > > > 
-> > > > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> > > > ---
-> > > > version 3:
-> > > > - Add documentation about the new structuers and fields.
-> > > > 
-> > > > version 2:
-> > > > - remove all change related to scaling
-> > > > - squash commits to a coherent split
-> > > > - be more verbose about the added fields
-> > > > 
-> > > >  .../media/v4l/ext-ctrls-codec.rst             | 126 ++++++++++++++
-+---
-> > > >  .../media/v4l/vidioc-queryctrl.rst            |   6 +
-> > > >  drivers/media/v4l2-core/v4l2-ctrls.c          |  26 +++-
-> > > >  drivers/staging/media/sunxi/cedrus/cedrus.c   |   6 +
-> > > >  drivers/staging/media/sunxi/cedrus/cedrus.h   |   1 +
-> > > >  .../staging/media/sunxi/cedrus/cedrus_dec.c   |   2 +
-> > > >  .../staging/media/sunxi/cedrus/cedrus_h265.c  |   6 +-
-> > > >  include/media/hevc-ctrls.h                    |  45 +++++--
-> > > >  8 files changed, 186 insertions(+), 32 deletions(-)
-> > > > 
-> > > > diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst 
-b/
-> > Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > > > index 00944e97d638..5e6d77e858c0 100644
-> > > > --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > > > +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > > > @@ -3109,6 +3109,15 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-> > > >      :stub-columns: 0
-> > > >      :widths:       1 1 2
-> > > >  
-> > > > +    * - __u8
-> > > > +      - ``video_parameter_set_id``
-> > > > +      - Identifies the VPS for reference by other syntax elements
-> > > > +    * - __u8
-> > > > +      - ``seq_parameter_set_id̀``
-> > > > +      - Specifies the value of the vps_video_parameter_set_id of the 
-> > active VPS
-> > > > +    * - __u8
-> > > > +      - ``chroma_format_idc``
-> > > > +      - Specifies the chroma sampling relative to the luma sampling
-> > > 
-> > > None of these fields seem needed for the Hantro G2 driver,
-> > > so I suggest you drop them for now.
-> > > 
-> > > >      * - __u16
-> > > >        - ``pic_width_in_luma_samples``
-> > > >        -
-> > > > @@ -3172,6 +3181,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-> > > >      * - __u8
-> > > >        - ``chroma_format_idc``
-> > > >        -
-> > > > +    * - __u8
-> > > > +      - ``num_slices``
-> > > > +
-> > > 
-> > > Not used, but also doesn't seem part of the SPS syntax. If we have to
-> > > pass the number of slices, we'll need another mechanism.
-> > > 
-> > > >       -
-> > > >      * - __u64
-> > > >        - ``flags``
-> > > >        - See :ref:`Sequence Parameter Set Flags <hevc_sps_flags>`
-> > > > @@ -3231,9 +3243,18 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-> > > >      :stub-columns: 0
-> > > >      :widths:       1 1 2
-> > > >  
-> > > > +    * - __u8
-> > > > +      - ``pic_parameter_set_id``
-> > > > +      - Identifies the PPS for reference by other syntax elements
-> > > 
-> > > Not used.
-> > > 
-> > > >      * - __u8
-> > > >        - ``num_extra_slice_header_bits``
-> > > >        -
-> > > > +    * - __u8
-> > > > +      - ``num_ref_idx_l0_default_active_minus1``
-> > > > +      - Specifies the inferred value of num_ref_idx_l0_active_minus1
-> > > > +    * - __u8
-> > > > +      - ``num_ref_idx_l1_default_active_minus1``
-> > > > +      - Specifies the inferred value of num_ref_idx_l1_active_minus1
-> > > >      * - __s8
-> > > >        - ``init_qp_minus26``
-> > > >        -
-> > > > @@ -3342,6 +3363,12 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-> > > >      * - ``V4L2_HEVC_PPS_FLAG_SLICE_SEGMENT_HEADER_EXTENSION_PRESENT``
-> > > >        - 0x00040000
-> > > >        -
-> > > > +    * - ``V4L2_HEVC_PPS_FLAG_DEBLOCKING_FILTER_CONTROL_PRESENT``
-> > > > +      - 0x00080000
-> > > > +      -
-> > > > +    * - ``V4L2_HEVC_PPS_FLAG_UNIFORM_SPACING``
-> > > > +      - 0x00100000
-> > > > +      -
-> > > >  
-> > > 
-> > > I suggest to do all the PPS control changes in a separate patch,
-> > > feels easier to review and cleaner as you can explain the
-> > > changes with more detail in the commit description.
-> > > 
-> > > Looking at the PPS syntax for tiles, I'm wondering if these
-> > > deserve their own control, which would be used if tiles are enabled,
-> > > i.e. V4L2_HEVC_PPS_FLAG_TILES_ENABLED is set.
-> > > 
-> > >         __u8    
-num_tile_columns_minus1;                                         
-> > >         __u8    
-num_tile_rows_minus1;                                            
-> > >         __u8    
-column_width_minus1[20];                                         
-> > >         __u8    row_height_minus1[22];    
-> > > 
-> > > Not something we necessarily have to tackle now.
-> > > 
-> > > >  ``V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS (struct)``
-> > > >      Specifies various slice-specific parameters, especially from the 
-NAL 
-> > unit
-> > > > @@ -3366,6 +3393,12 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-> > > >      * - __u32
-> > > >        - ``data_bit_offset``
-> > > >        - Offset (in bits) to the video data in the current slice data.
-> > > > +    * - __u32
-> > > > +      - ``slice_segment_addr``
-> > > > +      - Specifies the address of the first coding tree block in the 
-slice 
-> > segment
-> > > 
-> > > Not used.
-> > > 
-> > > > +    * - __u32
-> > > > +      - ``num_entry_point_offsets``
-> > > > +      - Specifies the number of entry_point_offset_minus1[ i ] syntax 
-> > elements in the slice header
-> > > 
-> > > Not used.
-> > 
-> > While above two fields may not be used in Hantro, they are for sure useful 
-for 
-> > Cedrus and RPi4. I would like to keep them, otherwise with such approach 
-HEVC 
-> > will stay in staging for a long time. I'm still baffled why scaling matrix 
-> > control was dropped. It would fit well in Cedrus and RPi4 driver and after 
-a 
-> > quick look, it seems that it was used in driver in later patch.
-> > 
-> 
-> I'd like to make sure each modification we are making to the uAPI
-> goes in the right direction, that is in the direction of moving
-> the API out of staging.
-> 
-> Since reviewing each field is quite hard, and opens some discussions,
-> I wanted to keep this patchset specific to what's needed for Hantro G2.
-> 
-> The Scaling matrix control is certainly a good one, as well as the ones
-> needed for Cedrus and RPi4. However, I feel it's better to discuss
-> them in their own "uAPI review" series so we can review all the changes
-> with an API hat.
-> 
-> This way we decouple the Hantro G2 discussion and work from the API work.
-> 
-> Also please feel free to submit RFC patches fo Cedrus and RPi4
-> (API and driver changes). We can certainly start the discussion around that,
-> with driver changes in context.
+This series attempts to add flexible system clock (sysclk) and pll
+configuration for the DAI controller from simple card or audio graph
+card.
 
-I don't know much about RPi4 driver, only few implementation details, so 
-you'll have to ping developer who wrote it. Regarding HEVC on Cedrus - it has 
-one pain point - it needs entry point table which in turn needs support for 
-variable arrays in order to be feasable AFAIK. I don't plan to develop that. 
-Patches for scaling matrix and segment address were sent a bit more than a 
-year ago but were turned down because they change control structures (among 
-other things). Sorry to say, but I work on other things now, so Cedrus will 
-have to wait. Alternatively, someone can take my patches from LibreELEC, 
-update and submit them. They are in use for a long time.
+Sysclk configuration
+====================
+  Motivation:
+  -----------
+    The problem this tries to address is, some Codecs may have
+    multiple clocks and multiple sources for its sysclk. For example
+    sysclk may depend on MCLK provided by SoC or it may used an
+    internal pll. The simple card or audio graph card driver is
+    generic and can be used on multiple platforms. So if a platform
+    using this driver needs a generic configuration, then the Codec
+    specific stuff cannot be hardcoded in the driver. Hence it would
+    be better if the info is driven from DT, especially from a
+    Codec DAI or endpoint subnode.
 
-Best regards,
-Jernej
+  Solution:
+  ---------
+    "system-clock-id" and "system-clock-source" DT properties can be
+    exposed for a flexible sysclk configuration. These properties
+    go into a Codec DAI or endpoint subnode.
 
-> 
-> Hope I'm making sense here :)
-> 
-> Thanks,
-> Ezequiel
-> 
-> > Best regards,
-> > Jernej
-> > 
-> > > 
-> > > >      * - __u8
-> > > >        - ``nal_unit_type``
-> > > >        -
-> > > > @@ -3422,28 +3455,20 @@ enum v4l2_mpeg_video_hevc_size_of_length_field 
--
-> > > >      * - __u8
-> > > >        - ``pic_struct``
-> > > >        -
-> > > > -    * - __u8
-> > > > -      - ``num_active_dpb_entries``
-> > > > -      - The number of entries in ``dpb``.
-> > > 
-> > > Need to explain in the commit description why this field is moved.
-> > > 
-> > > >      * - __u8
-> > > >        - ``ref_idx_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> > > >        - The list of L0 reference elements as indices in the DPB.
-> > > >      * - __u8
-> > > >        - ``ref_idx_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> > > >        - The list of L1 reference elements as indices in the DPB.
-> > > > +    * - __u16
-> > > > +      - ``short_term_ref_pic_set_size``
-> > > > +
-> > > 
-> > > Not used.
-> > > 
-> > > >       -
-> > > > +    * - __u16
-> > > > +      - ``long_term_ref_pic_set_size``
-> > > > +      -
-> > > 
-> > > Not used.
-> > > 
-> > > >      * - __u8
-> > > > -      - ``num_rps_poc_st_curr_before``
-> > > > -      - The number of reference pictures in the short-term set that 
-come 
-> > before
-> > > > -        the current frame.
-> > > 
-> > > If this matches NumPocStCurrBefore from section 8.3.2 "Decoding process 
-for 
-> > reference picture set"
-> > > then I would document that. And perhaps rename it to 
-num_poc_st_curr_before.
-> > > 
-> > > > -    * - __u8
-> > > > -      - ``num_rps_poc_st_curr_after``
-> > > > -      - The number of reference pictures in the short-term set that 
-come 
-> > after
-> > > > -        the current frame.
-> > > 
-> > > Ditto.
-> > > 
-> > > > -    * - __u8
-> > > > -      - ``num_rps_poc_lt_curr``
-> > > > -      - The number of reference pictures in the long-term set.
-> > > 
-> > > Ditto.
-> > > 
-> > > Also, I'd like the changes that move fields from 
-> > V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS
-> > > to the new V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS control, to be in 
-their
-> > > patch.
-> > > 
-> > > That will allow us to put in the commit description a proper
-> > > explanation of why are fields being moved. Nothing fancy, simply
-> > > explaining that these variables come from section 8.3.2
-> > > "Decoding process for reference picture set", which describes
-> > > a process invoked once per picture, so they are not per-slice.
-> > > 
-> > > > -    * - __u8
-> > > > -      - ``padding[7]``
-> > > > +      - ``padding``
-> > > >        - Applications and drivers must set this to zero.
-> > > >      * - struct :c:type:`v4l2_hevc_dpb_entry`
-> > > >        - ``dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> > > > @@ -3646,3 +3671,74 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-> > > >      so this has to come from client.
-> > > >      This is applicable to H264 and valid Range is from 0 to 63.
-> > > >      Source Rec. ITU-T H.264 (06/2019); G.7.4.1.1, G.8.8.1.
-> > > > +
-> > > > +``V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS (struct)``
-> > > > +    Specifies various decode parameters, especially the references 
-picture 
-> > order
-> > > > +    count (POC) for all the lists (short, long, before, current, 
-after) 
-> > and the
-> > > > +    number of entries for each of them.
-> > > > +    These parameters are defined according to :ref:`hevc`.
-> > > > +    They are described in section 8.3 "Slice decoding process" of the
-> > > > +    specification.
-> > > > +
-> > > > +.. c:type:: v4l2_ctrl_hevc_decode_params
-> > > > +
-> > > > +.. cssclass:: longtable
-> > > > +
-> > > > +.. flat-table:: struct v4l2_ctrl_hevc_decode_params
-> > > > +    :header-rows:  0
-> > > > +    :stub-columns: 0
-> > > > +    :widths:       1 1 2
-> > > > +
-> > > > +    * - __s32
-> > > > +      - ``pic_order_cnt_val``
-> > > > +      -
-> > > 
-> > > Can be documented as:
-> > > 
-> > > """
-> > > PicOrderCntVal as described in section 8.3.1 "Decoding process
-> > > for picture order count" of the specification.
-> > > """
-> > > 
-> > > Note that snake case is used to match the kernel style,
-> > > but other than that we try to keep the HEVC spec variable
-> > > names.
-> > > 
-> > > > +    * - __u8
-> > > > +      - ``num_active_dpb_entries``
-> > > > +      - The number of entries in ``dpb``.
-> > > > +    * - struct :c:type:`v4l2_hevc_dpb_entry`
-> > > > +      - ``dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> > > > +      - The decoded picture buffer, for meta-data about reference 
-frames.
-> > > 
-> > > The DPB is here, but it seems it's also in the slice control?
-> > > 
-> > > > +    * - __u8
-> > > > +      - ``num_rps_poc_st_curr_before``
-> > > > +      - The number of reference pictures in the short-term set that 
-come 
-> > before
-> > > > +        the current frame.
-> > > > +    * - __u8
-> > > > +      - ``num_rps_poc_st_curr_after``
-> > > > +      - The number of reference pictures in the short-term set that 
-come 
-> > after
-> > > > +        the current frame.
-> > > > +    * - __u8
-> > > > +      - ``num_rps_poc_lt_curr``
-> > > > +      - The number of reference pictures in the long-term set.
-> > > > +    * - __u8
-> > > > +      - ``rps_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> > > > +      -
-> > > > +    * - __u8
-> > > > +      - ``rps_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> > > > +      -
-> > > > +    * - __u8
-> > > > +      - ``rps_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
-> > > > +      -
-> > > 
-> > > Could you document these as well?
-> > > 
-> > > Thanks a lot,
-> > > Ezequiel
-> > > 
-> > > 
-> > 
-> > 
-> 
-> 
-> 
+    Please note that other sysclk related properties like
+    "system-clock-frequency" and "system-clock-direction-out" are
+    already present.
 
+    Currently snd_soc_dai_set_sysclk() does not have an argument
+    for source. This series adds this additional field and updates
+    all the required drivers. This is needed because ideally sysclk
+    "clk_id" and "source" fields are different. Some drivers are
+    making use of "clk_id" field to program source information.
+    **May be this needs to be corrected going ahead**
+
+
+Pll configuration
+=================
+  Motivation:
+  -----------
+    Similar to sysclk configuration, pll configuration also needs
+    little more flexibility. If a Codec has internal pll and it
+    can be sourced from multiple clocks a specific configuration
+    may be required for a given platform.
+
+    Some of the cases are:
+      - MCLK (supplied by SoC) --> Codec pll -> Codec sysclk
+      - SoC I2S bit clock (BCLK) --> Codec pll -> Codec sysclk
+
+  Solution:
+  ---------
+    Approach is similar to what is done for extending sysclk
+    flexibility. Following DT properties are added to address the
+    same.
+
+      "pll-id"
+      "pll-source"
+      "pll-input-reference"
+      "pll-output-reference"
+      "pll-input-frequency"
+      "pll-output-frequency"
+
+    All these are optional properties. Simple card or audio graph
+    card drivers can use above info and call snd_soc_dai_set_pll()
+    for necessary configuration.
+
+Sameer Pujar (5):
+  ASoC: soc-component: Fix return value of snd_soc_component_set_pll()
+  ASoC: soc-dai: Add sysclk source to snd_soc_dai_set_sysclk()
+  ASoC: audio-graph-card: Add bindings for sysclk and pll
+  ASoC: simple-card-utils: Parse sysclk id and source
+  ASoC: simple-card-utils: Support pll configuration
+
+ .../bindings/sound/audio-graph-port.yaml           |  71 +++++++++
+ include/sound/simple_card_utils.h                  |  35 +++++
+ include/sound/soc-dai.h                            |   4 +-
+ sound/soc/amd/acp-da7219-max98357a.c               |   2 +-
+ sound/soc/amd/acp-rt5645.c                         |   2 +-
+ sound/soc/amd/acp3x-rt5682-max9836.c               |   4 +-
+ sound/soc/atmel/atmel_wm8904.c                     |   2 +-
+ sound/soc/atmel/mchp-i2s-mcc.c                     |   2 +-
+ sound/soc/atmel/mikroe-proto.c                     |   2 +-
+ sound/soc/atmel/sam9g20_wm8731.c                   |   2 +-
+ sound/soc/atmel/sam9x5_wm8731.c                    |   2 +-
+ sound/soc/bcm/cygnus-ssp.c                         |   2 +-
+ sound/soc/cirrus/edb93xx.c                         |   2 +-
+ sound/soc/cirrus/ep93xx-i2s.c                      |   2 +-
+ sound/soc/cirrus/snappercl15.c                     |   4 +-
+ sound/soc/codecs/88pm860x-codec.c                  |   2 +-
+ sound/soc/codecs/ad193x.c                          |   2 +-
+ sound/soc/codecs/adau1373.c                        |   2 +-
+ sound/soc/codecs/adau17x1.c                        |   2 +-
+ sound/soc/codecs/ak4535.c                          |   2 +-
+ sound/soc/codecs/ak4613.c                          |   2 +-
+ sound/soc/codecs/ak4641.c                          |   2 +-
+ sound/soc/codecs/ak4642.c                          |   2 +-
+ sound/soc/codecs/ak4671.c                          |   2 +-
+ sound/soc/codecs/alc5623.c                         |   2 +-
+ sound/soc/codecs/alc5632.c                         |   2 +-
+ sound/soc/codecs/arizona.c                         |   2 +-
+ sound/soc/codecs/cpcap.c                           |   4 +-
+ sound/soc/codecs/cq93vc.c                          |   2 +-
+ sound/soc/codecs/cs35l34.c                         |   2 +-
+ sound/soc/codecs/cs35l35.c                         |   2 +-
+ sound/soc/codecs/cs35l36.c                         |   2 +-
+ sound/soc/codecs/cs4265.c                          |   2 +-
+ sound/soc/codecs/cs4270.c                          |   2 +-
+ sound/soc/codecs/cs4271.c                          |   2 +-
+ sound/soc/codecs/cs42l42.c                         |   2 +-
+ sound/soc/codecs/cs42l51.c                         |   2 +-
+ sound/soc/codecs/cs42l52.c                         |   2 +-
+ sound/soc/codecs/cs42l56.c                         |   2 +-
+ sound/soc/codecs/cs42l73.c                         |   2 +-
+ sound/soc/codecs/cs42xx8.c                         |   2 +-
+ sound/soc/codecs/cs43130.c                         |   2 +-
+ sound/soc/codecs/cs53l30.c                         |   2 +-
+ sound/soc/codecs/cx2072x.c                         |   2 +-
+ sound/soc/codecs/da7210.c                          |   2 +-
+ sound/soc/codecs/da7218.c                          |   2 +-
+ sound/soc/codecs/da7219.c                          |   2 +-
+ sound/soc/codecs/da732x.c                          |   2 +-
+ sound/soc/codecs/da9055.c                          |   2 +-
+ sound/soc/codecs/es7134.c                          |   2 +-
+ sound/soc/codecs/es7241.c                          |   2 +-
+ sound/soc/codecs/es8316.c                          |   2 +-
+ sound/soc/codecs/es8328.c                          |   2 +-
+ sound/soc/codecs/lm49453.c                         |   2 +-
+ sound/soc/codecs/madera.c                          |   3 +-
+ sound/soc/codecs/max98088.c                        |   3 +-
+ sound/soc/codecs/max98090.c                        |   2 +-
+ sound/soc/codecs/max98095.c                        |   2 +-
+ sound/soc/codecs/max98390.c                        |   2 +-
+ sound/soc/codecs/max9850.c                         |   2 +-
+ sound/soc/codecs/max9867.c                         |   2 +-
+ sound/soc/codecs/max98925.c                        |   2 +-
+ sound/soc/codecs/max98927.c                        |   2 +-
+ sound/soc/codecs/mc13783.c                         |   6 +-
+ sound/soc/codecs/ml26124.c                         |   2 +-
+ sound/soc/codecs/nau8810.c                         |   2 +-
+ sound/soc/codecs/nau8822.c                         |   2 +-
+ sound/soc/codecs/pcm186x.c                         |   2 +-
+ sound/soc/codecs/pcm3060.c                         |   2 +-
+ sound/soc/codecs/pcm3168a.c                        |   2 +-
+ sound/soc/codecs/rt1011.c                          |   2 +-
+ sound/soc/codecs/rt1305.c                          |   2 +-
+ sound/soc/codecs/rt274.c                           |   2 +-
+ sound/soc/codecs/rt286.c                           |   2 +-
+ sound/soc/codecs/rt298.c                           |   2 +-
+ sound/soc/codecs/rt5514.c                          |   2 +-
+ sound/soc/codecs/rt5616.c                          |   2 +-
+ sound/soc/codecs/rt5631.c                          |   2 +-
+ sound/soc/codecs/rt5640.c                          |   2 +-
+ sound/soc/codecs/rt5645.c                          |   2 +-
+ sound/soc/codecs/rt5651.c                          |   2 +-
+ sound/soc/codecs/rt5660.c                          |   2 +-
+ sound/soc/codecs/rt5663.c                          |   2 +-
+ sound/soc/codecs/rt5677.c                          |   2 +-
+ sound/soc/codecs/sgtl5000.c                        |   2 +-
+ sound/soc/codecs/ssm2602.c                         |   2 +-
+ sound/soc/codecs/sta32x.c                          |   2 +-
+ sound/soc/codecs/sta350.c                          |   2 +-
+ sound/soc/codecs/sti-sas.c                         |   2 +-
+ sound/soc/codecs/tas2552.c                         |   2 +-
+ sound/soc/codecs/tas5086.c                         |   2 +-
+ sound/soc/codecs/tlv320aic23.c                     |   2 +-
+ sound/soc/codecs/tlv320aic26.c                     |   2 +-
+ sound/soc/codecs/tlv320aic31xx.c                   |   2 +-
+ sound/soc/codecs/tlv320aic32x4.c                   |   2 +-
+ sound/soc/codecs/tlv320aic3x.c                     |   2 +-
+ sound/soc/codecs/tlv320dac33.c                     |   2 +-
+ sound/soc/codecs/tscs454.c                         |   2 +-
+ sound/soc/codecs/twl4030.c                         |   4 +-
+ sound/soc/codecs/twl6040.c                         |   2 +-
+ sound/soc/codecs/uda1334.c                         |   2 +-
+ sound/soc/codecs/uda134x.c                         |   2 +-
+ sound/soc/codecs/wm8350.c                          |   2 +-
+ sound/soc/codecs/wm8400.c                          |   2 +-
+ sound/soc/codecs/wm8523.c                          |   2 +-
+ sound/soc/codecs/wm8524.c                          |   2 +-
+ sound/soc/codecs/wm8580.c                          |   2 +-
+ sound/soc/codecs/wm8711.c                          |   2 +-
+ sound/soc/codecs/wm8731.c                          |   2 +-
+ sound/soc/codecs/wm8737.c                          |   2 +-
+ sound/soc/codecs/wm8741.c                          |   2 +-
+ sound/soc/codecs/wm8750.c                          |   2 +-
+ sound/soc/codecs/wm8753.c                          |   2 +-
+ sound/soc/codecs/wm8770.c                          |   2 +-
+ sound/soc/codecs/wm8776.c                          |   2 +-
+ sound/soc/codecs/wm8804.c                          |   2 +-
+ sound/soc/codecs/wm8903.c                          |   2 +-
+ sound/soc/codecs/wm8904.c                          |   2 +-
+ sound/soc/codecs/wm8940.c                          |   2 +-
+ sound/soc/codecs/wm8955.c                          |   2 +-
+ sound/soc/codecs/wm8960.c                          |   2 +-
+ sound/soc/codecs/wm8961.c                          |   2 +-
+ sound/soc/codecs/wm8962.c                          |   2 +-
+ sound/soc/codecs/wm8971.c                          |   2 +-
+ sound/soc/codecs/wm8974.c                          |   2 +-
+ sound/soc/codecs/wm8978.c                          |   2 +-
+ sound/soc/codecs/wm8983.c                          |   2 +-
+ sound/soc/codecs/wm8985.c                          |   2 +-
+ sound/soc/codecs/wm8988.c                          |   2 +-
+ sound/soc/codecs/wm8990.c                          |   2 +-
+ sound/soc/codecs/wm8993.c                          |   2 +-
+ sound/soc/codecs/wm8994.c                          |   2 +-
+ sound/soc/codecs/wm8995.c                          |   2 +-
+ sound/soc/codecs/wm8996.c                          |   2 +-
+ sound/soc/fsl/eukrea-tlv320.c                      |   4 +-
+ sound/soc/fsl/fsl-asoc-card.c                      |   8 +-
+ sound/soc/fsl/fsl_esai.c                           |   2 +-
+ sound/soc/fsl/fsl_micfil.c                         |   2 +-
+ sound/soc/fsl/fsl_sai.c                            |   8 +-
+ sound/soc/fsl/imx-audmix.c                         |   2 +-
+ sound/soc/fsl/imx-hdmi.c                           |   2 +-
+ sound/soc/fsl/imx-sgtl5000.c                       |   2 +-
+ sound/soc/fsl/mpc5200_psc_i2s.c                    |   2 +-
+ sound/soc/fsl/mpc8610_hpcd.c                       |   2 +-
+ sound/soc/fsl/p1022_ds.c                           |   2 +-
+ sound/soc/generic/simple-card-utils.c              | 173 +++++++++++++++++++--
+ sound/soc/intel/boards/bdw-rt5650.c                |   2 +-
+ sound/soc/intel/boards/bdw-rt5677.c                |   4 +-
+ sound/soc/intel/boards/broadwell.c                 |   2 +-
+ sound/soc/intel/boards/bxt_da7219_max98357a.c      |   2 +-
+ sound/soc/intel/boards/bxt_rt298.c                 |   2 +-
+ sound/soc/intel/boards/bytcht_cx2072x.c            |   2 +-
+ sound/soc/intel/boards/bytcht_da7213.c             |   2 +-
+ sound/soc/intel/boards/bytcht_es8316.c             |   2 +-
+ sound/soc/intel/boards/bytcr_rt5640.c              |   4 +-
+ sound/soc/intel/boards/bytcr_rt5651.c              |   4 +-
+ sound/soc/intel/boards/bytcr_wm5102.c              |   2 +-
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c       |   2 +-
+ sound/soc/intel/boards/cht_bsw_nau8824.c           |   2 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c            |   4 +-
+ sound/soc/intel/boards/cht_bsw_rt5672.c            |   4 +-
+ sound/soc/intel/boards/cml_rt1011_rt5682.c         |   2 +-
+ sound/soc/intel/boards/glk_rt5682_max98357a.c      |   2 +-
+ sound/soc/intel/boards/haswell.c                   |   2 +-
+ sound/soc/intel/boards/kbl_da7219_max98357a.c      |   2 +-
+ sound/soc/intel/boards/kbl_da7219_max98927.c       |   2 +-
+ sound/soc/intel/boards/skl_rt286.c                 |   2 +-
+ sound/soc/intel/boards/sof_da7219_max98373.c       |   2 +-
+ sound/soc/intel/boards/sof_realtek_common.c        |   2 +-
+ sound/soc/intel/boards/sof_rt5682.c                |   4 +-
+ sound/soc/intel/boards/sof_sdw_rt1308.c            |   2 +-
+ sound/soc/intel/boards/sof_wm8804.c                |   2 +-
+ sound/soc/jz4740/jz4740-i2s.c                      |   2 +-
+ sound/soc/kirkwood/armada-370-db.c                 |   2 +-
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c         |   2 +-
+ sound/soc/mediatek/mt2701/mt2701-cs42448.c         |   4 +-
+ sound/soc/mediatek/mt2701/mt2701-wm8960.c          |   4 +-
+ sound/soc/mediatek/mt8173/mt8173-max98090.c        |   2 +-
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c   |   2 +-
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c   |   2 +-
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c          |   2 +-
+ sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c |   8 +-
+ sound/soc/mediatek/mt8183/mt8183-dai-i2s.c         |   2 +-
+ sound/soc/mediatek/mt8183/mt8183-dai-tdm.c         |   2 +-
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c        |   6 +-
+ sound/soc/mediatek/mt8192/mt8192-dai-i2s.c         |   2 +-
+ sound/soc/mediatek/mt8192/mt8192-dai-tdm.c         |   2 +-
+ .../mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c  |   8 +-
+ sound/soc/meson/aiu-encoder-i2s.c                  |   2 +-
+ sound/soc/meson/axg-tdm-interface.c                |   2 +-
+ sound/soc/meson/meson-card-utils.c                 |   4 +-
+ sound/soc/mxs/mxs-saif.c                           |   2 +-
+ sound/soc/mxs/mxs-sgtl5000.c                       |   4 +-
+ sound/soc/pxa/brownstone.c                         |   4 +-
+ sound/soc/pxa/corgi.c                              |   4 +-
+ sound/soc/pxa/hx4700.c                             |   4 +-
+ sound/soc/pxa/imote2.c                             |   4 +-
+ sound/soc/pxa/magician.c                           |   4 +-
+ sound/soc/pxa/mmp-sspa.c                           |   2 +-
+ sound/soc/pxa/poodle.c                             |   4 +-
+ sound/soc/pxa/pxa-ssp.c                            |   2 +-
+ sound/soc/pxa/pxa2xx-i2s.c                         |   2 +-
+ sound/soc/pxa/spitz.c                              |   4 +-
+ sound/soc/pxa/z2.c                                 |   4 +-
+ sound/soc/pxa/zylonite.c                           |   2 +-
+ sound/soc/qcom/apq8096.c                           |   2 +-
+ sound/soc/qcom/lpass-cpu.c                         |   2 +-
+ sound/soc/qcom/qdsp6/q6afe-dai.c                   |   2 +-
+ sound/soc/qcom/sc7180.c                            |   6 +-
+ sound/soc/qcom/sdm845.c                            |  22 +--
+ sound/soc/qcom/sm8250.c                            |   2 +-
+ sound/soc/qcom/storm.c                             |   2 +-
+ sound/soc/rockchip/rk3288_hdmi_analog.c            |   4 +-
+ sound/soc/rockchip/rk3399_gru_sound.c              |  14 +-
+ sound/soc/rockchip/rockchip_i2s.c                  |   2 +-
+ sound/soc/rockchip/rockchip_max98090.c             |   4 +-
+ sound/soc/rockchip/rockchip_rt5645.c               |   4 +-
+ sound/soc/samsung/aries_wm8994.c                   |   6 +-
+ sound/soc/samsung/arndale.c                        |   8 +-
+ sound/soc/samsung/bells.c                          |   6 +-
+ sound/soc/samsung/h1940_uda1380.c                  |   2 +-
+ sound/soc/samsung/i2s.c                            |   6 +-
+ sound/soc/samsung/jive_wm8750.c                    |   2 +-
+ sound/soc/samsung/littlemill.c                     |  14 +-
+ sound/soc/samsung/midas_wm1811.c                   |  10 +-
+ sound/soc/samsung/neo1973_wm8753.c                 |   4 +-
+ sound/soc/samsung/odroid.c                         |   2 +-
+ sound/soc/samsung/pcm.c                            |   2 +-
+ sound/soc/samsung/rx1950_uda1380.c                 |   2 +-
+ sound/soc/samsung/s3c24xx-i2s.c                    |   2 +-
+ sound/soc/samsung/s3c24xx_simtec.c                 |   4 +-
+ sound/soc/samsung/s3c24xx_uda134x.c                |   4 +-
+ sound/soc/samsung/smartq_wm8987.c                  |   6 +-
+ sound/soc/samsung/smdk_spdif.c                     |   2 +-
+ sound/soc/samsung/smdk_wm8580.c                    |   2 +-
+ sound/soc/samsung/smdk_wm8994.c                    |   2 +-
+ sound/soc/samsung/smdk_wm8994pcm.c                 |   4 +-
+ sound/soc/samsung/snow.c                           |   2 +-
+ sound/soc/samsung/spdif.c                          |   2 +-
+ sound/soc/samsung/speyside.c                       |   8 +-
+ sound/soc/samsung/tm2_wm5110.c                     |   6 +-
+ sound/soc/samsung/tobermory.c                      |   6 +-
+ sound/soc/sh/migor.c                               |   4 +-
+ sound/soc/sh/siu_dai.c                             |   2 +-
+ sound/soc/sh/ssi.c                                 |   2 +-
+ sound/soc/soc-component.c                          |   2 +-
+ sound/soc/soc-dai.c                                |   9 +-
+ sound/soc/sti/uniperif_player.c                    |   2 +-
+ sound/soc/stm/stm32_adfsdm.c                       |   2 +-
+ sound/soc/stm/stm32_i2s.c                          |   2 +-
+ sound/soc/stm/stm32_sai_sub.c                      |   2 +-
+ sound/soc/sunxi/sun4i-i2s.c                        |   2 +-
+ sound/soc/tegra/tegra_alc5632.c                    |   2 +-
+ sound/soc/tegra/tegra_max98090.c                   |   2 +-
+ sound/soc/tegra/tegra_rt5640.c                     |   2 +-
+ sound/soc/tegra/tegra_rt5677.c                     |   2 +-
+ sound/soc/tegra/tegra_sgtl5000.c                   |   2 +-
+ sound/soc/tegra/tegra_wm8753.c                     |   2 +-
+ sound/soc/tegra/tegra_wm8903.c                     |   2 +-
+ sound/soc/tegra/trimslice.c                        |   2 +-
+ sound/soc/ti/davinci-evm.c                         |   4 +-
+ sound/soc/ti/davinci-mcasp.c                       |   2 +-
+ sound/soc/ti/j721e-evm.c                           |   8 +-
+ sound/soc/ti/n810.c                                |   2 +-
+ sound/soc/ti/omap-abe-twl6040.c                    |   6 +-
+ sound/soc/ti/omap-dmic.c                           |   2 +-
+ sound/soc/ti/omap-mcbsp.c                          |   2 +-
+ sound/soc/ti/omap3pandora.c                        |   4 +-
+ sound/soc/ti/rx51.c                                |   2 +-
+ sound/soc/uniphier/aio-cpu.c                       |   4 +-
+ sound/soc/ux500/ux500_msp_dai.c                    |   2 +-
+ 271 files changed, 639 insertions(+), 389 deletions(-)
+
+-- 
+2.7.4
 
