@@ -2,215 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9EC3256E6
+	by mail.lfdr.de (Postfix) with ESMTP id 90A4F3256E7
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233805AbhBYTmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:42:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28170 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234220AbhBYTh2 (ORCPT
+        id S235070AbhBYTml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:42:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232982AbhBYTiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:37:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614281759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4mfUJf/iB9lMsr6TyPZwSuzA3Biu76FS2X7sZp1siFc=;
-        b=c1nwszKd9zFGvKXxvbnl3APyaKeyOrkxIvWa1yQqUCEHQl+OSmkigUGUCZapHyqiWoy8m5
-        e0+nCDOfHD3vP1KJNG788MiCbjnxVSRXdP42HBLqb6WwMhJgXBJduWHs61sk2UMDjijyxI
-        267Vt4TAa86OoWuFAdEHi41reF0/lb4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-i2vZoR94O6iHeh_beZGgdw-1; Thu, 25 Feb 2021 14:35:56 -0500
-X-MC-Unique: i2vZoR94O6iHeh_beZGgdw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 766CB835E22;
-        Thu, 25 Feb 2021 19:35:55 +0000 (UTC)
-Received: from krava (unknown [10.40.192.91])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 968375C234;
-        Thu, 25 Feb 2021 19:35:54 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 20:35:53 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: perf test for daemon
-Message-ID: <YDf8GYWlEhYqGkXv@krava>
-References: <20210219194619.1780437-1-acme@kernel.org>
- <e368e5d0-0005-0b67-aaeb-042eef9c24be@huawei.com>
- <YDf2wUG9JiXKEzL9@krava>
+        Thu, 25 Feb 2021 14:38:14 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED702C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:37:33 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id j24so4305535pfi.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:37:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=XOHcNIofRwvSB3gcnVVgijvZlcqRnOPyM4E4Yd9sOi4=;
+        b=bUGZ0X9gMDBqrvmAPT5fq9Kg9MLC8Hdvczlyir5R17UeuE1mhNrd9p+/X9S+hBsOVv
+         dl/tx/gOTlrN3iMRk7pQORAPFmhWlogYkfg30/4TMaevZayVpQiiCg7EVNppdnlUHfdr
+         3O3Jtg0hkI0OlamZ1RCsVbo2QmW8SN5RvyFdM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=XOHcNIofRwvSB3gcnVVgijvZlcqRnOPyM4E4Yd9sOi4=;
+        b=H0/pI9MqTwjS+i/gJeqWNY3D7liTWpPBEUMkSzBpi+Htz6WGvpoowTjjwcISn8DHxw
+         mW6Pbfo/kGzYnFdK/O2MBCJWOw5FXhbs/ZgYRFoi/ZptcjO9oGPMjfEQP4BwjMI4gquu
+         sJ3AmGs9he9ZvWYf+p2B/NQVZ3Akb5GLp/NqSMi4HSi4wqqyrcKO/MsbIDD5Uwk9maIC
+         VD7YGcDZmQt2jkQPhHR5rgu2eSygO4yC+ExYT1xlPhS+SuJjed71eaDBpP4fZRchqbC3
+         ZPbIXXIFjg4RCHbj73KuYpygjiy6fm5zWo0ks3ucBcxaPw2Blf1vRDp6MWz9IXZ9N1I3
+         1qDA==
+X-Gm-Message-State: AOAM532dvk8P+U8YN4V96yxSNpEwrhGM1Jo400eUF5US+7jrJugXlLGU
+        YFxWJgNnGkZiIk9PhYHQSWqdflDRrLNcmw==
+X-Google-Smtp-Source: ABdhPJwEbjhrK46+Vn8tAPouIhP77JPq9NOLpq6Nrj1LQCzfQz04Bu6+O8IxCxPLN1pbhCbhamtj6A==
+X-Received: by 2002:a63:1723:: with SMTP id x35mr4441170pgl.393.1614281853418;
+        Thu, 25 Feb 2021 11:37:33 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:b942:93a8:e68d:5a90])
+        by smtp.gmail.com with ESMTPSA id gg11sm6899868pjb.17.2021.02.25.11.37.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 11:37:32 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDf2wUG9JiXKEzL9@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <c4b7ae4dd009f563e6786f4a41f09efa38636fb6.1614244789.git.saiprakash.ranjan@codeaurora.org>
+References: <cover.1614244789.git.saiprakash.ranjan@codeaurora.org> <c4b7ae4dd009f563e6786f4a41f09efa38636fb6.1614244789.git.saiprakash.ranjan@codeaurora.org>
+Subject: Re: [PATCH 3/9] arm64: dts: qcom: sc7280: Add device tree node for LLCC
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Date:   Thu, 25 Feb 2021 11:37:31 -0800
+Message-ID: <161428185152.1254594.1426736986245389798@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 08:13:07PM +0100, Jiri Olsa wrote:
-> On Thu, Feb 25, 2021 at 06:39:22PM +0000, John Garry wrote:
-> > 
-> > Hi,
-> > 
-> > I notice that "perf test" when run without root priviledges now hangs at the
-> > daemon test - is this expected behaviour? Can we skip and warn the user
-> > instead?
-> > 
-> > I'm checking acme perf/core today.
-> 
-> ugh, I'll check.. looks like control fifo files are created with wrong permissions
+Quoting Sai Prakash Ranjan (2021-02-25 01:30:19)
+> Add a DT node for Last level cache (aka. system cache)
+> controller which provides control over the last level
+> cache present on SC7280 SoC.
+>=20
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
 
-could you please try the fix below? it's passing with non-root user for me
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-thanks,
-jirka
-
-
----
-diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
-index 617feaf020f6..8f0ed2e59280 100644
---- a/tools/perf/builtin-daemon.c
-+++ b/tools/perf/builtin-daemon.c
-@@ -373,12 +373,12 @@ static int daemon_session__run(struct daemon_session *session,
- 	dup2(fd, 2);
- 	close(fd);
- 
--	if (mkfifo(SESSION_CONTROL, O_RDWR) && errno != EEXIST) {
-+	if (mkfifo(SESSION_CONTROL, 0600) && errno != EEXIST) {
- 		perror("failed: create control fifo");
- 		return -1;
- 	}
- 
--	if (mkfifo(SESSION_ACK, O_RDWR) && errno != EEXIST) {
-+	if (mkfifo(SESSION_ACK, 0600) && errno != EEXIST) {
- 		perror("failed: create ack fifo");
- 		return -1;
- 	}
-diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
-index e5b824dd08d9..5ad3ca8d681b 100755
---- a/tools/perf/tests/shell/daemon.sh
-+++ b/tools/perf/tests/shell/daemon.sh
-@@ -140,10 +140,10 @@ test_list()
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- 
- [session-time]
--run = -e task-clock
-+run = -e task-clock -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
-@@ -159,14 +159,14 @@ EOF
- 	# check 1st session
- 	# pid:size:-e cpu-clock:base/size:base/size/output:base/size/control:base/size/ack:0
- 	local line=`perf daemon --config ${config} -x: | head -2 | tail -1`
--	check_line_other "${line}" size "-e cpu-clock" ${base}/session-size \
-+	check_line_other "${line}" size "-e cpu-clock -m 1 sleep 10" ${base}/session-size \
- 			 ${base}/session-size/output ${base}/session-size/control \
- 			 ${base}/session-size/ack "0"
- 
- 	# check 2nd session
- 	# pid:time:-e task-clock:base/time:base/time/output:base/time/control:base/time/ack:0
- 	local line=`perf daemon --config ${config} -x: | head -3 | tail -1`
--	check_line_other "${line}" time "-e task-clock" ${base}/session-time \
-+	check_line_other "${line}" time "-e task-clock -m 1 sleep 10" ${base}/session-time \
- 			 ${base}/session-time/output ${base}/session-time/control \
- 			 ${base}/session-time/ack "0"
- 
-@@ -190,10 +190,10 @@ test_reconfig()
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- 
- [session-time]
--run = -e task-clock
-+run = -e task-clock -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
-@@ -204,7 +204,7 @@ EOF
- 	# check 2nd session
- 	# pid:time:-e task-clock:base/time:base/time/output:base/time/control:base/time/ack:0
- 	local line=`perf daemon --config ${config} -x: | head -3 | tail -1`
--	check_line_other "${line}" time "-e task-clock" ${base}/session-time \
-+	check_line_other "${line}" time "-e task-clock -m 1 sleep 10" ${base}/session-time \
- 			 ${base}/session-time/output ${base}/session-time/control ${base}/session-time/ack "0"
- 	local pid=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $1 }'`
- 
-@@ -215,10 +215,10 @@ EOF
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- 
- [session-time]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- EOF
- 
- 	# TEST 1 - change config
-@@ -238,7 +238,7 @@ EOF
- 	# check reconfigured 2nd session
- 	# pid:time:-e task-clock:base/time:base/time/output:base/time/control:base/time/ack:0
- 	local line=`perf daemon --config ${config} -x: | head -3 | tail -1`
--	check_line_other "${line}" time "-e cpu-clock" ${base}/session-time \
-+	check_line_other "${line}" time "-e cpu-clock -m 1 sleep 10" ${base}/session-time \
- 			 ${base}/session-time/output ${base}/session-time/control ${base}/session-time/ack "0"
- 
- 	# TEST 2 - empty config
-@@ -309,10 +309,10 @@ test_stop()
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- 
- [session-time]
--run = -e task-clock
-+run = -e task-clock -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
-@@ -361,7 +361,7 @@ test_signal()
- base=BASE
- 
- [session-test]
--run = -e cpu-clock --switch-output
-+run = -e cpu-clock --switch-output -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
-@@ -400,10 +400,10 @@ test_ping()
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- 
- [session-time]
--run = -e task-clock
-+run = -e task-clock -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
-@@ -439,7 +439,7 @@ test_lock()
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
-
+Should add system-cache-controller to the devicetree spec. Or just use
+cache-controller for the node name.
