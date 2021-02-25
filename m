@@ -2,156 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C783252D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704C33252D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhBYP44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 10:56:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
+        id S231335AbhBYP6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 10:58:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbhBYP4w (ORCPT
+        with ESMTP id S230201AbhBYP6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 10:56:52 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C25C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 07:56:10 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id d11so5734754wrj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 07:56:10 -0800 (PST)
+        Thu, 25 Feb 2021 10:58:46 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BFC0C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 07:58:04 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id i7so5174222wmb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 07:58:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IKK5Sk4xYKEQS6he6oFH14uzFoBWOsLEHulMdGPTh3s=;
-        b=Rf7dYtwjQhhovLSRhQ++Yw2wPK4miSxmPQp+4AVUVIksnPY1j4FrbB90Gkfovz3njH
-         Twrir59gr01W9OudUEgazdYm0MHK0yiyAid99ozreQuRf/KE6p2NWw/XfA7jRc01lDdW
-         KY6kndFd/BSJQdsPnsmqW/2hDWF2/CpsmBnAN4d/Jf2x28RXxEJ79vBIqpGm4IwrVRrT
-         Gw3nvPwZdSa6usNGKf3zlgozi6zfBt19Y/oPzakvwhCUPFt7goKzfLb+wuPMoBD4k1UZ
-         LdeWizKmUC8988+3SKp5SR4SRVbK1pE3LNaA82fWqOSY9tXswNtu2Q8x59rLS6Kof26p
-         x84w==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=HTEp27ZNB/VIL5Wwc1HQRqf6ZorVyEspIjtn3xeL9W0=;
+        b=aZikez9cYeIMFSF0rE2oEcbpGLEn3mH6UDHddIRligtWUj+PtRyEHe9ibboq/4U8M3
+         mBz3bO/Bves8lGnENdHMqVGUxNfHWtgJvNJNNgy68J9eONo6zpQ6hra5YNr75CI14hft
+         n9X4ojJFLHQs4sk8GBws/UtQZXDG2bFay/rPsWaW0OnkNVhCmdjrz4aauZAjVdai7bue
+         s34s2/EAuYQTDHSyO9xYJxCpe+TAgjcz6tXppgtG8tCHDr89JM9WCkOl3QpCXHRmdCCS
+         HdqI+V3dGWgxDSjsbJqQR8ztrFzBIhD6x+heOnEPB4KIzG4wfTKasLn9aGbGpztYF72G
+         F8pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IKK5Sk4xYKEQS6he6oFH14uzFoBWOsLEHulMdGPTh3s=;
-        b=mMxmI6FyV3TkTA44OGEvzF0/QZBnyvhyP8STyCYujyhPzxC0rzIjd/pYbkygy4Qunx
-         sPuLTqKjNTVVLxABl4x0MhSl/OMto8DvtKtVctJRaUz/koEIvAb6AM1qv3bs4uwUPPtG
-         mT+NJikUhuXsJ0j8LdW6aQ9HhwJzlJoNy9Sg+L7vgbPclx2AZFwBFfxPcNdoXkRlonJ4
-         y93wnnQPOm9CI1CZby1fCDy+6mgteQrbrhTDrJcXr9/ObbhaMYzm2DPMaLDlAUTZYj0/
-         rtF0EhX3R+1WqNlphS9X7DpoTzh3j3skn8+ymMTrHYBrcX5nqAhqLZs1+KqI4UrepFGZ
-         /urg==
-X-Gm-Message-State: AOAM533lRF7D+q2UI9K4Q+gt2GkdyUX2sn0ArcAa5fWiAQhAVm+IlNp4
-        hqYZo2NTEgL+MWchvb4NxT51wPXsxWmmqRo1
-X-Google-Smtp-Source: ABdhPJw+xUtDhcz+Elc3MHEJH7TS3rs1JsepsMJ+0YIIlvr3DGy2rg/ANGnfX5KSvscV5KGb4yGpXQ==
-X-Received: by 2002:adf:8104:: with SMTP id 4mr4193667wrm.265.1614268569651;
-        Thu, 25 Feb 2021 07:56:09 -0800 (PST)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id x18sm8702512wrs.16.2021.02.25.07.56.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 07:56:09 -0800 (PST)
-Date:   Thu, 25 Feb 2021 15:56:07 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net, akpm@linux-foundation.org,
-        mhiramat@kernel.org, rostedt@goodmis.org,
-        jason.wessel@windriver.com, dianders@chromium.org,
-        peterz@infradead.org, stefan.saecherl@fau.de,
-        qy15sije@cip.cs.fau.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kgdb: Fix to kill breakpoints on initmem after boot
-Message-ID: <20210225155607.634snzzq3w62kpkn@maple.lan>
-References: <20210224081652.587785-1-sumit.garg@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224081652.587785-1-sumit.garg@linaro.org>
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=HTEp27ZNB/VIL5Wwc1HQRqf6ZorVyEspIjtn3xeL9W0=;
+        b=b6tlyjwumzfBqgmKwAq5KNFYCZuw/GKCArfnHWhKSzZvDPWyrP9T+Uaw5IoSUWU63y
+         ++CEo6Yfxqc3t2Pb2OxbvgI5+ej0NlFMw8TxA349fP1Z6xQsr3nLvW2CBJ5OsOXqDHNR
+         zr+O8huaRsWZ3MGQYd4oiyI3UtS49o1vH/MHPe1/nWcX+ljtOf1vBR0N5pxgTTexrk36
+         veSEMVpD7+mWjYLerGMjUlQP660OgTAYWu8MLe2BjlIvzZwHEFvl5oDRyi3FO2WWnwkk
+         xJXjO3mLSCwtWJIybT/1s0x8RL2ehGffyEb5vT2psAjcRV4+0vASLaU11w0rziZ9fxAh
+         CDbA==
+X-Gm-Message-State: AOAM5332dldOshicAwJ3qqOSqoX9uElggTwfXTSQWFaDfQFyJRxwzOv1
+        aJwx+6Z3yfN+vru76x4BkfCOiA==
+X-Google-Smtp-Source: ABdhPJymRQM/RQkQUCShsPIWjBy7sexfLrBD1t+yZhVR/HXz1+HZOCpzBFUR41DvqYPhX+Cv/STLUQ==
+X-Received: by 2002:a1c:7fd8:: with SMTP id a207mr3484641wmd.40.1614268683107;
+        Thu, 25 Feb 2021 07:58:03 -0800 (PST)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id w13sm10387508wre.2.2021.02.25.07.58.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 25 Feb 2021 07:58:02 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH BUGFIX/IMPROVEMENT 1/6] block, bfq: always inject I/O of
+ queues blocked by wakers
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <23cc8281-a869-b260-ba0c-22127db2019b@kernel.dk>
+Date:   Thu, 25 Feb 2021 16:58:59 +0100
+Cc:     linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <1653E35E-CFEF-437C-9D52-4E004ED1CAFF@linaro.org>
+References: <20210126105102.53102-1-paolo.valente@linaro.org>
+ <20210126105102.53102-2-paolo.valente@linaro.org>
+ <23cc8281-a869-b260-ba0c-22127db2019b@kernel.dk>
+To:     Jens Axboe <axboe@kernel.dk>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 01:46:52PM +0530, Sumit Garg wrote:
-> Currently breakpoints in kernel .init.text section are not handled
-> correctly while allowing to remove them even after corresponding pages
-> have been freed.
-> 
-> Fix it via killing .init.text section breakpoints just prior to initmem
-> pages being freed.
-> 
-> Suggested-by: Doug Anderson <dianders@chromium.org>
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-
-I saw Andrew has picked this one up. That's ok for me:
-Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
-
-I already enriched kgdbtest to cover this (and they pass) so I guess
-this is also:
-Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
-
-BTW this is not Cc:ed to stable and I do wonder if it crosses the
-threshold to be considered a fix rather than a feature. Normally I
-consider adding safety rails for kgdb to be a new feature but, in this
-case, the problem would easily ensnare an inexperienced developer who is
-doing nothing more than debugging their own driver (assuming they
-correctly marked their probe function as .init) so I think this weighs
-in favour of being a fix.
 
 
-Daniel.
+> Il giorno 26 gen 2021, alle ore 17:17, Jens Axboe <axboe@kernel.dk> ha =
+scritto:
+>=20
+> On 1/26/21 3:50 AM, Paolo Valente wrote:
+>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+>> index 445cef9c0bb9..a83149407336 100644
+>> --- a/block/bfq-iosched.c
+>> +++ b/block/bfq-iosched.c
+>> @@ -4487,9 +4487,15 @@ static struct bfq_queue =
+*bfq_select_queue(struct bfq_data *bfqd)
+>> 			bfq_bfqq_busy(bfqq->bic->bfqq[0]) &&
+>> 			bfqq->bic->bfqq[0]->next_rq ?
+>> 			bfqq->bic->bfqq[0] : NULL;
+>> +		struct bfq_queue *blocked_bfqq =3D
+>> +			!hlist_empty(&bfqq->woken_list) ?
+>> +			container_of(bfqq->woken_list.first,
+>> +				     struct bfq_queue,
+>> +				     woken_list_node)
+>> +			: NULL;
+>=20
+> hlist_first_entry_or_null?
+>=20
 
+I didn't find any such function.  There is a list_first_entry_or_null,
+but it's for circular doubly linked lists.
 
-> ---
->  include/linux/kgdb.h      |  2 ++
->  init/main.c               |  1 +
->  kernel/debug/debug_core.c | 11 +++++++++++
->  3 files changed, 14 insertions(+)
-> 
-> diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
-> index 57b8885708e5..3aa503ef06fc 100644
-> --- a/include/linux/kgdb.h
-> +++ b/include/linux/kgdb.h
-> @@ -361,9 +361,11 @@ extern atomic_t			kgdb_active;
->  extern bool dbg_is_early;
->  extern void __init dbg_late_init(void);
->  extern void kgdb_panic(const char *msg);
-> +extern void kgdb_free_init_mem(void);
->  #else /* ! CONFIG_KGDB */
->  #define in_dbg_master() (0)
->  #define dbg_late_init()
->  static inline void kgdb_panic(const char *msg) {}
-> +static inline void kgdb_free_init_mem(void) { }
->  #endif /* ! CONFIG_KGDB */
->  #endif /* _KGDB_H_ */
-> diff --git a/init/main.c b/init/main.c
-> index c68d784376ca..a446ca3d334e 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -1417,6 +1417,7 @@ static int __ref kernel_init(void *unused)
->  	async_synchronize_full();
->  	kprobe_free_init_mem();
->  	ftrace_free_init_mem();
-> +	kgdb_free_init_mem();
->  	free_initmem();
->  	mark_readonly();
->  
-> diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-> index 229dd119f430..319381e95d1d 100644
-> --- a/kernel/debug/debug_core.c
-> +++ b/kernel/debug/debug_core.c
-> @@ -465,6 +465,17 @@ int dbg_remove_all_break(void)
->  	return 0;
->  }
->  
-> +void kgdb_free_init_mem(void)
-> +{
-> +	int i;
-> +
-> +	/* Clear init memory breakpoints. */
-> +	for (i = 0; i < KGDB_MAX_BREAKPOINTS; i++) {
-> +		if (init_section_contains((void *)kgdb_break[i].bpt_addr, 0))
-> +			kgdb_break[i].state = BP_UNDEFINED;
-> +	}
-> +}
-> +
->  #ifdef CONFIG_KGDB_KDB
->  void kdb_dump_stack_on_cpu(int cpu)
->  {
-> -- 
-> 2.25.1
+I'll wait a little bit for your reply, then send a V2 with this patch
+unchanged.
+
+Thanks,
+Paolo
+
+> --=20
+> Jens Axboe
+>=20
+
