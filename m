@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE5A324CDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6BE324CE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236365AbhBYJa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:30:58 -0500
-Received: from foss.arm.com ([217.140.110.172]:49898 "EHLO foss.arm.com"
+        id S236389AbhBYJbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:31:52 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:23965 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231771AbhBYJax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:30:53 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FEF6ED1;
-        Thu, 25 Feb 2021 01:30:07 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E1BB03F73D;
-        Thu, 25 Feb 2021 01:30:05 -0800 (PST)
-Date:   Thu, 25 Feb 2021 09:30:00 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Jon Masters <jcm@jonmasters.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Will Deacon <will@kernel.org>, mark.rutland@arm.com,
-        linux-pci@vger.kernel.org, sudeep.holla@arm.com,
-        lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
-Message-ID: <20210225093000.GA22843@e121166-lin.cambridge.arm.com>
-References: <4c2db08d-ccc4-05eb-6b7b-5fd7d07dd11e@arm.com>
- <20210128233147.GA28434@bjorn-Precision-5520>
- <CACCGGCc3zULqHgUh3Q9wA5WtPBnQ4eq_v2+1qA8bOBCQZJ5YoQ@mail.gmail.com>
+        id S236364AbhBYJbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:31:43 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614245481; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=Se6iQyjGJd8igMcoYPEvgpXPldXyd8UU9UkcbPu3Q5o=; b=kTWlUv7dCTWk0khspuRT+bpHJPRcW1c1V2gUlCpRpxTfDoD7Kz+dWCeKN3+o7mYWuUwTWsdl
+ dT2t+hrZ5Egt2DBLNgc12Ox9wXNtOBEioZWmnRCW/soENbK/uEPlYgPgvC3EYKm3Njd3td+Q
+ uH9+YDJs5yfDwqjuwiZFQIFeDB8=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60376e4e4ba4640b2b01f1a0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Feb 2021 09:30:54
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9E71EC43466; Thu, 25 Feb 2021 09:30:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 053EAC433ED;
+        Thu, 25 Feb 2021 09:30:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 053EAC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     devicetree@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH 0/9] qcom/sc7280: Enable various hardware blocks on SC7280 SoC
+Date:   Thu, 25 Feb 2021 15:00:16 +0530
+Message-Id: <cover.1614244789.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACCGGCc3zULqHgUh3Q9wA5WtPBnQ4eq_v2+1qA8bOBCQZJ5YoQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 12:43:30PM -0500, Jon Masters wrote:
-> Hi Bjorn, all,
-> 
-> On Thu, Jan 28, 2021 at 6:31 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> 
->     On Tue, Jan 26, 2021 at 10:46:04AM -0600, Jeremy Linton wrote:
-> 
->  
-> 
->     > Does that mean its open season for ECAM quirks, and we can expect
->     > them to start being merged now?
-> 
->     "Open season" makes me cringe because it suggests we have a license to
->     use quirks indiscriminately forever, and I hope that's not the case.
-> 
->     Lorenzo is closer to this issue than I am and has much better insight
->     into the mess this could turn into.  From my point of view, it's
->     shocking how much of a hassle this is compared to x86.  There just
->     aren't ECAM quirks, in-kernel clock management, or any of that crap.
->     I don't know how they do it on x86 and I don't have to care.  Whatever
->     they need to do, they apparently do in AML.  Eventually ARM64 has to
->     get there as well if vendors want distro support.
-> 
->     I don't want to be in the position of enforcing a draconian "no more
->     quirks ever" policy.  The intent -- to encourage/force vendors to
->     develop spec-compliant machines -- is good, but it seems like the
->     reward of having compliant machines "just work" vs the penalty of
->     having to write quirks and shepherd them upstream and into distros
->     will probably be more effective and not much slower.
-> 
-> 
-> The problem is that the third party IP vendors (still) make too much junk. For
-> years, there wasn't a compliance program (e.g. SystemReady with some of the
-> meat behind PCI-SIG compliance) and even when there was the third party IP
-> vendors building "root ports" (not even RCs) would make some junk with a hacked
-> up Linux kernel booting on a model and demo that as "PCI". There wasn't the
-> kind of adult supervision that was required. It is (slowly) happening now, but
-> it's years and years late. It's just embarrassing to see the lack of ECAM that
-> works. In many cases, it's because the IP being used was baked years ago or
-> made for some "non server" (as if there is such a thing) use case, etc. But in
-> others, there was a chance to do it right, and it still happens. Some of us
-> have lost what hair we had over the years getting third party IP vendors to
-> wake up and start caring about this.
-> 
-> So there's no excuse. None at all. However, this is where we are. And it /is/
-> improving. But it's still too slow, and we have platforms still coming to
-> market that need to boot and run. Based on this, and the need to have something
-> more flexible than just solving for ECAM deficiencies (which are really just a
-> symptom), I can see the allure of an SMC. I don't like it, but if that's where
-> folks want to go, and if we can find a way to constrain the enthusiasm for it,
-> then perhaps it is a path forward. But if we are to go down that path it needs
-> to come with a giant warning from the kernel that a system was booted at is
-> relying on that. Something that will cause an OS certification program to fail
-> without a waiver, or will cause customers to phone up for support wondering why
-> the hw is broken. It *must* not be a silent thing. It needs to be "this
-> hardware is broken and non-standard, get the next version fixed".
+This series enables various hardware blocks such as LLCC, IPCC, AOSS QMP
+and Coresight on SC7280 SoC.
 
-It is a stance I agree with in many respects, it should be shared (it
-was in HTML format - the lists unfortunately dropped the message) so I
-am replying to it to make it public.
+This series is dependent on the base support added for SC7280 in [1].
 
-Thanks,
-Lorenzo
+[1] https://lore.kernel.org/patchwork/cover/1379842/
+
+Sai Prakash Ranjan (9):
+  dt-bindings: arm: msm: Add LLCC for SC7280
+  soc: qcom: llcc: Add configuration data for SC7280
+  arm64: dts: qcom: sc7280: Add device tree node for LLCC
+  dt-bindings: mailbox: qcom-ipcc: Add compatible for SC7280
+  arm64: dts: qcom: sc7280: Add IPCC for SC7280 SoC
+  dt-bindings: soc: qcom: aoss: Add SC7280 compatible
+  soc: qcom: aoss: Add AOSS QMP support for SC7280
+  arm64: dts: qcom: sc7280: Add AOSS QMP node
+  arm64: dts: qcom: sc7280: Add Coresight support
+
+ .../bindings/arm/msm/qcom,llcc.yaml           |   1 +
+ .../bindings/mailbox/qcom-ipcc.yaml           |   1 +
+ .../bindings/soc/qcom/qcom,aoss-qmp.txt       |   1 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi          | 520 ++++++++++++++++++
+ drivers/soc/qcom/llcc-qcom.c                  |  19 +
+ drivers/soc/qcom/qcom_aoss.c                  |   1 +
+ 6 files changed, 543 insertions(+)
+
+
+base-commit: d79b47c59576a51d8e288a6b98b75ccf4afb8acd
+prerequisite-patch-id: d8babdd3c8a9923360af342f3d8d9876820272e5
+prerequisite-patch-id: 5757e07e4336d773d402769d09106924962ce31b
+prerequisite-patch-id: 9b21eb51aa86619f5695a511c65c9236e3bc0f2b
+prerequisite-patch-id: 2f834cc892f7f9109cbf32a87d504ba27b64a5df
+prerequisite-patch-id: 14b1185357703d750c3411a16e97675489ca7dde
+prerequisite-patch-id: 55c143f21b646c18da921a62bbd2801a5df38c8f
+prerequisite-patch-id: 66f4c58aff2f1a7283b0103590ff82384907bae3
+prerequisite-patch-id: 75e73e6b13ab91ed5e3a96b59957aa5e867d65ea
+prerequisite-patch-id: eb46845b4f9eb3706a26911042c2865a58577198
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
