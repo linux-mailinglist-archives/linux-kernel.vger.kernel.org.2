@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE42324E5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2279324E6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235748AbhBYKiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:38:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55392 "EHLO
+        id S235730AbhBYKnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:43:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234475AbhBYKQo (ORCPT
+        with ESMTP id S232582AbhBYKRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:16:44 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4546EC061356
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:16:29 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id u11so2916785plg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:16:29 -0800 (PST)
+        Thu, 25 Feb 2021 05:17:12 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244A7C06178C
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:16:32 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id t25so3488178pga.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:16:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CzZrf5ZN3dKFJYWBe83SjlOjpZibeUfuJa93ac7YAXk=;
-        b=jQ+HHERLSuqcV29Grg3WAhikDj9vUDlXUXBlEp4E5EI257b4HU7uyTT8eY6GWJMoF7
-         2YDbh1LC1TY0viJmtlEUakyPipeouh1KUBxw+uD0wvJL/0k13a7Kw721ONcSuziOdcwi
-         4UIxHaiKplFL1VtfBw8wFJZ6QcozptuSGnZFg=
+        bh=s7mSN+irdwIhsF2IwhZRcQVeKmeP7JQ9ahNUIts3x4s=;
+        b=VA5P4FPtqDNjUTPqvHbPbfMmrqsH/+bthZa1qtHJ5xmR0AU6RudvpkJcVgUAa4EuVs
+         ZFn+G9aSx4gYOB8iqycClcB2AW96HHdAZojWASQNJB+dVurhn5zkaoiqlRcysc83MB/c
+         STAeqH+KNyctpBpOrIYwiRLAeL3Ve0Yl5LOwU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CzZrf5ZN3dKFJYWBe83SjlOjpZibeUfuJa93ac7YAXk=;
-        b=mkYb0CvBnyDurkTx48Xo9KQbIvpcz2Ztz3Oy5HA5zxdE/4RH0fabPTm6rwrDCVvlFt
-         Y80VEYIwViybOAuD0jXTUeFz3iJHLWa36mCGu+56H6vU+wF5t2B9KEnxi7A/JyJl46pV
-         pj0EW4DUosdP2VI6MrpT5/IAP2SQRjTSnkP0brIvq9fMQJYKNBjF5BWVO72hIEDbcbRE
-         1XnXajezBaMoEgDAb8PUupeO5kEuI6uKN+ecw8sPmiuAAPRXNFyMhzNX+UBx3VntFsWv
-         VI3EX9CXa2SP0Q5aSkdk8DR+6CkZjMQQjzuMcAK0DFMkB0djJ540PL5k3enD5jflIKWW
-         IGDQ==
-X-Gm-Message-State: AOAM531QZvJ2bqjU4BR7dPgNqigjwY4Lt9hjqZReCQDWPNKR56f3YlUh
-        PCgdjD2VtbDgxPtMOvMVDjUonA==
-X-Google-Smtp-Source: ABdhPJxSUJ4T7sf9r5KfvrKdJu6jBTRF3OdWQWVVUucHE6mUQiixAZdQBEGSo5/E6wQ6PxyWQv8jBA==
-X-Received: by 2002:a17:90a:d998:: with SMTP id d24mr2582834pjv.169.1614248188900;
-        Thu, 25 Feb 2021 02:16:28 -0800 (PST)
+        bh=s7mSN+irdwIhsF2IwhZRcQVeKmeP7JQ9ahNUIts3x4s=;
+        b=IbkMb1VPpSzksSCUPDeFvdSiUjYcauz7yM0jT3Sq0f9y7F4ec9HQbMDsfOWWRIAms7
+         7Qr9ZzcSuw6W7Gj+2zRKxtgF9s8rQz2gmcQDRAXBCpzvld17L8QI5lVUs4+OSkUFMorU
+         20vcMIlPB2EJsppZYZQZr1ke16PlmAYqWNv1ok2BJPnHA9Xwz2jTTVaWdbGyzKTbKFDb
+         zFkUxuq34Aj4uAWHVxQJlwldxVpGmiyE/0Upw9E5DtgGRw0GyWqsNp7baLeffmYGsvF7
+         rqSsHJTMAlqnSWdyHEwuZC0Xi5HV7eVQVWfv2fo3wNjOcRPbb6GHd8LBpsNsxdUOUk0O
+         xudQ==
+X-Gm-Message-State: AOAM532nI/Du/pacjRFJmGzMpdvVQVX3p1ZbFBbXJxshKqmJkxKpkiCU
+        F241hBCllq+FikNTvo7Lq6xv2g==
+X-Google-Smtp-Source: ABdhPJwlZgpK53Z/Lqs96ckBIaWhONyBJg+ghT63Pz7grsmKbH9NbNbSweCCB8j+N1FExWWmxODj6A==
+X-Received: by 2002:aa7:8e51:0:b029:1ed:2928:18ff with SMTP id d17-20020aa78e510000b02901ed292818ffmr2537841pfr.76.1614248191668;
+        Thu, 25 Feb 2021 02:16:31 -0800 (PST)
 Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:2550:3154:2c53:b6e7])
-        by smtp.gmail.com with ESMTPSA id z2sm5848193pfc.8.2021.02.25.02.16.26
+        by smtp.gmail.com with ESMTPSA id z2sm5848193pfc.8.2021.02.25.02.16.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 02:16:28 -0800 (PST)
+        Thu, 25 Feb 2021 02:16:31 -0800 (PST)
 From:   Alexandre Courbot <acourbot@chromium.org>
 To:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -55,9 +55,9 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org,
         Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH v2 1/8] media: mtk-vcodec: vdec: handle firmware version field
-Date:   Thu, 25 Feb 2021 19:16:05 +0900
-Message-Id: <20210225101612.2832444-2-acourbot@chromium.org>
+Subject: [PATCH v2 2/8] media: mtk-vcodec: support version 2 of decoder firmware ABI
+Date:   Thu, 25 Feb 2021 19:16:06 +0900
+Message-Id: <20210225101612.2832444-3-acourbot@chromium.org>
 X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
 In-Reply-To: <20210225101612.2832444-1-acourbot@chromium.org>
 References: <20210225101612.2832444-1-acourbot@chromium.org>
@@ -67,125 +67,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firmwares for decoders newer than MT8173 will include an ABI version
-number in their initialization ack message. Add the capacity to manage
-it and make initialization fail if the firmware ABI is of a version that
-we don't support.
-
-For MT8173, this ABI version field does not exist ; thus ignore it on
-this chip. There should only be one firmware version available for it
-anyway.
+Add support for decoder firmware version 2, which makes the kernel
+responsible for managing the VSI context and is used for stateless
+codecs.
 
 Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 ---
- .../mtk-vcodec/mtk_vcodec_dec_stateful.c      |  1 +
- .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  4 ++++
- .../media/platform/mtk-vcodec/vdec_ipi_msg.h  |  5 +++++
- .../media/platform/mtk-vcodec/vdec_vpu_if.c   | 21 +++++++++++++++++--
- 4 files changed, 29 insertions(+), 2 deletions(-)
+ .../media/platform/mtk-vcodec/vdec_ipi_msg.h  | 18 +++++++++---
+ .../media/platform/mtk-vcodec/vdec_vpu_if.c   | 28 +++++++++++++++----
+ .../media/platform/mtk-vcodec/vdec_vpu_if.h   |  5 ++++
+ 3 files changed, 42 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
-index 48b7524bc8fb..f9db7ef19c28 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
-@@ -620,6 +620,7 @@ static struct vb2_ops mtk_vdec_frame_vb2_ops = {
- };
- 
- const struct mtk_vcodec_dec_pdata mtk_vdec_8173_pdata = {
-+	.chip = MTK_MT8173,
- 	.init_vdec_params = mtk_init_vdec_params,
- 	.ctrls_setup = mtk_vcodec_dec_ctrls_setup,
- 	.vdec_vb2_ops = &mtk_vdec_frame_vb2_ops,
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-index 9221c17a176b..60bc39efa20d 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-@@ -322,6 +322,8 @@ enum mtk_chip {
-  * @vdec_framesizes: supported video decoder frame sizes
-  * @num_framesizes: count of video decoder frame sizes
-  *
-+ * @chip: chip this decoder is compatible with
-+ *
-  * @uses_stateless_api: whether the decoder uses the stateless API with requests
-  */
- 
-@@ -341,6 +343,8 @@ struct mtk_vcodec_dec_pdata {
- 	const struct mtk_codec_framesizes *vdec_framesizes;
- 	const int num_framesizes;
- 
-+	enum mtk_chip chip;
-+
- 	bool uses_stateless_api;
- };
- 
 diff --git a/drivers/media/platform/mtk-vcodec/vdec_ipi_msg.h b/drivers/media/platform/mtk-vcodec/vdec_ipi_msg.h
-index 47a1c1c0fd04..eb66729fda63 100644
+index eb66729fda63..a0e773ae3ab3 100644
 --- a/drivers/media/platform/mtk-vcodec/vdec_ipi_msg.h
 +++ b/drivers/media/platform/mtk-vcodec/vdec_ipi_msg.h
-@@ -83,12 +83,17 @@ struct vdec_ap_ipi_dec_start {
-  * @status	: VPU exeuction result
-  * @ap_inst_addr	: AP vcodec_vpu_inst instance address
-  * @vpu_inst_addr	: VPU decoder instance address
-+ * @vdec_abi_version:	ABI version of the firmware. Kernel can use it to
-+ *			ensure that it is compatible with the firmware.
-+ *			This field is not valid for MT8173 and must not be
-+ *			accessed for this chip.
+@@ -29,11 +29,15 @@ enum vdec_ipi_msgid {
+ /**
+  * struct vdec_ap_ipi_cmd - generic AP to VPU ipi command format
+  * @msg_id	: vdec_ipi_msgid
+- * @vpu_inst_addr	: VPU decoder instance address
++ * @vpu_inst_addr : VPU decoder instance address. Used if ABI version < 2.
++ * @inst_id     : instance ID. Used if the ABI version >= 2.
+  */
+ struct vdec_ap_ipi_cmd {
+ 	uint32_t msg_id;
+-	uint32_t vpu_inst_addr;
++	union {
++		uint32_t vpu_inst_addr;
++		uint32_t inst_id;
++	};
+ };
+ 
+ /**
+@@ -63,7 +67,8 @@ struct vdec_ap_ipi_init {
+ /**
+  * struct vdec_ap_ipi_dec_start - for AP_IPIMSG_DEC_START
+  * @msg_id	: AP_IPIMSG_DEC_START
+- * @vpu_inst_addr	: VPU decoder instance address
++ * @vpu_inst_addr : VPU decoder instance address. Used if ABI version < 2.
++ * @inst_id     : instance ID. Used if the ABI version >= 2.
+  * @data	: Header info
+  *	H264 decoder [0]:buf_sz [1]:nal_start
+  *	VP8 decoder  [0]:width/height
+@@ -72,7 +77,10 @@ struct vdec_ap_ipi_init {
+  */
+ struct vdec_ap_ipi_dec_start {
+ 	uint32_t msg_id;
+-	uint32_t vpu_inst_addr;
++	union {
++		uint32_t vpu_inst_addr;
++		uint32_t inst_id;
++	};
+ 	uint32_t data[3];
+ 	uint32_t reserved;
+ };
+@@ -87,6 +95,7 @@ struct vdec_ap_ipi_dec_start {
+  *			ensure that it is compatible with the firmware.
+  *			This field is not valid for MT8173 and must not be
+  *			accessed for this chip.
++ * @inst_id     : instance ID. Valid only if the ABI version >= 2.
   */
  struct vdec_vpu_ipi_init_ack {
  	uint32_t msg_id;
- 	int32_t status;
+@@ -94,6 +103,7 @@ struct vdec_vpu_ipi_init_ack {
  	uint64_t ap_inst_addr;
  	uint32_t vpu_inst_addr;
-+	uint32_t vdec_abi_version;
+ 	uint32_t vdec_abi_version;
++	uint32_t inst_id;
  };
  
  #endif
 diff --git a/drivers/media/platform/mtk-vcodec/vdec_vpu_if.c b/drivers/media/platform/mtk-vcodec/vdec_vpu_if.c
-index 58b0e6fa8fd2..203089213e67 100644
+index 203089213e67..5dffc459a33d 100644
 --- a/drivers/media/platform/mtk-vcodec/vdec_vpu_if.c
 +++ b/drivers/media/platform/mtk-vcodec/vdec_vpu_if.c
-@@ -24,6 +24,22 @@ static void handle_init_ack_msg(const struct vdec_vpu_ipi_init_ack *msg)
- 	vpu->inst_addr = msg->vpu_inst_addr;
+@@ -25,18 +25,30 @@ static void handle_init_ack_msg(const struct vdec_vpu_ipi_init_ack *msg)
  
  	mtk_vcodec_debug(vpu, "- vpu_inst_addr = 0x%x", vpu->inst_addr);
+ 
++	/* Set default ABI version if dealing with unversioned firmware. */
++	vpu->fw_abi_version = 0;
++	/*
++	 * Instance ID is only used if ABI version >= 2. Initialize it with
++	 * garbage by default.
++	 */
++	vpu->inst_id = 0xdeadbeef;
 +
-+	/* Firmware version field does not exist on MT8173. */
-+	if (vpu->ctx->dev->vdec_pdata->chip == MTK_MT8173)
-+		return;
-+
-+	/* Check firmware version. */
-+	mtk_vcodec_debug(vpu, "firmware version 0x%x\n", msg->vdec_abi_version);
-+	switch (msg->vdec_abi_version) {
-+	case 1:
+ 	/* Firmware version field does not exist on MT8173. */
+ 	if (vpu->ctx->dev->vdec_pdata->chip == MTK_MT8173)
+ 		return;
+ 
+ 	/* Check firmware version. */
+-	mtk_vcodec_debug(vpu, "firmware version 0x%x\n", msg->vdec_abi_version);
+-	switch (msg->vdec_abi_version) {
++	vpu->fw_abi_version = msg->vdec_abi_version;
++	mtk_vcodec_debug(vpu, "firmware version 0x%x\n", vpu->fw_abi_version);
++	switch (vpu->fw_abi_version) {
+ 	case 1:
+ 		break;
++	case 2:
++		vpu->inst_id = msg->inst_id;
 +		break;
-+	default:
-+		mtk_vcodec_err(vpu, "unhandled firmware version 0x%x\n",
-+			       msg->vdec_abi_version);
-+		vpu->failure = 1;
-+		break;
-+	}
- }
- 
- /*
-@@ -44,6 +60,9 @@ static void vpu_dec_ipi_handler(void *data, unsigned int len, void *priv)
- 
- 	mtk_vcodec_debug(vpu, "+ id=%X", msg->msg_id);
- 
-+	vpu->failure = msg->status;
-+	vpu->signaled = 1;
-+
- 	if (msg->status == 0) {
- 		switch (msg->msg_id) {
- 		case VPU_IPIMSG_DEC_INIT_ACK:
-@@ -63,8 +82,6 @@ static void vpu_dec_ipi_handler(void *data, unsigned int len, void *priv)
+ 	default:
+ 		mtk_vcodec_err(vpu, "unhandled firmware version 0x%x\n",
+-			       msg->vdec_abi_version);
++			       vpu->fw_abi_version);
+ 		vpu->failure = 1;
+ 		break;
  	}
+@@ -113,7 +125,10 @@ static int vcodec_send_ap_ipi(struct vdec_vpu_inst *vpu, unsigned int msg_id)
  
- 	mtk_vcodec_debug(vpu, "- id=%X", msg->msg_id);
--	vpu->failure = msg->status;
--	vpu->signaled = 1;
- }
+ 	memset(&msg, 0, sizeof(msg));
+ 	msg.msg_id = msg_id;
+-	msg.vpu_inst_addr = vpu->inst_addr;
++	if (vpu->fw_abi_version < 2)
++		msg.vpu_inst_addr = vpu->inst_addr;
++	else
++		msg.inst_id = vpu->inst_id;
  
- static int vcodec_vpu_send_msg(struct vdec_vpu_inst *vpu, void *msg, int len)
+ 	err = vcodec_vpu_send_msg(vpu, &msg, sizeof(msg));
+ 	mtk_vcodec_debug(vpu, "- id=%X ret=%d", msg_id, err);
+@@ -163,7 +178,10 @@ int vpu_dec_start(struct vdec_vpu_inst *vpu, uint32_t *data, unsigned int len)
+ 
+ 	memset(&msg, 0, sizeof(msg));
+ 	msg.msg_id = AP_IPIMSG_DEC_START;
+-	msg.vpu_inst_addr = vpu->inst_addr;
++	if (vpu->fw_abi_version < 2)
++		msg.vpu_inst_addr = vpu->inst_addr;
++	else
++		msg.inst_id = vpu->inst_id;
+ 
+ 	for (i = 0; i < len; i++)
+ 		msg.data[i] = data[i];
+diff --git a/drivers/media/platform/mtk-vcodec/vdec_vpu_if.h b/drivers/media/platform/mtk-vcodec/vdec_vpu_if.h
+index 85224eb7e34b..c2ed5b6cab8b 100644
+--- a/drivers/media/platform/mtk-vcodec/vdec_vpu_if.h
++++ b/drivers/media/platform/mtk-vcodec/vdec_vpu_if.h
+@@ -18,6 +18,9 @@ struct mtk_vcodec_ctx;
+  *                for control and info share
+  * @failure     : VPU execution result status, 0: success, others: fail
+  * @inst_addr	: VPU decoder instance address
++ * @fw_abi_version : ABI version of the firmware.
++ * @inst_id	: if fw_abi_version >= 2, contains the instance ID to be given
++ *                in place of inst_addr in messages.
+  * @signaled    : 1 - Host has received ack message from VPU, 0 - not received
+  * @ctx         : context for v4l2 layer integration
+  * @dev		: platform device of VPU
+@@ -29,6 +32,8 @@ struct vdec_vpu_inst {
+ 	void *vsi;
+ 	int32_t failure;
+ 	uint32_t inst_addr;
++	uint32_t fw_abi_version;
++	uint32_t inst_id;
+ 	unsigned int signaled;
+ 	struct mtk_vcodec_ctx *ctx;
+ 	wait_queue_head_t wq;
 -- 
 2.30.0.617.g56c4b15f3c-goog
 
