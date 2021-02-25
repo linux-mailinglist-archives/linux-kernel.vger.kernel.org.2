@@ -2,228 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9B1324C9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24918324C9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236153AbhBYJP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:15:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236161AbhBYJML (ORCPT
+        id S236249AbhBYJQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:16:35 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:46538 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236196AbhBYJNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:12:11 -0500
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8224C06178C
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 01:11:30 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:bd01:18f7:df2b:b765])
-        by andre.telenet-ops.be with bizsmtp
-        id ZMBS2400Z3wXKmD01MBTUz; Thu, 25 Feb 2021 10:11:27 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lFCgA-001asd-Hp; Thu, 25 Feb 2021 10:11:26 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lFCgA-002sUX-0P; Thu, 25 Feb 2021 10:11:26 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] docs: driver-model: Remove obsolete device class documentation
-Date:   Thu, 25 Feb 2021 10:11:24 +0100
-Message-Id: <20210225091124.686078-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 25 Feb 2021 04:13:44 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UPXPpzL_1614244379;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPXPpzL_1614244379)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 25 Feb 2021 17:13:00 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     mpe@ellerman.id.au
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] powerpc: Replace DEFINE_SIMPLE_ATTRIBUTE with  DEFINE_DEBUGFS_ATTRIBUTE
+Date:   Thu, 25 Feb 2021 17:12:58 +0800
+Message-Id: <1614244378-63152-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-None of this is valid since v2.5.69.
+Fix the following coccicheck warning:
+./arch/powerpc/kernel/setup_64.c:1143:0-23: WARNING: fops_rfi_flush
+should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+./arch/powerpc/kernel/setup_64.c:1169:0-23: WARNING: fops_entry_flush
+should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+./arch/powerpc/kernel/setup_64.c:1195:0-23: WARNING: fops_uaccess_flush
+should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+./arch/powerpc/platforms/powernv/memtrace.c:311:0-23: WARNING:
+memtrace_init_fops should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+./arch/powerpc/xmon/xmon.c:3997:0-23: WARNING: xmon_dbgfs_ops should be
+defined with DEFINE_DEBUGFS_ATTRIBUTE
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
-I started updating the document, until I realized that all of the
-typedefs, structures, functions, defines, and sysfs layout have been
-renamed, changed, or removed.  So I think it's better (for an expert in
-the field) to start from scratch.
----
- .../driver-api/driver-model/class.rst         | 149 ------------------
- .../driver-api/driver-model/index.rst         |   1 -
- 2 files changed, 150 deletions(-)
- delete mode 100644 Documentation/driver-api/driver-model/class.rst
+ arch/powerpc/kernel/setup_64.c            | 6 +++---
+ arch/powerpc/platforms/powernv/memtrace.c | 4 ++--
+ arch/powerpc/xmon/xmon.c                  | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/driver-api/driver-model/class.rst b/Documentation/driver-api/driver-model/class.rst
-deleted file mode 100644
-index fff55b80e86a54a4..0000000000000000
---- a/Documentation/driver-api/driver-model/class.rst
-+++ /dev/null
-@@ -1,149 +0,0 @@
--==============
--Device Classes
--==============
--
--Introduction
--~~~~~~~~~~~~
--A device class describes a type of device, like an audio or network
--device. The following device classes have been identified:
--
--<Insert List of Device Classes Here>
--
--
--Each device class defines a set of semantics and a programming interface
--that devices of that class adhere to. Device drivers are the
--implementation of that programming interface for a particular device on
--a particular bus.
--
--Device classes are agnostic with respect to what bus a device resides
--on.
--
--
--Programming Interface
--~~~~~~~~~~~~~~~~~~~~~
--The device class structure looks like::
--
--
--  typedef int (*devclass_add)(struct device *);
--  typedef void (*devclass_remove)(struct device *);
--
--See the kerneldoc for the struct class.
--
--A typical device class definition would look like::
--
--  struct device_class input_devclass = {
--        .name		= "input",
--        .add_device	= input_add_device,
--	.remove_device	= input_remove_device,
--  };
--
--Each device class structure should be exported in a header file so it
--can be used by drivers, extensions and interfaces.
--
--Device classes are registered and unregistered with the core using::
--
--  int devclass_register(struct device_class * cls);
--  void devclass_unregister(struct device_class * cls);
--
--
--Devices
--~~~~~~~
--As devices are bound to drivers, they are added to the device class
--that the driver belongs to. Before the driver model core, this would
--typically happen during the driver's probe() callback, once the device
--has been initialized. It now happens after the probe() callback
--finishes from the core.
--
--The device is enumerated in the class. Each time a device is added to
--the class, the class's devnum field is incremented and assigned to the
--device. The field is never decremented, so if the device is removed
--from the class and re-added, it will receive a different enumerated
--value.
--
--The class is allowed to create a class-specific structure for the
--device and store it in the device's class_data pointer.
--
--There is no list of devices in the device class. Each driver has a
--list of devices that it supports. The device class has a list of
--drivers of that particular class. To access all of the devices in the
--class, iterate over the device lists of each driver in the class.
--
--
--Device Drivers
--~~~~~~~~~~~~~~
--Device drivers are added to device classes when they are registered
--with the core. A driver specifies the class it belongs to by setting
--the struct device_driver::devclass field.
--
--
--sysfs directory structure
--~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--There is a top-level sysfs directory named 'class'.
--
--Each class gets a directory in the class directory, along with two
--default subdirectories::
--
--        class/
--        `-- input
--            |-- devices
--            `-- drivers
--
--
--Drivers registered with the class get a symlink in the drivers/ directory
--that points to the driver's directory (under its bus directory)::
--
--   class/
--   `-- input
--       |-- devices
--       `-- drivers
--           `-- usb:usb_mouse -> ../../../bus/drivers/usb_mouse/
--
--
--Each device gets a symlink in the devices/ directory that points to the
--device's directory in the physical hierarchy::
--
--   class/
--   `-- input
--       |-- devices
--       |   `-- 1 -> ../../../root/pci0/00:1f.0/usb_bus/00:1f.2-1:0/
--       `-- drivers
--
--
--Exporting Attributes
--~~~~~~~~~~~~~~~~~~~~
--
--::
--
--  struct devclass_attribute {
--        struct attribute        attr;
--        ssize_t (*show)(struct device_class *, char * buf, size_t count, loff_t off);
--        ssize_t (*store)(struct device_class *, const char * buf, size_t count, loff_t off);
--  };
--
--Class drivers can export attributes using the DEVCLASS_ATTR macro that works
--similarly to the DEVICE_ATTR macro for devices. For example, a definition
--like this::
--
--  static DEVCLASS_ATTR(debug,0644,show_debug,store_debug);
--
--is equivalent to declaring::
--
--  static devclass_attribute devclass_attr_debug;
--
--The bus driver can add and remove the attribute from the class's
--sysfs directory using::
--
--  int devclass_create_file(struct device_class *, struct devclass_attribute *);
--  void devclass_remove_file(struct device_class *, struct devclass_attribute *);
--
--In the example above, the file will be named 'debug' in placed in the
--class's directory in sysfs.
--
--
--Interfaces
--~~~~~~~~~~
--There may exist multiple mechanisms for accessing the same device of a
--particular class type. Device interfaces describe these mechanisms.
--
--When a device is added to a device class, the core attempts to add it
--to every interface that is registered with the device class.
-diff --git a/Documentation/driver-api/driver-model/index.rst b/Documentation/driver-api/driver-model/index.rst
-index 755016422269fb6e..4831bdd92e5cd42a 100644
---- a/Documentation/driver-api/driver-model/index.rst
-+++ b/Documentation/driver-api/driver-model/index.rst
-@@ -7,7 +7,6 @@ Driver Model
+diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup_64.c
+index 560ed8b..6a030b0 100644
+--- a/arch/powerpc/kernel/setup_64.c
++++ b/arch/powerpc/kernel/setup_64.c
+@@ -1140,7 +1140,7 @@ static int rfi_flush_get(void *data, u64 *val)
+ 	return 0;
+ }
  
-    binding
-    bus
--   class
-    design-patterns
-    device
-    devres
+-DEFINE_SIMPLE_ATTRIBUTE(fops_rfi_flush, rfi_flush_get, rfi_flush_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(fops_rfi_flush, rfi_flush_get, rfi_flush_set, "%llu\n");
+ 
+ static int entry_flush_set(void *data, u64 val)
+ {
+@@ -1166,7 +1166,7 @@ static int entry_flush_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(fops_entry_flush, entry_flush_get, entry_flush_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(fops_entry_flush, entry_flush_get, entry_flush_set, "%llu\n");
+ 
+ static int uaccess_flush_set(void *data, u64 val)
+ {
+@@ -1192,7 +1192,7 @@ static int uaccess_flush_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(fops_uaccess_flush, uaccess_flush_get, uaccess_flush_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(fops_uaccess_flush, uaccess_flush_get, uaccess_flush_set, "%llu\n");
+ 
+ static __init int rfi_flush_debugfs_init(void)
+ {
+diff --git a/arch/powerpc/platforms/powernv/memtrace.c b/arch/powerpc/platforms/powernv/memtrace.c
+index 019669e..731be02 100644
+--- a/arch/powerpc/platforms/powernv/memtrace.c
++++ b/arch/powerpc/platforms/powernv/memtrace.c
+@@ -308,8 +308,8 @@ static int memtrace_enable_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(memtrace_init_fops, memtrace_enable_get,
+-					memtrace_enable_set, "0x%016llx\n");
++DEFINE_DEBUGFS_ATTRIBUTE(memtrace_init_fops, memtrace_enable_get,
++			 memtrace_enable_set, "0x%016llx\n");
+ 
+ static int memtrace_init(void)
+ {
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index 3fe3749..6d54767 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -3994,7 +3994,7 @@ static int xmon_dbgfs_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(xmon_dbgfs_ops, xmon_dbgfs_get,
++DEFINE_DEBUGFS_ATTRIBUTE(xmon_dbgfs_ops, xmon_dbgfs_get,
+ 			xmon_dbgfs_set, "%llu\n");
+ 
+ static int __init setup_xmon_dbgfs(void)
 -- 
-2.25.1
+1.8.3.1
 
