@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6243C3250D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 697F63250F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhBYNtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 08:49:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51534 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231960AbhBYNtE (ORCPT
+        id S232491AbhBYNtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 08:49:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232398AbhBYNtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:49:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614260858;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EgjC+rf5BpRHQVKEWQzIdMLice8BLuA8Q1gYTkfD844=;
-        b=Z/uQbHjNHfaoKzGrK2Mtkc0fBrdysKOd7WQjN8gLuRQMcj1EKslQfHDb64CJ6KOXtt7bQU
-        omf/KRU3PZsRiYl5UnNTnpM36yhjrRJcHmrjjWTHQen2oonDZtocfB3A+ORPy89zHtCFrh
-        ZbJR2NyADTMIIBz5/XTsITU+a2Fgc5I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406-f7r-gXxdPe6w62d-1y8HYQ-1; Thu, 25 Feb 2021 08:47:34 -0500
-X-MC-Unique: f7r-gXxdPe6w62d-1y8HYQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E40A8799E0;
-        Thu, 25 Feb 2021 13:47:32 +0000 (UTC)
-Received: from [10.36.114.58] (ovpn-114-58.ams2.redhat.com [10.36.114.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9CE4919C79;
-        Thu, 25 Feb 2021 13:47:29 +0000 (UTC)
-Subject: Re: [PATCH] memblock: fix section mismatch warning
-To:     Arnd Bergmann <arnd@kernel.org>, Mike Rapoport <rppt@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Baoquan He <bhe@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Aslan Bakirov <aslan@fb.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210225133808.2188581-1-arnd@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <60989b76-1ae6-6be3-0277-df9f0cc8dc3e@redhat.com>
-Date:   Thu, 25 Feb 2021 14:47:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 25 Feb 2021 08:49:32 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8CEC061786;
+        Thu, 25 Feb 2021 05:49:17 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id k2so451139ioh.5;
+        Thu, 25 Feb 2021 05:49:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UJpMiDeR5e81SLjna5kQPFiv7DjhNpdh1mQ36CWKCU0=;
+        b=d8JGs98H7pp/gCDG2m+l2j61WMZR/DLTYaw8mK4AwTDLq+eKyIAWdpZ78cbG60IOua
+         fpN7QE/n/9uw8YEVnowSAaCgeABpWXq1Tz0Qe+QYOeTBtNxgxDrnk29KYpHc5Ohu75nz
+         KCkH94n87xIv2kn7q4ePVkpGkRNUVENNSlfpqPGMW3RKPt/2um16vnR2ZLFOFiYpmK9d
+         Zqmw1n6vVPPyy39AvLgQCldBnEHMbl8GVZUOxORVNes11BhYR/FizZ+xO5fPJsLjewpO
+         2LuPN1TH6ZFzqevmfP6QrDgxlsy1npQxke4Qi3MvVV74Dif+u3fy83JdRqWYe0xz+BdB
+         AH7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UJpMiDeR5e81SLjna5kQPFiv7DjhNpdh1mQ36CWKCU0=;
+        b=Kr1QtDrWt+tCC3cL4dObXcliy68a6u1p+Qo32LW0LqFq2J6UYvYPrQ7Ll4WnDP6ud/
+         2Svb0m9WB+CJM6HiFYgGosX5YNudkcLhIyGKe8gONlBZGdFHD65nQ6BuKdqdGSQ1WtYX
+         jFhIO4nbH+1B+sVt124LD3y9lKn4ls97C6fwrcm41wQawFP0SPgY9G5/kXDoeCwnFLAz
+         z0mC4QV7tnwm6Va/52aNXOoPCB7/9v1adHVxjXTJTl8lUJ1CSHVm9UxLswk3S6MvedZb
+         rGycKjKOHSIXb6HYcjzfmWk2ZkpfkMgOtvaL1QFGqYHli+7VmMBb5TH4CaTsH0VT+JyV
+         +qUw==
+X-Gm-Message-State: AOAM530v9K97b8aHEGxTjK3Rbn8qcapncs89KpPLvcRbZZOrcyPQLWqx
+        6EUfVWaFaUBPOijQUq28UZqrwNutoqL71gIgDA03lL7S528=
+X-Google-Smtp-Source: ABdhPJwVRyG8wV2EWyGt2tFgntkYqMntju34OBdoXuzPxgMgogZZfkVIJDICRDHr95orvYU2Wiuh1tkQWVWTaXX0kr4=
+X-Received: by 2002:a5e:dd46:: with SMTP id u6mr2744670iop.73.1614260957176;
+ Thu, 25 Feb 2021 05:49:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210225133808.2188581-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210220065654.25598-1-heiko.thiery@gmail.com>
+ <20210222190051.40fdc3e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAEyMn7ZM7_pPor0S=dMGbmnp0hmZMrpquGqq4VNu-ixSPp+0UQ@mail.gmail.com>
+ <20210223142726.GA4711@hoboy.vegasvil.org> <CAEyMn7Za9z9TUdhb8egf8mOFJyA3hgqX5fwLED8HDKw8Smyocg@mail.gmail.com>
+ <20210223161136.GA5894@hoboy.vegasvil.org>
+In-Reply-To: <20210223161136.GA5894@hoboy.vegasvil.org>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Thu, 25 Feb 2021 14:49:04 +0100
+Message-ID: <CAEyMn7YwvZD6T=oHp2AcmsA+R6Ho2SCYYkt2NcK8hZNUT7_TSQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] net: fec: ptp: avoid register access when ipg clock
+ is disabled
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
+        Fugang Duan <fugang.duan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.02.21 14:38, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The inlining logic in clang-13 is rewritten to often not inline
-> some functions that were inlined by all earlier compilers.
-> 
-> In case of the memblock interfaces, this exposed a harmless bug
-> of a missing __init annotation:
-> 
-> WARNING: modpost: vmlinux.o(.text+0x507c0a): Section mismatch in reference from the function memblock_bottom_up() to the variable .meminit.data:memblock
-> The function memblock_bottom_up() references
-> the variable __meminitdata memblock.
-> This is often because memblock_bottom_up lacks a __meminitdata
-> annotation or the annotation of memblock is wrong.
-> 
-> Interestingly, these annotations were present originally, but got removed
-> with the explanation that the __init annotation prevents the function
-> from getting inlined. I checked this again and found that while this
-> is the case with clang, gcc (version 7 through 10, did not test others)
-> does inline the functions regardless.
+Hi Richard,
 
-Did I understand correctly, that with this change it will not get 
-inlined with any version of clang? Maybe __always_inline is more 
-appropriate then.
+Am Di., 23. Feb. 2021 um 17:11 Uhr schrieb Richard Cochran
+<richardcochran@gmail.com>:
+>
+> On Tue, Feb 23, 2021 at 04:04:16PM +0100, Heiko Thiery wrote:
+> > It is not only the PHC clock that stops. Rather, it is the entire
+> > ethernet building block in the SOC that is disabled, including the
+> > PHC.
+>
+> Sure, but why does the driver do that?
 
-(I don't see why to not inline that function, but I am obviously not a 
-compiler person :) )
+That is a good question. I tried to understand the clock
+infrastructure of the imx8 but it looks quite complicated. I cannot
+find the point where all the stuff is disabled.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Heiko
