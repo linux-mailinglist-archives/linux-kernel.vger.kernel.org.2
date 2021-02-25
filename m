@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B84325777
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB0F325778
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234478AbhBYUSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:18:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234361AbhBYURl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:17:41 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F8CC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:17:00 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id g20so3838180plo.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:17:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9jhOqg6r1RI16qcHYH2Ga+IvE/GRGzd6JVW7UgxwI8A=;
-        b=ZzWvGhPZTTPYal91SdN5CmabX0igGsDXwUDeQ/cYGops9w/MJXvQfG5X1hLNnnHRw0
-         Nmo3Yv0P+QsKfEDC+/rSY10t8M8tttOoG9v2DXbvACjcQ+fLgHQ3RMHe69XpBZjlztvX
-         Y8BKjpUM/kfETaJJzH6vzy6vrTELfyBbEEhrY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9jhOqg6r1RI16qcHYH2Ga+IvE/GRGzd6JVW7UgxwI8A=;
-        b=kcBNfgjVZusrtW290mULbl4IWn3k4R73pAwzlhJ3sMfluoAQ4NNdNYduy9Il//bHUS
-         YUAoBETBsNUs+mnx2grHE6q7lb+OllZdumhX+dwlYfvMRg1e4wgSGLcC9M8cGEmFIYn+
-         c1tV2BZZz+GlSze4D8AAaNTV6Os5HA0/3mWJG9bBsgOGX1Znu4iEfuvuVfODDOWpl9S6
-         TVNqWH6RYtXosh+d5hGtaH1eCCTuq/ONof+kL6XjJ5pdZZBapVk25aLHERtlQ565pa7A
-         Yq18SDbolapkURDi3Pg3LhiE8ji1MkACH9w8oKzulJccg+lpAZuYTkFK+M9OLmfvttwz
-         gmnA==
-X-Gm-Message-State: AOAM532DL/0e7NyWK13oCEPTz2AVlDK/n/xrlz7qc4PAmLb9MCTYlmL0
-        xBTgWm3XyOSSHkZq0rBSR+UWKAqCT7C76Q==
-X-Google-Smtp-Source: ABdhPJzSn2dIwbVr+U3m4pRomSnqhpO4l2jVPJ50mi/OaQx4Jl2gWT2sTffZi7bX+/Tns4FYoMyRvg==
-X-Received: by 2002:a17:902:8d95:b029:e2:c956:f085 with SMTP id v21-20020a1709028d95b02900e2c956f085mr4516993plo.35.1614284220067;
-        Thu, 25 Feb 2021 12:17:00 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l3sm7083563pfc.81.2021.02.25.12.16.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 12:16:59 -0800 (PST)
-Date:   Thu, 25 Feb 2021 12:16:58 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RFT] m68k: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-Message-ID: <202102251216.F53A012@keescook>
-References: <20210225111505.1936566-1-arnd@kernel.org>
+        id S234202AbhBYUU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:20:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233958AbhBYUUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 15:20:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0B5D60235;
+        Thu, 25 Feb 2021 20:18:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614284286;
+        bh=v5oVTZBZwuQMLnpywUM1fAUATe03QvCjA1kY3odwcGc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HK0vtCW3kBuIvp1H3XHNfG5tIR/K3dB+ICpVBWkg85qtBoONVXw8BD6jHd4bmxvVQ
+         5MAaTrgdo3/UYwL5aiZtqcc/mCObhNztvtuzYKMoD+CXXnP8faul0+cNZ7Loq9kePx
+         uo7isOwcGNziFamNjQmEcgjddlrXvUO3q20ZkLQP6h9RlN+VxfkkxdDgqt/JqOwELC
+         PRTc/n9UTBOS78PMmL2wv6fthZq5ljDIaHku7ObQqrYnPHFGQRdkC/pIzIcF+2ji/u
+         yfJ5ufXLhiASISZdRIssAAjYbIlgm2gR8921RvlT/8CNx4CuyA4k2XvfHe348ptqmv
+         tFrk2NK3wrAiA==
+Date:   Thu, 25 Feb 2021 13:18:01 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
+        Marco Elver <elver@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] linux/compiler-clang.h: define HAVE_BUILTIN_BSWAP*
+Message-ID: <20210225201801.GA3119@MSI.localdomain>
+References: <20210225164513.3667778-1-arnd@kernel.org>
+ <202102251203.03762F77@keescook>
+ <20210225120637.8e2a234f192952829fc5f471@linux-foundation.org>
+ <202102251213.5815C9B33@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210225111505.1936566-1-arnd@kernel.org>
+In-Reply-To: <202102251213.5815C9B33@keescook>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 12:14:45PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Feb 25, 2021 at 12:14:17PM -0800, Kees Cook wrote:
+> On Thu, Feb 25, 2021 at 12:06:37PM -0800, Andrew Morton wrote:
+> > On Thu, 25 Feb 2021 12:03:48 -0800 Kees Cook <keescook@chromium.org> wrote:
+> > 
+> > > On Thu, Feb 25, 2021 at 05:45:09PM +0100, Arnd Bergmann wrote:
+> > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > > 
+> > > > Separating compiler-clang.h from compiler-gcc.h inadventently dropped the
+> > > > definitions of the three HAVE_BUILTIN_BSWAP macros, which requires falling
+> > > > back to the open-coded version and hoping that the compiler detects it.
+> > > > 
+> > > > Since all versions of clang support the __builtin_bswap interfaces,
+> > > > add back the flags and have the headers pick these up automatically.
+> > > > 
+> > > > This results in a 4% improvement of compilation speed for arm defconfig.
+> > > > 
+> > > > Fixes: 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
+> > > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > > 
+> > > Cc: stable@vger.kernel.org
+> > 
+> > I figured 4% better compile time isn't significant enough to justify a
+> > backport.  Thoughts?
 > 
-> While experimenting with CONFIG_TRIM_UNUSED_KSYMS across architectures,
-> I noticed that this unsurprisingly works best when combined with the
-> --gc-sections linker flag, which is not currently allowed on m68k.
-> 
-> Enabling it with this patch shows significant improvements
-> for kernel size, looking at m68k defconfig with gcc-10, I get
-> 
-> 4005135 1374302 167108 5546545 54a231 vmlinux-normal
-> 3916254 1378078 167108 5461440 5355c0 vmlinux+trim
-> 4012933 1362514 164280 5539727 54878f vmlinux+gcsection
-> 3797884 1334194 164640 5296718 50d24e vmlinux+gcsection+trim
-> 
-> There are probably bugs somewhere, but if someone is able to test this
-> patch and fix any issues that come up, would be a useful improvement
-> for memory-limited machines.
-> 
-> Link: https://lore.kernel.org/lkml/CAK8P3a05VZ9hSKRzVTxTn+1nf9E+gqebJWTj6N23nfm+ELHt9A@mail.gmail.com/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> It's a trivial change, so I think it's worth it?
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Indeed. Any wins that we can get with compile time, we should take.
+Clang is being widely used in production systems now so I feel like with
+a trivial change plus user visible impact, it should be backported.
 
--- 
-Kees Cook
+Not to mention that the generated code in theory should be better
+because it is the compiler's builtin, rather than a hand rolled one, AND
+this is technically a regression, given that it worked before compiler.h
+was split.
+
+Cheers,
+Nathan
+
+> > 
+> > > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > 
+> 
+> -- 
+> Kees Cook
