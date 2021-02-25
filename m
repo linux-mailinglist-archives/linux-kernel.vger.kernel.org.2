@@ -2,140 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73673324E68
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2F7324E80
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235517AbhBYKmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:42:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59690 "EHLO mx2.suse.de"
+        id S232918AbhBYKpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:45:20 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:37071 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235096AbhBYKVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:21:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D3ABAAAAE;
-        Thu, 25 Feb 2021 10:19:59 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id a21891c8;
-        Thu, 25 Feb 2021 10:21:04 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 10:21:04 +0000
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-Subject: Re: [PATCH] copy_file_range.2: Kernel v5.12 updates
-Message-ID: <YDd6EMpvZhHq6ncM@suse.de>
-References: <20210222102456.6692-1-lhenriques@suse.de>
- <20210224142307.7284-1-lhenriques@suse.de>
- <CAOQ4uxi3-+tOgHV_GUnWtJoQXbV5ZS9qDZsLsd9sJxX5Aftyew@mail.gmail.com>
+        id S233502AbhBYKYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 05:24:01 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614248630; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=OnrGOA7+vtKJaM77uUe4Y7LYAd/8kech7ZlLX5tFEs0=; b=iLCmvJvoEcIE1UEGyuvk67+TYQubKZ3Ri6ZiZl1138r8TbCuJxMXJn++duXPgch3QqTpdVXp
+ jBZ1GBIwupOGcbISmi07wCU/xfAR8yMmKt7yXiLyDIq7g4VTdUSuVWl4VIo+mjqCoh3kOrwO
+ vYZH/Dv4b8ysu+Y+u9n64vOA+IE=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60377a86cc1f7d7e95a066be (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Feb 2021 10:23:02
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 30A44C433ED; Thu, 25 Feb 2021 10:23:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C14B4C433C6;
+        Thu, 25 Feb 2021 10:22:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C14B4C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     samirweng1979 <samirweng1979@163.com>, imitsyanko@quantenna.com,
+        geomatsi@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        colin.king@canonical.com, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: Re: [PATCH] qtnfmac: remove meaningless goto statement and labels
+References: <20210225064842.36952-1-samirweng1979@163.com>
+        <202102251757.V6qESTrL-lkp@intel.com>
+Date:   Thu, 25 Feb 2021 12:22:54 +0200
+In-Reply-To: <202102251757.V6qESTrL-lkp@intel.com> (kernel test robot's
+        message of "Thu, 25 Feb 2021 18:04:03 +0800")
+Message-ID: <875z2gfnup.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxi3-+tOgHV_GUnWtJoQXbV5ZS9qDZsLsd9sJxX5Aftyew@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 06:10:45PM +0200, Amir Goldstein wrote:
-> On Wed, Feb 24, 2021 at 4:22 PM Luis Henriques <lhenriques@suse.de> wrote:
-> >
-> > Update man-page with recent changes to this syscall.
-> >
-> > Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> > ---
-> > Hi!
-> >
-> > Here's a suggestion for fixing the manpage for copy_file_range().  Note that
-> > I've assumed the fix will hit 5.12.
-> >
-> >  man2/copy_file_range.2 | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/man2/copy_file_range.2 b/man2/copy_file_range.2
-> > index 611a39b8026b..b0fd85e2631e 100644
-> > --- a/man2/copy_file_range.2
-> > +++ b/man2/copy_file_range.2
-> > @@ -169,6 +169,9 @@ Out of memory.
-> >  .B ENOSPC
-> >  There is not enough space on the target filesystem to complete the copy.
-> >  .TP
-> > +.B EOPNOTSUPP
-> > +The filesystem does not support this operation.
-> > +.TP
-> >  .B EOVERFLOW
-> >  The requested source or destination range is too large to represent in the
-> >  specified data types.
-> > @@ -187,7 +190,7 @@ refers to an active swap file.
-> >  .B EXDEV
-> >  The files referred to by
-> >  .IR fd_in " and " fd_out
-> > -are not on the same mounted filesystem (pre Linux 5.3).
-> > +are not on the same mounted filesystem (pre Linux 5.3 and post Linux 5.12).
-> 
-> I think you need to drop the (Linux range) altogether.
-> What's missing here is the NFS cross server copy use case.
-> Maybe:
-> 
-> ...are not on the same mounted filesystem and the source and target filesystems
-> do not support cross-filesystem copy.
-> 
-> You may refer the reader to VERSIONS section where it will say which
-> filesystems support cross-fs copy as of kernel version XXX (i.e. cifs and nfs).
-> 
-> >  .SH VERSIONS
-> >  The
-> >  .BR copy_file_range ()
-> > @@ -202,6 +205,11 @@ Applications should target the behaviour and requirements of 5.3 kernels.
-> >  .PP
-> >  First support for cross-filesystem copies was introduced in Linux 5.3.
-> >  Older kernels will return -EXDEV when cross-filesystem copies are attempted.
-> > +.PP
-> > +After Linux 5.12, support for copies between different filesystems was dropped.
-> > +However, individual filesystems may still provide
-> > +.BR copy_file_range ()
-> > +implementations that allow copies across different devices.
-> 
-> Again, this is not likely to stay uptodate for very long.
-> The stable kernels are expected to apply your patch (because it fixes
-> a regression)
-> so this should be phrased differently.
-> If it were me, I would provide all the details of the situation to
-> Michael and ask him
-> to write the best description for this section.
+kernel test robot <lkp@intel.com> writes:
 
-Thanks Amir.
+> Hi samirweng1979,
+>
+> Thank you for the patch! Yet something to improve:
+>
+> [auto build test ERROR on wireless-drivers-next/master]
+> [also build test ERROR on wireless-drivers/master sparc-next/master v5.11 next-20210225]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/samirweng1979/qtnfmac-remove-meaningless-goto-statement-and-labels/20210225-145714
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next.git master
+> config: x86_64-randconfig-a001-20210225 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a921aaf789912d981cbb2036bdc91ad7289e1523)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install x86_64 cross compiling tool for clang build
+>         # apt-get install binutils-x86-64-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/d18bea1fd25dee219ae56343ff9caf9cb6eb1519
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review samirweng1979/qtnfmac-remove-meaningless-goto-statement-and-labels/20210225-145714
+>         git checkout d18bea1fd25dee219ae56343ff9caf9cb6eb1519
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>>> drivers/net/wireless/quantenna/qtnfmac/commands.c:1901:8: error: use of undeclared label 'out'
+>                    goto out;
 
-Yeah, it's tricky.  Support was added and then dropped.   Since stable
-kernels will be picking this patch,  maybe the best thing to do is to no
-mention the generic cross-filesystem support at all...?  Or simply say
-that 5.3 temporarily supported it but that support was later dropped.
+Do you compile test your patches? This error implies that not.
+Compilation test is a hard requirement for patches.
 
-Michael (or Alejandro), would you be OK handling this yourself as Amir
-suggested?
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Cheers,
---
-Luís
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
