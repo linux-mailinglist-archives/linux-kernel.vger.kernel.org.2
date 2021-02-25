@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F2D32540C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC1A32540D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234070AbhBYQwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 11:52:21 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:33736 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233557AbhBYQsG (ORCPT
+        id S234147AbhBYQwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 11:52:45 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:35508 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhBYQsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:48:06 -0500
-Received: by mail-io1-f71.google.com with SMTP id m3so4808941ioy.0
+        Thu, 25 Feb 2021 11:48:05 -0500
+Received: by mail-io1-f69.google.com with SMTP id a1so4807736ios.2
         for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 08:47:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=9H/CwtcPS5njhZEy8VrcSFtOUJSZ60HSsVj51LKQW8Q=;
-        b=g7ev5bFRNB+cG8AKtkj53+sWi0bNPE8H12/mc0ozIys0QdA+U+OsZTG1CFdFXiuB9C
-         uU8j62UyTQ9UQuKR+KlUMUL6OMm7yaZ3/A1DaDvlz8lJLc3meEXRwaJu7NiACxthzYo6
-         a76m8ZsgZZsi4hbdrFJE53XG2uB9smhmSvZkUe8tmCGyQzYrQ6F5h5V4g77vbiTfLOpl
-         4N+yvELFp5eTAjYA1kR2Lp+kIhW/kIQ2OosZ0EeQPy+aG8oOEEOUNdpyXifd1H86Emeg
-         cz6UKmNRHErRMomp4n4DhwsQZs73F4mPBubl1X1H8bGscyj1T2eVF3hi1IuQMXZXhhPi
-         AHwQ==
-X-Gm-Message-State: AOAM530TrnZ1rZxPnEkuhyflAmDxukcty6KQ8h0OSbr9EHkFs2GPZ10c
-        hzy1DH7EcOpuGUHKmEhhrrCHZtDxhHxqXieHR2frEF8U56Wq
-X-Google-Smtp-Source: ABdhPJxso2JqKTX/f7Iyxq1fwMqK1qdcYRdckBeoApdPTVevpB0NGiGdk4FSjtupSp/xKb2WEDPVzx16mrT97Yb1wgQz+oVUwfcJ
+        bh=HjVoCCLqQ5aLObIxnLkQto/2AeI+2Rp4Wsj6msR1kdQ=;
+        b=WCEK/ZAHo2JdCueXl2g0FXWKbVEtFfEe+O+uBerQ5un3XqZaz8Ujpk79ABybWTdpWy
+         UfTsgMSJ11TFTkTTspfXczij3HjM3eCNcH34X9u0zpV7aVsFaHAF+d3f6t/OQCU8hHQZ
+         isHprK1mWDMiVG7j0kzBJ55rpvmE5n0sHzJq2vOyOJDrqycD5dBNZlJ5Fdvu6M5d3UpW
+         44xWiPdM7ehMdMWIyYaqFVgVdC//iG2hxu9ihNTtjnebstr9hwBbaph7vY8tjSfci1zE
+         TAazQAIos/2TX5bX98ztxvvglvz23lToHHdag9IIbBT08eetWDP2jvrA/EAgUx0QVoNs
+         4EoA==
+X-Gm-Message-State: AOAM532ebPw48CR1chkofBOr0x8WxxvWcGGDNmqTn/TOwTKtm1u5Xz+T
+        1SM6Ua909BpAIoUm8z9/PngG/TTLe8ZoGn/NZwnyPiAB7kdZ
+X-Google-Smtp-Source: ABdhPJxe1vtc7hJJ7AA0bC4wpgRxM2msPbG4JXKPLog1i6tDpoCBLDmsW4tXqjzybcTwmC+pk9CzFbsUTzvvrZs6EzvKwPa11VLd
 MIME-Version: 1.0
-X-Received: by 2002:a02:3e16:: with SMTP id s22mr3666531jas.72.1614271643488;
+X-Received: by 2002:a05:6638:3bb:: with SMTP id z27mr4020048jap.29.1614271643291;
  Thu, 25 Feb 2021 08:47:23 -0800 (PST)
 Date:   Thu, 25 Feb 2021 08:47:23 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e195f705bc2be778@google.com>
-Subject: general protection fault in ieee802154_llsec_parse_dev_addr
-From:   syzbot <syzbot+8b6719da8a04beeafcc3@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
+Message-ID: <000000000000de96a905bc2be7a6@google.com>
+Subject: general protection fault in kobject_cleanup
+From:   syzbot <syzbot+d27b4c8adbbff70fbfde@syzkaller.appspotmail.com>
+To:     bgolaszewski@baylibre.com, linus.walleij@linaro.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
@@ -49,83 +48,62 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    fcb30073 Merge branch 'wireguard-fixes-for-5-12-rc1'
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=148f1646d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2b8307379601586a
-dashboard link: https://syzkaller.appspot.com/bug?extid=8b6719da8a04beeafcc3
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122a61a8d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1648d632d00000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10406466d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12406466d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14406466d00000
+HEAD commit:    719bbd4a Merge tag 'vfio-v5.12-rc1' of git://github.com/aw..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=149ff9b6d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fd38148e4aa89cdb
+dashboard link: https://syzkaller.appspot.com/bug?extid=d27b4c8adbbff70fbfde
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=146af9ccd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11c59e32d00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8b6719da8a04beeafcc3@syzkaller.appspotmail.com
+Reported-by: syzbot+d27b4c8adbbff70fbfde@syzkaller.appspotmail.com
 
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 8419 Comm: syz-executor652 Not tainted 5.11.0-syzkaller #0
+usb 1-1: USB disconnect, device number 2
+general protection fault, probably for non-canonical address 0xdffffc00000000b3: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000598-0x000000000000059f]
+CPU: 1 PID: 2922 Comm: kworker/1:2 Not tainted 5.11.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:nla_get_le16 include/net/netlink.h:1599 [inline]
-RIP: 0010:ieee802154_llsec_parse_dev_addr+0x2b3/0x370 net/ieee802154/nl802154.c:1306
-Code: 00 0f 85 d5 00 00 00 48 89 5d 08 e9 5c ff ff ff e8 72 2e e4 f8 49 8d 7e 04 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 01 38 d0 7c 04 84 d2 75 7d 48
-RSP: 0018:ffffc90001797390 EFLAGS: 00010247
-RAX: dffffc0000000000 RBX: 0000000000000002 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff888eab3e RDI: 0000000000000004
-RBP: ffffc90001797590 R08: ffffffff8a8934e0 R09: ffffffff888eaa81
-R10: 0000000000000002 R11: 0000000000000002 R12: 1ffff920002f2e72
-R13: 0000000000000000 R14: 0000000000000000 R15: ffff88802171cc78
-FS:  00000000016b2300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:__list_del_entry_valid+0x1f/0x100 lib/list_debug.c:42
+Code: fd 0f 0b 0f 1f 84 00 00 00 00 00 41 57 41 56 41 54 53 49 89 fe 49 bc 00 00 00 00 00 fc ff df 48 83 c7 08 48 89 f8 48 c1 e8 03 <42> 80 3c 20 00 74 05 e8 05 81 ec fd 4d 8b 7e 08 4c 89 f0 48 c1 e8
+RSP: 0018:ffffc900014ef318 EFLAGS: 00010202
+RAX: 00000000000000b3 RBX: 0000000000000000 RCX: ffff88801acb1bc0
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000598
+RBP: dffffc0000000000 R08: dffffc0000000000 R09: fffffbfff1f28ab6
+R10: fffffbfff1f28ab6 R11: 0000000000000000 R12: dffffc0000000000
+R13: dffffc0000000000 R14: 0000000000000590 R15: 1ffff110023f3601
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000408 CR3: 000000001360f000 CR4: 00000000001506e0
+CR2: 00000000004d5800 CR3: 000000000c48e000 CR4: 00000000001506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- ieee802154_llsec_parse_key_id+0x343/0x410 net/ieee802154/nl802154.c:1344
- nl802154_set_llsec_params+0x1db/0x470 net/ieee802154/nl802154.c:1399
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2348
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2402
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2435
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43fc09
-Code: 28 c3 e8 5a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffed214c208 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 000000000043fc09
-RDX: 0000000000000040 RSI: 0000000020000680 RDI: 0000000000000003
-RBP: 0000000000403670 R08: 0000000000000004 R09: 00000000004004a0
-R10: 000000000000000c R11: 0000000000000246 R12: 0000000000403700
-R13: 0000000000000000 R14: 00000000004ad018 R15: 00000000004004a0
-Modules linked in:
----[ end trace 20aa2d549964b50b ]---
-RIP: 0010:nla_get_le16 include/net/netlink.h:1599 [inline]
-RIP: 0010:ieee802154_llsec_parse_dev_addr+0x2b3/0x370 net/ieee802154/nl802154.c:1306
-Code: 00 0f 85 d5 00 00 00 48 89 5d 08 e9 5c ff ff ff e8 72 2e e4 f8 49 8d 7e 04 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 01 38 d0 7c 04 84 d2 75 7d 48
-RSP: 0018:ffffc90001797390 EFLAGS: 00010247
-RAX: dffffc0000000000 RBX: 0000000000000002 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff888eab3e RDI: 0000000000000004
-RBP: ffffc90001797590 R08: ffffffff8a8934e0 R09: ffffffff888eaa81
-R10: 0000000000000002 R11: 0000000000000002 R12: 1ffff920002f2e72
-R13: 0000000000000000 R14: 0000000000000000 R15: ffff88802171cc78
-FS:  00000000016b2300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f3256d2dab4 CR3: 000000001360f000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ __list_del_entry include/linux/list.h:132 [inline]
+ list_del include/linux/list.h:146 [inline]
+ gpiodevice_release+0x48/0x1b0 drivers/gpio/gpiolib.c:479
+ device_release+0x98/0x1c0 drivers/base/core.c:2104
+ kobject_cleanup+0x1c9/0x280 lib/kobject.c:705
+ ftdi_gpio_remove drivers/usb/serial/ftdi_sio.c:2215 [inline]
+ ftdi_sio_port_remove+0x8b/0x2f0 drivers/usb/serial/ftdi_sio.c:2407
+ usb_serial_device_remove+0x126/0x1f0 drivers/usb/serial/bus.c:97
+ __device_release_driver drivers/base/dd.c:1156 [inline]
+ device_release_driver_internal+0x51e/0x7b0 drivers/base/dd.c:1187
+ bus_remove_device+0x300/0x420 drivers/base/bus.c:533
+ device_del+0x5e1/0xa90 drivers/base/core.c:3421
+ usb_serial_disconnect+0x294/0x3c0 drivers/usb/serial/usb-serial.c:1102
+ usb_unbind_interface+0x1f2/0x860 drivers/usb/core/driver.c:458
+ __device_release_driver drivers/base/dd.c:1156 [inline]
+ device_release_driver_internal+0x51e/0x7b0 drivers/base/dd.c:1187
+ bus_remove_device+0x300/0x420 drivers/base/bus.c:533
+ device_del+0x5e1/0xa90 drivers/base/core.c:3421
+ usb_disable_device+0x407/0x800 drivers/usb/core/message.c:1413
+ usb_disconnect+0x33a/0x8a0 drivers/usb/core/hub.c:2218
+ hub_port_connect+0x214/0x25b0 drivers/usb/core/hub.c:5074
+ hub_port_connect_change+0x5c6/0xab0 drivers/usb/core/hub.c:5363
+ port_event+0xa6f/0x10b0 drivers/usb/core/hub.c:5509
+ hub_event+0x417/0xcb0 drivers/usb/core/hub.c:5591
 
 
 ---
@@ -135,6 +113,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
