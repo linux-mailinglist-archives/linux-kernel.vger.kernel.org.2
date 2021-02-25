@@ -2,159 +2,400 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157E9324898
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 02:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A300A32489E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 02:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbhBYBjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 20:39:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232761AbhBYBjC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 20:39:02 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D698C061574;
-        Wed, 24 Feb 2021 17:38:21 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id t26so2743539pgv.3;
-        Wed, 24 Feb 2021 17:38:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tnYBYbRsT961WK2ev0Rbh+EcQBNdVkmVWWLFnK3URxk=;
-        b=UUwVQcG4PTWGWXKYkzvoRHtHEUq0WNbBEpyvDvWP3fMNY01a2NsbFmLLITwL5TF7jV
-         VBDsPH/01Hhxj7FAkkf8UWJ7o9xIyD2Ncqe1sFBYm2Y/hu4tMnKBiCSPAOm44yfZvNx+
-         t9U1Q8a6sarq5WjfAOcAFjShzn3h+iGyfq38jnH0BeQLj2iV+EHKDIcOQJbMPkcPm7/r
-         1iChX8jE1RE5/SDkYKPczDcZtklFKgGOOfBCtMW5cgOAKq4CQz4BpKYO5lvXcFLS8rXe
-         MCd3KXHMT9TFZeeVgrRB7VtWUTofY7W5RZ7MkxupCCQIG+dowMcsYtI8aKf8INkAK8dx
-         xTtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tnYBYbRsT961WK2ev0Rbh+EcQBNdVkmVWWLFnK3URxk=;
-        b=XIK7Bzpq+t8wNCcEJyXhoEzg0xHL9zWWdrTpP3/ZF2t7g/YDeKOGdlQegEBOnN3Jwv
-         ogZsmL5fi6zalMZMUXXJgxHfzf8Fq+EnOItKUPacJ6RMuA82R6iwRJ6DAPt5Nd939VRA
-         aGNc5RPssNbQqFU7gjzhqDVIXRO2Rb3DoaF1XshHH7ZKPFHKZ+u5qcb1F8dRapYzpKR4
-         F+hud/4+OeEyW0AVproQ/7TFntRghajjJ7FB4lGq+xjDZos0uIs2aA1RP3Foy5Hv08Eu
-         8CgHGGYfIRNh8I/So2fKAoWFbzeZDJtLo1FW5YL6FC9zNRu8X66lqcMXDP4WMu2S5WOy
-         hicQ==
-X-Gm-Message-State: AOAM53211YlLe/zLgVnq5Qgtj/yV/jZ6UG4dI8QAHaTBfbrBmxtu4qW/
-        bC8V47TY69G32M0R2j+h+jA=
-X-Google-Smtp-Source: ABdhPJwaBaQqGlpkRe/Jl4qJ15wo0xrC9OZFfV3xikodpbQmGUYyqucqYzDvY+I+iND9VbTEqyabyg==
-X-Received: by 2002:a05:6a00:1502:b029:1d2:72e7:a9db with SMTP id q2-20020a056a001502b02901d272e7a9dbmr838221pfu.42.1614217101047;
-        Wed, 24 Feb 2021 17:38:21 -0800 (PST)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id u129sm3944828pfu.219.2021.02.24.17.38.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 24 Feb 2021 17:38:20 -0800 (PST)
-Date:   Thu, 25 Feb 2021 09:38:20 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yue Hu <huyue2@yulong.com>
-Subject: Re: [PATCH] cpufreq: schedutil: Don't consider freq reduction to
- busy CPU if need_freq_update is set
-Message-ID: <20210225093820.000071dd.zbestahu@gmail.com>
-In-Reply-To: <CAJZ5v0jfSuWF2LX5c475P0hM0QED6SsWe_BdcogcPM2_8qpztA@mail.gmail.com>
-References: <20210218082514.1437-1-zbestahu@gmail.com>
-        <20210218102029.syj6vkltlbtoxsig@vireshk-i7>
-        <20210219113804.00004a7e.zbestahu@gmail.com>
-        <20210219040933.2o5hhbjb6emf3xl4@vireshk-i7>
-        <20210219144140.00004de9.zbestahu@gmail.com>
-        <20210219074249.2hcwcnakihor343h@vireshk-i7>
-        <20210219162026.00002e2b.zbestahu@gmail.com>
-        <20210219093551.bykqhjk6xvs4kszi@vireshk-i7>
-        <20210219194509.00005884.zbestahu@gmail.com>
-        <20210222053014.s45odi3qsfio2ahp@vireshk-i7>
-        <20210222170420.000019a3.zbestahu@163.com>
-        <CAJZ5v0jouxkj5uKrkNSBZUxXkSNjGY5NAo3zAqSaO9rJBGcqCQ@mail.gmail.com>
-        <20210224102435.00006325.zbestahu@gmail.com>
-        <CAJZ5v0jfSuWF2LX5c475P0hM0QED6SsWe_BdcogcPM2_8qpztA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S235134AbhBYBkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 20:40:45 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:36783 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233524AbhBYBkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 20:40:39 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614217218; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=2IFE87NuBgP78ExOiV6/LMVzhbX3Fwj1LKLw1sRsBF4=;
+ b=H6qp1PvIhBT45r8Bx3MfUBXpfQulora7m2t7grDnTQFhqH4ay8PIIbZkFgXjyay0P2gWjC7P
+ lPfNrxht2jsv9eXLsRNScmsvnpulfBI5UDRfettLEti+v8eh6SnmzRp0ndEISC0348NpuOHS
+ DQftlP79z+QmoamSTmD0U1WouXg=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6036ffe44511108a814d3741 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Feb 2021 01:39:48
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6CB0EC43461; Thu, 25 Feb 2021 01:39:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 07867C433C6;
+        Thu, 25 Feb 2021 01:39:45 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 24 Feb 2021 17:39:45 -0800
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v6 3/8] bus: mhi: core: Improvements to the channel
+ handling state machine
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <20210224100329.GS27945@work>
+References: <1612470486-10440-1-git-send-email-bbhatt@codeaurora.org>
+ <1612470486-10440-4-git-send-email-bbhatt@codeaurora.org>
+ <20210224100329.GS27945@work>
+Message-ID: <71c7ab5bdc8abef2249c1f8af6a215f8@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Feb 2021 13:46:11 +0100
-"Rafael J. Wysocki" <rafael@kernel.org> wrote:
+Hi Mani,
 
-> On Wed, Feb 24, 2021 at 3:24 AM Yue Hu <zbestahu@gmail.com> wrote:
-> >
-> > On Mon, 22 Feb 2021 15:30:34 +0100
-> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> >  
-> > > On Mon, Feb 22, 2021 at 2:57 PM Yue Hu <zbestahu@163.com> wrote:  
-> > > >
-> > > > On Mon, 22 Feb 2021 11:00:14 +0530
-> > > > Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > >  
-> > > > > On 19-02-21, 19:45, Yue Hu wrote:  
-> > > > > > We will set next_f to next_freq(previous freq) if next_f is
-> > > > > > reduced for busy CPU. Then the next sugov_update_next_freq() will check
-> > > > > > if next_freq matches next_f if need_freq_update is not set.
-> > > > > > Obviously, we will do nothing for the case. And The related check to
-> > > > > > fast_switch_enabled and raw_spin_{lock,unlock} operations are
-> > > > > > unnecessary.  
-> > > > >
-> > > > > Right, but we will still need sugov_update_next_freq() to have the
-> > > > > same implementation regardless and so I am not sure if we should add  
-> > > >
-> > > > Yes, sugov_update_next_freq() should be keeping current logic for corner case.
-> > > >  
-> > > > > this change:
-> > > > >
-> > > > > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > > > > index 41e498b0008a..7289e1adab73 100644
-> > > > > --- a/kernel/sched/cpufreq_schedutil.c
-> > > > > +++ b/kernel/sched/cpufreq_schedutil.c
-> > > > > @@ -362,6 +362,9 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
-> > > > >          * recently, as the reduction is likely to be premature then.
-> > > > >          */
-> > > > >         if (sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
-> > > > > +               if (!sg_policy->need_freq_update)  
-> > > >
-> > > > The initial purpose about code of `next_f = sg_policy->next_freq` here (for special CPU busy
-> > > > case) should be skipping the freq update.
-> > > >
-> > > > Since commit 600f5badb78c ("cpufreq: schedutil: Don't skip freq update when limits change"),
-> > > > we add the check to busy CPU for not skipping the update, we need to update the freq using
-> > > > computed one because limits change.
-> > > >
-> > > > After commit 23a881852f3e ("cpufreq: schedutil: Don't skip freq update if need_freq_update
-> > > > is set"), we removed the need_freq_update check(no issue of commit 600f5badb78c anymore?)
-> > > > and introduce to always do an update in sugov_update_next_freq() if need_freq_update is set
-> > > > even though current freq == sg_policy->next_freq because of corner case issue. But that is
-> > > > conflict with original purpose of the freq skip code (next_f = sg_policy->next_freq) of
-> > > > busy CPU.  
-> > >
-> > > That's because we realized that it was not always a good idea to skip
-> > > the update even if next_f == sg_policy->next_freq.
-> > >
-> > > That's why CPUFREQ_NEED_UPDATE_LIMITS has been introduced and the
-> > > current flow is a result of subsequent code rearrangements.  
-> >
-> > ok, care about unnecessary(should be) behaviors(fast_switch_enabled and raw_spin_{lock,unlock})
-> > if need_freq_update is unset?
-> >
-> > If we care, i will send another patch (which is different from above change for busy CPU).  
+On 2021-02-24 02:03 AM, Manivannan Sadhasivam wrote:
+> On Thu, Feb 04, 2021 at 12:28:01PM -0800, Bhaumik Bhatt wrote:
+>> Improve the channel handling state machine such that all commands
+>> go through a common function and validation process to ensure
+>> that the state machine is not violated in any way and adheres to
+>> the MHI specification. Assert device wake before sending the
+>> channel update commands instead of a wake toggle to ensure we
+>> fail if device is in a bad state. Also update print messages to
+>> use client device to accurately represent the channel being
+>> updated.
+>> 
 > 
-> Please send a patch and we'll see (this is how things go).
+> This patch is doing atleast 3 things and that is not acceptable. Please
+> split this patch and send.
+> 
+These changes to commit text and other updates were done after your 
+comments for v5
+[1].
 
-Already sent it("Call sugov_update_next_freq() before check to fast_switch_enabled"). Please review.
+Please check and let me know what you think. I have addressed them and 
+added info
+in the commit description.
 
-Thank you.
+I feel this is one patch to improve channel handling overall, so the 
+"assert device wake"
+change is part of that and I have stated that.
 
+> Thanks,
+> Mani
+> 
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+>> ---
+>>  drivers/bus/mhi/core/init.c     |   6 ++
+>>  drivers/bus/mhi/core/internal.h |  12 +++
+>>  drivers/bus/mhi/core/main.c     | 172 
+>> ++++++++++++++++++++++------------------
+>>  3 files changed, 114 insertions(+), 76 deletions(-)
+>> 
+>> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+>> index 03c5786..482b365 100644
+>> --- a/drivers/bus/mhi/core/init.c
+>> +++ b/drivers/bus/mhi/core/init.c
+>> @@ -54,6 +54,12 @@ const char * const mhi_state_str[MHI_STATE_MAX] = {
+>>  	[MHI_STATE_SYS_ERR] = "SYS_ERR",
+>>  };
+>> 
+>> +const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX] = {
+>> +	[MHI_CH_STATE_TYPE_RESET] = "RESET",
+>> +	[MHI_CH_STATE_TYPE_STOP] = "STOP",
+>> +	[MHI_CH_STATE_TYPE_START] = "START",
+>> +};
+>> +
+>>  static const char * const mhi_pm_state_str[] = {
+>>  	[MHI_PM_STATE_DISABLE] = "DISABLE",
+>>  	[MHI_PM_STATE_POR] = "POR",
+>> diff --git a/drivers/bus/mhi/core/internal.h 
+>> b/drivers/bus/mhi/core/internal.h
+>> index 6f80ec3..7e3aac1 100644
+>> --- a/drivers/bus/mhi/core/internal.h
+>> +++ b/drivers/bus/mhi/core/internal.h
+>> @@ -369,6 +369,18 @@ enum mhi_ch_state {
+>>  	MHI_CH_STATE_ERROR = 0x5,
+>>  };
+>> 
+>> +enum mhi_ch_state_type {
+>> +	MHI_CH_STATE_TYPE_RESET,
+>> +	MHI_CH_STATE_TYPE_STOP,
+>> +	MHI_CH_STATE_TYPE_START,
+>> +	MHI_CH_STATE_TYPE_MAX,
+>> +};
+>> +
+>> +extern const char * const 
+>> mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX];
+>> +#define TO_CH_STATE_TYPE_STR(state) (((state) >= 
+>> MHI_CH_STATE_TYPE_MAX) ? \
+>> +				     "INVALID_STATE" : \
+>> +				     mhi_ch_state_type_str[(state)])
+>> +
+>>  #define MHI_INVALID_BRSTMODE(mode) (mode != MHI_DB_BRST_DISABLE && \
+>>  				    mode != MHI_DB_BRST_ENABLE)
+>> 
+>> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+>> index d068188..2f6fdb2 100644
+>> --- a/drivers/bus/mhi/core/main.c
+>> +++ b/drivers/bus/mhi/core/main.c
+>> @@ -1188,56 +1188,114 @@ int mhi_send_cmd(struct mhi_controller 
+>> *mhi_cntrl,
+>>  	return 0;
+>>  }
+>> 
+>> -static void __mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
+>> -				    struct mhi_chan *mhi_chan)
+>> +static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+>> +				    struct mhi_chan *mhi_chan,
+>> +				    enum mhi_ch_state_type to_state)
+>>  {
+>> -	int ret;
+>> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>> +	struct device *dev = &mhi_chan->mhi_dev->dev;
+>> +	enum mhi_cmd_type cmd = MHI_CMD_NOP;
+>> +	int ret = -EIO;
+>> +
+>> +	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
+>> +		TO_CH_STATE_TYPE_STR(to_state));
+>> +
+>> +	switch (to_state) {
+>> +	case MHI_CH_STATE_TYPE_RESET:
+>> +		write_lock_irq(&mhi_chan->lock);
+>> +		if (mhi_chan->ch_state != MHI_CH_STATE_STOP &&
+>> +		    mhi_chan->ch_state != MHI_CH_STATE_ENABLED &&
+>> +		    mhi_chan->ch_state != MHI_CH_STATE_SUSPENDED) {
+>> +			write_unlock_irq(&mhi_chan->lock);
+>> +			return -EINVAL;
+>> +		}
+>> +		mhi_chan->ch_state = MHI_CH_STATE_DISABLED;
+>> +		write_unlock_irq(&mhi_chan->lock);
+>> 
+>> -	dev_dbg(dev, "Entered: unprepare channel:%d\n", mhi_chan->chan);
+>> +		cmd = MHI_CMD_RESET_CHAN;
+>> +		break;
+>> +	case MHI_CH_STATE_TYPE_STOP:
+>> +		if (mhi_chan->ch_state != MHI_CH_STATE_ENABLED)
+>> +			return -EINVAL;
+>> 
+>> -	/* no more processing events for this channel */
+>> -	mutex_lock(&mhi_chan->mutex);
+>> -	write_lock_irq(&mhi_chan->lock);
+>> -	if (mhi_chan->ch_state != MHI_CH_STATE_ENABLED &&
+>> -	    mhi_chan->ch_state != MHI_CH_STATE_SUSPENDED) {
+>> -		write_unlock_irq(&mhi_chan->lock);
+>> -		mutex_unlock(&mhi_chan->mutex);
+>> -		return;
+>> +		cmd = MHI_CMD_STOP_CHAN;
+>> +		break;
+>> +	case MHI_CH_STATE_TYPE_START:
+>> +		if (mhi_chan->ch_state != MHI_CH_STATE_STOP &&
+>> +		    mhi_chan->ch_state != MHI_CH_STATE_DISABLED)
+>> +			return -EINVAL;
+>> +
+>> +		cmd = MHI_CMD_START_CHAN;
+>> +		break;
+>> +	default:
+>> +		dev_err(dev, "%d: Channel state update to %s not allowed\n",
+>> +			mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
+>> +		return -EINVAL;
+>>  	}
+>> 
+>> -	mhi_chan->ch_state = MHI_CH_STATE_DISABLED;
+>> -	write_unlock_irq(&mhi_chan->lock);
+>> +	/* bring host and device out of suspended states */
+>> +	ret = mhi_device_get_sync(mhi_cntrl->mhi_dev);
+>> +	if (ret)
+>> +		return ret;
+>> +	mhi_cntrl->runtime_get(mhi_cntrl);
+>> 
+>>  	reinit_completion(&mhi_chan->completion);
+>> -	read_lock_bh(&mhi_cntrl->pm_lock);
+>> -	if (MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)) {
+>> -		read_unlock_bh(&mhi_cntrl->pm_lock);
+>> -		goto error_invalid_state;
+>> +	ret = mhi_send_cmd(mhi_cntrl, mhi_chan, cmd);
+>> +	if (ret) {
+>> +		dev_err(dev, "%d: Failed to send %s channel command\n",
+>> +			mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
+>> +		goto exit_channel_update;
+>>  	}
+>> 
+>> -	mhi_cntrl->wake_toggle(mhi_cntrl);
+>> -	read_unlock_bh(&mhi_cntrl->pm_lock);
+>> +	ret = wait_for_completion_timeout(&mhi_chan->completion,
+>> +				       msecs_to_jiffies(mhi_cntrl->timeout_ms));
+>> +	if (!ret || mhi_chan->ccs != MHI_EV_CC_SUCCESS) {
+>> +		dev_err(dev,
+>> +			"%d: Failed to receive %s channel command completion\n",
+>> +			mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
+>> +		ret = -EIO;
+>> +		goto exit_channel_update;
+>> +	}
+>> 
+>> -	mhi_cntrl->runtime_get(mhi_cntrl);
+>> +	ret = 0;
+>> +
+>> +	if (to_state != MHI_CH_STATE_TYPE_RESET) {
+>> +		write_lock_irq(&mhi_chan->lock);
+>> +		mhi_chan->ch_state = (to_state == MHI_CH_STATE_TYPE_START) ?
+>> +				      MHI_CH_STATE_ENABLED : MHI_CH_STATE_STOP;
+>> +		write_unlock_irq(&mhi_chan->lock);
+>> +	}
+>> +
+>> +	dev_dbg(dev, "%d: Channel state change to %s successful\n",
+>> +		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
+>> +
+>> +exit_channel_update:
+>>  	mhi_cntrl->runtime_put(mhi_cntrl);
+>> -	ret = mhi_send_cmd(mhi_cntrl, mhi_chan, MHI_CMD_RESET_CHAN);
+>> -	if (ret)
+>> -		goto error_invalid_state;
+>> +	mhi_device_put(mhi_cntrl->mhi_dev);
+>> 
+>> -	/* even if it fails we will still reset */
+>> -	ret = wait_for_completion_timeout(&mhi_chan->completion,
+>> -				msecs_to_jiffies(mhi_cntrl->timeout_ms));
+>> -	if (!ret || mhi_chan->ccs != MHI_EV_CC_SUCCESS)
+>> -		dev_err(dev,
+>> -			"Failed to receive cmd completion, still resetting\n");
+>> +	return ret;
+>> +}
+>> +
+>> +static void __mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
+>> +				    struct mhi_chan *mhi_chan)
+>> +{
+>> +	int ret;
+>> +	struct device *dev = &mhi_chan->mhi_dev->dev;
+>> +
+>> +	mutex_lock(&mhi_chan->mutex);
+>> +
+>> +	/* no more processing events for this channel */
+>> +	ret = mhi_update_channel_state(mhi_cntrl, mhi_chan,
+>> +				       MHI_CH_STATE_TYPE_RESET);
+>> +	if (ret)
+>> +		dev_err(dev, "%d: Failed to reset channel, still resetting\n",
+>> +			mhi_chan->chan);
+>> 
+>> -error_invalid_state:
+>>  	if (!mhi_chan->offload_ch) {
+>>  		mhi_reset_chan(mhi_cntrl, mhi_chan);
+>>  		mhi_deinit_chan_ctxt(mhi_cntrl, mhi_chan);
+>>  	}
+>> -	dev_dbg(dev, "chan:%d successfully resetted\n", mhi_chan->chan);
+>> +	dev_dbg(dev, "%d: successfully reset\n", mhi_chan->chan);
+>> +
+>>  	mutex_unlock(&mhi_chan->mutex);
+>>  }
+>> 
+>> @@ -1245,28 +1303,16 @@ int mhi_prepare_channel(struct mhi_controller 
+>> *mhi_cntrl,
+>>  			struct mhi_chan *mhi_chan)
+>>  {
+>>  	int ret = 0;
+>> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>> -
+>> -	dev_dbg(dev, "Preparing channel: %d\n", mhi_chan->chan);
+>> +	struct device *dev = &mhi_chan->mhi_dev->dev;
+>> 
+>>  	if (!(BIT(mhi_cntrl->ee) & mhi_chan->ee_mask)) {
+>> -		dev_err(dev,
+>> -			"Current EE: %s Required EE Mask: 0x%x for chan: %s\n",
+>> -			TO_MHI_EXEC_STR(mhi_cntrl->ee), mhi_chan->ee_mask,
+>> -			mhi_chan->name);
+>> +		dev_err(dev, "Current EE: %s Required EE Mask: 0x%x\n",
+>> +			TO_MHI_EXEC_STR(mhi_cntrl->ee), mhi_chan->ee_mask);
+>>  		return -ENOTCONN;
+>>  	}
+>> 
+>>  	mutex_lock(&mhi_chan->mutex);
+>> 
+>> -	/* If channel is not in disable state, do not allow it to start */
+>> -	if (mhi_chan->ch_state != MHI_CH_STATE_DISABLED) {
+>> -		ret = -EIO;
+>> -		dev_dbg(dev, "channel: %d is not in disabled state\n",
+>> -			mhi_chan->chan);
+>> -		goto error_init_chan;
+>> -	}
+>> -
+>>  	/* Check of client manages channel context for offload channels */
+>>  	if (!mhi_chan->offload_ch) {
+>>  		ret = mhi_init_chan_ctxt(mhi_cntrl, mhi_chan);
+>> @@ -1274,34 +1320,11 @@ int mhi_prepare_channel(struct mhi_controller 
+>> *mhi_cntrl,
+>>  			goto error_init_chan;
+>>  	}
+>> 
+>> -	reinit_completion(&mhi_chan->completion);
+>> -	read_lock_bh(&mhi_cntrl->pm_lock);
+>> -	if (MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)) {
+>> -		read_unlock_bh(&mhi_cntrl->pm_lock);
+>> -		ret = -EIO;
+>> -		goto error_pm_state;
+>> -	}
+>> -
+>> -	mhi_cntrl->wake_toggle(mhi_cntrl);
+>> -	read_unlock_bh(&mhi_cntrl->pm_lock);
+>> -	mhi_cntrl->runtime_get(mhi_cntrl);
+>> -	mhi_cntrl->runtime_put(mhi_cntrl);
+>> -
+>> -	ret = mhi_send_cmd(mhi_cntrl, mhi_chan, MHI_CMD_START_CHAN);
+>> +	ret = mhi_update_channel_state(mhi_cntrl, mhi_chan,
+>> +				       MHI_CH_STATE_TYPE_START);
+>>  	if (ret)
+>>  		goto error_pm_state;
+>> 
+>> -	ret = wait_for_completion_timeout(&mhi_chan->completion,
+>> -				msecs_to_jiffies(mhi_cntrl->timeout_ms));
+>> -	if (!ret || mhi_chan->ccs != MHI_EV_CC_SUCCESS) {
+>> -		ret = -EIO;
+>> -		goto error_pm_state;
+>> -	}
+>> -
+>> -	write_lock_irq(&mhi_chan->lock);
+>> -	mhi_chan->ch_state = MHI_CH_STATE_ENABLED;
+>> -	write_unlock_irq(&mhi_chan->lock);
+>> -
+>>  	/* Pre-allocate buffer for xfer ring */
+>>  	if (mhi_chan->pre_alloc) {
+>>  		int nr_el = get_nr_avail_ring_elements(mhi_cntrl,
+>> @@ -1339,9 +1362,6 @@ int mhi_prepare_channel(struct mhi_controller 
+>> *mhi_cntrl,
+>> 
+>>  	mutex_unlock(&mhi_chan->mutex);
+>> 
+>> -	dev_dbg(dev, "Chan: %d successfully moved to start state\n",
+>> -		mhi_chan->chan);
+>> -
+>>  	return 0;
+>> 
+>>  error_pm_state:
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
+
+[1] https://lkml.org/lkml/2021/1/21/781
+
+Thanks,
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
