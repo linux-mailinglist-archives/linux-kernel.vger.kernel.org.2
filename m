@@ -2,192 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A18325366
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87BD4325361
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhBYQVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 11:21:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233159AbhBYQUb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:20:31 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on070d.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::70d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9B9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 08:19:44 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bjfT7gJKQrqBdhL9oQmb7tDKwAe7YN7EV4zhIeJOtw69MHj9QSnjpq4tl/D0PUikipE8fkRqLgnegO2AGF5Quq/rd3FJbuzG+//YuWERfWZosJYrRtniZyjwBdML835aKnnR6rfv4n8i9V2zKjfWY7XTjIp0QUe66mzfAMF/AXX5biLtX82HAahVNx8NplUoA/9JfNttV9I1sqHnPozWj2kCZDas1CXud7yU2K9zu9DwjxGzXmYtJR/W+6s+o/CzMUbqucghu6KpiaCKa+Y+jahdH8Tk0BMglbELYdbhKnKdhhsRTIOW1yowdsfVPhgvyF0llPz+1bI88lb0ElJnww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bFW3NqT3xrfvGegiFlDmbsr58noDI6PkF1W30oQW7EA=;
- b=XTMERsrTDqTdebxbdVzPib2uPZI07idnR41Nu1GrUcdXujzwYpi64SNdxu79FFdlOOP8u68GO/O8M49i49KUmzMmykYefTD2K4lUyxbitr0KQ79PhMWtwRmlE7WH9OZ97xGoeepKnqh7cief5+3XNk1JR9rV8ExdffblxOPLwDw870wh+eedhA9fauVDRsSBuYR0IfWVA39uJ/l0jbfjLbMZPY7FdS9vfHYV1xL8DU08iuAC7Ta3l+IPeot23wQSbbx+m+hVCGmBT9+lrpCD4sQZvXFmjdU0aa5Qc+4NiwYxYCP734oKvmbi7x3sFzKCEZlVIIyvEV9uzmEeiQT52A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bFW3NqT3xrfvGegiFlDmbsr58noDI6PkF1W30oQW7EA=;
- b=ivgL95Na/LfAlgahCh8piPkUkzB45L+dvHl71fF9bPX62E596JfbUh6v0eVBLi+Qei9b+GhmhAmE3HL0oHv/nia7LipwjUe/EpEUu3ASSBEaFF1GAwMZfdICxLKKKzQC2QzJyEttSyjd4MeAeTlGkJsvIKbW3QhQm2Bx+lXxbMY=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=prevas.dk;
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
- by AM8PR10MB4131.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1ca::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.24; Thu, 25 Feb
- 2021 16:19:28 +0000
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::58b2:6a2a:b8f9:bc1a]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::58b2:6a2a:b8f9:bc1a%3]) with mapi id 15.20.3890.020; Thu, 25 Feb 2021
- 16:19:28 +0000
-Subject: Re: [GIT PULL] Modules updates for v5.12
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Jessica Yu <jeyu@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?=ef=bf=bcMiroslav_Benes?= <mbenes@suse.cz>,
-        Emil Velikov <emil.l.velikov@gmail.com>
-References: <YDUibKAt5tpA1Hxs@gunter>
- <CAHk-=wipCbbXswcFvnrGae01H54dY1+XoaL+9YaiU71zGzko3Q@mail.gmail.com>
- <CAHk-=wh8vHL43v7GWK9MWrWitSmOmrEw1B0AJD9CrhBc4FvpxA@mail.gmail.com>
- <CAHk-=wiuoRKa=F3txoVHvnca+H=7gJyL3SFYwd3549v-sa0+QQ@mail.gmail.com>
- <20210223200130.GA8059@lst.de>
- <CAHk-=wj27tmZBzFRTZTAEPd6eRBzP5xCkQM+1cuSx7vzv8K4=g@mail.gmail.com>
- <YDYPWAtoDpyD9D4Z@gunter>
- <CAK7LNAQUL4qEgk97z0WfagVDgGAARzj8hqFyrC2wnPjiLduEoQ@mail.gmail.com>
- <cb28abc8-5c4c-90c2-e3f2-a939ff507a8b@prevas.dk>
- <CAK7LNASv-pWVdztiD1-VCHCnOqZ6j=J6ra5cEdiUkmM9E8fHWQ@mail.gmail.com>
-From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Message-ID: <a2d84bf6-f753-92f6-7613-38391e65af85@prevas.dk>
-Date:   Thu, 25 Feb 2021 17:19:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <CAK7LNASv-pWVdztiD1-VCHCnOqZ6j=J6ra5cEdiUkmM9E8fHWQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [80.208.71.141]
-X-ClientProxiedBy: AM0PR01CA0179.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:aa::48) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:3f::10)
+        id S233383AbhBYQUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 11:20:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231160AbhBYQUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 11:20:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17B5664ED3;
+        Thu, 25 Feb 2021 16:19:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614269984;
+        bh=8pUy9btHp98WJPos6UZOl296CQG5BhWSBIjY2gbD/+M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EVEkSdMz5WVDcrCAJmUmlfiHkObCdg/4MOcJ1m2BKub9cOuX8nwSpxn+8bq+mUFqb
+         R2Nowq1OTPT2lj9vrWC/ep1FlmgtL5dyiMV+xOCD+7ZKGbLc+QLxQCtjEzHUwGOi8R
+         E63yVi/7GayfXGw9z/j1js7GQHDAOuMLEbgNVFOuBReaxVaPKKYPHQQURFfXovowPd
+         4XlGxEbh/PfCA34oaF2zKA2DfyOOb037YamD1fxuUlEywL+BORbZLuJNz/oSe8PWGe
+         rB1I9cH7pyaQRrGLmuf2zo03NoUZYPIDSbBZs5XEga+pUzONN4qoftw2gUpnHNlA7J
+         /4xshCTvWLYNg==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Sagiv Ozeri <sozeri@habana.ai>
+Subject: [PATCH 1/4] habanalabs: support HW blocks vm show
+Date:   Thu, 25 Feb 2021 18:19:36 +0200
+Message-Id: <20210225161939.20842-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.149] (80.208.71.141) by AM0PR01CA0179.eurprd01.prod.exchangelabs.com (2603:10a6:208:aa::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Thu, 25 Feb 2021 16:19:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ad57e5bf-a3ad-4536-ce3c-08d8d9a92002
-X-MS-TrafficTypeDiagnostic: AM8PR10MB4131:
-X-Microsoft-Antispam-PRVS: <AM8PR10MB4131990101E89C9B0F2192CA939E9@AM8PR10MB4131.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FiBK4Xdy1Y9Xk78Ei3+TKEyUhtRLtK2TFQBoEnz54UOym68UL/TGKua++ElPPpGxvGB/K0+TRK9FUwaFs+g10Tfea0npX1Nen6mKL0gPipR+GqiyUOqu0VCI/JoDxkGLigh++OtJViHI2+eP1xEUmpk2aAt2hFe7aVZDNiY8UR1HbTpShGG22b3t2fMLUfsmkQoIzZGfrrTFNAXUeTW0XTWlIqiH0CzEKYoYvBY1t53v8/sKYSY+0SvfiWEK2/vxv0WklmU4QCpWOsOcZ4Pe++lq+gkI3oaOB5eailwoJ3gDN7Qyilnnwl6BrvCwt37hd86cc5Ebwv/4HSn6IUySAm4zHcdSrnXB46UYr5R7oOViLi7h/vpgUezO6TbafTgXXUov2Pu+ticocg/WcBD6AvA9vA04RTwj0v1cA0lYsx2TYm8ExYw2qPSpVfoJEhh2meI4t486iS8b3h0e72x8ihQuSWl+xw4/CH3WSTRxt/KRkJ0cOdtTleR4g0enLmOufDBysilYvTabnFyqujYXv4g2QHSNbaWBZdQOv0HhTaMyn4heWZp9nSN8GPx5k8CxmS2z/QQmH0+AbPU98mI3yw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(396003)(39850400004)(366004)(316002)(6486002)(478600001)(66946007)(86362001)(26005)(5660300002)(4326008)(186003)(52116002)(8936002)(956004)(8976002)(2906002)(6916009)(83380400001)(53546011)(2616005)(66556008)(36756003)(31696002)(66476007)(16576012)(31686004)(54906003)(8676002)(44832011)(16526019)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QzZqb3Job3liK0t1UTd2aHgrKzVjRHBzNGhYV2xPSk5abUNZejZiTDJGcTc0?=
- =?utf-8?B?ekN1MHNFVmxjQ1ovRjMvWlJGbUIyRHhmNGhPcUxNdTZoTmErUUZKOFFYaXdi?=
- =?utf-8?B?S1RvWVZsSCtkQlRidjl3VDdWakpjTUNIOGRXczJ5TWNHM1p2MUlOVWRRUzY0?=
- =?utf-8?B?dnpZaU51amlwM25HMjNwNlk5UzBtNjlZZm5EU0QrUUJWOWwzT1d2Zm1sdVFp?=
- =?utf-8?B?b2VuZlozTlBYSmw4R2Zpd2Y4WmdBTFlPNm1QYTNNTkxvU1RITjU3ZU1xVHhl?=
- =?utf-8?B?QzdzVEtFZmNxdFg0ZEFXU1gwM01KLzJlSVR6Q2pwRG1NQUZ1VGNaRzZscVhm?=
- =?utf-8?B?MXVWV1NMYjBCZXYzYXczTUpwM2lkb2hmVGQ2MDBIUFlKbTZUNVFuTmM4dmFo?=
- =?utf-8?B?NkZMVnR5bDhzOUlFOEJTdStxSElmcm82K1hkdEJvRE1TS1Jaczg5b2dNK093?=
- =?utf-8?B?aTZwS1dsWW84RlVPT0dORVpua0RhOFltSmdkMjVjRUJ3Q3NaMWlocStJc2ZX?=
- =?utf-8?B?dWRVT0YrUkwwdDBpNkNYUnlaZTEyNloyOHVJdFpEZFlUTDhObmczbTRSNFdr?=
- =?utf-8?B?NzdTeXQraWNoN2x1T3FTWHRIcVp1bEt0YWUrblkzQmZraEFCYngwVGdxQTF0?=
- =?utf-8?B?K3l2NXhNYm5zVXlQMllZcE14ckc5SU5YeFZNbFQ1MVBDeDFaMkpVNzU4dnRD?=
- =?utf-8?B?d2FhYUV1R1V1MHVqZFk1Mk5zMFBVNmVZYlVTTzJLQ0pBVmdBL1lPVlc2WUZY?=
- =?utf-8?B?RVFPU2NrU3orQ3pNM014a09DeHhuNjd2OUZxa1c2TnhYb2VuTzdBTWFidXJG?=
- =?utf-8?B?MHRseWxKcEdaem9zNHduMHZEUkdQUGlGd0lBWCtoUTVpS2g2YjVIQjZDdkxY?=
- =?utf-8?B?THlwRmQ1SXlNbHNueFpNNitjRUtNNnZ3OXVxa0lCN0lvTVBTTzVWNnFYOXdN?=
- =?utf-8?B?TjcyUHI3WHdJV0VnZk1IeU5ybTRjcVQyZS9Pczd0WXFpZ1htTXJ6bFllWWky?=
- =?utf-8?B?OVBmRzNSeXk0aFp4R1h4N2lYL2ZQakRMQkN4WU5kdGE2bVdMUUZXZzdsekdT?=
- =?utf-8?B?VkFhdGg3SlJDYnRZRzVObW9sWSt0TnNGQ1BTZk50TmpqaU40N0gybytGR3JW?=
- =?utf-8?B?YzJmOG13ZG1CeWtKYkhvVmJXNjZjSzlEK1NqVXROUWxuc0FrRHRNbnBKakhl?=
- =?utf-8?B?azBKUjh5czZ5dno2c3N6ckU1TTV2eHg4SWtFL2tWOGVOT2JydHJUbGJ2MUti?=
- =?utf-8?B?RGNNbjZrNkNBUVdNbGlURVh6NkxoelREYk9JbC9ESUNHeDVyaUxYODJ2VGJs?=
- =?utf-8?B?YmYwellNVy96T2thT3h6UlZUQ1JxQzZ4dU41MEV1b2pZZFpVYmUxZ0hhem9s?=
- =?utf-8?B?aS9VQTZEMXBEWUljOW0xVFgwZzVud3h2U3lXYTJvYWI3WFpkY2ozeFJ3TnhK?=
- =?utf-8?B?dEI1bVdpSExRT042dk4xc3J1bTBIL0NxekFUUW0yeDZXczhGMG9tTHZidjdV?=
- =?utf-8?B?Wi85eDM0Nys0bkVJN0cwNEIyN1Bvb0o0MHdHZ1dRdzQ3eTkydHpUaWhXR2ZG?=
- =?utf-8?B?N0kzWlJQQzIwRjA0dFVLbURuREpvellwUVpnejlBK3lpUTBJYzZpcjNxUTNo?=
- =?utf-8?B?Q3VXTTlEelRkUGI1ZHdkMjRiMEx1SlRtY3lIbHFrODBMZTUrMSsvMEZJR1Bi?=
- =?utf-8?B?SUthMDZSL3Izc05hanZzcTd4Ump1eDZ3NXJYb3l0cFRLYnBPNHdSWGxJdXdx?=
- =?utf-8?Q?HAuzwTj637QYExlOxzCJ5hXRNHVVcMt3LaeZMGf?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad57e5bf-a3ad-4536-ce3c-08d8d9a92002
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2021 16:19:28.7387
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1/e7omZD6TayqFBHi+OTjwMXamojHMrruzOOWkwDy81w4elssppRKKVVY1mOjQiYTGCcYKejdCvrPcku/AjMmJHMWyalNeVTdbO9xoOBU/0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB4131
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/02/2021 16.49, Masahiro Yamada wrote:
-> On Thu, Feb 25, 2021 at 4:36 AM Rasmus Villemoes
-> <rasmus.villemoes@prevas.dk> wrote:
->>
->> On 24/02/2021 15.40, Masahiro Yamada wrote:
-> 
-> 
-> Good insight.
-> Actually, I came up with the same idea last night, and had started
-> the implementation background.
-> I needed sleep before completing the patch set, but
-> now it is working as far as I tested.
-> 
-> BTW,
-> KEEP(*(SORT(___ksymtab+foo ___ksymtab+bar ___ksymtab+baz))
-> is a syntax error.
-> 
+From: Sagiv Ozeri <sozeri@habana.ai>
 
-ah, ok, didn't test anything, just threw it out there in case somebody
-wanted to see if it was doable.
+Improve "vm" debugfs node to print also the virtual addresses which are
+currently mapped to HW blocks in the device.
 
-Is that a limitation of SORT? The ld docs say
+Signed-off-by: Sagiv Ozeri <sozeri@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ .../ABI/testing/debugfs-driver-habanalabs     |  2 +-
+ drivers/misc/habanalabs/common/context.c      | 14 +++-
+ drivers/misc/habanalabs/common/debugfs.c      | 16 +++++
+ drivers/misc/habanalabs/common/habanalabs.h   | 24 +++++++
+ drivers/misc/habanalabs/common/memory.c       | 65 +++++++++++++++++--
+ 5 files changed, 113 insertions(+), 8 deletions(-)
 
-   There are two ways to include more than one section:
-     *(.text .rdata)
-     *(.text) *(.rdata)
-The difference between these is the order in which the '.text' and
-'.rdata' input sections will appear in the output section.
+diff --git a/Documentation/ABI/testing/debugfs-driver-habanalabs b/Documentation/ABI/testing/debugfs-driver-habanalabs
+index d447a611c41b..f9e233cbdc37 100644
+--- a/Documentation/ABI/testing/debugfs-driver-habanalabs
++++ b/Documentation/ABI/testing/debugfs-driver-habanalabs
+@@ -174,7 +174,7 @@ Date:           Jan 2019
+ KernelVersion:  5.1
+ Contact:        ogabbay@kernel.org
+ Description:    Displays a list with information about all the active virtual
+-                address mappings per ASID
++                address mappings per ASID and all user mappings of HW blocks
+ 
+ What:           /sys/kernel/debug/habanalabs/hl<n>/stop_on_err
+ Date:           Mar 2020
+diff --git a/drivers/misc/habanalabs/common/context.c b/drivers/misc/habanalabs/common/context.c
+index cda871afb8f4..62d705889ca8 100644
+--- a/drivers/misc/habanalabs/common/context.c
++++ b/drivers/misc/habanalabs/common/context.c
+@@ -20,6 +20,11 @@ static void hl_ctx_fini(struct hl_ctx *ctx)
+ 	 */
+ 	hl_pending_cb_list_flush(ctx);
+ 
++	/* Release all allocated HW block mapped list entries and destroy
++	 * the mutex.
++	 */
++	hl_hw_block_mem_fini(ctx);
++
+ 	/*
+ 	 * If we arrived here, there are no jobs waiting for this context
+ 	 * on its queues so we can safely remove it.
+@@ -160,13 +165,15 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx)
+ 	if (!ctx->cs_pending)
+ 		return -ENOMEM;
+ 
++	hl_hw_block_mem_init(ctx);
++
+ 	if (is_kernel_ctx) {
+ 		ctx->asid = HL_KERNEL_ASID_ID; /* Kernel driver gets ASID 0 */
+ 		rc = hl_vm_ctx_init(ctx);
+ 		if (rc) {
+ 			dev_err(hdev->dev, "Failed to init mem ctx module\n");
+ 			rc = -ENOMEM;
+-			goto err_free_cs_pending;
++			goto err_hw_block_mem_fini;
+ 		}
+ 
+ 		rc = hdev->asic_funcs->ctx_init(ctx);
+@@ -179,7 +186,7 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx)
+ 		if (!ctx->asid) {
+ 			dev_err(hdev->dev, "No free ASID, failed to create context\n");
+ 			rc = -ENOMEM;
+-			goto err_free_cs_pending;
++			goto err_hw_block_mem_fini;
+ 		}
+ 
+ 		rc = hl_vm_ctx_init(ctx);
+@@ -214,7 +221,8 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx)
+ err_asid_free:
+ 	if (ctx->asid != HL_KERNEL_ASID_ID)
+ 		hl_asid_free(hdev, ctx->asid);
+-err_free_cs_pending:
++err_hw_block_mem_fini:
++	hl_hw_block_mem_fini(ctx);
+ 	kfree(ctx->cs_pending);
+ 
+ 	return rc;
+diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
+index df847a6d19f4..d4a49d6d1753 100644
+--- a/drivers/misc/habanalabs/common/debugfs.c
++++ b/drivers/misc/habanalabs/common/debugfs.c
+@@ -229,6 +229,7 @@ static int vm_show(struct seq_file *s, void *data)
+ {
+ 	struct hl_debugfs_entry *entry = s->private;
+ 	struct hl_dbg_device_entry *dev_entry = entry->dev_entry;
++	struct hl_vm_hw_block_list_node *lnode;
+ 	struct hl_ctx *ctx;
+ 	struct hl_vm *vm;
+ 	struct hl_vm_hash_node *hnode;
+@@ -272,6 +273,21 @@ static int vm_show(struct seq_file *s, void *data)
+ 		}
+ 		mutex_unlock(&ctx->mem_hash_lock);
+ 
++		if (ctx->asid != HL_KERNEL_ASID_ID &&
++		    !list_empty(&ctx->hw_block_mem_list)) {
++			seq_puts(s, "\nhw_block mappings:\n\n");
++			seq_puts(s, "    virtual address    size    HW block id\n");
++			seq_puts(s, "-------------------------------------------\n");
++			mutex_lock(&ctx->hw_block_list_lock);
++			list_for_each_entry(lnode, &ctx->hw_block_mem_list,
++					    node) {
++				seq_printf(s,
++					"    0x%-14lx   %-6u      %-9u\n",
++					lnode->vaddr, lnode->size, lnode->id);
++			}
++			mutex_unlock(&ctx->hw_block_list_lock);
++		}
++
+ 		vm = &ctx->hdev->vm;
+ 		spin_lock(&vm->idr_lock);
+ 
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index 56c5fb16b409..9129582e9339 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -1103,9 +1103,11 @@ struct hl_pending_cb {
+  * @mem_hash_lock: protects the mem_hash.
+  * @mmu_lock: protects the MMU page tables. Any change to the PGT, modifying the
+  *            MMU hash or walking the PGT requires talking this lock.
++ * @hw_block_list_lock: protects the HW block memory list.
+  * @debugfs_list: node in debugfs list of contexts.
+  * pending_cb_list: list of pending command buffers waiting to be sent upon
+  *                  next user command submission context.
++ * @hw_block_mem_list: list of HW block virtual mapped addresses.
+  * @cs_counters: context command submission counters.
+  * @cb_va_pool: device VA pool for command buffers which are mapped to the
+  *              device's MMU.
+@@ -1142,8 +1144,10 @@ struct hl_ctx {
+ 	struct hl_va_range		*va_range[HL_VA_RANGE_TYPE_MAX];
+ 	struct mutex			mem_hash_lock;
+ 	struct mutex			mmu_lock;
++	struct mutex			hw_block_list_lock;
+ 	struct list_head		debugfs_list;
+ 	struct list_head		pending_cb_list;
++	struct list_head		hw_block_mem_list;
+ 	struct hl_cs_counters_atomic	cs_counters;
+ 	struct gen_pool			*cb_va_pool;
+ 	u64				cs_sequence;
+@@ -1362,6 +1366,23 @@ struct hl_vm_hash_node {
+ 	void			*ptr;
+ };
+ 
++/**
++ * struct hl_vm_hw_block_list_node - list element from user virtual address to
++ *				HW block id.
++ * @node: node to hang on the list in context object.
++ * @ctx: the context this node belongs to.
++ * @vaddr: virtual address of the HW block.
++ * @size: size of the block.
++ * @id: HW block id (handle).
++ */
++struct hl_vm_hw_block_list_node {
++	struct list_head	node;
++	struct hl_ctx		*ctx;
++	unsigned long		vaddr;
++	u32			size;
++	u32			id;
++};
++
+ /**
+  * struct hl_vm_phys_pg_pack - physical page pack.
+  * @vm_type: describes the type of the virtual area descriptor.
+@@ -2280,6 +2301,9 @@ void hl_vm_ctx_fini(struct hl_ctx *ctx);
+ int hl_vm_init(struct hl_device *hdev);
+ void hl_vm_fini(struct hl_device *hdev);
+ 
++void hl_hw_block_mem_init(struct hl_ctx *ctx);
++void hl_hw_block_mem_fini(struct hl_ctx *ctx);
++
+ u64 hl_reserve_va_block(struct hl_device *hdev, struct hl_ctx *ctx,
+ 		enum hl_va_range_type type, u32 size, u32 alignment);
+ int hl_unreserve_va_block(struct hl_device *hdev, struct hl_ctx *ctx,
+diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
+index 1f5910517b0e..c2679896aa50 100644
+--- a/drivers/misc/habanalabs/common/memory.c
++++ b/drivers/misc/habanalabs/common/memory.c
+@@ -1305,9 +1305,15 @@ static int map_block(struct hl_device *hdev, u64 address, u64 *handle,
+ 
+ static void hw_block_vm_close(struct vm_area_struct *vma)
+ {
+-	struct hl_ctx *ctx = (struct hl_ctx *) vma->vm_private_data;
++	struct hl_vm_hw_block_list_node *lnode =
++		(struct hl_vm_hw_block_list_node *) vma->vm_private_data;
++	struct hl_ctx *ctx = lnode->ctx;
+ 
++	mutex_lock(&ctx->hw_block_list_lock);
++	list_del(&lnode->node);
++	mutex_unlock(&ctx->hw_block_list_lock);
+ 	hl_ctx_put(ctx);
++	kfree(lnode);
+ 	vma->vm_private_data = NULL;
+ }
+ 
+@@ -1325,7 +1331,9 @@ static const struct vm_operations_struct hw_block_vm_ops = {
+  */
+ int hl_hw_block_mmap(struct hl_fpriv *hpriv, struct vm_area_struct *vma)
+ {
++	struct hl_vm_hw_block_list_node *lnode;
+ 	struct hl_device *hdev = hpriv->hdev;
++	struct hl_ctx *ctx = hpriv->ctx;
+ 	u32 block_id, block_size;
+ 	int rc;
+ 
+@@ -1351,17 +1359,31 @@ int hl_hw_block_mmap(struct hl_fpriv *hpriv, struct vm_area_struct *vma)
+ 		return -EINVAL;
+ 	}
+ 
++	lnode = kzalloc(sizeof(*lnode), GFP_KERNEL);
++	if (!lnode)
++		return -ENOMEM;
++
+ 	vma->vm_ops = &hw_block_vm_ops;
+-	vma->vm_private_data = hpriv->ctx;
++	vma->vm_private_data = lnode;
+ 
+-	hl_ctx_get(hdev, hpriv->ctx);
++	hl_ctx_get(hdev, ctx);
+ 
+ 	rc = hdev->asic_funcs->hw_block_mmap(hdev, vma, block_id, block_size);
+ 	if (rc) {
+-		hl_ctx_put(hpriv->ctx);
++		hl_ctx_put(ctx);
++		kfree(lnode);
+ 		return rc;
+ 	}
+ 
++	lnode->ctx = ctx;
++	lnode->vaddr = vma->vm_start;
++	lnode->size = block_size;
++	lnode->id = block_id;
++
++	mutex_lock(&ctx->hw_block_list_lock);
++	list_add_tail(&lnode->node, &ctx->hw_block_mem_list);
++	mutex_unlock(&ctx->hw_block_list_lock);
++
+ 	vma->vm_pgoff = block_id;
+ 
+ 	return 0;
+@@ -2122,3 +2144,38 @@ void hl_vm_fini(struct hl_device *hdev)
+ 
+ 	vm->init_done = false;
+ }
++
++/**
++ * hl_hw_block_mem_init() - HW block memory initialization.
++ * @ctx: pointer to the habanalabs context structure.
++ *
++ * This function initializes the HW block virtual mapped addresses list and
++ * it's lock.
++ */
++void hl_hw_block_mem_init(struct hl_ctx *ctx)
++{
++	mutex_init(&ctx->hw_block_list_lock);
++	INIT_LIST_HEAD(&ctx->hw_block_mem_list);
++}
++
++/**
++ * hl_hw_block_mem_fini() - HW block memory teardown.
++ * @ctx: pointer to the habanalabs context structure.
++ *
++ * This function clears the HW block virtual mapped addresses list and destroys
++ * it's lock.
++ */
++void hl_hw_block_mem_fini(struct hl_ctx *ctx)
++{
++	struct hl_vm_hw_block_list_node *lnode, *tmp;
++
++	if (!list_empty(&ctx->hw_block_mem_list))
++		dev_crit(ctx->hdev->dev, "HW block mem list isn't empty\n");
++
++	list_for_each_entry_safe(lnode, tmp, &ctx->hw_block_mem_list, node) {
++		list_del(&lnode->node);
++		kfree(lnode);
++	}
++
++	mutex_destroy(&ctx->hw_block_list_lock);
++}
+-- 
+2.25.1
 
-so there shouldn't be a problem mentioning more than one section name?
-
->> If LD_DEAD_CODE_DATA_ELIMINATION was more widely supported (and I was
->> surprised to see that it's not even available on arm or x86) one could
->> also play another game, dropping the KEEP()s and instead create a linker
->> script snippet containing EXTERN(__ksymtab_foo __ksymtab_bar ...),
->> referencing the "struct kernel_symbol" elements themselves rather than
->> the singleton sections they reside in.
-> 
-> Do you mean LD_DEAD_CODE_DATA_ELIMINATION must be enabled by default
-> to do this?
-> 
-
-No, but without LD_DEAD_CODE_DATA_ELIMINATION, I don't see much point of
-the TRIM_UNUSED_KSYMS. Yes, the export_symbol metadata itself vanishes,
-but the actual functions remain in the image. Conversely, with modules
-enabled, LD_DEAD_CODE_DATA_ELIMINATION can't do much when almost all of
-the kernel can be built modular so almost extern interface is an
-EXPORT_SYMBOL. At least, that's what I see for a ppc target with a
-somewhat trimmed-down .config, combining the two gives much more space
-saving than the sum of what each option does:
-
-$ size vmlinux.{vanilla,trim,dead,trim-dead}
-   text    data     bss     dec     hex filename
-6197380 1159488  121732 7478600  721d48 vmlinux.vanilla
-6045906 1159440  121732 7327078  6fcd66 vmlinux.trim
-6087316 1137284  120476 7345076  7013b4 vmlinux.dead
-5675370 1101964  115180 6892514  692be2 vmlinux.trim-dead
-
-Anyway, that was just an aside, probably the above ___ksymtab+foo thing
-will work just fine.
-
-Rasmus
