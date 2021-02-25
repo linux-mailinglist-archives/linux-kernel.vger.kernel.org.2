@@ -2,92 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F39732513C
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7C132513B
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhBYOGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 09:06:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbhBYOG2 (ORCPT
+        id S232429AbhBYOGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 09:06:37 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:43614 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231248AbhBYOG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 09:06:28 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92ECFC061574;
-        Thu, 25 Feb 2021 06:05:46 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id q9so5022839ilo.1;
-        Thu, 25 Feb 2021 06:05:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HNl+j7XzE9le/Y31giKwsRpFTGZ7bjJThJ0wX9igwH8=;
-        b=baHr+Xh3tv9Bdb+XoKmQUT9GL9l7XRNx9hYgZ7qLwYG1/GEO48svlhtydDF/9BcBGo
-         GgzM9davIc4/iApPPohit9eW5KwggmmrksyqK7+TXOkIq+6p2vaa3RCOcZ5nKhWkmF6g
-         T67x5PN2ySCLhGivJOxiRifenWB3VQ8NkpYWvfWtDrlwFCEdTNzc8rknvA4bCOY75oIQ
-         8p0u/rlwmEZXpwmgO30KJtuJXWIzp49kn2+LtR4a4ko+u12GDVPvD2Tfmyx3+5Wi/X5b
-         2b1ZAkLFS3KLXgMCYKBEHAnQB+QoS2bx0LKfAatFMsrltWZFnTGHBDwCjF3QB5SiYcdG
-         Uajg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HNl+j7XzE9le/Y31giKwsRpFTGZ7bjJThJ0wX9igwH8=;
-        b=lJJEbbAC+asTjN9wjXviqQbNsF3XR5MTUGr9PLeung15XzwADViURNsvICci2MYcRn
-         PkgfkytPGtpj4IPXGCCALXhxiDOYdRUuU3YaPP1rvTmQk9xmZDyqpOHo7HpjjTWg/+4b
-         NXpI8X+L5fxFEzUGkjNPfrsHAMqacouPF+pmV+H6IYn/kpHU1RLeksAlfVhvd2SlcyAJ
-         dJ4mkUioO/WZhznaNUAhZATvMHoyOZE+CgRwIPmJrhbk1hWOhkjWGmI85vjfHjkj27+c
-         lcQdoKb9e3xeTtUZfrJbNZtU5AVYTLNOML3HU7XIYwNLPyikQe9YVHwUd/GAi4Se/O+8
-         ZpdA==
-X-Gm-Message-State: AOAM532awyppG4sAUByG0vKXvwmxZuMBRGIWkG0Dy/gnyEua0FJd8bWm
-        wHbDALXrbRJ0ColVH031ZBjxmYaikET92lfRv57+2jQHfzYys4nM
-X-Google-Smtp-Source: ABdhPJz0P18YYZxzzf7UIrdHDGO788LiCP1JN3bOCD2fP/I5ywm2cOAKId/FNlzRb02eOEioa7cSvTKeVlT1Sio3m+k=
-X-Received: by 2002:a92:d201:: with SMTP id y1mr2733142ily.129.1614261945979;
- Thu, 25 Feb 2021 06:05:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20210220065654.25598-1-heiko.thiery@gmail.com>
- <20210222190051.40fdc3e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAEyMn7ZM7_pPor0S=dMGbmnp0hmZMrpquGqq4VNu-ixSPp+0UQ@mail.gmail.com>
- <20210223142726.GA4711@hoboy.vegasvil.org> <CAEyMn7Za9z9TUdhb8egf8mOFJyA3hgqX5fwLED8HDKw8Smyocg@mail.gmail.com>
- <20210223161136.GA5894@hoboy.vegasvil.org> <CAEyMn7YwvZD6T=oHp2AcmsA+R6Ho2SCYYkt2NcK8hZNUT7_TSQ@mail.gmail.com>
-In-Reply-To: <CAEyMn7YwvZD6T=oHp2AcmsA+R6Ho2SCYYkt2NcK8hZNUT7_TSQ@mail.gmail.com>
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-Date:   Thu, 25 Feb 2021 15:05:32 +0100
-Message-ID: <CAEyMn7Yjug3S=2mRC8uA=_+Tdxe=m6G-ga1YuupLSx3mPqUoug@mail.gmail.com>
-Subject: Re: [PATCH 1/1] net: fec: ptp: avoid register access when ipg clock
- is disabled
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Fugang Duan <fugang.duan@nxp.com>
+        Thu, 25 Feb 2021 09:06:26 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 439961F4617B
+Message-ID: <3a2b4d06a363541c475dbc1bbf61d90b3a1b0cc0.camel@collabora.com>
+Subject: Re: [PATCH v3 4/9] media: uapi: Add a control for HANTRO driver
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, peng.fan@nxp.com,
+        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Date:   Thu, 25 Feb 2021 11:05:32 -0300
+In-Reply-To: <20210222122406.41782-5-benjamin.gaignard@collabora.com>
+References: <20210222122406.41782-1-benjamin.gaignard@collabora.com>
+         <20210222122406.41782-5-benjamin.gaignard@collabora.com>
+Organization: Collabora
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+Hi Benjamin,
 
-Am Do., 25. Feb. 2021 um 14:49 Uhr schrieb Heiko Thiery
-<heiko.thiery@gmail.com>:
->
-> Hi Richard,
->
-> Am Di., 23. Feb. 2021 um 17:11 Uhr schrieb Richard Cochran
-> <richardcochran@gmail.com>:
-> >
-> > On Tue, Feb 23, 2021 at 04:04:16PM +0100, Heiko Thiery wrote:
-> > > It is not only the PHC clock that stops. Rather, it is the entire
-> > > ethernet building block in the SOC that is disabled, including the
-> > > PHC.
-> >
-> > Sure, but why does the driver do that?
->
-> That is a good question. I tried to understand the clock
-> infrastructure of the imx8 but it looks quite complicated. I cannot
-> find the point where all the stuff is disabled.
+On Mon, 2021-02-22 at 13:24 +0100, Benjamin Gaignard wrote:
+> The HEVC HANTRO driver needs to know the number of bits to skip at
 
-But the explanation why it is currently disabled that way can be found
-in the commit 91c0d987a9788dcc5fe26baafd73bf9242b68900.
+s/HANTRO/Hantro
 
--- 
-Heiko
+> the beginning of the slice header.
+
+As discussed in a different thread, we should describe exactly
+what the hardware is expecting, so applications can parse that
+and pass a correct value.
+
+> That is a hardware specific requirement so create a dedicated control
+> that this purpose.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> version 3:
+> - Fix typo in field name
+> 
+>  include/uapi/linux/hantro-v4l2-controls.h | 20 ++++++++++++++++++++
+>  include/uapi/linux/v4l2-controls.h        |  5 +++++
+>  2 files changed, 25 insertions(+)
+>  create mode 100644 include/uapi/linux/hantro-v4l2-controls.h
+> 
+> diff --git a/include/uapi/linux/hantro-v4l2-controls.h b/include/uapi/linux/hantro-v4l2-controls.h
+> new file mode 100644
+> index 000000000000..a8dfd6b1a2a9
+> --- /dev/null
+> +++ b/include/uapi/linux/hantro-v4l2-controls.h
+> @@ -0,0 +1,20 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +
+> +#ifndef __UAPI_HANTRO_V4L2_CONYTROLS_H__
+> +#define __UAPI_HANTRO_V4L2_CONYTROLS_H__
+> +
+> +#include <linux/v4l2-controls.h>
+> +#include <media/hevc-ctrls.h>
+> +
+> +#define V4L2_CID_HANTRO_HEVC_EXTRA_DECODE_PARAMS       (V4L2_CID_USER_HANTRO_BASE + 0)
+> +
+> +/**
+> + * struct hantro_hevc_extra_decode_params - extra decode parameters for hantro driver
+> + * @hevc_hdr_skip_length:      header first bits offset
+> + */
+> +struct hantro_hevc_extra_decode_params {
+> +       __u32   hevc_hdr_skip_length;
+> +       __u8    padding[4];
+> +};
+> +
+
+I think we can get away with a simpler solution. Since it's just one integer
+we need, there's no need for a compound control. Something like this:
+
+                .codec = HANTRO_HEVC_DECODER,                                    
+                .cfg = {                                                         
+                        .id = V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP,            
+                        .name = "Hantro HEVC slice header skip bytes",           
+                        .type = V4L2_CTRL_TYPE_INTEGER,                          
+                        .min = 0,                                                
+                        .max = 0x7fffffff,                                       
+                        .step = 1,                                               
+                },     
+
+Also see V4L2_CID_CODA_MB_ERR_CNT which is defined in drivers/media/platform/coda/coda.h.
+The control is sufficiently special that it could be kept in an internal driver header.
+
+> +#endif
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index 039c0d7add1b..ced7486c7f46 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -209,6 +209,11 @@ enum v4l2_colorfx {
+>   * We reserve 128 controls for this driver.
+>   */
+>  #define V4L2_CID_USER_CCS_BASE                 (V4L2_CID_USER_BASE + 0x10f0)
+> +/*
+> + * The base for HANTRO driver controls.
+> + * We reserve 32 controls for this driver.
+> + */
+> +#define V4L2_CID_USER_HANTRO_BASE              (V4L2_CID_USER_BASE + 0x1170)
+>  
+>  /* MPEG-class control IDs */
+>  /* The MPEG controls are applicable to all codec controls
+
+Thanks,
+Ezequiel
+
