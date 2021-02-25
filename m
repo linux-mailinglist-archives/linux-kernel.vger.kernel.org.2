@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681E7325719
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86640325718
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbhBYTw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:52:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36184 "EHLO
+        id S233242AbhBYTwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:52:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235114AbhBYTmp (ORCPT
+        with ESMTP id S235120AbhBYTmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:42:45 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C72CC061794;
+        Thu, 25 Feb 2021 14:42:46 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3201C061797;
         Thu, 25 Feb 2021 11:42:05 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id r3so6395740wro.9;
+Received: by mail-wr1-x436.google.com with SMTP id u14so6418090wri.3;
         Thu, 25 Feb 2021 11:42:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=saCL0zfJzepVD1gxLoKMRQsDgM3GHTKoi14Ll4BsQeg=;
-        b=JryEvbV1GQsxgCKnjJBw5scuebx3A+/9G9SK/FrVWiCCojT6WRO9jElDYXYapQCsC2
-         Ewaqogw1CWS8NOtyA/q3bGrLGXXu8HSP3gWDzcgCDZtVY+eZfzC25akHws0xRLhbJSgG
-         1ehhUuCzvmGsa6elJpp/fby7EEhzK5VoM358JOZXeg/gVA9C+L6p2I4Jyk7F4bU5qzmn
-         iPw0KcO6ro4efc65qjBmhHs4ZBwCAO9jp/ql9au+M4XT0vzqjH70dr+AlwrJNBW1b/qP
-         DWOhIFgCiKhnt1xm0+cjBBC8Evns+DT5zzwvOFgcmZs64+8Igby6uvWlNiaZWZhOTHhk
-         ba9w==
+        bh=qTlTcDSdxImTa7ViobepPe5YOpcOn7A/xAH3auWjaM4=;
+        b=PW+JrKonb2ZmsN1R83sYbW+WJGOkW0UGVRYTQQ8dM0yNhdq1hvciySQZLFMX3YxEfC
+         OcAuWIo+N3OjUFq6XcVaO9FLdr0LqdkC4+7VeqSzqNmBQyPCucs7Uj5iGfMPjIF5AK6W
+         bqVhxkrXNEmqvctRrPcEI6W7nbN4r/83buY/hj6MGyy/PSXlrrHoaBmLZI14DB61qQ8r
+         rsCPnZU97VUCvakWLsMb5XL6xb/tgj767yVuedEVuK54X6ln0xJDNbYO3trMO6FMr2yV
+         izSXmY66diq4lGKVtCHm/1XyQBU80teoJkiVtqv+WiZvvkVsK9eHgbwnRftQfqgSIx5q
+         EuCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=saCL0zfJzepVD1gxLoKMRQsDgM3GHTKoi14Ll4BsQeg=;
-        b=QI/TF6oFkGhUdQ4cNsIJNPn2D7UQR2wF9nWPsN+7BgvAvnAvV7Cem7G3rfRp+vnIep
-         nTLdoe5wQJf04vIUZ6vX1Kt/TcO3yLm3AHJqJ3lpdC/HSO6t/HqLrZmLPZWvKFU9RdkS
-         NsNoTI3IqKPb9EQmvrwmTbiX+7hjCnLjaKYbJJH+14FebZtI0EBcXI+qZXITTHYurawq
-         3L7W3YdOG7jumg6/RBZk9qEqQwHIPH81TKU33sJqspYzJoiyenz3RJCVF/407jUzBIpx
-         VguXu0EEsgKO7x06P/A6Q5WlAm9tVgXRzZXFbTYCCXTjfzAq68ZFukVgJFcQLlWpjyIn
-         hCnw==
-X-Gm-Message-State: AOAM530bGENH16Me39EtvG038K3rksJNgYRrR3L5pM3lV4fXWeneovbh
-        SfaSqWjDEGU1VXIG9g+PuxI=
-X-Google-Smtp-Source: ABdhPJwWjm9e7eKn0TIyQV98i8yiAEUSMvJWWTiiUM4DI6+uDhxL/7wpeSPqfszRt5SqZjOkV3445g==
-X-Received: by 2002:a5d:6ccb:: with SMTP id c11mr1407903wrc.122.1614282123818;
-        Thu, 25 Feb 2021 11:42:03 -0800 (PST)
+        bh=qTlTcDSdxImTa7ViobepPe5YOpcOn7A/xAH3auWjaM4=;
+        b=m5KgpO+ieeq6/G615MtC310xPUv8dHYCeC+Fyxi6RFDRFO+RTn0LzOYSBhEk6FuCkH
+         DJxSZNC7Exbk6Xj+Jo6OCRAfptKJh38m4LdRSvIthUs6nRL8mb2ByC9tTsJKNKaHV5pY
+         wkdw24MiCODSupeKaKlgeU0lGovqNo48DXVieflGZtFjMmVE8Uro8fpUUhsK0H0LauGI
+         rWXt29pr6XzxG+Z1BXQcSiQITOPTpg+Y98PtdeNkEoeYuFNyk5cbKUPpBY3ZKYktTl/7
+         ULRAOPUvkuke5I2EwBepBEhWMaCSL9zNlicOR6amHWWe/KE5s3FpRQkC4N9i+3uw6LVq
+         N6sQ==
+X-Gm-Message-State: AOAM532Pjnpo9AEm4ZYmlC5D5Z36iDgwaSJ/pBTGakX/0u1dr4QQQgLW
+        qYKhPLFg6aWPyyy5cGW0GGg=
+X-Google-Smtp-Source: ABdhPJzEMzLHj4q+xSnoAgsQqs+nEcKezgAzOb49FU7j2c36aZxnrM0vIM1oT2cBXT9FBf0DRPraPw==
+X-Received: by 2002:adf:fcc9:: with SMTP id f9mr2847672wrs.420.1614282124627;
+        Thu, 25 Feb 2021 11:42:04 -0800 (PST)
 Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
         by smtp.gmail.com with ESMTPSA id a198sm890603wmd.11.2021.02.25.11.42.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 11:42:03 -0800 (PST)
+        Thu, 25 Feb 2021 11:42:04 -0800 (PST)
 From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
 To:     jonas.gorski@gmail.com,
@@ -62,9 +62,9 @@ To:     jonas.gorski@gmail.com,
         Florian Fainelli <f.fainelli@gmail.com>,
         linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] mips: bmips: add BCM63268 timer clock definitions
-Date:   Thu, 25 Feb 2021 20:41:58 +0100
-Message-Id: <20210225194201.17001-2-noltari@gmail.com>
+Subject: [PATCH 2/4] mips: bmips: add BCM63268 timer reset definitions
+Date:   Thu, 25 Feb 2021 20:41:59 +0100
+Message-Id: <20210225194201.17001-3-noltari@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210225194201.17001-1-noltari@gmail.com>
 References: <20210225194201.17001-1-noltari@gmail.com>
@@ -75,35 +75,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing timer clock definitions for BCM63268.
+Add missing timer reset definitions for BCM63268.
 
 Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 ---
- include/dt-bindings/clock/bcm63268-clock.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ include/dt-bindings/reset/bcm63268-reset.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/dt-bindings/clock/bcm63268-clock.h b/include/dt-bindings/clock/bcm63268-clock.h
-index da23e691d359..dea8adc8510e 100644
---- a/include/dt-bindings/clock/bcm63268-clock.h
-+++ b/include/dt-bindings/clock/bcm63268-clock.h
-@@ -27,4 +27,17 @@
- #define BCM63268_CLK_TBUS	27
- #define BCM63268_CLK_ROBOSW250	31
+diff --git a/include/dt-bindings/reset/bcm63268-reset.h b/include/dt-bindings/reset/bcm63268-reset.h
+index 6a6403a4c2d5..d87a7882782a 100644
+--- a/include/dt-bindings/reset/bcm63268-reset.h
++++ b/include/dt-bindings/reset/bcm63268-reset.h
+@@ -23,4 +23,8 @@
+ #define BCM63268_RST_PCIE_HARD	17
+ #define BCM63268_RST_GPHY	18
  
-+#define BCM63268_TCLK_EPHY1		0
-+#define BCM63268_TCLK_EPHY2		1
-+#define BCM63268_TCLK_EPHY3		2
-+#define BCM63268_TCLK_GPHY1		3
-+#define BCM63268_TCLK_DSL		4
-+#define BCM63268_TCLK_WAKEON_EPHY	6
-+#define BCM63268_TCLK_WAKEON_DSL	7
-+#define BCM63268_TCLK_FAP1		11
-+#define BCM63268_TCLK_FAP2		15
-+#define BCM63268_TCLK_UTO_50		16
-+#define BCM63268_TCLK_UTO_EXTIN		17
-+#define BCM63268_TCLK_USB_REF		18
++#define BCM63268_TRST_SW	29
++#define BCM63268_TRST_HW	30
++#define BCM63268_TRST_POR	31
 +
- #endif /* __DT_BINDINGS_CLOCK_BCM63268_H */
+ #endif /* __DT_BINDINGS_RESET_BCM63268_H */
 -- 
 2.20.1
 
