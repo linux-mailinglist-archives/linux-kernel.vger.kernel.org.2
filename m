@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72930325471
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73143325479
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbhBYRPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 12:15:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232679AbhBYRPi (ORCPT
+        id S231439AbhBYRU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 12:20:27 -0500
+Received: from pb-smtp2.pobox.com ([64.147.108.71]:50724 "EHLO
+        pb-smtp2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhBYRUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:15:38 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA02AC06174A;
-        Thu, 25 Feb 2021 09:14:57 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id n10so4199194pgl.10;
-        Thu, 25 Feb 2021 09:14:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ptZSGNduCqA0B2NGqlCeIXaHGJ3fPPC3dn9cLh0I7ik=;
-        b=G4fJAsJeWfC0GWoeHmYOrWgnNJgBFX4n2XNIpHlFU+vDhdvcG2r9MnKWm0Zo+J9YHP
-         8Eiq1mCHQM6BnGYZkyO7DMW5sqyDb0uFXGn1epmUwM0xj9pmjtAlCqR87C0aqKdn8Bzj
-         /4UFnNZcwCzVQrHd1YmRD3Ci+/YqTs83yQ4+TjV/OMWwgmIrECsp18sxLFBVT/2j2eKo
-         bvhPI/GsFSEyTQ2dMYR2I3ZAc8tJXvVNgKjkmQT0/12BrVhHB240xfRk7yNEHLcMGi+l
-         9ugdfZhdGmtMrfxhgA1HSTnu+MMdi3WCJvSTP9ArYfR06o83+DvBv8INo+G6EFCHaUJv
-         QL+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ptZSGNduCqA0B2NGqlCeIXaHGJ3fPPC3dn9cLh0I7ik=;
-        b=umiS5IgoZmQ3SxkSCYFPE8AtGhdljfv3T27K7d/huLvgUS7uPqnqqGD5EW/WoEw8PH
-         Dzta25tpZsTAKCwGedv56/fIIHG3xQvTItonC7LCZvlc0ygXpnrWaxhoQwb7IlEajuES
-         6fN2eVLhr6PrpNNVOa56U9ZJtG7lEDGzxRxseUOymtbRd3Xz+H+GXRt7AThLctf6azab
-         2f3cT6WAl4bTfuzRkPjfpYMf3v6TTnBydqXdVyFKcYe462xbubjp9/TnRW6fW89lQu9y
-         MKbzGKE5YEFmqtEDi+6TtC7vjjeE8EqBkUTP2IBZfG4h3Opt328FsLo65vTX95mAtVVa
-         9b7g==
-X-Gm-Message-State: AOAM5326ipWivQsIW0g7+7CS1ZiMzTmQjTVrU0JGsMDlSyJZZAkIRhn7
-        u2+Gm7OdUqAnp5W4Xg2WEVc=
-X-Google-Smtp-Source: ABdhPJyqsHOcMi4gNm4EvkknlyZr1OERkUkLw7+t0OXfCo2O7JbPogfykEWOwhV/S4DvJNyqbRb7Dg==
-X-Received: by 2002:a63:a401:: with SMTP id c1mr3921545pgf.60.1614273297497;
-        Thu, 25 Feb 2021 09:14:57 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id h123sm4755228pfe.115.2021.02.25.09.14.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 09:14:56 -0800 (PST)
-Date:   Thu, 25 Feb 2021 09:14:54 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Fugang Duan <fugang.duan@nxp.com>
-Subject: Re: [PATCH 1/1] net: fec: ptp: avoid register access when ipg clock
- is disabled
-Message-ID: <20210225171454.GD17490@hoboy.vegasvil.org>
-References: <20210220065654.25598-1-heiko.thiery@gmail.com>
- <20210222190051.40fdc3e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAEyMn7ZM7_pPor0S=dMGbmnp0hmZMrpquGqq4VNu-ixSPp+0UQ@mail.gmail.com>
- <20210223142726.GA4711@hoboy.vegasvil.org>
- <CAEyMn7Za9z9TUdhb8egf8mOFJyA3hgqX5fwLED8HDKw8Smyocg@mail.gmail.com>
- <20210223161136.GA5894@hoboy.vegasvil.org>
- <CAEyMn7YwvZD6T=oHp2AcmsA+R6Ho2SCYYkt2NcK8hZNUT7_TSQ@mail.gmail.com>
- <CAEyMn7Yjug3S=2mRC8uA=_+Tdxe=m6G-ga1YuupLSx3mPqUoug@mail.gmail.com>
+        Thu, 25 Feb 2021 12:20:21 -0500
+Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id 6399C9E9D8;
+        Thu, 25 Feb 2021 12:19:38 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=23dtnOUfzLyDX+KW1V2mmBc/9V0=; b=H4Brws
+        TZSHzddWSKivCGfqVGCqQ88W3DJggqpWSJQLjEH8HQsMhD2So5e5QmQkCPYj8iCy
+        iFnpbqKYcjtW7Kdz12+s0V3KoFN+LrWYhWM7Qyc++gTHWp5Rl0StNAGNuyX4GYzr
+        LBaQOjTiXI6bMum7/n32YuGBTJP4WakTEyfEk=
+Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id 5C07A9E9D6;
+        Thu, 25 Feb 2021 12:19:38 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=n8NygWpegxhLZX877LB3tSwxmKQuyH4sXRAP1vuz7oQ=; b=hh7xvP+hjmn279jUavnDgocmjN/Z3vnhifsJ+CMWWGXDAT6HUHjaX48/Z22fz89en00mXpoHOTRL70JxhT0wCrJT7XPEuQQSs1plC8SJ+ytH0T/AOC8/qLuOkW6UtVssSfvn3qx6jhQndnDdLLjsPHjR8ZrhjxcyY3YEyhRzpDE=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id C11A89E9D5;
+        Thu, 25 Feb 2021 12:19:37 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id C5C622DA0082;
+        Thu, 25 Feb 2021 12:19:36 -0500 (EST)
+Date:   Thu, 25 Feb 2021 12:19:36 -0500 (EST)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+cc:     linux-kbuild@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 0/4] kbuild: build speed improvment of
+ CONFIG_TRIM_UNUSED_KSYMS
+In-Reply-To: <20210225160247.2959903-1-masahiroy@kernel.org>
+Message-ID: <r3584n3-sq21-qo49-9sp5-r3qp6o611s55@syhkavp.arg>
+References: <20210225160247.2959903-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEyMn7Yjug3S=2mRC8uA=_+Tdxe=m6G-ga1YuupLSx3mPqUoug@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: A343518A-778D-11EB-8355-74DE23BA3BAF-78420484!pb-smtp2.pobox.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 03:05:32PM +0100, Heiko Thiery wrote:
+On Fri, 26 Feb 2021, Masahiro Yamada wrote:
 
-> But the explanation why it is currently disabled that way can be found
-> in the commit 91c0d987a9788dcc5fe26baafd73bf9242b68900.
+> 
+> Now CONFIG_TRIM_UNUSED_KSYMS is revived, but Linus is still unhappy
+> about the build speed.
+> 
+> I re-implemented this feature, and the build time cost is now
+> almost unnoticeable level.
+> 
+> I hope this makes Linus happy.
 
-Okay, without re-factoring the entire driver, I agree that the gettime
-lock up aught to be fixed in a similar way.  I missed the original
-patch, but the diff fragment in this thread doesn't appear to take the
-mutex as it should.
+:-)
 
-Thanks,
-Richard
+I'm surprised to see that Linus is using this feature. When disabled 
+(the default) this should have had no impact on the build time.
+
+This feature provides a nice security advantage by significantly 
+reducing the kernel input surface. And people are using that also to 
+better what third party vendor can and cannot do with a distro kernel, 
+etc. But that's not the reason why I implemented this feature in the 
+first place.
+
+My primary goal was to efficiently reduce the kernel binary size using 
+LTO even with kernel modules enabled. Each EXPORT_SYMBOL() created a 
+symbol dependency that prevented LTO from optimizing out the related 
+code even though a tiny fraction of those exported symbols were needed.
+
+The idea behind the recursion was to catch those cases where disabling 
+an exported symbol within a module would optimize out references to more 
+exported symbols that, in turn, could be disabled and possibly trigger 
+yet more code elimination. There is no way that can be achieved without 
+extra compiler passes in a recursive manner.
+
+
+Nicolas
