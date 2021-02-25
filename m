@@ -2,229 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71953324F45
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFA6324F3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235772AbhBYLcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 06:32:11 -0500
-Received: from mail-eopbgr1410043.outbound.protection.outlook.com ([40.107.141.43]:45312
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235649AbhBYLai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 06:30:38 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T2LSn+E3O1Unvh8y7rQZTbJthtaEV47gXRN5emsOBE/3n3nxX1JaU8tMTrETXAJpdk7/D38vULpr1u/LmZ/rPEPXLCxTq+gMzaKt5/yLFO1YGjkS5gr/+TFfo3bRPiUV6MhS0oIBeJRnf/1jNdFABIAdOn065K37C85hVXZ3bOMI9wTj3kIENdewXFPmCzjDUC8ERvohNvtqIgngeYkO3PB0Udn0O5++I/lUI9rlUM9tgfo7fgnSkfyRspewIKYNfADvtN0fRIvwOgW/gIWUKciUyNKTRwmcJjPsVDWyUiZjpm50vRMh/29jssbCVJwM8/Y9ciA6CYe01qWFBusjkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W2CnKLFc7e8Ep0lol3SpLDRgEHfwzqGOUhP3Dx4zS/0=;
- b=O8b0sLAm86j+LAnFgmgt9y7v7IH4Tr1i3/aTmZh9Ce2yi6w8GrvGjLJzRgjrGhcbtc9OCTY2noa/cI6Ut7LWzMdTRMUJ+9D8/hR2Z0zHr410KASIUKfCs/HJc9Ma9aU2G7L0AKqpSbuS8BBJkvVKexkMku4mBV523lzLY1FRyC9Ay8/rk4UBC6TaYso9OwtJgi+Il0Y9IVWeoFaWpukRjA5JYqjJyr0G3FFk9yDIQLifWnkoiysKMLO4Fb3dJhYFpddKyq3wEu1zCRwxgNzRi7UURcV/gdxqfB89pXY0ZctN56sAt1nIm58MjDp7O99Jwi9e9Bk7ji+Hl/JEgWMJCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W2CnKLFc7e8Ep0lol3SpLDRgEHfwzqGOUhP3Dx4zS/0=;
- b=jEQupOuizveEH+pmmEzPoYTW5oMi/3kW/2GS1HEOJLeokIVVxT7piH0X9kvakXNcCi8O1KJ2a34qu6fFMcYMMlGdC5qmK+BFlNCdXJ5vmzp9kHL5Y8YwfKA4jTxsKq2e0tCdRuewjMSJDNbXN2toDCHrAbINdEwOISK2Zzs/QuQ=
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
- by TYAPR01MB3967.jpnprd01.prod.outlook.com (2603:1096:404:c9::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.29; Thu, 25 Feb
- 2021 11:28:18 +0000
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::1d15:6a82:ea9b:5101]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::1d15:6a82:ea9b:5101%6]) with mapi id 15.20.3868.032; Thu, 25 Feb 2021
- 11:28:18 +0000
-From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>
-To:     Aili Yao <yaoaili@kingsoft.com>
-CC:     Oscar Salvador <osalvador@suse.de>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "inux-edac@vger.kernel.org" <inux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
-Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Topic: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Thread-Index: AQHXCn0F5fAOAyGRl0mX4JfXYioGdapnG5GAgAEgN4CAAIHeAA==
-Date:   Thu, 25 Feb 2021 11:28:18 +0000
-Message-ID: <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
-References: <20210224151619.67c29731@alex-virtual-machine>
- <20210224103105.GA16368@linux> <20210225114329.4e1a41c6@alex-virtual-machine>
-In-Reply-To: <20210225114329.4e1a41c6@alex-virtual-machine>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kingsoft.com; dkim=none (message not signed)
- header.d=none;kingsoft.com; dmarc=none action=none header.from=nec.com;
-x-originating-ip: [165.225.110.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 39f0d871-177e-40f2-4e6e-08d8d9807374
-x-ms-traffictypediagnostic: TYAPR01MB3967:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYAPR01MB3967F1E0FDA0B4895F226338E79E9@TYAPR01MB3967.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0VJjweDa7FyAAsJNS5wGXCUXdLPSXvpig2zZ59Jghk8WmsiL4zIh6i4h//5aoqYE5SlM/RWsNvjKuNEcl8X0X99CYS2IZaodz9OFyoTCPvWuE5InCT2kxvb3wf1XdgYoSf7DBOEi+MjDx4QUqeUxGb8nQosP0Te9EQmZWO8OEBcns9e+Vb7hCUYQMeWSC5Q3mkLEONDDYqLgg4WqGPjZxUnddF5XWcqmSsrb9dXgXzMmJW66cYV4r3K2xqiB75QHBjq+LayR1nvFk0PXHEg0at2iTWkS1lH1CiyHj9qUMEMwRp4wnCEJ1JjEq3rfPdrNrO5ZHcDYZJ/0vojHUgYozF6XlvYu7og4NcHvmQJw1TAucbKKTkQrdr2fJ2dz5lUdWeLPQDKL73ukh4awmipWETsQmbuJqk3Nhbf7k5IJlWEEIi1U+cAIqTL9WiWre60BNPEG+xnQI+Bk1HlGlqLzcihoXqBcN80uWxQSp4NuTMoVP6YZR8HR2I5RlyC1trtUNIJQJzuGrf3qnVejKpGNvOZPudVGVpuRYOSzCG4Kl7JzCMmn3NQvFprcclWKQhW4
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(396003)(39860400002)(136003)(316002)(186003)(55236004)(26005)(76116006)(6506007)(8936002)(5660300002)(85182001)(1076003)(9686003)(6916009)(6486002)(7416002)(54906003)(83380400001)(66556008)(2906002)(71200400001)(4326008)(66446008)(8676002)(33656002)(64756008)(478600001)(66476007)(6512007)(86362001)(66946007)(21314003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?YmpzZWpBdmZHU1gvdG9LeCtTMHVLeWQ1UXFPT295c2kxazV0dmQ3Sk5l?=
- =?iso-2022-jp?B?cWRQQXVVVGhGeGdRdXh1cHp1b3NkWms5dmo1czJnelhRUG5TbURuYzBE?=
- =?iso-2022-jp?B?bWhyenJ5VElyVWxkbjI2MDNucVpLNDJxZm5ieUNtZ0RMQnpFdTBWdVlO?=
- =?iso-2022-jp?B?MnVNeFlYS25OdmVUNGkxWmlWTDNwbDZ1NmlwbDJNZzNhRHBjRXMvQjNO?=
- =?iso-2022-jp?B?RXJFRUQ2SmxuSGxodG5RV0M5ZFAyallxYjRRa1RuMlZ1V3I4aHpZakkz?=
- =?iso-2022-jp?B?V3lqSnVGaGI2SFFvS1IvdmV0MG15dEpaZWgwSDN0cSt3UlZSbUlPN0FI?=
- =?iso-2022-jp?B?eUh5RmRlbnpLdGhsZ0ZnSlpUUFRENjBjTHhoZFdBZm40Y2RuRko3aStk?=
- =?iso-2022-jp?B?aEErTUIwR3MrTlBCN3VuMDF4UnFsK1BnWlVxUFZNSWVURWxoSUVqVDdq?=
- =?iso-2022-jp?B?a3M3Nkh6a2hvdTZZSHIvZnNBL01zRzdHZHowSzN3ZjNhUnREV1FHRDc4?=
- =?iso-2022-jp?B?eDExMVJLekRoazJ5Um9wSUR2SG8ydmJoVmFnQmhtZ3hZU1BRdklUM3Yv?=
- =?iso-2022-jp?B?SjBOOHZZUWNRSUFsdmh2Z2VlM09BMGgzdXFDRmJwdEtlYktEbVR4cGJC?=
- =?iso-2022-jp?B?UER0Q3VVL2JXMnc0TXpQRkpMOGFQU1NtZVlKdGRxL3hKUW1Vb01DR2ZI?=
- =?iso-2022-jp?B?akMwKzQ3Y2NCb0lKV3F2Z3ZMNzNRMkJqdVFzN2tCejNYLzQ2aStjbDdh?=
- =?iso-2022-jp?B?ZlBOR0hvSWRLZ0tCang4NEo3amwwVnBjcGVrQUJLcTJReEJ5bGRVSjZs?=
- =?iso-2022-jp?B?MU04WVZHMFVnTmNRdWdGOVgwWEJtVWtXcjA4UUZPQjZockFMdHJoTEYr?=
- =?iso-2022-jp?B?aUFpQU5BRnlkb3NGYVcrb3ZiVkJSV0lDOEVMeCs3NWdqVGJvYW1ZbGJn?=
- =?iso-2022-jp?B?ZSs2SXl2MmlERktKc2xRaXU0MnBwTGlMUld1WVZUWHZ3YVBMU0Z4QStX?=
- =?iso-2022-jp?B?T3RNK3BzU2xtK0VkS3d4b0xWd3A0bmtxMy81M0dza3pvNmFtek41RHpi?=
- =?iso-2022-jp?B?cUJmY0F2dmdxb08rQ0FrSEsyZXlQQWpPazlCSzRvSVlvNUxTMk4xQ0Fi?=
- =?iso-2022-jp?B?WW9RL3liVU5YYUo3ajFpcm0vNWtmdTlOUHR1Vkh1Vjd6cDRuSkFpYUVS?=
- =?iso-2022-jp?B?UzRGMEJUWFA5Z01POXd0YUZMR0FBL0Mya01DUjVIZzVJNmZyRXpuc3lo?=
- =?iso-2022-jp?B?QWxVcGVqUXh2eXBTL1hzbmdIaVhnNm1uVnZFK3dycCtlR1E3OVQ3RDJr?=
- =?iso-2022-jp?B?bU5tS295S1JUZGwyRDZoaFBtUjk4Q29pTkdiZi9kTTVIZWFVMkoyVGVw?=
- =?iso-2022-jp?B?NnQ4MmdNVXIxY0R5V3kvZ2ZNNWk1Ykk2RVlSZlpmVHk0ZE1WY1R3RmFP?=
- =?iso-2022-jp?B?UFhjSjluR2E4VzlCZ1lJdnB3MGhmMDI0R0FLUCsrbXpMc2tqN1RDdGYy?=
- =?iso-2022-jp?B?dnRpb2szbWFLcCtJZnAyRlRuVFZIdW1wbTZibzRGZVYwNTNNZ2ZYd0V3?=
- =?iso-2022-jp?B?UG9veUdEUGVpMEh3Q1FjaWVseDYrZFhoOGVCUVJiY3lmdGxxbytQYy9l?=
- =?iso-2022-jp?B?eVFMVURwbW04cGd1c3M4dXF6bGFqZzErMUplVm4wdEdiQWFBdklwZjlO?=
- =?iso-2022-jp?B?bnBWWGFja1MrUk1BblM3dkQ3dVNTSjFqS2hkbDVEckpmaDNtSy9QN2s4?=
- =?iso-2022-jp?B?NnVsVTQxelNxa2ZPZHAzUFJYTDFtM3h6L2RoQllXVHcySnMrdzdnYTlB?=
- =?iso-2022-jp?B?NmJVWUhIdlliTkx0MTdpS1hacUhGWWk4aVd0OXNWU3JhRmRmZHpWdUFp?=
- =?iso-2022-jp?B?NVVqOTBjV0V6eEVYM1FQY1BKL0ZtMXFITm5JdXU1ZEg4OEFpYjFoTGJv?=
- =?iso-2022-jp?B?amZCSndxVG5mR3Q2cFpzU2RQRDBMQT09?=
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <2F1ADB323F838F48B411E9387AA9B558@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S235590AbhBYLaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 06:30:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34936 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235785AbhBYL3T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 06:29:19 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PB3I0g032389;
+        Thu, 25 Feb 2021 06:28:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qBoyYnHcCJqYWt10koSEmKWz4/PiSuY2+a7Z/gaa+lc=;
+ b=MmdHCTuGrv6/gNTQceCmdAti2TfQp7HvWaBaus51e0yL0l3p1kL2HQAtyP5o9Xdgv8I3
+ BblM7nc6ymPePZ8tOMheMSAW6+DgM/O7kKCO+E6cf48mmbD4n+zmlS+R0taCCD+rTcQ2
+ nogzVNsWcvHv8Gw/mEbkpgIHpm7eUjDHQpACDP2mQ0GIS3E2o7eQbmlZUnoWDiBoVvEd
+ J9LuuS2s9kXPUcjxrjE/ozFmyX/J5TZh2NbT3EKUmBI+SvgIDk3P0ZU5YqkeIDaDWKON
+ TzlkgPN0bJm2PFM/VC6sUDWNsbr7M94hCGAWFXjEC/14oJDV1fu+Nhiw5cq33a0QuRYX XA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36x0qrrmu5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Feb 2021 06:28:33 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11PB46OM036238;
+        Thu, 25 Feb 2021 06:28:33 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36x0qrrmtc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Feb 2021 06:28:32 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11PBMZTi019320;
+        Thu, 25 Feb 2021 11:28:30 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 36tsph4ctb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Feb 2021 11:28:30 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11PBSRV338994306
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Feb 2021 11:28:27 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 883EC42042;
+        Thu, 25 Feb 2021 11:28:27 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C49004203F;
+        Thu, 25 Feb 2021 11:28:26 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.33.39])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 25 Feb 2021 11:28:26 +0000 (GMT)
+Date:   Thu, 25 Feb 2021 12:28:24 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+Subject: Re: [PATCH v2 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+Message-ID: <20210225122824.467b8ed9.pasic@linux.ibm.com>
+In-Reply-To: <63bb0d61-efcd-315b-5a1a-0ef4d99600f4@linux.ibm.com>
+References: <20210216011547.22277-1-akrowiak@linux.ibm.com>
+        <20210216011547.22277-2-akrowiak@linux.ibm.com>
+        <20210223104805.6a8d1872.pasic@linux.ibm.com>
+        <63bb0d61-efcd-315b-5a1a-0ef4d99600f4@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: nec.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39f0d871-177e-40f2-4e6e-08d8d9807374
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Feb 2021 11:28:18.7829
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bz0UYVDiS482tExH3rZjF/8KUwkVAXzTxW1je/cAVWOAFRhVwi39OPJk9AaHj6YSycpcGYmwX9klaw67ajuzKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB3967
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-25_06:2021-02-24,2021-02-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ malwarescore=0 priorityscore=1501 spamscore=0 clxscore=1015 phishscore=0
+ suspectscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102250087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 11:43:29AM +0800, Aili Yao wrote:
-> On Wed, 24 Feb 2021 11:31:55 +0100 Oscar Salvador <osalvador@suse.de> wro=
-te:
-...
-> =20
-> > >=20
-> > > 3.The kill_me_maybe will check the return:
-> > >=20
-> > > 1244 static void kill_me_maybe(struct callback_head *cb)
-> > > 1245 {
-> > >=20
-> > > 1254         if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
-> > > 1255             !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
-> > > 1256                 set_mce_nospec(p->mce_addr >> PAGE_SHIFT, =20
-> >=20
-> > So, IIUC, in case of a LMCE nested call, the second MCE will reach here=
-.
-> > set_mce_nospec() will either mark the underlying page as not mapped/cac=
-hed.
+On Wed, 24 Feb 2021 22:28:50 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> >>   static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
+> >>   {
+> >> -	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> >> -	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> >> -	vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
+> >> -	kvm_put_kvm(matrix_mdev->kvm);
+> >> -	matrix_mdev->kvm = NULL;
+> >> +	struct kvm *kvm;
+> >> +
+> >> +	if (matrix_mdev->kvm) {
+> >> +		kvm = matrix_mdev->kvm;
+> >> +		kvm_get_kvm(kvm);
+> >> +		matrix_mdev->kvm = NULL;  
+> > I think if there were two threads dong the unset in parallel, one
+> > of them could bail out and carry on before the cleanup is done. But
+> > since nothing much happens in release after that, I don't see an
+> > immediate problem.
 > >
-> This set_mce_nospec() is not proper when the recovery job is on the fly. =
-In my test
-> this function failed.
+> > Another thing to consider is, that setting ->kvm to NULL arms
+> > vfio_ap_mdev_remove()...  
+> 
+> I'm not entirely sure what you mean by this, but my
+> assumption is that you are talking about the check
+> for matrix_mdev->kvm != NULL at the start of
+> that function. 
 
-Hi Aili,
+Yes I was talking about the check
 
-I agree that this set_mce_nospec() is not expected to be called for
-"already hwpoisoned" page because in the reported case the error
-page is already contained and no need to resort changing cache mode.
-
+static int vfio_ap_mdev_remove(struct mdev_device *mdev)                        
+{                                                                               
+        struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);            
+                                                                                
+        if (matrix_mdev->kvm)                                                   
+                return -EBUSY;
 ...
+        kfree(matrix_mdev);                                                     
+...                                                               
+} 
 
-> > > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> > > index e9481632fcd1..06f006174b8c 100644
-> > > --- a/mm/memory-failure.c
-> > > +++ b/mm/memory-failure.c
-> > > @@ -1224,7 +1224,7 @@ static int memory_failure_hugetlb(unsigned long=
- pfn, int flags)
-> > >  	if (TestSetPageHWPoison(head)) {
-> > >  		pr_err("Memory failure: %#lx: already hardware poisoned\n",
-> > >  		       pfn);
-> > > -		return 0;
-> > > +		return -EBUSY; =20
-> >=20
-> > As David said, madvise_inject_error() will start returning -EBUSY now i=
-n case
-> > we madvise(MADV_HWPOISON) on an already hwpoisoned page.
-> >=20
-> > AFAICS, memory_failure() can return 0, -Eerrors, and MF_XXX.
-> > Would it make sense to unify that? That way we could declare error code=
-s that
-> > make somse sense (like MF_ALREADY_HWPOISONED).
+As you see, we bail out if kvm is still set, otherwise we clean up the
+matrix_mdev which includes kfree-ing it. And vfio_ap_mdev_remove() is
+initiated via the sysfs, i.e. can be initiated at any time. If we were
+to free matrix_mdev in mdev_remove() and then carry on with kvm_unset()
+with mutex_lock(&matrix_dev->lock); that would be bad.
 
-It seems to me that memory_failure() does not return MF_XXX.  But yes,
-returning some positive value for the reported case could be a solution.
 
-> >=20
->=20
-> @David:
->=20
-> I checked the code again, and find a few places will care the exact retur=
-n value, like:
->=20
-> 1: drivers/base/memory.c:483:      ret =3D memory_failure(pfn, 0);
-> This is for hard page offline, I see the code in mcelog:
-> static void offline_action(struct mempage *mp, u64 addr)
-> {
-> 	if (offline <=3D OFFLINE_ACCOUNT)
-> 		return;
-> 	Lprintf("Offlining page %llx\n", addr);
-> 	if (memory_offline(addr) < 0) {
-> 		Lprintf("Offlining page %llx failed: %s\n", addr, strerror(errno));
-> 		mp->offlined =3D PAGE_OFFLINE_FAILED;
-> 	} else
-> 		mp->offlined =3D PAGE_OFFLINE;
+
+> The reason
+> matrix_mdev->kvm is set to NULL before giving up
+> the matrix_dev->lock is so that functions that check
+> for the presence of the matrix_mdev->kvm pointer,
+> such as assign_adapter_store() - will exit if they get
+> control while the masks are being cleared. 
+
+I disagree!
+
+static ssize_t assign_adapter_store(struct device *dev,                         
+                                    struct device_attribute *attr,              
+                                    const char *buf, size_t count)              
+{                                                                               
+        int ret;                                                                
+        unsigned long apid;                                                     
+        struct mdev_device *mdev = mdev_from_dev(dev);                          
+        struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);            
+                                                                                
+        /* If the guest is running, disallow assignment of adapter */           
+        if (matrix_mdev->kvm)                                                   
+                return -EBUSY;
+
+We bail out when kvm != NULL, so having it set to NULL while the
+mask are being cleared will make these not bail out.
+
+> So what we have
+> here is a catch-22; in other words, we have the case
+> you pointed out above and the cases related to
+> assigning/unassigning adapters, domains and
+> control domains which should exit when a guest
+> is running.
+
+
+See above.
+
+> 
+> I may have an idea to resolve this. Suppose we add:
+> 
+> struct ap_matrix_mdev {
+>      ...
+>      bool kvm_busy;
+>      ...
 > }
-> I think return an negative value will be more proper? As the related kill=
-ing function may not be performed, and we can't say
-> it's a success operation?
->=20
-> 2:mm/hwpoison-inject.c:51:        return memory_failure(pfn, 0);
-> mm/madvise.c:910:               ret =3D memory_failure(pfn, MF_COUNT_INCR=
-EASED);
->=20
-> These two cases are mainly for error injections, I checked the test codes=
-, mostly it only care if the value is 0 or < 0;
-> I do the related test, normally it work well, but for stress test, someti=
-mes in some case, I do meet some fail cases along with the -EBUSY return.
-> I will dig more.
->=20
-> Other place will only care if the return value is 0. or just ignore it.
->=20
-> Hi naoya, what's your opnion for this possible issue, I need your inputs!
+> 
+> This flag will be set to true at the start of both the
+> vfio_ap_mdev_set_kvm() and vfio_ap_mdev_unset_kvm()
+> and set to false at the end. The assignment/unassignment
+> and remove callback functions can test this flag and
+> return -EBUSY if the flag is true. That will preclude assigning
+> or unassigning adapters, domains and control domains when
+> the KVM pointer is being set/unset. Likewise, removal of the
+> mediated device will also be prevented while the KVM pointer
+> is being set/unset.
+> 
+> In the case of the PQAP handler function, it can wait for the
+> set/unset of the KVM pointer as follows:
+> 
+> /while (matrix_mdev->kvm_busy) {//
+> //        mutex_unlock(&matrix_dev->lock);//
+> //        msleep(100);//
+> //        mutex_lock(&matrix_dev->lock);//
+> //}//
+> //
+> //if (!matrix_mdev->kvm)//
+> //        goto out_unlock;
+> 
+> /What say you?
+> //
 
-We could use some negative value (error code) to report the reported case,
-then as you mentioned above, some callers need change to handle the
-new case, and the same is true if you use some positive value.
-My preference is -EHWPOISON, but other options are fine if justified well.
+I'm not sure. Since I disagree with your analysis above it is difficult
+to deal with the conclusion. I'm not against decoupling the tracking of
+the state of the mdev_matrix device from the value of the kvm pointer. I
+think we should first get a common understanding of the problem, before
+we proceed to the solution.
 
-Thanks,
-Naoya Horiguchi=
+Regards,
+Halil
