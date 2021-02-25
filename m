@@ -2,136 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902463256C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 940303256C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235031AbhBYTcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:32:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234787AbhBYT3e (ORCPT
+        id S235154AbhBYTdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:33:09 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:8724 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234840AbhBYTaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:29:34 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBB0C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:28:54 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id 201so4284931pfw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:28:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=eg2T+GAall58PHie1pc/1M6D3b3c5ZA2F5gwbRjHzXI=;
-        b=XAH5DbX0NmfVOZxrBQ+uQ636JLbgHKyf211mfe0oio2b5HL4OwBHllfrayb5aPqFAn
-         nWNdqykSp2SPQx8Gx5x6frsT1jZ7KF1iNTaqjfzHL6P/RXcS9j0n0kFaXHlVnybSjAmr
-         T1sA3Q5mtuCtDlkBw7zl9DfLWWrlAGvpl4t6ID1wDcTcdcLipJRr/R+Yj5j6iqpt21sw
-         zKLoW2cRYxfCfjqcqsZD9GL+j3uWv5aUfKAsQ8t9kBvHkV5GMMwUeXIPqFKbR0oElrRx
-         m9ja9x2qv+DAe51QHMjWLI/k1N14adZPcUKSnBErPA5m/lSfEBsTmqVhKa5otSB0NDb0
-         fhQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=eg2T+GAall58PHie1pc/1M6D3b3c5ZA2F5gwbRjHzXI=;
-        b=qT/FpLUgtoYogbgQW4s+ftj+I0cSKNb/eXr844Knsr5hSGvvdnlx7yscF6ePkOywVL
-         9fESEzV4efUfW7wYsqaz7iaoKZpjCkVd8WphK4ZWCY9LtYrM3EERuGN8JEZGjFXRNr9f
-         K6UbJqq/rxffdZT92dhEJT5hXDWoOC1QvRWGZ7IDblgOPuO28hCDNcEecV57Bg7971us
-         2mlN06VhmWWskEQFkEGuJ1akXoew/ZM4ysMOihj0IzuvSWXyh9S/pQO+G9bjMspzAwcy
-         u4lfXbhpBVJW1O8X29RtRhjCDylHMzlhyMSxXXhyEJgW+9/dSaJSxtLJV5c0O+qB8eF3
-         RetQ==
-X-Gm-Message-State: AOAM533U6fAeqfWaOwOZY6x/TVtJJedTOYNFhijaf5i67c4bIV6m6DPv
-        wKmcPojyI4v/BmweMdi20ICskg==
-X-Google-Smtp-Source: ABdhPJyXQztSjriJUwr+YzP+mFraH1PK/i2Qee5tybeVsmvbD3+TQKAmth+5mPNoDOkUQyEtlsqkJg==
-X-Received: by 2002:a63:6705:: with SMTP id b5mr4351009pgc.165.1614281333590;
-        Thu, 25 Feb 2021 11:28:53 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:9474:84b:e7ae:d5fc])
-        by smtp.gmail.com with ESMTPSA id gj24sm6736615pjb.4.2021.02.25.11.28.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 11:28:52 -0800 (PST)
-Date:   Thu, 25 Feb 2021 11:28:46 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     thomas.lendacky@amd.com, tj@kernel.org, brijesh.singh@amd.com,
-        jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
-        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
-        corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 1/2] cgroup: sev: Add misc cgroup controller
-Message-ID: <YDf6bpSxX6I5xdqZ@google.com>
-References: <20210218195549.1696769-1-vipinsh@google.com>
- <20210218195549.1696769-2-vipinsh@google.com>
- <YDVIdycgk8XL0Zgx@blackbook>
- <YDcuQFMbe5MaatBe@google.com>
- <YDdzcfLxsCeYxLNG@blackbook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        Thu, 25 Feb 2021 14:30:15 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PJPkwo016281;
+        Thu, 25 Feb 2021 11:29:07 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=9mHCP4w9MolImRyPkB5fkaDnMsckKc2b7gc7l6Vtr6s=;
+ b=c52CNHutsslLXbbHFSaUWS0z9VrdYgAKO6vAQM2ajpARmB2e3oA2likqlVCuMGp3cYV0
+ NZj7dsudGrZKTKN5zeJ+dwyiogZVwF3WpG7H+fKuwomokVeH9NCFeHOW8mi7X08PPgZ3
+ IsuYOJy+JdsMxfS1pHGEcvracxWMGwuzJrE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36xd17j87s-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 25 Feb 2021 11:29:06 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 25 Feb 2021 11:29:06 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EcmDbap/gRjtxFRmS3PV2RyEsF3FGDxsnXlhHozstRBh1xQQKuF9s3wj5aXPL17jCDeYs6RxF1Um/4SWAAwQoQbXzdtcc6UsrPZ807Pjwptg1TBtGURQ7QJMj7ek4Bdno1n60JyBvROkhuYOlaQBdPhUTGl7yHwUwi6rYUIPUvJ7xoJOIxw2dbWlKs9z4aTJW6irysXL1ta2XIcfhXyX5Rl/+PZXWxxSHipHHI7JHrQuIQzCN27Q2LEVOk82u4ud70qlEBxXiR7UvhlOJLvGQXLWI1ewjVHtiHp37s1kBX6BM1nX9fvAWrN9FHrqCrzZ8UxZaryIWl6woyndMsgpjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9mHCP4w9MolImRyPkB5fkaDnMsckKc2b7gc7l6Vtr6s=;
+ b=Yc/b32R0g+xTrp5KuqD103HZ1/rm9I5SWjJ3ErlnT0UmAc+P4nEH2cZTNCpV/TdGf70cl9IIWGY5mJ0M6I7ufNZ0YfHGjeAVjRvgTh5JsdDZXC90q61BX7f6y9VCM4+m+2fXoo8tgUq3MYwjctLWqOoDmZeiVI+OwfzsE71vW4dTpSulbkpRjjZ/2P1BZTcllv8lNHDZUuTx9yseBvDK9cTqAcVJqGv8XCNBOwrfl5gb0TVruzVphxny7YOJFtVyRHcEO6TnwkKS8L/cFrBqYBaMM/3w7GivO5wN/jX3wgUs+94m3ACdgCQ+BUM5N03s0Ik5fNm5PoAWOx6z1ibCQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2821.namprd15.prod.outlook.com (2603:10b6:a03:15d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.31; Thu, 25 Feb
+ 2021 19:29:02 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::2975:c9d8:3f7f:dbd0]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::2975:c9d8:3f7f:dbd0%5]) with mapi id 15.20.3890.020; Thu, 25 Feb 2021
+ 19:29:02 +0000
+Date:   Thu, 25 Feb 2021 11:28:59 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Song Liu <songliubraving@fb.com>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <peterz@infradead.org>, kernel test robot <lkp@intel.com>,
+        KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH v5 bpf-next 1/6] bpf: enable task local storage for
+ tracing programs
+Message-ID: <20210225192859.pfvkox7dgz236b3w@kafai-mbp.dhcp.thefacebook.com>
+References: <20210223222845.2866124-1-songliubraving@fb.com>
+ <20210223222845.2866124-2-songliubraving@fb.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YDdzcfLxsCeYxLNG@blackbook>
+In-Reply-To: <20210223222845.2866124-2-songliubraving@fb.com>
+X-Originating-IP: [2620:10d:c090:400::5:e351]
+X-ClientProxiedBy: SJ0PR03CA0121.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::6) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:e351) by SJ0PR03CA0121.namprd03.prod.outlook.com (2603:10b6:a03:33c::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20 via Frontend Transport; Thu, 25 Feb 2021 19:29:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3d6e1724-cf15-43ef-1a1a-08d8d9c39b04
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2821:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2821023D7E9329AFF6AAEBE8D59E9@BYAPR15MB2821.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dDjN4T6KybW3mRLQIpC3apSUsLD6H6ix5CXdW3bO+UN0VJte6JthCI7FUdFisljvdMccYuXG4HdEEQ1z4pDDz34RtX4GewZpqCPYfWTFY6y4hlkrL2r25LzfJDGm86iK5sexUeRWsm2jkT/BhLd7MBulRHPcS0oAuvJyI2SakDe/0MO8E37MPJoHsNhfshKP8rP5yM4W4nVV8Fu9HgCyh5hvJw0qKF+7xeOUuTuliQqg5s0qjhb9n8DYHyNkj4Jz87ShNXpelK3AAvQ8bJGea406LEDcpjGJmuGzjcWDMD7bwNCw4nbBbMvyWP99R0Zy8lPutl9wqgQTlnP7PrdZiVI4v9raVH1483X6zFzwgBIQgFCiNxerJyHaK9OVX4oXu8RdmlVMC1uhJRee2GvoejgVnyXpf85GHyIDO87GtJd7SNWgHlnCx41+37TywM5Wj9ZVsYGEGapmZjFGRxGPoioKtBFRIbvNGTM2j3KgEieSfycGGarqhw26hrR44nrXg9HuXTbtlAEMkTs5NVk1Eg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(39860400002)(396003)(366004)(316002)(5660300002)(1076003)(186003)(52116002)(16526019)(54906003)(7696005)(6636002)(9686003)(66476007)(6862004)(4326008)(66556008)(66946007)(478600001)(55016002)(8936002)(8676002)(2906002)(86362001)(83380400001)(6506007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?IBGWfyvuWY2pOtwPjxC/0rEogdW2rbi3LAG4LaP0vurjhn7N11N09xPJPO/k?=
+ =?us-ascii?Q?rFStJA2XGaHjTDAqT0ux3RxzNiG0r4EDURv1VOwgRtVFba4hrfa7PSm/747q?=
+ =?us-ascii?Q?y0a3OI/teZ/vlDTcAKs+IS2hZ7c6O79rkCGtlpZTAIYV4rtU+R/MzphVKv4b?=
+ =?us-ascii?Q?fWMPo3pHDoWH1p+stp+8Yjsx04gf2UYfV/uHKDd+tYdIEyQh1IRk9Ogr9BIy?=
+ =?us-ascii?Q?e8WBBYMCYS80l3lWgHfXL1gS08+Bc+Qamuu0WI+RBeWzMdXZJzxmLekHIoGg?=
+ =?us-ascii?Q?5Y29rDa+cdGBWfCWjBoam+QClSUrre8V9DmY5FECBoCPM4ZH/oik++147+OW?=
+ =?us-ascii?Q?C8iCnZ0mxuFa8dBvH9ZPhXc+cS3C/33KaX+9+Ly4iC8cMcmT1XfKkAmodwvb?=
+ =?us-ascii?Q?AI9Cwm0qCvYppIgszW1XZ6JDwU+ak1dL32JYjDEVkCTUD+a2NxJHsMGX2cq2?=
+ =?us-ascii?Q?zRWwlBkCBKOKokflfVa3Uvq+cBdh6BoXrEWLbuKGxJa+ODi6hksJi1QZDNye?=
+ =?us-ascii?Q?KmhAfOpODptJ1AyglIhNer0Acfuu6nC2RT6gshr9jn12eCSxWHhvtt2mCiw8?=
+ =?us-ascii?Q?RHVDnGoKm8o5dxMJIjzXM68+3jaBGuKxZPLFnnQyhxRkMafK9q9xzfoiqWOg?=
+ =?us-ascii?Q?y6mtoneik69Tn/FKfPodHusRvhZcm/5JiyrRO9oNqFK3ymIOonch+cOPcG2B?=
+ =?us-ascii?Q?uFXxBPdJKV0S4kHlxEUXqQSDazrmVC5oIx7kQ0gs9zruW6EA/pFeRh93+E8m?=
+ =?us-ascii?Q?RBdIceRLmVjHG15mB0ivoEHs8vXY/wAjhbLaM7k5LMrf18mKW2+opBQC1fWW?=
+ =?us-ascii?Q?DStZy8NEqWOX0UoZX7tewJP41aKKgb0Omx2p58b+NrdrzZtkH2ycL0iueACv?=
+ =?us-ascii?Q?5CSAPFJRN4F/QN88xX0lX7yI8tIL/S/C0wmqJ0GrVsvY48VbwhXKmJ1I/gkq?=
+ =?us-ascii?Q?pfXmK3vVfqbG7pOCRV1VZIJFzUqCgBr3+ENT/HPxSb4LJcu5xdS1d2fIWN8v?=
+ =?us-ascii?Q?WQA4FTrpgRjejzOtpenZcNTN/YULECVf/xVNPqP3lTsqr1IQGSHzKu3Ug8dT?=
+ =?us-ascii?Q?QkayuQu1rKY24KU9KFV3bParMXKp5/NCYzaN/PxBzTFS3irKD74DAbL9tEPR?=
+ =?us-ascii?Q?2KCR/NCwfnXJjna+6CAZ1DwBxzQP4umpphqxkm4nnjNMbSwA9z7H4t0hZgFd?=
+ =?us-ascii?Q?CVpyS20F6Q0hr8pdJ1o3l/1C+oc5tmbk06Y4hBbcJ+3QYQiAl2F9uPvBS2rJ?=
+ =?us-ascii?Q?CCU8R6DV8wLvi26a2BP5PQHod7HAS5321p3LAzDbFUeiNWDtHoxz+vjKAuy4?=
+ =?us-ascii?Q?ghhwxyi5gGTkJjwP0j9S/3CFfVZobK6dVYpP+D2l8s0o/A=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d6e1724-cf15-43ef-1a1a-08d8d9c39b04
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2021 19:29:01.9010
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hfuzQgpHY0d9zFK4orS5Uj5ZQ9cCC05MVQtZYFlrYNxYwll63fkBlXUw0wUqKp5t
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2821
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-25_11:2021-02-24,2021-02-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ clxscore=1015 priorityscore=1501 adultscore=0 mlxscore=0 phishscore=0
+ bulkscore=0 mlxlogscore=767 impostorscore=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102250146
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 10:52:49AM +0100, Michal Koutný wrote:
-> On Wed, Feb 24, 2021 at 08:57:36PM -0800, Vipin Sharma <vipinsh@google.com> wrote:
-> > This function is meant for hot unplug functionality too.
-> Then I'm wondering if the current form is sufficient, i.e. the generic
-> controller can hardly implement preemption but possibly it should
-> prevent any additional charges of the resource. (Or this can be
-> implemented the other subsystem and explained in the
-> misc_cg_set_capacity() docs.)
-
-My approach here is that it is the responsibility of the caller to:
-1. Check the return value and proceed accordingly.
-2. Ideally, let all of the usage be 0 before deactivating this resource
-   by setting capacity to 0
-
-But I see your point that it makes sense for this call to always
-succeed. I think I can simplify this function now to just have xchg() (for
-memory barrier) so that new value is immediately reflected in
-misc_cg_try_charge() and no new charges will succeed.
-
-Is the above change good?
-
+On Tue, Feb 23, 2021 at 02:28:40PM -0800, Song Liu wrote:
+> To access per-task data, BPF programs usually creates a hash table with
+> pid as the key. This is not ideal because:
+>  1. The user need to estimate the proper size of the hash table, which may
+>     be inaccurate;
+>  2. Big hash tables are slow;
+>  3. To clean up the data properly during task terminations, the user need
+>     to write extra logic.
 > 
-> > Just to be on the same page are you talking about adding an events file
-> > like in pids?
-> Actually, I meant just the kernel log message. As it's the simpler part
-> and even pid events have some inconsistencies wrt hierarchical
-> reporting.
-
-I see, thanks, I will add some log messages, 
-
-if (new_usage > res->max || new_usage > misc_res_capacity[type)) {
-  pr_info("cgroup: charge rejected by misc controller for %s resource in ",
-          misc_res_name[type]);
-  pr_cont_cgroup_path(i->css.cgroup);
-  pr_cont("\n");
-  ...
-}
-
-Only difference compared to pids will be that here logs will be printed
-for every failure.
-
-I was thinking to add more information in the log like what is the current
-limits (max and capacity) and what new usage would have been. Will there
-be any objection to extra information?
-
+> Task local storage overcomes these issues and offers a better option for
+> these per-task data. Task local storage is only available to BPF_LSM. Now
+> enable it for tracing programs.
 > 
-> > However, if I take reference at the first charge and remove reference at
-> > last uncharge then I can keep the ref count in correct sync.
-> I see now how it works. I still find it a bit complex. What about making
-> misc_cg an input parameter and making it the callers responsibility to
-> keep a reference? (Perhaps with helpers for the most common case.)
-
-Yeah, that can simplify the misc controller, I will have to add couple of
-more helper APIs for callers having simple use cases. I will make this
-change.
-
-Thanks
-Vipin
+> Unlike LSM programs, tracing programs can be called in IRQ contexts.
+> Helpers that access task local storage are updated to use
+> raw_spin_lock_irqsave() instead of raw_spin_lock_bh().
+> 
+> Tracing programs can attach to functions on the task free path, e.g.
+> exit_creds(). To avoid allocating task local storage after
+> bpf_task_storage_free(). bpf_task_storage_get() is updated to not allocate
+> new storage when the task is not refcounted (task->usage == 0).
+Acked-by: Martin KaFai Lau <kafai@fb.com>
