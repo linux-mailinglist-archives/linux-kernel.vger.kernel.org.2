@@ -2,137 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8823324896
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 02:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 157E9324898
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 02:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235086AbhBYBhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 20:37:52 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:13374 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233895AbhBYBht (ORCPT
+        id S233739AbhBYBjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 20:39:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232761AbhBYBjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 20:37:49 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DmFjH2QB8z7q1b;
-        Thu, 25 Feb 2021 09:35:31 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 25 Feb
- 2021 09:37:06 +0800
-Subject: Re: [f2fs-dev] [PATCH][next] f2fs: Replace one-element array with
- flexible-array member
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     Chao Yu <chao@kernel.org>, <linux-hardening@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20210224190313.GA144040@embeddedor>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <bee16b72-f2e2-b113-9785-7f760be867df@huawei.com>
-Date:   Thu, 25 Feb 2021 09:37:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Wed, 24 Feb 2021 20:39:02 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D698C061574;
+        Wed, 24 Feb 2021 17:38:21 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id t26so2743539pgv.3;
+        Wed, 24 Feb 2021 17:38:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=tnYBYbRsT961WK2ev0Rbh+EcQBNdVkmVWWLFnK3URxk=;
+        b=UUwVQcG4PTWGWXKYkzvoRHtHEUq0WNbBEpyvDvWP3fMNY01a2NsbFmLLITwL5TF7jV
+         VBDsPH/01Hhxj7FAkkf8UWJ7o9xIyD2Ncqe1sFBYm2Y/hu4tMnKBiCSPAOm44yfZvNx+
+         t9U1Q8a6sarq5WjfAOcAFjShzn3h+iGyfq38jnH0BeQLj2iV+EHKDIcOQJbMPkcPm7/r
+         1iChX8jE1RE5/SDkYKPczDcZtklFKgGOOfBCtMW5cgOAKq4CQz4BpKYO5lvXcFLS8rXe
+         MCd3KXHMT9TFZeeVgrRB7VtWUTofY7W5RZ7MkxupCCQIG+dowMcsYtI8aKf8INkAK8dx
+         xTtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tnYBYbRsT961WK2ev0Rbh+EcQBNdVkmVWWLFnK3URxk=;
+        b=XIK7Bzpq+t8wNCcEJyXhoEzg0xHL9zWWdrTpP3/ZF2t7g/YDeKOGdlQegEBOnN3Jwv
+         ogZsmL5fi6zalMZMUXXJgxHfzf8Fq+EnOItKUPacJ6RMuA82R6iwRJ6DAPt5Nd939VRA
+         aGNc5RPssNbQqFU7gjzhqDVIXRO2Rb3DoaF1XshHH7ZKPFHKZ+u5qcb1F8dRapYzpKR4
+         F+hud/4+OeEyW0AVproQ/7TFntRghajjJ7FB4lGq+xjDZos0uIs2aA1RP3Foy5Hv08Eu
+         8CgHGGYfIRNh8I/So2fKAoWFbzeZDJtLo1FW5YL6FC9zNRu8X66lqcMXDP4WMu2S5WOy
+         hicQ==
+X-Gm-Message-State: AOAM53211YlLe/zLgVnq5Qgtj/yV/jZ6UG4dI8QAHaTBfbrBmxtu4qW/
+        bC8V47TY69G32M0R2j+h+jA=
+X-Google-Smtp-Source: ABdhPJwaBaQqGlpkRe/Jl4qJ15wo0xrC9OZFfV3xikodpbQmGUYyqucqYzDvY+I+iND9VbTEqyabyg==
+X-Received: by 2002:a05:6a00:1502:b029:1d2:72e7:a9db with SMTP id q2-20020a056a001502b02901d272e7a9dbmr838221pfu.42.1614217101047;
+        Wed, 24 Feb 2021 17:38:21 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id u129sm3944828pfu.219.2021.02.24.17.38.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 24 Feb 2021 17:38:20 -0800 (PST)
+Date:   Thu, 25 Feb 2021 09:38:20 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yue Hu <huyue2@yulong.com>
+Subject: Re: [PATCH] cpufreq: schedutil: Don't consider freq reduction to
+ busy CPU if need_freq_update is set
+Message-ID: <20210225093820.000071dd.zbestahu@gmail.com>
+In-Reply-To: <CAJZ5v0jfSuWF2LX5c475P0hM0QED6SsWe_BdcogcPM2_8qpztA@mail.gmail.com>
+References: <20210218082514.1437-1-zbestahu@gmail.com>
+        <20210218102029.syj6vkltlbtoxsig@vireshk-i7>
+        <20210219113804.00004a7e.zbestahu@gmail.com>
+        <20210219040933.2o5hhbjb6emf3xl4@vireshk-i7>
+        <20210219144140.00004de9.zbestahu@gmail.com>
+        <20210219074249.2hcwcnakihor343h@vireshk-i7>
+        <20210219162026.00002e2b.zbestahu@gmail.com>
+        <20210219093551.bykqhjk6xvs4kszi@vireshk-i7>
+        <20210219194509.00005884.zbestahu@gmail.com>
+        <20210222053014.s45odi3qsfio2ahp@vireshk-i7>
+        <20210222170420.000019a3.zbestahu@163.com>
+        <CAJZ5v0jouxkj5uKrkNSBZUxXkSNjGY5NAo3zAqSaO9rJBGcqCQ@mail.gmail.com>
+        <20210224102435.00006325.zbestahu@gmail.com>
+        <CAJZ5v0jfSuWF2LX5c475P0hM0QED6SsWe_BdcogcPM2_8qpztA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210224190313.GA144040@embeddedor>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Gustavo,
+On Wed, 24 Feb 2021 13:46:11 +0100
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-On 2021/2/25 3:03, Gustavo A. R. Silva wrote:
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use “flexible array members”[1] for these cases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
+> On Wed, Feb 24, 2021 at 3:24 AM Yue Hu <zbestahu@gmail.com> wrote:
+> >
+> > On Mon, 22 Feb 2021 15:30:34 +0100
+> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> >  
+> > > On Mon, Feb 22, 2021 at 2:57 PM Yue Hu <zbestahu@163.com> wrote:  
+> > > >
+> > > > On Mon, 22 Feb 2021 11:00:14 +0530
+> > > > Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > > >  
+> > > > > On 19-02-21, 19:45, Yue Hu wrote:  
+> > > > > > We will set next_f to next_freq(previous freq) if next_f is
+> > > > > > reduced for busy CPU. Then the next sugov_update_next_freq() will check
+> > > > > > if next_freq matches next_f if need_freq_update is not set.
+> > > > > > Obviously, we will do nothing for the case. And The related check to
+> > > > > > fast_switch_enabled and raw_spin_{lock,unlock} operations are
+> > > > > > unnecessary.  
+> > > > >
+> > > > > Right, but we will still need sugov_update_next_freq() to have the
+> > > > > same implementation regardless and so I am not sure if we should add  
+> > > >
+> > > > Yes, sugov_update_next_freq() should be keeping current logic for corner case.
+> > > >  
+> > > > > this change:
+> > > > >
+> > > > > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> > > > > index 41e498b0008a..7289e1adab73 100644
+> > > > > --- a/kernel/sched/cpufreq_schedutil.c
+> > > > > +++ b/kernel/sched/cpufreq_schedutil.c
+> > > > > @@ -362,6 +362,9 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
+> > > > >          * recently, as the reduction is likely to be premature then.
+> > > > >          */
+> > > > >         if (sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
+> > > > > +               if (!sg_policy->need_freq_update)  
+> > > >
+> > > > The initial purpose about code of `next_f = sg_policy->next_freq` here (for special CPU busy
+> > > > case) should be skipping the freq update.
+> > > >
+> > > > Since commit 600f5badb78c ("cpufreq: schedutil: Don't skip freq update when limits change"),
+> > > > we add the check to busy CPU for not skipping the update, we need to update the freq using
+> > > > computed one because limits change.
+> > > >
+> > > > After commit 23a881852f3e ("cpufreq: schedutil: Don't skip freq update if need_freq_update
+> > > > is set"), we removed the need_freq_update check(no issue of commit 600f5badb78c anymore?)
+> > > > and introduce to always do an update in sugov_update_next_freq() if need_freq_update is set
+> > > > even though current freq == sg_policy->next_freq because of corner case issue. But that is
+> > > > conflict with original purpose of the freq skip code (next_f = sg_policy->next_freq) of
+> > > > busy CPU.  
+> > >
+> > > That's because we realized that it was not always a good idea to skip
+> > > the update even if next_f == sg_policy->next_freq.
+> > >
+> > > That's why CPUFREQ_NEED_UPDATE_LIMITS has been introduced and the
+> > > current flow is a result of subsequent code rearrangements.  
+> >
+> > ok, care about unnecessary(should be) behaviors(fast_switch_enabled and raw_spin_{lock,unlock})
+> > if need_freq_update is unset?
+> >
+> > If we care, i will send another patch (which is different from above change for busy CPU).  
+> 
+> Please send a patch and we'll see (this is how things go).
 
-I proposal to do the similar cleanup, and I've no objection on doing this.
+Already sent it("Call sugov_update_next_freq() before check to fast_switch_enabled"). Please review.
 
-https://lore.kernel.org/patchwork/patch/869440/
+Thank you.
 
-Let's ask for Jaegeuk' opinion.
-
-> 
-> Refactor the code according to the use of a flexible-array member in
-> struct f2fs_checkpoint, instead of a one-element arrays.
-> 
-> Notice that a temporary pointer to void '*tmp_ptr' was used in order to
-> fix the following errors when using a flexible array instead of a one
-> element array in struct f2fs_checkpoint:
-> 
->    CC [M]  fs/f2fs/dir.o
-> In file included from fs/f2fs/dir.c:13:
-> fs/f2fs/f2fs.h: In function ‘__bitmap_ptr’:
-> fs/f2fs/f2fs.h:2227:40: error: invalid use of flexible array member
->   2227 |   return &ckpt->sit_nat_version_bitmap + offset + sizeof(__le32);
->        |                                        ^
-> fs/f2fs/f2fs.h:2227:49: error: invalid use of flexible array member
->   2227 |   return &ckpt->sit_nat_version_bitmap + offset + sizeof(__le32);
->        |                                                 ^
-> fs/f2fs/f2fs.h:2238:40: error: invalid use of flexible array member
->   2238 |   return &ckpt->sit_nat_version_bitmap + offset;
->        |                                        ^
-> make[2]: *** [scripts/Makefile.build:287: fs/f2fs/dir.o] Error 1
-> make[1]: *** [scripts/Makefile.build:530: fs/f2fs] Error 2
-> make: *** [Makefile:1819: fs] Error 2
-> 
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
-> 
-> Link: https://github.com/KSPP/linux/issues/79
-> Build-tested-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/lkml/603647e4.DeEFbl4eqljuwAUe%25lkp@intel.com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->   fs/f2fs/f2fs.h          | 5 +++--
->   include/linux/f2fs_fs.h | 2 +-
->   2 files changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index e2d302ae3a46..3f5cb097c30f 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -2215,6 +2215,7 @@ static inline block_t __cp_payload(struct f2fs_sb_info *sbi)
->   static inline void *__bitmap_ptr(struct f2fs_sb_info *sbi, int flag)
->   {
->   	struct f2fs_checkpoint *ckpt = F2FS_CKPT(sbi);
-> +	void *tmp_ptr = &ckpt->sit_nat_version_bitmap;
->   	int offset;
->   
->   	if (is_set_ckpt_flags(sbi, CP_LARGE_NAT_BITMAP_FLAG)) {
-> @@ -2224,7 +2225,7 @@ static inline void *__bitmap_ptr(struct f2fs_sb_info *sbi, int flag)
->   		 * if large_nat_bitmap feature is enabled, leave checksum
->   		 * protection for all nat/sit bitmaps.
->   		 */
-> -		return &ckpt->sit_nat_version_bitmap + offset + sizeof(__le32);
-> +		return tmp_ptr + offset + sizeof(__le32);
->   	}
->   
->   	if (__cp_payload(sbi) > 0) {
-> @@ -2235,7 +2236,7 @@ static inline void *__bitmap_ptr(struct f2fs_sb_info *sbi, int flag)
->   	} else {
->   		offset = (flag == NAT_BITMAP) ?
->   			le32_to_cpu(ckpt->sit_ver_bitmap_bytesize) : 0;
-> -		return &ckpt->sit_nat_version_bitmap + offset;
-> +		return tmp_ptr + offset;
->   	}
->   }
->   
-> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-> index c6cc0a566ef5..5487a80617a3 100644
-> --- a/include/linux/f2fs_fs.h
-> +++ b/include/linux/f2fs_fs.h
-> @@ -168,7 +168,7 @@ struct f2fs_checkpoint {
->   	unsigned char alloc_type[MAX_ACTIVE_LOGS];
->   
->   	/* SIT and NAT version bitmap */
-> -	unsigned char sit_nat_version_bitmap[1];
-> +	unsigned char sit_nat_version_bitmap[];
->   } __packed;
->   
->   #define CP_CHKSUM_OFFSET	4092	/* default chksum offset in checkpoint */
-> 
