@@ -2,91 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A5732555D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 229F3325566
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232929AbhBYSWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:22:06 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:39064 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232350AbhBYSV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 13:21:58 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614277301; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=mHL2o5cdwInZ5auVjA1RzFMxGmXtPE8iZ7MSS/BW+Rk=; b=JIJheenKGPhUMm9/Nd0iVsWsukZgSDEIODWo83v4Cc35diYUP0iasRDRPkd7rQ8NMLQ96YaK
- QP2mgjamed3D+ke0fNijtVhFbRTJb1Vt6Qjv9Fpk80PsNFrmUnWdhr5xrL4dzEcsY3jYT8kQ
- 7t80NfxcX4A7pKzx3rNRBjUwBXg=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6037ea941d6d3a470f690783 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Feb 2021 18:21:08
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AEFEEC433C6; Thu, 25 Feb 2021 18:21:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S232982AbhBYSYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:24:24 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:42216 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233007AbhBYSYS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 13:24:18 -0500
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_smtp) via UNIX with SMTP (IdeaSmtpServer 0.83.537)
+ id cb3e75c887120231; Thu, 25 Feb 2021 19:23:28 +0100
+Received: from kreacher.localnet (89-64-80-209.dynamic.chello.pl [89.64.80.209])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 71C15C433CA;
-        Thu, 25 Feb 2021 18:21:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 71C15C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Luca Coelho <luciano.coelho@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ihab Zhaika <ihab.zhaika@intel.com>,
-        Matti Gottlieb <matti.gottlieb@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iwlwifi: fix link error without CONFIG_IWLMVM
-References: <20210225143236.3543360-1-arnd@kernel.org>
-Date:   Thu, 25 Feb 2021 20:21:02 +0200
-In-Reply-To: <20210225143236.3543360-1-arnd@kernel.org> (Arnd Bergmann's
-        message of "Thu, 25 Feb 2021 15:30:37 +0100")
-Message-ID: <87wnuwdn5d.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        by v370.home.net.pl (Postfix) with ESMTPSA id B9CEC661F15;
+        Thu, 25 Feb 2021 19:23:27 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "elaine.zhang" <zhangqing@rock-chips.com>
+Subject: [PATCH v2] PM: runtime: Update device status before letting suppliers suspend
+Date:   Thu, 25 Feb 2021 19:23:27 +0100
+Message-ID: <2024466.aZ6alR0V7q@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrkeelgdduudegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtvdenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeeiueevhfeigffhffevueekgedtleeitdfhffejleevtddvtdettedvfffffffhjeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeekledrieegrdektddrvddtleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrvddtledphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehulhhfrdhhrghnshhsohhnsehlihhnrghrohdrohhrghdprhgtphhtthhopeiihhgrnhhgqhhinhhgsehrohgtkhdqtghhihhpshdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> A runtime check that was introduced recently failed to
-> check for the matching Kconfig symbol:
->
-> ld.lld: error: undefined symbol: iwl_so_trans_cfg
->>>> referenced by drv.c
->>>>               net/wireless/intel/iwlwifi/pcie/drv.o:(iwl_pci_probe)
->
-> Fixes: 930be4e76f26 ("iwlwifi: add support for SnJ with Jf devices")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Because the PM-runtime status of the device is not updated in
+__rpm_callback(), attempts to suspend the suppliers of the given
+device triggered by rpm_put_suppliers() called by it may fail.
 
-A sent a similar patch this morning:
+Fix this by making __rpm_callback() update the device's status to
+RPM_SUSPENDED before calling rpm_put_suppliers() if the current
+status of the device is RPM_SUSPENDING and the callback just invoked
+by it has returned 0 (success).
 
-https://patchwork.kernel.org/project/linux-wireless/patch/1614236661-20274-1-git-send-email-kvalo@codeaurora.org/
+While at it, modify the code in __rpm_callback() to always check
+the device's PM-runtime status under its PM lock.
 
-But I forgot to include an Fixes tag, I'll add that to my patch during commit.
+Link: https://lore.kernel.org/linux-pm/CAPDyKFqm06KDw_p8WXsM4dijDbho4bb6T4k50UqqvR1_COsp8g@mail.gmail.com/
+Fixes: 21d5c57b3726 ("PM / runtime: Use device links")
+Reported-by: elaine.zhang <zhangqing@rock-chips.com>
+Diagnosed-by: Ulf Hansson <ulf.hansson@linaro.org> 
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+v1 -> v2:
+   * Initialize the "get" variable to avoid a false-positive warning from
+     the compiler.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+---
+ drivers/base/power/runtime.c |   62 +++++++++++++++++++++++++------------------
+ 1 file changed, 37 insertions(+), 25 deletions(-)
+
+Index: linux-pm/drivers/base/power/runtime.c
+===================================================================
+--- linux-pm.orig/drivers/base/power/runtime.c
++++ linux-pm/drivers/base/power/runtime.c
+@@ -325,22 +325,22 @@ static void rpm_put_suppliers(struct dev
+ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+ 	__releases(&dev->power.lock) __acquires(&dev->power.lock)
+ {
+-	int retval, idx;
+ 	bool use_links = dev->power.links_count > 0;
++	bool get = false;
++	int retval, idx;
++	bool put;
+ 
+ 	if (dev->power.irq_safe) {
+ 		spin_unlock(&dev->power.lock);
++	} else if (!use_links) {
++		spin_unlock_irq(&dev->power.lock);
+ 	} else {
++		get = dev->power.runtime_status == RPM_RESUMING;
++
+ 		spin_unlock_irq(&dev->power.lock);
+ 
+-		/*
+-		 * Resume suppliers if necessary.
+-		 *
+-		 * The device's runtime PM status cannot change until this
+-		 * routine returns, so it is safe to read the status outside of
+-		 * the lock.
+-		 */
+-		if (use_links && dev->power.runtime_status == RPM_RESUMING) {
++		/* Resume suppliers if necessary. */
++		if (get) {
+ 			idx = device_links_read_lock();
+ 
+ 			retval = rpm_get_suppliers(dev);
+@@ -355,24 +355,36 @@ static int __rpm_callback(int (*cb)(stru
+ 
+ 	if (dev->power.irq_safe) {
+ 		spin_lock(&dev->power.lock);
+-	} else {
+-		/*
+-		 * If the device is suspending and the callback has returned
+-		 * success, drop the usage counters of the suppliers that have
+-		 * been reference counted on its resume.
+-		 *
+-		 * Do that if resume fails too.
+-		 */
+-		if (use_links
+-		    && ((dev->power.runtime_status == RPM_SUSPENDING && !retval)
+-		    || (dev->power.runtime_status == RPM_RESUMING && retval))) {
+-			idx = device_links_read_lock();
++		return retval;
++	}
+ 
+- fail:
+-			rpm_put_suppliers(dev);
++	spin_lock_irq(&dev->power.lock);
+ 
+-			device_links_read_unlock(idx);
+-		}
++	if (!use_links)
++		return retval;
++
++	/*
++	 * If the device is suspending and the callback has returned success,
++	 * drop the usage counters of the suppliers that have been reference
++	 * counted on its resume.
++	 *
++	 * Do that if the resume fails too.
++	 */
++	put = dev->power.runtime_status == RPM_SUSPENDING && !retval;
++	if (put)
++		__update_runtime_status(dev, RPM_SUSPENDED);
++	else
++		put = get && retval;
++
++	if (put) {
++		spin_unlock_irq(&dev->power.lock);
++
++		idx = device_links_read_lock();
++
++fail:
++		rpm_put_suppliers(dev);
++
++		device_links_read_unlock(idx);
+ 
+ 		spin_lock_irq(&dev->power.lock);
+ 	}
+
+
+
