@@ -2,121 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBAC325695
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F88C32569D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234039AbhBYTV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:21:57 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2245 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234718AbhBYTSI (ORCPT
+        id S233780AbhBYT07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:26:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233502AbhBYTYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:18:08 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6037f7bf0000>; Thu, 25 Feb 2021 11:17:19 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Feb
- 2021 19:17:18 +0000
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.53) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Thu, 25 Feb 2021 19:17:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kZIWAIIT48zkw0bjx+axI+2iLp48A0L+Yf2v1r5thC64AxYHAvsUz9acLlMXJ0XSIj4jPVRctHdb969VCDjPmy9Yom7ZpzTO6PiNjGwMsbMH/S0kdLXcHxMHmnyd8Yujxq8ttDIql0K4Gu0F6Kev2dvvyEjy3iJy6bIYtXhcryHZPEPw4Ivj6FG09BLxIBMe9ir1si6L7PtWgSIXbFBeghDrKYgZCIE4NyhH827wHezT7ZR2klWtXSOA74V/nyChoHV4f7yhLVpuDhJ43ZpYzCmEhgs4Lbjw431/KxTG/4fDuPTxINaryz9/KLckQ0ZZHCc8XvJO3ePOL8jRyTB0YA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HqDpi636jhSWWxboEzhNsvod/t/IqTxlCQxbEALiQWU=;
- b=fBJiyxpLkGK3BDXp2KTx2uasyXm+xgfNqNbrRMEus7G46fXohkhw3mamf4JlEkdfX8a3Eq3X2FDIPMwEl7LLznqGzcHBcKDGytRLxAEJZWRywf3MHx0ctHtFpbU1kw1yGG7yZNIMkFFXW5kts/feS72GhkjGlpry35fmesmvJSH/xQXm/r8GoVhLlUURHl8+JkDgRWqP2EO1jgeQkDw5i4QPmjv7yaRiBp9R2jtZQqc/5FA+zLhaBKlkOIu6G1bPj/Mdll4QJSn7V2UHWDkxREPCIVmb0aolgw20IxgroSp/wlZkLklUegs9duGYqpjvkkozeBYx2HzZ2GgMy1CWag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1339.namprd12.prod.outlook.com (2603:10b6:3:70::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Thu, 25 Feb
- 2021 19:17:17 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3868.033; Thu, 25 Feb 2021
- 19:17:16 +0000
-Date:   Thu, 25 Feb 2021 15:17:14 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Peter Xu <peterx@redhat.com>
-CC:     Alex Williamson <alex.williamson@redhat.com>, <cohuck@redhat.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 10/10] vfio/type1: Register device notifier
-Message-ID: <20210225191714.GU4247@nvidia.com>
-References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
- <161401275279.16443.6350471385325897377.stgit@gimli.home>
- <20210222175523.GQ4247@nvidia.com>
- <20210224145508.1f0edb06@omen.home.shazbot.org>
- <20210225002216.GQ4247@nvidia.com> <20210225175457.GD250483@xz-x1>
- <20210225181945.GT4247@nvidia.com> <20210225190646.GE250483@xz-x1>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210225190646.GE250483@xz-x1>
-X-ClientProxiedBy: MN2PR10CA0036.namprd10.prod.outlook.com
- (2603:10b6:208:120::49) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Thu, 25 Feb 2021 14:24:54 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15ACEC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:24:08 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id d8so10753144ejc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:24:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=/Z4k1oLR2zEbGG8x+xifCQPmkVHmiWfhHSn+WZvhyTQ=;
+        b=bHjovVtAFkPg/UJ92MhEQtv4+7Mix6Hp+U4j7Mn+LM4XWpgEPRKEggL3wQ6CgnSA8A
+         7O6A9+AoW/5pXF5b/mik2npTWZ3OwXY6k50w0Yymk94iRHzY4DgvVSIRcgomtjCh/wPp
+         RKvaIWCFO1uqT9+Sn+9ICtdzV+qjwh7nauD+xkKEDL7UykxWH6nmJvepwJ9S0y6d6Vns
+         HcmHgZdfgXvSWqd027o4a4yex3FC2ZrtgXzgcvXwQ3D/oWqotGRMCcw+gBLyRUft8Rlh
+         hPOJJjGZrcP4aG42esCEJHFQ1yzKCGcx2NoiHHJOTCfTqgE0/xg8QEJFOd40DnlmtoHs
+         00rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=/Z4k1oLR2zEbGG8x+xifCQPmkVHmiWfhHSn+WZvhyTQ=;
+        b=lUxeu+kbTXh1KO8rMxXAxrDZQtLUz9uQF1tWkinP2PK87WkQDgJD8YwfQLHVxwcSk2
+         7rGv14e7xO/mwZHQwsmbt0+jvPosTlWyHLazoTtnOHg+/R0A+IDcldtJSXdw6b/5kXjx
+         +d2pT28uvQQvIQE8X27L+1q5IVlzDZiCzqmsSqTww6qjmJyGmQ3IDXjhtAcAg2NuK2Kq
+         FGkYoCi8p35apRs52Y9XSH/tBaPkj7ifxE7yFefHa1ArJgaOsErKRS5N2b4xR1ivQO/G
+         mH1yKrOYhOQSdqBMLdVKA/eDPpAnnHnnx93Gi4J1R/h86x+1Z3H1GFT1T/COW+XGdZjR
+         fGzQ==
+X-Gm-Message-State: AOAM531jIRsdokHgrXgJnE8f/TjlWYla+oaFS11XWtyZKzbLGKQchqbU
+        FLXaUUMh+DVDyS90cCHUN0xfRzKJR+k6kXUEO5W6ZP51tIk=
+X-Google-Smtp-Source: ABdhPJz6Ujmk4jr4S43LLBDYV0I2LYbpQJJRzgoZyv0qN3jt4Un/d20Hx+PAhbz/b0saoiEAYXPVVK18z0qjbptZn4w=
+X-Received: by 2002:a17:907:1b02:: with SMTP id mp2mr4257418ejc.419.1614281045247;
+ Thu, 25 Feb 2021 11:24:05 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR10CA0036.namprd10.prod.outlook.com (2603:10b6:208:120::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Thu, 25 Feb 2021 19:17:16 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lFM8Q-000Ipw-FX; Thu, 25 Feb 2021 15:17:14 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614280639; bh=HqDpi636jhSWWxboEzhNsvod/t/IqTxlCQxbEALiQWU=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=UVhcvKIl9oy5OU5yUR8MORkien/tD2qgmrTm1+2yE25PFdpjde5GVKmkJPHu8WXv4
-         lZ6f+WDdrhqCEwde2D5g61U+fPnHqBBXVGzCUEWPR372P0dpUzZhb50WnWm/8n5ZYc
-         dChA3Oii4ZFVKfzJHLVJYJSJn4btNegDNAUw0+YtBWnTLtjL7x2Rka9Nil5kNhTj0U
-         QeKW1dNKaD6bs6RUBpMEDj9E4cyQ/Sz+Qot4N850wloItVgl4OmY0oyoUbfIDZpbRb
-         Ep4IAe65JrIdqEmTDXX4i/+q0fdAFNo2nYNfD4MzKSe8iEEWw7TyeuVAcrLCxttXdr
-         jW2r9b+mfs1pg==
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 26 Feb 2021 05:23:53 +1000
+Message-ID: <CAPM=9tyht2VHck6c0oh21+H=b_M=h1dvm4BNqe6AkPYZ+Ph_Uw@mail.gmail.com>
+Subject: [git pull] drm fixes + msm-next for 5.12-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 02:06:46PM -0500, Peter Xu wrote:
+Hi Linus,
 
-> Agreed.  I saw discussions around on redefining the vm_pgoff namespace, I can't
-> say I followed that closely either, but yes it definitely makes sense to always
-> use an unified namespace.  Maybe we should even comment it somewhere on how
-> vm_pgoff is encoded?
+Hope power/internet are back on fully!
 
-Yes, it should be described, it is subtle
- 
-> > Correct. VFIO can map into the IOMMU PFNs it can get a reference
-> > to. pin_user_pages() works for the majority, special VFIO VMAs cover
-> > the rest, and everthing else must be blocked for security.
-> 
-> If we all agree that the current follow_pfn() should only apply to vfio
-> internal vmas, 
+This is fixes but I missed msm-next pull last week. It's been in
+drm-next anyways so shouldn't be a problem.
 
-I want to remvoe follow_pfn(). Internal VMAs can deduce the PFN from
-the vm_pgoff, they don't need to do follow.
+Otherwise it's a selection of i915, amdgpu and misc fixes, one TTM
+memory leak, nothing really major stands out otherwise.
 
-> then it seems we can drop it indeed, as long as the crash reported
-> in 5cbf3264b would fail gracefully at e.g. VFIO_IOMMU_MAP_DMA rather
-> than triggering a kernel warning somehow.
+Dave.
 
-Yes, this will just fail the ioctl because pin_user_pages() failed and
-the VMA was not VFIO.
+drm-next-2021-02-26:
+drm fixes for 5.12-rc1 + msm-next
 
-> However I'm still confused on why it's more secure - the current process to do
-> VFIO_IOMMU_MAP_DMA should at least has proper permission for everything to be
-> setup, including the special vma, right?  Say, if the process can write to
-> those memories, then shouldn't we also allow it to grant this write permission
-> to other devices too?
+core:
+- vblank fence timing improvements
 
-It is a use-after-free. Once the PFN is programmed into the IOMMU it
-becomes completely divorced from the VMA. Remember there is no
-pin_user_page here, so the PFN has no reference count.
+dma-buf:
+- improve error handling
 
-If the owner of the VMA decided to zap it or otherwise then the IOMMU
-access keeps going - but now the owner thinks the PFN is free'd and
-nobody is referencing it. Goes bad.
+ttm:
+- memory leak fix
 
-Jason
+msm:
+- a6xx speedbin support
+- a508, a509, a512 support
+- various a5xx fixes
+- various dpu fixes
+- qseed3lite support for sm8250
+- dsi fix for msm8994
+- mdp5 fix for framerate bug with cmd mode panels
+- a6xx GMU OOB race fixes that were showing up in CI
+- various addition and removal of semicolons
+- gem submit fix for legacy userspace relocs path
+
+amdgpu:
+- Clang warning fix
+- S0ix platform shutdown/poweroff fix
+- Misc display fixes
+
+i915:
+- color format fix
+- -Wuninitialised reenabled
+- GVT ww locking, cmd parser fixes
+
+atyfb:
+- fix build
+
+rockchip:
+- AFBC modifier fix
+The following changes since commit f730f39eb981af249d57336b47cfe3925632a7fd=
+:
+
+  Merge tag 'drm-intel-next-fixes-2021-02-18' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-next (2021-02-19
+13:55:07 +1000)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-02-26
+
+for you to fetch changes up to d153e8c156dafeb847fd655f416cf81c007e8706:
+
+  Merge tag 'drm-intel-next-fixes-2021-02-25' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-next (2021-02-26
+05:08:51 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.12-rc1 + msm-next
+
+core:
+- vblank fence timing improvements
+
+dma-buf:
+- improve error handling
+
+ttm:
+- memory leak fix
+
+msm:
+- a6xx speedbin support
+- a508, a509, a512 support
+- various a5xx fixes
+- various dpu fixes
+- qseed3lite support for sm8250
+- dsi fix for msm8994
+- mdp5 fix for framerate bug with cmd mode panels
+- a6xx GMU OOB race fixes that were showing up in CI
+- various addition and removal of semicolons
+- gem submit fix for legacy userspace relocs path
+
+amdgpu:
+- Clang warning fix
+- S0ix platform shutdown/poweroff fix
+- Misc display fixes
+
+i915:
+- color format fix
+- -Wuninitialised reenabled
+- GVT ww locking, cmd parser fixes
+
+atyfb:
+- fix build
+
+rockchip:
+- AFBC modifier fix
+
+----------------------------------------------------------------
+Akhil P Oommen (1):
+      drm/msm: Add speed-bin support to a618 gpu
+
+Alyssa Rosenzweig (1):
+      drm/rockchip: Require the YTR modifier for AFBC
+
+AngeloGioacchino Del Regno (16):
+      drm/msm/a5xx: Allow all patchid for A540 chip
+      drm/msm/a5xx: Remove overwriting A5XX_PC_DBG_ECO_CNTL register
+      drm/msm/a5xx: Separate A5XX_PC_DBG_ECO_CNTL write from main branch
+      drm/msm/a5xx: Add support for Adreno 508, 509, 512 GPUs
+      drm/msm/a5xx: Reset VBIF before PC only on A510 and A530
+      drm/msm/dpu: Fix VBIF_XINL_QOS_LVL_REMAP_000 register offset
+      drm/msm/dpu: Move DPU_SSPP_QOS_8LVL bit to SDM845 and SC7180 masks
+      drm/msm/dpu: Add prog_fetch_lines_worst_case to INTF_BLK macro
+      drm/msm/dpu: Allow specifying features and sblk in DSPP_BLK macro
+      drm/msm/dpu: Disable autorefresh in command mode
+      drm/msm/dpu: Correctly configure vsync tearcheck for command mode
+      drm/msm/dpu: Remove unused call in wait_for_commit_done
+      drm/msm/dsi_pll_10nm: Fix dividing the same numbers twice
+      drm/msm/dsi_pll_10nm: Solve TODO for multiplier frac_bits assignment
+      drm/msm/dsi_pll_10nm: Fix variable usage for pll_lockdet_rate
+      drm/msm/dsi_pll_10nm: Convert pr_err prints to DRM_DEV_ERROR
+
+Anson Jacob (1):
+      Revert "drm/amd/display: reuse current context instead of recreating =
+one"
+
+Bernard Zhao (1):
+      drm/msm: remove unneeded variable: "rc"
+
+Bjorn Andersson (1):
+      dt-bindings: dp-connector: Drop maxItems from -supply
+
+Chris Wilson (2):
+      drm/i915/gvt: Parse default state to update reg whitelist
+      drm/i915/gvt: Purge dev_priv->gt
+
+Dave Airlie (4):
+      Merge tag 'drm-msm-next-2021-02-07' of
+https://gitlab.freedesktop.org/drm/msm into drm-next
+      Merge tag 'drm-misc-next-fixes-2021-02-25' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-next
+      Merge tag 'amd-drm-fixes-5.12-2021-02-24' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-next
+      Merge tag 'drm-intel-next-fixes-2021-02-25' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-next
+
+Dmitry Baryshkov (1):
+      drm/msm/dpu1: add support for qseed3lite used on sm8250
+
+Eric Anholt (3):
+      drm/msm: Fix race of GPU init vs timestamp power management.
+      drm/msm: Fix races managing the OOB state for timestamp vs timestamps=
+.
+      drm/msm: Clean up GMU OOB set/clear handling.
+
+Eric Bernstein (1):
+      drm/amd/display: Remove Assert from dcn10_get_dig_frontend
+
+Heiko Stuebner (1):
+      drm/panel: kd35t133: allow using non-continuous dsi clock
+
+Iskren Chernev (2):
+      drm/msm: Fix MSM_INFO_GET_IOVA with carveout
+      drm/msm/mdp5: Fix wait-for-commit for cmd panels
+
+Jiapeng Zhong (1):
+      drm/msm: remove redundant NULL check
+
+John Stultz (2):
+      dma-buf: system_heap: Make sure to return an error if we abort
+      dma-buf: heaps: Rework heap allocation hooks to return struct
+dma_buf instead of fd
+
+Judy Hsiao (1):
+      drm/msm/dp: trigger unplug event in msm_dp_display_disable
+
+Konrad Dybcio (5):
+      drm/msm/a5xx: Fix VPC protect value in gpu_write()
+      drm/msm/a5xx: Disable flat shading optimization
+      drm/msm/a5xx: Disable UCHE global filter
+      drm/msm/dsi: Correct io_start for MSM8994 (20nm PHY)
+      drm/msm/disp/mdp5: mdp5_cfg: Fix msm8974v2 max_clk
+
+Kuogee Hsieh (2):
+      drm/msm/dp: unplug interrupt missed after irq_hpd handler
+      drm/msm/dp: reset dp controller only at boot up and pm_resume
+
+Nathan Chancellor (2):
+      drm/amd/pm/swsmu: Avoid using structure_size uninitialized in
+smu_cmn_init_soft_gpu_metrics
+      drm/i915: Enable -Wuninitialized
+
+Prike Liang (1):
+      drm/amdgpu: fix shutdown and poweroff process failed with s0ix
+
+Qingqing Zhuo (1):
+      drm/amd/display: Fix system hang after multiple hotplugs (v3)
+
+Randy Dunlap (1):
+      fbdev: atyfb: add stubs for aty_{ld,st}_lcd()
+
+Rob Clark (1):
+      drm/msm: Fix legacy relocs path
+
+Rodrigo Siqueira (1):
+      drm/amd/display: Add vupdate_no_lock interrupts for DCN2.1
+
+Rodrigo Vivi (1):
+      Merge tag 'gvt-next-fixes-2021-02-22' of
+https://github.com/intel/gvt-linux into drm-intel-next-fixes
+
+Sai Prakash Ranjan (2):
+      drm/msm: Add proper checks for GPU LLCC support
+      drm/msm/a6xx: Create an A6XX GPU specific address space
+
+Stephen Boyd (2):
+      drm/msm/kms: Make a lock_class_key for each crtc mutex
+      drm/msm/dp: Add a missing semi-colon
+
+Veera Sundaram Sankaran (2):
+      dma-fence: allow signaling drivers to set fence timestamp
+      drm/drm_vblank: set the dma-fence timestamp during send_vblank_event
+
+Ville Syrj=C3=A4l=C3=A4 (1):
+      drm/i915: Nuke INTEL_OUTPUT_FORMAT_INVALID
+
+Xu Wang (2):
+      drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c: Remove unneeded semicolon
+      drm/msm/dp/dp_ctrl: Remove unneeded semicolon
+
+Zhi Wang (1):
+      drm/i915/gvt: Introduce per object locking in GVT scheduler.
+
+xinhui pan (1):
+      drm/ttm: Fix a memory leak
+
+ .../bindings/display/connector/dp-connector.yaml   |   1 -
+ drivers/dma-buf/dma-fence.c                        |  70 +++++++-
+ drivers/dma-buf/dma-heap.c                         |  14 +-
+ drivers/dma-buf/heaps/cma_heap.c                   |  22 +--
+ drivers/dma-buf/heaps/system_heap.c                |  25 ++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h                |   6 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |   6 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            |   9 +-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  | 101 ++++++++---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h  |  27 +++
+ drivers/gpu/drm/amd/display/dc/core/dc.c           |  27 +--
+ drivers/gpu/drm/amd/display/dc/dc_stream.h         |   3 +-
+ .../drm/amd/display/dc/dcn10/dcn10_link_encoder.c  |   1 -
+ drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c |   2 +
+ .../amd/display/dc/irq/dcn21/irq_service_dcn21.c   |  22 +++
+ drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c             |   2 +-
+ drivers/gpu/drm/drm_file.c                         |  68 +++++--
+ drivers/gpu/drm/drm_vblank.c                       |   9 +-
+ drivers/gpu/drm/i915/Makefile                      |   1 -
+ drivers/gpu/drm/i915/display/intel_crtc.c          |   1 -
+ drivers/gpu/drm/i915/display/intel_display.c       |   3 +-
+ drivers/gpu/drm/i915/display/intel_display_types.h |   1 -
+ drivers/gpu/drm/i915/gvt/cmd_parser.c              |  93 +++-------
+ drivers/gpu/drm/i915/gvt/execlist.c                |   8 +-
+ drivers/gpu/drm/i915/gvt/scheduler.c               |  52 ++++--
+ drivers/gpu/drm/msm/adreno/a5xx.xml.h              |   2 +
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c              | 195 +++++++++++++++++=
++---
+ drivers/gpu/drm/msm/adreno/a5xx_power.c            |   4 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c              | 105 ++++++-----
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.h              |  49 ++----
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c              | 139 ++++++++++++++-
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.h              |   2 +
+ drivers/gpu/drm/msm/adreno/adreno_device.c         |  54 +++++-
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c            |  23 +--
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h            |  22 ++-
+ .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c   |  90 ++++++++--
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c     |  87 ++++++---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h     |   2 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c    |  26 +++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h    |  14 ++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c        |   1 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.h        |   1 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c        |  73 +++++++-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h        |   3 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_vbif.c        |   9 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c            |   2 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c          |   1 +
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c           |   2 +-
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c          |   2 +-
+ drivers/gpu/drm/msm/dp/dp_aux.c                    |   7 -
+ drivers/gpu/drm/msm/dp/dp_catalog.c                |  24 +++
+ drivers/gpu/drm/msm/dp/dp_ctrl.c                   |  15 +-
+ drivers/gpu/drm/msm/dp/dp_ctrl.h                   |   2 +-
+ drivers/gpu/drm/msm/dp/dp_display.c                |  24 ++-
+ drivers/gpu/drm/msm/dp/dp_panel.c                  |   3 +-
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c         |   2 +-
+ drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c         |  21 +--
+ drivers/gpu/drm/msm/msm_drv.c                      |   3 +-
+ drivers/gpu/drm/msm/msm_gem.c                      |   3 +-
+ drivers/gpu/drm/msm/msm_gem_submit.c               |   2 +
+ drivers/gpu/drm/msm/msm_kms.h                      |   8 +-
+ drivers/gpu/drm/panel/panel-elida-kd35t133.c       |   3 +-
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.h        |  11 ++
+ drivers/gpu/drm/ttm/ttm_bo.c                       |   9 +-
+ drivers/video/fbdev/aty/atyfb_base.c               |   9 +
+ include/drm/drm_file.h                             |   3 +
+ include/linux/dma-fence.h                          |   3 +
+ include/linux/dma-heap.h                           |  12 +-
+ 68 files changed, 1223 insertions(+), 423 deletions(-)
