@@ -2,179 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFF5324C84
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 968A1324C97
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbhBYJLn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Feb 2021 04:11:43 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:39722 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236089AbhBYJIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:08:39 -0500
-Received: from [95.90.166.74] (helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lFCcS-0000It-Tw; Thu, 25 Feb 2021 10:07:36 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     sboyd@kernel.org, "elaine.zhang" <zhangqing@rock-chips.com>
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        cl@rock-chips.com, huangtao@rock-chips.com,
-        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
-        finley.xiao@rock-chips.com
-Subject: Re: [PATCH v1 3/4] clk: rockchip: support more core div setting
-Date:   Thu, 25 Feb 2021 10:07:36 +0100
-Message-ID: <3100125.44csPzL39Z@diego>
-In-Reply-To: <6759a56c-56d1-da63-5299-0d76966329df@rock-chips.com>
-References: <20210223095352.11544-1-zhangqing@rock-chips.com> <5312231.BaHzMo0RvP@diego> <6759a56c-56d1-da63-5299-0d76966329df@rock-chips.com>
+        id S231445AbhBYJNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:13:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235879AbhBYJKn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:10:43 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B9CC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 01:09:54 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id h17so5437429oih.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 01:09:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=biZ1wBWo+IyHAiu9LCZLsexjAROPaLNmbZ+cAEUO6bg=;
+        b=ifW3yy/23dQuYLO8GrEzHZNy7uFEGWCbiAK1sGoswLbb8RLVtlEHGWKcd9yqFk4f6y
+         oQQBbNPbaNGR1c48U4cHfLDBJ8/LtMqwQA4LY8ewcnRv00BLxoN1rhkeAn3JiVwRM0Pn
+         yeJucFLFo/pyLGhD7qqePuo4jDgg1sj/ApMoU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=biZ1wBWo+IyHAiu9LCZLsexjAROPaLNmbZ+cAEUO6bg=;
+        b=jhzEPpV3CjtYJrpjKCGo6YX0iF3yfF9XPmik/c9kCwcg6aLU+LA9s6ljYnKvgsCnRj
+         eQTrLRiWlhBgyxpMePtUk8r0LBn1JPc4K7moEVLtuirMLH1XKRWF3f1cGCzgpQ0p7Zn8
+         BCnLJYjmqfkn7DgUc1j8Us0p1VUC3zrvBOJeDbuZR8CF8kWxA6O7N7GxAcYlLywmKdyc
+         EGAxQlA4ZUTVXyUgbi0xTHQICl2YamKl9XGGwKVkVuXmkhyK0dSbF3fVUysUsiKAlUg+
+         IutyVpIhejXeNF/hcb4/eNvv0zZnfwc4EXQ99fdjOnk2rVXjK30CwPXmyVKuzO00+wx/
+         K6Jg==
+X-Gm-Message-State: AOAM533brIEPSuCO9wgGiG8u23VvwgRPAIdB50nP5KueNNgKNKwDvbYK
+        zqjd+G4js2hWLqCu8nwlghnm9f8BhlX2WwqS9T15gw==
+X-Google-Smtp-Source: ABdhPJwUdrB44gX2fDhU+Z9N/Jx4DWmJSOJ1GwoULyRjmRmUEsEkyCJ+xhSVfA2mO36NkZSx34vpPdfpaV3tCBpwj1Y=
+X-Received: by 2002:a05:6808:4c9:: with SMTP id a9mr1261173oie.101.1614244193790;
+ Thu, 25 Feb 2021 01:09:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+References: <20210224105509.yzdimgbu2jwe3auf@adolin>
+In-Reply-To: <20210224105509.yzdimgbu2jwe3auf@adolin>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 25 Feb 2021 10:09:42 +0100
+Message-ID: <CAKMK7uFwdHaaGs8BPSAah1Vp5pJWTzxoruLgOWxQu1aDAyCKLQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] drm/vkms: Add support for virtual hardware mode
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Zack Rusin <zackr@vmware.com>
+Cc:     Melissa Wen <melissa.srw@gmail.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Dave Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Elaine,
-
-Am Donnerstag, 25. Februar 2021, 03:59:32 CET schrieb elaine.zhang:
-> 在 2021/2/23 下午6:22, Heiko Stübner 写道:
-> > Am Dienstag, 23. Februar 2021, 10:53:51 CET schrieb Elaine Zhang:
-> >> A55 supports each core to work at different frequencies, and each core
-> >> has an independent divider control.
-> >>
-> >> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
-> >> ---
-> >>   drivers/clk/rockchip/clk-cpu.c | 25 +++++++++++++++++++++++++
-> >>   drivers/clk/rockchip/clk.h     | 17 ++++++++++++++++-
-> >>   2 files changed, 41 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/clk/rockchip/clk-cpu.c b/drivers/clk/rockchip/clk-cpu.c
-> >> index fa9027fb1920..cac06f4f7573 100644
-> >> --- a/drivers/clk/rockchip/clk-cpu.c
-> >> +++ b/drivers/clk/rockchip/clk-cpu.c
-> >> @@ -164,6 +164,18 @@ static int rockchip_cpuclk_pre_rate_change(struct rockchip_cpuclk *cpuclk,
-> >>   				     reg_data->mux_core_mask,
-> >>   				     reg_data->mux_core_shift),
-> >>   		       cpuclk->reg_base + reg_data->core_reg);
-> >> +		if (reg_data->core1_reg)
-> >> +			writel(HIWORD_UPDATE(alt_div, reg_data->div_core1_mask,
-> >> +					     reg_data->div_core1_shift),
-> >> +			       cpuclk->reg_base + reg_data->core1_reg);
-> >> +		if (reg_data->core2_reg)
-> >> +			writel(HIWORD_UPDATE(alt_div, reg_data->div_core2_mask,
-> >> +					     reg_data->div_core2_shift),
-> >> +			       cpuclk->reg_base + reg_data->core2_reg);
-> >> +		if (reg_data->core3_reg)
-> >> +			writel(HIWORD_UPDATE(alt_div, reg_data->div_core3_mask,
-> >> +					     reg_data->div_core3_shift),
-> >> +			       cpuclk->reg_base + reg_data->core3_reg);
-> > for (i = 0; i < reg_data->num_cores; i++)
-> > 	writel(...)
-> >
-> >>   	} else {
-> >>   		/* select alternate parent */
-> >>   		writel(HIWORD_UPDATE(reg_data->mux_core_alt,
-> >> @@ -209,6 +221,19 @@ static int rockchip_cpuclk_post_rate_change(struct rockchip_cpuclk *cpuclk,
-> >>   				reg_data->mux_core_shift),
-> >>   	       cpuclk->reg_base + reg_data->core_reg);
-> >>   
-> >> +	if (reg_data->core1_reg)
-> >> +		writel(HIWORD_UPDATE(0, reg_data->div_core1_mask,
-> >> +				     reg_data->div_core1_shift),
-> >> +		       cpuclk->reg_base + reg_data->core1_reg);
-> >> +	if (reg_data->core2_reg)
-> >> +		writel(HIWORD_UPDATE(0, reg_data->div_core2_mask,
-> >> +				     reg_data->div_core2_shift),
-> >> +		       cpuclk->reg_base + reg_data->core2_reg);
-> >> +	if (reg_data->core3_reg)
-> >> +		writel(HIWORD_UPDATE(0, reg_data->div_core3_mask,
-> >> +				     reg_data->div_core3_shift),
-> >> +		       cpuclk->reg_base + reg_data->core3_reg);
-> >> +
-> > for (i = 0; i < reg_data->num_cores; i++)
-> > 	writel(...)
-> >
-> >>   	if (ndata->old_rate > ndata->new_rate)
-> >>   		rockchip_cpuclk_set_dividers(cpuclk, rate);
-> >>   
-> >> diff --git a/drivers/clk/rockchip/clk.h b/drivers/clk/rockchip/clk.h
-> >> index 2271a84124b0..b46c93fd0cb5 100644
-> >> --- a/drivers/clk/rockchip/clk.h
-> >> +++ b/drivers/clk/rockchip/clk.h
-> >> @@ -322,7 +322,7 @@ struct rockchip_cpuclk_clksel {
-> >>   	u32 val;
-> >>   };
-> >>   
-> >> -#define ROCKCHIP_CPUCLK_NUM_DIVIDERS	2
-> >> +#define ROCKCHIP_CPUCLK_NUM_DIVIDERS	5
-> > please move this into a separate patch, as yes the rk3568 needs more
-> > dividers but that isn't related to adding separate core divider controls.
-> >
-> > [...]
-> > add
-> >
-> > #define ROCKCHIP_CPUCLK_MAX_CORES	4
-> >
-> >>   struct rockchip_cpuclk_rate_table {
-> >>   	unsigned long prate;
-> >>   	struct rockchip_cpuclk_clksel divs[ROCKCHIP_CPUCLK_NUM_DIVIDERS];
-> >> @@ -333,6 +333,12 @@ struct rockchip_cpuclk_rate_table {
-> >>    * @core_reg:		register offset of the core settings register
-> >>    * @div_core_shift:	core divider offset used to divide the pll value
-> >>    * @div_core_mask:	core divider mask
-> >> + * @div_core1_shift:	core1 divider offset used to divide the pll value
-> >> + * @div_core1_mask:	core1 divider mask
-> >> + * @div_core2_shift:	core2 divider offset used to divide the pll value
-> >> + * @div_core2_mask:	core2 divider mask
-> >> + * @div_core3_shift:	core3 divider offset used to divide the pll value
-> >> + * @div_core3_mask:	core3 divider mask
-> >>    * @mux_core_alt:	mux value to select alternate parent
-> >>    * @mux_core_main:	mux value to select main parent of core
-> >>    * @mux_core_shift:	offset of the core multiplexer
-> >> @@ -342,6 +348,15 @@ struct rockchip_cpuclk_reg_data {
-> >>   	int		core_reg;
-> >>   	u8		div_core_shift;
-> >>   	u32		div_core_mask;
-> >> +	int		core1_reg;
-> >> +	u8		div_core1_shift;
-> >> +	u32		div_core1_mask;
-> >> +	int		core2_reg;
-> >> +	u8		div_core2_shift;
-> >> +	u32		div_core2_mask;
-> >> +	int		core3_reg;
-> >> +	u8		div_core3_shift;
-> >> +	u32		div_core3_mask;
-> > please make this instead like:
-> >
-> > int	core_reg[ROCKCHIP_CPUCLK_MAX_CORES];
-> > u8	div_core_shift[ROCKCHIP_CPUCLK_MAX_CORES];
-> > u32	div_core_mask[ROCKCHIP_CPUCLK_MAX_CORES];
-> > int	num_cores;
+On Wed, Feb 24, 2021 at 11:55 AM Sumera Priyadarsini
+<sylphrenadin@gmail.com> wrote:
 >
-> This is also my original intention, but with such modification, other 
-> SOCs of RK need to be modified, otherwise they cannot be compatible with 
-> the old SOC.
+> Add a virtual hardware or vblank-less mode as a module to enable
+> VKMS to emulate virtual graphic drivers. This mode can be enabled
+> by setting enable_virtual_hw=1 at the time of loading VKMS.
+>
+> A new function vkms_crtc_composer() has been added to bypass the
+> vblank mode and is called directly in the atomic hook in
+> vkms_atomic_begin(). However, some crc captures still use vblanks
+> which causes the crc-based igt tests to crash. Currently, I am unsure
+> about how to approach one-shot implementation of crc reads so I am
+> still working on that.
 
-That is actually no problem, especially as the diff should be just a simple
+Gerd, Zack: For virtual hw like virtio-gpu or vmwgfx that does
+one-shot upload and damage tracking, what do you think is the best way
+to capture crc for validation? Assuming that's even on the plans
+anywhere ...
 
-static const struct rockchip_cpuclk_reg_data px30_cpuclk_data = {
--	.core_reg = PX30_CLKSEL_CON(0),
--	.div_core_shift = 0,
--	.div_core_mask = 0xf,
-+	.core_reg[0] = PX30_CLKSEL_CON(0),
-+	.div_core_shift[0] = 0,
-+	.div_core_mask[0] = 0xf,
-+	.num_cores = 1,
-	.mux_core_alt = 1,
-	.mux_core_main = 0,
-	.mux_core_shift = 7,
-	.mux_core_mask = 0x1,
-};
+Ideally it'd be a crc that the host side captures, so that we really
+have end-to-end validation, including the damage uploads and all that.
 
-So please go the clean way :-) 
+For vkms we're going for now with one-shot crc generation after each
+atomic flip (or DIRTYFB ioctl call). Will need a pile of igt changes,
+but seems like the most fitting model.
+Other option would be that we'd wire up something on the kernel side
+that generates a crc on-demand every time igt reads a new crc value
+(maybe with some rate limiting). But that's not really how virtual hw
+works when everything is pushed explicitly to the host side.
 
-Thanks
-Heiko
+Thoughts?
+
+> This patch has been tested with the igt tests, kms_writeback, kms_atomic,
+> kms_lease, kms_flip, kms_pipe_get_crc and preserves results except for
+> subtests related to crc reads and skips tests that rely on vertical
+> blanking. This patch must be tested after incorporating the
+> igt-tests patch: https://lists.freedesktop.org/archives/igt-dev/2021-February/029355.html .
+>
+> The patch is based on Rodrigo Siqueira's
+> patch(https://patchwork.freedesktop.org/patch/316851/?series=48469&rev=3)
+> and the ensuing review.
+>
+> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+
+I think the logic in the patch looks good, some comments below about polishing.
+-Daniel
+
+> ---
+>  drivers/gpu/drm/vkms/vkms_composer.c | 46 ++++++++++++++++++++++++++++
+>  drivers/gpu/drm/vkms/vkms_crtc.c     | 17 ++++++++--
+>  drivers/gpu/drm/vkms/vkms_drv.c      | 18 ++++++++---
+>  drivers/gpu/drm/vkms/vkms_drv.h      |  2 ++
+>  4 files changed, 75 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
+> index 66c6842d70db..7a8aaf5c5555 100644
+> --- a/drivers/gpu/drm/vkms/vkms_composer.c
+> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+> @@ -247,6 +247,52 @@ void vkms_composer_worker(struct work_struct *work)
+>                 drm_crtc_add_crc_entry(crtc, true, frame_start++, &crc32);
+>  }
+>
+> +void vkms_crtc_composer(struct vkms_crtc_state *crtc_state)
+> +{
+> +       struct drm_crtc *crtc = crtc_state->base.crtc;
+> +       struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
+> +       struct vkms_composer *primary_composer = NULL;
+> +       struct vkms_composer *cursor_composer = NULL;
+> +       void *vaddr_out = NULL;
+> +       u32 crc32 = 0;
+> +       int ret;
+> +       bool wb_pending;
+> +
+> +       wb_pending = crtc_state->wb_pending;
+> +
+> +       if (crtc_state->num_active_planes >= 1)
+> +               primary_composer = crtc_state->active_planes[0]->composer;
+> +
+> +       if (crtc_state->num_active_planes == 2)
+> +               cursor_composer = crtc_state->active_planes[1]->composer;
+> +
+> +       if (!primary_composer)
+> +               return;
+> +
+> +       if (wb_pending)
+> +               vaddr_out = crtc_state->active_writeback;
+> +
+> +       ret = compose_planes(&vaddr_out, primary_composer, cursor_composer);
+> +       if (ret) {
+> +               if (ret == -EINVAL && !wb_pending)
+> +                       kfree(vaddr_out);
+> +               return;
+> +       }
+> +
+> +       crc32 = compute_crc(vaddr_out, primary_composer);
+> +
+> +       if (wb_pending) {
+> +               drm_writeback_signal_completion(&out->wb_connector, 0);
+> +               spin_lock_irq(&out->composer_lock);
+> +               crtc_state->wb_pending = false;
+> +               spin_unlock_irq(&out->composer_lock);
+> +       } else {
+> +               kfree(vaddr_out);
+> +       }
+> +
+> +       drm_crtc_add_crc_entry(crtc, true, 0, &crc32);
+> +}
+
+This duplicates code that we also have vkms_composer_worker(). It
+would be good to if we can share this code (either by
+composer_worker() call this function you add here, or by having a
+composer_common function which does all the common parts.
+
+I also realized that we have a problem now with the kzalloc in
+compose_planes, that would need to be fixed up somehow. But can be
+done in a follow up patch, and it's a bit tricky to explain exactly
+why, but short summary is: We're not allowed to allocate memory from
+the crtc commit functions, only from crtc_check callback.
+
+Also since this is run while you hold a spinlock the kernel should
+complain into dmesg. At least if the basic debug stuff is all enabled,
+CONFIG_DEBUG_ATOMIC_SLEEP is the Kconfig option you need. Would be
+good to check that.
+
+> +
+>  static const char * const pipe_crc_sources[] = {"auto"};
+>
+>  const char *const *vkms_get_crc_sources(struct drm_crtc *crtc,
+> diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
+> index 6164349cdf11..38de791a4882 100644
+> --- a/drivers/gpu/drm/vkms/vkms_crtc.c
+> +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
+> @@ -224,13 +224,19 @@ static int vkms_crtc_atomic_check(struct drm_crtc *crtc,
+>  static void vkms_crtc_atomic_enable(struct drm_crtc *crtc,
+>                                     struct drm_atomic_state *state)
+>  {
+> -       drm_crtc_vblank_on(crtc);
+> +       struct vkms_device *vkmsdev = drm_device_to_vkms_device(crtc->dev);
+> +
+> +       if (!vkmsdev->config->virtual_hw)
+> +               drm_crtc_vblank_on(crtc);
+>  }
+>
+>  static void vkms_crtc_atomic_disable(struct drm_crtc *crtc,
+>                                      struct drm_atomic_state *state)
+>  {
+> -       drm_crtc_vblank_off(crtc);
+> +       struct vkms_device *vkmsdev = drm_device_to_vkms_device(crtc->dev);
+> +
+> +       if (!vkmsdev->config->virtual_hw)
+> +               drm_crtc_vblank_off(crtc);
+>  }
+>
+>  static void vkms_crtc_atomic_begin(struct drm_crtc *crtc,
+> @@ -248,8 +254,13 @@ static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
+>                                    struct drm_atomic_state *state)
+>  {
+>         struct vkms_output *vkms_output = drm_crtc_to_vkms_output(crtc);
+> +       struct vkms_crtc_state *vkms_state = to_vkms_crtc_state(crtc->state);
+> +       struct vkms_device *vkmsdev = drm_device_to_vkms_device(crtc->dev);
+> +
+> +       if (vkmsdev->config->virtual_hw)
+> +               vkms_crtc_composer(vkms_state);
+
+We're holding vkms_output->lock spinlock while doing this fairly
+expensive computation, that's not good. And this spinlock was only
+there to protect against concurrent access from the vblank hrtimer, so
+we don't really need this I think, and can make it conditional on
+!virtual_hw too.
+
+At that point all our crtc functions have conditions for virtual hw
+(except atomic_check), so I think it'd be cleaner to duplicate the
+functions into vkms_vblank_crtc_* and vkms_virtual_crtc, with two
+struct drm_crtc_helper_funcs and we do the if once when we set up the
+crtc in vkms_crtc_init.
+
+>
+> -       if (crtc->state->event) {
+> +       if (crtc->state->event && !vkmsdev->config->virtual_hw) {
+>                 spin_lock(&crtc->dev->event_lock);
+>
+>                 if (drm_crtc_vblank_get(crtc) != 0)
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
+> index 2173b82606f6..945c4495d62a 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.c
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
+> @@ -44,6 +44,11 @@ static bool enable_writeback = true;
+>  module_param_named(enable_writeback, enable_writeback, bool, 0444);
+>  MODULE_PARM_DESC(enable_writeback, "Enable/Disable writeback connector support");
+>
+> +static bool enable_virtual_hw = false;
+> +module_param_named(enable_virtual_hw, enable_virtual_hw, bool, 0444);
+> +MODULE_PARM_DESC(enable_virtual_hw, "Enable/Disable virtual hardware mode(virtual \
+> +hardware mode disables vblank interrupts)");
+> +
+>  DEFINE_DRM_GEM_FOPS(vkms_driver_fops);
+>
+>  static void vkms_release(struct drm_device *dev)
+> @@ -159,12 +164,14 @@ static int vkms_create(struct vkms_config *config)
+>                 goto out_devres;
+>         }
+>
+> -       vkms_device->drm.irq_enabled = true;
+> +       vkms_device->drm.irq_enabled = !vkms_device->config->virtual_hw;
+>
+> -       ret = drm_vblank_init(&vkms_device->drm, 1);
+> -       if (ret) {
+> -               DRM_ERROR("Failed to vblank\n");
+> -               goto out_devres;
+> +       if (!vkms_device->config->virtual_hw) {
+> +               ret = drm_vblank_init(&vkms_device->drm, 1);
+> +               if (ret) {
+> +                       DRM_ERROR("Failed to vblank\n");
+> +                       goto out_devres;
+> +               }
+>         }
+>
+>         ret = vkms_modeset_init(vkms_device);
+> @@ -198,6 +205,7 @@ static int __init vkms_init(void)
+>
+>         config->cursor = enable_cursor;
+>         config->writeback = enable_writeback;
+> +       config->virtual_hw = enable_virtual_hw;
+>
+>         return vkms_create(config);
+>  }
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+> index 35540c7c4416..d4a45518639c 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -85,6 +85,7 @@ struct vkms_device;
+>  struct vkms_config {
+>         bool writeback;
+>         bool cursor;
+> +       bool virtual_hw;
+>         /* only set when instantiated */
+>         struct vkms_device *dev;
+>  };
+> @@ -127,6 +128,7 @@ int vkms_verify_crc_source(struct drm_crtc *crtc, const char *source_name,
+>  /* Composer Support */
+>  void vkms_composer_worker(struct work_struct *work);
+>  void vkms_set_composer(struct vkms_output *out, bool enabled);
+> +void vkms_crtc_composer(struct vkms_crtc_state *crtc_state);
+>
+>  /* Writeback */
+>  int vkms_enable_writeback_connector(struct vkms_device *vkmsdev);
+> --
+> 2.25.1
+>
 
 
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
