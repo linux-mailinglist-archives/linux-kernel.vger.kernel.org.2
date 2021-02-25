@@ -2,253 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C114D32550F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA7632550B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbhBYSB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:01:26 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:10692 "EHLO m42-2.mailgun.net"
+        id S233269AbhBYSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:00:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60978 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233158AbhBYRws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:52:48 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614275542; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=DGq6IDzFUvvJIL7ZMOUaKbC0+G2XRnz/QgQTPcnn1yo=; b=qGJwN2om4qQadP1cXaHMcEfna7WBnGXHS1owrQUZKvN810Qyu6lgYixSn+XXTtOOtc32/bGf
- qp2zVkOoXxrOf4cL1nbIpnykbh1Hr4HqY8UMKDCGSTMORfzPU2TS5otpn5GBMM/ozj4k6ZNu
- NmBxDYJjSWpxx5k8fr5Ig9RU+nE=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6037e3ba7f306299bfc97fdb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Feb 2021 17:51:54
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 94CCBC433CA; Thu, 25 Feb 2021 17:51:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C253C433ED;
-        Thu, 25 Feb 2021 17:51:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C253C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, Eric Anholt <eric@anholt.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] drm/msm: Improve the a6xx page fault handler
-Date:   Thu, 25 Feb 2021 10:51:35 -0700
-Message-Id: <20210225175135.91922-4-jcrouse@codeaurora.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210225175135.91922-1-jcrouse@codeaurora.org>
-References: <20210225175135.91922-1-jcrouse@codeaurora.org>
+        id S232982AbhBYRwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 12:52:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 37A0BAD57;
+        Thu, 25 Feb 2021 17:51:54 +0000 (UTC)
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org, x86@kernel.org
+References: <20210224153950.20789-1-rppt@kernel.org>
+ <20210224153950.20789-2-rppt@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v7 1/1] mm/page_alloc.c: refactor initialization of struct
+ page for holes in memory layout
+Message-ID: <a4b2ba7e-96a5-6a75-dad7-626d054f9e8b@suse.cz>
+Date:   Thu, 25 Feb 2021 18:51:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210224153950.20789-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new adreno-smmu-priv fault info function to get more SMMU
-debug registers and print the current TTBR0 to debug per-instance
-pagetables and figure out which GPU block generated the request.
+On 2/24/21 4:39 PM, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 
-Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
----
+Hi, thanks for your efforts. I'll just nit pick on the description/comments as I
+don't feel confident about judging the implementation correctness, sorry :)
 
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c |  4 +-
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 76 +++++++++++++++++++++++++--
- drivers/gpu/drm/msm/msm_iommu.c       | 11 +++-
- drivers/gpu/drm/msm/msm_mmu.h         |  4 +-
- 4 files changed, 87 insertions(+), 8 deletions(-)
+> There could be struct pages that are not backed by actual physical memory.
+> This can happen when the actual memory bank is not a multiple of
+> SECTION_SIZE or when an architecture does not register memory holes
+> reserved by the firmware as memblock.memory.
+> 
+> Such pages are currently initialized using init_unavailable_mem() function
+> that iterates through PFNs in holes in memblock.memory and if there is a
+> struct page corresponding to a PFN, the fields of this page are set to
+> default values and it is marked as Reserved.
+> 
+> init_unavailable_mem() does not take into account zone and node the page
+> belongs to and sets both zone and node links in struct page to zero.
+> 
+> Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
+> rather that check each PFN") the holes inside a zone were re-initialized
+> during memmap_init() and got their zone/node links right. However, after
+> that commit nothing updates the struct pages representing such holes.
+> 
+> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+> instance in a configuration below:
+> 
+> 	# grep -A1 E820 /proc/iomem
+> 	7a17b000-7a216fff : Unknown E820 type
+> 	7a217000-7bffffff : System RAM
+> 
+> unset zone link in struct page will trigger
+> 
+> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
 
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-index 7e553d3efeb2..56b548921c4e 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-@@ -1075,7 +1075,7 @@ bool a5xx_idle(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
- 	return true;
- }
- 
--static int a5xx_fault_handler(void *arg, unsigned long iova, int flags)
-+static int a5xx_fault_handler(void *arg, unsigned long iova, int flags, void *data)
- {
- 	struct msm_gpu *gpu = arg;
- 	pr_warn_ratelimited("*** gpu fault: iova=%08lx, flags=%d (%u,%u,%u,%u)\n",
-@@ -1085,7 +1085,7 @@ static int a5xx_fault_handler(void *arg, unsigned long iova, int flags)
- 			gpu_read(gpu, REG_A5XX_CP_SCRATCH_REG(6)),
- 			gpu_read(gpu, REG_A5XX_CP_SCRATCH_REG(7)));
- 
--	return -EFAULT;
-+	return 0;
- }
- 
- static void a5xx_cp_err_irq(struct msm_gpu *gpu)
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 064b7face504..97eabd87740c 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -959,18 +959,88 @@ static void a6xx_recover(struct msm_gpu *gpu)
- 	msm_gpu_hw_init(gpu);
- }
- 
--static int a6xx_fault_handler(void *arg, unsigned long iova, int flags)
-+static const char *a6xx_uche_fault_block(struct msm_gpu *gpu, u32 mid)
-+{
-+	static const char *uche_clients[7] = {
-+		"VFD", "SP", "VSC", "VPC", "HLSQ", "PC", "LRZ",
-+	};
-+	u32 val;
-+
-+	if (mid < 1 || mid > 3)
-+		return "UNKNOWN";
-+
-+	/*
-+	 * The source of the data depends on the mid ID read from FSYNR1.
-+	 * and the client ID read from the UCHE block
-+	 */
-+	val = gpu_read(gpu, REG_A6XX_UCHE_CLIENT_PF);
-+
-+	/* mid = 3 is most precise and refers to only one block per client */
-+	if (mid == 3)
-+		return uche_clients[val & 7];
-+
-+	/* For mid=2 the source is TP or VFD except when the client id is 0 */
-+	if (mid == 2)
-+		return ((val & 7) == 0) ? "TP" : "TP|VFD";
-+
-+	/* For mid=1 just return "UCHE" as a catchall for everything else */
-+	return "UCHE";
-+}
-+
-+static const char *a6xx_fault_block(struct msm_gpu *gpu, u32 id)
-+{
-+	if (id == 0)
-+		return "CP";
-+	else if (id == 4)
-+		return "CCU";
-+	else if (id == 6)
-+		return "CDP Prefetch";
-+
-+	return a6xx_uche_fault_block(gpu, id);
-+}
-+
-+#define ARM_SMMU_FSR_TF                 BIT(1)
-+#define ARM_SMMU_FSR_PF			BIT(3)
-+#define ARM_SMMU_FSR_EF			BIT(4)
-+
-+static int a6xx_fault_handler(void *arg, unsigned long iova, int flags, void *data)
- {
- 	struct msm_gpu *gpu = arg;
-+	struct adreno_smmu_fault_info *info = data;
-+	const char *type = "UNKNOWN";
- 
--	pr_warn_ratelimited("*** gpu fault: iova=%08lx, flags=%d (%u,%u,%u,%u)\n",
-+	/*
-+	 * Print a default message if we couldn't get the data from the
-+	 * adreno-smmu-priv
-+	 */
-+	if (!info) {
-+		pr_warn_ratelimited("*** gpu fault: iova=%.16lx flags=%d (%u,%u,%u,%u)\n",
- 			iova, flags,
- 			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(4)),
- 			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(5)),
- 			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(6)),
- 			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(7)));
- 
--	return -EFAULT;
-+		return 0;
-+	}
-+
-+	if (info->fsr & ARM_SMMU_FSR_TF)
-+		type = "TRANSLATION";
-+	else if (info->fsr & ARM_SMMU_FSR_PF)
-+		type = "PERMISSION";
-+	else if (info->fsr & ARM_SMMU_FSR_EF)
-+		type = "EXTERNAL";
-+
-+	pr_warn_ratelimited("*** gpu fault: ttbr0=%.16llx iova=%.16lx dir=%s type=%s source=%s (%u,%u,%u,%u)\n",
-+			info->ttbr0, iova,
-+			flags & IOMMU_FAULT_WRITE ? "WRITE" : "READ", type,
-+			a6xx_fault_block(gpu, info->fsynr1 & 0xff),
-+			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(4)),
-+			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(5)),
-+			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(6)),
-+			gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(7)));
-+
-+	return 0;
- }
- 
- static void a6xx_cp_hw_err_irq(struct msm_gpu *gpu)
-diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
-index 50d881794758..6975b95c3c29 100644
---- a/drivers/gpu/drm/msm/msm_iommu.c
-+++ b/drivers/gpu/drm/msm/msm_iommu.c
-@@ -211,8 +211,17 @@ static int msm_fault_handler(struct iommu_domain *domain, struct device *dev,
- 		unsigned long iova, int flags, void *arg)
- {
- 	struct msm_iommu *iommu = arg;
-+	struct adreno_smmu_priv *adreno_smmu = dev_get_drvdata(iommu->base.dev);
-+	struct adreno_smmu_fault_info info, *ptr = NULL;
-+
-+	if (adreno_smmu->get_fault_info) {
-+		adreno_smmu->get_fault_info(adreno_smmu->cookie, &info);
-+		ptr = &info;
-+	}
-+
- 	if (iommu->base.handler)
--		return iommu->base.handler(iommu->base.arg, iova, flags);
-+		return iommu->base.handler(iommu->base.arg, iova, flags, ptr);
-+
- 	pr_warn_ratelimited("*** fault: iova=%16lx, flags=%d\n", iova, flags);
- 	return 0;
- }
-diff --git a/drivers/gpu/drm/msm/msm_mmu.h b/drivers/gpu/drm/msm/msm_mmu.h
-index 61ade89d9e48..a88f44c3268d 100644
---- a/drivers/gpu/drm/msm/msm_mmu.h
-+++ b/drivers/gpu/drm/msm/msm_mmu.h
-@@ -26,7 +26,7 @@ enum msm_mmu_type {
- struct msm_mmu {
- 	const struct msm_mmu_funcs *funcs;
- 	struct device *dev;
--	int (*handler)(void *arg, unsigned long iova, int flags);
-+	int (*handler)(void *arg, unsigned long iova, int flags, void *data);
- 	void *arg;
- 	enum msm_mmu_type type;
- };
-@@ -43,7 +43,7 @@ struct msm_mmu *msm_iommu_new(struct device *dev, struct iommu_domain *domain);
- struct msm_mmu *msm_gpummu_new(struct device *dev, struct msm_gpu *gpu);
- 
- static inline void msm_mmu_set_fault_handler(struct msm_mmu *mmu, void *arg,
--		int (*handler)(void *arg, unsigned long iova, int flags))
-+		int (*handler)(void *arg, unsigned long iova, int flags, void *data))
- {
- 	mmu->arg = arg;
- 	mmu->handler = handler;
--- 
-2.25.1
+... in set_pfnblock_flags_mask() when called with a struct page from the
+"Unknown E820 type" range.
+
+> because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
+> in struct page) in the same pageblock.
+
+I would say "there are apparently pages" ... "and ZONE_DMA does not span this range"
+
+> Interleave initialization of the unavailable pages with the normal
+> initialization of memory map, so that zone and node information will be
+> properly set on struct pages that are not backed by the actual memory.
+> 
+> With this change the pages for holes inside a zone will get proper
+> zone/node links and the pages that are not spanned by any node will get
+> links to the adjacent zone/node.
+
+What if two zones are adjacent? I.e. if the hole was at a boundary between two
+zones.
+
+> Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Reported-by: Qian Cai <cai@lca.pw>
+> Reported-by: Andrea Arcangeli <aarcange@redhat.com>
+> Reviewed-by: Baoquan He <bhe@redhat.com>
+
+For the approach:
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+>  mm/page_alloc.c | 147 +++++++++++++++++++++---------------------------
+>  1 file changed, 64 insertions(+), 83 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 3e93f8b29bae..a11a9acde708 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -6280,12 +6280,60 @@ static void __meminit zone_init_free_lists(struct zone *zone)
+>  	}
+>  }
+>  
+> +#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
+> +/*
+> + * Only struct pages that correspond to ranges defined by memblock.memory
+> + * are zeroed and initialized by going through __init_single_page() during
+> + * memmap_init_zone().
+> + *
+> + * But, there could be struct pages that correspond to holes in
+> + * memblock.memory. This can happen because of the following reasons:
+> + * - phyiscal memory bank size is not necessarily the exact multiple of the
+
+        physical
+
+> + *   arbitrary section size
+> + * - early reserved memory may not be listed in memblock.memory
+> + * - memory layouts defined with memmap= kernel parameter may not align
+> + *   nicely with memmap sections
+> + *
+> + * Explicitly initialize those struct pages so that:
+> + * - PG_Reserved is set
+> + * - zone and node links point to zone and node that span the page
+
+Yes spanned pages are the most important, but should you also describe here the
+adjacent ones, as you do in commit log?
+
+> + */
+> +static u64 __meminit init_unavailable_range(unsigned long spfn,
+> +					    unsigned long epfn,
+> +					    int zone, int node)
+> +{
+> +	unsigned long pfn;
+> +	u64 pgcnt = 0;
+> +
+> +	for (pfn = spfn; pfn < epfn; pfn++) {
+> +		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
+> +			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
+> +				+ pageblock_nr_pages - 1;
+> +			continue;
+> +		}
+> +		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
+> +		__SetPageReserved(pfn_to_page(pfn));
+> +		pgcnt++;
+> +	}
+> +
+> +	return pgcnt;
+> +}
+> +#else
+> +static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
+> +					 int zone, int node)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+>  void __meminit __weak memmap_init_zone(struct zone *zone)
+>  {
+>  	unsigned long zone_start_pfn = zone->zone_start_pfn;
+>  	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
+>  	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
+> +	static unsigned long hole_pfn = 0;
+>  	unsigned long start_pfn, end_pfn;
+> +	u64 pgcnt = 0;
+>  
+>  	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
+>  		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
+> @@ -6295,7 +6343,23 @@ void __meminit __weak memmap_init_zone(struct zone *zone)
+>  			memmap_init_range(end_pfn - start_pfn, nid,
+>  					zone_id, start_pfn, zone_end_pfn,
+>  					MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
+> +
+> +		if (hole_pfn < start_pfn)
+> +			pgcnt += init_unavailable_range(hole_pfn, start_pfn,
+> +							zone_id, nid);
+> +		hole_pfn = end_pfn;
+>  	}
+> +
+> +#ifdef CONFIG_SPARSEMEM
+> +	end_pfn = round_up(zone_end_pfn, PAGES_PER_SECTION);
+> +	if (hole_pfn < end_pfn)
+> +		pgcnt += init_unavailable_range(hole_pfn, end_pfn,
+> +						zone_id, nid);
+> +#endif
+> +
+> +	if (pgcnt)
+> +		pr_info("  %s zone: %lld pages in unavailable ranges\n",
+> +			zone->name, pgcnt);
+>  }
+>  
+>  static int zone_batchsize(struct zone *zone)
+> @@ -7092,88 +7156,6 @@ void __init free_area_init_memoryless_node(int nid)
+>  	free_area_init_node(nid);
+>  }
+>  
+> -#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
+> -/*
+> - * Initialize all valid struct pages in the range [spfn, epfn) and mark them
+> - * PageReserved(). Return the number of struct pages that were initialized.
+> - */
+> -static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
+> -{
+> -	unsigned long pfn;
+> -	u64 pgcnt = 0;
+> -
+> -	for (pfn = spfn; pfn < epfn; pfn++) {
+> -		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
+> -			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
+> -				+ pageblock_nr_pages - 1;
+> -			continue;
+> -		}
+> -		/*
+> -		 * Use a fake node/zone (0) for now. Some of these pages
+> -		 * (in memblock.reserved but not in memblock.memory) will
+> -		 * get re-initialized via reserve_bootmem_region() later.
+> -		 */
+> -		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
+> -		__SetPageReserved(pfn_to_page(pfn));
+> -		pgcnt++;
+> -	}
+> -
+> -	return pgcnt;
+> -}
+> -
+> -/*
+> - * Only struct pages that are backed by physical memory are zeroed and
+> - * initialized by going through __init_single_page(). But, there are some
+> - * struct pages which are reserved in memblock allocator and their fields
+> - * may be accessed (for example page_to_pfn() on some configuration accesses
+> - * flags). We must explicitly initialize those struct pages.
+> - *
+> - * This function also addresses a similar issue where struct pages are left
+> - * uninitialized because the physical address range is not covered by
+> - * memblock.memory or memblock.reserved. That could happen when memblock
+> - * layout is manually configured via memmap=, or when the highest physical
+> - * address (max_pfn) does not end on a section boundary.
+> - */
+> -static void __init init_unavailable_mem(void)
+> -{
+> -	phys_addr_t start, end;
+> -	u64 i, pgcnt;
+> -	phys_addr_t next = 0;
+> -
+> -	/*
+> -	 * Loop through unavailable ranges not covered by memblock.memory.
+> -	 */
+> -	pgcnt = 0;
+> -	for_each_mem_range(i, &start, &end) {
+> -		if (next < start)
+> -			pgcnt += init_unavailable_range(PFN_DOWN(next),
+> -							PFN_UP(start));
+> -		next = end;
+> -	}
+> -
+> -	/*
+> -	 * Early sections always have a fully populated memmap for the whole
+> -	 * section - see pfn_valid(). If the last section has holes at the
+> -	 * end and that section is marked "online", the memmap will be
+> -	 * considered initialized. Make sure that memmap has a well defined
+> -	 * state.
+> -	 */
+> -	pgcnt += init_unavailable_range(PFN_DOWN(next),
+> -					round_up(max_pfn, PAGES_PER_SECTION));
+> -
+> -	/*
+> -	 * Struct pages that do not have backing memory. This could be because
+> -	 * firmware is using some of this memory, or for some other reasons.
+> -	 */
+> -	if (pgcnt)
+> -		pr_info("Zeroed struct page in unavailable ranges: %lld pages", pgcnt);
+> -}
+> -#else
+> -static inline void __init init_unavailable_mem(void)
+> -{
+> -}
+> -#endif /* !CONFIG_FLAT_NODE_MEM_MAP */
+> -
+>  #if MAX_NUMNODES > 1
+>  /*
+>   * Figure out the number of possible node ids.
+> @@ -7597,7 +7579,6 @@ void __init free_area_init(unsigned long *max_zone_pfn)
+>  	/* Initialise every node */
+>  	mminit_verify_pageflags_layout();
+>  	setup_nr_node_ids();
+> -	init_unavailable_mem();
+>  	for_each_online_node(nid) {
+>  		pg_data_t *pgdat = NODE_DATA(nid);
+>  		free_area_init_node(nid);
+> 
 
