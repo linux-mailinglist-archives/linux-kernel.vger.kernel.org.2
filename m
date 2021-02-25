@@ -2,161 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2436D325A30
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2D0325A31
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 00:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhBYX2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 18:28:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56386 "EHLO
+        id S232596AbhBYX20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 18:28:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231925AbhBYX2C (ORCPT
+        with ESMTP id S231925AbhBYX2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 18:28:02 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B327C06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:27:13 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id p16so7805437ioj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:27:13 -0800 (PST)
+        Thu, 25 Feb 2021 18:28:21 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8D8C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:27:40 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id lr13so11663934ejb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:27:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5BVyJ8VvhMa5lHXCBOiQO5IyxOHW0ykPgLhaVVKuF7o=;
-        b=UWBdQmX5mxAijUdurfYOQi6c43opvi1a/wi/+4KyyiHnJJSuhXhjNw9bYkLjqtkxAs
-         vGiJ8MhFQKJ9R0mZ0SxqK1g6dO98KHuEjnrvyhhYaZPQT4+aEocJAmoL4I2Xk8Gohcjc
-         qVh2FHH2skEnlBFGnTtXAiStbuFid709J4jHNahXQxocrUXTLcwNI5rjUZEBY8Pswxq5
-         LEta9r9H5PHla4jnN4W7I2fatYYsf5emIp+5DRJt63xeOdoGGTrkIt6uFhtLbmM44TiB
-         ixQap30K4R0vg3a19ZXZBjIXE2cflvXK/dCudrVp159dl07OXVp8tM2YaqM6PbVX4otY
-         4lmA==
+        bh=bLcmTEjAiF5yFpxf27atOmC91/iDittSsNlvHgP+FGw=;
+        b=WAV1PV1KABzooKU+nDNO9oCfpMmd7hnjojZfiA9jbcjxpJ5euqn3q1lz1J+VxZGzvs
+         TOWw/xoVDYENrYzytLq03NBIbhDH57Jm9hAL/UFdbc/fYldOcIaMgkZOe9xhjoset08E
+         KPFE5YyrjUcy6dFzxw5a1oPyprnC6RPg8cFd2bumvS+D39E3rrrMfyed598M4dsvw1YI
+         0a7Jx66J1XZaiuR2n+n28/7/EjbwBQ92ir4SXmRFyHOegjQ7NNJfK9sCFpm+mg/rg2JF
+         Og6zjWvOrK8ICMQLekXr9xk7mbkW3fjljVVxq8ZhPbr/gMziu1Ohp84sTiPzt0XDsxpl
+         P3SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5BVyJ8VvhMa5lHXCBOiQO5IyxOHW0ykPgLhaVVKuF7o=;
-        b=b0SgBLz7oOERoK2jNBY2JodcFZf79WX+z8+61cK1L3kq7Ir33Zj1uk2zR+E/AlxZux
-         RszoRJBNLEOvzzeQJxnj1lQ/aIa9HdpsHPtuC00J+fQnVUOv4FdPw4VdsK53rFagZ3Ms
-         CAo42oBlOE3JPm2LiIPb5aGF9IIIb9X5HWl+vUwPrCj2s8P1OmvsYupxEuTjzHiGOWnJ
-         n0qcIkb9UbNsX5JTVwfClXVppsdbcFGUrMQb+5Zb/4W2kySGwuXgsxJRleeKh8/NOwe8
-         zl0TfTSyEUZL3XPFwItZwIjnWr+w1C3NRBLhz+vpRjoxuuMEPkbkvSGPeRuJoufGYGQJ
-         2/Cw==
-X-Gm-Message-State: AOAM532128iycrHX4CwIGOYUIkAuAOuGa12v586Sx1zCtz+zfhyR9+mb
-        d+DjkQiTBEGek3yiEi9bFIp4ygAndzIRENdlaJgXpg==
-X-Google-Smtp-Source: ABdhPJwxP/CvB1vsBhRA6CV3ZO+uz2PjuW+nzH1ZzaEPt9UicnfG7Q8mmt7mINLxqNLB6ZHvaVrOMs5R+ln5kmfDveU=
-X-Received: by 2002:a02:30cb:: with SMTP id q194mr159018jaq.57.1614295632018;
- Thu, 25 Feb 2021 15:27:12 -0800 (PST)
+        bh=bLcmTEjAiF5yFpxf27atOmC91/iDittSsNlvHgP+FGw=;
+        b=WlIy9JHhqh4B0GAEIpfjGUExAfvh/8kS9ZIBKU+REcMMmTlnW6zVDf/R8BSkZyt6P2
+         HIzIjeOwJfKg9BDuN8Ju/pmsUoQX/Gum/A1lB0jzggwMMuL2DdWqbVQI80DHFJrfBe9T
+         C/iRDoT6qPHZOXzMlzvcSg5uWD8BSRuw9dXkcc6FXKL8rM7xiYlsBSl27Ndka15SRtie
+         PnOd4/uMb4cq43Zwkjy2PpPWz9Rp7fVy1TxRV7BdG/tsxDiIoiiHUJhWnlRH+67xcZtI
+         3S4vWDmUo67bGJhKEUSjpETCTFVonCSIvMhmTcaz7EAAzLR8CGk5kMhTf7G8HY/XpIdY
+         +pyg==
+X-Gm-Message-State: AOAM533LKrNjIFfGr14qU6Y8cjpjGyOYT0yf8744BNg0T6+3F2IXOxtX
+        pFCP3RGZgdFk00IJNiFDcSuQ8FJNQlgoxcKTtbgs
+X-Google-Smtp-Source: ABdhPJyWVS/hrD+V4AvttM+SSjvEy52dNqah1ffuwMS87KYsNyJ8cUUVc1mTEFfK+8tWKRBoVMuAEFf/vCbdv+CpJ2Y=
+X-Received: by 2002:a17:906:2e91:: with SMTP id o17mr43073eji.488.1614295659553;
+ Thu, 25 Feb 2021 15:27:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225055940.18748-1-wangyanan55@huawei.com> <20210225055940.18748-5-wangyanan55@huawei.com>
-In-Reply-To: <20210225055940.18748-5-wangyanan55@huawei.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 25 Feb 2021 15:27:00 -0800
-Message-ID: <CANgfPd8rSmKr_G9HFqt30hFGJ9jW387yUODYH+f+BUJPv7-sCA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 4/7] KVM: selftests: Add a helper to get system
- configured THP page size
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     kvm <kvm@vger.kernel.org>, linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+References: <20210223214346.GB6000@sequoia> <20210223215054.GC6000@sequoia>
+ <20210223223652.GD6000@sequoia> <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
+ <20210224143651.GE6000@sequoia> <CAFqZXNsNtAD56H0K-oOMkm=M_M6g=zuSvprDAWVk_phwQGk_TQ@mail.gmail.com>
+In-Reply-To: <CAFqZXNsNtAD56H0K-oOMkm=M_M6g=zuSvprDAWVk_phwQGk_TQ@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 25 Feb 2021 18:27:28 -0500
+Message-ID: <CAHC9VhRTBrBU+PgWWyymeS+wvLKX5LRw8BZFZpS56eo2uMJedg@mail.gmail.com>
+Subject: Re: [BUG] Race between policy reload sidtab conversion and live conversion
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 10:00 PM Yanan Wang <wangyanan55@huawei.com> wrote:
->
-> If we want to have some tests about transparent hugepages, the system
-> configured THP hugepage size should better be known by the tests, which
-> can be used for kinds of alignment or guest memory accessing of vcpus...
-> So it makes sense to add a helper to get the transparent hugepage size.
->
-> With VM_MEM_SRC_ANONYMOUS_THP specified in vm_userspace_mem_region_add(),
-> we now stat /sys/kernel/mm/transparent_hugepage to check whether THP is
-> configured in the host kernel before madvise(). Based on this, we can also
-> read file /sys/kernel/mm/transparent_hugepage/hpage_pmd_size to get THP
-> hugepage size.
->
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+On Thu, Feb 25, 2021 at 11:38 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> Unless someone objects, I'll start working on a patch to switch back
+> to read-write lock for now. If all goes well, I'll send it sometime
+> next week.
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+Sorry, I was looking at other things and just got to this ... I'm not
+overly excited about switching back to the read-write lock so quickly,
+I'd rather we spend some additional time looking into resolving issues
+with the current RCU code.
 
-> ---
->  .../testing/selftests/kvm/include/test_util.h |  2 ++
->  tools/testing/selftests/kvm/lib/test_util.c   | 36 +++++++++++++++++++
->  2 files changed, 38 insertions(+)
->
-> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-> index b7f41399f22c..ef24c76ba89a 100644
-> --- a/tools/testing/selftests/kvm/include/test_util.h
-> +++ b/tools/testing/selftests/kvm/include/test_util.h
-> @@ -78,6 +78,8 @@ struct vm_mem_backing_src_alias {
->         enum vm_mem_backing_src_type type;
->  };
->
-> +bool thp_configured(void);
-> +size_t get_trans_hugepagesz(void);
->  void backing_src_help(void);
->  enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
->
-> diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-> index c7c0627c6842..f2d133f76c67 100644
-> --- a/tools/testing/selftests/kvm/lib/test_util.c
-> +++ b/tools/testing/selftests/kvm/lib/test_util.c
-> @@ -10,6 +10,7 @@
->  #include <limits.h>
->  #include <stdlib.h>
->  #include <time.h>
-> +#include <sys/stat.h>
->  #include "linux/kernel.h"
->
->  #include "test_util.h"
-> @@ -117,6 +118,41 @@ const struct vm_mem_backing_src_alias backing_src_aliases[] = {
->         {"anonymous_hugetlb", VM_MEM_SRC_ANONYMOUS_HUGETLB,},
->  };
->
-> +bool thp_configured(void)
-> +{
-> +       int ret;
-> +       struct stat statbuf;
-> +
-> +       ret = stat("/sys/kernel/mm/transparent_hugepage", &statbuf);
-> +       TEST_ASSERT(ret == 0 || (ret == -1 && errno == ENOENT),
-> +                   "Error in stating /sys/kernel/mm/transparent_hugepage: %d",
-> +                   errno);
-> +
-> +       return ret == 0;
-> +}
-> +
-> +size_t get_trans_hugepagesz(void)
-> +{
-> +       size_t size;
-> +       char buf[16];
-> +       FILE *f;
-> +
-> +       TEST_ASSERT(thp_configured(), "THP is not configured in host kernel");
-> +
-> +       f = fopen("/sys/kernel/mm/transparent_hugepage/hpage_pmd_size", "r");
-> +       TEST_ASSERT(f != NULL,
-> +                   "Error in opening transparent_hugepage/hpage_pmd_size: %d",
-> +                   errno);
-> +
-> +       if (fread(buf, sizeof(char), sizeof(buf), f) == 0) {
-> +               fclose(f);
-> +               TEST_FAIL("Unable to read transparent_hugepage/hpage_pmd_size");
-> +       }
-> +
-> +       size = strtoull(buf, NULL, 10);
-> +       return size;
-> +}
-> +
->  void backing_src_help(void)
->  {
->         int i;
-> --
-> 2.19.1
->
+-- 
+paul moore
+www.paul-moore.com
