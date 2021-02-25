@@ -2,131 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D7A324979
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CE832497A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235278AbhBYD1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 22:27:06 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:34594 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbhBYD1B (ORCPT
+        id S232700AbhBYD2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 22:28:39 -0500
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:57997
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S231843AbhBYD2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 22:27:01 -0500
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210225032617epoutp044e225490e5e609f780c5da2c6bb95a5f~m38qQ_Wze0682306823epoutp04a
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 03:26:17 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210225032617epoutp044e225490e5e609f780c5da2c6bb95a5f~m38qQ_Wze0682306823epoutp04a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614223577;
-        bh=PUJ1RF9kKOIw3H5CgMQFMHd7cpsNDg6/7ze9waNJ49M=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=TTj87//7gGbOd+qTlHOlbzvE1S0SD4tPfppyMLTFpDLRsHZGHKxzkmh7yqxd4QWgz
-         zRtrq1b2rd82U025rzSxrfG7U1q/IH5v8n/NiXw2YOG1PRnKfr5qmzYiMh9/yw70Z/
-         y12qc3PKFIMyr/AT8eN//TmvPoM24Eb8kLgq/0MM=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210225032617epcas2p3e32cdfd18f2f2507076571b056bbc287~m38pw7Zai2214722147epcas2p3t;
-        Thu, 25 Feb 2021 03:26:17 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4DmJ934XRPz4x9Q8; Thu, 25 Feb
-        2021 03:26:15 +0000 (GMT)
-X-AuditID: b6c32a46-1efff7000000dbf8-70-603718d711c6
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BF.C9.56312.7D817306; Thu, 25 Feb 2021 12:26:15 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: RE: [PATCH v24 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <DM6PR04MB6575BBF6F89002222EA5FC1DFC9F9@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210225032615epcms2p6679f3571205dc7a9c222f07398a9726c@epcms2p6>
-Date:   Thu, 25 Feb 2021 12:26:15 +0900
-X-CMS-MailID: 20210225032615epcms2p6679f3571205dc7a9c222f07398a9726c
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA51TbUxbVRj23HtpC1py+RrHbrp6hwpTSiltOYwxcU7SuIgmblk2XaCWG4rQ
-        D3sLzCVkzcDB2BiYKbAOqoOUKZA12/goFPkoisBClLEPvtS6lWzIuiHMOMZAKS1u8af/nvOc
-        5z3P874nLwcP7GDzOBlqPa1Ty7Molh/R0hshjbwOY1OFVyZeQA5TCwt9e6SfjaYXrrJQ78Rd
-        NiqfXcDRnKXOB03bI1C9Yw/Kr7WwUNWQAUMlpc0sdHNyno1qRlswVLpcSKCR9ioWOnbdykJn
-        f1jG0ESTHzI3jwF0tKKRQDVnbERiiGzkyk7ZyIkSTNZm/JktK6vpBrKu6ka2rGCgi5D9MTVO
-        yE401QPZ/IXnZYXdx7B3/fYZwFa5TqHMyKH5tFqhSctQpydQu3clRSKKr9Qw+gTq/WgkEkTH
-        SQTiOIEodv+WaKFQJKH4armKTqAORHqrKb5OoV1R62lGr6MV9AqlS2T08nRawMhVTLY6XaDQ
-        qCh+jjwre6WOitq2VUnL02gdP9UJlIOT67Xn2AcuHr+LGcAcUQw4HEiK4QPbzmLgxwkkrQAW
-        HLnh4+a5ZABcsgYVA19OEPkarPlrkHDjQJKClmEj28ML4PhvjcCNWeSrsKL/V7b7nWByEYfD
-        rnIf9wEnzThsmDLgbhUkubCycIrw4PWw9WwzcJv5kvthqZ3nocPhg7oSrzwEjjW42Gv4Xt+X
-        wIOD4ae/DHk1AdCxYPPyz8I+2yzmwYdg8+RD4M4AyeMA9raN+3guouC1ovOrGbjk27BjfmC1
-        mCBfhK6KL7xmO6Dj9tiqBic3wlZXFe7OiZMR0NIe5ZnbJvjdOLHWleH8Ivu/GCf9YVHv0r+8
-        1eT0RnsJnluwYGVgk/HxpI1PeBkfe30F8HqwjtYyqnSaEWlFT37zBbC6AZuTrOBz16zADjAO
-        sAPIwalg7sVlSWogN03+yUFap0nRZWfRjB0cXOnyM5wXotCsrJBanxItFYqkkhhxTIxELPnf
-        tEQklQrjJEgiFSEqlMsIHSmBZLpcT2fStJbWrZljHF+eAcuMTSoWb2jt7F6SzbT3F9w7HYa3
-        kpPV4jz1yafum0f37fGvxeqyxeaHVvJGWYA5yJ7X80ZahLDJ77Qzd1fkN8nl1T9+fId6J7yT
-        V/tmqT/I/bD70kejucO2yg2irmnhmb4e1u+VA90Db+X68jrNUzOJ88qQyx98zTs8H/7TgG9P
-        6PI1Z8shU5zJVPQyJ3726e3fb4+fbDALdxw/vO4UK9O0V7UY/Ddzykf8imWL1uV/+6rI6Qq7
-        JQ64/7pxUIcejfZdCr2cmG+bKbOYOjJ3l2iki3dgA7zpFM9ti3cQ1tGNt6xBXclDZCvRlpyf
-        tffPZ8ijBhrkPVKF5Tx3smV28L1aimCU8ujNuI6R/wPhmILGzwQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0
-References: <DM6PR04MB6575BBF6F89002222EA5FC1DFC9F9@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p6>
-        <20210224045532epcms2p2215025506b062e2fdbad73e51563dca6@epcms2p2>
-        <CGME20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p6>
+        Wed, 24 Feb 2021 22:28:37 -0500
+Received: from centos7u5.localdomain (unknown [202.43.158.76])
+        by c1app2 (Coremail) with SMTP id AgINCgBnb_shGTdg5dEfAw--.17262S3;
+        Thu, 25 Feb 2021 11:27:30 +0800 (CST)
+From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Subject: [PATCH] mm/swapfile: minor coding style tweaks
+Date:   Thu, 25 Feb 2021 11:27:04 +0800
+Message-Id: <1614223624-16055-1-git-send-email-daizhiyuan@phytium.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AgINCgBnb_shGTdg5dEfAw--.17262S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1xKr43CF1rGFWfZr15CFg_yoWDCFX_C3
+        y8Zws7Grs8XF13uF13Cr45Ar9rWrsxZFyrCryS9Fy3trWrGa4fXrZ2yFyFyrWrZwsYgFW5
+        Cw4Ivrn7X3sxCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUjKsUDUUUU
+X-Originating-IP: [202.43.158.76]
+X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >         if (dev_info->wspecversion >= UFS_DEV_HPB_SUPPORT_VERSION &&
-> >             (b_ufs_feature_sup & UFS_DEV_HPB_SUPPORT)) {
-> > -               dev_info->hpb_enabled = true;
-> > +               bool hpb_en = false;
-> > +
-> >                 ufshpb_get_dev_info(hba, desc_buf);
-> > +
-> > +               err = ufshcd_query_flag_retry(hba,
-> > UPIU_QUERY_OPCODE_READ_FLAG,
-> > +                                             QUERY_FLAG_IDN_HPB_EN, 0, &hpb_en);
-> > +               if (ufshpb_is_legacy(hba) || (!err && hpb_en))
-> If is_legacy you shouldn't send fHPBen in the first place, not ignoring its failure.
-OK,
+Add whitespace to fix coding style issues, improve code reading.
 
-> Also, using a Boolean is limiting you to HPB2.0 vs. HPB1.0.
-> What would you do in new flags/attributes/descriptors that HPB3.0 will introduce?
-It can be managed as enum. but it is enough now, I think.
+Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+---
+ mm/swapfile.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> > +                       dev_info->hpb_enabled = true;
-> >         }
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 96799a2..d261be4 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -2767,7 +2767,7 @@ static int swap_show(struct seq_file *swap, void *v)
+ 	unsigned int bytes, inuse;
+ 
+ 	if (si == SEQ_START_TOKEN) {
+-		seq_puts(swap,"Filename\t\t\t\tType\t\tSize\t\tUsed\t\tPriority\n");
++		seq_puts(swap, "Filename\t\t\t\tType\t\tSize\t\tUsed\t\tPriority\n");
+ 		return 0;
+ 	}
+ 
+@@ -3271,7 +3271,7 @@ static bool swap_discardable(struct swap_info_struct *si)
+ 					 sizeof(long),
+ 					 GFP_KERNEL);
+ 
+-	if (p->bdev &&(swap_flags & SWAP_FLAG_DISCARD) && swap_discardable(p)) {
++	if (p->bdev && (swap_flags & SWAP_FLAG_DISCARD) && swap_discardable(p)) {
+ 		/*
+ 		 * When discard is enabled for swap with no particular
+ 		 * policy flagged, we set all swap discard flags here in
+-- 
+1.8.3.1
 
-Thanks,
-Daejun
