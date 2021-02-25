@@ -2,124 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427B532499A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E73F32499D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234106AbhBYDww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 22:52:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
+        id S233869AbhBYD5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 22:57:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233232AbhBYDwi (ORCPT
+        with ESMTP id S233084AbhBYD5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 22:52:38 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAEC2C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:51:57 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id h4so2884417pgf.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:51:57 -0800 (PST)
+        Wed, 24 Feb 2021 22:57:09 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD699C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:56:28 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id a7so4428292iok.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:56:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TEuUr9VNbOHpA/0hjczpQ7Dj4IS4s74Bjtg1fR/tu8c=;
-        b=Do/d4fbTOdEIKtXhhgkYxc8cfwm8TPSQKXkafQ9sxiHUHnW5ND+Q1JECHVP2b8sQK8
-         0N9HSL9j3aKpce3vULyosIebwGxdCrhzvqIGOiVSDZbpYnnnqGARYDeKj9URQxeabSvS
-         QD9INYdlz6yg5xcLLekuEUgacsLyMOkH1KCYGftH9XgKwTFx0vPDx5jJ0Tpb6SQeP5/g
-         ltBznXnLHgM4Kc21j5O6e4Zv9/HBb9wnbBcg1ccvJw0bslzs8mF3pR10uNZsrvwAdhBY
-         my2J/Vi3xMtWMMm8NfcHSXJ1OdECYzMsxbatljXIKXWC1/H3bp7HuHzg+WMaXSBXJq46
-         mqhg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VMhssfkntbp6BkEdgeddf6ITSgH2/sACeJhofv7G7Qk=;
+        b=pxq5QeWUzVL/vGfbVNLb2osJm/A4y0MvKWH4ryodlpu0IGEyWYJkLK62EquwoT5vXh
+         NjkZcEXppruaW6kFhkh974WJiWPRwzLu45wO2HtCpV4jNukAZT1RhMTu43qeag0yBWJz
+         po+gSu7r6sRDp+sqq853uK73AqEBXX/5Ci5/PgDbWFH8WHeFGpLcwOUqddgQPo53HFJU
+         p8XlSL2wWT8u/rrxAc7omZUYo/nQEJDVAE/+Dxk9+arLL2hPE/xen1C9gnqBQGfnytTY
+         j+FXMPiW8pn8RweYVtBm5CtEflk1w5nPIbrkJEb/9RmPioWT6g7WR8pqwby6N9rhNJo7
+         R9Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=TEuUr9VNbOHpA/0hjczpQ7Dj4IS4s74Bjtg1fR/tu8c=;
-        b=CrAyBuTowWqlDBIUvMCmtIz08jsYg0w871ZWUpcMPrOT73NbGajzpPuEl7+YFgGeiA
-         fKHGXtyujp1iT79o6HbwF0n2IUteYe62GTKNJeZRg6s7a2ehN9nOCP2qz6dqeR0QRVx2
-         /we1sKVjEQ68O3lc4nPmVo7X1HLJmAwCdcbfuHO6vMSlQPTM9YKm63Ujkrl5hxf6YClf
-         tErN2QChLlN9Dkh7zmUesofDhIPclKsL4+TNCrKvbfV0XueB80yOKv8k3T2U5SZvmBi6
-         o7lOBbNV1Rh8GMNHkf/7B0kq54KZ8kzvDmDMvOqMYw4WwcC6HK2L7sEITk38OuKSM3TX
-         twgA==
-X-Gm-Message-State: AOAM533zRhEzxUrB3kvfPsVNwTQHLYGMJ7D8svF3/kA8A5I2UrLetDSI
-        bVIJdTXgEhhb/t85C/zMIQc=
-X-Google-Smtp-Source: ABdhPJx3fIXqQEpguV9Wqcvlu5nT4FFchZWPYgFyyGI47Sw7+wu3wAd/yoAvsxy7i9qJ9y7hcQQznw==
-X-Received: by 2002:a63:194c:: with SMTP id 12mr1177041pgz.198.1614225117359;
-        Wed, 24 Feb 2021 19:51:57 -0800 (PST)
-Received: from balhae.roam.corp.google.com ([114.129.115.223])
-        by smtp.gmail.com with ESMTPSA id u22sm4357734pgh.20.2021.02.24.19.51.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 19:51:56 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH v2 2/2] perf stat: Fix use-after-free when -r option is used
-Date:   Thu, 25 Feb 2021 12:51:48 +0900
-Message-Id: <20210225035148.778569-2-namhyung@kernel.org>
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-In-Reply-To: <20210225035148.778569-1-namhyung@kernel.org>
-References: <20210225035148.778569-1-namhyung@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VMhssfkntbp6BkEdgeddf6ITSgH2/sACeJhofv7G7Qk=;
+        b=afb4h0Gd+VR/Xyl36kBxki9BVwyqM3huAoTHceHrBfdVyRmDwBrtMlfmFuCXo5XMAQ
+         As1cyoRfeB5eR6colrW8G/jQOzs9qC+KEce/5fGVDlRKCWFc8sUl7UBRCjaxwnkzaJzg
+         HdStQUrACcozXTFq/veohtZypXLAA5JhvAqwkeAMWCGNn0X+ssQNu4U02tBVQe2NCfpv
+         W0+/OJijZDQbCbvXDD3YHUGNolXzA5cfX38NVjoRsbqdcfc94zFtyhoB+yB0iNmHow07
+         FZwkXV8D0IzQQgg13oSfomkOq23h2JQwXQzlZf6TSgNJ5qGafL7VPX+g2pdpMKq1+mtc
+         5Z8g==
+X-Gm-Message-State: AOAM530QJGxn/pAAl/n3AR2hZ9NOZK/aGIXZ52Vj3obo4BW3fCiXR3aJ
+        99n7/oz/4AWslY2d2cDQrit98EFie1peU4whsIdSRA==
+X-Google-Smtp-Source: ABdhPJyLZIGwvciSXuv0EOvVOClNo6/DzD3V+vVlnTp1m0pld87jItvthB4sJcyYaZwS1w1U59K0L9OT7StOa8lDIJM=
+X-Received: by 2002:a6b:c40b:: with SMTP id y11mr991070ioa.205.1614225387929;
+ Wed, 24 Feb 2021 19:56:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210224085915.28751-1-natet@google.com> <YDaOw48Ug7Tgr+M6@google.com>
+In-Reply-To: <YDaOw48Ug7Tgr+M6@google.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Wed, 24 Feb 2021 19:55:51 -0800
+Message-ID: <CABayD+f6q0q2v7pT-hjD=oP_+hAyEW5VA2WoTQNn=5-=OD1e1w@mail.gmail.com>
+Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Nathan Tempelman <natet@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Ashish Kalra <Ashish.Kalra@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a segfault when using -r option with event groups.  The option
-makes it run the workload multiple times and it will reuse the evlist
-and evsel for each run.
+On Wed, Feb 24, 2021 at 9:37 AM Sean Christopherson <seanjc@google.com> wrote:
+> > +     unsigned int asid;
+> > +     int ret;
+> > +
+> > +     if (!sev_guest(kvm))
+> > +             return -ENOTTY;
+> > +
+> > +     mutex_lock(&kvm->lock);
+> > +
+> > +     /* Mirrors of mirrors should work, but let's not get silly */
+>
+> Do we really care?
+Yes, unless you reparent mirrors of mirrors to the original ASID
+owner. If you don't do that, I think userspace could pump a chain of
+mirrors to blow the kernel stack when it closes the leaf vm, since you
+could build up a chain of sev_vm_destroys. Refcounting the ASIDs
+directly would also fix this.
 
-While most of resources are allocated and freed properly, the id hash
-in the evlist was not and it resulted in the bug.  You can see it with
-the address sanitizer like below:
-
-  $ perf stat -r 100 -e '{cycles,instructions}' true
-  =================================================================
-  ==693052==ERROR: AddressSanitizer: heap-use-after-free on
-      address 0x6080000003d0 at pc 0x558c57732835 bp 0x7fff1526adb0 sp 0x7fff1526ada8
-  WRITE of size 8 at 0x6080000003d0 thread T0
-    #0 0x558c57732834 in hlist_add_head /home/namhyung/project/linux/tools/include/linux/list.h:644
-    #1 0x558c57732834 in perf_evlist__id_hash /home/namhyung/project/linux/tools/lib/perf/evlist.c:237
-    #2 0x558c57732834 in perf_evlist__id_add /home/namhyung/project/linux/tools/lib/perf/evlist.c:244
-    #3 0x558c57732834 in perf_evlist__id_add_fd /home/namhyung/project/linux/tools/lib/perf/evlist.c:285
-    #4 0x558c5747733e in store_evsel_ids util/evsel.c:2765
-    #5 0x558c5747733e in evsel__store_ids util/evsel.c:2782
-    #6 0x558c5730b717 in __run_perf_stat /home/namhyung/project/linux/tools/perf/builtin-stat.c:895
-    #7 0x558c5730b717 in run_perf_stat /home/namhyung/project/linux/tools/perf/builtin-stat.c:1014
-    #8 0x558c5730b717 in cmd_stat /home/namhyung/project/linux/tools/perf/builtin-stat.c:2446
-    #9 0x558c57427c24 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
-    #10 0x558c572b1a48 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
-    #11 0x558c572b1a48 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
-    #12 0x558c572b1a48 in main /home/namhyung/project/linux/tools/perf/perf.c:539
-    #13 0x7fcadb9f7d09 in __libc_start_main ../csu/libc-start.c:308
-    #14 0x558c572b60f9 in _start (/home/namhyung/project/linux/tools/perf/perf+0x45d0f9)
-
-Actually the nodes in the hash table are struct perf_stream_id and
-they were freed in the previous run.  Fix it by resetting the hash.
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/evlist.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 5121b4db66fe..882cd1f721d9 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -1306,6 +1306,7 @@ void evlist__close(struct evlist *evlist)
- 		perf_evsel__free_fd(&evsel->core);
- 		perf_evsel__free_id(&evsel->core);
- 	}
-+	perf_evlist__reset_id_hash(&evlist->core);
- }
- 
- static int evlist__create_syswide_maps(struct evlist *evlist)
--- 
-2.30.0.617.g56c4b15f3c-goog
-
+Nate's early implementation did the reparenting, but I pushed for the
+simplification since it made the locking a bit hairy.
+>
+> > +     if (is_mirroring_enc_context(kvm)) {
+> > +             ret = -ENOTTY;
+> > +             goto failed;
+> > +     }
+> > +
