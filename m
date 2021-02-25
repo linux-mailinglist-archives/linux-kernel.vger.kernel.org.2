@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673B93258BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:37:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AF63258CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbhBYVgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:36:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
+        id S234548AbhBYVi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:38:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbhBYVgs (ORCPT
+        with ESMTP id S229800AbhBYVik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:36:48 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E99C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:36:08 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id t9so4314525pjl.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:36:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=/U0ItIv10awr48o0Xr67ORIR0R4cpmrKcS939Ry0u60=;
-        b=aM51O6VgHioWd7XkWW6peAD4fP73FQxRl9onjbsDlp5Blv8GVDlbHlQ+bVRRjiux/q
-         VIxiQcJR41IkzBS8pG7heU8OynV6hjepxqvlstpyFvUkQWJhAnBl+a6tpRtBk+ZyE13j
-         zVdDJdwPN3PqFz/Ss1XlFCxH4TSZowvWFTJivJL+xB/l89cEcHmp/rYKIVkSu4LT8hga
-         5nSYNt+3RUeWL1/NWf0uHLE+a5HhUal3ERbcabQPkwbKuVJfkwuRGqyfFarm3LfwfI8M
-         Mj5tmQZmj/xixxD5TIyQNEkHBfKvZEGwiP/SS9Cz6oyw1sHAzZLiS2+UfBZj5WuIOQA8
-         iO3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=/U0ItIv10awr48o0Xr67ORIR0R4cpmrKcS939Ry0u60=;
-        b=Y63tqZS7ZRUfoDH/obMq9iY27YUy7Ej4JWEUPzINXktfzlvgr7WzEDx0w95wLCc7zr
-         dOYMQq/4OtvrqywdXOxbAJXAW+fIF+T+aeMYPsZf1g1Zamg/njUBjFsO+g37piDxVRJb
-         uu/t81vpj0cQ3MCfypU9XaDdbZ7c3mxETiJJ8Rtc3RPMZy9kqHgVcOqwoFjbMPOpw49b
-         0H4cHiaYw7QyFAQmgFJNvyEy1httCakrtTUTUjstMSy5Y7DPo/fdxa2wNFf0wIlKQHwc
-         l4KvqHo8tDyWtRLj1Wa+UF/vqMovgC55m2jKPdQF1KbnA/SQFoAtDoZhlvw8K8BXt+er
-         5zoQ==
-X-Gm-Message-State: AOAM5313nA3xB3C0RjnyPpDF1Vl3++fEA8yn2PrSODa924O6pZawFOL0
-        ya4RXSBelaPktkYzReWAaWTuNQ==
-X-Google-Smtp-Source: ABdhPJx9m++KLr1Vney+yZ57/jgY0SoHkKVpS8hWdbbOKP+8KR9VogqbH4ylR1ahD/dOaJ4IAJ2uqQ==
-X-Received: by 2002:a17:90a:4a06:: with SMTP id e6mr362628pjh.141.1614288968138;
-        Thu, 25 Feb 2021 13:36:08 -0800 (PST)
-Received: from [2620:15c:17:3:a902:4bab:58a0:3f05] ([2620:15c:17:3:a902:4bab:58a0:3f05])
-        by smtp.gmail.com with ESMTPSA id 142sm600208pfz.196.2021.02.25.13.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 13:36:07 -0800 (PST)
-Date:   Thu, 25 Feb 2021 13:36:06 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Shakeel Butt <shakeelb@google.com>
-cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Thu, 25 Feb 2021 16:38:40 -0500
+Received: from relay05.th.seeweb.it (relay05.th.seeweb.it [IPv6:2001:4b7a:2000:18::166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F198C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:38:00 -0800 (PST)
+Received: from localhost.localdomain (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 59A983F400;
+        Thu, 25 Feb 2021 22:37:58 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: enable memcg oom-kill for __GFP_NOFAIL
-In-Reply-To: <20210223204337.2785120-1-shakeelb@google.com>
-Message-ID: <f9a2aff-727b-445c-f6bd-613fc8725a@google.com>
-References: <20210223204337.2785120-1-shakeelb@google.com>
+Subject: [PATCH] regulator: qcom_smd: Fix up PM8950 regulator configuration
+Date:   Thu, 25 Feb 2021 22:37:44 +0100
+Message-Id: <20210225213745.117498-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021, Shakeel Butt wrote:
+Following changes have been made:
 
-> In the era of async memcg oom-killer, the commit a0d8b00a3381 ("mm:
-> memcg: do not declare OOM from __GFP_NOFAIL allocations") added the code
-> to skip memcg oom-killer for __GFP_NOFAIL allocations. The reason was
-> that the __GFP_NOFAIL callers will not enter aync oom synchronization
-> path and will keep the task marked as in memcg oom. At that time the
-> tasks marked in memcg oom can bypass the memcg limits and the oom
-> synchronization would have happened later in the later userspace
-> triggered page fault. Thus letting the task marked as under memcg oom
-> bypass the memcg limit for arbitrary time.
-> 
-> With the synchronous memcg oom-killer (commit 29ef680ae7c21 ("memcg,
-> oom: move out_of_memory back to the charge path")) and not letting the
-> task marked under memcg oom to bypass the memcg limits (commit
-> 1f14c1ac19aa4 ("mm: memcg: do not allow task about to OOM kill to bypass
-> the limit")), we can again allow __GFP_NOFAIL allocations to trigger
-> memcg oom-kill. This will make memcg oom behavior closer to page
-> allocator oom behavior.
-> 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+- S5, L4, L18, L20 and L21 were removed (S5 is managed by
+SPMI, whereas the rest seems not to exist [or at least it's blocked
+by Sony Loire /MSM8956/ RPM firmware])
 
-Acked-by: David Rientjes <rientjes@google.com>
+- Supply maps have were adjusted to reflect regulator changes.
+
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ drivers/regulator/qcom_smd-regulator.c | 35 +++++++++++++-------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
+index bb944ee5fe3b..5188f58b4718 100644
+--- a/drivers/regulator/qcom_smd-regulator.c
++++ b/drivers/regulator/qcom_smd-regulator.c
+@@ -843,32 +843,31 @@ static const struct rpm_regulator_data rpm_pm8950_regulators[] = {
+ 	{ "s2", QCOM_SMD_RPM_SMPA, 2, &pm8950_hfsmps, "vdd_s2" },
+ 	{ "s3", QCOM_SMD_RPM_SMPA, 3, &pm8950_hfsmps, "vdd_s3" },
+ 	{ "s4", QCOM_SMD_RPM_SMPA, 4, &pm8950_hfsmps, "vdd_s4" },
+-	{ "s5", QCOM_SMD_RPM_SMPA, 5, &pm8950_ftsmps2p5, "vdd_s5" },
++	/* S5 is managed via SPMI. */
+ 	{ "s6", QCOM_SMD_RPM_SMPA, 6, &pm8950_hfsmps, "vdd_s6" },
+ 
+ 	{ "l1", QCOM_SMD_RPM_LDOA, 1, &pm8950_ult_nldo, "vdd_l1_l19" },
+ 	{ "l2", QCOM_SMD_RPM_LDOA, 2, &pm8950_ult_nldo, "vdd_l2_l23" },
+ 	{ "l3", QCOM_SMD_RPM_LDOA, 3, &pm8950_ult_nldo, "vdd_l3" },
+-	{ "l4", QCOM_SMD_RPM_LDOA, 4, &pm8950_ult_pldo, "vdd_l4_l5_l6_l7_l16" },
+-	{ "l5", QCOM_SMD_RPM_LDOA, 5, &pm8950_pldo_lv, "vdd_l4_l5_l6_l7_l16" },
+-	{ "l6", QCOM_SMD_RPM_LDOA, 6, &pm8950_pldo_lv, "vdd_l4_l5_l6_l7_l16" },
+-	{ "l7", QCOM_SMD_RPM_LDOA, 7, &pm8950_pldo_lv, "vdd_l4_l5_l6_l7_l16" },
++	/* L4 seems not to exist. */
++	{ "l5", QCOM_SMD_RPM_LDOA, 5, &pm8950_pldo_lv, "vdd_l5_l6_l7_l16" },
++	{ "l6", QCOM_SMD_RPM_LDOA, 6, &pm8950_pldo_lv, "vdd_l5_l6_l7_l16" },
++	{ "l7", QCOM_SMD_RPM_LDOA, 7, &pm8950_pldo_lv, "vdd_l5_l6_l7_l16" },
+ 	{ "l8", QCOM_SMD_RPM_LDOA, 8, &pm8950_ult_pldo, "vdd_l8_l11_l12_l17_l22" },
+ 	{ "l9", QCOM_SMD_RPM_LDOA, 9, &pm8950_ult_pldo, "vdd_l9_l10_l13_l14_l15_l18" },
+ 	{ "l10", QCOM_SMD_RPM_LDOA, 10, &pm8950_ult_nldo, "vdd_l9_l10_l13_l14_l15_l18"},
+-	{ "l11", QCOM_SMD_RPM_LDOA, 11, &pm8950_ult_pldo, "vdd_l8_l11_l12_l17_l22"},
+-	{ "l12", QCOM_SMD_RPM_LDOA, 12, &pm8950_ult_pldo, "vdd_l8_l11_l12_l17_l22"},
+-	{ "l13", QCOM_SMD_RPM_LDOA, 13, &pm8950_ult_pldo, "vdd_l9_l10_l13_l14_l15_l18"},
+-	{ "l14", QCOM_SMD_RPM_LDOA, 14, &pm8950_ult_pldo, "vdd_l9_l10_l13_l14_l15_l18"},
+-	{ "l15", QCOM_SMD_RPM_LDOA, 15, &pm8950_ult_pldo, "vdd_l9_l10_l13_l14_l15_l18"},
+-	{ "l16", QCOM_SMD_RPM_LDOA, 16, &pm8950_ult_pldo, "vdd_l4_l5_l6_l7_l16"},
+-	{ "l17", QCOM_SMD_RPM_LDOA, 17, &pm8950_ult_pldo, "vdd_l8_l11_l12_l17_l22"},
+-	{ "l18", QCOM_SMD_RPM_LDOA, 18, &pm8950_ult_pldo, "vdd_l9_l10_l13_l14_l15_l18"},
+-	{ "l19", QCOM_SMD_RPM_LDOA, 18, &pm8950_pldo, "vdd_l1_l19"},
+-	{ "l20", QCOM_SMD_RPM_LDOA, 18, &pm8950_pldo, "vdd_l20"},
+-	{ "l21", QCOM_SMD_RPM_LDOA, 18, &pm8950_pldo, "vdd_l21"},
+-	{ "l22", QCOM_SMD_RPM_LDOA, 18, &pm8950_pldo, "vdd_l8_l11_l12_l17_l22"},
+-	{ "l23", QCOM_SMD_RPM_LDOA, 18, &pm8950_pldo, "vdd_l2_l23"},
++	{ "l11", QCOM_SMD_RPM_LDOA, 11, &pm8950_ult_pldo, "vdd_l8_l11_l12_l17_l22" },
++	{ "l12", QCOM_SMD_RPM_LDOA, 12, &pm8950_ult_pldo, "vdd_l8_l11_l12_l17_l22" },
++	{ "l13", QCOM_SMD_RPM_LDOA, 13, &pm8950_ult_pldo, "vdd_l9_l10_l13_l14_l15_l18" },
++	{ "l14", QCOM_SMD_RPM_LDOA, 14, &pm8950_ult_pldo, "vdd_l9_l10_l13_l14_l15_l18" },
++	{ "l15", QCOM_SMD_RPM_LDOA, 15, &pm8950_ult_pldo, "vdd_l9_l10_l13_l14_l15_l18" },
++	{ "l16", QCOM_SMD_RPM_LDOA, 16, &pm8950_ult_pldo, "vdd_l5_l6_l7_l16" },
++	{ "l17", QCOM_SMD_RPM_LDOA, 17, &pm8950_ult_pldo, "vdd_l8_l11_l12_l17_l22" },
++	/* L18 seems not to exist. */
++	{ "l19", QCOM_SMD_RPM_LDOA, 19, &pm8950_pldo, "vdd_l1_l19" },
++	/* L20 & L21 seem not to exist. */
++	{ "l22", QCOM_SMD_RPM_LDOA, 22, &pm8950_pldo, "vdd_l8_l11_l12_l17_l22" },
++	{ "l23", QCOM_SMD_RPM_LDOA, 23, &pm8950_pldo, "vdd_l2_l23" },
+ 	{}
+ };
+ 
+-- 
+2.30.1
+
