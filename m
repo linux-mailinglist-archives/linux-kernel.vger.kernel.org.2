@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DDF324D54
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7F4324E07
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbhBYJ5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:57:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32772 "EHLO mail.kernel.org"
+        id S235442AbhBYKXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:23:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235494AbhBYJyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:54:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3FF964EF5;
-        Thu, 25 Feb 2021 09:54:02 +0000 (UTC)
+        id S229561AbhBYKBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 05:01:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3731364F2B;
+        Thu, 25 Feb 2021 09:56:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246843;
-        bh=iBNOvr58JQz924Lz8whUfoQyHyI302JA1X7nNfhZi04=;
+        s=korg; t=1614246966;
+        bh=0cvQT/OwTLVEuuXM4LgLBjDxKi1tlOI9rg/xaVRGIzI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EKoLLHcZEJJC4KJl4T/DJzipKsIWmulD/UNqWhOiH5X+KVOjGmvGBwsvI2OIUMRLd
-         rnBiUCPVUr64QvWSX9hINUMBmRi/oT3qWTM2SxAYi5G1lJksMGVdhivzP7gJ5LaCQ8
-         hl845N330VO3oUW9mpwmJJ7rBRzg8UcmNx2a+XYs=
+        b=nGU/Uc92TnbWC/7Tz0GziDoTileEeHvFmvMlty1/1GwJT41hUHlJ+vzrdnO+O5jkZ
+         hzdEu1JLIe1BHCsB7uBh/X5dxfZVjSAIOZ0ZZDBtNmqi/eJATB4otiLaGRoaH06Uie
+         IZCVu33l0MsxFI8Ez0Y25t+yIUQt6P7E4CaHLf2o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.11 12/12] KVM: Use kvm_pfn_t for local PFN variable in hva_to_pfn_remapped()
-Date:   Thu, 25 Feb 2021 10:53:46 +0100
-Message-Id: <20210225092515.573855820@linuxfoundation.org>
+        stable@vger.kernel.org, Will McVicker <willmcvicker@google.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 5.4 02/17] HID: make arrays usage and value to be the same
+Date:   Thu, 25 Feb 2021 10:53:47 +0100
+Message-Id: <20210225092515.126158905@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210225092515.015261674@linuxfoundation.org>
-References: <20210225092515.015261674@linuxfoundation.org>
+In-Reply-To: <20210225092515.001992375@linuxfoundation.org>
+References: <20210225092515.001992375@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Will McVicker <willmcvicker@google.com>
 
-commit a9545779ee9e9e103648f6f2552e73cfe808d0f4 upstream.
+commit ed9be64eefe26d7d8b0b5b9fa3ffdf425d87a01f upstream.
 
-Use kvm_pfn_t, a.k.a. u64, for the local 'pfn' variable when retrieving
-a so called "remapped" hva/pfn pair.  In theory, the hva could resolve to
-a pfn in high memory on a 32-bit kernel.
+The HID subsystem allows an "HID report field" to have a different
+number of "values" and "usages" when it is allocated. When a field
+struct is created, the size of the usage array is guaranteed to be at
+least as large as the values array, but it may be larger. This leads to
+a potential out-of-bounds write in
+__hidinput_change_resolution_multipliers() and an out-of-bounds read in
+hidinput_count_leds().
 
-This bug was inadvertantly exposed by commit bd2fae8da794 ("KVM: do not
-assume PTE is writable after follow_pfn"), which added an error PFN value
-to the mix, causing gcc to comlain about overflowing the unsigned long.
-
-  arch/x86/kvm/../../../virt/kvm/kvm_main.c: In function ‘hva_to_pfn_remapped’:
-  include/linux/kvm_host.h:89:30: error: conversion from ‘long long unsigned int’
-                                  to ‘long unsigned int’ changes value from
-                                  ‘9218868437227405314’ to ‘2’ [-Werror=overflow]
-   89 | #define KVM_PFN_ERR_RO_FAULT (KVM_PFN_ERR_MASK + 2)
-      |                              ^
-virt/kvm/kvm_main.c:1935:9: note: in expansion of macro ‘KVM_PFN_ERR_RO_FAULT’
+To fix this, let's make sure that both the usage and value arrays are
+the same size.
 
 Cc: stable@vger.kernel.org
-Fixes: add6a0cd1c5b ("KVM: MMU: try to fix up page faults before giving up")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210208201940.1258328-1-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- virt/kvm/kvm_main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/hid-core.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1903,7 +1903,7 @@ static int hva_to_pfn_remapped(struct vm
- 			       bool write_fault, bool *writable,
- 			       kvm_pfn_t *p_pfn)
+--- a/drivers/hid/hid-core.c
++++ b/drivers/hid/hid-core.c
+@@ -90,7 +90,7 @@ EXPORT_SYMBOL_GPL(hid_register_report);
+  * Register a new field for this report.
+  */
+ 
+-static struct hid_field *hid_register_field(struct hid_report *report, unsigned usages, unsigned values)
++static struct hid_field *hid_register_field(struct hid_report *report, unsigned usages)
  {
--	unsigned long pfn;
-+	kvm_pfn_t pfn;
- 	pte_t *ptep;
- 	spinlock_t *ptl;
- 	int r;
+ 	struct hid_field *field;
+ 
+@@ -101,7 +101,7 @@ static struct hid_field *hid_register_fi
+ 
+ 	field = kzalloc((sizeof(struct hid_field) +
+ 			 usages * sizeof(struct hid_usage) +
+-			 values * sizeof(unsigned)), GFP_KERNEL);
++			 usages * sizeof(unsigned)), GFP_KERNEL);
+ 	if (!field)
+ 		return NULL;
+ 
+@@ -300,7 +300,7 @@ static int hid_add_field(struct hid_pars
+ 	usages = max_t(unsigned, parser->local.usage_index,
+ 				 parser->global.report_count);
+ 
+-	field = hid_register_field(report, usages, parser->global.report_count);
++	field = hid_register_field(report, usages);
+ 	if (!field)
+ 		return 0;
+ 
 
 
