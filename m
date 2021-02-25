@@ -2,131 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242A4324B32
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 08:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4D7324B3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 08:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbhBYHYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 02:24:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbhBYHYL (ORCPT
+        id S233022AbhBYH1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 02:27:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50123 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232000AbhBYH05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 02:24:11 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCCCC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 23:23:31 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lFAzP-000525-RF; Thu, 25 Feb 2021 08:23:11 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:55fd:a17b:b4ca:d5fb])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 5AF8A5E8D3D;
-        Thu, 25 Feb 2021 07:23:07 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 08:23:06 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 5/6] can: c_can: prepare to up the message objects number
-Message-ID: <20210225072306.wdxtzbpowuorhxlp@pengutronix.de>
-References: <20210224225246.11346-1-dariobin@libero.it>
- <20210224225246.11346-6-dariobin@libero.it>
+        Thu, 25 Feb 2021 02:26:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614237928;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4wcRvtsO4y5OfAp6pyfE1ewYb2DKBqCK08OK1qyG89Y=;
+        b=UWORBS0NNGEJe4aN9NSpCHmKn1c3+d04t7LvPOfS5Eh/pq2fpxURIc6U35f+YvmMfbPIuX
+        C+M9YbBOACo4xxD6W1AjQVOemGIKnBbDepd4L+4u2mwGzTeEe8mzlojvRtLpNPSdZrMne8
+        VQ0MyErpbznASjCCDvJQ9IxNreoGB04=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-Y81AmIhhOfeVfOt5M0EZOQ-1; Thu, 25 Feb 2021 02:25:24 -0500
+X-MC-Unique: Y81AmIhhOfeVfOt5M0EZOQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A501D186DD22;
+        Thu, 25 Feb 2021 07:25:21 +0000 (UTC)
+Received: from localhost (ovpn-12-51.pek2.redhat.com [10.72.12.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0FB8510023B1;
+        Thu, 25 Feb 2021 07:25:17 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 15:25:15 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>, ebiederm@xmission.com
+Cc:     Chen Zhou <chenzhou10@huawei.com>, mingo@redhat.com,
+        tglx@linutronix.de, rppt@kernel.org, dyoung@redhat.com,
+        will@kernel.org, nsaenzjulienne@suse.de, corbet@lwn.net,
+        John.P.donnelly@oracle.com, prabhakar.pkin@gmail.com,
+        horms@verge.net.au, robh+dt@kernel.org, arnd@arndb.de,
+        james.morse@arm.com, xiexiuqi@huawei.com, guohanjun@huawei.com,
+        huawei.libin@huawei.com, wangkefeng.wang@huawei.com,
+        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org
+Subject: Re: [PATCH v14 01/11] x86: kdump: replace the hard-coded alignment
+ with macro CRASH_ALIGN
+Message-ID: <20210225072426.GH3553@MiWiFi-R3L-srv>
+References: <20210130071025.65258-1-chenzhou10@huawei.com>
+ <20210130071025.65258-2-chenzhou10@huawei.com>
+ <20210224141939.GA28965@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4ncm4fr4jlmweoy3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210224225246.11346-6-dariobin@libero.it>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210224141939.GA28965@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02/24/21 at 02:19pm, Catalin Marinas wrote:
+> On Sat, Jan 30, 2021 at 03:10:15PM +0800, Chen Zhou wrote:
+> > Move CRASH_ALIGN to header asm/kexec.h for later use. Besides, the
+> > alignment of crash kernel regions in x86 is 16M(CRASH_ALIGN), but
+> > function reserve_crashkernel() also used 1M alignment. So just
+> > replace hard-coded alignment 1M with macro CRASH_ALIGN.
+> [...]
+> > @@ -510,7 +507,7 @@ static void __init reserve_crashkernel(void)
+> >  	} else {
+> >  		unsigned long long start;
+> >  
+> > -		start = memblock_phys_alloc_range(crash_size, SZ_1M, crash_base,
+> > +		start = memblock_phys_alloc_range(crash_size, CRASH_ALIGN, crash_base,
+> >  						  crash_base + crash_size);
+> >  		if (start != crash_base) {
+> >  			pr_info("crashkernel reservation failed - memory is in use.\n");
+> 
+> There is a small functional change here for x86. Prior to this patch,
+> crash_base passed by the user on the command line is allowed to be 1MB
+> aligned. With this patch, such reservation will fail.
+> 
+> Is the current behaviour a bug in the current x86 code or it does allow
+> 1MB-aligned reservations?
 
---4ncm4fr4jlmweoy3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hmm, you are right. Here we should keep 1MB alignment as is because
+users specify the address and size, their intention should be respected.
+The 1MB alignment for fixed memory region reservation was introduced in
+below commit, but it doesn't tell what is Eric's request at that time, I
+guess it meant respecting users' specifying.
 
+commit 44280733e71ad15377735b42d8538c109c94d7e3
+Author: Yinghai Lu <yinghai@kernel.org>
+Date:   Sun Nov 22 17:18:49 2009 -0800
 
-Hey Dario,
+    x86: Change crash kernel to reserve via reserve_early()
+    
+    use find_e820_area()/reserve_early() instead.
+    
+    -v2: address Eric's request, to restore original semantics.
+         will fail, if the provided address can not be used.
 
-just a quick note...
-
-On 24.02.2021 23:52:45, Dario Binacchi wrote:
-> -struct net_device *alloc_c_can_dev(void)
-> +struct net_device *alloc_c_can_dev(int msg_obj_num)
->  {
->  	struct net_device *dev;
->  	struct c_can_priv *priv;
-> +	int msg_obj_tx_num =3D msg_obj_num / 2;
-> =20
-> -	dev =3D alloc_candev(sizeof(struct c_can_priv), C_CAN_MSG_OBJ_TX_NUM);
-> +	dev =3D alloc_candev(sizeof(struct c_can_priv), msg_obj_tx_num);
->  	if (!dev)
->  		return NULL;
-> =20
->  	priv =3D netdev_priv(dev);
-> -	netif_napi_add(dev, &priv->napi, c_can_poll, C_CAN_NAPI_WEIGHT);
-> +	priv->msg_obj_num =3D msg_obj_num;
-> +	priv->msg_obj_rx_num =3D msg_obj_num - msg_obj_tx_num;
-> +	priv->msg_obj_rx_first =3D 1;
-> +	priv->msg_obj_rx_last =3D
-> +		priv->msg_obj_rx_first + priv->msg_obj_rx_num - 1;
-> +	priv->msg_obj_rx_mask =3D ((u64)1 << priv->msg_obj_rx_num) - 1;
-> +
-> +	priv->msg_obj_tx_num =3D msg_obj_tx_num;
-> +	priv->msg_obj_tx_first =3D priv->msg_obj_rx_last + 1;
-> +	priv->msg_obj_tx_last =3D
-> +		priv->msg_obj_tx_first + priv->msg_obj_tx_num - 1;
-> +
-> +	priv->dlc =3D kcalloc(msg_obj_tx_num, sizeof(*priv->dlc), GFP_KERNEL);
-
-You can pass a larger size to alloc_candev() so that it includes the mem
-you allocate here.
-
-> +	if (!priv->dlc) {
-> +		free_candev(dev);
-> +		return NULL;
-> +	}
-> +
-> +	netif_napi_add(dev, &priv->napi, c_can_poll, priv->msg_obj_rx_num);
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---4ncm4fr4jlmweoy3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA3UFcACgkQqclaivrt
-76niVAf+IuzAhvFFvjMtVPcuWVBVvHIiEbAaTPfc40isqqtmuoIsiBv1sttYFzFn
-A6IiBdAZZgJL+x4TEFbXjOrC+0YHxwL2YIovO7tiZGy98lH0BV4eYRguvmKunm5H
-fEH0wHc4Ouw1pSYypUFnVia9UoYB16Npubs6tdipw8bo6IAGWo7LRUlEH1fHvWYP
-l9WzqzD0Ywq2tsYvdOuhuo7A7IqwR7FxXTUEwNsLs0mSFdNDOm5t0QLSAv9Q1we7
-nNUvfG563VS4f3lBfLny99Ytd+HCprXDfnIBEetrJqDvzk/b7fpyUpGcmNXjVpJe
-9PMUlZWuDN6jS22dO2RETQ1Gi5ip5Q==
-=pUEf
------END PGP SIGNATURE-----
-
---4ncm4fr4jlmweoy3--
