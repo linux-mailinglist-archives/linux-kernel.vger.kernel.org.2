@@ -2,78 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F787324B0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 08:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF6F324B10
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 08:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233257AbhBYHMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 02:12:09 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:51314 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbhBYHJR (ORCPT
+        id S233880AbhBYHMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 02:12:34 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:55724 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233159AbhBYHJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 02:09:17 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11P74AsX193359;
-        Thu, 25 Feb 2021 07:08:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=zBKsoyvZW42pljgNs2qIOF6TztDTbsqax0iQzIQWQUA=;
- b=HTkWMgw71P/uCefychW8VqYtMY5zRPMj4BnFIAQGW0GwYTBX5eMLVdtRZHYYGvSizjcO
- N5BnMkkyhImBV0AMy46s4EqdPeQLD4szf/h/ClOHq/SgyUWg/k+J/Yq8bwsfL+hkoPrX
- rd3n0q7o4ix6Qbj1mcWJQvCk14VfcGYdLmelMnMWwSNK9DKK0O6nRS4Ltd2QGPSgfR8O
- V26Nor9/PxNaDXPfrsf4GTQlCeK7ik/6jZPa29Bv56Rkk7Ob29sEPQckqFolhC5MLqq/
- WVrN3l7qnlSVnpBy3BgguWBfiSaUEv/cyMTYFbY8ZQc83MdJGuiomK+KJBfR4aUcnbIE 5Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 36ttcmddgu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 07:08:26 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11P74bsS172733;
-        Thu, 25 Feb 2021 07:08:25 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 36v9m6week-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 07:08:25 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11P78Mkm019540;
-        Thu, 25 Feb 2021 07:08:23 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 24 Feb 2021 23:08:22 -0800
-Date:   Thu, 25 Feb 2021 10:08:15 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     William Durand <will+git@drnd.me>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/13] bss_ht struct cleanups
-Message-ID: <20210225070815.GV2087@kadam>
-References: <20210220172909.15812-1-will+git@drnd.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210220172909.15812-1-will+git@drnd.me>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9905 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102250057
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9905 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 spamscore=0 mlxscore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 malwarescore=0 impostorscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102250057
+        Thu, 25 Feb 2021 02:09:33 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UPWUmt0_1614236919;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPWUmt0_1614236919)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 25 Feb 2021 15:08:47 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] kallsyms: make arch_get_kallsym static
+Date:   Thu, 25 Feb 2021 15:08:37 +0800
+Message-Id: <1614236917-80472-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good.
+Fix the following sparse warning:
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+kernel/kallsyms.c:457:12: warning: symbol 'arch_get_kallsym' was not
+declared. Should it be static?
 
-regards,
-dan carpenter
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ kernel/kallsyms.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index 8043a90..a26f98e 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -454,7 +454,7 @@ struct kallsym_iter {
+ 	int show_value;
+ };
+ 
+-int __weak arch_get_kallsym(unsigned int symnum, unsigned long *value,
++static int __weak arch_get_kallsym(unsigned int symnum, unsigned long *value,
+ 			    char *type, char *name)
+ {
+ 	return -EINVAL;
+-- 
+1.8.3.1
 
