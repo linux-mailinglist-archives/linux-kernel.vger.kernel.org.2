@@ -2,105 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E79325114
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8086325127
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbhBYN6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 08:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhBYN5r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:57:47 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39662C061756;
-        Thu, 25 Feb 2021 05:57:07 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id f17so5653554qkl.5;
-        Thu, 25 Feb 2021 05:57:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YjQQYAvCYurZK7ldaR7wdMuQlhqNk26sh+booS2Ah34=;
-        b=uRMIB6gDJkTYgjbHVu7BAzdGGm1PFtEAm1zu98MInx0ilMKOd79he4zUJKLVyn5GUB
-         tlZMhqNfr5G/ILE0mA8nnhJq9AmzfJXAmQi4oBS5dxezyZR1l5Xn1oyEoao/cjg5BqrO
-         sP+AsEjwmcT4MM333CaI0Cf5xGOa8PyZX7ueyudp64ptucBQtz7m3rPqFL8aN42MDGmo
-         b7tIRoRtY7HBLDg8S7aXUBME8kjVgCe5DTZeoXRDRcl9MM4D7Bh7GxY2WMcjazIOmGDo
-         nPO9CWDk4Zt5sOSjW3zTaEUgj5g5ihUB387FcuwKTBil76LwLkgVWpX4iK0iu/V+bppa
-         78EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YjQQYAvCYurZK7ldaR7wdMuQlhqNk26sh+booS2Ah34=;
-        b=Jz0QXzZ1tAt5UkcOmZabi3BUy/vEoIy5YS97RyeA8VfZQ2maEVj+/gbZHYhg5wKO5Z
-         FSeDNSPR9QfHnKjMRhdmjKlguSgxjWYzVs1gTwQr7klatUtuatzf5GCyBJYdZ3Zv/MiK
-         kN4/DYDtwG3LOauSxZvWdudG0b2NyBVeU+4vkwlIHdeiA4tbUj0R2eRVEJ9VWULn5HHn
-         3/uRYJTfVxPXGKRWuBpYfEyh9FMdWR7GtJvM77efw3v+1U+o2Vq+Cne5PaoT6pmdHcMk
-         rPAXc24qIrBjx0pTp285mxkuF23yG1rFlsg1M/YYPu01NBH5/FhSIjbSdi6WnXkbOczw
-         1otw==
-X-Gm-Message-State: AOAM532ZTtTBUyd4rVCHtRhdR878tfHj7kh+mc0ZpR6N1QxFeQ79aAn6
-        H+XxzDbeQ/t1LicacA94MfY=
-X-Google-Smtp-Source: ABdhPJx+PKOZos9XXN2E6Yo01qJv1TAuCbOtRjCLWy1ChLGZFh7LIPlXALSkc5a6ENsIBlQSRnoD1Q==
-X-Received: by 2002:a05:620a:166e:: with SMTP id d14mr2846844qko.82.1614261426421;
-        Thu, 25 Feb 2021 05:57:06 -0800 (PST)
-Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id z1sm3522908qtu.83.2021.02.25.05.57.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 05:57:06 -0800 (PST)
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Alexey Klimov <aklimov@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>
-Subject: [PATCH 2/2] MIPS: enable GENERIC_FIND_FIRST_BIT
-Date:   Thu, 25 Feb 2021 05:57:00 -0800
-Message-Id: <20210225135700.1381396-3-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210225135700.1381396-1-yury.norov@gmail.com>
-References: <20210225135700.1381396-1-yury.norov@gmail.com>
+        id S229722AbhBYOCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 09:02:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230467AbhBYOCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 09:02:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33D3764F1B;
+        Thu, 25 Feb 2021 14:01:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614261702;
+        bh=gB6SQ75V2Rk37+UKLUfmsXNjtKCUUEXnmz4FEJPQVQY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iGKh9gRLvR8o04SWuKsCmipjtlzTrYuO47BWoJKHisDTteOpg/JDJDJJNnt+rGTTb
+         0rw4Z/+2u64PifagBhihDsPlyJ67Y3oQmsZn/oOul3KOK4yi2rGalMnkTSGw0hDAQu
+         5UCXh/aLF+AKNOXFFYPj9pbvUcZ+cJQXjOePkvmGZX37GfJUD/b8DZYdke/mmAKvZT
+         fAGvXP4lcs8maCpu0ckyrKPIoHkrpGb6cRtLNo09qQE/bWR08AfpprntjG9xmxGdei
+         eNSETbirr5t3ogcQ9xtRSswYiW1kh8gzy8rrgKIT9HRwylXF4qapcoQRRth0EghGpX
+         ctCpWU8hVtI2A==
+Received: by mail-oo1-f51.google.com with SMTP id x10so1389976oor.3;
+        Thu, 25 Feb 2021 06:01:42 -0800 (PST)
+X-Gm-Message-State: AOAM530YQNSUY6DI1p/w+oMByG+xrschcT2x6xk2C68fFUBMnyNwDQQJ
+        HRKQc6KM13zEsopqRnEASZN4oYZnOLKbfAR4rYM=
+X-Google-Smtp-Source: ABdhPJy0Z8oAC8F3qvd9r/HrjNWv0zSRZwzOF/sqWqHtbHpdIOPcLKBh4nK6FxEKGL+hdddWAENt07LK/yhwcmvgmrE=
+X-Received: by 2002:a4a:870c:: with SMTP id z12mr2391944ooh.15.1614261701193;
+ Thu, 25 Feb 2021 06:01:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210224072516.74696-1-uwe@kleine-koenig.org> <87sg5ks6xp.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87sg5ks6xp.fsf@mpe.ellerman.id.au>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 25 Feb 2021 15:01:25 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1q=zqyOxBgV-nprpN3jBczZWexupkA1Wy6g+AEW6rQqw@mail.gmail.com>
+Message-ID: <CAK8P3a1q=zqyOxBgV-nprpN3jBczZWexupkA1Wy6g+AEW6rQqw@mail.gmail.com>
+Subject: Re: [PATCH v2] vio: make remove callback return void
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Haren Myneni <haren@us.ibm.com>,
+        =?UTF-8?Q?Breno_Leit=C3=A3o?= <leitao@debian.org>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+        Steven Royer <seroyer@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Cristobal Forno <cforno12@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Michael Cyr <mikecyr@linux.ibm.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, linux-integrity@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        target-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@pm.me>
+On Thu, Feb 25, 2021 at 12:52 PM Michael Ellerman <mpe@ellerman.id.au> wrot=
+e:
+>
+> Uwe Kleine-K=C3=B6nig <uwe@kleine-koenig.org> writes:
+> > The driver core ignores the return value of struct bus_type::remove()
+> > because there is only little that can be done. To simplify the quest to
+> > make this function return void, let struct vio_driver::remove() return
+> > void, too. All users already unconditionally return 0, this commit make=
+s
+> > it obvious that returning an error code is a bad idea and makes it
+> > obvious for future driver authors that returning an error code isn't
+> > intended.
+> >
+> > Note there are two nominally different implementations for a vio bus:
+> > one in arch/sparc/kernel/vio.c and the other in
+> > arch/powerpc/platforms/pseries/vio.c. I didn't care to check which
+> > driver is using which of these busses (or if even some of them can be
+> > used with both) and simply adapt all drivers and the two bus codes in
+> > one go.
+>
+> I'm 99% sure there's no connection between the two implementations,
+> other than the name.
+>
+> So splitting the patch by arch would make it easier to merge. I'm
+> reluctant to merge changes to sparc code.
 
-MIPS doesn't have architecture-optimized bitsearching functions,
-like find_{first,next}_bit() etc.
-It's absolutely harmless to enable GENERIC_FIND_FIRST_BIT as this
-functionality is not new at all and well-tested. It provides more
-optimized code and saves some .text memory (32 R2):
+The sparc subsystem clearly started out as a copy of the powerpc
+version, and serves roughly the same purpose, but the communication
+with the hypervisor is quite different.
 
-add/remove: 4/1 grow/shrink: 1/53 up/down: 216/-372 (-156)
+As there are only four drivers for the sparc vio subsystem:
+drivers/block/sunvdc.c
+drivers/net/ethernet/sun/ldmvsw.c
+drivers/net/ethernet/sun/sunvnet.c
+drivers/tty/vcc.c
+maybe it would make sense to rename those to use distinct
+identifiers now?
 
-Users of for_each_set_bit() like hotpath gic_handle_shared_int()
-will also benefit from this.
-
-Suggested-by: Yury Norov <yury.norov@gmail.com>
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d89efba3d8a4..164bdd715d4b 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -26,6 +26,7 @@ config MIPS
- 	select GENERIC_ATOMIC64 if !64BIT
- 	select GENERIC_CMOS_UPDATE
- 	select GENERIC_CPU_AUTOPROBE
-+	select GENERIC_FIND_FIRST_BIT
- 	select GENERIC_GETTIMEOFDAY
- 	select GENERIC_IOMAP
- 	select GENERIC_IRQ_PROBE
--- 
-2.25.1
-
+       Arnd
