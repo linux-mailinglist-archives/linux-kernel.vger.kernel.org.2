@@ -2,211 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D843252A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0CC3252AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhBYPqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 10:46:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhBYPpJ (ORCPT
+        id S232929AbhBYPrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 10:47:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20979 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233159AbhBYPq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 10:45:09 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEFB6C061574;
-        Thu, 25 Feb 2021 07:44:27 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id l18so3758306pji.3;
-        Thu, 25 Feb 2021 07:44:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NsI5KUxHmckWZBlulVpmoyk0qRD6uEF9h8uRVX9ELb8=;
-        b=cY89Tq4udqskbxO7a8opwTMeqp+vyMNgS14MbgqsTvYOTlWmsJ1mLDUdDi+28mdmiV
-         VREDL1ftstrVRmJwIFtVmj2tiQvKzGvfI4Yj1o4/cYy5QHd10/ccI8xp6vTqtx/vbnqI
-         L3mC0sMy1dq6cF8sDSNDA0DUOyn7inMGkMZvuA2CVS4m9J2TWfctwlqX0TO86JXkbSW9
-         mUrquRcKkBqgN4lbfLEKRNNXktYbEU+jGmyRT5jKqHs5uaTbCixkjBSAtTG4yOuh5cEf
-         E/2H3PnrZQE4KSWYHcCYUTXFZU+zn7j+zIu6kmjRijEvnZRmztYaUl+pwqWCI90HKFEM
-         O9mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NsI5KUxHmckWZBlulVpmoyk0qRD6uEF9h8uRVX9ELb8=;
-        b=W8gfL1i9gQtgj/+2jdAc/U0mBSHngg/N3W8rds9vdllXNsuB/Fcd0LkD2NtN7hB+Kc
-         w5rgmSqh5OKY0NPvIDkcWgPWUtswjMBikAaAAluGY4JjxZ6Ec3dI0nPItBdMfvoDmWru
-         Grjo6kbLSdJYVVB/3wapDbhcwbXlE1mKb5w++sI09GxCOlMEXZIDnZMQ1douRfiL+xXX
-         yRDG3DbZbjvrTmvlCnAAcMChVkZq7PcQKWECQDF66FQD9KSBeJMXslj2A975ajnj4obO
-         HC6NomTAYrOP/8O/Y1mUeeYYm7p0D9mBqo1NsRDFu4hXHD2lL8q183tvG54FuBSHfc/U
-         SXRA==
-X-Gm-Message-State: AOAM530lFf5V20Ffa8WbG/Mno9SKDW2F8wWrsHXagzWFHUhr4MISeYPM
-        gWBHkgGoFTjgMH+UBmttO+3O3bPaR8bVPDQcR708Vg5UWh74ykit
-X-Google-Smtp-Source: ABdhPJzBW8rI0j2VlRO01cB8A1DDiKx4LSq4UbnetRB+jOlYfVShheS7Ys/KuvfMZBgrqxurQAUkL2LZXnr0xoy9oWQ=
-X-Received: by 2002:a17:902:70c7:b029:e3:71cf:33d2 with SMTP id
- l7-20020a17090270c7b02900e371cf33d2mr3426322plt.21.1614267867080; Thu, 25 Feb
- 2021 07:44:27 -0800 (PST)
+        Thu, 25 Feb 2021 10:46:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614267902;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R6q+Q5NQOXbRifBC8SSR9ugXbvqn66/46WmsQY9vYlk=;
+        b=JEA+IFz8Nlu/+uCL5bFNCEhXiBB5xYbAV3MkKWd/MlZ4oODqoV3fBftB0N9guzPrwVLGUP
+        gIfiaVdZKsHYCkhvFXMolVbt8NFqIiH52YVO/1l2v0t3xu7TDe9rCnODZRYp2JyJLP4GUK
+        8x+gSDJR1nQo+MQM9xT5TSVDIzmszm4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-1nkb0a5vOVKmgZhXqpt6CA-1; Thu, 25 Feb 2021 10:44:56 -0500
+X-MC-Unique: 1nkb0a5vOVKmgZhXqpt6CA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E857C19611A8;
+        Thu, 25 Feb 2021 15:44:53 +0000 (UTC)
+Received: from localhost (ovpn-12-80.pek2.redhat.com [10.72.12.80])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 547E45D767;
+        Thu, 25 Feb 2021 15:44:49 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 23:44:46 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Chen Zhou <chenzhou10@huawei.com>, mingo@redhat.com,
+        tglx@linutronix.de, rppt@kernel.org, dyoung@redhat.com,
+        will@kernel.org, nsaenzjulienne@suse.de, corbet@lwn.net,
+        John.P.donnelly@oracle.com, prabhakar.pkin@gmail.com,
+        horms@verge.net.au, robh+dt@kernel.org, arnd@arndb.de,
+        james.morse@arm.com, xiexiuqi@huawei.com, guohanjun@huawei.com,
+        huawei.libin@huawei.com, wangkefeng.wang@huawei.com,
+        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org
+Subject: Re: [PATCH v14 02/11] x86: kdump: make the lower bound of crash
+ kernel reservation consistent
+Message-ID: <20210225154446.GI3553@MiWiFi-R3L-srv>
+References: <20210130071025.65258-1-chenzhou10@huawei.com>
+ <20210130071025.65258-3-chenzhou10@huawei.com>
+ <20210224143547.GB28965@arm.com>
+ <20210225070717.GG3553@MiWiFi-R3L-srv>
+ <20210225144237.GA23418@arm.com>
 MIME-Version: 1.0
-References: <20210223172231.2224-1-andriy.shevchenko@linux.intel.com>
- <fea7ce9a-01a9-cab8-8675-be5c44cb8a27@redhat.com> <YDZLuzNivBP4HcPd@smile.fi.intel.com>
- <7e5f8d81-0ee5-b8ad-ed72-06d4677cd8f7@redhat.com>
-In-Reply-To: <7e5f8d81-0ee5-b8ad-ed72-06d4677cd8f7@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 25 Feb 2021 17:44:10 +0200
-Message-ID: <CAHp75VeNZ9REU5nCDJ-Rt4Wmsnsz+hcN-P_oopzN8LpVTkU74g@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] i2c: cht-wc: Use fwnode for the controller and IRQ domain
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225144237.GA23418@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 5:11 AM Hans de Goede <hdegoede@redhat.com> wrote:
-> On 2/24/21 1:51 PM, Andy Shevchenko wrote:
-> > On Tue, Feb 23, 2021 at 08:25:35PM +0100, Hans de Goede wrote:
-> >> On 2/23/21 6:22 PM, Andy Shevchenko wrote:
-> >>> It's better to describe the I=C2=B2C controller and associated IRQ do=
-main with
-> >>> fwnode, so they will find their place in the hierarchy in sysfs and a=
-lso
-> >>> make easier to debug.
+On 02/25/21 at 02:42pm, Catalin Marinas wrote:
+> On Thu, Feb 25, 2021 at 03:08:46PM +0800, Baoquan He wrote:
+> > On 02/24/21 at 02:35pm, Catalin Marinas wrote:
+> > > On Sat, Jan 30, 2021 at 03:10:16PM +0800, Chen Zhou wrote:
+> > > > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> > > > index da769845597d..27470479e4a3 100644
+> > > > --- a/arch/x86/kernel/setup.c
+> > > > +++ b/arch/x86/kernel/setup.c
+> > > > @@ -439,7 +439,8 @@ static int __init reserve_crashkernel_low(void)
+> > > >  			return 0;
+> > > >  	}
+> > > >  
+> > > > -	low_base = memblock_phys_alloc_range(low_size, CRASH_ALIGN, 0, CRASH_ADDR_LOW_MAX);
+> > > > +	low_base = memblock_phys_alloc_range(low_size, CRASH_ALIGN, CRASH_ALIGN,
+> > > > +			CRASH_ADDR_LOW_MAX);
+> > > >  	if (!low_base) {
+> > > >  		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
+> > > >  		       (unsigned long)(low_size >> 20));
+> > > 
+> > > Is there any reason why the lower bound can't be 0 in all low cases
+> > > here? (Sorry if it's been already discussed, I lost track)
+> > 
+> > Seems like a good question.
+> > 
+> > This reserve_crashkernel_low(), paired with reserve_crashkernel_high(), is
+> > used to reserve memory under 4G so that kdump kernel owns memory for dma
+> > buffer allocation. In that case, kernel usually is loaded in high
+> > memory. In x86_64, kernel loading need be aligned to 16M because of
+> > CONFIG_PHYSICAL_START, please see commit 32105f7fd8faa7b ("x86: find
+> > offset for crashkernel reservation automatically"). But for crashkernel
+> > low memory, there seems to be no reason to ask for 16M alignment, if
+> > it's taken as dma buffer memory.
+> > 
+> > So we can make a different alignment for low memory only, e.g 2M. But
+> > 16M alignment consistent with crashkernel,high is also fine to me. The
+> > only affect is smaller alignment can increase the possibility of
+> > crashkernel low reservation.
+> 
+> I don't mind the 16M alignment in both low and high base. But is there
+> any reason that the lower bound (third argument) cannot be 0 in both
+> reserve_crashkernel() (the low attempt) and reserve_crashkernel_low()
+> cases? The comment in reserve_crashkernel() only talks about the 4G
+> upper bound but not why we need a 16M lower bound.
 
-...
+Ah, sorry, I must have mixed this one with the alignment of fixed
+memory region reservation in patch 1 when considering comments.
 
-> >>> +   set_primary_fwnode(&adap->adapter.dev, fwnode);
-> >>
-> >> So now we have the main PMIC device i2c-client, the platform-device in=
-stantiated
-> >> for the MFD-cell for the PMIC's builtin I2C-controller; and the device=
- instantiated
-> >> for the adapter-device all 3 share the same ACPI-companion fwnode.
-> >
-> > Okay, this step in this patch maybe not needed (or should be a separate=
- change,
-> > but I don't see clearly what would be the benefit out of it).
+Hmm, in x86 we always have memory reserved in low 1M, lower bound
+being 0 or 16M (kernel alignment) doesn't make difference on crashkernel
+low reservation. But for crashkernel reservation, the reason should be
+kernel loading alignment being 16M, please see commit 32105f7fd8faa7b
+("x86: find offset for crashkernel reservation automatically").
 
-Shall I leave this or should be removed in v2?
+So, for crashkernel low, keeping lower bound as 0 looks good to me, the
+only reason is just as patch log tells. And it can skip the unnecessary
+memblock searching under 16M since it will always fail, even though it
+won't matter much. Or changing it to CRASH_ALIGN as this patch is doing,
+and adding code comment, is also fine to me.
 
-...
+Thanks
+Baoquan
 
-> >>> -   adap->irq_domain =3D irq_domain_add_linear(pdev->dev.of_node, 1,
-> >>> -                                            &irq_domain_simple_ops, =
-NULL);
-> >>> +   adap->irq_domain =3D irq_domain_create_linear(fwnode, 1,
-> >>> +                                               &irq_domain_simple_op=
-s, NULL);
-> >>
-> >> Hmm, not sure this is right, admittedly the old code looks weird too, =
-but now we
-> >> are creating a second irq_domain at the same level as the irq_domain c=
-reated for
-> >> the IRQ-chip part of the PMIC. But this is really more of a child-doma=
-in of just
-> >> the I2C-controller MFD-cell. The IRQ-CHIP part of the PMIC has a singl=
-e IRQ for the
-> >> I2C controller which gets raised both on i2c-transfer completions and =
-when the
-> >> pin on the PMIC which is reserved as input for the IRQ coming out of t=
-he charger-chip
-> >> gets triggered.
-> >>
-> >> IOW we have this:
-> >>
-> >>
-> >>                PMIC
-> >>                  |
-> >>     ------------------------------
-> >>     |       |        |           |
-> >>    IRQ1   IRQ2      IRQ3       I2C-IRQ
-> >>                                  |
-> >>                    ----------------------------------
-> >>                    |        |         |             |
-> >>                  READIRQ   WRIRQ    NACKIRQ     CLIENT-IRQ
-> >>
-> >> Where READIRQ, WRIRQ and NACKIRQ are directly consumed
-> >> and the CLIENT-IRQ is being represented as a single IRQ on
-> >> a new irqchip so that we can pass it along to the i2c-driver
-> >> for the charger-chip which is connected to the Whiskey Cove's
-> >> builtin I2C controller.
-> >>
-> >> But doing as you suggest would model the IRQs as:
-> >>
-> >>                PMIC
-> >>                  |
-> >>     --------------------------------------------------
-> >>     |       |        |           |                    |
-> >>    IRQ1   IRQ2      IRQ3       I2C-IRQ           CLIENT-IRQ
-> >>
-> >> Which is not the same really. I guess it is better then what we
-> >> have though ?
-> >
-> > Hmm... There should not be difference in the hierarchy. add_linear =3D=
-=3D
-> > create_linear. The propagation of *device* (not an IRQ) fwnode is just
-> > convenient way to have IRQ domain be named (instead of 'unknown-N' or s=
-o).
-> > Maybe I have read __irq_domain_add() code wrongly.
->
-> Sorry, this is probably my bad. The first ASCII-art which I posted is
-> how things actually work in HW. The second one is how I assumed that
-> things would look like in some nested representation of the IRQ-domains
-> given that all the IRQs mentioned in the ASCII-art now use the same fwnod=
-e
-> as parent for their domain. But poking around in sysfs I don't see any
-> hierarchical representation of the domains at all. Actually I cannot
-> find any representation of the IRQ domains inside sysfs (I've never
-> looked at / into this before) ?
-
-I have enabled  GENERIC_IRQ_DEBUGFS to see some information.
-
-> If what you say is right and the fwnode is only used to set a name (where=
- can
-> I see those names ?) then your patch is probably correct.
-
-I have checked again and I don't see anything except it uses it as a
-domain name and takes reference count.
-
-> > Nevertheless, thinking more about it, why we don't add an IRQ chip via =
-regmap
-> > IRQ API?
->
-> There already is a regmap IRQ chip associated with the MFD device and the
-> IRQ handling required here is somewhat tricky (see the comments in the dr=
-iver)
-> so I would prefer to keep this as is.
-
-Ah, that makes things complicated a bit.
-
-> >> Note I can test any changes made here, but I'm not 100% convinced that
-> >> the current version of this patch is correct.
-> >
-> > If we settle on the idea first. I'm (slowly) looking forward to check a=
-nother
-> > CherryTrail device we have at the lab, but we lack of some (power) equi=
-pment
-> > right now to setup it properly. I hope it may have the Whiskey Cove PMI=
-C there.
->
-> More testing is always welcome :)   With that said, testing these changes=
- really
-> is not a lot of work for me.
-
-I would expect that we will have a clash with IRQ domain names and
-thus we would need our own fwnode here.
-
-I will think about it, but it sounds like we need to create a
-hierarchy of the IRQ domains and take the device's fwnode as a parent
-here.
-
-Overall, I stumbled over of_node use in pure ACPI case (simplest "fix"
-is to provide a NULL pointer there). If you think we can get rid of
-of_node as intermediate step, I will send v2 with that.
-
-
-
---=20
-With Best Regards,
-Andy Shevchenko
