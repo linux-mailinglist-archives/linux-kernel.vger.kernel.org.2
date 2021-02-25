@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8773F324DE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A2F324D6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233498AbhBYKTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:19:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234962AbhBYKBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:01:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6286E64F2E;
-        Thu, 25 Feb 2021 09:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246964;
-        bh=BjnqRSgTghxHTC/Y2mXgCFEH6teFqCdVhUhL3nlqKnA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ixG2HLcUC+frIgG1Ac7Xc4MIip46mwlDbCorpZXUk3BJRDfA/AhgihZ6+7Z0/FV66
-         XdAGcnyZZ0lTxcI9XcbroNeqJdp95Jtoyqieh3ua8MxKGV9StDgppZWo7edJsg8j/K
-         fYNvvdnmTATfuxKhOC4svol8qRUwuJTpgStiWVWA=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Yoshinori Sato <ysato@users.osdn.me>,
-        Rich Felker <dalias@libc.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 17/17] scripts/recordmcount.pl: support big endian for ARCH sh
-Date:   Thu, 25 Feb 2021 10:54:02 +0100
-Message-Id: <20210225092515.838349974@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210225092515.001992375@linuxfoundation.org>
-References: <20210225092515.001992375@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S233219AbhBYKAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:00:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235541AbhBYJzx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:55:53 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCBABC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 01:55:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=ILy7hOxPlcatByP7X1y13wdKQwSGNRl/iT8aWHTE2qw=; b=ZqxKzT7/r1NE04sirOzcr608B/
+        R395iSU0IRoUkHWEpfHW25yW2KdYeGsZKPTLPEdgFY7LQv6Enquz76tVioN2ipKI4aRH2MaBCyrbB
+        QmbDmbkMdjh9UE5bL7mBkmJ4UFTFFJMd6Ca53jgr7FTVPqeg20DJdO53sw97uLsiyjOn2L9kwonYx
+        s+oJRl2s3vjcgKC6AhV1oy56xcGmVXDXfiawqCsMaIhWEyahIq7y9jNHmstooc82BYXRB1ih/e6hr
+        8gjPX/lMonfStCVM1GotQdjVure9uouOQhHu+MRtZp+NE63ljdhVpoqGziDOA3bDPtSofYNvg7NLa
+        z0W34GxA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lFDMM-0000C3-H2; Thu, 25 Feb 2021 09:55:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8E33A300DB4;
+        Thu, 25 Feb 2021 10:55:00 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7AEB0201C2FE0; Thu, 25 Feb 2021 10:55:00 +0100 (CET)
+Date:   Thu, 25 Feb 2021 10:55:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org
+Subject: Re: [RFC 0/6] x86: prefetch_page() vDSO call
+Message-ID: <YDdz9JwcwuqV3GaW@hirez.programming.kicks-ass.net>
+References: <20210225072910.2811795-1-namit@vmware.com>
+ <YDdiZ1SFRrvRPhkR@hirez.programming.kicks-ass.net>
+ <64538CCF-AD11-43C2-9632-E054301F9E6D@gmail.com>
+ <D3DF6AC2-679F-4E64-B511-B1A03D1C6048@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <D3DF6AC2-679F-4E64-B511-B1A03D1C6048@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Chen <rong.a.chen@intel.com>
+On Thu, Feb 25, 2021 at 01:32:56AM -0800, Nadav Amit wrote:
+> > On Feb 25, 2021, at 12:52 AM, Nadav Amit <nadav.amit@gmail.com> wrote:
 
-[ Upstream commit 93ca696376dd3d44b9e5eae835ffbc84772023ec ]
+> > Can you give me a reference to the =E2=80=9Cremoving explicit prefetch =
+=66rom some
+> > parts of the kernel=E2=80=9D?
 
-The kernel test robot reported the following issue:
+75d65a425c01 ("hlist: remove software prefetching in hlist iterators")
+e66eed651fd1 ("list: remove prefetching from regular list iterators")
 
-    CC [M]  drivers/soc/litex/litex_soc_ctrl.o
-  sh4-linux-objcopy: Unable to change endianness of input file(s)
-  sh4-linux-ld: cannot find drivers/soc/litex/.tmp_gl_litex_soc_ctrl.o: No such file or directory
-  sh4-linux-objcopy: 'drivers/soc/litex/.tmp_mx_litex_soc_ctrl.o': No such file
+> Oh. I get it - you mean we remove we remove the use of explicit memory
+> prefetch from the kernel code. Well, I don=E2=80=99t think it is really r=
+elated,
+> but yes, performance numbers are needed.
 
-The problem is that the format of input file is elf32-shbig-linux, but
-sh4-linux-objcopy wants to output a file which format is elf32-sh-linux:
-
-  $ sh4-linux-objdump -d drivers/soc/litex/litex_soc_ctrl.o | grep format
-  drivers/soc/litex/litex_soc_ctrl.o:     file format elf32-shbig-linux
-
-Link: https://lkml.kernel.org/r/20210210150435.2171567-1-rong.a.chen@intel.com
-Link: https://lore.kernel.org/linux-mm/202101261118.GbbYSlHu-lkp@intel.com
-Signed-off-by: Rong Chen <rong.a.chen@intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Yoshinori Sato <ysato@users.osdn.me>
-Cc: Rich Felker <dalias@libc.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- scripts/recordmcount.pl | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
-index 3f77a5d695c13..0bafed857e171 100755
---- a/scripts/recordmcount.pl
-+++ b/scripts/recordmcount.pl
-@@ -268,7 +268,11 @@ if ($arch eq "x86_64") {
- 
-     # force flags for this arch
-     $ld .= " -m shlelf_linux";
--    $objcopy .= " -O elf32-sh-linux";
-+    if ($endian eq "big") {
-+        $objcopy .= " -O elf32-shbig-linux";
-+    } else {
-+        $objcopy .= " -O elf32-sh-linux";
-+    }
- 
- } elsif ($arch eq "powerpc") {
-     my $ldemulation;
--- 
-2.27.0
-
-
-
+Right, so my main worry was that use of the prefetch instruction
+actually hurt performance once the hardware prefetchers got smart
+enough, this being a very similar construct (just on a different level
+of the stack) should be careful not to suffer the same fate.
