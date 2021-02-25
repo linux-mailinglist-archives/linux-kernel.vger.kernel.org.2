@@ -2,118 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2439632551B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EE8325515
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbhBYSCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:02:24 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:45900 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230459AbhBYRyM (ORCPT
+        id S233178AbhBYSC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:02:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53552 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233357AbhBYR4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:54:12 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 91A011280420;
-        Thu, 25 Feb 2021 09:53:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1614275607;
-        bh=9ED/xEUPHnxMMI/+cLRr2qpX8Y0fccwW3J6zaIUl+wI=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:From;
-        b=MGgD9OeYTSD/mN1Vup6+lAyzi7dyOP46XlfuEnXOsQI6uvuWya46DblDLfIoE3aLC
-         ns/iecYTNAZx690gUiKUI5ZsgheNieLuIobhwwhPCU0hOmIRACKbvSZvqtyhuNw3DE
-         q89/huI4uswV5kxxT+hzXG+6FqOPO7Sh70sXrJ6g=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 6IDE53itTMSn; Thu, 25 Feb 2021 09:53:27 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 25 Feb 2021 12:56:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614275678;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=byOfTija5+suCvG20txiiotsxrvATo8BhNy2ZFJ78Pk=;
+        b=X2qPIqWZuCAOyNh05r1X2O1HMCotAmpfrEWRUip8iQFxKwt5XmOsugyK6C8EC5CiZChrjH
+        X0XZ4YM7BPHTGNLGPe2juPBB1BE40M6stbgaiwnyX+kCGvWcR2Gx4WId5rvRWHj9V5+spi
+        AIatUCy4UuCf/TSaq01f5cuj5Dkagf0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-595-aGNrTLL-NNSZVLIgLJIO3g-1; Thu, 25 Feb 2021 12:54:19 -0500
+X-MC-Unique: aGNrTLL-NNSZVLIgLJIO3g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id CAB2B12803F7;
-        Thu, 25 Feb 2021 09:53:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1614275607;
-        bh=9ED/xEUPHnxMMI/+cLRr2qpX8Y0fccwW3J6zaIUl+wI=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:From;
-        b=MGgD9OeYTSD/mN1Vup6+lAyzi7dyOP46XlfuEnXOsQI6uvuWya46DblDLfIoE3aLC
-         ns/iecYTNAZx690gUiKUI5ZsgheNieLuIobhwwhPCU0hOmIRACKbvSZvqtyhuNw3DE
-         q89/huI4uswV5kxxT+hzXG+6FqOPO7Sh70sXrJ6g=
-Message-ID: <7cb132ce522728f7689618832a65e31e37788201.camel@HansenPartnership.com>
-Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     natet@google.com
-Cc:     Ashish.Kalra@amd.com, brijesh.singh@amd.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        rientjes@google.com, seanjc@google.com, srutherford@google.com,
-        thomas.lendacky@amd.com, x86@kernel.org,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        DOV MURIK <Dov.Murik1@il.ibm.com>
-Date:   Thu, 25 Feb 2021 09:53:26 -0800
-In-Reply-To: <20210224085915.28751-1-natet@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C09853CE8;
+        Thu, 25 Feb 2021 17:54:16 +0000 (UTC)
+Received: from [10.36.114.58] (ovpn-114-58.ams2.redhat.com [10.36.114.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D24365D9D2;
+        Thu, 25 Feb 2021 17:54:11 +0000 (UTC)
+Subject: Re: [PATCH v7 1/1] mm/page_alloc.c: refactor initialization of struct
+ page for holes in memory layout
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+References: <20210224153950.20789-1-rppt@kernel.org>
+ <20210224153950.20789-2-rppt@kernel.org>
+ <515b4abf-ff07-a43a-ac2e-132c33681886@redhat.com>
+ <20210225170629.GE1854360@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <2c7ad47f-f545-8716-5fa2-7d3173141f76@redhat.com>
+Date:   Thu, 25 Feb 2021 18:54:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210225170629.GE1854360@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Add a capability for userspace to mirror SEV encryption context from
-> one vm to another. On our side, this is intended to support a
-> Migration Helper vCPU, but it can also be used generically to support
-> other in-guest workloads scheduled by the host. The intention is for
-> the primary guest and the mirror to have nearly identical memslots.
-
-So this causes a cloned VM that you can boot up another CPU into but
-the boot path must have been already present?  In essence we've already
-been thinking about something like this to get migration running inside
-OVMF:
-
-https://lore.kernel.org/qemu-devel/8b824c44-6a51-c3a7-6596-921dc47fea39@linux.ibm.com/
-
-It sounds like this mechanism can be used to boot a vCPU through a
-mirror VM after the fact, which is very compatible with the above whose
-mechanism is  simply to steal a VCPU to hold in reset until it's
-activated.  However, you haven't published how you activate the entity
-inside the VM ... do you have patches for this so we can see the
-internal capture mechanism and mirror VM boot path?
-
-> The primary benefits of this are that:
-> 1) The VMs do not share KVM contexts (think APIC/MSRs/etc), so they
-> can't accidentally clobber each other.
-> 2) The VMs can have different memory-views, which is necessary for
-> post-copy migration (the migration vCPUs on the target need to read
-> and write to pages, when the primary guest would VMEXIT).
+On 25.02.21 18:06, Mike Rapoport wrote:
+> On Thu, Feb 25, 2021 at 04:59:06PM +0100, David Hildenbrand wrote:
+>> On 24.02.21 16:39, Mike Rapoport wrote:
+>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>
+>>> There could be struct pages that are not backed by actual physical memory.
+>>> This can happen when the actual memory bank is not a multiple of
+>>> SECTION_SIZE or when an architecture does not register memory holes
+>>> reserved by the firmware as memblock.memory.
+>>>
+>>> Such pages are currently initialized using init_unavailable_mem() function
+>>> that iterates through PFNs in holes in memblock.memory and if there is a
+>>> struct page corresponding to a PFN, the fields of this page are set to
+>>> default values and it is marked as Reserved.
+>>>
+>>> init_unavailable_mem() does not take into account zone and node the page
+>>> belongs to and sets both zone and node links in struct page to zero.
+>>>
+>>> Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
+>>> rather that check each PFN") the holes inside a zone were re-initialized
+>>> during memmap_init() and got their zone/node links right. However, after
+>>> that commit nothing updates the struct pages representing such holes.
+>>>
+>>> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+>>> instance in a configuration below:
+>>>
+>>> 	# grep -A1 E820 /proc/iomem
+>>> 	7a17b000-7a216fff : Unknown E820 type
+>>> 	7a217000-7bffffff : System RAM
+>>>
+>>> unset zone link in struct page will trigger
+>>>
+>>> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+>>>
+>>> because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
+>>> in struct page) in the same pageblock.
+>>>
+>>> Interleave initialization of the unavailable pages with the normal
+>>> initialization of memory map, so that zone and node information will be
+>>> properly set on struct pages that are not backed by the actual memory.
+>>>
+>>> With this change the pages for holes inside a zone will get proper
+>>> zone/node links and the pages that are not spanned by any node will get
+>>> links to the adjacent zone/node.
+>>>
+>>> Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
+>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+>>> Reported-by: Qian Cai <cai@lca.pw>
+>>> Reported-by: Andrea Arcangeli <aarcange@redhat.com>
+>>> Reviewed-by: Baoquan He <bhe@redhat.com>
+>>> ---
+>>>    mm/page_alloc.c | 147 +++++++++++++++++++++---------------------------
+>>>    1 file changed, 64 insertions(+), 83 deletions(-)
+>>>
+>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>> index 3e93f8b29bae..a11a9acde708 100644
+>>> --- a/mm/page_alloc.c
+>>> +++ b/mm/page_alloc.c
+>>> @@ -6280,12 +6280,60 @@ static void __meminit zone_init_free_lists(struct zone *zone)
+>>>    	}
+>>>    }
+>>> +#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
+>>> +/*
+>>> + * Only struct pages that correspond to ranges defined by memblock.memory
+>>> + * are zeroed and initialized by going through __init_single_page() during
+>>> + * memmap_init_zone().
+>>> + *
+>>> + * But, there could be struct pages that correspond to holes in
+>>> + * memblock.memory. This can happen because of the following reasons:
+>>> + * - phyiscal memory bank size is not necessarily the exact multiple of the
+>>> + *   arbitrary section size
+>>> + * - early reserved memory may not be listed in memblock.memory
+>>> + * - memory layouts defined with memmap= kernel parameter may not align
+>>> + *   nicely with memmap sections
+>>> + *
+>>> + * Explicitly initialize those struct pages so that:
+>>> + * - PG_Reserved is set
+>>> + * - zone and node links point to zone and node that span the page
+>>> + */
+>>> +static u64 __meminit init_unavailable_range(unsigned long spfn,
+>>> +					    unsigned long epfn,
+>>> +					    int zone, int node)
+>>> +{
+>>> +	unsigned long pfn;
+>>> +	u64 pgcnt = 0;
+>>> +
+>>> +	for (pfn = spfn; pfn < epfn; pfn++) {
+>>> +		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
+>>> +			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
+>>> +				+ pageblock_nr_pages - 1;
+>>> +			continue;
+>>> +		}
+>>> +		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
+>>> +		__SetPageReserved(pfn_to_page(pfn));
+>>> +		pgcnt++;
+>>> +	}
+>>> +
+>>> +	return pgcnt;
+>>> +}
+>>> +#else
+>>> +static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
+>>> +					 int zone, int node)
+>>> +{
+>>> +	return 0;
+>>> +}
+>>> +#endif
+>>> +
+>>>    void __meminit __weak memmap_init_zone(struct zone *zone)
+>>>    {
+>>>    	unsigned long zone_start_pfn = zone->zone_start_pfn;
+>>>    	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
+>>>    	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
+>>> +	static unsigned long hole_pfn = 0;
+>>>    	unsigned long start_pfn, end_pfn;
+>>> +	u64 pgcnt = 0;
+>>>    	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
+>>>    		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
+>>> @@ -6295,7 +6343,23 @@ void __meminit __weak memmap_init_zone(struct zone *zone)
+>>>    			memmap_init_range(end_pfn - start_pfn, nid,
+>>>    					zone_id, start_pfn, zone_end_pfn,
+>>>    					MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
+>>> +
+>>> +		if (hole_pfn < start_pfn)
+>>> +			pgcnt += init_unavailable_range(hole_pfn, start_pfn,
+>>> +							zone_id, nid);
+>>> +		hole_pfn = end_pfn;
+>>>    	}
+>>> +
+>>> +#ifdef CONFIG_SPARSEMEM
+>>> +	end_pfn = round_up(zone_end_pfn, PAGES_PER_SECTION);
+>>> +	if (hole_pfn < end_pfn)
+>>> +		pgcnt += init_unavailable_range(hole_pfn, end_pfn,
+>>> +						zone_id, nid);
+>>
+>> We might still double-initialize PFNs when two zones overlap within a
+>> section, correct?
 > 
-> This does not change the threat model for AMD SEV. Any memory
-> involved is still owned by the primary guest and its initial state is
-> still attested to through the normal SEV_LAUNCH_* flows. If userspace
-> wanted to circumvent SEV, they could achieve the same effect by
-> simply attaching a vCPU to the primary VM.
-> This patch deliberately leaves userspace in charge of the memslots
-> for the mirror, as it already has the power to mess with them in the
-> primary guest.
+> You mean that a section crosses zones boundary?
+> I don't think it's that important.
+> 
+>> This might worth documenting - also, you might want to
+>> take some of the original comment the accompanied this code.
+> 
+> The original comment was not exactly right, I believe the comment above
+> init_unavailable_range() better describes what's going on there.
 
-Well it does alter the threat model in that previously the
-configuration, including the CPU configuration, was fixed after launch
-and attestation.  Now the CSP can alter the configuration via a mirror.
-I'm not sure I have a threat for this, but it definitely alters the
-model.
+Ah, okay - as long as it's documented I'm happy :)
 
-> This patch does not support SEV-ES (much less SNP), as it does not
-> handle handing off attested VMSAs to the mirror.
+-- 
+Thanks,
 
-One of the reasons for doing the sequestered vcpu is that -ES and -SNP
-require the initial CPU state to be part of the attestation, so with
-them you can't add CPU state after the fact.  I think you could use
-this model if you declare the vCPU in the mirror in the initial
-attested VMSA, but that's conjecture at this stage.
-
-> For additional context, we need a Migration Helper because SEV PSP
-> migration is far too slow for our live migration on its own. Using an
-> in-guest migrator lets us speed this up significantly.
-
-We have the same problem here at IBM, hence the RFC referred to above.
-
-James
-
+David / dhildenb
 
