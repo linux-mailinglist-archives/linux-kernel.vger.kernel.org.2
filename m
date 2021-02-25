@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95410324E95
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:55:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C725324E96
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234112AbhBYKv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:51:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40788 "EHLO mx2.suse.de"
+        id S234931AbhBYKvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:51:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41426 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234037AbhBYKjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:39:23 -0500
+        id S235245AbhBYKkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 05:40:40 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2AB1FAAAE;
-        Thu, 25 Feb 2021 10:38:36 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 11:38:35 +0100
-Message-ID: <s5h7dmwqvo4.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 2F4D5AD5C;
+        Thu, 25 Feb 2021 10:39:59 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 11:39:59 +0100
+Message-ID: <s5h5z2gqvls.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
 Cc:     <virtualization@lists.linux-foundation.org>,
@@ -27,9 +27,10 @@ Cc:     <virtualization@lists.linux-foundation.org>,
         Jason Wang <jasowang@redhat.com>,
         <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH v5 2/9] ALSA: virtio: add virtio sound driver
-In-Reply-To: <20210222153444.348390-3-anton.yakovlev@opensynergy.com>
+In-Reply-To: <s5h7dmwqvo4.wl-tiwai@suse.de>
 References: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
         <20210222153444.348390-3-anton.yakovlev@opensynergy.com>
+        <s5h7dmwqvo4.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -39,51 +40,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 16:34:37 +0100,
-Anton Yakovlev wrote:
-> +static int virtsnd_find_vqs(struct virtio_snd *snd)
-> +{
-> +	struct virtio_device *vdev = snd->vdev;
-> +	vq_callback_t *callbacks[VIRTIO_SND_VQ_MAX] = {
-> +		[VIRTIO_SND_VQ_EVENT] = virtsnd_event_notify_cb
-> +	};
-> +	const char *names[VIRTIO_SND_VQ_MAX] = {
+On Thu, 25 Feb 2021 11:38:35 +0100,
+Takashi Iwai wrote:
+> 
+> On Mon, 22 Feb 2021 16:34:37 +0100,
+> Anton Yakovlev wrote:
+> > +static int virtsnd_find_vqs(struct virtio_snd *snd)
+> > +{
+> > +	struct virtio_device *vdev = snd->vdev;
+> > +	vq_callback_t *callbacks[VIRTIO_SND_VQ_MAX] = {
+> > +		[VIRTIO_SND_VQ_EVENT] = virtsnd_event_notify_cb
+> > +	};
+> > +	const char *names[VIRTIO_SND_VQ_MAX] = {
+> 
+> Shouldn't be static?
 
-Shouldn't be static?
-Also it's often const char * const names[] = { ... }
-unless you overwrite something.
+Also callbacks[] should be static (and maybe const), I suppose.
 
-> +/**
-> + * virtsnd_reset_fn() - Kernel worker's function to reset the device.
-> + * @work: Reset device work.
-> + *
-> + * Context: Process context.
-> + */
-> +static void virtsnd_reset_fn(struct work_struct *work)
-> +{
-> +	struct virtio_snd *snd =
-> +		container_of(work, struct virtio_snd, reset_work);
-> +	struct virtio_device *vdev = snd->vdev;
-> +	struct device *dev = &vdev->dev;
-> +	int rc;
-> +
-> +	dev_info(dev, "sound device needs reset\n");
-> +
-> +	/*
-> +	 * It seems that the only way to properly reset the device is to remove
-> +	 * and re-create the ALSA sound card device.
-> +	 */
-> +	rc = device_reprobe(dev);
-> +	if (rc)
-> +		dev_err(dev, "failed to reprobe sound device: %d\n", rc);
-
-Now I'm wondering whether it's safe to do that from this place.
-Basically device_reprobe() unbinds the device that releases the full
-resources once including the devm_* stuff.  And this work itself is in
-a part of devm allocated resource, so it'll be released there.  That
-said, we might hit use-after-free...  This needs to be verified.
-
-
-thanks,
 
 Takashi
