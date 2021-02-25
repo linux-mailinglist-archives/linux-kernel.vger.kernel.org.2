@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC55C3258BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7077D3258CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234220AbhBYVhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:37:06 -0500
-Received: from relay01.th.seeweb.it ([5.144.164.162]:35681 "EHLO
-        relay01.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234022AbhBYVgx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:36:53 -0500
-Received: from localhost.localdomain (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 69C381F630;
-        Thu, 25 Feb 2021 22:36:10 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] pinctrl: pmic-mpp: Add missing dt-bindings mpp function defs
-Date:   Thu, 25 Feb 2021 22:36:04 +0100
-Message-Id: <20210225213605.117201-1-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.30.1
+        id S234410AbhBYVhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:37:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234081AbhBYVhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 16:37:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E03FD64EC8
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 21:36:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614288982;
+        bh=vhR06eEJtDZ0r97bs4jU4YhRSpx9NcqTr0R2mpv+aSo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Avuf5TFdxU8dfLyGY3bl8VlfmjoSEy30btLo9dx84eVSgZAok+ltJN/7aXBZfZpOd
+         Bp2zI8zESCw6lYHJjFHlJT5YkjbvUi6WOqNxV92d9u5WEt94NeQN+YKqFDGAEX7fqL
+         tM+HYLv0oC4BnZMNfUyIcTRVjXj4EDlRjL3a89eTpPhofePsiDfSwAJRmdKWxJPIYf
+         Uk8Paz4LdHZvpM4Zz4zaS/KxUxQlnnm2wP/6MDSjEz8SjiOgZxLVatxXurGdfNQsgU
+         vs55lHfX1LpXtlgKN8JHB8a8eQQYO9swShtJlwblI0JTQ5hPhyH3C9nG1NoISmhnbw
+         UwGZnQ4Ke6kKg==
+Received: by mail-oi1-f176.google.com with SMTP id f3so7575375oiw.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:36:21 -0800 (PST)
+X-Gm-Message-State: AOAM533zNWJxWCZ0GpqghLLK9TA5rutIXaIarNxKE25nB/NrWqZusHTs
+        bDSEkkgpjtz3UAwuRe7Jg+6pvDJUJbbSa4BytSI=
+X-Google-Smtp-Source: ABdhPJybVJcHMJTDZedQxlBiUnKZZcDkyTWHOLi5187NOxBRl/xxjKkBQg64kUB5T4FFzlA5mQYjKZG0yiDibO3jb2M=
+X-Received: by 2002:aca:b457:: with SMTP id d84mr312789oif.4.1614288981097;
+ Thu, 25 Feb 2021 13:36:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210225143339.3693838-1-arnd@kernel.org>
+In-Reply-To: <20210225143339.3693838-1-arnd@kernel.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 25 Feb 2021 22:36:04 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0Zi2MAzG2f6Te-LYuDuLd4yiy4b3VRYQY6EspqzMnQ5w@mail.gmail.com>
+Message-ID: <CAK8P3a0Zi2MAzG2f6Te-LYuDuLd4yiy4b3VRYQY6EspqzMnQ5w@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: fix 64-bit integer division
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bindu Ramamurthy <bindu.r@amd.com>,
+        Vladimir Stempen <vladimir.stempen@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+On Thu, Feb 25, 2021 at 3:33 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The new display synchronization code caused a regression
+> on all 32-bit architectures:
+>
+> ld.lld: error: undefined symbol: __aeabi_uldivmod
+> >>> referenced by dce_clock_source.c
+> >>>               gpu/drm/amd/display/dc/dce/dce_clock_source.o:(get_pixel_clk_frequency_100hz) in archive drivers/built-in.a
+>
+> ld.lld: error: undefined symbol: __aeabi_ldivmod
+> >>> referenced by dc_resource.c
+> >>>               gpu/drm/amd/display/dc/core/dc_resource.o:(resource_are_vblanks_synchronizable) in archive drivers/built-in.a
+> >>> referenced by dc_resource.c
+> >>>               gpu/drm/amd/display/dc/core/dc_resource.o:(resource_are_vblanks_synchronizable) in archive drivers/built-in.a
+> >>> referenced by dc_resource.c
+> >>>               gpu/drm/amd/display/dc/core/dc_resource.o:(resource_are_vblanks_synchronizable) in archive drivers/built-in.a
+>
+> This is not a fast path, so the use of an explicit div_u64/div_s64
+> seems appropriate.
 
-The pinctrl-spmi-mpp driver supports setting more mpp functions
-than the ones defined in the dt-bindings header, specifically,
-digital, analog and sink.
+I found two more instances:
 
-To follow the current way of specifying the function config
-in Device-Tree, add the missing three definitions in the
-appropriate dt-bindings header as:
-GPIO_MPP_FUNC_{DIGITAL,ANALOG,SINK}.
+>>> referenced by dcn20_optc.c
+>>>               gpu/drm/amd/display/dc/dcn20/dcn20_optc.o:(optc2_align_vblanks) in archive drivers/built-in.a
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- include/dt-bindings/pinctrl/qcom,pmic-mpp.h | 3 +++
- 1 file changed, 3 insertions(+)
+>>> referenced by dcn10_hw_sequencer.c
+>>>               gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.o:(reduceSizeAndFraction) in archive drivers/built-in.a
 
-diff --git a/include/dt-bindings/pinctrl/qcom,pmic-mpp.h b/include/dt-bindings/pinctrl/qcom,pmic-mpp.h
-index 32e66ee7e830..3cdca7ee1b3f 100644
---- a/include/dt-bindings/pinctrl/qcom,pmic-mpp.h
-+++ b/include/dt-bindings/pinctrl/qcom,pmic-mpp.h
-@@ -98,6 +98,9 @@
- /* To be used with "function" */
- #define PMIC_MPP_FUNC_NORMAL		"normal"
- #define PMIC_MPP_FUNC_PAIRED		"paired"
-+#define PMIC_MPP_FUNC_DIGITAL		"digital"
-+#define PMIC_MPP_FUNC_ANALOG		"analog"
-+#define PMIC_MPP_FUNC_SINK		"sink"
- #define PMIC_MPP_FUNC_DTEST1		"dtest1"
- #define PMIC_MPP_FUNC_DTEST2		"dtest2"
- #define PMIC_MPP_FUNC_DTEST3		"dtest3"
--- 
-2.30.1
+I have patches for both, but will let the randconfig build box keep working
+on it over night to see if there are any others. Let me know if you want a
+combined patch or one per file once there are no more regressions.
 
+        Arnd
