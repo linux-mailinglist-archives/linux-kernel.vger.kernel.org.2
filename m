@@ -2,160 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790E1325401
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A318325409
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232077AbhBYQut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 11:50:49 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:40634 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233864AbhBYQqi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:46:38 -0500
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A1D1920B6C40;
-        Thu, 25 Feb 2021 08:45:55 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A1D1920B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1614271556;
-        bh=wlRHhMDhdnPoOFiC5N9w8GK8FzHuH7hrSm93HlcK0Lk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RYEpC4RbxF1x4ktJidIkRrotkXepMC9his7/DJxkAzyGquo/8KPx9wknKuEmhPe13
-         Y/lBsSoDiJrB77FAFbGwMEHgmJjgtYlvAGIcUBLD8hIz0UgcfS7bFpPpTjJDs591eh
-         69Kd1+1mIdx5NkHV4Pu1+mWqd3h2J2w1MuPCu4nQ=
-Date:   Thu, 25 Feb 2021 10:45:53 -0600
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG] Race between policy reload sidtab conversion and live
- conversion
-Message-ID: <20210225164553.GG6000@sequoia>
-References: <20210223214346.GB6000@sequoia>
- <20210223215054.GC6000@sequoia>
- <20210223223652.GD6000@sequoia>
- <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
- <20210224143651.GE6000@sequoia>
- <CAFqZXNsNtAD56H0K-oOMkm=M_M6g=zuSvprDAWVk_phwQGk_TQ@mail.gmail.com>
+        id S233984AbhBYQvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 11:51:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50230 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233844AbhBYQrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 11:47:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4DB91AC1D;
+        Thu, 25 Feb 2021 16:46:47 +0000 (UTC)
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Timur Tabi <timur@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH] printk: clarify the documentation for plain pointer printing
+Date:   Thu, 25 Feb 2021 17:46:39 +0100
+Message-Id: <20210225164639.27212-1-vbabka@suse.cz>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFqZXNsNtAD56H0K-oOMkm=M_M6g=zuSvprDAWVk_phwQGk_TQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-25 17:38:25, Ondrej Mosnacek wrote:
-> On Wed, Feb 24, 2021 at 3:43 PM Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
-> > On 2021-02-24 10:33:46, Ondrej Mosnacek wrote:
-> > > On Tue, Feb 23, 2021 at 11:37 PM Tyler Hicks
-> > > <tyhicks@linux.microsoft.com> wrote:
-> > > > On 2021-02-23 15:50:56, Tyler Hicks wrote:
-> > > > > On 2021-02-23 15:43:48, Tyler Hicks wrote:
-> > > > > > I'm seeing a race during policy load while the "regular" sidtab
-> > > > > > conversion is happening and a live conversion starts to take place in
-> > > > > > sidtab_context_to_sid().
-> > > > > >
-> > > > > > We have an initial policy that's loaded by systemd ~0.6s into boot and
-> > > > > > then another policy gets loaded ~2-3s into boot. That second policy load
-> > > > > > is what hits the race condition situation because the sidtab is only
-> > > > > > partially populated and there's a decent amount of filesystem operations
-> > > > > > happening, at the same time, which are triggering live conversions.
-> > > >
-> > > > Hmm, perhaps this is the same problem that's fixed by Ondrej's proposed
-> > > > change here:
-> > > >
-> > > >  https://lore.kernel.org/selinux/20210212185930.130477-3-omosnace@redhat.com/
-> > > >
-> > > > I'll put these changes through a validation run (the only place that I
-> > > > can seem to reproduce this crash) and see how it looks.
-> > >
-> > > Hm... I think there is actually another race condition introduced by
-> > > the switch from rwlock to RCU [1]... Judging from the call trace you
-> > > may be hitting that.
-> >
-> > I believe your patches above fixed the race I was seeing. I was able to
-> > make it through a full validation run without any crashes. Without those
-> > patches applied, I would see several crashes resulting from this race
-> > over the course of a validation run.
-> 
-> Hm... okay so probably you were indeed running into that bug. I tried
-> to reproduce the other race (I added a BUG_ON to help detect it), but
-> wasn't able to reproduce it with my (pretty aggressive) stress test. I
-> only managed to trigger it by adding a conditional delay in the right
-> place. So I now know the second bug is really there, though it' seems
-> to be very unlikely to be hit in practice (might be more likely on
-> systems with many CPU cores, though). The first bug, OTOH, is
-> triggered almost instantly by my stress test.
-> 
-> Unless someone objects, I'll start working on a patch to switch back
-> to read-write lock for now. If all goes well, I'll send it sometime
-> next week.
-> 
-> >
-> > I'll continue to test with your changes and let you know if I end up
-> > running into the other race you spotted.
-> 
-> Thanks, but given the results of my testing it's probably not worth trying :)
+We have several modifiers for plain pointers (%p, %px and %pK) and now also
+the no_hash_pointers boot parameter. The documentation should help to choose
+which variant to use. Importantly, we should discourage %px in favour of %p
+(with the new boot parameter when debugging), and stress that %pK should be
+only used for procfs and similar files, not dmesg buffer. This patch clarifies
+the documentation in that regard.
 
-Those changes have now survived through several validation runs. I can
-confidently say that they fix the race I was seeing.
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+ Documentation/core-api/printk-formats.rst | 26 ++++++++++++++++++++++-
+ lib/vsprintf.c                            |  7 ++++--
+ 2 files changed, 30 insertions(+), 3 deletions(-)
 
-Tyler
+diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
+index 160e710d992f..6724adf58082 100644
+--- a/Documentation/core-api/printk-formats.rst
++++ b/Documentation/core-api/printk-formats.rst
+@@ -79,7 +79,19 @@ Pointers printed without a specifier extension (i.e unadorned %p) are
+ hashed to prevent leaking information about the kernel memory layout. This
+ has the added benefit of providing a unique identifier. On 64-bit machines
+ the first 32 bits are zeroed. The kernel will print ``(ptrval)`` until it
+-gathers enough entropy. If you *really* want the address see %px below.
++gathers enough entropy.
++
++When possible, use specialised modifiers such as %pS or %pB (described below)
++to avoid the need of providing an unhashed address that has to be interpreted
++post-hoc. If not possible, and the aim of printing the address is to provide
++more information for debugging, use %p and boot the kernel with the
++``no_hash_pointers`` parameter during debugging, which will print all %p
++addresses unmodified. If you *really* always want the unmodified address, see
++%px below.
++
++If (and only if) you are printing addresses as a content of a virtual file in
++e.g. procfs or sysfs (using e.g. seq_printf(), not printk()) read by a
++userspace process, use the %pK modifier described below instead of %p or %px.
+ 
+ Error Pointers
+ --------------
+@@ -139,6 +151,11 @@ For printing kernel pointers which should be hidden from unprivileged
+ users. The behaviour of %pK depends on the kptr_restrict sysctl - see
+ Documentation/admin-guide/sysctl/kernel.rst for more details.
+ 
++This modifier is *only* intended when producing content of a file read by
++userspace from e.g. procfs or sysfs, not for dmesg. Please refer to the
++section about %p above for discussion about how to manage hashing pointers
++in printk().
++
+ Unmodified Addresses
+ --------------------
+ 
+@@ -153,6 +170,13 @@ equivalent to %lx (or %lu). %px is preferred because it is more uniquely
+ grep'able. If in the future we need to modify the way the kernel handles
+ printing pointers we will be better equipped to find the call sites.
+ 
++Before using %px, consider if using %p is sufficient together with enabling the
++``no_hash_pointers`` kernel parameter during debugging sessions (see the %p
++description above). One valid scenario for %px might be printing information
++immediately before a panic, which prevents any sensitive information to be
++exploited anyway, and with %px there would be no need to reproduce the panic
++with no_hash_pointers.
++
+ Pointer Differences
+ -------------------
+ 
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 41ddc353ebb8..c4dc971e5ca5 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -2186,7 +2186,9 @@ early_param("no_hash_pointers", no_hash_pointers_enable);
+  *       Implements a "recursive vsnprintf".
+  *       Do not use this feature without some mechanism to verify the
+  *       correctness of the format string and va_list arguments.
+- * - 'K' For a kernel pointer that should be hidden from unprivileged users
++ * - 'K' For a kernel pointer that should be hidden from unprivileged users.
++ *       Use only for procfs, sysfs and similar files, not printk(); please
++ *       read the documentation (path below) first.
+  * - 'NF' For a netdev_features_t
+  * - 'h[CDN]' For a variable-length buffer, it prints it as a hex string with
+  *            a certain separator (' ' by default):
+@@ -2225,7 +2227,8 @@ early_param("no_hash_pointers", no_hash_pointers_enable);
+  *		Without an option prints the full name of the node
+  *		f full name
+  *		P node name, including a possible unit address
+- * - 'x' For printing the address. Equivalent to "%lx".
++ * - 'x' For printing the address unmodified. Equivalent to "%lx".
++ *       Please read the documentation (path below) before using!
+  * - '[ku]s' For a BPF/tracing related format specifier, e.g. used out of
+  *           bpf_trace_printk() where [ku] prefix specifies either kernel (k)
+  *           or user (u) memory to probe, and:
+-- 
+2.30.1
 
-> 
-> >
-> > Tyler
-> >
-> > >
-> > > Basically, before the switch the sidtab swapover worked like this:
-> > > 1. Start live conversion of new entries.
-> > > 2. Convert existing entries.
-> > > [Still only the old sidtab is visible to readers here.]
-> > > 3. Swap sidtab under write lock.
-> > > 4. Now only the new sidtab is visible to readers, so the old one can
-> > > be destroyed.
-> > >
-> > > After the switch to RCU, we now have:
-> > > 1. Start live conversion of new entries.
-> > > 2. Convert existing entries.
-> > > 3. RCU-assign the new policy pointer to selinux_state.
-> > > [!!! Now actually both old and new sidtab may be referenced by
-> > > readers, since there is no synchronization barrier previously provided
-> > > by the write lock.]
-> > > 4. Wait for synchronize_rcu() to return.
-> > > 5. Now only the new sidtab is visible to readers, so the old one can
-> > > be destroyed.
-> > >
-> > > So the race can happen between 3. and 5., if one thread already sees
-> > > the new sidtab and adds a new entry there, and a second thread still
-> > > has the reference to the old sidtab and also tires to add a new entry;
-> > > live-converting to the new sidtab, which it doesn't expect to change
-> > > by itself. Unfortunately I failed to realize this when reviewing the
-> > > patch :/
-> > >
-> > > I think the only two options to fix it are A) switching back to
-> > > read-write lock (the easy and safe way; undoing the performance
-> > > benefits of [1]), or B) implementing a safe two-way live conversion of
-> > > new sidtab entries, so that both tables are kept in sync while they
-> > > are both available (more complicated and with possible tricky
-> > > implications of different interpretations of contexts by the two
-> > > policies).
-> > >
-> > > [1] 1b8b31a2e612 ("selinux: convert policy read-write lock to RCU")
-> > >
-> > > --
-> > > Ondrej Mosnacek
-> > > Software Engineer, Linux Security - SELinux kernel
-> > > Red Hat, Inc.
-> > >
-> >
-> 
-> 
-> --
-> Ondrej Mosnacek
-> Software Engineer, Linux Security - SELinux kernel
-> Red Hat, Inc.
-> 
