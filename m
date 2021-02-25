@@ -2,106 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4346F324C4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2087A324C56
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhBYI5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 03:57:08 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13002 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbhBYI5B (ORCPT
+        id S233681AbhBYI5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 03:57:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhBYI5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 03:57:01 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DmRS11HS5zjSGf;
-        Thu, 25 Feb 2021 16:54:41 +0800 (CST)
-Received: from [10.67.102.197] (10.67.102.197) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 25 Feb 2021 16:56:11 +0800
-Subject: Re: [PATCH] futex: fix dead code in attach_to_pi_owner()
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        <sashal@kernel.org>, <tglx@linutronix.de>, <lee.jones@linaro.org>,
-        <wangle6@huawei.com>, <zhengyejian1@huawei.com>
-References: <20210222125352.110124-1-nixiaoming@huawei.com>
- <YDdfASEcv7i/DxHF@kroah.com>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <71a24b9b-2a65-57a1-55bb-95f7ec3287dd@huawei.com>
-Date:   Thu, 25 Feb 2021 16:56:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Thu, 25 Feb 2021 03:57:16 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE80EC061574;
+        Thu, 25 Feb 2021 00:56:36 -0800 (PST)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 062C058E;
+        Thu, 25 Feb 2021 09:56:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1614243394;
+        bh=yUTVG65stQzSJoZk2DwuSqJ7mbLyW5rGuDmNK1bm15k=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=X9qMlTgWca78Z9RN49HNVdZzTislNq4z/4YwzuaCxyEUqKFyWYdWBkwMfB16eV1OY
+         nj9qpkpK7palmZ1llp5ezaYo7gNpN9MR5bg1zRbPUfvIprGiu+LUsemOgFtiZ9DwOZ
+         a1HqZlGlybRzOMdZqFvFMwq3S7Of3xZF1/35RPFI=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH 03/16] media: i2c: rdacm20: Replace goto with a loop
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo@jmondi.org>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-4-jacopo+renesas@jmondi.org>
+ <c95022bc-3841-4d0a-653c-6d6974e20355@ideasonboard.com>
+ <YDMDPymgU/N5wd/i@pendragon.ideasonboard.com>
+ <20210222150643.cuv6uye3wpxaykim@uno.localdomain>
+ <YDa2qh4onPRSHlXq@pendragon.ideasonboard.com>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <517b3ef0-cead-0107-1c7b-91eec658bd66@ideasonboard.com>
+Date:   Thu, 25 Feb 2021 08:56:31 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YDdfASEcv7i/DxHF@kroah.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
+In-Reply-To: <YDa2qh4onPRSHlXq@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/25 16:25, Greg KH wrote:
-> On Mon, Feb 22, 2021 at 08:53:52PM +0800, Xiaoming Ni wrote:
->> From: Thomas Gleixner <tglx@linutronix.de>
->>
->> The handle_exit_race() function is defined in commit c158b461306df82
->>   ("futex: Cure exit race"), which never returns -EBUSY. This results
->> in a small piece of dead code in the attach_to_pi_owner() function:
->>
->> 	int ret = handle_exit_race(uaddr, uval, p); /* Never return -EBUSY */
->> 	...
->> 	if (ret == -EBUSY)
->> 		*exiting = p; /* dead code */
->>
->> The return value -EBUSY is added to handle_exit_race() in upsteam
->> commit ac31c7ff8624409 ("futex: Provide distinct return value when
->> owner is exiting"). This commit was incorporated into v4.9.255, before
->> the function handle_exit_race() was introduced, whitout Modify
->> handle_exit_race().
->>
->> To fix dead code, extract the change of handle_exit_race() from
->> commit ac31c7ff8624409 ("futex: Provide distinct return value when owner
->>   is exiting"), re-incorporated.
-mainline:
-ac31c7ff8624 futex: Provide distinct return value when owner is exiting
-
->>
->> Fixes: c158b461306df82 ("futex: Cure exit race")
-
-stable linux-4.9.y
-9c3f39860367 futex: Cure exit race
-c27f392040e2 futex: Provide distinct return value when owner is exiting
-
->> Cc: stable@vger.kernel.org # 4.9.258-rc1
->> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
->> ---
->>   kernel/futex.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
+On 24/02/2021 20:27, Laurent Pinchart wrote:
+> Hi Jacopo,
 > 
-> What is the git commit id of this patch in Linus's tree?
+> On Mon, Feb 22, 2021 at 04:06:43PM +0100, Jacopo Mondi wrote:
+>> On Mon, Feb 22, 2021 at 03:05:03AM +0200, Laurent Pinchart wrote:
+>>> Hi Jacopo,
+>>>
+>>> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>>>
+>>> On Wed, Feb 17, 2021 at 01:01:26PM +0000, Kieran Bingham wrote:
+>>>> On 16/02/2021 17:41, Jacopo Mondi wrote:
+>>>>> During the camera module initialization the image sensor PID is read to
+>>>>> verify it can correctly be identified. The current implementation is
+>>>>> rather confused and uses a loop implemented with a label and a goto.
+>>>>>
+>>>>> Replace it with a more compact for() loop.
+>>>>>
+>>>>> No functional changes intended.
+>>>>
+>>>> I think there is a functional change in here, but I almost like it.
+>>>>
+>>>> Before, if the read was successful, it would check to see if the
+>>>> OV10635_PID == OV10635_VERSION, and if not it would print that the read
+>>>> was successful but a mismatch.
+>>>>
+>>>> Now - it will retry again instead, and if at the end of the retries it
+>>>> still fails then it's a failure.
+>>>>
+>>>> This means we perhaps don't get told if the device id is not correct in
+>>>> the same way, but it also means that if the VERSION was not correct
+>>>> because of a read error (which I believe i've seen occur), it will retry.
+
+So - to be clear here, I meant a 'read error', as in perhaps a
+one-bit-flip or something else, not an error detected and propogated by
+the I2C controllers.
+
+I.e. ... something happening on the bus that gives a different result
+but the 'read' was successful.... it's just that it returns a different
+value than expected.
+
+Given our noisy bus, not certain bus speeds, etc etc, I believe this can
+happen.
+
+
+>>>
+>>> I was going to ask about that, whether we can have a successful I2C read
+>>> operation that would return incorrect data. If we do, aren't we screwed
+>>> ? If there's a non-negligible probability that reads will return
+>>> incorrect data without any way to know about it (for other registers
+>>> than the version register of course), then I would consider that writes
+>>> could fail the same way, and that would mean an unusable device,
+>>> wouldn't it ?
+>>>
+>>> If, on the other hand, read failures can always (or nearly always,
+>>> ignoring space neutrinos and similar niceties) be detected, then I think
+>>> we should avoid the functional change.
+>>>
+>>>> Because there is a functional change you might want to update the
+>>>> commit, but I still think this is a good change overall.
+>>
+>> I'm not sure I got your concerns to be honest :/
+>> yes before the code flow was like
+>>
+>>         ret = ov10635_read();
+>>         if (ret < 0) {
+>>
+>>         }
+>>
+>>         if (ret != PID) {
+>>
+
+And so here you might have had a 'successful' read of the wrong value,
+which means that ret > 0 but != PID.
+
+>>         }
+>>
+>> But the condition ret != PID implied ret < 0 so I don't really get
+>> what changes, apart from the fact that in the previous version we
+>> could have had two different error messages for the same issue, and yes,
+>> I saw ID mistmatch happening but the value of knowing the i2c read
+>> didn't fail but the read data was garbage (usually it's 0x01 when it
+>> fails iirc) is, well, questionable.
 > 
-> Also, what kernel tree(s) is this supposed to go to?
+> That's worrying :-S May we should add a warning message when the read
+> succeeds but the ID doesn't match, to at least have a way to track the
+> issue, and see if other changes get rid of this problem ?
 > 
-> thanks,
+
+Ok, now I'm confused, that's what I was talking about!
+
+Before we did do this, and now we don't. Ergo - functional change.
+
+
+>> I'm sorry I didn't fully get this comment.
 > 
-> greg k-h
-> .
+> You're right, I had missed that the current code retried in case of a
+> version number mismatch. There's no functional change.
+
+I still think there's a functional change, but I'm not all too worried
+about it.
+
+As I said before, I think it's worth the retry in that event, which
+didn't happen before, so my tag still holds.
+
+
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 > 
-Sorry, the commit id c158b461306df82 in the patch does not exist in the 
-linux-stable repository.
-The commit ID is from linux-stable-rc.
-
-I corrected the commit id in a subsequent email, and added a branch 
-label. 
-https://lore.kernel.org/lkml/20210224100923.51315-1-nixiaoming@huawei.com/
-
-Sorry, I forgot to use "--in-reply-to=" when I sent the update patch.
-
-This issue occurs only in the linux-4.9.y branch v4.9.258
-
-Thanks
-xiaoming Ni
-
-
-
+>>>> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+>>>>
+>>>>> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+>>>>> ---
+>>>>>  drivers/media/i2c/rdacm20.c | 27 ++++++++++-----------------
+>>>>>  1 file changed, 10 insertions(+), 17 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+>>>>> index 4d9bac87cba8..6504ed0bd3bc 100644
+>>>>> --- a/drivers/media/i2c/rdacm20.c
+>>>>> +++ b/drivers/media/i2c/rdacm20.c
+>>>>> @@ -59,6 +59,8 @@
+>>>>>   */
+>>>>>  #define OV10635_PIXEL_RATE		(44000000)
+>>>>>
+>>>>> +#define OV10635_PID_TIMEOUT		3
+>>>>> +
+>>>>>  static const struct ov10635_reg {
+>>>>>  	u16	reg;
+>>>>>  	u8	val;
+>>>>> @@ -452,7 +454,7 @@ static const struct v4l2_subdev_ops rdacm20_subdev_ops = {
+>>>>>
+>>>>>  static int rdacm20_initialize(struct rdacm20_device *dev)
+>>>>>  {
+>>>>> -	unsigned int retry = 3;
+>>>>> +	unsigned int i;
+>>>>>  	int ret;
+>>>>>
+>>>>>  	/* Verify communication with the MAX9271: ping to wakeup. */
+>>>>> @@ -501,23 +503,14 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>>>>>  		return ret;
+>>>>>  	usleep_range(10000, 15000);
+>>>>>
+>>>>> -again:
+>>>>> -	ret = ov10635_read16(dev, OV10635_PID);
+>>>>> -	if (ret < 0) {
+>>>>> -		if (retry--)
+>>>>> -			goto again;
+>>>>> -
+>>>>> -		dev_err(dev->dev, "OV10635 ID read failed (%d)\n",
+>>>>> -			ret);
+>>>>> -		return -ENXIO;
+>>>>> +	for (i = 0; i < OV10635_PID_TIMEOUT; ++i) {
+>>>>> +		ret = ov10635_read16(dev, OV10635_PID);
+>>>>> +		if (ret == OV10635_VERSION)
+>>>>> +			break;
+>>>>> +		usleep_range(1000, 2000);
+>>>>>  	}
+>>>>> -
+>>>>> -	if (ret != OV10635_VERSION) {
+>>>>> -		if (retry--)
+>>>>> -			goto again;
+>>>>> -
+>>>>> -		dev_err(dev->dev, "OV10635 ID mismatch (0x%04x)\n",
+>>>>> -			ret);
+>>>>> +	if (i == OV10635_PID_TIMEOUT) {
+>>>>> +		dev_err(dev->dev, "OV10635 ID read failed (%d)\n", ret);
+>>>>>  		return -ENXIO;
+>>>>>  	}
+>>>>>
+> 
 
