@@ -2,280 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59ED324E56
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A6D324E57
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhBYKey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
+        id S234587AbhBYKfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:35:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234444AbhBYKLt (ORCPT
+        with ESMTP id S234871AbhBYKMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:11:49 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11DCC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:11:08 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id b7so3633699qtj.16
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:11:08 -0800 (PST)
+        Thu, 25 Feb 2021 05:12:47 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADABC061788;
+        Thu, 25 Feb 2021 02:12:07 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id k13so7880721ejs.10;
+        Thu, 25 Feb 2021 02:12:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=vBBpst1OMUzDZ1yOin+fylRpaLZ9STOMqxTxMjduIFY=;
-        b=JcK9/z+zT9oSop0FCQgSBg/hUneZRjXhGjqgMEYT+QlcdoQX2BQMTvVGpek9tBJe0a
-         Or8b+1q2Rk6Ag+YrxGZ3XQu6L/AvMZorHrrUAyfzWpD4GHj1N8FAGoqPwO+Kdzcg1P5d
-         IpauStK7/GOYz53aTXnrSOKeQ4/7ldXMBbkjQfrwtYvDbw0HEUL3xPTyEvkvoU03zajN
-         HWex374eOSxZHU3A9E8xbeVXkYIeAjofdN825OXhY2+ESMJElS9lA6BcMjybEpGtGiaa
-         7ieptaZPyA7U+aEMpdYjXco9pY/FGoOFfXxQwKze5AS2Es5q4uzPHOFcndlKtP0Z5Pxr
-         IgRA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/RUb5WY27Oz2vzRcOsNokpjBKH5ToeFvji20EJddXt8=;
+        b=HrVGaTWwtvm4kYU+nFUKoHA2vGZD3GpxgO0KHLRR9quykd3c8ZaC0n5mWK/zS+vXpy
+         QtSAZPK0T72Gq4dNVcgCrudhamLhiniP6d/YJZKTCu2G5j2lHMKmvpFGbW9CZAroEo3+
+         6R/Qmt27MgqM1eKbgNlvnOz0YXJ5FKZ0CUsMJxt3ekJFNPS3u5r1U02cuAnhUKDM3SrT
+         Po/cy7UhuA40Dm1SD0qoU41ieUcjPFBpwHG7tolpXWC4rMSI5yDoFvgcc9feoW9FT6PJ
+         DwW7TYtlmeqPhmfzNE8mjsjxV3E83LFygje5ArNDZBx0tSDaPfsW+5n85+T033L1IFiO
+         tRpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=vBBpst1OMUzDZ1yOin+fylRpaLZ9STOMqxTxMjduIFY=;
-        b=jg6woM5DqdBYOT4+ANUW5Vq+OST/rKj2uJc8Laeg9+VdbdGS9RR14zNmfHjMZLs78z
-         nU9RzSPG0zKhoHeTgiOBVG0MJu/CTgFugW6YynDL41LE/8XIqE0cNZvizPnCVWHX7GdW
-         3x1ZwXYFmZhbjPgg2uasxiLZChq0/Qudym/ra8DUZbLf0SwWDVq/e2Sj2EcAWfpboH13
-         nwR+LRrcTt2h7azpsF8paBBoO9TAI29oY0dAaUSorNtVSRbDxvOcBbv+SQRxLEgOsnuF
-         ow9dISyeiH8K/7BNw/PaKJyWdR1fi5Ps+RINqoAPu1elqXGZKOVQlJdvhKjad1zI6civ
-         QR8g==
-X-Gm-Message-State: AOAM530ARnQGeD3UTuU84gxu2IrB5tBHq+S9xl1eoY0LJBTUqzNj148t
-        Ch/dmoiv/bDLI7gj4Jye9SsvUYMKWDg=
-X-Google-Smtp-Source: ABdhPJxKI3qDnB2QSxLoINqD738OBp/E37Knoi6YydQAekxCNJ3A0J7+vMwyRc429eifeOy+vewSIf9ELXY=
-Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:7dfb:417e:ab68:1efb])
- (user=badhri job=sendgmr) by 2002:a05:6214:1a4a:: with SMTP id
- fi10mr1814634qvb.5.1614247867926; Thu, 25 Feb 2021 02:11:07 -0800 (PST)
-Date:   Thu, 25 Feb 2021 02:11:04 -0800
-Message-Id: <20210225101104.1680697-1-badhri@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-Subject: [PATCH v3] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V
- before toggling
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/RUb5WY27Oz2vzRcOsNokpjBKH5ToeFvji20EJddXt8=;
+        b=ta9P0gGULInPanU2NnQBSdTbqccM9Id4/83IZtGabP/uGL6c0sePFMizDVIbxyGrDH
+         RjN1rbxRzH+8FKBOl3zQZdTg71h4O5FjbDYvsaYEZ0OamtMBw8bAAhdmhjge6r6mESgO
+         rfkSsL7gqjQBZEnCYSh7lf2++MFIPWErnUWVtMkd9sg+P29QTj6/0n33Gbk0zNTvpCKO
+         cOafdhW0qLbNTcGhTMP7SgHznqdL8wQ7yDS/5IknwI9tvRpaa6wmWEkv9k3arU8iFocs
+         bTEUk6u9yzgRxsA5hTu7So2Vnij6ZPuVgeDLEUA/iajUMcUy1CodKA5CW4EX3gNg98Ew
+         5gdw==
+X-Gm-Message-State: AOAM533FtZ8E7J/LqIymPKGKRdJXxbr0rVwaV3NtKeKw05bnmPR0MVqL
+        sM7XiMOUUIX0HkJTnw8e7krHNEFbjpOZyM7mmwu2xI6lTIc=
+X-Google-Smtp-Source: ABdhPJzBL9430otKC5elC9WkKe50wlxD8dqzv+bEvgKMOBOKS/CYLXGpJ/4v6O7qgGTmKsHX59ltKnw+UJ/e+8zmWVY=
+X-Received: by 2002:a17:906:b210:: with SMTP id p16mr2034515ejz.256.1614247926177;
+ Thu, 25 Feb 2021 02:12:06 -0800 (PST)
+MIME-Version: 1.0
+References: <20210222070701.16416-1-coxu@redhat.com> <20210222070701.16416-5-coxu@redhat.com>
+In-Reply-To: <20210222070701.16416-5-coxu@redhat.com>
+From:   Bhupesh SHARMA <bhupesh.linux@gmail.com>
+Date:   Thu, 25 Feb 2021 15:41:55 +0530
+Message-ID: <CAFTCetS=G_JV4Ax6=Ty20uifoL1jscrqPGhdh7d2k+t=0d+L8g@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/4] i40e: don't open i40iw client for kdump
+To:     Coiby Xu <coxu@redhat.com>
+Cc:     netdev@vger.kernel.org, kexec@lists.infradead.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When vbus auto discharge is enabled, TCPM can sometimes be faster than
-the TCPC i.e. TCPM can go ahead and move the port to unattached state
-(involves disabling vbus auto discharge) before TCPC could effectively
-discharge vbus to VSAFE0V. This leaves vbus with residual charge and
-increases the decay time which prevents tsafe0v from being met.
-This change makes TCPM waits for a maximum of tSafe0V(max) for vbus
-to discharge to VSAFE0V before transitioning to unattached state
-and re-enable toggling. If vbus discharges to vsafe0v sooner, then,
-transition to unattached state
-happens right away.
+Hello Coiby,
 
-Also, while in SNK_READY, when auto discharge is enabled, drive
-disconnect based on vbus turning off instead of Rp disappearing on
-CC pins. Rp disappearing on CC pins is almost instanteous compared
-to vbus decay.
+On Mon, Feb 22, 2021 at 12:40 PM Coiby Xu <coxu@redhat.com> wrote:
+>
+> i40iw consumes huge amounts of memory. For example, on a x86_64 machine,
+> i40iw consumed 1.5GB for Intel Corporation Ethernet Connection X722 for
+> for 1GbE while "craskernel=auto" only reserved 160M. With the module
+> parameter "resource_profile=2", we can reduce the memory usage of i40iw
+> to ~300M which is still too much for kdump.
+>
+> Disabling the client registration would spare us the client interface
+> operation open , i.e., i40iw_open for iwarp/uda device. Thus memory is
+> saved for kdump.
+>
+> Signed-off-by: Coiby Xu <coxu@redhat.com>
+> ---
+>  drivers/net/ethernet/intel/i40e/i40e_client.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_client.c b/drivers/net/ethernet/intel/i40e/i40e_client.c
+> index a2dba32383f6..aafc2587f389 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_client.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_client.c
+> @@ -4,6 +4,7 @@
+>  #include <linux/list.h>
+>  #include <linux/errno.h>
+>  #include <linux/net/intel/i40e_client.h>
+> +#include <linux/crash_dump.h>
+>
+>  #include "i40e.h"
+>  #include "i40e_prototype.h"
+> @@ -741,6 +742,12 @@ int i40e_register_client(struct i40e_client *client)
+>  {
+>         int ret = 0;
+>
+> +       /* Don't open i40iw client for kdump because i40iw will consume huge
+> +        * amounts of memory.
+> +        */
+> +       if (is_kdump_kernel())
+> +               return ret;
+> +
 
-Sink detach:
-[  541.703058] CC1: 3 -> 0, CC2: 0 -> 0 [state SNK_READY, polarity 0, disconnected]
-[  541.703331] Setting voltage/current limit 5000 mV 0 mA
-[  541.727235] VBUS on
-[  541.749650] VBUS off
-[  541.749653] pending state change SNK_READY -> SNK_UNATTACHED @ 650 ms [rev3 NONE_AMS]
-[  541.749944] VBUS VSAFE0V
-[  541.749945] state change SNK_READY -> SNK_UNATTACHED [rev3 NONE_AMS]
-[  541.750806] Disable vbus discharge ret:0
-[  541.907345] Start toggling
-[  541.922799] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+Since crashkernel size can be manually set on the command line by a
+user, and some users might be fine with a ~300M memory usage by i40iw
+client [with resource_profile=2"], in my view, disabling the client
+for all kdump cases seems too restrictive.
 
-Source detach:
-[ 2555.310414] state change SRC_SEND_CAPABILITIES -> SRC_READY [rev3 POWER_NEGOTIATION]
-[ 2555.310675] AMS POWER_NEGOTIATION finished
-[ 2555.310679] cc:=3
-[ 2593.645886] CC1: 0 -> 0, CC2: 2 -> 0 [state SRC_READY, polarity 1, disconnected]
-[ 2593.645919] pending state change SRC_READY -> SNK_UNATTACHED @ 650 ms [rev3 NONE_AMS]
-[ 2593.648419] VBUS off
-[ 2593.648960] VBUS VSAFE0V
-[ 2593.648965] state change SRC_READY -> SNK_UNATTACHED [rev3 NONE_AMS]
-[ 2593.649962] Disable vbus discharge ret:0
-[ 2593.890322] Start toggling
-[ 2593.925663] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0,
+We can probably check the crash kernel size allocated (
+$ cat /sys/kernel/kexec_crash_size) and then make a decision
+accordingly, so for example something like:
 
-Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto
-Discharge disconnect support")
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
-Changes since V1:
-- Add Fixes tag
+ +       if (is_kdump_kernel() && kexec_crash_size < 512M)
+ +               return ret;
 
-Changes since V2:
-- Remove VBUS_DISCHARGE state as preferred by Guenter Roeck
----
- drivers/usb/typec/tcpm/tcpm.c | 75 ++++++++++++++++++++++++++++++-----
- 1 file changed, 65 insertions(+), 10 deletions(-)
+What do you think?
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index be0b6469dd3d..8469c37a59e1 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -438,6 +438,9 @@ struct tcpm_port {
- 	enum tcpm_ams next_ams;
- 	bool in_ams;
- 
-+	/* Auto vbus discharge status */
-+	bool auto_vbus_discharge_enabled;
-+
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *dentry;
- 	struct mutex logbuffer_lock;	/* log buffer access lock */
-@@ -507,6 +510,9 @@ static const char * const pd_rev[] = {
- 	(tcpm_port_is_sink(port) && \
- 	((port)->cc1 == TYPEC_CC_RP_3_0 || (port)->cc2 == TYPEC_CC_RP_3_0))
- 
-+#define tcpm_wait_for_discharge(port) \
-+	(((port)->auto_vbus_discharge_enabled && !(port)->vbus_vsafe0v) ? PD_T_SAFE_0V : 0)
-+
- static enum tcpm_state tcpm_default_state(struct tcpm_port *port)
- {
- 	if (port->port_type == TYPEC_PORT_DRP) {
-@@ -3413,6 +3419,8 @@ static int tcpm_src_attach(struct tcpm_port *port)
- 	if (port->tcpc->enable_auto_vbus_discharge) {
- 		ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, true);
- 		tcpm_log_force(port, "enable vbus discharge ret:%d", ret);
-+		if (!ret)
-+			port->auto_vbus_discharge_enabled = true;
- 	}
- 
- 	ret = tcpm_set_roles(port, true, TYPEC_SOURCE, tcpm_data_role_for_source(port));
-@@ -3495,6 +3503,8 @@ static void tcpm_reset_port(struct tcpm_port *port)
- 	if (port->tcpc->enable_auto_vbus_discharge) {
- 		ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, false);
- 		tcpm_log_force(port, "Disable vbus discharge ret:%d", ret);
-+		if (!ret)
-+			port->auto_vbus_discharge_enabled = false;
- 	}
- 	port->in_ams = false;
- 	port->ams = NONE_AMS;
-@@ -3568,6 +3578,8 @@ static int tcpm_snk_attach(struct tcpm_port *port)
- 		tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, VSAFE5V);
- 		ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, true);
- 		tcpm_log_force(port, "enable vbus discharge ret:%d", ret);
-+		if (!ret)
-+			port->auto_vbus_discharge_enabled = true;
- 	}
- 
- 	ret = tcpm_set_roles(port, true, TYPEC_SINK, tcpm_data_role_for_sink(port));
-@@ -4670,9 +4682,9 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
- 		if (tcpm_port_is_disconnected(port) ||
- 		    !tcpm_port_is_source(port)) {
- 			if (port->port_type == TYPEC_PORT_SRC)
--				tcpm_set_state(port, SRC_UNATTACHED, 0);
-+				tcpm_set_state(port, SRC_UNATTACHED, tcpm_wait_for_discharge(port));
- 			else
--				tcpm_set_state(port, SNK_UNATTACHED, 0);
-+				tcpm_set_state(port, SNK_UNATTACHED, tcpm_wait_for_discharge(port));
- 		}
- 		break;
- 	case SNK_UNATTACHED:
-@@ -4703,7 +4715,23 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
- 			tcpm_set_state(port, SNK_DEBOUNCED, 0);
- 		break;
- 	case SNK_READY:
--		if (tcpm_port_is_disconnected(port))
-+		/*
-+		 * EXIT condition is based primarily on vbus disconnect and CC is secondary.
-+		 * "A port that has entered into USB PD communications with the Source and
-+		 * has seen the CC voltage exceed vRd-USB may monitor the CC pin to detect
-+		 * cable disconnect in addition to monitoring VBUS.
-+		 *
-+		 * A port that is monitoring the CC voltage for disconnect (but is not in
-+		 * the process of a USB PD PR_Swap or USB PD FR_Swap) shall transition to
-+		 * Unattached.SNK within tSinkDisconnect after the CC voltage remains below
-+		 * vRd-USB for tPDDebounce."
-+		 *
-+		 * When set_auto_vbus_discharge_threshold is enabled, CC pins go
-+		 * away before vbus decays to disconnect threshold. Allow
-+		 * disconnect to be driven by vbus disconnect when auto vbus
-+		 * discharge is enabled.
-+		 */
-+		if (!port->auto_vbus_discharge_enabled && tcpm_port_is_disconnected(port))
- 			tcpm_set_state(port, unattached_state(port), 0);
- 		else if (!port->pd_capable &&
- 			 (cc1 != old_cc1 || cc2 != old_cc2))
-@@ -4802,9 +4830,13 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
- 		 * Ignore CC changes here.
- 		 */
- 		break;
--
- 	default:
--		if (tcpm_port_is_disconnected(port))
-+		/*
-+		 * While acting as sink and auto vbus discharge is enabled, Allow disconnect
-+		 * to be driven by vbus disconnect.
-+		 */
-+		if (tcpm_port_is_disconnected(port) && !(port->pwr_role == TYPEC_SINK &&
-+							 port->auto_vbus_discharge_enabled))
- 			tcpm_set_state(port, unattached_state(port), 0);
- 		break;
- 	}
-@@ -4968,8 +5000,16 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
- 	case SRC_TRANSITION_SUPPLY:
- 	case SRC_READY:
- 	case SRC_WAIT_NEW_CAPABILITIES:
--		/* Force to unattached state to re-initiate connection */
--		tcpm_set_state(port, SRC_UNATTACHED, 0);
-+		/*
-+		 * Force to unattached state to re-initiate connection.
-+		 * DRP port should move to Unattached.SNK instead of Unattached.SRC if
-+		 * sink removed. Although sink removal here is due to source's vbus collapse,
-+		 * treat it the same way for consistency.
-+		 */
-+		if (port->port_type == TYPEC_PORT_SRC)
-+			tcpm_set_state(port, SRC_UNATTACHED, tcpm_wait_for_discharge(port));
-+		else
-+			tcpm_set_state(port, SNK_UNATTACHED, tcpm_wait_for_discharge(port));
- 		break;
- 
- 	case PORT_RESET:
-@@ -4988,9 +5028,8 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
- 		break;
- 
- 	default:
--		if (port->pwr_role == TYPEC_SINK &&
--		    port->attached)
--			tcpm_set_state(port, SNK_UNATTACHED, 0);
-+		if (port->pwr_role == TYPEC_SINK && port->attached)
-+			tcpm_set_state(port, SNK_UNATTACHED, tcpm_wait_for_discharge(port));
- 		break;
- 	}
- }
-@@ -5012,7 +5051,23 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
- 			tcpm_set_state(port, tcpm_try_snk(port) ? SNK_TRY : SRC_ATTACHED,
- 				       PD_T_CC_DEBOUNCE);
- 		break;
-+	case SRC_STARTUP:
-+	case SRC_SEND_CAPABILITIES:
-+	case SRC_SEND_CAPABILITIES_TIMEOUT:
-+	case SRC_NEGOTIATE_CAPABILITIES:
-+	case SRC_TRANSITION_SUPPLY:
-+	case SRC_READY:
-+	case SRC_WAIT_NEW_CAPABILITIES:
-+		if (port->auto_vbus_discharge_enabled) {
-+			if (port->port_type == TYPEC_PORT_SRC)
-+				tcpm_set_state(port, SRC_UNATTACHED, 0);
-+			else
-+				tcpm_set_state(port, SNK_UNATTACHED, 0);
-+		}
-+		break;
- 	default:
-+		if (port->pwr_role == TYPEC_SINK && port->auto_vbus_discharge_enabled)
-+			tcpm_set_state(port, SNK_UNATTACHED, 0);
- 		break;
- 	}
- }
--- 
-2.30.0.617.g56c4b15f3c-goog
+Regards,
+Bhupesh
 
+>         if (!client) {
+>                 ret = -EIO;
+>                 goto out;
+> --
+> 2.30.1
+>
+>
+> _______________________________________________
+> kexec mailing list
+> kexec@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kexec
