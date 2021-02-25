@@ -2,159 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB44325A37
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 00:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D44A325A39
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 00:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhBYXdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 18:33:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57598 "EHLO
+        id S232072AbhBYXd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 18:33:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhBYXdi (ORCPT
+        with ESMTP id S229596AbhBYXds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 18:33:38 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB10C061574;
-        Thu, 25 Feb 2021 15:32:57 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DmpxH4lPhz9sBJ;
-        Fri, 26 Feb 2021 10:32:51 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614295974;
-        bh=eQ6kffqDVHJ2uzHeKjRoPUaCZwkfCTZSsKybnP6LcIo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BRzyLAt0uvOGcDlP32qk5RNrfneXetL2OdlYSMNQjcylb17fIv7KRZdvT3LGV4wXo
-         AegvrOGj8ZZmadFttVkyUPDwA8jswncIhSCroEQ136bP7AhbiSQaSykesN3FJz3pnq
-         DsSMsmDdT68HF/wHGEnHINlGwoMDFSwHs1bXsvLSSeedRq2pxaKaMGzGI+baBkMJ05
-         MI7jDn2XPklcVFziUrwr63jQp4qsylmSfLt0kVhiXiS1vEVh6D1nGlLtx3+fCuu23f
-         gTfPeNfmcsCmri/762lWkloyxEM7okiIz0ZAvx8TiSTSwDPcdFGlANL8fPCtXKmD4y
-         WbopmqwfgaCQw==
-Date:   Fri, 26 Feb 2021 10:32:50 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Martin Raiber <martin@urbackup.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- btrfs tree
-Message-ID: <20210226103250.7b08a233@canb.auug.org.au>
-In-Reply-To: <20210215084634.06c1b430@canb.auug.org.au>
-References: <20210127223918.1b3e4b3f@canb.auug.org.au>
-        <20210215084634.06c1b430@canb.auug.org.au>
+        Thu, 25 Feb 2021 18:33:48 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB02CC06174A;
+        Thu, 25 Feb 2021 15:33:08 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id ba1so4112987plb.1;
+        Thu, 25 Feb 2021 15:33:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bryi5nIeAqPN6gv7PQEAJOmSmh8foFZDgMCzK44/Hyg=;
+        b=iqG/f6sZQa2houoo+VxHHF5MXsX3q6ya/wwhRKCc0jn/JbAnFB2nwn6AcRC+SMb8by
+         TtrQtNyfQLBdLC/7ipEnKQMfykNO7XppSRejPMrIAI42mzlddkR4Va38kmWC/dOZB9Q3
+         yQW81DF+qMabSjoY3OIDOsEtdv9q8R5ISUZ9OWeos27i6/ounQu/uOVvTXEUVN5hmqY6
+         d7ndpm/Mvctmq5r6ewk5IAPWvqhsrbrcnnwAI4QZ2AVAD6mAjTOtd1//QPmJGUZkOJ+N
+         a5X290eJgasRN/rkCxp055Hbb+DIQOTEEP2DFwWZomTMZQIT6OT5ZWNwn0wLIwQHwHVL
+         oT6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bryi5nIeAqPN6gv7PQEAJOmSmh8foFZDgMCzK44/Hyg=;
+        b=J087Ub/HpD7cPBBLovCtld2t0eORHAAStXqEN5VTgqMIbcwZQIpWr4AvXUmArEJmLh
+         rZtlx3iC3zehRm3asbgef1i2oUN0rbnwI4bmLCMC+KBdi8d8WpK2b7LuA6gWqd6qG4Ug
+         5WCu7SbFAg1NwHpq607Ny8JPBQTtcyaFDe4YcB8T6g3+5hgl67ywcFWERNZiLznNoJ8a
+         HnIywQxQdhsjGLMHPESihNZ1hf1sCglJmYJ8IRnJo28hzFsyfY9j4eh098CmBk13wQFQ
+         3D5N2dU2aiBXtJ+Rz/zlkbSJgWWbQzyYiAAkk7C+AU1Eutr1fx+3G4WMc9IlLRoPt6Uf
+         a02g==
+X-Gm-Message-State: AOAM532Lvcg3ftEKAHLJ+wv9UrAkBUboTltUZcSW9I8f54MK3c7rvxlk
+        fpkxkyseffJmeX5539CuDGI=
+X-Google-Smtp-Source: ABdhPJxMEOKq3iRqEYUSu0q+taLEkz0dkFYCzdzEkJXmSR/VAt/A+73uvo8HhMqtFBoeA3pTOYRZhQ==
+X-Received: by 2002:a17:902:c407:b029:e3:cfa7:e300 with SMTP id k7-20020a170902c407b02900e3cfa7e300mr203101plk.49.1614295988431;
+        Thu, 25 Feb 2021 15:33:08 -0800 (PST)
+Received: from shinobu (113x37x72x20.ap113.ftth.ucom.ne.jp. [113.37.72.20])
+        by smtp.gmail.com with ESMTPSA id 8sm7577762pfp.171.2021.02.25.15.33.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 15:33:07 -0800 (PST)
+Date:   Fri, 26 Feb 2021 08:32:59 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v8 19/22] counter: Implement extension*_name sysfs
+ attributes
+Message-ID: <YDgzq6t5YRm6cFvO@shinobu>
+References: <cover.1613131238.git.vilhelm.gray@gmail.com>
+ <c9b55d1cff6acac692a7853b0a25777ecf017b12.1613131238.git.vilhelm.gray@gmail.com>
+ <20210214180913.05bd3498@archlinux>
+ <YC98GTwzwt+pkzMO@shinobu>
+ <20210221140507.0a5ef57f@archlinux>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uo1/9bbAQ8+im9In9I57Sx6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="g5C8206GHyZn93ao"
+Content-Disposition: inline
+In-Reply-To: <20210221140507.0a5ef57f@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/uo1/9bbAQ8+im9In9I57Sx6
-Content-Type: text/plain; charset=US-ASCII
+
+--g5C8206GHyZn93ao
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
-
-On Mon, 15 Feb 2021 08:46:34 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Wed, 27 Jan 2021 22:39:18 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > Today's linux-next merge of the akpm-current tree got a conflict in:
-> >=20
-> >   fs/btrfs/file.c
-> >=20
-> > between commit:
-> >=20
-> >   0225a20db6d8 ("btrfs: Prevent nowait or async read from doing sync IO=
-")
-> >=20
-> > from the btrfs tree and commit:
-> >=20
-> >   ddcd14c48a30 ("mm/filemap: rename generic_file_buffered_read to filem=
-ap_read")
-> >=20
-> > from the akpm-current tree.
-> >=20
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> >=20
-> > diff --cc fs/btrfs/file.c
-> > index 5282f456c99c,898ef7b792b7..000000000000
-> > --- a/fs/btrfs/file.c
-> > +++ b/fs/btrfs/file.c
-> > @@@ -3629,18 -3639,7 +3629,18 @@@ static ssize_t btrfs_file_read_iter(s=
-tr
-> >   			return ret;
-> >   	}
-> >  =20
-> >  -	return filemap_read(iocb, to, ret);
-> >  +	if (iocb->ki_flags & IOCB_NOWAIT)
-> >  +		iocb->ki_flags |=3D IOCB_NOIO;
-> >  +
-> > - 	ret =3D generic_file_buffered_read(iocb, to, ret);
-> > ++	ret =3D filemap_read(iocb, to, ret);
-> >  +
-> >  +	if (iocb->ki_flags & IOCB_NOWAIT) {
-> >  +		iocb->ki_flags &=3D ~IOCB_NOIO;
-> >  +		if (ret =3D=3D 0)
-> >  +			ret =3D -EAGAIN;
-> >  +	}
-> >  +
-> >  +	return ret;
-> >   }
-> >  =20
-> >   const struct file_operations btrfs_file_operations =3D { =20
+On Sun, Feb 21, 2021 at 02:05:07PM +0000, Jonathan Cameron wrote:
+> On Fri, 19 Feb 2021 17:51:37 +0900
+> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 >=20
-> With the merge window about to open, this is a reminder that this
-> conflict still exists.
+> > On Sun, Feb 14, 2021 at 06:09:13PM +0000, Jonathan Cameron wrote:
+> > > On Fri, 12 Feb 2021 21:13:43 +0900
+> > > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+> > >  =20
+> > > > The Generic Counter chrdev interface expects users to supply extens=
+ion
+> > > > IDs in order to select extensions for requests. In order for users =
+to
+> > > > know what extension ID belongs to which extension this information =
+must
+> > > > be exposed. The extension*_name attribute provides a way for users =
+to
+> > > > discover what extension ID belongs to which extension by reading the
+> > > > respective extension name for an extension ID.
+> > > >=20
+> > > > Cc: David Lechner <david@lechnology.com>
+> > > > Cc: Gwendal Grignou <gwendal@chromium.org>
+> > > > Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> > > > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > > > ---
+> > > >  Documentation/ABI/testing/sysfs-bus-counter |  9 ++++
+> > > >  drivers/counter/counter-sysfs.c             | 51 +++++++++++++++++=
+----
+> > > >  2 files changed, 50 insertions(+), 10 deletions(-)
+> > > >=20
+> > > > diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Document=
+ation/ABI/testing/sysfs-bus-counter
+> > > > index 6353f0a2f8f8..847e96f19d19 100644
+> > > > --- a/Documentation/ABI/testing/sysfs-bus-counter
+> > > > +++ b/Documentation/ABI/testing/sysfs-bus-counter
+> > > > @@ -100,6 +100,15 @@ Description:
+> > > >  		Read-only attribute that indicates whether excessive noise is
+> > > >  		present at the channel Y counter inputs.
+> > > > =20
+> > > > +What:		/sys/bus/counter/devices/counterX/countY/extensionZ_name
+> > > > +What:		/sys/bus/counter/devices/counterX/extensionZ_name
+> > > > +What:		/sys/bus/counter/devices/counterX/signalY/extensionZ_name
+> > > > +KernelVersion:	5.13
+> > > > +Contact:	linux-iio@vger.kernel.org
+> > > > +Description:
+> > > > +		Read-only attribute that indicates the component name of
+> > > > +		Extension Z. =20
+> > >=20
+> > > Good to say what form this takes. =20
+> >=20
+> > Do you mean a description like this: "Read-only string attribute that
+> > indicates the component name of Extension Z"?
 >=20
-> The btrfs tree commit is now
+> My expectation would be that the possible strings are tightly constrained
+> (perhaps via review). So I'd like to see what they are and a brief descri=
+ption
+> of what each one means.
 >=20
->   1605f1b63c76 ("btrfs: Prevent nowait or async read from doing sync IO")
+> Jonathan
 
-Now
+Okay I see what you mean now. These names will match the sysfs attribute
+filenames. So for example, if Extension 9 of Count 2 of Counter device
+is /sys/bus/counter/devices/counter4/count2/ceiling, then the attribute
+/sys/bus/counter/devices/counter4/count2/extension9_name will hold a
+value of "ceiling".
 
-  5b1c5c4216f2 ("btrfs: Prevent nowait or async read from doing sync IO")
+The idea is that the user walks down through each extension*_name to
+find sysfs attribute name for the Extension that they want. When they
+find the desired Extension name in say sysfs attribute extension9_name,
+then they know 9 is the ID number for that Extension.
 
-> The akpm-current commit is now
->=20
->   de45c82ebea8 ("mm/filemap: rename generic_file_buffered_read to filemap=
-_read")
+There is an alternative design I was considering: instead of
+extension*_name attributes, we could have each Extension sysfs attribute
+have a matching *_extension_id attribute which provides the respective
+Extension ID. So for example, using the same Extension as before:
+/sys/bus/counter/devices/counter4/count2/ceiling_extension_id will hold
+a value of 9.
 
-Now in Linus' tree as
+Do you think this alternative design would be more intuitive to users?
 
-  87fa0f3eb267 ("mm/filemap: rename generic_file_buffered_read to filemap_r=
-ead")
+William Breathitt Gray
 
-This ia now a conflict between the btrfs tree and Linus' tree.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/uo1/9bbAQ8+im9In9I57Sx6
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--g5C8206GHyZn93ao
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA4M6IACgkQAVBC80lX
-0Gw/Qgf9F4Gq3mkCg6vBGD9ub3M4dJbLl9ep6unGy1Mg6ueS2Yr6PP12tt5Gh1/f
-B4W4h45TVoFeyO1WoDcojr4rXrSh1rlwYY1uXbgpyPn38ip7xj4Zqtf7Km5vnq93
-0N0QkxGryNQix6yAM2G2LZa6bCeQ+jK4i34RdvsuVaFh7GwY3NOZqvzSzUZ5a+To
-KFLSueQNVApD4MJQ6NyhYsdcP8AnmgnK6inZRfosKlwhTR+ITlpeRhfAjfoAwzw1
-1C5NO7MNTp+hNuWdhtvrJD5LMU1B4jzr/cdrKHEJydyIAzqhdhP17w2Tu0ZzX+PX
-KC6BOS26nJMdpRxUlRO2r6FDl+Ykcw==
-=cBHK
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmA4M6EACgkQhvpINdm7
+VJIBCg/+JWYA6xMb2Q9RpprWLkpN2p4IE7zL9kEZE+WzE6aHG1+usGMbF3AQMIO9
+LqssPDGtbchunSQk7RHkT8OMuUXIRaiIl1tE1Lefh+Tylaf4+VLbJo1t+I21MmLr
+LZDV8vnQnwFjhZhPgfOJo+dnOY1SldnRcZzfER607uWOb3xtVpHsdpWaS+IMwt6e
+Yn0Qe8URcv05YGrw4N2re9HtNU01hwlMTyKst7pNyY15MRwmPI7c9sBWC8nWKaCZ
+butQTV3VGDUA3VZ/DVwo0aOZ8HFbWsOpZKGII2IGNIvVgXBCKrkIw1W9wX9mHi4t
+s5uuIW0XBys3SzaxqV/zzV2jtQy/TexhjLMBELX+4M4WMeAbAGoHUA337QoI3EP1
+Z0b28249Cax2iddXR90cisXqYMd8F/9fCaMzgR3lQF/pC3wB9LCk9JhCPaogtRRC
+ZleiZZA3/cgnYFiUlOcb4mfQGlxOSk2fs/EoXdfKVbmuxaHddiqFZJxImv0TnrWg
+Gag0WcYipOglgAQyJUwP36FBerkcqUc463KF7BtSp3in5YMPhR5xgOxS3nlK2rKO
+ySKzH/JjLsIQ1vaKb/Z42sPNJ+7XANxp+Wuoz2kKwHWevljJybwJG+AAIwMlyrqc
+osUnIPljV010+LeG2LU9AS7tdrN3l49nDY6XS4ITC3HXeTHIzuo=
+=IeB7
 -----END PGP SIGNATURE-----
 
---Sig_/uo1/9bbAQ8+im9In9I57Sx6--
+--g5C8206GHyZn93ao--
