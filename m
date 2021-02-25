@@ -2,120 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEE0324F02
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB103324F04
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234554AbhBYLTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 06:19:54 -0500
-Received: from mail-mw2nam10on2082.outbound.protection.outlook.com ([40.107.94.82]:30752
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232491AbhBYLTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 06:19:47 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NhppFZWm+iRjm/vo2J29d2s8Tk7wy/INQU7oHFXNspPszBLXAjhKp1H9Uu71iP8J4ycXbnulxs+dMdByMs4DXlimPTSrShtW9C2/1bYqPgio0tf9tTYUeiIGnHdMIaXDlZqWnhgJzEDrkdyKht995ltgiBx2Z2v30645TxfVxYY+w9AK+XWxW2wQ9IkT2PqJUhlBnwMK9x4dtJStbS33NJNCqQ+y/SAEwJKif+3zwGGd8gOO/VSJ1Xiqy2XpSaNreAcfSPQV1g2BmozB275dNsnn7p399sJZdg/6LOCkAdUaoHzyid8fbj/7YWegRsr22HyRshndGNap1vLzTevPJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZOnuSHfTvVQRrkiN/VH7ECbo3iQ3KL1Gjyo6ewArQ9A=;
- b=HmgU1Uow3Tp3Gy4Rl2anFS1ekFfOGRukARD1mIXo3ibMlr1Spqv55+bem3CXy1eOKylQlJDJLL6HThlasLbSmx8gOl7j/nMRRFYqcoUfMUBQUOz24qLEp4cZAsONPzU0Bgv7hHxtV+QNgD1+nQ53gxGd+n7gXl21l52lK9slAV3FI0oAoq/Eh0UN11yklBjKLEJiU9X2efYzVHaqIlQVnvavV2Dy14KcGkHue/0fdowg9co0DQIlIhaJPiehDQuD9YzNvtWOFJauv3MKJk6KWTYV/wg0ZZKT75W+04xIfaSuhPnubLRoAxzK8RlnCA9I5I7/4RR82jLPcLHS7WPLCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZOnuSHfTvVQRrkiN/VH7ECbo3iQ3KL1Gjyo6ewArQ9A=;
- b=Q43QBd11Ybu+voHah6Zoznx9nOj5VjndiHgo5QdLO7h4wDLhNlarkW2kpxEILByT2I+YwWV8Yt1YVXaWErfmlSFtGjcMNOP1SXRkrIBv9xjBmhKpTXzgWS9FJBwJBZUIUp59kc1nxpHEy2jc/P4KnNFVdW+DCnGhzjStLY0yp2g=
-Authentication-Results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none
- header.from=windriver.com;
-Received: from PH0PR11MB4904.namprd11.prod.outlook.com (2603:10b6:510:40::10)
- by PH0PR11MB4790.namprd11.prod.outlook.com (2603:10b6:510:40::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.31; Thu, 25 Feb
- 2021 11:18:59 +0000
-Received: from PH0PR11MB4904.namprd11.prod.outlook.com
- ([fe80::4cc3:4690:b257:8c51]) by PH0PR11MB4904.namprd11.prod.outlook.com
- ([fe80::4cc3:4690:b257:8c51%6]) with mapi id 15.20.3890.020; Thu, 25 Feb 2021
- 11:18:59 +0000
-From:   Mikael Beckius <mikael.beckius@windriver.com>
-To:     anna-maria@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, mikael.beckius@windriver.com,
-        tglx@linutronix.de
-Subject: Sv: [PATCH] hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
-Date:   Thu, 25 Feb 2021 12:18:51 +0100
-Message-Id: <20210225111851.8432-1-mikael.beckius@windriver.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210223160240.27518-1-anna-maria@linutronix.de>
-References: <20210223160240.27518-1-anna-maria@linutronix.de>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [94.254.65.183]
-X-ClientProxiedBy: BYAPR07CA0046.namprd07.prod.outlook.com
- (2603:10b6:a03:60::23) To PH0PR11MB4904.namprd11.prod.outlook.com
- (2603:10b6:510:40::10)
+        id S234725AbhBYLU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 06:20:28 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:54324 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234675AbhBYLUV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 06:20:21 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PBHF5r006407;
+        Thu, 25 Feb 2021 12:19:26 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=CMTm/gPp7SHBgmvKDTH9L2sSez0dNF3orqXJb1JT8M4=;
+ b=MvAR4Vv/NHFJsNA0pv6LrnxkIuwZSUtNrUvWrBXo0SthxC6nF3KtidapmIO5QY/f5M3Y
+ bxoONQEw5hO7tv23xOkXyF62AHTjNfLewBoyfnbFOLdSpR31ACHQWKZODGlOREIH7JF/
+ AQPXmzqtZaGDi+JOyWU31Ums/ms7LV/q1XYdjftFs2DcUamHJnG1e08Z95p2Of/nFEy3
+ BMPV/Ad9zkCO90nd19ZDMjnwcAzfE910H3U2+AxtoJE3uGEla5qhqPKwIGiN2DJya9bH
+ 35btoWnIfhT8uIxctSmhof5jOMMWVqhdlNlDrjUIt8fubQpS7+QtuMh4SXMqq7cWle7q 3A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36w66cn91j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Feb 2021 12:19:26 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DE3A710002A;
+        Thu, 25 Feb 2021 12:19:24 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4A25F22529A;
+        Thu, 25 Feb 2021 12:19:20 +0100 (CET)
+Received: from [10.211.6.253] (10.75.127.49) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 25 Feb
+ 2021 12:19:19 +0100
+Subject: Re: [PATCH] counter: stm32-timer-cnt: Report count function when
+ SLAVE_MODE_DISABLED
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>, <jic23@kernel.org>
+CC:     Alexandre Torgue <alexandre.torgue@st.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210219095906.220382-1-vilhelm.gray@gmail.com>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <288929fc-6984-072b-359a-10e163056bad@foss.st.com>
+Date:   Thu, 25 Feb 2021 12:19:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from windriver.com (94.254.65.183) by BYAPR07CA0046.namprd07.prod.outlook.com (2603:10b6:a03:60::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Thu, 25 Feb 2021 11:18:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e30d1e65-8553-4736-8b3a-08d8d97f25af
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4790:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR11MB47907B69A030758CE9A0BA7F929E9@PH0PR11MB4790.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GM6UqB9GkMPAlZOJOMungM3psmnJYPVvdRVTg/beJUb6IXfy0yTSPfBagbroZLno2+pYKtdBeqYj+2Xebwd8gLzBjrfn7FtfjbiXW5MXpxpeNySC/Fh0egTBC3/TiJZgscUbjgJUe2ca4UqapDQtW6kKce8zeSvdAWS46AgsB24uWtEqEfCgL0fctskJlnLAqOgyjo2qbtF5tK3RK4j3ao6whHmk1qbwx2Xy1FcTfxXUOwQ5xmdrp3vGoraYZN+AyM8/GyKUUCQXjRE6SZ+gG/ibmlLummm7e7W1U2AWyAx9sclAYulXm7StlBpKiUw5WiMG5ld+vTxk5a5G630mK/v7ueinWf4zKPkpyR68zcJEnxw1LtmhmsH6IJ9J3o4DYKANQEnqMT3+8doXNBEJ1ilkYDcKQMYOz+jlUlRBzXrUHWqbvK+C4rmJwaGOH1ITS7lcYyHgJrteM1ErqkChLUPOks3LzMAcqnGmHZkFVCD6ulUSq2riBrFMuvCjoC9gh9/O0wiR9koPp0G0kOs+qQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4904.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39850400004)(366004)(396003)(26005)(8676002)(2616005)(8936002)(6916009)(36756003)(55016002)(186003)(16526019)(44832011)(7696005)(52116002)(4326008)(4744005)(956004)(2906002)(66946007)(316002)(66476007)(66556008)(5660300002)(478600001)(86362001)(8886007)(6666004)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?R0G7HSSFH6bZe14153YisvbWZkueeXXULG6cHPEQucMBkRMSJLNV5vu+ZqCM?=
- =?us-ascii?Q?Qy5V0jkH7pdFygxVJ1W1a0ljuOLF3r0x04xANTbp4oQ31d+ZgRC4vMWPx7hb?=
- =?us-ascii?Q?eOu0LwKaPMgc25+ZO9sMyiIkZ1BDFqlmyrRTJ6py71MPq9V08YDb0eb6AItt?=
- =?us-ascii?Q?EUVwJhBli0uf+bHn17YrZHrviBfLmORfEzxQEc6pesMiF2KJwkXVvbyW8kwO?=
- =?us-ascii?Q?zWSqeA0XSS/eWLmTXHFNdKXRSmKpPP8Nou8rmNlxNa3MyvF06+XbGLHDHJRv?=
- =?us-ascii?Q?+iZguZfqbA5CWttBYw9SyD/o8e7sXiJ+9aqteVfaacuW5aE7MjLgBANS16sA?=
- =?us-ascii?Q?CfENtUnE6Rv+WUB+CLuEvKCPv/vH6dNKUfy7u7cb7MioPWJ7G4JIuiaPIC75?=
- =?us-ascii?Q?LgjGDthVaOXfwSQ8NBxdjW88V76QEEBjeAAGHOGasK5I73TCGt4FnuRgoML7?=
- =?us-ascii?Q?Q8AEkOiBCbBbU1vNB7zRkehCbWFUxdKL3Oy2Pu+vlsG9TrSB1Hk48b4DHIWi?=
- =?us-ascii?Q?S+K9WKyR60uOJDEPp2Y24AEORd5jQL5vy5qeiwaWMPijhxpGizbZL3RBr8dn?=
- =?us-ascii?Q?FkIWuxHjSL1NxAIMUtNQtd74tsTad2JHEbs5C/zA7tJ/5N+oSdzlFz5VTmTc?=
- =?us-ascii?Q?RMzruITeGHv1je5ijw9C1KmfQqD4uQiafwcCRuDhpxhszsgkj88677L7Nmd8?=
- =?us-ascii?Q?7XF6OiVY4RlpKDy9sOu34jwVg7g8v0PtKRE03n0QaAp4Wxhk+MJpKU6RnSAJ?=
- =?us-ascii?Q?VP58mHXl7xmZSLtESWuyCyS40wFVUapQUMi4IGqXpjS0LGZaV/aWyX4qROZo?=
- =?us-ascii?Q?Ll1BVBSU95iKwSKVsgeIjMe2SmRTydUUf/LSHINW9nDEMRnL7YYla4J6Ot4q?=
- =?us-ascii?Q?kFrt+Gas4t2yNBrKSxnrv74OktGF3xRYeFrSzUEoSDpxytRKca8ghJRYrVI4?=
- =?us-ascii?Q?YpgnlBOTrHuUYSUGtjyc5A/8pySdH0/bWdyHfCgGMmw/J6j21GKjcGXJV0ln?=
- =?us-ascii?Q?YeB3SIRJIH2GhxyMDGJh04ZfAuBzz5ZaT6w6WEVspfq1dwOoHMxoqPlEq/dh?=
- =?us-ascii?Q?TQgDOqVRuWqi6SbUH4mMqxjuD1jnUdaqS5kj/JvGj1NGFT7EnJmcxtOG7frZ?=
- =?us-ascii?Q?USamNw/dDAEK1RDcF8UJ26P2Fp7w3nTG/HU7evvGtyINRskcfveZwAqDv/8E?=
- =?us-ascii?Q?pJpaoB6t9rPHjmP5Iead2yrYtsFuDY9rmkYrNJ65mKSzpLYwrwoojoLIrzGy?=
- =?us-ascii?Q?FUGySBpXWDTUXjJAOneXLTtaSZW+gQnRfvq54eiwUQn2BxBnmcBjPKehogzE?=
- =?us-ascii?Q?TMkBOo5PydZQNEjq2VNeCbtc?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e30d1e65-8553-4736-8b3a-08d8d97f25af
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4904.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2021 11:18:59.2287
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: C5aehUJsUvTP+tPTvuTxYQuNHkERaShKbttMUyshbiNLtwmEcyWGgVNQZdT0lxx6fxiXIVYPxaFTl8HZ8NH3rfK99GA4AKW618tGbLyZWdA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4790
+In-Reply-To: <20210219095906.220382-1-vilhelm.gray@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-25_06:2021-02-24,2021-02-25 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Micke, please test this patch - it is compile tested only...
+On 2/19/21 10:59 AM, William Breathitt Gray wrote:
+> When in SLAVE_MODE_DISABLED mode, the count still increases if the
+> counter is enabled because an internal clock is used. This patch fixes
+> the stm32_count_function_get() function to properly report this
+> behavior.
 
-Thanks Anna-Maria, it seems to work equally good or better than the change
-I suggested in preventing interrupt storms. After running a test I created,
-based on traces from a live system, several thousands of iterations
-there are no reproductions. Normally both issues will reproduce within
-seconds after only a few iterations.
+Hi William,
 
-Also by looking at the source code it seems like your patch should do the
-trick.
+Thanks for the patch, that's something I also noticed earlier.
+Please find few comment below.
 
-Micke
+> 
+> Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
+> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Alexandre Torgue <alexandre.torgue@st.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> ---
+>  drivers/counter/stm32-timer-cnt.c | 31 +++++++++++++++++++------------
+>  1 file changed, 19 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+> index ef2a974a2f10..ec6d9e89c028 100644
+> --- a/drivers/counter/stm32-timer-cnt.c
+> +++ b/drivers/counter/stm32-timer-cnt.c
+> @@ -44,13 +44,14 @@ struct stm32_timer_cnt {
+>   * @STM32_COUNT_ENCODER_MODE_3: counts on both TI1FP1 and TI2FP2 edges
+>   */
+>  enum stm32_count_function {
+> -	STM32_COUNT_SLAVE_MODE_DISABLED = -1,
+> +	STM32_COUNT_SLAVE_MODE_DISABLED,
+>  	STM32_COUNT_ENCODER_MODE_1,
+>  	STM32_COUNT_ENCODER_MODE_2,
+>  	STM32_COUNT_ENCODER_MODE_3,
+>  };
+>  
+>  static enum counter_count_function stm32_count_functions[] = {
+> +	[STM32_COUNT_SLAVE_MODE_DISABLED] = COUNTER_COUNT_FUNCTION_INCREASE,
+>  	[STM32_COUNT_ENCODER_MODE_1] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_A,
+>  	[STM32_COUNT_ENCODER_MODE_2] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_B,
+>  	[STM32_COUNT_ENCODER_MODE_3] = COUNTER_COUNT_FUNCTION_QUADRATURE_X4,
+> @@ -99,9 +100,10 @@ static int stm32_count_function_get(struct counter_device *counter,
+>  	case 3:
+>  		*function = STM32_COUNT_ENCODER_MODE_3;
+>  		return 0;
+> +	default:
+
+I'd rather add a 'case 0', as that's the real value for slave mode
+disabled. For reference, here's what the STM32 timer spec says on slave
+mode selection:
+0000: Slave mode disabled - if CEN = ‘1’ then the prescaler is clocked
+directly by the internal clock.
+
+> +		*function = STM32_COUNT_SLAVE_MODE_DISABLED;
+> +		return 0;
+>  	}
+> -
+> -	return -EINVAL;
+
+Other slave modes could be added later (like counting on external
+signals: channel A, B, ETR or other signals). But this isn't supported
+right now in the driver.
+Then I suggest to keep the returning -EINVAL for the default case here.
+Do you agree with this approach ?
+
+>  }
+>  
+>  static int stm32_count_function_set(struct counter_device *counter,
+> @@ -274,31 +276,36 @@ static int stm32_action_get(struct counter_device *counter,
+>  	size_t function;
+>  	int err;
+>  
+> -	/* Default action mode (e.g. STM32_COUNT_SLAVE_MODE_DISABLED) */
+> -	*action = STM32_SYNAPSE_ACTION_NONE;
+> -
+>  	err = stm32_count_function_get(counter, count, &function);
+>  	if (err)
+> -		return 0;
+> +		return err;
+
+This makes sense, in case the error reporting is kept above. Otherwise,
+it always returns 0.
+
+>  
+>  	switch (function) {
+>  	case STM32_COUNT_ENCODER_MODE_1:
+>  		/* counts up/down on TI1FP1 edge depending on TI2FP2 level */
+>  		if (synapse->signal->id == count->synapses[0].signal->id)
+>  			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
+> -		break;
+> +		else
+> +			*action = STM32_SYNAPSE_ACTION_NONE;
+
+More a question here...
+
+> +		return 0;
+>  	case STM32_COUNT_ENCODER_MODE_2:
+>  		/* counts up/down on TI2FP2 edge depending on TI1FP1 level */
+>  		if (synapse->signal->id == count->synapses[1].signal->id)
+>  			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
+> -		break;
+> +		else
+> +			*action = STM32_SYNAPSE_ACTION_NONE;
+
+..., not related to your fix: In "quadrature x2 a" or "quadrature x2 b",
+the other signal determines the counting direction.
+I feel like this isn't really represented with the "none" action.
+
+I just realized if we want to extend this driver to add new signals
+(e.g. like counting on chA, chB or even by adding other signals like ETR
+on STM32 with the increase function), this may start to be confusing.
+Currently only the two signal names could give some hint (so it's rather
+obvious currently).
+
+Maybe there could be some change later to indicate the other signal
+(channel A or channel B) participates in quadrature encoding ?
+
+
+Thanks and best regards,
+Fabrice
+
+> +		return 0;
+>  	case STM32_COUNT_ENCODER_MODE_3:
+>  		/* counts up/down on both TI1FP1 and TI2FP2 edges */
+>  		*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
+> -		break;
+> +		return 0;
+> +	case STM32_COUNT_SLAVE_MODE_DISABLED:
+> +		/* counts on internal clock when CEN=1 */
+> +		*action = STM32_SYNAPSE_ACTION_NONE;
+> +		return 0;
+> +	default:
+> +		return -EINVAL;
+>  	}
+> -
+> -	return 0;
+>  }
+>  
+>  static const struct counter_ops stm32_timer_cnt_ops = {
+> 
