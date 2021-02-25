@@ -2,163 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BBF324BA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 787F5324BAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235406AbhBYIBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 03:01:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233996AbhBYIBa (ORCPT
+        id S235461AbhBYID6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 03:03:58 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:53702 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235365AbhBYID4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 03:01:30 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9BD4C06174A;
-        Thu, 25 Feb 2021 00:00:49 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id u187so1927825wmg.4;
-        Thu, 25 Feb 2021 00:00:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ta3OzSEGe0pGlQa1/6wh2mwdIsBwlShcPy03EcAAeAY=;
-        b=VXXSoEL1t70kSem0mjxSbGWP2l6WCl0JVg+qcf3LKgJc8uCjkp92ZqltT/hwL8kLsP
-         53gmcOnplQ9dzznSZZr0dAHENJQkRzP4pHwsxvLOhfHNekpRVEiUWPnqtoMeMeKJ06So
-         FYBtR1gH7+ZNaiHa8A1hG8cL1knnt62JS28c828hQ+pK0OjLwu4Fw9C1K7SdjueGyYV3
-         G197nX5N4lB5g2oie7ym9TaaK3fWGmFJTPH2psNFo0qBqbepuiEq0dQmTusrkVPiIg67
-         ABQ+kxVMU1OA++tHQ3Hbx6FJFyk8tYPN6hYxQxa5z+/xcA6dSBgJgrrCUts0ziy+w+zE
-         YfBQ==
+        Thu, 25 Feb 2021 03:03:56 -0500
+Received: by mail-il1-f199.google.com with SMTP id s12so3572599ilh.20
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 00:03:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ta3OzSEGe0pGlQa1/6wh2mwdIsBwlShcPy03EcAAeAY=;
-        b=aCdavDbZauTrffyqfQRUbJSFoqhKTPw/jSS06qH8Ir9l38rYwXol0YySPiLVb+1k5s
-         e0MN/7X7Yu/sh87t4WFjrYzIaJxpuEBZRcSsG1O/0Uux0I/bFFU/6iSZn0TFe2mGpxQG
-         x2rM8zZ9dC5E/27HIgLB696LBixULOWLtXQXGOeIXx/QmeE9KZTXEwnEQYmcjLo9rIL9
-         g3eD/+cm2SYANGYeGmvHAAyzCQHGHeo6qDrphuMOMPzfvCtghs9Edz0uVEdoaerW4hvW
-         QkDWwj9X0CZFYDC5C0vX9nhOQRLZPUMSdimrtD/gaCmb14oDoCCT8ucdYon84OLe9SsG
-         y2PA==
-X-Gm-Message-State: AOAM530SJozV90GHOx0zigwtRQJY8OibvRTIAfmw254wEVeXLlr2dJZi
-        jTU/myncXKEO/+q4t9fzaaI=
-X-Google-Smtp-Source: ABdhPJx6GyXM8A7kx8tYW9O+qz2cM9BODx6C5yY8gS1kwSuwaBZ4InciA2vUTVFHQlnGjzE0OC2WAg==
-X-Received: by 2002:a05:600c:4e8a:: with SMTP id f10mr1945621wmq.15.1614240048633;
-        Thu, 25 Feb 2021 00:00:48 -0800 (PST)
-Received: from gmail.com (82-209-154-112.cust.bredband2.com. [82.209.154.112])
-        by smtp.gmail.com with ESMTPSA id o3sm764567wmq.46.2021.02.25.00.00.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 00:00:48 -0800 (PST)
-Date:   Thu, 25 Feb 2021 09:02:46 +0100
-From:   Marcus Folkesson <marcus.folkesson@gmail.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Ajay.Kathat@microchip.com, Claudiu.Beznea@microchip.com,
-        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] wilc1000: write value to WILC_INTR2_ENABLE register
-Message-ID: <YDdZpjoa8rODL0px@gmail.com>
-References: <20210224163706.519658-1-marcus.folkesson@gmail.com>
- <87pn0pfmb4.fsf@codeaurora.org>
- <1b8270b5-047e-568e-8546-732bac6f9b0f@microchip.com>
- <87lfbcfwt1.fsf@codeaurora.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=jlsLdlfAeeYm3GSnn7ckzgMhfO3YG8JIFGtQXqDZgPw=;
+        b=MGMKQpjrg3Dz54We9yWqebpU094cnzGlnIg7bSZOZygAExp+SFUD+8UPIQgytmldYx
+         ilfCw/8hyQNXBrtC19LSDFCh+QFNMhZNQufdK6eJftaP5uRadnsZixdq7QQHz+XgbDUD
+         3eXMQS9AGm21DHE0PzV4f1bLE5Nt0HQYfUnj4wt+ocC+xR6Yw+zhKBMAytohnNeTdnzq
+         jzYNQNNtXvC/lDZSv3B7hw0KO6IC3/i582Yg5bOUe9TuPPSHbiqH5ajveuYMmb1BosCS
+         nhzNkpapl1cuDSzwoT08tkxJGLK4YFvBOlOKiRIGnjhiRfskU2mkuq0R1OoEzb8JOdRs
+         B+oA==
+X-Gm-Message-State: AOAM53328vXNji0LTLS91U762Xtd0Xv+x3eY42ooNW4CI2tDOa2MvaAn
+        VNaf4hL0KLoSayYH6oIhpACM5uM+KdybCEJwJT1UF8cStrMx
+X-Google-Smtp-Source: ABdhPJwRbqWkaeICViZ/G3JuiAWIWAe+uf4fp2eUam2UFWkHDIw7TtkBstWGA6OTHf4Agg1N2HD9gME93xFkLiuCuZPfjd8c6vSm
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ofArnjgXtp6/xcZ6"
-Content-Disposition: inline
-In-Reply-To: <87lfbcfwt1.fsf@codeaurora.org>
+X-Received: by 2002:a6b:f708:: with SMTP id k8mr1703093iog.187.1614240195234;
+ Thu, 25 Feb 2021 00:03:15 -0800 (PST)
+Date:   Thu, 25 Feb 2021 00:03:15 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006b4d6e05bc2495a7@google.com>
+Subject: KASAN: use-after-free Write in addr_resolve (2)
+From:   syzbot <syzbot+507b7f64b139d1dfea45@syzkaller.appspotmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---ofArnjgXtp6/xcZ6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+syzbot found the following issue on:
 
-Hi,
+HEAD commit:    e767b353 Merge tag 'arm-drivers-v5.12' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10915934d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5906640bbd7c47d4
+dashboard link: https://syzkaller.appspot.com/bug?extid=507b7f64b139d1dfea45
+compiler:       Debian clang version 11.0.1-2
 
-On Thu, Feb 25, 2021 at 09:09:30AM +0200, Kalle Valo wrote:
-> <Ajay.Kathat@microchip.com> writes:
->=20
-> > On 24/02/21 10:13 pm, Kalle Valo wrote:
-> >> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> >> know the content is safe
-> >>=20
-> >> Marcus Folkesson <marcus.folkesson@gmail.com> writes:
-> >>=20
-> >>> Write the value instead of reading it twice.
-> >>>
-> >>> Fixes: 5e63a598441a ("staging: wilc1000: added 'wilc_' prefix for fun=
-ction in wilc_sdio.c file")
-> >>>
-> >>> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
-> >>> ---
-> >>>  drivers/net/wireless/microchip/wilc1000/sdio.c | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/net/wireless/microchip/wilc1000/sdio.c b/drivers=
-/net/wireless/microchip/wilc1000/sdio.c
-> >>> index 351ff909ab1c..e14b9fc2c67a 100644
-> >>> --- a/drivers/net/wireless/microchip/wilc1000/sdio.c
-> >>> +++ b/drivers/net/wireless/microchip/wilc1000/sdio.c
-> >>> @@ -947,7 +947,7 @@ static int wilc_sdio_sync_ext(struct wilc *wilc, =
-int nint)
-> >>>                       for (i =3D 0; (i < 3) && (nint > 0); i++, nint-=
--)
-> >>>                               reg |=3D BIT(i);
-> >>>
-> >>> -                     ret =3D wilc_sdio_read_reg(wilc, WILC_INTR2_ENA=
-BLE, &reg);
-> >>> +                     ret =3D wilc_sdio_write_reg(wilc, WILC_INTR2_EN=
-ABLE, reg);
-> >>=20
-> >> To me it looks like the bug existed before commit 5e63a598441a:
-> >
-> >
-> > Yes, you are correct. The bug existed from commit c5c77ba18ea6:
-> >
-> > https://git.kernel.org/linus/c5c77ba18ea6
->=20
-> So the fixes tag should be:
->=20
-> Fixes: c5c77ba18ea6 ("staging: wilc1000: Add SDIO/SPI 802.11 driver")
+Unfortunately, I don't have any reproducer for this issue yet.
 
-You are right.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+507b7f64b139d1dfea45@syzkaller.appspotmail.com
 
->=20
-> I can change that during commit, ok?
+==================================================================
+BUG: KASAN: use-after-free in addr6_resolve drivers/infiniband/core/addr.c:439 [inline]
+BUG: KASAN: use-after-free in addr_resolve+0x1844/0x1b40 drivers/infiniband/core/addr.c:590
+Write of size 4 at addr ffff88802f7e01a4 by task kworker/u4:3/114
 
-Please do, thanks!
+CPU: 1 PID: 114 Comm: kworker/u4:3 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: ib_addr process_one_req
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x137/0x1be lib/dump_stack.c:120
+ print_address_description+0x5f/0x3a0 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report+0x15e/0x200 mm/kasan/report.c:413
+ addr6_resolve drivers/infiniband/core/addr.c:439 [inline]
+ addr_resolve+0x1844/0x1b40 drivers/infiniband/core/addr.c:590
+ process_one_req+0x105/0x550 drivers/infiniband/core/addr.c:630
+ process_one_work+0x789/0xfc0 kernel/workqueue.c:2275
+ worker_thread+0xac1/0x1300 kernel/workqueue.c:2421
+ kthread+0x39a/0x3c0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
->=20
-> --=20
-> https://patchwork.kernel.org/project/linux-wireless/list/
->=20
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpa=
-tches
+Allocated by task 13814:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:401 [inline]
+ ____kasan_kmalloc+0xbd/0xf0 mm/kasan/common.c:429
+ kasan_kmalloc include/linux/kasan.h:219 [inline]
+ kmem_cache_alloc_trace+0x200/0x300 mm/slub.c:2919
+ kmalloc include/linux/slab.h:552 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ __rdma_create_id+0x65/0x4f0 drivers/infiniband/core/cma.c:838
+ rdma_create_user_id+0x7f/0xc0 drivers/infiniband/core/cma.c:891
+ ucma_create_id+0x1de/0x5c0 drivers/infiniband/core/ucma.c:461
+ ucma_write+0x279/0x350 drivers/infiniband/core/ucma.c:1732
+ vfs_write+0x220/0xab0 fs/read_write.c:603
+ ksys_write+0x11b/0x220 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Best regards
-Marcus Folkesson
+Freed by task 13811:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
+ kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:356
+ ____kasan_slab_free+0xe2/0x110 mm/kasan/common.c:362
+ kasan_slab_free include/linux/kasan.h:192 [inline]
+ slab_free_hook mm/slub.c:1547 [inline]
+ slab_free_freelist_hook+0xd6/0x1a0 mm/slub.c:1580
+ slab_free mm/slub.c:3143 [inline]
+ kfree+0xd1/0x2a0 mm/slub.c:4139
+ ucma_close_id drivers/infiniband/core/ucma.c:185 [inline]
+ ucma_destroy_private_ctx+0x111/0xa50 drivers/infiniband/core/ucma.c:576
+ ucma_close+0xef/0x170 drivers/infiniband/core/ucma.c:1797
+ __fput+0x34d/0x7a0 fs/file_table.c:280
+ task_work_run+0x137/0x1c0 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x10b/0x1e0 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
+ syscall_exit_to_user_mode+0x48/0x180 kernel/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
---ofArnjgXtp6/xcZ6
-Content-Type: application/pgp-signature; name="signature.asc"
+The buggy address belongs to the object at ffff88802f7e0000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 420 bytes inside of
+ 2048-byte region [ffff88802f7e0000, ffff88802f7e0800)
+The buggy address belongs to the page:
+page:00000000f60da0cc refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2f7e0
+head:00000000f60da0cc order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888011042000
+raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
 
------BEGIN PGP SIGNATURE-----
+Memory state around the buggy address:
+ ffff88802f7e0080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88802f7e0100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88802f7e0180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff88802f7e0200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88802f7e0280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
-iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAmA3WaEACgkQiIBOb1ld
-UjLhEQ//UpMRDqeT7f6q2ck/6okAuqT2Jff7LrRq9oONDcxyePfKcCTa1VhWDA47
-jo+3iXMBwuyFQOKWJ7PWUp3EVtPM2A3urcZTGoijfKAXtzE+PEf2yO2eC7Yk3tSx
-vA3djsIrQT35w7OnGpnE5PFWDbDBAVS7mK/xSjngdB4f3FWsDg7kDQqO1JWyXyAB
-ZtH+HBjEuaZ+xzfCVWfXh5D+UnvIZnTcvABHtTrWpXKhhuYGbov3iIg9h1ZhYNDb
-0KW1W8MnXSUNEVbJo6HapxP+IHMoP+GOOOYG3alyR1FqfNr199sQWzKUPX26bvt7
-01j8c6+Pk5o6i4/IAkkCTcCtykoAxyGfGlWdefSuKFhXoCnLu61cE8wQLsJd73P+
-Emvb8W++oUmtYD960suSr5O9CyG8thVKpDVb/Lc+LVTZU9JMf1HPNmTsyeJFPkYh
-dcb6OWEu6YlF8P+Xi5KjGXwuvxrzYRFbmM73DKuzYAiMG163TsSwLx/kLYEfFN95
-h/gRAEA0rV3IGdUKkGz0urwl5X+jlkLciPHW4cD7bdFN523JQWRzpjsvB+taTPmR
-rlq5i+ECyERA8Daj+DF6Q8TzVllty+Z8cVFs4Rqp1WiXDqm2dnbZa8Hr4NFM1GGc
-Kh5TIIEsXmJBdT+/l4rjfq8ZlljapSn1R5SN+PK+H2Iq3TAdcjg=
-=HVvU
------END PGP SIGNATURE-----
 
---ofArnjgXtp6/xcZ6--
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
