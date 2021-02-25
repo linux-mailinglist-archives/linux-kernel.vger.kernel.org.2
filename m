@@ -2,152 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787F5324BAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DFE324BB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235461AbhBYID6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 03:03:58 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:53702 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235365AbhBYID4 (ORCPT
+        id S235479AbhBYIGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 03:06:02 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:41463 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231335AbhBYIF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 03:03:56 -0500
-Received: by mail-il1-f199.google.com with SMTP id s12so3572599ilh.20
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 00:03:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=jlsLdlfAeeYm3GSnn7ckzgMhfO3YG8JIFGtQXqDZgPw=;
-        b=MGMKQpjrg3Dz54We9yWqebpU094cnzGlnIg7bSZOZygAExp+SFUD+8UPIQgytmldYx
-         ilfCw/8hyQNXBrtC19LSDFCh+QFNMhZNQufdK6eJftaP5uRadnsZixdq7QQHz+XgbDUD
-         3eXMQS9AGm21DHE0PzV4f1bLE5Nt0HQYfUnj4wt+ocC+xR6Yw+zhKBMAytohnNeTdnzq
-         jzYNQNNtXvC/lDZSv3B7hw0KO6IC3/i582Yg5bOUe9TuPPSHbiqH5ajveuYMmb1BosCS
-         nhzNkpapl1cuDSzwoT08tkxJGLK4YFvBOlOKiRIGnjhiRfskU2mkuq0R1OoEzb8JOdRs
-         B+oA==
-X-Gm-Message-State: AOAM53328vXNji0LTLS91U762Xtd0Xv+x3eY42ooNW4CI2tDOa2MvaAn
-        VNaf4hL0KLoSayYH6oIhpACM5uM+KdybCEJwJT1UF8cStrMx
-X-Google-Smtp-Source: ABdhPJwRbqWkaeICViZ/G3JuiAWIWAe+uf4fp2eUam2UFWkHDIw7TtkBstWGA6OTHf4Agg1N2HD9gME93xFkLiuCuZPfjd8c6vSm
+        Thu, 25 Feb 2021 03:05:59 -0500
+X-Originating-IP: 81.185.161.35
+Received: from localhost.localdomain (35.161.185.81.rev.sfr.net [81.185.161.35])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 8449C240013;
+        Thu, 25 Feb 2021 08:05:05 +0000 (UTC)
+From:   Alexandre Ghiti <alex@ghiti.fr>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, linux-doc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Alexandre Ghiti <alex@ghiti.fr>
+Subject: [PATCH 0/3] Move kernel mapping outside the linear mapping
+Date:   Thu, 25 Feb 2021 03:04:50 -0500
+Message-Id: <20210225080453.1314-1-alex@ghiti.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:f708:: with SMTP id k8mr1703093iog.187.1614240195234;
- Thu, 25 Feb 2021 00:03:15 -0800 (PST)
-Date:   Thu, 25 Feb 2021 00:03:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006b4d6e05bc2495a7@google.com>
-Subject: KASAN: use-after-free Write in addr_resolve (2)
-From:   syzbot <syzbot+507b7f64b139d1dfea45@syzkaller.appspotmail.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+I decided to split sv48 support in small series to ease the review.
 
-syzbot found the following issue on:
+This patchset pushes the kernel mapping (modules and BPF too) to the last
+4GB of the 64bit address space, this allows to:
+- implement relocatable kernel (that will come later in another
+  patchset) that requires to move the kernel mapping out of the linear
+  mapping to avoid to copy the kernel at a different physical address.
+- have a single kernel that is not relocatable (and then that avoids the
+  performance penalty imposed by PIC kernel) for both sv39 and sv48.
 
-HEAD commit:    e767b353 Merge tag 'arm-drivers-v5.12' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10915934d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5906640bbd7c47d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=507b7f64b139d1dfea45
-compiler:       Debian clang version 11.0.1-2
+The first patch implements this behaviour, the second patch introduces a
+documentation that describes the virtual address space layout of the 64bit
+kernel and the last patch is taken from my sv48 series where I simply added
+the dump of the modules/kernel/BPF mapping.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I removed the Reviewed-by on the first patch since it changed enough from
+last time and deserves a second look.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+507b7f64b139d1dfea45@syzkaller.appspotmail.com
+Alexandre Ghiti (3):
+  riscv: Move kernel mapping outside of linear mapping
+  Documentation: riscv: Add documentation that describes the VM layout
+  riscv: Prepare ptdump for vm layout dynamic addresses
 
-==================================================================
-BUG: KASAN: use-after-free in addr6_resolve drivers/infiniband/core/addr.c:439 [inline]
-BUG: KASAN: use-after-free in addr_resolve+0x1844/0x1b40 drivers/infiniband/core/addr.c:590
-Write of size 4 at addr ffff88802f7e01a4 by task kworker/u4:3/114
+ Documentation/riscv/index.rst       |  1 +
+ Documentation/riscv/vm-layout.rst   | 61 ++++++++++++++++++++++
+ arch/riscv/boot/loader.lds.S        |  3 +-
+ arch/riscv/include/asm/page.h       | 18 ++++++-
+ arch/riscv/include/asm/pgtable.h    | 37 +++++++++----
+ arch/riscv/include/asm/set_memory.h |  1 +
+ arch/riscv/kernel/head.S            |  3 +-
+ arch/riscv/kernel/module.c          |  6 +--
+ arch/riscv/kernel/setup.c           |  3 ++
+ arch/riscv/kernel/vmlinux.lds.S     |  3 +-
+ arch/riscv/mm/fault.c               | 13 +++++
+ arch/riscv/mm/init.c                | 81 +++++++++++++++++++++++------
+ arch/riscv/mm/kasan_init.c          |  9 ++++
+ arch/riscv/mm/physaddr.c            |  2 +-
+ arch/riscv/mm/ptdump.c              | 67 +++++++++++++++++++-----
+ 15 files changed, 258 insertions(+), 50 deletions(-)
+ create mode 100644 Documentation/riscv/vm-layout.rst
 
-CPU: 1 PID: 114 Comm: kworker/u4:3 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: ib_addr process_one_req
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x137/0x1be lib/dump_stack.c:120
- print_address_description+0x5f/0x3a0 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report+0x15e/0x200 mm/kasan/report.c:413
- addr6_resolve drivers/infiniband/core/addr.c:439 [inline]
- addr_resolve+0x1844/0x1b40 drivers/infiniband/core/addr.c:590
- process_one_req+0x105/0x550 drivers/infiniband/core/addr.c:630
- process_one_work+0x789/0xfc0 kernel/workqueue.c:2275
- worker_thread+0xac1/0x1300 kernel/workqueue.c:2421
- kthread+0x39a/0x3c0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+-- 
+2.20.1
 
-Allocated by task 13814:
- kasan_save_stack mm/kasan/common.c:38 [inline]
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:401 [inline]
- ____kasan_kmalloc+0xbd/0xf0 mm/kasan/common.c:429
- kasan_kmalloc include/linux/kasan.h:219 [inline]
- kmem_cache_alloc_trace+0x200/0x300 mm/slub.c:2919
- kmalloc include/linux/slab.h:552 [inline]
- kzalloc include/linux/slab.h:682 [inline]
- __rdma_create_id+0x65/0x4f0 drivers/infiniband/core/cma.c:838
- rdma_create_user_id+0x7f/0xc0 drivers/infiniband/core/cma.c:891
- ucma_create_id+0x1de/0x5c0 drivers/infiniband/core/ucma.c:461
- ucma_write+0x279/0x350 drivers/infiniband/core/ucma.c:1732
- vfs_write+0x220/0xab0 fs/read_write.c:603
- ksys_write+0x11b/0x220 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 13811:
- kasan_save_stack mm/kasan/common.c:38 [inline]
- kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
- kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:356
- ____kasan_slab_free+0xe2/0x110 mm/kasan/common.c:362
- kasan_slab_free include/linux/kasan.h:192 [inline]
- slab_free_hook mm/slub.c:1547 [inline]
- slab_free_freelist_hook+0xd6/0x1a0 mm/slub.c:1580
- slab_free mm/slub.c:3143 [inline]
- kfree+0xd1/0x2a0 mm/slub.c:4139
- ucma_close_id drivers/infiniband/core/ucma.c:185 [inline]
- ucma_destroy_private_ctx+0x111/0xa50 drivers/infiniband/core/ucma.c:576
- ucma_close+0xef/0x170 drivers/infiniband/core/ucma.c:1797
- __fput+0x34d/0x7a0 fs/file_table.c:280
- task_work_run+0x137/0x1c0 kernel/task_work.c:140
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
- exit_to_user_mode_prepare+0x10b/0x1e0 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
- syscall_exit_to_user_mode+0x48/0x180 kernel/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff88802f7e0000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 420 bytes inside of
- 2048-byte region [ffff88802f7e0000, ffff88802f7e0800)
-The buggy address belongs to the page:
-page:00000000f60da0cc refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2f7e0
-head:00000000f60da0cc order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888011042000
-raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88802f7e0080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88802f7e0100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88802f7e0180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                               ^
- ffff88802f7e0200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88802f7e0280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
