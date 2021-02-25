@@ -2,121 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD97C32565B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2706E325683
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234368AbhBYTMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:12:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46909 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232139AbhBYTIU (ORCPT
+        id S234477AbhBYTQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:16:45 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:35782 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234039AbhBYTK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:08:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614280014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0ntq0VlGIcmn4gcxkIRxd3iIu35CFerEbtANCfGiVdM=;
-        b=gzavQ4p7CmdrS35UZ6oSd+8YaVZUTUVlxT0ZLqkfiKKn06e+esfQUqA6UfRRGOr9GvTsEE
-        ajFOmf7G6a5SJHfq+v7A1EjYWKaMghy6RXizhlC6tOE7gkfZQkj7/z3h+p7TU4emIETBZP
-        BzoCW2kiy39nb//JS2VZg5bvRcXgfsM=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183-tIPP9WkAM_2_-mui3NaTmw-1; Thu, 25 Feb 2021 14:06:51 -0500
-X-MC-Unique: tIPP9WkAM_2_-mui3NaTmw-1
-Received: by mail-qk1-f197.google.com with SMTP id o8so5266831qkl.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:06:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0ntq0VlGIcmn4gcxkIRxd3iIu35CFerEbtANCfGiVdM=;
-        b=I9LL3T2AUM1dtSalZUcMJIhS+0u/vl7wr4iZuyNgSJ2mX/0pCPb6b5p156mzOm+cnr
-         e85o/XAzIq+nUvGibi+Nn/wgP48Dr2EFoTANcEGr1F/o7BLKhBfjlUstvPWMuYQcAHgi
-         4nScYrtfmqgthrvGnJXe+XAzS+Bxm4tNTlDpwqlKJLBXc1PgRGDsIM7/KbaHzN3TjrVu
-         +qjHkzo2L2gtnRPvEy5SD3mZKjGIfnHTgd3fCpKOwQc+I5GowRqt4h8CEUdAP3S25Wc4
-         fZYR0mRliUeSNd3G+Ru/5cMkuO3fH6edPGhIeR6GjixItrflN1XWuDvEyx03oxxGsOSI
-         gtew==
-X-Gm-Message-State: AOAM530V0akzzWKBd8+RWcN98GOfHMZGqOPbtd5FItFbnmqbI+0yXKre
-        WhxlKWuOzaZD596wgJZgEA7tEp/HsIzaTIMfuXugF9YjfQR4d61v+fOO8SAtOElamG60yR9EiLg
-        uLnzJkYWfDXBPlSQvWuevjafJ
-X-Received: by 2002:a37:a183:: with SMTP id k125mr4205723qke.332.1614280011439;
-        Thu, 25 Feb 2021 11:06:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxfK+N05IVgdsA0MDZcag+sGz5potbwSbK8mKsg4vfzFYEPeycGT3qjurTXgTTNpmL/fJDJmQ==
-X-Received: by 2002:a37:a183:: with SMTP id k125mr4205707qke.332.1614280011193;
-        Thu, 25 Feb 2021 11:06:51 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-25-174-95-95-253.dsl.bell.ca. [174.95.95.253])
-        by smtp.gmail.com with ESMTPSA id j2sm4373993qkk.96.2021.02.25.11.06.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 11:06:50 -0800 (PST)
-Date:   Thu, 25 Feb 2021 14:06:46 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>, cohuck@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 10/10] vfio/type1: Register device notifier
-Message-ID: <20210225190646.GE250483@xz-x1>
-References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
- <161401275279.16443.6350471385325897377.stgit@gimli.home>
- <20210222175523.GQ4247@nvidia.com>
- <20210224145508.1f0edb06@omen.home.shazbot.org>
- <20210225002216.GQ4247@nvidia.com>
- <20210225175457.GD250483@xz-x1>
- <20210225181945.GT4247@nvidia.com>
+        Thu, 25 Feb 2021 14:10:56 -0500
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 11PJ9Bkd013829;
+        Fri, 26 Feb 2021 04:09:11 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 11PJ9Bkd013829
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614280152;
+        bh=zg1EEkrl/wm9+TnhN4C32Tty7U9ZLaDHf5C7lX9aPew=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=1xgeBpZ3CUbQ/fWk3kKZX6sHSLKL2GUlmmPqnwen6i0bvDJXbDMJi+SC9qxhnGFtD
+         1b/enygjOZ0cgPYM3i6EdgaZA+tRPdhdovhhyYwwaICZmj1C6eqYZxT0mI0P17jhCA
+         dHpE2SFjRwvPAQCcqtf24ZWYPXqj6RbVIG5A3jwq2FTWLrPbDtarR3ZN6YwNTsVqUc
+         SEQuL2LlaERn1arlxOew3EPyR4EHUlnAj6BvsE/5nNnZTdn34dVTP7JQnm8CnNoJft
+         ECTLam3yIqCNGIN4OvnbqApPO6Er2xdJcnSrWwZwSRiiNCGklwFMBksm4oBapUVNDI
+         v4phVsR3VzxSw==
+X-Nifty-SrcIP: [209.85.215.172]
+Received: by mail-pg1-f172.google.com with SMTP id e6so4434429pgk.5;
+        Thu, 25 Feb 2021 11:09:11 -0800 (PST)
+X-Gm-Message-State: AOAM530LIJXf0ls4NimBqqsz7ijk80FY2D1OHV2uheiOl1autYyfvLei
+        X94zBw2C/mB9Tiqt3nVOA5GE+AIQ+x4s+hr50ns=
+X-Google-Smtp-Source: ABdhPJzS1WbAxMEt7joUmN9ZapNyyOeIYXnC+SmaepLH4w9wg3+sUyEHzRmu8OE6ooVIgiIVRH7yqtpc/I4PUKaelTE=
+X-Received: by 2002:a62:d454:0:b029:1ed:a6d6:539d with SMTP id
+ u20-20020a62d4540000b02901eda6d6539dmr4660956pfl.63.1614280150840; Thu, 25
+ Feb 2021 11:09:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210225181945.GT4247@nvidia.com>
+References: <20210225160247.2959903-1-masahiroy@kernel.org>
+ <20210225160247.2959903-2-masahiroy@kernel.org> <CABCJKufovCMH9iyA9hFjq1Pt4VNWEPid+rqNWtTvYPTC19LfeA@mail.gmail.com>
+In-Reply-To: <CABCJKufovCMH9iyA9hFjq1Pt4VNWEPid+rqNWtTvYPTC19LfeA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 26 Feb 2021 04:08:33 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASVrpN2CoUZt7Yj++wTv2C1vMioA4nAZkHLrPkQGGLj9g@mail.gmail.com>
+Message-ID: <CAK7LNASVrpN2CoUZt7Yj++wTv2C1vMioA4nAZkHLrPkQGGLj9g@mail.gmail.com>
+Subject: Re: [PATCH 1/4] kbuild: fix UNUSED_KSYMS_WHITELIST for Clang LTO
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jessica Yu <jeyu@kernel.org>, Nicolas Pitre <nico@fluxnic.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 02:19:45PM -0400, Jason Gunthorpe wrote:
-> On Thu, Feb 25, 2021 at 12:54:57PM -0500, Peter Xu wrote:
->  
-> > I can't say I fully understand the whole rational behind 5cbf3264bc71, but that
-> > commit still sounds reasonable to me, since I don't see why VFIO cannot do
-> > VFIO_IOMMU_MAP_DMA upon another memory range that's neither anonymous memory
-> > nor vfio mapped MMIO range.
-> 
-> It is not so much it can't, more that it doesn't and doesn't need to.
+On Fri, Feb 26, 2021 at 2:46 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+>
+> Hi Masahiro,
+>
+> On Thu, Feb 25, 2021 at 8:03 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > Commit fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+> > does not work as expected if the .config file has already specified
+> > CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list" before enabling
+> > CONFIG_LTO_CLANG.
+> >
+> > So, the user-supplied whitelist and LTO-specific white list must be
+> > independent of each other.
+> >
+> > I refactored the shell script so CONFIG_MODVERSIONS and CONFIG_CLANG_LTO
+> > handle whitelists in the same way.
+> >
+> > Fixes: fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  init/Kconfig                    |  1 -
+> >  scripts/gen_autoksyms.sh        | 33 ++++++++++++++++++++++++---------
+> >  scripts/lto-used-symbollist.txt |  5 -----
+> >  3 files changed, 24 insertions(+), 15 deletions(-)
+> >  delete mode 100644 scripts/lto-used-symbollist.txt
+>
+> > +
+> > +ksym_wl=
+> >  if [ -n "$CONFIG_UNUSED_KSYMS_WHITELIST" ]; then
+> >         # Use 'eval' to expand the whitelist path and check if it is relative
+> >         eval ksym_wl="$CONFIG_UNUSED_KSYMS_WHITELIST"
+> > @@ -40,16 +57,14 @@ cat > "$output_file" << EOT
+> >  EOT
+> >
+> >  [ -f modules.order ] && modlist=modules.order || modlist=/dev/null
+> > -sed 's/ko$/mod/' $modlist |
+> > -xargs -n1 sed -n -e '2{s/ /\n/g;/^$/!p;}' -- |
+> > -cat - "$ksym_wl" |
+> > +
+> > +{
+> > +       sed 's/ko$/mod/' $modlist | xargs -n1 sed -n -e '2p'
+> > +       echo "$needed_symbols"
+> > +       [ -n "$ksym_wl" ] && cat "$ksym_wl"
+> > +} | sed -e 's/ /\n/g' | sed -n -e '/^$/!p' |
+> >  # Remove the dot prefix for ppc64; symbol names with a dot (.) hold entry
+> >  # point addresses.
+> >  sed -e 's/^\.//' |
+> >  sort -u |
+> >  sed -e 's/\(.*\)/#define __KSYM_\1 1/' >> "$output_file"
+> > -
+> > -# Special case for modversions (see modpost.c)
+> > -if [ -n "$CONFIG_MODVERSIONS" ]; then
+> > -       echo "#define __KSYM_module_layout 1" >> "$output_file"
+> > -fi
+> > diff --git a/scripts/lto-used-symbollist.txt b/scripts/lto-used-symbollist.txt
+> > deleted file mode 100644
+> > index 38e7bb9ebaae..000000000000
+> > --- a/scripts/lto-used-symbollist.txt
+> > +++ /dev/null
+> > @@ -1,5 +0,0 @@
+> > -memcpy
+> > -memmove
+> > -memset
+> > -__stack_chk_fail
+> > -__stack_chk_guard
+> > --
+> > 2.27.0
+> >
+> >
+> > diff --git a/init/Kconfig b/init/Kconfig
+> > index 0bf5b340b80e..351161326e3c 100644
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -2277,7 +2277,6 @@ config TRIM_UNUSED_KSYMS
+> >  config UNUSED_KSYMS_WHITELIST
+> >         string "Whitelist of symbols to keep in ksymtab"
+> >         depends on TRIM_UNUSED_KSYMS
+> > -       default "scripts/lto-used-symbollist.txt" if LTO_CLANG
+> >         help
+> >           By default, all unused exported symbols will be un-exported from the
+> >           build when TRIM_UNUSED_KSYMS is selected.
+> > diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
+> > index d54dfba15bf2..b74d5949fea6 100755
+> > --- a/scripts/gen_autoksyms.sh
+> > +++ b/scripts/gen_autoksyms.sh
+> > @@ -19,7 +19,24 @@ esac
+> >  # We need access to CONFIG_ symbols
+> >  . include/config/auto.conf
+> >
+> > -ksym_wl=/dev/null
+> > +needed_symbols=
+> > +
+> > +# Special case for modversions (see modpost.c)
+> > +if [ -n "$CONFIG_MODVERSIONS" ]; then
+> > +       needed_symbols="$needed_symbols module_layout"
+> > +fi
+> > +
+> > +# With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a binary
+> > +# when the .mod files are generated, which means they don't yet contain
+> > +# references to certain symbols that will be present in the final binaries.
+> > +if [ -n "$CONFIG_LTO_CLANG" ]; then
+> > +       # intrinsic functions
+> > +       needed_symbols="$needed_symbols memcpy memmove memset"
+> > +       # stack protector symbols
+> > +       needed_symbols="$needed_symbols __stack_chk_fail __stack_chk_guard"
+> > +fi
+>
+> Thank you for the patch!
+>
+> Arnd just reported that _mcount is also needed with some
+> configurations. Would you mind including that in the next version?
+>
+> https://lore.kernel.org/r/20210225143456.3829513-1-arnd@kernel.org/
 
-OK.
+Sure, I can even pick it up
+although that patch was not addressed to me or kbuild ML.
 
-> 
-> > In those cases, vm_pgoff namespace defined by vfio may not be true
-> > anymore, iiuc.
-> 
-> Since this series is proposing linking the VMA to an address_space all
-> the vm_pgoffs must be in the same namespace
 
-Agreed.  I saw discussions around on redefining the vm_pgoff namespace, I can't
-say I followed that closely either, but yes it definitely makes sense to always
-use an unified namespace.  Maybe we should even comment it somewhere on how
-vm_pgoff is encoded?
-
-> 
-> > Or does it mean that we don't want to allow VFIO dma to those unknown memory
-> > backends, for some reason?
-> 
-> Correct. VFIO can map into the IOMMU PFNs it can get a reference
-> to. pin_user_pages() works for the majority, special VFIO VMAs cover
-> the rest, and everthing else must be blocked for security.
-
-If we all agree that the current follow_pfn() should only apply to vfio
-internal vmas, then it seems we can drop it indeed, as long as the crash
-reported in 5cbf3264b would fail gracefully at e.g. VFIO_IOMMU_MAP_DMA rather
-than triggering a kernel warning somehow.
-
-However I'm still confused on why it's more secure - the current process to do
-VFIO_IOMMU_MAP_DMA should at least has proper permission for everything to be
-setup, including the special vma, right?  Say, if the process can write to
-those memories, then shouldn't we also allow it to grant this write permission
-to other devices too?
-
-Thanks,
 
 -- 
-Peter Xu
-
+Best Regards
+Masahiro Yamada
