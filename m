@@ -2,103 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB9232519B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 993C13251A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbhBYOjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 09:39:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbhBYOi5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 09:38:57 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF218C061574;
-        Thu, 25 Feb 2021 06:38:16 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id n20so9259719ejb.5;
-        Thu, 25 Feb 2021 06:38:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AGEE2575c0gJxe/ojj9iv1qzlHIKXvtl4Fpc/Q6GFGY=;
-        b=csrT8UvqNhfkzlrzmOgHLKaLKSvXagdgJkSte1UVBKonkXeMB2RG7FJ8cDx954OVCa
-         bUuq/IZruM+qx4qEz1aVilOUN5wKd/yICoW2ZOWv6oUIVXbOJ7iTiRzJHY010p1F1tfa
-         6bwDFy9tjYshwHnLmYhBJWtjM3UAQyfEoOOrTpGv4sQY0LiceSqhprTi17//WZN3EuDV
-         ep3r3KmBns3mPosJUzUerYD84lwZ0Y2aDZIxn/wi/M8a/PM5VIYRJ67y7+i88ikV6SmC
-         wmk2iJwtZ9qQAPUqUpjF/MgXVBCYNessl3DJ7ngMlHOf8z4YI2yIcT3xp3VqNw5dakXw
-         Y/hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AGEE2575c0gJxe/ojj9iv1qzlHIKXvtl4Fpc/Q6GFGY=;
-        b=KW/9NKqmf8YguFckH2wxm5X+8dr5eV5le1DMIdMXNBxfK6TeP2Odtce3WScTFNQLvt
-         u5TD+4KikuM4txqd98VjRVGH+RaNeyqZucItR5mlNhxF8oFhehLDOab2QxmRlEYKDSgo
-         rY0ID/zjRB5ZGGIH/s4l0ey6597k5szJvnoheLJliW8hBOnsuPHAqQNORK8YAF526A5M
-         z1BrONBL5Kytu3JQwdbJHtEUGvmtqlbgdlNVhYGl/SZy374YBsPfawHzH4muJXvTgZO3
-         cbyldCl8uwGlc5bnee8KXy6JSf2bUlWs5pIXeBjiCP8GiXrJB0MgvX4+PRf/ji62PCU1
-         cwtg==
-X-Gm-Message-State: AOAM532F/ulwsa7Gorsh/0DQruoxdmmsWYK9y8Ez7RDzTdTfZNimiHKZ
-        7ZExVi2g6Bc0qbbRMtO2iZs=
-X-Google-Smtp-Source: ABdhPJxtdrjQgm8rYi9MIVGsRmgyWTLm2t1CSbgFHlYJ04QkWFdpirrWKutVzO98hDtxNMh0bZNQRw==
-X-Received: by 2002:a17:907:9688:: with SMTP id hd8mr2829798ejc.528.1614263895497;
-        Thu, 25 Feb 2021 06:38:15 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bec1d.dynamic.kabel-deutschland.de. [95.91.236.29])
-        by smtp.googlemail.com with ESMTPSA id r4sm3420879edv.27.2021.02.25.06.38.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Feb 2021 06:38:15 -0800 (PST)
-Message-ID: <50f8a0963e887542a467e690b6d406675279a4e5.camel@gmail.com>
-Subject: Re: [PATCH v24 1/4] scsi: ufs: Introduce HPB feature
-From:   Bean Huo <huobean@gmail.com>
-To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Date:   Thu, 25 Feb 2021 15:38:12 +0100
-In-Reply-To: <20210224045405epcms2p2d05f8563b1f121d2c2cc79b343e5af77@epcms2p2>
-References: <20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p6>
-         <CGME20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p2>
-         <20210224045405epcms2p2d05f8563b1f121d2c2cc79b343e5af77@epcms2p2>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S232197AbhBYOkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 09:40:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229954AbhBYOj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 09:39:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1879364EC3;
+        Thu, 25 Feb 2021 14:39:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614263956;
+        bh=Qq8jqEoh+azun2jK73XZzJMU37OcfRZrN7R9i+zYwUo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=h3HE6oYtJcCq9fIpq9tXgUMqk+xtwGeeqeTOgd3IknWR9r1tzBOqxNbQRqF0xPYZk
+         3qN2f91McxFiBFDmuoHD34MylKmKZnMJdZO7WO8rFLng53j3722BRJSj6OMAqxSh6x
+         KDWeEpfNL7TkuPjewwrYmpfC+Y2D9xT0iCFoO53FNFtpCJRIWC6X8Mc3fffAO5ixVV
+         8NDKnia+T5/X1MxPaX/Wo6P1L2qrXsqUzhCbF/I/g8pH82O/fl6FLJ7GHlmCc3tAPZ
+         QiyXC2ccdVo8TyB3tET4f8QAIWGiLXS+LR/rpwyhlnohG3XL5nTPXSKpMcBiwcwiMC
+         6WzSp/oySZJTw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] net: mscc: ocelot: select NET_DEVLINK
+Date:   Thu, 25 Feb 2021 15:38:31 +0100
+Message-Id: <20210225143910.3964364-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-24 at 13:54 +0900, Daejun Park wrote:
-> 
-> +void ufshpb_init(struct ufs_hba *hba)
-> +{
-> +	struct ufshpb_dev_info *hpb_dev_info = &hba->ufshpb_dev;
-> +	int try;
-> +	int ret;
-> +
-> +	if (!ufshpb_is_allowed(hba))
-> +		return;
-> +
+From: Arnd Bergmann <arnd@arndb.de>
 
-Here it is better to check "dev_info->hpb_enable", if HPB is not
-enabled from UFS device level,  doesn't need to create mempool and take
-other memory resource.
+Without this option, the driver fails to link:
 
-Bean
+ld.lld: error: undefined symbol: devlink_sb_register
+>>> referenced by ocelot_devlink.c
+>>>               net/ethernet/mscc/ocelot_devlink.o:(ocelot_devlink_sb_register) in archive drivers/built-in.a
+>>> referenced by ocelot_devlink.c
+>>>               net/ethernet/mscc/ocelot_devlink.o:(ocelot_devlink_sb_register) in archive drivers/built-in.a
 
+Fixes: f59fd9cab730 ("net: mscc: ocelot: configure watermarks using devlink-sb")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/mscc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/net/ethernet/mscc/Kconfig b/drivers/net/ethernet/mscc/Kconfig
+index c0ede0ca7115..05cb040c2677 100644
+--- a/drivers/net/ethernet/mscc/Kconfig
++++ b/drivers/net/ethernet/mscc/Kconfig
+@@ -13,6 +13,7 @@ if NET_VENDOR_MICROSEMI
+ 
+ # Users should depend on NET_SWITCHDEV, HAS_IOMEM
+ config MSCC_OCELOT_SWITCH_LIB
++	select NET_DEVLINK
+ 	select REGMAP_MMIO
+ 	select PACKING
+ 	select PHYLIB
+-- 
+2.29.2
 
