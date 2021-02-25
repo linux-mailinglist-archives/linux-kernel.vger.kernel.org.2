@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF355325860
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 725D8325861
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbhBYVG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:06:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234962AbhBYUyy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:54:54 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E262C06121E
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:53:54 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id jx13so780541pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:53:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=bjIHdni2K5n1Z4jRhYXSP4Vl1PlKk59Pq/thwE2NYoc=;
-        b=OhMhVZyXgA0i3KB/2jH/nfAUcFzozCDx82iGOD3ULBMQIoJa3H7RnDf4oAOG/igILr
-         +ahJfNDQqgBofPAgtegC8u8+VVDaLgRUjXHOZwAlT4lyrmjJYm/Nn19dCHgdsoiXT/7l
-         3Si5F9cBWzFcgFCNyCFe2Gysc2CPNvDteAoeQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=bjIHdni2K5n1Z4jRhYXSP4Vl1PlKk59Pq/thwE2NYoc=;
-        b=UrUniOLdHeLByUFOBpNJXYa9bx99OMfypAm7RiQ1JTRKnJGBaRbI3LJ+iiJOY4uad/
-         NoFABywdbKF6S6EmcT4vOAihNSsqkBH4+ZPvWdTQyc5aHdbH350BcNxspG9D+fTBszaR
-         9vwolNhNYvhTmGm3eXs6uFI0j8qIhZKeMANRbLMXG/MrhhnfdSdUxn1UklrVxyRKHMb4
-         Ft0Ztx8aerOR+lxjmacPa1aobrMDHxxD6c1y3AR2MFNtnD37RSw70s9JO70U56KOKGut
-         EWtMC0GFIwZuEof+SlLJ6g5JVCI0efoGSWyflM3U6dKLLK5GmfYBjoyZmulP5HqKqqhP
-         J2MA==
-X-Gm-Message-State: AOAM530gba7Q3h1LdyiopOavk+V+cNoSAqwtW15F/5FdS+wSJoqcxBdm
-        48qSODgmsrP2q7ixm3BeRvUcGQ==
-X-Google-Smtp-Source: ABdhPJw5ErGR9jm8qpbdl4kDnZW6wg8B/Ffu60D6GYhU2ChBC7i9mgLfMnJBzJRxVtdbZnUJyYuVSg==
-X-Received: by 2002:a17:902:6a88:b029:e3:cd8a:3a92 with SMTP id n8-20020a1709026a88b02900e3cd8a3a92mr4662523plk.22.1614286434015;
-        Thu, 25 Feb 2021 12:53:54 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o129sm6748797pgo.27.2021.02.25.12.53.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 12:53:53 -0800 (PST)
-Date:   Thu, 25 Feb 2021 12:53:52 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: [GIT PULL] clang-lto fixes for v5.12-rc1
-Message-ID: <202102251252.C5A522755@keescook>
+        id S234358AbhBYVHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:07:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233403AbhBYUzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 15:55:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FA1B64DA3;
+        Thu, 25 Feb 2021 20:55:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614286505;
+        bh=G9IMobkduNXNp77gtGj9v6ooEe9z5eqMcQHbgs8ufx4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NQlmNhAKNAW/NF+b1b5yu69849sDzpqUW5wqAF8dEiPfDPvP6z32I9igms5SvkQ5E
+         j2z/Slx6PSH0gG1X9LNjOOPoXws7qRAoKWkffl4YQx7xt0G+g3J8Tw3Hqr/C+UCd4X
+         JR2fCTD7GiexA8Sku9gJNmfQGwTdfzfUzE/D+y/WavhReqtQHl3EV44kgvav89VnrR
+         lmZbs7bGoQlzuXpc27ukSAjbBm//2Cr+dD4eMQu2rKz6vhPGrb2S7BmM0wwx5nvpci
+         6sot38l5YL8JV7qQ3mo2tiAbe6jhgiyiP2TWI49079h2fLD3ARVDNL2IYtfsWnQ1uS
+         laPAwgeZ6+OTQ==
+Date:   Thu, 25 Feb 2021 21:55:01 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     Joe Perches <joe@perches.com>, Jonathan Corbet <corbet@lwn.net>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 0/2] checkpatch: add verbose mode
+Message-ID: <20210225215501.2408c97b@coco.lan>
+In-Reply-To: <CABJPP5AARO3h2mt-piPWuOD3kY_XzNfW-s2mi=btfOayVPURHg@mail.gmail.com>
+References: <20210222075205.19834-1-dwaipayanray1@gmail.com>
+        <bcee822d1934772f47702ee257bc735c8f467088.camel@perches.com>
+        <CABJPP5AARO3h2mt-piPWuOD3kY_XzNfW-s2mi=btfOayVPURHg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Em Thu, 25 Feb 2021 23:38:03 +0530
+Dwaipayan Ray <dwaipayanray1@gmail.com> escreveu:
 
-Please pull these clang-lto fixes for v5.12-rc1. This gets parisc
-building again and moves LTO artifact caching cleanup from the
-"distclean" build target to "clean".
+> On Thu, Feb 25, 2021 at 11:03 PM Joe Perches <joe@perches.com> wrote:
+> >
+> > On Mon, 2021-02-22 at 13:22 +0530, Dwaipayan Ray wrote:  
+> > > Add a new verbose mode to checkpatch. The verbose test
+> > > descriptions are read from the checkpatch documentation
+> > > file at `Documentation/dev-tools/checkpatch.rst`.
+> > >
+> > > The verbose mode is optional and can be enabled by the
+> > > flag -v or --verbose.
+> > >
+> > > The documentation file is only parsed by checkpatch.pl
+> > > if the verbose mode is enabled. The verbose mode can
+> > > not be used together with the --terse option.  
+> >
+> > I don't have any real objection to this patch set, but as this
+> > might be added to the Documentation tree and in .rst format,
+> > perhaps Jonathan Corbet and/or Mauro Carvalho Chehab might have
+> > some opinion.
+> >
+> > Also I do not want to be a maintainer of this .rst file and
+> > likely neither Jon nor Mauro would either.  Perhaps you?
+> >  
+> 
+> I could take it up if everybody is okay with it!
+> 
+> > Ideally, the patch order would be reversed so the .rst file
+> > is added first, then checkpatch updated to use it.
+> >  
+> 
+> Sure, if Jonathan or Mauro has no objections to it, I will be happy
+> to resend it so that it can be picked up properly.
 
-Thanks!
+I don't have any objections, provided that I won't be maintaining
+it :-)
 
--Kees
+-
 
-The following changes since commit 5e95325fbbbdea96de91e7bdb05fe95a3031e37d:
+Just my two cents:
 
-  kbuild: lto: force rebuilds when switching CONFIG_LTO (2021-02-23 14:10:44 -0800)
+IMO, maintaining this on a separate file can be a maintenance nightmare, 
+as this is the kind of thing that can become obsolete real soon.
 
-are available in the Git repository at:
+One alternative would be to use Pod::Usage module, just like
+this script does:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/clang-lto-v5.12-rc1-fix1
+	scripts/get_abi.pl
 
-for you to fetch changes up to 4c7858b9001c85aacf86a74b3a68aa384bc33760:
+with something similar to that, calling
 
-  kbuild: Move .thinlto-cache removal to 'make clean' (2021-02-25 12:21:06 -0800)
+	$ checkpatch --man 
 
-----------------------------------------------------------------
-clang-lto fixes for v5.12-rc1
+Could generate a man-page style with all options, while:
 
-- Fix parisc build for ftrace vs mcount (Sami Tolvanen)
-- Move .thinlto-cache remove to "clean" from "distclean" (Masahiro Yamada)
+	$ checkpatch --help
 
-----------------------------------------------------------------
-Masahiro Yamada (1):
-      kbuild: Move .thinlto-cache removal to 'make clean'
+would print the current help page.
 
-Sami Tolvanen (1):
-      parisc: select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY
+Yet, this would generate more work for Joe, as, for every new
+type, the corresponding help text would be needed.
 
- Makefile            | 4 ++--
- arch/parisc/Kconfig | 1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
--- 
-Kees Cook
+Thanks,
+Mauro
