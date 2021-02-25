@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E83E3249C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DF63249C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234833AbhBYEdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 23:33:15 -0500
-Received: from m12-11.163.com ([220.181.12.11]:50081 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231284AbhBYEdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 23:33:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=sBCHY
-        tyyAMjewXzDkB4dkOq0rbmi9+6n4xSLTpVJPbA=; b=RTiMRrQCst1Zv2y1BygZw
-        /O2Q8dy6SIa0KXIkiAH3b1AGDx6spzjFOWOUk+q8IcVt/ZjMyiAXZ+tVChgp6hit
-        V+hdD9xMTnThOKHFxwgowZW2aDGkv2s0J42vTNaLdgqa8tjsBC54PU4rbh+uRlG+
-        s32R64/K+98jpnJ6AvK1eg=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp7 (Coremail) with SMTP id C8CowAAHIKDWJzdg6NQbPQ--.26767S2;
-        Thu, 25 Feb 2021 12:30:16 +0800 (CST)
-From:   dingsenjie@163.com
-To:     dmitry.torokhov@gmail.com, fery@cypress.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH] input: touchscreen: Remove unneeded variable: "rc"
-Date:   Thu, 25 Feb 2021 12:29:39 +0800
-Message-Id: <20210225042939.11100-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S235096AbhBYEdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 23:33:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231284AbhBYEdi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 23:33:38 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEF4C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 20:32:58 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id u12so2542602pjr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 20:32:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ksjOCtJ0nuu5aqjShvr266w7TXx5g4TaGEaQoeTbXfo=;
+        b=ip4GM9wxAb9xv375Nqpbu1+mSvZw2nCzmYBxVyqCJXSx0HEbk1bCThuCIXdwzIJlB3
+         PsOnD71/w9p7LkOKrskeYQCM5m1n8IXa7n5erFZ2HwdhNCv/DZZVoC59GwvYHKyLoq0P
+         NvJltsXOGhy1FXlpbwVQrUGVWx6xzKB6PqCyS9IK6XGm7eWPotUMQafT7R0aZKw8JXzA
+         wuBz0cxWznshnnNuEGj1zwuqREAkQC56RNzxMm11M0685r80nx0Rr7noxzFKXXvVX8m4
+         wQYg+pXz9B0lPmt7ARZUQDewhrkXshAzHIeruNTAgXJIApUCixVLrYJaH7ba23B+Zk0m
+         b8dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ksjOCtJ0nuu5aqjShvr266w7TXx5g4TaGEaQoeTbXfo=;
+        b=qa1w0m9JZT93sWJnQ5GQBb7Rb3bxzvAzCBaufwFxyv7lWrz1cn0z2KBSbTnJCc+Zca
+         yql/CUBOuxbBOLLjM9xCiKa1Zly4zIhcS8m6NS+88CPadv4UcnpVKlq8MpCqBZ8I8E0p
+         574E/GGk5gSnDRAr5q5uWwhINiI+uIjAUPe3cq5Hhj6UEFhaQebvbHpV8o1V5XHW/Ezb
+         jFd/e2tOAPzl3unYkQvbNNTJ3UYnUteGEqJwhxWWFkavrf6LrjLeUtcgPfAblXet9WGG
+         aJu2ZSosR7Fyfe9Y6k1vZhCnyu9iOC3H5fAhsuxSCI5vaz8RjgMPPosFS9UMWeXfVfio
+         WwFQ==
+X-Gm-Message-State: AOAM533Q9Z0+YqpkOd2zvmrsRiKV8CqfwCpu7pxh80sudp76zrmvcnra
+        G2aQDjRFZegcxbcYFAoBmZM=
+X-Google-Smtp-Source: ABdhPJyPwVMcqUaFUrEW3dUmCarbud+mGcEnTBHX8+oDBeJeF3sugARwq0y2DK88gTOvxadtZ9wh4w==
+X-Received: by 2002:a17:90a:7e0a:: with SMTP id i10mr1354443pjl.152.1614227577882;
+        Wed, 24 Feb 2021 20:32:57 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:552:720f:2933:5745])
+        by smtp.gmail.com with ESMTPSA id z16sm3978894pgj.51.2021.02.24.20.32.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 20:32:56 -0800 (PST)
+Date:   Wed, 24 Feb 2021 20:32:54 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Chris Ye <lzye@google.com>
+Cc:     Chris Ye <linzhao.ye@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, trivial@kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH] Input: Add "Share" button to Microsoft Xbox One
+ controller.
+Message-ID: <YDcoduCkBjC8EM3F@google.com>
+References: <20210225040032.684590-1-lzye@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowAAHIKDWJzdg6NQbPQ--.26767S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZw4UWrWfJF4xKFW8Kw1rWFg_yoWDZwbE9w
-        18twnrWry0kr47KrnrJ3sIvr97tryvvrnYv3Wkt343Gw15Xr47Ar9xW3WkA3y5WrW8uFWk
-        ArsxGr10kw4xAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8F385UUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiThhEyFUDH3tfLwAAsY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225040032.684590-1-lzye@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
+Hi Chris,
 
-Remove unneeded "rc" variable in the cyttsp4_core.c.
+On Thu, Feb 25, 2021 at 04:00:32AM +0000, Chris Ye wrote:
+> Add "Share" button input capability and input event mapping for
+> Microsoft Xbox One controller.
+> Fixed Microsoft Xbox One controller share button not working under USB
+> connection.
+> 
+> Signed-off-by: Chris Ye <lzye@google.com>
+> ---
+>  drivers/input/joystick/xpad.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+> index 9f0d07dcbf06..08c3e93ccb2f 100644
+> --- a/drivers/input/joystick/xpad.c
+> +++ b/drivers/input/joystick/xpad.c
+> @@ -368,6 +368,14 @@ static const signed short xpad360_btn[] = {  /* buttons for x360 controller */
+>  	-1
+>  };
+>  
+> +static const signed short xpad_xboxone_btn[] = {
+> +	/* buttons for xbox one controller */
+> +	BTN_TL, BTN_TR,		/* Button LB/RB */
+> +	BTN_MODE,		/* The big X button */
+> +	KEY_RECORD,		/* The share button */
 
-Signed-off-by: dingsenjie <dingsenjie@yulong.com>
----
- drivers/input/touchscreen/cyttsp4_core.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+If I understand this correctly, not all Xbox One controllers have this
+new key. Is it possible to determine if it is present and only set
+capability for controllers that actually have it?
 
-diff --git a/drivers/input/touchscreen/cyttsp4_core.c b/drivers/input/touchscreen/cyttsp4_core.c
-index dccbcb9..93d3c77 100644
---- a/drivers/input/touchscreen/cyttsp4_core.c
-+++ b/drivers/input/touchscreen/cyttsp4_core.c
-@@ -544,7 +544,6 @@ static int cyttsp4_si_get_btn_data(struct cyttsp4 *cd)
- 	int num_defined_keys;
- 	u16 *key_table;
- 	void *p;
--	int rc = 0;
- 
- 	if (si->si_ofs.num_btns) {
- 		si->si_ofs.btn_keys_size = si->si_ofs.num_btns *
-@@ -581,13 +580,13 @@ static int cyttsp4_si_get_btn_data(struct cyttsp4 *cd)
- 			si->btn[btn].enabled = true;
- 		}
- 
--		return rc;
-+		return 0;
- 	}
- 
- 	si->si_ofs.btn_keys_size = 0;
- 	kfree(si->btn);
- 	si->btn = NULL;
--	return rc;
-+	return 0;
- }
- 
- static int cyttsp4_si_get_op_data_ptrs(struct cyttsp4 *cd)
+Also, I am unsure if KEY_RECORD is the best keycode for this. It might,
+but does your controller supports bluetooth? What HID usage code does it
+send for this key?
+
+Thanks.
+
 -- 
-1.9.1
-
+Dmitry
