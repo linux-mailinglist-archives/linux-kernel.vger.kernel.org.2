@@ -2,137 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0071D3252B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5CA3252B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233127AbhBYPse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 10:48:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231414AbhBYPsA (ORCPT
+        id S232588AbhBYPsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 10:48:52 -0500
+Received: from mail.efficios.com ([167.114.26.124]:56058 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232787AbhBYPsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 10:48:00 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B526DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 07:47:13 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id 2so2451021ljr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 07:47:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7472uxom7Z481F7tt+sw25AU0eSjfsKwR5ygScta5fE=;
-        b=ucEMhlq3ICGBXoXl+yoOqxsahXkZ7soa6DZWHnqcb0KC+aBz5uSY4JJZa3uTqu0NHV
-         SI0ypf1zXlu33/ULK1id3FGFPFM1TvqWampmZBs3dMuSfkQheYPxKXk7S8m6AzEvcomL
-         8tiHz+JHta16LwKh17alBVsTbCRGNRy60NzlJ6f0FcX+ROx7F+MfCEpPmktudIk2FRf1
-         dDCAjOUhbF7H2ha3QpnzNEnkj/JZ6yl3UbWUn1P1cMq22kThwkpaI92JhgScOev+VzLq
-         9ce+0Z2a/iDd1UzXeQ6Z4XVlWZZFQiVJQlbQtbLUZvVzqoSgTdV1Q6zYFNg4bzo7e86f
-         Vw6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7472uxom7Z481F7tt+sw25AU0eSjfsKwR5ygScta5fE=;
-        b=pT4t495XNShS4TWH9brMRfeBbto0Tq811TXajBPQ5o4O9tBwPmKGrxEO9L86DtfmWt
-         BzDHqLKd7CdZAVg3RcJb2Hd8SULsUbtG11n9RKBlirrz+S/OtF/BqAxqRLuhWLqCHvru
-         IEVr7UWWDhQiWpnEchD4/BAUYdSW9FZ5IUKwrCXRZI/z7nYyN2uybqdq/BKF/EReJOqL
-         9zMZT4Cv/pvZZaSZSGDCJBBBcFRz1lbCRrl2BE+SUEKraDKuDnJv/m1LJUpCwA4Fu59v
-         6l70Vw6HqGEsRFlC2qvJ+kEOK/sG9PfHQMXZ+X8V98K/k53nthy3fqilbGACgnUY7ssh
-         HWWg==
-X-Gm-Message-State: AOAM533/3xIS3Ok8VD3V3mFW0jGVDZ9A+Fecqoch1viJ8Xf+XxXRIyEK
-        f1xaQJ0zf5kVw0zR4scL/pta9bYdIbSiBexI32498Q==
-X-Google-Smtp-Source: ABdhPJznwYHF+hZ7N9WA49Pvn/TEevBL3qSxo1/FA6akdJpPaZTdxHVU3Pii9f5PrgxBc/2STVauNtXkfZ+/l8TFaUE=
-X-Received: by 2002:a2e:b5b4:: with SMTP id f20mr1905904ljn.445.1614268032239;
- Thu, 25 Feb 2021 07:47:12 -0800 (PST)
-MIME-Version: 1.0
-References: <1613979200-9707-1-git-send-email-ultrachin@163.com>
-In-Reply-To: <1613979200-9707-1-git-send-email-ultrachin@163.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 25 Feb 2021 16:47:01 +0100
-Message-ID: <CAKfTPtAUwPv9p+LPEX5x1PfkCxL+pXJvS4UQOaj3L+sTV2CNHA@mail.gmail.com>
-Subject: Re: [PATCH V2] sched: pull tasks when CPU is about to run SCHED_IDLE tasks
-To:     chin <ultrachin@163.com>
+        Thu, 25 Feb 2021 10:48:16 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id A61A531D38F;
+        Thu, 25 Feb 2021 10:47:33 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id FwTvnPePBsJb; Thu, 25 Feb 2021 10:47:33 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 3325731DCA8;
+        Thu, 25 Feb 2021 10:47:33 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3325731DCA8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1614268053;
+        bh=Dwsmhua/nRZFvhh4nU5tUhxY4iuNco/M6opv1tYMNFM=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=ClzkcOdTtrGLQWqjYN8LyN8LNZj89bbN+00UcIk6uA21XdXDIDjTcqRqWcU2iyBYl
+         CPyp3tl1mv5q7a8W2YHCAEengUr1qnQuNDQjE6d90qjTb98y+QB74UhN4k5JqbZpeN
+         tboVmwtKvw9eBpAzdrOFRLIMPzhYg2KYcdX4Xc3ezqdj0P5CXxtb8L2WG3yTj1jdt+
+         vdu82Nn0jVG8/3bCPTdOWhmhOiK98CW4iOOa03WaEwrEtr61vNJzGwvB6lfb8x91Tk
+         7XndXyE6XQdtePWn+0nX9CU5j66QkBiVZUrIYaCRbttU+5qmt5AH+hXStGGovfMSH5
+         Zl0QjKpEYV31A==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id rVclInozgsqV; Thu, 25 Feb 2021 10:47:33 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 1B9D831DCA7;
+        Thu, 25 Feb 2021 10:47:33 -0500 (EST)
+Date:   Thu, 25 Feb 2021 10:47:32 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     paulmck <paulmck@kernel.org>
 Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        heddchen@tencent.com,
-        =?UTF-8?B?eGlhb2dnY2hlbijpmYjlsI/lhYkp?= <xiaoggchen@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+        rcu <rcu@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        rostedt <rostedt@goodmis.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>
+Message-ID: <47558398.5024.1614268052985.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210225153656.GQ2743@paulmck-ThinkPad-P72>
+References: <354598689.4868.1614262968890.JavaMail.zimbra@efficios.com> <20210225153656.GQ2743@paulmck-ThinkPad-P72>
+Subject: Re: tasks-trace RCU: question about grace period forward progress
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
+Thread-Topic: tasks-trace RCU: question about grace period forward progress
+Thread-Index: pwK/WXjIrT7rEqZmBrlQyKVe9bflUA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 at 08:35, <ultrachin@163.com> wrote:
->
-> From: Chen Xiaoguang <xiaoggchen@tencent.com>
->
-> In order to use the computer efficiently we usually deploy online
-> tasks and offline tasks in the same computer.
->
-> The online tasks are more important than the offline tasks and are
-> latency sensitive we should make sure the online tasks preempt the
-> offline tasks as soon as possible while there are online tasks
-> waiting to run.
->
-> Online tasks using the SCHED_NORMAL policy and offline tasks using
-> the SCHED_ILDE policy. This patch decrease the latency of online
-> tasks by doing a load balance before a offline tasks to run.
->
-> Signed-off-by: Chen Xiaoguang <xiaoggchen@tencent.com>
-> Signed-off-by: Chen He <heddchen@tencent.com>
+----- On Feb 25, 2021, at 10:36 AM, paulmck paulmck@kernel.org wrote:
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> On Thu, Feb 25, 2021 at 09:22:48AM -0500, Mathieu Desnoyers wrote:
+>> Hi Paul,
+>> 
+>> Answering a question from Peter on IRC got me to look at rcu_read_lock_trace(),
+>> and I see this:
+>> 
+>> static inline void rcu_read_lock_trace(void)
+>> {
+>>         struct task_struct *t = current;
+>> 
+>>         WRITE_ONCE(t->trc_reader_nesting, READ_ONCE(t->trc_reader_nesting) + 1);
+>>         barrier();
+>>         if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB) &&
+>>             t->trc_reader_special.b.need_mb)
+>>                 smp_mb(); // Pairs with update-side barriers
+>>         rcu_lock_acquire(&rcu_trace_lock_map);
+>> }
+>> 
+>> static inline void rcu_read_unlock_trace(void)
+>> {
+>>         int nesting;
+>>         struct task_struct *t = current;
+>> 
+>>         rcu_lock_release(&rcu_trace_lock_map);
+>>         nesting = READ_ONCE(t->trc_reader_nesting) - 1;
+>>         barrier(); // Critical section before disabling.
+>>         // Disable IPI-based setting of .need_qs.
+>>         WRITE_ONCE(t->trc_reader_nesting, INT_MIN);
+>>         if (likely(!READ_ONCE(t->trc_reader_special.s)) || nesting) {
+>>                 WRITE_ONCE(t->trc_reader_nesting, nesting);
+>>                 return;  // We assume shallow reader nesting.
+>>         }
+>>         rcu_read_unlock_trace_special(t, nesting);
+>> }
+>> 
+>> AFAIU, each thread keeps track of whether it is nested within a RCU read-side
+>> critical
+>> section with a counter, and grace periods iterate over all threads to make sure
+>> they
+>> are not within a read-side critical section before they can complete:
+>> 
+>> # define rcu_tasks_trace_qs(t)                                          \
+>>         do {                                                            \
+>>                 if (!likely(READ_ONCE((t)->trc_reader_checked)) &&      \
+>>                     !unlikely(READ_ONCE((t)->trc_reader_nesting))) {    \
+>>                         smp_store_release(&(t)->trc_reader_checked, true); \
+>>                         smp_mb(); /* Readers partitioned by store. */   \
+>>                 }                                                       \
+>>         } while (0)
+>> 
+>> It reminds me of the liburcu urcu-mb flavor which also deals with per-thread
+>> state to track whether threads are nested within a critical section:
+>> 
+>> https://github.com/urcu/userspace-rcu/blob/master/include/urcu/static/urcu-mb.h#L90
+>> https://github.com/urcu/userspace-rcu/blob/master/include/urcu/static/urcu-mb.h#L125
+>> 
+>> static inline void _urcu_mb_read_lock_update(unsigned long tmp)
+>> {
+>> 	if (caa_likely(!(tmp & URCU_GP_CTR_NEST_MASK))) {
+>> 		_CMM_STORE_SHARED(URCU_TLS(urcu_mb_reader).ctr,
+>> 		_CMM_LOAD_SHARED(urcu_mb_gp.ctr));
+>> 		cmm_smp_mb();
+>> 	} else
+>> 		_CMM_STORE_SHARED(URCU_TLS(urcu_mb_reader).ctr, tmp + URCU_GP_COUNT);
+>> }
+>> 
+>> static inline void _urcu_mb_read_lock(void)
+>> {
+>> 	unsigned long tmp;
+>> 
+>> 	urcu_assert(URCU_TLS(urcu_mb_reader).registered);
+>> 	cmm_barrier();
+>> 	tmp = URCU_TLS(urcu_mb_reader).ctr;
+>> 	urcu_assert((tmp & URCU_GP_CTR_NEST_MASK) != URCU_GP_CTR_NEST_MASK);
+>> 	_urcu_mb_read_lock_update(tmp);
+>> }
+>> 
+>> The main difference between the two algorithm is that task-trace within the
+>> kernel lacks the global "urcu_mb_gp.ctr" state snapshot, which is either
+>> incremented or flipped between 0 and 1 by the grace period. This allow RCU
+>> readers
+>> outermost nesting starting after the beginning of the grace period not to
+>> prevent
+>> progress of the grace period.
+>> 
+>> Without this, a steady flow of incoming tasks-trace-RCU readers can prevent the
+>> grace period from ever completing.
+>> 
+>> Or is this handled in a clever way that I am missing here ?
+> 
+> There are several mechanisms designed to handle this.  The following
+> paragraphs describe these at a high level.
+> 
+> The trc_wait_for_one_reader() is invoked on each task.  It uses the
+> try_invoke_on_locked_down_task(), which, if the task is currently not
+> running, keeps it that way and invokes trc_inspect_reader().  If the
+> locked-down task is in a read-side critical section, the need_qs field
+> is set, which will cause the task's next rcu_read_lock_trace() to report
+> the quiescent state.
 
-Thanks
+I suspect you meant "rcu_read_unlock_trace()" here.
 
-> ---
-> v1 -> v2:
->  - Add checking in balance_fair
->  - Remove task state checking in pick_next_task_fair
->  - Add comment about the change
-> ---
->  kernel/sched/fair.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 8a8bd7b..80b69a2 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6833,7 +6833,13 @@ static void task_dead_fair(struct task_struct *p)
->  static int
->  balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  {
-> -       if (rq->nr_running)
-> +       /*
-> +        * Return if SCHED_NORMAL tasks exist.
-> +        * Else if only SCHED_IDLE tasks in rq then do a load balance trying
-> +        * to pull SCHED_NORMAL tasks to run so as to reduce the latency of
-> +        * SCHED_NORMAL task.
-> +        */
-> +       if (rq->nr_running && !sched_idle_rq(rq))
->                 return 1;
->
->         return newidle_balance(rq, rf) != 0;
-> @@ -7013,6 +7019,14 @@ struct task_struct *
->         struct task_struct *p;
->         int new_tasks;
->
-> +       /*
-> +        * Before a CPU switches from running SCHED_NORMAL task to SCHED_IDLE
-> +        * task, do a load balance trying to pull SCHED_NORMAL tasks to run
-> +        * so as to reduce the latency of SCHED_NORMAL task.
-> +        */
-> +       if (sched_idle_rq(rq) && prev && prev->policy != SCHED_IDLE)
-> +               goto idle;
-> +
->  again:
->         if (!sched_fair_runnable(rq))
->                 goto idle;
-> --
-> 1.8.3.1
->
+> 
+> If read-side memory barriers have been enabled, trc_inspect_reader()
+> is able to check for a reader being active, and if not, reports the
+> quiescent state.  If there is a reader, trc_inspect_reader() reports
+> failure, which is another path to the following paragraph.
+> 
+> If the task could not be locked down due its currently running,
+> then trc_wait_for_one_reader() attempts to send an IPI, which results in
+> trc_read_check_handler() rechecking for a read-side critical section
+> and either reporting the quiescent state immediately or proceding in the
+> same way that trc_inspect_reader() does.  The trc_read_check_handler()
+> of course checks to make sure that the target task is still running
+> before doing anything.  If the attempt to send the IPI fails, then
+> the task is rechecked in a later pass.
+> 
+> So what sequence of events did you find that causes these mechanisms
+> to fail?
+
+The explanation you provide takes care of my concerns, so I don't have
+any remaining problematic scenario in mind.
+
+Thanks,
+
+Mathieu
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
