@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E73F32499D
+	by mail.lfdr.de (Postfix) with ESMTP id CED7232499E
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbhBYD5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 22:57:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
+        id S234123AbhBYD5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 22:57:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233084AbhBYD5J (ORCPT
+        with ESMTP id S233084AbhBYD5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 22:57:09 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD699C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:56:28 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id a7so4428292iok.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:56:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VMhssfkntbp6BkEdgeddf6ITSgH2/sACeJhofv7G7Qk=;
-        b=pxq5QeWUzVL/vGfbVNLb2osJm/A4y0MvKWH4ryodlpu0IGEyWYJkLK62EquwoT5vXh
-         NjkZcEXppruaW6kFhkh974WJiWPRwzLu45wO2HtCpV4jNukAZT1RhMTu43qeag0yBWJz
-         po+gSu7r6sRDp+sqq853uK73AqEBXX/5Ci5/PgDbWFH8WHeFGpLcwOUqddgQPo53HFJU
-         p8XlSL2wWT8u/rrxAc7omZUYo/nQEJDVAE/+Dxk9+arLL2hPE/xen1C9gnqBQGfnytTY
-         j+FXMPiW8pn8RweYVtBm5CtEflk1w5nPIbrkJEb/9RmPioWT6g7WR8pqwby6N9rhNJo7
-         R9Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VMhssfkntbp6BkEdgeddf6ITSgH2/sACeJhofv7G7Qk=;
-        b=afb4h0Gd+VR/Xyl36kBxki9BVwyqM3huAoTHceHrBfdVyRmDwBrtMlfmFuCXo5XMAQ
-         As1cyoRfeB5eR6colrW8G/jQOzs9qC+KEce/5fGVDlRKCWFc8sUl7UBRCjaxwnkzaJzg
-         HdStQUrACcozXTFq/veohtZypXLAA5JhvAqwkeAMWCGNn0X+ssQNu4U02tBVQe2NCfpv
-         W0+/OJijZDQbCbvXDD3YHUGNolXzA5cfX38NVjoRsbqdcfc94zFtyhoB+yB0iNmHow07
-         FZwkXV8D0IzQQgg13oSfomkOq23h2JQwXQzlZf6TSgNJ5qGafL7VPX+g2pdpMKq1+mtc
-         5Z8g==
-X-Gm-Message-State: AOAM530QJGxn/pAAl/n3AR2hZ9NOZK/aGIXZ52Vj3obo4BW3fCiXR3aJ
-        99n7/oz/4AWslY2d2cDQrit98EFie1peU4whsIdSRA==
-X-Google-Smtp-Source: ABdhPJyLZIGwvciSXuv0EOvVOClNo6/DzD3V+vVlnTp1m0pld87jItvthB4sJcyYaZwS1w1U59K0L9OT7StOa8lDIJM=
-X-Received: by 2002:a6b:c40b:: with SMTP id y11mr991070ioa.205.1614225387929;
- Wed, 24 Feb 2021 19:56:27 -0800 (PST)
+        Wed, 24 Feb 2021 22:57:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D358C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:56:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+VTPtIMpGcN6w4RmHgdNd6IeFShUVJwNrk2/joKyueI=; b=Ix980A7Htoh/OVX8qDJG1830M0
+        534uvDXukdDuARYmNGKRCsAPzCSY0/FaIZ7C9K3IFEX/87LZcG5yvzefbOVgc0Dxgo8HNHqI32pUO
+        Y7Bqa9N4Od4d/Xnvtb6HRS+UHubyn83ex3t25iC0FCBQ6TvUTu4ZjAjw0Cs2R5/mwtwSXyBYu77R+
+        c3dl9eG05Oa6VBYWscUONyPBIBB2sAnVAStyKcCItwcvER9L5e2HXxHs42K76fFrTkligVOBmnWIo
+        1xen+66NsgqfNF47qGt8JtWfvXQNF8MmfBlzmeOqa/LGVgSXJOMGR+0L3gK4qjfZhu0WaTHQWUXlT
+        5JkjGxKQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lF7kn-00AEba-SP; Thu, 25 Feb 2021 03:55:58 +0000
+Date:   Thu, 25 Feb 2021 03:55:53 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, vbabka@suse.cz,
+        alex.shi@linux.alibaba.com, guro@fb.com, hannes@cmpxchg.org,
+        hughd@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com
+Subject: Re: [PATCH] mm: test page->flags directly in page_lru()
+Message-ID: <20210225035553.GX2858050@casper.infradead.org>
+References: <20210122220600.906146-11-yuzhao@google.com>
+ <20210224084807.2179942-1-yuzhao@google.com>
+ <20210224051558.79e31c60eea2c088f4a1b300@linux-foundation.org>
+ <20210224215639.GT2858050@casper.infradead.org>
+ <YDbUaJ0j2YisyyuK@google.com>
+ <20210224224846.GU2858050@casper.infradead.org>
+ <YDbmT87E106uS1Xa@google.com>
 MIME-Version: 1.0
-References: <20210224085915.28751-1-natet@google.com> <YDaOw48Ug7Tgr+M6@google.com>
-In-Reply-To: <YDaOw48Ug7Tgr+M6@google.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Wed, 24 Feb 2021 19:55:51 -0800
-Message-ID: <CABayD+f6q0q2v7pT-hjD=oP_+hAyEW5VA2WoTQNn=5-=OD1e1w@mail.gmail.com>
-Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Nathan Tempelman <natet@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Ashish Kalra <Ashish.Kalra@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDbmT87E106uS1Xa@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 9:37 AM Sean Christopherson <seanjc@google.com> wrote:
-> > +     unsigned int asid;
-> > +     int ret;
-> > +
-> > +     if (!sev_guest(kvm))
-> > +             return -ENOTTY;
-> > +
-> > +     mutex_lock(&kvm->lock);
-> > +
-> > +     /* Mirrors of mirrors should work, but let's not get silly */
->
-> Do we really care?
-Yes, unless you reparent mirrors of mirrors to the original ASID
-owner. If you don't do that, I think userspace could pump a chain of
-mirrors to blow the kernel stack when it closes the leaf vm, since you
-could build up a chain of sev_vm_destroys. Refcounting the ASIDs
-directly would also fix this.
+On Wed, Feb 24, 2021 at 04:50:39PM -0700, Yu Zhao wrote:
+> On Wed, Feb 24, 2021 at 10:48:46PM +0000, Matthew Wilcox wrote:
+> > On Wed, Feb 24, 2021 at 03:34:16PM -0700, Yu Zhao wrote:
+> > > > If only somebody were working on a patch series to get rid of
+> > > > all those calls to compound_head()!  Some reviews on
+> > > > https://lore.kernel.org/linux-mm/20210128070404.1922318-2-willy@infradead.org/
+> > > > would be nice.
+> > > 
+> > > I'm on board with the idea and have done some research in this
+> > > direction. We've found that the ideal *anon* page size for Chrome OS
+> > > is not 4KB or 2MB, but 32KB. I hope we could leverage the folio to
+> > > support flexible anon page size to reduce the number of page faults
+> > > (vs 4KB) or internal fragmentation (vs 2MB).
+> > > 
+> > > That being said, it seems to me this is a long term plan and right
+> > > now we need something smaller. So if you don't mind, I'll just go
+> > > ahead and remove compound_head() from Page{LRU,Active,Unevictable,
+> > > SwapBacked} first?
+> > 
+> > It's really not a big change I'm suggesting here.  You need
+> > https://lore.kernel.org/linux-mm/20210128070404.1922318-2-willy@infradead.org/
+> > https://lore.kernel.org/linux-mm/20210128070404.1922318-5-willy@infradead.org/
+> > https://lore.kernel.org/linux-mm/20210128070404.1922318-8-willy@infradead.org/
+> > and then the patch I sent above to create folio_lru().
+> > 
+> > Then any changes you want to make to use folios more broadly will
+> > incrementally move us towards your goal of 32kB anon pages.
+> 
+> Well, these patches introduce a new concept which I'm on board with.
 
-Nate's early implementation did the reparenting, but I pushed for the
-simplification since it made the locking a bit hairy.
->
-> > +     if (is_mirroring_enc_context(kvm)) {
-> > +             ret = -ENOTTY;
-> > +             goto failed;
-> > +     }
-> > +
+It's not really a new concept ... it's a new type for an existing concept
+(a head page).
+
+> Assume everybody else is too, it still seems to me it's an overkill
+> to employee folio to just get rid of unnecessary compound_head()
+> in page_lru() -- this is not a criticism but a compliment.
+
+It's not overkill, that really is the point of a folio!  If you
+think about it, only head pages can be on the LRU list (because the
+compound_head is in the union with the lru list_head).  So it
+always makes sense to talk about folios on the LRU list.
+
+> Let me work out something *conceptually* smaller first, and if you
+> think folio is absolutely more suitable even for this specific issue,
+> I'll go review and test the four patches you listed. Sounds good?
+
+Umm.  It seems to me that no matter what you do, it'll be equivalent to
+this, only without the type-safety?
