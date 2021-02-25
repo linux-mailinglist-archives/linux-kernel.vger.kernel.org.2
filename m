@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BEF325934
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25C6325938
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234499AbhBYWCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:02:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
+        id S233743AbhBYWE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:04:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbhBYWBy (ORCPT
+        with ESMTP id S231326AbhBYWEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:01:54 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928E9C061574;
-        Thu, 25 Feb 2021 14:01:13 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DmmvW2PJQz9s1l;
-        Fri, 26 Feb 2021 09:01:11 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614290471;
-        bh=SC60X5dVB4OyDxry5X6pUUyiZ6Pdwzqhi/mulXo8zcE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nG11K0fzxVX51o37RpGtTuwydPP8GG42x2lCJUYvl+9dDJeppZ8vi0j6n2qe3isSV
-         0xqn8J4H+KxTXcTRF7ArKtDefQluwMYViuWNXnLZuxk/bEqulLsCfIXIQswycgIvYx
-         eO35+/IwvxMykQxdSxKmDXsETp2ckeqjZbYSnH2ai6Pe8ZYVuOMwE/eMvhjxeF1nka
-         VWHD+CO48N970Mj9UBk0fGBRh6NtmdQKg640C4z16SqVw0Ls4Fib9VG3vbtuJfP/Ch
-         E3X1HRDseALac/p6flkfwpb4Z4UQxa3Bk7iHoKD1Kp8C1Uk/X40HX4MOzHfeJ45LKU
-         xaCmrOxANQUhQ==
-Date:   Fri, 26 Feb 2021 09:01:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Andrew Donnellan <ajd@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the jc_docs tree
-Message-ID: <20210226090109.1c4b645f@canb.auug.org.au>
-In-Reply-To: <87a6rrbze2.fsf@meer.lwn.net>
-References: <20210226083433.1419e9c9@canb.auug.org.au>
-        <87a6rrbze2.fsf@meer.lwn.net>
+        Thu, 25 Feb 2021 17:04:54 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40033C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:04:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=t1Ft9fTKk6nbWlpAb3J7lEuAxbMocVw2RdI/+bVWD/s=; b=UJ9lwbOq5fxB/Wa57PStkSQLn4
+        caIE3pmlGRvNsJZHlzCD3Q0R3zh1/opV7ute83jT/p6mgrCOGf1CKsyxiCTGzsYrp8t/T4aXaZ5No
+        9R8KqzaUU0629glRgC7Nd4dZGSs40hW1JcAvkxurwVzsay1ZSKZ3N9/x3PH/fG2OPbtyPvVMaJhWl
+        lCiqQneytl0hxR5isynJe9G8kJQsGFHwGWz2Gd9LIwL3yeoq1WsjjA3uyQQ4UwDzUEIOK4BHDaUjY
+        4Ngh6rq8R+PKkWastbZn5ykVEBZWCakaMjDTPiE5xPGy2ZWJ/Q6hKwO18DUSFFKxw+UgFCaKxMN8G
+        IzDUA7Ew==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lFOjm-00BEMi-6R; Thu, 25 Feb 2021 22:03:59 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9FA709864D3; Thu, 25 Feb 2021 23:03:51 +0100 (CET)
+Date:   Thu, 25 Feb 2021 23:03:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH] static_call: Fix the module key fixup
+Message-ID: <20210225220351.GE4746@worktop.programming.kicks-ass.net>
+References: <20210225131221.11dab26e@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/flJeXf+cw8FsuSU=S1ZkqZg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225131221.11dab26e@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/flJeXf+cw8FsuSU=S1ZkqZg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Subject: static_call: Fix the module key fixup
 
-Hi Jon,
+Provided the target address of a R_X86_64_PC32 relocation is aligned,
+the low two bits should be invariant between the relative and absolute
+value.
 
-On Thu, 25 Feb 2021 14:39:33 -0700 Jonathan Corbet <corbet@lwn.net> wrote:
->
-> I made that tag by hand while "fixing" the changlog on that commit,
-> which included the full ID.  Obviously, counting to 12 is a challenging
-> task for a slow guy like me...:)
+Turns out the address is not aligned and things go sideways, ensure we
+transfer the bits in the absolute form when fixing up the key address.
 
-Which is why I have a script called clog:
+Reported-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/static_call.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-!/bin/bash
-
-git log -1 --format=3D'  %h ("%s")' "$@"
-
-:-)
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/flJeXf+cw8FsuSU=S1ZkqZg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA4HiUACgkQAVBC80lX
-0GwGJQf9HzIFLXL5ydNN763ic+FaA6LIBKoHHgC4E9HM90jUIuBs+Q4QVnbbAAPP
-J9si1O9fw7T7RJQLGLG2Lxde08Q6fQuXopSTKDWU6knlpg5wqMD5szMmnQjdwbV+
-en7gCzIAGPigI5G7Xak4OVaxp9hzHwUB4SkYYd9gdoeBJqjCtzGxZNPcYKty8dW+
-vFGxinjarjdqPHqb46vKNQMIaF6QH0gXefr/0MhiT9GHWGJ7hb0R3qGW2+x8GYnC
-1vOwpc8KoQhjqFg02DEeub8IqCE2iODINGtoYENleIyheDYny/Vv1qo9f8G27xZ3
-DDbarbtRDumPfZDCGxg5uIYB57XSxA==
-=dmep
------END PGP SIGNATURE-----
-
---Sig_/flJeXf+cw8FsuSU=S1ZkqZg--
+diff --git a/kernel/static_call.c b/kernel/static_call.c
+index 6906c6ec4c97..ae825295cf68 100644
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -349,7 +349,8 @@ static int static_call_add_module(struct module *mod)
+ 	struct static_call_site *site;
+ 
+ 	for (site = start; site != stop; site++) {
+-		unsigned long addr = (unsigned long)static_call_key(site);
++		unsigned long s_key = (long)site->key + (long)&site->key;
++		unsigned long addr = s_key & ~STATIC_CALL_SITE_FLAGS;
+ 		unsigned long key;
+ 
+ 		/*
+@@ -373,8 +374,8 @@ static int static_call_add_module(struct module *mod)
+ 			return -EINVAL;
+ 		}
+ 
+-		site->key = (key - (long)&site->key) |
+-			    (site->key & STATIC_CALL_SITE_FLAGS);
++		key |= s_key & STATIC_CALL_SITE_FLAGS;
++		site->key = key - (long)&site->key;
+ 	}
+ 
+ 	return __static_call_init(mod, start, stop);
