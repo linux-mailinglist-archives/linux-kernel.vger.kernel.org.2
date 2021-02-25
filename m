@@ -2,136 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC9D32594B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C693E325950
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:15:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbhBYWNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:13:16 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15006 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232600AbhBYWNN (ORCPT
+        id S234114AbhBYWOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:14:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232746AbhBYWOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:13:13 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PM5ZYF165647;
-        Thu, 25 Feb 2021 17:12:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ENtB9L0T9Uc1EJuHaVh6I7LbKCVplGQT/CvgVhH5kBA=;
- b=tKongqvsPbOpI1jBCssAE+YJKloh+G9L3BHfkHeSbRgn45XcVyEdsopP+88deAnDKVyV
- J61vOUq/fsdjBJD7WugtCAT94lG/25kUrWAa08OjUNLsqSqQHb86pCBOFkCOQkNV4rzy
- Q4LPc8QAmDJTz6psMJwB6eqRGVFOEWNqZ6rVrIWx2g5RGRuZDzIDNL8mbVA/QGFMnPIe
- MDYfRCC/WGtXDtgDUgxkB/JHQ8xWgQQ0UsmDvEoOYJcJtVqydb/45887IvLSs1rLqQUv
- 6czTPAB/Mhd6cz/GTWjyzkXR7iOeYGZ0nTR+eVf5EQUSm940lkq2/BnBsd+5l+WdoMvf 0A== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36xhw0veh6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 17:12:25 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11PM6wOM031530;
-        Thu, 25 Feb 2021 22:12:25 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma02dal.us.ibm.com with ESMTP id 36tt2amghm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 22:12:25 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11PMCND626608076
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 22:12:23 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BC5BBBE059;
-        Thu, 25 Feb 2021 22:12:23 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 87AD8BE054;
-        Thu, 25 Feb 2021 22:12:22 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.44.137])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 25 Feb 2021 22:12:22 +0000 (GMT)
-Subject: Re: [PATCH v3 5/5] ibmvfc: reinitialize sub-CRQs and perform channel
- enquiry after LPM
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20210225214237.22400-1-tyreld@linux.ibm.com>
- <20210225214237.22400-6-tyreld@linux.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <0698062b-35b4-6cbe-aee3-a825026fb20f@linux.ibm.com>
-Date:   Thu, 25 Feb 2021 14:12:21 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 25 Feb 2021 17:14:17 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5E2C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:13:37 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id jx13so897957pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:13:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BGyHjBouNSnLUG2Lzfuc7WYlrAHiqSHJ6DI2sOQjym4=;
+        b=S4Vi4cVffwjxP1q3GBRpmePU3bNnosfOHW0493up4vtbefnaDjXNrkFPVOOc1kLROO
+         wTqoIXJGHgcH4ixg60PUwcK/Wjfuel0+BGx/ZQ1sY6Xg4upWMYLTdshYL+RaNFaOQggR
+         Dtsd3kLgKbPKNANEi48PZT4tdnwy/82fvgD/w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BGyHjBouNSnLUG2Lzfuc7WYlrAHiqSHJ6DI2sOQjym4=;
+        b=jzSJDnRHJzleWBCbkJjwa6EaxbKgO/UQVav4pYwB5zvR0ex72Ygbn/ugaNKBrEPhxJ
+         vZEkD5X22WXqq9YcyF1U76YP/+ptpIJ/ona3Lejl5PiqfqpQH/qhF1Y2SehjHxd5cjTt
+         0/jqhYYUq2+qLzcprBjxQoNIgUxX6oU+QUicKvJ/3K32peFLSExAm4QkyBmt2m/RgdHZ
+         fllrpHYJy6YKUDwY3jj8Uww1aWLiAJ0D5StzbiftsgkpR9OjNid/vK5bP23HLB/f9pA4
+         izPsWl2zz2xil+g9QRM36ySdpLNkPoDccC99x7udh/UQPFOlKxgYkx7jic2hbFaEVTuw
+         1rRA==
+X-Gm-Message-State: AOAM531h8I4DGhgX0mwWs1m/4ApRUxa6tEW4jXwoZlApcb63lSxKncIB
+        wKvzmAuclkKFFQ8xUWxlqJJEiQ==
+X-Google-Smtp-Source: ABdhPJzRmpl0rRj+D2HGkH0+imXRHUlA3DDnhKov+B+ipXusLMCdPyxG853CyK9kQXZD/AfQjokxIA==
+X-Received: by 2002:a17:902:be06:b029:e3:7031:bef with SMTP id r6-20020a170902be06b02900e370310befmr178907pls.19.1614291217144;
+        Thu, 25 Feb 2021 14:13:37 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:8414:45a5:94c4:d35d])
+        by smtp.gmail.com with ESMTPSA id jt21sm6713301pjb.51.2021.02.25.14.13.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 14:13:36 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Alexandru M Stan <amstan@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/13] arm64: dts: qcom: Update sc7180-trogdor variants from downstream
+Date:   Thu, 25 Feb 2021 14:12:57 -0800
+Message-Id: <20210225221310.1939599-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-In-Reply-To: <20210225214237.22400-6-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-25_14:2021-02-24,2021-02-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 impostorscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 mlxscore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102250165
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/25/21 1:42 PM, Tyrel Datwyler wrote:
-> A live partition migration (LPM) results in a CRQ disconnect similar to
-> a hard reset. In this LPM case the hypervisor moslty perserves the CRQ
-> transport such that it simply needs to be reenabled. However, the
-> capabilities may have changed such as fewer channels, or no channels at
-> all. Further, its possible that there may be sub-CRQ support, but no
-> channel support. The CRQ reenable path currently doesn't take any of
-> this into consideration.
-> 
-> For simpilicty release and reinitialize sub-CRQs during reenable, and
-> set do_enquiry and using_channels with the appropriate values to trigger
-> channel renegotiation.
-> 
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> ---
->  drivers/scsi/ibmvscsi/ibmvfc.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> index 1bb08e5f3674..6bbc2697ad5a 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> @@ -903,6 +903,9 @@ static int ibmvfc_reenable_crq_queue(struct ibmvfc_host *vhost)
->  {
->  	int rc = 0;
->  	struct vio_dev *vdev = to_vio_dev(vhost->dev);
-> +	unsigned long flags;
-> +
-> +	ibmvfc_release_sub_crqs(vhost);
->  
->  	/* Re-enable the CRQ */
->  	do {
-> @@ -914,6 +917,15 @@ static int ibmvfc_reenable_crq_queue(struct ibmvfc_host *vhost)
->  	if (rc)
->  		dev_err(vhost->dev, "Error enabling adapter (rc=%d)\n", rc);
->  
-> +	ibmvfc_init_sub_crqs(vhost);
+The point of this series is to catch upstream up to what we have
+downstream in terms of sc7180-trogdor variants.  Notably:
+- It incorporates minor changes that snuck into the trogdor and lazor
+  device tree files since they were posted upstream.
+- It adds the "Limozeen" SKU variant of Lazor.
+- It adds support the Pompom and CoachZ type trogdor boards.
 
-Realized that if this fails it set the do_enquiry flag to zero which the locked
-region below will then flip back to one. Need to move sub-crq init to after
-locked region.
+This series was tested on mainline Linux instead of the Qualcomm tree
+since mainline has important bugfixes that are not in the current
+Qualcomm tree. Given the current state of the merge window mainline
+has all of the relevant Qualcomm device tree files anyway. For
+testing, I picked these atop mainline:
+- Commit fe7952c629da ("drm/msm: Add speed-bin support to a618 gpu")
+  to keep the GPU from crashing due to the fact that commit
+  20fd3b37285b ("arm64: dts: qcom: sc7180: Add support for gpu fuse")
+  is in mainline.  This commit is in msm-next.
+- The patch ("arm64: dts: qcom: sc7180: Use pdc interrupts for USB
+  instead of GIC interrupts") [1] just because it reduced diffs and
+  seemed ready to go.
+- The patch ("arm64: dts: qcom: sc7180: Avoid glitching SPI CS at
+  bootup on trogdor") [2] because that's an important bugfix.
 
--T
+With all these changes things are in pretty good shape. Looking at
+diffs compared to downstream w/ a few patches [3]:
+- I haven't tried to resolve "sound" with upstream, instead stripping
+  / leaving as-is any audio related nodes.  Someone with more
+  knowledge of the current state of audio needs to take a pass here.
+- I haven't tried to resolve DP with upstream.  It's basically not
+  there.  Someone who works on this: please help!
+- We have a downstream patch to manage power for USB hubs.  Without
+  that we have to keep power on all the time for USB.  Matthias is
+  still working on trying to get an agreement for how that should
+  work.
+- Downstream we have an early version of the "sleep stats" driver
+  landed.  I believe this is in Maulik's court to re-post.
 
-> +
-> +	spin_lock_irqsave(vhost->host->host_lock, flags);
-> +	spin_lock(vhost->crq.q_lock);
-> +	vhost->do_enquiry = 1;
-> +	vhost->using_channels = 0;
-> +	spin_unlock(vhost->crq.q_lock);
-> +	spin_unlock_irqrestore(vhost->host->host_lock, flags);
-> +
->  	return rc;
->  }
->  
-> 
+I have tested this series on "lazor", "lazor-limozeen", "pompom" and
+"coachz".  All of them boot to the web browser with this patch series.
+
+I have confirmed that Matthias's recent charger series [4] applies
+atop this with no conflicts, though I haven't looked at exactly which
+revs of coachz / pompom need a similar change.  It might be easiest to
+just follow up once both series land and we get final confirmation
+about exactly which revs will have exactly which thermistor.
+
+[1] https://lore.kernel.org/r/1594235417-23066-4-git-send-email-sanm@codeaurora.org
+[2] https://lore.kernel.org/r/20210218145456.1.I1da01a075dd86e005152f993b2d5d82dd9686238@changeid
+[3] https://chromium.googlesource.com/chromiumos/third_party/kernel/+log/refs/sandbox/dianders/210225-downstream-dts
+[4] https://lore.kernel.org/linux-arm-msm/20210225103330.v2.1.I6a426324db3d98d6cfae8adf2598831bb30bba74@changeid/
+
+
+Abhishek Kumar (1):
+  arm64: dts: qcom: sc7180: add GO_LAZOR variant property for lazor
+
+Alexandru M Stan (1):
+  arm64: dts: qcom: sc7180-trogdor: Remove fp control pins in prep for
+    coachz
+
+Douglas Anderson (6):
+  arm64: dts: qcom: Move sc7180 MI2S config to board files and make
+    pulldown
+  arm64: dts: qcom: Prep sc7180-trogdor trackpad IRQ for new boards
+  arm64: dts: qcom: Unify the sc7180-trogdor panel nodes
+  arm64: dts: qcom: Add sc7180-lazor-limozeen skus
+  arm64: dts: qcom: Add sc7180-lazor-pompom skus
+  arm64: dts: qcom: Add sc7180-lazor-coachz skus
+
+Matthias Kaehlcke (1):
+  arm64: dts: qcom: sc7180: Set up lazor r3+ as sc7180-lite SKUs
+
+Stephen Boyd (3):
+  arm64: dts: qcom: sc7180: Update dts for DP phy inside QMP phy
+  arm64: dts: qcom: trogdor: Only wakeup from pen eject
+  arm64: dts: qcom: Disable camera clk on sc7180-trogdor devices by
+    default
+
+Venkata Lakshmi Narayana Gubba (1):
+  arm64: dts: qcom: sc7180: Remove clock for bluetooth on Trogdor
+
+ arch/arm64/boot/dts/qcom/Makefile             |  11 +
+ .../dts/qcom/sc7180-trogdor-coachz-r1-lte.dts |  18 ++
+ .../dts/qcom/sc7180-trogdor-coachz-r1.dts     | 154 ++++++++++
+ .../dts/qcom/sc7180-trogdor-coachz-r2-lte.dts |  18 ++
+ .../dts/qcom/sc7180-trogdor-coachz-r2.dts     |  15 +
+ .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi  | 249 +++++++++++++++
+ .../sc7180-trogdor-lazor-limozeen-nots-r4.dts |  34 +++
+ .../sc7180-trogdor-lazor-limozeen-nots.dts    |  26 ++
+ .../qcom/sc7180-trogdor-lazor-limozeen.dts    |  42 +++
+ .../dts/qcom/sc7180-trogdor-lazor-r3-kb.dts   |   5 +-
+ .../dts/qcom/sc7180-trogdor-lazor-r3-lte.dts  |   4 +-
+ .../boot/dts/qcom/sc7180-trogdor-lazor-r3.dts |   1 +
+ .../boot/dts/qcom/sc7180-trogdor-lazor.dtsi   |  39 +--
+ .../dts/qcom/sc7180-trogdor-pompom-r1-lte.dts |  14 +
+ .../dts/qcom/sc7180-trogdor-pompom-r1.dts     |  26 ++
+ .../dts/qcom/sc7180-trogdor-pompom-r2-lte.dts |  14 +
+ .../dts/qcom/sc7180-trogdor-pompom-r2.dts     |  44 +++
+ .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  | 288 ++++++++++++++++++
+ .../arm64/boot/dts/qcom/sc7180-trogdor-r1.dts |  35 ++-
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi  | 105 +++----
+ arch/arm64/boot/dts/qcom/sc7180.dtsi          |  41 +--
+ 21 files changed, 1073 insertions(+), 110 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1-lte.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2-lte.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r2.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r4.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1-lte.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2-lte.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
+
+-- 
+2.30.1.766.gb4fecdf3b7-goog
 
