@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8A1324D0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB23324D1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbhBYJka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:40:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234250AbhBYJiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:38:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C513064EBA;
-        Thu, 25 Feb 2021 09:38:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614245890;
-        bh=5buN3EC107S76JKghAcicRI28n7jlFz14jT62JQaKPU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=euBaOkbadcvUXmfC2VxZUjDjRqbhLRRIGr9iOoFZJ2l82JgzRCpRJBInxlw/tWUJd
-         TTBSPZMLXSAccC+6x2QJmEhQNrCwFx+gvBeZBvNHgMUKRwP8OuPTGerA3pYT0LdxBA
-         kRJCHjgNqA9y/NKEsCAxUbkq86lQ8UJOEHQcS3yHCICalSLAGdqWxdNIzGR5Zrbcbj
-         C5Jf8/8x9yHMliTa7nd0gIsBtmcx8mfv144Vh+jOOjzsiz5MB8fwCJNqYctgvvQ6yj
-         q9/R5rlVpQ6OFSY6IyZY/z/okNFF8w8aKrdzmT49zjKr/AGYdHd6jn1E9Gyk2rJHNA
-         +NPUW4HmrHUrg==
-Date:   Thu, 25 Feb 2021 10:38:01 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Nikolai Kostrigin <nickel@basealt.ru>
-Cc:     linux-i2c@vger.kernel.org,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Need some help on "Input: elantech - add LEN2146 to SMBus
- blacklist for ThinkPad L13 Gen2"
-Message-ID: <20210225093801.GA1008@ninjato>
-References: <0d1eaadd-5350-63a4-fe6d-f8f357c49504@basealt.ru>
- <CAO-hwJLmByHHULhJF60qOUAqprkqZpSvVh-GFXLZ_ndL0guvPQ@mail.gmail.com>
- <e1fd99ae-8e46-0b21-1011-db73cd75523b@basealt.ru>
+        id S234622AbhBYJnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:43:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234107AbhBYJmi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:42:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AA6C061793;
+        Thu, 25 Feb 2021 01:39:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2r8qTWCQuEAeQqk6EF6ekYZa+LRQpOnq8QiY31W/zA4=; b=PGIQVeqlTsjn8OCEcdTziCcyIB
+        /7/qqI0p+RJJuAikuzXWsW2yFyGB1LCyvt/IyWJUdPzuR0YP/wHShezLq0yHpCTK96IQ2o5VGqUC+
+        Xn8ebk1tvFBEugxYldRHqgtiYDuKKn3kqiyCrsd6P2As7DpdYFJMs9RxcloU1MIptblNNTEMH6IVf
+        Z5nvP/99ja1TmUOfg/PAmibgg8rSOBghLFV449VIKjy+++iU4KjocoGzjEc6q3i9WzHaFgFuwamLy
+        RTgOd0heoXK+kFUwErTNN9DFeUrxxYarVw74Q5b+dUCfY+1osuZGxHKH6pz32kBAR50n346SF9MN6
+        yDx79NYA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lFD6j-00AWyD-IP; Thu, 25 Feb 2021 09:38:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 349733010D2;
+        Thu, 25 Feb 2021 10:38:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DB22B20BC92B4; Thu, 25 Feb 2021 10:38:51 +0100 (CET)
+Date:   Thu, 25 Feb 2021 10:38:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Eric Biggers <ebiggers@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-crypto@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 04/13] x86/crypto/aesni-intel_avx: Standardize stack
+ alignment prologue
+Message-ID: <YDdwK8aPnc6X9WTB@hirez.programming.kicks-ass.net>
+References: <cover.1614182415.git.jpoimboe@redhat.com>
+ <02d00a0903a0959f4787e186e2a07d271e1f63d4.1614182415.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e1fd99ae-8e46-0b21-1011-db73cd75523b@basealt.ru>
+In-Reply-To: <02d00a0903a0959f4787e186e2a07d271e1f63d4.1614182415.git.jpoimboe@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 24, 2021 at 10:29:17AM -0600, Josh Poimboeuf wrote:
+> Use RBP instead of R14 for saving the old stack pointer before
+> realignment.  This resembles what compilers normally do.
+> 
+> This enables ORC unwinding by allowing objtool to understand the stack
+> realignment.
+> 
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> ---
+>  arch/x86/crypto/aesni-intel_avx-x86_64.S | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/crypto/aesni-intel_avx-x86_64.S b/arch/x86/crypto/aesni-intel_avx-x86_64.S
+> index 188f1848a730..98e3552b6e03 100644
+> --- a/arch/x86/crypto/aesni-intel_avx-x86_64.S
+> +++ b/arch/x86/crypto/aesni-intel_avx-x86_64.S
+> @@ -251,22 +251,20 @@ VARIABLE_OFFSET = 16*8
+>  .macro FUNC_SAVE
+>          push    %r12
+>          push    %r13
+> -        push    %r14
+>          push    %r15
+>  
+> -        mov     %rsp, %r14
+> -
+> -
+> +	push	%rbp
+> +	mov	%rsp, %rbp
+>  
+>          sub     $VARIABLE_OFFSET, %rsp
+>          and     $~63, %rsp                    # align rsp to 64 bytes
+>  .endm
+>  
+>  .macro FUNC_RESTORE
+> -        mov     %r14, %rsp
+> +        mov     %rbp, %rsp
+> +	pop	%rbp
+>  
+>          pop     %r15
+> -        pop     %r14
+>          pop     %r13
+>          pop     %r12
+>  .endm
 
---Dxnq1zWXvFF0Q93v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-> I had a preliminary discussion with Benjamin Tissoires and according to
-> our agreement I repost it for wider audience.
-> Blacklisting the device was decided to be a bad idea.
-> But actually I managed to get touchpad totally operational via SMBus
-> using a following hack:
->=20
-> providing a parameter to i2c_i801 driver:
->=20
-> modprobe i2c_i801 disable_features=3D0x2 (i.e. disable the block buffer).
-
-So, from an I2C perspective, there are two things to mention here:
-
-a) I am in the process of extending the I2C core to allow block
-transfers > 32 byte. This is a slow process, though, because we need to
-pay attention to not break userspace ABI. If this is done *and* the i801
-driver supports length > 32 bytes, too, then it would work natively. If
-the i801 can do this, this is a question for Jean Delvare.
-
-b) I don't know Elantech HW but there are devices out there which allow
-configuration for the block size. Something like a bit specifying if
-block transfers > 32 are allowed. Or the SMBus version to support. Block
-transfers > 32 are SMBus 3.0+ only. If your HW does not have that,
-disabling SMBus is an option, too. Disabling it in the i801 driver is
-too much of a hammer, I'd say.
-
-Hope this helps! Happy hacking,
-
-   Wolfram
-
-
---Dxnq1zWXvFF0Q93v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmA3b/UACgkQFA3kzBSg
-KbZgIw/6Amdf7SNeFb/tzaL4tGkVQsJrbp9bEb04NSYN+KcVlsRlXGz4jV6Uup5s
-jyGQi3Nv64TdPTm0ASUnBEgvBsmniASxiCbLKpmTwpO6IfMp+U94SbeT0l2B5Ezu
-PFrxoRGyX1nnolfi1SL12SlyMJlxPjS2BXtE2ZOnoSGVi8UWTC9hvJ5lNVYIKTQ4
-EdBxhS78ptsrGxetlfao40+8pVFRWDSS7GtaXoNoUU5Ih71GVL4f5xWQYtKGWHJ4
-6TJjHQLHDhU1r978oqC36TTflQCnuwX1uShHqMIIz3cuqiQRbyHp9s8r1acGaKd0
-EtOVlLR0O3bgcdN/pFHzMxJKg6O+l4xQPdX6cD7KA6W8pNAtmRMXCSUvzZeVArO5
-dXL6j1uAtSPp55oc8zGjXtvnKDc1rvsNPtLOKlOK1JD6cMPwFZYfxpWVdjeiUpv5
-O9Kcf3ZW5w8CqSN5HDIU7rlJZUzYUNULGIvpNPMBp6CAcaQl7rray9QNqUM7iN4N
-oraCEkjtF/xa+65wGMpLSN1a03b7iGNTwVwxjNjPEXWT76ikjX6tZM4BXmRdMI/u
-FlpPTDWieZyEp+UEzm1a4HOxsnOQ2KpUW1YlEQk/FC3kRBBOn+DMaD21Mfz2uqCO
-m7oXTTNAI5w2AYfSvmLSqHrPV+ber09CV1T4i4wZUAqZuEU5X1o=
-=ZevR
------END PGP SIGNATURE-----
-
---Dxnq1zWXvFF0Q93v--
+Urgh, I was about to say your patch is whitespace damaged, but it's the
+original file :-/
