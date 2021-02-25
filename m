@@ -2,175 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B1E3253A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D54C73253A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbhBYQga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 11:36:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33060 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231950AbhBYQf2 (ORCPT
+        id S232250AbhBYQhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 11:37:04 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:60337 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231950AbhBYQgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:35:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614270840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Et7igBqbnPMWOABfF5S6RbAtusEqg/cELYr9FlbLbFw=;
-        b=Y+Pn699TnYywHWPCqlM+r7iD4tiYKehyVn+FYrs7uCRSoo0fHCdlmT1By0q/BiSshgFhcM
-        meSH/pokgu8Wj69FlwB+h1DLyyibnjGeZLapwAqOOiYCGNC/CIWL+tpmz/10a7TGTk61K2
-        b/voj5h5L+QJQO5IMfSt9LKB/p9Cccw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-421-CQWFyTm8Psib3Y3-dugJCg-1; Thu, 25 Feb 2021 11:33:55 -0500
-X-MC-Unique: CQWFyTm8Psib3Y3-dugJCg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BE56107ACC7;
-        Thu, 25 Feb 2021 16:33:53 +0000 (UTC)
-Received: from krava (unknown [10.40.194.234])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 54EDD10013D6;
-        Thu, 25 Feb 2021 16:33:51 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 17:33:50 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Pierre.Gondois@arm.com
-Cc:     linux-kernel@vger.kernel.org, douglas.raillard@arm.com,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org
-Subject: Re: [PATCH v1] perf: cast (struct timeval).tv_sec when printing
-Message-ID: <YDfRbnZxBLdStPb9@krava>
-References: <20210224182410.5366-1-Pierre.Gondois@arm.com>
+        Thu, 25 Feb 2021 11:36:39 -0500
+Received: (qmail 1353759 invoked by uid 1000); 25 Feb 2021 11:35:57 -0500
+Date:   Thu, 25 Feb 2021 11:35:57 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Tom Yan <tom.ty89@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-usb <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        SCSI development list <linux-scsi@vger.kernel.org>
+Subject: Re: [PATCH 2/2] usb-storage: revert from scsi_add_host_with_dma() to
+ scsi_add_host()
+Message-ID: <20210225163557.GC1350993@rowland.harvard.edu>
+References: <5e62c383-22ea-6df6-5acc-5e9f381d4632@redhat.com>
+ <CAGnHSEnetAJNqUEW-iuq7eVyU6VnP84cv9+OVL4C5Z2ZK_eM0A@mail.gmail.com>
+ <186eb035-4bc4-ff72-ee41-aeb6d81888e3@redhat.com>
+ <X8T0E2qvF2cgADl+@kroah.com>
+ <dd557c38-a919-5e5e-ab3b-17a235f17139@redhat.com>
+ <20201130172004.GA966032@rowland.harvard.edu>
+ <abb0a79d-63a0-6f3d-4812-f828283cd47c@redhat.com>
+ <CAGnHSEk1GixNK71CJMymwLE=MyedjCkiG5Ubq1=O_wFxBBM0GQ@mail.gmail.com>
+ <CAGnHSEmPpbDokAfGkeCkvo3JuYfnosVt8H+TK7ZWFNsdyWAfYQ@mail.gmail.com>
+ <20201130203618.GB975529@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210224182410.5366-1-Pierre.Gondois@arm.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20201130203618.GB975529@rowland.harvard.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 06:24:10PM +0000, Pierre.Gondois@arm.com wrote:
-> From: Pierre Gondois <Pierre.Gondois@arm.com>
-> 
-> The musl-libc [1] defines (struct timeval).tv_sec as a
-> 'long long' for arm and other architectures. The default
-> build having a '-Wformat' flag, not casting the field
-> when printing prevents from building perf.
-> 
-> This patch casts the (struct timeval).tv_sec fields to the
-> expected format.
-> 
-> [1] git://git.musl-libc.org/musl
-> 
-> Signed-off-by: Pierre Gondois <Pierre.Gondois@arm.com>
+This thread seems to have fallen through the cracks.  Maybe now would be 
+a good time to address the problem (since we originally planned to fix 
+it in 5.11!).
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+The questions listed below are pretty self-contained, although the rest
+of the discussion isn't.  But I never received any answers.
 
-thanks,
-jirka
+Alan Stern
 
-> ---
->  tools/perf/bench/sched-messaging.c | 4 ++--
->  tools/perf/bench/sched-pipe.c      | 4 ++--
->  tools/perf/bench/syscall.c         | 4 ++--
->  tools/perf/util/header.c           | 4 ++--
->  tools/perf/util/stat-display.c     | 2 +-
->  5 files changed, 9 insertions(+), 9 deletions(-)
+On Mon, Nov 30, 2020 at 03:36:18PM -0500, Alan Stern wrote:
+> [Added linux-scsi to CC: list.  When discussing code in a particular 
+> subsystem, it's a good idea to include that subsystem's mailing list in 
+> the CC:.]
 > 
-> diff --git a/tools/perf/bench/sched-messaging.c b/tools/perf/bench/sched-messaging.c
-> index cecce93ccc63..488f6e6ba1a5 100644
-> --- a/tools/perf/bench/sched-messaging.c
-> +++ b/tools/perf/bench/sched-messaging.c
-> @@ -309,11 +309,11 @@ int bench_sched_messaging(int argc, const char **argv)
->  		       num_groups, num_groups * 2 * num_fds,
->  		       thread_mode ? "threads" : "processes");
->  		printf(" %14s: %lu.%03lu [sec]\n", "Total time",
-> -		       diff.tv_sec,
-> +		       (unsigned long) diff.tv_sec,
->  		       (unsigned long) (diff.tv_usec / USEC_PER_MSEC));
->  		break;
->  	case BENCH_FORMAT_SIMPLE:
-> -		printf("%lu.%03lu\n", diff.tv_sec,
-> +		printf("%lu.%03lu\n", (unsigned long) diff.tv_sec,
->  		       (unsigned long) (diff.tv_usec / USEC_PER_MSEC));
->  		break;
->  	default:
-> diff --git a/tools/perf/bench/sched-pipe.c b/tools/perf/bench/sched-pipe.c
-> index 3c88d1f201f1..a960e7a93aec 100644
-> --- a/tools/perf/bench/sched-pipe.c
-> +++ b/tools/perf/bench/sched-pipe.c
-> @@ -156,7 +156,7 @@ int bench_sched_pipe(int argc, const char **argv)
->  		result_usec += diff.tv_usec;
->  
->  		printf(" %14s: %lu.%03lu [sec]\n\n", "Total time",
-> -		       diff.tv_sec,
-> +		       (unsigned long) diff.tv_sec,
->  		       (unsigned long) (diff.tv_usec / USEC_PER_MSEC));
->  
->  		printf(" %14lf usecs/op\n",
-> @@ -168,7 +168,7 @@ int bench_sched_pipe(int argc, const char **argv)
->  
->  	case BENCH_FORMAT_SIMPLE:
->  		printf("%lu.%03lu\n",
-> -		       diff.tv_sec,
-> +		       (unsigned long) diff.tv_sec,
->  		       (unsigned long) (diff.tv_usec / USEC_PER_MSEC));
->  		break;
->  
-> diff --git a/tools/perf/bench/syscall.c b/tools/perf/bench/syscall.c
-> index 5fe621cff8e9..9b751016f4b6 100644
-> --- a/tools/perf/bench/syscall.c
-> +++ b/tools/perf/bench/syscall.c
-> @@ -54,7 +54,7 @@ int bench_syscall_basic(int argc, const char **argv)
->  		result_usec += diff.tv_usec;
->  
->  		printf(" %14s: %lu.%03lu [sec]\n\n", "Total time",
-> -		       diff.tv_sec,
-> +		       (unsigned long) diff.tv_sec,
->  		       (unsigned long) (diff.tv_usec/1000));
->  
->  		printf(" %14lf usecs/op\n",
-> @@ -66,7 +66,7 @@ int bench_syscall_basic(int argc, const char **argv)
->  
->  	case BENCH_FORMAT_SIMPLE:
->  		printf("%lu.%03lu\n",
-> -		       diff.tv_sec,
-> +		       (unsigned long) diff.tv_sec,
->  		       (unsigned long) (diff.tv_usec / 1000));
->  		break;
->  
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index 4fe9e2a54346..20effdff76ce 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -1618,8 +1618,8 @@ static void print_clock_data(struct feat_fd *ff, FILE *fp)
->  
->  	fprintf(fp, "# clockid: %s (%u)\n", clockid_name(clockid), clockid);
->  	fprintf(fp, "# reference time: %s = %ld.%06d (TOD) = %ld.%09ld (%s)\n",
-> -		    tstr, tod_ns.tv_sec, (int) tod_ns.tv_usec,
-> -		    clockid_ns.tv_sec, clockid_ns.tv_nsec,
-> +		    tstr, (long) tod_ns.tv_sec, (int) tod_ns.tv_usec,
-> +		    (long) clockid_ns.tv_sec, clockid_ns.tv_nsec,
->  		    clockid_name(clockid));
->  }
->  
-> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-> index cce7a76d6473..7f09cdaf5b60 100644
-> --- a/tools/perf/util/stat-display.c
-> +++ b/tools/perf/util/stat-display.c
-> @@ -983,7 +983,7 @@ static void print_interval(struct perf_stat_config *config,
->  	if (config->interval_clear)
->  		puts(CONSOLE_CLEAR);
->  
-> -	sprintf(prefix, "%6lu.%09lu%s", ts->tv_sec, ts->tv_nsec, config->csv_sep);
-> +	sprintf(prefix, "%6lu.%09lu%s", (unsigned long) ts->tv_sec, ts->tv_nsec, config->csv_sep);
->  
->  	if ((num_print_interval == 0 && !config->csv_output) || config->interval_clear) {
->  		switch (config->aggr_mode) {
-> -- 
-> 2.17.1
+> On Tue, Dec 01, 2020 at 03:01:56AM +0800, Tom Yan wrote:
+> > For the record,
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/scsi/scsi_host.h?h=v5.10-rc6#n753
+> > 
+> > On Tue, 1 Dec 2020 at 02:57, Tom Yan <tom.ty89@gmail.com> wrote:
+> > >
+> > > This maybe? https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/scsi/scsi_lib.c?h=v5.10-rc6#n1816
+> > >
+> > > UAS:
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/usb/storage/uas.c?h=v5.10-rc6#n918
+> > > BOT (AFAICT):
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/scsi/hosts.c?h=v5.10-rc6#n466
+> > >
+> > > It would explain why the issue is only triggered with UAS drives.
 > 
-
+> In brief, a recent change -- calling scsi_add_host_with_dma rather than 
+> scsi_add_host -- in the USB uas driver has caused a regression in 
+> performance.  (Note that the shost->dma_dev value is set differently as 
+> a result of this change.)  Hans has determined that the problem seems 
+> to be related to permanent changes in the dma_dev's settings caused by 
+> scsi_add_host_with_dma.
+> 
+> Tom pointed out that __scsi_init_queue contains a couple of questionable 
+> assignments:
+> 
+> 	dma_set_seg_boundary(dev, shost->dma_boundary);
+> 
+> and
+> 
+> 	dma_set_max_seg_size(dev, queue_max_segment_size(q));
+> 
+> where dev = shost->dma_dev -- in this case, a USB host controller.
+> 
+> So an important question is why decisions related to a particular SCSI 
+> host should affect the DMA settings of a device somewhere else in the 
+> heirarchy?  Sure, the properties of the USB controller should constrain 
+> the settings available to the SCSI host, but there doesn't seem to be 
+> any good reason for restrictions to go in the other direction.
+> 
+> Doesn't the way we handle DMA permit a child device to impose additional 
+> restrictions (such as a smaller max segment size) beyond those of the 
+> parent device which actually performs the DMA transfer?
+> 
+> > > The questions (from me) are:
+> > > 1. From the scsi layer POV (as per what __scsi_init_queue() does),
+> > > what/which should we use as dma_dev?
+> 
+> We should be using the USB host controller, because it is the device 
+> which actually performs the DMA transfers.
+> 
+> > > 2. Do we really need to set dma_boundary in the UAS host template (to
+> > > PAGE_SIZE - 1)?
+> 
+> I don't know.  But in theory it should be possible to have settings 
+> (like this one) which affect only the transfers carried out by the SCSI 
+> host, not the transfers carred out by other drivers which might use the 
+> same USB controller.
+> 
+> > > 3. Kind of the same question as #1: when we clamp hw_max_sectors to
+> > > dma max mapping size, should the size actually be "the smaller one
+> > > among dev and sysdev"? Or is one of the two sizes *always* the smaller
+> > > one?
+> 
+> I assume you're referring to code in the uas driver.  There the value of 
+> dev is meaningless as far as DMA is concerned.  Only sysdev matters.
+> 
+> Alan Stern
+> 
+> > > On Tue, 1 Dec 2020 at 02:19, Hans de Goede <hdegoede@redhat.com> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > On 11/30/20 6:20 PM, Alan Stern wrote:
+> > > > > On Mon, Nov 30, 2020 at 02:36:38PM +0100, Hans de Goede wrote:
+> > > > >> Hi,
+> > > > >>
+> > > > >> On 11/30/20 2:30 PM, Greg KH wrote:
+> > > > >>> On Mon, Nov 30, 2020 at 02:23:48PM +0100, Hans de Goede wrote:
+> > > > >>>> Hi,
+> > > > >>>>
+> > > > >>>> On 11/30/20 1:58 PM, Tom Yan wrote:
+> > > > >>>>> It's merely a moving of comment moving for/and a no-behavioral-change
+> > > > >>>>> adaptation for the reversion.>
+> > > > >>>>
+> > > > >>>> IMHO the revert of the troublesome commit and the other/new changes really
+> > > > >>>> should be 2 separate commits. But I will let Alan and Greg have the final
+> > > > >>>> verdict on this.
+> > > > >>>
+> > > > >>> I would prefer to just revert the commits and not do anything
+> > > > >>> different/special here so late in the release cycle.
+> > > > >>>
+> > > > >>> So, if Alan agrees, I'll be glad to do them on my end, I just need the
+> > > > >>> commit ids for them.
+> > > > >>
+> > > > >> The troublesome commit are (in reverse, so revert, order):
+> > > > >>
+> > > > >> 5df7ef7d32fe ("uas: bump hw_max_sectors to 2048 blocks for SS or faster drives")
+> > > > >> 558033c2828f ("uas: fix sdev->host->dma_dev")
+> > > > >> 0154012f8018 ("usb-storage: fix sdev->host->dma_dev")
+> > > > >>
+> > > > >> Alan, the reason for reverting these is that using scsi_add_host_with_dma() as the
+> > > > >> last 2 patches do, with the dmadev argument of that call pointing to the device
+> > > > >> for the XHCI controller is causing changes to the DMA settings of the XHCI controller
+> > > > >> itself which is causing regressions in 5.10, see this email thread:
+> > > > >>
+> > > > >> https://lore.kernel.org/linux-usb/fde7e11f-5dfc-8348-c134-a21cb1116285@redhat.com/T/#t
+> > > > >
+> > > > > It's hard to go wrong with reverting, so it's okay with me.
+> > > > >
+> > > > > Still, Hans, have you checked out the difference between the
+> > > > > scsi_add_host() and scsi_add_host_with_dma() calls?  It's just a matter
+> > > > > of using dev vs. sysdev.  In particular, have you checked to see what
+> > > > > those two devices are on your system?
+> > > >
+> > > > Its not just dev vs sysdev, its iface->dev vs bus->sysdev, and I assume
+> > > > that the latter is actually the XHCI controller.
+> > > >
+> > > > my vote goes to reverting to avoid the regression for 5.10, esp. since
+> > > > this is a clean revert of 3 patches with nothing depending / building
+> > > > on top of the reverted commits.
+> > > >
+> > > > Then for 5.11 we can retry to introduce similar changes. I would be happy
+> > > > to try a new patch-set for 5.11.
+> > > >
+> > > > > It seems likely that if one of those calls messes up some DMA settings,
+> > > > > the other one does too -- just maybe not settings that matter much.
+> > > >
+> > > > I'm not very familiar with all the DMA mapping / mask code, but AFAIK making
+> > > > changes to the DMA settings of a child will not influence the parent.
+> > > >
+> > > > Where as when passing bus->sysdev, then changes are made to a device
+> > > > which is shared with other devices on the bus, which is why we see
+> > > > a regression in an USB NIC driver being triggered by the UAS driver
+> > > > binding to a device (on the same bus).
+> > > >
+> > > > At least that is my interpretation of this. I bisected the regression
+> > > > and that pointed at the UAS DMA change and reverting it fixes things,
+> > > > confirming that I did not make any mistakes during the bisect.
+> > > >
+> > > > Regards,
+> > > >
+> > > > Hans
+> > > >
