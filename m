@@ -2,321 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1BF324C9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1158324C99
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236231AbhBYJQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:16:04 -0500
-Received: from exmail.andestech.com ([60.248.187.195]:62894 "EHLO
-        ATCSQR.andestech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234781AbhBYJMY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:12:24 -0500
-Received: from mail.andestech.com (atcpcs16.andestech.com [10.0.1.222])
-        by ATCSQR.andestech.com with ESMTP id 11P94pVw011628;
-        Thu, 25 Feb 2021 17:04:51 +0800 (GMT-8)
-        (envelope-from nylon7@andestech.com)
-Received: from atcfdc88 (10.0.15.120) by ATCPCS16.andestech.com (10.0.1.222)
- with Microsoft SMTP Server id 14.3.487.0; Thu, 25 Feb 2021 17:10:34 +0800
-Date:   Thu, 25 Feb 2021 17:10:35 +0800
-From:   Nylon Chen <nylon7@andestech.com>
-To:     Alex Ghiti <alex@ghiti.fr>
-CC:     "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "Nick Chun-Ming Hu(?????????)" <nickhu@andestech.com>,
-        "Alan Quey-Liang Kao(?????????)" <alankao@andestech.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        "nylon7717@gmail.com" <nylon7717@gmail.com>,
-        "aryabinin@virtuozzo.com" <aryabinin@virtuozzo.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "glider@google.com" <glider@google.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "dvyukov@google.com" <dvyukov@google.com>
-Subject: Re: [PATCH v2 1/1] riscv/kasan: add KASAN_VMALLOC support
-Message-ID: <20210225091035.GA12748@atcfdc88>
-References: <mhng-443fd141-b9a3-4be6-a056-416877f99ea4@palmerdabbelt-glaptop>
- <2b2f3038-3e27-8763-cf78-3fbbfd2100a0@ghiti.fr>
- <4fa97788-157c-4059-ae3f-28ab074c5836@ghiti.fr>
- <e15fbf55-25db-7f91-6feb-fb081ab60cdb@ghiti.fr>
- <20210222013754.GA7626@andestech.com>
- <af58ed3d-36e4-1278-dc42-7df2d875abbc@ghiti.fr>
- <42483a2b-efb9-88a8-02b2-9f44eed3d418@ghiti.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <42483a2b-efb9-88a8-02b2-9f44eed3d418@ghiti.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.0.15.120]
-X-DNSRBL: 
-X-MAIL: ATCSQR.andestech.com 11P94pVw011628
+        id S236334AbhBYJOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:14:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236084AbhBYJL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:11:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A109464EC3;
+        Thu, 25 Feb 2021 09:11:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614244278;
+        bh=X5KBf9U/WobuVOv+5t26GFL+AWng3GR196FyiFebKpc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ion9QI3SaDmFVBubZgTlqOG+wr2ovnWaWNJkKlQitEA5BT7PEfA3dPT01D+jngZwe
+         O3AXmfTFyrAc4jOEIuQjbtEqi1V48deQK7Yk0k+Rs5LgbvHxwlrS0uEOpHVqGtFOIv
+         sNY6vbHfA+JhzBx8eFmRVJyhcasdGCPKdGzHtp4FxQ+Jsz4Kaje0KqCvbBImAxJvLg
+         WsuMXrumUYowYcr3hdSLSa9cF+Rf8RYdN4fzN3ZIEpOPBean1cuWrK9afS5oXv23na
+         tH5US1o7oHxKpiOk4PuWaQAL5pPAmqY1s6F1BbrqTC47T1DtiNVv1fnQzWUYdAi4+f
+         quYxNiHakwGEw==
+Date:   Thu, 25 Feb 2021 18:11:14 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+Message-Id: <20210225181114.e8e92e2fc2a204219b1bd28d@kernel.org>
+In-Reply-To: <CALCETrVUBd5CuAh5TRTFqbCE2mYCiBvqrPouTicC0pyO7A6GWw@mail.gmail.com>
+References: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
+        <20210224101756.bbdf95b9b6dfc982bff21324@kernel.org>
+        <CALCETrWoKh0aemrvTGZ13bUzN27s3WGW3CyvTptvayWLQEk91Q@mail.gmail.com>
+        <20210225112245.607c70ec13cf8d279390e89e@kernel.org>
+        <CALCETrVUBd5CuAh5TRTFqbCE2mYCiBvqrPouTicC0pyO7A6GWw@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex, Palmer
-On Thu, Feb 25, 2021 at 03:11:07AM +0800, Alex Ghiti wrote:
-> Hi Nylon,
-> 
-> Le 2/22/21 ?? 12:13 PM, Alex Ghiti a ??crit??:
-> > Le 2/21/21 ?? 8:37 PM, Nylon Chen a ??crit??:
-> >> Hi Alex, Palmer
-> >>
-> >> Sorry I missed this message.
-> >> On Sun, Feb 21, 2021 at 09:38:04PM +0800, Alex Ghiti wrote:
-> >>> Le 2/13/21 ?? 5:52 AM, Alex Ghiti a ??crit??:
-> >>>> Hi Nylon, Palmer,
-> >>>>
-> >>>> Le 2/8/21 ?? 1:28 AM, Alex Ghiti a ??crit??:
-> >>>>> Hi Nylon,
-> >>>>>
-> >>>>> Le 1/22/21 ?? 10:56 PM, Palmer Dabbelt a ??crit??:
-> >>>>>> On Fri, 15 Jan 2021 21:58:35 PST (-0800), nylon7@andestech.com wrote:
-> >>>>>>> It references to x86/s390 architecture.
-> >>>>>>>>> So, it doesn't map the early shadow page to cover VMALLOC space.
-> >>>>>>>
-> >>>>>>> Prepopulate top level page table for the range that would 
-> >>>>>>> otherwise be
-> >>>>>>> empty.
-> >>>>>>>
-> >>>>>>> lower levels are filled dynamically upon memory allocation while
-> >>>>>>> booting.
-> >>>>>
-> >>>>> I think we can improve the changelog a bit here with something like 
-> >>>>> that:
-> >>>>>
-> >>>>> "KASAN vmalloc space used to be mapped using kasan early shadow page.
-> >>>>> KASAN_VMALLOC requires the top-level of the kernel page table to be
-> >>>>> properly populated, lower levels being filled dynamically upon memory
-> >>>>> allocation at runtime."
-> >>>>>
-> >>>>>>>
-> >>>>>>> Signed-off-by: Nylon Chen <nylon7@andestech.com>
-> >>>>>>> Signed-off-by: Nick Hu <nickhu@andestech.com>
-> >>>>>>> ---
-> >>>>>>> ????arch/riscv/Kconfig???????????????? |?? 1 +
-> >>>>>>> ????arch/riscv/mm/kasan_init.c | 57 
-> >>>>>>> +++++++++++++++++++++++++++++++++++++-
-> >>>>>>> ????2 files changed, 57 insertions(+), 1 deletion(-)
-> >>>>>>>
-> >>>>>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> >>>>>>> index 81b76d44725d..15a2c8088bbe 100644
-> >>>>>>> --- a/arch/riscv/Kconfig
-> >>>>>>> +++ b/arch/riscv/Kconfig
-> >>>>>>> @@ -57,6 +57,7 @@ config RISCV
-> >>>>>>> ?????????? select HAVE_ARCH_JUMP_LABEL
-> >>>>>>> ?????????? select HAVE_ARCH_JUMP_LABEL_RELATIVE
-> >>>>>>> ?????????? select HAVE_ARCH_KASAN if MMU && 64BIT
-> >>>>>>> +?????? select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
-> >>>>>>> ?????????? select HAVE_ARCH_KGDB
-> >>>>>>> ?????????? select HAVE_ARCH_KGDB_QXFER_PKT
-> >>>>>>> ?????????? select HAVE_ARCH_MMAP_RND_BITS if MMU
-> >>>>>>> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-> >>>>>>> index 12ddd1f6bf70..4b9149f963d3 100644
-> >>>>>>> --- a/arch/riscv/mm/kasan_init.c
-> >>>>>>> +++ b/arch/riscv/mm/kasan_init.c
-> >>>>>>> @@ -9,6 +9,19 @@
-> >>>>>>> ????#include <linux/pgtable.h>
-> >>>>>>> ????#include <asm/tlbflush.h>
-> >>>>>>> ????#include <asm/fixmap.h>
-> >>>>>>> +#include <asm/pgalloc.h>
-> >>>>>>> +
-> >>>>>>> +static __init void *early_alloc(size_t size, int node)
-> >>>>>>> +{
-> >>>>>>> +?????? void *ptr = memblock_alloc_try_nid(size, size,
-> >>>>>>> +?????????????? __pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, node);
-> >>>>>>> +
-> >>>>>>> +?????? if (!ptr)
-> >>>>>>> +?????????????? panic("%pS: Failed to allocate %zu bytes align=%zx nid=%d
-> >>>>>>> from=%llx\n",
-> >>>>>>> +?????????????????????? __func__, size, size, node, 
-> >>>>>>> (u64)__pa(MAX_DMA_ADDRESS));
-> >>>>>>> +
-> >>>>>>> +?????? return ptr;
-> >>>>>>> +}
-> >>>>>>>
-> >>>>>>> ????extern pgd_t early_pg_dir[PTRS_PER_PGD];
-> >>>>>>> ????asmlinkage void __init kasan_early_init(void)
-> >>>>>>> @@ -83,6 +96,40 @@ static void __init populate(void *start, void 
-> >>>>>>> *end)
-> >>>>>>> ?????????? memset(start, 0, end - start);
-> >>>>>>> ????}
-> >>>>>>>
-> >>>>>>> +void __init kasan_shallow_populate(void *start, void *end)
-> >>>>>>> +{
-> >>>>>>> +?????? unsigned long vaddr = (unsigned long)start & PAGE_MASK;
-> >>>>>>> +?????? unsigned long vend = PAGE_ALIGN((unsigned long)end);
-> >>>>>>> +?????? unsigned long pfn;
-> >>>>>>> +?????? int index;
-> >>>>>>> +?????? void *p;
-> >>>>>>> +?????? pud_t *pud_dir, *pud_k;
-> >>>>>>> +?????? pgd_t *pgd_dir, *pgd_k;
-> >>>>>>> +?????? p4d_t *p4d_dir, *p4d_k;
-> >>>>>>> +
-> >>>>>>> +?????? while (vaddr < vend) {
-> >>>>>>> +?????????????? index = pgd_index(vaddr);
-> >>>>>>> +?????????????? pfn = csr_read(CSR_SATP) & SATP_PPN;
-> >>>>>
-> >>>>> At this point in the boot process, we know that we use swapper_pg_dir
-> >>>>> so no need to read SATP.
-> >>>>>
-> >>>>>>> +?????????????? pgd_dir = (pgd_t *)pfn_to_virt(pfn) + index;
-> >>>>>
-> >>>>> Here, this pgd_dir assignment is overwritten 2 lines below, so no need
-> >>>>> for it.
-> >>>>>
-> >>>>>>> +?????????????? pgd_k = init_mm.pgd + index;
-> >>>>>>> +?????????????? pgd_dir = pgd_offset_k(vaddr);
-> >>>>>
-> >>>>> pgd_offset_k(vaddr) = init_mm.pgd + pgd_index(vaddr) so pgd_k == 
-> >>>>> pgd_dir.
-> >>>>>
-> >>>>>>> +?????????????? set_pgd(pgd_dir, *pgd_k);
-> >>>>>>> +
-> >>>>>>> +?????????????? p4d_dir = p4d_offset(pgd_dir, vaddr);
-> >>>>>>> +?????????????? p4d_k?? = p4d_offset(pgd_k, vaddr);
-> >>>>>>> +
-> >>>>>>> +?????????????? vaddr = (vaddr + PUD_SIZE) & PUD_MASK;
-> >>>>>
-> >>>>> Why do you increase vaddr *before* populating the first one ? And
-> >>>>> pud_addr_end does that properly: it returns the next pud address if it
-> >>>>> does not go beyond end address to map.
-> >>>>>
-> >>>>>>> +?????????????? pud_dir = pud_offset(p4d_dir, vaddr);
-> >>>>>>> +?????????????? pud_k = pud_offset(p4d_k, vaddr);
-> >>>>>>> +
-> >>>>>>> +?????????????? if (pud_present(*pud_dir)) {
-> >>>>>>> +?????????????????????? p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
-> >>>>>>> +?????????????????????? pud_populate(&init_mm, pud_dir, p);
-> >>>>>
-> >>>>> init_mm is not needed here.
-> >>>>>
-> >>>>>>> +?????????????? }
-> >>>>>>> +?????????????? vaddr += PAGE_SIZE;
-> >>>>>
-> >>>>> Why do you need to add PAGE_SIZE ? vaddr already points to the next 
-> >>>>> pud.
-> >>>>>
-> >>>>> It seems like this patch tries to populate userspace page table
-> >>>>> whereas at this point in the boot process, only swapper_pg_dir is used
-> >>>>> or am I missing something ?
-> >>>>>
-> >>>>> Thanks,
-> >>>>>
-> >>>>> Alex
-> >>>>
-> >>>> I implemented this morning a version that fixes all the comments I made
-> >>>> earlier. I was able to insert test_kasan_module on both sv39 and sv48
-> >>>> without any modification: set_pgd "goes through" all the unused page
-> >>>> table levels, whereas p*d_populate are noop for unused levels.
-> >>>>
-> >>>> If you have any comment, do not hesitate.
-> >>>>
-> >>>> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-> >>>> index adbf94b7e68a..d643b222167c 100644
-> >>>> --- a/arch/riscv/mm/kasan_init.c
-> >>>> +++ b/arch/riscv/mm/kasan_init.c
-> >>>> @@ -195,6 +195,31 @@ static void __init kasan_populate(void *start, 
-> >>>> void
-> >>>> *end)
-> >>>> ?? ?????????????? memset(start, KASAN_SHADOW_INIT, end - start);
-> >>>> ?? ??}
-> >>>>
-> >>>>
-> >>>> +void __init kasan_shallow_populate_pgd(unsigned long vaddr, unsigned
-> >>>> long end)
-> >>>> +{
-> >>>> +???????????? unsigned long next;
-> >>>> +???????????? void *p;
-> >>>> +???????????? pgd_t *pgd_k = pgd_offset_k(vaddr);
-> >>>> +
-> >>>> +???????????? do {
-> >>>> +???????????????????????????? next = pgd_addr_end(vaddr, end);
-> >>>> +???????????????????????????? if (pgd_page_vaddr(*pgd_k) == (unsigned
-> >>>> long)lm_alias(kasan_early_shadow_pgd_next)) {
-> >>>> +???????????????????????????????????????????? p = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> >>>> +???????????????????????????????????????????? set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)),
-> >>>> PAGE_TABLE));
-> >>>> +???????????????????????????? }
-> >>>> +???????????? } while (pgd_k++, vaddr = next, vaddr != end);
-> >>>> +}
-> >>>> +
-> >>>
-> >>> This way of going through the page table seems to be largely used across
-> >>> the kernel (cf KASAN population functions of arm64/x86) so I do think
-> >>> this patch brings value to Nylon and Nick's patch.
-> >>>
-> >>> I can propose a real patch if you agree and I'll add a co-developed by
-> >>> Nylon/Nick since this only 'improves' theirs.
-> >>>
-> >>> Thanks,
-> >>>
-> >>> Alex
-> >>>
-> >> I agree with your proposal, but when I try your patch that it dosen't 
-> >> work
-> >> because `kasan_early_shadow_pgd_next` function wasn't define.
-> > 
-> > Oops, I messed up my rebase, please replace 
-> > 'kasan_early_shadow_pgd_next' with 'kasan_early_shadow_pmd'.
-> > 
-> > Thank you for your feeback,
-> > 
-> > Alex
-> > 
-> 
-> Did you have time to test the above fix ? It would be nice to replace 
-> your current patch with the above solution before it gets merged for 
-> 5.12, I will propose something tomorrow, feel free to review and test :)
-> 
-> Thanks again,
-> 
-> Alex
-> 
-Today I follow your fix in our platform, it's workable.
+On Wed, 24 Feb 2021 22:03:12 -0800
+Andy Lutomirski <luto@kernel.org> wrote:
 
-Thank you for your fix.
-> >>
-> >> Do you have complete patch? or just I missed some content?
-> >>>> +void __init kasan_shallow_populate(void *start, void *end)
-> >>>> +{
-> >>>> +???????????? unsigned long vaddr = (unsigned long)start & PAGE_MASK;
-> >>>> +???????????? unsigned long vend = PAGE_ALIGN((unsigned long)end);
-> >>>> +
-> >>>> +???????????? kasan_shallow_populate_pgd(vaddr, vend);
-> >>>> +
-> >>>> +???????????? local_flush_tlb_all();
-> >>>> +}
-> >>>> +
-> >>>> ?? ??void __init kasan_init(void)
-> >>>> ?? ??{
-> >>>> ?? ?????????????? phys_addr_t _start, _end;
-> >>>> @@ -206,7 +231,15 @@ void __init kasan_init(void)
-> >>>> ?? ???????????????? */
-> >>>> ?? ?????????????? kasan_populate_early_shadow((void *)KASAN_SHADOW_START,
-> >>>> ?? ?????????????????????????????????????????????????????????????????????? (void 
-> >>>> *)kasan_mem_to_shadow((void *)
-> >>>> - VMALLOC_END));
-> >>>> + VMEMMAP_END));
-> >>>> +???????????? if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
-> >>>> +???????????????????????????? kasan_shallow_populate(
-> >>>> +???????????????????????????????????????????? (void *)kasan_mem_to_shadow((void 
-> >>>> *)VMALLOC_START),
-> >>>> +???????????????????????????????????????????? (void *)kasan_mem_to_shadow((void 
-> >>>> *)VMALLOC_END));
-> >>>> +???????????? else
-> >>>> +???????????????????????????? kasan_populate_early_shadow(
-> >>>> +???????????????????????????????????????????? (void *)kasan_mem_to_shadow((void 
-> >>>> *)VMALLOC_START),
-> >>>> +???????????????????????????????????????????? (void *)kasan_mem_to_shadow((void 
-> >>>> *)VMALLOC_END));
-> >>>>
-> >>>>
-> >>>> ?? ?????????????? /* Populate the linear mapping */
-> >>>> ?? ?????????????? for_each_mem_range(i, &_start, &_end) {
-> >>
-> >> _______________________________________________
-> >> linux-riscv mailing list
-> >> linux-riscv@lists.infradead.org
-> >> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >>
+> On Wed, Feb 24, 2021 at 6:22 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > On Wed, 24 Feb 2021 11:45:10 -0800
+> > Andy Lutomirski <luto@kernel.org> wrote:
+> >
+> > > On Tue, Feb 23, 2021 at 5:18 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > >
+> > > > On Tue, 23 Feb 2021 15:24:19 -0800
+> > > > Andy Lutomirski <luto@kernel.org> wrote:
+> > > >
+> > > > > A while back, I let myself be convinced that kprobes genuinely need to
+> > > > > single-step the kernel on occasion, and I decided that this sucked but
+> > > > > I could live with it.  it would, however, be Really Really Nice (tm)
+> > > > > if we could have a rule that anyone running x86 Linux who single-steps
+> > > > > the kernel (e.g. kgdb and nothing else) gets to keep all the pieces
+> > > > > when the system falls apart around them.  Specifically, if we don't
+> > > > > allow kernel single-stepping and if we suitably limit kernel
+> > > > > instruction breakpoints (the latter isn't actually a major problem),
+> > > > > then we don't really really need to use IRET to return to the kernel,
+> > > > > and that means we can avoid some massive NMI nastiness.
+> > > >
+> > > > Would you mean using "pop regs + popf + ret" instead of IRET after
+> > > > int3 handled for avoiding IRET releasing the NMI mask? Yeah, it is
+> > > > possible. I don't complain about that.
+> > >
+> > > Yes, more or less.
+> > >
+> > > >
+> > > > However, what is the relationship between the IRET and single-stepping?
+> > > > I think we can do same thing in do_debug...
+> > >
+> > > Because there is no way to single-step without using IRET.  POPF; RET
+> > > will trap after RET and you won't make forward progress.
+> >
+> > Ah, indeed. "POPF; RET" is not atomically exceute.
+> >
+> > > > > But I was contemplating the code, and I'm no longer convinced.
+> > > > > Uprobes seem to single-step user code for no discernable reason.
+> > > > > (They want to trap after executing an out of line instruction, AFAICT.
+> > > > > Surely INT3 or even CALL after the out-of-line insn would work as well
+> > > > > or better.)  Why does kprobe single-step?  I spend a while staring at
+> > > > > the code, and it was entirely unclear to me what the purpose of the
+> > > > > single-step is.
+> > > >
+> > > > For kprobes, there are 2 major reasons for (still relaying on) single stepping.
+> > > > One is to provide post_handler, another is executing the original code,
+> > > > which is replaced by int3, without modifying code nor emulation.
+> > >
+> > > I don't follow.  Suppose we execute out of line.  If we originally have:
+> > >
+> > > INSN
+> > >
+> > > we replace it with:
+> > >
+> > > INT3
+> > >
+> > > and we have, out of line:
+> > >
+> > > INSN [but with displacement modified if it's RIP-relative]
+> > >
+> > > right now, we single-step the out of line copy.  But couldn't we instead do:
+> > >
+> > > INSN [but with displacement modified if it's RIP-relative]
+> > > INT3
+> >
+> > If the INSN is "jmp +127", it will skip the INT3. So those instructions
+> > must be identified and emulated. We did it already in the arm64 (see commit
+> > 7ee31a3aa8f4 ("arm64: kprobes: Use BRK instead of single-step when executing
+> >  instructions out-of-line")), because arm64 already emulated the branch
+> > instructions. I have to check x86 insns can be emulated without side-effects.
+> 
+> Off the top of my head:
+> 
+> JMP changes RIP but has no other side effects.  Jcc is the same except
+> that the condition needs checking, which would be a bit tedious.
+> 
+> CALL changes RIP and does a push but has no other side effects.  We
+> have special infrastructure to emulate CALL from int3 context:
+> int3_emulate_call().
+
+Yeah, I remember that a gap was introduced for int3_emulate_call().
+These helps me to implement emulation.
+
+> 
+> RET pops and changes RIP.  No other side effects.
+> 
+> RET imm is rare.  I don't think it occurs in the kernel at all.
+> 
+> LRET is rare.  I don't think kprobe needs to support it.
+> 
+> JMP FAR and CALL FAR are rare.  I see no reason to support them.
+
+I see those are rare, but supporting those is not hard.
+
+> 
+> IRET is rare, and trying to kprobe it seems likely to cause a
+> disaster, although it's within the realm of possibility that the IRET
+> in sync_core() could work.
+
+Agreed. Iret should not be probed.
+
+
+> > > or even
+> > >
+> > > INSN [but with displacement modified if it's RIP-relative]
+> > > JMP kprobe_post_handler
+> >
+> > This needs a sequence of push-regs etc. ;)
+> >
+> > >
+> > > and avoid single-stepping?
+> > >
+> > > I guess I see the point for CALL, JMP and RET, but it seems like we
+> > > could emulate those cases instead fairly easily.
+> >
+> > OK, let's try to do it. I think it should be possible because even in the
+> > current code, resume fixup code (adjust IP register) works only for a few
+> > groups of instructions.
+> 
+> I suspect that emulating them would give a nice performance boost,
+> too.  Single-stepping is very slow on x86.
+
+Yeah, that's same on arm64. Jean reported eliminating single-step
+gained the performance.
+
+> 
+> I should let you know, though, that I might have found a sneaky
+> alternative solution to handling NMIs, so this is a bit lower priority
+> from my perspective than I thought it was.  I'm not quite 100%
+> convinced my idea works, but I'll play with it.
+
+Does that involve kprobes? Anyway, I'll try to remove single-step by
+emulation and int3.
+
+Thank you,
+
+
+> 
+> --Andy
+> 
+> >
+> > Thank you,
+> >
+> > --
+> > Masami Hiramatsu <mhiramat@kernel.org>
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
