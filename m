@@ -2,64 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913B7325193
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81259325194
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhBYOfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 09:35:08 -0500
-Received: from mga07.intel.com ([134.134.136.100]:51634 "EHLO mga07.intel.com"
+        id S232008AbhBYOfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 09:35:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229919AbhBYOeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 09:34:37 -0500
-IronPort-SDR: VncrEkIW1CzjfwoGpcJt7Ew4mytvO7fQB+0LJO/+uZtfyY1G4nP3bKr/C/LyvLnhnvLoaN4E71
- bxpRq64k2J8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="249599584"
-X-IronPort-AV: E=Sophos;i="5.81,205,1610438400"; 
-   d="scan'208";a="249599584"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 06:33:55 -0800
-IronPort-SDR: 5hOqb448r80JPOcGcWTmbLuw32zVDPinUN8H55F5pcA9v166xEDX3WjDAYC7QQB4FWijIC9k+I
- XIDErPx4+5aw==
-X-IronPort-AV: E=Sophos;i="5.81,205,1610438400"; 
-   d="scan'208";a="404298979"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 06:33:53 -0800
-From:   Tomas Winkler <tomas.winkler@intel.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Tomas Winkler <tomas.winkler@intel.com>
-Subject: [PATCH] mtd: mtdcore: constify name param in mtd_bdi_init
-Date:   Thu, 25 Feb 2021 16:33:29 +0200
-Message-Id: <20210225143329.430012-1-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.26.2
+        id S231974AbhBYOfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 09:35:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6E8564F16;
+        Thu, 25 Feb 2021 14:34:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614263701;
+        bh=8T6cWgIA4YyFKiNd9Yq9e/r3lAf6Xfx2G/lG7LEhHQ8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NclfhjdxXtVuc6EEyuQ5aqrGgPnQ0KFTT9qH2P8GlKceFZFU4VZ209mCEVFhE/ivB
+         bBu69LiB6JywavncY0A7J9p4zH/anabPeU2HGUmCerRCDTjxbhvH60p8u0eLHRSely
+         6oRgL8m900uCaOQp45PjbaP9HnzRDX4j/WcKQXL3AWtNF7Ma4tLHdU5HuwazOJEAyO
+         KON0q0IPabGe21w9ZbdWfto8d6bbKLsrkmGcOITLGwOzENB6RZu5MHgK3WDudfDokf
+         EyJpjX3qfIdVzsVxW5qeOnkCpR6yxbA8aL0LowYb3DuO6fXaPvaeb0x9NRx6pVpMZj
+         2cgRUxc9ATjNg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: lto: add _mcount to list of used symbols
+Date:   Thu, 25 Feb 2021 15:34:49 +0100
+Message-Id: <20210225143456.3829513-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bdi name is not modified by the function, it should be const.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+Some randconfig builds fail with undefined references to _mcount
+when CONFIG_TRIM_UNUSED_KSYMS is set:
+
+ERROR: modpost: "_mcount" [drivers/tee/optee/optee.ko] undefined!
+ERROR: modpost: "_mcount" [drivers/fsi/fsi-occ.ko] undefined!
+ERROR: modpost: "_mcount" [drivers/fpga/dfl-pci.ko] undefined!
+
+Since there is already a list of symbols that get generated at link
+time, add this one as well.
+
+Fixes: fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/mtd/mtdcore.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/lto-used-symbollist.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index db5167eacaa4..80fb69453ebe 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -2177,7 +2177,7 @@ static int mtd_proc_show(struct seq_file *m, void *v)
- /*====================================================================*/
- /* Init code */
- 
--static struct backing_dev_info * __init mtd_bdi_init(char *name)
-+static struct backing_dev_info * __init mtd_bdi_init(const char *name)
- {
- 	struct backing_dev_info *bdi;
- 	int ret;
+diff --git a/scripts/lto-used-symbollist.txt b/scripts/lto-used-symbollist.txt
+index 38e7bb9ebaae..406ada65e926 100644
+--- a/scripts/lto-used-symbollist.txt
++++ b/scripts/lto-used-symbollist.txt
+@@ -1,5 +1,6 @@
+ memcpy
+ memmove
+ memset
++_mcount
+ __stack_chk_fail
+ __stack_chk_guard
 -- 
-2.26.2
+2.29.2
 
