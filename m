@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA24324D88
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3173D324DB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235527AbhBYKDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:03:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34226 "EHLO mail.kernel.org"
+        id S234499AbhBYKMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:12:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235601AbhBYJ4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:56:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 048B664F12;
-        Thu, 25 Feb 2021 09:54:26 +0000 (UTC)
+        id S235279AbhBYJ66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:58:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8DEC64EBA;
+        Thu, 25 Feb 2021 09:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246867;
-        bh=UEDpM2iNq1Jh298bEQH9lI2lZIkdVnRfLGHTU/RCeyE=;
+        s=korg; t=1614246905;
+        bh=raU4MGqjBAmfuxy7acDYtTLSzIYckDSt6CZlH5zXx88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1LbII0DNa6xFsmVvp8/WvfEadQvdCuoC0KdqHPR4W03PmfI3340uIzyCp7ZHfmeYL
-         6wMAZmYdO2d42VYC8SiWihflvW1tSIPRFhUX5q/OlToAxI52BJn4nXBPa++RuLqrmi
-         tA//1ZEBt5NmCOu6l4pqbICXcMIBaJ4xUhBLC5lE=
+        b=ZEI23AyXWiTPnCusOTpVAuILNNU0Ew690J+y7XUOraQCdyPtuYJnlcygci9XBYzhc
+         QFZ+AxifjlbGttm2s9JtMB91h2u+Els2VY9xzhmDX3iu6VZUpLC7SQQgeorYWlk+EY
+         EJsyWtbhVodiaWf7nW6PZV+rLmxY/h0wWEQxQL8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zdenek Kaspar <zkaspar82@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.11 09/12] KVM: x86: Zap the oldest MMU pages, not the newest
-Date:   Thu, 25 Feb 2021 10:53:43 +0100
-Message-Id: <20210225092515.434032433@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 13/23] mm: unexport follow_pte_pmd
+Date:   Thu, 25 Feb 2021 10:53:44 +0100
+Message-Id: <20210225092517.163803871@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210225092515.015261674@linuxfoundation.org>
-References: <20210225092515.015261674@linuxfoundation.org>
+In-Reply-To: <20210225092516.531932232@linuxfoundation.org>
+References: <20210225092516.531932232@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Christoph Hellwig <hch@lst.de>
 
-commit 8fc517267fb28576dfca2380cc2497a2454b8fae upstream.
+commit 7336375734d65ecc82956b59a79cf5deccce880c upstream.
 
-Walk the list of MMU pages in reverse in kvm_mmu_zap_oldest_mmu_pages().
-The list is FIFO, meaning new pages are inserted at the head and thus
-the oldest pages are at the tail.  Using a "forward" iterator causes KVM
-to zap MMU pages that were just added, which obliterates guest
-performance once the max number of shadow MMU pages is reached.
+Patch series "simplify follow_pte a bit".
 
-Fixes: 6b82ef2c9cf1 ("KVM: x86/mmu: Batch zap MMU pages when recycling oldest pages")
-Reported-by: Zdenek Kaspar <zkaspar82@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210113205030.3481307-1-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+This small series drops the not needed follow_pte_pmd exports, and
+simplifies the follow_pte family of functions a bit.
+
+This patch (of 2):
+
+follow_pte_pmd() is only used by the DAX code, which can't be modular.
+
+Link: https://lkml.kernel.org/r/20201029101432.47011-2-hch@lst.de
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/mmu/mmu.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/memory.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2417,7 +2417,7 @@ static unsigned long kvm_mmu_zap_oldest_
- 		return 0;
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4798,7 +4798,6 @@ int follow_pte_pmd(struct mm_struct *mm,
+ 						    ptepp, pmdpp, ptlp)));
+ 	return res;
+ }
+-EXPORT_SYMBOL(follow_pte_pmd);
  
- restart:
--	list_for_each_entry_safe(sp, tmp, &kvm->arch.active_mmu_pages, link) {
-+	list_for_each_entry_safe_reverse(sp, tmp, &kvm->arch.active_mmu_pages, link) {
- 		/*
- 		 * Don't zap active root pages, the page itself can't be freed
- 		 * and zapping it will just force vCPUs to realloc and reload.
+ /**
+  * follow_pfn - look up PFN at a user virtual address
 
 
