@@ -2,56 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAD3324D26
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0F9324D2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234073AbhBYJrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:47:22 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:53870 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232227AbhBYJrH (ORCPT
+        id S234900AbhBYJsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:48:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234545AbhBYJsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:47:07 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UPXAOhV_1614246378;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPXAOhV_1614246378)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 25 Feb 2021 17:46:23 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] power: supply: cpcap-charger: remove unnecessary conversion to bool
-Date:   Thu, 25 Feb 2021 17:46:15 +0800
-Message-Id: <1614246375-89403-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 25 Feb 2021 04:48:12 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199C0C06174A;
+        Thu, 25 Feb 2021 01:47:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HURRimf/rjBeqsWwOvbXeNiLX7bq1D1hp76NynxPQvc=; b=T09LrmP8vyGWSLC1HLbvVl5x/J
+        cCZklA50HCSlRki+7Je/QGQn7a09AhXLb0TyOU1Fxrn3R1w8XBVj3s+SxghpfOBQfYUowYpk/U9JT
+        UDClKh2WZQ+KlRoUSL+9zo1Gspn2mBHjGLerfawgTR5xdz4A9MqfTqoqcn/gbp52Wk2nIzf9Hr6wi
+        iFeDPjsr+zaBB2ajCjODKKklATwR3WBxDO2i4jwjCbm1WgtEsE82q6ABaNoMArNq/WKqtfGZwbPQf
+        L6vXQ2PMk3QEQqM7DW8aJxb6SX/MBlVJyPKpjd+ICYtR8H5hu3mNSYPN8EF/hzruqH6WoKbEouzG1
+        rrOif4sw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lFDEX-00AXQw-Uo; Thu, 25 Feb 2021 09:47:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 078983006D0;
+        Thu, 25 Feb 2021 10:46:57 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E4B0120BC92B4; Thu, 25 Feb 2021 10:46:56 +0100 (CET)
+Date:   Thu, 25 Feb 2021 10:46:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Eric Biggers <ebiggers@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-crypto@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 00/13] x86/crypto/asm: objtool support
+Message-ID: <YDdyEKqDEKmdg9yW@hirez.programming.kicks-ass.net>
+References: <cover.1614182415.git.jpoimboe@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1614182415.git.jpoimboe@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On Wed, Feb 24, 2021 at 10:29:13AM -0600, Josh Poimboeuf wrote:
+> Standardize the crypto asm to make it resemble compiler-generated code,
+> so that objtool can understand it.
+> 
+> This magically enables ORC unwinding from crypto code.  It also fixes
+> the last known remaining objtool warnings on vmlinux.o, for LTO and
+> more.
+> 
+> Josh Poimboeuf (13):
+>   objtool: Support asm jump tables
+>   x86/crypto/aesni-intel_avx: Remove unused macros
+>   x86/crypto/aesni-intel_avx: Fix register usage comments
+>   x86/crypto/aesni-intel_avx: Standardize stack alignment prologue
+>   x86/crypto/camellia-aesni-avx2: Unconditionally allocate stack buffer
+>   x86/crypto/crc32c-pcl-intel: Standardize jump table
+>   x86/crypto/sha_ni: Standardize stack alignment prologue
+>   x86/crypto/sha1_avx2: Standardize stack alignment prologue
+>   x86/crypto/sha256-avx2: Standardize stack alignment prologue
+>   x86/crypto/sha512-avx: Standardize stack alignment prologue
+>   x86/crypto/sha512-avx2: Standardize stack alignment prologue
+>   x86/crypto/sha512-ssse3: Standardize stack alignment prologue
+>   x86/crypto: Enable objtool in crypto code
+> 
+>  arch/x86/crypto/Makefile                     |  2 -
+>  arch/x86/crypto/aesni-intel_avx-x86_64.S     | 28 +++++--------
+>  arch/x86/crypto/camellia-aesni-avx2-asm_64.S |  5 +--
+>  arch/x86/crypto/crc32c-pcl-intel-asm_64.S    |  7 +---
+>  arch/x86/crypto/sha1_avx2_x86_64_asm.S       |  8 ++--
+>  arch/x86/crypto/sha1_ni_asm.S                |  8 ++--
+>  arch/x86/crypto/sha256-avx2-asm.S            | 13 +++---
+>  arch/x86/crypto/sha512-avx-asm.S             | 41 +++++++++----------
+>  arch/x86/crypto/sha512-avx2-asm.S            | 42 ++++++++++----------
+>  arch/x86/crypto/sha512-ssse3-asm.S           | 41 +++++++++----------
+>  tools/objtool/check.c                        | 14 ++++++-
+>  11 files changed, 98 insertions(+), 111 deletions(-)
 
-./drivers/power/supply/cpcap-charger.c:468:31-36: WARNING: conversion to
-bool not needed here.
+One nit, there's lots and lots of:
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/power/supply/cpcap-charger.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+	mov %rbp, %rsp
+	pop %rbp
 
-diff --git a/drivers/power/supply/cpcap-charger.c b/drivers/power/supply/cpcap-charger.c
-index 641dcad..0437480 100644
---- a/drivers/power/supply/cpcap-charger.c
-+++ b/drivers/power/supply/cpcap-charger.c
-@@ -465,7 +465,7 @@ static bool cpcap_charger_vbus_valid(struct cpcap_charger_ddata *ddata)
- 
- 	error = iio_read_channel_processed(channel, &value);
- 	if (error >= 0)
--		return value > 3900 ? true : false;
-+		return value > 3900;
- 
- 	dev_err(ddata->dev, "error reading VBUS: %i\n", error);
- 
--- 
-1.8.3.1
+and we have this 'leave' instruction that does exactly that, should we
+be using it?
 
+Otherwise:
+
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
