@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03208324E8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E5C324E94
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbhBYKuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:50:44 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:40464 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233451AbhBYKer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:34:47 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614249261; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=QAKeyZ9Su/z8OtvrwFe6t2G9Ko/Uzum2N9syhdKBguA=; b=leDgD4PYsLht2X1NOOZsE05B1IJzYx7R/tJbRt6nKSTQKGz24cU7MTXE46pkxWZdLPrBmBWT
- TJm63zO2vU2mJRyMIRd3pzwXtgIbWddXLLlofz71BFFX/P/9w46ZgFqTCDz5/sDGC7R9oiby
- 5gA47uF6mweVqodE4aX2DHdE/lA=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60377d13ba1dc157804ed56c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Feb 2021 10:33:55
- GMT
-Sender: ylal=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 98A4AC433C6; Thu, 25 Feb 2021 10:33:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.3 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.106] (unknown [49.206.40.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S233814AbhBYKvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:51:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54296 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229845AbhBYKfw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 05:35:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614249265;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NA0XhNNgXWdKWddYRBJjHOR9CD09LFOv4oAxt+/QKh8=;
+        b=WdDPOmJMbQqk2KIzJr4ckI2A0+ta0zHd1vnLd0BFaRrtSB//xK7HFmmhZuuiPPJylza3y0
+        3x6sRE5UmHJPRwtIoQNx1VoNuwU3at0Smw31KGAOH6AdB7hPLFQ/piGPX3+JGdrBzfiS0e
+        8nuIGRj6FcoZOTTduWukG9/SA31Bzew=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-yrGz6ss2PRqE8fSc9ob9ug-1; Thu, 25 Feb 2021 05:34:21 -0500
+X-MC-Unique: yrGz6ss2PRqE8fSc9ob9ug-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: ylal)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F1D81C433CA;
-        Thu, 25 Feb 2021 10:33:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F1D81C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=ylal@codeaurora.org
-Subject: Re: [PATCH] driver core: Use unbound workqueue for deferred probes
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, pkondeti@codeaurora.org,
-        neeraju@codeaurora.org
-References: <1614167749-22005-1-git-send-email-ylal@codeaurora.org>
- <YDZKCk+it/7RpgUJ@kroah.com>
-From:   Yogesh Lal <ylal@codeaurora.org>
-Message-ID: <a40db2a2-f58a-aaec-6976-977d4b9f9e0e@codeaurora.org>
-Date:   Thu, 25 Feb 2021 16:03:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6854B19611A2;
+        Thu, 25 Feb 2021 10:34:18 +0000 (UTC)
+Received: from [10.36.114.58] (ovpn-114-58.ams2.redhat.com [10.36.114.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 658C619801;
+        Thu, 25 Feb 2021 10:34:14 +0000 (UTC)
+Subject: Re: [PATCH 2/3] Documentation: riscv: Add documentation that
+ describes the VM layout
+To:     Alexandre Ghiti <alex@ghiti.fr>, Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, linux-doc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210225080453.1314-1-alex@ghiti.fr>
+ <20210225080453.1314-3-alex@ghiti.fr>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <5279e97c-3841-717c-2a16-c249a61573f9@redhat.com>
+Date:   Thu, 25 Feb 2021 11:34:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <YDZKCk+it/7RpgUJ@kroah.com>
+In-Reply-To: <20210225080453.1314-3-alex@ghiti.fr>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+                  |            |                  |         |> + 
+ffffffc000000000 | -256    GB | ffffffc7ffffffff |   32 GB | kasan
+> +   ffffffcefee00000 | -196    GB | ffffffcefeffffff |    2 MB | fixmap
+> +   ffffffceff000000 | -196    GB | ffffffceffffffff |   16 MB | PCI io
+> +   ffffffcf00000000 | -196    GB | ffffffcfffffffff |    4 GB | vmemmap
+> +   ffffffd000000000 | -192    GB | ffffffdfffffffff |   64 GB | vmalloc/ioremap space
+> +   ffffffe000000000 | -128    GB | ffffffff7fffffff |  126 GB | direct mapping of all physical memory
 
+^ So you could never ever have more than 126 GB, correct?
 
-On 2/24/2021 6:13 PM, Greg KH wrote:
-> On Wed, Feb 24, 2021 at 05:25:49PM +0530, Yogesh Lal wrote:
->> Queue deferred driver probes on unbounded workqueue, to allow
->> scheduler better manage scheduling of long running probes.
-> 
-> Really?  What does this change and help?  What is the visable affect of
-> this patch?  What problem does it solve?
-> 
-
-We observed boot up improvement (~400 msec) when the deferred probe work 
-is made unbound. This is due to scheduler moving the worker running 
-deferred probe work to big CPUs. without this change, we see the worker 
-is running on LITTLE CPU due to affinity.
-​
-Please let us now if there are any concerns/restrictions that deferred 
-probe work should run only on pinned kworkers. Since this work runs 
-deferred probe of several devices , the locality may not be that important
-
-Thanks
-Yogesh Lal
-
-> thanks,
-> 
-> greg k-h
-> 
+I assume that's nothing new.
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
+Thanks,
+
+David / dhildenb
+
