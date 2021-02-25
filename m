@@ -2,83 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AB63251B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC493251B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhBYOpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 09:45:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60296 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232588AbhBYOpG (ORCPT
+        id S232394AbhBYOob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 09:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhBYOoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 09:45:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614264217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bro6K1L61Sgcgif8LOhoB45JhdsJvdKQppn6eGahtEs=;
-        b=gPhWLdv3OI+OeIZMYrQ5ZRZbo+UvgVybX2TzP0laWpswV3wAlPQLZ0KDN0fehyFvOYeOa1
-        lBcUDJ52lYJX/FSdg0An0PWBMFBKZGLJqfdDOKVNm2wzklW+EZPBHU/K3L5gD5htJR8+2X
-        eJVQUoArcuMDEFRZRhuWSaFtYhZDbJE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-98-ueaSdkpkNOq9pf5i1BRPjg-1; Thu, 25 Feb 2021 09:43:35 -0500
-X-MC-Unique: ueaSdkpkNOq9pf5i1BRPjg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B3F2C86A066;
-        Thu, 25 Feb 2021 14:43:33 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 68B6C60861;
-        Thu, 25 Feb 2021 14:43:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <B7E35D95-1A22-4277-B41B-B3FCC2E93743@oracle.com>
-References: <B7E35D95-1A22-4277-B41B-B3FCC2E93743@oracle.com> <F6980CA4-737D-416A-BBE3-390CEBA8B192@oracle.com> <20210217165058.1336155-1-eric.snowberg@oracle.com> <3524595.1614124044@warthog.procyon.org.uk> <3731128.1614163916@warthog.procyon.org.uk>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        =?us-ascii?Q?=3D=3Futf-8=3FQ=3FMicka=3DC3=3DABl?=
-         =?us-ascii?Q?=5FSala=3DC3=3DBCn=3F=3D?= <mic@linux.microsoft.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cert: Add kconfig dependency for validate_trust
+        Thu, 25 Feb 2021 09:44:25 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85D5C061574;
+        Thu, 25 Feb 2021 06:43:44 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id d13so2167709edp.4;
+        Thu, 25 Feb 2021 06:43:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oJNxAD8vKbiovpaWu0yq7Msj0MCOYG3SFayJwlmkCAY=;
+        b=i/fI002txvMHEqiGiMFHvLbXkNuz/gZnNBk+nJzibwood8tvOejJp7QJENnnSEqhUx
+         OKw6+cCSD4xZFHO/GFKOAmsSjXPs0NSB4qDFcHkhZG4v37yAdVjC9qLWC8roxvPhO57y
+         4vQ3J8IAj+ZPRN9FqrYR5idFU5pncAoR6q3Ro9Vj6gitgAEF3a1ZMWSAmSYURtAZc+Zg
+         56valH2ipQlhOg7JNu2D7w2KC6vjMhwGtBluptmS47NsrsZeBp8oIKW+xYw0ASeH7PhA
+         rgqBuxfu6Dmn//jEn8kFBGqqaaevjYVciWMdfXKoqhmmmbyL+Z/EHr1njLDLNcCap84M
+         KfPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oJNxAD8vKbiovpaWu0yq7Msj0MCOYG3SFayJwlmkCAY=;
+        b=k+Qf2wsREOARMfSvzjqC9bcWTkIpAMBZJjLW1Li0CWnL7aWQhtwzkBzhiaASJq+1S2
+         tPCVM/xlTzqspQeF8hUiTvo13sL5xbLflVK2d14a70rHXg1y43gJT61efwwZVBOK7ctj
+         U4K4ZMJ/KXp32FBsG6XHTWaS8vjxJK3VO5BLPopUrj6XNdH1JOUYTKriJjGOkrYP0paU
+         9S0GdrUh7auTeJxG0WEdwEg+d8XQ7+zgS8Fl2yVm8rA3XzMmk2VrVRbk+6tLqH9zFckq
+         hreDUVSi1rBMqgFoyQxtwTPcCsIbNFKb8lGOZ8a78vayDGSdqGKvhs+j9CpuuRbudAKe
+         ggrw==
+X-Gm-Message-State: AOAM530aoSIhCdLbWefXsyudyek+NYqxYj3D/rT9OEbQp3X+nsg5Es7/
+        D0J+bLMq9p2MqnVC7gcD728=
+X-Google-Smtp-Source: ABdhPJwTs7ZW6xnGwyanc/x7j1NptPabSN7B0LwYYa/ohyQudBIY7/OnbBXSal5J08vsYkz5LsbH4w==
+X-Received: by 2002:a50:fa89:: with SMTP id w9mr3213549edr.22.1614264223539;
+        Thu, 25 Feb 2021 06:43:43 -0800 (PST)
+Received: from skbuf ([188.25.217.13])
+        by smtp.gmail.com with ESMTPSA id p16sm3473423edw.44.2021.02.25.06.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 06:43:43 -0800 (PST)
+Date:   Thu, 25 Feb 2021 16:43:41 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] net: dsa: tag_ocelot_8021q: fix driver dependency
+Message-ID: <20210225144341.xgm65mqxuijoxplv@skbuf>
+References: <20210225143910.3964364-1-arnd@kernel.org>
+ <20210225143910.3964364-2-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 25 Feb 2021 14:43:31 +0000
-Message-ID: <506021.1614264211@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225143910.3964364-2-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Snowberg <eric.snowberg@oracle.com> wrote:
+On Thu, Feb 25, 2021 at 03:38:32PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When the ocelot driver code is in a library, the dsa tag
+> code cannot be built-in:
+> 
+> ld.lld: error: undefined symbol: ocelot_can_inject
+> >>> referenced by tag_ocelot_8021q.c
+> >>>               dsa/tag_ocelot_8021q.o:(ocelot_xmit) in archive net/built-in.a
+> 
+> ld.lld: error: undefined symbol: ocelot_port_inject_frame
+> >>> referenced by tag_ocelot_8021q.c
+> >>>               dsa/tag_ocelot_8021q.o:(ocelot_xmit) in archive net/built-in.a
+> 
+> Building the tag support only really makes sense for compile-testing
+> when the driver is available, so add a Kconfig dependency that prevents
+> the broken configuration while allowing COMPILE_TEST alternative when
+> MSCC_OCELOT_SWITCH_LIB is disabled entirely.  This case is handled
+> through the #ifdef check in include/soc/mscc/ocelot.h.
+> 
+> Fixes: 0a6f17c6ae21 ("net: dsa: tag_ocelot_8021q: add support for PTP timestamping")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  net/dsa/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
+> index 3589224c8da9..58b8fc82cd3c 100644
+> --- a/net/dsa/Kconfig
+> +++ b/net/dsa/Kconfig
+> @@ -118,6 +118,8 @@ config NET_DSA_TAG_OCELOT
+>  
+>  config NET_DSA_TAG_OCELOT_8021Q
+>  	tristate "Tag driver for Ocelot family of switches, using VLAN"
+> +	depends on MSCC_OCELOT_SWITCH_LIB || \
+> +	          (MSCC_OCELOT_SWITCH_LIB=n && COMPILE_TEST)
+>  	select NET_DSA_TAG_8021Q
+>  	help
+>  	  Say Y or M if you want to enable support for tagging frames with a
+> -- 
+> 2.29.2
+> 
 
-> > I've added an extra config option to turn on SYSTEM_REVOCATION_LIST sup=
-port.
->=20
-> I believe this is ok.  However currently, whenever the kernel finds eithe=
-r a
-> EFI_CERT_SHA256_GUID or EFI_CERT_X509_SHA256_GUID entry in the dbx, it lo=
-ads
-> it into the blacklist keyring.  Then anytime signature validation takes
-> place, these entries are referenced.  If there is a match, the signature
-> check fails.  Now with the inclusion of EFI_CERT_X509_GUID, I question why
-> we want to enable it thru a Kconfig option, when we don=E2=80=99t for the=
- other two
-> types.
+Why isn't this code in include/soc/mscc/ocelot.h enough?
 
-But we do.
+#if IS_ENABLED(CONFIG_MSCC_OCELOT_SWITCH_LIB)
 
-mark_hash_blacklisted(), is_hash_blacklisted() and is_binary_blacklisted() =
-do
-nothing if CONFIG_SYSTEM_BLACKLIST_KEYRING=3Dn.
+bool ocelot_can_inject(struct ocelot *ocelot, int grp);
+void ocelot_port_inject_frame(struct ocelot *ocelot, int port, int grp,
+			      u32 rew_op, struct sk_buff *skb);
+int ocelot_xtr_poll_frame(struct ocelot *ocelot, int grp, struct sk_buff **skb);
+void ocelot_drain_cpu_queue(struct ocelot *ocelot, int grp);
 
-David
+#else
 
+static inline bool ocelot_can_inject(struct ocelot *ocelot, int grp)
+{
+	return false;
+}
+
+static inline void ocelot_port_inject_frame(struct ocelot *ocelot, int port,
+					    int grp, u32 rew_op,
+					    struct sk_buff *skb)
+{
+}
+
+static inline int ocelot_xtr_poll_frame(struct ocelot *ocelot, int grp,
+					struct sk_buff **skb)
+{
+	return -EIO;
+}
+
+static inline void ocelot_drain_cpu_queue(struct ocelot *ocelot, int grp)
+{
+}
+
+#endif
