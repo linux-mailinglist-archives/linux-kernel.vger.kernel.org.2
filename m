@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D86073254C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C913254D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhBYRvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 12:51:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47344 "EHLO mail.kernel.org"
+        id S233121AbhBYRwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 12:52:43 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:32838 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232237AbhBYRur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:50:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7467664F2F;
-        Thu, 25 Feb 2021 17:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614275407;
-        bh=HGZf4wD+9SOJFs9WegPWYrqiO6JXVwTAhHqsRSUtSDY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Uqj57k/TvNUKhiNBepHLh6c1SW+Uog71DDfJVO6KkV7KQREY2mx/5/IYxW4gUMv9n
-         HC1M7NP0f77X9wUT1xGM8sDXhD32Si8W0LKVU5Vrj7JG6lPHIBuuhaXw1uXWNj6E+h
-         mbsEfWu3K0IdWVO9UqibS1Kf9R9ApnQRIPIXru4yHF/JEN9Ku28bJ6lrStN/aRMwY/
-         j1Zv0G5BEvjeuuV5H/piynF9CVgH19YQnwiO6ETlumqyH0w2Y8vVOKmfgPypoBK2TN
-         dqza7Z8EtxKhw9tT/01+JrwT4ut4LwLLz4OqZlRlTZefiGpSD5lL8rZG6ZGUVezH3A
-         wWyRLm+PEO5SA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6862660A10;
-        Thu, 25 Feb 2021 17:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: dsa: sja1105: Remove unneeded cast in sja1105_crc32()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161427540742.4743.13860069967965207667.git-patchwork-notify@kernel.org>
-Date:   Thu, 25 Feb 2021 17:50:07 +0000
-References: <20210223112003.2223332-1-geert+renesas@glider.be>
-In-Reply-To: <20210223112003.2223332-1-geert+renesas@glider.be>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     olteanv@gmail.com, andrew@lunn.ch, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S232549AbhBYRvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 12:51:19 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DmgLD4QBbz9v1B0;
+        Thu, 25 Feb 2021 18:50:28 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 4bSuDRE5h1vb; Thu, 25 Feb 2021 18:50:28 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DmgLD3FF7z9v19y;
+        Thu, 25 Feb 2021 18:50:28 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 493D78B895;
+        Thu, 25 Feb 2021 18:50:30 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id C4JgywURdKTZ; Thu, 25 Feb 2021 18:50:30 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 161A18B88B;
+        Thu, 25 Feb 2021 18:50:30 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id D011367442; Thu, 25 Feb 2021 17:50:29 +0000 (UTC)
+Message-Id: <cover.1614275314.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v1 00/15] powerpc: Cleanup of uaccess.h
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu, 25 Feb 2021 17:50:29 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+This series cleans up uaccess.h
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Christophe Leroy (15):
+  powerpc/uaccess: Remove __get_user_allowed() and unsafe_op_wrap()
+  powerpc/uaccess: Define ___get_user_instr() for ppc32
+  powerpc/uaccess: Remove __get/put_user_inatomic()
+  powerpc/uaccess: Move get_user_instr helpers in asm/inst.h
+  powerpc/align: Don't use __get_user_instr() on kernel addresses
+  powerpc/uaccess: Call might_fault() inconditionaly
+  powerpc/uaccess: Remove __unsafe_put_user_goto()
+  powerpc/uaccess: Remove __chk_user_ptr() in __get/put_user
+  powerpc/uaccess: Remove calls to __get_user_bad() and __put_user_bad()
+  powerpc/uaccess: Split out __get_user_nocheck()
+  powerpc/uaccess: Rename __get/put_user_check/nocheck
+  powerpc/uaccess: Refactor get/put_user() and __get/put_user()
+  powerpc/uaccess: Swap clear_user() and __clear_user()
+  powerpc/uaccess: Also perform 64 bits copies in unsafe_copy_to_user()
+    on ppc32
+  powerpc/uaccess: Move copy_mc_xxx() functions down
 
-On Tue, 23 Feb 2021 12:20:03 +0100 you wrote:
-> sja1105_unpack() takes a "const void *buf" as its first parameter, so
-> there is no need to cast away the "const" of the "buf" variable before
-> calling it.
-> 
-> Drop the cast, as it prevents the compiler performing some checks.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> 
-> [...]
+ arch/powerpc/include/asm/inst.h               |  34 ++
+ arch/powerpc/include/asm/uaccess.h            | 303 ++++++------------
+ arch/powerpc/kernel/align.c                   |  38 ++-
+ .../kernel/hw_breakpoint_constraints.c        |   2 +-
+ arch/powerpc/kernel/traps.c                   |   2 +-
+ 5 files changed, 147 insertions(+), 232 deletions(-)
 
-Here is the summary with links:
-  - net: dsa: sja1105: Remove unneeded cast in sja1105_crc32()
-    https://git.kernel.org/netdev/net/c/fcd4ba3bcba7
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+-- 
+2.25.0
 
