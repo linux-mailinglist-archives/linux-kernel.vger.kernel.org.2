@@ -2,129 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619003249E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A88B3249EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:59:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234899AbhBYE6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 23:58:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44096 "EHLO
+        id S235307AbhBYE6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 23:58:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhBYE6R (ORCPT
+        with ESMTP id S234827AbhBYE6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 23:58:17 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A3DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 20:57:36 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id ba1so2554168plb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 20:57:36 -0800 (PST)
+        Wed, 24 Feb 2021 23:58:22 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A65C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 20:57:42 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id p21so2980899pgl.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 20:57:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+8kI8nz4N5Z48gbO4eFrSdCp9JwpH67g3WghBeNMpbU=;
-        b=UCbZ5Mhzz4O5aTkkjWgGwk3FLzXuPh8ycqu8b3WpnxL1gqVcU4sJ9w42+cOkvjAmcf
-         REpFYMUV4APQsRd2sy7qqMuumqz8lByV6QhjIcU2drZjBTaISO2YvK3zk0zZq2Vn6MMG
-         vRdIDJNTLaO0ZVwLpY4Y5oYQiZaoaoQJTRRFA=
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=GCPvH/ftBaPKrIrg1SrRaA28WOD5QZfwlnEHwgccJos=;
+        b=qcnZZYCJi98bpluIA+Q6PbpZt/DTsw6UAEq6IRMRd1PNOsFM6BO9kPihfoQQQb87Rx
+         fsrwNx3FnRYOVp90fuaDu9oOIAHKQZ5JRcw5J4/+z10kW3ty+3KpTL1AUzSuEpCF/9CX
+         c2ODR7C0MZAeApvSVIMhXxFEE4oO34Tfc3p1nBRDx/buMluyiYYrdFtAv9BTvjIwkNuL
+         P7AGSBh/JZKXRr05hZuaMm7Vp/wH9GiJkDriIApAxmnd3CcoDOrjpj0FWSALeojZv+P/
+         0JAirMem5/JvDvQ14shHJRy+NVY7k2H+KT9Fep2BLYxsIHztz/JM1LZDgnAXK8U1qVJf
+         fFAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+8kI8nz4N5Z48gbO4eFrSdCp9JwpH67g3WghBeNMpbU=;
-        b=VQHXPVCwXsGAGZQr0BpewR5Hoe8sWROMiwK+nI5mhnDFX26n8HgPONIVOnBf5S9w0g
-         4rJgF7wZCebgkdEoJda7vQIj6dTniR0hzH4sfeu1wFPBBpcIeNwDc/L9gA/ZGI+/JDaP
-         Kv8KSGUpdlu9MmIamOvqy2Et37nR2o9A0i3/R+JaI8VRLJ3aVvqv+M2iuT44s5brfzVG
-         ptsvL1CbbhvBuAsiyblCYrUxxHxUFpBlsmKBzwfBcpl0xxTD7WKRqchdR+kkmGm7xIXC
-         WTVXs7+KYxKYkfL8gv4uk+8z7qc03nsaSyJofJXHhtCASUS8hdFT7nn9zv9Hq05qe1IV
-         Zx4w==
-X-Gm-Message-State: AOAM530G3mNL1ROcEqL6BNQmK1os9V1Kxe5b0rIgeS3eNElG7pPer2gB
-        UVNj0Fm/4MuMR8I9kod4X8vVyw==
-X-Google-Smtp-Source: ABdhPJxN42CgYcoLGskaFUCoPXLZ2lXQ2UUsOjk+rumrN7ykCwdYDaAVvwhw0mcwsn86KftcE8gtww==
-X-Received: by 2002:a17:902:edc2:b029:e4:3738:9b23 with SMTP id q2-20020a170902edc2b02900e437389b23mr1512855plk.37.1614229056386;
-        Wed, 24 Feb 2021 20:57:36 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z8sm1756620pjd.0.2021.02.24.20.57.35
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=GCPvH/ftBaPKrIrg1SrRaA28WOD5QZfwlnEHwgccJos=;
+        b=LPD2V8i4Zh7AjgciCmHcG8m2x94LuUNXaook3tXNsNqLJLyL5wtYhYb1+aXBZZuQT9
+         cwHynBufb1xoo4/86zhjD0MAcP5ZS5z6rBqS4FPl1cJy/ScyGtnxBFre91Q3iMCqWpLR
+         O41QsHQEXIeLsWmkaiCdL3P+OyK4HEtohXy889JhoV8/Hq3JL+0OlI6rJh/ita2JW++w
+         v/F9AdLHUO7ChofV+vVQOH07waPeRaR/4t+R9fOtqrRSX52f7FMDyFKXVLWUgiPtEK6W
+         k6WIjso9WcnyIhNwIOePoEKUDqggQdXht5a7vKsMwmeTKyls5Kxw/ZBbKyZHIPYHFdYK
+         lu0w==
+X-Gm-Message-State: AOAM532rTh65R1yr+2HEhAJR366MYt1at2MJunyV7jR6qolDG0HRQlhD
+        OTINVIjaS1VSgW98EqGlmxIIVQ==
+X-Google-Smtp-Source: ABdhPJzHz+X6qOY/Ap20Mg+cl6p/k3veTQ4izjUkq9XK8Lc2iDiGHMlEOejfq7dwuBVVLuLS+3zY+w==
+X-Received: by 2002:aa7:9dd1:0:b029:1ed:bee2:c65e with SMTP id g17-20020aa79dd10000b02901edbee2c65emr1483923pfq.5.1614229061213;
+        Wed, 24 Feb 2021 20:57:41 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:9474:84b:e7ae:d5fc])
+        by smtp.gmail.com with ESMTPSA id v129sm4399042pfc.110.2021.02.24.20.57.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 20:57:35 -0800 (PST)
-Date:   Wed, 24 Feb 2021 20:57:34 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Gabriel Somlo <somlo@cmu.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>, qemu-devel@nongnu.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
-Message-ID: <202102242050.128D0CD@keescook>
-References: <20210211194258.4137998-1-nathan@kernel.org>
+        Wed, 24 Feb 2021 20:57:40 -0800 (PST)
+Date:   Wed, 24 Feb 2021 20:57:36 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        thomas.lendacky@amd.com
+Cc:     tj@kernel.org, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
+        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <YDcuQFMbe5MaatBe@google.com>
+References: <20210218195549.1696769-1-vipinsh@google.com>
+ <20210218195549.1696769-2-vipinsh@google.com>
+ <YDVIdycgk8XL0Zgx@blackbook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210211194258.4137998-1-nathan@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YDVIdycgk8XL0Zgx@blackbook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 12:42:58PM -0700, Nathan Chancellor wrote:
-> fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
-> which violates clang's CFI checking because fw_cfg_showrev()'s second
-> parameter is 'struct attribute', whereas the ->show() member of 'struct
-> kobj_structure' expects the second parameter to be of type 'struct
-> kobj_attribute'.
-> 
-> $ cat /sys/firmware/qemu_fw_cfg/rev
-> 3
-> 
-> $ dmesg | grep "CFI failure"
-> [   26.016832] CFI failure (target: fw_cfg_showrev+0x0/0x8):
-> 
-> Fix this by converting fw_cfg_rev_attr to 'struct kobj_attribute' where
-> this would have been caught automatically by the incompatible pointer
-> types compiler warning. Update fw_cfg_showrev() accordingly.
-> 
-> Fixes: 75f3e8e47f38 ("firmware: introduce sysfs driver for QEMU's fw_cfg device")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1299
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-
-Ah, nice, yes.
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
-Michael, are you able to take this? I can snag it if needed.
-
--Kees
-
-> ---
->  drivers/firmware/qemu_fw_cfg.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/firmware/qemu_fw_cfg.c b/drivers/firmware/qemu_fw_cfg.c
-> index 0078260fbabe..172c751a4f6c 100644
-> --- a/drivers/firmware/qemu_fw_cfg.c
-> +++ b/drivers/firmware/qemu_fw_cfg.c
-> @@ -299,15 +299,13 @@ static int fw_cfg_do_platform_probe(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -static ssize_t fw_cfg_showrev(struct kobject *k, struct attribute *a, char *buf)
-> +static ssize_t fw_cfg_showrev(struct kobject *k, struct kobj_attribute *a,
-> +			      char *buf)
->  {
->  	return sprintf(buf, "%u\n", fw_cfg_rev);
->  }
->  
-> -static const struct {
-> -	struct attribute attr;
-> -	ssize_t (*show)(struct kobject *k, struct attribute *a, char *buf);
-> -} fw_cfg_rev_attr = {
-> +static const struct kobj_attribute fw_cfg_rev_attr = {
->  	.attr = { .name = "rev", .mode = S_IRUSR },
->  	.show = fw_cfg_showrev,
->  };
-> 
-> base-commit: 92bf22614b21a2706f4993b278017e437f7785b3
-> -- 
-> 2.30.1
+On Tue, Feb 23, 2021 at 07:24:55PM +0100, Michal Koutný wrote:
+> On Thu, Feb 18, 2021 at 11:55:48AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
+> > --- a/arch/x86/kvm/svm/sev.c
+> > +++ b/arch/x86/kvm/svm/sev.c
+> > [...]
+> > +#ifndef CONFIG_KVM_AMD_SEV
+> > +/*
+> > + * When this config is not defined, SEV feature is not supported and APIs in
+> > + * this file are not used but this file still gets compiled into the KVM AMD
+> > + * module.
+> I'm not familiar with the layout of KVM/SEV compile targets but wouldn't
+> it be simpler to exclude whole svm/sev.c when !CONFIG_KVM_AMD_SEV?
 > 
 
--- 
-Kees Cook
+Tom,
+Is there any plan to exclude sev.c compilation if CONFIG_KVM_AMD_SEV is
+not set?
+
+> > +++ b/kernel/cgroup/misc.c
+> > [...]
+> > +/**
+> > + * misc_cg_set_capacity() - Set the capacity of the misc cgroup res.
+> > + * @type: Type of the misc res.
+> > + * @capacity: Supported capacity of the misc res on the host.
+> > + *
+> > + * If capacity is 0 then the charging a misc cgroup fails for that type.
+> > + *
+> > + * The caller must serialize invocations on the same resource.
+> > + *
+> > + * Context: Process context.
+> > + * Return:
+> > + * * %0 - Successfully registered the capacity.
+> > + * * %-EINVAL - If @type is invalid.
+> > + * * %-EBUSY - If current usage is more than the capacity.
+> When is this function supposed to be called? At boot only or is this
+> meant for some kind of hot unplug functionality too?
+> 
+
+This function is meant for hot unplug functionality too.
+
+> > +int misc_cg_try_charge(enum misc_res_type type, struct misc_cg **cg,
+> > +		       unsigned int amount)
+> > [...]
+> > +		new_usage = atomic_add_return(amount, &res->usage);
+> > +		if (new_usage > res->max ||
+> > +		    new_usage > misc_res_capacity[type]) {
+> > +			ret = -EBUSY;
+> I'm not sure the user of this resource accounting will always be able to
+> interpret EBUSY returned from depths of the subsystem.
+> See what's done in pids controller in order to give some useful
+> information about why operation failed.
+
+Just to be on the same page are you talking about adding an events file
+like in pids?
+
+> 
+> > +			goto err_charge;
+> > +		}
+> > +
+> > +		// First one to charge gets a reference.
+> > +		if (new_usage == amount)
+> > +			css_get(&i->css);
+> 1) Use the /* comment */ style.
+> 2) You pin the whole path from task_cg up to root (on the first charge).
+> That's unnecessary since children reference their parents.
+> Also why do you get the reference only for the first charger? While it
+> may work, it seems too convoluted to me.
+> It'd be worth documenting what the caller can expect wrt to ref count of
+> the returned misc_cg.
+
+Suppose a user charges 5 resources in a single charge call but uncharges
+them in 5 separate calls one by one. I cannot take reference on every
+charge and put the reference for every uncharge as it is not guaranteed
+to have equal number of charge-uncharge pairs and we will end up with
+the wrong ref count.
+
+However, if I take reference at the first charge and remove reference at
+last uncharge then I can keep the ref count in correct sync.
+
+I can rewrite if condition to (new_usage == amount && task_cg == i)
+this will avoid pinning whole path up to the root. I was thinking that
+original code was simpler, clearly I was wrong.
+
+Thanks
+Vipin
