@@ -2,173 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CB43259AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 319B13259B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbhBYW2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:28:04 -0500
-Received: from mga12.intel.com ([192.55.52.136]:33744 "EHLO mga12.intel.com"
+        id S231614AbhBYWck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:32:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:56338 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231881AbhBYW1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:27:36 -0500
-IronPort-SDR: uQBRiXE8ffy4Dd+tHy0u2+jC9MQtzLeyUnSjejC0f60gTFMk5tpCiNyX5YSBcDWVBzV7sRTQ6K
- cnoGO5/xRWiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="164916683"
-X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
-   d="scan'208";a="164916683"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 14:25:48 -0800
-IronPort-SDR: 3xeohI4Olwdz2iRO+Wcc4cNuCWodhBY1jeeoz7LVZ+cZBwoZwLjM3a7ax373SR3+PoXrk0U++r
- pxX9gr5hypXQ==
-X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
-   d="scan'208";a="365618944"
-Received: from schen9-mobl.amr.corp.intel.com ([10.254.86.33])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 14:25:48 -0800
-Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
- usage excess
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
- <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
- <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
- <YDNuAIztiGJpLEtw@dhcp22.suse.cz>
- <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
-Message-ID: <cc046fc0-930d-76f6-7cd5-2aba582d72dd@linux.intel.com>
-Date:   Thu, 25 Feb 2021 14:25:47 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S229491AbhBYWcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 17:32:35 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34E59ED1;
+        Thu, 25 Feb 2021 14:31:49 -0800 (PST)
+Received: from [192.168.122.166] (unknown [10.119.48.7])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD44A3F73D;
+        Thu, 25 Feb 2021 14:31:48 -0800 (PST)
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jon Masters <jcm@jonmasters.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, Will Deacon <will@kernel.org>,
+        mark.rutland@arm.com, linux-pci@vger.kernel.org,
+        sudeep.holla@arm.com, lkml <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <4c2db08d-ccc4-05eb-6b7b-5fd7d07dd11e@arm.com>
+ <20210128233147.GA28434@bjorn-Precision-5520>
+ <CACCGGCc3zULqHgUh3Q9wA5WtPBnQ4eq_v2+1qA8bOBCQZJ5YoQ@mail.gmail.com>
+ <20210225093000.GA22843@e121166-lin.cambridge.arm.com>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <790e63a4-bd8c-8644-19de-645cf6691953@arm.com>
+Date:   Thu, 25 Feb 2021 16:31:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210225093000.GA22843@e121166-lin.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 2/22/21 9:41 AM, Tim Chen wrote:
-> 
-> 
-> On 2/22/21 12:40 AM, Michal Hocko wrote:
->> On Fri 19-02-21 10:59:05, Tim Chen wrote:
->  occurrence.
->>>>
->>>> Soft limit is evaluated every THRESHOLDS_EVENTS_TARGET * SOFTLIMIT_EVENTS_TARGET.
->>>> If all events correspond with a newly charged memory and the last event
->>>> was just about the soft limit boundary then we should be bound by 128k
->>>> pages (512M and much more if this were huge pages) which is a lot!
->>>> I haven't realized this was that much. Now I see the problem. This would
->>>> be a useful information for the changelog.
->>>>
->>>> Your fix is focusing on the over-the-limit boundary which will solve the
->>>> problem but wouldn't that lead to to updates happening too often in
->>>> pathological situation when a memcg would get reclaimed immediatelly?
->>>
->>> Not really immediately.  The memcg that has the most soft limit excess will
->>> be chosen for page reclaim, which is the way it should be.  
->>> It is less likely that a memcg that just exceeded
->>> the soft limit becomes the worst offender immediately. 
+On 2/25/21 3:30 AM, Lorenzo Pieralisi wrote:
+> On Thu, Feb 18, 2021 at 12:43:30PM -0500, Jon Masters wrote:
+>> Hi Bjorn, all,
 >>
->> Well this all depends on when the the soft limit reclaim triggeres. In
->> other words how often you see the global memory reclaim. If we have a
->> memcg with a sufficient excess then this will work mostly fine. I was more
->> worried about a case when you have memcgs just slightly over the limit
->> and the global memory pressure is a regular event. You can easily end up
->> bouncing memcgs off and on the tree in a rapid fashion. 
+>> On Thu, Jan 28, 2021 at 6:31 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
 >>
+>>      On Tue, Jan 26, 2021 at 10:46:04AM -0600, Jeremy Linton wrote:
+>>
+>>   
+>>
+>>      > Does that mean its open season for ECAM quirks, and we can expect
+>>      > them to start being merged now?
+>>
+>>      "Open season" makes me cringe because it suggests we have a license to
+>>      use quirks indiscriminately forever, and I hope that's not the case.
+>>
+>>      Lorenzo is closer to this issue than I am and has much better insight
+>>      into the mess this could turn into.  From my point of view, it's
+>>      shocking how much of a hassle this is compared to x86.  There just
+>>      aren't ECAM quirks, in-kernel clock management, or any of that crap.
+>>      I don't know how they do it on x86 and I don't have to care.  Whatever
+>>      they need to do, they apparently do in AML.  Eventually ARM64 has to
+>>      get there as well if vendors want distro support.
+>>
+>>      I don't want to be in the position of enforcing a draconian "no more
+>>      quirks ever" policy.  The intent -- to encourage/force vendors to
+>>      develop spec-compliant machines -- is good, but it seems like the
+>>      reward of having compliant machines "just work" vs the penalty of
+>>      having to write quirks and shepherd them upstream and into distros
+>>      will probably be more effective and not much slower.
+>>
+>>
+>> The problem is that the third party IP vendors (still) make too much junk. For
+>> years, there wasn't a compliance program (e.g. SystemReady with some of the
+>> meat behind PCI-SIG compliance) and even when there was the third party IP
+>> vendors building "root ports" (not even RCs) would make some junk with a hacked
+>> up Linux kernel booting on a model and demo that as "PCI". There wasn't the
+>> kind of adult supervision that was required. It is (slowly) happening now, but
+>> it's years and years late. It's just embarrassing to see the lack of ECAM that
+>> works. In many cases, it's because the IP being used was baked years ago or
+>> made for some "non server" (as if there is such a thing) use case, etc. But in
+>> others, there was a chance to do it right, and it still happens. Some of us
+>> have lost what hair we had over the years getting third party IP vendors to
+>> wake up and start caring about this.
+>>
+>> So there's no excuse. None at all. However, this is where we are. And it /is/
+>> improving. But it's still too slow, and we have platforms still coming to
+>> market that need to boot and run. Based on this, and the need to have something
+>> more flexible than just solving for ECAM deficiencies (which are really just a
+>> symptom), I can see the allure of an SMC. I don't like it, but if that's where
+>> folks want to go, and if we can find a way to constrain the enthusiasm for it,
+>> then perhaps it is a path forward. But if we are to go down that path it needs
+>> to come with a giant warning from the kernel that a system was booted at is
+>> relying on that. Something that will cause an OS certification program to fail
+>> without a waiver, or will cause customers to phone up for support wondering why
+>> the hw is broken. It *must* not be a silent thing. It needs to be "this
+>> hardware is broken and non-standard, get the next version fixed".
 > 
-> If you are concerned about such a case, we can add an excess threshold,
-> say 4 MB (or 1024 4K pages), before we trigger a forced update. You think
-> that will cover this concern?
-> 
+> It is a stance I agree with in many respects, it should be shared (it
+> was in HTML format - the lists unfortunately dropped the message) so I
+> am replying to it to make it public.
 
-Michal,
 
-How about modifiying this patch with a threshold? Like the following?
+So, the V3 of this set has a pr_info of "PCI: SMC conduit attached to 
+segment %d". I will respin with that at pr_warn() which seems to fulfill 
+the comment above. Is that "giant" enough, or should it be higher/worded 
+differently?
 
-Tim
-
----
-From 5a78ab56e2e654290cacab2f5a1631e1da1d90d2 Mon Sep 17 00:00:00 2001
-From: Tim Chen <tim.c.chen@linux.intel.com>
-Date: Wed, 3 Feb 2021 14:08:48 -0800
-Subject: [PATCH] mm: Force update of mem cgroup soft limit tree on usage
- excess
-
-To rate limit updates to the mem cgroup soft limit tree, we only perform
-updates every SOFTLIMIT_EVENTS_TARGET (defined as 1024) memory events.
-
-However, this sampling based updates may miss a critical update: i.e. when
-the mem cgroup first exceeded its limit but it was not on the soft limit tree.
-It should be on the tree at that point so it could be subjected to soft
-limit page reclaim. If the mem cgroup had few memory events compared with
-other mem cgroups, we may not update it and place in on the mem cgroup
-soft limit tree for many memory events.  And this mem cgroup excess
-usage could creep up and the mem cgroup could be hidden from the soft
-limit page reclaim for a long time.
-
-Fix this issue by forcing an update to the mem cgroup soft limit tree if a
-mem cgroup has exceeded its memory soft limit but it is not on the mem
-cgroup soft limit tree.
-
----
- mm/memcontrol.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a51bf90732cb..e0f6948f8ea5 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -104,6 +104,7 @@ static bool do_memsw_account(void)
- 
- #define THRESHOLDS_EVENTS_TARGET 128
- #define SOFTLIMIT_EVENTS_TARGET 1024
-+#define SOFTLIMIT_EXCESS_THRESHOLD 1024
- 
- /*
-  * Cgroups above their limits are maintained in a RB-Tree, independent of
-@@ -985,15 +986,29 @@ static bool mem_cgroup_event_ratelimit(struct mem_cgroup *memcg,
-  */
- static void memcg_check_events(struct mem_cgroup *memcg, struct page *page)
- {
-+	struct mem_cgroup_per_node *mz;
-+	bool force_update = false;
-+
-+	mz = mem_cgroup_nodeinfo(memcg, page_to_nid(page));
-+	/*
-+	 * mem_cgroup_update_tree may not be called for a memcg exceeding
-+	 * soft limit due to the sampling nature of update. Don't allow
-+	 * a memcg to be left out of the tree if it has too much usage
-+	 * excess.
-+	 */
-+	if (mz && !mz->on_tree &&
-+	    soft_limit_excess(mz->memcg) > SOFTLIMIT_EXCESS_THRESHOLD)
-+		force_update = true;
-+
- 	/* threshold event is triggered in finer grain than soft limit */
--	if (unlikely(mem_cgroup_event_ratelimit(memcg,
-+	if (unlikely((force_update) || mem_cgroup_event_ratelimit(memcg,
- 						MEM_CGROUP_TARGET_THRESH))) {
- 		bool do_softlimit;
- 
- 		do_softlimit = mem_cgroup_event_ratelimit(memcg,
- 						MEM_CGROUP_TARGET_SOFTLIMIT);
- 		mem_cgroup_threshold(memcg);
--		if (unlikely(do_softlimit))
-+		if (unlikely((force_update) || do_softlimit))
- 			mem_cgroup_update_tree(memcg, page);
- 	}
- }
--- 
-2.20.1
+Thanks,
 
 
