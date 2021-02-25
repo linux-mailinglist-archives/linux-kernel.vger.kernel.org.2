@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47E13251EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AC93251DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhBYPCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 10:02:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232296AbhBYPBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 10:01:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7024464F17;
-        Thu, 25 Feb 2021 15:00:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614265226;
-        bh=a/04c2nTy0GlyhPSNi1+WMgFD2zAC0g91qf3en1lMLo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LEDUqRTCMenTu9MnNcW1qob6RYDrqs1gz1VtBztoWFVDSpAvVZf6RE6B5qU+6cBjk
-         E5A8uOpoJvPVDZhA1IAMy2tUVFJQtfqQLp7LRPNIHbxOk2cRaS61LpZHyWdumt/P+B
-         rWlN1QvnRZkoVsDDP2HjPlbTl5qVm/kU7hb78IywItFArL2p00/n9Sq/7UrkyzGcvH
-         cPbVmKao7NukQmUDujfQcneYHhKc/QWLt10ZMrk8ZHFLEiJo4Gu82nZvidg4q+bdAq
-         ar7EvPI7N8wpkhMcwlUkhr/KdtGe5YaxLdm0qhoq9xB83cMehBHqpRd194JPxe+zQq
-         S6qMO9MKOCzzQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Ryder Lee <ryder.lee@mediatek.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Soul Huang <Soul.Huang@mediatek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH 2/2] mt76: mt7921: remove incorrect error handling
-Date:   Thu, 25 Feb 2021 15:59:15 +0100
-Message-Id: <20210225145953.404859-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210225145953.404859-1-arnd@kernel.org>
-References: <20210225145953.404859-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231960AbhBYPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 10:00:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhBYO7z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 09:59:55 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D8FC06174A;
+        Thu, 25 Feb 2021 06:59:39 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id mm21so9076891ejb.12;
+        Thu, 25 Feb 2021 06:59:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KdvCOoGwc01pWj3zqit8lvG+zKUB7O20UVPK03THNP4=;
+        b=aiB780fqG+lMV0qHVrbZKuWfDRwQ555saLIEqG9xmXTWW3j5ZH4bsrNLh2Ri8oKLqV
+         h1BSGhj53+kXfUuxLmHzE4aSeYBfbU1JTBC7VAesQM3d/wTaL302bwm6PMwH9Cfx8k8M
+         XnFSAJJ0RwsS/omDxOXcrcfO2DM/GhuUXsBdlpzszutJtBc9bwQ+hEglG+hj5d9hEjty
+         2ZgvEkJCJ21szGtlotNGWpGjy66gzWrnWBno4Wh/Ry087KSlSgGO0JbJS0iGT4sdxFD2
+         ajeuFBd48Bj/joqs9Ogzn7Zs/UcV+qLA8MoSz8E3R+q5Ylnbd71So7r20yWiTpuxiyHO
+         yXpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KdvCOoGwc01pWj3zqit8lvG+zKUB7O20UVPK03THNP4=;
+        b=dQGtF6Ps0EqJK9ALFjZ8dyE49x0TTYSjzdtWRXmcH5bN1582FqD+NkhLhyLD/jjaqb
+         JFDZrSOqYXrgpdPoLItM1xfpaL9t/KNxiuV3daO0w2ZdYWCgGUyWj129MENrEDJJmxdg
+         XhvUstw7SE5Mqt3ksMpFuSRF2vAIgNmtyvzpnkm1gMQkUc6SNzG/waafzTdBCJ3RmW00
+         US27xxaDBwevAVg1R7Gv6a5vXopy5RwFqdtxdq1CMPzKTubFmZE3iIw7yqa6jyolLir+
+         tN1xJrzrAXQgVbiLp0LU9TWQsTscLz+qYzJHVqDbxbX3g7iz84w9pjeKKICtxbbnW1ou
+         ArrA==
+X-Gm-Message-State: AOAM530z/cqymxlDs5fa13kcuJQHNLBK9lBQKV/NB1YzkkjKmpiFff6z
+        NXjpVCmsJ6mU5Ms7a2Rln74=
+X-Google-Smtp-Source: ABdhPJyODUvvQvgTK6/qjd6qJbaxonWfMg0MxVfoP/KHn/A/kiMr3yFuH26yVr2ne5IwxpmO1rln5A==
+X-Received: by 2002:a17:906:6047:: with SMTP id p7mr3011865ejj.400.1614265178501;
+        Thu, 25 Feb 2021 06:59:38 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bec1d.dynamic.kabel-deutschland.de. [95.91.236.29])
+        by smtp.googlemail.com with ESMTPSA id r5sm3141799ejx.96.2021.02.25.06.59.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 25 Feb 2021 06:59:38 -0800 (PST)
+Message-ID: <23b7d59df2b83cdac53fdb4567c41c007257b436.camel@gmail.com>
+Subject: Re: [PATCH v24 2/4] scsi: ufs: L2P map management for HPB read
+From:   Bean Huo <huobean@gmail.com>
+To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Date:   Thu, 25 Feb 2021 15:59:35 +0100
+In-Reply-To: <20210224045437epcms2p7ed0a41233d899337ddbd3525fddeb042@epcms2p7>
+References: <20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p6>
+         <CGME20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p7>
+         <20210224045437epcms2p7ed0a41233d899337ddbd3525fddeb042@epcms2p7>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, 2021-02-24 at 13:54 +0900, Daejun Park wrote:
+> +static int ufshpb_init_mem_wq(void)
+> +{
+> +       int ret;
+> +       unsigned int pool_size;
+> +
+> +       ufshpb_mctx_cache = kmem_cache_create("ufshpb_mctx_cache",
+> +                                       sizeof(struct
+> ufshpb_map_ctx),
+> +                                       0, 0, NULL);
+> +       if (!ufshpb_mctx_cache) {
+> +               pr_err("ufshpb: cannot init mctx cache\n");
+> +               return -ENOMEM;
+> +       }
+> +
+> +       pool_size = PAGE_ALIGN(ufshpb_host_map_kbytes * 1024) /
+> PAGE_SIZE;
+> +       pr_info("%s:%d ufshpb_host_map_kbytes %u pool_size %u\n",
+> +              __func__, __LINE__, ufshpb_host_map_kbytes,
+> pool_size);
+> +
 
-Clang points out a mistake in the error handling in
-mt7921_mcu_tx_rate_report(), which tries to dereference a pointer that
-cannot be initialized because of the error that is being handled:
+I think print function name is not proper while booting.
+And one HPB is associated with one HBA, if there are two UFS
+controllers, how can I differentiate them? 
 
-drivers/net/wireless/mediatek/mt76/mt7921/mcu.c:409:3: warning: variable 'stats' is uninitialized when used here [-Wuninitialized]
-                stats->tx_rate = rate;
-                ^~~~~
-drivers/net/wireless/mediatek/mt76/mt7921/mcu.c:401:32: note: initialize the variable 'stats' to silence this warning
-        struct mt7921_sta_stats *stats;
-                                      ^
-Just remove the obviously incorrect line.
-
-Fixes: 1c099ab44727 ("mt76: mt7921: add MCU support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/wireless/mediatek/mt76/mt7921/mcu.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-index db125cd22b91..b5cc72e7e81c 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-@@ -405,10 +405,8 @@ mt7921_mcu_tx_rate_report(struct mt7921_dev *dev, struct sk_buff *skb,
- 	if (wlan_idx >= MT76_N_WCIDS)
- 		return;
- 	wcid = rcu_dereference(dev->mt76.wcid[wlan_idx]);
--	if (!wcid) {
--		stats->tx_rate = rate;
-+	if (!wcid)
- 		return;
--	}
- 
- 	msta = container_of(wcid, struct mt7921_sta, wcid);
- 	stats = &msta->stats;
--- 
-2.29.2
+Bean
 
