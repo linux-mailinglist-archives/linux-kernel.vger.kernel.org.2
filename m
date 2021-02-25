@@ -2,331 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435A9324C45
+	by mail.lfdr.de (Postfix) with ESMTP id B4361324C46
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236037AbhBYIyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 03:54:31 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19848 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233906AbhBYIyZ (ORCPT
+        id S234876AbhBYIyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 03:54:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236030AbhBYIya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 03:54:25 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11P8XKh7013629;
-        Thu, 25 Feb 2021 03:53:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=h+Bg1KAb2M3NX3MNkh6cvynOcax+Mj6ebzjJBOaspRU=;
- b=j2PrgI5xpGXEhkRZleg1bBeofB8RuM5Lqbkd24QyOk2tGuZuT/rI4cD+CJwscJNT8rdp
- NrqGb0MPkW0/jtikHAJoTru+LrAXaUIp0JD6rcyruLqb8qMlNV0w5bUtSh1pJWnHd1Qt
- auweF4qxTIaVXef28/JKFQXPm2UzK1oLqMvBrGNOL7yHgS74Bf5U0OxlzDg5gy5aLRVS
- Yr4JXC8TWXp89zgtgtaOaoQhisX1GW1m7G0mPrYgk3JJHE+rQ2E4/p37VHQNvM/bCLLL
- L+Jc7m/UmCDOsqN8wL7efVtsFXvBSnVoOHbi7HSZnk41/1uWZoEaXz7XMZ8lTDAfx6H3 UA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36x0qrkupd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 03:53:10 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11P8rAmb089588;
-        Thu, 25 Feb 2021 03:53:10 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36x0qrkunc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 03:53:10 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11P8mveG018466;
-        Thu, 25 Feb 2021 08:53:07 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 36tsph49cp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 08:53:07 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11P8qqHB36569356
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 08:52:52 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5529F11C058;
-        Thu, 25 Feb 2021 08:53:05 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 987D311C054;
-        Thu, 25 Feb 2021 08:53:02 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.51.238])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 25 Feb 2021 08:53:02 +0000 (GMT)
-Date:   Thu, 25 Feb 2021 10:53:00 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     George Kennedy <george.kennedy@oracle.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Konrad Rzeszutek Wilk <konrad@darnok.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dhaval Giani <dhaval.giani@oracle.com>
-Subject: Re: [PATCH] mm, kasan: don't poison boot memory
-Message-ID: <20210225085300.GB1854360@linux.ibm.com>
-References: <20210223103321.GD1741768@linux.ibm.com>
- <3ef9892f-d657-207f-d4cf-111f98dcb55c@oracle.com>
- <20210223154758.GF1741768@linux.ibm.com>
- <3a56ba38-ce91-63a6-b57c-f1726aa1b76e@oracle.com>
- <20210223200914.GH1741768@linux.ibm.com>
- <af06267d-00cd-d4e0-1985-b06ce7c993a3@oracle.com>
- <20210223213237.GI1741768@linux.ibm.com>
- <450a9895-a2b4-d11b-97ca-1bd33d5308d4@oracle.com>
- <20210224103754.GA1854360@linux.ibm.com>
- <9b7251d1-7b90-db4f-fa5e-80165e1cbb4b@oracle.com>
+        Thu, 25 Feb 2021 03:54:30 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8B5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 00:53:50 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id r3so4388047wro.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 00:53:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/yTwC3eBlpkhsEJCLy6pLPRMsGtFs8+S1DpDqKfd+OE=;
+        b=dlAVL0r9MBoIQBYa49UhDWU27DfXME1eQ/Fa/fCbYvey6CrNsPdx7TLzis8Q+sKUsH
+         UV1CuXgi6+yrdsoa58M921U5ah7THkccwNBg3SKTVNze4YxqF7i+FhCNJxPqXO9OdsVG
+         ue0em9OYfCAgr9R6BsezsZag8023XCo/Qja0gaKMSAxo8FeO6ZUxFCg4nWyD+kcMootH
+         FbQA7qc7oDslp9b1GB/04GE/kHPim1oTW4nw3DztnodI4lnRQY3ZCY2vcxMDmWF9TtIL
+         AggMm1lyfxtsIpLz9SYB5Edv4freHK7pNKiZ6URJSigjHK+n6//JFfRX9bQzHab0gpaQ
+         kipA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/yTwC3eBlpkhsEJCLy6pLPRMsGtFs8+S1DpDqKfd+OE=;
+        b=I73UJ3OWnnfIQnSsMUklcVFmusmfGLj7BO09peSXEJuYHTTKFr6EWG+Qome13Tab0a
+         M7QgG+2Jl3NyYM22ltV81BdKy8QCuAWLYhaOSp9f7RsEDbp4O2/i142Q/nRLpA53lJ3e
+         b492kYFe+daHj5Xat5AroNtWbVzNSYdo9D1+rjlci7dSLjXgAwH7poW+R7DnP2pMymfo
+         NGKDmgwQ1UVIJAPHqp9BYShqcvGgnGapHTe3vwJhxPV4Ur+tJgxIA/GdIxfrrUd9ssyS
+         NAH1+Hai0cysh0GmJ5som9cvAJKkEC+rMFy8rdGG8IZer+sb857T6ne5/O0pdsU9g5yK
+         RnUw==
+X-Gm-Message-State: AOAM532oXUI6n67JOfg0vAvE+IJQBIRS09ESEmUX3yh1L3BZ28QxI+tq
+        OmtYf/Mpe6HGaaY4Qfa/b9JdoQ==
+X-Google-Smtp-Source: ABdhPJyzEwZEaYW2lPzUxwymTmf05pz4IeWzFyeoAcoKTpmEsH+eG4ZGohNT+qLOfIfX0JS8EATE0A==
+X-Received: by 2002:a5d:6cab:: with SMTP id a11mr2283730wra.419.1614243228787;
+        Thu, 25 Feb 2021 00:53:48 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id w25sm6276170wmc.42.2021.02.25.00.53.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 00:53:48 -0800 (PST)
+Date:   Thu, 25 Feb 2021 08:53:45 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     vincent.donnefort@arm.com
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net, valentin.schneider@arm.com
+Subject: Re: [PATCH v2 2/2] sched/fair: use lsub_positive in cpu_util_next()
+Message-ID: <YDdlmUrBiHgXMJTm@google.com>
+References: <20210225083612.1113823-1-vincent.donnefort@arm.com>
+ <20210225083612.1113823-3-vincent.donnefort@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9b7251d1-7b90-db4f-fa5e-80165e1cbb4b@oracle.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-25_04:2021-02-24,2021-02-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- malwarescore=0 priorityscore=1501 spamscore=0 clxscore=1015 phishscore=0
- suspectscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102250071
+In-Reply-To: <20210225083612.1113823-3-vincent.donnefort@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi George,
-
-> On 2/24/2021 5:37 AM, Mike Rapoport wrote:
-> > On Tue, Feb 23, 2021 at 04:46:28PM -0500, George Kennedy wrote:
-> > > Mike,
-> > > 
-> > > Still no luck.
-> > > 
-> > > [   30.193723] iscsi: registered transport (iser)
-> > > [   30.195970] iBFT detected.
-> > > [   30.196571] BUG: unable to handle page fault for address: ffffffffff240004
-> > Hmm, we cannot set ibft_addr to early pointer to the ACPI table.
-> > Let's try something more disruptive and move the reservation back to
-> > iscsi_ibft_find.c.
-> > 
-> > diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-> > index 7bdc0239a943..c118dd54a747 100644
-> > --- a/arch/x86/kernel/acpi/boot.c
-> > +++ b/arch/x86/kernel/acpi/boot.c
-> > @@ -1551,6 +1551,7 @@ void __init acpi_boot_table_init(void)
-> >   	if (acpi_disabled)
-> >   		return;
-> > +#if 0
-> >   	/*
-> >   	 * Initialize the ACPI boot-time table parser.
-> >   	 */
-> > @@ -1558,6 +1559,7 @@ void __init acpi_boot_table_init(void)
-> >   		disable_acpi();
-> >   		return;
-> >   	}
-> > +#endif
-> >   	acpi_table_parse(ACPI_SIG_BOOT, acpi_parse_sbf);
-> > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> > index d883176ef2ce..c615ce96c9a2 100644
-> > --- a/arch/x86/kernel/setup.c
-> > +++ b/arch/x86/kernel/setup.c
-> > @@ -570,16 +570,6 @@ void __init reserve_standard_io_resources(void)
-> >   }
-> > -static __init void reserve_ibft_region(void)
-> > -{
-> > -	unsigned long addr, size = 0;
-> > -
-> > -	addr = find_ibft_region(&size);
-> > -
-> > -	if (size)
-> > -		memblock_reserve(addr, size);
-> > -}
-> > -
-> >   static bool __init snb_gfx_workaround_needed(void)
-> >   {
-> >   #ifdef CONFIG_PCI
-> > @@ -1032,6 +1022,12 @@ void __init setup_arch(char **cmdline_p)
-> >   	 */
-> >   	find_smp_config();
-> > +	/*
-> > +	 * Initialize the ACPI boot-time table parser.
-> > +	 */
-> > +	if (acpi_table_init())
-> > +		disable_acpi();
-> > +
-> >   	reserve_ibft_region();
-> >   	early_alloc_pgt_buf();
-> > diff --git a/drivers/firmware/iscsi_ibft_find.c b/drivers/firmware/iscsi_ibft_find.c
-> > index 64bb94523281..01be513843d6 100644
-> > --- a/drivers/firmware/iscsi_ibft_find.c
-> > +++ b/drivers/firmware/iscsi_ibft_find.c
-> > @@ -47,7 +47,25 @@ static const struct {
-> >   #define VGA_MEM 0xA0000 /* VGA buffer */
-> >   #define VGA_SIZE 0x20000 /* 128kB */
-> > -static int __init find_ibft_in_mem(void)
-> > +static void __init *acpi_find_ibft_region(void)
-> > +{
-> > +	int i;
-> > +	struct acpi_table_header *table = NULL;
-> > +	acpi_status status;
-> > +
-> > +	if (acpi_disabled)
-> > +		return NULL;
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(ibft_signs) && !ibft_addr; i++) {
-> > +		status = acpi_get_table(ibft_signs[i].sign, 0, &table);
-> > +		if (ACPI_SUCCESS(status))
-> > +			return table;
-> > +	}
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> > +static void __init *find_ibft_in_mem(void)
-> >   {
-> >   	unsigned long pos;
-> >   	unsigned int len = 0;
-> > @@ -70,35 +88,44 @@ static int __init find_ibft_in_mem(void)
-> >   				/* if the length of the table extends past 1M,
-> >   				 * the table cannot be valid. */
-> >   				if (pos + len <= (IBFT_END-1)) {
-> > -					ibft_addr = (struct acpi_table_ibft *)virt;
-> >   					pr_info("iBFT found at 0x%lx.\n", pos);
-> > -					goto done;
-> > +					return virt;
-> >   				}
-> >   			}
-> >   		}
-> >   	}
-> > -done:
-> > -	return len;
-> > +
-> > +	return NULL;
-> >   }
-> > +
-> > +static void __init *find_ibft(void)
-> > +{
-> > +	/* iBFT 1.03 section 1.4.3.1 mandates that UEFI machines will
-> > +	 * only use ACPI for this */
-> > +	if (!efi_enabled(EFI_BOOT))
-> > +		return find_ibft_in_mem();
-> > +	else
-> > +		return acpi_find_ibft_region();
-> > +}
-> > +
-> >   /*
-> >    * Routine used to find the iSCSI Boot Format Table. The logical
-> >    * kernel address is set in the ibft_addr global variable.
-> >    */
-> > -unsigned long __init find_ibft_region(unsigned long *sizep)
-> > +void __init reserve_ibft_region(void)
-> >   {
-> > -	ibft_addr = NULL;
-> > +	struct acpi_table_ibft *table;
-> > +	unsigned long size;
-> > -	/* iBFT 1.03 section 1.4.3.1 mandates that UEFI machines will
-> > -	 * only use ACPI for this */
-> > +	table = find_ibft();
-> > +	if (!table)
-> > +		return;
-> > -	if (!efi_enabled(EFI_BOOT))
-> > -		find_ibft_in_mem();
-> > -
-> > -	if (ibft_addr) {
-> > -		*sizep = PAGE_ALIGN(ibft_addr->header.length);
-> > -		return (u64)virt_to_phys(ibft_addr);
-> > -	}
-> > +	size = PAGE_ALIGN(table->header.length);
-> > +	memblock_reserve(virt_to_phys(table), size);
-> > -	*sizep = 0;
-> > -	return 0;
-> > +	if (efi_enabled(EFI_BOOT))
-> > +		acpi_put_table(&table->header);
-> > +	else
-> > +		ibft_addr = table;
-> >   }
-> > diff --git a/include/linux/iscsi_ibft.h b/include/linux/iscsi_ibft.h
-> > index b7b45ca82bea..da813c891990 100644
-> > --- a/include/linux/iscsi_ibft.h
-> > +++ b/include/linux/iscsi_ibft.h
-> > @@ -26,13 +26,9 @@ extern struct acpi_table_ibft *ibft_addr;
-> >    * mapped address is set in the ibft_addr variable.
-> >    */
-> >   #ifdef CONFIG_ISCSI_IBFT_FIND
-> > -unsigned long find_ibft_region(unsigned long *sizep);
-> > +void reserve_ibft_region(void);
-> >   #else
-> > -static inline unsigned long find_ibft_region(unsigned long *sizep)
-> > -{
-> > -	*sizep = 0;
-> > -	return 0;
-> > -}
-> > +static inline void reserve_ibft_region(void) {}
-> >   #endif
-> >   #endif /* ISCSI_IBFT_H */
+On Thursday 25 Feb 2021 at 08:36:12 (+0000), vincent.donnefort@arm.com wrote:
+> From: Vincent Donnefort <vincent.donnefort@arm.com>
 > 
-> Still no luck Mike,
+> The sub_positive local version is saving an explicit load-store and is
+> enough for the cpu_util_next() usage.
 > 
-> We're back to the original problem where the only thing that worked was to
-> run "SetPageReserved(page)" before calling "kmap(page)". The page is being
-> "freed" before ibft_init() is called as a result of the recent buddy page
-> freeing changes.
+> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
 
-I keep missing some little details each time :(
-Ok, let's try from the different angle.
+Reviewed-by: Quentin Perret <qperret@google.com>
 
-diff --git a/drivers/acpi/acpica/tbutils.c b/drivers/acpi/acpica/tbutils.c
-index 4b9b329a5a92..ec43e1447336 100644
---- a/drivers/acpi/acpica/tbutils.c
-+++ b/drivers/acpi/acpica/tbutils.c
-@@ -7,6 +7,8 @@
-  *
-  *****************************************************************************/
- 
-+#include <linux/memblock.h>
-+
- #include <acpi/acpi.h>
- #include "accommon.h"
- #include "actables.h"
-@@ -339,6 +341,21 @@ acpi_tb_parse_root_table(acpi_physical_address rsdp_address)
- 			acpi_tb_parse_fadt();
- 		}
- 
-+		if (ACPI_SUCCESS(status) &&
-+		    ACPI_COMPARE_NAMESEG(&acpi_gbl_root_table_list.
-+					 tables[table_index].signature,
-+					 ACPI_SIG_IBFT)) {
-+			struct acpi_table_header *ibft;
-+			struct acpi_table_desc *desc;
-+
-+			desc = &acpi_gbl_root_table_list.tables[table_index];
-+			status = acpi_tb_get_table(desc, &ibft);
-+			if (ACPI_SUCCESS(status)) {
-+				memblock_reserve(address, ibft->length);
-+				acpi_tb_put_table(desc);
-+			}
-+		}
-+
- next_table:
- 
- 		table_entry += table_entry_size;
- 
-
-
--- 
-Sincerely yours,
-Mike.
+Thanks,
+Quentin
