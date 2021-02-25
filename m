@@ -2,54 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3B332578F
+	by mail.lfdr.de (Postfix) with ESMTP id 2670E32578E
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbhBYUZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:25:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
+        id S233819AbhBYUZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:25:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbhBYUZY (ORCPT
+        with ESMTP id S231974AbhBYUZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 25 Feb 2021 15:25:24 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C00C061756
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DC2C061786
         for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:24:43 -0800 (PST)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614284680;
+        s=2020; t=1614284681;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2PsPa8qMZnWwUb4jHsmd/hQaRjESGDEH7IccbrBhwY0=;
-        b=bhbU7YwMBvimdKvYGnhePinmZs38v5Eo4N8r/KTFAuEXAzI7j8AJbtEKMmFxiiBVeLkKvi
-        ao6hrO4nIVYZPGehFgSe9LhMduVdiEs6r80eavZcayaQuNZs4Heq1aJzjI4fcXaY7+9fJt
-        quqeyDvDgwl3UBqnGqpdE6MpygbKYh1RJz48OlX8bPQeW3KewRZNKGr2gl5VrwHrFtVfOr
-        gvg0vngGmaR4Lbr/3isDqzZygjZXgE6X/a/xu25X3He0UV3WH0425UYkmafdOx804m3g02
-        kF+lrIJ9T2ndSSxc1j0TR4VsD26P/wIhpUVkgGEWA7j1lkg+6Zf8oTOT2EH+SQ==
+        bh=TiujYZwqXTbI1RjkTHv+2Z/Pkwu+Ea0IXXEIKR3RaYE=;
+        b=Lfs4TvUGYNgdqJ2OGGdBl91ZpATFsh6LhKHcEOKeuqSw2b6JhdkiqZoC0muo1bIFdA/VBf
+        vFD9riXhKsaowIi4L3c9rl+nemLNA0t6V14b91xXKjoHpqKjyGGOlcus6e79BzQm3oE26u
+        fLB2tvxnU6uSMU0rvaVHUB3cN8HUJwk8JGrXsLWe0PYW/aoS55ajISQMaTB/bklEBgTlpP
+        Fc08PYUkajOdZbV76NHMpPi4+gqCjdMo2Dg2GPvH7lk350KzciS8Rrc3QBD3rHtLdxx3Vg
+        2DGgaOWu2m9gq/0hlWqgvo1d5AWa536dWzkDV3d6eEsmSYw8nqA0am3nLiRB8A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614284680;
+        s=2020e; t=1614284681;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2PsPa8qMZnWwUb4jHsmd/hQaRjESGDEH7IccbrBhwY0=;
-        b=4U2fWzVfVlarqsfvvMAFJYgi9lBy8gSF94jFIX7ke6zS6m7vc1YI39uScih1UfkS4DlJ/j
-        1b4F5xB/wXjRGKCw==
+        bh=TiujYZwqXTbI1RjkTHv+2Z/Pkwu+Ea0IXXEIKR3RaYE=;
+        b=UUstzkaT71FdlM4/8ElORQ9wsSPplG2w6jyBcqNUDsXjb9X2dPF+tOpFHDlaI2nQ0FEELA
+        euU20heDbNFQsVDA==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH next v3 02/15] mtd: mtdoops: synchronize kmsg_dumper
-Date:   Thu, 25 Feb 2021 21:24:25 +0100
-Message-Id: <20210225202438.28985-3-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH next v3 03/15] printk: limit second loop of syslog_print_all
+Date:   Thu, 25 Feb 2021 21:24:26 +0100
+Message-Id: <20210225202438.28985-4-john.ogness@linutronix.de>
 In-Reply-To: <20210225202438.28985-1-john.ogness@linutronix.de>
 References: <20210225202438.28985-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -58,81 +54,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kmsg_dumper can be called from any context and CPU, possibly
-from multiple CPUs simultaneously. Since the writing of the buffer
-can occur from a later scheduled work queue, the oops buffer must
-be protected against simultaneous dumping.
+The second loop of syslog_print_all() subtracts lengths that were
+added in the first loop. With commit b031a684bfd0 ("printk: remove
+logbuf_lock writer-protection of ringbuffer") it is possible that
+records are (over)written during syslog_print_all(). This allows the
+possibility of the second loop subtracting lengths that were never
+added in the first loop.
 
-Use an atomic bit to mark when the buffer is protected. Release the
-protection in between setting the buffer and the actual writing in
-order for a possible panic (immediate write) to be written during
-the scheduling of a previous oops (delayed write).
+This situation can result in syslog_print_all() filling the buffer
+starting from a later record, even though there may have been room
+to fit the earlier record(s) as well.
 
+Fixes: b031a684bfd0 ("printk: remove logbuf_lock writer-protection of ringbuffer")
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- drivers/mtd/mtdoops.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ kernel/printk/printk.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 774970bfcf85..8bbfba40a554 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -52,6 +52,7 @@ static struct mtdoops_context {
- 	int nextcount;
- 	unsigned long *oops_page_used;
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 575a34b88936..77ae2704e979 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1494,6 +1494,7 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
+ 	struct printk_info info;
+ 	unsigned int line_count;
+ 	struct printk_record r;
++	u64 max_seq;
+ 	char *text;
+ 	int len = 0;
+ 	u64 seq;
+@@ -1512,9 +1513,15 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
+ 	prb_for_each_info(clear_seq, prb, seq, &info, &line_count)
+ 		len += get_record_print_text_size(&info, line_count, true, time);
  
-+	unsigned long oops_buf_busy;
- 	void *oops_buf;
- } oops_cxt;
- 
-@@ -180,6 +181,9 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
- 	u32 *hdr;
- 	int ret;
- 
-+	if (test_and_set_bit(0, &cxt->oops_buf_busy))
-+		return;
++	/*
++	 * Set an upper bound for the next loop to avoid subtracting lengths
++	 * that were never added.
++	 */
++	max_seq = seq;
 +
- 	/* Add mtdoops header to the buffer */
- 	hdr = cxt->oops_buf;
- 	hdr[0] = cxt->nextcount;
-@@ -190,7 +194,7 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
- 				      record_size, &retlen, cxt->oops_buf);
- 		if (ret == -EOPNOTSUPP) {
- 			printk(KERN_ERR "mtdoops: Cannot write from panic without panic_write\n");
--			return;
-+			goto out;
- 		}
- 	} else
- 		ret = mtd_write(mtd, cxt->nextpage * record_size,
-@@ -203,6 +207,8 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
- 	memset(cxt->oops_buf, 0xff, record_size);
- 
- 	mtdoops_inc_counter(cxt);
-+out:
-+	clear_bit(0, &cxt->oops_buf_busy);
- }
- 
- static void mtdoops_workfunc_write(struct work_struct *work)
-@@ -276,8 +282,11 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
- 	if (reason == KMSG_DUMP_OOPS && !dump_oops)
- 		return;
- 
-+	if (test_and_set_bit(0, &cxt->oops_buf_busy))
-+		return;
- 	kmsg_dump_get_buffer(dumper, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE,
- 			     record_size - MTDOOPS_HEADER_SIZE, NULL);
-+	clear_bit(0, &cxt->oops_buf_busy);
- 
- 	if (reason != KMSG_DUMP_OOPS) {
- 		/* Panics must be written immediately */
-@@ -394,6 +403,7 @@ static int __init mtdoops_init(void)
- 		return -ENOMEM;
+ 	/* move first record forward until length fits into the buffer */
+ 	prb_for_each_info(clear_seq, prb, seq, &info, &line_count) {
+-		if (len <= size)
++		if (len <= size || info.seq >= max_seq)
+ 			break;
+ 		len -= get_record_print_text_size(&info, line_count, true, time);
  	}
- 	memset(cxt->oops_buf, 0xff, record_size);
-+	cxt->oops_buf_busy = 0;
- 
- 	INIT_WORK(&cxt->work_erase, mtdoops_workfunc_erase);
- 	INIT_WORK(&cxt->work_write, mtdoops_workfunc_write);
 -- 
 2.20.1
 
