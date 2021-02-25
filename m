@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130FA324947
+	by mail.lfdr.de (Postfix) with ESMTP id 8344F324948
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236014AbhBYDLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 22:11:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232237AbhBYDLb (ORCPT
+        id S233443AbhBYDLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 22:11:50 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:5522 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235745AbhBYDLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 22:11:31 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5299C061574;
-        Wed, 24 Feb 2021 19:10:50 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id f1so6383791lfu.3;
-        Wed, 24 Feb 2021 19:10:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EnWKtR8Gi6MBZCyGkt9dN20MUD2l2Ye826UGjeumL/M=;
-        b=bH9vGPAt9TT8vyB02A3LusGmI+8chLo2PIYd/qdVnAoXcA4p9U8W5tREoMsyzsBZ4Z
-         Q9NWpJGzbzKuGHL8s6oMt0bLW3cEcmbC9NdcLISbdy921Vh/wsagj4AH++LZuIzRDEbT
-         /WeaCZUdRo1TnFila95eDP1Wh6V9uR/3XL/ldcc37WLU90lRiqTi5RA7028rpBzspYn0
-         uzW+qM+xaP557V5nIjT5QocjQY/t2x2za9ZZhZ52SkaDpq5OPJHeeJmMELdtjDXjttJT
-         B9WSVRITYzuXvO6JzTkJ79NxGhasXXQhMfU3k2UQOy3nrYfAVvhpTpohOVYNphQy7Wsl
-         Pj9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EnWKtR8Gi6MBZCyGkt9dN20MUD2l2Ye826UGjeumL/M=;
-        b=IO4xRyBtIV27Y0x18dRMPFhwoTwDg+E4I46T2sns8g6uQukn6K9bo+gOYKpeOtH67c
-         NfFlWYsUgTz4aFQP8zr2h8TGRxTv6+s3t8XiNSg/vNnnc/+clpcvx3v8LdESIC5K7ZCS
-         3QpMePSToxoetgS8TbcsmYtOQ1MZMH4gN+q4tgFs7Ys2lUxJC5uz0iHMWwNldd+KQl5I
-         3BJBQ78jApa68swxRC0mFqsw4UbMUNXXA5SymGIe+nooTV7vP1ADqRXM2FMZmXkAkUaN
-         9CVZVV0wbonLeR3wwqVVQqNSvZXzx5F6noe98+60b6XFSrE4SXGAwYAWrgil7BmAZAgR
-         9v3Q==
-X-Gm-Message-State: AOAM531IaFsxZnpn/NO1DEELaxqgUyuFNbmMK6vKEKVondJrS5JhlcIh
-        oFwGVeiqZqud9Sbaw/5e1FGmzDvmvv9o2n/dvN4=
-X-Google-Smtp-Source: ABdhPJxCV+TqWtFTdMF/6bZM7j6af9TKwjCsqsLP5PqihQfPd5E2/w9l1zUzIOTZC6eXqdEZ1+/twFQLRzEl5p88ras=
-X-Received: by 2002:a19:4147:: with SMTP id o68mr691484lfa.295.1614222649170;
- Wed, 24 Feb 2021 19:10:49 -0800 (PST)
-MIME-Version: 1.0
-References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
- <1612693435-31418-4-git-send-email-shengjiu.wang@nxp.com> <20210210221252.GA2885308@robh.at.kernel.org>
- <CAA+D8APfd8trC8cFsT8k8G54nhrYDrwXxECx9RpDAgw3rco9DQ@mail.gmail.com>
-In-Reply-To: <CAA+D8APfd8trC8cFsT8k8G54nhrYDrwXxECx9RpDAgw3rco9DQ@mail.gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 25 Feb 2021 00:10:38 -0300
-Message-ID: <CAOMZO5D3HgVF6Gq6sFo7j7OJ63NVN--ZtmwZCoM7=dmmhVZchQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] ASoC: dt-bindings: fsl_rpmsg: Add binding doc for
- rpmsg cpu dai driver
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Timur Tabi <timur@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>
+        Wed, 24 Feb 2021 22:11:38 -0500
+X-UUID: 853e14c8a2d044ef8095201542d43cb8-20210225
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=8AfxQgMLd5LAOyHUuhbTLCDggQdgcP/KVwPluxawHEI=;
+        b=Np7Elwv0qmDQN7s5zBQSUifBPwgKxBYmhoh55d72XYgiAnkm0+21XQ2hFC4vxAkOyR15kw3FT1ZGSq7yUB/1Eo+MNIR+7Fp7EpoMMTkT+d4KJspj2+W/vgXIbARArwynKvc5+ZDCHO8Qd4WbZWFVQsjKcK+/+nto3wZiEl48Tek=;
+X-UUID: 853e14c8a2d044ef8095201542d43cb8-20210225
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 883676415; Thu, 25 Feb 2021 11:10:53 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Feb
+ 2021 11:10:47 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 25 Feb 2021 11:10:46 +0800
+Message-ID: <1614222646.25750.8.camel@mhfsdcap03>
+Subject: Re: [v8,4/7] PCI: mediatek-gen3: Add INTx support
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+CC:     Bjorn Helgaas <helgaas@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, <maz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Sj Huang" <sj.huang@mediatek.com>, <youlin.pei@mediatek.com>,
+        <chuanjia.liu@mediatek.com>, <qizhong.cheng@mediatek.com>,
+        <sin_jieyang@mediatek.com>, <drinkcat@chromium.org>,
+        <Rex-BC.Chen@mediatek.com>, <anson.chuang@mediatek.com>
+Date:   Thu, 25 Feb 2021 11:10:46 +0800
+In-Reply-To: <YDZhuwbgdUsnBD/0@rocinante>
+References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
+         <20210224061132.26526-5-jianjun.wang@mediatek.com>
+         <YDZhuwbgdUsnBD/0@rocinante>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 4481712F5FD8DB778D110BBC2B7BB028FF4AF1B4B16E4CAF6ACB5AA1DB123F3D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 4:21 AM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+SGkgS3J6eXN6dG9mLA0KDQpUaGFua3MgZm9yIHlvdXIgcmV2aWV3LCBJIHdpbGwgZml4IGl0IGF0
+IG5leHQgdmVyc2lvbi4NCg0KT24gV2VkLCAyMDIxLTAyLTI0IGF0IDE1OjI0ICswMTAwLCBLcnp5
+c3p0b2YgV2lsY3p5xYRza2kgd3JvdGU6DQo+IEhpIEppYW5qdW4sDQo+IA0KPiBbLi4uXQ0KPiA+
+ICsvKioNCj4gPiArICogbXRrX2ludHhfZW9pDQo+ID4gKyAqIEBkYXRhOiBwb2ludGVyIHRvIGNo
+aXAgc3BlY2lmaWMgZGF0YQ0KPiA+ICsgKg0KPiA+ICsgKiBBcyBhbiBlbXVsYXRlZCBsZXZlbCBJ
+UlEsIGl0cyBpbnRlcnJ1cHQgc3RhdHVzIHdpbGwgcmVtYWluDQo+ID4gKyAqIHVudGlsIHRoZSBj
+b3JyZXNwb25kaW5nIGRlLWFzc2VydCBtZXNzYWdlIGlzIHJlY2VpdmVkOyBoZW5jZSB0aGF0DQo+
+ID4gKyAqIHRoZSBzdGF0dXMgY2FuIG9ubHkgYmUgY2xlYXJlZCB3aGVuIHRoZSBpbnRlcnJ1cHQg
+aGFzIGJlZW4gc2VydmljZWQuDQo+ID4gKyAqLw0KPiBbLi4uXQ0KPiANCj4gU2VlIG15IGNvbW1l
+bnQgYWJvdXQgdGhlIGtlcm5lbC1kb2MgZnJvbSB0aGUgZm9sbG93aW5nOg0KPiANCj4gICBodHRw
+czovL2xvcmUua2VybmVsLm9yZy9saW51eC1wY2kvWURaV1VHY0tldCUyRmxOV2xGQHJvY2luYW50
+ZS8NCj4gDQo+IFsuLi5dDQo+ID4gKwlpZiAoZXJyKSB7DQo+ID4gKwkJZGV2X2VycihkZXYsICJm
+YWlsZWQgdG8gaW5pdCBQQ0llIElSUSBkb21haW5cbiIpOw0KPiA+ICsJCXJldHVybiBlcnI7DQo+
+ID4gKwl9DQo+IFsuLi5dDQo+IA0KPiBKdXN0IGEgbml0cGljay4gIFdoYXQgYWJvdXQgdXNpbmcg
+ImluaXRpYWxpemUiIGluIHRoZSBhYm92ZT8NCj4gDQo+IEtyenlzenRvZg0KDQpUaGFua3MuDQoN
+Cg==
 
-> > rpmsg is a protocol. What's the h/w block?
->
-> On Linux side this driver is a virtual driver, it is running
-> on Arm Cortex-A core. The h/w block is controlled by
-> another core (cortex-M core). so this driver actually
-> doesn't touch any hardware, it just does configuration
-> for rpmsg channel.
-> fsl,version: There are maybe different image running on M core, this
-> is the image version, different image has different function.
-
-To answer Rob's question: the hardware block that handles these
-messages is the Message Unit block.
