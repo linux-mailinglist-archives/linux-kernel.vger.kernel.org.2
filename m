@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C471324E99
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF573248C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 03:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235539AbhBYKw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:52:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233791AbhBYKsb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:48:31 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7ACC06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:47:47 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id m1so4411507wml.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:47:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ntcKBESxFVyduoAY/dPjBxtnQO9pteJ/Wd6m2/ACihc=;
-        b=CZf/YGKddhGVVe1DMJkkY2i0ywBaQyh9j5Ps+4eoOK4pyx73889nYyXjQ2j5o4kYOD
-         6yc+KTpkfDaMzXLWM1EIxoD+uuNoDy79QIvWV0wg+gzpNENJycAQA8trhJNb9lzoTKhH
-         1RVdxC1FCEbP0NEUp6BAR5SouVnBDQBHjXoe1zRaynZFDAh5LNlH01Hq1C3ermFExGBF
-         cSBDesOdk0Roo/EgATMQkFSgqr40AlfDuHaL9fIVfgQSUFOkpKVIbwBj2coe9TFZmiaq
-         EvME94oOIm//YmFOXhkH3PA5UzH+K1Bf643S3j/5JAzM7YoDys1kIaSnOrDzPnlqgg39
-         2z2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ntcKBESxFVyduoAY/dPjBxtnQO9pteJ/Wd6m2/ACihc=;
-        b=f/WAPgFkOXZzwtTnmjbW1Gg+e2nWvGSqgBeZcaLqtDrOTH0PK8joy3QGkTV3+jU2Xo
-         yndZXCNHJpFfbkmdDlTThWVGth2hRfchcclc+ltDRTwNghsjJbzjzIc5Lkf7EqrX174K
-         G2ForwNakNnGfONercConXYPNuyFfJstKYGN6XOJJQp726BE6YfLj7gmB/3kzcQlihvu
-         yrD6aFNUGW48AtJOw0cU4tQs5qvuAKws3ZkMyNSTSYxJacRMgYuqnkCmL0gp13iZPkye
-         rU7mXElYncJqDAw/buPeNJKSi2FsBhELAdV/Om8yWh3AFa8n74+e9Hovxu+HDGBYnSz7
-         lWGA==
-X-Gm-Message-State: AOAM531oRoNXxa/ipFTzyn7C5DlY7/X+YtpzNUgZDkQai42FB6PzUO9Y
-        wBmTsvZygxccXcTQ7ZYYd0Z3SLra7K7EYw==
-X-Google-Smtp-Source: ABdhPJydhYQjpuk8jx4V1ehMhP9g4MgIJuBp/VmDpGOyeOXqMKpjjqh9XwwYrZZKTeBhxE9UwIe2Yw==
-X-Received: by 2002:a05:600c:3588:: with SMTP id p8mr2602481wmq.71.1614250066000;
-        Thu, 25 Feb 2021 02:47:46 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id l4sm7927850wrt.42.2021.02.25.02.47.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 02:47:45 -0800 (PST)
-Date:   Thu, 25 Feb 2021 11:47:43 +0100
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>, Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the sparc tree
-Message-ID: <YDeAT33QxlCuzLz+@Red>
-References: <20210222190928.4f093646@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210222190928.4f093646@canb.auug.org.au>
+        id S236753AbhBYCFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 21:05:42 -0500
+Received: from mga03.intel.com ([134.134.136.65]:15399 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235527AbhBYCFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 21:05:39 -0500
+IronPort-SDR: 0Oq0OtVrfTxkfF8IE/rlKvy9hqtlCEbA9vtNx7aXFAYdB4fnHqk91ArR303xR+InwDMBg7qGu7
+ g+74G0/yDuWA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="185432101"
+X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
+   d="scan'208";a="185432101"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 18:03:53 -0800
+IronPort-SDR: deqi13EprK5XusdLMH1m5cIV/y6T78cCGIGj9ILsMn55gwwJD9BTVIlNDTRIAq1RiApkWy4/kt
+ rf2uVs4W6Mzw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
+   d="scan'208";a="367209747"
+Received: from vmmteam.bj.intel.com ([10.240.193.86])
+  by orsmga006.jf.intel.com with ESMTP; 24 Feb 2021 18:03:50 -0800
+From:   Jing Liu <jing2.liu@linux.intel.com>
+To:     pbonzini@redhat.com, seanjc@google.com
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] KVM: x86: Revise guest_fpu xcomp_bv field
+Date:   Thu, 25 Feb 2021 05:49:54 -0500
+Message-Id: <20210225104955.3553-1-jing2.liu@linux.intel.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Mon, Feb 22, 2021 at 07:09:28PM +1100, Stephen Rothwell a écrit :
-> Hi all,
-> 
-> After merging the sparc tree, today's linux-next build (sparc64 defconfig)
-> produced these warnings:
-> 
-> arch/sparc/configs/sparc64_defconfig:237:warning: override: reassigning to symbol ATA
-> arch/sparc/configs/sparc64_defconfig:239:warning: override: reassigning to symbol HAPPYMEAL
-> 
-> Presumably introduced by commit
-> 
->   520615e1f5b2 ("sparc64: switch defconfig from the legacy ide driver to libata")
-> 
-> or commit
-> 
->   a57cdeb369ef ("sparc: sparc64_defconfig: add necessary configs for qemu")
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+XCOMP_BV[63] field indicates that the save area is in the compacted
+format and XCOMP_BV[62:0] indicates the states that have space allocated
+in the save area, including both XCR0 and XSS bits enabled by the host
+kernel. Use xfeatures_mask_all for calculating xcomp_bv and reuse
+XCOMP_BV_COMPACTED_FORMAT defined by kernel.
 
-Hello
+Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
+---
+ arch/x86/kvm/x86.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-Sorry, that's my fault for both warnings.
-I send a patch fixing that.
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 1b404e4d7dd8..f115493f577d 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -4435,8 +4435,6 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
+ 	return 0;
+ }
+ 
+-#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
+-
+ static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
+ {
+ 	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
+@@ -4494,7 +4492,8 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
+ 	/* Set XSTATE_BV and possibly XCOMP_BV.  */
+ 	xsave->header.xfeatures = xstate_bv;
+ 	if (boot_cpu_has(X86_FEATURE_XSAVES))
+-		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
++		xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
++					 xfeatures_mask_all;
+ 
+ 	/*
+ 	 * Copy each region from the non-compacted offset to the
+@@ -9912,9 +9911,6 @@ static void fx_init(struct kvm_vcpu *vcpu)
+ 		return;
+ 
+ 	fpstate_init(&vcpu->arch.guest_fpu->state);
+-	if (boot_cpu_has(X86_FEATURE_XSAVES))
+-		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =
+-			host_xcr0 | XSTATE_COMPACTION_ENABLED;
+ 
+ 	/*
+ 	 * Ensure guest xcr0 is valid for loading
+-- 
+2.18.4
 
-Thanks for the report
-Regards
