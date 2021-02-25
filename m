@@ -2,123 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DF3325996
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F39C325999
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhBYWW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:22:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233443AbhBYWR6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:17:58 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B6CC061225
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:17:15 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id d20so6287882qkc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:17:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=44yiA3ypd9Z9fwxLK92nJoDxSjcY2FUyKf3kzqwUJOc=;
-        b=iVwq6CfNSEWonjlkLJQXRi/Cm0iUxxT/lq17x1VuDi2jMuBd5UqiT0VF1uybRg1VRq
-         zfnjXy9mkKEQolQC+sxlLW19vUBXi5GCKfnC8K8QDhVNbb2hpjgO8eGnL/KJWEV6lJCy
-         69Nos5MsEt5Ost6aGeqeUrd/QVHVj9AwlF9wHBMBlJdS/NshrnNbRPfyqgzcF4zkDK7G
-         3k7tN4cirrQD5EYAmob3YmlDYeddz8ZzveMrgQIvOsyAExDT8YN/DrOqJDmdCeJ8hFvG
-         uZrCBhW9p3WJS9qYlkeLTBe0hNhjgjwlxKLkFGg8aFWtPyjj45YOu9NbfWsbsGZYOfyo
-         6f/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=44yiA3ypd9Z9fwxLK92nJoDxSjcY2FUyKf3kzqwUJOc=;
-        b=OA60FjBFSWx9nPsKn/cRTPkTCp6vNYHSDMtvUbLRaX4AIZ8vuoGFr29zjaasiwPXUs
-         s2I44Xlc0IVu1Ywx29D8RuQBl/BDGqSSWyD1PCZfNtAx3HOBzZGIXUTU5rK4yLi+H4hm
-         vrfe/4C4R3F1h8vXWFy0g3jhfhBQU1sgAtwz2R5Y18yjjCRdRgrUtlzVzacOKKYXWEit
-         Nyu+KYtEoGQ0c94y3kC3oX126ohOsI6jCH9X9SpZTKnCFIGTQqUgiLiJTDMWeCHwKDIH
-         Q/HxJ5qBtSdfVuL0Y0R1tdRv/IgDm2HuyNhZ/d0FJ4QqPVx+nYdxAT7AKH9/pOGmq3cP
-         pN6w==
-X-Gm-Message-State: AOAM5312IPns488zckADh3kdkrS6r5+8hsb2PlXKCPSwOTTnY51bdqzL
-        Uw7CsCGXclTrNgQZ0786rTUTF5TcdT2qAtPPItt98w==
-X-Google-Smtp-Source: ABdhPJwvFoUfCTC8dTmdEf1tqOL0hY16jfa2aPfzu2EUETLRgHILXhnffm5SUXSanL/djuug7AXELkupurbAJ+g24V4=
-X-Received: by 2002:ae9:c00e:: with SMTP id u14mr4794568qkk.482.1614291434386;
- Thu, 25 Feb 2021 14:17:14 -0800 (PST)
+        id S232491AbhBYWXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:23:49 -0500
+Received: from mga03.intel.com ([134.134.136.65]:3567 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233455AbhBYWSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 17:18:04 -0500
+IronPort-SDR: edwX2uxP8Nqr+3PbHjpS/LjIi/TUOZ5uMxRuNhDF/OAb0wQvPXL+fIsqWvlraCzmw20gIIgHy7
+ fL1IMyMWQe6w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="185749632"
+X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
+   d="scan'208";a="185749632"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 14:17:18 -0800
+IronPort-SDR: HBKSHiLe0MtfvnRN4zT3jI0f0Rqf5KuNeB1ORFZDVA8T397xDurDMDhDQchjk4a8veYMxlqzmu
+ CNop4lCWAW1w==
+X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
+   d="scan'208";a="404589780"
+Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 14:17:18 -0800
+Date:   Thu, 25 Feb 2021 22:17:11 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, zhangfei.gao@foxmail.com,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v6 08/12] fork: Clear PASID for new mm
+Message-ID: <YDgh53AcQHT+T3L0@otcwcpicx3.sc.intel.com>
+References: <1594684087-61184-1-git-send-email-fenghua.yu@intel.com>
+ <1594684087-61184-9-git-send-email-fenghua.yu@intel.com>
+ <YDYoL/zZ9YaGgwSV@myrica>
 MIME-Version: 1.0
-References: <20210214000611.2169820-1-zzyiwei@android.com> <YC+ZQAwwb4RGgjDf@alley>
- <CAKB3++YB3xftQFgSGQXKQucuid9sFywjN1E7nQ6QrqR96+heEg@mail.gmail.com>
- <CAKB3++b4wnsh+Kbgk4U200hLQmudM28sK=s9e6mARpM-eZ2ZZw@mail.gmail.com>
- <YDUkoTGk2G/GZj8w@alley> <CAKB3++Yf5cv8shHU0T1nqfNTgbknU1uMu54YXWqNGqXHpa_oAA@mail.gmail.com>
- <YDYdoRwezfVsWS4W@alley>
-In-Reply-To: <YDYdoRwezfVsWS4W@alley>
-From:   =?UTF-8?B?WWl3ZWkgWmhhbmfigI4=?= <zzyiwei@android.com>
-Date:   Thu, 25 Feb 2021 14:17:04 -0800
-Message-ID: <CAKB3++YFqao5f4oZ2eX3GhLDChNx5EheXG-y9aUsReY3JETYtQ@mail.gmail.com>
-Subject: Re: [PATCH] kthread: add kthread_mod_pending_delayed_work api
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ilias Stamatis <stamatis.iliass@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Liang Chen <cl@rock-chips.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDYoL/zZ9YaGgwSV@myrica>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 1:34 AM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Tue 2021-02-23 14:29:37, Yiwei Zhang wrote:
-> > > > which is not cool because it will make the
-> > > > asynchronous effort a no-op. Is there a way we can include caller
-> > > > thread metadata(task_struct pointer?) when it enqueues the work so
-> > > > that the RT worker thread won't preempt the caller thread when that
-> > > > queued work gets scheduled? Probably require the CPU scheduler to poke
-> > > > at the next work...or any other ideas will be very appreciated,
-> > > > thanks!
-> > >
-> > > This sounds like a very strange use case.
-> > > Why is the worker kthread RT when the work can be delayed?
-> > >
-> > > If the kthread has to be RT because of another work then
-> > > your proposal will not work. The delayed processing of
-> > > low priority work might block and delay any pending
-> > > high priority work.
-> > >
-> > > You should consider handling the less important work in a separate
-> > > kthread worker with a lower priority or by the system workqueue.
-> >
-> > Just want to clarify that it's not about delayed_work any more. In my
-> > latest question, it's a RT thread with normal work queued and
-> > scheduled to be run immediately. However, I simply don't want the
-> > worker to preempt the thread that queues the work.
-> >
-> > It's a high prio work that we don't want other random tasks to preempt
-> > it. Meanwhile, we don't want it to preempt the called thread. In
-> > addition, assume we can't raise the priority of those caller
-> > threads(otherwise I'd be fine with using a workqueue).
->
-> Honestly, it sounds weird to me. Either the caller or the
-> worker has higher priority.
->
-> Well, I think that behavior could be achieved by
-> CONFIG_PREEMPT_NONE or CONFIG_PREEMPT_VOLUNTARY.
->
-> Anyway, this is rather a question for scheduler experts.
-> It is possible that it has some solution. But it is also
-> possible that it is so specific behavior and it would
-> complicate the scheduler too much.
->
-> Best Regards,
-> Petr
+Hi, Jean,
 
-Thanks for the pointers! I'll explore further with scheduling folks.
+On Wed, Feb 24, 2021 at 11:19:27AM +0100, Jean-Philippe Brucker wrote:
+> Hi Fenghua,
+> 
+> [Trimmed the Cc list]
+> 
+> On Mon, Jul 13, 2020 at 04:48:03PM -0700, Fenghua Yu wrote:
+> > When a new mm is created, its PASID should be cleared, i.e. the PASID is
+> > initialized to its init state 0 on both ARM and X86.
+> 
+> I just noticed this patch was dropped in v7, and am wondering whether we
+> could still upstream it. Does x86 need a child with a new address space
+> (!CLONE_VM) to inherit the PASID of the parent?  That doesn't make much
+> sense with regard to IOMMU structures - same PASID indexing multiple PGDs?
+
+You are right: x86 should clear mm->pasid when a new mm is created.
+This patch somehow is losted:(
+
+> 
+> Currently iommu_sva_alloc_pasid() assumes mm->pasid is always initialized
+> to 0 and fails on forked tasks. I'm trying to figure out how to fix this.
+> Could we clear the pasid on fork or does it break the x86 model?
+
+x86 calls ioasid_alloc() instead of iommu_sva_alloc_pasid(). So
+functionality is not a problem without this patch on x86. But I think
+we do need to have this patch in the kernel because PASID is per addr
+space and two addr spaces shouldn't have the same PASID.
+
+Who will accept this patch?
+
+Thanks.
+
+-Fenghua
