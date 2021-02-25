@@ -2,94 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4651E3256E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E89833256CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhBYTlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:41:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234355AbhBYTgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:36:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D63064F27;
-        Thu, 25 Feb 2021 19:29:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614281386;
-        bh=pjao6kRqK0VYhuK41pYwn+/iPwXCCek5r5Nlw4CqnS4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TIk98Mwyw4SCY7D8ZsQal3Zzw+0p/n+g4j4H0PD28Wpv633Sih0wXShM1g/LXGY7G
-         Rizd/vSpb6hSxw2H3jE9x4Sw7x0SPReMU2I1sXK1wJrnFC+cAieKGhdoi0qBCn+VFc
-         M3CfD3ErVGg/PCiZw8stFxPWx25U6y5PMlzUxjV46bxR+Ew2kY+AiPhlx/iJ/LQFKK
-         HL/ml8wXSh6XhFYhF6WzsldgSg/5D4SBVQbXUWOgyixfH/toJTgVfPBAey5jJgpM2c
-         DSnHHxfmAv3EPHf7G1AdloR1fBm8Xqsr2PYpkK8k+oZEUtnCpgEeY8rf9eo0KV/BOm
-         vzi93VfDepxsw==
-Date:   Thu, 25 Feb 2021 12:29:41 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] linux/compiler-clang.h: define HAVE_BUILTIN_BSWAP*
-Message-ID: <20210225192941.GA2026@MSI.localdomain>
-References: <20210225164513.3667778-1-arnd@kernel.org>
+        id S234493AbhBYThB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:37:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50200 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234879AbhBYTfK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 14:35:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614281622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=J8XckA0wuy/u0dP7Chp3yO58HxOiKtqQRaFNCMmqR6E=;
+        b=c/7Oyf6DDTlSYqAFhYywOP3Z6B6pWb2uxPWiN474Iv88kQD0zkNb4O4j9b+MGuKwVKHRfl
+        tzjnABCtWIMRgSLJkghOBCKe9CjMiXdpwSpgazHUxlDZot+ns8VL8spNYeWCji2oaBgk3D
+        i5MiKHdhjGBZrVKGfFAtNHTZP7opjxw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-577-pJoKHfGZNi-q1JgDfefkXQ-1; Thu, 25 Feb 2021 14:33:40 -0500
+X-MC-Unique: pJoKHfGZNi-q1JgDfefkXQ-1
+Received: by mail-ed1-f70.google.com with SMTP id u2so3354754edj.20
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:33:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=J8XckA0wuy/u0dP7Chp3yO58HxOiKtqQRaFNCMmqR6E=;
+        b=aC6HxjfbWEoyJlxjR1qNCt28b0qw8AS1pBfcSWtWVCv5b4l8x/PQ0htdnvPMDCcWdU
+         9w5oR4Ab9K09Vc0zcZheNUKVJGZhLOVE/1pDzjc4hpVBAa70Dicrwyspv091Fn3VsROf
+         peTekNmMzGthUTArVVXfCITWdw/BibAkWm8sIcH5ULZS4phs3+psATuPM5Gp6T9kCeOD
+         7i7CWm19RpS68IbLENXOvMrEoGYddrrgKN4i4fm1qBCRGBBbs9Cz/P3ETzL/vzpUvFW7
+         c8xjPJbZUZiGpi4ecvfkoNSvhjjJ0xJwmxJs7GoiVhCJmkwvJoY0oZhG7aqXp/nivA9n
+         Ut8A==
+X-Gm-Message-State: AOAM5332iQWsYk1/+jhFgU47r6Vluo/tkhlZJuqTvWcS5ni3DtWBvBfk
+        TXpGKumUXbJz2PZZ/buc23kRznuFj9u+Ne7GIHAjbbmLA4gAuilB8DHxWNthrZ4vh+em8VBiHdc
+        x8gpwzmESohemyYyJ5RS1oOrG
+X-Received: by 2002:a17:907:2113:: with SMTP id qn19mr4214703ejb.98.1614281619064;
+        Thu, 25 Feb 2021 11:33:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz2dN9ZzfgwQ9M65gsI//PlQJrl1Zvqctla4lD8bDjF0K4fbGkjn6jK5ahnGYupXSe2W6FPQw==
+X-Received: by 2002:a17:907:2113:: with SMTP id qn19mr4214672ejb.98.1614281618920;
+        Thu, 25 Feb 2021 11:33:38 -0800 (PST)
+Received: from redhat.com (212.116.168.114.static.012.net.il. [212.116.168.114])
+        by smtp.gmail.com with ESMTPSA id ca26sm4215205edb.4.2021.02.25.11.33.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 11:33:38 -0800 (PST)
+Date:   Thu, 25 Feb 2021 14:33:33 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        abaci-bugfix@linux.alibaba.com, abaci@linux.alibaba.com,
+        anders.roxell@linaro.org, arnd@arndb.de,
+        aruna.ramakrishna@oracle.com, colin.xu@intel.com, david@redhat.com,
+        dongli.zhang@oracle.com, edumazet@google.com, elic@nvidia.com,
+        gustavoars@kernel.org, jasowang@redhat.com, joe.jin@oracle.com,
+        joseph.qi@linux.alibaba.com, linux@roeck-us.net,
+        mathias.crombez@faurecia.com, mst@redhat.com,
+        naresh.kamboju@linaro.org, parav@nvidia.com, sgarzare@redhat.com,
+        stable@vger.kernel.org, syzkaller@googlegroups.com,
+        tiantao6@hisilicon.com, vasyl.vavrychuk@opensynergy.com,
+        xianting_tian@126.com
+Subject: [GIT PULL] virtio: features, fixes
+Message-ID: <20210225143333-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210225164513.3667778-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 05:45:09PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Separating compiler-clang.h from compiler-gcc.h inadventently dropped the
-> definitions of the three HAVE_BUILTIN_BSWAP macros, which requires falling
-> back to the open-coded version and hoping that the compiler detects it.
-> 
-> Since all versions of clang support the __builtin_bswap interfaces,
-> add back the flags and have the headers pick these up automatically.
-> 
-> This results in a 4% improvement of compilation speed for arm defconfig.
-> 
-> Fixes: 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+There are a couple new drivers and support for the new management
+interface for mlx under review now. I figured I'll send them separately
+if review is done in time, lots of people are waiting for the vdpa tool
+patches to I want to make sure they make this release.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+The following changes since commit f40ddce88593482919761f74910f42f4b84c004b:
 
-> ---
->  include/linux/compiler-clang.h | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> index 6478bff6fcc2..bbfa9ff6a2ec 100644
-> --- a/include/linux/compiler-clang.h
-> +++ b/include/linux/compiler-clang.h
-> @@ -33,6 +33,16 @@
->  #define __no_sanitize_thread
->  #endif
->  
-> +/*
-> + * sparse (__CHECKER__) pretends to be gcc, but can't do constant
-> + * folding in __builtin_bswap*() (yet), so don't set these for it.
-> + */
-> +#if defined(CONFIG_ARCH_USE_BUILTIN_BSWAP) && !defined(__CHECKER__)
-> +#define __HAVE_BUILTIN_BSWAP32__
-> +#define __HAVE_BUILTIN_BSWAP64__
-> +#define __HAVE_BUILTIN_BSWAP16__
-> +#endif /* CONFIG_ARCH_USE_BUILTIN_BSWAP && !__CHECKER__ */
-> +
->  #if __has_feature(undefined_behavior_sanitizer)
->  /* GCC does not have __SANITIZE_UNDEFINED__ */
->  #define __no_sanitize_undefined \
-> -- 
-> 2.29.2
-> 
+  Linux 5.11 (2021-02-14 14:32:24 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+
+for you to fetch changes up to 16c10bede8b3d8594279752bf53153491f3f944f:
+
+  virtio-input: add multi-touch support (2021-02-23 07:52:59 -0500)
+
+----------------------------------------------------------------
+virtio: features, fixes
+
+new vdpa features to allow creation and deletion of new devices
+virtio-blk support per-device queue depth
+fixes, cleanups all over the place
+
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+
+----------------------------------------------------------------
+Colin Xu (1):
+      virtio_input: Prevent EV_MSC/MSC_TIMESTAMP loop storm for MT.
+
+Dongli Zhang (1):
+      vhost scsi: alloc vhost_scsi with kvzalloc() to avoid delay
+
+Gustavo A. R. Silva (1):
+      virtio_net: Fix fall-through warnings for Clang
+
+Jason Wang (17):
+      virtio-pci: do not access iomem via struct virtio_pci_device directly
+      virtio-pci: split out modern device
+      virtio-pci-modern: factor out modern device initialization logic
+      virtio-pci-modern: introduce vp_modern_remove()
+      virtio-pci-modern: introduce helper to set config vector
+      virtio-pci-modern: introduce helpers for setting and getting status
+      virtio-pci-modern: introduce helpers for setting and getting features
+      virtio-pci-modern: introduce vp_modern_generation()
+      virtio-pci-modern: introduce vp_modern_set_queue_vector()
+      virtio-pci-modern: introduce vp_modern_queue_address()
+      virtio-pci-modern: introduce helper to set/get queue_enable
+      virtio-pci-modern: introduce helper for setting/geting queue size
+      virtio-pci-modern: introduce helper for getting queue nums
+      virtio-pci-modern: introduce helper to get notification offset
+      virito-pci-modern: rename map_capability() to vp_modern_map_capability()
+      virtio-pci: introduce modern device module
+      virtio_vdpa: don't warn when fail to disable vq
+
+Jiapeng Zhong (1):
+      virtio-mem: Assign boolean values to a bool variable
+
+Joseph Qi (1):
+      virtio-blk: support per-device queue depth
+
+Mathias Crombez (1):
+      virtio-input: add multi-touch support
+
+Parav Pandit (6):
+      vdpa_sim_net: Make mac address array static
+      vdpa: Extend routine to accept vdpa device name
+      vdpa: Define vdpa mgmt device, ops and a netlink interface
+      vdpa: Enable a user to add and delete a vdpa device
+      vdpa: Enable user to query vdpa device info
+      vdpa_sim_net: Add support for user supported devices
+
+Stefano Garzarella (1):
+      vdpa/mlx5: fix param validation in mlx5_vdpa_get_config()
+
+Xianting Tian (1):
+      virtio_mmio: fix one typo
+
+ drivers/block/virtio_blk.c             |  11 +-
+ drivers/net/virtio_net.c               |   1 +
+ drivers/vdpa/Kconfig                   |   1 +
+ drivers/vdpa/ifcvf/ifcvf_main.c        |   2 +-
+ drivers/vdpa/mlx5/net/mlx5_vnet.c      |   4 +-
+ drivers/vdpa/vdpa.c                    | 503 ++++++++++++++++++++++++++-
+ drivers/vdpa/vdpa_sim/vdpa_sim.c       |   3 +-
+ drivers/vdpa/vdpa_sim/vdpa_sim.h       |   2 +
+ drivers/vdpa/vdpa_sim/vdpa_sim_net.c   | 100 ++++--
+ drivers/vhost/scsi.c                   |   9 +-
+ drivers/virtio/Kconfig                 |   9 +
+ drivers/virtio/Makefile                |   1 +
+ drivers/virtio/virtio_input.c          |  26 +-
+ drivers/virtio/virtio_mem.c            |   2 +-
+ drivers/virtio/virtio_mmio.c           |   2 +-
+ drivers/virtio/virtio_pci_common.h     |  22 +-
+ drivers/virtio/virtio_pci_modern.c     | 504 ++++-----------------------
+ drivers/virtio/virtio_pci_modern_dev.c | 599 +++++++++++++++++++++++++++++++++
+ drivers/virtio/virtio_vdpa.c           |   3 +-
+ include/linux/vdpa.h                   |  44 ++-
+ include/linux/virtio_pci_modern.h      | 111 ++++++
+ include/uapi/linux/vdpa.h              |  40 +++
+ 22 files changed, 1492 insertions(+), 507 deletions(-)
+ create mode 100644 drivers/virtio/virtio_pci_modern_dev.c
+ create mode 100644 include/linux/virtio_pci_modern.h
+ create mode 100644 include/uapi/linux/vdpa.h
+
