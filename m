@@ -2,99 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D05325995
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DF3325996
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbhBYWWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:22:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40692 "EHLO
+        id S233791AbhBYWW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:22:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233396AbhBYWRz (ORCPT
+        with ESMTP id S233443AbhBYWR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:17:55 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A32C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:16:59 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id f17so7309571qkl.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:16:59 -0800 (PST)
+        Thu, 25 Feb 2021 17:17:58 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B6CC061225
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:17:15 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id d20so6287882qkc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:17:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=android.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/28pMZEAxPunJv3VDFxY9qRg4v622m5ASv9egU51f+c=;
-        b=MQqIRfSbdfNH5JT7Cx56a6oYyOuCTo5vwJnGQX1ixbtEe2ZnSFKMyks+3R0hidOSsU
-         5y11pQl7qRHZFSnlriBPtKO4SsalOauMyCuLbf7loI2mdGba3ibmGSkhzjgjXEXIFb/v
-         7J7ZoUcOwTarrmA3X5j1xmeQYemg69GihSM58=
+        bh=44yiA3ypd9Z9fwxLK92nJoDxSjcY2FUyKf3kzqwUJOc=;
+        b=iVwq6CfNSEWonjlkLJQXRi/Cm0iUxxT/lq17x1VuDi2jMuBd5UqiT0VF1uybRg1VRq
+         zfnjXy9mkKEQolQC+sxlLW19vUBXi5GCKfnC8K8QDhVNbb2hpjgO8eGnL/KJWEV6lJCy
+         69Nos5MsEt5Ost6aGeqeUrd/QVHVj9AwlF9wHBMBlJdS/NshrnNbRPfyqgzcF4zkDK7G
+         3k7tN4cirrQD5EYAmob3YmlDYeddz8ZzveMrgQIvOsyAExDT8YN/DrOqJDmdCeJ8hFvG
+         uZrCBhW9p3WJS9qYlkeLTBe0hNhjgjwlxKLkFGg8aFWtPyjj45YOu9NbfWsbsGZYOfyo
+         6f/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/28pMZEAxPunJv3VDFxY9qRg4v622m5ASv9egU51f+c=;
-        b=hsgE8bNU55e+KZBo9TzcLL0fYX/YquU3ajobh7BOmP7jN/NKjNZ+n7WSqn9qzxIJG+
-         L6vPbfq1tsrFCeQkRdCkRZixno8DKScU4ttuAZmAWfl3DiLn0Np8mbMBpvUB1CtHun2e
-         ftkRkkbr9nFLkYIJ7VfWo86iaOy2CeaICeMqaXuvpXrfl7tM5bMkaAm50U8++cCGWEqA
-         7xF/FmsN2IMP82YEUf75jwZsJ4FtK8/Y54TXjiU7tfxuSlGaG9C5fAJP3M4P6Kr8CT5B
-         I3guwTGyTXfyUtdfZRb8NePzozr+tjUy/U/nehPNZf6iPaSsPnHld56wzHWHk3jCVm0u
-         yaDQ==
-X-Gm-Message-State: AOAM533lsHpVvTvsBJmo01M+jIIWug3rVehFcjf+qgeAwPTefrUxysid
-        x/vrqd+CHa4zbY3VFZjwWVTvmmqQ6TN1+w==
-X-Google-Smtp-Source: ABdhPJwMfk83slZBREYdVFKmUhKSS081f+VzKg/JpTyjeF8bBoUrnxDv8cF+at1Ga7myrzKHjHXsMQ==
-X-Received: by 2002:a37:9a84:: with SMTP id c126mr4787909qke.399.1614291418487;
-        Thu, 25 Feb 2021 14:16:58 -0800 (PST)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id 136sm4881877qko.12.2021.02.25.14.16.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Feb 2021 14:16:57 -0800 (PST)
-Received: by mail-yb1-f172.google.com with SMTP id d9so7013501ybq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:16:57 -0800 (PST)
-X-Received: by 2002:a25:ab54:: with SMTP id u78mr101535ybi.276.1614291417357;
- Thu, 25 Feb 2021 14:16:57 -0800 (PST)
+        bh=44yiA3ypd9Z9fwxLK92nJoDxSjcY2FUyKf3kzqwUJOc=;
+        b=OA60FjBFSWx9nPsKn/cRTPkTCp6vNYHSDMtvUbLRaX4AIZ8vuoGFr29zjaasiwPXUs
+         s2I44Xlc0IVu1Ywx29D8RuQBl/BDGqSSWyD1PCZfNtAx3HOBzZGIXUTU5rK4yLi+H4hm
+         vrfe/4C4R3F1h8vXWFy0g3jhfhBQU1sgAtwz2R5Y18yjjCRdRgrUtlzVzacOKKYXWEit
+         Nyu+KYtEoGQ0c94y3kC3oX126ohOsI6jCH9X9SpZTKnCFIGTQqUgiLiJTDMWeCHwKDIH
+         Q/HxJ5qBtSdfVuL0Y0R1tdRv/IgDm2HuyNhZ/d0FJ4QqPVx+nYdxAT7AKH9/pOGmq3cP
+         pN6w==
+X-Gm-Message-State: AOAM5312IPns488zckADh3kdkrS6r5+8hsb2PlXKCPSwOTTnY51bdqzL
+        Uw7CsCGXclTrNgQZ0786rTUTF5TcdT2qAtPPItt98w==
+X-Google-Smtp-Source: ABdhPJwvFoUfCTC8dTmdEf1tqOL0hY16jfa2aPfzu2EUETLRgHILXhnffm5SUXSanL/djuug7AXELkupurbAJ+g24V4=
+X-Received: by 2002:ae9:c00e:: with SMTP id u14mr4794568qkk.482.1614291434386;
+ Thu, 25 Feb 2021 14:17:14 -0800 (PST)
 MIME-Version: 1.0
-References: <1605526408-15671-1-git-send-email-srivasam@codeaurora.org>
-In-Reply-To: <1605526408-15671-1-git-send-email-srivasam@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 25 Feb 2021 14:16:45 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VipGLw+wqzb-ies2LK8esP3=PfFjpxubH2YYONQt5jCA@mail.gmail.com>
-Message-ID: <CAD=FV=VipGLw+wqzb-ies2LK8esP3=PfFjpxubH2YYONQt5jCA@mail.gmail.com>
-Subject: Re: [PATCH] Asoc: qcom: dts: Change MI2S GPIO configuration to pulldown
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <20210214000611.2169820-1-zzyiwei@android.com> <YC+ZQAwwb4RGgjDf@alley>
+ <CAKB3++YB3xftQFgSGQXKQucuid9sFywjN1E7nQ6QrqR96+heEg@mail.gmail.com>
+ <CAKB3++b4wnsh+Kbgk4U200hLQmudM28sK=s9e6mARpM-eZ2ZZw@mail.gmail.com>
+ <YDUkoTGk2G/GZj8w@alley> <CAKB3++Yf5cv8shHU0T1nqfNTgbknU1uMu54YXWqNGqXHpa_oAA@mail.gmail.com>
+ <YDYdoRwezfVsWS4W@alley>
+In-Reply-To: <YDYdoRwezfVsWS4W@alley>
+From:   =?UTF-8?B?WWl3ZWkgWmhhbmfigI4=?= <zzyiwei@android.com>
+Date:   Thu, 25 Feb 2021 14:17:04 -0800
+Message-ID: <CAKB3++YFqao5f4oZ2eX3GhLDChNx5EheXG-y9aUsReY3JETYtQ@mail.gmail.com>
+Subject: Re: [PATCH] kthread: add kthread_mod_pending_delayed_work api
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ilias Stamatis <stamatis.iliass@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Liang Chen <cl@rock-chips.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Nov 16, 2020 at 3:35 AM Srinivasa Rao Mandadapu
-<srivasam@codeaurora.org> wrote:
+On Wed, Feb 24, 2021 at 1:34 AM Petr Mladek <pmladek@suse.com> wrote:
 >
-> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+> On Tue 2021-02-23 14:29:37, Yiwei Zhang wrote:
+> > > > which is not cool because it will make the
+> > > > asynchronous effort a no-op. Is there a way we can include caller
+> > > > thread metadata(task_struct pointer?) when it enqueues the work so
+> > > > that the RT worker thread won't preempt the caller thread when that
+> > > > queued work gets scheduled? Probably require the CPU scheduler to poke
+> > > > at the next work...or any other ideas will be very appreciated,
+> > > > thanks!
+> > >
+> > > This sounds like a very strange use case.
+> > > Why is the worker kthread RT when the work can be delayed?
+> > >
+> > > If the kthread has to be RT because of another work then
+> > > your proposal will not work. The delayed processing of
+> > > low priority work might block and delay any pending
+> > > high priority work.
+> > >
+> > > You should consider handling the less important work in a separate
+> > > kthread worker with a lower priority or by the system workqueue.
+> >
+> > Just want to clarify that it's not about delayed_work any more. In my
+> > latest question, it's a RT thread with normal work queued and
+> > scheduled to be run immediately. However, I simply don't want the
+> > worker to preempt the thread that queues the work.
+> >
+> > It's a high prio work that we don't want other random tasks to preempt
+> > it. Meanwhile, we don't want it to preempt the called thread. In
+> > addition, assume we can't raise the priority of those caller
+> > threads(otherwise I'd be fine with using a workqueue).
 >
-> Change LPASS MI2S gpio configuration to pull down from pull up.
+> Honestly, it sounds weird to me. Either the caller or the
+> worker has higher priority.
 >
-> Fixes: 9b72f4e6a3f8 (arm64: dts: qcom: sc7180: Add lpass cpu node for I2S driver)
+> Well, I think that behavior could be achieved by
+> CONFIG_PREEMPT_NONE or CONFIG_PREEMPT_VOLUNTARY.
 >
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180.dtsi | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+> Anyway, this is rather a question for scheduler experts.
+> It is possible that it has some solution. But it is also
+> possible that it is so specific behavior and it would
+> complicate the scheduler too much.
+>
+> Best Regards,
+> Petr
 
-Should be replaced with:
-
-[PATCH 02/13] arm64: dts: qcom: Move sc7180 MI2S config to board files
-and make pulldown
-
-https://lore.kernel.org/r/20210225141022.2.Id27e7e6f90c29bf623fa4880e18a14ba1dffd2d2@changeid
-
--Doug
+Thanks for the pointers! I'll explore further with scheduling folks.
