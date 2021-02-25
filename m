@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901D332536A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4001232536E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:24:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbhBYQXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 11:23:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233688AbhBYQWi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:22:38 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E29C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 08:21:56 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id l8so5917661ybe.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 08:21:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/cP36naQj3qpC5i/IheYs6HlbPebR0MpDFfVJ183xi8=;
-        b=KeDpl/ntLDJO0xHlFgkxocqJLerEAuvIJ2EY3GHp0W3hUj+P/H80wjBdRtEMG9I6mk
-         mOgnF2arVx72Klh9ceuX9/gZrNp086hN7VWSm2CdPxWGVLlv/d3ygeohIOvkZz5l7Cyx
-         ZhFxLDCDeov/Avb6rWbqVkBHPzx5KAcHND5L3Oyd1ikRLLXkV4M2h1M2rxeBlmXO1FzC
-         h6wigFdFrnCmS2Ta1BenFcqq3z1TeWEZYayefvy101cUxA4uZ/76DzbLiVB0QDg4ef1t
-         RT0ZhWM3jjPl7MNJayNpq84oFbz/wj7Vm1HMTE9TGejYbOcy+PrX9l5mI0z5Sz0KgvLo
-         ksGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/cP36naQj3qpC5i/IheYs6HlbPebR0MpDFfVJ183xi8=;
-        b=CR69NnU6xOpS+POy7f8+XtjsocBJa/3Gt0Z3wKZzg1s7tDxO+7PMDaPL6JMS7rJVfe
-         9J0pPqNVWH5MXsNKaQh5IH8gkzDvhD8JeioS6ZO1ZQfpZzSvwh77af8Zx6PrahF8B2ik
-         ffdEGfKy9LoQQ5vKzwjc0CmeSMqEbqd9J7FFXUoBhhs3GTPa/Jya53t/kI7kjY6Tysq0
-         ikx5/UagIlxgOVbiAy0ysAwsOiSYsENgl8ROJEtR2oystNr3vXxuMSg2rsgOd5niYe6d
-         n9tKPwV7whYNZIcKslDhoiIEBwd3p7TJ4w/QoUEY4EieVG47Oa6jjozvcO3UvV32vBKJ
-         RH6w==
-X-Gm-Message-State: AOAM533Z/F5Qdine74SV9Pn2un67Y2GRD9O+Rt2pFR4d3PHzF/4AqClM
-        n6Kb6LUSWpvYyyUGTVClU/ZWUVJHU1cNzD3vtGdoKw==
-X-Google-Smtp-Source: ABdhPJwM8YNyUIdNGpLL8VN5EQjunqmqzPDS5sX6h/EAdG7KRABzywLAjcwqJL7G07M7ZbMubkIt94W1wIhCADUnp+I=
-X-Received: by 2002:a25:aa43:: with SMTP id s61mr5354227ybi.32.1614270115514;
- Thu, 25 Feb 2021 08:21:55 -0800 (PST)
+        id S233455AbhBYQYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 11:24:34 -0500
+Received: from foss.arm.com ([217.140.110.172]:39490 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230201AbhBYQY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 11:24:29 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A71CD6E;
+        Thu, 25 Feb 2021 08:23:43 -0800 (PST)
+Received: from e124901.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 81EBD3F73D;
+        Thu, 25 Feb 2021 08:23:41 -0800 (PST)
+Date:   Thu, 25 Feb 2021 16:23:46 +0000
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, qperret@google.com,
+        patrick.bellasi@matbug.net, valentin.schneider@arm.com
+Subject: Re: [PATCH v2 1/2] sched/fair: Fix task utilization accountability
+ in compute_energy()
+Message-ID: <20210225162346.GB1345245@e124901.cambridge.arm.com>
+References: <20210225083612.1113823-1-vincent.donnefort@arm.com>
+ <20210225083612.1113823-2-vincent.donnefort@arm.com>
+ <f2f5cf8e-3a0b-7192-5293-bad576e7066b@arm.com>
 MIME-Version: 1.0
-References: <20210215151405.2551143-1-geert+renesas@glider.be>
- <CAGETcx-c5P76JkB-upi8ArDqa=TrR3bJMnpDTO-59sh83opW8g@mail.gmail.com>
- <CAMuHMdVXCH+27cpC=-viQev1HeN_DkU0=7Dydp4G50z0bB2Ang@mail.gmail.com>
- <CAGETcx_B7r6DErnxzDngh_KW9a33f4+cHhvthzfEHX8pO0et8w@mail.gmail.com> <CAMuHMdXr99COTVHyostPLfYC7hezwOf9GfBi_oPfBPQu9nLB9Q@mail.gmail.com>
-In-Reply-To: <CAMuHMdXr99COTVHyostPLfYC7hezwOf9GfBi_oPfBPQu9nLB9Q@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 25 Feb 2021 08:21:19 -0800
-Message-ID: <CAGETcx8AYjq7jdGhNXZffg2Y_Jxn3RszuBeXJsRH8on8TC0A-g@mail.gmail.com>
-Subject: Re: [PATCH] staging: board: Fix uninitialized spinlock when attaching genpd
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f2f5cf8e-3a0b-7192-5293-bad576e7066b@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 1:25 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Mon, Feb 15, 2021 at 10:03 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Mon, Feb 15, 2021 at 11:10 AM Geert Uytterhoeven
-> > <geert@linux-m68k.org> wrote:
-> > > On Mon, Feb 15, 2021 at 7:37 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > On Mon, Feb 15, 2021 at 7:14 AM Geert Uytterhoeven
-> > > > > @@ -148,7 +149,11 @@ static int board_staging_add_dev_domain(struct platform_device *pdev,
-> > > > >         pd_args.np = np;
-> > > > >         pd_args.args_count = 0;
-> > > > >
-> > > > > -       return of_genpd_add_device(&pd_args, &pdev->dev);
-> > > > > +       /* Cfr. device_pm_init_common() */
-> > > >
-> > > > What's Cfr?
-> > >
-> > > "compare to" (from Latin "confer").
-> >
-> > Can you please change this to "refer to" or "similar to"? Also, not
-> > sure if this comment is even adding anything useful even if you switch
-> > the words.
->
-> I changed it to "Initialization similar to device_pm_init_common()"
->
-> > Also, device_pm_init_common() is used in two places outside of
-> > drivers/base/ with this change. Maybe better to move it to
-> > linux/device.h?
->
-> arch/sh/drivers/platform_early.c has a separate definition, and this
-> is intentional, cfr. commit 507fd01d53333387 ("drivers: move the early
-> platform device support to arch/sh"):
->
->     In order not to export internal drivers/base functions to arch code for
->     this temporary solution - copy the two needed routines for driver
->     matching from drivers/base/platform.c to arch/sh/drivers/platform_early.c.
->
+On Thu, Feb 25, 2021 at 12:45:06PM +0100, Dietmar Eggemann wrote:
+> On 25/02/2021 09:36, vincent.donnefort@arm.com wrote:
+> > From: Vincent Donnefort <vincent.donnefort@arm.com>
+> 
+> [...]
+> 
+> > cpu_util_next() estimates the CPU utilization that would happen if the
+> > task was placed on dst_cpu as follows:
+> > 
+> >   max(cpu_util + task_util, cpu_util_est + _task_util_est)
+> > 
+> > The task contribution to the energy delta can then be either:
+> > 
+> >   (1) _task_util_est, on a mostly idle CPU, where cpu_util is close to 0
+> >       and _task_util_est > cpu_util.
+> >   (2) task_util, on a mostly busy CPU, where cpu_util > _task_util_est.
+> > 
+> >   (cpu_util_est doesn't appear here. It is 0 when a CPU is idle and
+> >    otherwise must be small enough so that feec() takes the CPU as a
+> >    potential target for the task placement)
+> 
+> I still don't quite get the reasoning for (2) why task_util is used as
+> task contribution.
+> 
+> So we use 'cpu_util + task_util' instead of 'cpu_util_est +
+> _task_util_est' in (2).
+> 
+> I.e. since _task_util_est is always >= task_util during wakeup, cpu_util
+> must be > cpu_util_est (by more than _task_util_est - task_util).
+> 
+> I can see it for a CPU whose cpu_util has a fair amount of contributions
+> from blocked tasks which cpu_util_est wouldn't have.
+> 
+> [...]
 
-Thanks. The comments and decision to copy the code sounds okay to me.
-But I'll still leave the Ack/Review to Rafael or someone else as I'm
-not too familiar with the intent of this flag.
+Yes exactly. I discovered this issue in a trace where an overutilized happened.
+Many tasks were migrated to the biggest CPU, but once EAS was back on, it was too
+late. The big CPU had a high util_avg and the task_util _task_util_est
+unfairness kept placing tasks on that one, despite being inefficient. All the
+tasks enqueued on that CPU were enough to keep util_avg high enough and that
+situation wasn't resolving.
 
--Saravana
+> 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 7043bb0f2621..146ac9fec4b6 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6573,8 +6573,24 @@ compute_energy(struct task_struct *p, int dst_cpu, struct perf_domain *pd)
+> >  	 * its pd list and will not be accounted by compute_energy().
+> >  	 */
+> >  	for_each_cpu_and(cpu, pd_mask, cpu_online_mask) {
+> > -		unsigned long cpu_util, util_cfs = cpu_util_next(cpu, p, dst_cpu);
+> > -		struct task_struct *tsk = cpu == dst_cpu ? p : NULL;
+> > +		unsigned long util_freq = cpu_util_next(cpu, p, dst_cpu);
+> > +		unsigned long cpu_util, util_running = util_freq;
+> > +		struct task_struct *tsk = NULL;
+> > +
+> > +		/*
+> > +		 * When @p is placed on @cpu:
+> > +		 *
+> > +		 * util_running = max(cpu_util, cpu_util_est) +
+> > +		 *		  max(task_util, _task_util_est)
+> > +		 *
+> > +		 * while cpu_util_next is: max(cpu_util + task_util,
+> > +		 *			       cpu_util_est + _task_util_est)
+> > +		 */
+> 
+> Nit pick:
+> 
+> s/on @cpu/on @dst_cpu ?
+
+I meant @cpu. When dst_cpu == cpu, it means that we simulate the task being
+placed on cpu. That's what I wanted to highlight. But I can remove it if you
+think this is not necessary.
+
+> 
+> s/while cpu_util_next is/while cpu_util_next(cpu, p, cpu) would be
+> 
+> If dst_cpu != cpu (including dst_cpu == -1) task_util and _task_util_est
+> are not added to util resp. util_est.
+> 
+> Not sure if this is clear from the source code here?
+> 
+> [...]
+> 
+> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
