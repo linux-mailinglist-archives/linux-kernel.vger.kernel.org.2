@@ -2,120 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1247324E5D
+	by mail.lfdr.de (Postfix) with ESMTP id 704C7324E5C
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhBYKiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:38:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45742 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233797AbhBYKQw (ORCPT
+        id S235432AbhBYKhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:37:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234858AbhBYKQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:16:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614248125;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MXujrRAJUsdt7pmUSQ6eDC3ZVL38WWSlzY8hkivUSCQ=;
-        b=Kgt1VeMnQ3FnqiBxnsSNcCAvJDRwBLQOvBlc4xHZicCMuogPzXxdnOtpfFcjFeVN55YK48
-        b9rE0TVXBelmVsZ8nh2F3Cy5ICrpDpuooVzyUVB9j75iDHVk5ZQMl9fKUcXnbJ46EZvp0P
-        gSrhkHrtZAfFSpjWVNuOR8A3GJlB31A=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-7Ds2dMGFNuuSCfG5ptY4lA-1; Thu, 25 Feb 2021 05:15:23 -0500
-X-MC-Unique: 7Ds2dMGFNuuSCfG5ptY4lA-1
-Received: by mail-ed1-f72.google.com with SMTP id u1so287191edt.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:15:23 -0800 (PST)
+        Thu, 25 Feb 2021 05:16:44 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784DDC0617AB
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:16:26 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id o22so4811730pjs.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:16:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0atpWon12z4IWnuFWgpbQsyQr6nSoFQweJtAwwQcdzg=;
+        b=Nr5BqbxSOcyQWzKpp/SIuKrPwvxQi8Q+NaZCxHSiZbKbAa7GL+dL03bUeGe8+Da7W2
+         Wh2dyEXlJj21rZwW0q7mdkSY6Y0SBVbJGUE2n9VHhJIa4L2liA1vXmRseWAjFWK0jD01
+         EvnCG73mMk8Y5NSKJIBUTqCHAfBnBJJeMf1pA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=MXujrRAJUsdt7pmUSQ6eDC3ZVL38WWSlzY8hkivUSCQ=;
-        b=E2CIzgXth39vM/rFbktHeEETKoV5m2B4Lix7PzEVlWoM2fq0kngK9y3g0ovpukEWXZ
-         LlBP56zlerEr00SRpOrlvXoGMLFS1d8yy/962z30E6oK1uvjNkI7n1nmnD/CXtPVcytf
-         ZsgJx91wbh4PbvVBlclx/8Wukws5yZquTXNCS012g56EPaPPzoPcKRhfWFwQ129gv543
-         FabGu2mBrf6Jscz99BM6dmWAlWU38QmQXCskKrraitLfNJv/Sgma1QWBde3HkW5oMfjb
-         fYyRTzTc327IXbW0T1EivFZjsYUQW+ZoiL+Y1w9lQWztzsn3sJzNkq2C6okYa+VAR+5W
-         x7NA==
-X-Gm-Message-State: AOAM5312dNj8qOTBIoUGRLGHb+RZqa7AoMa+qmjnC5cooGe1wV9+Mstk
-        FaRt43NsbygDDzQBFo5FJnv2KNiwuqx9eVpdj+mskeLlzA+eum9dLySBXn0YuD10rnNAntBUAkl
-        KBAFEwR4J8Ay5c531+QOadKPP2nRv8GwS91sfPpre0Tzse1c/nMhls2lZ4TgSFXkFpKofsgGEAd
-        s5
-X-Received: by 2002:aa7:d416:: with SMTP id z22mr2058105edq.239.1614248122255;
-        Thu, 25 Feb 2021 02:15:22 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw0TIHDu679C70uKt6RpUNxITWbouvozeuVL51y0fVl2B4IaBlUl3kBP1Xe4ijNWM5MhvoMHg==
-X-Received: by 2002:aa7:d416:: with SMTP id z22mr2058090edq.239.1614248122092;
-        Thu, 25 Feb 2021 02:15:22 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id c9sm3230863edt.6.2021.02.25.02.15.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Feb 2021 02:15:21 -0800 (PST)
-Subject: Re: [PATCH] KVM: SVM: Fix nested VM-Exit on #GP interception handling
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210224005627.657028-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <3cd45ce5-fde0-eda1-9797-66d7d5212bd9@redhat.com>
-Date:   Thu, 25 Feb 2021 11:15:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=0atpWon12z4IWnuFWgpbQsyQr6nSoFQweJtAwwQcdzg=;
+        b=VWAwOvxUXn/hii/DQwTQ4gEXvw4ABwUUPzrNWytdkhwYFWvZuAcYjQXg8WXFGa9CEZ
+         J8UaUJv5jI26ZrOV8Sd01kOYXMCQn9kwCH0eUonoYwym77Pcef9KGqqPLOe1EMaZtf7a
+         kX5BA9Uju3/DYysnv0OJ5yIeassRuW6q47lgg9PpdX9trFI43UkdreX7v6HvLCz+oSAE
+         UU336e2c1+86FVzJ0U2CqCwax9IAhI1Xbh+BIqVoC6Ar8UlaKoWQ8ES7SPJx/An0EmUV
+         uXs4BMRW/e1sXRcWjTyIdfpsNftWIQLyJ0BlNWjfRLYUejykIsAZyp8BNoXjEszYZgjq
+         EuOA==
+X-Gm-Message-State: AOAM5328+yBCHTN1wiMLAjM63ZqngaAE4EX4k2dMF28D9pR1j47Lbny2
+        iqeHhoTQtnbsmUi6Ibz9Vu+kRg==
+X-Google-Smtp-Source: ABdhPJzBmqqLIz2rwI/0pS/Sl2SKlj6SwhdoQHrjNHnPKxBAWzEzxWx61d+Ngoc2E6AzBwVP2WUQsQ==
+X-Received: by 2002:a17:90a:d318:: with SMTP id p24mr2744855pju.122.1614248186008;
+        Thu, 25 Feb 2021 02:16:26 -0800 (PST)
+Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:2550:3154:2c53:b6e7])
+        by smtp.gmail.com with ESMTPSA id z2sm5848193pfc.8.2021.02.25.02.16.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 02:16:25 -0800 (PST)
+From:   Alexandre Courbot <acourbot@chromium.org>
+To:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Alexandre Courbot <acourbot@chromium.org>
+Subject: [PATCH v2 0/8] media: mtk-vcodec: vdec: support for MT8183
+Date:   Thu, 25 Feb 2021 19:16:04 +0900
+Message-Id: <20210225101612.2832444-1-acourbot@chromium.org>
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
 MIME-Version: 1.0
-In-Reply-To: <20210224005627.657028-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/02/21 01:56, Sean Christopherson wrote:
-> Fix the interpreation of nested_svm_vmexit()'s return value when
-> synthesizing a nested VM-Exit after intercepting an SVM instruction while
-> L2 was running.  The helper returns '0' on success, whereas a return
-> value of '0' in the exit handler path means "exit to userspace".  The
-> incorrect return value causes KVM to exit to userspace without filling
-> the run state, e.g. QEMU logs "KVM: unknown exit, hardware reason 0".
-> 
-> Fixes: 14c2bf81fcd2 ("KVM: SVM: Fix #GP handling for doubly-nested virtualization")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/svm/svm.c | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 14e41dddc7eb..c4f2f2f6b945 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2200,13 +2200,18 @@ static int emulate_svm_instr(struct kvm_vcpu *vcpu, int opcode)
->   		[SVM_INSTR_VMSAVE] = vmsave_interception,
->   	};
->   	struct vcpu_svm *svm = to_svm(vcpu);
-> +	int ret;
->   
->   	if (is_guest_mode(vcpu)) {
->   		svm->vmcb->control.exit_code = guest_mode_exit_codes[opcode];
->   		svm->vmcb->control.exit_info_1 = 0;
->   		svm->vmcb->control.exit_info_2 = 0;
->   
-> -		return nested_svm_vmexit(svm);
-> +		/* Returns '1' or -errno on failure, '0' on success. */
-> +		ret = nested_svm_vmexit(svm);
-> +		if (ret)
-> +			return ret;
-> +		return 1;
->   	}
->   	return svm_instr_handlers[opcode](vcpu);
->   }
-> 
+Here is the second version is this patchset, although there has been such a
+delay after the first one that probably nobody remembers it has even been sent.
 
-Queued, thanks.
+This series adds support for the stateless API into mtk-vcodec, by first
+separating the stateful ops into their own source file, and introducing a new
+set of ops suitable for stateless decoding. As such, support for stateful
+decoders should remain completely unaffected.
 
-Paolo
+This series has been tested with both MT8183 and MT8173. Decoding was working
+for both chips, and in the case of MT8173 no regression has been spotted.
+
+v4l2-compliance is also passing, minor a problem when testing requests on
+MT8183: the test tries to call S_EXT_CTRLS on the first available control,
+which happens to be V4L2_CID_MIN_BUFFERS_FOR_CAPTURE. Since this control is
+read-only, the driver returns -EACCESS. I suppose this is a problem with
+v4l2-compliance and not the driver.
+
+Alexandre Courbot (4):
+  media: mtk-vcodec: vdec: handle firmware version field
+  media: mtk-vcodec: support version 2 of decoder firmware ABI
+  media: add Mediatek's MM21 format
+  dt-bindings: media: document mediatek,mt8183-vcodec-dec
+
+Yunfei Dong (4):
+  media: mtk-vcodec: vdec: support stateless API
+  media: mtk-vcodec: vdec: support stateless H.264 decoding
+  media: mtk-vcodec: vdec: add media device if using stateless api
+  media: mtk-vcodec: enable MT8183 decoder
+
+ .../bindings/media/mediatek-vcodec.txt        |   1 +
+ .../media/v4l/pixfmt-reserved.rst             |   7 +
+ drivers/media/platform/Kconfig                |   2 +
+ drivers/media/platform/mtk-vcodec/Makefile    |   2 +
+ .../platform/mtk-vcodec/mtk_vcodec_dec.c      |  66 +-
+ .../platform/mtk-vcodec/mtk_vcodec_dec.h      |   9 +-
+ .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  44 +
+ .../mtk-vcodec/mtk_vcodec_dec_stateful.c      |   1 +
+ .../mtk-vcodec/mtk_vcodec_dec_stateless.c     | 427 +++++++++
+ .../platform/mtk-vcodec/mtk_vcodec_drv.h      |   9 +
+ .../mtk-vcodec/vdec/vdec_h264_req_if.c        | 808 ++++++++++++++++++
+ .../media/platform/mtk-vcodec/vdec_drv_if.c   |   3 +
+ .../media/platform/mtk-vcodec/vdec_drv_if.h   |   1 +
+ .../media/platform/mtk-vcodec/vdec_ipi_msg.h  |  23 +-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.c   |  43 +-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.h   |   5 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
+ include/uapi/linux/videodev2.h                |   1 +
+ 18 files changed, 1442 insertions(+), 11 deletions(-)
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateless.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
+
+--
+2.30.0.617.g56c4b15f3c-goog
 
