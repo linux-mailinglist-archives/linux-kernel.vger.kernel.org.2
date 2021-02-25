@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F82324DA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52AA324D5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232538AbhBYKJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:09:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34820 "EHLO mail.kernel.org"
+        id S232495AbhBYJ6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:58:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235497AbhBYJ63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:58:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8796F64F1A;
-        Thu, 25 Feb 2021 09:54:50 +0000 (UTC)
+        id S235279AbhBYJzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:55:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71C4D64EFA;
+        Thu, 25 Feb 2021 09:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246891;
+        s=korg; t=1614246849;
         bh=BViO87cLdkLb4nnIj22hLyjnw+zpQKuNU92oSogE66s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kEZDT3jNSHOg4MB/YujcsuM1UKta6j4niAI1dPY3QmWb5AuegORxPFnjZiBCcrgpM
-         cpwdA5tNzkhh5JDDF3IKb5Tpr0ECSCTWIHNQisi9y+x3T9zOuRFE3ZGnkP+QF0SvAI
-         WGX57shJH5bj6IjLkDr+LRE9lQPNfKT2l4K/fCsk=
+        b=aZ4qqPVQjpFLIrKw0tELFCBgmdSSDxxvgsFrHeI8uL3dkajeFxaBKr7wC/2j65Ayi
+         tAiZbyNbxq0KJKA/kRa0EXDI0Q8+4ELV1sf3Bjbr/R3mHYYW7BXU+uK8GGp4S743az
+         dhRgbLt3h+aGUc8KoXR474sh9bDLGHz6V3jVEfm4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 05/23] USB: quirks: sort quirk entries
-Date:   Thu, 25 Feb 2021 10:53:36 +0100
-Message-Id: <20210225092516.793075315@linuxfoundation.org>
+Subject: [PATCH 5.11 03/12] USB: quirks: sort quirk entries
+Date:   Thu, 25 Feb 2021 10:53:37 +0100
+Message-Id: <20210225092515.182454523@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210225092516.531932232@linuxfoundation.org>
-References: <20210225092516.531932232@linuxfoundation.org>
+In-Reply-To: <20210225092515.015261674@linuxfoundation.org>
+References: <20210225092515.015261674@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
