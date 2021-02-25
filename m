@@ -2,137 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD5D324CF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C35324D06
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbhBYJdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:33:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236398AbhBYJcE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:32:04 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEFE9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 01:31:23 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id i7so4597612wmb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 01:31:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=jt3f5PSlfrfTzXBF41UxrdtI2y14FBGpZCcDyrQYVAQ=;
-        b=IJpfGrK76fzW8EuyG7kHKBBEOgSacm7oP/+ohWVEy/DRpR9XmJ7DztCKbGz3bs16j/
-         LmzE4BneSaQhfntz+XQDv7xuEpRB/ocVUFeSUr1HcqVrxHDztSzLBFQJ9STxV8fXojwP
-         sZlEfAyJWr50BFmOjPfoUkzSvqWyqvdiZiq6hiU8cpxcUW8jUVY6LjEaUvO9z/pBalUS
-         FwOw9pnemFoEwJ8cp0nBAo9NAZMAZyNmtcj5OCV88S2LogMA4u89tT838zhsWBKT1prW
-         PwRj8pkmw63oC9LvMrSBcarmN+oQBZ7AOeuLuoriwoTc7RT/VmcxqKOqag6F54oi7+iA
-         MHMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jt3f5PSlfrfTzXBF41UxrdtI2y14FBGpZCcDyrQYVAQ=;
-        b=fBvdBTq94cMgTTaO4QEQMBtVgJoVPrircaHrKCc5OfAoU7VTUz7+VWWmH3wZl8pjAL
-         SrbQZ1peMuLzYWVmBtzPcIaTVvY5p1AhNuPcaVoqNTGGcOGvnQ0mLHF0HvjIeZJPzacY
-         BNchj297ra8jd9gsSbnibKw37wFjLIM8zyJr6w2a/lUFDm30gFx+zX6MezKDKDD6vPDg
-         mFwbUcTXAHOxh8qLBIFgMzwab4Jeqi/s1CbJv1uCSrw3oV61S/Kswjb56RwmIXxtxbft
-         6MW0BfeAMg0Ehl6LS97DSysSU2qEqFDNc7Xp84cChlp7BfKAIF2bV4PI3Ckx34iKMi+Y
-         CMZQ==
-X-Gm-Message-State: AOAM533Vav7+81HCtzJi+3K0dHxoOLPsPi+zn+1TXzAqbExKy9WH1p2d
-        44cogunHxlKnBonY2RXRu6XPkoqd4Zgx9A==
-X-Google-Smtp-Source: ABdhPJzJQp196fp6wfS00p90fvdltaQfTdWBcGPO3FoxTye4Rn/aqAvEgwqNBu2PcIBYkoZs7ADGYQ==
-X-Received: by 2002:a1c:a7d3:: with SMTP id q202mr2290120wme.93.1614245482639;
-        Thu, 25 Feb 2021 01:31:22 -0800 (PST)
-Received: from dell ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id w13sm7724031wrt.49.2021.02.25.01.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 01:31:22 -0800 (PST)
-Date:   Thu, 25 Feb 2021 09:31:20 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, sashal@kernel.org, tglx@linutronix.de,
-        wangle6@huawei.com, zhengyejian1@huawei.com
-Subject: Re: [PATCH] futex: fix dead code in attach_to_pi_owner()
-Message-ID: <20210225093120.GD641347@dell>
-References: <20210222125352.110124-1-nixiaoming@huawei.com>
- <YDdfASEcv7i/DxHF@kroah.com>
- <71a24b9b-2a65-57a1-55bb-95f7ec3287dd@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <71a24b9b-2a65-57a1-55bb-95f7ec3287dd@huawei.com>
+        id S236548AbhBYJgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:36:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47890 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232923AbhBYJd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:33:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9E5EDACCF;
+        Thu, 25 Feb 2021 09:32:45 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 10:32:45 +0100
+Message-ID: <s5hmtvsqypu.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Chris Chiu <chris.chiu@canonical.com>
+Cc:     tiwai@suse.com, kailang@realtek.com, jhp@endlessos.org,
+        kai.heng.feng@canonical.com, hui.wang@canonical.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable MICs of Acer SWIFT with ALC256
+In-Reply-To: <CABTNMG0O_z1tOqb=dR44zgasSL5m73ABpu+bj2WKK0+QWY-EEw@mail.gmail.com>
+References: <CABTNMG0O_z1tOqb=dR44zgasSL5m73ABpu+bj2WKK0+QWY-EEw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021, Xiaoming Ni wrote:
+On Thu, 25 Feb 2021 10:21:07 +0100,
+Chris Chiu wrote:
+> 
+> The Acer SWIFT Swift SF314-54/55 with ALC256 cannot detect the headset
+> microphone and suffers the noise problem in audio capture.
+> 
+> This patch enables the headset jack sense and fixes the noise problem with
+> aamix fixup.
+> 
+> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
 
-> On 2021/2/25 16:25, Greg KH wrote:
-> > On Mon, Feb 22, 2021 at 08:53:52PM +0800, Xiaoming Ni wrote:
-> > > From: Thomas Gleixner <tglx@linutronix.de>
-> > > 
-> > > The handle_exit_race() function is defined in commit c158b461306df82
-> > >   ("futex: Cure exit race"), which never returns -EBUSY. This results
-> > > in a small piece of dead code in the attach_to_pi_owner() function:
-> > > 
-> > > 	int ret = handle_exit_race(uaddr, uval, p); /* Never return -EBUSY */
-> > > 	...
-> > > 	if (ret == -EBUSY)
-> > > 		*exiting = p; /* dead code */
-> > > 
-> > > The return value -EBUSY is added to handle_exit_race() in upsteam
-> > > commit ac31c7ff8624409 ("futex: Provide distinct return value when
-> > > owner is exiting"). This commit was incorporated into v4.9.255, before
-> > > the function handle_exit_race() was introduced, whitout Modify
-> > > handle_exit_race().
-> > > 
-> > > To fix dead code, extract the change of handle_exit_race() from
-> > > commit ac31c7ff8624409 ("futex: Provide distinct return value when owner
-> > >   is exiting"), re-incorporated.
-> mainline:
-> ac31c7ff8624 futex: Provide distinct return value when owner is exiting
-> 
-> > > 
-> > > Fixes: c158b461306df82 ("futex: Cure exit race")
-> 
-> stable linux-4.9.y
-> 9c3f39860367 futex: Cure exit race
-> c27f392040e2 futex: Provide distinct return value when owner is exiting
-> 
-> > > Cc: stable@vger.kernel.org # 4.9.258-rc1
-> > > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-> > > ---
-> > >   kernel/futex.c | 6 +++---
-> > >   1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > What is the git commit id of this patch in Linus's tree?
-> > 
-> > Also, what kernel tree(s) is this supposed to go to?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > .
-> > 
-> Sorry, the commit id c158b461306df82 in the patch does not exist in the
-> linux-stable repository.
-> The commit ID is from linux-stable-rc.
-> 
-> I corrected the commit id in a subsequent email, and added a branch label.
-> https://lore.kernel.org/lkml/20210224100923.51315-1-nixiaoming@huawei.com/
+The patch seems broken due to the line break and cannot be applied
+cleanly.  Could you resubmit?
 
-Replied to the follow-up.
 
-> Sorry, I forgot to use "--in-reply-to=" when I sent the update patch.
+thanks,
+
+Takashi
+
+
+> ---
+>  sound/pci/hda/patch_realtek.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 > 
-> This issue occurs only in the linux-4.9.y branch v4.9.258
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 290645516313..57e4dbcd76a9 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -6372,6 +6372,8 @@ enum {
+>         ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
+>         ALC282_FIXUP_ACER_DISABLE_LINEOUT,
+>         ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST,
+> +       ALC256_FIXUP_ACER_SWIFT_NO_MIC_PRESENCE,
+> +       ALC256_FIXUP_ACER_SWIFT_DISABLE_AAMIX,
+>  };
+> 
+>  static const struct hda_fixup alc269_fixups[] = {
+> @@ -7815,6 +7817,22 @@ static const struct hda_fixup alc269_fixups[] = {
+>                 .chained = true,
+>                 .chain_id = ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
+>         },
+> +       [ALC256_FIXUP_ACER_SWIFT_NO_MIC_PRESENCE] = {
+> +               .type = HDA_FIXUP_PINS,
+> +               .v.pins = (const struct hda_pintbl[]) {
+> +                       { 0x19, 0x02a1113c }, /* use as headset mic,
+> without its own jack detect */
+> +                       { 0x1a, 0x90a1092f }, /* use as internal mic */
+> +                       { },
+> +               },
+> +               .chained = true,
+> +               .chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
+> +       },
+> +       [ALC256_FIXUP_ACER_SWIFT_DISABLE_AAMIX] = {
+> +               .type = HDA_FIXUP_FUNC,
+> +               .v.func = alc_fixup_disable_aamix,
+> +               .chained = true,
+> +               .chain_id = ALC256_FIXUP_ACER_SWIFT_NO_MIC_PRESENCE
+> +       },
+>  };
+> 
+>  static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+> @@ -7841,9 +7859,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>         SND_PCI_QUIRK(0x1025, 0x1246, "Acer Predator Helios 500",
+> ALC299_FIXUP_PREDATOR_SPK),
+>         SND_PCI_QUIRK(0x1025, 0x1247, "Acer vCopperbox",
+> ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS),
+>         SND_PCI_QUIRK(0x1025, 0x1248, "Acer Veriton N4660G",
+> ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE),
+> +       SND_PCI_QUIRK(0x1025, 0x1269, "Acer SWIFT SF314-54",
+> ALC256_FIXUP_ACER_SWIFT_DISABLE_AAMIX),
+>         SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G",
+> ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+>         SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G",
+> ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+>         SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G",
+> ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+> +       SND_PCI_QUIRK(0x1025, 0x129c, "Acer SWIFT SF314-55",
+> ALC256_FIXUP_ACER_SWIFT_DISABLE_AAMIX),
+>         SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890",
+> ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+>         SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21",
+> ALC233_FIXUP_ACER_HEADSET_MIC),
+>         SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T",
+> ALC255_FIXUP_ACER_HEADSET_MIC),
+> --
+> 2.20.1
+> 
