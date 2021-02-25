@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB68B325980
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F7532598A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbhBYWSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:18:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        id S232549AbhBYWUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:20:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234606AbhBYWQJ (ORCPT
+        with ESMTP id S234637AbhBYWQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:16:09 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A133C0611C0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:13:49 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id t11so4757279pgu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:13:49 -0800 (PST)
+        Thu, 25 Feb 2021 17:16:12 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEBFC0611C2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:13:50 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id n10so4744244pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:13:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DWfJgrkm+PiOhD7g8KXUD8ia7V1Lzy83q7sZnbzerdI=;
-        b=A/aRmSydE/uJYEhHY+s4KHoIPPxgRYmCY5N1mmrw2rW5mmZ+XMApgFAYNieqeFW9bP
-         R8oPJYyypqaixPSp52KTRAqNihidnvEfavgNdHzwrK/qGGM7bIYAZCstVhjU5fvT6PUz
-         AAh2vuza8Zlg38SFwI892+Gl0+GVqOeaOp+Oo=
+        bh=SRM09e0XG9iDpWuWB8nMTgOWrXG/nxGrXiBhekdNcJg=;
+        b=G0S7x75/R7r1fGd1saUoVxPFnqw4/sWhW8lHA755YPlAIbFsWyItvuVyfJxHXpasYz
+         MdE9DFSfjidLtDYjMjbZKBP5F3n6gyFnXe+Ud+TQqJTzl9+GlI3DQJDxcJATXvQxVctB
+         KZLThqNpqhP4hZFetX8vPgMsJNQRaWjjkTQJM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DWfJgrkm+PiOhD7g8KXUD8ia7V1Lzy83q7sZnbzerdI=;
-        b=VMO12n6lux/ZsZak6AaMvGrDn9GVGgGVHtiFioBlz9XFWrIJRf3hS7+txkRTPf/sF9
-         mgFjDh5BnRRuD8Lm/fO0XYiyzooAP6oSm23zT4h5LwPo53o970G5YBWRfI1DCYkgGFBs
-         myw3zZD9oEu2DfRsRyZ1k+YP/bk9B4MDwX7cdK6ATy/2BRrRyua6C8dFqlsdejxP7D7h
-         veI2zgkNc5gSqjbrDAwEJVyuV86oj0Q9dS0bwpaKsM06R4WKLt13nS0069w3jptd9zZe
-         HQ7E2VFkKEr32JVwgC7dkwjbsNHab4GzWhWccZx+Ey4LBKSc7JlhXg8Y4P/9jbpFyKCM
-         bWTA==
-X-Gm-Message-State: AOAM531rxhmf+OBS7VpUAGeREvHg0MayTYi8+Ralsqw3FFd8yegIzyqH
-        ptvt+ufy0DI0rP4D8ftjvhHULQ==
-X-Google-Smtp-Source: ABdhPJyRASVmSouq5LszmzLBjUuuxzI6kqNOdBDRujBCpa+n4UpgF79DeAwjNdtxwKoNGZsLUw1ZZA==
-X-Received: by 2002:a63:4f59:: with SMTP id p25mr8007pgl.335.1614291228656;
-        Thu, 25 Feb 2021 14:13:48 -0800 (PST)
+        bh=SRM09e0XG9iDpWuWB8nMTgOWrXG/nxGrXiBhekdNcJg=;
+        b=tUD5avnGRw3Mq+qdmUyAmAAQ3AXhhVFx6Mjzd0pdoXiVtVvCmgxRiRjHM/B1qqCPfh
+         PlzRY7shxW87pYZJ0WBfpf4DmM4BRgoGTin/AFtH+ecouS0LoPMQk1J8D/D8QU0mfQiy
+         HTZwkEtQ46z0kzn8aeLd3ScAkKSXvNy8Bd13QFYOfds0D5aVSbWiYD0JfmzYfOvP2mlD
+         l/rQYadOwUYvH5atCfji7BjulmR1WaSSJIanCfIIWyaBKi6K08hgOhpheS1HucHgkmz/
+         zWtfUNb7v8looVDIyAMS9RY/gVJRuRzMcOizChqwdivhWF1sBiPdtOlcD2Fzr3VrP2Vy
+         AZ8w==
+X-Gm-Message-State: AOAM530TPSzxBEV8tKSzQnudeRGzqMB2uEDb6GcFTCnIf0hJcJk+dyH3
+        z0bi2/Z51l7g51GZL66w9ppnhw==
+X-Google-Smtp-Source: ABdhPJzOJy70QJbhalFGwUvn2ysJjEn64L2lFRIGfvfjaBwOSoSgCdTggX5g0xWNGsYMrfaLKVMkLw==
+X-Received: by 2002:a63:e42:: with SMTP id 2mr60944pgo.100.1614291230149;
+        Thu, 25 Feb 2021 14:13:50 -0800 (PST)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:8414:45a5:94c4:d35d])
-        by smtp.gmail.com with ESMTPSA id jt21sm6713301pjb.51.2021.02.25.14.13.47
+        by smtp.gmail.com with ESMTPSA id jt21sm6713301pjb.51.2021.02.25.14.13.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 14:13:48 -0800 (PST)
+        Thu, 25 Feb 2021 14:13:49 -0800 (PST)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc:     Stephen Boyd <swboyd@chromium.org>,
         Alexandru M Stan <amstan@chromium.org>,
         Matthias Kaehlcke <mka@chromium.org>,
         Rob Clark <robdclark@chromium.org>,
-        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
+        Abhishek Kumar <kuabhs@chromium.org>,
+        Philip Chen <philipchen@chromium.org>,
         Douglas Anderson <dianders@chromium.org>,
         Andy Gross <agross@kernel.org>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 08/13] arm64: dts: qcom: sc7180: Remove clock for bluetooth on Trogdor
-Date:   Thu, 25 Feb 2021 14:13:05 -0800
-Message-Id: <20210225141022.8.I80c268f163e6d49a70af1238be442b5de400c579@changeid>
+Subject: [PATCH 09/13] arm64: dts: qcom: sc7180: add GO_LAZOR variant property for lazor
+Date:   Thu, 25 Feb 2021 14:13:06 -0800
+Message-Id: <20210225141022.9.I4a38fe64dd79c54af80d7e4ef5940f8cf4f86e75@changeid>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 In-Reply-To: <20210225221310.1939599-1-dianders@chromium.org>
 References: <20210225221310.1939599-1-dianders@chromium.org>
@@ -68,31 +69,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+From: Abhishek Kumar <kuabhs@chromium.org>
 
-Removed voting for RPMH_RF_CLK2 which is not required as it is
-getting managed by BT SoC through SW_CTRL line.
+For trogdor, in the latest board-2.bin file, new BDF with variant
+name GO_LAZOR has been introduced, so we need this property set, for
+GO_LAZOR BDF to be picked.
 
-Cc: Matthias Kaehlcke <mka@chromium.org>
-Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Cc: Philip Chen <philipchen@chromium.org>
+Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+[dianders: adjusted subject line and sort order]
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 12397e31bef6..05e3c3db2e9a 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -833,7 +833,6 @@ bluetooth: bluetooth {
- 		vddrf-supply = <&pp1300_l2c>;
- 		vddch0-supply = <&pp3300_l10c>;
- 		max-speed = <3200000>;
--		clocks = <&rpmhcc RPMH_RF_CLK2>;
- 	};
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+index 5efa04d0d256..6b10b96173e8 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+@@ -49,6 +49,10 @@ &trackpad {
+ 	interrupts = <58 IRQ_TYPE_EDGE_FALLING>;
  };
  
++&wifi {
++	qcom,ath10k-calibration-variant = "GO_LAZOR";
++};
++
+ /* PINCTRL - modifications to sc7180-trogdor.dtsi */
+ 
+ &trackpad_int_1v8_odl {
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
