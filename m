@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67C8324DDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6C2324E25
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234567AbhBYKQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:16:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33382 "EHLO mail.kernel.org"
+        id S235388AbhBYK0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:26:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234037AbhBYKAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:00:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D14B64F23;
-        Thu, 25 Feb 2021 09:55:31 +0000 (UTC)
+        id S235123AbhBYKBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 05:01:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D57E064F30;
+        Thu, 25 Feb 2021 09:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246932;
-        bh=UBu0Do1tJBKsqNSF6lz//geyXMo1BLqDEoi/eFKxZ9s=;
+        s=korg; t=1614246981;
+        bh=FOYkBGeqyDEKd26/v0UlNBNy5fH1sisv9RVQ0kgNT1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bn7gTzeZNN2ZDLi8x9qL/9N50EG0+DE7VeJ1TiG8xps2l4SBYtKkUdIl7qOgFDxad
-         9joMvt0RgEuQ6EVOqZsrDT0GD67DJDUKgWw7DTv8zDcYSShFlys4h3cGWWkm9oMGCh
-         MofJzP6GuTgUtyUHzRhDop6XIDVxY+WHoKpe4P84=
+        b=mDOVGIc4WZZrBlH5+OldKmdv7gwMCMen8XdPrDNrQcrpgNzOm/HnghDZ7JguAMxfm
+         FFhER5Y9Ub2lMLQhgNQN5lGqsLgiFkpTeibGkzJXzl21vZRwYM1JvToguRARfzoi70
+         4BE+BuGn1Yp2jH2PtrG+eixNvQVPVAXAhDn914Ns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Raju Rangoju <rajur@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 20/23] cxgb4: Add new T6 PCI device id 0x6092
-Date:   Thu, 25 Feb 2021 10:53:51 +0100
-Message-Id: <20210225092517.492816967@linuxfoundation.org>
+        stable@vger.kernel.org, Rolf Eike Beer <eb@emlix.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 5.4 07/17] scripts: use pkg-config to locate libcrypto
+Date:   Thu, 25 Feb 2021 10:53:52 +0100
+Message-Id: <20210225092515.360514382@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210225092516.531932232@linuxfoundation.org>
-References: <20210225092516.531932232@linuxfoundation.org>
+In-Reply-To: <20210225092515.001992375@linuxfoundation.org>
+References: <20210225092515.001992375@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raju Rangoju <rajur@chelsio.com>
+From: Rolf Eike Beer <eb@emlix.com>
 
-[ Upstream commit 3401e4aa43a540881cc97190afead650e709c418 ]
+commit 2cea4a7a1885bd0c765089afc14f7ff0eb77864e upstream.
 
-Signed-off-by: Raju Rangoju <rajur@chelsio.com>
-Link: https://lore.kernel.org/r/20210202182511.8109-1-rajur@chelsio.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Otherwise build fails if the headers are not in the default location. While at
+it also ask pkg-config for the libs, with fallback to the existing value.
+
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+Cc: stable@vger.kernel.org # 5.6.x
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/chelsio/cxgb4/t4_pci_id_tbl.h | 1 +
- 1 file changed, 1 insertion(+)
+ scripts/Makefile |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_pci_id_tbl.h b/drivers/net/ethernet/chelsio/cxgb4/t4_pci_id_tbl.h
-index 0c5373462cedb..0b1b5f9c67d47 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/t4_pci_id_tbl.h
-+++ b/drivers/net/ethernet/chelsio/cxgb4/t4_pci_id_tbl.h
-@@ -219,6 +219,7 @@ CH_PCI_DEVICE_ID_TABLE_DEFINE_BEGIN
- 	CH_PCI_ID_TABLE_FENTRY(0x6089), /* Custom T62100-KR */
- 	CH_PCI_ID_TABLE_FENTRY(0x608a), /* Custom T62100-CR */
- 	CH_PCI_ID_TABLE_FENTRY(0x608b), /* Custom T6225-CR */
-+	CH_PCI_ID_TABLE_FENTRY(0x6092), /* Custom T62100-CR-LOM */
- CH_PCI_DEVICE_ID_TABLE_DEFINE_END;
+--- a/scripts/Makefile
++++ b/scripts/Makefile
+@@ -10,6 +10,9 @@
  
- #endif /* __T4_PCI_ID_TBL_H__ */
--- 
-2.27.0
-
+ HOST_EXTRACFLAGS += -I$(srctree)/tools/include
+ 
++CRYPTO_LIBS = $(shell pkg-config --libs libcrypto 2> /dev/null || echo -lcrypto)
++CRYPTO_CFLAGS = $(shell pkg-config --cflags libcrypto 2> /dev/null)
++
+ hostprogs-$(CONFIG_BUILD_BIN2C)  += bin2c
+ hostprogs-$(CONFIG_KALLSYMS)     += kallsyms
+ hostprogs-$(CONFIG_LOGO)         += pnmtologo
+@@ -23,8 +26,9 @@ hostprogs-$(CONFIG_SYSTEM_EXTRA_CERTIFIC
+ 
+ HOSTCFLAGS_sortextable.o = -I$(srctree)/tools/include
+ HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
+-HOSTLDLIBS_sign-file = -lcrypto
+-HOSTLDLIBS_extract-cert = -lcrypto
++HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
++HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
++HOSTLDLIBS_extract-cert = $(CRYPTO_LIBS)
+ 
+ always		:= $(hostprogs-y) $(hostprogs-m)
+ 
 
 
