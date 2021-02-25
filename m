@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F943249E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF96E3249E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235269AbhBYEvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 23:51:49 -0500
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:36986
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S234965AbhBYEvo (ORCPT
+        id S234547AbhBYE5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 23:57:09 -0500
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:52655
+        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S232139AbhBYE5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 23:51:44 -0500
+        Wed, 24 Feb 2021 23:57:07 -0500
 Received: from centos7u5.localdomain (unknown [202.43.158.76])
-        by c1app2 (Coremail) with SMTP id AgINCgAnLLigLDdgI_4fAw--.56247S3;
-        Thu, 25 Feb 2021 12:50:40 +0800 (CST)
+        by c1app2 (Coremail) with SMTP id AgINCgBHTrriLTdg4QAgAw--.35049S3;
+        Thu, 25 Feb 2021 12:56:03 +0800 (CST)
 From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
 To:     akpm@linux-foundation.org
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Subject: [PATCH] mm/page_alloc: minor coding style tweaks
-Date:   Thu, 25 Feb 2021 12:50:13 +0800
-Message-Id: <1614228613-21754-1-git-send-email-daizhiyuan@phytium.com.cn>
+Subject: [PATCH] mm/filemap: minor coding style tweaks
+Date:   Thu, 25 Feb 2021 12:55:36 +0800
+Message-Id: <1614228936-22337-1-git-send-email-daizhiyuan@phytium.com.cn>
 X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AgINCgAnLLigLDdgI_4fAw--.56247S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYo7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87
-        Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-        4I1lc2xSY4AK67AK6r45MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2
-        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
-        ZFpf9x0JUYFAdUUUUU=
+X-CM-TRANSID: AgINCgBHTrriLTdg4QAgAw--.35049S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw13KFW5uF15AFy7WFyrCrg_yoW8XFW8pF
+        15G345C3y7Jw109r1DWayqva4Yg3W0gayjqry8Was09w1DKrnI9FyFgFWUAFy5Xr1kWr43
+        tw4Dt345Ww1YkrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
+        Gryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVW8JVWx
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUb4SoUU
+        UUU
 X-Originating-IP: [202.43.158.76]
 X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add whitespace to fix coding style issues, improve code reading.
+Delete whitespace to fix coding style issues, improve code reading.
 
 Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
 ---
- mm/page_alloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/filemap.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index ef5070f..c7c4991 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8603,7 +8603,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
- 	ret = __alloc_contig_migrate_range(&cc, start, end);
- 	if (ret && ret != -EBUSY)
- 		goto done;
--	ret =0;
-+	ret = 0;
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 6ff2a3f..20f27b6 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -3111,7 +3111,7 @@ vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf)
  
- 	/*
- 	 * Pages from [start, end) are within a MAX_ORDER_NR_PAGES
+ /* This is used for a general mmap of a disk file */
+ 
+-int generic_file_mmap(struct file * file, struct vm_area_struct * vma)
++int generic_file_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+ 	struct address_space *mapping = file->f_mapping;
+ 
+@@ -3136,11 +3136,11 @@ vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf)
+ {
+ 	return VM_FAULT_SIGBUS;
+ }
+-int generic_file_mmap(struct file * file, struct vm_area_struct * vma)
++int generic_file_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+ 	return -ENOSYS;
+ }
+-int generic_file_readonly_mmap(struct file * file, struct vm_area_struct * vma)
++int generic_file_readonly_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+ 	return -ENOSYS;
+ }
+@@ -3567,7 +3567,7 @@ ssize_t generic_perform_write(struct file *file,
+ ssize_t __generic_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	struct file *file = iocb->ki_filp;
+-	struct address_space * mapping = file->f_mapping;
++	struct address_space *mapping = file->f_mapping;
+ 	struct inode 	*inode = mapping->host;
+ 	ssize_t		written = 0;
+ 	ssize_t		err;
 -- 
 1.8.3.1
 
