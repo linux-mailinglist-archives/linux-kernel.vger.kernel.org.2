@@ -2,104 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD23D324C39
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2336324C3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235985AbhBYIrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 03:47:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235168AbhBYIrK (ORCPT
+        id S236006AbhBYItu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 03:49:50 -0500
+Received: from mo-csw1116.securemx.jp ([210.130.202.158]:60952 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232177AbhBYItj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 03:47:10 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2214C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 00:46:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0chbbTizAM4s+RnstfoLBGU6yV6ryXMRj6cwHmxWsO4=; b=k6HHV2W7YjVTYREl888DFS+XNX
-        35rEWttPio2L2lB3zTCqNYH3fmBHvBgodCdCtGafbTYaw5YS5yTmGYBu5ZtTnyWgQ/bl/ry+9EIse
-        wBSSNQF+aawn4wXBu75JuL/5XQH6cHKGWmY49y/d28RLs73Nl7RwnfY7DorHIjsfEDkNLhydVmFvJ
-        U6KU6CeZzCD5+g6lx6D3YS65Y3fzjDwG+dqVPOxvFKo8yU0qU9na7LeLDjBs6ziEJ9CErnZNjaRmN
-        YRFrP7vu5E0gWOVHsxXpuYMXthRDDvNJAtEmPepkIuZJTvgZ6mRJx+KqTqU4Fw9PDiAv7E1QJWVxz
-        aMDyNsrg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lFCHR-00ATzC-LB; Thu, 25 Feb 2021 08:46:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Thu, 25 Feb 2021 03:49:39 -0500
+Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 11P8lG6L026829; Thu, 25 Feb 2021 17:47:16 +0900
+X-Iguazu-Qid: 2wGra9XxFUulKTwMxY
+X-Iguazu-QSIG: v=2; s=0; t=1614242836; q=2wGra9XxFUulKTwMxY; m=3LZse+GcVvgYq21VFTdnN2QhZC92Dp5MRMb2uEy9Y9k=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1113) id 11P8lF6k012947
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 25 Feb 2021 17:47:15 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2C1E53010D2;
-        Thu, 25 Feb 2021 09:45:53 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E91CF20BC9281; Thu, 25 Feb 2021 09:45:52 +0100 (CET)
-Date:   Thu, 25 Feb 2021 09:45:52 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>
-Subject: Re: [PATCH 2/6] sched: Simplify migration_cpu_stop()
-Message-ID: <YDdjwIhoCWtlliD7@hirez.programming.kicks-ass.net>
-References: <20210224122439.176543586@infradead.org>
- <20210224131355.430014682@infradead.org>
- <jhjmtvt5vjn.mognet@arm.com>
+        (No client certificate requested)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 6D1BD1000DD;
+        Thu, 25 Feb 2021 17:47:15 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 11P8lE3N005672;
+        Thu, 25 Feb 2021 17:47:15 +0900
+Date:   Thu, 25 Feb 2021 17:47:13 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.4 04/35] iwlwifi: pcie: add a NULL check in
+ iwl_pcie_txq_unmap
+X-TSB-HOP: ON
+Message-ID: <20210225084713.msqf5bqh7j42l6jm@toshiba.co.jp>
+References: <20210222121013.581198717@linuxfoundation.org>
+ <20210222121017.933649049@linuxfoundation.org>
+ <20210225060446.auoymjxg5cuzlism@toshiba.co.jp>
+ <YDdccs3OacohZgFr@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="mret2h7hhsygveq2"
 Content-Disposition: inline
-In-Reply-To: <jhjmtvt5vjn.mognet@arm.com>
+In-Reply-To: <YDdccs3OacohZgFr@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 03:34:36PM +0000, Valentin Schneider wrote:
-> On 24/02/21 13:24, Peter Zijlstra wrote:
-> > @@ -1950,31 +1931,20 @@ static int migration_cpu_stop(void *data
-> >                       goto out;
-> >
-> >               if (pending) {
-> > -			p->migration_pending = NULL;
-> > +			if (p->migration_pending == pending)
-> > +				p->migration_pending = NULL;
-> >                       complete = true;
-> >               }
-> >
-> > -		/* migrate_enable() --  we must not race against SCA */
-> > -		if (dest_cpu < 0) {
-> > -			/*
-> > -			 * When this was migrate_enable() but we no longer
-> > -			 * have a @pending, a concurrent SCA 'fixed' things
-> > -			 * and we should be valid again. Nothing to do.
-> > -			 */
-> > -			if (!pending) {
-> > -				WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
-> > -				goto out;
-> > -			}
-> > -
-> 
-> This is fixed by 5+6, but at this patch I think you can have double
-> completions - I thought this was an issue, but briefly looking at
-> completion stuff it might not. In any case, consider:
-> 
->   task_cpu(p) == Y
-> 
->   SCA(p, X);
->                  SCA(p, Y);
-> 
-> 
-> SCA(p, Y) will uninstall SCA(p, X)'s pending and complete.
-> 
-> migration/Y kicked by SCA(p, X) will grab arg->pending, which is still
-> SCA(p, X)'s pending and also complete.
 
-Right, so I didn't really think too hard about the intermediate states,
-given it's all pretty buggered until at least 5. But yeah, double
-complete is harmless.
+--mret2h7hhsygveq2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Specifically, the refcount the stopper has should avoid the stack from
-getting released.
+Hi,
+
+On Thu, Feb 25, 2021 at 09:14:42AM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Feb 25, 2021 at 03:04:46PM +0900, Nobuhiro Iwamatsu wrote:
+> > Hi,
+> > 
+> > Sorry for the report after the release.
+> > 
+> > On Mon, Feb 22, 2021 at 01:36:00PM +0100, Greg Kroah-Hartman wrote:
+> > > From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+> > > 
+> > > [ Upstream commit 98c7d21f957b10d9c07a3a60a3a5a8f326a197e5 ]
+> > > 
+> > > I hit a NULL pointer exception in this function when the
+> > > init flow went really bad.
+> > > 
+> > > Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+> > > Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+> > > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> > > Link: https://lore.kernel.org/r/iwlwifi.20210115130252.2e8da9f2c132.I0234d4b8ddaf70aaa5028a20c863255e05bc1f84@changeid
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > ---
+> > >  drivers/net/wireless/iwlwifi/pcie/tx.c | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > > 
+> > > diff --git a/drivers/net/wireless/iwlwifi/pcie/tx.c b/drivers/net/wireless/iwlwifi/pcie/tx.c
+> > > index 8dfe6b2bc7031..cb03c2855019b 100644
+> > > --- a/drivers/net/wireless/iwlwifi/pcie/tx.c
+> > > +++ b/drivers/net/wireless/iwlwifi/pcie/tx.c
+> > > @@ -585,6 +585,11 @@ static void iwl_pcie_txq_unmap(struct iwl_trans *trans, int txq_id)
+> > >  	struct iwl_txq *txq = &trans_pcie->txq[txq_id];
+> > >  	struct iwl_queue *q = &txq->q;
+> > >  
+> > > +	if (!txq) {
+> > > +		IWL_ERR(trans, "Trying to free a queue that wasn't allocated?\n");
+> > > +		return;
+> > > +	}
+> > > +
+> > 
+> > I think that this fix is not enough.
+> > If txq is NULL, an error will occur with "struct iwl_queue * q = & txq->q;".
+> > The following changes are required.
+> 
+> Is this a 4.4-only thing, or is this issue also in Linus's tree as well?
+> If Linus's tree, please submit this as a normal patch so we can apply it
+> there first.
+
+I did not have enough explanation.
+
+This issue is only 4.4.y tree. The same patch has been applied to the
+other trees, but with the correct fixes.
+Also this issue is not in Linus's tree. This is due to incorrect fixes
+in this commit.
+
+I attached a patch for this issue.
+
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+Best regards,
+  Nobuhiro
+
+--mret2h7hhsygveq2
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-iwlwifi-pcie-fix-to-correct-null-check.patch"
+
+From 85913eb9a7b61e2baae3818e69afe79b76e122d2 Mon Sep 17 00:00:00 2001
+From: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Date: Thu, 25 Feb 2021 17:30:47 +0900
+Subject: [PATCH] iwlwifi: pcie: fix to correct null check
+
+The fixes made in commit: 4ae5798004d8 ("iwlwifi: pcie: add a NULL check in
+iwl_pcie_txq_unmap") is not enough. This still have problems with null
+references. This provides the correct fix.
+Also, this is a problem only in 4.4.y. This patch has been applied to
+other LTS trees, but with the correct fixes.
+
+Fixes: 4ae5798004d8 ("iwlwifi: pcie: add a NULL check in iwl_pcie_txq_unmap")
+Cc: stable@vger.kernel.org
+Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
+---
+ drivers/net/wireless/iwlwifi/pcie/tx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/iwlwifi/pcie/tx.c b/drivers/net/wireless/iwlwifi/pcie/tx.c
+index cb03c2855019..7584796131fa 100644
+--- a/drivers/net/wireless/iwlwifi/pcie/tx.c
++++ b/drivers/net/wireless/iwlwifi/pcie/tx.c
+@@ -583,13 +583,15 @@ static void iwl_pcie_txq_unmap(struct iwl_trans *trans, int txq_id)
+ {
+ 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
+ 	struct iwl_txq *txq = &trans_pcie->txq[txq_id];
+-	struct iwl_queue *q = &txq->q;
++	struct iwl_queue *q;
+ 
+ 	if (!txq) {
+ 		IWL_ERR(trans, "Trying to free a queue that wasn't allocated?\n");
+ 		return;
+ 	}
+ 
++	q = &txq->q;
++
+ 	spin_lock_bh(&txq->lock);
+ 	while (q->write_ptr != q->read_ptr) {
+ 		IWL_DEBUG_TX_REPLY(trans, "Q %d Free %d\n",
+-- 
+2.30.0.rc2
+
+
+--mret2h7hhsygveq2--
