@@ -2,75 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1A83248BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 03:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2A83248C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 03:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236586AbhBYCE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 21:04:29 -0500
-Received: from mga12.intel.com ([192.55.52.136]:11237 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236625AbhBYCEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 21:04:23 -0500
-IronPort-SDR: dcHnqP8ZhpsSHKcqG9WVXhvJZs+6wCnLp8gM/A9G5oEwXV3N92N496jng/wFidZsB4RfnA5C9g
- +7dufUOt9nwg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="164600846"
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="164600846"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 18:02:31 -0800
-IronPort-SDR: YOAAxv/VPQMb8k0UAuMjlTPE/mMIrCB9QshiZaeenDxclCZ5pjuacKNoquEI6xPOVIZ+CThEPL
- ykzEfnlEtBWA==
-X-IronPort-AV: E=Sophos;i="5.81,203,1610438400"; 
-   d="scan'208";a="391885944"
-Received: from unknown (HELO [10.238.130.200]) ([10.238.130.200])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2021 18:02:28 -0800
-Subject: Re: [PATCH v1] kvm: x86: Revise guest_fpu xcomp_bv field
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, pbonzini@redhat.com,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210208161659.63020-1-jing2.liu@linux.intel.com>
- <4e4b37d1-e2f8-6757-003c-d19ae8184088@intel.com>
- <YCFzztFESzcnKRqQ@google.com>
- <c33335d3-abbe-04e0-2fa1-47f57ad154ac@linux.intel.com>
- <YDPWn70DTA64psQb@google.com>
- <9d23ae5b-9b85-88d7-a2d7-44fd75a068b9@linux.intel.com>
- <YDa5saYSU+Zrr8e+@google.com>
-From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
-Message-ID: <acf225f2-5783-8a2d-a060-e58aad28e8de@linux.intel.com>
-Date:   Thu, 25 Feb 2021 10:02:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <YDa5saYSU+Zrr8e+@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S236245AbhBYCPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 21:15:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234637AbhBYCP1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 21:15:27 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69432C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 18:14:41 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id v62so4389413ybb.15
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 18:14:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=d7qjpU8XKEfBqlMiCyPh8nFPbvWh1eJ63+H3QFuie5Y=;
+        b=UMLqTstxNUBx26sg6GLN6yLQPAjd2tgC7PtHCBbHKD4iSU1KIibkTuyxM4iqtkGaCg
+         Ir5emR92f/9DRcZXi+gQ01lXg0qFQy1IjrPYgogIJyIzp/E/dzz+RuR4G4xHh4rpFSjE
+         KxRt4gnRJ0ElbEoeuEI1i3RJ0Svq53VVxRgipBXKZ7oUcdEIDkZjEmqnhG9Z4/by8xpb
+         uhmiPiMYSHUi2h34aYQdi73+ZbPCms3CJAaw/DEiQB5utN3e7pP0npwWSMuGcu0Q1DRK
+         IL8TaM0PNMCbmKdnu6yJ9/5IVHqXEzbuNYDLaEagmMRZl+VZ3N6UNqlAJRaP1ZOfpxl3
+         RCPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=d7qjpU8XKEfBqlMiCyPh8nFPbvWh1eJ63+H3QFuie5Y=;
+        b=eGgy3CuApF17Y3mylUEvL4ua3e2Q4G1Q6X71khbEJuJTPjqzzcr+X8ghNlP2iobDEP
+         teddL7GfcfkSkHxsqLvcE1VEcfKVWZsmOoXWWIuN9OPPmVPWIA11b1iKnBuMBczxcNrN
+         m9G6l4O3YiU2IR7LTtJJqUPXnOvwhAVGAUREGjf6N82cCwh4l+3toNvoUMDWbj/Jr5Or
+         P7Ou1NV1Uk8BSOA3xs2FeO8KC+cW8RMf+dcjhSxyHjMA4YJBIkW/bTa8spvc1MHm9mmT
+         QldA4r3HZ6sHPzk93AHbH8dSzhmLyeve8ldFT0MH/RKaVukkoGfFraV1CFisOuQ75HBL
+         ahIA==
+X-Gm-Message-State: AOAM530zBc+LKrzfz2syrTOaI/jb35YSlnYl4xR3w7H9XxvAG1JqGKaZ
+        OKrhWqF0L4mQDcVjmIhJ84r/zgVhAdEEzgEEKaaH
+X-Google-Smtp-Source: ABdhPJw98ig0Yji2QsABXFSreCF+ogXsubw5CFDtC6GaaoOwFYEUFPOQp0YULt8aO2A/kWa9cWqMeli63FZEp52R2m/7
+Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:a5fd:f848:2fdf:4651])
+ (user=axelrasmussen job=sendgmr) by 2002:a25:8112:: with SMTP id
+ o18mr902059ybk.208.1614219280483; Wed, 24 Feb 2021 18:14:40 -0800 (PST)
+Date:   Wed, 24 Feb 2021 18:14:15 -0800
+Message-Id: <20210225021420.2290912-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+Subject: [PATCH 0/5] userfaultfd: support minor fault handling for shmem
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>, Wang Qing <wangqing@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Base
+====
 
+This series is based on top of my series which adds minor fault handling for
+hugetlbfs [1]. (And, therefore, it is based on linux-next/akpm and Peter Xu's
+series for disabling huge pmd sharing as well.)
 
-On 2/25/2021 4:40 AM, Sean Christopherson wrote:
-> On Tue, Feb 23, 2021, Liu, Jing2 wrote:
->> XCOMP_BV[63] field indicates that the save area is in the
->> compacted format and XCOMP_BV[62:0] indicates the states that
->> have space allocated in the save area, including both XCR0
->> and XSS bits enable by the host kernel. Use xfeatures_mask_all
->> for calculating xcomp_bv and reuse XCOMP_BV_COMPACTED_FORMAT
->> defined by kernel.
-> Works for me, just please wrap at ~73-75 chars, not ~64.
->
-> Thanks!
-Sure, let me update v2.
+[1] https://lore.kernel.org/patchwork/cover/1384095/
 
-BRs,
-Jing
+Overview
+========
+
+See my original series linked above for a detailed overview of minor fault
+handling in general. The feature in this series works exactly like the
+hugetblfs version (from userspace's perspective).
+
+I'm sending this as a separate series because:
+
+- The original minor fault handling series has been through several rounds of
+  review and seems close to being merged, so it seems reasonable to start
+  looking at this next step.
+
+- shmem is different enough that this series may require some additional work
+  before it's ready, and I don't want to delay the original series
+  unnecessarily by bundling them together.
+
+Use Case
+========
+
+In some cases it is useful to have VM memory backed by tmpfs instead of
+hugetlbfs. So, this feature will be used to support the same VM live migration
+use case described in my original series.
+
+Additionally, Android folks (Lokesh Gidra <lokeshgidra@google.com>) hope to
+optimize the Android JVM garbage collector using this feature (a paper
+describing a somewhat similar approach: https://arxiv.org/pdf/1902.04738.pdf).
+
+Axel Rasmussen (5):
+  userfaultfd: support minor fault handling for shmem
+  userfaultfd/selftests: use memfd_create for shmem test type
+  userfaultfd/selftests: create alias mappings in the shmem test
+  userfaultfd/selftests: reinitialize test context in each test
+  userfaultfd/selftests: exercise minor fault handling shmem support
+
+ fs/userfaultfd.c                         |   6 +-
+ include/linux/shmem_fs.h                 |  26 +-
+ include/uapi/linux/userfaultfd.h         |   4 +-
+ mm/memory.c                              |   8 +-
+ mm/shmem.c                               |  88 +++----
+ mm/userfaultfd.c                         |  27 +-
+ tools/testing/selftests/vm/userfaultfd.c | 322 +++++++++++++++--------
+ 7 files changed, 293 insertions(+), 188 deletions(-)
+
+--
+2.30.0.617.g56c4b15f3c-goog
 
