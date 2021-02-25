@@ -2,114 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691C43249DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA15F3249DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 05:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234833AbhBYEqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 23:46:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233938AbhBYEpb (ORCPT
+        id S234438AbhBYEsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 23:48:20 -0500
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:46752
+        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S235189AbhBYErq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 23:45:31 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4E9C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 20:44:50 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id x22so836690lfc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 20:44:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KB5JhlgmS5BmydzLq9Py6A6KtaOeupVMCxOq1ee3I5A=;
-        b=oEgJPsjr3GwDx4EieM3zreXhqsLnn5vLNP9C7yzu9QqPWSnuZOYOqx4EkFaSCmmVpn
-         PSFLqxERn6xBdsKbFbBd3/6gn+dY5wHpga1tMediFaG2wVxW8zMzjeQfohqk79jJmmmV
-         5bE5xBWSXTXelmjDJMYlabAZVqtwmIWq4rGTm6M6LsRXQf501d3lYYAdFHyqeOeAhCEY
-         dx7KHxjIF+QVDulG+RUcqSKUn6YI3QnLC/Y7xNA2eTfOC8rAxkq1fyxCdPepwkj50tin
-         9eEjaAjSPwc0DDMaSrg3SHogJODdP1nroIHZ2HEI8T8ReHNnZiwpQkc6hch6etkQokru
-         93QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KB5JhlgmS5BmydzLq9Py6A6KtaOeupVMCxOq1ee3I5A=;
-        b=ukMdDnhMLH9RwsV92E+nVa4MAgZUzznOerS6TzlutnpC9nJCN8ybtoLegheRMSkqd4
-         xgsyWg7RnFf4LUQIqKMel8r2rRfsra5toyBIq3wSoKPB6r1Ea/zSJKUP5J6qvXfQQ39S
-         xPz7MVyxftCAB9Ul3JbpkJpihBTwvq3gokbgorpBA4if7voQTCO31bwJm2P0mZHFbw31
-         kY0+zLwxtzStmLCMnaBRrr0wNx+WTDP98tz8yJiRLRg8+szX+2pU9DK01/b+fDct29WL
-         wl4HgXpfgtju6RaxO/1H05YjQg2uu8OCxJsD9kPPIV9tQXNZ0tt5jNLBglvgiaJnAOqi
-         Y+Mg==
-X-Gm-Message-State: AOAM532E6YwrgCIDfnbY3j/GV8faqoraiL+td3Yv66ujHGMOkbGLa+8K
-        E3Zb7XqwK1B/OWaMK65CE05R2VgNP07tLJuRfJFEYA==
-X-Google-Smtp-Source: ABdhPJwiUGaO+d+ipUZgM4gZGa9mAQUnDYLyKbHj9CJRH/M9xve9lAOtTkPa2TIsSPpduor9oqxQpCj+fadwB6R7d6Q=
-X-Received: by 2002:a19:5609:: with SMTP id k9mr774375lfb.589.1614228289206;
- Wed, 24 Feb 2021 20:44:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20210225040032.684590-1-lzye@google.com> <YDcoduCkBjC8EM3F@google.com>
-In-Reply-To: <YDcoduCkBjC8EM3F@google.com>
-From:   Chris Ye <lzye@google.com>
-Date:   Wed, 24 Feb 2021 20:44:37 -0800
-Message-ID: <CAFFuddKYhOV8NY9vqrmzRNe0P_n0H+zzAMarV9iGc_qt=+40xg@mail.gmail.com>
-Subject: Re: [PATCH] Input: Add "Share" button to Microsoft Xbox One controller.
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Chris Ye <linzhao.ye@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, trivial@kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 24 Feb 2021 23:47:46 -0500
+Received: from centos7u5.localdomain (unknown [202.43.158.76])
+        by c1app2 (Coremail) with SMTP id AgINCgDHzfmkKzdguvsfAw--.8688S3;
+        Thu, 25 Feb 2021 12:46:28 +0800 (CST)
+From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Subject: [PATCH] mm/oom_kill: minor coding style tweaks
+Date:   Thu, 25 Feb 2021 12:46:00 +0800
+Message-Id: <1614228360-21168-1-git-send-email-daizhiyuan@phytium.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AgINCgDHzfmkKzdguvsfAw--.8688S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrGF1UWF15Ar45Xr1fGF4xXrb_yoWxXFXE93
+        4qkrWjg34xWryayFnFqrsIqrWIgw45ur18ZFn2qrWUta4qvr15WF4DGw4kZFy3ur1jqFy7
+        Z3srXrW7Ars8AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        XwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr
+        0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUbvtCUUUUU
+X-Originating-IP: [202.43.158.76]
+X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
-The latest Xbox One X series has this button, I can add a new
-XTYPE_XBOXONE_X and only apply the change to the new type.
-The controller supports bluetooth and the HID usage for this button is
-consumer 0xB2:
-0x05, 0x0C,        //   Usage Page (Consumer)
-0x0A, 0xB2, 0x00,  //   Usage (Record)
+Add whitespace to fix coding style issues, improve code reading.
 
-Thanks!
-Chris
+Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+---
+ mm/oom_kill.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Wed, Feb 24, 2021 at 8:33 PM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> Hi Chris,
->
-> On Thu, Feb 25, 2021 at 04:00:32AM +0000, Chris Ye wrote:
-> > Add "Share" button input capability and input event mapping for
-> > Microsoft Xbox One controller.
-> > Fixed Microsoft Xbox One controller share button not working under USB
-> > connection.
-> >
-> > Signed-off-by: Chris Ye <lzye@google.com>
-> > ---
-> >  drivers/input/joystick/xpad.c | 16 ++++++++++++++--
-> >  1 file changed, 14 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-> > index 9f0d07dcbf06..08c3e93ccb2f 100644
-> > --- a/drivers/input/joystick/xpad.c
-> > +++ b/drivers/input/joystick/xpad.c
-> > @@ -368,6 +368,14 @@ static const signed short xpad360_btn[] = {  /* buttons for x360 controller */
-> >       -1
-> >  };
-> >
-> > +static const signed short xpad_xboxone_btn[] = {
-> > +     /* buttons for xbox one controller */
-> > +     BTN_TL, BTN_TR,         /* Button LB/RB */
-> > +     BTN_MODE,               /* The big X button */
-> > +     KEY_RECORD,             /* The share button */
->
-> If I understand this correctly, not all Xbox One controllers have this
-> new key. Is it possible to determine if it is present and only set
-> capability for controllers that actually have it?
->
-> Also, I am unsure if KEY_RECORD is the best keycode for this. It might,
-> but does your controller supports bluetooth? What HID usage code does it
-> send for this key?
->
-> Thanks.
->
-> --
-> Dmitry
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index c9a33ff..dd12dad7 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -994,7 +994,7 @@ static void oom_kill_process(struct oom_control *oc, const char *message)
+ 	if (oom_group) {
+ 		mem_cgroup_print_oom_group(oom_group);
+ 		mem_cgroup_scan_tasks(oom_group, oom_kill_memcg_member,
+-				      (void*)message);
++				      (void *)message);
+ 		mem_cgroup_put(oom_group);
+ 	}
+ }
+-- 
+1.8.3.1
+
