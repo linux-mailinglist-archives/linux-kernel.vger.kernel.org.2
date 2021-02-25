@@ -2,267 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B34932540E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F53325410
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234247AbhBYQwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 11:52:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbhBYQsf (ORCPT
+        id S234429AbhBYQxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 11:53:04 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:51698 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234017AbhBYQtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:48:35 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8097DC061786;
-        Thu, 25 Feb 2021 08:47:54 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id i21so4400503oii.2;
-        Thu, 25 Feb 2021 08:47:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=az6/5sv7SGsBjh1i/c65JEKtmkb6vMifZ9O5uEmeCso=;
-        b=lJGOWRTwXqDp8SeQjTd1iuKQ4lPVeIuZsbUlwi71ZQVPgh8VfYTv2HK3wrY7rndb/J
-         MeYevG4HAIYx3z0G1dIYHKBvyZYPnQHKE0YgvbYfttPIICUM6VTbKKZ94PrAjaHSaIP8
-         lDHBLjWiEpK6RkhEM+T79WIv0YRq31YxgsrY+aPx5zDnS3v7Qnv5pdV3DsN+n8imGmeI
-         7YZpdasAEN+3Hu1O7R0qLCpi3DC3H7FIMkUISVBKbPPt9FusL3Qyvy41m8+T3qygJMeL
-         ivfnvtRZxbvNPJ0rUIyPScjoKwuulQgvlTJeJD1sYMKrOACdtwpNibjdmPvU2Exb5NkN
-         niJA==
+        Thu, 25 Feb 2021 11:49:00 -0500
+Received: by mail-il1-f198.google.com with SMTP id y11so4766297ilc.18
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 08:48:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=az6/5sv7SGsBjh1i/c65JEKtmkb6vMifZ9O5uEmeCso=;
-        b=V1VXfNJDomZ7e0tPhnq0toCDlktTzzM3N0y8p7Cu7MQORCDHWp3w+ZO6QAy4GZHUMp
-         YWJbJQV8SqP1ac1rDlreTsE+KUhl1a7t3s0XWoTts2pZl5hyj+/ivo31B+P3UOSlXT/1
-         wlznvlLIC4RcX/d0vkzZMzI/AHxPxWFo2nRsiJ5J3omvK1fLj/wtEV33ko94xCD5RCxM
-         808hOF3DRi4IsdLfmKjGQJ4lodxyUjc/JbudLlASvrU7S9B3xojtpqEdWPNbLXmJKQio
-         qqlnfK5I2pXBCfLNhvTnCnOadQkpgtTXZc0pvfYGvfQ5P2kMdF81bXhO1WidQWwhyOJY
-         7XpA==
-X-Gm-Message-State: AOAM5338hDSsBCCejqMmuxdoh8yf0IIvfSlutJJxPbuqI3x9vAt4b5IY
-        MqEB6ss94W2ddIm2DIw5QCk=
-X-Google-Smtp-Source: ABdhPJyNXhvv74P8RFan/9aB+RJmNZR+69bnq9a1MXWTFEExRveSpjRP0Y1ye2KazypNBk7g195gqg==
-X-Received: by 2002:aca:4bc5:: with SMTP id y188mr2560988oia.135.1614271673946;
-        Thu, 25 Feb 2021 08:47:53 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n1sm1165457oog.31.2021.02.25.08.47.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Feb 2021 08:47:53 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 1/4] dt-bindings: mfd: Add bindings for Ampere Altra SMPro
- drivers
-To:     Quan Nguyen <quan@os.amperecomputing.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        openbmc@lists.ozlabs.org
-Cc:     Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-References: <20210225101854.13896-1-quan@os.amperecomputing.com>
- <20210225101854.13896-2-quan@os.amperecomputing.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <9f3845c5-ee4b-76d6-82dd-fa838f8f44ba@roeck-us.net>
-Date:   Thu, 25 Feb 2021 08:47:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=bm5KVUwsuOTCPxuT3237AJb+zASH625uTeaABViY/E4=;
+        b=Qm+rY1coe5r0hHgqoxX9gTh6YA5jnRG5uIaO15mYyoskJ0NzNOiCwjHDeTJuLXzy1b
+         hhIhcBUvm3FAtyyRCDUl8QJZ8t+a3uiVN5wjaW2/zsBjrf55x7yYa0bKQdx5TdESsgBF
+         8U0JoBarulL7o3CvTt6o6w2agcmD+u8FQW0dTFvJoqWwvfx1qulkMc0+InaGgjTthxUu
+         t3+9+AUulk0S4Htn5uG/pbaqq37BrQeExj9JpOUYJny/rk+OavvRVORx194m/6w2pw1A
+         Ez3qtC3b3gjSj7VpbNsqAfZNHT0M0HR9H+TZjwUxJwvpMoRTSimhOvpnCC7FNFaTI8cW
+         7LVw==
+X-Gm-Message-State: AOAM530SVkkIXkUlmNTSEJqe5FNKMJETL4WslrEeAp2/EHjd3eZzNxrG
+        pZvWmki9E0mhzvfstxzgxGug+kRpL4CLRgmtkFXCBTfrsfnm
+X-Google-Smtp-Source: ABdhPJzvJ1H0QFwLKUYOmSNqLN/tdD/HPnxUWAv6tONgOjtqmE8onuWd9jXfUqY2vJG3seUNScYY6UXd/ckbLlqrs/x73JvcA4RV
 MIME-Version: 1.0
-In-Reply-To: <20210225101854.13896-2-quan@os.amperecomputing.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6602:3316:: with SMTP id b22mr3419944ioz.69.1614271697365;
+ Thu, 25 Feb 2021 08:48:17 -0800 (PST)
+Date:   Thu, 25 Feb 2021 08:48:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000017b19205bc2beb40@google.com>
+Subject: INFO: task can't die in io_sq_thread_finish
+From:   syzbot <syzbot+c927c937cba8ef66dd4a@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/25/21 2:18 AM, Quan Nguyen wrote:
-> Adds device tree bindings for SMPro drivers found on the Mt.Jade hardware
-> reference platform with Ampere's Altra Processor family.
-> 
-> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
-> ---
->  .../bindings/hwmon/ampere,ac01-hwmon.yaml     | 27 ++++++
->  .../bindings/mfd/ampere,ac01-smpro.yaml       | 82 +++++++++++++++++++
->  2 files changed, 109 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml
->  create mode 100644 Documentation/devicetree/bindings/mfd/ampere,ac01-smpro.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml b/Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml
-> new file mode 100644
-> index 000000000000..d13862ba646b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml
-> @@ -0,0 +1,27 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/hwmon/ampere,ac01-hwmon.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Hardware monitoring driver for the Ampere Altra SMPro
-> +
-> +maintainers:
-> +  - Quan Nguyen <quan@os.amperecomputing.com>
-> +
-> +description: |
-> +  This module is part of the Ampere Altra SMPro multi-function device. For more
-> +  details see ../mfd/ampere,ac01-smpro.yaml.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ampere,ac01-hwmon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: false
-> diff --git a/Documentation/devicetree/bindings/mfd/ampere,ac01-smpro.yaml b/Documentation/devicetree/bindings/mfd/ampere,ac01-smpro.yaml
-> new file mode 100644
-> index 000000000000..06b0239413ae
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/ampere,ac01-smpro.yaml
-> @@ -0,0 +1,82 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/ampere,ac01-smpro.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Ampere Altra SMPro firmware driver
-> +
-> +maintainers:
-> +  - Quan Nguyen <quan@os.amperecomputing.com>
-> +
-> +description: |
-> +  Ampere Altra SMPro firmware may contain different blocks like hardware
-> +  monitoring, error monitoring and other miscellaneous features.
-> +
-> +properties:
-> +  compatible:
-> +    const: ampere,ac01-smpro
+Hello,
 
-Is that the same as the "ampere,smpro" in
-arch/arm/boot/dts/nuvoton-npcm730-kudo.dts ?
+syzbot found the following issue on:
 
-Guenter
+HEAD commit:    7f206cf3 Add linux-next specific files for 20210225
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16d9516cd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a1746d2802a82a05
+dashboard link: https://syzkaller.appspot.com/bug?extid=c927c937cba8ef66dd4a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b9c5a8d00000
 
-> +
-> +  reg:
-> +    description:
-> +      I2C device address.
-> +    maxItems: 1
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +patternProperties:
-> +  "^hwmon(@[0-9a-f]+)?$":
-> +    $ref: ../hwmon/ampere,ac01-hwmon.yaml
-> +
-> +  "^misc(@[0-9a-f]+)?$":
-> +    type: object
-> +    description: Ampere Altra SMPro Misc driver
-> +    properties:
-> +      compatible:
-> +        const: "ampere,ac01-misc"
-> +
-> +  "^errmon(@[0-9a-f]+)?$":
-> +    type: object
-> +    description: Ampere Altra SMPro Error Monitor driver
-> +    properties:
-> +      compatible:
-> +        const: "ampere,ac01-errmon"
-> +
-> +required:
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        smpro@4f {
-> +            compatible = "ampere,ac01-smpro";
-> +            reg = <0x4f>;
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            hwmon {
-> +                compatible = "ampere,ac01-hwmon";
-> +            };
-> +
-> +            misc {
-> +                compatible = "ampere,ac01-misc";
-> +            };
-> +
-> +            errmon {
-> +                compatible = "ampere,ac01-errmon";
-> +            };
-> +
-> +        };
-> +    };
-> 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c927c937cba8ef66dd4a@syzkaller.appspotmail.com
 
+INFO: task syz-executor.0:12538 can't die for more than 143 seconds.
+task:syz-executor.0  state:D stack:28352 pid:12538 ppid:  8423 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4324 [inline]
+ __schedule+0x90c/0x21a0 kernel/sched/core.c:5075
+ schedule+0xcf/0x270 kernel/sched/core.c:5154
+ schedule_timeout+0x1db/0x250 kernel/time/timer.c:1868
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
+ io_sq_thread_finish+0x96/0x580 fs/io_uring.c:7152
+ io_sq_offload_create fs/io_uring.c:7929 [inline]
+ io_uring_create fs/io_uring.c:9465 [inline]
+ io_uring_setup+0x1fb2/0x2c20 fs/io_uring.c:9550
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465ef9
+RSP: 002b:00007fe26f744108 EFLAGS: 00000202 ORIG_RAX: 00000000000001a9
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465ef9
+RDX: 0000000020ffd000 RSI: 0000000020000040 RDI: 000000000000563c
+RBP: 0000000020000040 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000000020ffd000 R14: 0000000000000000 R15: 0000000020ffc000
+INFO: task syz-executor.0:12538 blocked for more than 143 seconds.
+      Not tainted 5.11.0-next-20210225-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:28352 pid:12538 ppid:  8423 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4324 [inline]
+ __schedule+0x90c/0x21a0 kernel/sched/core.c:5075
+ schedule+0xcf/0x270 kernel/sched/core.c:5154
+ schedule_timeout+0x1db/0x250 kernel/time/timer.c:1868
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
+ io_sq_thread_finish+0x96/0x580 fs/io_uring.c:7152
+ io_sq_offload_create fs/io_uring.c:7929 [inline]
+ io_uring_create fs/io_uring.c:9465 [inline]
+ io_uring_setup+0x1fb2/0x2c20 fs/io_uring.c:9550
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465ef9
+RSP: 002b:00007fe26f744108 EFLAGS: 00000202 ORIG_RAX: 00000000000001a9
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465ef9
+RDX: 0000000020ffd000 RSI: 0000000020000040 RDI: 000000000000563c
+RBP: 0000000020000040 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000000020ffd000 R14: 0000000000000000 R15: 0000000020ffc000
+INFO: task iou-sqp-12538:12557 can't die for more than 143 seconds.
+task:iou-sqp-12538   state:D stack:30296 pid:12557 ppid:  8423 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4324 [inline]
+ __schedule+0x90c/0x21a0 kernel/sched/core.c:5075
+ schedule+0xcf/0x270 kernel/sched/core.c:5154
+ schedule_timeout+0x1db/0x250 kernel/time/timer.c:1868
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
+ io_sq_thread+0x27d/0x19a0 fs/io_uring.c:6731
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+INFO: task iou-sqp-12538:12557 blocked for more than 143 seconds.
+      Not tainted 5.11.0-next-20210225-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:iou-sqp-12538   state:D stack:30296 pid:12557 ppid:  8423 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4324 [inline]
+ __schedule+0x90c/0x21a0 kernel/sched/core.c:5075
+ schedule+0xcf/0x270 kernel/sched/core.c:5154
+ schedule_timeout+0x1db/0x250 kernel/time/timer.c:1868
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
+ io_sq_thread+0x27d/0x19a0 fs/io_uring.c:6731
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/1653:
+ #0: ffffffff8bf744e0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6327
+1 lock held by in:imklog/8109:
+ #0: ffff8880126b65f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:961
+2 locks held by kworker/u4:3/8814:
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 1653 Comm: khungtaskd Not tainted 5.11.0-next-20210225-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0xfa/0x151 lib/dump_stack.c:120
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
+ watchdog+0xd8e/0xf40 kernel/hung_task.c:338
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 10404 Comm: kworker/u4:9 Not tainted 5.11.0-next-20210225-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: phy14 ieee80211_iface_work
+RIP: 0010:orc_find arch/x86/kernel/unwind_orc.c:163 [inline]
+RIP: 0010:unwind_next_frame+0x238/0x2000 arch/x86/kernel/unwind_orc.c:443
+Code: ff 39 d6 0f 83 69 12 00 00 48 ba 00 00 00 00 00 fc ff df 41 89 f0 4a 8d 3c 85 08 a7 d7 8e 49 89 f9 49 c1 e9 03 45 0f b6 0c 11 <48> 89 fa 83 e2 07 83 c2 03 44 38 ca 7c 32 45 84 c9 74 2d 4c 89 44
+RSP: 0018:ffffc9000c146d18 EFLAGS: 00000a02
+RAX: 0000000000000000 RBX: 1ffff92001828dab RCX: ffffffff81325e95
+RDX: dffffc0000000000 RSI: 000000000000325e RDI: ffffffff8ed87080
+RBP: 0000000000000001 R08: 000000000000325e R09: 0000000000000000
+R10: 0000000000084087 R11: 0000000000000000 R12: ffffc9000c146e88
+R13: ffffc9000c146e75 R14: ffffc9000c146e90 R15: ffffc9000c146e40
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd5c6299010 CR3: 0000000026149000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __unwind_start+0x51b/0x800 arch/x86/kernel/unwind_orc.c:699
+ unwind_start arch/x86/include/asm/unwind.h:60 [inline]
+ arch_stack_walk+0x5c/0xe0 arch/x86/kernel/stacktrace.c:24
+ stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:427 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:506 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:465 [inline]
+ __kasan_kmalloc+0x99/0xc0 mm/kasan/common.c:515
+ kmalloc include/linux/slab.h:559 [inline]
+ ieee802_11_parse_elems_crc+0x121/0xfe0 net/mac80211/util.c:1473
+ ieee802_11_parse_elems net/mac80211/ieee80211_i.h:2041 [inline]
+ ieee80211_bss_info_update+0x4b4/0xb20 net/mac80211/scan.c:212
+ ieee80211_rx_bss_info net/mac80211/ibss.c:1126 [inline]
+ ieee80211_rx_mgmt_probe_beacon+0xccd/0x16b0 net/mac80211/ibss.c:1615
+ ieee80211_ibss_rx_queued_mgmt+0xe43/0x1870 net/mac80211/ibss.c:1642
+ ieee80211_iface_work+0x761/0x9e0 net/mac80211/iface.c:1439
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
