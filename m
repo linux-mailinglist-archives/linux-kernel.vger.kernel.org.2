@@ -2,199 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6B6324BD1
+	by mail.lfdr.de (Postfix) with ESMTP id EF6E8324BD3
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233708AbhBYINE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 03:13:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48798 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235661AbhBYIMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 03:12:43 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DE7E5ACE5;
-        Thu, 25 Feb 2021 08:11:18 +0000 (UTC)
-Subject: Re: udldrmfb: causes WARN in i915 on X60 (x86-32)
-To:     Pavel Machek <pavel@ucw.cz>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, intel-gfx@lists.freedesktop.org,
-        airlied@redhat.com, sean@poorly.run,
-        dri-devel@lists.freedesktop.org
-References: <20210224200912.GA27905@duo.ucw.cz>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <452585d5-9d18-f5a8-9d6b-6d39aa037480@suse.de>
-Date:   Thu, 25 Feb 2021 09:11:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S235025AbhBYINb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Feb 2021 03:13:31 -0500
+Received: from relay12.mail.gandi.net ([217.70.178.232]:60531 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230142AbhBYIN1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 03:13:27 -0500
+Received: from xps13 (lfbn-tou-1-813-134.w86-250.abo.wanadoo.fr [86.250.253.134])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 369DC200005;
+        Thu, 25 Feb 2021 08:12:39 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 09:12:38 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>
+Cc:     Brian Norris <computersforpeace@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] nand: brcmnand: fix OOB R/W with Hamming ECC
+Message-ID: <20210225091238.4158cb3a@xps13>
+In-Reply-To: <4DF5654C-1412-4E89-BF21-60C649EEDF4F@gmail.com>
+References: <20210222201655.32361-1-noltari@gmail.com>
+        <20210224080210.23686-1-noltari@gmail.com>
+        <CAN8TOE_Eg6zYqy8wLtrNcTiCQdcihM7wGM5JHw=bh4=b1CL-_A@mail.gmail.com>
+        <20210225084838.34bbdbff@xps13>
+        <4DF5654C-1412-4E89-BF21-60C649EEDF4F@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210224200912.GA27905@duo.ucw.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="PdxeD5ut3tZI8Q9Hor7brMkIrWdARuWxB"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---PdxeD5ut3tZI8Q9Hor7brMkIrWdARuWxB
-Content-Type: multipart/mixed; boundary="oBM3evNMO0ZXkWW1ASweRUGLFdVaInNUc";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Pavel Machek <pavel@ucw.cz>, kernel list <linux-kernel@vger.kernel.org>,
- jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
- rodrigo.vivi@intel.com, intel-gfx@lists.freedesktop.org, airlied@redhat.com,
- sean@poorly.run, dri-devel@lists.freedesktop.org
-Message-ID: <452585d5-9d18-f5a8-9d6b-6d39aa037480@suse.de>
-Subject: Re: udldrmfb: causes WARN in i915 on X60 (x86-32)
-References: <20210224200912.GA27905@duo.ucw.cz>
-In-Reply-To: <20210224200912.GA27905@duo.ucw.cz>
+Hi Álvaro,
 
---oBM3evNMO0ZXkWW1ASweRUGLFdVaInNUc
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Álvaro Fernández Rojas <noltari@gmail.com> wrote on Thu, 25 Feb 2021
+08:54:09 +0100:
 
-Hi
+> Hi Miquel,
+> 
+> > El 25 feb 2021, a las 8:48, Miquel Raynal <miquel.raynal@bootlin.com> escribió:
+> > 
+> > Hi Álvaro,
+> > 
+> > Brian Norris <computersforpeace@gmail.com> wrote on Wed, 24 Feb 2021
+> > 13:01:13 -0800:
+> >   
+> >> On Wed, Feb 24, 2021 at 12:02 AM Álvaro Fernández Rojas
+> >> <noltari@gmail.com> wrote:  
+> >>> Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")    
+> >> 
+> >> FWIW, I could believe this was broken. We weren't testing Hamming ECC
+> >> (nor JFFS2) at the time, so it could easily have obvious bugs like
+> >> this.  
+> > 
+> > Right, you should probably limit the backport to the time when raw
+> > accessors got introduced/fixed.  
+> 
+> What do you mean?
+> Those accessors have been there since the first commit (27c5b17cd1b10564fa36f8f51e4b4b41436ecc32):
+> https://github.com/torvalds/linux/blob/27c5b17cd1b10564fa36f8f51e4b4b41436ecc32/drivers/mtd/nand/brcmnand/brcmnand.c#L1896-L1899
 
-Am 24.02.21 um 21:09 schrieb Pavel Machek:
-> Hi!
->=20
-> This is in -next, but I get same behaviour on 5.11; and no, udl does
-
-Thanks for reporting. We are in the process of fixing the issue. The=20
-latest patch is at [1].
-
-Best regards
-Thomas
-
-[1]=20
-https://lore.kernel.org/dri-devel/b44307cf-25f9-acd0-eb35-92e8716205de@su=
-se.de/T/#m74795744a58836dcba055fdcd6a0697811b8c14b
-
-> not work, but monitor is detected:
->=20
-> pavel@amd:~/g/tui/crashled$ xrandr
-> Screen 0: minimum 320 x 200, current 1024 x 768, maximum 4096 x 4096
-> LVDS1 connected 1024x768+0+0 (normal left inverted right x axis y axis)=
- 246mm x 185mm
->     1024x768      50.00*+  60.00    40.00
->     800x600       60.32    56.25
->     640x480       59.94
-> VGA1 disconnected (normal left inverted right x axis y axis)
-> DVI-1-0 connected 1024x768+0+0 304mm x 228mm
->     1024x768      60.00*+  75.03
->     800x600       75.00    60.32
->     640x480       75.00    59.94
->     720x400       70.08
->    1024x768 (0x45) 65.000MHz -HSync -VSync
->          h: width  1024 start 1048 end 1184 total 1344 skew    0 clock =
- 48.36KHz
->          v: height  768 start  771 end  777 total  806           clock =
- 60.00Hz
->    800x600 (0x47) 40.000MHz +HSync +VSync
->          h: width   800 start  840 end  968 total 1056 skew    0 clock =
- 37.88KHz
->          v: height  600 start  601 end  605 total  628           clock =
- 60.32Hz
->    640x480 (0x49) 25.175MHz -HSync -VSync
->          h: width   640 start  656 end  752 total  800 skew    0 clock =
- 31.47KHz
->          v: height  480 start  490 end  492 total  525           clock =
- 59.94Hz
-> pavel@amd:~/g/tui/crashled$
->=20
->=20
-> [13957.499755] wlan0: associated
-> [13962.906368] udl 1-5:1.0: [drm] fb1: udldrmfb frame buffer device
-> [13972.585101] ------------[ cut here ]------------
-> [13972.585117] WARNING: CPU: 0 PID: 3159 at kernel/dma/mapping.c:192 dm=
-a_map_sg_attrs+0x38/0x50
-> [13972.585137] Modules linked in:
-> [13972.585149] CPU: 0 PID: 3159 Comm: Xorg Not tainted 5.11.0-next-2021=
-0223+ #176
-> [13972.585158] Hardware name: LENOVO 17097HU/17097HU, BIOS 7BETD8WW (2.=
-19 ) 03/31/2011
-> [13972.585166] EIP: dma_map_sg_attrs+0x38/0x50
-> [13972.585176] Code: f0 01 00 00 00 74 23 ff 75 0c 53 e8 72 1b 00 00 5a=
- 59 85 c0 78 1c 8b 5d fc c9 c3 8d b4 26 00 00 00 00 0f 0b 8d b6 00 00 00 =
-00 <0f> 0b 31 c0 eb e6 66 90 0f 0b 8d b4 26 00 00 00 00 8d b4 26 00 00
-> [13972.585186] EAX: c296c41c EBX: 00000000 ECX: 00000055 EDX: dbbc4800
-> [13972.585194] ESI: c69f9ea0 EDI: d2c313c0 EBP: c5cbdda8 ESP: c5cbdda4
-> [13972.585202] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 002=
-10246
-> [13972.585211] CR0: 80050033 CR2: b6b99000 CR3: 05d42000 CR4: 000006b0
-> [13972.585219] Call Trace:
-> [13972.585227]  i915_gem_map_dma_buf+0xee/0x160
-> [13972.585240]  dma_buf_map_attachment+0xb8/0x140
-> [13972.585251]  drm_gem_prime_import_dev.part.0+0x33/0xc0
-> [13972.585262]  ? drm_gem_shmem_create+0x10/0x10
-> [13972.585271]  drm_gem_prime_import_dev+0x22/0x70
-> [13972.585280]  drm_gem_prime_fd_to_handle+0x186/0x1c0
-> [13972.585289]  ? drm_gem_prime_import_dev+0x70/0x70
-> [13972.585298]  ? drm_prime_destroy_file_private+0x20/0x20
-> [13972.585307]  drm_prime_fd_to_handle_ioctl+0x1c/0x30
-> [13972.585315]  drm_ioctl_kernel+0x8e/0xe0
-> [13972.585325]  ? drm_prime_destroy_file_private+0x20/0x20
-> [13972.585334]  drm_ioctl+0x1fd/0x380
-> [13972.585343]  ? drm_prime_destroy_file_private+0x20/0x20
-> [13972.585352]  ? ksys_write+0x5c/0xd0
-> [13972.585363]  ? vfs_write+0xeb/0x3f0
-> [13972.585371]  ? drm_ioctl_kernel+0xe0/0xe0
-> [13972.585380]  __ia32_sys_ioctl+0x369/0x7d0
-> [13972.585389]  ? exit_to_user_mode_prepare+0x4e/0x170
-> [13972.585398]  do_int80_syscall_32+0x2c/0x40
-> [13972.585409]  entry_INT80_32+0x111/0x111
-> [13972.585419] EIP: 0xb7f68092
-> [13972.585427] Code: 00 00 00 e9 90 ff ff ff ff a3 24 00 00 00 68 30 00=
- 00 00 e9 80 ff ff ff ff a3 e8 ff ff ff 66 90 00 00 00 00 00 00 00 00 cd =
-80 <c3> 8d b4 26 00 00 00 00 8d b6 00 00 00 00 8b 1c 24 c3 8d b4 26 00
-> [13972.585436] EAX: ffffffda EBX: 00000030 ECX: c00c642e EDX: bfaeda30
-> [13972.585444] ESI: 00915790 EDI: c00c642e EBP: 00000030 ESP: bfaed9e4
-> [13972.585452] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 002=
-00296
-> [13972.585461]  ? asm_exc_nmi+0xcc/0x2bc
-> [13972.585470] ---[ end trace 46a21fad0595bc89 ]---
-> pavel@amd:~/g/tui/crashled$
->=20
-> Any ideas?
->=20
-> Best regards,
->=20
-> 									Pavel
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=FCrnberg, Germany
-(HRB 36809, AG N=FCrnberg)
-Gesch=E4ftsf=FChrer: Felix Imend=F6rffer
-
-
---oBM3evNMO0ZXkWW1ASweRUGLFdVaInNUc--
-
---PdxeD5ut3tZI8Q9Hor7brMkIrWdARuWxB
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmA3W6UFAwAAAAAACgkQlh/E3EQov+AK
-vhAAsmxWCfuZrGPxADD7lijvUQDV5iEGwfkBEUSZ8PfSVznzkzsvksmKnX0j+2REGegXLtzTr226
-VtSrRfAmitJLWTvJIUHxogJdSXMafMi93SUF3U/skxSdvGt6rgPd0jGTiBjO6ytUsH8svkQD7+Jp
-YMRZ2NUFbCbY2Om96pM8vU6quvja5CvOXcARySoOizfRDUIzioaFUmq53YZnHOHuLOHAJh3rfotv
-RYCGPLDRcYgys5vBoXWvD8aAeAyTIHcc2mekdnmuDg0DJ7S84o4sqTaCH8W+ciu0uH9fngJ6oz1v
-FNPSWq3EbKIbvhzLJGlMkA/YzsqHTQuCjudW6T8D7nfCLwhg5CyImfpvK2b2/Bbaxz8/xZpDPJuT
-Mc8AL5+ZSoPw9DKuMDAUUySff9LYdmNjYKkEq2ZWYhwzf0uea2w/8Q7EPy7Jfp6DvJMsXEQF+vVn
-t/+y29r1H0Q0S0NDcKbVGylBwSV6FFXxPft0b+SF2xvut32i4D/C+S9EexI9tnhy74V8SjhmnaS/
-7G62Uz8Rbh33n75qjwnllYfwB9zuxSBloKhfShVvO31vlgN4I9nKCnYy9hJu7i3xPs1AwvmjWUMS
-YxXFAvInWEOggm4hVmiiyqB7vyOb7dciOv6sbJsian1v5e4FaKjwiRCgTjKlDUj0DRFQm7lB2H+x
-zfw=
-=mk4m
------END PGP SIGNATURE-----
-
---PdxeD5ut3tZI8Q9Hor7brMkIrWdARuWxB--
+I misunderstood Brian's answer. This commit is not that old and looks
+legit.
