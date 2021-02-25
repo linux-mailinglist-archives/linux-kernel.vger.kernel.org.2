@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB09E324B51
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 08:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7345D324B54
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 08:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233618AbhBYHez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 02:34:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49170 "EHLO
+        id S234267AbhBYHf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 02:35:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233773AbhBYHeP (ORCPT
+        with ESMTP id S234039AbhBYHeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 02:34:15 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF25C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 23:33:49 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id p21so3206048pgl.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 23:33:49 -0800 (PST)
+        Thu, 25 Feb 2021 02:34:17 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FC6C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 23:33:51 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id o63so3226324pgo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 23:33:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zgKO3MnWtgg50f4xin0lRAlnzGDn6IFUU+LS1IwPjiI=;
-        b=W/Hk+wWyxzLK85Yspxk1j9kKCNb2H/TE8Nr3Gsd4yYPhFoQqeFYulVz1ESEv9Xuyuy
-         RhNtM6Hwq7cRgFjCtqGqXH7Iue9w/00NIlLkAeKmW5eCHN17S92vu71m/qLWNUua1ZWj
-         FNsUtTlmdX+nONjru1+lUpNNeuvBTw+cJrb0fzST/1ux/1h1Zf/pA+ka4vtqCmriGpAl
-         3cXsbLbzA+B0VKEYW2J9LQqIkd5v16cHVUPeZzrBkRZcLlpA8kDNqk7A6dSmOS1oZ84L
-         ngFdFH4gKzdcvg4IPh7w74oNyMY8vDSCc91N2A5IfH2YVvLJDAPd30cPIBoXLCu23wxW
-         nSKg==
+        bh=5ebRx4V31DSDhZXC0yr3LtKn279spf6opfPxtzn4I70=;
+        b=b5Dg9LmaXf2YzgQNvM6K47rUortYW8n2hCPF5Krke30h9MXYtgfvQkBUZygduBw47k
+         HOWRlBh3NPu3jRaUUgDwM9zK0n/HsCOVwYAsKiE+4GeDc0kfUqYBXSmbMPoMEeKO9L3r
+         lUuUSKzR6/htE7vhh8dSgrr43yqm4IczLlTppo3nunX/DE0c9gLZuDIVFcjvFyUW8+27
+         UEME7RkgvXelyfL29k8zxAgPBQJnWM0zXlTCt8Tt3rEspcDcVntrYmHTCnLVYg1OX/k3
+         UeoXLbqXEl7oOYwyS1AseioOuPsNagDFOdNvUIkbWVYr9bhFwcyDy0qbjZqtZ0MWwKxl
+         RA8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zgKO3MnWtgg50f4xin0lRAlnzGDn6IFUU+LS1IwPjiI=;
-        b=mNWz07AwU+oIE3BvcMUj3HIj7sfMuc7AqLEIhW9/M5loSXAmUEEb5AyxSeUICeAqxv
-         B0w6qYRuoO6PZUO74He7p6KvKAN/hiMq++yHKUzn+bEHFb3xFVtNowBorj/6w1uVkl+9
-         SJwuF5IfYXAfphwcEIC8oMN+1c+Hjz6tjEbmXHJc7WpoGEdBlVfWe8x9oLXbAuBwp059
-         J4cEhVqAMMsg93GhpUzB5rQbS+5yJ8G5FbzzwsF0K1fpje6VkP2dBYL6nCfT/AzaUhHJ
-         5LNA0bE4jAH9qTeLIifAMJl7RhqhpTvWM62Y6WKTqgIJRfHeT3pC/Ul9TteUcRoUhjlm
-         /j9A==
-X-Gm-Message-State: AOAM532ZD80AVXjxikBvNlv91OQpUa/a/SwkAUdwHq2XQbxoXSpfbcn3
-        yAspN53NJF0x0OarDVhQffQ=
-X-Google-Smtp-Source: ABdhPJxSLsgCDlJ2iNA9exMeg5JU1gPQkYTFM9O+DtIiU0GZ0RewqOlVs2JHJeIXT5peHT7BfkCfag==
-X-Received: by 2002:a05:6a00:1a4b:b029:1d2:8522:75e7 with SMTP id h11-20020a056a001a4bb02901d2852275e7mr2037326pfv.80.1614238429290;
-        Wed, 24 Feb 2021 23:33:49 -0800 (PST)
+        bh=5ebRx4V31DSDhZXC0yr3LtKn279spf6opfPxtzn4I70=;
+        b=panxGOni/olnsQiW0lP7B7xVFTAjq7Z2wYu4WaIjJVrQd8EAsn3C443nT9ahN0KgXd
+         JXAiWKPRe24ozTZXeBmZESdrD34S2rclMu/BpuqPp6qISrU+RrVbid2l6XA2ZoEhZh5k
+         HWdUxWQWgDGux+GcmIKBl4ADLZ+FN7IlcUZ3raHvfrQ9hFe+69dmV7Ik73FlO5n5bLQ6
+         alVIHXfv7ZjlJzQeT28hPvBa32TbT41tQOsOxwdlivNHNl3NVVBwUY4yam3axUZvB+en
+         SvnD4KBfdjuUe0dGeMYMi/jjnCvpwCnqGajhpx2jixYrhMejhUs3sRpsQH6lu+qPCiRK
+         PMLw==
+X-Gm-Message-State: AOAM530TiTpNsbiH7w9wMGCB+R14et/tjjNZvidt3CdNb0oEi4TLsMKb
+        rFpNp7RMpmBiJVfeNyQOllU=
+X-Google-Smtp-Source: ABdhPJz45/nZGq0qVdXrll6ISaRWXK4Er9JRFHjpVmUudiHHnAwEcTD+fJdDZQNzJuCCFu58chwvew==
+X-Received: by 2002:a05:6a00:22d1:b029:1b4:9bb5:724c with SMTP id f17-20020a056a0022d1b02901b49bb5724cmr2069327pfj.63.1614238430691;
+        Wed, 24 Feb 2021 23:33:50 -0800 (PST)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id w3sm4917561pjt.24.2021.02.24.23.33.48
+        by smtp.gmail.com with ESMTPSA id w3sm4917561pjt.24.2021.02.24.23.33.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 23:33:48 -0800 (PST)
+        Wed, 24 Feb 2021 23:33:50 -0800 (PST)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc:     Hugh Dickins <hughd@google.com>, Andy Lutomirski <luto@kernel.org>,
         Nadav Amit <namit@vmware.com>,
         Sean Christopherson <seanjc@google.com>,
         Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org
-Subject: [RFC 1/6] vdso/extable: fix calculation of base
-Date:   Wed, 24 Feb 2021 23:29:05 -0800
-Message-Id: <20210225072910.2811795-2-namit@vmware.com>
+Subject: [RFC 2/6] x86/vdso: add mask and flags to extable
+Date:   Wed, 24 Feb 2021 23:29:06 -0800
+Message-Id: <20210225072910.2811795-3-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210225072910.2811795-1-namit@vmware.com>
 References: <20210225072910.2811795-1-namit@vmware.com>
@@ -72,13 +72,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-Apparently, the assembly considers __ex_table as the location when the
-pushsection directive was issued. Therefore when there is more than a
-single entry in the vDSO exception table, the calculations of the base
-and fixup are wrong.
+Add a "mask" field to vDSO exception tables that says which exceptions
+should be handled.
 
-Fix the calculations of the expected fault IP and new IP by adjusting
-the base after each entry.
+Add a "flags" field to vDSO as well to provide additional information
+about the exception.
+
+The existing preprocessor macro _ASM_VDSO_EXTABLE_HANDLE for assembly is
+not easy to use as it requires the user to stringify the expanded C
+macro. Remove _ASM_VDSO_EXTABLE_HANDLE and use a similar scheme to
+ALTERNATIVE, using assembly macros directly in assembly without wrapping
+them in C macros.
+
+Move the vsgx supported exceptions test out of the generic C code into
+vsgx-specific assembly by setting vsgx supported exceptions in the mask.
 
 Cc: Andy Lutomirski <luto@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
@@ -90,22 +97,107 @@ Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: x86@kernel.org
 Signed-off-by: Nadav Amit <namit@vmware.com>
 ---
- arch/x86/entry/vdso/extable.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/entry/vdso/extable.c |  9 +--------
+ arch/x86/entry/vdso/extable.h | 21 +++++++++++++--------
+ arch/x86/entry/vdso/vsgx.S    |  9 +++++++--
+ 3 files changed, 21 insertions(+), 18 deletions(-)
 
 diff --git a/arch/x86/entry/vdso/extable.c b/arch/x86/entry/vdso/extable.c
-index afcf5b65beef..c81e78636220 100644
+index c81e78636220..93fb37bd32ad 100644
 --- a/arch/x86/entry/vdso/extable.c
 +++ b/arch/x86/entry/vdso/extable.c
-@@ -32,7 +32,7 @@ bool fixup_vdso_exception(struct pt_regs *regs, int trapnr,
- 	nr_entries = image->extable_len / (sizeof(*extable));
- 	extable = image->extable;
+@@ -7,6 +7,7 @@
  
--	for (i = 0; i < nr_entries; i++) {
-+	for (i = 0; i < nr_entries; i++, base += sizeof(*extable)) {
- 		if (regs->ip == base + extable[i].insn) {
- 			regs->ip = base + extable[i].fixup;
- 			regs->di = trapnr;
+ struct vdso_exception_table_entry {
+ 	int insn, fixup;
++	unsigned int mask, flags;
+ };
+ 
+ bool fixup_vdso_exception(struct pt_regs *regs, int trapnr,
+@@ -17,14 +18,6 @@ bool fixup_vdso_exception(struct pt_regs *regs, int trapnr,
+ 	unsigned int nr_entries, i;
+ 	unsigned long base;
+ 
+-	/*
+-	 * Do not attempt to fixup #DB or #BP.  It's impossible to identify
+-	 * whether or not a #DB/#BP originated from within an SGX enclave and
+-	 * SGX enclaves are currently the only use case for vDSO fixup.
+-	 */
+-	if (trapnr == X86_TRAP_DB || trapnr == X86_TRAP_BP)
+-		return false;
+-
+ 	if (!current->mm->context.vdso)
+ 		return false;
+ 
+diff --git a/arch/x86/entry/vdso/extable.h b/arch/x86/entry/vdso/extable.h
+index b56f6b012941..7ca8a0776805 100644
+--- a/arch/x86/entry/vdso/extable.h
++++ b/arch/x86/entry/vdso/extable.h
+@@ -2,26 +2,31 @@
+ #ifndef __VDSO_EXTABLE_H
+ #define __VDSO_EXTABLE_H
+ 
++#include <asm/trapnr.h>
++
++#define ASM_VDSO_ASYNC_FLAGS	(1 << 0)
++
+ /*
+  * Inject exception fixup for vDSO code.  Unlike normal exception fixup,
+  * vDSO uses a dedicated handler the addresses are relative to the overall
+  * exception table, not each individual entry.
+  */
+ #ifdef __ASSEMBLY__
+-#define _ASM_VDSO_EXTABLE_HANDLE(from, to)	\
+-	ASM_VDSO_EXTABLE_HANDLE from to
+-
+-.macro ASM_VDSO_EXTABLE_HANDLE from:req to:req
++.macro ASM_VDSO_EXTABLE_HANDLE from:req to:req mask:req flags:req
+ 	.pushsection __ex_table, "a"
+ 	.long (\from) - __ex_table
+ 	.long (\to) - __ex_table
++	.long (\mask)
++	.long (\flags)
+ 	.popsection
+ .endm
+ #else
+-#define _ASM_VDSO_EXTABLE_HANDLE(from, to)	\
+-	".pushsection __ex_table, \"a\"\n"      \
+-	".long (" #from ") - __ex_table\n"      \
+-	".long (" #to ") - __ex_table\n"        \
++#define ASM_VDSO_EXTABLE_HANDLE(from, to, mask, flags)		\
++	".pushsection __ex_table, \"a\"\n"			\
++	".long (" #from ") - __ex_table\n"			\
++	".long (" #to ") - __ex_table\n"			\
++	".long (" #mask ")\n"					\
++	".long (" #flags ")\n"					\
+ 	".popsection\n"
+ #endif
+ 
+diff --git a/arch/x86/entry/vdso/vsgx.S b/arch/x86/entry/vdso/vsgx.S
+index 86a0e94f68df..c588255af480 100644
+--- a/arch/x86/entry/vdso/vsgx.S
++++ b/arch/x86/entry/vdso/vsgx.S
+@@ -4,6 +4,7 @@
+ #include <asm/export.h>
+ #include <asm/errno.h>
+ #include <asm/enclu.h>
++#include <asm/trapnr.h>
+ 
+ #include "extable.h"
+ 
+@@ -146,6 +147,10 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
+ 
+ 	.cfi_endproc
+ 
+-_ASM_VDSO_EXTABLE_HANDLE(.Lenclu_eenter_eresume, .Lhandle_exception)
+-
++/*
++ * Do not attempt to fixup #DB or #BP.  It's impossible to identify
++ * whether or not a #DB/#BP originated from within an SGX enclave.
++ */
++ASM_VDSO_EXTABLE_HANDLE .Lenclu_eenter_eresume, .Lhandle_exception,	\
++			~((1<<X86_TRAP_DB)+(1<<X86_TRAP_BP)), 0
+ SYM_FUNC_END(__vdso_sgx_enter_enclave)
 -- 
 2.25.1
 
