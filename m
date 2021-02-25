@@ -2,181 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89833256CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94AD3256D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234493AbhBYThB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:37:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50200 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234879AbhBYTfK (ORCPT
+        id S234635AbhBYThS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:37:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234934AbhBYTfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:35:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614281622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=J8XckA0wuy/u0dP7Chp3yO58HxOiKtqQRaFNCMmqR6E=;
-        b=c/7Oyf6DDTlSYqAFhYywOP3Z6B6pWb2uxPWiN474Iv88kQD0zkNb4O4j9b+MGuKwVKHRfl
-        tzjnABCtWIMRgSLJkghOBCKe9CjMiXdpwSpgazHUxlDZot+ns8VL8spNYeWCji2oaBgk3D
-        i5MiKHdhjGBZrVKGfFAtNHTZP7opjxw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-577-pJoKHfGZNi-q1JgDfefkXQ-1; Thu, 25 Feb 2021 14:33:40 -0500
-X-MC-Unique: pJoKHfGZNi-q1JgDfefkXQ-1
-Received: by mail-ed1-f70.google.com with SMTP id u2so3354754edj.20
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:33:40 -0800 (PST)
+        Thu, 25 Feb 2021 14:35:14 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9933C061756;
+        Thu, 25 Feb 2021 11:34:33 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id n4so4399737wmq.3;
+        Thu, 25 Feb 2021 11:34:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lVZp14Mcd8FycajwzlQP/vuilnLXZoOgy0eCNqGJ0m4=;
+        b=J2OOoVb9u1EcBPPokPsurVn8KByV44J0ZX04iFk+WG9o0jK/+46MmhfxeokcEoOFq5
+         1SsNH8pYoGUiLpKHMQP86m42LwO3m5cqVkkTTMtEH3h9j3A1hDP2wjXxmGMw+VreIScx
+         QHIRtyPM302s6uvGDjg52bNin/2w++v8bV/rEK5Ehru6aC5aTw5w9nE4GLiDjD9mSTLM
+         FRitHNTceFI9JT2yIT7UAxteMmM1HyEkLXVIfxmdGGDaSrC9mT1wGsZorSOAW3XrPvNP
+         9ltDTJmirJrfXXpsJwMHWPa1JR27q6NA6dU+Lls+h/fvEYnxLLG7M/Az4+OEuvkLnH/Y
+         iL2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=J8XckA0wuy/u0dP7Chp3yO58HxOiKtqQRaFNCMmqR6E=;
-        b=aC6HxjfbWEoyJlxjR1qNCt28b0qw8AS1pBfcSWtWVCv5b4l8x/PQ0htdnvPMDCcWdU
-         9w5oR4Ab9K09Vc0zcZheNUKVJGZhLOVE/1pDzjc4hpVBAa70Dicrwyspv091Fn3VsROf
-         peTekNmMzGthUTArVVXfCITWdw/BibAkWm8sIcH5ULZS4phs3+psATuPM5Gp6T9kCeOD
-         7i7CWm19RpS68IbLENXOvMrEoGYddrrgKN4i4fm1qBCRGBBbs9Cz/P3ETzL/vzpUvFW7
-         c8xjPJbZUZiGpi4ecvfkoNSvhjjJ0xJwmxJs7GoiVhCJmkwvJoY0oZhG7aqXp/nivA9n
-         Ut8A==
-X-Gm-Message-State: AOAM5332iQWsYk1/+jhFgU47r6Vluo/tkhlZJuqTvWcS5ni3DtWBvBfk
-        TXpGKumUXbJz2PZZ/buc23kRznuFj9u+Ne7GIHAjbbmLA4gAuilB8DHxWNthrZ4vh+em8VBiHdc
-        x8gpwzmESohemyYyJ5RS1oOrG
-X-Received: by 2002:a17:907:2113:: with SMTP id qn19mr4214703ejb.98.1614281619064;
-        Thu, 25 Feb 2021 11:33:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz2dN9ZzfgwQ9M65gsI//PlQJrl1Zvqctla4lD8bDjF0K4fbGkjn6jK5ahnGYupXSe2W6FPQw==
-X-Received: by 2002:a17:907:2113:: with SMTP id qn19mr4214672ejb.98.1614281618920;
-        Thu, 25 Feb 2021 11:33:38 -0800 (PST)
-Received: from redhat.com (212.116.168.114.static.012.net.il. [212.116.168.114])
-        by smtp.gmail.com with ESMTPSA id ca26sm4215205edb.4.2021.02.25.11.33.35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lVZp14Mcd8FycajwzlQP/vuilnLXZoOgy0eCNqGJ0m4=;
+        b=qddflWq0/qRthxARGhzrgrJo1uwulMw3wWhHXQX0P30n8DMBqkU7bAEByw+54f8/Lv
+         QyJuf8gwps61wVys5qYlauulXL/r3tersKdEPpYvCZbwUvXsDqe/xDngO574tJgLjmxN
+         r/qccxITXfI1dDfgOBUtJYGKTPo3lITe6TFdptG3z2F7fNyNMWFmRU10P6flazL5LM6j
+         ifWNUeTVX+wgTn/6H7b8Vo4kMmTb8S0fqoPtBeBTN9zxi0vHTotg/KdY9S5loNRT9bvo
+         Ovj9TDPcaQH7+KlSP9+hD9ji5jAy+PmjDdNJb2p0hGZnZ8/yBGyNSf8TbmqD76g6T7Mh
+         JBzA==
+X-Gm-Message-State: AOAM532wTABxdZ7GZMJUkRMw2TbSdLE6LndI7hTPIc6mZC8JCZMK7JhA
+        0H3ktz9oayP6GNfeohFH798=
+X-Google-Smtp-Source: ABdhPJwi5c4JQV8ntU927+jDX4oN5q5lZTAZXC2Q5YRE4TxwY/2Geq592o1YkHgyFLECtmTfocsLmA==
+X-Received: by 2002:a05:600c:4f94:: with SMTP id n20mr4670107wmq.78.1614281672529;
+        Thu, 25 Feb 2021 11:34:32 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id k15sm8417005wmj.6.2021.02.25.11.34.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 11:33:38 -0800 (PST)
-Date:   Thu, 25 Feb 2021 14:33:33 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
+        Thu, 25 Feb 2021 11:34:31 -0800 (PST)
+From:   Thierry Reding <thierry.reding@gmail.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        abaci-bugfix@linux.alibaba.com, abaci@linux.alibaba.com,
-        anders.roxell@linaro.org, arnd@arndb.de,
-        aruna.ramakrishna@oracle.com, colin.xu@intel.com, david@redhat.com,
-        dongli.zhang@oracle.com, edumazet@google.com, elic@nvidia.com,
-        gustavoars@kernel.org, jasowang@redhat.com, joe.jin@oracle.com,
-        joseph.qi@linux.alibaba.com, linux@roeck-us.net,
-        mathias.crombez@faurecia.com, mst@redhat.com,
-        naresh.kamboju@linaro.org, parav@nvidia.com, sgarzare@redhat.com,
-        stable@vger.kernel.org, syzkaller@googlegroups.com,
-        tiantao6@hisilicon.com, vasyl.vavrychuk@opensynergy.com,
-        xianting_tian@126.com
-Subject: [GIT PULL] virtio: features, fixes
-Message-ID: <20210225143333-mutt-send-email-mst@kernel.org>
+Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] pwm: Changes for v5.12-rc1
+Date:   Thu, 25 Feb 2021 20:34:26 +0100
+Message-Id: <20210225193426.3679817-1-thierry.reding@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a couple new drivers and support for the new management
-interface for mlx under review now. I figured I'll send them separately
-if review is done in time, lots of people are waiting for the vdpa tool
-patches to I want to make sure they make this release.
+Hi Linus,
 
-The following changes since commit f40ddce88593482919761f74910f42f4b84c004b:
+The following changes since commit 6eefb79d6f5bc4086bd02c76f1072dd4a8d9d9f6:
 
-  Linux 5.11 (2021-02-14 14:32:24 -0800)
+  pwm: sun4i: Remove erroneous else branch (2020-12-17 14:23:49 +0100)
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+  git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.12-rc1
 
-for you to fetch changes up to 16c10bede8b3d8594279752bf53153491f3f944f:
+for you to fetch changes up to 9a9dd7e473517b68412fd2da3da8a4aeb4ecb38a:
 
-  virtio-input: add multi-touch support (2021-02-23 07:52:59 -0500)
+  pwm: lpc18xx-sct: remove unneeded semicolon (2021-02-22 15:20:43 +0100)
+
+As I was generating the pull request I noticed that I forgot to fast-
+forward this to v5.11-rc1 after the last merge window. However, I did
+not think a last-minute rebase was appropriate. I did go back and ran
+my test builds on a rebase on top of v5.11-rc1 and everything checked
+out, so I think this is safe to merge. Also, linux-next would have
+caught any problems related to this. I'll make sure to properly roll
+forward the branch next time.
+
+Thanks,
+Thierry
 
 ----------------------------------------------------------------
-virtio: features, fixes
+pwm: Changes for v5.12-rc1
 
-new vdpa features to allow creation and deletion of new devices
-virtio-blk support per-device queue depth
-fixes, cleanups all over the place
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+The ZTE ZX platform is being removed, so the PWM driver is no longer
+needed and removed as well. Other than that this contains a small set of
+fixes and cleanups across a couple of drivers.
 
 ----------------------------------------------------------------
-Colin Xu (1):
-      virtio_input: Prevent EV_MSC/MSC_TIMESTAMP loop storm for MT.
+Arnd Bergmann (1):
+      pwm: Remove ZTE ZX driver
 
-Dongli Zhang (1):
-      vhost scsi: alloc vhost_scsi with kvzalloc() to avoid delay
+Jeff LaBundy (1):
+      pwm: iqs620a: Correct a stale state variable
 
-Gustavo A. R. Silva (1):
-      virtio_net: Fix fall-through warnings for Clang
+Simon South (5):
+      pwm: rockchip: Enable APB clock during register access while probing
+      pwm: rockchip: rockchip_pwm_probe(): Remove superfluous clk_unprepare()
+      pwm: rockchip: Replace "bus clk" with "PWM clk"
+      pwm: rockchip: Eliminate potential race condition when probing
+      pwm: rockchip: Enable clock before calling clk_get_rate()
 
-Jason Wang (17):
-      virtio-pci: do not access iomem via struct virtio_pci_device directly
-      virtio-pci: split out modern device
-      virtio-pci-modern: factor out modern device initialization logic
-      virtio-pci-modern: introduce vp_modern_remove()
-      virtio-pci-modern: introduce helper to set config vector
-      virtio-pci-modern: introduce helpers for setting and getting status
-      virtio-pci-modern: introduce helpers for setting and getting features
-      virtio-pci-modern: introduce vp_modern_generation()
-      virtio-pci-modern: introduce vp_modern_set_queue_vector()
-      virtio-pci-modern: introduce vp_modern_queue_address()
-      virtio-pci-modern: introduce helper to set/get queue_enable
-      virtio-pci-modern: introduce helper for setting/geting queue size
-      virtio-pci-modern: introduce helper for getting queue nums
-      virtio-pci-modern: introduce helper to get notification offset
-      virito-pci-modern: rename map_capability() to vp_modern_map_capability()
-      virtio-pci: introduce modern device module
-      virtio_vdpa: don't warn when fail to disable vq
+Uwe Kleine-König (1):
+      pwm: iqs620a: Fix overflow and optimize calculations
 
-Jiapeng Zhong (1):
-      virtio-mem: Assign boolean values to a bool variable
+Yang Li (1):
+      pwm: lpc18xx-sct: remove unneeded semicolon
 
-Joseph Qi (1):
-      virtio-blk: support per-device queue depth
-
-Mathias Crombez (1):
-      virtio-input: add multi-touch support
-
-Parav Pandit (6):
-      vdpa_sim_net: Make mac address array static
-      vdpa: Extend routine to accept vdpa device name
-      vdpa: Define vdpa mgmt device, ops and a netlink interface
-      vdpa: Enable a user to add and delete a vdpa device
-      vdpa: Enable user to query vdpa device info
-      vdpa_sim_net: Add support for user supported devices
-
-Stefano Garzarella (1):
-      vdpa/mlx5: fix param validation in mlx5_vdpa_get_config()
-
-Xianting Tian (1):
-      virtio_mmio: fix one typo
-
- drivers/block/virtio_blk.c             |  11 +-
- drivers/net/virtio_net.c               |   1 +
- drivers/vdpa/Kconfig                   |   1 +
- drivers/vdpa/ifcvf/ifcvf_main.c        |   2 +-
- drivers/vdpa/mlx5/net/mlx5_vnet.c      |   4 +-
- drivers/vdpa/vdpa.c                    | 503 ++++++++++++++++++++++++++-
- drivers/vdpa/vdpa_sim/vdpa_sim.c       |   3 +-
- drivers/vdpa/vdpa_sim/vdpa_sim.h       |   2 +
- drivers/vdpa/vdpa_sim/vdpa_sim_net.c   | 100 ++++--
- drivers/vhost/scsi.c                   |   9 +-
- drivers/virtio/Kconfig                 |   9 +
- drivers/virtio/Makefile                |   1 +
- drivers/virtio/virtio_input.c          |  26 +-
- drivers/virtio/virtio_mem.c            |   2 +-
- drivers/virtio/virtio_mmio.c           |   2 +-
- drivers/virtio/virtio_pci_common.h     |  22 +-
- drivers/virtio/virtio_pci_modern.c     | 504 ++++-----------------------
- drivers/virtio/virtio_pci_modern_dev.c | 599 +++++++++++++++++++++++++++++++++
- drivers/virtio/virtio_vdpa.c           |   3 +-
- include/linux/vdpa.h                   |  44 ++-
- include/linux/virtio_pci_modern.h      | 111 ++++++
- include/uapi/linux/vdpa.h              |  40 +++
- 22 files changed, 1492 insertions(+), 507 deletions(-)
- create mode 100644 drivers/virtio/virtio_pci_modern_dev.c
- create mode 100644 include/linux/virtio_pci_modern.h
- create mode 100644 include/uapi/linux/vdpa.h
-
+ Documentation/devicetree/bindings/pwm/pwm-zx.txt |  22 --
+ drivers/pwm/Kconfig                              |  10 -
+ drivers/pwm/Makefile                             |   1 -
+ drivers/pwm/pwm-iqs620a.c                        |  94 ++++----
+ drivers/pwm/pwm-lpc18xx-sct.c                    |   2 +-
+ drivers/pwm/pwm-rockchip.c                       |  32 ++-
+ drivers/pwm/pwm-zx.c                             | 278 -----------------------
+ 7 files changed, 65 insertions(+), 374 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-zx.txt
+ delete mode 100644 drivers/pwm/pwm-zx.c
