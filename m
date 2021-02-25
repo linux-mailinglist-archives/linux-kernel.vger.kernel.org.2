@@ -2,221 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731333252ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4F83252E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 17:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbhBYQBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 11:01:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34898 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230467AbhBYQA4 (ORCPT
+        id S232711AbhBYQAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 11:00:02 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:41371 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232250AbhBYP75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:00:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614268768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TqEs2s9NIJ3mhMA0+/qlDylBOaw6l4Ll6nMq3B0MxfE=;
-        b=b5EF6q0+amub7bsDQw0qTjHNFUbhS5pe3ODUWPDixD6TBGD5EuaNDZPqU+OhPKbS+MZScl
-        NqDmyimYhlAFyStP/yyQ5HtceLRvKdvNyWVAsNN0gRfy/MMaWov8BCJhgT+J5g8qEtR5Qf
-        mP2Sh0/pbB7RmMYN19WzTw0lKYcScOo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-203-31PQjnKxPSmTSlKR5Bx0sA-1; Thu, 25 Feb 2021 10:59:23 -0500
-X-MC-Unique: 31PQjnKxPSmTSlKR5Bx0sA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0CD43107ACC7;
-        Thu, 25 Feb 2021 15:59:20 +0000 (UTC)
-Received: from [10.36.114.58] (ovpn-114-58.ams2.redhat.com [10.36.114.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E74696EF76;
-        Thu, 25 Feb 2021 15:59:06 +0000 (UTC)
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-References: <20210224153950.20789-1-rppt@kernel.org>
- <20210224153950.20789-2-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v7 1/1] mm/page_alloc.c: refactor initialization of struct
- page for holes in memory layout
-Message-ID: <515b4abf-ff07-a43a-ac2e-132c33681886@redhat.com>
-Date:   Thu, 25 Feb 2021 16:59:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 25 Feb 2021 10:59:57 -0500
+Received: (qmail 1351795 invoked by uid 1000); 25 Feb 2021 10:59:14 -0500
+Date:   Thu, 25 Feb 2021 10:59:14 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+ab02336a647181a886a6@syzkaller.appspotmail.com
+Subject: Re: [PATCH] drivers/hid: fix for the big hid report length
+Message-ID: <20210225155914.GA1350993@rowland.harvard.edu>
+References: <20210225145215.3438202-1-snovitoll@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210224153950.20789-2-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225145215.3438202-1-snovitoll@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.02.21 16:39, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Thu, Feb 25, 2021 at 08:52:15PM +0600, Sabyrzhan Tasbolatov wrote:
+> syzbot found WARNING in hid_alloc_report_buf[1] when the raw buffer for
+> report is kmalloc() allocated with length > KMALLOC_MAX_SIZE, causing
+> order >= MAX_ORDER condition:
 > 
-> There could be struct pages that are not backed by actual physical memory.
-> This can happen when the actual memory bank is not a multiple of
-> SECTION_SIZE or when an architecture does not register memory holes
-> reserved by the firmware as memblock.memory.
+> u8 *hid_alloc_report_buf(struct hid_report *report, gfp_t flags)
+> {
+> 	/*
+> 	 * 7 extra bytes are necessary to achieve proper functionality
+> 	 * of implement() working on 8 byte chunks
+> 	 */
 > 
-> Such pages are currently initialized using init_unavailable_mem() function
-> that iterates through PFNs in holes in memblock.memory and if there is a
-> struct page corresponding to a PFN, the fields of this page are set to
-> default values and it is marked as Reserved.
+> 	u32 len = hid_report_len(report) + 7;
 > 
-> init_unavailable_mem() does not take into account zone and node the page
-> belongs to and sets both zone and node links in struct page to zero.
+> 	return kmalloc(len, flags);
 > 
-> Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
-> rather that check each PFN") the holes inside a zone were re-initialized
-> during memmap_init() and got their zone/node links right. However, after
-> that commit nothing updates the struct pages representing such holes.
+> The restriction with HID_MAX_BUFFER_SIZE (16kb) is, seems, a valid max
+> limit. I've come up with this in all hid_report_len() xrefs.
 > 
-> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
-> instance in a configuration below:
+> The fix inside hid_report_len(), not in *hid_alloc_report_buf() is also
+> fixing out-of-bounds here in memcpy():
 > 
-> 	# grep -A1 E820 /proc/iomem
-> 	7a17b000-7a216fff : Unknown E820 type
-> 	7a217000-7bffffff : System RAM
+> statc int hid_submit_ctrl(..)
+> {
+> ..
+> 	len = hid_report_len(report);
+> 	if (dir == USB_DIR_OUT) {
+> 		..
+> 		if (raw_report) {
+> 			memcpy(usbhid->ctrlbuf, raw_report, len);
+> ..
 > 
-> unset zone link in struct page will trigger
+> So I've decided to return HID_MAX_BUFFER_SIZE if it the report length is
+> bigger than limit, otherwise the return the report length.
 > 
-> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+> [1]
+> Call Trace:
+>  alloc_pages include/linux/gfp.h:547 [inline]
+>  kmalloc_order+0x40/0x130 mm/slab_common.c:837
+>  kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
+>  kmalloc_large include/linux/slab.h:481 [inline]
+>  __kmalloc+0x257/0x330 mm/slub.c:3974
+>  kmalloc include/linux/slab.h:557 [inline]
+>  hid_alloc_report_buf+0x70/0xa0 drivers/hid/hid-core.c:1648
+>  __usbhid_submit_report drivers/hid/usbhid/hid-core.c:590 [inline]
 > 
-> because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
-> in struct page) in the same pageblock.
-> 
-> Interleave initialization of the unavailable pages with the normal
-> initialization of memory map, so that zone and node information will be
-> properly set on struct pages that are not backed by the actual memory.
-> 
-> With this change the pages for holes inside a zone will get proper
-> zone/node links and the pages that are not spanned by any node will get
-> links to the adjacent zone/node.
-> 
-> Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Reported-by: Qian Cai <cai@lca.pw>
-> Reported-by: Andrea Arcangeli <aarcange@redhat.com>
-> Reviewed-by: Baoquan He <bhe@redhat.com>
+> Reported-by: syzbot+ab02336a647181a886a6@syzkaller.appspotmail.com
+> Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 > ---
->   mm/page_alloc.c | 147 +++++++++++++++++++++---------------------------
->   1 file changed, 64 insertions(+), 83 deletions(-)
+>  drivers/hid/usbhid/hid-core.c | 2 +-
+>  include/linux/hid.h           | 4 +++-
+>  2 files changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3e93f8b29bae..a11a9acde708 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6280,12 +6280,60 @@ static void __meminit zone_init_free_lists(struct zone *zone)
->   	}
->   }
->   
-> +#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
-> +/*
-> + * Only struct pages that correspond to ranges defined by memblock.memory
-> + * are zeroed and initialized by going through __init_single_page() during
-> + * memmap_init_zone().
-> + *
-> + * But, there could be struct pages that correspond to holes in
-> + * memblock.memory. This can happen because of the following reasons:
-> + * - phyiscal memory bank size is not necessarily the exact multiple of the
-> + *   arbitrary section size
-> + * - early reserved memory may not be listed in memblock.memory
-> + * - memory layouts defined with memmap= kernel parameter may not align
-> + *   nicely with memmap sections
-> + *
-> + * Explicitly initialize those struct pages so that:
-> + * - PG_Reserved is set
-> + * - zone and node links point to zone and node that span the page
-> + */
-> +static u64 __meminit init_unavailable_range(unsigned long spfn,
-> +					    unsigned long epfn,
-> +					    int zone, int node)
-> +{
-> +	unsigned long pfn;
-> +	u64 pgcnt = 0;
+> diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
+> index 86257ce6d619..4e9077363c96 100644
+> --- a/drivers/hid/usbhid/hid-core.c
+> +++ b/drivers/hid/usbhid/hid-core.c
+> @@ -374,7 +374,7 @@ static int hid_submit_ctrl(struct hid_device *hid)
+>  	raw_report = usbhid->ctrl[usbhid->ctrltail].raw_report;
+>  	dir = usbhid->ctrl[usbhid->ctrltail].dir;
+>  
+> -	len = ((report->size - 1) >> 3) + 1 + (report->id > 0);
+> +	len = hid_report_len(report);
+>  	if (dir == USB_DIR_OUT) {
+>  		usbhid->urbctrl->pipe = usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
+>  		usbhid->urbctrl->transfer_buffer_length = len;
+> diff --git a/include/linux/hid.h b/include/linux/hid.h
+> index c39d71eb1fd0..509a6ffdca00 100644
+> --- a/include/linux/hid.h
+> +++ b/include/linux/hid.h
+> @@ -1156,7 +1156,9 @@ static inline void hid_hw_wait(struct hid_device *hdev)
+>  static inline u32 hid_report_len(struct hid_report *report)
+>  {
+>  	/* equivalent to DIV_ROUND_UP(report->size, 8) + !!(report->id > 0) */
+> -	return ((report->size - 1) >> 3) + 1 + (report->id > 0);
+> +	u32 len = ((report->size - 1) >> 3) + 1 + (report->id > 0);
 > +
-> +	for (pfn = spfn; pfn < epfn; pfn++) {
-> +		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
-> +			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
-> +				+ pageblock_nr_pages - 1;
-> +			continue;
-> +		}
-> +		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
-> +		__SetPageReserved(pfn_to_page(pfn));
-> +		pgcnt++;
-> +	}
-> +
-> +	return pgcnt;
-> +}
-> +#else
-> +static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
-> +					 int zone, int node)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
->   void __meminit __weak memmap_init_zone(struct zone *zone)
->   {
->   	unsigned long zone_start_pfn = zone->zone_start_pfn;
->   	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
->   	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
-> +	static unsigned long hole_pfn = 0;
->   	unsigned long start_pfn, end_pfn;
-> +	u64 pgcnt = 0;
->   
->   	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
->   		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
-> @@ -6295,7 +6343,23 @@ void __meminit __weak memmap_init_zone(struct zone *zone)
->   			memmap_init_range(end_pfn - start_pfn, nid,
->   					zone_id, start_pfn, zone_end_pfn,
->   					MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
-> +
-> +		if (hole_pfn < start_pfn)
-> +			pgcnt += init_unavailable_range(hole_pfn, start_pfn,
-> +							zone_id, nid);
-> +		hole_pfn = end_pfn;
->   	}
-> +
-> +#ifdef CONFIG_SPARSEMEM
-> +	end_pfn = round_up(zone_end_pfn, PAGES_PER_SECTION);
-> +	if (hole_pfn < end_pfn)
-> +		pgcnt += init_unavailable_range(hole_pfn, end_pfn,
-> +						zone_id, nid);
+> +	return len > HID_MAX_BUFFER_SIZE ? HID_MAX_BUFFER_SIZE : len;
 
-We might still double-initialize PFNs when two zones overlap within a 
-section, correct? This might worth documenting - also, you might want to 
-take some of the original comment the accompanied this code.
+Won't this cause silent errors?
 
-You should also document (in the patch description?) that node/zone 
-spans are not properly handled yet for such hole pfns and that this 
-might require care in the future.
+How about instead just rejecting any device which includes a report 
+whose length is too big (along with an line in the system log explaining 
+what's wrong)?
 
-
-I played a little with weird setups and expected the memap state using 
-page-types (well, I can't inspect the node/zone that way but at least 
-have a look if the memmap was initialized). No surprises.
-
--- 
-Thanks,
-
-David / dhildenb
-
+Alan Stern
