@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B4C324F0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30832324F0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235062AbhBYLVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 06:21:54 -0500
-Received: from mga14.intel.com ([192.55.52.115]:33867 "EHLO mga14.intel.com"
+        id S235096AbhBYLW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 06:22:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234548AbhBYLVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 06:21:47 -0500
-IronPort-SDR: cqu2pBjhKfPwu1nKe9s1CD/ZuZH3X9b+gwSp3I3q8y/v/TKJxVpgaqTyAbTGJ5Yu/mtH1tLC21
- 85GDt6+3mwgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9905"; a="184790291"
-X-IronPort-AV: E=Sophos;i="5.81,205,1610438400"; 
-   d="scan'208";a="184790291"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 03:20:00 -0800
-IronPort-SDR: 1P/mJl6SAnf563iICc4wL5539Tioyys6RloOQ/05gFhu6+njg154KlieXPQ+bAHxn0oo866GVn
- p46NldlC2HpA==
-X-IronPort-AV: E=Sophos;i="5.81,205,1610438400"; 
-   d="scan'208";a="442531676"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 03:19:58 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lFEgV-0080Jh-Of; Thu, 25 Feb 2021 13:19:55 +0200
-Date:   Thu, 25 Feb 2021 13:19:55 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Liguang Zhang <zhangliguang@linux.alibaba.com>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: designware: Get right data length
-Message-ID: <YDeH27Vgble8FetC@smile.fi.intel.com>
-References: <20210225023528.121135-1-zhangliguang@linux.alibaba.com>
+        id S234736AbhBYLWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 06:22:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A128964EF1;
+        Thu, 25 Feb 2021 11:21:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614252090;
+        bh=PqWn91KrIETiPlzBFDZjY6Somdl4vci+5xNgQ83B00Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=p/ZwyTzdtsjXQtkNhRRjE38XN33+oamIKs7NaqMoHtZ5ytJu2LGEPHiBMl3ZT1w+h
+         T+emWFOtMZbM5WxWJvFg4DddYY9WFEGWcmLDhx0SQ+DViQRm/rb/Hzsc/3+0cvTKBf
+         llrjN1TWCqgIwS30MJLYXt1tDML2guwysFs7QTumAdHCXf4uDLHvX6A+JFl7LWQzSt
+         jfUL2aD3U61JqiZ9o4xbAkj8t/wo83rLjIOqpScBg4CQPcM8uTBcmTiNG6p3obE0BW
+         d3FJcVWcjbff9/Y5b0nHXtz0OsfUtk9cB+bR2KCOfKR+7I8Ll4t79E3EstZU1Ur9O6
+         kky/BAI/Xp31w==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Scull <ascull@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Date:   Thu, 25 Feb 2021 12:20:56 +0100
+Message-Id: <20210225112122.2198845-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225023528.121135-1-zhangliguang@linux.alibaba.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 10:35:28AM +0800, Liguang Zhang wrote:
-> IC_DATA_CMD[11] indicates the first data byte received after the address
-> phase for receive transfer in Master receiver or Slave receiver mode,
-> this bit was set in some transfer flow. IC_DATA_CMD[7:0] contains the
-> data to be transmitted or received on the I2C bus, so we should use the
-> lower 8 bits to get the right data length.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Thanks for the report and fix!
-My comments below.
+When looking at kernel size optimizations, I found that arm64
+does not currently support HAVE_LD_DEAD_CODE_DATA_ELIMINATION,
+which enables the --gc-sections flag to the linker.
 
-> Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
-> ---
->  drivers/i2c/busses/i2c-designware-master.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-> index d6425ad6e6a3..c3cf76f6c607 100644
-> --- a/drivers/i2c/busses/i2c-designware-master.c
-> +++ b/drivers/i2c/busses/i2c-designware-master.c
-> @@ -432,7 +432,7 @@ i2c_dw_read(struct dw_i2c_dev *dev)
->  			regmap_read(dev->map, DW_IC_DATA_CMD, &tmp);
->  			/* Ensure length byte is a valid value */
->  			if (flags & I2C_M_RECV_LEN &&
-> -			    tmp <= I2C_SMBUS_BLOCK_MAX && tmp > 0) {
-> +			    (tmp & 0xff) <= I2C_SMBUS_BLOCK_MAX && tmp > 0) {
+I see that for a defconfig build with llvm, there are some
+notable improvements from enabling this, in particular when
+combined with the recently added CONFIG_LTO_CLANG_THIN
+and CONFIG_TRIM_UNUSED_KSYMS:
 
-Can we rather describe this as
+   text    data     bss     dec     hex filename
+16570322 10998617 506468 28075407 1ac658f defconfig/vmlinux
+16318793 10569913 506468 27395174 1a20466 trim_defconfig/vmlinux
+16281234 10984848 504291 27770373 1a7be05 gc_defconfig/vmlinux
+16029705 10556880 504355 27090940 19d5ffc gc+trim_defconfig/vmlinux
+17040142 11102945 504196 28647283 1b51f73 thinlto_defconfig/vmlinux
+16788613 10663201 504196 27956010 1aa932a thinlto+trim_defconfig/vmlinux
+16347062 11043384 502499 27892945 1a99cd1 gc+thinlto_defconfig/vmlinux
+15759453 10532792 502395 26794640 198da90 gc+thinlto+trim_defconfig/vmlinux
 
-#define DW_IC_DATA_CMD_DAT   GENMASK(7, 0)
+I needed a small change to the linker script to get clean randconfig
+builds, but I have not done any meaningful boot testing on it to
+see if it works. If there are no regressions, I wonder whether this
+should be autmatically done for LTO builds, given that it improves
+both kernel size and compile speed.
 
-in *.h file and...
+Link: https://lore.kernel.org/lkml/CAK8P3a05VZ9hSKRzVTxTn+1nf9E+gqebJWTj6N23nfm+ELHt9A@mail.gmail.com/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm64/Kconfig              | 1 +
+ arch/arm64/kernel/vmlinux.lds.S | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-			    (tmp & DW_IC_DATA_CMD_DAT) <= I2C_SMBUS_BLOCK_MAX && tmp > 0) {
-...here?
-
->  				len = i2c_dw_recv_len(dev, tmp);
->  			}
->  			*buf++ = tmp;
-> -- 
-> 2.19.1.6.gb485710b
-> 
-
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index b94a678afce4..75e13cc52928 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -2,6 +2,7 @@
+ config ARM64
+ 	def_bool y
+ 	select ACPI_CCA_REQUIRED if ACPI
++	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+ 	select ACPI_GENERIC_GSI if ACPI
+ 	select ACPI_GTDT if ACPI
+ 	select ACPI_IORT if ACPI
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index bad2b9eaab22..926cdb597a45 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -217,7 +217,7 @@ SECTIONS
+ 		INIT_CALLS
+ 		CON_INITCALL
+ 		INIT_RAM_FS
+-		*(.init.altinstructions .init.bss .init.bss.*)	/* from the EFI stub */
++		*(.init.altinstructions .init.data.* .init.bss .init.bss.*)	/* from the EFI stub */
+ 	}
+ 	.exit.data : {
+ 		EXIT_DATA
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.29.2
 
