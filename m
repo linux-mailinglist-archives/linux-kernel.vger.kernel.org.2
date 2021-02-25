@@ -2,141 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD9C32577B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FB9325793
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbhBYUVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:21:41 -0500
-Received: from mail.efficios.com ([167.114.26.124]:52342 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234345AbhBYUVQ (ORCPT
+        id S233720AbhBYU0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:26:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232290AbhBYUZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:21:16 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C18A631F6FB;
-        Thu, 25 Feb 2021 15:20:34 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id oDanPPviHs04; Thu, 25 Feb 2021 15:20:34 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6A4BE31F6FA;
-        Thu, 25 Feb 2021 15:20:34 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 6A4BE31F6FA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1614284434;
-        bh=hHXH7cIIE+aDLHBcMP5ZT3pETwrKIyHHLK9KAKn917E=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=C83s9BUjAiRYj2q6zbb7jRZhvAnFXmrcV6puxyvbiKduWufNSWxLqIq5RE6HoY3hX
-         O8GBoT3BBKRrprN4kJt0XtRIOEfB4HMsUoFFUoAZWDCn0Mywls3gFt47CInKpZHoH7
-         xRr8LIuZK5VSW5DXP2nHWMGoNaWjvszl+9r5JrrozbWpLueQ1qVNuN/h1yWmCABsmb
-         kJgbCedHgWZYfXRHUx/DcMD67KfZ0OrX70UNNGTalQSFX8Iu8wbzinXF6VEHntIaY3
-         Op7YjcCLAQYADH47CsQ2SQm+Iw86XqygTSWsHNi3rkgjllJK7sHq+IH6raVO3YAedI
-         SMcE9sTWJPt+A==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id pJgGfKy6Upnn; Thu, 25 Feb 2021 15:20:34 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 568D331F676;
-        Thu, 25 Feb 2021 15:20:34 -0500 (EST)
-Date:   Thu, 25 Feb 2021 15:20:34 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        rostedt <rostedt@goodmis.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>
-Message-ID: <2096901411.5697.1614284434230.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210225183321.GT2743@paulmck-ThinkPad-P72>
-References: <354598689.4868.1614262968890.JavaMail.zimbra@efficios.com> <20210225153656.GQ2743@paulmck-ThinkPad-P72> <47558398.5024.1614268052985.JavaMail.zimbra@efficios.com> <20210225183321.GT2743@paulmck-ThinkPad-P72>
-Subject: Re: tasks-trace RCU: question about grace period forward progress
+        Thu, 25 Feb 2021 15:25:24 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3388C06174A;
+        Thu, 25 Feb 2021 12:24:43 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614284679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qDVKAKnnfPFs0Dxv5+kX2VVyNzrYE33K+BDYTVeJME8=;
+        b=Itg1HgnAQey3puEfZXpKRRf1RkHbrPWXsodppd3f9/agHLs59mQxmZvHrDVfXhn7TF2e+X
+        YgctQb8llo4ek4IXOH40pHKrSlSJUv+qmqSuRbNPlwERu5vmF3/VXIexN4FpY+8WHM5d4n
+        3zHVITkWvbjhosz0zzfOytwQyTccmRTsG9uKDQ/PoVKslKdevkHeAS8FY/vBbTk7ZYAmwx
+        j9C6lcv4wUAstQLOYdbQOINDWx2UjXbjMRmTNEt/9KnzbRIvSmj2EXQuCLrXAd5jyQHGnB
+        6degQSHuHB1F0v3eFX0HxngBtbRJympKrqQjrUQzvVBIk1MNI805LQYIDMpUAg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614284679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qDVKAKnnfPFs0Dxv5+kX2VVyNzrYE33K+BDYTVeJME8=;
+        b=R+fgiTn80NtyboUkoI+34S01BUhJK8k4MSy2VNzuYCNOKjN83g0YvSMQCLvesqnrTwxeYZ
+        t+PogSzB5duz2fCg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Thomas Meyer <thomas@m3y3r.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-um@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Wei Li <liwei391@huawei.com>, linuxppc-dev@lists.ozlabs.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, Joel Stanley <joel@jms.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        linux-hyperv@vger.kernel.org
+Subject: [PATCH next v3 00/15] printk: remove logbuf_lock
+Date:   Thu, 25 Feb 2021 21:24:23 +0100
+Message-Id: <20210225202438.28985-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
-Thread-Topic: tasks-trace RCU: question about grace period forward progress
-Thread-Index: V9hP9BaRvLcwxywYqgqg+vIadBWE2g==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Feb 25, 2021, at 1:33 PM, paulmck paulmck@kernel.org wrote:
-[...]
-> commit 581f79546b6be406a9c7280b2d3511b60821efe0
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Thu Feb 25 10:26:00 2021 -0800
-> 
->    rcu-tasks: Add block comment laying out RCU Tasks Trace design
->    
->    This commit adds a block comment that gives a high-level overview of
->    how RCU tasks trace grace periods progress.  It also adds a note about
->    how exiting tasks are handles, plus it gives an overview of the memory
+Hello,
 
-handles -> handled
+Here is v3 of a series to remove @logbuf_lock, exposing the
+ringbuffer locklessly to both readers and writers. v2 is here [0].
 
->    ordering.
->    
->    Reported-by: Peter Zijlstra <peterz@infradead.org>
->    Reported-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 17c8ebe..f818357 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -726,6 +726,42 @@ EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
-> // flavors, rcu_preempt and rcu_sched.  The fact that RCU Tasks Trace
-> // readers can operate from idle, offline, and exception entry/exit in no
-> // way allows rcu_preempt and rcu_sched readers to also do so.
-> +//
-> +// The implementation uses rcu_tasks_wait_gp(), which relies on function
-> +// pointers in the rcu_tasks structure.  The rcu_spawn_tasks_trace_kthread()
-> +// function sets these function pointers up so that rcu_tasks_wait_gp()
-> +// invokes these functions in this order:
-> +//
-> +// rcu_tasks_trace_pregp_step():
-> +//	Initialize the count of readers and block CPU-hotplug operations.
-> +// rcu_tasks_trace_pertask(), invoked on every non-idle task:
-> +//	Initialize per-task state and attempt to identify an immediate
-> +//	quiescent state for that task, or, failing that, attempt to set
-> +//	that task's .need_qs flag so that that task's next outermost
-> +//	rcu_read_unlock_trace() will report the quiescent state (in which
-> +//	case the count of readers is incremented).  If both attempts fail,
-> +//	the task is added to a "holdout" list.
-> +// rcu_tasks_trace_postscan():
-> +//	Initialize state and attempt to identify an immediate quiescent
-> +//	state as above (but only for idle tasks), unblock CPU-hotplug
-> +//	operations, and wait for an RCU grace period to avoid races with
-> +//	tasks that are in the process of exiting.
-> +// check_all_holdout_tasks_trace(), repeatedly until holdout list is empty:
-> +//	Scans the holdout list, attempting to identify a quiescent state
-> +//	for each task on the list.  If there is a quiescent state, the
-> +//	corresponding task is removed from the holdout list.
-> +// rcu_tasks_trace_postgp():
-> +//	Wait for the count of readers do drop to zero, reporting any stalls.
-> +//	Also execute full memory barriers to maintain ordering with code
-> +//	executing after the grace period.
-> +//
-> +// The exit_tasks_rcu_finish_trace() synchronizes with exiting tasks.
-> +//
-> +// Pre-grace-period update-side code is ordered before the grace
-> +// period via the ->cbs_lock and barriers in rcu_tasks_kthread().
-> +// Pre-grace-period read-side code is ordered before the grace period by
-> +// atomic_dec_and_test() of the count of readers (for IPIed readers) and by
-> +// scheduler context-switch ordering (for locked-down non-running readers).
+Since @logbuf_lock was protecting much more than just the
+ringbuffer, this series clarifies and cleans up the various
+protections using comments, lockless accessors, atomic types, and a
+new finer-grained @syslog_lock.
 
-The rest looks good, thanks!
+Removing @logbuf_lock required changing the semantics of the
+kmsg_dumper callback in order to work locklessly. Since this
+involved touching all the kmsg_dump users, we also decided [1] to
+use this opportunity to clean up and clarify the kmsg_dump semantics
+in general.
 
-Mathieu
+This series is based on next-20210225.
 
-> 
-> // The lockdep state must be outside of #ifdef to be useful.
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+Changes since v2:
+
+- use get_maintainer.pl to get the full list of developers that
+  should at least see the changes in their respective areas
+
+- do not disable interrupts in arch/um kmsg_dumper (because there is
+  no need to)
+
+- protect the mtd/mtdoops kmsg_dumper buffer against concurrent
+  dumps
+
+- update kerneldoc for kmsg_dump_get_line() (@len_out)
+
+- remove ksmg_dump's @active flag
+
+- change kmsg_dumper callback to:
+  void (*dump)(enum kmsg_dump_reason reason);
+
+- rename kmsg_dumper_iter to kmsg_dump_iter
+
+- update kmsg_dumpers to use their own kmsg_dump_iter (and
+  initialize it with kmsg_dump_rewind() if necessary)
+
+John Ogness
+
+[0] https://lkml.kernel.org/r/20210218081817.28849-1-john.ogness@linutronix.de
+[1] https://lkml.kernel.org/r/YDeZAA08NKCHa4s%2F@alley
+
+John Ogness (15):
+  um: synchronize kmsg_dumper
+  mtd: mtdoops: synchronize kmsg_dumper
+  printk: limit second loop of syslog_print_all
+  printk: kmsg_dump: remove unused fields
+  printk: refactor kmsg_dump_get_buffer()
+  printk: consolidate kmsg_dump_get_buffer/syslog_print_all code
+  printk: introduce CONSOLE_LOG_MAX for improved multi-line support
+  printk: use seqcount_latch for clear_seq
+  printk: use atomic64_t for devkmsg_user.seq
+  printk: add syslog_lock
+  printk: kmsg_dumper: remove @active field
+  printk: introduce a kmsg_dump iterator
+  printk: remove logbuf_lock
+  printk: kmsg_dump: remove _nolock() variants
+  printk: console: remove unnecessary safe buffer usage
+
+ arch/powerpc/kernel/nvram_64.c             |  14 +-
+ arch/powerpc/platforms/powernv/opal-kmsg.c |   3 +-
+ arch/powerpc/xmon/xmon.c                   |   6 +-
+ arch/um/kernel/kmsg_dump.c                 |  15 +-
+ drivers/hv/vmbus_drv.c                     |   7 +-
+ drivers/mtd/mtdoops.c                      |  20 +-
+ fs/pstore/platform.c                       |   8 +-
+ include/linux/kmsg_dump.h                  |  49 +--
+ kernel/debug/kdb/kdb_main.c                |  10 +-
+ kernel/printk/internal.h                   |   4 +-
+ kernel/printk/printk.c                     | 456 ++++++++++-----------
+ kernel/printk/printk_safe.c                |  27 +-
+ 12 files changed, 309 insertions(+), 310 deletions(-)
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.20.1
+
