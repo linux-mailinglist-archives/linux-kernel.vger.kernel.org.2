@@ -2,80 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F1A32503F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36310325037
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbhBYNPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 08:15:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59692 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230498AbhBYNP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:15:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AC167AF6F;
-        Thu, 25 Feb 2021 13:14:45 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 98146DA790; Thu, 25 Feb 2021 14:12:52 +0100 (CET)
-Date:   Thu, 25 Feb 2021 14:12:52 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [GIT PULL] Kmap conversions for 5.12
-Message-ID: <20210225131252.GA7604@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Ira Weiny <ira.weiny@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <cover.1614090658.git.dsterba@suse.com>
- <CAHk-=wijdojzo56FzYqE5TOYw2Vws7ik3LEMGj9SPQaJJ+Z73Q@mail.gmail.com>
- <20210223192506.GY3014244@iweiny-DESK2.sc.intel.com>
- <20210224123049.GX1993@twin.jikos.cz>
- <20210224175912.GA3014244@iweiny-DESK2.sc.intel.com>
+        id S231414AbhBYNO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 08:14:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhBYNOV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 08:14:21 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FEDC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 05:13:41 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lFGST-008RYO-Tv; Thu, 25 Feb 2021 14:13:34 +0100
+Message-ID: <96d1f031409d87ff91582eb5b3c1db5af9832bf9.camel@sipsolutions.net>
+Subject: Re: [PATCH 4/7] um: time-travel/signals: fix ndelay() in interrupt
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     linux-um@lists.infradead.org
+Cc:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org
+Date:   Thu, 25 Feb 2021 14:13:33 +0100
+In-Reply-To: <20210223161449.7461e0b6dacc.I3507b456d425cb95a092eb50b6cb491fe8575c50@changeid>
+References: <20210223152707.408995-1-johannes@sipsolutions.net>
+         <20210223161449.7461e0b6dacc.I3507b456d425cb95a092eb50b6cb491fe8575c50@changeid>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224175912.GA3014244@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 09:59:12AM -0800, Ira Weiny wrote:
-> On Wed, Feb 24, 2021 at 01:30:49PM +0100, David Sterba wrote:
-> > On Tue, Feb 23, 2021 at 11:25:06AM -0800, Ira Weiny wrote:
-> > > On Tue, Feb 23, 2021 at 09:13:42AM -0800, Linus Torvalds wrote:
-> > > > On Tue, Feb 23, 2021 at 7:03 AM David Sterba <dsterba@suse.com> wrote:
-> > [...]
-> > 
-> > > Sorry.  I will change it.
-> > 
-> > Let me know how you want to proceed with the patchset/pull request.
+On Tue, 2021-02-23 at 16:27 +0100, Johannes Berg wrote:
 > 
-> To be clear I'd like to just drop the 2 patches which use zero_user() for this
-> merge window.
-> 
-> I've already submitted some additional btrfs changes for 5.13[1].  I can rework
-> these zero_user() patches and submit them through Andrew for 5.13 as separate
-> set.  That is what I meant by 'I will change it'.
-> 
-> > I
-> > can play the messenger again but now it seems a round of review is
-> > needed and with some testing it'll be possible in some -rc. At that
-> > point you may take the patches via the mm tree, unless Linus is ok with
-> > a late pull.
-> 
-> I'm ok with delaying the memzero_page() change to 5.13.  There are a lot of
-> kmap changes to come.  But I'm trying to do them as smaller series just for
-> this reason.  I don't want valid changes to be denied due to my messing up just
-> a few patches...  :-(  Hopefully you and Linus can forgive me on this one.
-> 
-> Is ok to just drop them and merge the rest of this series in 5.12?
+> +void unblock_signals_hard(void)
+> +{
+> +	if (!signals_blocked)
+> +		return;
+> +
+> +	if (signals_pending && signals_enabled) {
+> +		/* this is a bit inefficient, but that's not really important */
+> +		block_signals();
+> +		unblock_signals();
+> +	} else if (signals_pending & SIGIO_MASK) {
+> +		/* we need to run time-travel handlers even if not enabled */
+> +		sigio_run_timetravel_handlers();
+> +	}
+> +
+> +	signals_blocked = 0;
+> +}
 
-Ok, no problem. Please let me know exactly which patches to drop, I'll
-respin the branch. Thanks.
+This is, of course, racy & wrong - we could set signals_pending just
+after checking it.
+
+Need to make this
+
+{
+	if (!signals_blocked)
+		return;
+	signals_blocked = 0;
+	barrier();
+
+	if (signals_pending && signals_enabled) {
+...
+
+
+Anyway, I need to repost this series, but I'll wait a bit longer for
+further feedback before that, since I know Arnd and others wanted to
+take a look at the IOMEM and PCI bits.
+
+johannes
+
