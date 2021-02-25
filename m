@@ -2,176 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131F1325A24
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 00:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA784325A2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 00:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbhBYXW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 18:22:58 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:46374 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhBYXWo (ORCPT
+        id S232077AbhBYX0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 18:26:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhBYXZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 18:22:44 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11PN4GJo060726;
-        Thu, 25 Feb 2021 23:21:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=NCLzLTXLk/Yj5R2viPobLArIeniNbUdIBuWPMpeeGm8=;
- b=bwLMteU+YO0GvUZ42S8yXiS+cKbAF7EkwXF6iCThVrHNwq21ro/8lJ9Havog9+0Ic6I/
- FBsuNhS4J2tK6Gzo333rd24nP6JP3YrBEAh20lkBMLUnUIzl4/RMipCzgw/QFgNXz3vl
- peyF271j1XdOeI2CXiPeXR63kbIFOmAIMsqFViw+qfFawPwotqvT7wKUblCy7gw96dJo
- QQvVtXGYC4rDsz/znUFFWmbnTrtc87vQQTEkm3NhNB7sxeWu5OSygRNSbqRo2XcyVrSM
- 3mTV8tgn/Z1iBSZ6MqIdiYa4LOXt6DbUxtVApXtdgHUD1lxGW2z2mdbfk2uum/XqcCBv HA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 36ttcmg7gt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 23:21:51 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11PN6FbY063914;
-        Thu, 25 Feb 2021 23:21:51 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2105.outbound.protection.outlook.com [104.47.70.105])
-        by userp3020.oracle.com with ESMTP id 36uc6v4w54-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 23:21:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BSnLO2N3HMqw4BQIdUx9Y8gp4wlkj+1hrz/3KDKMQ9r24wYpxXRt57z78HY/soKIVqrJPumKeb/9a4a1ooBp4s1Rg1btoBmYSow8510V4e48xlkKo+OD/gYr60l4344gKZTdZzoWdrqhBEeJb7QyKsaxcop9W97Ux/rCRerw5aNQLoyzJXbJhtj5zqQ0TH4Na5b44/3pSsM0lJbmJPhVpx+sW16ktTJWex8C9+1gOqaGGzm0tX2x017fWaCdhNNQkxUi6tEGA1Ibe13rDFe1t4HvxNcJg5luymekvbDDW60dbSdzVd4lZikiPlfJPKefZ/RJavan5PZsjdd6BqRLEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NCLzLTXLk/Yj5R2viPobLArIeniNbUdIBuWPMpeeGm8=;
- b=oKQEIVigqQ8GOy8Lhw9gtBzbd65HcLNp2jxJvS/8yQeapmRNf78VyXtxrD6sgvZ3Cz1jIlN4OTYjm5bFGyNnnBlYsT8gX1Kdre9rY3bhshN9A+9MBfrjuxOP0hiarRyxtjnmqp6/rOXSzOdHA8juLS+jWAsj9FSCDLKzKFv00bjGK3et2rq2xJZ11WD66qMm9LhExLyt7s6+EEn4l4+geqrOu+zG2VFFGsuWX3yDDi2pA4cCGh9sZRuv7lTfhRne2eFj+SRZXY8uN4jZktuhoyJhiGAIWJInyYfNhHC/RFGc6uOYHSj4VADDpjTREwRiUOWZlFpCuJo+w9y7D721vQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 25 Feb 2021 18:25:59 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346E6C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:25:19 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id s24so7785686iob.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 15:25:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NCLzLTXLk/Yj5R2viPobLArIeniNbUdIBuWPMpeeGm8=;
- b=Y6vRWUOQcpY3e/wY4BUChXI72/gG9XugCSCVcL6y5fO1pDveiS/H2G+QGbfn2Ra8wMGuyLCtEuV45spwzNU42OcAdE7d92Bv6ir7caF7YXKVLTVUIsB090RkGaDZKqWN1/abHEiarUxUM7QIEangcXQr8fdP8xJZxKPltZbbuqw=
-Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
- header.d=none;lists.xenproject.org; dmarc=none action=none
- header.from=oracle.com;
-Received: from BYAPR10MB3288.namprd10.prod.outlook.com (2603:10b6:a03:156::21)
- by BYAPR10MB3429.namprd10.prod.outlook.com (2603:10b6:a03:81::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.31; Thu, 25 Feb
- 2021 23:21:49 +0000
-Received: from BYAPR10MB3288.namprd10.prod.outlook.com
- ([fe80::f489:4e25:63e0:c721]) by BYAPR10MB3288.namprd10.prod.outlook.com
- ([fe80::f489:4e25:63e0:c721%7]) with mapi id 15.20.3890.019; Thu, 25 Feb 2021
- 23:21:48 +0000
-Subject: Re: [PATCH v1] xen: ACPI: Get rid of ACPICA message printing
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org
-References: <1709720.Zl72FGBfpD@kreacher>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <f73290b7-9a50-829d-76f6-ba2db3d16305@oracle.com>
-Date:   Thu, 25 Feb 2021 18:21:41 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
-In-Reply-To: <1709720.Zl72FGBfpD@kreacher>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [138.3.200.62]
-X-ClientProxiedBy: SN1PR12CA0107.namprd12.prod.outlook.com
- (2603:10b6:802:21::42) To BYAPR10MB3288.namprd10.prod.outlook.com
- (2603:10b6:a03:156::21)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=buKsp3p8qdkKup4y0TOrYPNSpU4MJwjrjc4Pg3aQsqY=;
+        b=A0JMF81DswBAPlC8ypStKA2rg4ZYbEW5mBfM5bhmhEzNPXcc0KlET4IjVTpJFiKO6z
+         RDwc49QZf0/ZzzdII9Fr4VKpSE93e03FNtdLX8mcWSvdZD24YnV9Z07H+wDUahF7H+ld
+         kbHDMOWAVDvl1LeMLb5fG4G8pZcgzKerZGj1CK5hvU/EXXfyizruvwqE1cnDN//aLLzr
+         Xz7+pFvi5nRbDm2zT4WzrG7AWnUJLCpOnub+ek8aH94l6DBCTFc4GvcpOHHKQWW7DFTC
+         cFAWTc5XB+E9tEVntUEEgEiiNhrKT0W90+xVWfDD0+eXttgoLZKP+GiG/DjdV07SWD5r
+         oobA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=buKsp3p8qdkKup4y0TOrYPNSpU4MJwjrjc4Pg3aQsqY=;
+        b=UW6VEvylSNEUqtPmVwiUsCSZuyGdu+/TDIG+6guZntoU6oTp52MAUkDBf3uO1h4mTs
+         gYgNZ6Mom3FXIxa/A5sicnczenEOOiZN1VdKBJTOtEp+CaRv0RStQw+EU92lbcAHo5Hk
+         8kYdqhW0/oqILEX8G9B2XLARdBw8pKe2o8FHWishL5ZcjkfqFQ9ewqnGJ7PUs+bLUghs
+         vIkt0lWkAiO5mw7TcurLdXICDR+y4WCdNyV1c1dNNv88UXmFFktSzugDdpdU9+NuoaiM
+         Ixt5AZrNUt89k5TGv9LDTJ+ObGcX3sYDcycTg3TLF+ayrWgNlg5dX9NToDBkOHNqVaBk
+         444w==
+X-Gm-Message-State: AOAM530tuGXlq0Gz6Y4nqUqarnF86blJBGcKIpb3K+Npb3jGr/ajZQWe
+        ngkE/PzWI5Gc0p6aiJ88ZtTLls9j51VE3NwnsTceyQ==
+X-Google-Smtp-Source: ABdhPJxO1ZFFwznkE2sgi695rGhxeIW4srN9jz1QlLgeboB+UwuDopHsMPcVUA0qzcJ3V9TLXSgZMYhw+6yJJe4UMIo=
+X-Received: by 2002:a6b:7a4a:: with SMTP id k10mr403062iop.8.1614295518399;
+ Thu, 25 Feb 2021 15:25:18 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.74.97.62] (138.3.200.62) by SN1PR12CA0107.namprd12.prod.outlook.com (2603:10b6:802:21::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Thu, 25 Feb 2021 23:21:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5c3ce6d2-28c0-4660-ced3-08d8d9e42005
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3429:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB34290F4EB3764005086D74FB8A9E9@BYAPR10MB3429.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 70oDqX8LKf+t8CQOsXyZjiwlRZEvHfVRloIBPoEzxBzuXWxUXIK8rTPrsJJAqrckVv3lSxTQhP6+spioyfXZF4oBttJwyttXxRDKdOiJmZo7voXsUIZXzNV1KRlu3RhANMw8FwXhx5Qe8Jt6GjOUtb0lbZZpmLvRNCuTmoCecvRdSU+MrnoxUf4zXOyn1EGajRgI3Ubcl3XnUUcomum1BurbXqih10spqQc6XaqcA8dTBVEM0riqrKm4ns3fwFyqFVkncCJxYwevoWP7bRsw0Sc8ChWXsPMC1GZt2UnaNrgVipT7ufDnt8vPW8C4mbXr5zNrCI4sQJrPmxoAVwHGtqYzKgFKJ/4tfCzCSTTyPouYh78850bp+ehzhog49DWFPgX8ZVJT/Ij+UAchqQfYu35+hccIEa5gBNTg4qDmcyMBtdElWP0/FiTN4T5N4IPxgPJSvWMvzE6AA8bgTio8eBeSv5okiVJ+5tVauUk1lqAk9hOdDAdAuplbRUJvGAGR6wSvPm19CEpmWYYT0SVtxE+iQ8zlXQQkGBtVeBlaZvyH9JDowvWAX3oOM4UY/50JPKkXBQRh4a0HLLV98dM2dpVHRGj1eBZW1woXgXShyVFP6zeFdlcnMWIS2TrKHMFU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3288.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(366004)(396003)(39860400002)(66946007)(83380400001)(316002)(31686004)(4326008)(16526019)(5660300002)(16576012)(66556008)(478600001)(54906003)(186003)(15650500001)(26005)(66476007)(6666004)(36756003)(6486002)(53546011)(31696002)(44832011)(2616005)(2906002)(110136005)(8676002)(86362001)(956004)(8936002)(26583001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VXlaa0JJS1VCaDQ5N1VvQ05Na1QrTXk3SWJHci9rZnloMHAvT0RKNmlOcExE?=
- =?utf-8?B?OWE0SHhORnliUXErN2ZMWVpSakhoVmhTSkQ3U1RZWW16TnZOQVRqbnJaM3hM?=
- =?utf-8?B?Uzg2djdBd3BoQmVEM3hvcWdVbXZRZ1BESWI4MWo5MnNZMVVkTmEveW5aZkNI?=
- =?utf-8?B?bTN4NkhJNGRyYVZCdDEyNklwREhUZm5tK1NLVmg2ZklWeTNwV3pRSmJWSis2?=
- =?utf-8?B?VEVxSlRVelpVODhrQ0ViOGJwQjhyWk41M3NBZE1Hc2xZbnBwcUVsVzhRTHp6?=
- =?utf-8?B?ZFk5WGNnd3lJb2dzUUhZanJscUFMUzlxaitxQm5hRWV1MW44UVRoS0UrSTFx?=
- =?utf-8?B?TCtGeldDWnY3QkJTWnc1VW5HeDNBVlB1MldEUndaeVBIU1ZSSVNsS3JRT2Fj?=
- =?utf-8?B?YlpMYmpHdG4vYW1HaVpwNUw1WmVzaXFwYUdqUXhZbzVCaWozamhpRmR4cnl0?=
- =?utf-8?B?YVVYNDRKdEMrQ3RZNE0rZXNZdEZzSnp3b3FCOUhlcGh4bmhySm05b2RXTzVY?=
- =?utf-8?B?UVlMemwyVEZCV0ZaUHZvN1pVWUwwUmgzaGl3Qi9hRnFKU2w5ajZzTmxkVFFX?=
- =?utf-8?B?QmxYL1FGYjdDZ2lmcnJJbVlteksxMnh0bm1sUXhrd2U2bUUwYk91UEs5dDZW?=
- =?utf-8?B?S3QwaGVSbktzajI0cWtNeHJYUlI1bjZPVU1jbWs0eDh0bzkyTUdoVDMwek1w?=
- =?utf-8?B?YWt6dnlsNHhsV2dETnpVck1YTHFOWmRUeDV5TWZWdkRZeXFCK3hySVBRMExB?=
- =?utf-8?B?N2x3NFhqVzRIV3pWRmg2cGJBYnl6VlRmZWhQSGRvdkNZdTFLcFMxZEdZemR0?=
- =?utf-8?B?YWduU1J4bEU0a1lzend3ZlJPUlNOdW5jdGZjcE83bFNzeHRvQVJ4T0szTytv?=
- =?utf-8?B?ck1xU0ZhWXZ2eTZnQTErcDVVZm9EZjFnaWFsV2FsV2dmOWN1MUdad2xBb2Z6?=
- =?utf-8?B?WWF4OUFvVUhGcEZmRnkrdWZYOXBiejF6K2JkUVVVV3NKd3JCbmM3ZGl2d1hI?=
- =?utf-8?B?ZkppdXIzN3NFbWIvODljdG9makt3c3JEOVpyNUlBeFI3emRIajhEazNGTVJG?=
- =?utf-8?B?a0xRTUhheThHSThVSk1hU0Mvd0NsMCtGU0FiU2hMQzI3MzBna29MbEovblNO?=
- =?utf-8?B?cXB3RHg0M2VKd2RPSFEycFZRYzZLY2ErZmt2dERTaDlsQzBqeTVhZXdITU9i?=
- =?utf-8?B?azlmTXVUZ0pzbmZZM21GdWJEMTZ1SlhjRXZnWU5IdnAzN3BNQlhsYWd2ekI0?=
- =?utf-8?B?b21iMlpuZmcvRW10Uk54c3NXeW1JalJoVFhDSFpGYmpkak54S25YcFBZR0lV?=
- =?utf-8?B?TlpVM2Y1WTMyOE44bTVZTEU1RE4ydnBaREcxNG9NS1lJRnBGR3dPWlBhYnFE?=
- =?utf-8?B?aVNYdis1V0x3ZVRkMmllRDkyM3p6TDg3ZVpIS2Q2UWxzVVRxc0lNRVBYRjgv?=
- =?utf-8?B?Qk1KUU9XYWZYTXpGbDJPcVpPUDI5TDFZeE9tNitmOG93VitzbEFqWjVCcEFD?=
- =?utf-8?B?V0V5Mk5IVXk0bFdRR3plc2NVMkczUlFKL0ViQmF3ek1YK0J2OGZsOFdDYXFO?=
- =?utf-8?B?TUptKzJwdUk0RHJ1S2ZYSGs0eklZM0VVL0h4TEV3KzhwUnZLK2l5YXZNaTdz?=
- =?utf-8?B?NllzNGF0eVVhbTdOMWNKWG9EdGNieUt5VEQ1UFR3djBLUFZTV0Y4MEk4L0F3?=
- =?utf-8?B?dTZ6c011UXUvdGpwSjk4WmMwMDJRallDTGt1ZWZwMlNUZlR1Ym5mK2VQaTRz?=
- =?utf-8?Q?9oRpAFgLFk0FbypXQDHGvsumjgX5MUCFvbLyMg+?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c3ce6d2-28c0-4660-ced3-08d8d9e42005
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3288.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2021 23:21:48.7666
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9V4925iD72Mty/9IIR/kUgw3SnyZQV1SdoTk1UcWkBGaNiU18EthUUGEAnjW3TXm/0Pkxwq5iJ1LMerecsA4U4++VzNwTH4hlTAQ+I0U704=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3429
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9906 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102250175
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9906 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 spamscore=0 mlxscore=0 bulkscore=0 clxscore=1011
- priorityscore=1501 malwarescore=0 impostorscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102250175
+References: <cover.1612398155.git.ashish.kalra@amd.com> <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
+ <YCxrV4u98ZQtInOE@google.com> <SN6PR12MB27672FF8358D122EDD8CC0188E859@SN6PR12MB2767.namprd12.prod.outlook.com>
+ <20210224175122.GA19661@ashkalra_ubuntu_server> <YDaZacLqNQ4nK/Ex@google.com>
+ <20210225202008.GA5208@ashkalra_ubuntu_server> <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
+In-Reply-To: <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Thu, 25 Feb 2021 15:24:41 -0800
+Message-ID: <CABayD+cVKjYrNq84Ak2rJ0W696+BhhAYkEpJ+SwsK5DvNYSGzw@mail.gmail.com>
+Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST ioctl
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "joro@8bytes.org" <joro@8bytes.org>, "bp@suse.de" <bp@suse.de>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2/24/21 1:47 PM, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, Feb 25, 2021 at 2:59 PM Steve Rutherford <srutherford@google.com> wrote:
 >
-> The ACPI_DEBUG_PRINT() macro is used in a few places in
-> xen-acpi-cpuhotplug.c and xen-acpi-memhotplug.c for printing debug
-> messages, but that is questionable, because that macro belongs to
-> ACPICA and it should not be used elsewhere.  In addition,
-> ACPI_DEBUG_PRINT() requires special enabling to allow it to actually
-> print the message and the _COMPONENT symbol generally needed for
-> that is not defined in any of the files in question.
+> On Thu, Feb 25, 2021 at 12:20 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
+> >
+> > On Wed, Feb 24, 2021 at 10:22:33AM -0800, Sean Christopherson wrote:
+> > > On Wed, Feb 24, 2021, Ashish Kalra wrote:
+> > > > # Samples: 19K of event 'kvm:kvm_hypercall'
+> > > > # Event count (approx.): 19573
+> > > > #
+> > > > # Overhead  Command          Shared Object     Symbol
+> > > > # ........  ...............  ................  .........................
+> > > > #
+> > > >    100.00%  qemu-system-x86  [kernel.vmlinux]  [k] kvm_emulate_hypercall
+> > > >
+> > > > Out of these 19573 hypercalls, # of page encryption status hcalls are 19479,
+> > > > so almost all hypercalls here are page encryption status hypercalls.
+> > >
+> > > Oof.
+> > >
+> > > > The above data indicates that there will be ~2% more Heavyweight VMEXITs
+> > > > during SEV guest boot if we do page encryption status hypercalls
+> > > > pass-through to host userspace.
+> > > >
+> > > > But, then Brijesh pointed out to me and highlighted that currently
+> > > > OVMF is doing lot of VMEXITs because they don't use the DMA pool to minimize the C-bit toggles,
+> > > > in other words, OVMF bounce buffer does page state change on every DMA allocate and free.
+> > > >
+> > > > So here is the performance analysis after kernel and initrd have been
+> > > > loaded into memory using grub and then starting perf just before booting the kernel.
+> > > >
+> > > > These are the performance #'s after kernel and initrd have been loaded into memory,
+> > > > then perf is attached and kernel is booted :
+> > > >
+> > > > # Samples: 1M of event 'kvm:kvm_userspace_exit'
+> > > > # Event count (approx.): 1081235
+> > > > #
+> > > > # Overhead  Trace output
+> > > > # ........  ........................
+> > > > #
+> > > >     99.77%  reason KVM_EXIT_IO (2)
+> > > >      0.23%  reason KVM_EXIT_MMIO (6)
+> > > >
+> > > > # Samples: 1K of event 'kvm:kvm_hypercall'
+> > > > # Event count (approx.): 1279
+> > > > #
+> > > >
+> > > > So as the above data indicates, Linux is only making ~1K hypercalls,
+> > > > compared to ~18K hypercalls made by OVMF in the above use case.
+> > > >
+> > > > Does the above adds a prerequisite that OVMF needs to be optimized if
+> > > > and before hypercall pass-through can be done ?
+> > >
+> > > Disclaimer: my math could be totally wrong.
+> > >
+> > > I doubt it's a hard requirement.  Assuming a conversative roundtrip time of 50k
+> > > cycles, those 18K hypercalls will add well under a 1/2 a second of boot time.
+> > > If userspace can push the roundtrip time down to 10k cycles, the overhead is
+> > > more like 50 milliseconds.
+> > >
+> > > That being said, this does seem like a good OVMF cleanup, irrespective of this
+> > > new hypercall.  I assume it's not cheap to convert a page between encrypted and
+> > > decrypted.
+> > >
+> > > Thanks much for getting the numbers!
+> >
+> > Considering the above data and guest boot time latencies
+> > (and potential issues with OVMF and optimizations required there),
+> > do we have any consensus on whether we want to do page encryption
+> > status hypercall passthrough or not ?
+> >
+> > Thanks,
+> > Ashish
 >
-> For this reason, replace all of the ACPI_DEBUG_PRINT() instances in
-> the Xen code with acpi_handle_debug() (with the additional benefit
-> that the source object can be identified more easily after this
-> change) and drop the ACPI_MODULE_NAME() definitions that are only
-> used by the ACPICA message printing macros from that code.
+> Thanks for grabbing the data!
 >
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> I am fine with both paths. Sean has stated an explicit desire for
+> hypercall exiting, so I think that would be the current consensus.
+>
+> If we want to do hypercall exiting, this should be in a follow-up
+> series where we implement something more generic, e.g. a hypercall
+> exiting bitmap or hypercall exit list. If we are taking the hypercall
+> exit route, we can drop the kvm side of the hypercall. Userspace could
+> also handle the MSR using MSR filters (would need to confirm that).
+> Then userspace could also be in control of the cpuid bit.
+>
+> Essentially, I think you could drop most of the host kernel work if
+> there were generic support for hypercall exiting. Then userspace would
+> be responsible for all of that. Thoughts on this?
+>
+> --Steve
 
-
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-
-
-
+This could even go a step further, and use an MSR write from within
+the guest instead of a hypercall, which could be patched through to
+userspace without host modification, if I understand the MSR filtering
+correctly.
+--Steve
