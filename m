@@ -2,203 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C77832560B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E22B32560F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233440AbhBYTFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:05:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58881 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229769AbhBYTFB (ORCPT
+        id S233545AbhBYTF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:05:29 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:52570 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233236AbhBYTFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:05:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614279814;
+        Thu, 25 Feb 2021 14:05:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1614279842;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+tBBjR9sNYzM6KSzYefGASfGJGZayMCw0kAzhSTkJbQ=;
-        b=JQ04+YiS7+TwEWAGNShZxrHBJ61ZuSt4ejdKpjNW9UOg0UVcuJRcTj/7B8Ib1cZkMsydCF
-        8cbJzOAsQn5uydJ2IyUnPIaRUgqad1RSHBAv2yZh0/Zr9X3Xog6qPINFdhdLrIDVTzmOJk
-        soRLN8o1NOVVuKCmUVof8oZQD6WfiMQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-57-CcjKFO4YOG-GHfa8jG3qZw-1; Thu, 25 Feb 2021 14:03:30 -0500
-X-MC-Unique: CcjKFO4YOG-GHfa8jG3qZw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 84D5DC73A0;
-        Thu, 25 Feb 2021 19:03:28 +0000 (UTC)
-Received: from krava (unknown [10.40.192.91])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6DC3060854;
-        Thu, 25 Feb 2021 19:03:25 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 20:03:24 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Liang, Kan" <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>,
-        "Yi, Ammy" <ammy.yi@intel.com>
-Subject: Re: [drm/i915/gt] 8c3b1ba0e7:
- perf-sanity-tests.Parse_event_definition_strings.fail
-Message-ID: <YDf0fP8XmnTrkIT8@krava>
-References: <20210224074841.GD6114@xsang-OptiPlex-9020>
- <cabd8692-07ca-13c8-efb5-e088b4547f80@linux.intel.com>
- <YDenRVGzh5Dv1pC2@krava>
- <YDfph8b9p8sSk1AF@krava>
- <YDfxgfi5DBDMFgwu@krava>
-MIME-Version: 1.0
+        bh=khND3q2P5JO6gJQuB9Q33C51QrN9ywxGjcZy7pMumik=;
+        b=UeKzz1Sy6ZEAJQErc9+ubz9137D0/Z6cLSEaWrM7hsn9V7YI10Javta3UB++aaP55tj0JV
+        EPK66WSO8zFmBv+HigGUJ9Uw1azTRt4AJTIn8YJt6/VFmhoeoPWJue+x6DeHM11M4MRsqP
+        RrkMUR1DD9BdImgsXlH2G/jZnVuIg74=
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ (mail-db8eur05lp2107.outbound.protection.outlook.com [104.47.17.107])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-1-1ankPBAvNBCLdJyO8jhGgQ-1; Thu, 25 Feb 2021 20:04:01 +0100
+X-MC-Unique: 1ankPBAvNBCLdJyO8jhGgQ-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Jl4Z7LrjFSSvjo912jNmB2Eh9UEw1BeKevGXOv5IyRPBhphB+pLOaEdVcQgJLxBbBgn74gmop6AQwsbPdcI88koNmJQny5rAvJh84Sy/sTRLSw8fsRRkOGQHP0E9UgkJixnYhxSX/uDXRflM/LlT5A1JYixb5VRE8QmUaRV7N0uhTA60het1a2lJhbt32q67sEMdTyaIMBen2LKoxsAKodm7AItdiMNBE1DTLVj++4/oJI2G2/5MY6WMKV6U9gSCAwOJFER4gVuZrPHVrIs7L35S+aipiP6kINp2vILdPNAjq0p15meaFNIMlouAih6MzfLjBWIkq7m0mw1TfWlwQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=khND3q2P5JO6gJQuB9Q33C51QrN9ywxGjcZy7pMumik=;
+ b=mFoYex//683Tu/fPwXgmPbEB4vLccov9W/ql1tcIIaO20FlyYFByFdsNGU2KLE3M/tb/uidkDE28dDIBja+62ZDq19pyMzypLmVWmXt/K581OtMVJsqIiYKesYXRPIVSL3SUSIcaJfLI2EdQfkzkNaRw26Aiai6s/BdMoCSLGsxKCrqumKdg9N3o+tmS+NSJ2UvTnbUXmADj/DBMQMi+cUCQ9napqQlgtquSEnoZIsoWEEFI9LIsyXeAZr8L2XC3D4hAenBsdm335WV2q/kL25kSYS7lJcPemj8c55TkFCzAQMiVFRNsiLstBUzIHp+m+UwT9DhHxyl8st7PiWBliw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com (2603:10a6:803:3::28)
+ by VI1PR04MB4591.eurprd04.prod.outlook.com (2603:10a6:803:6e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.29; Thu, 25 Feb
+ 2021 19:03:59 +0000
+Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com
+ ([fe80::9c1d:89de:a08e:ccc9]) by VI1PR0402MB3359.eurprd04.prod.outlook.com
+ ([fe80::9c1d:89de:a08e:ccc9%4]) with mapi id 15.20.3868.032; Thu, 25 Feb 2021
+ 19:03:59 +0000
+From:   =?utf-8?Q?Aur=C3=A9lien?= Aptel <aaptel@suse.com>
+To:     David Howells <dhowells@redhat.com>, mtk.manpages@gmail.com,
+        viro@zeniv.linux.org.uk
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-man@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] Add manpage for open_tree(2)
+In-Reply-To: <159827188271.306468.16962617119460123110.stgit@warthog.procyon.org.uk>
+References: <159827188271.306468.16962617119460123110.stgit@warthog.procyon.org.uk>
+Date:   Thu, 25 Feb 2021 20:03:56 +0100
+Message-ID: <87h7m0ynoj.fsf@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YDfxgfi5DBDMFgwu@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [2003:fa:70b:4a14:ba29:b88d:f57e:aede]
+X-ClientProxiedBy: ZR0P278CA0137.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:40::16) To VI1PR0402MB3359.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::28)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2003:fa:70b:4a14:ba29:b88d:f57e:aede) by ZR0P278CA0137.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:40::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Thu, 25 Feb 2021 19:03:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: de897b0b-9df5-4ad2-6424-08d8d9c01bae
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4591:
+X-Microsoft-Antispam-PRVS: <VI1PR04MB459174FB6C45DAEA2CC1BFF8A89E9@VI1PR04MB4591.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tlK391oRAcDYRKcrzf8yGRBWe4q17sOvuNMGJ9glEH4uHUgG/8r0z8WkF53EOOMDtQmagsmTKbT44fJC2s8lBZAuiS87t25/w1qdy5qI6x4OPWjTCjvu+fz7trcDEycfa6gmbV5PMGyFEu02PLXgRTMMxIawl9IU78JOBTBwXhge0Z9HXPyv8mTz85UvaneV3u93bYgnY8KUJhhcLdrupXsg0iec/SgUePRVuVrLaLu/txY2tZFMqsW6n+GkRBncg5m5OFqBrzxGtjDdjEP5EYdJxLjURMgsGPIFciU3GjQNA+3/QFmBIwnbYtgp2QMYgZblPMtJ55M2LsDXTsPx2gJYkhSzsBqFJh/0eFYVSKFVQAqmaTNg8zRqc4QzQKhhQU+0k1Jzm8GHZ+QsNTLNYcDrDQkimQv23tQ3rCQaJIPRY0DW/hA78WMF0Y7U2uHR1jZPOWEPSQ0+l1p2ibRPSIixOiZywSIxRSpG7Jrhw8AwMYwEPEUKTVJqwSBCyLegkAoNAyxXxHr0Cj2eQuYawQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(39860400002)(366004)(396003)(66946007)(2906002)(4744005)(66476007)(478600001)(52116002)(66556008)(6496006)(6666004)(36756003)(5660300002)(8676002)(2616005)(4326008)(16526019)(186003)(6486002)(316002)(8936002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RmJWZlVqWXB3cjhEdG5ObXhwVmtrMHpmQzhkQnRvNXExbmNKRG10QVIwQ0pv?=
+ =?utf-8?B?dVdxaVZZY3hMS0pBRXk4N1V6WWhKaEpPc2ZWREU5bXVzbTZmME5xbStyYita?=
+ =?utf-8?B?Smlud09wdld0L0kzbG82SnZxWFh3aVBBMUowY3pkQzAyY0prUTZSU0RUWUho?=
+ =?utf-8?B?MjhQL21MNWhobVNyeFlocVYyN2lBZGR5OUk2Y2VQbG85WjVRbzNEOXppSWdm?=
+ =?utf-8?B?eHQ0Z2lodFVWSWhkemgweG53K2lYQW5pc2F0WVgzZWtVb3FJT0F3NEdKWC9t?=
+ =?utf-8?B?UHNlanp5N0RST1YvUGNRUzQ4dnd4SlZVdS95bWpzRTYvdkJIcmM0NHQ0WVpI?=
+ =?utf-8?B?RUtiKzlqSGUxTUJyV1U3Qnk1M3pmazZUTGMzWUdRVlgwRitmZjl2ZEx1aktJ?=
+ =?utf-8?B?MjJwOVhlbUpSWGI2bGtDcUQ2bjdHN0dJSDBnekhoWVdnQVhlckMvVHNnTXE1?=
+ =?utf-8?B?dWZLY3YxM0I0cHB3WDZHcnovakRmN2Urd0V1U3p4eFJseUtGMjJIMG8vVXVJ?=
+ =?utf-8?B?YitubXhQWks4VUtrSXZHZklaQnRwSTZ0L0E5NDN5VjVwbEkxaVFpYUdJS3hJ?=
+ =?utf-8?B?OVpVeEdUNXNMMXYwU0ZiZCtVVlpaMGE4SUxxbk4yOENOdHJiQzJZekMwcUQ0?=
+ =?utf-8?B?QTNWSmNkN0xJSGhqTURvcXNYbDBmLytCcXNjU2x4K0dTVTBGWUZrVUNBd3J5?=
+ =?utf-8?B?YVJFckI5V1dBT3FrQWdEZk56aFFTVE1Fb0ZrWXB0d3VtQ3FPQmJnYTNIaGFR?=
+ =?utf-8?B?czk5MkVNbFNJUVREWmMzTHhHMVk2Wk0rTW9UVTlQSThsMmZuUUYxdEZQdjdS?=
+ =?utf-8?B?ek5zRk9KaDkrZVFrTGNPcWU4Zmd0eVFzaWlpMWVvTXpHVXhFV1JVT2dhT0Ja?=
+ =?utf-8?B?ZldKZEtZdGExT3czenRMOHFvbi84Q1BKZ1FVb3oxWHptcXg3SjJKRXBOK3RH?=
+ =?utf-8?B?VEtXVVhyN2hxWTV0cFV1Z1lPQTVXN2YzeE80dzJmUG4xZmhTdzY2dVRvYlFs?=
+ =?utf-8?B?MHQ0V2pET0YyYy8yU0w1bC9RVURQQzZPSlZNU3N2Tit1RXFnendDbW0zQjR6?=
+ =?utf-8?B?U1hhcXFkVm43MWhZNE9KeTExV0lNUjNUZXAvNmM5bHByaGkvQk8zQW9VNmhn?=
+ =?utf-8?B?dm56TWVWNFNiTXltbkpZQjhqc1hhZDRWUFlQMmNxdFlab3hneExYeng4K21K?=
+ =?utf-8?B?QXdobXBnTVNPd0ttcm1LQTZMRnpHUURCQmlBdURSUnJqc0dyQmN1czhEaTFm?=
+ =?utf-8?B?V2VaWXlBUnorejkvdjhaTHRDWGNOOG1aL01aWU1meko1QmNxLy9kUnFRMUhQ?=
+ =?utf-8?B?OXZ2THFydEFqOGJ6ZlJlNlFwNUM1YUFndTl3QXJRVWN6b2FaNlk2c2V3UW85?=
+ =?utf-8?B?eGxGWDlJQTRjQ1NHVW1aWkIwUTdBNDNWR05BZUExYzd6d2hTQWN5WVZKa1RQ?=
+ =?utf-8?B?ajEzY2JQY2JidkRveGlhUHlnMEIwTk0vUExaQjV0dXBnNUVOZ2RYSERtdXRq?=
+ =?utf-8?B?RXRkZm1tdzBUY2IwOWIzTXVMWldQdVdqL2UxeEFZM0o4Y1V3dWhHZy9UMU52?=
+ =?utf-8?B?anBHY05wVUhoTEdFUVVBU28zUXRDQlJkRjlyUnFTRys4aFpOZzMwU2pEbmxT?=
+ =?utf-8?B?anM3ZnpKOERxWlpweHh2d2ZMNEVqTzczL3V3anFFWnE3bE56c0FwSXFMcWln?=
+ =?utf-8?B?TkYrZ0YxSVlpMFhjdmZpeklyOVhrYnFwVzdLVUFkQjRISklSNi9pelBIMlRQ?=
+ =?utf-8?B?M0dieW1tTllKUzlNY0x1aHR3RUpra1NGM1lyKytJQUlmandWSlpCRXZrVzZ4?=
+ =?utf-8?B?Y0Y2VjJqVVMxTHZ4ZTczR0xPSDJrWmZUQWFQTzhvMWsyZWVjNkFGT1RlNncy?=
+ =?utf-8?Q?wjCSqV6DqfTBp?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de897b0b-9df5-4ad2-6424-08d8d9c01bae
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3359.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2021 19:03:59.5156
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oxZcN63T+Cl0iZK9iAyEWtjQZzNiJ+VHOZ4KOwivgokI+dexr9pGl69khb0FYhk+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4591
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 07:50:46PM +0100, Jiri Olsa wrote:
-> On Thu, Feb 25, 2021 at 07:16:44PM +0100, Jiri Olsa wrote:
-> > On Thu, Feb 25, 2021 at 02:33:57PM +0100, Jiri Olsa wrote:
-> > > On Thu, Feb 25, 2021 at 04:06:23PM +0800, Jin, Yao wrote:
-> > > > Hi Chris, Arnaldo, Jiri,
-> > > > 
-> > > > We observe the parsing error for "software/xxx/" on some platforms.
-> > > > 
-> > > > For example,
-> > > > 
-> > > > # perf stat -e software/r1a/ -a -- sleep 1
-> > > > event syntax error: 'software/r1a/'
-> > > >                      \___ parser error
-> > > > Run 'perf list' for a list of valid events
-> > > > 
-> > > >  Usage: perf stat [<options>] [<command>]
-> > > > 
-> > > >     -e, --event <event>   event selector. use 'perf list' to list available events
-> > > > 
-> > > > And perf test is failed too.
-> > > > 
-> > > > # perf test 6 -vv
-> > > > ...
-> > > > running test 4 'software/r1a/'failed to parse event 'software/r1a/', err 1, str 'parser error'
-> > > > event syntax error: 'software/r1a/'
-> > > >                      \___ parser error
-> > > > 
-> > > > running test 4 'software/r0x1a/'failed to parse event 'software/r0x1a/', err 1, str 'parser error'
-> > > > event syntax error: 'software/r0x1a/'
-> > > >                      \___ parser error
-> > > > ...
-> > > > 
-> > > > The issue should be the conflict between event "i915/software-gt-awake-time/" and pmu "software".
-> > > > 
-> > > > # perf list | grep i915/software
-> > > >   i915/software-gt-awake-time/                       [Kernel PMU event]
-> > > > 
-> > > > Perf supports the event format as "prefix-xxx-suffix", so the "software"
-> > > > string in "software-gt-awake-time" is added to perf_pmu_events_list as
-> > > > PMU_EVENT_SYMBOL_PREFIX. When parsing the string such as "software/xxx/",
-> > > > it’s parsed as PMU_EVENT_SYMBOL_PREFIX for "software", then it would error
-> > > > out in next processing.
-> > > > 
-> > > > So the easy way is to rename "software-gt-awake-time" to "gt-awake-time",
-> > > > right? Otherwise we have to hardcode something in perf tool.
-> > > > 
-> > > > What do you think of this issue and the solution?
-> > > > 
-> > > > BTW, as the robot reported, it's related to the commit 8c3b1ba0e7ea
-> > > > ("drm/i915/gt: Track the overall awake/busy time").
-> > > 
-> > > yes, I think you're right.. I'll try to reproduce and check on this
-> > > 
-> > > I'm still not clear why is that parsing fail if those 2 events are
-> > > distinguished by - and / ... but yep, we are asking for trouble in
-> > > here ;-)
-> > > 
-> > > I think we could either prioritaze one or add extra check when we
-> > > add prefix-xxx-suffix events and do not add ones that have conflict..
-> > > that seems like best solution to me now
-> > 
-> > would patch below work for you?
-> > 
-> > jirka
-> 
-> and now with more fixes after I ran tests ;-)
-> 
-> we should perhaps add also same check for non '-' aliases, I'll check
 
-and one more version ;-)
+I was looking at this to possibly give it a go in mount.cifs (cifs-utils).
 
-jirka
+Sorry if this has been debated before but is there an interest in
+converting those man page to RST? We already switched in cifs-utils.
+Iterating on patchsets is quite daunting in roff.
 
-
----
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 42c84adeb2fb..d9e795056d15 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2028,30 +2028,49 @@ static void perf_pmu__parse_init(void)
- 		perf_pmu_events_list_num = -1;
- 		return;
- 	}
--	perf_pmu_events_list = malloc(sizeof(struct perf_pmu_event_symbol) * len);
-+	perf_pmu_events_list = zalloc(sizeof(struct perf_pmu_event_symbol) * len);
- 	if (!perf_pmu_events_list)
- 		return;
--	perf_pmu_events_list_num = len;
- 
- 	len = 0;
- 	pmu = NULL;
- 	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
- 		list_for_each_entry(alias, &pmu->aliases, list) {
- 			struct perf_pmu_event_symbol *p = perf_pmu_events_list + len;
--			char *tmp = strchr(alias->name, '-');
-+			char *prefix = strdup(alias->name);
-+			char *tmp = strchr(prefix, '-');
-+
-+			if (tmp != NULL)
-+				*tmp = 0;
-+
-+			/*
-+			 * Skip any prefix that conflicts with pmu name,
-+			 * otherwise the event parser gets confused.
-+			 */
-+			if (perf_pmu__find(prefix)) {
-+				pr_debug2("perf_pmu__parse_init: skipping conflicting alias '%s'\n",
-+					  alias->name);
-+				free(prefix);
-+				continue;
-+			}
- 
- 			if (tmp != NULL) {
--				SET_SYMBOL(strndup(alias->name, tmp - alias->name),
--						PMU_EVENT_SYMBOL_PREFIX);
-+				SET_SYMBOL(prefix, PMU_EVENT_SYMBOL_PREFIX);
- 				p++;
- 				SET_SYMBOL(strdup(++tmp), PMU_EVENT_SYMBOL_SUFFIX);
- 				len += 2;
- 			} else {
--				SET_SYMBOL(strdup(alias->name), PMU_EVENT_SYMBOL);
-+				SET_SYMBOL(prefix, PMU_EVENT_SYMBOL);
- 				len++;
- 			}
- 		}
- 	}
-+
-+	/* unlikely, but still.. */
-+	if (!len)
-+		goto err;
-+	perf_pmu_events_list_num = len;
-+
- 	qsort(perf_pmu_events_list, len,
- 		sizeof(struct perf_pmu_event_symbol), comp_pmu);
- 
+Cheers,
+--=20
+Aur=C3=A9lien Aptel / SUSE Labs Samba Team
+GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, D=
+E
+GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=BC=
+nchen)
 
