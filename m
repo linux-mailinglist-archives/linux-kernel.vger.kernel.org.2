@@ -2,74 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E014B325864
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57830325869
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235307AbhBYVIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:08:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbhBYU7i (ORCPT
+        id S233974AbhBYVIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:08:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59117 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234263AbhBYVAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:59:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF78C061756;
-        Thu, 25 Feb 2021 12:58:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=Fb28fR8D4293sacImRBpNCIWgpc/QGNK8lBvO/1bYzg=; b=Nin3NxV9mb61KAV3Ka9c6CkJOo
-        CO75+0rPm7YtE02SFNN+05E/mv3JMOCIU23JcT5Bwnp222OF4KGYM+j66gP3eoerx0YQ97McoJXWZ
-        6l6aW7GsZ+2hN1d8NSYTQbD39T5RDOpPYrh+1aEjbf+ibrPds5JV6js5BTJt2w4b6r7ItWlCSbo7W
-        fSx8yper9oa7cZu6vk4gvqhI9jq1xd2H2hGEs5/Q6iOqdW0PnAojQb2RoytNT+kjWP6RVqwnMQwKj
-        KvwwOYuC1F6L/1aiFly2NRckR12/6oVAPbdmFH2x+aJE7pfFZUhb7UQz3jZQXVaQaaLKwRzmXu//l
-        tzmdbAyg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lFNiG-00BAcs-P4; Thu, 25 Feb 2021 20:58:23 +0000
-Date:   Thu, 25 Feb 2021 20:58:20 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Freeing page tables through RCU
-Message-ID: <20210225205820.GC2858050@casper.infradead.org>
+        Thu, 25 Feb 2021 16:00:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614286721;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3ZofdrozonSrpXzzHJj4sZQrAAT/WiE2QcpLH4zUhIM=;
+        b=Px3sa+HCgv1dfN53X56cafMd/F4zNbcKV/pUN1JlmDVoMOrJEhZLO+PP97sjFFx5cfqHw9
+        wd15TnyBo228p5NbSPpz0C3SzzUqsn9sDo6SSfWyHq2SESefWE0jhsDGWRUGj+G9RfzM0d
+        hSYd+Zq3QQLiyEPtsmpehln52O5dRxg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-570-0yqDLGttM8eP9ofQzSG_Uw-1; Thu, 25 Feb 2021 15:58:37 -0500
+X-MC-Unique: 0yqDLGttM8eP9ofQzSG_Uw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44D551005501;
+        Thu, 25 Feb 2021 20:58:35 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 12E0D5D767;
+        Thu, 25 Feb 2021 20:58:32 +0000 (UTC)
+Subject: [PATCH 0/4] keys: Add EFI_CERT_X509_GUID support for dbx/mokx entries
+From:   David Howells <dhowells@redhat.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>, keyrings@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>, dhowells@redhat.com,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 25 Feb 2021 20:58:32 +0000
+Message-ID: <161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to walk the page tables without the mmap semaphore, it must
-be possible to prevent them from being freed and reused (eg if munmap()
-races with viewing /proc/$pid/smaps).
 
-There is various commentary within the mm on how to prevent this.  One way
-is to disable interrupts, relying on that to block rcu_sched or IPIs.
-I don't think the RT people are terribly happy about reading a proc file
-disabling interrupts, and it doesn't work for architectures that free
-page tables directly instead of batching them into an rcu_sched (because
-the IPI may not be sent to this CPU if the task has never run on it).
+Here's my take on v5 of Eric Snowberg's patches[1]:
 
-See "Fast GUP" in mm/gup.c
+This series of patches adds support for EFI_CERT_X509_GUID entries [2].  It has
+been expanded to not only include dbx entries but also entries in the mokx.
+Additionally Eric included his patches to preload these certificate [3].
 
-Ideally, I'd like rcu_read_lock() to delay page table reuse.  This is
-close to trivial for architectures which use entire pages or multiple
-pages for levels of their page tables as we can use the rcu_head embedded
-in struct page to queue the page for RCU.
+The patches can be found on the following branch:
 
-s390 and powerpc are the only two architectures I know of that have
-levels of their page table that are smaller than their PAGE_SIZE.
-I'd like to discuss options.  There may be a complicated scheme that
-allows partial pages to be freed via RCU, but I have something simpler
-in mind.  For powerpc in particular, it can have a PAGE_SIZE of 64kB
-and then the MMU wants to see 4kB entries in the PMD.  I suggest that
-instead of allocating each 4kB entry individually, we allocate a 64kB
-page and fill in 16 consecutive PMDs.  This could cost a bit more memory
-(although if you've asked for a CONFIG_PAGE_SIZE of 64kB, you presumably
-don't care too much about it), but it'll make future page faults cheaper
-(as the PMDs will already be present, assuming you have good locality
-of reference).
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=keys-cve-2020-26541-branch
 
-I'd like to hear better ideas than this.
+Changes:
+ - I've modified the first patch in the series to fix a configuration
+   problem[4][5], to move the added functions to a more logical place within the
+   file and to add kerneldoc comments.
+
+Link: https://lore.kernel.org/r/20210122181054.32635-1-eric.snowberg@oracle.com [1]
+Link: https://patchwork.kernel.org/project/linux-security-module/patch/20200916004927.64276-1-eric.snowberg@oracle.com/ [2]
+Link: https://lore.kernel.org/patchwork/cover/1315485/ [3]
+Link: https://lore.kernel.org/r/bc2c24e3-ed68-2521-0bf4-a1f6be4a895d@infradead.org/ [4]
+Link: https://lore.kernel.org/r/20210225125638.1841436-1-arnd@kernel.org/ [5]
+
+David
+---
+Eric Snowberg (4):
+      certs: Add EFI_CERT_X509_GUID support for dbx entries
+      certs: Move load_system_certificate_list to a common function
+      certs: Add ability to preload revocation certs
+      integrity: Load mokx variables into the blacklist keyring
+
+
+ certs/Kconfig                                 |  8 +++
+ certs/Makefile                                | 20 ++++++-
+ certs/blacklist.c                             | 17 ++++++
+ certs/common.c                                | 56 +++++++++++++++++++
+ certs/common.h                                |  9 +++
+ certs/revocation_certificates.S               | 21 +++++++
+ certs/system_keyring.c                        | 49 +---------------
+ scripts/Makefile                              |  1 +
+ security/integrity/platform_certs/load_uefi.c | 20 ++++++-
+ 9 files changed, 150 insertions(+), 51 deletions(-)
+ create mode 100644 certs/common.c
+ create mode 100644 certs/common.h
+ create mode 100644 certs/revocation_certificates.S
+
+
