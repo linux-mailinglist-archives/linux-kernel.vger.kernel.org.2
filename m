@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992C6324F50
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:39:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07348324F54
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 12:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbhBYLjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 06:39:08 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13088 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbhBYLjE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 06:39:04 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DmW2l0pD6z16CZf;
-        Thu, 25 Feb 2021 19:36:31 +0800 (CST)
-Received: from huawei.com (10.69.192.56) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Feb 2021
- 19:37:58 +0800
-From:   Luo Jiaxing <luojiaxing@huawei.com>
-To:     <nouveau@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <bskeggs@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <luojiaxing@huawei.com>
-Subject: [PATCH v1] drm/nouveau/device: append a NUL-terminated character for the string which filled by strncpy()
-Date:   Thu, 25 Feb 2021 19:38:52 +0800
-Message-ID: <1614253132-21793-1-git-send-email-luojiaxing@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S233234AbhBYLk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 06:40:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55048 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231895AbhBYLkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 06:40:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 59D36AC6E;
+        Thu, 25 Feb 2021 11:39:40 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 12:39:30 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
+        <naoya.horiguchi@nec.com>
+Cc:     Aili Yao <yaoaili@kingsoft.com>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "inux-edac@vger.kernel.org" <inux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
+Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Message-ID: <20210225113930.GA7227@localhost.localdomain>
+References: <20210224151619.67c29731@alex-virtual-machine>
+ <20210224103105.GA16368@linux>
+ <20210225114329.4e1a41c6@alex-virtual-machine>
+ <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following warning is found when using W=1 to build kernel:
+On Thu, Feb 25, 2021 at 11:28:18AM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
+> Hi Aili,
+> 
+> I agree that this set_mce_nospec() is not expected to be called for
+> "already hwpoisoned" page because in the reported case the error
+> page is already contained and no need to resort changing cache mode.
 
-In function ‘nvkm_udevice_info’,
-    inlined from ‘nvkm_udevice_mthd’ at drivers/gpu/drm/nouveau/nvkm/engine/device/user.c:195:10:
-drivers/gpu/drm/nouveau/nvkm/engine/device/user.c:164:2: warning: ‘strncpy’ specified bound 16 equals destination size [-Wstringop-truncation]
-  164 |  strncpy(args->v0.chip, device->chip->name, sizeof(args->v0.chip));
-drivers/gpu/drm/nouveau/nvkm/engine/device/user.c:165:2: warning: ‘strncpy’ specified bound 64 equals destination size [-Wstringop-truncation]
-  165 |  strncpy(args->v0.name, device->name, sizeof(args->v0.name));
+Out of curiosity, what is the current behavour now?
+Say we have an ongoing MCE which has marked the page as HWPoison but
+memory_failure did not take any action on the page yet.
+And then, we have another MCE, which ends up there.
+set_mce_nospec might clear _PAGE_PRESENT bit.
 
-The reason of this warning is strncpy() does not guarantee that the
-destination buffer will be NUL terminated. If the length of source string
-is bigger than number we set by third input parameter, only first [number]
-of characters is copied to the destination, and no NUL-terminated is
-automatically added. There are some potential risks.
+Does that have any impact on the first MCE?
 
-Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
----
- drivers/gpu/drm/nouveau/nvkm/engine/device/user.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+> It seems to me that memory_failure() does not return MF_XXX.  But yes,
+> returning some positive value for the reported case could be a solution.
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c b/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c
-index fea9d8f..2a32fe0 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c
-@@ -161,8 +161,10 @@ nvkm_udevice_info(struct nvkm_udevice *udev, void *data, u32 size)
- 	if (imem && args->v0.ram_size > 0)
- 		args->v0.ram_user = args->v0.ram_user - imem->reserved;
- 
--	strncpy(args->v0.chip, device->chip->name, sizeof(args->v0.chip));
--	strncpy(args->v0.name, device->name, sizeof(args->v0.name));
-+	strncpy(args->v0.chip, device->chip->name, sizeof(args->v0.chip) - 1);
-+	args->v0.chip[sizeof(args->v0.chip) - 1] = '\0';
-+	strncpy(args->v0.name, device->name, sizeof(args->v0.name) - 1);
-+	args->v0.name[sizeof(args->v0.name) - 1] = '\0';
- 	return 0;
- }
- 
+No, you are right. I somehow managed to confuse myself.
+I see now that MF_XXX return codes are filtered out in page_action.
+
+> We could use some negative value (error code) to report the reported case,
+> then as you mentioned above, some callers need change to handle the
+> new case, and the same is true if you use some positive value.
+> My preference is -EHWPOISON, but other options are fine if justified well.
+
+-EHWPOISON seems like a good fit.
+
+
 -- 
-2.7.4
-
+Oscar Salvador
+SUSE L3
