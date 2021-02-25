@@ -2,333 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D40F325546
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED21325540
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbhBYSMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:12:10 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19353 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232631AbhBYSJQ (ORCPT
+        id S232290AbhBYSKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:10:44 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44416 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232787AbhBYSHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 13:09:16 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6037e73a0000>; Thu, 25 Feb 2021 10:06:50 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Feb
- 2021 18:06:49 +0000
-Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 25 Feb 2021 18:06:47 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <robh@kernel.org>
-CC:     <jonathanh@nvidia.com>, <kuninori.morimoto.gx@renesas.com>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Sameer Pujar <spujar@nvidia.com>
-Subject: [RFC PATCH 5/5] ASoC: simple-card-utils: Support pll configuration
-Date:   Thu, 25 Feb 2021 23:36:04 +0530
-Message-ID: <1614276364-13655-6-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
-References: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
+        Thu, 25 Feb 2021 13:07:33 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PHvh5C028071;
+        Thu, 25 Feb 2021 10:06:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=su8xcQDcdok4JEF20Pr6YMsqNR1hpcHhtMhvCVd1FHk=;
+ b=AyYFB8DdZjXaB4kkDSB2rv1idUAIIyQZA1VOok1iR5Np20mhk18dJqAJILi/C4U9L6PZ
+ cllyVU5lMano1r7T4WzpC3Do59WaEa1w5Krsxy7xWcnJXiIdwn+DQzVG7smn5GcS7Zro
+ j6uf1rrpOuMZeOhfz9PDZDW0Cu2YDh0lYD4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36x96btq1w-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 25 Feb 2021 10:06:32 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 25 Feb 2021 10:06:30 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mkm6MlczohpIP91RcBxB/oPTbBVNeU9mwqH+2Xnm0LBCsh2X113zu8LUJUKMx/MxJ9W2FX6EjH3nDGnVUs0KyA0PMhrwoQH4ymq1HUAROCt62e3Yy6sJ9kmFSmtXOoGnWL1RYkwWyaUputXkt4sOpyGqth5ZFsq7iOiA21X2EgBg08UhbkkFaOh5WEq86lhFbKyCEh8qqiwUIVqRKPWjQ5kdjTwLQOcQpzACQVVkYvvW/GIiP474dzHVvMtL3gdE7SuJXNhFkZs3lNq4HTfZ3d0f5E37VcJ1l6jJiNj8/aNYmyOuwcbuqg5m2K0SelJ0wR7+pUUORBnxcL0LMPxEgA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=su8xcQDcdok4JEF20Pr6YMsqNR1hpcHhtMhvCVd1FHk=;
+ b=XN8QmvjgNdCWfOImjXvpT6oePu5NGFW+2001ldvwVYK7CnFd4Fy/rfPJ481zC+ky2skNlBtZGysXyMemZd+JpfQlqWIUb4FzNyBfZHsDKs7Mli2iK3OQn4dbddXXN+ylART4PXB8a3NgMhNQKbnwDtJ1S6yWIBYq0FGV4+glPJPCgzia/mhEHcLroRB9wW+Ru4tdJKuR+4yQVpm2PD3lpi8SxqXHVbkguruiyGnl2iP1icmNpPcDVMSgHsyZ7yyz8U490prSdxWMOf5k5W874UTQGQ8r7Y91AMYrt5uj5KXh9zSAGi0OMs3k9rMRdkTOB9UFHrYwfLRnEs/F9pTfzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY5PR15MB4308.namprd15.prod.outlook.com (2603:10b6:a03:1b4::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Thu, 25 Feb
+ 2021 18:06:29 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3868.033; Thu, 25 Feb 2021
+ 18:06:29 +0000
+Date:   Thu, 25 Feb 2021 10:06:23 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Hugh Dickins <hughd@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mm: vmstat: fix /proc/sys/vm/stat_refresh generating
+ false warnings
+Message-ID: <YDfnHyzKzZRU53e4@carbon.dhcp.thefacebook.com>
+References: <alpine.LSU.2.11.2007302018350.2410@eggly.anvils>
+ <20200801011821.GA859734@carbon.dhcp.thefacebook.com>
+ <alpine.LSU.2.11.2007311915130.9716@eggly.anvils>
+ <20200804004012.GA1049259@carbon.dhcp.thefacebook.com>
+ <alpine.LSU.2.11.2008051913580.8184@eggly.anvils>
+ <20200806233804.GB1217906@carbon.dhcp.thefacebook.com>
+ <20200806182555.d7a7fc9853b5a239ffe9f846@linux-foundation.org>
+ <alpine.LSU.2.11.2102232210130.9202@eggly.anvils>
+ <YDcDAOxKXSopVe3b@carbon.dhcp.thefacebook.com>
+ <alpine.LSU.2.11.2102250905350.11720@eggly.anvils>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2102250905350.11720@eggly.anvils>
+X-Originating-IP: [2620:10d:c090:400::5:45bd]
+X-ClientProxiedBy: CO2PR05CA0058.namprd05.prod.outlook.com
+ (2603:10b6:102:2::26) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614276410; bh=XsuTkaQjpknAbqXsocoOXCmvAkmPnsCYijQXi5ZJhAI=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Type;
-        b=eIPcptowc7wdxHaMJXOyE5rvKtk5H4cdQCuLTxJhHu0zx6JhuPMQoUkLRTQYQsa6i
-         NtMgHS1CCcugb4mCEz2fmDEl87MmB2YhYZnWELHmjNJBGW2wdsvRLvnqX8l8fynXK4
-         MCyYN7FG1MkXM3aUmaNrGNvSAn7HCFVkPCh/HnaLzEc6NlQiWfs7WYs7BOxHgEhJTm
-         2UPZl+3IWd78mVlY40Yq3nvLPXlHe+ou6s4RO5oWmAmaRe8MgLonEVyjxxeX3epFqY
-         H1Q/oYZH6s+v5l7v3oDnmLwV60meB5iSQMvG/yqfnvYZ+vUaMstOdMGjkPevNq4aNo
-         nH9DHcqc7WI6g==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:45bd) by CO2PR05CA0058.namprd05.prod.outlook.com (2603:10b6:102:2::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.9 via Frontend Transport; Thu, 25 Feb 2021 18:06:27 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d417654c-3711-4a80-f5cb-08d8d9b812f1
+X-MS-TrafficTypeDiagnostic: BY5PR15MB4308:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR15MB4308EC941DCC1B833C13E8FBBE9E9@BY5PR15MB4308.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5ibzWd0+as3dwlQ9XZtJNCZ8GixeEcJRIgadZRonqovlheAXN3fwOpCKKWDSPu22bEbmdBsDA8hCG03cCqkg6ca3QfCC+LPPiM8w4FFtiJp0NN09M8l62Xanymp1f01YAoyYoWgrwbsBVsL+1oZ3loh5AvFSbEUT+t4Sr0LvUydJtwfD9YBAifNo1spy1kBkkC0ZZzGT65XfKnZ+LA2FonxMJl1t56R59y2TAp4Ew8BZ71+88hPT0oXP2zrsJxc/Zue6qSaOQ0D6tb7JLSyfU0cSYucLEMqJ5SMKXMlcvXi7n99oiDXBmbY/ZCbgvrx8X6YZSyISP9H/LpJTpDe+GAe10D40xl/aiGInHjmUg7eJ8u5loOsodan3XCf8znT649W/6wJSdIyqvJNd7GZn4LTSVC8CE5IzGzc4/uR7gGX2b01ECI+TliNnoImwF2hyYyCy57NubIY845pZ59jzG4UHE3Hv4VAGyw0xhjyx8AsqOiFRbBqYwNPbpjghiNzFT2j7FvdFvIrqPHnZXvOHLw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(136003)(396003)(366004)(346002)(6916009)(6666004)(2906002)(83380400001)(5660300002)(478600001)(4326008)(8676002)(6506007)(55016002)(316002)(66556008)(9686003)(86362001)(54906003)(66946007)(16526019)(66476007)(186003)(8936002)(7696005)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?0jCakFYbqn3Ahv4rl/UGZkAzs2PSkoogLuLVmlmsWHcee57UtqKChjbP6RGD?=
+ =?us-ascii?Q?MW6aawVfIcMIo6Eu+nXxkuB2ammVi76IEFWF9P3LVI+ZXlzrHuKm3GDGUmPe?=
+ =?us-ascii?Q?KllwmQaIYOdoPyM/+xLfzd58U7iBGTi/r27UKZ0ykO/FWIKTrEsNdTx9vQHc?=
+ =?us-ascii?Q?ckQP4A9lqEpCkeT3eIsQ+NZBMx0sLgY21GR3M0P+zPH+fkE+jOKnRIsqRJvM?=
+ =?us-ascii?Q?SXkQ8ksG65pQdE/Ue96W0R54iIGxFYm1o/H3khLMRBjSHIsj21fEXPMpvM35?=
+ =?us-ascii?Q?REr/0nHWZqIp3zrvIcok/TbclBNKkCOu7sOiytq4qPQgT5hc+lmC4obnE0By?=
+ =?us-ascii?Q?F7OsWTdhqHfaO+EYNztQVgtVNbN2YjSLjUGGrJ0QudJjayXsYKD8Q3OIJe1i?=
+ =?us-ascii?Q?LeI9RuuHtBT1If95SCoaCqi32rR9oPSs17PJi+k9wszWVuEMZTpTaYAy8qqW?=
+ =?us-ascii?Q?yduEWOtCIKtJdNjugwAhNdV+DS5vTH8bcNovVjOf7bBK7WfQBuV4LLfYPciC?=
+ =?us-ascii?Q?UHKFnqhxPGWzxJOyTET8HPPcgymP8M/eU/D57ead/bcGv3Ii8HePRz0+4GjL?=
+ =?us-ascii?Q?ugxPLQP/diE15TTzO7P+wGFx5pCsnISBvW28cGfgcvQrkSGU4DaUnH+wuXsg?=
+ =?us-ascii?Q?p85wqspNOnaqHALm+5us88NXX5w3654kv06F714Ul8AxArMzrvbkuQJEfWJ3?=
+ =?us-ascii?Q?vVWoqJD9FrIRDO3JM/013MPcZujfpi/B0N3LiDAQRmbEKxlBzz1lm4OeiNl5?=
+ =?us-ascii?Q?mOhUeiGDCda/5ZxI3Up6tjtO59OqXDdsXQGtwRFbYp6CIq4A74lHY2LjI8vt?=
+ =?us-ascii?Q?a8C3tr0IfBeGsRnPBGyrEYIC5zOY3tLts8i5mw7jbss9rtYspIkZz86rkF+m?=
+ =?us-ascii?Q?MzFy9NalLZICtYN+/yjMID6k3HBvQPXzULvbF261GwpthSKSPJR/BuSTey8u?=
+ =?us-ascii?Q?5hBgIsNbJB0qrAajZFKsH7IEKMtBBKLUwaemxrM7m8d6R2F18Nbzxvy5dgJR?=
+ =?us-ascii?Q?ep0jVABs+fpV3JxH/obotln6vwN1i2N6eawTpufOxvG3OsoHVtdIaVU7R6tI?=
+ =?us-ascii?Q?bSmUHuOqNtQ1pPYj2vBs5aS0q++sb9HZ3X7GQigjLy00K7YU/JhdjgccarfM?=
+ =?us-ascii?Q?XVz5uKrgytnJJPsS16jShiBwii2nliesOBih4Y3dcojAIdz4EfiWdOgj4VTY?=
+ =?us-ascii?Q?q1JljECE6rrxi3IRngmU/dGPKJTAXyCV710ffn1nCOHhVr0/ewtEDhZ6oL54?=
+ =?us-ascii?Q?x1aE9Jp7+pqIZReN3OLnot/pQ3najzgUGSh94S/NMOTrmEBmDaZ7WZGVZAnq?=
+ =?us-ascii?Q?dAPqjyQL1+hgxLZE/SM2CLcCXhyFrHsxVpSqKNE8DNDXbQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d417654c-3711-4a80-f5cb-08d8d9b812f1
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2021 18:06:29.0220
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9szg5vvtgKbHFBBvdHjA6f/CV5E/yQncJbSNgAkroorUwMwt4Qj+vOVcdE+7TNRU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB4308
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-25_10:2021-02-24,2021-02-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 phishscore=0 mlxscore=0
+ adultscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
+ mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102250138
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some CPU/Codec DAI controllers may have an internal pll which can be
-used to source its clocking requirements. The ASoC core provides a DAI
-or component callback snd_soc_dai_set_pll() to configure this. But
-currently simple-card or audio-graph card drivers are not using this.
+On Thu, Feb 25, 2021 at 09:21:04AM -0800, Hugh Dickins wrote:
+> On Wed, 24 Feb 2021, Roman Gushchin wrote:
+> > On Tue, Feb 23, 2021 at 11:24:23PM -0800, Hugh Dickins wrote:
+> > > On Thu, 6 Aug 2020, Andrew Morton wrote:
+> > > > On Thu, 6 Aug 2020 16:38:04 -0700 Roman Gushchin <guro@fb.com> wrote:
+> > > 
+> > > August, yikes, I thought it was much more recent.
+> > > 
+> > > > 
+> > > > > it seems that Hugh and me haven't reached a consensus here.
+> > > > > Can, you, please, not merge this patch into 5.9, so we would have
+> > > > > more time to find a solution, acceptable for all?
+> > > > 
+> > > > No probs.  I already had a big red asterisk on it ;)
+> > > 
+> > > I've a suspicion that Andrew might be tiring of his big red asterisk,
+> > > and wanting to unload
+> > > mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings.patch
+> > > mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix.patch
+> > > mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix-2.patch
+> > > into 5.12.
+> > > 
+> > > I would prefer not, and reiterate my Nack: but no great harm will
+> > > befall the cosmos if he overrules that, and it does go through to
+> > > 5.12 - I'll just want to revert it again later.  And I do think a
+> > > more straightforward way of suppressing those warnings would be just
+> > > to delete the code that issues them, rather than brushing them under
+> > > a carpet of overtuning.
+> > 
+> > I'm actually fine with either option. My only concern is that if somebody
+> > will try to use the hugetlb_cma boot option AND /proc/sys/vm/stat_refresh
+> > together, they will get a false warning and report them to mm@ or will
+> > waste their time trying to debug a non-existing problem. It's not the end
+> > of the world.
+> > We can also make the warning conditional on CONFIG_DEBUG_VM, for example.
+> > 
+> > Please, let me know what's your preferred way to go forward.
+> 
+> My preferred way forward (for now: since we're all too busy to fix
+> the misbehaving stats) is for Andrew to drop your patch, and I'll post
+> three patches against current 5.12 in a few hours: one to restore the
+> check on the missing NR_VM_NODE_STAT_ITEMS, one to remove the -EINVAL
+> (which upsets test scripts at our end), one to suppress the warning on
+> nr_zone_write_pending, nr_writeback and nr_free_cma.
 
-To configure pll on DAI controller side, following optional DT properties
-can be used. These can be specified in CPU/Codec DAI or endpoint subnode.
+I'd totally support it!
 
- - pll-id               : DAI specific pll id.
+Please, cc me and I'll be happy to review/ack your patches.
 
- - pll-source           : DAI specific pll source. CPU/Codec DAI can
-                          specify the source that is used for pll
-                          reference.
-
- - pll-input-reference  : Depending on the given value, input frequency
-                          can be calculated at runtime. For example if
-                          I2S bit clock is used as reference, rate depends
-                          on the actual PCM parameters (rate, channels and
-                          bits) during an audio session. If a fixed rate is
-                          used, then "pll-input-frequency" can be used
-                          instead.
-
- - pll-output-reference : Depending on the given value, output frequency
-                          can be calculated at runtime. If output clock is
-                          used for MCLK purpose, then it may depend on
-                          "mclk-fs" scale factor. In such cases it needs to
-                          be calculated at runtime. If a fixed output
-                          frequency is needed, then "pll-output-frequency"
-                          can be used instead.
-
- - pll-input-frequency  : Specify fixed input frequency in Hz. This is
-                          checked only when "pll-input-reference" is not
-                          specified.
-
- - pll-output-frequency : Specify fixed output frequency in Hz. This is
-                          checked only when "pll-output-reference" is not
-                          specified.
-
-Usage examples with RT5658 Codec:
-
-  1. Use MCLK for Codec sysclk
-
-     codec-subnode {
-         mclk-fs = <256>;
-         system-clock-source = <RT5659_SCLK_S_MCLK>;
-     };
-
-     In above case, the sysclk source is set to MCLK and the sysclk rate
-     is set to 256 * fs, where fs is sampling rate of the stream.
-
-  2. Use Codec internal pll to derive Codec sysclk. The pll can use
-     SoC I2S bit clock (BCLK) as reference.
-
-     codec-subnode {
-         mclk-fs = <256>;
-
-         system-clock-source = <RT5659_SCLK_S_PLL1>;
-
-         pll-source = <RT5659_PLL1_S_BCLK1>;
-
-         /*
-          * SoC I2S BCLK as reference. Based on this pll input rate
-          * (sample rate * channels * bits) is calculated at runtime.
-          */
-         pll-input-reference = <2>;
-
-         /*
-          * pll will generate output rate based on MCLK, which is
-          * calculated at runtime as (mclk_fs * sample rate).
-          */
-         pll-output-reference = <1>; /* MCLK as output rate */
-     };
-
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- include/sound/simple_card_utils.h     |  33 ++++++++++
- sound/soc/generic/simple-card-utils.c | 114 ++++++++++++++++++++++++++++++++++
- 2 files changed, 147 insertions(+)
-
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index e026bf2..0f937eb 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -16,11 +16,44 @@
- #define asoc_simple_init_mic(card, sjack, prefix) \
- 	asoc_simple_init_jack(card, sjack, 0, prefix, NULL)
- 
-+/*
-+ * External audio Codecs for their system clock (sysclk) may use one
-+ * of the following:
-+ *
-+ *   - MCLK provided by SoC (already "system-clock-frequency" or
-+ *     "mclk-fs" bindings exist)
-+ *
-+ *   - Codec internal PLL which can take reference from SoC audio
-+ *     interface bit clock (BCLK) and generate required sysclk for
-+ *     the Codec.
-+ *
-+ *   - Codec internal PLL taking reference from onboard crystal and
-+ *     generate required sysclk for the Codec.
-+ *
-+ * BCLK depends on PCM parameters (rate, channels and bits) and has
-+ * to be calculated at runtime. So is MCLK, sometimes it depends on
-+ * sample rate and a scaling factor. So whenever PLL is used for
-+ * sysclk, input and output references/rates need to be provided.
-+ *
-+ * Following macros can be used to setup input/output frequency
-+ * requirements for the PLL.
-+ */
-+
-+#define SND_SOC_DAI_PLL_REF_FIXED		0
-+#define SND_SOC_DAI_PLL_REF_MCLK		(1 << 0)
-+#define SND_SOC_DAI_PLL_REF_BCLK		(1 << 1)
-+
- struct asoc_simple_dai {
- 	const char *name;
- 	unsigned int sysclk;
- 	int sysclk_id;
- 	int sysclk_source;
-+	unsigned int pll_id;
-+	unsigned int pll_source;
-+	unsigned int pll_in_freq;
-+	unsigned int pll_out_freq;
-+	unsigned int pll_in_ref;
-+	unsigned int pll_out_ref;
- 	int clk_direction;
- 	int slots;
- 	int slot_width;
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index bbbf891..6bfde08 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -12,6 +12,7 @@
- #include <linux/of_gpio.h>
- #include <linux/of_graph.h>
- #include <sound/jack.h>
-+#include <sound/pcm_params.h>
- #include <sound/simple_card_utils.h>
- 
- void asoc_simple_convert_fixup(struct asoc_simple_data *data,
-@@ -190,6 +191,30 @@ int asoc_simple_parse_clk(struct device *dev,
- 
- 	of_property_read_u32(node, "system-clock-source", &simple_dai->sysclk_source);
- 
-+	of_property_read_u32(node, "pll-id", &simple_dai->pll_id);
-+
-+	of_property_read_u32(node, "pll-source", &simple_dai->pll_source);
-+
-+	if (of_property_read_u32(node, "pll-input-reference",
-+				 &simple_dai->pll_in_ref)) {
-+		/*
-+		 * Look for "pll-input-frequency" if no explicit reference
-+		 * is provided.
-+		 */
-+		of_property_read_u32(node, "pll-input-frequency",
-+				     &simple_dai->pll_in_freq);
-+	}
-+
-+	if (of_property_read_u32(node, "pll-output-reference",
-+				 &simple_dai->pll_out_ref)) {
-+		/*
-+		 * Look for "pll-output-frequency" if no explicit reference
-+		 * is provided.
-+		 */
-+		of_property_read_u32(node, "pll-output-frequency",
-+				     &simple_dai->pll_out_freq);
-+	}
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(asoc_simple_parse_clk);
-@@ -217,6 +242,82 @@ static int asoc_simple_set_sysclk(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
-+static int asoc_simple_enable_pll(struct snd_soc_dai *dai,
-+				  struct asoc_simple_dai *simple_dai,
-+				  struct snd_pcm_hw_params *params,
-+				  unsigned int mclk_fs)
-+{
-+	int ret;
-+
-+	if (!simple_dai)
-+		return 0;
-+
-+	switch (simple_dai->pll_in_ref) {
-+	case SND_SOC_DAI_PLL_REF_FIXED:
-+		break;
-+	case SND_SOC_DAI_PLL_REF_MCLK:
-+		simple_dai->pll_in_freq = params_rate(params) * mclk_fs;
-+		break;
-+	case SND_SOC_DAI_PLL_REF_BCLK:
-+		simple_dai->pll_in_freq = params_rate(params) *
-+					  params_channels(params) *
-+					  params_width(params);
-+		break;
-+	default:
-+		dev_err(dai->dev, "pll input reference is invalid!\n");
-+		return -EINVAL;
-+	}
-+
-+	switch (simple_dai->pll_out_ref) {
-+	case SND_SOC_DAI_PLL_REF_FIXED:
-+		break;
-+	case SND_SOC_DAI_PLL_REF_MCLK:
-+		simple_dai->pll_out_freq = params_rate(params) * mclk_fs;
-+		break;
-+	case SND_SOC_DAI_PLL_REF_BCLK:
-+		simple_dai->pll_out_freq = params_rate(params) *
-+					   params_channels(params) *
-+					   params_width(params);
-+		break;
-+	default:
-+		dev_err(dai->dev, "pll output reference is invalid!\n");
-+		return -EINVAL;
-+	}
-+
-+	if (!simple_dai->pll_in_freq && !simple_dai->pll_out_freq) {
-+		/* There is nothing to be configured */
-+		return 0;
-+	} else if ((!simple_dai->pll_in_freq && simple_dai->pll_out_freq) ||
-+		   (simple_dai->pll_in_freq && !simple_dai->pll_out_freq)) {
-+		dev_err(dai->dev, "Invalid pll input/output rates!\n");
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(dai->dev,
-+		"pll config: id = %d, source = %d, in_freq = %u, out_freq = %u\n",
-+		simple_dai->pll_id, simple_dai->pll_source,
-+		simple_dai->pll_in_freq, simple_dai->pll_out_freq);
-+
-+	ret = snd_soc_dai_set_pll(dai, simple_dai->pll_id,
-+				  simple_dai->pll_source,
-+				  simple_dai->pll_in_freq,
-+				  simple_dai->pll_out_freq);
-+
-+	if (ret && ret != -ENOTSUPP)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int asoc_simple_disable_pll(struct snd_soc_dai *dai,
-+				   struct asoc_simple_dai *simple_dai)
-+{
-+	if (!simple_dai)
-+		return 0;
-+
-+	return snd_soc_dai_set_pll(dai, simple_dai->pll_id, 0, 0, 0);
-+}
-+
- int asoc_simple_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-@@ -252,6 +353,9 @@ void asoc_simple_shutdown(struct snd_pcm_substream *substream)
- 				       SND_SOC_CLOCK_OUT);
- 	}
- 
-+	asoc_simple_disable_pll(codec_dai, dai_props->codec_dai);
-+	asoc_simple_disable_pll(cpu_dai, dai_props->cpu_dai);
-+
- 	asoc_simple_clk_disable(dai_props->cpu_dai);
- 
- 	asoc_simple_clk_disable(dai_props->codec_dai);
-@@ -310,6 +414,16 @@ int asoc_simple_hw_params(struct snd_pcm_substream *substream,
- 			return ret;
- 	}
- 
-+	ret = asoc_simple_enable_pll(codec_dai, dai_props->codec_dai, params,
-+				     mclk_fs);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = asoc_simple_enable_pll(cpu_dai, dai_props->cpu_dai, params,
-+				     mclk_fs);
-+	if (ret < 0)
-+		return ret;
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(asoc_simple_hw_params);
--- 
-2.7.4
-
+Thanks!
