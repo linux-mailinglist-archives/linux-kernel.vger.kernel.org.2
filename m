@@ -2,111 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AC93251DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC8C3251EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbhBYPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 10:00:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhBYO7z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 09:59:55 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D8FC06174A;
-        Thu, 25 Feb 2021 06:59:39 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id mm21so9076891ejb.12;
-        Thu, 25 Feb 2021 06:59:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KdvCOoGwc01pWj3zqit8lvG+zKUB7O20UVPK03THNP4=;
-        b=aiB780fqG+lMV0qHVrbZKuWfDRwQ555saLIEqG9xmXTWW3j5ZH4bsrNLh2Ri8oKLqV
-         h1BSGhj53+kXfUuxLmHzE4aSeYBfbU1JTBC7VAesQM3d/wTaL302bwm6PMwH9Cfx8k8M
-         XnFSAJJ0RwsS/omDxOXcrcfO2DM/GhuUXsBdlpzszutJtBc9bwQ+hEglG+hj5d9hEjty
-         2ZgvEkJCJ21szGtlotNGWpGjy66gzWrnWBno4Wh/Ry087KSlSgGO0JbJS0iGT4sdxFD2
-         ajeuFBd48Bj/joqs9Ogzn7Zs/UcV+qLA8MoSz8E3R+q5Ylnbd71So7r20yWiTpuxiyHO
-         yXpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KdvCOoGwc01pWj3zqit8lvG+zKUB7O20UVPK03THNP4=;
-        b=dQGtF6Ps0EqJK9ALFjZ8dyE49x0TTYSjzdtWRXmcH5bN1582FqD+NkhLhyLD/jjaqb
-         JFDZrSOqYXrgpdPoLItM1xfpaL9t/KNxiuV3daO0w2ZdYWCgGUyWj129MENrEDJJmxdg
-         XhvUstw7SE5Mqt3ksMpFuSRF2vAIgNmtyvzpnkm1gMQkUc6SNzG/waafzTdBCJ3RmW00
-         US27xxaDBwevAVg1R7Gv6a5vXopy5RwFqdtxdq1CMPzKTubFmZE3iIw7yqa6jyolLir+
-         tN1xJrzrAXQgVbiLp0LU9TWQsTscLz+qYzJHVqDbxbX3g7iz84w9pjeKKICtxbbnW1ou
-         ArrA==
-X-Gm-Message-State: AOAM530z/cqymxlDs5fa13kcuJQHNLBK9lBQKV/NB1YzkkjKmpiFff6z
-        NXjpVCmsJ6mU5Ms7a2Rln74=
-X-Google-Smtp-Source: ABdhPJyODUvvQvgTK6/qjd6qJbaxonWfMg0MxVfoP/KHn/A/kiMr3yFuH26yVr2ne5IwxpmO1rln5A==
-X-Received: by 2002:a17:906:6047:: with SMTP id p7mr3011865ejj.400.1614265178501;
-        Thu, 25 Feb 2021 06:59:38 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bec1d.dynamic.kabel-deutschland.de. [95.91.236.29])
-        by smtp.googlemail.com with ESMTPSA id r5sm3141799ejx.96.2021.02.25.06.59.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Feb 2021 06:59:38 -0800 (PST)
-Message-ID: <23b7d59df2b83cdac53fdb4567c41c007257b436.camel@gmail.com>
-Subject: Re: [PATCH v24 2/4] scsi: ufs: L2P map management for HPB read
-From:   Bean Huo <huobean@gmail.com>
-To:     daejun7.park@samsung.com, Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Date:   Thu, 25 Feb 2021 15:59:35 +0100
-In-Reply-To: <20210224045437epcms2p7ed0a41233d899337ddbd3525fddeb042@epcms2p7>
-References: <20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p6>
-         <CGME20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p7>
-         <20210224045437epcms2p7ed0a41233d899337ddbd3525fddeb042@epcms2p7>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S230467AbhBYPC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 10:02:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232588AbhBYPCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 10:02:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB3B764EC3;
+        Thu, 25 Feb 2021 15:01:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614265288;
+        bh=rTp6tlRl/+2dDCi+5gBT4LR+IqVuF5cDPLNiC8PJHgk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jYFhNaZbbSoTDYljzbyuXXwgaGElH7/NWFsFNQhQ0ZoAdxEgpmjKWwUUu1s2Fli55
+         9FL9kT4HbFgnoCICaopvKBMhYoCiXfOXBFuMEVE8k6Q84QY9hsCwa5yJHoyViq4v1X
+         EX7tPknLeA2y0OW0L5A8mWn1P2bv6+vBhgqELGcPZG8j6su4kf+Kg+/L96oO+quyl6
+         71p38s+XZbNuKnAKIhqqAX3KgeM5DPUWGgkFGbfSeHNJLnPQuoalrJrn6A57tV3ngW
+         iaX1C009z+deiIsRBEnQ0n2G5zZ2RRY5moTt6Lf/Fvl81G5WA1QbJOXFi9UVJXZlmp
+         eWEboNG471QWQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Simon Ser <contact@emersion.fr>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] drm/amd/display: Fix an uninitialized index variable
+Date:   Thu, 25 Feb 2021 16:01:02 +0100
+Message-Id: <20210225150119.405469-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-24 at 13:54 +0900, Daejun Park wrote:
-> +static int ufshpb_init_mem_wq(void)
-> +{
-> +       int ret;
-> +       unsigned int pool_size;
-> +
-> +       ufshpb_mctx_cache = kmem_cache_create("ufshpb_mctx_cache",
-> +                                       sizeof(struct
-> ufshpb_map_ctx),
-> +                                       0, 0, NULL);
-> +       if (!ufshpb_mctx_cache) {
-> +               pr_err("ufshpb: cannot init mctx cache\n");
-> +               return -ENOMEM;
-> +       }
-> +
-> +       pool_size = PAGE_ALIGN(ufshpb_host_map_kbytes * 1024) /
-> PAGE_SIZE;
-> +       pr_info("%s:%d ufshpb_host_map_kbytes %u pool_size %u\n",
-> +              __func__, __LINE__, ufshpb_host_map_kbytes,
-> pool_size);
-> +
+From: Arnd Bergmann <arnd@arndb.de>
 
-I think print function name is not proper while booting.
-And one HPB is associated with one HBA, if there are two UFS
-controllers, how can I differentiate them? 
+clang points out that the new logic uses an always-uninitialized
+array index:
 
-Bean
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9810:38: warning: variable 'i' is uninitialized when used here [-Wuninitialized]
+                        timing  = &edid->detailed_timings[i];
+                                                          ^
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9720:7: note: initialize the variable 'i' to silence this warning
+
+My best guess is that the index should have been returned by the
+parse_hdmi_amd_vsdb() function that walks an array here, so do that.
+
+Fixes: f9b4f20c4777 ("drm/amd/display: Add Freesync HDMI support to DM")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c    | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index b19b93c74bae..667c0d52dbfa 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -9736,7 +9736,7 @@ static bool parse_edid_cea(struct amdgpu_dm_connector *aconnector,
+ 	return false;
+ }
+ 
+-static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
++static int parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+ 		struct edid *edid, struct amdgpu_hdmi_vsdb_info *vsdb_info)
+ {
+ 	uint8_t *edid_ext = NULL;
+@@ -9746,7 +9746,7 @@ static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+ 	/*----- drm_find_cea_extension() -----*/
+ 	/* No EDID or EDID extensions */
+ 	if (edid == NULL || edid->extensions == 0)
+-		return false;
++		return -ENODEV;
+ 
+ 	/* Find CEA extension */
+ 	for (i = 0; i < edid->extensions; i++) {
+@@ -9756,14 +9756,15 @@ static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+ 	}
+ 
+ 	if (i == edid->extensions)
+-		return false;
++		return -ENODEV;
+ 
+ 	/*----- cea_db_offsets() -----*/
+ 	if (edid_ext[0] != CEA_EXT)
+-		return false;
++		return -ENODEV;
+ 
+ 	valid_vsdb_found = parse_edid_cea(aconnector, edid_ext, EDID_LENGTH, vsdb_info);
+-	return valid_vsdb_found;
++
++	return valid_vsdb_found ? i : -ENODEV;
+ }
+ 
+ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+@@ -9781,7 +9782,6 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+ 	struct amdgpu_device *adev = drm_to_adev(dev);
+ 	bool freesync_capable = false;
+ 	struct amdgpu_hdmi_vsdb_info vsdb_info = {0};
+-	bool hdmi_valid_vsdb_found = false;
+ 
+ 	if (!connector->state) {
+ 		DRM_ERROR("%s - Connector has no state", __func__);
+@@ -9857,8 +9857,8 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+ 			}
+ 		}
+ 	} else if (edid && amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_HDMI_TYPE_A) {
+-		hdmi_valid_vsdb_found = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
+-		if (hdmi_valid_vsdb_found && vsdb_info.freesync_supported) {
++		i = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
++		if (i >= 0 && vsdb_info.freesync_supported) {
+ 			timing  = &edid->detailed_timings[i];
+ 			data    = &timing->data.other_data;
+ 
+-- 
+2.29.2
 
