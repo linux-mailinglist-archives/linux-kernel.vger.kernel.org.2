@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAC6324DD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC78324E0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhBYKPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:15:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35150 "EHLO mail.kernel.org"
+        id S233225AbhBYKZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:25:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233734AbhBYJ7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:59:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D47F64F21;
-        Thu, 25 Feb 2021 09:55:28 +0000 (UTC)
+        id S235115AbhBYKBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 05:01:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBB6E64F2D;
+        Thu, 25 Feb 2021 09:56:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246929;
-        bh=fCAN+h/NbCmdQzE9+XALKEyd32GFbAckkQ2+ot+svxg=;
+        s=korg; t=1614246978;
+        bh=fBlnvMMfjEELxcWjR0KXlBriOmBFrle+QhYoTAUOrjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zrBCS3u4Bcanu181zS9TSN7QgEFHlv6X4MVwNoi9YHfhf0vzYFwEfD3d6FK8eMbNC
-         Sz9NdMByHxNp1HP5H1Yps5imbPM8Z0UcRxN7E3KDjncN3JervexMmS23WAEr1ybxXn
-         DWUcMir7PMh11D5VNmtLe/I280qxzWIaqx6t4VPw=
+        b=i5uXZpHdVjY+IThyxPOy0SfDSDkBhUHChN/TRdE8mU6nfDs4rh5+Cn57wY7PumZnH
+         A7MbXd2PAlMWTcwPg4Y7VsXL1ET0NdKYrgm6Xq91DnMQ7COQgrafWF2C2XdZyznRDf
+         sG7iVBeFePcW7UnK74ZpG39EZj9Vl3YBSPhicplE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christoph Schemmel <christoph.schemmel@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 19/23] NET: usb: qmi_wwan: Adding support for Cinterion MV31
-Date:   Thu, 25 Feb 2021 10:53:50 +0100
-Message-Id: <20210225092517.445568197@linuxfoundation.org>
+        stable@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [PATCH 5.4 06/17] arm64: tegra: Add power-domain for Tegra210 HDA
+Date:   Thu, 25 Feb 2021 10:53:51 +0100
+Message-Id: <20210225092515.316740451@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210225092516.531932232@linuxfoundation.org>
-References: <20210225092516.531932232@linuxfoundation.org>
+In-Reply-To: <20210225092515.001992375@linuxfoundation.org>
+References: <20210225092515.001992375@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Schemmel <christoph.schemmel@gmail.com>
+From: Sameer Pujar <spujar@nvidia.com>
 
-[ Upstream commit a4dc7eee9106a9d2a6e08b442db19677aa9699c7 ]
+commit 1e0ca5467445bc1f41a9e403d6161a22f313dae7 upstream.
 
-Adding support for Cinterion MV31 with PID 0x00B7.
+HDA initialization is failing occasionally on Tegra210 and following
+print is observed in the boot log. Because of this probe() fails and
+no sound card is registered.
 
-T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 11 Spd=5000 MxCh= 0
-D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
-P:  Vendor=1e2d ProdID=00b7 Rev=04.14
-S:  Manufacturer=Cinterion
-S:  Product=Cinterion USB Mobile Broadband
-S:  SerialNumber=b3246eed
-C:  #Ifs= 4 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:  If#=0x0 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
-I:  If#=0x1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-I:  If#=0x3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+  [16.800802] tegra-hda 70030000.hda: no codecs found!
 
-Signed-off-by: Christoph Schemmel <christoph.schemmel@gmail.com>
-Link: https://lore.kernel.org/r/20210202084523.4371-1-christoph.schemmel@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Codecs request a state change and enumeration by the controller. In
+failure cases this does not seem to happen as STATETS register reads 0.
+
+The problem seems to be related to the HDA codec dependency on SOR
+power domain. If it is gated during HDA probe then the failure is
+observed. Building Tegra HDA driver into kernel image avoids this
+failure but does not completely address the dependency part. Fix this
+problem by adding 'power-domains' DT property for Tegra210 HDA. Note
+that Tegra186 and Tegra194 HDA do this already.
+
+Fixes: 742af7e7a0a1 ("arm64: tegra: Add Tegra210 support")
+Depends-on: 96d1f078ff0 ("arm64: tegra: Add SOR power-domain for Tegra210")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Acked-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/qmi_wwan.c | 1 +
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
-index ce73df4c137ea..b223536e07bed 100644
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1332,6 +1332,7 @@ static const struct usb_device_id products[] = {
- 	{QMI_FIXED_INTF(0x1e2d, 0x0082, 5)},	/* Cinterion PHxx,PXxx (2 RmNet) */
- 	{QMI_FIXED_INTF(0x1e2d, 0x0083, 4)},	/* Cinterion PHxx,PXxx (1 RmNet + USB Audio)*/
- 	{QMI_QUIRK_SET_DTR(0x1e2d, 0x00b0, 4)},	/* Cinterion CLS8 */
-+	{QMI_FIXED_INTF(0x1e2d, 0x00b7, 0)},	/* Cinterion MV31 RmNet */
- 	{QMI_FIXED_INTF(0x413c, 0x81a2, 8)},	/* Dell Wireless 5806 Gobi(TM) 4G LTE Mobile Broadband Card */
- 	{QMI_FIXED_INTF(0x413c, 0x81a3, 8)},	/* Dell Wireless 5570 HSPA+ (42Mbps) Mobile Broadband Card */
- 	{QMI_FIXED_INTF(0x413c, 0x81a4, 8)},	/* Dell Wireless 5570e HSPA+ (42Mbps) Mobile Broadband Card */
--- 
-2.27.0
-
+--- a/arch/arm64/boot/dts/nvidia/tegra210.dtsi
++++ b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
+@@ -917,6 +917,7 @@
+ 			 <&tegra_car 128>, /* hda2hdmi */
+ 			 <&tegra_car 111>; /* hda2codec_2x */
+ 		reset-names = "hda", "hda2hdmi", "hda2codec_2x";
++		power-domains = <&pd_sor>;
+ 		status = "disabled";
+ 	};
+ 
 
 
