@@ -2,136 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC8C3251EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A12D3251EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhBYPC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 10:02:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232588AbhBYPCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 10:02:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB3B764EC3;
-        Thu, 25 Feb 2021 15:01:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614265288;
-        bh=rTp6tlRl/+2dDCi+5gBT4LR+IqVuF5cDPLNiC8PJHgk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jYFhNaZbbSoTDYljzbyuXXwgaGElH7/NWFsFNQhQ0ZoAdxEgpmjKWwUUu1s2Fli55
-         9FL9kT4HbFgnoCICaopvKBMhYoCiXfOXBFuMEVE8k6Q84QY9hsCwa5yJHoyViq4v1X
-         EX7tPknLeA2y0OW0L5A8mWn1P2bv6+vBhgqELGcPZG8j6su4kf+Kg+/L96oO+quyl6
-         71p38s+XZbNuKnAKIhqqAX3KgeM5DPUWGgkFGbfSeHNJLnPQuoalrJrn6A57tV3ngW
-         iaX1C009z+deiIsRBEnQ0n2G5zZ2RRY5moTt6Lf/Fvl81G5WA1QbJOXFi9UVJXZlmp
-         eWEboNG471QWQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Stylon Wang <stylon.wang@amd.com>,
-        Eryk Brol <eryk.brol@amd.com>,
-        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Simon Ser <contact@emersion.fr>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] drm/amd/display: Fix an uninitialized index variable
-Date:   Thu, 25 Feb 2021 16:01:02 +0100
-Message-Id: <20210225150119.405469-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S229954AbhBYPDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 10:03:35 -0500
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:42316 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhBYPCT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 10:02:19 -0500
+Received: by mail-ot1-f49.google.com with SMTP id e45so5897743ote.9;
+        Thu, 25 Feb 2021 07:02:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e502o7CCWlPNbJmZY9s9X5FHWXBm35Nmhk7yitJzO4E=;
+        b=fYMF1GDDA53c2wyBizyBXO3hDH8uZfQoPhiCszU43IKQS/l0TFN5PY37sNFqpY41Gr
+         fA2odc0l+hcu0PKmxAxFfwZL+3M0PwXJGx6dCIUsdJn+iag6JPVW4ulXWSLWcEeM0qXs
+         M53LoaUnHSyiCgefKy6tVkfbjudDZ3nBclLkebtAvdtPQyxvNn4y1Cs3/NEg+iSHBYBS
+         vFWBiOgQIvuX/NpafMAuzs8sm9+bEG+vPnOczcRcICaI49vbCLS9fr5ZsHH8PSZ/vO+f
+         8ezGGrnyG8PsfG9OYGpfu9PBb3po/IdhIu4XzfGHjIoNOP7dmK49I68ngQUAfp1DC9fi
+         OTWQ==
+X-Gm-Message-State: AOAM530qoVs7xJoxeQYW2GNzq9GdNpy2P1dR5RSCFz99ihLh3R+rgkTX
+        5hgonhiMbeZifl0BAk9YDVPAbug1AsO8J3u2CsbaMH42
+X-Google-Smtp-Source: ABdhPJzQCX/66Mb0QI7j7N3f/dOotLPO7MAOeXnFoJvadqv5IziVI0uMkZkjS139qJQxhIsF9W2QpuK0fme2LSEv2OU=
+X-Received: by 2002:a05:6830:2466:: with SMTP id x38mr2735214otr.206.1614265295839;
+ Thu, 25 Feb 2021 07:01:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <2074665.VPHYfYaQb6@kreacher> <46166c43-ee54-4a6b-5e48-36ff8e08cba6@redhat.com>
+In-Reply-To: <46166c43-ee54-4a6b-5e48-36ff8e08cba6@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 25 Feb 2021 16:01:25 +0100
+Message-ID: <CAJZ5v0iwOiZg1--J-NTzV-1GBFCJytmKW2bDx+x_pPNX61DV0w@mail.gmail.com>
+Subject: Re: [PATCH v1] platform: x86: ACPI: Get rid of ACPICA message printing
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Chen Yu <yu.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Feb 24, 2021 at 8:03 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi Rafael,
+>
+> On 2/24/21 7:41 PM, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > A few x86 platform drivers use ACPI_DEBUG_PRINT() or ACPI_EXCEPTION()
+> > for printing messages, but that is questionable, because those macros
+> > belong to ACPICA and they should not be used elsewhere.  In addition,
+> > ACPI_DEBUG_PRINT() requires special enabling to allow it to actually
+> > print the message, which is a nuisance, and the _COMPONENT symbol
+> > generally needed for that is not defined in any of the files in
+> > question.
+> >
+> > For this reason, replace the ACPI_DEBUG_PRINT() in lg-laptop.c with
+> > pr_debug() and the one in xo15-ebook.c with acpi_handle_debug()
+> > (with the additional benefit that the source object can be identified
+> > more easily after this change), and replace the ACPI_EXCEPTION() in
+> > acer-wmi.c with pr_warn().
+> >
+> > Also drop the ACPI_MODULE_NAME() definitions that are only used by
+> > the ACPICA message printing macros from those files and from wmi.c
+> > and surfacepro3_button.c (while at it).
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> Thank you for your patch for this.
+>
+> This looks good to me, except that I already fixed the acer-wmi.c case
+> a couple of weeks ago, and that fiox was merged into Linus' tree already:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ef14f0e82c9b225ae19476fa5bed89d55b2a96d5
+>
+> I can drop the acer-wmi.c chunks when I merge this, so there is no
+> need to send out a new version.
 
-clang points out that the new logic uses an always-uninitialized
-array index:
+OK, thanks!
 
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9810:38: warning: variable 'i' is uninitialized when used here [-Wuninitialized]
-                        timing  = &edid->detailed_timings[i];
-                                                          ^
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9720:7: note: initialize the variable 'i' to silence this warning
+I will be assuming that you will pick up this patch and adjust it as needed.
 
-My best guess is that the index should have been returned by the
-parse_hdmi_amd_vsdb() function that walks an array here, so do that.
-
-Fixes: f9b4f20c4777 ("drm/amd/display: Add Freesync HDMI support to DM")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c    | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index b19b93c74bae..667c0d52dbfa 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -9736,7 +9736,7 @@ static bool parse_edid_cea(struct amdgpu_dm_connector *aconnector,
- 	return false;
- }
- 
--static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
-+static int parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
- 		struct edid *edid, struct amdgpu_hdmi_vsdb_info *vsdb_info)
- {
- 	uint8_t *edid_ext = NULL;
-@@ -9746,7 +9746,7 @@ static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
- 	/*----- drm_find_cea_extension() -----*/
- 	/* No EDID or EDID extensions */
- 	if (edid == NULL || edid->extensions == 0)
--		return false;
-+		return -ENODEV;
- 
- 	/* Find CEA extension */
- 	for (i = 0; i < edid->extensions; i++) {
-@@ -9756,14 +9756,15 @@ static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
- 	}
- 
- 	if (i == edid->extensions)
--		return false;
-+		return -ENODEV;
- 
- 	/*----- cea_db_offsets() -----*/
- 	if (edid_ext[0] != CEA_EXT)
--		return false;
-+		return -ENODEV;
- 
- 	valid_vsdb_found = parse_edid_cea(aconnector, edid_ext, EDID_LENGTH, vsdb_info);
--	return valid_vsdb_found;
-+
-+	return valid_vsdb_found ? i : -ENODEV;
- }
- 
- void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
-@@ -9781,7 +9782,6 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
- 	struct amdgpu_device *adev = drm_to_adev(dev);
- 	bool freesync_capable = false;
- 	struct amdgpu_hdmi_vsdb_info vsdb_info = {0};
--	bool hdmi_valid_vsdb_found = false;
- 
- 	if (!connector->state) {
- 		DRM_ERROR("%s - Connector has no state", __func__);
-@@ -9857,8 +9857,8 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
- 			}
- 		}
- 	} else if (edid && amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_HDMI_TYPE_A) {
--		hdmi_valid_vsdb_found = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
--		if (hdmi_valid_vsdb_found && vsdb_info.freesync_supported) {
-+		i = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
-+		if (i >= 0 && vsdb_info.freesync_supported) {
- 			timing  = &edid->detailed_timings[i];
- 			data    = &timing->data.other_data;
- 
--- 
-2.29.2
-
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>
+> Regards,
+>
+> Hans
+>
+>
+>
+> > ---
+> >  drivers/platform/surface/surfacepro3_button.c |    2 --
+> >  drivers/platform/x86/acer-wmi.c               |    4 ++--
+> >  drivers/platform/x86/lg-laptop.c              |    2 +-
+> >  drivers/platform/x86/wmi.c                    |    1 -
+> >  drivers/platform/x86/xo15-ebook.c             |    6 ++----
+> >  5 files changed, 5 insertions(+), 10 deletions(-)
+> >
+> > Index: linux-pm/drivers/platform/x86/lg-laptop.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/platform/x86/lg-laptop.c
+> > +++ linux-pm/drivers/platform/x86/lg-laptop.c
+> > @@ -678,7 +678,7 @@ static int __init acpi_init(void)
+> >
+> >       result = acpi_bus_register_driver(&acpi_driver);
+> >       if (result < 0) {
+> > -             ACPI_DEBUG_PRINT((ACPI_DB_ERROR, "Error registering driver\n"));
+> > +             pr_debug("Error registering driver\n");
+> >               return -ENODEV;
+> >       }
+> >
+> > Index: linux-pm/drivers/platform/x86/xo15-ebook.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/platform/x86/xo15-ebook.c
+> > +++ linux-pm/drivers/platform/x86/xo15-ebook.c
+> > @@ -26,8 +26,6 @@
+> >  #define XO15_EBOOK_HID                       "XO15EBK"
+> >  #define XO15_EBOOK_DEVICE_NAME               "EBook Switch"
+> >
+> > -ACPI_MODULE_NAME(MODULE_NAME);
+> > -
+> >  MODULE_DESCRIPTION("OLPC XO-1.5 ebook switch driver");
+> >  MODULE_LICENSE("GPL");
+> >
+> > @@ -66,8 +64,8 @@ static void ebook_switch_notify(struct a
+> >               ebook_send_state(device);
+> >               break;
+> >       default:
+> > -             ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+> > -                               "Unsupported event [0x%x]\n", event));
+> > +             acpi_handle_debug(device->handle,
+> > +                               "Unsupported event [0x%x]\n", event);
+> >               break;
+> >       }
+> >  }
+> > Index: linux-pm/drivers/platform/x86/acer-wmi.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/platform/x86/acer-wmi.c
+> > +++ linux-pm/drivers/platform/x86/acer-wmi.c
+> > @@ -30,7 +30,6 @@
+> >  #include <linux/input/sparse-keymap.h>
+> >  #include <acpi/video.h>
+> >
+> > -ACPI_MODULE_NAME(KBUILD_MODNAME);
+> >  MODULE_AUTHOR("Carlos Corbacho");
+> >  MODULE_DESCRIPTION("Acer Laptop WMI Extras Driver");
+> >  MODULE_LICENSE("GPL");
+> > @@ -1605,7 +1604,8 @@ static void acer_kbd_dock_get_initial_st
+> >
+> >       status = wmi_evaluate_method(WMID_GUID3, 0, 0x2, &input_buf, &output_buf);
+> >       if (ACPI_FAILURE(status)) {
+> > -             ACPI_EXCEPTION((AE_INFO, status, "Error getting keyboard-dock initial status"));
+> > +             pr_warn("Error getting keyboard-dock initial status: %s\n",
+> > +                     acpi_format_exception(status));
+> >               return;
+> >       }
+> >
+> > Index: linux-pm/drivers/platform/surface/surfacepro3_button.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/platform/surface/surfacepro3_button.c
+> > +++ linux-pm/drivers/platform/surface/surfacepro3_button.c
+> > @@ -40,8 +40,6 @@ static const guid_t MSHW0040_DSM_UUID =
+> >  #define SURFACE_BUTTON_NOTIFY_PRESS_VOLUME_DOWN              0xc2
+> >  #define SURFACE_BUTTON_NOTIFY_RELEASE_VOLUME_DOWN    0xc3
+> >
+> > -ACPI_MODULE_NAME("surface pro 3 button");
+> > -
+> >  MODULE_AUTHOR("Chen Yu");
+> >  MODULE_DESCRIPTION("Surface Pro3 Button Driver");
+> >  MODULE_LICENSE("GPL v2");
+> > Index: linux-pm/drivers/platform/x86/wmi.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/platform/x86/wmi.c
+> > +++ linux-pm/drivers/platform/x86/wmi.c
+> > @@ -32,7 +32,6 @@
+> >  #include <linux/fs.h>
+> >  #include <uapi/linux/wmi.h>
+> >
+> > -ACPI_MODULE_NAME("wmi");
+> >  MODULE_AUTHOR("Carlos Corbacho");
+> >  MODULE_DESCRIPTION("ACPI-WMI Mapping Driver");
+> >  MODULE_LICENSE("GPL");
+> >
+> >
+> >
+>
