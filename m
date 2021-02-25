@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3FD325762
+	by mail.lfdr.de (Postfix) with ESMTP id CEC90325763
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233364AbhBYUPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:15:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43110 "EHLO
+        id S233545AbhBYUPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:15:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhBYUO7 (ORCPT
+        with ESMTP id S232923AbhBYUPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:14:59 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09606C06178B
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:14:19 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id o6so4231892pjf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:14:19 -0800 (PST)
+        Thu, 25 Feb 2021 15:15:17 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0737C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:14:36 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id l7so162119pfd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:14:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Zvcw89WwnBGHGgFAGR9HWVcW1flA9Xzl577WVAqCD78=;
-        b=b4JTddy5ZgIX5TyNAyX/EEuoNzxOG0Ow6i26OWTw8EyLQHndl+mLZKBhliG57ThFoa
-         Itked0FH9fWMyBenWUMsZfa/zlwigfp55KoaxBZKMiW5Lap7oOBSDmqTK6nAnthr8AsR
-         HcpsajH5997DalFpyc3an0eLbNF7w35iQBXxs=
+        bh=zdmrTvdyCX0Y7fege27eT+Ei6fSHtu549VnzR/+8VsE=;
+        b=jI4IfZWpkZMecfmOkoHM1sDBamKCnyhZAjeDxWo+rANJ7GdjTcSH5W7eBatc/2j6gw
+         wocgFPVWBccNrS2n8ZwuGp9JJoQZq7I6dfk/7KWyQpKVT0g4iVZQXJWoK/G73m20Pi8D
+         GT2Itn+ybPPpezCQrWTd+fHX7QpAojDJ184l0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Zvcw89WwnBGHGgFAGR9HWVcW1flA9Xzl577WVAqCD78=;
-        b=QMX6vfbQ/I0LSBxa4KhzdV9gSn4bNe+5Zco7b1/l3f3d44+cBlNxlTvnyOk42nj3JZ
-         +MtC9ENdbwWnvVACWFUEzCmacZ2dfUjjltHbyHbhSUZtTUldOX9nilCv9jBe5AE+F4f+
-         nuYH9C39KwPMmy0+SSNPrifk+w+M7sEYaMIkqHwlKnS4qdomdp6Uf/OIf5NwEFETvaty
-         HbowMoPXeWBs5bEO9Rs1HQPOqrlZYEhWBhMLVnmSwv+hhABV6Ju0jOtol/5C/AL0Myor
-         taOep8M3TUVdoHB+BI1k17JFMQDnGqbxEMQMVIQeIWQ0ECv/PF2OocegNWEr3RAT8ijU
-         +Fmg==
-X-Gm-Message-State: AOAM532B9SQuFzoyc2Fg3wBuwqha2ihgjomLW+bzeA0KHtGPNxcFansY
-        QLVWBn9eFw9f7orpCbWVuhRvyA==
-X-Google-Smtp-Source: ABdhPJylDG8+tqcto0h9+3bfWwYB8oRjR+U7cKhN2xS+7Y5aCUPDf5wc7wqmvuTYEVT9LWttGO4qvQ==
-X-Received: by 2002:a17:90b:4c8c:: with SMTP id my12mr100914pjb.35.1614284058580;
-        Thu, 25 Feb 2021 12:14:18 -0800 (PST)
+        bh=zdmrTvdyCX0Y7fege27eT+Ei6fSHtu549VnzR/+8VsE=;
+        b=myoksuaHjrOirN+91qJjL9pZgzmMFEE2+Ku20MakDdRUpEF06QAWtUcV7sIGcSqA0M
+         xfI1uPYZD/B4T/mHdN6NoxXtMynHrCR906X+r1IJTfBzDfAWsUZ+ES5G5UceXXmFvBDT
+         ZD7I8abpPB4CF0MCaNjg5t9mLq3tnSqPxpjjpAwVmgKFvng1cR3qU8UEp0rueYkFGkWx
+         MBO3xciAFtHkEnaNsZs8D61SxkGhJWGHDSP+HXA231JOK9fyVmo7xsoH/PLTDCzYI456
+         gt6I75OiCZyrDnx8r2Ohg07pWgy0ZSAhinNM0eSLVMFWOy8WUFdgteV5KG89XsZmwiJI
+         oiQA==
+X-Gm-Message-State: AOAM533QyojaPXQ1t+gBL+Q+5ESRjF25s7jSdL2PRKMahAZn01ng3i7D
+        372aglET6YC4CNCxYjTY76w/WQ==
+X-Google-Smtp-Source: ABdhPJybewo9PBjpkHnhHiTD+UEzDtD2a4vw8RMiqGlZyxuXP8K3WZtyuQGrpy2dmyBGJevA7jzpxw==
+X-Received: by 2002:a63:fd01:: with SMTP id d1mr4347459pgh.319.1614284076558;
+        Thu, 25 Feb 2021 12:14:36 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d124sm7012807pfa.149.2021.02.25.12.14.17
+        by smtp.gmail.com with ESMTPSA id p11sm6631697pjb.31.2021.02.25.12.14.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 12:14:18 -0800 (PST)
-Date:   Thu, 25 Feb 2021 12:14:17 -0800
+        Thu, 25 Feb 2021 12:14:36 -0800 (PST)
+Date:   Thu, 25 Feb 2021 12:14:35 -0800
 From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
-        Marco Elver <elver@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] linux/compiler-clang.h: define HAVE_BUILTIN_BSWAP*
-Message-ID: <202102251213.5815C9B33@keescook>
-References: <20210225164513.3667778-1-arnd@kernel.org>
- <202102251203.03762F77@keescook>
- <20210225120637.8e2a234f192952829fc5f471@linux-foundation.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kbuild: lto: add _mcount to list of used symbols
+Message-ID: <202102251214.4CCD3FF13@keescook>
+References: <20210225143456.3829513-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210225120637.8e2a234f192952829fc5f471@linux-foundation.org>
+In-Reply-To: <20210225143456.3829513-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 12:06:37PM -0800, Andrew Morton wrote:
-> On Thu, 25 Feb 2021 12:03:48 -0800 Kees Cook <keescook@chromium.org> wrote:
+On Thu, Feb 25, 2021 at 03:34:49PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> > On Thu, Feb 25, 2021 at 05:45:09PM +0100, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > > 
-> > > Separating compiler-clang.h from compiler-gcc.h inadventently dropped the
-> > > definitions of the three HAVE_BUILTIN_BSWAP macros, which requires falling
-> > > back to the open-coded version and hoping that the compiler detects it.
-> > > 
-> > > Since all versions of clang support the __builtin_bswap interfaces,
-> > > add back the flags and have the headers pick these up automatically.
-> > > 
-> > > This results in a 4% improvement of compilation speed for arm defconfig.
-> > > 
-> > > Fixes: 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > Cc: stable@vger.kernel.org
+> Some randconfig builds fail with undefined references to _mcount
+> when CONFIG_TRIM_UNUSED_KSYMS is set:
 > 
-> I figured 4% better compile time isn't significant enough to justify a
-> backport.  Thoughts?
+> ERROR: modpost: "_mcount" [drivers/tee/optee/optee.ko] undefined!
+> ERROR: modpost: "_mcount" [drivers/fsi/fsi-occ.ko] undefined!
+> ERROR: modpost: "_mcount" [drivers/fpga/dfl-pci.ko] undefined!
+> 
+> Since there is already a list of symbols that get generated at link
+> time, add this one as well.
+> 
+> Fixes: fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-It's a trivial change, so I think it's worth it?
+Thanks!
 
-> 
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
 Kees Cook
