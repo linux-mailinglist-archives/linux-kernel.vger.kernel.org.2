@@ -2,205 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333FA324990
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D55324992
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 04:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbhBYDoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 22:44:20 -0500
-Received: from mail.kingsoft.com ([114.255.44.146]:45394 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229466AbhBYDoR (ORCPT
+        id S233251AbhBYDqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 22:46:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232077AbhBYDp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 22:44:17 -0500
-X-AuditID: 0a580157-f39ff7000005df43-2f-6037169b23e1
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 0A.5F.57155.B9617306; Thu, 25 Feb 2021 11:16:43 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 25 Feb
- 2021 11:43:30 +0800
-Date:   Thu, 25 Feb 2021 11:43:29 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Oscar Salvador <osalvador@suse.de>, <naoya.horiguchi@nec.com>,
-        <tony.luck@intel.com>, <david@redhat.com>
-CC:     <akpm@linux-foundation.org>, <bp@alien8.de>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <hpa@zytor.com>, <x86@kernel.org>,
-        <inux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <yangfeng1@kingsoft.com>,
-        <yaoaili@kingsoft.com>
-Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Message-ID: <20210225114329.4e1a41c6@alex-virtual-machine>
-In-Reply-To: <20210224103105.GA16368@linux>
-References: <20210224151619.67c29731@alex-virtual-machine>
-        <20210224103105.GA16368@linux>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Wed, 24 Feb 2021 22:45:57 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB355C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:45:17 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id g27so3089251iox.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 19:45:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RWBwTIueuYncqBnoLNaT06f86OMdHzkNoeJqjL3eUCg=;
+        b=Y/EhyyN6fQJaxq/oxM7enYR4Lp336hl0snpi8FibiCF6+VrMkfWzhz1MfohCebHuRB
+         D1K+Nm/B3GvAzFMAJrfbguIYCBJXNWbIpcjtsKRmJha86adl+9RXkO9ImqLnzbSFfTS2
+         Ftxcz66AgxPIp4v3knkNUTUDbt1PETRTnJQHD++F22UGTYrjZiG2Pf692udfOEKlsQHW
+         62gKmEJc4iSrxjVn+miYswUcxDm0nL7h2XofDrtjfStUXJr8WCF3ijrQWv/inFXT8OW0
+         75KOrwOVls4zK6qCHOSyYNMuItJtQNN24e/jSOumWd/dz5WUjHvkcujTDGPUfehLzB2M
+         Rdjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RWBwTIueuYncqBnoLNaT06f86OMdHzkNoeJqjL3eUCg=;
+        b=L6MO63g/85sp4E6os3TwB37Njw++uSjoIdB0bUmWj6olo3RSNRCia3ZGKK2/nMj/pR
+         HS+OBvrOYsMXb4DWEJ8x3C5Jheso+RnzNvAnMJCr8uhQXl2JCIiIW9LFw7kGlsVIDBb/
+         Q14N1hkx87F+fkdW6kHS3dPfq+NaCrwLL8Sag4Q+bqr+/ntmIPIi8CBl8dUrD0vcjFdM
+         h/Iex+7a3zxXtO/OeQ419quiM2J7KlLZFdHkli98t/l+mk24upTPIn1US1yHR+65FSxh
+         1kC3dLgGgmcT8ZSEtdZC4cUg+gTWh2bfLI8OLMKeNsG3ajJoU1ZcDT63jGFyLjwoDREE
+         yksw==
+X-Gm-Message-State: AOAM532ab6NNaA9v7mifNGGleq9FIqDhmcwFrxPAEHOtJ+a+Lx5NJCVA
+        /jBeNUFK36wEmsQ3/0XinD/DAmxxqFORaOcEfGo/zA==
+X-Google-Smtp-Source: ABdhPJx0uoKO+fxnyqUKxS0lMGFg3W5bsBtpg9uwlb9QAmwFNpXmlVkQeWdCu0PBZp4tfjx6cj//5x7z4O5Qm47SttQ=
+X-Received: by 2002:a05:6602:584:: with SMTP id v4mr1020635iox.156.1614224716835;
+ Wed, 24 Feb 2021 19:45:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsXCFcGooDtbzDzBYNdLQYs569ewWXze8I/N
-        4uv6X8wW0zaKW9w+sIbR4vKuOWwW99b8Z7W4dGABk8XFxgOMFmemFVls3jSV2eLNhXssFj82
-        PGZ14PX43trH4rF4z0smj02rOtk8Nn2axO7x7tw5do8TM36zeLy4upHF4/2+q2wem09Xe3ze
-        JOdxouULawB3FJdNSmpOZllqkb5dAldG17OD7AVbdCtmblrE2MC4TrmLkYNDQsBE4ts1uS5G
-        Tg4hgelMEkf6bboYuYDsV4wSM1bMYQJJsAioShw48pwRxGYDsnfdm8UKYosI5Els71rKDGIz
-        C7QzSTy8XARiCwt4SXy5vxasnlfASmLjq2VsIDangLbEo95GVohl0RL7jrSB1fALiEn0XvkP
-        tktCwF6ibcsiqF5BiZMzn7BAzNeROLHqGNQueYntb+cwQ8xRlDi85Bc7RK+SxJHuGWwQdqzE
-        snmvWCcwCs9CMmoWklGzkIxawMi8ipGlODfdcBMjJPbCdzDOa/qod4iRiYPxEKMEB7OSCO/m
-        f6YJQrwpiZVVqUX58UWlOanFhxilOViUxHml2MwThATSE0tSs1NTC1KLYLJMHJxSDUzsd7qt
-        TjkKzY3feOB7oMaMRLfez+Upxh/3t/GeaPifaOhQ1C/S9S5Peseu/gUPQ6o7H5QeC7k4cdvu
-        pHRt/WDegpUqz7ZfeSzwsD33XsZcKz27snPiBSpSVqc1PuhmZXfbTxFfVnHk7dGLvorVm0qu
-        Lbr7ZVVmqvbxCbGb+vMC/Nc9PClfeMA5bG3ogQ5pQ16x3bnWkrluqpPav39le7dgwwnJ5ruH
-        z1f6R1jXHE//6vu28Sa/9/vXZUlJd3JeP/7y9MD9y5x2GTsfqNow/k/eOW9/ivxDruiVf9uc
-        LGLmrFY3Pf5G957YN7G3qhe/WLSudjPoe8WndaVHXLdRl3m++NQ19oI25fFn/qYH+CuxFGck
-        GmoxFxUnAgAQST0bLAMAAA==
+References: <20210224085915.28751-1-natet@google.com>
+In-Reply-To: <20210224085915.28751-1-natet@google.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Wed, 24 Feb 2021 19:44:40 -0800
+Message-ID: <CABayD+cZ1nRwuFWKHGh5a2sVXG5AEB_AyTGqZs_xVQLoWwmaSA@mail.gmail.com>
+Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
+To:     Nathan Tempelman <natet@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Ashish Kalra <Ashish.Kalra@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Feb 2021 11:31:55 +0100
-Oscar Salvador <osalvador@suse.de> wrote:
-
-
-> I have some questions:
-> 
-> > 1.When LCME is enabled, and there are two processes A && B running on
-> > different core X && Y separately, which will access one same page, then
-> > the page corrupted when process A access it, a MCE will be rasied to
-> > core X and the error process is just underway.  
-> 
-> When !LMCE, that is not a problem because new MCE needs to wait for the ongoing MCE?
-
-I am not sure whether this case will happen when !LMCE, when I realized this place may be an issue
-I tried to reproduce it and my configuration is LMCE enabled.
-
-> > 2.Then B access the page and trigger another MCE to core Y, it will also
-> > do error process, it will see TestSetPageHWPoison be true, and 0 is
-> > returned.  
-> 
-> For non-nested calls, that is no problem because the page will be taken out
-> of business(unmapped from the processes), right? So no more MCE are possible.
-
-Yes, I think after the recovery jod is finished, other processes still access the page
-will meet a page fault and error will be returned;
- 
-> > 
-> > 3.The kill_me_maybe will check the return:
-> > 
-> > 1244 static void kill_me_maybe(struct callback_head *cb)
-> > 1245 {
-> > 
-> > 1254         if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
-> > 1255             !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
-> > 1256                 set_mce_nospec(p->mce_addr >> PAGE_SHIFT,  
-> 
-> So, IIUC, in case of a LMCE nested call, the second MCE will reach here.
-> set_mce_nospec() will either mark the underlying page as not mapped/cached.
+On Wed, Feb 24, 2021 at 1:00 AM Nathan Tempelman <natet@google.com> wrote:
 >
-This set_mce_nospec() is not proper when the recovery job is on the fly. In my test
-this function failed.
- 
-> Should not have memory_failure()->hwpoison_user_mappings() unmapped the page
-> from both process A and B? Or this is in case the ongoing MCE(process A) has
-> not still unmapped anything, so process B can still access this page.
-> 
-What I care is the process B triggered the error again after process A,
-I don't know how it return and proceed.
+> @@ -1186,6 +1195,10 @@ int svm_register_enc_region(struct kvm *kvm,
+>         if (!sev_guest(kvm))
+>                 return -ENOTTY;
+>
+> +       /* If kvm is mirroring encryption context it isn't responsible for it */
+> +       if (is_mirroring_enc_context(kvm))
+> +               return -ENOTTY;
+> +
 
-> So with your change, process B will be sent a SIGBUG, while process A is still
-> handling the MCE, right?
+Is this necessary? Same for unregister. When we looked at
+sev_pin_memory, I believe we concluded that double pinning was safe.
+>
+>         if (range->addr > ULONG_MAX || range->size > ULONG_MAX)
+>                 return -EINVAL;
+>
+> @@ -1252,6 +1265,10 @@ int svm_unregister_enc_region(struct kvm *kvm,
+>         struct enc_region *region;
+>         int ret;
+>
+> +       /* If kvm is mirroring encryption context it isn't responsible for it */
+> +       if (is_mirroring_enc_context(kvm))
+> +               return -ENOTTY;
+> +
+>         mutex_lock(&kvm->lock);
+>
+>         if (!sev_guest(kvm)) {
+> @@ -1282,6 +1299,65 @@ int svm_unregister_enc_region(struct kvm *kvm,
+>         return ret;
+>  }
+>
+> +int svm_vm_copy_asid_to(struct kvm *kvm, unsigned int mirror_kvm_fd)
+> +{
+> +       struct file *mirror_kvm_file;
+> +       struct kvm *mirror_kvm;
+> +       struct kvm_sev_info *mirror_kvm_sev;
+> +       unsigned int asid;
+> +       int ret;
+> +
+> +       if (!sev_guest(kvm))
+> +               return -ENOTTY;
 
-Right!
+You definitely don't want this: this is the function that turns the vm
+into an SEV guest (marks SEV as active).
 
-> > p->mce_whole_page);
-> > 1257                 sync_core();
-> > 1258                 return;
-> > 1259         }
-> > 
-> > 1267 }
-> > 
-> > 4. The error process for B will end, and may nothing happened if
-> > kill-early is not set, We may let the wrong data go into effect.
-> > 
-> > For other cases which care the return value of memory_failure() should
-> > check why they want to process a memory error which have already been
-> > processed. This behavior seems reasonable.
-> > 
-> > In kill_me_maybe, log the fact about the memory may not recovered, and
-> > we will kill the related process.
-> > 
-> > Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
-> > ---
-> >  arch/x86/kernel/cpu/mce/core.c | 2 ++
-> >  mm/memory-failure.c            | 4 ++--
-> >  2 files changed, 4 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-> > index e133ce1e562b..db4afc5bf15a 100644
-> > --- a/arch/x86/kernel/cpu/mce/core.c
-> > +++ b/arch/x86/kernel/cpu/mce/core.c
-> > @@ -1259,6 +1259,8 @@ static void kill_me_maybe(struct callback_head *cb)
-> >  	}
-> >  
-> >  	if (p->mce_vaddr != (void __user *)-1l) {
-> > +		pr_err("Memory error may not recovered: %#lx: Sending SIGBUS to %s:%d due to hardware memory corruption\n",
-> > +			p->mce_addr >> PAGE_SHIFT, p->comm, p->pid);
-> >  		force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);
-> >  	} else {
-> >  		pr_err("Memory error not recovered");
-> > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> > index e9481632fcd1..06f006174b8c 100644
-> > --- a/mm/memory-failure.c
-> > +++ b/mm/memory-failure.c
-> > @@ -1224,7 +1224,7 @@ static int memory_failure_hugetlb(unsigned long pfn, int flags)
-> >  	if (TestSetPageHWPoison(head)) {
-> >  		pr_err("Memory failure: %#lx: already hardware poisoned\n",
-> >  		       pfn);
-> > -		return 0;
-> > +		return -EBUSY;  
-> 
-> As David said, madvise_inject_error() will start returning -EBUSY now in case
-> we madvise(MADV_HWPOISON) on an already hwpoisoned page.
-> 
-> AFAICS, memory_failure() can return 0, -Eerrors, and MF_XXX.
-> Would it make sense to unify that? That way we could declare error codes that
-> make somse sense (like MF_ALREADY_HWPOISONED).
-> 
+(Not an issue with this patch, but a broader issue) I believe
+sev_guest lacks the necessary acquire/release barriers on sev->active,
+since it's called without the kvm lock. I mean, it's x86, so the only
+one that's going to hose you is the compiler for this type of access.
+There should be an smp_rmb() after the access in sev_guest and an
+smp_wmb() before the access in SEV_GUEST_INIT and here.
+>
+> +
+> +       mutex_lock(&kvm->lock);
+> +
+> +       /* Mirrors of mirrors should work, but let's not get silly */
+> +       if (is_mirroring_enc_context(kvm)) {
+> +               ret = -ENOTTY;
+> +               goto failed;
+> +       }
+> +
+> +       mirror_kvm_file = fget(mirror_kvm_fd);
+> +       if (!kvm_is_kvm(mirror_kvm_file)) {
+> +               ret = -EBADF;
+> +               goto failed;
+> +       }
+> +
+> +       mirror_kvm = mirror_kvm_file->private_data;
+> +
+> +       if (mirror_kvm == kvm || is_mirroring_enc_context(mirror_kvm)) {
+Just check if the source is an sev_guest and that the destination is
+not an sev_guest.
 
-@David:
-
-I checked the code again, and find a few places will care the exact return value, like:
-
-1: drivers/base/memory.c:483:      ret = memory_failure(pfn, 0);
-This is for hard page offline, I see the code in mcelog:
-static void offline_action(struct mempage *mp, u64 addr)
-{
-	if (offline <= OFFLINE_ACCOUNT)
-		return;
-	Lprintf("Offlining page %llx\n", addr);
-	if (memory_offline(addr) < 0) {
-		Lprintf("Offlining page %llx failed: %s\n", addr, strerror(errno));
-		mp->offlined = PAGE_OFFLINE_FAILED;
-	} else
-		mp->offlined = PAGE_OFFLINE;
-}
-I think return an negative value will be more proper? As the related killing function may not be performed, and we can't say
-it's a success operation?
-
-2:mm/hwpoison-inject.c:51:        return memory_failure(pfn, 0);
-mm/madvise.c:910:               ret = memory_failure(pfn, MF_COUNT_INCREASED);
-
-These two cases are mainly for error injections, I checked the test codes, mostly it only care if the value is 0 or < 0;
-I do the related test, normally it work well, but for stress test, sometimes in some case, I do meet some fail cases along with the -EBUSY return.
-I will dig more.
-
-Other place will only care if the return value is 0. or just ignore it.
-
-Hi naoya, what's your opnion for this possible issue, I need your inputs!
-
-Thanks
-Aili Yao
+I reviewed earlier incarnations of this, and think the high-level idea
+is sound. I'd like to see kvm-selftests for this patch, and plan on
+collaborating with AMD to help make those happen.
