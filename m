@@ -2,264 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76235325440
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2D1325443
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233136AbhBYRBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 12:01:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233117AbhBYRBK (ORCPT
+        id S233571AbhBYRCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 12:02:02 -0500
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:29924 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhBYRBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:01:10 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE326C06174A;
-        Thu, 25 Feb 2021 09:00:29 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id cf12so7011441edb.8;
-        Thu, 25 Feb 2021 09:00:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+m1d5CY/dF8o5udkQaQvUfO44nkt75LbnmvMpeNlDbs=;
-        b=VQepAW4qGEpIG4zriDbpRNyKdaSQlv+/1iG5RzDzSQ3mQv9w2D+vWLgyjWjpON75KK
-         e6pwT+zx0vR64mtkqfmq7bUQKAB7l50cfts7x52XcM35f8oWj0FLVIKT0NaMIQcPNhay
-         72J+HExew308Z3SXPWY7IqcfvWz8c+iFbOUqSJY7KSpEuW4ArubR8xjELpgzYHQftdDB
-         HnNu35M+vu27C3JLxTGqPKvm5AEFbpxH8gmD1qXqhza9R4KuihJeqtrA/z5sCHRDt3tS
-         twE6xuxgpDyuiGISzjE3ErWR06rI3DsRD+5j8kWHbxH+SrcUPh2KXG2S8wUk6nTh3GuE
-         Z4hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+m1d5CY/dF8o5udkQaQvUfO44nkt75LbnmvMpeNlDbs=;
-        b=rbwGVEj2PHO94fH75DngoFqG+Axv/C0rILa7rxvNbPcMaU/UwxjzHGm62hx/ec/VdX
-         Jq+rpO/GbjB/pVXvJ+uEiz+dUGYJPzM4Wy/qDqkZhp/gVMMV4yj+auQfc7uXWTXdHKRi
-         zGu2w+wnoJAzjYkDBWTP1xbvG7zyxymrI7uEm42aP/IAiOTZifQp9xECUx9CSaz3toRS
-         37wrg4ef7Gwrgm2tjzqDgsWCy1c3O/17ThAeWi6dZSaDdzx0ozU0802NZJKgQov6i6dB
-         GZLZoaFOykKZE7/1aaewfi98ScrqPmcF/E/pNqi2TQSIWNR5x6zvz4057vmpRjrBu2R3
-         JvnA==
-X-Gm-Message-State: AOAM533zMOf47ESVmiGdycrRV/WN2R93BbpBhRmtrfgmBb2Nah7vDzKX
-        J5RmYCx+V6bgDQn+4rn+gkOKz1fUwvhIuiBWBCM=
-X-Google-Smtp-Source: ABdhPJy6oLq5mlHnobE3bk/kmGmTG4Pibg+rGHaVCnM0iER+VUl9nMOHV/R0KgGhB4WKo/IsIPMDLwDUj1Zr9Fo+j74=
-X-Received: by 2002:a50:bec3:: with SMTP id e3mr3904100edk.290.1614272428345;
- Thu, 25 Feb 2021 09:00:28 -0800 (PST)
+        Thu, 25 Feb 2021 12:01:31 -0500
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 29EFE7807C;
+        Thu, 25 Feb 2021 20:00:41 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1614272441;
+        bh=/aucgc2DX9LFwaXqoZnOT5lfaPvZGZ8Tlz/h3Ffm0VE=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=2gFk2LRDxXqLQWLKSmmkiIE23AqJBf/vQ5PCHFqnKARjnvpaFjVJudVhstY/SaftM
+         hk8qat394sBm090YSJagErX62b8plqplXGEsx/RLtiw5tC6Iaw8Qqy+d4BtF6Qf9Qu
+         KKkVsUeHCHEOFuqbQLcERGb7HzXMkqJF12ktZEh8QRePCyyDBbeKsRVZcSQKdYtdot
+         wE0F9VnRcpsf7iN/UxTlyQ4WtR+1YgElRmrK1XFChPf5A5ai7dKF/OheDhI3IEZ4Lp
+         L0yumn2eeLK3xVpFqSUQhRwsyvyruUMfm2nPvPLCQcaWaD/6ATDZoLTwMTWCKx+g8o
+         dAKBsc4D13QMg==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 1682B7807E;
+        Thu, 25 Feb 2021 20:00:40 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Thu, 25
+ Feb 2021 20:00:39 +0300
+Subject: Re: [RFC PATCH v5 04/19] af_vsock: implement SEQPACKET receive loop
+To:     Jorgen Hansen <jhansen@vmware.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210218053719.1067237-1-arseny.krasnov@kaspersky.com>
+ <125822F8-C6D5-4892-BD32-A7189578B3DE@vmware.com>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <3763ad62-8a03-8dba-25f3-82c1a83e0182@kaspersky.com>
+Date:   Thu, 25 Feb 2021 20:00:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210217001322.2226796-1-shy828301@gmail.com>
-In-Reply-To: <20210217001322.2226796-1-shy828301@gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 25 Feb 2021 09:00:16 -0800
-Message-ID: <CAHbLzkrEfeoofwJjncFDepcOxEKzqiAo8T7mowX2jJVCz5ikEA@mail.gmail.com>
-Subject: Re: [v8 PATCH 00/13] Make shrinker's nr_deferred memcg aware
-To:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <125822F8-C6D5-4892-BD32-A7189578B3DE@vmware.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 02/25/2021 16:43:49
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 162085 [Feb 25 2021]
+X-KSE-AntiSpam-Info: LuaCore: 429 429 b8387e624a66feb695608edbad2d54079eb31df3
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
+X-KSE-AntiSpam-Info: {Tracking_date, moscow}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {Macro_CONTENT_PLAIN}
+X-KSE-AntiSpam-Info: {Macro_CONTENT_TEXT_PLAIN_OR_HTML}
+X-KSE-AntiSpam-Info: {Macro_CONTENT_TYPE_CHARSET_UTF_8}
+X-KSE-AntiSpam-Info: {Macro_CONTENT_TYPE_ENCODING_NOT_JAPANESE}
+X-KSE-AntiSpam-Info: {Macro_CONTENT_TYPE_ENCODING_NOT_RUS}
+X-KSE-AntiSpam-Info: {Macro_DATE_MOSCOW}
+X-KSE-AntiSpam-Info: {Macro_FROM_DOUBLE_ENG_NAME}
+X-KSE-AntiSpam-Info: {Macro_FROM_LOWCAPS_DOUBLE_ENG_NAME_IN_EMAIL}
+X-KSE-AntiSpam-Info: {Macro_FROM_NOT_RU}
+X-KSE-AntiSpam-Info: {Macro_FROM_NOT_RUS_CHARSET}
+X-KSE-AntiSpam-Info: {Macro_FROM_REAL_NAME_MATCHES_ALL_USERNAME_PROB}
+X-KSE-AntiSpam-Info: {Macro_HEADERS_NOT_LIST}
+X-KSE-AntiSpam-Info: {Macro_MAILER_THUNDERBIRD}
+X-KSE-AntiSpam-Info: {Macro_MISC_X_PRIORITY_MISSED}
+X-KSE-AntiSpam-Info: {Macro_MSGID_LOWHEX_8_4_4_4_12}
+X-KSE-AntiSpam-Info: {Macro_NO_DKIM}
+X-KSE-AntiSpam-Info: {Macro_REPLY_TO_MISSED}
+X-KSE-AntiSpam-Info: {Macro_SUBJECT_AT_LEAST_2_WORDS}
+X-KSE-AntiSpam-Info: {Macro_SUBJECT_ENG_UPPERCASE_BEGINNING}
+X-KSE-AntiSpam-Info: {Macro_SUBJECT_LONG_TEXT}
+X-KSE-AntiSpam-Info: {Macro_SUBJECT_WITH_FWD_OR_RE}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/25/2021 16:47:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 25.02.2021 13:47:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/02/25 15:26:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/02/25 15:16:00 #16299632
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
 
-Just checking in whether this series is on your radar. The patch 1/13
-~ patch 12/13 have been reviewed and acked. Vlastimil had had some
-comments on patch 13/13, I'm not sure if he is going to continue
-reviewing that one. I hope the last patch could get into the -mm tree
-along with the others so that it can get a broader test. What do you
-think about it?
+On 25.02.2021 19:27, Jorgen Hansen wrote:
+> On 18 Feb 2021, at 06:37, Arseny Krasnov <arseny.krasnov@kaspersky.com> wrote:
+>> This adds receive loop for SEQPACKET. It looks like receive loop for
+>> STREAM, but there is a little bit difference:
+>> 1) It doesn't call notify callbacks.
+>> 2) It doesn't care about 'SO_SNDLOWAT' and 'SO_RCVLOWAT' values, because
+>>   there is no sense for these values in SEQPACKET case.
+>> 3) It waits until whole record is received or error is found during
+>>   receiving.
+>> 4) It processes and sets 'MSG_TRUNC' flag.
+>>
+>> So to avoid extra conditions for two types of socket inside one loop, two
+>> independent functions were created.
+>>
+>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>> ---
+>> include/net/af_vsock.h   |  5 +++
+>> net/vmw_vsock/af_vsock.c | 97 +++++++++++++++++++++++++++++++++++++++-
+>> 2 files changed, 101 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>> index b1c717286993..01563338cc03 100644
+>> --- a/include/net/af_vsock.h
+>> +++ b/include/net/af_vsock.h
+>> @@ -135,6 +135,11 @@ struct vsock_transport {
+>> 	bool (*stream_is_active)(struct vsock_sock *);
+>> 	bool (*stream_allow)(u32 cid, u32 port);
+>>
+>> +	/* SEQ_PACKET. */
+>> +	size_t (*seqpacket_seq_get_len)(struct vsock_sock *vsk);
+>> +	int (*seqpacket_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
+>> +				     int flags, bool *msg_ready);
+>> +
+>> 	/* Notification. */
+>> 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
+>> 	int (*notify_poll_out)(struct vsock_sock *, size_t, bool *);
+>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>> index d277dc1cdbdf..b754927a556a 100644
+>> --- a/net/vmw_vsock/af_vsock.c
+>> +++ b/net/vmw_vsock/af_vsock.c
+>> @@ -1972,6 +1972,98 @@ static int __vsock_stream_recvmsg(struct sock *sk, struct msghdr *msg,
+>> 	return err;
+>> }
+>>
+>> +static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
+>> +				     size_t len, int flags)
+>> +{
+>> +	const struct vsock_transport *transport;
+>> +	const struct iovec *orig_iov;
+>> +	unsigned long orig_nr_segs;
+>> +	bool msg_ready;
+>> +	struct vsock_sock *vsk;
+>> +	size_t record_len;
+>> +	long timeout;
+>> +	int err = 0;
+>> +	DEFINE_WAIT(wait);
+>> +
+>> +	vsk = vsock_sk(sk);
+>> +	transport = vsk->transport;
+>> +
+>> +	timeout = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
+>> +	orig_nr_segs = msg->msg_iter.nr_segs;
+>> +	orig_iov = msg->msg_iter.iov;
+>> +	msg_ready = false;
+>> +	record_len = 0;
+>> +
+>> +	while (1) {
+>> +		err = vsock_wait_data(sk, &wait, timeout, NULL, 0);
+>> +
+>> +		if (err <= 0) {
+>> +			/* In case of any loop break(timeout, signal
+>> +			 * interrupt or shutdown), we report user that
+>> +			 * nothing was copied.
+>> +			 */
+>> +			err = 0;
+>> +			break;
+>> +		}
+>> +
+>> +		if (record_len == 0) {
+>> +			record_len =
+>> +				transport->seqpacket_seq_get_len(vsk);
+>> +
+>> +			if (record_len == 0)
+>> +				continue;
+>> +		}
+>> +
+>> +		err = transport->seqpacket_dequeue(vsk, msg,
+>> +					flags, &msg_ready);
+>> +
+>> +		if (err < 0) {
+>> +			if (err == -EAGAIN) {
+>> +				iov_iter_init(&msg->msg_iter, READ,
+>> +					      orig_iov, orig_nr_segs,
+>> +					      len);
+>> +				/* Clear 'MSG_EOR' here, because dequeue
+>> +				 * callback above set it again if it was
+>> +				 * set by sender. This 'MSG_EOR' is from
+>> +				 * dropped record.
+>> +				 */
+>> +				msg->msg_flags &= ~MSG_EOR;
+>> +				record_len = 0;
+>> +				continue;
+>> +			}
+> So a question for my understanding of the flow here. SOCK_SEQPACKET is reliable, so
+> what does it mean to drop the record? Is the transport supposed to roll back to the
+> beginning of the current record? If the incoming data in the transport doesn’t follow
+> the protocol, and packets need to be dropped, shouldn’t the socket be reset or similar?
+> Maybe there is potential for simplifying the flow if that is the case.
 
-Thanks,
-Yang
+As vhost transport could drop some packets(for example when kmalloc failed),
 
-On Tue, Feb 16, 2021 at 4:13 PM Yang Shi <shy828301@gmail.com> wrote:
+in this case user will see part of record(when RW packet was dropped), or it will
+
+be impossible to distinguish two records(when END of first and BEGIN of second
+
+were missed). So in this case user continues to sleep and such orphaned packets
+
+will be dropped.
+
+
+Yes, it will simplify logic a lot, if i'll just send connection reset when invalid
+
+sequence of packets were detected.
+
 >
->
-> Changelog
-> v7 --> v8:
->     * Added lockdep assert in expand_shrinker_info() per Roman.
->     * Added patch 05/13 to use kvfree_rcu() instead of call_rcu() per Roman
->       and Kirill.
->     * Moved rwsem acquire/release out of unregister_memcg_shrinker() per Roman.
->     * Renamed count_nr_deferred_{memcg} to xchg_nr_deferred_{memcg} per Roman.
->     * Fixed the next_deferred logic per Vlastimil.
->     * Misc minor code cleanup, refactor and spelling correction per Roman
->       and Shakeel.
->     * Collected more ack and review tags from Roman, Shakeel and Vlastimil.
-> v6 --> v7:
->     * Expanded shrinker_info in a batch of BITS_PER_LONG per Kirill.
->     * Added patch 06/12 to introduce a helper for dereferencing shrinker_info
->       per Kirill.
->     * Renamed set_nr_deferred_memcg to add_nr_deferred_memcg per Kirill.
->     * Collected Acked-by from Kirill.
-> v5 --> v6:
->     * Rebased on top of https://lore.kernel.org/linux-mm/1611216029-34397-1-git-send-email-abaci-bugfix@linux.alibaba.com/
->       per Kirill.
->     * Don't register shrinker idr with NULL and remove idr_replace() per Vlastimil.
->     * Move nr_deferred before map to guarantee the alignment per Vlastimil.
->     * Misc minor code cleanup and refactor per Kirill and Vlastimil.
->     * Added Acked-by from Vlastimil for path #1, #2, #3, #5, #9 and #10.
-> v4 --> v5:
->     * Incorporated the comments from Kirill.
->     * Rebased to v5.11-rc5.
-> v3 --> v4:
->     * Removed "memcg_" prefix for shrinker_maps related functions per Roman.
->     * Use write lock instead of read lock per Kirill. Also removed Johannes's ack
->       since write lock is used.
->     * Incorporated the comments from Kirill.
->     * Removed RFC.
->     * Rebased to v5.11-rc4.
-> v2 --> v3:
->     * Moved shrinker_maps related code to vmscan.c per Dave.
->     * Removed memcg_shrinker_map_size. Calcuated the size of map via shrinker_nr_max
->       per Johannes.
->     * Consolidated shrinker_deferred with shrinker_maps into one struct per Dave.
->     * Simplified the nr_deferred related code.
->     * Dropped the memory barrier from v2.
->     * Moved nr_deferred reparent code to vmscan.c per Dave.
->     * Added test coverage information in patch #11. Dave is concerned about the
->       potential regression. I didn't notice regression with my tests, but suggestions
->       about more test coverage is definitely welcome. And it may help spot regression
->       with this patch in -mm tree then linux-next tree so I keep it in this version.
->     * The code cleanup and consolidation resulted in the series grow to 11 patches.
->     * Rebased onto 5.11-rc2.
-> v1 --> v2:
->     * Use shrinker->flags to store the new SHRINKER_REGISTERED flag per Roman.
->     * Folded patch #1 into patch #6 per Roman.
->     * Added memory barrier to prevent shrink_slab_memcg from seeing NULL shrinker_maps/
->       shrinker_deferred per Kirill.
->     * Removed memcg_shrinker_map_mutex. Protcted shrinker_map/shrinker_deferred
->       allocations from expand with shrinker_rwsem per Johannes.
->
-> Recently huge amount one-off slab drop was seen on some vfs metadata heavy workloads,
-> it turned out there were huge amount accumulated nr_deferred objects seen by the
-> shrinker.
->
-> On our production machine, I saw absurd number of nr_deferred shown as the below
-> tracing result:
->
-> <...>-48776 [032] .... 27970562.458916: mm_shrink_slab_start:
-> super_cache_scan+0x0/0x1a0 ffff9a83046f3458: nid: 0 objects to shrink
-> 2531805877005 gfp_flags GFP_HIGHUSER_MOVABLE pgs_scanned 32 lru_pgs
-> 9300 cache items 1667 delta 11 total_scan 833
->
-> There are 2.5 trillion deferred objects on one node, assuming all of them
-> are dentry (192 bytes per object), so the total size of deferred on
-> one node is ~480TB. It is definitely ridiculous.
->
-> I managed to reproduce this problem with kernel build workload plus negative dentry
-> generator.
->
-> First step, run the below kernel build test script:
->
-> NR_CPUS=`cat /proc/cpuinfo | grep -e processor | wc -l`
->
-> cd /root/Buildarea/linux-stable
->
-> for i in `seq 1500`; do
->         cgcreate -g memory:kern_build
->         echo 4G > /sys/fs/cgroup/memory/kern_build/memory.limit_in_bytes
->
->         echo 3 > /proc/sys/vm/drop_caches
->         cgexec -g memory:kern_build make clean > /dev/null 2>&1
->         cgexec -g memory:kern_build make -j$NR_CPUS > /dev/null 2>&1
->
->         cgdelete -g memory:kern_build
-> done
->
-> Then run the below negative dentry generator script:
->
-> NR_CPUS=`cat /proc/cpuinfo | grep -e processor | wc -l`
->
-> mkdir /sys/fs/cgroup/memory/test
-> echo $$ > /sys/fs/cgroup/memory/test/tasks
->
-> for i in `seq $NR_CPUS`; do
->         while true; do
->                 FILE=`head /dev/urandom | tr -dc A-Za-z0-9 | head -c 64`
->                 cat $FILE 2>/dev/null
->         done &
-> done
->
-> Then kswapd will shrink half of dentry cache in just one loop as the below tracing result
-> showed:
->
->         kswapd0-475   [028] .... 305968.252561: mm_shrink_slab_start: super_cache_scan+0x0/0x190 0000000024acf00c: nid: 0
-> objects to shrink 4994376020 gfp_flags GFP_KERNEL cache items 93689873 delta 45746 total_scan 46844936 priority 12
->         kswapd0-475   [021] .... 306013.099399: mm_shrink_slab_end: super_cache_scan+0x0/0x190 0000000024acf00c: nid: 0 unused
-> scan count 4994376020 new scan count 4947576838 total_scan 8 last shrinker return val 46844928
->
-> There were huge number of deferred objects before the shrinker was called, the behavior
-> does match the code but it might be not desirable from the user's stand of point.
->
-> The excessive amount of nr_deferred might be accumulated due to various reasons, for example:
->     * GFP_NOFS allocation
->     * Significant times of small amount scan (< scan_batch, 1024 for vfs metadata)
->
-> However the LRUs of slabs are per memcg (memcg-aware shrinkers) but the deferred objects
-> is per shrinker, this may have some bad effects:
->     * Poor isolation among memcgs. Some memcgs which happen to have frequent limit
->       reclaim may get nr_deferred accumulated to a huge number, then other innocent
->       memcgs may take the fall. In our case the main workload was hit.
->     * Unbounded deferred objects. There is no cap for deferred objects, it can outgrow
->       ridiculously as the tracing result showed.
->     * Easy to get out of control. Although shrinkers take into account deferred objects,
->       but it can go out of control easily. One misconfigured memcg could incur absurd
->       amount of deferred objects in a period of time.
->     * Sort of reclaim problems, i.e. over reclaim, long reclaim latency, etc. There may be
->       hundred GB slab caches for vfe metadata heavy workload, shrink half of them may take
->       minutes. We observed latency spike due to the prolonged reclaim.
->
-> These issues also have been discussed in https://lore.kernel.org/linux-mm/20200916185823.5347-1-shy828301@gmail.com/.
-> The patchset is the outcome of that discussion.
->
-> So this patchset makes nr_deferred per-memcg to tackle the problem. It does:
->     * Have memcg_shrinker_deferred per memcg per node, just like what shrinker_map
->       does. Instead it is an atomic_long_t array, each element represent one shrinker
->       even though the shrinker is not memcg aware, this simplifies the implementation.
->       For memcg aware shrinkers, the deferred objects are just accumulated to its own
->       memcg. The shrinkers just see nr_deferred from its own memcg. Non memcg aware
->       shrinkers still use global nr_deferred from struct shrinker.
->     * Once the memcg is offlined, its nr_deferred will be reparented to its parent along
->       with LRUs.
->     * The root memcg has memcg_shrinker_deferred array too. It simplifies the handling of
->       reparenting to root memcg.
->     * Cap nr_deferred to 2x of the length of lru. The idea is borrowed from Dave Chinner's
->       series (https://lore.kernel.org/linux-xfs/20191031234618.15403-1-david@fromorbit.com/)
->
-> The downside is each memcg has to allocate extra memory to store the nr_deferred array.
-> On our production environment, there are typically around 40 shrinkers, so each memcg
-> needs ~320 bytes. 10K memcgs would need ~3.2MB memory. It seems fine.
->
-> We have been running the patched kernel on some hosts of our fleet (test and production) for
-> months, it works very well. The monitor data shows the working set is sustained as expected.
->
-> Yang Shi (13):
->       mm: vmscan: use nid from shrink_control for tracepoint
->       mm: vmscan: consolidate shrinker_maps handling code
->       mm: vmscan: use shrinker_rwsem to protect shrinker_maps allocation
->       mm: vmscan: remove memcg_shrinker_map_size
->       mm: vmscan: use kvfree_rcu instead of call_rcu
->       mm: memcontrol: rename shrinker_map to shrinker_info
->       mm: vmscan: add shrinker_info_protected() helper
->       mm: vmscan: use a new flag to indicate shrinker is registered
->       mm: vmscan: add per memcg shrinker nr_deferred
->       mm: vmscan: use per memcg nr_deferred of shrinker
->       mm: vmscan: don't need allocate shrinker->nr_deferred for memcg aware shrinkers
->       mm: memcontrol: reparent nr_deferred when memcg offline
->       mm: vmscan: shrink deferred objects proportional to priority
->
->  include/linux/memcontrol.h |  23 +++---
->  include/linux/shrinker.h   |   7 +-
->  mm/huge_memory.c           |   4 +-
->  mm/list_lru.c              |   6 +-
->  mm/memcontrol.c            | 130 +------------------------------
->  mm/vmscan.c                | 394 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------
->  6 files changed, 319 insertions(+), 245 deletions(-)
->
+>> +
+>> +			err = -ENOMEM;
+>> +			break;
+>> +		}
+>> +
+>> +		if (msg_ready)
+>> +			break;
+>> +	}
+>> +
+>> +	if (sk->sk_err)
+>> +		err = -sk->sk_err;
+>> +	else if (sk->sk_shutdown & RCV_SHUTDOWN)
+>> +		err = 0;
+>> +
+>> +	if (msg_ready) {
+>> +		/* User sets MSG_TRUNC, so return real length of
+>> +		 * packet.
+>> +		 */
+>> +		if (flags & MSG_TRUNC)
+>> +			err = record_len;
+>> +		else
+>> +			err = len - msg->msg_iter.count;
+>> +
+>> +		/* Always set MSG_TRUNC if real length of packet is
+>> +		 * bigger than user's buffer.
+>> +		 */
+>> +		if (record_len > len)
+>> +			msg->msg_flags |= MSG_TRUNC;
+>> +	}
+>> +
+>> +	return err;
+>> +}
+>> +
+>> static int
+>> vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>> 			  int flags)
+>> @@ -2027,7 +2119,10 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>> 		goto out;
+>> 	}
+>>
+>> -	err = __vsock_stream_recvmsg(sk, msg, len, flags);
+>> +	if (sk->sk_type == SOCK_STREAM)
+>> +		err = __vsock_stream_recvmsg(sk, msg, len, flags);
+>> +	else
+>> +		err = __vsock_seqpacket_recvmsg(sk, msg, len, flags);
+>>
+>> out:
+>> 	release_sock(sk);
+>> -- 
+>> 2.25.1
+>>
