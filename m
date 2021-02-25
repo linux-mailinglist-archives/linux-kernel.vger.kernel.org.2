@@ -2,199 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD1E3257DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C09723257EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbhBYUli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:41:38 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:43009 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234302AbhBYUla (ORCPT
+        id S233242AbhBYUso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:48:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231895AbhBYUsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:41:30 -0500
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id D23AD100005;
-        Thu, 25 Feb 2021 20:40:45 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 21:40:45 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 2/3] reset: mchp: sparx5: add switch reset driver
-Message-ID: <YDgLTczzqTBCwEUY@piout.net>
-References: <20210225095005.1510846-1-steen.hegelund@microchip.com>
- <20210225095005.1510846-3-steen.hegelund@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225095005.1510846-3-steen.hegelund@microchip.com>
+        Thu, 25 Feb 2021 15:48:38 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B9EC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:47:57 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id v62so7552492ybb.15
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:47:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=om9uFHT7e8jzZ23sZL9XQVqb3sS0Fv61rG18CUdoIp0=;
+        b=QeFBPAKjT+YjPCo9JcaoxsSX9JFFup0lEG3jQCx5yJI1ixHMZCsadFJ/NNf5RDZz5A
+         3mKCO7izGPoz+pC/V9koHNS9jPbCJQCsp3R4idXXfZ4KBQPQRvUHDcH22Z8e7RqxsdD0
+         TQI/pp0NvGSnCCLn9mWzdHlNVLkF3HHETi//tjnTvJFK6j0JabIsycg/LWUS6cyx37Ap
+         yobJgLs0cG95IiS0twVjcdhZJpNiPfr6m1Sab4is3JSIELkxd+OEM5HWo4KGhIgqqTPR
+         2XI0oPfzWzBpDA3wozCD3CX6w16Rq2h+B1cu6BkOCBxWG6J2ix1io6JLiNjdPwQsd8VM
+         4aMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=om9uFHT7e8jzZ23sZL9XQVqb3sS0Fv61rG18CUdoIp0=;
+        b=U0i4CpL1xv81MZzQLsr44ebLPiQWqx7C23LrLGbx0YjpSPNL5lQGAEPIkmJECH/AGj
+         6byVE+PZ6HVyi11OXa3J4V9BQpzA/anIJVNfJD96grq8jbP5nXKuWXLZ71JSVodMkMTL
+         FE13iFcuLxEv5RB1Z2ZF+MfIFJCLWW5oSaxU/xGQGpT+bGnqBh62BX6CYoWDmuZ6Jk3P
+         2nyeU/ikgRhfhM4+IO4OSFODfRpiQqvGCHrJ2aDfm2DbDvfdFgYwDH1UF+bTGitaqanU
+         3LiQRmDBRp/DEa9XMtiB8zuD86DYBuyA8ArEBOXPWVcW7jBHULY0apSODcwtJNLoSA4r
+         o19g==
+X-Gm-Message-State: AOAM532rXgdls2LwoH9hB49PGGM0MCTb7QEI9hGPRlIPCqj75RAbiQvu
+        LSVDWQ29fr0hd4gUan33EpGgLAtUOgg=
+X-Google-Smtp-Source: ABdhPJzl2CHRSfum3VVu3pLelkQeo1yBDsqs7I/L+wQrUIIse1Xh/RGmrEbBFSjoFD2ZghbqTRgUPLXJKpA=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:34c4:7c1d:f9ba:4576])
+ (user=seanjc job=sendgmr) by 2002:a25:1184:: with SMTP id 126mr6443848ybr.430.1614286077055;
+ Thu, 25 Feb 2021 12:47:57 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 25 Feb 2021 12:47:25 -0800
+Message-Id: <20210225204749.1512652-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH 00/24] KVM: x86/mmu: Introduce MMU_PRESENT and fix bugs
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This series adds the simple idea of tagging shadow-present SPTEs with
+a single bit, instead of looking for non-zero SPTEs that aren't MMIO and
+aren't REMOVED.  Doing so reduces KVM's code footprint by 2k bytes on
+x86-64, and presumably adds a tiny performance boost in related paths.
 
-On 25/02/2021 10:50:04+0100, Steen Hegelund wrote:
-> The Sparx5 Switch SoC has a number of components that can be reset
-> indiviually, but at least the Switch Core needs to be in a well defined
-> state at power on, when any of the Sparx5 drivers starts to access the
-> Switch Core, this reset driver is available.
-> 
-> The reset driver is loaded early via the postcore_initcall interface, and
-> will then be available for the other Sparx5 drivers (SGPIO, SwitchDev etc)
-> that are loaded next, and the first of them to be loaded can perform the
-> one-time Switch Core reset that is needed.
-> 
-> The driver has protection so that the system busses, DDR controller, PCI-E
-> and ARM A53 CPU and a few other subsystems are not touched by the reset.
-> 
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> ---
->  drivers/reset/Kconfig                  |   8 ++
->  drivers/reset/Makefile                 |   1 +
->  drivers/reset/reset-microchip-sparx5.c | 151 +++++++++++++++++++++++++
->  3 files changed, 160 insertions(+)
->  create mode 100644 drivers/reset/reset-microchip-sparx5.c
-> 
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index 71ab75a46491..05c240c47a8a 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -101,6 +101,14 @@ config RESET_LPC18XX
->  	help
->  	  This enables the reset controller driver for NXP LPC18xx/43xx SoCs.
->  
-> +config RESET_MCHP_SPARX5
-> +	bool "Microchip Sparx5 reset driver"
-> +	depends on HAS_IOMEM || COMPILE_TEST
-> +	default y if SPARX5_SWITCH
-> +	select MFD_SYSCON
-> +	help
-> +	  This driver supports switch core reset for the Microchip Sparx5 SoC.
-> +
->  config RESET_MESON
->  	tristate "Meson Reset Driver"
->  	depends on ARCH_MESON || COMPILE_TEST
-> diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-> index 1054123fd187..341fd9ab4bf6 100644
-> --- a/drivers/reset/Makefile
-> +++ b/drivers/reset/Makefile
-> @@ -15,6 +15,7 @@ obj-$(CONFIG_RESET_IMX7) += reset-imx7.o
->  obj-$(CONFIG_RESET_INTEL_GW) += reset-intel-gw.o
->  obj-$(CONFIG_RESET_LANTIQ) += reset-lantiq.o
->  obj-$(CONFIG_RESET_LPC18XX) += reset-lpc18xx.o
-> +obj-$(CONFIG_RESET_MCHP_SPARX5) += reset-microchip-sparx5.o
->  obj-$(CONFIG_RESET_MESON) += reset-meson.o
->  obj-$(CONFIG_RESET_MESON_AUDIO_ARB) += reset-meson-audio-arb.o
->  obj-$(CONFIG_RESET_NPCM) += reset-npcm.o
-> diff --git a/drivers/reset/reset-microchip-sparx5.c b/drivers/reset/reset-microchip-sparx5.c
-> new file mode 100644
-> index 000000000000..36f00ef68f0d
-> --- /dev/null
-> +++ b/drivers/reset/reset-microchip-sparx5.c
-> @@ -0,0 +1,151 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/* Microchip Sparx5 Switch Reset driver
-> + *
-> + * Copyright (c) 2020 Microchip Technology Inc. and its subsidiaries.
-> + *
-> + * The Sparx5 Chip Register Model can be browsed at this location:
-> + * https://github.com/microchip-ung/sparx-5_reginfo
-> + */
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/of_device.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/reset-controller.h>
-> +
-> +#define PROTECT_REG    0x84
-> +#define PROTECT_BIT    BIT(10)
-> +#define SOFT_RESET_REG 0x00
-> +#define SOFT_RESET_BIT BIT(1)
-> +
-> +struct mchp_reset_context {
-> +	struct regmap *cpu_ctrl;
-> +	struct regmap *gcb_ctrl;
-> +	struct reset_controller_dev rcdev;
-> +};
-> +
-> +static struct regmap_config sparx5_reset_regmap_config = {
-> +	.reg_bits	= 32,
-> +	.val_bits	= 32,
-> +	.reg_stride	= 4,
-> +};
-> +
-> +static int sparx5_switch_reset(struct reset_controller_dev *rcdev,
-> +			       unsigned long id)
-> +{
-> +	struct mchp_reset_context *ctx =
-> +		container_of(rcdev, struct mchp_reset_context, rcdev);
-> +	u32 val;
-> +
-> +	/* Make sure the core is PROTECTED from reset */
-> +	regmap_update_bits(ctx->cpu_ctrl, PROTECT_REG, PROTECT_BIT, PROTECT_BIT);
-> +
-> +	/* Start soft reset */
-> +	regmap_write(ctx->gcb_ctrl, SOFT_RESET_REG, SOFT_RESET_BIT);
-> +
-> +	/* Wait for soft reset done */
-> +	return regmap_read_poll_timeout(ctx->gcb_ctrl, SOFT_RESET_REG, val,
-> +					(val & SOFT_RESET_BIT) == 0,
-> +					1, 100);
-> +}
-> +
-> +static const struct reset_control_ops sparx5_reset_ops = {
-> +	.reset = sparx5_switch_reset,
-> +};
-> +
-> +static int mchp_sparx5_map_syscon(struct platform_device *pdev, char *name,
-> +				  struct regmap **target)
-> +{
-> +	struct device_node *syscon_np;
-> +	struct regmap *regmap;
-> +	int err;
-> +
-> +	syscon_np = of_parse_phandle(pdev->dev.of_node, name, 0);
-> +	if (!syscon_np)
-> +		return -ENODEV;
-> +	regmap = syscon_node_to_regmap(syscon_np);
-> +	of_node_put(syscon_np);
-> +	if (IS_ERR(regmap)) {
-> +		err = PTR_ERR(regmap);
-> +		dev_err(&pdev->dev, "No '%s' map: %d\n", name, err);
-> +		return err;
-> +	}
-> +	*target = regmap;
-> +	return 0;
-> +}
-> +
-> +static int mchp_sparx5_map_io(struct platform_device *pdev, char *name,
-> +			      struct regmap **target)
-> +{
-> +	struct resource *res;
-> +	struct regmap *map;
-> +	void __iomem *mem;
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, name);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "No '%s' resource\n", name);
-> +		return -ENODEV;
-> +	}
-> +	mem = devm_ioremap(&pdev->dev, res->start, res->end - res->start + 1);
-> +	if (!mem) {
-> +		dev_err(&pdev->dev, "Could not map '%s' resource\n", name);
-> +		return -ENXIO;
-> +	}
+But, actually adding MMU_PRESENT without breaking one flow or another is
+a bit of a debacle.  The main issue is that EPT doesn't have many low
+available bits, and PAE doesn't have any high available bits.  And, the
+existing MMU_WRITABLE and HOST_WRITABLE flags aren't optional, i.e. are
+needed for all flavors of paging.  The solution I settled on is to let
+make the *_WRITABLE bit configurable so that EPT can use high available
+bits.
 
-Someone is going to tell you to use
-devm_platform_get_and_ioremap_resource so it may as well be me ;)
+Of course, I forgot the above PAE restriction multiple times, and
+journeyed down several dead ends.  The most notable failed idea was
+using the AD_* masks in bits 52 and 53 to denote shadow-present SPTEs.
+That would have been quite clever as it would provide the same benefits
+without burning another available bit.
+
+Along the many failed attempts, I collected a variety of bug fixes and
+cleanups, mostly things found by inspection after doing a deep dive to
+figure out what I broke.
+
+Sean Christopherson (24):
+  KVM: x86/mmu: Set SPTE_AD_WRPROT_ONLY_MASK if and only if PML is
+    enabled
+  KVM: x86/mmu: Check for shadow-present SPTE before querying A/D status
+  KVM: x86/mmu: Bail from fast_page_fault() if SPTE is not
+    shadow-present
+  KVM: x86/mmu: Disable MMIO caching if MMIO value collides with L1TF
+  KVM: x86/mmu: Retry page faults that hit an invalid memslot
+  KVM: x86/mmu: Don't install bogus MMIO SPTEs if MMIO caching is
+    disabled
+  KVM: x86/mmu: Handle MMIO SPTEs directly in mmu_set_spte()
+  KVM: x86/mmu: Drop redundant trace_kvm_mmu_set_spte() in the TDP MMU
+  KVM: x86/mmu: Rename 'mask' to 'spte' in MMIO SPTE helpers
+  KVM: x86/mmu: Stop using software available bits to denote MMIO SPTEs
+  KVM: x86/mmu: Add module param to disable MMIO caching (for testing)
+  KVM: x86/mmu: Rename and document A/D scheme for TDP SPTEs
+  KVM: x86/mmu: Use MMIO SPTE bits 53 and 52 for the MMIO generation
+  KVM: x86/mmu: Document dependency bewteen TDP A/D type and saved bits
+  KVM: x86/mmu: Move initial kvm_mmu_set_mask_ptes() call into MMU
+    proper
+  KVM: x86/mmu: Co-locate code for setting various SPTE masks
+  KVM: x86/mmu: Move logic for setting SPTE masks for EPT into the MMU
+    proper
+  KVM: x86/mmu: Make Host-writable and MMU-writable bit locations
+    dynamic
+  KVM: x86/mmu: Use high bits for host/mmu writable masks for EPT SPTEs
+  KVM: x86/mmu: Use a dedicated bit to track shadow/MMU-present SPTEs
+  KVM: x86/mmu: Tweak auditing WARN for A/D bits to !PRESENT (was MMIO)
+  KVM: x86/mmu: Use is_removed_spte() instead of open coded equivalents
+  KVM: x86/mmu: Use low available bits for removed SPTEs
+  KVM: x86/mmu: Dump reserved bits if they're detected on non-MMIO SPTE
+
+ Documentation/virt/kvm/locking.rst |  49 +++++----
+ arch/x86/include/asm/kvm_host.h    |   3 -
+ arch/x86/kvm/mmu.h                 |  15 +--
+ arch/x86/kvm/mmu/mmu.c             |  87 +++++++---------
+ arch/x86/kvm/mmu/mmu_internal.h    |  16 +--
+ arch/x86/kvm/mmu/paging_tmpl.h     |   2 +-
+ arch/x86/kvm/mmu/spte.c            | 157 ++++++++++++++++++++---------
+ arch/x86/kvm/mmu/spte.h            | 135 +++++++++++++++++--------
+ arch/x86/kvm/mmu/tdp_mmu.c         |  22 ++--
+ arch/x86/kvm/svm/svm.c             |   2 +-
+ arch/x86/kvm/vmx/vmx.c             |  24 +----
+ arch/x86/kvm/x86.c                 |   3 -
+ 12 files changed, 290 insertions(+), 225 deletions(-)
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.30.1.766.gb4fecdf3b7-goog
+
