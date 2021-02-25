@@ -2,318 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968A1324C97
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1BF324C9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhBYJNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 04:13:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235879AbhBYJKn (ORCPT
+        id S236231AbhBYJQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:16:04 -0500
+Received: from exmail.andestech.com ([60.248.187.195]:62894 "EHLO
+        ATCSQR.andestech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234781AbhBYJMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:10:43 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B9CC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 01:09:54 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id h17so5437429oih.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 01:09:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=biZ1wBWo+IyHAiu9LCZLsexjAROPaLNmbZ+cAEUO6bg=;
-        b=ifW3yy/23dQuYLO8GrEzHZNy7uFEGWCbiAK1sGoswLbb8RLVtlEHGWKcd9yqFk4f6y
-         oQQBbNPbaNGR1c48U4cHfLDBJ8/LtMqwQA4LY8ewcnRv00BLxoN1rhkeAn3JiVwRM0Pn
-         yeJucFLFo/pyLGhD7qqePuo4jDgg1sj/ApMoU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=biZ1wBWo+IyHAiu9LCZLsexjAROPaLNmbZ+cAEUO6bg=;
-        b=jhzEPpV3CjtYJrpjKCGo6YX0iF3yfF9XPmik/c9kCwcg6aLU+LA9s6ljYnKvgsCnRj
-         eQTrLRiWlhBgyxpMePtUk8r0LBn1JPc4K7moEVLtuirMLH1XKRWF3f1cGCzgpQ0p7Zn8
-         BCnLJYjmqfkn7DgUc1j8Us0p1VUC3zrvBOJeDbuZR8CF8kWxA6O7N7GxAcYlLywmKdyc
-         EGAxQlA4ZUTVXyUgbi0xTHQICl2YamKl9XGGwKVkVuXmkhyK0dSbF3fVUysUsiKAlUg+
-         IutyVpIhejXeNF/hcb4/eNvv0zZnfwc4EXQ99fdjOnk2rVXjK30CwPXmyVKuzO00+wx/
-         K6Jg==
-X-Gm-Message-State: AOAM533brIEPSuCO9wgGiG8u23VvwgRPAIdB50nP5KueNNgKNKwDvbYK
-        zqjd+G4js2hWLqCu8nwlghnm9f8BhlX2WwqS9T15gw==
-X-Google-Smtp-Source: ABdhPJwUdrB44gX2fDhU+Z9N/Jx4DWmJSOJ1GwoULyRjmRmUEsEkyCJ+xhSVfA2mO36NkZSx34vpPdfpaV3tCBpwj1Y=
-X-Received: by 2002:a05:6808:4c9:: with SMTP id a9mr1261173oie.101.1614244193790;
- Thu, 25 Feb 2021 01:09:53 -0800 (PST)
+        Thu, 25 Feb 2021 04:12:24 -0500
+Received: from mail.andestech.com (atcpcs16.andestech.com [10.0.1.222])
+        by ATCSQR.andestech.com with ESMTP id 11P94pVw011628;
+        Thu, 25 Feb 2021 17:04:51 +0800 (GMT-8)
+        (envelope-from nylon7@andestech.com)
+Received: from atcfdc88 (10.0.15.120) by ATCPCS16.andestech.com (10.0.1.222)
+ with Microsoft SMTP Server id 14.3.487.0; Thu, 25 Feb 2021 17:10:34 +0800
+Date:   Thu, 25 Feb 2021 17:10:35 +0800
+From:   Nylon Chen <nylon7@andestech.com>
+To:     Alex Ghiti <alex@ghiti.fr>
+CC:     "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "Nick Chun-Ming Hu(?????????)" <nickhu@andestech.com>,
+        "Alan Quey-Liang Kao(?????????)" <alankao@andestech.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        "nylon7717@gmail.com" <nylon7717@gmail.com>,
+        "aryabinin@virtuozzo.com" <aryabinin@virtuozzo.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "glider@google.com" <glider@google.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "dvyukov@google.com" <dvyukov@google.com>
+Subject: Re: [PATCH v2 1/1] riscv/kasan: add KASAN_VMALLOC support
+Message-ID: <20210225091035.GA12748@atcfdc88>
+References: <mhng-443fd141-b9a3-4be6-a056-416877f99ea4@palmerdabbelt-glaptop>
+ <2b2f3038-3e27-8763-cf78-3fbbfd2100a0@ghiti.fr>
+ <4fa97788-157c-4059-ae3f-28ab074c5836@ghiti.fr>
+ <e15fbf55-25db-7f91-6feb-fb081ab60cdb@ghiti.fr>
+ <20210222013754.GA7626@andestech.com>
+ <af58ed3d-36e4-1278-dc42-7df2d875abbc@ghiti.fr>
+ <42483a2b-efb9-88a8-02b2-9f44eed3d418@ghiti.fr>
 MIME-Version: 1.0
-References: <20210224105509.yzdimgbu2jwe3auf@adolin>
-In-Reply-To: <20210224105509.yzdimgbu2jwe3auf@adolin>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 25 Feb 2021 10:09:42 +0100
-Message-ID: <CAKMK7uFwdHaaGs8BPSAah1Vp5pJWTzxoruLgOWxQu1aDAyCKLQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] drm/vkms: Add support for virtual hardware mode
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Zack Rusin <zackr@vmware.com>
-Cc:     Melissa Wen <melissa.srw@gmail.com>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        Dave Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <42483a2b-efb9-88a8-02b2-9f44eed3d418@ghiti.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.0.15.120]
+X-DNSRBL: 
+X-MAIL: ATCSQR.andestech.com 11P94pVw011628
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 11:55 AM Sumera Priyadarsini
-<sylphrenadin@gmail.com> wrote:
->
-> Add a virtual hardware or vblank-less mode as a module to enable
-> VKMS to emulate virtual graphic drivers. This mode can be enabled
-> by setting enable_virtual_hw=1 at the time of loading VKMS.
->
-> A new function vkms_crtc_composer() has been added to bypass the
-> vblank mode and is called directly in the atomic hook in
-> vkms_atomic_begin(). However, some crc captures still use vblanks
-> which causes the crc-based igt tests to crash. Currently, I am unsure
-> about how to approach one-shot implementation of crc reads so I am
-> still working on that.
+Hi Alex, Palmer
+On Thu, Feb 25, 2021 at 03:11:07AM +0800, Alex Ghiti wrote:
+> Hi Nylon,
+> 
+> Le 2/22/21 ?? 12:13 PM, Alex Ghiti a ??crit??:
+> > Le 2/21/21 ?? 8:37 PM, Nylon Chen a ??crit??:
+> >> Hi Alex, Palmer
+> >>
+> >> Sorry I missed this message.
+> >> On Sun, Feb 21, 2021 at 09:38:04PM +0800, Alex Ghiti wrote:
+> >>> Le 2/13/21 ?? 5:52 AM, Alex Ghiti a ??crit??:
+> >>>> Hi Nylon, Palmer,
+> >>>>
+> >>>> Le 2/8/21 ?? 1:28 AM, Alex Ghiti a ??crit??:
+> >>>>> Hi Nylon,
+> >>>>>
+> >>>>> Le 1/22/21 ?? 10:56 PM, Palmer Dabbelt a ??crit??:
+> >>>>>> On Fri, 15 Jan 2021 21:58:35 PST (-0800), nylon7@andestech.com wrote:
+> >>>>>>> It references to x86/s390 architecture.
+> >>>>>>>>> So, it doesn't map the early shadow page to cover VMALLOC space.
+> >>>>>>>
+> >>>>>>> Prepopulate top level page table for the range that would 
+> >>>>>>> otherwise be
+> >>>>>>> empty.
+> >>>>>>>
+> >>>>>>> lower levels are filled dynamically upon memory allocation while
+> >>>>>>> booting.
+> >>>>>
+> >>>>> I think we can improve the changelog a bit here with something like 
+> >>>>> that:
+> >>>>>
+> >>>>> "KASAN vmalloc space used to be mapped using kasan early shadow page.
+> >>>>> KASAN_VMALLOC requires the top-level of the kernel page table to be
+> >>>>> properly populated, lower levels being filled dynamically upon memory
+> >>>>> allocation at runtime."
+> >>>>>
+> >>>>>>>
+> >>>>>>> Signed-off-by: Nylon Chen <nylon7@andestech.com>
+> >>>>>>> Signed-off-by: Nick Hu <nickhu@andestech.com>
+> >>>>>>> ---
+> >>>>>>> ????arch/riscv/Kconfig???????????????? |?? 1 +
+> >>>>>>> ????arch/riscv/mm/kasan_init.c | 57 
+> >>>>>>> +++++++++++++++++++++++++++++++++++++-
+> >>>>>>> ????2 files changed, 57 insertions(+), 1 deletion(-)
+> >>>>>>>
+> >>>>>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> >>>>>>> index 81b76d44725d..15a2c8088bbe 100644
+> >>>>>>> --- a/arch/riscv/Kconfig
+> >>>>>>> +++ b/arch/riscv/Kconfig
+> >>>>>>> @@ -57,6 +57,7 @@ config RISCV
+> >>>>>>> ?????????? select HAVE_ARCH_JUMP_LABEL
+> >>>>>>> ?????????? select HAVE_ARCH_JUMP_LABEL_RELATIVE
+> >>>>>>> ?????????? select HAVE_ARCH_KASAN if MMU && 64BIT
+> >>>>>>> +?????? select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
+> >>>>>>> ?????????? select HAVE_ARCH_KGDB
+> >>>>>>> ?????????? select HAVE_ARCH_KGDB_QXFER_PKT
+> >>>>>>> ?????????? select HAVE_ARCH_MMAP_RND_BITS if MMU
+> >>>>>>> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> >>>>>>> index 12ddd1f6bf70..4b9149f963d3 100644
+> >>>>>>> --- a/arch/riscv/mm/kasan_init.c
+> >>>>>>> +++ b/arch/riscv/mm/kasan_init.c
+> >>>>>>> @@ -9,6 +9,19 @@
+> >>>>>>> ????#include <linux/pgtable.h>
+> >>>>>>> ????#include <asm/tlbflush.h>
+> >>>>>>> ????#include <asm/fixmap.h>
+> >>>>>>> +#include <asm/pgalloc.h>
+> >>>>>>> +
+> >>>>>>> +static __init void *early_alloc(size_t size, int node)
+> >>>>>>> +{
+> >>>>>>> +?????? void *ptr = memblock_alloc_try_nid(size, size,
+> >>>>>>> +?????????????? __pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, node);
+> >>>>>>> +
+> >>>>>>> +?????? if (!ptr)
+> >>>>>>> +?????????????? panic("%pS: Failed to allocate %zu bytes align=%zx nid=%d
+> >>>>>>> from=%llx\n",
+> >>>>>>> +?????????????????????? __func__, size, size, node, 
+> >>>>>>> (u64)__pa(MAX_DMA_ADDRESS));
+> >>>>>>> +
+> >>>>>>> +?????? return ptr;
+> >>>>>>> +}
+> >>>>>>>
+> >>>>>>> ????extern pgd_t early_pg_dir[PTRS_PER_PGD];
+> >>>>>>> ????asmlinkage void __init kasan_early_init(void)
+> >>>>>>> @@ -83,6 +96,40 @@ static void __init populate(void *start, void 
+> >>>>>>> *end)
+> >>>>>>> ?????????? memset(start, 0, end - start);
+> >>>>>>> ????}
+> >>>>>>>
+> >>>>>>> +void __init kasan_shallow_populate(void *start, void *end)
+> >>>>>>> +{
+> >>>>>>> +?????? unsigned long vaddr = (unsigned long)start & PAGE_MASK;
+> >>>>>>> +?????? unsigned long vend = PAGE_ALIGN((unsigned long)end);
+> >>>>>>> +?????? unsigned long pfn;
+> >>>>>>> +?????? int index;
+> >>>>>>> +?????? void *p;
+> >>>>>>> +?????? pud_t *pud_dir, *pud_k;
+> >>>>>>> +?????? pgd_t *pgd_dir, *pgd_k;
+> >>>>>>> +?????? p4d_t *p4d_dir, *p4d_k;
+> >>>>>>> +
+> >>>>>>> +?????? while (vaddr < vend) {
+> >>>>>>> +?????????????? index = pgd_index(vaddr);
+> >>>>>>> +?????????????? pfn = csr_read(CSR_SATP) & SATP_PPN;
+> >>>>>
+> >>>>> At this point in the boot process, we know that we use swapper_pg_dir
+> >>>>> so no need to read SATP.
+> >>>>>
+> >>>>>>> +?????????????? pgd_dir = (pgd_t *)pfn_to_virt(pfn) + index;
+> >>>>>
+> >>>>> Here, this pgd_dir assignment is overwritten 2 lines below, so no need
+> >>>>> for it.
+> >>>>>
+> >>>>>>> +?????????????? pgd_k = init_mm.pgd + index;
+> >>>>>>> +?????????????? pgd_dir = pgd_offset_k(vaddr);
+> >>>>>
+> >>>>> pgd_offset_k(vaddr) = init_mm.pgd + pgd_index(vaddr) so pgd_k == 
+> >>>>> pgd_dir.
+> >>>>>
+> >>>>>>> +?????????????? set_pgd(pgd_dir, *pgd_k);
+> >>>>>>> +
+> >>>>>>> +?????????????? p4d_dir = p4d_offset(pgd_dir, vaddr);
+> >>>>>>> +?????????????? p4d_k?? = p4d_offset(pgd_k, vaddr);
+> >>>>>>> +
+> >>>>>>> +?????????????? vaddr = (vaddr + PUD_SIZE) & PUD_MASK;
+> >>>>>
+> >>>>> Why do you increase vaddr *before* populating the first one ? And
+> >>>>> pud_addr_end does that properly: it returns the next pud address if it
+> >>>>> does not go beyond end address to map.
+> >>>>>
+> >>>>>>> +?????????????? pud_dir = pud_offset(p4d_dir, vaddr);
+> >>>>>>> +?????????????? pud_k = pud_offset(p4d_k, vaddr);
+> >>>>>>> +
+> >>>>>>> +?????????????? if (pud_present(*pud_dir)) {
+> >>>>>>> +?????????????????????? p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
+> >>>>>>> +?????????????????????? pud_populate(&init_mm, pud_dir, p);
+> >>>>>
+> >>>>> init_mm is not needed here.
+> >>>>>
+> >>>>>>> +?????????????? }
+> >>>>>>> +?????????????? vaddr += PAGE_SIZE;
+> >>>>>
+> >>>>> Why do you need to add PAGE_SIZE ? vaddr already points to the next 
+> >>>>> pud.
+> >>>>>
+> >>>>> It seems like this patch tries to populate userspace page table
+> >>>>> whereas at this point in the boot process, only swapper_pg_dir is used
+> >>>>> or am I missing something ?
+> >>>>>
+> >>>>> Thanks,
+> >>>>>
+> >>>>> Alex
+> >>>>
+> >>>> I implemented this morning a version that fixes all the comments I made
+> >>>> earlier. I was able to insert test_kasan_module on both sv39 and sv48
+> >>>> without any modification: set_pgd "goes through" all the unused page
+> >>>> table levels, whereas p*d_populate are noop for unused levels.
+> >>>>
+> >>>> If you have any comment, do not hesitate.
+> >>>>
+> >>>> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> >>>> index adbf94b7e68a..d643b222167c 100644
+> >>>> --- a/arch/riscv/mm/kasan_init.c
+> >>>> +++ b/arch/riscv/mm/kasan_init.c
+> >>>> @@ -195,6 +195,31 @@ static void __init kasan_populate(void *start, 
+> >>>> void
+> >>>> *end)
+> >>>> ?? ?????????????? memset(start, KASAN_SHADOW_INIT, end - start);
+> >>>> ?? ??}
+> >>>>
+> >>>>
+> >>>> +void __init kasan_shallow_populate_pgd(unsigned long vaddr, unsigned
+> >>>> long end)
+> >>>> +{
+> >>>> +???????????? unsigned long next;
+> >>>> +???????????? void *p;
+> >>>> +???????????? pgd_t *pgd_k = pgd_offset_k(vaddr);
+> >>>> +
+> >>>> +???????????? do {
+> >>>> +???????????????????????????? next = pgd_addr_end(vaddr, end);
+> >>>> +???????????????????????????? if (pgd_page_vaddr(*pgd_k) == (unsigned
+> >>>> long)lm_alias(kasan_early_shadow_pgd_next)) {
+> >>>> +???????????????????????????????????????????? p = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+> >>>> +???????????????????????????????????????????? set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)),
+> >>>> PAGE_TABLE));
+> >>>> +???????????????????????????? }
+> >>>> +???????????? } while (pgd_k++, vaddr = next, vaddr != end);
+> >>>> +}
+> >>>> +
+> >>>
+> >>> This way of going through the page table seems to be largely used across
+> >>> the kernel (cf KASAN population functions of arm64/x86) so I do think
+> >>> this patch brings value to Nylon and Nick's patch.
+> >>>
+> >>> I can propose a real patch if you agree and I'll add a co-developed by
+> >>> Nylon/Nick since this only 'improves' theirs.
+> >>>
+> >>> Thanks,
+> >>>
+> >>> Alex
+> >>>
+> >> I agree with your proposal, but when I try your patch that it dosen't 
+> >> work
+> >> because `kasan_early_shadow_pgd_next` function wasn't define.
+> > 
+> > Oops, I messed up my rebase, please replace 
+> > 'kasan_early_shadow_pgd_next' with 'kasan_early_shadow_pmd'.
+> > 
+> > Thank you for your feeback,
+> > 
+> > Alex
+> > 
+> 
+> Did you have time to test the above fix ? It would be nice to replace 
+> your current patch with the above solution before it gets merged for 
+> 5.12, I will propose something tomorrow, feel free to review and test :)
+> 
+> Thanks again,
+> 
+> Alex
+> 
+Today I follow your fix in our platform, it's workable.
 
-Gerd, Zack: For virtual hw like virtio-gpu or vmwgfx that does
-one-shot upload and damage tracking, what do you think is the best way
-to capture crc for validation? Assuming that's even on the plans
-anywhere ...
-
-Ideally it'd be a crc that the host side captures, so that we really
-have end-to-end validation, including the damage uploads and all that.
-
-For vkms we're going for now with one-shot crc generation after each
-atomic flip (or DIRTYFB ioctl call). Will need a pile of igt changes,
-but seems like the most fitting model.
-Other option would be that we'd wire up something on the kernel side
-that generates a crc on-demand every time igt reads a new crc value
-(maybe with some rate limiting). But that's not really how virtual hw
-works when everything is pushed explicitly to the host side.
-
-Thoughts?
-
-> This patch has been tested with the igt tests, kms_writeback, kms_atomic,
-> kms_lease, kms_flip, kms_pipe_get_crc and preserves results except for
-> subtests related to crc reads and skips tests that rely on vertical
-> blanking. This patch must be tested after incorporating the
-> igt-tests patch: https://lists.freedesktop.org/archives/igt-dev/2021-February/029355.html .
->
-> The patch is based on Rodrigo Siqueira's
-> patch(https://patchwork.freedesktop.org/patch/316851/?series=48469&rev=3)
-> and the ensuing review.
->
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-
-I think the logic in the patch looks good, some comments below about polishing.
--Daniel
-
-> ---
->  drivers/gpu/drm/vkms/vkms_composer.c | 46 ++++++++++++++++++++++++++++
->  drivers/gpu/drm/vkms/vkms_crtc.c     | 17 ++++++++--
->  drivers/gpu/drm/vkms/vkms_drv.c      | 18 ++++++++---
->  drivers/gpu/drm/vkms/vkms_drv.h      |  2 ++
->  4 files changed, 75 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-> index 66c6842d70db..7a8aaf5c5555 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -247,6 +247,52 @@ void vkms_composer_worker(struct work_struct *work)
->                 drm_crtc_add_crc_entry(crtc, true, frame_start++, &crc32);
->  }
->
-> +void vkms_crtc_composer(struct vkms_crtc_state *crtc_state)
-> +{
-> +       struct drm_crtc *crtc = crtc_state->base.crtc;
-> +       struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
-> +       struct vkms_composer *primary_composer = NULL;
-> +       struct vkms_composer *cursor_composer = NULL;
-> +       void *vaddr_out = NULL;
-> +       u32 crc32 = 0;
-> +       int ret;
-> +       bool wb_pending;
-> +
-> +       wb_pending = crtc_state->wb_pending;
-> +
-> +       if (crtc_state->num_active_planes >= 1)
-> +               primary_composer = crtc_state->active_planes[0]->composer;
-> +
-> +       if (crtc_state->num_active_planes == 2)
-> +               cursor_composer = crtc_state->active_planes[1]->composer;
-> +
-> +       if (!primary_composer)
-> +               return;
-> +
-> +       if (wb_pending)
-> +               vaddr_out = crtc_state->active_writeback;
-> +
-> +       ret = compose_planes(&vaddr_out, primary_composer, cursor_composer);
-> +       if (ret) {
-> +               if (ret == -EINVAL && !wb_pending)
-> +                       kfree(vaddr_out);
-> +               return;
-> +       }
-> +
-> +       crc32 = compute_crc(vaddr_out, primary_composer);
-> +
-> +       if (wb_pending) {
-> +               drm_writeback_signal_completion(&out->wb_connector, 0);
-> +               spin_lock_irq(&out->composer_lock);
-> +               crtc_state->wb_pending = false;
-> +               spin_unlock_irq(&out->composer_lock);
-> +       } else {
-> +               kfree(vaddr_out);
-> +       }
-> +
-> +       drm_crtc_add_crc_entry(crtc, true, 0, &crc32);
-> +}
-
-This duplicates code that we also have vkms_composer_worker(). It
-would be good to if we can share this code (either by
-composer_worker() call this function you add here, or by having a
-composer_common function which does all the common parts.
-
-I also realized that we have a problem now with the kzalloc in
-compose_planes, that would need to be fixed up somehow. But can be
-done in a follow up patch, and it's a bit tricky to explain exactly
-why, but short summary is: We're not allowed to allocate memory from
-the crtc commit functions, only from crtc_check callback.
-
-Also since this is run while you hold a spinlock the kernel should
-complain into dmesg. At least if the basic debug stuff is all enabled,
-CONFIG_DEBUG_ATOMIC_SLEEP is the Kconfig option you need. Would be
-good to check that.
-
-> +
->  static const char * const pipe_crc_sources[] = {"auto"};
->
->  const char *const *vkms_get_crc_sources(struct drm_crtc *crtc,
-> diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-> index 6164349cdf11..38de791a4882 100644
-> --- a/drivers/gpu/drm/vkms/vkms_crtc.c
-> +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-> @@ -224,13 +224,19 @@ static int vkms_crtc_atomic_check(struct drm_crtc *crtc,
->  static void vkms_crtc_atomic_enable(struct drm_crtc *crtc,
->                                     struct drm_atomic_state *state)
->  {
-> -       drm_crtc_vblank_on(crtc);
-> +       struct vkms_device *vkmsdev = drm_device_to_vkms_device(crtc->dev);
-> +
-> +       if (!vkmsdev->config->virtual_hw)
-> +               drm_crtc_vblank_on(crtc);
->  }
->
->  static void vkms_crtc_atomic_disable(struct drm_crtc *crtc,
->                                      struct drm_atomic_state *state)
->  {
-> -       drm_crtc_vblank_off(crtc);
-> +       struct vkms_device *vkmsdev = drm_device_to_vkms_device(crtc->dev);
-> +
-> +       if (!vkmsdev->config->virtual_hw)
-> +               drm_crtc_vblank_off(crtc);
->  }
->
->  static void vkms_crtc_atomic_begin(struct drm_crtc *crtc,
-> @@ -248,8 +254,13 @@ static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
->                                    struct drm_atomic_state *state)
->  {
->         struct vkms_output *vkms_output = drm_crtc_to_vkms_output(crtc);
-> +       struct vkms_crtc_state *vkms_state = to_vkms_crtc_state(crtc->state);
-> +       struct vkms_device *vkmsdev = drm_device_to_vkms_device(crtc->dev);
-> +
-> +       if (vkmsdev->config->virtual_hw)
-> +               vkms_crtc_composer(vkms_state);
-
-We're holding vkms_output->lock spinlock while doing this fairly
-expensive computation, that's not good. And this spinlock was only
-there to protect against concurrent access from the vblank hrtimer, so
-we don't really need this I think, and can make it conditional on
-!virtual_hw too.
-
-At that point all our crtc functions have conditions for virtual hw
-(except atomic_check), so I think it'd be cleaner to duplicate the
-functions into vkms_vblank_crtc_* and vkms_virtual_crtc, with two
-struct drm_crtc_helper_funcs and we do the if once when we set up the
-crtc in vkms_crtc_init.
-
->
-> -       if (crtc->state->event) {
-> +       if (crtc->state->event && !vkmsdev->config->virtual_hw) {
->                 spin_lock(&crtc->dev->event_lock);
->
->                 if (drm_crtc_vblank_get(crtc) != 0)
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-> index 2173b82606f6..945c4495d62a 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.c
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
-> @@ -44,6 +44,11 @@ static bool enable_writeback = true;
->  module_param_named(enable_writeback, enable_writeback, bool, 0444);
->  MODULE_PARM_DESC(enable_writeback, "Enable/Disable writeback connector support");
->
-> +static bool enable_virtual_hw = false;
-> +module_param_named(enable_virtual_hw, enable_virtual_hw, bool, 0444);
-> +MODULE_PARM_DESC(enable_virtual_hw, "Enable/Disable virtual hardware mode(virtual \
-> +hardware mode disables vblank interrupts)");
-> +
->  DEFINE_DRM_GEM_FOPS(vkms_driver_fops);
->
->  static void vkms_release(struct drm_device *dev)
-> @@ -159,12 +164,14 @@ static int vkms_create(struct vkms_config *config)
->                 goto out_devres;
->         }
->
-> -       vkms_device->drm.irq_enabled = true;
-> +       vkms_device->drm.irq_enabled = !vkms_device->config->virtual_hw;
->
-> -       ret = drm_vblank_init(&vkms_device->drm, 1);
-> -       if (ret) {
-> -               DRM_ERROR("Failed to vblank\n");
-> -               goto out_devres;
-> +       if (!vkms_device->config->virtual_hw) {
-> +               ret = drm_vblank_init(&vkms_device->drm, 1);
-> +               if (ret) {
-> +                       DRM_ERROR("Failed to vblank\n");
-> +                       goto out_devres;
-> +               }
->         }
->
->         ret = vkms_modeset_init(vkms_device);
-> @@ -198,6 +205,7 @@ static int __init vkms_init(void)
->
->         config->cursor = enable_cursor;
->         config->writeback = enable_writeback;
-> +       config->virtual_hw = enable_virtual_hw;
->
->         return vkms_create(config);
->  }
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-> index 35540c7c4416..d4a45518639c 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -85,6 +85,7 @@ struct vkms_device;
->  struct vkms_config {
->         bool writeback;
->         bool cursor;
-> +       bool virtual_hw;
->         /* only set when instantiated */
->         struct vkms_device *dev;
->  };
-> @@ -127,6 +128,7 @@ int vkms_verify_crc_source(struct drm_crtc *crtc, const char *source_name,
->  /* Composer Support */
->  void vkms_composer_worker(struct work_struct *work);
->  void vkms_set_composer(struct vkms_output *out, bool enabled);
-> +void vkms_crtc_composer(struct vkms_crtc_state *crtc_state);
->
->  /* Writeback */
->  int vkms_enable_writeback_connector(struct vkms_device *vkmsdev);
-> --
-> 2.25.1
->
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thank you for your fix.
+> >>
+> >> Do you have complete patch? or just I missed some content?
+> >>>> +void __init kasan_shallow_populate(void *start, void *end)
+> >>>> +{
+> >>>> +???????????? unsigned long vaddr = (unsigned long)start & PAGE_MASK;
+> >>>> +???????????? unsigned long vend = PAGE_ALIGN((unsigned long)end);
+> >>>> +
+> >>>> +???????????? kasan_shallow_populate_pgd(vaddr, vend);
+> >>>> +
+> >>>> +???????????? local_flush_tlb_all();
+> >>>> +}
+> >>>> +
+> >>>> ?? ??void __init kasan_init(void)
+> >>>> ?? ??{
+> >>>> ?? ?????????????? phys_addr_t _start, _end;
+> >>>> @@ -206,7 +231,15 @@ void __init kasan_init(void)
+> >>>> ?? ???????????????? */
+> >>>> ?? ?????????????? kasan_populate_early_shadow((void *)KASAN_SHADOW_START,
+> >>>> ?? ?????????????????????????????????????????????????????????????????????? (void 
+> >>>> *)kasan_mem_to_shadow((void *)
+> >>>> - VMALLOC_END));
+> >>>> + VMEMMAP_END));
+> >>>> +???????????? if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
+> >>>> +???????????????????????????? kasan_shallow_populate(
+> >>>> +???????????????????????????????????????????? (void *)kasan_mem_to_shadow((void 
+> >>>> *)VMALLOC_START),
+> >>>> +???????????????????????????????????????????? (void *)kasan_mem_to_shadow((void 
+> >>>> *)VMALLOC_END));
+> >>>> +???????????? else
+> >>>> +???????????????????????????? kasan_populate_early_shadow(
+> >>>> +???????????????????????????????????????????? (void *)kasan_mem_to_shadow((void 
+> >>>> *)VMALLOC_START),
+> >>>> +???????????????????????????????????????????? (void *)kasan_mem_to_shadow((void 
+> >>>> *)VMALLOC_END));
+> >>>>
+> >>>>
+> >>>> ?? ?????????????? /* Populate the linear mapping */
+> >>>> ?? ?????????????? for_each_mem_range(i, &_start, &_end) {
+> >>
+> >> _______________________________________________
+> >> linux-riscv mailing list
+> >> linux-riscv@lists.infradead.org
+> >> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >>
