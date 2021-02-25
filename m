@@ -2,84 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697F63250F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 940303250FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbhBYNtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 08:49:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232398AbhBYNtc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:49:32 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8CEC061786;
-        Thu, 25 Feb 2021 05:49:17 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id k2so451139ioh.5;
-        Thu, 25 Feb 2021 05:49:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UJpMiDeR5e81SLjna5kQPFiv7DjhNpdh1mQ36CWKCU0=;
-        b=d8JGs98H7pp/gCDG2m+l2j61WMZR/DLTYaw8mK4AwTDLq+eKyIAWdpZ78cbG60IOua
-         fpN7QE/n/9uw8YEVnowSAaCgeABpWXq1Tz0Qe+QYOeTBtNxgxDrnk29KYpHc5Ohu75nz
-         KCkH94n87xIv2kn7q4ePVkpGkRNUVENNSlfpqPGMW3RKPt/2um16vnR2ZLFOFiYpmK9d
-         Zqmw1n6vVPPyy39AvLgQCldBnEHMbl8GVZUOxORVNes11BhYR/FizZ+xO5fPJsLjewpO
-         2LuPN1TH6ZFzqevmfP6QrDgxlsy1npQxke4Qi3MvVV74Dif+u3fy83JdRqWYe0xz+BdB
-         AH7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UJpMiDeR5e81SLjna5kQPFiv7DjhNpdh1mQ36CWKCU0=;
-        b=Kr1QtDrWt+tCC3cL4dObXcliy68a6u1p+Qo32LW0LqFq2J6UYvYPrQ7Ll4WnDP6ud/
-         2Svb0m9WB+CJM6HiFYgGosX5YNudkcLhIyGKe8gONlBZGdFHD65nQ6BuKdqdGSQ1WtYX
-         jFhIO4nbH+1B+sVt124LD3y9lKn4ls97C6fwrcm41wQawFP0SPgY9G5/kXDoeCwnFLAz
-         z0mC4QV7tnwm6Va/52aNXOoPCB7/9v1adHVxjXTJTl8lUJ1CSHVm9UxLswk3S6MvedZb
-         rGycKjKOHSIXb6HYcjzfmWk2ZkpfkMgOtvaL1QFGqYHli+7VmMBb5TH4CaTsH0VT+JyV
-         +qUw==
-X-Gm-Message-State: AOAM530v9K97b8aHEGxTjK3Rbn8qcapncs89KpPLvcRbZZOrcyPQLWqx
-        6EUfVWaFaUBPOijQUq28UZqrwNutoqL71gIgDA03lL7S528=
-X-Google-Smtp-Source: ABdhPJwVRyG8wV2EWyGt2tFgntkYqMntju34OBdoXuzPxgMgogZZfkVIJDICRDHr95orvYU2Wiuh1tkQWVWTaXX0kr4=
-X-Received: by 2002:a5e:dd46:: with SMTP id u6mr2744670iop.73.1614260957176;
- Thu, 25 Feb 2021 05:49:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20210220065654.25598-1-heiko.thiery@gmail.com>
- <20210222190051.40fdc3e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAEyMn7ZM7_pPor0S=dMGbmnp0hmZMrpquGqq4VNu-ixSPp+0UQ@mail.gmail.com>
- <20210223142726.GA4711@hoboy.vegasvil.org> <CAEyMn7Za9z9TUdhb8egf8mOFJyA3hgqX5fwLED8HDKw8Smyocg@mail.gmail.com>
- <20210223161136.GA5894@hoboy.vegasvil.org>
-In-Reply-To: <20210223161136.GA5894@hoboy.vegasvil.org>
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-Date:   Thu, 25 Feb 2021 14:49:04 +0100
-Message-ID: <CAEyMn7YwvZD6T=oHp2AcmsA+R6Ho2SCYYkt2NcK8hZNUT7_TSQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] net: fec: ptp: avoid register access when ipg clock
- is disabled
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Fugang Duan <fugang.duan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231815AbhBYNyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 08:54:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229961AbhBYNym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 08:54:42 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3AD2D64F03;
+        Thu, 25 Feb 2021 13:54:00 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lFH5Z-00FrtX-Ro; Thu, 25 Feb 2021 13:53:58 +0000
+Date:   Thu, 25 Feb 2021 13:53:56 +0000
+Message-ID: <87zgzsz217.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Max Uvarov <muvarov@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm64: cpufeatures: Fix handling of CONFIG_CMDLINE for idreg overrides
+In-Reply-To: <20210225125921.13147-2-will@kernel.org>
+References: <20210225125921.13147-1-will@kernel.org>
+        <20210225125921.13147-2-will@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: will@kernel.org, linux-kernel@vger.kernel.org, muvarov@gmail.com, robh@kernel.org, ardb@kernel.org, dianders@chromium.org, tyhicks@linux.microsoft.com, frowand.list@gmail.com, arnd@arndb.de, palmer@dabbelt.com, gregkh@linuxfoundation.org, catalin.marinas@arm.com, kernel-team@android.com, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+On Thu, 25 Feb 2021 12:59:20 +0000,
+Will Deacon <will@kernel.org> wrote:
+> 
+> The built-in kernel commandline (CONFIG_CMDLINE) can be configured in
+> three different ways:
+> 
+>   1. CMDLINE_FORCE: Use CONFIG_CMDLINE instead of any bootloader args
+>   2. CMDLINE_EXTEND: Append the bootloader args to CONFIG_CMDLINE
+>   3. CMDLINE_FROM_BOOTLOADER: Only use CONFIG_CMDLINE if there aren't
+>      any bootloader args.
+> 
+> The early cmdline parsing to detect idreg overrides gets (2) and (3)
+> slightly wrong: in the case of (2) the bootloader args are parsed first
+> and in the case of (3) the CMDLINE is always parsed.
+> 
+> Fix these issues by moving the bootargs parsing out into a helper
+> function and following the same logic as that used by the EFI stub.
+> 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Fixes: 33200303553d ("arm64: cpufeature: Add an early command-line cpufeature override facility")
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  arch/arm64/kernel/idreg-override.c | 44 +++++++++++++++++-------------
+>  1 file changed, 25 insertions(+), 19 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
+> index dffb16682330..cc071712c6f9 100644
+> --- a/arch/arm64/kernel/idreg-override.c
+> +++ b/arch/arm64/kernel/idreg-override.c
+> @@ -163,33 +163,39 @@ static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
+>  	} while (1);
+>  }
+>  
+> -static __init void parse_cmdline(void)
+> +static __init const u8 *get_bootargs_cmdline(void)
+>  {
+> -	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE)) {
+> -		const u8 *prop;
+> -		void *fdt;
+> -		int node;
+> +	const u8 *prop;
+> +	void *fdt;
+> +	int node;
+>  
+> -		fdt = get_early_fdt_ptr();
+> -		if (!fdt)
+> -			goto out;
+> +	fdt = get_early_fdt_ptr();
+> +	if (!fdt)
+> +		return NULL;
+>  
+> -		node = fdt_path_offset(fdt, "/chosen");
+> -		if (node < 0)
+> -			goto out;
+> +	node = fdt_path_offset(fdt, "/chosen");
+> +	if (node < 0)
+> +		return NULL;
+>  
+> -		prop = fdt_getprop(fdt, node, "bootargs", NULL);
+> -		if (!prop)
+> -			goto out;
+> +	prop = fdt_getprop(fdt, node, "bootargs", NULL);
+> +	if (!prop)
+> +		return NULL;
+>  
+> -		__parse_cmdline(prop, true);
+> +	return strlen(prop) ? prop : NULL;
+> +}
+>  
+> -		if (!IS_ENABLED(CONFIG_CMDLINE_EXTEND))
+> -			return;
+> +static __init void parse_cmdline(void)
+> +{
+> +	const u8 *prop = get_bootargs_cmdline();
+> +
+> +	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) ||
+> +	    IS_ENABLED(CONFIG_CMDLINE_FORCE) ||
+> +	    !prop) {
 
-Am Di., 23. Feb. 2021 um 17:11 Uhr schrieb Richard Cochran
-<richardcochran@gmail.com>:
->
-> On Tue, Feb 23, 2021 at 04:04:16PM +0100, Heiko Thiery wrote:
-> > It is not only the PHC clock that stops. Rather, it is the entire
-> > ethernet building block in the SOC that is disabled, including the
-> > PHC.
->
-> Sure, but why does the driver do that?
+The logic hurts, but I think I grok it now. The last term is actually
+a reduction of
 
-That is a good question. I tried to understand the clock
-infrastructure of the imx8 but it looks quite complicated. I cannot
-find the point where all the stuff is disabled.
+	(IS_ENABLED(CONFIG_CMDLINE_FROM_BOOTLOADER) && !prop)
+
+and we know for sure that if none of the other two terms are true,
+then CMDLINE_FROM_BOOTLOADER *must* be enabled.
+
+> +		__parse_cmdline(CONFIG_CMDLINE, true);
+>  	}
+>  
+> -out:
+> -	__parse_cmdline(CONFIG_CMDLINE, true);
+> +	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && prop)
+> +		__parse_cmdline(prop, true);
+>  }
+>  
+>  /* Keep checkers quiet */
+
+I don't think we need to backport anything to stable for the nokaslr
+handling, do we?
+
+Otherwise,
+
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+
+Thanks,
+
+	M.
 
 -- 
-Heiko
+Without deviation from the norm, progress is not possible.
