@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449D4324BD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E9F324BDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 09:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235543AbhBYIPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 03:15:18 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:55431 "EHLO z11.mailgun.us"
+        id S235621AbhBYIPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 03:15:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230142AbhBYIO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 03:14:56 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614240867; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=mjpCUN75mxBIkE9oG7YOQEDH03kOxOJ1QPxbXjijrOo=; b=VcRCGKnSXsrejslxxJgbUOHsT51yeJpe4LVl3DbQBW19qrKyPrbPd6D4qepvGMm2a5Acvh8H
- 04MwSmoJMaLgNSpuVHeiP/1h9V+PovU5/LGLSCr024dRg1wlGQZ+VIaq+niJGleQKBmZzgDs
- Yd3dIrOIzGbuyfhioXAF786DGzg=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60375c47669548ff7a814e6f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Feb 2021 08:13:59
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D0A1CC433C6; Thu, 25 Feb 2021 08:13:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A05B6C433CA;
-        Thu, 25 Feb 2021 08:13:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A05B6C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        id S230142AbhBYIP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 03:15:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DEEE64E4D;
+        Thu, 25 Feb 2021 08:14:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614240885;
+        bh=FIIQYrMd3eyKYvYbHiSlBA2eMZvZBmVNWEKSpp/O1YA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nc4LCXLGzTOqXNJY/X9CKnP/p2uTNpjpMfz2ZGQuSo/DYbhTyBwVzNBl9hEVVIei5
+         Ex4h6TN1N47xWpM6hOZQ9iRcgu44jKs1v8te9EDCl6gtzhNiv5NOj0LzC5XOyegIut
+         ZUx4v47kh1cXFyFvrYTJFE+OK7eGSX012P0v+xnk=
+Date:   Thu, 25 Feb 2021 09:14:42 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
         Luca Coelho <luciano.coelho@intel.com>,
-        linux-wireless <linux-wireless@vger.kernel.org>
-Subject: Re: linux-next: Tree for Feb 23 [drivers/net/wireless/intel/iwlwifi/iwlwifi.ko]
-References: <20210223173539.049dd40d@canb.auug.org.au>
-        <a3f440a5-2178-ffd8-a043-25b18fa42f0f@infradead.org>
-Date:   Thu, 25 Feb 2021 10:13:50 +0200
-In-Reply-To: <a3f440a5-2178-ffd8-a043-25b18fa42f0f@infradead.org> (Randy
-        Dunlap's message of "Tue, 23 Feb 2021 11:52:13 -0800")
-Message-ID: <87r1l4ef9d.fsf@tynnyri.adurom.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.4 04/35] iwlwifi: pcie: add a NULL check in
+ iwl_pcie_txq_unmap
+Message-ID: <YDdccs3OacohZgFr@kroah.com>
+References: <20210222121013.581198717@linuxfoundation.org>
+ <20210222121017.933649049@linuxfoundation.org>
+ <20210225060446.auoymjxg5cuzlism@toshiba.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225060446.auoymjxg5cuzlism@toshiba.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> writes:
+On Thu, Feb 25, 2021 at 03:04:46PM +0900, Nobuhiro Iwamatsu wrote:
+> Hi,
+> 
+> Sorry for the report after the release.
+> 
+> On Mon, Feb 22, 2021 at 01:36:00PM +0100, Greg Kroah-Hartman wrote:
+> > From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+> > 
+> > [ Upstream commit 98c7d21f957b10d9c07a3a60a3a5a8f326a197e5 ]
+> > 
+> > I hit a NULL pointer exception in this function when the
+> > init flow went really bad.
+> > 
+> > Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+> > Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+> > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> > Link: https://lore.kernel.org/r/iwlwifi.20210115130252.2e8da9f2c132.I0234d4b8ddaf70aaa5028a20c863255e05bc1f84@changeid
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > ---
+> >  drivers/net/wireless/iwlwifi/pcie/tx.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/drivers/net/wireless/iwlwifi/pcie/tx.c b/drivers/net/wireless/iwlwifi/pcie/tx.c
+> > index 8dfe6b2bc7031..cb03c2855019b 100644
+> > --- a/drivers/net/wireless/iwlwifi/pcie/tx.c
+> > +++ b/drivers/net/wireless/iwlwifi/pcie/tx.c
+> > @@ -585,6 +585,11 @@ static void iwl_pcie_txq_unmap(struct iwl_trans *trans, int txq_id)
+> >  	struct iwl_txq *txq = &trans_pcie->txq[txq_id];
+> >  	struct iwl_queue *q = &txq->q;
+> >  
+> > +	if (!txq) {
+> > +		IWL_ERR(trans, "Trying to free a queue that wasn't allocated?\n");
+> > +		return;
+> > +	}
+> > +
+> 
+> I think that this fix is not enough.
+> If txq is NULL, an error will occur with "struct iwl_queue * q = & txq->q;".
+> The following changes are required.
 
-> On 2/22/21 10:35 PM, Stephen Rothwell wrote:
->> Hi all,
->> 
->> Please do not add any changes destined for v5.13 to your linux-next
->> included branches until after v5.12-rc1 has been released.
->> 
->> Changes since 20210222:
->> 
->
-> Still seeing this build error on x86_64:
->
-> ERROR: modpost: "iwl_so_trans_cfg" [drivers/net/wireless/intel/iwlwifi/iwlwifi.ko] undefined!
->
->
-> Full randconfig file is attached.
+Is this a 4.4-only thing, or is this issue also in Linus's tree as well?
+If Linus's tree, please submit this as a normal patch so we can apply it
+there first.
 
-Still? I don't recall seeing this report before, but maybe I have missed
-it. Anyway, I sent a fix but it would be great if you can test it:
+thanks,
 
-https://patchwork.kernel.org/project/linux-wireless/patch/1614236661-20274-1-git-send-email-kvalo@codeaurora.org/
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+greg k-h
