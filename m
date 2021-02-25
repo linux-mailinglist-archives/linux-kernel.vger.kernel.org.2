@@ -2,65 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6899E32548D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63BD32548A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232770AbhBYRbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 12:31:20 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:50547 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbhBYRbS (ORCPT
+        id S232164AbhBYRaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 12:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhBYRae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:31:18 -0500
-Received: from localhost ([109.247.224.130]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MkYLW-1lg9wq2PDq-00m3Ry; Thu, 25 Feb 2021 18:28:42 +0100
-Date:   Thu, 25 Feb 2021 18:28:41 +0100
-From:   Heinz Diehl <htd+ml@fritha.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     tiwai@suse.de, lpoetter@redhat.com
-Subject: Re: [BISECTED] Kernel 5.11.x breaks pulseaudio
-Message-ID: <YDfeSZjdNKFcNKN8@fritha.org>
-References: <YDfYAYCaC9KDc1F0@fritha.org>
- <s5him6gnkdu.wl-tiwai@suse.de>
+        Thu, 25 Feb 2021 12:30:34 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BAEC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 09:29:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ST/Haa8ApvfQZwyll9UagFEHhmOAnskHO/715jxkpNk=; b=ZC8moU0YItGDXHkrjCixgQaLXa
+        2rGw0VX+j7Z50DtXCftHeBU+hPA5sLGzP3ylpIPrs/vzPRBg9OjMQTHMcKGgqHbp96A1YsKsUrLDT
+        Arud/lSLTvEzdUXGgcvyJ0GweDIewlMLI2R+lAf6wUeSpCXbgcR2zaqVaYCWB0M/dAOZx+HQQMPt2
+        S17mF/oCoB8wlCRz9J5KyB524QqkOnWCcQfs0TJdpkVpDtNyzhENkc47asE/uTHEoqL0MBeDICL+l
+        2zRpu0W3PYlffcioRHHIqaBzBQzole06GyF462JC/TRislIAQyfjZEFD9W9D26bqM5yAzgr3IeMf3
+        7+R07vVw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lFKSR-0003JV-Ke; Thu, 25 Feb 2021 17:29:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 045DD3006D0;
+        Thu, 25 Feb 2021 18:29:43 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B07C92D944B8C; Thu, 25 Feb 2021 18:29:43 +0100 (CET)
+Date:   Thu, 25 Feb 2021 18:29:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     vincent.donnefort@arm.com
+Cc:     mingo@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        qperret@google.com, patrick.bellasi@matbug.net,
+        valentin.schneider@arm.com
+Subject: Re: [PATCH v2 0/2] Fix task utilization accountability for EAS
+Message-ID: <YDfehwwkMQUS3lAZ@hirez.programming.kicks-ass.net>
+References: <20210225083612.1113823-1-vincent.donnefort@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <s5him6gnkdu.wl-tiwai@suse.de>
-X-Accept-Language: no,dk,se,en,de
-Organization: private site
-OpenPGP: id=60F4A92C; url=http://www.fritha.org/htd.asc;
- preference=signencrypt
-User-Agent: Mutt/1.14.7+158 (b0ccf259) (2020-09-25)
-X-Provags-ID: V03:K1:n0kF3Z86RfE3OP5/qHaL2WMm0u0k36i6rJT8fb4zDI5PG9RyY7F
- KvXtrBTsmIcBm7lQ4xWTy1hSOZxxRnEIB99/jKfgLZPE0aBX0t/c44jMgc0Q+CWiu3RWkix
- 2G1FsMz004874CiiQ/We7f1UXgK/H3jJRQ0VPh+tqf549oE7jrhnU3yyd+cyEonNra4Xf3L
- 20ucASohb09/8JvxqaYog==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oVyuLM1ygsU=:if5Q38qqRwuGEUpz8NAN6c
- 0DlBWr8M062/CRzbWzjWBaUacOCIJRm1AfT5qwWCsmdZueuVkMMN1NwgywE2MwgpkJ3gESjsx
- 96XzhCA7MllIPU6PkkG09gTC3vs6fw15ZWlpp+1gNzP2t6AIMHCxfav6veZqI+bh/eJB7TjEM
- t5VPoEEEkAl3Y7biIJP5QaYzTSvhCF5LpaYSgeZFgsgkrFPmFqTMckXTiu1Azt0Pc2ypuuW6n
- F5ywtO26oOIc/CvYwQIupDUK8juqhWiVMqo6DAoJYg5cHz3kJmotTCGFRY64S7/aABXW5pMYG
- pk+UgUq8CxvCiCJWfSD5qdESuH3wcm3ehz68OE4ENNLvcXHE2fqGcvfk9kcAYyGNBqRC3BPc/
- Pz6T/1L0uP16+fyVe5cwTzU8oYQNGgLhZErDlSd0YrpeLNqS4ytV+zB4Qxy1c
+In-Reply-To: <20210225083612.1113823-1-vincent.donnefort@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.02.2021, Takashi Iwai wrote:
+On Thu, Feb 25, 2021 at 08:36:10AM +0000, vincent.donnefort@arm.com wrote:
+> From: Vincent Donnefort <vincent.donnefort@arm.com>
+> 
+> Changelog since v1:
+>   - Fix the issue in compute_energy(), as a change in cpu_util_next() would
+>     break the OPP selection estimation.
+>   - Separate patch for lsub_positive usage in cpu_util_next()
+> 
+> Vincent Donnefort (2):
+>   sched/fair: Fix task utilization accountability in compute_energy()
+>   sched/fair: use lsub_positive in cpu_util_next()
+> 
+>  kernel/sched/fair.c | 26 +++++++++++++++++++++-----
+>  1 file changed, 21 insertions(+), 5 deletions(-)
 
-> It's no regression but the right behavior.  This indicates that you're
-> trying a stream in 44.1kHz in one side of the full duplex stream while
-> 48kHz in another rate, and this cannot work properly with the implicit
-> feedback devices.
-[....]
-
-Well, I'm by no means an audio or recording professional, but if what you describe
-is the correct behavior, it means that absolutely all audio files played on
-my machine always will be resampled to 44.1kHz. Youtube from native 48kHz,
-highres audio 24/96, virtually anything I play. Could that be correct? And
-what can I do to be able to listen to highres audio again?
-
-Thanks,
- Heinz
+Thanks!
