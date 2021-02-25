@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACAD3256AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 340893256B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbhBYT2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:28:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60660 "EHLO
+        id S234055AbhBYT3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:29:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbhBYTZn (ORCPT
+        with ESMTP id S233880AbhBYTZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:25:43 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF35C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:25:02 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id f8so3752478plg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:25:02 -0800 (PST)
+        Thu, 25 Feb 2021 14:25:54 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167B9C06178C
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:25:08 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id f8so3752609plg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:25:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uZTtKUM3ywIyFpIjcIgukbnF3keZtJpSlDzhBl/MLhA=;
-        b=JZvW3UwGJ2b4wGpTvl5DULBTFsVEMTGyBwd4kawjDGipjTGpVn81s5qjcgvhuC/VhF
-         EsDuBLvbr2tSiPLOj3O0iP96I+ez1Ji0dAjTaLDDJUr00lOX8k8WWf2Ls2eO4DNhldga
-         BvLLrkeVCbAUGq7YDDDa3gHf2AVCEIxxrsDPY=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=282A101crg/XNOHEhfuzISYb0UTcmSFl9PM6BPqD/Z8=;
+        b=WgjjHJo+/xCDXem9ilfyKzOlSVT7Lj+R6CgsAIARDwhFxMTm7LAO4zgCmyi0RHsp9A
+         nJcVURkzNWqJCXq2kzj9ECi2UajOPZlAZV3pqxemeG9/fxK6ZOPqtmcclKAJaxxL7UTv
+         uFKZF4C75w8TRFjeRuIBQ88MhSGuI4O7td8IE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uZTtKUM3ywIyFpIjcIgukbnF3keZtJpSlDzhBl/MLhA=;
-        b=tkwDtQ/7Ppow3ahkTxDTR+psLH94oNisaH1kdKJydBwfFeBxAvNdX7kJis38B0FVku
-         IA2z+6mI7uDy9eyGzsPiOxVjkG6J1+tRMehNBeIYAynsN4+1niSgj5+SVfLTeGtsm5tN
-         mlTaxD04+KVy7RJh1hId8ehtX+9n/sCVi6GNDZSLLAwpmfYKV5Uy9pl9RiV+fxmH+4i+
-         hfrJRtkIZSkvAoqpj8zjwjpiN19BaC61nqhjCF0xxCAMwO1D8Av0V6KXumDE6QjK5ZPZ
-         ak+TzO+qk9UBwboZC0JA+m16YjO5XZw545BX/UC5Qqz8sXKf0uIRGXX9R5lNkOE39HjY
-         SafA==
-X-Gm-Message-State: AOAM533Q2070n0KxDEr1Zfrbut8ehrJQEHYn0irxeh7m3FCG7208dKp7
-        ny6kMnZPHBdAnVAwjWeNgogpiQ==
-X-Google-Smtp-Source: ABdhPJwVDk5EdFhPslHl1zSJjacq3zIWPjAV0NC0NKJryJoi1FWfSSIfwd3CEKhHrc9CiFKQhEstEg==
-X-Received: by 2002:a17:90b:1808:: with SMTP id lw8mr4578361pjb.203.1614281102335;
-        Thu, 25 Feb 2021 11:25:02 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=282A101crg/XNOHEhfuzISYb0UTcmSFl9PM6BPqD/Z8=;
+        b=o1jxhBNkr7HOS7ycAd0tO9MI93XRvtj6xEIolkwqDh4zO7DsFkAaMzmWLs8a5TJrC4
+         iB7SYes1d/SS+sr8B87CgopisVSoLNYvKa1lZRjZmbhQFrZP7PApBSrqTY9z3mYkLMY7
+         x19+iIMpsewimyep81INxcaqfhHZYly6hiI6WShWuYuhfQak/Y4XQbspDK2U1RA9/BAX
+         bpO9s7qfYimD+RsrS3woFmag/QUA5asW0Y1A1X0PVrzlmA5QQN5hxLzgTOSAva9djGpV
+         QSDUwYn48I4LXmHUteWDBVBEEo9RwGH8YcoWOMF1cviYVBtgW5tN9pxQXahsFX930dY7
+         hhjg==
+X-Gm-Message-State: AOAM533PqlPZHcoJo7yI7xdiQRpka2iLRS2RedeUQX1Im5dZ4Z/Md+a5
+        53V5dPo1X6SzHd2BiCtqAs1dSbsWq8MRQA==
+X-Google-Smtp-Source: ABdhPJwT60+8zcLQO1DfCyY5AhL6itc/wXZ9fI87PCxGuHhOWjhoZa1f3zzQCKvS7PSbYRXsJxjtTQ==
+X-Received: by 2002:a17:902:a517:b029:de:79a7:48d9 with SMTP id s23-20020a170902a517b02900de79a748d9mr4386374plq.45.1614281107598;
+        Thu, 25 Feb 2021 11:25:07 -0800 (PST)
 Received: from ub-XPS-13-9350.domain.name ([103.161.30.220])
-        by smtp.gmail.com with ESMTPSA id c78sm7025787pfc.212.2021.02.25.11.24.57
+        by smtp.gmail.com with ESMTPSA id c78sm7025787pfc.212.2021.02.25.11.25.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 11:25:01 -0800 (PST)
+        Thu, 25 Feb 2021 11:25:07 -0800 (PST)
 From:   Jagan Teki <jagan@amarulasolutions.com>
 To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Li Yang <leoyang.li@nxp.com>,
@@ -56,46 +56,60 @@ Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-amarula@amarulasolutions.com,
         Jagan Teki <jagan@amarulasolutions.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH v4 0/5] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
-Date:   Fri, 26 Feb 2021 00:53:59 +0530
-Message-Id: <20210225192404.262453-1-jagan@amarulasolutions.com>
+        Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>
+Subject: [PATCH v4 1/5] dt-bindings: arm: fsl: Add Engicam i.Core MX8M Mini C.TOUCH 2.0
+Date:   Fri, 26 Feb 2021 00:54:00 +0530
+Message-Id: <20210225192404.262453-2-jagan@amarulasolutions.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210225192404.262453-1-jagan@amarulasolutions.com>
+References: <20210225192404.262453-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch series for Engicam i.Core MX8M Mini SOM and it's associated 
-carrier board dts(i) support.
+i.Core MX8M Mini is an EDIMM SoM based on NXP i.MX8M Mini from Engicam.
 
+C.TOUCH 2.0 is a general purpose carrier board with capacitive
+touch interface support.
+
+i.Core MX8M Mini needs to mount on top of this Carrier board for
+creating complete i.Core MX8M Mini C.TOUCH 2.0 board.
+
+Add bindings for it.
+
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
+---
 Changes for v4:
-- rebase on linux-next
-- fixed Krzysztof comments
+- collect ack's
 Changes for v3:
-- don't maintain common nodes and include it, if no feature diff
-- keep min/max regulator hoping
-- collect Krzysztof r-b
-- fix dt-bindings
+- add proper bindings
+Changes for v2:
+- updated commit message
 
-Jagan Teki (5):
-  dt-bindings: arm: fsl: Add Engicam i.Core MX8M Mini C.TOUCH 2.0
-  arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini SoM
-  arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini C.TOUCH 2.0
-  dt-bindings: arm: fsl: Add Engicam i.Core MX8M Mini EDIMM2.2 Starter Kit
-  arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini EDIMM2.2 Starter Kit
+ Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
- .../devicetree/bindings/arm/fsl.yaml          |   8 +
- arch/arm64/boot/dts/freescale/Makefile        |   2 +
- .../freescale/imx8mm-icore-mx8mm-ctouch2.dts  |  97 ++++++++
- .../freescale/imx8mm-icore-mx8mm-edimm2.2.dts |  97 ++++++++
- .../dts/freescale/imx8mm-icore-mx8mm.dtsi     | 232 ++++++++++++++++++
- 5 files changed, 436 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2.dts
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dts
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm.dtsi
-
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 297c87f45db8..949442d4f385 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -688,6 +688,12 @@ properties:
+               - variscite,var-som-mx8mm   # i.MX8MM Variscite VAR-SOM-MX8MM module
+           - const: fsl,imx8mm
+ 
++      - description: Engicam i.Core MX8M Mini SoM based boards
++        items:
++          - const: engicam,icore-mx8mm-ctouch2     # i.MX8MM Engicam i.Core MX8M Mini C.TOUCH 2.0
++          - const: engicam,icore-mx8mm             # i.MX8MM Engicam i.Core MX8M Mini SoM
++          - const: fsl,imx8mm
++
+       - description: Kontron BL i.MX8MM (N801X S) Board
+         items:
+           - const: kontron,imx8mm-n801x-s
 -- 
 2.25.1
 
