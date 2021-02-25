@@ -2,104 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCC4325773
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B360325776
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234335AbhBYURh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:17:37 -0500
-Received: from mga14.intel.com ([192.55.52.115]:38233 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234141AbhBYURP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:17:15 -0500
-IronPort-SDR: J/G7zmWtYflgRYjgqnZSyEiwBnDfMN/x95pe+eDjEOmydL5qrQbzAX/68Xr4jbIzBCTfXeZeSV
- LNsucaWGHGvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="184965109"
-X-IronPort-AV: E=Sophos;i="5.81,206,1610438400"; 
-   d="scan'208";a="184965109"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 12:15:29 -0800
-IronPort-SDR: Lp0kxLVj3i3LsaWdmuhDqNRxSPh5IJ7dkLQYetfa1ZtANFwJdVgAqWZBAoXdjBk2jOqS4G7Hf1
- 1FxUcWP/KMxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,206,1610438400"; 
-   d="scan'208";a="365580912"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 25 Feb 2021 12:15:28 -0800
-Received: from [10.254.88.247] (kliang2-MOBL.ccr.corp.intel.com [10.254.88.247])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id B79835804A9;
-        Thu, 25 Feb 2021 12:15:27 -0800 (PST)
-Subject: Re: [perf] perf_fuzzer causes crash in intel_pmu_drain_pebs_nhm()
-To:     Vince Weaver <vincent.weaver@maine.edu>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        id S234165AbhBYUSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:18:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234102AbhBYURZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 15:17:25 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360F2C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:16:42 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id h4so4528627pgf.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:16:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mr0qfRB0Ik/agsf3L0HG3xZ8g9VBKc2G+9roJzfPeiY=;
+        b=euraqYIpl64XJWU+m2Fw7Fyq+kDa7eJRiurKUHe2oMGf4JZeSakNYjP5Zg9jvV2Y7i
+         dJiYfNpaLC8ukwM3GczFJRylLgC4twIIVyuMxLgJYzja/cJ+/0R5UQPG7WddojrljFxZ
+         EmncsucyA2xWo3DbkTZiRg0sSr53Zfo49Yiwk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mr0qfRB0Ik/agsf3L0HG3xZ8g9VBKc2G+9roJzfPeiY=;
+        b=c1pnb0KMP1oxHZx0QVza+RwBMjykox3bGW7qWorBMuVmn7W1wfcw0L2XsC61VBJMz8
+         mEWB2h6fv4tQpJUsjO+ZVMIjhfvZVyEp1Pm4gpDF7NG7tZQ5kuGKBT9EI4cka66tPO1K
+         MQ/Qkf1j/7fJkfiC4jV5C9YoUcwomGyEi+CT240tOhVkCKBsTpFDCPlSe9ZC2rxQykad
+         RNmcZJ3JecQtRtAZ9L3Nyllvp5J/BW9aopMVp7djQy8WLhVSAl5Uwhsi0Pg2gZgtg8AP
+         CV+okfMslUM0LTdKqnF8RtAo2cHFCY4I3Rx5ngI5DTOxz2jxOnkKUB2B0zOlgR3YtjOV
+         iuEA==
+X-Gm-Message-State: AOAM530PCc2SsucKWiVhYNhtosAEVdvIRC0ElgVZ0HPpBlBvG9K38Cit
+        /cMd12vkvhCz0QbeRcyJ7TmdoQ==
+X-Google-Smtp-Source: ABdhPJzu0QIjDXTR7OQR9Z1qCNxRIOUORSgg7eUBcP4OkAwlJhANLNn18mAIXKIhEeF1cPgAQ3sF1w==
+X-Received: by 2002:a62:187:0:b029:1da:e323:a96b with SMTP id 129-20020a6201870000b02901dae323a96bmr5028766pfb.28.1614284201699;
+        Thu, 25 Feb 2021 12:16:41 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h3sm6888983pgm.67.2021.02.25.12.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 12:16:41 -0800 (PST)
+Date:   Thu, 25 Feb 2021 12:16:40 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Stephane Eranian <eranian@google.com>
-References: <61a56699-aab4-ef6-ed8d-a22b6bf532d@maine.edu>
- <7170d3b-c17f-1ded-52aa-cc6d9ae999f4@maine.edu>
- <YCVE8q4MlbcU4fnV@hirez.programming.kicks-ass.net>
- <d2005608-4214-ec01-d6b1-a7d19fab7bf9@linux.intel.com>
- <2a655469-de9d-c80-dd7f-26436d6f03a@maine.edu>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <9b3f84e0-e1cc-cebe-43b6-fa062484ad28@linux.intel.com>
-Date:   Thu, 25 Feb 2021 15:15:26 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Andrew Scull <ascull@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Message-ID: <202102251216.935EFD7F@keescook>
+References: <20210225112122.2198845-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <2a655469-de9d-c80-dd7f-26436d6f03a@maine.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225112122.2198845-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/11/2021 5:14 PM, Vince Weaver wrote:
-> On Thu, 11 Feb 2021, Liang, Kan wrote:
+On Thu, Feb 25, 2021 at 12:20:56PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
->>> On Thu, Jan 28, 2021 at 02:49:47PM -0500, Vince Weaver wrote:
->> I'd like to reproduce it on my machine.
->> Is this issue only found in a Haswell client machine?
->>
->> To reproduce the issue, can I use ./perf_fuzzer under perf_event_tests/fuzzer?
->> Do I need to apply any parameters with ./perf_fuzzer?
->>
->> Usually how long does it take to reproduce the issue?
+> When looking at kernel size optimizations, I found that arm64
+> does not currently support HAVE_LD_DEAD_CODE_DATA_ELIMINATION,
+> which enables the --gc-sections flag to the linker.
 > 
-> On my machine if I run the commands
-> 		echo 1 > /proc/sys/kernel/nmi_watchdog
->                  echo 0 > /proc/sys/kernel/perf_event_paranoid
->                  echo 1000 > /proc/sys/kernel/perf_event_max_sample_rate
->                  ./perf_fuzzer -s 30000 -r 1611784483
+> I see that for a defconfig build with llvm, there are some
+> notable improvements from enabling this, in particular when
+> combined with the recently added CONFIG_LTO_CLANG_THIN
+> and CONFIG_TRIM_UNUSED_KSYMS:
 > 
-> it is repeatable within a minute, but because of the nature of the fuzzer
-> it probably won't work for you because the random events will diverge
-> based on the different configs of the system.
+>    text    data     bss     dec     hex filename
+> 16570322 10998617 506468 28075407 1ac658f defconfig/vmlinux
+> 16318793 10569913 506468 27395174 1a20466 trim_defconfig/vmlinux
+> 16281234 10984848 504291 27770373 1a7be05 gc_defconfig/vmlinux
+> 16029705 10556880 504355 27090940 19d5ffc gc+trim_defconfig/vmlinux
+> 17040142 11102945 504196 28647283 1b51f73 thinlto_defconfig/vmlinux
+> 16788613 10663201 504196 27956010 1aa932a thinlto+trim_defconfig/vmlinux
+> 16347062 11043384 502499 27892945 1a99cd1 gc+thinlto_defconfig/vmlinux
+> 15759453 10532792 502395 26794640 198da90 gc+thinlto+trim_defconfig/vmlinux
 > 
-> I can try to generate a simple reproducer, I've just been extremely busy
-> here at work and haven't had the chance.
+> I needed a small change to the linker script to get clean randconfig
+> builds, but I have not done any meaningful boot testing on it to
+> see if it works. If there are no regressions, I wonder whether this
+> should be autmatically done for LTO builds, given that it improves
+> both kernel size and compile speed.
 > 
-> If you want to try to reproduce it the hard way, run the
-> 	./fast_repro99.sh
-> script in the perf_fuzzer directory.  It will start fuzzing.  My machine
-> turned up the issue within a day or so.
->
-Sorry for the late response. Just want to let you know I'm still trying 
-to reproduce the issue.
+> Link: https://lore.kernel.org/lkml/CAK8P3a05VZ9hSKRzVTxTn+1nf9E+gqebJWTj6N23nfm+ELHt9A@mail.gmail.com/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-I only have a Haswell server on hand. I run the ./fast_repro99.sh on the 
-machine for 3 days, but I didn't observe any crash.
-Now, I'm looking for a HSW client in my lab. I will check if I can 
-reproduce it on a client machine.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-If you have a simple reproducer, please let me know.
-
-Thanks,
-Kan
+-- 
+Kees Cook
