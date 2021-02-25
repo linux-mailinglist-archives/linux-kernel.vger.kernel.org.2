@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECB1324B4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 08:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB09E324B51
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 08:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbhBYHeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 02:34:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
+        id S233618AbhBYHez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 02:34:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233963AbhBYHeN (ORCPT
+        with ESMTP id S233773AbhBYHeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 02:34:13 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85363C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 23:33:48 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id t25so3234696pga.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 23:33:48 -0800 (PST)
+        Thu, 25 Feb 2021 02:34:15 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF25C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 23:33:49 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id p21so3206048pgl.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Feb 2021 23:33:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7uPn+gulMqhjaE42kJBeaOP3zpjHqeQ12o0+1jYccOE=;
-        b=MclzpfaLfKRRoTmtHKOR+QpD7iRU7gZnLM4D29YRc09BXBn6SZA0QA16+njtTz4Yoy
-         Ks5SD7jL/4HV6tcNHIZGTQB/J5tjAasaxzcJKnNe++qadDyDLJsL+yTi5JRr1SjCiqjj
-         +4rDvsM1JQ2ZdaXT1z3K+8BIIaoLhvM8lW+FM/GhEdA/H6PHn6mjp3nt89vBEEvBumIo
-         4L3Dd5EaOQx+AS8CYcb9m+ZLDGmA3gDJSayp1sQgAqOAi8K7heOgqUP+72auHRfBMeBY
-         zCo7eXCAVdBTaxOnQw2OGRilwbn6RwA+6D2Uv7fPK7pUJzJ4JSaEn2UvPlUgdQGuRzfE
-         sp9w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zgKO3MnWtgg50f4xin0lRAlnzGDn6IFUU+LS1IwPjiI=;
+        b=W/Hk+wWyxzLK85Yspxk1j9kKCNb2H/TE8Nr3Gsd4yYPhFoQqeFYulVz1ESEv9Xuyuy
+         RhNtM6Hwq7cRgFjCtqGqXH7Iue9w/00NIlLkAeKmW5eCHN17S92vu71m/qLWNUua1ZWj
+         FNsUtTlmdX+nONjru1+lUpNNeuvBTw+cJrb0fzST/1ux/1h1Zf/pA+ka4vtqCmriGpAl
+         3cXsbLbzA+B0VKEYW2J9LQqIkd5v16cHVUPeZzrBkRZcLlpA8kDNqk7A6dSmOS1oZ84L
+         ngFdFH4gKzdcvg4IPh7w74oNyMY8vDSCc91N2A5IfH2YVvLJDAPd30cPIBoXLCu23wxW
+         nSKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7uPn+gulMqhjaE42kJBeaOP3zpjHqeQ12o0+1jYccOE=;
-        b=fVjq2wLZyh+RwT/zFyQewmqJ3Pz7ORDtNbMPDHi8CfBRgstmrNpWPGpsBZrVznBpaL
-         kjdTJpx+GC0z2LBcnOUhq8dH32Gi1bOxqj3/nKWzTOYJMXOVkasgisTD8Qy+T/17SJA6
-         /j4PkE4hwFLItn1HtbMayMaeuSJ5NopMrdIta6Dc05CS8i5lonVLYDr/24D1jyRV/tlk
-         eLYWUmotM6wSi4JJw689zOKxZT8+/w6+/HfizThTxq5gzFTOtSpMeAcOPuTrykUvYBdH
-         sz/2grgktRKm98r4+QE4Tix5kf5HlwZoTAdkm/66r+7qA5wI2/ZK4zDMYXKKJHfUDsGE
-         sFHg==
-X-Gm-Message-State: AOAM533vrO3cPUjavOgU93cRdxP9rC/u25frtaCocKLVd+dV9cN1ENYZ
-        cKHlWIw6fveIAB/vLPA4cY0=
-X-Google-Smtp-Source: ABdhPJwiWsHFEuH/7othAr6zlobxWGfqE+W8XfT/aMywpYl+JLK2CPN8bEN880NqGtcE7kVM1JG7GQ==
-X-Received: by 2002:aa7:83cc:0:b029:1ed:446b:1ae2 with SMTP id j12-20020aa783cc0000b02901ed446b1ae2mr1938968pfn.47.1614238427898;
-        Wed, 24 Feb 2021 23:33:47 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zgKO3MnWtgg50f4xin0lRAlnzGDn6IFUU+LS1IwPjiI=;
+        b=mNWz07AwU+oIE3BvcMUj3HIj7sfMuc7AqLEIhW9/M5loSXAmUEEb5AyxSeUICeAqxv
+         B0w6qYRuoO6PZUO74He7p6KvKAN/hiMq++yHKUzn+bEHFb3xFVtNowBorj/6w1uVkl+9
+         SJwuF5IfYXAfphwcEIC8oMN+1c+Hjz6tjEbmXHJc7WpoGEdBlVfWe8x9oLXbAuBwp059
+         J4cEhVqAMMsg93GhpUzB5rQbS+5yJ8G5FbzzwsF0K1fpje6VkP2dBYL6nCfT/AzaUhHJ
+         5LNA0bE4jAH9qTeLIifAMJl7RhqhpTvWM62Y6WKTqgIJRfHeT3pC/Ul9TteUcRoUhjlm
+         /j9A==
+X-Gm-Message-State: AOAM532ZD80AVXjxikBvNlv91OQpUa/a/SwkAUdwHq2XQbxoXSpfbcn3
+        yAspN53NJF0x0OarDVhQffQ=
+X-Google-Smtp-Source: ABdhPJxSLsgCDlJ2iNA9exMeg5JU1gPQkYTFM9O+DtIiU0GZ0RewqOlVs2JHJeIXT5peHT7BfkCfag==
+X-Received: by 2002:a05:6a00:1a4b:b029:1d2:8522:75e7 with SMTP id h11-20020a056a001a4bb02901d2852275e7mr2037326pfv.80.1614238429290;
+        Wed, 24 Feb 2021 23:33:49 -0800 (PST)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id w3sm4917561pjt.24.2021.02.24.23.33.46
+        by smtp.gmail.com with ESMTPSA id w3sm4917561pjt.24.2021.02.24.23.33.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 23:33:47 -0800 (PST)
+        Wed, 24 Feb 2021 23:33:48 -0800 (PST)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
@@ -58,10 +58,12 @@ Cc:     Hugh Dickins <hughd@google.com>, Andy Lutomirski <luto@kernel.org>,
         Nadav Amit <namit@vmware.com>,
         Sean Christopherson <seanjc@google.com>,
         Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org
-Subject: [RFC 0/6] x86: prefetch_page() vDSO call
-Date:   Wed, 24 Feb 2021 23:29:04 -0800
-Message-Id: <20210225072910.2811795-1-namit@vmware.com>
+Subject: [RFC 1/6] vdso/extable: fix calculation of base
+Date:   Wed, 24 Feb 2021 23:29:05 -0800
+Message-Id: <20210225072910.2811795-2-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210225072910.2811795-1-namit@vmware.com>
+References: <20210225072910.2811795-1-namit@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -70,44 +72,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-Just as applications can use prefetch instructions to overlap
-computations and memory accesses, applications may want to overlap the
-page-faults and compute or overlap the I/O accesses that are required
-for page-faults of different pages.
+Apparently, the assembly considers __ex_table as the location when the
+pushsection directive was issued. Therefore when there is more than a
+single entry in the vDSO exception table, the calculations of the base
+and fixup are wrong.
 
-Applications can use multiple threads and cores for this matter, by
-running one thread that prefetches the data (i.e., faults in the data)
-and another that does the compute, but this scheme is inefficient. Using
-mincore() can tell whether a page is mapped, but might not tell whether
-the page is in the page-cache and does not fault in the data.
-
-Introduce prefetch_page() vDSO-call to prefetch, i.e. fault-in memory
-asynchronously. The semantic of this call is: try to prefetch a page of
-in a given address and return zero if the page is accessible following
-the call. Start I/O operations to retrieve the page if such operations
-are required and there is no high memory pressure that might introduce
-slowdowns.
-
-Note that as usual the page might be paged-out at any point and
-therefore, similarly to mincore(), there is no guarantee that the page
-will be present at the time that the user application uses the data that
-resides on the page. Nevertheless, it is expected that in the vast
-majority of the cases this would not happen, since prefetch_page()
-accesses the page and therefore sets the PTE access-bit (if it is
-clear). 
-
-The implementation is as follows. The vDSO code accesses the data,
-triggering a page-fault it is not present. The handler detects based on
-the instruction pointer that this is an asynchronous-#PF, using the
-recently introduce vDSO exception tables. If the page can be brought
-without waiting (e.g., the page is already in the page-cache), the
-kernel handles the fault and returns success (zero). If there is memory
-pressure that prevents the proper handling of the fault (i.e., requires
-heavy-weight reclamation) it returns a failure. Otherwise, it starts an
-I/O to bring the page and returns failure.
-
-Compilers can be extended to issue the prefetch_page() calls when
-needed.
+Fix the calculations of the expected fault IP and new IP by adjusting
+the base after each entry.
 
 Cc: Andy Lutomirski <luto@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
@@ -117,34 +88,24 @@ Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Borislav Petkov <bp@alien8.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: x86@kernel.org
+Signed-off-by: Nadav Amit <namit@vmware.com>
+---
+ arch/x86/entry/vdso/extable.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Nadav Amit (6):
-  vdso/extable: fix calculation of base
-  x86/vdso: add mask and flags to extable
-  x86/vdso: introduce page_prefetch()
-  mm/swap_state: respect FAULT_FLAG_RETRY_NOWAIT
-  mm: use lightweight reclaim on FAULT_FLAG_RETRY_NOWAIT
-  testing/selftest: test vDSO prefetch_page()
-
- arch/x86/Kconfig                              |   1 +
- arch/x86/entry/vdso/Makefile                  |   1 +
- arch/x86/entry/vdso/extable.c                 |  70 +++--
- arch/x86/entry/vdso/extable.h                 |  21 +-
- arch/x86/entry/vdso/vdso.lds.S                |   1 +
- arch/x86/entry/vdso/vprefetch.S               |  39 +++
- arch/x86/entry/vdso/vsgx.S                    |   9 +-
- arch/x86/include/asm/vdso.h                   |  38 ++-
- arch/x86/mm/fault.c                           |  11 +-
- lib/vdso/Kconfig                              |   5 +
- mm/memory.c                                   |  47 +++-
- mm/shmem.c                                    |   1 +
- mm/swap_state.c                               |  12 +-
- tools/testing/selftests/vDSO/Makefile         |   2 +
- .../selftests/vDSO/vdso_test_prefetch_page.c  | 265 ++++++++++++++++++
- 15 files changed, 470 insertions(+), 53 deletions(-)
- create mode 100644 arch/x86/entry/vdso/vprefetch.S
- create mode 100644 tools/testing/selftests/vDSO/vdso_test_prefetch_page.c
-
+diff --git a/arch/x86/entry/vdso/extable.c b/arch/x86/entry/vdso/extable.c
+index afcf5b65beef..c81e78636220 100644
+--- a/arch/x86/entry/vdso/extable.c
++++ b/arch/x86/entry/vdso/extable.c
+@@ -32,7 +32,7 @@ bool fixup_vdso_exception(struct pt_regs *regs, int trapnr,
+ 	nr_entries = image->extable_len / (sizeof(*extable));
+ 	extable = image->extable;
+ 
+-	for (i = 0; i < nr_entries; i++) {
++	for (i = 0; i < nr_entries; i++, base += sizeof(*extable)) {
+ 		if (regs->ip == base + extable[i].insn) {
+ 			regs->ip = base + extable[i].fixup;
+ 			regs->di = trapnr;
 -- 
 2.25.1
 
