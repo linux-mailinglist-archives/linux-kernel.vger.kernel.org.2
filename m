@@ -2,117 +2,544 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8033255A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463023255AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbhBYShs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:37:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233158AbhBYSfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 13:35:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C13F64F25;
-        Thu, 25 Feb 2021 18:34:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614278080;
-        bh=D+o2eGuxk/96TykauSFPUt++BF/ZEYWd6AdWAF7lWnE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iYswuWlR9ns7uatgoMx+SnWVyeJJwej3QpXCRAOfhxQoNvtykdbAm+8gbNrLi8FEQ
-         Qtmve/Mjwf+xOXayAV4V6cO8teMH/nIKxvaqbosZbAds1LC5y8blKLCenXjMuz4zrf
-         itIW9lchhtnUy8smBKroglsmC4iGmYbK9O7Q3zXPvaIV4I0aW8XufxY8lC7zrRvXsY
-         nnnuYwyrB5W9ovdgJNQna+KPf49nmRXXsRDioWpuZWd1alOLe8jUVyN04Z6+Dr/Wvz
-         j+U6Ya2iZIzryK3icEXbWHCa9bDwwk02L4Qtc+/jWRzpfNKRo13MH1wZAtJ2L7Yk20
-         mddu6MscP4hgg==
-Date:   Thu, 25 Feb 2021 11:34:36 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Rong Chen <rong.a.chen@intel.com>
-Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [kbuild-all] Re: WARNING: modpost: vmlinux.o(.text+0x1a8edb8):
- Section mismatch in reference from the function stop_machine() to the
- function .init.text:intel_rng_hw_init()
-Message-ID: <20210225183436.GA1349@MSI.localdomain>
-References: <202102242224.Cpiog92Y-lkp@intel.com>
- <83ab58cb-581f-135f-21fd-05c15860cafa@suse.com>
- <a7013b23-af0b-e1dd-324c-904a536d9f01@intel.com>
+        id S234153AbhBYSiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 13:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233860AbhBYSfp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 13:35:45 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B77C06121E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 10:34:50 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id d11so6230882wrj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 10:34:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:references:in-reply-to
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=XqEmaiF4fdloBE0PtgqJZA08jNunGa6dywJvJa69qxU=;
+        b=dUvmO0E/gAW5FystOLPbklpzFKWNZRVkH/JO2kktkKrkhSSOLBikaLHrsKLBakexex
+         EjDXIs/nLL4/qnq/nz39tomfzwGKFv/FoBhmOeCeu7DQ7/hPNABIPoEa6ruXAhhfox3o
+         +YYatKutn7qAotHwSNkW9be9DWYcpfTqZRPRZG8aaE3b01E/80xITQjgiDFoMm3nxEnx
+         vHqyj7X849IxKvI2QzMMfev+hZJzebJDZCq+ESLGJhGYMS8vOMhQhU5ovPNxrDKFC+xc
+         TTHB74x2jrnoqFqpch8TvqV69SanweP42MtT/zbFFOpi+A5ycfTams20JpPpgOCgOnco
+         Cmqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
+         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
+        bh=XqEmaiF4fdloBE0PtgqJZA08jNunGa6dywJvJa69qxU=;
+        b=a4Vt0Pg5nTVhlEni4URZOISWyE1ZcWHvyJbs1YYc6YRID1z4F3fycgWUBvfUos4K5N
+         eJA/YAE33C1w17+VB8+bQR7LBANIJVOvQmeFe+2mqSlUmZ9x+2iumOrrnPnnRAIQB4Uv
+         B66j5LlaYkfkaI5Gts2U6YUvuHeXvGL4FJtu+DHB0MG0ZJJ2h46RGOg52n+jEh5K7S7D
+         W51mvcE5P+XFAYGOuZdUfGF5l87QoXkCrJ1WreGUMWDqwLE8F6qAYHgbh85pkG3sLf8R
+         NUjPHcgBxMrEYK7wL2lGQra5aOgSpLL4mI/QfdH3bhf7uMfMYZyN3MtDA7mccXHtI2sW
+         fzcA==
+X-Gm-Message-State: AOAM530xdJtU07kEch1AOGz5TvDWfOex+JHCtFLOb+sg+QWigHmidn15
+        a/fCP3LTtn3liJMPnNdMMKLZkA==
+X-Google-Smtp-Source: ABdhPJx1KahEMKzMa9zqPQsN3E5Js3QiIJ3akKTpS6WUvuyk/EluvkrvxEEs8OrwiCGzk+b+leugiQ==
+X-Received: by 2002:adf:fe0d:: with SMTP id n13mr4831508wrr.224.1614278088979;
+        Thu, 25 Feb 2021 10:34:48 -0800 (PST)
+Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
+        by smtp.gmail.com with ESMTPSA id h10sm7076268wrp.22.2021.02.25.10.34.47
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 25 Feb 2021 10:34:48 -0800 (PST)
+From:   John Cox <jc@kynesim.co.uk>
+To:     =?utf-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@siol.net>
+Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        peng.fan@nxp.com, hverkuil-cisco@xs4all.nl,
+        dan.carpenter@oracle.com, Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH v3 1/9] media: hevc: Modify structures to follow H265 ITU spec
+Date:   Thu, 25 Feb 2021 18:34:47 +0000
+Message-ID: <bnqf3ghrqnrh02e1hr1q42ilsb84guag5p@4ax.com>
+References: <20210222122406.41782-1-benjamin.gaignard@collabora.com> <233731323.ucs1DXFtIZ@kista> <a227da5c0a7cda42aedf470fff34ae0e4227b626.camel@collabora.com> <5861676.snnbt3pK2g@kista>
+In-Reply-To: <5861676.snnbt3pK2g@kista>
+User-Agent: ForteAgent/8.00.32.1272
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a7013b23-af0b-e1dd-324c-904a536d9f01@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 04:17:21PM +0800, Rong Chen wrote:
-> 
-> 
-> On 2/24/21 10:26 PM, Jürgen Groß wrote:
-> > On 24.02.21 15:20, kernel test robot wrote:
-> > > tree:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> > > master
-> > > head:   c03c21ba6f4e95e406a1a7b4c34ef334b977c194
-> > > commit: ab234a260b1f625b26cbefa93ca365b0ae66df33 x86/pv: Rework
-> > > arch_local_irq_restore() to not use popf
-> > > date:   2 weeks ago
-> > > config: x86_64-randconfig-a005-20210223 (attached as .config)
-> > > compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project
-> > > f14a14dd2564703db02f80c00db8ae492b594f77)
-> > > reproduce (this is a W=1 build):
-> > >          wget
-> > > https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
-> > > -O ~/bin/make.cross
-> > >          chmod +x ~/bin/make.cross
-> > >          # install x86_64 cross compiling tool for clang build
-> > >          # apt-get install binutils-x86-64-linux-gnu
-> > >          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ab234a260b1f625b26cbefa93ca365b0ae66df33
-> > >          git remote add linus
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> > >          git fetch --no-tags linus master
-> > >          git checkout ab234a260b1f625b26cbefa93ca365b0ae66df33
-> > >          # save the attached .config to linux build tree
-> > >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross
-> > > ARCH=x86_64
-> > > 
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > 
-> > > All warnings (new ones prefixed by >>, old ones prefixed by <<):
-> > > 
-> > > > > WARNING: modpost: vmlinux.o(.text+0x1a8edb8): Section
-> > > > > mismatch in reference from the function stop_machine() to
-> > > > > the function .init.text:intel_rng_hw_init()
-> > > The function stop_machine() references
-> > > the function __init intel_rng_hw_init().
-> > > This is often because stop_machine lacks a __init
-> > > annotation or the annotation of intel_rng_hw_init is wrong.
-> > 
-> > I'd be very interested to know how the identified patch would be able to
-> > have this effect.
-> 
-> Hi Clang Team,
-> 
-> The problem is found by the latest clang, and I can't reproduce it with
-> clang-11,
-> could you take a look?
-> 
-> Best Regards,
-> Rong Chen
+On Thu, 25 Feb 2021 19:05:55 +0100, you wrote:
 
-Hi Rong,
+>Dne ?etrtek, 25. februar 2021 ob 18:34:48 CET je Ezequiel Garcia =
+napisal(a):
+>> Hey Jernej,
+>>=20
+>> On Thu, 2021-02-25 at 18:01 +0100, Jernej =C5=A0krabec wrote:
+>> > Hi Ezequiel,
+>> >=20
+>> > Dne ?etrtek, 25. februar 2021 ob 14:09:52 CET je Ezequiel Garcia=20
+>napisal(a):
+>> > > Hi Benjamin,
+>> > >=20
+>> > > Thanks for the good work.
+>> > >=20
+>> > > On Mon, 2021-02-22 at 13:23 +0100, Benjamin Gaignard wrote:
+>> > > > The H.265 ITU specification (section 7.4) define the general
+>> > > > slice segment header semantics.
+>> > > > Modified/added fields are:
+>> > > > - video_parameter_set_id: (7.4.3.1) identifies the VPS for
+>> > > > reference by other syntax elements.
+>> > > > - seq_parameter_set_id: (7.4.3.2.1) specifies the value of
+>> > > > the vps_video_parameter_set_id of the active VPS.
+>> > > > - chroma_format_idc: (7.4.3.2.1) specifies the chroma sampling
+>> > > >  relative to the luma sampling
+>> > > > - pic_parameter_set_id: (7.4.3.3.1) identifies the PPS for
+>> > > > reference by other syntax elements
+>> > > > - num_ref_idx_l0_default_active_minus1: (7.4.3.3.1) specifies
+>> > > > the inferred value of num_ref_idx_l0_active_minus1
+>> > > > - num_ref_idx_l1_default_active_minus1: (7.4.3.3.1) specifies
+>> > > > the inferred value of num_ref_idx_l1_active_minus1
+>> > > > - slice_segment_addr: (7.4.7.1) specifies the address of
+>> > > > the first coding tree block in the slice segment
+>> > > > - num_entry_point_offsets: (7.4.7.1) specifies the number of
+>> > > > entry_point_offset_minus1[ i ] syntax elements in the slice =
+header
+>> > > >=20
+>> > > > Add HEVC decode params contains the information used in section
+>> > > > "8.3 Slice decoding process" of the specification to let the =
+hardware
+>> > > > perform decoding of a slices.
+>> > > >=20
+>> > > > Adapt Cedrus driver according to these changes.
+>> > > >=20
+>> > > > Signed-off-by: Benjamin Gaignard =
+<benjamin.gaignard@collabora.com>
+>> > > > ---
+>> > > > version 3:
+>> > > > - Add documentation about the new structuers and fields.
+>> > > >=20
+>> > > > version 2:
+>> > > > - remove all change related to scaling
+>> > > > - squash commits to a coherent split
+>> > > > - be more verbose about the added fields
+>> > > >=20
+>> > > >  .../media/v4l/ext-ctrls-codec.rst             | 126 =
+++++++++++++++
+>+---
+>> > > >  .../media/v4l/vidioc-queryctrl.rst            |   6 +
+>> > > >  drivers/media/v4l2-core/v4l2-ctrls.c          |  26 +++-
+>> > > >  drivers/staging/media/sunxi/cedrus/cedrus.c   |   6 +
+>> > > >  drivers/staging/media/sunxi/cedrus/cedrus.h   |   1 +
+>> > > >  .../staging/media/sunxi/cedrus/cedrus_dec.c   |   2 +
+>> > > >  .../staging/media/sunxi/cedrus/cedrus_h265.c  |   6 +-
+>> > > >  include/media/hevc-ctrls.h                    |  45 +++++--
+>> > > >  8 files changed, 186 insertions(+), 32 deletions(-)
+>> > > >=20
+>> > > > diff --git =
+a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst=20
+>b/
+>> > Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> > > > index 00944e97d638..5e6d77e858c0 100644
+>> > > > --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> > > > +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> > > > @@ -3109,6 +3109,15 @@ enum =
+v4l2_mpeg_video_hevc_size_of_length_field -
+>> > > >      :stub-columns: 0
+>> > > >      :widths:       1 1 2
+>> > > > =20
+>> > > > +    * - __u8
+>> > > > +      - ``video_parameter_set_id``
+>> > > > +      - Identifies the VPS for reference by other syntax =
+elements
+>> > > > +    * - __u8
+>> > > > +      - ``seq_parameter_set_id?``
+>> > > > +      - Specifies the value of the vps_video_parameter_set_id =
+of the=20
+>> > active VPS
+>> > > > +    * - __u8
+>> > > > +      - ``chroma_format_idc``
+>> > > > +      - Specifies the chroma sampling relative to the luma =
+sampling
+>> > >=20
+>> > > None of these fields seem needed for the Hantro G2 driver,
+>> > > so I suggest you drop them for now.
+>> > >=20
+>> > > >      * - __u16
+>> > > >        - ``pic_width_in_luma_samples``
+>> > > >        -
+>> > > > @@ -3172,6 +3181,9 @@ enum =
+v4l2_mpeg_video_hevc_size_of_length_field -
+>> > > >      * - __u8
+>> > > >        - ``chroma_format_idc``
+>> > > >        -
+>> > > > +    * - __u8
+>> > > > +      - ``num_slices``
+>> > > > +
+>> > >=20
+>> > > Not used, but also doesn't seem part of the SPS syntax. If we have=
+ to
+>> > > pass the number of slices, we'll need another mechanism.
+>> > >=20
+>> > > >       -
+>> > > >      * - __u64
+>> > > >        - ``flags``
+>> > > >        - See :ref:`Sequence Parameter Set Flags =
+<hevc_sps_flags>`
+>> > > > @@ -3231,9 +3243,18 @@ enum =
+v4l2_mpeg_video_hevc_size_of_length_field -
+>> > > >      :stub-columns: 0
+>> > > >      :widths:       1 1 2
+>> > > > =20
+>> > > > +    * - __u8
+>> > > > +      - ``pic_parameter_set_id``
+>> > > > +      - Identifies the PPS for reference by other syntax =
+elements
+>> > >=20
+>> > > Not used.
+>> > >=20
+>> > > >      * - __u8
+>> > > >        - ``num_extra_slice_header_bits``
+>> > > >        -
+>> > > > +    * - __u8
+>> > > > +      - ``num_ref_idx_l0_default_active_minus1``
+>> > > > +      - Specifies the inferred value of =
+num_ref_idx_l0_active_minus1
+>> > > > +    * - __u8
+>> > > > +      - ``num_ref_idx_l1_default_active_minus1``
+>> > > > +      - Specifies the inferred value of =
+num_ref_idx_l1_active_minus1
+>> > > >      * - __s8
+>> > > >        - ``init_qp_minus26``
+>> > > >        -
+>> > > > @@ -3342,6 +3363,12 @@ enum =
+v4l2_mpeg_video_hevc_size_of_length_field -
+>> > > >      * - =
+``V4L2_HEVC_PPS_FLAG_SLICE_SEGMENT_HEADER_EXTENSION_PRESENT``
+>> > > >        - 0x00040000
+>> > > >        -
+>> > > > +    * - =
+``V4L2_HEVC_PPS_FLAG_DEBLOCKING_FILTER_CONTROL_PRESENT``
+>> > > > +      - 0x00080000
+>> > > > +      -
+>> > > > +    * - ``V4L2_HEVC_PPS_FLAG_UNIFORM_SPACING``
+>> > > > +      - 0x00100000
+>> > > > +      -
+>> > > > =20
+>> > >=20
+>> > > I suggest to do all the PPS control changes in a separate patch,
+>> > > feels easier to review and cleaner as you can explain the
+>> > > changes with more detail in the commit description.
+>> > >=20
+>> > > Looking at the PPS syntax for tiles, I'm wondering if these
+>> > > deserve their own control, which would be used if tiles are =
+enabled,
+>> > > i.e. V4L2_HEVC_PPS_FLAG_TILES_ENABLED is set.
+>> > >=20
+>> > >         __u8   =20
+>num_tile_columns_minus1;                                        =20
+>> > >         __u8   =20
+>num_tile_rows_minus1;                                           =20
+>> > >         __u8   =20
+>column_width_minus1[20];                                        =20
+>> > >         __u8    row_height_minus1[22];   =20
+>> > >=20
+>> > > Not something we necessarily have to tackle now.
+>> > >=20
+>> > > >  ``V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS (struct)``
+>> > > >      Specifies various slice-specific parameters, especially =
+from the=20
+>NAL=20
+>> > unit
+>> > > > @@ -3366,6 +3393,12 @@ enum =
+v4l2_mpeg_video_hevc_size_of_length_field -
+>> > > >      * - __u32
+>> > > >        - ``data_bit_offset``
+>> > > >        - Offset (in bits) to the video data in the current slice=
+ data.
+>> > > > +    * - __u32
+>> > > > +      - ``slice_segment_addr``
+>> > > > +      - Specifies the address of the first coding tree block in=
+ the=20
+>slice=20
+>> > segment
+>> > >=20
+>> > > Not used.
+>> > >=20
+>> > > > +    * - __u32
+>> > > > +      - ``num_entry_point_offsets``
+>> > > > +      - Specifies the number of entry_point_offset_minus1[ i ] =
+syntax=20
+>> > elements in the slice header
+>> > >=20
+>> > > Not used.
+>> >=20
+>> > While above two fields may not be used in Hantro, they are for sure =
+useful=20
+>for=20
+>> > Cedrus and RPi4. I would like to keep them, otherwise with such =
+approach=20
+>HEVC=20
+>> > will stay in staging for a long time. I'm still baffled why scaling =
+matrix=20
+>> > control was dropped. It would fit well in Cedrus and RPi4 driver and=
+ after=20
+>a=20
+>> > quick look, it seems that it was used in driver in later patch.
+>> >=20
+>>=20
+>> I'd like to make sure each modification we are making to the uAPI
+>> goes in the right direction, that is in the direction of moving
+>> the API out of staging.
+>>=20
+>> Since reviewing each field is quite hard, and opens some discussions,
+>> I wanted to keep this patchset specific to what's needed for Hantro =
+G2.
+>>=20
+>> The Scaling matrix control is certainly a good one, as well as the =
+ones
+>> needed for Cedrus and RPi4. However, I feel it's better to discuss
+>> them in their own "uAPI review" series so we can review all the =
+changes
+>> with an API hat.
+>>=20
+>> This way we decouple the Hantro G2 discussion and work from the API =
+work.
+>>=20
+>> Also please feel free to submit RFC patches fo Cedrus and RPi4
+>> (API and driver changes). We can certainly start the discussion around=
+ that,
+>> with driver changes in context.
+>
+>I don't know much about RPi4 driver, only few implementation details, so=
+=20
+>you'll have to ping developer who wrote it. Regarding HEVC on Cedrus - =
+it has=20
+>one pain point - it needs entry point table which in turn needs support =
+for=20
+>variable arrays in order to be feasable AFAIK. I don't plan to develop =
+that.=20
+>Patches for scaling matrix and segment address were sent a bit more than=
+ a=20
+>year ago but were turned down because they change control structures =
+(among=20
+>other things). Sorry to say, but I work on other things now, so Cedrus =
+will=20
+>have to wait. Alternatively, someone can take my patches from LibreELEC,=
+=20
+>update and submit them. They are in use for a long time.
 
-Known issue. LLVM 13 cut over to the new pass manager (NPM) which has
-changed some of the inlining heuristics. I would probably recommend
-cutting over to the "release/12.x" branch for now, which should be more
-up to date but also stable.
+It seems to me that H.265 should be the source for what fields are
+needed in the uapi - not whatever happens to be supported by current
+h/w. The standard defines the list of fields that can occur in the
+parameter sets and headers, and everything that is needed to decode=20
+any slice_seqgment_data should be in the upai.  Eventually all those
+fields are going to be needed (they aren't in the standard just to look
+pretty) and given the reluctance I've observed to change the uapi once
+released they should be there from the start.
 
-Additionally, Arnd sent a fix for this particular warning here:
-https://lore.kernel.org/lkml/20210225130153.1956990-1-arnd@kernel.org/
+Now some hardware requires more fields that aren't in the standard -
+those can (and should) be added in h/w specific extensions.
 
-Cheers,
-Nathan
+Regards
+
+JC
+
+>Best regards,
+>Jernej
+>
+>>=20
+>> Hope I'm making sense here :)
+>>=20
+>> Thanks,
+>> Ezequiel
+>>=20
+>> > Best regards,
+>> > Jernej
+>> >=20
+>> > >=20
+>> > > >      * - __u8
+>> > > >        - ``nal_unit_type``
+>> > > >        -
+>> > > > @@ -3422,28 +3455,20 @@ enum =
+v4l2_mpeg_video_hevc_size_of_length_field=20
+>-
+>> > > >      * - __u8
+>> > > >        - ``pic_struct``
+>> > > >        -
+>> > > > -    * - __u8
+>> > > > -      - ``num_active_dpb_entries``
+>> > > > -      - The number of entries in ``dpb``.
+>> > >=20
+>> > > Need to explain in the commit description why this field is moved.
+>> > >=20
+>> > > >      * - __u8
+>> > > >        - ``ref_idx_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>> > > >        - The list of L0 reference elements as indices in the =
+DPB.
+>> > > >      * - __u8
+>> > > >        - ``ref_idx_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>> > > >        - The list of L1 reference elements as indices in the =
+DPB.
+>> > > > +    * - __u16
+>> > > > +      - ``short_term_ref_pic_set_size``
+>> > > > +
+>> > >=20
+>> > > Not used.
+>> > >=20
+>> > > >       -
+>> > > > +    * - __u16
+>> > > > +      - ``long_term_ref_pic_set_size``
+>> > > > +      -
+>> > >=20
+>> > > Not used.
+>> > >=20
+>> > > >      * - __u8
+>> > > > -      - ``num_rps_poc_st_curr_before``
+>> > > > -      - The number of reference pictures in the short-term set =
+that=20
+>come=20
+>> > before
+>> > > > -        the current frame.
+>> > >=20
+>> > > If this matches NumPocStCurrBefore from section 8.3.2 "Decoding =
+process=20
+>for=20
+>> > reference picture set"
+>> > > then I would document that. And perhaps rename it to=20
+>num_poc_st_curr_before.
+>> > >=20
+>> > > > -    * - __u8
+>> > > > -      - ``num_rps_poc_st_curr_after``
+>> > > > -      - The number of reference pictures in the short-term set =
+that=20
+>come=20
+>> > after
+>> > > > -        the current frame.
+>> > >=20
+>> > > Ditto.
+>> > >=20
+>> > > > -    * - __u8
+>> > > > -      - ``num_rps_poc_lt_curr``
+>> > > > -      - The number of reference pictures in the long-term set.
+>> > >=20
+>> > > Ditto.
+>> > >=20
+>> > > Also, I'd like the changes that move fields from=20
+>> > V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS
+>> > > to the new V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS control, to be =
+in=20
+>their
+>> > > patch.
+>> > >=20
+>> > > That will allow us to put in the commit description a proper
+>> > > explanation of why are fields being moved. Nothing fancy, simply
+>> > > explaining that these variables come from section 8.3.2
+>> > > "Decoding process for reference picture set", which describes
+>> > > a process invoked once per picture, so they are not per-slice.
+>> > >=20
+>> > > > -    * - __u8
+>> > > > -      - ``padding[7]``
+>> > > > +      - ``padding``
+>> > > >        - Applications and drivers must set this to zero.
+>> > > >      * - struct :c:type:`v4l2_hevc_dpb_entry`
+>> > > >        - ``dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>> > > > @@ -3646,3 +3671,74 @@ enum =
+v4l2_mpeg_video_hevc_size_of_length_field -
+>> > > >      so this has to come from client.
+>> > > >      This is applicable to H264 and valid Range is from 0 to 63.
+>> > > >      Source Rec. ITU-T H.264 (06/2019); G.7.4.1.1, G.8.8.1.
+>> > > > +
+>> > > > +``V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS (struct)``
+>> > > > +    Specifies various decode parameters, especially the =
+references=20
+>picture=20
+>> > order
+>> > > > +    count (POC) for all the lists (short, long, before, =
+current,=20
+>after)=20
+>> > and the
+>> > > > +    number of entries for each of them.
+>> > > > +    These parameters are defined according to :ref:`hevc`.
+>> > > > +    They are described in section 8.3 "Slice decoding process" =
+of the
+>> > > > +    specification.
+>> > > > +
+>> > > > +.. c:type:: v4l2_ctrl_hevc_decode_params
+>> > > > +
+>> > > > +.. cssclass:: longtable
+>> > > > +
+>> > > > +.. flat-table:: struct v4l2_ctrl_hevc_decode_params
+>> > > > +    :header-rows:  0
+>> > > > +    :stub-columns: 0
+>> > > > +    :widths:       1 1 2
+>> > > > +
+>> > > > +    * - __s32
+>> > > > +      - ``pic_order_cnt_val``
+>> > > > +      -
+>> > >=20
+>> > > Can be documented as:
+>> > >=20
+>> > > """
+>> > > PicOrderCntVal as described in section 8.3.1 "Decoding process
+>> > > for picture order count" of the specification.
+>> > > """
+>> > >=20
+>> > > Note that snake case is used to match the kernel style,
+>> > > but other than that we try to keep the HEVC spec variable
+>> > > names.
+>> > >=20
+>> > > > +    * - __u8
+>> > > > +      - ``num_active_dpb_entries``
+>> > > > +      - The number of entries in ``dpb``.
+>> > > > +    * - struct :c:type:`v4l2_hevc_dpb_entry`
+>> > > > +      - ``dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>> > > > +      - The decoded picture buffer, for meta-data about =
+reference=20
+>frames.
+>> > >=20
+>> > > The DPB is here, but it seems it's also in the slice control?
+>> > >=20
+>> > > > +    * - __u8
+>> > > > +      - ``num_rps_poc_st_curr_before``
+>> > > > +      - The number of reference pictures in the short-term set =
+that=20
+>come=20
+>> > before
+>> > > > +        the current frame.
+>> > > > +    * - __u8
+>> > > > +      - ``num_rps_poc_st_curr_after``
+>> > > > +      - The number of reference pictures in the short-term set =
+that=20
+>come=20
+>> > after
+>> > > > +        the current frame.
+>> > > > +    * - __u8
+>> > > > +      - ``num_rps_poc_lt_curr``
+>> > > > +      - The number of reference pictures in the long-term set.
+>> > > > +    * - __u8
+>> > > > +      - ``rps_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>> > > > +      -
+>> > > > +    * - __u8
+>> > > > +      - ``rps_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>> > > > +      -
+>> > > > +    * - __u8
+>> > > > +      - ``rps_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>> > > > +      -
+>> > >=20
+>> > > Could you document these as well?
+>> > >=20
+>> > > Thanks a lot,
+>> > > Ezequiel
+>> > >=20
+>> > >=20
+>> >=20
+>> >=20
+>>=20
+>>=20
+>>=20
+>
