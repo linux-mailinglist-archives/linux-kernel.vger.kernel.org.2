@@ -2,126 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8428324B73
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 08:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9213B324B77
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 08:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234465AbhBYHoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 02:44:07 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2849 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234222AbhBYHni (ORCPT
+        id S233688AbhBYHob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 02:44:31 -0500
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:53429 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233153AbhBYHnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 02:43:38 -0500
-Received: from dggeme761-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DmPlV3NLSz13yLv;
-        Thu, 25 Feb 2021 15:37:58 +0800 (CST)
-Received: from [10.174.187.128] (10.174.187.128) by
- dggeme761-chm.china.huawei.com (10.3.19.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 25 Feb 2021 15:40:33 +0800
-Subject: Re: [PATCH 03/15] KVM: selftests: Align HVA for HugeTLB-backed
- memslots
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-CC:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>
-References: <20210210230625.550939-1-seanjc@google.com>
- <20210210230625.550939-4-seanjc@google.com>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <eac3f8b1-0e5b-395f-7fd7-75409554bffc@huawei.com>
-Date:   Thu, 25 Feb 2021 15:40:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 25 Feb 2021 02:43:39 -0500
+X-Originating-IP: 81.185.161.35
+Received: from localhost.localdomain (35.161.185.81.rev.sfr.net [81.185.161.35])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 5FF4F20003;
+        Thu, 25 Feb 2021 07:42:39 +0000 (UTC)
+From:   Alexandre Ghiti <alex@ghiti.fr>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nylon Chen <nylon7@andestech.com>,
+        Nick Hu <nickhu@andestech.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Alexandre Ghiti <alex@ghiti.fr>
+Subject: [PATCH] riscv: Add KASAN_VMALLOC support
+Date:   Thu, 25 Feb 2021 02:42:27 -0500
+Message-Id: <20210225074227.3176-1-alex@ghiti.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210210230625.550939-4-seanjc@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme701-chm.china.huawei.com (10.1.199.97) To
- dggeme761-chm.china.huawei.com (10.3.19.107)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+Populate the top-level of the kernel page table to implement KASAN_VMALLOC,
+lower levels are filled dynamically upon memory allocation at runtime.
 
-On 2021/2/11 7:06, Sean Christopherson wrote:
-> Align the HVA for HugeTLB memslots, not just THP memslots.  Add an
-> assert so any future backing types are forced to assess whether or not
-> they need to be aligned.
->
-> Cc: Ben Gardon <bgardon@google.com>
-> Cc: Yanan Wang <wangyanan55@huawei.com>
-> Cc: Andrew Jones <drjones@redhat.com>
-> Cc: Peter Xu <peterx@redhat.com>
-> Cc: Aaron Lewis <aaronlewis@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   tools/testing/selftests/kvm/lib/kvm_util.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index 584167c6dbc7..deaeb47b5a6d 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -731,8 +731,11 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
->   	alignment = 1;
->   #endif
->   
-> -	if (src_type == VM_MEM_SRC_ANONYMOUS_THP)
-> +	if (src_type == VM_MEM_SRC_ANONYMOUS_THP ||
-> +	    src_type == VM_MEM_SRC_ANONYMOUS_HUGETLB)
-Sorry for the late reply, I just returned from vacation.
-I am not sure HVA alignment is really necessary here for hugetlb pages. 
-Different from hugetlb pages,
-the THP pages are dynamically allocated by later madvise(), so the value 
-of HVA returned from mmap()
-is host page size aligned but not THP page size aligned, so we indeed 
-have to perform alignment.
-But hugetlb pages are pre-allocated on systems. The following test 
-results also indicate that,
-with MAP_HUGETLB flag, the HVA returned from mmap() is already aligned 
-to the corresponding
-hugetlb page size. So maybe HVAs of each hugetlb pages are aligned 
-during allocation of them
-or in mmap() ? If so, I think we better not do this again here, because 
-the later *region->mmap_size += alignment*
-will cause one more hugetlb page mapped but will not be used.
+Co-developed-by: Nylon Chen <nylon7@andestech.com>
+Signed-off-by: Nylon Chen <nylon7@andestech.com>
+Co-developed-by: Nick Hu <nickhu@andestech.com>
+Signed-off-by: Nick Hu <nickhu@andestech.com>
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+---
+ arch/riscv/Kconfig         |  1 +
+ arch/riscv/mm/kasan_init.c | 35 ++++++++++++++++++++++++++++++++++-
+ 2 files changed, 35 insertions(+), 1 deletion(-)
 
-cmdline: ./kvm_page_table_test -m 4 -b 1G -s anonymous_hugetlb_1gb
-some outputs:
-Host  virtual  test memory offset: 0xffff40000000
-Host  virtual  test memory offset: 0xffff00000000
-Host  virtual  test memory offset: 0x400000000000
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 8eadd1cbd524..3832a537c5d6 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -57,6 +57,7 @@ config RISCV
+ 	select HAVE_ARCH_JUMP_LABEL
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN if MMU && 64BIT
++	select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_KGDB_QXFER_PKT
+ 	select HAVE_ARCH_MMAP_RND_BITS if MMU
+diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+index 719b6e4d6075..171569df4334 100644
+--- a/arch/riscv/mm/kasan_init.c
++++ b/arch/riscv/mm/kasan_init.c
+@@ -142,6 +142,31 @@ static void __init kasan_populate(void *start, void *end)
+ 	memset(start, KASAN_SHADOW_INIT, end - start);
+ }
+ 
++void __init kasan_shallow_populate_pgd(unsigned long vaddr, unsigned long end)
++{
++	unsigned long next;
++	void *p;
++	pgd_t *pgd_k = pgd_offset_k(vaddr);
++
++	do {
++		next = pgd_addr_end(vaddr, end);
++		if (pgd_page_vaddr(*pgd_k) == (unsigned long)lm_alias(kasan_early_shadow_pmd)) {
++			p = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
++			set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)), PAGE_TABLE));
++		}
++	} while (pgd_k++, vaddr = next, vaddr != end);
++}
++
++void __init kasan_shallow_populate(void *start, void *end)
++{
++	unsigned long vaddr = (unsigned long)start & PAGE_MASK;
++	unsigned long vend = PAGE_ALIGN((unsigned long)end);
++
++	kasan_shallow_populate_pgd(vaddr, vend);
++
++	local_flush_tlb_all();
++}
++
+ void __init kasan_init(void)
+ {
+ 	phys_addr_t _start, _end;
+@@ -149,7 +174,15 @@ void __init kasan_init(void)
+ 
+ 	kasan_populate_early_shadow((void *)KASAN_SHADOW_START,
+ 				    (void *)kasan_mem_to_shadow((void *)
+-								VMALLOC_END));
++								VMEMMAP_END));
++	if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
++		kasan_shallow_populate(
++			(void *)kasan_mem_to_shadow((void *)VMALLOC_START),
++			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
++	else
++		kasan_populate_early_shadow(
++			(void *)kasan_mem_to_shadow((void *)VMALLOC_START),
++			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+ 
+ 	for_each_mem_range(i, &_start, &_end) {
+ 		void *start = (void *)_start;
+-- 
+2.20.1
 
-cmdline: ./kvm_page_table_test -m 4 -b 1G -s anonymous_hugetlb_2mb
-some outputs:
-Host  virtual  test memory offset: 0xffff48000000
-Host  virtual  test memory offset: 0xffff65400000
-Host  virtual  test memory offset: 0xffff6ba00000
-
-cmdline: ./kvm_page_table_test -m 4 -b 1G -s anonymous_hugetlb_32mb
-some outputs:
-Host  virtual  test memory offset: 0xffff70000000
-Host  virtual  test memory offset: 0xffff4c000000
-Host  virtual  test memory offset: 0xffff72000000
-
-cmdline: ./kvm_page_table_test -m 4 -b 1G -s anonymous_hugetlb_64kb
-some outputs:
-Host  virtual  test memory offset: 0xffff58230000
-Host  virtual  test memory offset: 0xffff6ef00000
-Host  virtual  test memory offset: 0xffff7c150000
-
-Thanks,
-Yanan
->   		alignment = max(huge_page_size, alignment);
-> +	else
-> +		ASSERT_EQ(src_type, VM_MEM_SRC_ANONYMOUS);
->   
->   	/* Add enough memory to align up if necessary */
->   	if (alignment > 1)
