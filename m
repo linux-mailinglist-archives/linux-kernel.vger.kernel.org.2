@@ -2,118 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F993251C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704333251C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232197AbhBYOv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 09:51:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
+        id S229722AbhBYOxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 09:53:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbhBYOvW (ORCPT
+        with ESMTP id S229952AbhBYOxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 09:51:22 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2401EC061786;
-        Thu, 25 Feb 2021 06:50:42 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id f8so3312232plg.5;
-        Thu, 25 Feb 2021 06:50:42 -0800 (PST)
+        Thu, 25 Feb 2021 09:53:02 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B183C061574;
+        Thu, 25 Feb 2021 06:52:21 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id f1so8978770lfu.3;
+        Thu, 25 Feb 2021 06:52:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ICxR1l/7KZSqo36Cd5u0xbdSpjciCk+ekMLVc8kZuio=;
-        b=nE6FMH8tBWhfqZypIJmxC5ZJEacdZdRTQGVNDmCmx4YJNFIJcmYMWDXn4VIoeXDo13
-         jzFLbi7t95uHfCk9Zv/FVCJYJ9P3c9i45qgjJF5H6TMlNeSOS/rjfcjl+iAMX1c/KfXr
-         gN8kryvUYUs9lcMEWRgh9xYg2aIcHAKCEZ+UmAg0OCflDlScn4y97eDbrJ53NnNzKhjk
-         n6OcnXDpC0hMsFZhOH7nG/divlVa8I7xzQQoSQNKaZXL9XQFc+ffpVH1w4kSyg+xoi1S
-         kzUc7+XH2zRKkg3tY8a3bzPgUzTkog0aMj1J5UuS7hDRSKQ25zDHXyyanhBNF0qnQuRi
-         Racw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b0Yk5ew37ynltShNJp4k5V36iPk1KvT5BVOHRHFaH5s=;
+        b=leTObcTkk9Ve7VFdaV/zIX8dqgSqu7CAzf5FNcAUl19xRnOm5za1DBzelVKwSnZiYC
+         qEG4FlPGGbTQJQ/8xCt+0awAsS59bSzZPhWg0X4zzN+vLQTVLLb7FD7OKLOV+VY8mtxn
+         6jRB9AU53GJc63xn86LhgphVD0q3OO4OOflMBGkCLP4RCSjwVCGp0+IqDdEBJbrXmB5U
+         kD/AQFC6T+U0PdI7gWj+CY4OL/mEqFQrBA/7LW7cK5EhaYIn6zmI5+od1hUFbFeIRXv6
+         6FTqNlkUvRAfpr+Fz98nNPBTHm7zpSlKWcANWLZ5Rab0trJdH5IXL5Jhv1TraEaa9fDN
+         zE8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ICxR1l/7KZSqo36Cd5u0xbdSpjciCk+ekMLVc8kZuio=;
-        b=crO7Nzl1GLu7BbCOfo4T4luowQVnJx+fzo9ZfRUPoGJHjCohVmYzipFACbJzmKpHmY
-         KsxWTQswmpNWGu4jEa5oR7nu3eXfJxKJf8MqbrFwTPEp78XZrQ9n3CiubK02mbVdz+6p
-         LQfIGyLm/midH5QvJ6NQ0tfXDuSjOVfT0b1ACUsnxXTe6x99qewN0KKmFNjZ5MPj/HJo
-         d7XCUscLncviWTS2YqH1lIN1VLX2K3d7AmLkA9mKX//WA9mE5vqGBWTZl1FKm2Ac0OQY
-         hqZtAfbV5kBDuPQ3ovO24IEeUceWAeLsBjN1UHZV+wIfs/t12WinEggi0Ls4W3lfKcZD
-         Z+eg==
-X-Gm-Message-State: AOAM533jLbZYU5HaLBMISYoWzbApReEmzjCCsXdt+RJnKn15sHfUqNJN
-        EiwjY57I7XnG5vz9KQf5JqI=
-X-Google-Smtp-Source: ABdhPJy0xwfu4LfbRHmB35h3GPFN6CKqur6cB8K9GM7y1x9Cw1fj+2bpbHW0NMjS52DUc2zE6Yc3bw==
-X-Received: by 2002:a17:902:f688:b029:da:a817:1753 with SMTP id l8-20020a170902f688b02900daa8171753mr3410714plg.76.1614264641504;
-        Thu, 25 Feb 2021 06:50:41 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:600d:a089:7d05:ce5c:6c16:3c9f])
-        by smtp.googlemail.com with ESMTPSA id x2sm6389082pfi.220.2021.02.25.06.50.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b0Yk5ew37ynltShNJp4k5V36iPk1KvT5BVOHRHFaH5s=;
+        b=AVH2fT09fpJQKaug8/os/NkUZqxib+TGQPk+CjuGRnb8BDzR1H7TOUZlMDYTLM1AsH
+         n5Y7IcUomEDYw0SEyYu5ofE2ERA9M6D/P0LAkYu94pgiy1tFjdsY4YTBdCYL7JyLuxh4
+         N48uTScePSWqEfb+GfQCafj/9DvUmuYwurQzcrrDjJ/+T6+Mx8/mzQNstr9JqPN8NVPj
+         tgYfVkPGH2SJnkXdaf7yXkqY+xuHuERy7TOv0FntsMXv2Jevk091Rb5CXjIAdXV1jxVp
+         /Zx9hz30O5BWH/2MU7ZiBowl4gYNFqmjgJ6H2jruzX57sL12V9CQQ3m9xQktYSR1im6d
+         mWLw==
+X-Gm-Message-State: AOAM531dEyx3o5nrKNN3XXCFX8qf7fhtBk0uKyXIx2lEYe5V6Oi2r49z
+        WiOt8JtOWJFdNhA9mcOSSN79jotaccnko/xM
+X-Google-Smtp-Source: ABdhPJw/miGXH2CYM18vtvSrYyG6DV61kC26JwSH7Z4wz78Qz8gxAJlaYZL6kT12HczTp2bmlr7KiQ==
+X-Received: by 2002:a05:6512:224f:: with SMTP id i15mr2199244lfu.545.1614264740055;
+        Thu, 25 Feb 2021 06:52:20 -0800 (PST)
+Received: from localhost.localdomain ([37.150.90.70])
+        by smtp.googlemail.com with ESMTPSA id r7sm1146506lfr.230.2021.02.25.06.52.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 06:50:40 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     corbet@lwn.net
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [RFC v3] scripts: kernel-doc: fix typedef support for struct/union parsing
-Date:   Thu, 25 Feb 2021 20:20:33 +0530
-Message-Id: <20210225145033.11431-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CAKXUXMzHPnM=ie06ZGuFXyJ7RcRjYomjyASbp3ND9-Mb2Es+2w@mail.gmail.com>
-References: <CAKXUXMzHPnM=ie06ZGuFXyJ7RcRjYomjyASbp3ND9-Mb2Es+2w@mail.gmail.com>
+        Thu, 25 Feb 2021 06:52:19 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com
+Cc:     linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+ab02336a647181a886a6@syzkaller.appspotmail.com
+Subject: [PATCH] drivers/hid: fix for the big hid report length
+Date:   Thu, 25 Feb 2021 20:52:15 +0600
+Message-Id: <20210225145215.3438202-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, there are ~1290 occurrences in 447 files in the kernel tree
-'typedef struct/union' syntax for defining some struct/union. However,
-kernel-doc currently does not support that syntax. Of the ~1290
-occurrences, there are four occurrences in ./include/linux/zstd.h with
-typedef struct/union syntax and a preceding kernel-doc; all other
-occurrences have no preceding kernel-doc.
+syzbot found WARNING in hid_alloc_report_buf[1] when the raw buffer for
+report is kmalloc() allocated with length > KMALLOC_MAX_SIZE, causing
+order >= MAX_ORDER condition:
 
-Add support for parsing struct/union following this syntax.
+u8 *hid_alloc_report_buf(struct hid_report *report, gfp_t flags)
+{
+	/*
+	 * 7 extra bytes are necessary to achieve proper functionality
+	 * of implement() working on 8 byte chunks
+	 */
 
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+	u32 len = hid_report_len(report) + 7;
+
+	return kmalloc(len, flags);
+
+The restriction with HID_MAX_BUFFER_SIZE (16kb) is, seems, a valid max
+limit. I've come up with this in all hid_report_len() xrefs.
+
+The fix inside hid_report_len(), not in *hid_alloc_report_buf() is also
+fixing out-of-bounds here in memcpy():
+
+statc int hid_submit_ctrl(..)
+{
+..
+	len = hid_report_len(report);
+	if (dir == USB_DIR_OUT) {
+		..
+		if (raw_report) {
+			memcpy(usbhid->ctrlbuf, raw_report, len);
+..
+
+So I've decided to return HID_MAX_BUFFER_SIZE if it the report length is
+bigger than limit, otherwise the return the report length.
+
+[1]
+Call Trace:
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x40/0x130 mm/slab_common.c:837
+ kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
+ kmalloc_large include/linux/slab.h:481 [inline]
+ __kmalloc+0x257/0x330 mm/slub.c:3974
+ kmalloc include/linux/slab.h:557 [inline]
+ hid_alloc_report_buf+0x70/0xa0 drivers/hid/hid-core.c:1648
+ __usbhid_submit_report drivers/hid/usbhid/hid-core.c:590 [inline]
+
+Reported-by: syzbot+ab02336a647181a886a6@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 ---
-Changes in v3:
-- Modify commit message
+ drivers/hid/usbhid/hid-core.c | 2 +-
+ include/linux/hid.h           | 4 +++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-Changes in v2:
-- Split recurring regex into multiple variables
-- Modify commit message
-
- scripts/kernel-doc | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 8b5bc7bf4bb8..68df17877384 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -1201,12 +1201,23 @@ sub dump_union($$) {
- sub dump_struct($$) {
-     my $x = shift;
-     my $file = shift;
-+    my $decl_type;
-+    my $members;
-+    my $type = qr{struct|union};
-+    # For capturing struct/union definition body, i.e. "{members*}qualifiers*"
-+    my $definition_body = qr{\{(.*)\}(?:\s*(?:__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*};
+diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
+index 86257ce6d619..4e9077363c96 100644
+--- a/drivers/hid/usbhid/hid-core.c
++++ b/drivers/hid/usbhid/hid-core.c
+@@ -374,7 +374,7 @@ static int hid_submit_ctrl(struct hid_device *hid)
+ 	raw_report = usbhid->ctrl[usbhid->ctrltail].raw_report;
+ 	dir = usbhid->ctrl[usbhid->ctrltail].dir;
  
--    if ($x =~ /(struct|union)\s+(\w+)\s*\{(.*)\}(\s*(__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*/) {
--	my $decl_type = $1;
-+    if ($x =~ /($type)\s+(\w+)\s*$definition_body/) {
-+	$decl_type = $1;
- 	$declaration_name = $2;
--	my $members = $3;
-+	$members = $3;
-+    } elsif ($x =~ /typedef\s+($type)\s*$definition_body\s*(\w+)\s*;/) {
-+	$decl_type = $1;
-+	$declaration_name = $3;
-+	$members = $2;
-+    }
+-	len = ((report->size - 1) >> 3) + 1 + (report->id > 0);
++	len = hid_report_len(report);
+ 	if (dir == USB_DIR_OUT) {
+ 		usbhid->urbctrl->pipe = usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
+ 		usbhid->urbctrl->transfer_buffer_length = len;
+diff --git a/include/linux/hid.h b/include/linux/hid.h
+index c39d71eb1fd0..509a6ffdca00 100644
+--- a/include/linux/hid.h
++++ b/include/linux/hid.h
+@@ -1156,7 +1156,9 @@ static inline void hid_hw_wait(struct hid_device *hdev)
+ static inline u32 hid_report_len(struct hid_report *report)
+ {
+ 	/* equivalent to DIV_ROUND_UP(report->size, 8) + !!(report->id > 0) */
+-	return ((report->size - 1) >> 3) + 1 + (report->id > 0);
++	u32 len = ((report->size - 1) >> 3) + 1 + (report->id > 0);
++
++	return len > HID_MAX_BUFFER_SIZE ? HID_MAX_BUFFER_SIZE : len;
+ }
  
-+    if ($members) {
- 	if ($identifier ne $declaration_name) {
- 	    print STDERR "${file}:$.: warning: expecting prototype for $decl_type $identifier. Prototype was for $decl_type $declaration_name instead\n";
- 	    return;
+ int hid_report_raw_event(struct hid_device *hid, int type, u8 *data, u32 size,
 -- 
-2.17.1
+2.25.1
 
