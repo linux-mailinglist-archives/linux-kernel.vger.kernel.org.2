@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCB5324E31
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5997A324E2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235200AbhBYK3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:29:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35148 "EHLO mail.kernel.org"
+        id S234202AbhBYK2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:28:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230201AbhBYKBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232735AbhBYKBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 25 Feb 2021 05:01:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3D5064F32;
-        Thu, 25 Feb 2021 09:56:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B027764F33;
+        Thu, 25 Feb 2021 09:56:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246984;
-        bh=/08kOTvtWnoDP/4PO9mP0Dvrc6F4ejLsOtsGp//5fQo=;
+        s=korg; t=1614246987;
+        bh=ZBH8gMZE+qDRnkd48XonUZMaQcZhgvhR6kyUGJg3Pqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IENphGvxJyXH2pRb/ztdkoVtAlSQlnQPbpCwpkke0w/KHQYm6SVPTk8lXSLXiiBx6
-         5oIANSqwhq2Xeq1fAfsx75X6aBjM82cuiqeFpYuPeGufoW2HuGx4M/5xzSRGsi83k2
-         jg1HiBb73MLEFdQsap1UeTxG32mxq9noGaq3FEcU=
+        b=S45vaZKnXTr/+J5xe2WHDZhOyylvYA/Z4ylBGAvJumF9cOycwvwKUAyGlrcAleeMX
+         zWgq+u1elFUR4BHbGtCeulDzGI/LOmJ31MPYrUpkHP1ueH9ZAutSy328j+G54MbIh6
+         Ny6ceFPzUoEx5ICswmA9aS4iz8iq1ONujsrZIXFs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rolf Eike Beer <eb@emlix.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 5.4 08/17] scripts: set proper OpenSSL include dir also for sign-file
-Date:   Thu, 25 Feb 2021 10:53:53 +0100
-Message-Id: <20210225092515.408097659@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 09/17] mm: unexport follow_pte_pmd
+Date:   Thu, 25 Feb 2021 10:53:54 +0100
+Message-Id: <20210225092515.457589379@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210225092515.001992375@linuxfoundation.org>
 References: <20210225092515.001992375@linuxfoundation.org>
@@ -39,28 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rolf Eike Beer <eb@emlix.com>
+From: Christoph Hellwig <hch@lst.de>
 
-commit fe968c41ac4f4ec9ffe3c4cf16b72285f5e9674f upstream.
+commit 7336375734d65ecc82956b59a79cf5deccce880c upstream.
 
-Fixes: 2cea4a7a1885 ("scripts: use pkg-config to locate libcrypto")
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
-Cc: stable@vger.kernel.org # 5.6.x
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Patch series "simplify follow_pte a bit".
+
+This small series drops the not needed follow_pte_pmd exports, and
+simplifies the follow_pte family of functions a bit.
+
+This patch (of 2):
+
+follow_pte_pmd() is only used by the DAX code, which can't be modular.
+
+Link: https://lkml.kernel.org/r/20201029101432.47011-2-hch@lst.de
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- scripts/Makefile |    1 +
- 1 file changed, 1 insertion(+)
+ mm/memory.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -26,6 +26,7 @@ hostprogs-$(CONFIG_SYSTEM_EXTRA_CERTIFIC
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4313,7 +4313,6 @@ int follow_pte_pmd(struct mm_struct *mm,
+ 						    ptepp, pmdpp, ptlp)));
+ 	return res;
+ }
+-EXPORT_SYMBOL(follow_pte_pmd);
  
- HOSTCFLAGS_sortextable.o = -I$(srctree)/tools/include
- HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
-+HOSTCFLAGS_sign-file.o = $(CRYPTO_CFLAGS)
- HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
- HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
- HOSTLDLIBS_extract-cert = $(CRYPTO_LIBS)
+ /**
+  * follow_pfn - look up PFN at a user virtual address
 
 
