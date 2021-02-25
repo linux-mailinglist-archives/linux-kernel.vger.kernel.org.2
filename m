@@ -2,128 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9BC32583A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A6C325824
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234459AbhBYU7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:59:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234212AbhBYUuN (ORCPT
+        id S235115AbhBYU4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:56:12 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16946 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233688AbhBYUtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:50:13 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4765C0611C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:33 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id g17so7639655ybh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:48:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=iKJLs+velK3tbbbqG24O5VyKgRTy3wHLluGHdOvzpgU=;
-        b=c16m5fP+SpCoY8+Sz3VL1bRlpB0IOoWxnO0jmB37hGhNGm2KgtoNzrIye/2rFrSAt8
-         KhBU9Q9IloU6akt/33FAi29Elcb+fD7Ldf3WQWpKeayx/39ZbGeeLnVXYTOJqi+qjOJw
-         xHGGweXg+BWHNZvy6ML1iAKUTK9y5c9Jv3NtsLgD+DV0ueb5W9MJX9OcMNIgBnFVfaVA
-         3FLemBZ0WblYjTtAa3Mxavr/gGaEvm+xn53jy2B6Vh8U2lQ4oMuxZvT6+4mGKVrtazWl
-         KEMcpAI1Pf90DZIqpxlarn52e+A8PAZ8jDvKHd6UE7gd3oaRRVzp64/u/bnhYS0ovZwb
-         sw7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=iKJLs+velK3tbbbqG24O5VyKgRTy3wHLluGHdOvzpgU=;
-        b=Z3BdBSzV2xeTzr3GFEsR531VXzfVsBywT7TqUyF2kgDxIfD3c5jflhU05hIVjjmVAQ
-         IgEEpOzuPXcpq+RtBmfND69iXRxu4uFzbjXJanxbPTc/NZZwiQokgR3D1LPLP0Uv0ThU
-         i5fWyIUS6InDIyg6fhYo2qY0evJjNFW5lqd84L1erpZV7CVNdxQl9n3vObZVJ2sGwFpP
-         xZS018HSM9DyjIhru352vf3LfkyqPyq6s88we9oBoYx3dhBhJEi8iNyPhFv19IiGGyT6
-         KM7BblynQ9NSJ9w1BU2MUc6KxTrIsJJrgP4RBKwxVtZQcDqrm7wgRzguVlhTV4yO6KjR
-         dHKA==
-X-Gm-Message-State: AOAM532krF1smwLy7n5l+XO8BooZPl4NaytLHyWasSpb4+HtDrrIwmTb
-        5SOJclmCuF3IqaTgpCDxHq284WJS8c0=
-X-Google-Smtp-Source: ABdhPJyxdfNw7gAbChySrqKHw9zv/yCfvcjoe75Yr2KYX6LuA2A8TRL9xhG7JHcEgHCraEL9ypNV3Ztjmy8=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:34c4:7c1d:f9ba:4576])
- (user=seanjc job=sendgmr) by 2002:a25:482:: with SMTP id 124mr6891292ybe.315.1614286112926;
- Thu, 25 Feb 2021 12:48:32 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Feb 2021 12:47:38 -0800
-In-Reply-To: <20210225204749.1512652-1-seanjc@google.com>
-Message-Id: <20210225204749.1512652-14-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210225204749.1512652-1-seanjc@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH 13/24] KVM: x86/mmu: Use MMIO SPTE bits 53 and 52 for the MMIO generation
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 25 Feb 2021 15:49:46 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PKYrFS137177;
+        Thu, 25 Feb 2021 15:48:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=3IT/tt0A/Rt/I15o1zV9S8xLTjI2UhF7KfP/c0y7sbU=;
+ b=OG2GY0dt1Q5m4mw7NJtQvjX8IDlaA0fGXIr6Ir56GEjDWUqc9+hIRClJX6kth8lavzrr
+ jxhiEHZDpwzNtcidQzRl7kDa/Jg/vgH0Ts6WH3jMseoc2tK3Zksxjcr/IOO07QfOSWq/
+ ZDTp82dzRexg2bXZDK4Swf6ZsFSub6d3knFrv1JSfwvUDTx2AJQm/zEWnVyE1UAqClC0
+ +o+T76l1olx8szmb8qGULVkbaYqHJfWzygZDe8rcyBYw18u7zrdmIu4BWM8YHciHyBhf
+ rjNSKI4iPQVvYnae6HqUEycNhipkUeeBVUr1kmNjbwIvXaGYSbjZ7dNziQmndi6RH3lV DA== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36xhw0tgeu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Feb 2021 15:48:28 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11PKmCHI003426;
+        Thu, 25 Feb 2021 20:48:28 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma04wdc.us.ibm.com with ESMTP id 36tt2a1h36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Feb 2021 20:48:28 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11PKmQVG13697598
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Feb 2021 20:48:26 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D08866E050;
+        Thu, 25 Feb 2021 20:48:26 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 78D8F6E04E;
+        Thu, 25 Feb 2021 20:48:26 +0000 (GMT)
+Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 25 Feb 2021 20:48:26 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH v2 0/5] ibmvfc: hard reset fixes
+Date:   Thu, 25 Feb 2021 14:48:19 -0600
+Message-Id: <20210225204824.14570-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-25_11:2021-02-24,2021-02-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=866
+ malwarescore=0 impostorscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 mlxscore=0 priorityscore=1501 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102250158
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use bits 53 and 52 for the MMIO generation now that they're not used to
-identify MMIO SPTEs.
+This series contains a minor simplification of ibmvfc_init_sub_crqs() followed
+by a couple fixes for sub-CRQ handling which effect hard reset of the
+client/host adapter CRQ pair.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/spte.c | 1 -
- arch/x86/kvm/mmu/spte.h | 8 ++++----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+changes in v2:
+* added Reviewed-by tags for patches 1-3
+* Patch 4: use rtas_busy_delay to test rc and delay correct amount of time
+* Patch 5: (new) similar fix for LPM case where CRQ pair needs re-enablement
 
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index 3eaf143b7d12..cf0e20b34cd3 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -42,7 +42,6 @@ static u64 generation_mmio_spte_mask(u64 gen)
- 	u64 mask;
- 
- 	WARN_ON(gen & ~MMIO_SPTE_GEN_MASK);
--	BUILD_BUG_ON((MMIO_SPTE_GEN_HIGH_MASK | MMIO_SPTE_GEN_LOW_MASK) & SPTE_TDP_AD_MASK);
- 
- 	mask = (gen << MMIO_SPTE_GEN_LOW_SHIFT) & MMIO_SPTE_GEN_LOW_MASK;
- 	mask |= (gen << MMIO_SPTE_GEN_HIGH_SHIFT) & MMIO_SPTE_GEN_HIGH_MASK;
-diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-index fd0a7911f098..bf4f49890606 100644
---- a/arch/x86/kvm/mmu/spte.h
-+++ b/arch/x86/kvm/mmu/spte.h
-@@ -65,11 +65,11 @@ static_assert(SPTE_TDP_AD_ENABLED_MASK == 0);
- #define SPTE_MMU_WRITEABLE	(1ULL << (PT_FIRST_AVAIL_BITS_SHIFT + 1))
- 
- /*
-- * Due to limited space in PTEs, the MMIO generation is a 18 bit subset of
-+ * Due to limited space in PTEs, the MMIO generation is a 20 bit subset of
-  * the memslots generation and is derived as follows:
-  *
-  * Bits 0-8 of the MMIO generation are propagated to spte bits 3-11
-- * Bits 9-17 of the MMIO generation are propagated to spte bits 54-62
-+ * Bits 9-19 of the MMIO generation are propagated to spte bits 52-62
-  *
-  * The KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS flag is intentionally not included in
-  * the MMIO generation number, as doing so would require stealing a bit from
-@@ -82,7 +82,7 @@ static_assert(SPTE_TDP_AD_ENABLED_MASK == 0);
- #define MMIO_SPTE_GEN_LOW_START		3
- #define MMIO_SPTE_GEN_LOW_END		11
- 
--#define MMIO_SPTE_GEN_HIGH_START	PT64_SECOND_AVAIL_BITS_SHIFT
-+#define MMIO_SPTE_GEN_HIGH_START	52
- #define MMIO_SPTE_GEN_HIGH_END		62
- 
- #define MMIO_SPTE_GEN_LOW_MASK		GENMASK_ULL(MMIO_SPTE_GEN_LOW_END, \
-@@ -94,7 +94,7 @@ static_assert(SPTE_TDP_AD_ENABLED_MASK == 0);
- #define MMIO_SPTE_GEN_HIGH_BITS		(MMIO_SPTE_GEN_HIGH_END - MMIO_SPTE_GEN_HIGH_START + 1)
- 
- /* remember to adjust the comment above as well if you change these */
--static_assert(MMIO_SPTE_GEN_LOW_BITS == 9 && MMIO_SPTE_GEN_HIGH_BITS == 9);
-+static_assert(MMIO_SPTE_GEN_LOW_BITS == 9 && MMIO_SPTE_GEN_HIGH_BITS == 11);
- 
- #define MMIO_SPTE_GEN_LOW_SHIFT		(MMIO_SPTE_GEN_LOW_START - 0)
- #define MMIO_SPTE_GEN_HIGH_SHIFT	(MMIO_SPTE_GEN_HIGH_START - MMIO_SPTE_GEN_LOW_BITS)
+Tyrel Datwyler (5):
+  powerpc/pseries: extract host bridge from pci_bus prior to bus removal
+  ibmvfc: simplify handling of sub-CRQ initialization
+  ibmvfc: fix invalid sub-CRQ handles after hard reset
+  ibmvfc: treat H_CLOSED as success during sub-CRQ registration
+  ibmvfc: store return code of H_FREE_SUB_CRQ during cleanup
+
+ arch/powerpc/platforms/pseries/pci_dlpar.c |  4 +-
+ drivers/scsi/ibmvscsi/ibmvfc.c             | 49 ++++++++++------------
+ 2 files changed, 26 insertions(+), 27 deletions(-)
+
 -- 
-2.30.1.766.gb4fecdf3b7-goog
+2.27.0
 
