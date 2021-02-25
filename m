@@ -2,218 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D5B325081
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC82325086
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232982AbhBYN33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 08:29:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47921 "EHLO
+        id S233161AbhBYNbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 08:31:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20283 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233121AbhBYN2H (ORCPT
+        by vger.kernel.org with ESMTP id S233162AbhBYN24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:28:07 -0500
+        Thu, 25 Feb 2021 08:28:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614259599;
+        s=mimecast20190719; t=1614259650;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=eXUvZpa0/Gfdi/WbDQrtIYaPffDzy8NMBiJQiT8MF2I=;
-        b=KvIsdO1iyg0GwYmLgzzX8/LJht8ZU6mEyir+iuBNkPLD+4hN+3p2YBJ/K0UTQkkUJW+Chd
-        i2m5o/PcaLLi1UaJzzajWGnqDaNfdJY3LLA1+Cyk010y95d5NaG14xGhZiAylk7aGC3jHG
-        f5F973aBnSGp6qDmmcCCH19AgNIKmWc=
+        bh=bmhocK8JvxeFvqznSPmVOrjmguqn5DklCKcUL2w9cKA=;
+        b=UPTQRptALDnF6j3Mxg+yY4UnM+76++3siI6Mdxi8CsbCwsP4scbiisuOBxzmtXMHazQxOd
+        xBnslBWoOOH7Vr3e2ky6CuMKzxnrcAAOF0tyjC9kZ13s94pbdLlTOHJV8q8H3P7LIIrMTu
+        7enANNrMKiG/TSNg3O+u9wm7yYgS/Vo=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-471-CzbjGrFwMg-IyRC5cRsJ2Q-1; Thu, 25 Feb 2021 08:26:36 -0500
-X-MC-Unique: CzbjGrFwMg-IyRC5cRsJ2Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+ us-mta-273-YUcj0nl0NBq2qTP1Br-cZQ-1; Thu, 25 Feb 2021 08:27:25 -0500
+X-MC-Unique: YUcj0nl0NBq2qTP1Br-cZQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CF9F801979;
-        Thu, 25 Feb 2021 13:26:35 +0000 (UTC)
-Received: from gondolin (ovpn-113-228.ams2.redhat.com [10.36.113.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D170C5C234;
-        Thu, 25 Feb 2021 13:26:30 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 14:26:28 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        virtio-dev@lists.oasis-open.org
-Subject: Re: [virtio-dev] Re: [PATCH] vdpa/mlx5: set_features should allow
- reset to zero
-Message-ID: <20210225142628.3659af58.cohuck@redhat.com>
-In-Reply-To: <be6713d3-ac98-bbbf-1dc1-a003ed06a156@redhat.com>
-References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
-        <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
-        <ee31e93b-5fbb-1999-0e82-983d3e49ad1e@oracle.com>
-        <20210223041740-mutt-send-email-mst@kernel.org>
-        <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
-        <20210223110430.2f098bc0.cohuck@redhat.com>
-        <bbb0a09e-17e1-a397-1b64-6ce9afe18e44@redhat.com>
-        <20210223115833.732d809c.cohuck@redhat.com>
-        <8355f9b3-4cda-cd2e-98df-fed020193008@redhat.com>
-        <20210224121234.0127ae4b.cohuck@redhat.com>
-        <be6713d3-ac98-bbbf-1dc1-a003ed06a156@redhat.com>
-Organization: Red Hat GmbH
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BFD280196C;
+        Thu, 25 Feb 2021 13:27:24 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-114-4.ams2.redhat.com [10.36.114.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 89E715D9E2;
+        Thu, 25 Feb 2021 13:27:23 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 19A4C18000A7; Thu, 25 Feb 2021 14:27:22 +0100 (CET)
+Date:   Thu, 25 Feb 2021 14:27:22 +0100
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Melissa Wen <melissa.srw@gmail.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Dave Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] drm/vkms: Add support for virtual hardware mode
+Message-ID: <20210225132722.s2deh35qwhan5kkf@sirius.home.kraxel.org>
+References: <20210224105509.yzdimgbu2jwe3auf@adolin>
+ <CAKMK7uFwdHaaGs8BPSAah1Vp5pJWTzxoruLgOWxQu1aDAyCKLQ@mail.gmail.com>
+ <20210225102520.uysa4muovemqi66n@sirius.home.kraxel.org>
+ <YDd8qOETBy8z/qDh@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDd8qOETBy8z/qDh@phenom.ffwll.local>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 12:36:07 +0800
-Jason Wang <jasowang@redhat.com> wrote:
+On Thu, Feb 25, 2021 at 11:32:08AM +0100, Daniel Vetter wrote:
+> On Thu, Feb 25, 2021 at 11:25:20AM +0100, Gerd Hoffmann wrote:
+> > On Thu, Feb 25, 2021 at 10:09:42AM +0100, Daniel Vetter wrote:
+> > > On Wed, Feb 24, 2021 at 11:55 AM Sumera Priyadarsini
+> > > <sylphrenadin@gmail.com> wrote:
+> > > >
+> > > > Add a virtual hardware or vblank-less mode as a module to enable
+> > > > VKMS to emulate virtual graphic drivers. This mode can be enabled
+> > > > by setting enable_virtual_hw=1 at the time of loading VKMS.
+> > > >
+> > > > A new function vkms_crtc_composer() has been added to bypass the
+> > > > vblank mode and is called directly in the atomic hook in
+> > > > vkms_atomic_begin(). However, some crc captures still use vblanks
+> > > > which causes the crc-based igt tests to crash. Currently, I am unsure
+> > > > about how to approach one-shot implementation of crc reads so I am
+> > > > still working on that.
+> > > 
+> > > Gerd, Zack: For virtual hw like virtio-gpu or vmwgfx that does
+> > > one-shot upload and damage tracking, what do you think is the best way
+> > > to capture crc for validation? Assuming that's even on the plans
+> > > anywhere ...
+> > > 
+> > > Ideally it'd be a crc that the host side captures, so that we really
+> > > have end-to-end validation, including the damage uploads and all that.
+> > 
+> > Disclaimer:  Not knowing much about the crc thing beside having noticed
+> > it exists and seems to be used for display content checking.
+> > 
+> > > For vkms we're going for now with one-shot crc generation after each
+> > > atomic flip (or DIRTYFB ioctl call). Will need a pile of igt changes,
+> > > but seems like the most fitting model.
+> > > Other option would be that we'd wire up something on the kernel side
+> > > that generates a crc on-demand every time igt reads a new crc value
+> > > (maybe with some rate limiting). But that's not really how virtual hw
+> > > works when everything is pushed explicitly to the host side.
+> > 
+> > igt runs inside the guest, right?
+> 
+> Yup. There's some debugfs files for capture crc on a specific CRTC. So
+> supporting this would mean some virtio-gpu revision so you could ask the
+> host side for a crc when you do a screen update, and the host side would
+> send that back to you on a virtio channel as some kind of message.
 
-> On 2021/2/24 7:12 =E4=B8=8B=E5=8D=88, Cornelia Huck wrote:
-> > On Wed, 24 Feb 2021 17:29:07 +0800
-> > Jason Wang <jasowang@redhat.com> wrote:
-> > =20
-> >> On 2021/2/23 6:58 =E4=B8=8B=E5=8D=88, Cornelia Huck wrote: =20
-> >>> On Tue, 23 Feb 2021 18:31:07 +0800
-> >>> Jason Wang <jasowang@redhat.com> wrote:
+Waded through the source code a bit.  So, the vkms crc code merges all
+planes (specifically the cursor plane) before calculating the crc.
+Which is a bit of a problem, we try to avoid that and rarely actually
+merge the planes anywhere in the virtualization stack.  Instead we
+prefer to pass through the cursor plane separately, so we can -- for
+example -- use that to simply set the cursor sprite of the qemu gtk
+window.  It's much more snappy because moving+rendering the pointer
+doesn't need a round-trip to the guest then.
 
-> >>>> The problem is the MTU description for example:
-> >>>>
-> >>>> "The following driver-read-only field, mtu only exists if
-> >>>> VIRTIO_NET_F_MTU is set."
-> >>>>
-> >>>> It looks to me need to use "if VIRTIO_NET_F_MTU is set by device". =
-=20
-> >>> "offered by the device"? I don't think it should 'disappear' from the
-> >>> config space if the driver won't use it. (Same for other config space
-> >>> fields that are tied to feature bits.) =20
-> >>
-> >> But what happens if e.g device doesn't offer VIRTIO_NET_F_MTU? It looks
-> >> to according to the spec there will be no mtu field. =20
-> > I think so, yes.
-> > =20
-> >> And a more interesting case is VIRTIO_NET_F_MQ is not offered but
-> >> VIRTIO_NET_F_MTU offered. To me, it means we don't have
-> >> max_virtqueue_pairs but it's not how the driver is wrote today. =20
-> > That would be a bug, but it seems to me that the virtio-net driver
-> > reads max_virtqueue_pairs conditionally and handles absence of the
-> > feature correctly? =20
->=20
->=20
-> Yes, see the avove codes:
->=20
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (virtio_has_feature(vdev, =
-VIRTIO_NET_F_MTU)) {
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 int mtu =3D virtio_cread16(vdev,
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 offsetof(struct virtio_net_config,
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mt=
-u));
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 if (mtu < MIN_MTU)
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __virtio=
-_clear_bit(vdev, VIRTIO_NET_F_MTU);
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->=20
+So, it would be quite some effort on the host side, we would have to
+merge planes just for crc calculation.
 
-Ouch, you're right. The virtio_cread accessors all operate on offsets
-into a structure, it's just more obvious here.
+> > You can ask qemu to write out a screen dump.
 
-> So it's probably too late to fix the driver.
+Hmm, the (hardware) cursor is not in the screen dump either.
 
-It is never too late to fix a driver :)
+A software cursor (when using for example cirrus which has no cursor
+plane) would be there.
 
-It seems involved, though. We'd need different config space structures
-based upon which set of features has been negotiated. It's not too bad
-when features build upon each other and add fields at the end (this
-should be fine right now, if the code remembered to check for the
-feature), but can become ugly if an in-between field depends upon a
-feature.
+> > Another option to access the screen would be vnc.
 
-I guess we've been lucky that it seems to be an extremely uncommon
-configuration.
+vnc clients can get the cursor sprite.  They can't get the position
+though, only set it (it's a one-way ticket in the vnc protocol).
+Typically not a problem because desktops set the position in response
+to the pointer events so guest + host position match nevertheless.
+But for test cases which don't look at input events and set the cursor
+to a fixed place this is a problem ...
 
->=20
->=20
-> > =20
-> >> =20
-> >>>       =20
-> >>>> Otherwise readers (at least for me), may think the MTU is only valid
-> >>>> if driver set the bit. =20
-> >>> I think it would still be 'valid' in the sense that it exists and has
-> >>> some value in there filled in by the device, but a driver reading it
-> >>> without negotiating the feature would be buggy. (Like in the kernel
-> >>> code above; the kernel not liking the value does not make the field
-> >>> invalid.) =20
-> >>
-> >> See Michael's reply, the spec allows read the config before setting
-> >> features. =20
-> > Yes, the period prior to finishing negotiation is obviously special.
-> > =20
-> >> =20
-> >>> Maybe a statement covering everything would be:
-> >>>
-> >>> "The following driver-read-only field mtu only exists if the device
-> >>> offers VIRTIO_NET_F_MTU and may be read by the driver during feature
-> >>> negotiation and after VIRTIO_NET_F_MTU has been successfully
-> >>> negotiated."
-> >>>    =20
-> >>>>    =20
-> >>>>> Should we add a wording clarification to the spec? =20
-> >>>> I think so. =20
-> >>> Some clarification would be needed for each field that depends on a
-> >>> feature; that would be quite verbose. Maybe we can get away with a
-> >>> clarifying statement?
-> >>>
-> >>> "Some config space fields may depend on a certain feature. In that
-> >>> case, the field exits if the device has offered the corresponding
-> >>> feature, =20
-> >>
-> >> So this implies for !VIRTIO_NET_F_MQ && VIRTIO_NET_F_MTU, the config
-> >> will look like:
-> >>
-> >> struct virtio_net_config {
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 mac[6];
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 le16 status;
-> >>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 le16 mtu;
-> >> };
-> >> =20
-> > I agree. =20
->=20
->=20
-> So consider it's probably too late to fix the driver which assumes some=20
-> field are always persent, it looks to me need fix the spec do declare=20
-> the fields are always existing instead.
+> > On-demand crc via debugfs or ioctl would work too, but yes that wouldn't
+> > verify the host-side.  At least not without virtio protocol extensions.
+> > We could add a new command asking the host to crc the display and return
+> > the result for on-demand crc.  Or add a crc request flag to an existing
+> > command (VIRTIO_GPU_CMD_RESOURCE_FLUSH probably).
+> 
+> Yup, I think that's what would be needed. The question here is, what do
+> you think would be the most natural way for virtio host side stack to
+> support this?
 
-The problem with that is that it has been in the spec already, and a
-compliant device that did not provide the fields without the features
-would suddenly become non-compliant...
+virtio has feature flags, so we can easily introduce an extension in a
+backward compatible way.  Each command sends a reply, with optional
+payload, so it would make sense to send the crc with the
+VIRTIO_GPU_CMD_RESOURCE_FLUSH reply.
 
->=20
->=20
-> > =20
-> >>>    and may be read by the driver during feature negotiation, and
-> >>> accessed by the driver after the feature has been successfully
-> >>> negotiated. A shorthand for this is a statement that a field only
-> >>> exists if a certain feature bit is set." =20
-> >>
-> >> I'm not sure using "shorthand" is good for the spec, at least we can
-> >> limit the its scope only to the configuration space part. =20
-> > Maybe "a shorthand expression"? =20
->=20
->=20
-> So the questions is should we use this for all over the spec or it will=20
-> be only used in this speicifc part (device configuration).
+Alternatively introduce a communication channel independent of the gpu,
+using for example virtio-serial or vsock, let the guest send crc
+requests to qemu that way.  Which would work with all qemu display
+devices, not only virtio-gpu.
 
-For command structures and the like, "feature is set" should always
-mean "feature has been negotiated"; I think config space is special
-because the driver can read it before feature negotiation is finished,
-so device configuration is probably the proper place for it.
+take care,
+  Gerd
 
