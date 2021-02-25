@@ -2,118 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98804325716
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1579B325717
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234458AbhBYTvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:51:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36104 "EHLO
+        id S233375AbhBYTwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234761AbhBYTm2 (ORCPT
+        with ESMTP id S235096AbhBYTmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:42:28 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCA6C061788
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:41:44 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id g20so3788999plo.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 11:41:44 -0800 (PST)
+        Thu, 25 Feb 2021 14:42:44 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519E1C06178C;
+        Thu, 25 Feb 2021 11:42:04 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id n4so6424246wrx.1;
+        Thu, 25 Feb 2021 11:42:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=rQpr5+/yevWYmIpNLxeUt8voD/kpC5d74+rfky8OIcQ=;
-        b=hmWw3KIsjHnY1fe3QMyLU/f+l9+t0cTKKV1fi7bBFBnnP4ylE0tpE7LX2o4yj52plY
-         MZJPJ7tqyDlysj8Hl/udW6HKPo8eVrcJ6Ot2YFpMbDUVbnbBbnLg9azHZKfjCGu+QHGW
-         umWfWO0L3E9EyCoUZ2AOiPd0FMF6EgYUNuB8g=
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9um242iCHB300BD9k7qw2Txw9JjwLSguwC+abttFn+k=;
+        b=iKEYA9uD61YuyyZhKRBJK/4HehtHC3bMDkMrExOg/wZiPOxNefn5LUt/8kQN8TsNGT
+         5gpZk/avut5Y7FpzANYLpDw5wviZ4JAyP0Hyf5Yt6JYMv36nYcsrNw304pnC8IIDNEAF
+         cZsyZPnuvhDBuLq2ZWTlHbmZW7O2GFe8TXqfy1HNkk+5gWPo5pXcvx6ZZ70dtnoyJrWf
+         sPLkHh5/nBUWBSJIzBIvKNyrljy1Lmn/TADpZCOhY9J4oV19yHfOSqlSOPqUeSXBcm4X
+         Rxr/OF7b7cu7Pos6Z7je01pZQGb0S9Ps1aRLeNrK2TqwH9IaK8aQa1IVmr8+Pu5hEUnn
+         RztA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=rQpr5+/yevWYmIpNLxeUt8voD/kpC5d74+rfky8OIcQ=;
-        b=qgaF6b8hLswyldvPsC7oZRxnQc+brTDFnBcwiOc1zwza56gRlSxFgGFf0hA1wWvAYZ
-         wIL2MNFw8gyyPMJJuaeCyScC2DycSSD0JWm/d/rlJ8e4wNVcba2vQxRxgU43lJR0A6Lz
-         1ZN3ulGd+59SipmXZnbdwLcbTEQcOqDYwLRFAp/2ZxXCTyTN4wzZYn6EfEL2ULdcuuqZ
-         f2QWtP0PuA+MhqLjk1+DQUpkj2cUSRVmWpy8FjjGLJ53U+z0f5R6kH0JiLIpzbPOKFyr
-         ebeZ9002OYpSiC+cfukYQhS+qAgEP7rgYgtq5N3poE6BPUfXnyZ2hb3FZFAriXs+5WME
-         lIrg==
-X-Gm-Message-State: AOAM5301J0wi0Dw+bveOAs1fqnqmJ4/zBofYWfMcwM4FzTvWO1GdbIpW
-        ghhkRymMh8TH8idcDZB1jzdYvw==
-X-Google-Smtp-Source: ABdhPJyYq/aWU+OvnpQXKNtlrlAIj00JW+H+hFN2jZiEEBKQMLcGqxPVTETtPRzSKUGffP/x0Rps9w==
-X-Received: by 2002:a17:90b:3783:: with SMTP id mz3mr18611pjb.88.1614282104581;
-        Thu, 25 Feb 2021 11:41:44 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:b942:93a8:e68d:5a90])
-        by smtp.gmail.com with ESMTPSA id c9sm6452234pjr.44.2021.02.25.11.41.44
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9um242iCHB300BD9k7qw2Txw9JjwLSguwC+abttFn+k=;
+        b=UuXCdWKFNGUeKgui4OfcqU8As40y3We1Q+ClUupfJNqGnXo6Sis6hVQWUamseAXP3v
+         X6O7F15ViX25bxwXRONf1tSbpEoPgn9+r/Mt3lOO4shQqe1AYDJjyh8l6p5dduDG4n/2
+         KoKhonLVBrLXAWhY9dEtLoJey6xUtq9GaUhr2b/KkLGbo9GL6pmfFP5htLDkVs1GxerD
+         N/3YUxHvtnLWOirG4QcBNBdPpHOaiC/zRn+B7AEbDY8OUjHfT+k5PB3MpruROfLON0T7
+         VkR+c3gWnqp2HwYGrGP8ytvZNfCEbnnaaJn5g4blFdtabbIDAPU01k/dG2hhOJa/wZjo
+         /LOQ==
+X-Gm-Message-State: AOAM530HpXNtErDuUnLx5PTOysqtJDcaLYH5XpLjMzperwj6zOSj7kLO
+        TLUvSOc4AOjayCJQFz3SBbg=
+X-Google-Smtp-Source: ABdhPJwlC8EUWRDFTZiHHNE9uXS4gfVOcxocHpKijHRbeQd8FkDDkntUIu2akkthH8hSLVmEW8ufGg==
+X-Received: by 2002:adf:a418:: with SMTP id d24mr4982711wra.187.1614282123073;
+        Thu, 25 Feb 2021 11:42:03 -0800 (PST)
+Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id a198sm890603wmd.11.2021.02.25.11.42.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 11:41:44 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 25 Feb 2021 11:42:02 -0800 (PST)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     jonas.gorski@gmail.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Stefan Wahren <stefan.wahren@i2se.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] clk: add BCM63268 timer clock and reset
+Date:   Thu, 25 Feb 2021 20:41:57 +0100
+Message-Id: <20210225194201.17001-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <463a45f2c3e4a91430c006fa1637c7f4f124185e.1614244789.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1614244789.git.saiprakash.ranjan@codeaurora.org> <463a45f2c3e4a91430c006fa1637c7f4f124185e.1614244789.git.saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH 8/9] arm64: dts: qcom: sc7280: Add AOSS QMP node
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Date:   Thu, 25 Feb 2021 11:41:42 -0800
-Message-ID: <161428210272.1254594.16034240343090747878@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sai Prakash Ranjan (2021-02-25 01:30:24)
-> Add a DT node for the AOSS QMP on SC7280 SoC.
->=20
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/q=
-com/sc7280.dtsi
-> index 65c1e0f2fb56..cbd567ccc04e 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -9,6 +9,7 @@
->  #include <dt-bindings/clock/qcom,rpmh.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/mailbox/qcom-ipcc.h>
-> +#include <dt-bindings/power/qcom-aoss-qmp.h>
->  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
-> =20
->  / {
-> @@ -368,6 +369,19 @@ pdc: interrupt-controller@b220000 {
->                         interrupt-controller;
->                 };
-> =20
-> +               aoss_qmp: qmp@c300000 {
+Broadcom BCM63268 has a timer clock and reset controller which has the
+following layout:
+  #define POR_RESET_STATUS            (1 << 31)
+  #define HW_RESET_STATUS             (1 << 30)
+  #define SW_RESET_STATUS             (1 << 29)
+  #define USB_REF_CLKEN               (1 << 18)
+  #define UTO_EXTIN_CLKEN             (1 << 17)
+  #define UTO_CLK50_SEL               (1 << 16)
+  #define FAP2_PLL_CLKEN              (1 << 15)
+  #define FAP2_PLL_FREQ_SHIFT         12
+  #define FAP1_PLL_CLKEN              (1 << 11)
+  #define FAP1_PLL_FREQ_SHIFT         8
+  #define WAKEON_DSL                  (1 << 7)
+  #define WAKEON_EPHY                 (1 << 6)
+  #define DSL_ENERGY_DETECT_ENABLE    (1 << 4)
+  #define GPHY_1_ENERGY_DETECT_ENABLE (1 << 3)
+  #define EPHY_3_ENERGY_DETECT_ENABLE (1 << 2)
+  #define EPHY_2_ENERGY_DETECT_ENABLE (1 << 1)
+  #define EPHY_1_ENERGY_DETECT_ENABLE (1 << 0)
 
-power-domain-controller@c300000? power-controller@c300000?
+Álvaro Fernández Rojas (4):
+  mips: bmips: add BCM63268 timer clock definitions
+  mips: bmips: add BCM63268 timer reset definitions
+  dt-bindings: clock: Add BCM63268 timer binding
+  clk: bcm: Add BCM63268 timer clock and reset driver
 
-> +                       compatible =3D "qcom,sc7280-aoss-qmp";
-> +                       reg =3D <0 0x0c300000 0 0x100000>;
-> +                       interrupts-extended =3D <&ipcc IPCC_CLIENT_AOP
-> +                                                    IPCC_MPROC_SIGNAL_GL=
-INK_QMP
-> +                                                    IRQ_TYPE_EDGE_RISING=
->;
-> +                       mboxes =3D <&ipcc IPCC_CLIENT_AOP
-> +                                       IPCC_MPROC_SIGNAL_GLINK_QMP>;
-> +
-> +                       #clock-cells =3D <0>;
-> +                       #power-domain-cells =3D <1>;
-> +               };
-> +
->                 spmi_bus: qcom,spmi@c440000 {
+ .../clock/brcm,bcm63268-timer-clocks.yaml     |  40 +++
+ drivers/clk/bcm/Kconfig                       |   9 +
+ drivers/clk/bcm/Makefile                      |   1 +
+ drivers/clk/bcm/clk-bcm63268-timer.c          | 232 ++++++++++++++++++
+ include/dt-bindings/clock/bcm63268-clock.h    |  13 +
+ include/dt-bindings/reset/bcm63268-reset.h    |   4 +
+ 6 files changed, 299 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/brcm,bcm63268-timer-clocks.yaml
+ create mode 100644 drivers/clk/bcm/clk-bcm63268-timer.c
 
-Ick, should be spmi@
+-- 
+2.20.1
 
->                         compatible =3D "qcom,spmi-pmic-arb";
->                         reg =3D <0 0x0c440000 0 0x1100>,
