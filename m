@@ -2,125 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1905F32590A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1036C32590C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234728AbhBYVxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:53:10 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20628 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233637AbhBYVvt (ORCPT
+        id S234800AbhBYVyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:54:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234141AbhBYVwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:51:49 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PLX3Ol075512;
-        Thu, 25 Feb 2021 16:51:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=UvwvlC54y4paFAvsUh+rgdZ3V7FM+LNSvEGafGNoUvM=;
- b=dEdIKAuS8RSLkUTkGASbZTNS7f2/FTDs+KtPsH81b/a14KgiUJHZ9cz8jb2Fr6grveyY
- hU2QLj7Oa/BGG+88LnQUUxHOVEZX4Ywt2dJeN7Valeh80whVlFP0g3F1aizM+8vrjaKP
- b89DpJtseD2Mm7RYjH0K4IFlRCQNvaAdz9nC+uKFZBkLW0g7Dgw1182x4sa8FaeH5KBe
- Ie18jio6zaD4hSVghAZTOj2syQ5mD8BE9J8bid1XYczxog4JEzNuG4HCUdtQftBsGvsS
- cS9IPWlo9AiY+WJrmjMPc/mzI2n4Mq9Lw/VBIUOLdQGhqXfeVYXGHQatiydfIzAJDToV kw== 
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36xh9953x5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 16:51:03 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11PLmBX9008671;
-        Thu, 25 Feb 2021 21:51:02 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma04wdc.us.ibm.com with ESMTP id 36tt2a1vn2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 21:51:01 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11PLp0aV38207892
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 21:51:00 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 96BD66E052;
-        Thu, 25 Feb 2021 21:51:00 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4EA496E04E;
-        Thu, 25 Feb 2021 21:51:00 +0000 (GMT)
-Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 25 Feb 2021 21:51:00 +0000 (GMT)
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
-Subject: [PATCH v4 5/5] ibmvfc: reinitialize sub-CRQs and perform channel enquiry after LPM
-Date:   Thu, 25 Feb 2021 15:50:57 -0600
-Message-Id: <20210225215057.23020-6-tyreld@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210225215057.23020-1-tyreld@linux.ibm.com>
-References: <20210225215057.23020-1-tyreld@linux.ibm.com>
+        Thu, 25 Feb 2021 16:52:13 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C79BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:51:25 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id b21so4725706pgk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 13:51:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CYvg/O3koZWMfVOTf8PwAS4cBLMkQ4+DUOBTdtis/0Q=;
+        b=nsG6R/Niwz/fN1QMeTZFoE8vZSoTJ9sHqzL5OAklqWYTe2KC0TxA8qLD1iFab7mKJm
+         T8WVWbRVCLma2niPU7kL5lVY13OJmYQMyFSiQDlPb23iqz4f4x6oWTJdFf24cXWfdPL4
+         zPk6DaE2906Nj3UxHZEKdpHuhRgpyqjpKqk/xEEWX/iUA/cUbbrR1bfHVcz/bnxm3Zjz
+         olp+/I3Nai+l2t4913bVD5unrRxvm8aqPTisiES1pJ+yGueO9exTT4ff69CIpgL8cdIe
+         Yo/XX1T4V33ps/E8+IbvUdm8D7L6Rr2LtmUVJHAOBXVf1Pl7xvAyz4yIqmo9QF38M5yO
+         yEeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CYvg/O3koZWMfVOTf8PwAS4cBLMkQ4+DUOBTdtis/0Q=;
+        b=FECR6czOHzrfXAAV6MjZgezOrkN2Txj/cW4JeCnyB6fC2dtOCvXnQd9wfTRBnQEaDq
+         +YfYyZP3iR4sQ0Yed+V7XWR29f0xMpY1Vu2A/zgTuzspGJGqiLhDCN//BVoSHhGqMvb2
+         W4D+YbVrjj0ELpLfGkIvbTWKFBgR4jnYRH8dT0GJKvZR02F/bCdnUhT9+B0xMLK87H7u
+         FSxki1EAkcz/aV+hqR6ES+JG1vZH6svBWtyVpUo8NjurGmUKtCVfplBfmu8kPrjBYrhg
+         l7FaeGV0gJxLLfR0PTiegXyqW6lQluRga63JTgmSBJufQ87fvi/JkN+RF+Wrrp4MZ/ub
+         3yxw==
+X-Gm-Message-State: AOAM530MPyQlRY65zUT04w4/qdSWsGk2UJbIq78iF2eOW3z1M+X8L3wD
+        ecTI/QdjNEARp/iS/MtU0xOj/w==
+X-Google-Smtp-Source: ABdhPJwjpz3YtwDnrpywcvLk6YW5Zhwu/J28xvqrPtp5cJzIwbYF28o5tlE/6/HByPVyGUBBTHccAQ==
+X-Received: by 2002:a62:6585:0:b029:1b9:d8d9:1af2 with SMTP id z127-20020a6265850000b02901b9d8d91af2mr5111484pfb.17.1614289884558;
+        Thu, 25 Feb 2021 13:51:24 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 2sm7011553pfi.116.2021.02.25.13.51.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 13:51:24 -0800 (PST)
+Date:   Thu, 25 Feb 2021 14:51:22 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-doc@vger.kernel.org, suzuki.poulose@arm.com,
+        yabinc@google.com, corbet@lwn.net, leo.yan@linaro.org,
+        alexander.shishkin@linux.intel.com, tingwei@codeaurora.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 06/10] coresight: etm-perf: Update to activate
+ selected configuration
+Message-ID: <20210225215122.GC3567106@xps15>
+References: <20210128170936.9222-1-mike.leach@linaro.org>
+ <20210128170936.9222-7-mike.leach@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-25_14:2021-02-24,2021-02-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 bulkscore=0 clxscore=1015 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102250163
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128170936.9222-7-mike.leach@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A live partition migration (LPM) results in a CRQ disconnect similar to
-a hard reset. In this LPM case the hypervisor moslty perserves the CRQ
-transport such that it simply needs to be reenabled. However, the
-capabilities may have changed such as fewer channels, or no channels at
-all. Further, its possible that there may be sub-CRQ support, but no
-channel support. The CRQ reenable path currently doesn't take any of
-this into consideration.
+On Thu, Jan 28, 2021 at 05:09:32PM +0000, Mike Leach wrote:
+> Add calls to activate the selected configuration as perf starts
+> and stops the tracing session.
+> 
+> Signed-off-by: Mike Leach <mike.leach@linaro.org>
+> ---
+>  drivers/hwtracing/coresight/coresight-etm-perf.c | 14 +++++++++++++-
+>  drivers/hwtracing/coresight/coresight-etm-perf.h |  2 ++
+>  2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> index e270bb1e0f7d..5c1aeddabc59 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> @@ -178,6 +178,10 @@ static void free_event_data(struct work_struct *work)
+>  	/* Free the sink buffers, if there are any */
+>  	free_sink_buffer(event_data);
+>  
+> +	/* clear any configuration we were using */
+> +	if (event_data->config_id_hash)
+> +		cscfg_deactivate_config(event_data->config_id_hash);
+> +
+>  	for_each_cpu(cpu, mask) {
+>  		struct list_head **ppath;
+>  
+> @@ -236,7 +240,7 @@ static void etm_free_aux(void *data)
+>  static void *etm_setup_aux(struct perf_event *event, void **pages,
+>  			   int nr_pages, bool overwrite)
+>  {
+> -	u32 id;
+> +	u32 id, config_id;
 
-For simpilicty release and reinitialize sub-CRQs during reenable, and
-set do_enquiry and using_channels with the appropriate values to trigger
-channel renegotiation.
+config_id, cfg_hash, id_hash...
 
-fixes: faacf8c5f1d5 ("ibmvfc: add alloc/dealloc routines for SCSI Sub-CRQ Channels")
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
----
- drivers/scsi/ibmvscsi/ibmvfc.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+>  	int cpu = event->cpu;
+>  	cpumask_t *mask;
+>  	struct coresight_device *sink = NULL;
+> @@ -253,6 +257,14 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+>  		sink = coresight_get_sink_by_id(id);
+>  	}
+>  
+> +	/* check if user wants a coresight configuration selected */
+> +	config_id = (u32)((event->attr.config2 & GENMASK_ULL(63, 32)) >> 32);
+> +	if (config_id) {
+> +		if (cscfg_activate_config(config_id))
+> +			goto err;
+> +		event_data->config_id_hash = config_id;
+> +	}
+> +
+>  	mask = &event_data->mask;
+>  
+>  	/*
+> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.h b/drivers/hwtracing/coresight/coresight-etm-perf.h
+> index 3646a3837a0b..751d768939d8 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm-perf.h
+> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.h
+> @@ -49,12 +49,14 @@ struct etm_filters {
+>   * @work:		Handle to free allocated memory outside IRQ context.
+>   * @mask:		Hold the CPU(s) this event was set for.
+>   * @snk_config:		The sink configuration.
+> + * @config_id_hash:	The id of any coresight config selected.
+>   * @path:		An array of path, each slot for one CPU.
+>   */
+>  struct etm_event_data {
+>  	struct work_struct work;
+>  	cpumask_t mask;
+>  	void *snk_config;
+> +	u32 config_id_hash;
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index ef03fa559433..1e2ea21713ad 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -903,6 +903,9 @@ static int ibmvfc_reenable_crq_queue(struct ibmvfc_host *vhost)
- {
- 	int rc = 0;
- 	struct vio_dev *vdev = to_vio_dev(vhost->dev);
-+	unsigned long flags;
-+
-+	ibmvfc_release_sub_crqs(vhost);
- 
- 	/* Re-enable the CRQ */
- 	do {
-@@ -914,6 +917,15 @@ static int ibmvfc_reenable_crq_queue(struct ibmvfc_host *vhost)
- 	if (rc)
- 		dev_err(vhost->dev, "Error enabling adapter (rc=%d)\n", rc);
- 
-+	spin_lock_irqsave(vhost->host->host_lock, flags);
-+	spin_lock(vhost->crq.q_lock);
-+	vhost->do_enquiry = 1;
-+	vhost->using_channels = 0;
-+	spin_unlock(vhost->crq.q_lock);
-+	spin_unlock_irqrestore(vhost->host->host_lock, flags);
-+
-+	ibmvfc_init_sub_crqs(vhost);
-+
- 	return rc;
- }
- 
--- 
-2.27.0
+Please align this with the naming convention you will be using above and
+throughout.
 
+More comments tomorrow.
+
+Thanks,
+Mathieu
+
+>  	struct list_head * __percpu *path;
+>  };
+>  
+> -- 
+> 2.17.1
+> 
