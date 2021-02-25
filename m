@@ -2,121 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA123259C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8BB3259C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232077AbhBYWm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:42:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhBYWmz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:42:55 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE19AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:42:15 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id ba1so4045290plb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:42:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=tstq3ZEyFA6o5XAzGatOdrYcukD0RQ27xs0uogdL8EU=;
-        b=NcxG44AIHls1ygwbjqAkAEBnbjkQj5Z89PZTe4WPAY2bBzuPUTtXvQs0kIPTHqrd7X
-         16eVpresHTY+q8R5r5uVqZHJBxtb+vuUYNyhHmmu60feo0HnAgdGZvmVFASV3Aw5aaft
-         g8YYM+6JBB7aso98sYZ15T6KA2k4I7CCDblvw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=tstq3ZEyFA6o5XAzGatOdrYcukD0RQ27xs0uogdL8EU=;
-        b=YGePklRHdNb2tg1vFR4L0uBE+YB4kLrgeg2s9F9qcewVgd/bW6+DlPBYKcIKau11si
-         fZkd5V4xpb1vQhbmk92pv7kQ6XWuIW0gOeyZd9BRRd4pdA7b50PX0CSPQexLJ0cfjiI2
-         tD8nQyGHOTtObBCPO0cwXpnV4Wr3pznlZAUpzenyo9Npcpyq/u1bg4WIqYsh5Fp8lvga
-         E6VRkUXAspOGhVEKMOGM0Q+x3TAKPIvFRFEEeszM4TR2hmeRkOPEn6/UXt0wN8aNVcn9
-         6WYeowltPRaXcIOyKFrY4oRRg6PZgWG0yzV2JRKpQfaoTIv7dd++QAUS/60nAt/0+uF9
-         qqqA==
-X-Gm-Message-State: AOAM531mNBTfUuUiiNzcU4SLlx0IwWPOBx2IA6ZCJqzYLPFTJlTIoNTx
-        Uk9KsVCz5/320LavKjpS9vipJw==
-X-Google-Smtp-Source: ABdhPJz4XPfgdF0Zdi38fMJeQ1lfxFPywN33YQx/K6YrJPnLgiWDEto9nsljHlSpcJ4mQH2Js3WZAQ==
-X-Received: by 2002:a17:902:e541:b029:df:df4f:2921 with SMTP id n1-20020a170902e541b02900dfdf4f2921mr300199plf.52.1614292935300;
-        Thu, 25 Feb 2021 14:42:15 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:b942:93a8:e68d:5a90])
-        by smtp.gmail.com with ESMTPSA id i10sm7908751pgo.75.2021.02.25.14.42.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 14:42:14 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S231326AbhBYWo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:44:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229548AbhBYWox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 17:44:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E278864ED3;
+        Thu, 25 Feb 2021 22:44:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614293052;
+        bh=Cv8v/GiuqByyrsc3Zdvatk4vl+jl5WdA99J73Bv9URs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=J2tQwbwhNvMJKH/6gGrjy3qmddFKuRCgNB06NY5U/f47LC3KrCxvGPRzFNXtgWMu/
+         40V3qKjrZkdPC8j523yvMpN/z2q2zFQ4v6plwFk+sXozMqSr5kFxE+UQ7vOJ3GE0oX
+         0jgGonicQZbQoZ7G9UBihklkxd+UXhCOSpuJRvDhKfASx+GP/kZMRZ7zNKSZ745PIE
+         MGjSEkuQTniUdQdA69qGb9Y8nDdyA7R3nngyHk2V/bsI2sCaCpRv5+TmC/8OohqbxE
+         Ha3ftfKMozIDLw1QfPOhf4itkHDOUhgHfQ4CctIn/0w43qAV2eUkAzDnelbRpChkYn
+         tJoshxO34zTFg==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?q?=C5=81ukasz=20Majczak?= <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+Subject: [PATCH v8 0/1] mm: fix initialization of struct page for holes in  memory layout
+Date:   Fri, 26 Feb 2021 00:43:50 +0200
+Message-Id: <20210225224351.7356-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210225103330.v2.4.I67e29f2854bad22e3581d6a6e1879b9fc8abbdea@changeid>
-References: <20210225103330.v2.1.I6a426324db3d98d6cfae8adf2598831bb30bba74@changeid> <20210225103330.v2.4.I67e29f2854bad22e3581d6a6e1879b9fc8abbdea@changeid>
-Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sc7180: trogdor: Use ADC TM channel 0 instead of 1 for charger temperature
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthias Kaehlcke <mka@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 25 Feb 2021 14:42:13 -0800
-Message-ID: <161429293348.1254594.17006777195039771186@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Matthias Kaehlcke (2021-02-25 10:33:37)
-> On trogdor the ADC thermal monitor is used for monitoring certain
-> device temperatures. All trogdor boards have at least a thermistor
-> for the charger temperature, optionally they may have others.
->=20
-> Currently the ADC thermal monitor is configured to use channel 1
-> for the charger temperature. Given that all trogdor boards have
-> the charger thermistor it makes more sense to use channel 0,
-> and then let boards with other thermistors use channels 1, 2, 3,
-> rather than 0, 2, 3.
->=20
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Hi,
 
->=20
-> Changes in v2:
-> - patch added to the series
->=20
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/bo=
-ot/dts/qcom/sc7180-trogdor.dtsi
-> index ab4efaece5cb..58e127b6ba1e 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-> @@ -19,7 +19,7 @@ charger_thermal: charger-thermal {
->                         polling-delay-passive =3D <0>;
->                         polling-delay =3D <0>;
-> =20
-> -                       thermal-sensors =3D <&pm6150_adc_tm 1>;
-> +                       thermal-sensors =3D <&pm6150_adc_tm 0>;
+@Andrew, this is based on v5.11-mmotm-2021-02-18-18-29 with the previous
+version reverted
 
-Too bad this can't point at the sensor "config" node itself. Looks error pr=
-one!
+Commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather
+that check each PFN") exposed several issues with the memory map
+initialization and these patches fix those issues.
 
-> =20
->                         trips {
->                                 charger-crit {
-> @@ -718,8 +718,8 @@ charger-thermistor@4f {
->  &pm6150_adc_tm {
->         status =3D "okay";
-> =20
-> -       charger-thermistor@1 {
-> -               reg =3D <1>;
-> +       charger-thermistor@0 {
-> +               reg =3D <0>;
->                 io-channels =3D <&pm6150_adc ADC5_AMUX_THM3_100K_PU>;
->                 qcom,ratiometric;
->                 qcom,hw-settle-time-us =3D <200>;
+Initially there were crashes during compaction that Qian Cai reported back
+in April [1]. It seemed back then that the problem was fixed, but a few
+weeks ago Andrea Arcangeli hit the same bug [2] and there was an additional
+discussion at [3].
+
+I didn't appreciate variety of ways BIOSes can report memory in the first
+megabyte, so previous versions of this set caused all kinds of troubles.
+
+The last version that implicitly extended node/zone to cover the complete
+section might also have unexpected side effects, so this time I'm trying to
+move in forward in baby steps.
+
+This is mostly a return to the fist version that simply merges
+init_unavailable_pages() into memmap_init() so that the only effective
+change would be more sensible zone/node links in unavailable struct pages.
+
+For now, I've dropped the patch that tried to make ZONE_DMA to span pfn 0
+because it didn't cause any issues for really long time and there are way
+to many hidden mines around this.
+
+I have an ugly workaround for "pfn 0" issue that IMHO is the safest way to
+deal with it until it could be gradually fixed properly:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/commit/?h=meminit/pfn0&id=90272f37151c6e1bc2610997310c51f4e984cf2f
+
+v8:
+* make comments and changelog more elaborate as per David, Linus and Vlastimil
+* add Vlastimil's ack
+
+v7: https://lore.kernel.org/lkml/20210224153950.20789-1-rppt@kernel.org
+* add handling of section end that span beyond the populated zones
+
+v6: https://lore.kernel.org/lkml/20210222105728.28636-1-rppt@kernel.org
+* only interleave initialization of unavailable pages in memmap_init(), so
+that it is essentially includes init_unavailable_pages().
+
+v5: https://lore.kernel.org/lkml/20210208110820.6269-1-rppt@kernel.org
+* extend node/zone spans to cover complete sections, this allows to interleave
+  the initialization of unavailable pages with "normal" memory map init.
+* drop modifications to x86 early setup
+
+v4: https://lore.kernel.org/lkml/20210130221035.4169-1-rppt@kernel.org/
+* make sure pages in the range 0 - start_pfn_of_lowest_zone are initialized
+  even if an architecture hides them from the generic mm
+* finally make pfn 0 on x86 to be a part of memory visible to the generic
+  mm as reserved memory.
+
+v3: https://lore.kernel.org/lkml/20210111194017.22696-1-rppt@kernel.org
+* use architectural zone constraints to set zone links for struct pages
+  corresponding to the holes
+* drop implicit update of memblock.memory
+* add a patch that sets pfn 0 to E820_TYPE_RAM on x86
+
+v2: https://lore.kernel.org/lkml/20201209214304.6812-1-rppt@kernel.org/):
+* added patch that adds all regions in memblock.reserved that do not
+overlap with memblock.memory to memblock.memory in the beginning of
+free_area_init()
+
+[1] https://lore.kernel.org/lkml/8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw
+[2] https://lore.kernel.org/lkml/20201121194506.13464-1-aarcange@redhat.com
+[3] https://lore.kernel.org/mm-commits/20201206005401.qKuAVgOXr%akpm@linux-foundation.org
+
+Mike Rapoport (1):
+  mm/page_alloc.c: refactor initialization of struct page for holes in
+    memory layout
+
+ mm/page_alloc.c | 147 +++++++++++++++++++++---------------------------
+ 1 file changed, 64 insertions(+), 83 deletions(-)
+
+-- 
+2.28.0
+
+*** BLURB HERE ***
+
+Mike Rapoport (1):
+  mm/page_alloc.c: refactor initialization of struct page for holes in
+    memory layout
+
+ mm/page_alloc.c | 158 +++++++++++++++++++++++-------------------------
+ 1 file changed, 75 insertions(+), 83 deletions(-)
+
+-- 
+2.28.0
+
