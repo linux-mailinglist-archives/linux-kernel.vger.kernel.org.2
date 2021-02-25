@@ -2,71 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43593257C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C436D3257C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbhBYUd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:33:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43682 "EHLO mail.kernel.org"
+        id S234492AbhBYUfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:35:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52006 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234087AbhBYUab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:30:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 56FF964F32;
-        Thu, 25 Feb 2021 20:29:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614284990;
-        bh=fmzexBSIfWb47JkIPrZNPmcrb7SH3FBEATmvFBYUfD0=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=oqcux6qN0uI6LifZYaDpDyY+9BABnFbWj1andck/5elvftav0Kj99uVq2h7CUO+XE
-         2VjXZrPkpo8h7+fxHDUlec+DQ2iZzhvivH66DSJeE/c2mkFFdS96Y+hzOlithb4fz2
-         YFScToiuY6SoaSPSTcYdLvwttH5sK7XnuxhAHckVIyvW2xgA0tjCvch9XMFxDv2UL4
-         f9lmwLr5U8Q/MLov0iaOzWfyvaQpyc9sYxa4GCN3q3d9CQheiAGaVv3ZCrwr6PktSG
-         /DghOU+/gxQ6rkyq+b9M1n6KWCTmOkYb5WfN6sWhUu6lma3U5e5j39icHy9pMJumlF
-         r8vBrjtWAEdag==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 43F59609F5;
-        Thu, 25 Feb 2021 20:29:50 +0000 (UTC)
-Subject: Re: [GIT PULL] virtio: features, fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210225143333-mutt-send-email-mst@kernel.org>
-References: <20210225143333-mutt-send-email-mst@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210225143333-mutt-send-email-mst@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-X-PR-Tracked-Commit-Id: 16c10bede8b3d8594279752bf53153491f3f944f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ffc1759676bed0bff046427dd7d00cb68660190d
-Message-Id: <161428499022.20173.13248373429390310648.pr-tracker-bot@kernel.org>
-Date:   Thu, 25 Feb 2021 20:29:50 +0000
+        id S234358AbhBYUbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 15:31:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C5AFAAF72;
+        Thu, 25 Feb 2021 20:30:51 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 21:30:51 +0100
+Message-ID: <s5hblc7opok.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
 To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        abaci-bugfix@linux.alibaba.com, abaci@linux.alibaba.com,
-        anders.roxell@linaro.org, arnd@arndb.de,
-        aruna.ramakrishna@oracle.com, colin.xu@intel.com, david@redhat.com,
-        dongli.zhang@oracle.com, edumazet@google.com, elic@nvidia.com,
-        gustavoars@kernel.org, jasowang@redhat.com, joe.jin@oracle.com,
-        joseph.qi@linux.alibaba.com, linux@roeck-us.net,
-        mathias.crombez@faurecia.com, mst@redhat.com,
-        naresh.kamboju@linaro.org, parav@nvidia.com, sgarzare@redhat.com,
-        stable@vger.kernel.org, syzkaller@googlegroups.com,
-        tiantao6@hisilicon.com, vasyl.vavrychuk@opensynergy.com,
-        xianting_tian@126.com
+Cc:     Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, virtio-dev@lists.oasis-open.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 6/9] ALSA: virtio: PCM substream operators
+In-Reply-To: <20210225135951-mutt-send-email-mst@kernel.org>
+References: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
+        <20210222153444.348390-7-anton.yakovlev@opensynergy.com>
+        <s5h35xkquvj.wl-tiwai@suse.de>
+        <d9b6e8fa-7356-1cbf-029b-6f7c8bad4994@opensynergy.com>
+        <s5hlfbcpayj.wl-tiwai@suse.de>
+        <20210225135951-mutt-send-email-mst@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 25 Feb 2021 14:33:33 -0500:
+On Thu, 25 Feb 2021 20:02:50 +0100,
+Michael S. Tsirkin wrote:
+> 
+> On Thu, Feb 25, 2021 at 01:51:16PM +0100, Takashi Iwai wrote:
+> > On Thu, 25 Feb 2021 13:14:37 +0100,
+> > Anton Yakovlev wrote:
+> > > 
+> > > On 25.02.2021 11:55, Takashi Iwai wrote:
+> > > > On Mon, 22 Feb 2021 16:34:41 +0100,
+> > > > Anton Yakovlev wrote:
+> > > >> +static int virtsnd_pcm_open(struct snd_pcm_substream *substream)
+> > > >> +{
+> > > >> +     struct virtio_pcm *vpcm = snd_pcm_substream_chip(substream);
+> > > >> +     struct virtio_pcm_substream *vss = NULL;
+> > > >> +
+> > > >> +     if (vpcm) {
+> > > >> +             switch (substream->stream) {
+> > > >> +             case SNDRV_PCM_STREAM_PLAYBACK:
+> > > >> +             case SNDRV_PCM_STREAM_CAPTURE: {
+> > > >
+> > > > The switch() here looks superfluous.  The substream->stream must be a
+> > > > good value in the callback.  If any, you can put WARN_ON() there, but
+> > > > I don't think it worth.
+> > > 
+> > > At least it doesn't do any harm.
+> > 
+> > It does -- it makes the readability worse, and that's a very important
+> > point.
+> > 
+> > > >> +static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
+> > > >> +                              struct snd_pcm_hw_params *hw_params)
+> > > >> +{
+> > > > ....
+> > > >> +     return virtsnd_pcm_msg_alloc(vss, periods, period_bytes);
+> > > >
+> > > > We have the allocation, but...
+> > > >
+> > > >> +static int virtsnd_pcm_hw_free(struct snd_pcm_substream *substream)
+> > > >> +{
+> > > >> +     return 0;
+> > > >
+> > > > ... no release at hw_free()?
+> > > > I know that the free is present in the allocator, but it's only for
+> > > > re-allocation case, I suppose.
+> > > 
+> > > When the substream stops, sync_ptr waits until the device has completed
+> > > all pending messages. This wait can be interrupted either by a signal or
+> > > due to a timeout. In this case, the device can still access messages
+> > > even after calling hw_free(). It can also issue an interrupt, and the
+> > > interrupt handler will also try to access message structures. Therefore,
+> > > freeing of already allocated messages occurs either in hw_params() or in
+> > > dev->release(), since there it is 100% safe.
+> > 
+> > OK, then it's worth to document it about this object lifecycle.
+> > The buffer management of this driver is fairly unique, so otherwise it
+> > confuses readers.
+> > 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> 
+> Takashi given I was in my tree for a while and I planned to merge
+> it this merge window.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+Hmm, that's too quick, I'm afraid.  I see still a few rough edges in
+the code.  e.g. the reset work should be canceled at the driver
+removal, but it's missing right now.  And that'll become tricky
+because the reset work itself unbinds the device, hence it'll get
+stuck if calling cancel_work_sync() at remove callback.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ffc1759676bed0bff046427dd7d00cb68660190d
+> I can still drop it but there are
+> unrelated patches behind these in the tree so that's a rebase
+> which will invalidate my testing, I'm just concerned about
+> meeting the merge window.
+> 
+> Would it be ok to merge this as is and then address
+> readability stuff by patches on top?
+> If yes please send acks!
+> If you want to merge it yourself instead, also please say so.
 
-Thank you!
+I don't mind who take the patches, although it looks more fitting to
+merge through sound git tree if judging from the changes put in
+sound/* directory.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
+thanks,
+
+Takashi
