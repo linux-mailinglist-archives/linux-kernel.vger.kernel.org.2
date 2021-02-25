@@ -2,87 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10859325871
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C607932587A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 22:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234796AbhBYVMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 16:12:06 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51846 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234891AbhBYVGs (ORCPT
+        id S233732AbhBYVQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 16:16:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232196AbhBYVQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 16:06:48 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PL4Lxv166532;
-        Thu, 25 Feb 2021 16:05:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=pqOo7IEXZuN4o2GJtHjkXskjvWSpvNljjvnukPmdQyc=;
- b=Et7Jb1Xw5qUZjYtE1oWTeQpGjEs7bT+ZKyRBuhpLtFZ4/57LbkEdVaRdKixq90JVYmp4
- O2/7vgBOEuwIWSqXnJrTrbU9lLq95N86iS0bJ9tl/zSI1N0KLuYVu26Ii8tkD3fHwgHG
- dYS6zO8Zju/FGnPamkvcVxSj6YwRCsaXyLHg0VAduhJqwZfe6i+P7nuHfFTiFSAt3Aek
- +GYKAFl/w+Q/zni/yIZ/M21XqLglRJo4WeVXthQ0dmu6yUMcI77EDFqM1LG+kCzZSTvJ
- VL8dRWaj6iPOeVIYcl8m26HPCIbj89N3OtjlNNK58QBESu/Xyyl8rtJn6pdtjRRoCZ7b WQ== 
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36xh8jv328-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 16:05:37 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11PL26iH021277;
-        Thu, 25 Feb 2021 21:05:36 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma03wdc.us.ibm.com with ESMTP id 36tt29hnmn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 21:05:36 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11PL5ZKw33030518
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 21:05:35 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B1879AE060;
-        Thu, 25 Feb 2021 21:05:35 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AA767AE05F;
-        Thu, 25 Feb 2021 21:05:34 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.211.123.159])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 25 Feb 2021 21:05:34 +0000 (GMT)
-Subject: Re: [PATCH v2 4/5] ibmvfc: store return code of H_FREE_SUB_CRQ during
- cleanup
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20210225204824.14570-1-tyreld@linux.ibm.com>
- <20210225204824.14570-5-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <46ef110f-238e-50bf-731a-ba3a4392dba6@linux.vnet.ibm.com>
-Date:   Thu, 25 Feb 2021 15:05:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 25 Feb 2021 16:16:21 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB375C06174A;
+        Thu, 25 Feb 2021 13:15:40 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id a11so2515415wmd.5;
+        Thu, 25 Feb 2021 13:15:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pOO48CRVDwuK4MdBDmN0ZaayDswN2bcw5RsSh3NXzK4=;
+        b=H50sSvw9F8zkWIzdOX+9Q/1CIiSrcErSJudYopuz3opDJ+GKFS4T1VZNHrzsvuu26+
+         jKxCxB2Nlxxr3s13+aKQwU/zAIoESDMuzV9X/41WMEEA76KxPRZngAmBRsJECJyXyF1l
+         v1By6iya2G5cPQ/gyAkJFMMXyXt9WEz5geGKRPBei8uH/axjY2WQVkz+h2iced85vA7q
+         SLO6XOmztohvkl+rC781l2jXCvtAExWFRgcZ1sXVOQbpBl6ITUlonF4dGefZFAwo1w1v
+         AlknttOPWpdIWgAaUF1DSYcDVEn1DfvWNYIUhlO0UioOeVKAwUEKwWOs2kpWwrHHEfcX
+         itWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pOO48CRVDwuK4MdBDmN0ZaayDswN2bcw5RsSh3NXzK4=;
+        b=Xx0REBX0rtqe5hHzMlAXxKSn2ck1K1SG5gLg48MEIlnBIktp5CWrEMBuUmH9UlomPd
+         Nl3Uzc133d9EKf+rJJbpdfiNaZeVYhuuGa9qDWIXJb/NiJQmeZYk1CUxTotv7CnblGl+
+         pmV8Vz3DOab1w4sUomjPyyw2bDbkqa7Ie9AicW12fSeWjwdlh4tuLAiDtc6DUNnWQzcj
+         OmviVnAxZhzjb/kiz/cK2I0eB8P6S8qCmi7RxbDZZ1+UT1LjNHXNu4SDsKmgY6u6LG8f
+         1+1U5gpNWkKidDLBoocz0cYPQQGVqu2oDCVnIeqomIGO/fmr/Y5g/wpSzRZrApZB9Tkj
+         0cfg==
+X-Gm-Message-State: AOAM530OAAHbwBbcSi2xgTYzr7+Gv7yjI3qBbELkljrAUfMSO0Br5Lz+
+        GeeOZ/rNDBUGu8thUFBze0Bd5JCX/SAoylrx
+X-Google-Smtp-Source: ABdhPJw2bmmrZ6V3DJtiCOw/Q64l19Wv131uwA+GqkvuG7FI/02eU3nX/58yd9vBQPhJRnqRov1+5w==
+X-Received: by 2002:a1c:9a46:: with SMTP id c67mr230998wme.159.1614287739208;
+        Thu, 25 Feb 2021 13:15:39 -0800 (PST)
+Received: from hthiery.fritz.box (ip1f1322f8.dynamic.kabel-deutschland.de. [31.19.34.248])
+        by smtp.gmail.com with ESMTPSA id s124sm8636373wms.40.2021.02.25.13.15.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 13:15:38 -0800 (PST)
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fugang Duan <fugang.duan@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>
+Subject: [PATCH v2 1/1] net: fec: ptp: avoid register access when ipg clock is disabled
+Date:   Thu, 25 Feb 2021 22:15:16 +0100
+Message-Id: <20210225211514.9115-1-heiko.thiery@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210225204824.14570-5-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-25_14:2021-02-24,2021-02-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- clxscore=1015 phishscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- impostorscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102250161
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
+When accessing the timecounter register on an i.MX8MQ the kernel hangs.
+This is only the case when the interface is down. This can be reproduced
+by reading with 'phc_ctrl eth0 get'.
 
+Like described in the change in 91c0d987a9788dcc5fe26baafd73bf9242b68900
+the igp clock is disabled when the interface is down and leads to a
+system hang.
+
+So we check if the ptp clock status before reading the timecounter
+register.
+
+Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+---
+v2:
+ - add mutex (thanks to Richard)
+
+v3:
+I did a mistake and did not test properly
+ - add parenteses
+ - fix the used variable
+
+ drivers/net/ethernet/freescale/fec_ptp.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
+index 2e344aada4c6..1753807cbf97 100644
+--- a/drivers/net/ethernet/freescale/fec_ptp.c
++++ b/drivers/net/ethernet/freescale/fec_ptp.c
+@@ -377,9 +377,16 @@ static int fec_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
+ 	u64 ns;
+ 	unsigned long flags;
+ 
++	mutex_lock(&adapter->ptp_clk_mutex);
++	/* Check the ptp clock */
++	if (!adapter->ptp_clk_on) {
++		mutex_unlock(&adapter->ptp_clk_mutex);
++		return -EINVAL;
++	}
+ 	spin_lock_irqsave(&adapter->tmreg_lock, flags);
+ 	ns = timecounter_read(&adapter->tc);
+ 	spin_unlock_irqrestore(&adapter->tmreg_lock, flags);
++	mutex_unlock(&adapter->ptp_clk_mutex);
+ 
+ 	*ts = ns_to_timespec64(ns);
+ 
 -- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
+2.30.0
 
