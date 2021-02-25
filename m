@@ -2,181 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2706E325683
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A67732567A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234477AbhBYTQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:16:45 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:35782 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234039AbhBYTK4 (ORCPT
+        id S234349AbhBYTPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:15:17 -0500
+Received: from relay04.th.seeweb.it ([5.144.164.165]:46345 "EHLO
+        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233952AbhBYTKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:10:56 -0500
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 11PJ9Bkd013829;
-        Fri, 26 Feb 2021 04:09:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 11PJ9Bkd013829
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614280152;
-        bh=zg1EEkrl/wm9+TnhN4C32Tty7U9ZLaDHf5C7lX9aPew=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=1xgeBpZ3CUbQ/fWk3kKZX6sHSLKL2GUlmmPqnwen6i0bvDJXbDMJi+SC9qxhnGFtD
-         1b/enygjOZ0cgPYM3i6EdgaZA+tRPdhdovhhyYwwaICZmj1C6eqYZxT0mI0P17jhCA
-         dHpE2SFjRwvPAQCcqtf24ZWYPXqj6RbVIG5A3jwq2FTWLrPbDtarR3ZN6YwNTsVqUc
-         SEQuL2LlaERn1arlxOew3EPyR4EHUlnAj6BvsE/5nNnZTdn34dVTP7JQnm8CnNoJft
-         ECTLam3yIqCNGIN4OvnbqApPO6Er2xdJcnSrWwZwSRiiNCGklwFMBksm4oBapUVNDI
-         v4phVsR3VzxSw==
-X-Nifty-SrcIP: [209.85.215.172]
-Received: by mail-pg1-f172.google.com with SMTP id e6so4434429pgk.5;
-        Thu, 25 Feb 2021 11:09:11 -0800 (PST)
-X-Gm-Message-State: AOAM530LIJXf0ls4NimBqqsz7ijk80FY2D1OHV2uheiOl1autYyfvLei
-        X94zBw2C/mB9Tiqt3nVOA5GE+AIQ+x4s+hr50ns=
-X-Google-Smtp-Source: ABdhPJzS1WbAxMEt7joUmN9ZapNyyOeIYXnC+SmaepLH4w9wg3+sUyEHzRmu8OE6ooVIgiIVRH7yqtpc/I4PUKaelTE=
-X-Received: by 2002:a62:d454:0:b029:1ed:a6d6:539d with SMTP id
- u20-20020a62d4540000b02901eda6d6539dmr4660956pfl.63.1614280150840; Thu, 25
- Feb 2021 11:09:10 -0800 (PST)
+        Thu, 25 Feb 2021 14:10:03 -0500
+Received: from [192.168.1.101] (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 891011F678;
+        Thu, 25 Feb 2021 20:09:16 +0100 (CET)
+Subject: Re: [PATCH 5/6] clk: qcom: gcc-sdm660: Account for needed adjustments
+ in probe function
+To:     Stephen Boyd <sboyd@kernel.org>, phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Craig Tatlor <ctatlor97@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20210220155618.176559-1-konrad.dybcio@somainline.org>
+ <20210220155618.176559-5-konrad.dybcio@somainline.org>
+ <161404077336.1254594.15002572465360321874@swboyd.mtv.corp.google.com>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <3917fba4-e5b0-911f-9220-f401a90aac38@somainline.org>
+Date:   Thu, 25 Feb 2021 20:09:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210225160247.2959903-1-masahiroy@kernel.org>
- <20210225160247.2959903-2-masahiroy@kernel.org> <CABCJKufovCMH9iyA9hFjq1Pt4VNWEPid+rqNWtTvYPTC19LfeA@mail.gmail.com>
-In-Reply-To: <CABCJKufovCMH9iyA9hFjq1Pt4VNWEPid+rqNWtTvYPTC19LfeA@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 26 Feb 2021 04:08:33 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASVrpN2CoUZt7Yj++wTv2C1vMioA4nAZkHLrPkQGGLj9g@mail.gmail.com>
-Message-ID: <CAK7LNASVrpN2CoUZt7Yj++wTv2C1vMioA4nAZkHLrPkQGGLj9g@mail.gmail.com>
-Subject: Re: [PATCH 1/4] kbuild: fix UNUSED_KSYMS_WHITELIST for Clang LTO
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>, Nicolas Pitre <nico@fluxnic.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <161404077336.1254594.15002572465360321874@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 2:46 AM Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> Hi Masahiro,
->
-> On Thu, Feb 25, 2021 at 8:03 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > Commit fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
-> > does not work as expected if the .config file has already specified
-> > CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list" before enabling
-> > CONFIG_LTO_CLANG.
-> >
-> > So, the user-supplied whitelist and LTO-specific white list must be
-> > independent of each other.
-> >
-> > I refactored the shell script so CONFIG_MODVERSIONS and CONFIG_CLANG_LTO
-> > handle whitelists in the same way.
-> >
-> > Fixes: fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  init/Kconfig                    |  1 -
-> >  scripts/gen_autoksyms.sh        | 33 ++++++++++++++++++++++++---------
-> >  scripts/lto-used-symbollist.txt |  5 -----
-> >  3 files changed, 24 insertions(+), 15 deletions(-)
-> >  delete mode 100644 scripts/lto-used-symbollist.txt
->
-> > +
-> > +ksym_wl=
-> >  if [ -n "$CONFIG_UNUSED_KSYMS_WHITELIST" ]; then
-> >         # Use 'eval' to expand the whitelist path and check if it is relative
-> >         eval ksym_wl="$CONFIG_UNUSED_KSYMS_WHITELIST"
-> > @@ -40,16 +57,14 @@ cat > "$output_file" << EOT
-> >  EOT
-> >
-> >  [ -f modules.order ] && modlist=modules.order || modlist=/dev/null
-> > -sed 's/ko$/mod/' $modlist |
-> > -xargs -n1 sed -n -e '2{s/ /\n/g;/^$/!p;}' -- |
-> > -cat - "$ksym_wl" |
-> > +
-> > +{
-> > +       sed 's/ko$/mod/' $modlist | xargs -n1 sed -n -e '2p'
-> > +       echo "$needed_symbols"
-> > +       [ -n "$ksym_wl" ] && cat "$ksym_wl"
-> > +} | sed -e 's/ /\n/g' | sed -n -e '/^$/!p' |
-> >  # Remove the dot prefix for ppc64; symbol names with a dot (.) hold entry
-> >  # point addresses.
-> >  sed -e 's/^\.//' |
-> >  sort -u |
-> >  sed -e 's/\(.*\)/#define __KSYM_\1 1/' >> "$output_file"
-> > -
-> > -# Special case for modversions (see modpost.c)
-> > -if [ -n "$CONFIG_MODVERSIONS" ]; then
-> > -       echo "#define __KSYM_module_layout 1" >> "$output_file"
-> > -fi
-> > diff --git a/scripts/lto-used-symbollist.txt b/scripts/lto-used-symbollist.txt
-> > deleted file mode 100644
-> > index 38e7bb9ebaae..000000000000
-> > --- a/scripts/lto-used-symbollist.txt
-> > +++ /dev/null
-> > @@ -1,5 +0,0 @@
-> > -memcpy
-> > -memmove
-> > -memset
-> > -__stack_chk_fail
-> > -__stack_chk_guard
-> > --
-> > 2.27.0
-> >
-> >
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index 0bf5b340b80e..351161326e3c 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -2277,7 +2277,6 @@ config TRIM_UNUSED_KSYMS
-> >  config UNUSED_KSYMS_WHITELIST
-> >         string "Whitelist of symbols to keep in ksymtab"
-> >         depends on TRIM_UNUSED_KSYMS
-> > -       default "scripts/lto-used-symbollist.txt" if LTO_CLANG
-> >         help
-> >           By default, all unused exported symbols will be un-exported from the
-> >           build when TRIM_UNUSED_KSYMS is selected.
-> > diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
-> > index d54dfba15bf2..b74d5949fea6 100755
-> > --- a/scripts/gen_autoksyms.sh
-> > +++ b/scripts/gen_autoksyms.sh
-> > @@ -19,7 +19,24 @@ esac
-> >  # We need access to CONFIG_ symbols
-> >  . include/config/auto.conf
-> >
-> > -ksym_wl=/dev/null
-> > +needed_symbols=
-> > +
-> > +# Special case for modversions (see modpost.c)
-> > +if [ -n "$CONFIG_MODVERSIONS" ]; then
-> > +       needed_symbols="$needed_symbols module_layout"
-> > +fi
-> > +
-> > +# With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a binary
-> > +# when the .mod files are generated, which means they don't yet contain
-> > +# references to certain symbols that will be present in the final binaries.
-> > +if [ -n "$CONFIG_LTO_CLANG" ]; then
-> > +       # intrinsic functions
-> > +       needed_symbols="$needed_symbols memcpy memmove memset"
-> > +       # stack protector symbols
-> > +       needed_symbols="$needed_symbols __stack_chk_fail __stack_chk_guard"
-> > +fi
->
-> Thank you for the patch!
->
-> Arnd just reported that _mcount is also needed with some
-> configurations. Would you mind including that in the next version?
->
-> https://lore.kernel.org/r/20210225143456.3829513-1-arnd@kernel.org/
-
-Sure, I can even pick it up
-although that patch was not addressed to me or kbuild ML.
+Hi and sorry for the late reply,
 
 
+>> +
+>> +       /* Keep bimc gfx clock port on all the time */
+>> +       clk_prepare_enable(gcc_bimc_gfx_clk.clkr.hw.clk);
+>> +
+> Preferably just set these various bits with regmap_update_bits() during
+> probe. Also, please do it before regsitering the clks, not after.
 
--- 
-Best Regards
-Masahiro Yamada
+To be fair, now I think that simply adding CLK_IS_CRITICAL flag to the clocks in question is the smartest thing to do. Magic writes don't tell a whole lot.
+
+
+>> +       /* Set the HMSS_GPLL0_SRC for 300MHz to CPU subsystem */
+>> +       clk_set_rate(hmss_gpll0_clk_src.clkr.hw.clk, 300000000);
+> Is this not already the case?
+
+
+This is a mission-critical clock and we cannot trust the bootloader with setting it. Otherwise dragons might appear.
+
+
+Konrad
+
+
