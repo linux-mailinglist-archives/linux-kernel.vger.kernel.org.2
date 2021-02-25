@@ -2,80 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 348743250F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 14:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE5A324CDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 10:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhBYNwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 08:52:20 -0500
-Received: from m12-18.163.com ([220.181.12.18]:50426 "EHLO m12-18.163.com"
+        id S236365AbhBYJa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 04:30:58 -0500
+Received: from foss.arm.com ([217.140.110.172]:49898 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229491AbhBYNwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:52:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=gKhar
-        +lYaJ5173fNnZ4PuxYgg0OdolQJPPWgrxXc07o=; b=j9mxuV/K5gBkuy0Kaakde
-        ft/L5hRP73+cjdxRlcBiLLxi8oLRshFNCTdNm+qOkCaOlzz1SUcPohf9IyYdsDwd
-        3aSKn+TFoT2ml3shUdStv0njXXEitmWL/IRg7zgTWLog7E9/R9p8rNJqZ0sAeMei
-        msQf6bbKoD9bxN+k1D0guE=
-Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
-        by smtp14 (Coremail) with SMTP id EsCowAAXGPYccjdgbGBCVw--.4398S2;
-        Thu, 25 Feb 2021 17:47:09 +0800 (CST)
-From:   angkery <angkery@163.com>
-To:     dmitry.torokhov@gmail.com, hdegoede@redhat.com, rajatja@google.com,
-        luomeng12@huawei.com, gustavoars@kernel.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: [PATCH] Input: i8042: Remove unneeded variable
-Date:   Thu, 25 Feb 2021 17:29:43 +0800
-Message-Id: <20210225092943.657-1-angkery@163.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        id S231771AbhBYJax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:30:53 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FEF6ED1;
+        Thu, 25 Feb 2021 01:30:07 -0800 (PST)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E1BB03F73D;
+        Thu, 25 Feb 2021 01:30:05 -0800 (PST)
+Date:   Thu, 25 Feb 2021 09:30:00 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Jon Masters <jcm@jonmasters.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Will Deacon <will@kernel.org>, mark.rutland@arm.com,
+        linux-pci@vger.kernel.org, sudeep.holla@arm.com,
+        lkml <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+Message-ID: <20210225093000.GA22843@e121166-lin.cambridge.arm.com>
+References: <4c2db08d-ccc4-05eb-6b7b-5fd7d07dd11e@arm.com>
+ <20210128233147.GA28434@bjorn-Precision-5520>
+ <CACCGGCc3zULqHgUh3Q9wA5WtPBnQ4eq_v2+1qA8bOBCQZJ5YoQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAAXGPYccjdgbGBCVw--.4398S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1kJryfKr13AFWUWw45Wrg_yoWfuFc_u3
-        4Yvwn7XFyDAwn8t3ZrArW3Z3sIka12vFW09F4Syw43Ary5J3y3GF1DAryDAw42qr1fWr92
-        gw17GryrCr4DGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUn-BMJUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiLR1EI1SIlFlwFAAAsi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACCGGCc3zULqHgUh3Q9wA5WtPBnQ4eq_v2+1qA8bOBCQZJ5YoQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junlin Yang <yangjunlin@yulong.com>
+On Thu, Feb 18, 2021 at 12:43:30PM -0500, Jon Masters wrote:
+> Hi Bjorn, all,
+> 
+> On Thu, Jan 28, 2021 at 6:31 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> 
+>     On Tue, Jan 26, 2021 at 10:46:04AM -0600, Jeremy Linton wrote:
+> 
+>  
+> 
+>     > Does that mean its open season for ECAM quirks, and we can expect
+>     > them to start being merged now?
+> 
+>     "Open season" makes me cringe because it suggests we have a license to
+>     use quirks indiscriminately forever, and I hope that's not the case.
+> 
+>     Lorenzo is closer to this issue than I am and has much better insight
+>     into the mess this could turn into.  From my point of view, it's
+>     shocking how much of a hassle this is compared to x86.  There just
+>     aren't ECAM quirks, in-kernel clock management, or any of that crap.
+>     I don't know how they do it on x86 and I don't have to care.  Whatever
+>     they need to do, they apparently do in AML.  Eventually ARM64 has to
+>     get there as well if vendors want distro support.
+> 
+>     I don't want to be in the position of enforcing a draconian "no more
+>     quirks ever" policy.  The intent -- to encourage/force vendors to
+>     develop spec-compliant machines -- is good, but it seems like the
+>     reward of having compliant machines "just work" vs the penalty of
+>     having to write quirks and shepherd them upstream and into distros
+>     will probably be more effective and not much slower.
+> 
+> 
+> The problem is that the third party IP vendors (still) make too much junk. For
+> years, there wasn't a compliance program (e.g. SystemReady with some of the
+> meat behind PCI-SIG compliance) and even when there was the third party IP
+> vendors building "root ports" (not even RCs) would make some junk with a hacked
+> up Linux kernel booting on a model and demo that as "PCI". There wasn't the
+> kind of adult supervision that was required. It is (slowly) happening now, but
+> it's years and years late. It's just embarrassing to see the lack of ECAM that
+> works. In many cases, it's because the IP being used was baked years ago or
+> made for some "non server" (as if there is such a thing) use case, etc. But in
+> others, there was a chance to do it right, and it still happens. Some of us
+> have lost what hair we had over the years getting third party IP vendors to
+> wake up and start caring about this.
+> 
+> So there's no excuse. None at all. However, this is where we are. And it /is/
+> improving. But it's still too slow, and we have platforms still coming to
+> market that need to boot and run. Based on this, and the need to have something
+> more flexible than just solving for ECAM deficiencies (which are really just a
+> symptom), I can see the allure of an SMC. I don't like it, but if that's where
+> folks want to go, and if we can find a way to constrain the enthusiasm for it,
+> then perhaps it is a path forward. But if we are to go down that path it needs
+> to come with a giant warning from the kernel that a system was booted at is
+> relying on that. Something that will cause an OS certification program to fail
+> without a waiver, or will cause customers to phone up for support wondering why
+> the hw is broken. It *must* not be a silent thing. It needs to be "this
+> hardware is broken and non-standard, get the next version fixed".
 
-The variable "delay" is initialized to zero and then returned.
-So remove the delay variable and return zero.
+It is a stance I agree with in many respects, it should be shared (it
+was in HTML format - the lists unfortunately dropped the message) so I
+am replying to it to make it public.
 
-Generated by:scripts/coccinelle/misc/returnvar.cocci
-
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
----
- drivers/input/serio/i8042.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
-index abae23a..145bda1 100644
---- a/drivers/input/serio/i8042.c
-+++ b/drivers/input/serio/i8042.c
-@@ -1126,7 +1126,6 @@ static void i8042_controller_reset(bool s2r_wants_reset)
- 
- static long i8042_panic_blink(int state)
- {
--	long delay = 0;
- 	char led;
- 
- 	led = (state) ? 0x01 | 0x04 : 0;
-@@ -1142,7 +1141,7 @@ static long i8042_panic_blink(int state)
- 	dbg("%02x -> i8042 (panic blink)\n", led);
- 	i8042_write_data(led);
- 	DELAY;
--	return delay;
-+	return 0;
- }
- 
- #undef DELAY
--- 
-1.9.1
-
-
+Thanks,
+Lorenzo
