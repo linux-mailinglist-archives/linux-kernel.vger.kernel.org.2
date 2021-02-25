@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1D53255DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 19:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 736653255FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233557AbhBYSvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 13:51:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42316 "EHLO mail.kernel.org"
+        id S233454AbhBYTA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:00:27 -0500
+Received: from mx4.wp.pl ([212.77.101.11]:59739 "EHLO mx4.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232982AbhBYSvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 13:51:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36ED564F29;
-        Thu, 25 Feb 2021 18:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614279062;
-        bh=MmXrhKpXug2McN3faWeNdMvPLMny3JE46p+2y9M4jYU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=tytnpNQr52fVeD5UQJXFycNDm0X6Ocao34AL65DEC6a+iG2/MZ+Qj565eQzTXlX/3
-         zCeEaZ4JSeqnHyAZXnSefl2gdKz+jS8OM8zCAwXyZ1SmrOPQ4A9/Lcjamo3968lK2Y
-         IcfGhu3NLdcWT7STywQ+jIhyL0p8cxkEEovqh+vyXaK1ZOG48MvsHmb4E0zQ5ktHdT
-         5YR2/Rd5lN+vAdrXzNqyFZ36/bko9g8aBLWtcMufNPHIZn6p05xxSFuZg+T5tbb8wY
-         yaWK/2o0zYB/3gZ+jh0iV9qTXvTccifOAUMj9h6sdr+YEKCJ7NTKA9CG/9K/w1G2qc
-         wBMT85rLFuasQ==
-Date:   Thu, 25 Feb 2021 12:51:00 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Robert Richter <rric@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] PCI: controller: thunder: fix compile testing
-Message-ID: <20210225185100.GA17711@bjorn-Precision-5520>
+        id S231445AbhBYS7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 13:59:16 -0500
+X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Feb 2021 13:59:15 EST
+Received: (wp-smtpd smtp.wp.pl 5472 invoked from network); 25 Feb 2021 19:51:42 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1614279103; bh=Jlr0mJspKRZ4zpFrq4Z9+nbzOH2E12NSX79EmButAiQ=;
+          h=From:To:Cc:Subject;
+          b=kW6vYXIBFSAG+UNmM40pyfcMd0GNROJzyfDRCJZx3VjGw8H8Hnza6CRyMKf4RThtJ
+           DV2fJPgev3NYaR6XY/p3WLY0FmUk06psLEDvnB0pEUgQbUkEdyK00fn9zVKVjZCaTX
+           iwFioTDs7sUP1Rnpz37mK644REXZOBAC0O4b34n4=
+Received: from unknown (HELO kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com) (kubakici@wp.pl@[163.114.132.7])
+          (envelope-sender <kubakici@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <colin.king@canonical.com>; 25 Feb 2021 19:51:42 +0100
+Date:   Thu, 25 Feb 2021 10:51:35 -0800
+From:   Jakub Kicinski <kubakici@wp.pl>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mt7601u: fix always true expression
+Message-ID: <20210225105135.6a2e6953@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210225183241.1002129-1-colin.king@canonical.com>
+References: <20210225183241.1002129-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de0dd513-dc7d-d7ca-c0b6-4bc9db355a53@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-WP-MailID: d4752f3dadd47f61a803e18d0663a885
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000001 [0TIT]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 09:44:12AM -0800, Kuppuswamy, Sathyanarayanan wrote:
-> On 2/25/21 6:37 AM, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > Compile-testing these drivers is currently broken. Enabling
-> > it causes a couple of build failures though:
-> > 
-> > drivers/pci/controller/pci-thunder-ecam.c:119:30: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
-> > drivers/pci/controller/pci-thunder-pem.c:54:2: error: implicit declaration of function 'writeq' [-Werror,-Wimplicit-function-declaration]
-> > drivers/pci/controller/pci-thunder-pem.c:392:8: error: implicit declaration of function 'acpi_get_rc_resources' [-Werror,-Wimplicit-function-declaration]
-> > 
-> > Fix them with the obvious one-line changes.
-> Looks good to me.
+On Thu, 25 Feb 2021 18:32:41 +0000 Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Currently the expression ~nic_conf1 is always true because nic_conf1
+> is a u16 and according to 6.5.3.3 of the C standard the ~ operator
+> promotes the u16 to an integer before flipping all the bits. Thus
+> the top 16 bits of the integer result are all set so the expression
+> is always true.  If the intention was to flip all the bits of nic_conf1
+> then casting the integer result back to a u16 is a suitabel fix.
+> 
+> Interestingly static analyzers seem to thing a bitwise ! should be
+> used instead of ~ for this scenario
 
-Thanks for looking this over!  I'd like to acknowledge your review,
-but I need an explicit Reviewed-by or similar.  I don't want to put
-words in your mouth by converting "Looks good to me" to "Reviewed-by".
+In what way? The condition is nic_conf1 != 0xffff AFAICT, how would we
+do that with !?
+
+> so I think the original intent
+> of the expression may need some extra consideration.
+> 
+> Addresses-Coverity: ("Logical vs. bitwise operator")
+> Fixes: c869f77d6abb ("add mt7601u driver")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Acked-by: Jakub Kicinski <kubakici@wp.pl>
+
+Thanks for the fix!
+
