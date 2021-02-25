@@ -2,154 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84382325991
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0142E325992
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 23:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbhBYWVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 17:21:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27926 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234326AbhBYWQt (ORCPT
+        id S232538AbhBYWWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 17:22:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234405AbhBYWRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:16:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614291321;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+533owFFoe3g0xTq7seU8RN9Dccv2HdyDhgPBrwMfSM=;
-        b=QBYD9AzjfwOy7FUJ28dldZi7L+h46/u/YaZOhLh2ACNHR4ZVQ+5O6Uc0a8j51h/G21daMa
-        xX8me5yicb/+mFDENgoJyiN5oOWrfmIRhcgoAPNxQbV/9OTTDfMCX5PG5DXGeEwTGXyzR4
-        6fDpydKNBUBeJULmwXnIuBSQgo6i560=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-rQM6TUUnNFiBNjy3LLlibg-1; Thu, 25 Feb 2021 17:15:19 -0500
-X-MC-Unique: rQM6TUUnNFiBNjy3LLlibg-1
-Received: by mail-ej1-f72.google.com with SMTP id y3so2937066ejj.20
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:15:19 -0800 (PST)
+        Thu, 25 Feb 2021 17:17:07 -0500
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25776C061223
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:15:44 -0800 (PST)
+Received: by mail-oo1-xc2f.google.com with SMTP id i11so251096ood.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 14:15:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r4a3+s4Cr4ghjIOXuD7YCu2wxYZMNr5Kr9H6awJOdGA=;
+        b=p/ihU0UriJ1G+zaM2B8ZoG3pX47dwZu2qqJmjam5qlENpz8t4tn+kOPb2ztOMxGlhU
+         NIKkrZih48NbkY+/2gdH2JoGfg0UAogzCR5ubsjG8ddeeWTXkuVmlbAPQsPr7eqklEcI
+         sPK6/rRKng0/m6CGl5gP1TwdOSn5efSbLP4St24DY4W2vDzdto7+lhgjfSvRKo+iNAb/
+         F9ghxM0aVSYoaXHRcWPN1z0cmnL0SlVVwwYt2FQ6MHc4HeYuzt/3kCHwWRlByHVxcxyS
+         /I3Bu32j6luppCfxuwykzx8MTTG5ionbfKNK9NQ3+W9UTbT2W4xHFiuj1mKlN2p+PVf7
+         43Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=+533owFFoe3g0xTq7seU8RN9Dccv2HdyDhgPBrwMfSM=;
-        b=ByjrdKp4w/jQoDpyJrVhQmmGOyPL9fjEYBfiEmHyhisSCLh2kE5+PEJq+/55IXbYbk
-         tx5oinZeoPE7dGwGF6gQiZnhmjEa6yKgQSSM4hIIzSTKl32JZx+Bl6xhyPRYLfn15rm0
-         wIj3FFeOhyHZQNnH/0YIREtBEPGUJBLQoSpSU+xZ4GfoJMHrYxPoyUTxG5Lo0NhjFIcv
-         /rGJIaqDb1Bs2upZ6T7BH4jn2BX1GdZ2KkL9tSV4VrUSnhJaMQSokpQDexXuTrPK/Pt6
-         BaPKrd0Ra/k8WtL0sxSdRbYBo2DbfQSJ0ZRjNTBAlv/IN9NoLzCemrK6SFp9pUMA/5h0
-         51uA==
-X-Gm-Message-State: AOAM533hCwqLvZBcRupcmyJdg1vfBCc97sbqzZriBZcF55znE5u8Jny8
-        qAXX/UtRngim7nFWAqqfNskBJLkywuVqsPrc0f99njgCqwiQMqS1n5cbBmDuzmGOF/TGmBWGZxk
-        rj98NgtH+K+LroU44Uj+W83N9
-X-Received: by 2002:a17:906:5acd:: with SMTP id x13mr4841441ejs.211.1614291318592;
-        Thu, 25 Feb 2021 14:15:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwsLOW/8G5/Ak1nix7I8hM+mG5Fh/maJBwHMgKJbldwwCRfHbbA63oUAdYER2wiGlo1aFp3nw==
-X-Received: by 2002:a17:906:5acd:: with SMTP id x13mr4841423ejs.211.1614291318397;
-        Thu, 25 Feb 2021 14:15:18 -0800 (PST)
-Received: from ?IPv6:2a01:598:b880:cd5f:2452:43b8:4b31:c43? ([2a01:598:b880:cd5f:2452:43b8:4b31:c43])
-        by smtp.gmail.com with ESMTPSA id a3sm3531876ejv.40.2021.02.25.14.15.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Feb 2021 14:15:17 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC PATCH 2/2] mm,page_alloc: Make alloc_contig_range handle free hugetlb pages
-Date:   Thu, 25 Feb 2021 23:15:15 +0100
-Message-Id: <1C808F10-158D-4DB8-A393-01829A398B17@redhat.com>
-References: <b4bf7fcf-449d-daed-e490-994b1072652a@oracle.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <b4bf7fcf-449d-daed-e490-994b1072652a@oracle.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-X-Mailer: iPhone Mail (18D52)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r4a3+s4Cr4ghjIOXuD7YCu2wxYZMNr5Kr9H6awJOdGA=;
+        b=g8t/ozXCk9k7i1fr7BAR43HBk+9QMgFLmRVSx9h56Mxz+V96NU/ITsrqUKvVDKD5pQ
+         wa5LFUg4dgtCSO2015T6u17n+vEtvtTHnMEv7rFNYALPbqd9KKb63qzt+sxA5FJE7b2o
+         ELn/e7cG/LS9ItpUOrpb7VHk/arFNVUFYSIrLqMIZH3rq/0TP0N0EzkuY0q9DNdEmKbQ
+         3Nmf7DG1KiVNmHfzVf5ijX70KplVzspJ4tXXSkaZ/uAAmultwkl2L0itC2EKFNLidt2U
+         YV4jUblZIKszaKIv8zgfUwHozTPwgvHzh0Eka96RXFnLyCSFVMxyZ3G2NeZL8zHojXgR
+         eimw==
+X-Gm-Message-State: AOAM530e78mxjPwy9hGI4JpZCGkRdAVAY69BWLlulBya5objLt+17UGv
+        wPU9IptWbb72647cACcGfyKYzCme5/asvPMk55A=
+X-Google-Smtp-Source: ABdhPJxx85FVLzbdXSx6qhXhyL7H1rRrOKaKcXVFP64nsizcsaDLq+89FUQ5/N++2sUA2TQTz1wSDFE8OR7deMIaNcs=
+X-Received: by 2002:a4a:9801:: with SMTP id y1mr79967ooi.90.1614291343519;
+ Thu, 25 Feb 2021 14:15:43 -0800 (PST)
+MIME-Version: 1.0
+References: <20210225150119.405469-1-arnd@kernel.org>
+In-Reply-To: <20210225150119.405469-1-arnd@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 25 Feb 2021 17:15:32 -0500
+Message-ID: <CADnq5_M8+SMJWQ4snm73ky3pFVkKYr2=bCB-x0ymZ3j405uP7g@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Fix an uninitialized index variable
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>, Arnd Bergmann <arnd@arndb.de>,
+        David Airlie <airlied@linux.ie>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 25, 2021 at 10:01 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang points out that the new logic uses an always-uninitialized
+> array index:
+>
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9810:38: warning: variable 'i' is uninitialized when used here [-Wuninitialized]
+>                         timing  = &edid->detailed_timings[i];
+>                                                           ^
+> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:9720:7: note: initialize the variable 'i' to silence this warning
+>
+> My best guess is that the index should have been returned by the
+> parse_hdmi_amd_vsdb() function that walks an array here, so do that.
+>
+> Fixes: f9b4f20c4777 ("drm/amd/display: Add Freesync HDMI support to DM")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-> Am 25.02.2021 um 22:43 schrieb Mike Kravetz <mike.kravetz@oracle.com>:
->=20
-> =EF=BB=BFOn 2/10/21 12:23 AM, David Hildenbrand wrote:
->>> On 08.02.21 11:38, Oscar Salvador wrote:
->>> --- a/mm/compaction.c
->>> +++ b/mm/compaction.c
->>> @@ -952,6 +952,17 @@ isolate_migratepages_block(struct compact_control *=
-cc, unsigned long low_pfn,
->>>                      low_pfn +=3D compound_nr(page) - 1;
->>>                      goto isolate_success_no_list;
->>>                  }
->>> +            } else {
->>=20
->> } else if (alloc_and_dissolve_huge_page(page))) {
->>=20
->> ...
->>=20
->>> +                /*
->>> +                 * Free hugetlb page. Allocate a new one and
->>> +                 * dissolve this is if succeed.
->>> +                 */
->>> +                if (alloc_and_dissolve_huge_page(page)) {
->>> +                    unsigned long order =3D buddy_order_unsafe(page);
->>> +
->>> +                    low_pfn +=3D (1UL << order) - 1;
->>> +                    continue;
->>> +                }
->>=20
->>=20
->>=20
->> Note that there is a very ugly corner case we will have to handle gracefu=
-lly (I think also in patch #1):
->>=20
->> Assume you allocated a gigantic page (and assume that we are not using CM=
-A for gigantic pages for simplicity). Assume you want to allocate another on=
-e. alloc_pool_huge_page()->...->alloc_contig_pages() will stumble over the f=
-irst allocated page. It will try to alloc_and_dissolve_huge_page() the exist=
-ing gigantic page. To do that, it will alloc_pool_huge_page()->...->alloc_co=
-ntig_pages() ... and so on. Bad.
->>=20
->=20
-> Sorry for resurrecting an old thread.
-> While looking at V3 of these patches, I was exploring all the calling
-> sequences looking for races and other issues.  It 'may' be that the
-> issue about infinitely allocating and freeing gigantic pages may not be
-> an issue.  Of course, I could be mistaken.  Here is my reasoning:
->=20
-> alloc_and_dissolve_huge_page (now isolate_or_dissolve_huge_page) will be
-> called from __alloc_contig_migrate_range() within alloc_contig_range().
-> Before calling __alloc_contig_migrate_range, we call start_isolate_page_ra=
-nge
-> to isolate all page blocks in the range.  Because all the page blocks in
-> the range are isolated, another invocation of alloc_contig_range will
-> not operate on any part of that range.  See the comments for
-> start_isolate_page_range or commit 2c7452a075d4.  So, when
-> start_isolate_page_range goes to allocate another gigantic page it will
-> never notice/operate on the existing gigantic page.
->=20
-> Again, this is confusing and I might be missing something.
+This looks correct to me.  Stylon can you verify?
 
-I think you are right that the endless loop is blocked. But I think the whol=
-e thing could cascade once we have multiple gigantic pages allocated.
+Thanks,
 
-Try allocating a new gpage. We find an existing gpage, isolate it and try to=
- migrate it. To do that, we try allocating a new gpage. We find yet another e=
-xisting gpage, isolate and try to migrate it ... until we isolated all gpage=
-s on out way to an actual usable area. Then we have to actually migrate all t=
-hese in reverse order ...
+Alex
 
-Of course this only works if we can actually isolate a gigantic page - which=
- should be the case I think (they are migratable and should be marked as mov=
-able).
 
->=20
-> In any case, I agree that gigantic pages are tricky and we should leave
-> them out of the discussion for now.  We can rethink this later if
-> necessary.
-
-Yes, it=E2=80=98s tricky and not strictly required right now because we neve=
-r place them on ZONE_MOVABLE. And as I said, actual use cases might be rare.=
-
+> ---
+>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c    | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index b19b93c74bae..667c0d52dbfa 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -9736,7 +9736,7 @@ static bool parse_edid_cea(struct amdgpu_dm_connector *aconnector,
+>         return false;
+>  }
+>
+> -static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+> +static int parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+>                 struct edid *edid, struct amdgpu_hdmi_vsdb_info *vsdb_info)
+>  {
+>         uint8_t *edid_ext = NULL;
+> @@ -9746,7 +9746,7 @@ static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+>         /*----- drm_find_cea_extension() -----*/
+>         /* No EDID or EDID extensions */
+>         if (edid == NULL || edid->extensions == 0)
+> -               return false;
+> +               return -ENODEV;
+>
+>         /* Find CEA extension */
+>         for (i = 0; i < edid->extensions; i++) {
+> @@ -9756,14 +9756,15 @@ static bool parse_hdmi_amd_vsdb(struct amdgpu_dm_connector *aconnector,
+>         }
+>
+>         if (i == edid->extensions)
+> -               return false;
+> +               return -ENODEV;
+>
+>         /*----- cea_db_offsets() -----*/
+>         if (edid_ext[0] != CEA_EXT)
+> -               return false;
+> +               return -ENODEV;
+>
+>         valid_vsdb_found = parse_edid_cea(aconnector, edid_ext, EDID_LENGTH, vsdb_info);
+> -       return valid_vsdb_found;
+> +
+> +       return valid_vsdb_found ? i : -ENODEV;
+>  }
+>
+>  void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+> @@ -9781,7 +9782,6 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+>         struct amdgpu_device *adev = drm_to_adev(dev);
+>         bool freesync_capable = false;
+>         struct amdgpu_hdmi_vsdb_info vsdb_info = {0};
+> -       bool hdmi_valid_vsdb_found = false;
+>
+>         if (!connector->state) {
+>                 DRM_ERROR("%s - Connector has no state", __func__);
+> @@ -9857,8 +9857,8 @@ void amdgpu_dm_update_freesync_caps(struct drm_connector *connector,
+>                         }
+>                 }
+>         } else if (edid && amdgpu_dm_connector->dc_sink->sink_signal == SIGNAL_TYPE_HDMI_TYPE_A) {
+> -               hdmi_valid_vsdb_found = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
+> -               if (hdmi_valid_vsdb_found && vsdb_info.freesync_supported) {
+> +               i = parse_hdmi_amd_vsdb(amdgpu_dm_connector, edid, &vsdb_info);
+> +               if (i >= 0 && vsdb_info.freesync_supported) {
+>                         timing  = &edid->detailed_timings[i];
+>                         data    = &timing->data.other_data;
+>
+> --
+> 2.29.2
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
