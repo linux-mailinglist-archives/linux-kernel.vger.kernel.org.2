@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E937324E06
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0665324E2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235390AbhBYKWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:22:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34282 "EHLO mail.kernel.org"
+        id S234711AbhBYK1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:27:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234563AbhBYKBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:01:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FEE064F2F;
-        Thu, 25 Feb 2021 09:56:08 +0000 (UTC)
+        id S229886AbhBYKBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 05:01:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F27564EF1;
+        Thu, 25 Feb 2021 09:56:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246969;
-        bh=BViO87cLdkLb4nnIj22hLyjnw+zpQKuNU92oSogE66s=;
+        s=korg; t=1614246972;
+        bh=DZ0xcnks63hkG0sZOQbcAvAOYB9mcIuUFP7X3UMXmCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IzoYHmYibWF/U0IdZNRFXPGs5gRfVqPGqryaQTqHL7N9WRXLI1Qs4Spg9G/8EaPNb
-         trjYYRz2fSRVFPt2LKm5jwtQvM7Z0cEMdjTmribXUOZrQwzlWG7dUo5a7+s1GBULKt
-         dgkAKRihcfutqTVD0ZDN0bpBGW3ZWsDo1O88Hfto=
+        b=dxLTrQzLhC/sC3fq1jld+nVZYIPJPVc3mussw5prUW4Bxze5E0ktPJJ0C8eWaNL3V
+         P2IKwcwpkkP6IP6U7o5Skely0Yf9GzQG3VkNJLQY/Z99Klq2Pz2epiKVX+vT4dCtam
+         wJM75DG83t/M/+2BzzIq1P3v2AtxlRO42ZPZvXzU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 03/17] USB: quirks: sort quirk entries
-Date:   Thu, 25 Feb 2021 10:53:48 +0100
-Message-Id: <20210225092515.175465337@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Stefan Ursella <stefan.ursella@wolfvision.net>
+Subject: [PATCH 5.4 04/17] usb: quirks: add quirk to start video capture on ELMO L-12F document camera reliable
+Date:   Thu, 25 Feb 2021 10:53:49 +0100
+Message-Id: <20210225092515.223684188@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210225092515.001992375@linuxfoundation.org>
 References: <20210225092515.001992375@linuxfoundation.org>
@@ -38,42 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Stefan Ursella <stefan.ursella@wolfvision.net>
 
-commit 43861d29c0810a70792bf69d37482efb7bb6677d upstream.
+commit 1ebe718bb48278105816ba03a0408ecc2d6cf47f upstream.
 
-Move the last entry to its proper place to maintain the VID/PID sort
-order.
+Without this quirk starting a video capture from the device often fails with
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210210111746.13360-1-johan@kernel.org
+kernel: uvcvideo: Failed to set UVC probe control : -110 (exp. 34).
+
+Signed-off-by: Stefan Ursella <stefan.ursella@wolfvision.net>
+Link: https://lore.kernel.org/r/20210210140713.18711-1-stefan.ursella@wolfvision.net
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/core/quirks.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/core/quirks.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
 --- a/drivers/usb/core/quirks.c
 +++ b/drivers/usb/core/quirks.c
-@@ -415,6 +415,9 @@ static const struct usb_device_id usb_qu
- 	{ USB_DEVICE(0x10d6, 0x2200), .driver_info =
- 			USB_QUIRK_STRING_FETCH_255 },
+@@ -391,6 +391,9 @@ static const struct usb_device_id usb_qu
+ 	/* X-Rite/Gretag-Macbeth Eye-One Pro display colorimeter */
+ 	{ USB_DEVICE(0x0971, 0x2000), .driver_info = USB_QUIRK_NO_SET_INTF },
  
-+	/* novation SoundControl XL */
-+	{ USB_DEVICE(0x1235, 0x0061), .driver_info = USB_QUIRK_RESET_RESUME },
++	/* ELMO L-12F document camera */
++	{ USB_DEVICE(0x09a1, 0x0028), .driver_info = USB_QUIRK_DELAY_CTRL_MSG },
 +
- 	/* Huawei 4G LTE module */
- 	{ USB_DEVICE(0x12d1, 0x15bb), .driver_info =
- 			USB_QUIRK_DISCONNECT_SUSPEND },
-@@ -495,9 +498,6 @@ static const struct usb_device_id usb_qu
- 	/* INTEL VALUE SSD */
- 	{ USB_DEVICE(0x8086, 0xf1a5), .driver_info = USB_QUIRK_RESET_RESUME },
- 
--	/* novation SoundControl XL */
--	{ USB_DEVICE(0x1235, 0x0061), .driver_info = USB_QUIRK_RESET_RESUME },
--
- 	{ }  /* terminating entry must be last */
- };
+ 	/* Broadcom BCM92035DGROM BT dongle */
+ 	{ USB_DEVICE(0x0a5c, 0x2021), .driver_info = USB_QUIRK_RESET_RESUME },
  
 
 
