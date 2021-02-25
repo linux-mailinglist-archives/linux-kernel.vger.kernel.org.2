@@ -2,93 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73143325479
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED0032547C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 18:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhBYRU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 12:20:27 -0500
-Received: from pb-smtp2.pobox.com ([64.147.108.71]:50724 "EHLO
-        pb-smtp2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhBYRUV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 12:20:21 -0500
-Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
-        by pb-smtp2.pobox.com (Postfix) with ESMTP id 6399C9E9D8;
-        Thu, 25 Feb 2021 12:19:38 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=23dtnOUfzLyDX+KW1V2mmBc/9V0=; b=H4Brws
-        TZSHzddWSKivCGfqVGCqQ88W3DJggqpWSJQLjEH8HQsMhD2So5e5QmQkCPYj8iCy
-        iFnpbqKYcjtW7Kdz12+s0V3KoFN+LrWYhWM7Qyc++gTHWp5Rl0StNAGNuyX4GYzr
-        LBaQOjTiXI6bMum7/n32YuGBTJP4WakTEyfEk=
-Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp2.pobox.com (Postfix) with ESMTP id 5C07A9E9D6;
-        Thu, 25 Feb 2021 12:19:38 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=n8NygWpegxhLZX877LB3tSwxmKQuyH4sXRAP1vuz7oQ=; b=hh7xvP+hjmn279jUavnDgocmjN/Z3vnhifsJ+CMWWGXDAT6HUHjaX48/Z22fz89en00mXpoHOTRL70JxhT0wCrJT7XPEuQQSs1plC8SJ+ytH0T/AOC8/qLuOkW6UtVssSfvn3qx6jhQndnDdLLjsPHjR8ZrhjxcyY3YEyhRzpDE=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id C11A89E9D5;
-        Thu, 25 Feb 2021 12:19:37 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id C5C622DA0082;
-        Thu, 25 Feb 2021 12:19:36 -0500 (EST)
-Date:   Thu, 25 Feb 2021 12:19:36 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-cc:     linux-kbuild@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 0/4] kbuild: build speed improvment of
- CONFIG_TRIM_UNUSED_KSYMS
-In-Reply-To: <20210225160247.2959903-1-masahiroy@kernel.org>
-Message-ID: <r3584n3-sq21-qo49-9sp5-r3qp6o611s55@syhkavp.arg>
-References: <20210225160247.2959903-1-masahiroy@kernel.org>
+        id S232918AbhBYRWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 12:22:00 -0500
+Received: from foss.arm.com ([217.140.110.172]:42116 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232033AbhBYRV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 12:21:56 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 810F8101E;
+        Thu, 25 Feb 2021 09:21:08 -0800 (PST)
+Received: from [10.57.49.35] (unknown [10.57.49.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9339C3F73D;
+        Thu, 25 Feb 2021 09:21:04 -0800 (PST)
+Subject: Re: [PATCH] coresight: etm4x: work around clang-12+ build failure
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210225094324.3542511-1-arnd@kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <19c9eba2-c5cd-301f-4dfa-a31c971728f9@arm.com>
+Date:   Thu, 25 Feb 2021 17:20:57 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: A343518A-778D-11EB-8355-74DE23BA3BAF-78420484!pb-smtp2.pobox.com
+In-Reply-To: <20210225094324.3542511-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021, Masahiro Yamada wrote:
-
+On 2/25/21 9:42 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Now CONFIG_TRIM_UNUSED_KSYMS is revived, but Linus is still unhappy
-> about the build speed.
+> clang-12 fails to build the etm4x driver with -fsanitize=array-bounds:
 > 
-> I re-implemented this feature, and the build time cost is now
-> almost unnoticeable level.
+> <instantiation>:1:7: error: expected constant expression in '.inst' directive
+> .inst (0xd5200000|((((2) << 19) | ((1) << 16) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 7) & 0x7)) << 12) | ((((((((((0x160 + (i * 4))))) >> 2))) & 0xf)) << 8) | (((((((((((0x160 + (i * 4))))) >> 2))) >> 4) & 0x7)) << 5)))|(.L__reg_num_x8))
+>        ^
+> drivers/hwtracing/coresight/coresight-etm4x-core.c:702:4: note: while in macro instantiation
+>                          etm4x_relaxed_read32(csa, TRCCNTVRn(i));
+>                          ^
+> drivers/hwtracing/coresight/coresight-etm4x.h:403:4: note: expanded from macro 'etm4x_relaxed_read32'
+>                   read_etm4x_sysreg_offset((offset), false)))
+>                   ^
+> drivers/hwtracing/coresight/coresight-etm4x.h:383:12: note: expanded from macro 'read_etm4x_sysreg_offset'
+>                          __val = read_etm4x_sysreg_const_offset((offset));       \
+>                                  ^
+> drivers/hwtracing/coresight/coresight-etm4x.h:149:2: note: expanded from macro 'read_etm4x_sysreg_const_offset'
+>          READ_ETM4x_REG(ETM4x_OFFSET_TO_REG(offset))
+>          ^
+> drivers/hwtracing/coresight/coresight-etm4x.h:144:2: note: expanded from macro 'READ_ETM4x_REG'
+>          read_sysreg_s(ETM4x_REG_NUM_TO_SYSREG((reg)))
+>          ^
+> arch/arm64/include/asm/sysreg.h:1108:15: note: expanded from macro 'read_sysreg_s'
+>          asm volatile(__mrs_s("%0", r) : "=r" (__val));                  \
+>                       ^
+> arch/arm64/include/asm/sysreg.h:1074:2: note: expanded from macro '__mrs_s'
+> "       mrs_s " v ", " __stringify(r) "\n"                      \
+>   ^
 > 
-> I hope this makes Linus happy.
+> It appears that the __builin_constant_p() check in
+> read_etm4x_sysreg_offset() falsely returns 'true' here because clang
+> decides finds that an out-of-bounds access to config->cntr_val[] cannot
 
-:-)
+s/decides finds/decides/ ?
 
-I'm surprised to see that Linus is using this feature. When disabled 
-(the default) this should have had no impact on the build time.
+> happen, and then it unrolls the loop with constant register numbers. Then
+> when actually emitting the output, it fails to figure out the value again.
+> 
+> While this is incorrect behavior in clang, it is easy to work around
+> by avoiding the out-of-bounds array access. Do this by limiting the
+> loop counter to the actual dimension of the array.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1310
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 15016f757828..4cccf874a602 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -691,13 +691,13 @@ static void etm4_disable_hw(void *info)
+>   			"timeout while waiting for PM stable Trace Status\n");
+>   
+>   	/* read the status of the single shot comparators */
+> -	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
+> +	for (i = 0; i < min_t(u32, drvdata->nr_ss_cmp, ETM_MAX_SS_CMP); i++) {
+>   		config->ss_status[i] =
+>   			etm4x_relaxed_read32(csa, TRCSSCSRn(i));
+>   	}
+>   
 
-This feature provides a nice security advantage by significantly 
-reducing the kernel input surface. And people are using that also to 
-better what third party vendor can and cannot do with a distro kernel, 
-etc. But that's not the reason why I implemented this feature in the 
-first place.
+There are more places where we do this. So I believe you need the similar
+change elsewhere too in the driver. So, that becomes cumbersome for circumventing
+the compiler issue.
 
-My primary goal was to efficiently reduce the kernel binary size using 
-LTO even with kernel modules enabled. Each EXPORT_SYMBOL() created a 
-symbol dependency that prevented LTO from optimizing out the related 
-code even though a tiny fraction of those exported symbols were needed.
-
-The idea behind the recursion was to catch those cases where disabling 
-an exported symbol within a module would optimize out references to more 
-exported symbols that, in turn, could be disabled and possibly trigger 
-yet more code elimination. There is no way that can be achieved without 
-extra compiler passes in a recursive manner.
-
-
-Nicolas
+Suzuki
