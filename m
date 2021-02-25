@@ -2,400 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A300A32489E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 02:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F07C13248AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 02:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235134AbhBYBkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 20:40:45 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:36783 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233524AbhBYBkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 20:40:39 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614217218; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=2IFE87NuBgP78ExOiV6/LMVzhbX3Fwj1LKLw1sRsBF4=;
- b=H6qp1PvIhBT45r8Bx3MfUBXpfQulora7m2t7grDnTQFhqH4ay8PIIbZkFgXjyay0P2gWjC7P
- lPfNrxht2jsv9eXLsRNScmsvnpulfBI5UDRfettLEti+v8eh6SnmzRp0ndEISC0348NpuOHS
- DQftlP79z+QmoamSTmD0U1WouXg=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6036ffe44511108a814d3741 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Feb 2021 01:39:48
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6CB0EC43461; Thu, 25 Feb 2021 01:39:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 07867C433C6;
-        Thu, 25 Feb 2021 01:39:45 +0000 (UTC)
+        id S235527AbhBYByI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 20:54:08 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38770 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235198AbhBYByH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Feb 2021 20:54:07 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11P1js4V012648;
+        Wed, 24 Feb 2021 17:53:11 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=vE+vjfDycg9TNdqMQf5/CFO8ssPomQNKxjpWsBrwrAk=;
+ b=RpdWld+wLqC5qaOpliG7ZOsoii3qJwGoeUEQW03QeCXeuAzry8e0FjLLb8hnSBEYAhaN
+ oJoFBc0Lfwfador/Qrc0D1XquLw31W6vBs75Ll0/33ApFs8ImNfRziJS9R2qSpVA3JIF
+ PCuH3/ejKGr8MpM7HhIFJiAj9UozrSsKvmM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 36wbu3q313-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 24 Feb 2021 17:53:11 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 24 Feb 2021 17:53:10 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cs01mvdJxvUg8FZHv6npqCsjqs9o1crHvnFQ+2Mji1OMWoVycDwvmy51tGiXFWxzHKI047hHUVDUItmetjrKTiUsCuxeb8jccVRCKrWYIgQr7+nikqxdhVd/4CSfSCTk6uoWaZwzPSLdA/Gbbr8gHnpYqqj1BL0EEz+T/Wpq0AgsmLIJV07fO+jsCTSHvmcU6LvTKRb94lNawaGAwMK02sYqxtyQ6WZWAoJ25PJmWF1juu5ognENLiUEDRfJKoupnXVfpuf+GHX+Vi1o/2SoJX0hT15LbLMTx2dPI/KLeth2lDTc0ekuq7kXsLzSFIGDW+bCQFqIIuohJrhwLLE30A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vE+vjfDycg9TNdqMQf5/CFO8ssPomQNKxjpWsBrwrAk=;
+ b=hlffrNzXYWk7u5mwRG46rA8xIujTkOxqfEgROE1/JM+ZPbSqV+P2PSDiLWPf/SYcpxOtY7VFl/M3dLOk5iV4iXZOsYwRdFeDx8Q4FSVsNODX1zVIJvarBL0u6EthdLcChGMowM5k5YScFk2uJ88e5U9Cemqw069WoWx54Dq94LPGePmwLbBg0sh8R0zqty8h76Wg0zzb6Ff9uIV6oFXxHwcfqeKbabM75ZslOMuxmT4QZyy20i31ARVtUMK1BOZWAge9WWD7SoGmJwAsh5BAD8y0erSwQ6WqqJtsT9I/SkWwxqdLus/A558C2c4ISIh2OlmdrQIaJoHfH+x9t6ZwLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB4133.namprd15.prod.outlook.com (2603:10b6:a03:9b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.33; Thu, 25 Feb
+ 2021 01:53:09 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3868.033; Thu, 25 Feb 2021
+ 01:53:09 +0000
+Date:   Wed, 24 Feb 2021 17:53:04 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Hugh Dickins <hughd@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mm: vmstat: fix /proc/sys/vm/stat_refresh generating
+ false warnings
+Message-ID: <YDcDAOxKXSopVe3b@carbon.dhcp.thefacebook.com>
+References: <alpine.LSU.2.11.2007291902340.6363@eggly.anvils>
+ <20200730162348.GA679955@carbon.dhcp.thefacebook.com>
+ <alpine.LSU.2.11.2007302018350.2410@eggly.anvils>
+ <20200801011821.GA859734@carbon.dhcp.thefacebook.com>
+ <alpine.LSU.2.11.2007311915130.9716@eggly.anvils>
+ <20200804004012.GA1049259@carbon.dhcp.thefacebook.com>
+ <alpine.LSU.2.11.2008051913580.8184@eggly.anvils>
+ <20200806233804.GB1217906@carbon.dhcp.thefacebook.com>
+ <20200806182555.d7a7fc9853b5a239ffe9f846@linux-foundation.org>
+ <alpine.LSU.2.11.2102232210130.9202@eggly.anvils>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2102232210130.9202@eggly.anvils>
+X-Originating-IP: [2620:10d:c090:400::5:45f6]
+X-ClientProxiedBy: MW4PR04CA0103.namprd04.prod.outlook.com
+ (2603:10b6:303:83::18) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 24 Feb 2021 17:39:45 -0800
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v6 3/8] bus: mhi: core: Improvements to the channel
- handling state machine
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20210224100329.GS27945@work>
-References: <1612470486-10440-1-git-send-email-bbhatt@codeaurora.org>
- <1612470486-10440-4-git-send-email-bbhatt@codeaurora.org>
- <20210224100329.GS27945@work>
-Message-ID: <71c7ab5bdc8abef2249c1f8af6a215f8@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:45f6) by MW4PR04CA0103.namprd04.prod.outlook.com (2603:10b6:303:83::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Thu, 25 Feb 2021 01:53:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a6d41fe2-21eb-491f-0919-08d8d9301a2a
+X-MS-TrafficTypeDiagnostic: BYAPR15MB4133:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB413336E0517FAB24DBBF4650BE9E9@BYAPR15MB4133.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ijQa3N5kEip9Vu7zKXaC5Zvzd3GZ7kPlCmgtU0nKEHuDUG6npPjY0OtYz4qty+9p1NbTqubxUSNwG3BPcLT0lbA2/P4gRlGDTERcsAWvmC3WY9C7+HJShThn77Uc1Zqz9WluhoXwQhdj71StASBlDrhQN2vnXZp8fINJvcRlChbjwmBNimDk6o3BdgCCcul5oM6S7t24kSRk9/ggYV9FpapZokzNv7701lpgxR38GpsxtDH6/7/GAcIpsSJpZAhaJFSK6omsFRbaRkPb2z5hrnBm5BWyCMQUvLIaWtLVhWLAxUyjbmfs9X0YqZu81py8lstSTKi3cXimWxSN2ZRnZYRf8SsZlE6x+FKFAdgllILGJqbyLNVMqZdNf4hyLOdSgi/oBOAALJqIbUgMwhUCZgQQEweBUhCcrfkVaobUmOAxjoIMfzTDZRrKJfNY9ix6ug7aikglir+L38wgfGdgEr/RX/nGdSuTJJxQ71INuBVWw+iEop+RCzaYLpGl14BiFYD81Jo7tweLn78rxq21OQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(39860400002)(366004)(396003)(9686003)(86362001)(83380400001)(5660300002)(8676002)(2906002)(55016002)(316002)(8936002)(7696005)(6916009)(66556008)(186003)(478600001)(16526019)(66476007)(52116002)(66946007)(4326008)(6506007)(54906003)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?X8dO6JA7xJ4TyX5f74EXXrDSzlDtbF9FZGCTq+IK+wuFy8TevzZQxXGgCaPa?=
+ =?us-ascii?Q?jICv20hGzLqU/BwD2ymeEfoil3v644iLp4iCBlSLx8pH5VuYebHs+1W8sPrb?=
+ =?us-ascii?Q?Eoc48YDgDug8mY0NvKrp3wfkbch/f795eVhS1zNT4X9h2t8KE68e2bm//X6n?=
+ =?us-ascii?Q?GFY1F5k96gCdEGf4iudGGKMBhDJz2YGJMrIixWGaxqhU6jwiMW65gU/pm+81?=
+ =?us-ascii?Q?pQwElpXNKqVxSRU5QnRRu/HijO4sAXtl7FA20db36XqzkGAqbDAInOqhEKWW?=
+ =?us-ascii?Q?jL+/QSRI0Ok0gpRJd/U9NfUBrzqszHcZCSbAyVtUuLOyqCwt07JICy2W00ko?=
+ =?us-ascii?Q?WkmPGCgV7NlQ5pPscu6jVdlg3V8FTENZ9xKBHbzYicKMQFH1u2xiQ/7wM1cb?=
+ =?us-ascii?Q?dfUIKVei6aVQ9ZDNXsrcoc4wm+839bTO5FETKiqlttVUTa9tAV2oKlKL86ts?=
+ =?us-ascii?Q?bzDSFt1Ptwn0zBXkeszBWU95qU0T2QBLm6pIDX5XkuvVeoOrYSkKrX9nerXj?=
+ =?us-ascii?Q?z6/XWSCNLdb8CrJr7niT2olAD+r6w8Xo4IBiRvZy9G9SczMRkqhikDpUn9y9?=
+ =?us-ascii?Q?d7j72S1iD1cTytmUc0VR22sCDVVJpZ1mqO76z07MO8rdFCi9NugA+QMxjGJr?=
+ =?us-ascii?Q?8k4/5S9zODvopgQwzd6HJwvirO4KOWK17Cg38sJgoeHOH0Jzzx8FlDCSnf8b?=
+ =?us-ascii?Q?aMkt6uMvF8dpFMsBW/xO7/bQFDn50hwuP4GuW3Z4eCTdAh12jvDobWsJVN4O?=
+ =?us-ascii?Q?c3rli1wCE15tdT0NY9qe8Y+mXVs2c+y0W+1RUkxPR3obSdkvjSqB183TvA1q?=
+ =?us-ascii?Q?jUTIYHColVNG2DHB9zZ0HmSZIrSqiOnP6pHhYfOMN4YGwhtvLHz1FcspEdys?=
+ =?us-ascii?Q?PSP8XbFSDCg8UtB7hclNQH8BCCPVXxhmFu8D/wEaQovmjdKb5NpIEKNr1Y6y?=
+ =?us-ascii?Q?9uKHW5pA+Cy/M7waiu27aHf9LWqKk2XIzn3LyA5jMnBvGJpgGM+sLyrEYJGB?=
+ =?us-ascii?Q?KZbxg6erjarRUqFl6WKf9N1jZtSF66bDxcut7E8xPTerwVbkp1WIrqmXhZzl?=
+ =?us-ascii?Q?1CiAqLuZbBbksfpsA6I0b5irYzgcaqg0gDalaXzrxCLnZa4l9OI0B4nIHsPS?=
+ =?us-ascii?Q?DZz+bHlUakANw1sEPCRinYsDQc91J9v+uAh4BadkVwF1/aamjYvKRQIh5Zte?=
+ =?us-ascii?Q?lR9mzHbwDbuxRXcWqAN2WVxuZnCEbDcisGsELmmZOwgnowZYNc3CMvY2p6Nd?=
+ =?us-ascii?Q?uLzOfTYPUCemHFyimVh0XOaBB+8Z1z03MOuq+aroeuWlUNk+5EYxSOGOI09m?=
+ =?us-ascii?Q?gF79+vFc3mqBj0NhW82dcdcSDX/Gppu1hQ8lSKevhCqTaQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a6d41fe2-21eb-491f-0919-08d8d9301a2a
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2021 01:53:09.6753
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lfZlABupa6SmKxW01AzZY1x4+vuV57aDlmrUvG1HwlKJJbP7U3rcehlaCyeepuQG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4133
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-24_13:2021-02-24,2021-02-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=986
+ lowpriorityscore=0 impostorscore=0 malwarescore=0 mlxscore=0 spamscore=0
+ adultscore=0 bulkscore=0 clxscore=1011 suspectscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102250012
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
-
-On 2021-02-24 02:03 AM, Manivannan Sadhasivam wrote:
-> On Thu, Feb 04, 2021 at 12:28:01PM -0800, Bhaumik Bhatt wrote:
->> Improve the channel handling state machine such that all commands
->> go through a common function and validation process to ensure
->> that the state machine is not violated in any way and adheres to
->> the MHI specification. Assert device wake before sending the
->> channel update commands instead of a wake toggle to ensure we
->> fail if device is in a bad state. Also update print messages to
->> use client device to accurately represent the channel being
->> updated.
->> 
+On Tue, Feb 23, 2021 at 11:24:23PM -0800, Hugh Dickins wrote:
+> On Thu, 6 Aug 2020, Andrew Morton wrote:
+> > On Thu, 6 Aug 2020 16:38:04 -0700 Roman Gushchin <guro@fb.com> wrote:
 > 
-> This patch is doing atleast 3 things and that is not acceptable. Please
-> split this patch and send.
+> August, yikes, I thought it was much more recent.
 > 
-These changes to commit text and other updates were done after your 
-comments for v5
-[1].
-
-Please check and let me know what you think. I have addressed them and 
-added info
-in the commit description.
-
-I feel this is one patch to improve channel handling overall, so the 
-"assert device wake"
-change is part of that and I have stated that.
-
-> Thanks,
-> Mani
+> > 
+> > > it seems that Hugh and me haven't reached a consensus here.
+> > > Can, you, please, not merge this patch into 5.9, so we would have
+> > > more time to find a solution, acceptable for all?
+> > 
+> > No probs.  I already had a big red asterisk on it ;)
 > 
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
->> ---
->>  drivers/bus/mhi/core/init.c     |   6 ++
->>  drivers/bus/mhi/core/internal.h |  12 +++
->>  drivers/bus/mhi/core/main.c     | 172 
->> ++++++++++++++++++++++------------------
->>  3 files changed, 114 insertions(+), 76 deletions(-)
->> 
->> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
->> index 03c5786..482b365 100644
->> --- a/drivers/bus/mhi/core/init.c
->> +++ b/drivers/bus/mhi/core/init.c
->> @@ -54,6 +54,12 @@ const char * const mhi_state_str[MHI_STATE_MAX] = {
->>  	[MHI_STATE_SYS_ERR] = "SYS_ERR",
->>  };
->> 
->> +const char * const mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX] = {
->> +	[MHI_CH_STATE_TYPE_RESET] = "RESET",
->> +	[MHI_CH_STATE_TYPE_STOP] = "STOP",
->> +	[MHI_CH_STATE_TYPE_START] = "START",
->> +};
->> +
->>  static const char * const mhi_pm_state_str[] = {
->>  	[MHI_PM_STATE_DISABLE] = "DISABLE",
->>  	[MHI_PM_STATE_POR] = "POR",
->> diff --git a/drivers/bus/mhi/core/internal.h 
->> b/drivers/bus/mhi/core/internal.h
->> index 6f80ec3..7e3aac1 100644
->> --- a/drivers/bus/mhi/core/internal.h
->> +++ b/drivers/bus/mhi/core/internal.h
->> @@ -369,6 +369,18 @@ enum mhi_ch_state {
->>  	MHI_CH_STATE_ERROR = 0x5,
->>  };
->> 
->> +enum mhi_ch_state_type {
->> +	MHI_CH_STATE_TYPE_RESET,
->> +	MHI_CH_STATE_TYPE_STOP,
->> +	MHI_CH_STATE_TYPE_START,
->> +	MHI_CH_STATE_TYPE_MAX,
->> +};
->> +
->> +extern const char * const 
->> mhi_ch_state_type_str[MHI_CH_STATE_TYPE_MAX];
->> +#define TO_CH_STATE_TYPE_STR(state) (((state) >= 
->> MHI_CH_STATE_TYPE_MAX) ? \
->> +				     "INVALID_STATE" : \
->> +				     mhi_ch_state_type_str[(state)])
->> +
->>  #define MHI_INVALID_BRSTMODE(mode) (mode != MHI_DB_BRST_DISABLE && \
->>  				    mode != MHI_DB_BRST_ENABLE)
->> 
->> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
->> index d068188..2f6fdb2 100644
->> --- a/drivers/bus/mhi/core/main.c
->> +++ b/drivers/bus/mhi/core/main.c
->> @@ -1188,56 +1188,114 @@ int mhi_send_cmd(struct mhi_controller 
->> *mhi_cntrl,
->>  	return 0;
->>  }
->> 
->> -static void __mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
->> -				    struct mhi_chan *mhi_chan)
->> +static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
->> +				    struct mhi_chan *mhi_chan,
->> +				    enum mhi_ch_state_type to_state)
->>  {
->> -	int ret;
->> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->> +	struct device *dev = &mhi_chan->mhi_dev->dev;
->> +	enum mhi_cmd_type cmd = MHI_CMD_NOP;
->> +	int ret = -EIO;
->> +
->> +	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
->> +		TO_CH_STATE_TYPE_STR(to_state));
->> +
->> +	switch (to_state) {
->> +	case MHI_CH_STATE_TYPE_RESET:
->> +		write_lock_irq(&mhi_chan->lock);
->> +		if (mhi_chan->ch_state != MHI_CH_STATE_STOP &&
->> +		    mhi_chan->ch_state != MHI_CH_STATE_ENABLED &&
->> +		    mhi_chan->ch_state != MHI_CH_STATE_SUSPENDED) {
->> +			write_unlock_irq(&mhi_chan->lock);
->> +			return -EINVAL;
->> +		}
->> +		mhi_chan->ch_state = MHI_CH_STATE_DISABLED;
->> +		write_unlock_irq(&mhi_chan->lock);
->> 
->> -	dev_dbg(dev, "Entered: unprepare channel:%d\n", mhi_chan->chan);
->> +		cmd = MHI_CMD_RESET_CHAN;
->> +		break;
->> +	case MHI_CH_STATE_TYPE_STOP:
->> +		if (mhi_chan->ch_state != MHI_CH_STATE_ENABLED)
->> +			return -EINVAL;
->> 
->> -	/* no more processing events for this channel */
->> -	mutex_lock(&mhi_chan->mutex);
->> -	write_lock_irq(&mhi_chan->lock);
->> -	if (mhi_chan->ch_state != MHI_CH_STATE_ENABLED &&
->> -	    mhi_chan->ch_state != MHI_CH_STATE_SUSPENDED) {
->> -		write_unlock_irq(&mhi_chan->lock);
->> -		mutex_unlock(&mhi_chan->mutex);
->> -		return;
->> +		cmd = MHI_CMD_STOP_CHAN;
->> +		break;
->> +	case MHI_CH_STATE_TYPE_START:
->> +		if (mhi_chan->ch_state != MHI_CH_STATE_STOP &&
->> +		    mhi_chan->ch_state != MHI_CH_STATE_DISABLED)
->> +			return -EINVAL;
->> +
->> +		cmd = MHI_CMD_START_CHAN;
->> +		break;
->> +	default:
->> +		dev_err(dev, "%d: Channel state update to %s not allowed\n",
->> +			mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
->> +		return -EINVAL;
->>  	}
->> 
->> -	mhi_chan->ch_state = MHI_CH_STATE_DISABLED;
->> -	write_unlock_irq(&mhi_chan->lock);
->> +	/* bring host and device out of suspended states */
->> +	ret = mhi_device_get_sync(mhi_cntrl->mhi_dev);
->> +	if (ret)
->> +		return ret;
->> +	mhi_cntrl->runtime_get(mhi_cntrl);
->> 
->>  	reinit_completion(&mhi_chan->completion);
->> -	read_lock_bh(&mhi_cntrl->pm_lock);
->> -	if (MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)) {
->> -		read_unlock_bh(&mhi_cntrl->pm_lock);
->> -		goto error_invalid_state;
->> +	ret = mhi_send_cmd(mhi_cntrl, mhi_chan, cmd);
->> +	if (ret) {
->> +		dev_err(dev, "%d: Failed to send %s channel command\n",
->> +			mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
->> +		goto exit_channel_update;
->>  	}
->> 
->> -	mhi_cntrl->wake_toggle(mhi_cntrl);
->> -	read_unlock_bh(&mhi_cntrl->pm_lock);
->> +	ret = wait_for_completion_timeout(&mhi_chan->completion,
->> +				       msecs_to_jiffies(mhi_cntrl->timeout_ms));
->> +	if (!ret || mhi_chan->ccs != MHI_EV_CC_SUCCESS) {
->> +		dev_err(dev,
->> +			"%d: Failed to receive %s channel command completion\n",
->> +			mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
->> +		ret = -EIO;
->> +		goto exit_channel_update;
->> +	}
->> 
->> -	mhi_cntrl->runtime_get(mhi_cntrl);
->> +	ret = 0;
->> +
->> +	if (to_state != MHI_CH_STATE_TYPE_RESET) {
->> +		write_lock_irq(&mhi_chan->lock);
->> +		mhi_chan->ch_state = (to_state == MHI_CH_STATE_TYPE_START) ?
->> +				      MHI_CH_STATE_ENABLED : MHI_CH_STATE_STOP;
->> +		write_unlock_irq(&mhi_chan->lock);
->> +	}
->> +
->> +	dev_dbg(dev, "%d: Channel state change to %s successful\n",
->> +		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
->> +
->> +exit_channel_update:
->>  	mhi_cntrl->runtime_put(mhi_cntrl);
->> -	ret = mhi_send_cmd(mhi_cntrl, mhi_chan, MHI_CMD_RESET_CHAN);
->> -	if (ret)
->> -		goto error_invalid_state;
->> +	mhi_device_put(mhi_cntrl->mhi_dev);
->> 
->> -	/* even if it fails we will still reset */
->> -	ret = wait_for_completion_timeout(&mhi_chan->completion,
->> -				msecs_to_jiffies(mhi_cntrl->timeout_ms));
->> -	if (!ret || mhi_chan->ccs != MHI_EV_CC_SUCCESS)
->> -		dev_err(dev,
->> -			"Failed to receive cmd completion, still resetting\n");
->> +	return ret;
->> +}
->> +
->> +static void __mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
->> +				    struct mhi_chan *mhi_chan)
->> +{
->> +	int ret;
->> +	struct device *dev = &mhi_chan->mhi_dev->dev;
->> +
->> +	mutex_lock(&mhi_chan->mutex);
->> +
->> +	/* no more processing events for this channel */
->> +	ret = mhi_update_channel_state(mhi_cntrl, mhi_chan,
->> +				       MHI_CH_STATE_TYPE_RESET);
->> +	if (ret)
->> +		dev_err(dev, "%d: Failed to reset channel, still resetting\n",
->> +			mhi_chan->chan);
->> 
->> -error_invalid_state:
->>  	if (!mhi_chan->offload_ch) {
->>  		mhi_reset_chan(mhi_cntrl, mhi_chan);
->>  		mhi_deinit_chan_ctxt(mhi_cntrl, mhi_chan);
->>  	}
->> -	dev_dbg(dev, "chan:%d successfully resetted\n", mhi_chan->chan);
->> +	dev_dbg(dev, "%d: successfully reset\n", mhi_chan->chan);
->> +
->>  	mutex_unlock(&mhi_chan->mutex);
->>  }
->> 
->> @@ -1245,28 +1303,16 @@ int mhi_prepare_channel(struct mhi_controller 
->> *mhi_cntrl,
->>  			struct mhi_chan *mhi_chan)
->>  {
->>  	int ret = 0;
->> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->> -
->> -	dev_dbg(dev, "Preparing channel: %d\n", mhi_chan->chan);
->> +	struct device *dev = &mhi_chan->mhi_dev->dev;
->> 
->>  	if (!(BIT(mhi_cntrl->ee) & mhi_chan->ee_mask)) {
->> -		dev_err(dev,
->> -			"Current EE: %s Required EE Mask: 0x%x for chan: %s\n",
->> -			TO_MHI_EXEC_STR(mhi_cntrl->ee), mhi_chan->ee_mask,
->> -			mhi_chan->name);
->> +		dev_err(dev, "Current EE: %s Required EE Mask: 0x%x\n",
->> +			TO_MHI_EXEC_STR(mhi_cntrl->ee), mhi_chan->ee_mask);
->>  		return -ENOTCONN;
->>  	}
->> 
->>  	mutex_lock(&mhi_chan->mutex);
->> 
->> -	/* If channel is not in disable state, do not allow it to start */
->> -	if (mhi_chan->ch_state != MHI_CH_STATE_DISABLED) {
->> -		ret = -EIO;
->> -		dev_dbg(dev, "channel: %d is not in disabled state\n",
->> -			mhi_chan->chan);
->> -		goto error_init_chan;
->> -	}
->> -
->>  	/* Check of client manages channel context for offload channels */
->>  	if (!mhi_chan->offload_ch) {
->>  		ret = mhi_init_chan_ctxt(mhi_cntrl, mhi_chan);
->> @@ -1274,34 +1320,11 @@ int mhi_prepare_channel(struct mhi_controller 
->> *mhi_cntrl,
->>  			goto error_init_chan;
->>  	}
->> 
->> -	reinit_completion(&mhi_chan->completion);
->> -	read_lock_bh(&mhi_cntrl->pm_lock);
->> -	if (MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)) {
->> -		read_unlock_bh(&mhi_cntrl->pm_lock);
->> -		ret = -EIO;
->> -		goto error_pm_state;
->> -	}
->> -
->> -	mhi_cntrl->wake_toggle(mhi_cntrl);
->> -	read_unlock_bh(&mhi_cntrl->pm_lock);
->> -	mhi_cntrl->runtime_get(mhi_cntrl);
->> -	mhi_cntrl->runtime_put(mhi_cntrl);
->> -
->> -	ret = mhi_send_cmd(mhi_cntrl, mhi_chan, MHI_CMD_START_CHAN);
->> +	ret = mhi_update_channel_state(mhi_cntrl, mhi_chan,
->> +				       MHI_CH_STATE_TYPE_START);
->>  	if (ret)
->>  		goto error_pm_state;
->> 
->> -	ret = wait_for_completion_timeout(&mhi_chan->completion,
->> -				msecs_to_jiffies(mhi_cntrl->timeout_ms));
->> -	if (!ret || mhi_chan->ccs != MHI_EV_CC_SUCCESS) {
->> -		ret = -EIO;
->> -		goto error_pm_state;
->> -	}
->> -
->> -	write_lock_irq(&mhi_chan->lock);
->> -	mhi_chan->ch_state = MHI_CH_STATE_ENABLED;
->> -	write_unlock_irq(&mhi_chan->lock);
->> -
->>  	/* Pre-allocate buffer for xfer ring */
->>  	if (mhi_chan->pre_alloc) {
->>  		int nr_el = get_nr_avail_ring_elements(mhi_cntrl,
->> @@ -1339,9 +1362,6 @@ int mhi_prepare_channel(struct mhi_controller 
->> *mhi_cntrl,
->> 
->>  	mutex_unlock(&mhi_chan->mutex);
->> 
->> -	dev_dbg(dev, "Chan: %d successfully moved to start state\n",
->> -		mhi_chan->chan);
->> -
->>  	return 0;
->> 
->>  error_pm_state:
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+> I've a suspicion that Andrew might be tiring of his big red asterisk,
+> and wanting to unload
+> mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings.patch
+> mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix.patch
+> mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix-2.patch
+> into 5.12.
+> 
+> I would prefer not, and reiterate my Nack: but no great harm will
+> befall the cosmos if he overrules that, and it does go through to
+> 5.12 - I'll just want to revert it again later.  And I do think a
+> more straightforward way of suppressing those warnings would be just
+> to delete the code that issues them, rather than brushing them under
+> a carpet of overtuning.
 
-[1] https://lkml.org/lkml/2021/1/21/781
+I'm actually fine with either option. My only concern is that if somebody
+will try to use the hugetlb_cma boot option AND /proc/sys/vm/stat_refresh
+together, they will get a false warning and report them to mm@ or will
+waste their time trying to debug a non-existing problem. It's not the end
+of the world.
+We can also make the warning conditional on CONFIG_DEBUG_VM, for example.
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Please, let me know what's your preferred way to go forward.
+
+Thanks!
