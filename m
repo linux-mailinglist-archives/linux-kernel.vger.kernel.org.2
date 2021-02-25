@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C23324D83
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 508E6324DBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbhBYKCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:02:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34110 "EHLO mail.kernel.org"
+        id S234477AbhBYKOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:14:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234158AbhBYJ4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:56:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEF9364F0D;
-        Thu, 25 Feb 2021 09:54:16 +0000 (UTC)
+        id S232372AbhBYJ7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:59:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04DBD64F1B;
+        Thu, 25 Feb 2021 09:55:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614246857;
-        bh=AM0VwAM248I11PFNRkNnsugVBeUvdAPwU4cg/Y93yy4=;
+        s=korg; t=1614246902;
+        bh=BDpcdwetzIbQYUQZAKbqW5NiD40bNsx0qkgmoQXr6vY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UTJLlPEC4M4mmFa0u4UVXOgnW4CAtSY41E7X62T6zxwXcstaL1bxAO/1F7QgnoEQY
-         j582yPUaPvKJshLTg9aIRNzGeXRlZsONSo+3cy3oJVk8SK5bzfKKjU7umdWaGafEuT
-         K6BahUTSdVp4KjNZna94PYpef5jZvblnE/dVvXy4=
+        b=yUT5+ZPJcxu8yWIkHJwPhlygmnKM9YptcfyQ4CS491n93uXFJFCL1hHJGXAy0nLiL
+         LTOl1VJiAP4DtHas7u//NXZkvglczaKjXo+l+ak49rHWcJK7YKLf2JCba/zs+Mwbom
+         8vMfve3bNWYJyXA7zouiYM1OChrn7XWJQOfq36lc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
         Marcel Holtmann <marcel@holtmann.org>,
         Salvatore Bonaccorso <carnil@debian.org>
-Subject: [PATCH 5.11 06/12] Bluetooth: btusb: Some Qualcomm Bluetooth adapters stop working
+Subject: [PATCH 5.10 09/23] Bluetooth: btusb: Some Qualcomm Bluetooth adapters stop working
 Date:   Thu, 25 Feb 2021 10:53:40 +0100
-Message-Id: <20210225092515.298883603@linuxfoundation.org>
+Message-Id: <20210225092516.984855850@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210225092515.015261674@linuxfoundation.org>
-References: <20210225092515.015261674@linuxfoundation.org>
+In-Reply-To: <20210225092516.531932232@linuxfoundation.org>
+References: <20210225092516.531932232@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -72,7 +72,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/bluetooth/btusb.c
 +++ b/drivers/bluetooth/btusb.c
-@@ -4065,6 +4065,13 @@ static int btusb_setup_qca(struct hci_de
+@@ -3689,6 +3689,13 @@ static int btusb_setup_qca(struct hci_de
  			info = &qca_devices_table[i];
  	}
  	if (!info) {
