@@ -2,199 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B3C324E58
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109F9324E59
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 11:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235039AbhBYKgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 05:36:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
+        id S232767AbhBYKgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 05:36:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232821AbhBYKNc (ORCPT
+        with ESMTP id S229522AbhBYKPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 05:13:32 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBA9C06178B
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:12:23 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id b3so4646863wrj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:12:23 -0800 (PST)
+        Thu, 25 Feb 2021 05:15:30 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B9AC0617A9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:13:39 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id c44so1705426uad.12
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 02:13:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Vn11HK/QHBg9CE9WbeXOr9LshINBA4CLu+MxA7Mzfr8=;
-        b=ARngZ/D3Nv0+1s9emEGhMEfClMcW9kRfI/HDZnEbj0gN0Qizegn6IxEOdYvRKfaiFe
-         ESoncKtaNWD/tJee02gmhCWvSei3s08zNq4ACeYQzncAyYQtRy1cevgY8P8LRm0BAaAX
-         qBzn95S0ueYmqmuoJ8kkLiPeEqUmGNreEaP+C1NRUgpD+SWkGzcbhOLKw8ZtKTt1biii
-         zNRtV8+qHYzymc/suBEvQV7JstsmuXgW764ZXnxlGNLQhTXAIb69lxlQL2FTsImnM3tk
-         eY9MgEYt17ltmUas4CcP5seoaIgX/jr6Or9D1pa67bHmaIpxQZrM8qJB2v1VLC6gQnWO
-         SEeg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1rwdBW0LAuJT29U18RbZg+7dDhrtIMwM8XGpp8ROhvA=;
+        b=FU6ytM8QB25u4uEGM3w/0vqufiuzVnkI06gj4bOLXkPmRSvcYJSzU5MzEMUQd0Uf3Y
+         xO6a/BnYszCWKNkC0i62ttuzeeWgCvBO4UewkIk7X6+kB2LnaIe97VC34H/Cba1HhbES
+         hkoAw1pqXkUppF3K7zV3KDfwU6oxNfbvpQTyjsN9Xc7OuYjvSl0lT4oPDOF49b2Plrhg
+         HFv/FO/IrST6F+GRW9Z/zQDWPfm7PNcr7FCTDuJM/qZuUZptF7wUQk3+lyjIswYGL+K8
+         D+RTxerH34BL1ZeXQaQA8xgpfAxaPtVDLiXm/8WdcJxsRWLVtbahz1we5RaI/WsUPNCM
+         s6eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Vn11HK/QHBg9CE9WbeXOr9LshINBA4CLu+MxA7Mzfr8=;
-        b=DR5KsOLrGrjKQsmZrHR4B39eUYOv/fpkZEYkoFanCtaH8dQeVVnukdiRe0y7q/AdwU
-         I8pMQMfi4GO4IMwWuoJhw6KFZjRDNtAGDP2DVNK5Y/+4StEgI7SWkY7W9oo8BhmkcuKJ
-         L981FpMvQDjY/J5fFvDf0yxLioQWHvW5Uyhh3vtj8/SaTfSESPuXs/9kX0ihdtBMAqs+
-         d2IKShclRjQB0N4ypUxsg8gEF0iki8qVuOYOYqc4UW7LAbwp3dCk/ENXN1+Y6s29uwDs
-         7mzClT+y8M10y64sRz/pQfq8ek//VY6lhFLb6618wVQUJGy1niOnM9v3O0wftlGCmQ22
-         mQcA==
-X-Gm-Message-State: AOAM5311c87uNRJnVUiCglcxFlnLPDScryEZDoVjoXe+4zIFOoPA8nig
-        fgprlMbALGMTGTUU9PC2qkXQow==
-X-Google-Smtp-Source: ABdhPJw9oXOdq41JUnkKdXWSKCNJgCwMqYBDMRm14Ga8eqPrv9ZLgU8NeKG4wBtwX06W7igRUEsxmQ==
-X-Received: by 2002:a5d:658a:: with SMTP id q10mr2634713wru.285.1614247942139;
-        Thu, 25 Feb 2021 02:12:22 -0800 (PST)
-Received: from [192.168.0.4] (hst-221-21.medicom.bg. [84.238.221.21])
-        by smtp.googlemail.com with ESMTPSA id l7sm8292289wrn.11.2021.02.25.02.12.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Feb 2021 02:12:21 -0800 (PST)
-Subject: Re: [PATCH 1/2] v4l2-ctrl: Add decoder conceal color control
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20210209094527.2173690-1-stanimir.varbanov@linaro.org>
- <20210209094527.2173690-2-stanimir.varbanov@linaro.org>
- <cccae00e-e30e-6691-d954-27379a104115@xs4all.nl>
- <489f1417-085d-4057-f2e8-1cc8db0ed161@linaro.org>
- <70c04719-39ac-9ba7-cd2f-6c5b9d5f2275@xs4all.nl>
- <12b37304-84d1-63fe-1d85-60268502d8bc@linaro.org>
- <eb410d2c-9650-2251-cff8-4306663f41f9@xs4all.nl>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <4e85add8-3ddf-1d36-f1ab-2866aa9327f8@linaro.org>
-Date:   Thu, 25 Feb 2021 12:12:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1rwdBW0LAuJT29U18RbZg+7dDhrtIMwM8XGpp8ROhvA=;
+        b=BgNYv1O+5E7lk+TqTmhLj38vS9tmw0Z5boUVZFM0L9eRQ/CK2Gxw55ydf+osusJxkU
+         ycoDZH27Q7U+JGTCkpyHSHfEQoeiObFvzCJ2nHWQtNjRxFPVpMEuH/1CXmc67ZJVNfcm
+         qxRZzyIbOs+IqEip97MoiS8SiAlsPua0JKBy3ALxk5PvEMRd1KJeip6pDtBBHRfz70l1
+         UNHUIpp31zZ9BD8ON076zjrFYzCPaeTSiAOGfxNB/jb/Se5m+muD+0ITPn33UU8o0563
+         SsCPbMOCeNMmKIgi1VLcEJgRkhSiwO9oymu1AFElt4fLIuPdpNrOD1ntlETX+1+hwrAs
+         iMoQ==
+X-Gm-Message-State: AOAM531ML8rt7/Lzyhm59UrxIV32UOOUepaTEpCvQnbpv1d4npLfSHHK
+        t4xaMwnkWr0FJc8f+tdt7NXcm6yYs6pZlIbSykQr/A==
+X-Google-Smtp-Source: ABdhPJwJozf9VE/9g7E7vKLycikS7uqN3OXoyJk6oVUQSwSe8WrSJ2f9m+onS8ieEf4pWVssO6bQ8OAgvC3t7H1wL3k=
+X-Received: by 2002:ab0:1d11:: with SMTP id j17mr1144266uak.99.1614248018333;
+ Thu, 25 Feb 2021 02:13:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <eb410d2c-9650-2251-cff8-4306663f41f9@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210219090409.325492-1-badhri@google.com> <c0fbb198-a905-cdd0-3c6e-6af484512a5b@roeck-us.net>
+ <CAPTae5LMQQHkvWqcOC7D93kEJ4uJQuUu9Aq_RWTgiBfV74UC+g@mail.gmail.com>
+In-Reply-To: <CAPTae5LMQQHkvWqcOC7D93kEJ4uJQuUu9Aq_RWTgiBfV74UC+g@mail.gmail.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Thu, 25 Feb 2021 02:13:01 -0800
+Message-ID: <CAPTae5KHy5jfiSnfD9oNjC5Gf_-R-WWHmvRHC1KVs1WKzH4oKA@mail.gmail.com>
+Subject: Re: [PATCH v2] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V
+ before toggling
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kyle Tso <kyletso@google.com>, USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 24, 2021 at 9:46 PM Badhri Jagan Sridharan
+<badhri@google.com> wrote:
+>
+> On Fri, Feb 19, 2021 at 7:56 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > On 2/19/21 1:04 AM, Badhri Jagan Sridharan wrote:
+> > > When vbus auto discharge is enabled, TCPM can sometimes be faster than
+> > > the TCPC i.e. TCPM can go ahead and move the port to unattached state
+> > > (involves disabling vbus auto discharge) before TCPC could effectively
+> > > discharge vbus to VSAFE0V. This leaves vbus with residual charge and
+> > > increases the decay time which prevents tsafe0v from being met.
+> > > This change introduces a new state VBUS_DISCHARGE where the TCPM waits
+> > > for a maximum of tSafe0V(max) for vbus to discharge to VSAFE0V before
+> > > transitioning to unattached state and re-enable toggling. If vbus
+> > > discharges to vsafe0v sooner, then, transition to unattached state
+> > > happens right away.
+> > >
+> > > Also, while in SNK_READY, when auto discharge is enabled, drive
+> > > disconnect based on vbus turning off instead of Rp disappearing on
+> > > CC pins. Rp disappearing on CC pins is almost instanteous compared
+> > > to vbus decay.
+> > >
+> > > Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto
+> > > Discharge disconnect support")
+> > > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > > ---
+> > > Changes since V1:
+> > > - Add Fixes tag
+> > > ---
+> > >  drivers/usb/typec/tcpm/tcpm.c | 60 +++++++++++++++++++++++++++++++----
+> > >  1 file changed, 53 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> > > index be0b6469dd3d..0ed71725980f 100644
+> > > --- a/drivers/usb/typec/tcpm/tcpm.c
+> > > +++ b/drivers/usb/typec/tcpm/tcpm.c
+> > > @@ -62,6 +62,8 @@
+> > >       S(SNK_TRANSITION_SINK_VBUS),            \
+> > >       S(SNK_READY),                           \
+> > >                                               \
+> > > +     S(VBUS_DISCHARGE),                      \
+> > > +                                             \
+> > >       S(ACC_UNATTACHED),                      \
+> > >       S(DEBUG_ACC_ATTACHED),                  \
+> > >       S(AUDIO_ACC_ATTACHED),                  \
+> > > @@ -438,6 +440,9 @@ struct tcpm_port {
+> > >       enum tcpm_ams next_ams;
+> > >       bool in_ams;
+> > >
+> > > +     /* Auto vbus discharge state */
+> > > +     bool auto_vbus_discharge_enabled;
+> > > +
+> > >  #ifdef CONFIG_DEBUG_FS
+> > >       struct dentry *dentry;
+> > >       struct mutex logbuffer_lock;    /* log buffer access lock */
+> > > @@ -3413,6 +3418,8 @@ static int tcpm_src_attach(struct tcpm_port *port)
+> > >       if (port->tcpc->enable_auto_vbus_discharge) {
+> > >               ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, true);
+> > >               tcpm_log_force(port, "enable vbus discharge ret:%d", ret);
+> > > +             if (!ret)
+> > > +                     port->auto_vbus_discharge_enabled = true;
+> > >       }
+> > >
+> > >       ret = tcpm_set_roles(port, true, TYPEC_SOURCE, tcpm_data_role_for_source(port));
+> > > @@ -3495,6 +3502,8 @@ static void tcpm_reset_port(struct tcpm_port *port)
+> > >       if (port->tcpc->enable_auto_vbus_discharge) {
+> > >               ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, false);
+> > >               tcpm_log_force(port, "Disable vbus discharge ret:%d", ret);
+> > > +             if (!ret)
+> > > +                     port->auto_vbus_discharge_enabled = false;
+> > >       }
+> > >       port->in_ams = false;
+> > >       port->ams = NONE_AMS;
+> > > @@ -3568,6 +3577,8 @@ static int tcpm_snk_attach(struct tcpm_port *port)
+> > >               tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, VSAFE5V);
+> > >               ret = port->tcpc->enable_auto_vbus_discharge(port->tcpc, true);
+> > >               tcpm_log_force(port, "enable vbus discharge ret:%d", ret);
+> > > +             if (!ret)
+> > > +                     port->auto_vbus_discharge_enabled = true;
+> > >       }
+> > >
+> > >       ret = tcpm_set_roles(port, true, TYPEC_SINK, tcpm_data_role_for_sink(port));
+> > > @@ -3684,6 +3695,12 @@ static void run_state_machine(struct tcpm_port *port)
+> > >       switch (port->state) {
+> > >       case TOGGLING:
+> > >               break;
+> > > +     case VBUS_DISCHARGE:
+> > > +             if (port->port_type == TYPEC_PORT_SRC)
+> > > +                     tcpm_set_state(port, SRC_UNATTACHED, PD_T_SAFE_0V);
+> > > +             else
+> > > +                     tcpm_set_state(port, SNK_UNATTACHED, PD_T_SAFE_0V);
+> > > +             break;
+> > >       /* SRC states */
+> > >       case SRC_UNATTACHED:
+> > >               if (!port->non_pd_role_swap)
+> > > @@ -4669,7 +4686,9 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
+> > >       case SRC_READY:
+> > >               if (tcpm_port_is_disconnected(port) ||
+> > >                   !tcpm_port_is_source(port)) {
+> > > -                     if (port->port_type == TYPEC_PORT_SRC)
+> > > +                     if (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v)
+> > > +                             tcpm_set_state(port, VBUS_DISCHARGE, 0);
+> > > +                     else if (port->port_type == TYPEC_PORT_SRC)
+> > >                               tcpm_set_state(port, SRC_UNATTACHED, 0);
+> > >                       else
+> > >                               tcpm_set_state(port, SNK_UNATTACHED, 0);
+> >
+> > Unless I am missing something, the new state is only used to set the
+> > PD_T_SAFE_0V timeout. Is it really necessary/useful to add a new state
+> > just for that, while keeping the rest of if/else statements ?
+> > Personally I would prefer something like
+> >                         timeout = (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v) ? PD_T_SAFE_0V : 0;
+> >                         if (port->port_type == TYPEC_PORT_SRC)
+> >                                 tcpm_set_state(port, SRC_UNATTACHED, timeout);
+> >                         else
+> >                                 tcpm_set_state(port, SNK_UNATTACHED, timeout);
+> >
+> Yes this should be OK as well. I was thinking  it would be more
+> clearer during debug if there
+> was a separate state altogether, but, looks like we should be fine.
+> Implementing/Validating it now. Will send a follow up version today.
+
+Just sent out the V3 version of the patch.
 
 
-On 2/16/21 10:58 AM, Hans Verkuil wrote:
-> On 16/02/2021 09:56, Stanimir Varbanov wrote:
->>
->>
->> On 2/15/21 1:57 PM, Hans Verkuil wrote:
->>> On 15/02/2021 12:32, Stanimir Varbanov wrote:
->>>>
->>>>
->>>> On 2/9/21 1:05 PM, Hans Verkuil wrote:
->>>>> On 09/02/2021 10:45, Stanimir Varbanov wrote:
->>>>>> Add decoder v4l2 control to set conceal color.
->>>>>>
->>>>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->>>>>> ---
->>>>>>  .../media/v4l/ext-ctrls-codec.rst             | 20 +++++++++++++++++++
->>>>>>  drivers/media/v4l2-core/v4l2-ctrls.c          |  9 +++++++++
->>>>>>  include/uapi/linux/v4l2-controls.h            |  1 +
->>>>>>  3 files changed, 30 insertions(+)
->>>>>>
->>>>>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>>>>> index 00944e97d638..994650052333 100644
->>>>>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>>>>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>>>>> @@ -674,6 +674,26 @@ enum v4l2_mpeg_video_frame_skip_mode -
->>>>>>      is currently displayed (decoded). This value is reset to 0 whenever
->>>>>>      the decoder is started.
->>>>>>  
->>>>>> +``V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR (integer64)``
->>>>>> +    This control sets conceal color in YUV color space. It describes the
->>>>>> +    client preference of error conceal color in case of error where
->>>>>> +    reference frame is missing. The decoder would paint the reference
->>>>>> +    buffer with preferred color and use it for future decoding.
->>>>>> +    Applicable to decoders.
->>>>>
->>>>> You should mention explicitly that this is using 16-bit color components
->>>>> and expects Limited Range.
->>>>
->>>> I don't want to limit the client to Limited range only. I'll mention in
->>>> the description that both ranges are valid.
->>>
->>> OK, but then you need to describe what the color format depends on. See more
->>> below.
->>>
->>>>
->>>>>
->>>>>> +
->>>>>> +.. flat-table::
->>>>>> +    :header-rows:  0
->>>>>> +    :stub-columns: 0
->>>>>> +
->>>>>> +    * - Bit 0:15
->>>>>> +      - Y luminance
->>>>>> +    * - Bit 16:31
->>>>>> +      - Cb chrominance
->>>>>> +    * - Bit 32:47
->>>>>> +      - Cr chrominance
->>>>>> +    * - Bit 48:63
->>>>>> +      - Must be zero
->>>>>> +
->>
->> The table how the bits are spread into int64.
->>
->>>>>>  ``V4L2_CID_MPEG_VIDEO_DECODER_SLICE_INTERFACE (boolean)``
->>>>>>      If enabled the decoder expects to receive a single slice per buffer,
->>>>>>      otherwise the decoder expects a single frame in per buffer.
->>>>>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
->>>>>> index 016cf6204cbb..a3b9d28a00b7 100644
->>>>>> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
->>>>>> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
->>>>>> @@ -945,6 +945,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->>>>>>  	case V4L2_CID_MPEG_VIDEO_VBV_SIZE:			return "VBV Buffer Size";
->>>>>>  	case V4L2_CID_MPEG_VIDEO_DEC_PTS:			return "Video Decoder PTS";
->>>>>>  	case V4L2_CID_MPEG_VIDEO_DEC_FRAME:			return "Video Decoder Frame Count";
->>>>>> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:		return "Video Decoder Conceal Color";
->>>>>>  	case V4L2_CID_MPEG_VIDEO_VBV_DELAY:			return "Initial Delay for VBV Control";
->>>>>>  	case V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE:		return "Horizontal MV Search Range";
->>>>>>  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
->>>>>> @@ -1430,6 +1431,14 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->>>>>>  		*max = 0x7fffffffffffffffLL;
->>>>>>  		*step = 1;
->>>>>>  		break;
->>>>>> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:
->>>>>> +		*type = V4L2_CTRL_TYPE_INTEGER64;
->>>>>> +		*min = 0;
->>>>>> +		/* default for 8bit black, luma is 16, chroma is 128 */
->>>>>
->>>>> Since this is 16 bit the actual default luma value for black is 4096 and for chroma use
->>>>> 32768 (i.e. both values are times 256).
->>>>
->>>> If we follow this for pixel format with 10bit per channel we have to
->>>> multiply by 64?
->>>
->>> No, you multiply by 4. 12 bit depth will multiple by 16, and 16 bit depth by 256.
->>>
->>> But how do you format this? Using bits 29-0? Or use 9-0 for one color component,
->>> 25-16 for another and 41-32 for the last component?
->>
->> I described this in the table above:
->>
->> Bit  0:15 - Y luminance
->> Bit 16:31 - Cb chrominance
->> Bit 32:47 - Cr chrominance
->> Bit 48:63 - Must be zero
->>
->> So depending on the bit depth of the current pixel format:
->>
->>  8bit - 0:7  Y', 16:23 Cb, 32:39 Cr
->> 10bit - 0:9  Y', 16:25 Cb, 32:41 Cr
->> 12bit - 0:11 Y', 16:27 Cb, 32:43 Cr
 
-^^^^
-
-> 
-> Apologies, I missed that table!
-
-Hans, do you want me to update with the above ^^^^ components bits or
-something else?
-
--- 
-regards,
-Stan
+>
+> > In this context, any idea why port_type==TYPEC_PORT_DRP results in
+> > SNK_UNATTACHED state ? That seems a bit odd.
+>
+> This comes from the patch here:
+> https://lore.kernel.org/r/1582128343-22438-1-git-send-email-jun.li@nxp.com
+>
+> Looks reasonable to me as tcpm_*_detach functions call  tcpm_detach so
+> teardown should
+> happen anyways.
+>
+> static void tcpm_snk_detach(struct tcpm_port *port)
+> {
+>         tcpm_detach(port);
+> }
+>
+>
+> static void tcpm_src_detach(struct tcpm_port *port)
+> {
+>         tcpm_detach(port);
+> }
+>
+> Thanks,
+> Badhri
+>
+> >
+> > Guenter
+> >
+> > > @@ -4703,7 +4722,18 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
+> > >                       tcpm_set_state(port, SNK_DEBOUNCED, 0);
+> > >               break;
+> > >       case SNK_READY:
+> > > -             if (tcpm_port_is_disconnected(port))
+> > > +             /*
+> > > +              * When set_auto_vbus_discharge_threshold is enabled, CC pins go
+> > > +              * away before vbus decays to disconnect threshold. Allow
+> > > +              * disconnect to be driven by vbus disconnect when auto vbus
+> > > +              * discharge is enabled.
+> > > +              *
+> > > +              * EXIT condition is based primarily on vbus disconnect and CC is secondary.
+> > > +              * "A port that has entered into USB PD communications with the Source and
+> > > +              * has seen the CC voltage exceed vRd-USB may monitor the CC pin to detect
+> > > +              * cable disconnect in addition to monitoring VBUS.
+> > > +              */
+> > > +             if (!port->auto_vbus_discharge_enabled && tcpm_port_is_disconnected(port))
+> > >                       tcpm_set_state(port, unattached_state(port), 0);
+> > >               else if (!port->pd_capable &&
+> > >                        (cc1 != old_cc1 || cc2 != old_cc2))
+> > > @@ -4803,9 +4833,16 @@ static void _tcpm_cc_change(struct tcpm_port *port, enum typec_cc_status cc1,
+> > >                */
+> > >               break;
+> > >
+> > > +     case VBUS_DISCHARGE:
+> > > +             /* Do nothing. Waiting for vsafe0v signal */
+> > > +             break;
+> > >       default:
+> > > -             if (tcpm_port_is_disconnected(port))
+> > > -                     tcpm_set_state(port, unattached_state(port), 0);
+> > > +             if (tcpm_port_is_disconnected(port)) {
+> > > +                     if (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v)
+> > > +                             tcpm_set_state(port, VBUS_DISCHARGE, 0);
+> > > +                     else
+> > > +                             tcpm_set_state(port, unattached_state(port), 0);
+> > > +             }
+> > >               break;
+> > >       }
+> > >  }
+> > > @@ -4988,9 +5025,12 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
+> > >               break;
+> > >
+> > >       default:
+> > > -             if (port->pwr_role == TYPEC_SINK &&
+> > > -                 port->attached)
+> > > -                     tcpm_set_state(port, SNK_UNATTACHED, 0);
+> > > +             if (port->pwr_role == TYPEC_SINK && port->attached) {
+> > > +                     if (port->auto_vbus_discharge_enabled && !port->vbus_vsafe0v)
+> > > +                             tcpm_set_state(port, VBUS_DISCHARGE, 0);
+> > > +                     else
+> > > +                             tcpm_set_state(port, SNK_UNATTACHED, 0);
+> > > +             }
+> > >               break;
+> > >       }
+> > >  }
+> > > @@ -5012,6 +5052,12 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
+> > >                       tcpm_set_state(port, tcpm_try_snk(port) ? SNK_TRY : SRC_ATTACHED,
+> > >                                      PD_T_CC_DEBOUNCE);
+> > >               break;
+> > > +     case VBUS_DISCHARGE:
+> > > +             if (port->port_type == TYPEC_PORT_SRC)
+> > > +                     tcpm_set_state(port, SRC_UNATTACHED, 0);
+> > > +             else
+> > > +                     tcpm_set_state(port, SNK_UNATTACHED, 0);
+> > > +             break;
+> > >       default:
+> > >               break;
+> > >       }
+> > >
+> >
