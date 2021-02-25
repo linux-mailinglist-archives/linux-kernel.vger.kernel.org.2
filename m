@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643F73257D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0813257DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 21:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234410AbhBYUj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 15:39:26 -0500
-Received: from raptor.unsafe.ru ([5.9.43.93]:47106 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234690AbhBYUiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:38:02 -0500
-Received: from example.org (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id 54A7A209D4;
-        Thu, 25 Feb 2021 20:37:07 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 21:36:57 +0100
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        io-uring@vger.kernel.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: d28296d248:  stress-ng.sigsegv.ops_per_sec -82.7% regression
-Message-ID: <20210225203657.mjhaqnj5vszna5xw@example.org>
-References: <20210224051845.GB6114@xsang-OptiPlex-9020>
- <m1czwpl83q.fsf@fess.ebiederm.org>
- <20210224183828.j6uut6sholeo2fzh@example.org>
- <m17dmxl2qa.fsf@fess.ebiederm.org>
+        id S234204AbhBYUkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 15:40:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33625 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233644AbhBYUib (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 15:38:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614285424;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A2DCIpl4t4oP1eDrLAD1K46exhLy3YbNX0Rf8/i1+pw=;
+        b=LJzpCz5teZdwEkeNMvWh60Qf+GJF/P3tj7/NT3imj3zGphx9VjH3+nQ1gpslrIsM6hY50c
+        f/otw9HxRtliF1iAOxFsock+bgds8lOrhu9QwY21QXmlwrnXrw1jmwgL2dbPEPrBH3fJG2
+        UzoIZGk2XM6aKwJI8k927r2FcfIMyOg=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-IPJYLoh-NX2AVyFlKnldGQ-1; Thu, 25 Feb 2021 15:37:02 -0500
+X-MC-Unique: IPJYLoh-NX2AVyFlKnldGQ-1
+Received: by mail-wr1-f71.google.com with SMTP id b15so1918242wrm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 12:37:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A2DCIpl4t4oP1eDrLAD1K46exhLy3YbNX0Rf8/i1+pw=;
+        b=tgMkgva9GBPa1lDQrlQj4m6MM9qYH/dV82Dvu4JDdhrkpEJ87OAskhsv6xTH6ihSt4
+         nUzfVetSXhY/LOhM0LzfdkSDNs1YmVLUdbyx8Juca6ZEunN2UMalwTM4gY7bsjBDk8mH
+         v+1MzTBo+iOZA9JE6jq3umYmIZKlxv5Gg+bJFNpsVFDjJbclva0rzv3kr6rqzhyiHG7f
+         J7LV7rWr8kKhCOQXi+pV1But6KDjhZYUGWcDw6Kx09Jnt3dAVfondQKZNLyWR7WA/WEM
+         7tEcOUwghQ2S6KyIsTXRoWZdI3Z5XFRvYM8vLGOLe0PkeATR0Ci11zJsO2mdf/ue+WDp
+         Nb6g==
+X-Gm-Message-State: AOAM5314fsnpA8ljBjQSRl2U2fB7gUxRrRFflQiRbxdtwMJxVXK0/rEb
+        ESbvUkNv2oM8Rv55D2P54fIXfWDTOXccjyvC8f9tz5xmgBgZbF4+FTNj+Rl1P+WL6XRjifqMu/3
+        a5a4822yspokhkTLHX/FwRfGK
+X-Received: by 2002:a05:600c:4f46:: with SMTP id m6mr158747wmq.154.1614285421010;
+        Thu, 25 Feb 2021 12:37:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwXZvXWhSI3vb50fZVQvv9A84mo6VgUnsNq9wE8PRfGBQ3ihQ561J2mp2VhvnoXByW5vkEnvA==
+X-Received: by 2002:a05:600c:4f46:: with SMTP id m6mr158729wmq.154.1614285420836;
+        Thu, 25 Feb 2021 12:37:00 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id o3sm3000691wmq.46.2021.02.25.12.36.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Feb 2021 12:36:59 -0800 (PST)
+Subject: Re: [RFC] KVM: x86: Support KVM VMs sharing SEV context
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        natet@google.com
+Cc:     Ashish.Kalra@amd.com, brijesh.singh@amd.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rientjes@google.com,
+        seanjc@google.com, srutherford@google.com, thomas.lendacky@amd.com,
+        x86@kernel.org, Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        DOV MURIK <Dov.Murik1@il.ibm.com>
+References: <7cb132ce522728f7689618832a65e31e37788201.camel@HansenPartnership.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <0b194254-1774-e54f-b801-c2d0c0ead07c@redhat.com>
+Date:   Thu, 25 Feb 2021 21:36:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <m17dmxl2qa.fsf@fess.ebiederm.org>
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Thu, 25 Feb 2021 20:37:16 +0000 (UTC)
+In-Reply-To: <7cb132ce522728f7689618832a65e31e37788201.camel@HansenPartnership.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 12:50:21PM -0600, Eric W. Biederman wrote:
-> Alexey Gladkov <gladkov.alexey@gmail.com> writes:
+On 25/02/21 18:53, James Bottomley wrote:
 > 
-> > On Wed, Feb 24, 2021 at 10:54:17AM -0600, Eric W. Biederman wrote:
-> >> kernel test robot <oliver.sang@intel.com> writes:
-> >> 
-> >> > Greeting,
-> >> >
-> >> > FYI, we noticed a -82.7% regression of stress-ng.sigsegv.ops_per_sec due to commit:
-> >> >
-> >> >
-> >> > commit: d28296d2484fa11e94dff65e93eb25802a443d47 ("[PATCH v7 5/7] Reimplement RLIMIT_SIGPENDING on top of ucounts")
-> >> > url: https://github.com/0day-ci/linux/commits/Alexey-Gladkov/Count-rlimits-in-each-user-namespace/20210222-175836
-> >> > base: https://git.kernel.org/cgit/linux/kernel/git/shuah/linux-kselftest.git next
-> >> >
-> >> > in testcase: stress-ng
-> >> > on test machine: 48 threads Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz with 112G memory
-> >> > with following parameters:
-> >> >
-> >> > 	nr_threads: 100%
-> >> > 	disk: 1HDD
-> >> > 	testtime: 60s
-> >> > 	class: interrupt
-> >> > 	test: sigsegv
-> >> > 	cpufreq_governor: performance
-> >> > 	ucode: 0x42e
-> >> >
-> >> >
-> >> > In addition to that, the commit also has significant impact on the
-> >> > following tests:
-> >> 
-> >> Thank you.  Now we have a sense of where we need to test the performance
-> >> of these changes carefully.
-> >
-> > One of the reasons for this is that I rolled back the patch that changed
-> > the ucounts.count type to atomic_t. Now get_ucounts() is forced to use a
-> > spin_lock to increase the reference count.
+> https://lore.kernel.org/qemu-devel/8b824c44-6a51-c3a7-6596-921dc47fea39@linux.ibm.com/
 > 
-> Which given the hickups with getting a working version seems justified.
-> 
-> Now we can add incremental patches on top to improve the performance.
+> It sounds like this mechanism can be used to boot a vCPU through a
+> mirror VM after the fact, which is very compatible with the above whose
+> mechanism is  simply to steal a VCPU to hold in reset until it's
+> activated.
 
-I'm not sure that get_ucounts() should be used in __sigqueue_alloc() [1].
-I tried removing it and running KASAN tests that were failing before. So
-far, I have not found any problems.
+Yes, and it's much cleaner because, for example, the extra vCPU need not 
+participate in the ACPI hotplug stuff and can even use a simplified run 
+loop.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/legion/linux.git/tree/kernel/signal.c?h=patchset/per-userspace-rlimit/v7.1&id=2d4a2e2be7db42c95acb98abfc2a9b370ddd0604#n428
-
--- 
-Rgrds, legion
+Paolo
 
