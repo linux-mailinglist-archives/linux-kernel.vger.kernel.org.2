@@ -2,148 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14452324A8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 07:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87680324A8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 07:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhBYG2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 01:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233291AbhBYG12 (ORCPT
+        id S233688AbhBYGb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 01:31:28 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13377 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233536AbhBYGb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 01:27:28 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D153C06174A;
-        Wed, 24 Feb 2021 22:26:47 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id o6so2918715pjf.5;
-        Wed, 24 Feb 2021 22:26:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=w8TXeKml8XM1ZbA6ShbdIyFFO1a3KVv9r8HYd21fZjk=;
-        b=p19dGD+CtfMWthkM6oPMevPv6cSTY5w5I15nfN7Il0AFFuk+DDhRywx9dAOKOylpiz
-         AddR9A97AT1BV89QDKGX6qVEBU+Jix+DLHuUJIxkrA/MDqJQW4gZEXw72bzrJkEZOp4V
-         T8ZORrbSZNq/tw7EtYa/0C74efB9AAXr3G8oHVG8oJ+DB6njNaI3iMXZjB6Lau8EtLGM
-         PlH5TlB9qEwy+HQMZpcKTlTspDuCWlllm0Dz29DysvqXwRdDxK9LKrY6WtMfxhAdAvM4
-         5x4dtODIV6QL5GClNVzeF2U5i9U0yqyAtLOXFTZzuZ0dZzabuLS9qWhFO7AxH7JiP7hn
-         vprw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=w8TXeKml8XM1ZbA6ShbdIyFFO1a3KVv9r8HYd21fZjk=;
-        b=M4ZLYoFkBJh4GDcwp3gKeiJ18eVssFXWbGUutfJBx8/NHMvKzIf7IadkLmdpb18Ezd
-         ifXEgGsqubzpr5oQfbQkMbCh2h0OoGgLhhmIxrPt7i8GDiUr4F/jzDkBXNk2EgMduZX1
-         pu26RN9nkn6lHCpPtWjTZ1O3JNcw8x44A/Ur1yM/ZxQWpZmpqwsYZegBvqCadldQZ5+L
-         JcGV/z2tAq22RtcQOXxV498juYctYve3Xp315CxSlWUsWXkSseAEzq1i7GN5EjzGNcJi
-         YT/JLCGbd4fsHef3H3Ge9F9IuVRDT5wH3NjvOIhZGMfk4MuGeelV3gNLTkKbB5mXym0y
-         sHpg==
-X-Gm-Message-State: AOAM532S/E23faKetrQCIipN/tY6ZvbOWuVYZ+SEt/DBNru/vsHgObQc
-        Vsyg845ax/Cg95Ni9D5xbUE=
-X-Google-Smtp-Source: ABdhPJy1Weq2xf/Mb961fv+2Q+OKgsSyBof3VnceaDHKkw7fdW2LEYlYl75J31TS2Bc58lJ8GzVh3g==
-X-Received: by 2002:a17:902:b089:b029:e3:28:b8ee with SMTP id p9-20020a170902b089b02900e30028b8eemr1812650plr.84.1614234407056;
-        Wed, 24 Feb 2021 22:26:47 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id o3sm4407946pgm.60.2021.02.24.22.26.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 24 Feb 2021 22:26:46 -0800 (PST)
-Date:   Wed, 24 Feb 2021 22:27:43 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     joro@8bytes.org, thierry.reding@gmail.com, will@kernel.org,
-        guillaume.tucker@collabora.com, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
-Message-ID: <20210225062742.GA13353@Asurada-Nvidia>
-References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
- <9d6445c0-9574-1650-e327-32b11716f87e@gmail.com>
- <20210223021343.GA6539@Asurada-Nvidia>
- <79bb1248-497f-8adf-663b-74448bea3849@gmail.com>
+        Thu, 25 Feb 2021 01:31:26 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DmNBr0G4dz7kKg;
+        Thu, 25 Feb 2021 14:28:04 +0800 (CST)
+Received: from [10.67.110.218] (10.67.110.218) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 25 Feb 2021 14:29:33 +0800
+Subject: Re: [PATCH 4.9.y 1/1] futex: Fix OWNER_DEAD fixup
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>,
+        <cj.chengjian@huawei.com>, <judy.chenhui@huawei.com>,
+        <zhangjinhao2@huawei.com>
+References: <20210223144151.916675-1-zhengyejian1@huawei.com>
+ <20210223144151.916675-2-zhengyejian1@huawei.com>
+ <20210224111915.GA641347@dell>
+From:   "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>
+Message-ID: <09cd79ce-291a-1750-6954-ecde0a6bdfcf@huawei.com>
+Date:   Thu, 25 Feb 2021 14:29:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <79bb1248-497f-8adf-663b-74448bea3849@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210224111915.GA641347@dell>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.110.218]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 08:10:41AM +0300, Dmitry Osipenko wrote:
-> 23.02.2021 05:13, Nicolin Chen пишет:
-> > Hi Dmitry,
-> > 
-> > On Sat, Feb 20, 2021 at 08:16:22AM +0300, Dmitry Osipenko wrote:
-> >> 19.02.2021 01:07, Nicolin Chen пишет:
-> >>> Commit 25938c73cd79 ("iommu/tegra-smmu: Rework tegra_smmu_probe_device()")
-> >>> removed certain hack in the tegra_smmu_probe() by relying on IOMMU core to
-> >>> of_xlate SMMU's SID per device, so as to get rid of tegra_smmu_find() and
-> >>> tegra_smmu_configure() that are typically done in the IOMMU core also.
-> >>>
-> >>> This approach works for both existing devices that have DT nodes and other
-> >>> devices (like PCI device) that don't exist in DT, on Tegra210 and Tegra3
-> >>> upon testing. However, Page Fault errors are reported on tegra124-Nyan:
-> >>>
-> >>>   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-> >>> 	 EMEM address decode error (SMMU translation error [--S])
-> >>>   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-> >>> 	 Page fault (SMMU translation error [--S])
-> >>>
-> >>> After debugging, I found that the mentioned commit changed some function
-> >>> callback sequence of tegra-smmu's, resulting in enabling SMMU for display
-> >>> client before display driver gets initialized. I couldn't reproduce exact
-> >>> same issue on Tegra210 as Tegra124 (arm-32) differs at arch-level code.
-> >>
-> >> Hello Nicolin,
-> >>
-> >> Could you please explain in a more details what exactly makes the
-> >> difference for the callback sequence?
-> > 
-> > Here is a log with 5.11.0-rc6:
-> > https://lava.collabora.co.uk/scheduler/job/3187849
-> > [dump_stack was added in some tegra-smmu functions]
-> > 
-> > And here is a corresponding log with reverting the original commit:
-> > https://lava.collabora.co.uk/scheduler/job/3187851
-> > 
-> > Here is a log with 5.11.0-rc7-next-20210210:
-> > https://lava.collabora.co.uk/scheduler/job/3210245
-> > 
-> > And here is a corresponding log with reverting the original commit:
-> > https://lava.collabora.co.uk/scheduler/job/3210596
-> > 
-> > Both failing logs show that mc errors started right after client DC
-> > got enabled by ->attach_dev() callback that in the passing logs was
-> > not called until Host1x driver init. And note that two failing logs
-> > show that ->attach_dev() could be called from two different sources,
-> > of_dma_configure_id() or arch_setup_dma_ops().
-> > 
-> > The reason why ->attach_dev() gets called is probably related to the
-> > following reasons (sorry, can't be 100% sure as I don't have Tegra124
-> > or other 32bit Tegra board to test):
-> > 1) With the commit reverted, all clients are probed in "arch" stage,
-> >    which is even prior to iommu core initialization -- including it
-> >    setting default domain type. This probably messed up the type of
-> >    allocating domains against the default domain type. Also internal
-> >    group is somehow affected. So some condition check in iommu core
-> >    failed and then it bypassed ->attach_dev callback in really_probe
-> >    stage, until Host1x driver does attach_dev again.
-> > 
-> > 2) 32bit ARM has arch_setup_dma_ops() does an additional set of iommu
-> >    domain allocation + attach_dev(), after of_dma_configure_id() did
-> >    once. This isn't reproducible for me on Tegra210.
-> > 
-> > As debugging online isn't very efficient, and given that Thierry has
-> > been working on the linear mapping of framebuffer carveout, I choose
-> > to partially revert as a quick fix.
-> 
-> The partially revert should be okay, but it's not clear to me what makes
-> difference for T124 since I don't see that problem on T30, which also
-> has active display at a boot time.
 
-Hmm..do you see ->attach_dev() is called from host1x_client_iommu_attach
-or from of_dma_configure_id/arch_setup_dma_ops?
+
+On 2021/2/24 19:19, Lee Jones wrote:
+> On Tue, 23 Feb 2021, Zheng Yejian wrote:
+> 
+>> From: Peter Zijlstra <peterz@infradead.org>
+>>
+>> commit a97cb0e7b3f4c6297fd857055ae8e895f402f501 upstream.
+>>
+>> Both Geert and DaveJ reported that the recent futex commit:
+>>
+>>    c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
+>>
+>> introduced a problem with setting OWNER_DEAD. We set the bit on an
+>> uninitialized variable and then entirely optimize it away as a
+>> dead-store.
+>>
+>> Move the setting of the bit to where it is more useful.
+>>
+>> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Reported-by: Dave Jones <davej@codemonkey.org.uk>
+>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+>> Cc: Paul E. McKenney <paulmck@us.ibm.com>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
+>> Link: http://lkml.kernel.org/r/20180122103947.GD2228@hirez.programming.kicks-ass.net
+>> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+>> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> 
+> Why have you dropped my Reviewed-by?
+> 
+Really sorry. I thought that a changed patchset needs another review.
+Then I do need to append your Reviewed-by and send a "V2" patchset, Do I?
+
+>> ---
+>>   kernel/futex.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/futex.c b/kernel/futex.c
+>> index b65dbb5d60bb..604d1cb9839d 100644
+>> --- a/kernel/futex.c
+>> +++ b/kernel/futex.c
+>> @@ -2424,9 +2424,6 @@ static int __fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
+>>   	int err = 0;
+>>   
+>>   	oldowner = pi_state->owner;
+>> -	/* Owner died? */
+>> -	if (!pi_state->owner)
+>> -		newtid |= FUTEX_OWNER_DIED;
+>>   
+>>   	/*
+>>   	 * We are here because either:
+>> @@ -2484,6 +2481,9 @@ static int __fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
+>>   	}
+>>   
+>>   	newtid = task_pid_vnr(newowner) | FUTEX_WAITERS;
+>> +	/* Owner died? */
+>> +	if (!pi_state->owner)
+>> +		newtid |= FUTEX_OWNER_DIED;
+>>   
+>>   	if (get_futex_value_locked(&uval, uaddr))
+>>   		goto handle_fault;
+> 
