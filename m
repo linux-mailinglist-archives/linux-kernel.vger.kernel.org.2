@@ -2,199 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B131032526F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D30CD325274
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 16:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhBYP2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 10:28:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
+        id S231950AbhBYPaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 10:30:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbhBYP1y (ORCPT
+        with ESMTP id S231771AbhBYPaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 10:27:54 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA19FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 07:27:02 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id z11so9095955lfb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 07:27:02 -0800 (PST)
+        Thu, 25 Feb 2021 10:30:01 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383F1C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 07:29:19 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id e7so5238959ile.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 07:29:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LGakPrHLDhRp1IZ5yNuxKjxsCxOojXmjVTcLjn2/wBU=;
-        b=Bod/aAcriDLiojeGtSwg2Gc/r1XHZpiz5eGQpctCiOiI0I+E4XK8XmNRMxHdaLUxOh
-         xBw1ckRoK4Krgn9F4mv4rl1r3Yyfv1/16fzhN9GaIDcwOT2BlwBnKmAw75yQs5uKrBKA
-         kXSuyKJWSUKw4D3IIeiodZfirkstO58Zhn2V3x52qG79dIBs24sDwd4k0Sg7BgBvDZ1d
-         x3Giofx+VN54jQGO73hZtaKeOqm9gzN4rHutMPoqzhDPrK73xnyNMkrkN3d+Ca9ZaUdD
-         5+vqxYjRHuIPFxpQxG9UX3dwBn6A6MmI3UG2lqCPnucpwBiONMkXQZajwvecIc/pxRat
-         N/5Q==
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N/p0Ouq5Gx5/1pe82Ydybk60Eu2zL8qEPa4Wa2rPVwg=;
+        b=Q6+pKjJiyFU6c9v41N/6toFCdHsI3u7cOCHS03gUhNVzG9N6YGsyp4c62iLbeRtCKc
+         jGKUGEUYKjzydBI1DTAwf96O66YgY5YigP4jGjGRYhAY1v9ef8+YueIpelUe810Y8Hdq
+         x1b0T9mi1R79EVu9LN3oKpQaKS4+SbnaZ44iM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LGakPrHLDhRp1IZ5yNuxKjxsCxOojXmjVTcLjn2/wBU=;
-        b=aISGcpBL1wlaC7UL6rsFJ9ocow34Yu1CDqqrfcEGjKux/i10Nl3QVq90S+be0A3IKR
-         4NfPaXnPbmEWjxRXr9BjVOnGfLPIM0c+vymQxH+NH+m6LMgUsA3Dw8jh+loNNWGKgcHo
-         ykXsTec5WjD+zr1MZfm8NsEuOdFA5neuLvbx21EZrPkmH4kDntl9Ap2cLUhw++g3h+u/
-         yXRVaVhBqkApT+n9fH7Sp2S0o02hMU34jPJSMm67Y2/4Xpp4fghUzZ2XXw9cAvZRqZeP
-         0tSmc0iDrHHHSq7SJFm4S2d4uX4R7qY7IqGkCDzSfQoj1l93O4p+8JFomnQQkPMV8XVK
-         p45g==
-X-Gm-Message-State: AOAM530SxZFP4jcAcMI9hwZVhwS4+cMDGQRpA51DrFBnahS3UiFjqjHg
-        cg+u5PkFCwK/iEB70ygWMn8CdBQGo64WsgmDAYz7Zg==
-X-Google-Smtp-Source: ABdhPJxA7fMFjF99NUMbe5aXX3/2PLByd8c3eSo/+SbCmmhGJ0tGeq7nzvJACDgYZFerUck50heUFBkCI4wPTN+edFQ=
-X-Received: by 2002:a05:6512:3a86:: with SMTP id q6mr2351561lfu.286.1614266821184;
- Thu, 25 Feb 2021 07:27:01 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N/p0Ouq5Gx5/1pe82Ydybk60Eu2zL8qEPa4Wa2rPVwg=;
+        b=Wde8r6YSGI2OiVL+QHKdBqCSm5a9IGaAB6vKu8INgDHrC8HeGIJswfBQBdTnq1odUL
+         5YatCQr/E2MZuq88nU4tBRbOlrZEbP/HV2nNL/CUt5uf8xxOVDPaUQcl5F2gc3L5QxEp
+         gwbAv/qOe2SA/Kl19to1bk8Drtj0f0vFWS7li1JPS0MqiAPOA0RPLK3yiBzi+l49M2Pz
+         za9YsfBvxfwBO4Fx8bil8Uinv4B+k7FmYlTlkEqeZ31nY8V0qBSFhjdm/xCIkezrp91h
+         tO2aK6N6AKxGtqbB6osgJbT8NReqhktXBGOoKwtQO7zzWC91571Vevv4yA1NYj4XeAAg
+         cGYw==
+X-Gm-Message-State: AOAM533jj3WeGDOSAWHyqN7A+bq418j3+/xLJzFEav7D0W14JGFkE8kX
+        1jXlluutXg6ZgIxdYUq6pcdMMHErdNYAZw==
+X-Google-Smtp-Source: ABdhPJxsToSaxizKtwqi9lsBXnLvmKOPMx+LDkUYyYK+j8fc4p4BFVmTX8eUbkovQYZ/PsaVEp9Usg==
+X-Received: by 2002:a05:6e02:c2d:: with SMTP id q13mr2834677ilg.83.1614266958252;
+        Thu, 25 Feb 2021 07:29:18 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id k11sm3288063ilo.8.2021.02.25.07.29.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Feb 2021 07:29:17 -0800 (PST)
+Subject: Re: [PATCH net-next v3 2/3] net: ethernet: rmnet: Support for
+ downlink MAPv5 checksum offload
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Sharath Chandra Vurukala <sharathv@codeaurora.org>
+Cc:     davem@davemloft.net, elder@kernel.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1614110571-11604-1-git-send-email-sharathv@codeaurora.org>
+ <1614110571-11604-3-git-send-email-sharathv@codeaurora.org>
+ <20210224102307.4a484568@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <866808f2-d6aa-f887-a11d-8d9ec741188d@ieee.org>
+Date:   Thu, 25 Feb 2021 09:29:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210216163921.572228-1-vincent.donnefort@arm.com>
- <CAKfTPtDC1GYV_7zoUtZa5MNLdt0Lx=X_UgB=Q8UtsGf8=Kd3iQ@mail.gmail.com> <20210222092426.GA5716@e124901.cambridge.arm.com>
-In-Reply-To: <20210222092426.GA5716@e124901.cambridge.arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 25 Feb 2021 16:26:50 +0100
-Message-ID: <CAKfTPtCsbAePDooasS_Wxx729QjD9h5fi=Noa7SNkALjZMLsVg@mail.gmail.com>
-Subject: Re: [PATCH] sched/pelt: Fix task util_est update filtering
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210224102307.4a484568@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 at 10:24, Vincent Donnefort
-<vincent.donnefort@arm.com> wrote:
->
-> On Fri, Feb 19, 2021 at 11:48:28AM +0100, Vincent Guittot wrote:
-> > On Tue, 16 Feb 2021 at 17:39, <vincent.donnefort@arm.com> wrote:
-> > >
-> > > From: Vincent Donnefort <vincent.donnefort@arm.com>
-> > >
-> > > Being called for each dequeue, util_est reduces the number of its updates
-> > > by filtering out when the EWMA signal is different from the task util_avg
-> > > by less than 1%. It is a problem for a sudden util_avg ramp-up. Due to the
-> > > decay from a previous high util_avg, EWMA might now be close enough to
-> > > the new util_avg. No update would then happen while it would leave
-> > > ue.enqueued with an out-of-date value.
-> > >
-> > > Taking into consideration the two util_est members, EWMA and enqueued for
-> > > the filtering, ensures, for both, an up-to-date value.
-> > >
-> > > This is for now an issue only for the trace probe that might return the
-> > > stale value. Functional-wise, it isn't (yet) a problem, as the value is
-> >
-> > What do you mean by "it isn't (yet) a problem" ? How could this become
-> > a problem ?
->
-> I wrote "yet" as nothing prevents anyone from using the ue.enqueued signal.
+On 2/24/21 12:23 PM, Jakub Kicinski wrote:
+> On Wed, 24 Feb 2021 01:32:50 +0530 Sharath Chandra Vurukala wrote:
+>> +/* MAP CSUM headers */
+>> +struct rmnet_map_v5_csum_header {
+>> +#if defined(__LITTLE_ENDIAN_BITFIELD)
+>> +	u8  next_hdr:1;
+>> +	u8  header_type:7;
+>> +	u8  hw_reserved:7;
+>> +	u8  csum_valid_required:1;
+>> +#elif defined(__BIG_ENDIAN_BITFIELD)
+>> +	u8  header_type:7;
+>> +	u8  next_hdr:1;
+>> +	u8  csum_valid_required:1;
+>> +	u8  hw_reserved:7;
+>> +#else
+>> +#error	"Please fix <asm/byteorder.h>"
+>> +#endif
+>> +	__be16 reserved;
+>> +} __aligned(1);
+> 
+> This seems to be your first contribution so let me spell it out.
+> 
+> In Linux when maintainers ask you to do something you are expected
+> to do it.
+> 
+> You can leave the existing bitfields for later, but don't add another.
 
-Hmm.. you are not supposed to use it outside the helper functions so
-this is irrelevant IMO which means that only the trace probe is
-impacted
+As I offered, I will implement changes to the existing
+code to use masks in place of these C bit-fields.
 
->
-> >
-> > > always accessed through max(enqueued, ewma).
-> > >
-> >
-> > This adds more tests and or update of  struct avg.util_est. It would
-> > be good to have an idea of the perf impact. Especially because this
-> > only fixes a tracing problem
->
-> I ran hackbench on the big cores of a SD845C board. After 100 iterations of
-> 100 loops runs, the geometric mean of the hackbench test is 0.1% lower
-> with this patch applied (2.0833s vs 2.0858s). The p-value, computed with
-> the ks_2samp [1] is 0.37. We can't conclude that the two distributions are
-> different. This patch, in this scenario seems completely harmless.
+I will try complete this within the next week.  If it
+looks good it could serve as an example of how to go
+about it.
 
-For such kind of change,  perf bench sched pipe is better to highlight
-any perf regression. I have done a quick test and i haven't seen
-noticeable difference
-
->
-> Shall I include those results in the commit message?
->
-> [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ks_2samp.html
->
-> >
-> >
-> > > This problem has been observed using LISA's UtilConvergence:test_means on
-> > > the sd845c board.
-> > >
-> > > Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-> > >
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index 794c2cb945f8..9008e0c42def 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -3941,24 +3941,27 @@ static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
-> > >         trace_sched_util_est_cfs_tp(cfs_rq);
-> > >  }
-> > >
-> > > +#define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
-> > > +
-> > >  /*
-> > > - * Check if a (signed) value is within a specified (unsigned) margin,
-> > > + * Check if a (signed) value is within the (unsigned) util_est margin,
-> > >   * based on the observation that:
-> > >   *
-> > >   *     abs(x) < y := (unsigned)(x + y - 1) < (2 * y - 1)
-> > >   *
-> > > - * NOTE: this only works when value + maring < INT_MAX.
-> > > + * NOTE: this only works when value + UTIL_EST_MARGIN < INT_MAX.
-> > >   */
-> > > -static inline bool within_margin(int value, int margin)
-> > > +static inline bool util_est_within_margin(int value)
-> > >  {
-> > > -       return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
-> > > +       return ((unsigned int)(value + UTIL_EST_MARGIN - 1) <
-> > > +               (2 * UTIL_EST_MARGIN - 1));
-> > >  }
-> > >
-> > >  static inline void util_est_update(struct cfs_rq *cfs_rq,
-> > >                                    struct task_struct *p,
-> > >                                    bool task_sleep)
-> > >  {
-> > > -       long last_ewma_diff;
-> > > +       long last_ewma_diff, last_enqueued_diff;
-> > >         struct util_est ue;
-> > >
-> > >         if (!sched_feat(UTIL_EST))
-> > > @@ -3979,6 +3982,8 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
-> > >         if (ue.enqueued & UTIL_AVG_UNCHANGED)
-> > >                 return;
-> > >
-> > > +       last_enqueued_diff = ue.enqueued;
-> > > +
-> > >         /*
-> > >          * Reset EWMA on utilization increases, the moving average is used only
-> > >          * to smooth utilization decreases.
-> > > @@ -3992,12 +3997,19 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
-> > >         }
-> > >
-> > >         /*
-> > > -        * Skip update of task's estimated utilization when its EWMA is
-> > > +        * Skip update of task's estimated utilization when its members are
-> > >          * already ~1% close to its last activation value.
-> > >          */
-> > >         last_ewma_diff = ue.enqueued - ue.ewma;
-> > > -       if (within_margin(last_ewma_diff, (SCHED_CAPACITY_SCALE / 100)))
-> > > +       last_enqueued_diff -= ue.enqueued;
-> > > +       if (util_est_within_margin(last_ewma_diff)) {
-> > > +               if (!util_est_within_margin(last_enqueued_diff)) {
-> > > +                       ue.ewma = ue.enqueued;
-
-why do you set ewma directly with latest enqueued value ?
-
-> > > +                       goto done;
-> > > +               }
-> > > +
-> > >                 return;
-> > > +       }
-> > >
-> > >         /*
-> > >          * To avoid overestimation of actual task utilization, skip updates if
-> > > --
-> > > 2.25.1
-> > >
+					-Alex
