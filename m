@@ -2,87 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF9B325144
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 072FF325147
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 15:11:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232686AbhBYOIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 09:08:21 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:38669 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232549AbhBYOIN (ORCPT
+        id S232816AbhBYOJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 09:09:09 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13089 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232113AbhBYOJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 09:08:13 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UPYfGtW_1614262019;
-Received: from 30.39.207.232(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0UPYfGtW_1614262019)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 25 Feb 2021 22:07:00 +0800
-Subject: Re: [PATCH] i2c: designware: Get right data length
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210225023528.121135-1-zhangliguang@linux.alibaba.com>
- <YDeH27Vgble8FetC@smile.fi.intel.com>
-From:   =?UTF-8?B?5Lmx55+z?= <zhangliguang@linux.alibaba.com>
-Message-ID: <c89a0aa3-b580-7726-e7d7-4b3ce103e90a@linux.alibaba.com>
-Date:   Thu, 25 Feb 2021 22:06:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 25 Feb 2021 09:09:03 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DmZN36C2Vz16CRc;
+        Thu, 25 Feb 2021 22:06:43 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.174) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 25 Feb 2021 22:08:11 +0800
+From:   Li Huafei <lihuafei1@huawei.com>
+To:     <gregory.herrero@oracle.com>, <rostedt@goodmis.org>,
+        <catalin.marinas@arm.com>, <christophe.leroy@csgroup.eu>,
+        <linux-kernel@vger.kernel.org>
+CC:     <lihuafei1@huawei.com>, <zhangjinhao2@huawei.com>,
+        <yangjihong1@huawei.com>, <xukuohai@huawei.com>
+Subject: [PATCH] recordmcount: Fix the wrong use of w* in arm64_is_fake_mcount()
+Date:   Thu, 25 Feb 2021 22:07:47 +0800
+Message-ID: <20210225140747.10818-1-lihuafei1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <YDeH27Vgble8FetC@smile.fi.intel.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-ÔÚ 2021/2/25 19:19, Andy Shevchenko Ð´µÀ:
-> On Thu, Feb 25, 2021 at 10:35:28AM +0800, Liguang Zhang wrote:
->> IC_DATA_CMD[11] indicates the first data byte received after the address
->> phase for receive transfer in Master receiver or Slave receiver mode,
->> this bit was set in some transfer flow. IC_DATA_CMD[7:0] contains the
->> data to be transmitted or received on the I2C bus, so we should use the
->> lower 8 bits to get the right data length.
-> Thanks for the report and fix!
-> My comments below.
+When cross-compiling the kernel, the endian of the target machine and
+the local machine may not match, at this time the recordmcount tool
+needs byte reversal when processing elf's variables to get the correct
+value. w* callback function is used to solve this problem, w is used for
+4-byte variable processing, while w8 is used for 8-byte.
 
-Thanks for your comments. I will optimize my code follow your comments 
-and send v2 revision.
+arm64_is_fake_mcount() is used to filter '_mcount' relocations that are
+not used by ftrace. In arm64_is_fake_mcount(), rp->info is 8 bytes in
+size, but w is used. This causes arm64_is_fake_mcount() to get the wrong
+type of relocation when we cross-compile the arm64_be kernel image on an
+x86_le machine, and all valid '_mcount' is filtered out. The
+recordmcount tool does not collect any mcount function call locations.
+At kernel startup, the following ftrace log is seen:
 
-Regards,
+	ftrace: No functions to be traced?
 
-Liguang
+and thus ftrace cannot be used.
 
->
->> Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
->> ---
->>   drivers/i2c/busses/i2c-designware-master.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
->> index d6425ad6e6a3..c3cf76f6c607 100644
->> --- a/drivers/i2c/busses/i2c-designware-master.c
->> +++ b/drivers/i2c/busses/i2c-designware-master.c
->> @@ -432,7 +432,7 @@ i2c_dw_read(struct dw_i2c_dev *dev)
->>   			regmap_read(dev->map, DW_IC_DATA_CMD, &tmp);
->>   			/* Ensure length byte is a valid value */
->>   			if (flags & I2C_M_RECV_LEN &&
->> -			    tmp <= I2C_SMBUS_BLOCK_MAX && tmp > 0) {
->> +			    (tmp & 0xff) <= I2C_SMBUS_BLOCK_MAX && tmp > 0) {
-> Can we rather describe this as
->
-> #define DW_IC_DATA_CMD_DAT   GENMASK(7, 0)
->
-> in *.h file and...
->
-> 			    (tmp & DW_IC_DATA_CMD_DAT) <= I2C_SMBUS_BLOCK_MAX && tmp > 0) {
-> ...here?
->
->>   				len = i2c_dw_recv_len(dev, tmp);
->>   			}
->>   			*buf++ = tmp;
->> -- 
->> 2.19.1.6.gb485710b
->>
+Using w8 to get the value of rp->r_info will fix the problem.
+
+Fixes: ea0eada45632 ("recordmcount: only record relocation of type
+R_AARCH64_CALL26 on arm64")
+Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+---
+ scripts/recordmcount.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
+index b9c2ee7ab43f..cce12e1971d8 100644
+--- a/scripts/recordmcount.c
++++ b/scripts/recordmcount.c
+@@ -438,7 +438,7 @@ static int arm_is_fake_mcount(Elf32_Rel const *rp)
+ 
+ static int arm64_is_fake_mcount(Elf64_Rel const *rp)
+ {
+-	return ELF64_R_TYPE(w(rp->r_info)) != R_AARCH64_CALL26;
++	return ELF64_R_TYPE(w8(rp->r_info)) != R_AARCH64_CALL26;
+ }
+ 
+ /* 64-bit EM_MIPS has weird ELF64_Rela.r_info.
+-- 
+2.17.1
+
