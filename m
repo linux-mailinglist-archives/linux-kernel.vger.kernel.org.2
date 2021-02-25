@@ -2,250 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC40325605
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C77832560B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Feb 2021 20:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbhBYTD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 14:03:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233025AbhBYTDw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 14:03:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D4FD64EFA;
-        Thu, 25 Feb 2021 19:03:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614279789;
-        bh=mqRATAtny9DcsR1CdJJNpoJ/uwWCFDvyI0SopqofvyY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=u4hT3ugYzLnd8M6gdo71afj/JH5CaQWhiNmm5uCGyfAy4thc+ErElqhOp3EiRy8cx
-         aIcWAssFjmTdfbxJYzge/PDYrBzU4y8t61MqK3I8SOdenhjQAwv27RulAVpVgX5HNs
-         GBHCw7R1SfKIrX+sXy8ZPy4Q6C4EzVu4VbQBaDt77Ssj1OhGe4dM1UP13vuyGptd/y
-         cjRhJmirUsk1wwnGAXWkbcFSD5HOAwH0Ag3ztMYcYfyXoIHvoyzY4lv/aDw/TPLokm
-         ZtvSyJZ/IvTBrIe73xbwHQBM5awHnkoDRhGsOaJwHw1/h+25bt7fvN9rek2rUAOQtJ
-         wVmFQYA3KQdhQ==
-Received: by pali.im (Postfix)
-        id DC322760; Thu, 25 Feb 2021 20:03:06 +0100 (CET)
-Date:   Thu, 25 Feb 2021 20:03:06 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.11 16/67] net: sfp: add mode quirk for GPON
- module Ubiquiti U-Fiber Instant
-Message-ID: <20210225190306.65jnl557vvs6d7o3@pali>
+        id S233440AbhBYTFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 14:05:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58881 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229769AbhBYTFB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 14:05:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614279814;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+tBBjR9sNYzM6KSzYefGASfGJGZayMCw0kAzhSTkJbQ=;
+        b=JQ04+YiS7+TwEWAGNShZxrHBJ61ZuSt4ejdKpjNW9UOg0UVcuJRcTj/7B8Ib1cZkMsydCF
+        8cbJzOAsQn5uydJ2IyUnPIaRUgqad1RSHBAv2yZh0/Zr9X3Xog6qPINFdhdLrIDVTzmOJk
+        soRLN8o1NOVVuKCmUVof8oZQD6WfiMQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-57-CcjKFO4YOG-GHfa8jG3qZw-1; Thu, 25 Feb 2021 14:03:30 -0500
+X-MC-Unique: CcjKFO4YOG-GHfa8jG3qZw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 84D5DC73A0;
+        Thu, 25 Feb 2021 19:03:28 +0000 (UTC)
+Received: from krava (unknown [10.40.192.91])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6DC3060854;
+        Thu, 25 Feb 2021 19:03:25 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 20:03:24 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Liang, Kan" <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>,
+        "Yi, Ammy" <ammy.yi@intel.com>
+Subject: Re: [drm/i915/gt] 8c3b1ba0e7:
+ perf-sanity-tests.Parse_event_definition_strings.fail
+Message-ID: <YDf0fP8XmnTrkIT8@krava>
+References: <20210224074841.GD6114@xsang-OptiPlex-9020>
+ <cabd8692-07ca-13c8-efb5-e088b4547f80@linux.intel.com>
+ <YDenRVGzh5Dv1pC2@krava>
+ <YDfph8b9p8sSk1AF@krava>
+ <YDfxgfi5DBDMFgwu@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210224125026.481804-16-sashal@kernel.org>
- <20210224125212.482485-12-sashal@kernel.org>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <YDfxgfi5DBDMFgwu@krava>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 24 February 2021 07:49:34 Sasha Levin wrote:
-> From: Pali Rohár <pali@kernel.org>
+On Thu, Feb 25, 2021 at 07:50:46PM +0100, Jiri Olsa wrote:
+> On Thu, Feb 25, 2021 at 07:16:44PM +0100, Jiri Olsa wrote:
+> > On Thu, Feb 25, 2021 at 02:33:57PM +0100, Jiri Olsa wrote:
+> > > On Thu, Feb 25, 2021 at 04:06:23PM +0800, Jin, Yao wrote:
+> > > > Hi Chris, Arnaldo, Jiri,
+> > > > 
+> > > > We observe the parsing error for "software/xxx/" on some platforms.
+> > > > 
+> > > > For example,
+> > > > 
+> > > > # perf stat -e software/r1a/ -a -- sleep 1
+> > > > event syntax error: 'software/r1a/'
+> > > >                      \___ parser error
+> > > > Run 'perf list' for a list of valid events
+> > > > 
+> > > >  Usage: perf stat [<options>] [<command>]
+> > > > 
+> > > >     -e, --event <event>   event selector. use 'perf list' to list available events
+> > > > 
+> > > > And perf test is failed too.
+> > > > 
+> > > > # perf test 6 -vv
+> > > > ...
+> > > > running test 4 'software/r1a/'failed to parse event 'software/r1a/', err 1, str 'parser error'
+> > > > event syntax error: 'software/r1a/'
+> > > >                      \___ parser error
+> > > > 
+> > > > running test 4 'software/r0x1a/'failed to parse event 'software/r0x1a/', err 1, str 'parser error'
+> > > > event syntax error: 'software/r0x1a/'
+> > > >                      \___ parser error
+> > > > ...
+> > > > 
+> > > > The issue should be the conflict between event "i915/software-gt-awake-time/" and pmu "software".
+> > > > 
+> > > > # perf list | grep i915/software
+> > > >   i915/software-gt-awake-time/                       [Kernel PMU event]
+> > > > 
+> > > > Perf supports the event format as "prefix-xxx-suffix", so the "software"
+> > > > string in "software-gt-awake-time" is added to perf_pmu_events_list as
+> > > > PMU_EVENT_SYMBOL_PREFIX. When parsing the string such as "software/xxx/",
+> > > > it’s parsed as PMU_EVENT_SYMBOL_PREFIX for "software", then it would error
+> > > > out in next processing.
+> > > > 
+> > > > So the easy way is to rename "software-gt-awake-time" to "gt-awake-time",
+> > > > right? Otherwise we have to hardcode something in perf tool.
+> > > > 
+> > > > What do you think of this issue and the solution?
+> > > > 
+> > > > BTW, as the robot reported, it's related to the commit 8c3b1ba0e7ea
+> > > > ("drm/i915/gt: Track the overall awake/busy time").
+> > > 
+> > > yes, I think you're right.. I'll try to reproduce and check on this
+> > > 
+> > > I'm still not clear why is that parsing fail if those 2 events are
+> > > distinguished by - and / ... but yep, we are asking for trouble in
+> > > here ;-)
+> > > 
+> > > I think we could either prioritaze one or add extra check when we
+> > > add prefix-xxx-suffix events and do not add ones that have conflict..
+> > > that seems like best solution to me now
+> > 
+> > would patch below work for you?
+> > 
+> > jirka
 > 
-> [ Upstream commit f0b4f847673299577c29b71d3f3acd3c313d81b7 ]
+> and now with more fixes after I ran tests ;-)
+> 
+> we should perhaps add also same check for non '-' aliases, I'll check
 
-Hello! This commit requires also commit~1 from that patch series:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=426c6cbc409cbda9ab1a9dbf15d3c2ef947eb8c1
+and one more version ;-)
 
-Without it kernel cannot read EEPROM from Ubiquiti U-Fiber Instant
-module and therefore the hook based on EEPROM data which is below would
-not be applied.
+jirka
 
-> The Ubiquiti U-Fiber Instant SFP GPON module has nonsensical information
-> stored in its EEPROM. It claims to support all transceiver types including
-> 10G Ethernet. Clear all claimed modes and set only 1000baseX_Full, which is
-> the only one supported.
-> 
-> This module has also phys_id set to SFF, and the SFP subsystem currently
-> does not allow to use SFP modules detected as SFFs. Add exception for this
-> module so it can be detected as supported.
-> 
-> This change finally allows to detect and use SFP GPON module Ubiquiti
-> U-Fiber Instant on Linux system.
-> 
-> EEPROM content of this SFP module is (where XX is serial number):
-> 
-> 00: 02 04 0b ff ff ff ff ff ff ff ff 03 0c 00 14 c8    ???........??.??
-> 10: 00 00 00 00 55 42 4e 54 20 20 20 20 20 20 20 20    ....UBNT
-> 20: 20 20 20 20 00 18 e8 29 55 46 2d 49 4e 53 54 41        .??)UF-INSTA
-> 30: 4e 54 20 20 20 20 20 20 34 20 20 20 05 1e 00 36    NT      4   ??.6
-> 40: 00 06 00 00 55 42 4e 54 XX XX XX XX XX XX XX XX    .?..UBNTXXXXXXXX
-> 50: 20 20 20 20 31 34 30 31 32 33 20 20 60 80 02 41        140123  `??A
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/net/phy/sfp-bus.c | 15 +++++++++++++++
->  drivers/net/phy/sfp.c     | 17 +++++++++++++++--
->  2 files changed, 30 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
-> index 20b91f5dfc6ed..4cf874fb5c5b4 100644
-> --- a/drivers/net/phy/sfp-bus.c
-> +++ b/drivers/net/phy/sfp-bus.c
-> @@ -44,6 +44,17 @@ static void sfp_quirk_2500basex(const struct sfp_eeprom_id *id,
->  	phylink_set(modes, 2500baseX_Full);
->  }
->  
-> +static void sfp_quirk_ubnt_uf_instant(const struct sfp_eeprom_id *id,
-> +				      unsigned long *modes)
-> +{
-> +	/* Ubiquiti U-Fiber Instant module claims that support all transceiver
-> +	 * types including 10G Ethernet which is not truth. So clear all claimed
-> +	 * modes and set only one mode which module supports: 1000baseX_Full.
-> +	 */
-> +	phylink_zero(modes);
-> +	phylink_set(modes, 1000baseX_Full);
-> +}
-> +
->  static const struct sfp_quirk sfp_quirks[] = {
->  	{
->  		// Alcatel Lucent G-010S-P can operate at 2500base-X, but
-> @@ -63,6 +74,10 @@ static const struct sfp_quirk sfp_quirks[] = {
->  		.vendor = "HUAWEI",
->  		.part = "MA5671A",
->  		.modes = sfp_quirk_2500basex,
-> +	}, {
-> +		.vendor = "UBNT",
-> +		.part = "UF-INSTANT",
-> +		.modes = sfp_quirk_ubnt_uf_instant,
->  	},
->  };
->  
-> diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
-> index 91d74c1a920ab..804295ad8a044 100644
-> --- a/drivers/net/phy/sfp.c
-> +++ b/drivers/net/phy/sfp.c
-> @@ -273,8 +273,21 @@ static const struct sff_data sff_data = {
->  
->  static bool sfp_module_supported(const struct sfp_eeprom_id *id)
->  {
-> -	return id->base.phys_id == SFF8024_ID_SFP &&
-> -	       id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP;
-> +	if (id->base.phys_id == SFF8024_ID_SFP &&
-> +	    id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP)
-> +		return true;
-> +
-> +	/* SFP GPON module Ubiquiti U-Fiber Instant has in its EEPROM stored
-> +	 * phys id SFF instead of SFP. Therefore mark this module explicitly
-> +	 * as supported based on vendor name and pn match.
-> +	 */
-> +	if (id->base.phys_id == SFF8024_ID_SFF_8472 &&
-> +	    id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP &&
-> +	    !memcmp(id->base.vendor_name, "UBNT            ", 16) &&
-> +	    !memcmp(id->base.vendor_pn, "UF-INSTANT      ", 16))
-> +		return true;
-> +
-> +	return false;
->  }
->  
->  static const struct sff_data sfp_data = {
-> -- 
-> 2.27.0
-> 
 
-On Wednesday 24 February 2021 07:51:28 Sasha Levin wrote:
-> From: Pali Rohár <pali@kernel.org>
-> 
-> [ Upstream commit f0b4f847673299577c29b71d3f3acd3c313d81b7 ]
-> 
-> The Ubiquiti U-Fiber Instant SFP GPON module has nonsensical information
-> stored in its EEPROM. It claims to support all transceiver types including
-> 10G Ethernet. Clear all claimed modes and set only 1000baseX_Full, which is
-> the only one supported.
-> 
-> This module has also phys_id set to SFF, and the SFP subsystem currently
-> does not allow to use SFP modules detected as SFFs. Add exception for this
-> module so it can be detected as supported.
-> 
-> This change finally allows to detect and use SFP GPON module Ubiquiti
-> U-Fiber Instant on Linux system.
-> 
-> EEPROM content of this SFP module is (where XX is serial number):
-> 
-> 00: 02 04 0b ff ff ff ff ff ff ff ff 03 0c 00 14 c8    ???........??.??
-> 10: 00 00 00 00 55 42 4e 54 20 20 20 20 20 20 20 20    ....UBNT
-> 20: 20 20 20 20 00 18 e8 29 55 46 2d 49 4e 53 54 41        .??)UF-INSTA
-> 30: 4e 54 20 20 20 20 20 20 34 20 20 20 05 1e 00 36    NT      4   ??.6
-> 40: 00 06 00 00 55 42 4e 54 XX XX XX XX XX XX XX XX    .?..UBNTXXXXXXXX
-> 50: 20 20 20 20 31 34 30 31 32 33 20 20 60 80 02 41        140123  `??A
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/net/phy/sfp-bus.c | 15 +++++++++++++++
->  drivers/net/phy/sfp.c     | 17 +++++++++++++++--
->  2 files changed, 30 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
-> index 58014feedf6c8..fb954e8141802 100644
-> --- a/drivers/net/phy/sfp-bus.c
-> +++ b/drivers/net/phy/sfp-bus.c
-> @@ -44,6 +44,17 @@ static void sfp_quirk_2500basex(const struct sfp_eeprom_id *id,
->  	phylink_set(modes, 2500baseX_Full);
->  }
->  
-> +static void sfp_quirk_ubnt_uf_instant(const struct sfp_eeprom_id *id,
-> +				      unsigned long *modes)
-> +{
-> +	/* Ubiquiti U-Fiber Instant module claims that support all transceiver
-> +	 * types including 10G Ethernet which is not truth. So clear all claimed
-> +	 * modes and set only one mode which module supports: 1000baseX_Full.
-> +	 */
-> +	phylink_zero(modes);
-> +	phylink_set(modes, 1000baseX_Full);
-> +}
-> +
->  static const struct sfp_quirk sfp_quirks[] = {
->  	{
->  		// Alcatel Lucent G-010S-P can operate at 2500base-X, but
-> @@ -63,6 +74,10 @@ static const struct sfp_quirk sfp_quirks[] = {
->  		.vendor = "HUAWEI",
->  		.part = "MA5671A",
->  		.modes = sfp_quirk_2500basex,
-> +	}, {
-> +		.vendor = "UBNT",
-> +		.part = "UF-INSTANT",
-> +		.modes = sfp_quirk_ubnt_uf_instant,
->  	},
->  };
->  
-> diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
-> index 34aa196b7465c..d8a809cf20c15 100644
-> --- a/drivers/net/phy/sfp.c
-> +++ b/drivers/net/phy/sfp.c
-> @@ -272,8 +272,21 @@ static const struct sff_data sff_data = {
->  
->  static bool sfp_module_supported(const struct sfp_eeprom_id *id)
->  {
-> -	return id->base.phys_id == SFF8024_ID_SFP &&
-> -	       id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP;
-> +	if (id->base.phys_id == SFF8024_ID_SFP &&
-> +	    id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP)
-> +		return true;
-> +
-> +	/* SFP GPON module Ubiquiti U-Fiber Instant has in its EEPROM stored
-> +	 * phys id SFF instead of SFP. Therefore mark this module explicitly
-> +	 * as supported based on vendor name and pn match.
-> +	 */
-> +	if (id->base.phys_id == SFF8024_ID_SFF_8472 &&
-> +	    id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP &&
-> +	    !memcmp(id->base.vendor_name, "UBNT            ", 16) &&
-> +	    !memcmp(id->base.vendor_pn, "UF-INSTANT      ", 16))
-> +		return true;
-> +
-> +	return false;
->  }
->  
->  static const struct sff_data sfp_data = {
-> -- 
-> 2.27.0
-> 
+---
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 42c84adeb2fb..d9e795056d15 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -2028,30 +2028,49 @@ static void perf_pmu__parse_init(void)
+ 		perf_pmu_events_list_num = -1;
+ 		return;
+ 	}
+-	perf_pmu_events_list = malloc(sizeof(struct perf_pmu_event_symbol) * len);
++	perf_pmu_events_list = zalloc(sizeof(struct perf_pmu_event_symbol) * len);
+ 	if (!perf_pmu_events_list)
+ 		return;
+-	perf_pmu_events_list_num = len;
+ 
+ 	len = 0;
+ 	pmu = NULL;
+ 	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
+ 		list_for_each_entry(alias, &pmu->aliases, list) {
+ 			struct perf_pmu_event_symbol *p = perf_pmu_events_list + len;
+-			char *tmp = strchr(alias->name, '-');
++			char *prefix = strdup(alias->name);
++			char *tmp = strchr(prefix, '-');
++
++			if (tmp != NULL)
++				*tmp = 0;
++
++			/*
++			 * Skip any prefix that conflicts with pmu name,
++			 * otherwise the event parser gets confused.
++			 */
++			if (perf_pmu__find(prefix)) {
++				pr_debug2("perf_pmu__parse_init: skipping conflicting alias '%s'\n",
++					  alias->name);
++				free(prefix);
++				continue;
++			}
+ 
+ 			if (tmp != NULL) {
+-				SET_SYMBOL(strndup(alias->name, tmp - alias->name),
+-						PMU_EVENT_SYMBOL_PREFIX);
++				SET_SYMBOL(prefix, PMU_EVENT_SYMBOL_PREFIX);
+ 				p++;
+ 				SET_SYMBOL(strdup(++tmp), PMU_EVENT_SYMBOL_SUFFIX);
+ 				len += 2;
+ 			} else {
+-				SET_SYMBOL(strdup(alias->name), PMU_EVENT_SYMBOL);
++				SET_SYMBOL(prefix, PMU_EVENT_SYMBOL);
+ 				len++;
+ 			}
+ 		}
+ 	}
++
++	/* unlikely, but still.. */
++	if (!len)
++		goto err;
++	perf_pmu_events_list_num = len;
++
+ 	qsort(perf_pmu_events_list, len,
+ 		sizeof(struct perf_pmu_event_symbol), comp_pmu);
+ 
 
