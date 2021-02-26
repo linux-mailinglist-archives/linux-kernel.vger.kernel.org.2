@@ -2,173 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8EF326672
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424EF32666D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhBZRr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 12:47:29 -0500
-Received: from mga09.intel.com ([134.134.136.24]:6509 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhBZRrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:47:25 -0500
-IronPort-SDR: VjmcFmXCyoDfSxCwfRUIoY7V9svM4oK3K7OP6IO9FOFQ9JQjtVMZl7N2531vaN1rcRtJbFi1Lh
- drRw2D1eZA1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="186066745"
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="186066745"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:45:39 -0800
-IronPort-SDR: Y0GiQagDo5GTv1ZbQ03rpUeN62xAuAnWazm1QzYWLEEBE5IEnu7+iFEmPfDYwUlwJYTFCKD63S
- b7lsREAmef/w==
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="432857280"
-Received: from esnyder-desk.amr.corp.intel.com (HELO [10.255.230.205]) ([10.255.230.205])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:45:38 -0800
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/3] soundwire: qcom: add auto enumeration support
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org
-Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
- <20210226170250.9067-3-srinivas.kandagatla@linaro.org>
-Message-ID: <0c551b23-7ed4-59d7-72c2-284bdf8584f1@linux.intel.com>
-Date:   Fri, 26 Feb 2021 11:44:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229795AbhBZRpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 12:45:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhBZRp3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 12:45:29 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54552C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:44:49 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id o10so6642168pgg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:44:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CoeO2iZ8xxu68vAL8jtiT4/h7hy4METDWBDneXDpQxo=;
+        b=ouVOwFpkPYNO37bwVrVblcq6bdqnNueRnAoPvaIRj9dTVaF2y3M8Go2waK15V1HwD5
+         rfvm5PYKw3zdHnlmTCCgYI1KKjMioBR9fhCV/fdHJHGZS6WHTbEFy9SE1PpSGAQdrMkz
+         1+e15FpWoykh7n9vfrtbUetWHQ5iMElXOe29lKFufFsCTYK2GH+o3YR+loynpTyglkvu
+         2rTGt6LX8RvzGNkbq0+lhfnTAUFZARik9n9xhd3h/409mpd/wAfgWMZbwJ/UJqXcUuMF
+         4CUVQTaRSjAHLHyzPVUy1epDPYvOid6DrzuCXkvIm8iNNAYV0VDB/d/1ZFFap/kla1Hb
+         bcvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CoeO2iZ8xxu68vAL8jtiT4/h7hy4METDWBDneXDpQxo=;
+        b=rRxZo0YEm9AZ8yRFlopAZxVsCxxjExKTcYD7x0O+c/MkmaESjt2apjdcRx5rRlTYy4
+         Gex0EsADuRuffdrjfcopXZJFauKCu98QpFi6CXDYioPYO3XmYevwfkd0PUHK93Qzvdu6
+         PblschmMjfm49Ln0TXLS6JVtn2dmUcGTCY1UpUPmOYnT2YMz+iaL09XJLFwyPVB255oh
+         IJ7UBtlTDeitD08NDXwtppy4cZBEWIuzfrjDIVyqFlXUJ2XFUy6E/VyBOOcXPbtbNx+d
+         Uyqf/wjOcdbCUZ7fqiPoV2/XVzpanLXyskoJJEKX3VSiD8s9arv4JTkYhnwzc0hCeJJ/
+         dUQg==
+X-Gm-Message-State: AOAM531PJZ9IXBFu2erPuDfyPMDoWCK/aySdyMDebWYf7ZQ/sg9X8X7a
+        uYxZ3wGkix5y5ztQePMz203JNA==
+X-Google-Smtp-Source: ABdhPJwjWOEc7YomYdRhrCUuSr7CR6m145f91kjNCg5blLJKeSXZqiBSwHAQuofeiHLWAwbe6oLYJQ==
+X-Received: by 2002:a63:4753:: with SMTP id w19mr3792496pgk.394.1614361488694;
+        Fri, 26 Feb 2021 09:44:48 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e190:bf4c:e355:6c55])
+        by smtp.gmail.com with ESMTPSA id p29sm9214572pgm.64.2021.02.26.09.44.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 09:44:48 -0800 (PST)
+Date:   Fri, 26 Feb 2021 09:44:41 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Steve Rutherford <srutherford@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
+ ioctl
+Message-ID: <YDkzibkC7tAYbfFQ@google.com>
+References: <cover.1612398155.git.ashish.kalra@amd.com>
+ <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
+ <YCxrV4u98ZQtInOE@google.com>
+ <SN6PR12MB27672FF8358D122EDD8CC0188E859@SN6PR12MB2767.namprd12.prod.outlook.com>
+ <20210224175122.GA19661@ashkalra_ubuntu_server>
+ <YDaZacLqNQ4nK/Ex@google.com>
+ <20210225202008.GA5208@ashkalra_ubuntu_server>
+ <CABayD+cn5e3PR6NtSWLeM_qxs6hKWtjEx=aeKpy=WC2dzPdRLw@mail.gmail.com>
+ <20210226140432.GB5950@ashkalra_ubuntu_server>
 MIME-Version: 1.0
-In-Reply-To: <20210226170250.9067-3-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226140432.GB5950@ashkalra_ubuntu_server>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++Will and Quentin (arm64)
 
-> +static int qcom_swrm_enumerate(struct sdw_bus *bus)
-> +{
-> +	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
-> +	struct sdw_slave *slave, *_s;
-> +	struct sdw_slave_id id;
-> +	u32 val1, val2;
-> +	u64 addr;
-> +	int i;
-> +	char *buf1 = (char *)&val1, *buf2 = (char *)&val2;
-> +
-> +	for (i = 1; i < (SDW_MAX_DEVICES + 1); i++) {
+Moving the non-KVM x86 folks to bcc, I don't they care about KVM details at this
+point.
 
-I don't understand the (SDW_MAX_DEVICES + 1)?
+On Fri, Feb 26, 2021, Ashish Kalra wrote:
+> On Thu, Feb 25, 2021 at 02:59:27PM -0800, Steve Rutherford wrote:
+> > On Thu, Feb 25, 2021 at 12:20 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
+> > Thanks for grabbing the data!
+> > 
+> > I am fine with both paths. Sean has stated an explicit desire for
+> > hypercall exiting, so I think that would be the current consensus.
+
+Yep, though it'd be good to get Paolo's input, too.
+
+> > If we want to do hypercall exiting, this should be in a follow-up
+> > series where we implement something more generic, e.g. a hypercall
+> > exiting bitmap or hypercall exit list. If we are taking the hypercall
+> > exit route, we can drop the kvm side of the hypercall.
+
+I don't think this is a good candidate for arbitrary hypercall interception.  Or
+rather, I think hypercall interception should be an orthogonal implementation.
+
+The guest, including guest firmware, needs to be aware that the hypercall is
+supported, and the ABI needs to be well-defined.  Relying on userspace VMMs to
+implement a common ABI is an unnecessary risk.
+
+We could make KVM's default behavior be a nop, i.e. have KVM enforce the ABI but
+require further VMM intervention.  But, I just don't see the point, it would
+save only a few lines of code.  It would also limit what KVM could do in the
+future, e.g. if KVM wanted to do its own bookkeeping _and_ exit to userspace,
+then mandatory interception would essentially make it impossible for KVM to do
+bookkeeping while still honoring the interception request.
+
+However, I do think it would make sense to have the userspace exit be a generic
+exit type.  But hey, we already have the necessary ABI defined for that!  It's
+just not used anywhere.
+
+	/* KVM_EXIT_HYPERCALL */
+	struct {
+		__u64 nr;
+		__u64 args[6];
+		__u64 ret;
+		__u32 longmode;
+		__u32 pad;
+	} hypercall;
 
 
-> +		/*SCP_Devid5 - Devid 4*/
-> +		ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_1(i), &val1);
-> +
-> +		/*SCP_Devid3 - DevId 2 Devid 1 Devid 0*/
-> +		ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_2(i), &val2);
+> > Userspace could also handle the MSR using MSR filters (would need to
+> > confirm that).  Then userspace could also be in control of the cpuid bit.
 
-Do you mind explaining a bit what happens here?
-Does the hardware issue commands to read all DevID registers and set the 
-device number automagically?
-If yes, then in SoundWire parlance the enumeration is complete. What you 
-are doing below is no longer part of the enumeration.
+An MSR is not a great fit; it's x86 specific and limited to 64 bits of data.
+The data limitation could be fudged by shoving data into non-standard GPRs, but
+that will result in truly heinous guest code, and extensibility issues.
 
+The data limitation is a moot point, because the x86-only thing is a deal
+breaker.  arm64's pKVM work has a near-identical use case for a guest to share
+memory with a host.  I can't think of a clever way to avoid having to support
+TDX's and SNP's hypervisor-agnostic variants, but we can at least not have
+multiple KVM variants.
 
-> +
-> +		if (!val1 && !val2)
-> +			break;
-> +
-> +		addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
-> +			((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
-> +			((u64)buf1[0] << 40);
-> +
-> +		sdw_extract_slave_id(bus, addr, &id);
-> +		/* Now compare with entries */
-> +		list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
-> +			if (sdw_compare_devid(slave, id) == 0) {
-> +				u32 status = qcom_swrm_get_n_device_status(ctrl, i);
-> +				if (status == SDW_SLAVE_ATTACHED) {
-> +					slave->dev_num = i;
-> +					mutex_lock(&bus->bus_lock);
-> +					set_bit(i, bus->assigned);
-> +					mutex_unlock(&bus->bus_lock);
-> +
-> +				}
+> > Essentially, I think you could drop most of the host kernel work if
+> > there were generic support for hypercall exiting. Then userspace would
+> > be responsible for all of that. Thoughts on this?
 
-And that part is strange as well. The bus->assigned bit should be set 
-even if the Slave is not in the list provided by platform firmware. It's 
-really tracking the state of the hardware, and it should not be 
-influenced by what software knows to manage.
+> So if i understand it correctly, i will submitting v11 of this patch-set
+> with in-kernel support for page encryption status hypercalls and shared
+> pages list and the userspace control of SEV live migration feature
+> support and fixes for MSR handling.
 
-> +				break;
-> +			}
-> +		}
-> +	}
-> +
-> +	complete(&ctrl->enumeration);
+At this point, I'd say hold off on putting more effort into an implementation
+until we have consensus.
 
-you have init_completion() and complete() in this patch, but no 
-wait_for_completion(), so that should be added in a later patch, no?
-
-> +	return 0;
-> +}
-> +
->   static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
->   {
->   	struct qcom_swrm_ctrl *swrm = dev_id;
-> -	u32 value, intr_sts, intr_sts_masked;
-> +	u32 value, intr_sts, intr_sts_masked, slave_status;
->   	u32 i;
->   	u8 devnum = 0;
->   	int ret = IRQ_HANDLED;
-> @@ -382,10 +443,19 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
->   				break;
->   			case SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED:
->   			case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
-> -				dev_err_ratelimited(swrm->dev, "%s: SWR new slave attached\n",
-> +				dev_err_ratelimited(swrm->dev, "%s: SWR slave status changed\n",
->   					__func__);
-> -				qcom_swrm_get_device_status(swrm);
-> -				sdw_handle_slave_status(&swrm->bus, swrm->status);
-> +				swrm->reg_read(swrm, SWRM_MCP_SLV_STATUS, &slave_status);
-> +				if (swrm->slave_status == slave_status) {
-> +					dev_err(swrm->dev, "Slave status not changed %x\n",
-> +						slave_status);
-> +					break;
-> +				} else {
-> +					dev_err(swrm->dev, "Slave status handle %x\n", slave_status);
-> +					qcom_swrm_get_device_status(swrm);
-> +					qcom_swrm_enumerate(&swrm->bus);
-> +					sdw_handle_slave_status(&swrm->bus, swrm->status);
-> +				}
->   				break;
->   			case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
->   				dev_err_ratelimited(swrm->dev,
-> @@ -472,8 +542,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
->   
->   	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
->   
-> -	/* Disable Auto enumeration */
-> -	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 0);
-> +	/* Enable Auto enumeration */
-> +	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 1);
->   
->   	ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
->   	/* Mask soundwire interrupts */
-> @@ -507,6 +577,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
->   		ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN,
->   				SWRM_INTERRUPT_STATUS_RMSK);
->   	}
-> +	ctrl->slave_status = 0;
->   	return 0;
->   }
->   
-> @@ -1068,6 +1139,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->   	dev_set_drvdata(&pdev->dev, ctrl);
->   	mutex_init(&ctrl->port_lock);
->   	init_completion(&ctrl->broadcast);
-> +	init_completion(&ctrl->enumeration);
->   
->   	ctrl->bus.ops = &qcom_swrm_ops;
->   	ctrl->bus.port_ops = &qcom_swrm_port_ops;
+> In subsequent follow-up patches we will add generic support for hypercall 
+> exiting and then drop kvm side of hypercall and also add userspace
+> support for MSR handling.
 > 
+> Thanks,
+> Ashish
