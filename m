@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B163262F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 950053262ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhBZMuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 07:50:05 -0500
-Received: from lucky1.263xmail.com ([211.157.147.133]:36818 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhBZMt6 (ORCPT
+        id S230148AbhBZMtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 07:49:03 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:49078 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229835AbhBZMs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:49:58 -0500
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id C3D59CBEB5;
-        Fri, 26 Feb 2021 20:47:33 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P19731T140184928626432S1614343654275055_;
-        Fri, 26 Feb 2021 20:47:34 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <5a97b5e13e8a8963c362dac91eb51f91>
-X-RL-SENDER: zhaoxiao@uniontech.com
-X-SENDER: zhaoxiao@uniontech.com
-X-LOGIN-NAME: zhaoxiao@uniontech.com
-X-FST-TO: tytso@mit.edu
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     tytso@mit.edu
-Cc:     linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH] random: remove the redundant space for the pointer variables.
-Date:   Fri, 26 Feb 2021 20:47:31 +0800
-Message-Id: <20210226124731.26626-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 26 Feb 2021 07:48:57 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AC38C580;
+        Fri, 26 Feb 2021 13:48:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1614343694;
+        bh=rrLpCYkJ5JwjMm7tTb6U1oQtp1SJVFjnAKeQrFXlxdM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FNsZyv1yKpHH+uaUyjyU4iZvC6Sjp8pQ6lMMS3CMLW5dC9STGwKaPhwqfi+6s6CnB
+         VyeBGpfJV3wwFC0AJ0wD2z7zXoBHGZP9ZzdlLR5QB/i0G/JW1oV00/0vNxotVLUN8A
+         H/Onn9pGwyPZVPhGMVprj1+A5gdgrnGiDuiQgAdc=
+Date:   Fri, 26 Feb 2021 14:47:47 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        Dirk Behme <Dirk.Behme@de.bosch.com>,
+        Peter Erben <Peter.Erben@de.bosch.com>
+Subject: Re: [PATCH 6/7] arm64: dts: renesas: r8a77965: Add DAB support
+Message-ID: <YDjt83Yri6jiEq6B@pendragon.ideasonboard.com>
+References: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com>
+ <20210225225147.29920-7-fabrizio.castro.jz@renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210225225147.29920-7-fabrizio.castro.jz@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following pointer variables don't meet the kernel coding style,
-so remove the redundant space.
+Hi Fabrizio,
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
- drivers/char/random.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thank you for the patch.
 
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 0fe9e200e4c8..bbec50b8641e 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -920,8 +920,8 @@ static int crng_slow_load(const char *cp, size_t len)
- 	static unsigned char	lfsr = 1;
- 	unsigned char		tmp;
- 	unsigned		i, max = CHACHA_KEY_SIZE;
--	const char *		src_buf = cp;
--	char *			dest_buf = (char *) &primary_crng.state[4];
-+	const char		*src_buf = cp;
-+	char			*dest_buf = (char *)&primary_crng.state[4];
- 
- 	if (!spin_trylock_irqsave(&primary_crng.lock, flags))
- 		return 0;
-@@ -1855,7 +1855,7 @@ random_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
- }
- 
- static __poll_t
--random_poll(struct file *file, poll_table * wait)
-+random_poll(struct file *file, poll_table *wait)
- {
- 	__poll_t mask;
- 
+On Thu, Feb 25, 2021 at 10:51:46PM +0000, Fabrizio Castro wrote:
+> R-Car M3-N (a.k.a. r8a77965) comes with the DAB hardware accelerator.
+> This patch adds SoC specific support.
+> 
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> ---
+>  arch/arm64/boot/dts/renesas/r8a77965.dtsi | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/renesas/r8a77965.dtsi b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
+> index 657b20d3533b..b6176fd5b703 100644
+> --- a/arch/arm64/boot/dts/renesas/r8a77965.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
+> @@ -1013,6 +1013,18 @@ ipmmu_vp0: iommu@fe990000 {
+>  			#iommu-cells = <1>;
+>  		};
+>  
+> +		dab: dab@e6730000 {
+> +			compatible = "renesas,dab-r8a77965",
+> +				     "renesas,rcar-gen3-dab";
+> +			reg = <0x00 0xe6730000 0x00 0x120>;
+> +			interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&cpg CPG_MOD 1016>;
+> +			clock-names = "dab";
+> +			power-domains = <&sysc R8A77965_PD_ALWAYS_ON>;
+> +			resets = <&cpg 1016>;
+
+Same comments as for r8a77990.
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +			status = "disabled";
+> +		};
+> +
+>  		avb: ethernet@e6800000 {
+>  			compatible = "renesas,etheravb-r8a77965",
+>  				     "renesas,etheravb-rcar-gen3";
+
 -- 
-2.30.1
+Regards,
 
-
-
+Laurent Pinchart
