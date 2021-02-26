@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E7F3261FA
+	by mail.lfdr.de (Postfix) with ESMTP id 001B83261FB
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhBZL0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:26:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60100 "EHLO mx2.suse.de"
+        id S231165AbhBZL00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:26:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60172 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230223AbhBZL0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:26:16 -0500
+        id S230153AbhBZL0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 06:26:18 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614338729; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1614338731; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9Aoj+mD0sR1IiIwitK9WRvyR8NQutn4XWYPCWVLCqsI=;
-        b=se13TZjCsJkvolVSSUHJ1dT0RmMc6nn/5/qGqYPLloh7TX8Wsyv8zRL72Q61AdxNVSUxZX
-        gwaxQM5+L2d1uGeyY3YyX6X5hiWJETal8n6tjoF1naex4qJK4jy8yl8N5qDYvPI3c5Fgi8
-        Pd0SAU0kc1Gwt8Jx9CLYX8zD4rYH3vs=
+        bh=JKTEzRAv9CATlTY86zVJKrAJi0oI5ufBySa5XHkL5CQ=;
+        b=HD1zZcC4FsATozxt/S6mRCc6hOgV7UIdxxRx5JDvB/INimab5p+THc1d6zwpTJYj92yX01
+        zRnYRZPCSOVu7UegKL79wIb4Cx5gpAbNxApbZiXnnZhEqV8oArPl2/3YlFTq904r7Whuoi
+        D4K1W9uqfzyy+SgQZK8LqXbbsNA/sv0=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BA73DAFF9;
-        Fri, 26 Feb 2021 11:25:29 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 9C56CAFFA;
+        Fri, 26 Feb 2021 11:25:31 +0000 (UTC)
 From:   Juergen Gross <jgross@suse.com>
-To:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     paulmck@kernel.org, mhocko@suse.com,
-        Juergen Gross <jgross@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 1/3] kernel/smp: add boot parameter for controlling CSD lock debugging
-Date:   Fri, 26 Feb 2021 12:25:19 +0100
-Message-Id: <20210226112521.8641-2-jgross@suse.com>
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 2/3] kernel/smp: prepare more CSD lock debugging
+Date:   Fri, 26 Feb 2021 12:25:20 +0100
+Message-Id: <20210226112521.8641-3-jgross@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210226112521.8641-1-jgross@suse.com>
 References: <20210226112521.8641-1-jgross@suse.com>
@@ -41,134 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently CSD lock debugging can be switched on and off via a kernel
-config option only. Unfortunately there is at least one problem with
-CSD lock handling pending for about 2 years now, which has been seen
-in different environments (mostly when running virtualized under KVM
-or Xen, at least once on bare metal). Multiple attempts to catch this
-issue have finally led to introduction of CSD lock debug code, but
-this code is not in use in most distros as it has some impact on
-performance.
-
-In order to be able to ship kernels with CONFIG_CSD_LOCK_WAIT_DEBUG
-enabled even for production use, add a boot parameter for switching
-the debug functionality on. This will reduce any performance impact
-of the debug coding to a bare minimum when not being used.
+In order to be able to easily add more CSD lock debugging data to
+struct call_function_data->csd move the call_single_data_t element
+into a sub-structure.
 
 Signed-off-by: Juergen Gross <jgross@suse.com>
 ---
- .../admin-guide/kernel-parameters.txt         |  6 +++
- kernel/smp.c                                  | 38 +++++++++++++++++--
- 2 files changed, 40 insertions(+), 4 deletions(-)
+ kernel/smp.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index bab6a8b01202..af9749b866c2 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -784,6 +784,12 @@
- 	cs89x0_media=	[HW,NET]
- 			Format: { rj45 | aui | bnc }
- 
-+	csdlock_debug=	[KNL] Enable debug add-ons of cross-cpu function call
-+			handling. When switched on additional debug data is
-+			printed to the console in case a hanging cpu is
-+			detected and that cpu is pinged again in order to try
-+			to resolve the hang situation.
-+
- 	dasd=		[HW,NET]
- 			See header of drivers/s390/block/dasd_devmap.c.
- 
 diff --git a/kernel/smp.c b/kernel/smp.c
-index aeb0adfa0606..d5f0b21ab55e 100644
+index d5f0b21ab55e..6d7e6dbe33dc 100644
 --- a/kernel/smp.c
 +++ b/kernel/smp.c
-@@ -24,6 +24,7 @@
- #include <linux/sched/clock.h>
- #include <linux/nmi.h>
- #include <linux/sched/debug.h>
-+#include <linux/jump_label.h>
+@@ -31,8 +31,12 @@
  
- #include "smpboot.h"
- #include "sched/smp.h"
-@@ -102,6 +103,20 @@ void __init call_function_init(void)
+ #define CSD_TYPE(_csd)	((_csd)->node.u_flags & CSD_FLAG_TYPE_MASK)
  
- #ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
++struct cfd_percpu {
++	call_single_data_t	csd;
++};
++
+ struct call_function_data {
+-	call_single_data_t	__percpu *csd;
++	struct cfd_percpu	__percpu *pcpu;
+ 	cpumask_var_t		cpumask;
+ 	cpumask_var_t		cpumask_ipi;
+ };
+@@ -55,8 +59,8 @@ int smpcfd_prepare_cpu(unsigned int cpu)
+ 		free_cpumask_var(cfd->cpumask);
+ 		return -ENOMEM;
+ 	}
+-	cfd->csd = alloc_percpu(call_single_data_t);
+-	if (!cfd->csd) {
++	cfd->pcpu = alloc_percpu(struct cfd_percpu);
++	if (!cfd->pcpu) {
+ 		free_cpumask_var(cfd->cpumask);
+ 		free_cpumask_var(cfd->cpumask_ipi);
+ 		return -ENOMEM;
+@@ -71,7 +75,7 @@ int smpcfd_dead_cpu(unsigned int cpu)
  
-+static DEFINE_STATIC_KEY_FALSE(csdlock_debug_enabled);
-+
-+static int __init csdlock_debug(char *str)
-+{
-+	unsigned int val = 0;
-+
-+	get_option(&str, &val);
-+	if (val)
-+		static_branch_enable(&csdlock_debug_enabled);
-+
-+	return 0;
-+}
-+early_param("csdlock_debug", csdlock_debug);
-+
- static DEFINE_PER_CPU(call_single_data_t *, cur_csd);
- static DEFINE_PER_CPU(smp_call_func_t, cur_csd_func);
- static DEFINE_PER_CPU(void *, cur_csd_info);
-@@ -110,7 +125,7 @@ static DEFINE_PER_CPU(void *, cur_csd_info);
- static atomic_t csd_bug_count = ATOMIC_INIT(0);
- 
- /* Record current CSD work for current CPU, NULL to erase. */
--static void csd_lock_record(call_single_data_t *csd)
-+static void __csd_lock_record(call_single_data_t *csd)
- {
- 	if (!csd) {
- 		smp_mb(); /* NULL cur_csd after unlock. */
-@@ -125,7 +140,13 @@ static void csd_lock_record(call_single_data_t *csd)
- 		  /* Or before unlock, as the case may be. */
+ 	free_cpumask_var(cfd->cpumask);
+ 	free_cpumask_var(cfd->cpumask_ipi);
+-	free_percpu(cfd->csd);
++	free_percpu(cfd->pcpu);
+ 	return 0;
  }
  
--static __always_inline int csd_lock_wait_getcpu(call_single_data_t *csd)
-+static __always_inline void csd_lock_record(call_single_data_t *csd)
-+{
-+	if (static_branch_unlikely(&csdlock_debug_enabled))
-+		__csd_lock_record(csd);
-+}
-+
-+static int csd_lock_wait_getcpu(call_single_data_t *csd)
- {
- 	unsigned int csd_type;
+@@ -694,7 +698,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
  
-@@ -140,7 +161,7 @@ static __always_inline int csd_lock_wait_getcpu(call_single_data_t *csd)
-  * the CSD_TYPE_SYNC/ASYNC types provide the destination CPU,
-  * so waiting on other types gets much less information.
-  */
--static __always_inline bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, int *bug_id)
-+static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, int *bug_id)
- {
- 	int cpu = -1;
- 	int cpux;
-@@ -204,7 +225,7 @@ static __always_inline bool csd_lock_wait_toolong(call_single_data_t *csd, u64 t
-  * previous function call. For multi-cpu calls its even more interesting
-  * as we'll have to ensure no other cpu is observing our csd.
-  */
--static __always_inline void csd_lock_wait(call_single_data_t *csd)
-+static void __csd_lock_wait(call_single_data_t *csd)
- {
- 	int bug_id = 0;
- 	u64 ts0, ts1;
-@@ -218,6 +239,15 @@ static __always_inline void csd_lock_wait(call_single_data_t *csd)
- 	smp_acquire__after_ctrl_dep();
- }
+ 	cpumask_clear(cfd->cpumask_ipi);
+ 	for_each_cpu(cpu, cfd->cpumask) {
+-		call_single_data_t *csd = per_cpu_ptr(cfd->csd, cpu);
++		call_single_data_t *csd = &per_cpu_ptr(cfd->pcpu, cpu)->csd;
  
-+static __always_inline void csd_lock_wait(call_single_data_t *csd)
-+{
-+	if (static_branch_unlikely(&csdlock_debug_enabled)) {
-+		__csd_lock_wait(csd);
-+		return;
-+	}
-+
-+	smp_cond_load_acquire(&csd->node.u_flags, !(VAL & CSD_FLAG_LOCK));
-+}
- #else
- static void csd_lock_record(call_single_data_t *csd)
- {
+ 		if (cond_func && !cond_func(cpu, info))
+ 			continue;
+@@ -719,7 +723,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+ 		for_each_cpu(cpu, cfd->cpumask) {
+ 			call_single_data_t *csd;
+ 
+-			csd = per_cpu_ptr(cfd->csd, cpu);
++			csd = &per_cpu_ptr(cfd->pcpu, cpu)->csd;
+ 			csd_lock_wait(csd);
+ 		}
+ 	}
 -- 
 2.26.2
 
