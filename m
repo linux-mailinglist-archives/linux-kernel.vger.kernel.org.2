@@ -2,91 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1333261C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFCF3261CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbhBZLJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:09:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47746 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230165AbhBZLIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:08:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 56765AF33;
-        Fri, 26 Feb 2021 11:08:10 +0000 (UTC)
-Subject: Re: [PATCH v7 1/1] mm/page_alloc.c: refactor initialization of struct
- page for holes in memory layout
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org, x86@kernel.org
-References: <20210224153950.20789-1-rppt@kernel.org>
- <20210224153950.20789-2-rppt@kernel.org>
- <a4b2ba7e-96a5-6a75-dad7-626d054f9e8b@suse.cz>
- <20210225180521.GH1854360@linux.ibm.com>
- <a458a933-91c7-9fb5-d7f8-b9a7af93a11c@suse.cz>
- <20210226105900.GK1854360@linux.ibm.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <aeb4aeb9-4ca7-723a-d989-226d537adfb3@suse.cz>
-Date:   Fri, 26 Feb 2021 12:08:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231134AbhBZLLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:11:06 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:21965 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhBZLLD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 06:11:03 -0500
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 11QB9oRn021085;
+        Fri, 26 Feb 2021 20:09:50 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 11QB9oRn021085
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614337791;
+        bh=FFT/oqy9Tdm+9fNoO5+/eHYDaXl4/fLpccymluZSbRk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ng2m7mwPpY8FHosFpIjQRL23HwJSs/HPaZn+PfJCJCPFA9TBGv0BUBVq0SYa/uRGO
+         PYCM2buRGmWeHmYeKTA7PKdTw2OdwMkTyERzP1LZhTLqbID0NUDJUPj8+XKI9Px/VS
+         I4F6hS6Fe8W2Glw6nAtfYG5LAErnIwOfZlCpunX7i7sXDghZvfnA49SAbgPxGwb4O1
+         L3/hzRmjUQu1rKGWOcDkUafJJor1XW6IiPgLkL6o9lN6QfihGgwvmUuEHhHRtqfflj
+         gr6dgnEQML2r3efkAdt1Tkv51bqOYUJZIGl/dutxoV8PGhHZEx0DaUmyddxayH712U
+         kp/RjpWkPf5zg==
+X-Nifty-SrcIP: [209.85.215.176]
+Received: by mail-pg1-f176.google.com with SMTP id g4so6036003pgj.0;
+        Fri, 26 Feb 2021 03:09:50 -0800 (PST)
+X-Gm-Message-State: AOAM53343u2ggSGJzMmQt4jUN5lDGr1HkVJTA198jTTiRm02f3uBrmn7
+        yHoTjRwdAI/30LdgNn/28WusH3mCCQGuPxdEOhg=
+X-Google-Smtp-Source: ABdhPJzp2injQKm4gFYlgJXgvIF1/jHRI4vas5sveZg40W3AXUlCM0Pk/VO4QocCGoho8eCkS8NvSM76sVnXor/tDIQ=
+X-Received: by 2002:a62:1412:0:b029:1ec:bc11:31fd with SMTP id
+ 18-20020a6214120000b02901ecbc1131fdmr2623654pfu.76.1614337790138; Fri, 26 Feb
+ 2021 03:09:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210226105900.GK1854360@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210226100640.2827925-1-geert@linux-m68k.org>
+In-Reply-To: <20210226100640.2827925-1-geert@linux-m68k.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 26 Feb 2021 20:09:12 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARG+AU2ZBFEo8+tqEGSuS2_yv2QpSc3kVDKtrAw6PRTpA@mail.gmail.com>
+Message-ID: <CAK7LNARG+AU2ZBFEo8+tqEGSuS2_yv2QpSc3kVDKtrAw6PRTpA@mail.gmail.com>
+Subject: Re: [PATCH v2] f2fs: compress: Allow modular (de)compression algorithms
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/26/21 11:59 AM, Mike Rapoport wrote:
-> On Thu, Feb 25, 2021 at 07:38:44PM +0100, Vlastimil Babka wrote:
->> On 2/25/21 7:05 PM, Mike Rapoport wrote:
->> >> 
->> >> What if two zones are adjacent? I.e. if the hole was at a boundary between two
->> >> zones.
->> > 
->> > What do you mean by "adjacent zones"? If there is a hole near the zone
->> > boundary, zone span would be clamped to exclude the hole.
->> 
->> Yeah, zone span should exclude those pages, but you still somehow handle them?
->> That's how I read "pages that are not spanned by any node will get links to the
->> adjacent zone/node."
->> So is it always a unique zone/node can be determined?
->> 
->> Let's say we have:
->> 
->> <memory on node 0>
->> ---- pageblock boundary ----
->> <more memory on node 0>
->> <a hole>
->> <memory on node 1>
->> ---- pageblock boundary ----
->> 
->> Now I hope such configurations don't really exist :) But if we simulated them in
->> QEMU, what would be the linkage in struct pages in that hole?
-> 
-> I don't think such configuration is possible in practice but it can be
-> forced with e.g memmap="2M hole at 4G - 1M".
+On Fri, Feb 26, 2021 at 7:10 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> If F2FS_FS is modular, enabling the compressions options
+> F2FS_FS_{LZ4,LZ4HZ,LZO,LZORLE,ZSTD} will make the (de)compression
+> algorithms {LZ4,LZ4HC,LZO,ZSTD}_{,DE}COMPRESS builtin instead of
+> modular, as the former depend on an intermediate boolean
+> F2FS_FS_COMPRESSION, which in-turn depends on tristate F2FS_FS.
+>
+> Indeed, if a boolean symbol A depends directly on a tristate symbol B
+> and selects another tristate symbol C:
+>
+>     tristate B
+>
+>     tristate C
+>
+>     bool A
+>       depends on B
+>       select C
+>
+> and B is modular, then C will also be modular.
+>
+> However, if there is an intermediate boolean D in the dependency chain
+> between A and B:
+>
+>     tristate B
+>
+>     tristate C
+>
+>     bool D
+>       depends on B
+>
+>     bool A
+>       depends on D
+>       select C
+>
+> then the modular state won't propagate from B to C, and C will be
+> builtin instead of modular.
+>
+> As modular dependency propagation through intermediate symbols is
+> obscure, fix this in a robust way by moving the selection of tristate
+> (de)compression algorithms from the boolean compression options to the
+> tristate main F2FS_FS option.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> v2:
+>   - Move the selects to F2FS_FS instead of adding direct dependencies
+>     on F2FS_FS.
+> ---
+>  fs/f2fs/Kconfig | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+>
+> diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+> index 62e638a49bbf089a..cca79029a577151c 100644
+> --- a/fs/f2fs/Kconfig
+> +++ b/fs/f2fs/Kconfig
+> @@ -7,6 +7,15 @@ config F2FS_FS
+>         select CRYPTO_CRC32
+>         select F2FS_FS_XATTR if FS_ENCRYPTION
+>         select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+> +       select LZ4_COMPRESS if F2FS_FS_LZ4
+> +       select LZ4_DECOMPRESS if F2FS_FS_LZ4
+> +       select LZ4HC_COMPRESS if F2FS_FS_LZ4HC
+> +       select LZO_COMPRESS if F2FS_FS_LZO
+> +       select LZO_COMPRESS if F2FS_FS_LZORLE
 
-Right.
+This line is redundant because
+F2FS_FS_LZORLE depends on F2FS_FS_LZO.
 
-> The hole in your example the hole will get node1 for node and zone that
-> spans the beginning of node1 for zone.
 
-Yeah the comments in v8 make that clear now, thanks!
+> +       select LZO_DECOMPRESS if F2FS_FS_LZO
+> +       select LZO_DECOMPRESS if F2FS_FS_LZORLE
 
+Ditto.
+
+
+> +       select ZSTD_COMPRESS if F2FS_FS_ZSTD
+> +       select ZSTD_DECOMPRESS if F2FS_FS_ZSTD
+>         help
+>           F2FS is based on Log-structured File System (LFS), which supports
+>           versatile "flash-friendly" features. The design has been focused on
+
+
+-- 
+Best Regards
+Masahiro Yamada
