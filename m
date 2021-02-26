@@ -2,128 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B32326374
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A4432637A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbhBZNlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 08:41:22 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:31180 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229823AbhBZNlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 08:41:20 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614346862; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=YptA8kAZhQsB/gFtRWYpF2uoN0yMu74Sopi3PQoKs7w=; b=G3mSO87a56BiUMtEyqyjZUkPbJ290/i51F8lqTKoF3/XJAvtzpkeIK8WyTMLweCOFWPrJ7ik
- q/apcChw3a+wekwOwRyjLu46+DTADC//a9TdMVk/0a+oE5ObZEkrt4RywSzOJNq4hNZIbEMN
- jA/eXdXks3E5iPj62BDPRAZbdrw=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6038fa4d8f0d5ba6c5f9731c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 13:40:29
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A64FCC43461; Fri, 26 Feb 2021 13:40:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 30C9FC433CA;
-        Fri, 26 Feb 2021 13:40:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 30C9FC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Yan-Hsuan Chuang <tony0620emma@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH 3/3] PCI: Convert rtw88 power cycle quirk to shutdown quirk
-References: <20210225174041.405739-1-kai.heng.feng@canonical.com>
-        <20210225174041.405739-3-kai.heng.feng@canonical.com>
-        <87o8g7e20e.fsf@codeaurora.org>
-        <0e8ba5a4-0029-6966-e4ab-265a538f3b3d@gmail.com>
-        <CAAd53p6tWUn-QbCysL_KweREmpSNfiQa7-gHgndqGta2UWt0=Q@mail.gmail.com>
-        <6db9e75e-52a7-4316-bfd8-cf44b4875f44@gmail.com>
-Date:   Fri, 26 Feb 2021 15:40:23 +0200
-In-Reply-To: <6db9e75e-52a7-4316-bfd8-cf44b4875f44@gmail.com> (Heiner
-        Kallweit's message of "Fri, 26 Feb 2021 14:31:31 +0100")
-Message-ID: <87pn0n9cc8.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S229990AbhBZNoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 08:44:32 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:39654 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhBZNo2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 08:44:28 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QDcu3w161909;
+        Fri, 26 Feb 2021 13:43:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=G+DgAze3w+Tbq+Aon1ADcm+cJk9dTPRMgXOqHQYMSas=;
+ b=HHKaOwEG3QlQYoZSFPtzVWZ3jOOZIF3P7cfPjiFBZC+LqxI0djCmKV1OZx6K4vPmjkSd
+ KWxvhGElWRwSPhkc9gypzLIM95gF3faidsFCEuEhNx+lwalcqkXlqoHVnhg2aAoZbcGM
+ abJxVZvpxJLvFgeUeKXrccT1XAsN7uKM0lr9LsJFlba+ktMx9arcZNaIivr0dJSZ0Ed6
+ 0XNKb1dKPnuCsOlscXx3grjUVBieytZ+FP4Pj9QIeQOvtRraPadvaV6W0qy68sM7z7L1
+ vja/XsV563AV/jFgXqfCQG/Y+gQePsxC4jh4xcZ1AY25If1SgZWP3UCiBjXdUTSKU/Tg bw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 36ugq3ru4t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Feb 2021 13:43:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QDeIFG035663;
+        Fri, 26 Feb 2021 13:43:42 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 36uc6vw20c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Feb 2021 13:43:42 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11QDhfXS017563;
+        Fri, 26 Feb 2021 13:43:41 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 26 Feb 2021 05:43:40 -0800
+Date:   Fri, 26 Feb 2021 16:43:33 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Lee Gibson <leegib@gmail.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8192e: Fix possible buffer overflow in
+ _rtl92e_wx_set_scan
+Message-ID: <20210226134333.GA2087@kadam>
+References: <20210226114829.316980-1-leegib@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226114829.316980-1-leegib@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9906 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
+ mlxlogscore=999 adultscore=0 bulkscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102260105
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9906 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ malwarescore=0 spamscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
+ clxscore=1015 impostorscore=0 lowpriorityscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102260105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Heiner Kallweit <hkallweit1@gmail.com> writes:
+On Fri, Feb 26, 2021 at 11:48:29AM +0000, Lee Gibson wrote:
+> Function _rtl92e_wx_set_scan calls memcpy without checking the length.
+> A user could control that length and trigger a buffer overflow.
+> Fix by checking the length is within the maximum allowed size.
+> 
+> Signed-off-by: Lee Gibson <leegib@gmail.com>
+> ---
+>  drivers/staging/rtl8192e/rtl8192e/rtl_wx.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+> index 16bcee13f64b..2acc4f314732 100644
+> --- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+> +++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+> @@ -406,6 +406,9 @@ static int _rtl92e_wx_set_scan(struct net_device *dev,
+>  		struct iw_scan_req *req = (struct iw_scan_req *)b;
+>  
+>  		if (req->essid_len) {
+> +			if (req->essid_len > IW_ESSID_MAX_SIZE)
+> +				req->essid_len = IW_ESSID_MAX_SIZE;
+> +
+>  			ieee->current_network.ssid_len = req->essid_len;
+>  			memcpy(ieee->current_network.ssid, req->essid,
+>  			       req->essid_len);
+> -- 
 
-> On 26.02.2021 13:18, Kai-Heng Feng wrote:
->> On Fri, Feb 26, 2021 at 8:10 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->>>
->>> On 26.02.2021 08:12, Kalle Valo wrote:
->>>> Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
->>>>
->>>>> Now we have a generic D3 shutdown quirk, so convert the original
->>>>> approach to a PCI quirk.
->>>>>
->>>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>>>> ---
->>>>>  drivers/net/wireless/realtek/rtw88/pci.c | 2 --
->>>>>  drivers/pci/quirks.c                     | 6 ++++++
->>>>>  2 files changed, 6 insertions(+), 2 deletions(-)
->>>>
->>>> It would have been nice to CC linux-wireless also on patches 1-2. I only
->>>> saw patch 3 and had to search the rest of patches from lkml.
->>>>
->>>> I assume this goes via the PCI tree so:
->>>>
->>>> Acked-by: Kalle Valo <kvalo@codeaurora.org>
->>>>
->>>
->>> To me it looks odd to (mis-)use the quirk mechanism to set a device
->>> to D3cold on shutdown. As I see it the quirk mechanism is used to work
->>> around certain device misbehavior. And setting a device to a D3
->>> state on shutdown is a normal activity, and the shutdown() callback
->>> seems to be a good place for it.
->>> I miss an explanation what the actual benefit of the change is.
->> 
->> To make putting device to D3 more generic, as there are more than one
->> device need the quirk.
->> 
->> Here's the discussion:
->> https://lore.kernel.org/linux-usb/00de6927-3fa6-a9a3-2d65-2b4d4e8f0012@linux.intel.com/
->> 
->
-> Thanks for the link. For the AMD USB use case I don't have a strong opinion,
-> what's considered the better option may be a question of personal taste.
-> For rtw88 however I'd still consider it over-engineering to replace a simple
-> call to pci_set_power_state() with a PCI quirk.
-> I may be biased here because I find it sometimes bothering if I want to
-> look up how a device is handled and in addition to checking the respective
-> driver I also have to grep through quirks.c whether there's any special
-> handling.
+Well done.  You can add a Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+to your final patch.  How did you spot this bug?  It's so ancient that
+the Fixes tag would look messed up.
 
-Good point about rtw88. And if there's a new PCI id for rtw88 we need to
-also update the quirk in the PCI subsystem, which will be most likely
-forgotten.
+commit 94a799425eee8225a1e3fbe5f473d2ef04002577
+Author: Larry Finger <Larry.Finger@lwfinger.net>
+Date:   Tue Aug 23 19:00:42 2011 -0500
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+    From: wlanfae <wlanfae@realtek.com>
+    [PATCH 1/8] rtl8192e: Import new version of driver from realtek
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+Smatch isn't smart enough to track how this function is called.  Smatch
+tries to track the names of the pointers that a function can be.  For
+example, the pointer is stored in r8192_wx_handlers[] and it's returned
+from get_handler().  Here is that list.
+
+$ smdb.py function_ptr _rtl92e_wx_set_scan
+_rtl92e_wx_set_scan = ['_rtl92e_wx_set_scan', 'r8192_wx_handlers[]', '(struct iw_handler_def)->standard', 'r get_handler()', 'wireless_process_ioctl ptr handler', 'standard param 4', 'private param 4']
+
+But Smatch gets confused when we do:
+
+net/wireless/wext-core.c
+   951          handler = get_handler(dev, cmd);
+   952          if (handler) {
+   953                  /* Standard and private are not the same */
+   954                  if (cmd < SIOCIWFIRSTPRIV)
+   955                          return standard(dev, iwr, cmd, info, handler);
+
+Passing the handler pointer to the standard() pointer...
+
+   956                  else if (private)
+   957                          return private(dev, iwr, cmd, info, handler);
+   958          }
+
+I can hard code the correct function pointer by adding some insert
+commands into the smatch_data/db/fixup_kernel.sh file.
+
+insert into function_ptr values ("fixup_kernel.sh", "r get_handler()", "ioctl_standard_call ptr param 4", 1);
+insert into function_ptr values ("fixup_kernel.sh", "r get_handler()", "ioctl_standard_iw_point param 3", 1);
+
+And now it generates the warning....
+
+But I wonder if probably another idea is to just create a new warning
+that any time we memcpy() to a (struct ieee80211_network)->ssid and the
+length is not known to be less than IW_ESSID_MAX_SIZE then print a
+warning.
+
+It turns out this process was slightly more unwieldy than I expected.
+Adding the types manually seems like it might be a lot of work.  Someone
+could probably go through the list of CVEs from last year and see which
+types were overflowed.  Anyway, I'll test out what I have and post my
+results next week.
+
+regards,
+dan carpenter
+
+#include "smatch.h"
+#include "smatch_slist.h"
+#include "smatch_extra.h"
+
+static int my_id;
+
+static struct {
+	const char *type_name;
+	int len;
+} member_list[] = {
+	{ "(struct ieee80211_network)->ssid", 32 },
+	{ "(struct rtllib_network)->ssid", 32 },
+};
+
+static void match_memset(const char *fn, struct expression *expr, void *_unused)
+{
+	struct expression *dest, *size_expr;
+	struct range_list *rl;
+	char *member_name;
+	int size;
+	int i;
+
+	dest = get_argument_from_call_expr(expr->args, 0);
+	size_expr = get_argument_from_call_expr(expr->args, 2);
+	if (!dest || !size_expr)
+		return;
+
+	member_name = get_member_name(dest);
+	if (!member_name)
+		return;
+
+	for (i = 0; i < ARRAY_SIZE(member_list); i++) {
+		if (strcmp(member_name, member_list[i].type_name) == 0)
+			break;
+	}
+	if (i == ARRAY_SIZE(member_list))
+		goto free;
+
+	if (member_list[i].len)
+		size = member_list[i].len;
+	else
+		size = get_array_size_bytes(dest);
+	get_absolute_rl(size_expr, &rl);
+
+	if (rl_max(rl).value <= size)
+		goto free;
+
+	sm_msg("protected struct member '%s' overflow: rl='%s'", member_name, show_rl(rl));
+free:
+	free_string(member_name);
+}
+
+void check_protected_member(int id)
+{
+	if (option_project != PROJ_KERNEL)
+		return;
+
+	my_id = id;
+
+	add_function_hook("memcpy", &match_memset, NULL);
+	add_function_hook("__memcpy", &match_memset, NULL);
+}
+
+
