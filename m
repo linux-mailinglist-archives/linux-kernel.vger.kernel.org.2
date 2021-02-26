@@ -2,75 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63558326665
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC1E326671
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhBZRkv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Feb 2021 12:40:51 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:33597 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhBZRkq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:40:46 -0500
-Received: by mail-io1-f71.google.com with SMTP id m3so7795171ioy.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:40:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:content-transfer-encoding;
-        bh=PQUkYOPypd5QA7wH0ZiOCBAtaTuHt1m0uYa+QbCHJ6U=;
-        b=qIPTib1uQw5EjOIOmYnsQdLH2QJHEFiGe7wIjgYPfy/jO19qaw9ygrNOPBkp7HanGb
-         fXrhk2bPy3rMe8n+/t8Tn4K/Dm+NKALOhsWlu1RmKK4bHyTLyOU5+mslVBbUaiEHDZP+
-         g4I07HyVWtYSNEjApUJ9d/FVqCipxMnkYuonwAlqxJSs3thQpn+hK7V13lxYUoSMmVT6
-         czibH21k20foY5eu8uCbs2s2Y4NUjGdHYMAreWFuH4YLQP6Uz1dbzQUpKPRZfwLIr7qi
-         U83+c1b76avPsNlXhEMVnFXgXHJSipZLGeLeLnoE27mpGo2Pqin/W8D+Bg0C2Orpt6uL
-         j/2w==
-X-Gm-Message-State: AOAM530CFutKfZff7iY63uG0j1S+6fPqed7FrMjdGmCZoFhx/1UAfz3L
-        Wd7+hZUGr2ZDl32/BvVUN1QEi/lPwSQmzVQ0nEqdESmwcVBP
-X-Google-Smtp-Source: ABdhPJwjcrDY3M3NySdVXsyY9Thnn/YytagkgN3LVwDBc1JZluRM0uR02sC/B0mrZ5cqBEHumS98eeNLfegZzpqZCSWbSUsV2Gd/
+        id S230081AbhBZRr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 12:47:26 -0500
+Received: from mga09.intel.com ([134.134.136.24]:6494 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229949AbhBZRrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 12:47:24 -0500
+IronPort-SDR: htTRCCfQarrdYW5qErY13UdE2mEn/h9ttQbNtudbWL21xr8y/pImUhjGKVqqIlAEfPwz+rG7oQ
+ dwRVjBSvt/4A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="186066728"
+X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
+   d="scan'208";a="186066728"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:45:37 -0800
+IronPort-SDR: euc8B0W1H4NFKQOSN7g5l2A4ovhz1sX9su9tk7znskuX1brkoXRu6dcT6iMPX8ATrqEuvThh7b
+ QUd9MlpVjAGg==
+X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
+   d="scan'208";a="432857273"
+Received: from esnyder-desk.amr.corp.intel.com (HELO [10.255.230.205]) ([10.255.230.205])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:45:35 -0800
+Subject: Re: [PATCH 3/3] soundwire: qcom: add clock stop via runtime pm
+ support
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        vkoul@kernel.org
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
+References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
+ <20210226170250.9067-4-srinivas.kandagatla@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <2899ca9e-2938-4d8d-5e56-49eba8cdb920@linux.intel.com>
+Date:   Fri, 26 Feb 2021 11:41:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:f06:: with SMTP id x6mr3067247ilj.287.1614361205201;
- Fri, 26 Feb 2021 09:40:05 -0800 (PST)
-Date:   Fri, 26 Feb 2021 09:40:05 -0800
-In-Reply-To: <000000000000b2d35705b7f31599@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002ce0d905bc40c2df@google.com>
-Subject: Re: INFO: task hung in virtio_cleanup
-From:   syzbot <syzbot+1db88381b64aaa929ef6@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, benjamin.tissoires@redhat.com,
-        gregkh@linuxfoundation.org, hdanton@sina.com,
-        herbert@gondor.apana.org.au, jikos@kernel.org, jkosina@suse.cz,
-        linux-crypto@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        mpm@selenic.com, mst@redhat.com, rafael@kernel.org,
-        rikard.falkeborn@gmail.com, sammko@sammserver.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210226170250.9067-4-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
 
-commit 77a36a3ab4ff17fad23831192e3694a3c5a1750d
-Author: Samuel Čavoj <sammko@sammserver.com>
-Date:   Fri Mar 13 02:12:38 2020 +0000
+> +	pm_runtime_get_sync(ctrl->dev);
 
-    HID: Add driver fixing Glorious PC Gaming Race mouse report descriptor
+if this fails you've got to do a put_noidle().
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=129959ccd00000
-start commit:   f40ddce8 Linux 5.11
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=119959ccd00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=169959ccd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e53d04227c52a0df
-dashboard link: https://syzkaller.appspot.com/bug?extid=1db88381b64aaa929ef6
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12277728d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1135e198d00000
+we use this for Intel:
 
-Reported-by: syzbot+1db88381b64aaa929ef6@syzkaller.appspotmail.com
-Fixes: 77a36a3ab4ff ("HID: Add driver fixing Glorious PC Gaming Race mouse report descriptor")
+	ret = pm_runtime_get_sync(cdns->dev);
+	if (ret < 0 && ret != -EACCES) {
+		dev_err_ratelimited(cdns->dev,
+				    "pm_runtime_get_sync failed in %s, ret %d\n",
+				    __func__, ret);
+		pm_runtime_put_noidle(cdns->dev);
+		return ret;
+	}
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+> +	pm_runtime_mark_last_busy(ctrl->dev);
+> +	pm_runtime_put_autosuspend(ctrl->dev);
+>   
+>   	complete(&ctrl->enumeration);
+>   	return 0;
+> @@ -421,6 +427,7 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+>   	u8 devnum = 0;
+>   	int ret = IRQ_HANDLED;
+>   
+> +	clk_prepare_enable(swrm->hclk);
+>   	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
+>   	intr_sts_masked = intr_sts & swrm->intr_mask;
+>   
+> @@ -529,6 +536,7 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+>   		intr_sts_masked = intr_sts & swrm->intr_mask;
+>   	} while (intr_sts_masked);
+>   
+> +	clk_disable_unprepare(swrm->hclk);
+>   	return ret;
+>   }
+>   
+> @@ -587,6 +595,8 @@ static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
+>   	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
+>   	int ret, i, len;
+>   
+> +	pm_runtime_get_sync(ctrl->dev);
+> +
+>   	if (msg->flags == SDW_MSG_FLAG_READ) {
+>   		for (i = 0; i < msg->len;) {
+>   			if ((msg->len - i) < QCOM_SWRM_MAX_RD_LEN)
+> @@ -598,7 +608,7 @@ static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
+>   							msg->addr + i, len,
+>   						       &msg->buf[i]);
+>   			if (ret)
+> -				return ret;
+> +				goto done;
+>   
+>   			i = i + len;
+>   		}
+> @@ -607,12 +617,20 @@ static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
+>   			ret = qcom_swrm_cmd_fifo_wr_cmd(ctrl, msg->buf[i],
+>   							msg->dev_num,
+>   						       msg->addr + i);
+> -			if (ret)
+> -				return SDW_CMD_IGNORED;
+> +			if (ret) {
+> +				ret = SDW_CMD_IGNORED;
+> +				goto done;
+> +			}
+>   		}
+>   	}
+>   
+> +	pm_runtime_put_autosuspend(ctrl->dev);
+> +	pm_runtime_mark_last_busy(ctrl->dev);
+
+wrong order, you've got to mark_last_busy before the put().
+
+>   	return SDW_CMD_OK;
+> +done:
+> +	pm_runtime_mark_last_busy(ctrl->dev);
+> +	pm_runtime_put_autosuspend(ctrl->dev);
+> +	return ret;
+
+this looks weird. why not reuse the same flow and return ret in all cases?
+
+>   }
+>   
+>   static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
+> @@ -620,13 +638,19 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
+>   	u32 reg = SWRM_MCP_FRAME_CTRL_BANK_ADDR(bus->params.next_bank);
+>   	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
+>   	u32 val;
+> +	int ret;
+>   
+> +	pm_runtime_get_sync(ctrl->dev);
+>   	ctrl->reg_read(ctrl, reg, &val);
+>   
+>   	u32p_replace_bits(&val, ctrl->cols_index, SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK);
+>   	u32p_replace_bits(&val, ctrl->rows_index, SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK);
+>   
+> -	return ctrl->reg_write(ctrl, reg, val);
+> +	ret = ctrl->reg_write(ctrl, reg, val);
+> +	pm_runtime_mark_last_busy(ctrl->dev);
+> +	pm_runtime_put_autosuspend(ctrl->dev);
+> +
+> +	return ret;
+>   }
+>   
+>   static int qcom_swrm_port_params(struct sdw_bus *bus,
+> @@ -634,13 +658,18 @@ static int qcom_swrm_port_params(struct sdw_bus *bus,
+>   				 unsigned int bank)
+>   {
+>   	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
+> +	int ret = 0;
+> +	pm_runtime_get_sync(ctrl->dev);
+>   
+>   	if (p_params->bps != SWR_INVALID_PARAM)
+> -		return ctrl->reg_write(ctrl,
+> +		ret = ctrl->reg_write(ctrl,
+>   				       SWRM_DP_BLOCK_CTRL_1(p_params->num),
+>   				       p_params->bps - 1);
+> +	pm_runtime_mark_last_busy(ctrl->dev);
+> +	pm_runtime_put_autosuspend(ctrl->dev);
+
+it feels like all you pm_runtime_get/put() should be moved to your 
+register read/write operations?
+
+>   
+> -	return 0;
+> +
+> +	return ret;
+>   }
+>   
+>   static int qcom_swrm_transport_params(struct sdw_bus *bus,
+> @@ -651,6 +680,7 @@ static int qcom_swrm_transport_params(struct sdw_bus *bus,
+>   	u32 value;
+>   	int reg = SWRM_DP_PORT_CTRL_BANK((params->port_num), bank);
+>   	int ret;
+> +	pm_runtime_get_sync(ctrl->dev);
+>   
+>   	value = params->offset1 << SWRM_DP_PORT_CTRL_OFFSET1_SHFT;
+>   	value |= params->offset2 << SWRM_DP_PORT_CTRL_OFFSET2_SHFT;
+> @@ -685,6 +715,9 @@ static int qcom_swrm_transport_params(struct sdw_bus *bus,
+>   		reg = SWRM_DP_BLOCK_CTRL3_BANK(params->port_num, bank);
+>   		ret = ctrl->reg_write(ctrl, reg, params->blk_pkg_mode);
+>   	}
+> +	pm_runtime_mark_last_busy(ctrl->dev);
+> +	pm_runtime_put_autosuspend(ctrl->dev);
+> +
+>   
+>   	return ret;
+>   }
+> @@ -696,6 +729,9 @@ static int qcom_swrm_port_enable(struct sdw_bus *bus,
+>   	u32 reg = SWRM_DP_PORT_CTRL_BANK(enable_ch->port_num, bank);
+>   	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
+>   	u32 val;
+> +	int ret;
+> +
+> +	pm_runtime_get_sync(ctrl->dev);
+>   
+>   	ctrl->reg_read(ctrl, reg, &val);
+>   
+> @@ -704,7 +740,11 @@ static int qcom_swrm_port_enable(struct sdw_bus *bus,
+>   	else
+>   		val &= ~(0xff << SWRM_DP_PORT_CTRL_EN_CHAN_SHFT);
+>   
+> -	return ctrl->reg_write(ctrl, reg, val);
+> +	ret  = ctrl->reg_write(ctrl, reg, val);
+> +	pm_runtime_mark_last_busy(ctrl->dev);
+> +	pm_runtime_put_autosuspend(ctrl->dev);
+> +
+> +	return ret;
+>   }
+>   
+>   static const struct sdw_master_port_ops qcom_swrm_port_ops = {
+> @@ -1194,6 +1234,13 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>   		 (ctrl->version >> 24) & 0xff, (ctrl->version >> 16) & 0xff,
+>   		 ctrl->version & 0xffff);
+>   
+> +	pm_runtime_set_autosuspend_delay(dev, 30000);
+
+30s? that sounds very very long for an audio device.
+
+> +	pm_runtime_use_autosuspend(dev);
+> +	pm_runtime_mark_last_busy(dev);
+> +
+> +	pm_runtime_set_active(dev);
+> +	pm_runtime_enable(dev);
+> +
+>   	return 0;
+>   
+>   err_master_add:
+> @@ -1214,6 +1261,47 @@ static int qcom_swrm_remove(struct platform_device *pdev)
+>   	return 0;
+>   }
+>   
+> +static int swrm_runtime_resume(struct device *dev)
+> +{
+> +	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
+> +
+> +	reinit_completion(&ctrl->enumeration);
+> +	clk_prepare_enable(ctrl->hclk);
+> +	ctrl->reg_write(ctrl, SWRM_COMP_SW_RESET, 0x01);
+> +	qcom_swrm_get_device_status(ctrl);
+> +	sdw_handle_slave_status(&ctrl->bus, ctrl->status);
+> +	qcom_swrm_init(ctrl);
+> +	wait_for_completion_timeout(&ctrl->enumeration,
+> +					msecs_to_jiffies(TIMEOUT_MS));
+> +	usleep_range(100, 105);
+> +
+> +	pm_runtime_mark_last_busy(dev);
+
+Humm, what 'clock stop' are we talking about here?
+
+In SoundWire 1.x devices, you can stop the BUS clock and not have to 
+redo any enumeration on resume, devices are required to save their 
+context.  You have to also follow the pattern of preparing and 
+broadcasting the CLOCK STOP NOW message.
+
+It looks like you are stopping something else, and completely resetting 
+the hardware. It's fine, it's just a reset but not clock stop support as 
+defined in the SoundWire spec.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused swrm_runtime_suspend(struct device *dev)
+> +{
+> +	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
+> +
+> +	/* Mask bus clash interrupt */
+> +	ctrl->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
+> +	ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR, ctrl->intr_mask);
+> +	ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN, ctrl->intr_mask);
+> +	/* clock stop sequence */
+> +	qcom_swrm_cmd_fifo_wr_cmd(ctrl, 0x2, 0xF, SDW_SCP_CTRL);
+
+Humm, this looks like writing in SCP_CTRL::ClockStopNow, so why is 
+enumeration required on restart?
+
+If you take down the bus and reset everything, you don't need to do this 
+sequence. a hardware reset will do...
+
+> +
+> +	clk_disable_unprepare(ctrl->hclk);
+> +
+> +	usleep_range(100, 105);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops swrm_dev_pm_ops = {
+> +	SET_RUNTIME_PM_OPS(swrm_runtime_suspend, swrm_runtime_resume, NULL)
+> +};
+> +
+>   static const struct of_device_id qcom_swrm_of_match[] = {
+>   	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
+>   	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
+> @@ -1228,6 +1316,7 @@ static struct platform_driver qcom_swrm_driver = {
+>   	.driver = {
+>   		.name	= "qcom-soundwire",
+>   		.of_match_table = qcom_swrm_of_match,
+> +		.pm = &swrm_dev_pm_ops,
+>   	}
+>   };
+>   module_platform_driver(qcom_swrm_driver);
+> 
