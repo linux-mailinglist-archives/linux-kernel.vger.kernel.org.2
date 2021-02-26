@@ -2,89 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79733269E7
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7683269E6
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 23:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhBZWWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 17:22:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhBZWV7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230087AbhBZWV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 26 Feb 2021 17:21:59 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BAB5C061788
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 14:21:19 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id c8so12329897ljd.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 14:21:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1K6EFKaL76TU0vrMptcFpOpukPudyQ834mCnGUOJSJ8=;
-        b=Qhtf5tMCa15jexl+5eTT5kTjnjjKcjh+MOzsBgl+VAlfoHFzs6WF9ewHaZ59fgo6AR
-         OdUYAUftiv8WvzHb6IHXe0Xcy4yBfJxotfV8HMi/PcYFw3wNvGZRLi7nACTZRizzTvUx
-         xTdELz+t64JchV2azQj4hqWYnobLy8HBJLebs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1K6EFKaL76TU0vrMptcFpOpukPudyQ834mCnGUOJSJ8=;
-        b=EBIDCkAkfsDjkhgXw4AUeXiLRniOng5KBE9QsvUrf/lLVfl9u55kQclJN1xZGqTGgi
-         xPfR1GctenrY2SEM9w1Nt6tBLabsi/h2opf6q5jTuPBPu0tHvCYvJpSnUNhNBhiTaq4W
-         TkC9BT/rp16TUXvTnvLn/UhiUImO0fx7mrorJLO7rTqglI80dj9nLutQlZ7w544i1tSa
-         8VdOUzsAWwjwkzLC4akC7jVrrjB5YtNyfdgRP3+aRsDdl8TbjiuHpOSt9F91VdvI/n3T
-         bhNrfFosTvCg6a5SPtDmPPg2JFduvtBY4YNq/BV6FxPsjAL3aEUAz2q1ViGbzZkIyhFk
-         /ljw==
-X-Gm-Message-State: AOAM532l7lqy2HrNEMCNTuXUFTK1jabLEfQo4zY7BooMgaimhlSIURFD
-        AHuvPCihaK4fh10QUl6GgtaEXHndOQBnmA==
-X-Google-Smtp-Source: ABdhPJxfHid0rV4HFmM7Q09sXuxj7belp46LokMlq6ic6Wv+64ZsyXKCuwXjn1PYSE3DQiL5uEv9pA==
-X-Received: by 2002:a2e:87c6:: with SMTP id v6mr2803925ljj.372.1614378077404;
-        Fri, 26 Feb 2021 14:21:17 -0800 (PST)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id t192sm1304186lff.295.2021.02.26.14.21.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 14:21:16 -0800 (PST)
-Received: by mail-lf1-f41.google.com with SMTP id m22so16118978lfg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 14:21:16 -0800 (PST)
-X-Received: by 2002:a05:6512:a8c:: with SMTP id m12mr2960904lfu.253.1614378075864;
- Fri, 26 Feb 2021 14:21:15 -0800 (PST)
+Received: from mail.kernel.org ([198.145.29.99]:55136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230083AbhBZWVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 17:21:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5532264EC4;
+        Fri, 26 Feb 2021 22:21:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614378068;
+        bh=M/OuyHOjC9MzHNaxSVLYAi5rdaxbhm5uZgeZBX2G6Ro=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d3t3FNtryc1UhKe1+Jg4VDk5bK0a4sz/j8ZV0Dwr1mngV5ykWhd3zHyxSVBiFcnlb
+         25z0XmZMv6MzhyIB4KqyEK02gz9gsn/TW5g+RYE6lJYcDHEbShLDrRW82+2t3YgepL
+         Mgf9okJ40C2y6SsVqPIF/cBsgR8zaXaCiW757EEibC8nxSe7QumqXLRExNNCbIRoZf
+         Nhn1s8EoJMR2E3NneNVsVlsE879Y0hG5HcOMPxNYvMXXlHKvsACmcxa284SVATJmAv
+         stZpCmigY4bwXpXroYD/LQq5M7KXG9THiyFiSsUokO/t19mImZpaQ+SzgKASca/NgC
+         /GjP2gg7ZbeVw==
+Date:   Fri, 26 Feb 2021 14:21:06 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Gwendal Grignou <gwendal@chromium.org>
+Subject: Re: [PATCH] ext4: Add xattr commands to compat ioctl handler
+Message-ID: <YDl0UlcgobAHx0v5@gmail.com>
+References: <20210226221441.70071-1-sarthakkukreti@chromium.org>
 MIME-Version: 1.0
-References: <20210226185909.100032746@goodmis.org>
-In-Reply-To: <20210226185909.100032746@goodmis.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 26 Feb 2021 14:21:00 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
-Message-ID: <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] tracing: Detect unsafe dereferencing of pointers from
- trace events
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jacob Wen <jian.w.wen@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226221441.70071-1-sarthakkukreti@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 11:07 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> The first patch scans the print fmts of the trace events looking for
-> dereferencing pointers from %p*, and making sure that they refer back
-> to the trace event itself.
->
-> The second patch handles strings "%s" [..]
+On Fri, Feb 26, 2021 at 02:14:41PM -0800, Sarthak Kukreti wrote:
+> This allows 32-bit userspace utils to use FS_IOC_FSGETXATTR and 
+> FS_IOC_FSSETXATTR on a 64-bit kernel.
+> 
+> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> ---
+>  fs/ext4/ioctl.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> index f0381876a7e5b..055c26296ab46 100644
+> --- a/fs/ext4/ioctl.c
+> +++ b/fs/ext4/ioctl.c
+> @@ -1371,6 +1371,8 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>  			return -EFAULT;
+>  		return ext4_ioctl_group_add(file, &input);
+>  	}
+> +	case EXT4_IOC_FSGETXATTR:
+> +	case EXT4_IOC_FSSETXATTR:
+>  	case EXT4_IOC_MOVE_EXT:
+>  	case EXT4_IOC_RESIZE_FS:
+>  	case FITRIM:
 
-Doing this at runtime really feels like the wrong thing to do.
+These were already added to the list by commit a54d8d34d235
+("ext4: Add EXT4_IOC_FSGETXATTR/EXT4_IOC_FSSETXATTR to compat_ioctl").
 
-It won't even protect us from what happened - people like me and
-Andrew won't even run those tracepoints in the first place, so we
-won't notice.
-
-It really would be much better in every respect to have this done by
-checkpatch, I think.
-
-            Linus
+- Eric
