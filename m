@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED71325D9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1183C325D9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhBZGgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:36:54 -0500
-Received: from mga07.intel.com ([134.134.136.100]:5752 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhBZGgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:36:52 -0500
-IronPort-SDR: WZ8b8co/M5X42spHx/sdiC8m8Uo/jV/wY8tNJJEtn3kCWdNhBqTJ5YwBb4r8ATAltO8iF0sXJ/
- rFGm0B7ktPRQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="249850295"
-X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
-   d="scan'208";a="249850295"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 22:36:10 -0800
-IronPort-SDR: is0K+Bt0lWf4cURRIiLxV4oQ1h0TAMqjZtGGjmWNxreUFwznHD84BCaiHBptzO8JxynKfFixrf
- X1Wa934K+VBQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
-   d="scan'208";a="381896236"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by orsmga002.jf.intel.com with ESMTP; 25 Feb 2021 22:36:05 -0800
-Subject: Re: [PATCH v4] i2c: virtio: add a virtio i2c frontend driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        wsa+renesas@sang-engineering.com, wsa@kernel.org,
-        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
-        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
-        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
-        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
-        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com,
-        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <7c5e44c534b3fd07b855af22d8d4b78bc44cd7a4.1602465440.git.jie.deng@intel.com>
- <20210225072114.iwmtaexl3dkihlba@vireshk-i7>
- <a580de35-787e-4024-3c80-0a101b1a6d3b@intel.com>
- <20210226042126.rix5gjxqrazb6sao@vireshk-i7>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <96f88e54-ebc7-bfda-310c-ca75b3e09398@intel.com>
-Date:   Fri, 26 Feb 2021 14:36:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S229621AbhBZGiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:38:00 -0500
+Received: from conuserg-07.nifty.com ([210.131.2.74]:34904 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229835AbhBZGh6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 01:37:58 -0500
+Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 11Q6aLlf015692;
+        Fri, 26 Feb 2021 15:36:22 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 11Q6aLlf015692
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614321382;
+        bh=3EyAn1oBogvw+4z1UfD+liYPR0MvrLj+uuVZw+YxBuc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RX4V98Ps/dlExxulJAZBZvX/sBANN4XTJqJV8OVo/P7z6gp3m+apsAo1ETq4H7XeN
+         tHD6T0gi3nIfIro0/mA6R7oSZq0rINNJe/xlxlu83AUf7Xnv/SKAiCcOKgsSYvuXyk
+         ocX+meoYZaBKU6jkUSP46xOOJfYK67Ojuc9DjmSDsUx2t1hMNl7YQJZyIIq3fNw+I3
+         T4EuOEmCzXb1Jol3swuVsTv1KTaP0GgxtN7keQTX27VpeoZbIXvqStj6TsZ2fmH87E
+         yxM+Px5mbb7Oh0pe6LlQ1zecmESdUK6TaoHd5YhFhPIK2+4sVfnVjQEO7Rxfp0XCEW
+         qIRIlWBGzz8Ng==
+X-Nifty-SrcIP: [126.26.90.165]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Matthias Maennich <maennich@google.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Quentin Perret <qperret@google.com>
+Subject: [PATCH] kbuild: do not include include/config/auto.conf from adjust_autoksyms.sh
+Date:   Fri, 26 Feb 2021 15:36:15 +0900
+Message-Id: <20210226063615.3335021-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210226042126.rix5gjxqrazb6sao@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit cd195bc4775a ("kbuild: split adjust_autoksyms.sh in two parts")
+split out the code that needs include/config/auto.conf.
 
-On 2021/2/26 12:21, Viresh Kumar wrote:
-> On 26-02-21, 10:46, Jie Deng wrote:
->> This v4 was the old version before the specification was acked by the virtio
->> tc.
->>
->> Following is the latest specification.
->>
->> https://raw.githubusercontent.com/oasis-tcs/virtio-spec/master/virtio-i2c.tex
->>
->> I will send the v5 since the host/guest ABI changes.
-> Okay, now it makes some sense :)
->
-> I am interested in this stuff, if possible please keep me Cc'd for following
-> versions, thanks.
-Sure. I will add you to the Cc list.
+This script no longer needs to include include/config/auto.conf.
+
+Fixes: cd195bc4775a ("kbuild: split adjust_autoksyms.sh in two parts")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/adjust_autoksyms.sh | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/scripts/adjust_autoksyms.sh b/scripts/adjust_autoksyms.sh
+index 2b366d945ccb..d8f6f9c63043 100755
+--- a/scripts/adjust_autoksyms.sh
++++ b/scripts/adjust_autoksyms.sh
+@@ -34,9 +34,6 @@ case "$KBUILD_VERBOSE" in
+ 	;;
+ esac
+ 
+-# We need access to CONFIG_ symbols
+-. include/config/auto.conf
+-
+ # Generate a new symbol list file
+ $CONFIG_SHELL $srctree/scripts/gen_autoksyms.sh "$new_ksyms_file"
+ 
+-- 
+2.27.0
+
