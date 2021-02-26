@@ -2,596 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38600325FD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DF7325FD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhBZJQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:16:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40350 "EHLO
+        id S229769AbhBZJRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:17:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhBZJOc (ORCPT
+        with ESMTP id S230368AbhBZJPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:14:32 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CF4C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:13:52 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id k12so783077ljg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:13:51 -0800 (PST)
+        Fri, 26 Feb 2021 04:15:05 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37C8C061756;
+        Fri, 26 Feb 2021 01:14:24 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id q204so4807213pfq.10;
+        Fri, 26 Feb 2021 01:14:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JRO57Gs7+NfqRjvh7R+IHtk2zCCeFtVqBgNpNG+9wQc=;
-        b=fCIxiQ2gkgds+kBm2fyMKGSm7joHjemvpj7s4xUhRvEG5v1OQZI83hEZ0aId9+hGIE
-         VKrSnulrDX3S5eTQjmz7qV3GD/C3ZfTpj9LY/bz8CYJ6KuzUo+l5bwS9qOpMfo0SsL1P
-         5XnM7xOkbHm/SBPWZeLsb0DuxK/J8+4cHNeR56lh4x41cjZQgbaoqKovqE6DzBfB9Zf+
-         /lllY/xhrg/R19EnF6bhjEwBUQlFnwY4yuTauwoTru8osc1jHgV7COW9AuxfWOKX4m53
-         hvaLYGckWlBvA02wy9d9wrARSFl9U7WznwPEGhbRnRR9/txMb4JO/hUy9TXJGUEMXbPB
-         JlkA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4HudJwsSNTrLZRkkYuja6CKbDzOsyudkGlfh5uEFK/w=;
+        b=Jsf+u+mV2rHgtUjTLZHvllF8IvzUWw7SWPr0ueu6R2IeEMsc/b63HgOW+L6f5bucxe
+         lgB2XENZ2+cmltsyFxcDiD+SEfKAzWNM1IamCXvb1/Mz547A3kbCmaO73wyJhVDo1YsH
+         ULf1SK6HXy7wcCZnPDwQpwUy4+mSsxY8ulNcs9ZFK86RBIN6CAcCv+CQGCyOHTlAX0KW
+         Dc5MYWAVfJ/+rRbmCQBEZfIrIelfubKaRFCatj+3IzgBBbb6MIEEnF72tZzugx78UovK
+         Wp7bqUVUwz6MaFh1m9WveEFRTOG3jtpa5Epb4qXsRxuR4lqVo53coY1zNMjcdNkC0s3d
+         ckAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JRO57Gs7+NfqRjvh7R+IHtk2zCCeFtVqBgNpNG+9wQc=;
-        b=uX6vdxmiXsAM0XVHj/2QOanEGA2GqeONYuu9EuT7BQa6IrplaZZyr0Fq4IobrDHhas
-         Z/o5Rf3wnYpB3HWMOA2FOz5i9JZNj7LfUKps4tUF3GWmTGYrWCR+44PVOo+KQR0Xidho
-         VVFPwvxiceux+Dxqul7oswqgWJk47j/EGEuwPXvp2kdrrFZAsHVM6ivLjCRhzcyQs+Zt
-         Y3fg/eQ5xnMTjnm5CAy98bxXSeKALX+8yu6nic+/9+kWpu1PR8t8HQMxInUqB4y+N+tZ
-         C6Dv6TPkGKTN2VPXnHYerqCRnLIkWlWmzHpzdgTvxPLY3UONFJ6KXGz9+ebr/QTnDCKg
-         LxxA==
-X-Gm-Message-State: AOAM533Q1gFMB308bAQTmFu8uMMpaG8gEzlZhVRKqjeKXtAjzKs4zkee
-        sV48ByKJxjo3DNFwSydjrMhqawgzzymctXwX8gp6Jg==
-X-Google-Smtp-Source: ABdhPJzy3nsW12duQjEKCIs1cJt7qA7dCAtyiNFnVwBrrPSRLPPhldJF8U96oJCVEzSE1VYaHmfjbyeU4gSDOsjZvOY=
-X-Received: by 2002:a2e:9e05:: with SMTP id e5mr1125650ljk.152.1614330830326;
- Fri, 26 Feb 2021 01:13:50 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4HudJwsSNTrLZRkkYuja6CKbDzOsyudkGlfh5uEFK/w=;
+        b=AMJJPbyJ9/K527mX9YjqceRo1miqm/gkmqqsu/uOjlI8PWf9jnvrO8ga94kmppgDw5
+         VErfQ9zUoYO04vq3362+sUZCIi1qJJUwzF8He8TEafuFTaqP3Eu2w/kB3gs3yi21YYaZ
+         LaOQAgZtIEh6UBp1SBimI431nsVe2B3zfKG5SXw44kEqdaOwL2g/qi70yQ25FpoHrOkz
+         vX6OvWOQjXqlDLQ/z63vkQ687zwsG/fBfQRGQhuPtLEHt1V8PI0ar4nVP04VlQzTBZ5H
+         +Rxu86b3NiE4KpTZ0cOJHZtub7vqfwLC/TAElMJKURjNFYVg1WBooT26VxRvhKcbC0Xr
+         D2Tg==
+X-Gm-Message-State: AOAM532deVY+zb0ZqqDwiRtV2IyguZRhhbRE9E2AA95eLofk2xvf1dH8
+        BwQXGiAuSyGSxYYj28tpFtu0jSeGq3ceAA==
+X-Google-Smtp-Source: ABdhPJwE8r0YJpEHq7Vl6OOIIeL8NNUTro2dtr1y2mxew8SXK7jK3N+Fx5aHCC71jjjhEQVzS9kC/w==
+X-Received: by 2002:a63:fa4d:: with SMTP id g13mr2075292pgk.201.1614330863705;
+        Fri, 26 Feb 2021 01:14:23 -0800 (PST)
+Received: from [172.30.1.19] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id d189sm8886708pfd.42.2021.02.26.01.14.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 01:14:23 -0800 (PST)
+Subject: Re: [PATCH v2 3/9] devfreq: Use HZ macros
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rafael@kernel.org,
+        andriy.shevchenko@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        "open list:DEVICE FREQUENCY (DEVFREQ)" <linux-pm@vger.kernel.org>
+References: <20210224144222.23762-1-daniel.lezcano@linaro.org>
+ <20210224144222.23762-3-daniel.lezcano@linaro.org>
+ <0db79cd7-f062-b31b-2a6c-ecf8dadaf572@gmail.com>
+ <09954745-5b39-8718-ca79-3e92a85e5ace@linaro.org>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <112760b7-0594-2077-b632-ea5611481be6@gmail.com>
+Date:   Fri, 26 Feb 2021 18:14:18 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210225112258.978417-1-sumit.garg@linaro.org>
- <20210225121912.ifeydzcriaibdgah@maple.lan> <CAFA6WYNoEO9ZPCi_euUo_3gN63e4ZG-ecnQcqP_17-s+Ug0z-g@mail.gmail.com>
-In-Reply-To: <CAFA6WYNoEO9ZPCi_euUo_3gN63e4ZG-ecnQcqP_17-s+Ug0z-g@mail.gmail.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Fri, 26 Feb 2021 14:43:38 +0530
-Message-ID: <CAFA6WYOBn09iC-ipT4Ssn7uiUZPrXV9sEzm=uApE9otUcx1wZQ@mail.gmail.com>
-Subject: Re: [PATCH] kdb: Get rid of custom debug heap allocator
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <09954745-5b39-8718-ca79-3e92a85e5ace@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021 at 12:54, Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> On Thu, 25 Feb 2021 at 17:49, Daniel Thompson
-> <daniel.thompson@linaro.org> wrote:
-> >
-> > On Thu, Feb 25, 2021 at 04:52:58PM +0530, Sumit Garg wrote:
-> > > Currently the only user for debug heap is kdbnearsym() which can be
-> > > modified to rather ask the caller to supply a buffer for symbol name.
-> > > So do that and modify kdbnearsym() callers to pass a symbol name buffer
-> > > allocated from stack and hence remove custom debug heap allocator.
-> >
-> > Is it really a good idea to increase stack usage this much? I thought
-> > several architectures will take the debug exception on existing stacks
-> > (and that these can nest with other exceptions).
-> >
-> > The reason I'm concerned is that AFAICT the *purpose* of the current
-> > heap is to minimise stack usage... and that this has the effect of
-> > improving debugger robustness when we take exceptions on small shared
-> > stacks.
-> >
-> > The reason I called the heap redundant is that currently it also allows
-> > us to have nested calls to kdbnearsym() whilst not consuming stack. In
-> > this case, when I say nested I mean new calls to kdbnearsym() before the
-> > previous caller has consumed the output rather than truely recursive
-> > calls.
-> >
-> > This is why I think the heap is pointless. In "normal" usage I don't
-> > think there will never be a nested call to kdbnearsym() so I think a
-> > single static buffer will suffice.
-> >
-> > Technically speaking there is one way that kdbnearsym() can nest but I
-> > think it is OK for that to be considered out-of-scope.
-> >
-> > To explain...
-> >
-> > It can nest is if we recursively enter the debugger! Recursive entry
-> > should never happen, is pretty much untestable and, even if we tested
-> > it, it is not a bug for an architeture to choose not to support it.
-> > Nevertheless kgdb/kdb does include logic to handle this if an
-> > architecture does make it as far are executing the trap. Note that
-> > even if the architecture does somehow land in the debug trap there's
-> > a strong chance the system is is too broken to resume (since we just
-> > took an impossible trap). Therefore kdb will inhibit resume unless the
-> > operator admits what they are doing won't work before trying to do it.
-> >
-> > Therefore I think it is ok for namebuf to be statically allocated and
-> > the only thing we need do for stability is ensure that kdbnearsym()
-> > guarantees that namebuf[sizeof(namebuf)-1] == '\0' regardless of the
-> > symbol length. Thus if by some miracle the system can resume after the
-> > user has ignored the warning then kdb can't take a bad memory access
-> > when it tries to print an overwritten symbol name. They see a few
-> > garbage characters... but since they just told us to do something
-> > crazy they should be expecting that.
-> >
->
-> Thanks for the detailed explanation. I see the reasoning to not use
-> stack and it does sound reasonable to use statically allocated namebuf
-> with a stability guarantee.
->
 
-It looks like kallsyms_lookup() already takes care of
-namebuf[KSYM_NAME_LEN - 1] = 0; [1]. So I think we don't require it in
-kdbnearsym().
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/kallsyms.c#n294
+On 21. 2. 26. 오후 5:51, Daniel Lezcano wrote:
+> On 26/02/2021 07:08, Chanwoo Choi wrote:
+>>
+>>
+>> On 21. 2. 24. 오후 11:42, Daniel Lezcano wrote:
+>>> HZ unit conversion macros are available in units.h, use them and
+>>> remove the duplicate definition.
+>>>
+>>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>>> Reviewed-by: Christian Eggers <ceggers@arri.de>
+>>> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+>>> ---
+>>>    drivers/devfreq/devfreq.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+>>> index bf3047896e41..b6d63f02d293 100644
+>>> --- a/drivers/devfreq/devfreq.c
+>>> +++ b/drivers/devfreq/devfreq.c
+>>> @@ -26,6 +26,7 @@
+>>>    #include <linux/hrtimer.h>
+>>>    #include <linux/of.h>
+>>>    #include <linux/pm_qos.h>
+>>> +#include <linux/units.h>
+>>>    #include "governor.h"
+>>>      #define CREATE_TRACE_POINTS
+>>> @@ -33,7 +34,6 @@
+>>>      #define IS_SUPPORTED_FLAG(f, name) ((f & DEVFREQ_GOV_FLAG_##name)
+>>> ? true : false)
+>>>    #define IS_SUPPORTED_ATTR(f, name) ((f & DEVFREQ_GOV_ATTR_##name) ?
+>>> true : false)
+>>> -#define HZ_PER_KHZ    1000
+>>>      static struct class *devfreq_class;
+>>>    static struct dentry *devfreq_debugfs;
+>>>
+>>
+>> I changed the patch title with 'PM /' prefix as following
+>> in order to keep the consistent patch style if there are no any special
+>> objection.
+>> - PM / devfreq: Use HZ macros
+>>
+>> Applied it.
+> 
+> It should not compile. This patch and others depend on 1/9.
+> 
+> It would make sense to merge all of them through linux-pm.
 
--Sumit
+OK. I'm OK to apply it to linux-pm.
 
-> >
-> > Daniel.
-> >
-> >
-> > PS The code to guarantee that if we read past the end of the string
-> >    we will still see a '\'0' before making an invalid memory access
-> >    should be well commented though... because its pretty nasty.
-> >
->
-> Sure, I will add a proper comment.
->
-> -Sumit
->
-> >
-> > >
-> > > This change has been tested using kgdbtest on arm64 which doesn't show
-> > > any regressions.
-> > >
-> > > Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
-> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > ---
-> > >  kernel/debug/kdb/kdb_debugger.c |   1 -
-> > >  kernel/debug/kdb/kdb_main.c     |   6 +-
-> > >  kernel/debug/kdb/kdb_private.h  |   7 +-
-> > >  kernel/debug/kdb/kdb_support.c  | 294 +-------------------------------
-> > >  4 files changed, 11 insertions(+), 297 deletions(-)
-> > >
-> > > diff --git a/kernel/debug/kdb/kdb_debugger.c b/kernel/debug/kdb/kdb_debugger.c
-> > > index 0220afda3200..e91fc3e4edd5 100644
-> > > --- a/kernel/debug/kdb/kdb_debugger.c
-> > > +++ b/kernel/debug/kdb/kdb_debugger.c
-> > > @@ -140,7 +140,6 @@ int kdb_stub(struct kgdb_state *ks)
-> > >        */
-> > >       kdb_common_deinit_state();
-> > >       KDB_STATE_CLEAR(PAGER);
-> > > -     kdbnearsym_cleanup();
-> > >       if (error == KDB_CMD_KGDB) {
-> > >               if (KDB_STATE(DOING_KGDB))
-> > >                       KDB_STATE_CLEAR(DOING_KGDB);
-> > > diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-> > > index 9d69169582c6..ca525a3e0032 100644
-> > > --- a/kernel/debug/kdb/kdb_main.c
-> > > +++ b/kernel/debug/kdb/kdb_main.c
-> > > @@ -526,6 +526,7 @@ int kdbgetaddrarg(int argc, const char **argv, int *nextarg,
-> > >       char symbol = '\0';
-> > >       char *cp;
-> > >       kdb_symtab_t symtab;
-> > > +     char namebuf[KSYM_NAME_LEN];
-> > >
-> > >       /*
-> > >        * If the enable flags prohibit both arbitrary memory access
-> > > @@ -585,7 +586,7 @@ int kdbgetaddrarg(int argc, const char **argv, int *nextarg,
-> > >       }
-> > >
-> > >       if (!found)
-> > > -             found = kdbnearsym(addr, &symtab);
-> > > +             found = kdbnearsym(addr, &symtab, namebuf);
-> > >
-> > >       (*nextarg)++;
-> > >
-> > > @@ -1503,6 +1504,7 @@ static void kdb_md_line(const char *fmtstr, unsigned long addr,
-> > >       int i;
-> > >       int j;
-> > >       unsigned long word;
-> > > +     char namebuf[KSYM_NAME_LEN];
-> > >
-> > >       memset(cbuf, '\0', sizeof(cbuf));
-> > >       if (phys)
-> > > @@ -1518,7 +1520,7 @@ static void kdb_md_line(const char *fmtstr, unsigned long addr,
-> > >                       break;
-> > >               kdb_printf(fmtstr, word);
-> > >               if (symbolic)
-> > > -                     kdbnearsym(word, &symtab);
-> > > +                     kdbnearsym(word, &symtab, namebuf);
-> > >               else
-> > >                       memset(&symtab, 0, sizeof(symtab));
-> > >               if (symtab.sym_name) {
-> > > diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-> > > index b857a84de3b5..1707eeebc59a 100644
-> > > --- a/kernel/debug/kdb/kdb_private.h
-> > > +++ b/kernel/debug/kdb/kdb_private.h
-> > > @@ -108,8 +108,7 @@ extern char *kdbgetenv(const char *);
-> > >  extern int kdbgetaddrarg(int, const char **, int*, unsigned long *,
-> > >                        long *, char **);
-> > >  extern int kdbgetsymval(const char *, kdb_symtab_t *);
-> > > -extern int kdbnearsym(unsigned long, kdb_symtab_t *);
-> > > -extern void kdbnearsym_cleanup(void);
-> > > +extern int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab, char *namebuf);
-> > >  extern char *kdb_strdup(const char *str, gfp_t type);
-> > >  extern void kdb_symbol_print(unsigned long, const kdb_symtab_t *, unsigned int);
-> > >
-> > > @@ -233,10 +232,6 @@ extern struct task_struct *kdb_curr_task(int);
-> > >
-> > >  #define GFP_KDB (in_dbg_master() ? GFP_ATOMIC : GFP_KERNEL)
-> > >
-> > > -extern void *debug_kmalloc(size_t size, gfp_t flags);
-> > > -extern void debug_kfree(void *);
-> > > -extern void debug_kusage(void);
-> > > -
-> > >  extern struct task_struct *kdb_current_task;
-> > >  extern struct pt_regs *kdb_current_regs;
-> > >
-> > > diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
-> > > index b59aad1f0b55..319b36ceedf9 100644
-> > > --- a/kernel/debug/kdb/kdb_support.c
-> > > +++ b/kernel/debug/kdb/kdb_support.c
-> > > @@ -57,8 +57,6 @@ int kdbgetsymval(const char *symname, kdb_symtab_t *symtab)
-> > >  }
-> > >  EXPORT_SYMBOL(kdbgetsymval);
-> > >
-> > > -static char *kdb_name_table[100];    /* arbitrary size */
-> > > -
-> > >  /*
-> > >   * kdbnearsym -      Return the name of the symbol with the nearest address
-> > >   *   less than 'addr'.
-> > > @@ -79,13 +77,11 @@ static char *kdb_name_table[100]; /* arbitrary size */
-> > >   *   hold active strings, no kdb caller of kdbnearsym makes more
-> > >   *   than ~20 later calls before using a saved value.
-> > >   */
-> > > -int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
-> > > +int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab, char *namebuf)
-> > >  {
-> > >       int ret = 0;
-> > >       unsigned long symbolsize = 0;
-> > >       unsigned long offset = 0;
-> > > -#define knt1_size 128                /* must be >= kallsyms table size */
-> > > -     char *knt1 = NULL;
-> > >
-> > >       if (KDB_DEBUG(AR))
-> > >               kdb_printf("kdbnearsym: addr=0x%lx, symtab=%px\n", addr, symtab);
-> > > @@ -93,14 +89,9 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
-> > >
-> > >       if (addr < 4096)
-> > >               goto out;
-> > > -     knt1 = debug_kmalloc(knt1_size, GFP_ATOMIC);
-> > > -     if (!knt1) {
-> > > -             kdb_printf("kdbnearsym: addr=0x%lx cannot kmalloc knt1\n",
-> > > -                        addr);
-> > > -             goto out;
-> > > -     }
-> > > +
-> > >       symtab->sym_name = kallsyms_lookup(addr, &symbolsize , &offset,
-> > > -                             (char **)(&symtab->mod_name), knt1);
-> > > +                             (char **)(&symtab->mod_name), namebuf);
-> > >       if (offset > 8*1024*1024) {
-> > >               symtab->sym_name = NULL;
-> > >               addr = offset = symbolsize = 0;
-> > > @@ -109,42 +100,6 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
-> > >       symtab->sym_end = symtab->sym_start + symbolsize;
-> > >       ret = symtab->sym_name != NULL && *(symtab->sym_name) != '\0';
-> > >
-> > > -     if (ret) {
-> > > -             int i;
-> > > -             /* Another 2.6 kallsyms "feature".  Sometimes the sym_name is
-> > > -              * set but the buffer passed into kallsyms_lookup is not used,
-> > > -              * so it contains garbage.  The caller has to work out which
-> > > -              * buffer needs to be saved.
-> > > -              *
-> > > -              * What was Rusty smoking when he wrote that code?
-> > > -              */
-> > > -             if (symtab->sym_name != knt1) {
-> > > -                     strncpy(knt1, symtab->sym_name, knt1_size);
-> > > -                     knt1[knt1_size-1] = '\0';
-> > > -             }
-> > > -             for (i = 0; i < ARRAY_SIZE(kdb_name_table); ++i) {
-> > > -                     if (kdb_name_table[i] &&
-> > > -                         strcmp(kdb_name_table[i], knt1) == 0)
-> > > -                             break;
-> > > -             }
-> > > -             if (i >= ARRAY_SIZE(kdb_name_table)) {
-> > > -                     debug_kfree(kdb_name_table[0]);
-> > > -                     memmove(kdb_name_table, kdb_name_table+1,
-> > > -                            sizeof(kdb_name_table[0]) *
-> > > -                            (ARRAY_SIZE(kdb_name_table)-1));
-> > > -             } else {
-> > > -                     debug_kfree(knt1);
-> > > -                     knt1 = kdb_name_table[i];
-> > > -                     memmove(kdb_name_table+i, kdb_name_table+i+1,
-> > > -                            sizeof(kdb_name_table[0]) *
-> > > -                            (ARRAY_SIZE(kdb_name_table)-i-1));
-> > > -             }
-> > > -             i = ARRAY_SIZE(kdb_name_table) - 1;
-> > > -             kdb_name_table[i] = knt1;
-> > > -             symtab->sym_name = kdb_name_table[i];
-> > > -             knt1 = NULL;
-> > > -     }
-> > > -
-> > >       if (symtab->mod_name == NULL)
-> > >               symtab->mod_name = "kernel";
-> > >       if (KDB_DEBUG(AR))
-> > > @@ -152,23 +107,10 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
-> > >                  "symtab->mod_name=%px, symtab->sym_name=%px (%s)\n", ret,
-> > >                  symtab->sym_start, symtab->mod_name, symtab->sym_name,
-> > >                  symtab->sym_name);
-> > > -
-> > >  out:
-> > > -     debug_kfree(knt1);
-> > >       return ret;
-> > >  }
-> > >
-> > > -void kdbnearsym_cleanup(void)
-> > > -{
-> > > -     int i;
-> > > -     for (i = 0; i < ARRAY_SIZE(kdb_name_table); ++i) {
-> > > -             if (kdb_name_table[i]) {
-> > > -                     debug_kfree(kdb_name_table[i]);
-> > > -                     kdb_name_table[i] = NULL;
-> > > -             }
-> > > -     }
-> > > -}
-> > > -
-> > >  static char ks_namebuf[KSYM_NAME_LEN+1], ks_namebuf_prev[KSYM_NAME_LEN+1];
-> > >
-> > >  /*
-> > > @@ -259,11 +201,13 @@ void kdb_symbol_print(unsigned long addr, const kdb_symtab_t *symtab_p,
-> > >                     unsigned int punc)
-> > >  {
-> > >       kdb_symtab_t symtab, *symtab_p2;
-> > > +     char namebuf[KSYM_NAME_LEN];
-> > > +
-> > >       if (symtab_p) {
-> > >               symtab_p2 = (kdb_symtab_t *)symtab_p;
-> > >       } else {
-> > >               symtab_p2 = &symtab;
-> > > -             kdbnearsym(addr, symtab_p2);
-> > > +             kdbnearsym(addr, symtab_p2, namebuf);
-> > >       }
-> > >       if (!(symtab_p2->sym_name || (punc & KDB_SP_VALUE)))
-> > >               return;
-> > > @@ -665,232 +609,6 @@ unsigned long kdb_task_state(const struct task_struct *p, unsigned long mask)
-> > >       return (mask & kdb_task_state_string(state)) != 0;
-> > >  }
-> > >
-> > > -/* Last ditch allocator for debugging, so we can still debug even when
-> > > - * the GFP_ATOMIC pool has been exhausted.  The algorithms are tuned
-> > > - * for space usage, not for speed.  One smallish memory pool, the free
-> > > - * chain is always in ascending address order to allow coalescing,
-> > > - * allocations are done in brute force best fit.
-> > > - */
-> > > -
-> > > -struct debug_alloc_header {
-> > > -     u32 next;       /* offset of next header from start of pool */
-> > > -     u32 size;
-> > > -     void *caller;
-> > > -};
-> > > -
-> > > -/* The memory returned by this allocator must be aligned, which means
-> > > - * so must the header size.  Do not assume that sizeof(struct
-> > > - * debug_alloc_header) is a multiple of the alignment, explicitly
-> > > - * calculate the overhead of this header, including the alignment.
-> > > - * The rest of this code must not use sizeof() on any header or
-> > > - * pointer to a header.
-> > > - */
-> > > -#define dah_align 8
-> > > -#define dah_overhead ALIGN(sizeof(struct debug_alloc_header), dah_align)
-> > > -
-> > > -static u64 debug_alloc_pool_aligned[256*1024/dah_align];     /* 256K pool */
-> > > -static char *debug_alloc_pool = (char *)debug_alloc_pool_aligned;
-> > > -static u32 dah_first, dah_first_call = 1, dah_used, dah_used_max;
-> > > -
-> > > -/* Locking is awkward.  The debug code is called from all contexts,
-> > > - * including non maskable interrupts.  A normal spinlock is not safe
-> > > - * in NMI context.  Try to get the debug allocator lock, if it cannot
-> > > - * be obtained after a second then give up.  If the lock could not be
-> > > - * previously obtained on this cpu then only try once.
-> > > - *
-> > > - * sparse has no annotation for "this function _sometimes_ acquires a
-> > > - * lock", so fudge the acquire/release notation.
-> > > - */
-> > > -static DEFINE_SPINLOCK(dap_lock);
-> > > -static int get_dap_lock(void)
-> > > -     __acquires(dap_lock)
-> > > -{
-> > > -     static int dap_locked = -1;
-> > > -     int count;
-> > > -     if (dap_locked == smp_processor_id())
-> > > -             count = 1;
-> > > -     else
-> > > -             count = 1000;
-> > > -     while (1) {
-> > > -             if (spin_trylock(&dap_lock)) {
-> > > -                     dap_locked = -1;
-> > > -                     return 1;
-> > > -             }
-> > > -             if (!count--)
-> > > -                     break;
-> > > -             udelay(1000);
-> > > -     }
-> > > -     dap_locked = smp_processor_id();
-> > > -     __acquire(dap_lock);
-> > > -     return 0;
-> > > -}
-> > > -
-> > > -void *debug_kmalloc(size_t size, gfp_t flags)
-> > > -{
-> > > -     unsigned int rem, h_offset;
-> > > -     struct debug_alloc_header *best, *bestprev, *prev, *h;
-> > > -     void *p = NULL;
-> > > -     if (!get_dap_lock()) {
-> > > -             __release(dap_lock);    /* we never actually got it */
-> > > -             return NULL;
-> > > -     }
-> > > -     h = (struct debug_alloc_header *)(debug_alloc_pool + dah_first);
-> > > -     if (dah_first_call) {
-> > > -             h->size = sizeof(debug_alloc_pool_aligned) - dah_overhead;
-> > > -             dah_first_call = 0;
-> > > -     }
-> > > -     size = ALIGN(size, dah_align);
-> > > -     prev = best = bestprev = NULL;
-> > > -     while (1) {
-> > > -             if (h->size >= size && (!best || h->size < best->size)) {
-> > > -                     best = h;
-> > > -                     bestprev = prev;
-> > > -                     if (h->size == size)
-> > > -                             break;
-> > > -             }
-> > > -             if (!h->next)
-> > > -                     break;
-> > > -             prev = h;
-> > > -             h = (struct debug_alloc_header *)(debug_alloc_pool + h->next);
-> > > -     }
-> > > -     if (!best)
-> > > -             goto out;
-> > > -     rem = best->size - size;
-> > > -     /* The pool must always contain at least one header */
-> > > -     if (best->next == 0 && bestprev == NULL && rem < dah_overhead)
-> > > -             goto out;
-> > > -     if (rem >= dah_overhead) {
-> > > -             best->size = size;
-> > > -             h_offset = ((char *)best - debug_alloc_pool) +
-> > > -                        dah_overhead + best->size;
-> > > -             h = (struct debug_alloc_header *)(debug_alloc_pool + h_offset);
-> > > -             h->size = rem - dah_overhead;
-> > > -             h->next = best->next;
-> > > -     } else
-> > > -             h_offset = best->next;
-> > > -     best->caller = __builtin_return_address(0);
-> > > -     dah_used += best->size;
-> > > -     dah_used_max = max(dah_used, dah_used_max);
-> > > -     if (bestprev)
-> > > -             bestprev->next = h_offset;
-> > > -     else
-> > > -             dah_first = h_offset;
-> > > -     p = (char *)best + dah_overhead;
-> > > -     memset(p, POISON_INUSE, best->size - 1);
-> > > -     *((char *)p + best->size - 1) = POISON_END;
-> > > -out:
-> > > -     spin_unlock(&dap_lock);
-> > > -     return p;
-> > > -}
-> > > -
-> > > -void debug_kfree(void *p)
-> > > -{
-> > > -     struct debug_alloc_header *h;
-> > > -     unsigned int h_offset;
-> > > -     if (!p)
-> > > -             return;
-> > > -     if ((char *)p < debug_alloc_pool ||
-> > > -         (char *)p >= debug_alloc_pool + sizeof(debug_alloc_pool_aligned)) {
-> > > -             kfree(p);
-> > > -             return;
-> > > -     }
-> > > -     if (!get_dap_lock()) {
-> > > -             __release(dap_lock);    /* we never actually got it */
-> > > -             return;         /* memory leak, cannot be helped */
-> > > -     }
-> > > -     h = (struct debug_alloc_header *)((char *)p - dah_overhead);
-> > > -     memset(p, POISON_FREE, h->size - 1);
-> > > -     *((char *)p + h->size - 1) = POISON_END;
-> > > -     h->caller = NULL;
-> > > -     dah_used -= h->size;
-> > > -     h_offset = (char *)h - debug_alloc_pool;
-> > > -     if (h_offset < dah_first) {
-> > > -             h->next = dah_first;
-> > > -             dah_first = h_offset;
-> > > -     } else {
-> > > -             struct debug_alloc_header *prev;
-> > > -             unsigned int prev_offset;
-> > > -             prev = (struct debug_alloc_header *)(debug_alloc_pool +
-> > > -                                                  dah_first);
-> > > -             while (1) {
-> > > -                     if (!prev->next || prev->next > h_offset)
-> > > -                             break;
-> > > -                     prev = (struct debug_alloc_header *)
-> > > -                             (debug_alloc_pool + prev->next);
-> > > -             }
-> > > -             prev_offset = (char *)prev - debug_alloc_pool;
-> > > -             if (prev_offset + dah_overhead + prev->size == h_offset) {
-> > > -                     prev->size += dah_overhead + h->size;
-> > > -                     memset(h, POISON_FREE, dah_overhead - 1);
-> > > -                     *((char *)h + dah_overhead - 1) = POISON_END;
-> > > -                     h = prev;
-> > > -                     h_offset = prev_offset;
-> > > -             } else {
-> > > -                     h->next = prev->next;
-> > > -                     prev->next = h_offset;
-> > > -             }
-> > > -     }
-> > > -     if (h_offset + dah_overhead + h->size == h->next) {
-> > > -             struct debug_alloc_header *next;
-> > > -             next = (struct debug_alloc_header *)
-> > > -                     (debug_alloc_pool + h->next);
-> > > -             h->size += dah_overhead + next->size;
-> > > -             h->next = next->next;
-> > > -             memset(next, POISON_FREE, dah_overhead - 1);
-> > > -             *((char *)next + dah_overhead - 1) = POISON_END;
-> > > -     }
-> > > -     spin_unlock(&dap_lock);
-> > > -}
-> > > -
-> > > -void debug_kusage(void)
-> > > -{
-> > > -     struct debug_alloc_header *h_free, *h_used;
-> > > -#ifdef       CONFIG_IA64
-> > > -     /* FIXME: using dah for ia64 unwind always results in a memory leak.
-> > > -      * Fix that memory leak first, then set debug_kusage_one_time = 1 for
-> > > -      * all architectures.
-> > > -      */
-> > > -     static int debug_kusage_one_time;
-> > > -#else
-> > > -     static int debug_kusage_one_time = 1;
-> > > -#endif
-> > > -     if (!get_dap_lock()) {
-> > > -             __release(dap_lock);    /* we never actually got it */
-> > > -             return;
-> > > -     }
-> > > -     h_free = (struct debug_alloc_header *)(debug_alloc_pool + dah_first);
-> > > -     if (dah_first == 0 &&
-> > > -         (h_free->size == sizeof(debug_alloc_pool_aligned) - dah_overhead ||
-> > > -          dah_first_call))
-> > > -             goto out;
-> > > -     if (!debug_kusage_one_time)
-> > > -             goto out;
-> > > -     debug_kusage_one_time = 0;
-> > > -     kdb_printf("%s: debug_kmalloc memory leak dah_first %d\n",
-> > > -                __func__, dah_first);
-> > > -     if (dah_first) {
-> > > -             h_used = (struct debug_alloc_header *)debug_alloc_pool;
-> > > -             kdb_printf("%s: h_used %px size %d\n", __func__, h_used,
-> > > -                        h_used->size);
-> > > -     }
-> > > -     do {
-> > > -             h_used = (struct debug_alloc_header *)
-> > > -                       ((char *)h_free + dah_overhead + h_free->size);
-> > > -             kdb_printf("%s: h_used %px size %d caller %px\n",
-> > > -                        __func__, h_used, h_used->size, h_used->caller);
-> > > -             h_free = (struct debug_alloc_header *)
-> > > -                       (debug_alloc_pool + h_free->next);
-> > > -     } while (h_free->next);
-> > > -     h_used = (struct debug_alloc_header *)
-> > > -               ((char *)h_free + dah_overhead + h_free->size);
-> > > -     if ((char *)h_used - debug_alloc_pool !=
-> > > -         sizeof(debug_alloc_pool_aligned))
-> > > -             kdb_printf("%s: h_used %px size %d caller %px\n",
-> > > -                        __func__, h_used, h_used->size, h_used->caller);
-> > > -out:
-> > > -     spin_unlock(&dap_lock);
-> > > -}
-> > > -
-> > >  /* Maintain a small stack of kdb_flags to allow recursion without disturbing
-> > >   * the global kdb state.
-> > >   */
-> > > --
-> > > 2.25.1
-> > >
+Thanks,
+Chanwoo Choi
