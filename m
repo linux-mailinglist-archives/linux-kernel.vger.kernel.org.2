@@ -2,128 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EFE326607
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C3232660F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhBZRD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 12:03:59 -0500
-Received: from mga18.intel.com ([134.134.136.126]:8775 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229598AbhBZRD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:03:57 -0500
-IronPort-SDR: jKyd1eKmaLtJrl8dSiwf3DCPFsQ995Pf2dv/R4aPmHP2WwyNk4AYeHh/roL5ZtvJNEpJuxGv7U
- FOBrRXbQSHMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="173578634"
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="173578634"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:02:49 -0800
-IronPort-SDR: ReI+MBbVQEBTQiTBgijphNyVsN9PMQvLjXWg9g0Fli0A+nknkgedIMoa7QP8sH8Exv9XWbxY9u
- JwuOWuWq3Zgw==
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="443137334"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:02:48 -0800
-Date:   Fri, 26 Feb 2021 09:02:48 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     dsterba@suse.cz, Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [GIT PULL] Kmap conversions for 5.12
-Message-ID: <20210226170248.GH3014244@iweiny-DESK2.sc.intel.com>
-References: <cover.1614090658.git.dsterba@suse.com>
- <CAHk-=wijdojzo56FzYqE5TOYw2Vws7ik3LEMGj9SPQaJJ+Z73Q@mail.gmail.com>
- <20210223192506.GY3014244@iweiny-DESK2.sc.intel.com>
- <20210224123049.GX1993@twin.jikos.cz>
- <20210224175912.GA3014244@iweiny-DESK2.sc.intel.com>
- <20210225131252.GA7604@suse.cz>
- <20210225163234.GD3014244@iweiny-DESK2.sc.intel.com>
- <20210226142339.GK7604@suse.cz>
+        id S230083AbhBZRFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 12:05:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhBZREx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 12:04:53 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A71C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:04:11 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id u187so6058795wmg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:04:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UFwBCm6HrJKHxscAt59AxdAYrvfQ1oAdw/JgYFUJbXY=;
+        b=l770UNXtFuPJoYAmuiZ45pNtSa0Xh65CavALPfvZSZz8KUtQlMoJbY92RvYw+PvxlH
+         xFUHRwN05sCSIaMt3iAZ2pmxJhKY84S9KsIz9/aeMaTKfKdtZIBAQLIdUM4ghmm95lJB
+         g8zTqZgLRU+Y2W3t4wPMr7ICsNmb3QSv7n/1jcT8LeDXy290uflmsIOgXffqSYnVOYAm
+         Ye4SGqQUdNW7w6vT98J0kwopl2IYhR8Ks1dz1mnlFb7RkyIKNLZLz2dQOIgyYeqt0h3d
+         K4FaHMR0aG3aTCCW5YVyrBFnHgpJq+2rtmQwiLPhb+sFVJdzsNqtkHd7Ss3mYGmHJ/a7
+         ZpjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UFwBCm6HrJKHxscAt59AxdAYrvfQ1oAdw/JgYFUJbXY=;
+        b=ank+RCkQwVkn5NNpvvsFDepmwiRyKsYxWZITFZdrZoEttJdTB7W2esIb+FN5lYQ40V
+         8YtVrkrSHibEeJnZDNPhWmJgqdRJp9NEOFbu+7i7xn+a/S6ppk/2DHQmxmTRrgAnphL2
+         k+0pYtE3wCNoxYRoeHy02PO6QstmJ7Zjbvalq1l5tJLUNsNCOhVZuZ2+Wo096eViNKR7
+         le9fvcCLrjn0jaXUDCxKmbSIGM9h2MH3WkQrP/KXQlD3fW+UPg58eAV+no/OKm02oX6f
+         gME/CfjdMWgmQk623U5IdFlBPo9ch51wFeZSfX2tfW9fP3OFOeLvZwYbDNtfu3qc/lqN
+         TmBA==
+X-Gm-Message-State: AOAM531yDA/kYcziqd+fCl5yqdkmuCgHDNyn+UDz+vRiUE1haqj+oj+U
+        5m/jb19Ybbb1K3vMH0ISQ5XnBw==
+X-Google-Smtp-Source: ABdhPJyaWV4rGjsm+DtbdD0ua/bhu8nDmtycZVp8fJVqSHrTe2CJiv8Lz2q+1aZ3Do7PUcpfDbllUA==
+X-Received: by 2002:a7b:c442:: with SMTP id l2mr3908239wmi.34.1614359050443;
+        Fri, 26 Feb 2021 09:04:10 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id w13sm15962972wre.2.2021.02.26.09.04.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 09:04:09 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     vkoul@kernel.org
+Cc:     yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/3] soundwire: qcom: add auto enumeration support
+Date:   Fri, 26 Feb 2021 17:02:49 +0000
+Message-Id: <20210226170250.9067-3-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
+References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226142339.GK7604@suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 03:23:40PM +0100, David Sterba wrote:
-> On Thu, Feb 25, 2021 at 08:32:34AM -0800, Ira Weiny wrote:
-> > On Thu, Feb 25, 2021 at 02:12:52PM +0100, David Sterba wrote:
-> > > On Wed, Feb 24, 2021 at 09:59:12AM -0800, Ira Weiny wrote:
-> > > > On Wed, Feb 24, 2021 at 01:30:49PM +0100, David Sterba wrote:
-> > > > > On Tue, Feb 23, 2021 at 11:25:06AM -0800, Ira Weiny wrote:
-> > > > > > On Tue, Feb 23, 2021 at 09:13:42AM -0800, Linus Torvalds wrote:
-> > > > > > > On Tue, Feb 23, 2021 at 7:03 AM David Sterba <dsterba@suse.com> wrote:
-> > > > > [...]
-> > > > > 
-> > > > > > Sorry.  I will change it.
-> > > > > 
-> > > > > Let me know how you want to proceed with the patchset/pull request.
-> > > > 
-> > > > To be clear I'd like to just drop the 2 patches which use zero_user() for this
-> > > > merge window.
-> > > > 
-> > > > I've already submitted some additional btrfs changes for 5.13[1].  I can rework
-> > > > these zero_user() patches and submit them through Andrew for 5.13 as separate
-> > > > set.  That is what I meant by 'I will change it'.
-> > > > 
-> > > > > I
-> > > > > can play the messenger again but now it seems a round of review is
-> > > > > needed and with some testing it'll be possible in some -rc. At that
-> > > > > point you may take the patches via the mm tree, unless Linus is ok with
-> > > > > a late pull.
-> > > > 
-> > > > I'm ok with delaying the memzero_page() change to 5.13.  There are a lot of
-> > > > kmap changes to come.  But I'm trying to do them as smaller series just for
-> > > > this reason.  I don't want valid changes to be denied due to my messing up just
-> > > > a few patches...  :-(  Hopefully you and Linus can forgive me on this one.
-> > > > 
-> > > > Is ok to just drop them and merge the rest of this series in 5.12?
-> > > 
-> > > Ok, no problem. Please let me know exactly which patches to drop, I'll
-> > > respin the branch. Thanks.
-> > 
-> > Drop These 2:
-> > 
-> > [PATCH V2 5/8] iov_iter: Remove memzero_page() in favor of zero_user()
-> > https://lore.kernel.org/lkml/20210210062221.3023586-6-ira.weiny@intel.com/
-> > 
-> > [PATCH V2 8/8] btrfs: convert to zero_user()
-> > https://lore.kernel.org/lkml/20210210062221.3023586-9-ira.weiny@intel.com/
-> > 
-> > 
-> > Keep:
-> > 
-> > [PATCH V2 1/8] mm/highmem: Lift memcpy_[to|from]_page to core 
-> > [PATCH V2 2/8] mm/highmem: Convert memcpy_[to|from]_page() to kmap_local_page()
-> > [PATCH V2 3/8] mm/highmem: Introduce memcpy_page(), memmove_page(), and memset_page()
-> > [PATCH V2 4/8] mm/highmem: Add VM_BUG_ON() to mem*_page() calls
-> > 	...
-> > [PATCH V2 6/8] btrfs: use memcpy_[to|from]_page() and kmap_local_page()
-> > [PATCH V2 7/8] btrfs: use copy_highpage() instead of 2 kmaps()
-> > 	...
-> > 
-> > I would resend but I'd rather keep the exact commits you had in your testing
-> > rather than potentially messing up the rebase this late.
-> 
-> Got it, thanks. It's easier for me to delete the patches once I have
-> them in the branch, that's been updated and now pushed to kernel org
-> again (https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/log/?h=kmap-conversion-for-5.12)
+Qualcomm SoundWire controller supports Auto Enumeration of the
+devices within the IP. This patch enables support for this feature.
 
-Looks good.  thank you.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/soundwire/qcom.c | 84 +++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 78 insertions(+), 6 deletions(-)
 
-> 
-> I'll add it to testing branches and let it test over the weekend,
-> sending the pull request next week.
-> 
-
-Sounds like a good plan.
-
-Once again thank you for dealing with this.
-
-Sorry for the mix up,
-Ira
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 8438f9812d7c..d90eba6a1e88 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -57,6 +57,8 @@
+ #define SWRM_CMD_FIFO_RD_FIFO_ADDR				0x318
+ #define SWRM_RD_FIFO_CMD_ID_MASK				GENMASK(11, 8)
+ #define SWRM_ENUMERATOR_CFG_ADDR				0x500
++#define SWRM_ENUMERATOR_SLAVE_DEV_ID_1(m)		(0x530 + 0x8 * (m))
++#define SWRM_ENUMERATOR_SLAVE_DEV_ID_2(m)   		(0x534 + 0x8 * (m))
+ #define SWRM_MCP_FRAME_CTRL_BANK_ADDR(m)		(0x101C + 0x40 * (m))
+ #define SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK			GENMASK(2, 0)
+ #define SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK			GENMASK(7, 3)
+@@ -121,6 +123,7 @@ struct qcom_swrm_ctrl {
+ 	struct regmap *regmap;
+ 	void __iomem *mmio;
+ 	struct completion broadcast;
++	struct completion enumeration;
+ 	struct work_struct slave_work;
+ 	/* Port alloc/free lock */
+ 	struct mutex port_lock;
+@@ -143,6 +146,7 @@ struct qcom_swrm_ctrl {
+ 	enum sdw_slave_status status[SDW_MAX_DEVICES];
+ 	int (*reg_read)(struct qcom_swrm_ctrl *ctrl, int reg, u32 *val);
+ 	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
++	u32 slave_status;
+ };
+ 
+ struct qcom_swrm_data {
+@@ -342,6 +346,7 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
+ 	int i;
+ 
+ 	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
++	ctrl->slave_status = val;
+ 
+ 	for (i = 0; i < SDW_MAX_DEVICES; i++) {
+ 		u32 s;
+@@ -352,10 +357,66 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
+ 	}
+ }
+ 
++static int qcom_swrm_get_n_device_status(struct qcom_swrm_ctrl *ctrl, int devnum)
++{
++	u32 val;
++
++	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
++	val = (val >> (devnum * SWRM_MCP_SLV_STATUS_SZ));
++	val &= SWRM_MCP_SLV_STATUS_MASK;
++
++	return val;
++}
++
++static int qcom_swrm_enumerate(struct sdw_bus *bus)
++{
++	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
++	struct sdw_slave *slave, *_s;
++	struct sdw_slave_id id;
++	u32 val1, val2;
++	u64 addr;
++	int i;
++	char *buf1 = (char *)&val1, *buf2 = (char *)&val2;
++
++	for (i = 1; i < (SDW_MAX_DEVICES + 1); i++) {
++		/*SCP_Devid5 - Devid 4*/
++		ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_1(i), &val1);
++
++		/*SCP_Devid3 - DevId 2 Devid 1 Devid 0*/
++		ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_2(i), &val2);
++
++		if (!val1 && !val2)
++			break;
++
++		addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
++			((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
++			((u64)buf1[0] << 40);
++
++		sdw_extract_slave_id(bus, addr, &id);
++		/* Now compare with entries */
++		list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
++			if (sdw_compare_devid(slave, id) == 0) {
++				u32 status = qcom_swrm_get_n_device_status(ctrl, i);
++				if (status == SDW_SLAVE_ATTACHED) {
++					slave->dev_num = i;
++					mutex_lock(&bus->bus_lock);
++					set_bit(i, bus->assigned);
++					mutex_unlock(&bus->bus_lock);
++
++				}
++				break;
++			}
++		}
++	}
++
++	complete(&ctrl->enumeration);
++	return 0;
++}
++
+ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+ {
+ 	struct qcom_swrm_ctrl *swrm = dev_id;
+-	u32 value, intr_sts, intr_sts_masked;
++	u32 value, intr_sts, intr_sts_masked, slave_status;
+ 	u32 i;
+ 	u8 devnum = 0;
+ 	int ret = IRQ_HANDLED;
+@@ -382,10 +443,19 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+ 				break;
+ 			case SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED:
+ 			case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
+-				dev_err_ratelimited(swrm->dev, "%s: SWR new slave attached\n",
++				dev_err_ratelimited(swrm->dev, "%s: SWR slave status changed\n",
+ 					__func__);
+-				qcom_swrm_get_device_status(swrm);
+-				sdw_handle_slave_status(&swrm->bus, swrm->status);
++				swrm->reg_read(swrm, SWRM_MCP_SLV_STATUS, &slave_status);
++				if (swrm->slave_status == slave_status) {
++					dev_err(swrm->dev, "Slave status not changed %x\n",
++						slave_status);
++					break;
++				} else {
++					dev_err(swrm->dev, "Slave status handle %x\n", slave_status);
++					qcom_swrm_get_device_status(swrm);
++					qcom_swrm_enumerate(&swrm->bus);
++					sdw_handle_slave_status(&swrm->bus, swrm->status);
++				}
+ 				break;
+ 			case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
+ 				dev_err_ratelimited(swrm->dev,
+@@ -472,8 +542,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+ 
+ 	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
+ 
+-	/* Disable Auto enumeration */
+-	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 0);
++	/* Enable Auto enumeration */
++	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 1);
+ 
+ 	ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
+ 	/* Mask soundwire interrupts */
+@@ -507,6 +577,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+ 		ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN,
+ 				SWRM_INTERRUPT_STATUS_RMSK);
+ 	}
++	ctrl->slave_status = 0;
+ 	return 0;
+ }
+ 
+@@ -1068,6 +1139,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(&pdev->dev, ctrl);
+ 	mutex_init(&ctrl->port_lock);
+ 	init_completion(&ctrl->broadcast);
++	init_completion(&ctrl->enumeration);
+ 
+ 	ctrl->bus.ops = &qcom_swrm_ops;
+ 	ctrl->bus.port_ops = &qcom_swrm_port_ops;
+-- 
+2.21.0
 
