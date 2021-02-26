@@ -2,170 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4D6325D30
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 06:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAE8325D39
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 06:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhBZF3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 00:29:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48728 "EHLO
+        id S229745AbhBZFcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 00:32:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhBZF3W (ORCPT
+        with ESMTP id S229545AbhBZFcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 00:29:22 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A503AC061574;
-        Thu, 25 Feb 2021 21:28:42 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id i18so7029889ilq.13;
-        Thu, 25 Feb 2021 21:28:42 -0800 (PST)
+        Fri, 26 Feb 2021 00:32:52 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9CEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 21:32:11 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id h4so5531007pgf.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 21:32:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EqDkuKsSWvX/q3kNJAK9RVd+ZVKW2vi+5spcJMq/Sc4=;
-        b=s/SewRrgpzD0TY3LBiVs61IojGLUIU9foxEGpKhool5VTcla7VgFFdaEkJB4YLP9Rm
-         XDElSuG8L9i/zJsajzOfHq65jEqjbW6pdNylhhkK28cd2L0bCPe7In9UYOihYfHk59zQ
-         j+fy4D4SEbh/m8NyJ6LfNNHONa0Zgk8n8jitgEVW3VHN3w97tXAxxz5chmGCrJ8buX4s
-         ONUjrDHezM0v1/Et0D+UJ7OnD217K4g/FqIAr7PfOnn1a+H0El2Ne7CdRIz+V+MHhyod
-         WRkYJe6fB1ccrmG+z6hKMdiXglejf66zyRmwbveR7DVnZ17v4H5MBBdS/L/qwVHrWXhR
-         Uf2A==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nFi/Tly9ElESGJN8oskhUGGfZDgsnBKdYL375bNbXVw=;
+        b=JioBCib/pjgVwCE+1j1L7J+4tfJ9rsxj0xJ7mNV1d3h4lgyYYI+qXuyqmqRt0Xwh0d
+         jvgqMIUemTP1Lxdkok+irPUbY9vjvRqFh+xYTMJ75GlhbbNR7oUGVVKPAP6Oby4RBv44
+         e9iDymH6Ev2uwlY4gCPNa2O1KttsCUTEVQRd7C51U3UXZIw+THXC64dshlRia/zQiwAt
+         16lxLPURQRa2lGSL7pgl7PG6TBPphwj0yQrJAaxEAyfpQA49h9OUNuOT0Y2dgs+UgJG0
+         qu7gjTDhzUNgfSBeOZg8lZclZzq88UQCur3Dxm3QBLH3KzhgKAYv0i085XeC2lFzpUWX
+         W4aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EqDkuKsSWvX/q3kNJAK9RVd+ZVKW2vi+5spcJMq/Sc4=;
-        b=RZiGq3efrBIl7Jgu6T5DGsfwM40kgNWSD3ubfkxSdzs2ayud5VxQqvLg/P+HDr1Yp2
-         TJqKMgpSwrCKzbBIjpF0LUlMkHvmHcA2nAh0bAT8/ODehckTRmiMUPaOR4m6wYuCzbho
-         7CoLiiocfzWbRmUpcW79n6ZeRlygQoN85Mwb7B5S/7arcUG82rSpN3nh5FE6wGKBnq2c
-         JoXRAtEeozZRRD6B4EvnP9mV8IU0Wig926VLFUrvlYvpNtqCrg0qkbSOjcL793ekt4GG
-         70TB/rxGpv1q0xzfr8olAlg3/2dgLXHz1FKUG9U1M02AlBy5WACI/buQsm2KAhfV89TN
-         mTew==
-X-Gm-Message-State: AOAM530IctHPJthvEulHfrdwD4vtNZVR7iKnp/lUFklvE7icq1cYxEVm
-        Mwc4CEYCGOyaHQMLpmmnsxBreD3SDFRgP1QVGjA=
-X-Google-Smtp-Source: ABdhPJwfHCK6GlloWH0sOyFYOU3LeDbo+badKWvs88UrTGzOqS9L4CInm4CWwHBQdmjqtWc3xJGWcxgwEVcZjXKGBrQ=
-X-Received: by 2002:a92:4105:: with SMTP id o5mr1052617ila.47.1614317321997;
- Thu, 25 Feb 2021 21:28:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20210218222125.46565-1-mjeanson@efficios.com> <20210223211639.670db85c@gandalf.local.home>
- <083bce0f-bd66-ab83-1211-be9838499b45@efficios.com> <915297635.2997.1614185975415.JavaMail.zimbra@efficios.com>
-In-Reply-To: <915297635.2997.1614185975415.JavaMail.zimbra@efficios.com>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Fri, 26 Feb 2021 13:28:30 +0800
-Message-ID: <CAJhGHyBb8FOwAqD4Y=k2aVL_t-n0ks1grWcsyRT+W+5pqWNnaQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/6] [RFC] Faultable tracepoints (v2)
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Michael Jeanson <mjeanson@efficios.com>,
-        rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=nFi/Tly9ElESGJN8oskhUGGfZDgsnBKdYL375bNbXVw=;
+        b=XIrXe8Jy0ioGFRsZiNgIJloPRev3BRe83wqGKIKeABqflJck8QZoYZge4vKCDEkEUY
+         A5Mcf0HUWfKCTA0WfhDIO4WwKpaloj4nQ5Lln/4Kxs8yBzE49kB2c0l2/M95l7XIH3dM
+         E5yprHeRKXoYzbvbTVqZ3QVyWCs+UIraqw8hMM/jgKHmfLuiJJE0hcd+K0dj7u6ZfSOx
+         1unfriIQUiaRqCg66QcJsJqLd7UrMfz9Z9hSr9+Hj9vop3MJix6WxfHaVQ+C2vv0M8ez
+         A+5UvnouAC0pRNRj5IVzEPOkK41xe1eah8k0ctTp1ZKwqsG4G/89baAU7O2ffrOB22El
+         sw/Q==
+X-Gm-Message-State: AOAM532DZhz4F8T3KT0WEcnWgEPUuhS0NdR0puk/cq0JvjxgtJaRg1dS
+        Pi9m0ZlOhqLcF4R88wAzuF2fAg==
+X-Google-Smtp-Source: ABdhPJzqqNWI8LPb+RbI+afEQbemNqMMfrtDVHxnRHynUOPZCKSmIemE8l7c3ZOEysW+aIpylADAKA==
+X-Received: by 2002:aa7:85cf:0:b029:1ee:8ae:533a with SMTP id z15-20020aa785cf0000b02901ee08ae533amr1486354pfn.30.1614317531108;
+        Thu, 25 Feb 2021 21:32:11 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id v185sm7960624pfb.125.2021.02.25.21.32.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 21:32:10 -0800 (PST)
+Date:   Thu, 25 Feb 2021 21:32:10 -0800 (PST)
+X-Google-Original-Date: Thu, 25 Feb 2021 21:31:51 PST (-0800)
+Subject:     Re: [PATCH] riscv: Add KASAN_VMALLOC support
+In-Reply-To: <bdef5309-03dd-6c0b-7d0c-9dd036ceae95@ghiti.fr>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        nylon7@andestech.com, nickhu@andestech.com,
+        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alex@ghiti.fr
+Message-ID: <mhng-ea9a6037-0f18-41d5-8c01-6c16b14b6a63@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 9:15 AM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
+On Wed, 24 Feb 2021 23:48:13 PST (-0800), alex@ghiti.fr wrote:
+> Le 2/25/21 à 2:42 AM, Alexandre Ghiti a écrit :
+>> Populate the top-level of the kernel page table to implement KASAN_VMALLOC,
+>> lower levels are filled dynamically upon memory allocation at runtime.
+>>
+>> Co-developed-by: Nylon Chen <nylon7@andestech.com>
+>> Signed-off-by: Nylon Chen <nylon7@andestech.com>
+>> Co-developed-by: Nick Hu <nickhu@andestech.com>
+>> Signed-off-by: Nick Hu <nickhu@andestech.com>
+>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>> ---
+>>   arch/riscv/Kconfig         |  1 +
+>>   arch/riscv/mm/kasan_init.c | 35 ++++++++++++++++++++++++++++++++++-
+>>   2 files changed, 35 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>> index 8eadd1cbd524..3832a537c5d6 100644
+>> --- a/arch/riscv/Kconfig
+>> +++ b/arch/riscv/Kconfig
+>> @@ -57,6 +57,7 @@ config RISCV
+>>   	select HAVE_ARCH_JUMP_LABEL
+>>   	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+>>   	select HAVE_ARCH_KASAN if MMU && 64BIT
+>> +	select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
+>>   	select HAVE_ARCH_KGDB
+>>   	select HAVE_ARCH_KGDB_QXFER_PKT
+>>   	select HAVE_ARCH_MMAP_RND_BITS if MMU
+>> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+>> index 719b6e4d6075..171569df4334 100644
+>> --- a/arch/riscv/mm/kasan_init.c
+>> +++ b/arch/riscv/mm/kasan_init.c
+>> @@ -142,6 +142,31 @@ static void __init kasan_populate(void *start, void *end)
+>>   	memset(start, KASAN_SHADOW_INIT, end - start);
+>>   }
+>>
+>> +void __init kasan_shallow_populate_pgd(unsigned long vaddr, unsigned long end)
+>> +{
+>> +	unsigned long next;
+>> +	void *p;
+>> +	pgd_t *pgd_k = pgd_offset_k(vaddr);
+>> +
+>> +	do {
+>> +		next = pgd_addr_end(vaddr, end);
+>> +		if (pgd_page_vaddr(*pgd_k) == (unsigned long)lm_alias(kasan_early_shadow_pmd)) {
+>> +			p = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+>> +			set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)), PAGE_TABLE));
+>> +		}
+>> +	} while (pgd_k++, vaddr = next, vaddr != end);
+>> +}
+>> +
+>> +void __init kasan_shallow_populate(void *start, void *end)
+>> +{
+>> +	unsigned long vaddr = (unsigned long)start & PAGE_MASK;
+>> +	unsigned long vend = PAGE_ALIGN((unsigned long)end);
+>> +
+>> +	kasan_shallow_populate_pgd(vaddr, vend);
+>> +
+>> +	local_flush_tlb_all();
+>> +}
+>> +
+>>   void __init kasan_init(void)
+>>   {
+>>   	phys_addr_t _start, _end;
+>> @@ -149,7 +174,15 @@ void __init kasan_init(void)
+>>
+>>   	kasan_populate_early_shadow((void *)KASAN_SHADOW_START,
+>>   				    (void *)kasan_mem_to_shadow((void *)
+>> -								VMALLOC_END));
+>> +								VMEMMAP_END));
+>> +	if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
+>> +		kasan_shallow_populate(
+>> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_START),
+>> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+>> +	else
+>> +		kasan_populate_early_shadow(
+>> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_START),
+>> +			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+>>
+>>   	for_each_mem_range(i, &_start, &_end) {
+>>   		void *start = (void *)_start;
+>>
 >
-> ----- On Feb 24, 2021, at 11:22 AM, Michael Jeanson mjeanson@efficios.com wrote:
->
-> > [ Adding Mathieu Desnoyers in CC ]
-> >
-> > On 2021-02-23 21 h 16, Steven Rostedt wrote:
-> >> On Thu, 18 Feb 2021 17:21:19 -0500
-> >> Michael Jeanson <mjeanson@efficios.com> wrote:
-> >>
-> >>> This series only implements the tracepoint infrastructure required to
-> >>> allow tracers to handle page faults. Modifying each tracer to handle
-> >>> those page faults would be a next step after we all agree on this piece
-> >>> of instrumentation infrastructure.
-> >>
-> >> I started taking a quick look at this, and came up with the question: how
-> >> do you allow preemption when dealing with per-cpu buffers or storage to
-> >> record the data?
-> >>
-> >> That is, perf, bpf and ftrace are all using some kind of per-cpu data, and
-> >> this is the reason for the need to disable preemption. What's the solution
-> >> that LTTng is using for this? I know it has a per cpu buffers too, but does
-> >> it have some kind of "per task" buffer that is being used to extract the
-> >> data that can fault?
->
-> As a prototype solution, what I've done currently is to copy the user-space
-> data into a kmalloc'd buffer in a preparation step before disabling preemption
-> and copying data over into the per-cpu buffers. It works, but I think we should
-> be able to do it without the needless copy.
->
-> What I have in mind as an efficient solution (not implemented yet) for the LTTng
-> kernel tracer goes as follows:
->
-> #define COMMIT_LOCAL 0
-> #define COMMIT_REMOTE 1
->
-> - faultable probe is called from system call tracepoint [ preemption/blocking/migration is allowed ]
+> Palmer, this commit should replace (if everyone agrees) Nylon and Nick's
+> Commit e178d670f251 ("riscv/kasan: add KASAN_VMALLOC support") that is
+> already in for-next.
 
-label:
-restart:
+Sorry, but it's way too late to be rebasing things.  I can get trying to have
+the history clean, but in this case we're better off having this as an explicit
+fix patch -- changing hashes this late in the process messes with all the
+testing.
 
->   - probe code calculate the length which needs to be reserved to store the event
->     (e.g. user strlen),
-
-Does "user strlen" makes the content fault in?
-
-Is it possible to make the sleepable faulting only happen here between
-"restart" and the following "preempt disable"?  The code here should
-do a prefetch operation like "user strlen".
-
-And we can keep preemption disabled when copying the data.  If there
-is a fault while copying, then we can restart from the label "restart".
-
-Very immature thought.
-
-Thanks
-Lai
-
->
->   - preempt disable -> [ preemption/blocking/migration is not allowed from here ]
->     - reserve_cpu = smp_processor_id()
->     - reserve space in the ring buffer for reserve_cpu
->       [ from that point on, we have _exclusive_ access to write into the ring buffer "slot"
->         from any cpu until we commit. ]
->   - preempt enable -> [ preemption/blocking/migration is allowed from here ]
->
->   - copy data from user-space to the ring buffer "slot",
->
->   - preempt disable -> [ preemption/blocking/migration is not allowed from here ]
->     commit_cpu = smp_processor_id()
->     if (commit_cpu == reserve_cpu)
->        use local_add to increment the buf[commit_cpu].subbuffer[current].commit_count[COMMIT_LOCAL]
->     else
->        use atomic_add to increment the buf[commit_cpu].subbuffer[current].commit_count[COMMIT_REMOTE]
->   - preempt enable -> [ preemption/blocking/migration is allowed from here ]
->
-> Given that lttng uses per-buffer/per-sub-buffer commit counters as simple free-running
-> accumulators, the trick here is to use two commit counters rather than single one for each
-> sub-buffer. Whenever we need to read a commit count value, we always sum the total of the
-> LOCAL and REMOTE counter.
->
-> This allows dealing with migration between reserve and commit without requiring the overhead
-> of an atomic operation on the fast-path (LOCAL case).
->
-> I had to design this kind of dual-counter trick in the context of user-space use of restartable
-> sequences. It looks like it may have a role to play in the kernel as well. :)
->
-> Or am I missing something important that would not survive real-life ?
->
-> Thanks,
->
-> Mathieu
->
-> --
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+I'm not sure what the issue actually is, so it'd be great if you could send the
+fix patch.  If not then LMK and I'll try to figure out what's going on.  Either
+way, having the fix will make sure this gets tested properly as whatever's
+going on isn't failing for me.
