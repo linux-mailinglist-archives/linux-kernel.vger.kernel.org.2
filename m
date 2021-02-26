@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACA432603F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF921326017
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhBZJi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:38:57 -0500
-Received: from first.geanix.com ([116.203.34.67]:34444 "EHLO first.geanix.com"
+        id S230210AbhBZJdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:33:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhBZJi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:38:29 -0500
-X-Greylist: delayed 469 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Feb 2021 04:38:27 EST
-Received: from zen.. (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id 3BA0210234E1;
-        Fri, 26 Feb 2021 09:29:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1614331794; bh=vcrmu95vnJRJusz0UYr/l1XS/6bCR87a3Z2nnZWR1ME=;
-        h=From:To:Cc:Subject:Date;
-        b=cJhtUC6/dYjkxU4y+B79V0P2IOMKu1xcgHE5AYLQkoCIzwjvL8EMz25FEiaTmSCt6
-         2jgKTxJI1XN3ya6Zrx22Uom2W0vpsaI/W8f+1B/K20rtdvxMdgU9kBEp/t8qmS+iSn
-         VIEbP3ja4BEe552iertDMbVH2cmhvSH2itu8HXXYfDhrZ1hDAby9NrXYiIPbDM8xLx
-         pWbEcjiLY+YAfNxlxelsyiwZAeBXfRbm87oVMMmbzHBmEztqUpuLzlqHZCBazfDvgV
-         +ne0doLVUl9hgGct/Dn2z2ykVc/fF7Yo/G5cJP0Bi4Uodd7Xm0S5V2y7dLM48TJRWm
-         MYB92YqjH1GRQ==
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Phillip Lougher <phillip@squashfs.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Sean Nyekjaer <sean@geanix.com>, stable@vger.kernel.org,
+        id S230406AbhBZJcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 04:32:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E99864ED5;
+        Fri, 26 Feb 2021 09:31:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614331900;
+        bh=CyXWD5LrZck3yEqxzTXhr0oQtIwdrRJ8pEYe2Zj1HiI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uj4UsTGRQ20WVGooVvPPNxZ5VOkM+Qn4Fv1jW/NMeUO+uFgXKsMny5UO6oQG+tlQ8
+         Mqyf8y9gwUDJBD/H+QhvKhI3HY7JN85UYGYBs059YEu2Ao/KT+jWSnCq0LUBwfLQYB
+         8XnD3Uwd75t0oCFyNb0vyVwxRiopM9j6n8kShlxQ=
+Date:   Fri, 26 Feb 2021 10:31:37 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ricky Niu <rickyniu@google.com>
+Cc:     stern@rowland.harvard.edu, erosca@de.adit-jv.com,
+        gustavoars@kernel.org, a.darwish@linutronix.de, oneukum@suse.com,
+        kyletso@google.com, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] squashfs: fix inode lookup sanity checks
-Date:   Fri, 26 Feb 2021 10:29:03 +0100
-Message-Id: <20210226092903.1473545-1-sean@geanix.com>
-X-Mailer: git-send-email 2.29.2
+Subject: Re: [PATCH] ANDROID: usb: core: Send uevent when USB TOPO layer over
+ 6
+Message-ID: <YDi/+TN6AYXropf7@kroah.com>
+References: <20210226091612.508639-1-rickyniu@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226091612.508639-1-rickyniu@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When mouting a squashfs image created without inode compression it
-fails with: "unable to read inode lookup table"
+On Fri, Feb 26, 2021 at 05:16:12PM +0800, Ricky Niu wrote:
+> When the topology of the nested hubs are over 6 layers
+> Send uevent to user space when USB TOPO layer over 6.
+> Let end user more understand what happened.
+> 
+> Signed-off-by: Ricky Niu <rickyniu@google.com>
+> ---
+>  drivers/usb/core/hub.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> index 7f71218cc1e5..e5e924526822 100644
+> --- a/drivers/usb/core/hub.c
+> +++ b/drivers/usb/core/hub.c
+> @@ -55,6 +55,10 @@ static DEFINE_SPINLOCK(device_state_lock);
+>  static struct workqueue_struct *hub_wq;
+>  static void hub_event(struct work_struct *work);
+>  
+> +/* struct to notify userspace of hub events */
+> +static struct class *hub_class;
+> +static struct device *hub_device;
 
-It turns out that the BLOCK_OFFSET is missing when checking
-the SQUASHFS_METADATA_SIZE agaist the actual size.
+Wait, how did you even test this code?  This will not work if you have
+more than one hub in the system at a single time, right?
 
-Fixes: eabac19e40c0 ("squashfs: add more sanity checks in inode lookup")
-CC: stable@vger.kernel.org
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
----
- fs/squashfs/export.c      | 8 ++++++--
- fs/squashfs/squashfs_fs.h | 1 +
- 2 files changed, 7 insertions(+), 2 deletions(-)
+That's going to be really rough, given here's the output of just my
+desktop system, count the number of hubs in it:rdevmgmt.msc
 
-diff --git a/fs/squashfs/export.c b/fs/squashfs/export.c
-index eb02072d28dd..723763746238 100644
---- a/fs/squashfs/export.c
-+++ b/fs/squashfs/export.c
-@@ -152,14 +152,18 @@ __le64 *squashfs_read_inode_lookup_table(struct super_block *sb,
- 		start = le64_to_cpu(table[n]);
- 		end = le64_to_cpu(table[n + 1]);
- 
--		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
-+		if (start >= end
-+		    || (end - start) >
-+		    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 			kfree(table);
- 			return ERR_PTR(-EINVAL);
- 		}
- 	}
- 
- 	start = le64_to_cpu(table[indexes - 1]);
--	if (start >= lookup_table_start || (lookup_table_start - start) > SQUASHFS_METADATA_SIZE) {
-+	if (start >= lookup_table_start ||
-+	    (lookup_table_start - start) >
-+	    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
- 		kfree(table);
- 		return ERR_PTR(-EINVAL);
- 	}
-diff --git a/fs/squashfs/squashfs_fs.h b/fs/squashfs/squashfs_fs.h
-index 8d64edb80ebf..b3fdc8212c5f 100644
---- a/fs/squashfs/squashfs_fs.h
-+++ b/fs/squashfs/squashfs_fs.h
-@@ -17,6 +17,7 @@
- 
- /* size of metadata (inode and directory) blocks */
- #define SQUASHFS_METADATA_SIZE		8192
-+#define SQUASHFS_BLOCK_OFFSET		2
- 
- /* default size of block device I/O */
- #ifdef CONFIG_SQUASHFS_4K_DEVBLK_SIZE
--- 
-2.29.2
+$ lsusb -t
+/:  Bus 10.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/4p, 10000M
+/:  Bus 09.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/6p, 480M
+    |__ Port 5: Dev 2, If 0, Class=Wireless, Driver=btusb, 12M
+    |__ Port 5: Dev 2, If 1, Class=Wireless, Driver=btusb, 12M
+    |__ Port 6: Dev 3, If 0, Class=Hub, Driver=hub/4p, 480M
+/:  Bus 08.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/4p, 10000M
+    |__ Port 2: Dev 2, If 0, Class=Hub, Driver=hub/4p, 5000M
+    |__ Port 3: Dev 3, If 0, Class=Mass Storage, Driver=uas, 10000M
+/:  Bus 07.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/6p, 480M
+    |__ Port 2: Dev 2, If 0, Class=Hub, Driver=hub/4p, 480M
+        |__ Port 2: Dev 4, If 0, Class=Hub, Driver=hub/2p, 12M
+            |__ Port 2: Dev 5, If 0, Class=Human Interface Device, Driver=usbhid, 12M
+            |__ Port 2: Dev 5, If 1, Class=Human Interface Device, Driver=usbhid, 12M
+            |__ Port 2: Dev 5, If 2, Class=Human Interface Device, Driver=usbhid, 12M
+    |__ Port 5: Dev 3, If 3, Class=Audio, Driver=snd-usb-audio, 480M
+    |__ Port 5: Dev 3, If 1, Class=Audio, Driver=snd-usb-audio, 480M
+    |__ Port 5: Dev 3, If 6, Class=Audio, Driver=snd-usb-audio, 480M
+    |__ Port 5: Dev 3, If 4, Class=Audio, Driver=snd-usb-audio, 480M
+    |__ Port 5: Dev 3, If 2, Class=Audio, Driver=snd-usb-audio, 480M
+    |__ Port 5: Dev 3, If 0, Class=Audio, Driver=snd-usb-audio, 480M
+    |__ Port 5: Dev 3, If 7, Class=Human Interface Device, Driver=usbhid, 480M
+    |__ Port 5: Dev 3, If 5, Class=Audio, Driver=snd-usb-audio, 480M
+    |__ Port 6: Dev 6, If 0, Class=Human Interface Device, Driver=usbhid, 12M
+/:  Bus 06.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/1p, 10000M/x2
+/:  Bus 05.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/1p, 480M
+/:  Bus 04.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/2p, 10000M
+    |__ Port 1: Dev 11, If 0, Class=Hub, Driver=hub/3p, 5000M
+        |__ Port 3: Dev 12, If 0, Class=Hub, Driver=hub/3p, 5000M
+            |__ Port 1: Dev 13, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+/:  Bus 03.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/2p, 480M
+    |__ Port 1: Dev 14, If 0, Class=Hub, Driver=hub/3p, 480M
+        |__ Port 3: Dev 15, If 0, Class=Hub, Driver=hub/3p, 480M
+            |__ Port 2: Dev 17, If 0, Class=Human Interface Device, Driver=usbhid, 12M
+            |__ Port 3: Dev 18, If 3, Class=Human Interface Device, Driver=usbhid, 12M
+            |__ Port 3: Dev 18, If 1, Class=Audio, Driver=snd-usb-audio, 12M
+            |__ Port 3: Dev 18, If 2, Class=Audio, Driver=snd-usb-audio, 12M
+            |__ Port 3: Dev 18, If 0, Class=Audio, Driver=snd-usb-audio, 12M
+/:  Bus 02.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/2p, 10000M
+/:  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/2p, 480M
 
+
+So, proof that this works?  How did you test this?
+
+Also, you have a memory leak in this submission :(
+
+greg k-h
