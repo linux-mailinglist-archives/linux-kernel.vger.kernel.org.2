@@ -2,58 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA223260F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B243260F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:09:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhBZKIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:08:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60666 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230124AbhBZKEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:04:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6A08BAF3F;
-        Fri, 26 Feb 2021 10:04:09 +0000 (UTC)
-Subject: Re: [PATCH][RFC] perf annotate: show full line locations with 'k' in
- UI
-From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <9acb63e0-af38-eeeb-157e-32f6177da557@suse.cz>
- <20210212203408.GH1398414@kernel.org>
- <5b59c46e-4907-7ab9-a68d-dd234e988dc7@suse.cz>
-Message-ID: <cf9079f8-8150-710a-79e1-753dc5857815@suse.cz>
-Date:   Fri, 26 Feb 2021 11:04:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231256AbhBZKJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:09:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231187AbhBZKH0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:07:26 -0500
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864F5C06178C
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 02:06:45 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:15af:edeb:8b51:79e0])
+        by xavier.telenet-ops.be with bizsmtp
+        id Zm6i2400V16s2Gb01m6ius; Fri, 26 Feb 2021 11:06:42 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lFa1B-001wZS-T3; Fri, 26 Feb 2021 11:06:41 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lFa1B-00BrgS-9X; Fri, 26 Feb 2021 11:06:41 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2] f2fs: compress: Allow modular (de)compression algorithms
+Date:   Fri, 26 Feb 2021 11:06:40 +0100
+Message-Id: <20210226100640.2827925-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <5b59c46e-4907-7ab9-a68d-dd234e988dc7@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-May I please ping this?
+If F2FS_FS is modular, enabling the compressions options
+F2FS_FS_{LZ4,LZ4HZ,LZO,LZORLE,ZSTD} will make the (de)compression
+algorithms {LZ4,LZ4HC,LZO,ZSTD}_{,DE}COMPRESS builtin instead of
+modular, as the former depend on an intermediate boolean
+F2FS_FS_COMPRESSION, which in-turn depends on tristate F2FS_FS.
 
-Thanks
+Indeed, if a boolean symbol A depends directly on a tristate symbol B
+and selects another tristate symbol C:
 
-On 2/15/21 1:34 PM, Martin Liška wrote:
-> On 2/12/21 9:34 PM, Arnaldo Carvalho de Melo wrote:
->> Another idea is to, when requested, reserve one line at the bottom to
->> show what is the source codefile:line  for where the TUI cursor is, i.e.
->> you press down/up and the line under the cursor has its sourcefile:line
->> shown at the second (from bottom to top) line in the screen.
-> 
-> Hello.
-> 
-> I decided to use the footer bar and a full location is displayed when 'l'
-> hokey is pressed. I think it's quite rare feature, so on demand footer
-> line usage should be an appropriate place.
-> 
-> Thoughts?
-> Thanks,
-> Martin
+    tristate B
+
+    tristate C
+
+    bool A
+      depends on B
+      select C
+
+and B is modular, then C will also be modular.
+
+However, if there is an intermediate boolean D in the dependency chain
+between A and B:
+
+    tristate B
+
+    tristate C
+
+    bool D
+      depends on B
+
+    bool A
+      depends on D
+      select C
+
+then the modular state won't propagate from B to C, and C will be
+builtin instead of modular.
+
+As modular dependency propagation through intermediate symbols is
+obscure, fix this in a robust way by moving the selection of tristate
+(de)compression algorithms from the boolean compression options to the
+tristate main F2FS_FS option.
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+v2:
+  - Move the selects to F2FS_FS instead of adding direct dependencies
+    on F2FS_FS.
+---
+ fs/f2fs/Kconfig | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+index 62e638a49bbf089a..cca79029a577151c 100644
+--- a/fs/f2fs/Kconfig
++++ b/fs/f2fs/Kconfig
+@@ -7,6 +7,15 @@ config F2FS_FS
+ 	select CRYPTO_CRC32
+ 	select F2FS_FS_XATTR if FS_ENCRYPTION
+ 	select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
++	select LZ4_COMPRESS if F2FS_FS_LZ4
++	select LZ4_DECOMPRESS if F2FS_FS_LZ4
++	select LZ4HC_COMPRESS if F2FS_FS_LZ4HC
++	select LZO_COMPRESS if F2FS_FS_LZO
++	select LZO_COMPRESS if F2FS_FS_LZORLE
++	select LZO_DECOMPRESS if F2FS_FS_LZO
++	select LZO_DECOMPRESS if F2FS_FS_LZORLE
++	select ZSTD_COMPRESS if F2FS_FS_ZSTD
++	select ZSTD_DECOMPRESS if F2FS_FS_ZSTD
+ 	help
+ 	  F2FS is based on Log-structured File System (LFS), which supports
+ 	  versatile "flash-friendly" features. The design has been focused on
+@@ -94,8 +103,6 @@ config F2FS_FS_COMPRESSION
+ config F2FS_FS_LZO
+ 	bool "LZO compression support"
+ 	depends on F2FS_FS_COMPRESSION
+-	select LZO_COMPRESS
+-	select LZO_DECOMPRESS
+ 	default y
+ 	help
+ 	  Support LZO compress algorithm, if unsure, say Y.
+@@ -103,8 +110,6 @@ config F2FS_FS_LZO
+ config F2FS_FS_LZ4
+ 	bool "LZ4 compression support"
+ 	depends on F2FS_FS_COMPRESSION
+-	select LZ4_COMPRESS
+-	select LZ4_DECOMPRESS
+ 	default y
+ 	help
+ 	  Support LZ4 compress algorithm, if unsure, say Y.
+@@ -113,7 +118,6 @@ config F2FS_FS_LZ4HC
+ 	bool "LZ4HC compression support"
+ 	depends on F2FS_FS_COMPRESSION
+ 	depends on F2FS_FS_LZ4
+-	select LZ4HC_COMPRESS
+ 	default y
+ 	help
+ 	  Support LZ4HC compress algorithm, LZ4HC has compatible on-disk
+@@ -122,8 +126,6 @@ config F2FS_FS_LZ4HC
+ config F2FS_FS_ZSTD
+ 	bool "ZSTD compression support"
+ 	depends on F2FS_FS_COMPRESSION
+-	select ZSTD_COMPRESS
+-	select ZSTD_DECOMPRESS
+ 	default y
+ 	help
+ 	  Support ZSTD compress algorithm, if unsure, say Y.
+@@ -132,8 +134,6 @@ config F2FS_FS_LZORLE
+ 	bool "LZO-RLE compression support"
+ 	depends on F2FS_FS_COMPRESSION
+ 	depends on F2FS_FS_LZO
+-	select LZO_COMPRESS
+-	select LZO_DECOMPRESS
+ 	default y
+ 	help
+ 	  Support LZO-RLE compress algorithm, if unsure, say Y.
+-- 
+2.25.1
 
