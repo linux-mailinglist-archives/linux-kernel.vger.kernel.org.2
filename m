@@ -2,96 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857D83268BC
+	by mail.lfdr.de (Postfix) with ESMTP id 155613268BB
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbhBZU2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:28:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41760 "EHLO
+        id S231388AbhBZU2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:28:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhBZUTE (ORCPT
+        with ESMTP id S230334AbhBZUSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:19:04 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0452C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:18:21 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id jx13so3165411pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:18:21 -0800 (PST)
+        Fri, 26 Feb 2021 15:18:36 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8419C0611C2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:17:31 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id c23so6041629edr.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:17:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=9E+CJGi9vbnEQTKM+ByNuYS5mQQ+2hX085/dBrdX5hI=;
-        b=eF0N998zDZscF98K/U6KhV/DH/lPR6SR4RV0yhiLLSA1L1B+bsfUSASoBRA24ZBPxi
-         9YHsHI7STyER7wx8VXHr+pXZiDyeyEFexER1GjWJpW9+RkC9gc0NEKN9c/TxELvKKb6q
-         N0eUIE3mxU66D/6Z+Qg+Usy0C3OfxqxCusn3UEvtAEEsHMPC9CENxdyNzpLUs/DE1tGL
-         TxwO3xig1gv3gSpLs7K6ZF8XThlVlazBd9QNYEEGElv8KDhjDhNKm22QONS1pJx2MXG3
-         Ri+tY+LYl1sH8hLOR2txXP0Wvn+8UpgIfTUZIFteH5z1pKqgxRJmdEk3VSS0RJ3Hx1Fy
-         8dFw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=y9tnX4xQQ5Op8Hxcrn5nj7mki8AFmTwG2wBetASTk5U=;
+        b=guDAnlYANU+HERicwhxAFjdQDQ9JEaPbygYx1saC9hXfoR22j+QWWhhY3uKP8X4IDl
+         Zesdhs3qiiL5P8OtOOhS0+Qndf9//6NBdHToDCPmxvCAijBl/OKhmGg1gmhpsJX/JQId
+         AuSXowhjlDjm4rTzBDacNiAmDcl3/JWuvc8MttWPrXvjA6UTJ4m8VYoktfRzCTSDI9Zn
+         z21h5ScqRrQ4hTG7hlckLqpExHYaxKPNSwdyRBB5dLvInfHPojX93z78IUNQOZK8dXp/
+         UQzQttdZqg/O8fXppOGsZ+PGss8+77zsjZYqvmZx6VBr/Wb1SlUhm48vlZe7rzMNiQJ+
+         eQlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding:cc:from:to;
-        bh=9E+CJGi9vbnEQTKM+ByNuYS5mQQ+2hX085/dBrdX5hI=;
-        b=bSskFpZkMg93RDvv9jVSN87vR0pxILP1aZ6lv6g4bmOGC2sDLjO5H72+sUAaWvKYpx
-         NaHEdfmeDScVCrnhkY2DuXdSROG/JxiMvHkiwjCr4yQabhMTiRg5rh7NxNJ0jAAWxwB6
-         0d6w6jJn/1r/hBTmT1LX3DoBZw8QGhwEnvceF5XGlBr+qEE8bINeNXuKtl8VHTgD2Zpa
-         6NTItWsuGWqLDfLFKwobaBixSxnplIsirdge/kumStW6e8e2IosYhYocWg0O/3psGUXe
-         SuAsYnKybfckkNPiH1lLmsS02wTCXvW/WarqRpa07UFvHiGgHrdgrx0IbizoqdPNeWzU
-         caQA==
-X-Gm-Message-State: AOAM531D6vDB30Do1FtG+8IzLQjunq++k2hROMHenkZfRVUDUDRwUuNH
-        aZpAubgIauK5pbYuMko4I4F3Bg==
-X-Google-Smtp-Source: ABdhPJyMDe4rbtveTYgncBcjGF3qz45nqxfrUYyHXvTYLo0tBDml/VM1sEKxYwUxRH3SrFB4qZpRcw==
-X-Received: by 2002:a17:90b:1213:: with SMTP id gl19mr5026942pjb.107.1614370701536;
-        Fri, 26 Feb 2021 12:18:21 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id e24sm9202856pjr.13.2021.02.26.12.18.20
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=y9tnX4xQQ5Op8Hxcrn5nj7mki8AFmTwG2wBetASTk5U=;
+        b=tJpclSEqvKgDvigRCcWRc5Yl/egmejWBTyqJP8hTWhnZbTIqESx6TvMPwJ9xbLo7jd
+         jzeEX0xfBul+fipbySpy6wyn40PsC3nlbv9J+smp2xA3kdAboJ0smuCc5OtB79PDu2JV
+         vB/07e2pQtSqfnI3fX37MPHSQCOGrxF6XxCAHnj4otWyatM0wG2kRfamuoM0bjvqx1zg
+         O4Zn5ITyYdX/OUEVv6PQ3c6joqUdJ/QWjL53bm1PXCUupm4LwFQWa6W+aDztL4TAp/E9
+         +zwXaZ9JbIDSwC7LJvksCurLX2LmZpOdyEDwfdj7qGq33hsADGEvuFmmpLrasBTKvDDl
+         U8ow==
+X-Gm-Message-State: AOAM531PkLjs0gSXFxZ9vrn1O0WsZVnzQ6/6p/4zdLr9RfxM/lbUxuoq
+        AjL/Plw9nHFmZ39xBgyk0dDVOWS+aQ==
+X-Google-Smtp-Source: ABdhPJzIH5PRON6qqB3jZqJGxwI2Nsdr0YO4G7CHsq3OmL3zXh8DqSy3QgRX5FeUd0hjRK4qkilFaQ==
+X-Received: by 2002:a05:6402:1c86:: with SMTP id cy6mr4129060edb.276.1614370650511;
+        Fri, 26 Feb 2021 12:17:30 -0800 (PST)
+Received: from localhost.localdomain ([46.53.253.104])
+        by smtp.gmail.com with ESMTPSA id fw3sm1792731ejb.82.2021.02.26.12.17.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 12:18:21 -0800 (PST)
-Subject: [PATCH 2/2] topology: Guard node_reclaim_distance with CONFIFG_NUMA
-Date:   Fri, 26 Feb 2021 12:17:21 -0800
-Message-Id: <20210226201721.510177-2-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-In-Reply-To: <20210226201721.510177-1-palmer@dabbelt.com>
-References: <20210226201721.510177-1-palmer@dabbelt.com>
+        Fri, 26 Feb 2021 12:17:30 -0800 (PST)
+Date:   Fri, 26 Feb 2021 23:17:28 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+Subject: #pragma once (was Re: incoming)
+Message-ID: <YDlXWHkYntoO4fk0@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     peterz@infradead.org, srikar@linux.vnet.ibm.com,
-        valentin.schneider@arm.com, vbabka@suse.cz, mpe@ellerman.id.au,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel-team@android.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     akpm@linux-foundation.org, atishp@atishpatra.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+Linus wrote:
 
-This is only defined (and useful) for CONFIG_NUMA, but isn't
-conditionally declared.  This makes users a bit more of a headache to
-track down.
+> I'm hoping to just do -rc1 this weekend after all - despite my late
+> start due to loss of power for several days.
+> 
+> I'll allow late stragglers with good reason through, but the fewer of
+> those there are, the better, of course.
 
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
- include/linux/topology.h | 2 ++
- 1 file changed, 2 insertions(+)
+I want to sent treewide "#pragma once" conversion:
 
-diff --git a/include/linux/topology.h b/include/linux/topology.h
-index 7634cd737061..15f02281bdf0 100644
---- a/include/linux/topology.h
-+++ b/include/linux/topology.h
-@@ -73,7 +73,9 @@ int arch_update_cpu_topology(void);
-  * *improves* if allowed to reclaim memory and load balance tasks
-  * between NUMA nodes 2-hops apart.
-  */
-+#ifdef CONFIG_NUMA
- extern int __read_mostly node_reclaim_distance;
-+#endif
- 
- #ifndef PENALTY_FOR_NODE_WITH_CPUS
- #define PENALTY_FOR_NODE_WITH_CPUS	(1)
--- 
-2.30.1.766.gb4fecdf3b7-goog
+	18092 files changed, 18883 insertions(+), 99841 deletions(-)
 
+ideally it is done as 1 commit avoiding my death by thousand cuts of
+going through all of maintainers.
+
+There may be a compile failure or two but the list of exceptions is
+stable.
+
+Opinions? :-)
