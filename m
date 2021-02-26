@@ -2,161 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC196326795
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5069B326799
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhBZTyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 14:54:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36296 "EHLO
+        id S230041AbhBZTzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 14:55:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBZTyA (ORCPT
+        with ESMTP id S229849AbhBZTzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 14:54:00 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA3AC061786;
-        Fri, 26 Feb 2021 11:53:20 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id z126so10936626oiz.6;
-        Fri, 26 Feb 2021 11:53:20 -0800 (PST)
+        Fri, 26 Feb 2021 14:55:01 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D17C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:54:20 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id e2so7592871iog.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:54:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fhZMDDNAuvyoi6Q1oQYjvRFeDXsfEhM3TJa22IcYiiU=;
-        b=Gsfu5OB/Czx81TfcU31Iu65nK2fWkuRSetI/XguUwNafQRQFSkYozK6b3IGVBh6NeY
-         OHe3JqX/mfyFIXN1cOxb8g4ydP4UyVEpfFF5zbquu8CKiqK87OdpdYUJv9NS+RDI6I34
-         52uY+lQwJpE40xSTwI1LJzMiFE9sgNM+A4847QzBYg1AiNOeSzyiWoCigfDCmgkVWP6R
-         eb9MSZ4Y8tZ/lKgs+5+p+LAlTI14oB+JZsgEz6WG58GLA2xx99nWpQWy0tE06dqhwzA/
-         gyZFEX97ONctcDTIeAKPk2zS2YlWk2QdKmbEQBd5qk26SnnQYXpRUsVqfC/XlBdDBvV0
-         L/sw==
+        d=cosmicpenguin-net.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JIP7pj2bII2YYqVDvOr4T8XZtG0IKAlZ5S5uVeQftY8=;
+        b=ReNrLHuTcYMc5CV8DYEubwqgUp8OLflDGEY3KtfN43gOeixyXRxztxX99MgxHh0g5d
+         64KTNKWWxXh2DgacpC4Wr91I7A5c/DV52KLxiNYe3/k3tSnFScQqUEYqVhFnrqyAJPCv
+         OU7V7jy/7u93j2hDr4MzeddvDsi7nOAxg/L86PTHJhXfrSfMy5J+Wj6K1fp0e7IsjMFI
+         b9S9V8UPPqDvUV/hcyBozDp+3fFJuK3M6drZly2dsWbnlnimNN39KgKUgcUMs0xLzOhb
+         rRqpiSFSTrSfDaJo77cGfE9CpNFM0cy4knvulCrmTuoZeplJi6wi92xK1eRB97L/Vr6b
+         duKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=fhZMDDNAuvyoi6Q1oQYjvRFeDXsfEhM3TJa22IcYiiU=;
-        b=YVBx0nulFJ2Pi+hT2zqk4KYa5KqVHUhH1ymwdkl8o/IDm1wYj/6+zxg7vyqevnYjxT
-         kESWlAKB/3jXBDG4IyWyKwHZd5M73VAMxv7Lt9nySGY6HQyFeQ6Bc6egEW59WLag+8kV
-         wcr6izLVHuvobnElXVVJW5tN7xLrHWCl/URM9lJMHHYX+gUPxWEiU1TICcfpCuPLtokk
-         44ZKHKiqI7YL48zNiloErzygeunkWaE5AM1P8/Cco+4PyTp9cHF4GbF/sHUIP+r93gWx
-         zmnPR7S/g1enVMJEb4Czfg2kf7suTyq8uq2epai6xBeijdVFUvjZvs0NSpTCHWYQZtUT
-         5Fjg==
-X-Gm-Message-State: AOAM532PCdJYu2wk3k5ppMB29lyZM6UxPrf+zjJ+joF668376PSak+wx
-        OjgdYLP2tQj/p5PHRRev8bExpa38Pjs=
-X-Google-Smtp-Source: ABdhPJw6dPs0c2oc9wOPM339L6g0LJMKPzrvodWTNcQSMtwTMzgygZQxqVzaK9fDw96VTnJvhxSe1g==
-X-Received: by 2002:a05:6808:8cb:: with SMTP id k11mr3243253oij.151.1614369199004;
-        Fri, 26 Feb 2021 11:53:19 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f29sm1929789ook.7.2021.02.26.11.53.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 11:53:17 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 0/2] add ripple counter dt binding and driver
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
-References: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
- <CAK8P3a2=nZ3bbeguXjbFrhz0nWeUOcLM7mRudhPDrcb+jZ4VvQ@mail.gmail.com>
- <e5fd7ce3-3ba6-e5de-1cbc-fa31bd46942c@rasmusvillemoes.dk>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <2208f466-e509-6bbe-0358-34effb965610@roeck-us.net>
-Date:   Fri, 26 Feb 2021 11:53:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:subject:message-id:mail-followup-to
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=JIP7pj2bII2YYqVDvOr4T8XZtG0IKAlZ5S5uVeQftY8=;
+        b=p7b0xG04I22Txf26p/x08HXea+1GJVSz4Pj0eigAbYSTc0+JTEFPJl5W6VIBKw4S9n
+         SUnFIfZBlasAvt+IZF6J/B5PhmwMbbup5mmoQJVAAgncxdLVB2+d+FozGmbcQKYZph7a
+         auvetI0XU/9pP7w9P/2sVo6TcrtO5pNPNJMEl/tfKSDiS5lhVYrY5ouX8CB5EEuNgYX1
+         mvlEelBuYqvoqAkJfIOthHHUH4c6KJ4+n4NDFwce69XiQabMb9L/xQuMu0GpUmFEg7fu
+         vU93je6JuQIjj+CPyiNNVUEVVJbT0v/3MC1OFWBT7G3IwjjCXpKA97Cp6wcNZNVYuiy4
+         4fqQ==
+X-Gm-Message-State: AOAM53154769nrf8dUSZzRNkuAaFui+BjZrhJGZp7cSwOTOhtOZHMgVc
+        /kAC/wKrjFYSHjatpo77xIO0Cg==
+X-Google-Smtp-Source: ABdhPJxT3JMfcN7o0fe55mwMhIvwoQjsrhAEaDedA6b09+t1iIJRi3Lvanp7xOpZX4iPzsgu8QnT+Q==
+X-Received: by 2002:a02:3541:: with SMTP id y1mr4532704jae.66.1614369259483;
+        Fri, 26 Feb 2021 11:54:19 -0800 (PST)
+Received: from cosmicpenguin.net (c-71-237-100-236.hsd1.co.comcast.net. [71.237.100.236])
+        by smtp.gmail.com with ESMTPSA id u14sm5012109ilv.0.2021.02.26.11.54.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 11:54:19 -0800 (PST)
+Date:   Fri, 26 Feb 2021 12:54:16 -0700
+From:   Jordan Crouse <jordan@cosmicpenguin.net>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 2/2] iommu/arm-smmu-qcom: Move the adreno smmu specific
+ impl earlier
+Message-ID: <20210226195416.7dzyln7v6lke6ssr@cosmicpenguin.net>
+Mail-Followup-To: Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.1614332994.git.saiprakash.ranjan@codeaurora.org>
+ <c607d71eb0fe507c8b83cc0ea9b393777f22149a.1614332994.git.saiprakash.ranjan@codeaurora.org>
+ <YDku5PFQZetP4iG8@builder.lan>
+ <20210226184813.t6ohkh3gxeseev2j@cosmicpenguin.net>
 MIME-Version: 1.0
-In-Reply-To: <e5fd7ce3-3ba6-e5de-1cbc-fa31bd46942c@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226184813.t6ohkh3gxeseev2j@cosmicpenguin.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/26/21 8:35 AM, Rasmus Villemoes wrote:
-> On 26/02/2021 15.35, Arnd Bergmann wrote:
->> On Fri, Feb 26, 2021 at 3:14 PM Rasmus Villemoes
->> <linux@rasmusvillemoes.dk> wrote:
->>
->>>
->>> So I'm thinking that the proper way to handle this is to be able to
->>> represent that ripple counter as a clock consumer in DT and have a
->>> driver do the clk_prepare_enable(), even if that driver doesn't and
->>> can't do anything else. But I'm certainly open to other suggestions.
->>
->> How about adding support for the optional clock to the gpio_wdt driver,
->> would that work?
+On Fri, Feb 26, 2021 at 11:48:13AM -0700, Jordan Crouse wrote:
+> On Fri, Feb 26, 2021 at 11:24:52AM -0600, Bjorn Andersson wrote:
+> > On Fri 26 Feb 03:55 CST 2021, Sai Prakash Ranjan wrote:
+> > 
+> > > Adreno(GPU) SMMU and APSS(Application Processor SubSystem) SMMU
+> > > both implement "arm,mmu-500" in some QTI SoCs and to run through
+> > > adreno smmu specific implementation such as enabling split pagetables
+> > > support, we need to match the "qcom,adreno-smmu" compatible first
+> > > before apss smmu or else we will be running apps smmu implementation
+> > > for adreno smmu and the additional features for adreno smmu is never
+> > > set. For ex: we have "qcom,sc7280-smmu-500" compatible for both apps
+> > > and adreno smmu implementing "arm,mmu-500", so the adreno smmu
+> > > implementation is never reached because the current sequence checks
+> > > for apps smmu compatible(qcom,sc7280-smmu-500) first and runs that
+> > > specific impl and we never reach adreno smmu specific implementation.
+> > > 
+> > 
+> > So you're saying that you have a single SMMU instance that's compatible
+> > with both an entry in qcom_smmu_impl_of_match[] and "qcom,adreno-smmu"?
+> > 
+> > Per your proposed change we will pick the adreno ops _only_ for this
+> > component, essentially disabling the non-Adreno quirks selected by the
+> > qcom impl. As such keeping the non-adreno compatible in the
+> > qcom_smmu_impl_init[] seems to only serve to obfuscate the situation.
+> > 
+> > Don't we somehow need the combined set of quirks? (At least if we're
+> > running this with a standard UEFI based boot flow?)
 > 
-> I think it would _work_ (all I need is some piece of code doing the
-> clock_prepare_enable(), and until now we've just stashed that in some
-> otherwise unrelated out-of-tree driver, but we're trying to get rid of
-> that one), but the watchdog chip isn't really the consumer of the clock
-> signal, so in-so-far as DT is supposed to describe the hardware, I don't
-> think it's appropriate.
-> 
-> OTOH, one could argue that the watchdog chip and the ripple counter
-> together constitute the watchdog circuit.
-> 
-> Cc += watchdog maintainers. Context: I have a gpio-wdt which can
-> unfortunately effectively be disabled by disabling a clock output, and
-> that happens automatically unless the clock has a consumer in DT. But
-> the actual consumer is not the gpio-wdt.
-> Please see
-> https://lore.kernel.org/lkml/20210226141411.2517368-1-linux@rasmusvillemoes.dk/
-> for the original thread.
-> 
+> We *do* need the combined set of quirks, so there has to be an adreno-smmu
+> impelmentation that matches the "generic" implementation with a few extra
+> function hooks added on. I'm not sure if there is a clever way to figure out how
+> to meld the implementation hooks at runtime but the alternative is to just make
+> sure that the adreno-smmu static struct calls the same quirks as its generic
+> partner.
 
-Sorry, I am missing something. If the watchdog is controlled by the clock,
-it is a consumer of that clock. What else does "consumer" mean ? And why
-not just add optional clock support to the gpio_wdt driver ?
+To clarify, the gpu-smmu doesn't strictly need the s2cr handoff or the cfg_probe
+though it wouldn't hurt to have them since they would be essentially
+passthroughs for the GPU. We do need to capture errata like the
+sdm845_smmu500_reset which is already part of the upstream adreno
+implementation.
 
-Guenter
+I think the main takeaway is that if a new errata or quirk is added
+for main mmu500 it needs to be considered for adreno-smmu too.
+
+Jordan
+
+> > > Suggested-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> > > ---
+> > >  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 12 +++++++++---
+> > >  1 file changed, 9 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> > > index bea3ee0dabc2..03f048aebb80 100644
+> > > --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> > > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> > > @@ -345,11 +345,17 @@ struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
+> > >  {
+> > >  	const struct device_node *np = smmu->dev->of_node;
+> > >  
+> > > -	if (of_match_node(qcom_smmu_impl_of_match, np))
+> > > -		return qcom_smmu_create(smmu, &qcom_smmu_impl);
+> > > -
+> > > +	/*
+> > > +	 * Do not change this order of implementation, i.e., first adreno
+> > > +	 * smmu impl and then apss smmu since we can have both implementing
+> > > +	 * arm,mmu-500 in which case we will miss setting adreno smmu specific
+> > > +	 * features if the order is changed.
+> > > +	 */
+> > >  	if (of_device_is_compatible(np, "qcom,adreno-smmu"))
+> > >  		return qcom_smmu_create(smmu, &qcom_adreno_smmu_impl);
+> > >  
+> > > +	if (of_match_node(qcom_smmu_impl_of_match, np))
+> > > +		return qcom_smmu_create(smmu, &qcom_smmu_impl);
+> > > +
+> > >  	return smmu;
+> > >  }
+> > > -- 
+> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> > > of Code Aurora Forum, hosted by The Linux Foundation
+> > > 
+> > _______________________________________________
+> > iommu mailing list
+> > iommu@lists.linux-foundation.org
+> > https://lists.linuxfoundation.org/mailman/listinfo/iommu
