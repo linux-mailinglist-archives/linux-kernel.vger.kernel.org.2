@@ -2,71 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C01F326436
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB3D32643A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhBZOlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:41:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47888 "EHLO mail.kernel.org"
+        id S230041AbhBZOlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:41:55 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:60516 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhBZOlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:41:14 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S229991AbhBZOlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 09:41:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614350493; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=QKnTlpsb0EuIYLzuabumyRuDVAYh1JzK2VWq+csCaVU=; b=Q7sTM9gPq6Apc9uc7n8lx+iBVmOiaSeWKXeCtzMs9lxFc/45JmQMiuWGQCYlB/qA3/2CmVe4
+ wBMzWH2sDP+T+e0u+g6Te39t3r5ZJrIw1EthqaDCH4C+NmgESOxWxdWAR+PxWRhcJnxc07SW
+ FQx0iOLwET0EvjBVnq/eOZZIKp8=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6039087816ba745201cdd9da (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 14:40:56
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 714DDC43462; Fri, 26 Feb 2021 14:40:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from Pillair (unknown [103.149.159.134])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C375F64E20;
-        Fri, 26 Feb 2021 14:40:33 +0000 (UTC)
-Date:   Fri, 26 Feb 2021 09:40:32 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Xu Wang <vulab@iscas.ac.cn>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing: Use WARN(1,...)
-Message-ID: <20210226094032.49ac56d7@gandalf.local.home>
-In-Reply-To: <20210226094426.49016-1-vulab@iscas.ac.cn>
-References: <20210226094426.49016-1-vulab@iscas.ac.cn>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 159B7C433C6;
+        Fri, 26 Feb 2021 14:40:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 159B7C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
+From:   "Rakesh Pillai" <pillair@codeaurora.org>
+To:     "'Kalle Valo'" <kvalo@codeaurora.org>
+Cc:     <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "'Youghandhar Chintala'" <youghand@codeaurora.org>
+References: <1593197633-9014-1-git-send-email-pillair@codeaurora.org> <87k0tbngz6.fsf@codeaurora.org> 
+In-Reply-To: 
+Subject: RE: [PATCH v2 0/2] ath10k: Fixes during subsystem recovery
+Date:   Fri, 26 Feb 2021 20:10:48 +0530
+Message-ID: <002901d70c4d$6282e6c0$2788b440$@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHK1UA7L8ou4VjNidoeHu16b5pDlgHqoQMdAewVlEiqZDo1MA==
+Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021 09:44:26 +0000
-Xu Wang <vulab@iscas.ac.cn> wrote:
 
-> Use WARN(1,...) rather than printk followed by WARN_ON(1).
 
-Why?
-
+> -----Original Message-----
+> From: Rakesh Pillai <pillair@codeaurora.org>
+> Sent: Friday, January 15, 2021 6:56 PM
+> To: 'Kalle Valo' <kvalo@codeaurora.org>
+> Cc: 'ath10k@lists.infradead.org' <ath10k@lists.infradead.org>; 'linux-
+> wireless@vger.kernel.org' <linux-wireless@vger.kernel.org>; 'linux-
+> kernel@vger.kernel.org' <linux-kernel@vger.kernel.org>
+> Subject: RE: [PATCH v2 0/2] ath10k: Fixes during subsystem recovery
 > 
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
-> ---
->  kernel/trace/trace.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 526fd5ac2ba8..a556b8c00a9f 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -1957,7 +1957,7 @@ static int run_tracer_selftest(struct tracer *type)
->  	tr->current_trace = saved_tracer;
->  	if (ret) {
->  		/* Add the warning after printing 'FAILED' */
-> -		WARN(1, KERN_CONT "FAILED!\n");
-> +		WARN(1, "FAILED!\n");
+> > -----Original Message-----
+> > From: Kalle Valo <kvalo@codeaurora.org>
+> > Sent: Tuesday, December 22, 2020 12:07 AM
+> > To: Rakesh Pillai <pillair@codeaurora.org>
+> > Cc: ath10k@lists.infradead.org; linux-wireless@vger.kernel.org; linux-
+> > kernel@vger.kernel.org
+> > Subject: Re: [PATCH v2 0/2] ath10k: Fixes during subsystem recovery
+> >
+> > Rakesh Pillai <pillair@codeaurora.org> writes:
+> >
+> > > This patch series includes some fixes when the device
+> > > is in recovery mode, i.e. when the firmware goes down.
+> > >
+> > > - Pausing TX queues when FW goes down
+> > > - Removed unwanted/extra error logging in pkt TX path
+> > > - Skipping wait for FW response for delete cmds
+> > > - Handling the -ESHUTDOWN error code in case of SSR.
+> > >
+> > > Rakesh Pillai (2):
+> > >   ath10k: Pause the tx queues when firmware is down
+> > >   ath10k: Skip wait for delete response if firmware is down
+> >
+> > This has been tested only on WCN3990. How do I know that this doesn't
+> > break other hardware families?
+> 
+> " ath10k: Pause the tx queues when firmware is down"
+> This is done only for SNOC (wcn3990) target and does not affect other
+> targets.
+> 
+> " ath10k: Skip wait for delete response if firmware is down"
+> The skip for wmi responses is done based on the flag
+> "ATH10K_FLAG_CRASH_FLUSH", which is generic for all targets.
+> Since if the FW is down, there wont be any response from the FW for any
+> target.
+> 
 
-The above isn't even in my tree.
+Hi Kalle,
+I see that these patches are in "deferred" state. Is there any info/change
+needed in this patch ?
 
-Anyway, look at the code around it, and then tell that this patch makes
-sense.
-
-NAK.
-
--- Steve
-
-
->  		return -1;
->  	}
->  	/* Only reset on passing, to avoid touching corrupted buffers */
+Thanks,
+Rakesh Pillai.
 
