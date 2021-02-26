@@ -2,88 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0C432691E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AEE326921
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhBZVEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 16:04:45 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:62253 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhBZVEb (ORCPT
+        id S230248AbhBZVGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 16:06:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhBZVGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:04:31 -0500
-Date:   Fri, 26 Feb 2021 21:03:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1614373419;
-        bh=mgI15i8Gqoao+PhkVDc90QeW7Hur0oMNEEFJzJqqPQI=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=kporxv1OhRLR2fWYgLjHZsd7U96MkrLdMoSpbDH7tcwZjOYYTCXWPKJ6kTRkqIsRo
-         ynzaphaFrDuhhZ6ORGluiK1VFZK+k3I7EM3GvhfPH1gBRbrrK3Tlh5bzPQM+YsY3R3
-         pfW07b0hbnSpw6id6Tx3pfwExlL9wPYG+Zw2VxDE=
-To:     Rob Herring <robh@kernel.org>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Rob Herring <robh+dt@kernel.org>, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: Re: [PATCH v4 2/2] dt-bindings: Document bindings for new SDM845 devices
-Message-ID: <3ffff921-8f83-ccf9-b304-667ae0611e2e@connolly.tech>
-In-Reply-To: <20210125221812.GA1120729@robh.at.kernel.org>
-References: <20210114203057.64541-1-caleb@connolly.tech> <20210114203057.64541-3-caleb@connolly.tech> <20210125221812.GA1120729@robh.at.kernel.org>
+        Fri, 26 Feb 2021 16:06:40 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1441C061574;
+        Fri, 26 Feb 2021 13:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oAMn00qL1UH8lZgRFRyPH+GWc5Azm2mPOYcIwE8BO0U=; b=DlkbmiwR6dInsoXYmDyn7MlvUg
+        D8Fo4Ojdj+ikq44ei9R7Vya6o5uK98vRr+s5D/v62VkwvS1qiFe/wbvAHLUMVaVgaju5yBGmrK6Xa
+        jx7j1/Pf8c41fiOP+MywvbZKn6dKbs58RJ8VCQL/eduuKyyKUVFgJk2PpPAeZZtEuljTygoCqQy/9
+        ntMROheOEFQAw5qX1S1KgMFxbeCanRnbrVNcPVroF63/s1yPseVF30MPQYo7ZbeM3PPvpWuFIySEN
+        nuSY71G+g0jw53oHl3UtNjSuTJQFeEJTj+UnuLEpfSWUfF62JtjdBxUeN+GCCy3sNBSItAZ9Y1k+1
+        2pqxPOFA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lFkJ7-0007Ll-5G; Fri, 26 Feb 2021 21:05:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BC536300DB4;
+        Fri, 26 Feb 2021 22:05:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A214320616380; Fri, 26 Feb 2021 22:05:51 +0100 (CET)
+Date:   Fri, 26 Feb 2021 22:05:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, mhocko@suse.com,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 3/3] kernel/smp: add more data to CSD lock debugging
+Message-ID: <YDlirwTWMmZ3g0ts@hirez.programming.kicks-ass.net>
+References: <20210226112521.8641-1-jgross@suse.com>
+ <20210226112521.8641-4-jgross@suse.com>
+ <YDkkFBerBlW5uUBS@hirez.programming.kicks-ass.net>
+ <20210226181205.GZ2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226181205.GZ2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Fri, Feb 26, 2021 at 10:12:05AM -0800, Paul E. McKenney wrote:
+> On Fri, Feb 26, 2021 at 05:38:44PM +0100, Peter Zijlstra wrote:
+> > 
+> > I hate all of this, but if this will finally catch the actual problem,
+> > we can then revert all this, so sure.
+> 
+> OK, I will bite...  What exactly do you hate about it?
 
-Hi,
-
-Is this patch ready to be merged?
-
-Regards,
-
-Caleb
-
-On 25/01/2021 10:18 pm, Rob Herring wrote:
-> On Thu, 14 Jan 2021 20:32:06 +0000, Caleb Connolly wrote:
->> Document compatible bindings for the new OnePlus 6/6T devices.
->>
->> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
->> ---
->>   Documentation/devicetree/bindings/arm/qcom.yaml        | 5 +++++
->>   Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->>   2 files changed, 7 insertions(+)
->>
-> Acked-by: Rob Herring <robh@kernel.org>
-
------BEGIN PGP SIGNATURE-----
-Version: ProtonMail
-
-wsFmBAEBCAAQBQJgOWIgCRAFgzErGV9ktgAKCRAFgzErGV9ktk+xD/0fKnmh
-g6DDJRgcIdxgOqGCoZZDjYnuIsl1H89A2lJtoGB8x5Z6sQM6RgffkxWY+D9o
-P7rhEsSTnRKGaLR+fuSHuhrorafQ2LYAB0LB8R8ngvRGJoFhEEMzGAb3+j/j
-oBXveVU+bb8S+nQnDOdGZ4sJZ780gEpdm4yVWwwjmbBc2E2fJPgLRAeADcb8
-3eG58dizoxtiEWkISIorX9aCVfHLgnGcl3UXumGN8SjKQR0b3tIoJy1heHXZ
-o0RZj407kYWgj2zl9bO93ki735x7kb5T4cwE1HBO6nxs2BsKJMcDS9Vdo+FQ
-EDsIfChWxHmSKDzeZCoG45qKBeFLxmqx7TpoJb7mMuHlTtaQxihhMoAefWDi
-8AVb0N+IMwV0H1Ma7lnlW2Y71FrY/dVLYbE6wurCR7LYmz1yHZ0Fz5yiT6IO
-r7dW2BPFcX2Ex0+8OK3OXzgxtncNVxVbfRV/vV6daBe3clfb+73ZZTjHwHna
-BaGc3ShXLtoTZndb5f+kKW7q3nScOlQmLnlM+Hd05pKp41uzG5qwpE+dVF7R
-Kz+ekQka7tY8jFQoDE7ChR1+LBcCcwQ8/T+4pie86NeKDGO0NGseRSav1G/0
-LJSk+hn/jm7iBDW9de/UKLhCoZAz8JrO95YiNell2G6tB5PdSdYphasS3vzT
-uy9b/O2m1rv1DeWoUg=3D=3D
-=3DrBzA
------END PGP SIGNATURE-----
-
+It's ugly and messy. We're basically commiting a debug session. Normally
+gunk like this is done in private trees, then we find the problem and
+fix that and crap like this never sees the light of day.
