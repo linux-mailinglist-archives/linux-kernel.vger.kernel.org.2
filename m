@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E846B326463
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:50:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BF3326468
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhBZOty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:49:54 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:36848 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230209AbhBZOtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:49:16 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614350933; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=7f6oYZbS+4PmPt/CVutDJnDyMbGA+QS/Vt1PzOpRTeM=; b=uknkUeJmrhwlIvsLt20HKsg2Uk1xqGq6R5y8VIOfIFAIXaYbZerZaYe2uP8uM0jYDPeigOrx
- ZuIaJCI04Cv+e6D3jWefMIGgTTbRTFDxlSIZ+2P2NqIe7sq+1mbRAYj5Uffa0AZLcqn1WCJ4
- 1j1imrLb8Z1MNnq/G0whfOdzl1Y=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60390a3475e4458f08685860 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 14:48:20
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3C62EC43461; Fri, 26 Feb 2021 14:48:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 55A23C433C6;
-        Fri, 26 Feb 2021 14:48:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 55A23C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH RFC v2] mhi: Enable unique QRTR node ID support
-To:     Gokul Sriram Palanisamy <gokulsri@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
-        sricharan@codeaurora.org
-References: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <838f49f6-ea8a-4c22-21f2-45721773bbc9@codeaurora.org>
-Date:   Fri, 26 Feb 2021 07:48:18 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230095AbhBZOwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:52:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhBZOwn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 09:52:43 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4137AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:52:03 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id u20so15296399ejb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:52:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BcTToyzpeOpMOHGf2502u3oDLI9dQyecgjyBUkdWpJU=;
+        b=QzVQuEjUz3ppI18P4bRTN00h0uHT541lO9ITFI02yXlfF9/DhS0PGUFkeU+9H4HY3d
+         wN9Sp32D65lwcRqK4cKGMYL80hdoa5n16yXfIIqOJlbozAGUOto9zI0WtVf9Ql5amtWg
+         CWG18LsyRBnSUxasdsvMgkcQkh8sRcmCzhuBNZIy9IbDK0S8M5VYJ0jTLCkq6aZgC4Jc
+         IPwhqeAPp0Oh9oKUZ9awwIH23prx2xuFWDHyixvX+VUIawMfPjPVMacuoF3qidDZ2Jjr
+         KWGEa2qA/A9uQuAFyf7oVQ+yBhOOsTnpj95o6YT6f9TQJyS2oj0S/A4A4IxDJ48caF1t
+         46sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BcTToyzpeOpMOHGf2502u3oDLI9dQyecgjyBUkdWpJU=;
+        b=ilWLGP6FZes5Oy+j809TghAyz1kMEc3Utd6xzp4wxI5xwf0jb2eCZvsrnwtN/cbLkT
+         yqOoh3I4DPc2UEnePBo8VDHVynlDMTM8sJCy+6RxIFz8oPrroIZx+FI/hlAw8KUUt03c
+         d6j5DvXLvYztPboDLXbjb7jmrkZRmNVBsEUUWm91s8dolEYooH5xCxzHmGmz4vlOG2wp
+         1zh6zS9b6YP/z+ud4YOS5+aZOsRa2srQs3NSLYgqojktRHpeaSlnvNFKZz1qBxU35LVb
+         9gSw6N/3tsV7ZrZP9sYhgatapsdfaSiJPl+sAp2v35CMmk2sfgTW+qZHv4ahUd4ceHYs
+         kH+A==
+X-Gm-Message-State: AOAM531ZtXLa4MfVqU05SNuGtuK872+3Jo2O6/gCkTv72ToIR0A2U04P
+        xI6gZSxeEXTF40uoPD1HDGVf4Zz6Ft8NRSwa
+X-Google-Smtp-Source: ABdhPJyiANY52+/vXMbXgLIX7IYTgMTMZ2ZhjyL9Ed6ngh1Jd33Uh9tBqMCNX+e+dlo0TJHUYuWGPA==
+X-Received: by 2002:a17:906:5043:: with SMTP id e3mr3802802ejk.260.1614351122015;
+        Fri, 26 Feb 2021 06:52:02 -0800 (PST)
+Received: from ubuntudesktop.lan (205.158.32.217.dyn.plus.net. [217.32.158.205])
+        by smtp.gmail.com with ESMTPSA id c9sm5964663edt.6.2021.02.26.06.52.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 06:52:01 -0800 (PST)
+From:   Lee Gibson <leegib@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     dan.carpenter@oracle.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, Lee Gibson <leegib@gmail.com>
+Subject: [PATCH v3] staging: rtl8192e: Fix possible buffer overflow in _rtl92e_wx_set_scan
+Date:   Fri, 26 Feb 2021 14:51:57 +0000
+Message-Id: <20210226145157.424065-1-leegib@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/26/2021 3:42 AM, Gokul Sriram Palanisamy wrote:
-> On multi-mhi platforms, host WiFi driver and
-> QMI test driver needs to differntiate between
-> QMI packets received from multiple mhi devices.
-> 
-> With QCN9000 PCI cards, once SBL gets loaded, we
-> utilize ERRDBG2 register to write a unique value
-> per mhi device from device-tree that the device
-> utilizes to set a unique QRTR node ID and
-> instance ID for the QMI service. This helps QRTR
-> stack in differenting the packets in a multi-mhi
-> environment and can route them accordingly.
-> 
-> sample:
-> root@OpenWrt:/# qrtr-lookup
->    Service Version Instance Node  Port
->         15       1        0    8     1 Test service
->         69       1        8    8     2 ATH10k WLAN firmware service
->         15       1        0   24     1 Test service
->         69       1       24   24     2 ATH10k WLAN firmware service
-> 
-> Here 8 and 24 on column 3 (QMI Instance ID)
-> and 4 (QRTR Node ID) are the node IDs that
-> is unique per mhi device.
-> 
-> Changes since v1:
->   - Addressed review comments by Jeffrey Hugo.
+Function _rtl92e_wx_set_scan calls memcpy without checking the length.
+A user could control that length and trigger a buffer overflow.
+Fix by checking the length is within the maximum allowed size.
 
-No, you didn't.  You fixed the DT comment, but didn't address the rest. 
-  This gets a NACK from me.
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Lee Gibson <leegib@gmail.com>
+---
+ drivers/staging/rtl8192e/rtl8192e/rtl_wx.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-> 
-> Gokul Sriram Palanisamy (1):
->    bus: mhi: core: Add unique qrtr node id support
-> 
->   drivers/bus/mhi/core/boot.c | 14 ++++++++++++++
->   1 file changed, 14 insertions(+)
-> 
-
-
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+index 16bcee13f64b..407effde5e71 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+@@ -406,9 +406,10 @@ static int _rtl92e_wx_set_scan(struct net_device *dev,
+ 		struct iw_scan_req *req = (struct iw_scan_req *)b;
+ 
+ 		if (req->essid_len) {
+-			ieee->current_network.ssid_len = req->essid_len;
+-			memcpy(ieee->current_network.ssid, req->essid,
+-			       req->essid_len);
++			int len = min_t(int, req->essid_len, IW_ESSID_MAX_SIZE);
++
++			ieee->current_network.ssid_len = len;
++			memcpy(ieee->current_network.ssid, req->essid, len);
+ 		}
+ 	}
+ 
 -- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.25.1
+
