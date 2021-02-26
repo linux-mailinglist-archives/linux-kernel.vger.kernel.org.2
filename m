@@ -2,109 +2,468 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D1F326026
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC64132602A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhBZJfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:35:01 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:34874 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhBZJd4 (ORCPT
+        id S230165AbhBZJfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:35:31 -0500
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:42208 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229835AbhBZJfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:33:56 -0500
-Received: by mail-io1-f69.google.com with SMTP id a1so6714208ios.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:33:40 -0800 (PST)
+        Fri, 26 Feb 2021 04:35:10 -0500
+Received: by mail-ot1-f52.google.com with SMTP id e45so8491122ote.9;
+        Fri, 26 Feb 2021 01:34:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=THYLeXXwOJM3i5c20cB4pRajHL018nJ1FMhoVbpcroA=;
-        b=dlb1lwsalz7u0pkEHGkHYx42iCf1s/MHXugf2vugnGbyArBVJroeKjaSO7swjSRTZ/
-         hvgtXR7NIFGJRei12cZZ4lUCSL1L5OV767rnEWLag3DDsHh4M9rKryK6BUxlFLFpGLxo
-         4DcNGYw2DmEYyxssowbdiTW9KF/ex41A7sWmeIhvuYPpVxvLTz729zcMWzNd2J08NbUW
-         riYyJoERGVfDicDdsMTR9KZ20Gf2i1ljEJmMd6R5QEqjPIWLpFpYoE5kjX3YVNbw1ya9
-         xY9ki62pSlXKvk+5NKd4gh17qZZxEkA6iYjc4lnjDr2bNTH273RqSlvngqw9STfxu652
-         0oOg==
-X-Gm-Message-State: AOAM531BhYSKUqb6tMtzLR+PNVn3gjXv1h9SICumDVVM9oQyJQMWRlB1
-        8OAvfpyMqiOwYul9EUhaHa7zHAcKQzQ8pzqi6KuHl/sN+6O+
-X-Google-Smtp-Source: ABdhPJzRcavYFpGfLxQpLP1P+swzqB8AKNY3SwOzdv5E40P+CYLZcbFX+yau32xAelk9H2pNA6xFQcJoYr43OiIRIgdBvv73Bbnd
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nZ43B2HFhv4tlOIOBxKLAeccyFA+MgCrLZMNO9bkBtY=;
+        b=RyOW7CHBaV3cqmEGuJEgCZqIbW7r596XP04qkpfzFS/TZoxE47XQ5PQXJXiFlbEpUV
+         nujJX0JUqnsud3cvbaefbLutd3cO1VELw8xs11cRtYRxxL5eibTUVGLJaKmxWkQFa1wv
+         ZaNAwHkmlwiCILyGIyHsAiXMXQV+PFpj70mGCVDJZTcBNEFJ1UFaBTXDqz1djm55pM6c
+         kXu+n3SZ+oY5pf01UA1meJiuPwuYwFTNPENQuZDiqi2WWNKmZ1+PvEuYRYp97EoGw7sK
+         N3xsiQlqY31URrre0w0f9PbwXBCzgEuxVe9I4o6ZjZI6nPXt21RXTi+JsvkqDiHaYDbo
+         7z0w==
+X-Gm-Message-State: AOAM530Q6oGqCvAkTnVsKOQmj8rPtDlIwfTNWF+SIqSv81DwP//C5di/
+        FjM9anVb3tDIpoj7iAfPb1nxQgI7cWCiBnNzMAI=
+X-Google-Smtp-Source: ABdhPJxJulx5RDzxT58wPu3qYNtvQTi9qUqNw/ixFem6J5L7umQbMAPA5OISKzk6DsnolUxAUJhf+a4+C8nrPYZPKpM=
+X-Received: by 2002:a9d:7196:: with SMTP id o22mr1577563otj.107.1614332067793;
+ Fri, 26 Feb 2021 01:34:27 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:4c8:: with SMTP id 191mr2031284jab.27.1614331995416;
- Fri, 26 Feb 2021 01:33:15 -0800 (PST)
-Date:   Fri, 26 Feb 2021 01:33:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000022ebeb05bc39f582@google.com>
-Subject: KASAN: null-ptr-deref Write in io_uring_cancel_sqpoll
-From:   syzbot <syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com> <20210225225147.29920-5-fabrizio.castro.jz@renesas.com>
+In-Reply-To: <20210225225147.29920-5-fabrizio.castro.jz@renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 26 Feb 2021 10:34:16 +0100
+Message-ID: <CAMuHMdU1uTy_smaZGDcpRnDEUgKn-EYdpqEwP1qTN1=P5M073w@mail.gmail.com>
+Subject: Re: [PATCH 4/7] misc: Add driver for DAB IP found on Renesas R-Car devices
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        Dirk Behme <Dirk.Behme@de.bosch.com>,
+        Peter Erben <Peter.Erben@de.bosch.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Fabrizio,
 
-syzbot found the following issue on:
+On Thu, Feb 25, 2021 at 11:53 PM Fabrizio Castro
+<fabrizio.castro.jz@renesas.com> wrote:
+> The DAB hardware accelerator found on R-Car E3 and R-Car M3-N devices is
+> a hardware accelerator for software DAB demodulators.
+> It consists of one FFT (Fast Fourier Transform) module and one decoder
+> module, compatible with DAB specification (ETSI EN 300 401 and
+> ETSI TS 102 563).
+> The decoder module can perform FIC decoding and MSC decoding processing
+> from de-puncture to final decoded result.
+>
+> This patch adds a device driver to support the FFT module only.
+>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
 
-HEAD commit:    d01f2f7e Add linux-next specific files for 20210226
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=108dc5a8d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1746d2802a82a05
-dashboard link: https://syzkaller.appspot.com/bug?extid=be51ca5a4d97f017cd50
+Thanks for your patch!
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> --- a/drivers/misc/Kconfig
+> +++ b/drivers/misc/Kconfig
+> @@ -461,4 +461,5 @@ source "drivers/misc/bcm-vk/Kconfig"
+>  source "drivers/misc/cardreader/Kconfig"
+>  source "drivers/misc/habanalabs/Kconfig"
+>  source "drivers/misc/uacce/Kconfig"
+> +source "drivers/misc/rcar_dab/Kconfig"
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+be51ca5a4d97f017cd50@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
-BUG: KASAN: null-ptr-deref in atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
-BUG: KASAN: null-ptr-deref in io_uring_cancel_sqpoll+0x2c7/0x450 fs/io_uring.c:8871
-Write of size 4 at addr 0000000000000110 by task iou-sqp-19439/19447
-
-CPU: 0 PID: 19447 Comm: iou-sqp-19439 Not tainted 5.11.0-next-20210226-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xfa/0x151 lib/dump_stack.c:120
- __kasan_report mm/kasan/report.c:403 [inline]
- kasan_report.cold+0x5f/0xd8 mm/kasan/report.c:416
- check_region_inline mm/kasan/generic.c:180 [inline]
- kasan_check_range+0x13d/0x180 mm/kasan/generic.c:186
- instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
- atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
- io_uring_cancel_sqpoll+0x2c7/0x450 fs/io_uring.c:8871
- io_sq_thread+0x1109/0x1ae0 fs/io_uring.c:6782
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 19447 Comm: iou-sqp-19439 Tainted: G    B             5.11.0-next-20210226-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xfa/0x151 lib/dump_stack.c:120
- panic+0x306/0x73d kernel/panic.c:231
- end_report mm/kasan/report.c:102 [inline]
- end_report.cold+0x5a/0x5a mm/kasan/report.c:88
- __kasan_report mm/kasan/report.c:406 [inline]
- kasan_report.cold+0x6a/0xd8 mm/kasan/report.c:416
- check_region_inline mm/kasan/generic.c:180 [inline]
- kasan_check_range+0x13d/0x180 mm/kasan/generic.c:186
- instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
- atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
- io_uring_cancel_sqpoll+0x2c7/0x450 fs/io_uring.c:8871
- io_sq_thread+0x1109/0x1ae0 fs/io_uring.c:6782
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+rcar-dab?
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> --- /dev/null
+> +++ b/drivers/misc/rcar_dab/Kconfig
+> @@ -0,0 +1,11 @@
+> +# SPDX-License-Identifier: GPL-2.0+
+> +#
+> +# R-Car DAB Hardware Accelerator
+> +#
+> +
+> +config RCAR_DAB
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+DAB_RCAR?
+
+> +       tristate "DAB accelerator for Renesas R-Car devices"
+> +       depends on ARCH_R8A77990 || ARCH_R8A77965
+
+|| COMPILE_TEST
+
+> +       help
+> +         Some R-Car devices come with an IP to accelerate DAB decoding.
+> +         Enable this option to add driver support.
+
+> --- /dev/null
+> +++ b/drivers/misc/rcar_dab/rcar_dev.c
+> @@ -0,0 +1,176 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * R-Car Gen3 DAB hardware accelerator driver
+> + *
+> + * Copyright (C) 2021 Renesas Electronics Corporation
+> + *
+> + */
+> +#include <linux/clk.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/uaccess.h>
+> +
+> +#include <uapi/linux/rcar_dab.h>
+> +#include "rcar_dev.h"
+> +
+> +irqreturn_t rcar_dab_irq(int irq, void *devid)
+
+static, as discovered by the robot.
+
+> +{
+> +       struct rcar_dab *dab = devid;
+> +       u32 intsr, intcr1;
+> +
+> +       spin_lock(&dab->shared_regs_lock);
+> +
+> +       intcr1 = rcar_dab_read(dab, RCAR_DAB_INTCR1);
+> +       rcar_dab_write(dab, RCAR_DAB_INTCR1, 0x000003FF);
+
+Magic value (setting undocumented bits?), please use a define.
+
+> +
+> +       intsr = rcar_dab_read(dab, RCAR_DAB_INTSR);
+> +       if (!intsr) {
+> +               rcar_dab_write(dab, RCAR_DAB_INTCR1, intcr1);
+> +               spin_unlock(&dab->shared_regs_lock);
+> +               return IRQ_NONE;
+> +       }
+> +
+> +       /* Re-enable interrupts that haven't fired */
+> +       rcar_dab_write(dab, RCAR_DAB_INTCR1, 0x3FF & (intsr | intcr1));
+> +       /* Clear interrupts */
+> +       rcar_dab_write(dab, RCAR_DAB_INTSR, 0x7 & ~intsr);
+
+More magic values.
+
+> +
+> +       spin_unlock(&dab->shared_regs_lock);
+> +
+> +       if (intsr & RCAR_DAB_INTSR_FFT_DONE)
+> +               rcar_dab_fft_irq(dab);
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static long rcar_dab_unlocked_ioctl(struct file *file, unsigned int cmd,
+> +                                   unsigned long arg)
+> +{
+> +       void __user *argp = (void __user *)arg;
+> +       struct rcar_dab *dab;
+> +       int ret;
+> +
+> +       dab = container_of(file->private_data, struct rcar_dab, misc);
+> +
+> +       switch (cmd) {
+> +       case RCAR_DAB_IOC_FFT:
+> +               if (!access_ok(argp, sizeof(struct rcar_dab_fft_req)))
+> +                       return -EFAULT;
+> +               ret = rcar_dab_fft(dab, argp);
+
+Do you envision ever using the FFT operation from kernel space?
+Might be easier if you handle the copy_{from,to}_user() here.
+
+> +               break;
+> +       default:
+> +               ret = -ENOTTY;
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +static const struct file_operations rcar_dab_fops = {
+> +       .owner          = THIS_MODULE,
+> +       .unlocked_ioctl = rcar_dab_unlocked_ioctl,
+
+Does this need compat_ioctl handling?
+
+> +};
+> +
+> +static int rcar_dab_probe(struct platform_device *pdev)
+> +{
+> +       struct device *dev = &pdev->dev;
+> +       struct rcar_dab *dab;
+> +       int ret, irq;
+> +
+> +       dab = devm_kzalloc(dev, sizeof(*dab), GFP_KERNEL);
+> +       if (!dab)
+> +               return -ENOMEM;
+> +       dab->pdev = pdev;
+> +
+> +       dab->base = devm_platform_ioremap_resource(pdev, 0);
+> +       if (IS_ERR(dab->base))
+> +               return PTR_ERR(dab->base);
+> +
+> +       irq = platform_get_irq(pdev, 0);
+> +       if (irq < 0) {
+> +               dev_err(dev, "Can't get the irq.\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       dab->clk = devm_clk_get(&pdev->dev, "dab");
+> +       if (IS_ERR(dab->clk)) {
+> +               ret = PTR_ERR(dab->clk);
+> +               dev_err(dev, "Can't get the clock (%d).\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       spin_lock_init(&dab->shared_regs_lock);
+> +
+> +       ret = clk_prepare_enable(dab->clk);
+
+Does the module clock need to be enabled all the time?
+What about using Runtime PM instead of explicit clock handling, so your
+driver will keep on working on future SoCs where the DAB block is part of
+a power domain?
+
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = rcar_dab_fft_probe(dab);
+> +       if (ret)
+> +               goto error_clock_disable;
+> +
+> +       ret = devm_request_irq(dev, irq, rcar_dab_irq, 0, dev_name(dev), dab);
+> +       if (ret) {
+> +               dev_err(dev, "Can't request the irq (%d).\n", ret);
+> +               goto error_remove;
+> +       }
+> +
+> +       platform_set_drvdata(pdev, dab);
+> +
+> +       dab->misc.minor = MISC_DYNAMIC_MINOR;
+> +       dab->misc.name = RCAR_DAB_DRV_NAME;
+> +       dab->misc.fops = &rcar_dab_fops;
+> +       ret = misc_register(&dab->misc);
+> +       if (ret) {
+> +               dev_err(dev, "Can't register misc device (%d).\n", ret);
+> +               goto error_remove;
+> +       }
+> +
+> +       dev_info(dev, "R-Car Gen3 DAB misc driver ready.\n");
+> +
+> +       return 0;
+> +
+> +error_remove:
+> +       rcar_dab_fft_remove(dab);
+> +
+> +error_clock_disable:
+> +       clk_disable_unprepare(dab->clk);
+> +
+> +       return ret;
+> +}
+
+> --- /dev/null
+> +++ b/drivers/misc/rcar_dab/rcar_dev.h
+
+> +/* Register DAB_FFTCR */
+> +#define RCAR_DAB_FFTCR_FFT_EN_DISABLED         0
+> +#define RCAR_DAB_FFTCR_FFT_EN_ENABLED          1
+
+Do you need both?
+
+#define RCAR_DAB_FFTCR_FFT_EN        BIT(0)
+
+> +
+> +/* Register DAB_FFTREQCR */
+> +#define RCAR_DAB_FFTREQCR_FFT_REQ_INACTIVE     0
+> +#define RCAR_DAB_FFTREQCR_FFT_REQ_ACTIVE       1
+
+Do you need both?
+
+> +
+> +/* Register DAB_INTSR */
+> +#define RCAR_DAB_INTSR_FFT_DONE                        0x1
+
+BIT(0) (there are more bits for FIC and MSC)
+
+> +
+> +/* Register DAB_INTCR1 */
+> +#define RCAR_DAB_INTCR1_FFT_DONE_MASK          0x1
+
+BIT(0) (there are more bits for FIC and MSC)
+
+> +#define RCAR_DAB_INTCR1_FFT_DONE_INT_ENABLED   0
+> +#define RCAR_DAB_INTCR1_FFT_DONE_INT_DISABLED  1
+
+Do you need these?
+I'd just retain RCAR_DAB_INTCR1_FFT_DONE.
+
+For enabling interrupts:
+
+    rcar_dab_update_bits_locked(dab, RCAR_DAB_INTCR1,
+                                RCAR_DAB_INTCR1_FFT_DONE,
+                                RCAR_DAB_INTCR1_FFT_DONE);
+
+and for disabling:
+
+    rcar_dab_update_bits_locked(dab, RCAR_DAB_INTCR1,
+                                CAR_DAB_INTCR1_FFT_DONE, 0);
+
+> +
+> +struct rcar_dab_fft {
+> +       bool done;                      /*
+> +                                        * Condition for waking up the process
+> +                                        * sleeping while FFT is in progress.
+> +                                        */
+
+Please use kerneldoc for documenting structures.
+
+> +       wait_queue_head_t wait;         /* Wait queue for FFT. */
+> +       struct mutex lock;              /* Mutex for FFT. */
+> +       dma_addr_t dma_input_buf;       /*
+> +                                        * Input buffer seen by the FFT
+> +                                        * module.
+> +                                        */
+> +       dma_addr_t dma_output_buf;      /*
+> +                                        * Output buffer seen by the FFT
+> +                                        * module.
+> +                                        */
+> +       void *input_buffer;             /* Input buffer seen by the CPU */
+> +       void *output_buffer;            /* Output buffer seen by the CPU */
+
+Please use consistent naming (buf vs buffer).
+
+> +};
+
+> --- /dev/null
+> +++ b/drivers/misc/rcar_dab/rcar_fft.c
+
+> +int rcar_dab_fft(struct rcar_dab *dab, struct rcar_dab_fft_req __user *fft_req)
+> +{
+> +       int buffer_size, ret;
+> +
+> +       buffer_size = fft_req->points * 4;
+
+Missing validation of buffer_size?
+
+> +
+> +       mutex_lock(&dab->fft.lock);
+> +
+> +       if (copy_from_user(dab->fft.input_buffer, fft_req->input_address,
+> +                          buffer_size)) {
+> +               mutex_unlock(&dab->fft.lock);
+> +               return -EFAULT;
+> +       }
+> +
+> +       dab->fft.done = false;
+
+You can init done in rcar_dab_fft_init(), too.
+
+> +       ret = rcar_dab_fft_init(dab, fft_req);
+> +       if (ret) {
+> +               mutex_unlock(&dab->fft.lock);
+> +               return ret;
+> +       }
+> +
+> +       rcar_dab_fft_enable(dab);
+> +       wait_event_interruptible_timeout(dab->fft.wait, dab->fft.done, HZ);
+> +       if (!dab->fft.done) {
+
+You can just check the return value of wait_event_interruptible_timeout().
+
+> +               rcar_dab_fft_disable(dab);
+> +               ret = -EFAULT;
+
+-ETIMEOUT?
+
+> +       } else if (copy_to_user(fft_req->output_address, dab->fft.output_buffer,
+> +                               buffer_size)) {
+> +               ret = -EFAULT;
+> +       }
+> +
+> +       mutex_unlock(&dab->fft.lock);
+> +
+> +       return ret;
+> +}
+
+> --- /dev/null
+> +++ b/include/uapi/linux/rcar_dab.h
+> @@ -0,0 +1,35 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+> +/*
+> + * R-Car Gen3 DAB user space interface data structures
+> + *
+> + * Copyright (C) 2021 Renesas Electronics Corporation
+> + *
+> + */
+> +#ifndef _RCAR_DAB_H_
+> +#define _RCAR_DAB_H_
+> +
+> +struct rcar_dab_fft_req {
+> +       int points;                     /*
+
+unsigned int
+
+> +                                        * The number of points to use.
+> +                                        * Legal values are 256, 512, 1024, and
+> +                                        * 2048.
+> +                                        */
+
+Please use kerneldoc to document struct members.
+
+> +       unsigned char ofdm_number;      /*
+> +                                        * Orthogonal Frequency Division
+> +                                        * Multiplexing (OFDM).
+> +                                        * Minimum value is 1, maximum value is
+> +                                        * 255.
+> +                                        */
+
+Please make padding explicit.
+I'd also sort the members by decreasing size, i.e. pointers first.
+
+> +       void __user *input_address;     /*
+
+input_buf?
+
+> +                                        * User space address for the input
+> +                                        * buffer.
+> +                                        */
+> +       void __user *output_address;    /*
+
+output_buf?
+
+> +                                        * User space address for the output
+> +                                        * buffer.
+> +                                        */
+> +};
+> +
+> +#define        RCAR_DAB_IOC_FFT                _IOWR(0x90, 1, struct rcar_dab_fft_req *)
+> +
+> +#endif /* _RCAR_DAB_H_ */
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
