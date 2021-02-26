@@ -2,136 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E182B325F6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0530E325F77
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhBZIs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:48:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52148 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229526AbhBZIsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:48:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 93B73ACD4;
-        Fri, 26 Feb 2021 08:48:10 +0000 (UTC)
-Subject: Re: udldrm does not recover from powersave? Re: udldrmfb: causes WARN
- in i915 on X60 (x86-32)
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     intel-gfx@lists.freedesktop.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, rodrigo.vivi@intel.com,
-        airlied@redhat.com, sean@poorly.run
-References: <20210224200912.GA27905@duo.ucw.cz>
- <452585d5-9d18-f5a8-9d6b-6d39aa037480@suse.de> <20210225095322.GA5089@amd>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <ece8d515-5de1-6303-e62e-8ab7bce61102@suse.de>
-Date:   Fri, 26 Feb 2021 09:48:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230024AbhBZIwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:52:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhBZIwm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 03:52:42 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931A2C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:52:01 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id m1so7076513wml.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:52:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4I/9T27v5fuw5VieFV0ytWcSNAk1Bbl6fxq7D/9O4Aw=;
+        b=Jfw6tP2FVDpP7xS8MbqMlicPR0GZnIVCgiPOcK/MiszbWN4L4KBSdO2/h25VIMSeG+
+         7SAwS2q8Z7P7hrGER2mdTBRT+q3vSFnUVkeBj0HKYrJXd4mYDNLP2/ale6YrMg77bPz0
+         cYNXpUSSVzBgaTjGEEnvD3AM5sC0dr0P4pJs0MKmJ6VJrXscOFoCFmXm67XVlGZkroIf
+         TaP6BORXDmqVcynMjwc/tOSyFlPPV86DiB3empT8quFbYyXauzuVEM5kbtqChu5KNtvY
+         465h+fe4lpEQPLCTH3jrcXW9iHfbdBl9PyMrmL6Jr6pVxOt8ZneYJOpwGsa8EOXudSNN
+         vDJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4I/9T27v5fuw5VieFV0ytWcSNAk1Bbl6fxq7D/9O4Aw=;
+        b=ryvD8f1P6DrTgSzXycvbmKSSfCIdVEPpCJCwuaeAOBz49c4a2pBkkZZitD4KSGscbL
+         iAzk7qaHRjmYTUGIRIBOw6ylhq5bHML3Sp5e7uwFnuoT6QBS70KIU+ax29g9MFV2D3PC
+         DKoJaA/RHuyN7JlVUv0NyHCJRpoRRE5WSH3buK7QXYOKiyZqpoJciOWRyRqQHL+LTSri
+         XpHx13B8BUM+z+jGCR24x1FggIQWSkpjC2VljERrQf1hJk/YqCkV1QuSADK31dGecXLa
+         2kP8YzjObVZLH5gHD8n8KMfHV7/8bvJmNr8TP+zmLJb6zIiZ+i9Aq7W25nknuxzKFv0d
+         ai4A==
+X-Gm-Message-State: AOAM530hF/OWNmqMYPh6pi9ho3g3lyd9U89QzJmcOwUA0tMyfyZD9hsB
+        miDFe5rg/m15Elw+A8AlJj6lZw==
+X-Google-Smtp-Source: ABdhPJxHPYGVqRr09nDy1S17EJWwgU6sW5Cb/LJlPKbA3dZHEnjVzSLya6Tdt5HY+7+SnowqHW6fVw==
+X-Received: by 2002:a7b:cc0c:: with SMTP id f12mr1706548wmh.137.1614329520071;
+        Fri, 26 Feb 2021 00:52:00 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:f137:d18c:50a6:cc6a? ([2a01:e34:ed2f:f020:f137:d18c:50a6:cc6a])
+        by smtp.googlemail.com with ESMTPSA id j16sm12393890wra.17.2021.02.26.00.51.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 00:51:59 -0800 (PST)
+Subject: Re: [PATCH v2 3/9] devfreq: Use HZ macros
+To:     Chanwoo Choi <cwchoi00@gmail.com>, rafael@kernel.org,
+        andriy.shevchenko@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        "open list:DEVICE FREQUENCY (DEVFREQ)" <linux-pm@vger.kernel.org>
+References: <20210224144222.23762-1-daniel.lezcano@linaro.org>
+ <20210224144222.23762-3-daniel.lezcano@linaro.org>
+ <0db79cd7-f062-b31b-2a6c-ecf8dadaf572@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <09954745-5b39-8718-ca79-3e92a85e5ace@linaro.org>
+Date:   Fri, 26 Feb 2021 09:51:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210225095322.GA5089@amd>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="R9SctC0uQGGWA18ld3uV2EUoWdWXbdHcF"
+In-Reply-To: <0db79cd7-f062-b31b-2a6c-ecf8dadaf572@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---R9SctC0uQGGWA18ld3uV2EUoWdWXbdHcF
-Content-Type: multipart/mixed; boundary="5YbiRPKFIGwMzBdTT84emkODExBeeAPmC";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Pavel Machek <pavel@ucw.cz>
-Cc: intel-gfx@lists.freedesktop.org,
- kernel list <linux-kernel@vger.kernel.org>, dri-devel@lists.freedesktop.org,
- rodrigo.vivi@intel.com, airlied@redhat.com, sean@poorly.run
-Message-ID: <ece8d515-5de1-6303-e62e-8ab7bce61102@suse.de>
-Subject: Re: udldrm does not recover from powersave? Re: udldrmfb: causes WARN
- in i915 on X60 (x86-32)
-References: <20210224200912.GA27905@duo.ucw.cz>
- <452585d5-9d18-f5a8-9d6b-6d39aa037480@suse.de> <20210225095322.GA5089@amd>
-In-Reply-To: <20210225095322.GA5089@amd>
-
---5YbiRPKFIGwMzBdTT84emkODExBeeAPmC
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Am 25.02.21 um 10:53 schrieb Pavel Machek:
-> Hi!
->=20
->>> This is in -next, but I get same behaviour on 5.11; and no, udl does
+On 26/02/2021 07:08, Chanwoo Choi wrote:
+> 
+> 
+> On 21. 2. 24. 오후 11:42, Daniel Lezcano wrote:
+>> HZ unit conversion macros are available in units.h, use them and
+>> remove the duplicate definition.
 >>
->> Thanks for reporting. We are in the process of fixing the issue. The l=
-atest
->> patch is at [1].
+>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>> Reviewed-by: Christian Eggers <ceggers@arri.de>
+>> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+>> ---
+>>   drivers/devfreq/devfreq.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
 >>
->=20
-> Thank you, that fixes the DMA issue, and I can use the udl.
->=20
-> ...for a while. Then screensaver blanks laptop screen, udl screen
-> blanks too. Upon hitting a key, internal screen shows up, udl does
-> not.
->=20
-> I try rerunning xrandr ... --auto, but could not recover it.
->=20
-> Any ideas?
+>> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+>> index bf3047896e41..b6d63f02d293 100644
+>> --- a/drivers/devfreq/devfreq.c
+>> +++ b/drivers/devfreq/devfreq.c
+>> @@ -26,6 +26,7 @@
+>>   #include <linux/hrtimer.h>
+>>   #include <linux/of.h>
+>>   #include <linux/pm_qos.h>
+>> +#include <linux/units.h>
+>>   #include "governor.h"
+>>     #define CREATE_TRACE_POINTS
+>> @@ -33,7 +34,6 @@
+>>     #define IS_SUPPORTED_FLAG(f, name) ((f & DEVFREQ_GOV_FLAG_##name)
+>> ? true : false)
+>>   #define IS_SUPPORTED_ATTR(f, name) ((f & DEVFREQ_GOV_ATTR_##name) ?
+>> true : false)
+>> -#define HZ_PER_KHZ    1000
+>>     static struct class *devfreq_class;
+>>   static struct dentry *devfreq_debugfs;
+>>
+> 
+> I changed the patch title with 'PM /' prefix as following
+> in order to keep the consistent patch style if there are no any special
+> objection.
+> - PM / devfreq: Use HZ macros
+> 
+> Applied it.
 
-Seems unrelated. I tested for the issue with the last good revision and=20
-with the latest fix applied. I use Gnome/X11.
+It should not compile. This patch and others depend on 1/9.
 
-With both kernels, the udl adapter's display came back after suspending. =
-
-So I'd attribute the problem to something else.
-
-Best regards
-Thomas
-
->=20
-> Best regards,
-> 								Pavel
->=20
->=20
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=FCrnberg, Germany
-(HRB 36809, AG N=FCrnberg)
-Gesch=E4ftsf=FChrer: Felix Imend=F6rffer
+It would make sense to merge all of them through linux-pm.
 
 
---5YbiRPKFIGwMzBdTT84emkODExBeeAPmC--
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
---R9SctC0uQGGWA18ld3uV2EUoWdWXbdHcF
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmA4tcQFAwAAAAAACgkQlh/E3EQov+Ci
-ng//WJBJQMFY2/H+nPFNVaVndjuuoD5EU9nKdbgzA8jvKxHcbFVkcGieeUvFZydB3yEC80UYioes
-YF5KaWKtAAt4BqiIR+s1afZ64dWXXtfy2/40ynpkd7bSwotj9B6T614avMu/4N3B+++oeB8l6Kkh
-ejo1CcNzxLM2P8k1gzxDSzdz9R+to3cKPe8hGw9TnQs5SVU5uOkLPwp3upO4/UrVhG5y2xBV0V0m
-l72f/aXUx/zH37EEMPdv4O/YkWfwYl4j0LY/TCxY72kKO0ACyGmtB4hbqysLHQYlPR/0gF++BU9f
-nNjWVjS4lUx9dEyxKsssGP5pu6QA/3ReGhZY65gaNvxe+Czo1sLaljoY/fuTZH+LGyVAkVKzY+zw
-910fw5LR+hgalsfBzt2URyYxbZ2JRISSLZNaGt3pw/zYFO/sWpulVdsJydTG40bg0OaUlixFRxWi
-9AiSk605jtBlYAGz9EnKVQOXvGtI+dIkwMTVOiqj4o/LT48rDOjm5yQAt9zdcSrS6lHAtFXC7LAw
-BnXzhnW3jjxlHt/tc9r5YSwFH0Fg706nQbOn6Df3YZVjk6ByvdvzgNV0iYPygwrqSq4l0f5m/F2O
-+HPPtahhFB8JCEJTA/xGqAkFUZ6ESaoY7UE/S0CS8k0WuMJemJB4XqEt48shQUKhnUITYat6GY7K
-OSI=
-=E5MT
------END PGP SIGNATURE-----
-
---R9SctC0uQGGWA18ld3uV2EUoWdWXbdHcF--
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
