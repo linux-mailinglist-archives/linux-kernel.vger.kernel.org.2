@@ -2,98 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CEB326189
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02229326193
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhBZKtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:49:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhBZKs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:48:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 190A264EAF;
-        Fri, 26 Feb 2021 10:48:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614336496;
-        bh=Esz1NQAGOdP7jefY/y2XPXh2Htwlap/EqjLQH7vn1nk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BF7oVUWkuBHJWTvvQKy4mdaH4N5HrVYlbfmvrsouwZRWEmefSFJbYzNGNX72JjQ/z
-         s5YL20UotY75gvNAsyflzGZThDYkIgzeNUplfLKCxAkd4p5Uh7Qv6WrD3Tf9nWafq6
-         qSf7sRRdsVZ1WIkqYWH8k3vTAmrjJLUJrJZ6VCNdmzhQnvbYbHGVvFZ00a+Esz/yZ4
-         fTcO69TJJ4nzwNoPizcs5LDT7fcb4mPx2ZFwW4nkxK/sbuUcKRRj+BhkiyU8guHHjN
-         xMBvXMltQYuStEcwEua/nlpFZxfPo6sxoiqNQY6LPw1u4sGyE1QSCbMn/Uu+l+YM0u
-         A2VGejDgCMnpQ==
-Date:   Fri, 26 Feb 2021 11:48:12 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     =?utf-8?Q?M=C3=A5rten?= Lindahl <marten.lindahl@axis.com>,
-        kernel@axis.com,
-        =?utf-8?Q?M=C3=A5rten?= Lindahl <martenli@axis.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] i2c: exynos5: Preserve high speed master code
-Message-ID: <20210226104812.GG1014@ninjato>
-References: <20210216222538.6427-1-marten.lindahl@axis.com>
- <20210226103407.GF1014@ninjato>
- <CAJKOXPcx5a7m0ChqA8BimK=JhnzSgm0cx07RhSu+P8D-2YsfWw@mail.gmail.com>
+        id S230384AbhBZKvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:51:01 -0500
+Received: from smtprelay0060.hostedemail.com ([216.40.44.60]:33516 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230223AbhBZKu7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:50:59 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 05A37AF8C;
+        Fri, 26 Feb 2021 10:50:17 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2693:2731:2828:2895:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6119:7514:7652:7903:7974:9040:10004:10400:10450:10455:10848:10967:11232:11658:11914:12043:12297:12663:12679:12740:12895:13200:13229:13439:13894:14096:14097:14181:14659:14721:19904:19999:21080:21094:21323:21325:21433:21451:21611:21627:21740:21939:30054:30062:30069:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: dime75_4c077ac27699
+X-Filterd-Recvd-Size: 3638
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 26 Feb 2021 10:50:15 +0000 (UTC)
+Message-ID: <a0f05bbd5880a7d498af21c5013fa5895d6e3ca7.camel@perches.com>
+Subject: Re: [PATCH v7 0/2] checkpatch: add verbose mode
+From:   Joe Perches <joe@perches.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 26 Feb 2021 02:50:14 -0800
+In-Reply-To: <20210225215501.2408c97b@coco.lan>
+References: <20210222075205.19834-1-dwaipayanray1@gmail.com>
+         <bcee822d1934772f47702ee257bc735c8f467088.camel@perches.com>
+         <CABJPP5AARO3h2mt-piPWuOD3kY_XzNfW-s2mi=btfOayVPURHg@mail.gmail.com>
+         <20210225215501.2408c97b@coco.lan>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="m972NQjnE83KvVa/"
-Content-Disposition: inline
-In-Reply-To: <CAJKOXPcx5a7m0ChqA8BimK=JhnzSgm0cx07RhSu+P8D-2YsfWw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2021-02-25 at 21:55 +0100, Mauro Carvalho Chehab wrote:
+> Em Thu, 25 Feb 2021 23:38:03 +0530
+> Dwaipayan Ray <dwaipayanray1@gmail.com> escreveu:
+> 
+> > On Thu, Feb 25, 2021 at 11:03 PM Joe Perches <joe@perches.com> wrote:
+> > > 
+> > > On Mon, 2021-02-22 at 13:22 +0530, Dwaipayan Ray wrote:  
+> > > > Add a new verbose mode to checkpatch. The verbose test
+> > > > descriptions are read from the checkpatch documentation
+> > > > file at `Documentation/dev-tools/checkpatch.rst`.
+> > > > 
+> > > > The verbose mode is optional and can be enabled by the
+> > > > flag -v or --verbose.
+> > > > 
+> > > > The documentation file is only parsed by checkpatch.pl
+> > > > if the verbose mode is enabled. The verbose mode can
+> > > > not be used together with the --terse option.  
+> > > 
+> > > I don't have any real objection to this patch set, but as this
+> > > might be added to the Documentation tree and in .rst format,
+> > > perhaps Jonathan Corbet and/or Mauro Carvalho Chehab might have
+> > > some opinion.
+> > > 
+> > > Also I do not want to be a maintainer of this .rst file and
+> > > likely neither Jon nor Mauro would either.  Perhaps you?
+> > >  
+> > > 
+> > 
+> > I could take it up if everybody is okay with it!
+> > 
+> > > Ideally, the patch order would be reversed so the .rst file
+> > > is added first, then checkpatch updated to use it.
+> > >  
+> > > 
+> > 
+> > Sure, if Jonathan or Mauro has no objections to it, I will be happy
+> > to resend it so that it can be picked up properly.
+> 
+> I don't have any objections, provided that I won't be maintaining
+> it :-)
+> 
+> -
+> 
+> Just my two cents:
+> 
+> IMO, maintaining this on a separate file can be a maintenance nightmare, 
+> as this is the kind of thing that can become obsolete real soon.
+> 
+> One alternative would be to use Pod::Usage module, just like
+> this script does:
+> 
+> 	scripts/get_abi.pl
+> 
+> with something similar to that, calling
+> 
+> 	$ checkpatch --man 
+> 
+> Could generate a man-page style with all options, while:
+> 
+> 	$ checkpatch --help
+> 
+> would print the current help page.
+> 
+> Yet, this would generate more work for Joe, as, for every new
+> type, the corresponding help text would be needed.
 
---m972NQjnE83KvVa/
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Does this get integrated into the .rst output?
 
-On Fri, Feb 26, 2021 at 11:40:00AM +0100, Krzysztof Kozlowski wrote:
-> On Fri, 26 Feb 2021 at 11:34, Wolfram Sang <wsa@kernel.org> wrote:
-> >
-> > On Tue, Feb 16, 2021 at 11:25:38PM +0100, M=C3=A5rten Lindahl wrote:
-> > > From: M=C3=A5rten Lindahl <martenli@axis.com>
-> > >
-> > > When the driver starts to send a message with the MASTER_ID field
-> > > set (high speed), the whole I2C_ADDR register is overwritten including
-> > > MASTER_ID as the SLV_ADDR_MAS field is set.
-> > >
-> > > This patch preserves already written fields in I2C_ADDR when writing
-> > > SLV_ADDR_MAS.
-> > >
-> > > Signed-off-by: M=C3=A5rten Lindahl <martenli@axis.com>
-> >
-> > Looks good. Is there a Fixes-tag we could apply?
->=20
-> The first commit, 2013 :)
-> Fixes: 8a73cd4cfa15 ("i2c: exynos5: add High Speed I2C controller driver")
+I see:
+Documentation/Makefile:$(shell $(srctree)/scripts/get_abi.pl validate --dir $(srctree)/Documentation/ABI)
 
-Thanks! Applied to for-current.
+But no obvious mechanism that emits .rst files for Pod::Usage
+
+And no, I'm not much interested in maintaining those docs either.
 
 
---m972NQjnE83KvVa/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmA40ewACgkQFA3kzBSg
-KbZ5/A//dK4Fcf91UDaJiEgIWcUB3p2nnKBUi5bIC0XVA6NYbDVffZPr/ESa3WyB
-6ihTfgEdgPy+6zpErE4K/Od7JX94RsSKlo8MmT9WaPk/kfzlWhc10nCZJHFYLuLE
-+BqtWour4TTqHcRg/ncjnNicm+etMedSWsgUJ/O3GZEK0SUO+UbQESK4qCLGKH3W
-uIuuRUdXASdC4YvUIT4WWWjP8vzeOb/9CAfrQcnz2DTOFqqpp/nFFjifYHFO2Ab4
-KbHYYHvJzqZGEpKgf+B7VscQk51oWO9KnzVYeN32z6zuwJxo+i9sKvLXfH1Ebpah
-In/IEjVxamd1KZmBzW5gBr/h8IEp5DzEG1aNyvX0itrxr8T69sMxBRQLoDvJI/lW
-URGN7tMRypj+FddKvmExyzOwTKzrkl9QVJggf4jF+7ghbKg+HUMN/SZhXHtTrzSI
-FQ+1RGuvhqSrBIuKL+XGjtir+qdAu7m6UJk//IWcajWI+V96rSZ4C/F+BXiZ9I7A
-G18Zjuh2YGX2oe6V7kAwX/FqlBHPWMUgY82HQurcMJP01HoO3tsyzX9crB1XqVpn
-nQ2w8jxrE6cj7PBm3X0HtHg15pd018wzToYOyMoBp7fEOq+WHHiYhvjrQbI7iIMp
-3cFQZzSqETfBYT6uag49Knr//csR7gZrEyJEc/Dn0lR4Ws1LxNk=
-=S4ZO
------END PGP SIGNATURE-----
-
---m972NQjnE83KvVa/--
