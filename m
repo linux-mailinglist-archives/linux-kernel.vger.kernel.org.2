@@ -2,123 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84A932611F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F13F326124
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhBZKPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:15:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231272AbhBZKN7 (ORCPT
+        id S230493AbhBZKRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:17:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59852 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230521AbhBZKPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:13:59 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A68C06174A;
-        Fri, 26 Feb 2021 02:13:19 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id o10so749575wmc.1;
-        Fri, 26 Feb 2021 02:13:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UcwXbjPspvdQ4b6hP2yUf/RnFbzT9dnV8toQVcT9t0Q=;
-        b=W/Z3NYQvkwE7RJz0m8fThZtcPXZa52gGx5QJa1TIfz7B1mvKdmTy7955/+wL9msJN/
-         U1qAMheJC4I/zW3KnQ7gaLaQhEw3Kcm/VA0SO1OjuyX6jsUE4g03vSfkty0u6jvT+w0o
-         0YxboNCAWX2b/ws6rvL0bkQSA6RQ0cKU7wx81r8vJMRZGav0LhWse6BUS+jmju/k62tx
-         Ssvmn6mh+FPePI1qiiQ6EnJTLXa/Pw4oDiD/ZuwepvNAVjTgwwAqSG3rf9Y+lOe6+RjH
-         ewGEosyyc751yQfq+/5p018C0U2kOUpZUerF3ds6fXNGnbSnh5AM8rSaAOPHkFxivLrp
-         oDIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UcwXbjPspvdQ4b6hP2yUf/RnFbzT9dnV8toQVcT9t0Q=;
-        b=Uxr6m2VZv/WpsfeIcL6CPhsYmqJL//ZFd21rsbVaYrTsSmfJC8weFPWwmoavssBLcZ
-         9TYIkOqPvea8IXbb5qCWS6OtV+kINxbjopUzgxAg9bmvVQdGl53H7GNqC1t8McH9CRCM
-         0U0ukm5R6I4k1+6vHBwQ2gjNDgtKFwCeHf9k7DJD5B3HZWtuDq2dh4NTYAK0qx87GbuB
-         X1CCayrMlxKh1YlPQkduo/rDyBPuW8PpkuY25YP+cEuq12vwOdtLAUDE8k7gl1GHOvYp
-         cnLsUx5p3rQDmgTuI4NuDQl/AgJZMG+OKP4a/QkaMv19ieMwpr/oA3fYyk0PR8rOg4EE
-         FBPQ==
-X-Gm-Message-State: AOAM533Pol4bnyePSiZl5x3F1QUp+K4T9P928fihhJmMHm9NnWC0bTZJ
-        rxMSQTNbyWbW439ubNsczJ2hwhz5vCgEJw==
-X-Google-Smtp-Source: ABdhPJz+kl3sKdVAUjZUW1w6qXbEODQ2vpK+v7Ynjy6o1JFRa9VgJCMlLmgI9oC0gBY/DWPSryH7NA==
-X-Received: by 2002:a1c:721a:: with SMTP id n26mr2088010wmc.181.1614334397997;
-        Fri, 26 Feb 2021 02:13:17 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id v9sm12426835wrt.76.2021.02.26.02.13.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 02:13:17 -0800 (PST)
-Subject: Re: [PATCH] copy_file_range.2: Kernel v5.12 updates
-To:     Luis Henriques <lhenriques@suse.de>,
-        Amir Goldstein <amir73il@gmail.com>
-Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-References: <20210222102456.6692-1-lhenriques@suse.de>
- <20210224142307.7284-1-lhenriques@suse.de>
- <CAOQ4uxi3-+tOgHV_GUnWtJoQXbV5ZS9qDZsLsd9sJxX5Aftyew@mail.gmail.com>
- <YDd6EMpvZhHq6ncM@suse.de>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <fd5d0d24-35e3-6097-31a9-029475308f15@gmail.com>
-Date:   Fri, 26 Feb 2021 11:13:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 26 Feb 2021 05:15:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614334466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Z39kMRj5F+w7GwQjo6RQskikMPrjcYP4QGKdBa2Y9ZQ=;
+        b=COk74D9pqSVmR6Ib7jcHiEQcYm0cabb8o7eKyCgsuzNgcAT3bZ+Jwv2uqhkBzRQnVDTWNO
+        rWLzIRbLfd5DNRxMYsPlJrywmevbM60dZT3XipKGM75gBEFJDDUEOZ+t2xOVIBR1342gl4
+        bbF25uFrzhPRZesgSukvTwFB+ucVURA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-599-HEX_cppGMKGDue7hqzoQyg-1; Fri, 26 Feb 2021 05:14:24 -0500
+X-MC-Unique: HEX_cppGMKGDue7hqzoQyg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94BC918B9ECA;
+        Fri, 26 Feb 2021 10:14:22 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0DB4C1001281;
+        Fri, 26 Feb 2021 10:14:21 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>, David Woodhouse <dwmw@amazon.co.uk>
+Subject: [PATCH] KVM: x86: allow compiling out the Xen hypercall interface
+Date:   Fri, 26 Feb 2021 05:14:21 -0500
+Message-Id: <20210226101421.81535-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YDd6EMpvZhHq6ncM@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Luis,
+The Xen hypercall interface adds to the attack surface of the hypervisor
+and will be used quite rarely.  Allow compiling it out.
 
-On 2/25/21 11:21 AM, Luis Henriques wrote:
-> On Wed, Feb 24, 2021 at 06:10:45PM +0200, Amir Goldstein wrote:
->> If it were me, I would provide all the details of the situation to
->> Michael and ask him
->> to write the best description for this section.
-> 
-> Thanks Amir.
-> 
-> Yeah, it's tricky.  Support was added and then dropped.   Since stable
-> kernels will be picking this patch,  maybe the best thing to do is to no
-> mention the generic cross-filesystem support at all...?  Or simply say
-> that 5.3 temporarily supported it but that support was later dropped.
-> 
-> Michael (or Alejandro), would you be OK handling this yourself as Amir
-> suggested?
+Suggested-by: Christoph Hellwig <hch@lst.de>
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/Kconfig  |  9 ++++++++
+ arch/x86/kvm/Makefile |  3 ++-
+ arch/x86/kvm/x86.c    |  2 ++
+ arch/x86/kvm/xen.h    | 49 ++++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 61 insertions(+), 2 deletions(-)
 
-Could you please provide a more detailed history of what is to be 
-documented?
-
-Thanks,
-
-Alex
-
+diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+index 7ac592664c52..5a0d704581bd 100644
+--- a/arch/x86/kvm/Kconfig
++++ b/arch/x86/kvm/Kconfig
+@@ -103,6 +103,15 @@ config KVM_AMD_SEV
+ 	  Provides support for launching Encrypted VMs (SEV) and Encrypted VMs
+ 	  with Encrypted State (SEV-ES) on AMD processors.
+ 
++config KVM_XEN
++	bool "Support for Xen hypercall interface"
++	depends on KVM && IA32_FEAT_CTL
++	help
++	  Provides KVM support for the Xen shared information page and
++	  for passing Xen hypercalls to userspace.
++
++	  If in doubt, say "N".
++
+ config KVM_MMU_AUDIT
+ 	bool "Audit KVM MMU"
+ 	depends on KVM && TRACEPOINTS
+diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+index aeab168c5711..1b4766fe1de2 100644
+--- a/arch/x86/kvm/Makefile
++++ b/arch/x86/kvm/Makefile
+@@ -14,11 +14,12 @@ kvm-y			+= $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o \
+ 				$(KVM)/dirty_ring.o
+ kvm-$(CONFIG_KVM_ASYNC_PF)	+= $(KVM)/async_pf.o
+ 
+-kvm-y			+= x86.o emulate.o i8259.o irq.o lapic.o xen.o \
++kvm-y			+= x86.o emulate.o i8259.o irq.o lapic.o \
+ 			   i8254.o ioapic.o irq_comm.o cpuid.o pmu.o mtrr.o \
+ 			   hyperv.o debugfs.o mmu/mmu.o mmu/page_track.o \
+ 			   mmu/spte.o
+ kvm-$(CONFIG_X86_64) += mmu/tdp_iter.o mmu/tdp_mmu.o
++kvm-$(CONFIG_KVM_XEN)	+= xen.o
+ 
+ kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
+ 			   vmx/evmcs.o vmx/nested.o vmx/posted_intr.o
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index bfc928495bd4..9727295b7817 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8039,8 +8039,10 @@ void kvm_arch_exit(void)
+ 	kvm_mmu_module_exit();
+ 	free_percpu(user_return_msrs);
+ 	kmem_cache_destroy(x86_fpu_cache);
++#ifdef CONFIG_KVM_XEN
+ 	static_key_deferred_flush(&kvm_xen_enabled);
+ 	WARN_ON(static_branch_unlikely(&kvm_xen_enabled.key));
++#endif
+ }
+ 
+ static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
+diff --git a/arch/x86/kvm/xen.h b/arch/x86/kvm/xen.h
+index b66a921776f4..6abdbebb029b 100644
+--- a/arch/x86/kvm/xen.h
++++ b/arch/x86/kvm/xen.h
+@@ -9,6 +9,7 @@
+ #ifndef __ARCH_X86_KVM_XEN_H__
+ #define __ARCH_X86_KVM_XEN_H__
+ 
++#ifdef CONFIG_KVM_XEN
+ #include <linux/jump_label_ratelimit.h>
+ 
+ extern struct static_key_false_deferred kvm_xen_enabled;
+@@ -18,7 +19,6 @@ int kvm_xen_vcpu_set_attr(struct kvm_vcpu *vcpu, struct kvm_xen_vcpu_attr *data)
+ int kvm_xen_vcpu_get_attr(struct kvm_vcpu *vcpu, struct kvm_xen_vcpu_attr *data);
+ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data);
+ int kvm_xen_hvm_get_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data);
+-int kvm_xen_hypercall(struct kvm_vcpu *vcpu);
+ int kvm_xen_write_hypercall_page(struct kvm_vcpu *vcpu, u64 data);
+ int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc);
+ void kvm_xen_destroy_vm(struct kvm *kvm);
+@@ -38,6 +38,53 @@ static inline int kvm_xen_has_interrupt(struct kvm_vcpu *vcpu)
+ 
+ 	return 0;
+ }
++#else
++static inline int kvm_xen_vcpu_set_attr(struct kvm_vcpu *vcpu, struct kvm_xen_vcpu_attr *data)
++{
++	return -EINVAL;
++}
++
++static inline int kvm_xen_vcpu_get_attr(struct kvm_vcpu *vcpu, struct kvm_xen_vcpu_attr *data)
++{
++	return -EINVAL;
++}
++
++static inline int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
++{
++	return -EINVAL;
++}
++
++static inline int kvm_xen_hvm_get_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
++{
++	return -EINVAL;
++}
++
++static inline int kvm_xen_write_hypercall_page(struct kvm_vcpu *vcpu, u64 data)
++{
++	return 1;
++}
++
++static inline int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc)
++{
++	return -EINVAL;
++}
++
++static inline void kvm_xen_destroy_vm(struct kvm *kvm)
++{
++}
++
++static inline bool kvm_xen_hypercall_enabled(struct kvm *kvm)
++{
++	return false;
++}
++
++static inline int kvm_xen_has_interrupt(struct kvm_vcpu *vcpu)
++{
++	return 0;
++}
++#endif
++
++int kvm_xen_hypercall(struct kvm_vcpu *vcpu);
+ 
+ /* 32-bit compatibility definitions, also used natively in 32-bit build */
+ #include <asm/pvclock-abi.h>
 -- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+2.26.2
+
