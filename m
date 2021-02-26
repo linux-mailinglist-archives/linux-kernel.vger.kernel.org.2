@@ -2,183 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6963268DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9699E3268DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhBZUr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:47:26 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:38194 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhBZUrW (ORCPT
+        id S230362AbhBZUsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:48:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230304AbhBZUr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:47:22 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QKjcZP107745;
-        Fri, 26 Feb 2021 20:46:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2020-01-29; bh=GCWBaAOT0C1eOqpOXXVvJWF3E/qOn7J2h/2smWamOUs=;
- b=AI2/9pVhw17L1SZCJlJKyOfusPWDDH4oEnKbaQ+slEGHdBouyxMbJ/+QdKHkMQmNukKn
- Nk+6tZjf1TaFP6WrGI1zUfMldcHGr464OjEqU1Ukb8khB2J2iw7zEy9dybi3xeumv5hQ
- r8dKj+Sh8xj7uB0a8rFzzL2sIaKO8tDdoAA7gxlq25s9887oqgsg7KyLfIqUJO+So5iP
- EY5URCbZG+Z+MSsN/NjTOhwlYOAJH+SSvF4Ci9f/7oc8Y/J7mNfotqaZfYxY8R59Zu7H
- A95eKFvNaBKLZSKPmPu9ZGNr397rUR7R6kH5L9Zeq1BEUfVQHJ3uS0wY0ZSiCMnZeR/2 FA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 36vr62dn30-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Feb 2021 20:46:39 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QKkJAb069132;
-        Fri, 26 Feb 2021 20:46:37 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
-        by userp3020.oracle.com with ESMTP id 36uc6wbw41-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Feb 2021 20:46:37 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DtpN7S1AcuKt06jUK0eQ9ab3ZlErncaysrOm5CBp0UUwO0qsslE6Q3vlGUulTrk88FjQXp9mtoNioZODKeWUv7oJPkeZCYP3b9yqiXMtnRkmEos8HBsGpfJIeUDMW0wktpMjFJjAX3Nd2Kb0jcgZ3WyZGfX6YhNYhIIQKVxTquqWTx7Cm5n6Wvx3IN5loXaEnwSs6dZXVlxCtVnG0RhfDPInZHnqgJAS4aiCT4WtLx+22gW0o3ldvv7MKCY8DMjVbX4ZVsoqvL0u2iOcyAQhENY54gJAaFFj+QxcgM8rKUFw/08U5RYTvIt5xinrwV1/mdZeIeRZbwMZoTr4XzLn6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GCWBaAOT0C1eOqpOXXVvJWF3E/qOn7J2h/2smWamOUs=;
- b=h2fIJTDmmEWee6lp5u9sUFB68qjIef3bWE0xE/bpowuiHlOf/rNse6OS5qpiNHOzHT+EAmY0XKzufWLzIA7BuLmWvNaBgKfZto44hZxr5DBj+Cf2HFjK3/43GJdId/gtrn0ubwa4XXDIc7XUERosb9gY1g/da9AkCOh5YeqM7hOfPIsCE5BElraayVOGfyq3Buma8YMfkbUo+hreLSpGekNuawWr3x9BIZuF+zDnbK3dEvlMEBKl6FivzVc2mkEYBQ7l0WxKznaLbaNuJ5R6/bFL0BGs1NT0PITfuzqLldiJIaOvT6nTvqptL+kKXR8jt7XNRubf5iVaoCx1ZBo8Ww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 26 Feb 2021 15:47:57 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAA8C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:47:16 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id k12so3084332ljg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:47:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GCWBaAOT0C1eOqpOXXVvJWF3E/qOn7J2h/2smWamOUs=;
- b=Ur09xa6ETMj8pJqgPfVVhoPW0qKmy/sL3bhML1MMEa15VXQsyeiMYVUP4hYR2SQFsZEjVNpzxfObgb3KFmZkne2hm+EQB2np73yWNbNkBBuiHAXYf+ez0PNKIqFnVBfTTMFbGoVYsXpX9uKjOLzseAww3Xx8+Acq1wsdNQvj9nw=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by SJ0PR10MB4671.namprd10.prod.outlook.com (2603:10b6:a03:2d5::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Fri, 26 Feb
- 2021 20:46:36 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3868.033; Fri, 26 Feb 2021
- 20:46:36 +0000
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     alison.schofield@intel.com, vishal.l.verma@intel.com,
-        ira.weiny@intel.com, ben.widawsky@intel.com,
-        dan.j.williams@intel.com, linux-cxl@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Subject: [PATCH] cxl: Make loop variable be 'i' instead of 'j'
-Date:   Fri, 26 Feb 2021 15:45:52 -0500
-Message-Id: <20210226204552.45399-2-konrad.wilk@oracle.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210226204552.45399-1-konrad.wilk@oracle.com>
-References: <20210226204552.45399-1-konrad.wilk@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [209.6.208.110]
-X-ClientProxiedBy: CY4PR16CA0046.namprd16.prod.outlook.com
- (2603:10b6:910:60::33) To BYAPR10MB2999.namprd10.prod.outlook.com
- (2603:10b6:a03:85::27)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=o5m09NeCFmgUIFbH6bFaGd//EU34vmPkiCWl7hgRUY0=;
+        b=VmMtrwsfm54uLBaQBt/sYsvvIUQW1YOTdLhZo+8pFV6kESOp8e7MhrVbaHqaf616En
+         PmCNqmmP4lasf/xD5V84Q8u2vvJnuFd+SinildC07UzxKLSm+4fcwDPstHjSipBI5D/I
+         Pkddvx8VKR1JCKmAFPYszvJ6xQ0PVlULvsbZNIx8Y9SX7fwdYm3KuMH6VCbvFLDkbpmY
+         UeNG8n6d+eRdOwY6vU0UCdCeMOc0+wajVbeWHSdf9unXNKRSztsKcKk/0m+Rwum0wQjU
+         afe5fqbHCOrFLncWVjLrapTYWklRdwMEsCNZrO1ZzSUfsEy+PM8W1P7we3eMR9lcpvk3
+         QTZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=o5m09NeCFmgUIFbH6bFaGd//EU34vmPkiCWl7hgRUY0=;
+        b=o3rQufd+DQWtSxJlbo1QqV9Boc15whjfjogwNISyAomtV4LBS9/+sZClGBZ9Z/V9dP
+         Usld1PWDkV+mI5ZoHO39V4NyQuXREdE6+C5XR4UiF4gQQSOHJTagkCzHD/TDQqnYiC3N
+         10R+eqY1YCL4H3Sz+luO29j5BSJRRueBoqFyf9yu4ZH4d0mDY3J/mKeWLxtPLu2oAX+y
+         H50ID9thf4PAFFlDqWz8IX6P9q4faahbSyYBqwtx81eb+TXiConw9YgecM54NfR16sFu
+         GB/H4aazvPZCJl0Z7nHJ4mZIOQZAbnnE3cV05Rb53PmPwoD2WensBVC1NlXrk7DfM7DJ
+         9cbA==
+X-Gm-Message-State: AOAM5336rLm9gZi+GXcT4gGym8D/SKG5FuHQtA9iR1yE7yvVJuH20b/4
+        wVsPVlhNpHteywOzqSXf3t5PFHx3R3zkZmiv/Ycv7Q==
+X-Google-Smtp-Source: ABdhPJwyZ0K/gVAo6hRYhdVki43elIu4FeI/sEG+cCftVnIHI7FVMnMXRcLmbi9duRt/aF4I1R91Q/UZcg1UWzBBX1U=
+X-Received: by 2002:a05:651c:2042:: with SMTP id t2mr2568526ljo.233.1614372434754;
+ Fri, 26 Feb 2021 12:47:14 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (209.6.208.110) by CY4PR16CA0046.namprd16.prod.outlook.com (2603:10b6:910:60::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Fri, 26 Feb 2021 20:46:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b12910e0-d23c-4cb3-c39b-08d8da979b98
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4671:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB4671D1AB555D38FEFF3A7847899D9@SJ0PR10MB4671.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G6/sju5qilUDECNj3iQoUPMc5BZvhmp3c5IPO1cEQBIgiSuzAC+d7FsmrPdFYoSsEehKHhGWrleN7aWqTOZ4GsjwKH8M07vaYs/2hrig4sSaxKQ38TrmjuAbV1MrecprvbnaGuPfXLrqEjdnurJlLEiZY4ubccSa/ACifLGcRnYn0DgK38ObCdhiX54zD19NMJiwCpl3Ghwm0hM+cxKuOGqCMR8hHFa0/DD/Yf1Dgy8iy9pc619ijQuZn7ivKX66KavTqDFgzQQ+pLNbERvJI4CPDcJhvIGARBqktdfRKWJgRIJYpI4dFSpGpwxaJJVs9nrijzIvCM78ANm8Qj5vBTp5UXal4ev8QvmBG37D4/SCIQrTwX7xK1sfiyj/nsL56+zTNkRdLXdT4nF3dMWaht9pTfRNC5aHSsN0e4XHbV4kHJnTLzlnQKY3yfWNxNKfiBmAOdB7zpcyCi3MZUcdXBSxGkPXo6upXaZa5gf9n0HaVhMpCdATbdjxGUvhdhyHmM5nV6U+RJhcJOJSz+dDwg1g/R/24aUHImzmuKq8kEabvMMQA5dfQvwM2+lRrhHOGVv+dYyY5xyxB11MsW6u+Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(39860400002)(346002)(396003)(478600001)(66946007)(66556008)(956004)(6666004)(6506007)(16526019)(52116002)(2616005)(36756003)(1076003)(8936002)(186003)(2906002)(5660300002)(8676002)(66476007)(83380400001)(6486002)(6512007)(26005)(316002)(69590400012)(107886003)(86362001)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?s+uEv79cxjEsywrvGkJKzjLfJ2Lk4OhUCN+wfTjRbw081i5gGwuQvB2YUmRK?=
- =?us-ascii?Q?9iSJ7v+7llMiwAfIWK302Ki8xyD3EMcEack6K4XLGu2ZdApWW0LvFyYx3Oex?=
- =?us-ascii?Q?3CCZYOWnFjSJtqIPaF/0zVfcVDk8v1ekKtTCPLOoivwib1vzWGsjH7otjtXN?=
- =?us-ascii?Q?3/TCc6sKxwK1RKSdq86/GggrVUgNZkzB7Q94iN7Nz/8Ep7HY/3G0Yg8xjHyv?=
- =?us-ascii?Q?CJyvZy3DcfmXMD0Q9nOAuMGzRR5B7cDG5g31nb0Re9olOtYLfoX173xfeRc9?=
- =?us-ascii?Q?ONylUBfgOItiFyr4SFnuFsG7leoRPt9me28rJDlK2RpUTT9oqA2tyBD0xFIq?=
- =?us-ascii?Q?1pOtDlUA5eS4C9N6lecpVvJ3Ekh9HO4lJuYV4lmQQZf9P42inwFs/KjIYFvN?=
- =?us-ascii?Q?jJ/4ohSOC0meJOiDzK6Z7WvB63YpL9orlht5sAFZlkWrsmrKuBAU916906su?=
- =?us-ascii?Q?MuT4uJUBDFJ0itMP9tqMd4jljC/Y4PEj75xwmG8AsvCHfn8tPnZbSrs7Ara5?=
- =?us-ascii?Q?4AFQiaLZSf64pMIknR1X+SA+4G5fbEjYoPHCaKZ0KCesqT5TM2632ygqOd04?=
- =?us-ascii?Q?al3sgOqgH+VTiIxmaBLgNcSshbDES8Gj17XYooCny1v7gWg2cNfU0NFWJwe2?=
- =?us-ascii?Q?jpnPrK2wovz/OclnHHgY/wS8ORg5UrVZhGxPS/GoHVVD3Yv/1K2baTujqlBv?=
- =?us-ascii?Q?nnzyhdm6rSxdJVE7nJqmlY9cyfD6wABHyymrk/lz4GJ8d/P2ZEgZ6ctS9Iix?=
- =?us-ascii?Q?EYzdtGbOsWOdExcQFCySoz3lQQg2DKdPmdUBze+PwU9kQ9EajJAFCEF8yLF4?=
- =?us-ascii?Q?ETHiYoowLcOvU5Y0UHC3i1CVN6gz1oQ/LIS9EiXA/D2tu4gqE4jD2tukFyje?=
- =?us-ascii?Q?pt17II4fP1uCgUW30MwNP8KRLuqUHyRpSAWidgX2MUWWrxINsOe8JDwqEZLv?=
- =?us-ascii?Q?J5gdAgRW2ryzVraRhDuUZpMlbqr1Bs/eR2tk/32s3dYd41zWSOiQ11ka78lZ?=
- =?us-ascii?Q?QVtnHnozxOZhF+nRxFPsE2CxLcKhY6T2flK6fgc4skOxbEXrkQLoyKGwNUGX?=
- =?us-ascii?Q?x6CWItpNNe+gOqgrXADTL1hBiUA9PyX0k0Jqix/C54ZDhrxhE8/9KUjqsG1u?=
- =?us-ascii?Q?pTCfLOwvAq9ZeBQ7t5Pp5qghqOukpUa6CenyF9tFjSp5hD1u5b+LfIE0l0Hq?=
- =?us-ascii?Q?9f3Jd84nWq8O69JSVRUuiunFthbUqJtEomsN1P9UGo1q+K+XQzJfa3C1H/8g?=
- =?us-ascii?Q?gJM+nVnCoY+6KjppBeEcnYfGZCxQb1GEjr5CbXZYsveF/1pwpl62Pik2pYWH?=
- =?us-ascii?Q?iTM+JmRAtDE+jxCgGVFFKs8M?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b12910e0-d23c-4cb3-c39b-08d8da979b98
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2021 20:46:36.0450
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qZBiqcJZBsklX8r6+oYAiT7+G/2bhG+jx6/E5jOhhBRbcl/e3EDuTSrPbeIrXamFpNaGnHufMgGOSIKjT5IinA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4671
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9907 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102260155
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9907 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- clxscore=1015 mlxlogscore=999 lowpriorityscore=0 phishscore=0
- impostorscore=0 adultscore=0 mlxscore=0 priorityscore=1501 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102260155
+References: <20210226164345.3889993-1-arnd@kernel.org> <141f3098744ea8d1cc39abcdce89c0e513bfbc70.camel@gmail.com>
+ <BYAPR01MB5621DC2003DA49EA64AD46A0D09D9@BYAPR01MB5621.prod.exchangelabs.com>
+In-Reply-To: <BYAPR01MB5621DC2003DA49EA64AD46A0D09D9@BYAPR01MB5621.prod.exchangelabs.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 26 Feb 2021 12:47:03 -0800
+Message-ID: <CAKwvOdkW6bctowgCrLakWJ7pj1uxEZ9T8TPiANFu9dhcHYYc0A@mail.gmail.com>
+Subject: Re: [PATCH] ARM: ep93xx: don't use clang IAS for crunch
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        "soc@kernel.org" <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        Hartley Sweeten <HartleyS@visionengravers.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-.. otherwise people spend extra cycles looking for the
-inner loop and wondering 'why j'?
+On Fri, Feb 26, 2021 at 11:32 AM Hartley Sweeten
+<HartleyS@visionengravers.com> wrote:
+>
+> On Friday, February 26, 2021 12:23 PM, Alexander Sverdlin wrote:
+> > On Fri, 2021-02-26 at 17:43 +0100, Arnd Bergmann wrote:
+> >> Randconfig builds with ep93xx fail with the clang integrated assembler
+> >> that does not understand the maverick crunch extensions:
+> >>
+> >> arch/arm/mach-ep93xx/crunch-bits.S:94:2: error: invalid instruction
+> >>  cfstr64 mvdx0, [r1, #0] @ save 64b registers
+> >>
+> >> It is unclear if anyone is still using support for crunch: gcc-4.8
+> >> dropped it in 2012 when it was already too broken to be used
+> >> reliabled. glibc support existed as an external patch but was never me=
+rged upstream.
+> >> We could consider removing the last bits of the kernel support as well=
+.
+> >
+> > This was my impression already in 2006, that Cirrus is not going to wor=
+k on Crunch support. From my PoV it's OK to remove the support in the kerne=
+l completely.
+>
+> Martin Guy did a lot of work trying to get the maverick crunch working bu=
+t I was never able to successfully use it for anything. It "kind" of works =
+but depending on the EP93xx silicon revision there are still a number of ha=
+rdware bugs that either give imprecise or garbage results.
+>
+> I have no problem with removing the kernel support for the maverick crunc=
+h.
 
-This was an over-sight when initial work was rebased
-so lets fix it here.
+Either way, please consider adding a
 
-Fixes: 583fa5e71cae ("cxl/mem: Add basic IOCTL interface")
-Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
----
- drivers/cxl/mem.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Link: https://github.com/ClangBuiltLinux/linux/issues/1272
 
-diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-index 244cb7d89678..2b8265b03b0d 100644
---- a/drivers/cxl/mem.c
-+++ b/drivers/cxl/mem.c
-@@ -698,7 +698,7 @@ static int cxl_query_cmd(struct cxl_memdev *cxlmd,
- 	struct device *dev = &cxlmd->dev;
- 	struct cxl_mem_command *cmd;
- 	u32 n_commands;
--	int j = 0;
-+	int i = 0;
- 
- 	dev_dbg(dev, "Query IOCTL\n");
- 
-@@ -716,10 +716,10 @@ static int cxl_query_cmd(struct cxl_memdev *cxlmd,
- 	cxl_for_each_cmd(cmd) {
- 		const struct cxl_command_info *info = &cmd->info;
- 
--		if (copy_to_user(&q->commands[j++], info, sizeof(*info)))
-+		if (copy_to_user(&q->commands[i++], info, sizeof(*info)))
- 			return -EFAULT;
- 
--		if (j == n_commands)
-+		if (i == n_commands)
- 			break;
- 	}
- 
--- 
-2.13.6
+tag. That will help us notice when/where this lands in order to close
+out the issue. Thanks for the patch.
 
+(if we go with this rather than removing the driver:)
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+
+(I'm also fine with removing the driver; my ack is not conditional on
+one way or the other).
+--=20
+Thanks,
+~Nick Desaulniers
