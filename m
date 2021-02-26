@@ -2,254 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78088325E94
+	by mail.lfdr.de (Postfix) with ESMTP id E9003325E95
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhBZIBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:01:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhBZIB1 (ORCPT
+        id S230019AbhBZIE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:04:26 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:58741 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229727AbhBZIES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:01:27 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29029C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:00:47 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id cf12so9023307edb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:00:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+cCnvqPl/AB2g/rBCqOWO+msBf4tIh3Bh6qIDLBPfpE=;
-        b=JsAvrIKlM3pL20nlLL0BGEAkMQ3GUpsDs0XoRGguz27yaqnCrbkbOF9kproZLnThBV
-         5E+hiLimH0JGxTQ7lO4zwbefzp7zDJ3blbEg3Q7s4Dv6yX2x69aEnlq4OKdpTVSf+X4h
-         iJjSipoy6nTbZpZr7K6o97b3oP+XpIknAERMe8K5YnH0mmQufDu+S7GhPX30jeHE9UhD
-         eN1QZOsgF3imwOK3dFkI50oJCYmDNPl4odkxgz+WODdlUKNSCGyhMXpzUpUpz1+tVY2X
-         Af19VZthnhkhZc3zn5zLBcHHRylF7vHPugX9g5QMbBDKNPyW80BCw/BFiuxBkNVubT+f
-         PY8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+cCnvqPl/AB2g/rBCqOWO+msBf4tIh3Bh6qIDLBPfpE=;
-        b=mEGC7aqCuXYaiKuCKCD+OGjNA4z/0njt2tuT6uAWUP6+OCtgKs093kUyKfx8EE/F1k
-         RLcyVxMzMOYW/YehCI3ik7UftdY5F3pft3DgewvbdLqTXg2tjovHyXdmow8P0diara5P
-         f7w7AGYfJN8uNZyDNly84G0Hn+zuuoPnfyX0huaVfa0Qsy1SQodPs7OxwC3j7ShktI3N
-         XMVLE5GahWnKhoaMbtUUEMrS9Ed+08Ii3R7fflLWcPGRc56uBeVra5Luuq8RJCdwde1X
-         nyVh0rvJg2w2yeJPEBl6hRbVOV6YkRzGWgGVwedpl1gVE1Rb2p/Vhk0B/eQ5i9Jdyvqu
-         N5og==
-X-Gm-Message-State: AOAM533LqtaF92iRa8z/zbPKqH7t/Pf9ArI/KySLCypGmGaZi/iLiY64
-        yQNHpZ9ZzsTXmbfsW+I384/2866w8xt/Cy2UK9DYZA==
-X-Google-Smtp-Source: ABdhPJy+9ukdO4/4f4X7C9KDKCtQDucXdj3+WjwRZkYshjkjwzKOaFEWBvOHrT9uAZCURYIRIPxV2ImOkm21opowz2c=
-X-Received: by 2002:aa7:cb0d:: with SMTP id s13mr1870001edt.221.1614326445786;
- Fri, 26 Feb 2021 00:00:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20210225092515.015261674@linuxfoundation.org>
-In-Reply-To: <20210225092515.015261674@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 26 Feb 2021 13:30:34 +0530
-Message-ID: <CA+G9fYu-UQxh+TppNVU88wWcLtBgrB-FseSf-MdGN02EAkd5aA@mail.gmail.com>
-Subject: Re: [PATCH 5.11 00/12] 5.11.2-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+        Fri, 26 Feb 2021 03:04:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1614326658; x=1645862658;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=DsAB6aiYDZ3bgkslJCKId+HjWbaUI76K1t+k4ZjB2TQ=;
+  b=V691AaWjdU4AiMkGkvNKXeShDJOyVv91TvJ5tTGcU2oq6Jfcj/ThbNBt
+   wzhkGF1BfgzYUD/fRkMKUtRB8o5NFlvp+2oiNA9WOL3N9qvq+z2FtCnEX
+   hJ5HfCm900PK9vimpHDnJFdcITwUk+SlUWX+ZPShcCCSAMSahFT59GeRd
+   0EPolnbAqMzVK3tt30ei14tKyVKEsjNoAlvqDTI/QC3Njch6Oo0hGm/Rg
+   5ILMITD46CoEjok87tkTq2LNSEIMnGRY1Dyw1m1hO/C5oJcHyCXskxcTQ
+   Usqmtld8vzWFdUbAgv0g3/qy8ahjRay4I9ME4QJBELS6WZERCVRJ4gs/t
+   w==;
+IronPort-SDR: qaprJXd/WHT+lyWz4aML0kB8JVH7uyptXHMyVMXdJMrbjpU6ldx+ikr6hF/3Vh4cwLMRtcYGsh
+ fwojopqpMUEjj4eJ3liThlSw4ZIwUovKPeXl61pQXMCdxH/vsYDAkTEDMhJRF2GqDj/pA6KEex
+ fCM9/2opn0w9pP1t52+lZhH4SDZaBfXp3h0PftPAQ2J+b16XWgL8Bpf5P7QQN6yX2Q/Ps2LHnb
+ jfH7Md3qXxNVD/3EiGFrbu/KNqeNvOC1oksNm6fC9r0mO6Eu9Muj+hHHXIF3KQarGpeF1rcR1c
+ mVk=
+X-IronPort-AV: E=Sophos;i="5.81,207,1610434800"; 
+   d="scan'208";a="45557285"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Feb 2021 01:02:54 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 26 Feb 2021 01:02:54 -0700
+Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Fri, 26 Feb 2021 01:02:52 -0700
+Message-ID: <1f33bcd26589c3a2fd85c195837bdc52c6ec6492.camel@microchip.com>
+Subject: Re: [PATCH v6 2/3] reset: mchp: sparx5: add switch reset driver
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "Gregory Clement" <gregory.clement@bootlin.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Fri, 26 Feb 2021 09:02:52 +0100
+In-Reply-To: <YDgLTczzqTBCwEUY@piout.net>
+References: <20210225095005.1510846-1-steen.hegelund@microchip.com>
+         <20210225095005.1510846-3-steen.hegelund@microchip.com>
+         <YDgLTczzqTBCwEUY@piout.net>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.38.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 at 15:24, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.2 release.
-> There are 12 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 27 Feb 2021 09:25:06 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.2-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi Alex,
 
+On Thu, 2021-02-25 at 21:40 +0100, Alexandre Belloni wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> know the content is safe
+> 
+> Hello,
+> 
+> > 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+...
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > +static int mchp_sparx5_map_io(struct platform_device *pdev, char
+> > *name,
+> > +                           struct regmap **target)
+> > +{
+> > +     struct resource *res;
+> > +     struct regmap *map;
+> > +     void __iomem *mem;
+> > +
+> > +     res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> > name);
+> > +     if (!res) {
+> > +             dev_err(&pdev->dev, "No '%s' resource\n", name);
+> > +             return -ENODEV;
+> > +     }
+> > +     mem = devm_ioremap(&pdev->dev, res->start, res->end - res-
+> > >start + 1);
+> > +     if (!mem) {
+> > +             dev_err(&pdev->dev, "Could not map '%s' resource\n",
+> > name);
+> > +             return -ENXIO;
+> > +     }
+> 
+> Someone is going to tell you to use
+> devm_platform_get_and_ioremap_resource so it may as well be me ;)
 
-Summary
-------------------------------------------------------------------------
+Very nice.
+Thanks for the info.  I will use that instead.
 
-kernel: 5.11.2-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.11.y
-git commit: 68eabe17bf08272cb338564500da7be0d4aad9a5
-git describe: v5.11.1-13-g68eabe17bf08
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
-.y/build/v5.11.1-13-g68eabe17bf08
+> 
+> --
+> Alexandre Belloni, co-owner and COO, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
 
-No regressions (compared to build v5.11-13-g6380656c9227)
+-- 
+BR
+Steen
 
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+steen.hegelund@microchip.com
 
-No fixes (compared to build v5.11-13-g6380656c9227)
-
-
-Ran 46115 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-64k_page_size
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-bpf
-* kselftest-intel_pstate
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* perf
-* v4l2-compliance
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lkdtm
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* ltp-sched-tests
-* kvm-unit-tests
-* fwts
-* kunit
-* rcutorture
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
