@@ -2,99 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1B2326857
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A6D326874
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhBZUOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:14:17 -0500
-Received: from outbound-gw.openxchange.ahost.me ([94.136.40.163]:45644 "EHLO
-        outbound-gw.openxchange.ahost.me" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230177AbhBZULA (ORCPT
+        id S231530AbhBZUSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:18:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhBZUMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:11:00 -0500
-Received: from localhost ([127.0.0.1] helo=outbound-gw.openxchange.ahost.me)
-        by outbound-gw.openxchange.ahost.me with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <phillip@squashfs.org.uk>)
-        id 1lFjQZ-0001DC-Ua; Fri, 26 Feb 2021 20:09:31 +0000
-Date:   Fri, 26 Feb 2021 20:09:31 +0000 (GMT)
-From:   Phillip Lougher <phillip@squashfs.org.uk>
-To:     Sean Nyekjaer <sean@geanix.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <1911592520.1810343.1614370171896@webmail.123-reg.co.uk>
-In-Reply-To: <20210226092903.1473545-1-sean@geanix.com>
-References: <20210226092903.1473545-1-sean@geanix.com>
-Subject: Re: [PATCH] squashfs: fix inode lookup sanity checks
+        Fri, 26 Feb 2021 15:12:06 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB14BC0698D0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:10:09 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id u14so9747535wri.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:10:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DYHcnJh5U/6gVrGS5eDqixWkprjFpWIsSZ52nLUsrJc=;
+        b=DSfMOLBxr80hV9v8h3EUvd/OLOFky0SJeRZdwhBnc36/ZpcPbQsu5d5PKODXq4bHIF
+         QJdAYs0TDqk7dKTWHhHZa2YZgnRoL2P3vWK5eoR+rVuc7A/ys1fYWanQcSikr8Z2n7u4
+         nQZEq8a2UwIPn2Gz4IAazI7WeFdCqjNzjWjO62WgIZCWfWU+VM5XJC1uwpQvabQGRuFv
+         N+sJMaudVZtLvfyJWtZeeU+doAwBIb+ZwnP1AvfVgpbJNku6a0hLN4Tz4nMU/NWrHntN
+         brqTKkRrR2dLtVIFdehSmuhnOMxDyAORHnDaPaWvXxAFjZ1rL000wgyeQidxbB8FT+m3
+         985g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DYHcnJh5U/6gVrGS5eDqixWkprjFpWIsSZ52nLUsrJc=;
+        b=Prn9Qw2BDUr1RLxGYd7o7IfbULGPGSfZExTmXZcdCdSc8op4Isi5YtSZjFpS7YFaO4
+         lqL65XdUbCa7c51fcggCiUKkS4ZFQ8f9YolsFCR2EUjvwuHn+Y6aAx53AMQTpoYaXVpq
+         pcYYg05Ie5JLyX0c/VYSXvi0v9fHbT0Rt0IxVPK89l25T616HqCVkD6yAYVjkH1OV7cV
+         A4BB1BOdvzitxHjPTK2+oP7K3LroE6KqXdwqbvI+PwLqzo2EOjsy/6hhvHCvLguE2vFz
+         zs2UROWWJOVkGKXX0h+XAsv4hIASvHssrT5llJIFiOm7WQl8Ub7E/eWL36IQcJgNaTj6
+         fR0g==
+X-Gm-Message-State: AOAM530q5EGatUeayj76b4DdkRWptSxPEXTgGd///xOof14K461pjK9P
+        0j0k6PcwW5kZYrL8X2iRN/Acfw/xipc47UrNKB9+mw==
+X-Google-Smtp-Source: ABdhPJzFk/7GIOENhAIWM+EZkNdE/mONUK5IXOXD3LykxferNg9wj5MnKOvayTLAOrdBVIDUHJnk4J+G73gZ7GaKm6w=
+X-Received: by 2002:a5d:6643:: with SMTP id f3mr4867346wrw.182.1614370208353;
+ Fri, 26 Feb 2021 12:10:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev30
-X-Originating-IP: 82.69.79.175
-X-Originating-Client: com.openexchange.ox.gui.dhtml
+References: <20210128170936.9222-1-mike.leach@linaro.org> <20210128170936.9222-7-mike.leach@linaro.org>
+ <20210225215122.GC3567106@xps15>
+In-Reply-To: <20210225215122.GC3567106@xps15>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Fri, 26 Feb 2021 20:09:57 +0000
+Message-ID: <CAJ9a7Vi5Dyb2k7uDxqRg99e-cxKyLkCgimMD8ZSO2m+1NdbFjg@mail.gmail.com>
+Subject: Re: [PATCH v4 06/10] coresight: etm-perf: Update to activate selected configuration
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Yabin Cui <yabinc@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mathieu,
 
-> On 26/02/2021 09:29 Sean Nyekjaer <sean@geanix.com> wrote:
-> 
->  
-> When mouting a squashfs image created without inode compression it
-> fails with: "unable to read inode lookup table"
-> 
-> It turns out that the BLOCK_OFFSET is missing when checking
-> the SQUASHFS_METADATA_SIZE agaist the actual size.
-> 
-> Fixes: eabac19e40c0 ("squashfs: add more sanity checks in inode lookup")
-> CC: stable@vger.kernel.org
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+On Thu, 25 Feb 2021 at 21:51, Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+>
+> On Thu, Jan 28, 2021 at 05:09:32PM +0000, Mike Leach wrote:
+> > Add calls to activate the selected configuration as perf starts
+> > and stops the tracing session.
+> >
+> > Signed-off-by: Mike Leach <mike.leach@linaro.org>
+> > ---
+> >  drivers/hwtracing/coresight/coresight-etm-perf.c | 14 +++++++++++++-
+> >  drivers/hwtracing/coresight/coresight-etm-perf.h |  2 ++
+> >  2 files changed, 15 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > index e270bb1e0f7d..5c1aeddabc59 100644
+> > --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > @@ -178,6 +178,10 @@ static void free_event_data(struct work_struct *work)
+> >       /* Free the sink buffers, if there are any */
+> >       free_sink_buffer(event_data);
+> >
+> > +     /* clear any configuration we were using */
+> > +     if (event_data->config_id_hash)
+> > +             cscfg_deactivate_config(event_data->config_id_hash);
+> > +
+> >       for_each_cpu(cpu, mask) {
+> >               struct list_head **ppath;
+> >
+> > @@ -236,7 +240,7 @@ static void etm_free_aux(void *data)
+> >  static void *etm_setup_aux(struct perf_event *event, void **pages,
+> >                          int nr_pages, bool overwrite)
+> >  {
+> > -     u32 id;
+> > +     u32 id, config_id;
+>
+> config_id, cfg_hash, id_hash...
+>
 
-Acked-by: Phillip Lougher <phillip@squashfs.org.uk>
+OK - I'll get the naming consistent.
 
-> ---
->  fs/squashfs/export.c      | 8 ++++++--
->  fs/squashfs/squashfs_fs.h | 1 +
->  2 files changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/squashfs/export.c b/fs/squashfs/export.c
-> index eb02072d28dd..723763746238 100644
-> --- a/fs/squashfs/export.c
-> +++ b/fs/squashfs/export.c
-> @@ -152,14 +152,18 @@ __le64 *squashfs_read_inode_lookup_table(struct super_block *sb,
->  		start = le64_to_cpu(table[n]);
->  		end = le64_to_cpu(table[n + 1]);
->  
-> -		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
-> +		if (start >= end
-> +		    || (end - start) >
-> +		    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
->  			kfree(table);
->  			return ERR_PTR(-EINVAL);
->  		}
->  	}
->  
->  	start = le64_to_cpu(table[indexes - 1]);
-> -	if (start >= lookup_table_start || (lookup_table_start - start) > SQUASHFS_METADATA_SIZE) {
-> +	if (start >= lookup_table_start ||
-> +	    (lookup_table_start - start) >
-> +	    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
->  		kfree(table);
->  		return ERR_PTR(-EINVAL);
->  	}
-> diff --git a/fs/squashfs/squashfs_fs.h b/fs/squashfs/squashfs_fs.h
-> index 8d64edb80ebf..b3fdc8212c5f 100644
-> --- a/fs/squashfs/squashfs_fs.h
-> +++ b/fs/squashfs/squashfs_fs.h
-> @@ -17,6 +17,7 @@
->  
->  /* size of metadata (inode and directory) blocks */
->  #define SQUASHFS_METADATA_SIZE		8192
-> +#define SQUASHFS_BLOCK_OFFSET		2
->  
->  /* default size of block device I/O */
->  #ifdef CONFIG_SQUASHFS_4K_DEVBLK_SIZE
-> -- 
-> 2.29.2
+> >       int cpu = event->cpu;
+> >       cpumask_t *mask;
+> >       struct coresight_device *sink = NULL;
+> > @@ -253,6 +257,14 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
+> >               sink = coresight_get_sink_by_id(id);
+> >       }
+> >
+> > +     /* check if user wants a coresight configuration selected */
+> > +     config_id = (u32)((event->attr.config2 & GENMASK_ULL(63, 32)) >> 32);
+> > +     if (config_id) {
+> > +             if (cscfg_activate_config(config_id))
+> > +                     goto err;
+> > +             event_data->config_id_hash = config_id;
+> > +     }
+> > +
+> >       mask = &event_data->mask;
+> >
+> >       /*
+> > diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.h b/drivers/hwtracing/coresight/coresight-etm-perf.h
+> > index 3646a3837a0b..751d768939d8 100644
+> > --- a/drivers/hwtracing/coresight/coresight-etm-perf.h
+> > +++ b/drivers/hwtracing/coresight/coresight-etm-perf.h
+> > @@ -49,12 +49,14 @@ struct etm_filters {
+> >   * @work:            Handle to free allocated memory outside IRQ context.
+> >   * @mask:            Hold the CPU(s) this event was set for.
+> >   * @snk_config:              The sink configuration.
+> > + * @config_id_hash:  The id of any coresight config selected.
+> >   * @path:            An array of path, each slot for one CPU.
+> >   */
+> >  struct etm_event_data {
+> >       struct work_struct work;
+> >       cpumask_t mask;
+> >       void *snk_config;
+> > +     u32 config_id_hash;
+>
+> Please align this with the naming convention you will be using above and
+> throughout.
+>
+> More comments tomorrow.
+>
+> Thanks,
+> Mathieu
+>
+> >       struct list_head * __percpu *path;
+> >  };
+> >
+> > --
+> > 2.17.1
+> >
+
+Thanks
+
+Mike
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
