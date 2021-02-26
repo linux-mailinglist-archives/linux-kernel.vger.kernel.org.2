@@ -2,151 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C157D325D27
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 06:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4D6325D30
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 06:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhBZFZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 00:25:50 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13102 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhBZFZt (ORCPT
+        id S229707AbhBZF3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 00:29:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhBZF3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 00:25:49 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603886340000>; Thu, 25 Feb 2021 21:25:08 -0800
-Received: from [10.25.103.29] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Feb
- 2021 05:25:06 +0000
-Subject: Re: [RFC PATCH 0/5] Flexible sysclk/pll configuration
-To:     <broonie@kernel.org>, <robh@kernel.org>
-CC:     <jonathanh@nvidia.com>, <kuninori.morimoto.gx@renesas.com>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <49dd60ad-dfb1-8847-2604-0cb4aebe83bd@nvidia.com>
-Date:   Fri, 26 Feb 2021 10:54:48 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 26 Feb 2021 00:29:22 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A503AC061574;
+        Thu, 25 Feb 2021 21:28:42 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id i18so7029889ilq.13;
+        Thu, 25 Feb 2021 21:28:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EqDkuKsSWvX/q3kNJAK9RVd+ZVKW2vi+5spcJMq/Sc4=;
+        b=s/SewRrgpzD0TY3LBiVs61IojGLUIU9foxEGpKhool5VTcla7VgFFdaEkJB4YLP9Rm
+         XDElSuG8L9i/zJsajzOfHq65jEqjbW6pdNylhhkK28cd2L0bCPe7In9UYOihYfHk59zQ
+         j+fy4D4SEbh/m8NyJ6LfNNHONa0Zgk8n8jitgEVW3VHN3w97tXAxxz5chmGCrJ8buX4s
+         ONUjrDHezM0v1/Et0D+UJ7OnD217K4g/FqIAr7PfOnn1a+H0El2Ne7CdRIz+V+MHhyod
+         WRkYJe6fB1ccrmG+z6hKMdiXglejf66zyRmwbveR7DVnZ17v4H5MBBdS/L/qwVHrWXhR
+         Uf2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EqDkuKsSWvX/q3kNJAK9RVd+ZVKW2vi+5spcJMq/Sc4=;
+        b=RZiGq3efrBIl7Jgu6T5DGsfwM40kgNWSD3ubfkxSdzs2ayud5VxQqvLg/P+HDr1Yp2
+         TJqKMgpSwrCKzbBIjpF0LUlMkHvmHcA2nAh0bAT8/ODehckTRmiMUPaOR4m6wYuCzbho
+         7CoLiiocfzWbRmUpcW79n6ZeRlygQoN85Mwb7B5S/7arcUG82rSpN3nh5FE6wGKBnq2c
+         JoXRAtEeozZRRD6B4EvnP9mV8IU0Wig926VLFUrvlYvpNtqCrg0qkbSOjcL793ekt4GG
+         70TB/rxGpv1q0xzfr8olAlg3/2dgLXHz1FKUG9U1M02AlBy5WACI/buQsm2KAhfV89TN
+         mTew==
+X-Gm-Message-State: AOAM530IctHPJthvEulHfrdwD4vtNZVR7iKnp/lUFklvE7icq1cYxEVm
+        Mwc4CEYCGOyaHQMLpmmnsxBreD3SDFRgP1QVGjA=
+X-Google-Smtp-Source: ABdhPJwfHCK6GlloWH0sOyFYOU3LeDbo+badKWvs88UrTGzOqS9L4CInm4CWwHBQdmjqtWc3xJGWcxgwEVcZjXKGBrQ=
+X-Received: by 2002:a92:4105:: with SMTP id o5mr1052617ila.47.1614317321997;
+ Thu, 25 Feb 2021 21:28:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614317108; bh=bZLn7mqkvbTFnvY90gnBrI9GdPGe2eHmP57y+B8irak=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=j2pUG0A47uvh8AwklgsEjdeoaCrIbszFcYadPmLRlbsQtmhuBz5Qn65nc+KQkniAz
-         SfbeVQAoByc/CNn643BL0H0T8zCW2r4mDFEBuqARLjKZmI9kebvw+2qSSdE8Tutg+j
-         wqkalDGRASB+BqHdonwQ6bed1ha8dmtVIsZVKo2NsJMHvVNceHOr/yr7uowyu3Wnd/
-         3MHuz+4bb6ON+uNcRJTjBSEmQbKwpUVwq+bP9N3uFp/FzUSBW1nNZEPuF412t4JsJ7
-         xQSQj9CTylYEynMw7dneErcpo72nI/pms1WMCcjrB3/Be7hfkXSBmuE9+tD5nv/FMa
-         1UL+92QHwDDDw==
+References: <20210218222125.46565-1-mjeanson@efficios.com> <20210223211639.670db85c@gandalf.local.home>
+ <083bce0f-bd66-ab83-1211-be9838499b45@efficios.com> <915297635.2997.1614185975415.JavaMail.zimbra@efficios.com>
+In-Reply-To: <915297635.2997.1614185975415.JavaMail.zimbra@efficios.com>
+From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Date:   Fri, 26 Feb 2021 13:28:30 +0800
+Message-ID: <CAJhGHyBb8FOwAqD4Y=k2aVL_t-n0ks1grWcsyRT+W+5pqWNnaQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/6] [RFC] Faultable tracepoints (v2)
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Michael Jeanson <mjeanson@efficios.com>,
+        rostedt <rostedt@goodmis.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 25, 2021 at 9:15 AM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> ----- On Feb 24, 2021, at 11:22 AM, Michael Jeanson mjeanson@efficios.com wrote:
+>
+> > [ Adding Mathieu Desnoyers in CC ]
+> >
+> > On 2021-02-23 21 h 16, Steven Rostedt wrote:
+> >> On Thu, 18 Feb 2021 17:21:19 -0500
+> >> Michael Jeanson <mjeanson@efficios.com> wrote:
+> >>
+> >>> This series only implements the tracepoint infrastructure required to
+> >>> allow tracers to handle page faults. Modifying each tracer to handle
+> >>> those page faults would be a next step after we all agree on this piece
+> >>> of instrumentation infrastructure.
+> >>
+> >> I started taking a quick look at this, and came up with the question: how
+> >> do you allow preemption when dealing with per-cpu buffers or storage to
+> >> record the data?
+> >>
+> >> That is, perf, bpf and ftrace are all using some kind of per-cpu data, and
+> >> this is the reason for the need to disable preemption. What's the solution
+> >> that LTTng is using for this? I know it has a per cpu buffers too, but does
+> >> it have some kind of "per task" buffer that is being used to extract the
+> >> data that can fault?
+>
+> As a prototype solution, what I've done currently is to copy the user-space
+> data into a kmalloc'd buffer in a preparation step before disabling preemption
+> and copying data over into the per-cpu buffers. It works, but I think we should
+> be able to do it without the needless copy.
+>
+> What I have in mind as an efficient solution (not implemented yet) for the LTTng
+> kernel tracer goes as follows:
+>
+> #define COMMIT_LOCAL 0
+> #define COMMIT_REMOTE 1
+>
+> - faultable probe is called from system call tracepoint [ preemption/blocking/migration is allowed ]
 
+label:
+restart:
 
-On 2/25/2021 11:35 PM, Sameer Pujar wrote:
-> This series attempts to add flexible system clock (sysclk) and pll
-> configuration for the DAI controller from simple card or audio graph
-> card.
->
-> Sysclk configuration
-> ====================
->    Motivation:
->    -----------
->      The problem this tries to address is, some Codecs may have
->      multiple clocks and multiple sources for its sysclk. For example
->      sysclk may depend on MCLK provided by SoC or it may used an
->      internal pll. The simple card or audio graph card driver is
->      generic and can be used on multiple platforms. So if a platform
->      using this driver needs a generic configuration, then the Codec
->      specific stuff cannot be hardcoded in the driver. Hence it would
->      be better if the info is driven from DT, especially from a
->      Codec DAI or endpoint subnode.
->
->    Solution:
->    ---------
->      "system-clock-id" and "system-clock-source" DT properties can be
->      exposed for a flexible sysclk configuration. These properties
->      go into a Codec DAI or endpoint subnode.
->
->      Please note that other sysclk related properties like
->      "system-clock-frequency" and "system-clock-direction-out" are
->      already present.
->
->      Currently snd_soc_dai_set_sysclk() does not have an argument
->      for source. This series adds this additional field and updates
->      all the required drivers. This is needed because ideally sysclk
->      "clk_id" and "source" fields are different. Some drivers are
->      making use of "clk_id" field to program source information.
->      **May be this needs to be corrected going ahead**
->
->
-> Pll configuration
-> =================
->    Motivation:
->    -----------
->      Similar to sysclk configuration, pll configuration also needs
->      little more flexibility. If a Codec has internal pll and it
->      can be sourced from multiple clocks a specific configuration
->      may be required for a given platform.
->
->      Some of the cases are:
->        - MCLK (supplied by SoC) --> Codec pll -> Codec sysclk
->        - SoC I2S bit clock (BCLK) --> Codec pll -> Codec sysclk
->
->    Solution:
->    ---------
->      Approach is similar to what is done for extending sysclk
->      flexibility. Following DT properties are added to address the
->      same.
->
->        "pll-id"
->        "pll-source"
->        "pll-input-reference"
->        "pll-output-reference"
->        "pll-input-frequency"
->        "pll-output-frequency"
->
->      All these are optional properties. Simple card or audio graph
->      card drivers can use above info and call snd_soc_dai_set_pll()
->      for necessary configuration.
->
-> Sameer Pujar (5):
->    ASoC: soc-component: Fix return value of snd_soc_component_set_pll()
->    ASoC: soc-dai: Add sysclk source to snd_soc_dai_set_sysclk()
->    ASoC: audio-graph-card: Add bindings for sysclk and pll
->    ASoC: simple-card-utils: Parse sysclk id and source
->    ASoC: simple-card-utils: Support pll configuration
->
->   .../bindings/sound/audio-graph-port.yaml           |  71 +++++++++
->   include/sound/simple_card_utils.h                  |  35 +++++
->   include/sound/soc-dai.h                            |   4 +-
->   sound/soc/amd/acp-da7219-max98357a.c               |   2 +-
->   sound/soc/amd/acp-rt5645.c                         |   2 +-
->   sound/soc/amd/acp3x-rt5682-max9836.c               |   4 +-
->   sound/soc/atmel/atmel_wm8904.c                     |   2 +-
->   sound/soc/atmel/mchp-i2s-mcc.c                     |   2 +-
+>   - probe code calculate the length which needs to be reserved to store the event
+>     (e.g. user strlen),
 
-[...]
+Does "user strlen" makes the content fault in?
 
->   sound/soc/ti/omap-mcbsp.c                          |   2 +-
->   sound/soc/ti/omap3pandora.c                        |   4 +-
->   sound/soc/ti/rx51.c                                |   2 +-
->   sound/soc/uniphier/aio-cpu.c                       |   4 +-
->   sound/soc/ux500/ux500_msp_dai.c                    |   2 +-
->   271 files changed, 639 insertions(+), 389 deletions(-)
+Is it possible to make the sleepable faulting only happen here between
+"restart" and the following "preempt disable"?  The code here should
+do a prefetch operation like "user strlen".
+
+And we can keep preemption disabled when copying the data.  If there
+is a fault while copying, then we can restart from the label "restart".
+
+Very immature thought.
+
+Thanks
+Lai
+
 >
-
-Looks like I missed some files to update which make use of 
-snd_soc_dai_set_sysclk(). I will try to fix that. Meanwhile please 
-review if the idea is right here.
-
+>   - preempt disable -> [ preemption/blocking/migration is not allowed from here ]
+>     - reserve_cpu = smp_processor_id()
+>     - reserve space in the ring buffer for reserve_cpu
+>       [ from that point on, we have _exclusive_ access to write into the ring buffer "slot"
+>         from any cpu until we commit. ]
+>   - preempt enable -> [ preemption/blocking/migration is allowed from here ]
+>
+>   - copy data from user-space to the ring buffer "slot",
+>
+>   - preempt disable -> [ preemption/blocking/migration is not allowed from here ]
+>     commit_cpu = smp_processor_id()
+>     if (commit_cpu == reserve_cpu)
+>        use local_add to increment the buf[commit_cpu].subbuffer[current].commit_count[COMMIT_LOCAL]
+>     else
+>        use atomic_add to increment the buf[commit_cpu].subbuffer[current].commit_count[COMMIT_REMOTE]
+>   - preempt enable -> [ preemption/blocking/migration is allowed from here ]
+>
+> Given that lttng uses per-buffer/per-sub-buffer commit counters as simple free-running
+> accumulators, the trick here is to use two commit counters rather than single one for each
+> sub-buffer. Whenever we need to read a commit count value, we always sum the total of the
+> LOCAL and REMOTE counter.
+>
+> This allows dealing with migration between reserve and commit without requiring the overhead
+> of an atomic operation on the fast-path (LOCAL case).
+>
+> I had to design this kind of dual-counter trick in the context of user-space use of restartable
+> sequences. It looks like it may have a role to play in the kernel as well. :)
+>
+> Or am I missing something important that would not survive real-life ?
+>
+> Thanks,
+>
+> Mathieu
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
