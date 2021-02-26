@@ -2,162 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37135325D7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A62C325D85
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhBZGZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:25:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhBZGZI (ORCPT
+        id S229953AbhBZGZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:25:55 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57298 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhBZGZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:25:08 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EAEC061574;
-        Thu, 25 Feb 2021 22:24:27 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id k12so335900ljg.9;
-        Thu, 25 Feb 2021 22:24:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=60b0NKkE4IS8WeqdaHkGZTCzE12kooB885932AJOIEs=;
-        b=e0HslaQ/AwybaSkuUGc4MCNSabaipnTeaWgkptSLNoI23I/B02uWKSUlGXQtnmHVr4
-         LWl/I6mB2KtL+Ko1akrg88baTFREWLbJ7AQD4963YFVeN/1ClIL5GACxw6nvKHEc7yz9
-         unAEPOGbXx7w97yOTUzJ8ef2WMjvzLtlmmgiIj7R1H9B9AUjYhJhhykxNthf8CM4RdKZ
-         uWR5E0Hn39JlGBRbkuVU1TKjAoFYBDdYIpFRpBZSePOORNyi5/85ZsWsdGfbYCT+5Ajg
-         /v1cfycqGeSTTzlyxXDG+cnoUoL2oQ4RWfuJbnvn68KOlES552MC9AZOM8Yp44Cd6hmz
-         FhHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=60b0NKkE4IS8WeqdaHkGZTCzE12kooB885932AJOIEs=;
-        b=lUiREfqWi2pxCDKIhm0bHjGVh5m7YfldWEgyEwE/6gXGxpAU29/orCYkTBTn4BP7oH
-         fPduqJwlFVoTugP/97ZciUaprpL2BI9KStqMpHbE09jZF2QsmwAl260lcgq8QtsLvDqs
-         ZJx3N3IKgKZnd8J72lSyQXlVXgmA+3MPzw0CWw503aGcc/iOKHAC5ucoSxVJ7neWuzS0
-         vJn7Wj5ol+SFdt9saS1O3oFw31L3dJBjCWQV3GCteRVKrZLoZysogp2+FwYYEysF7NN3
-         6gKB5//nMZ06FSK0NSlrQWfr/Nb74Qk1A2XLu4WUhiAPEDxN8Z96n3B5k/Bp3ESkgpbE
-         6TRw==
-X-Gm-Message-State: AOAM531keOnM513YrIEvFI8YDyFj1XbKkaCrvRmp1NYbWHsjTZX9WnPJ
-        bsEeycVREIJEI4rpVg295Q0jJDVSGTdwg1XZCqitko/Cacg8Hw==
-X-Google-Smtp-Source: ABdhPJwVaa3LlpORKZNkzn5nWVM2AUd3+dpl+2M9SnGBqMSL1kCpT7MHNsEwt4+VcUNI36PLLQcCVl3bwYG4sFETseQ=
-X-Received: by 2002:a05:651c:548:: with SMTP id q8mr803473ljp.256.1614320665499;
- Thu, 25 Feb 2021 22:24:25 -0800 (PST)
+        Fri, 26 Feb 2021 01:25:52 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11Q6Ob2f100191;
+        Fri, 26 Feb 2021 00:24:37 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614320677;
+        bh=2biBGk1+BsVwomDa/bJIak1U+MfLlq0iBBjwh0Cnf58=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=C+fn0jwGx7jTUjCQkNNAiipxOb9vXrYqZccJEnF4ePqGYovdqvi5aJAQXvGfUGXO1
+         JjmDlUzUEClAxJsSyQLOXyVl9dSQUO0ZX3dL26hCb4wCZfYg6uCPVKduzJvkLXNBak
+         pfRkH1VmuGsbBxF9W6w6KFVzXVtUg/E3PY5JYuL8=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11Q6Ob5j086593
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 26 Feb 2021 00:24:37 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 26
+ Feb 2021 00:24:37 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 26 Feb 2021 00:24:37 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11Q6ObeS063664;
+        Fri, 26 Feb 2021 00:24:37 -0600
+Date:   Fri, 26 Feb 2021 00:24:37 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+CC:     <ssantosh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        <tony@atomide.com>
+Subject: Re: [PATCH] PM: AVS: Replace DEFINE_SIMPLE_ATTRIBUTE with
+ DEFINE_DEBUGFS_ATTRIBUTE
+Message-ID: <20210226062437.lvhy3ehwgwgn5nom@likewise>
+References: <1614156520-105525-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 26 Feb 2021 00:24:14 -0600
-Message-ID: <CAH2r5mudreWgQdGQPSn++0H6zzY-3fcCZvxga7PcNqt4EDWo9Q@mail.gmail.com>
-Subject: [GIT PULL] CIFS/SMB3 Fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1614156520-105525-1-git-send-email-yang.lee@linux.alibaba.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-f40ddce88593482919761f74910f42f4b84c004b:
+On 16:48-20210224, Yang Li wrote:
+> Fix the following coccicheck warning:
+> ./drivers/soc/ti/smartreflex.c:820:0-23: WARNING: pm_sr_fops should be
+> defined with DEFINE_DEBUGFS_ATTRIBUTE
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  drivers/soc/ti/smartreflex.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/ti/smartreflex.c b/drivers/soc/ti/smartreflex.c
+> index 5376f3d..b3c7460 100644
+> --- a/drivers/soc/ti/smartreflex.c
+> +++ b/drivers/soc/ti/smartreflex.c
+> @@ -817,7 +817,7 @@ static int omap_sr_autocomp_store(void *data, u64 val)
+>  	return 0;
+>  }
+>  
+> -DEFINE_SIMPLE_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
+> +DEFINE_DEBUGFS_ATTRIBUTE(pm_sr_fops, omap_sr_autocomp_show,
+>  			omap_sr_autocomp_store, "%llu\n");
+>  
+>  static int omap_sr_probe(struct platform_device *pdev)
+> -- 
+> 1.8.3.1
+> 
+LGTM.
 
-  Linux 5.11 (2021-02-14 14:32:24 -0800)
+Reviewed-by: Nishanth Menon <nm@ti.com>
 
-are available in the Git repository at:
+Though $subject might be soc: ti: smartreflex after the relocation to maintain
+consistency..
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.12-smb3-part1
-
-for you to fetch changes up to 8369dfd7841e70711c53a065ffb8029f24520200:
-
-  cifs: update internal version number (2021-02-25 19:08:11 -0600)
-
-----------------------------------------------------------------
-cifs/smb3 fixes:
-    - improvements to mode bit conversion, chmod and chown when using
-cifsacl mount option
-     - two new mount options for controlling attribute caching
-     - improvements to crediting and reconnect, improved debugging
-     - reconnect fix
-     - add SMB3.1.1 dialect to default dialects for vers=3
-
-Still working on a security fix and some multichannel fixes which are
-not included in this pull request
-
-Test results: http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/513
-----------------------------------------------------------------
-David Howells (1):
-      cifs: use discard iterator to discard unneeded network data more
-efficiently
-
-Paulo Alcantara (4):
-      cifs: fix nodfs mount option
-      cifs: fix DFS failover
-      cifs: check all path components in resolved dfs target
-      cifs: introduce helper for finding referral server to improve
-DFS target resolution
-
-Rohith Surabattula (1):
-      TCON Reconnect during STATUS_NETWORK_NAME_DELETED
-
-Ronnie Sahlberg (1):
-      cifs: fix handling of escaped ',' in the password mount argument
-
-Shyam Prasad N (8):
-      cifs: New optype for session operations.
-      cifs: Fix in error types returned for out-of-credit situations.
-      cifs: Identify a connection by a conn_id.
-      cifs: Reformat DebugData and index connections by conn_id.
-      cifs: Fix cifsacl ACE mask for group and others.
-      cifs: Retain old ACEs when converting between mode bits and ACL.
-      cifs: Change SIDs in ACEs while transferring file ownership.
-      cifs: If a corrupted DACL is returned by the server, bail out.
-
-Steve French (11):
-      smb3: negotiate current dialect (SMB3.1.1) when version 3 or
-greater requested
-      cifs: fix trivial typo
-      cifs: documentation cleanup
-      cifs: change confusing field serverName (to ip_addr)
-      cifs: clarify hostname vs ip address in /proc/fs/cifs/DebugData
-      cifs: cleanup a few le16 vs. le32 uses in cifsacl.c
-      cifs: minor simplification to smb2_is_network_name_deleted
-      cifs: Add new mount parameter "acdirmax" to allow caching
-directory metadata
-      cifs: convert revalidate of directories to using directory
-metadata cache timeout
-      cifs: Add new parameter "acregmax" for distinct file and
-directory metadata timeout
-      cifs: update internal version number
-
-YueHaibing (1):
-      cifs: Fix inconsistent IS_ERR and PTR_ERR
-
- Documentation/admin-guide/cifs/authors.rst      |   6 +-
- Documentation/admin-guide/cifs/changes.rst      |   5 +-
- Documentation/admin-guide/cifs/introduction.rst |  30 +-
- Documentation/admin-guide/cifs/todo.rst         |  34 ++-
- Documentation/admin-guide/cifs/usage.rst        |   2 +-
- fs/cifs/cifs_debug.c                            | 121 ++++----
- fs/cifs/cifs_swn.c                              |   2 +-
- fs/cifs/cifsacl.c                               | 379 +++++++++++++++++++-----
- fs/cifs/cifsacl.h                               |   4 +-
- fs/cifs/cifsencrypt.c                           |   6 +-
- fs/cifs/cifsfs.c                                |  15 +-
- fs/cifs/cifsfs.h                                |   2 +-
- fs/cifs/cifsglob.h                              |  11 +-
- fs/cifs/cifsproto.h                             |   2 +
- fs/cifs/cifssmb.c                               |   6 +-
- fs/cifs/connect.c                               | 301 ++++++++++---------
- fs/cifs/dfs_cache.c                             |  33 ++-
- fs/cifs/file.c                                  |   2 +-
- fs/cifs/fs_context.c                            |  75 +++--
- fs/cifs/fs_context.h                            |   6 +-
- fs/cifs/inode.c                                 |  23 +-
- fs/cifs/sess.c                                  |   2 +-
- fs/cifs/smb2ops.c                               | 109 +++++--
- fs/cifs/smb2pdu.c                               |  22 +-
- fs/cifs/trace.h                                 |  36 ++-
- fs/cifs/transport.c                             |  63 ++--
- 26 files changed, 883 insertions(+), 414 deletions(-)
+Upto santosh if he might want to locally change on applying the patch..
 
 -- 
-Thanks,
-
-Steve
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
