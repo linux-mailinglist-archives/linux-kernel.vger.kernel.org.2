@@ -2,103 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965D332625A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCBC32625C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:12:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhBZMLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 07:11:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50060 "EHLO
+        id S230139AbhBZMLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 07:11:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhBZMLR (ORCPT
+        with ESMTP id S229989AbhBZMLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:11:17 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B51C061574;
-        Fri, 26 Feb 2021 04:10:36 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id w7so7244966wmb.5;
-        Fri, 26 Feb 2021 04:10:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O8grGw91Md2y89hra9UyHWr6e2gg7S6aJOWyyIS8g3Q=;
-        b=OtQ7UHJfBBiVUhEyqFppblMyT1dIYIbsf8ZPCPK66/0T0rx+cqwxXFWooYXeVBRKzq
-         96E9e7/B5lujgYGhTYX+1syVeiIuIdMOciCEkpZnQIddjjGE7DStXnqi0yIs5IOSdvrR
-         00lnbYlHWEbgCVdBVE45GIiXcjXBS7wcRIFtEOkslR1JglGG1SW13wJbH2h60bpz6A2O
-         GcWwvfVu4WlpXBOTEMMt4qmdH26P3chY7IE24nDtFnxhbhgB+weGD7Rc23e3Hi1jJJVc
-         wLAlW3q08rS6xDEmZCqMn5rP4jBTQ1HOoDivqYZwzpXae+PPFks/SiA5kr+o2LbzPDhC
-         rpmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O8grGw91Md2y89hra9UyHWr6e2gg7S6aJOWyyIS8g3Q=;
-        b=BDC66o5yaVBr3lYbF12VHxApOvELhSIBqpgeHnvTcfE4ZbYyf2wq814bhC9WdPK0uN
-         1X6JNHNn2oiRwzyzRT45x7jbm1O3ywSeo5LT5/ZBkq1mNIyB789AqYabMq+lkSw0sKRp
-         pIZLNL+wXv/kk12zDkAJvbtXIlfxuUoGPQyaXO1Io7DphKTI6Vo/1h76RZT6/KpejNnW
-         /egGly79gfvU4oq2+a+NcTW2/95P5sfhiJuswCkiaQ8egyvt34jEEkzHa1Oa6RaSop/6
-         1vP5+CzrONvPy5qtDX5OS6B73i7JZO1zT3vM/Xr9HqdEMidgFXl/qSg5GsMoaM5DMPT/
-         B7Kg==
-X-Gm-Message-State: AOAM530zx3My1WC/qpp2m1Q4zmxZmmX7D5oIa31yFcpd5vC6Ykyqh6Sk
-        A7yaN9xmb8+zZO7egUdwvgrx7eTUyOvDbg==
-X-Google-Smtp-Source: ABdhPJxEgUewsPLnX1CqGAn5g/rmXTcK3TCeazb5KytZIK5nb4TH4LKJKDGW0KWn4FXYKBwpZ2HmAw==
-X-Received: by 2002:a7b:c083:: with SMTP id r3mr2626403wmh.177.1614341435432;
-        Fri, 26 Feb 2021 04:10:35 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f39:5b00:3483:8cf6:25ff:155b? (p200300ea8f395b0034838cf625ff155b.dip0.t-ipconnect.de. [2003:ea:8f39:5b00:3483:8cf6:25ff:155b])
-        by smtp.googlemail.com with ESMTPSA id x13sm18160074wmj.2.2021.02.26.04.10.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 04:10:35 -0800 (PST)
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     bhelgaas@google.com, Yan-Hsuan Chuang <tony0620emma@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-References: <20210225174041.405739-1-kai.heng.feng@canonical.com>
- <20210225174041.405739-3-kai.heng.feng@canonical.com>
- <87o8g7e20e.fsf@codeaurora.org>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH 3/3] PCI: Convert rtw88 power cycle quirk to shutdown
- quirk
-Message-ID: <0e8ba5a4-0029-6966-e4ab-265a538f3b3d@gmail.com>
-Date:   Fri, 26 Feb 2021 13:10:29 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 26 Feb 2021 07:11:31 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A61C06174A;
+        Fri, 26 Feb 2021 04:10:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GoPhaTBzxDxDjimRwk9eU6RU03Pf2eUvh8y04g2Kknc=; b=Bknwcnr4tLLVBaQXp2lILZrLUk
+        UDBrl4PxNZTggDzXjZeOMfsh9YNWwOn7jMizsRsiwWYjKYseEEtcfPJ21vW5EqCdonExNtpGFWTki
+        qUeDUmh1LdflaKmHoUIJhzJfcZIxq8/eUMB2kUkbV62LGBGtvjRc0LpmGjGwAN4SgZEAz+6LFwJge
+        XxI89rki8RYYlWDaN9TeYA1xjThJSKg0mUqkpMjK5iwmObLW0371KXBrHC386qUouVo7hMizZtiPb
+        mkHTT3uxPT7VPePn8sD5/D1GTHJ3dZ4zjLKJQh0VFPEswmOCji6kFhJhejGj/gHOLvOok1sAh+w4c
+        YcNbH/Tw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lFbx5-00BxuP-RD; Fri, 26 Feb 2021 12:10:36 +0000
+Date:   Fri, 26 Feb 2021 12:10:35 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Xu Wang <vulab@iscas.ac.cn>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: Use WARN(1,...)
+Message-ID: <20210226121035.GA2723601@casper.infradead.org>
+References: <20210226094949.49372-1-vulab@iscas.ac.cn>
 MIME-Version: 1.0
-In-Reply-To: <87o8g7e20e.fsf@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226094949.49372-1-vulab@iscas.ac.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.02.2021 08:12, Kalle Valo wrote:
-> Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
-> 
->> Now we have a generic D3 shutdown quirk, so convert the original
->> approach to a PCI quirk.
->>
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->> ---
->>  drivers/net/wireless/realtek/rtw88/pci.c | 2 --
->>  drivers/pci/quirks.c                     | 6 ++++++
->>  2 files changed, 6 insertions(+), 2 deletions(-)
-> 
-> It would have been nice to CC linux-wireless also on patches 1-2. I only
-> saw patch 3 and had to search the rest of patches from lkml.
-> 
-> I assume this goes via the PCI tree so:
-> 
-> Acked-by: Kalle Valo <kvalo@codeaurora.org>
-> 
+On Fri, Feb 26, 2021 at 09:49:49AM +0000, Xu Wang wrote:
+> Use WARN(1,...) rather than printk followed by WARN_ON(1).
 
-To me it looks odd to (mis-)use the quirk mechanism to set a device
-to D3cold on shutdown. As I see it the quirk mechanism is used to work
-around certain device misbehavior. And setting a device to a D3
-state on shutdown is a normal activity, and the shutdown() callback
-seems to be a good place for it.
-I miss an explanation what the actual benefit of the change is.
+This description doesn't match the patch.
+
+> -	WARN(1, KERN_ERR "BUG: Dentry %p{i=%lx,n=%pd} "
+> +	WARN(1, "BUG: Dentry %p{i=%lx,n=%pd} "
+
