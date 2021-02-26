@@ -2,177 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A403D32665B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D945326660
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbhBZRcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 12:32:16 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:35262 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229751AbhBZRcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:32:08 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614360703; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=M7HvRPiSZ2xSbCT1WOfPlcHl519+4Bp5gCcSHWi5Dtk=;
- b=TacWN7Gmsp7ybE/rqJcG8t0ZqL8w5V+M0Id4cLIFkjS7CZvCcZq/E5DoiJ8PVqSGa7Z6b13d
- MmGEiW2EeZKMGl20pXj7AihoE0H54C1B63W1g6BN8b6sa4B1T/w3QdIDKBx4TdljPs7tfWEk
- aSqvGPAdtO6avst4BDtxxFlYcJs=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6039306d9e950d0db1367b47 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 17:31:25
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7BE07C433CA; Fri, 26 Feb 2021 17:31:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 09078C433C6;
-        Fri, 26 Feb 2021 17:31:23 +0000 (UTC)
+        id S229863AbhBZRiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 12:38:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhBZRiL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 12:38:11 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC881C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:37:30 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id n4so7071517wmq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:37:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=veZgy17Qv7a6dOErF+0HWjSOpg9SVAzw3NpOggfjmDQ=;
+        b=qxK9tJ80SkTns5/mqJrFGM+Y8je0U6Fppv1OGwiYyeWQauXU4nt77C561Hjj+RJMEe
+         G7AuPNzsWq1UbSiCLY1pLITemweSTK03hLwO9L7aoBirYeN+k5EZrW/uoiUImFJSoZhg
+         zTgKSXjU3QQbWgDYTeHbn+1nyWaXu6wD04KEz0Sl/xdGHiiju3kyaWQVkB7UwXw4lf3h
+         wHJUeu9Vrg1fTN/Lml3JdBqDbIKmBhan57wi54z9rhHVu5kmx3nCRnZWn0VvG5hbiXIk
+         a5sY7LObqQCliXUhAakL01bHVtlU+EZ+VLbUxBGzM5L62kAI36yCHtm3k0vjaPXa9b/S
+         PV1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=veZgy17Qv7a6dOErF+0HWjSOpg9SVAzw3NpOggfjmDQ=;
+        b=Mbmw91YJO7k0O9n2dbSGNP6wxnobO3YXlxrRtHsmwzDvCHE/1KPHMFdtfp98/BeWCX
+         B7jyc8P8/z6Nve0UPSDNp+7jMkQobVelV0g9Meh0lk+gAEbROSYlZr3Da08IuQo7jRxE
+         lCG7fhS02rEwHY57KEQk0JsAo87vocegCQVCp1kdtI2sGEXYa0fKQslLv9wcwui8ueG7
+         f8b9+/S5id2J9g5u4UhUTEHS4lZYRAatBhpYkg4Yv1KaD4Eh3/nPQcG463PtHFttF///
+         +2CZs0WXPO7ShchxLk62NZXuA0IGzlvBGDav7lK3V74QdtmSqmJuPwClJH60XT6dKFbv
+         t+XQ==
+X-Gm-Message-State: AOAM530Go7cb5ndebd4AxwILHc0x4F0+aKDOcNgQDd3vlN6m0YEXE7lC
+        B6/TqLSB00Ou9MY1Rp0ppjAXPw==
+X-Google-Smtp-Source: ABdhPJzrqayqs3QwF66mzSrY3iQ3M0cQTtC+IsYvltl94Zm8cmNJRbwF7yNDnGO3/B3OqzwnITZh2Q==
+X-Received: by 2002:a05:600c:2314:: with SMTP id 20mr3954732wmo.97.1614361049311;
+        Fri, 26 Feb 2021 09:37:29 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id q140sm14556328wme.0.2021.02.26.09.37.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 09:37:28 -0800 (PST)
+Date:   Fri, 26 Feb 2021 17:37:27 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] kdb: Get rid of custom debug heap allocator
+Message-ID: <20210226173727.dqa5uytqwbll6omo@maple.lan>
+References: <20210226095306.1236539-1-sumit.garg@linaro.org>
+ <20210226105934.gmppt6kubfadv4uf@maple.lan>
+ <CAFA6WYPXCKSYBH8Tapf_yg-jS7G0sH0Dmi27s6hutUMtSE39-Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 26 Feb 2021 09:31:23 -0800
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, hemantk@codeaurora.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH v2] bus: mhi: core: Add unique qrtr node id support
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20210226145245.GB70936@thinkpad>
-References: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
- <1614336169-31467-2-git-send-email-gokulsri@codeaurora.org>
- <20210226145245.GB70936@thinkpad>
-Message-ID: <ee9edb7c59a20e5ea2af59de21e815ee@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYPXCKSYBH8Tapf_yg-jS7G0sH0Dmi27s6hutUMtSE39-Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-26 06:52 AM, Manivannan Sadhasivam wrote:
-> On Fri, Feb 26, 2021 at 04:12:49PM +0530, Gokul Sriram Palanisamy 
-> wrote:
->> On platforms with two or more identical mhi
->> devices, qmi service will run with identical
->> qrtr-node-id. Because of this identical ID,
->> host qrtr-lookup cannot register more than one
->> qmi service with identical node ID. Ultimately,
->> only one qmi service will be avilable for the
->> underlying drivers to communicate with.
->> 
->> On QCN9000, it implements a unique qrtr-node-id
->> and qmi instance ID using a unique instance ID
->> written to a debug register from host driver
->> soon after SBL is loaded.
->> 
->> This change generates a unique instance ID from
->> PCIe domain number and bus number, writes to the
->> given debug register just after SBL is loaded so
->> that it is available for FW when the QMI service
->> is spawned.
->> 
->> sample:
->> root@OpenWrt:/# qrtr-lookup
->>   Service Version Instance Node  Port
->>        15       1        0    8     1 Test service
->>        69       1        8    8     2 ATH10k WLAN firmware service
->>        15       1        0   24     1 Test service
->>        69       1       24   24     2 ATH10k WLAN firmware service
->> 
->> Here 8 and 24 on column 3 (QMI Instance ID)
->> and 4 (QRTR Node ID) are the node IDs that
->> is unique per mhi device.
->> 
->> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
->> ---
->>  drivers/bus/mhi/core/boot.c | 14 ++++++++++++++
->>  1 file changed, 14 insertions(+)
->> 
->> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
->> index c2546bf..5e5dad5 100644
->> --- a/drivers/bus/mhi/core/boot.c
->> +++ b/drivers/bus/mhi/core/boot.c
->> @@ -16,8 +16,12 @@
->>  #include <linux/random.h>
->>  #include <linux/slab.h>
->>  #include <linux/wait.h>
->> +#include <linux/pci.h>
->>  #include "internal.h"
->> 
->> +#define QRTR_INSTANCE_MASK	0x000000FF
->> +#define QRTR_INSTANCE_SHIFT	0
->> +
->>  /* Setup RDDM vector table for RDDM transfer and program RXVEC */
->>  void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
->>  		      struct image_info *img_info)
->> @@ -391,6 +395,9 @@ void mhi_fw_load_handler(struct mhi_controller 
->> *mhi_cntrl)
->>  	const struct firmware *firmware = NULL;
->>  	struct image_info *image_info;
->>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->> +	struct pci_dev *pci_dev = to_pci_dev(mhi_cntrl->cntrl_dev);
->> +	struct pci_bus *bus = pci_dev->bus;
->> +	uint32_t instance;
->>  	const char *fw_name;
->>  	void *buf;
->>  	dma_addr_t dma_addr;
->> @@ -466,6 +473,13 @@ void mhi_fw_load_handler(struct mhi_controller 
->> *mhi_cntrl)
->>  		return;
->>  	}
->> 
->> +	instance = ((pci_domain_nr(bus) & 0xF) << 4) | (bus->number & 0xF);
->> +	instance &= QRTR_INSTANCE_MASK;
->> +
->> +	mhi_write_reg_field(mhi_cntrl, mhi_cntrl->bhi,
->> +			    BHI_ERRDBG2, QRTR_INSTANCE_MASK,
->> +			    QRTR_INSTANCE_SHIFT, instance);
+On Fri, Feb 26, 2021 at 06:12:13PM +0530, Sumit Garg wrote:
+> On Fri, 26 Feb 2021 at 16:29, Daniel Thompson
+> <daniel.thompson@linaro.org> wrote:
+> >
+> > On Fri, Feb 26, 2021 at 03:23:06PM +0530, Sumit Garg wrote:
+> > > Currently the only user for debug heap is kdbnearsym() which can be
+> > > modified to rather ask the caller to supply a buffer for symbol name.
+> > > So do that and modify kdbnearsym() callers to pass a symbol name buffer
+> > > allocated statically and hence remove custom debug heap allocator.
+> >
+> > Why make the callers do this?
+> >
+> > The LRU buffers were managed inside kdbnearsym() why does switching to
+> > an approach with a single buffer require us to push that buffer out to
+> > the callers?
+> >
 > 
-> You cannot not do this in MHI stack. Why can't you do this in the MHI 
-> controller
-> specific to QCN9000? And btw, is QCN9000 supported in mainline?
+> Earlier the LRU buffers managed namebuf uniqueness per caller (upto
+> 100 callers)
+
+The uniqueness is per symbol, not per caller.
+
+> but if we switch to single entry in kdbnearsym() then all
+> callers need to share common buffer which will lead to incorrect
+> results from following simple sequence:
 > 
-> Thanks,
-> Mani
+> kdbnearsym(word, &symtab1);
+> kdbnearsym(word, &symtab2);
+> kdb_symbol_print(word, &symtab1, 0);
+> kdb_symbol_print(word, &symtab2, 0);
 > 
->> +
->>  	write_lock_irq(&mhi_cntrl->pm_lock);
->>  	mhi_cntrl->dev_state = MHI_STATE_RESET;
->>  	write_unlock_irq(&mhi_cntrl->pm_lock);
->> --
->> 2.7.4
->> 
+> But if we change to a unique static namebuf per caller then the
+> following sequence will work:
+> 
+> kdbnearsym(word, &symtab1, namebuf1);
+> kdbnearsym(word, &symtab2, namebuf2);
+> kdb_symbol_print(word, &symtab1, 0);
+> kdb_symbol_print(word, &symtab2, 0);
 
-As others have stated, please refrain from adding protocol specific code 
-(such as PCIe)
-in the MHI core driver. Please have this change in your controller.
+This is true but do any of the callers of kdbnearsym ever do this? The
+main reaason that heap stuck out as redundant was that I've only ever
+seen the output of kdbnearsym() consumed almost immediately by a print.
 
-If there is access to BHI registers required prior to power up from MHI 
-core, it is not
-exposed right now. We can talk about how you can  achieve that, so you 
-can do this write
-in your controller after mhi_prepare_for_power_up().
+I wrote an early version of a patch like this that just shrunk the LRU
+cache down to 2 and avoided any heap usage... but I threw it away
+when I realized we never carry cached values outside the function
+that obtained them.
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+
+> > > @@ -526,6 +526,7 @@ int kdbgetaddrarg(int argc, const char **argv, int *nextarg,
+> 
+> >
+> > > diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+> > > index 9d69169582c6..6efe9ec53906 100644
+> > > --- a/kernel/debug/kdb/kdb_main.c
+> > > +++ b/kernel/debug/kdb/kdb_main.c
+> > > @@ -526,6 +526,7 @@ int kdbgetaddrarg(int argc, const char **argv, int *nextarg,
+> >
+> > The documentation comment for this function has not been updated to
+> > describe the new contract on callers of this function (e.g. if they
+> > consume the symbol name they must do so before calling kdbgetaddrarg()
+> > (and maybe kdbnearsym() again).
+> >
+> 
+> I am not sure if I follow you here. If we have a unique static buffer
+> per caller then why do we need this new contract?
+
+I traced the code wrong. I thought it shared symtab->sym_name with its
+own caller... but it doesn't it shares synname with its caller and
+that's totally different...
+
+
+Daniel.
+
+> 
+> >
+> > >       char symbol = '\0';
+> > >       char *cp;
+> > >       kdb_symtab_t symtab;
+> > > +     static char namebuf[KSYM_NAME_LEN];
+> > >
+> > >       /*
+> > >        * If the enable flags prohibit both arbitrary memory access
+> > > diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
+> > > index b59aad1f0b55..9b907a84f2db 100644
+> > > --- a/kernel/debug/kdb/kdb_support.c
+> > > +++ b/kernel/debug/kdb/kdb_support.c
+> > > @@ -57,8 +57,6 @@ int kdbgetsymval(const char *symname, kdb_symtab_t *symtab)
+> > >  }
+> > >  EXPORT_SYMBOL(kdbgetsymval);
+> > >
+> > > -static char *kdb_name_table[100];    /* arbitrary size */
+> > > -
+> > >  /*
+> > >   * kdbnearsym -      Return the name of the symbol with the nearest address
+> > >   *   less than 'addr'.
+> >
+> > Again the documentation comment has not been updated and, in this case,
+> > is now misleading.
+> 
+> Okay, I will fix it.
+> 
+> >
+> > If we move the static buffer here then the remarks section on this
+> > function is a really good place to describe what the callers must do to
+> > manage the static buffer safely as well as a convenient place to mention
+> > that we tolerate the reuse of the static buffer if kdb is re-entered
+> > becase a) kdb is broken if that happens and b) we are crash resilient
+> > if if does.
+> >
+> >
+> > > @@ -79,13 +77,11 @@ static char *kdb_name_table[100]; /* arbitrary size */
+> > >   *   hold active strings, no kdb caller of kdbnearsym makes more
+> > >   *   than ~20 later calls before using a saved value.
+> > >   */
+> > > -int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+> > > +int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab, char *namebuf)
+> >
+> > As above, I don't understand why we need to add namebuf here. I think
+> > the prototype can remain the same.
+> >
+> > Think of it simple that we have reduce the cache from having 100 entries
+> > to having just 1 ;-) .
+> 
+> Please see my response above.
+> 
+> -Sumit
+> 
+> >
+> >
+> > Daniel.
