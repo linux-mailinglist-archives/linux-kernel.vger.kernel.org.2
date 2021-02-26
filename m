@@ -2,114 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D02326103
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4008326105
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbhBZKLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:11:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36362 "EHLO mx2.suse.de"
+        id S231273AbhBZKLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:11:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhBZKIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:08:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 95F28ACF6;
-        Fri, 26 Feb 2021 10:08:12 +0000 (UTC)
-Subject: Re: [PATCH] perf config: add annotate.demangle{,_kernel}
-From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <deb2af9e-25dd-ac72-29f4-ab90c2b24237@suse.cz>
- <YDVcZJscuKIgShsm@kernel.org> <a4e687b9-f611-1b24-ae7c-2ecd93c42ea8@suse.cz>
-Message-ID: <c96aabe7-791f-9503-295f-3147a9d19b60@suse.cz>
-Date:   Fri, 26 Feb 2021 11:08:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230466AbhBZKJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:09:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 999A964EED;
+        Fri, 26 Feb 2021 10:08:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614334110;
+        bh=+vSapguqVi3xqBZItpVDSazJWi5j4QeV+Jglua/0Ul8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=p2dVoMxmr0REiGruLYydcIFsMId1dYK2ZpW0uA5jRZYlAuqwPSUYWFNPdcLDRptlE
+         OFzF2WzQ4IY1FY1uGQqoWgCTwppg3EVA/Mf0VaE7+UE5detHV1MORv+SUZ1CDQHXeS
+         rFeC/9J5bIea84mdhvn4CU44cw1xYJGg8p7om4JJ1kZq0Gwg3H37UfveRyRe9xJMbO
+         xvVH5jZ/iLk89HfNjIa66Zy9OrwSm7R/o66FcBj3JdBQmvsha9e/Brn96QvTAw8zbl
+         res01ueFB+AslXJ4JAhcSj5Pfr5ye4LyS5pvsD2QRmye/6lIRlGwZuGzqxocyJrtb0
+         dgBUdozDBGWRQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lFa3G-0004wz-S7; Fri, 26 Feb 2021 11:08:50 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     linux-usb@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Subject: [PATCH] USB: serial: xr: fix NULL-deref on disconnect
+Date:   Fri, 26 Feb 2021 11:08:26 +0100
+Message-Id: <20210226100826.18987-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <a4e687b9-f611-1b24-ae7c-2ecd93c42ea8@suse.cz>
-Content-Type: multipart/mixed;
- boundary="------------7ED3ADB86AC31C7AA548F629"
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------7ED3ADB86AC31C7AA548F629
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Claiming the sibling control interface is a bit more involved and
+specifically requires adding support to USB-serial core for managing
+either interface being unbound first, something which could otherwise
+lead to a NULL-pointer dereference.
 
-On 2/26/21 11:03 AM, Martin Liška wrote:
-> On 2/23/21 8:49 PM, Arnaldo Carvalho de Melo wrote:
->> Please consider making this configurable (if not already) via
->> ~/.perfconfig, 'perf config', sure in a followup patch.
-> 
-> I'm doing that in the following patch.
+Similarly, additional infrastructure is also needed to handle suspend
+properly.
 
-The patch contained a typo, fixed in the V2.
+Since the driver currently isn't actually using the control interface,
+we can defer this for now by simply not claiming the control interface.
 
-Martin
-
-> 
-> Thanks,
-> Martin
-
-
---------------7ED3ADB86AC31C7AA548F629
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-perf-config-add-annotate.demangle-_kernel.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
- filename="0001-perf-config-add-annotate.demangle-_kernel.patch"
-
-From a29a6d3ae717f19774a430ccf9a63a452376f359 Mon Sep 17 00:00:00 2001
-From: Martin Liska <mliska@suse.cz>
-Date: Fri, 26 Feb 2021 11:01:24 +0100
-Subject: [PATCH] perf config: add annotate.demangle{,_kernel}
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-Signed-off-by: Martin Liška <mliska@suse.cz>
+Fixes: c2d405aa86b4 ("USB: serial: add MaxLinear/Exar USB to Serial driver")
+Reported-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Manivannan Sadhasivam <mani@kernel.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- tools/perf/Documentation/perf-config.txt | 6 ++++++
- tools/perf/util/annotate.c               | 4 ++++
- 2 files changed, 10 insertions(+)
+ drivers/usb/serial/xr_serial.c | 25 -------------------------
+ 1 file changed, 25 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
-index 153bde14bbe0..154a1ced72b2 100644
---- a/tools/perf/Documentation/perf-config.txt
-+++ b/tools/perf/Documentation/perf-config.txt
-@@ -393,6 +393,12 @@ annotate.*::
+diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
+index 483d07dee19d..0ca04906da4b 100644
+--- a/drivers/usb/serial/xr_serial.c
++++ b/drivers/usb/serial/xr_serial.c
+@@ -545,37 +545,13 @@ static void xr_close(struct usb_serial_port *port)
  
- 		This option works with tui, stdio2 browsers.
+ static int xr_probe(struct usb_serial *serial, const struct usb_device_id *id)
+ {
+-	struct usb_driver *driver = serial->type->usb_driver;
+-	struct usb_interface *control_interface;
+-	int ret;
+-
+ 	/* Don't bind to control interface */
+ 	if (serial->interface->cur_altsetting->desc.bInterfaceNumber == 0)
+ 		return -ENODEV;
  
-+	annotate.demangle::
-+		Demangle symbol names to human readable form. Default is 'true'.
-+
-+	annotate.demangle_kernel::
-+		Demangle kernel symbol names to human readable form. Default is 'true'.
-+
- hist.*::
- 	hist.percentage::
- 		This option control the way to calculate overhead of filtered entries -
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 80542012ec1b..e35d56608986 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -3142,6 +3142,10 @@ static int annotation__config(const char *var, const char *value, void *data)
- 		opt->use_offset = perf_config_bool("use_offset", value);
- 	} else if (!strcmp(var, "annotate.disassembler_style")) {
- 		opt->disassembler_style = value;
-+	} else if (!strcmp(var, "annotate.demangle")) {
-+		symbol_conf.demangle = perf_config_bool("demangle", value);
-+	} else if (!strcmp(var, "annotate.demangle_kernel")) {
-+		symbol_conf.demangle_kernel = perf_config_bool("demangle_kernel", value);
- 	} else {
- 		pr_debug("%s variable unknown, ignoring...", var);
- 	}
+-	/* But claim the control interface during data interface probe */
+-	control_interface = usb_ifnum_to_if(serial->dev, 0);
+-	if (!control_interface)
+-		return -ENODEV;
+-
+-	ret = usb_driver_claim_interface(driver, control_interface, NULL);
+-	if (ret) {
+-		dev_err(&serial->interface->dev, "Failed to claim control interface\n");
+-		return ret;
+-	}
+-
+ 	return 0;
+ }
+ 
+-static void xr_disconnect(struct usb_serial *serial)
+-{
+-	struct usb_driver *driver = serial->type->usb_driver;
+-	struct usb_interface *control_interface;
+-
+-	control_interface = usb_ifnum_to_if(serial->dev, 0);
+-	usb_driver_release_interface(driver, control_interface);
+-}
+-
+ static const struct usb_device_id id_table[] = {
+ 	{ USB_DEVICE(0x04e2, 0x1410) }, /* XR21V141X */
+ 	{ }
+@@ -590,7 +566,6 @@ static struct usb_serial_driver xr_device = {
+ 	.id_table		= id_table,
+ 	.num_ports		= 1,
+ 	.probe			= xr_probe,
+-	.disconnect		= xr_disconnect,
+ 	.open			= xr_open,
+ 	.close			= xr_close,
+ 	.break_ctl		= xr_break_ctl,
 -- 
-2.30.1
+2.26.2
 
-
---------------7ED3ADB86AC31C7AA548F629--
