@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B3732608A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA30326092
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbhBZJw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:52:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49476 "EHLO mx2.suse.de"
+        id S230390AbhBZJxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:53:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230347AbhBZJwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:52:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614333085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8ELmdVBlgSFEM0c+8AL7CXModPBPz81obvz/7XnzWnc=;
-        b=CPKMJQj54h34+7/Xoeo8J4aZTqTa6EYLB3mHPan+F006P17R7stKKFzXzupg5uR4LM//Zd
-        240pjifIk35pgZJTw0ntGpLRtWtr8zsNmnBdK7KpT5cKEvv5wte7OcPTVKRJCWM6/zRqvt
-        AzQ6yA5kxKv1joQZk6eJ3WlyGNIe/l0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3C875AAAE;
-        Fri, 26 Feb 2021 09:51:25 +0000 (UTC)
-Date:   Fri, 26 Feb 2021 10:51:24 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] mm: Make alloc_contig_range handle free hugetlb
- pages
-Message-ID: <YDjEnKex9bBmQv7C@dhcp22.suse.cz>
-References: <20210222135137.25717-1-osalvador@suse.de>
- <20210222135137.25717-2-osalvador@suse.de>
- <YDiyvQ2SCXxCjPJ2@dhcp22.suse.cz>
- <20210226094507.GA3240@linux>
+        id S230188AbhBZJwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 04:52:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2256064EEE
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:51:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614333117;
+        bh=ApJaVYzJeY8MVteoWjvp93/sOHg/735tReQS2Q+OzCA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=D1D7MK9GBenuzDq23SDzmnkg6URzwCPAXfx3GPr4DmE6aIHZGWWueJJzqsIJLHrQW
+         3BwpM0vcW2rVpJ0dZB5S73P2SXDEZgEFlmdreULCdwr6h3iejm32AX6kbWaeeV4dsr
+         98kx77mS5gzuZQVX3X4BiOn+qEjTUzd786zy+/1ML9O+BoxKL03uBsjFAiPN7vZxvl
+         BZm3nYOfZYOMIfykZfzErQROyKdms0P309J8iiijjxiEqZmyg7dC3pdSvK+8gQ2rAM
+         vpzCxTEFiCcobt5FKFu/SD+VuPTftv4d5cnWlXoe3GdbUXqzdeGpBgOFwIOEQRrMm8
+         pWDcFEcH0qvbg==
+Received: by mail-ot1-f53.google.com with SMTP id 40so171651otu.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:51:57 -0800 (PST)
+X-Gm-Message-State: AOAM532W4B7ic+yHCklXgB40XXbVfTjoW32kg/2ARBuYOIGYJgn+BNdU
+        LzjJiNtzCn2luzBsXwrIwDNWwDsDnIeSBnzKYGM=
+X-Google-Smtp-Source: ABdhPJwWMFB8RCNioZobpm/xPLgdfIRzTGssxm+clf270OodDNb4DJPh+Y3YNRV/I9WnrOVFWKyxldNGczV4JlasNlQ=
+X-Received: by 2002:a9d:6b8b:: with SMTP id b11mr1655619otq.210.1614333116293;
+ Fri, 26 Feb 2021 01:51:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226094507.GA3240@linux>
+References: <20210225112122.2198845-1-arnd@kernel.org> <CA+icZUUDnKBxkfgOVYDdpA29GnLUTT22mqRNyxQeYmay044ejg@mail.gmail.com>
+ <CAK8P3a1QmS6g3cHTR93wWPkKs8vaP6RJEb8nZbTMLX+xphLJRw@mail.gmail.com> <CA+icZUW9Hzm_ZZtLiJu8pVeOmYJMOaXkV4Om_u4yZKYRVWNddA@mail.gmail.com>
+In-Reply-To: <CA+icZUW9Hzm_ZZtLiJu8pVeOmYJMOaXkV4Om_u4yZKYRVWNddA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 26 Feb 2021 10:51:40 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0cyAYqdPg_OoaVVY2Gjn=vtwAyfsVPjZ5qYddiOOc-eA@mail.gmail.com>
+Message-ID: <CAK8P3a0cyAYqdPg_OoaVVY2Gjn=vtwAyfsVPjZ5qYddiOOc-eA@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Scull <ascull@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 26-02-21 10:45:14, Oscar Salvador wrote:
-> On Fri, Feb 26, 2021 at 09:35:09AM +0100, Michal Hocko wrote:
-> > I think it would be helpful to call out that specific case explicitly
-> > here. I can see only one scenario (are there more?)
-> > __free_huge_page()		isolate_or_dissolve_huge_page
-> > 				  PageHuge() == T
-> > 				  alloc_and_dissolve_huge_page
-> > 				    alloc_fresh_huge_page()
-> > 				    spin_lock(hugetlb_lock)
-> > 				    // PageHuge() && !PageHugeFreed &&
-> > 				    // !PageCount()
-> > 				    spin_unlock(hugetlb_lock)
-> >   spin_lock(hugetlb_lock)
-> >   1) update_and_free_page
-> >        PageHuge() == F
-> >        __free_pages()
-> >   2) enqueue_huge_page
-> >        SetPageHugeFreed()
-> >   spin_unlock(&hugetlb_lock)
-> 
-> I do not think there are more scenarios. The thing is to find a !page_count &&
-> !PageHugeFreed.
-> AFAICS, this can only happen after:
-> put_page->put_page_test_zero->..->_free_huge_page gets called but __free_huge_page
-> has not reached enqueue_huge_page yet (as you just described above)
-> 
-> By calling out this case, you meant to describe it in the changelog?
+On Fri, Feb 26, 2021 at 10:05 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> On Fri, Feb 26, 2021 at 9:14 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> > > BTW, is CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y setable for x86 (64bit)?
+> > > ( Did not look or check for it. )
+> >
+> > No, in mainline, HAVE_LD_DEAD_CODE_DATA_ELIMINATION is currently
+> > only selected on MIPS and PowerPC. I only sent experimental patches to
+> > enable it on arm64 and m68k, but have not tried booting them. If you
+> > select the symbol on x86, you should see similar results.
+> >
+>
+> OK, i see:
+>
+> $ git grep HAVE_LD_DEAD_CODE_DATA_ELIMINATION arch/mips/
+> arch/mips/Kconfig:      select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+>
+> $ git grep HAVE_LD_DEAD_CODE_DATA_ELIMINATION arch/powerpc/
+> arch/powerpc/Kconfig:   select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+>
+> So, I need to add this to arch/x86/Kconfig.
+>
+> You happen to know if changes to arch/x86/kernel/vmlinux.lds.S
+> (sections) are needed?
 
-Yes.
-[...]
-> > 	struct hstate *h;
-> > 
-> > 	/*
-> > 	 * The page might have been dissloved from under our feet
-> > 	 * so make sure to carefully check the state under the lock.
-> > 	 * Return success on when racing as if we dissloved the page
-> > 	 * ourselves.
-> > 	 */
-> > 	spin_lock(&hugetlb_lock);
-> > 	if (PageHuge(page)) {
-> > 		head = compound_head(page);
-> > 		h = page_hstate(head);
-> > 	} else {
-> > 		spin_unlock(&hugetlb_lock);
-> > 		return true;
-> > 	}
-> > 	spin_unlock(&hugetlb_lock);
-> 
-> Yes, I find this less eyesore.
-> 
-> I will fix it up in v4.
+No idea. I'm still debugging a possible regression on arm64, but both
+issues I found for arm64 are specific to that architecture and won't
+happen on x86. It's likely that something else breaks though.
 
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+> Last question:
+> The last days I see a lot of fixes touching inlining with LLVM/Clang v13-git.
+> What git tag are you using?
+> What are your experiences?
+> Pending patches (kernel-side)?
+>
+> I use:
+> $ /opt/llvm-toolchain/bin/clang --version
+> dileks clang version 13.0.0 (https://github.com/llvm/llvm-project.git
+> c465429f286f50e52a8d2b3b39f38344f3381cce)
+
+This is what I have on the build box:
+Ubuntu clang version
+13.0.0-++20210223104451+ebca13c66504-1~exp1~20210223095200.234
+
+        Arnd
