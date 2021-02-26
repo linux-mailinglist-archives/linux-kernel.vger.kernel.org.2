@@ -2,217 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A0A32607A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8770132607C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhBZJta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:49:30 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:56434 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbhBZJtB (ORCPT
+        id S229769AbhBZJtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:49:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhBZJtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:49:01 -0500
-Received: by mail-il1-f200.google.com with SMTP id s4so6552462ilv.23
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:48:44 -0800 (PST)
+        Fri, 26 Feb 2021 04:49:23 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C02C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:48:41 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id k13so13745319ejs.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:48:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xrw0bPY3dRaQun4EfVVXzqdCe+d3ceyGPlj8WbSMudQ=;
+        b=VOH920EVdn3aZoa4vJKbkxtK5Iez9PqlzMZtdibal49Itgmmk42+G+NiS1ORASqdfq
+         gEVKA807y68W3984LfXaoG9MIX/ZuFI7SXkKgh1wa6EQRoFznRhHW+cxbStGVIo3PwZ3
+         oLEihxh8u2e1NsRcXw5eo73X6JvHVC8W7iJ6M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=aZf9z6OB+FlDxun0umJzf89vugjyAE5GbM2mk1dS+6A=;
-        b=DM+Ff6/ojatxPjZgJGFOB2A9kTo5ul+CxMXiVlTOfFakQ/hVFx4QC5r2nSnG7IukJp
-         vZJ9p289Y67ql01p5PVOZpAp3S/3BJIjVCs7l97SOxt2vOIkEVoJlLSEmNKK/uA1/Xee
-         x7TYcqUeKHk3oTKG9vIbimQqiQkG9FfmQDHz9U/wPTwNJFAqLXJuLZbrkah38d9GLgNg
-         xwV1lB1E/XgB2sReLDV46DMpEKguvMBVCOvDsXOu7DfHj/8VcWXXG0bbrZLld/wptDci
-         Z8FgsUOf0wJ6m8rrOH2/fMcql4xN/5TjM+8T0yPF6ATITBuHHCQdBOubfto2ThZ2ChZ6
-         vRPg==
-X-Gm-Message-State: AOAM533n1eNvcTaYJMs7vCLzgnyw5FBhcUHHyZbedZrauOazTS+EDAEy
-        BSfwELNKjIYJqU1T5vkJp/JPL88ECR4q+M9VK+riwE5wytlD
-X-Google-Smtp-Source: ABdhPJwziAIzhfU8Xi8QPIfaU8BDOhxP/ihwKuLwlDBtHSt/a0DhsarlbPmpFBtYM1e0aUMIehZCBLsGIEEP3wCiJm9Lk7gw8QCq
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xrw0bPY3dRaQun4EfVVXzqdCe+d3ceyGPlj8WbSMudQ=;
+        b=LwNS3+DCkTO2lOB/S2T2ckDCxmESbXUjxmzFTvVl0g1ZFSE1EsZDoa5qjZllJ2fS2b
+         O2LW+ouFn52IKWAuinYvEClr9LPba6BEcYME4ZIXMiDnCcqhTDp8183/egyZLtX/P7dR
+         cYy9QXfs7D1C92G+8nqE4pnunoLYDWuia4hX1xStb3xqUVkmtgscuudUkmVY87vxYkP5
+         P6tEubc23amj+wB7WBNeqf8Sl82/axxNkXMo1Ou0Uw47PMAnx9Njjc8t2Do7yCO8fHGY
+         4PY0oByiiCN5vPCRXg1PRM5N9awrwE6HLvvw6uh/sALPdvx18Dk3EatyonkTqZpb95Bq
+         fCPQ==
+X-Gm-Message-State: AOAM5315P0yWiGLtlMpkrMZ786dAwdFxdeQUBeRMqwkZSq49SFDjpAZd
+        6H2dq/agh7TVT3gACZZDYUnUsOUTEFHl871yoHig+A==
+X-Google-Smtp-Source: ABdhPJxWuSz2iyDDTGjfGe4Jvdayc3bHShA++D78xtofe6tqHY74fUEFB0e7W1vxS4IaVgMnZ4FHVK2UHVhoYGv51Ck=
+X-Received: by 2002:a17:906:3fc3:: with SMTP id k3mr2392671ejj.522.1614332920681;
+ Fri, 26 Feb 2021 01:48:40 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:74a:: with SMTP id f71mr2066296jaf.30.1614332899369;
- Fri, 26 Feb 2021 01:48:19 -0800 (PST)
-Date:   Fri, 26 Feb 2021 01:48:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000427db05bc3a2be3@google.com>
-Subject: KASAN: use-after-free Read in __cpuhp_state_remove_instance
-From:   syzbot <syzbot+38769495e847cea2dcca@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, mpe@ellerman.id.au,
-        paulmck@kernel.org, peterz@infradead.org, qais.yousef@arm.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+References: <20210216060128.126938-1-axel.lin@ingics.com>
+In-Reply-To: <20210216060128.126938-1-axel.lin@ingics.com>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Fri, 26 Feb 2021 15:18:29 +0530
+Message-ID: <CAMty3ZBbCxYp75Jumu7XPW8snz3KbEg=4u_mwKR3XacDjv8F2g@mail.gmail.com>
+Subject: Re: [PATCH] regulator: pf8x00: Use regulator_map_voltage_ascend for pf8x00_buck7_ops
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Adrien Grassein <adrien.grassein@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Feb 16, 2021 at 11:31 AM Axel Lin <axel.lin@ingics.com> wrote:
+>
+> The voltages in pf8x00_sw7_voltages are in ascendant order, so use
+> regulator_map_voltage_ascend.
+>
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
 
-syzbot found the following issue on:
-
-HEAD commit:    d01f2f7e Add linux-next specific files for 20210226
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1750e9b0d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1746d2802a82a05
-dashboard link: https://syzkaller.appspot.com/bug?extid=38769495e847cea2dcca
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+38769495e847cea2dcca@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in __hlist_del include/linux/list.h:835 [inline]
-BUG: KASAN: use-after-free in hlist_del include/linux/list.h:852 [inline]
-BUG: KASAN: use-after-free in __cpuhp_state_remove_instance+0x58b/0x5b0 kernel/cpu.c:2002
-Read of size 8 at addr ffff88801582fb98 by task syz-executor.5/15523
-
-CPU: 1 PID: 15523 Comm: syz-executor.5 Not tainted 5.11.0-next-20210226-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xfa/0x151 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
- __hlist_del include/linux/list.h:835 [inline]
- hlist_del include/linux/list.h:852 [inline]
- __cpuhp_state_remove_instance+0x58b/0x5b0 kernel/cpu.c:2002
- cpuhp_state_remove_instance_nocalls include/linux/cpuhotplug.h:407 [inline]
- io_wq_create+0x6ca/0xbf0 fs/io-wq.c:1056
- io_init_wq_offload fs/io_uring.c:7792 [inline]
- io_uring_alloc_task_context+0x1bf/0x6a0 fs/io_uring.c:7811
- io_uring_add_task_file+0x261/0x350 fs/io_uring.c:8773
- io_uring_install_fd fs/io_uring.c:9381 [inline]
- io_uring_create fs/io_uring.c:9532 [inline]
- io_uring_setup+0x14c7/0x2be0 fs/io_uring.c:9571
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x465ef9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f7ba953b108 EFLAGS: 00000202 ORIG_RAX: 00000000000001a9
-RAX: ffffffffffffffda RBX: 000000000056c0b0 RCX: 0000000000465ef9
-RDX: 0000000020ffb000 RSI: 0000000020000080 RDI: 00000000000050bb
-RBP: 0000000020000080 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000020000000 R11: 0000000000000202 R12: 0000000000000000
-R13: 0000000020ffb000 R14: 0000000020000000 R15: 0000000020ee7000
-
-Allocated by task 15523:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:427 [inline]
- ____kasan_kmalloc mm/kasan/common.c:506 [inline]
- ____kasan_kmalloc mm/kasan/common.c:465 [inline]
- __kasan_kmalloc+0x99/0xc0 mm/kasan/common.c:515
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:684 [inline]
- io_wq_create+0xc0/0xbf0 fs/io-wq.c:1002
- io_init_wq_offload fs/io_uring.c:7792 [inline]
- io_uring_alloc_task_context+0x1bf/0x6a0 fs/io_uring.c:7811
- io_uring_add_task_file+0x261/0x350 fs/io_uring.c:8773
- io_uring_install_fd fs/io_uring.c:9381 [inline]
- io_uring_create fs/io_uring.c:9532 [inline]
- io_uring_setup+0x14c7/0x2be0 fs/io_uring.c:9571
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 15523:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free mm/kasan/common.c:360 [inline]
- ____kasan_slab_free mm/kasan/common.c:325 [inline]
- __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
- kasan_slab_free include/linux/kasan.h:199 [inline]
- slab_free_hook mm/slub.c:1562 [inline]
- slab_free_freelist_hook+0x72/0x1b0 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kfree+0xe5/0x7b0 mm/slub.c:4213
- io_wq_destroy fs/io-wq.c:1091 [inline]
- io_wq_put+0x4d0/0x6d0 fs/io-wq.c:1098
- io_wq_create+0x92d/0xbf0 fs/io-wq.c:1053
- io_init_wq_offload fs/io_uring.c:7792 [inline]
- io_uring_alloc_task_context+0x1bf/0x6a0 fs/io_uring.c:7811
- io_uring_add_task_file+0x261/0x350 fs/io_uring.c:8773
- io_uring_install_fd fs/io_uring.c:9381 [inline]
- io_uring_create fs/io_uring.c:9532 [inline]
- io_uring_setup+0x14c7/0x2be0 fs/io_uring.c:9571
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
- insert_work+0x48/0x370 kernel/workqueue.c:1331
- __queue_work+0x5c1/0xf00 kernel/workqueue.c:1497
- queue_work_on+0xae/0xc0 kernel/workqueue.c:1524
- queue_work include/linux/workqueue.h:507 [inline]
- netdevice_queue_work drivers/infiniband/core/roce_gid_mgmt.c:658 [inline]
- netdevice_event+0x3aa/0x720 drivers/infiniband/core/roce_gid_mgmt.c:801
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2063
- call_netdevice_notifiers_extack net/core/dev.c:2075 [inline]
- call_netdevice_notifiers net/core/dev.c:2089 [inline]
- unregister_netdevice_many+0x942/0x1760 net/core/dev.c:10905
- default_device_exit_batch+0x2fa/0x3c0 net/core/dev.c:11425
- ops_exit_list+0x10d/0x160 net/core/net_namespace.c:178
- cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:595
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Second to last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
- insert_work+0x48/0x370 kernel/workqueue.c:1331
- __queue_work+0x5c1/0xf00 kernel/workqueue.c:1497
- queue_work_on+0xae/0xc0 kernel/workqueue.c:1524
- queue_work include/linux/workqueue.h:507 [inline]
- call_usermodehelper_exec+0x1f0/0x4c0 kernel/umh.c:433
- kobject_uevent_env+0xf9f/0x1680 lib/kobject_uevent.c:617
- rx_queue_add_kobject net/core/net-sysfs.c:1020 [inline]
- net_rx_queue_update_kobjects+0xee/0x450 net/core/net-sysfs.c:1060
- register_queue_kobjects net/core/net-sysfs.c:1742 [inline]
- netdev_register_kobject+0x275/0x430 net/core/net-sysfs.c:1990
- register_netdevice+0xd33/0x14a0 net/core/dev.c:10178
- __ip_tunnel_create+0x398/0x5c0 net/ipv4/ip_tunnel.c:267
- ip_tunnel_init_net+0x330/0x9c0 net/ipv4/ip_tunnel.c:1061
- vti_init_net+0x2a/0x360 net/ipv4/ip_vti.c:501
- ops_init+0xaf/0x470 net/core/net_namespace.c:140
- setup_net+0x40f/0xa30 net/core/net_namespace.c:333
- copy_net_ns+0x31e/0x760 net/core/net_namespace.c:474
- create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
- copy_namespaces+0x385/0x440 kernel/nsproxy.c:178
- copy_process+0x2ab5/0x6fd0 kernel/fork.c:2100
- kernel_clone+0xe7/0xab0 kernel/fork.c:2462
- __do_sys_clone+0xc8/0x110 kernel/fork.c:2579
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff88801582fb00
- which belongs to the cache kmalloc-192 of size 192
-The buggy address is located 152 bytes inside of
- 192-byte region [ffff88801582fb00, ffff88801582fbc0)
-The buggy address belongs to the page:
-page:000000007dcd9156 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1582f
-flags: 0xfff00000000200(slab)
-raw: 00fff00000000200 ffffea000071b7c0 0000000400000004 ffff888010841a00
-raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88801582fa80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff88801582fb00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88801582fb80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-                            ^
- ffff88801582fc00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88801582fc80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Reviewed-by: Jagan Teki <jagan@amarulasolutions.com>
