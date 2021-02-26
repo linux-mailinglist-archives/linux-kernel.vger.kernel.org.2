@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5553E3269D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 23:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AEE43269D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 23:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhBZWHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 17:07:48 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:12436 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229598AbhBZWHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 17:07:46 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614377244; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=bSGUK32O8UCe/VfHem0U/voNTp1WJZFoh+x84Rxcu/U=; b=Sm4PzdoRVTEN++wG/fGKfaoEDXN8Ny61GiKkxzyPEX6qrjSUXeRMVYA9Fxb92Yeitj9ONdUS
- /14t/5PIZOt5rlIugDDzEg3Xl/HTL/ioMcRMXuP/pC2svQ8ajP1G8f9SSp7WRsT5QdxO/Lkm
- NWQrobdnZR1ZoacNSENa1gArRWE=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 603970ed8f0d5ba6c58b9dbb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 22:06:37
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 95A7AC433C6; Fri, 26 Feb 2021 22:06:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F555C433C6;
-        Fri, 26 Feb 2021 22:06:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7F555C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v6 1/4] bus: mhi: core: Destroy SBL devices when moving to
- mission mode
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com
-References: <1614208985-20851-1-git-send-email-bbhatt@codeaurora.org>
- <1614208985-20851-2-git-send-email-bbhatt@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <6790d212-5980-39bd-ac4c-1176225604fd@codeaurora.org>
-Date:   Fri, 26 Feb 2021 14:06:36 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1614208985-20851-2-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S229752AbhBZWPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 17:15:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhBZWPV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 17:15:21 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CBAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 14:14:40 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id o9so11277581yba.18
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 14:14:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=JsBBABLzKcrH/70TNpRbu5bpTMsoyM/6m7MdSXMmoA4=;
+        b=HCSlKdVdz+DK+YffwyMd2BOWhgKplThbh3P6H/0JuwuHmBxLEWWE2uObxi9quNuDo3
+         dIHjhI/vzToBGrEt4diTKBInihx51DKDfedNVD4sB/KOpWhVGuO2sUZIANlAFZTqiCz0
+         OOsApd8J+w+zrnDde7rnKx5nSjNxGrH7wzQ2KXrdFlsP+ippszhYRm+Cziz7gjo2TiUW
+         66QahQYQ9zlAsgIEw24NxCgUVl3SJCDyKrmwjAu6AhYeYaO+Q9UNO9MaLlHnzUS5Bke8
+         HPVah9taq08HW6vSsfifBjalBNCTzrKNVv358jYt8PuawH+J5qG1vs4VfPgcbYeJJ703
+         M7Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=JsBBABLzKcrH/70TNpRbu5bpTMsoyM/6m7MdSXMmoA4=;
+        b=IViNueyGK02ff0/qAN6XzY5m2MgPyN/kLA2o71JMM8yuybIC94kahrx8Mx2uCV9biS
+         JNiwqQMdCKd9Yb3yLDU0ZGs6Ls484ZbauSmlOU4O77ofZij4xO7Wz5cJeJNOCQ1JtZ8j
+         mfy22R5cuGWl160CJqLMvgFPPy0gzdQipZrIk1EaAdpqFThJlUsVbSLnkgrwX61yZ6GC
+         b48B2X8RmxwR7HnfLnsgYdadGnq4OrKx9YpsW4lBeDeycOMhkFSJIWFzsLoqIfdu5rTT
+         fObHKnqIGcFr2K9/EOnRwuACVHohlBy2tdT6WHm635/sIlKpg5NmdqIcBNxPHiwlbVb0
+         Q6/Q==
+X-Gm-Message-State: AOAM530kHNJK445NIJCnVmr9/0LIyEvfBbMTBey+heN4Ef46rep5pkP9
+        7kQQNg7TiU7291mCYrU1QxJxBvgYGTcK
+X-Google-Smtp-Source: ABdhPJyA5FjXkWp+p3vw+CJN4gNRrALjmaMZbpzIIpMknshfpeQN1xPZdpugF8KuQgoKr89gWydacx8cjUw1
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:985c:25dd:9e93:fb43])
+ (user=irogers job=sendgmr) by 2002:a25:40d7:: with SMTP id
+ n206mr7494742yba.285.1614377679921; Fri, 26 Feb 2021 14:14:39 -0800 (PST)
+Date:   Fri, 26 Feb 2021 14:14:31 -0800
+Message-Id: <20210226221431.1985458-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH] perf trace: Ensure read cmdlines are null terminated.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Issue detected by address sanitizer.
 
+Fixes: cd4ceb63438e (perf util: Save pid-cmdline mapping into tracing header)
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/trace-event-read.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 2/24/21 3:23 PM, Bhaumik Bhatt wrote:
-> Currently, client devices are created in SBL or AMSS (mission
-> mode) and only destroyed after power down or SYS ERROR. When
-> moving between certain execution environments, such as from SBL
-> to AMSS, no clean-up is required. This presents an issue where
-> SBL-specific channels are left open and client drivers now run in
-> an execution environment where they cannot operate. Fix this by
-> expanding the mhi_destroy_device() to do an execution environment
-> specific clean-up if one is requested. Close the gap and destroy
-> devices in such scenarios that allow SBL client drivers to clean
-> up once device enters mission mode.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-It make sense to clean up previous execution env related resources.
-
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-
+diff --git a/tools/perf/util/trace-event-read.c b/tools/perf/util/trace-event-read.c
+index f507dff713c9..8a01af783310 100644
+--- a/tools/perf/util/trace-event-read.c
++++ b/tools/perf/util/trace-event-read.c
+@@ -361,6 +361,7 @@ static int read_saved_cmdline(struct tep_handle *pevent)
+ 		pr_debug("error reading saved cmdlines\n");
+ 		goto out;
+ 	}
++	buf[ret] = '\0';
+ 
+ 	parse_saved_cmdline(pevent, buf, size);
+ 	ret = 0;
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.30.1.766.gb4fecdf3b7-goog
+
