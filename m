@@ -2,19 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5957B326811
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E15D326872
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhBZUK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:10:59 -0500
-Received: from relay04.th.seeweb.it ([5.144.164.165]:33111 "EHLO
-        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhBZUHw (ORCPT
+        id S231445AbhBZURy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:17:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230122AbhBZUME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:07:52 -0500
+        Fri, 26 Feb 2021 15:12:04 -0500
+Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A62C061223
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:09:13 -0800 (PST)
 Received: from localhost.localdomain (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 969751FAC6;
-        Fri, 26 Feb 2021 21:06:03 +0100 (CET)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 62A451FC59;
+        Fri, 26 Feb 2021 21:06:23 +0100 (CET)
 From:   Konrad Dybcio <konrad.dybcio@somainline.org>
 To:     phone-devel@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
@@ -29,9 +32,9 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
         Rob Herring <robh+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 20/41] arm64: dts: qcom: sdm630: Add Adreno 508 GPU configuration
-Date:   Fri, 26 Feb 2021 21:03:50 +0100
-Message-Id: <20210226200414.167762-21-konrad.dybcio@somainline.org>
+Subject: [PATCH 24/41] arm64: dts: qcom: pm660(l): Add VADC and temp alarm nodes
+Date:   Fri, 26 Feb 2021 21:03:54 +0100
+Message-Id: <20210226200414.167762-25-konrad.dybcio@somainline.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210226200414.167762-1-konrad.dybcio@somainline.org>
 References: <20210226200414.167762-1-konrad.dybcio@somainline.org>
@@ -41,118 +44,214 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-
-The SDM630 SoC features an Adreno 508.0 GPU with a minimum frequency
-of 160MHz and a maximum of (depending on the speed-bin) 775MHz.
+Add VADC, temperature alarm and thermal zones for pm660(l)
+to allow for temperature and voltage readouts and prevent
+PMIC overheating.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- arch/arm64/boot/dts/qcom/sdm630.dtsi | 84 +++++++++++++++++++++++++++-
- 1 file changed, 83 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/pm660.dtsi  | 122 +++++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/pm660l.dtsi |  33 ++++++++
+ 2 files changed, 155 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-index d4dd8624cac5..1da9b8aa5c0f 100644
---- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: BSD-3-Clause
- /*
-- * Copyright (c) 2020, Konrad Dybcio
-+ * Copyright (c) 2020, Konrad Dybcio <konradybcio@gmail.com>
-+ * Copyright (c) 2020, AngeloGioacchino Del Regno <kholk11@gmail.com>
+diff --git a/arch/arm64/boot/dts/qcom/pm660.dtsi b/arch/arm64/boot/dts/qcom/pm660.dtsi
+index c6c57fe626e3..e847d7209afc 100644
+--- a/arch/arm64/boot/dts/qcom/pm660.dtsi
++++ b/arch/arm64/boot/dts/qcom/pm660.dtsi
+@@ -3,9 +3,35 @@
+  * Copyright (c) 2020, Konrad Dybcio
   */
  
- #include <dt-bindings/clock/qcom,gcc-sdm660.h>
-@@ -1137,6 +1138,87 @@ pinconf-sd-cd {
- 			};
- 		};
- 
-+		adreno_gpu: gpu@5000000 {
-+			compatible = "qcom,adreno-508.0", "qcom,adreno";
-+			#stream-id-cells = <16>;
++#include <dt-bindings/iio/qcom,spmi-vadc.h>
+ #include <dt-bindings/input/linux-event-codes.h>
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/spmi/spmi.h>
++#include <dt-bindings/thermal/thermal.h>
 +
-+			reg = <0x05000000 0x40000>;
-+			reg-names = "kgsl_3d0_reg_memory";
++/ {
++	thermal-zones {
++		pm660 {
++			polling-delay-passive = <250>;
++			polling-delay = <1000>;
 +
-+			interrupts = <0 300 IRQ_TYPE_LEVEL_HIGH>;
++			thermal-sensors = <&pm660_temp>;
 +
-+			clocks = <&gcc GCC_GPU_CFG_AHB_CLK>,
-+				<&gpucc GPUCC_RBBMTIMER_CLK>,
-+				<&gcc GCC_BIMC_GFX_CLK>,
-+				<&gcc GCC_GPU_BIMC_GFX_CLK>,
-+				<&gpucc GPUCC_RBCPR_CLK>,
-+				<&gpucc GPUCC_GFX3D_CLK>;
-+
-+			clock-names = "iface",
-+				"rbbmtimer",
-+				"mem",
-+				"mem_iface",
-+				"rbcpr",
-+				"core";
-+
-+			power-domains = <&rpmpd SDM660_VDDMX>;
-+			iommus = <&kgsl_smmu 0>;
-+
-+			nvmem-cells = <&gpu_speed_bin>;
-+			nvmem-cell-names = "speed_bin";
-+
-+			interconnects = <&gnoc 1 &bimc 5>;
-+			interconnect-names = "gfx-mem";
-+
-+			operating-points-v2 = <&gpu_sdm630_opp_table>;
-+
-+			gpu_sdm630_opp_table: opp-table {
-+				compatible  = "operating-points-v2";
-+				opp-775000000 {
-+					opp-hz = /bits/ 64 <775000000>;
-+					opp-level = <RPM_SMD_LEVEL_TURBO>;
-+					opp-peak-kBps = <5412000>;
-+					opp-supported-hw = <0xA2>;
++			trips {
++				pm660_alert0: pm660-alert0 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
 +				};
-+				opp-647000000 {
-+					opp-hz = /bits/ 64 <647000000>;
-+					opp-level = <RPM_SMD_LEVEL_NOM_PLUS>;
-+					opp-peak-kBps = <4068000>;
-+					opp-supported-hw = <0xFF>;
-+				};
-+				opp-588000000 {
-+					opp-hz = /bits/ 64 <588000000>;
-+					opp-level = <RPM_SMD_LEVEL_NOM>;
-+					opp-peak-kBps = <3072000>;
-+					opp-supported-hw = <0xFF>;
-+				};
-+				opp-465000000 {
-+					opp-hz = /bits/ 64 <465000000>;
-+					opp-level = <RPM_SMD_LEVEL_SVS_PLUS>;
-+					opp-peak-kBps = <2724000>;
-+					opp-supported-hw = <0xFF>;
-+				};
-+				opp-370000000 {
-+					opp-hz = /bits/ 64 <370000000>;
-+					opp-level = <RPM_SMD_LEVEL_SVS>;
-+					opp-peak-kBps = <2188000>;
-+					opp-supported-hw = <0xFF>;
-+				};
-+				opp-240000000 {
-+					opp-hz = /bits/ 64 <240000000>;
-+					opp-level = <RPM_SMD_LEVEL_LOW_SVS>;
-+					opp-peak-kBps = <1648000>;
-+					opp-supported-hw = <0xFF>;
-+				};
-+				opp-160000000 {
-+					opp-hz = /bits/ 64 <160000000>;
-+					opp-level = <RPM_SMD_LEVEL_MIN_SVS>;
-+					opp-peak-kBps = <1200000>;
-+					opp-supported-hw = <0xFF>;
++				pm660_crit: pm660-crit {
++					temperature = <125000>;
++					hysteresis = <2000>;
++					type = "critical";
 +				};
 +			};
 +		};
++	};
++};
+ 
+ &spmi_bus {
+ 
+@@ -37,6 +63,102 @@ pwrkey {
+ 
+ 		};
+ 
++		pm660_temp: temp-alarm@2400 {
++			compatible = "qcom,spmi-temp-alarm";
++			reg = <0x2400>;
++			interrupts = <0x0 0x24 0x0 IRQ_TYPE_EDGE_RISING>;
++			io-channels = <&pm660_adc ADC5_DIE_TEMP>;
++			io-channel-names = "thermal";
++			#thermal-sensor-cells = <0>;
++		};
 +
- 		kgsl_smmu: iommu@5040000 {
- 			compatible = "qcom,sdm630-smmu-v2",
- 				     "qcom,adreno-smmu", "qcom,smmu-v2";
++		pm660_adc: adc@3100 {
++			compatible = "qcom,spmi-adc-rev2";
++			reg = <0x3100>;
++			interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			#io-channel-cells = <1>;
++
++			ref_gnd: ref_gnd@0 {
++				reg = <ADC5_REF_GND>;
++				qcom,decimation = <1024>;
++				qcom,pre-scaling = <1 1>;
++			};
++
++			vref_1p25: vref_1p25@1 {
++				reg = <ADC5_1P25VREF>;
++				qcom,decimation = <1024>;
++				qcom,pre-scaling = <1 1>;
++			};
++
++			die_temp: die_temp@6 {
++				reg = <ADC5_DIE_TEMP>;
++				qcom,decimation = <1024>;
++				qcom,pre-scaling = <1 1>;
++			};
++
++			xo_therm: xo_therm@4c {
++				reg = <ADC5_XO_THERM_100K_PU>;
++				qcom,pre-scaling = <1 1>;
++				qcom,decimation = <1024>;
++				qcom,hw-settle-time = <200>;
++				qcom,ratiometric;
++			};
++
++			msm_therm: msm_therm@4d {
++				reg = <ADC5_AMUX_THM1_100K_PU>;
++				qcom,pre-scaling = <1 1>;
++				qcom,decimation = <1024>;
++				qcom,hw-settle-time = <200>;
++				qcom,ratiometric;
++			};
++
++			emmc_therm: emmc_therm@4e {
++				reg = <ADC5_AMUX_THM2_100K_PU>;
++				qcom,pre-scaling = <1 1>;
++				qcom,decimation = <1024>;
++				qcom,hw-settle-time = <200>;
++				qcom,ratiometric;
++			};
++
++			pa_therm0: thermistor0@4f {
++				reg = <ADC5_AMUX_THM3_100K_PU>;
++				qcom,pre-scaling = <1 1>;
++				qcom,decimation = <1024>;
++				qcom,hw-settle-time = <200>;
++				qcom,ratiometric;
++			};
++
++			pa_therm1: thermistor1@50 {
++				reg = <ADC5_AMUX_THM4_100K_PU>;
++				qcom,pre-scaling = <1 1>;
++				qcom,decimation = <1024>;
++				qcom,hw-settle-time = <200>;
++				qcom,ratiometric;
++			};
++
++			quiet_therm: quiet_therm@51 {
++				reg = <ADC5_AMUX_THM5_100K_PU>;
++				qcom,pre-scaling = <1 1>;
++				qcom,decimation = <1024>;
++				qcom,hw-settle-time = <200>;
++				qcom,ratiometric;
++			};
++
++			vadc_vph_pwr: vph_pwr@83 {
++				reg = <ADC5_VPH_PWR>;
++				qcom,decimation = <1024>;
++				qcom,pre-scaling = <1 3>;
++			};
++
++			vcoin: vcoin@83 {
++				reg = <ADC5_VCOIN>;
++				qcom,decimation = <1024>;
++				qcom,pre-scaling = <1 3>;
++			};
++		};
++
+ 		pm660_gpios: gpios@c000 {
+ 			compatible = "qcom,pm660-gpio";
+ 			reg = <0xc000>;
+diff --git a/arch/arm64/boot/dts/qcom/pm660l.dtsi b/arch/arm64/boot/dts/qcom/pm660l.dtsi
+index 64a8e9b9afbe..05086cbe573b 100644
+--- a/arch/arm64/boot/dts/qcom/pm660l.dtsi
++++ b/arch/arm64/boot/dts/qcom/pm660l.dtsi
+@@ -3,9 +3,35 @@
+  * Copyright (c) 2020, Konrad Dybcio
+  */
+ 
++#include <dt-bindings/iio/qcom,spmi-vadc.h>
+ #include <dt-bindings/input/linux-event-codes.h>
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/spmi/spmi.h>
++#include <dt-bindings/thermal/thermal.h>
++
++/ {
++	thermal-zones {
++		pm660l {
++			polling-delay-passive = <250>;
++			polling-delay = <1000>;
++
++			thermal-sensors = <&pm660l_temp>;
++
++			trips {
++				pm660l_alert0: pm660l-alert0 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++				pm660l_crit: pm660l-crit {
++					temperature = <125000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++		};
++	};
++};
+ 
+ &spmi_bus {
+ 
+@@ -15,6 +41,13 @@ pmic@2 {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
++		pm660l_temp: temp-alarm@2400 {
++			compatible = "qcom,spmi-temp-alarm";
++			reg = <0x2400>;
++			interrupts = <0x2 0x24 0x0 IRQ_TYPE_EDGE_BOTH>;
++			#thermal-sensor-cells = <0>;
++		};
++
+ 		pm660l_gpios: gpios@c000 {
+ 			compatible = "qcom,pm660l-gpio", "qcom,spmi-gpio";
+ 			reg = <0xc000>;
 -- 
 2.30.1
 
