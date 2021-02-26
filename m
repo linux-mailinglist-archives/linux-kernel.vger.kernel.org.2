@@ -2,63 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE233266FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1063266FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbhBZSe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 13:34:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60262 "EHLO mail.kernel.org"
+        id S230335AbhBZSfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 13:35:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52786 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230347AbhBZSdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 13:33:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0CDB164F2C;
-        Fri, 26 Feb 2021 18:32:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614364334;
-        bh=8s3Fwk8VRD+pCW1Q70zHEwnifgxn1s7z4wEKMvai88U=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=qMFYj4qso3RaNtd0BUySBCpRCGDYUu5tu7dqurNoqEfkUh7QuemptQp90uEiUEpYv
-         RwIdV81QJpecYWyR667RF4EY7Vm0YyN9+7YnbcDBvfxdmQhRGFLR47AUf8dR6VQxNO
-         iqdNT4pE9GZ4unFVz29WzJ5RvBMnOkYQ2+G5ZE/1DRta+pYLIchoFma2FuMZaNnQRM
-         Dyf9BUekh8TA4Z2zoQTraFHKNVwCbE8bfb+nE4hvpJPFZliftQhwwPpjL5t6BW8k78
-         ii2efRB5UKgjTzdKhdjXyQv5W1VVVuNoK3/2SK3tXAVH8HPI2JsL+iDy9GbbYTGOtF
-         1nEG1EUiCo6fA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0929460A0E;
-        Fri, 26 Feb 2021 18:32:14 +0000 (UTC)
-Subject: Re: [GIT PULL] Tracing: Fixes for 5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210225215417.1e19b408@oasis.local.home>
-References: <20210225215417.1e19b408@oasis.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210225215417.1e19b408@oasis.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.12-2
-X-PR-Tracked-Commit-Id: c1d96fa61eb74b1e211f1653acc5b68ac62c8ef4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8b1e2c50bce9f3cc4422c3ed087252b8347da77a
-Message-Id: <161436433403.9780.5049110055492753107.pr-tracker-bot@kernel.org>
-Date:   Fri, 26 Feb 2021 18:32:14 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jacob Wen <jian.w.wen@oracle.com>
+        id S230360AbhBZSdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 13:33:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 795F6AFF5;
+        Fri, 26 Feb 2021 18:32:51 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 57c09077;
+        Fri, 26 Feb 2021 18:33:58 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Vivek Goyal <vgoyal@redhat.com>, linux-fsdevel@vger.kernel.org,
+        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
+        Luis Henriques <lhenriques@suse.de>
+Subject: [RFC PATCH] fuse: Clear SGID bit when setting mode in setacl
+Date:   Fri, 26 Feb 2021 18:33:57 +0000
+Message-Id: <20210226183357.28467-1-lhenriques@suse.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 25 Feb 2021 21:54:17 -0500:
+Setting file permissions with POSIX ACLs (setxattr) isn't clearing the
+setgid bit.  This seems to be CVE-2016-7097, detected by running fstest
+generic/375 in virtiofs.  Unfortunately, when the fix for this CVE landed
+in the kernel with commit 073931017b49 ("posix_acl: Clear SGID bit when
+setting file permissions"), FUSE didn't had ACLs support yet.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.12-2
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
+---
+ fs/fuse/acl.c | 29 ++++++++++++++++++++++++++---
+ 1 file changed, 26 insertions(+), 3 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8b1e2c50bce9f3cc4422c3ed087252b8347da77a
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+diff --git a/fs/fuse/acl.c b/fs/fuse/acl.c
+index f529075a2ce8..1b273277c1c9 100644
+--- a/fs/fuse/acl.c
++++ b/fs/fuse/acl.c
+@@ -54,7 +54,9 @@ int fuse_set_acl(struct inode *inode, struct posix_acl *acl, int type)
+ {
+ 	struct fuse_conn *fc = get_fuse_conn(inode);
+ 	const char *name;
++	umode_t mode = inode->i_mode;
+ 	int ret;
++	bool update_mode = false;
+ 
+ 	if (fuse_is_bad(inode))
+ 		return -EIO;
+@@ -62,11 +64,18 @@ int fuse_set_acl(struct inode *inode, struct posix_acl *acl, int type)
+ 	if (!fc->posix_acl || fc->no_setxattr)
+ 		return -EOPNOTSUPP;
+ 
+-	if (type == ACL_TYPE_ACCESS)
++	if (type == ACL_TYPE_ACCESS) {
+ 		name = XATTR_NAME_POSIX_ACL_ACCESS;
+-	else if (type == ACL_TYPE_DEFAULT)
++		if (acl) {
++			ret = posix_acl_update_mode(inode, &mode, &acl);
++			if (ret)
++				return ret;
++			if (inode->i_mode != mode)
++				update_mode = true;
++		}
++	} else if (type == ACL_TYPE_DEFAULT) {
+ 		name = XATTR_NAME_POSIX_ACL_DEFAULT;
+-	else
++	} else
+ 		return -EINVAL;
+ 
+ 	if (acl) {
+@@ -98,6 +107,20 @@ int fuse_set_acl(struct inode *inode, struct posix_acl *acl, int type)
+ 	} else {
+ 		ret = fuse_removexattr(inode, name);
+ 	}
++	if (!ret && update_mode) {
++		struct dentry *entry;
++		struct iattr attr;
++
++		entry = d_find_alias(inode);
++		if (entry) {
++			memset(&attr, 0, sizeof(attr));
++			attr.ia_valid = ATTR_MODE | ATTR_CTIME;
++			attr.ia_mode = mode;
++			attr.ia_ctime = current_time(inode);
++			ret = fuse_do_setattr(entry, &attr, NULL);
++			dput(entry);
++		}
++	}
+ 	forget_all_cached_acls(inode);
+ 	fuse_invalidate_attr(inode);
+ 
