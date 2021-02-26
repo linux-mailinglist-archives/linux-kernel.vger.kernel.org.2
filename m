@@ -2,87 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC7E32641B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B12EE326420
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:33:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhBZObs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:31:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhBZObn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:31:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 617C764E28;
-        Fri, 26 Feb 2021 14:31:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614349862;
-        bh=eoydl7NT3rcKH12ao6zDbuGLyabBFk8cBHZyvngNOrw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Sn/yLAhnuXIyB1Ggx9lTL9E7Gt7Djf2QeNIU43xFL0DUVSBqxzltkTU5mmtZSKu6m
-         xZuPtJT3z80smSDzXNqL4t3P/4QFI6zQM2NsgfHcL4t5QRoAEIHlyr9OR3NrxGu4Xt
-         BIwboBd4HEdBnJHMAmD9RW0PzyGA007B1e5pi83kSd9+NkoSfXw5wTYN5f+i+PlKQv
-         NFu1EckYqri+ApMOHfSHSoOaNjbQvr0iphNEnhzF2j7fdvKeRc/85h4fF02PN16qAO
-         S2UQ3ZEYPyTPRpW8mi8y5XjXuOUnofa9z3PEVDO6U5ZYDi4TAkwsXqkVFpJ0zkK4/X
-         0MZ/5BIFldbFg==
-Received: by mail-oi1-f176.google.com with SMTP id w69so9925231oif.1;
-        Fri, 26 Feb 2021 06:31:02 -0800 (PST)
-X-Gm-Message-State: AOAM532Id7JupUsJ2wZ8RZ2iXOFbauMRflxzXLDpr7sI5woGIFeSho/8
-        Gsuv1OSLo4i7+s+PG5I231jxRJLZx4HE2/eFOI8=
-X-Google-Smtp-Source: ABdhPJzAoQODal78eaIbnT8IbU2I8GkjHWnZ7JkEFMA0NJD1umk/XL8soULbUrEdDAwQn5q2ddm6oulE93HipGh5rE4=
-X-Received: by 2002:aca:4a47:: with SMTP id x68mr2082122oia.67.1614349861556;
- Fri, 26 Feb 2021 06:31:01 -0800 (PST)
+        id S229586AbhBZOdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:33:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20263 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229598AbhBZOd2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 09:33:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614349921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9RX//Bdd8HPk0Ssm+CTrvmQb+OiGD1xCr+0Drqw+QDY=;
+        b=eXZizGke8tnlmawlmPS+8Nxq5XXahZFZGOM0NUYNIG+FJd5sKLcX7dZGvC9lL+CacpecFL
+        iYGCAbG93z7+RW5sBWDWQvE0LZE5y9XfqcPZ8s79nWEU9dq1PX6uqLYCfd3b5f/B8un3NK
+        TS6gOeEwKEIbXZGwNF7niR+Lb8oYKyo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-198-bzAVz64zNeSf0a_rv2AhZA-1; Fri, 26 Feb 2021 09:31:56 -0500
+X-MC-Unique: bzAVz64zNeSf0a_rv2AhZA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 728691936B61;
+        Fri, 26 Feb 2021 14:31:55 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 565195D9DE;
+        Fri, 26 Feb 2021 14:31:50 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 15:31:49 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        chuck.lever@oracle.com, netdev@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brouer@redhat.com
+Subject: Re: [PATCH RFC net-next 2/3] net: page_pool: use alloc_pages_bulk
+ in refill code path
+Message-ID: <20210226153149.08b3d822@carbon>
+In-Reply-To: <YDaz2tXXxEkcBfRR@apalos.home>
+References: <161419296941.2718959.12575257358107256094.stgit@firesoul>
+        <161419300618.2718959.11165518489200268845.stgit@firesoul>
+        <YDaz2tXXxEkcBfRR@apalos.home>
 MIME-Version: 1.0
-References: <20210226140305.26356-1-nsaenzjulienne@suse.de> <20210226140305.26356-14-nsaenzjulienne@suse.de>
-In-Reply-To: <20210226140305.26356-14-nsaenzjulienne@suse.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 26 Feb 2021 15:30:45 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1cDgSo7LTtBZpzBo3xu23_uDEux8=15Xyw6JTpXtGqhw@mail.gmail.com>
-Message-ID: <CAK8P3a1cDgSo7LTtBZpzBo3xu23_uDEux8=15Xyw6JTpXtGqhw@mail.gmail.com>
-Subject: Re: [RFC 13/13] scsi: megaraid: Make use of dev_64bit_mmio_supported()
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 3:03 PM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
+On Wed, 24 Feb 2021 22:15:22 +0200
+Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
 
->         unsigned long flags;
-> -       spin_lock_irqsave(&instance->hba_lock, flags);
-> -       writel(le32_to_cpu(req_desc->u.low),
-> -               &instance->reg_set->inbound_low_queue_port);
-> -       writel(le32_to_cpu(req_desc->u.high),
-> -               &instance->reg_set->inbound_high_queue_port);
-> -       spin_unlock_irqrestore(&instance->hba_lock, flags);
+> Hi Jesper, 
+> 
+> On Wed, Feb 24, 2021 at 07:56:46PM +0100, Jesper Dangaard Brouer wrote:
+> > There are cases where the page_pool need to refill with pages from the
+> > page allocator. Some workloads cause the page_pool to release pages
+> > instead of recycling these pages.
+> > 
+> > For these workload it can improve performance to bulk alloc pages from
+> > the page-allocator to refill the alloc cache.
+> > 
+> > For XDP-redirect workload with 100G mlx5 driver (that use page_pool)
+> > redirecting xdp_frame packets into a veth, that does XDP_PASS to create
+> > an SKB from the xdp_frame, which then cannot return the page to the
+> > page_pool. In this case, we saw[1] an improvement of 18.8% from using
+> > the alloc_pages_bulk API (3,677,958 pps -> 4,368,926 pps).
+> > 
+> > [1] https://github.com/xdp-project/xdp-project/blob/master/areas/mem/page_pool06_alloc_pages_bulk.org
+> > 
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>  
+> 
+> [...]
+> 
+> > +	/* Remaining pages store in alloc.cache */
+> > +	list_for_each_entry_safe(page, next, &page_list, lru) {
+> > +		list_del(&page->lru);
+> > +		if (pp_flags & PP_FLAG_DMA_MAP) {
+> > +			page = page_pool_dma_map(pool, page);
+> > +			if (!page)  
+> 
+> As I commented on the previous patch, i'd prefer the put_page() here to be
+> explicitly called, instead of hiding in the page_pool_dma_map()
 
-> +
-> +       if (dev_64bit_mmio_supported(&instance->pdev->dev)) {
-> +               writeq(req_data, &instance->reg_set->inbound_low_queue_port);
-> +       } else {
-> +               spin_lock_irqsave(&instance->hba_lock, flags);
-> +               lo_hi_writeq(req_data, &instance->reg_set->inbound_low_queue_port);
-> +               spin_unlock_irqrestore(&instance->hba_lock, flags);
-> +       }
+I fully agree.  I will fixup the code.
 
-I see your patch changes the code to the lo_hi_writeq() accessor,
-and it also fixes the endianness bug (double byteswap on big-endian),
-but it does not fix the spinlock bug (writel on pci leaks out of the lock
-unless it's followed by a read).
+> > +				continue;
+> > +		}
+> > +		if (likely(pool->alloc.count < PP_ALLOC_CACHE_SIZE)) {
+> > +			pool->alloc.cache[pool->alloc.count++] = page;
+> > +			pool->pages_state_hold_cnt++;
+> > +			trace_page_pool_state_hold(pool, page,
+> > +						   pool->pages_state_hold_cnt);
+> > +		} else {
+> > +			put_page(page);
+> > +		}
+> > +	}
+> > +out:
+> >  	if (pool->p.flags & PP_FLAG_DMA_MAP) {
+> > -		page = page_pool_dma_map(pool, page);
+> > -		if (!page)
+> > +		first_page = page_pool_dma_map(pool, first_page);
+> > +		if (!first_page)
+> >  			return NULL;
+> >  	}
+> >    
+> [...]
 
-I'd suggest splitting the bugfix from the cleanup here, and fixing both
-of the bugs while you're at it.
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-      Arnd
