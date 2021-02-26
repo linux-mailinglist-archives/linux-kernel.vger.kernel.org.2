@@ -2,180 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2FA3260C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4D63260CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhBZKCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:02:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57896 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhBZKBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:01:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E667BAF3F;
-        Fri, 26 Feb 2021 10:01:11 +0000 (UTC)
-Subject: Re: [PATCH] perf annotate: add --demangle and --demangle-kernel
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <deb2af9e-25dd-ac72-29f4-ab90c2b24237@suse.cz>
- <YDVcZJscuKIgShsm@kernel.org>
-From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
-Message-ID: <a2349b3e-b3e2-f979-6bc5-a2cffbdd2d6a@suse.cz>
-Date:   Fri, 26 Feb 2021 11:01:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230288AbhBZKCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:02:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhBZKCk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:02:40 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A06C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 02:02:00 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id e9so3031277pjs.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 02:02:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rdHQrIoRBZis59jo/BlYAHJNjsS+NHQ7VVed8ginGb0=;
+        b=MsQ/EITikSwmceNc01UidROuZO8i86fefQVWuDj88ZnuaRnex8jZbEqMBSj7xJf3vk
+         4MS4W+RN09mFDHeWU1V+lzeZfBb3IKOUdtA19n09rxA3lFEfiL0bWn0xbd9GXQ0NHTJH
+         rCmhueTb2eC3VliCroGN3UeXgb2iCmHbps2jw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rdHQrIoRBZis59jo/BlYAHJNjsS+NHQ7VVed8ginGb0=;
+        b=uS2/D2N4zMTbtu4nw7LwMyfeEjs89ITMihihA+HvAtp9LWDK//31rRKRDF4A4UY7Dz
+         jFVgPlPV3HjavDxr7+4h8Q65gjukS1KohOk8GHvv9ZsSdhKQAc5gNjCq0g/+JZkmxG8W
+         j4ap/RCRrd4fh7S+auJtg1YVUyIGGmZfbOhSiiLJVbQQmAAxXPDMlFUP9MeDY9ET1nfB
+         8G4opzvhJENxx1lQPYgIC4VladKAD3x8KqpvMhlN537lILZtURzFgGPLDM8Lclm0wcql
+         VHkqwII4EqxZcdY2jFA5wP/qgyOzj7Ijcxh7TMGXgBwkszPSAImS+y1D7pvZhEvYcEP2
+         BJAw==
+X-Gm-Message-State: AOAM530Ck/HJUGZ/kLE5cOOK/CFP9LmJ52+OhmPjx9iaOGJUpE5z4RN6
+        i1ULj+ddqcPwQKeiQygagzaM3w==
+X-Google-Smtp-Source: ABdhPJzTeUwT5lTjJeqNtc/Vnuyz+cdz8j6lb2R9rH9Z7Ae4N0P6WxL+lS+AF39HONEWvZwP7VfhRQ==
+X-Received: by 2002:a17:90a:ce88:: with SMTP id g8mr2635720pju.107.1614333719701;
+        Fri, 26 Feb 2021 02:01:59 -0800 (PST)
+Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:5c91:233c:dd5b:b1b0])
+        by smtp.gmail.com with ESMTPSA id o23sm9201565pfp.89.2021.02.26.02.01.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 02:01:59 -0800 (PST)
+From:   Alexandre Courbot <acourbot@chromium.org>
+To:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Alexandre Courbot <acourbot@chromium.org>
+Subject: [PATCH v3 00/15] media: mtk-vcodec: support for MT8183 decoder
+Date:   Fri, 26 Feb 2021 19:01:33 +0900
+Message-Id: <20210226100148.1663389-1-acourbot@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-In-Reply-To: <YDVcZJscuKIgShsm@kernel.org>
-Content-Type: multipart/mixed;
- boundary="------------BEDBFE0A2EDD88A4D15A7E96"
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------BEDBFE0A2EDD88A4D15A7E96
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Please ignore the v2 of this series since I neglected a final check on
+it and realized later it did not compile. >_<
 
-On 2/23/21 8:49 PM, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Feb 22, 2021 at 09:29:22AM +0100, Martin Liška escreveu:
->> Perf annotate supports --symbol but it's impossible to filter
->> a C++ symbol. With --no-demangle one can filter easily by
->> mangled function name.
->>
->> Signed-off-by: Martin Liška <mliska@suse.cz>
->> ---
->>   tools/perf/Documentation/perf-annotate.txt | 7 +++++++
->>   tools/perf/builtin-annotate.c              | 4 ++++
->>   2 files changed, 11 insertions(+)
->>
->> diff --git a/tools/perf/Documentation/perf-annotate.txt b/tools/perf/Documentation/perf-annotate.txt
->> index 1b5042f134a8..80c1be5d566c 100644
->> --- a/tools/perf/Documentation/perf-annotate.txt
->> +++ b/tools/perf/Documentation/perf-annotate.txt
->> @@ -124,6 +124,13 @@ OPTIONS
->>   --group::
->>   	Show event group information together
->> +--demangle::
->> +	Demangle symbol names to human readable form. It's enabled by default,
->> +	disable with --no-demangle.
->> +
->> +--demangle-kernel::
->> +	Demangle kernel symbol names to human readable form (for C++ kernels).
->> +
->>   --percent-type::
->>   	Set annotation percent type from following choices:
->>   	  global-period, local-period, global-hits, local-hits
->> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
->> index a23ba6bb99b6..ef70a17b9b5b 100644
->> --- a/tools/perf/builtin-annotate.c
->> +++ b/tools/perf/builtin-annotate.c
->> @@ -538,6 +538,10 @@ int cmd_annotate(int argc, const char **argv)
->>   		    "Strip first N entries of source file path name in programs (with --prefix)"),
->>   	OPT_STRING(0, "objdump", &annotate.opts.objdump_path, "path",
->>   		   "objdump binary to use for disassembly and annotations"),
->> +	OPT_BOOLEAN(0, "demangle", &symbol_conf.demangle,
->> +		    "Disable symbol demangling"),
-> 
-> Nope, this _enables_ demangling, i.e.:
-> 
-> 	perf annotate --demangle
+This series adds support for the stateless API into mtk-vcodec, by first
+separating the stateful ops into their own source file, and introducing
+a new set of ops suitable for stateless decoding. As such, support for
+stateful decoders should remain completely unaffected.
 
-Oh, yeah, you are right.
+This series has been tested with both MT8183 and MT8173. Decoding was
+working for both chips, and in the case of MT8173 no regression has been
+spotted.
 
-> 
-> Asks for symbol demangling, while:
-> 
-> 	perf annotate --no-demangle
-> 
-> As you correctly wrote in your commit message and on the
-> --demangle-kernel case, enables demangling.
+Patches 1-9 add MT8183 support to the decoder using the stateless API.
+MT8183 only support H.264 acceleration.
 
-Fixed that in V2.
+Patches 10-15 are follow-ups that further improve compliance for the
+decoder and encoder, by fixing support for commands on both. Patch 11
+also makes sure that supported H.264 profiles are exported on MT8173.
 
-Martin
+Changes since v2:
+* Actually compiles (duh),
+* Add follow-up patches fixing support for START/STOP commands for the
+  encoder, and stateful decoder.
 
-> 
-> Please consider making this configurable (if not already) via
-> ~/.perfconfig, 'perf config', sure in a followup patch.
-> 
-> Thanks,
-> 
-> - Arnaldo
-> 
->> +	OPT_BOOLEAN(0, "demangle-kernel", &symbol_conf.demangle_kernel,
->> +		    "Enable kernel symbol demangling"),
->>   	OPT_BOOLEAN(0, "group", &symbol_conf.event_group,
->>   		    "Show event group information together"),
->>   	OPT_BOOLEAN(0, "show-total-period", &symbol_conf.show_total_period,
->> -- 
->> 2.30.1
->>
-> 
+Alexandre Courbot (8):
+  media: mtk-vcodec: vdec: handle firmware version field
+  media: mtk-vcodec: support version 2 of decoder firmware ABI
+  media: add Mediatek's MM21 format
+  dt-bindings: media: document mediatek,mt8183-vcodec-dec
+  media: mtk-vcodec: vdec: use helpers in VIDIOC_(TRY_)DECODER_CMD
+  media: mtk-vcodec: vdec: clamp OUTPUT resolution to hardware limits
+  media: mtk-vcodec: make flush buffer reusable by encoder
+  media: mtk-vcodec: venc: support START and STOP commands
 
+Hirokazu Honda (1):
+  media: mtk-vcodec: vdec: Support H264 profile control
 
---------------BEDBFE0A2EDD88A4D15A7E96
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-perf-annotate-add-demangle-and-demangle-kernel.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
- filename*0="0001-perf-annotate-add-demangle-and-demangle-kernel.patch"
+Hsin-Yi Wang (1):
+  media: mtk-vcodec: venc: make sure buffer exists in list before
+    removing
 
-From 336233abae5c539d7b2730cbbe35d0c7528bccc2 Mon Sep 17 00:00:00 2001
-From: Martin Liska <mliska@suse.cz>
-Date: Mon, 22 Feb 2021 09:24:22 +0100
-Subject: [PATCH] perf annotate: add --demangle and --demangle-kernel
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Yunfei Dong (5):
+  media: mtk-vcodec: vdec: move stateful ops into their own file
+  media: mtk-vcodec: vdec: support stateless API
+  media: mtk-vcodec: vdec: support stateless H.264 decoding
+  media: mtk-vcodec: vdec: add media device if using stateless api
+  media: mtk-vcodec: enable MT8183 decoder
 
-Perf annotate supports --symbol but it's impossible to filter
-a C++ symbol. With --no-demangle one can filter easily by
-mangled function name.
+ .../bindings/media/mediatek-vcodec.txt        |   1 +
+ .../media/v4l/pixfmt-reserved.rst             |   7 +
+ drivers/media/platform/Kconfig                |   2 +
+ drivers/media/platform/mtk-vcodec/Makefile    |   3 +
+ .../platform/mtk-vcodec/mtk_vcodec_dec.c      | 800 +++--------------
+ .../platform/mtk-vcodec/mtk_vcodec_dec.h      |  30 +-
+ .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  66 +-
+ .../mtk-vcodec/mtk_vcodec_dec_stateful.c      | 647 ++++++++++++++
+ .../mtk-vcodec/mtk_vcodec_dec_stateless.c     | 427 +++++++++
+ .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  58 +-
+ .../platform/mtk-vcodec/mtk_vcodec_enc.c      | 135 ++-
+ .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  |   4 +
+ .../mtk-vcodec/vdec/vdec_h264_req_if.c        | 807 ++++++++++++++++++
+ .../media/platform/mtk-vcodec/vdec_drv_if.c   |   3 +
+ .../media/platform/mtk-vcodec/vdec_drv_if.h   |   1 +
+ .../media/platform/mtk-vcodec/vdec_ipi_msg.h  |  23 +-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.c   |  43 +-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.h   |   5 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
+ include/uapi/linux/videodev2.h                |   1 +
+ 20 files changed, 2360 insertions(+), 704 deletions(-)
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateless.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/vdec/vdec_h264_req_if.c
 
-Signed-off-by: Martin Liška <mliska@suse.cz>
----
- tools/perf/Documentation/perf-annotate.txt | 7 +++++++
- tools/perf/builtin-annotate.c              | 4 ++++
- 2 files changed, 11 insertions(+)
-
-diff --git a/tools/perf/Documentation/perf-annotate.txt b/tools/perf/Documentation/perf-annotate.txt
-index 1b5042f134a8..80c1be5d566c 100644
---- a/tools/perf/Documentation/perf-annotate.txt
-+++ b/tools/perf/Documentation/perf-annotate.txt
-@@ -124,6 +124,13 @@ OPTIONS
- --group::
- 	Show event group information together
- 
-+--demangle::
-+	Demangle symbol names to human readable form. It's enabled by default,
-+	disable with --no-demangle.
-+
-+--demangle-kernel::
-+	Demangle kernel symbol names to human readable form (for C++ kernels).
-+
- --percent-type::
- 	Set annotation percent type from following choices:
- 	  global-period, local-period, global-hits, local-hits
-diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-index a23ba6bb99b6..ea05d9f927cb 100644
---- a/tools/perf/builtin-annotate.c
-+++ b/tools/perf/builtin-annotate.c
-@@ -538,6 +538,10 @@ int cmd_annotate(int argc, const char **argv)
- 		    "Strip first N entries of source file path name in programs (with --prefix)"),
- 	OPT_STRING(0, "objdump", &annotate.opts.objdump_path, "path",
- 		   "objdump binary to use for disassembly and annotations"),
-+	OPT_BOOLEAN(0, "demangle", &symbol_conf.demangle,
-+		    "Enable symbol demangling"),
-+	OPT_BOOLEAN(0, "demangle-kernel", &symbol_conf.demangle_kernel,
-+		    "Enable kernel symbol demangling"),
- 	OPT_BOOLEAN(0, "group", &symbol_conf.event_group,
- 		    "Show event group information together"),
- 	OPT_BOOLEAN(0, "show-total-period", &symbol_conf.show_total_period,
 -- 
-2.30.1
+2.30.1.766.gb4fecdf3b7-goog
 
-
---------------BEDBFE0A2EDD88A4D15A7E96--
