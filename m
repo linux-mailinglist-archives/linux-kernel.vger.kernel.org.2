@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C4D3269A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7815E3269AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhBZVh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 16:37:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhBZVhZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:37:25 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D50CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:36:44 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id d12so4583807pfo.7
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:36:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=george-graphics-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=cRLodfWRnEjlTZrSBt6hDfYE5X58rZ2ErBl6zq1bcAc=;
-        b=o6ymOXMItFTeRh+rc7ebXZfFwq8cwp52/KXjmElVgQZD/qUwcEc/LaffX4mnC6WgVn
-         i0OnGDWEPfxaKuiRyc1E8daAbjQ0sJN8OTj4uLNpVYzBPICJjC6xpm3HMJHOqx3RTO43
-         0zROfxsBbpjFT3Sr+rw+RK7TtdJ6Q3942lxxaBnaCWRYokcRwNsEwlwaqZUUyI8GUQsm
-         jy0k5FagAlCRg04PFuwH50DEJXlv/mihnOnGLJ46tB6znP6MTOF3u5rSYa6kXPi9RfHi
-         Pp7YQQ8bv7ydcU1Q0qwA1tn0cOJih3ARRxaZnfSXu5UMhvKoRdIOo/AshOxGD0HF3qvy
-         avBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=cRLodfWRnEjlTZrSBt6hDfYE5X58rZ2ErBl6zq1bcAc=;
-        b=FgYqOvDY+bYyAILV0ICe633fSS/tpShsRb4zDXrmSt/+v4iz/iy+ntRiLV0JjMQHyq
-         ojJDkrqWLZzrZ4EwXuBqZ7tXSlpD+aTVon+2B11v5iBs7r2UDVlUX5LDlH/OJwXZNEke
-         FxTJC4PF2o8f5DaDWK6IetcLUOXY4higOxd7TEZWbQZnnanatwu1jonvLK2j2S/I7Pjc
-         UsuokM1vB7tFat3bY+LXOxYj1vUMqkJc98Oftk4B2yWhL50rQxh/RCxEbarN3cydCP+a
-         owvo+GaCMH6mJfwCzeVSbVQgPEV7DyLq6N0Rv0qjPpRya7llNqHX2idhUU3kuVa+WkvV
-         zCcQ==
-X-Gm-Message-State: AOAM5337bsxOc4sInZdMcZ86eAr2zI2vK73QqdYpKGu7Y5m8tlH79PVm
-        GZxvCzbnap+s4qyKTOVVmdwboBIliatNan4UFhA=
-X-Google-Smtp-Source: ABdhPJwxjF858MeTFv5S0/K4kufLD8+kXIoJgCdektiYqdnA+pdyvVPCJhl6odd99bScgjDs6D5XsA==
-X-Received: by 2002:a62:b516:0:b029:1ea:34a:a70e with SMTP id y22-20020a62b5160000b02901ea034aa70emr5117459pfe.38.1614375404008;
-        Fri, 26 Feb 2021 13:36:44 -0800 (PST)
-Received: from ?IPv6:2601:602:8000:181:d8ec:3c42:2c25:f1d1? ([2601:602:8000:181:d8ec:3c42:2c25:f1d1])
-        by smtp.gmail.com with ESMTPSA id 25sm10685597pfh.199.2021.02.26.13.36.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Feb 2021 13:36:43 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH 2/2] midi streaming substream names from jack names A
- number of devices have named substreams which are hard to remember / decypher
- from <device> MIDI n names.  Eg. Korg puts a pass through on one substream
- and iConnectivity devices name the connections.
-From:   George Harker <george@george-graphics.co.uk>
-In-Reply-To: <20210226212617.24616-1-george@george-graphics.co.uk>
-Date:   Fri, 26 Feb 2021 13:36:42 -0800
-Cc:     Clemens Ladisch <clemens@ladisch.de>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <FE234989-046F-4E65-A574-25C79A8726D2@george-graphics.co.uk>
-References: <s5hczwpucd3.wl-tiwai@suse.de>
- <20210226212617.24616-1-george@george-graphics.co.uk>
-To:     Takashi Iwai <tiwai@suse.de>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        id S229953AbhBZVox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 16:44:53 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:52211 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229622AbhBZVow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 16:44:52 -0500
+Received: from [192.168.0.5] (ip5f5aed0c.dynamic.kabel-deutschland.de [95.90.237.12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 527DD20647910;
+        Fri, 26 Feb 2021 22:44:09 +0100 (CET)
+Subject: Re: [PATCH] iommu/amd: Fix event counter availability check
+To:     Alexander Monakov <amonakov@ispras.ru>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        David Coe <david.coe@live.co.uk>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Tj (Elloe Linux)" <ml.linux@elloe.vision>
+References: <20200529200738.1923-1-amonakov@ispras.ru>
+ <alpine.LNX.2.20.13.2005311014450.16067@monopod.intra.ispras.ru>
+ <c0f9f676-eff8-572d-9174-4c22c6095a3d@linuxfoundation.org>
+ <alpine.LNX.2.20.13.2006030935570.3181@monopod.intra.ispras.ru>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <4aba4c61-1878-3d4e-d52e-3ccac9715010@molgen.mpg.de>
+Date:   Fri, 26 Feb 2021 22:44:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <alpine.LNX.2.20.13.2006030935570.3181@monopod.intra.ispras.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the feedback, addressed in the two patches.  I=E2=80=99m not =
-sure why it pulled the body up into the title.I=E2=80=99m sorry about =
-that.  I can resubmit if that needs fixing.
+[cc: +suravee, +jörg]
 
-George
+Dear Alex, dear Shuah, dear Suravee, dear Jörg,
+
+
+Am 03.06.20 um 08:54 schrieb Alexander Monakov:
+> On Tue, 2 Jun 2020, Shuah Khan wrote:
+> 
+>> I changed the logic to read config to get max banks and counters
+>> before checking if counters are writable and tried writing to all.
+>> The result is the same and all of them aren't writable. However,
+>> when disable the writable check and assume they are, I can run
+> [snip]
+> 
+> This is similar to what I did. I also noticed that counters can
+> be successfully used with perf if the initial check is ignored.
+> I was considering sending a patch to remove the check and adjust
+> the event counting logic to use counters as read-only, but after
+> a bit more investigation I've noticed how late pci_enable_device
+> is done, and came up with this patch. It's a path of less resistance:
+> I'd expect maintainers to be more averse to removing the check
+> rather than fixing it so it works as intended (even though I think
+> the check should not be there in the first place).
+> 
+> However:
+> 
+> The ability to modify the counters is needed only for sampling the
+> events (getting an interrupt when a counter overflows). There's no
+> code to do that for these AMD IOMMU counters. A solution I would
+> prefer is to not write to those counters at all. It would simplify or
+> even remove a bunch of code. I can submit a corresponding patch if
+> there's general agreement this path is ok.
+> 
+> What do you think?
+
+I like this idea. Suravee, Jörg, what do you think?
+
+Commit 6778ff5b21b (iommu/amd: Fix performance counter initialization) 
+delays the boot up to 100 ms, which is over 20 % on fast systems, and 
+also just a workaround, and does not seem to work always. The delay is 
+also not mentioned in the commit message.
+
+
+Kind regards,
+
+Paul
+
+
+[1]: 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6778ff5b21bd8e78c8bd547fd66437cf2657fd9b
