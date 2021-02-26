@@ -2,124 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B43326577
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FC6326574
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhBZQW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:22:56 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:2876 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230146AbhBZQWc (ORCPT
+        id S230207AbhBZQWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:22:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230144AbhBZQW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:22:32 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QG7i3N014846;
-        Fri, 26 Feb 2021 17:21:38 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=vKUjuCfKomRiLIaHaqmUsJrHpfHVL4Esk5IZPPw6i5s=;
- b=zRLBVxlKQPTJ2C9ZlgqkSgpGj5I/GQv4bJeXvbehhvtJzJqitjHg2XKLEvuYB5n4uknG
- 5l5GRxEFF35h8l6b6pkf9FX4Zh1W88t5u1tTh7DJ2YaayrtwmLAY5Avx0GFVNBMzj9OV
- L9YNe3skHSUFIvopTkphfk7XxjzOLJ70PCObCdKCOvZFe2kU941fjLGpJKBL3Aazi92j
- fxsGpBAAYSHP1OcvE9l01T9EbjsoHKRa0AkfnAQyvivJ0lEjUAOL+jY5Uz+L7DwM7bgM
- 0aRJ20HGNRTmaYTzQrhH99GWA3B9WremflLzcHhKgO5nhQZ2y0Xoso5X/f7KcW32gnzI Dg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36w66yeqk7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 17:21:38 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1A07C10002A;
-        Fri, 26 Feb 2021 17:21:38 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0BB0D2BA2C3;
-        Fri, 26 Feb 2021 17:21:38 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Feb
- 2021 17:21:37 +0100
-Subject: Re: [PATCH v6 15/16] remoteproc: Properly deal with a detach request
- when attached
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>, <ohad@wizery.com>,
-        <bjorn.andersson@linaro.org>, <arnaud.pouliquen@st.com>
-CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
- <20210223233515.3468677-16-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <0204b7b3-14e5-73c2-5423-db494bd4352d@foss.st.com>
-Date:   Fri, 26 Feb 2021 17:21:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 26 Feb 2021 11:22:26 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAAFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 08:21:44 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id 204so9556745qke.11
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 08:21:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wKhee+wwyY8wAQtAwhfFGxIYlymbanXy7c8d3WGe9uw=;
+        b=UbX00wvuuvMEYhRJX3nCu4zXb85v13Cqv2r7hy9O+bowY1FaIbOHtDcePeLY0/B0Da
+         SF2Rt/j2i5vqV+2nd6y/YV7vdWi7UcnYCo6GUDusZkQq2I/4QAMG5NnybLXlvhoAWc4E
+         CB07JSKy/zS1mTJuVrl1tmyNn9/lGP5fKjyqtPqmEH+ZLIUFG0B2e4C+3p28fkRswuxC
+         hFXweOu/200WMxTdg7r9jyhUcvqhegxsjllPJTsf9QRFCspOmTW4FmlmbibPyeQkxmm0
+         eTduKaFz+s5eAm4qAnHn5719bNNg6/TZ7O3TMvWSTpqPFuHHbDX0UTpRpz8DWGQYjFaf
+         L6OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wKhee+wwyY8wAQtAwhfFGxIYlymbanXy7c8d3WGe9uw=;
+        b=okXGrPu9qr8VCwgBx/ik0qvMf39eP3NE/WqokYKVw5fROarkmouVDSZNW0dqDYMoYM
+         7uPS2dTT5zNd8kKsd61cimtfuiiilI8OXCzcJgj5r7q07uLxPalZYbnBGZXdRcfxU/ZR
+         A1UNtAEFidBr0h5T0wzPPpzrLqTa1kQhBFiITXVAl6HCqeUQxnfqU1CxbvhnKiMq+Ega
+         X7Qnda/2/pMVnaEZFIivlZ4fMSuCWR4e6Vd7Au7LYprI6luJlbYAxWbZa1GtUwsKvCh2
+         4/j8iplz5QMQ2ToExZ2p5CNYIZiunPLVF7EOVbs8lBC6d7jNav/aVYxmhd3hH2XPCUn3
+         2xTg==
+X-Gm-Message-State: AOAM530IEHFGdUqYbdJNqXA0eKG/pmQPGMZ2SJxLhvIranlhvgWFhINT
+        NE2MX2Th8sWh0BDiHU7POVxk+Q==
+X-Google-Smtp-Source: ABdhPJwJdZL4xF23yJV09qXQ0a4Ybxm3pNDa6pceKSCI9bofx7wUXwpD/kCLchRD1oPm3hWZue3Zhg==
+X-Received: by 2002:a37:dc41:: with SMTP id v62mr3158437qki.457.1614356503934;
+        Fri, 26 Feb 2021 08:21:43 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id x3sm6801311qkd.94.2021.02.26.08.21.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 08:21:43 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lFfs7-000yvy-1U; Fri, 26 Feb 2021 12:21:43 -0400
+Date:   Fri, 26 Feb 2021 12:21:43 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Freeing page tables through RCU
+Message-ID: <20210226162143.GW2643399@ziepe.ca>
+References: <20210225205820.GC2858050@casper.infradead.org>
+ <20210226144200.GV2643399@ziepe.ca>
+ <20210226160354.GE2723601@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210223233515.3468677-16-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-26_05:2021-02-26,2021-02-26 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226160354.GE2723601@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/24/21 12:35 AM, Mathieu Poirier wrote:
-> This patch introduces the capability to detach a remote processor
-> that has been attached by the remoteproc core.  For that to happen
-> a rproc::ops::detach() operation needs to be available.
+On Fri, Feb 26, 2021 at 04:03:54PM +0000, Matthew Wilcox wrote:
+> On Fri, Feb 26, 2021 at 10:42:00AM -0400, Jason Gunthorpe wrote:
+> > On Thu, Feb 25, 2021 at 08:58:20PM +0000, Matthew Wilcox wrote:
+> > 
+> > > I'd like to hear better ideas than this.
+> > 
+> > You didn't like my suggestion to put a sleepable lock around the
+> > freeing of page tables during flushing?
+> > 
+> > I still don't see how you convert the sleepable page walkers to use
+> > rcu??
 > 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> I don't want to convert the sleepable ones to use RCU ... I want to
+> convert the non-sleeping ones to use RCU.  
 
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Why? Convert them to use the normal page table spinlocks?
 
-Thanks,
-Arnaud
+It makes everything much more understandable if it is locked properly.
 
-> ---
-> New for V6:
-> - The RPROC_RUNNING -> RPROC_DETACHED transition is no longer permitted
->   to avoid dealing with complex resource table management problems.
-> - Removed Peng and Arnaud's RB tags because of the above.
-> ---
-> 
->  drivers/remoteproc/remoteproc_cdev.c  | 5 +++++
->  drivers/remoteproc/remoteproc_sysfs.c | 5 +++++
->  2 files changed, 10 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
-> index 0249d8f6c3f8..2db494816d5f 100644
-> --- a/drivers/remoteproc/remoteproc_cdev.c
-> +++ b/drivers/remoteproc/remoteproc_cdev.c
-> @@ -43,6 +43,11 @@ static ssize_t rproc_cdev_write(struct file *filp, const char __user *buf, size_
->  			return -EINVAL;
->  
->  		rproc_shutdown(rproc);
-> +	} else if (!strncmp(cmd, "detach", len)) {
-> +		if (rproc->state != RPROC_ATTACHED)
-> +			return -EINVAL;
-> +
-> +		ret = rproc_detach(rproc);
->  	} else {
->  		dev_err(&rproc->dev, "Unrecognized option\n");
->  		ret = -EINVAL;
-> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
-> index 09eb700c5e7e..ad3dd208024c 100644
-> --- a/drivers/remoteproc/remoteproc_sysfs.c
-> +++ b/drivers/remoteproc/remoteproc_sysfs.c
-> @@ -207,6 +207,11 @@ static ssize_t state_store(struct device *dev,
->  			return -EINVAL;
->  
->  		rproc_shutdown(rproc);
-> +	} else if (sysfs_streq(buf, "detach")) {
-> +		if (rproc->state != RPROC_ATTACHED)
-> +			return -EINVAL;
-> +
-> +		ret = rproc_detach(rproc);
->  	} else {
->  		dev_err(&rproc->dev, "Unrecognised option: %s\n", buf);
->  		ret = -EINVAL;
-> 
+The lockless walks should be reserved for special places because they
+are actually hard to do properly.
+
+> A page_table_free_lock might work, but it might have its own
+> problems later (eg a sleeping lock can't be acquired under RCU or
+> spinlock, and it can't be a spinlock because it'd have to be held
+> while we wait for IPIs).
+
+The mmap_sem today is serving the function of the page_table_free_lock
+idea, so I think a sleepable lock is already proven to work?
+
+Jason
