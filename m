@@ -2,53 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11081326538
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA49326536
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhBZQFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
+        id S230107AbhBZQE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:04:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhBZQFB (ORCPT
+        with ESMTP id S229915AbhBZQE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:05:01 -0500
+        Fri, 26 Feb 2021 11:04:56 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9749BC06174A;
-        Fri, 26 Feb 2021 08:04:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E015C061574;
+        Fri, 26 Feb 2021 08:04:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cN1OGMv5NyfZ7fEgBVYVHch3nvdLpsq8DiEjUx9WM+0=; b=oxw7f+zA5HuIUzZ7Yqvqizi8xB
-        xX6Gxe5cpSd4R4jb1dE1xo2kl15c5/1Pb4TYBaTDHtTm/L1LnudbOpOUTjzNG5o7l6JJlGyAKJge4
-        bSOVrHQW1SlCFBN6grnJ6zDXGtSLnOfgw5BdWZaLmEG5spqkmid8PYONGaNErnfkJfwE8R+8woHC2
-        UsddLqPP9i3nWSE574r/wuYTch6sx1oOCaOeKb8pY9O9D6rM5v36hzn/Fs/QaabR5Iiv+7t+pwSjP
-        Ap/ZEuk/1xi5tjiyPvNrLnL6O1lmVe4tq3PbnYa99UZSP+PBq8MWiXvlgB8F3x3NV2mTKRzETOFPW
-        oqV6Qs3g==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lFfaY-00CDKy-Ir; Fri, 26 Feb 2021 16:03:43 +0000
-Date:   Fri, 26 Feb 2021 16:03:34 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
-        bskeggs@redhat.com, akpm@linux-foundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, jhubbard@nvidia.com,
-        rcampbell@nvidia.com, jglisse@redhat.com, jgg@nvidia.com,
-        hch@infradead.org, daniel@ffwll.ch
-Subject: Re: [PATCH v3 4/8] mm/rmap: Split migration into its own function
-Message-ID: <20210226160334.GD2907711@infradead.org>
-References: <20210226071832.31547-1-apopple@nvidia.com>
- <20210226071832.31547-5-apopple@nvidia.com>
+        bh=nlrPN6RKsKi94KSjI+2dR6vaJd54WtU/wGcRKq1SGac=; b=ONNF7yjdRI1tRIpo0PQk8cAljg
+        u3YfDpfRVp8NNTh+ucghqkv8ngoXtpV/axBTq+P3Js4/AgyZgZ+aekEOAxYXOgmJ79Hs1Dv9GhdgP
+        lX3X4f0Fk5rpkhvUZD135Bxge8SpbXgAWybC2Mc3IKg3MN09I5BSb50Xa+8zU8k06Bq9FTNaxAdo+
+        3yACY5ecnhSeenvfblbCjWFkZUpNoCN1FOipQcGGa0h3ERmwuB8zyX+2Ub/weelZ0uph9wN5CPbRO
+        SBH78t+9xvcw1R03B/mfNcNRPENtIas77/vSrsXz649FAQPO+oDNpa6wrW/A0DObSZ2Hw+inIYCx9
+        /OSQsC6g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lFfas-00CDLc-Ux; Fri, 26 Feb 2021 16:03:59 +0000
+Date:   Fri, 26 Feb 2021 16:03:54 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Freeing page tables through RCU
+Message-ID: <20210226160354.GE2723601@casper.infradead.org>
+References: <20210225205820.GC2858050@casper.infradead.org>
+ <20210226144200.GV2643399@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210226071832.31547-5-apopple@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210226144200.GV2643399@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nice cleanup!
+On Fri, Feb 26, 2021 at 10:42:00AM -0400, Jason Gunthorpe wrote:
+> On Thu, Feb 25, 2021 at 08:58:20PM +0000, Matthew Wilcox wrote:
+> 
+> > I'd like to hear better ideas than this.
+> 
+> You didn't like my suggestion to put a sleepable lock around the
+> freeing of page tables during flushing?
+> 
+> I still don't see how you convert the sleepable page walkers to use
+> rcu??
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+I don't want to convert the sleepable ones to use RCU ... I want to
+convert the non-sleeping ones to use RCU.  A page_table_free_lock might
+work, but it might have its own problems later (eg a sleeping lock can't
+be acquired under RCU or spinlock, and it can't be a spinlock because
+it'd have to be held while we wait for IPIs).
+
+I think it would solve my immediate problem, and I wonder if it might
+solve some other problems ...
