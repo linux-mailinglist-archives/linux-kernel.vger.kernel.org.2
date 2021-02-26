@@ -2,76 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3B1326A7C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 00:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2675326A7E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 00:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhBZXpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 18:45:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52404 "EHLO mail.kernel.org"
+        id S230006AbhBZXsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 18:48:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229989AbhBZXpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 18:45:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8B5064EFA;
-        Fri, 26 Feb 2021 23:44:57 +0000 (UTC)
+        id S229622AbhBZXsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 18:48:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23C7564EFA;
+        Fri, 26 Feb 2021 23:47:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614383098;
-        bh=dEaRhcmyFCzj248hiTK2l3Emc3/GnGJvEvLBYW/GUjU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UEIvrxSJu8q8sdY/L3E5wfYm1KSaT8N8lXXXTPgqHU3iTDpOdhh3wRDsYreia25l5
-         PfUdDIJHgcjK9ATY+VT3CQqyB3OA4j84VNMDS20OH+3cKO4rTShjx16n/iAOP5gB4I
-         W6vIcR308qmyAAT2wrKYYTHhP/fu0ks6CFyOgpXi667Vz52ZIw7utQ7NOc2QDqG+Sc
-         oGEKtrfY1wLXrmJLXhxy4+ZIYXMVLKBgAQ/UYUKjmxHPXWIFzVP3T1ROOcUNpJbk1D
-         Y3QxRF2e0yAXACjMefAJuHeNlWptG28E/q21xlzzH0qArIy7PdKkAhuHhLVwMm+yaX
-         ZcFGDE1Uy1naA==
-Date:   Fri, 26 Feb 2021 15:44:57 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Heiko Thiery <heiko.thiery@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2 1/1] net: fec: ptp: avoid register access when ipg
- clock is disabled
-Message-ID: <20210226154457.71094945@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210226152331.GD26140@hoboy.vegasvil.org>
-References: <20210225211514.9115-1-heiko.thiery@gmail.com>
-        <20210226152331.GD26140@hoboy.vegasvil.org>
+        s=k20201202; t=1614383259;
+        bh=mJmhgb1ENqSPoT/kdRZ1i3I2jcWdAdpEDiJifCHL+fI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LZj63Tk2majjXEHT+i49RbEISRXJCWinGPKuLwCAIgeNYDwhMYGnMJghBtzmTBMFy
+         k7Y9ukwLVUPcIIsX+Rq9p1KBcW75fmPnMznI/iJXPkpFw7na/i69+dkjfc8+hYzhSM
+         gC/HLxuLYK+IAWlKNSxv3BP3UhdRVHk9/herSTicLvj6B+/1wORwkXBb8ua/9T1A/C
+         0GnPAWXzmvwAu08DOpLNG9PT9v8elCSW/5WQ7Yr9L68S+Wwz3OaPbZqKFdV8t0n4mv
+         nBaQ3+cDN9kRLkgZGKcAAY/sSfFw0Nj80AUYGz3qjo+OLSP7gmWfDLrcqhgmGp2lhC
+         flPvHyrH+9A8A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CF0F140CD9; Fri, 26 Feb 2021 20:47:36 -0300 (-03)
+Date:   Fri, 26 Feb 2021 20:47:36 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Nicholas Fraser <nfraser@codeweavers.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+        Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+Subject: Re: [PATCH] perf buildid-cache: Add test for PE executable
+Message-ID: <YDmImAQ1Lloa2d5y@kernel.org>
+References: <790bfe67-2155-a426-7130-ae7c45cb055b@codeweavers.com>
+ <YDgJ+JTiOsGX288R@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDgJ+JTiOsGX288R@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021 07:23:31 -0800 Richard Cochran wrote:
-> On Thu, Feb 25, 2021 at 10:15:16PM +0100, Heiko Thiery wrote:
-> > When accessing the timecounter register on an i.MX8MQ the kernel hangs.
-> > This is only the case when the interface is down. This can be reproduced
-> > by reading with 'phc_ctrl eth0 get'.
+Em Thu, Feb 25, 2021 at 09:35:04PM +0100, Jiri Olsa escreveu:
+> On Wed, Feb 24, 2021 at 02:59:16PM -0500, Nicholas Fraser wrote:
+> > From 9fd0b3889f00ad13662879767d833309d8a035b6 Mon Sep 17 00:00:00 2001
+> > From: Nicholas Fraser <nfraser@codeweavers.com>
+> > Date: Thu, 18 Feb 2021 13:24:03 -0500
+> > Subject: [PATCH] perf buildid-cache: Add test for PE executable
 > > 
-> > Like described in the change in 91c0d987a9788dcc5fe26baafd73bf9242b68900
-> > the igp clock is disabled when the interface is down and leads to a
-> > system hang.
+> > This builds on the previous changes to tests/shell/buildid.sh, adding
+> > tests for a PE file. It adds it to the build-id cache manually and, if
+> > Wine is available, runs it under "perf record" and verifies that it was
+> > added automatically.
 > > 
-> > So we check if the ptp clock status before reading the timecounter
-> > register.
+> > If wine is not installed, only warnings are printed; the test can still
+> > exit 0.
 > > 
-> > Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+> > Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
+> 
+> works nicely now, thanks
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+Thanks for checking it, but if you did a review, i.e. if you looked at
+the code, made suggestions, the submitter acted upon those changes, you
+looked again, etc, shouldn't this be a more appropriate:
+
+Reviewed-by: Jiri Olsa <jolsa@redhat.com>
+
+?
+
+I think we need to make these tags reflect more what really happened,
+i.e. if you just glanced over and thought, quickly, that it seems
+okayish, then Acked-by is what we should use, but if you gone thru the
+trouble of actually _looking hard_ at it, sometimes multiple times, then
+we should really use Reviewed-by and not take that lightly.
+
+- Arnaldo
+
+ 
+> jirka
+> 
 > > ---
-> > v2:
-> >  - add mutex (thanks to Richard)
+> >  tools/perf/tests/shell/buildid.sh | 65 +++++++++++++++++++++++++++----
+> >  1 file changed, 58 insertions(+), 7 deletions(-)
 > > 
-> > v3:
-> > I did a mistake and did not test properly
-> >  - add parenteses
-> >  - fix the used variable  
+> > diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
+> > index 416af614bbe0..f05670d1e39e 100755
+> > --- a/tools/perf/tests/shell/buildid.sh
+> > +++ b/tools/perf/tests/shell/buildid.sh
+> > @@ -14,18 +14,56 @@ if ! [ -x "$(command -v cc)" ]; then
+> >  	exit 2
+> >  fi
+> >  
+> > +# check what we need to test windows binaries
+> > +add_pe=1
+> > +run_pe=1
+> > +if ! perf version --build-options | grep -q 'libbfd: .* on '; then
+> > +	echo "WARNING: perf not built with libbfd. PE binaries will not be tested."
+> > +	add_pe=0
+> > +	run_pe=0
+> > +fi
+> > +if ! which wine > /dev/null; then
+> > +	echo "WARNING: wine not found. PE binaries will not be run."
+> > +	run_pe=0
+> > +fi
+> > +
+> > +# set up wine
+> > +if [ ${run_pe} -eq 1 ]; then
+> > +	wineprefix=$(mktemp -d /tmp/perf.wineprefix.XXX)
+> > +	export WINEPREFIX=${wineprefix}
+> > +	# clear display variables to prevent wine from popping up dialogs
+> > +	unset DISPLAY
+> > +	unset WAYLAND_DISPLAY
+> > +fi
+> > +
+> >  ex_md5=$(mktemp /tmp/perf.ex.MD5.XXX)
+> >  ex_sha1=$(mktemp /tmp/perf.ex.SHA1.XXX)
+> > +ex_pe=$(dirname $0)/../pe-file.exe
+> >  
+> >  echo 'int main(void) { return 0; }' | cc -Wl,--build-id=sha1 -o ${ex_sha1} -x c -
+> >  echo 'int main(void) { return 0; }' | cc -Wl,--build-id=md5 -o ${ex_md5} -x c -
+> >  
+> > -echo "test binaries: ${ex_sha1} ${ex_md5}"
+> > +echo "test binaries: ${ex_sha1} ${ex_md5} ${ex_pe}"
+> >  
+> >  check()
+> >  {
+> > -	id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
+> > -
+> > +	case $1 in
+> > +	*.exe)
+> > +		# We don't have a tool that can pull a nicely formatted build-id out of
+> > +		# a PE file, but we can extract the whole section with objcopy and
+> > +		# format it ourselves. The .buildid section is a Debug Directory
+> > +		# containing a CodeView entry:
+> > +		#     https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#debug-directory-image-only
+> > +		#     https://github.com/dotnet/runtime/blob/da94c022576a5c3bbc0e896f006565905eb137f9/docs/design/specs/PE-COFF.md
+> > +		# The build-id starts at byte 33 and must be rearranged into a GUID.
+> > +		id=`objcopy -O binary --only-section=.buildid $1 /dev/stdout | \
+> > +			cut -c 33-48 | hexdump -ve '/1 "%02x"' | \
+> > +			sed 's@^\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(.*\)0a$@\4\3\2\1\6\5\8\7\9@'`
+> > +		;;
+> > +	*)
+> > +		id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
+> > +		;;
+> > +	esac
+> >  	echo "build id: ${id}"
+> >  
+> >  	link=${build_id_dir}/.build-id/${id:0:2}/${id:2}
+> > @@ -50,7 +88,7 @@ check()
+> >  		exit 1
+> >  	fi
+> >  
+> > -	${perf} buildid-cache -l | grep $id
+> > +	${perf} buildid-cache -l | grep ${id}
+> >  	if [ $? -ne 0 ]; then
+> >  		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
+> >  		exit 1
+> > @@ -79,16 +117,20 @@ test_record()
+> >  {
+> >  	data=$(mktemp /tmp/perf.data.XXX)
+> >  	build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
+> > +	log=$(mktemp /tmp/perf.log.XXX)
+> >  	perf="perf --buildid-dir ${build_id_dir}"
+> >  
+> > -	${perf} record --buildid-all -o ${data} ${1}
+> > +	echo "running: perf record $@"
+> > +	${perf} record --buildid-all -o ${data} $@ &> ${log}
+> >  	if [ $? -ne 0 ]; then
+> > -		echo "failed: record ${1}"
+> > +		echo "failed: record $@"
+> > +		echo "see log: ${log}"
+> >  		exit 1
+> >  	fi
+> >  
+> > -	check ${1}
+> > +	check ${@: -1}
+> >  
+> > +	rm -f ${log}
+> >  	rm -rf ${build_id_dir}
+> >  	rm -rf ${data}
+> >  }
+> > @@ -96,12 +138,21 @@ test_record()
+> >  # add binaries manual via perf buildid-cache -a
+> >  test_add ${ex_sha1}
+> >  test_add ${ex_md5}
+> > +if [ ${add_pe} -eq 1 ]; then
+> > +	test_add ${ex_pe}
+> > +fi
+> >  
+> >  # add binaries via perf record post processing
+> >  test_record ${ex_sha1}
+> >  test_record ${ex_md5}
+> > +if [ ${run_pe} -eq 1 ]; then
+> > +	test_record wine ${ex_pe}
+> > +fi
+> >  
+> >  # cleanup
+> >  rm ${ex_sha1} ${ex_md5}
+> > +if [ ${run_pe} -eq 1 ]; then
+> > +	rm -r ${wineprefix}
+> > +fi
+> >  
+> >  exit ${err}
+> > -- 
+> > 2.30.1
+> > 
+> > 
+> 
 
-On Fri, 26 Feb 2021 08:22:50 +0100 Heiko Thiery wrote:
-> Sorry for the noise. But just realized that I sent a v3 version of the
-> patch but forgot to update the subject line (still v2). Should I
-> resend it with the correct subject?
+-- 
 
-No need, looks like patchwork caught the right version.
-
-> Acked-by: Richard Cochran <richardcochran@gmail.com>
-
-Applied, thanks!
+- Arnaldo
