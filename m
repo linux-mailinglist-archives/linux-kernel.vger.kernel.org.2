@@ -2,178 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09414325C3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 04:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 638B7325C41
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 05:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhBZD6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 22:58:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57532 "EHLO
+        id S229953AbhBZD7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 22:59:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhBZD6O (ORCPT
+        with ESMTP id S229491AbhBZD7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 22:58:14 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9C8C061574;
-        Thu, 25 Feb 2021 19:57:34 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id k22so4595520pll.6;
-        Thu, 25 Feb 2021 19:57:34 -0800 (PST)
+        Thu, 25 Feb 2021 22:59:30 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D843C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 19:58:50 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id u3so7655786ybk.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 19:58:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E9uT3F5a+Hilx7GeVN55UELvpzXvN2z1hUQ2uEJGCFU=;
-        b=X2OrJSnrjeIUZW27A1DiaoI6Gm3ofJtmqNJrDEjVsRV++pkR4S6pcYcwxDyoy7pbz2
-         58Flgdd8a5+VgAuEQXrxPYgaJrO9wMHhl1vPCpeKJLuSjQVGgBmPOA6pQDrFKmlgIct3
-         hIe7TlIzDR8eIx22FjRGjunzbl3HMZxcG6w2B4e1ciW9rBq6DSc/m2c5GK5LBcsQHNjK
-         eAoqYL3Sw9ElIxN9WoiNJOgVupAsOTawavC6gskmD/YrA6QG8Zo88bF/4lal/wZA+iKi
-         nWdPQo9XWt0xqmBbIEUwAeKChDtRWIJsRqm2IhR28fqHDKmb9gew0hGC6iGshBeQ21Mi
-         ujNw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DR7Dnd24+rlaYf99PAlqhwVRNpL9GcKCVK3DbGNBrek=;
+        b=U2nwcGm2hY+IwkHqVz0vJLcPbSA0sak7u0hqv5m3rjcmoLnI0Im4QNAssftyTJeoHI
+         zOOLElNM47FZ3Q6dWiXKcqbo+r1Bh0HyCmZYNswPVgqW037epoH0kFWYIK7hKSZVrDHx
+         9R+JZXW58+N+MkosR1qdlC4eEy9b/icSeZ3IzzZw51G5sGRJCx1IfC4ogrz7H2B1yztm
+         NkgtD8c6Be0o7gujR58K5TUYLluYqfChWTRtlL5TrifL4TQGBjW4kJH3QWxIuOUY6x9D
+         V6baAWO9MpRCxbgZ8XbuGTc0EEbc/C6LZ84LS5Aint+OD29DuFzGG4yhZDu6Km+vReKg
+         hHZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E9uT3F5a+Hilx7GeVN55UELvpzXvN2z1hUQ2uEJGCFU=;
-        b=Hxn7LL9YawdGBmI7axlsG7pLWmtG2qZUjkslI2A6KllUhpWjVadbRI5tmSRiVFKOZv
-         TjimxcL8r1iwWX8j4l1JgvJWPVgr5DIApTYVJtWXX3kLrmrz2PShvtnLIjzYlMM0cVN1
-         B557YHeeu/WR/hoEBVezk+qaxRWLD2+/SVoXOqU/VDfxP5cL5aQHWK5GI0sd8p5FwOoZ
-         1bxsP7cGhCbl1Up38Lv20WAsQHc/RjRnTTtk/kNSSBNJEDlTuzDGkQC3abLRGisBmUGE
-         shQaDZ8mLzM98x2pcz5vCQCOjQ5QgYIHRYKgsO48r8vuJmr8AU4dODwpCNiOsU9xuzOh
-         JxKg==
-X-Gm-Message-State: AOAM533bGuv86H/AkWs4nW3roD8guYqoI6/CdDV37GQwjJMsRDsd414Z
-        lhnhqOrqkQ3MKs8hYxv5o6A=
-X-Google-Smtp-Source: ABdhPJyCUfNoAEjO97SXjz7tTVaxyDh8nEBM7i1wbf6/BcXGz6uYkFFyEki3gTQYywmBeAe+fXZeew==
-X-Received: by 2002:a17:90b:4acc:: with SMTP id mh12mr1340433pjb.10.1614311853709;
-        Thu, 25 Feb 2021 19:57:33 -0800 (PST)
-Received: from localhost.localdomain ([154.48.252.65])
-        by smtp.gmail.com with ESMTPSA id mp17sm6992917pjb.48.2021.02.25.19.57.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Feb 2021 19:57:33 -0800 (PST)
-From:   Xuesen Huang <hxseverything@gmail.com>
-To:     daniel@iogearbox.net
-Cc:     davem@davemloft.net, bpf@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xuesen Huang <huangxuesen@kuaishou.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
-        Li Wang <wangli09@kuaishou.com>
-Subject: [PATCH/v3] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
-Date:   Fri, 26 Feb 2021 11:57:21 +0800
-Message-Id: <20210226035721.40054-1-hxseverything@gmail.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DR7Dnd24+rlaYf99PAlqhwVRNpL9GcKCVK3DbGNBrek=;
+        b=EZb3kg/Jajp5EVuJwEhLbkgj1YF3ZxYgkP5gwfMaxw1BwAqqShdQs16YQdxWcvKW/I
+         8jFqzDhsL3n/b9DdZRkNn+79fBXYIL0oNFQVc7ePEaT42t/Nk03UCDAJ0yRhojGkYixY
+         arodC2x/cYRuMsCwtOAu9NwyL9zbthIiK1eCO4zD/YZ02wYxKjD8mN9/k5pTVHvQBQC4
+         C+m+GfVWUfRAOXFGjds1vb/gsAis1swsoaxf5RR6AspZMihw6gmEN3s0RR6oIg6pGEon
+         WbN/XqUtIEkDo8/MLEQXZOBDLgJj8YGyaDl4U4QZ8YU7+GXwB2zdyWFYKsPmjytONoCF
+         Ns9g==
+X-Gm-Message-State: AOAM530Zz4UPC99cQPdfsdQ/YHiV5RxpBJiyI9yR/J5yn9nl5DnFAujf
+        LarTb7gYuHOQ1ozOCoUebOKl7FghROKeGNk/W7M=
+X-Google-Smtp-Source: ABdhPJyA+U3p7S4LVlULul/gukKq7Znt/rO8nSS8W9Q+ZKmQNUt7TfBo8nj6FSaaFwEpfk3AIvK5OwParuYnBvDJHiM=
+X-Received: by 2002:a25:3208:: with SMTP id y8mr1760714yby.422.1614311929791;
+ Thu, 25 Feb 2021 19:58:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210225164513.3667778-1-arnd@kernel.org> <202102251203.03762F77@keescook>
+ <20210225120637.8e2a234f192952829fc5f471@linux-foundation.org>
+ <202102251213.5815C9B33@keescook> <20210225201801.GA3119@MSI.localdomain>
+In-Reply-To: <20210225201801.GA3119@MSI.localdomain>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 26 Feb 2021 04:58:38 +0100
+Message-ID: <CANiq72=5t1maOv1FerMLRVCRos_yv-iQGLzB21Z+aYxTXLy8gA@mail.gmail.com>
+Subject: Re: [PATCH] linux/compiler-clang.h: define HAVE_BUILTIN_BSWAP*
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
+        Marco Elver <elver@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuesen Huang <huangxuesen@kuaishou.com>
+On Thu, Feb 25, 2021 at 9:18 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Indeed. Any wins that we can get with compile time, we should take.
+> Clang is being widely used in production systems now so I feel like with
+> a trivial change plus user visible impact, it should be backported.
+>
+> Not to mention that the generated code in theory should be better
+> because it is the compiler's builtin, rather than a hand rolled one, AND
+> this is technically a regression, given that it worked before compiler.h
+> was split.
 
-bpf_skb_adjust_room sets the inner_protocol as skb->protocol for packets
-encapsulation. But that is not appropriate when pushing Ethernet header.
+Compilation speed shouldn't be an argument for a stable change unless
+it is something egregious like a 50% that may affect users or tightly
+timed CIs.
 
-Add an option to further specify encap L2 type and set the inner_protocol
-as ETH_P_TEB.
+Fixing an important runtime regression is a stronger argument, but the
+patch doesn't show what the effects are, so it isn't justified (yet).
 
-v3:
-- Fix the code format.
+Please note that this kind of change touches a lot of code all over
+the place, which could always trigger other runtime regressions or
+even bad codegen (yes, very unlikely, but it happens).
 
-v2:
-Suggested-by: Willem de Bruijn <willemb@google.com>
-- Add a new flag to specify the type of the inner packet.
-
-Suggested-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
-Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
-Signed-off-by: Li Wang <wangli09@kuaishou.com>
----
- include/uapi/linux/bpf.h       |  5 +++++
- net/core/filter.c              | 11 ++++++++++-
- tools/include/uapi/linux/bpf.h |  5 +++++
- 3 files changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 77d7c1b..d791596 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1751,6 +1751,10 @@ struct bpf_stack_build_id {
-  *		  Use with ENCAP_L3/L4 flags to further specify the tunnel
-  *		  type; *len* is the length of the inner MAC header.
-  *
-+ *		* **BPF_F_ADJ_ROOM_ENCAP_L2_ETH**:
-+ *		  Use with BPF_F_ADJ_ROOM_ENCAP_L2 flag to further specify the
-+ *		  L2 type as Ethernet.
-+ *
-  * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-@@ -4088,6 +4092,7 @@ enum {
- 	BPF_F_ADJ_ROOM_ENCAP_L4_GRE	= (1ULL << 3),
- 	BPF_F_ADJ_ROOM_ENCAP_L4_UDP	= (1ULL << 4),
- 	BPF_F_ADJ_ROOM_NO_CSUM_RESET	= (1ULL << 5),
-+	BPF_F_ADJ_ROOM_ENCAP_L2_ETH	= (1ULL << 6),
- };
- 
- enum {
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 255aeee..8d1fb61 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3412,6 +3412,7 @@ static u32 bpf_skb_net_base_len(const struct sk_buff *skb)
- 					 BPF_F_ADJ_ROOM_ENCAP_L3_MASK | \
- 					 BPF_F_ADJ_ROOM_ENCAP_L4_GRE | \
- 					 BPF_F_ADJ_ROOM_ENCAP_L4_UDP | \
-+					 BPF_F_ADJ_ROOM_ENCAP_L2_ETH | \
- 					 BPF_F_ADJ_ROOM_ENCAP_L2( \
- 					  BPF_ADJ_ROOM_ENCAP_L2_MASK))
- 
-@@ -3448,6 +3449,10 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
- 		    flags & BPF_F_ADJ_ROOM_ENCAP_L4_UDP)
- 			return -EINVAL;
- 
-+		if (flags & BPF_F_ADJ_ROOM_ENCAP_L2_ETH &&
-+		    inner_mac_len < ETH_HLEN)
-+			return -EINVAL;
-+
- 		if (skb->encapsulation)
- 			return -EALREADY;
- 
-@@ -3466,7 +3471,11 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
- 		skb->inner_mac_header = inner_net - inner_mac_len;
- 		skb->inner_network_header = inner_net;
- 		skb->inner_transport_header = inner_trans;
--		skb_set_inner_protocol(skb, skb->protocol);
-+
-+		if (flags & BPF_F_ADJ_ROOM_ENCAP_L2_ETH)
-+			skb_set_inner_protocol(skb, htons(ETH_P_TEB));
-+		else
-+			skb_set_inner_protocol(skb, skb->protocol);
- 
- 		skb->encapsulation = 1;
- 		skb_set_network_header(skb, mac_len);
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 77d7c1b..d791596 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1751,6 +1751,10 @@ struct bpf_stack_build_id {
-  *		  Use with ENCAP_L3/L4 flags to further specify the tunnel
-  *		  type; *len* is the length of the inner MAC header.
-  *
-+ *		* **BPF_F_ADJ_ROOM_ENCAP_L2_ETH**:
-+ *		  Use with BPF_F_ADJ_ROOM_ENCAP_L2 flag to further specify the
-+ *		  L2 type as Ethernet.
-+ *
-  * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-@@ -4088,6 +4092,7 @@ enum {
- 	BPF_F_ADJ_ROOM_ENCAP_L4_GRE	= (1ULL << 3),
- 	BPF_F_ADJ_ROOM_ENCAP_L4_UDP	= (1ULL << 4),
- 	BPF_F_ADJ_ROOM_NO_CSUM_RESET	= (1ULL << 5),
-+	BPF_F_ADJ_ROOM_ENCAP_L2_ETH	= (1ULL << 6),
- };
- 
- enum {
--- 
-1.8.3.1
-
+Cheers,
+Miguel
