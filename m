@@ -2,160 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34C6325DBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BC1325DC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbhBZGxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:53:54 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33293 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229482AbhBZGxw (ORCPT
+        id S229618AbhBZG5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhBZG5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:53:52 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2AB935C00C4;
-        Fri, 26 Feb 2021 01:53:06 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 26 Feb 2021 01:53:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=i
-        7m4H3xz7cUcEC09O4w9iOsviObRN/Oa4xlAc5IYr8A=; b=AhHnXf8/jOqDcDiR5
-        SuWIOji93zDqi4rYcGnDFqGWTC+D/mI25KUgr9dWJ6vRI7TvrLnjr3SXtyZbafcn
-        lUskaPovJGcD3BOATOex+KysktMDf+omj0+3pwFpdQ/3rZYxJr4v6+cjeD+3NazL
-        10aMqQv3k7OP53Eswwv6wJf0m24Fq/7MpDwPb6hufvlRiwbgYa6tQ6R6H1vlZK+d
-        Y5EV8wRlNrFBa0HUWzrbgBlRAv6On5oSQYeRp4YW0FUvfqt+6aIQuDYVZxzCCbcZ
-        Q8Gtxh4JRkyq8mc6Jl+0k8uZllqcS321Lx0k8hoVNPxx7iB0z12Rh70Cr0Bsuerv
-        SThhQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=i7m4H3xz7cUcEC09O4w9iOsviObRN/Oa4xlAc5IYr
-        8A=; b=QIDddVguzSpYbhmGdlrl+OkosoabhMOZN54w+ufqfQWO9mmTbGofihzwa
-        0gExUWWKXjjDZrc/t7FCGXEvD3350vMkaiSjEN2VSDoK399zvXo1s1vqfgeA8PKG
-        rMToz+R3h1sHGlIleE22qisbvD17lGGMAXAmKjTWbj/rr+8jz6WwO44HSsR3SONG
-        UHYZwkTntvuRLeSCc5OaxkpTMpjEntkz3lHL7ifjH3ciAyCY9CBuHOzWk+q6vaz3
-        xasvuWSw9JzEsqPvKPvpnhK9JEu25zsg2bHaMNccAp1Kjwg+LBc7xWGagTy7Z0ti
-        41798qhHALusTeq1LCh5UAc5Ln7oQ==
-X-ME-Sender: <xms:0Jo4YAiO0f3mdc-kQ2xblnP-kaRxWA4M8RbPS_Uy0MMVI1KWoitPvQ>
-    <xme:0Jo4YJDFKn9NqU852SFdvyrhMQM2sPephid497z5LPIEN-chkFvDklWLpCzLFyEr7
-    f4Qbui-iGINWc4onkg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrledtgddutddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeeihffghfeikedugeejvefgffevgeevgeehfffhudeiieffffev
-    ffeugeevfefgfeenucfkphepudelkedrjeegrdehuddrieeknecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
-    hihgohgrthdrtghomh
-X-ME-Proxy: <xmx:0Jo4YIHW1Yq_AvOLOx6XIcG71dHPBfweWePeDMogY9nYnf12rlcDYg>
-    <xmx:0Jo4YBSnkx1ZIEF4PMbJOs4BTp7_ivJagOSH3cdwz-gKCi5oUHlhNQ>
-    <xmx:0Jo4YNzfrdqllkqW85IudgwxUw9nbsZ4qpqUWcAYw3AqzXSI_s_orA>
-    <xmx:0po4YI-MCuppUHhsyN3uGWX6xfLr-A4NGlW1ZJ1o5tzR5UiFVTJyAA>
-Received: from [0.0.0.0] (li551-68.members.linode.com [198.74.51.68])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9996D1080057;
-        Fri, 26 Feb 2021 01:53:02 -0500 (EST)
-Subject: Re: [PATCH RFC] MIPS: Remove detect_memory_region()
-To:     Jinyang He <hejinyang@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>
-Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <1614171720-13221-1-git-send-email-hejinyang@loongson.cn>
- <987b0dc5-9306-4271-afc0-7c44dba644b7@www.fastmail.com>
- <a657ea7c-3d0e-6b92-5ad6-c445e827a845@loongson.cn>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <ba014ac1-6a83-7b11-e9a7-e6ad9ba1aa62@flygoat.com>
-Date:   Fri, 26 Feb 2021 14:52:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 26 Feb 2021 01:57:00 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AD0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:56:19 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id q14so9447033ljp.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:56:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UrADPMnBZ4yoBkU/YnqPcC29N2iUEXdcqQ2toRM2mXU=;
+        b=eFepvFj5vxgAV9mdLShk1pEQuEq/ti8+znapTe0TXp2bOu/L9MPqW+rUfHW7z5MEL8
+         91jeUc/yr02bscPCU9WoWz0sIvRVDfY0qzs06fNPag5poabIBqOi21vl4mGUetX5XZUJ
+         LwKYTFfW0epb11REZuq5RfzaoGCisr3e16Bz4kJNIJ5ioGH+o4lb71Edu61YLmCAMvm2
+         m8IwQT2QsFsJ7oKVrz8rBLMkeOtbmfQmxf9sgg3a1x0PeiCzD2I+IlriQzTzfkQ4zkGz
+         boH5TckQAM9zJ+YxSmxM9AUCx1NV9Lt4FNaZ/Otj/enH617IvcOWJG9Ghxr0grMEfcdp
+         lSHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UrADPMnBZ4yoBkU/YnqPcC29N2iUEXdcqQ2toRM2mXU=;
+        b=h4oWEzW0NMgJEWHP/kfGUQW0MgucjZcXLR6Ln5naffXU4dZzaY66COK/J636MSln9y
+         WHrKZsq1kCuNuoraFV6DtteMiZOu+6X1IMBDekS8/Wy6lbmXHaj1NMLagTMg62J/QTeG
+         Nxgl9giwn53m2L2CsG/VjZjLl06XIV6pAxB4k8aC5g3BFHV9HqGq2s/I6NaHp5ZZhtjB
+         eIQL9MtZAq7nOh+SGkVj+rTQPLoHnjTnr/Z486KGcWXnaTJJmyXKhP4dqXpltwlBV/cD
+         na/JEQsCCHgDyDRmAjXTRqC5kV3oJ5s2NiF6nREuEUU5Z2TirDjGHjcL6AfiOagEZjxb
+         UjZg==
+X-Gm-Message-State: AOAM533upAeNgc1TprhUNn3paYacoJGqzDzakCPE/opS/QcinzHwK/fN
+        8I2Bov4XGq+p6nqcMsBT49Ct/so82X5Q7LL/3YM7yQ==
+X-Google-Smtp-Source: ABdhPJxwPpU76NmvTXgY0+vpZCEUd69qX7ujB5TalBs1OGjExSoBkWKC4nlZRGhTWTAkbMG0DD7c0nv+VBR+OhScRJw=
+X-Received: by 2002:a2e:9e05:: with SMTP id e5mr840848ljk.152.1614322578322;
+ Thu, 25 Feb 2021 22:56:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a657ea7c-3d0e-6b92-5ad6-c445e827a845@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210224081652.587785-1-sumit.garg@linaro.org> <CAD=FV=VOdf1TyXWQOyP=y2xaLxY6_c+xm-VSSUkFasJD1Cbgpw@mail.gmail.com>
+In-Reply-To: <CAD=FV=VOdf1TyXWQOyP=y2xaLxY6_c+xm-VSSUkFasJD1Cbgpw@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 26 Feb 2021 12:26:07 +0530
+Message-ID: <CAFA6WYMsphYjjwU0WBtOzo5FXC8OtcHv+3bM48iWjGu_3HkMRQ@mail.gmail.com>
+Subject: Re: [PATCH] kgdb: Fix to kill breakpoints on initmem after boot
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Peter Zijlstra <peterz@infradead.org>, stefan.saecherl@fau.de,
+        qy15sije@cip.cs.fau.de, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/2/26 上午9:37, Jinyang He 写道:
-> On 02/24/2021 11:40 PM, Jiaxun Yang wrote:
+On Wed, 24 Feb 2021 at 23:39, Doug Anderson <dianders@chromium.org> wrote:
 >
->>
->> On Wed, Feb 24, 2021, at 9:02 PM, Jinyang He wrote:
->>> detect_memory_region() was committed by Commit 4d9f77d25268 ("MIPS: add
->>> detect_memory_region()"). Then it was equipped by Commit dd63b00804a5
->>> ("MIPS: ralink: make use of the new memory detection code") and
->>> Commit 9b75733b7b5e ("MIPS: ath79: make use of the new memory detection
->>> code"). Its code is based on early ath79 platform code.
->>>
->>> What puzzles me is that how memcmp() detect the memory region. If 
->>> `break`
->>> was touched, the function could make sense. That means memcmp() should
->>> return zero. Otherwise, the loop will be end by size > sz_max.
->>>
->>> I have tested detect_memory_region() on Loongson64 3A3000. On our 
->>> design,
->>> kseg0 low 256MB maps real memory and kseg0 high 256MB maps IO/PCI. The
->>> function runs and last stopped on kseg1 where is uncached. In this 
->>> process
->>> memcmp also returned non-zero when detected kseg0 high 256MB. Then I 
->>> did
->>> another thing. memcpy first and test memcmp then (after &_end). It 
->>> works
->>> well on 3A3000 but badly on 3A4000. Maybe because kseg0 high 256MB maps
->>> IO/PCI and it is dangerous to write like write memory.
->>>
->>> At last, read memory from where is not memory region may always 
->>> return 0.
->>> (Or trigger exception.) This function have been used several years and
->>> seems no error occur. Maybe it's a fallback way.
->> That is not true for other platforms like ath79 or mtk.
->> They'll wrap around or return 0xffffffff for out of boundary accessing.
->>
->> Loongson does not apply to this case as it have special "Address Window"
->> design to accurately describe address regions.
->> Any access beyond described windows will be handled by MC and return 
->> 0 or random stuff.
->>
->> Again, please don't make changes because you can.
->>
->> Thanks.
->>
->> - Jiaxun
+> Hi,
 >
-> Hi, Jiaxun,
+> On Wed, Feb 24, 2021 at 12:17 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > Currently breakpoints in kernel .init.text section are not handled
+> > correctly while allowing to remove them even after corresponding pages
+> > have been freed.
+> >
+> > Fix it via killing .init.text section breakpoints just prior to initmem
+> > pages being freed.
 >
-> Thank you for answering this puzzle for me in detail.
+> It might be worth it to mention that HW breakpoints aren't handled by
+> this patch but it's probably not such a big deal.
 >
-> Assume that the machine has 8MB real memory and dm address is (base + 
-> 3M).
-> When size = 8MB, there will be a phenomenon of `wrap around`, the actual
-> content of (dm + 8M + 3M) is content of (dm + 3M), so it will trigger
-> `break`, right? At this time, the kernel will add 8M to the memory.
-
-Hi Jingyang,
-
-How can you boot kernel with 8M memory in present days ;-)
-(Ohh with respect to Nintendo64 developer who had proven it's possible)
-
-For what I can say, detect_memory_region exists because many devices
-doesn't have a way to pass memory size information from bootloader to
-kernel. Or their bootloader even don't care about memory size.
-
-Kernel needs it to get memory size correctly. Although it seems fragile.
-
-That's life, we must accept imperfect past and don't repeat it in future.
-
-Thanks.
-
-- Jiaxun
-
-
 >
-> Thanks,
-> Jinyang
+> > Suggested-by: Doug Anderson <dianders@chromium.org>
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  include/linux/kgdb.h      |  2 ++
+> >  init/main.c               |  1 +
+> >  kernel/debug/debug_core.c | 11 +++++++++++
+> >  3 files changed, 14 insertions(+)
+> >
+> > diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+> > index 57b8885708e5..3aa503ef06fc 100644
+> > --- a/include/linux/kgdb.h
+> > +++ b/include/linux/kgdb.h
+> > @@ -361,9 +361,11 @@ extern atomic_t                    kgdb_active;
+> >  extern bool dbg_is_early;
+> >  extern void __init dbg_late_init(void);
+> >  extern void kgdb_panic(const char *msg);
+> > +extern void kgdb_free_init_mem(void);
+> >  #else /* ! CONFIG_KGDB */
+> >  #define in_dbg_master() (0)
+> >  #define dbg_late_init()
+> >  static inline void kgdb_panic(const char *msg) {}
+> > +static inline void kgdb_free_init_mem(void) { }
+> >  #endif /* ! CONFIG_KGDB */
+> >  #endif /* _KGDB_H_ */
+> > diff --git a/init/main.c b/init/main.c
+> > index c68d784376ca..a446ca3d334e 100644
+> > --- a/init/main.c
+> > +++ b/init/main.c
+> > @@ -1417,6 +1417,7 @@ static int __ref kernel_init(void *unused)
+> >         async_synchronize_full();
+> >         kprobe_free_init_mem();
+> >         ftrace_free_init_mem();
+> > +       kgdb_free_init_mem();
+> >         free_initmem();
+> >         mark_readonly();
+> >
+> > diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+> > index 229dd119f430..319381e95d1d 100644
+> > --- a/kernel/debug/debug_core.c
+> > +++ b/kernel/debug/debug_core.c
+> > @@ -465,6 +465,17 @@ int dbg_remove_all_break(void)
+> >         return 0;
+> >  }
+> >
+> > +void kgdb_free_init_mem(void)
+> > +{
+> > +       int i;
+> > +
+> > +       /* Clear init memory breakpoints. */
+> > +       for (i = 0; i < KGDB_MAX_BREAKPOINTS; i++) {
+> > +               if (init_section_contains((void *)kgdb_break[i].bpt_addr, 0))
 >
+> A nit, but instead of 0 should this be passing "BREAK_INSTR_SIZE" ?
+>
+> Also: even if memory is about to get freed it still seems like it'd be
+> wise to call this:
+>
+>   kgdb_arch_remove_breakpoint(&kgdb_break[i]);
+>
+> It looks like it shouldn't matter today but just in case an
+> architecture decides to do something fancy in the future it might not
+> hurt to tell it that the breakpoint is going away.
+>
+>
+> Everything here is pretty nitty, though.  This looks good to me now.
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
+Thanks Doug for your review.
+
+-Sumit
