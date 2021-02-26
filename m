@@ -2,83 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0658A3262F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7153262F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhBZMxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 07:53:07 -0500
-Received: from lucky1.263xmail.com ([211.157.147.135]:56890 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhBZMxF (ORCPT
+        id S230071AbhBZMyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 07:54:06 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:49182 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhBZMyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:53:05 -0500
-Received: from localhost (unknown [192.168.167.225])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 9213DA7744;
-        Fri, 26 Feb 2021 20:50:46 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P5975T140595418887936S1614343847164482_;
-        Fri, 26 Feb 2021 20:50:47 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <e31d183d9d66a28fa44ec72a564d3e31>
-X-RL-SENDER: zhaoxiao@uniontech.com
-X-SENDER: zhaoxiao@uniontech.com
-X-LOGIN-NAME: zhaoxiao@uniontech.com
-X-FST-TO: tglx@linutronix.de
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org
-Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH] KVM: x86: fix the space error for the pointer variables.
-Date:   Fri, 26 Feb 2021 20:50:43 +0800
-Message-Id: <20210226125043.27403-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 26 Feb 2021 07:54:01 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EF4EF580;
+        Fri, 26 Feb 2021 13:53:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1614343999;
+        bh=LYN1xxISJasdZzU6yYhtZjYnXw5AND9OFkY4FM/4VC8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Czdu4Nuo1+9gO0LaVVNAzm6YfbFoe1kadIF2+jliSAM/7PLZ2j9zD1WCKdM6jukhg
+         mEBB5Rc+q/ZcK7HhZsEE/UFx/yHQixVij4kD57AZ6w5kwQ45VeSiHBMYmcS2VO6Spq
+         dGHr7tdIUY2uAsErcsqXDysN//tf6Px/bVxdLCWs=
+Date:   Fri, 26 Feb 2021 14:52:51 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        Dirk Behme <Dirk.Behme@de.bosch.com>,
+        Peter Erben <Peter.Erben@de.bosch.com>
+Subject: Re: [PATCH 7/7] arm64: configs: Add R-Car DAB support
+Message-ID: <YDjvI6DTcBfWdA3G@pendragon.ideasonboard.com>
+References: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com>
+ <20210225225147.29920-8-fabrizio.castro.jz@renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210225225147.29920-8-fabrizio.castro.jz@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following pointer variables don't meet the kernel coding style,
-so fix the space error.
+Hi Fabrizio,
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
- arch/x86/kvm/x86.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thank you for the patch.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 3712bb5245eb..98849f3112d4 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5368,7 +5368,7 @@ static int kvm_add_msr_filter(struct kvm *kvm, struct kvm_msr_filter_range *user
- 	if (!bitmap_size || bitmap_size > KVM_MSR_FILTER_MAX_BITMAP_SIZE)
- 		return -EINVAL;
- 
--	bitmap = memdup_user((__user u8*)user_range->bitmap, bitmap_size);
-+	bitmap = memdup_user((__user u8 *)user_range->bitmap, bitmap_size);
- 	if (IS_ERR(bitmap))
- 		return PTR_ERR(bitmap);
- 
-@@ -10554,7 +10554,7 @@ void kvm_arch_sync_events(struct kvm *kvm)
-  * address, i.e. its accessibility is not guaranteed, and must be
-  * accessed via __copy_{to,from}_user().
-  */
--void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
-+void __user *__x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
- 				      u32 size)
- {
- 	int i, r;
+On Thu, Feb 25, 2021 at 10:51:47PM +0000, Fabrizio Castro wrote:
+> Make sure that the R-Car DAB device driver gets compiled as a
+> module since R-Car E3 and R-Car M3-N come with the DAB IP.
+> 
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+
+Do we need this in the defconfig ? It's not required to have a bootable
+E3 or M3-N with the set of standard features, and would result in all
+ARM64 platforms having one module they don't care about.
+
+> ---
+>  arch/arm64/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index d612f633b771..3b9996c7f1fc 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -274,6 +274,7 @@ CONFIG_PCI_ENDPOINT_TEST=m
+>  CONFIG_EEPROM_AT24=m
+>  CONFIG_EEPROM_AT25=m
+>  CONFIG_UACCE=m
+> +CONFIG_RCAR_DAB=m
+>  # CONFIG_SCSI_PROC_FS is not set
+>  CONFIG_BLK_DEV_SD=y
+>  CONFIG_SCSI_SAS_ATA=y
+
 -- 
-2.20.1
+Regards,
 
-
-
+Laurent Pinchart
