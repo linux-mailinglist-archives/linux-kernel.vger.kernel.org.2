@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942663269B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D3B3269BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:56:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhBZVyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 16:54:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
+        id S230019AbhBZVzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 16:55:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhBZVyr (ORCPT
+        with ESMTP id S229752AbhBZVz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:54:47 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8E6C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:54:07 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id e2so5117467ljo.7
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:54:07 -0800 (PST)
+        Fri, 26 Feb 2021 16:55:29 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A2DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:54:49 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id u3so10357211ybk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:54:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UNEvIq/qxA6OOZG+WYtlwoaiZCAR2je7MAQSUMeP9zU=;
-        b=DoVnxvMGwTiuuY8O+425FVCTFrq9wNuvueHtEeECVa/XKMdj6xistUI4rdrazTj76y
-         XDlZ9YJ2LZYSON2YmvMKUjiBrtggSI4Pj1XvyPkiEzbROntPyENI2Ww/e/wu7cDSgbxw
-         vdZt/hRmEAHBldrmdWyQnxz9yANDFw2DHfvoM=
+        bh=TFSTMI7ryRQxrtNhAxWEs+B7yYWo+lfhTGjsQMzxFP0=;
+        b=B2/1Ao0Q94/ecvoT23XORi65LbOEqxem34O8qEn3v46TLm2Ufh9AdpQbNu+gShymBd
+         DqIm9AAup8V+OjHchs3y6+rxGQSqBuABAUg4mG2ScHu3nET0vqJ8BMWVKW6uiXwEOteE
+         Mmw42Oio2H0wehbJJW+QKGQvm/2ZYS7a5bHeZszvWKHaBmlSAF1auXBKvMVbJRJQl81t
+         GgiVrduLaMAOr+1DiIRKorkLCL3+i103bj/T8MoeyOvjRgHaI/0k4q/1uzm1lRCcfBww
+         2Rm9GI+ze0e013ITgqQCX4k1woIbe+MMWKzmEK1RrcibY18l48TKrnsbjW5Mqerj+x8A
+         nwRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UNEvIq/qxA6OOZG+WYtlwoaiZCAR2je7MAQSUMeP9zU=;
-        b=au4d+fnlSXp8gmXu+mfEZadhijyW2hWEWPtZkowgdapeL/DU9FB7dHC4kOL5ydhtMI
-         rAd3bVwoDSNbJ3sFDqyOKxFu7BmnG9jbd2qdM3dPqZLDLi30L9jyZ6kctSFSnQAl0soc
-         OHUeq//kTBq7PK46VLauH0jNyrZKSreVHhZwkDjkXa2kQ7jIG2ydh8fhOMAGMF34jmww
-         w/nhvwYNo0Q6zYzApP6N68RHJtCFK2veDu6nf7avrh7LFS4T26us/3qIH3jjqXtnz6K5
-         0L0cnM7H64Zbe1wGHK3Ee4aKkL2UxwUI9Nu90OUj3f86fLmS1NI3DgCUEJP8i3eat9de
-         sHrw==
-X-Gm-Message-State: AOAM5338JbK3CYvDTh2Y1Mrlt0CPtIKFSB/IZM/c8NgOpnik4YtASL2E
-        S3Kcu1HfPcX8d7xU91VuUJOAKTbO/7Gjvg==
-X-Google-Smtp-Source: ABdhPJySa527LYsa/eoOQkn+tcdVPs907XC7z2hfI/HBorR3fnYIxSJZ/KF3+d0ZjTujrLr0J286qg==
-X-Received: by 2002:a2e:309:: with SMTP id 9mr2857091ljd.377.1614376445717;
-        Fri, 26 Feb 2021 13:54:05 -0800 (PST)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id w11sm1564789ljw.97.2021.02.26.13.54.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 13:54:05 -0800 (PST)
-Received: by mail-lf1-f46.google.com with SMTP id d3so15978994lfg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:54:04 -0800 (PST)
-X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr2765167lfu.40.1614376444470;
- Fri, 26 Feb 2021 13:54:04 -0800 (PST)
+        bh=TFSTMI7ryRQxrtNhAxWEs+B7yYWo+lfhTGjsQMzxFP0=;
+        b=BbGICyx2W/bkhb7FfAPPKgO+6mGblonsNq9GJJ1dZYRdYFrkEBZnYwamQuPoketukd
+         8vxcmibKYtFth2RZje8gUJntIJCnXXZIUoqS06gFeE9W8bB5Gt6rIoOq2Y1qYZFP06tQ
+         DyxCU/KcZHayDmc/WPUCicCOObpgS0UNY/LKEhaVL4TfAig7r/RNHRftfkB6cqrYI9YJ
+         djddhIV3F7ptygASxT6/T7ASbIn0d+1AJERw2HqwLg2Sfh9BzYNJhx6Jo1q6onPWeYTC
+         2ngBMPd4EWstHSGkQMQ/8JDJdNGgcJp2NAgr73lmMPES+bpBmsd332xwpsEnSLrFhKn5
+         HfUQ==
+X-Gm-Message-State: AOAM530bBcF0au3nnQ0M3lm7mZ8wEqmdFRPld3F+h6KIdy3EBRAJSmss
+        HcpE5ZccK61wMvQl5CBkrzQYLtVA1yWApGqbqFrh0g==
+X-Google-Smtp-Source: ABdhPJzP8p2qMENfeBoRsfOY6ITy1KLwEoJVReeXV6Va1b5sD8yhyRAUASCl1TzCHhUjBqv393Q5LYqaT9qZ7g+VsHw=
+X-Received: by 2002:a05:6902:1025:: with SMTP id x5mr7781569ybt.96.1614376488562;
+ Fri, 26 Feb 2021 13:54:48 -0800 (PST)
 MIME-Version: 1.0
-References: <YDlXWHkYntoO4fk0@localhost.localdomain>
-In-Reply-To: <YDlXWHkYntoO4fk0@localhost.localdomain>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 26 Feb 2021 13:53:48 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjZJPqmPE_gzvzPtPsojxw-Xg8QTBCn+Oi-ca2s0818NA@mail.gmail.com>
-Message-ID: <CAHk-=wjZJPqmPE_gzvzPtPsojxw-Xg8QTBCn+Oi-ca2s0818NA@mail.gmail.com>
-Subject: Re: #pragma once (was Re: incoming)
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
+References: <20210226145246.1171-1-johan@kernel.org> <20210226145246.1171-2-johan@kernel.org>
+In-Reply-To: <20210226145246.1171-2-johan@kernel.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 26 Feb 2021 13:54:12 -0800
+Message-ID: <CAGETcx-4Q+SkdLO-rXE-zt2kdz=J1cnrPjv07mt0KRtCPa_OGg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] gpio: fix NULL-deref-on-deregistration regression
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzbot+d27b4c8adbbff70fbfde@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 12:17 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+On Fri, Feb 26, 2021 at 6:55 AM Johan Hovold <johan@kernel.org> wrote:
 >
-> I want to sent treewide "#pragma once" conversion:
+> Fix a NULL-pointer deference when deregistering the gpio character
+> device that was introduced by the recent stub-driver hack. When the new
+> "driver" is unbound as part of deregistration, driver core clears the
+> driver-data pointer which is used to retrieve the struct gpio_device in
+> its release callback.
+>
+> Fix this by using container_of() in the release callback as should have
+> been done all along.
+>
+> Fixes: 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable fw_devlink=on by default")
+> Cc: Saravana Kannan <saravanak@google.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reported-by: syzbot+d27b4c8adbbff70fbfde@syzkaller.appspotmail.com
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>  drivers/gpio/gpiolib.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index adf55db080d8..e1016bc8cf14 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -474,7 +474,7 @@ EXPORT_SYMBOL_GPL(gpiochip_line_is_valid);
+>
+>  static void gpiodevice_release(struct device *dev)
+>  {
+> -       struct gpio_device *gdev = dev_get_drvdata(dev);
+> +       struct gpio_device *gdev = container_of(dev, struct gpio_device, dev);
 
-Are there *any* advantages to it?
+Can you also delete the dev_set_drvdata() in
+gpiochip_add_data_with_key() if the drvdata is not used
+elsewhere anymore? I skimmed the code and it doesn't look like it, but
+I could be wrong.
 
-It's non-standard, and the historical argument for it ("it can reduce
-compile times because the preprocessor doesn't open the file twice" is
-pure and utter hogwash. Any preprocessor worth its salt does the same
-thing for the standard and traditional #ifndef/#define guard sequence.
-
-Honestly, "#pragma once" was always a hack for bad preprocessors that
-weren't smart enough to just figure it out from the regular guarding
-macros.
-
-I can't imagine that any preprocessor that incompetent exists any
-more, and if i does, we sure shouldn't be using it.
-
-So #pragma once seems to have no actual advantages.
-
-               Linus
+-Saravana
