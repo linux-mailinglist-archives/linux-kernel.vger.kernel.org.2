@@ -2,94 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994273268BA
+	by mail.lfdr.de (Postfix) with ESMTP id 292933268B9
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhBZU1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:27:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhBZUSe (ORCPT
+        id S230487AbhBZU1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:27:20 -0500
+Received: from mx1.opensynergy.com ([217.66.60.4]:4051 "EHLO
+        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230253AbhBZURi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:18:34 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8067C061222;
-        Fri, 26 Feb 2021 12:15:53 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id o22so7197312pjs.1;
-        Fri, 26 Feb 2021 12:15:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mb+a+iPifUcMlypSO/2znNyZszUx5kqHHIYdplyNQKE=;
-        b=tv+erJ3fIJqxkJRhk3AyA8tVrsaRhN1kcda8ZThAF2/2aKoyGroiN9OpEDPCSduCmM
-         +qVdya9vF+GOmCjijCs5zvcEaFq5uDTbyUA6XfBImxHPUQvwC5quQobrK4BHSQLAVQK5
-         //Qr2scExcx9xzdjfYElFsQLXswfq/D+PlsSBbn3YbBy1QacalTTIDV7gqGpoJj5lnJd
-         HJ5NMEw339qlO82opPfzTuZkRZMwupUgdpLGfVcyPVuS6hjC4VDgU0OofFPCDSns9PsE
-         J+oyR+PikcSjOjfB6mDjm7v4bJXQhz3SGAMxbM0MnXJbKW7q8mQ9xpbf2UoCuJSxACmu
-         9wDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mb+a+iPifUcMlypSO/2znNyZszUx5kqHHIYdplyNQKE=;
-        b=PhOQbBriq2spT1U9wkIOPoSvgUqCzBMKlDuB5vWyUI8MqDOOkFDw0RJbJcmWq3dII8
-         Vf9DT/ZNKkkwuXpn61L86RpPHct6QWMrQ/jtm+xq1o/k6m+Hl2C5DtqHap2WtX8Sa+pX
-         /WJN0o0w4ph7Jrcw2nLejkFvm6WWCDYJ7EaHcYvwgbuhv2dtj7HimcLUm2q1ciG/WhGn
-         146kt29jVIhQS1P4rKSptZD4HIRvRUKLb84gZMb2C8cGhOR4SY7oC2qAel6L7FiGEuJ5
-         29yt0e+mN3zOtGnxtp4ZfJAUZyuVJ7gbWpcKYn+R/mXT4yzQQUbz5Ggsp2yuw1JhFWXb
-         EZzg==
-X-Gm-Message-State: AOAM532OxfHKU93WLau0P6SqlERawzS8qFTRnYYJgjmuABRscNQ9QohB
-        bmmjvNODHlhK8+00K9dgxa78EVRCxZsh6QRN4cfUaGZayfHE9w==
-X-Google-Smtp-Source: ABdhPJyBhtaFW+5H3Hag4UkmWG0/rwnGcCy0YKzQCDAn1APtu1dQOnmYkbs1hMZRsKITYMf6wQB96LLiLTTHLZjgWvU=
-X-Received: by 2002:a17:902:9691:b029:e3:dd4b:f6bb with SMTP id
- n17-20020a1709029691b02900e3dd4bf6bbmr4519309plp.77.1614370553485; Fri, 26
- Feb 2021 12:15:53 -0800 (PST)
+        Fri, 26 Feb 2021 15:17:38 -0500
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
+        by mx1.opensynergy.com (Proxmox) with ESMTP id 6E31BA16ED;
+        Fri, 26 Feb 2021 21:16:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:from:from:in-reply-to:message-id:mime-version:references
+        :reply-to:subject:subject:to:to; s=srmailgate02; bh=QFjGStjIzh6J
+        7frNT2LEqGS+oMJPYJeHt/N3AzMgBWQ=; b=l9OojtCdVaM6d0+MvAfQmteavjL4
+        X1lEvn6/iVjdMQz8DQ6zTmmYEOqRgBJrg4aLFv9eSeKtjNzf5zSbqA/WTrpQ1nX+
+        2WbMpxMH7CIj8P2uoE5SDtuev90SsA1qNMDQ1x8wK8EXc+qj7eKsAy66iScVi8z4
+        EIZlf0TKkNS2eRjH1rUnTdA9AnXKidJw8RG1cCUTqJdvpKynVNKHGVlpBe+L7SLp
+        QcceqhEmbk/SKyAkbxUieHG6SWOGHtUofAFqQxjlylEkxNzuXdvJ2AY4zUwH+Dr8
+        gW3Hij5eESFSxpLqaLGfYcDw/OFV+jkw5NMd5Ftzi6TDBwCX5EWrWNYj8Q==
+Subject: Re: [PATCH v5 6/9] ALSA: virtio: PCM substream operators
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     "Michael S. Tsirkin" <mst@redhat.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+References: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
+ <20210222153444.348390-7-anton.yakovlev@opensynergy.com>
+ <s5h35xkquvj.wl-tiwai@suse.de>
+ <d9b6e8fa-7356-1cbf-029b-6f7c8bad4994@opensynergy.com>
+ <s5hlfbcpayj.wl-tiwai@suse.de>
+ <20210225135951-mutt-send-email-mst@kernel.org>
+ <s5hblc7opok.wl-tiwai@suse.de>
+ <0a9f6dea-ed75-16eb-9fc2-84148fa820be@opensynergy.com>
+ <s5ha6rqnc0m.wl-tiwai@suse.de>
+From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Message-ID: <8243d984-0482-b9b5-e779-9f3f723d48ed@opensynergy.com>
+Date:   Fri, 26 Feb 2021 21:16:41 +0100
 MIME-Version: 1.0
-References: <20210226035721.40054-1-hxseverything@gmail.com>
-In-Reply-To: <20210226035721.40054-1-hxseverything@gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Fri, 26 Feb 2021 12:15:42 -0800
-Message-ID: <CAM_iQpUAc5sB1xzqE7RvG5pQHQeCPJx5qAz_m9LaJYZ4pKfZsQ@mail.gmail.com>
-Subject: Re: [PATCH/v3] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
-To:     Xuesen Huang <hxseverything@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuesen Huang <huangxuesen@kuaishou.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
-        Li Wang <wangli09@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <s5ha6rqnc0m.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
+ SR-MAIL-02.open-synergy.com (10.26.10.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 7:59 PM Xuesen Huang <hxseverything@gmail.com> wrote:
-> v3:
-> - Fix the code format.
->
-> v2:
-> Suggested-by: Willem de Bruijn <willemb@google.com>
-> - Add a new flag to specify the type of the inner packet.
+On 26.02.2021 15:23, Takashi Iwai wrote:
+> On Thu, 25 Feb 2021 23:19:31 +0100,
+> Anton Yakovlev wrote:
+>>
+>> On 25.02.2021 21:30, Takashi Iwai wrote:> On Thu, 25 Feb 2021 20:02:50
+>> +0100,
+>>> Michael S. Tsirkin wrote:
+>>>>
+>>>> On Thu, Feb 25, 2021 at 01:51:16PM +0100, Takashi Iwai wrote:
+>>>>> On Thu, 25 Feb 2021 13:14:37 +0100,
+>>>>> Anton Yakovlev wrote:
+>>
+>>
+>> [snip]
+>>
+>>
+>>>> Takashi given I was in my tree for a while and I planned to merge
+>>>> it this merge window.
+>>>
+>>> Hmm, that's too quick, I'm afraid.  I see still a few rough edges in
+>>> the code.  e.g. the reset work should be canceled at the driver
+>>> removal, but it's missing right now.  And that'll become tricky
+>>> because the reset work itself unbinds the device, hence it'll get
+>>> stuck if calling cancel_work_sync() at remove callback.
+>>
+>> Yes, you made a good point here! In this case, we need some external
+>> mutex for synchronization. This is just a rough idea, but maybe
+>> something like this might work:
+>>
+>> struct reset_work {
+>>      struct mutex mutex;
+>>      struct work_struct work;
+>>      struct virtio_snd *snd;
+>>      bool resetting;
+>> };
+>>
+>> static struct reset_work reset_works[SNDRV_CARDS];
+>>
+>> init()
+>>      // init mutexes and workers
+>>
+>>
+>> virtsnd_probe()
+>>      snd_card_new(snd->card)
+>>      reset_works[snd->card->number].snd = snd;
+>>
+>>
+>> virtsnd_remove()
+>>      mutex_lock(reset_works[snd->card->number].mutex)
+>>      reset_works[snd->card->number].snd = NULL;
+>>      resetting = reset_works[snd->card->number].resetting;
+>>      mutex_unlock(reset_works[snd->card->number].mutex)
+>>
+>>      if (!resetting)
+>>          // cancel worker reset_works[snd->card->number].work
+>>      // remove device
+>>
+>>
+>> virtsnd_reset_fn(work)
+>>      mutex_lock(work->mutex)
+>>      if (!work->snd)
+>>          // do nothing and take an exit path
+>>      work->resetting = true;
+>>      mutex_unlock(work->mutex)
+>>
+>>      device_reprobe()
+>>
+>>      work->resetting = false;
+>>
+>>
+>> interrupt_handler()
+>>      schedule_work(reset_works[snd->card->number].work);
+>>
+>>
+>> What do you think?
+> 
+> I think it's still somehow racy.  Suppose that the reset_work is
+> already running right before entering virtsnd_remove(): it sets
+> reset_works[].resetting flag, virtsnd_remove() skips canceling, and
+> both reset work and virtsnd_remove() perform at the very same time.
+> (I don't know whether this may happen, but I assume it's possible.)
+> 
+> In that case, maybe a better check is to check current_work(), and
+> perform cancel_work_sync() unless it's &reset_works[].work itself.
+> Then the recursive cancel call can be avoided.
+> 
+> After that point, the reset must be completed, and we can (again)
+> process the rest release procedure.  (But also snd object itself might
+> have been changed again, so it needs to be re-evaluated.)
+> 
+> One remaining concern is that the card number of the sound instance
+> may change after reprobe.  That is, we may want to another persistent
+> object instead of accessing via an array index of sound card number.
+> So, we might need reset_works[] associated with virtio_snd object
+> instead.
+> 
+> In anyway, this is damn complex.  I sincerely hope that we can avoid
+> this kind of things.  Wouldn't it be better to shift the reset stuff
+> up to the virtio core layer?  Or drop the feature in the first
+> version.  Shooting itself (and revival) is a dangerous magic spell,
+> after all.
 
-These need to be moved after '---', otherwise it would be merged
-into the final git log.
+Yes, I also got an impression, that without some assistance somewhere
+from the bus it will hardly be possible to find a suitable solution.
+Ok, then I will postpone this feature at the moment.
 
->
-> Suggested-by: Willem de Bruijn <willemb@google.com>
-> Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
-> Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
-> Signed-off-by: Li Wang <wangli09@kuaishou.com>
-> ---
->  include/uapi/linux/bpf.h       |  5 +++++
->  net/core/filter.c              | 11 ++++++++++-
->  tools/include/uapi/linux/bpf.h |  5 +++++
->  3 files changed, 20 insertions(+), 1 deletion(-)
 
-As a good practice, please add a test case for this in
-tools/testing/selftests/bpf/progs/test_tc_tunnel.c.
+> 
+> thanks,
+> 
+> Takashi
+> 
 
-Thanks.
+-- 
+Anton Yakovlev
+Senior Software Engineer
+
+OpenSynergy GmbH
+Rotherstr. 20, 10245 Berlin
+
