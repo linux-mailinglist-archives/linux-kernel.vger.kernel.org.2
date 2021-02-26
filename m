@@ -2,62 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0179326661
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63558326665
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhBZRj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 12:39:57 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:44816 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbhBZRj4 (ORCPT
+        id S230022AbhBZRkv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Feb 2021 12:40:51 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:33597 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhBZRkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:39:56 -0500
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614361153;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/BuqB3Oqx0tX4WNfP6KKpm8RPYgYW/KLWsgiNVhvs3E=;
-        b=x7KrW2ykM4exs/iT7gBW0KuK7Q2QuqkHTQACVr+7TgroAD9Nhjf37tKbJRdMD2ZtuHoAKo
-        r+tUgonAEXIQjU+VFiNdQ1Q9GFoKsjICFhYfvvg8rS3gX9Tf1L1qDuZScQOdQYyAvW0mGD
-        6VBSxhZEz0SqpJWEhMmUtQc/R2RvF/W55mQT2JBNUTMvFD2seAcOxhCZOAe4dpnT+djCM9
-        vXbpM0Sta7VdENd/+mCefiifPqcr1vxDClrORdb+w6jKqQGQdBQrQnMGs49m4Hqg5kTkR4
-        ipFq+US+IEujnctcyHU05WWJR2lJh3csQAJcR2DwnMM+M2wppl2DUPU5nzAB+w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614361153;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/BuqB3Oqx0tX4WNfP6KKpm8RPYgYW/KLWsgiNVhvs3E=;
-        b=GrxkUzIuAItpSsCg7WP1LZlRe7nFXWqayBjou22gY64xetZQI/mC6hQ8WauDI2VtGxxwfj
-        Uv+/AOw6UhaORkCg==
-To:     Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: [PATCH] printk: fix buffer overflow potential for print_text()
-In-Reply-To: <20210226171943.GA12088@oc3871087118.ibm.com>
-References: <20210114170412.4819-1-john.ogness@linutronix.de> <20210226171943.GA12088@oc3871087118.ibm.com>
-Date:   Fri, 26 Feb 2021 18:39:13 +0100
-Message-ID: <87ft1iwwxq.fsf@jogness.linutronix.de>
+        Fri, 26 Feb 2021 12:40:46 -0500
+Received: by mail-io1-f71.google.com with SMTP id m3so7795171ioy.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:40:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to:content-transfer-encoding;
+        bh=PQUkYOPypd5QA7wH0ZiOCBAtaTuHt1m0uYa+QbCHJ6U=;
+        b=qIPTib1uQw5EjOIOmYnsQdLH2QJHEFiGe7wIjgYPfy/jO19qaw9ygrNOPBkp7HanGb
+         fXrhk2bPy3rMe8n+/t8Tn4K/Dm+NKALOhsWlu1RmKK4bHyTLyOU5+mslVBbUaiEHDZP+
+         g4I07HyVWtYSNEjApUJ9d/FVqCipxMnkYuonwAlqxJSs3thQpn+hK7V13lxYUoSMmVT6
+         czibH21k20foY5eu8uCbs2s2Y4NUjGdHYMAreWFuH4YLQP6Uz1dbzQUpKPRZfwLIr7qi
+         U83+c1b76avPsNlXhEMVnFXgXHJSipZLGeLeLnoE27mpGo2Pqin/W8D+Bg0C2Orpt6uL
+         j/2w==
+X-Gm-Message-State: AOAM530CFutKfZff7iY63uG0j1S+6fPqed7FrMjdGmCZoFhx/1UAfz3L
+        Wd7+hZUGr2ZDl32/BvVUN1QEi/lPwSQmzVQ0nEqdESmwcVBP
+X-Google-Smtp-Source: ABdhPJwjcrDY3M3NySdVXsyY9Thnn/YytagkgN3LVwDBc1JZluRM0uR02sC/B0mrZ5cqBEHumS98eeNLfegZzpqZCSWbSUsV2Gd/
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6e02:f06:: with SMTP id x6mr3067247ilj.287.1614361205201;
+ Fri, 26 Feb 2021 09:40:05 -0800 (PST)
+Date:   Fri, 26 Feb 2021 09:40:05 -0800
+In-Reply-To: <000000000000b2d35705b7f31599@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002ce0d905bc40c2df@google.com>
+Subject: Re: INFO: task hung in virtio_cleanup
+From:   syzbot <syzbot+1db88381b64aaa929ef6@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, benjamin.tissoires@redhat.com,
+        gregkh@linuxfoundation.org, hdanton@sina.com,
+        herbert@gondor.apana.org.au, jikos@kernel.org, jkosina@suse.cz,
+        linux-crypto@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        mpm@selenic.com, mst@redhat.com, rafael@kernel.org,
+        rikard.falkeborn@gmail.com, sammko@sammserver.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-26, Alexander Gordeev <agordeev@linux.ibm.com> wrote:
-> I am seeing KASAN reporting incorrect 1-byte access in exactly
-> same location Sven has identified before. In case there no
-> fix for it yet, please see below what happens in case of pretty
-> large buffer - WARN_ONCE() invocation in my case.
+syzbot has bisected this issue to:
 
-It looks like you have not applied the fix yet:
+commit 77a36a3ab4ff17fad23831192e3694a3c5a1750d
+Author: Samuel Čavoj <sammko@sammserver.com>
+Date:   Fri Mar 13 02:12:38 2020 +0000
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=08d60e5999540110576e7c1346d486220751b7f9
+    HID: Add driver fixing Glorious PC Gaming Race mouse report descriptor
 
-John Ogness
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=129959ccd00000
+start commit:   f40ddce8 Linux 5.11
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=119959ccd00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=169959ccd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e53d04227c52a0df
+dashboard link: https://syzkaller.appspot.com/bug?extid=1db88381b64aaa929ef6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12277728d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1135e198d00000
+
+Reported-by: syzbot+1db88381b64aaa929ef6@syzkaller.appspotmail.com
+Fixes: 77a36a3ab4ff ("HID: Add driver fixing Glorious PC Gaming Race mouse report descriptor")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
